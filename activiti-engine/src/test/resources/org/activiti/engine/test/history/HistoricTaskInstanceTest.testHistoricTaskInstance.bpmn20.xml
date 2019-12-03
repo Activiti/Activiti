@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="taskAssigneeExample" 
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="Examples">
+  
+  <process id="HistoricTaskInstanceTest">
+  
+    <startEvent id="start" />
+    
+    <sequenceFlow id="flow1" sourceRef="start" targetRef="task" />
+
+    <userTask id="task" name="Clean up" activiti:formKey="#{formKeyVar}">
+      <documentation>
+        Schedule an engineering meeting for next week with the new hire.
+      </documentation>
+      <humanPerformer>
+        <resourceAssignmentExpression>
+          <formalExpression>kermit</formalExpression>
+        </resourceAssignmentExpression>
+      </humanPerformer>
+    </userTask>
+    
+    <sequenceFlow id="flow2" sourceRef="task" targetRef="end" />
+    
+    <endEvent id="end" />
+    
+  </process>
+
+</definitions>

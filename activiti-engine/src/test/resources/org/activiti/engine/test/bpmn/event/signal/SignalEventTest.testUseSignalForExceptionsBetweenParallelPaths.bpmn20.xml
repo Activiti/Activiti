@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
+  
+  <signal id="negationsFailed" name="negationsFailed" />
+  
+  <process id="processWithSignal" name="My process" isExecutable="true">
+  
+    <startEvent id="startevent1" name="Start"></startEvent>
+    <sequenceFlow id="flow1" sourceRef="startevent1" targetRef="enterDevs"></sequenceFlow>
+    
+    <userTask id="enterDevs" name="Enter developers"></userTask>
+    <sequenceFlow id="flow2" sourceRef="enterDevs" targetRef="parallelgateway1"></sequenceFlow>
+    
+    <parallelGateway id="parallelgateway1" />
+    <sequenceFlow id="flow3" sourceRef="parallelgateway1" targetRef="negotiate"></sequenceFlow>
+    <sequenceFlow id="flow4" sourceRef="parallelgateway1" targetRef="developSpecs"></sequenceFlow>
+    
+    <userTask id="negotiate" name="Negotiate with client" activiti:assignee="kermit"></userTask>
+    <sequenceFlow id="flow5" sourceRef="negotiate" targetRef="exclusivegateway1"></sequenceFlow>
+
+    <userTask id="developSpecs" name="Develop specifications" activiti:assignee="${developer}">
+      <multiInstanceLoopCharacteristics isSequential="false" activiti:collection="${developers}" activiti:elementVariable="developer"></multiInstanceLoopCharacteristics>
+    </userTask>
+    <sequenceFlow id="flow6" sourceRef="developSpecs" targetRef="mergingExclusiveGw2"></sequenceFlow>
+    <boundaryEvent id="boundarysignal1" name="Signal" attachedToRef="developSpecs" cancelActivity="true">
+      <signalEventDefinition signalRef="negationsFailed" />
+    </boundaryEvent>
+    <sequenceFlow id="flow7" sourceRef="boundarysignal1" targetRef="mergingExclusiveGw2"></sequenceFlow>
+    
+    <exclusiveGateway id="exclusivegateway1" ></exclusiveGateway>
+    <sequenceFlow id="flow8" sourceRef="exclusivegateway1" targetRef="signalintermediatethrowevent1">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${negotationFailed}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="flow9" sourceRef="exclusivegateway1" targetRef="mergingExclusiveGw1">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${!negotationFailed}]]></conditionExpression>
+    </sequenceFlow>
+    
+    <intermediateThrowEvent id="signalintermediatethrowevent1" name="SignalThrowEvent">
+      <signalEventDefinition signalRef="negationsFailed"/>
+    </intermediateThrowEvent>
+    <sequenceFlow id="flow10" sourceRef="signalintermediatethrowevent1" targetRef="mergingExclusiveGw1"></sequenceFlow>
+    
+    <exclusiveGateway id="mergingExclusiveGw1" />
+    <sequenceFlow id="flow11" sourceRef="mergingExclusiveGw1" targetRef="parallelgateway2" />
+    
+    <exclusiveGateway id="mergingExclusiveGw2" />
+    <sequenceFlow id="flow12" sourceRef="mergingExclusiveGw2" targetRef="parallelgateway2" />
+
+    
+    <parallelGateway id="parallelgateway2" name="Parallel Gateway"></parallelGateway>
+    <sequenceFlow id="flow13" sourceRef="parallelgateway2" targetRef="endevent1"></sequenceFlow>
+    
+    <endEvent id="endevent1" name="End"></endEvent>
+  
+  </process>
+  
+</definitions>

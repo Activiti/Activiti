@@ -1,0 +1,146 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/processdef" xmlns:modeler="http://activiti.com/modeler" modeler:version="1.0en" modeler:exportDateTime="20160823153328016" modeler:modelId="5" modeler:modelVersion="1" modeler:modelLastUpdated="1471959206008">
+  <process id="transientVarsTest" name="transientVarsTest" isExecutable="true">
+    <startEvent id="startEvent1">
+      <extensionElements>
+        <modeler:editor-resource-id><![CDATA[startEvent1]]></modeler:editor-resource-id>
+      </extensionElements>
+    </startEvent>
+    <exclusiveGateway id="sid-372939DC-8012-41DA-88D5-C7791CBAE872" default="sid-DEAF1635-AC1C-4876-B79D-D57E0B03E321">
+      <extensionElements>
+        <modeler:editor-resource-id><![CDATA[sid-372939DC-8012-41DA-88D5-C7791CBAE872]]></modeler:editor-resource-id>
+      </extensionElements>
+    </exclusiveGateway>
+    <sequenceFlow id="sid-2C96D408-F45D-4381-B834-0CD5E853711A" sourceRef="startEvent1" targetRef="sid-372939DC-8012-41DA-88D5-C7791CBAE872">
+      <extensionElements>
+        <modeler:editor-resource-id><![CDATA[sid-2C96D408-F45D-4381-B834-0CD5E853711A]]></modeler:editor-resource-id>
+      </extensionElements>
+    </sequenceFlow>
+    <userTask id="sid-47B5A6D9-F447-43EB-B95C-E06769DEEED9" name="A" activiti:assignee="$INITIATOR">
+      <extensionElements>
+        <modeler:allow-send-email><![CDATA[true]]></modeler:allow-send-email>
+        <modeler:activiti-idm-initiator><![CDATA[true]]></modeler:activiti-idm-initiator>
+        <modeler:editor-resource-id><![CDATA[sid-47B5A6D9-F447-43EB-B95C-E06769DEEED9]]></modeler:editor-resource-id>
+      </extensionElements>
+    </userTask>
+    <userTask id="sid-0AEB208C-84E3-4809-8569-21AD9E1A42B1" name="B" activiti:assignee="$INITIATOR">
+      <extensionElements>
+        <modeler:allow-send-email><![CDATA[true]]></modeler:allow-send-email>
+        <modeler:activiti-idm-initiator><![CDATA[true]]></modeler:activiti-idm-initiator>
+        <modeler:editor-resource-id><![CDATA[sid-0AEB208C-84E3-4809-8569-21AD9E1A42B1]]></modeler:editor-resource-id>
+      </extensionElements>
+    </userTask>
+    <userTask id="sid-D4A94019-AF3A-415B-9B3B-8E6050D41C11" name="Default" activiti:assignee="$INITIATOR">
+      <extensionElements>
+        <modeler:allow-send-email><![CDATA[true]]></modeler:allow-send-email>
+        <modeler:activiti-idm-initiator><![CDATA[true]]></modeler:activiti-idm-initiator>
+        <modeler:editor-resource-id><![CDATA[sid-D4A94019-AF3A-415B-9B3B-8E6050D41C11]]></modeler:editor-resource-id>
+      </extensionElements>
+    </userTask>
+    <endEvent id="sid-4CCE23AA-FEA7-4569-9103-6C3A8DD9AC25">
+      <extensionElements>
+        <modeler:editor-resource-id><![CDATA[sid-4CCE23AA-FEA7-4569-9103-6C3A8DD9AC25]]></modeler:editor-resource-id>
+      </extensionElements>
+    </endEvent>
+    <sequenceFlow id="sid-FCA94FCA-915D-4DBE-935A-03F1F6FE1692" sourceRef="sid-47B5A6D9-F447-43EB-B95C-E06769DEEED9" targetRef="sid-4CCE23AA-FEA7-4569-9103-6C3A8DD9AC25">
+      <extensionElements>
+        <modeler:editor-resource-id><![CDATA[sid-FCA94FCA-915D-4DBE-935A-03F1F6FE1692]]></modeler:editor-resource-id>
+      </extensionElements>
+    </sequenceFlow>
+    <endEvent id="sid-0E9F2534-282A-4E40-81B3-4DD2AF1D0ED5">
+      <extensionElements>
+        <modeler:editor-resource-id><![CDATA[sid-0E9F2534-282A-4E40-81B3-4DD2AF1D0ED5]]></modeler:editor-resource-id>
+      </extensionElements>
+    </endEvent>
+    <sequenceFlow id="sid-FD498EB0-E9D2-4E85-885C-6793DDB659E4" sourceRef="sid-0AEB208C-84E3-4809-8569-21AD9E1A42B1" targetRef="sid-0E9F2534-282A-4E40-81B3-4DD2AF1D0ED5">
+      <extensionElements>
+        <modeler:editor-resource-id><![CDATA[sid-FD498EB0-E9D2-4E85-885C-6793DDB659E4]]></modeler:editor-resource-id>
+      </extensionElements>
+    </sequenceFlow>
+    <endEvent id="sid-CB4513FA-17B6-4DED-889F-DA819A3AD117">
+      <extensionElements>
+        <modeler:editor-resource-id><![CDATA[sid-CB4513FA-17B6-4DED-889F-DA819A3AD117]]></modeler:editor-resource-id>
+      </extensionElements>
+    </endEvent>
+    <sequenceFlow id="sid-1BEC387C-78B6-40E2-B5F1-F6D80CAAA197" sourceRef="sid-D4A94019-AF3A-415B-9B3B-8E6050D41C11" targetRef="sid-CB4513FA-17B6-4DED-889F-DA819A3AD117">
+      <extensionElements>
+        <modeler:editor-resource-id><![CDATA[sid-1BEC387C-78B6-40E2-B5F1-F6D80CAAA197]]></modeler:editor-resource-id>
+      </extensionElements>
+    </sequenceFlow>
+    <sequenceFlow id="sid-DEAF1635-AC1C-4876-B79D-D57E0B03E321" sourceRef="sid-372939DC-8012-41DA-88D5-C7791CBAE872" targetRef="sid-D4A94019-AF3A-415B-9B3B-8E6050D41C11">
+      <extensionElements>
+        <modeler:editor-resource-id><![CDATA[sid-DEAF1635-AC1C-4876-B79D-D57E0B03E321]]></modeler:editor-resource-id>
+      </extensionElements>
+    </sequenceFlow>
+    <sequenceFlow id="sid-08213970-42BF-4759-A928-DD76542A1C34" sourceRef="sid-372939DC-8012-41DA-88D5-C7791CBAE872" targetRef="sid-47B5A6D9-F447-43EB-B95C-E06769DEEED9">
+      <extensionElements>
+        <modeler:editor-resource-id><![CDATA[sid-08213970-42BF-4759-A928-DD76542A1C34]]></modeler:editor-resource-id>
+      </extensionElements>
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${variable == 'gotoA'}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="sid-56AA9D7D-D07C-461A-BB49-BFB4A443A649" sourceRef="sid-372939DC-8012-41DA-88D5-C7791CBAE872" targetRef="sid-0AEB208C-84E3-4809-8569-21AD9E1A42B1">
+      <extensionElements>
+        <modeler:editor-resource-id><![CDATA[sid-56AA9D7D-D07C-461A-BB49-BFB4A443A649]]></modeler:editor-resource-id>
+      </extensionElements>
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${variable == 'gotoB'}]]></conditionExpression>
+    </sequenceFlow>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_transientVarsTest">
+    <bpmndi:BPMNPlane bpmnElement="transientVarsTest" id="BPMNPlane_transientVarsTest">
+      <bpmndi:BPMNShape bpmnElement="startEvent1" id="BPMNShape_startEvent1">
+        <omgdc:Bounds height="30.0" width="30.0" x="75.0" y="330.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sid-372939DC-8012-41DA-88D5-C7791CBAE872" id="BPMNShape_sid-372939DC-8012-41DA-88D5-C7791CBAE872">
+        <omgdc:Bounds height="40.0" width="40.0" x="150.0" y="325.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sid-47B5A6D9-F447-43EB-B95C-E06769DEEED9" id="BPMNShape_sid-47B5A6D9-F447-43EB-B95C-E06769DEEED9">
+        <omgdc:Bounds height="80.0" width="100.0" x="300.0" y="165.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sid-0AEB208C-84E3-4809-8569-21AD9E1A42B1" id="BPMNShape_sid-0AEB208C-84E3-4809-8569-21AD9E1A42B1">
+        <omgdc:Bounds height="80.0" width="100.0" x="300.0" y="305.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sid-D4A94019-AF3A-415B-9B3B-8E6050D41C11" id="BPMNShape_sid-D4A94019-AF3A-415B-9B3B-8E6050D41C11">
+        <omgdc:Bounds height="80.0" width="100.0" x="300.0" y="435.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sid-4CCE23AA-FEA7-4569-9103-6C3A8DD9AC25" id="BPMNShape_sid-4CCE23AA-FEA7-4569-9103-6C3A8DD9AC25">
+        <omgdc:Bounds height="28.0" width="28.0" x="445.0" y="191.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sid-0E9F2534-282A-4E40-81B3-4DD2AF1D0ED5" id="BPMNShape_sid-0E9F2534-282A-4E40-81B3-4DD2AF1D0ED5">
+        <omgdc:Bounds height="28.0" width="28.0" x="445.0" y="331.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sid-CB4513FA-17B6-4DED-889F-DA819A3AD117" id="BPMNShape_sid-CB4513FA-17B6-4DED-889F-DA819A3AD117">
+        <omgdc:Bounds height="28.0" width="28.0" x="445.0" y="461.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="sid-1BEC387C-78B6-40E2-B5F1-F6D80CAAA197" id="BPMNEdge_sid-1BEC387C-78B6-40E2-B5F1-F6D80CAAA197">
+        <omgdi:waypoint x="400.0" y="475.0"/>
+        <omgdi:waypoint x="445.0" y="475.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-08213970-42BF-4759-A928-DD76542A1C34" id="BPMNEdge_sid-08213970-42BF-4759-A928-DD76542A1C34">
+        <omgdi:waypoint x="170.5" y="325.5"/>
+        <omgdi:waypoint x="170.5" y="205.0"/>
+        <omgdi:waypoint x="300.0" y="205.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-FCA94FCA-915D-4DBE-935A-03F1F6FE1692" id="BPMNEdge_sid-FCA94FCA-915D-4DBE-935A-03F1F6FE1692">
+        <omgdi:waypoint x="400.0" y="205.0"/>
+        <omgdi:waypoint x="445.0" y="205.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-2C96D408-F45D-4381-B834-0CD5E853711A" id="BPMNEdge_sid-2C96D408-F45D-4381-B834-0CD5E853711A">
+        <omgdi:waypoint x="104.99971066768252" y="345.0931659047682"/>
+        <omgdi:waypoint x="150.375" y="345.375"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-56AA9D7D-D07C-461A-BB49-BFB4A443A649" id="BPMNEdge_sid-56AA9D7D-D07C-461A-BB49-BFB4A443A649">
+        <omgdi:waypoint x="189.55307262569832" y="345.44692737430165"/>
+        <omgdi:waypoint x="300.0" y="345.1392757660167"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-FD498EB0-E9D2-4E85-885C-6793DDB659E4" id="BPMNEdge_sid-FD498EB0-E9D2-4E85-885C-6793DDB659E4">
+        <omgdi:waypoint x="400.0" y="345.0"/>
+        <omgdi:waypoint x="445.0" y="345.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-DEAF1635-AC1C-4876-B79D-D57E0B03E321" id="BPMNEdge_sid-DEAF1635-AC1C-4876-B79D-D57E0B03E321">
+        <omgdi:waypoint x="170.5" y="364.5"/>
+        <omgdi:waypoint x="170.5" y="475.0"/>
+        <omgdi:waypoint x="300.0" y="475.0"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

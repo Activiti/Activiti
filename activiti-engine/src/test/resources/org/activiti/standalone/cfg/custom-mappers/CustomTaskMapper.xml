@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.activiti.standalone.cfg.TaskMapper">
+
+  <!-- CUSTOM TASK RESULTMAP -->
+  
+  <resultMap id="customTaskResultMap" type="org.activiti.standalone.cfg.CustomTask">
+    <id property="id" column="ID_" jdbcType="VARCHAR"/>
+    <result property="name" column="NAME_" jdbcType="VARCHAR"/>
+    <result property="priority" column="PRIORITY_" jdbcType="INTEGER"/>
+    <result property="createTime" column="CREATE_TIME_" jdbcType="TIMESTAMP" />
+    <result property="owner" column="OWNER_" jdbcType="VARCHAR"/>
+    <result property="assignee" column="ASSIGNEE_" jdbcType="VARCHAR"/>
+  </resultMap>
+
+  <sql id="selectCustomTaskColumns">
+		RES.ID_, RES.NAME_, RES.PRIORITY_, RES.CREATE_TIME_, RES.OWNER_, RES.ASSIGNEE_
+	</sql>
+	
+	<select id="selectCustomTaskList" parameterType="string" resultMap="customTaskResultMap">
+		select <include refid="selectCustomTaskColumns"/> from ACT_RU_TASK RES
+	</select>
+	
+	<select id="selectOneCustomTask" parameterType="string" resultMap="customTaskResultMap">
+		select <include refid="selectCustomTaskColumns"/> from ACT_RU_TASK RES where RES.ID_ = #{id}
+	</select>
+
+	<select id="selectCustomTaskCountByQueryCriteria" parameterType="org.activiti.standalone.cfg.CustomTaskQuery" resultType="long">
+    select count(distinct RES.ID_)
+    <include refid="selectCustomTaskByQueryCriteriaSql"/>
+  </select>
+  
+  <select id="selectCustomTaskByQueryCriteria" parameterType="org.activiti.standalone.cfg.CustomTaskQuery" resultMap="customTaskResultMap">
+    ${limitBefore}
+    select distinct <include refid="selectCustomTaskColumns"/> ${limitBetween}
+    <include refid="selectCustomTaskByQueryCriteriaSql"/> 
+    ${orderBy}
+    ${limitAfter}
+  </select>
+  
+  <sql id="selectCustomTaskByQueryCriteriaSql">
+  from ${prefix}ACT_RU_TASK RES
+  <where>
+	<if test="taskId != null">
+		RES.ID_ = #{taskId}
+	</if>
+	<if test="owner != null">
+		and RES.OWNER_ = #{owner}
+	</if>
+	<if test="unOwned">
+		and RES.OWNER_ IS NULL
+	</if>
+  </where>
+  </sql>
+</mapper>

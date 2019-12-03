@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<definitions id="definitions" 
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="Examples">
+  
+  <process id="historicDetailMixed">
+  
+    <startEvent id="start">
+      <extensionElements>
+        <activiti:formProperty id="formProp1" 
+          name="Property 1"
+          variable="variable1" 
+          type="string" />
+    
+       <activiti:formProperty id="formProp2" 
+          name="Property 2"
+          variable="variable2" 
+          type="long" />
+        </extensionElements>
+    </startEvent>
+    <sequenceFlow id="flow1" sourceRef="start" targetRef="task" />
+    <userTask id="task" name="Schedule meeting" activiti:assignee="kermit" />
+    <sequenceFlow id="flow2" sourceRef="task" targetRef="end" />
+    
+    <endEvent id="end" />
+    
+  </process>
+
+</definitions>

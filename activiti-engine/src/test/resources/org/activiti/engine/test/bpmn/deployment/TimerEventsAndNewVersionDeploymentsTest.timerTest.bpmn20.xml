@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/processdef" xmlns:modeler="http://activiti.com/modeler" modeler:version="1.0en" modeler:exportDateTime="20160203231642760" modeler:modelId="972290" modeler:modelVersion="1" modeler:modelLastUpdated="1454541400250">
+  <process id="timerTest" name="timerTest" isExecutable="true">
+    <startEvent id="sid-07E9A1C1-7D04-4E61-8C9D-8C0DC540CDB1">
+      <timerEventDefinition>
+        <timeDuration>PT10M</timeDuration>
+      </timerEventDefinition>
+    </startEvent>
+    <userTask id="sid-D6164A01-FD97-4D7D-AAAB-C300D1F8AEB6" name="My Task">
+      <extensionElements>
+        <modeler:allow-send-email>true</modeler:allow-send-email>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="sid-0807939E-85FC-43CC-8923-C2D56A51994E" sourceRef="sid-07E9A1C1-7D04-4E61-8C9D-8C0DC540CDB1" targetRef="sid-D6164A01-FD97-4D7D-AAAB-C300D1F8AEB6"/>
+    <endEvent id="sid-EF05038A-8D8E-4A5E-BE25-3B4AA446C57B"/>
+    <sequenceFlow id="sid-BCD0DB74-4950-4FC1-8E6F-25FA01CDCD5D" sourceRef="sid-D6164A01-FD97-4D7D-AAAB-C300D1F8AEB6" targetRef="sid-EF05038A-8D8E-4A5E-BE25-3B4AA446C57B"/>
+    <boundaryEvent id="sid-DC2EAF44-FB57-4452-A732-890B9DE4DC60" attachedToRef="sid-D6164A01-FD97-4D7D-AAAB-C300D1F8AEB6" cancelActivity="true">
+      <timerEventDefinition>
+        <timeDuration>PT20M</timeDuration>
+      </timerEventDefinition>
+    </boundaryEvent>
+    <userTask id="sid-FD610C27-901C-4C7C-8A8C-77CA6C5A7898" name="Timer after boundary">
+      <extensionElements>
+        <modeler:allow-send-email>true</modeler:allow-send-email>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="sid-B078A6E0-7C4A-4B1A-97AA-9EEF698AC318" sourceRef="sid-DC2EAF44-FB57-4452-A732-890B9DE4DC60" targetRef="sid-FD610C27-901C-4C7C-8A8C-77CA6C5A7898"/>
+    <endEvent id="sid-7794B021-2C98-4A60-93BD-98FA5CB8E0DD"/>
+    <sequenceFlow id="sid-5F1E216C-381A-4791-9C7C-B9D93B3BB8CD" sourceRef="sid-FD610C27-901C-4C7C-8A8C-77CA6C5A7898" targetRef="sid-7794B021-2C98-4A60-93BD-98FA5CB8E0DD"/>
+  </process>
+</definitions>

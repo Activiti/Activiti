@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xmlns:signavio="http://www.signavio.com" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL http://www.omg.org/spec/BPMN/20100501/BPMN20.xsd" id="sid-11b0cdf6-b871-49bb-b66b-bcd02028d83d" exporter="Signavio Process Editor, http://www.signavio.com" exporterVersion="5.4.1" targetNamespace="http://www.omg.org/spec/BPMN/20100524/MODEL">
+  <bpmn:collaboration id="collaboration_1">
+    <bpmn:participant id="Process_Engine_1" name="parentActivationOnNonJoiningEnd" processRef="parentActivationOnNonJoiningEnd"/>
+  </bpmn:collaboration>
+  <bpmn:process id="parentActivationOnNonJoiningEnd" name="parentActivationOnNonJoiningEnd" isExecutable="true">
+    <bpmn:laneSet id="laneSet_5">
+      <bpmn:lane id="lane_5">
+        <bpmn:flowNodeRef>second_check</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>first_check</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>first_check_2</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>second_check_2</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ParallelGateway_1</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>start</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>EndEvent_1</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>EndEvent_2</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:userTask id="second_check" activiti:candidateGroups="test" name="Second check asset1">
+      <bpmn:incoming>SequenceFlow_5</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_8</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="first_check" activiti:candidateGroups="test" name="First check asset1">
+      <bpmn:incoming>SequenceFlow_1</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_5</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="SequenceFlow_5" name="" sourceRef="first_check" targetRef="second_check"/>
+    <bpmn:userTask id="first_check_2" activiti:candidateGroups="test" name="First check asset2">
+      <bpmn:incoming>SequenceFlow_3</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_4</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="SequenceFlow_4" sourceRef="first_check_2" targetRef="second_check_2"/>
+    <bpmn:userTask id="second_check_2" activiti:candidateGroups="test" name="Second check asset2">
+      <bpmn:incoming>SequenceFlow_4</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_7</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="SequenceFlow_7" sourceRef="second_check_2" targetRef="EndEvent_1"/>
+    <bpmn:parallelGateway id="ParallelGateway_1">
+      <bpmn:incoming>SequenceFlow_2</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1</bpmn:outgoing>
+      <bpmn:outgoing>SequenceFlow_3</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:sequenceFlow id="SequenceFlow_1" name="" sourceRef="ParallelGateway_1" targetRef="first_check"/>
+    <bpmn:sequenceFlow id="SequenceFlow_3" name="" sourceRef="ParallelGateway_1" targetRef="first_check_2"/>
+    <bpmn:startEvent id="start" name="...">
+      <bpmn:outgoing>SequenceFlow_2</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="SequenceFlow_2" name="" sourceRef="start" targetRef="ParallelGateway_1"/>
+    <bpmn:endEvent id="EndEvent_1">
+      <bpmn:incoming>SequenceFlow_7</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="SequenceFlow_8" sourceRef="second_check" targetRef="EndEvent_2"/>
+    <bpmn:endEvent id="EndEvent_2">
+      <bpmn:incoming>SequenceFlow_8</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:association id="association_52" sourceRef="second_check" targetRef="textAnnotation_57"/>
+    <bpmn:textAnnotation id="textAnnotation_57">
+      <bpmn:text>not the same person as the first task</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_1" sourceRef="textAnnotation_57" targetRef="second_check_2"/>
+  </bpmn:process>
+</bpmn:definitions>

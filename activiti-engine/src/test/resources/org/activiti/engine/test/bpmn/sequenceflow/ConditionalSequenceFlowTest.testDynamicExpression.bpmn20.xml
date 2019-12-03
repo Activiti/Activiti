@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions" 
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="Examples">
+  
+  <process id="condSeqFlowUelExpr">
+  
+    <startEvent id="theStart" />
+    
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="task1">
+      <conditionExpression xsi:type="tFormalExpression">
+         <![CDATA[${input == 'left'}]]>
+      </conditionExpression>
+    </sequenceFlow>
+    
+    <sequenceFlow id="flow2" sourceRef="theStart" targetRef="task2">
+      <conditionExpression xsi:type="tFormalExpression">
+         <![CDATA[${input != 'left'}]]>
+      </conditionExpression>
+    </sequenceFlow>
+    
+    <userTask id="task1" name="task left" />
+    
+    <userTask id="task2" name="task not left" />
+    
+    <sequenceFlow id="flow3" sourceRef="task1" targetRef="endEvent" />
+    
+    <sequenceFlow id="flow4" sourceRef="task2" targetRef="endEvent" />
+    
+    <endEvent id="endEvent" />
+    
+  </process>
+
+</definitions>

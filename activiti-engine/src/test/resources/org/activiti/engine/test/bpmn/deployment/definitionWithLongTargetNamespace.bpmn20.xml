@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 302 characters long targetNamespace is too long, only 255 characters are allowed in i.e. ACT_RE_PROCDEF.CATEGORY -->
+<definitions id="ID123"
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" 
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="ID100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000300000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000">
+
+  <process id="ABC">
+
+    <startEvent id="start" />
+
+    <sequenceFlow id="flow1" sourceRef="start" targetRef="end" />
+
+    <endEvent id="end" />
+
+  </process>
+
+</definitions>

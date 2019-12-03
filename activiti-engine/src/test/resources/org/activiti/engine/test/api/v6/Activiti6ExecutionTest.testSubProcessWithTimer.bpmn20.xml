@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="Examples">
+
+  <process id="subProcessWithTimer">
+  
+    <startEvent id="theStart" />
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="theTask1" />
+    
+    <userTask id="theTask1" name="The famous task1" activiti:assignee="kermit" />
+    
+    <sequenceFlow id="flow2" sourceRef="theTask1" targetRef="subProcess" />
+    
+    <subProcess id="subProcess">
+    
+    	<startEvent id="subStart" />
+    	<sequenceFlow id="subflow1" sourceRef="subStart" targetRef="subTask" />
+    	<userTask id="subTask" name="The sub task" activiti:assignee="kermit" />
+    	<sequenceFlow id="subflow2" sourceRef="subTask" targetRef="subEnd" />
+    	<endEvent id="subEnd" />
+    
+    </subProcess>
+    
+    <boundaryEvent id="timerEvent" cancelActivity="true" attachedToRef="subProcess">
+		<timerEventDefinition>
+			<timeDuration>PT5M</timeDuration>
+		</timerEventDefinition>
+	</boundaryEvent>
+	
+	<sequenceFlow id="flow3" sourceRef="timerEvent" targetRef="timerTask" />
+	
+	<userTask id="timerTask" name="Timer task" activiti:assignee="kermit" />
+	
+	<sequenceFlow id="flow4" sourceRef="timerTask" targetRef="theEnd" />
+    
+    <sequenceFlow id="flow5" sourceRef="subProcess" targetRef="theTask2" />
+    
+    <userTask id="theTask2" name="The famous task2" activiti:assignee="kermit" />
+    
+    <sequenceFlow id="flow6" sourceRef="theTask2" targetRef="theEnd" />
+    
+    <endEvent id="theEnd" />
+    
+  </process>
+
+</definitions>

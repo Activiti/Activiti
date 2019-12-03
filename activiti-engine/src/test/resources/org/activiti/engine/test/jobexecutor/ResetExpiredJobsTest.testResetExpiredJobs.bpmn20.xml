@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/processdef" xmlns:modeler="http://activiti.com/modeler" modeler:version="1.0en" modeler:exportDateTime="20160616170715422" modeler:modelId="981438" modeler:modelVersion="1" modeler:modelLastUpdated="1465902184827">
+  <process id="myProcess" isExecutable="true">
+    <startEvent id="startEvent1"/>
+    <sequenceFlow id="sid-96B92FE0-5C64-4AEA-BDFA-183788DFB74C" sourceRef="startEvent1" targetRef="sid-5A379119-8C0B-49DF-BA41-7309B29B2FDC"/>
+    <scriptTask id="sid-5A379119-8C0B-49DF-BA41-7309B29B2FDC" activiti:async="true" name="My Script" scriptFormat="javascript" activiti:autoStoreVariables="false">
+      <script><![CDATA[execution.setVariable('test', '12345');]]></script>
+    </scriptTask>
+    <userTask id="sid-BB6DF19F-F939-4A23-9105-F5649A91F24D" name="A" />
+    <sequenceFlow id="sid-65ACD043-6DF5-4A6C-8C85-E737EFEDC4BD" sourceRef="sid-5A379119-8C0B-49DF-BA41-7309B29B2FDC" targetRef="sid-BB6DF19F-F939-4A23-9105-F5649A91F24D"/>
+    <endEvent id="sid-A6FA6203-B754-4730-A7BA-BDFF4600E627"/>
+    <sequenceFlow id="sid-505CA06C-5579-4ACC-A341-977A20F5C7F1" sourceRef="sid-BB6DF19F-F939-4A23-9105-F5649A91F24D" targetRef="sid-A6FA6203-B754-4730-A7BA-BDFF4600E627"/>
+  </process>
+</definitions>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions" xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn" targetNamespace="Examples">
+  <signal id="theSignal" name="The Signal"/>
+  <process id="processWithSignalCatch" isClosed="false" processType="None">
+    <startEvent id="theStart2" isInterrupting="true" parallelMultiple="false">
+      <outgoing>_4</outgoing>
+    </startEvent>
+    <endEvent id="theEnd2">
+      <incoming>_5</incoming>
+    </endEvent>
+    <intermediateCatchEvent id="_3" name="Intermediate Catch Event" parallelMultiple="false">
+      <incoming>_4</incoming>
+      <outgoing>_5</outgoing>
+      <signalEventDefinition id="_3_ED_1" signalRef="theSignal"/>
+    </intermediateCatchEvent>
+    <sequenceFlow id="_4" sourceRef="theStart2" targetRef="_3"/>
+    <sequenceFlow id="_5" sourceRef="_3" targetRef="theEnd2"/>
+  </process>
+</definitions>

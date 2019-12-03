@@ -1,0 +1,572 @@
+<?xml version="1.0" encoding="UTF-8"?><definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xmlns:signavio="http://www.signavio.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="Signavio Process Editor, http://www.signavio.com" exporterVersion="5.4.0" id="sid-95c23b2e-60dc-4bea-86c9-98e9582989e0" targetNamespace="http://www.signavio.com/bpmn20" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL http://www.omg.org/spec/BPMN/2.0/20100501/BPMN20.xsd">
+   <collaboration id="sid-538283f5-5300-4cdd-a663-32586779d734">
+      <participant id="Team-Assistenz_7" name="Team-Assistenz" processRef="Team-Assistenz_16">
+         <extensionElements/>
+      </participant>
+      <participant id="Process_Engine_1" name="invoice-inbound" processRef="invoice">
+         <extensionElements/>
+      </participant>
+      <participant id="Gesch_ftsf_hrung_4" name="Geschäftsführung" processRef="Gesch_ftsf_hrung_190">
+         <extensionElements/>
+      </participant>
+      <messageFlow id="messageFlow_10" name="" sourceRef="Freigebenden_zuordnen_143" targetRef="Freigebender__ist_zuzuordnen_50">
+         <extensionElements/>
+      </messageFlow>
+      <messageFlow id="messageFlow_12" name="" sourceRef="Rechnung_kl_ren_148" targetRef="Rechnung_zu_kl_ren_68">
+         <extensionElements/>
+      </messageFlow>
+      <messageFlow id="messageFlow_11" name="" sourceRef="Kl_ren_und_Ergebnis_festhalten_75" targetRef="Rechnung_kl_ren_148">
+         <extensionElements/>
+      </messageFlow>
+      <messageFlow id="messageFlow_14" name="" sourceRef="Freigebenden_zuordnen_57" targetRef="Freigebenden_zuordnen_143">
+         <extensionElements/>
+      </messageFlow>
+      <messageFlow id="messageFlow_13" name="" sourceRef="Rechnung_scannen_und_mailen_36" targetRef="Rechnung_eingegangen_138">
+         <extensionElements/>
+      </messageFlow>
+   </collaboration>
+   <message id="messageId" name="messageName"/>
+   <process id="Team-Assistenz_16" isClosed="true" isExecutable="false" name="Team-Assistenz">
+      <laneSet id="sid-dd806f8c-459f-45fe-8aa4-cd1f68bda452">
+         <lane id="lane_16">
+            <extensionElements>
+               <signavio:signavioMetaData metaKey="bgcolor" metaValue=""/>
+            </extensionElements>
+            <flowNodeRef>Rechnung_eingegangen_31</flowNodeRef>
+            <flowNodeRef>Rechnung_scannen_und_mailen_36</flowNodeRef>
+            <flowNodeRef>Papierbeleg_archivieren_41</flowNodeRef>
+            <flowNodeRef>endEvent_46</flowNodeRef>
+            <flowNodeRef>Freigebender__ist_zuzuordnen_50</flowNodeRef>
+            <flowNodeRef>Freigebenden_zuordnen_57</flowNodeRef>
+            <flowNodeRef>eventBasedGateway_62</flowNodeRef>
+            <flowNodeRef>Rechnung_zu_kl_ren_68</flowNodeRef>
+            <flowNodeRef>Kl_ren_und_Ergebnis_festhalten_75</flowNodeRef>
+            <flowNodeRef>z_Tage_80</flowNodeRef>
+            <flowNodeRef>endEvent_87</flowNodeRef>
+         </lane>
+      </laneSet>
+      <startEvent id="Rechnung_eingegangen_31" name="Rechnung&#10;eingegangen">
+         <extensionElements>
+            <signavio:signavioMetaData metaKey="bgcolor" metaValue="#ffffff"/>
+         </extensionElements>
+         <outgoing>sequenceFlow_91</outgoing>
+         <messageEventDefinition id="sid-c85360e6-3575-4642-8575-ece877d3d6e2" messageRef="messageId"/>
+      </startEvent>
+      <task completionQuantity="1" id="Rechnung_scannen_und_mailen_36" isForCompensation="false" name="Rechnung scannen und mailen" startQuantity="1">
+         <extensionElements>
+            <signavio:signavioMetaData metaKey="bgcolor" metaValue="#ffffcc"/>
+         </extensionElements>
+         <incoming>sequenceFlow_91</incoming>
+         <outgoing>sequenceFlow_93</outgoing>
+      </task>
+      <task completionQuantity="1" id="Papierbeleg_archivieren_41" isForCompensation="false" name="Papierbeleg archivieren" startQuantity="1">
+         <extensionElements>
+            <signavio:signavioMetaData metaKey="bgcolor" metaValue="#ffffcc"/>
+         </extensionElements>
+         <incoming>sequenceFlow_93</incoming>
+         <outgoing>sequenceFlow_92</outgoing>
+      </task>
+      <endEvent id="endEvent_46" name="">
+         <extensionElements>
+            <signavio:signavioMetaData metaKey="bgcolor" metaValue="#ffffff"/>
+         </extensionElements>
+         <incoming>sequenceFlow_99</incoming>
+      </endEvent>
+      <intermediateCatchEvent id="Freigebender__ist_zuzuordnen_50" name="Freigebender&#10; ist zuzuordnen">
+         <extensionElements>
+            <signavio:signavioLabel bottom="false" left="false" ref="text_name" right="false" top="false" valign="bottom" x="16.0" y="-8.0"/>
+            <signavio:signavioMetaData metaKey="bgcolor" metaValue="#ffffff"/>
+         </extensionElements>
+         <incoming>sequenceFlow_92</incoming>
+         <outgoing>sequenceFlow_94</outgoing>
+         <messageEventDefinition id="sid-57c872b4-d591-4f66-92c4-4300e4362719" messageRef="messageId"/>
+      </intermediateCatchEvent>
+      <task completionQuantity="1" id="Freigebenden_zuordnen_57" isForCompensation="false" name="Freigebenden zuordnen" startQuantity="1">
+         <extensionElements>
+            <signavio:signavioMetaData metaKey="bgcolor" metaValue="#ffffcc"/>
+         </extensionElements>
+         <incoming>sequenceFlow_94</incoming>
+         <outgoing>sequenceFlow_95</outgoing>
+      </task>
+      <eventBasedGateway eventGatewayType="Exclusive" gatewayDirection="Diverging" id="eventBasedGateway_62" instantiate="false" name="">
+         <extensionElements>
+            <signavio:signavioMetaData metaKey="bgcolor" metaValue="#ffffff"/>
+         </extensionElements>
+         <incoming>sequenceFlow_95</incoming>
+         <outgoing>sequenceFlow_97</outgoing>
+         <outgoing>sequenceFlow_96</outgoing>
+      </eventBasedGateway>
+      <intermediateCatchEvent id="Rechnung_zu_kl_ren_68" name="Rechnung&#10;zu klären">
+         <extensionElements>
+            <signavio:signavioLabel bottom="false" left="false" ref="text_name" right="false" top="false" valign="bottom" x="16.0" y="-8.0"/>
+            <signavio:signavioMetaData metaKey="bgcolor" metaValue="#ffffff"/>
+         </extensionElements>
+         <incoming>sequenceFlow_97</incoming>
+         <outgoing>sequenceFlow_98</outgoing>
+         <messageEventDefinition id="sid-f57ed9c1-2217-4b6a-9c92-e9b92f71422c" messageRef="messageId"/>
+      </intermediateCatchEvent>
+      <task completionQuantity="1" id="Kl_ren_und_Ergebnis_festhalten_75" isForCompensation="false" name="Klären und Ergebnis festhalten" startQuantity="1">
+         <extensionElements>
+            <signavio:signavioMetaData metaKey="bgcolor" metaValue="#ffffcc"/>
+         </extensionElements>
+         <incoming>sequenceFlow_98</incoming>
+         <outgoing>sequenceFlow_100</outgoing>
+      </task>
+      <intermediateCatchEvent id="z_Tage_80" name="7 Tage">
+         <extensionElements>
+            <signavio:signavioLabel bottom="false" left="false" ref="text_name" right="false" top="false" valign="bottom" x="16.0" y="-8.0"/>
+            <signavio:signavioMetaData metaKey="bgcolor" metaValue="#ffffff"/>
+         </extensionElements>
+         <incoming>sequenceFlow_96</incoming>
+         <outgoing>sequenceFlow_99</outgoing>
+         <timerEventDefinition id="sid-6fbf9288-536b-4ddc-bfe3-23f09dc06950"/>
+      </intermediateCatchEvent>
+      <endEvent id="endEvent_87" name="">
+         <extensionElements>
+            <signavio:signavioMetaData metaKey="bgcolor" metaValue="#ffffff"/>
+         </extensionElements>
+         <incoming>sequenceFlow_100</incoming>
+      </endEvent>
+      <sequenceFlow id="sequenceFlow_100" isImmediate="true" name="" sourceRef="Kl_ren_und_Ergebnis_festhalten_75" targetRef="endEvent_87">
+         <extensionElements/>
+      </sequenceFlow>
+      <sequenceFlow id="sequenceFlow_99" isImmediate="true" name="" sourceRef="z_Tage_80" targetRef="endEvent_46">
+         <extensionElements/>
+      </sequenceFlow>
+      <sequenceFlow id="sequenceFlow_98" isImmediate="true" name="" sourceRef="Rechnung_zu_kl_ren_68" targetRef="Kl_ren_und_Ergebnis_festhalten_75">
+         <extensionElements/>
+      </sequenceFlow>
+      <sequenceFlow id="sequenceFlow_97" isImmediate="true" name="" sourceRef="eventBasedGateway_62" targetRef="Rechnung_zu_kl_ren_68">
+         <extensionElements/>
+      </sequenceFlow>
+      <sequenceFlow id="sequenceFlow_96" isImmediate="true" name="" sourceRef="eventBasedGateway_62" targetRef="z_Tage_80">
+         <extensionElements/>
+      </sequenceFlow>
+      <sequenceFlow id="sequenceFlow_95" isImmediate="true" name="" sourceRef="Freigebenden_zuordnen_57" targetRef="eventBasedGateway_62">
+         <extensionElements/>
+      </sequenceFlow>
+      <sequenceFlow id="sequenceFlow_94" isImmediate="true" name="" sourceRef="Freigebender__ist_zuzuordnen_50" targetRef="Freigebenden_zuordnen_57">
+         <extensionElements/>
+      </sequenceFlow>
+      <sequenceFlow id="sequenceFlow_93" isImmediate="true" name="" sourceRef="Rechnung_scannen_und_mailen_36" targetRef="Papierbeleg_archivieren_41">
+         <extensionElements/>
+      </sequenceFlow>
+      <sequenceFlow id="sequenceFlow_92" isImmediate="true" name="" sourceRef="Papierbeleg_archivieren_41" targetRef="Freigebender__ist_zuzuordnen_50">
+         <extensionElements/>
+      </sequenceFlow>
+      <sequenceFlow id="sequenceFlow_91" isImmediate="true" name="" sourceRef="Rechnung_eingegangen_31" targetRef="Rechnung_scannen_und_mailen_36">
+         <extensionElements/>
+      </sequenceFlow>
+      <association associationDirection="None" id="association_101" sourceRef="Rechnung_scannen_und_mailen_36" targetRef="textAnnotation_102">
+         <extensionElements/>
+      </association>
+      <textAnnotation id="textAnnotation_102" textFormat="text/plain">
+         <extensionElements/>
+         <text>in einem Rutsch dank HP-Gerät</text>
+      </textAnnotation>
+   </process>
+   <process id="Gesch_ftsf_hrung_190" isClosed="true" isExecutable="false" name="Geschäftsführung">
+      <laneSet id="sid-ff79e1d0-5a70-4540-8311-2eb3a8b36913">
+         <lane id="lane_190">
+            <extensionElements>
+               <signavio:signavioMetaData metaKey="bgcolor" metaValue=""/>
+            </extensionElements>
+            <flowNodeRef>Monatsende_198</flowNodeRef>
+            <flowNodeRef>zber-weisungen_ausf_hren_203</flowNodeRef>
+            <flowNodeRef>endEvent_208</flowNodeRef>
+            <flowNodeRef>zberweisungs-_vorlagen_212</flowNodeRef>
+         </lane>
+      </laneSet>
+      <startEvent id="Monatsende_198" name="Monatsende">
+         <extensionElements>
+            <signavio:signavioMetaData metaKey="bgcolor" metaValue="#ffffff"/>
+         </extensionElements>
+         <outgoing>sequenceFlow_215</outgoing>
+         <timerEventDefinition id="sid-426e2fdb-a070-4849-bcf9-5a84d726575c"/>
+      </startEvent>
+      <task completionQuantity="1" id="zber-weisungen_ausf_hren_203" isForCompensation="false" name="Über-weisungen ausführen" startQuantity="1">
+         <extensionElements>
+            <signavio:signavioMetaData metaKey="bgcolor" metaValue="#ffffcc"/>
+         </extensionElements>
+         <incoming>sequenceFlow_215</incoming>
+         <outgoing>sequenceFlow_216</outgoing>
+      </task>
+      <endEvent id="endEvent_208" name="">
+         <extensionElements>
+            <signavio:signavioMetaData metaKey="bgcolor" metaValue="#ffffff"/>
+         </extensionElements>
+         <incoming>sequenceFlow_216</incoming>
+      </endEvent>
+      <dataStoreReference dataStoreRef="sid-33810e28-46d2-4ff6-a536-7f0faff302e7" id="zberweisungs-_vorlagen_212" name="Überweisungs-&#10;vorlagen">
+         <extensionElements>
+            <signavio:signavioMetaData metaKey="bgcolor" metaValue="#ffffff"/>
+         </extensionElements>
+      </dataStoreReference>
+      <sequenceFlow id="sequenceFlow_216" isImmediate="true" name="" sourceRef="zber-weisungen_ausf_hren_203" targetRef="endEvent_208">
+         <extensionElements/>
+      </sequenceFlow>
+      <sequenceFlow id="sequenceFlow_215" isImmediate="true" name="" sourceRef="Monatsende_198" targetRef="zber-weisungen_ausf_hren_203">
+         <extensionElements/>
+      </sequenceFlow>
+      <association associationDirection="None" id="association_188" sourceRef="zberweisung_vorbereiten_169" targetRef="zberweisungs-_vorlagen_212">
+         <extensionElements/>
+      </association>
+      <association associationDirection="None" id="association_217" sourceRef="zberweisungs-_vorlagen_212" targetRef="zber-weisungen_ausf_hren_203">
+         <extensionElements/>
+      </association>
+   </process>
+   <process id="invoice" isClosed="true" isExecutable="false" name="invoice-inbound">
+      <laneSet id="sid-9f4b77a2-d54a-416d-b2aa-a7e818ea04a5">
+         <lane id="Freigebender_105" name="Freigebender">
+            <extensionElements/>
+            <flowNodeRef>Rechnung_freigeben_125</flowNodeRef>
+            <flowNodeRef>Freigabe_erfolgt__131</flowNodeRef>
+         </lane>
+         <lane id="Team-Assistenz_110" name="Team-Assistenz">
+            <extensionElements/>
+            <flowNodeRef>Rechnung_eingegangen_138</flowNodeRef>
+            <flowNodeRef>Freigebenden_zuordnen_143</flowNodeRef>
+            <flowNodeRef>Rechnung_kl_ren_148</flowNodeRef>
+            <flowNodeRef>Kl_rung_erfolgreich__153</flowNodeRef>
+            <flowNodeRef>endEvent_165</flowNodeRef>
+         </lane>
+         <lane id="Buchhaltung_119" name="Buchhaltung">
+            <extensionElements/>
+            <flowNodeRef>zberweisung_vorbereiten_169</flowNodeRef>
+            <flowNodeRef>Rechnungseingang_abgearbeitet_174</flowNodeRef>
+            <flowNodeRef>PDF_aus_SVN_entfernen_160</flowNodeRef>
+         </lane>
+      </laneSet>
+      <userTask activiti:assignee="#{approver}" activiti:formKey="approveInvoice" completionQuantity="1" id="Rechnung_freigeben_125" isForCompensation="false" name="Rechnung&#10;freigeben" startQuantity="1">
+         <documentation id="sid-55047ae4-aa2a-43c7-a71b-c25a9999ea24">#{comment}</documentation>
+         <extensionElements/>
+         <incoming>sequenceFlow_178</incoming>
+         <incoming>ja_186</incoming>
+         <outgoing>sequenceFlow_180</outgoing>
+      </userTask>
+      <exclusiveGateway gatewayDirection="Diverging" id="Freigabe_erfolgt__131" name="Freigabe&#10;erfolgt?">
+         <extensionElements/>
+         <incoming>sequenceFlow_180</incoming>
+         <outgoing>Ja_181</outgoing>
+         <outgoing>Nein_182</outgoing>
+      </exclusiveGateway>
+      <startEvent id="Rechnung_eingegangen_138" name="Rechnung&#10;eingegangen">
+         <extensionElements/>
+         <outgoing>sequenceFlow_187</outgoing>
+         <messageEventDefinition id="sid-95acd6c4-27f0-4ceb-880f-d847c8328b7c" messageRef="messageId"/>
+      </startEvent>
+      <userTask activiti:assignee="kermit" activiti:formKey="assignApprover" completionQuantity="1" id="Freigebenden_zuordnen_143" isForCompensation="false" name="Freigebenden zuordnen" startQuantity="1">
+         <extensionElements/>
+         <incoming>sequenceFlow_187</incoming>
+         <outgoing>sequenceFlow_178</outgoing>
+      </userTask>
+      <userTask activiti:assignee="kermit" activiti:formKey="clarifyInvoice" completionQuantity="1" id="Rechnung_kl_ren_148" isForCompensation="false" name="Rechnung&#10;klären" startQuantity="1">
+         <extensionElements/>
+         <incoming>Nein_182</incoming>
+         <outgoing>sequenceFlow_183</outgoing>
+      </userTask>
+      <exclusiveGateway gatewayDirection="Diverging" id="Kl_rung_erfolgreich__153" name="Klärung&#10;erfolgreich?">
+         <extensionElements/>
+         <incoming>sequenceFlow_183</incoming>
+         <outgoing>nein_185</outgoing>
+         <outgoing>ja_186</outgoing>
+      </exclusiveGateway>
+      <endEvent id="endEvent_165" name="">
+         <extensionElements/>
+         <incoming>nein_185</incoming>
+      </endEvent>
+      <userTask activiti:assignee="kermit" activiti:formKey="preparePayment" completionQuantity="1" id="zberweisung_vorbereiten_169" isForCompensation="false" name="Überweisung vorbereiten" startQuantity="1">
+         <extensionElements/>
+         <incoming>Ja_181</incoming>
+         <outgoing>sequenceFlow_179</outgoing>
+      </userTask>
+      <endEvent id="Rechnungseingang_abgearbeitet_174" name="Rechnungseingang&#10;abgearbeitet">
+         <extensionElements/>
+         <incoming>SequenceFlow_1</incoming>
+      </endEvent>
+      <serviceTask activiti:delegateExpression="#{svnService}" completionQuantity="1" id="PDF_aus_SVN_entfernen_160" isForCompensation="false" name="PDF in SVN ablegen" startQuantity="1">
+         <extensionElements/>
+         <incoming>sequenceFlow_179</incoming>
+         <outgoing>SequenceFlow_1</outgoing>
+      </serviceTask>
+      <sequenceFlow id="Ja_181" isImmediate="true" name="Ja" sourceRef="Freigabe_erfolgt__131" targetRef="zberweisung_vorbereiten_169">
+         <extensionElements/>
+         <conditionExpression id="sid-5d20b81c-305e-4ae6-abb6-d6406b679ada" xsi:type="tFormalExpression">${approved}</conditionExpression>
+      </sequenceFlow>
+      <sequenceFlow id="nein_185" isImmediate="true" name="nein" sourceRef="Kl_rung_erfolgreich__153" targetRef="endEvent_165">
+         <extensionElements/>
+         <conditionExpression id="sid-7765a669-d354-4ec6-b5ce-604855662401" xsi:type="tFormalExpression">${!clarified.equals('yes')}</conditionExpression>
+      </sequenceFlow>
+      <sequenceFlow id="sequenceFlow_187" isImmediate="true" name="" sourceRef="Rechnung_eingegangen_138" targetRef="Freigebenden_zuordnen_143">
+         <extensionElements/>
+      </sequenceFlow>
+      <sequenceFlow id="Nein_182" isImmediate="true" name="Nein" sourceRef="Freigabe_erfolgt__131" targetRef="Rechnung_kl_ren_148">
+         <extensionElements/>
+         <conditionExpression id="sid-b6082dbe-df3a-43a2-bd56-c72cad388ed1" xsi:type="tFormalExpression">${!approved}</conditionExpression>
+      </sequenceFlow>
+      <sequenceFlow id="sequenceFlow_180" isImmediate="true" name="" sourceRef="Rechnung_freigeben_125" targetRef="Freigabe_erfolgt__131">
+         <extensionElements/>
+      </sequenceFlow>
+      <sequenceFlow id="sequenceFlow_183" isImmediate="true" name="" sourceRef="Rechnung_kl_ren_148" targetRef="Kl_rung_erfolgreich__153">
+         <extensionElements/>
+      </sequenceFlow>
+      <sequenceFlow id="sequenceFlow_179" isImmediate="true" name="" sourceRef="zberweisung_vorbereiten_169" targetRef="PDF_aus_SVN_entfernen_160">
+         <extensionElements/>
+      </sequenceFlow>
+      <sequenceFlow id="sequenceFlow_178" isImmediate="true" name="" sourceRef="Freigebenden_zuordnen_143" targetRef="Rechnung_freigeben_125">
+         <extensionElements/>
+      </sequenceFlow>
+      <sequenceFlow id="SequenceFlow_1" isImmediate="true" name="" sourceRef="PDF_aus_SVN_entfernen_160" targetRef="Rechnungseingang_abgearbeitet_174">
+         <extensionElements/>
+      </sequenceFlow>
+      <sequenceFlow id="ja_186" isImmediate="true" name="ja" sourceRef="Kl_rung_erfolgreich__153" targetRef="Rechnung_freigeben_125">
+         <extensionElements/>
+         <conditionExpression id="sid-3e50ce21-aa66-425b-84c5-0fea71ab5b8d" xsi:type="tFormalExpression">${clarified.equals('yes')}</conditionExpression>
+      </sequenceFlow>
+   </process>
+   <bpmndi:BPMNDiagram id="sid-0cf34df2-8cb6-43b3-ac5e-a1c682009b05">
+      <bpmndi:BPMNPlane bpmnElement="sid-538283f5-5300-4cdd-a663-32586779d734" id="sid-d52fbd4a-61a8-42ef-bca6-36a33562b48a">
+         <bpmndi:BPMNShape bpmnElement="Team-Assistenz_7" id="Team-Assistenz_7_gui" isHorizontal="true">
+            <omgdc:Bounds height="205.0" width="998.5" x="54.5" y="26.0"/>
+         </bpmndi:BPMNShape>
+         <bpmndi:BPMNShape bpmnElement="Process_Engine_1" id="Process_Engine_1_gui" isHorizontal="true">
+            <omgdc:Bounds height="505.0" width="1126.0" x="52.0" y="255.0"/>
+         </bpmndi:BPMNShape>
+         <bpmndi:BPMNShape bpmnElement="Gesch_ftsf_hrung_4" id="Gesch_ftsf_hrung_4_gui" isHorizontal="true">
+            <omgdc:Bounds height="173.0" width="475.5" x="52.0" y="780.0"/>
+         </bpmndi:BPMNShape>
+         <bpmndi:BPMNShape bpmnElement="lane_16" id="lane_16_gui" isHorizontal="true">
+            <omgdc:Bounds height="205.0" width="968.5" x="84.5" y="26.0"/>
+         </bpmndi:BPMNShape>
+         <bpmndi:BPMNShape bpmnElement="Rechnung_eingegangen_31" id="Rechnung_eingegangen_31_gui">
+            <omgdc:Bounds height="28.0" width="28.0" x="132.5" y="130.0"/>
+         </bpmndi:BPMNShape>
+         <bpmndi:BPMNShape bpmnElement="Rechnung_scannen_und_mailen_36" id="Rechnung_scannen_und_mailen_36_gui">
+            <omgdc:Bounds height="80.0" width="100.0" x="204.5" y="104.0"/>
+         </bpmndi:BPMNShape>
+         <bpmndi:BPMNShape bpmnElement="Papierbeleg_archivieren_41" id="Papierbeleg_archivieren_41_gui">
+            <omgdc:Bounds height="80.0" width="100.0" x="352.5" y="104.0"/>
+         </bpmndi:BPMNShape>
+         <bpmndi:BPMNShape bpmnElement="endEvent_46" id="endEvent_46_gui">
+            <omgdc:Bounds height="28.0" width="28.0" x="871.0" y="70.0"/>
+         </bpmndi:BPMNShape>
+         <bpmndi:BPMNShape bpmnElement="Freigebender__ist_zuzuordnen_50" id="Freigebender__ist_zuzuordnen_50_gui">
+            <omgdc:Bounds height="28.0" width="28.0" x="504.5" y="130.0"/>
+         </bpmndi:BPMNShape>
+         <bpmndi:BPMNShape bpmnElement="Freigebenden_zuordnen_57" id="Freigebenden_zuordnen_57_gui">
+            <omgdc:Bounds height="80.0" width="100.0" x="565.0" y="104.0"/>
+         </bpmndi:BPMNShape>
+         <bpmndi:BPMNShape bpmnElement="eventBasedGateway_62" id="eventBasedGateway_62_gui">
+            <omgdc:Bounds height="40.0" width="40.0" x="690.0" y="124.0"/>
+         </bpmndi:BPMNShape>
+         <bpmndi:BPMNShape bpmnElement="Rechnung_zu_kl_ren_68" id="Rechnung_zu_kl_ren_68_gui">
+            <omgdc:Bounds height="28.0" width="28.0" x="763.25" y="165.0"/>
+         </bpmndi:BPMNShape>
+         <bpmndi:BPMNShape bpmnElement="Kl_ren_und_Ergebnis_festhalten_75" id="Kl_ren_und_Ergebnis_festhalten_75_gui">
+            <omgdc:Bounds height="80.0" width="100.0" x="830.25" y="140.0"/>
+         </bpmndi:BPMNShape>
+         <bpmndi:BPMNShape bpmnElement="z_Tage_80" id="z_Tage_80_gui">
+            <omgdc:Bounds height="28.0" width="28.0" x="762.25" y="70.0"/>
+         </bpmndi:BPMNShape>
+         <bpmndi:BPMNShape bpmnElement="endEvent_87" id="endEvent_87_gui">
+            <omgdc:Bounds height="28.0" width="28.0" x="975.25" y="166.0"/>
+         </bpmndi:BPMNShape>
+         <bpmndi:BPMNShape bpmnElement="textAnnotation_102" id="textAnnotation_102_gui">
+            <omgdc:Bounds height="50.0" width="100.0" x="309.5" y="45.0"/>
+         </bpmndi:BPMNShape>
+         <bpmndi:BPMNShape bpmnElement="lane_190" id="lane_190_gui" isHorizontal="true">
+            <omgdc:Bounds height="173.0" width="445.5" x="82.0" y="780.0"/>
+         </bpmndi:BPMNShape>
+         <bpmndi:BPMNShape bpmnElement="Monatsende_198" id="Monatsende_198_gui">
+            <omgdc:Bounds height="28.0" width="28.0" x="126.0" y="856.0"/>
+         </bpmndi:BPMNShape>
+         <bpmndi:BPMNShape bpmnElement="zber-weisungen_ausf_hren_203" id="zber-weisungen_ausf_hren_203_gui">
+            <omgdc:Bounds height="80.0" width="100.0" x="197.0" y="827.0"/>
+         </bpmndi:BPMNShape>
+         <bpmndi:BPMNShape bpmnElement="endEvent_208" id="endEvent_208_gui">
+            <omgdc:Bounds height="28.0" width="28.0" x="342.0" y="853.0"/>
+         </bpmndi:BPMNShape>
+         <bpmndi:BPMNShape bpmnElement="zberweisungs-_vorlagen_212" id="zberweisungs-_vorlagen_212_gui">
+            <omgdc:Bounds height="61.173" width="63.000999999999976" x="361.9995" y="748.0"/>
+         </bpmndi:BPMNShape>
+         <bpmndi:BPMNShape bpmnElement="Freigebender_105" id="Freigebender_105_gui" isHorizontal="true">
+            <omgdc:Bounds height="161.0" width="1096.0" x="82.0" y="438.0"/>
+         </bpmndi:BPMNShape>
+         <bpmndi:BPMNShape bpmnElement="Team-Assistenz_110" id="Team-Assistenz_110_gui" isHorizontal="true">
+            <omgdc:Bounds height="183.0" width="1096.0" x="82.0" y="255.0"/>
+         </bpmndi:BPMNShape>
+         <bpmndi:BPMNShape bpmnElement="Buchhaltung_119" id="Buchhaltung_119_gui" isHorizontal="true">
+            <omgdc:Bounds height="161.0" width="1096.0" x="82.0" y="599.0"/>
+         </bpmndi:BPMNShape>
+         <bpmndi:BPMNShape bpmnElement="Rechnung_freigeben_125" id="Rechnung_freigeben_125_gui">
+            <omgdc:Bounds height="80.0" width="100.0" x="405.0" y="480.0"/>
+         </bpmndi:BPMNShape>
+         <bpmndi:BPMNShape bpmnElement="Freigabe_erfolgt__131" id="Freigabe_erfolgt__131_gui" isMarkerVisible="true">
+            <omgdc:Bounds height="40.0" width="40.0" x="540.0" y="500.0"/>
+         </bpmndi:BPMNShape>
+         <bpmndi:BPMNShape bpmnElement="Rechnung_eingegangen_138" id="Rechnung_eingegangen_138_gui">
+            <omgdc:Bounds height="28.0" width="28.0" x="164.0" y="334.0"/>
+         </bpmndi:BPMNShape>
+         <bpmndi:BPMNShape bpmnElement="Freigebenden_zuordnen_143" id="Freigebenden_zuordnen_143_gui">
+            <omgdc:Bounds height="80.0" width="100.0" x="237.0" y="307.0"/>
+         </bpmndi:BPMNShape>
+         <bpmndi:BPMNShape bpmnElement="Rechnung_kl_ren_148" id="Rechnung_kl_ren_148_gui">
+            <omgdc:Bounds height="80.0" width="100.0" x="600.0" y="307.0"/>
+         </bpmndi:BPMNShape>
+         <bpmndi:BPMNShape bpmnElement="Kl_rung_erfolgreich__153" id="Kl_rung_erfolgreich__153_gui" isMarkerVisible="true">
+            <omgdc:Bounds height="40.0" width="40.0" x="745.0" y="327.0"/>
+         </bpmndi:BPMNShape>
+         <bpmndi:BPMNShape bpmnElement="endEvent_165" id="endEvent_165_gui">
+            <omgdc:Bounds height="28.0" width="28.0" x="942.0" y="333.0"/>
+         </bpmndi:BPMNShape>
+         <bpmndi:BPMNShape bpmnElement="zberweisung_vorbereiten_169" id="zberweisung_vorbereiten_169_gui">
+            <omgdc:Bounds height="80.0" width="100.0" x="690.0" y="640.0"/>
+         </bpmndi:BPMNShape>
+         <bpmndi:BPMNShape bpmnElement="Rechnungseingang_abgearbeitet_174" id="Rechnungseingang_abgearbeitet_174_gui">
+            <omgdc:Bounds height="28.0" width="28.0" x="975.0" y="666.0"/>
+         </bpmndi:BPMNShape>
+         <bpmndi:BPMNShape bpmnElement="PDF_aus_SVN_entfernen_160" id="PDF_aus_SVN_entfernen_160_gui">
+            <omgdc:Bounds height="80.0" width="100.0" x="830.0" y="640.0"/>
+         </bpmndi:BPMNShape>
+         <bpmndi:BPMNEdge bpmnElement="association_188" id="association_188_gui">
+            <omgdi:waypoint x="690.0" y="694.0"/>
+            <omgdi:waypoint x="425.0" y="769.0"/>
+         </bpmndi:BPMNEdge>
+         <bpmndi:BPMNEdge bpmnElement="messageFlow_10" id="messageFlow_10_gui">
+            <omgdi:waypoint x="270.0" y="307.0"/>
+            <omgdi:waypoint x="270.0" y="245.0"/>
+            <omgdi:waypoint x="518.5" y="245.0"/>
+            <omgdi:waypoint x="518.0" y="158.0"/>
+         </bpmndi:BPMNEdge>
+         <bpmndi:BPMNEdge bpmnElement="messageFlow_12" id="messageFlow_12_gui">
+            <omgdi:waypoint x="625.0" y="307.0"/>
+            <omgdi:waypoint x="625.0" y="240.0"/>
+            <omgdi:waypoint x="777.25" y="240.0"/>
+            <omgdi:waypoint x="777.0" y="193.0"/>
+         </bpmndi:BPMNEdge>
+         <bpmndi:BPMNEdge bpmnElement="messageFlow_11" id="messageFlow_11_gui">
+            <omgdi:waypoint x="880.0" y="220.0"/>
+            <omgdi:waypoint x="880.25" y="263.5"/>
+            <omgdi:waypoint x="675.0" y="263.5"/>
+            <omgdi:waypoint x="675.0" y="307.0"/>
+         </bpmndi:BPMNEdge>
+         <bpmndi:BPMNEdge bpmnElement="messageFlow_14" id="messageFlow_14_gui">
+            <omgdi:waypoint x="615.0" y="184.0"/>
+            <omgdi:waypoint x="615.0" y="277.0"/>
+            <omgdi:waypoint x="303.66666666666663" y="277.0"/>
+            <omgdi:waypoint x="303.0" y="307.0"/>
+         </bpmndi:BPMNEdge>
+         <bpmndi:BPMNEdge bpmnElement="messageFlow_13" id="messageFlow_13_gui">
+            <omgdi:waypoint x="254.0" y="184.0"/>
+            <omgdi:waypoint x="254.5" y="242.0"/>
+            <omgdi:waypoint x="177.0" y="242.0"/>
+            <omgdi:waypoint x="178.0" y="334.0"/>
+         </bpmndi:BPMNEdge>
+         <bpmndi:BPMNEdge bpmnElement="sequenceFlow_216" id="sequenceFlow_216_gui">
+            <omgdi:waypoint x="297.0" y="867.0"/>
+            <omgdi:waypoint x="342.0" y="867.0"/>
+         </bpmndi:BPMNEdge>
+         <bpmndi:BPMNEdge bpmnElement="sequenceFlow_215" id="sequenceFlow_215_gui">
+            <omgdi:waypoint x="154.0" y="870.0"/>
+            <omgdi:waypoint x="197.0" y="867.0"/>
+         </bpmndi:BPMNEdge>
+         <bpmndi:BPMNEdge bpmnElement="Ja_181" id="Ja_181_gui">
+            <omgdi:waypoint x="580.0" y="520.0"/>
+            <omgdi:waypoint x="639.0" y="520.0"/>
+            <omgdi:waypoint x="639.0" y="680.0"/>
+            <omgdi:waypoint x="690.0" y="680.0"/>
+         </bpmndi:BPMNEdge>
+         <bpmndi:BPMNEdge bpmnElement="nein_185" id="nein_185_gui">
+            <omgdi:waypoint x="785.0" y="347.0"/>
+            <omgdi:waypoint x="942.0" y="347.0"/>
+         </bpmndi:BPMNEdge>
+         <bpmndi:BPMNEdge bpmnElement="sequenceFlow_100" id="sequenceFlow_100_gui">
+            <omgdi:waypoint x="930.0" y="180.0"/>
+            <omgdi:waypoint x="975.0" y="180.0"/>
+         </bpmndi:BPMNEdge>
+         <bpmndi:BPMNEdge bpmnElement="sequenceFlow_187" id="sequenceFlow_187_gui">
+            <omgdi:waypoint x="192.0" y="348.0"/>
+            <omgdi:waypoint x="237.0" y="347.0"/>
+         </bpmndi:BPMNEdge>
+         <bpmndi:BPMNEdge bpmnElement="association_101" id="association_101_gui">
+            <omgdi:waypoint x="283.0" y="104.0"/>
+            <omgdi:waypoint x="309.0" y="70.0"/>
+         </bpmndi:BPMNEdge>
+         <bpmndi:BPMNEdge bpmnElement="Nein_182" id="Nein_182_gui">
+            <omgdi:waypoint x="560.0" y="500.0"/>
+            <omgdi:waypoint x="560.5" y="347.0"/>
+            <omgdi:waypoint x="600.0" y="347.0"/>
+         </bpmndi:BPMNEdge>
+         <bpmndi:BPMNEdge bpmnElement="sequenceFlow_99" id="sequenceFlow_99_gui">
+            <omgdi:waypoint x="790.0" y="84.0"/>
+            <omgdi:waypoint x="871.0" y="84.0"/>
+         </bpmndi:BPMNEdge>
+         <bpmndi:BPMNEdge bpmnElement="sequenceFlow_180" id="sequenceFlow_180_gui">
+            <omgdi:waypoint x="505.0" y="520.0"/>
+            <omgdi:waypoint x="540.0" y="520.0"/>
+         </bpmndi:BPMNEdge>
+         <bpmndi:BPMNEdge bpmnElement="sequenceFlow_183" id="sequenceFlow_183_gui">
+            <omgdi:waypoint x="700.0" y="347.0"/>
+            <omgdi:waypoint x="745.0" y="347.0"/>
+         </bpmndi:BPMNEdge>
+         <bpmndi:BPMNEdge bpmnElement="sequenceFlow_179" id="sequenceFlow_179_gui">
+            <omgdi:waypoint x="790.0" y="680.0"/>
+            <omgdi:waypoint x="830.0" y="680.0"/>
+         </bpmndi:BPMNEdge>
+         <bpmndi:BPMNEdge bpmnElement="sequenceFlow_178" id="sequenceFlow_178_gui">
+            <omgdi:waypoint x="337.0" y="347.0"/>
+            <omgdi:waypoint x="362.0" y="347.0"/>
+            <omgdi:waypoint x="362.0" y="520.0"/>
+            <omgdi:waypoint x="405.0" y="520.0"/>
+         </bpmndi:BPMNEdge>
+         <bpmndi:BPMNEdge bpmnElement="association_217" id="association_217_gui">
+            <omgdi:waypoint x="361.0" y="797.0"/>
+            <omgdi:waypoint x="297.0" y="837.0"/>
+         </bpmndi:BPMNEdge>
+         <bpmndi:BPMNEdge bpmnElement="sequenceFlow_98" id="sequenceFlow_98_gui">
+            <omgdi:waypoint x="791.0" y="179.0"/>
+            <omgdi:waypoint x="830.0" y="180.0"/>
+         </bpmndi:BPMNEdge>
+         <bpmndi:BPMNEdge bpmnElement="sequenceFlow_97" id="sequenceFlow_97_gui">
+            <omgdi:waypoint x="710.0" y="164.0"/>
+            <omgdi:waypoint x="710.5" y="179.0"/>
+            <omgdi:waypoint x="763.0" y="179.0"/>
+         </bpmndi:BPMNEdge>
+         <bpmndi:BPMNEdge bpmnElement="sequenceFlow_96" id="sequenceFlow_96_gui">
+            <omgdi:waypoint x="710.0" y="124.0"/>
+            <omgdi:waypoint x="710.5" y="84.0"/>
+            <omgdi:waypoint x="762.0" y="84.0"/>
+         </bpmndi:BPMNEdge>
+         <bpmndi:BPMNEdge bpmnElement="sequenceFlow_95" id="sequenceFlow_95_gui">
+            <omgdi:waypoint x="665.0" y="144.0"/>
+            <omgdi:waypoint x="690.0" y="144.0"/>
+         </bpmndi:BPMNEdge>
+         <bpmndi:BPMNEdge bpmnElement="sequenceFlow_94" id="sequenceFlow_94_gui">
+            <omgdi:waypoint x="532.0" y="144.0"/>
+            <omgdi:waypoint x="565.0" y="144.0"/>
+         </bpmndi:BPMNEdge>
+         <bpmndi:BPMNEdge bpmnElement="sequenceFlow_93" id="sequenceFlow_93_gui">
+            <omgdi:waypoint x="304.0" y="144.0"/>
+            <omgdi:waypoint x="352.0" y="144.0"/>
+         </bpmndi:BPMNEdge>
+         <bpmndi:BPMNEdge bpmnElement="sequenceFlow_92" id="sequenceFlow_92_gui">
+            <omgdi:waypoint x="452.0" y="144.0"/>
+            <omgdi:waypoint x="504.0" y="144.0"/>
+         </bpmndi:BPMNEdge>
+         <bpmndi:BPMNEdge bpmnElement="SequenceFlow_1" id="SequenceFlow_1_gui">
+            <omgdi:waypoint x="930.0" y="680.0"/>
+            <omgdi:waypoint x="975.0" y="680.0"/>
+         </bpmndi:BPMNEdge>
+         <bpmndi:BPMNEdge bpmnElement="sequenceFlow_91" id="sequenceFlow_91_gui">
+            <omgdi:waypoint x="160.0" y="144.0"/>
+            <omgdi:waypoint x="204.0" y="144.0"/>
+         </bpmndi:BPMNEdge>
+         <bpmndi:BPMNEdge bpmnElement="ja_186" id="ja_186_gui">
+            <omgdi:waypoint x="765.0" y="327.0"/>
+            <omgdi:waypoint x="765.5" y="290.0"/>
+            <omgdi:waypoint x="455.0" y="290.0"/>
+            <omgdi:waypoint x="455.0" y="480.0"/>
+         </bpmndi:BPMNEdge>
+      </bpmndi:BPMNPlane>
+   </bpmndi:BPMNDiagram>
+</definitions>

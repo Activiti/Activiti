@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions"
+	xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:activiti="http://activiti.org/bpmn"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	targetNamespace="Examples">
+
+	<process id="compensateProcess">
+
+		<startEvent id="start" />
+		<sequenceFlow sourceRef="start" targetRef="bookHotel" />
+
+		<serviceTask id="bookHotel" activiti:expression="${true}" />
+		<sequenceFlow sourceRef="bookHotel" targetRef="afterBookHotel" />
+		
+		<boundaryEvent id="compensateBookHotelEvt" name="Boundary event" attachedToRef="bookHotel">
+			<compensateEventDefinition />
+		</boundaryEvent>
+
+		<subProcess id="undoBookHotel" isForCompensation="true">
+
+			<startEvent id="subProcessStart" />
+			<sequenceFlow sourceRef="subProcessStart" targetRef="fork" />
+
+			<parallelGateway id="fork" />
+			<sequenceFlow sourceRef="fork" targetRef="compensateTask1" />
+			<sequenceFlow sourceRef="fork" targetRef="compensateTask2" />
+
+			<userTask id="compensateTask1" />
+			<sequenceFlow sourceRef="compensateTask1" targetRef="compensateTask3" />
+
+			<userTask id="compensateTask2" />
+			<sequenceFlow sourceRef="compensateTask2" targetRef="join" />
+
+			<userTask id="compensateTask3" />
+			<sequenceFlow sourceRef="compensateTask3" targetRef="join" />
+
+			<parallelGateway id="join" />
+			<sequenceFlow sourceRef="join" targetRef="subProcessEnd" />
+
+			<endEvent id="subProcessEnd" />
+
+		</subProcess>
+
+		<userTask id="afterBookHotel" name="After book hotel" />
+		<sequenceFlow sourceRef="afterBookHotel" targetRef="exclusive" />
+		
+		<exclusiveGateway id="exclusive" default="toCompensate" />
+		<sequenceFlow id="toCompensate" sourceRef="exclusive" targetRef="throwCompensate">
+		</sequenceFlow>
+		<sequenceFlow sourceRef="exclusive" targetRef="end">
+		  <conditionExpression xsi:type="tFormalExpression"><![CDATA[
+		    ${execution.getVariable('doCompensation') != null && !doCompensation}
+		  ]]>
+		  </conditionExpression>
+		</sequenceFlow>
+		
+		
+		<intermediateThrowEvent id="throwCompensate">
+      <compensateEventDefinition  />
+    </intermediateThrowEvent>
+    <sequenceFlow sourceRef="throwCompensate" targetRef="end" />
+
+		<endEvent id="end" />
+		
+		<association associationDirection="One" sourceRef="compensateBookHotelEvt" targetRef="undoBookHotel" />
+
+	</process>
+
+</definitions>

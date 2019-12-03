@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
+  <process id="process" name="process1" isExecutable="true">
+    <endEvent id="endEvent"></endEvent>
+    <sequenceFlow id="sid-10FF0337-D8FC-495E-92C4-82C2FD5F44F8" sourceRef="sid-12DAA756-C12D-42B6-9AB7-D08C7C8283C1" targetRef="usertask"></sequenceFlow>
+    <startEvent id="sid-12DAA756-C12D-42B6-9AB7-D08C7C8283C1"></startEvent>
+    <sequenceFlow id="sid-AA1205FD-63BD-47BA-9FB3-AA9F7C1E31F0" sourceRef="usertask" targetRef="endEvent"></sequenceFlow>
+    <userTask id="usertask" name="User task" activiti:category="Test Category" activiti:async="true" activiti:exclusive="false" activiti:assignee="kermit" activiti:candidateUsers="kermit,fozzie" activiti:candidateGroups="management,sales" activiti:dueDate="2012-11-01" activiti:businessCalendarName="customCalendarName" activiti:formKey="testKey" activiti:priority="40">
+      <extensionElements>
+        <activiti:customResource name="businessAdministrator">
+         <resourceAssignmentExpression>
+          <formalExpression>user(kermit), group(management)</formalExpression>
+         </resourceAssignmentExpression>
+        </activiti:customResource>
+        <activiti:customResource activiti:name="manager">
+         <resourceAssignmentExpression>
+          <formalExpression>group(management)</formalExpression>
+         </resourceAssignmentExpression>
+        </activiti:customResource>
+        <activiti:formProperty id="formId" name="formName" type="string" expression="${expression}" variable="variable"></activiti:formProperty>
+        <activiti:formProperty id="formId2" name="anotherName" type="long"></activiti:formProperty>
+        <activiti:formProperty id="formId3" name="enumName" type="enum">
+        	<activiti:value id="test" name="Test" />
+        	<activiti:value id="test2" name="Test2" />
+        </activiti:formProperty>
+        <activiti:taskListener event="create" class="org.test.TestClass" onTransaction="before-commit" customPropertiesResolverClass="org.test.TestResolverClass"></activiti:taskListener>
+        <activiti:taskListener event="assignment" expression="${someExpression}" onTransaction="committed" customPropertiesResolverExpression="${testResolverExpression}"></activiti:taskListener>
+        <activiti:taskListener event="complete" delegateExpression="${someDelegateExpression}" onTransaction="rolled-back" customPropertiesResolverDelegateExpression="${delegateResolverExpression}"></activiti:taskListener>
+      	<activiti:executionListener expression="${someExpression}" event="end" onTransaction="before-commit" customPropertiesResolverClass="org.test.TestResolverClass"/>
+      </extensionElements>
+    </userTask>
+    <boundaryEvent id="escalationTimer" cancelActivity="true" attachedToRef="usertask">
+	   <timerEventDefinition>
+	    <timeCycle>${cronExpression}</timeCycle>
+	  </timerEventDefinition>
+	</boundaryEvent>
+	<sequenceFlow id="flow5" sourceRef="escalationTimer" targetRef="endEvent"></sequenceFlow>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_process">
+    <bpmndi:BPMNPlane bpmnElement="process" id="BPMNPlane_process">
+      <bpmndi:BPMNShape bpmnElement="sid-7C003C2A-266E-4C30-9309-06BA6F9DD527" id="BPMNShape_sid-7C003C2A-266E-4C30-9309-06BA6F9DD527">
+        <omgdc:Bounds height="28.0" width="28.0" x="310.5" y="93.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sid-12DAA756-C12D-42B6-9AB7-D08C7C8283C1" id="BPMNShape_sid-12DAA756-C12D-42B6-9AB7-D08C7C8283C1">
+        <omgdc:Bounds height="30.0" width="30.0" x="90.5" y="92.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="usertask" id="BPMNShape_usertask">
+        <omgdc:Bounds height="80.0" width="100.0" x="165.5" y="67.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="sid-10FF0337-D8FC-495E-92C4-82C2FD5F44F8" id="BPMNEdge_sid-10FF0337-D8FC-495E-92C4-82C2FD5F44F8">
+        <omgdi:waypoint x="120.5" y="107.0"></omgdi:waypoint>
+        <omgdi:waypoint x="165.5" y="107.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-AA1205FD-63BD-47BA-9FB3-AA9F7C1E31F0" id="BPMNEdge_sid-AA1205FD-63BD-47BA-9FB3-AA9F7C1E31F0">
+        <omgdi:waypoint x="265.5" y="107.0"></omgdi:waypoint>
+        <omgdi:waypoint x="310.5" y="107.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

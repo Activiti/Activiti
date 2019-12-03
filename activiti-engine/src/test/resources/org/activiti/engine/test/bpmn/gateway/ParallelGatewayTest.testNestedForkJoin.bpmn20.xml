@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns:activiti="http://activiti.org/bpmn"
+	xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" 
+	targetNamespace="http://www.omg.org/spec/BPMN/20100524/MODEL">
+
+  <!-- ACT-482 -->
+
+	<process id="nestedForkJoin">
+	
+		<startEvent id="Start" name="Start" />
+		<sequenceFlow id="Flow_9" name="" sourceRef="Start" targetRef="Task_0" />
+		
+		<userTask id="Task_0" name="Task 0" />
+		<sequenceFlow id="Flow_6" name="" sourceRef="Task_0" targetRef="Fork_AB" />
+		
+		<parallelGateway gatewayDirection="Diverging" id="Fork_AB" name="Fork AB" />
+		<sequenceFlow id="Flow_2" name="" sourceRef="Fork_AB" targetRef="Task_A" />
+		<sequenceFlow id="Flow_5" name="" sourceRef="Fork_AB" targetRef="Task_B" />
+		
+		<userTask id="Task_A" name="Task A" />
+		<sequenceFlow id="Flow_4" name="" sourceRef="Task_A" targetRef="Join_AB" />
+		
+		<userTask id="Task_B" name="Task B" />
+		<sequenceFlow id="Flow_7" name="" sourceRef="Task_B" targetRef="Fork_B" />
+		
+		<parallelGateway gatewayDirection="Diverging" id="Fork_B"	name="Fork B" />
+		<sequenceFlow id="Flow_0" name="" sourceRef="Fork_B" targetRef="Task_B1" />
+		<sequenceFlow id="Flow_1" name="" sourceRef="Fork_B" targetRef="Task_B2" />
+		
+		<userTask id="Task_B1" name="Task B1" />
+		<sequenceFlow id="Flow_11" name="" sourceRef="Task_B1" targetRef="Join_B" />
+		
+		<userTask id="Task_B2" name="Task B2" />
+		<sequenceFlow id="Flow_10" name="" sourceRef="Task_B2" targetRef="Join_B" />
+		
+		<parallelGateway gatewayDirection="Converging" id="Join_B" name="Join B" />
+    <sequenceFlow id="Flow_3" name="" sourceRef="Join_B" targetRef="Join_AB" />
+		
+		<parallelGateway gatewayDirection="Converging" id="Join_AB" name="Join AB" />
+		<sequenceFlow id="Flow_8" name="" sourceRef="Join_AB" targetRef="Task_C" />
+		
+		<userTask id="Task_C" name="Task C" />
+		<sequenceFlow id="Flow_12" name="" sourceRef="Task_C" targetRef="End" />
+		
+		<endEvent id="End" name="End" />
+		
+	</process>
+
+</definitions>

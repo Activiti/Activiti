@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_0wnv36y" targetNamespace="http://bpmn.io/schema/bpmn" xmlns:activiti="http://activiti.org/bpmn" exporter="Activiti Modeler" exporterVersion="3.0.0-beta.3">
+  <bpmn:process id="intermediateThrowMessageEvent" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1">
+      <bpmn:outgoing>SequenceFlow_0f4zar0</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:intermediateThrowEvent id="IntermediateThrowEvent_0la4q0b">
+      <bpmn:incoming>SequenceFlow_0f4zar0</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0j48jx3</bpmn:outgoing>
+      <bpmn:messageEventDefinition messageRef="TestMessageId" activiti:correlationKey="${process_variable_name}"/>
+    </bpmn:intermediateThrowEvent> 
+    <bpmn:sequenceFlow id="SequenceFlow_0f4zar0" sourceRef="StartEvent_1" targetRef="IntermediateThrowEvent_0la4q0b" />
+    <bpmn:endEvent id="EndEvent_0tkslwk">
+      <bpmn:incoming>SequenceFlow_0j48jx3</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="SequenceFlow_0j48jx3" sourceRef="IntermediateThrowEvent_0la4q0b" targetRef="EndEvent_0tkslwk" />
+  </bpmn:process>
+  <bpmn:message id="TestMessageId" name="Test Message" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="intermediateThrowMessageEvent">
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="162" y="81" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="IntermediateThrowEvent_052h1lg_di" bpmnElement="IntermediateThrowEvent_0la4q0b">
+        <dc:Bounds x="225" y="81" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0f4zar0_di" bpmnElement="SequenceFlow_0f4zar0">
+        <di:waypoint x="198" y="99" />
+        <di:waypoint x="225" y="99" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="EndEvent_0tkslwk_di" bpmnElement="EndEvent_0tkslwk">
+        <dc:Bounds x="310" y="81" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0j48jx3_di" bpmnElement="SequenceFlow_0j48jx3">
+        <di:waypoint x="261" y="99" />
+        <di:waypoint x="310" y="99" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

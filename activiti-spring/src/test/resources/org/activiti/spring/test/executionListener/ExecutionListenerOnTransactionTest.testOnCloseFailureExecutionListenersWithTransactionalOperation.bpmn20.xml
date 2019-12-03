@@ -1,0 +1,38 @@
+<definitions 
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="Examples">
+
+  <process id="transactionDependentExecutionListenerProcess">
+
+    <startEvent id="theStart1" name="Start Event" />
+
+    <sequenceFlow sourceRef="theStart1" targetRef="theEnd1" />
+
+    <endEvent id="theEnd1" name="End Event" />
+
+  </process>
+
+  <process id="secondTransactionDependentExecutionListenerProcess">
+
+    <startEvent id="theStart2" name="Start Event" />
+
+    <sequenceFlow sourceRef="theStart2" targetRef="serviceTask1" />
+
+    <serviceTask
+            id="serviceTask1"
+            name="Service Task 1"
+            activiti:class="org.activiti.spring.test.executionListener.ConditionalThrowExceptionDelegate">
+      <extensionElements>
+        <activiti:executionListener class="org.activiti.spring.test.executionListener.MyTransactionalOperationTransactionDependentExecutionListener"
+                                    event="start"
+                                    onTransaction="committed"/>
+      </extensionElements>
+    </serviceTask>
+
+    <sequenceFlow sourceRef="serviceTask1" targetRef="theEnd2"/>
+
+    <endEvent id="theEnd2" name="End Event" />
+
+  </process>
+</definitions>

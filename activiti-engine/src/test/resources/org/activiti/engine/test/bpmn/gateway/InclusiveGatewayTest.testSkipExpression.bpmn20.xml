@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions" 
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="Examples">
+  
+  <process id="inclusiveGwSkipExpression">
+  
+    <startEvent id="theStart" />
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="inclusiveGw" />
+    
+    <inclusiveGateway id="inclusiveGw" name="Inclusive Gateway" default="flow5" />
+    <sequenceFlow id="flow2" sourceRef="inclusiveGw" targetRef="theTask1" activiti:skipExpression="${input == 10}">
+      <conditionExpression xsi:type="tFormalExpression">${input == 1}</conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="flow3" sourceRef="inclusiveGw" targetRef="theTask2" activiti:skipExpression="${input >= 20}">
+      <conditionExpression xsi:type="tFormalExpression">${input >= 2}</conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="flow4" sourceRef="inclusiveGw" targetRef="theTask3" activiti:skipExpression="${input == 30}">
+      <conditionExpression xsi:type="tFormalExpression">${input == 3}</conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="flow5" sourceRef="inclusiveGw" targetRef="joinInclusiveGw" />
+
+    <userTask id="theTask1" name="Input is one" />
+    <sequenceFlow id="flow6" sourceRef="theTask1" targetRef="joinInclusiveGw" />
+    
+    <userTask id="theTask2" name="Default input" />
+    <sequenceFlow id="flow7" sourceRef="theTask2" targetRef="joinInclusiveGw" />
+    
+    <userTask id="theTask3" name="Default input" />
+    <sequenceFlow id="flow8" sourceRef="theTask3" targetRef="joinInclusiveGw" />
+    
+    <inclusiveGateway id="joinInclusiveGw" name="Inclusive Gateway" />
+    
+    <sequenceFlow id="flow9" sourceRef="joinInclusiveGw" targetRef="theEnd" />
+    
+    <endEvent id="theEnd" />
+    
+  </process>
+
+</definitions>

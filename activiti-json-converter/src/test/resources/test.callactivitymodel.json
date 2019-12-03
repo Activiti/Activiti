@@ -1,0 +1,148 @@
+{ "bounds" : { "lowerRight" : { "x" : 1485,
+          "y" : 1050
+        },
+      "upperLeft" : { "x" : 0,
+          "y" : 0
+        }
+    },
+  "childShapes" : [ { "bounds" : { "lowerRight" : { "x" : 116.5,
+                "y" : 87
+              },
+            "upperLeft" : { "x" : 86.5,
+                "y" : 57
+              }
+          },
+        "childShapes" : [  ],
+        "dockers" : [  ],
+        "outgoing" : [ { "resourceId" : "sid-7D914C2B-2A0F-4CC8-A23D-DFC6317BF72E" } ],
+        "properties" : { "documentation" : "",
+            "executionlisteners" : "",
+            "formproperties" : "",
+            "initiator" : "",
+            "name" : ""
+          },
+        "resourceId" : "sid-4D8B3541-C9E5-45BB-8BB1-F6C94B9A4C11",
+        "stencil" : { "id" : "StartNoneEvent" }
+      },
+      { "bounds" : { "lowerRight" : { "x" : 265,
+                "y" : 112
+              },
+            "upperLeft" : { "x" : 165,
+                "y" : 32
+              }
+          },
+        "childShapes" : [  ],
+        "dockers" : [  ],
+        "outgoing" : [ { "resourceId" : "sid-3E39A302-9778-49BA-AEBE-5609C72C7C65" } ],
+        "properties" : { "callactivitycalledelement" : "processId",
+            "callactivityinparameters" : { "inParameters" : [ { "source" : "test",
+                      "sourceExpression" : "",
+                      "target" : "test"
+                    },
+                    { "source" : "",
+                      "sourceExpression" : "${test}",
+                      "target" : "test"
+                    }
+                  ],
+                "totalCount" : 2
+              },
+            "callactivityoutparameters" : { "outParameters" : [ { "source" : "test",
+                      "sourceExpression" : "",
+                      "target" : "test"
+                    } ],
+                "totalCount" : 1
+              },
+            "documentation" : "",
+            "isforcompensation" : "false",
+            "looptype" : "None",
+            "name" : "Call activity"
+          },
+        "resourceId" : "callactivity",
+        "stencil" : { "id" : "CallActivity" }
+      },
+      { "bounds" : { "lowerRight" : { "x" : 164.34375,
+                "y" : 72
+              },
+            "upperLeft" : { "x" : 116.6875,
+                "y" : 72
+              }
+          },
+        "childShapes" : [  ],
+        "dockers" : [ { "x" : 15,
+              "y" : 15
+            },
+            { "x" : 50,
+              "y" : 40
+            }
+          ],
+        "outgoing" : [ { "resourceId" : "callactivity" } ],
+        "properties" : { "conditionalflow" : "None",
+            "conditionsequenceflow" : "",
+            "defaultflow" : "None",
+            "documentation" : "",
+            "name" : "",
+            "showdiamondmarker" : false
+          },
+        "resourceId" : "sid-7D914C2B-2A0F-4CC8-A23D-DFC6317BF72E",
+        "stencil" : { "id" : "SequenceFlow" },
+        "target" : { "resourceId" : "callactivity" }
+      },
+      { "bounds" : { "lowerRight" : { "x" : 338,
+                "y" : 86
+              },
+            "upperLeft" : { "x" : 310,
+                "y" : 58
+              }
+          },
+        "childShapes" : [  ],
+        "dockers" : [  ],
+        "outgoing" : [  ],
+        "properties" : { "documentation" : "",
+            "executionlisteners" : "",
+            "name" : ""
+          },
+        "resourceId" : "sid-DC3F9E0D-7CE0-4A8E-847E-823110F71807",
+        "stencil" : { "id" : "EndNoneEvent" }
+      },
+      { "bounds" : { "lowerRight" : { "x" : 309.375,
+                "y" : 72
+              },
+            "upperLeft" : { "x" : 265.390625,
+                "y" : 72
+              }
+          },
+        "childShapes" : [  ],
+        "dockers" : [ { "x" : 50,
+              "y" : 40
+            },
+            { "x" : 14,
+              "y" : 14
+            }
+          ],
+        "outgoing" : [ { "resourceId" : "sid-DC3F9E0D-7CE0-4A8E-847E-823110F71807" } ],
+        "properties" : { "conditionalflow" : "None",
+            "conditionsequenceflow" : "",
+            "defaultflow" : "None",
+            "documentation" : "",
+            "name" : ""
+          },
+        "resourceId" : "sid-3E39A302-9778-49BA-AEBE-5609C72C7C65",
+        "stencil" : { "id" : "SequenceFlow" },
+        "target" : { "resourceId" : "sid-DC3F9E0D-7CE0-4A8E-847E-823110F71807" }
+      }
+    ],
+  "properties" : { "documentation" : "",
+      "executionlisteners" : "",
+      "name" : "",
+      "process_author" : "",
+      "process_id" : "process",
+      "process_namespace" : "http://www.activiti.org/processdef",
+      "process_version" : ""
+    },
+  "resourceId" : "canvas",
+  "ssextensions" : [  ],
+  "stencil" : { "id" : "BPMNDiagram" },
+  "stencilset" : { "namespace" : "http://b3mn.org/stencilset/bpmn2.0#",
+      "url" : "../stencilsets/bpmn2.0/bpmn2.0.json"
+    }
+}

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions
+        xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+        xmlns:activiti="http://activiti.org/bpmn"
+        targetNamespace="Examples">
+
+  <process id="transactionDependentTaskListenerProcess">
+
+    <startEvent id="theStart1" name="Start Event" />
+
+    <sequenceFlow sourceRef="theStart1" targetRef="theEnd1" />
+
+    <endEvent id="theEnd1" name="End Event" />
+
+  </process>
+
+  <process id="secondTransactionDependentTaskListenerProcess">
+
+    <startEvent id="theStart2" name="Start Event" />
+
+    <sequenceFlow sourceRef="theStart2" targetRef="usertask1" />
+
+    <userTask id="usertask1" name="User Task 1">
+      <extensionElements>
+        <activiti:taskListener
+                event="complete"
+                class="org.activiti.examples.bpmn.tasklistener.MyTransactionalOperationTransactionDependentTaskListener"
+                onTransaction="committed"/>
+      </extensionElements>
+    </userTask>
+
+    <sequenceFlow sourceRef="usertask1" targetRef="theEnd2"/>
+
+    <endEvent id="theEnd2" name="End Event" />
+
+  </process>
+</definitions>

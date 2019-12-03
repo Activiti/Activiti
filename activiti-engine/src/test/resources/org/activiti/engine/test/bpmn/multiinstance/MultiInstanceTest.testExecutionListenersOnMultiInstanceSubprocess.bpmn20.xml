@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:activiti="http://activiti.org/bpmn"
+	typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath"
+	targetNamespace="http://www.activiti.org/test">
+	<process id="MultiInstanceTest" name="MultiInstanceTest">
+		<documentation>Place documentation for the 'MultiInstanceTest' processhere.</documentation>
+		<startEvent id="startevent1" name="Start"></startEvent>
+		<subProcess id="subprocess1" name="Sub Process">
+			<extensionElements>
+				<activiti:executionListener event="start" class="org.activiti.engine.test.bpmn.multiinstance.MultiInstanceTest$TestStartExecutionListener"></activiti:executionListener>
+				<activiti:executionListener event="end" class="org.activiti.engine.test.bpmn.multiinstance.MultiInstanceTest$TestEndExecutionListener"></activiti:executionListener>
+			</extensionElements>
+			<multiInstanceLoopCharacteristics isSequential="false">
+				<loopDataInputRef>assignees</loopDataInputRef>
+				<inputDataItem name="assignee"></inputDataItem>
+			</multiInstanceLoopCharacteristics>
+			<startEvent id="startevent2" name="Start"></startEvent>
+			<endEvent id="endevent2" name="End"></endEvent>
+			<sequenceFlow id="flow3" name="" sourceRef="startevent2" targetRef="endevent2"></sequenceFlow>
+		</subProcess>
+		<endEvent id="endevent1" name="End"></endEvent>
+		<sequenceFlow id="flow1" name="" sourceRef="startevent1" targetRef="subprocess1"></sequenceFlow>
+		<sequenceFlow id="flow2" name="" sourceRef="subprocess1" targetRef="endevent1"></sequenceFlow>
+	</process>
+</definitions>

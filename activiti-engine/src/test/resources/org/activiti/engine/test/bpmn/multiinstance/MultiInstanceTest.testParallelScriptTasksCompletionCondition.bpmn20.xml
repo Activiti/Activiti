@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definition" 
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="Examples">
+  
+  <process id="miParallelScriptTaskCompletionCondition">
+  
+    <startEvent id="theStart" />
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="miScriptTask" />
+    
+    <scriptTask id="miScriptTask" scriptFormat="groovy">
+      <multiInstanceLoopCharacteristics isSequential="false">
+        <loopCardinality>${8}</loopCardinality>
+        <completionCondition>${nrOfCompletedInstances == 2}</completionCondition>
+      </multiInstanceLoopCharacteristics>
+      <script>
+        <![CDATA[
+	        def processInstance = execution.getProcessInstance()
+          def Object value = processInstance.getVariable("sum")
+          def int sum 
+          if (value == null) {
+            sum = 0         
+          } else {
+           sum = value
+          }
+          processInstance.setVariable("sum", sum + 1)
+        ]]>
+      </script>
+    </scriptTask>
+    
+    <sequenceFlow id="flow3" sourceRef="miScriptTask" targetRef="waitState" />
+    <receiveTask id="waitState" />
+    
+     <sequenceFlow id="flow4" sourceRef="waitState" targetRef="theEnd" />
+    <endEvent id="theEnd" />
+    
+  </process>
+
+</definitions>

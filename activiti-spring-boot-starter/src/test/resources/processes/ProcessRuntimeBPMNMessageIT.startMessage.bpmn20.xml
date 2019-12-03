@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_098ju69" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Activiti Modeler" exporterVersion="3.0.0-beta.3">
+  <bpmn:process id="startMessage" isExecutable="true">
+    <bpmn:endEvent id="EndEvent_1yxwnmm">
+      <bpmn:incoming>SequenceFlow_0zk2l68</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="SequenceFlow_0zk2l68" sourceRef="StartEvent_1" targetRef="EndEvent_1yxwnmm" />
+    <bpmn:startEvent id="StartEvent_1">
+      <bpmn:outgoing>SequenceFlow_0zk2l68</bpmn:outgoing>
+      <bpmn:messageEventDefinition messageRef="Message_1v73ptz" />
+    </bpmn:startEvent>
+    <bpmn:textAnnotation id="TextAnnotation_13udteh">
+      <bpmn:text>testMessage</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_0uf02hz" sourceRef="StartEvent_1" targetRef="TextAnnotation_13udteh" />
+  </bpmn:process>
+  <bpmn:message id="Message_1v73ptz" name="testMessage" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="startMessage">
+      <bpmndi:BPMNShape id="EndEvent_1yxwnmm_di" bpmnElement="EndEvent_1yxwnmm">
+        <dc:Bounds x="382" y="155" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0zk2l68_di" bpmnElement="SequenceFlow_0zk2l68">
+        <di:waypoint x="192" y="173" />
+        <di:waypoint x="382" y="173" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="StartEvent_0gihf3i_di" bpmnElement="StartEvent_1">
+        <dc:Bounds x="156" y="155" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_13udteh_di" bpmnElement="TextAnnotation_13udteh">
+        <dc:Bounds x="192" y="75" width="100" height="30" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Association_0uf02hz_di" bpmnElement="Association_0uf02hz">
+        <di:waypoint x="185" y="159" />
+        <di:waypoint x="230" y="105" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

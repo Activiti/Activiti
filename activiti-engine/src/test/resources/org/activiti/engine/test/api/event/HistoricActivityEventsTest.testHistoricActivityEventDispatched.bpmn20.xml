@@ -1,0 +1,73 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/processdef" xmlns:modeler="http://activiti.com/modeler" modeler:version="1.0en" modeler:exportDateTime="20151130153322538" modeler:modelId="969407" modeler:modelVersion="1" modeler:modelLastUpdated="1448897599772">
+  <process id="TestActivityEvents" name="TestActivityEvents" isExecutable="true">
+    <startEvent id="mainStart"/>
+    <subProcess id="subProcess" name="subProcess">
+      <startEvent id="subProcessStart"/>
+      <userTask id="a" name="A" activiti:assignee="$INITIATOR">
+        <extensionElements>
+          <modeler:allow-send-email>true</modeler:allow-send-email>
+          <modeler:activiti-idm-initiator>true</modeler:activiti-idm-initiator>
+        </extensionElements>
+      </userTask>
+      <userTask id="b" name="B" activiti:assignee="$INITIATOR">
+        <extensionElements>
+          <modeler:allow-send-email>true</modeler:allow-send-email>
+          <modeler:activiti-idm-initiator>true</modeler:activiti-idm-initiator>
+        </extensionElements>
+      </userTask>
+      <endEvent id="subprocessEnd"/>
+      <sequenceFlow id="sid-526B9ABC-0A00-4AA9-9B50-3AFBFC437D4A" sourceRef="subProcessStart" targetRef="a"/>
+      <sequenceFlow id="sid-34DFE08F-4298-4978-8C4F-A96E86E4BABA" sourceRef="a" targetRef="b"/>
+      <sequenceFlow id="sid-C347A793-B233-4B73-9B11-8D2639EC8C27" sourceRef="b" targetRef="subprocessEnd"/>
+    </subProcess>
+    <sequenceFlow id="sid-F5E7D48E-F284-4F6E-915B-CDA3F5EE85CA" sourceRef="mainStart" targetRef="subProcess"/>
+    <endEvent id="mainEnd"/>
+    <sequenceFlow id="sid-7ED65E92-1F62-4B42-9DA5-081F769ACE40" sourceRef="subProcess" targetRef="mainEnd"/>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_TestActivityEvents">
+    <bpmndi:BPMNPlane bpmnElement="TestActivityEvents" id="BPMNPlane_TestActivityEvents">
+      <bpmndi:BPMNShape bpmnElement="mainStart" id="BPMNShape_mainStart">
+        <omgdc:Bounds height="30.0" width="30.0" x="100.0" y="163.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="subProcess" id="BPMNShape_subProcess">
+        <omgdc:Bounds height="180.0" width="513.0" x="195.0" y="98.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="subProcessStart" id="BPMNShape_subProcessStart">
+        <omgdc:Bounds height="30.0" width="30.0" x="240.0" y="163.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="a" id="BPMNShape_a">
+        <omgdc:Bounds height="80.0" width="100.0" x="315.0" y="138.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="b" id="BPMNShape_b">
+        <omgdc:Bounds height="80.0" width="100.0" x="460.0" y="138.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="subprocessEnd" id="BPMNShape_subprocessEnd">
+        <omgdc:Bounds height="28.0" width="28.0" x="605.0" y="164.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="mainEnd" id="BPMNShape_mainEnd">
+        <omgdc:Bounds height="28.0" width="28.0" x="753.0" y="174.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="sid-7ED65E92-1F62-4B42-9DA5-081F769ACE40" id="BPMNEdge_sid-7ED65E92-1F62-4B42-9DA5-081F769ACE40">
+        <omgdi:waypoint x="708.0" y="188.0"/>
+        <omgdi:waypoint x="753.0" y="188.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-F5E7D48E-F284-4F6E-915B-CDA3F5EE85CA" id="BPMNEdge_sid-F5E7D48E-F284-4F6E-915B-CDA3F5EE85CA">
+        <omgdi:waypoint x="129.99338082923626" y="178.44556852390002"/>
+        <omgdi:waypoint x="195.0" y="180.37741456166418"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-C347A793-B233-4B73-9B11-8D2639EC8C27" id="BPMNEdge_sid-C347A793-B233-4B73-9B11-8D2639EC8C27">
+        <omgdi:waypoint x="560.0" y="178.0"/>
+        <omgdi:waypoint x="605.0" y="178.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-526B9ABC-0A00-4AA9-9B50-3AFBFC437D4A" id="BPMNEdge_sid-526B9ABC-0A00-4AA9-9B50-3AFBFC437D4A">
+        <omgdi:waypoint x="270.0" y="178.0"/>
+        <omgdi:waypoint x="315.0" y="178.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-34DFE08F-4298-4978-8C4F-A96E86E4BABA" id="BPMNEdge_sid-34DFE08F-4298-4978-8C4F-A96E86E4BABA">
+        <omgdi:waypoint x="415.0" y="178.0"/>
+        <omgdi:waypoint x="460.0" y="178.0"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions" 
+	xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+	xmlns:activiti="http://activiti.org/bpmn"
+	targetNamespace="Examples">
+
+	<process id="testCustomDurationCalendar">
+
+		<startEvent id="theStart" />
+		<sequenceFlow id="flow1" sourceRef="theStart" targetRef="timer" />
+
+		<intermediateCatchEvent id="timer">
+			<timerEventDefinition activiti:businessCalendarName="INVALID">
+				<timeDuration>PT5M</timeDuration>
+			</timerEventDefinition>
+		</intermediateCatchEvent>
+		
+		<sequenceFlow id="flow2" sourceRef="timer" targetRef="receive" />
+
+		<receiveTask id="receive"/>
+
+		<sequenceFlow id="flow3" sourceRef="receive" targetRef="theEnd"/>
+
+		<endEvent id="theEnd"/>
+	</process>
+
+</definitions>

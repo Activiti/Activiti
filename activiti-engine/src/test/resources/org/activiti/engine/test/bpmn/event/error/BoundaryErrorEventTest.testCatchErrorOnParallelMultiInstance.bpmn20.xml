@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions" 
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="Examples">
+  
+  <process id="catchErrorOnParallelMi">
+  
+    <startEvent id="theStart" />
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="miSubProcess" />
+    
+    <subProcess id="miSubProcess">
+      <multiInstanceLoopCharacteristics isSequential="false">
+        <loopCardinality>5</loopCardinality>
+      </multiInstanceLoopCharacteristics>
+    
+      <startEvent id="subProcessStart" />
+      <sequenceFlow id="flow2" sourceRef="subProcessStart" targetRef="subProcessTask" />
+      
+      <userTask id="subProcessTask" />
+      <sequenceFlow id="flow3" sourceRef="subProcessTask" targetRef="exclusiveGw" />
+      
+      <exclusiveGateway id="exclusiveGw" default="normal"/>
+      <sequenceFlow id="normal" sourceRef="exclusiveGw" targetRef="normalEnd" />
+      <sequenceFlow id="error" sourceRef="exclusiveGw" targetRef="errorEnd">
+        <conditionExpression>${throwError}</conditionExpression>
+      </sequenceFlow>
+      
+      <endEvent id="normalEnd" />
+      <endEvent id="errorEnd">
+        <errorEventDefinition errorRef="myError" />
+      </endEvent>
+    
+    </subProcess>
+    
+    <boundaryEvent id="catchError" attachedToRef="miSubProcess">
+      <errorEventDefinition />
+    </boundaryEvent>
+    <sequenceFlow id="flow4 " sourceRef="catchError" targetRef="processEnd" />
+    
+    <endEvent id="processEnd" />
+    
+  
+    <sequenceFlow id="flow5" sourceRef="miSubProcess" targetRef="taskAfterSubProcess" />
+    <userTask id="taskAfterSubProcess" name="Task after subprocess" />
+    
+  </process>
+
+</definitions>

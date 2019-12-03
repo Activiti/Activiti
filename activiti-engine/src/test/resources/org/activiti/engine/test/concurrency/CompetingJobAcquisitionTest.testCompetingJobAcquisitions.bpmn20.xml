@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions"
+	xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" 
+	xmlns:activiti="http://activiti.org/bpmn"
+	targetNamespace="Examples">
+
+	<process id="CompetingJobAcquisitionProcess">
+
+		<startEvent id="start" />
+
+		<sequenceFlow id="flow1" sourceRef="start" targetRef="firstTask" />
+
+		<userTask id="firstTask" />
+
+		<boundaryEvent id="escalationTimer1" cancelActivity="true" attachedToRef="firstTask">
+			<timerEventDefinition>
+				<timeDuration>PT0H</timeDuration>
+			</timerEventDefinition>
+		</boundaryEvent>
+
+		<sequenceFlow id="flow3" sourceRef="escalationTimer1" targetRef="secondTask" />
+
+    <userTask id="secondTask" />
+
+	</process>
+
+</definitions>

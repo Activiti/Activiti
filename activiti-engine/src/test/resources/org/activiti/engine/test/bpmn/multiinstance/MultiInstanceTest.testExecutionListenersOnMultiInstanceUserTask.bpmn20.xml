@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definition" 
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="Examples">
+  
+  <process id="testExecutionListenersOnMultiInstanceUserTask">
+  
+    <startEvent id="theStart" />
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="miTasks" />
+    
+    <userTask id="miTasks" name="My Task ${loopCounter}" activiti:assignee="kermit_${loopCounter}" >
+      <extensionElements>
+        <activiti:executionListener event="start" class="org.activiti.engine.test.bpmn.multiinstance.MultiInstanceTest$TestStartExecutionListener"></activiti:executionListener>
+        <activiti:executionListener event="end" class="org.activiti.engine.test.bpmn.multiinstance.MultiInstanceTest$TestEndExecutionListener"></activiti:executionListener>
+        <activiti:taskListener event="complete" class="org.activiti.engine.test.bpmn.multiinstance.MultiInstanceTest$TestTaskCompletionListener" ></activiti:taskListener>
+      </extensionElements>
+      <multiInstanceLoopCharacteristics isSequential="false">
+        <loopCardinality>4</loopCardinality>
+      </multiInstanceLoopCharacteristics>
+    </userTask>
+    
+    <sequenceFlow id="flow3" sourceRef="miTasks" targetRef="waitState" />
+    <receiveTask id="waitState" />
+    
+  </process>
+
+</definitions>

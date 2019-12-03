@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions"
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" 
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="org.activiti.engine.test.bpmn.deployment">
+
+  <!-- 302 characters long id is too long, only 255 characters are allowed in ACT_RE_PROCDEF.KEY -->
+  <process id="ID100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000300000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000">
+
+    <startEvent id="start" />
+
+    <sequenceFlow id="flow1" sourceRef="start" targetRef="end" />
+
+    <endEvent id="end" />
+
+  </process>
+
+</definitions>

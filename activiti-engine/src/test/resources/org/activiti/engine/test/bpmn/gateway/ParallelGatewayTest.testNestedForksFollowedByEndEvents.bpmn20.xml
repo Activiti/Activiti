@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions" 
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="Examples">
+  
+  <process id="nestedForksFollowedByEndEvents">
+  
+    <startEvent id="theStart" />
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="fork" />
+    
+    <parallelGateway id="fork" />
+    <sequenceFlow id="flow2" sourceRef="fork" targetRef="nestedFork1" />
+    <sequenceFlow id="flow3" sourceRef="fork" targetRef="nestedFork2" />
+    
+    <parallelGateway id="nestedFork1" />
+    <sequenceFlow id="flow4" sourceRef="nestedFork1" targetRef="end1" />
+    <sequenceFlow id="flow5" sourceRef="nestedFork1" targetRef="end2" />
+    
+    <parallelGateway id="nestedFork2" />
+    <sequenceFlow id="flow6" sourceRef="nestedFork2" targetRef="end3" />
+    <sequenceFlow id="flow7" sourceRef="nestedFork2" targetRef="end4" />
+
+    <endEvent id="end1" />
+    <endEvent id="end2" />
+    <endEvent id="end3" />
+    <endEvent id="end4" />
+    
+  </process>
+
+</definitions>

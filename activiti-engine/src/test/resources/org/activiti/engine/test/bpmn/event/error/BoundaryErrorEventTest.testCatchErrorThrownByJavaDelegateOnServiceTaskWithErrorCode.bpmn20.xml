@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions" 
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="Examples">
+  
+  <error id="error42" errorCode="42" />
+  <error id="error23" errorCode="23" />
+
+  <process id="catchErrorThrownByJavaDelegateOnServiceTaskWithErrorCode">
+  
+    <startEvent id="theStart" />
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="serviceTask" />
+    
+    <serviceTask id="serviceTask" activiti:class="org.activiti.engine.test.bpmn.event.error.ThrowBpmnErrorDelegate" />
+    
+    <boundaryEvent id="ignoreError42" attachedToRef="serviceTask">
+      <errorEventDefinition errorRef="error42" />
+    </boundaryEvent>
+    
+    <boundaryEvent id="catchError" attachedToRef="serviceTask">
+      <errorEventDefinition errorRef="error23" />
+    </boundaryEvent>
+    
+    <sequenceFlow id="flow3" sourceRef="catchError" targetRef="escalatedTask" />
+    
+    <userTask id="escalatedTask" name="Escalated Task" />
+    <sequenceFlow id="flow4" sourceRef="serviceTask" targetRef="theEnd" />
+    <sequenceFlow id="flow5" sourceRef="ignoreError42" targetRef="theEnd" />
+    
+    <endEvent id="theEnd" />
+    
+  </process>
+
+</definitions>

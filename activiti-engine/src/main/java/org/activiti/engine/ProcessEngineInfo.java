@@ -1,0 +1,41 @@
+/* Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.activiti.engine;
+
+import org.activiti.engine.api.internal.Internal;
+
+/**
+ * Represents information about the initialization of the process engine.
+ * 
+ * @see ProcessEngines
+
+ */
+@Internal
+public interface ProcessEngineInfo {
+
+  /**
+   * Returns the name of the process engine.
+   */
+  String getName();
+
+  /**
+   * Returns the resources the engine was configured from.
+   */
+  String getResourceUrl();
+
+  /**
+   * Returns the exception stacktrace in case an exception occurred while initializing the engine. When no exception occurred, null is returned.
+   */
+  String getException();
+
+}

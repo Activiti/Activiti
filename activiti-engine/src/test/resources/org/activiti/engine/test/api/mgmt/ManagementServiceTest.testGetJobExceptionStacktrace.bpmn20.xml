@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions"
+	xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" 
+	xmlns:activiti="http://activiti.org/bpmn" 
+	targetNamespace="org.activiti.enginge.test.api.mgmt">
+
+	<process id="exceptionInJobExecution">
+
+		<startEvent id="theStart" />
+
+		<sequenceFlow id="flow1" sourceRef="theStart" targetRef="firstLineSupport" />
+    
+		<userTask id="firstLineSupport" name="First line support" />
+
+		<sequenceFlow id="flow2" sourceRef="firstLineSupport" targetRef="normalEnd" />
+
+		<endEvent id="normalEnd" />
+
+		<boundaryEvent id="escalationTimer" cancelActivity="true" attachedToRef="firstLineSupport">
+			<timerEventDefinition>
+				<timeDuration>PT4H</timeDuration>
+			</timerEventDefinition>
+		</boundaryEvent>
+
+		<sequenceFlow id="flow3" sourceRef="escalationTimer" targetRef="theScriptTask" />
+
+		<scriptTask id="theScriptTask" name="Execute script" scriptFormat="groovy">
+	      <script>
+	      	// Throw an exception in script task
+	        throw new RuntimeException("This is an exception thrown from scriptTask")
+	      </script>
+	    </scriptTask>
+
+		<sequenceFlow id="flow4" sourceRef="theScriptTask" targetRef="escalatedEnd" />
+
+		<endEvent id="escalatedEnd" />
+
+	</process>
+
+</definitions>

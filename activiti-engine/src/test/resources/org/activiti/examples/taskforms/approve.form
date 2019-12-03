@@ -1,0 +1,21 @@
+<h1>Vacation Approval</h1>
+<p>
+  ${employeeName} would like to take ${numberOfDays} day(s) of vacation.
+</p>
+<p>
+  Motivation: ${vacationMotivation}
+</p>
+<p>
+  Do you approve this?
+  <select name="vacationApproved">
+    <option value="true">Yes</option>
+    <option value="false">No</option>
+   </select>
+   <input type="hidden" name="vacationApproved_type" value="Boolean" />
+</p>
+<p>
+  <label>
+    Motivation:<br/>
+    <textarea name="managerMotivation" value=""></textarea>
+  </label>
+</p>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  targetNamespace="Examples">
+
+  <process id="noEndProcess" name="No End Process">
+    <documentation>This is a process for testing purposes</documentation>
+  
+    <startEvent id="theStart" />
+
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="theGateway"/>
+
+    <parallelGateway id="theGateway"/>
+
+    <sequenceFlow id="flow2" sourceRef="theGateway" targetRef="noneEvent1" />
+
+    <intermediateThrowEvent id="noneEvent1"/>
+
+    <sequenceFlow id="flow3" sourceRef="theGateway" targetRef="noneEvent2"/>
+
+    <intermediateThrowEvent id="noneEvent2"/>
+  </process>
+
+</definitions>

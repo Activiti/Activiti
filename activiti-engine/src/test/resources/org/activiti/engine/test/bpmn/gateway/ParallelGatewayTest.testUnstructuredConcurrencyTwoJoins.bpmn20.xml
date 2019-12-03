@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions" 
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="Examples">
+  
+  <process id="unstructuredConcurrencyTwoJoins">
+  
+    <startEvent id="theStart" />
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="fork" />
+    
+    <parallelGateway id="fork" />
+    <sequenceFlow id="flow2" sourceRef="fork" targetRef="task1" />
+    <sequenceFlow id="flow3" sourceRef="fork" targetRef="task2" />
+    <sequenceFlow id="flow4" sourceRef="fork" targetRef="task3" />
+    
+    
+    <manualTask id="task1" />
+    <sequenceFlow id="flow5" sourceRef="task1" targetRef="join1" />
+    
+    <manualTask id="task2" />
+    <sequenceFlow id="flow6" sourceRef="task2" targetRef="join1" />
+    
+    <manualTask id="task3" />
+    <sequenceFlow id="flow7" sourceRef="task3" targetRef="join2" />
+    
+    
+    <parallelGateway id="join1" />
+    <sequenceFlow id="flow8" sourceRef="join1" targetRef="task4" />
+    <sequenceFlow id="flow9" sourceRef="join1" targetRef="task5" />
+    <sequenceFlow id="flow10" sourceRef="join1" targetRef="task6" />
+    
+    
+    <manualTask id="task4" />
+    <sequenceFlow id="flow11" sourceRef="task4" targetRef="join2" />
+    
+    <manualTask id="task5" />
+    <sequenceFlow id="flow12" sourceRef="task5" targetRef="join2" />
+    
+    <manualTask id="task6" />
+    <sequenceFlow id="flow13" sourceRef="task6" targetRef="join2" />
+    
+    
+    <parallelGateway id="join2" />
+    <sequenceFlow id="flow14" sourceRef="join2" targetRef="theEnd" />
+    
+   
+    <endEvent id="theEnd" />
+    
+  </process>
+
+</definitions>

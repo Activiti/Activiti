@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="sample-diagram" targetNamespace="http://bpmn.io/schema/bpmn" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd">
+  <process id="process-bee943dd-1618-4c7e-91e6-171abb6edcaf" name="test-simple" isExecutable="true">
+    <documentation />
+    <startEvent id="StartEvent_1">
+      <outgoing>SequenceFlow_0h1gjsj</outgoing>
+    </startEvent>
+    <sequenceFlow id="SequenceFlow_0h1gjsj" sourceRef="StartEvent_1" targetRef="EndEvent_0mdpjzn" />
+    <endEvent id="EndEvent_0mdpjzn">
+      <incoming>SequenceFlow_0h1gjsj</incoming>
+      <errorEventDefinition errorRef="Error_01agmko" />
+    </endEvent>
+  </process>
+  <error id="Error_01agmko" name="Error_01agmko" errorCode="Error_01agmko" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="process-bee943dd-1618-4c7e-91e6-171abb6edcaf">
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="242" y="222" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0h1gjsj_di" bpmnElement="SequenceFlow_0h1gjsj">
+        <di:waypoint x="278" y="240" />
+        <di:waypoint x="372" y="240" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="EndEvent_1sno9bt_di" bpmnElement="EndEvent_0mdpjzn">
+        <dc:Bounds x="372" y="222" width="36" height="36" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

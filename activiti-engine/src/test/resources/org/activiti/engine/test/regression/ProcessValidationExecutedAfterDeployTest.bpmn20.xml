@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions expressionLanguage="http://www.w3.org/1999/XPath"
+    id="definitions" targetNamespace="testapp"
+    typeLanguage="http://www.w3.org/2001/XMLSchema"
+    xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+    xmlns:activiti="http://activiti.org/bpmn"
+    xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+    xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC"
+    xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <process id="testProcess1" name="test process">
+        <property id="processVariable" itemSubjectRef="xsd:string" name="processVariable"/>
+        <startEvent activiti:async="true" id="start" name="Start">
+            <extensionElements>
+                <activiti:formProperty id="task1Variable1"
+                    name="task1 Variable1" required="false" type="string"/>
+                <activiti:formProperty id="task1Variable2"
+                    name="task1 Variable2" required="false" type="string"/>
+            </extensionElements>
+        </startEvent>
+        <serviceTask id="task1" name="Task 1">
+            <extensionElements>
+                <activiti:field name="variableNames">
+                    <activiti:string>             task1Variable1,             task1Variable2           </activiti:string>
+                </activiti:field>
+            </extensionElements>
+        </serviceTask>
+        <endEvent id="end" name="End"/>
+        <sequenceFlow id="flow1" sourceRef="start" targetRef="task1"/>
+        <sequenceFlow id="flow2" sourceRef="task1" targetRef="end"/>
+    </process>
+</definitions>

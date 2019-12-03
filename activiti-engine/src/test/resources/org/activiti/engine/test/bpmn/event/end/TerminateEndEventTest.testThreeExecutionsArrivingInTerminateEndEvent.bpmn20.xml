@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions expressionLanguage="http://www.w3.org/1999/XPath"
+    id="definitions" targetNamespace="testapp"
+    typeLanguage="http://www.w3.org/2001/XMLSchema"
+    xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+    xmlns:activiti="http://activiti.org/bpmn"
+    xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+    xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC"
+    xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <signal id="badpixelsignal" name="bad pixel signal"/>
+    <process id="skybox_image_pull_request" isExecutable="true" name="Handles Request for Nominal Images">
+        <startEvent id="start" name="Start">
+            <extensionElements>
+                <activiti:formProperty default="false" id="passed_QC"
+                    name="flag indicating if data passes quality control" type="boolean"/>
+                <activiti:formProperty default="true"
+                    id="has_bad_pixel_pattern"
+                    name="flag indicating if the bad pixel is a pattern or one-off" type="boolean"/>
+            </extensionElements>
+        </startEvent>
+        <serviceTask activiti:async="true"
+            activiti:class="org.activiti.engine.test.bpmn.event.end.DummyServiceTask"
+            id="scheduling_nominal" name="Scheduling Nominal"/>
+        <sequenceFlow id="flow2" sourceRef="scheduling_nominal" targetRef="nominal_collecting"/>
+        <serviceTask activiti:async="true"
+            activiti:class="org.activiti.engine.test.bpmn.event.end.DummyServiceTask"
+            id="nominal_collecting" name="Nominal Collecting"/>
+        <serviceTask activiti:async="true"
+            activiti:class="org.activiti.engine.test.bpmn.event.end.DummyServiceTask"
+            id="nominal_payload_channel" name="Nominal Payload Channel"/>
+        <sequenceFlow id="flow3" sourceRef="nominal_collecting" targetRef="nominal_payload_channel"/>
+        <serviceTask activiti:async="true"
+            activiti:class="org.activiti.engine.test.bpmn.event.end.DummyServiceTask"
+            id="process_in_geomdl" name="Processing in GeoMdl"/>
+        <sequenceFlow id="flow4" sourceRef="nominal_payload_channel" targetRef="process_in_geomdl"/>
+        <serviceTask activiti:async="true"
+            activiti:class="org.activiti.engine.test.bpmn.event.end.DummyServiceTask"
+            id="quality_control" name="Quality Control">
+        </serviceTask>
+        <sequenceFlow id="flow5" sourceRef="process_in_geomdl" targetRef="quality_control"/>
+        <exclusiveGateway id="quality_control_passed_gateway" name="Quality Control Passed gateway"/>
+        <sequenceFlow id="flow6" sourceRef="quality_control" targetRef="quality_control_passed_gateway"/>
+        <sequenceFlow id="failed_QC" name="Failed QC"
+            sourceRef="quality_control_passed_gateway" targetRef="investigate_qc_error">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${passed_QC == false}]]></conditionExpression>
+        </sequenceFlow>
+        <sequenceFlow id="passed_QC" name="Passed QC"
+            sourceRef="quality_control_passed_gateway" targetRef="publish_data">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${passed_QC == true}]]></conditionExpression>
+        </sequenceFlow>
+        <serviceTask activiti:async="true"
+            activiti:class="org.activiti.engine.test.bpmn.event.end.DummyServiceTask"
+            id="publish_data" name="Publish Data"/>
+        <parallelGateway id="parallelgateway1" name="Parallel Gateway"/>
+        <sequenceFlow id="flow8" sourceRef="parallelgateway1" targetRef="scheduling_nominal"/>
+        <sequenceFlow id="flow9" sourceRef="start" targetRef="parallelgateway1"/>
+        <intermediateCatchEvent id="catch_bad_pixel_signal" name="catch bad pixel signal">
+            <signalEventDefinition signalRef="badpixelsignal"/>
+        </intermediateCatchEvent>
+        <intermediateThrowEvent id="throw_bad_pixel_signal" name="throw bad pixel signal">
+            <signalEventDefinition signalRef="badpixelsignal"/>
+        </intermediateThrowEvent>
+        <sequenceFlow id="flow10" sourceRef="parallelgateway1" targetRef="catch_bad_pixel_signal"/>
+        <serviceTask activiti:async="true"
+            activiti:class="org.activiti.engine.test.bpmn.event.end.DummyServiceTask"
+            id="investigate_qc_error" name="Investigate QC error">
+        </serviceTask>
+        <exclusiveGateway id="has_bad_pixel_pattern" name="Has Bad Pixel Pattern"/>
+        <sequenceFlow id="flow11" sourceRef="investigate_qc_error" targetRef="has_bad_pixel_pattern"/>
+        <serviceTask activiti:async="true"
+            activiti:class="org.activiti.engine.test.bpmn.event.end.DummyServiceTask"
+            id="fail_for_qc" name="Fail for QC"/>
+        <sequenceFlow id="flow12" name="No pattern"
+            sourceRef="has_bad_pixel_pattern" targetRef="fail_for_qc">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${has_bad_pixel_pattern == false}]]></conditionExpression>
+        </sequenceFlow>
+        <sequenceFlow id="flow14" name="Reschedule"
+            sourceRef="fail_for_qc" targetRef="scheduling_nominal"/>
+        <endEvent id="terminateendevent1" name="TerminateEndEvent">
+            <terminateEventDefinition/>
+        </endEvent>
+        <sequenceFlow id="flow15" sourceRef="publish_data" targetRef="terminateendevent1"/>
+        <sequenceFlow id="flow16" sourceRef="catch_bad_pixel_signal" targetRef="terminateendevent1"/>
+        <sequenceFlow id="flow17" sourceRef="throw_bad_pixel_signal" targetRef="terminateendevent1"/>
+        <sequenceFlow id="flow18" name="Has pattern"
+            sourceRef="has_bad_pixel_pattern" targetRef="throw_bad_pixel_signal">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${has_bad_pixel_pattern == true}]]></conditionExpression>
+        </sequenceFlow>
+    </process>
+</definitions>

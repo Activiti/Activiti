@@ -1,0 +1,37 @@
+{
+  "id": "tagImageConnectorId",
+  "name": "Tag Image Connector",
+  "description": "Description of the Tag Image Connector",
+  "actions": {
+    "tagImageActionId": {
+      "id": "tagImageActionId",
+      "name": "tagImageActionName",
+      "description": "...",
+      "inputs": [
+        {
+          "id": "input-variable-2",
+          "name": "input-variable-name-2",
+          "type": "string",
+          "required": false,
+          "description": ""
+        },
+        {
+          "id": "expectedKey",
+          "name": "expectedKey",
+          "type": "boolean",
+          "required": false,
+          "description": ""
+        }
+      ],
+      "outputs": [
+        {
+          "id": "approved",
+          "name": "approved",
+          "type": "boolean",
+          "description": "",
+          "required": "false"
+        }
+      ]
+    }
+  }
+}

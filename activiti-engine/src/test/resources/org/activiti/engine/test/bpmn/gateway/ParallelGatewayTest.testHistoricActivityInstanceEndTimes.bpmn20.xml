@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions 
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://schema.omg.org/spec/BPMN/2.0 BPMN20.xsd" 
+  typeLanguage="http://www.w3.org/2001/XMLSchema"
+  targetNamespace="http://www.activiti.org/bpmn2.0">
+
+  <process id="nestedForkJoin">
+  
+    <startEvent id="theStart" />
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="bigFork" />
+   
+    <!-- Big fork -->
+    <parallelGateway id="bigFork" />
+    <sequenceFlow id="flow2" sourceRef="bigFork" targetRef="a1" />
+    <sequenceFlow id="flow3" sourceRef="bigFork" targetRef="b1" />
+    <sequenceFlow id="flow4" sourceRef="bigFork" targetRef="c1" />
+    <sequenceFlow id="flow5" sourceRef="bigFork" targetRef="d1" />
+    
+    <!-- First leg: 4 sequential passthroughs -->
+    <manualTask id="a1" />
+    <sequenceFlow id="flow6" sourceRef="a1" targetRef="a2" />
+    <manualTask id="a2" />
+    <sequenceFlow id="flow7" sourceRef="a2" targetRef="a3" />
+    <manualTask id="a3" />
+    <sequenceFlow id="flow8" sourceRef="a3" targetRef="a4" />
+    <manualTask id="a4" />
+    <sequenceFlow id="flow9" sourceRef="a4" targetRef="bigJoin" />
+    
+    <!-- Second leg: a smaller nested fork/join with two legs -->
+    <manualTask id="b1" />
+    <sequenceFlow id="flow10" sourceRef="b1" targetRef="smallFork" />
+    <parallelGateway id="smallFork" />
+    <sequenceFlow id="flow11" sourceRef="smallFork" targetRef="b2a" />
+    <sequenceFlow id="flow12" sourceRef="smallFork" targetRef="b2b" />
+    <manualTask id="b2a" />
+    <sequenceFlow id="flow13" sourceRef="b2a" targetRef="smallJoin" />
+    <manualTask id="b2b" />
+    <sequenceFlow id="flow14" sourceRef="b2b" targetRef="smallJoin" />
+    <parallelGateway id="smallJoin"/>
+    <sequenceFlow id="flow15" sourceRef="smallJoin" targetRef="bigJoin" />
+    
+    <!-- Third leg: 2 sequential passthroughs -->
+    <manualTask id="c1" />
+    <sequenceFlow id="flow16" sourceRef="c1" targetRef="c2" />
+    <manualTask id="c2" />
+    <sequenceFlow id="flow17" sourceRef="c2" targetRef="bigJoin" />
+    
+    <!-- Fourth leg: 1 sequential passthrough -->
+    <manualTask id="d1" />
+    <sequenceFlow id="flow18" sourceRef="d1" targetRef="bigJoin" />
+    
+    <!-- Big join -->
+    <parallelGateway id="bigJoin" />
+    <sequenceFlow id="flow19" sourceRef="bigJoin" targetRef="lastActivity" />
+    
+    <!-- last passthrough after join -->
+    <manualTask id="lastActivity" />
+    <sequenceFlow id="flow20" sourceRef="lastActivity" targetRef="theEnd" />
+    
+    <endEvent id="theEnd" />
+  </process>
+
+</definitions>

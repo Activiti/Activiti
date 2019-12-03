@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="Examples">
+
+  <process id="simpleBoundaryTimer">
+  
+    <startEvent id="theStart" />
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="theTask" />
+    
+    <userTask id="theTask" name="Task A" activiti:assignee="kermit" />
+    <sequenceFlow id="flow2" sourceRef="theTask" targetRef="theEnd" />
+    
+    <boundaryEvent id="boundaryTimer" cancelActivity="false" attachedToRef="theTask">
+		<timerEventDefinition>
+			<timeDuration>PT5M</timeDuration>
+		</timerEventDefinition>
+	</boundaryEvent>
+    <sequenceFlow id="flow3" sourceRef="boundaryTimer" targetRef="theTask2" />
+    <userTask id="theTask2" name="Task B" activiti:assignee="gonzo" />
+    <sequenceFlow id="flow4" sourceRef="theTask2" targetRef="theEnd" />
+    
+    <endEvent id="theEnd" />
+    
+  </process>
+
+</definitions>

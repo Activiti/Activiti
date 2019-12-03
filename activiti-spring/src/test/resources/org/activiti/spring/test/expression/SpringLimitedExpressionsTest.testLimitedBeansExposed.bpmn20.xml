@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<definitions id="definitions"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:activiti="http://activiti.org/bpmn"
+             targetNamespace="Examples">
+
+    <process id="limitedExpressionProcess">
+
+        <startEvent id="start"/>
+        <sequenceFlow id="flow1" sourceRef="start" targetRef="serviceTask"/>
+
+        <serviceTask id="serviceTask" activiti:expression="${bean1.getSentence()}"
+                     activiti:resultVariableName="beanOutput"/>
+        <sequenceFlow id="flow2" sourceRef="serviceTask" targetRef="userTask"/>
+
+        <userTask id="userTask" name="Schedule meeting"/>
+        <sequenceFlow id="flow3" sourceRef="userTask" targetRef="serviceTask2"/>
+
+        <!-- Using bean that is available in app-context, but not mentioned in beans -->
+        <serviceTask id="serviceTask2" activiti:expression="${bean2.getSentence()}"/>
+
+        <sequenceFlow id="flow4" sourceRef="serviceTask2" targetRef="end"/>
+
+        <endEvent id="end"/>
+
+    </process>
+
+</definitions>

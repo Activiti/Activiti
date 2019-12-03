@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="taskAssigneeExample" 
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="Examples">
+	
+	<process id="candidateWithExpression" name="Write bi-monthly financial report">
+	
+		<startEvent id="theStart" />
+		
+		<sequenceFlow id="flow1" sourceRef="theStart" targetRef="theTask" />
+
+		<userTask id="theTask" name="Write financial report" >
+		  <documentation>
+		    Write the bi-monthly financial report for the shareholders newsletter.
+		  </documentation>
+		  <potentialOwner>
+		    <resourceAssignmentExpression>
+		      <formalExpression>user(${testBean.oneParameterMethod("param1")})</formalExpression>
+		    </resourceAssignmentExpression>
+		  </potentialOwner>
+		</userTask>
+		
+		<sequenceFlow id="flow2" sourceRef="theTask" targetRef="theEnd" />
+		
+		<endEvent id="theEnd" />
+		
+	</process>
+
+</definitions>

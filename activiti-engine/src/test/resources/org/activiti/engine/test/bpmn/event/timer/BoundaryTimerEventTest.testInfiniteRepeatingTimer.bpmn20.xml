@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/processdef">
+  <process id="testTimerErrors" name="Test Timer Errors" isExecutable="true">
+    <startEvent id="sid-F868E99C-FC2C-4F43-93E0-60327AF519B5">
+      <extensionElements>
+        <activiti:formProperty id="timerString" name="Timer String (i.e. R/2015-10-01T11:00:00/PT5M)" type="string" required="true"></activiti:formProperty>
+      </extensionElements>
+    </startEvent>
+    <subProcess id="sid-4D5C7417-4A65-4DFB-A676-6FE99138B8F8" name="Sample Escalation">
+      <startEvent id="sid-65AF1F00-7F44-4CC3-98EC-BD54594E1CC2"></startEvent>
+      <serviceTask id="sid-466108A5-0461-4BF8-8861-A3ABF7521FCB" name="Get Email Recipient (db)" activiti:expression="${todoTask.execute('get email recipient')}"></serviceTask>
+      <serviceTask id="sid-844D544A-8ACF-43B4-8254-789765EC778D" name="Send urgent email to fix error" activiti:type="mail">
+        <extensionElements>
+          <activiti:field name="to">
+            <activiti:expression><![CDATA[${sagentErrorInfo.getEscalationEmail().getToRecipiant()}]]></activiti:expression>
+          </activiti:field>
+          <activiti:field name="from">
+            <activiti:string><![CDATA[activiti-workflow.dsservices.com]]></activiti:string>
+          </activiti:field>
+          <activiti:field name="subject">
+            <activiti:expression><![CDATA[${sagentErrorInfo.getEscalationEmail().getSubject()}]]></activiti:expression>
+          </activiti:field>
+          <activiti:field name="cc">
+            <activiti:expression><![CDATA[${sagentErrorInfo.getEscalationEmail().getCcRecipiant()}]]></activiti:expression>
+          </activiti:field>
+          <activiti:field name="html">
+            <activiti:expression><![CDATA[${sagentErrorInfo.getEscalationEmail().getContent()}]]></activiti:expression>
+          </activiti:field>
+          <activiti:executionListener event="start" expression="${prepareEmailTaskListener.createEmail (sagentErrorInfo)}"></activiti:executionListener>
+        </extensionElements>
+      </serviceTask>
+      <endEvent id="sid-E94E1E25-F095-4123-9145-22F3069CCC97"></endEvent>
+      <exclusiveGateway id="sid-248E480D-9E80-462A-BF51-61161846F7EF"></exclusiveGateway>
+      <exclusiveGateway id="sid-220FBE6D-2AAD-45AE-A0DF-F286D9448311"></exclusiveGateway>
+      <scriptTask id="sid-CE6E10C5-165E-41D0-99F6-163A6C7148A5" name="Sample Script Task" scriptFormat="groovy" activiti:autoStoreVariables="false">
+        <script>System.out.println(" Trying to escalate at "+new Date().toString());
+sendEmail=false;
+execution.setVariable("sendEmail",sendEmail);</script>
+      </scriptTask>
+      <sequenceFlow id="sid-AEB38E9B-2527-4562-A293-F209800C50AB" sourceRef="sid-65AF1F00-7F44-4CC3-98EC-BD54594E1CC2" targetRef="sid-CE6E10C5-165E-41D0-99F6-163A6C7148A5"></sequenceFlow>
+      <sequenceFlow id="sid-C58D6B2C-540A-4427-B1D9-1AC3872184C9" sourceRef="sid-466108A5-0461-4BF8-8861-A3ABF7521FCB" targetRef="sid-844D544A-8ACF-43B4-8254-789765EC778D"></sequenceFlow>
+      <sequenceFlow id="sid-86582FF4-9A9C-4978-A397-70C95DE5A407" sourceRef="sid-844D544A-8ACF-43B4-8254-789765EC778D" targetRef="sid-248E480D-9E80-462A-BF51-61161846F7EF"></sequenceFlow>
+      <sequenceFlow id="sid-77108025-BCB8-43A6-BC43-61CF643EF0A8" sourceRef="sid-248E480D-9E80-462A-BF51-61161846F7EF" targetRef="sid-E94E1E25-F095-4123-9145-22F3069CCC97"></sequenceFlow>
+      <sequenceFlow id="sid-77599734-296B-4FAB-9C02-25B7550E3D5D" sourceRef="sid-CE6E10C5-165E-41D0-99F6-163A6C7148A5" targetRef="sid-220FBE6D-2AAD-45AE-A0DF-F286D9448311"></sequenceFlow>
+      <sequenceFlow id="sid-ABF45B91-28B1-4368-A988-4BF84ED31AFC" name="don't send email" sourceRef="sid-220FBE6D-2AAD-45AE-A0DF-F286D9448311" targetRef="sid-248E480D-9E80-462A-BF51-61161846F7EF">
+        <conditionExpression xsi:type="tFormalExpression"><![CDATA[${sendEmail==false}]]></conditionExpression>
+      </sequenceFlow>
+      <sequenceFlow id="sid-405FD919-0059-4A90-B50C-4D0E1A614CB8" name="send email" sourceRef="sid-220FBE6D-2AAD-45AE-A0DF-F286D9448311" targetRef="sid-466108A5-0461-4BF8-8861-A3ABF7521FCB">
+        <conditionExpression xsi:type="tFormalExpression"><![CDATA[${sendEmail==true}]]></conditionExpression>
+      </sequenceFlow>
+    </subProcess>
+    <userTask id="sid-CD0EE5B8-B07D-4A23-9058-EBF38C615694" name="Sample User Task">
+      <extensionElements>
+        <activiti:formProperty id="address1" name="Address Line 1" type="string" required="true"></activiti:formProperty>
+        <activiti:formProperty id="enumProperty" name="Sample Enum Property" type="enum" required="true">
+          <activiti:value id="value 1" name="value 1"></activiti:value>
+          <activiti:value id="value 2" name="value 2"></activiti:value>
+        </activiti:formProperty>
+        <activiti:formProperty id="stringProperty" name="String Property" type="string" required="true"></activiti:formProperty>
+        <activiti:formProperty id="longProperty" name="Long Property" type="long" required="true"></activiti:formProperty>
+        <activiti:formProperty id="booleanProperty" name="Boolean Property" type="boolean" required="true"></activiti:formProperty>
+        <activiti:formProperty id="dateProperty" name="Date Property" type="date" datePattern="MM-dd-yyyy hh:mm" required="true"></activiti:formProperty>
+      </extensionElements>
+    </userTask>
+    <endEvent id="sid-6168FE97-63EF-4272-9A13-B6F292D2A870"></endEvent>
+    <sequenceFlow id="sid-81638E56-5E25-4148-A3A2-8F8B298BC721" sourceRef="sid-32030820-F341-4D85-BD71-58714C78750F" targetRef="sid-4D5C7417-4A65-4DFB-A676-6FE99138B8F8"></sequenceFlow>
+    <boundaryEvent id="sid-32030820-F341-4D85-BD71-58714C78750F" attachedToRef="sid-CD0EE5B8-B07D-4A23-9058-EBF38C615694" cancelActivity="false">
+      <timerEventDefinition>
+        <timeCycle>${timerString}</timeCycle>
+      </timerEventDefinition>
+    </boundaryEvent>
+    <sequenceFlow id="sid-87596D1E-9A7B-47A6-A4D9-03ECA06ABEDE" sourceRef="sid-CD0EE5B8-B07D-4A23-9058-EBF38C615694" targetRef="sid-6168FE97-63EF-4272-9A13-B6F292D2A870"></sequenceFlow>
+    <scriptTask id="init-sample-1" name="Initialize Sample" scriptFormat="groovy" activiti:autoStoreVariables="false">
+      <script>testStartTime=new Date().toString();
+timerStartTime = (String) execution.getVariable("timerString");
+System.out.println("""
+ 
+ 
+*** Starting Timer Test Instance on ${testStartTime} with timerString=${timerStartTime}
+ 
+""");</script>
+    </scriptTask>
+    <sequenceFlow id="sid-C920660F-08B8-4728-89A7-D5BDC3087DA8" sourceRef="sid-F868E99C-FC2C-4F43-93E0-60327AF519B5" targetRef="init-sample-1"></sequenceFlow>
+    <sequenceFlow id="sid-C414D079-7EA2-49A8-BEA8-C56BA6E1297D" sourceRef="init-sample-1" targetRef="sid-CD0EE5B8-B07D-4A23-9058-EBF38C615694"></sequenceFlow>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_testTimerErrors">
+    <bpmndi:BPMNPlane bpmnElement="testTimerErrors" id="BPMNPlane_testTimerErrors">
+      <bpmndi:BPMNShape bpmnElement="sid-F868E99C-FC2C-4F43-93E0-60327AF519B5" id="BPMNShape_sid-F868E99C-FC2C-4F43-93E0-60327AF519B5">
+        <omgdc:Bounds height="30.0" width="30.0" x="45.0" y="325.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sid-4D5C7417-4A65-4DFB-A676-6FE99138B8F8" id="BPMNShape_sid-4D5C7417-4A65-4DFB-A676-6FE99138B8F8">
+        <omgdc:Bounds height="206.0" width="1079.0" x="30.0" y="435.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sid-65AF1F00-7F44-4CC3-98EC-BD54594E1CC2" id="BPMNShape_sid-65AF1F00-7F44-4CC3-98EC-BD54594E1CC2">
+        <omgdc:Bounds height="30.0" width="30.0" x="46.0" y="509.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sid-466108A5-0461-4BF8-8861-A3ABF7521FCB" id="BPMNShape_sid-466108A5-0461-4BF8-8861-A3ABF7521FCB">
+        <omgdc:Bounds height="80.0" width="100.0" x="699.0" y="484.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sid-844D544A-8ACF-43B4-8254-789765EC778D" id="BPMNShape_sid-844D544A-8ACF-43B4-8254-789765EC778D">
+        <omgdc:Bounds height="80.0" width="100.0" x="841.0" y="484.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sid-E94E1E25-F095-4123-9145-22F3069CCC97" id="BPMNShape_sid-E94E1E25-F095-4123-9145-22F3069CCC97">
+        <omgdc:Bounds height="28.0" width="28.0" x="1051.0" y="591.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sid-248E480D-9E80-462A-BF51-61161846F7EF" id="BPMNShape_sid-248E480D-9E80-462A-BF51-61161846F7EF">
+        <omgdc:Bounds height="40.0" width="40.0" x="961.0" y="585.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sid-220FBE6D-2AAD-45AE-A0DF-F286D9448311" id="BPMNShape_sid-220FBE6D-2AAD-45AE-A0DF-F286D9448311">
+        <omgdc:Bounds height="40.0" width="40.0" x="556.0" y="504.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sid-CE6E10C5-165E-41D0-99F6-163A6C7148A5" id="BPMNShape_sid-CE6E10C5-165E-41D0-99F6-163A6C7148A5">
+        <omgdc:Bounds height="80.0" width="100.0" x="115.125" y="484.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sid-CD0EE5B8-B07D-4A23-9058-EBF38C615694" id="BPMNShape_sid-CD0EE5B8-B07D-4A23-9058-EBF38C615694">
+        <omgdc:Bounds height="80.0" width="100.0" x="285.0" y="300.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sid-6168FE97-63EF-4272-9A13-B6F292D2A870" id="BPMNShape_sid-6168FE97-63EF-4272-9A13-B6F292D2A870">
+        <omgdc:Bounds height="28.0" width="28.0" x="614.5" y="326.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sid-32030820-F341-4D85-BD71-58714C78750F" id="BPMNShape_sid-32030820-F341-4D85-BD71-58714C78750F">
+        <omgdc:Bounds height="31.0" width="31.0" x="280.38628717589336" y="364.69915281930315"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="init-sample-1" id="BPMNShape_init-sample-1">
+        <omgdc:Bounds height="80.0" width="100.0" x="135.0" y="300.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="sid-86582FF4-9A9C-4978-A397-70C95DE5A407" id="BPMNEdge_sid-86582FF4-9A9C-4978-A397-70C95DE5A407">
+        <omgdi:waypoint x="941.0" y="524.0"></omgdi:waypoint>
+        <omgdi:waypoint x="981.0" y="524.0"></omgdi:waypoint>
+        <omgdi:waypoint x="981.0" y="585.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-C58D6B2C-540A-4427-B1D9-1AC3872184C9" id="BPMNEdge_sid-C58D6B2C-540A-4427-B1D9-1AC3872184C9">
+        <omgdi:waypoint x="799.0" y="524.0"></omgdi:waypoint>
+        <omgdi:waypoint x="841.0" y="524.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-405FD919-0059-4A90-B50C-4D0E1A614CB8" id="BPMNEdge_sid-405FD919-0059-4A90-B50C-4D0E1A614CB8">
+        <omgdi:waypoint x="596.0" y="524.0"></omgdi:waypoint>
+        <omgdi:waypoint x="699.0" y="524.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-81638E56-5E25-4148-A3A2-8F8B298BC721" id="BPMNEdge_sid-81638E56-5E25-4148-A3A2-8F8B298BC721">
+        <omgdi:waypoint x="309.3132940344577" y="387.94289137506973"></omgdi:waypoint>
+        <omgdi:waypoint x="390.90645678149184" y="435.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-77599734-296B-4FAB-9C02-25B7550E3D5D" id="BPMNEdge_sid-77599734-296B-4FAB-9C02-25B7550E3D5D">
+        <omgdi:waypoint x="215.125" y="524.0607718018839"></omgdi:waypoint>
+        <omgdi:waypoint x="556.4756616975966" y="524.4756616975966"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-77108025-BCB8-43A6-BC43-61CF643EF0A8" id="BPMNEdge_sid-77108025-BCB8-43A6-BC43-61CF643EF0A8">
+        <omgdi:waypoint x="1001.0" y="605.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1051.0" y="605.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-ABF45B91-28B1-4368-A988-4BF84ED31AFC" id="BPMNEdge_sid-ABF45B91-28B1-4368-A988-4BF84ED31AFC">
+        <omgdi:waypoint x="576.0" y="544.0"></omgdi:waypoint>
+        <omgdi:waypoint x="576.0" y="605.0"></omgdi:waypoint>
+        <omgdi:waypoint x="961.0" y="605.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-AEB38E9B-2527-4562-A293-F209800C50AB" id="BPMNEdge_sid-AEB38E9B-2527-4562-A293-F209800C50AB">
+        <omgdi:waypoint x="76.0" y="524.0"></omgdi:waypoint>
+        <omgdi:waypoint x="115.125" y="524.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-C414D079-7EA2-49A8-BEA8-C56BA6E1297D" id="BPMNEdge_sid-C414D079-7EA2-49A8-BEA8-C56BA6E1297D">
+        <omgdi:waypoint x="235.0" y="340.0"></omgdi:waypoint>
+        <omgdi:waypoint x="285.0" y="340.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-87596D1E-9A7B-47A6-A4D9-03ECA06ABEDE" id="BPMNEdge_sid-87596D1E-9A7B-47A6-A4D9-03ECA06ABEDE">
+        <omgdi:waypoint x="385.0" y="340.0"></omgdi:waypoint>
+        <omgdi:waypoint x="614.5" y="340.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-C920660F-08B8-4728-89A7-D5BDC3087DA8" id="BPMNEdge_sid-C920660F-08B8-4728-89A7-D5BDC3087DA8">
+        <omgdi:waypoint x="74.9975858124004" y="340.2691092709031"></omgdi:waypoint>
+        <omgdi:waypoint x="135.0" y="341.3457629494638"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

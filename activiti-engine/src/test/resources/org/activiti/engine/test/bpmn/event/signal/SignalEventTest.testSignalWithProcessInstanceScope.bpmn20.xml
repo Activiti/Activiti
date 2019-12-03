@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions" xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn" targetNamespace="Examples">
+
+  <signal id="theSignal" name="The Signal" activiti:scope="processInstance" />
+
+  <process id="processWithSignalThrow">
+
+    <startEvent id="theStart" />
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="signalThrow" />
+
+   <intermediateThrowEvent id="signalThrow" >
+    <signalEventDefinition signalRef="theSignal" />
+   </intermediateThrowEvent>
+    <sequenceFlow id="flow3" sourceRef="signalThrow" targetRef="theEnd" />
+    
+    <endEvent id="theEnd" />
+  </process>
+  
+  <process id="processWithSignalCatch">
+  
+    <startEvent id="theStart2" />
+    <sequenceFlow id="flow4" sourceRef="theStart2" targetRef="userTaskWithSignalCatch" />
+
+    <userTask id="userTaskWithSignalCatch" name="userTaskWithSignalCatch"/>
+    <boundaryEvent id="signalCatch" attachedToRef="userTaskWithSignalCatch" cancelActivity="true">
+      <signalEventDefinition signalRef="theSignal" />
+    </boundaryEvent>
+    <sequenceFlow id="flow5" sourceRef="userTaskWithSignalCatch" targetRef="theEnd2" />
+    <sequenceFlow id="flow6" sourceRef="signalCatch" targetRef="userTaskAfterSignalCatch" />
+    
+    <userTask id="userTaskAfterSignalCatch" name="userTaskAfterSignalCatch" />
+    
+    <endEvent id="theEnd2" />
+  
+  </process>
+  
+
+</definitions>

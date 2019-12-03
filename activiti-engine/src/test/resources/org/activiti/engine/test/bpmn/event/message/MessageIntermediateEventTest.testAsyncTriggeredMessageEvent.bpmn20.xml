@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions"
+	xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:activiti="http://activiti.org/bpmn"
+	targetNamespace="Examples" xmlns:tns="Examples">
+  <message id="_13" name="newMessage">
+  </message>
+  <process id="process" isClosed="false" isExecutable="true" processType="Public">
+    <startEvent id="_2" isInterrupting="true" name="Start Event" parallelMultiple="false">
+      <outgoing>_3</outgoing>
+    </startEvent>
+    <endEvent id="_4" name="End Event">
+      <incoming>_11</incoming>
+    </endEvent>
+    <intermediateCatchEvent id="_7" name="Intermediate Catch Event" parallelMultiple="false">
+      <incoming>_3</incoming>
+      <outgoing>_11</outgoing>
+      <messageEventDefinition id="_7_ED_1" messageRef="_13"/>
+    </intermediateCatchEvent>
+    <sequenceFlow id="_11" sourceRef="_7" targetRef="_4"/>
+    <sequenceFlow id="_3" sourceRef="_2" targetRef="_7"/>
+    <association associationDirection="None" id="_14" sourceRef="_7" targetRef="_13"/>
+  </process>
+</definitions>

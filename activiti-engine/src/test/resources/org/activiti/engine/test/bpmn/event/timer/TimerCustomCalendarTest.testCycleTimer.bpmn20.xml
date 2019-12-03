@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:activiti="http://activiti.org/bpmn"
+             targetNamespace="Examples">
+
+    <process id="startTimerEventExampleCycle" name="Timer start event example">
+
+        <startEvent id="theStart">
+            <timerEventDefinition activiti:businessCalendarName="custom">
+                <timeCycle>R2/PT5S</timeCycle>
+            </timerEventDefinition>
+        </startEvent>    
+
+        <sequenceFlow id="flow1" sourceRef="theStart" targetRef="receive"/>
+
+        <receiveTask id="receive"/>
+
+        <sequenceFlow id="flow2" sourceRef="receive" targetRef="theEnd"/>
+
+        <endEvent id="theEnd"/>
+
+    </process>
+
+</definitions>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="taskAssigneeExample" 
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="Examples">
+  
+  <process id="taskDefinitionKeyProcess">
+  
+    <startEvent id="start"/>
+    
+    <sequenceFlow id="flow1" sourceRef="start" targetRef="fork" />
+    
+    <parallelGateway id="fork" />
+    <sequenceFlow sourceRef="fork" targetRef="taskKey1" />
+    <sequenceFlow sourceRef="fork" targetRef="taskKey123" />
+
+    <userTask id="taskKey1" name="Task A"/>
+    <userTask id="taskKey123" name="Task B"/>
+    <sequenceFlow id="joinFlow1" sourceRef="taskKey1" targetRef="join" />
+    <sequenceFlow id="joinFlow2" sourceRef="taskKey123" targetRef="join" />
+    
+    
+    <parallelGateway id="join" />
+    <sequenceFlow id="flow2" sourceRef="join" targetRef="end" />
+    
+    
+    <endEvent id="end" />
+    
+  </process>
+
+</definitions>
