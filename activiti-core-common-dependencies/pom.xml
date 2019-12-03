@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2018 Alfresco, Inc. and/or its affiliates.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.activiti.core.common</groupId>
+    <artifactId>activiti-core-common-parent</artifactId>
+    <version>7.1.0-SNAPSHOT</version>
+  </parent>
+  <artifactId>activiti-core-common-dependencies</artifactId>
+  <packaging>pom</packaging>
+  <name>Activiti Core Common :: Dependencies BOM (Bill Of Materials)</name>
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.activiti.api</groupId>
+        <artifactId>activiti-api-dependencies</artifactId>
+        <version>${activiti-api.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.activiti.core.common</groupId>
+        <artifactId>activiti-connector-model</artifactId>
+        <version>${activiti-core-common.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.activiti.core.common</groupId>
+        <artifactId>activiti-spring-application</artifactId>
+        <version>${activiti-core-common.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.activiti.core.common</groupId>
+        <artifactId>activiti-spring-connector</artifactId>
+        <version>${activiti-core-common.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.activiti.core.common</groupId>
+        <artifactId>activiti-spring-identity</artifactId>
+        <version>${activiti-core-common.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.activiti.core.common</groupId>
+        <artifactId>activiti-spring-security</artifactId>
+        <version>${activiti-core-common.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.activiti.core.common</groupId>
+        <artifactId>activiti-spring-security-policies</artifactId>
+        <version>${activiti-core-common.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.activiti.core.common</groupId>
+        <artifactId>activiti-core-test-assertions</artifactId>
+        <version>${activiti-core-common.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.activiti.core.common</groupId>
+        <artifactId>activiti-core-test-local-runtime</artifactId>
+        <version>${activiti-core-common.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.activiti.core.common</groupId>
+        <artifactId>activiti-spring-resource-finder</artifactId>
+        <version>${activiti-core-common.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.activiti.core.common</groupId>
+        <artifactId>activiti-project-model</artifactId>
+        <version>${activiti-core-common.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.activiti.core.common</groupId>
+        <artifactId>activiti-spring-project</artifactId>
+        <version>${activiti-core-common.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.activiti.core.common</groupId>
+        <artifactId>activiti-common-util</artifactId>
+        <version>${activiti-core-common.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+</project>
