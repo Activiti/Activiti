@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.activiti.api</groupId>
+    <artifactId>activiti-api-dependencies</artifactId>
+    <version>7.1.0-SNAPSHOT</version>
+    <relativePath>../activiti-api-dependencies</relativePath>
+  </parent>
+  <artifactId>activiti-api-process-runtime</artifactId>
+  <name>Activiti API :: Process Runtime</name>
+  <dependencies>
+    <dependency>
+      <groupId>org.activiti.api</groupId>
+      <artifactId>activiti-api-model-shared</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.activiti.api</groupId>
+      <artifactId>activiti-api-runtime-shared</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.activiti.api</groupId>
+      <artifactId>activiti-api-process-model</artifactId>
+    </dependency>
+  </dependencies>
+</project>
