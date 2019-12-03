@@ -7,7 +7,7 @@
     <groupId>org.activiti.build</groupId>
     <artifactId>activiti-parent</artifactId>
     <version>7.1.0-SNAPSHOT</version>
-    <relativePath/>
+    <relativePath>../activiti-build</relativePath>
   </parent>
   
   <groupId>org.activiti.dependencies</groupId>
