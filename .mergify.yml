@@ -1,0 +1,12 @@
+pull_request_rules:
+  - name: automatic merge with strict
+    conditions:
+      - author=jx-activiti-cloud
+      - status-success=continuous-integration/travis-ci/pr
+      - status-success=continuous-integration/travis-ci/push
+      #- status-success=license/cla
+    actions:
+      delete_head_branch: {}
+      merge:
+        method: squash
+        strict: true
