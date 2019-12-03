@@ -39,6 +39,7 @@ import org.activiti.api.task.runtime.events.TaskCreatedEvent;
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.spring.boot.RuntimeTestConfiguration;
 import org.activiti.spring.boot.process.ProcessBaseRuntime;
+import org.activiti.spring.boot.process.ProcessRuntimeBPMNTimerIT;
 import org.activiti.spring.boot.process.TimerTestConfigurator;
 import org.activiti.spring.boot.process.listener.DummyBPMNTimerCancelledListener;
 import org.activiti.spring.boot.process.listener.DummyBPMNTimerExecutedListener;
@@ -54,10 +55,12 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
+@ActiveProfiles(ProcessRuntimeBPMNTimerIT.PROCESS_RUNTIME_BPMN_TIMER_IT)
 @Import({TimerTestConfigurator.class,
         DummyBPMNTimerFiredListener.class,
         DummyBPMNTimerScheduledListener.class,
@@ -234,7 +237,7 @@ public class TaskRuntimeMultiInstanceIT {
         taskBaseRuntime.completeTask(taskToComplete);
 
         // testing the multi instance element start, complete, cancel events
-//        test_started_completed_canceledCount("miSubProcess", 4, 2,2);
+        test_started_completed_canceledCount("miSubProcess", 4, 2,2);
 
         //then
         assertThat(localEventSource.getEvents())
@@ -336,7 +339,7 @@ public class TaskRuntimeMultiInstanceIT {
         }
 
         // testing the multi instance element start, complete, cancel events
-//        test_started_completed_canceledCount("miCallActivity", 4, 2,2);
+        test_started_completed_canceledCount("miCallActivity", 4, 2,2);
 
         assertThat(processBaseRuntime.getProcessInstances()).isEmpty();
 
@@ -629,7 +632,7 @@ public class TaskRuntimeMultiInstanceIT {
 
 
         //when
-        long waitTime = 10 * 60 * 1000;
+        long waitTime = 1 * 60 * 1000;
         Date startTime = new Date();
         Date dueDate = new Date(startTime.getTime() + waitTime);
 
@@ -684,7 +687,7 @@ public class TaskRuntimeMultiInstanceIT {
                         "My Task 3");
 
         // testing the multi instance element start, complete, cancel events
-//        test_started_completed_canceledCount("miTasks", 4, 0, 4);
+        test_started_completed_canceledCount("miTasks", 4, 0, 4);
 
         tasks = taskBaseRuntime.getTasks(processInstance);
         assertThat(tasks.size()).isEqualTo(1);
@@ -807,7 +810,7 @@ public class TaskRuntimeMultiInstanceIT {
                         "Task in sub-process 3");
 
         // testing the multi instance element start, complete, cancel events
-//        test_started_completed_canceledCount("miSubProcess", 4, 0, 4);
+        test_started_completed_canceledCount("miSubProcess", 4, 0, 4);
 
         tasks = taskBaseRuntime.getTasks(processInstance);
         assertThat(tasks.size()).isEqualTo(1);
@@ -931,10 +934,7 @@ public class TaskRuntimeMultiInstanceIT {
         });
 
         // testing the multi instance element start, complete, cancel events
-//        test_started_completed_canceledCount("miCallActivity", 4, 2,2);
-
-        localEventSource.getEvents().parallelStream()
-                .forEach(System.out::println);
+        test_started_completed_canceledCount("miCallActivity", 4, 0,4);
 
         await().untilAsserted(() -> {
 
@@ -950,25 +950,24 @@ public class TaskRuntimeMultiInstanceIT {
                     tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_CANCELLED, childProcess.get(2).getId(), null),
                     tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_CANCELLED, childProcess.get(3).getId(), null),
                     tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_CANCELLED, childProcess.get(4).getId(), null));
+
+
         });
 
-//        List<ProcessInstance> allChildProcess = processBaseRuntime.getProcessInstances();
-//        assertThat(allChildProcess.size()).isEqualTo(0);
-//
-//        List<Task> tasks = taskBaseRuntime.getTasks(processInstance);
-//        assertThat(tasks.size()).isEqualTo(1);
-//        assertThat(tasks)
-//                .extracting(Task::getName)
-//                .contains("Escalation Task");
-//
-//        taskBaseRuntime.completeTask(tasks.get(0));
+        List<Task> tasks = taskBaseRuntime.getTasks(processInstance);
+        assertThat(tasks.size()).isEqualTo(1);
+        assertThat(tasks)
+                .extracting(Task::getName)
+                .contains("Escalation Task");
 
-//        assertThat(taskBaseRuntime.getTasks(processInstance)).isEmpty();
-//        assertThat(localEventSource.getEvents())
-//                .extracting(RuntimeEvent::getEventType,
-//                        RuntimeEvent::getProcessInstanceId)
-//                .contains(tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_COMPLETED,
-//                        processInstance.getId()));
+        taskBaseRuntime.completeTask(tasks.get(0));
+
+        assertThat(taskBaseRuntime.getTasks(processInstance)).isEmpty();
+        assertThat(localEventSource.getEvents())
+                .extracting(RuntimeEvent::getEventType,
+                        RuntimeEvent::getProcessInstanceId)
+                .contains(tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_COMPLETED,
+                        processInstance.getId()));
 
     }
 
