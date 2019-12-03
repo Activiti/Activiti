@@ -1,5 +1,7 @@
 package org.activiti.api.model.shared;
 
-public interface Payload {
+import java.io.Serializable;
+
+public interface Payload extends Serializable {
     String getId();
 }

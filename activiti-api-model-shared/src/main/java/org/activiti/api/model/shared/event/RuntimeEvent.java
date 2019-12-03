@@ -16,7 +16,9 @@
 
 package org.activiti.api.model.shared.event;
 
-public interface RuntimeEvent<ENTITY_TYPE, EVENT_TYPE extends Enum<?>> {
+import java.io.Serializable;
+
+public interface RuntimeEvent<ENTITY_TYPE, EVENT_TYPE extends Enum<?>> extends Serializable {
 
     String getId();
 

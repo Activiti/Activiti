@@ -1,6 +1,10 @@
 package org.activiti.api.model.shared;
 
-public abstract class Result<T> {
+import java.io.Serializable;
+
+public abstract class Result<T> implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private Payload payload;
     private T entity;
