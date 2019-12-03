@@ -24,7 +24,7 @@
     <java.version>11</java.version>
    <maven.compiler.source>${java.version}</maven.compiler.source>
    <maven.compiler.target>${java.version}</maven.compiler.target>
-    <activiti-dependencies.version>7.1.123</activiti-dependencies.version>
+    <activiti-dependencies.version>7.1.0-SNAPSHOT</activiti-dependencies.version>
   </properties>
   <dependencyManagement>
     <dependencies>
