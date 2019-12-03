@@ -16,11 +16,9 @@
 
 package org.activiti.runtime.api.event.impl;
 
-import java.util.List;
 import java.util.Optional;
 
 import org.activiti.api.task.model.Task;
-import org.activiti.api.task.model.impl.TaskImpl;
 import org.activiti.api.task.runtime.events.TaskCancelledEvent;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
@@ -43,12 +41,9 @@ public class ToTaskCancelledConverter implements EventConverter<TaskCancelledEve
     public Optional<TaskCancelledEvent> from(ActivitiEntityEvent internalEvent) {
         TaskCancelledEvent event = null;
         if (internalEvent.getEntity() != null && internalEvent.getEntity() instanceof TaskEntity && ((TaskEntity) internalEvent.getEntity()).isCanceled()) {
-
             TaskEntity taskEntity = (TaskEntity) internalEvent.getEntity();
-
             Task task = this.taskConverter.from(taskEntity, Task.TaskStatus.CANCELLED);
             event = new TaskCancelledImpl(task);
-
         }
         return Optional.ofNullable(event);
     }

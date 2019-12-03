@@ -15,7 +15,6 @@ package org.activiti.engine.test.api.event;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.activiti.engine.delegate.event.ActivitiActivityCancelledEvent;
 import org.activiti.engine.delegate.event.ActivitiActivityEvent;
 import org.activiti.engine.delegate.event.ActivitiCancelledEvent;
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
@@ -135,10 +134,10 @@ public class CancelCallActivityByMessageTest extends PluggableActivitiTestCase {
     assertEquals(ActivitiEventType.ACTIVITY_CANCELLED, activityEvent.getType());
     assertEquals("callActivity", activityEvent.getActivityType());
     assertEquals(boundaryExecutionId, activityEvent.getExecutionId());
-        
-    ActivitiActivityCancelledEvent taskCancelledEvent = (ActivitiActivityCancelledEvent) myEventListener.getEventsReceived().get(15);
-    assertEquals(ActivitiEventType.ACTIVITY_CANCELLED, taskCancelledEvent.getType());
-    assertEquals(taskEntity.getName(), taskCancelledEvent.getActivityName()); 
+
+    ActivitiEntityEvent taskCancelledEvent = (ActivitiEntityEvent) myEventListener.getEventsReceived().get(15);
+    assertEquals(ActivitiEventType.ENTITY_DELETED, taskCancelledEvent.getType());
+    assertEquals(taskEntity.getName(), ((TaskEntity) taskCancelledEvent.getEntity()).getName());
     
     ActivitiCancelledEvent processCancelledEvent = (ActivitiCancelledEvent) myEventListener.getEventsReceived().get(16);
     assertEquals(ActivitiEventType.PROCESS_CANCELLED, processCancelledEvent.getType());
@@ -221,6 +220,11 @@ public class CancelCallActivityByMessageTest extends PluggableActivitiTestCase {
     		if (entityEvent.getEntity() instanceof ExecutionEntity) {
     			eventsReceived.add(event);
     		}
+    		break;
+            case ENTITY_DELETED:
+                if(event instanceof ActivitiEntityEvent && ((ActivitiEntityEvent) event).getEntity() instanceof TaskEntity) {
+                    eventsReceived.add(event);
+                }
     		break;
     	case ACTIVITY_STARTED:
     	case ACTIVITY_COMPLETED:
