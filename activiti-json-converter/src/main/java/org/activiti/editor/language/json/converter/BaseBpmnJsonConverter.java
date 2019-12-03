@@ -13,6 +13,7 @@
 package org.activiti.editor.language.json.converter;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -31,6 +32,7 @@ import org.activiti.bpmn.model.DataStoreReference;
 import org.activiti.bpmn.model.ErrorEventDefinition;
 import org.activiti.bpmn.model.Event;
 import org.activiti.bpmn.model.EventDefinition;
+import org.activiti.bpmn.model.ExtensionAttribute;
 import org.activiti.bpmn.model.ExtensionElement;
 import org.activiti.bpmn.model.FieldExtension;
 import org.activiti.bpmn.model.FlowElement;
@@ -70,6 +72,7 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants,
     protected static final Logger LOGGER = LoggerFactory.getLogger(BaseBpmnJsonConverter.class);
 
     public static final String NAMESPACE = "http://activiti.com/modeler";
+    public static final String ACTIVITI_EXTENSIONS_NAMESPACE = "http://activiti.org/bpmn";
 
     protected ObjectMapper objectMapper = new ObjectMapper();
     protected ActivityProcessor processor;
@@ -604,6 +607,73 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants,
         }
     }
 
+    protected void addLocalizationProperties(BaseElement baseElement,
+                                             ObjectNode propertiesNode) {
+        List<ExtensionElement> localizationElements = baseElement.getExtensionElements().get("localization");
+        if (localizationElements != null) {
+            ObjectNode localizationNode = objectMapper.createObjectNode();
+            ObjectNode nameNode = localizationNode.putObject("name");
+            ObjectNode descriptionNode = localizationNode.putObject("description");
+
+            for (ExtensionElement localizationElement : localizationElements) {
+                if (ACTIVITI_EXTENSIONS_NAMESPACE.equals(localizationElement.getNamespace())) {
+                    String locale = localizationElement.getAttributeValue(null,
+                                                                          "locale");
+                    String name = localizationElement.getAttributeValue(null,
+                                                                        "name");
+                    String documentation = null;
+                    List<ExtensionElement> documentationElements = localizationElement.getChildElements().get("documentation");
+                    if (documentationElements != null && documentationElements.size() > 0) {
+                        documentation = StringUtils.trimToNull(documentationElements.get(0).getElementText());
+                    }
+                    if (name != null && !name.trim().isEmpty()) {
+                        nameNode.put(locale,
+                                     name);
+                    }
+                    if (documentation != null && !documentation.trim().isEmpty()) {
+
+                        descriptionNode.put(locale,
+                                            documentation);
+                    }
+                }
+            }
+            if (nameNode.fieldNames().hasNext() || descriptionNode.fieldNames().hasNext()) {
+                propertiesNode.set("localization",
+                                   localizationNode);
+            }
+        }
+    }
+
+    protected void addLocalizationExtensionElement(JsonNode objectNode,
+                                                   BaseElement element) {
+        JsonNode localizationNode = getProperty(PROPERTY_LOCALIZATION,
+                                                objectNode);
+        if (localizationNode != null) {
+            localizationNode = BpmnJsonConverterUtil.validateIfNodeIsTextual(localizationNode);
+            final JsonNode nameNode = localizationNode.get("name");
+            Iterator<Map.Entry<String, JsonNode>> fields;
+            if (nameNode != null) {
+                fields = nameNode.fields();
+                while (fields.hasNext()) {
+                    final Map.Entry<String, JsonNode> entry = fields.next();
+                    setLocalizedName(entry.getKey(),
+                                     entry.getValue().textValue(),
+                                     element);
+                }
+            }
+            final JsonNode descriptionNode = localizationNode.get("description");
+            if (descriptionNode != null) {
+                fields = descriptionNode.fields();
+                while (fields.hasNext()) {
+                    final Map.Entry<String, JsonNode> entry = fields.next();
+                    setLocalizedDescription(entry.getKey(),
+                                            entry.getValue().textValue(),
+                                            element);
+                }
+            }
+        }
+    }
+
     protected void convertJsonToFormProperties(JsonNode objectNode,
                                                BaseElement element) {
 
@@ -833,5 +903,73 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants,
             resultString = expressionBuilder.toString();
         }
         return resultString;
+    }
+
+    protected void setLocalizedName(String locale,
+                                    String name,
+                                    BaseElement element) {
+        upsertLocalizationExtensionElement(locale,
+                                           name,
+                                           null,
+                                           element);
+    }
+
+    protected void setLocalizedDescription(String locale,
+                                           String description,
+                                           BaseElement element) {
+        upsertLocalizationExtensionElement(locale,
+                                           null,
+                                           description,
+                                           element);
+    }
+
+    protected void upsertLocalizationExtensionElement(String locale,
+                                                      String name,
+                                                      String description,
+                                                      BaseElement element) {
+
+        ExtensionElement localization = getOrCreateLocalizationExtensionElement(element,
+                                                                                locale);
+
+        if (StringUtils.isNotBlank(description)) {
+            final ExtensionElement documentationElement;
+            List<ExtensionElement> documentationElements = localization.getChildElements().get("documentation");
+            if (documentationElements != null && documentationElements.size() > 0) {
+                documentationElement = documentationElements.get(0);
+            } else {
+                documentationElement = new ExtensionElement();
+                documentationElement.setNamespace(ACTIVITI_EXTENSIONS_NAMESPACE);
+                documentationElement.setName("documentation");
+                localization.addChildElement(documentationElement);
+            }
+            documentationElement.setElementText(description);
+        }
+        if (StringUtils.isNotBlank(name)) {
+            localization.getAttributes().get("name").get(0).setValue(name);
+        }
+    }
+
+    private ExtensionElement getOrCreateLocalizationExtensionElement(BaseElement element,
+                                                                     String locale) {
+        final List<ExtensionElement> localizations = element.getExtensionElements().get("localization");
+        if (localizations != null) {
+            for (ExtensionElement extensionElement : localizations) {
+                if (locale.equals(extensionElement.getAttributeValue(null,
+                                                                     "locale")) &&
+                        extensionElement.getAttributeValue(null,
+                                                           "name") != null) {
+                    return extensionElement;
+                }
+            }
+        }
+        ExtensionElement localization = new ExtensionElement();
+        localization.setNamespace(ACTIVITI_EXTENSIONS_NAMESPACE);
+        localization.setName("localization");
+        localization.addAttribute(new ExtensionAttribute("name"));
+        ExtensionAttribute localeAttr = new ExtensionAttribute("locale");
+        localization.addAttribute(localeAttr);
+        localeAttr.setValue(locale);
+        element.addExtensionElement(localization);
+        return localization;
     }
 }
