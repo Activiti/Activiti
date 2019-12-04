@@ -31,14 +31,14 @@ pipeline {
         steps {
           container('maven') {
             // ensure we're not on a detached head
-            sh "git checkout develop" 
+            sh "git checkout develop"
             sh "git config --global credential.helper store"
 
             sh "jx step git credentials"
             // so we can retrieve the version in later steps
             sh "echo \$(jx-release-version) > VERSION"
             sh "mvn versions:set -DnewVersion=\$(cat VERSION)"
-            
+
             sh 'mvn clean verify'
             sh "git add --all"
             sh "git commit -m \"Release \$(cat VERSION)\" --allow-empty"
@@ -56,7 +56,7 @@ pipeline {
             sh "jx step git credentials"
             //sh "updatebot push-version --kind maven org.activiti.dependencies:activiti-dependencies \$(cat VERSION) --merge false"
             sh "make updatebot/push-version"
-              
+
             sh "updatebot update --merge false"
 
           }
@@ -97,7 +97,14 @@ pipeline {
 
     }
     post {
-        always {
+        failure {
+           slackSend(
+             channel: "#activiti-community-builds",
+             color: "danger",
+             message: "Activiti branch=$BRANCH_NAME is failed http://jenkins.jx.35.240.9.95.nip.io/job/Activiti/ "
+           )
+        }
+         always {
             cleanWs()
         }
     }
