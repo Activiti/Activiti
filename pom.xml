@@ -2,11 +2,11 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.activiti</groupId>
-  <artifactId>activiti-mono-aggregator</artifactId>
+  <artifactId>activiti-aggregator</artifactId>
   <packaging>pom</packaging>
-  <name>Activiti Mono :: Parent</name>
+  <name>Activiti :: Aggregator</name>
   <version>7.1.0-SNAPSHOT</version>
-  <description>Activiti Mono :: Aggregator</description>
+  <description>Activiti :: Aggregator</description>
   <url>http://activiti.org</url>
 
   <modules>
