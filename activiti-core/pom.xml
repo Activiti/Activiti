@@ -6,7 +6,7 @@
     <groupId>org.activiti.build</groupId>
     <artifactId>activiti-parent</artifactId>
     <version>7.1.0-SNAPSHOT</version>
-    <relativePath/>
+    <relativePath>../activiti-build</relativePath>
   </parent>
   <groupId>org.activiti</groupId>
   <artifactId>activiti-root</artifactId>
@@ -16,9 +16,9 @@
   <description>Activiti Core :: Parent</description>
   <url>http://activiti.org</url>
   <properties>
-    <activiti-build.version>7.1.0-SNAPSHOT</activiti-build.version>
-    <activiti-api.version>7.1.0-SNAPSHOT</activiti-api.version>
-    <activiti-core-common.version>7.1.0-SNAPSHOT</activiti-core-common.version>
+    <activiti-build.version>${project.version}</activiti-build.version>
+    <activiti-api.version>${project.version}</activiti-api.version>
+    <activiti-core-common.version>${project.version}</activiti-core-common.version>
     <activiti.version>${project.version}</activiti.version>
     <awaitility.version>4.0.1</awaitility.version>
     <batik.version>1.12</batik.version>

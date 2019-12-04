@@ -6,7 +6,7 @@
     <groupId>org.activiti.build</groupId>
     <artifactId>activiti-parent</artifactId>
     <version>7.1.0-SNAPSHOT</version> <!-- using fixed version for CI/CD -->
-    <relativePath/>
+    <relativePath>../activiti-build</relativePath>
   </parent>
   <groupId>org.activiti.api</groupId>
   <artifactId>activiti-api</artifactId>
@@ -58,7 +58,7 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
     <activiti-api.version>${project.version}</activiti-api.version>
-    <activiti-build.version>7.1.0-SNAPSHOT</activiti-build.version>
+    <activiti-build.version>${project.version}</activiti-build.version>
 
   </properties>
 

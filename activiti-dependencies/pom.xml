@@ -7,7 +7,7 @@
     <groupId>org.activiti.build</groupId>
     <artifactId>activiti-parent</artifactId>
     <version>7.1.0-SNAPSHOT</version>
-    <relativePath/>
+    <relativePath>../activiti-build</relativePath>
   </parent>
   
   <groupId>org.activiti.dependencies</groupId>
@@ -20,10 +20,10 @@
   <inceptionYear>2018</inceptionYear>
 
   <properties>
-    <activiti-build.version>7.1.0-SNAPSHOT</activiti-build.version>
-    <activiti-api.version>7.1.0-SNAPSHOT</activiti-api.version>
-    <activiti-core-common.version>7.1.0-SNAPSHOT</activiti-core-common.version> 
-    <activiti.version>7.1.0-SNAPSHOT</activiti.version>
+    <activiti-build.version>${project.version}</activiti-build.version>
+    <activiti-api.version>${project.version}</activiti-api.version>
+    <activiti-core-common.version>${project.version}</activiti-core-common.version>
+    <activiti.version>${project.version}</activiti.version>
   </properties>
 
   <organization>
