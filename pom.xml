@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.activiti</groupId>
   <artifactId>activiti-aggregator</artifactId>
@@ -8,6 +9,52 @@
   <version>7.1.0-SNAPSHOT</version>
   <description>Activiti :: Aggregator</description>
   <url>http://activiti.org</url>
+  <inceptionYear>2010</inceptionYear>
+  <organization>
+    <name>Alfresco</name>
+    <url>http://www.alfresco.com</url>
+  </organization>
+  <licenses>
+    <license>
+      <name>Apache v2</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
+    </license>
+  </licenses>
+
+  <scm>
+    <url>http://github.com/Activiti/${project.artifactId}</url>
+    <connection>scm:git:git://github.com/Activiti/${project.artifactId}.git</connection>
+    <developerConnection>scm:git:ssh://git@github.com/Activiti/${project.artifactId}.git</developerConnection>
+  </scm>
+  <issueManagement>
+    <system>GitHub</system>
+    <url>https://github.com/Activiti/Activiti/issues</url>
+  </issueManagement>
+  <ciManagement>
+    <system>Travis</system>
+    <url>https://travis-ci.org/Activiti/${project.artifactId}</url>
+  </ciManagement>
+
+  <developers>
+    <developer>
+      <id>activititeam</id>
+      <name>Activiti Community</name>
+      <email>activiti-community@alfresco.com</email>
+      <organization>Alfresco</organization>
+      <organizationUrl>http://alfresco.com</organizationUrl>
+    </developer>
+  </developers>
+
+  <repositories>
+    <repository>
+      <id>alfresco</id>
+      <name>Activiti Releases</name>
+      <url>https://artifacts.alfresco.com/nexus/content/repositories/activiti-releases/</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+    </repository>
+  </repositories>
 
   <modules>
     <module>activiti-build</module>
