@@ -36,7 +36,7 @@
   </modules>
 
   <properties>
-    <awaitility.version>3.1.6</awaitility.version>
+    <awaitility.version>4.0.1</awaitility.version>
   </properties>
 
   <dependencyManagement>

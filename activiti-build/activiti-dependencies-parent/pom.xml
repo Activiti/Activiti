@@ -27,7 +27,7 @@
   <packaging>pom</packaging>
   <name>Activiti :: Dependencies Parent</name>
   <properties>
-    <spring-boot.version>2.1.10.RELEASE</spring-boot.version>
+    <spring-boot.version>2.2.1.RELEASE</spring-boot.version>
   </properties>
   <dependencyManagement>
     <dependencies>
