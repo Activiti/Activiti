@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions 
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="Examples">
+
+  <process id="asyncCallactivity">
+  
+    <startEvent id="theStart" />
+    
+    <sequenceFlow sourceRef="theStart" targetRef="callactivity" />
+    
+    <callActivity id="callactivity" calledElement="asyncService" activiti:async="true">
+    	<!-- isSequential="true" should fail with OptimisticLocking exception in 99% of the cases
+    		because the called process contains an async task, which means that the 
+    		spawned executions will be "actually" concurrent
+    	 -->
+    	<multiInstanceLoopCharacteristics isSequential="true">
+    		<loopCardinality>10</loopCardinality>
+    	</multiInstanceLoopCharacteristics>
+    </callActivity> 
+    
+    <sequenceFlow sourceRef="callactivity" targetRef="theEnd" />
+        
+    <endEvent id="theEnd" />
+    
+  </process>
+
+</definitions>

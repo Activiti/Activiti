@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions" 
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="Examples">
+
+  <process id="getVariableLocal">
+    <startEvent id="theStart" />
+    <sequenceFlow id="flow0" sourceRef="theStart" targetRef="serviceTask1" />
+    <serviceTask id="serviceTask1" name="Service task in subprocess" activiti:class="org.activiti.engine.test.db.GetVariableLocalTask" />
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="serviceTask2" />
+    <serviceTask id="serviceTask2" name="Service task in subprocess" activiti:class="org.activiti.engine.test.db.GetVariableLocalTask" />
+    <sequenceFlow id="flow2" sourceRef="serviceTask2" targetRef="userTask1" />
+    <userTask id="userTask1" name="Task1"/>
+    <sequenceFlow id="flow3" sourceRef="userTask1" targetRef="theEnd" />
+    <endEvent id="theEnd" />
+  </process>
+</definitions>

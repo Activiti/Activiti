@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="Examples">
+
+  <bpmn:process id="myProcess">
+  
+    <bpmn:startEvent id="theStart" />
+    <bpmn:sequenceFlow id="flow1" sourceRef="theStart" targetRef="theTask" />
+    <bpmn:userTask id="theTask" name="my task" />    
+    <bpmn:sequenceFlow id="flow2" sourceRef="theTask" targetRef="theEnd" />
+    <bpmn:endEvent id="theEnd" />
+
+  </bpmn:process>
+
+</bpmn:definitions>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions" 
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="Examples">
+  
+  <process id="exclusiveGwMerging">
+  
+    <startEvent id="theStart" />
+    
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="exclusiveGw" />
+    
+    <sequenceFlow id="flow2" sourceRef="theStart" targetRef="exclusiveGw" />
+    
+    <sequenceFlow id="flow3" sourceRef="theStart" targetRef="exclusiveGw" />
+    
+    <exclusiveGateway id="exclusiveGw" name="Exclusive Gateway" />
+    
+    <sequenceFlow id="flow4" sourceRef="exclusiveGw" targetRef="theTask" />
+    
+    <userTask id="theTask" name="my task" />
+    
+    <sequenceFlow id="flow5" sourceRef="theTask" targetRef="theEnd" />    
+    
+    <endEvent id="theEnd" />
+    
+  </process>
+
+</definitions>

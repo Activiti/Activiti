@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_0f0q57q" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Activiti Modeler" exporterVersion="3.0.0-beta">
+  <bpmn:process id="process" isExecutable="true">
+    <bpmn:startEvent id="theStart">
+      <bpmn:outgoing>SequenceFlow_106n723</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="SequenceFlow_106n723" sourceRef="theStart" targetRef="task" />
+    <bpmn:endEvent id="theEnd">
+      <bpmn:incoming>SequenceFlow_1b9zary</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="SequenceFlow_1b9zary" sourceRef="task" targetRef="theEnd" />
+    <bpmn:userTask id="task" name="Task">
+      <bpmn:incoming>SequenceFlow_106n723</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1b9zary</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:subProcess id="startMessageEventSubprocess" triggeredByEvent="true">
+      <bpmn:startEvent id="eventProcessStart" isInterrupting="false">
+        <bpmn:outgoing>SequenceFlow_00r0rza</bpmn:outgoing>
+        <bpmn:messageEventDefinition messageRef="Message_1" />
+      </bpmn:startEvent>
+      <bpmn:sequenceFlow id="SequenceFlow_00r0rza" sourceRef="eventProcessStart" targetRef="eventSubProcessTask" />
+      <bpmn:endEvent id="eventSubProcessEnd">
+        <bpmn:incoming>SequenceFlow_06mz811</bpmn:incoming>
+      </bpmn:endEvent>
+      <bpmn:sequenceFlow id="SequenceFlow_06mz811" sourceRef="eventSubProcessTask" targetRef="eventSubProcessEnd" />
+      <bpmn:userTask id="eventSubProcessTask" name="Task">
+        <bpmn:incoming>SequenceFlow_00r0rza</bpmn:incoming>
+        <bpmn:outgoing>SequenceFlow_06mz811</bpmn:outgoing>
+      </bpmn:userTask>
+    </bpmn:subProcess>
+  </bpmn:process>
+  <bpmn:message id="Message_1" name="eventSubprocessMessage" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="process">
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="theStart">
+        <dc:Bounds x="195" y="103" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_106n723_di" bpmnElement="SequenceFlow_106n723">
+        <di:waypoint x="231" y="121" />
+        <di:waypoint x="281" y="121" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="EndEvent_0ew27ki_di" bpmnElement="theEnd">
+        <dc:Bounds x="431" y="103" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_1b9zary_di" bpmnElement="SequenceFlow_1b9zary">
+        <di:waypoint x="381" y="121" />
+        <di:waypoint x="431" y="121" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="UserTask_1q7z4k0_di" bpmnElement="task">
+        <dc:Bounds x="281" y="81" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="SubProcess_1jo1dcp_di" bpmnElement="startMessageEventSubprocess" isExpanded="true">
+        <dc:Bounds x="156" y="230" width="350" height="200" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="StartEvent_15n8e39_di" bpmnElement="eventProcessStart">
+        <dc:Bounds x="194" y="311" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_00r0rza_di" bpmnElement="SequenceFlow_00r0rza">
+        <di:waypoint x="230" y="329" />
+        <di:waypoint x="280" y="329" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="EndEvent_08ds64l_di" bpmnElement="eventSubProcessEnd">
+        <dc:Bounds x="430" y="311" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_06mz811_di" bpmnElement="SequenceFlow_06mz811">
+        <di:waypoint x="380" y="329" />
+        <di:waypoint x="430" y="329" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="UserTask_0y9xfny_di" bpmnElement="eventSubProcessTask">
+        <dc:Bounds x="280" y="289" width="100" height="80" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

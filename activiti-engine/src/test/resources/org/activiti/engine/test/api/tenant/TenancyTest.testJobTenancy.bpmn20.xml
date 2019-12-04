@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+	xmlns:activiti="http://activiti.org/bpmn" targetNamespace="Examples">
+
+	<process id="testJobTenancy">
+		<documentation>This is a process for testing purposes</documentation>
+
+		<startEvent id="theStart" >
+		   <timerEventDefinition>
+                <timeDate>2025-03-11T12:13:14</timeDate>
+            </timerEventDefinition>
+		</startEvent>
+		<sequenceFlow id="flow1" sourceRef="theStart" targetRef="timer" />
+		<intermediateCatchEvent id="timer">
+			<timerEventDefinition>
+				<timeDuration>PT5M</timeDuration>
+			</timerEventDefinition>
+		</intermediateCatchEvent>
+		<sequenceFlow id="flow2" sourceRef="timer" targetRef="theTask" />
+		<userTask id="theTask" name="my task" activiti:async="true"/>
+		<sequenceFlow id="flow3" sourceRef="theTask" targetRef="theEnd" />
+		<endEvent id="theEnd" />
+
+	</process>
+
+</definitions>

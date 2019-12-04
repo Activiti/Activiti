@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+	xmlns:activiti="http://activiti.org/bpmn" targetNamespace="Examples">
+
+	<process id="testEventListeners">
+        <extensionElements>
+          <activiti:eventListener delegateExpression="${testAttachmentEventListener}" entityType="attachment" />
+          <activiti:eventListener delegateExpression="${testCommentEventListener}" entityType="comment" />
+          <activiti:eventListener delegateExpression="${testExecutionEventListener}" entityType="execution" />
+          <activiti:eventListener delegateExpression="${testIdentityLinkEventListener}" entityType="identity-link" />
+          <activiti:eventListener delegateExpression="${testJobEventListener}" entityType="job" />
+          <activiti:eventListener delegateExpression="${testProcessDefinitionEventListener}" entityType="process-definition" />
+          <activiti:eventListener delegateExpression="${testProcessInstanceEventListener}" entityType="process-instance" />
+          <activiti:eventListener delegateExpression="${testTaskEventListener}" entityType="task" />
+        </extensionElements>
+		<startEvent id="theStart" />
+		<sequenceFlow sourceRef="theStart" targetRef="task" />
+		<userTask id="task" />
+		<sequenceFlow sourceRef="task" targetRef="theEnd" />
+		<endEvent id="theEnd" />
+
+	</process>
+
+</definitions>

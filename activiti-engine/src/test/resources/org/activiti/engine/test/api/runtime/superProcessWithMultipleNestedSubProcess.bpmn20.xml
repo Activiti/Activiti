@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions" 
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="org.activiti.enginge.test.api.runtime">
+  
+  <process id="nestedSubProcessQueryTest">
+  
+    <startEvent id="theStart" />
+    
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="fork" />
+    
+    <parallelGateway id="fork" />
+    
+    <sequenceFlow sourceRef="fork" targetRef="callSubProcess1" />
+    <sequenceFlow sourceRef="fork" targetRef="callSubProcess2" />
+    
+    <callActivity id="callSubProcess1" calledElement="nestedSimpleSubProcess" />
+    <callActivity id="callSubProcess2" calledElement="nestedSimpleSubProcess" />
+    
+    <sequenceFlow sourceRef="callSubProcess1" targetRef="join" />
+    <sequenceFlow sourceRef="callSubProcess2" targetRef="join" />
+    
+    <parallelGateway id="join" />
+    
+    <sequenceFlow id="flow3" sourceRef="join" targetRef="theEnd" />
+    
+    <endEvent id="theEnd" />
+    
+  </process>
+
+</definitions>

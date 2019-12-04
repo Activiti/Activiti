@@ -1,0 +1,157 @@
+{ "bounds" : { "lowerRight" : { "x" : 1485,
+          "y" : 1050
+        },
+      "upperLeft" : { "x" : 0,
+          "y" : 0
+        }
+    },
+  "childShapes" : [ { "bounds" : { "lowerRight" : { "x" : 134.5,
+                "y" : 166
+              },
+            "upperLeft" : { "x" : 104.5,
+                "y" : 136
+              }
+          },
+        "childShapes" : [  ],
+        "dockers" : [  ],
+        "outgoing" : [ { "resourceId" : "sid-C6C56AC3-9561-49E0-A58A-624F6CB8BB82" } ],
+        "properties" : { "documentation" : "",
+            "executionlisteners" : "",
+            "formproperties" : "",
+            "initiator" : "",
+            "name" : ""
+          },
+        "resourceId" : "sid-F62B554B-FF4F-475E-94FF-A3F44EDA6A6A",
+        "stencil" : { "id" : "StartNoneEvent" }
+      },
+      { "bounds" : { "lowerRight" : { "x" : 178.65625,
+                "y" : 151
+              },
+            "upperLeft" : { "x" : 135.109375,
+                "y" : 151
+              }
+          },
+        "childShapes" : [  ],
+        "dockers" : [ { "x" : 15,
+              "y" : 15
+            },
+            { "x" : 50,
+              "y" : 40
+            }
+          ],
+        "outgoing" : [ { "resourceId" : "servicetask" } ],
+        "properties" : { "conditionalflow" : "None",
+            "conditionsequenceflow" : "",
+            "defaultflow" : "None",
+            "documentation" : "",
+            "name" : ""
+          },
+        "resourceId" : "sid-C6C56AC3-9561-49E0-A58A-624F6CB8BB82",
+        "stencil" : { "id" : "SequenceFlow" },
+        "target" : { "resourceId" : "servicetask" }
+      },
+      { "bounds" : { "lowerRight" : { "x" : 279.5,
+                "y" : 191
+              },
+            "upperLeft" : { "x" : 179.5,
+                "y" : 111
+              }
+          },
+        "childShapes" : [  ],
+        "dockers" : [  ],
+        "outgoing" : [ { "resourceId" : "sid-91C0F3A0-649F-462E-A1C1-1CE499FEDE3E" } ],
+        "properties" : { "asynchronousdefinition" : "Yes",
+            "documentation" : "Documentation",
+            "duedatedefinition" : "",
+            "exclusivedefinition" : "No",
+            "executionlisteners" : {"executionListeners" : [
+            	{"event": "start", "className": "org.test.TestClass", "expression": "", "delegateExpression": "", "fields": [{"name": "testField", "stringValue": "test", "expression": ""}, {"name": "testField2", "stringValue": "", "expression": "${test}"}]}, 
+            	{"event": "end", "className": "", "expression": "${testExpression}", "delegateExpression": "", "fields": "undefined"}, 
+            	{"event": "start", "className": "", "expression": "", "delegateExpression": "${delegateExpression}", "fields": "undefined"}]},
+            "formkeydefinition" : "",
+            "formproperties" : "",
+            "isforcompensation" : "false",
+            "looptype" : "None",
+            "name" : "Service task",
+            "prioritydefinition" : "",
+            "servicetaskclass" : "org.test.TestClass",
+            "servicetaskdelegateexpression" : "",
+            "servicetaskexpression" : "",
+            "servicetaskfields" : { "fields" : [ { "expression" : "",
+                      "name" : "testField",
+                      "stringValue" : "test"
+                    },
+                    { "expression" : "${test}",
+                      "name" : "testField2",
+                      "stringValue" : ""
+                    }
+                  ],
+                "totalCount" : 2
+              },
+            "servicetaskresultvariable" : "resultVariable",
+            "tasklisteners" : "",
+            "type" : "http://b3mn.org/stencilset/bpmn2.0#UserTask",
+            "usertaskassignment" : ""
+          },
+        "resourceId" : "servicetask",
+        "stencil" : { "id" : "ServiceTask" }
+      },
+      { "bounds" : { "lowerRight" : { "x" : 352.5,
+                "y" : 165
+              },
+            "upperLeft" : { "x" : 324.5,
+                "y" : 137
+              }
+          },
+        "childShapes" : [  ],
+        "dockers" : [  ],
+        "outgoing" : [  ],
+        "properties" : { "documentation" : "",
+            "executionlisteners" : "",
+            "name" : ""
+          },
+        "resourceId" : "sid-F7795B38-72CD-41A4-9549-6CFB7D3E5FB5",
+        "stencil" : { "id" : "EndNoneEvent" }
+      },
+      { "bounds" : { "lowerRight" : { "x" : 323.875,
+                "y" : 151
+              },
+            "upperLeft" : { "x" : 279.890625,
+                "y" : 151
+              }
+          },
+        "childShapes" : [  ],
+        "dockers" : [ { "x" : 50,
+              "y" : 40
+            },
+            { "x" : 14,
+              "y" : 14
+            }
+          ],
+        "outgoing" : [ { "resourceId" : "sid-F7795B38-72CD-41A4-9549-6CFB7D3E5FB5" } ],
+        "properties" : { "conditionalflow" : "None",
+            "conditionsequenceflow" : "",
+            "defaultflow" : "None",
+            "documentation" : "",
+            "name" : ""
+          },
+        "resourceId" : "sid-91C0F3A0-649F-462E-A1C1-1CE499FEDE3E",
+        "stencil" : { "id" : "SequenceFlow" },
+        "target" : { "resourceId" : "sid-F7795B38-72CD-41A4-9549-6CFB7D3E5FB5" }
+      }
+    ],
+  "properties" : { "documentation" : "",
+      "executionlisteners" : "",
+      "name" : "",
+      "process_author" : "",
+      "process_id" : "process",
+      "process_namespace" : "http://www.activiti.org/processdef",
+      "process_version" : ""
+    },
+  "resourceId" : "canvas",
+  "ssextensions" : [  ],
+  "stencil" : { "id" : "BPMNDiagram" },
+  "stencilset" : { "namespace" : "http://b3mn.org/stencilset/bpmn2.0#",
+      "url" : "../stencilsets/bpmn2.0/bpmn2.0.json"
+    }
+}

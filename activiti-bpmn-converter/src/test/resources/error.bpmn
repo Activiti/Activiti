@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="sample-diagram" targetNamespace="http://bpmn.io/schema/bpmn" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd">
+  <process id="process-bb0f2461-0351-4bcd-82cb-e0845bf6d281" name="gsd" isExecutable="true">
+    <documentation />
+    <startEvent id="StartEvent_1">
+      <outgoing>SequenceFlow_0gpqwq5</outgoing>
+    </startEvent>s
+    <endEvent id="EndEvent_080wnt4" name="errorEvent">
+      <incoming>SequenceFlow_0gpqwq5</incoming>
+      <errorEventDefinition errorRef="Error_0v4rsz5" />
+    </endEvent>
+    <sequenceFlow id="SequenceFlow_0gpqwq5" sourceRef="StartEvent_1" targetRef="EndEvent_080wnt4" />
+  </process>
+  <error id="Error_0v4rsz5" name="ok" errorCode="200" />
+  <error id="Error_02htlc0" name="conflict" errorCode="409" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="process-bb0f2461-0351-4bcd-82cb-e0845bf6d281">
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="412" y="240" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_05js3ac_di" bpmnElement="EndEvent_080wnt4">
+        <dc:Bounds x="494" y="240" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="486" y="276" width="52" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0gpqwq5_di" bpmnElement="SequenceFlow_0gpqwq5">
+        <di:waypoint x="448" y="258" />
+        <di:waypoint x="494" y="258" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

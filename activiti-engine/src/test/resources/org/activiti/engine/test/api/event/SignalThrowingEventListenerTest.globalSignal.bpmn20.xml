@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn" targetNamespace="Examples">
+
+  <process id="globalSignalProcess">
+  
+      <startEvent id="Start" />
+      <sequenceFlow sourceRef="Start" targetRef="Task" />
+      <userTask id="Task" />
+      <sequenceFlow sourceRef="Task" targetRef="End" />
+      <endEvent id="End" />
+  </process>
+
+</definitions>

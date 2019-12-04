@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL http://www.omg.org/spec/BPMN/20100501/BPMN20.xsd"
+             targetNamespace="Examples">
+
+  <process id="testTimerFiredForIntermediateTimer">
+  
+    <startEvent id="theStart"/>
+
+    <sequenceFlow sourceRef="theStart" targetRef="intermediate"/>
+
+    <intermediateCatchEvent id="intermediate">
+      <timerEventDefinition>
+        <timeDuration>P1D</timeDuration>
+      </timerEventDefinition>
+    </intermediateCatchEvent>
+
+    <sequenceFlow sourceRef="intermediate" targetRef="receive" />
+
+    <receiveTask id="receive" />
+
+    <sequenceFlow sourceRef="receive" targetRef="theEnd"/>
+
+    <endEvent id="theEnd" />
+    
+  </process>
+
+</definitions>

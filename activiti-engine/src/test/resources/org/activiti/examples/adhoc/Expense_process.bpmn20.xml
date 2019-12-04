@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<definitions targetNamespace="adhoc"
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" 
+  xmlns:ns3="http://activiti.org/bpmn" 
+  xmlns:ns5="http://www.omg.org/spec/DD/20100524/DC"
+  xmlns:ns4="http://www.omg.org/spec/DD/20100524/DI" 
+  xmlns:ns6="http://www.omg.org/spec/BPMN/20100524/DI">
+	<process name="Expense process" id="adhoc_Expense_process">
+		<documentation id="adhoc_Expense_process_documentation"> Example process created using Activiti KickStart</documentation>
+		<startEvent ns3:initiator="initiator" id="theStart" />
+		<sequenceFlow targetRef="task_1" sourceRef="theStart" id="flow_1" />
+		<userTask name="Request expense refund" id="task_1">
+			<documentation id="task_1_documentation">Request the refund of an expense
+				related to company business.</documentation>
+			<extensionElements>
+				<ns3:formProperty required="true" type="long" name="Amount"
+					id="Amount" />
+				<ns3:formProperty required="false" type="string"
+					name="Motivation" id="Motivation" />
+			</extensionElements>
+			<humanPerformer
+				id="sid-657391c0-67aa-48d9-a265-5f8647991926_humanPerformer">
+				<resourceAssignmentExpression
+					id="sid-657391c0-67aa-48d9-a265-5f8647991926_humanPerformer_assignmentExpression">
+					<formalExpression
+						id="sid-657391c0-67aa-48d9-a265-5f8647991926_humanPerformer_formalExpressions">${initiator}</formalExpression>
+				</resourceAssignmentExpression>
+			</humanPerformer>
+		</userTask>
+		<sequenceFlow targetRef="task_2" sourceRef="task_1" id="flow_2" />
+		<userTask name="Handle expense request" id="task_2">
+			<documentation id="task_2_documentation">${initiator} has filed an expense
+				refund request.</documentation>
+			<extensionElements>
+				<ns3:formProperty required="true" type="string"
+					name="Do you agree?" id="Do you agree?" />
+			</extensionElements>
+			<potentialOwner
+				id="sid-b75f0c60-fed7-4f09-9334-b2615bed6c71_potentialOwner">
+				<resourceAssignmentExpression
+					id="sid-b75f0c60-fed7-4f09-9334-b2615bed6c71_potentialOwner_assignmentExpression">
+					<formalExpression
+						id="sid-b75f0c60-fed7-4f09-9334-b2615bed6c71_potentialOwner_formalExpressions">management</formalExpression>
+				</resourceAssignmentExpression>
+			</potentialOwner>
+		</userTask>
+		<endEvent id="theEnd" />
+		<sequenceFlow targetRef="theEnd" sourceRef="task_2" id="flow_3" />
+	</process>
+	<ns6:BPMNDiagram id="Expense_process_diagram">
+		<ns6:BPMNPlane bpmnElement="adhoc_Expense_process" id="Expense_process_plane">
+			<ns6:BPMNShape bpmnElement="theStart" id="theStart_shape">
+				<ns5:Bounds height="20.0" width="20.0" y="45.0" x="0.0" />
+			</ns6:BPMNShape>
+			<ns6:BPMNEdge bpmnElement="flow_1" id="flow_1_edge">
+				<ns4:waypoint y="55.0" x="20.0" />
+				<ns4:waypoint y="55.0" x="70.0" />
+			</ns6:BPMNEdge>
+			<ns6:BPMNShape bpmnElement="task_1" id="task_1_shape">
+				<ns5:Bounds height="60.0" width="130.0" y="25.0" x="70.0" />
+			</ns6:BPMNShape>
+			<ns6:BPMNEdge bpmnElement="flow_2" id="flow_2_edge">
+				<ns4:waypoint y="55.0" x="200.0" />
+				<ns4:waypoint y="55.0" x="250.0" />
+			</ns6:BPMNEdge>
+			<ns6:BPMNShape bpmnElement="task_2" id="task_2_shape">
+				<ns5:Bounds height="60.0" width="130.0" y="25.0" x="250.0" />
+			</ns6:BPMNShape>
+			<ns6:BPMNEdge bpmnElement="flow_3" id="flow_3_edge">
+				<ns4:waypoint y="55.0" x="380.0" />
+				<ns4:waypoint y="55.0" x="430.0" />
+			</ns6:BPMNEdge>
+			<ns6:BPMNShape bpmnElement="theEnd" id="theEnd_shape">
+				<ns5:Bounds height="20.0" width="20.0" y="45.0" x="430.0" />
+			</ns6:BPMNShape>
+		</ns6:BPMNPlane>
+	</ns6:BPMNDiagram>
+</definitions>

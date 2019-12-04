@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions"
+	xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+	xmlns:activiti="http://activiti.org/bpmn" 
+	targetNamespace="org.activiti.enginge.test.api.mgmt">
+
+	<process id="timerOnTask">
+
+		<startEvent id="theStart" />
+
+		<sequenceFlow id="flow1" sourceRef="theStart" targetRef="firstLineSupport" />
+
+		<userTask id="firstLineSupport" name="First line support" />
+
+		<sequenceFlow id="flow2" sourceRef="firstLineSupport" targetRef="normalEnd" />
+
+		<endEvent id="normalEnd" />
+
+		<boundaryEvent id="escalationTimer" cancelActivity="true" attachedToRef="firstLineSupport">
+			<timerEventDefinition>
+				<timeDuration>PT1H</timeDuration>
+			</timerEventDefinition>
+		</boundaryEvent>
+
+		<sequenceFlow id="flow3" sourceRef="escalationTimer" targetRef="secondLineSupport" />
+
+		<userTask id="secondLineSupport" name="Second line support" />
+
+		<sequenceFlow id="flow4" sourceRef="secondLineSupport" targetRef="escalatedEnd" />
+
+		<endEvent id="escalatedEnd" />
+
+	</process>
+
+</definitions>

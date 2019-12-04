@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/processdef">
+  <process id="formPropertiesProcess" name="User registration" isExecutable="true">
+    <startEvent id="startNode">
+      <extensionElements>
+        <activiti:formProperty id="new_property_1" name="v000" type="string" variable="v000" required="true" readable="false" writable="false"></activiti:formProperty>
+        <activiti:formProperty id="new_property_2" name="v001" type="string" variable="v001" required="true" readable="false"></activiti:formProperty>
+        <activiti:formProperty id="new_property_3" name="v010" type="string" variable="v010" required="true" writable="false"></activiti:formProperty>
+        <activiti:formProperty id="new_property_4" name="v011" type="string" variable="v011" required="true"></activiti:formProperty>
+        <activiti:formProperty id="new_property_5" name="v100" type="enum" variable="v100" readable="false" writable="false" required="true">
+          <activiti:value id="value1" name="Value 1"></activiti:value>
+          <activiti:value id="value2" name="Value 2"></activiti:value>
+          <activiti:value id="value3" name="Value 3"></activiti:value>
+          <activiti:value id="value4" name="Value 4"></activiti:value>
+        </activiti:formProperty>
+        <activiti:formProperty id="new_property_6" name="v101" type="string" variable="v101" readable="false" required="true"></activiti:formProperty>
+        <activiti:formProperty id="new_property_7" name="v110" type="string" variable="v110" writable="false" required="true"></activiti:formProperty>
+        <activiti:formProperty id="new_property_8" name="v111" type="string" variable="v111" required="true"></activiti:formProperty>
+      </extensionElements>
+
+    </startEvent>
+    <userTask id="userTask">
+      <extensionElements>
+        <activiti:formProperty id="new_property_1" name="v000" type="string" variable="v000" readable="false" writable="false"></activiti:formProperty>
+        <activiti:formProperty id="new_property_2" name="v001" type="string" variable="v001" readable="false"></activiti:formProperty>
+        <activiti:formProperty id="new_property_3" name="v010" type="string" variable="v010" writable="false"></activiti:formProperty>
+        <activiti:formProperty id="new_property_4" name="v011" type="string" variable="v011"></activiti:formProperty>
+        <activiti:formProperty id="new_property_5" name="v100" type="enum" variable="v100" readable="false" writable="false" required="true">
+          <activiti:value id="value1" name="Value 1"></activiti:value>
+          <activiti:value id="value2" name="Value 2"></activiti:value>
+          <activiti:value id="value3" name="Value 3"></activiti:value>
+          <activiti:value id="value4" name="Value 4"></activiti:value>
+        </activiti:formProperty>
+        <activiti:formProperty id="new_property_6" name="v101" type="string" variable="v101" readable="false" required="true"></activiti:formProperty>
+        <activiti:formProperty id="new_property_7" name="v110" type="string" variable="v110" writable="false" required="true"></activiti:formProperty>
+        <activiti:formProperty id="new_property_8" name="v111" type="string" variable="v111" required="true"></activiti:formProperty>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="sid-67E5C57C-B8CB-4B76-AF19-46A3DD03290E" sourceRef="startNode" targetRef="userTask"></sequenceFlow>
+    <endEvent id="sid-DA28CB1A-F2D3-4C30-B3DB-ABD246D1DA3A"></endEvent>
+    <sequenceFlow id="sid-F5607957-26B8-4781-B424-513C79A4ABBA" sourceRef="userTask" targetRef="sid-DA28CB1A-F2D3-4C30-B3DB-ABD246D1DA3A"></sequenceFlow>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_process">
+    <bpmndi:BPMNPlane bpmnElement="process" id="BPMNPlane_process">
+      <bpmndi:BPMNShape bpmnElement="startNode" id="BPMNShape_startNode">
+        <omgdc:Bounds height="30.0" width="30.0" x="161.25" y="163.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="userTask" id="BPMNShape_userTask">
+        <omgdc:Bounds height="80.0" width="100.0" x="240.0" y="138.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sid-DA28CB1A-F2D3-4C30-B3DB-ABD246D1DA3A" id="BPMNShape_sid-DA28CB1A-F2D3-4C30-B3DB-ABD246D1DA3A">
+        <omgdc:Bounds height="28.0" width="28.0" x="385.0" y="164.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="sid-F5607957-26B8-4781-B424-513C79A4ABBA" id="BPMNEdge_sid-F5607957-26B8-4781-B424-513C79A4ABBA">
+        <omgdi:waypoint x="340.0" y="178.0"></omgdi:waypoint>
+        <omgdi:waypoint x="385.0" y="178.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-67E5C57C-B8CB-4B76-AF19-46A3DD03290E" id="BPMNEdge_sid-67E5C57C-B8CB-4B76-AF19-46A3DD03290E">
+        <omgdi:waypoint x="191.25" y="178.0"></omgdi:waypoint>
+        <omgdi:waypoint x="240.0" y="178.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

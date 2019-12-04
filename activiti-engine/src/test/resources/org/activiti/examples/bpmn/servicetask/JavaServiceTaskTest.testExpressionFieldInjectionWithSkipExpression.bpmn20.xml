@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions" 
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="Examples">
+  
+  <process id="expressionFieldInjectionWithSkipExpression">
+  
+    <startEvent id="theStart" />
+    
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="javaService" />
+    
+    <serviceTask id="javaService" 
+                 name="Java service invocation" 
+                 activiti:class="org.activiti.examples.bpmn.servicetask.ReverseStringsFieldInjected"
+                 activiti:skipExpression="${execution.getVariable('skip')}">
+      <extensionElements>
+        <activiti:field name="text1">
+          <activiti:expression>${genderBean.getGenderString(gender)}</activiti:expression>
+        </activiti:field>
+        <activiti:field name="text2">
+          <activiti:expression>Hello ${gender == 'male' ? 'Mr.' : 'Mrs.'} ${name}</activiti:expression>
+        </activiti:field>
+      </extensionElements>             
+    </serviceTask>
+    
+    <sequenceFlow id="flow2" sourceRef="javaService" targetRef="waitState" />
+    
+    <receiveTask id="waitState" />
+    
+    <sequenceFlow id="flow3" sourceRef="waitState" targetRef="theEnd" />
+    
+    <endEvent id="theEnd" />
+    
+  </process>
+
+</definitions>

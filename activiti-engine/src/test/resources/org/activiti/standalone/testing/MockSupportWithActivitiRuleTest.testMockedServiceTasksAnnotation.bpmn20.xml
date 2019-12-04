@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions"
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" 
+  xmlns:activiti="http://activiti.org/bpmn"  
+  targetNamespace="Examples">
+
+  <process id="mockSupportTest">
+
+    <startEvent id="start" />
+    <sequenceFlow id="flow1" sourceRef="start" targetRef="serviceTask1" />
+
+    <serviceTask id="serviceTask1" activiti:class="com.yourcompany.delegate1"/>
+    <sequenceFlow id="flow2" sourceRef="serviceTask1" targetRef="serviceTask2" />
+    
+     <serviceTask id="serviceTask2" activiti:class="com.yourcompany.delegate2"/>
+    <sequenceFlow id="flow3" sourceRef="serviceTask2" targetRef="theEnd" />
+
+    <endEvent id="theEnd" />
+
+  </process>
+
+</definitions>

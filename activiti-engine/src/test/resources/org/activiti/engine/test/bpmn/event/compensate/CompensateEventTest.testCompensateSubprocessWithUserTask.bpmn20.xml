@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions" 
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="Examples">
+	
+	<process id="compensateProcess">
+
+		<startEvent id="start" />
+		
+		<sequenceFlow sourceRef="start"	targetRef="scope" />
+
+		<subProcess id="scope">
+
+			<startEvent id="startInScope" />
+			
+			<sequenceFlow sourceRef="startInScope" targetRef="bookHotel" />
+
+			<serviceTask id="bookHotel" activiti:expression="${true}" />
+				
+			<boundaryEvent id="compensateBookHotelEvt" name="Boundary event" attachedToRef="bookHotel">
+				<compensateEventDefinition />
+			</boundaryEvent>	
+
+      <userTask id="undoBookHotel" name="Manually undo book hotel" isForCompensation="true" />
+			
+			<sequenceFlow sourceRef="bookHotel" targetRef="endInScope" />
+			
+			<endEvent id="endInScope" />
+				
+			<association associationDirection="One" sourceRef="compensateBookHotelEvt" targetRef="undoBookHotel" />
+
+		</subProcess>
+
+		<sequenceFlow sourceRef="scope" targetRef="throwCompensate" />
+		
+		<intermediateThrowEvent id="throwCompensate">
+			<compensateEventDefinition activityRef="scope" />
+		</intermediateThrowEvent>
+		
+		<sequenceFlow sourceRef="throwCompensate" targetRef="beforeEnd" />
+		<sequenceFlow sourceRef="beforeEnd" targetRef="end" />
+		
+		<receiveTask id="beforeEnd" />
+		
+		<endEvent id="end" />
+	</process>
+
+</definitions>

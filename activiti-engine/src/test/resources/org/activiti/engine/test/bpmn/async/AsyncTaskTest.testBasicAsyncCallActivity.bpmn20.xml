@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:activiti="http://activiti.org/bpmn"
+             typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath"
+             targetNamespace="http://www.activiti.org/test">
+  <process id="myProcess" name="My process" isExecutable="true">
+    <startEvent id="startevent1" name="Start"></startEvent>
+    <callActivity id="callSubprocess" name="Call Subprocess" activiti:async="true"
+                  calledElement="startToEnd"></callActivity>
+    <sequenceFlow id="flow1" sourceRef="startevent1" targetRef="callSubprocess"></sequenceFlow>
+    <endEvent id="endevent1" name="End"></endEvent>
+    <sequenceFlow id="flow2" sourceRef="callSubprocess" targetRef="endevent1"></sequenceFlow>
+  </process>
+
+</definitions>

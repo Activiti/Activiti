@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definition" 
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="Examples">
+  
+  <process id="externalSubProcess">
+  
+    <startEvent id="theStart" />
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="fork" />
+
+    <parallelGateway id="fork" />
+    <sequenceFlow id="flow2" sourceRef="fork" targetRef="task1" />
+    <sequenceFlow id="flow3" sourceRef="fork" targetRef="task2" />
+            
+    <userTask id="task1" name="task one" activiti:assignee="kermit"/>
+    <sequenceFlow id="flow4" sourceRef="task1" targetRef="end1" />
+    <endEvent id="end1" />  
+            
+    <userTask id="task2" name="task two" activiti:assignee="kermit"/>
+    <sequenceFlow id="flow5" sourceRef="task2" targetRef="end2" />
+    <endEvent id="end2" />   
+    
+  </process>
+
+</definitions>

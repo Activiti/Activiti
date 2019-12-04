@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="w"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             targetNamespace="Examples">
+
+    <process id="waiter">
+
+        <startEvent id="start"/>
+
+        <sequenceFlow id="flow1" sourceRef="start" targetRef="print"/>
+
+        <userTask id="print" name="user"/>
+
+        <sequenceFlow id="flow2" sourceRef="print" targetRef="end"/>
+
+        <endEvent id="end"/>
+
+    </process>
+
+</definitions>

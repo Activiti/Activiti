@@ -1,0 +1,55 @@
+<definitions 
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="Examples">
+
+  <process id="transactionDependentExecutionListenerProcess">
+
+    <startEvent id="theStart" name="Start Event" />
+
+    <sequenceFlow sourceRef="theStart" targetRef="serviceTask1" />
+
+    <serviceTask
+            id="serviceTask1"
+            name="Service Task 1"
+            activiti:class="org.activiti.spring.test.executionListener.ConditionalThrowExceptionDelegate">
+      <extensionElements>
+        <activiti:executionListener class="org.activiti.spring.test.executionListener.CurrentActivityTransactionDependentExecutionListener"
+                                    event="start"
+                                    onTransaction="before-commit"/>
+      </extensionElements>
+    </serviceTask>
+
+    <sequenceFlow sourceRef="serviceTask1" targetRef="serviceTask2" />
+
+    <serviceTask
+            id="serviceTask2"
+            name="Service Task 2"
+            activiti:async="true"
+            activiti:class="org.activiti.spring.test.executionListener.ConditionalThrowExceptionDelegate">
+      <extensionElements>
+        <activiti:executionListener class="org.activiti.spring.test.executionListener.CurrentActivityTransactionDependentExecutionListener"
+                                    event="start"
+                                    onTransaction="committed"/>
+      </extensionElements>
+    </serviceTask>
+
+    <sequenceFlow sourceRef="serviceTask2" targetRef="serviceTask3" />
+
+    <serviceTask
+            id="serviceTask3"
+            name="Service Task 3"
+            activiti:class="org.activiti.spring.test.executionListener.ConditionalThrowExceptionDelegate">
+      <extensionElements>
+        <activiti:executionListener class="org.activiti.spring.test.executionListener.CurrentActivityTransactionDependentExecutionListener"
+                                    event="start"
+                                    onTransaction="rolled-back"/>
+      </extensionElements>
+    </serviceTask>
+
+    <sequenceFlow sourceRef="serviceTask3" targetRef="theEnd"/>
+
+    <endEvent id="theEnd" name="End Event" />
+
+  </process>
+</definitions>

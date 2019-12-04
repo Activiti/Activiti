@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions" 
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="Examples">
+  
+  <process id="simpleSubProcessWithConcurrentTimer">
+  
+    <startEvent id="theStart" />
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="subProcess" />
+    
+    <subProcess id="subProcess">
+    
+      <startEvent id="subProcessStart" />
+      <sequenceFlow id="flow2" sourceRef="subProcessStart" targetRef="subProcessTask" />
+
+      <userTask id="subProcessTask" name="Task in subprocess" />
+      <sequenceFlow id="flow3" sourceRef="subProcessTask" targetRef="subProcessEnd" />
+      
+      <endEvent id="subProcessEnd" />
+    
+    </subProcess>
+    
+    <!-- Part after subprocess: a task and the end -->
+    <sequenceFlow id="flow4" sourceRef="subProcess" targetRef="taskAfterSubProcess" />
+    <userTask id="taskAfterSubProcess" name="Task after subProcess" />
+    <sequenceFlow id="flow5" sourceRef="taskAfterSubProcess" targetRef="normalEnd" />
+    <endEvent id="normalEnd" />
+    
+    <!-- The timer attached to the subprocess -->
+    <boundaryEvent id="timer" attachedToRef="subProcess">
+      <timerEventDefinition>
+        <timeDuration>PT2H</timeDuration>
+      </timerEventDefinition>
+    </boundaryEvent>
+    <sequenceFlow id="flow6" sourceRef="timer" targetRef="taskAfterTimer1" />
+    <sequenceFlow id="flow7" sourceRef="timer" targetRef="taskAfterTimer2" />
+    
+    <userTask id="taskAfterTimer1" name="Task after timer 1" />
+    <sequenceFlow id="flow8" sourceRef="taskAfterTimer1" targetRef="timerEnd1" />
+    <endEvent id="timerEnd1" />
+    
+    <userTask id="taskAfterTimer2" name="Task after timer 2" />
+    <sequenceFlow id="flow9" sourceRef="taskAfterTimer2" targetRef="timerEnd2" />
+    <endEvent id="timerEnd2" />
+    
+  </process>
+
+</definitions>

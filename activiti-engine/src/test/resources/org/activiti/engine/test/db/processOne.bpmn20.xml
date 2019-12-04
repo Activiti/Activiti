@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions"
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="Examples">
+
+  <process id="processOne" name="Process One">
+    <documentation>the first process</documentation>
+    
+    <startEvent id="start" name="S t a r t">
+      <documentation>the start event</documentation>
+    </startEvent>
+
+    <sequenceFlow id="flow1" name="Flow One" sourceRef="start" targetRef="end">
+      <documentation>The only transitions in the process</documentation>
+      <conditionExpression>${a == b}</conditionExpression>
+    </sequenceFlow>
+
+    <endEvent id="end" />
+
+  </process>
+
+</definitions>

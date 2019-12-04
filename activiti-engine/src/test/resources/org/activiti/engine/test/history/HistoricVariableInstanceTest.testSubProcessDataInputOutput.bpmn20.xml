@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions" 
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="Examples">
+  
+  <process id="subProcessDataInputOutput">
+  
+    <startEvent id="theStart" />
+    
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="callSubProcess" />
+    
+    <callActivity id="callSubProcess" calledElement="simpleSubProcess" >
+	  <extensionElements>
+	    <activiti:in source="superVariable" target="subVariable" />
+	    <activiti:out source="subVariable" target="superVariable" />
+	  </extensionElements>
+      <!--
+        Warning: The following code abuses the syntax of Data Associations
+        for a radical shortcut.
+      <dataInputAssociation>
+        <sourceRef>superVariable</sourceRef>
+        <targetRef>subVariable</targetRef>
+      </dataInputAssociation>
+      <dataOutputAssociation>
+        <sourceRef>subVariable</sourceRef>
+        <targetRef>superVariable</targetRef>
+      </dataOutputAssociation>
+      -->
+    </callActivity>
+    
+    <sequenceFlow id="flow3" sourceRef="callSubProcess" targetRef="userTask1" />
+    
+    <userTask id="userTask1" name="Task in super process" />
+  
+    <sequenceFlow id="flow4" sourceRef="userTask1" targetRef="callSubProcessWithExpression" />
+    
+    <callActivity id="callSubProcessWithExpression" calledElement="simpleSubProcess" >
+	  <extensionElements>
+	    <activiti:in sourceExpression="${x+5}" target="y" />
+	    <activiti:out sourceExpression="${y+5}" target="z" />
+	  </extensionElements>
+    </callActivity>    
+
+    <sequenceFlow id="flow5" sourceRef="callSubProcessWithExpression" targetRef="userTask2" />
+    
+    <userTask id="userTask2" name="Task in super process" />
+  
+    <sequenceFlow id="flow6" sourceRef="userTask2" targetRef="theEnd" />
+    
+    <endEvent id="theEnd" />
+    
+  </process>
+
+</definitions>

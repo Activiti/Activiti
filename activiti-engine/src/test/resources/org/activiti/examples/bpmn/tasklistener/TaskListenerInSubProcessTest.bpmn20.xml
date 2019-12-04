@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="taskListenerExample"
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn"
+	targetNamespace="Examples">
+
+	<process id="taskListenerInSubProcess" name="Task Listener InSubProcess Example">
+
+		<startEvent id="theStart" />
+
+		<sequenceFlow id="flow1" sourceRef="theStart" targetRef="subprocess1" />
+
+		<subProcess id="subprocess1" name="Sub Process">
+
+		<userTask id="task1" name="Schedule meeting" >
+		  <documentation>
+		    Schedule a meeting with management.
+		  </documentation>
+		  <extensionElements>
+		    <activiti:taskListener event="create" class="org.activiti.examples.bpmn.tasklistener.TaskCreateListener" />
+		    <activiti:taskListener event="complete" class="org.activiti.examples.bpmn.tasklistener.TaskCompleteListener">
+		      <activiti:field name="greeter" stringValue="The Process" />
+              <activiti:field name="shortName" expression="${'Activiti'.substring(0,3)}" />
+		    </activiti:taskListener>
+            <activiti:taskListener event="assignment" class="org.activiti.examples.bpmn.tasklistener.TaskAssignmentListener" />
+            <activiti:taskListener event="all" class="org.activiti.examples.bpmn.tasklistener.TaskAllEventsListener" />
+		  </extensionElements>
+		</userTask>
+			<startEvent id="startevent2" name="Start"></startEvent>
+			<sequenceFlow id="flow4" sourceRef="startevent2" targetRef="task1"></sequenceFlow>
+			<endEvent id="endevent2" name="End"></endEvent>
+			<sequenceFlow id="flow6" sourceRef="task1" targetRef="endevent2"></sequenceFlow>
+		</subProcess>
+
+
+		<sequenceFlow id="flow2" sourceRef="subprocess1" targetRef="task2" />
+
+		<userTask id="task2" name="Write meeting notes" >
+      <documentation>
+        Write meeting notes after meeting with management.
+      </documentation>
+      <extensionElements>
+        <activiti:taskListener event="create" expression="${execution.setVariable('greeting2', task.name)}" />
+      </extensionElements>
+    </userTask>
+
+    <sequenceFlow id="flow3" sourceRef="task2" targetRef="theEnd" />
+
+		<endEvent id="theEnd" />
+
+	</process>
+
+</definitions>

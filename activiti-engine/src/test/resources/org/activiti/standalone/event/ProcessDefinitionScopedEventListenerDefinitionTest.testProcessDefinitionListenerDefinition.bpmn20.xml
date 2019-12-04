@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+	xmlns:activiti="http://activiti.org/bpmn" targetNamespace="Examples">
+
+	<process id="testEventListeners">
+        <extensionElements>
+          <activiti:eventListener class="org.activiti.engine.test.api.event.StaticTestActivitiEventListener" />
+          <activiti:eventListener delegateExpression="${testEventListener}" events="ENTITY_CREATED"/>
+        </extensionElements>
+        
+		<startEvent id="theStart" />
+		<sequenceFlow sourceRef="theStart" targetRef="task" />
+		<userTask id="task" />
+		<sequenceFlow sourceRef="task" targetRef="theEnd" />
+		<endEvent id="theEnd" />
+
+	</process>
+
+</definitions>

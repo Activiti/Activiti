@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+             xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI"
+             typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath"
+             targetNamespace="http://www.activiti.org/test">
+    <process id="errorProcess1" name="errorProcess1">
+        <startEvent id="startevent1" name="Start"></startEvent>
+        <endEvent id="endevent1" name="End"></endEvent>
+        <userTask id="usertask1" name="User Task"></userTask>
+        <boundaryEvent id="boundarytimer1" cancelActivity="false" attachedToRef="usertask1">
+            <timerEventDefinition>
+                <timeDuration>PT1S</timeDuration>
+            </timerEventDefinition>
+        </boundaryEvent>
+        <sequenceFlow id="flow1" name="" sourceRef="startevent1" targetRef="usertask1"></sequenceFlow>
+        <sequenceFlow id="flow2" name="" sourceRef="usertask1" targetRef="endevent1"></sequenceFlow>
+        <sequenceFlow id="flow3" name="" sourceRef="boundarytimer1" targetRef="endevent1">
+            <extensionElements>
+                <activiti:executionListener event="take"
+                                            class="org.activiti.spring.test.jobexecutor.ForcedRollbackExecutionListener"></activiti:executionListener>
+            </extensionElements>
+        </sequenceFlow>
+    </process>
+    <bpmndi:BPMNDiagram id="BPMNDiagram_errorProcess1">
+        <bpmndi:BPMNPlane bpmnElement="errorProcess1" id="BPMNPlane_errorProcess1">
+            <bpmndi:BPMNShape bpmnElement="startevent1" id="BPMNShape_startevent1">
+                <omgdc:Bounds height="35" width="35" x="70" y="180"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="endevent1" id="BPMNShape_endevent1">
+                <omgdc:Bounds height="35" width="35" x="540" y="180"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="usertask1" id="BPMNShape_usertask1">
+                <omgdc:Bounds height="55" width="105" x="280" y="170"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="boundarytimer1" id="BPMNShape_boundarytimer1">
+                <omgdc:Bounds height="30" width="30" x="350" y="220"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNEdge bpmnElement="flow1" id="BPMNEdge_flow1">
+                <omgdi:waypoint x="105" y="197"></omgdi:waypoint>
+                <omgdi:waypoint x="280" y="197"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow2" id="BPMNEdge_flow2">
+                <omgdi:waypoint x="385" y="197"></omgdi:waypoint>
+                <omgdi:waypoint x="540" y="197"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow3" id="BPMNEdge_flow3">
+                <omgdi:waypoint x="365" y="250"></omgdi:waypoint>
+                <omgdi:waypoint x="557" y="235"></omgdi:waypoint>
+                <omgdi:waypoint x="557" y="215"></omgdi:waypoint>
+                <bpmndi:BPMNLabel>
+                    <omgdc:Bounds height="14" width="100" x="10" y="0"></omgdc:Bounds>
+                </bpmndi:BPMNLabel>
+            </bpmndi:BPMNEdge>
+        </bpmndi:BPMNPlane>
+    </bpmndi:BPMNDiagram>
+</definitions>

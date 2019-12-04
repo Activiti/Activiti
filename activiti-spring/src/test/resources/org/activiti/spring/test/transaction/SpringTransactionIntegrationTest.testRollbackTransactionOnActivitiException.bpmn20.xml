@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:activiti="http://activiti.org/bpmn"
+             targetNamespace="Examples">
+
+    <process id="helloProcess">
+
+        <startEvent id="start"/>
+        <sequenceFlow id="flow1" sourceRef="start" targetRef="task"/>
+
+        <userTask id="task" name="My Task"/>
+        <sequenceFlow id="flow2" sourceRef="task" targetRef="print"/>
+
+        <serviceTask id="print" activiti:expression="#{failing_expression}"/>
+        <sequenceFlow id="flow3" sourceRef="print" targetRef="userTask"/>
+
+        <userTask id="userTask"/>
+        <sequenceFlow id="flow4" sourceRef="userTask" targetRef="end"/>
+
+        <endEvent id="end"/>
+
+    </process>
+
+</definitions>

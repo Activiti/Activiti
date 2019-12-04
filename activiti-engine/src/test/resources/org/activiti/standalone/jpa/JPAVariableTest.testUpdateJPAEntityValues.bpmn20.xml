@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="taskAssigneeExample" 
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="Examples">
+	
+  <process id="UpdateJPAValuesProcess" name="Process updating JPA Entity value">
+    <startEvent id="theStart" />
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="theTask" />
+    <serviceTask id="theTask" name="updateJPAEntityTask" activiti:expression="${entityToUpdate.setValue('updatedValue')}" />    
+    <sequenceFlow id="flow2" sourceRef="theTask" targetRef="userTask" />
+    <userTask id="userTask" name="userTask" />
+    <sequenceFlow id="flow3" sourceRef="userTask" targetRef="theEnd" />
+    <endEvent id="theEnd" />
+  </process>
+
+</definitions>

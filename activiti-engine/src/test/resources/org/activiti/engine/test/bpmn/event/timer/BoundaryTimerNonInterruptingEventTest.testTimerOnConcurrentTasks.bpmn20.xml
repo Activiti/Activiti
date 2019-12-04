@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions"
+	xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:activiti="http://activiti.org/bpmn"
+	targetNamespace="Examples">
+
+	<process id="nonInterruptingOnConcurrentTasks">
+
+		<startEvent id="theStart" />
+		<sequenceFlow id="flow1" sourceRef="theStart" targetRef="fork" />
+		
+		<parallelGateway id="fork" />
+		<sequenceFlow id="flow2" sourceRef="fork" targetRef="firstTask" />
+		<sequenceFlow id="flow3" sourceRef="fork" targetRef="secondTask" />
+		
+    <userTask id="firstTask" />
+    <sequenceFlow id="flow4" sourceRef="firstTask" targetRef="join" />
+    
+    <boundaryEvent id="timer" attachedToRef="firstTask" cancelActivity="false">
+      <timerEventDefinition>
+        <timeDuration>PT1H</timeDuration>
+      </timerEventDefinition>
+    </boundaryEvent>
+    <sequenceFlow id="flow5" sourceRef="timer" targetRef="timerFiredTask" />
+    <userTask id="timerFiredTask" />
+    <sequenceFlow id="flow6" sourceRef="timerFiredTask" targetRef="nonInterruptingEnd" />
+    <endEvent id="nonInterruptingEnd" />
+    
+    <userTask id="secondTask" />
+    <sequenceFlow id="flow7" sourceRef="secondTask" targetRef="join" />
+    
+    <parallelGateway id="join" />
+    <sequenceFlow id="flow8" sourceRef="join" targetRef="theEnd" />
+
+		<endEvent id="theEnd" />
+
+	</process>
+</definitions>

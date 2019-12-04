@@ -1,0 +1,17 @@
+<definitions 
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="Examples">
+  
+  <process id="skipExpressionUserTask-testSkipMultipleTasks">
+    <startEvent id="theStart" name="Start Event"/>
+    <sequenceFlow sourceRef="theStart" targetRef="userTask1" />
+    <userTask id="userTask1" name="Task1" activiti:skipExpression="${execution.getVariable('skip1')}"/> 
+    <sequenceFlow sourceRef="userTask1" targetRef="userTask2" />
+    <userTask id="userTask2" name="Task2" activiti:skipExpression="${execution.getVariable('skip2')}"/> 
+    <sequenceFlow sourceRef="userTask2" targetRef="userTask3" />
+    <userTask id="userTask3" name="Task3" activiti:skipExpression="${execution.getVariable('skip3')}"/>
+    <sequenceFlow sourceRef="userTask3" targetRef="theEnd" />
+    <endEvent id="theEnd" name="End Event"/>
+  </process>
+</definitions>

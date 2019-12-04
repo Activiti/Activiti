@@ -1,0 +1,56 @@
+<h1>Vacation Request</h1>
+<table>
+  <tr>
+    <td>
+      <label>
+        Employee name:<br/>
+        <input type="text" name="employeeName" value="" />
+        <input type="hidden" name="employeeName_required" value="true" />
+        <input type="hidden" name="employeeName_type" value="User" />
+      </label><br/>
+    </td>
+  </tr>
+  <tr>  
+    <td>
+      <label>
+        Number of days:<br/>
+        <input type="number" name="numberOfDays" value="1" min="1" />
+        <input type="hidden" name="numberOfDays_type" value="Integer" />
+      </label>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <label>
+         First day of vacation: (YYYY-MM-DD)<br/>
+         <input type="date" name="startDate"/>
+         <input type="hidden" name="startDate_type" value="Date"/>
+      </label>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <label>
+         Date of return to work: (YYYY-MM-DD)<br/>
+         <input type="date" name="returnDate"/>
+         <input type="hidden" name="returnDate_type" value="Date"/>
+      </label>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <label>
+        <input type="checkbox" name="vacationPay"/> Vacation pay requested
+        <input type="hidden" name="vacationPay_boolean" value="true"/>
+      </label>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <label>
+        Motivation:<br/>
+       <textarea name="vacationMotivation" value=""></textarea>
+      </label>
+    </td>
+  </tr>
+</table>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<definitions id="definitions"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:activiti="http://activiti.org/bpmn"
+             targetNamespace="Examples">
+
+    <process id="candidateUsersThroughSpringService">
+
+        <startEvent id="start"/>
+        <sequenceFlow id="flow1" sourceRef="start" targetRef="task"/>
+
+        <userTask id="task" name="Schedule meeting" activiti:candidateUsers="${fakeLdapService.findAllSales()}"/>
+        <sequenceFlow id="flow2" sourceRef="task" targetRef="end"/>
+
+        <endEvent id="end"/>
+
+    </process>
+
+</definitions>

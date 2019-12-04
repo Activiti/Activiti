@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<definitions id="definitions"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:activiti="http://activiti.org/bpmn"
+             targetNamespace="Examples">
+
+    <process id="delegateExpressionPrototype">
+
+        <startEvent id="start"/>
+        <sequenceFlow id="flow1" sourceRef="start" targetRef="serviceTask1"/>
+
+        <serviceTask id="serviceTask1" activiti:delegateExpression="${prototypeDelegateExpressionBean}">
+            <extensionElements>
+                <activiti:field name="fieldA" expression="${input * 2}"/>
+                <activiti:field name="fieldB" expression="${1 + 1}"/>
+                <activiti:field name="resultVariableName" stringValue="resultServiceTask1"/>
+            </extensionElements>
+        </serviceTask>
+
+        <sequenceFlow id="flow2" sourceRef="serviceTask1" targetRef="serviceTask2"/>
+        
+        <serviceTask id="serviceTask2" activiti:delegateExpression="${prototypeDelegateExpressionBean}">
+            <extensionElements>
+                <activiti:field name="fieldA" expression="${123}"/>
+                <activiti:field name="fieldB" expression="${456}"/>
+                <activiti:field name="resultVariableName" stringValue="resultServiceTask2"/>
+            </extensionElements>
+        </serviceTask>
+        
+        <sequenceFlow id="flow3" sourceRef="serviceTask2" targetRef="userTask"/>
+
+        <userTask id="userTask" name="theTask"/>
+        <sequenceFlow id="flow4" sourceRef="userTask" targetRef="end"/>
+
+        <endEvent id="end"/>
+
+    </process>
+
+</definitions>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="Examples">
+
+  <process id="simpleParallelGateway">
+  
+    <startEvent id="theStart" />
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="fork" />
+    
+    <parallelGateway id="fork" />
+    <sequenceFlow id="flow2" sourceRef="fork" targetRef="taskA" />
+    <sequenceFlow id="flow3" sourceRef="fork" targetRef="taskC" />
+    <sequenceFlow id="flow4" sourceRef="fork" targetRef="nestedFork" />
+    
+    <userTask id="taskA" name="Task a" activiti:assignee="kermit" />
+    <sequenceFlow id="flow5" sourceRef="taskA" targetRef="join" />
+    
+    <parallelGateway id="nestedFork" />
+    <sequenceFlow id="flow6" sourceRef="nestedFork" targetRef="taskB1" />
+    <sequenceFlow id="flow7" sourceRef="nestedFork" targetRef="taskB2" />
+    
+    <userTask id="taskB1" name="Task b1" activiti:assignee="kermit" />
+    <sequenceFlow id="flow8" sourceRef="taskB1" targetRef="nestedJoin" />
+    
+    <userTask id="taskB2" name="Task b2" activiti:assignee="kermit" />
+    <sequenceFlow id="flow9" sourceRef="taskB2" targetRef="nestedJoin" />
+    
+    <parallelGateway id="nestedJoin" />
+    <sequenceFlow id="flow10" sourceRef="nestedJoin" targetRef="join" />
+    
+    <userTask id="taskC" name="Task c" activiti:assignee="fozzie" />
+    <sequenceFlow id="flow11" sourceRef="taskC" targetRef="join" />
+    
+    <parallelGateway id="join" />
+    <sequenceFlow id="flow12" sourceRef="join" targetRef="theEnd" />
+    
+    <endEvent id="theEnd" />
+    
+  </process>
+
+</definitions>

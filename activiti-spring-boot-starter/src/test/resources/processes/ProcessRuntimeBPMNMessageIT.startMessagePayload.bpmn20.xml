@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_098ju69" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Activiti Modeler" exporterVersion="3.0.0-beta">
+  <bpmn:process id="startMessagePayload" isExecutable="true">
+    <bpmn:endEvent id="EndEvent_1yxwnmm">
+      <bpmn:incoming>SequenceFlow_0ew1sqz</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="SequenceFlow_0zk2l68" sourceRef="StartEvent_1" targetRef="Task_1cwakqs" />
+    <bpmn:startEvent id="StartEvent_1">
+      <bpmn:outgoing>SequenceFlow_0zk2l68</bpmn:outgoing>
+      <bpmn:messageEventDefinition messageRef="Message_1v73ptz" />
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="SequenceFlow_0ew1sqz" sourceRef="Task_1cwakqs" targetRef="EndEvent_1yxwnmm" />
+    <bpmn:userTask id="Task_1cwakqs" name="Task">
+      <bpmn:incoming>SequenceFlow_0zk2l68</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0ew1sqz</bpmn:outgoing>
+    </bpmn:userTask>
+  </bpmn:process>
+  <bpmn:message id="Message_1v73ptz" name="startMessagePayload" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="startMessagePayload">
+      <bpmndi:BPMNShape id="EndEvent_1yxwnmm_di" bpmnElement="EndEvent_1yxwnmm">
+        <dc:Bounds x="482" y="81" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0zk2l68_di" bpmnElement="SequenceFlow_0zk2l68">
+        <di:waypoint x="192" y="99" />
+        <di:waypoint x="283" y="99" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="StartEvent_0gihf3i_di" bpmnElement="StartEvent_1">
+        <dc:Bounds x="156" y="81" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0ew1sqz_di" bpmnElement="SequenceFlow_0ew1sqz">
+        <di:waypoint x="383" y="99" /> 
+        <di:waypoint x="482" y="99" />
+      </bpmndi:BPMNEdge> 
+      <bpmndi:BPMNShape id="UserTask_1v2zj8t_di" bpmnElement="Task_1cwakqs">
+        <dc:Bounds x="283" y="59" width="100" height="80" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

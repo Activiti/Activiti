@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:activiti="http://activiti.org/bpmn"
+             xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd" id="Definitions_1" targetNamespace="http://activiti.org/bpmn">
+  <process id="terminateEndEventSubprocessExample" name="Default Process">
+
+    <startEvent id="start"/>
+
+    <sequenceFlow id="flow1" sourceRef="start" targetRef="terminateEnd"/>
+
+    <endEvent id="terminateEnd">
+      <extensionElements>
+        <activiti:strangeProperty id="strangeId">value</activiti:strangeProperty>
+      </extensionElements>
+      <terminateEventDefinition id="TerminateEventDefinition_1"/>
+    </endEvent>
+  </process>
+</definitions>
