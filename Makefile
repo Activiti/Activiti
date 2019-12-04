@@ -7,23 +7,18 @@ GROUP_ID := $(shell mvn help:evaluate -Dexpression=project.groupId -q -DforceStd
 ARTIFACT_ID := $(shell mvn help:evaluate -Dexpression=project.artifactId -q -DforceStdout)
 RELEASE_ARTIFACT := $(GROUP_ID):$(ARTIFACT_ID)
 
-updatebot/push: 
+updatebot/push:
 	@echo doing updatebot push $(RELEASE_VERSION)
 	updatebot push --ref $(RELEASE_VERSION)
 
 
-updatebot/push-version: 
-	@echo Resolving push versions for artifacts........
-	$(eval ACTIVITI_CORE_COMMON_VERSION=$(shell mvn help:evaluate -Dexpression=activiti-core-common.version -q -DforceStdout))
-	$(eval ACTIVITI_API_VERSION=$(shell mvn help:evaluate -Dexpression=activiti-api.version -q -DforceStdout))
-	$(eval ACTIVITI_BUILD_VERSION=$(shell mvn help:evaluate -Dexpression=activiti-build.version -q -DforceStdout))
-
+updatebot/push-version:
 	@echo Doing updatebot push-version.....
 	updatebot push-version --kind maven \
 		org.activiti.dependencies:activiti-dependencies $(RELEASE_VERSION) \
-		org.activiti.api:activiti-api-dependencies $(ACTIVITI_API_VERSION) \
-		org.activiti.core.common:activiti-core-common-dependencies $(ACTIVITI_CORE_COMMON_VERSION) \
-		org.activiti.build:activiti-parent $(ACTIVITI_BUILD_VERSION)	
+		org.activiti.api:activiti-api-dependencies $(RELEASE_VERSION) \
+		org.activiti.core.common:activiti-core-common-dependencies $(RELEASE_VERSION) \
+		org.activiti.build:activiti-parent $(RELEASE_VERSION)
 
 updatebot/update:
 	@echo doing updatebot update $(RELEASE_VERSION)
