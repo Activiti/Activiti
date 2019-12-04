@@ -22,10 +22,10 @@ install: mvn jar:jar install:install
 
 jobs:
     include:
-        - stage: Check style
-          name:  Check style
-          script:
-             mvn checkstyle:check -DskipCheckstyle=false
+#        - stage: Check style
+#          name:  Check style
+#          script:
+#             mvn checkstyle:check -DskipCheckstyle=false
         - stage: Build and test
           name: Build and test
           script:

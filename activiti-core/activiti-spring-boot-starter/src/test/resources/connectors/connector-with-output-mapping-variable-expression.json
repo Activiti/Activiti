@@ -1,0 +1,22 @@
+{
+  "id": "OutputMappingExpVarConnector",
+  "name": "OutputMappingExpVarConnector",
+  "description": "Description of the OutputMappingExpVarConnector",
+  "actions": {
+    "outputMappingExpVarActionName": {
+      "id": "outputMappingExpVarActionName",
+      "name": "outputMappingExpVarActionName",
+      "description": "...",
+      "inputs": [],
+      "outputs": [
+        {
+          "id": "out-variable-1",
+          "name": "out-variable-name-1",
+          "type": "string",
+          "description": "",
+          "required": "false"
+        }
+      ]
+    }
+  }
+}

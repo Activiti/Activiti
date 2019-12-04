@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.activiti.build</groupId>
+    <artifactId>activiti-parent</artifactId>
+    <version>7.1.0-SNAPSHOT</version> <!-- using fixed version for CI/CD -->
+    <relativePath>../activiti-build</relativePath>
+  </parent>
+  <groupId>org.activiti.api</groupId>
+  <artifactId>activiti-api</artifactId>
+  <version>7.1.0-SNAPSHOT</version>
+
+  <name>Activiti API :: Parent</name>
+  <packaging>pom</packaging>
+  
+  <modules>
+    <module>activiti-api-dependencies-tests</module>
+    <module>activiti-api-dependencies</module>
+    <module>activiti-api-model-shared</module>
+    <module>activiti-api-runtime-shared</module>
+    <module>activiti-api-process-model</module>
+    <module>activiti-api-process-runtime</module>
+    <module>activiti-api-task-model</module>
+    <module>activiti-api-task-runtime</module>
+    <module>activiti-api-model-shared-impl</module>
+    <module>activiti-api-process-model-impl</module>
+    <module>activiti-api-task-model-impl</module>
+  </modules>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.activiti.build</groupId>
+        <artifactId>activiti-dependencies-parent</artifactId>
+        <version>${activiti-build.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <repositories>
+    <repository>
+      <id>alfresco</id>
+      <name>Activiti Releases</name>
+      <url>https://artifacts.alfresco.com/nexus/content/repositories/activiti-releases/</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+    </repository>
+  </repositories>
+
+  <properties>
+    <!-- configuration properties -->
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
+    <activiti-api.version>${project.version}</activiti-api.version>
+    <activiti-build.version>${project.version}</activiti-build.version>
+
+  </properties>
+
+  <!-- Activiti build parent marker dependency for dependency convergence tests -->
+  <dependencies>
+    <dependency>
+      <groupId>org.activiti.build</groupId>
+      <artifactId>activiti-parent</artifactId>
+      <version>${activiti-build.version}</version>
+      <type>pom</type>
+    </dependency>
+  </dependencies>
+  
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>${maven-compiler-plugin.version}</version>
+        <configuration>
+          <release>${java.version}</release>
+          <showDeprecation>true</showDeprecation>
+          <showWarnings>true</showWarnings>
+          <optimize>true</optimize>
+        </configuration>
+      </plugin>
+    
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-deploy-plugin</artifactId>
+        <configuration>
+          <deployAtEnd>true</deployAtEnd>
+        </configuration>
+      </plugin>
+      <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-javadoc-plugin</artifactId>
+          <version>3.0.1</version>
+          <configuration>
+          </configuration>
+        </plugin>
+      </plugins>
+
+  </build>
+
+</project>

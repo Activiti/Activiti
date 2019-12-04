@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:activiti="http://activiti.org/bpmn" id="Definitions_09e0d2h" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Activiti Modeler" exporterVersion="3.0.0-beta.3">
+  <bpmn:process id="testThrowMessageEndEvent" isExecutable="true">
+    <bpmn:startEvent id="theStart">
+      <bpmn:outgoing>flow1</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="flow1" sourceRef="theStart" targetRef="theEnd" />
+    <bpmn:endEvent id="theEnd" name="Throw Message">
+      <bpmn:extensionElements>
+        <activiti:executionListener class="org.activiti.engine.test.bpmn.event.message.MessageThrowEventTest$MyExecutionListener" event="start" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>flow1</bpmn:incoming>
+      <bpmn:messageEventDefinition messageRef="Message_0a38u1h" />
+    </bpmn:endEvent>
+  </bpmn:process>
+  <bpmn:message id="Message_0a38u1h" name="endMessage" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="testThrowMessageEndEvent">
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="theStart">
+        <dc:Bounds x="179" y="81" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0f4m2em_di" bpmnElement="flow1">
+        <di:waypoint x="215" y="99" />
+        <di:waypoint x="351" y="99" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="EndEvent_1ln7o5v_di" bpmnElement="theEnd">
+        <dc:Bounds x="351" y="81" width="36" height="36" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.activiti.build</groupId>
+        <artifactId>activiti-parent</artifactId>
+        <version>7.1.0-SNAPSHOT</version>
+        <relativePath>../activiti-build</relativePath>
+    </parent>
+
+    <groupId>org.activiti.examples</groupId>
+    <artifactId>activiti-examples-parent</artifactId>
+    <version>7.1.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <name>Activiti Examples :: Parent</name>
+    <description>Activiti Examples :: Parent</description>
+
+    <properties>
+        <spring-boot.version>2.1.10.RELEASE</spring-boot.version>
+    </properties>
+
+    <modules>
+        <module>activiti-api-basic-full-example-bean</module>
+        <module>activiti-api-basic-full-example-nobean</module>
+        <module>activiti-api-basic-connector-example</module>
+        <module>activiti-api-basic-process-example</module>
+        <module>activiti-api-basic-task-example</module>
+        <module>activiti-api-spring-integration-example</module>
+        <module>activiti-api-web-example</module>
+    </modules>
+
+    <repositories>
+        <repository>
+            <id>alfresco</id>
+            <name>Activiti Releases</name>
+            <url>https://artifacts.alfresco.com/nexus/content/repositories/activiti-releases/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+        </repository>
+    </repositories>
+
+  </project>
