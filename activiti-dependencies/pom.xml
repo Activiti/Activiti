@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.activiti.build</groupId>
+    <artifactId>activiti-parent</artifactId>
+    <version>7.1.0-SNAPSHOT</version>
+    <relativePath>../activiti-build</relativePath>
+  </parent>
+  
+  <groupId>org.activiti.dependencies</groupId>
+  <artifactId>activiti-dependencies-parent</artifactId>
+  <version>7.1.0-SNAPSHOT</version>
+  <packaging>pom</packaging>
+  <name>Activiti :: BOM (Bill of Materials) Parent</name>
+  <description>${project.name}</description>
+  <url>http://activiti.org</url>
+  <inceptionYear>2018</inceptionYear>
+
+  <properties>
+    <activiti-build.version>${project.version}</activiti-build.version>
+    <activiti-api.version>${project.version}</activiti-api.version>
+    <activiti-core-common.version>${project.version}</activiti-core-common.version>
+    <activiti.version>${project.version}</activiti.version>
+  </properties>
+
+  <organization>
+    <name>Alfresco</name>
+    <url>http://www.alfresco.com</url>
+  </organization>
+  <licenses>
+    <license>
+      <name>Apache v2</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <id>salaboy</id>
+      <name>Mauricio Salatino</name>
+      <email>mauricio.salatino@alfresco.com</email>
+      <organization>Alfresco</organization>
+      <organizationUrl>http://alfresco.com</organizationUrl>
+    </developer>
+    <developer>
+      <id>erdemedeiros</id>
+      <name>Elias De Medeiros</name>
+      <email>elias.demedeiros@alfresco.com</email>
+      <organization>Alfresco</organization>
+      <organizationUrl>http://alfresco.com</organizationUrl>
+    </developer>
+    <developer>
+      <id>ryandawsonuk</id>
+      <name>Ryan Dawson</name>
+      <email>ryan.dawson@alfresco.com</email>
+      <organization>Alfresco</organization>
+      <organizationUrl>http://alfresco.com</organizationUrl>
+    </developer>
+  </developers>
+
+  <repositories>
+    <repository>
+      <id>alfresco</id>
+      <name>Activiti Releases</name>
+      <url>https://artifacts.alfresco.com/nexus/content/repositories/activiti-releases/</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+    </repository>
+  </repositories>
+
+  <scm>
+    <url>http://github.com/Activiti/${project.artifactId}</url>
+    <connection>scm:git:git://github.com/Activiti/${project.artifactId}.git</connection>
+    <developerConnection>scm:git:ssh://git@github.com/Activiti/${project.artifactId}.git</developerConnection>
+  </scm>
+  <issueManagement>
+    <system>GitHub</system>
+    <url>https://github.com/Activiti/Activiti/issues</url>
+  </issueManagement>
+  <ciManagement>
+    <system>Travis</system>
+    <url>https://travis-ci.org/Activiti/${project.artifactId}</url>
+  </ciManagement>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-deploy-plugin</artifactId>
+        <version>2.8.2</version>
+        <configuration>
+          <deployAtEnd>true</deployAtEnd>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+  
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.activiti.build</groupId>
+        <artifactId>activiti-dependencies-parent</artifactId>
+        <version>${activiti-build.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <!-- Activiti Build Parent Marker Dependency for Dependency Convergence Tests -->
+  <dependencies>
+    <dependency>
+      <groupId>org.activiti.build</groupId>
+      <artifactId>activiti-parent</artifactId>
+      <version>${activiti-build.version}</version>
+      <type>pom</type>
+    </dependency>
+    <dependency>
+      <groupId>org.activiti.api</groupId>
+      <artifactId>activiti-api-dependencies</artifactId>
+      <version>${activiti-api.version}</version>
+      <type>pom</type>
+    </dependency>
+    <dependency>
+      <groupId>org.activiti.core.common</groupId>
+      <artifactId>activiti-core-common-dependencies</artifactId>
+      <version>${activiti-core-common.version}</version>
+      <type>pom</type>
+    </dependency>
+    <dependency>
+      <groupId>org.activiti</groupId>
+      <artifactId>activiti-core-dependencies</artifactId>
+      <version>${activiti.version}</version>
+      <type>pom</type>
+    </dependency>    
+  </dependencies>
+
+  <modules>
+    <module>dependencies</module>
+    <module>dependencies-tests</module>
+  </modules>
+
+</project>

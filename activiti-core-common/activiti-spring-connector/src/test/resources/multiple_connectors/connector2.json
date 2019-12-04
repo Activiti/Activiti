@@ -1,0 +1,43 @@
+{
+  "id": "connector-uuid-2",
+  "name": "Name-of-the-connector-2",
+  "description": "Description of the connector",
+  "actions": {
+    "actionId1": {
+      "id": "actionId1",
+      "name": "actionName1",
+      "description": "description",
+      "inputs": [
+        {
+          "id": "input-variable-1",
+          "name": "input-variable-name-1",
+          "type": "string",
+          "required": false,
+          "description": "description"
+        },
+        {
+          "id": "input-variable-2",
+          "name": "input-variable-name-2",
+          "type": "boolean",
+          "required": false,
+          "description": ""
+        }
+      ],
+      "outputs": [
+        {
+          "id": "output-variable-1",
+          "name": "output-variable-name-1",
+          "type": "string",
+          "description": ""
+        },
+        {
+          "id": "output-variable-2",
+          "name": "output-variable-name-2",
+          "type": "string",
+          "description": ""
+        }
+      ]
+    },
+    "actionName2": {}
+  }
+} 

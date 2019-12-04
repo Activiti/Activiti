@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.activiti.build</groupId>
+    <artifactId>activiti-parent</artifactId>
+    <version>7.1.0-SNAPSHOT</version>
+    <relativePath>../activiti-build</relativePath>
+  </parent>
+  <groupId>org.activiti.core.common</groupId>
+  <artifactId>activiti-core-common-parent</artifactId>
+  <packaging>pom</packaging>
+  <name>Activiti Core :: Common</name>
+  <version>7.1.0-SNAPSHOT</version>
+  <description>Activiti Core :: Common</description>
+  <url>http://activiti.org</url>
+  <properties>
+    <activiti-build.version>${project.version}</activiti-build.version>
+    <activiti-api.version>${project.version}</activiti-api.version>
+    <activiti-core-common.version>${project.version}</activiti-core-common.version>
+    <commons-io.version>2.6</commons-io.version>
+  </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.activiti.build</groupId>
+        <artifactId>activiti-dependencies-parent</artifactId>
+        <version>${activiti-build.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>commons-io</groupId>
+        <artifactId>commons-io</artifactId>
+        <version>${commons-io.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <!-- Activiti Build Parent Marker Dependency for Dependency Convergence Tests -->
+  <dependencies>
+    <dependency>
+      <groupId>org.activiti.build</groupId>
+      <artifactId>activiti-parent</artifactId>
+      <version>${activiti-build.version}</version>
+      <type>pom</type>
+    </dependency>
+    <dependency>
+      <groupId>org.activiti.api</groupId>
+      <artifactId>activiti-api-dependencies</artifactId>
+      <version>${activiti-api.version}</version>
+      <type>pom</type>
+    </dependency>
+  </dependencies>
+
+  <modules>
+    <module>activiti-core-common-dependencies-tests</module>
+    <module>activiti-core-common-dependencies</module>
+    <module>activiti-spring-identity</module>
+    <module>activiti-spring-security</module>
+    <module>activiti-spring-security-policies</module>
+    <module>activiti-spring-connector</module>
+    <module>activiti-connector-model</module>
+    <module>activiti-spring-application</module>
+    <module>activiti-spring-resource-finder</module>
+    <module>activiti-core-test</module>
+    <module>activiti-project-model</module>
+    <module>activiti-spring-project</module>
+    <module>activiti-common-util</module>
+  </modules>
+
+  <repositories>
+    <repository>
+      <id>alfresco</id>
+      <name>Activiti Releases</name>
+      <url>https://artifacts.alfresco.com/nexus/content/repositories/activiti-releases/</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+    </repository>
+  </repositories>
+
+  <scm>
+    <url>https://github.com/Activiti/Activiti</url>
+    <connection>scm:git:https://github.com/Activiti/Activiti.git</connection>
+    <developerConnection>scm:git:https://github.com/Activiti/Activiti.git</developerConnection>
+    <tag>HEAD</tag>
+  </scm>
+  <ciManagement>
+    <system>Travis</system>
+    <url>https://travis-ci.org/Activiti/Activiti</url>
+  </ciManagement>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-deploy-plugin</artifactId>
+        <version>2.8.2</version>
+        <configuration>
+          <deployAtEnd>true</deployAtEnd>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>

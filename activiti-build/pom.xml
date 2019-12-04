@@ -1,0 +1,665 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.activiti</groupId>
+    <version>7.1.0-SNAPSHOT</version>
+    <artifactId>activiti-aggregator</artifactId>
+    <relativePath>../</relativePath>
+  </parent>
+
+  <groupId>org.activiti.build</groupId>
+  <artifactId>activiti-parent</artifactId>
+  <version>7.1.0-SNAPSHOT</version>
+  <packaging>pom</packaging>
+  <name>Activiti :: Parent</name>
+  <description>${project.name}</description>
+  <url>http://activiti.org</url>
+  <inceptionYear>2010</inceptionYear>
+  <organization>
+    <name>Alfresco</name>
+    <url>http://www.alfresco.com</url>
+  </organization>
+  <licenses>
+    <license>
+      <name>Apache v2</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <id>salaboy</id>
+      <name>Mauricio Salatino</name>
+      <email>mauricio.salatino@alfresco.com</email>
+      <organization>Alfresco</organization>
+      <organizationUrl>http://alfresco.com</organizationUrl>
+    </developer>
+    <developer>
+      <id>erdemedeiros</id>
+      <name>Elias De Medeiros</name>
+      <email>elias.demedeiros@alfresco.com</email>
+      <organization>Alfresco</organization>
+      <organizationUrl>http://alfresco.com</organizationUrl>
+    </developer>
+    <developer>
+      <id>ryandawsonuk</id>
+      <name>Ryan Dawson</name>
+      <email>ryan.dawson@alfresco.com</email>
+      <organization>Alfresco</organization>
+      <organizationUrl>http://alfresco.com</organizationUrl>
+    </developer>
+  </developers>
+  <modules>
+    <module>activiti-dependencies-parent</module>
+    <module>activiti-dependency-check</module>
+  </modules>
+  <scm>
+    <url>http://github.com/Activiti/${project.artifactId}</url>
+    <connection>scm:git:git://github.com/Activiti/${project.artifactId}.git</connection>
+    <developerConnection>scm:git:ssh://git@github.com/Activiti/${project.artifactId}.git</developerConnection>
+  </scm>
+  <issueManagement>
+    <system>GitHub</system>
+    <url>https://github.com/Activiti/Activiti/issues</url>
+  </issueManagement>
+  <ciManagement>
+    <system>Travis</system>
+    <url>https://travis-ci.org/Activiti/${project.artifactId}</url>
+  </ciManagement>
+  <properties>
+    <!-- plugins -->
+    <asm.version>7.2-beta</asm.version>
+    <assertj-assertions-generator-maven-plugin.version>2.2.0</assertj-assertions-generator-maven-plugin.version>
+    <build-helper-maven-plugin.version>3.0.0</build-helper-maven-plugin.version>
+    <dependency-check-maven.version>3.1.2</dependency-check-maven.version>
+    <exec-maven-plugin.version>1.6.0</exec-maven-plugin.version>
+    <extra-enforcer-rules.version>1.2</extra-enforcer-rules.version>
+    <jacoco-maven-plugin.version>0.8.4</jacoco-maven-plugin.version>
+    <jgitflow-maven-plugin.version>1.0-m5.1</jgitflow-maven-plugin.version>
+    <maven-clean-plugin.version>3.1.0</maven-clean-plugin.version>
+    <maven-checkstyle-plugin.version>3.1.0</maven-checkstyle-plugin.version>
+    <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
+    <maven-deploy-plugin.version>3.0.0-M1</maven-deploy-plugin.version>
+    <maven-enforcer-plugin.version>3.0.0-M2</maven-enforcer-plugin.version>
+    <!-- had to downgrade failsafe plugin to avoid sun.reflect.annotation.TypeNotPresentExceptionProxy error in activiti-cloud-query
+    workaround for https://github.com/spring-projects/spring-boot/issues/6254-->
+    <maven-failsafe-plugin.version>3.0.0-M3</maven-failsafe-plugin.version>
+    <maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
+    <maven-install-plugin.version>3.0.0-M1</maven-install-plugin.version>
+    <maven-jar-plugin.version>3.1.2</maven-jar-plugin.version>
+    <maven-javadoc-plugin.version>3.1.1</maven-javadoc-plugin.version>
+    <maven-release-plugin.version>2.5.3</maven-release-plugin.version>
+    <maven-resources-plugin.version>3.1.0</maven-resources-plugin.version>
+    <maven-site-plugin.version>3.8.2</maven-site-plugin.version>
+    <maven-source-plugin.version>3.1.0</maven-source-plugin.version>
+    <maven-surefire-plugin.version>3.0.0-M3</maven-surefire-plugin.version>
+
+    <java.version>8</java.version>
+    <maven.compiler.source>${java.version}</maven.compiler.source>
+    <maven.compiler.target>${java.version}</maven.compiler.target>
+
+    <!-- configuration properties -->
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <enforcer.failOnDuplicatedClasses>true</enforcer.failOnDuplicatedClasses>
+    <!-- configuration properties for tests-->
+    <generated-assertions-folder>${project.build.directory}/generated-test-sources/assertions</generated-assertions-folder>
+    <generated-assertions-package>org.activiti.test</generated-assertions-package>
+    <!-- JVM params for test execution -->
+    <argLine>-Duser.language=en</argLine>
+
+    <!-- dependency -->
+    <activiti-build.version>${project.version}</activiti-build.version>
+    <skipITs>true</skipITs>
+
+  </properties>
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.activiti.build</groupId>
+        <artifactId>activiti-dependency-check</artifactId>
+        <version>${activiti-build.version}</version>
+        <type>xml</type>
+        <classifier>suppression</classifier>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>versions-maven-plugin</artifactId>
+          <version>2.7</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-clean-plugin</artifactId>
+          <version>${maven-clean-plugin.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-checkstyle-plugin</artifactId>
+          <version>${maven-checkstyle-plugin.version}</version>
+          <executions>
+            <execution>
+              <id>validate</id>
+              <phase>validate</phase>
+              <goals>
+                <goal>check</goal>
+              </goals>
+              <configuration>
+                <checkstyleRules>
+                  <module name="Checker">
+                    <!-- Checks for whitespace. -->
+
+                    <module name="FileTabCharacter">
+                      <property name="severity" value="error" />
+                      <property name="eachLine" value="true" />
+                    </module>
+                    <module name="TreeWalker">
+                      <!-- Import settings: getting rid of redundant import, forbid star notation, defined order of imports. -->
+                      <module name="RedundantImport" />
+                      <module name="AvoidStarImport">
+                        <property name="excludes" value="org.junit.Assert,org.assertj.core.api.Assertions,org.mockito.Mockito" />
+                        <property name="allowClassImports" value="false" />
+                        <property name="allowStaticMemberImports" value="false" />
+                      </module>
+                      <module name="CustomImportOrder">
+                        <property name="customImportOrderRules" value="STANDARD_JAVA_PACKAGE###THIRD_PARTY_PACKAGE###STATIC" />
+                        <property name="sortImportsInGroupAlphabetically" value="true" />
+                        <property name="separateLineBetweenGroups" value="true" />
+                      </module>
+
+                      <module name="NeedBraces">
+                        <property name="tokens" value="LITERAL_IF, LITERAL_ELSE, LITERAL_FOR, LITERAL_WHILE, LITERAL_DO" />
+                      </module>
+                      <module name="EqualsHashCode" />
+                    </module>
+                  </module>
+                </checkstyleRules>
+                <outputFile>${project.build.directory}/checkstyle.log</outputFile>
+                <includeTestSourceDirectory>true</includeTestSourceDirectory>
+                <includeResources>true</includeResources>
+                <includeTestResources>true</includeTestResources>
+                <consoleOutput>false</consoleOutput>
+                <logViolationsToConsole>false</logViolationsToConsole>
+                <failsOnError>false</failsOnError>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-deploy-plugin</artifactId>
+          <version>${maven-deploy-plugin.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-jar-plugin</artifactId>
+          <version>${maven-jar-plugin.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-javadoc-plugin</artifactId>
+          <version>${maven-javadoc-plugin.version}</version>
+          <configuration>
+            <doclint>none</doclint>
+            <failOnError>false</failOnError>        
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-install-plugin</artifactId>
+          <version>${maven-install-plugin.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-release-plugin</artifactId>
+          <version>${maven-release-plugin.version}</version>
+          <configuration>
+            <releaseProfiles>sign</releaseProfiles>
+            <autoVersionSubmodules>true</autoVersionSubmodules>
+            <tagNameFormat>activiti-@{project.version}</tagNameFormat>
+            <!-- Necessary until keycloak releases boot2 adaptor -->
+            <allowTimestampedSnapshots>true</allowTimestampedSnapshots>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-resources-plugin</artifactId>
+          <version>${maven-resources-plugin.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-site-plugin</artifactId>
+          <version>${maven-site-plugin.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-source-plugin</artifactId>
+          <version>${maven-source-plugin.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>external.atlassian.jgitflow</groupId>
+          <artifactId>jgitflow-maven-plugin</artifactId>
+          <version>${jgitflow-maven-plugin.version}</version>
+          <configuration>
+            <enableFeatureVersions>true</enableFeatureVersions>
+            <autoVersionSubmodules>true</autoVersionSubmodules>
+            <allowSnapshots>true</allowSnapshots>
+            <noDeploy>false</noDeploy>
+            <useReleaseProfile>true</useReleaseProfile> <!-- Do not generate javadoc when releasing -->
+            <pushReleases>true</pushReleases>
+            <squash>false</squash>
+            <keepBranch>true</keepBranch>
+            <noFeatureBuild>true</noFeatureBuild>
+            <noFeatureMerge>true</noFeatureMerge>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>exec-maven-plugin</artifactId>
+          <version>${exec-maven-plugin.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>build-helper-maven-plugin</artifactId>
+          <version>${build-helper-maven-plugin.version}</version>
+          <executions>
+            <execution>
+              <id>add-generated-assertions-folder</id>
+              <phase>generate-test-sources</phase>
+              <goals>
+                <goal>add-test-source</goal>
+              </goals>
+              <configuration>
+                <sources>
+                  <source>${generated-assertions-folder}</source>
+                </sources>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
+          <groupId>org.springframework.boot</groupId>
+          <artifactId>spring-boot-maven-plugin</artifactId>
+          <version>${spring-boot.version}</version>
+          <executions>
+            <execution>
+              <goals>
+                <goal>repackage</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
+          <groupId>org.assertj</groupId>
+          <artifactId>assertj-assertions-generator-maven-plugin</artifactId>
+          <version>${assertj-assertions-generator-maven-plugin.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.jacoco</groupId>
+          <artifactId>jacoco-maven-plugin</artifactId>
+          <version>${jacoco-maven-plugin.version}</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>${maven-compiler-plugin.version}</version>
+        <configuration>
+          <release>${java.version}</release>
+          <showDeprecation>true</showDeprecation>
+          <showWarnings>true</showWarnings>
+          <optimize>true</optimize>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <version>${maven-enforcer-plugin.version}</version>
+        <dependencies>
+          <dependency>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>extra-enforcer-rules</artifactId>
+            <version>${extra-enforcer-rules.version}</version>
+          </dependency>
+          <dependency>
+            <groupId>org.ow2.asm</groupId>
+            <artifactId>asm-analysis</artifactId>
+            <version>${asm.version}</version>
+          </dependency>
+        </dependencies>
+        <executions>
+          <!-- <execution>
+            <id>enforce-java</id>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <requireJavaVersion>
+                  <version>${java.version}</version>
+                </requireJavaVersion>
+              </rules>
+            </configuration>
+          </execution> -->
+          <execution>
+            <id>enforce-maven</id>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <requireMavenVersion>
+                  <version>3.2</version>
+                </requireMavenVersion>
+              </rules>
+            </configuration>
+          </execution>
+          <execution>
+            <id>ban-blacklisted-dependencies</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <bannedDependencies>
+                  <excludes combine.children="append">
+                    <!-- Ban blacklisted logging deps (we only use SLF4J + Logback) -->
+                    <!-- In case of transitive dependency, exclude it and use 'org.slf4j:jcl-over-slf4j' instead -->
+                    <exclude>commons-logging:commons-log*</exclude>
+                    <!-- In case of transitive dependency, exclude it and use 'org.slf4j:log4j-over-slf4j' instead -->
+                    <exclude>log4j:log4j</exclude>
+                    <!-- In case of transitive dependency, exclude it and use 'org.javassist:javassist' instead -->
+                    <exclude>javassist:javassist</exclude>
+                    <!-- Replaced by commons-lang3 -->
+                    <exclude>commons-lang:commons-lang:*:jar:compile</exclude>
+                    <!-- Replaced by commons-dbcp2 -->
+                    <exclude>commons-dbcp:commons-dbcp:*:jar:compile</exclude>
+                  </excludes>
+                </bannedDependencies>
+              </rules>
+              <fail>true</fail>
+            </configuration>
+          </execution>
+          <execution>
+            <id>ban-duplicated-classes</id>
+            <!-- Using phase=none as we don't want this execution as part of the default build. The phase
+                               is specified in the "full" profile and thus the execution will only be activated when using that profile. -->
+            <phase>none</phase>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <banDuplicateClasses>
+                  <ignoreClasses>
+                    <!-- Servlet API is bundled in way too many different dependencies, causing nightmares trying to
+                                               properly exclude everything. There were no real issues with this so far as mostly the APIs
+                                               are just duplicates of the exactly same sources. In ideal world, this get eventually fixed,
+                                               but it may very well not be worth the effort. -->
+                    <ignoreClass>javax.servlet.*</ignoreClass>
+                    <!-- Classes in javax.annotation package are just marker annotations used to aid the programmers.
+                                               These annotations do not influence the actual behavior of the code, so it's reasonable to
+                                               ignore them. Following dependencies contain these classes: 'com.google.code.findbugs:jsr305'
+                                               and 'com.google.code.findbugs:annotations'. -->
+                    <ignoreClass>javax.annotation.*</ignoreClass>
+                    <!-- Exactly the same case as for above 'javax.annotation.*' classes. Following dependencies contain
+                                               these classes: 'net.jcip:jcip-annotations' and 'com.google.code.findbugs:annotations'. -->
+                    <ignoreClass>net.jcip.annotations.*</ignoreClass>
+                  </ignoreClasses>
+                  <dependencies>
+
+                  </dependencies>
+                  <findAllDuplicates>true</findAllDuplicates>
+                </banDuplicateClasses>
+              </rules>
+              <fail>${enforcer.failOnDuplicatedClasses}</fail>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>${maven-surefire-plugin.version}</version>
+        <configuration>
+          <!-- use syntax for Jacoco late property evaluation -->
+          <argLine>@{argLine} -Xmx1024m -XX:MaxPermSize=256m</argLine>
+          <redirectTestOutputToFile>true</redirectTestOutputToFile>
+          <failIfNoTests>false</failIfNoTests>
+          <trimStackTrace>false</trimStackTrace>
+          <excludes>
+            <exclude>**/*TestCase.java</exclude>
+            <exclude>**/*IT.java</exclude>
+          </excludes>
+          <runOrder>alphabetical</runOrder>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <version>${jacoco-maven-plugin.version}</version>
+        <executions>
+          <!-- Unit tests configuration-->
+          <execution>
+            <id>pre-unit-test</id>
+            <goals>
+              <goal>prepare-agent</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>post-unit-test</id>
+            <phase>test</phase>
+            <goals>
+              <goal>report</goal>
+            </goals>
+          </execution>
+          <!-- Integration tests configuration-->
+          <execution>
+            <id>pre-integration-test</id>
+            <phase>pre-integration-test</phase>
+            <goals>
+              <goal>prepare-agent-integration</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>post-integration-test</id>
+            <phase>post-integration-test</phase>
+            <goals>
+              <goal>report-integration</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+  <profiles>
+    <profile>
+      <id>attach-sources</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>   
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-source-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>attach-sources</id>
+                <phase>deploy</phase>
+                <goals>
+                  <goal>jar-no-fork</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <!-- Activate integration tests -->
+    <profile>
+      <id>integration-test</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+        <property>
+          <name>skipITs</name>
+          <value>false</value>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-failsafe-plugin</artifactId>
+            <version>${maven-failsafe-plugin.version}</version>
+            <executions>
+              <execution>
+                <id>integration-test</id>
+                <goals>
+                  <goal>integration-test</goal>
+                  <goal>verify</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <!-- Profile to sign artifacts, triggered when releasing -->
+    <profile>
+      <id>sign</id>
+      <activation>
+        <property>
+          <name>performRelease</name>
+          <value>true</value>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-gpg-plugin</artifactId>
+            <version>${maven-gpg-plugin.version}</version>
+            <executions>
+              <execution>
+                <id>sign-artifacts</id>
+                <goals>
+                  <goal>sign</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+      <distributionManagement>
+       <!--TODO this doesn't work with new deployment plugin -->
+        <repository>
+          <id>central-releases-staging</id>
+          <name>Central Releases - Staging</name>
+          <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+      </distributionManagement>
+    </profile>
+    <!-- profile to make eclipse happy -->
+    <profile>
+      <id>m2eclipse</id>
+      <activation>
+        <property>
+          <name>m2e.version</name>
+        </property>
+      </activation>
+      <build>
+        <pluginManagement>
+          <plugins>
+            <plugin>
+              <groupId>org.eclipse.m2e</groupId>
+              <artifactId>lifecycle-mapping</artifactId>
+              <version>1.0.0</version>
+              <configuration>
+                <lifecycleMappingMetadata>
+                  <pluginExecutions>
+                    <pluginExecution>
+                      <pluginExecutionFilter>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <versionRange>[${exec-maven-plugin.version},)</versionRange>
+                        <goals>
+                          <goal>java</goal>
+                          <goal>exec</goal>
+                        </goals>
+                      </pluginExecutionFilter>
+                      <action>
+                        <execute>
+                          <runOnIncremental>true</runOnIncremental>
+                          <runOnConfiguration>true</runOnConfiguration>
+                        </execute>
+                      </action>
+                    </pluginExecution>
+                    <pluginExecution>
+                      <pluginExecutionFilter>
+                        <groupId>org.assertj</groupId>
+                        <artifactId>assertj-assertions-generator-maven-plugin</artifactId>
+                        <versionRange>[${assertj-assertions-generator-maven-plugin.version},)</versionRange>
+                        <goals>
+                          <goal>generate-assertions</goal>
+                        </goals>
+                      </pluginExecutionFilter>
+                      <action>
+                        <execute>
+                          <runOnIncremental>true</runOnIncremental>
+                          <runOnConfiguration>true</runOnConfiguration>
+                        </execute>
+                      </action>
+                    </pluginExecution>
+                  </pluginExecutions>
+                </lifecycleMappingMetadata>
+              </configuration>
+            </plugin>
+          </plugins>
+        </pluginManagement>
+      </build>
+    </profile>
+    <!-- profile to check dependencies for vulnerabilities -->
+    <profile>
+      <id>dependency-check</id>
+      <dependencies>
+        <dependency>
+          <groupId>org.activiti.build</groupId>
+          <artifactId>activiti-dependency-check</artifactId>
+          <type>xml</type>
+          <classifier>suppression</classifier>
+        </dependency>
+      </dependencies>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.owasp</groupId>
+            <artifactId>dependency-check-maven</artifactId>
+            <version>${dependency-check-maven.version}</version>
+            <configuration>
+              <failBuildOnCVSS>7</failBuildOnCVSS>
+              <suppressionFiles>
+                <suppressionFile>${settings.localRepository}/org/activiti/build/activiti-dependency-check/${activiti-build.version}/activiti-dependency-check-${activiti-build.version}-suppression.xml</suppressionFile>
+              </suppressionFiles>
+            </configuration>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+</project>
