@@ -129,20 +129,32 @@ public class ProcessInstanceHelper {
       throw new ActivitiException("No message start event found for process definition " + processDefinition.getId() + " and message name " + messageName);
     }
 
-    // Map message payload variables before creating process instance
-    Map<String, Object> processVariables = commandContext.getProcessEngineConfiguration()
-                                                         .getEventSubscriptionPayloadMappingProvider()
-                                                         .apply(messageVariables,
-                                                                eventSubscription);
-
-    // Create process instance with executions but defer to start process after dispatching ACTIVITY_MESSAGE_RECEIVED
-    ExecutionEntity processInstance = createProcessInstanceWithInitialFlowElement(processDefinition,
-                                                                                  businessKey,
-                                                                                  null,
-                                                                                  initialFlowElement,
-                                                                                  process,
-                                                                                  processVariables,
-                                                                                  transientVariables);
+//    // Map message payload variables before creating process instance
+//    Map<String, Object> processVariables = commandContext.getProcessEngineConfiguration()
+//                                                         .getEventSubscriptionPayloadMappingProvider()
+//                                                         .apply(messageVariables,
+//                                                                eventSubscription);
+//
+//    // Create process instance with executions but defer to start process after dispatching ACTIVITY_MESSAGE_RECEIVED
+//    ExecutionEntity processInstance = createProcessInstanceWithInitialFlowElement(processDefinition,
+//                                                                                  businessKey,
+//                                                                                  null,
+//                                                                                  initialFlowElement,
+//                                                                                  process,
+//                                                                                  processVariables,
+//                                                                                  transientVariables);
+    
+   Map<String, Object> processVariables = messageVariables;
+    
+  // Create process instance with executions but defer to start process after dispatching ACTIVITY_MESSAGE_RECEIVED
+  ExecutionEntity processInstance = createProcessInstanceWithInitialFlowElement(processDefinition,
+                                                                                businessKey,
+                                                                                null,
+                                                                                initialFlowElement,
+                                                                                process,
+                                                                                processVariables,
+                                                                                transientVariables);
+    
     // Dispatch message received event
     dispatchStartMessageReceivedEvent(processInstance, messageName, messageVariables);
 

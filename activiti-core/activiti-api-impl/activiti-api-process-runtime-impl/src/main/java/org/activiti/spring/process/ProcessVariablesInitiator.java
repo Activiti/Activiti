@@ -13,23 +13,25 @@
 
 package org.activiti.spring.process;
 
-import org.activiti.bpmn.model.FlowElement;
-import org.activiti.bpmn.model.Process;
-import org.activiti.engine.ActivitiException;
-import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
-import org.activiti.engine.impl.util.ProcessInstanceHelper;
-import org.activiti.engine.repository.ProcessDefinition;
-import org.activiti.spring.process.model.ProcessExtensionModel;
-import org.activiti.spring.process.model.VariableDefinition;
-import org.activiti.spring.process.variable.VariableParsingService;
-import org.activiti.spring.process.variable.VariableValidationService;
-
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+
+import org.activiti.bpmn.model.FlowElement;
+import org.activiti.bpmn.model.Process;
+import org.activiti.engine.ActivitiException;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
+import org.activiti.engine.impl.util.ProcessInstanceHelper;
+import org.activiti.engine.repository.ProcessDefinition;
+import org.activiti.runtime.api.impl.MappingExecutionContext;
+import org.activiti.runtime.api.impl.VariablesMappingProvider;
+import org.activiti.spring.process.model.ProcessExtensionModel;
+import org.activiti.spring.process.model.VariableDefinition;
+import org.activiti.spring.process.variable.VariableParsingService;
+import org.activiti.spring.process.variable.VariableValidationService;
 
 public class ProcessVariablesInitiator extends ProcessInstanceHelper {
 
@@ -38,13 +40,17 @@ public class ProcessVariablesInitiator extends ProcessInstanceHelper {
     private final VariableParsingService variableParsingService;
 
     private final VariableValidationService variableValidationService;
+    
+    private VariablesMappingProvider mappingProvider;
 
     public ProcessVariablesInitiator(ProcessExtensionService processExtensionService,
                                      VariableParsingService variableParsingService,
-                                     VariableValidationService variableValidationService) {
+                                     VariableValidationService variableValidationService,
+                                     VariablesMappingProvider mappingProvider) {
         this.processExtensionService = processExtensionService;
         this.variableParsingService = variableParsingService;
         this.variableValidationService = variableValidationService;
+        this.mappingProvider = mappingProvider;
     }
 
     public Map<String, Object> calculateVariablesFromExtensionFile(ProcessDefinition processDefinition,
@@ -82,10 +88,15 @@ public class ProcessVariablesInitiator extends ProcessInstanceHelper {
                                                                        Map<String, Object> variables,
                                                                        Map<String, Object> transientVariables) {
         Map<String, Object> processVariables = variables;
-
+        
         if (processExtensionService.hasExtensionsFor(processDefinition)) {
+            
+            processVariables = mappingProvider.calculateOutPutVariables(MappingExecutionContext.buildMappingExecutionContext(processDefinition.getId(),
+                                                                                                                             initialFlowElement.getId()),
+                                                                        variables);
+
             processVariables = calculateVariablesFromExtensionFile(processDefinition,
-                    variables);
+                                                                   processVariables);
         }
 
         return super.createProcessInstanceWithInitialFlowElement(processDefinition,

@@ -2,6 +2,7 @@ package org.activiti.spring.boot.process;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.tuple;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -149,5 +150,37 @@ public class ProcessExtensionsTest {
                     .withVariable("birth","2007-10-01")
                     .build());
         }).withMessage("Variables fail type validation: subscribe, name, age");
+    }
+    
+    @Test
+    public void test() {
+
+        securityUtil.logInAs("user");
+
+        ProcessInstance process = processRuntime.start(ProcessPayloadBuilder.start()
+                .withProcessDefinitionKey("process-b42a166d-605b-4eec-8b96-82b1253666bf")
+                .withVariable("Text0xfems",
+                        "name_value")
+                .withVariable("Text0rvs0o",
+                        "email_value")
+                .withBusinessKey("my business key")
+                .build());
+
+        assertThat(process).isNotNull();
+        assertThat(process.getStatus()).isEqualTo(ProcessInstance.ProcessInstanceStatus.RUNNING);
+
+        List<VariableInstance> variableInstances = processRuntime.variables(ProcessPayloadBuilder.variables().withProcessInstance(process).build());
+
+        assertThat(variableInstances)
+        .isNotNull()
+        .hasSize(2)
+        .extracting(VariableInstance::getName,
+                    VariableInstance::getValue)
+        .containsOnly(
+                      tuple("name", "name_value"),
+                      tuple("email", "email_value")
+        );
+
+        processRuntime.delete(ProcessPayloadBuilder.delete(process));
     }
 }

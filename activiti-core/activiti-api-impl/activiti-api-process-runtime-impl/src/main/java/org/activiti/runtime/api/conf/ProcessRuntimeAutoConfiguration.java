@@ -124,6 +124,8 @@ import org.activiti.runtime.api.model.impl.ToActivityConverter;
 import org.activiti.runtime.api.model.impl.ToSignalConverter;
 import org.activiti.runtime.api.signal.SignalPayloadEventListener;
 import org.activiti.spring.process.ProcessExtensionService;
+import org.activiti.spring.process.ProcessVariablesInitiator;
+import org.activiti.spring.process.variable.VariableParsingService;
 import org.activiti.spring.process.variable.VariableValidationService;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -220,6 +222,18 @@ public class ProcessRuntimeAutoConfiguration {
         return new APIProcessDefinitionConverter(repositoryService);
     }
 
+    @Bean
+    @ConditionalOnMissingBean
+    public ProcessVariablesInitiator processVariablesInitiator(ProcessExtensionService processExtensionService,
+                                                               VariableParsingService variableParsingService,
+                                                               VariableValidationService variableValidationService,
+                                                               VariablesMappingProvider mappingProvider) {
+        return new ProcessVariablesInitiator(processExtensionService,
+                                             variableParsingService,
+                                             variableValidationService,
+                                             mappingProvider);
+    }
+    
     @Bean
     @ConditionalOnMissingBean
     public ProcessVariablesPayloadValidator processVariablesValidator(DateFormatterProvider dateFormatterProvider,
