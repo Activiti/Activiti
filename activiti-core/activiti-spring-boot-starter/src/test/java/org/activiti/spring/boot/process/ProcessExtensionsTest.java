@@ -153,7 +153,7 @@ public class ProcessExtensionsTest {
     }
     
     @Test
-    public void test() {
+    public void should_mapProcessVariables_when_startEventMappingExists() {
 
         securityUtil.logInAs("user");
 
