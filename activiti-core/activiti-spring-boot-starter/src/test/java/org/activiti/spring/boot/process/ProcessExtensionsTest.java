@@ -181,6 +181,5 @@ public class ProcessExtensionsTest {
                       tuple("email", "email_value")
         );
 
-        processRuntime.delete(ProcessPayloadBuilder.delete(process));
     }
 }
