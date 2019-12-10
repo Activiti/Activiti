@@ -128,12 +128,6 @@ public class ProcessInstanceHelper {
     if (initialFlowElement == null) {
       throw new ActivitiException("No message start event found for process definition " + processDefinition.getId() + " and message name " + messageName);
     }
-
-//    // Map message payload variables before creating process instance
-//    Map<String, Object> processVariables = commandContext.getProcessEngineConfiguration()
-//                                                         .getEventSubscriptionPayloadMappingProvider()
-//                                                         .apply(messageVariables,
-//                                                                eventSubscription);
     
     Map<String, Object> processVariables = messageVariables;
 
