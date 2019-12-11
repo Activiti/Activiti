@@ -6,7 +6,7 @@
     <groupId>org.activiti.build</groupId>
     <artifactId>activiti-parent</artifactId>
     <version>7.1.0-SNAPSHOT</version> <!-- using fixed version for CI/CD -->
-    <relativePath>../activiti-build</relativePath>
+    <relativePath>../</relativePath>
   </parent>
   <groupId>org.activiti.api</groupId>
   <artifactId>activiti-api</artifactId>
@@ -14,7 +14,7 @@
 
   <name>Activiti API :: Parent</name>
   <packaging>pom</packaging>
-  
+
   <modules>
     <module>activiti-api-dependencies-tests</module>
     <module>activiti-api-dependencies</module>
@@ -71,7 +71,7 @@
       <type>pom</type>
     </dependency>
   </dependencies>
-  
+
   <build>
     <plugins>
       <plugin>
@@ -85,7 +85,7 @@
           <optimize>true</optimize>
         </configuration>
       </plugin>
-    
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-deploy-plugin</artifactId>
