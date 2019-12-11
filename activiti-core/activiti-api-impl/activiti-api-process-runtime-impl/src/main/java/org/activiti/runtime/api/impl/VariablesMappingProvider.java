@@ -140,10 +140,10 @@ public class VariablesMappingProvider {
         }
 
         if (!extensions.getExtensions().hasMapping(execution.getActivityId())) {
-            return new HashMap<>(availableVariables);
+            return (availableVariables != null ? new HashMap<>(availableVariables) : Collections.emptyMap());
         }
 
-        if (!availableVariables.isEmpty()) {
+        if (availableVariables != null && !availableVariables.isEmpty()) {
             if (expressionResolver.containsExpression(availableVariables)) {
                 throw new ActivitiIllegalArgumentException("Expressions are not allowed as variable values in the output mapping");
             }

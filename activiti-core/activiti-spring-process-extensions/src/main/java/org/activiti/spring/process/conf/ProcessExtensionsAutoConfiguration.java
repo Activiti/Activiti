@@ -20,10 +20,8 @@ import java.util.Map;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.activiti.common.util.DateFormatterProvider;
 import org.activiti.engine.RepositoryService;
-import org.activiti.spring.process.ProcessExtensionResourceFinderDescriptor;
 import org.activiti.spring.process.ProcessExtensionResourceReader;
 import org.activiti.spring.process.ProcessExtensionService;
-import org.activiti.spring.process.ProcessVariablesInitiator;
 import org.activiti.spring.process.model.ProcessExtensionModel;
 import org.activiti.spring.process.variable.VariableParsingService;
 import org.activiti.spring.process.variable.VariableValidationService;
@@ -33,23 +31,12 @@ import org.activiti.spring.process.variable.types.JsonObjectVariableType;
 import org.activiti.spring.process.variable.types.VariableType;
 import org.activiti.spring.resources.DeploymentResourceLoader;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class ProcessExtensionsAutoConfiguration {
-
-    @Bean
-    @ConditionalOnMissingBean
-    public ProcessVariablesInitiator processVariablesInitiator(ProcessExtensionService processExtensionService,
-                                                               VariableParsingService variableParsingService,
-                                                               VariableValidationService variableValidationService) {
-        return new ProcessVariablesInitiator(processExtensionService,
-                                             variableParsingService,
-                                             variableValidationService);
-    }
 
     @Bean
     @ConditionalOnMissingBean
