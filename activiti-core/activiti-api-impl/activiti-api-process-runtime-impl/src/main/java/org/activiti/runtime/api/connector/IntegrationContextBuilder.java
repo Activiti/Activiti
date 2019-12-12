@@ -16,6 +16,8 @@
 
 package org.activiti.runtime.api.connector;
 
+import java.util.Objects;
+
 import org.activiti.api.process.model.IntegrationContext;
 import org.activiti.api.runtime.model.impl.IntegrationContextImpl;
 import org.activiti.bpmn.model.ServiceTask;
@@ -59,6 +61,8 @@ public class IntegrationContextBuilder {
 
             if (processInstance != null) {
                 integrationContext.setParentProcessInstanceId(processInstance.getParentProcessInstanceId());
+                integrationContext.setAppVersion(Objects.toString(processInstance.getAppVersion(),"1"));
+
             }
 
             // Let's try to resolve process definition attributes
