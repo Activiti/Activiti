@@ -21,6 +21,8 @@
              xmlns:activiti="http://activiti.org/bpmn"
              targetNamespace="Examples">
 
+  <signal id="goMiParallelUserTaskBoundaryEvent" name="goMiParallelUserTaskBoundaryEvent"></signal>
+
   <process id="miParallelUserTaskBoundaryEvent">
     <startEvent id="StartEvent_1"/>
 
@@ -34,7 +36,7 @@
 
     <userTask id="miTasks" name="My Task ${loopCounter}" activiti:assignee="user">
       <multiInstanceLoopCharacteristics>
-        <loopCardinality>4</loopCardinality>
+        <loopCardinality>2</loopCardinality>
       </multiInstanceLoopCharacteristics>
     </userTask>
 

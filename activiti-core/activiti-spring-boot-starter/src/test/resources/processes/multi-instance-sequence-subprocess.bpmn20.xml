@@ -28,7 +28,7 @@
 
     <subProcess id="miSubProcess">
       <multiInstanceLoopCharacteristics isSequential="true">
-        <loopCardinality>${4}</loopCardinality>
+        <loopCardinality>${2}</loopCardinality>
       </multiInstanceLoopCharacteristics>
 
       <startEvent id="StartEvent_1kslv5t"/>

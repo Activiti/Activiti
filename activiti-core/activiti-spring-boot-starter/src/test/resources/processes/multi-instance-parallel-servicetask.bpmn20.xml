@@ -12,7 +12,7 @@
         <serviceTask id="miServiceTask" name="miServiceTask ${loopCounter}"
                      implementation="testConnectorMultiInstanceExecution">
             <multiInstanceLoopCharacteristics isSequential="false">
-                <loopCardinality>${4}</loopCardinality>
+                <loopCardinality>${2}</loopCardinality>
             </multiInstanceLoopCharacteristics>
         </serviceTask>
 

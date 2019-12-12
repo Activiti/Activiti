@@ -280,8 +280,8 @@ public class ProcessRuntimeBPMNTimerIT {
         assertThat(processInstances).isNotNull();
         assertThat(processInstances.getContent()).isEmpty();
 
-        //when shift 10 minutes
-        long waitTime = 600 * 1000;
+        //when shift 31 minutes
+        long waitTime = 31 * 60 * 1000;
         processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + waitTime));
 
         //then

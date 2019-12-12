@@ -13,7 +13,7 @@
 
     <task id="miTasks" name="My Task ${loopCounter}">
       <multiInstanceLoopCharacteristics isSequential="true">
-        <loopCardinality>${4}</loopCardinality>
+        <loopCardinality>${2}</loopCardinality>
       </multiInstanceLoopCharacteristics>
     </task>
 

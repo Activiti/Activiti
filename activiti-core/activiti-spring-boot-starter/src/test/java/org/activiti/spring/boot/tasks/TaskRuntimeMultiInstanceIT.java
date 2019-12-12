@@ -26,18 +26,20 @@ import java.util.stream.Collectors;
 
 import org.activiti.api.model.shared.event.RuntimeEvent;
 import org.activiti.api.process.model.ProcessInstance;
-import org.activiti.api.process.model.events.*;
-import org.activiti.api.process.runtime.events.ProcessCancelledEvent;
+import org.activiti.api.process.model.events.BPMNActivityCancelledEvent;
+import org.activiti.api.process.model.events.BPMNActivityCompletedEvent;
+import org.activiti.api.process.model.events.BPMNActivityEvent;
+import org.activiti.api.process.model.events.BPMNActivityStartedEvent;
+import org.activiti.api.process.model.events.BPMNTimerEvent;
+import org.activiti.api.process.model.events.ProcessRuntimeEvent;
 import org.activiti.api.process.runtime.events.ProcessCompletedEvent;
 import org.activiti.api.process.runtime.events.ProcessStartedEvent;
+import org.activiti.api.runtime.shared.query.Page;
 import org.activiti.api.task.model.Task;
 import org.activiti.api.task.model.events.TaskRuntimeEvent;
 import org.activiti.api.task.runtime.events.TaskAssignedEvent;
-import org.activiti.api.task.runtime.events.TaskCancelledEvent;
-import org.activiti.api.task.runtime.events.TaskCompletedEvent;
 import org.activiti.api.task.runtime.events.TaskCreatedEvent;
 import org.activiti.engine.ProcessEngineConfiguration;
-import org.activiti.spring.boot.RuntimeTestConfiguration;
 import org.activiti.spring.boot.process.ProcessBaseRuntime;
 import org.activiti.spring.boot.process.ProcessRuntimeBPMNTimerIT;
 import org.activiti.spring.boot.process.TimerTestConfigurator;
@@ -47,7 +49,6 @@ import org.activiti.spring.boot.process.listener.DummyBPMNTimerFiredListener;
 import org.activiti.spring.boot.process.listener.DummyBPMNTimerScheduledListener;
 import org.activiti.spring.boot.test.util.ProcessCleanUpUtil;
 import org.activiti.test.LocalEventSource;
-import org.assertj.core.groups.Tuple;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -81,18 +82,6 @@ public class TaskRuntimeMultiInstanceIT {
     private ProcessCleanUpUtil processCleanUpUtil;
 
     @Autowired
-    private DummyBPMNTimerFiredListener listenerFired;
-
-    @Autowired
-    private DummyBPMNTimerScheduledListener listenerScheduled;
-
-    @Autowired
-    private DummyBPMNTimerCancelledListener listenerCancelled;
-
-    @Autowired
-    private DummyBPMNTimerExecutedListener listenerExecuted;
-
-    @Autowired
     private ProcessEngineConfiguration processEngineConfiguration;
 
     @Before
@@ -104,10 +93,7 @@ public class TaskRuntimeMultiInstanceIT {
     public void tearDown() {
         processCleanUpUtil.cleanUpWithAdmin();
         processEngineConfiguration.getClock().reset();
-        listenerFired.clear();
-        listenerExecuted.clear();
-        listenerScheduled.clear();
-        listenerCancelled.clear();
+        localEventSource.clearEvents();
     }
 
     @Test
@@ -124,59 +110,75 @@ public class TaskRuntimeMultiInstanceIT {
                           "My Task 2",
                           "My Task 3");
 
-        List<TaskCreatedEvent> taskCreatedEvents = localEventSource.getEvents().stream()
-                .filter(event -> event.getEventType().equals(TaskRuntimeEvent.TaskEvents.TASK_CREATED))
-                .map(TaskCreatedEvent.class::cast)
-                .collect(Collectors.toList());
-        assertThat(taskCreatedEvents)
-                .extracting(event -> event.getEntity().getName())
-                .containsExactlyInAnyOrder("My Task 0",
-                                           "My Task 1",
-                                           "My Task 2",
-                                           "My Task 3");
+        assertThat(localEventSource.getTaskEvents())
+                .extracting(event -> ((Task) event.getEntity()).getName(),
+                        RuntimeEvent::getEventType
+                )
+                .containsExactlyInAnyOrder(tuple("My Task 0",
+                                                 TaskRuntimeEvent.TaskEvents.TASK_CREATED),
+                                           tuple("My Task 1",
+                                                 TaskRuntimeEvent.TaskEvents.TASK_CREATED),
+                                           tuple("My Task 2",
+                                                 TaskRuntimeEvent.TaskEvents.TASK_CREATED),
+                                           tuple("My Task 3",
+                                                 TaskRuntimeEvent.TaskEvents.TASK_CREATED),
+                                           tuple("My Task 0",
+                                                 TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED),
+                                           tuple("My Task 1",
+                                                 TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED),
+                                           tuple("My Task 2",
+                                                 TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED),
+                                           tuple("My Task 3",
+                                                 TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED));
 
-        // testing the multi instance element start, complete, cancel events
-        test_started_completed_canceledCount("miTasks", 4, 0,0);
+        assertActivityEvents("miTasks",
+                        BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
+                        BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
+                        BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
+                        BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED
+                );
 
         //given
         Task taskToComplete = tasks.get(0);
 
         //when first multi instance is completed: 3 remaining / completion condition not reached
+        localEventSource.clearEvents();
         taskBaseRuntime.completeTask(taskToComplete);
 
         //then
-        assertThat(localEventSource.getEvents())
-                .filteredOn(event -> event.getEventType().equals(TaskRuntimeEvent.TaskEvents.TASK_COMPLETED)
-                        || event.getEventType().equals(TaskRuntimeEvent.TaskEvents.TASK_CANCELLED))
-                .extracting(RuntimeEvent::getEventType,
-                            event -> ((Task) event.getEntity()).getName())
-                .containsExactly(tuple(TaskRuntimeEvent.TaskEvents.TASK_COMPLETED,
-                                       taskToComplete.getName()));
+        assertThat(localEventSource.getTaskEvents())
+                .extracting(event -> ((Task) event.getEntity()).getName(),
+                            RuntimeEvent::getEventType
+                )
+                .containsExactly(tuple(taskToComplete.getName(),
+                                                 TaskRuntimeEvent.TaskEvents.TASK_COMPLETED));
+
+        assertActivityEvents("miTasks",
+                        BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED);
+
 
         //given
         taskToComplete = tasks.get(1);
 
         //when second multi instance is completed: 2 remaining / completion condition reached
+        localEventSource.clearEvents();
         taskBaseRuntime.completeTask(taskToComplete);
 
-        // testing the multi instance element start, complete, cancel events
-        test_started_completed_canceledCount("miTasks", 4, 2,2);
+        assertThat(localEventSource.getTaskEvents())
+                .extracting(event -> ((Task) event.getEntity()).getName(),
+                            RuntimeEvent::getEventType
+                )
+                .containsExactlyInAnyOrder(tuple(taskToComplete.getName(),
+                                                 TaskRuntimeEvent.TaskEvents.TASK_COMPLETED),
+                                           tuple(tasks.get(2).getName(),
+                                                 TaskRuntimeEvent.TaskEvents.TASK_CANCELLED),
+                                           tuple(tasks.get(3).getName(),
+                                                 TaskRuntimeEvent.TaskEvents.TASK_CANCELLED));
 
-        //then
-        assertThat(localEventSource.getEvents())
-                .filteredOn(event -> event.getEventType().equals(TaskRuntimeEvent.TaskEvents.TASK_COMPLETED)
-                        || event.getEventType().equals(TaskRuntimeEvent.TaskEvents.TASK_CANCELLED))
-                .extracting(RuntimeEvent::getEventType,
-                            event -> ((Task) event.getEntity()).getName())
-                .containsExactlyInAnyOrder(tuple(TaskRuntimeEvent.TaskEvents.TASK_COMPLETED,
-                                                 tasks.get(0).getName()),
-                                           tuple(TaskRuntimeEvent.TaskEvents.TASK_COMPLETED,
-                                                 taskToComplete.getName()),
-                                           tuple(TaskRuntimeEvent.TaskEvents.TASK_CANCELLED,
-                                                 tasks.get(2).getName()),
-                                           tuple(TaskRuntimeEvent.TaskEvents.TASK_CANCELLED,
-                                                 tasks.get(3).getName())
-                );
+        assertActivityEvents("miTasks",
+                        BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
+                        BPMNActivityEvent.ActivityEvents.ACTIVITY_CANCELLED,
+                        BPMNActivityEvent.ActivityEvents.ACTIVITY_CANCELLED);
 
 
         assertThat(taskBaseRuntime.getTasks(processInstance)).isEmpty();
@@ -201,59 +203,79 @@ public class TaskRuntimeMultiInstanceIT {
                           "Task in sub-process 2",
                           "Task in sub-process 3");
 
-        List<TaskCreatedEvent> taskCreatedEvents = localEventSource.getEvents().stream()
-                .filter(event -> event.getEventType().equals(TaskRuntimeEvent.TaskEvents.TASK_CREATED))
-                .map(TaskCreatedEvent.class::cast)
-                .collect(Collectors.toList());
-        assertThat(taskCreatedEvents)
-                .extracting(event -> event.getEntity().getName())
-                .containsExactlyInAnyOrder("Task in sub-process 0",
-                                           "Task in sub-process 1",
-                                           "Task in sub-process 2",
-                                           "Task in sub-process 3");
+        assertThat(localEventSource.getTaskEvents())
+                .extracting(event -> ((Task) event.getEntity()).getName(),
+                            RuntimeEvent::getEventType
+                )
+                .containsExactlyInAnyOrder(tuple("Task in sub-process 0",
+                                                 TaskRuntimeEvent.TaskEvents.TASK_CREATED),
+                                           tuple("Task in sub-process 1",
+                                                 TaskRuntimeEvent.TaskEvents.TASK_CREATED),
+                                           tuple("Task in sub-process 2",
+                                                 TaskRuntimeEvent.TaskEvents.TASK_CREATED),
+                                           tuple("Task in sub-process 3",
+                                                 TaskRuntimeEvent.TaskEvents.TASK_CREATED),
+                                           tuple("Task in sub-process 0",
+                                                 TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED),
+                                           tuple("Task in sub-process 1",
+                                                 TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED),
+                                           tuple("Task in sub-process 2",
+                                                 TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED),
+                                           tuple("Task in sub-process 3",
+                                                 TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED));
 
-        // testing the multi instance element start, complete, cancel events
-        test_started_completed_canceledCount("miSubProcess", 4, 0,0);
+        assertActivityEvents("miSubProcess",
+                        BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
+                        BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
+                        BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
+                        BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED
+                );
 
         //given
         Task taskToComplete = tasks.get(0);
 
         //when first multi instance is completed: 3 remaining / completion condition not reached
+        localEventSource.clearEvents();
         taskBaseRuntime.completeTask(taskToComplete);
 
         //then
-        assertThat(localEventSource.getEvents())
-                .filteredOn(event -> event.getEventType().equals(TaskRuntimeEvent.TaskEvents.TASK_COMPLETED)
-                        || event.getEventType().equals(TaskRuntimeEvent.TaskEvents.TASK_CANCELLED))
-                .extracting(RuntimeEvent::getEventType,
-                            event -> ((Task) event.getEntity()).getName())
-                .containsExactly(tuple(TaskRuntimeEvent.TaskEvents.TASK_COMPLETED,
-                                       taskToComplete.getName()));
+        assertThat(localEventSource.getTaskEvents())
+                .extracting(event -> ((Task) event.getEntity()).getName(),
+                            RuntimeEvent::getEventType
+                )
+                .containsExactly(tuple(taskToComplete.getName(),
+                                       TaskRuntimeEvent.TaskEvents.TASK_COMPLETED));
+
+        assertActivityEvents( "miSubProcess",
+                        BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED
+                );
 
         //given
         taskToComplete = tasks.get(1);
 
         //when second multi instance is completed: 2 remaining / completion condition reached
+        localEventSource.clearEvents();
         taskBaseRuntime.completeTask(taskToComplete);
 
-        // testing the multi instance element start, complete, cancel events
-        test_started_completed_canceledCount("miSubProcess", 4, 2,2);
 
         //then
-        assertThat(localEventSource.getEvents())
-                .filteredOn(event -> event.getEventType().equals(TaskRuntimeEvent.TaskEvents.TASK_COMPLETED)
-                        || event.getEventType().equals(TaskRuntimeEvent.TaskEvents.TASK_CANCELLED))
-                .extracting(RuntimeEvent::getEventType,
-                            event -> ((Task) event.getEntity()).getName())
-                .containsExactlyInAnyOrder(tuple(TaskRuntimeEvent.TaskEvents.TASK_COMPLETED,
-                                                 tasks.get(0).getName()),
-                                           tuple(TaskRuntimeEvent.TaskEvents.TASK_COMPLETED,
-                                                 taskToComplete.getName()),
-                                           tuple(TaskRuntimeEvent.TaskEvents.TASK_CANCELLED,
-                                                 tasks.get(2).getName()),
-                                           tuple(TaskRuntimeEvent.TaskEvents.TASK_CANCELLED,
-                                                 tasks.get(3).getName())
+        assertThat(localEventSource.getTaskEvents())
+                .extracting(event -> ((Task) event.getEntity()).getName(),
+                            RuntimeEvent::getEventType
+                )
+                .containsExactlyInAnyOrder(tuple(taskToComplete.getName(),
+                                                 TaskRuntimeEvent.TaskEvents.TASK_COMPLETED),
+                                           tuple(tasks.get(2).getName(),
+                                                 TaskRuntimeEvent.TaskEvents.TASK_CANCELLED),
+                                           tuple(tasks.get(3).getName(),
+                                                 TaskRuntimeEvent.TaskEvents.TASK_CANCELLED));
+
+        assertActivityEvents("miSubProcess",
+                        BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
+                        BPMNActivityEvent.ActivityEvents.ACTIVITY_CANCELLED,
+                        BPMNActivityEvent.ActivityEvents.ACTIVITY_CANCELLED
                 );
+
 
         assertThat(taskBaseRuntime.getTasks(processInstance)).isEmpty();
         assertThat(localEventSource.getEvents())
@@ -265,105 +287,153 @@ public class TaskRuntimeMultiInstanceIT {
 
     @Test
     public void processWithParallelMultiInstancesCallActivity_should_emmitEventsAndContinueOnceCompletionConditionIsReached() {
-        ProcessInstance processInstance = processBaseRuntime.startProcessWithProcessDefinitionKey("miParallelCallActivityCompletionCondition");
+        ProcessInstance parentProcessInstance = processBaseRuntime.startProcessWithProcessDefinitionKey("miParallelCallActivityCompletionCondition");
 
-        List<ProcessInstance> childProcess = processBaseRuntime.getProcessInstances();
-        assertThat(childProcess.size()).isEqualTo(5);
+        List<ProcessInstance> childrenProcess = processBaseRuntime.getChildrenProcessInstances(parentProcessInstance.getId()).getContent();
+        assertThat(childrenProcess).hasSize(4);
 
-
-        assertThat(localEventSource.getEvents().stream()
-                .filter(event -> event.getEventType().equals(ProcessRuntimeEvent.ProcessEvents.PROCESS_STARTED))
-                .map(ProcessStartedEvent.class::cast))
+        assertThat(localEventSource.getProcessInstanceEvents())
                 .extracting(
                         RuntimeEvent::getEventType,
-                        event -> event.getEntity().getId(),
-                        event -> event.getEntity().getParentId()
-                ).containsExactlyInAnyOrder(
-                        tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_STARTED, childProcess.get(0).getId(), null),
-                        tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_STARTED, childProcess.get(1).getId(), processInstance.getId()),
-                        tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_STARTED, childProcess.get(2).getId(), processInstance.getId()),
-                        tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_STARTED, childProcess.get(3).getId(), processInstance.getId()),
-                        tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_STARTED, childProcess.get(4).getId(), processInstance.getId()));
+                        event -> ((ProcessInstance) event.getEntity()).getId(),
+                        event -> ((ProcessInstance) event.getEntity()).getParentId()
+                )
+                .containsExactlyInAnyOrder(
+                        tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_CREATED,
+                              parentProcessInstance.getId(),
+                              null),
+                        tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_STARTED,
+                              parentProcessInstance.getId(),
+                              null),
+                        tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_CREATED,
+                              childrenProcess.get(0).getId(),
+                              parentProcessInstance.getId()),
+                        tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_STARTED,
+                              childrenProcess.get(0).getId(),
+                              parentProcessInstance.getId()),
+                        tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_CREATED,
+                              childrenProcess.get(1).getId(),
+                              parentProcessInstance.getId()),
+                        tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_STARTED,
+                              childrenProcess.get(1).getId(),
+                              parentProcessInstance.getId()),
+                        tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_CREATED,
+                              childrenProcess.get(2).getId(),
+                              parentProcessInstance.getId()),
+                        tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_STARTED,
+                              childrenProcess.get(2).getId(),
+                              parentProcessInstance.getId()),
+                        tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_CREATED,
+                              childrenProcess.get(3).getId(),
+                              parentProcessInstance.getId()),
+                        tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_STARTED,
+                              childrenProcess.get(3).getId(),
+                              parentProcessInstance.getId())
+                );
 
-        assertThat(localEventSource.getEvents().stream()
-                .filter(event -> event.getEventType().equals(TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED))
-                .map(TaskAssignedEvent.class::cast))
+        assertThat(localEventSource.getTaskEvents())
                 .extracting(
                         RuntimeEvent::getEventType,
-                        event -> event.getEntity().getName(),
-                        event -> event.getEntity().getProcessInstanceId()
-                ).containsExactlyInAnyOrder(
-                        tuple(TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED, "User Task", childProcess.get(1).getId()),
-                        tuple(TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED, "User Task", childProcess.get(2).getId()),
-                        tuple(TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED, "User Task", childProcess.get(3).getId()),
-                        tuple(TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED, "User Task", childProcess.get(4).getId()));
+                        event -> ((Task)event.getEntity()).getName(),
+                        event -> ((Task)event.getEntity()).getProcessInstanceId()
+                )
+                .containsExactlyInAnyOrder(
+                        tuple(TaskRuntimeEvent.TaskEvents.TASK_CREATED, "User Task", childrenProcess.get(0).getId()),
+                        tuple(TaskRuntimeEvent.TaskEvents.TASK_CREATED, "User Task", childrenProcess.get(1).getId()),
+                        tuple(TaskRuntimeEvent.TaskEvents.TASK_CREATED, "User Task", childrenProcess.get(2).getId()),
+                        tuple(TaskRuntimeEvent.TaskEvents.TASK_CREATED, "User Task", childrenProcess.get(3).getId()),
+                        tuple(TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED, "User Task", childrenProcess.get(0).getId()),
+                        tuple(TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED, "User Task", childrenProcess.get(1).getId()),
+                        tuple(TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED, "User Task", childrenProcess.get(2).getId()),
+                        tuple(TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED, "User Task", childrenProcess.get(3).getId())
+        );
 
 
-        assertThat(localEventSource.getEvents().stream()
-                .filter(event -> event.getEventType().equals(ProcessRuntimeEvent.ProcessEvents.PROCESS_COMPLETED))
-                .collect(Collectors.toList()).size()).isEqualTo(0);
+        assertActivityEvents("miCallActivity",
+                        BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
+                        BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
+                        BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
+                        BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED
+                );
 
-        // testing the multi instance element start, complete, cancel events
-        test_started_completed_canceledCount("miCallActivity", 4, 0,0);
+        //first multi instance is completed: 3 remaining / completion condition not reached
+        List<TaskAssignedEvent> assignedTasksEvents = localEventSource.getEvents(TaskAssignedEvent.class);
+        TaskAssignedEvent taskAssignedEvent = assignedTasksEvents.get(0);
+        localEventSource.clearEvents();
+        taskBaseRuntime.completeTask(taskAssignedEvent.getEntity().getId());
 
-        //for i = 1 ,  first multi instance is completed: 3 remaining / completion condition not reached
-        //for i = 2 ,  second multi instance is completed: 2 remaining / completion condition reached
-        for(int i=1; i < 3; i++) {
+        assertThat(localEventSource.getProcessInstanceEvents())
+                .extracting(
+                        RuntimeEvent::getEventType,
+                        event -> ((ProcessInstance) event.getEntity()).getId(),
+                        event -> ((ProcessInstance) event.getEntity()).getParentId()
+                )
+                .containsExactly(
+                        tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_COMPLETED,
+                              taskAssignedEvent.getEntity().getProcessInstanceId(),
+                              parentProcessInstance.getId())
+                );
 
-            List<Task> tasks = taskBaseRuntime.getTasks(childProcess.get(i));
-
-            assertThat(tasks.size()).isEqualTo(1);
-            assertThat(tasks)
-                    .extracting(Task::getName)
-                    .contains("User Task");
-            taskBaseRuntime.completeTask(tasks.get(0));
-
-            assertThat(localEventSource.getEvents().stream()
-                    .filter(event -> event.getEventType().equals(TaskRuntimeEvent.TaskEvents.TASK_COMPLETED))
-                    .map(TaskCompletedEvent.class::cast))
-                    .extracting(
-                            RuntimeEvent::getEventType,
-                            event -> event.getEntity().getName(),
-                            event -> event.getEntity().getProcessInstanceId())
-                    .contains(tuple(TaskRuntimeEvent.TaskEvents.TASK_COMPLETED, "User Task", childProcess.get(i).getId()));
+        assertThat(localEventSource.getTaskEvents())
+                .extracting(
+                        RuntimeEvent::getEventType,
+                        event -> ((Task) event.getEntity()).getName(),
+                        event -> ((Task) event.getEntity()).getProcessInstanceId()
+                )
+                .containsExactly(
+                        tuple(TaskRuntimeEvent.TaskEvents.TASK_COMPLETED,
+                              "User Task",
+                              taskAssignedEvent.getEntity().getProcessInstanceId())
+                );
 
 
-            assertThat(localEventSource.getEvents().stream()
-                    .filter(event -> event.getEventType().equals(ProcessRuntimeEvent.ProcessEvents.PROCESS_COMPLETED))
-                    .map(ProcessCompletedEvent.class::cast))
-                    .extracting(
-                            RuntimeEvent::getEventType,
-                            event -> event.getEntity().getId(),
-                            event -> event.getEntity().getParentId()
-                    ).contains(tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_COMPLETED, childProcess.get(i).getId(), processInstance.getId()));
-        }
+        assertActivityEvents("miCallActivity",
+                        BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED
+                );
 
-        // testing the multi instance element start, complete, cancel events
-        test_started_completed_canceledCount("miCallActivity", 4, 2,2);
+        //second multi instance is completed: 2 remaining / completion condition reached
+        taskAssignedEvent = assignedTasksEvents.get(1);
+        localEventSource.clearEvents();
+        taskBaseRuntime.completeTask(taskAssignedEvent.getEntity().getId());
+        assertThat(localEventSource.getProcessInstanceEvents())
+                .extracting(
+                        RuntimeEvent::getEventType,
+                        event -> ((ProcessInstance)event.getEntity()).getId()
+                )
+                .containsExactlyInAnyOrder(
+                        tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_COMPLETED,
+                              taskAssignedEvent.getEntity().getProcessInstanceId()),
+                        tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_CANCELLED,
+                              assignedTasksEvents.get(2).getEntity().getProcessInstanceId()),
+                        tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_CANCELLED,
+                              assignedTasksEvents.get(3).getEntity().getProcessInstanceId()),
+                        tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_COMPLETED,
+                              parentProcessInstance.getId())
+                );
+
+        assertThat(localEventSource.getTaskEvents())
+                .extracting(
+                        RuntimeEvent::getEventType,
+                        event -> ((Task)event.getEntity()).getName(),
+                        event -> ((Task)event.getEntity()).getProcessInstanceId()
+                )
+                .containsExactlyInAnyOrder(
+                        tuple(TaskRuntimeEvent.TaskEvents.TASK_COMPLETED, "User Task", taskAssignedEvent.getEntity().getProcessInstanceId()),
+                        tuple(TaskRuntimeEvent.TaskEvents.TASK_CANCELLED, "User Task", assignedTasksEvents.get(2).getEntity().getProcessInstanceId()),
+                        tuple(TaskRuntimeEvent.TaskEvents.TASK_CANCELLED, "User Task", assignedTasksEvents.get(3).getEntity().getProcessInstanceId())
+                );
+
+
+        assertActivityEvents("miCallActivity",
+                        BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
+                        BPMNActivityEvent.ActivityEvents.ACTIVITY_CANCELLED,
+                        BPMNActivityEvent.ActivityEvents.ACTIVITY_CANCELLED
+                );
+
+
 
         assertThat(processBaseRuntime.getProcessInstances()).isEmpty();
 
-        assertThat(localEventSource.getEvents().stream()
-                .filter(event -> event.getEventType().equals(ProcessRuntimeEvent.ProcessEvents.PROCESS_COMPLETED))
-                .map(ProcessCompletedEvent.class::cast))
-                .extracting(
-                        RuntimeEvent::getEventType,
-                        event -> event.getEntity().getId(),
-                        event -> event.getEntity().getParentId()
-                ).contains(
-                tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_COMPLETED, childProcess.get(2).getId(), processInstance.getId()),
-                tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_COMPLETED, processInstance.getId(), null));
-
-        assertThat(localEventSource.getEvents().stream()
-                .filter(event -> event.getEventType().equals(ProcessRuntimeEvent.ProcessEvents.PROCESS_CANCELLED))
-                .map(ProcessCancelledEvent.class::cast))
-                .extracting(
-                        RuntimeEvent::getEventType,
-                        event -> event.getEntity().getId(),
-                        event -> event.getEntity().getParentId()
-                ).contains(
-                tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_CANCELLED, childProcess.get(3).getId(), null),
-                tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_CANCELLED, childProcess.get(4).getId(), null));
     }
 
     @Test
@@ -371,46 +441,96 @@ public class TaskRuntimeMultiInstanceIT {
         //when
         ProcessInstance processInstance = processBaseRuntime.startProcessWithProcessDefinitionKey("miSequentialUserTasks");
 
-        // testing the multi instance element start, complete, cancel events
-        test_started_completed_canceledCount("miTasks", 1, 0, 0);
+        assertThat(localEventSource.getProcessInstanceEvents())
+                .extracting(
+                        RuntimeEvent::getEventType,
+                        event -> ((ProcessInstance)event.getEntity()).getId()
+                )
+                .containsExactlyInAnyOrder(
+                        tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_CREATED,
+                              processInstance.getId()),
+                        tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_STARTED,
+                              processInstance.getId())
+                );
 
-        for(int i = 0; i< 4;i ++) {
-            //then
-            List<Task> tasks = taskBaseRuntime.getTasks(processInstance);
-            assertThat(tasks.size()).isEqualTo(1);
-            assertThat(tasks)
-                    .extracting(Task::getName)
-                    .containsExactlyInAnyOrder("My Task " + i);
-            taskBaseRuntime.completeTask(tasks.get(0));
-        }
+        assertActivityEvents("miTasks",
+                        BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED
+                );
 
-        // testing the multi instance element start, complete, cancel events
-        test_started_completed_canceledCount("miTasks", 4, 4, 0);
+        assertThat(localEventSource.getTaskEvents())
+                .extracting(
+                        RuntimeEvent::getEventType,
+                        event -> ((Task) event.getEntity()).getName(),
+                        event -> ((Task) event.getEntity()).getProcessInstanceId()
+                )
+                .containsExactly(
+                        tuple(TaskRuntimeEvent.TaskEvents.TASK_CREATED,
+                              "My Task 0",
+                              processInstance.getId()),
+                        tuple(TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED,
+                              "My Task 0",
+                              processInstance.getId())
+                );
+        List<Task> tasks = taskBaseRuntime.getTasks(processInstance);
+        assertThat(tasks)
+                .extracting(Task::getName)
+                .containsExactlyInAnyOrder("My Task 0");
 
-        List<TaskCreatedEvent> taskCreatedEvents = localEventSource.getEvents().stream()
-                .filter(event -> event.getEventType().equals(TaskRuntimeEvent.TaskEvents.TASK_CREATED))
-                .map(TaskCreatedEvent.class::cast)
-                .collect(Collectors.toList());
-        assertThat(taskCreatedEvents)
-                .extracting(event -> event.getEntity().getName())
-                .containsExactlyInAnyOrder("My Task 0",
-                        "My Task 1",
-                        "My Task 2",
-                        "My Task 3");
+        //complete first iteration, multi-instance should not complete yet
+        localEventSource.clearEvents();
+        taskBaseRuntime.completeTask(tasks.get(0));
 
-        List<TaskCompletedEvent> taskCompletedEvents = localEventSource.getEvents().stream()
-                .filter(event -> event.getEventType().equals(TaskRuntimeEvent.TaskEvents.TASK_COMPLETED))
-                .map(TaskCompletedEvent.class::cast)
-                .collect(Collectors.toList());
-        assertThat(taskCompletedEvents)
-                .extracting(event -> event.getEntity().getName())
-                .containsExactlyInAnyOrder("My Task 0",
-                        "My Task 1",
-                        "My Task 2",
-                        "My Task 3");
+        assertActivityEvents("miTasks",
+                        BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
+                        BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED //second iteration was created
+                );
+
+        assertThat(localEventSource.getTaskEvents())
+                .extracting(
+                        RuntimeEvent::getEventType,
+                        event -> ((Task) event.getEntity()).getName(),
+                        event -> ((Task) event.getEntity()).getProcessInstanceId()
+                )
+                .containsExactly(
+                        tuple(TaskRuntimeEvent.TaskEvents.TASK_COMPLETED,
+                              "My Task 0",
+                              processInstance.getId()),
+                        tuple(TaskRuntimeEvent.TaskEvents.TASK_CREATED,
+                              "My Task 1",
+                              processInstance.getId()),
+                        tuple(TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED,
+                              "My Task 1",
+                              processInstance.getId())
+                );
+
+        tasks = taskBaseRuntime.getTasks(processInstance);
+        assertThat(tasks)
+                .extracting(Task::getName)
+                .containsExactlyInAnyOrder("My Task 1");
+
+        //complete second iteration, multi-instance should not complete
+        localEventSource.clearEvents();
+        taskBaseRuntime.completeTask(tasks.get(0));
+
+        assertActivityEvents( "miTasks",
+                        BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED
+                );
+
+        assertThat(localEventSource.getTaskEvents())
+                .extracting(
+                        RuntimeEvent::getEventType,
+                        event -> ((Task) event.getEntity()).getName(),
+                        event -> ((Task) event.getEntity()).getProcessInstanceId()
+                )
+                .containsExactly(
+                        tuple(TaskRuntimeEvent.TaskEvents.TASK_COMPLETED,
+                              "My Task 1",
+                              processInstance.getId())
+                );
+
 
         assertThat(taskBaseRuntime.getTasks(processInstance)).isEmpty();
-        assertThat(localEventSource.getEvents())
+        assertThat(localEventSource.getProcessInstanceEvents())
                 .extracting(RuntimeEvent::getEventType,
                         RuntimeEvent::getProcessInstanceId)
                 .contains(tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_COMPLETED,
@@ -422,109 +542,227 @@ public class TaskRuntimeMultiInstanceIT {
         //when
         ProcessInstance processInstance = processBaseRuntime.startProcessWithProcessDefinitionKey("miSequentialSubprocess");
 
-        // testing the multi instance element start, complete, cancel events
-        test_started_completed_canceledCount("miSubProcess", 1, 0, 0);
+        assertThat(localEventSource.getProcessInstanceEvents())
+                .extracting(
+                        RuntimeEvent::getEventType,
+                        event -> ((ProcessInstance)event.getEntity()).getId()
+                )
+                .containsExactlyInAnyOrder(
+                        tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_CREATED,
+                              processInstance.getId()),
+                        tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_STARTED,
+                              processInstance.getId())
+                );
 
-        for(int i = 0; i< 4;i ++) {
-            //then
-            List<Task> tasks = taskBaseRuntime.getTasks(processInstance);
-            assertThat(tasks.size()).isEqualTo(1);
-            assertThat(tasks)
-                    .extracting(Task::getName)
-                    .containsExactlyInAnyOrder("Task in sub-process " + i);
-            taskBaseRuntime.completeTask(tasks.get(0));
-        }
+        assertActivityEvents("miSubProcess",
+                        BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED
+                );
 
+        assertThat(localEventSource.getTaskEvents())
+                .extracting(
+                        RuntimeEvent::getEventType,
+                        event -> ((Task) event.getEntity()).getName(),
+                        event -> ((Task) event.getEntity()).getProcessInstanceId()
+                )
+                .containsExactly(
+                        tuple(TaskRuntimeEvent.TaskEvents.TASK_CREATED,
+                              "Task in sub-process 0",
+                              processInstance.getId()),
+                        tuple(TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED,
+                              "Task in sub-process 0",
+                              processInstance.getId())
+                );
+        List<Task> tasks = taskBaseRuntime.getTasks(processInstance);
+        assertThat(tasks)
+                .extracting(Task::getName)
+                .containsExactlyInAnyOrder("Task in sub-process 0");
 
-        // testing the multi instance element start, complete, cancel events
-        test_started_completed_canceledCount("miSubProcess", 4, 4, 0);
+        //complete first iteration, multi-instance should not complete yet
+        localEventSource.clearEvents();
+        taskBaseRuntime.completeTask(tasks.get(0));
 
-        List<TaskCreatedEvent> taskCreatedEvents = localEventSource.getEvents().stream()
-                .filter(event -> event.getEventType().equals(TaskRuntimeEvent.TaskEvents.TASK_CREATED))
-                .map(TaskCreatedEvent.class::cast)
-                .collect(Collectors.toList());
-        assertThat(taskCreatedEvents)
-                .extracting(event -> event.getEntity().getName())
-                .containsExactlyInAnyOrder("Task in sub-process 0",
-                        "Task in sub-process 1",
-                        "Task in sub-process 2",
-                        "Task in sub-process 3");
+        assertActivityEvents("miSubProcess",
+                        BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
+                        BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED //second iteration was created
+                );
 
-        List<TaskCompletedEvent> taskCompletedEvents = localEventSource.getEvents().stream()
-                .filter(event -> event.getEventType().equals(TaskRuntimeEvent.TaskEvents.TASK_COMPLETED))
-                .map(TaskCompletedEvent.class::cast)
-                .collect(Collectors.toList());
-        assertThat(taskCompletedEvents)
-                .extracting(event -> event.getEntity().getName())
-                .containsExactlyInAnyOrder("Task in sub-process 0",
-                        "Task in sub-process 1",
-                        "Task in sub-process 2",
-                        "Task in sub-process 3");
+        assertThat(localEventSource.getTaskEvents())
+                .extracting(
+                        RuntimeEvent::getEventType,
+                        event -> ((Task) event.getEntity()).getName(),
+                        event -> ((Task) event.getEntity()).getProcessInstanceId()
+                )
+                .containsExactly(
+                        tuple(TaskRuntimeEvent.TaskEvents.TASK_COMPLETED,
+                              "Task in sub-process 0",
+                              processInstance.getId()),
+                        tuple(TaskRuntimeEvent.TaskEvents.TASK_CREATED,
+                              "Task in sub-process 1",
+                              processInstance.getId()),
+                        tuple(TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED,
+                              "Task in sub-process 1",
+                              processInstance.getId())
+                );
+
+        tasks = taskBaseRuntime.getTasks(processInstance);
+        assertThat(tasks)
+                .extracting(Task::getName)
+                .containsExactlyInAnyOrder("Task in sub-process 1");
+
+        //complete second iteration, multi-instance should not complete
+        localEventSource.clearEvents();
+        taskBaseRuntime.completeTask(tasks.get(0));
+
+        assertActivityEvents("miSubProcess",
+                        BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED
+                );
+
+        assertThat(localEventSource.getTaskEvents())
+                .extracting(
+                        RuntimeEvent::getEventType,
+                        event -> ((Task) event.getEntity()).getName(),
+                        event -> ((Task) event.getEntity()).getProcessInstanceId()
+                )
+                .containsExactly(
+                        tuple(TaskRuntimeEvent.TaskEvents.TASK_COMPLETED,
+                              "Task in sub-process 1",
+                              processInstance.getId())
+                );
+
 
         assertThat(taskBaseRuntime.getTasks(processInstance)).isEmpty();
-        assertThat(localEventSource.getEvents())
+        assertThat(localEventSource.getProcessInstanceEvents())
                 .extracting(RuntimeEvent::getEventType,
                         RuntimeEvent::getProcessInstanceId)
-                .contains(tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_COMPLETED,
+                .containsExactly(tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_COMPLETED,
                         processInstance.getId()));
     }
 
     @Test
     public void processWithSequentialMultiInstancesOnCallActivity_should_emmit_EqualStartAndEndEvent() {
-        ProcessInstance processInstance = processBaseRuntime.startProcessWithProcessDefinitionKey("miSequentialCallActivity");
+        ProcessInstance parentProcessInstance = processBaseRuntime.startProcessWithProcessDefinitionKey("miSequentialCallActivity");
 
-        List<ProcessInstance> childProcess = processBaseRuntime.getProcessInstances();
-        assertThat(childProcess.size()).isEqualTo(2);
+        List<ProcessInstance> childrenProcessInstances = processBaseRuntime.getChildrenProcessInstances(parentProcessInstance.getId()).getContent();
+        assertThat(childrenProcessInstances).hasSize(1);
+        ProcessInstance firstChildProcInst = childrenProcessInstances.get(0);
+
+        assertThat(localEventSource.getProcessInstanceEvents())
+                .extracting(
+                        RuntimeEvent::getEventType,
+                        event -> ((ProcessInstance)event.getEntity()).getId()
+                )
+                .containsExactlyInAnyOrder(
+                        tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_CREATED,
+                              parentProcessInstance.getId()),
+                        tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_STARTED,
+                              parentProcessInstance.getId()),
+                        tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_CREATED,
+                              firstChildProcInst.getId()),
+                        tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_STARTED,
+                              firstChildProcInst.getId())
+                );
+
+        assertActivityEvents("miCallActivity",
+                        BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED
+                );
+
+        assertThat(localEventSource.getTaskEvents())
+                .extracting(
+                        RuntimeEvent::getEventType,
+                        event -> ((Task) event.getEntity()).getName(),
+                        event -> ((Task) event.getEntity()).getProcessInstanceId()
+                )
+                .containsExactly(
+                        tuple(TaskRuntimeEvent.TaskEvents.TASK_CREATED,
+                              "User Task",
+                              firstChildProcInst.getId()),
+                        tuple(TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED,
+                              "User Task",
+                              firstChildProcInst.getId())
+                );
+        List<Task> tasks = taskBaseRuntime.getTasks(firstChildProcInst);
+        assertThat(tasks)
+                .extracting(Task::getName)
+                .containsExactlyInAnyOrder("User Task");
+
+        //complete first iteration, multi-instance should not complete yet
+        localEventSource.clearEvents();
+        taskBaseRuntime.completeTask(tasks.get(0));
+
+        assertActivityEvents("miCallActivity",
+                        BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
+                        BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED //second iteration was created
+                );
 
 
-        assertThat(localEventSource.getEvents().stream()
-                .filter(event -> event.getEventType().equals(ProcessRuntimeEvent.ProcessEvents.PROCESS_COMPLETED))
-                .collect(Collectors.toList()).size()).isEqualTo(0);
+        childrenProcessInstances = processBaseRuntime.getChildrenProcessInstances(parentProcessInstance.getId()).getContent();
+        assertThat(childrenProcessInstances).hasSize(1);
+        ProcessInstance secondChildProcInst = childrenProcessInstances.get(0);
 
-        // testing the multi instance element start, complete, cancel events
-        test_started_completed_canceledCount("miCallActivity", 1, 0, 0);
+        assertThat(localEventSource.getTaskEvents())
+                .extracting(
+                        RuntimeEvent::getEventType,
+                        event -> ((Task) event.getEntity()).getName(),
+                        event -> ((Task) event.getEntity()).getProcessInstanceId()
+                )
+                .containsExactly(
+                        tuple(TaskRuntimeEvent.TaskEvents.TASK_COMPLETED,
+                              "User Task",
+                              firstChildProcInst.getId()),
+                        tuple(TaskRuntimeEvent.TaskEvents.TASK_CREATED,
+                              "User Task",
+                              secondChildProcInst.getId()),
+                        tuple(TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED,
+                              "User Task",
+                              secondChildProcInst.getId())
+                );
 
-        // multi instance is sequential 4 times
-        for(int i=1; i < 5; i++) {
+        assertThat(localEventSource.getProcessInstanceEvents())
+                .extracting(RuntimeEvent::getEventType,
+                            event -> ((ProcessInstance) event.getEntity()).getId())
+                .contains(
+                        tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_COMPLETED,
+                              firstChildProcInst.getId()),
+                        tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_CREATED,
+                              secondChildProcInst.getId()),
+                        tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_STARTED,
+                              secondChildProcInst.getId()));
 
-            childProcess = processBaseRuntime.getProcessInstances();
-            List<Task> tasks = taskBaseRuntime.getTasks(childProcess.get(1));
+        tasks = taskBaseRuntime.getTasks(secondChildProcInst);
+        assertThat(tasks)
+                .extracting(Task::getName)
+                .containsExactlyInAnyOrder("User Task");
 
-            assertThat(tasks.size()).isEqualTo(1);
-            assertThat(tasks)
-                    .extracting(Task::getName)
-                    .contains("User Task");
-            taskBaseRuntime.completeTask(tasks.get(0));
+        //complete second iteration, multi-instance should not complete
+        localEventSource.clearEvents();
+        taskBaseRuntime.completeTask(tasks.get(0));
 
-            assertThat(localEventSource.getEvents().stream()
-                    .filter(event -> event.getEventType().equals(TaskRuntimeEvent.TaskEvents.TASK_COMPLETED))
-                    .map(TaskCompletedEvent.class::cast))
-                    .extracting(
-                            RuntimeEvent::getEventType,
-                            event -> event.getEntity().getName(),
-                            event -> event.getEntity().getProcessInstanceId())
-                    .contains(tuple(TaskRuntimeEvent.TaskEvents.TASK_COMPLETED, "User Task", childProcess.get(1).getId()));
+        assertActivityEvents("miCallActivity",
+                        BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED
+                );
 
+        assertThat(localEventSource.getTaskEvents())
+                .extracting(
+                        RuntimeEvent::getEventType,
+                        event -> ((Task) event.getEntity()).getName(),
+                        event -> ((Task) event.getEntity()).getProcessInstanceId()
+                )
+                .containsExactly(
+                        tuple(TaskRuntimeEvent.TaskEvents.TASK_COMPLETED,
+                              "User Task",
+                              secondChildProcInst.getId())
+                );
 
-            assertThat(localEventSource.getEvents().stream()
-                    .filter(event -> event.getEventType().equals(ProcessRuntimeEvent.ProcessEvents.PROCESS_COMPLETED))
-                    .map(ProcessCompletedEvent.class::cast))
-                    .extracting(
-                            RuntimeEvent::getEventType,
-                            event -> event.getEntity().getId(),
-                            event -> event.getEntity().getParentId()
-                    ).contains(tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_COMPLETED, childProcess.get(1).getId(), processInstance.getId()));
-        }
-
-        // testing the multi instance element start, complete, cancel events
-        test_started_completed_canceledCount("miCallActivity", 4, 4, 0);
 
         assertThat(processBaseRuntime.getProcessInstances()).isEmpty();
-        assertThat(localEventSource.getEvents())
+        assertThat(localEventSource.getProcessInstanceEvents())
                 .extracting(RuntimeEvent::getEventType,
                         RuntimeEvent::getProcessInstanceId)
-                .contains(tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_COMPLETED,
-                        processInstance.getId()));
+                .contains(
+                        tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_COMPLETED,
+                        secondChildProcInst.getId()),
+                        tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_COMPLETED,
+                              parentProcessInstance.getId()));
     }
 
     @Test
@@ -537,49 +775,102 @@ public class TaskRuntimeMultiInstanceIT {
         assertThat(tasks)
                 .extracting(Task::getName)
                 .containsExactlyInAnyOrder("My Task 0",
-                        "My Task 1",
-                        "My Task 2",
-                        "My Task 3");
+                        "My Task 1");
 
-        // testing the multi instance element start, complete, cancel events
-        test_started_completed_canceledCount("miTasks", 4, 0, 0);
+        assertThat(localEventSource.getProcessInstanceEvents())
+                .extracting(
+                        RuntimeEvent::getEventType,
+                        event -> ((ProcessInstance)event.getEntity()).getId()
+                )
+                .containsExactlyInAnyOrder(
+                        tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_CREATED,
+                              processInstance.getId()),
+                        tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_STARTED,
+                              processInstance.getId())
+                );
 
-        List<TaskCreatedEvent> taskCreatedEvents = localEventSource.getEvents().stream()
-                .filter(event -> event.getEventType().equals(TaskRuntimeEvent.TaskEvents.TASK_CREATED))
-                .map(TaskCreatedEvent.class::cast)
-                .collect(Collectors.toList());
-        assertThat(taskCreatedEvents)
-                .extracting(event -> event.getEntity().getName())
-                .containsExactlyInAnyOrder("My Task 0",
-                        "My Task 1",
-                        "My Task 2",
-                        "My Task 3");
 
-        for(int i = 0; i< 4;i ++) {
-            //then
-            taskBaseRuntime.completeTask(tasks.get(i));
-        }
+        assertActivityEvents("miTasks",
+                        BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
+                        BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED
+                );
 
-        List<TaskCompletedEvent> taskCompletedEvents = localEventSource.getEvents().stream()
-                .filter(event -> event.getEventType().equals(TaskRuntimeEvent.TaskEvents.TASK_COMPLETED))
-                .map(TaskCompletedEvent.class::cast)
-                .collect(Collectors.toList());
-        assertThat(taskCompletedEvents)
-                .extracting(event -> event.getEntity().getName())
-                .containsExactlyInAnyOrder("My Task 0",
-                        "My Task 1",
-                        "My Task 2",
-                        "My Task 3");
+        assertThat(localEventSource.getTaskEvents())
+                .extracting(
+                        RuntimeEvent::getEventType,
+                        event -> ((Task) event.getEntity()).getName(),
+                        event -> ((Task) event.getEntity()).getProcessInstanceId()
+                )
+                .containsExactlyInAnyOrder(
+                        tuple(TaskRuntimeEvent.TaskEvents.TASK_CREATED,
+                              "My Task 0",
+                              processInstance.getId()),
+                        tuple(TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED,
+                             "My Task 0",
+                             processInstance.getId()),
+                        tuple(TaskRuntimeEvent.TaskEvents.TASK_CREATED,
+                              "My Task 1",
+                              processInstance.getId()),
+                        tuple(TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED,
+                             "My Task 1",
+                             processInstance.getId())
+                );
 
-        // testing the multi instance element start, complete, cancel events
-        test_started_completed_canceledCount("miTasks", 4, 4, 0);
+
+        //complete first iteration: multi instance should not complete yet
+        localEventSource.clearEvents();
+        taskBaseRuntime.completeTask(tasks.get(0));
+
+
+        assertActivityEvents("miTasks",
+                        BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED
+                );
+
+        assertThat(localEventSource.getTaskEvents())
+                .extracting(
+                        RuntimeEvent::getEventType,
+                        event -> ((Task) event.getEntity()).getName(),
+                        event -> ((Task) event.getEntity()).getProcessInstanceId()
+                )
+                .containsExactly(
+                        tuple(TaskRuntimeEvent.TaskEvents.TASK_COMPLETED,
+                              tasks.get(0).getName(),
+                              processInstance.getId())
+                );
+
+        assertThat(localEventSource.getProcessInstanceEvents()).isEmpty();
+
+        //complete second iteration: multi instance should complete
+        localEventSource.clearEvents();
+        taskBaseRuntime.completeTask(tasks.get(1));
+
+        assertActivityEvents("miTasks",
+                        BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED
+                );
+
+        assertThat(localEventSource.getTaskEvents())
+                .extracting(
+                        RuntimeEvent::getEventType,
+                        event -> ((Task) event.getEntity()).getName(),
+                        event -> ((Task) event.getEntity()).getProcessInstanceId()
+                )
+                .containsExactly(
+                        tuple(TaskRuntimeEvent.TaskEvents.TASK_COMPLETED,
+                              tasks.get(1).getName(),
+                              processInstance.getId())
+                );
+
+        assertThat(localEventSource.getProcessInstanceEvents())
+                .extracting(
+                        RuntimeEvent::getEventType,
+                        event -> ((ProcessInstance)event.getEntity()).getId()
+                )
+                .containsExactlyInAnyOrder(
+                        tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_COMPLETED,
+                              processInstance.getId())
+                );
 
         assertThat(taskBaseRuntime.getTasks(processInstance)).isEmpty();
-        assertThat(localEventSource.getEvents())
-                .extracting(RuntimeEvent::getEventType,
-                        RuntimeEvent::getProcessInstanceId)
-                .contains(tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_COMPLETED,
-                        processInstance.getId()));
     }
 
     @Test
@@ -592,43 +883,25 @@ public class TaskRuntimeMultiInstanceIT {
         assertThat(tasks)
                 .extracting(Task::getName)
                 .containsExactlyInAnyOrder("My Task 0",
-                        "My Task 1",
-                        "My Task 2",
-                        "My Task 3");
+                        "My Task 1");
 
-        // testing the multi instance element start, complete, cancel events
-        test_started_completed_canceledCount("miTasks", 4, 0, 0);
-
-        List<TaskCreatedEvent> taskCreatedEvents = localEventSource.getEvents().stream()
-                .filter(event -> event.getEventType().equals(TaskRuntimeEvent.TaskEvents.TASK_CREATED))
-                .map(TaskCreatedEvent.class::cast)
-                .collect(Collectors.toList());
-
-        assertThat(taskCreatedEvents)
-                .extracting(event -> event.getEntity().getName())
-                .containsExactlyInAnyOrder("My Task 0",
-                        "My Task 1",
-                        "My Task 2",
-                        "My Task 3");
-
-        List<BPMNTimerScheduledEvent> eventsScheduled = listenerScheduled.getEvents();
-        //then
-        assertThat(eventsScheduled)
-                .extracting(BPMNTimerEvent::getEventType,
-                        BPMNTimerEvent::getProcessDefinitionId,
-                        event -> event.getEntity().getProcessDefinitionId(),
-                        event -> event.getEntity().getProcessInstanceId(),
-                        event -> event.getEntity().getElementId()
-                )
-                .contains(Tuple.tuple(BPMNTimerEvent.TimerEvents.TIMER_SCHEDULED,
-                        processInstance.getProcessDefinitionId(),
-                        processInstance.getProcessDefinitionId(),
-                        processInstance.getId(),
-                        "timer"
-                        )
-
+        assertActivityEvents("miTasks",
+                        BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
+                        BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED
                 );
-        assertThat(listenerFired.getEvents()).isEmpty();
+
+        assertThat(localEventSource.getTaskEvents())
+                .extracting(event -> ((Task) event.getEntity()).getName(),
+                            RuntimeEvent::getEventType)
+                .containsExactlyInAnyOrder(
+                        tuple("My Task 0",
+                              TaskRuntimeEvent.TaskEvents.TASK_CREATED),
+                        tuple("My Task 1",
+                              TaskRuntimeEvent.TaskEvents.TASK_CREATED),
+                        tuple("My Task 0",
+                              TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED),
+                        tuple("My Task 1",
+                              TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED));
 
 
         //when
@@ -636,73 +909,75 @@ public class TaskRuntimeMultiInstanceIT {
         Date startTime = new Date();
         Date dueDate = new Date(startTime.getTime() + waitTime);
 
-        // After setting the clock to time '5minutes and 5 seconds', the second timer should fire
+        //set the clock so the timer fires
+        localEventSource.clearEvents();
         processEngineConfiguration.getClock().setCurrentTime(new Date(dueDate.getTime()));
 
         await().untilAsserted(() -> {
-            assertThat(listenerFired.getEvents())
+            assertThat(localEventSource.getEvents(BPMNTimerEvent.class))
                     .extracting(BPMNTimerEvent::getEventType,
-                            BPMNTimerEvent::getProcessDefinitionId,
+                                BPMNTimerEvent::getProcessDefinitionId,
                             event -> event.getEntity().getProcessDefinitionId(),
                             event -> event.getEntity().getProcessInstanceId(),
                             event -> event.getEntity().getElementId()
                     )
-                    .contains(Tuple.tuple(BPMNTimerEvent.TimerEvents.TIMER_FIRED,
-                            processInstance.getProcessDefinitionId(),
-                            processInstance.getProcessDefinitionId(),
-                            processInstance.getId(),
-                            "timer"
-                            )
-
-                    );
-
-            assertThat(listenerExecuted.getEvents())
-                    .extracting(BPMNTimerEvent::getEventType,
-                            BPMNTimerEvent::getProcessDefinitionId,
-                            event -> event.getEntity().getProcessDefinitionId(),
-                            event -> event.getEntity().getProcessInstanceId(),
-                            event -> event.getEntity().getElementId()
-                    )
-                    .contains(Tuple.tuple(BPMNTimerEvent.TimerEvents.TIMER_EXECUTED,
-                            processInstance.getProcessDefinitionId(),
-                            processInstance.getProcessDefinitionId(),
-                            processInstance.getId(),
-                            "timer"
+                    .containsExactly(
+                            tuple(BPMNTimerEvent.TimerEvents.TIMER_FIRED,
+                                          processInstance.getProcessDefinitionId(),
+                                          processInstance.getProcessDefinitionId(),
+                                          processInstance.getId(),
+                                          "timer"
+                            ),
+                            tuple(BPMNTimerEvent.TimerEvents.TIMER_EXECUTED,
+                                  processInstance.getProcessDefinitionId(),
+                                  processInstance.getProcessDefinitionId(),
+                                  processInstance.getId(),
+                                  "timer"
                             )
 
                     );
         });
 
+        assertThat(localEventSource.getTaskEvents())
+                .extracting(event -> ((Task) event.getEntity()).getName(),
+                            RuntimeEvent::getEventType)
+                .containsExactlyInAnyOrder(
+                        tuple("My Task 0",
+                              TaskRuntimeEvent.TaskEvents.TASK_CANCELLED),
+                        tuple("My Task 1",
+                              TaskRuntimeEvent.TaskEvents.TASK_CANCELLED),
+                        tuple("Escalation Task",
+                              TaskRuntimeEvent.TaskEvents.TASK_CREATED),
+                        tuple("Escalation Task",
+                              TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED));
 
-        List<TaskCancelledEvent> taskCanceledEvents = localEventSource.getEvents().stream()
-                .filter(event -> event.getEventType().equals(TaskRuntimeEvent.TaskEvents.TASK_CANCELLED))
-                .map(TaskCancelledEvent.class::cast)
-                .collect(Collectors.toList());
-
-        assertThat(taskCanceledEvents)
-                .extracting(event -> event.getEntity().getName())
-                .containsExactlyInAnyOrder("My Task 0",
-                        "My Task 1",
-                        "My Task 2",
-                        "My Task 3");
-
-        // testing the multi instance element start, complete, cancel events
-        test_started_completed_canceledCount("miTasks", 4, 0, 4);
+        assertActivityEvents("miTasks",
+                        BPMNActivityEvent.ActivityEvents.ACTIVITY_CANCELLED,
+                        BPMNActivityEvent.ActivityEvents.ACTIVITY_CANCELLED
+                );
 
         tasks = taskBaseRuntime.getTasks(processInstance);
-        assertThat(tasks.size()).isEqualTo(1);
         assertThat(tasks)
                 .extracting(Task::getName)
-                .contains("Escalation Task");
+                .containsExactly("Escalation Task");
 
+        localEventSource.clearEvents();
         taskBaseRuntime.completeTask(tasks.get(0));
 
+        assertThat(localEventSource.getTaskEvents())
+                .extracting(event -> ((Task) event.getEntity()).getName(),
+                            RuntimeEvent::getEventType)
+                .containsExactly(
+                        tuple("Escalation Task",
+                              TaskRuntimeEvent.TaskEvents.TASK_COMPLETED));
+
         assertThat(taskBaseRuntime.getTasks(processInstance)).isEmpty();
-        assertThat(localEventSource.getEvents())
+        assertThat(localEventSource.getProcessInstanceEvents())
                 .extracting(RuntimeEvent::getEventType,
-                        RuntimeEvent::getProcessInstanceId)
-                .contains(tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_COMPLETED,
-                        processInstance.getId()));
+                            RuntimeEvent::getProcessInstanceId)
+                .containsExactly(
+                        tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_COMPLETED,
+                              processInstance.getId()));
     }
 
     @Test
@@ -715,102 +990,47 @@ public class TaskRuntimeMultiInstanceIT {
         assertThat(tasks)
                 .extracting(Task::getName)
                 .containsExactlyInAnyOrder("Task in sub-process 0",
-                        "Task in sub-process 1",
-                        "Task in sub-process 2",
-                        "Task in sub-process 3");
+                        "Task in sub-process 1");
 
-        // testing the multi instance element start, complete, cancel events
-        test_started_completed_canceledCount("miSubProcess", 4, 0, 0);
-
-        List<TaskCreatedEvent> taskCreatedEvents = localEventSource.getEvents().stream()
-                .filter(event -> event.getEventType().equals(TaskRuntimeEvent.TaskEvents.TASK_CREATED))
-                .map(TaskCreatedEvent.class::cast)
-                .collect(Collectors.toList());
-
-        assertThat(taskCreatedEvents)
-                .extracting(event -> event.getEntity().getName())
-                .containsExactlyInAnyOrder("Task in sub-process 0",
-                        "Task in sub-process 1",
-                        "Task in sub-process 2",
-                        "Task in sub-process 3");
-
-        List<BPMNTimerScheduledEvent> eventsScheduled = listenerScheduled.getEvents();
-        //then
-        assertThat(eventsScheduled)
-                .extracting(BPMNTimerEvent::getEventType,
-                        BPMNTimerEvent::getProcessDefinitionId,
-                        event -> event.getEntity().getProcessDefinitionId(),
-                        event -> event.getEntity().getProcessInstanceId(),
-                        event -> event.getEntity().getElementId()
-                )
-                .contains(Tuple.tuple(BPMNTimerEvent.TimerEvents.TIMER_SCHEDULED,
-                        processInstance.getProcessDefinitionId(),
-                        processInstance.getProcessDefinitionId(),
-                        processInstance.getId(),
-                        "timer"
-                        )
-
+        assertActivityEvents("miSubProcess",
+                        BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
+                        BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED
                 );
-        assertThat(listenerFired.getEvents()).isEmpty();
 
+        assertThat(localEventSource.getTaskEvents())
+                .extracting(event -> ((Task) event.getEntity()).getName(),
+                            RuntimeEvent::getEventType)
+                .containsExactlyInAnyOrder(
+                        tuple("Task in sub-process 0",
+                              TaskRuntimeEvent.TaskEvents.TASK_CREATED),
+                        tuple("Task in sub-process 1",
+                              TaskRuntimeEvent.TaskEvents.TASK_CREATED),
+                        tuple("Task in sub-process 0",
+                              TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED),
+                        tuple("Task in sub-process 1",
+                              TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED));
 
-        //when
-        long waitTime = 10 * 60 * 1000;
-        Date startTime = new Date();
-        Date dueDate = new Date(startTime.getTime() + waitTime);
+        //send signal: boundary event should cancel multi-instance
+        localEventSource.clearEvents();
+        processBaseRuntime.signal("goMiParallelSubProcessBoundaryEvent");
 
-        // After setting the clock to time '5minutes and 5 seconds', the second timer should fire
-        processEngineConfiguration.getClock().setCurrentTime(new Date(dueDate.getTime()));
+        assertThat(localEventSource.getTaskEvents())
+                .extracting(event -> ((Task) event.getEntity()).getName(),
+                            RuntimeEvent::getEventType)
+                .containsExactlyInAnyOrder(
+                        tuple("Task in sub-process 0",
+                              TaskRuntimeEvent.TaskEvents.TASK_CANCELLED),
+                        tuple("Task in sub-process 1",
+                              TaskRuntimeEvent.TaskEvents.TASK_CANCELLED),
+                        tuple("Escalation Task",
+                              TaskRuntimeEvent.TaskEvents.TASK_CREATED),
+                        tuple("Escalation Task",
+                              TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED));
 
-        await().untilAsserted(() -> {
-            assertThat(listenerFired.getEvents())
-                    .extracting(BPMNTimerEvent::getEventType,
-                            BPMNTimerEvent::getProcessDefinitionId,
-                            event -> event.getEntity().getProcessDefinitionId(),
-                            event -> event.getEntity().getProcessInstanceId(),
-                            event -> event.getEntity().getElementId()
-                    )
-                    .contains(Tuple.tuple(BPMNTimerEvent.TimerEvents.TIMER_FIRED,
-                            processInstance.getProcessDefinitionId(),
-                            processInstance.getProcessDefinitionId(),
-                            processInstance.getId(),
-                            "timer"
-                            )
-
-                    );
-
-            assertThat(listenerExecuted.getEvents())
-                    .extracting(BPMNTimerEvent::getEventType,
-                            BPMNTimerEvent::getProcessDefinitionId,
-                            event -> event.getEntity().getProcessDefinitionId(),
-                            event -> event.getEntity().getProcessInstanceId(),
-                            event -> event.getEntity().getElementId()
-                    )
-                    .contains(Tuple.tuple(BPMNTimerEvent.TimerEvents.TIMER_EXECUTED,
-                            processInstance.getProcessDefinitionId(),
-                            processInstance.getProcessDefinitionId(),
-                            processInstance.getId(),
-                            "timer"
-                            )
-
-                    );
-        });
-
-
-        List<TaskCancelledEvent> taskCanceledEvents = localEventSource.getEvents().stream()
-                .filter(event -> event.getEventType().equals(TaskRuntimeEvent.TaskEvents.TASK_CANCELLED))
-                .map(TaskCancelledEvent.class::cast)
-                .collect(Collectors.toList());
-
-        assertThat(taskCanceledEvents)
-                .extracting(event -> event.getEntity().getName())
-                .containsExactlyInAnyOrder("Task in sub-process 0",
-                        "Task in sub-process 1",
-                        "Task in sub-process 2",
-                        "Task in sub-process 3");
-
-        // testing the multi instance element start, complete, cancel events
-        test_started_completed_canceledCount("miSubProcess", 4, 0, 4);
+        assertActivityEvents("miSubProcess",
+                        BPMNActivityEvent.ActivityEvents.ACTIVITY_CANCELLED,
+                        BPMNActivityEvent.ActivityEvents.ACTIVITY_CANCELLED
+                );
 
         tasks = taskBaseRuntime.getTasks(processInstance);
         assertThat(tasks.size()).isEqualTo(1);
@@ -821,153 +1041,125 @@ public class TaskRuntimeMultiInstanceIT {
         taskBaseRuntime.completeTask(tasks.get(0));
 
         assertThat(taskBaseRuntime.getTasks(processInstance)).isEmpty();
-        assertThat(localEventSource.getEvents())
+        assertThat(localEventSource.getProcessInstanceEvents())
                 .extracting(RuntimeEvent::getEventType,
-                        RuntimeEvent::getProcessInstanceId)
-                .contains(tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_COMPLETED,
-                        processInstance.getId()));
+                            RuntimeEvent::getProcessInstanceId)
+                .containsExactly(
+                        tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_COMPLETED,
+                              processInstance.getId()));
     }
 
     @Test
     public void processWithParallelMultiInstancesOn_CallActivity_Boundary_Event() {
-        ProcessInstance processInstance = processBaseRuntime.startProcessWithProcessDefinitionKey("miParallelCallActivityBoundaryEvent");
+        ProcessInstance parentProcessInstance = processBaseRuntime.startProcessWithProcessDefinitionKey("miParallelCallActivityBoundaryEvent");
 
-        final List<ProcessInstance> childProcess = processBaseRuntime.getProcessInstances();
-        assertThat(childProcess.size()).isEqualTo(5);
+        final Page<ProcessInstance> childrenProcessInstances = processBaseRuntime.getChildrenProcessInstances(parentProcessInstance.getId());
+        assertThat(childrenProcessInstances.getContent()).hasSize(2);
 
-
-        assertThat(localEventSource.getEvents().stream()
-                .filter(event -> event.getEventType().equals(ProcessRuntimeEvent.ProcessEvents.PROCESS_STARTED))
-                .map(ProcessStartedEvent.class::cast))
+        assertThat(localEventSource.getEvents(ProcessStartedEvent.class))
                 .extracting(
                         RuntimeEvent::getEventType,
                         event -> event.getEntity().getId(),
                         event -> event.getEntity().getParentId()
                 ).containsExactlyInAnyOrder(
-                tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_STARTED, childProcess.get(0).getId(), null),
-                tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_STARTED, childProcess.get(1).getId(), processInstance.getId()),
-                tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_STARTED, childProcess.get(2).getId(), processInstance.getId()),
-                tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_STARTED, childProcess.get(3).getId(), processInstance.getId()),
-                tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_STARTED, childProcess.get(4).getId(), processInstance.getId()));
+                tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_STARTED,
+                      parentProcessInstance.getId(),
+                      null),
+                tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_STARTED,
+                      childrenProcessInstances.getContent().get(0).getId(),
+                      parentProcessInstance.getId()),
+                tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_STARTED,
+                      childrenProcessInstances.getContent().get(1).getId(),
+                      parentProcessInstance.getId()));
 
-        assertThat(localEventSource.getEvents().stream()
-                .filter(event -> event.getEventType().equals(TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED))
-                .map(TaskAssignedEvent.class::cast))
+        assertActivityEvents("miCallActivity",
+                              BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
+                              BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED
+                );
+
+        assertThat(localEventSource.getTaskEvents())
                 .extracting(
                         RuntimeEvent::getEventType,
-                        event -> event.getEntity().getName(),
-                        event -> event.getEntity().getProcessInstanceId()
-                ).containsExactlyInAnyOrder(
-                tuple(TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED, "User Task", childProcess.get(1).getId()),
-                tuple(TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED, "User Task", childProcess.get(2).getId()),
-                tuple(TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED, "User Task", childProcess.get(3).getId()),
-                tuple(TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED, "User Task", childProcess.get(4).getId()));
-
-
-        assertThat(localEventSource.getEvents().stream()
-                .filter(event -> event.getEventType().equals(ProcessRuntimeEvent.ProcessEvents.PROCESS_COMPLETED))
-                .collect(Collectors.toList()).size()).isEqualTo(0);
-
-        // testing the multi instance element start, complete, cancel events
-        test_started_completed_canceledCount("miCallActivity", 4, 0,0);
-
-        List<BPMNTimerScheduledEvent> eventsScheduled = listenerScheduled.getEvents();
-        //then
-        assertThat(eventsScheduled)
-                .extracting(BPMNTimerEvent::getEventType,
-                        BPMNTimerEvent::getProcessDefinitionId,
-                        event -> event.getEntity().getProcessDefinitionId(),
-                        event -> event.getEntity().getProcessInstanceId(),
-                        event -> event.getEntity().getElementId()
+                        event -> ((Task) event.getEntity()).getName(),
+                        event -> ((Task) event.getEntity()).getProcessInstanceId()
                 )
-                .contains(Tuple.tuple(BPMNTimerEvent.TimerEvents.TIMER_SCHEDULED,
-                        processInstance.getProcessDefinitionId(),
-                        processInstance.getProcessDefinitionId(),
-                        processInstance.getId(),
-                        "timer"
-                        )
-
+                .containsExactlyInAnyOrder(
+                        tuple(TaskRuntimeEvent.TaskEvents.TASK_CREATED,
+                              "User Task",
+                              childrenProcessInstances.getContent().get(0).getId()),
+                        tuple(TaskRuntimeEvent.TaskEvents.TASK_CREATED,
+                              "User Task",
+                              childrenProcessInstances.getContent().get(1).getId()),
+                        tuple(TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED,
+                              "User Task",
+                              childrenProcessInstances.getContent().get(0).getId()),
+                        tuple(TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED,
+                              "User Task",
+                              childrenProcessInstances.getContent().get(1).getId())
                 );
-        assertThat(listenerFired.getEvents()).isEmpty();
 
+        assertThat(localEventSource.getEvents(ProcessCompletedEvent.class)).isEmpty();
 
         //when
-        long waitTime = 10 * 60 * 1000;
-        Date startTime = new Date();
-        Date dueDate = new Date(startTime.getTime() + waitTime);
-
-        // After setting the clock , the second timer should fire
-        processEngineConfiguration.getClock().setCurrentTime(new Date(dueDate.getTime()));
-
-        await().untilAsserted(() -> {
-            assertThat(listenerFired.getEvents())
-                    .extracting(BPMNTimerEvent::getEventType,
-                            BPMNTimerEvent::getProcessDefinitionId,
-                            event -> event.getEntity().getProcessDefinitionId(),
-                            event -> event.getEntity().getProcessInstanceId(),
-                            event -> event.getEntity().getElementId()
-                    )
-                    .contains(Tuple.tuple(BPMNTimerEvent.TimerEvents.TIMER_FIRED,
-                            processInstance.getProcessDefinitionId(),
-                            processInstance.getProcessDefinitionId(),
-                            processInstance.getId(),
-                            "timer"
-                            )
-
-                    );
-
-            assertThat(listenerExecuted.getEvents())
-                    .extracting(BPMNTimerEvent::getEventType,
-                            BPMNTimerEvent::getProcessDefinitionId,
-                            event -> event.getEntity().getProcessDefinitionId(),
-                            event -> event.getEntity().getProcessInstanceId(),
-                            event -> event.getEntity().getElementId()
-                    )
-                    .contains(Tuple.tuple(BPMNTimerEvent.TimerEvents.TIMER_EXECUTED,
-                            processInstance.getProcessDefinitionId(),
-                            processInstance.getProcessDefinitionId(),
-                            processInstance.getId(),
-                            "timer"
-                            )
-
-                    );
-        });
-
-        // testing the multi instance element start, complete, cancel events
-        test_started_completed_canceledCount("miCallActivity", 4, 0,4);
-
-        await().untilAsserted(() -> {
-
-            assertThat(localEventSource.getEvents().stream()
-                    .filter(event -> event.getEventType().equals(ProcessRuntimeEvent.ProcessEvents.PROCESS_CANCELLED))
-                    .map(ProcessCancelledEvent.class::cast))
-                    .extracting(
-                            RuntimeEvent::getEventType,
-                            event -> event.getEntity().getId(),
-                            event -> event.getEntity().getParentId()
-                    ).contains(
-                    tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_CANCELLED, childProcess.get(1).getId(), null),
-                    tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_CANCELLED, childProcess.get(2).getId(), null),
-                    tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_CANCELLED, childProcess.get(3).getId(), null),
-                    tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_CANCELLED, childProcess.get(4).getId(), null));
+        localEventSource.clearEvents();
+        processBaseRuntime.signal("goMiParallelCallActivityBoundaryEvent");
 
 
-        });
+        // then
+        assertThat(localEventSource.getTaskEvents())
+                .extracting(
+                        RuntimeEvent::getEventType,
+                        event -> ((Task) event.getEntity()).getName(),
+                        event -> ((Task) event.getEntity()).getProcessInstanceId()
+                )
+                .containsExactlyInAnyOrder(
+                        tuple(TaskRuntimeEvent.TaskEvents.TASK_CANCELLED,
+                              "User Task",
+                              childrenProcessInstances.getContent().get(0).getId()),
+                        tuple(TaskRuntimeEvent.TaskEvents.TASK_CANCELLED,
+                              "User Task",
+                              childrenProcessInstances.getContent().get(1).getId()),
 
-        List<Task> tasks = taskBaseRuntime.getTasks(processInstance);
+                        tuple(TaskRuntimeEvent.TaskEvents.TASK_CREATED,
+                              "Escalation Task",
+                              parentProcessInstance.getId()),
+                        tuple(TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED,
+                              "Escalation Task",
+                              parentProcessInstance.getId())
+                );
+
+        assertActivityEvents("miCallActivity",
+                             BPMNActivityEvent.ActivityEvents.ACTIVITY_CANCELLED,
+                             BPMNActivityEvent.ActivityEvents.ACTIVITY_CANCELLED);
+
+        assertThat(localEventSource.getProcessInstanceEvents())
+                .extracting(RuntimeEvent::getEventType,
+                            event -> ((ProcessInstance) event.getEntity()).getId())
+                .containsExactlyInAnyOrder(
+                        tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_CANCELLED,
+                              childrenProcessInstances.getContent().get(0).getId()),
+                        tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_CANCELLED,
+                              childrenProcessInstances.getContent().get(1).getId())
+                );
+
+
+
+        List<Task> tasks = taskBaseRuntime.getTasks(parentProcessInstance);
         assertThat(tasks.size()).isEqualTo(1);
         assertThat(tasks)
                 .extracting(Task::getName)
                 .contains("Escalation Task");
 
+        localEventSource.clearEvents();
         taskBaseRuntime.completeTask(tasks.get(0));
 
-        assertThat(taskBaseRuntime.getTasks(processInstance)).isEmpty();
-        assertThat(localEventSource.getEvents())
+        assertThat(taskBaseRuntime.getTasks(parentProcessInstance)).isEmpty();
+        assertThat(localEventSource.getProcessInstanceEvents())
                 .extracting(RuntimeEvent::getEventType,
-                        RuntimeEvent::getProcessInstanceId)
-                .contains(tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_COMPLETED,
-                        processInstance.getId()));
+                            RuntimeEvent::getProcessInstanceId)
+                .containsExactly(
+                        tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_COMPLETED,
+                              parentProcessInstance.getId()));
 
     }
 
@@ -982,176 +1174,202 @@ public class TaskRuntimeMultiInstanceIT {
         assertThat(tasks)
                 .extracting(Task::getName)
                 .containsExactlyInAnyOrder("Task in sub-process 0",
-                        "Task in sub-process 1",
-                        "Task in sub-process 2",
-                        "Task in sub-process 3");
+                        "Task in sub-process 1");
 
-        List<TaskCreatedEvent> taskCreatedEvents = localEventSource.getEvents().stream()
-                .filter(event -> event.getEventType().equals(TaskRuntimeEvent.TaskEvents.TASK_CREATED))
-                .map(TaskCreatedEvent.class::cast)
-                .collect(Collectors.toList());
-        assertThat(taskCreatedEvents)
+        assertThat(localEventSource.getEvents(TaskCreatedEvent.class))
                 .extracting(event -> event.getEntity().getName())
                 .containsExactlyInAnyOrder("Task in sub-process 0",
-                        "Task in sub-process 1",
-                        "Task in sub-process 2",
-                        "Task in sub-process 3");
+                        "Task in sub-process 1");
 
-        // testing the multi instance element start, complete, cancel events
-        test_started_completed_canceledCount("miSubProcess", 4, 0, 0);
+        assertActivityEvents("miSubProcess",
+                             BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
+                             BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED);
 
-        for(int i = 0; i< 4;i ++) {
-            //then
-            taskBaseRuntime.completeTask(tasks.get(i));
-        }
 
-        // testing the multi instance element start, complete, cancel events
-        test_started_completed_canceledCount("miSubProcess", 4, 4, 0);
 
-        List<TaskCompletedEvent> taskCompletedEvents = localEventSource.getEvents().stream()
-                .filter(event -> event.getEventType().equals(TaskRuntimeEvent.TaskEvents.TASK_COMPLETED))
-                .map(TaskCompletedEvent.class::cast)
-                .collect(Collectors.toList());
-        assertThat(taskCompletedEvents)
-                .extracting(event -> event.getEntity().getName())
-                .containsExactlyInAnyOrder("Task in sub-process 0",
-                        "Task in sub-process 1",
-                        "Task in sub-process 2",
-                        "Task in sub-process 3");
+        //complete first iteration: multi instance should not finish yet
+        localEventSource.clearEvents();
+        taskBaseRuntime.completeTask(tasks.get(0));
 
-        assertThat(taskBaseRuntime.getTasks(processInstance)).isEmpty();
-        assertThat(localEventSource.getEvents())
+        assertThat(localEventSource.getTaskEvents())
+                .extracting(
+                        RuntimeEvent::getEventType,
+                        event -> ((Task) event.getEntity()).getName(),
+                        event -> ((Task) event.getEntity()).getProcessInstanceId()
+                )
+                .containsExactly(
+                        tuple(TaskRuntimeEvent.TaskEvents.TASK_COMPLETED,
+                              tasks.get(0).getName(),
+                              processInstance.getId()));
+
+        assertActivityEvents("miSubProcess",
+                             BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED);
+
+        assertThat(localEventSource.getProcessInstanceEvents()).isEmpty();
+
+        //complete second iteration: multi instance should finish
+        localEventSource.clearEvents();
+        taskBaseRuntime.completeTask(tasks.get(1));
+
+
+        assertThat(localEventSource.getTaskEvents())
+                .extracting(
+                        RuntimeEvent::getEventType,
+                        event -> ((Task) event.getEntity()).getName(),
+                        event -> ((Task) event.getEntity()).getProcessInstanceId()
+                )
+                .containsExactly(
+                        tuple(TaskRuntimeEvent.TaskEvents.TASK_COMPLETED,
+                              tasks.get(1).getName(),
+                              processInstance.getId()));
+
+        assertActivityEvents("miSubProcess",
+                             BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED);
+
+        assertThat(localEventSource.getProcessInstanceEvents())
                 .extracting(RuntimeEvent::getEventType,
-                        RuntimeEvent::getProcessInstanceId)
-                .contains(tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_COMPLETED,
-                        processInstance.getId()));
+                            RuntimeEvent::getProcessInstanceId)
+                .containsExactly(
+                        tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_COMPLETED,
+                              processInstance.getId()));
+    }
+
+    private void assertActivityEvents(String miCallActivity,
+                                      BPMNActivityEvent.ActivityEvents ... activityEvents) {
+        assertThat(localEventSource.getEvents(BPMNActivityEvent.class))
+                .filteredOn(event -> miCallActivity.equals(event.getEntity().getElementId()))
+                .extracting(BPMNActivityEvent::getEventType)
+                .containsExactlyInAnyOrder(
+                        activityEvents
+                );
     }
 
     @Test
     public void processWithParallelMultiInstancesOnCallActivity_should_emmit_EqualStartAndEndEvent() {
-        ProcessInstance processInstance = processBaseRuntime.startProcessWithProcessDefinitionKey("miParallelCallActivity");
+        ProcessInstance parentProcessInstance = processBaseRuntime.startProcessWithProcessDefinitionKey("miParallelCallActivity");
 
-        List<ProcessInstance> childProcess = processBaseRuntime.getProcessInstances();
-        assertThat(childProcess.size()).isEqualTo(5);
+        List<ProcessInstance> childrenProcess = processBaseRuntime.getChildrenProcessInstances(parentProcessInstance.getId()).getContent();
+        assertThat(childrenProcess).hasSize(2);
 
-        // testing the multi instance element start, complete, cancel events
-        test_started_completed_canceledCount("miCallActivity", 4, 0, 0);
+        assertActivityEvents("miCallActivity",
+                             BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
+                             BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED);
 
-        assertThat(localEventSource.getEvents().stream()
-                .filter(event -> event.getEventType().equals(ProcessRuntimeEvent.ProcessEvents.PROCESS_STARTED))
-                .map(ProcessStartedEvent.class::cast))
+        assertThat(localEventSource.getEvents(ProcessStartedEvent.class))
                 .extracting(
                         RuntimeEvent::getEventType,
                         event -> event.getEntity().getId(),
                         event -> event.getEntity().getParentId()
                 ).containsExactlyInAnyOrder(
-                tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_STARTED, childProcess.get(0).getId(), null),
-                tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_STARTED, childProcess.get(1).getId(), processInstance.getId()),
-                tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_STARTED, childProcess.get(2).getId(), processInstance.getId()),
-                tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_STARTED, childProcess.get(3).getId(), processInstance.getId()),
-                tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_STARTED, childProcess.get(4).getId(), processInstance.getId()));
+                tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_STARTED, parentProcessInstance.getId(), null),
+                tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_STARTED, childrenProcess.get(0).getId(), parentProcessInstance.getId()),
+                tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_STARTED, childrenProcess.get(1).getId(), parentProcessInstance.getId())
+        );
 
-        assertThat(localEventSource.getEvents().stream()
-                .filter(event -> event.getEventType().equals(TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED))
-                .map(TaskAssignedEvent.class::cast))
+        assertThat(localEventSource.getTaskEvents())
                 .extracting(
                         RuntimeEvent::getEventType,
-                        event -> event.getEntity().getName(),
-                        event -> event.getEntity().getProcessInstanceId()
-                ).containsExactlyInAnyOrder(
-                tuple(TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED, "User Task", childProcess.get(1).getId()),
-                tuple(TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED, "User Task", childProcess.get(2).getId()),
-                tuple(TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED, "User Task", childProcess.get(3).getId()),
-                tuple(TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED, "User Task", childProcess.get(4).getId()));
+                        event -> ((Task) event.getEntity()).getName(),
+                        event -> ((Task) event.getEntity()).getProcessInstanceId()
+                )
+       .containsExactlyInAnyOrder(
+                tuple(TaskRuntimeEvent.TaskEvents.TASK_CREATED, "User Task", childrenProcess.get(0).getId()),
+                tuple(TaskRuntimeEvent.TaskEvents.TASK_CREATED, "User Task", childrenProcess.get(1).getId()),
+                tuple(TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED, "User Task", childrenProcess.get(0).getId()),
+                tuple(TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED, "User Task", childrenProcess.get(1).getId())
+       );
 
+        //complete first iteration: multi instance should not complete yet
+        List<TaskAssignedEvent> taskAssignedEvents = localEventSource.getEvents(TaskAssignedEvent.class);
+        localEventSource.clearEvents();
+        TaskAssignedEvent taskAssignedEvent = taskAssignedEvents.get(0);
+        taskBaseRuntime.completeTask(taskAssignedEvent.getEntity());
 
-        assertThat(localEventSource.getEvents().stream()
-                .filter(event -> event.getEventType().equals(ProcessRuntimeEvent.ProcessEvents.PROCESS_COMPLETED))
-                .collect(Collectors.toList()).size()).isEqualTo(0);
+        assertActivityEvents("miCallActivity",
+                             BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED);
 
-        //for i = 1 ,  first multi instance is completed: 3 remaining / completion condition not reached
-        //for i = 2 ,  second multi instance is completed: 2 remaining / completion condition reached
-        for(int i=1; i < 5; i++) {
+        assertThat(localEventSource.getTaskEvents())
+                .extracting(
+                        RuntimeEvent::getEventType,
+                        event -> ((Task) event.getEntity()).getName(),
+                        event -> ((Task) event.getEntity()).getProcessInstanceId()
+                )
+                .containsExactlyInAnyOrder(
+                        tuple(TaskRuntimeEvent.TaskEvents.TASK_COMPLETED, "User Task", taskAssignedEvent.getEntity().getProcessInstanceId())
+                );
 
-            List<Task> tasks = taskBaseRuntime.getTasks(childProcess.get(i));
+        assertThat(localEventSource.getProcessInstanceEvents())
+                .extracting(RuntimeEvent::getEventType,
+                            RuntimeEvent::getProcessInstanceId,
+                            event -> ((ProcessInstance) event.getEntity()).getParentId())
+                .containsExactly(
+                        tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_COMPLETED,
+                              taskAssignedEvent.getEntity().getProcessInstanceId(),
+                              parentProcessInstance.getId()));
 
-            assertThat(tasks.size()).isEqualTo(1);
-            assertThat(tasks)
-                    .extracting(Task::getName)
-                    .contains("User Task");
-            taskBaseRuntime.completeTask(tasks.get(0));
+        //complete second iteration: multi instance should complete
+        localEventSource.clearEvents();
+        taskAssignedEvent = taskAssignedEvents.get(1);
+        taskBaseRuntime.completeTask(taskAssignedEvent.getEntity());
 
-            assertThat(localEventSource.getEvents().stream()
-                    .filter(event -> event.getEventType().equals(TaskRuntimeEvent.TaskEvents.TASK_COMPLETED))
-                    .map(TaskCompletedEvent.class::cast))
-                    .extracting(
-                            RuntimeEvent::getEventType,
-                            event -> event.getEntity().getName(),
-                            event -> event.getEntity().getProcessInstanceId())
-                    .contains(tuple(TaskRuntimeEvent.TaskEvents.TASK_COMPLETED, "User Task", childProcess.get(i).getId()));
+        assertActivityEvents("miCallActivity",
+                             BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED);
 
+        assertThat(localEventSource.getTaskEvents())
+                .extracting(
+                        RuntimeEvent::getEventType,
+                        event -> ((Task) event.getEntity()).getName(),
+                        event -> ((Task) event.getEntity()).getProcessInstanceId()
+                )
+                .containsExactlyInAnyOrder(
+                        tuple(TaskRuntimeEvent.TaskEvents.TASK_COMPLETED, "User Task", taskAssignedEvent.getEntity().getProcessInstanceId())
+                );
 
-            assertThat(localEventSource.getEvents().stream()
-                    .filter(event -> event.getEventType().equals(ProcessRuntimeEvent.ProcessEvents.PROCESS_COMPLETED))
-                    .map(ProcessCompletedEvent.class::cast))
-                    .extracting(
-                            RuntimeEvent::getEventType,
-                            event -> event.getEntity().getId(),
-                            event -> event.getEntity().getParentId()
-                    ).contains(tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_COMPLETED, childProcess.get(i).getId(), processInstance.getId()));
-        }
+        assertThat(localEventSource.getProcessInstanceEvents())
+                .extracting(RuntimeEvent::getEventType,
+                            RuntimeEvent::getProcessInstanceId,
+                            event -> ((ProcessInstance) event.getEntity()).getParentId())
+                .containsExactly(
+                        tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_COMPLETED,
+                              taskAssignedEvent.getEntity().getProcessInstanceId(),
+                              parentProcessInstance.getId()),
+                        tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_COMPLETED,
+                              parentProcessInstance.getId(),
+                              null));
 
-
-        // testing the multi instance element start, complete, cancel events
-        test_started_completed_canceledCount("miCallActivity", 4, 4, 0);
 
         assertThat(processBaseRuntime.getProcessInstances()).isEmpty();
 
-        assertThat(localEventSource.getEvents().stream()
-                .filter(event -> event.getEventType().equals(ProcessRuntimeEvent.ProcessEvents.PROCESS_COMPLETED))
-                .map(ProcessCompletedEvent.class::cast))
-                .extracting(
-                        RuntimeEvent::getEventType,
-                        event -> event.getEntity().getId(),
-                        event -> event.getEntity().getParentId()
-                ).contains(
-                tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_COMPLETED, childProcess.get(1).getId(), processInstance.getId()),
-                tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_COMPLETED, childProcess.get(2).getId(), processInstance.getId()),
-                tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_COMPLETED, childProcess.get(3).getId(),  processInstance.getId()),
-                tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_COMPLETED, childProcess.get(4).getId(),  processInstance.getId()),
-                tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_COMPLETED, processInstance.getId(), null));
     }
 
     @Test
     public void processWithSequentialMultiInstancesOnManualTask_should_emmit_EqualStartAndEndEvent() {
-        test_MultiInstance_StartAndEndEventCount("miSequentialManualTasks", "miTasks", 4, 4, 0);
+        verifyMultiInstanceStartAndEndEventCount("miSequentialManualTasks", "miTasks", 2, 2);
     }
 
     @Test
     public void processWithSequentialMultiInstancesOnServiceTask_should_emmit_EqualStartAndEndEvent() {
-        test_MultiInstance_StartAndEndEventCount("miSequentialServiceTask", "miServiceTask", 4,4, 4);
+        verifyMultiInstanceStartAndEndEventCount("miSequentialServiceTask", "miServiceTask", 2, 2);
     }
 
     @Test
     public void processWithParallelMultiInstancesOnManualTask_should_emmit_EqualStartAndEndEvent() {
-        test_MultiInstance_StartAndEndEventCount("miParallelManualTasks", "miTasks", 4,4, 0);
+        verifyMultiInstanceStartAndEndEventCount("miParallelManualTasks", "miTasks", 2, 2);
     }
 
     @Test
     public void processWithParallelMultiInstancesOnServiceTask_should_emmit_EqualStartAndEndEvent() {
-        test_MultiInstance_StartAndEndEventCount("miParallelServiceTask", "miServiceTask", 4,4,4);
+        verifyMultiInstanceStartAndEndEventCount("miParallelServiceTask", "miServiceTask", 2, 2);
     }
 
-    private void test_MultiInstance_StartAndEndEventCount(String processDefinitionKey,String elementId, Integer startCount,Integer completeCount, Integer connectorCount) {
-        RuntimeTestConfiguration.testConnectorMultiInstanceExecutionCount = 0;
-
+    private void verifyMultiInstanceStartAndEndEventCount(String processDefinitionKey,
+                                                          String elementId,
+                                                          Integer startCount,
+                                                          Integer completeCount) {
         ProcessInstance processInstance = processBaseRuntime.startProcessWithProcessDefinitionKey(processDefinitionKey);
 
         // testing the multi instance element start, complete, cancel events
-        test_started_completed_canceledCount(elementId, startCount, completeCount, 0);
-
-        //checking the connector execution count
-        assertThat(RuntimeTestConfiguration.testConnectorMultiInstanceExecutionCount).isEqualTo(connectorCount);
+        verifyActivityStartedAndCompletedAreEmitted(elementId, startCount, completeCount);
 
         assertThat(localEventSource.getEvents())
                 .extracting(RuntimeEvent::getEventType,
@@ -1163,82 +1381,52 @@ public class TaskRuntimeMultiInstanceIT {
 
     @Test
     public void processWithParallelMultiInstancesManualTask_should_emmitEventsAndContinueOnceCompletionConditionIsReached() {
-        test_parallel_complete_condition_Events("miParallelManualTasksCompletionCondition", "miTasks", 0, 0);
+        verifyEventsOnAutomaticMultiInstanceWithCompletionCondition("miParallelManualTasksCompletionCondition", "miTasks");
     }
 
     @Test
     public void processWithParallelMultiInstancesServiceTask_should_emmitEventsAndContinueOnceCompletionConditionIsReached() {
-        test_parallel_complete_condition_Events("miParallelServiceTaskCompletionCondition", "miServiceTask", 2,4);
+        verifyEventsOnAutomaticMultiInstanceWithCompletionCondition("miParallelServiceTaskCompletionCondition", "miServiceTask");
     }
 
-    private void test_parallel_complete_condition_Events(String processDefinitionKey, String elementId, Integer minCount, Integer maxCount) {
-        RuntimeTestConfiguration.testConnectorMultiInstanceExecutionCount = 0;
-
+    private void verifyEventsOnAutomaticMultiInstanceWithCompletionCondition(String processDefinitionKey,
+                                                                             String elementId) {
         ProcessInstance processInstance = processBaseRuntime.startProcessWithProcessDefinitionKey(processDefinitionKey);
 
-        assertThat(localEventSource.getEvents().stream()
-                .filter(event-> event.getEventType() == BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED)
-                .map(BPMNActivityStartedEvent.class::cast)
-                .filter(event -> elementId.equals(event.getEntity().getElementId()))
-                .collect(Collectors.toList())
-                .size())
-                .isGreaterThanOrEqualTo(2)
-                .isLessThanOrEqualTo(4);
+        List<BPMNActivityStartedEvent> startedEvents = localEventSource.getEvents(BPMNActivityStartedEvent.class)
+                .stream().filter(event -> elementId.equals(event.getEntity().getElementId()))
+                .collect(Collectors.toList());
 
-        assertThat(localEventSource.getEvents().stream()
-                .filter(event-> event.getEventType() == BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED)
-                .map(BPMNActivityCompletedEvent.class::cast)
-                .filter(event -> elementId.equals(event.getEntity().getElementId()))
-                .collect(Collectors.toList())
-                .size())
-                .isGreaterThanOrEqualTo(2)
-                .isLessThanOrEqualTo(4);
+        List<BPMNActivityCompletedEvent> completedEvents = localEventSource.getEvents(BPMNActivityCompletedEvent.class)
+                .stream().filter(event -> elementId.equals(event.getEntity().getElementId()))
+                .collect(Collectors.toList());
 
-        assertThat(localEventSource.getEvents().stream()
-                .filter(event-> event.getEventType() == BPMNActivityEvent.ActivityEvents.ACTIVITY_CANCELLED)
-                .map(BPMNActivityCancelledEvent.class::cast)
-                .filter(event -> elementId.equals(event.getEntity().getElementId()))
-                .collect(Collectors.toList())
-                .size())
-                .isGreaterThanOrEqualTo(0)
-                .isLessThanOrEqualTo(2);
+        List<BPMNActivityCancelledEvent> cancelledEvents = localEventSource.getEvents(BPMNActivityCancelledEvent.class)
+                .stream().filter(event -> elementId.equals(event.getEntity().getElementId()))
+                .collect(Collectors.toList());
 
-        //checking the connector execution count
-        assertThat(RuntimeTestConfiguration.testConnectorMultiInstanceExecutionCount).isGreaterThanOrEqualTo(minCount).isLessThanOrEqualTo(maxCount);
+        assertThat(startedEvents.size()).isEqualTo(4);
 
-        assertThat(localEventSource.getEvents())
-                .extracting(RuntimeEvent::getEventType,
-                        RuntimeEvent::getProcessInstanceId)
-                .contains(tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_COMPLETED,
-                        processInstance.getId()));
+        assertThat(completedEvents.size())
+                .isGreaterThanOrEqualTo(2);
 
+        assertThat(completedEvents.size() +  cancelledEvents.size()).isEqualTo(startedEvents.size());
     }
 
+    private void verifyActivityStartedAndCompletedAreEmitted(String elementId,
+                                                             Integer startedCount,
+                                                             Integer completedCount) {
+        assertThat(localEventSource.getEvents(BPMNActivityStartedEvent.class))
+                .filteredOn(event -> elementId.equals(event.getEntity().getElementId()))
+                .hasSize(startedCount);
 
-    private void test_started_completed_canceledCount(String elementId, Integer startedCount, Integer completedCount, Integer canceledCount ) {
-        assertThat(localEventSource.getEvents().stream()
-                .filter(event-> event.getEventType() == BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED)
-                .map(BPMNActivityStartedEvent.class::cast)
-                .filter(event -> elementId.equals(event.getEntity().getElementId()))
-                .collect(Collectors.toList())
-                .size())
-                .isEqualTo(startedCount);
+        assertThat(localEventSource.getEvents(BPMNActivityCompletedEvent.class))
+                .filteredOn(event -> elementId.equals(event.getEntity().getElementId()))
+                .hasSize(completedCount);
 
-        assertThat(localEventSource.getEvents().stream()
-                .filter(event-> event.getEventType() == BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED)
-                .map(BPMNActivityCompletedEvent.class::cast)
-                .filter(event -> elementId.equals(event.getEntity().getElementId()))
-                .collect(Collectors.toList())
-                .size())
-                .isEqualTo(completedCount);
-
-        assertThat(localEventSource.getEvents().stream()
-                .filter(event-> event.getEventType() == BPMNActivityEvent.ActivityEvents.ACTIVITY_CANCELLED)
-                .map(BPMNActivityCancelledEvent.class::cast)
-                .filter(event -> elementId.equals(event.getEntity().getElementId()))
-                .collect(Collectors.toList())
-                .size())
-                .isEqualTo(canceledCount);
+        assertThat(localEventSource.getEvents(BPMNActivityCancelledEvent.class))
+                .filteredOn(event -> elementId.equals(event.getEntity().getElementId()))
+                .hasSize(0);
     }
 
 }

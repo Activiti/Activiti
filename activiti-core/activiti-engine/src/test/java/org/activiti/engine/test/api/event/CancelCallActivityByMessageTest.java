@@ -12,6 +12,8 @@
  */
 package org.activiti.engine.test.api.event;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,15 +43,20 @@ public class CancelCallActivityByMessageTest extends PluggableActivitiTestCase {
       "org/activiti/engine/test/api/event/CancelCallActivityByMessageTest.testActivityMessageBoundaryEventsExternalSubProcess.bpmn20.xml" })
   public void testCancelCallActivityByMessage() throws Exception {
 
-	  CallActivityByMessageEventListener myEventListener = new CallActivityByMessageEventListener();
+    CallActivityByMessageEventListener myEventListener = new CallActivityByMessageEventListener();
     processEngineConfiguration.getEventDispatcher().addEventListener(myEventListener);
 
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("messageEventOnCallActivity");
     assertNotNull(processInstance);
 
-    Execution executionWithMessageEvent = runtimeService.createExecutionQuery().activityId("cancelBoundaryMessageEvent")
-        .singleResult();
-    assertNotNull(executionWithMessageEvent);
+    Execution executionWithMessageEvent = runtimeService.createExecutionQuery()
+            .activityId("cancelBoundaryMessageEvent")
+            .singleResult();
+    assertThat(executionWithMessageEvent).isNotNull();
+    Execution callActivityExecution = runtimeService.createExecutionQuery()
+            .activityId("callActivity1")
+            .singleResult();
+    assertThat(callActivityExecution).isNotNull();
 
     runtimeService.messageEventReceived("cancel", executionWithMessageEvent.getId());
 
@@ -127,39 +134,61 @@ public class CancelCallActivityByMessageTest extends PluggableActivitiTestCase {
     assertEquals(ActivitiEventType.TASK_CREATED, entityEvent.getType());
     TaskEntity taskEntity = (TaskEntity) entityEvent.getEntity();
     assertEquals("Sample User Task2 in External", taskEntity.getName());
+    String externalTaskExecutionId = taskEntity.getExecutionId();
     
     // activityId is the call activity and the execution is the boundary event as we have seen before
     // We get this event in workflow but we ignore the activityType of "callActivity"
     activityEvent = (ActivitiActivityEvent) myEventListener.getEventsReceived().get(14);
-    assertEquals(ActivitiEventType.ACTIVITY_CANCELLED, activityEvent.getType());
-    assertEquals("callActivity", activityEvent.getActivityType());
-    assertEquals(boundaryExecutionId, activityEvent.getExecutionId());
+    assertThat(activityEvent)
+            .extracting(ActivitiActivityEvent::getType,
+                    ActivitiActivityEvent::getActivityType,
+                        ActivitiEvent::getExecutionId,
+                        ActivitiActivityEvent::getActivityName)
+            .containsExactly(ActivitiEventType.ACTIVITY_CANCELLED,
+                                   "userTask",
+                                   externalTaskExecutionId,
+                                   "Sample User Task2 in External");
+
+    assertThat(((ActivitiCancelledEvent) activityEvent).getCause()).isEqualTo("boundary event (cancelBoundaryMessageEvent)");
 
     ActivitiEntityEvent taskCancelledEvent = (ActivitiEntityEvent) myEventListener.getEventsReceived().get(15);
-    assertEquals(ActivitiEventType.ENTITY_DELETED, taskCancelledEvent.getType());
-    assertEquals(taskEntity.getName(), ((TaskEntity) taskCancelledEvent.getEntity()).getName());
+    assertThat(taskCancelledEvent.getType()).isEqualTo(ActivitiEventType.ENTITY_DELETED);
+    assertThat(((TaskEntity) taskCancelledEvent.getEntity()).getName()).isEqualTo(taskEntity.getName());
     
     ActivitiCancelledEvent processCancelledEvent = (ActivitiCancelledEvent) myEventListener.getEventsReceived().get(16);
     assertEquals(ActivitiEventType.PROCESS_CANCELLED, processCancelledEvent.getType());
     assertEquals(processCancelledEvent.getProcessInstanceId(), processCancelledEvent.getExecutionId());
-    
+
     activityEvent = (ActivitiActivityEvent) myEventListener.getEventsReceived().get(17);
+    assertThat(activityEvent)
+            .extracting(ActivitiActivityEvent::getType,
+                        ActivitiActivityEvent::getActivityType,
+                        ActivitiEvent::getExecutionId,
+                        ActivitiActivityEvent::getActivityName)
+            .containsExactly(ActivitiEventType.ACTIVITY_CANCELLED,
+                                   "callActivity",
+                                   callActivityExecution.getId(),
+                                   "Call activity");
+    assertThat(((ActivitiCancelledEvent) activityEvent).getCause()).isEqualTo("boundary event (cancelBoundaryMessageEvent)");
+
+
+    activityEvent = (ActivitiActivityEvent) myEventListener.getEventsReceived().get(18);
     assertEquals(ActivitiEventType.ACTIVITY_COMPLETED, activityEvent.getType());
     assertEquals("boundaryEvent", activityEvent.getActivityType());
     assertEquals("cancelBoundaryMessageEvent", activityEvent.getActivityId());
     
     // task in the main definition
-    activityEvent = (ActivitiActivityEvent) myEventListener.getEventsReceived().get(18);
+    activityEvent = (ActivitiActivityEvent) myEventListener.getEventsReceived().get(19);
     assertEquals(ActivitiEventType.ACTIVITY_STARTED, activityEvent.getType());
     assertEquals("usertask1", activityEvent.getActivityId());
     assertEquals("userTask", activityEvent.getActivityType());
     
-    entityEvent = (ActivitiEntityEvent) myEventListener.getEventsReceived().get(19);
+    entityEvent = (ActivitiEntityEvent) myEventListener.getEventsReceived().get(20);
     assertEquals(ActivitiEventType.TASK_CREATED, entityEvent.getType());
      taskEntity = (TaskEntity) entityEvent.getEntity();
     assertEquals("Sample User Task1", taskEntity.getName());
-    
-    assertEquals(20, myEventListener.getEventsReceived().size());
+
+    assertThat(myEventListener.getEventsReceived()).hasSize(21);
   }
   
   @Override

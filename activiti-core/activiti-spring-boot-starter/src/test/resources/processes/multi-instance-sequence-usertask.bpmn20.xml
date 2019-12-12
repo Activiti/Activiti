@@ -28,7 +28,7 @@
 
     <userTask id="miTasks" name="My Task ${loopCounter}" activiti:assignee="user">
       <multiInstanceLoopCharacteristics isSequential="true">
-        <loopCardinality>${4}</loopCardinality>
+        <loopCardinality>${2}</loopCardinality>
       </multiInstanceLoopCharacteristics>
     </userTask>
 

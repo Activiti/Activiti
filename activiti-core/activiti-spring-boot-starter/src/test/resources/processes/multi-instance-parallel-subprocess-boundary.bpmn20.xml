@@ -21,6 +21,8 @@
              xmlns:activiti="http://activiti.org/bpmn"
              targetNamespace="Examples">
 
+  <signal id="goMiParallelSubProcessBoundaryEvent" name="goMiParallelSubProcessBoundaryEvent"></signal>
+
   <process id="miParallelSubProcessBoundaryEvent">
     <startEvent id="StartEvent_1"/>
 
@@ -34,7 +36,7 @@
 
     <subProcess id="miSubProcess">
       <multiInstanceLoopCharacteristics isSequential="false">
-        <loopCardinality>${4}</loopCardinality>
+        <loopCardinality>${2}</loopCardinality>
       </multiInstanceLoopCharacteristics>
 
       <startEvent id="StartEvent_1kslv5t"/>
@@ -61,9 +63,8 @@
     <endEvent id="EndEvent_02ciezx"/>
 
     <boundaryEvent id="timer" attachedToRef="miSubProcess">
-      <timerEventDefinition>
-        <timeDuration>PT10S</timeDuration>
-      </timerEventDefinition>
+      <signalEventDefinition signalRef="goMiParallelSubProcessBoundaryEvent"></signalEventDefinition>
+
     </boundaryEvent>
   </process>
 </definitions>

@@ -12,7 +12,7 @@
 
         <callActivity id="miCallActivity" calledElement="externalSubProcess">
             <multiInstanceLoopCharacteristics isSequential="true">
-                <loopCardinality>${4}</loopCardinality>
+                <loopCardinality>${2}</loopCardinality>
             </multiInstanceLoopCharacteristics>
         </callActivity>
 

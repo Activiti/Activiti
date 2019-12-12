@@ -55,8 +55,6 @@ public class RuntimeTestConfiguration {
 
     public static boolean discardImageConnectorExecuted = false;
 
-    public static Integer testConnectorMultiInstanceExecutionCount = 0;
-
     public static Set<String> createdTasks = new HashSet<>();
 
     public static Set<String> updatedTasks = new HashSet<>();
@@ -111,10 +109,7 @@ public class RuntimeTestConfiguration {
 
     @Bean
     public Connector testConnectorMultiInstanceExecution() {
-        return integrationContext -> {
-            testConnectorMultiInstanceExecutionCount++;
-            return integrationContext;
-        };
+        return integrationContext -> integrationContext;
     }
 
     @Bean
