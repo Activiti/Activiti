@@ -36,6 +36,8 @@ public interface IntegrationContext {
     
     String getConnectorType();
 
+    String getAppVersion();
+
     String getClientId();
     String getClientName();
     String getClientType();

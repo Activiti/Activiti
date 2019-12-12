@@ -36,7 +36,7 @@ public class IntegrationContextImpl implements IntegrationContext {
     private String clientId;
     private String clientName;
     private String clientType;
-    
+    private String appVersion;
     private String connectorType;
 
     public IntegrationContextImpl() {
@@ -169,4 +169,12 @@ public class IntegrationContextImpl implements IntegrationContext {
         this.parentProcessInstanceId = parentProcessInstanceId;
     }
 
+    @Override
+    public String getAppVersion() {
+        return appVersion;
+    }
+
+    public void setAppVersion(String appVersion) {
+        this.appVersion = appVersion;
+    }
 }
