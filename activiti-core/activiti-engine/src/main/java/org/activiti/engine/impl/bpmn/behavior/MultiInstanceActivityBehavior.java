@@ -333,7 +333,7 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
     return multiInstanceRootExecution;
   }
 
-  protected void postMultiInstanceIterationCompleteEvent(DelegateExecution execution) {
+  protected void dispatchActivityCompletedEvent(DelegateExecution execution) {
     ExecutionEntity executionEntity = (ExecutionEntity) execution;
     Context.getCommandContext().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createActivityEvent(
             ActivitiEventType.ACTIVITY_COMPLETED,

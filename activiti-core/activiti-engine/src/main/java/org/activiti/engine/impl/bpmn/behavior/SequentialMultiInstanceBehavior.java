@@ -93,7 +93,7 @@ public class SequentialMultiInstanceBehavior extends MultiInstanceActivityBehavi
       multiInstanceRootExecution.setScope(false);
       multiInstanceRootExecution.setCurrentFlowElement(childExecution.getCurrentFlowElement());
       Context.getCommandContext().getExecutionEntityManager().deleteChildExecutions((ExecutionEntity) multiInstanceRootExecution, "MI_END", false);
-      postMultiInstanceIterationCompleteEvent(childExecution);
+      dispatchActivityCompletedEvent(childExecution);
       super.leave(multiInstanceRootExecution);
       
     } else {
@@ -109,7 +109,7 @@ public class SequentialMultiInstanceBehavior extends MultiInstanceActivityBehavi
         } else {
           executeOriginalBehavior(childExecution, loopCounter);
         }
-        postMultiInstanceIterationCompleteEvent(childExecution);
+        dispatchActivityCompletedEvent(childExecution);
       } catch (BpmnError error) {
         // re-throw business fault so that it can be caught by an Error
         // Intermediate Event or Error Event Sub-Process in the process

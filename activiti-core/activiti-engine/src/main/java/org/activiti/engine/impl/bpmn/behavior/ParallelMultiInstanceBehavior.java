@@ -25,7 +25,6 @@ import org.activiti.bpmn.model.SubProcess;
 import org.activiti.bpmn.model.Transaction;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.delegate.DelegateExecution;
-import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.bpmn.helper.ScopeUtil;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.delegate.ActivityBehavior;
@@ -213,10 +212,10 @@ public class ParallelMultiInstanceBehavior extends MultiInstanceActivityBehavior
         executionToUse.setMultiInstanceRoot(false);
         Context.getAgenda().planTakeOutgoingSequenceFlowsOperation(executionToUse, true);
       }
-      postMultiInstanceIterationCompleteEvent(executionEntity);
+      dispatchActivityCompletedEvent(executionEntity);
 
     } else {
-      postMultiInstanceIterationCompleteEvent(executionEntity);
+      dispatchActivityCompletedEvent(executionEntity);
       removeLocalLoopVariable(execution, getCollectionElementIndexVariable());
       execution.setMultiInstanceRoot(false);
       super.leave(execution);
@@ -254,14 +253,6 @@ public class ParallelMultiInstanceBehavior extends MultiInstanceActivityBehavior
 
     if (deleteExecution) {
         executionEntityManager.deleteExecutionAndRelatedData(parentExecution, "Multi-instance complete condition expression passed", true);
-
-//        boolean isActiveElement = parentExecution.isActive();
-//        executionEntityManager.deleteExecutionAndRelatedData(parentExecution, null, false);
-//        if (isActiveElement) {
-//            commandContext.getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createActivityCancelledEvent(
-//                    parentExecution,
-//                    "Multi-instance complete condition expression passed"
-//            ));
     }
   }
 

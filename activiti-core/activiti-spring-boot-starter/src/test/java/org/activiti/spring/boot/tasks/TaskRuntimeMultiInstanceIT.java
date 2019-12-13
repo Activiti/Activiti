@@ -1411,6 +1411,18 @@ public class TaskRuntimeMultiInstanceIT {
                 .isGreaterThanOrEqualTo(2);
 
         assertThat(completedEvents.size() +  cancelledEvents.size()).isEqualTo(startedEvents.size());
+
+        assertThat(localEventSource.getProcessInstanceEvents())
+                .extracting(RuntimeEvent::getEventType,
+                            event -> ((ProcessInstance) event.getEntity()).getId())
+                .containsExactlyInAnyOrder(
+                        tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_CREATED,
+                              processInstance.getId()),
+                        tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_STARTED,
+                              processInstance.getId()),
+                        tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_COMPLETED,
+                              processInstance.getId())
+                );
     }
 
     private void verifyActivityStartedAndCompletedAreEmitted(String elementId,
