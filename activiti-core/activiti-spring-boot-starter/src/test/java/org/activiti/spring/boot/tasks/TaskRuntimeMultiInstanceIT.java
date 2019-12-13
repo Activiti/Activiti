@@ -1405,12 +1405,10 @@ public class TaskRuntimeMultiInstanceIT {
                 .stream().filter(event -> elementId.equals(event.getEntity().getElementId()))
                 .collect(Collectors.toList());
 
-        assertThat(startedEvents.size()).isEqualTo(4);
-
-        assertThat(completedEvents.size())
-                .isGreaterThanOrEqualTo(2);
-
-        assertThat(completedEvents.size() +  cancelledEvents.size()).isEqualTo(startedEvents.size());
+        // in some cases, the execution is scheduled in the agenda but it get cancelled even before starting
+        assertThat(startedEvents.size()).isGreaterThanOrEqualTo(2);
+        assertThat(completedEvents).hasSize(2);
+        assertThat(cancelledEvents).hasSize(2);
 
         assertThat(localEventSource.getProcessInstanceEvents())
                 .extracting(RuntimeEvent::getEventType,
