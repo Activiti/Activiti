@@ -48,7 +48,7 @@
           },
           "process_variable_4": {
             "type": "VALUE",
-            "value": "${process_variable_1}"
+            "value": "${task_input_variable_name_2}"
           }
         }
       }

@@ -23,6 +23,7 @@ import java.util.Optional;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.delegate.VariableScope;
 import org.activiti.spring.process.ProcessExtensionService;
 import org.activiti.spring.process.model.ConstantDefinition;
 import org.activiti.spring.process.model.Mapping;
@@ -34,10 +35,11 @@ import org.activiti.spring.process.model.VariableDefinition;
 public class VariablesMappingProvider {
 
     private ProcessExtensionService processExtensionService;
-    
+
     private ExpressionResolver expressionResolver;
 
-    public VariablesMappingProvider(ProcessExtensionService processExtensionService, ExpressionResolver expressionResolver) {
+    public VariablesMappingProvider(ProcessExtensionService processExtensionService,
+                                    ExpressionResolver expressionResolver) {
         this.processExtensionService = processExtensionService;
         this.expressionResolver = expressionResolver;
     }
@@ -88,7 +90,8 @@ public class VariablesMappingProvider {
                                                    ProcessExtensionModel extensions) {
         Map<String, Object> constants = new HashMap<>();
 
-        ProcessConstantsMapping processConstantsMapping = extensions.getExtensions().getConstantForFlowElement(execution.getCurrentActivityId());
+        ProcessConstantsMapping processConstantsMapping = extensions.getExtensions()
+                                                                    .getConstantForFlowElement(execution.getCurrentActivityId());
         for (Map.Entry<String, ConstantDefinition> mapping : processConstantsMapping.entrySet()) {
             constants.put(mapping.getKey(), mapping.getValue().getValue());
         }
@@ -99,15 +102,16 @@ public class VariablesMappingProvider {
                                                         ProcessExtensionModel extensions) {
         Map<String, Object> inboundVariables = new HashMap<>();
 
-        ProcessVariablesMapping processVariablesMapping = extensions.getExtensions().getMappingForFlowElement(execution.getCurrentActivityId());
+        ProcessVariablesMapping processVariablesMapping = extensions.getExtensions()
+                                                                    .getMappingForFlowElement(execution.getCurrentActivityId());
 
         Map<String, Mapping> inputMappings = processVariablesMapping.getInputs();
         for (Map.Entry<String, Mapping> mapping : inputMappings.entrySet()) {
             Optional<Object> mappedValue = calculateMappedValue(mapping.getValue(),
-                    execution,
-                    extensions);
+                                                                execution,
+                                                                extensions);
             mappedValue.ifPresent(value -> inboundVariables.put(mapping.getKey(),
-                    value));
+                                                                value));
         }
         return inboundVariables;
     }
@@ -121,25 +125,23 @@ public class VariablesMappingProvider {
                 if (Mapping.SourceMappingType.VARIABLE.equals(mapping.getType())) {
                     String name = mapping.getValue().toString();
 
-                    return currentContextVariables != null ?
-                            Optional.ofNullable(currentContextVariables.get(name)) :
-                            Optional.empty();
+                    return currentContextVariables != null ? Optional.ofNullable(currentContextVariables.get(name)) : Optional.empty();
                 }
             }
         }
         return Optional.empty();
     }
 
-    public Map<String, Object> calculateOutPutVariables(MappingExecutionContext execution,
+    public Map<String, Object> calculateOutPutVariables(MappingExecutionContext mappingExecutionContext,
                                                         Map<String, Object> availableVariables) {
 
-        ProcessExtensionModel extensions = processExtensionService.getExtensionsForId(execution.getProcessDefinitionId());
+        ProcessExtensionModel extensions = processExtensionService.getExtensionsForId(mappingExecutionContext.getProcessDefinitionId());
 
-        if (extensions.getExtensions().hasEmptyOutputsMapping(execution.getActivityId())) {
+        if (extensions.getExtensions().hasEmptyOutputsMapping(mappingExecutionContext.getActivityId())) {
             return Collections.emptyMap();
         }
 
-        if (!extensions.getExtensions().hasMapping(execution.getActivityId())) {
+        if (!extensions.getExtensions().hasMapping(mappingExecutionContext.getActivityId())) {
             return (availableVariables != null ? new HashMap<>(availableVariables) : Collections.emptyMap());
         }
 
@@ -147,17 +149,18 @@ public class VariablesMappingProvider {
             if (expressionResolver.containsExpression(availableVariables)) {
                 throw new ActivitiIllegalArgumentException("Expressions are not allowed as variable values in the output mapping");
             }
-            return calculateOutPutVariables(execution, extensions, availableVariables);
+            return calculateOutPutVariables(mappingExecutionContext, extensions, availableVariables);
         } else {
             return Collections.emptyMap();
         }
     }
 
-    private Map<String, Object> calculateOutPutVariables(MappingExecutionContext execution,
+    private Map<String, Object> calculateOutPutVariables(MappingExecutionContext mappingExecutionContext,
                                                          ProcessExtensionModel extensions,
                                                          Map<String, Object> availableVariables) {
         Map<String, Object> outboundVariables = new HashMap<>();
-        ProcessVariablesMapping processVariablesMapping = extensions.getExtensions().getMappingForFlowElement(execution.getActivityId());
+        ProcessVariablesMapping processVariablesMapping = extensions.getExtensions()
+                                                                    .getMappingForFlowElement(mappingExecutionContext.getActivityId());
         Map<String, Mapping> outputMappings = processVariablesMapping.getOutputs();
 
         for (Map.Entry<String, Mapping> mapping : outputMappings.entrySet()) {
@@ -169,10 +172,15 @@ public class VariablesMappingProvider {
             if (processVariableDefinition != null) {
                 calculateOutPutMappedValue(mapping.getValue(),
                                            availableVariables)
-                        .ifPresent( value -> outboundVariables.put(name, value));
+                                                              .ifPresent(value -> outboundVariables.put(name, value));
             }
         }
 
-        return outboundVariables;
+        return expressionResolver.resolveExpressionsMap(createOutputMappingVariableScope(availableVariables),
+                                                        outboundVariables);
+    }
+
+    private VariableScope createOutputMappingVariableScope(Map<String, Object> availableVariables) {
+        return new OutputMappingVariableScope(availableVariables);
     }
 }

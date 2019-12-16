@@ -10,15 +10,14 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import org.activiti.engine.delegate.DelegateExecution;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.activiti.engine.delegate.Expression;
+import org.activiti.engine.delegate.VariableScope;
 import org.activiti.engine.impl.el.ExpressionManager;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public class ExpressionResolver {
 
@@ -40,62 +39,62 @@ public class ExpressionResolver {
         this.mapper = mapper;
     }
 
-    private Object resolveExpressions(final DelegateExecution execution,
+    private Object resolveExpressions(final VariableScope variableMappingContext,
                                       final Object value) {
         if (value instanceof String) {
-            return resolveExpressionsString(execution,
+            return resolveExpressionsString(variableMappingContext,
                                             (String) value);
         } else if (value instanceof ObjectNode) {
-            return resolveExpressionsMap(execution,
+            return resolveExpressionsMap(variableMappingContext,
                                          mapper.convertValue(value,
                                                              MAP_STRING_OBJECT_TYPE));
         } else if (value instanceof Map<?, ?>) {
-            return resolveExpressionsMap(execution,
+            return resolveExpressionsMap(variableMappingContext,
                                          (Map<String, ?>) value);
         } else if (value instanceof List<?>) {
-            return resolveExpressionsList(execution,
+            return resolveExpressionsList(variableMappingContext,
                                           (List<?>) value);
         } else {
             return value;
         }
     }
 
-    private List<Object> resolveExpressionsList(final DelegateExecution execution,
+    private List<Object> resolveExpressionsList(final VariableScope variableMappingContext,
                                                 final List<?> sourceList) {
         final List<Object> result = new LinkedList<>();
-        sourceList.forEach(value -> result.add(resolveExpressions(execution,
+        sourceList.forEach(value -> result.add(resolveExpressions(variableMappingContext,
                                                                   value)));
         return result;
     }
 
-    public Map<String, Object> resolveExpressionsMap(final DelegateExecution execution,
+    public Map<String, Object> resolveExpressionsMap(final VariableScope variableMappingContext,
                                                      final Map<String, ?> sourceMap) {
         final Map<String, Object> result = new LinkedHashMap<>();
         sourceMap.forEach((key,
                            value) -> result.put(key,
-                                                resolveExpressions(execution,
+                                                resolveExpressions(variableMappingContext,
                                                                    value)));
         return result;
     }
 
-    private Object resolveExpressionsString(final DelegateExecution execution,
+    private Object resolveExpressionsString(final VariableScope variableMappingContext,
                                             final String sourceString) {
         if (StringUtils.isBlank(sourceString)) {
             return sourceString;
         }
         if (sourceString.matches(EXPRESSION_PATTERN_STRING)) {
-            return resolveObjectPlaceHolder(execution,
+            return resolveObjectPlaceHolder(variableMappingContext,
                                             sourceString);
         } else {
-            return resolveInStringPlaceHolder(execution,
+            return resolveInStringPlaceHolder(variableMappingContext,
                                               sourceString);
         }
     }
 
-    private Object resolveObjectPlaceHolder(DelegateExecution execution,
+    private Object resolveObjectPlaceHolder(VariableScope variableMappingContext,
                                             String sourceString) {
         try {
-            return expressionManager.createExpression(sourceString).getValue(execution);
+            return expressionManager.createExpression(sourceString).getValue(variableMappingContext);
         } catch (final Exception e) {
             logger.warn("Unable to resolve expression in variables, keeping original value",
                         e);
@@ -103,7 +102,7 @@ public class ExpressionResolver {
         }
     }
 
-    private String resolveInStringPlaceHolder(final DelegateExecution execution,
+    private String resolveInStringPlaceHolder(final VariableScope variableMappingContext,
                                               final String sourceString) {
         final Matcher matcher = EXPRESSION_PATTERN.matcher(sourceString);
         final StringBuffer sb = new StringBuffer();
@@ -111,7 +110,7 @@ public class ExpressionResolver {
             final String expressionKey = matcher.group(EXPRESSION_KEY_INDEX);
             final Expression expression = expressionManager.createExpression(expressionKey);
             try {
-                final Object value = expression.getValue(execution);
+                final Object value = expression.getValue(variableMappingContext);
                 matcher.appendReplacement(sb,
                                           Objects.toString(value));
             } catch (final Exception e) {
