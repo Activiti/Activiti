@@ -96,6 +96,7 @@ public class ProcessRuntimeBPMNTimerIT {
     @Before
     public void setUp() {
         clear();
+        processEngineConfiguration.getClock().reset();
     }
 
     @After
