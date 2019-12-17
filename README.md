@@ -45,22 +45,25 @@ Configuring IntelliJ
 
     * Add `-J-Xss1024k` so it becomes something like `-target 1.8 -J-Xss1024k`
 
+* Recommended code style: use the [Google Java Style Guide](https://google.github.io/styleguide/javaguide.html) with editorconfig
 
-* Recommended: import our code style
+    * Download the IntelliJ code style xml from: [https://google.github.io/styleguide/intellij-java-google-style.xml]
 
-    * If you don't do this, you need to set the file encoding and number of spaces correctly manually.
-
-    * Use the one from `activiti-build/ide-configuration` in the [activiti-build repo](https://github.com/Activiti/activiti-build)
-
-    * Copy to `~/.IntelliJIdea*/config/codestyles/` (on mac: `~/Library/Preferences/IntelliJIdea*/config/codestyles/`)
-
-    * Restart, open menu *File*, menu item *Settings*
-
-    * Click tree item *Code Style* and select it.
+    * Open menu *File*, menu item *Settings*, click tree item *Code Style*, click cogwheel and select *Import scheme*, then *IntelliJ code style xml*
+    
+    * Browse where you downloaded the xml and open it. Check that GoogleStyle is the active scheme.  
 
         * Note: IntelliJ IDEA doesn't format your code automatically. You have to press Ctrl+Alt+L keyboard combination to trigger auto formatting when coding is done.
+        
+    * There's an `.editorconfig` what has definition for indents, file encoding, line endings. 
+    
+    * If you disable it, you need to set the file encoding and number of spaces correctly manually.
+    
+    * Eclipse code style xml: [https://google.github.io/styleguide/eclipse-java-google-style.xml]
+    
+    * Eclipse needs [editorconfig-eclipse](https://marketplace.eclipse.org/content/editorconfig-eclipse) plugin in order to support EditorConfig files.  
 
-* Set the correct file encoding (UTF-8 except for properties files) and end-of-line characters (unix):
+* Set manually the correct file encoding (UTF-8 except for properties files) and end-of-line characters (unix):
 
     * Open menu *File*, menu item *Settings*
 
@@ -76,7 +79,7 @@ Configuring IntelliJ
 
             * Note: normal i18n properties files must be in `ISO-8859-1` as specified by the java `ResourceBundle` contract.
 
-* Set the correct number of spaces when pressing tab:
+* Set manually the correct number of spaces when pressing tab:
 
     * Open menu *File*, menu item *Settings*
 
