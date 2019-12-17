@@ -162,10 +162,12 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
     }
 
     private List<org.activiti.engine.repository.ProcessDefinition> filterCurrentVersionDefinitions (List<org.activiti.engine.repository.ProcessDefinition> allDefinitions){
-        String currentDeploymentId = selectLatestDeployment().getId();
+        int currentVersion = selectLatestDeployment().getVersion();
         return allDefinitions
                 .stream()
-                .filter(processDefinition -> processDefinition.getDeploymentId().equals(currentDeploymentId))
+                .filter(processDefinition -> processDefinition.getAppVersion() == null ||
+                                             processDefinition.getAppVersion().equals(currentVersion))
+                //we fetch possible unversioned definitions from different types of deployments
                 .collect(Collectors.toList());
     }
 

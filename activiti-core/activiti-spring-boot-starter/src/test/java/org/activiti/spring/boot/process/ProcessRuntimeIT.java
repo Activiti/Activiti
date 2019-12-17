@@ -709,7 +709,7 @@ public class ProcessRuntimeIT {
     }
 
     @Test
-    public void should_ProcessDefinitionsFromLatestVersionRetrieved(){
+    public void should_OnlyProcessDefinitionsFromLatestVersionRetrieved(){
         securityUtil.logInAs("user");
 
         Deployment deployment = processRuntime.selectLatestDeployment();
@@ -717,7 +717,7 @@ public class ProcessRuntimeIT {
         Page<ProcessDefinition> processDefinitionPage = processRuntime.processDefinitions(Pageable.of(0,
                                                                                                       50));
 
-        assertThat(processDefinitionPage.getContent())
+        assertThat(processDefinitionPage.getContent().stream().filter(c -> c.getKey().equals(SUPER_PROCESS)))
                 .extracting(ProcessDefinition::getAppVersion)
                 .containsOnly(deployment.getVersion().toString());
     }
