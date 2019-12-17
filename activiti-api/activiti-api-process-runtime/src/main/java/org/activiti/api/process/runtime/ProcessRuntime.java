@@ -19,6 +19,7 @@ package org.activiti.api.process.runtime;
 import java.util.List;
 
 import org.activiti.api.model.shared.model.VariableInstance;
+import org.activiti.api.process.model.Deployment;
 import org.activiti.api.process.model.ProcessDefinition;
 import org.activiti.api.process.model.ProcessDefinitionMeta;
 import org.activiti.api.process.model.ProcessInstance;
@@ -129,4 +130,6 @@ public interface ProcessRuntime {
     void receive(ReceiveMessagePayload messagePayload);
     
     ProcessInstance start(StartMessagePayload messagePayload);
+
+    Deployment selectLatestDeployment();
 }

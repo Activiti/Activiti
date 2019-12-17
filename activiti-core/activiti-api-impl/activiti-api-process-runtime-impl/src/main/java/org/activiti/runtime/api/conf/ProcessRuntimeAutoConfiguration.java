@@ -117,6 +117,7 @@ import org.activiti.runtime.api.impl.RuntimeSignalPayloadEventListener;
 import org.activiti.runtime.api.impl.VariableNameValidator;
 import org.activiti.runtime.api.impl.VariablesMappingProvider;
 import org.activiti.runtime.api.message.ReceiveMessagePayloadEventListener;
+import org.activiti.runtime.api.model.impl.APIDeploymentConverter;
 import org.activiti.runtime.api.model.impl.APIProcessDefinitionConverter;
 import org.activiti.runtime.api.model.impl.APIProcessInstanceConverter;
 import org.activiti.runtime.api.model.impl.APIVariableInstanceConverter;
@@ -173,6 +174,7 @@ public class ProcessRuntimeAutoConfiguration {
                                          ProcessSecurityPoliciesManager securityPoliciesManager,
                                          APIProcessInstanceConverter processInstanceConverter,
                                          APIVariableInstanceConverter variableInstanceConverter,
+                                         APIDeploymentConverter apiDeploymentConverter,
                                          ProcessRuntimeConfiguration processRuntimeConfiguration,
                                          ApplicationEventPublisher eventPublisher,
                                          ProcessVariablesPayloadValidator processVariablesValidator) {
@@ -182,6 +184,7 @@ public class ProcessRuntimeAutoConfiguration {
                 securityPoliciesManager,
                 processInstanceConverter,
                 variableInstanceConverter,
+                apiDeploymentConverter,
                 processRuntimeConfiguration,
                 eventPublisher,
                 processVariablesValidator);
@@ -252,6 +255,12 @@ public class ProcessRuntimeAutoConfiguration {
     @ConditionalOnMissingBean
     public APIProcessInstanceConverter apiProcessInstanceConverter() {
         return new APIProcessInstanceConverter();
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public APIDeploymentConverter apiDeploymentConverter(){
+        return new APIDeploymentConverter();
     }
 
     @Bean

@@ -17,6 +17,7 @@ import java.io.Serializable;
 import java.util.List;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.repository.Deployment;
@@ -195,6 +196,11 @@ public class DeploymentQueryImpl extends AbstractQuery<DeploymentQuery, Deployme
   public List<Deployment> executeList(CommandContext commandContext, Page page) {
     checkQueryOk();
     return commandContext.getDeploymentEntityManager().findDeploymentsByQueryCriteria(this, page);
+  }
+
+  @Override
+  public Deployment executeSingleResult(CommandContext commandContext){
+    return commandContext.getDeploymentEntityManager().selectLatestDeployment("SpringAutoDeployment");
   }
 
   // getters ////////////////////////////////////////////////////////

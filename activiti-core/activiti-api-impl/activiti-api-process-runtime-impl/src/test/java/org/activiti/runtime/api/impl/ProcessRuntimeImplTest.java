@@ -63,6 +63,7 @@ public class ProcessRuntimeImplTest {
                 null,
                 null,
                 null,
+                null,
                 null));
         doReturn(true).when(securityPoliciesManager).canWrite("processDefinitionKey");
 

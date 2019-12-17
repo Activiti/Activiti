@@ -18,8 +18,10 @@ package org.activiti.runtime.api.impl;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.activiti.api.model.shared.model.VariableInstance;
+import org.activiti.api.process.model.Deployment;
 import org.activiti.api.process.model.ProcessDefinition;
 import org.activiti.api.process.model.ProcessDefinitionMeta;
 import org.activiti.api.process.model.ProcessInstance;
@@ -52,7 +54,9 @@ import org.activiti.core.common.spring.security.policies.SecurityPolicyAccess;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
+import org.activiti.engine.repository.DeploymentQuery;
 import org.activiti.engine.repository.ProcessDefinitionQuery;
+import org.activiti.runtime.api.model.impl.APIDeploymentConverter;
 import org.activiti.runtime.api.model.impl.APIProcessDefinitionConverter;
 import org.activiti.runtime.api.model.impl.APIProcessInstanceConverter;
 import org.activiti.runtime.api.model.impl.APIVariableInstanceConverter;
@@ -74,6 +78,8 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
 
     private final APIVariableInstanceConverter variableInstanceConverter;
 
+    private final APIDeploymentConverter deploymentConverter;
+
     private final ProcessRuntimeConfiguration configuration;
 
     private final ProcessSecurityPoliciesManager securityPoliciesManager;
@@ -88,6 +94,7 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
                               ProcessSecurityPoliciesManager securityPoliciesManager,
                               APIProcessInstanceConverter processInstanceConverter,
                               APIVariableInstanceConverter variableInstanceConverter,
+                              APIDeploymentConverter deploymentConverter,
                               ProcessRuntimeConfiguration configuration,
                               ApplicationEventPublisher eventPublisher,
                               ProcessVariablesPayloadValidator processVariablesValidator) {
@@ -97,6 +104,7 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
         this.securityPoliciesManager = securityPoliciesManager;
         this.processInstanceConverter = processInstanceConverter;
         this.variableInstanceConverter = variableInstanceConverter;
+        this.deploymentConverter = deploymentConverter;
         this.configuration = configuration;
         this.eventPublisher = eventPublisher;
         this.processVariablesValidator = processVariablesValidator;
@@ -146,8 +154,19 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
         if (getProcessDefinitionsPayload.hasDefinitionKeys()) {
             processDefinitionQuery.processDefinitionKeys(getProcessDefinitionsPayload.getProcessDefinitionKeys());
         }
-        return new PageImpl<>(processDefinitionConverter.from(processDefinitionQuery.list()),
-                Math.toIntExact(processDefinitionQuery.count()));
+
+        List<org.activiti.engine.repository.ProcessDefinition> currentVersionDefinitions = filterCurrentVersionDefinitions(processDefinitionQuery.list());
+
+        return new PageImpl<>(processDefinitionConverter.from(currentVersionDefinitions),
+                              Math.toIntExact(processDefinitionQuery.count()));
+    }
+
+    private List<org.activiti.engine.repository.ProcessDefinition> filterCurrentVersionDefinitions (List<org.activiti.engine.repository.ProcessDefinition> allDefinitions){
+        String currentDeploymentId = selectLatestDeployment().getId();
+        return allDefinitions
+                .stream()
+                .filter(processDefinition -> processDefinition.getDeploymentId().equals(currentDeploymentId))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -398,6 +417,15 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
         checkUserCanWrite(processDefinition.getKey());
 
         return processDefinition;
+    }
+
+    @Override
+    public Deployment selectLatestDeployment(){
+        return deploymentConverter.from(
+                repositoryService
+                        .createDeploymentQuery()
+                        .singleResult()
+        );
     }
 
 }

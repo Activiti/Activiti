@@ -14,6 +14,7 @@ import org.activiti.engine.RuntimeService;
 import org.activiti.runtime.api.impl.ProcessAdminRuntimeImpl;
 import org.activiti.runtime.api.impl.ProcessRuntimeImpl;
 import org.activiti.runtime.api.impl.ProcessVariablesPayloadValidator;
+import org.activiti.runtime.api.model.impl.APIDeploymentConverter;
 import org.activiti.runtime.api.model.impl.APIProcessDefinitionConverter;
 import org.activiti.runtime.api.model.impl.APIProcessInstanceConverter;
 import org.activiti.runtime.api.model.impl.APIVariableInstanceConverter;
@@ -75,6 +76,10 @@ public class HistoryConfigurationTest {
     @Autowired
     private ProcessCleanUpUtil processCleanUpUtil;
 
+    @Autowired
+    private APIDeploymentConverter deploymentConverter;
+
+
     @After
     public void cleanUp(){
         processCleanUpUtil.cleanUpWithAdmin();
@@ -90,6 +95,7 @@ public class HistoryConfigurationTest {
                      securityPoliciesManager,
                      processInstanceConverter,
                      variableInstanceConverter,
+                     deploymentConverter,
                      configuration,
                      eventPublisher,
                      processVariablesValidator));
