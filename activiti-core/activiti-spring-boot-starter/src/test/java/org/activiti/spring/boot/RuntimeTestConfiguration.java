@@ -108,6 +108,11 @@ public class RuntimeTestConfiguration {
     }
 
     @Bean
+    public Connector testConnectorMultiInstanceExecution() {
+        return integrationContext -> integrationContext;
+    }
+
+    @Bean
     public Connector processImageConnector() {
         return integrationContext -> {
             Map<String, Object> inBoundVariables = integrationContext.getInBoundVariables();

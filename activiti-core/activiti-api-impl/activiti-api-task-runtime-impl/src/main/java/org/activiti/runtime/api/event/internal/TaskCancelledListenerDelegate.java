@@ -19,6 +19,7 @@ package org.activiti.runtime.api.event.internal;
 import org.activiti.api.task.runtime.events.TaskCancelledEvent;
 import org.activiti.api.task.runtime.events.listener.TaskRuntimeEventListener;
 import org.activiti.engine.delegate.event.ActivitiActivityCancelledEvent;
+import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventListener;
 import org.activiti.runtime.api.event.impl.ToTaskCancelledConverter;
@@ -39,8 +40,8 @@ public class TaskCancelledListenerDelegate implements ActivitiEventListener {
 
     @Override
     public void onEvent(ActivitiEvent event) {
-        if (event instanceof ActivitiActivityCancelledEvent) {
-            toTaskCancelledConverter.from((ActivitiActivityCancelledEvent) event)
+        if (event instanceof ActivitiEntityEvent) {
+            toTaskCancelledConverter.from((ActivitiEntityEvent) event)
                     .ifPresent(convertedEvent -> {
                         for (TaskRuntimeEventListener<TaskCancelledEvent> listener : listeners) {
                             listener.onEvent(convertedEvent);

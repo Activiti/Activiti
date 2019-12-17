@@ -218,15 +218,15 @@ public class TaskEntityManagerImpl extends AbstractEntityManager<TaskEntity> imp
       if (getEventDispatcher().isEnabled()) {
     	  if (cancel && !task.isCanceled()) {
     		  task.setCanceled(true);
-          getEventDispatcher().dispatchEvent(
-                  ActivitiEventBuilder.createActivityCancelledEvent(task.getExecution() != null ? task.getExecution().getActivityId() : null,
-                                                                    task.getName(),
-                                                                    //temporary fix for standalone tasks
-                                                                    task.getExecutionId() != null ? task.getExecutionId() : task.getId(),
-                                                                    task.getProcessInstanceId(),
-                                                                    task.getProcessDefinitionId(),
-                                                                    "userTask",
-                                                                    deleteReason));
+                  getEventDispatcher().dispatchEvent(
+                          ActivitiEventBuilder.createActivityCancelledEvent(task.getExecution() != null ? task.getExecution().getActivityId() : null,
+                                  task.getName(),
+                                  //temporary fix for standalone tasks
+                                  task.getExecutionId() != null ? task.getExecutionId() : task.getId(),
+                                  task.getProcessInstanceId(),
+                                  task.getProcessDefinitionId(),
+                                  "userTask",
+                                  deleteReason));
         }
         getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_DELETED, task));
       }

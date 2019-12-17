@@ -191,12 +191,11 @@ public class TaskRuntimeAutoConfiguration {
     @Bean
     public InitializingBean registerTaskCancelledEventListener(RuntimeService runtimeService,
                                                                @Autowired(required = false) List<TaskRuntimeEventListener<TaskCancelledEvent>> taskRuntimeEventListeners,
-                                                               TaskService taskService,
                                                                APITaskConverter taskConverter) {
         return () -> runtimeService.addEventListener(new TaskCancelledListenerDelegate(getInitializedTaskRuntimeEventListeners(taskRuntimeEventListeners),
-                                                                                       new ToTaskCancelledConverter(taskConverter,
-                                                                                                                    taskService)),
-                                                     ActivitiEventType.ACTIVITY_CANCELLED);
+                                                                                       new ToTaskCancelledConverter(taskConverter
+                                                                                       )),
+                                                     ActivitiEventType.ENTITY_DELETED);
     }
 
     @Bean

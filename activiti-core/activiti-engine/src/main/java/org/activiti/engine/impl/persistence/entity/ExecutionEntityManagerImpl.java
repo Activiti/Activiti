@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.bpmn.model.UserTask;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
@@ -548,6 +549,7 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
 
   public void deleteDataForExecution(ExecutionEntity executionEntity, String deleteReason, boolean cancel) {
 
+      boolean isActive = executionEntity.isActive();
     // To start, deactivate the current incoming execution
     executionEntity.setEnded(true);
     executionEntity.setActive(false);
@@ -649,6 +651,13 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
       for (EventSubscriptionEntity eventSubscription : eventSubscriptions) {
         eventSubscriptionEntityManager.delete(eventSubscription);
       }
+    }
+
+    if (cancel &&
+            isActive &&
+            executionEntity.getCurrentFlowElement() != null &&
+            !(executionEntity.getCurrentFlowElement() instanceof UserTask)) {
+        getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createActivityCancelledEvent(executionEntity, deleteReason));
     }
 
   }

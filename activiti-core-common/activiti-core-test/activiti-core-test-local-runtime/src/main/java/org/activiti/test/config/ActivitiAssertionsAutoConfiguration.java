@@ -24,8 +24,14 @@ import org.activiti.api.model.shared.event.VariableUpdatedEvent;
 import org.activiti.api.process.model.events.BPMNActivityCancelledEvent;
 import org.activiti.api.process.model.events.BPMNActivityCompletedEvent;
 import org.activiti.api.process.model.events.BPMNActivityStartedEvent;
+import org.activiti.api.process.model.events.BPMNErrorReceivedEvent;
 import org.activiti.api.process.model.events.BPMNSequenceFlowTakenEvent;
 import org.activiti.api.process.model.events.BPMNSignalReceivedEvent;
+import org.activiti.api.process.model.events.BPMNTimerCancelledEvent;
+import org.activiti.api.process.model.events.BPMNTimerExecutedEvent;
+import org.activiti.api.process.model.events.BPMNTimerFailedEvent;
+import org.activiti.api.process.model.events.BPMNTimerFiredEvent;
+import org.activiti.api.process.model.events.BPMNTimerScheduledEvent;
 import org.activiti.api.process.runtime.ProcessRuntime;
 import org.activiti.api.process.runtime.events.ProcessCancelledEvent;
 import org.activiti.api.process.runtime.events.ProcessCompletedEvent;
@@ -185,4 +191,36 @@ public class ActivitiAssertionsAutoConfiguration {
     public BPMNElementEventListener<BPMNSignalReceivedEvent> keepInMemoryBpmnSignalReceivedListener() {
         return localEventProvider::addCollectedEvents;
     }
+
+    @Bean
+    public  BPMNElementEventListener<BPMNTimerScheduledEvent> keepInMemoryTimerScheduledListener() {
+        return localEventProvider::addCollectedEvents;
+    }
+
+    @Bean
+    public  BPMNElementEventListener<BPMNTimerFiredEvent> keepInMemoryTimerFiredListener() {
+        return localEventProvider::addCollectedEvents;
+    }
+
+    @Bean
+    public  BPMNElementEventListener<BPMNTimerExecutedEvent> keepInMemoryTimerExecutedListener() {
+        return localEventProvider::addCollectedEvents;
+    }
+
+    @Bean
+    public  BPMNElementEventListener<BPMNTimerFailedEvent> keepInMemoryTimerFailedListener() {
+        return localEventProvider::addCollectedEvents;
+    }
+
+    @Bean
+    public  BPMNElementEventListener<BPMNTimerCancelledEvent> keepInMemoryTimerCancelledListener() {
+        return localEventProvider::addCollectedEvents;
+    }
+
+    @Bean
+    public  BPMNElementEventListener<BPMNErrorReceivedEvent> keepInMemoryErrorReceivedListener() {
+        return localEventProvider::addCollectedEvents;
+    }
+
+
 }
