@@ -429,4 +429,28 @@ public class VariablesMappingProviderTest {
         variablesMappingProvider.calculateOutPutVariables(buildMappingExecutionContext(execution),
                                                           taskVariables);
     }
+
+    @Test
+    public void should_returnEmptyOutputMapping_when_thereIsNoAvaliableVariableInTask() throws Exception {
+        DelegateExecution execution = initExpressionResolverTest("expression-in-mapping-output-value.json");
+
+        Map<String, Object> outputMapping = variablesMappingProvider.calculateOutPutVariables(buildMappingExecutionContext(execution),
+                                                                                              null);
+
+        assertThat(outputMapping).isEmpty();
+    }
+    
+    @Test
+    public void should_returnEmptyOutputMapping_when_thereIsAnEmptyValueInOutputMappingVariable() throws Exception {
+        DelegateExecution execution = initExpressionResolverTest("no-value-in-output-mapping-variable.json");
+
+        Map<String, Object> taskVariables = new HashMap<>();
+        taskVariables.put("not_matching_variable",
+                          "variable_value_1");
+
+        Map<String, Object> outputMapping = variablesMappingProvider.calculateOutPutVariables(buildMappingExecutionContext(execution),
+                                                                                              taskVariables);
+
+        assertThat(outputMapping).isEmpty();
+    }
 }
