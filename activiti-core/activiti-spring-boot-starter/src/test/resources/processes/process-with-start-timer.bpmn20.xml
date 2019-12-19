@@ -15,7 +15,7 @@
   
     <startEvent id="theStart">
      	<timerEventDefinition>
-                <timeDuration>PT1M</timeDuration>
+                <timeDuration>PT30M</timeDuration>
         </timerEventDefinition>
     </startEvent>    
     

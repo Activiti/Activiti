@@ -16,22 +16,24 @@
 
 package org.activiti.spring.boot.process;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.activiti.spring.boot.security.util.SecurityUtil;
+import java.util.List;
+
+import org.activiti.api.model.shared.model.VariableInstance;
 import org.activiti.api.process.model.ProcessInstance;
-import org.activiti.api.process.runtime.ProcessRuntime;
-import org.activiti.api.runtime.shared.query.Pageable;
-import org.activiti.api.runtime.shared.query.Page;
 import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
 import org.activiti.api.process.model.payloads.DeleteProcessPayload;
-import org.activiti.api.process.model.payloads.GetProcessInstancesPayload;
+import org.activiti.api.process.runtime.ProcessRuntime;
+import org.activiti.api.runtime.shared.query.Page;
+import org.activiti.api.runtime.shared.query.Pageable;
+import org.activiti.spring.boot.security.util.SecurityUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestComponent;
-import org.activiti.api.model.shared.model.VariableInstance;
-import java.util.List;
 
 @TestComponent
 public class ProcessBaseRuntime {
 
+    public static final Pageable DEFAULT_PAGEABLE = Pageable.of(0,
+                                                                50);
     @Autowired
     private ProcessRuntime processRuntime;
 
@@ -47,11 +49,16 @@ public class ProcessBaseRuntime {
 
     public List<ProcessInstance> getProcessInstances() {
         List<ProcessInstance> processList = processRuntime
-                .processInstances(Pageable.of(0, 50), ProcessPayloadBuilder.processInstances().build()).getContent();
+                .processInstances(DEFAULT_PAGEABLE, ProcessPayloadBuilder.processInstances().build()).getContent();
         return processList;
     }
     public Page<ProcessInstance> getProcessInstancesPage() {
-        return processRuntime.processInstances(Pageable.of(0, 50));
+        return processRuntime.processInstances(DEFAULT_PAGEABLE);
+    }
+
+    public Page<ProcessInstance> getChildrenProcessInstances(String parentProcessId) {
+        return processRuntime.processInstances(DEFAULT_PAGEABLE,
+                                               ProcessPayloadBuilder.subprocesses(parentProcessId));
     }
 
     public List<VariableInstance> getProcessVariablesByProcessId(String processId) {
@@ -64,6 +71,10 @@ public class ProcessBaseRuntime {
 
     public ProcessInstance delete(String processInstanceId, String reason) {
         return processRuntime.delete(new DeleteProcessPayload(processInstanceId, reason));
+    }
+
+    public void signal(String signalName) {
+        processRuntime.signal(ProcessPayloadBuilder.signal().withName(signalName).build());
     }
 
 }

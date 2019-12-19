@@ -24,7 +24,7 @@ import org.activiti.api.process.runtime.events.listener.BPMNElementEventListener
 import org.springframework.boot.test.context.TestComponent;
 
 @TestComponent
-public class DummyBPMNTimerFiredListener implements BPMNElementEventListener<BPMNTimerFiredEvent> { 
+public class DummyBPMNTimerFiredListener implements BPMNElementEventListener<BPMNTimerFiredEvent> {
 
     private List<BPMNTimerFiredEvent> events = new LinkedList<>();
     

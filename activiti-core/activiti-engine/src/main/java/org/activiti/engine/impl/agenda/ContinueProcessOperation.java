@@ -15,6 +15,7 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
+import org.activiti.engine.impl.bpmn.behavior.MultiInstanceActivityBehavior;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.delegate.ActivityBehavior;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -195,7 +196,9 @@ public class ContinueProcessOperation extends AbstractOperation {
                      flowNode.getId(),
                      execution.getId());
 
-        if (Context.getProcessEngineConfiguration() != null && Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+        if (Context.getProcessEngineConfiguration() != null &&
+                Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled() &&
+                !(activityBehavior instanceof MultiInstanceActivityBehavior)) {
             Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
                     ActivitiEventBuilder.createActivityEvent(ActivitiEventType.ACTIVITY_STARTED,
                                                              flowNode.getId(),

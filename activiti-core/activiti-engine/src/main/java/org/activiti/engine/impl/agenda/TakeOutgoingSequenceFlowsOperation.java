@@ -19,6 +19,8 @@ import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.Condition;
+import org.activiti.engine.impl.bpmn.behavior.AbstractBpmnActivityBehavior;
+import org.activiti.engine.impl.bpmn.behavior.MultiInstanceActivityBehavior;
 import org.activiti.engine.impl.bpmn.helper.SkipExpressionUtil;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.el.UelExpressionCondition;
@@ -101,7 +103,7 @@ public class TakeOutgoingSequenceFlowsOperation extends AbstractOperation {
             commandContext.getHistoryManager().recordActivityEnd(execution,
                                                                  null);
 
-            if (!(execution.getCurrentFlowElement() instanceof SubProcess)) {
+            if (!(execution.getCurrentFlowElement() instanceof SubProcess) && !(flowNode.getBehavior() instanceof MultiInstanceActivityBehavior)) {
                 Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
                         ActivitiEventBuilder.createActivityEvent(ActivitiEventType.ACTIVITY_COMPLETED,
                                                                  flowNode.getId(),

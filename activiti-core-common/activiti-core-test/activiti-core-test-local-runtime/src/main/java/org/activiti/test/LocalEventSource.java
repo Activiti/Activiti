@@ -19,11 +19,14 @@ package org.activiti.test;
 import static java.util.stream.Collectors.collectingAndThen;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.activiti.api.model.shared.event.RuntimeEvent;
+import org.activiti.api.process.model.events.ProcessRuntimeEvent;
+import org.activiti.api.task.model.events.TaskRuntimeEvent;
 
 public class LocalEventSource implements EventSource {
 
@@ -42,7 +45,7 @@ public class LocalEventSource implements EventSource {
         collectedEvents.clear();
     }
 
-    public <T extends RuntimeEvent<?,?>> List<T> getEventsOfType(Class<T> eventType) {
+    public <T extends RuntimeEvent<?,?>> List<T> getEvents(Class<T> eventType) {
         return collectedEvents
                 .stream()
                 .filter(eventType::isInstance)
@@ -50,4 +53,22 @@ public class LocalEventSource implements EventSource {
                 .collect(collectingAndThen(Collectors.toList(),
                                            Collections::unmodifiableList));
     }
+
+    public List<RuntimeEvent<?, ?>> getEvents(Enum<?> ... eventTypes) {
+        return collectedEvents
+                .stream()
+                .filter(event -> Arrays.asList(eventTypes).contains(event.getEventType()))
+                .collect(collectingAndThen(Collectors.toList(),
+                                           Collections::unmodifiableList));
+
+    }
+
+    public List<RuntimeEvent<?, ?>> getTaskEvents() {
+        return getEvents(TaskRuntimeEvent.TaskEvents.values());
+    }
+
+    public List<RuntimeEvent<?, ?>> getProcessInstanceEvents() {
+        return getEvents(ProcessRuntimeEvent.ProcessEvents.values());
+    }
+
 }

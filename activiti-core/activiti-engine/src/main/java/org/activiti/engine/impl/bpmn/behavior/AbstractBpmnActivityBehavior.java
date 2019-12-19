@@ -51,7 +51,7 @@ public class AbstractBpmnActivityBehavior extends FlowNodeActivityBehavior {
     }
     if (!hasLoopCharacteristics()) {
       super.leave(execution);
-    } else if (hasMultiInstanceCharacteristics()) {
+    } else if (hasMultiInstanceCharacteristics() && !execution.isEnded()) {
       multiInstanceActivityBehavior.leave(execution);
     }
   }
