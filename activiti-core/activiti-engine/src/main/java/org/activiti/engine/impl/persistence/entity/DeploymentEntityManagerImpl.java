@@ -348,5 +348,9 @@ public class DeploymentEntityManagerImpl extends AbstractEntityManager<Deploymen
   public void setDeploymentDataManager(DeploymentDataManager deploymentDataManager) {
     this.deploymentDataManager = deploymentDataManager;
   }
-  
+
+  @Override
+  public Deployment selectLatestDeployment (String deploymentName){
+    return deploymentDataManager.selectLatestDeployment(deploymentName);
+  }
 }

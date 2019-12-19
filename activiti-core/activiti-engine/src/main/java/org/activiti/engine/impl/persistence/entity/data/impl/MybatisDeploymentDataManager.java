@@ -79,5 +79,10 @@ public class MybatisDeploymentDataManager extends AbstractDataManager<Deployment
   public long findDeploymentCountByNativeQuery(Map<String, Object> parameterMap) {
     return (Long) getDbSqlSession().selectOne("selectDeploymentCountByNativeQuery", parameterMap);
   }
-  
+
+  @Override
+  public Deployment selectLatestDeployment(String deploymentName){
+    return (Deployment) getDbSqlSession().selectOne("selectLatestDeployment", deploymentName);
+  }
+
 }

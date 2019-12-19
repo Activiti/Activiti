@@ -8,6 +8,7 @@ import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
+import org.activiti.api.process.model.Deployment;
 import org.activiti.api.process.model.ProcessDefinition;
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
@@ -24,6 +25,7 @@ import org.activiti.engine.RuntimeService;
 import org.activiti.runtime.api.impl.ProcessAdminRuntimeImpl;
 import org.activiti.runtime.api.impl.ProcessRuntimeImpl;
 import org.activiti.runtime.api.impl.ProcessVariablesPayloadValidator;
+import org.activiti.runtime.api.model.impl.APIDeploymentConverter;
 import org.activiti.runtime.api.model.impl.APIProcessDefinitionConverter;
 import org.activiti.runtime.api.model.impl.APIProcessInstanceConverter;
 import org.activiti.runtime.api.model.impl.APIVariableInstanceConverter;
@@ -79,6 +81,9 @@ public class ProcessRuntimeIT {
     private APIVariableInstanceConverter variableInstanceConverter;
 
     @Autowired
+    private APIDeploymentConverter deploymentConverter;
+
+    @Autowired
     ProcessVariablesPayloadValidator processVariablesValidator;
 
     @Autowired
@@ -111,6 +116,7 @@ public class ProcessRuntimeIT {
                                                      securityPoliciesManager,
                                                      processInstanceConverter,
                                                      variableInstanceConverter,
+                                                     deploymentConverter,
                                                      configuration,
                                                      eventPublisher,
                                                      processVariablesValidator));
@@ -689,6 +695,31 @@ public class ProcessRuntimeIT {
         ProcessDefinition result = processDefinitions.get(0);
 
         assertThat(result.getAppVersion()).isEqualTo("1");
+    }
+
+    @Test
+    public void should_selectLatestDeployment(){
+        securityUtil.logInAs("user");
+
+        Deployment deployment = processRuntime.selectLatestDeployment();
+
+        assertThat(deployment.getVersion()).isEqualTo(1);
+        assertThat(deployment.getProjectReleaseVersion()).isEqualTo("1");
+        assertThat(deployment.getName()).isEqualTo("SpringAutoDeployment");
+    }
+
+    @Test
+    public void should_OnlyProcessDefinitionsFromLatestVersionRetrieved(){
+        securityUtil.logInAs("user");
+
+        Deployment deployment = processRuntime.selectLatestDeployment();
+
+        Page<ProcessDefinition> processDefinitionPage = processRuntime.processDefinitions(Pageable.of(0,
+                                                                                                      50));
+
+        assertThat(processDefinitionPage.getContent().stream().filter(c -> c.getKey().equals(SUPER_PROCESS)))
+                .extracting(ProcessDefinition::getAppVersion)
+                .containsOnly(deployment.getVersion().toString());
     }
 
 }

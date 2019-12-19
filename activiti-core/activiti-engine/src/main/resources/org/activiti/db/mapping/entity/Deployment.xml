@@ -21,8 +21,8 @@
          #{deployment.key, jdbcType=VARCHAR},
          #{deployment.tenantId, jdbcType=VARCHAR},
          #{deployment.deploymentTime, jdbcType=TIMESTAMP}),
-         #{version, jdbcType=INTEGER},
-         #{projectReleaseVersion, jdbcType=VARCHAR}
+         #{deployment.version, jdbcType=INTEGER},
+         #{deployment.projectReleaseVersion, jdbcType=VARCHAR}
       </foreach>
   </insert>
 
@@ -36,8 +36,8 @@
            #{deployment.key, jdbcType=VARCHAR},
            #{deployment.tenantId, jdbcType=VARCHAR},
            #{deployment.deploymentTime, jdbcType=TIMESTAMP}),
-           #{version, jdbcType=INTEGER},
-           #{projectReleaseVersion, jdbcType=VARCHAR}
+           #{deployment.version, jdbcType=INTEGER},
+           #{deployment.projectReleaseVersion, jdbcType=VARCHAR}
       </foreach>
     SELECT * FROM dual
   </insert>
@@ -158,6 +158,13 @@
   
   <select id="selectDeployment" parameterType="string" resultMap="deploymentResultMap">
     select * from ${prefix}ACT_RE_DEPLOYMENT where ID_ = #{id, jdbcType=VARCHAR}
+  </select>
+
+  <select id="selectLatestDeployment" parameterType="string" resultMap="deploymentResultMap">
+    select * from ${prefix}ACT_RE_DEPLOYMENT
+    where VERSION_ = (select max(VERSION_) from ${prefix}ACT_RE_DEPLOYMENT)
+    and NAME_ = #{name, jdbcType=VARCHAR}
+    and PROJECT_RELEASE_VERSION_ IS NOT NULL
   </select>
 
   <!-- mysql specific -->

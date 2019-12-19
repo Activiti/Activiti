@@ -37,4 +37,6 @@ public interface DeploymentDataManager extends DataManager<DeploymentEntity> {
 
   long findDeploymentCountByNativeQuery(Map<String, Object> parameterMap);
 
+  Deployment selectLatestDeployment(String deploymentName);
+
 }

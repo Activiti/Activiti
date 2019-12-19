@@ -15,6 +15,7 @@ package org.activiti.engine.repository;
 
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.api.internal.Internal;
+import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.query.Query;
 
 /**

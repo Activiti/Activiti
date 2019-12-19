@@ -40,4 +40,6 @@ public interface DeploymentEntityManager extends EntityManager<DeploymentEntity>
   
   void deleteDeployment(String deploymentId, boolean cascade);
 
+  Deployment selectLatestDeployment(String deploymentName);
+
 }
