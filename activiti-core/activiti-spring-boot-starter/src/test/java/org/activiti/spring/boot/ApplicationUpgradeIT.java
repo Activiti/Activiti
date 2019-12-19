@@ -3,6 +3,7 @@ package org.activiti.spring.boot;
 import org.activiti.core.common.project.model.ProjectManifest;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.Deployment;
+import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +45,10 @@ public class ApplicationUpgradeIT {
 
         assertThat(deployment2.getProjectReleaseVersion()).isEqualTo("17");
         assertThat(deployment2.getVersion()).isEqualTo(2);
+
+
+        repositoryService.deleteDeployment(deployment1.getId());
+        repositoryService.deleteDeployment(deployment2.getId());
 
     }
 
