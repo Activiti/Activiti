@@ -161,7 +161,10 @@
   </select>
 
   <select id="selectLatestDeployment" parameterType="string" resultMap="deploymentResultMap">
-    select * from ${prefix}ACT_RE_DEPLOYMENT where VERSION_ = (select max(VERSION_) from ${prefix}ACT_RE_DEPLOYMENT) and NAME_ = #{name, jdbcType=VARCHAR}
+    select * from ${prefix}ACT_RE_DEPLOYMENT
+    where VERSION_ = (select max(VERSION_) from ${prefix}ACT_RE_DEPLOYMENT)
+    and NAME_ = #{name, jdbcType=VARCHAR}
+    and PROJECT_RELEASE_VERSION_ IS NOT NULL
   </select>
 
   <!-- mysql specific -->
