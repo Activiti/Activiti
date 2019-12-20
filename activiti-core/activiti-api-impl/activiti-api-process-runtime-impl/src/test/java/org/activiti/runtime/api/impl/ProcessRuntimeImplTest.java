@@ -16,25 +16,25 @@
 
 package org.activiti.runtime.api.impl;
 
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.MockitoAnnotations.initMocks;
-
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
 import org.activiti.api.process.model.payloads.UpdateProcessPayload;
+import org.activiti.api.runtime.model.impl.DeploymentImpl;
 import org.activiti.api.runtime.model.impl.ProcessInstanceImpl;
+import org.activiti.core.common.spring.security.policies.ActivitiForbiddenException;
 import org.activiti.core.common.spring.security.policies.ProcessSecurityPoliciesManager;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
+import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntityImpl;
 import org.activiti.engine.runtime.ProcessInstanceQuery;
 import org.activiti.runtime.api.model.impl.APIProcessInstanceConverter;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
+
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.mockito.Mockito.*;
+import static org.mockito.MockitoAnnotations.initMocks;
 
 public class ProcessRuntimeImplTest {
 
@@ -99,6 +99,24 @@ public class ProcessRuntimeImplTest {
         //then
         verify(runtimeService).updateBusinessKey("processId", "businessKey");
         verifyNoMoreInteractions(internalProcess);
+    }
+
+    @Test
+    public void should_ThrowException_when_ProcessDefinitionAppVersionDiffersFromCurrentDeploymentVersion(){
+
+        //given
+        DeploymentImpl deployment = new DeploymentImpl();
+        deployment.setVersion(2);
+
+        doReturn(deployment).when(processRuntime).selectLatestDeployment();
+
+        ProcessDefinitionEntityImpl processDefinition = new ProcessDefinitionEntityImpl();
+        processDefinition.setId("processDefinitionId");
+        processDefinition.setAppVersion(1);
+
+        assertThatThrownBy(() ->processRuntime.checkIfDefinitionBelongsToCurrentAppVersion(processDefinition))
+            .isInstanceOf(ActivitiForbiddenException.class)
+            .hasMessage("Process definition with the given id:'processDefinitionId' belongs to a different application version.");
     }
 
 }
