@@ -291,7 +291,7 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
 
         runtimeService.deleteProcessInstance(deleteProcessPayload.getProcessInstanceId(),
                 deleteProcessPayload.getReason());
-        processInstance.setStatus(ProcessInstance.ProcessInstanceStatus.DELETED);
+        processInstance.setStatus(ProcessInstance.ProcessInstanceStatus.CANCELLED);
         return processInstance;
     }
 

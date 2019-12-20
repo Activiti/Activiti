@@ -199,7 +199,7 @@ public class ProcessAdminRuntimeImpl implements ProcessAdminRuntime {
         runtimeService.deleteProcessInstance(deleteProcessPayload.getProcessInstanceId(),
                 deleteProcessPayload.getReason());
         if (processInstance != null) {
-            processInstance.setStatus(ProcessInstance.ProcessInstanceStatus.DELETED);
+            processInstance.setStatus(ProcessInstance.ProcessInstanceStatus.CANCELLED);
             return processInstance;
         }
         return null;
