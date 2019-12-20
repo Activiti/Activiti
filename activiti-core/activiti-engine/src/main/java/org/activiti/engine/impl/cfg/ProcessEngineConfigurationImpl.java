@@ -12,6 +12,7 @@
  */
 package org.activiti.engine.impl.cfg;
 
+import com.fasterxml.jackson.databind.ObjectMapper.DefaultTyping;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -295,6 +296,7 @@ import org.activiti.engine.impl.variable.JPAEntityVariableType;
 import org.activiti.engine.impl.variable.JodaDateTimeType;
 import org.activiti.engine.impl.variable.JodaDateType;
 import org.activiti.engine.impl.variable.JsonType;
+import org.activiti.engine.impl.variable.JsonTypeConverter;
 import org.activiti.engine.impl.variable.LongJsonType;
 import org.activiti.engine.impl.variable.LongStringType;
 import org.activiti.engine.impl.variable.LongType;
@@ -1939,8 +1941,13 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       variableTypes.addType(new DoubleType());
       variableTypes.addType(new UUIDType());
 
-      variableTypes.addType(new JsonType(getMaxLengthString(), objectMapper,serializePOJOsInVariablesToJson,javaClassFieldForJackson));
-      variableTypes.addType(new LongJsonType(getMaxLengthString() + 1, objectMapper,serializePOJOsInVariablesToJson,javaClassFieldForJackson));
+      objectMapper.enableDefaultTypingAsProperty(DefaultTyping.NON_FINAL, javaClassFieldForJackson);
+      JsonTypeConverter jsonTypeConverter = new JsonTypeConverter(objectMapper,
+            javaClassFieldForJackson);
+      variableTypes.addType(new JsonType(getMaxLengthString(), objectMapper,serializePOJOsInVariablesToJson,
+            jsonTypeConverter));
+      variableTypes.addType(new LongJsonType(getMaxLengthString() + 1, objectMapper,serializePOJOsInVariablesToJson,
+          jsonTypeConverter));
 
       //java serialization only supported OOTB if not defaulting to json
       //if java serliazation needed together with json defaulting then add to customPostVariableTypes

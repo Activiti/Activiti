@@ -14,12 +14,14 @@ package org.activiti.bpmn.model;
 
 public class MultiInstanceLoopCharacteristics extends BaseElement {
 
-  protected String inputDataItem;
-  protected String loopCardinality;
-  protected String completionCondition;
-  protected String elementVariable;
-  protected String elementIndexVariable;
-  protected boolean sequential;
+  private String inputDataItem;
+  private String loopCardinality;
+  private String completionCondition;
+  private String elementVariable;
+  private String elementIndexVariable;
+  private boolean sequential;
+  private String loopDataOutputRef;
+  private String outputDataItem;
 
   public String getInputDataItem() {
     return inputDataItem;
@@ -69,7 +71,23 @@ public class MultiInstanceLoopCharacteristics extends BaseElement {
     this.sequential = sequential;
   }
 
-  public MultiInstanceLoopCharacteristics clone() {
+    public String getLoopDataOutputRef() {
+        return loopDataOutputRef;
+    }
+
+    public void setLoopDataOutputRef(String loopDataOutputRef) {
+        this.loopDataOutputRef = loopDataOutputRef;
+    }
+
+    public String getOutputDataItem() {
+        return outputDataItem;
+    }
+
+    public void setOutputDataItem(String outputDataItem) {
+        this.outputDataItem = outputDataItem;
+    }
+
+    public MultiInstanceLoopCharacteristics clone() {
     MultiInstanceLoopCharacteristics clone = new MultiInstanceLoopCharacteristics();
     clone.setValues(this);
     return clone;
@@ -82,5 +100,7 @@ public class MultiInstanceLoopCharacteristics extends BaseElement {
     setElementVariable(otherLoopCharacteristics.getElementVariable());
     setElementIndexVariable(otherLoopCharacteristics.getElementIndexVariable());
     setSequential(otherLoopCharacteristics.isSequential());
+    setLoopDataOutputRef(otherLoopCharacteristics.getLoopDataOutputRef());
+    setOutputDataItem(otherLoopCharacteristics.getOutputDataItem());
   }
 }

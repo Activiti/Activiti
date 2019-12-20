@@ -77,4 +77,11 @@ public class ProcessBaseRuntime {
         processRuntime.signal(ProcessPayloadBuilder.signal().withName(signalName).build());
     }
 
+    public List<VariableInstance> getVariables(ProcessInstance processInstance) {
+        return processRuntime.variables(ProcessPayloadBuilder
+            .variables()
+            .withProcessInstance(processInstance)
+            .build());
+    }
+
 }

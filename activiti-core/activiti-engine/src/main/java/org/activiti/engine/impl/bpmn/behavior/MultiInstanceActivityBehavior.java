@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-
 import org.activiti.bpmn.model.Activity;
 import org.activiti.bpmn.model.BoundaryEvent;
 import org.activiti.bpmn.model.CompensateEventDefinition;
@@ -59,9 +58,9 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
   protected static final Logger LOGGER = LoggerFactory.getLogger(MultiInstanceActivityBehavior.class);
 
   // Variable names for outer instance(as described in spec)
-  protected final String NUMBER_OF_INSTANCES = "nrOfInstances";
-  protected final String NUMBER_OF_ACTIVE_INSTANCES = "nrOfActiveInstances";
-  protected final String NUMBER_OF_COMPLETED_INSTANCES = "nrOfCompletedInstances";
+  protected static final String NUMBER_OF_INSTANCES = "nrOfInstances";
+  protected static final String NUMBER_OF_ACTIVE_INSTANCES = "nrOfActiveInstances";
+  protected static final String NUMBER_OF_COMPLETED_INSTANCES = "nrOfCompletedInstances";
 
   // Instance members
   protected Activity activity;
@@ -73,6 +72,9 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
   protected String collectionElementVariable;
   // default variable name for loop counter for inner instances (as described in the spec)
   protected String collectionElementIndexVariable = "loopCounter";
+
+  private String loopDataOutputRef;
+  private String outputDataItem;
 
   /**
    * @param innerActivityBehavior
@@ -405,4 +407,46 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
   public AbstractBpmnActivityBehavior getInnerActivityBehavior() {
     return innerActivityBehavior;
   }
+
+    public String getLoopDataOutputRef() {
+        return loopDataOutputRef;
+    }
+
+    public boolean hasLoopDataOutputRef() {
+      return loopDataOutputRef != null && !loopDataOutputRef.trim().isEmpty();
+    }
+
+    public void setLoopDataOutputRef(String loopDataOutputRef) {
+        this.loopDataOutputRef = loopDataOutputRef;
+    }
+
+    public String getOutputDataItem() {
+        return outputDataItem;
+    }
+
+    public void setOutputDataItem(String outputDataItem) {
+        this.outputDataItem = outputDataItem;
+    }
+
+    protected void updateResultCollection(DelegateExecution childExecution,
+        DelegateExecution miRootExecution) {
+        if (miRootExecution != null && hasLoopDataOutputRef()) {
+            Object loopDataOutputReference = miRootExecution
+                .getVariableLocal(getLoopDataOutputRef());
+            List<Object> resultCollection;
+            if (loopDataOutputReference instanceof List) {
+                resultCollection = (List<Object>) loopDataOutputReference;
+            } else {
+                resultCollection = new ArrayList<>();
+            }
+            resultCollection.add(childExecution.getVariable(getOutputDataItem()));
+            setLoopVariable(miRootExecution, getLoopDataOutputRef(), resultCollection);
+        }
+    }
+
+    protected void propagateLoopDataOutputRefToProcessInstance(ExecutionEntity miRootExecution) {
+        if (hasLoopDataOutputRef()) {
+            miRootExecution.getProcessInstance().setVariable(getLoopDataOutputRef(), miRootExecution.getVariable(getLoopDataOutputRef()));
+        }
+    }
 }

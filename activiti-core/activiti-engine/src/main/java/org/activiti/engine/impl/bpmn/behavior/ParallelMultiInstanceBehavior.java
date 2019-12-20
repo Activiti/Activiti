@@ -15,7 +15,6 @@ package org.activiti.engine.impl.bpmn.behavior;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
 import org.activiti.bpmn.model.Activity;
 import org.activiti.bpmn.model.BoundaryEvent;
 import org.activiti.bpmn.model.CallActivity;
@@ -129,6 +128,7 @@ public class ParallelMultiInstanceBehavior extends MultiInstanceActivityBehavior
       setLoopVariable(miRootExecution, NUMBER_OF_COMPLETED_INSTANCES, nrOfCompletedInstances);
       setLoopVariable(miRootExecution, NUMBER_OF_ACTIVE_INSTANCES, nrOfActiveInstances);
     }
+    updateResultCollection(execution, miRootExecution);
 
     //executeCompensationBoundaryEvents(execution.getCurrentFlowElement(), execution);
 
@@ -149,6 +149,8 @@ public class ParallelMultiInstanceBehavior extends MultiInstanceActivityBehavior
         } else {
           executionToUse = executionEntity;
         }
+
+        propagateLoopDataOutputRefToProcessInstance(executionToUse);
 
         boolean hasCompensation = false;
         Activity activity = (Activity) execution.getCurrentFlowElement();

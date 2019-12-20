@@ -66,6 +66,10 @@ public class TaskBaseRuntime {
         this.completeTask(task.getId(), Collections.emptyMap());
     }
 
+    public void completeTask(Task task, Map<String, Object> variables) {
+        this.completeTask(task.getId(), variables);
+    }
+
     public void completeTask(String taskId, Map<String, Object> variables) {
         Task completeTask = taskRuntime
                 .complete(TaskPayloadBuilder.complete().withTaskId(taskId).withVariables(variables).build());

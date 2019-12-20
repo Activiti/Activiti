@@ -22,7 +22,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.xml.XMLConstants;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
@@ -34,7 +33,6 @@ import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
-
 import org.activiti.bpmn.constants.BpmnXMLConstants;
 import org.activiti.bpmn.converter.alfresco.AlfrescoStartEventXMLConverter;
 import org.activiti.bpmn.converter.alfresco.AlfrescoUserTaskXMLConverter;
@@ -80,7 +78,6 @@ import org.activiti.bpmn.model.BoundaryEvent;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.DateDataObject;
 import org.activiti.bpmn.model.DoubleDataObject;
-import org.activiti.bpmn.model.Error;
 import org.activiti.bpmn.model.EventSubProcess;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.FlowNode;

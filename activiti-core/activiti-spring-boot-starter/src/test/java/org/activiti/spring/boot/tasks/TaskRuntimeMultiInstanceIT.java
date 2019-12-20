@@ -20,10 +20,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 import static org.awaitility.Awaitility.await;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.activiti.api.model.shared.event.RuntimeEvent;
+import org.activiti.api.model.shared.model.VariableInstance;
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.model.events.BPMNActivityCancelledEvent;
 import org.activiti.api.process.model.events.BPMNActivityCompletedEvent;
@@ -1443,6 +1446,47 @@ public class TaskRuntimeMultiInstanceIT {
         assertThat(localEventSource.getEvents(BPMNActivityCancelledEvent.class))
                 .filteredOn(event -> elementId.equals(event.getEntity().getElementId()))
                 .hasSize(0);
+    }
+
+    @Test
+    public void parallelMultiInstance_should_collectOutputValues() {
+        ProcessInstance processInstance = processBaseRuntime.startProcessWithProcessDefinitionKey("miParallelUserTasksOutputCollection");
+        List<Task> tasks = taskBaseRuntime.getTasks(processInstance);
+        assertThat(tasks).hasSize(2);
+
+        taskBaseRuntime.completeTask(tasks.get(0), Collections.singletonMap("meal", "pizza"));
+        taskBaseRuntime.completeTask(tasks.get(1), Collections.singletonMap("meal", "pasta"));
+
+        List<VariableInstance> variables = processBaseRuntime.getVariables(processInstance);
+
+        assertThat(variables)
+            .extracting(VariableInstance::getName,
+                VariableInstance::getValue)
+            .contains(
+                tuple("meals",
+                    Arrays.asList("pizza", "pasta")));
+    }
+
+    @Test
+    public void sequentialMultiInstance_should_collectOutputValues() {
+        ProcessInstance processInstance = processBaseRuntime.startProcessWithProcessDefinitionKey("miSequentialUserTasksOutputCollection");
+
+        List<Task> tasks = taskBaseRuntime.getTasks(processInstance);
+        assertThat(tasks).hasSize(1);
+        taskBaseRuntime.completeTask(tasks.get(0), Collections.singletonMap("meal", "pizza"));
+
+        tasks = taskBaseRuntime.getTasks(processInstance);
+        assertThat(tasks).hasSize(1);
+        taskBaseRuntime.completeTask(tasks.get(0), Collections.singletonMap("meal", "pasta"));
+
+        List<VariableInstance> variables = processBaseRuntime.getVariables(processInstance);
+
+        assertThat(variables)
+            .extracting(VariableInstance::getName,
+                VariableInstance::getValue)
+            .contains(
+                tuple("meals",
+                    Arrays.asList("pizza", "pasta")));
     }
 
 }

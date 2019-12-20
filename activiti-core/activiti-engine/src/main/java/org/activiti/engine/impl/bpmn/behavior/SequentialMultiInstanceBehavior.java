@@ -81,6 +81,8 @@ public class SequentialMultiInstanceBehavior extends MultiInstanceActivityBehavi
     setLoopVariable(multiInstanceRootExecution, NUMBER_OF_COMPLETED_INSTANCES, nrOfCompletedInstances);
     setLoopVariable(childExecution, getCollectionElementIndexVariable(), loopCounter);
     logLoopDetails(childExecution, "instance completed", loopCounter, nrOfCompletedInstances, nrOfActiveInstances, nrOfInstances);
+
+    updateResultCollection(childExecution, multiInstanceRootExecution);
     
     Context.getCommandContext().getHistoryManager().recordActivityEnd((ExecutionEntity) childExecution, null);
     callActivityEndListeners(childExecution);
@@ -88,6 +90,7 @@ public class SequentialMultiInstanceBehavior extends MultiInstanceActivityBehavi
     //executeCompensationBoundaryEvents(execution.getCurrentFlowElement(), execution);
 
     if (loopCounter >= nrOfInstances || completionConditionSatisfied(multiInstanceRootExecution)) {
+      propagateLoopDataOutputRefToProcessInstance((ExecutionEntity) multiInstanceRootExecution);
       removeLocalLoopVariable(childExecution, getCollectionElementIndexVariable());
       multiInstanceRootExecution.setMultiInstanceRoot(false);
       multiInstanceRootExecution.setScope(false);

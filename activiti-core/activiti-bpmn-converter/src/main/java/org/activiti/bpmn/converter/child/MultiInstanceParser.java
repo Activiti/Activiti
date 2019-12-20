@@ -12,8 +12,9 @@
  */
 package org.activiti.bpmn.converter.child;
 
+import java.util.Arrays;
+import java.util.List;
 import javax.xml.stream.XMLStreamReader;
-
 import org.activiti.bpmn.converter.util.BpmnXMLUtil;
 import org.activiti.bpmn.model.Activity;
 import org.activiti.bpmn.model.BaseElement;
@@ -21,6 +22,21 @@ import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.MultiInstanceLoopCharacteristics;
 
 public class MultiInstanceParser extends BaseChildElementParser {
+
+    private final List<ElementParser<MultiInstanceLoopCharacteristics>> multiInstanceElementParsers;
+
+    public MultiInstanceParser() {
+        this(Arrays.asList(new LoopCardinalityParser(),
+            new MultiInstanceDataInputParser(),
+            new MultiInstanceInputDataItemParser(),
+            new MultiInstanceCompletionConditionParser(),
+            new LoopDataOutputRefParser(),
+            new MultiInstanceOutputDataItemParser()));
+    }
+
+    public MultiInstanceParser(List<ElementParser<MultiInstanceLoopCharacteristics>> multiInstanceElementParsers) {
+        this.multiInstanceElementParsers = multiInstanceElementParsers;
+    }
 
     public String getElementName() {
         return ELEMENT_MULTIINSTANCE;
@@ -40,30 +56,26 @@ public class MultiInstanceParser extends BaseChildElementParser {
             multiInstanceDef.setSequential(Boolean.valueOf(xtr.getAttributeValue(null,
                                                                                  ATTRIBUTE_MULTIINSTANCE_SEQUENTIAL)));
         }
-        multiInstanceDef.setInputDataItem(xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE,
-                                                                ATTRIBUTE_MULTIINSTANCE_COLLECTION));
-        multiInstanceDef.setElementVariable(xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE,
-                                                                  ATTRIBUTE_MULTIINSTANCE_VARIABLE));
-        multiInstanceDef.setElementIndexVariable(xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE,
-                                                                       ATTRIBUTE_MULTIINSTANCE_INDEX_VARIABLE));
+        parseActivitiExtensions(xtr, multiInstanceDef);
+        pareMultiInstanceAttributes(xtr, multiInstanceDef);
+        ((Activity) parentElement).setLoopCharacteristics(multiInstanceDef);
+    }
 
+    private void pareMultiInstanceAttributes(XMLStreamReader xtr,
+        MultiInstanceLoopCharacteristics multiInstanceDef) {
         boolean readyWithMultiInstance = false;
         try {
             while (!readyWithMultiInstance && xtr.hasNext()) {
                 xtr.next();
-                if (xtr.isStartElement() && ELEMENT_MULTIINSTANCE_CARDINALITY.equalsIgnoreCase(xtr.getLocalName())) {
-                    multiInstanceDef.setLoopCardinality(xtr.getElementText());
-                } else if (xtr.isStartElement() && ELEMENT_MULTIINSTANCE_DATAINPUT.equalsIgnoreCase(xtr.getLocalName())) {
-                    multiInstanceDef.setInputDataItem(xtr.getElementText());
-                } else if (xtr.isStartElement() && ELEMENT_MULTIINSTANCE_DATAITEM.equalsIgnoreCase(xtr.getLocalName())) {
-                    if (xtr.getAttributeValue(null,
-                                              ATTRIBUTE_NAME) != null) {
-                        multiInstanceDef.setElementVariable(xtr.getAttributeValue(null,
-                                                                                  ATTRIBUTE_NAME));
-                    }
-                } else if (xtr.isStartElement() && ELEMENT_MULTIINSTANCE_CONDITION.equalsIgnoreCase(xtr.getLocalName())) {
-                    multiInstanceDef.setCompletionCondition(xtr.getElementText());
-                } else if (xtr.isEndElement() && getElementName().equalsIgnoreCase(xtr.getLocalName())) {
+                ElementParser<MultiInstanceLoopCharacteristics> matchingParser = multiInstanceElementParsers
+                    .stream()
+                    .filter(elementParser -> elementParser.canParseCurrentElement(xtr))
+                    .findFirst()
+                    .orElse(null);
+                if (matchingParser != null) {
+                    matchingParser.setInformation(xtr, multiInstanceDef);
+                }
+                    if (xtr.isEndElement() && getElementName().equalsIgnoreCase(xtr.getLocalName())) {
                     readyWithMultiInstance = true;
                 }
             }
@@ -71,6 +83,16 @@ public class MultiInstanceParser extends BaseChildElementParser {
             LOGGER.warn("Error parsing multi instance definition",
                         e);
         }
-        ((Activity) parentElement).setLoopCharacteristics(multiInstanceDef);
+    }
+
+    private void parseActivitiExtensions(XMLStreamReader xtr,
+        MultiInstanceLoopCharacteristics multiInstanceDef) {
+        multiInstanceDef.setInputDataItem(xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE,
+            ATTRIBUTE_MULTIINSTANCE_COLLECTION));
+        multiInstanceDef.setElementVariable(xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE,
+            ATTRIBUTE_MULTIINSTANCE_VARIABLE));
+        multiInstanceDef
+            .setElementIndexVariable(xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE,
+                ATTRIBUTE_MULTIINSTANCE_INDEX_VARIABLE));
     }
 }
