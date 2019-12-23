@@ -142,17 +142,13 @@ public class EndExecutionOperation extends AbstractOperation {
 
         // If the execution is a scope, all the child executions must be deleted first.
         if (execution.isScope()) {
-            executionEntityManager.deleteChildExecutions(execution,
-                                                         null,
-                                                         false);
+            executionEntityManager.deleteChildExecutions(execution, null);
         }
 
         // Delete current execution
         logger.debug("Ending execution {}",
                      execution.getId());
-        executionEntityManager.deleteExecutionAndRelatedData(execution,
-                                                             null,
-                                                             false);
+        executionEntityManager.deleteExecutionAndRelatedData(execution, null);
 
         logger.debug("Parent execution found. Continuing process using execution {}",
                      parentExecution.getId());
@@ -245,12 +241,8 @@ public class EndExecutionOperation extends AbstractOperation {
             ScopeUtil.createCopyOfSubProcessExecutionForCompensation(parentExecution);
         }
 
-        executionEntityManager.deleteChildExecutions(parentExecution,
-                                                     null,
-                                                     false);
-        executionEntityManager.deleteExecutionAndRelatedData(parentExecution,
-                                                             null,
-                                                             false);
+        executionEntityManager.deleteChildExecutions(parentExecution, null);
+        executionEntityManager.deleteExecutionAndRelatedData(parentExecution, null);
 
         Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
                 ActivitiEventBuilder.createActivityEvent(ActivitiEventType.ACTIVITY_COMPLETED,
@@ -284,12 +276,8 @@ public class EndExecutionOperation extends AbstractOperation {
                     executionToContinue = executionEntityManager.createChildExecution(parentExecution.getParent());
                     executionToContinue.setCurrentFlowElement(parentExecution.getCurrentFlowElement());
 
-                    executionEntityManager.deleteChildExecutions(parentExecution,
-                                                                 null,
-                                                                 false);
-                    executionEntityManager.deleteExecutionAndRelatedData(parentExecution,
-                                                                         null,
-                                                                         false);
+                    executionEntityManager.deleteChildExecutions(parentExecution, null);
+                    executionEntityManager.deleteExecutionAndRelatedData(parentExecution,                         null);
                 } else {
                     executionToContinue = parentExecution;
                 }
@@ -383,9 +371,7 @@ public class EndExecutionOperation extends AbstractOperation {
         List<ExecutionEntity> executions = executionEntityManager.findChildExecutionsByParentExecutionId(parentExecution.getId());
         for (ExecutionEntity childExecution : executions) {
             if (childExecution.isEventScope() && childExecution.getExecutions().size() == 0) {
-                executionEntityManager.deleteExecutionAndRelatedData(childExecution,
-                                                                     null,
-                                                                     false);
+                executionEntityManager.deleteExecutionAndRelatedData(childExecution, null);
             } else {
                 allEventScopeExecutions = false;
                 break;

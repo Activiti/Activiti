@@ -116,9 +116,7 @@ public class ContinueProcessOperation extends AbstractOperation {
         subProcessExecution.setCurrentFlowElement(subProcess);
         subProcessExecution.setScope(true);
 
-        commandContext.getExecutionEntityManager().deleteExecutionAndRelatedData(execution,
-                                                                                 null,
-                                                                                 false);
+        commandContext.getExecutionEntityManager().deleteExecutionAndRelatedData(execution, null);
         execution = subProcessExecution;
     }
 

@@ -224,9 +224,7 @@ public class TakeOutgoingSequenceFlowsOperation extends AbstractOperation {
         if (flowNode.getOutgoingFlows().size() > 0) {
             leaveFlowNode(flowNode);
         } else {
-            commandContext.getExecutionEntityManager().deleteExecutionAndRelatedData(execution,
-                                                                                     null,
-                                                                                     false);
+            commandContext.getExecutionEntityManager().deleteExecutionAndRelatedData(execution, null);
         }
 
         if (completeAdhocSubProcess) {
@@ -259,9 +257,7 @@ public class TakeOutgoingSequenceFlowsOperation extends AbstractOperation {
 
         commandContext.getHistoryManager().recordActivityEnd(execution,
                                                              null);
-        commandContext.getExecutionEntityManager().deleteExecutionAndRelatedData(execution,
-                                                                                 null,
-                                                                                 false);
+        commandContext.getExecutionEntityManager().deleteExecutionAndRelatedData(execution, null);
 
         ExecutionEntity parentExecutionEntity = execution.getParent();
         if (parentExecutionEntity.isScope() && !parentExecutionEntity.isProcessInstanceType()) {
@@ -318,9 +314,7 @@ public class TakeOutgoingSequenceFlowsOperation extends AbstractOperation {
                 Collection<ExecutionEntity> childExecutions = commandContext.getExecutionEntityManager().findChildExecutionsByParentExecutionId(execution.getId());
                 for (ExecutionEntity childExecution : childExecutions) {
                     if (childExecution.getCurrentFlowElement() == null || !notToDeleteEvents.contains(childExecution.getCurrentFlowElement().getId())) {
-                        commandContext.getExecutionEntityManager().deleteExecutionAndRelatedData(childExecution,
-                                                                                                 null,
-                                                                                                 false);
+                        commandContext.getExecutionEntityManager().deleteExecutionAndRelatedData(childExecution, null);
                     }
                 }
             }

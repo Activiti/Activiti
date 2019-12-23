@@ -407,10 +407,10 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
     List<ExecutionEntity> childExecutions = collectChildren(execution.getProcessInstance());
     for (int i=childExecutions.size()-1; i>=0; i--) {
       ExecutionEntity childExecutionEntity = childExecutions.get(i);
-      deleteExecutionAndRelatedData(childExecutionEntity, deleteReason, false);
+      deleteExecutionAndRelatedData(childExecutionEntity, deleteReason);
     }
 
-    deleteExecutionAndRelatedData(execution, deleteReason, false);
+    deleteExecutionAndRelatedData(execution, deleteReason);
 
     if (deleteHistory) {
       getHistoricProcessInstanceEntityManager().delete(execution.getId());
@@ -421,9 +421,16 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
   }
 
   @Override
-  public void deleteExecutionAndRelatedData(ExecutionEntity executionEntity, String deleteReason, boolean cancel) {
+  public void deleteExecutionAndRelatedData(ExecutionEntity executionEntity, String deleteReason) {
     getHistoryManager().recordActivityEnd(executionEntity, deleteReason);
-    deleteDataForExecution(executionEntity, deleteReason, cancel);
+    deleteDataForExecution(executionEntity, deleteReason);
+    delete(executionEntity);
+  }
+
+  @Override
+  public void cancelExecutionAndRelatedData(ExecutionEntity executionEntity, String deleteReason) {
+    getHistoryManager().recordActivityEnd(executionEntity, deleteReason);
+    cancelDataForExecution(executionEntity, deleteReason);
     delete(executionEntity);
   }
 
@@ -451,12 +458,17 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
     // delete event scope executions
     for (ExecutionEntity childExecution : processInstanceEntity.getExecutions()) {
       if (childExecution.isEventScope()) {
-        deleteExecutionAndRelatedData(childExecution, null, false);
+        deleteExecutionAndRelatedData(childExecution, null);
       }
     }
 
-    deleteChildExecutions(processInstanceEntity, deleteReason, cancel);
-    deleteExecutionAndRelatedData(processInstanceEntity, deleteReason, cancel);
+    if(cancel) {
+        cancelChildExecutions(processInstanceEntity, deleteReason);
+        cancelExecutionAndRelatedData(processInstanceEntity, deleteReason);
+    } else {
+        deleteChildExecutions(processInstanceEntity, deleteReason);
+        deleteExecutionAndRelatedData(processInstanceEntity, deleteReason);
+    }
 
     if (getEventDispatcher().isEnabled()) {
     	if (!cancel) {
@@ -473,7 +485,7 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
   }
 
   @Override
-  public void deleteChildExecutions(ExecutionEntity executionEntity, String deleteReason, boolean cancel) {
+  public void deleteChildExecutions(ExecutionEntity executionEntity, String deleteReason) {
 
     // The children of an execution for a tree. For correct deletions
     // (taking care of foreign keys between child-parent)
@@ -483,7 +495,24 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
     for (int i = childExecutions.size() - 1; i>= 0; i--) {
       ExecutionEntity childExecutionEntity = childExecutions.get(i);
       if (!childExecutionEntity.isEnded()) {
-        deleteExecutionAndRelatedData(childExecutionEntity, deleteReason, cancel);
+        deleteExecutionAndRelatedData(childExecutionEntity, deleteReason);
+      }
+    }
+
+  }
+
+  @Override
+  public void cancelChildExecutions(ExecutionEntity executionEntity, String deleteReason) {
+
+    // The children of an execution for a tree. For correct deletions
+    // (taking care of foreign keys between child-parent)
+    // the leafs of this tree must be deleted first before the parents elements.
+
+    List<? extends ExecutionEntity> childExecutions = collectChildren(executionEntity);
+    for (int i = childExecutions.size() - 1; i>= 0; i--) {
+      ExecutionEntity childExecutionEntity = childExecutions.get(i);
+      if (!childExecutionEntity.isEnded()) {
+        cancelExecutionAndRelatedData(childExecutionEntity, deleteReason);
       }
     }
 
@@ -547,9 +576,7 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
     return null;
   }
 
-  public void deleteDataForExecution(ExecutionEntity executionEntity, String deleteReason, boolean cancel) {
-
-      boolean isActive = executionEntity.isActive();
+  private void deleteExecutionEntity(ExecutionEntity executionEntity, String deleteReason) {
     // To start, deactivate the current incoming execution
     executionEntity.setEnded(true);
     executionEntity.setActive(false);
@@ -580,16 +607,6 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
             getByteArrayEntityManager().deleteByteArrayById(variableInstanceEntity.getByteArrayRef().getId());
           }
         }
-      }
-    }
-
-    // Delete current user tasks
-    if (!enableExecutionRelationshipCounts ||
-        (enableExecutionRelationshipCounts && ((CountingExecutionEntity) executionEntity).getTaskCount() > 0)) {
-      TaskEntityManager taskEntityManager = getTaskEntityManager();
-      Collection<TaskEntity> tasksForExecution = taskEntityManager.findTasksByExecutionId(executionEntity.getId());
-      for (TaskEntity taskEntity : tasksForExecution) {
-        taskEntityManager.deleteTask(taskEntity, deleteReason, false, cancel);
       }
     }
 
@@ -653,16 +670,41 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
       }
     }
 
-    if (cancel &&
-            isActive &&
-            executionEntity.getCurrentFlowElement() != null &&
-            !(executionEntity.getCurrentFlowElement() instanceof UserTask)) {
-        getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createActivityCancelledEvent(executionEntity, deleteReason));
-    }
-
   }
 
-  // OTHER METHODS
+  private void deleteOrCancelUserTask(ExecutionEntity executionEntity, String deleteReason, boolean cancel) {
+      boolean enableExecutionRelationshipCounts = isExecutionRelatedEntityCountEnabled(executionEntity);
+
+      // Delete current user tasks
+      if (!enableExecutionRelationshipCounts ||
+          (enableExecutionRelationshipCounts && ((CountingExecutionEntity) executionEntity).getTaskCount() > 0)) {
+          TaskEntityManager taskEntityManager = getTaskEntityManager();
+          Collection<TaskEntity> tasksForExecution = taskEntityManager.findTasksByExecutionId(executionEntity.getId());
+          for (TaskEntity taskEntity : tasksForExecution) {
+              taskEntityManager.deleteTask(taskEntity, deleteReason, false, cancel);
+          }
+      }
+  }
+
+  private void deleteDataForExecution(ExecutionEntity executionEntity, String deleteReason) {
+      deleteExecutionEntity(executionEntity,deleteReason);
+      deleteOrCancelUserTask(executionEntity, deleteReason, false);
+  }
+
+  private void cancelDataForExecution(ExecutionEntity executionEntity, String deleteReason) {
+      boolean isActive = executionEntity.isActive();
+
+      deleteExecutionEntity(executionEntity,deleteReason);
+      deleteOrCancelUserTask(executionEntity, deleteReason, true);
+
+      if (isActive &&
+          executionEntity.getCurrentFlowElement() != null &&
+          !(executionEntity.getCurrentFlowElement() instanceof UserTask)) {
+          getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createActivityCancelledEvent(executionEntity, deleteReason));
+      }
+    }
+
+    // OTHER METHODS
 
   @Override
   public void updateProcessInstanceLockTime(String processInstanceId) {

@@ -123,9 +123,7 @@ public class DestroyScopeOperation extends AbstractOperation {
         // Delete all child executions
         Collection<ExecutionEntity> childExecutions = executionEntityManager.findChildExecutionsByParentExecutionId(scopeExecution.getId());
         for (ExecutionEntity childExecution : childExecutions) {
-            executionEntityManager.deleteExecutionAndRelatedData(childExecution,
-                                                                 execution.getDeleteReason(),
-                                                                 false);
+            executionEntityManager.deleteExecutionAndRelatedData(childExecution, execution.getDeleteReason());
         }
         return executionEntityManager;
     }
