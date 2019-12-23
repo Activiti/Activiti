@@ -53,7 +53,7 @@ public class JsonType implements VariableType {
     if (valueFields.getTextValue() != null && valueFields.getTextValue().length() > 0) {
         try {
             loadedValue = jsonTypeConverter.convertToValue(
-                objectMapper.readTree(valueFields.getTextValue()), valueFields.getName());
+                objectMapper.readTree(valueFields.getTextValue()), valueFields);
 
         } catch (Exception e) {
           logger.error("Error reading json variable " + valueFields.getName(), e);
@@ -62,10 +62,12 @@ public class JsonType implements VariableType {
     return loadedValue;
   }
 
-
   public void setValue(Object value, ValueFields valueFields) {
     try {
       valueFields.setTextValue(objectMapper.writeValueAsString(value));
+      if (value != null) {
+          valueFields.setTextValue2(value.getClass().getName());
+      }
     } catch (JsonProcessingException e) {
     logger.error("Error writing json variable " + valueFields.getName(), e);
     }

@@ -34,29 +34,35 @@ public class JsonTypeConverter {
         this.javaClassFieldForJackson = javaClassFieldForJackson;
     }
 
-    public Object convertToValue(JsonNode jsonValue, String variableName) {
+    public Object convertToValue(JsonNode jsonValue, ValueFields valueFields) {
         Object convertedValue = jsonValue;
-        if (jsonValue != null && StringUtils.isNotBlank(javaClassFieldForJackson) ) {
+        if (jsonValue != null && StringUtils.isNotBlank(javaClassFieldForJackson)) {
             //can find type so long as JsonTypeInfo annotation on the class - see https://stackoverflow.com/a/28384407/9705485
             JsonNode classNode = jsonValue.get(javaClassFieldForJackson);
-            if (classNode != null) {
-                final String type = classNode.asText();
-                Class<?> cls = null;
-                try {
-                    cls = Class.forName(type, false, this.getClass().getClassLoader());
-                } catch (ClassNotFoundException e) {
-                    LOGGER.warn("Unable to obtain type for json variable object " + variableName, e);
+            try {
+                if (classNode != null) {
+                    final String type = classNode.asText();
+                    convertedValue = convertToType(jsonValue, type);
+                } else if (valueFields.getTextValue2() != null &&
+                    !jsonValue.getClass().getName().equals(valueFields.getTextValue2())) {
+                    convertedValue = convertToType(jsonValue, valueFields.getTextValue2());
                 }
-                if (cls != null) {
-                    convertedValue = objectMapper.convertValue(jsonValue, cls);
-                }
-            } else if (jsonValue.isArray()) {
-                //todo conver case where type id is missing: should keep initial jsonNode
-                convertedValue = objectMapper.convertValue(jsonValue, Object.class);
+            } catch (ClassNotFoundException e) {
+                LOGGER
+                    .warn("Unable to obtain type for json variable object " + valueFields.getName(),
+                        e);
             }
         }
 
         return convertedValue;
+    }
+
+    private Object convertToType(JsonNode jsonValue, String type) throws ClassNotFoundException {
+        return objectMapper.convertValue(jsonValue, loadClass(type));
+    }
+
+    private Class<?> loadClass(String type) throws ClassNotFoundException {
+        return Class.forName(type, false, this.getClass().getClassLoader());
     }
 
 }

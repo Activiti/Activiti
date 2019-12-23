@@ -12,7 +12,8 @@
  */
 package org.activiti.engine.impl.cfg;
 
-import com.fasterxml.jackson.databind.ObjectMapper.DefaultTyping;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -35,13 +36,9 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
 import javax.xml.namespace.QName;
-
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.activiti.api.runtime.shared.identity.UserGroupManager;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.DynamicBpmnService;
@@ -1941,7 +1938,6 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       variableTypes.addType(new DoubleType());
       variableTypes.addType(new UUIDType());
 
-      objectMapper.enableDefaultTypingAsProperty(DefaultTyping.NON_FINAL, javaClassFieldForJackson);
       JsonTypeConverter jsonTypeConverter = new JsonTypeConverter(objectMapper,
             javaClassFieldForJackson);
       variableTypes.addType(new JsonType(getMaxLengthString(), objectMapper,serializePOJOsInVariablesToJson,

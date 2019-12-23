@@ -75,6 +75,7 @@ public class LongJsonType extends SerializableType {
       logger.error("Error writing long json variable " + valueFields.getName(), e);
     }
     try {
+      valueFields.setTextValue2(value.getClass().getName());
       return json.getBytes(StandardCharsets.UTF_8);
     } catch (Exception e) {
       throw new ActivitiException("Error getting bytes from json variable", e);
@@ -84,7 +85,7 @@ public class LongJsonType extends SerializableType {
   public Object deserialize(byte[] bytes, ValueFields valueFields) {
     Object jsonValue = null;
       try {
-        jsonValue = jsonTypeConverter.convertToValue(objectMapper.readTree(bytes), valueFields.getName());
+        jsonValue = jsonTypeConverter.convertToValue(objectMapper.readTree(bytes), valueFields);
       } catch (Exception e) {
         logger.error("Error reading json variable " + valueFields.getName(), e);
       }

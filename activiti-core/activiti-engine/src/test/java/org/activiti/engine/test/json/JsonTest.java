@@ -28,10 +28,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-/**
-
-
- */
 public class JsonTest extends PluggableActivitiTestCase {
 
   public static final String MY_JSON_OBJ = "myJsonObj";
