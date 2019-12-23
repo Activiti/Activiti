@@ -37,7 +37,9 @@ public class MultiInstanceParser extends BaseChildElementParser {
             new MultiInstanceInputDataItemParser(),
             new MultiInstanceCompletionConditionParser(),
             new LoopDataOutputRefParser(),
-            new MultiInstanceOutputDataItemParser()));
+            new MultiInstanceOutputDataItemParser(),
+            new MultiInstanceAttributesParser()
+        ));
     }
 
     public MultiInstanceParser(List<ElementParser<MultiInstanceLoopCharacteristics>> multiInstanceElementParsers) {
@@ -55,24 +57,18 @@ public class MultiInstanceParser extends BaseChildElementParser {
             return;
         }
         MultiInstanceLoopCharacteristics multiInstanceDef = new MultiInstanceLoopCharacteristics();
-        BpmnXMLUtil.addXMLLocation(multiInstanceDef,
-                                   xtr);
-        if (xtr.getAttributeValue(null,
-                                  ATTRIBUTE_MULTIINSTANCE_SEQUENTIAL) != null) {
-            multiInstanceDef.setSequential(Boolean.valueOf(xtr.getAttributeValue(null,
-                                                                                 ATTRIBUTE_MULTIINSTANCE_SEQUENTIAL)));
-        }
-        parseActivitiExtensions(xtr, multiInstanceDef);
-        pareMultiInstanceAttributes(xtr, multiInstanceDef);
+        BpmnXMLUtil.addXMLLocation(multiInstanceDef, xtr);
+
+        parseMultiInstanceProperties(xtr, multiInstanceDef);
+
         ((Activity) parentElement).setLoopCharacteristics(multiInstanceDef);
     }
 
-    private void pareMultiInstanceAttributes(XMLStreamReader xtr,
+    private void parseMultiInstanceProperties(XMLStreamReader xtr,
         MultiInstanceLoopCharacteristics multiInstanceDef) {
         boolean readyWithMultiInstance = false;
         try {
-            while (!readyWithMultiInstance && xtr.hasNext()) {
-                xtr.next();
+            do {
                 ElementParser<MultiInstanceLoopCharacteristics> matchingParser = multiInstanceElementParsers
                     .stream()
                     .filter(elementParser -> elementParser.canParseCurrentElement(xtr))
@@ -81,24 +77,17 @@ public class MultiInstanceParser extends BaseChildElementParser {
                 if (matchingParser != null) {
                     matchingParser.setInformation(xtr, multiInstanceDef);
                 }
-                    if (xtr.isEndElement() && getElementName().equalsIgnoreCase(xtr.getLocalName())) {
+                if (xtr.isEndElement() && getElementName().equalsIgnoreCase(xtr.getLocalName())) {
                     readyWithMultiInstance = true;
                 }
-            }
+                if (xtr.hasNext()) {
+                    xtr.next();
+                }
+            } while (!readyWithMultiInstance && xtr.hasNext());
         } catch (Exception e) {
             LOGGER.warn("Error parsing multi instance definition",
                         e);
         }
     }
 
-    private void parseActivitiExtensions(XMLStreamReader xtr,
-        MultiInstanceLoopCharacteristics multiInstanceDef) {
-        multiInstanceDef.setInputDataItem(xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE,
-            ATTRIBUTE_MULTIINSTANCE_COLLECTION));
-        multiInstanceDef.setElementVariable(xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE,
-            ATTRIBUTE_MULTIINSTANCE_VARIABLE));
-        multiInstanceDef
-            .setElementIndexVariable(xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE,
-                ATTRIBUTE_MULTIINSTANCE_INDEX_VARIABLE));
-    }
 }

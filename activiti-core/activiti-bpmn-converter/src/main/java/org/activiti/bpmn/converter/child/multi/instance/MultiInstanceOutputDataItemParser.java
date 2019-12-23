@@ -34,10 +34,10 @@ public class MultiInstanceOutputDataItemParser implements
     @Override
     public void setInformation(XMLStreamReader reader,
         MultiInstanceLoopCharacteristics loopCharacteristics) {
-        if (reader.getAttributeValue(null,
-            ATTRIBUTE_NAME) != null) {
-            loopCharacteristics.setOutputDataItem(reader.getAttributeValue(null,
-                ATTRIBUTE_NAME));
+        String attributeValue = reader.getAttributeValue(null,
+            ATTRIBUTE_NAME);
+        if (attributeValue != null) {
+            loopCharacteristics.setOutputDataItem(attributeValue);
         }
     }
 }
