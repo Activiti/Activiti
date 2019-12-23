@@ -14,14 +14,11 @@
  * limitations under the License.
  */
 
-package org.activiti.bpmn.converter.child.multi.instance;
+package org.activiti.bpmn.converter.child;
 
 import java.util.Collections;
 import java.util.List;
-
 import javax.xml.stream.XMLStreamReader;
-
-import org.activiti.bpmn.converter.child.BaseChildElementParser;
 import org.activiti.bpmn.converter.util.BpmnXMLUtil;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BpmnModel;
