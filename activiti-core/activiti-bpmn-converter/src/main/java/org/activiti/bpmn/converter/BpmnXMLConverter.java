@@ -38,7 +38,7 @@ import org.activiti.bpmn.converter.alfresco.AlfrescoStartEventXMLConverter;
 import org.activiti.bpmn.converter.alfresco.AlfrescoUserTaskXMLConverter;
 import org.activiti.bpmn.converter.child.DocumentationParser;
 import org.activiti.bpmn.converter.child.IOSpecificationParser;
-import org.activiti.bpmn.converter.child.MultiInstanceParser;
+import org.activiti.bpmn.converter.child.multi.instance.MultiInstanceParser;
 import org.activiti.bpmn.converter.export.ActivitiListenerExport;
 import org.activiti.bpmn.converter.export.BPMNDIExport;
 import org.activiti.bpmn.converter.export.CollaborationExport;

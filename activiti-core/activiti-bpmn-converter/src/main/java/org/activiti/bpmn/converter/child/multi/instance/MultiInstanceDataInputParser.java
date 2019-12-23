@@ -14,28 +14,26 @@
  * limitations under the License.
  */
 
-package org.activiti.bpmn.converter.child;
+package org.activiti.bpmn.converter.child.multi.instance;
 
-import static org.activiti.bpmn.constants.BpmnXMLConstants.ATTRIBUTE_NAME;
-import static org.activiti.bpmn.constants.BpmnXMLConstants.ELEMENT_MULTI_INSTANCE_OUTPUT_DATA_ITEM;
+import static org.activiti.bpmn.constants.BpmnXMLConstants.ELEMENT_MULTIINSTANCE_DATAINPUT;
 
+import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+import org.activiti.bpmn.converter.child.ElementParser;
 import org.activiti.bpmn.model.MultiInstanceLoopCharacteristics;
 
-public class MultiInstanceOutputDataItemParser implements ElementParser<MultiInstanceLoopCharacteristics> {
+public class MultiInstanceDataInputParser implements
+    ElementParser<MultiInstanceLoopCharacteristics> {
 
     @Override
     public boolean canParseCurrentElement(XMLStreamReader reader) {
-        return reader.isStartElement() && ELEMENT_MULTI_INSTANCE_OUTPUT_DATA_ITEM.equalsIgnoreCase(reader.getLocalName());
+        return reader.isStartElement() && ELEMENT_MULTIINSTANCE_DATAINPUT.equalsIgnoreCase(reader.getLocalName());
     }
 
     @Override
     public void setInformation(XMLStreamReader reader,
-        MultiInstanceLoopCharacteristics loopCharacteristics) {
-        if (reader.getAttributeValue(null,
-            ATTRIBUTE_NAME) != null) {
-            loopCharacteristics.setOutputDataItem(reader.getAttributeValue(null,
-                ATTRIBUTE_NAME));
-        }
+        MultiInstanceLoopCharacteristics loopCharacteristics) throws XMLStreamException {
+        loopCharacteristics.setInputDataItem(reader.getElementText());
     }
 }

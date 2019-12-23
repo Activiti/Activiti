@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-package org.activiti.bpmn.converter.child;
+package org.activiti.bpmn.converter.child.multi.instance;
 
 import static org.activiti.bpmn.constants.BpmnXMLConstants.ELEMENT_MULTIINSTANCE_CARDINALITY;
 
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+import org.activiti.bpmn.converter.child.ElementParser;
 import org.activiti.bpmn.model.MultiInstanceLoopCharacteristics;
 
 public class LoopCardinalityParser implements ElementParser<MultiInstanceLoopCharacteristics> {
