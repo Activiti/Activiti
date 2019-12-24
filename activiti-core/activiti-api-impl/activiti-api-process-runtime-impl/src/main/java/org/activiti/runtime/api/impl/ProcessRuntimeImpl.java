@@ -54,7 +54,6 @@ import org.activiti.core.common.spring.security.policies.SecurityPolicyAccess;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
-import org.activiti.engine.repository.DeploymentQuery;
 import org.activiti.engine.repository.ProcessDefinitionQuery;
 import org.activiti.runtime.api.model.impl.APIDeploymentConverter;
 import org.activiti.runtime.api.model.impl.APIProcessDefinitionConverter;
@@ -125,10 +124,19 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
         } else {
             processDefinition = repositoryService.getProcessDefinition(processDefinitionId);
         }
+
+        checkIfDefinitionBelongsToCurrentAppVersion(processDefinition);
+
         if (!securityPoliciesManager.canRead(processDefinition.getKey())) {
             throw new ActivitiObjectNotFoundException("Unable to find process definition for the given id:'" + processDefinitionId + "'");
         }
         return processDefinitionConverter.from(processDefinition);
+    }
+
+    public void checkIfDefinitionBelongsToCurrentAppVersion(org.activiti.engine.repository.ProcessDefinition processDefinition){
+        if (!selectLatestDeployment().getVersion().equals(processDefinition.getAppVersion())) {
+            throw new ActivitiForbiddenException("Process definition with the given id:'" + processDefinition.getId() + "' belongs to a different application version.");
+        }
     }
 
     @Override
@@ -283,7 +291,7 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
 
         runtimeService.deleteProcessInstance(deleteProcessPayload.getProcessInstanceId(),
                 deleteProcessPayload.getReason());
-        processInstance.setStatus(ProcessInstance.ProcessInstanceStatus.DELETED);
+        processInstance.setStatus(ProcessInstance.ProcessInstanceStatus.CANCELLED);
         return processInstance;
     }
 

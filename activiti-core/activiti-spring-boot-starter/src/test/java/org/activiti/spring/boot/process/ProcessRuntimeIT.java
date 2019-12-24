@@ -406,7 +406,7 @@ public class ProcessRuntimeIT {
         ProcessInstance deletedProcessInstance = processRuntime.delete(ProcessPayloadBuilder.delete(categorizeProcess));
 
         assertThat(deletedProcessInstance).isNotNull();
-        assertThat(deletedProcessInstance.getStatus()).isEqualTo(ProcessInstance.ProcessInstanceStatus.DELETED);
+        assertThat(deletedProcessInstance.getStatus()).isEqualTo(ProcessInstance.ProcessInstanceStatus.CANCELLED);
 
 
         processInstancePage = processRuntime.processInstances(Pageable.of(0,
@@ -505,7 +505,7 @@ public class ProcessRuntimeIT {
         ProcessInstance deletedProcessInstance = processRuntime.delete(ProcessPayloadBuilder.delete(categorizeProcess));
 
         assertThat(deletedProcessInstance).isNotNull();
-        assertThat(deletedProcessInstance.getStatus()).isEqualTo(ProcessInstance.ProcessInstanceStatus.DELETED);
+        assertThat(deletedProcessInstance.getStatus()).isEqualTo(ProcessInstance.ProcessInstanceStatus.CANCELLED);
 
     }
 
@@ -569,7 +569,7 @@ public class ProcessRuntimeIT {
         ProcessInstance deletedProcessInstance = processAdminRuntime.delete(ProcessPayloadBuilder.delete(categorizeProcess));
 
         assertThat(deletedProcessInstance).isNotNull();
-        assertThat(deletedProcessInstance.getStatus()).isEqualTo(ProcessInstance.ProcessInstanceStatus.DELETED);
+        assertThat(deletedProcessInstance.getStatus()).isEqualTo(ProcessInstance.ProcessInstanceStatus.CANCELLED);
 
     }
 
