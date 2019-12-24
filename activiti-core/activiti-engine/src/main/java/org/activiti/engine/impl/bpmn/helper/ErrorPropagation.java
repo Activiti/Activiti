@@ -184,7 +184,7 @@ public class ErrorPropagation {
       if (!currentExecution.getParentId().equals(parentExecution.getId())) {
         Context.getAgenda().planDestroyScopeOperation(currentExecution);
       } else {
-        executionEntityManager.deleteExecutionAndRelatedData(currentExecution, null, false);
+        executionEntityManager.deleteExecutionAndRelatedData(currentExecution, null);
       }
 
       ExecutionEntity eventSubProcessExecution = executionEntityManager.createChildExecution(parentExecution);

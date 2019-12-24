@@ -92,7 +92,7 @@ public class SequentialMultiInstanceBehavior extends MultiInstanceActivityBehavi
       multiInstanceRootExecution.setMultiInstanceRoot(false);
       multiInstanceRootExecution.setScope(false);
       multiInstanceRootExecution.setCurrentFlowElement(childExecution.getCurrentFlowElement());
-      Context.getCommandContext().getExecutionEntityManager().deleteChildExecutions((ExecutionEntity) multiInstanceRootExecution, "MI_END", false);
+      Context.getCommandContext().getExecutionEntityManager().deleteChildExecutions((ExecutionEntity) multiInstanceRootExecution, "MI_END");
       dispatchActivityCompletedEvent(childExecution);
       super.leave(multiInstanceRootExecution);
       

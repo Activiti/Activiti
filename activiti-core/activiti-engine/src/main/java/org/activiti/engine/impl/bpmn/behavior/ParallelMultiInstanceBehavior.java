@@ -252,7 +252,7 @@ public class ParallelMultiInstanceBehavior extends MultiInstanceActivityBehavior
     }
 
     if (deleteExecution) {
-        executionEntityManager.deleteExecutionAndRelatedData(parentExecution, "Multi-instance complete condition expression passed", true);
+        executionEntityManager.cancelExecutionAndRelatedData(parentExecution, "Multi-instance complete condition expression passed");
     }
   }
 
