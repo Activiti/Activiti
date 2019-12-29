@@ -9,7 +9,7 @@
     <relativePath>../activiti-api-dependencies</relativePath>
   </parent>
   <artifactId>activiti-api-task-model-impl</artifactId>
-  <name>Activiti API :: Task Model Implementation</name>
+  <name>Activiti :: API :: Task Model Implementation</name>
   <dependencies>
     <dependency>
       <groupId>org.activiti.api</groupId>

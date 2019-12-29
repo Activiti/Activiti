@@ -25,7 +25,7 @@
     <relativePath>../activiti-api-dependencies</relativePath>
   </parent>
   <artifactId>activiti-api-task-model</artifactId>
-  <name>Activiti API :: Task Model</name>
+  <name>Activiti :: API :: Task Model</name>
   <dependencies>
     <dependency>
       <groupId>org.activiti.api</groupId>

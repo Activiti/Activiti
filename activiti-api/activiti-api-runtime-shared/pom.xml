@@ -9,7 +9,7 @@
     <relativePath>../activiti-api-dependencies</relativePath>
   </parent>
   <artifactId>activiti-api-runtime-shared</artifactId>
-  <name>Activiti API :: Runtime Common</name>
+  <name>Activiti :: API :: Runtime Common</name>
   <dependencies>
     <dependency>
       <groupId>org.activiti.api</groupId>

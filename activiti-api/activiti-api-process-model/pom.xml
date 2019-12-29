@@ -25,7 +25,7 @@
     <relativePath>../activiti-api-dependencies</relativePath>
   </parent>
   <artifactId>activiti-api-process-model</artifactId>
-  <name>Activiti API :: Process Model API</name>
+  <name>Activiti :: API :: Process Model API</name>
   <dependencies>
     <dependency>
       <groupId>org.activiti.api</groupId>

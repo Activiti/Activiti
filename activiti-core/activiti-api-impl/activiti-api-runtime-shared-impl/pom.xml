@@ -8,7 +8,7 @@
     <version>7.1.0-SNAPSHOT</version>
   </parent>
   <artifactId>activiti-api-runtime-shared-impl</artifactId>
-  <name>Activiti API :: Common Runtime Implementation</name>
+  <name>Activiti :: API :: Common Runtime Implementation</name>
   <dependencies>
     <dependency>
       <groupId>org.activiti.api</groupId>
