@@ -13,6 +13,8 @@
 
 package org.activiti.engine.impl.el;
 
+import java.util.Map;
+
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.VariableScope;
@@ -24,23 +26,31 @@ import org.activiti.engine.delegate.VariableScope;
  */
 public class FixedValue implements Expression {
 
-  private static final long serialVersionUID = 1L;
-  private Object value;
+    private static final long serialVersionUID = 1L;
+    private Object value;
 
-  public FixedValue(Object value) {
-    this.value = value;
-  }
+    public FixedValue(Object value) {
+        this.value = value;
+    }
 
-  public Object getValue(VariableScope variableScope) {
-    return value;
-  }
+    @Override
+    public Object getValue(VariableScope variableScope) {
+        return value;
+    }
 
-  public void setValue(Object value, VariableScope variableScope) {
-    throw new ActivitiException("Cannot change fixed value");
-  }
+    @Override
+    public void setValue(Object value, VariableScope variableScope) {
+        throw new ActivitiException("Cannot change fixed value");
+    }
 
-  public String getExpressionText() {
-    return value.toString();
-  }
+    @Override
+    public String getExpressionText() {
+        return value.toString();
+    }
+
+    @Override
+    public Object getValue(Map<String, Object> availableVariables) {
+        return value;
+    }
 
 }

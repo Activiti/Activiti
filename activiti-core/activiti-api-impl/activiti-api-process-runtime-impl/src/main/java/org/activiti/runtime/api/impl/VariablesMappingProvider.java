@@ -23,7 +23,6 @@ import java.util.Optional;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.delegate.DelegateExecution;
-import org.activiti.engine.delegate.VariableScope;
 import org.activiti.spring.process.ProcessExtensionService;
 import org.activiti.spring.process.model.ConstantDefinition;
 import org.activiti.spring.process.model.Mapping;
@@ -176,11 +175,7 @@ public class VariablesMappingProvider {
             }
         }
 
-        return expressionResolver.resolveExpressionsMap(createOutputMappingVariableScope(availableVariables),
+        return expressionResolver.resolveExpressionsMap(availableVariables,
                                                         outboundVariables);
-    }
-
-    private VariableScope createOutputMappingVariableScope(Map<String, Object> availableVariables) {
-        return new OutputMappingVariableScope(availableVariables);
     }
 }

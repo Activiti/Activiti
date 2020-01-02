@@ -14,16 +14,19 @@
 package org.activiti.engine.delegate;
 
 import java.io.Serializable;
+import java.util.Map;
 
 /**
 
  */
 public interface Expression extends Serializable {
 
-  Object getValue(VariableScope variableScope);
+    Object getValue(VariableScope variableScope);
 
-  void setValue(Object value, VariableScope variableScope);
+    void setValue(Object value, VariableScope variableScope);
 
-  String getExpressionText();
+    String getExpressionText();
+
+    Object getValue(Map<String, Object> availableVariables);
 
 }
