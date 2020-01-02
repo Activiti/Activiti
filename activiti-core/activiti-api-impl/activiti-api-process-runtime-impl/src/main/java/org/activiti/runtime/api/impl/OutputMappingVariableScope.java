@@ -65,13 +65,7 @@ public class OutputMappingVariableScope extends NoExecutionVariableScope {
 
     @Override
     public Map<String, Object> getVariables(Collection<String> variableNames, boolean fetchAllVariables) {
-        Map<String, Object> variablesRequested = new HashMap<>();
-        variableNames.forEach(key -> {
-            if (variables.containsKey(key)) {
-                variablesRequested.put(key, variables.get(key));
-            }
-        });
-        return variablesRequested;
+        return getVariables(variableNames);
     }
 
     @Override
