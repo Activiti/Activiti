@@ -10,8 +10,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.activiti.engine.impl.el;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.el.ArrayELResolver;
@@ -137,7 +139,7 @@ public class ExpressionManager {
     }
 
     public ELContext getElContext(Map<String, Object> availableVariables) {
-        ELResolver elResolver = new ReadOnlyMapELResolver((Map) availableVariables);
+        ELResolver elResolver = new ReadOnlyMapELResolver(new HashMap<>(availableVariables));
         return new ActivitiElContext(elResolver);
     }
 }

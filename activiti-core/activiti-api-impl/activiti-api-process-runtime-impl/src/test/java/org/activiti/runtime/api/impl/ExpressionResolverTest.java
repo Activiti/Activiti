@@ -21,18 +21,16 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.MockitoAnnotations.initMocks;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.el.ExpressionManager;
 import org.junit.Before;
@@ -45,10 +43,11 @@ public class ExpressionResolverTest {
 
     private ObjectMapper mapper = new ObjectMapper();
 
-    Map<String, Object> availableVariables = Collections.emptyMap();
-
     @Mock
     private ExpressionManager expressionManager;
+
+    @Mock
+    private ExpressionEvaluator expressionEvaluator;
 
     @Before
     public void setUp() {
@@ -171,153 +170,102 @@ public class ExpressionResolverTest {
     @Test
     public void resolveExpressionsMap_should_replaceExpressionByValue_when_stringIsAnExpression() {
         //given
-        DelegateExecution execution = mock(DelegateExecution.class);
         Expression expression = buildExpression("${name}");
-        given(expression.getValue(execution)).willReturn("John");
-        given(expression.getValue(availableVariables)).willReturn("John");
+        given(expressionEvaluator.evaluate(expression)).willReturn("John");
 
         //when
-        Map<String, Object> result = expressionResolver.resolveExpressionsMap(execution,
+        Map<String, Object> result = expressionResolver.resolveExpressionsMap(expressionEvaluator,
                                                                               Collections.singletonMap("name",
                                                                                                        "${name}"));
-        Map<String, Object> resultOutput = expressionResolver.resolveExpressionsMap(availableVariables,
-                                                                                    Collections.singletonMap("name",
-                                                                                                             "${name}"));
         //then
         assertThat(result).containsEntry("name",
                                          "John");
-        assertThat(resultOutput).containsEntry("name",
-                                               "John");
     }
 
     @Test
     public void resolveExpressionsMap_should_replaceExpressionByValue_when_stringContainsAnExpression() {
         //given
-        DelegateExecution execution = mock(DelegateExecution.class);
-
         Expression nameExpression = buildExpression("${name}");
-        given(nameExpression.getValue(execution)).willReturn("John");
-        given(nameExpression.getValue(availableVariables)).willReturn("John");
+        given(expressionEvaluator.evaluate(nameExpression)).willReturn("John");
 
         Expression placeExpression = buildExpression("${place}");
-        given(placeExpression.getValue(execution)).willReturn("London");
-        given(placeExpression.getValue(availableVariables)).willReturn("London");
+        given(expressionEvaluator.evaluate(placeExpression)).willReturn("London");
 
         //when
-        Map<String, Object> result = expressionResolver.resolveExpressionsMap(execution,
+        Map<String, Object> result = expressionResolver.resolveExpressionsMap(expressionEvaluator,
                                                                               Collections.singletonMap("welcomeMessage",
                                                                                                        "Welcome to ${place}, ${name}!"));
-        Map<String, Object> resultOutput = expressionResolver.resolveExpressionsMap(availableVariables,
-                                                                                    Collections.singletonMap("welcomeMessage",
-                                                                                                             "Welcome to ${place}, ${name}!"));
         //then
         assertThat(result).containsEntry("welcomeMessage",
                                          "Welcome to London, John!");
-        assertThat(resultOutput).containsEntry("welcomeMessage",
-                                               "Welcome to London, John!");
     }
 
     @Test
     public void resolveExpressionsMap_should_returnItself_when_stringIsEmpty() {
-        //given
-        DelegateExecution execution = mock(DelegateExecution.class);
-
         //when
-        Map<String, Object> result = expressionResolver.resolveExpressionsMap(execution,
+        Map<String, Object> result = expressionResolver.resolveExpressionsMap(expressionEvaluator,
                                                                               Collections.singletonMap("empty",
                                                                                                        ""));
-        Map<String, Object> resultOutput = expressionResolver.resolveExpressionsMap(availableVariables,
-                                                                                    Collections.singletonMap("empty",
-                                                                                                             ""));
 
         //then
         assertThat(result).containsEntry("empty",
                                          "");
-        assertThat(resultOutput).containsEntry("empty",
-                                               "");
     }
 
     @Test
     public void resolveExpressionsMap_should_returnItself_when_stringIsNull() {
-        //given
-        DelegateExecution execution = mock(DelegateExecution.class);
-
         //when
-        Map<String, Object> result = expressionResolver.resolveExpressionsMap(execution,
+        Map<String, Object> result = expressionResolver.resolveExpressionsMap(expressionEvaluator,
                                                                               Collections.singletonMap("empty",
                                                                                                        null));
-        Map<String, Object> resultOutput = expressionResolver.resolveExpressionsMap(availableVariables,
-                                                                                    Collections.singletonMap("empty",
-                                                                                                             null));
         //then
         assertThat(result).containsEntry("empty",
                                          null);
-        assertThat(resultOutput).containsEntry("empty",
-                                               null);
     }
 
     @Test
     public void resolveExpressionsMap_should_keepExpressionContent_when_notAbleToResolveExpressionInString() {
         //given
-        DelegateExecution execution = mock(DelegateExecution.class);
         Expression expression = buildExpression("${nonResolvableExpression}");
-        given(expression.getValue(execution)).willThrow(new ActivitiException("Invalid property"));
-        given(expression.getValue(availableVariables)).willThrow(new ActivitiException("Invalid property"));
+        given(expressionEvaluator.evaluate(expression)).willThrow(new ActivitiException("Invalid property"));
 
         //when
-        Map<String, Object> result = expressionResolver.resolveExpressionsMap(execution,
+        Map<String, Object> result = expressionResolver.resolveExpressionsMap(expressionEvaluator,
                                                                               Collections.singletonMap("result",
                                                                                                        "Welcome to ${nonResolvableExpression}!"));
-        Map<String, Object> resultOutput = expressionResolver.resolveExpressionsMap(availableVariables,
-                                                                                    Collections.singletonMap("result",
-                                                                                                             "Welcome to ${nonResolvableExpression}!"));
         //then
         assertThat(result).containsEntry("result",
                                          "Welcome to ${nonResolvableExpression}!");
-        assertThat(resultOutput).containsEntry("result",
-                                               "Welcome to ${nonResolvableExpression}!");
     }
 
     @Test
     public void resolveExpressionsMap_should_keepExpressionContent_when_notAbleToResolveIt() {
         //given
-        DelegateExecution execution = mock(DelegateExecution.class);
         Expression expression = buildExpression("${nonResolvableExpression}");
-        given(expression.getValue(execution)).willThrow(new ActivitiException("Invalid property"));
-        given(expression.getValue(availableVariables)).willThrow(new ActivitiException("Invalid property"));
+        given(expressionEvaluator.evaluate(expression)).willThrow(new ActivitiException("Invalid property"));
 
         //when
-        Map<String, Object> result = expressionResolver.resolveExpressionsMap(execution,
+        Map<String, Object> result = expressionResolver.resolveExpressionsMap(expressionEvaluator,
                                                                               Collections.singletonMap("result",
                                                                                                        "${nonResolvableExpression}"));
-        Map<String, Object> resultOutput = expressionResolver.resolveExpressionsMap(availableVariables,
-                                                                                    Collections.singletonMap("result",
-                                                                                                             "${nonResolvableExpression}"));
         //then
         assertThat(result).containsEntry("result",
                                          "${nonResolvableExpression}");
-        assertThat(resultOutput).containsEntry("result",
-                                               "${nonResolvableExpression}");
 
     }
 
     @Test
-    public void resolveExpressionsMap_should_replaceExpressionByValue_when_ObjecNodeContainsAnExpression()
+    public void resolveExpressionsMap_should_replaceExpressionByValue_when_ObjectNodeContainsAnExpression()
                                                                                                            throws IOException {
         //given
-        DelegateExecution execution = mock(DelegateExecution.class);
-
         Expression nameExpression = buildExpression("${name}");
-        given(nameExpression.getValue(execution)).willReturn("John");
-        given(nameExpression.getValue(availableVariables)).willReturn("John");
+        given(expressionEvaluator.evaluate(nameExpression)).willReturn("John");
 
         Expression placeExpression = buildExpression("${place}");
-        given(placeExpression.getValue(execution)).willReturn(null);
-        given(placeExpression.getValue(availableVariables)).willReturn(null);
+        given(expressionEvaluator.evaluate(placeExpression)).willReturn(null);
 
         Expression ageExpression = buildExpression("${age}");
-        given(ageExpression.getValue(execution)).willReturn(30);
-        given(ageExpression.getValue(availableVariables)).willReturn(30);
+        given(expressionEvaluator.evaluate(ageExpression)).willReturn(30);
 
         JsonNode node = mapper.readTree("{\"name\":\"${name}\",\"place\":\"${place}\",\"age\":\"${age}\"}");
 
@@ -330,28 +278,20 @@ public class ExpressionResolverTest {
                       30);
 
         //when
-        Map<String, Object> result = expressionResolver.resolveExpressionsMap(execution,
+        Map<String, Object> result = expressionResolver.resolveExpressionsMap(expressionEvaluator,
                                                                               Collections.singletonMap("node",
                                                                                                        node));
-        Map<String, Object> resultOutput = expressionResolver.resolveExpressionsMap(availableVariables,
-                                                                                    Collections.singletonMap("node",
-                                                                                                             node));
         //then
         assertThat(result).containsEntry("node",
                                          resultMap);
-        assertThat(resultOutput).containsEntry("node",
-                                               resultMap);
     }
 
     @Test
     public void
            resolveExpressionsMap_should_keepExpressionContent_when_ObjecNodeContainsAnExpressionUnableToBeResolved() throws IOException {
         //given
-        DelegateExecution execution = mock(DelegateExecution.class);
-
         Expression nameExpression = buildExpression("${name}");
-        given(nameExpression.getValue(execution)).willThrow(new ActivitiException("Invalid property"));
-        given(nameExpression.getValue(availableVariables)).willThrow(new ActivitiException("Invalid property"));
+        given(expressionEvaluator.evaluate(nameExpression)).willThrow(new ActivitiException("Invalid property"));
 
         JsonNode node = mapper.readTree("{\"name\":\"${name}\",\"age\": 30}");
 
@@ -362,90 +302,57 @@ public class ExpressionResolverTest {
                       30);
 
         //when
-        Map<String, Object> result = expressionResolver.resolveExpressionsMap(execution,
+        Map<String, Object> result = expressionResolver.resolveExpressionsMap(expressionEvaluator,
                                                                               Collections.singletonMap("node",
                                                                                                        node));
-        Map<String, Object> resultOutput = expressionResolver.resolveExpressionsMap(availableVariables,
-                                                                                    Collections.singletonMap("node",
-                                                                                                             node));
         //then
         assertThat(result).containsEntry("node",
                                          resultMap);
-        assertThat(resultOutput).containsEntry("node",
-                                               resultMap);
     }
 
     @Test
     public void resolveExpressionsMap_should_replaceExpressionByValue_when_ListContainsAnExpression() {
         //given
-        DelegateExecution execution = mock(DelegateExecution.class);
-
         Expression placeExpression = buildExpression("${place}");
-        given(placeExpression.getValue(execution)).willReturn("London");
-        given(placeExpression.getValue(availableVariables)).willReturn("London");
+        given(expressionEvaluator.evaluate(placeExpression)).willReturn("London");
 
         //when
-        Map<String, Object> result = expressionResolver.resolveExpressionsMap(execution,
+        Map<String, Object> result = expressionResolver.resolveExpressionsMap(expressionEvaluator,
                                                                               Collections.singletonMap("places",
                                                                                                        Arrays.asList("${place}",
                                                                                                                      "Paris",
                                                                                                                      "Berlin")));
-        Map<String, Object> resultOutput = expressionResolver.resolveExpressionsMap(availableVariables,
-                                                                                    Collections.singletonMap("places",
-                                                                                                             Arrays.asList("${place}",
-                                                                                                                           "Paris",
-                                                                                                                           "Berlin")));
-
         //then
         assertThat(result).containsEntry("places",
                                          Arrays.asList("London",
                                                        "Paris",
                                                        "Berlin"));
-        assertThat(resultOutput).containsEntry("places",
-                                               Arrays.asList("London",
-                                                             "Paris",
-                                                             "Berlin"));
     }
 
     @Test
     public void resolveExpressionsMap_should_keepExpressionContent_when_ListContainsAnExpressionUnableToBeResolved() {
         //given
-        DelegateExecution execution = mock(DelegateExecution.class);
-
         Expression placeExpression = buildExpression("${place}");
-        given(placeExpression.getValue(execution)).willThrow(new ActivitiException("Invalid property"));
-        given(placeExpression.getValue(availableVariables)).willThrow(new ActivitiException("Invalid property"));
+        given(expressionEvaluator.evaluate(placeExpression)).willThrow(new ActivitiException("Invalid property"));
 
         //when
-        Map<String, Object> result = expressionResolver.resolveExpressionsMap(execution,
+        Map<String, Object> result = expressionResolver.resolveExpressionsMap(expressionEvaluator,
                                                                               Collections.singletonMap("places",
                                                                                                        Arrays.asList("${place}",
                                                                                                                      "Paris",
                                                                                                                      "Berlin")));
-        Map<String, Object> resultOutput = expressionResolver.resolveExpressionsMap(availableVariables,
-                                                                                    Collections.singletonMap("places",
-                                                                                                             Arrays.asList("${place}",
-                                                                                                                           "Paris",
-                                                                                                                           "Berlin")));
         //then
         assertThat(result).containsEntry("places",
                                          Arrays.asList("${place}",
                                                        "Paris",
                                                        "Berlin"));
-        assertThat(resultOutput).containsEntry("places",
-                                               Arrays.asList("${place}",
-                                                             "Paris",
-                                                             "Berlin"));
     }
 
     @Test
     public void resolveExpressionsMap_should_replaceExpressionByValue_when_MapContainsAnExpression() {
         //given
-        DelegateExecution execution = mock(DelegateExecution.class);
-
         Expression playerExpression = buildExpression("${player}");
-        given(playerExpression.getValue(execution)).willReturn("Agatha");
-        given(playerExpression.getValue(availableVariables)).willReturn("Agatha");
+        given(expressionEvaluator.evaluate(playerExpression)).willReturn("Agatha");
 
         Map<String, Object> players = new HashMap<>();
         players.put("Red",
@@ -468,28 +375,21 @@ public class ExpressionResolverTest {
                       "Agatha");
 
         //when
-        Map<String, Object> result = expressionResolver.resolveExpressionsMap(execution,
+        Map<String, Object> result = expressionResolver.resolveExpressionsMap(expressionEvaluator,
                                                                               Collections.singletonMap("players",
                                                                                                        players));
-        Map<String, Object> resultOutput = expressionResolver.resolveExpressionsMap(availableVariables,
-                                                                                    Collections.singletonMap("players",
-                                                                                                             players));
 
         //then
         assertThat(result).containsEntry("players",
                                          resultMap);
-        assertThat(resultOutput).containsEntry("players",
-                                               resultMap);
     }
 
     @Test
     public void resolveExpressionsMap_should_keepExpressionContent_when_MapContainsAnExpressionUnableToBeResolved() {
         //given
-        DelegateExecution execution = mock(DelegateExecution.class);
 
         Expression playerExpression = buildExpression("${player}");
-        given(playerExpression.getValue(execution)).willThrow(new ActivitiException("Invalid property"));
-        given(playerExpression.getValue(availableVariables)).willThrow(new ActivitiException("Invalid property"));
+        given(expressionEvaluator.evaluate(playerExpression)).willThrow(new ActivitiException("Invalid property"));
 
         Map<String, Object> players = new HashMap<>();
         players.put("Red",
@@ -502,18 +402,13 @@ public class ExpressionResolverTest {
                     "${player}");
 
         //when
-        Map<String, Object> result = expressionResolver.resolveExpressionsMap(execution,
+        Map<String, Object> result = expressionResolver.resolveExpressionsMap(expressionEvaluator,
                                                                               Collections.singletonMap("players",
                                                                                                        players));
-        Map<String, Object> resultOutput = expressionResolver.resolveExpressionsMap(availableVariables,
-                                                                                    Collections.singletonMap("players",
-                                                                                                             players));
 
         //then
         assertThat(result).containsEntry("players",
                                          players);
-        assertThat(resultOutput).containsEntry("players",
-                                               players);
     }
 
     private Expression buildExpression(String expressionContent) {

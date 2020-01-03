@@ -73,16 +73,16 @@ public class VariablesMappingProvider {
             return constants;
         }
 
-        Map<String, Object> inboudVariables;
+        Map<String, Object> inboundVariables;
 
         if (!extensions.getExtensions().hasMapping(execution.getCurrentActivityId())) {
-            inboudVariables = execution.getVariables();
+            inboundVariables = execution.getVariables();
         } else {
-            inboudVariables = calculateInputVariables(execution, extensions);
+            inboundVariables = calculateInputVariables(execution, extensions);
         }
-        inboudVariables = expressionResolver.resolveExpressionsMap(execution, inboudVariables);
-        inboudVariables.putAll(constants);
-        return inboudVariables;
+        inboundVariables = expressionResolver.resolveExpressionsMap(new VariableScopeExpressionEvaluator(execution), inboundVariables);
+        inboundVariables.putAll(constants);
+        return inboundVariables;
     }
 
     private Map<String, Object> calculateConstants(DelegateExecution execution,
@@ -175,7 +175,7 @@ public class VariablesMappingProvider {
             }
         }
 
-        return expressionResolver.resolveExpressionsMap(availableVariables,
+        return expressionResolver.resolveExpressionsMap(new SimpleMapExpressionEvaluator(availableVariables),
                                                         outboundVariables);
     }
 }

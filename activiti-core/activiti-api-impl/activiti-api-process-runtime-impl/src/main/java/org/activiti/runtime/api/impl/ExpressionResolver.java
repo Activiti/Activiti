@@ -1,5 +1,8 @@
 package org.activiti.runtime.api.impl;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -8,11 +11,6 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.el.ExpressionManager;
 import org.apache.commons.lang3.StringUtils;
@@ -39,114 +37,62 @@ public class ExpressionResolver {
         this.mapper = mapper;
     }
 
-    private Object resolveExpressions(final DelegateExecution execution,
+    private Object resolveExpressions(final ExpressionEvaluator expressionEvaluator,
                                       final Object value) {
         if (value instanceof String) {
-            return resolveExpressionsString(execution,
+            return resolveExpressionsString(expressionEvaluator,
                                             (String) value);
         } else if (value instanceof ObjectNode) {
-            return resolveExpressionsMap(execution,
+            return resolveExpressionsMap(expressionEvaluator,
                                          mapper.convertValue(value,
                                                              MAP_STRING_OBJECT_TYPE));
         } else if (value instanceof Map<?, ?>) {
-            return resolveExpressionsMap(execution,
+            return resolveExpressionsMap(expressionEvaluator,
                                          (Map<String, ?>) value);
         } else if (value instanceof List<?>) {
-            return resolveExpressionsList(execution,
+            return resolveExpressionsList(expressionEvaluator,
                                           (List<?>) value);
         } else {
             return value;
         }
     }
 
-    private Object resolveExpressions(final Map<String, Object> availableVariables,
-                                      final Object value) {
-        if (value instanceof String) {
-            return resolveExpressionsString(availableVariables,
-                                            (String) value);
-        } else if (value instanceof ObjectNode) {
-            return resolveExpressionsMap(availableVariables,
-                                         mapper.convertValue(value,
-                                                             MAP_STRING_OBJECT_TYPE));
-        } else if (value instanceof Map<?, ?>) {
-            return resolveExpressionsMap(availableVariables,
-                                         (Map<String, ?>) value);
-        } else if (value instanceof List<?>) {
-            return resolveExpressionsList(availableVariables,
-                                          (List<?>) value);
-        } else {
-            return value;
-        }
-    }
-
-    private List<Object> resolveExpressionsList(final DelegateExecution execution,
+    private List<Object> resolveExpressionsList(final ExpressionEvaluator expressionEvaluator,
                                                 final List<?> sourceList) {
         final List<Object> result = new LinkedList<>();
-        sourceList.forEach(value -> result.add(resolveExpressions(execution,
+        sourceList.forEach(value -> result.add(resolveExpressions(expressionEvaluator,
                                                                   value)));
         return result;
     }
 
-    private List<Object> resolveExpressionsList(final Map<String, Object> availableVariables,
-                                                final List<?> sourceList) {
-        final List<Object> result = new LinkedList<>();
-        sourceList.forEach(value -> result.add(resolveExpressions(availableVariables,
-                                                                  value)));
-        return result;
-    }
-
-    public Map<String, Object> resolveExpressionsMap(final DelegateExecution execution,
+    public Map<String, Object> resolveExpressionsMap(final ExpressionEvaluator expressionEvaluator,
                                                      final Map<String, ?> sourceMap) {
         final Map<String, Object> result = new LinkedHashMap<>();
         sourceMap.forEach((key,
                            value) -> result.put(key,
-                                                resolveExpressions(execution,
+                                                resolveExpressions(expressionEvaluator,
                                                                    value)));
         return result;
     }
 
-    public Map<String, Object> resolveExpressionsMap(final Map<String, Object> availableVariables,
-                                                     final Map<String, ?> sourceMap) {
-        final Map<String, Object> result = new LinkedHashMap<>();
-        sourceMap.forEach((key,
-                           value) -> result.put(key,
-                                                resolveExpressions(availableVariables,
-                                                                   value)));
-        return result;
-    }
-
-    private Object resolveExpressionsString(final DelegateExecution execution,
+    private Object resolveExpressionsString(final ExpressionEvaluator expressionEvaluator,
                                             final String sourceString) {
         if (StringUtils.isBlank(sourceString)) {
             return sourceString;
         }
         if (sourceString.matches(EXPRESSION_PATTERN_STRING)) {
-            return resolveObjectPlaceHolder(execution,
+            return resolveObjectPlaceHolder(expressionEvaluator,
                                             sourceString);
         } else {
-            return resolveInStringPlaceHolder(execution,
+            return resolveInStringPlaceHolder(expressionEvaluator,
                                               sourceString);
         }
     }
 
-    private Object resolveExpressionsString(final Map<String, Object> availableVariables,
-                                            final String sourceString) {
-        if (StringUtils.isBlank(sourceString)) {
-            return sourceString;
-        }
-        if (sourceString.matches(EXPRESSION_PATTERN_STRING)) {
-            return resolveObjectPlaceHolder(availableVariables,
-                                            sourceString);
-        } else {
-            return resolveInStringPlaceHolder(availableVariables,
-                                              sourceString);
-        }
-    }
-
-    private Object resolveObjectPlaceHolder(DelegateExecution execution,
+    private Object resolveObjectPlaceHolder(ExpressionEvaluator expressionEvaluator,
                                             String sourceString) {
         try {
-            return expressionManager.createExpression(sourceString).getValue(execution);
+            return expressionEvaluator.evaluate(expressionManager.createExpression(sourceString));
         } catch (final Exception e) {
             logger.warn("Unable to resolve expression in variables, keeping original value",
                         e);
@@ -154,18 +100,7 @@ public class ExpressionResolver {
         }
     }
 
-    private Object resolveObjectPlaceHolder(Map<String, Object> availableVariables,
-                                            String sourceString) {
-        try {
-            return expressionManager.createExpression(sourceString).getValue(availableVariables);
-        } catch (final Exception e) {
-            logger.warn("Unable to resolve expression in variables, keeping original value",
-                        e);
-            return sourceString;
-        }
-    }
-
-    private String resolveInStringPlaceHolder(final DelegateExecution execution,
+    private String resolveInStringPlaceHolder(final ExpressionEvaluator expressionEvaluator,
                                               final String sourceString) {
         final Matcher matcher = EXPRESSION_PATTERN.matcher(sourceString);
         final StringBuffer sb = new StringBuffer();
@@ -173,27 +108,7 @@ public class ExpressionResolver {
             final String expressionKey = matcher.group(EXPRESSION_KEY_INDEX);
             final Expression expression = expressionManager.createExpression(expressionKey);
             try {
-                final Object value = expression.getValue(execution);
-                matcher.appendReplacement(sb,
-                                          Objects.toString(value));
-            } catch (final Exception e) {
-                logger.warn("Unable to resolve expression in variables, keeping original value",
-                            e);
-            }
-        }
-        matcher.appendTail(sb);
-        return sb.toString();
-    }
-
-    private String resolveInStringPlaceHolder(final Map<String, Object> availableVariables,
-                                              final String sourceString) {
-        final Matcher matcher = EXPRESSION_PATTERN.matcher(sourceString);
-        final StringBuffer sb = new StringBuffer();
-        while (matcher.find()) {
-            final String expressionKey = matcher.group(EXPRESSION_KEY_INDEX);
-            final Expression expression = expressionManager.createExpression(expressionKey);
-            try {
-                final Object value = expression.getValue(availableVariables);
+                final Object value = expressionEvaluator.evaluate(expression);
                 matcher.appendReplacement(sb,
                                           Objects.toString(value));
             } catch (final Exception e) {
