@@ -333,4 +333,13 @@ public class RuntimeTestConfiguration {
             return integrationContext;
         };
     }
+
+    @Bean(name = "OutputMappingExpValueConnector.outputMappingExpValueActionName")
+    public Connector outputMappingValueExpressionActionName() {
+        return integrationContext -> {
+            integrationContext.addOutBoundVariable("outVariable1Name",
+                                                   "value-set-in-connector");
+            return integrationContext;
+        };
+    }
 }

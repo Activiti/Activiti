@@ -10,9 +10,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.activiti.engine.impl.el;
 
+import java.util.HashMap;
 import java.util.Map;
+
 import javax.el.ArrayELResolver;
 import javax.el.BeanELResolver;
 import javax.el.CompositeELResolver;
@@ -65,7 +68,7 @@ public class ExpressionManager {
                              boolean initFactory) {
         // Use the ExpressionFactoryImpl in activiti build in version of juel,
         // with parametrised method expressions enabled
-        if(initFactory) {
+        if (initFactory) {
             expressionFactory = new ExpressionFactoryImpl();
         }
         this.beans = beans;
@@ -133,5 +136,10 @@ public class ExpressionManager {
 
     public void setBeans(Map<Object, Object> beans) {
         this.beans = beans;
+    }
+
+    public ELContext getElContext(Map<String, Object> availableVariables) {
+        ELResolver elResolver = new ReadOnlyMapELResolver(new HashMap<>(availableVariables));
+        return new ActivitiElContext(elResolver);
     }
 }

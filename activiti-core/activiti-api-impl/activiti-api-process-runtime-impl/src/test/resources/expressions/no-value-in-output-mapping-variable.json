@@ -43,12 +43,7 @@
         },
         "outputs": {
           "process_variable_3": {
-            "type": "VARIABLE",
-            "value": "task_input_variable_name_1"
-          },
-          "process_variable_4": {
-            "type": "VALUE",
-            "value": "${task_input_variable_name_2}"
+            
           }
         }
       }

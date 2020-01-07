@@ -10,8 +10,8 @@
       "inputs": [],
       "outputs": [
         {
-          "id": "out-variable-1",
-          "name": "out-variable-name-1",
+          "id": "out-variable-1-id",
+          "name": "outVariable1Name",
           "type": "string",
           "description": "",
           "required": "false"
