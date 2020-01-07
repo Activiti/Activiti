@@ -58,16 +58,6 @@
     <system>Travis</system>
     <url>https://travis-ci.org/Activiti/${project.artifactId}</url>
   </ciManagement>
-  <repositories>
-    <repository>
-      <id>activiti-releases</id>
-      <name>Activiti Releases</name>
-      <url>https://artifacts.alfresco.com/nexus/content/repositories/activiti-releases/</url>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
-    </repository>
-  </repositories>
   <properties>
     <!-- plugins -->
     <asm.version>6.2</asm.version>
