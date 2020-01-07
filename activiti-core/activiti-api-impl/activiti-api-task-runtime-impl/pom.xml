@@ -8,7 +8,7 @@
         <version>7.1.0-SNAPSHOT</version>
     </parent>
     <artifactId>activiti-api-task-runtime-impl</artifactId>
-    <name>Activiti API :: Task Runtime Implementation</name>
+    <name>Activiti :: API :: Task Runtime Implementation</name>
     <dependencies>
         <dependency>
             <groupId>org.activiti.api</groupId>

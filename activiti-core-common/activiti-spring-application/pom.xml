@@ -25,7 +25,7 @@
     <relativePath>../activiti-core-common-dependencies</relativePath>
   </parent>
   <artifactId>activiti-spring-application</artifactId>
-  <name>Activiti Core Common :: Application</name>
+  <name>Activiti :: Core :: Common :: Application</name>
   <dependencies>
     <dependency>
       <groupId>org.springframework</groupId>

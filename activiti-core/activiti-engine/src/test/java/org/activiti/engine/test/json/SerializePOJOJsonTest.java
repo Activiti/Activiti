@@ -24,13 +24,13 @@ public class SerializePOJOJsonTest extends ResourceActivitiTestCase {
     public void testJsonVarInExpression() throws Exception {
         Map<String, Object> vars = new HashMap<String, Object>();
         Map<String, Object> map = new HashMap<String, Object>();
-        map.put("assignee", "salaboy");
+        map.put("assignee", "bob");
         map.put("category", "test");
         Map<String, Object> mapInMap = new HashMap<String, Object>();
-        mapInMap.put("user", "salaboy");
+        mapInMap.put("user", "bob");
         map.put("mapInMap", mapInMap);
         vars.put("userMap", map);
-        List<String> list = Arrays.asList("salaboy", "salaboy", "salaboy");
+        List<String> list = Arrays.asList("bob", "john", "hannah");
         vars.put("userCollection", list);
         ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testJsonVarInExpression", vars);
         String taskId = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult().getId();
@@ -40,20 +40,20 @@ public class SerializePOJOJsonTest extends ResourceActivitiTestCase {
             @Override
             public void accept(IdentityLink i) {
                 if ("candidate".equals(i.getType()) ) {
-                    assertEquals("salaboy", i.getUserId());
+                    assertEquals("bob", i.getUserId());
                 }
             }
         });
         taskService.complete(taskId);
         HistoricTaskInstance task = historyService.createHistoricTaskInstanceQuery().taskId(taskId).singleResult();
-        assertEquals("salaboy", task.getAssignee());
+        assertEquals("bob", task.getAssignee());
         assertEquals("test", task.getCategory());
     }
 
     @Deployment
     public void testCollectionJsonVarInExpression() throws Exception {
         Map<String, Object> vars = new HashMap<String, Object>();
-        List<String> list = Arrays.asList("salaboy", "salaboy", "salaboy");
+        List<String> list = Arrays.asList("bob", "john", "hannah");
         vars.put("userCollection", list);
         ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testCollectionJsonVarInExpression", vars);
         String taskId = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult().getId();
@@ -67,7 +67,7 @@ public class SerializePOJOJsonTest extends ResourceActivitiTestCase {
     @Deployment
     public void testCollectionInJsonVarInExpression() throws Exception {
         Map<String, Object> vars = new HashMap<String, Object>();
-        List<String> list = Arrays.asList("salaboy", "salaboy", "salaboy");
+        List<String> list = Arrays.asList("bob", "john", "hannah");
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("userCollection", list);
         vars.put("userMap", map);
@@ -77,7 +77,7 @@ public class SerializePOJOJsonTest extends ResourceActivitiTestCase {
         taskService.createTaskQuery().processInstanceId(processInstance.getId()).list().forEach(task -> taskService.complete(task.getId()));
 
         vars = new HashMap<String, Object>();
-        List<SomeSerializable> beanList = Arrays.asList(new SomeSerializable("salaboy"), new SomeSerializable("salaboy"), new SomeSerializable("salaboy"));
+        List<SomeSerializable> beanList = Arrays.asList(new SomeSerializable("bob"), new SomeSerializable("john"), new SomeSerializable("hannah"));
         map = new HashMap<String, Object>();
         map.put("userCollection", beanList);
         vars.put("userMap", map);
@@ -94,7 +94,7 @@ public class SerializePOJOJsonTest extends ResourceActivitiTestCase {
         Map<String, Object> vars = new HashMap<String, Object>();
         Map<String, Object> map = new HashMap<String, Object>();
         vars = new HashMap<String, Object>();
-        List<SomeSerializable> beanList = Arrays.asList(new SomeSerializable("salaboy"), new SomeSerializable("salaboy"), new SomeSerializable("salaboy"));
+        List<SomeSerializable> beanList = Arrays.asList(new SomeSerializable("bob"), new SomeSerializable("john"), new SomeSerializable("hannah"));
         map = new HashMap<String, Object>();
         map.put("userCollection", beanList);
         vars.put("userMap", map);

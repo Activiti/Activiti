@@ -6,20 +6,12 @@
     <groupId>org.activiti.build</groupId>
     <artifactId>activiti-parent</artifactId>
     <version>7.1.0-SNAPSHOT</version>
-    <relativePath>../</relativePath>
   </parent>
   <groupId>org.activiti</groupId>
   <artifactId>activiti-root</artifactId>
   <packaging>pom</packaging>
-  <name>Activiti Core :: Parent</name>
-  <version>7.1.0-SNAPSHOT</version>
-  <description>Activiti Core :: Parent</description>
-  <url>http://activiti.org</url>
+  <name>Activiti :: Core :: Parent</name>
   <properties>
-    <activiti-build.version>${project.version}</activiti-build.version>
-    <activiti-api.version>${project.version}</activiti-api.version>
-    <activiti-core-common.version>${project.version}</activiti-core-common.version>
-    <activiti.version>${project.version}</activiti.version>
     <awaitility.version>3.1.6</awaitility.version>
     <batik.version>1.10</batik.version>
     <commons-email.version>1.5</commons-email.version>
@@ -42,16 +34,15 @@
     <subethasmtp-wiser.version>1.2</subethasmtp-wiser.version>
     <xmlgraphics-commons.version>2.2</xmlgraphics-commons.version>
     <groovy-all.version>2.5.4</groovy-all.version>
-
     <checkstyle-maven-plugin.version>3.1.0</checkstyle-maven-plugin.version>
-    <skipCheckstyle>true</skipCheckstyle>
+<!--    <checkstyle.skip>true</checkstyle.skip>-->
   </properties>
   <dependencyManagement>
     <dependencies>
       <dependency>
         <groupId>org.activiti.build</groupId>
         <artifactId>activiti-dependencies-parent</artifactId>
-        <version>${activiti-build.version}</version>
+        <version>${project.version}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -187,13 +178,12 @@
         <version>${batik.version}</version>
         <scope>test</scope>
       </dependency>
-
       <!-- Test -->
-
       <dependency>
         <groupId>net.javacrumbs.json-unit</groupId>
         <artifactId>json-unit-fluent</artifactId>
         <version>${json-unit.version}</version>
+        <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.subethamail</groupId>
@@ -218,25 +208,18 @@
   <!-- Activiti Build Parent Marker Dependency for Dependency Convergence Tests -->
   <dependencies>
     <dependency>
-      <groupId>org.activiti.build</groupId>
-      <artifactId>activiti-parent</artifactId>
-      <version>${activiti-build.version}</version>
-      <type>pom</type>
-    </dependency>
-    <dependency>
       <groupId>org.activiti.api</groupId>
       <artifactId>activiti-api-dependencies</artifactId>
-      <version>${activiti-api.version}</version>
+      <version>${project.version}</version>
       <type>pom</type>
     </dependency>
     <dependency>
       <groupId>org.activiti.core.common</groupId>
       <artifactId>activiti-core-common-dependencies</artifactId>
-      <version>${activiti-core-common.version}</version>
+      <version>${project.version}</version>
       <type>pom</type>
     </dependency>
   </dependencies>
-
   <modules>
     <module>activiti-core-dependencies-tests</module>
     <module>activiti-core-dependencies</module>
@@ -255,70 +238,4 @@
     <module>activiti-spring-process-extensions</module>
     <module>activiti-spring-conformance-tests</module>
   </modules>
-
-  <repositories>
-    <repository>
-      <id>alfresco</id>
-      <name>Activiti Releases</name>
-      <url>https://artifacts.alfresco.com/nexus/content/repositories/activiti-releases/</url>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
-    </repository>
-  </repositories>
-
-  <scm>
-    <url>https://github.com/Activiti/Activiti</url>
-    <connection>scm:git:https://github.com/Activiti/Activiti.git</connection>
-    <developerConnection>scm:git:https://github.com/Activiti/Activiti.git</developerConnection>
-    <tag>HEAD</tag>
-  </scm>
-  <ciManagement>
-    <system>Travis</system>
-    <url>https://travis-ci.org/Activiti/Activiti</url>
-  </ciManagement>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-deploy-plugin</artifactId>
-        <version>2.8.2</version>
-        <configuration>
-          <deployAtEnd>true</deployAtEnd>
-        </configuration>
-      </plugin>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <version>${maven-surefire-plugin.version}</version>
-      </plugin>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-checkstyle-plugin</artifactId>
-        <version>${checkstyle-maven-plugin.version}</version>
-        <executions>
-          <execution>
-            <phase>install</phase>
-            <goals>
-              <goal>check</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <skip>${skipCheckstyle}</skip>
-          <sourceDirectories>
-            <sourceDirectory>activiti-api-impl</sourceDirectory>
-          </sourceDirectories>
-          <failOnViolation>true</failOnViolation>
-          <enableRulesSummary>false</enableRulesSummary>
-          <configLocation>./checkstyle-rules.xml</configLocation>
-        </configuration>
-      </plugin>
-
-    </plugins>
-  </build>
-
 </project>

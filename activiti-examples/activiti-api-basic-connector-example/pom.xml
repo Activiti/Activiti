@@ -2,43 +2,13 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-
-  <groupId>org.activiti.examples</groupId>
-  <artifactId>activiti-api-basic-connector-examples</artifactId>
-  <version>7.1.0-SNAPSHOT</version>
-  <packaging>jar</packaging>
-
-  <name>Activiti API Basic Connector Examples</name>
-  <description>Activiti API Basic Connector Examples</description>
-
   <parent>
     <groupId>org.activiti.examples</groupId>
     <artifactId>activiti-examples-parent</artifactId>
     <version>7.1.0-SNAPSHOT</version>
-    <relativePath>../</relativePath>
   </parent>
-
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <java.version>11</java.version>
-    <maven.compiler.source>${java.version}</maven.compiler.source>
-    <maven.compiler.target>${java.version}</maven.compiler.target>
-    <activiti-dependencies.version>${project.version}</activiti-dependencies.version>
-  </properties>
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.activiti.dependencies</groupId>
-        <artifactId>activiti-dependencies</artifactId>
-        <version>${activiti-dependencies.version}</version>
-        <scope>import</scope>
-        <type>pom</type>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
-
-
+  <artifactId>activiti-api-basic-connector-examples</artifactId>
+  <name>Activiti :: Examples :: API Basic Connector Examples</name>
   <dependencies>
     <dependency>
       <groupId>org.activiti</groupId>
@@ -58,15 +28,4 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
-
-  <repositories>
-    <repository>
-      <id>alfresco</id>
-      <name>Activiti Releases</name>
-      <url>https://artifacts.alfresco.com/nexus/content/repositories/activiti-releases/</url>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
-    </repository>
-  </repositories>
 </project>

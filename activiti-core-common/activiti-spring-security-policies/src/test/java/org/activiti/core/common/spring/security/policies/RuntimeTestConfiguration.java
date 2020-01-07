@@ -14,18 +14,18 @@ import java.util.List;
 
 @Configuration
 @EnableConfigurationProperties
-public class RuntimeTestConfiguraiton {
+public class RuntimeTestConfiguration {
 
     @Bean
     public UserDetailsService myUserDetailsService() {
         ExtendedInMemoryUserDetailsManager extendedInMemoryUserDetailsManager = new ExtendedInMemoryUserDetailsManager();
 
-        List<GrantedAuthority> salaboyAuthorities = new ArrayList<>();
-        salaboyAuthorities.add(new SimpleGrantedAuthority("ROLE_ACTIVITI_USER"));
-        salaboyAuthorities.add(new SimpleGrantedAuthority("GROUP_activitiTeam"));
-        salaboyAuthorities.add(new SimpleGrantedAuthority("GROUP_developers"));
+        List<GrantedAuthority> authorities = new ArrayList<>();
+        authorities.add(new SimpleGrantedAuthority("ROLE_ACTIVITI_USER"));
+        authorities.add(new SimpleGrantedAuthority("GROUP_activitiTeam"));
+        authorities.add(new SimpleGrantedAuthority("GROUP_developers"));
 
-        extendedInMemoryUserDetailsManager.createUser(new User("salaboy", "password", salaboyAuthorities));
+        extendedInMemoryUserDetailsManager.createUser(new User("bob", "password", authorities));
 
         List<GrantedAuthority> adminAuthorities = new ArrayList<>();
         adminAuthorities.add(new SimpleGrantedAuthority("ROLE_ACTIVITI_ADMIN"));
