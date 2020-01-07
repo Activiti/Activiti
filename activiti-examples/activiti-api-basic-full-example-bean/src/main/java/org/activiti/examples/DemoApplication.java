@@ -86,7 +86,7 @@ public class DemoApplication implements CommandLineRunner {
 
     @Scheduled(initialDelay = 1000, fixedDelay = 5000)
     public void checkAndWorkOnTasksWhenAvailable() {
-        securityUtil.logInAs("salaboy");
+        securityUtil.logInAs("bob");
 
         Page<Task> tasks = taskRuntime.tasks(Pageable.of(0, 10));
         if (tasks.getTotalItems() > 0) {

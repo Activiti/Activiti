@@ -25,5 +25,5 @@
     <relativePath>../activiti-api-dependencies</relativePath>
   </parent>
   <artifactId>activiti-api-model-shared</artifactId>
-  <name>Activiti API :: Model Common</name>
+  <name>Activiti :: API :: Model Common</name>
 </project>

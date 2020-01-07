@@ -10,11 +10,11 @@
   <artifactId>activiti-core-dependencies-tests</artifactId>
   <packaging>pom</packaging>
 
-  <name>Activiti Core :: BOM (Bill of Materials) Tests</name>
+  <name>Activiti :: Core :: BOM (Bill of Materials) Tests</name>
 
   <properties>
     <maven.deploy.skip>true</maven.deploy.skip>
-    <enforceFail>true</enforceFail>    
+    <enforceFail>true</enforceFail>
   </properties>
 
   <build>

@@ -95,11 +95,11 @@ public class SecurityPoliciesServiceIT {
     }
 
     @Test
-    @WithUserDetails(value = "salaboy", userDetailsServiceBeanName = "myUserDetailsService")
+    @WithUserDetails(value = "bob", userDetailsServiceBeanName = "myUserDetailsService")
     public void shouldGetPoliciesForSalaboy() {
 
         String authenticatedUserId = securityManager.getAuthenticatedUserId();
-        assertThat(authenticatedUserId).isEqualTo("salaboy");
+        assertThat(authenticatedUserId).isEqualTo("bob");
 
         List<String> userGroups = securityManager.getAuthenticatedUserGroups();
         assertThat(userGroups).hasSize(2);

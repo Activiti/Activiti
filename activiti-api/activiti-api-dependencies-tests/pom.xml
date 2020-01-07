@@ -7,18 +7,18 @@
   </parent>
   <artifactId>activiti-api-dependencies-tests</artifactId>
   <packaging>pom</packaging>
-  
-  <name>Activiti API :: Dependencies BOM (Bill Of Materials) Tests</name>
-  
+
+  <name>Activiti :: API :: Dependencies BOM (Bill Of Materials) Tests</name>
+
   <properties>
     <maven.deploy.skip>true</maven.deploy.skip>
-    <enforceFail>true</enforceFail>    
+    <enforceFail>true</enforceFail>
   </properties>
-  
+
   <dependencies>
     <!-- inherit all parent dependencies -->
   </dependencies>
-  
+
   <build>
     <plugins>
       <plugin>
@@ -37,7 +37,7 @@
                 <reactorModuleConvergence>
                   <message>The reactor is not valid</message>
                   <ignoreModuleDependencies>false</ignoreModuleDependencies>
-                </reactorModuleConvergence>              
+                </reactorModuleConvergence>
                 <dependencyConvergence/>
               </rules>
             </configuration>
@@ -53,5 +53,5 @@
       </plugin>
     </plugins>
   </build>
-  
+
 </project>

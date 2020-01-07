@@ -2,7 +2,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-
   <groupId>org.activiti.build</groupId>
   <artifactId>activiti-parent</artifactId>
   <version>7.1.0-SNAPSHOT</version>
@@ -23,13 +22,6 @@
   </licenses>
   <developers>
     <developer>
-      <id>salaboy</id>
-      <name>Mauricio Salatino</name>
-      <email>mauricio.salatino@alfresco.com</email>
-      <organization>Alfresco</organization>
-      <organizationUrl>http://alfresco.com</organizationUrl>
-    </developer>
-    <developer>
       <id>erdemedeiros</id>
       <name>Elias De Medeiros</name>
       <email>elias.demedeiros@alfresco.com</email>
@@ -37,9 +29,9 @@
       <organizationUrl>http://alfresco.com</organizationUrl>
     </developer>
     <developer>
-      <id>ryandawsonuk</id>
-      <name>Ryan Dawson</name>
-      <email>ryan.dawson@alfresco.com</email>
+      <id>miguelruizdev</id>
+      <name>Miguel Ruiz</name>
+      <email>miguel.ruiz@alfresco.com</email>
       <organization>Alfresco</organization>
       <organizationUrl>http://alfresco.com</organizationUrl>
     </developer>
@@ -101,24 +93,25 @@
     <!-- configuration properties -->
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <enforcer.failOnDuplicatedClasses>true</enforcer.failOnDuplicatedClasses>
+
     <!-- configuration properties for tests-->
-    <generated-assertions-folder>${project.build.directory}/generated-test-sources/assertions</generated-assertions-folder>
+    <generated-assertions-folder>${project.build.directory}/generated-test-sources/assertions
+    </generated-assertions-folder>
     <generated-assertions-package>org.activiti.test</generated-assertions-package>
     <!-- JVM params for test execution -->
     <argLine>-Duser.language=en</argLine>
 
     <!-- dependency -->
-    <activiti-build.version>${project.version}</activiti-build.version>
-    <skipITs>true</skipITs>
+    <spring-boot.version>2.1.10.RELEASE</spring-boot.version>
 
+    <skipITs>true</skipITs>
   </properties>
   <dependencyManagement>
     <dependencies>
       <dependency>
         <groupId>org.activiti.build</groupId>
         <artifactId>activiti-dependency-check</artifactId>
-        <version>${activiti-build.version}</version>
+        <version>${project.version}</version>
         <type>xml</type>
         <classifier>suppression</classifier>
       </dependency>
@@ -152,29 +145,30 @@
                 <checkstyleRules>
                   <module name="Checker">
                     <!-- Checks for whitespace. -->
-
                     <module name="FileTabCharacter">
-                      <property name="severity" value="error" />
-                      <property name="eachLine" value="true" />
+                      <property name="severity" value="error"/>
+                      <property name="eachLine" value="true"/>
                     </module>
                     <module name="TreeWalker">
                       <!-- Import settings: getting rid of redundant import, forbid star notation, defined order of imports. -->
-                      <module name="RedundantImport" />
+                      <module name="RedundantImport"/>
                       <module name="AvoidStarImport">
-                        <property name="excludes" value="org.junit.Assert,org.assertj.core.api.Assertions,org.mockito.Mockito" />
-                        <property name="allowClassImports" value="false" />
-                        <property name="allowStaticMemberImports" value="false" />
+                        <property name="excludes"
+                                  value="org.junit.Assert,org.assertj.core.api.Assertions,org.mockito.Mockito"/>
+                        <property name="allowClassImports" value="false"/>
+                        <property name="allowStaticMemberImports" value="false"/>
                       </module>
                       <module name="CustomImportOrder">
-                        <property name="customImportOrderRules" value="STANDARD_JAVA_PACKAGE###THIRD_PARTY_PACKAGE###STATIC" />
-                        <property name="sortImportsInGroupAlphabetically" value="true" />
-                        <property name="separateLineBetweenGroups" value="true" />
+                        <property name="customImportOrderRules"
+                                  value="STANDARD_JAVA_PACKAGE###THIRD_PARTY_PACKAGE###STATIC"/>
+                        <property name="sortImportsInGroupAlphabetically" value="true"/>
+                        <property name="separateLineBetweenGroups" value="true"/>
                       </module>
-
                       <module name="NeedBraces">
-                        <property name="tokens" value="LITERAL_IF, LITERAL_ELSE, LITERAL_FOR, LITERAL_WHILE, LITERAL_DO" />
+                        <property name="tokens"
+                                  value="LITERAL_IF, LITERAL_ELSE, LITERAL_FOR, LITERAL_WHILE, LITERAL_DO"/>
                       </module>
-                      <module name="EqualsHashCode" />
+                      <module name="EqualsHashCode"/>
                     </module>
                   </module>
                 </checkstyleRules>
@@ -193,6 +187,9 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-deploy-plugin</artifactId>
           <version>${maven-deploy-plugin.version}</version>
+          <configuration>
+            <deployAtEnd>true</deployAtEnd>
+          </configuration>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -390,7 +387,7 @@
           <execution>
             <id>ban-duplicated-classes</id>
             <!-- Using phase=none as we don't want this execution as part of the default build. The phase
-                               is specified in the "full" profile and thus the execution will only be activated when using that profile. -->
+                 is specified in the "full" profile and thus the execution will only be activated when using that profile. -->
             <phase>none</phase>
             <goals>
               <goal>enforce</goal>
@@ -400,26 +397,23 @@
                 <banDuplicateClasses>
                   <ignoreClasses>
                     <!-- Servlet API is bundled in way too many different dependencies, causing nightmares trying to
-                                               properly exclude everything. There were no real issues with this so far as mostly the APIs
-                                               are just duplicates of the exactly same sources. In ideal world, this get eventually fixed,
-                                               but it may very well not be worth the effort. -->
+                         properly exclude everything. There were no real issues with this so far as mostly the APIs
+                         are just duplicates of the exactly same sources. In ideal world, this get eventually fixed,
+                         but it may very well not be worth the effort. -->
                     <ignoreClass>javax.servlet.*</ignoreClass>
                     <!-- Classes in javax.annotation package are just marker annotations used to aid the programmers.
-                                               These annotations do not influence the actual behavior of the code, so it's reasonable to
-                                               ignore them. Following dependencies contain these classes: 'com.google.code.findbugs:jsr305'
-                                               and 'com.google.code.findbugs:annotations'. -->
+                         These annotations do not influence the actual behavior of the code, so it's reasonable to
+                         ignore them. Following dependencies contain these classes: 'com.google.code.findbugs:jsr305'
+                         and 'com.google.code.findbugs:annotations'. -->
                     <ignoreClass>javax.annotation.*</ignoreClass>
                     <!-- Exactly the same case as for above 'javax.annotation.*' classes. Following dependencies contain
-                                               these classes: 'net.jcip:jcip-annotations' and 'com.google.code.findbugs:annotations'. -->
+                         these classes: 'net.jcip:jcip-annotations' and 'com.google.code.findbugs:annotations'. -->
                     <ignoreClass>net.jcip.annotations.*</ignoreClass>
                   </ignoreClasses>
-                  <dependencies>
-
-                  </dependencies>
                   <findAllDuplicates>true</findAllDuplicates>
                 </banDuplicateClasses>
               </rules>
-              <fail>${enforcer.failOnDuplicatedClasses}</fail>
+              <fail>true</fail>
             </configuration>
           </execution>
         </executions>
@@ -629,14 +623,6 @@
     <!-- profile to check dependencies for vulnerabilities -->
     <profile>
       <id>dependency-check</id>
-      <dependencies>
-        <dependency>
-          <groupId>org.activiti.build</groupId>
-          <artifactId>activiti-dependency-check</artifactId>
-          <type>xml</type>
-          <classifier>suppression</classifier>
-        </dependency>
-      </dependencies>
       <build>
         <plugins>
           <plugin>
@@ -646,9 +632,20 @@
             <configuration>
               <failBuildOnCVSS>7</failBuildOnCVSS>
               <suppressionFiles>
-                <suppressionFile>${settings.localRepository}/org/activiti/build/activiti-dependency-check/${activiti-build.version}/activiti-dependency-check-${activiti-build.version}-suppression.xml</suppressionFile>
+                <suppressionFile>
+                  ${settings.localRepository}/org/activiti/build/activiti-dependency-check/${project.version}/activiti-dependency-check-${project.version}-suppression.xml
+                </suppressionFile>
               </suppressionFiles>
             </configuration>
+            <dependencies>
+              <dependency>
+                <groupId>org.activiti.build</groupId>
+                <artifactId>activiti-dependency-check</artifactId>
+                <version>${project.version}</version>
+                <type>xml</type>
+                <classifier>suppression</classifier>
+              </dependency>
+            </dependencies>
             <executions>
               <execution>
                 <goals>
@@ -662,5 +659,3 @@
     </profile>
   </profiles>
 </project>
-
-

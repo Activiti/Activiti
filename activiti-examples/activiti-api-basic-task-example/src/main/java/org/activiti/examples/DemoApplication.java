@@ -37,10 +37,10 @@ public class DemoApplication implements CommandLineRunner {
     public void run(String... args) {
 
         // Using Security Util to simulate a logged in user
-        securityUtil.logInAs("salaboy");
+        securityUtil.logInAs("bob");
 
         // Let's create a Group Task (not assigned, all the members of the group can claim it)
-        //  Here 'salaboy' is the owner of the created task
+        // Here 'bob' is the owner of the created task
         logger.info("> Creating a Group Task for 'activitiTeam'");
         taskRuntime.create(TaskPayloadBuilder.create()
                 .withName("First Team Task")
@@ -61,19 +61,19 @@ public class DemoApplication implements CommandLineRunner {
 
 
         // Now let's switch to a user that belongs to the activitiTeam
-        securityUtil.logInAs("erdemedeiros");
+        securityUtil.logInAs("john");
 
-        // Let's get 'erdemedeiros' tasks
+        // Let's get 'john' tasks
         logger.info("> Getting all the tasks");
         tasks = taskRuntime.tasks(Pageable.of(0, 10));
 
-        // 'erdemedeiros' can see and claim the task
-        logger.info(">  erdemedeiros can see the task: " + tasks.getTotalItems());
+        // 'john' can see and claim the task
+        logger.info(">  john can see the task: " + tasks.getTotalItems());
 
 
         String availableTaskId = tasks.getContent().get(0).getId();
 
-        // Let's claim the task, after the claim, nobody else can see the task and 'erdemedeiros' becomes the assignee
+        // Let's claim the task, after the claim, nobody else can see the task and 'john' becomes the assignee
         logger.info("> Claiming the task");
         taskRuntime.claim(TaskPayloadBuilder.claim().withTaskId(availableTaskId).build());
 

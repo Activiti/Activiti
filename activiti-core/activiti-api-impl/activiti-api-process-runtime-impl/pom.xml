@@ -8,7 +8,7 @@
     <version>7.1.0-SNAPSHOT</version>
   </parent>
   <artifactId>activiti-api-process-runtime-impl</artifactId>
-  <name>Activiti API :: Process Runtime Implementation</name>
+  <name>Activiti :: API :: Process Runtime Implementation</name>
   <dependencies>
     <dependency>
       <groupId>org.activiti</groupId>
@@ -86,15 +86,15 @@
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
     </dependency>
-    
+
     <!-- Optional -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-autoconfigure</artifactId>
       <optional>true</optional>
     </dependency>
-    
-    <!-- Test -->    
+
+    <!-- Test -->
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>

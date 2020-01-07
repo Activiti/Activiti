@@ -9,7 +9,7 @@
     <relativePath>../activiti-api-dependencies</relativePath>
   </parent>
   <artifactId>activiti-api-process-runtime</artifactId>
-  <name>Activiti API :: Process Runtime</name>
+  <name>Activiti :: API :: Process Runtime</name>
   <dependencies>
     <dependency>
       <groupId>org.activiti.api</groupId>

@@ -25,53 +25,53 @@
   </parent>
   <artifactId>activiti-api-dependencies</artifactId>
   <packaging>pom</packaging>
-  <name>Activiti API :: Dependencies BOM (Bill Of Materials)</name>
+  <name>Activiti :: API :: Dependencies BOM (Bill Of Materials)</name>
   <dependencyManagement>
     <dependencies>
       <dependency>
         <groupId>org.activiti.api</groupId>
         <artifactId>activiti-api-model-shared</artifactId>
-        <version>${activiti-api.version}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.activiti.api</groupId>
         <artifactId>activiti-api-runtime-shared</artifactId>
-        <version>${activiti-api.version}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.activiti.api</groupId>
         <artifactId>activiti-api-process-model</artifactId>
-        <version>${activiti-api.version}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.activiti.api</groupId>
         <artifactId>activiti-api-process-runtime</artifactId>
-        <version>${activiti-api.version}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.activiti.api</groupId>
         <artifactId>activiti-api-task-model</artifactId>
-        <version>${activiti-api.version}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.activiti.api</groupId>
         <artifactId>activiti-api-task-runtime</artifactId>
-        <version>${activiti-api.version}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.activiti.api</groupId>
         <artifactId>activiti-api-model-shared-impl</artifactId>
-        <version>${activiti-api.version}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.activiti.api</groupId>
         <artifactId>activiti-api-process-model-impl</artifactId>
-        <version>${activiti-api.version}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.activiti.api</groupId>
         <artifactId>activiti-api-task-model-impl</artifactId>
-        <version>${activiti-api.version}</version>
+        <version>${project.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
