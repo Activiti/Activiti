@@ -2,9 +2,18 @@ github:
   organisations:
   - name: activiti
     repositories:
+    - name: activiti-cloud-runtime-bundle-service
+      branch: develop
+      useSinglePullRequest: true
+    - name: activiti-cloud-query-service
+      branch: develop
+      useSinglePullRequest: true
     - name: activiti-cloud-service-common
       branch: develop
       useSinglePullRequest: true
     - name: activiti-cloud-api
+      branch: develop
+      useSinglePullRequest: true
+    - name: activiti-cloud-modeling-service
       branch: develop
       useSinglePullRequest: true
