@@ -1,9 +1,12 @@
-/* Licensed under the Apache License, Version 2.0 (the "License");
+/*
+ * Copyright 2020 Alfresco, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -190,6 +193,11 @@ public interface ProcessDefinitionQuery extends Query<ProcessDefinitionQuery, Pr
      * Order by the version of the process definitions (needs to be followed by {@link #asc()} or {@link #desc()}).
      */
     ProcessDefinitionQuery orderByProcessDefinitionVersion();
+
+    /**
+     * Order by the app version of the process definitions (needs to be followed by {@link #asc()} or {@link #desc()}).
+     */
+    ProcessDefinitionQuery orderByProcessDefinitionAppVersion();
 
     /**
      * Order by the name of the process definitions (needs to be followed by {@link #asc()} or {@link #desc()}).
