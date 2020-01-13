@@ -70,7 +70,7 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
     ExecutionEntity executionEntity = (ExecutionEntity) execution;
     task.setExecution(executionEntity);
     task.setTaskDefinitionKey(userTask.getId());
-    task.setBusinessKey(executionEntity.getBusinessKey());
+    task.setBusinessKey(executionEntity.getProcessInstanceBusinessKey());
 
     String activeTaskName = null;
     String activeTaskDescription = null;
