@@ -27,7 +27,7 @@
     values (#{id, jdbcType=VARCHAR},
             1,
             #{name, jdbcType=VARCHAR},
-            #{task.businessKey, jdbcType=VARCHAR},
+            #{businessKey, jdbcType=VARCHAR},
             #{parentTaskId, jdbcType=VARCHAR},
             #{description, jdbcType=VARCHAR},
             #{priority, jdbcType=INTEGER},
