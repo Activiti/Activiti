@@ -39,12 +39,12 @@ public class ApplicationUpgradeIT {
     private List<String> deploymentIds;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         deploymentIds = new ArrayList<>();
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown() {
         deploymentIds.forEach(deploymentId -> repositoryService.deleteDeployment(deploymentId, true));
     }
 
@@ -80,10 +80,10 @@ public class ApplicationUpgradeIT {
     public void should_getLatestProcessDefinitionByKey_when_multipleVersions() {
         ProjectManifest projectManifest = new ProjectManifest();
         projectManifest.setVersion("12");
-        deploy(projectManifest);
+        deploySingleTaskProcess(projectManifest);
 
         projectManifest.setVersion("34");
-        deploy(projectManifest);
+        deploySingleTaskProcess(projectManifest);
 
         securityUtil.logInAs("user");
 
@@ -96,7 +96,7 @@ public class ApplicationUpgradeIT {
 
     }
 
-    private Deployment deploy(ProjectManifest projectManifest) {
+    private void deploySingleTaskProcess(ProjectManifest projectManifest) {
         Deployment deployment = repositoryService.createDeployment()
             .setProjectManifest(projectManifest)
             .enableDuplicateFiltering()
@@ -105,7 +105,6 @@ public class ApplicationUpgradeIT {
             .addClasspathResource(SINGLE_TASK_PROCESS_DEFINITION_PATH)
             .deploy();
         deploymentIds.add(deployment.getId());
-        return deployment;
     }
 
 }

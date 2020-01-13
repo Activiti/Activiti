@@ -185,35 +185,30 @@ public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQ
         return this;
     }
 
-    @Deprecated
     public ProcessDefinitionQueryImpl processDefinitionVersion(Integer version) {
         checkVersion(version);
         this.version = version;
         return this;
     }
 
-    @Deprecated
     public ProcessDefinitionQuery processDefinitionVersionGreaterThan(Integer processDefinitionVersion) {
         checkVersion(processDefinitionVersion);
         this.versionGt = processDefinitionVersion;
         return this;
     }
 
-    @Deprecated
     public ProcessDefinitionQuery processDefinitionVersionGreaterThanOrEquals(Integer processDefinitionVersion) {
         checkVersion(processDefinitionVersion);
         this.versionGte = processDefinitionVersion;
         return this;
     }
 
-    @Deprecated
     public ProcessDefinitionQuery processDefinitionVersionLowerThan(Integer processDefinitionVersion) {
         checkVersion(processDefinitionVersion);
         this.versionLt = processDefinitionVersion;
         return this;
     }
 
-    @Deprecated
     public ProcessDefinitionQuery processDefinitionVersionLowerThanOrEquals(Integer processDefinitionVersion) {
         checkVersion(processDefinitionVersion);
         this.versionLte = processDefinitionVersion;
@@ -228,7 +223,6 @@ public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQ
         }
     }
 
-    @Deprecated
     public ProcessDefinitionQueryImpl latestVersion() {
         this.latest = true;
         return this;
@@ -327,7 +321,6 @@ public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQ
         return orderBy(ProcessDefinitionQueryProperty.PROCESS_DEFINITION_ID);
     }
 
-    @Deprecated
     public ProcessDefinitionQuery orderByProcessDefinitionVersion() {
         return orderBy(ProcessDefinitionQueryProperty.PROCESS_DEFINITION_VERSION);
     }

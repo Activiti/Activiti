@@ -93,31 +93,26 @@ public interface ProcessDefinitionQuery extends Query<ProcessDefinitionQuery, Pr
     /**
      * Only select process definition with a certain version. Particulary useful when used in combination with {@link #processDefinitionKey(String)}
      */
-    @Deprecated
     ProcessDefinitionQuery processDefinitionVersion(Integer processDefinitionVersion);
 
     /**
      * Only select process definitions which version are greater than a certain version.
      */
-    @Deprecated
     ProcessDefinitionQuery processDefinitionVersionGreaterThan(Integer processDefinitionVersion);
 
     /**
      * Only select process definitions which version are greater than or equals a certain version.
      */
-    @Deprecated
     ProcessDefinitionQuery processDefinitionVersionGreaterThanOrEquals(Integer processDefinitionVersion);
 
     /**
      * Only select process definitions which version are lower than a certain version.
      */
-    @Deprecated
     ProcessDefinitionQuery processDefinitionVersionLowerThan(Integer processDefinitionVersion);
 
     /**
      * Only select process definitions which version are lower than or equals a certain version.
      */
-    @Deprecated
     ProcessDefinitionQuery processDefinitionVersionLowerThanOrEquals(Integer processDefinitionVersion);
 
     /**
@@ -128,7 +123,6 @@ public interface ProcessDefinitionQuery extends Query<ProcessDefinitionQuery, Pr
      *
      * @throws ActivitiIllegalArgumentException if used in combination with {@link #groupId(string)}, {@link #processDefinitionVersion(int)} or {@link #deploymentId(String)}
      */
-    @Deprecated
     ProcessDefinitionQuery latestVersion();
 
     /**
@@ -198,7 +192,6 @@ public interface ProcessDefinitionQuery extends Query<ProcessDefinitionQuery, Pr
     /**
      * Order by the version of the process definitions (needs to be followed by {@link #asc()} or {@link #desc()}).
      */
-    @Deprecated
     ProcessDefinitionQuery orderByProcessDefinitionVersion();
 
     /**
