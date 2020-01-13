@@ -94,6 +94,8 @@ public class TaskEntityImpl extends VariableScopeImpl implements TaskEntity, Ser
 
   protected Integer appVersion;
 
+  protected String businessKey;
+
   public TaskEntityImpl() {
     
   }
@@ -104,6 +106,9 @@ public class TaskEntityImpl extends VariableScopeImpl implements TaskEntity, Ser
     persistentState.put("owner", this.owner);
     persistentState.put("name", this.name);
     persistentState.put("priority", this.priority);
+    if (businessKey != null) {
+      persistentState.put("businessKey", this.businessKey);
+    }
     if (executionId != null) {
       persistentState.put("executionId", this.executionId);
     }
@@ -320,6 +325,10 @@ public class TaskEntityImpl extends VariableScopeImpl implements TaskEntity, Ser
     this.parentTaskId = parentTaskId;
   }
 
+  public void setBusinessKey(String businessKey) {
+    this.businessKey = businessKey;
+  }
+
   public String getFormKey() {
     return formKey;
   }
@@ -528,6 +537,12 @@ public class TaskEntityImpl extends VariableScopeImpl implements TaskEntity, Ser
   
   public String getParentTaskId() {
     return parentTaskId;
+  }
+
+
+  @Override
+  public String getBusinessKey() {
+    return businessKey;
   }
 
   public Map<String, VariableInstanceEntity> getVariableInstanceEntities() {

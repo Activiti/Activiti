@@ -46,6 +46,7 @@ public class HistoricTaskInstanceEntityImpl extends HistoricScopeInstanceEntityI
   protected String category;
   protected String tenantId = ProcessEngineConfiguration.NO_TENANT_ID;
   protected List<HistoricVariableInstanceEntity> queryVariables;
+  protected String businessKey;
 
   public HistoricTaskInstanceEntityImpl() {
     
@@ -65,6 +66,7 @@ public class HistoricTaskInstanceEntityImpl extends HistoricScopeInstanceEntityI
     this.assignee = task.getAssignee();
     this.startTime = Context.getProcessEngineConfiguration().getClock().getCurrentTime();
     this.taskDefinitionKey = task.getTaskDefinitionKey();
+    this.businessKey = task.getBusinessKey();
 
     this.setPriority(task.getPriority());
     this.setDueDate(task.getDueDate());
@@ -232,6 +234,15 @@ public class HistoricTaskInstanceEntityImpl extends HistoricScopeInstanceEntityI
 
   public Date getTime() {
     return getStartTime();
+  }
+
+  @Override
+  public String getBusinessKey() {
+    return businessKey;
+  }
+
+  public void setBusinessKey(String businessKey) {
+    this.businessKey = businessKey;
   }
 
   public Long getWorkTimeInMillis() {
