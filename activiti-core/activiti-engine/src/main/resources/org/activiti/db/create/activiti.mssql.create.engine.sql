@@ -195,6 +195,7 @@ create table ACT_RU_TASK (
     PROC_INST_ID_ nvarchar(64),
     PROC_DEF_ID_ nvarchar(64),
     NAME_ nvarchar(255),
+    BUSINESS_KEY_ nvarchar(255),
     PARENT_TASK_ID_ nvarchar(64),
     DESCRIPTION_ nvarchar(4000),
     TASK_DEF_KEY_ nvarchar(255),

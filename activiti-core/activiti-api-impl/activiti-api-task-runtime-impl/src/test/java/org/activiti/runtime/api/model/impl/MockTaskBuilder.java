@@ -137,6 +137,11 @@ public class MockTaskBuilder {
         return this;
     }
 
+    public MockTaskBuilder withBusinessKey(String businessKey) {
+        when(task.getBusinessKey()).thenReturn(businessKey);
+        return this;
+    }
+
     public Task build() {
         return task;
     }

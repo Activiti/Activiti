@@ -71,4 +71,6 @@ public interface TaskEntity extends VariableScope, Task, DelegateTask, Entity, H
   boolean isCanceled();
   
   void setCanceled(boolean isCanceled);
+
+  void setBusinessKey(String businessKey);
 }

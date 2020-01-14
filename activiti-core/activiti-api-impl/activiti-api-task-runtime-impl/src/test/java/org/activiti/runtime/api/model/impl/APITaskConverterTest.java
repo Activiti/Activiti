@@ -61,6 +61,7 @@ public class APITaskConverterTest {
                         .withFormKey("testFormKey")
                         .withTaskDefinitionKey("taskDefinitionKey")
                         .withAppVersion(1)
+                        .withBusinessKey("businessKey")
                         .build()
         );
 
@@ -80,7 +81,8 @@ public class APITaskConverterTest {
                             Task::getFormKey,
                             Task::getStatus,
                             Task::getTaskDefinitionKey,
-                            Task::getAppVersion)
+                            Task::getAppVersion,
+                            Task::getBusinessKey)
                 .containsExactly("testTaskId",
                                  "testUser",
                                  "testTaskName",
@@ -95,7 +97,8 @@ public class APITaskConverterTest {
                                  "testFormKey",
                                  ASSIGNED,
                                  "taskDefinitionKey",
-                                 "1");
+                                 "1",
+                                 "businessKey");
     }
 
     @Test
