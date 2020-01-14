@@ -56,6 +56,7 @@ pipeline {
             sh "jx step git credentials"
 
             sh "make updatebot/push-version"
+          }
         }
       }
       stage('Build Release from Tag') {
