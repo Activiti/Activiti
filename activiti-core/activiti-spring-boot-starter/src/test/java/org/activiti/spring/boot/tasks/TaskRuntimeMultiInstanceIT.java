@@ -23,7 +23,6 @@ import static org.awaitility.Awaitility.await;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import org.activiti.api.model.shared.event.RuntimeEvent;
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.model.events.BPMNActivityCancelledEvent;
@@ -47,6 +46,7 @@ import org.activiti.spring.boot.process.listener.DummyBPMNTimerCancelledListener
 import org.activiti.spring.boot.process.listener.DummyBPMNTimerExecutedListener;
 import org.activiti.spring.boot.process.listener.DummyBPMNTimerFiredListener;
 import org.activiti.spring.boot.process.listener.DummyBPMNTimerScheduledListener;
+import org.activiti.spring.boot.security.util.SecurityUtil;
 import org.activiti.spring.boot.test.util.ProcessCleanUpUtil;
 import org.activiti.test.LocalEventSource;
 import org.junit.After;
@@ -83,6 +83,9 @@ public class TaskRuntimeMultiInstanceIT {
 
     @Autowired
     private ProcessEngineConfiguration processEngineConfiguration;
+
+    @Autowired
+    private SecurityUtil securityUtil;
 
     @Before
     public void setUp() {
@@ -879,8 +882,7 @@ public class TaskRuntimeMultiInstanceIT {
         ProcessInstance processInstance = processBaseRuntime.startProcessWithProcessDefinitionKey("miParallelUserTaskBoundaryEvent");
 
         //then
-        List<Task> tasks = taskBaseRuntime.getTasks(processInstance);
-        assertThat(tasks)
+        assertThat(taskBaseRuntime.getTasks(processInstance))
                 .extracting(Task::getName)
                 .containsExactlyInAnyOrder("My Task 0",
                         "My Task 1");
@@ -915,54 +917,58 @@ public class TaskRuntimeMultiInstanceIT {
 
         await().untilAsserted(() -> {
             assertThat(localEventSource.getEvents(BPMNTimerEvent.class))
-                    .extracting(BPMNTimerEvent::getEventType,
-                                BPMNTimerEvent::getProcessDefinitionId,
-                            event -> event.getEntity().getProcessDefinitionId(),
-                            event -> event.getEntity().getProcessInstanceId(),
-                            event -> event.getEntity().getElementId()
+                .extracting(BPMNTimerEvent::getEventType,
+                    BPMNTimerEvent::getProcessDefinitionId,
+                    event -> event.getEntity().getProcessDefinitionId(),
+                    event -> event.getEntity().getProcessInstanceId(),
+                    event -> event.getEntity().getElementId()
+                )
+                .containsExactly(
+                    tuple(BPMNTimerEvent.TimerEvents.TIMER_FIRED,
+                        processInstance.getProcessDefinitionId(),
+                        processInstance.getProcessDefinitionId(),
+                        processInstance.getId(),
+                        "timer"
+                    ),
+                    tuple(BPMNTimerEvent.TimerEvents.TIMER_EXECUTED,
+                        processInstance.getProcessDefinitionId(),
+                        processInstance.getProcessDefinitionId(),
+                        processInstance.getId(),
+                        "timer"
                     )
-                    .containsExactly(
-                            tuple(BPMNTimerEvent.TimerEvents.TIMER_FIRED,
-                                          processInstance.getProcessDefinitionId(),
-                                          processInstance.getProcessDefinitionId(),
-                                          processInstance.getId(),
-                                          "timer"
-                            ),
-                            tuple(BPMNTimerEvent.TimerEvents.TIMER_EXECUTED,
-                                  processInstance.getProcessDefinitionId(),
-                                  processInstance.getProcessDefinitionId(),
-                                  processInstance.getId(),
-                                  "timer"
-                            )
 
-                    );
-        });
-
-        assertThat(localEventSource.getTaskEvents())
-                .extracting(event -> ((Task) event.getEntity()).getName(),
-                            RuntimeEvent::getEventType)
-                .containsExactlyInAnyOrder(
-                        tuple("My Task 0",
-                              TaskRuntimeEvent.TaskEvents.TASK_CANCELLED),
-                        tuple("My Task 1",
-                              TaskRuntimeEvent.TaskEvents.TASK_CANCELLED),
-                        tuple("Escalation Task",
-                              TaskRuntimeEvent.TaskEvents.TASK_CREATED),
-                        tuple("Escalation Task",
-                              TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED));
-
-        assertActivityEvents("miTasks",
-                        BPMNActivityEvent.ActivityEvents.ACTIVITY_CANCELLED,
-                        BPMNActivityEvent.ActivityEvents.ACTIVITY_CANCELLED
                 );
 
-        tasks = taskBaseRuntime.getTasks(processInstance);
-        assertThat(tasks)
+            assertThat(localEventSource.getTaskEvents())
+                .extracting(event -> ((Task) event.getEntity()).getName(),
+                    RuntimeEvent::getEventType)
+                .containsExactlyInAnyOrder(
+                    tuple("My Task 0",
+                        TaskRuntimeEvent.TaskEvents.TASK_CANCELLED),
+                    tuple("My Task 1",
+                        TaskRuntimeEvent.TaskEvents.TASK_CANCELLED),
+                    tuple("Escalation Task",
+                        TaskRuntimeEvent.TaskEvents.TASK_CREATED),
+                    tuple("Escalation Task",
+                        TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED));
+
+            assertActivityEvents("miTasks",
+                BPMNActivityEvent.ActivityEvents.ACTIVITY_CANCELLED,
+                BPMNActivityEvent.ActivityEvents.ACTIVITY_CANCELLED
+            );
+
+            //need to login again before getting the list of tasks
+            //because Awaitility will run this inside another thread
+            securityUtil.logInAs("user");
+
+            List<Task> availableTasks = taskBaseRuntime.getTasks(processInstance);
+            assertThat(availableTasks)
                 .extracting(Task::getName)
                 .containsExactly("Escalation Task");
+            localEventSource.clearEvents();
+            taskBaseRuntime.completeTask(availableTasks.get(0));
+        });
 
-        localEventSource.clearEvents();
-        taskBaseRuntime.completeTask(tasks.get(0));
 
         assertThat(localEventSource.getTaskEvents())
                 .extracting(event -> ((Task) event.getEntity()).getName(),
