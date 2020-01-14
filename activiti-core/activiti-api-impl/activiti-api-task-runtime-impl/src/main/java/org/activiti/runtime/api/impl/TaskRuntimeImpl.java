@@ -88,7 +88,22 @@ public class TaskRuntimeImpl implements TaskRuntime {
 
     @Override
     public Task task(String taskId) {
-        return taskConverter.from(taskRuntimeHelper.getInternalTaskWithChecks(taskId));
+        Task task = taskConverter.from(taskRuntimeHelper.getInternalTaskWithChecks(taskId));
+        return enrichWithCandidates(task);
+    }
+
+    private Task enrichWithCandidates(Task task) {
+        if(task instanceof TaskImpl){
+            TaskImpl taskImpl = (TaskImpl) task;
+            String taskId = task.getId();
+            List<String> userCandidates = this.userCandidates(taskId);
+            taskImpl.setCandidateUsers(userCandidates);
+            List<String> groupCandidates = this.groupCandidates(taskId);
+            taskImpl.setCandidateGroups(groupCandidates);
+            return taskImpl;
+        } else {
+            return task;
+        }
     }
 
     @Override
