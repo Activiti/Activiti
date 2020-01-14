@@ -22,11 +22,12 @@
   <!-- TASK INSERT -->
 
   <insert id="insertTask" parameterType="org.activiti.engine.impl.persistence.entity.TaskEntityImpl">
-    insert into ${prefix}ACT_RU_TASK (ID_, REV_, NAME_, PARENT_TASK_ID_, DESCRIPTION_, PRIORITY_, CREATE_TIME_, OWNER_,
+    insert into ${prefix}ACT_RU_TASK (ID_, REV_, NAME_, BUSINESS_KEY_, PARENT_TASK_ID_, DESCRIPTION_, PRIORITY_, CREATE_TIME_, OWNER_,
                       ASSIGNEE_, DELEGATION_, EXECUTION_ID_, PROC_INST_ID_, PROC_DEF_ID_, TASK_DEF_KEY_, DUE_DATE_, CATEGORY_, SUSPENSION_STATE_, TENANT_ID_, FORM_KEY_, CLAIM_TIME_, APP_VERSION_)
     values (#{id, jdbcType=VARCHAR},
             1,
             #{name, jdbcType=VARCHAR},
+            #{businessKey, jdbcType=VARCHAR},
             #{parentTaskId, jdbcType=VARCHAR},
             #{description, jdbcType=VARCHAR},
             #{priority, jdbcType=INTEGER},
@@ -49,13 +50,14 @@
   </insert>
 
   <insert id="bulkInsertTask" parameterType="java.util.List">
-    INSERT INTO ${prefix}ACT_RU_TASK (ID_, REV_, NAME_, PARENT_TASK_ID_, DESCRIPTION_, PRIORITY_, CREATE_TIME_, OWNER_,
+    INSERT INTO ${prefix}ACT_RU_TASK (ID_, REV_, NAME_, BUSINESS_KEY_, PARENT_TASK_ID_, DESCRIPTION_, PRIORITY_, CREATE_TIME_, OWNER_,
                       ASSIGNEE_, DELEGATION_, EXECUTION_ID_, PROC_INST_ID_, PROC_DEF_ID_, TASK_DEF_KEY_, DUE_DATE_, CATEGORY_, SUSPENSION_STATE_, TENANT_ID_, FORM_KEY_, CLAIM_TIME_, APP_VERSION_)
     VALUES
       <foreach collection="list" item="task" index="index" separator=",">
         (#{task.id, jdbcType=VARCHAR},
          1,
          #{task.name, jdbcType=VARCHAR},
+         #{task.businessKey, jdbcType=VARCHAR},
          #{task.parentTaskId, jdbcType=VARCHAR},
          #{task.description, jdbcType=VARCHAR},
          #{task.priority, jdbcType=INTEGER},
@@ -80,12 +82,13 @@
   <insert id="bulkInsertTask" databaseId="oracle" parameterType="java.util.List">
     INSERT ALL
       <foreach collection="list" item="task" index="index">
-        INTO ${prefix}ACT_RU_TASK (ID_, REV_, NAME_, PARENT_TASK_ID_, DESCRIPTION_, PRIORITY_, CREATE_TIME_, OWNER_,
+        INTO ${prefix}ACT_RU_TASK (ID_, REV_, NAME_, BUSINESS_KEY_, PARENT_TASK_ID_, DESCRIPTION_, PRIORITY_, CREATE_TIME_, OWNER_,
              ASSIGNEE_, DELEGATION_, EXECUTION_ID_, PROC_INST_ID_, PROC_DEF_ID_, TASK_DEF_KEY_, DUE_DATE_, CATEGORY_,
              SUSPENSION_STATE_, TENANT_ID_, FORM_KEY_, CLAIM_TIME_, APP_VERSION_) VALUES
         (#{task.id, jdbcType=VARCHAR},
          1,
          #{task.name, jdbcType=VARCHAR},
+         #{task.businessKey, jdbcType=VARCHAR},
          #{task.parentTaskId, jdbcType=VARCHAR},
          #{task.description, jdbcType=VARCHAR},
          #{task.priority, jdbcType=INTEGER},
@@ -115,6 +118,7 @@
     <set>
       REV_ = #{revisionNext, jdbcType=INTEGER},
       NAME_ = #{name, jdbcType=VARCHAR},
+      BUSINESS_KEY_ = #{businessKey, jdbcType=VARCHAR},
       PARENT_TASK_ID_ = #{parentTaskId, jdbcType=VARCHAR},
       PRIORITY_ = #{priority, jdbcType=INTEGER},
       CREATE_TIME_ = #{createTime, jdbcType=TIMESTAMP},
@@ -185,6 +189,7 @@
     <id property="id" column="ID_" jdbcType="VARCHAR"/>
     <result property="revision" column="REV_" jdbcType="INTEGER"/>
     <result property="name" column="NAME_" jdbcType="VARCHAR"/>
+    <result property="businessKey" column="BUSINESS_KEY_" jdbcType="VARCHAR"/>
     <result property="parentTaskId" column="PARENT_TASK_ID_" jdbcType="VARCHAR"/>
     <result property="description" column="DESCRIPTION_" jdbcType="VARCHAR"/>
     <result property="priority" column="PRIORITY_" jdbcType="INTEGER"/>
@@ -209,6 +214,7 @@
     <id property="id" column="ID_" jdbcType="VARCHAR"/>
     <result property="revision" column="REV_" jdbcType="INTEGER"/>
     <result property="name" column="NAME_" jdbcType="VARCHAR"/>
+    <result property="businessKey" column="BUSINESS_KEY_" jdbcType="VARCHAR"/>
     <result property="parentTaskId" column="PARENT_TASK_ID_" jdbcType="VARCHAR"/>
     <result property="description" column="DESCRIPTION_" jdbcType="VARCHAR"/>
     <result property="priority" column="PRIORITY_" jdbcType="INTEGER"/>

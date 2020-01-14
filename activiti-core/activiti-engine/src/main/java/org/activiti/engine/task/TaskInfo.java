@@ -113,4 +113,6 @@ public interface TaskInfo {
    * The claim time of this task
    */
   Date getClaimTime();
+
+  String getBusinessKey();
 }
