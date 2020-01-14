@@ -424,7 +424,7 @@
         <version>${maven-surefire-plugin.version}</version>
         <configuration>
           <!-- use syntax for Jacoco late property evaluation -->
-          <argLine>@{argLine} -Xmx1024m -XX:MaxPermSize=256m</argLine>
+          <argLine>@{argLine} -Xmx1024m -XX:MaxMetaspaceSize=256m</argLine>
           <redirectTestOutputToFile>true</redirectTestOutputToFile>
           <failIfNoTests>false</failIfNoTests>
           <trimStackTrace>false</trimStackTrace>
