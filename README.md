@@ -2,7 +2,7 @@ Activiti
 ========
 
 [![Join Us in Gitter](https://badges.gitter.im/Activiti/Activiti7.svg)](https://gitter.im/Activiti/Activiti7?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-[![Build Status Travis](https://travis-ci.org/Activiti/Activiti.svg?branch=master)](https://travis-ci.org/Activiti/Activiti)
+[![Build Status Travis](https://travis-ci.com/Activiti/Activiti.svg?branch=master)](https://travis-ci.com/Activiti/Activiti)
 [![Coverage Status](http://img.shields.io/codecov/c/github/Activiti/Activiti/master.svg?maxAge=86400)](https://codecov.io/gh/Activiti/Activiti)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/f859f1bf542b43cab64e1e85706e5243)](https://www.codacy.com/app/Activiti/Activiti?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Activiti/Activiti&amp;utm_campaign=Badge_Grade)
 [![ASL 2.0](https://img.shields.io/hexpm/l/plug.svg)](https://github.com/Activiti/Activiti/blob/master/LICENSE.txt)

@@ -3,9 +3,7 @@ pull_request_rules:
     conditions:
       - author=jx-activiti-cloud
       - status-success=continuous-integration/jenkins/pr-head
-      #- status-success=continuous-integration/travis-ci/pr
-      - status-success=continuous-integration/travis-ci/push
-      #- status-success=license/cla
+      - status-success=Travis CI - Pull Request
       - label!=do-not-merge
     actions:
       delete_head_branch: {}
@@ -18,8 +16,7 @@ pull_request_rules:
       - "#review-requested=0"
       - "#changes-requested-reviews-by=0"
       - status-success=continuous-integration/jenkins/pr-head
-      #- status-success=continuous-integration/travis-ci/pr
-      - status-success=continuous-integration/travis-ci/push
+      - status-success=Travis CI - Pull Request
       - status-success=license/cla
       - label!=do-not-merge
     actions:
