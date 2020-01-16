@@ -4,4 +4,4 @@ alter table ACT_RE_PROCDEF add column APP_VERSION_ integer;
 alter table ACT_RU_TASK add column APP_VERSION_ integer;
 alter table ACT_RU_EXECUTION add column APP_VERSION_ integer;
 
-alter table ACT_RU_TASK add column BUSINESS_KEY_ varchar(255);
+alter table ACT_RU_TASK add column BUSINESS_KEY_ NVARCHAR2(255);
