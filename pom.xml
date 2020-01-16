@@ -56,7 +56,7 @@
   </issueManagement>
   <ciManagement>
     <system>Travis</system>
-    <url>https://travis-ci.org/Activiti/${project.artifactId}</url>
+    <url>https://travis-ci.com/Activiti/${project.artifactId}</url>
   </ciManagement>
   <properties>
     <!-- plugins -->
@@ -176,7 +176,6 @@
                 <consoleOutput>false</consoleOutput>
                 <logViolationsToConsole>false</logViolationsToConsole>
                 <failsOnError>false</failsOnError>
-                <linkXRef>false</linkXRef>
               </configuration>
             </execution>
           </executions>

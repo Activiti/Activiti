@@ -1,12 +1,15 @@
 language: java
-sudo: required
-services:
-  - docker
+
 jdk:
   - openjdk11
+
 cache:
   directories:
-    - $HOME/.m2
+    - ${HOME}/.m2/repository
+
+services:
+  - docker
+
 notifications:
   webhooks:
     urls:
@@ -15,21 +18,17 @@ notifications:
     on_failure: always  # options: [always|never|change] default: always
     on_start: never     # options: [always|never|change] default: always
 
+branches:
+  only:
+    - master
+    - develop
+
 before_script:
   - echo MAVEN_OPTS=-Xmx1536m > ~/.mavenrc
 
-install: mvn jar:jar install:install
-
-jobs:
-    include:
-#        - stage: Check style
-#          name:  Check style
-#          script:
-#             mvn checkstyle:check -DskipCheckstyle=false
-        - stage: Build and test
-          name: Build and test
-          script:
-             mvn verify -B -DskipITs=false
+# Enable integration tests
+script:
+  - mvn verify -B -DskipITs=false
 
 # Send coverage data
 after_success:
@@ -38,7 +37,3 @@ after_success:
 after_failure:
   - cat **/target/surefire-reports/*.xml | grep -B 1 -A 10 "<error"
   - cat **/target/failsafe-reports/*.xml | grep -B 1 -A 10 "<error"
-
-cache:
-  directories:
-  - $HOME/.m2
