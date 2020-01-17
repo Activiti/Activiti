@@ -17,7 +17,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-public abstract class FlowElement extends BaseElement implements HasExecutionListeners, AcceptUpdates {
+public abstract class FlowElement extends BaseElement implements HasExecutionListeners {
 
   protected String name;
   protected String documentation;

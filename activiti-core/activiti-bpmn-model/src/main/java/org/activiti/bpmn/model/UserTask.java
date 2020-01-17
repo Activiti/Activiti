@@ -230,9 +230,4 @@ public class UserTask extends Task {
     }
   }
 
-    @Override
-    public void accept(ReferenceOverrider referenceOverrider) {
-        referenceOverrider.override(this);
-    }
-
 }

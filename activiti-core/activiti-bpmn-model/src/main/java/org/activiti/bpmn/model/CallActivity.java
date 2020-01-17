@@ -98,10 +98,4 @@ public class CallActivity extends Activity {
       }
     }
   }
-
-    @Override
-    public void accept(ReferenceOverrider referenceOverrider) {
-        referenceOverrider.override(this);
-    }
-
 }
