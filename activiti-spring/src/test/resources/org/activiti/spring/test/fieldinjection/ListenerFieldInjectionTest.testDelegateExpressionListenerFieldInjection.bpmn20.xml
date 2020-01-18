@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<definitions id="definitions"
+	xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:activiti="http://activiti.org/bpmn"
+	targetNamespace="Examples">
+
+	<process id="listenerFieldInjection">
+
+		<extensionElements>
+			<activiti:executionListener
+				delegateExpression="${testExecutionListener}" event="start">
+				<activiti:field name="input" expression="${startValue}" />
+				<activiti:field name="resultVar" stringValue="processStartValue" />
+			</activiti:executionListener>
+		</extensionElements>
+
+
+		<startEvent id="start" />
+		<sequenceFlow id="flow1" sourceRef="start" targetRef="userTask1" />
+		<userTask id="userTask1" name="first task" />
+
+		<sequenceFlow id="flow2" sourceRef="userTask1" targetRef="userTask2">
+			<extensionElements>
+				<activiti:executionListener
+					delegateExpression="${testExecutionListener}" event="start">
+					<activiti:field name="input" expression="${processStartValue}" />
+					<activiti:field name="resultVar" stringValue="sequenceFlowValue" />
+				</activiti:executionListener>
+			</extensionElements>
+		</sequenceFlow>
+		<userTask id="userTask2" name="second task" />
+
+		<sequenceFlow id="flow3" sourceRef="userTask2" targetRef="userTask3" />
+		<userTask id="userTask3" name="third task">
+			<extensionElements>
+				<activiti:taskListener delegateExpression="${testTaskListener}" event="create">
+					<activiti:field name="input" expression="${sequenceFlowValue}" />
+					<activiti:field name="resultVar" stringValue="taskCreateValue" />
+				</activiti:taskListener>
+
+				<activiti:taskListener delegateExpression="${testTaskListener}" event="complete">
+					<activiti:field name="input" expression="${taskCreateValue}" />
+					<activiti:field name="resultVar" stringValue="taskCompleteValue" />
+				</activiti:taskListener>
+			</extensionElements>
+		</userTask>
+
+		<sequenceFlow id="flow4" sourceRef="userTask3" targetRef="userTask4" />
+		<userTask id="userTask4" name="fourth task" />
+		<sequenceFlow id="flow5" sourceRef="userTask4" targetRef="end" />
+
+		<endEvent id="end" />
+
+	</process>
+
+</definitions>

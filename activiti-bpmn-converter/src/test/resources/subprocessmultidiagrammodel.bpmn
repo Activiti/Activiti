@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
+  <process id="process" name="process1" isExecutable="true">
+    <dataObject id="dObj1" name="StringTest" itemSubjectRef="xsd:string"/>
+    <dataObject id="dObj2" name="BooleanTest" itemSubjectRef="xsd:boolean"/>
+    <dataObject id="dObj3" name="DateTest" itemSubjectRef="xsd:datetime"/>
+    <dataObject id="dObj4" name="DoubleTest" itemSubjectRef="xsd:double"/>
+    <dataObject id="dObj5" name="IntegerTest" itemSubjectRef="xsd:int"/>
+    <dataObject id="dObj6" name="LongTest" itemSubjectRef="xsd:long"/>
+    <sequenceFlow id="sid-04DAFAA0-34C1-48DF-BAD5-1038344BBFA9" sourceRef="start1" targetRef="userTask1"></sequenceFlow>
+    <startEvent id="start1"></startEvent>
+    <endEvent id="sid-194696BA-1A7D-47D7-95A9-A77390D25048"></endEvent>
+    <userTask id="userTask1" name="User task 1" activiti:async="true" activiti:exclusive="false" activiti:candidateUsers="kermit" activiti:candidateGroups="management"></userTask>
+    <subProcess id="subprocess1" name="Sub Process" isExpanded="false">
+      <dataObject id="dObj7" name="StringSubTest" itemSubjectRef="xsd:string"/>
+      <dataObject id="dObj8" name="BooleanSubTest" itemSubjectRef="xsd:boolean"/>
+      <dataObject id="dObj9" name="DateSubTest" itemSubjectRef="xsd:datetime"/>
+      <dataObject id="dObj10" name="DoubleSubTest" itemSubjectRef="xsd:double"/>
+      <dataObject id="dObj11" name="IntegerSubTest" itemSubjectRef="xsd:int"/>
+      <dataObject id="dObj12" name="LongSubTest" itemSubjectRef="xsd:long"/>
+      <userTask id="subUserTask1" name="User task 2"></userTask>
+      <sequenceFlow id="sid-C7145ECA-31A2-4A91-B20A-023CF0764155" sourceRef="subUserTask1" targetRef="sid-565296D1-FCF9-4B31-9048-528B10A27C46"></sequenceFlow>
+      <startEvent id="subStartEvent"></startEvent>
+      <sequenceFlow id="subFlowId1" sourceRef="subStartEvent" targetRef="subUserTask1"></sequenceFlow>
+      <endEvent id="sid-565296D1-FCF9-4B31-9048-528B10A27C46"></endEvent>
+    </subProcess>
+    <sequenceFlow id="flow1" sourceRef="userTask1" targetRef="subprocess1"></sequenceFlow>
+    <sequenceFlow id="flow2" sourceRef="subprocess1" targetRef="sid-194696BA-1A7D-47D7-95A9-A77390D25048"></sequenceFlow>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_process">
+    <bpmndi:BPMNPlane bpmnElement="process" id="BPMNPlane_process">
+      <bpmndi:BPMNShape bpmnElement="start1" id="BPMNShape_start1">
+        <omgdc:Bounds height="35.0" width="35.0" x="106.0" y="191.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sid-194696BA-1A7D-47D7-95A9-A77390D25048" id="BPMNShape_sid-194696BA-1A7D-47D7-95A9-A77390D25048">
+        <omgdc:Bounds height="35.0" width="35.0" x="780.0" y="191.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="userTask1" id="BPMNShape_userTask1">
+        <omgdc:Bounds height="80.0" width="100.0" x="211.0" y="169.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="subprocess1" id="BPMNShape_subprocess1">
+        <omgdc:Bounds height="205.0" width="335.0" x="380.0" y="105.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="sid-04DAFAA0-34C1-48DF-BAD5-1038344BBFA9" id="BPMNEdge_sid-04DAFAA0-34C1-48DF-BAD5-1038344BBFA9">
+        <omgdi:waypoint x="141.0" y="208.0"></omgdi:waypoint>
+        <omgdi:waypoint x="211.0" y="209.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow1" id="BPMNEdge_flow1">
+        <omgdi:waypoint x="311.0" y="209.0"></omgdi:waypoint>
+        <omgdi:waypoint x="380.0" y="207.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow2" id="BPMNEdge_flow2">
+        <omgdi:waypoint x="715.0" y="207.0"></omgdi:waypoint>
+        <omgdi:waypoint x="780.0" y="208.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_subprocess1">
+    <bpmndi:BPMNPlane bpmnElement="subprocess1" id="BPMNPlane_subprocess1">
+      <bpmndi:BPMNShape bpmnElement="subUserTask1" id="BPMNShape_subUserTask1">
+        <omgdc:Bounds height="80.0" width="100.0" x="490.0" y="170.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="subStartEvent" id="BPMNShape_subStartEvent">
+        <omgdc:Bounds height="35.0" width="35.0" x="400.0" y="195.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sid-565296D1-FCF9-4B31-9048-528B10A27C46" id="BPMNShape_sid-565296D1-FCF9-4B31-9048-528B10A27C46">
+        <omgdc:Bounds height="35.0" width="35.0" x="650.0" y="192.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="sid-C7145ECA-31A2-4A91-B20A-023CF0764155" id="BPMNEdge_sid-C7145ECA-31A2-4A91-B20A-023CF0764155">
+        <omgdi:waypoint x="590.0" y="210.0"></omgdi:waypoint>
+        <omgdi:waypoint x="650.0" y="209.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="subFlowId1" id="BPMNEdge_subFlowId1">
+        <omgdi:waypoint x="435.0" y="212.0"></omgdi:waypoint>
+        <omgdi:waypoint x="490.0" y="210.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

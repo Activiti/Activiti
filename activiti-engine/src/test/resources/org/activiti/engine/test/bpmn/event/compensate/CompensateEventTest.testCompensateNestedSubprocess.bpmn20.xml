@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions"
+	xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:activiti="http://activiti.org/bpmn"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" targetNamespace="Examples">
+
+	<process id="compensateProcess">
+
+		<startEvent id="start" />
+		<sequenceFlow sourceRef="start" targetRef="subProcess" />
+
+		<subProcess id="subProcess">
+
+			<startEvent id="subProcessStart" />
+			<sequenceFlow sourceRef="subProcessStart" targetRef="nestedSubProcess" />
+
+			
+			<subProcess id="nestedSubProcess">
+
+				<startEvent id="nestedSubProcessStart" />
+				<sequenceFlow sourceRef="nestedSubProcessStart"
+					targetRef="bookHotel" />
+
+				<serviceTask id="bookHotel" activiti:expression="${true}" />
+				<sequenceFlow sourceRef="bookHotel" targetRef="nestedSubProcessEnd" />
+
+				<boundaryEvent id="compensateBookHotelEvt" name="Boundary event"
+					attachedToRef="bookHotel">
+					<compensateEventDefinition />
+				</boundaryEvent>
+
+				<endEvent id="nestedSubProcessEnd" />
+
+				<userTask id="undoBookHotel" name="Manually undo book hotel"
+					isForCompensation="true" />
+
+				<association associationDirection="One"
+					sourceRef="compensateBookHotelEvt" targetRef="undoBookHotel" />
+
+			</subProcess>
+			
+
+			<sequenceFlow sourceRef="nestedSubProcess" targetRef="afterNestedSubProcess" />
+			<userTask id="afterNestedSubProcess" />
+
+			<sequenceFlow sourceRef="afterNestedSubProcess"
+				targetRef="throwCompensate" />
+
+			<intermediateThrowEvent id="throwCompensate">
+				<compensateEventDefinition />
+			</intermediateThrowEvent>
+			
+			<sequenceFlow sourceRef="throwCompensate"
+        targetRef="subProcessEnd" />
+
+			<endEvent id="subProcessEnd" />
+
+		</subProcess>
+
+		<sequenceFlow sourceRef="subProcess" targetRef="end" />
+		<endEvent id="end" />
+
+	</process>
+
+</definitions>

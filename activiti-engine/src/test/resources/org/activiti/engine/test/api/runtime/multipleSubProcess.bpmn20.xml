@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions" 
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="org.activiti.enginge.test.api.runtime">
+  
+  <process id="multipleSubProcessTest">
+  
+    <startEvent id="theStart" />
+    
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="callSubProcess" />
+    <sequenceFlow id="flow2" sourceRef="theStart" targetRef="embeddedSubprocess" />
+    
+    <callActivity id="callSubProcess" calledElement="simpleSubProcess" />
+    
+    <subProcess id="embeddedSubprocess" name="embeddedSubProcess">
+      <startEvent id="theSubStart" />
+      <sequenceFlow id="subflow1" sourceRef="theSubStart" targetRef="task" />
+      <userTask id="task" name="Task in subprocess" />
+      <sequenceFlow id="subflow2" sourceRef="task" targetRef="theSubEnd" />  
+      <endEvent id="theSubEnd" />
+    </subProcess>
+  
+    <sequenceFlow id="flow3" sourceRef="callSubProcess" targetRef="theEnd" />
+    <sequenceFlow id="flow4" sourceRef="embeddedSubprocess" targetRef="theEnd" />
+    
+    <endEvent id="theEnd" />
+    
+  </process>
+
+</definitions>

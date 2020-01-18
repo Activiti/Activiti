@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.activiti</groupId>
+    <artifactId>activiti-root</artifactId>
+    <version>7.0.0.Beta1</version>
+  </parent>
+  <artifactId>activiti-api</artifactId>
+  <name>Activiti :: Runtime API Parent</name>
+  <packaging>pom</packaging>
+  <modules>
+    <module>activiti-common-model-api</module>
+    <module>activiti-common-model-api-impl</module>
+    <module>activiti-common-runtime-api</module>
+    <module>activiti-common-runtime-api-impl</module>
+    <module>activiti-process-model-api</module>
+    <module>activiti-process-model-api-impl</module>
+    <module>activiti-process-runtime-api</module>
+    <module>activiti-process-runtime-api-impl</module>
+    <module>activiti-task-model-api</module>
+    <module>activiti-task-model-api-impl</module>
+    <module>activiti-task-runtime-api</module>
+    <module>activiti-task-runtime-api-impl</module>
+    <module>activiti-cloud-common-model-api</module>
+    <module>activiti-cloud-common-model-api-impl</module>
+    <module>activiti-cloud-process-model-api</module>
+    <module>activiti-cloud-process-model-api-impl</module>
+    <module>activiti-cloud-task-model-api</module>
+    <module>activiti-cloud-task-model-api-impl</module>
+  </modules>
+</project>

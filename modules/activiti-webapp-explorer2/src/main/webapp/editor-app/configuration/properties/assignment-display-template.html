@@ -1,4 +1,0 @@
-<span ng-if="property.value.assignment.assignee">{{'PROPERTY.ASSIGNMENT.ASSIGNEE_DISPLAY' | translate:property.value.assignment }} </span>
-<span ng-if="property.value.assignment.candidateUsers.length > 0">{{'PROPERTY.ASSIGNMENT.CANDIDATE_USERS_DISPLAY' | translate:property.value.assignment.candidateUsers}} </span>
-<span ng-if="property.value.assignment.candidateGroups.length > 0">{{'PROPERTY.ASSIGNMENT.CANDIDATE_GROUPS_DISPLAY' | translate:property.value.assignment.candidateGroups}} </span>
-<span ng-if="!property.value.assignment.assignee && (!property.value.assignment.candidateUsers || property.value.assignment.candidateUsers.length == 0) && (!property.value.assignment.candidateGroups || property.value.assignment.candidateGroups.length == 0)" translate>PROPERTY.ASSIGNMENT.EMPTY</span>
