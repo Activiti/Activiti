@@ -99,7 +99,7 @@
     <argLine>-Duser.language=en</argLine>
 
     <!-- dependency -->
-    <spring-boot.version>2.1.11.RELEASE</spring-boot.version>
+    <spring-boot.version>2.1.12.RELEASE</spring-boot.version>
 
     <skipITs>true</skipITs>
   </properties>

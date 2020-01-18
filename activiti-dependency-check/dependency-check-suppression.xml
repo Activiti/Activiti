@@ -2,59 +2,30 @@
 <suppressions xmlns="https://jeremylong.github.io/DependencyCheck/dependency-suppression.1.1.xsd">
   <suppress>
     <notes><![CDATA[
-     file name: spring-boot-starter-data-rest-2.0.1.RELEASE.jar
-    ]]></notes>
-    <gav regex="true">^org\.springframework\.boot:spring-boot-starter-data-rest:.*$</gav>
-    <cve>CVE-2018-1273</cve>
+   file name: spring-security-core-5.1.7.RELEASE.jar
+   ]]></notes>
+    <gav regex="true">^org\.springframework\.security:spring-security-core:.*$</gav>
+    <cve>CVE-2018-1258</cve>
   </suppress>
   <suppress>
     <notes><![CDATA[
-    file name: spring-tuple-1.0.0.RELEASE.jar
-    ]]></notes>
-    <gav regex="true">^org\.springframework:spring-tuple:.*$</gav>
-    <cve>CVE-2011-2730</cve>
-    <cve>CVE-2018-1270</cve>
+   file name: spring-security-web-5.1.7.RELEASE.jar
+   ]]></notes>
+    <gav regex="true">^org\.springframework\.security:spring-security-web:.*$</gav>
+    <cve>CVE-2018-1258</cve>
   </suppress>
   <suppress>
     <notes><![CDATA[
-    file name: spring-rabbit-2.0.3.RELEASE.jar
-    ]]></notes>
-    <gav regex="true">^org\.springframework\.amqp:spring-rabbit:.*$</gav>
-    <cve>CVE-2018-1270</cve>
+   file name: spring-security-config-5.1.7.RELEASE.jar
+   ]]></notes>
+    <gav regex="true">^org\.springframework\.security:spring-security-config:.*$</gav>
+    <cve>CVE-2018-1258</cve>
   </suppress>
   <suppress>
     <notes><![CDATA[
-    file name: spring-amqp-2.0.3.RELEASE.jar
-    ]]></notes>
-    <gav regex="true">^org\.springframework\.amqp:spring-amqp:.*$</gav>
-    <cve>CVE-2018-1270</cve>
-  </suppress>
-  <suppress>
-    <notes><![CDATA[
-    file name: jersey-apache-client4-1.19.1.jar
-    ]]></notes>
-    <gav regex="true">^com\.sun\.jersey\.contribs:jersey-apache-client4:.*$</gav>
-    <cve>CVE-2006-0550</cve>
-  </suppress>
-  <suppress>
-    <notes><![CDATA[
-    file name: java-dataloader-2.0.1.jar
-    ]]></notes>
-    <gav regex="true">^com\.graphql-java:java-dataloader:.*$</gav>
-    <cve>CVE-2008-0660</cve>
-  </suppress>
-  <suppress>
-    <notes><![CDATA[
-    file name: feign-form-spring-3.3.0.jar
-    ]]></notes>
-    <gav regex="true">^io\.github\.openfeign\.form:feign-form-spring:.*$</gav>
-    <cpe>cpe:/a:pivotal_software:spring_framework</cpe>
-  </suppress>
-  <suppress>
-    <notes><![CDATA[
-    file name: rxnetty-0.4.9.jar
-    ]]></notes>
-    <gav regex="true">^io\.reactivex:rxnetty:.*$</gav>
-    <cpe>cpe:/a:netty_project:netty</cpe>
+   file name: spring-boot-starter-integration-2.1.12.RELEASE.jar
+   ]]></notes>
+    <gav regex="true">^org\.springframework\.boot:spring-boot-starter-integration:.*$</gav>
+    <cve>CVE-2019-3772</cve>
   </suppress>
 </suppressions>
