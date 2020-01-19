@@ -8,7 +8,7 @@
   <packaging>pom</packaging>
   <name>Activiti :: Parent</name>
   <description>${project.name}</description>
-  <url>http://activiti.org</url>
+  <url>https://www.activiti.org/</url>
   <inceptionYear>2010</inceptionYear>
   <organization>
     <name>Alfresco</name>
@@ -22,16 +22,128 @@
   </licenses>
   <developers>
     <developer>
+      <id>almerico</id>
+      <name>Oleksandr Merkulov</name>
+      <organization>IntroPro Ventures</organization>
+      <organizationUrl>http://introproventures.com</organizationUrl>
+    </developer>
+    <developer>
+      <id>balsarori</id>
+      <name>Bassam Al-Sarori</name>
+      <organization>Alfresco</organization>
+      <organizationUrl>http://alfresco.com</organizationUrl>
+    </developer>
+    <developer>
+      <id>daisuke-yoshimoto</id>
+      <name>Daisuke Yoshimoto</name>
+      <organization>Alfresco</organization>
+      <organizationUrl>http://alfresco.com</organizationUrl>
+    </developer>
+    <developer>
       <id>erdemedeiros</id>
       <name>Elias De Medeiros</name>
-      <email>elias.demedeiros@alfresco.com</email>
+      <organization>Alfresco</organization>
+      <organizationUrl>http://alfresco.com</organizationUrl>
+    </developer>
+    <developer>
+      <id>eromano</id>
+      <name>Eugenio Romano</name>
+      <organization>Alfresco</organization>
+      <organizationUrl>http://alfresco.com</organizationUrl>
+    </developer>
+    <developer>
+      <id>ffazzini</id>
+      <name>Francesco Fazzini</name>
+      <organization>Alfresco</organization>
+      <organizationUrl>http://alfresco.com</organizationUrl>
+    </developer>
+    <developer>
+      <id>igdianov</id>
+      <name>Igor Dianov</name>
+      <organization>IntroPro Ventures</organization>
+      <organizationUrl>http://introproventures.com</organizationUrl>
+    </developer>
+    <developer>
+      <id>jesty</id>
+      <name>Davide Cerbo</name>
+      <organization>Alfresco</organization>
+      <organizationUrl>http://alfresco.com</organizationUrl>
+    </developer>
+    <developer>
+      <id>magemello</id>
+      <name>Mario Romano</name>
+      <organization>Alfresco</organization>
+      <organizationUrl>http://alfresco.com</organizationUrl>
+    </developer>
+    <developer>
+      <id>mauriziovitale</id>
+      <name>Maurizio Vitale</name>
       <organization>Alfresco</organization>
       <organizationUrl>http://alfresco.com</organizationUrl>
     </developer>
     <developer>
       <id>miguelruizdev</id>
       <name>Miguel Ruiz</name>
-      <email>miguel.ruiz@alfresco.com</email>
+      <organization>Alfresco</organization>
+      <organizationUrl>http://alfresco.com</organizationUrl>
+    </developer>
+    <developer>
+      <id>mmartinadanx</id>
+      <name>Miguel Ángel Martín</name>
+      <organization>Ixxus</organization>
+      <organizationUrl>http://www.ixxus.com</organizationUrl>
+    </developer>
+    <developer>
+      <id>mteodori</id>
+      <name>Marcello Teodori</name>
+      <organization>Alfresco</organization>
+      <organizationUrl>http://alfresco.com</organizationUrl>
+    </developer>
+    <developer>
+      <id>nazarethjim</id>
+      <name>Nazareth Jimenez Vela</name>
+      <organization>Ixxus</organization>
+      <organizationUrl>http://www.ixxus.com</organizationUrl>
+    </developer>
+    <developer>
+      <id>pmartinezga</id>
+      <name>Pablo Martinez Garcia</name>
+      <organization>Ixxus</organization>
+      <organizationUrl>http://www.ixxus.com</organizationUrl>
+    </developer>
+    <developer>
+      <id>popovicsandras</id>
+      <name>András Popovics</name>
+      <organization>Alfresco</organization>
+      <organizationUrl>http://alfresco.com</organizationUrl>
+    </developer>
+    <developer>
+      <id>robfrank</id>
+      <name>Roberto Franchini</name>
+      <organization>Alfresco</organization>
+      <organizationUrl>http://alfresco.com</organizationUrl>
+    </developer>
+    <developer>
+      <id>zoltanpalfi</id>
+      <name>Zoltan Palfi</name>
+      <organization>Alfresco</organization>
+      <organizationUrl>http://alfresco.com</organizationUrl>
+    </developer>
+    <developer>
+      <id>CTI777</id>
+      <name>Illia Goncharov</name>
+      <organization>IntroPro Ventures</organization>
+      <organizationUrl>http://introproventures.com</organizationUrl>
+    </developer>
+    <developer>
+      <id>EquinoxBlack</id>
+      <name>Rodion Savchuk</name>
+      <organization>Alfresco</organization>
+      <organizationUrl>http://alfresco.com</organizationUrl>
+    </developer>
+    <developer>
+      <id>VitoAlbano</id>
+      <name>Vito Albano</name>
       <organization>Alfresco</organization>
       <organizationUrl>http://alfresco.com</organizationUrl>
     </developer>
@@ -46,60 +158,73 @@
     <module>activiti-examples</module>
   </modules>
   <scm>
-    <url>http://github.com/Activiti/${project.artifactId}</url>
-    <connection>scm:git:git://github.com/Activiti/${project.artifactId}.git</connection>
-    <developerConnection>scm:git:ssh://git@github.com/Activiti/${project.artifactId}.git</developerConnection>
+    <url>http://github.com/${project.scm.organisation}/${project.scm.repository}</url>
+    <connection>scm:git:git://github.com/${project.scm.organisation}/${project.scm.repository}.git</connection>
+    <developerConnection>scm:git:ssh://git@github.com/${project.scm.organisation}/${project.scm.repository}.git
+    </developerConnection>
   </scm>
   <issueManagement>
     <system>GitHub</system>
-    <url>https://github.com/Activiti/Activiti/issues</url>
+    <url>https://github.com/${project.scm.organisation}/Activiti/issues</url>
   </issueManagement>
   <ciManagement>
     <system>Travis</system>
-    <url>https://travis-ci.com/Activiti/${project.artifactId}</url>
+    <url>https://travis-ci.com/${project.scm.organisation}/${project.scm.repository}</url>
   </ciManagement>
+  <distributionManagement>
+    <site>
+      <id>${project.scm.repository}-site</id>
+      <url>https://${project.scm.organisation}.github.io/${project.scm.repository}</url>
+    </site>
+  </distributionManagement>
   <properties>
-    <!-- plugins -->
+    <!-- configuration properties -->
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <project.scm.organisation>Activiti</project.scm.organisation>
+    <project.scm.repository>Activiti</project.scm.repository>
+
+    <java.release>8</java.release>
+    <java.version>1.${java.release}</java.version>
+    <maven.compiler.release>${java.release}</maven.compiler.release>
+    <maven.compiler.source>${java.version}</maven.compiler.source>
+    <maven.compiler.target>${java.version}</maven.compiler.target>
+
+    <!-- versions -->
     <asm.version>6.2</asm.version>
     <assertj-assertions-generator-maven-plugin.version>2.2.0</assertj-assertions-generator-maven-plugin.version>
     <build-helper-maven-plugin.version>3.0.0</build-helper-maven-plugin.version>
     <dependency-check-maven.version>5.3.0</dependency-check-maven.version>
     <exec-maven-plugin.version>1.6.0</exec-maven-plugin.version>
     <extra-enforcer-rules.version>1.2</extra-enforcer-rules.version>
-    <jacoco-maven-plugin.version>0.8.4</jacoco-maven-plugin.version>
-    <maven-clean-plugin.version>3.1.0</maven-clean-plugin.version>
+    <jacoco-maven-plugin.version>0.8.5</jacoco-maven-plugin.version>
     <maven-checkstyle-plugin.version>3.1.0</maven-checkstyle-plugin.version>
+    <maven-clean-plugin.version>3.1.0</maven-clean-plugin.version>
     <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
     <maven-deploy-plugin.version>2.8.2</maven-deploy-plugin.version>
     <maven-enforcer-plugin.version>3.0.0-M3</maven-enforcer-plugin.version>
     <maven-failsafe-plugin.version>2.22.2</maven-failsafe-plugin.version>
+    <maven-fluido-skin.version>1.8</maven-fluido-skin.version>
     <maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
     <maven-install-plugin.version>2.5.2</maven-install-plugin.version>
     <maven-jar-plugin.version>3.1.2</maven-jar-plugin.version>
     <maven-javadoc-plugin.version>3.0.1</maven-javadoc-plugin.version>
+    <maven-jxr-plugin.version>3.0.0</maven-jxr-plugin.version>
+    <maven-pmd-plugin.version>3.12.0</maven-pmd-plugin.version>
+    <maven-project-info-reports-plugin.version>3.0.0</maven-project-info-reports-plugin.version>
     <maven-release-plugin.version>2.5.3</maven-release-plugin.version>
     <maven-resources-plugin.version>3.1.0</maven-resources-plugin.version>
     <maven-site-plugin.version>3.7.1</maven-site-plugin.version>
     <maven-source-plugin.version>3.0.1</maven-source-plugin.version>
     <maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version>
+    <spring-boot.version>2.1.12.RELEASE</spring-boot.version>
     <versions-maven-plugin.version>2.7</versions-maven-plugin.version>
 
-    <java.version>8</java.version>
-    <maven.compiler.source>${java.version}</maven.compiler.source>
-    <maven.compiler.target>${java.version}</maven.compiler.target>
-
-    <!-- configuration properties -->
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-
-    <!-- configuration properties for tests-->
+    <!-- configuration properties for tests -->
     <generated-assertions-folder>${project.build.directory}/generated-test-sources/assertions</generated-assertions-folder>
     <generated-assertions-package>org.activiti.test</generated-assertions-package>
     <!-- JVM params for test execution -->
     <argLine>-Duser.language=en</argLine>
-
-    <!-- dependency -->
-    <spring-boot.version>2.1.12.RELEASE</spring-boot.version>
 
     <skipITs>true</skipITs>
   </properties>
@@ -209,6 +334,11 @@
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-project-info-reports-plugin</artifactId>
+          <version>${maven-project-info-reports-plugin.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-release-plugin</artifactId>
           <version>${maven-release-plugin.version}</version>
           <configuration>
@@ -288,7 +418,6 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <version>${maven-compiler-plugin.version}</version>
         <configuration>
-          <release>${java.version}</release>
           <showDeprecation>true</showDeprecation>
           <showWarnings>true</showWarnings>
           <optimize>true</optimize>
@@ -453,6 +582,66 @@
       </plugin>
     </plugins>
   </build>
+  <reporting>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <reportSets>
+          <reportSet>
+            <id>non-aggregate</id>
+            <reports>
+              <report>javadoc</report>
+            </reports>
+          </reportSet>
+          <reportSet>
+            <id>aggregate</id>
+            <reports>
+              <report>aggregate</report>
+            </reports>
+          </reportSet>
+        </reportSets>
+      </plugin>
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <reportSets>
+          <reportSet>
+            <reports>
+              <!-- select non-aggregate reports -->
+              <report>report</report>
+            </reports>
+          </reportSet>
+        </reportSets>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jxr-plugin</artifactId>
+        <version>${maven-jxr-plugin.version}</version>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-report-plugin</artifactId>
+        <version>${maven-surefire-plugin.version}</version>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <reportSets>
+          <reportSet>
+            <reports>
+              <report>checkstyle</report>
+            </reports>
+          </reportSet>
+        </reportSets>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-pmd-plugin</artifactId>
+        <version>${maven-pmd-plugin.version}</version>
+      </plugin>
+    </plugins>
+  </reporting>
   <profiles>
     <profile>
       <id>attach-sources</id>
@@ -505,6 +694,23 @@
           </plugin>
         </plugins>
       </build>
+      <reporting>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-report-plugin</artifactId>
+            <version>${maven-surefire-plugin.version}</version>
+            <reportSets>
+              <reportSet>
+                <id>integration-tests</id>
+                <reports>
+                  <report>failsafe-report-only</report>
+                </reports>
+              </reportSet>
+            </reportSets>
+          </plugin>
+        </plugins>
+      </reporting>
     </profile>
     <!-- Profile to sign artifacts, triggered when releasing -->
     <profile>
@@ -536,7 +742,6 @@
         <!--TODO this doesn't work with new deployment plugin -->
         <repository>
           <id>central-releases-staging</id>
-          <name>Central Releases - Staging</name>
           <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
         </repository>
       </distributionManagement>
