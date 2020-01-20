@@ -19,8 +19,5 @@
     <module>activiti-api-process-runtime</module>
     <module>activiti-api-task-model</module>
     <module>activiti-api-task-runtime</module>
-    <module>activiti-api-model-shared-impl</module>
-    <module>activiti-api-process-model-impl</module>
-    <module>activiti-api-task-model-impl</module>
   </modules>
 </project>

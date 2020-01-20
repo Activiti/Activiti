@@ -33,10 +33,6 @@
     </dependency>
     <dependency>
       <groupId>org.activiti.api</groupId>
-      <artifactId>activiti-api-process-model-impl</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.activiti.api</groupId>
       <artifactId>activiti-api-model-shared</artifactId>
     </dependency>
     <dependency>
@@ -62,6 +58,10 @@
     <dependency>
       <groupId>org.activiti</groupId>
       <artifactId>activiti-api-task-runtime-impl</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.activiti</groupId>
+      <artifactId>activiti-api-process-model-impl</artifactId>
     </dependency>
     <dependency>
       <groupId>org.activiti</groupId>

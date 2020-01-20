@@ -26,7 +26,6 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
-
       <!-- Activiti Modules for managed dependencies -->
       <dependency>
         <groupId>org.activiti</groupId>
@@ -46,6 +45,21 @@
       <dependency>
         <groupId>org.activiti</groupId>
         <artifactId>activiti-api-task-runtime-impl</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.activiti</groupId>
+        <artifactId>activiti-api-model-shared-impl</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.activiti</groupId>
+        <artifactId>activiti-api-process-model-impl</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.activiti</groupId>
+        <artifactId>activiti-api-task-model-impl</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
