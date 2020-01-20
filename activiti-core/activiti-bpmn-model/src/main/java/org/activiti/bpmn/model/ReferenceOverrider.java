@@ -18,6 +18,5 @@ package org.activiti.bpmn.model;
 
 public interface ReferenceOverrider {
     void override(UserTask userTask);
-    void override(CallActivity callActivity);
     void override(StartEvent startEvent);
 }
