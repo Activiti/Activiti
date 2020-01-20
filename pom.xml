@@ -509,7 +509,6 @@
                   </excludes>
                 </bannedDependencies>
               </rules>
-              <fail>true</fail>
             </configuration>
           </execution>
           <execution>
@@ -541,7 +540,6 @@
                   <findAllDuplicates>true</findAllDuplicates>
                 </banDuplicateClasses>
               </rules>
-              <fail>true</fail>
             </configuration>
           </execution>
         </executions>
