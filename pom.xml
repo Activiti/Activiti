@@ -192,7 +192,7 @@
 
     <!-- versions -->
     <asm.version>6.2</asm.version>
-    <assertj-assertions-generator-maven-plugin.version>2.2.0</assertj-assertions-generator-maven-plugin.version>
+    <assertj-assertions-generator-maven-plugin.version>2.0.0</assertj-assertions-generator-maven-plugin.version>
     <build-helper-maven-plugin.version>3.0.0</build-helper-maven-plugin.version>
     <dependency-check-maven.version>5.3.0</dependency-check-maven.version>
     <exec-maven-plugin.version>1.6.0</exec-maven-plugin.version>
