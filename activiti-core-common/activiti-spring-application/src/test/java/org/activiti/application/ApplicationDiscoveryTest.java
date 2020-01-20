@@ -73,7 +73,7 @@ public class ApplicationDiscoveryTest {
 
         //then
         assertThat(thrown)
-                .isInstanceOf(AppliationLoadException.class)
+                .isInstanceOf(ApplicationLoadException.class)
                 .hasCause(ioException);
     }
 

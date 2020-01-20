@@ -44,7 +44,7 @@ public class ApplicationService {
                 }
             }
         } catch (IOException e) {
-            throw new AppliationLoadException("Unable to load application resource", e);
+            throw new ApplicationLoadException("Unable to load application resource", e);
         }
         return applications;
     }

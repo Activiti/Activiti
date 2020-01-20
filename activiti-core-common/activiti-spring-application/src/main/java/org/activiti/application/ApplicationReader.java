@@ -50,7 +50,7 @@ public class ApplicationReader {
                                                                                              )))));
             }
         } catch (IOException e) {
-            throw new AppliationLoadException("Unable to read zip file",
+            throw new ApplicationLoadException("Unable to read zip file",
                                               e);
         }
         return application;
@@ -60,7 +60,7 @@ public class ApplicationReader {
         try {
             return IOUtils.toByteArray(zipInputStream);
         } catch (IOException e) {
-            throw new AppliationLoadException("Unable to read zip file",
+            throw new ApplicationLoadException("Unable to read zip file",
                                               e);
         }
     }

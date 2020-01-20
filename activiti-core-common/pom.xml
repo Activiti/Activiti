@@ -11,18 +11,6 @@
   <artifactId>activiti-core-common</artifactId>
   <packaging>pom</packaging>
   <name>Activiti :: Core :: Common :: Parent</name>
-  <properties>
-    <commons-io.version>2.6</commons-io.version>
-  </properties>
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>commons-io</groupId>
-        <artifactId>commons-io</artifactId>
-        <version>${commons-io.version}</version>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
   <dependencies>
     <dependency>
       <groupId>org.activiti.api</groupId>

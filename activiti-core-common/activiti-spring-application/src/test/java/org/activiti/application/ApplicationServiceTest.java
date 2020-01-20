@@ -81,7 +81,7 @@ public class ApplicationServiceTest {
                                                   applicationService.loadApplications());
 
         //then
-        assertThat(thrown).isInstanceOf(AppliationLoadException.class)
+        assertThat(thrown).isInstanceOf(ApplicationLoadException.class)
                 .hasCause(ioException);
     }
 }
