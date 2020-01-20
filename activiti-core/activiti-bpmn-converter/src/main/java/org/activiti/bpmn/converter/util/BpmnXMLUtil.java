@@ -15,6 +15,8 @@ import javax.xml.stream.XMLStreamWriter;
 
 import org.activiti.bpmn.constants.BpmnXMLConstants;
 import org.activiti.bpmn.converter.child.*;
+import org.activiti.bpmn.converter.child.MessageEventDefinitionParser;
+import org.activiti.bpmn.converter.child.multi.instance.MultiInstanceParser;
 import org.activiti.bpmn.model.*;
 import org.apache.commons.lang3.StringUtils;
 

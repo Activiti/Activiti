@@ -1,0 +1,7 @@
+<multiInstanceLoopCharacteristics isSequential="false">
+  <loopDataInputRef>assigneeList</loopDataInputRef>
+  <inputDataItem name="assignee" />
+  <completionCondition>${nrOfCompletedInstances/nrOfInstances >= 0.6 }</completionCondition>
+  <loopDataOutputRef>meals</loopDataOutputRef>
+  <outputDataItem name="meal"/>
+</multiInstanceLoopCharacteristics>

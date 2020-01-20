@@ -118,7 +118,7 @@ public class ProcessExtensionsJsonVarsTest {
                 .filteredOn("name","var4")
                 .extracting("value")
                 .hasSize(1)
-                .hasOnlyElementsOfType(ObjectNode.class)
+                .hasOnlyElementsOfTypes(ObjectNode.class, CustomType.class)
                 .toString()
                 .contains(customType.getCustomTypeField1());
 

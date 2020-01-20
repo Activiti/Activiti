@@ -41,14 +41,8 @@ public abstract class AbstractActivityBpmnParseHandler<T extends FlowNode> exten
 
     MultiInstanceLoopCharacteristics loopCharacteristics = modelActivity.getLoopCharacteristics();
 
-    // Activity Behavior
-    MultiInstanceActivityBehavior miActivityBehavior = null;
-
-    if (loopCharacteristics.isSequential()) {
-      miActivityBehavior = bpmnParse.getActivityBehaviorFactory().createSequentialMultiInstanceBehavior(modelActivity, (AbstractBpmnActivityBehavior) modelActivity.getBehavior());
-    } else {
-      miActivityBehavior = bpmnParse.getActivityBehaviorFactory().createParallelMultiInstanceBehavior(modelActivity, (AbstractBpmnActivityBehavior) modelActivity.getBehavior());
-    }
+    MultiInstanceActivityBehavior miActivityBehavior = createMultiInstanceActivityBehavior(
+          bpmnParse, modelActivity, loopCharacteristics);
 
     modelActivity.setBehavior(miActivityBehavior);
 
@@ -83,5 +77,25 @@ public abstract class AbstractActivityBpmnParseHandler<T extends FlowNode> exten
       miActivityBehavior.setCollectionElementIndexVariable(loopCharacteristics.getElementIndexVariable());
     }
 
+    if (StringUtils.isNotEmpty(loopCharacteristics.getLoopDataOutputRef())) {
+        miActivityBehavior.setLoopDataOutputRef(loopCharacteristics.getLoopDataOutputRef());
+    }
+
+    if (StringUtils.isNotEmpty(loopCharacteristics.getOutputDataItem())) {
+        miActivityBehavior.setOutputDataItem(loopCharacteristics.getOutputDataItem());
+    }
+
   }
+
+    private MultiInstanceActivityBehavior createMultiInstanceActivityBehavior(BpmnParse bpmnParse,
+        Activity modelActivity, MultiInstanceLoopCharacteristics loopCharacteristics) {
+        MultiInstanceActivityBehavior miActivityBehavior = null;
+
+        if (loopCharacteristics.isSequential()) {
+          miActivityBehavior = bpmnParse.getActivityBehaviorFactory().createSequentialMultiInstanceBehavior(modelActivity, (AbstractBpmnActivityBehavior) modelActivity.getBehavior());
+        } else {
+          miActivityBehavior = bpmnParse.getActivityBehaviorFactory().createParallelMultiInstanceBehavior(modelActivity, (AbstractBpmnActivityBehavior) modelActivity.getBehavior());
+        }
+        return miActivityBehavior;
+    }
 }

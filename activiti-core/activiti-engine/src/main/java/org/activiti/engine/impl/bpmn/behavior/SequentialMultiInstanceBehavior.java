@@ -10,6 +10,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.activiti.engine.impl.bpmn.behavior;
 
 import org.activiti.bpmn.model.Activity;
@@ -23,10 +24,6 @@ import org.activiti.engine.impl.delegate.ActivityBehavior;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
 
-/**
-
-
- */
 public class SequentialMultiInstanceBehavior extends MultiInstanceActivityBehavior {
 
   private static final long serialVersionUID = 1L;
@@ -61,14 +58,12 @@ public class SequentialMultiInstanceBehavior extends MultiInstanceActivityBehavi
     setLoopVariable(childExecution, getCollectionElementIndexVariable(), 0);
     logLoopDetails(multiInstanceExecution, "initialized", 0, 0, 1, nrOfInstances);
 
-    if (nrOfInstances > 0) {
-      executeOriginalBehavior(childExecution, 0);
-    }
+    executeOriginalBehavior(childExecution, 0);
     return nrOfInstances;
   }
 
   /**
-   * Called when the wrapped {@link ActivityBehavior} calls the {@link AbstractBpmnActivityBehavior#leave(ActivityExecution)} method. Handles the completion of one instance, and executes the logic for
+   * Called when the wrapped {@link ActivityBehavior} calls the {@link AbstractBpmnActivityBehavior#leave(DelegateExecution)} method. Handles the completion of one instance, and executes the logic for
    * the sequential behavior.
    */
   public void leave(DelegateExecution childExecution) {
@@ -81,13 +76,14 @@ public class SequentialMultiInstanceBehavior extends MultiInstanceActivityBehavi
     setLoopVariable(multiInstanceRootExecution, NUMBER_OF_COMPLETED_INSTANCES, nrOfCompletedInstances);
     setLoopVariable(childExecution, getCollectionElementIndexVariable(), loopCounter);
     logLoopDetails(childExecution, "instance completed", loopCounter, nrOfCompletedInstances, nrOfActiveInstances, nrOfInstances);
+
+    updateResultCollection(childExecution, multiInstanceRootExecution);
     
     Context.getCommandContext().getHistoryManager().recordActivityEnd((ExecutionEntity) childExecution, null);
     callActivityEndListeners(childExecution);
     
-    //executeCompensationBoundaryEvents(execution.getCurrentFlowElement(), execution);
-
     if (loopCounter >= nrOfInstances || completionConditionSatisfied(multiInstanceRootExecution)) {
+      propagateLoopDataOutputRefToProcessInstance((ExecutionEntity) multiInstanceRootExecution);
       removeLocalLoopVariable(childExecution, getCollectionElementIndexVariable());
       multiInstanceRootExecution.setMultiInstanceRoot(false);
       multiInstanceRootExecution.setScope(false);

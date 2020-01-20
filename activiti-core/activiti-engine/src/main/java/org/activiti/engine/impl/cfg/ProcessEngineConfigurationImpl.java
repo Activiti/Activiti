@@ -12,6 +12,8 @@
  */
 package org.activiti.engine.impl.cfg;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -34,13 +36,9 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
 import javax.xml.namespace.QName;
-
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.activiti.api.runtime.shared.identity.UserGroupManager;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.DynamicBpmnService;
@@ -295,6 +293,7 @@ import org.activiti.engine.impl.variable.JPAEntityVariableType;
 import org.activiti.engine.impl.variable.JodaDateTimeType;
 import org.activiti.engine.impl.variable.JodaDateType;
 import org.activiti.engine.impl.variable.JsonType;
+import org.activiti.engine.impl.variable.JsonTypeConverter;
 import org.activiti.engine.impl.variable.LongJsonType;
 import org.activiti.engine.impl.variable.LongStringType;
 import org.activiti.engine.impl.variable.LongType;
@@ -1939,8 +1938,12 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       variableTypes.addType(new DoubleType());
       variableTypes.addType(new UUIDType());
 
-      variableTypes.addType(new JsonType(getMaxLengthString(), objectMapper,serializePOJOsInVariablesToJson,javaClassFieldForJackson));
-      variableTypes.addType(new LongJsonType(getMaxLengthString() + 1, objectMapper,serializePOJOsInVariablesToJson,javaClassFieldForJackson));
+      JsonTypeConverter jsonTypeConverter = new JsonTypeConverter(objectMapper,
+            javaClassFieldForJackson);
+      variableTypes.addType(new JsonType(getMaxLengthString(), objectMapper,serializePOJOsInVariablesToJson,
+            jsonTypeConverter));
+      variableTypes.addType(new LongJsonType(getMaxLengthString() + 1, objectMapper,serializePOJOsInVariablesToJson,
+          jsonTypeConverter));
 
       //java serialization only supported OOTB if not defaulting to json
       //if java serliazation needed together with json defaulting then add to customPostVariableTypes
