@@ -3,25 +3,20 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.activiti.api</groupId>
-    <artifactId>activiti-api-dependencies</artifactId>
+    <groupId>org.activiti</groupId>
+    <artifactId>activiti-api-impl</artifactId>
     <version>7.1.0-SNAPSHOT</version>
-    <relativePath>../activiti-api-dependencies</relativePath>
   </parent>
-  <artifactId>activiti-api-process-model-impl</artifactId>
-  <name>Activiti :: API :: Process Model Implementation</name>
+  <artifactId>activiti-api-model-shared-impl</artifactId>
+  <name>Activiti :: API :: Common Model Implementation</name>
   <dependencies>
     <dependency>
       <groupId>org.activiti.api</groupId>
       <artifactId>activiti-api-model-shared</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.activiti.api</groupId>
-      <artifactId>activiti-api-process-model</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.activiti.api</groupId>
-      <artifactId>activiti-api-model-shared-impl</artifactId>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
@@ -29,20 +24,11 @@
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
-      <artifactId>jackson-databind</artifactId>
+      <artifactId>jackson-annotations</artifactId>
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-core</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.fasterxml.jackson.core</groupId>
-      <artifactId>jackson-annotations</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-autoconfigure</artifactId>
-      <optional>true</optional>
     </dependency>
   </dependencies>
 </project>
