@@ -149,7 +149,6 @@
     </developer>
   </developers>
   <modules>
-    <module>activiti-dependencies-parent</module>
     <module>activiti-dependency-check</module>
     <module>activiti-api</module>
     <module>activiti-core-common</module>
@@ -234,6 +233,13 @@
         <version>${project.version}</version>
         <type>xml</type>
         <classifier>suppression</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-dependencies</artifactId>
+        <version>${spring-boot.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
       </dependency>
     </dependencies>
   </dependencyManagement>

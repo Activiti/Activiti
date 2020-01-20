@@ -8,21 +8,14 @@
     <version>7.1.0-SNAPSHOT</version>
   </parent>
   <groupId>org.activiti.core.common</groupId>
-  <artifactId>activiti-core-common-parent</artifactId>
+  <artifactId>activiti-core-common</artifactId>
   <packaging>pom</packaging>
-  <name>Activiti :: Core :: Common</name>
+  <name>Activiti :: Core :: Common :: Parent</name>
   <properties>
     <commons-io.version>2.6</commons-io.version>
   </properties>
   <dependencyManagement>
     <dependencies>
-      <dependency>
-        <groupId>org.activiti.build</groupId>
-        <artifactId>activiti-dependencies-parent</artifactId>
-        <version>${project.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
       <dependency>
         <groupId>commons-io</groupId>
         <artifactId>commons-io</artifactId>
@@ -39,7 +32,6 @@
     </dependency>
   </dependencies>
   <modules>
-    <module>activiti-core-common-dependencies-tests</module>
     <module>activiti-core-common-dependencies</module>
     <module>activiti-spring-identity</module>
     <module>activiti-spring-security</module>

@@ -12,7 +12,6 @@
   <name>Activiti :: API :: Parent</name>
   <packaging>pom</packaging>
   <modules>
-    <module>activiti-api-dependencies-tests</module>
     <module>activiti-api-dependencies</module>
     <module>activiti-api-model-shared</module>
     <module>activiti-api-runtime-shared</module>
@@ -24,15 +23,4 @@
     <module>activiti-api-process-model-impl</module>
     <module>activiti-api-task-model-impl</module>
   </modules>
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.activiti.build</groupId>
-        <artifactId>activiti-dependencies-parent</artifactId>
-        <version>${project.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
 </project>
