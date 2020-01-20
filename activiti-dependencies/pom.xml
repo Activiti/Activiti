@@ -8,16 +8,35 @@
     <version>7.1.0-SNAPSHOT</version>
   </parent>
   <groupId>org.activiti.dependencies</groupId>
-  <artifactId>activiti-dependencies-parent</artifactId>
+  <artifactId>activiti-dependencies</artifactId>
   <packaging>pom</packaging>
-  <name>Activiti :: BOM (Bill of Materials) Parent</name>
+  <name>Activiti :: BOM (Bill of Materials)</name>
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.activiti.api</groupId>
+        <artifactId>activiti-api-dependencies</artifactId>
+        <version>${project.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.activiti.core.common</groupId>
+        <artifactId>activiti-core-common-dependencies</artifactId>
+        <version>${project.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.activiti</groupId>
+        <artifactId>activiti-core-dependencies</artifactId>
+        <version>${project.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
   <dependencies>
-    <dependency>
-      <groupId>org.activiti.build</groupId>
-      <artifactId>activiti-parent</artifactId>
-      <version>${project.version}</version>
-      <type>pom</type>
-    </dependency>
     <dependency>
       <groupId>org.activiti.api</groupId>
       <artifactId>activiti-api-dependencies</artifactId>
@@ -37,8 +56,4 @@
       <type>pom</type>
     </dependency>
   </dependencies>
-  <modules>
-    <module>dependencies</module>
-    <module>dependencies-tests</module>
-  </modules>
 </project>
