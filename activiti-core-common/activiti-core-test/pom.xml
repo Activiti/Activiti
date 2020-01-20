@@ -16,16 +16,4 @@
     <module>activiti-core-test-assertions</module>
     <module>activiti-core-test-local-runtime</module>
   </modules>
-  <properties>
-    <awaitility.version>4.0.1</awaitility.version>
-  </properties>
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.awaitility</groupId>
-        <artifactId>awaitility</artifactId>
-        <version>${awaitility.version}</version>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
 </project>

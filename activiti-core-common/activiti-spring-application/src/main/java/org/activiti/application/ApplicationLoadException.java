@@ -16,12 +16,10 @@
 
 package org.activiti.application;
 
-public class AppliationLoadException extends RuntimeException {
+public class ApplicationLoadException extends RuntimeException {
 
-    public AppliationLoadException(String message,
-                                   Throwable cause) {
-        super(message,
-              cause);
+    public ApplicationLoadException(String message, Throwable cause) {
+        super(message, cause);
     }
 
 }
