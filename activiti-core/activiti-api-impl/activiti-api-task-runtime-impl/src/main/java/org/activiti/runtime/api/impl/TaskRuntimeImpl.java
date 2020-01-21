@@ -92,20 +92,6 @@ public class TaskRuntimeImpl implements TaskRuntime {
         return enrichWithCandidates(task);
     }
 
-    private Task enrichWithCandidates(Task task) {
-        if(task instanceof TaskImpl){
-            TaskImpl taskImpl = (TaskImpl) task;
-            String taskId = task.getId();
-            List<String> userCandidates = this.userCandidates(taskId);
-            taskImpl.setCandidateUsers(userCandidates);
-            List<String> groupCandidates = this.groupCandidates(taskId);
-            taskImpl.setCandidateGroups(groupCandidates);
-            return taskImpl;
-        } else {
-            return task;
-        }
-    }
-
     @Override
     public Page<Task> tasks(Pageable pageable) {
         String authenticatedUserId = securityManager.getAuthenticatedUserId();
@@ -447,6 +433,17 @@ public class TaskRuntimeImpl implements TaskRuntime {
         taskRuntimeHelper.updateVariable(false, updateTaskVariablePayload);
     }
 
+    @Override
+    public void save(SaveTaskPayload saveTaskPayload) {
+        taskRuntimeHelper.assertHasAccessToTask(saveTaskPayload.getTaskId());
+
+        taskRuntimeHelper.handleSaveTaskPayload(saveTaskPayload);
+        
+        taskService.setVariablesLocal(saveTaskPayload.getTaskId(),
+                saveTaskPayload.getVariables());
+    }
+
+
     private List<IdentityLink> getIdentityLinks(String taskId) {
         String authenticatedUserId = securityManager.getAuthenticatedUserId();
         if (authenticatedUserId != null && !authenticatedUserId.isEmpty()) {
@@ -462,14 +459,16 @@ public class TaskRuntimeImpl implements TaskRuntime {
         throw new IllegalStateException("There is no authenticated user, we need a user authenticated to find tasks");
     }
 
-    @Override
-    public void save(SaveTaskPayload saveTaskPayload) {
-        taskRuntimeHelper.assertHasAccessToTask(saveTaskPayload.getTaskId());
-
-        taskRuntimeHelper.handleSaveTaskPayload(saveTaskPayload);
-        
-        taskService.setVariablesLocal(saveTaskPayload.getTaskId(),
-                saveTaskPayload.getVariables());
+    private Task enrichWithCandidates(Task task) {
+        if(task instanceof TaskImpl){
+            TaskImpl taskImpl = (TaskImpl) task;
+            String taskId = task.getId();
+            taskImpl.setCandidateUsers(this.userCandidates(taskId));
+            taskImpl.setCandidateGroups(this.groupCandidates(taskId));
+            return taskImpl;
+        } else {
+            return task;
+        }
     }
 
 }

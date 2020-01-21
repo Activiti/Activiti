@@ -18,10 +18,7 @@ import org.activiti.api.process.runtime.events.ProcessCompletedEvent;
 import org.activiti.api.process.runtime.events.listener.BPMNElementEventListener;
 import org.activiti.api.process.runtime.events.listener.ProcessRuntimeEventListener;
 import org.activiti.api.runtime.shared.events.VariableEventListener;
-import org.activiti.api.task.runtime.events.TaskCandidateUserAddedEvent;
-import org.activiti.api.task.runtime.events.TaskCandidateUserRemovedEvent;
-import org.activiti.api.task.runtime.events.TaskCreatedEvent;
-import org.activiti.api.task.runtime.events.TaskUpdatedEvent;
+import org.activiti.api.task.runtime.events.*;
 import org.activiti.api.task.runtime.events.listener.TaskRuntimeEventListener;
 import org.activiti.core.common.spring.identity.ExtendedInMemoryUserDetailsManager;
 import org.activiti.spring.boot.process.ProcessBaseRuntime;
@@ -68,7 +65,11 @@ public class RuntimeTestConfiguration {
     public static Set<TaskCandidateUserAddedEvent> taskCandidateUserAddedEvents = new HashSet<>();
 
     public static Set<TaskCandidateUserRemovedEvent> taskCandidateUserRemovedEvents = new HashSet<>();
-    
+
+    public static Set<TaskCandidateGroupAddedEvent> taskCandidateGroupAddedEvents = new HashSet<>();
+
+    public static Set<TaskCandidateGroupRemovedEvent> taskCandidateGroupRemovedEvents = new HashSet<>();
+
     @Bean
     public UserDetailsService myUserDetailsService() {
         ExtendedInMemoryUserDetailsManager extendedInMemoryUserDetailsManager = new ExtendedInMemoryUserDetailsManager();
@@ -201,6 +202,16 @@ public class RuntimeTestConfiguration {
                 variableCreatedEventsFromProcessInstance.add(variableCreatedEvent);
             }
         };
+    }
+
+    @Bean
+    public TaskRuntimeEventListener<TaskCandidateGroupAddedEvent> CandidateGroupAddedEvent() {
+        return candidateGroupAddedEvent -> taskCandidateGroupAddedEvents.add(candidateGroupAddedEvent);
+    }
+
+    @Bean
+    public TaskRuntimeEventListener<TaskCandidateGroupRemovedEvent> CandidateGroupRemovedEvent() {
+        return candidateGroupRemovedEvent -> taskCandidateGroupRemovedEvents.add(candidateGroupRemovedEvent);
     }
 
     @Bean
