@@ -44,7 +44,7 @@ public class TaskRuntimeStandaloneTaskTest {
     }
 
     @Test
-    public void createStandaloneTaskForSalaboy() {
+    public void createStandaloneTaskForUser() {
 
         securityUtil.logInAs("user");
 
@@ -55,8 +55,7 @@ public class TaskRuntimeStandaloneTaskTest {
 
         assertThat(RuntimeTestConfiguration.createdTasks).contains(standAloneTask.getId());
 
-        Page<Task> tasks = taskRuntime.tasks(Pageable.of(0,
-                50));
+        Page<Task> tasks = taskRuntime.tasks(Pageable.of(0, 50));
 
         assertThat(tasks.getContent()).hasSize(1);
         Task task = tasks.getContent().get(0);
@@ -74,11 +73,8 @@ public class TaskRuntimeStandaloneTaskTest {
         assertThat(deletedTask).isNotNull();
         assertThat(deletedTask.getStatus()).isEqualTo(Task.TaskStatus.CANCELLED);
 
-        tasks = taskRuntime.tasks(Pageable.of(0,
-                50));
+        tasks = taskRuntime.tasks(Pageable.of(0, 50));
         assertThat(tasks.getContent()).hasSize(0);
-
-
     }
 
     @Test
@@ -170,12 +166,12 @@ public class TaskRuntimeStandaloneTaskTest {
 
         assertThat(tasks.getContent()).hasSize(0);
     }
-    
+
     @Test
     public void should_throwExceptionOnTaskSave_when_charactersNotAllowedInVariableName() {
 
         securityUtil.logInAs("user");
-        
+
         Task task = taskRuntime.create(TaskPayloadBuilder.create()
                                                  .withName("name")
                                                  .withAssignee("user")
@@ -185,7 +181,7 @@ public class TaskRuntimeStandaloneTaskTest {
                                                          50));
 
         assertThat(tasks.getContent()).hasSize(1);
-        
+
         Map<String,Object> variables = new HashMap<>();
         variables.put("var_name1","good_value");
         variables.put("!wrong_name","!any_value>");
@@ -196,14 +192,14 @@ public class TaskRuntimeStandaloneTaskTest {
 
         assertThat(throwable)
                 .isInstanceOf(IllegalStateException.class);
-        
+
     }
-    
+
     @Test
     public void should_throwExceptionOnTaskComplete_when_charactersNotAllowedInVariableName() {
 
         securityUtil.logInAs("user");
-        
+
         Task task = taskRuntime.create(TaskPayloadBuilder.create()
                                                  .withName("name")
                                                  .withAssignee("user")
@@ -213,7 +209,7 @@ public class TaskRuntimeStandaloneTaskTest {
                                                          50));
 
         assertThat(tasks.getContent()).hasSize(1);
-        
+
         Map<String,Object> variables = new HashMap<>();
         variables.put("var_name1","good_value");
         variables.put("!wrong_name","!any_value>");
@@ -224,14 +220,14 @@ public class TaskRuntimeStandaloneTaskTest {
 
         assertThat(throwable)
                 .isInstanceOf(IllegalStateException.class);
-        
+
     }
 
     @Test
     public void should_throwExceptionOnCreateVariable_when_charactersNotAllowedInVariableName() {
 
         securityUtil.logInAs("user");
-        
+
         Task task = taskRuntime.create(TaskPayloadBuilder.create()
                                                  .withName("name")
                                                  .withAssignee("user")
@@ -241,7 +237,7 @@ public class TaskRuntimeStandaloneTaskTest {
                                                          50));
 
         assertThat(tasks.getContent()).hasSize(1);
-        
+
         Throwable throwable = catchThrowable(() -> taskRuntime.createVariable(TaskPayloadBuilder.createVariable()
                                                                               .withTaskId(task.getId())
                                                                               .withVariable("!wrong_name", "value")
@@ -249,14 +245,14 @@ public class TaskRuntimeStandaloneTaskTest {
 
         assertThat(throwable)
                 .isInstanceOf(IllegalStateException.class);
-        
+
     }
-    
+
     @Test
     public void should_throwExceptionOnUpdateVariable_when_charactersNotAllowedInVariableName() {
 
         securityUtil.logInAs("user");
-        
+
         Task task = taskRuntime.create(TaskPayloadBuilder.create()
                                                  .withName("name")
                                                  .withAssignee("user")
@@ -266,7 +262,7 @@ public class TaskRuntimeStandaloneTaskTest {
                                                          50));
 
         assertThat(tasks.getContent()).hasSize(1);
-        
+
         Throwable throwable = catchThrowable(() -> taskRuntime.updateVariable(TaskPayloadBuilder.updateVariable()
                                                                               .withTaskId(task.getId())
                                                                               .withVariable("!wrong_name", "value")
@@ -274,6 +270,6 @@ public class TaskRuntimeStandaloneTaskTest {
 
         assertThat(throwable)
                 .isInstanceOf(IllegalStateException.class);
-        
+
     }
 }
