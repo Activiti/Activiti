@@ -88,6 +88,21 @@ public class TaskRuntimeImplTest {
     }
 
     @Test
+    public void should_doNotReturnCandidates_when_taskInstanceIsntTaskImpl(){
+        String taskId = "taskId";
+        Task taskMock = mock(Task.class);
+        given(taskConverter.from(any(org.activiti.engine.task.Task.class)))
+                .willReturn(taskMock);
+        given(taskRuntimeHelper.getInternalTaskWithChecks(any()))
+                .willReturn(engineTaskMock);
+
+        Task task = taskRuntime.task(taskId);
+
+        assertThat(task.getCandidateUsers()).isEmpty();
+        assertThat(task.getCandidateGroups()).isEmpty();
+    }
+
+    @Test
     public void should_returnCandidateUsersAndGroups_when_getTaskById(){
         String taskId = "taskId";
         given(taskRuntimeHelper.getInternalTaskWithChecks(any()))
