@@ -246,15 +246,8 @@ public class TaskRuntimeImpl implements TaskRuntime {
 
     @Override
     public Task create(CreateTaskPayload createTaskPayload) {
-        if (createTaskPayload.getName() == null || createTaskPayload.getName().isEmpty()) {
-            throw new IllegalStateException("You cannot create a task without name");
-        }
-
-        if ((createTaskPayload.getAssignee() == null || createTaskPayload.getAssignee().isEmpty()) &&
-            (createTaskPayload.getCandidateGroups() == null || createTaskPayload.getCandidateGroups().isEmpty()) &&
-            (createTaskPayload.getCandidateUsers() == null || createTaskPayload.getCandidateUsers().isEmpty())) {
-            throw new IllegalStateException("You cannot create a task without an assignee or candidate users or groups");
-        }
+        assertName(createTaskPayload);
+        assertAssigneeOrCandidates(createTaskPayload);
 
         org.activiti.engine.task.Task task = taskService.newTask();
         task.setName(createTaskPayload.getName());
@@ -472,6 +465,20 @@ public class TaskRuntimeImpl implements TaskRuntime {
             return taskImpl;
         } else {
             return task;
+        }
+    }
+
+    private void assertName(CreateTaskPayload createTaskPayload) {
+        if (createTaskPayload.getName() == null || createTaskPayload.getName().isEmpty()) {
+            throw new IllegalStateException("You cannot create a task without name");
+        }
+    }
+
+    private void assertAssigneeOrCandidates(CreateTaskPayload createTaskPayload) {
+        if ((createTaskPayload.getAssignee() == null || createTaskPayload.getAssignee().isEmpty()) &&
+            (createTaskPayload.getCandidateGroups() == null || createTaskPayload.getCandidateGroups().isEmpty()) &&
+            (createTaskPayload.getCandidateUsers() == null || createTaskPayload.getCandidateUsers().isEmpty())) {
+            throw new IllegalStateException("You cannot create a task without an assignee or candidate users or groups");
         }
     }
 
