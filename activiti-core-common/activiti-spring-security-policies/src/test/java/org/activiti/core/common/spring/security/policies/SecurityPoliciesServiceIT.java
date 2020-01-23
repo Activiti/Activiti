@@ -96,7 +96,7 @@ public class SecurityPoliciesServiceIT {
 
     @Test
     @WithUserDetails(value = "bob", userDetailsServiceBeanName = "myUserDetailsService")
-    public void shouldGetPoliciesForSalaboy() {
+    public void shouldGetPoliciesForUser() {
 
         String authenticatedUserId = securityManager.getAuthenticatedUserId();
         assertThat(authenticatedUserId).isEqualTo("bob");
