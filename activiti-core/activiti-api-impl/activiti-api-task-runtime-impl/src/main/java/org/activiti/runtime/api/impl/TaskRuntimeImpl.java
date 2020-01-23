@@ -250,12 +250,6 @@ public class TaskRuntimeImpl implements TaskRuntime {
             throw new IllegalStateException("You cannot create a task without name");
         }
 
-        if ((createTaskPayload.getAssignee() == null || createTaskPayload.getAssignee().isEmpty()) &&
-            (createTaskPayload.getCandidateGroups() == null || createTaskPayload.getCandidateGroups().isEmpty()) &&
-            (createTaskPayload.getCandidateUsers() == null || createTaskPayload.getCandidateUsers().isEmpty())) {
-            throw new IllegalStateException("You cannot create a task without an assignee or candidate users or groups");
-        }
-
         org.activiti.engine.task.Task task = taskService.newTask();
         task.setName(createTaskPayload.getName());
         task.setDescription(createTaskPayload.getDescription());

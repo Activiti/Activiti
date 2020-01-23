@@ -145,7 +145,6 @@ public class TaskRuntimeUpdateTaskTest {
         securityUtil.logInAs("garth");
         // create
         Task standaloneTask = taskRuntime.create(TaskPayloadBuilder.create()
-                                                         .withCandidateUsers("garth")
                                                          .withName("test task update")
                                                          .withDescription("test task update description")
                                                          .withDueDate(new Date())
