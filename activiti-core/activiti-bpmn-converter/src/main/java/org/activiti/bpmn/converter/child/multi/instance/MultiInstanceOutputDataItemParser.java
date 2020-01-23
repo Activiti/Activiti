@@ -19,7 +19,6 @@ package org.activiti.bpmn.converter.child.multi.instance;
 import static org.activiti.bpmn.constants.BpmnXMLConstants.ATTRIBUTE_NAME;
 import static org.activiti.bpmn.constants.BpmnXMLConstants.ELEMENT_MULTI_INSTANCE_OUTPUT_DATA_ITEM;
 
-import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import org.activiti.bpmn.converter.child.ElementParser;
 import org.activiti.bpmn.model.MultiInstanceLoopCharacteristics;
@@ -34,15 +33,11 @@ public class MultiInstanceOutputDataItemParser implements
 
     @Override
     public void setInformation(XMLStreamReader reader,
-        MultiInstanceLoopCharacteristics loopCharacteristics) throws XMLStreamException {
+        MultiInstanceLoopCharacteristics loopCharacteristics) {
         String attributeValue = reader.getAttributeValue(null,
             ATTRIBUTE_NAME);
         if (attributeValue != null) {
             loopCharacteristics.setOutputDataItem(attributeValue);
-        }
-        String elementText = reader.getElementText();
-        if (elementText != null && !elementText.trim().isEmpty()) {
-            loopCharacteristics.setOutputDataItem(elementText);
         }
     }
 }
