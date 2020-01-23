@@ -31,17 +31,10 @@
     <xmlgraphics-commons.version>2.2</xmlgraphics-commons.version>
     <subethasmtp-wiser.version>1.2</subethasmtp-wiser.version>
     <xmlgraphics-commons.version>2.2</xmlgraphics-commons.version>
-    <groovy-all.version>2.5.4</groovy-all.version>
     <checkstyle-maven-plugin.version>3.1.0</checkstyle-maven-plugin.version>
   </properties>
   <dependencyManagement>
     <dependencies>
-      <dependency>
-        <groupId>org.codehaus.groovy</groupId>
-        <artifactId>groovy-all</artifactId>
-        <version>${groovy-all.version}</version>
-        <scope>test</scope>
-      </dependency>
       <dependency>
         <groupId>javax.el</groupId>
         <artifactId>el-api</artifactId>
