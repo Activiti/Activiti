@@ -75,7 +75,7 @@ public class CreateTaskPayloadBuilder {
     }
 
     public CreateTaskPayloadBuilder withCandidateUsers(String candidateUsers) {
-        this.candidateGroups.add(candidateUsers);
+        this.candidateUsers.add(candidateUsers);
         return this;
     }
 

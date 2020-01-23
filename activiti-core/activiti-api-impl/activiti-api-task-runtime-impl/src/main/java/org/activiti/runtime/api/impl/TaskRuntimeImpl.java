@@ -262,8 +262,6 @@ public class TaskRuntimeImpl implements TaskRuntime {
         task.setFormKey(createTaskPayload.getFormKey());
         task.setOwner(securityManager.getAuthenticatedUserId());
         taskService.saveTask(task);
-        taskService.addCandidateUser(task.getId(),
-                securityManager.getAuthenticatedUserId());
         if (createTaskPayload.getCandidateGroups() != null && !createTaskPayload.getCandidateGroups().isEmpty()) {
             for ( String g : createTaskPayload.getCandidateGroups() ) {
                 taskService.addCandidateGroup(task.getId(),
