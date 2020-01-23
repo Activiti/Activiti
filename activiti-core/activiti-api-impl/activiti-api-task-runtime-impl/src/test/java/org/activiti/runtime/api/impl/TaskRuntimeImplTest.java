@@ -20,6 +20,7 @@ import org.activiti.api.runtime.shared.security.SecurityManager;
 import org.activiti.api.task.model.Task;
 import org.activiti.api.task.model.builders.TaskPayloadBuilder;
 import org.activiti.api.task.model.impl.TaskImpl;
+import org.activiti.api.task.model.payloads.CreateTaskPayload;
 import org.activiti.api.task.model.payloads.UpdateTaskPayload;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.impl.TaskQueryImpl;
@@ -33,6 +34,7 @@ import org.mockito.Mock;
 
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
@@ -65,6 +67,88 @@ public class TaskRuntimeImplTest {
     @Before
     public void setUp() {
         initMocks(this);
+    }
+
+    @Test
+    public void should_thrownIllegalStateException_when_assigneeOrCandidatesAreNotSpecified() {
+        CreateTaskPayload createTaskPayload = TaskPayloadBuilder
+                                                      .create()
+                                                      .withDescription("new description")
+                                                      .build();
+
+
+        assertThatThrownBy(() -> taskRuntime.create(createTaskPayload))
+                .isInstanceOf(IllegalStateException.class)
+                .withFailMessage("You cannot create a task without an assignee or candidate users or groups");
+    }
+
+    @Test
+    public void should_createTask_when_assigneeIsSpecified() {
+
+        given(taskService.newTask())
+                .willReturn(engineTaskMock);
+
+        given(taskConverter.from(any(org.activiti.engine.task.Task.class)))
+                .willReturn(new TaskImpl());
+
+        Task taskWithAssignee = taskRuntime.create(TaskPayloadBuilder
+                                               .create()
+                                               .withAssignee("test")
+                                               .withName("name")
+                                               .build());
+
+        assertThat(taskWithAssignee).isNotNull();
+
+        verify(taskService).saveTask(eq(engineTaskMock));
+        verify(securityManager).getAuthenticatedUserId();
+        verify(taskService, never()).addCandidateUser(any(), any());
+        verify(taskService, never()).addCandidateGroup(any(), any());
+    }
+
+    @Test
+    public void should_createTask_when_CandidateGroupIsSpecified() {
+
+        given(taskService.newTask())
+                .willReturn(engineTaskMock);
+
+        given(taskConverter.from(any(org.activiti.engine.task.Task.class)))
+                .willReturn(new TaskImpl());
+
+        Task taskWithCandidateGroup = taskRuntime.create(TaskPayloadBuilder
+                                                                 .create()
+                                                                 .withCandidateGroup("testGroup")
+                                                                 .withName("name")
+                                                                 .build());
+
+        assertThat(taskWithCandidateGroup).isNotNull();
+
+        verify(taskService, times(1)).saveTask(eq(engineTaskMock));
+        verify(securityManager, times(1)).getAuthenticatedUserId();
+        verify(taskService, never()).addCandidateUser(any(), any());
+        verify(taskService, times(1)).addCandidateGroup(any(), eq("testGroup"));
+    }
+
+    @Test
+    public void should_createTask_when_CandidateUserIsSpecified() {
+
+        given(taskService.newTask())
+                .willReturn(engineTaskMock);
+
+        given(taskConverter.from(any(org.activiti.engine.task.Task.class)))
+                .willReturn(new TaskImpl());
+
+        Task taskWithCandidateUser = taskRuntime.create(TaskPayloadBuilder
+                                                                .create()
+                                                                .withCandidateUsers("testUser")
+                                                                .withName("name")
+                                                                .build());
+
+        assertThat(taskWithCandidateUser).isNotNull();
+
+        verify(taskService, times(1)).saveTask(eq(engineTaskMock));
+        verify(securityManager, times(1)).getAuthenticatedUserId();
+        verify(taskService, times(1)).addCandidateUser(any(), eq("testUser"));
+        verify(taskService, never()).addCandidateGroup(any(), any());
     }
 
     @Test
