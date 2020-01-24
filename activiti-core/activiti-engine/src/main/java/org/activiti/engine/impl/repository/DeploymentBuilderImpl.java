@@ -108,7 +108,7 @@ public class DeploymentBuilderImpl implements DeploymentBuilder, Serializable {
   }
 
   public boolean hasEnforcedAppVersionPropertySet(){
-      return this.enforcedAppVersion != null;
+      return this.enforcedAppVersion != 0;
   }
 
   @Override
