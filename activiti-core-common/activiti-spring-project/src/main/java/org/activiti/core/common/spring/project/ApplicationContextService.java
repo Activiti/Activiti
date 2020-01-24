@@ -10,18 +10,22 @@ import org.activiti.core.common.project.model.ProjectManifest;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.ResourcePatternResolver;
 
-public class ProjectModelService {
+public class ApplicationContextService {
 
     private String projectManifestFilePath;
+
+    private Integer enforcedAppVersion;
 
     private final ObjectMapper objectMapper;
 
     private ResourcePatternResolver resourceLoader;
 
-    public ProjectModelService(String path,
-                               ObjectMapper objectMapper,
-                               ResourcePatternResolver resourceLoader) {
+    public ApplicationContextService(String path,
+                                     Integer enforcedAppVersion,
+                                     ObjectMapper objectMapper,
+                                     ResourcePatternResolver resourceLoader) {
         this.projectManifestFilePath = path;
+        this.enforcedAppVersion = enforcedAppVersion;
         this.objectMapper = objectMapper;
         this.resourceLoader = resourceLoader;
     }
@@ -51,5 +55,13 @@ public class ProjectModelService {
 
     public boolean hasProjectManifest(){
         return retrieveResource().isPresent();
+    }
+
+    public boolean hasEnforcedAppVersionSet(){
+        return this.enforcedAppVersion != 0;
+    }
+
+    public Integer getEnforcedAppVersion(){
+        return this.enforcedAppVersion;
     }
 }

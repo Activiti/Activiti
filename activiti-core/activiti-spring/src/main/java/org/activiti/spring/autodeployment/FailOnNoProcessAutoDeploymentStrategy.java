@@ -1,8 +1,6 @@
 package org.activiti.spring.autodeployment;
 
-import java.io.IOException;
-
-import org.activiti.core.common.spring.project.ProjectModelService;
+import org.activiti.core.common.spring.project.ApplicationContextService;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.DeploymentBuilder;
@@ -16,8 +14,8 @@ public class FailOnNoProcessAutoDeploymentStrategy extends AbstractAutoDeploymen
 
     public static final String DEPLOYMENT_MODE = "fail-on-no-process";
 
-    public FailOnNoProcessAutoDeploymentStrategy(ProjectModelService projectModelService) {
-        super(projectModelService);
+    public FailOnNoProcessAutoDeploymentStrategy(ApplicationContextService applicationContextService) {
+        super(applicationContextService);
     }
 
     @Override
@@ -43,7 +41,7 @@ public class FailOnNoProcessAutoDeploymentStrategy extends AbstractAutoDeploymen
             }
         }
 
-        deploymentBuilder = loadProjectManifest(deploymentBuilder);
+        deploymentBuilder = loadApplicationUpgradeContext(deploymentBuilder);
 
         if (validProcessCount != 0) {
             deploymentBuilder.deploy();

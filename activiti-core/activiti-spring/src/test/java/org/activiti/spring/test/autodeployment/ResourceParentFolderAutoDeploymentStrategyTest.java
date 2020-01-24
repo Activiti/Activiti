@@ -51,7 +51,7 @@ public class ResourceParentFolderAutoDeploymentStrategyTest extends AbstractAuto
   @Before
   public void before() throws Exception {
     super.before();
-    deploymentStrategy = new ResourceParentFolderAutoDeploymentStrategy(projectModelServiceMock);
+    deploymentStrategy = new ResourceParentFolderAutoDeploymentStrategy(applicationContextServiceMock);
     assertNotNull(deploymentStrategy);
 
     when(parentFile1Mock.getName()).thenReturn(parentFilename1);
