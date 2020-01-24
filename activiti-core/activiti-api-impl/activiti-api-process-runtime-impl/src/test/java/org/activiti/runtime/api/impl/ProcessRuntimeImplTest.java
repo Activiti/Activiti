@@ -34,8 +34,7 @@ import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
 import org.activiti.api.process.model.payloads.UpdateProcessPayload;
 import org.activiti.api.runtime.model.impl.DeploymentImpl;
 import org.activiti.api.runtime.model.impl.ProcessInstanceImpl;
-import org.activiti.api.runtime.shared.UnprocessableEntryException;
-import org.activiti.core.common.spring.security.policies.ActivitiForbiddenException;
+import org.activiti.api.runtime.shared.UnprocessableEntityException;
 import org.activiti.core.common.spring.security.policies.ProcessSecurityPoliciesManager;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.RuntimeService;
@@ -144,7 +143,7 @@ public class ProcessRuntimeImplTest {
         Throwable exception = catchThrowable(() -> processRuntime.processDefinition(processDefinitionId));
 
         assertThat(exception)
-            .isInstanceOf(UnprocessableEntryException.class)
+            .isInstanceOf(UnprocessableEntityException.class)
             .hasMessage("Process definition with the given id:'processDefinitionId' belongs to a different application version.");
     }
 
