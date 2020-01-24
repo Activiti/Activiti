@@ -98,8 +98,8 @@ public class TaskRuntimeImplTest {
 
         Task task = taskRuntime.task(taskId);
 
-        assertThat(task.getCandidateUsers()).isEmpty();
-        assertThat(task.getCandidateGroups()).isEmpty();
+        assertThat(task).isNotInstanceOf(TaskImpl.class);
+        assertThat(task).isEqualTo(taskMock);
     }
 
     @Test
@@ -135,7 +135,7 @@ public class TaskRuntimeImplTest {
         given(identityLink.getGroupId())
                 .willReturn("group");
 
-        Task task = taskRuntime.task(taskId);
+        TaskImpl task = (TaskImpl) taskRuntime.task(taskId);
         assertThat(task.getCandidateUsers()).isNotNull();
         assertThat(task.getCandidateUsers()).containsExactly("user");
         assertThat(task.getCandidateGroups()).isNotNull();
