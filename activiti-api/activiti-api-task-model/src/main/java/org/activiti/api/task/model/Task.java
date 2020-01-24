@@ -16,10 +16,9 @@
 
 package org.activiti.api.task.model;
 
-import java.util.Date;
-import java.util.List;
-
 import org.activiti.api.model.shared.model.ApplicationElement;
+
+import java.util.Date;
 
 public interface Task extends ApplicationElement {
 
@@ -37,10 +36,6 @@ public interface Task extends ApplicationElement {
     String getOwner();
 
     String getAssignee();
-
-    List<String> getCandidateUsers();
-
-    List<String> getCandidateGroups();
 
     String getName();
 
