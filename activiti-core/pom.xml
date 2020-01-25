@@ -36,6 +36,20 @@
   <dependencyManagement>
     <dependencies>
       <dependency>
+        <groupId>org.activiti.api</groupId>
+        <artifactId>activiti-api-dependencies</artifactId>
+        <version>${project.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.activiti.core.common</groupId>
+        <artifactId>activiti-core-common-dependencies</artifactId>
+        <version>${project.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
         <groupId>javax.el</groupId>
         <artifactId>el-api</artifactId>
         <version>${el-api.version}</version>
