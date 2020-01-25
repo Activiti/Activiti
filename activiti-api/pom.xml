@@ -11,6 +11,30 @@
   <artifactId>activiti-api</artifactId>
   <name>Activiti :: API :: Parent</name>
   <packaging>pom</packaging>
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.activiti</groupId>
+        <artifactId>activiti-api-task-runtime-impl</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.activiti</groupId>
+        <artifactId>activiti-api-model-shared-impl</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.activiti</groupId>
+        <artifactId>activiti-api-process-model-impl</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.activiti</groupId>
+        <artifactId>activiti-api-task-model-impl</artifactId>
+        <version>${project.version}</version>
+      </dependency>      
+    </dependencies>
+  </dependencyManagement>
   <modules>
     <module>activiti-api-dependencies</module>
     <module>activiti-api-model-shared</module>

@@ -17,7 +17,4 @@ github:
     - name: activiti-cloud-modeling-service
       branch: develop
       useSinglePullRequest: true
-    - name: activiti-cloud-build
-      branch: develop
-      useSinglePullRequest: true
     
