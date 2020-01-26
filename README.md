@@ -7,7 +7,6 @@ Activiti
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/f859f1bf542b43cab64e1e85706e5243)](https://www.codacy.com/app/Activiti/Activiti?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Activiti/Activiti&amp;utm_campaign=Badge_Grade)
 [![ASL 2.0](https://img.shields.io/hexpm/l/plug.svg)](https://github.com/Activiti/Activiti/blob/master/LICENSE.txt)
 [![CLA](https://cla-assistant.io/readme/badge/Activiti/Activiti)](https://cla-assistant.io/Activiti/Activiti)
-[![Known Vulnerabilities](https://snyk.io/test/github/Activiti/Activiti/badge.svg)](https://snyk.io/test/github/Activiti/Activiti)
 [![security status](https://www.meterian.com/badge/gh/Activiti/Activiti/security)](https://www.meterian.com/report/gh/Activiti/Activiti)
 [![stability status](https://www.meterian.com/badge/gh/Activiti/Activiti/stability)](https://www.meterian.com/report/gh/Activiti/Activiti)
 
