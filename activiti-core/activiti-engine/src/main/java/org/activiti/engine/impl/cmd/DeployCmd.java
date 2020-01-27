@@ -82,7 +82,12 @@ public class DeployCmd<T> implements Command<Deployment>, Serializable {
                                      existingDeployment)) {
                   return existingDeployment;
               } else {
-                  deployment.setVersion(existingDeployment.getVersion() + 1);
+
+                  if (deploymentBuilder.hasEnforcedAppVersion()) {
+                      deployment.setVersion(deploymentBuilder.getEnforcedAppVersion());
+                  } else {
+                      deployment.setVersion(existingDeployment.getVersion() + 1);
+                  }
               }
           }
     }
@@ -126,7 +131,12 @@ public class DeployCmd<T> implements Command<Deployment>, Serializable {
 
         if (deploymentBuilder.hasProjectManifestSet()) {
 
-            return !deployment.getProjectReleaseVersion().equals(saved.getProjectReleaseVersion());
+            if (!deployment.getProjectReleaseVersion().equals(saved.getProjectReleaseVersion())) {
+                return true;
+            } else {
+                return !deploymentBuilder.getEnforcedAppVersion().equals(saved.getVersion());
+            }
+
         } else {
 
             if (deployment.getResources() == null || saved.getResources() == null) {

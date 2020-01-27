@@ -135,6 +135,14 @@ public abstract class AbstractAutoDeploymentStrategy implements AutoDeploymentSt
                 LOGGER.warn("Manifest of application not found. Project release version will not be set for deployment.");
             }
         }
+
+        if(projectModelService != null && projectModelService.hasEnforcedAppVersion()){
+            deploymentBuilder.setEnforcedAppVersion(projectModelService.getEnforcedAppVersion());
+            LOGGER.warn("Enforced application version set to" + projectModelService.getEnforcedAppVersion().toString());
+        }else{
+            LOGGER.warn("Enforced application version not set.");
+        }
+
         return deploymentBuilder;
     }
 }

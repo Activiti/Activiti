@@ -96,6 +96,37 @@ public class ApplicationUpgradeIT {
 
     }
 
+    @Test
+    public void should_UpdateDeploymentVersion_when_SameProjectManifestVersionAndEnforcedAppVersionIsSet(){
+
+        ProjectManifest projectManifest = new ProjectManifest();
+        projectManifest.setVersion("2");
+
+        Deployment deployment1 = repositoryService.createDeployment()
+            .setProjectManifest(projectManifest)
+            .setEnforcedAppVersion(1)
+            .enableDuplicateFiltering()
+            .name("deploymentName")
+            .deploy();
+        deploymentIds.add(deployment1.getId());
+
+        assertThat(deployment1.getVersion()).isEqualTo(1);
+        assertThat(deployment1.getProjectReleaseVersion()).isEqualTo("2");
+
+        Deployment deployment2 = repositoryService.createDeployment()
+            .setProjectManifest(projectManifest)
+            .setEnforcedAppVersion(2)
+            .enableDuplicateFiltering()
+            .name("deploymentName")
+            .deploy();
+        deploymentIds.add(deployment2.getId());
+        assertThat(deployment2.getVersion()).isEqualTo(2);
+        assertThat(deployment2.getProjectReleaseVersion()).isEqualTo("2");
+
+
+
+    }
+
     private void deploySingleTaskProcess(ProjectManifest projectManifest) {
         Deployment deployment = repositoryService.createDeployment()
             .setProjectManifest(projectManifest)

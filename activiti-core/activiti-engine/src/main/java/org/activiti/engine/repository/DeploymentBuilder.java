@@ -51,6 +51,8 @@ public interface DeploymentBuilder {
 
   DeploymentBuilder setProjectManifest(ProjectManifest projectManifest);
 
+  DeploymentBuilder setEnforcedAppVersion(Integer enforcedAppVersion);
+
   /**
    * If called, no XML schema validation against the BPMN 2.0 XSD.
    * 
