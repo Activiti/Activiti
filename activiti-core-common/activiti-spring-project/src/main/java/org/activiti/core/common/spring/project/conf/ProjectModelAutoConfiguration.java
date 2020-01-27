@@ -21,9 +21,11 @@ public class ProjectModelAutoConfiguration {
 
     @Bean
     public ProjectModelService projectModelService(@Value("${project.manifest.file.path:classpath:/default-app.json}") String absolutePath,
+                                                   @Value("${application.version:0}") Integer enforcedAppVersion,
                                                    ObjectMapper objectMapper,
                                                    ResourcePatternResolver resourceLoader) {
         return new ProjectModelService(absolutePath,
+                                       enforcedAppVersion,
                                        objectMapper,
                                        resourceLoader);
     }

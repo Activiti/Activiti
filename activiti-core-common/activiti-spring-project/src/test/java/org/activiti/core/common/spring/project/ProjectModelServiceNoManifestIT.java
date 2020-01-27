@@ -15,7 +15,7 @@ import static org.assertj.core.api.Assertions.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = ProjectModelAutoConfiguration.class, webEnvironment = SpringBootTest.WebEnvironment.NONE)
-@TestPropertySource(properties = "project.manifest.file.path=null")
+@TestPropertySource(properties = {"project.manifest.file.path=null", "application.version=0"})
 public class ProjectModelServiceNoManifestIT {
 
     @Autowired
@@ -35,4 +35,10 @@ public class ProjectModelServiceNoManifestIT {
                 .isInstanceOf(FileNotFoundException.class)
                 .hasMessageContaining("manifest not found");
     }
+
+    @Test
+    public void should_Have_DefaultEnforcedAppVersion() {
+        assertThat(projectModelService.hasEnforcedAppVersion()).isFalse();
+    }
+
 }

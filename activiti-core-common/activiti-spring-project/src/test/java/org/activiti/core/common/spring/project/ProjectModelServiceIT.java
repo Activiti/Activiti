@@ -37,4 +37,11 @@ public class ProjectModelServiceIT {
         assertThat(projectModel.getName()).isEqualTo("projectA");
         assertThat(projectModel.getVersion()).isEqualTo("2");
     }
+
+    @Test
+    public void should_HaveEnforcedAppVersionSet() {
+        assertThat(projectModelService.hasEnforcedAppVersion()).isTrue();
+        assertThat(projectModelService.getEnforcedAppVersion()).isEqualTo(1);
+    }
+
 }

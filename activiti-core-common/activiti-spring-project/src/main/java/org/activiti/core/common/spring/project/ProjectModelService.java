@@ -14,14 +14,18 @@ public class ProjectModelService {
 
     private String projectManifestFilePath;
 
+    private Integer enforcedAppVersion;
+
     private final ObjectMapper objectMapper;
 
     private ResourcePatternResolver resourceLoader;
 
     public ProjectModelService(String path,
+                               Integer enforcedAppVersion,
                                ObjectMapper objectMapper,
                                ResourcePatternResolver resourceLoader) {
         this.projectManifestFilePath = path;
+        this.enforcedAppVersion = enforcedAppVersion;
         this.objectMapper = objectMapper;
         this.resourceLoader = resourceLoader;
     }
@@ -51,5 +55,13 @@ public class ProjectModelService {
 
     public boolean hasProjectManifest(){
         return retrieveResource().isPresent();
+    }
+
+    public boolean hasEnforcedAppVersion(){
+        return this.enforcedAppVersion !=0;
+    }
+
+    public Integer getEnforcedAppVersion(){
+        return this.enforcedAppVersion;
     }
 }
