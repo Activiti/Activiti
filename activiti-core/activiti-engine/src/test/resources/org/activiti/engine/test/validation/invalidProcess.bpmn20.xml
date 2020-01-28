@@ -10,7 +10,7 @@
 	<signal id="signal2" name="duplicateName"></signal>
 
 	<signal id="signal3" name="signal3" activiti:scope="invalid"></signal>
-	
+
 	<!-- Messages -->
 	<message id="message1"></message>
 	<message id="message2" name="message2" itemRef="invalid"></message>
@@ -37,10 +37,10 @@
 
 		<association associationDirection="One" sourceRef=""
 			targetRef="" id="as1" />
-			
+
 		<documentation>This is a process for testing purposes</documentation>
-		
-		
+
+
 		 <dataObject id="dataObject1" itemSubjectRef="xsd:string">
         <extensionElements>
         <activiti:value>Testing</activiti:value>
@@ -56,7 +56,7 @@
 		<sequenceFlow id="flow1" sourceRef="theStart1"
 			targetRef="serviceTaskWithWrongResultVariableUsage" />
 
-		<!-- Service task with wrong usage of variable name (not allowed when used 
+		<!-- Service task with wrong usage of variable name (not allowed when used
 			with class) -->
 		<serviceTask id="serviceTaskWithWrongResultVariableUsage"
 			name="serviceTaskWithWrongResultVariableUsage" activiti:class="org.activiti.something"
@@ -106,7 +106,7 @@
                 <activiti:field name="to" expression="${recipient}" />
             </extensionElements>
         </serviceTask>
-        
+
         <!-- Shell task without command -->
         <serviceTask activiti:type="shell" id="shellTask1" name="shellTask1"></serviceTask>
 
@@ -149,7 +149,7 @@
 			<conditionExpression>${expression1}</conditionExpression>
 		</sequenceFlow>
 		<sequenceFlow id="flow5" sourceRef="xGw3" targetRef="theEnd">
-			<conditionExpression>${expression2}</conditionExpression>
+			<conditionExpression>${wrong ecpreafaf ____ _===== asdasdas}</conditionExpression>
 		</sequenceFlow>
 
 		<!-- Excl gw with seq flow without conditions -->
@@ -159,7 +159,7 @@
 		<sequenceFlow id="flow7" sourceRef="xGw4" targetRef="theEnd">
 		</sequenceFlow>
 
-		<!-- Excl gw with one outgoing seq flow that is not default. THIS ONE IS 
+		<!-- Excl gw with one outgoing seq flow that is not default. THIS ONE IS
 			VALID! -->
 		<exclusiveGateway id="xGw5" name="gw"></exclusiveGateway>
 		<sequenceFlow id="flow8" sourceRef="xGw5" targetRef="theEnd">
@@ -247,15 +247,15 @@
 		<eventBasedGateway id="eventGateway1" name="eventGateway2"></eventBasedGateway>
 		<sequenceFlow id="invalidSeqFlowFromEventGateway1" name="seqFlow"
 			targetRef="theEnd" sourceRef="eventGateway1"></sequenceFlow>
-			
-			
+
+
 		<!-- Invalid data association: no targetref -->
 		<serviceTask id="dataAssociationServiceTask1" name="dataAssociationServiceTask1" activiti:class="myDelegate">
 		  <dataInputAssociation id="inputAssoc">
 		      <sourceRef>dunno</sourceRef>
 		  </dataInputAssociation>
-		</serviceTask>	
-		
+		</serviceTask>
+
 		<!-- Invalid multi instance definitions -->
 		<userTask id="miUserTask1" name="miUserTask2">
 		  <multiInstanceLoopCharacteristics></multiInstanceLoopCharacteristics>
@@ -264,30 +264,30 @@
 		  <timerEventDefinition>
 		  </timerEventDefinition>
 		</boundaryEvent>
-		
+
 		<!-- Invalid compensation event -->
-		<boundaryEvent id="compensationEvent1" name="compensationEvent1" attachedToRef="invalid" >       
+		<boundaryEvent id="compensationEvent1" name="compensationEvent1" attachedToRef="invalid" >
           <compensateEventDefinition activityRef="invalid"/>
         </boundaryEvent>
-        
+
         <!-- Nested subprocess with a data object with no name -->
         <subProcess id="someSubprocess1" name="someSubprocess1">
-        
+
             <subProcess id="someSubprocess2" name="someSubprocess2">
-            
+
                 <subProcess id="someSubprocess3" name="someSubprocess3">
-        
+
 			         <dataObject id="dataObject2" itemSubjectRef="xsd:string">
 			        <extensionElements>
 			        <activiti:value>Testing2</activiti:value>
 			        </extensionElements>
 			        </dataObject>
 			    </subProcess>
-			    
-            </subProcess>    
-			        
+
+            </subProcess>
+
         </subProcess>
-        
+
 		<!-- Invalid sequence flow: src/target not correct -->
 		<sequenceFlow id="invalidSeqFlow1" name="seqFlow"
 			targetRef="theEnd" sourceRef="invalid"></sequenceFlow>
