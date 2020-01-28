@@ -55,6 +55,6 @@ public class DefaultAutoDeploymentStrategy extends AbstractAutoDeploymentStrateg
                                              resource);
         }
 
-        loadProjectManifest(deploymentBuilder).deploy();
+        loadApplicationUpgradeContext(deploymentBuilder).deploy();
     }
 }

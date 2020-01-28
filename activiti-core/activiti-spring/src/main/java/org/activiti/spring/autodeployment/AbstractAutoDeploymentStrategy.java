@@ -127,7 +127,13 @@ public abstract class AbstractAutoDeploymentStrategy implements AutoDeploymentSt
         return resource.endsWith(".bpmn20.xml") || resource.endsWith(".bpmn");
     }
 
-    protected DeploymentBuilder loadProjectManifest(DeploymentBuilder deploymentBuilder) {
+    protected DeploymentBuilder loadApplicationUpgradeContext(DeploymentBuilder deploymentBuilder) {
+        loadProjectManifest(deploymentBuilder);
+        loadEnforcedAppVersion(deploymentBuilder);
+        return deploymentBuilder;
+    }
+
+    private void loadProjectManifest(DeploymentBuilder deploymentBuilder) {
         if (applicationUpgradeContextService != null && applicationUpgradeContextService.hasProjectManifest()) {
             try {
                 deploymentBuilder.setProjectManifest(applicationUpgradeContextService.loadProjectManifest());
@@ -135,14 +141,14 @@ public abstract class AbstractAutoDeploymentStrategy implements AutoDeploymentSt
                 LOGGER.warn("Manifest of application not found. Project release version will not be set for deployment.");
             }
         }
+    }
 
+    private void loadEnforcedAppVersion(DeploymentBuilder deploymentBuilder) {
         if(applicationUpgradeContextService != null && applicationUpgradeContextService.hasEnforcedAppVersion()){
             deploymentBuilder.setEnforcedAppVersion(applicationUpgradeContextService.getEnforcedAppVersion());
             LOGGER.warn("Enforced application version set to" + applicationUpgradeContextService.getEnforcedAppVersion().toString());
         }else{
             LOGGER.warn("Enforced application version not set.");
         }
-
-        return deploymentBuilder;
     }
 }

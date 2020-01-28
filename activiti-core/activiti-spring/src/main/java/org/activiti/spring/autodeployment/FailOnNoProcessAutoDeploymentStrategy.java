@@ -41,7 +41,7 @@ public class FailOnNoProcessAutoDeploymentStrategy extends AbstractAutoDeploymen
             }
         }
 
-        deploymentBuilder = loadProjectManifest(deploymentBuilder);
+        deploymentBuilder = loadApplicationUpgradeContext(deploymentBuilder);
 
         if (validProcessCount != 0) {
             deploymentBuilder.deploy();

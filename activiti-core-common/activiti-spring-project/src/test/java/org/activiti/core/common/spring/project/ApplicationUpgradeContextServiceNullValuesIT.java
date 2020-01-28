@@ -11,7 +11,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.catchThrowable;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = ApplicationUpgradeContextAutoConfiguration.class, webEnvironment = SpringBootTest.WebEnvironment.NONE)
@@ -22,18 +23,17 @@ public class ApplicationUpgradeContextServiceNullValuesIT {
     private ApplicationUpgradeContextService applicationUpgradeContextService;
 
     @Test
-    public void should_ThrowException_When_NoManifestPresent() throws IOException {
+    public void should_ThrowException_When_NoManifestPresent() {
 
         assertThat(applicationUpgradeContextService.hasProjectManifest()).isFalse();
         Throwable thrown = catchThrowable(() -> applicationUpgradeContextService.loadProjectManifest());
         assertThat(thrown)
-                .isInstanceOf(FileNotFoundException.class)
-                .hasMessageContaining("manifest not found");
+            .isInstanceOf(FileNotFoundException.class)
+            .hasMessageContaining("manifest not found");
     }
 
     @Test
     public void should_Not_HaveDefaultEnforcedAppVersion() {
         assertThat(applicationUpgradeContextService.hasEnforcedAppVersion()).isFalse();
     }
-
 }

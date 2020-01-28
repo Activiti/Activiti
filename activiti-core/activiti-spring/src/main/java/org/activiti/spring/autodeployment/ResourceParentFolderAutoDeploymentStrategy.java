@@ -70,7 +70,7 @@ public class ResourceParentFolderAutoDeploymentStrategy extends AbstractAutoDepl
                                          resource);
       }
 
-      loadProjectManifest(deploymentBuilder).deploy();
+      loadApplicationUpgradeContext(deploymentBuilder).deploy();
     }
 
   }

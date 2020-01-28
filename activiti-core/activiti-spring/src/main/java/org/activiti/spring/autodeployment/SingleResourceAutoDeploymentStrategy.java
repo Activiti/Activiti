@@ -54,7 +54,7 @@ public class SingleResourceAutoDeploymentStrategy extends AbstractAutoDeployment
       deploymentBuilder.addInputStream(resourceName,
                                        resource);
 
-      loadProjectManifest(deploymentBuilder).deploy();
+      loadApplicationUpgradeContext(deploymentBuilder).deploy();
 
     }
   }
