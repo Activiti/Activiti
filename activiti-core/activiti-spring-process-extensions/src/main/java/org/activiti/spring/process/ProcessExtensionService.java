@@ -42,14 +42,15 @@ public class ProcessExtensionService {
         this.processExtensionReader = processExtensionReader;
     }
 
-    private Map<String, ProcessExtensionModel> getProcessExtensionsForDeploymentId(String deploymentId) {
+    private Map<String, ProcessExtensionModel> getProcessExtensionsForDeploymentId(String deploymentId, String processDefinitionId) {
         Map<String, ProcessExtensionModel> processExtensionModelMap = processExtensionModelDeploymentMap.get(deploymentId);
         if (processExtensionModelMap != null) {
             return processExtensionModelMap;
         }
 
         List<ProcessExtensionModel> processExtensionModels = processExtensionLoader.loadResourcesForDeployment(deploymentId,
-                processExtensionReader);
+                                                                                                               processDefinitionId,
+                                                                                                               processExtensionReader);
         processExtensionModelMap = processExtensionModels.stream().collect(Collectors.toMap(ProcessExtensionModel::getId,
                 Function.identity()));
 
@@ -70,7 +71,8 @@ public class ProcessExtensionService {
     public ProcessExtensionModel getExtensionsFor(ProcessDefinition processDefinition) {
         ProcessExtensionModel processExtensionModel = null;
 
-        Map<String, ProcessExtensionModel> processExtensionModelMap = getProcessExtensionsForDeploymentId(processDefinition.getDeploymentId());
+        Map<String, ProcessExtensionModel> processExtensionModelMap = getProcessExtensionsForDeploymentId(processDefinition.getDeploymentId(),
+                                                                                                          processDefinition.getId());
         if (processExtensionModelMap != null) {
             processExtensionModel = processExtensionModelMap.get(processDefinition.getKey());
         }

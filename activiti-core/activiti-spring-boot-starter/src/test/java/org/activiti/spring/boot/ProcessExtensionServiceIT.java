@@ -38,6 +38,6 @@ public class ProcessExtensionServiceIT {
         ProcessExtensionModel model = processExtensionService.getExtensionsFor(processDefinition);
 
         assertThat(model).isNotNull();
-        assertThat(model.getExtensions().getProperties()).containsKey("d440ff7b-0ac8-4a97-b163-51a6ec49faa1");
+        assertThat(model.getExtensions(processDefinition.getId()).getProperties()).containsKey("d440ff7b-0ac8-4a97-b163-51a6ec49faa1");
     }
 }

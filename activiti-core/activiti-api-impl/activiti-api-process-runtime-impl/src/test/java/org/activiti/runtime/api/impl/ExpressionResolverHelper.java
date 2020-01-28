@@ -35,7 +35,7 @@ public class ExpressionResolverHelper {
             throws JsonParseException, JsonMappingException, IOException {
         initializeExpressionResolver();
         
-        Map<String, Object> variables = converstToStringObjectMap(extensions.getExtensions().getProperties());
+        Map<String, Object> variables = converstToStringObjectMap(extensions.getExtensions(execution.getId()).getProperties());
         
         setExecutionVariables(execution, variables);
         return new ExpressionResolver(new ExpressionManager(),

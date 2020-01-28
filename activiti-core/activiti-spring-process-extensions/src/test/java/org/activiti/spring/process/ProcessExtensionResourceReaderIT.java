@@ -18,6 +18,7 @@ package org.activiti.spring.process;
 
 import java.io.InputStream;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.activiti.engine.RepositoryService;
 import org.activiti.spring.process.model.ProcessExtensionModel;
 import org.junit.Test;
@@ -30,7 +31,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
+@SpringBootTest(classes={ProcessExtensionResourceReader.class,ObjectMapper.class}, webEnvironment = SpringBootTest.WebEnvironment.NONE)
 public class ProcessExtensionResourceReaderIT {
 
     @MockBean
@@ -39,13 +40,16 @@ public class ProcessExtensionResourceReaderIT {
     @Autowired
     private ProcessExtensionResourceReader reader;
 
+    @Autowired
+    private ObjectMapper objectMapper;
+
     @Test
     public void shouldReadExtensionFromJsonFile() throws Exception{
         try(InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("processes/initial-vars-extensions.json")) {
-            ProcessExtensionModel processExtensionModel = reader.read(inputStream);
+            ProcessExtensionModel processExtensionModel = reader.read(inputStream, "Process_fazban");
             assertThat(processExtensionModel).isNotNull();
             assertThat(processExtensionModel.getId()).isEqualTo("initialVarsProcess");
-            assertThat(processExtensionModel.getExtensions().getProperties()).containsKey("d440ff7b-0ac8-4a97-b163-51a6ec49faa1");
+            assertThat(processExtensionModel.getExtensions("Process_fazban").getProperties()).containsKey("d440ff7b-0ac8-4a97-b163-51a6ec49faa1");
         }
     }
 }

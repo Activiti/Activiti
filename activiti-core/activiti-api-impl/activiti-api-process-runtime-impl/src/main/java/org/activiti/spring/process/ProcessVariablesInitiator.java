@@ -59,7 +59,7 @@ public class ProcessVariablesInitiator extends ProcessInstanceHelper {
         if (processExtensionService.hasExtensionsFor(processDefinition)) {
             ProcessExtensionModel processExtensionModel = processExtensionService.getExtensionsFor(processDefinition);
 
-            Map<String, VariableDefinition> variableDefinitionMap = processExtensionModel.getExtensions().getProperties();
+            Map<String, VariableDefinition> variableDefinitionMap = processExtensionModel.getExtensions(processDefinition.getId()).getProperties();
             processedVariables = processVariables(variables, variableDefinitionMap);
 
             Set<String> missingRequiredVars = checkRequiredVariables(processedVariables,

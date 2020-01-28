@@ -117,7 +117,9 @@ public class ProcessVariablesPayloadValidatorTest {
 
         ProcessExtensionModel processExtensionModel = new ProcessExtensionModel();
         processExtensionModel.setId("1");
-        processExtensionModel.setExtensions(extension);
+        Map<String, Extension> processExtensionMap = new HashMap();
+        processExtensionMap.put("Process_howdyzolt", extension);
+        processExtensionModel.setExtensions(processExtensionMap);
         
         given(processExtensionService.getExtensionsForId(any()))
                    .willReturn(processExtensionModel);

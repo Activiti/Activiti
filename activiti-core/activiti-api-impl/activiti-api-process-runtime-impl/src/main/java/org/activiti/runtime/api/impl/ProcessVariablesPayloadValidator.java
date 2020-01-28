@@ -62,9 +62,9 @@ public class ProcessVariablesPayloadValidator  {
                                                       processExtensionService.getExtensionsForId(processDefinitionId) :
                                                       null;
 
-        return Optional.ofNullable(processExtensionModel)
-                .map(ProcessExtensionModel::getExtensions)
-                .map(Extension::getProperties);
+        return Optional.of(processExtensionModel
+                               .getExtensions(processDefinitionId)
+                               .getProperties());
     }
 
     private boolean validateVariablesAgainstDefinitions(Optional<Map<String, VariableDefinition>> variableDefinitionMap,
