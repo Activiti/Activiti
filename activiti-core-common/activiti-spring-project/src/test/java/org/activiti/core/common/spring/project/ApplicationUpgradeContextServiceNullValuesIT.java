@@ -1,7 +1,6 @@
 package org.activiti.core.common.spring.project;
 
 import java.io.FileNotFoundException;
-import java.io.IOException;
 
 import org.activiti.core.common.spring.project.conf.ApplicationUpgradeContextAutoConfiguration;
 import org.junit.Test;
