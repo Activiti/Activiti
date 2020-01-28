@@ -3,7 +3,7 @@ package org.activiti.core.common.spring.project;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-import org.activiti.core.common.spring.project.conf.ProjectModelAutoConfiguration;
+import org.activiti.core.common.spring.project.conf.ApplicationUpgradeContextAutoConfiguration;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,23 +14,18 @@ import org.springframework.test.context.junit4.SpringRunner;
 import static org.assertj.core.api.Assertions.*;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = ProjectModelAutoConfiguration.class, webEnvironment = SpringBootTest.WebEnvironment.NONE)
+@SpringBootTest(classes = ApplicationUpgradeContextAutoConfiguration.class, webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @TestPropertySource(properties = {"project.manifest.file.path=null", "application.version=0"})
-public class ProjectModelServiceNoManifestIT {
+public class ApplicationUpgradeContextServiceNullValuesIT {
 
     @Autowired
-    private ProjectModelService projectModelService;
+    private ApplicationUpgradeContextService applicationUpgradeContextService;
 
     @Test
     public void should_ThrowException_When_NoManifestPresent() throws IOException {
 
-        //given
-        assertThat(projectModelService.hasProjectManifest()).isFalse();
-
-        //when
-        Throwable thrown = catchThrowable(() -> projectModelService.loadProjectManifest());
-
-        //then
+        assertThat(applicationUpgradeContextService.hasProjectManifest()).isFalse();
+        Throwable thrown = catchThrowable(() -> applicationUpgradeContextService.loadProjectManifest());
         assertThat(thrown)
                 .isInstanceOf(FileNotFoundException.class)
                 .hasMessageContaining("manifest not found");
@@ -38,7 +33,7 @@ public class ProjectModelServiceNoManifestIT {
 
     @Test
     public void should_Have_DefaultEnforcedAppVersion() {
-        assertThat(projectModelService.hasEnforcedAppVersion()).isFalse();
+        assertThat(applicationUpgradeContextService.hasEnforcedAppVersion()).isFalse();
     }
 
 }

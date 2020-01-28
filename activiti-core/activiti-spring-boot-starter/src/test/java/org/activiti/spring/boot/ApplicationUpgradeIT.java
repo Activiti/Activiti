@@ -123,8 +123,6 @@ public class ApplicationUpgradeIT {
         assertThat(deployment2.getVersion()).isEqualTo(2);
         assertThat(deployment2.getProjectReleaseVersion()).isEqualTo("2");
 
-
-
     }
 
     private void deploySingleTaskProcess(ProjectManifest projectManifest) {

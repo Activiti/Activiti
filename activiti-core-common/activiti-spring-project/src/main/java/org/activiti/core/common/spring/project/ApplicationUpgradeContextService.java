@@ -10,7 +10,7 @@ import org.activiti.core.common.project.model.ProjectManifest;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.ResourcePatternResolver;
 
-public class ProjectModelService {
+public class ApplicationUpgradeContextService {
 
     private String projectManifestFilePath;
 
@@ -20,10 +20,10 @@ public class ProjectModelService {
 
     private ResourcePatternResolver resourceLoader;
 
-    public ProjectModelService(String path,
-                               Integer enforcedAppVersion,
-                               ObjectMapper objectMapper,
-                               ResourcePatternResolver resourceLoader) {
+    public ApplicationUpgradeContextService(String path,
+                                            Integer enforcedAppVersion,
+                                            ObjectMapper objectMapper,
+                                            ResourcePatternResolver resourceLoader) {
         this.projectManifestFilePath = path;
         this.enforcedAppVersion = enforcedAppVersion;
         this.objectMapper = objectMapper;
