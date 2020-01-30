@@ -71,7 +71,7 @@ public class VariablesMappingProviderTest {
 
     private DelegateExecution buildExecution(ProcessExtensionModel extensions, String processDefinitionId) {
         DelegateExecution execution = mock(DelegateExecution.class);
-        given(processExtensionService.getExtensionsForId(processDefinitionId.concat(":1:1231230123-123-123"))).willReturn(extensions);
+        given(processExtensionService.getExtensionsForId(processDefinitionId.concat(":1:1231230123-123-123"))).willReturn(extensions.getExtensions(processDefinitionId));
         given(execution.getProcessDefinitionId()).willReturn(processDefinitionId.concat(":1:1231230123-123-123"));
         given(execution.getCurrentActivityId()).willReturn("simpleTask");
         return execution;

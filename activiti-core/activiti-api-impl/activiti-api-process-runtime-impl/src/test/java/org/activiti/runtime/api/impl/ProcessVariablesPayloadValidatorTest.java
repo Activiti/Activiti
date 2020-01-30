@@ -117,12 +117,12 @@ public class ProcessVariablesPayloadValidatorTest {
 
         ProcessExtensionModel processExtensionModel = new ProcessExtensionModel();
         processExtensionModel.setId("1");
-        Map<String, Extension> processExtension = new HashMap();
+        Map<String, Extension> processExtension = new HashMap<>();
         processExtension.put("10",extension);
         processExtensionModel.setExtensions(processExtension);
 
         given(processExtensionService.getExtensionsForId(any()))
-                   .willReturn(processExtensionModel);
+                   .willReturn(extension);
     }
 
     @Test

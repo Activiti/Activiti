@@ -86,7 +86,7 @@ public class ProcessVariablesInitiatorIT {
                                                                      ProcessExtensionModel.class);
 
             ProcessDefinition processDefinition = mock(ProcessDefinition.class);
-            given(processExtensionService.getExtensionsFor(processDefinition)).willReturn(extension);
+            given(processExtensionService.getExtensionsFor(processDefinition)).willReturn(extension.getExtensions("Process_DefaultVarsProcess"));
             given(processExtensionService.hasExtensionsFor(processDefinition)).willReturn(true);
             given(processDefinition.getKey()).willReturn("Process_DefaultVarsProcess");
 
@@ -112,7 +112,7 @@ public class ProcessVariablesInitiatorIT {
                                                                      ProcessExtensionModel.class);
 
             ProcessDefinition processDefinition = mock(ProcessDefinition.class);
-            given(processExtensionService.getExtensionsFor(processDefinition)).willReturn(extension);
+            given(processExtensionService.getExtensionsFor(processDefinition)).willReturn(extension.getExtensions("Process_DefaultVarsProcess"));
             given(processExtensionService.hasExtensionsFor(processDefinition)).willReturn(true);
             given(processDefinition.getKey()).willReturn("Process_DefaultVarsProcess");
 
@@ -138,7 +138,7 @@ public class ProcessVariablesInitiatorIT {
                                                                      ProcessExtensionModel.class);
 
             ProcessDefinition processDefinition = mock(ProcessDefinition.class);
-            given(processExtensionService.getExtensionsFor(processDefinition)).willReturn(extension);
+            given(processExtensionService.getExtensionsFor(processDefinition)).willReturn(extension.getExtensions("Process_initialVarsProcess"));
             given(processExtensionService.hasExtensionsFor(processDefinition)).willReturn(true);
             given(processDefinition.getKey()).willReturn("Process_initialVarsProcess");
 
@@ -163,7 +163,7 @@ public class ProcessVariablesInitiatorIT {
                                                                      ProcessExtensionModel.class);
 
             ProcessDefinition processDefinition = mock(ProcessDefinition.class);
-            given(processExtensionService.getExtensionsFor(processDefinition)).willReturn(extension);
+            given(processExtensionService.getExtensionsFor(processDefinition)).willReturn(extension.getExtensions("Process_initialVarsProcess"));
             given(processExtensionService.hasExtensionsFor(processDefinition)).willReturn(true);
             given(processDefinition.getKey()).willReturn("Process_initialVarsProcess");
 

@@ -19,7 +19,7 @@ import java.util.Map;
 public class ProcessExtensionModel {
 
     private String id;
-    private Map<String, Extension> extensions = new HashMap();
+    private Map<String, Extension> extensions = new HashMap<>();
 
     public String getId() {
         return id;
