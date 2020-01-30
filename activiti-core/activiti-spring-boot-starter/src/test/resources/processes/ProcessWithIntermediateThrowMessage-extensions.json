@@ -1,24 +1,26 @@
 {
-   "id":"intermediateThrowMessageEvent",
+   "id":"intermediateThrowMessageEventModel",
    "name":"intermediateThrowMessageEvent.bpmn20.xml",
    "extensions":{
-      "properties":{
+     "intermediateThrowMessageEvent": {
+       "properties":{
          "process_variable_name":{
-            "id":"process_variable_id",
-            "name":"process_variable_name",
-            "type":"string",
-            "value":"value"
+           "id":"process_variable_id",
+           "name":"process_variable_name",
+           "type":"string",
+           "value":"value"
          }
-      },
-      "mappings":{
+       },
+       "mappings":{
          "IntermediateThrowEvent_0la4q0b":{
-            "inputs":{
-               "message_payload_variable":{
-                  "type":"variable",
-                  "value":"process_variable_name"
-               }
-            }
+           "inputs":{
+             "message_payload_variable":{
+               "type":"variable",
+               "value":"process_variable_name"
+             }
+           }
          }
-      }
+       }
+     }
    }
 }

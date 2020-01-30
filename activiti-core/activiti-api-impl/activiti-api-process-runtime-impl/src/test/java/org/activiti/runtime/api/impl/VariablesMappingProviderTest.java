@@ -7,19 +7,17 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.MockitoAnnotations.initMocks;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.spring.process.ProcessExtensionService;
+import org.activiti.spring.process.model.Extension;
 import org.activiti.spring.process.model.ProcessExtensionModel;
 import org.junit.Before;
 import org.junit.Test;
@@ -48,12 +46,13 @@ public class VariablesMappingProviderTest {
         ProcessExtensionModel extensions = objectMapper.readValue(new File("src/test/resources/task-variable-mapping-extensions.json"),
                                                                   ProcessExtensionModel.class);
 
-        DelegateExecution execution = buildExecution(extensions);
+        Extension processExtensions = extensions.getExtensions("Process_taskVarMapping");
+        DelegateExecution execution = buildExecution(processExtensions);
         given(execution.getVariable("process_variable_inputmap_1")).willReturn("new-input-value");
         given(execution.getVariable("property-with-no-default-value")).willReturn(null);
 
         ExpressionResolver expressionResolver = ExpressionResolverHelper.initContext(execution,
-                                                                                     extensions);
+            processExtensions);
 
         ReflectionTestUtils.setField(variablesMappingProvider,
                                      "expressionResolver",
@@ -69,11 +68,12 @@ public class VariablesMappingProviderTest {
         assertThat(inputVariables).doesNotContainKeys("task_input_variable_mapped_with_null_process_variable");
     }
 
-    private DelegateExecution buildExecution(ProcessExtensionModel extensions) {
+    private DelegateExecution buildExecution(Extension extensions) {
         DelegateExecution execution = mock(DelegateExecution.class);
-        given(processExtensionService.getExtensionsForId("taskVarMapping")).willReturn(extensions);
-        given(execution.getProcessDefinitionId()).willReturn("taskVarMapping");
+        String processDefinitionId = "procDefId";
+        given(execution.getProcessDefinitionId()).willReturn(processDefinitionId);
         given(execution.getCurrentActivityId()).willReturn("simpleTask");
+        given(processExtensionService.getExtensionsForId(processDefinitionId)).willReturn(extensions);
         return execution;
     }
 
@@ -84,9 +84,10 @@ public class VariablesMappingProviderTest {
         ProcessExtensionModel extensions = objectMapper.readValue(new File("src/test/resources/task-variable-no-mapping-extensions.json"),
                                                                   ProcessExtensionModel.class);
 
-        DelegateExecution execution = buildExecution(extensions);
+        Extension processExtensions = extensions.getExtensions("Process_taskVariableNoMapping");
+        DelegateExecution execution = buildExecution(processExtensions);
         ExpressionResolver expressionResolver = ExpressionResolverHelper.initContext(execution,
-                                                                                     extensions);
+            processExtensions);
 
         ReflectionTestUtils.setField(variablesMappingProvider,
                                      "expressionResolver",
@@ -112,7 +113,7 @@ public class VariablesMappingProviderTest {
         ProcessExtensionModel extensions = objectMapper.readValue(new File("src/test/resources/task-variable-empty-mapping-extensions.json"),
                                                                   ProcessExtensionModel.class);
 
-        DelegateExecution execution = buildExecution(extensions);
+        DelegateExecution execution = buildExecution(extensions.getExtensions("Process_taskVariableEmptyMapping"));
 
         //when
         Map<String, Object> inputVariables = variablesMappingProvider.calculateInputVariables(execution);
@@ -129,7 +130,7 @@ public class VariablesMappingProviderTest {
         ProcessExtensionModel extensions = objectMapper.readValue(new File("src/test/resources/task-variable-empty-mapping-with-constants-extensions.json"),
                                                                   ProcessExtensionModel.class);
 
-        DelegateExecution execution = buildExecution(extensions);
+        DelegateExecution execution = buildExecution(extensions.getExtensions("Process_taskVariableEmptyMappingWithContants"));
 
         //when
         Map<String, Object> inputVariables = variablesMappingProvider.calculateInputVariables(execution);
@@ -152,9 +153,9 @@ public class VariablesMappingProviderTest {
         ProcessExtensionModel extensions = objectMapper.readValue(new File("src/test/resources/task-variable-mapping-extensions.json"),
                                                                   ProcessExtensionModel.class);
 
-        DelegateExecution execution = buildExecution(extensions);
-        ExpressionResolver expressionResolver = ExpressionResolverHelper.initContext(execution,
-                                                                                     extensions);
+        Extension processExtensions = extensions.getExtensions("Process_taskVarMapping");
+        DelegateExecution execution = buildExecution(processExtensions);
+        ExpressionResolver expressionResolver = ExpressionResolverHelper.initContext(execution, processExtensions);
 
         ReflectionTestUtils.setField(variablesMappingProvider,
                                      "expressionResolver",
@@ -183,7 +184,7 @@ public class VariablesMappingProviderTest {
         ProcessExtensionModel extensions = objectMapper.readValue(new File("src/test/resources/task-variable-no-mapping-extensions.json"),
                                                                   ProcessExtensionModel.class);
 
-        DelegateExecution execution = buildExecution(extensions);
+        DelegateExecution execution = buildExecution(extensions.getExtensions("Process_taskVariableNoMapping"));
 
         Map<String, Object> taskVariables = new HashMap<>();
         taskVariables.put("task_output_variable_name_1", "var-one");
@@ -205,7 +206,7 @@ public class VariablesMappingProviderTest {
         ProcessExtensionModel extensions = objectMapper.readValue(new File("src/test/resources/task-variable-empty-mapping-extensions.json"),
                                                                   ProcessExtensionModel.class);
 
-        DelegateExecution execution = buildExecution(extensions);
+        DelegateExecution execution = buildExecution(extensions.getExtensions("Process_taskVariableEmptyMapping"));
 
         Map<String, Object> taskVariables = new HashMap<>();
         taskVariables.put("task_output_variable_name_1", "var-one");
@@ -219,16 +220,14 @@ public class VariablesMappingProviderTest {
         assertThat(outputVariables).isEmpty();
     }
 
-    private DelegateExecution initExpressionResolverTest(String fileName) throws JsonParseException,
-                                                                          JsonMappingException,
-                                                                          IOException {
+    private DelegateExecution initExpressionResolverTest(String fileName, String processDefinitionKey) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         ProcessExtensionModel extensions = objectMapper.readValue(new File("src/test/resources/expressions/" + fileName),
                                                                   ProcessExtensionModel.class);
 
-        DelegateExecution execution = buildExecution(extensions);
+        DelegateExecution execution = buildExecution(extensions.getExtensions(processDefinitionKey));
         ExpressionResolver expressionResolver = ExpressionResolverHelper.initContext(execution,
-                                                                                     extensions);
+                                                                                     extensions.getExtensions(processDefinitionKey));
 
         ReflectionTestUtils.setField(variablesMappingProvider,
                                      "expressionResolver",
@@ -239,7 +238,7 @@ public class VariablesMappingProviderTest {
 
     @Test
     public void should_notSubstituteExpressions_when_thereAreNoExpressions() throws Exception {
-        DelegateExecution execution = initExpressionResolverTest("no-expression.json");
+        DelegateExecution execution = initExpressionResolverTest("no-expression.json", "Process_NoExpression");
 
         Map<String, Object> inputVariables = variablesMappingProvider.calculateInputVariables(execution);
 
@@ -275,7 +274,8 @@ public class VariablesMappingProviderTest {
 
     @Test
     public void should_notSubstituteExpressions_when_expressionIsInConstants() throws Exception {
-        DelegateExecution execution = initExpressionResolverTest("expression-in-constants.json");
+        DelegateExecution execution = initExpressionResolverTest("expression-in-constants.json",
+                                                       "Process_expression-in-constants");
 
         Map<String, Object> inputVariables = variablesMappingProvider.calculateInputVariables(execution);
 
@@ -311,7 +311,8 @@ public class VariablesMappingProviderTest {
 
     @Test
     public void should_substituteExpressions_when_expressionIsInInputMappingValue() throws Exception {
-        DelegateExecution execution = initExpressionResolverTest("expression-in-mapping-input-value.json");
+        DelegateExecution execution = initExpressionResolverTest("expression-in-mapping-input-value.json",
+                    "Process_expressionMappingInputValue");
 
         Map<String, Object> inputVariables = variablesMappingProvider.calculateInputVariables(execution);
 
@@ -330,7 +331,8 @@ public class VariablesMappingProviderTest {
 
     @Test
     public void should_notSubstituteExpressions_when_expressionIsInInputMappingVariable() throws Exception {
-        DelegateExecution execution = initExpressionResolverTest("expression-in-mapping-input-variable.json");
+        DelegateExecution execution = initExpressionResolverTest("expression-in-mapping-input-variable.json",
+                                                "Process_expressionMappingInputVariable");
 
         Map<String, Object> inputVariables = variablesMappingProvider.calculateInputVariables(execution);
 
@@ -347,7 +349,8 @@ public class VariablesMappingProviderTest {
 
     @Test
     public void should_substituteExpressions_when_expressionIsInOutputMappingValue() throws Exception {
-        DelegateExecution execution = initExpressionResolverTest("expression-in-mapping-output-value.json");
+        DelegateExecution execution = initExpressionResolverTest("expression-in-mapping-output-value.json",
+            "Process_expressionMappingOutputValue");
 
         Map<String, Object> taskVariables = new HashMap<>();
         taskVariables.put("task_input_variable_name_1",
@@ -369,7 +372,8 @@ public class VariablesMappingProviderTest {
 
     @Test
     public void should_notSubstituteExpressions_when_expressionIsInOutputMappingVariable() throws Exception {
-        DelegateExecution execution = initExpressionResolverTest("expression-in-mapping-output-variable.json");
+        DelegateExecution execution = initExpressionResolverTest("expression-in-mapping-output-variable.json",
+            "Process_expressionMappingOutputVariable");
 
         Map<String, Object> taskVariables = new HashMap<>();
         taskVariables.put("task_input_variable_name_1",
@@ -389,7 +393,8 @@ public class VariablesMappingProviderTest {
 
     @Test
     public void should_substituteExpressions_when_expressionIsInProperties() throws Exception {
-        DelegateExecution execution = initExpressionResolverTest("expression-in-properties.json");
+        DelegateExecution execution = initExpressionResolverTest("expression-in-properties.json",
+            "Process_expressionProperty");
 
         String[] array = {"1", "this expressionResolved is OK", "2"};
         List<String> list = Arrays.asList(array);
@@ -418,7 +423,8 @@ public class VariablesMappingProviderTest {
 
     @Test(expected = ActivitiIllegalArgumentException.class)
     public void should_throwActivitiIllegalArgumentException_when_expressionIsOutputMapping() throws Exception {
-        DelegateExecution execution = initExpressionResolverTest("expression-in-mapping-output-value.json");
+        DelegateExecution execution = initExpressionResolverTest("expression-in-mapping-output-value.json",
+            "Process_expressionMappingOutputValue");
 
         Map<String, Object> taskVariables = new HashMap<>();
         taskVariables.put("task_input_variable_name_1",
@@ -432,17 +438,19 @@ public class VariablesMappingProviderTest {
 
     @Test
     public void should_returnEmptyOutputMapping_when_thereIsNoAvaliableVariableInTask() throws Exception {
-        DelegateExecution execution = initExpressionResolverTest("expression-in-mapping-output-value.json");
+        DelegateExecution execution = initExpressionResolverTest("expression-in-mapping-output-value.json",
+            "Process_expressionMappingOutputValue");
 
         Map<String, Object> outputMapping = variablesMappingProvider.calculateOutPutVariables(buildMappingExecutionContext(execution),
                                                                                               null);
 
         assertThat(outputMapping).isEmpty();
     }
-    
+
     @Test
     public void should_returnEmptyOutputMapping_when_thereIsAnEmptyValueInOutputMappingVariable() throws Exception {
-        DelegateExecution execution = initExpressionResolverTest("no-value-in-output-mapping-variable.json");
+        DelegateExecution execution = initExpressionResolverTest("no-value-in-output-mapping-variable.json",
+            "Process_noValueOutputMappingVariable");
 
         Map<String, Object> taskVariables = new HashMap<>();
         taskVariables.put("not_matching_variable",

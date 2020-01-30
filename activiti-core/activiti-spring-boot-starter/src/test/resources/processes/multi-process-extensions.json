@@ -1,0 +1,31 @@
+{
+  "id": "multi-instance-process-model-id",
+  "name": "multi-instance-process",
+  "extensions": {
+    "Process_1HN1Cx_u": {
+      "properties": {
+        "7ffa5ef4-0ee4-4ae3-b774-1ef561913231": {
+          "id": "7ffa5ef4-0ee4-4ae3-b774-1ef561913231",
+          "name": "name",
+          "type": "string",
+          "required": false,
+          "value": "Kermit"
+        }
+      }
+    },
+    "Process_0j9xfcp": {
+      "constants": {},
+      "mappings": {},
+      "properties": {
+        "a846a0d4-38ca-44d7-aa21-238266487fa8": {
+          "id": "a846a0d4-38ca-44d7-aa21-238266487fa8",
+          "name": "lastName",
+          "type": "string",
+          "required": false,
+          "value": "The Frog"
+        }
+      },
+      "assignments": {}
+    }
+  }
+}

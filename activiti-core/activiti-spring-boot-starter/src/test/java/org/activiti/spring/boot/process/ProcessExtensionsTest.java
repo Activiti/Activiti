@@ -29,7 +29,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 @ContextConfiguration
 public class ProcessExtensionsTest {
 
-    private static final String INITIAL_VARS_PROCESS = "initialVarsProcess";
+    private static final String INITIAL_VARS_PROCESS = "Process_initialVarsProcess";
 
     @Autowired
     private ProcessRuntime processRuntime;
@@ -151,7 +151,7 @@ public class ProcessExtensionsTest {
                     .build());
         }).withMessage("Variables fail type validation: subscribe, name, age");
     }
-    
+
     @Test
     public void should_mapProcessVariables_when_startEventMappingExists() {
 

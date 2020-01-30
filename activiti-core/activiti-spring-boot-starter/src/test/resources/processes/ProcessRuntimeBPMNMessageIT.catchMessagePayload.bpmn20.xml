@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_09fwcyq" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Activiti Modeler" exporterVersion="3.0.0-beta.3">
-  <bpmn:process id="catchMessagePayload" isExecutable="true">
+  <bpmn:process id="Process_catchMessagePayload" isExecutable="true">
     <bpmn:startEvent id="StartEvent_1qgpcg4">
       <bpmn:outgoing>SequenceFlow_0legdlu</bpmn:outgoing>
     </bpmn:startEvent>

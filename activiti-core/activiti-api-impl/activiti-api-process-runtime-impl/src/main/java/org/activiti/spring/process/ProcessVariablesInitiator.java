@@ -28,7 +28,7 @@ import org.activiti.engine.impl.util.ProcessInstanceHelper;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.runtime.api.impl.MappingExecutionContext;
 import org.activiti.runtime.api.impl.VariablesMappingProvider;
-import org.activiti.spring.process.model.ProcessExtensionModel;
+import org.activiti.spring.process.model.Extension;
 import org.activiti.spring.process.model.VariableDefinition;
 import org.activiti.spring.process.variable.VariableParsingService;
 import org.activiti.spring.process.variable.VariableValidationService;
@@ -40,7 +40,7 @@ public class ProcessVariablesInitiator extends ProcessInstanceHelper {
     private final VariableParsingService variableParsingService;
 
     private final VariableValidationService variableValidationService;
-    
+
     private VariablesMappingProvider mappingProvider;
 
     public ProcessVariablesInitiator(ProcessExtensionService processExtensionService,
@@ -57,9 +57,9 @@ public class ProcessVariablesInitiator extends ProcessInstanceHelper {
                                                                    Map<String, Object> variables) {
         Map<String, Object> processedVariables = new HashMap<>();
         if (processExtensionService.hasExtensionsFor(processDefinition)) {
-            ProcessExtensionModel processExtensionModel = processExtensionService.getExtensionsFor(processDefinition);
+            Extension processExtension = processExtensionService.getExtensionsFor(processDefinition);
 
-            Map<String, VariableDefinition> variableDefinitionMap = processExtensionModel.getExtensions().getProperties();
+            Map<String, VariableDefinition> variableDefinitionMap = processExtension.getProperties();
             processedVariables = processVariables(variables, variableDefinitionMap);
 
             Set<String> missingRequiredVars = checkRequiredVariables(processedVariables,
@@ -88,9 +88,9 @@ public class ProcessVariablesInitiator extends ProcessInstanceHelper {
                                                                        Map<String, Object> variables,
                                                                        Map<String, Object> transientVariables) {
         Map<String, Object> processVariables = variables;
-        
+
         if (processExtensionService.hasExtensionsFor(processDefinition)) {
-            
+
             processVariables = mappingProvider.calculateOutPutVariables(MappingExecutionContext.buildMappingExecutionContext(processDefinition.getId(),
                                                                                                                              initialFlowElement.getId()),
                                                                         variables);

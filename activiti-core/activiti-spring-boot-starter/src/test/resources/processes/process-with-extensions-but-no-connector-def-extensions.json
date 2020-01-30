@@ -2,48 +2,50 @@
   "id":"processWithExtensionsButNoConnectorDef",
   "name":"processWithExtensionsButNoConnectorDef",
   "extensions": {
-    "properties": {
-      "age-id": {
-        "id": "age-id",
-        "name": "age",
-        "type": "integer",
-        "value": 20
-      },
-      "name-id": {
-        "id": "name-id",
-        "name": "name",
-        "type": "string",
-        "value": "inName"
-      }
-    },
-    "mappings": {
-      "myServiceTask": {
-        "inputs": {
-          "age": {
-            "type": "variable",
-            "value": "age"
-          },
-          "name" : {
-            "type": "variable",
-            "value": "name"
-          }
+    "processWithExtensionsButNoConnectorDef": {
+      "properties": {
+        "age-id": {
+          "id": "age-id",
+          "name": "age",
+          "type": "integer",
+          "value": 20
         },
-        "outputs": {
-          "name" : {
-            "type": "variable",
-            "value": "name"
+        "name-id": {
+          "id": "name-id",
+          "name": "name",
+          "type": "string",
+          "value": "inName"
+        }
+      },
+      "mappings": {
+        "myServiceTask": {
+          "inputs": {
+            "age": {
+              "type": "variable",
+              "value": "age"
+            },
+            "name": {
+              "type": "variable",
+              "value": "name"
+            }
           },
-          "age" : {
-            "type": "variable",
-            "value": "age"
+          "outputs": {
+            "name": {
+              "type": "variable",
+              "value": "name"
+            },
+            "age": {
+              "type": "variable",
+              "value": "age"
+            }
           }
         }
-      }
-    },
-    "constants": {
-      "myServiceTask": {
-        "nameAsStaticValue": {
-          "value": "Paul"
+      },
+      "constants": {
+        "myServiceTask": {
+          "nameAsStaticValue": {
+            "value": "Paul"
+          }
         }
       }
     }

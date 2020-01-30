@@ -2,29 +2,31 @@
   "id": "testTimerStartEvent",
   "name": "testTimerStartEvent",
   "extensions": {
-	    "properties": {
-	      "process_variable_name": {
-	        "id": "process_variable_id",
-	        "name": "process_variable_name",
-	        "type": "string",
-	        "value": "value"
-	      }
-	    },
-	    "mappings": {
-	    	"task": {
-		      "inputs": {
-		        "task_variable_name": {
-		          "type": "variable",
-		          "value": "proccess_variable_name"
-		        }
-		      },
-		      "outputs": {
-		        "proccess_variable_name": {
-		          "type": "variable",
-		          "value": "task_variable_name"
-		        }
-		      }
-	    	}
-  		}
+    "testTimerStartEvent": {
+      "properties": {
+        "process_variable_name": {
+          "id": "process_variable_id",
+          "name": "process_variable_name",
+          "type": "string",
+          "value": "value"
+        }
+      },
+      "mappings": {
+        "task": {
+          "inputs": {
+            "task_variable_name": {
+              "type": "variable",
+              "value": "proccess_variable_name"
+            }
+          },
+          "outputs": {
+            "proccess_variable_name": {
+              "type": "variable",
+              "value": "task_variable_name"
+            }
+          }
+        }
+      }
+    }
   }
 }

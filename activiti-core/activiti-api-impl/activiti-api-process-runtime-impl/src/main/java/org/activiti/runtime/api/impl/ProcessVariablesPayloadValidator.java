@@ -33,7 +33,6 @@ import org.activiti.common.util.DateFormatterProvider;
 import org.activiti.engine.ActivitiException;
 import org.activiti.spring.process.ProcessExtensionService;
 import org.activiti.spring.process.model.Extension;
-import org.activiti.spring.process.model.ProcessExtensionModel;
 import org.activiti.spring.process.model.VariableDefinition;
 import org.activiti.spring.process.variable.VariableValidationService;
 
@@ -48,7 +47,7 @@ public class ProcessVariablesPayloadValidator  {
     public ProcessVariablesPayloadValidator(DateFormatterProvider dateFormatterProvider,
                                             ProcessExtensionService processExtensionService,
                                             VariableValidationService variableValidationService,
-                                            VariableNameValidator variableNameValidator, 
+                                            VariableNameValidator variableNameValidator,
                                             ExpressionResolver expressionResolver) {
         this.dateFormatterProvider = dateFormatterProvider;
         this.processExtensionService = processExtensionService;
@@ -58,12 +57,11 @@ public class ProcessVariablesPayloadValidator  {
     }
 
     private Optional<Map<String, VariableDefinition>> getVariableDefinitionMap(String processDefinitionId) {
-        ProcessExtensionModel processExtensionModel = processDefinitionId != null ?
+        Extension processExtensionModel = processDefinitionId != null ?
                                                       processExtensionService.getExtensionsForId(processDefinitionId) :
                                                       null;
 
         return Optional.ofNullable(processExtensionModel)
-                .map(ProcessExtensionModel::getExtensions)
                 .map(Extension::getProperties);
     }
 

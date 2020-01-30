@@ -55,24 +55,24 @@ public class ProcessVariablesInitiatorIT {
 
     @MockBean
     private ProcessExtensionService processExtensionService;
-    
+
     @MockBean
     private UserGroupManager userGroupManager;
 
     @MockBean
     private RepositoryService repositoryService;
-    
+
     @MockBean
     private RuntimeService runtimeService;
-    
+
     @MockBean
     private ManagementService managementService;
 
     @SpringBootApplication
     static class Application {
-        
+
     }
-    
+
     @Before
     public void setUp() {
         initMocks(this);
@@ -86,8 +86,9 @@ public class ProcessVariablesInitiatorIT {
                                                                      ProcessExtensionModel.class);
 
             ProcessDefinition processDefinition = mock(ProcessDefinition.class);
-            given(processExtensionService.getExtensionsFor(processDefinition)).willReturn(extension);
+            given(processExtensionService.getExtensionsFor(processDefinition)).willReturn(extension.getExtensions("Process_DefaultVarsProcess"));
             given(processExtensionService.hasExtensionsFor(processDefinition)).willReturn(true);
+            given(processDefinition.getKey()).willReturn("Process_DefaultVarsProcess");
 
             //when
             Map<String, Object> variables = processVariablesInitiator.calculateVariablesFromExtensionFile(processDefinition,
@@ -111,8 +112,9 @@ public class ProcessVariablesInitiatorIT {
                                                                      ProcessExtensionModel.class);
 
             ProcessDefinition processDefinition = mock(ProcessDefinition.class);
-            given(processExtensionService.getExtensionsFor(processDefinition)).willReturn(extension);
+            given(processExtensionService.getExtensionsFor(processDefinition)).willReturn(extension.getExtensions("Process_DefaultVarsProcess"));
             given(processExtensionService.hasExtensionsFor(processDefinition)).willReturn(true);
+            given(processDefinition.getKey()).willReturn("Process_DefaultVarsProcess");
 
             //when
             Map<String, Object> variables = processVariablesInitiator.calculateVariablesFromExtensionFile(processDefinition,
@@ -136,8 +138,9 @@ public class ProcessVariablesInitiatorIT {
                                                                      ProcessExtensionModel.class);
 
             ProcessDefinition processDefinition = mock(ProcessDefinition.class);
-            given(processExtensionService.getExtensionsFor(processDefinition)).willReturn(extension);
+            given(processExtensionService.getExtensionsFor(processDefinition)).willReturn(extension.getExtensions("Process_initialVarsProcess"));
             given(processExtensionService.hasExtensionsFor(processDefinition)).willReturn(true);
+            given(processDefinition.getKey()).willReturn("Process_initialVarsProcess");
 
             //when
             Throwable thrownException = catchThrowable(() -> processVariablesInitiator.calculateVariablesFromExtensionFile(processDefinition,
@@ -160,8 +163,9 @@ public class ProcessVariablesInitiatorIT {
                                                                      ProcessExtensionModel.class);
 
             ProcessDefinition processDefinition = mock(ProcessDefinition.class);
-            given(processExtensionService.getExtensionsFor(processDefinition)).willReturn(extension);
+            given(processExtensionService.getExtensionsFor(processDefinition)).willReturn(extension.getExtensions("Process_initialVarsProcess"));
             given(processExtensionService.hasExtensionsFor(processDefinition)).willReturn(true);
+            given(processDefinition.getKey()).willReturn("Process_initialVarsProcess");
 
             //when
             Throwable thrownException = catchThrowable(() -> processVariablesInitiator.calculateVariablesFromExtensionFile(processDefinition,

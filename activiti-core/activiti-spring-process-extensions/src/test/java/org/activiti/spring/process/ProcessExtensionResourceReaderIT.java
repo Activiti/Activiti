@@ -45,7 +45,7 @@ public class ProcessExtensionResourceReaderIT {
             ProcessExtensionModel processExtensionModel = reader.read(inputStream);
             assertThat(processExtensionModel).isNotNull();
             assertThat(processExtensionModel.getId()).isEqualTo("initialVarsProcess");
-            assertThat(processExtensionModel.getExtensions().getProperties()).containsKey("d440ff7b-0ac8-4a97-b163-51a6ec49faa1");
+            assertThat(processExtensionModel.getExtensions("Process_initialVarsProcess").getProperties()).containsKey("d440ff7b-0ac8-4a97-b163-51a6ec49faa1");
         }
     }
 }
