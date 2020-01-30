@@ -6,7 +6,6 @@ import org.activiti.api.model.shared.model.VariableInstance;
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
 import org.activiti.api.process.runtime.ProcessRuntime;
-import org.activiti.api.task.runtime.TaskRuntime;
 import org.activiti.spring.boot.security.util.SecurityUtil;
 import org.activiti.spring.boot.test.util.ProcessCleanUpUtil;
 import org.junit.After;
@@ -20,7 +19,7 @@ import static org.assertj.core.api.Assertions.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
-public class ProcessRuntimeMultipleInstances {
+public class ProcessRuntimeMultipleInstancesIT {
 
     private static final String PROCESS_MULTIPLE_INSTANCE_1 = "Process_1HN1Cx_u";
     private static final String PROCESS_MULTIPLE_INSTANCE_2 = "Process_0j9xfcp";
@@ -58,5 +57,23 @@ public class ProcessRuntimeMultipleInstances {
                                                     VariableInstance::getValue)
             .containsOnly(tuple("name",
                                 "Kermit"));
+
+        ProcessInstance processInstance2 = processRuntime.start(
+            ProcessPayloadBuilder
+                .start()
+                .withProcessDefinitionKey(PROCESS_MULTIPLE_INSTANCE_2)
+                .build());
+        assertThat(processInstance1).isNotNull();
+
+        List<VariableInstance> processInstance2Vars = processRuntime.variables(ProcessPayloadBuilder
+                                                                                   .variables()
+                                                                                   .withProcessInstanceId(processInstance2.getId())
+                                                                                   .build());
+        assertThat(processInstance2Vars).extracting(VariableInstance::getName,
+                                                    VariableInstance::getValue)
+            .containsOnly(tuple("lastName",
+                                "The Frog"));
+
+
     }
 }

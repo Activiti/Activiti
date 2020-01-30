@@ -19,14 +19,14 @@
     </bpmn2:endEvent>
     <bpmn2:sequenceFlow id="SequenceFlow_0t8hz65" sourceRef="Task_0412ca8" targetRef="Event_0jqxa2p" />
   </bpmn2:process>
-  <bpmn2:process id="Process_0j9xfcp">
+  <bpmn2:process id="Process_0j9xfcp" activiti:assignee="user">
     <bpmn2:startEvent id="Event_133kayh">
       <bpmn2:outgoing>SequenceFlow_07b1i6h</bpmn2:outgoing>
     </bpmn2:startEvent>
-    <bpmn2:task id="Task_0e576ig">
+    <bpmn2:userTask id="Task_0e576ig">
       <bpmn2:incoming>SequenceFlow_07b1i6h</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_1ee7qni</bpmn2:outgoing>
-    </bpmn2:task>
+    </bpmn2:userTask>
     <bpmn2:sequenceFlow id="SequenceFlow_07b1i6h" sourceRef="Event_133kayh" targetRef="Task_0e576ig" />
     <bpmn2:endEvent id="Event_179nelb">
       <bpmn2:incoming>SequenceFlow_1ee7qni</bpmn2:incoming>

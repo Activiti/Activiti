@@ -22,7 +22,7 @@
           "name": "lastName",
           "type": "string",
           "required": false,
-          "value": "TheFrog"
+          "value": "The Frog"
         }
       },
       "assignments": {}
