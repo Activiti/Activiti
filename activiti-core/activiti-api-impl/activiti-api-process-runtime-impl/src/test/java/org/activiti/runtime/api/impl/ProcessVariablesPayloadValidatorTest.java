@@ -22,17 +22,17 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.MockitoAnnotations.initMocks;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
 import org.activiti.common.util.DateFormatterProvider;
 import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.spring.process.ProcessExtensionService;
 import org.activiti.spring.process.model.Extension;
-import org.activiti.spring.process.model.ProcessExtensionModel;
 import org.activiti.spring.process.model.VariableDefinition;
 import org.activiti.spring.process.variable.VariableValidationService;
 import org.activiti.spring.process.variable.types.DateVariableType;
@@ -42,9 +42,6 @@ import org.activiti.spring.process.variable.types.VariableType;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class ProcessVariablesPayloadValidatorTest {
 
@@ -111,16 +108,8 @@ public class ProcessVariablesPayloadValidatorTest {
                                                                          variableValidationService,
                                                                          variableNameValidator,
                                                                          expressionResolver);
-
         Extension extension = new Extension();
         extension.setProperties(properties);
-
-        ProcessExtensionModel processExtensionModel = new ProcessExtensionModel();
-        processExtensionModel.setId("1");
-        Map<String, Extension> processExtension = new HashMap<>();
-        processExtension.put("10",extension);
-        processExtensionModel.setExtensions(processExtension);
-
         given(processExtensionService.getExtensionsForId(any()))
                    .willReturn(extension);
     }

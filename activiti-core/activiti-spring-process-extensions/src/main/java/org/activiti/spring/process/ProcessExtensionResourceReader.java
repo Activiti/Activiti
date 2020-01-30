@@ -16,14 +16,13 @@
 
 package org.activiti.spring.process;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.MapperFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
 import java.util.function.Predicate;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.MapperFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.activiti.spring.process.model.Extension;
 import org.activiti.spring.process.model.ProcessExtensionModel;
 import org.activiti.spring.process.model.VariableDefinition;
@@ -63,10 +62,9 @@ public class ProcessExtensionResourceReader implements ResourceReader<ProcessExt
         if (processExtensionModel != null &&
             processExtensionModel.getAllExtensions() != null &&
             processExtensionModel.getAllExtensions().size() > 0) {
-
-            for (String processDefinitionKey : processExtensionModel.getAllExtensions().keySet()) {
-                if(processExtensionModel.getExtensions(processDefinitionKey).getProperties() != null){
-                    this.saveVariableAsJsonObject(processExtensionModel.getExtensions(processDefinitionKey));
+            for (Extension extension : processExtensionModel.getAllExtensions().values()) {
+                if (extension.getProperties() != null) {
+                    saveVariableAsJsonObject(extension);
                 }
             }
 
@@ -76,7 +74,7 @@ public class ProcessExtensionResourceReader implements ResourceReader<ProcessExt
 
     private void saveVariableAsJsonObject(Extension extension) {
         for (VariableDefinition variableDefinition : extension.getProperties().values()) {
-            if (!variableTypeMap.keySet().contains(variableDefinition.getType()) || variableDefinition.getType().equals("json")) {
+            if (!variableTypeMap.containsKey(variableDefinition.getType()) || variableDefinition.getType().equals("json")) {
                 variableDefinition.setValue(objectMapper.convertValue(variableDefinition.getValue(),
                     JsonNode.class));
             }

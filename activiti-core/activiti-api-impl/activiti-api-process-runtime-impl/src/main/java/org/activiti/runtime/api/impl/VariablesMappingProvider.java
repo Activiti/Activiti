@@ -20,12 +20,15 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.spring.process.ProcessExtensionService;
-import org.activiti.spring.process.model.*;
-import org.activiti.spring.process.model.ProcessExtensionModel;
+import org.activiti.spring.process.model.ConstantDefinition;
+import org.activiti.spring.process.model.Extension;
+import org.activiti.spring.process.model.Mapping;
+import org.activiti.spring.process.model.ProcessConstantsMapping;
+import org.activiti.spring.process.model.ProcessVariablesMapping;
+import org.activiti.spring.process.model.VariableDefinition;
 
 public class VariablesMappingProvider {
 
