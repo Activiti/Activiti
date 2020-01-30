@@ -1,7 +1,7 @@
 {
-  "id":"jsonVarsProcess",
+  "id":"jsonVarsProcessModel",
   "extensions":{
-    "Process_jsonVarsProcess": {
+    "jsonVarsProcess": {
       "properties":{
         "d440ff7b-0ac8-4a97-b163-51a6ec49faa1":{
           "id":"d440ff7b-0ac8-4a97-b163-51a6ec49faa1",
