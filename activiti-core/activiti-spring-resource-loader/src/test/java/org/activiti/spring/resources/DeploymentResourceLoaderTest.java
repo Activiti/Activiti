@@ -45,13 +45,13 @@ public class DeploymentResourceLoaderTest {
             }
 
             @Override
-            public String read(InputStream inputStream, String processDefinitionKey) throws IOException {
+            public String read(InputStream inputStream) throws IOException {
                 return new String(IoUtil.readInputStream(inputStream, "the stream"));
             }
         };
 
         //when
-        List<String> loaded = deploymentResourceLoader.loadResourcesForDeployment("123456", selectorReader, "");
+        List<String> loaded = deploymentResourceLoader.loadResourcesForDeployment("123456", selectorReader);
 
         //then
         Assertions.assertThat(loaded)

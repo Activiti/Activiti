@@ -32,7 +32,7 @@ public class DeploymentResourceLoader<T> {
 
     private Map<String, List<T>> loadedResources = new HashMap<>();
 
-    public List<T> loadResourcesForDeployment(String deploymentId, ResourceReader<T> resourceLoaderDescriptor, String processDefinitionKey) {
+    public List<T> loadResourcesForDeployment(String deploymentId, ResourceReader<T> resourceLoaderDescriptor) {
         List<T> resources = loadedResources.get(deploymentId);
         if (resources != null) {
             return resources;
@@ -48,8 +48,7 @@ public class DeploymentResourceLoader<T> {
 
             resources = loadResources(deploymentId,
                     resourceLoaderDescriptor,
-                    selectedResources,
-                    processDefinitionKey);
+                    selectedResources);
         } else {
             resources = new ArrayList<>();
         }
@@ -59,13 +58,12 @@ public class DeploymentResourceLoader<T> {
 
     private List<T> loadResources(String deploymentId,
                                   ResourceReader<T> resourceReader,
-                                  List<String> selectedResources,
-                                  String processDefinitionKey) {
+                                  List<String> selectedResources) {
         List<T> resources = new ArrayList<>();
         for (String name : selectedResources) {
             try (InputStream resourceAsStream = repositoryService.getResourceAsStream(deploymentId,
                     name)) {
-                T resource = resourceReader.read(resourceAsStream, processDefinitionKey);
+                T resource = resourceReader.read(resourceAsStream);
                 if (resource != null) {
                     resources.add(resource);
                 }

@@ -42,7 +42,7 @@ public class ProcessExtensionResourceReaderIT {
     @Test
     public void shouldReadExtensionFromJsonFile() throws Exception{
         try(InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("processes/initial-vars-extensions.json")) {
-            ProcessExtensionModel processExtensionModel = reader.read(inputStream, "Process_initialVarsProcess");
+            ProcessExtensionModel processExtensionModel = reader.read(inputStream);
             assertThat(processExtensionModel).isNotNull();
             assertThat(processExtensionModel.getId()).isEqualTo("initialVarsProcess");
             assertThat(processExtensionModel.getExtensions("Process_initialVarsProcess").getProperties()).containsKey("d440ff7b-0ac8-4a97-b163-51a6ec49faa1");

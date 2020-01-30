@@ -24,6 +24,7 @@ import java.util.function.Predicate;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.activiti.spring.process.model.Extension;
 import org.activiti.spring.process.model.ProcessExtensionModel;
 import org.activiti.spring.process.model.VariableDefinition;
 import org.activiti.spring.process.variable.types.VariableType;
@@ -46,29 +47,40 @@ public class ProcessExtensionResourceReader implements ResourceReader<ProcessExt
     }
 
     @Override
-    public ProcessExtensionModel read(InputStream inputStream, String processDefinitionKey) throws IOException {
+    public ProcessExtensionModel read(InputStream inputStream) throws IOException {
         objectMapper.enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS);
         ProcessExtensionModel mappedModel = objectMapper.readValue(inputStream,
                                                                    ProcessExtensionModel.class);
 
-        return convertJsonVariables(mappedModel, processDefinitionKey);
+        return convertJsonVariables(mappedModel);
     }
 
     /**
      * Json variables need to be represented as JsonNode for engine to handle as Json
      * Do this for any var marked as json or whose type is not recognised from the extension file
      */
-    private ProcessExtensionModel convertJsonVariables(ProcessExtensionModel processExtensionModel, String processDefinitionKey) {
-        if (processExtensionModel != null && processExtensionModel.getExtensions(processDefinitionKey) != null
-                && processExtensionModel.getExtensions(processDefinitionKey).getProperties() != null) {
+    private ProcessExtensionModel convertJsonVariables(ProcessExtensionModel processExtensionModel) {
+        if (processExtensionModel != null &&
+            processExtensionModel.getAllExtensions() != null &&
+            processExtensionModel.getAllExtensions().size() > 0) {
 
-            for (VariableDefinition variableDefinition : processExtensionModel.getExtensions(processDefinitionKey).getProperties().values()) {
-                if (!variableTypeMap.keySet().contains(variableDefinition.getType()) || variableDefinition.getType().equals("json")) {
-                    variableDefinition.setValue(objectMapper.convertValue(variableDefinition.getValue(),
-                                                                          JsonNode.class));
+            for (String processDefinitionKey : processExtensionModel.getAllExtensions().keySet()) {
+                if(processExtensionModel.getExtensions(processDefinitionKey).getProperties() != null){
+                    this.saveVariableAsJsonObject(processExtensionModel.getExtensions(processDefinitionKey));
                 }
             }
+
         }
         return processExtensionModel;
     }
+
+    private void saveVariableAsJsonObject(Extension extension) {
+        for (VariableDefinition variableDefinition : extension.getProperties().values()) {
+            if (!variableTypeMap.keySet().contains(variableDefinition.getType()) || variableDefinition.getType().equals("json")) {
+                variableDefinition.setValue(objectMapper.convertValue(variableDefinition.getValue(),
+                    JsonNode.class));
+            }
+        }
+    }
+
 }

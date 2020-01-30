@@ -49,7 +49,7 @@ public class ProcessExtensionService {
         }
 
         List<ProcessExtensionModel> processExtensionModels = processExtensionLoader.loadResourcesForDeployment(deploymentId,
-                processExtensionReader, processDefinitionKey);
+                processExtensionReader);
 
         processExtensionModelMap = this.buildProcessDefinitionAndExtensionMap(processExtensionModels, processDefinitionKey);
         processExtensionModelDeploymentMap.put(deploymentId, processExtensionModelMap);

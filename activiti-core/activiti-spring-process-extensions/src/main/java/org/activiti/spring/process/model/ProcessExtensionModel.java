@@ -33,6 +33,10 @@ public class ProcessExtensionModel {
         return extensions.get(processDefinitionKey);
     }
 
+    public Map<String, Extension> getAllExtensions() {
+        return extensions;
+    }
+
     public Extension getExtensionsByProcessDefinitionId(String processDefinitionId) {
         String processDefinitionKey = processDefinitionId.split(":")[0];
         return this.getExtensions(processDefinitionKey);
