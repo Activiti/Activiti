@@ -29,7 +29,6 @@ import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.runtime.api.impl.MappingExecutionContext;
 import org.activiti.runtime.api.impl.VariablesMappingProvider;
 import org.activiti.spring.process.model.Extension;
-import org.activiti.spring.process.model.ProcessExtensionModel;
 import org.activiti.spring.process.model.VariableDefinition;
 import org.activiti.spring.process.variable.VariableParsingService;
 import org.activiti.spring.process.variable.VariableValidationService;
