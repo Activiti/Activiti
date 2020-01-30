@@ -53,7 +53,7 @@ public class VariablesMappingProviderTest {
         given(execution.getVariable("property-with-no-default-value")).willReturn(null);
 
         ExpressionResolver expressionResolver = ExpressionResolverHelper.initContext(execution,
-                                                                                     extensions);
+                                                                                     extensions.getExtensions("Process_taskVarMapping"));
 
         ReflectionTestUtils.setField(variablesMappingProvider,
                                      "expressionResolver",
@@ -69,10 +69,10 @@ public class VariablesMappingProviderTest {
         assertThat(inputVariables).doesNotContainKeys("task_input_variable_mapped_with_null_process_variable");
     }
 
-    private DelegateExecution buildExecution(ProcessExtensionModel extensions, String processDefinitionId) {
+    private DelegateExecution buildExecution(ProcessExtensionModel extensions, String processDefinitionKey) {
         DelegateExecution execution = mock(DelegateExecution.class);
-        given(processExtensionService.getExtensionsForId(processDefinitionId.concat(":1:1231230123-123-123"))).willReturn(extensions.getExtensions(processDefinitionId));
-        given(execution.getProcessDefinitionId()).willReturn(processDefinitionId.concat(":1:1231230123-123-123"));
+        given(processExtensionService.getExtensionsForId(processDefinitionKey.concat(":1:1231230123-123-123"))).willReturn(extensions.getExtensions(processDefinitionKey));
+        given(execution.getProcessDefinitionId()).willReturn(processDefinitionKey.concat(":1:1231230123-123-123"));
         given(execution.getCurrentActivityId()).willReturn("simpleTask");
         return execution;
     }
@@ -86,7 +86,7 @@ public class VariablesMappingProviderTest {
 
         DelegateExecution execution = buildExecution(extensions, "Process_taskVariableNoMapping");
         ExpressionResolver expressionResolver = ExpressionResolverHelper.initContext(execution,
-                                                                                     extensions);
+                                                                                     extensions.getExtensions("Process_taskVariableNoMapping"));
 
         ReflectionTestUtils.setField(variablesMappingProvider,
                                      "expressionResolver",
@@ -154,7 +154,7 @@ public class VariablesMappingProviderTest {
 
         DelegateExecution execution = buildExecution(extensions, "Process_taskVarMapping");
         ExpressionResolver expressionResolver = ExpressionResolverHelper.initContext(execution,
-                                                                                     extensions);
+                                                                                     extensions.getExtensions("Process_taskVarMapping"));
 
         ReflectionTestUtils.setField(variablesMappingProvider,
                                      "expressionResolver",
@@ -228,7 +228,7 @@ public class VariablesMappingProviderTest {
 
         DelegateExecution execution = buildExecution(extensions, processDefinitionKey);
         ExpressionResolver expressionResolver = ExpressionResolverHelper.initContext(execution,
-                                                                                     extensions);
+                                                                                     extensions.getExtensions(processDefinitionKey));
 
         ReflectionTestUtils.setField(variablesMappingProvider,
                                      "expressionResolver",

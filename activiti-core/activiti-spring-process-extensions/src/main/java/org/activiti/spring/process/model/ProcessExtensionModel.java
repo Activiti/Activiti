@@ -37,11 +37,6 @@ public class ProcessExtensionModel {
         return extensions;
     }
 
-    public Extension getExtensionsByProcessDefinitionId(String processDefinitionId) {
-        String processDefinitionKey = processDefinitionId.split(":")[0];
-        return this.getExtensions(processDefinitionKey);
-    }
-
     public void setExtensions(Map<String, Extension> extensions) {
         this.extensions = extensions;
     }
