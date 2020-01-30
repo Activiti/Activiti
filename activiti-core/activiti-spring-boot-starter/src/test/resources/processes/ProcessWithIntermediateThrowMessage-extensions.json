@@ -1,8 +1,8 @@
 {
-   "id":"intermediateThrowMessageEvent",
+   "id":"intermediateThrowMessageEventModel",
    "name":"intermediateThrowMessageEvent.bpmn20.xml",
    "extensions":{
-     "Process_intermediateThrowMessageEvent": {
+     "intermediateThrowMessageEvent": {
        "properties":{
          "process_variable_name":{
            "id":"process_variable_id",
