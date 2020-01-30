@@ -21,6 +21,7 @@ import java.util.stream.Collectors;
 
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.ProcessDefinition;
+import org.activiti.spring.process.model.Extension;
 import org.activiti.spring.process.model.ProcessExtensionModel;
 import org.activiti.spring.resources.DeploymentResourceLoader;
 
@@ -30,9 +31,7 @@ public class ProcessExtensionService {
     private ProcessExtensionResourceReader processExtensionReader;
     private RepositoryService repositoryService;
 
-    private static final ProcessExtensionModel EMPTY_EXTENSIONS = new ProcessExtensionModel();
-
-    //deploymentId => processDefinitionKey, ProcessExtensionModel
+    private static final Extension EMPTY_EXTENSIONS = new Extension();
     private Map<String, Map<String, ProcessExtensionModel>> processExtensionModelDeploymentMap = new HashMap<>();
 
     public ProcessExtensionService(DeploymentResourceLoader<ProcessExtensionModel> processExtensionLoader,
@@ -80,7 +79,7 @@ public class ProcessExtensionService {
         return hasExtensionsFor(processDefinition);
     }
 
-    public ProcessExtensionModel getExtensionsFor(ProcessDefinition processDefinition) {
+    public Extension getExtensionsFor(ProcessDefinition processDefinition) {
         ProcessExtensionModel processExtensionModel = null;
 
         Map<String, ProcessExtensionModel> processExtensionModelMap = getProcessExtensionsForDeploymentId(processDefinition.getDeploymentId(),
@@ -89,14 +88,14 @@ public class ProcessExtensionService {
             processExtensionModel = processExtensionModelMap.get(processDefinition.getKey());
         }
 
-        return processExtensionModel != null ? processExtensionModel : EMPTY_EXTENSIONS;
+        return processExtensionModel != null ? processExtensionModel.getExtensions(processDefinition.getKey()) : EMPTY_EXTENSIONS;
     }
 
-    public ProcessExtensionModel getExtensionsForId(String processDefinitionId) {
+    public Extension getExtensionsForId(String processDefinitionId) {
         ProcessDefinition processDefinition = repositoryService.getProcessDefinition(processDefinitionId);
 
-        ProcessExtensionModel processExtensionModel = getExtensionsFor(processDefinition);
-        return processExtensionModel != null ? processExtensionModel : EMPTY_EXTENSIONS;
+        Extension processExtension = getExtensionsFor(processDefinition);
+        return processExtension != null ? processExtension : EMPTY_EXTENSIONS;
     }
 
     public void setRepositoryService(RepositoryService repositoryService) {

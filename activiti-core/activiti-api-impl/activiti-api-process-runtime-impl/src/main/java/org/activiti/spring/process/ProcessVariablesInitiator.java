@@ -28,6 +28,7 @@ import org.activiti.engine.impl.util.ProcessInstanceHelper;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.runtime.api.impl.MappingExecutionContext;
 import org.activiti.runtime.api.impl.VariablesMappingProvider;
+import org.activiti.spring.process.model.Extension;
 import org.activiti.spring.process.model.ProcessExtensionModel;
 import org.activiti.spring.process.model.VariableDefinition;
 import org.activiti.spring.process.variable.VariableParsingService;
@@ -57,9 +58,9 @@ public class ProcessVariablesInitiator extends ProcessInstanceHelper {
                                                                    Map<String, Object> variables) {
         Map<String, Object> processedVariables = new HashMap<>();
         if (processExtensionService.hasExtensionsFor(processDefinition)) {
-            ProcessExtensionModel processExtensionModel = processExtensionService.getExtensionsFor(processDefinition);
+            Extension processExtension = processExtensionService.getExtensionsFor(processDefinition);
 
-            Map<String, VariableDefinition> variableDefinitionMap = processExtensionModel.getExtensions(processDefinition.getKey()).getProperties();
+            Map<String, VariableDefinition> variableDefinitionMap = processExtension.getProperties();
             processedVariables = processVariables(variables, variableDefinitionMap);
 
             Set<String> missingRequiredVars = checkRequiredVariables(processedVariables,
