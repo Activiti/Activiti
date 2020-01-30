@@ -61,8 +61,7 @@ public class ExecutionEntityManagerImplTest {
     }
 
     @Test
-    public void should_createProcessInstanceExecution_when_NoInitialVariable() {
-        //given
+    public void should_createProcessInstanceExecution_when_initialVariableNameIsNull() {
         ProcessDefinitionEntity processDefinition = new ProcessDefinitionEntityImpl();
         processDefinition.setId("processDefinitionId");
         processDefinition.setKey("processDefinitionKey");
@@ -81,10 +80,8 @@ public class ExecutionEntityManagerImplTest {
         Date startTime = new Date();
         given(clock.getCurrentTime()).willReturn(startTime);
 
-        //when
         ExecutionEntity processInstanceResult = executionEntityManager.createProcessInstanceExecution(processDefinition, businessKey, tenantId, null);
 
-        //then
         assertThat(processInstanceResult.getProcessDefinitionId()).isEqualTo("processDefinitionId");
         assertThat(processInstanceResult.getProcessDefinitionKey()).isEqualTo("processDefinitionKey");
         assertThat(processInstanceResult.getProcessDefinitionName()).isEqualTo("processDefinitionName");
@@ -102,7 +99,6 @@ public class ExecutionEntityManagerImplTest {
 
     @Test
     public void should_createChildExecution() {
-        //given
         ExecutionEntityImpl parentExecution = new ExecutionEntityImpl();
         parentExecution.executions = new ArrayList<>();
         parentExecution.setRootProcessInstanceId("rootProcessInstanceId");
@@ -118,10 +114,8 @@ public class ExecutionEntityManagerImplTest {
         Date startTime = new Date();
         given(clock.getCurrentTime()).willReturn(startTime);
 
-        //when
         ExecutionEntity childResult = executionEntityManager.createChildExecution(parentExecution);
 
-        //then
         assertThat(childResult.getRootProcessInstanceId()).isEqualTo("rootProcessInstanceId");
         assertThat(childResult.isActive()).isTrue();
         assertThat(childResult.getStartTime()).isEqualTo(startTime);
@@ -139,7 +133,6 @@ public class ExecutionEntityManagerImplTest {
 
     @Test
     public void should_createSubProcess() {
-        //given
         ProcessDefinitionEntity processDefinition = new ProcessDefinitionEntityImpl();
         processDefinition.setId("processDefinitionId");
         processDefinition.setKey("processDefinitionKey");
@@ -160,10 +153,8 @@ public class ExecutionEntityManagerImplTest {
         Date startTime = new Date();
         given(clock.getCurrentTime()).willReturn(startTime);
 
-        //when
         ExecutionEntity subProcessResult = executionEntityManager.createSubprocessInstance(processDefinition, superExecution, businessKey);
 
-        //then
         assertThat(subProcessResult.isActive()).isTrue();
         assertThat(subProcessResult.getRootProcessInstanceId()).isEqualTo("rootProcessInstanceId");
         assertThat(subProcessResult.getStartTime()).isEqualTo(startTime);
