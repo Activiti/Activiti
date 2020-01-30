@@ -28,7 +28,7 @@ public class ProcessExtensionServiceIT {
     @Test
     public void canReadExtension() throws IOException {
         ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery()
-                .processDefinitionKey("initialVarsProcess")
+                .processDefinitionKey("Process_initialVarsProcess")
                 .singleResult();
 
         boolean hasExtensionsFor = processExtensionService.hasExtensionsFor(processDefinition);
@@ -38,6 +38,7 @@ public class ProcessExtensionServiceIT {
         ProcessExtensionModel model = processExtensionService.getExtensionsFor(processDefinition);
 
         assertThat(model).isNotNull();
-        assertThat(model.getExtensions().getProperties()).containsKey("d440ff7b-0ac8-4a97-b163-51a6ec49faa1");
+        assertThat(model.getExtensions(processDefinition.getKey())).isNotNull();
+        assertThat(model.getExtensions(processDefinition.getKey()).getProperties()).containsKey("d440ff7b-0ac8-4a97-b163-51a6ec49faa1");
     }
 }

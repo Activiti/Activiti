@@ -34,9 +34,10 @@ public class ExpressionResolverHelper {
                                                 ProcessExtensionModel extensions)
             throws JsonParseException, JsonMappingException, IOException {
         initializeExpressionResolver();
-        
-        Map<String, Object> variables = converstToStringObjectMap(extensions.getExtensions().getProperties());
-        
+
+        Map<String, Object> variables = converstToStringObjectMap(extensions
+            .getExtensionsByProcessDefinitionId(execution.getProcessDefinitionId()).getProperties());
+
         setExecutionVariables(execution, variables);
         return new ExpressionResolver(new ExpressionManager(),
                                       objectMapper);

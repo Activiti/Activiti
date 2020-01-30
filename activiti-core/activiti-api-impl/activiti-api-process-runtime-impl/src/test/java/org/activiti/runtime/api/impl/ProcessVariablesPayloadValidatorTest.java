@@ -47,26 +47,26 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class ProcessVariablesPayloadValidatorTest {
- 
+
     @Mock
     private ProcessExtensionService processExtensionService;
-    
+
     private DateFormatterProvider dateFormatterProvider = new DateFormatterProvider("yyyy-MM-dd[['T']HH:mm:ss[.SSS'Z']]");
     private ObjectMapper objectMapper = new ObjectMapper();
     private VariableNameValidator variableNameValidator = new VariableNameValidator();
-    
+
     private Map<String, VariableType> variableTypeMap;
-    
+
     private ProcessVariablesPayloadValidator processVariablesValidator;
     private VariableValidationService variableValidationService;
-    
+
     private ExpressionResolver expressionResolver = new ExpressionResolver(new ExpressionManager(),
                                                                            objectMapper);
 
     @Before
     public void setUp() {
         initMocks(this);
-        
+
         VariableDefinition variableDefinitionName = new VariableDefinition();
         variableDefinitionName.setName("name");
         variableDefinitionName.setType("string");
@@ -78,7 +78,7 @@ public class ProcessVariablesPayloadValidatorTest {
         VariableDefinition variableDefinitionSubscribe = new VariableDefinition();
         variableDefinitionSubscribe.setName("subscribe");
         variableDefinitionSubscribe.setType("boolean");
-        
+
         VariableDefinition variableDefinitionDate = new VariableDefinition();
         variableDefinitionDate.setName("mydate");
         variableDefinitionDate.setType("date");
@@ -105,20 +105,22 @@ public class ProcessVariablesPayloadValidatorTest {
         variableTypeMap.put("datetime", new DateVariableType(Date.class, dateFormatterProvider));
 
         variableValidationService = new VariableValidationService(variableTypeMap);
-        
+
         processVariablesValidator = new ProcessVariablesPayloadValidator(dateFormatterProvider,
                                                                          processExtensionService,
                                                                          variableValidationService,
                                                                          variableNameValidator,
                                                                          expressionResolver);
-        
+
         Extension extension = new Extension();
         extension.setProperties(properties);
 
         ProcessExtensionModel processExtensionModel = new ProcessExtensionModel();
         processExtensionModel.setId("1");
-        processExtensionModel.setExtensions(extension);
-        
+        Map<String, Extension> processExtension = new HashMap();
+        processExtension.put("10",extension);
+        processExtensionModel.setExtensions(processExtension);
+
         given(processExtensionService.getExtensionsForId(any()))
                    .willReturn(processExtensionModel);
     }
@@ -139,7 +141,7 @@ public class ProcessVariablesPayloadValidatorTest {
                                                                             "10"));
 
         assertThat(throwable).isInstanceOf(IllegalStateException.class);
-        
+
         assertThat(throwable.getMessage())
             .contains("subscribe",
                       "age");
@@ -155,7 +157,7 @@ public class ProcessVariablesPayloadValidatorTest {
         variables.put("subs", true);
         variables.put("subscribe", true);
         variables.put("mydate", "2019-08-26T10:20:30.000Z");
-        
+
         String expectedTypeErrorMessage = "age";
 
         Throwable throwable = catchThrowable(() -> processVariablesValidator.checkPayloadVariables(
@@ -165,13 +167,13 @@ public class ProcessVariablesPayloadValidatorTest {
                                                                                 .build(),
                                                                             "10"));
 
-        assertThat(throwable).isInstanceOf(IllegalStateException.class); 
-        
+        assertThat(throwable).isInstanceOf(IllegalStateException.class);
+
         assertThat(throwable.getMessage())
             .contains(expectedTypeErrorMessage);
-        
+
     }
-  
+
     @Test
     public void should_returnError_when_setVariablesWithWrongDateFormat() throws Exception {
 
@@ -186,7 +188,7 @@ public class ProcessVariablesPayloadValidatorTest {
                                                                             "10"));
 
         assertThat(throwable).isInstanceOf(IllegalStateException.class);
-        
+
     }
 
     @Test
@@ -203,16 +205,16 @@ public class ProcessVariablesPayloadValidatorTest {
                                                                             "10"));
 
         assertThat(throwable).isInstanceOf(IllegalStateException.class);
-        
+
     }
-    
+
     @Test
     public void should_returnErrorList_when_setVariableWithWrongCharactersInName() throws Exception {
 
         Map<String, Object> variables = new HashMap<>();
         variables.put("name", "Alice");
         variables.put("gen-der", "female");
-  
+
         String expectedTypeErrorMessage = "gen-der";
 
         Throwable throwable = catchThrowable(() -> processVariablesValidator.checkPayloadVariables(
@@ -222,13 +224,13 @@ public class ProcessVariablesPayloadValidatorTest {
                                                                                 .build(),
                                                                             "10"));
 
-        assertThat(throwable).isInstanceOf(IllegalStateException.class); 
-        
+        assertThat(throwable).isInstanceOf(IllegalStateException.class);
+
         assertThat(throwable.getMessage())
             .contains(expectedTypeErrorMessage);
-        
+
     }
-    
+
     @Test
     public void should_throwIllegalStateException_when_payloadVariableWithExpressionInStringVariable() {
         Map<String, Object> variables = new HashMap<>();

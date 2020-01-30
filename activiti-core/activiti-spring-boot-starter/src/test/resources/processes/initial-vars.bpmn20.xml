@@ -4,7 +4,7 @@
              xmlns:activiti="http://activiti.org/bpmn"
              targetNamespace="processDefinitions">
 
-    <process id="initialVarsProcess">
+    <process id="Process_initialVarsProcess">
 
         <startEvent id="start"/>
 

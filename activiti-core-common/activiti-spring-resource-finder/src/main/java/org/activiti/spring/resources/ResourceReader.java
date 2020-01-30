@@ -24,6 +24,6 @@ public interface ResourceReader<T> {
 
     Predicate<String> getResourceNameSelector();
 
-    T read(InputStream inputStream) throws IOException;
+    T read(InputStream inputStream, String processDefinitionKey) throws IOException;
 
 }

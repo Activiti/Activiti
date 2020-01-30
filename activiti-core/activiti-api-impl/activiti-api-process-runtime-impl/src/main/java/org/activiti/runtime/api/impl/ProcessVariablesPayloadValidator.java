@@ -48,7 +48,7 @@ public class ProcessVariablesPayloadValidator  {
     public ProcessVariablesPayloadValidator(DateFormatterProvider dateFormatterProvider,
                                             ProcessExtensionService processExtensionService,
                                             VariableValidationService variableValidationService,
-                                            VariableNameValidator variableNameValidator, 
+                                            VariableNameValidator variableNameValidator,
                                             ExpressionResolver expressionResolver) {
         this.dateFormatterProvider = dateFormatterProvider;
         this.processExtensionService = processExtensionService;
@@ -63,7 +63,7 @@ public class ProcessVariablesPayloadValidator  {
                                                       null;
 
         return Optional.ofNullable(processExtensionModel)
-                .map(ProcessExtensionModel::getExtensions)
+                .map(p -> p.getExtensionsByProcessDefinitionId(processDefinitionId))
                 .map(Extension::getProperties);
     }
 

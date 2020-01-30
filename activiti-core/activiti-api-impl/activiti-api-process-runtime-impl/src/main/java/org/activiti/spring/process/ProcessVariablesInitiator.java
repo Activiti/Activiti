@@ -40,7 +40,7 @@ public class ProcessVariablesInitiator extends ProcessInstanceHelper {
     private final VariableParsingService variableParsingService;
 
     private final VariableValidationService variableValidationService;
-    
+
     private VariablesMappingProvider mappingProvider;
 
     public ProcessVariablesInitiator(ProcessExtensionService processExtensionService,
@@ -59,7 +59,7 @@ public class ProcessVariablesInitiator extends ProcessInstanceHelper {
         if (processExtensionService.hasExtensionsFor(processDefinition)) {
             ProcessExtensionModel processExtensionModel = processExtensionService.getExtensionsFor(processDefinition);
 
-            Map<String, VariableDefinition> variableDefinitionMap = processExtensionModel.getExtensions().getProperties();
+            Map<String, VariableDefinition> variableDefinitionMap = processExtensionModel.getExtensions(processDefinition.getKey()).getProperties();
             processedVariables = processVariables(variables, variableDefinitionMap);
 
             Set<String> missingRequiredVars = checkRequiredVariables(processedVariables,
@@ -88,9 +88,9 @@ public class ProcessVariablesInitiator extends ProcessInstanceHelper {
                                                                        Map<String, Object> variables,
                                                                        Map<String, Object> transientVariables) {
         Map<String, Object> processVariables = variables;
-        
+
         if (processExtensionService.hasExtensionsFor(processDefinition)) {
-            
+
             processVariables = mappingProvider.calculateOutPutVariables(MappingExecutionContext.buildMappingExecutionContext(processDefinition.getId(),
                                                                                                                              initialFlowElement.getId()),
                                                                         variables);

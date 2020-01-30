@@ -42,20 +42,33 @@ public class ProcessExtensionService {
         this.processExtensionReader = processExtensionReader;
     }
 
-    private Map<String, ProcessExtensionModel> getProcessExtensionsForDeploymentId(String deploymentId) {
+    private Map<String, ProcessExtensionModel> getProcessExtensionsForDeploymentId(String deploymentId, String processDefinitionKey) {
         Map<String, ProcessExtensionModel> processExtensionModelMap = processExtensionModelDeploymentMap.get(deploymentId);
         if (processExtensionModelMap != null) {
             return processExtensionModelMap;
         }
 
         List<ProcessExtensionModel> processExtensionModels = processExtensionLoader.loadResourcesForDeployment(deploymentId,
-                processExtensionReader);
-        processExtensionModelMap = processExtensionModels.stream().collect(Collectors.toMap(ProcessExtensionModel::getId,
-                Function.identity()));
+                processExtensionReader, processDefinitionKey);
 
-
+        processExtensionModelMap = this.buildProcessDefinitionAndExtensionMap(processExtensionModels, processDefinitionKey);
         processExtensionModelDeploymentMap.put(deploymentId, processExtensionModelMap);
         return processExtensionModelMap;
+    }
+
+    private Map<String, ProcessExtensionModel> buildProcessDefinitionAndExtensionMap(List<ProcessExtensionModel> processExtensionModels,
+                                                                                     String processDefinitionKey){
+        Map<String, ProcessExtensionModel> buildProcessExtensionMap = null;
+        if(processExtensionModels.size() > 0 ){
+            buildProcessExtensionMap = new HashMap();
+            for(ProcessExtensionModel processExtensionModel:processExtensionModels ){
+                if(processExtensionModel.getExtensions(processDefinitionKey) != null){
+                    buildProcessExtensionMap.put(processDefinitionKey, processExtensionModel);
+                }
+            }
+
+        }
+        return buildProcessExtensionMap;
     }
 
     public boolean hasExtensionsFor(ProcessDefinition processDefinition) {
@@ -70,7 +83,8 @@ public class ProcessExtensionService {
     public ProcessExtensionModel getExtensionsFor(ProcessDefinition processDefinition) {
         ProcessExtensionModel processExtensionModel = null;
 
-        Map<String, ProcessExtensionModel> processExtensionModelMap = getProcessExtensionsForDeploymentId(processDefinition.getDeploymentId());
+        Map<String, ProcessExtensionModel> processExtensionModelMap = getProcessExtensionsForDeploymentId(processDefinition.getDeploymentId(),
+                                                                                                          processDefinition.getKey());
         if (processExtensionModelMap != null) {
             processExtensionModel = processExtensionModelMap.get(processDefinition.getKey());
         }
