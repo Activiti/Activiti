@@ -1,8 +1,8 @@
 {
-  "id": "connectorVarMappingExpression",
+  "id": "connectorVarMappingExpressionModel",
   "name": "myProcess.bpmn",
   "extensions": {
-    "Process_connectorVarMappingExpression": {
+    "connectorVarMappingExpression": {
       "properties": {
         "age-id": {
           "id": "age-id",
