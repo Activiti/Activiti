@@ -1,9 +1,9 @@
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -236,37 +236,51 @@ public class DefaultProcessValidatorTest {
 
   @Test
   public void testWarningError() throws UnsupportedEncodingException, XMLStreamException {
-    String flowWithoutConditionNoDefaultFlow = "<?xml version='1.0' encoding='UTF-8'?>"
-        + "<definitions id='definitions' xmlns='http://www.omg.org/spec/BPMN/20100524/MODEL' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns:activiti='http://activiti.org/bpmn' targetNamespace='Examples'>"
-        + "  <process id='exclusiveGwDefaultSequenceFlow'> " + "    <startEvent id='theStart' /> " + "    <sequenceFlow id='flow1' sourceRef='theStart' targetRef='exclusiveGw' /> " +
-
-        "    <exclusiveGateway id='exclusiveGw' name='Exclusive Gateway' /> "
-        + // no default = "flow3" !!
-        "    <sequenceFlow id='flow2' sourceRef='exclusiveGw' targetRef='theTask1'> " + "      <conditionExpression xsi:type='tFormalExpression'>${input == 1}</conditionExpression> "
-        + "    </sequenceFlow> " + "    <sequenceFlow id='flow3' sourceRef='exclusiveGw' targetRef='theTask2'/> " + // one
-                                                                                                                    // would
-                                                                                                                    // be
-                                                                                                                    // OK
-        "    <sequenceFlow id='flow4' sourceRef='exclusiveGw' targetRef='theTask2'/> " + // but
-                                                                                         // two
-                                                                                         // unconditional
-                                                                                         // not!
-
-        "    <userTask id='theTask1' name='Input is one' /> " + "    <userTask id='theTask2' name='Default input' /> " + "  </process>" + "</definitions>";
-
+    InputStream xmlStream = this.getClass().getClassLoader().getResourceAsStream("org/activiti/engine/test/validation/flowWithoutConditionNoDefaultFlow.bpmn20.xml");
     XMLInputFactory xif = XMLInputFactory.newInstance();
-    InputStreamReader in = new InputStreamReader(new ByteArrayInputStream(flowWithoutConditionNoDefaultFlow.getBytes()), "UTF-8");
+    InputStreamReader in = new InputStreamReader(xmlStream, "UTF-8");
     XMLStreamReader xtr = xif.createXMLStreamReader(in);
     BpmnModel bpmnModel = new BpmnXMLConverter().convertToBpmnModel(xtr);
+    Assert.assertNotNull(bpmnModel);
+
     Assert.assertNotNull(bpmnModel);
     List<ValidationError> allErrors = processValidator.validate(bpmnModel);
     Assert.assertEquals(1, allErrors.size());
     Assert.assertTrue(allErrors.get(0).isWarning());
+   }
+
+   @Test
+   public void testValidMessageFlow() throws UnsupportedEncodingException, XMLStreamException {
+    InputStream xmlStream = this.getClass().getClassLoader().getResourceAsStream("org/activiti/engine/test/validation/validMessageProcess.bpmn20.xml");
+    XMLInputFactory xif = XMLInputFactory.newInstance();
+    InputStreamReader in = new InputStreamReader(xmlStream, "UTF-8");
+    XMLStreamReader xtr = xif.createXMLStreamReader(in);
+    BpmnModel bpmnModel = new BpmnXMLConverter().convertToBpmnModel(xtr);
+    Assert.assertNotNull(bpmnModel);
+
+    Assert.assertNotNull(bpmnModel);
+    List<ValidationError> allErrors = processValidator.validate(bpmnModel);
+    Assert.assertEquals(0, allErrors.size());
   }
+
+   @Test
+   public void testInvalidMessageFlow() throws UnsupportedEncodingException, XMLStreamException {
+    InputStream xmlStream = this.getClass().getClassLoader().getResourceAsStream("org/activiti/engine/test/validation/invalidMessageProcess.bpmn20.xml");
+    XMLInputFactory xif = XMLInputFactory.newInstance();
+    InputStreamReader in = new InputStreamReader(xmlStream, "UTF-8");
+    XMLStreamReader xtr = xif.createXMLStreamReader(in);
+    BpmnModel bpmnModel = new BpmnXMLConverter().convertToBpmnModel(xtr);
+    Assert.assertNotNull(bpmnModel);
+
+    Assert.assertNotNull(bpmnModel);
+    List<ValidationError> allErrors = processValidator.validate(bpmnModel);
+    Assert.assertEquals(1, allErrors.size());
+    Assert.assertTrue(allErrors.get(0).isWarning());
+   }
 
   /*
    * Test for https://jira.codehaus.org/browse/ACT-2071:
-   * 
+   *
    * If all processes in a deployment are not executable, throw an exception as this doesn't make sense to do.
    */
   @Test
@@ -284,7 +298,7 @@ public class DefaultProcessValidatorTest {
 
   /*
    * Test for https://jira.codehaus.org/browse/ACT-2071:
-   * 
+   *
    * If there is at least one process definition which is executable, and the deployment contains other process definitions which are not executable, then add a warning for those non executable
    * process definitions
    */
