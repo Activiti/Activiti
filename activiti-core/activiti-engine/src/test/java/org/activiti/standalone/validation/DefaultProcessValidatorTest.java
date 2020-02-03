@@ -12,17 +12,17 @@
  */
 package org.activiti.standalone.validation;
 
-import java.io.ByteArrayInputStream;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
-
 import org.activiti.bpmn.converter.BpmnXMLConverter;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.engine.test.util.TestProcessUtil;
@@ -40,7 +40,7 @@ import org.junit.Test;
  */
 public class DefaultProcessValidatorTest {
 
-  protected ProcessValidator processValidator;
+  private ProcessValidator processValidator;
 
   @Before
   public void setupProcessValidator() {
@@ -51,12 +51,9 @@ public class DefaultProcessValidatorTest {
   @Test
   public void verifyValidation() throws Exception {
 
-    InputStream xmlStream = this.getClass().getClassLoader().getResourceAsStream("org/activiti/engine/test/validation/invalidProcess.bpmn20.xml");
-    XMLInputFactory xif = XMLInputFactory.newInstance();
-    InputStreamReader in = new InputStreamReader(xmlStream, "UTF-8");
-    XMLStreamReader xtr = xif.createXMLStreamReader(in);
-    BpmnModel bpmnModel = new BpmnXMLConverter().convertToBpmnModel(xtr);
-    Assert.assertNotNull(bpmnModel);
+      BpmnModel bpmnModel = readModel(
+          "org/activiti/engine/test/validation/invalidProcess.bpmn20.xml");
+      Assert.assertNotNull(bpmnModel);
 
     List<ValidationError> allErrors = processValidator.validate(bpmnModel);
     Assert.assertEquals(65, allErrors.size());
@@ -234,49 +231,52 @@ public class DefaultProcessValidatorTest {
 
   }
 
-  @Test
-  public void testWarningError() throws UnsupportedEncodingException, XMLStreamException {
-    InputStream xmlStream = this.getClass().getClassLoader().getResourceAsStream("org/activiti/engine/test/validation/flowWithoutConditionNoDefaultFlow.bpmn20.xml");
-    XMLInputFactory xif = XMLInputFactory.newInstance();
-    InputStreamReader in = new InputStreamReader(xmlStream, "UTF-8");
-    XMLStreamReader xtr = xif.createXMLStreamReader(in);
-    BpmnModel bpmnModel = new BpmnXMLConverter().convertToBpmnModel(xtr);
-    Assert.assertNotNull(bpmnModel);
+    @Test
+    public void testWarningError() throws Exception {
+        BpmnModel bpmnModel = readModel(
+            "org/activiti/engine/test/validation/flowWithoutConditionNoDefaultFlow.bpmn20.xml");
+        Assert.assertNotNull(bpmnModel);
 
-    Assert.assertNotNull(bpmnModel);
-    List<ValidationError> allErrors = processValidator.validate(bpmnModel);
-    Assert.assertEquals(1, allErrors.size());
-    Assert.assertTrue(allErrors.get(0).isWarning());
-   }
+        Assert.assertNotNull(bpmnModel);
+        List<ValidationError> allErrors = processValidator.validate(bpmnModel);
+        Assert.assertEquals(1, allErrors.size());
+        Assert.assertTrue(allErrors.get(0).isWarning());
+    }
 
-   @Test
-   public void testValidMessageFlow() throws UnsupportedEncodingException, XMLStreamException {
-    InputStream xmlStream = this.getClass().getClassLoader().getResourceAsStream("org/activiti/engine/test/validation/validMessageProcess.bpmn20.xml");
-    XMLInputFactory xif = XMLInputFactory.newInstance();
-    InputStreamReader in = new InputStreamReader(xmlStream, "UTF-8");
-    XMLStreamReader xtr = xif.createXMLStreamReader(in);
-    BpmnModel bpmnModel = new BpmnXMLConverter().convertToBpmnModel(xtr);
-    Assert.assertNotNull(bpmnModel);
+    @Test
+    public void testValidMessageFlow() throws Exception {
+        BpmnModel bpmnModel = readModel(
+            "org/activiti/engine/test/validation/validMessageProcess.bpmn20.xml");
+        Assert.assertNotNull(bpmnModel);
 
-    Assert.assertNotNull(bpmnModel);
-    List<ValidationError> allErrors = processValidator.validate(bpmnModel);
-    Assert.assertEquals(0, allErrors.size());
-  }
+        assertThat(bpmnModel).isNotNull();
+        List<ValidationError> allErrors = processValidator.validate(bpmnModel);
+        assertThat(allErrors).isEmpty();
+    }
 
-   @Test
-   public void testInvalidMessageFlow() throws UnsupportedEncodingException, XMLStreamException {
-    InputStream xmlStream = this.getClass().getClassLoader().getResourceAsStream("org/activiti/engine/test/validation/invalidMessageProcess.bpmn20.xml");
-    XMLInputFactory xif = XMLInputFactory.newInstance();
-    InputStreamReader in = new InputStreamReader(xmlStream, "UTF-8");
-    XMLStreamReader xtr = xif.createXMLStreamReader(in);
-    BpmnModel bpmnModel = new BpmnXMLConverter().convertToBpmnModel(xtr);
-    Assert.assertNotNull(bpmnModel);
+    private BpmnModel readModel(String modelPath)
+        throws XMLStreamException, IOException {
+        try (InputStream xmlStream = this.getClass().getClassLoader().getResourceAsStream(
+            modelPath)) {
+            XMLInputFactory xif = XMLInputFactory.newInstance();
+            InputStreamReader in = new InputStreamReader(xmlStream, StandardCharsets.UTF_8);
+            XMLStreamReader xtr = xif.createXMLStreamReader(in);
+            return new BpmnXMLConverter().convertToBpmnModel(xtr);
+        }
+    }
 
-    Assert.assertNotNull(bpmnModel);
-    List<ValidationError> allErrors = processValidator.validate(bpmnModel);
-    Assert.assertEquals(1, allErrors.size());
-    Assert.assertTrue(allErrors.get(0).isWarning());
-   }
+    @Test
+    public void testInvalidMessageFlow() throws Exception {
+        BpmnModel bpmnModel = readModel(
+            "org/activiti/engine/test/validation/invalidMessageProcess.bpmn20.xml");
+        Assert.assertNotNull(bpmnModel);
+
+        assertThat(bpmnModel).isNotNull();
+        List<ValidationError> allErrors = processValidator.validate(bpmnModel);
+        assertThat(allErrors).hasSize(1);
+        assertThat(allErrors.get(0).isWarning()).isTrue();
+        assertThat(allErrors.get(0).getProblem()).isEqualTo("activiti-di-invalid-reference");
+    }
 
   /*
    * Test for https://jira.codehaus.org/browse/ACT-2071:
@@ -328,7 +328,7 @@ public class DefaultProcessValidatorTest {
     }
   }
 
-  protected void assertCommonProblemFieldForActivity(ValidationError error) {
+  private void assertCommonProblemFieldForActivity(ValidationError error) {
     assertProcessElementError(error);
 
     Assert.assertNotNull(error.getActivityId());
@@ -338,7 +338,7 @@ public class DefaultProcessValidatorTest {
     Assert.assertTrue(error.getActivityName().length() > 0);
   }
 
-  protected void assertCommonErrorFields(ValidationError error) {
+  private void assertCommonErrorFields(ValidationError error) {
     Assert.assertNotNull(error.getValidatorSetName());
     Assert.assertNotNull(error.getProblem());
     Assert.assertNotNull(error.getDefaultDescription());
@@ -346,13 +346,14 @@ public class DefaultProcessValidatorTest {
     Assert.assertTrue(error.getXmlColumnNumber() > 0);
   }
 
-  protected void assertProcessElementError(ValidationError error) {
+  private void assertProcessElementError(ValidationError error) {
     assertCommonErrorFields(error);
     Assert.assertEquals("invalidProcess", error.getProcessDefinitionId());
     Assert.assertEquals("The invalid process", error.getProcessDefinitionName());
   }
 
-  protected List<ValidationError> findErrors(List<ValidationError> errors, String validatorSetName, String problemName, int expectedNrOfProblems) {
+  private List<ValidationError> findErrors(List<ValidationError> errors, String validatorSetName,
+      String problemName, int expectedNrOfProblems) {
     List<ValidationError> results = findErrors(errors, validatorSetName, problemName);
     Assert.assertEquals(expectedNrOfProblems, results.size());
     for (ValidationError result : results) {
@@ -362,8 +363,9 @@ public class DefaultProcessValidatorTest {
     return results;
   }
 
-  protected List<ValidationError> findErrors(List<ValidationError> errors, String validatorSetName, String problemName) {
-    List<ValidationError> results = new ArrayList<ValidationError>();
+  private List<ValidationError> findErrors(List<ValidationError> errors, String validatorSetName,
+      String problemName) {
+    List<ValidationError> results = new ArrayList<>();
     for (ValidationError error : errors) {
       if (error.getValidatorSetName().equals(validatorSetName) && error.getProblem().equals(problemName)) {
         results.add(error);
