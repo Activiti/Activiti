@@ -16,6 +16,12 @@
           "name": "outVar",
           "type": "string",
           "required": false
+        },
+        "outVarFromJsonExpressionId": {
+          "id": "outVarFromJsonExpressionId",
+          "name": "outVarFromJsonExpression",
+          "type": "string",
+          "required": false
         }
       },
       "mappings": {
@@ -24,6 +30,10 @@
             "outVar": {
               "type": "value",
               "value": "Resolved expression: ${outVariable1Name}"
+            },
+            "outVarFromJsonExpression": {
+              "type": "value",
+              "value": "${sightSeeing.city.place}"
             }
           }
         }

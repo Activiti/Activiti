@@ -1,9 +1,9 @@
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -111,14 +111,17 @@ public class ExpressionManager {
     protected ELResolver createElResolver(VariableScope variableScope) {
         CompositeELResolver elResolver = new CompositeELResolver();
         elResolver.add(new VariableScopeElResolver(variableScope));
-
         if (beans != null) {
             // ACT-1102: Also expose all beans in configuration when using
             // standalone activiti, not
             // in spring-context
             elResolver.add(new ReadOnlyMapELResolver(beans));
         }
+        addBaseResolvers(elResolver);
+        return elResolver;
+    }
 
+    private void addBaseResolvers(CompositeELResolver elResolver) {
         elResolver.add(new ArrayELResolver());
         elResolver.add(new ListELResolver());
         elResolver.add(new MapELResolver());
@@ -127,7 +130,6 @@ public class ExpressionManager {
                                                          "getFieldValue",
                                                          "setFieldValue")); // TODO: needs verification
         elResolver.add(new BeanELResolver());
-        return elResolver;
     }
 
     public Map<Object, Object> getBeans() {
@@ -139,7 +141,9 @@ public class ExpressionManager {
     }
 
     public ELContext getElContext(Map<String, Object> availableVariables) {
-        ELResolver elResolver = new ReadOnlyMapELResolver(new HashMap<>(availableVariables));
+        CompositeELResolver elResolver = new CompositeELResolver();
+        elResolver.add(new ReadOnlyMapELResolver(new HashMap<>(availableVariables)));
+        addBaseResolvers(elResolver);
         return new ActivitiElContext(elResolver);
     }
 }

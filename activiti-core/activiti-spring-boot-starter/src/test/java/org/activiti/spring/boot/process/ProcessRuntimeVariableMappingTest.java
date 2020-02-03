@@ -129,7 +129,8 @@ public class ProcessRuntimeVariableMappingTest {
                                          VariableInstance::getValue)
                              .containsOnly(
                                            tuple("name", "John"),
-                                           tuple("outVar", "Resolved expression: value-set-in-connector"));
+                                           tuple("outVar", "Resolved expression: value-set-in-connector"),
+                                 tuple("outVarFromJsonExpression", "Tower of London"));
 
     }
 }
