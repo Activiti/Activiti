@@ -1,9 +1,9 @@
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -12,17 +12,17 @@
  */
 package org.activiti.standalone.validation;
 
-import java.io.ByteArrayInputStream;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
-
 import org.activiti.bpmn.converter.BpmnXMLConverter;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.engine.test.util.TestProcessUtil;
@@ -40,7 +40,7 @@ import org.junit.Test;
  */
 public class DefaultProcessValidatorTest {
 
-  protected ProcessValidator processValidator;
+  private ProcessValidator processValidator;
 
   @Before
   public void setupProcessValidator() {
@@ -51,12 +51,9 @@ public class DefaultProcessValidatorTest {
   @Test
   public void verifyValidation() throws Exception {
 
-    InputStream xmlStream = this.getClass().getClassLoader().getResourceAsStream("org/activiti/engine/test/validation/invalidProcess.bpmn20.xml");
-    XMLInputFactory xif = XMLInputFactory.newInstance();
-    InputStreamReader in = new InputStreamReader(xmlStream, "UTF-8");
-    XMLStreamReader xtr = xif.createXMLStreamReader(in);
-    BpmnModel bpmnModel = new BpmnXMLConverter().convertToBpmnModel(xtr);
-    Assert.assertNotNull(bpmnModel);
+      BpmnModel bpmnModel = readModel(
+          "org/activiti/engine/test/validation/invalidProcess.bpmn20.xml");
+      Assert.assertNotNull(bpmnModel);
 
     List<ValidationError> allErrors = processValidator.validate(bpmnModel);
     Assert.assertEquals(65, allErrors.size());
@@ -234,39 +231,56 @@ public class DefaultProcessValidatorTest {
 
   }
 
-  @Test
-  public void testWarningError() throws UnsupportedEncodingException, XMLStreamException {
-    String flowWithoutConditionNoDefaultFlow = "<?xml version='1.0' encoding='UTF-8'?>"
-        + "<definitions id='definitions' xmlns='http://www.omg.org/spec/BPMN/20100524/MODEL' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns:activiti='http://activiti.org/bpmn' targetNamespace='Examples'>"
-        + "  <process id='exclusiveGwDefaultSequenceFlow'> " + "    <startEvent id='theStart' /> " + "    <sequenceFlow id='flow1' sourceRef='theStart' targetRef='exclusiveGw' /> " +
+    @Test
+    public void testWarningError() throws Exception {
+        BpmnModel bpmnModel = readModel(
+            "org/activiti/engine/test/validation/flowWithoutConditionNoDefaultFlow.bpmn20.xml");
+        Assert.assertNotNull(bpmnModel);
 
-        "    <exclusiveGateway id='exclusiveGw' name='Exclusive Gateway' /> "
-        + // no default = "flow3" !!
-        "    <sequenceFlow id='flow2' sourceRef='exclusiveGw' targetRef='theTask1'> " + "      <conditionExpression xsi:type='tFormalExpression'>${input == 1}</conditionExpression> "
-        + "    </sequenceFlow> " + "    <sequenceFlow id='flow3' sourceRef='exclusiveGw' targetRef='theTask2'/> " + // one
-                                                                                                                    // would
-                                                                                                                    // be
-                                                                                                                    // OK
-        "    <sequenceFlow id='flow4' sourceRef='exclusiveGw' targetRef='theTask2'/> " + // but
-                                                                                         // two
-                                                                                         // unconditional
-                                                                                         // not!
+        Assert.assertNotNull(bpmnModel);
+        List<ValidationError> allErrors = processValidator.validate(bpmnModel);
+        Assert.assertEquals(1, allErrors.size());
+        Assert.assertTrue(allErrors.get(0).isWarning());
+    }
 
-        "    <userTask id='theTask1' name='Input is one' /> " + "    <userTask id='theTask2' name='Default input' /> " + "  </process>" + "</definitions>";
+    @Test
+    public void testValidMessageFlow() throws Exception {
+        BpmnModel bpmnModel = readModel(
+            "org/activiti/engine/test/validation/validMessageProcess.bpmn20.xml");
+        Assert.assertNotNull(bpmnModel);
 
-    XMLInputFactory xif = XMLInputFactory.newInstance();
-    InputStreamReader in = new InputStreamReader(new ByteArrayInputStream(flowWithoutConditionNoDefaultFlow.getBytes()), "UTF-8");
-    XMLStreamReader xtr = xif.createXMLStreamReader(in);
-    BpmnModel bpmnModel = new BpmnXMLConverter().convertToBpmnModel(xtr);
-    Assert.assertNotNull(bpmnModel);
-    List<ValidationError> allErrors = processValidator.validate(bpmnModel);
-    Assert.assertEquals(1, allErrors.size());
-    Assert.assertTrue(allErrors.get(0).isWarning());
-  }
+        assertThat(bpmnModel).isNotNull();
+        List<ValidationError> allErrors = processValidator.validate(bpmnModel);
+        assertThat(allErrors).isEmpty();
+    }
+
+    private BpmnModel readModel(String modelPath)
+        throws XMLStreamException, IOException {
+        try (InputStream xmlStream = this.getClass().getClassLoader().getResourceAsStream(
+            modelPath)) {
+            XMLInputFactory xif = XMLInputFactory.newInstance();
+            InputStreamReader in = new InputStreamReader(xmlStream, StandardCharsets.UTF_8);
+            XMLStreamReader xtr = xif.createXMLStreamReader(in);
+            return new BpmnXMLConverter().convertToBpmnModel(xtr);
+        }
+    }
+
+    @Test
+    public void testInvalidMessageFlow() throws Exception {
+        BpmnModel bpmnModel = readModel(
+            "org/activiti/engine/test/validation/invalidMessageProcess.bpmn20.xml");
+        Assert.assertNotNull(bpmnModel);
+
+        assertThat(bpmnModel).isNotNull();
+        List<ValidationError> allErrors = processValidator.validate(bpmnModel);
+        assertThat(allErrors).hasSize(1);
+        assertThat(allErrors.get(0).isWarning()).isTrue();
+        assertThat(allErrors.get(0).getProblem()).isEqualTo("activiti-di-invalid-reference");
+    }
 
   /*
    * Test for https://jira.codehaus.org/browse/ACT-2071:
-   * 
+   *
    * If all processes in a deployment are not executable, throw an exception as this doesn't make sense to do.
    */
   @Test
@@ -284,7 +298,7 @@ public class DefaultProcessValidatorTest {
 
   /*
    * Test for https://jira.codehaus.org/browse/ACT-2071:
-   * 
+   *
    * If there is at least one process definition which is executable, and the deployment contains other process definitions which are not executable, then add a warning for those non executable
    * process definitions
    */
@@ -314,7 +328,7 @@ public class DefaultProcessValidatorTest {
     }
   }
 
-  protected void assertCommonProblemFieldForActivity(ValidationError error) {
+  private void assertCommonProblemFieldForActivity(ValidationError error) {
     assertProcessElementError(error);
 
     Assert.assertNotNull(error.getActivityId());
@@ -324,7 +338,7 @@ public class DefaultProcessValidatorTest {
     Assert.assertTrue(error.getActivityName().length() > 0);
   }
 
-  protected void assertCommonErrorFields(ValidationError error) {
+  private void assertCommonErrorFields(ValidationError error) {
     Assert.assertNotNull(error.getValidatorSetName());
     Assert.assertNotNull(error.getProblem());
     Assert.assertNotNull(error.getDefaultDescription());
@@ -332,13 +346,14 @@ public class DefaultProcessValidatorTest {
     Assert.assertTrue(error.getXmlColumnNumber() > 0);
   }
 
-  protected void assertProcessElementError(ValidationError error) {
+  private void assertProcessElementError(ValidationError error) {
     assertCommonErrorFields(error);
     Assert.assertEquals("invalidProcess", error.getProcessDefinitionId());
     Assert.assertEquals("The invalid process", error.getProcessDefinitionName());
   }
 
-  protected List<ValidationError> findErrors(List<ValidationError> errors, String validatorSetName, String problemName, int expectedNrOfProblems) {
+  private List<ValidationError> findErrors(List<ValidationError> errors, String validatorSetName,
+      String problemName, int expectedNrOfProblems) {
     List<ValidationError> results = findErrors(errors, validatorSetName, problemName);
     Assert.assertEquals(expectedNrOfProblems, results.size());
     for (ValidationError result : results) {
@@ -348,8 +363,9 @@ public class DefaultProcessValidatorTest {
     return results;
   }
 
-  protected List<ValidationError> findErrors(List<ValidationError> errors, String validatorSetName, String problemName) {
-    List<ValidationError> results = new ArrayList<ValidationError>();
+  private List<ValidationError> findErrors(List<ValidationError> errors, String validatorSetName,
+      String problemName) {
+    List<ValidationError> results = new ArrayList<>();
     for (ValidationError error : errors) {
       if (error.getValidatorSetName().equals(validatorSetName) && error.getProblem().equals(problemName)) {
         results.add(error);
