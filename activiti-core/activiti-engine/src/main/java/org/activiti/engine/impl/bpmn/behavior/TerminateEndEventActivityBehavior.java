@@ -174,9 +174,9 @@ public class TerminateEndEventActivityBehavior extends FlowNodeActivityBehavior 
 
     List<ExecutionEntity> childExecutions = executionEntityManager.collectChildren(rootExecutionEntity);
     for (int i=childExecutions.size()-1; i>=0; i--) {
-      executionEntityManager.deleteExecutionAndRelatedData(childExecutions.get(i), deleteReason);
+      executionEntityManager.cancelExecutionAndRelatedData(childExecutions.get(i), deleteReason);
     }
-    executionEntityManager.deleteExecutionAndRelatedData(rootExecutionEntity, deleteReason);
+    executionEntityManager.cancelExecutionAndRelatedData(rootExecutionEntity, deleteReason);
   }
 
   protected void sendProcessInstanceCancelledEvent(DelegateExecution execution, FlowElement terminateEndEvent) {
@@ -186,7 +186,7 @@ public class TerminateEndEventActivityBehavior extends FlowNodeActivityBehavior 
 
         Context.getProcessEngineConfiguration().getEventDispatcher()
             .dispatchEvent(ActivitiEventBuilder.createCancelledEvent(execution.getId(), execution.getProcessInstanceId(),
-                execution.getProcessDefinitionId(), execution.getCurrentFlowElement()));
+                execution.getProcessDefinitionId(), createDeleteReason(terminateEndEvent.getId())));
       }
     }
 
@@ -225,7 +225,7 @@ public class TerminateEndEventActivityBehavior extends FlowNodeActivityBehavior 
   }
 
   protected String createDeleteReason(String activityId) {
-    return DeleteReason.TERMINATE_END_EVENT + " (" + activityId + ")";
+    return DeleteReason.TERMINATE_END_EVENT + ": " + activityId;
   }
 
   public boolean isTerminateAll() {

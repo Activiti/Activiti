@@ -15,6 +15,7 @@ import java.util.Set;
 import org.activiti.api.model.shared.event.VariableCreatedEvent;
 import org.activiti.api.process.model.events.BPMNSequenceFlowTakenEvent;
 import org.activiti.api.process.runtime.connector.Connector;
+import org.activiti.api.process.runtime.events.ProcessCancelledEvent;
 import org.activiti.api.process.runtime.events.ProcessCompletedEvent;
 import org.activiti.api.process.runtime.events.listener.BPMNElementEventListener;
 import org.activiti.api.process.runtime.events.listener.ProcessRuntimeEventListener;
@@ -63,6 +64,10 @@ public class RuntimeTestConfiguration {
     public static Set<String> updatedTasks = new HashSet<>();
 
     public static Set<String> completedProcesses = new HashSet<>();
+
+    public static Set<String> completedTasks = new HashSet<>();
+
+    public static Set<String> cancelledProcesses = new HashSet<>();
 
     public static Set<BPMNSequenceFlowTakenEvent> sequenceFlowTakenEvents = new HashSet<>();
 
@@ -178,6 +183,16 @@ public class RuntimeTestConfiguration {
             discardImageConnectorExecuted = true;
             return integrationContext;
         };
+    }
+
+    @Bean
+    public TaskRuntimeEventListener<TaskCompletedEvent> taskCompletedListener() {
+        return taskCompleted -> completedTasks.add(taskCompleted.getEntity().getId());
+    }
+
+    @Bean
+    public ProcessRuntimeEventListener<ProcessCancelledEvent> processCancelledListener() {
+        return processCancelled -> cancelledProcesses.add(processCancelled.getEntity().getId());
     }
 
     @Bean

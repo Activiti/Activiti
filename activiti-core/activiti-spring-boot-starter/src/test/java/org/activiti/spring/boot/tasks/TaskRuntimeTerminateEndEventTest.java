@@ -17,13 +17,23 @@
 package org.activiti.spring.boot.tasks;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Java6Assertions.tuple;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
+import org.activiti.api.model.shared.event.RuntimeEvent;
 import org.activiti.api.process.model.ProcessInstance;
+import org.activiti.api.process.model.events.ProcessRuntimeEvent;
+import org.activiti.api.process.runtime.events.ProcessCancelledEvent;
 import org.activiti.api.task.model.Task;
+import org.activiti.api.task.model.events.TaskRuntimeEvent;
+import org.activiti.api.task.runtime.events.TaskCancelledEvent;
+import org.activiti.spring.boot.RuntimeTestConfiguration;
 import org.activiti.spring.boot.process.ProcessBaseRuntime;
+import org.activiti.spring.boot.security.util.SecurityUtil;
 import org.activiti.spring.boot.test.util.TaskCleanUpUtil;
+import org.activiti.test.LocalEventSource;
 import org.junit.After;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -49,13 +59,23 @@ public class TaskRuntimeTerminateEndEventTest {
     @Autowired
     private TaskCleanUpUtil taskCleanUpUtil;
 
+    @Autowired
+    private SecurityUtil securityUtil;
+
+    @Autowired
+    private LocalEventSource localEventSource;
+
+    @Autowired
+    private TaskRuntimeEventListeners taskRuntimeEventListeners;
+
     @After
-    public void taskCleanUp(){
+    public void tearDown(){
         taskCleanUpUtil.cleanUpWithAdmin();
+        localEventSource.clearEvents();
     }
 
     @Test
-    public void processTerminateEventWithParallelTasks() {
+    public void should_ProcessesAndTasksDisappear_whenTerminateEventIsExecuted() {
         ProcessInstance process = processBaseRuntime.startProcessWithProcessDefinitionKey(TASK_PROCESS_TERMINATE_EVENT);
 
         List<Task> taskList = taskBaseRuntime.getTasksByProcessInstanceId(process.getId());
@@ -68,6 +88,72 @@ public class TaskRuntimeTerminateEndEventTest {
 
         List<Task> taskAfterCompleted = taskBaseRuntime.getTasksByProcessInstanceId(process.getId());
         assertThat(taskAfterCompleted).hasSize(0);
+
+        List<ProcessInstance> processInstanceList = processBaseRuntime.getProcessInstances();
+        assertThat(processInstanceList).hasSize(0);
+
+    }
+
+    @Test
+    public void letsDebug(){
+
+        securityUtil.logInAs("user");
+
+        ProcessInstance processInstance = processBaseRuntime.startProcessWithProcessDefinitionKey("Process_KzwZAEl-");
+        assertThat(processInstance).isNotNull();
+
+        List<Task> tasks = taskBaseRuntime.getTasks(processInstance);
+        assertThat(tasks).hasSize(2);
+        Task task1 = tasks.get(0);
+        Task task2 = tasks.get(1);
+        assertThat(task1.getName()).isEqualTo("task1");
+        assertThat(task2.getName()).isEqualTo("task2");
+
+        assertThat(RuntimeTestConfiguration.createdTasks).contains(task1.getId(), task2.getId());
+
+        taskBaseRuntime.completeTask(task2.getId());
+
+        List<Task> tasksAfterCompletion = taskBaseRuntime.getTasks(processInstance);
+        assertThat(tasksAfterCompletion).hasSize(0);
+
+        assertThat(RuntimeTestConfiguration.completedTasks).hasSize(1);
+
+        assertThat(taskRuntimeEventListeners.getCancelledTasks()).hasSize(1);
+
+//        assertThat(localEventSource.getTaskEvents())
+//            .extracting(event -> ((Task) event.getEntity()).getName(),
+//                RuntimeEvent::getEventType
+//            )
+//            .contains(tuple(task1.getName(),
+//                TaskRuntimeEvent.TaskEvents.TASK_CANCELLED));
+
+
+        List<TaskCancelledEvent> taskCancelledEvents =
+            localEventSource.getEvents(TaskCancelledEvent.class);
+
+        assertThat(taskCancelledEvents).hasSize(1);
+        assertThat(taskCancelledEvents.get(0).getCause()).contains("Terminated by end event:");
+
+
+        assertThat(RuntimeTestConfiguration.cancelledProcesses).hasSize(1);
+
+//        assertThat(localEventSource.getProcessInstanceEvents())
+////            .extracting(event -> ((ProcessInstance) event.getEntity()).getName(),
+////                        RuntimeEvent::getEventType
+////            )
+//            .filteredOn(event -> event.getEventType().equals(ProcessRuntimeEvent.ProcessEvents.PROCESS_CANCELLED))
+////            .contains(tuple(processInstance.getName(), ProcessRuntimeEvent.ProcessEvents.PROCESS_CANCELLED
+////                            ));
+
+        List<RuntimeEvent> processCancelledEvents =
+            localEventSource.getProcessInstanceEvents()
+            .stream()
+            .filter(event -> event.getEventType().equals(ProcessRuntimeEvent.ProcessEvents.PROCESS_CANCELLED))
+            .collect(Collectors.toList());
+
+        assertThat(processCancelledEvents).hasSize(1);
+        assertThat(((ProcessCancelledEvent)processCancelledEvents.get(0)).getCause()).contains("Terminated by end event:");
+
     }
 
 }
