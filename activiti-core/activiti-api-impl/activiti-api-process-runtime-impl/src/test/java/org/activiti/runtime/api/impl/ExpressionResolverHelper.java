@@ -30,11 +30,11 @@ public class ExpressionResolverHelper {
                                                 Extension extensions) {
         initializeExpressionResolver();
 
-        Map<String, Object> variables = converstToStringObjectMap(extensions.getProperties());
+        Map<String, Object> variables = convertToStringObjectMap(extensions.getProperties());
 
         setExecutionVariables(execution, variables);
         return new ExpressionResolver(new ExpressionManager(),
-                                      objectMapper);
+                                      objectMapper, new DefaultDelegateInterceptor());
     }
 
     public static void setExecutionVariables(DelegateExecution execution, Map<String, Object> variables) {
@@ -50,7 +50,8 @@ public class ExpressionResolverHelper {
     }
 
 
-    public static Map<String, Object> converstToStringObjectMap(Map<String, VariableDefinition> sourceMap) {
+    private static Map<String, Object> convertToStringObjectMap(
+        Map<String, VariableDefinition> sourceMap) {
         Map<String, Object> result = new HashMap<>();
         sourceMap.forEach((key,
                 value) -> result.put(value.getName(),
