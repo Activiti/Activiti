@@ -72,6 +72,7 @@ public class TaskRuntimeTerminateEndEventTest {
     public void tearDown(){
         taskCleanUpUtil.cleanUpWithAdmin();
         localEventSource.clearEvents();
+        taskRuntimeEventListeners.clearEvents();
     }
 
     @Test
@@ -89,13 +90,19 @@ public class TaskRuntimeTerminateEndEventTest {
         List<Task> taskAfterCompleted = taskBaseRuntime.getTasksByProcessInstanceId(process.getId());
         assertThat(taskAfterCompleted).hasSize(0);
 
+//        assertThat(RuntimeTestConfiguration.completedTasks).hasSize(1);
+        assertThat(taskRuntimeEventListeners.getCancelledTasks()).hasSize(1);
+
         List<ProcessInstance> processInstanceList = processBaseRuntime.getProcessInstances();
         assertThat(processInstanceList).hasSize(0);
+
+        List<ProcessCancelledEvent> processCancelledEvents = localEventSource.getEvents(ProcessCancelledEvent.class);
+        assertThat(processCancelledEvents).hasSize(1);
 
     }
 
     @Test
-    public void letsDebug(){
+    public void should_CancelledEventsHaveCancellationReasonSet(){
 
         securityUtil.logInAs("user");
 
@@ -104,55 +111,23 @@ public class TaskRuntimeTerminateEndEventTest {
 
         List<Task> tasks = taskBaseRuntime.getTasks(processInstance);
         assertThat(tasks).hasSize(2);
-        Task task1 = tasks.get(0);
         Task task2 = tasks.get(1);
-        assertThat(task1.getName()).isEqualTo("task1");
-        assertThat(task2.getName()).isEqualTo("task2");
-
-        assertThat(RuntimeTestConfiguration.createdTasks).contains(task1.getId(), task2.getId());
 
         taskBaseRuntime.completeTask(task2.getId());
 
         List<Task> tasksAfterCompletion = taskBaseRuntime.getTasks(processInstance);
         assertThat(tasksAfterCompletion).hasSize(0);
 
-        assertThat(RuntimeTestConfiguration.completedTasks).hasSize(1);
-
-        assertThat(taskRuntimeEventListeners.getCancelledTasks()).hasSize(1);
-
-//        assertThat(localEventSource.getTaskEvents())
-//            .extracting(event -> ((Task) event.getEntity()).getName(),
-//                RuntimeEvent::getEventType
-//            )
-//            .contains(tuple(task1.getName(),
-//                TaskRuntimeEvent.TaskEvents.TASK_CANCELLED));
-
-
         List<TaskCancelledEvent> taskCancelledEvents =
             localEventSource.getEvents(TaskCancelledEvent.class);
-
         assertThat(taskCancelledEvents).hasSize(1);
-        assertThat(taskCancelledEvents.get(0).getCause()).contains("Terminated by end event:");
+        assertThat(taskCancelledEvents.get(0).getReason()).contains("Terminated by end event");
 
-
-        assertThat(RuntimeTestConfiguration.cancelledProcesses).hasSize(1);
-
-//        assertThat(localEventSource.getProcessInstanceEvents())
-////            .extracting(event -> ((ProcessInstance) event.getEntity()).getName(),
-////                        RuntimeEvent::getEventType
-////            )
-//            .filteredOn(event -> event.getEventType().equals(ProcessRuntimeEvent.ProcessEvents.PROCESS_CANCELLED))
-////            .contains(tuple(processInstance.getName(), ProcessRuntimeEvent.ProcessEvents.PROCESS_CANCELLED
-////                            ));
-
-        List<RuntimeEvent> processCancelledEvents =
-            localEventSource.getProcessInstanceEvents()
-            .stream()
-            .filter(event -> event.getEventType().equals(ProcessRuntimeEvent.ProcessEvents.PROCESS_CANCELLED))
-            .collect(Collectors.toList());
+        List<ProcessCancelledEvent> processCancelledEvents =
+            localEventSource.getEvents(ProcessCancelledEvent.class);
 
         assertThat(processCancelledEvents).hasSize(1);
-        assertThat(((ProcessCancelledEvent)processCancelledEvents.get(0)).getCause()).contains("Terminated by end event:");
+        assertThat(processCancelledEvents.get(0).getCause()).contains("Terminated by end event");
 
     }
 

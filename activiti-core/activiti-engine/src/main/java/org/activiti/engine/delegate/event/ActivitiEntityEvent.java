@@ -23,4 +23,8 @@ public interface ActivitiEntityEvent extends ActivitiEvent {
    * @return the entity that is targeted by this event.
    */
   Object getEntity();
+
+  default String getReason(){
+      return null;
+  }
 }
