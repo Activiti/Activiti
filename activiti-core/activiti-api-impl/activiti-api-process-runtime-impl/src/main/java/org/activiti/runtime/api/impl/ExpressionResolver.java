@@ -13,6 +13,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.el.ExpressionManager;
+import org.activiti.engine.impl.interceptor.DelegateInterceptor;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,13 +29,16 @@ public class ExpressionResolver {
     private static final int EXPRESSION_KEY_INDEX = 1;
 
     private ObjectMapper mapper;
+    private final DelegateInterceptor delegateInterceptor;
 
     private ExpressionManager expressionManager;
 
     public ExpressionResolver(ExpressionManager expressionManager,
-                              ObjectMapper mapper) {
+        ObjectMapper mapper,
+        DelegateInterceptor delegateInterceptor) {
         this.expressionManager = expressionManager;
         this.mapper = mapper;
+        this.delegateInterceptor = delegateInterceptor;
     }
 
     private Object resolveExpressions(final ExpressionEvaluator expressionEvaluator,
@@ -92,7 +96,8 @@ public class ExpressionResolver {
     private Object resolveObjectPlaceHolder(ExpressionEvaluator expressionEvaluator,
                                             String sourceString) {
         try {
-            return expressionEvaluator.evaluate(expressionManager.createExpression(sourceString));
+            return expressionEvaluator.evaluate(expressionManager.createExpression(sourceString), expressionManager,
+                delegateInterceptor);
         } catch (final Exception e) {
             logger.warn("Unable to resolve expression in variables, keeping original value",
                         e);
@@ -108,7 +113,8 @@ public class ExpressionResolver {
             final String expressionKey = matcher.group(EXPRESSION_KEY_INDEX);
             final Expression expression = expressionManager.createExpression(expressionKey);
             try {
-                final Object value = expressionEvaluator.evaluate(expression);
+                final Object value = expressionEvaluator.evaluate(expression, expressionManager,
+                    delegateInterceptor);
                 matcher.appendReplacement(sb,
                                           Objects.toString(value));
             } catch (final Exception e) {

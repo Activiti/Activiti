@@ -33,6 +33,7 @@ import java.util.Map;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.el.ExpressionManager;
+import org.activiti.engine.impl.interceptor.DelegateInterceptor;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -49,11 +50,14 @@ public class ExpressionResolverTest {
     @Mock
     private ExpressionEvaluator expressionEvaluator;
 
+    @Mock
+    private DelegateInterceptor delegateInterceptor;
+
     @Before
     public void setUp() {
         initMocks(this);
         expressionResolver = new ExpressionResolver(expressionManager,
-                                                    mapper);
+                                                    mapper, delegateInterceptor);
     }
 
     @Test
@@ -171,7 +175,7 @@ public class ExpressionResolverTest {
     public void resolveExpressionsMap_should_replaceExpressionByValue_when_stringIsAnExpression() {
         //given
         Expression expression = buildExpression("${name}");
-        given(expressionEvaluator.evaluate(expression)).willReturn("John");
+        given(expressionEvaluator.evaluate(expression, expressionManager, delegateInterceptor)).willReturn("John");
 
         //when
         Map<String, Object> result = expressionResolver.resolveExpressionsMap(expressionEvaluator,
@@ -186,10 +190,10 @@ public class ExpressionResolverTest {
     public void resolveExpressionsMap_should_replaceExpressionByValue_when_stringContainsAnExpression() {
         //given
         Expression nameExpression = buildExpression("${name}");
-        given(expressionEvaluator.evaluate(nameExpression)).willReturn("John");
+        given(expressionEvaluator.evaluate(nameExpression, expressionManager, delegateInterceptor)).willReturn("John");
 
         Expression placeExpression = buildExpression("${place}");
-        given(expressionEvaluator.evaluate(placeExpression)).willReturn("London");
+        given(expressionEvaluator.evaluate(placeExpression, expressionManager, delegateInterceptor)).willReturn("London");
 
         //when
         Map<String, Object> result = expressionResolver.resolveExpressionsMap(expressionEvaluator,
@@ -227,7 +231,7 @@ public class ExpressionResolverTest {
     public void resolveExpressionsMap_should_keepExpressionContent_when_notAbleToResolveExpressionInString() {
         //given
         Expression expression = buildExpression("${nonResolvableExpression}");
-        given(expressionEvaluator.evaluate(expression)).willThrow(new ActivitiException("Invalid property"));
+        given(expressionEvaluator.evaluate(expression, expressionManager, delegateInterceptor)).willThrow(new ActivitiException("Invalid property"));
 
         //when
         Map<String, Object> result = expressionResolver.resolveExpressionsMap(expressionEvaluator,
@@ -242,7 +246,7 @@ public class ExpressionResolverTest {
     public void resolveExpressionsMap_should_keepExpressionContent_when_notAbleToResolveIt() {
         //given
         Expression expression = buildExpression("${nonResolvableExpression}");
-        given(expressionEvaluator.evaluate(expression)).willThrow(new ActivitiException("Invalid property"));
+        given(expressionEvaluator.evaluate(expression, expressionManager, delegateInterceptor)).willThrow(new ActivitiException("Invalid property"));
 
         //when
         Map<String, Object> result = expressionResolver.resolveExpressionsMap(expressionEvaluator,
@@ -259,13 +263,13 @@ public class ExpressionResolverTest {
                                                                                                            throws IOException {
         //given
         Expression nameExpression = buildExpression("${name}");
-        given(expressionEvaluator.evaluate(nameExpression)).willReturn("John");
+        given(expressionEvaluator.evaluate(nameExpression, expressionManager, delegateInterceptor)).willReturn("John");
 
         Expression placeExpression = buildExpression("${place}");
-        given(expressionEvaluator.evaluate(placeExpression)).willReturn(null);
+        given(expressionEvaluator.evaluate(placeExpression, expressionManager, delegateInterceptor)).willReturn(null);
 
         Expression ageExpression = buildExpression("${age}");
-        given(expressionEvaluator.evaluate(ageExpression)).willReturn(30);
+        given(expressionEvaluator.evaluate(ageExpression, expressionManager, delegateInterceptor)).willReturn(30);
 
         JsonNode node = mapper.readTree("{\"name\":\"${name}\",\"place\":\"${place}\",\"age\":\"${age}\"}");
 
@@ -291,7 +295,7 @@ public class ExpressionResolverTest {
            resolveExpressionsMap_should_keepExpressionContent_when_ObjecNodeContainsAnExpressionUnableToBeResolved() throws IOException {
         //given
         Expression nameExpression = buildExpression("${name}");
-        given(expressionEvaluator.evaluate(nameExpression)).willThrow(new ActivitiException("Invalid property"));
+        given(expressionEvaluator.evaluate(nameExpression, expressionManager, delegateInterceptor)).willThrow(new ActivitiException("Invalid property"));
 
         JsonNode node = mapper.readTree("{\"name\":\"${name}\",\"age\": 30}");
 
@@ -314,7 +318,7 @@ public class ExpressionResolverTest {
     public void resolveExpressionsMap_should_replaceExpressionByValue_when_ListContainsAnExpression() {
         //given
         Expression placeExpression = buildExpression("${place}");
-        given(expressionEvaluator.evaluate(placeExpression)).willReturn("London");
+        given(expressionEvaluator.evaluate(placeExpression, expressionManager, delegateInterceptor)).willReturn("London");
 
         //when
         Map<String, Object> result = expressionResolver.resolveExpressionsMap(expressionEvaluator,
@@ -333,7 +337,7 @@ public class ExpressionResolverTest {
     public void resolveExpressionsMap_should_keepExpressionContent_when_ListContainsAnExpressionUnableToBeResolved() {
         //given
         Expression placeExpression = buildExpression("${place}");
-        given(expressionEvaluator.evaluate(placeExpression)).willThrow(new ActivitiException("Invalid property"));
+        given(expressionEvaluator.evaluate(placeExpression, expressionManager, delegateInterceptor)).willThrow(new ActivitiException("Invalid property"));
 
         //when
         Map<String, Object> result = expressionResolver.resolveExpressionsMap(expressionEvaluator,
@@ -352,7 +356,7 @@ public class ExpressionResolverTest {
     public void resolveExpressionsMap_should_replaceExpressionByValue_when_MapContainsAnExpression() {
         //given
         Expression playerExpression = buildExpression("${player}");
-        given(expressionEvaluator.evaluate(playerExpression)).willReturn("Agatha");
+        given(expressionEvaluator.evaluate(playerExpression, expressionManager, delegateInterceptor)).willReturn("Agatha");
 
         Map<String, Object> players = new HashMap<>();
         players.put("Red",
@@ -389,7 +393,7 @@ public class ExpressionResolverTest {
         //given
 
         Expression playerExpression = buildExpression("${player}");
-        given(expressionEvaluator.evaluate(playerExpression)).willThrow(new ActivitiException("Invalid property"));
+        given(expressionEvaluator.evaluate(playerExpression, expressionManager, delegateInterceptor)).willThrow(new ActivitiException("Invalid property"));
 
         Map<String, Object> players = new HashMap<>();
         players.put("Red",

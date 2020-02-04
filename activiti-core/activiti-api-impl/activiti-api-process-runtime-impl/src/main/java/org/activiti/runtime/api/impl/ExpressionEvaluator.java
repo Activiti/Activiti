@@ -17,9 +17,13 @@
 package org.activiti.runtime.api.impl;
 
 import org.activiti.engine.delegate.Expression;
+import org.activiti.engine.impl.el.ExpressionManager;
+import org.activiti.engine.impl.interceptor.DelegateInterceptor;
 
 public interface ExpressionEvaluator {
 
-    Object evaluate(Expression expression);
+    Object evaluate(Expression expression,
+        ExpressionManager expressionManager,
+        DelegateInterceptor delegateInterceptor);
 
 }

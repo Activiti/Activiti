@@ -30,6 +30,7 @@ import java.util.HashMap;
 import java.util.Map;
 import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
 import org.activiti.common.util.DateFormatterProvider;
+import org.activiti.engine.impl.delegate.invocation.DefaultDelegateInterceptor;
 import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.spring.process.ProcessExtensionService;
 import org.activiti.spring.process.model.Extension;
@@ -58,7 +59,8 @@ public class ProcessVariablesPayloadValidatorTest {
     private VariableValidationService variableValidationService;
 
     private ExpressionResolver expressionResolver = new ExpressionResolver(new ExpressionManager(),
-                                                                           objectMapper);
+        objectMapper,
+        new DefaultDelegateInterceptor());
 
     @Before
     public void setUp() {
@@ -115,7 +117,7 @@ public class ProcessVariablesPayloadValidatorTest {
     }
 
     @Test
-    public void should_returnErrorList_when_setVariablesWithWrongType() throws Exception {
+    public void should_returnErrorList_when_setVariablesWithWrongType() {
 
         Map<String, Object> variables = new HashMap<>();
         variables.put("name", "Alice");
@@ -137,7 +139,7 @@ public class ProcessVariablesPayloadValidatorTest {
     }
 
     @Test
-    public void should_returnErrorList_when_setVariablesWithNameWrongType() throws Exception {
+    public void should_returnErrorList_when_setVariablesWithNameWrongType() {
 
         Map<String, Object> variables = new HashMap<>();
         variables.put("name", "Alice");
@@ -164,7 +166,7 @@ public class ProcessVariablesPayloadValidatorTest {
     }
 
     @Test
-    public void should_returnError_when_setVariablesWithWrongDateFormat() throws Exception {
+    public void should_returnError_when_setVariablesWithWrongDateFormat() {
 
         Map<String, Object> variables = new HashMap<>();
         variables.put("mydate", "2019-08-26TT10:20:30.000Z");
@@ -181,7 +183,7 @@ public class ProcessVariablesPayloadValidatorTest {
     }
 
     @Test
-    public void should_returnError_when_setVariablesWithWrongDatetimeFormat() throws Exception {
+    public void should_returnError_when_setVariablesWithWrongDatetimeFormat() {
 
         Map<String, Object> variables = new HashMap<>();
         variables.put("mydatetime", "2019-08-26TT10:20:30.000Z");
@@ -198,7 +200,7 @@ public class ProcessVariablesPayloadValidatorTest {
     }
 
     @Test
-    public void should_returnErrorList_when_setVariableWithWrongCharactersInName() throws Exception {
+    public void should_returnErrorList_when_setVariableWithWrongCharactersInName() {
 
         Map<String, Object> variables = new HashMap<>();
         variables.put("name", "Alice");

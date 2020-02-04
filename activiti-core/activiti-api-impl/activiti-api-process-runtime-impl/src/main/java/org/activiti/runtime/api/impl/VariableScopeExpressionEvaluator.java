@@ -18,6 +18,8 @@ package org.activiti.runtime.api.impl;
 
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.VariableScope;
+import org.activiti.engine.impl.el.ExpressionManager;
+import org.activiti.engine.impl.interceptor.DelegateInterceptor;
 
 public class VariableScopeExpressionEvaluator implements ExpressionEvaluator {
 
@@ -28,7 +30,9 @@ public class VariableScopeExpressionEvaluator implements ExpressionEvaluator {
     }
 
     @Override
-    public Object evaluate(Expression expression) {
+    public Object evaluate(Expression expression,
+        ExpressionManager expressionManager,
+        DelegateInterceptor delegateInterceptor) {
         return expression.getValue(variableScope);
     }
 }

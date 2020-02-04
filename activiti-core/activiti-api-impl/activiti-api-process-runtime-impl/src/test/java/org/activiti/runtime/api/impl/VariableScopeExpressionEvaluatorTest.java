@@ -19,12 +19,28 @@ package org.activiti.runtime.api.impl;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
+import static org.mockito.MockitoAnnotations.initMocks;
 
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.VariableScope;
+import org.activiti.engine.impl.el.ExpressionManager;
+import org.activiti.engine.impl.interceptor.DelegateInterceptor;
+import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
 
 public class VariableScopeExpressionEvaluatorTest {
+
+    @Mock
+    private  ExpressionManager expressionManager;
+
+    @Mock
+    private DelegateInterceptor delegateInterceptor;
+
+    @Before
+    public void setUp() {
+        initMocks(this);
+    }
 
     @Test
     public void evaluate_should_returnResultOfGetValueWithVariableScope() {
@@ -37,7 +53,7 @@ public class VariableScopeExpressionEvaluatorTest {
         given(expression.getValue(variableScope)).willReturn("London");
 
         //when
-        Object value = evaluator.evaluate(expression);
+        Object value = evaluator.evaluate(expression, expressionManager, delegateInterceptor);
 
         //then
         assertThat(value).isEqualTo("London");

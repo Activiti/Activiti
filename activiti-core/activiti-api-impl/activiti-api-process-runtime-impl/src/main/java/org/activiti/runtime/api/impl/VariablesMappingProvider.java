@@ -171,7 +171,8 @@ public class VariablesMappingProvider {
             }
         }
 
-        return expressionResolver.resolveExpressionsMap(new SimpleMapExpressionEvaluator(availableVariables),
+        return expressionResolver.resolveExpressionsMap(new SimpleMapExpressionEvaluator(availableVariables
+            ),
                                                         outboundVariables);
     }
 }
