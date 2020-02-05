@@ -1,5 +1,10 @@
 package org.activiti.spring.boot.tasks;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.List;
+import java.util.Set;
+
 import org.activiti.api.task.model.Task;
 import org.activiti.api.task.model.builders.TaskPayloadBuilder;
 import org.activiti.api.task.model.impl.TaskImpl;
@@ -36,7 +41,7 @@ public class TaskRuntimeCandidatesTest {
     private TaskCleanUpUtil taskCleanUpUtil;
 
     @After
-    public void taskCleanUp() {
+    public void taskCleanUp(){
         taskCleanUpUtil.cleanUpWithAdmin();
     }
 
@@ -49,10 +54,9 @@ public class TaskRuntimeCandidatesTest {
         securityUtil.logInAs("garth");
 
         Task createTask = taskRuntime.create(TaskPayloadBuilder.create()
-                                                     .withName("task for dean")
-                                                     .withCandidateUsers("garth")
-                                                     .withAssignee("dean") //but he should still be assigned the task
-                                                     .build());
+                .withName("task for dean")
+                .withAssignee("dean") //but he should still be assigned the task
+                .build());
 
         // Check the task should be visible for dean
         securityUtil.logInAs("dean");
@@ -62,22 +66,23 @@ public class TaskRuntimeCandidatesTest {
         assertThat(task.getAssignee()).isEqualTo("dean");
         assertThat(task.getStatus()).isEqualTo(Task.TaskStatus.ASSIGNED);
 
-        List<String> userCandidatesOnTask = task.getCandidateUsers();
-        assertThat(userCandidatesOnTask).hasSize(1);
+        Set<String> userCandidatesOnTask = task.getCandidateUsers();
+        assertThat(userCandidatesOnTask).isNotNull();
+        assertThat(userCandidatesOnTask.size()).isEqualTo(1);
 
         List<String> userCandidates = taskRuntime.userCandidates(createTask.getId());
         assertThat(userCandidates).hasSize(1);
 
         taskRuntime.deleteCandidateUsers(TaskPayloadBuilder
-                                                 .deleteCandidateUsers()
-                                                 .withTaskId(task.getId())
-                                                 .withCandidateUser("garth")
-                                                 .build());
+                                         .deleteCandidateUsers()
+                                         .withTaskId(task.getId())
+                                         .withCandidateUser("garth")
+                                         .build());
 
         assertThat(RuntimeTestConfiguration.taskCandidateUserRemovedEvents.size()).isEqualTo(1);
         assertThat(RuntimeTestConfiguration.taskCandidateUserRemovedEvents)
-                .extracting(event -> event.getEntity().getUserId())
-                .contains("garth");
+        .extracting(event -> event.getEntity().getUserId())
+        .contains("garth");
 
         task = (TaskImpl) taskRuntime.task(createTask.getId());
         userCandidatesOnTask = task.getCandidateUsers();
@@ -95,9 +100,9 @@ public class TaskRuntimeCandidatesTest {
 
         assertThat(RuntimeTestConfiguration.taskCandidateUserAddedEvents.size()).isEqualTo(2);
         assertThat(RuntimeTestConfiguration.taskCandidateUserAddedEvents)
-                .extracting(event -> event.getEntity().getUserId())
-                .contains("garth",
-                          "garth");
+        .extracting(event -> event.getEntity().getUserId())
+        .contains("garth",
+                  "garth");
 
         task = (TaskImpl) taskRuntime.task(createTask.getId());
         userCandidatesOnTask = task.getCandidateUsers();
@@ -131,17 +136,17 @@ public class TaskRuntimeCandidatesTest {
                 .contains("test");
 
         TaskImpl task = (TaskImpl) taskRuntime.task(createTask.getId());
-        List<String> groupCandidatesOnTask = task.getCandidateGroups();
+        Set<String> groupCandidatesOnTask = task.getCandidateGroups();
         assertThat(groupCandidatesOnTask).hasSize(1);
 
         List<String> groupCandidates = taskRuntime.groupCandidates(createTask.getId());
         assertThat(groupCandidates).hasSize(1);
 
         taskRuntime.deleteCandidateGroups(TaskPayloadBuilder
-                                                  .deleteCandidateGroups()
-                                                  .withTaskId(task.getId())
-                                                  .withCandidateGroup("test")
-                                                  .build());
+                                                 .deleteCandidateGroups()
+                                                 .withTaskId(task.getId())
+                                                 .withCandidateGroup("test")
+                                                 .build());
 
         assertThat(RuntimeTestConfiguration.taskCandidateGroupRemovedEvents.size()).isEqualTo(1);
         assertThat(RuntimeTestConfiguration.taskCandidateGroupRemovedEvents)

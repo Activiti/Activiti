@@ -17,6 +17,7 @@
 package org.activiti.runtime.api.impl;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
@@ -44,6 +45,7 @@ import org.activiti.api.task.model.payloads.UpdateTaskVariablePayload;
 import org.activiti.api.task.runtime.TaskRuntime;
 import org.activiti.api.task.runtime.conf.TaskRuntimeConfiguration;
 import org.activiti.engine.TaskService;
+import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.IdentityLinkType;
 import org.activiti.engine.task.TaskQuery;
@@ -88,8 +90,7 @@ public class TaskRuntimeImpl implements TaskRuntime {
 
     @Override
     public Task task(String taskId) {
-        Task task = taskConverter.from(taskRuntimeHelper.getInternalTaskWithChecks(taskId));
-        return enrichWithCandidates(task);
+        return taskConverter.fromWithCandidates(taskRuntimeHelper.getInternalTaskWithChecks(taskId));
     }
 
     @Override
@@ -455,18 +456,6 @@ public class TaskRuntimeImpl implements TaskRuntime {
             return taskService.getIdentityLinksForTask(taskId);
         }
         throw new IllegalStateException("There is no authenticated user, we need a user authenticated to find tasks");
-    }
-
-    private Task enrichWithCandidates(Task task) {
-        if(task instanceof TaskImpl){
-            TaskImpl taskImpl = (TaskImpl) task;
-            String taskId = task.getId();
-            taskImpl.setCandidateUsers(this.userCandidates(taskId));
-            taskImpl.setCandidateGroups(this.groupCandidates(taskId));
-            return taskImpl;
-        } else {
-            return task;
-        }
     }
 
 }
