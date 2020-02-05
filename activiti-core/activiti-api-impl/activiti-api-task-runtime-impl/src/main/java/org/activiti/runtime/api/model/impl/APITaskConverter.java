@@ -47,7 +47,7 @@ public class APITaskConverter extends ListConverter<org.activiti.engine.task.Tas
     }
 
     public Task from(org.activiti.engine.task.Task internalTask,
-                             Task.TaskStatus status) {
+                     Task.TaskStatus status) {
         TaskImpl task = new TaskImpl(internalTask.getId(),
                                      internalTask.getName(),
                                      status);
@@ -70,26 +70,27 @@ public class APITaskConverter extends ListConverter<org.activiti.engine.task.Tas
     }
 
     private void extractCandidateUsersAndGroups(org.activiti.engine.task.Task source, TaskImpl destination) {
-            List<IdentityLink> candidates = taskService.getIdentityLinksForTask(source.getId());
-            destination.setCandidateGroups(extractCandidatesBy(candidates, IdentityLink::getGroupId));
-            destination.setCandidateUsers(extractCandidatesBy(candidates, IdentityLink::getUserId));
+        List<IdentityLink> candidates = taskService.getIdentityLinksForTask(source.getId());
+        destination.setCandidateGroups(extractCandidatesBy(candidates, IdentityLink::getGroupId));
+        destination.setCandidateUsers(extractCandidatesBy(candidates, IdentityLink::getUserId));
     }
 
-    private Set<String> extractCandidatesBy(List<IdentityLink> candidates, Function<IdentityLink, String> extractor){
+    private Set<String> extractCandidatesBy(List<IdentityLink> candidates, Function<IdentityLink, String> extractor) {
         Set<String> result = Collections.emptySet();
-        if(candidates != null){
+        if (candidates != null) {
             result = candidates
-                    .stream()
-                    .filter(candidate -> IdentityLinkType.CANDIDATE.equals(candidate.getType()))
-                    .map(extractor::apply)
-                    .collect(Collectors.toSet());
+                             .stream()
+                             .filter(candidate -> IdentityLinkType.CANDIDATE.equals(candidate.getType()))
+                             .map(extractor::apply)
+                             .filter(Objects::nonNull)
+                             .collect(Collectors.toSet());
         }
         return result;
     }
 
     private Task.TaskStatus calculateStatus(org.activiti.engine.task.Task source) {
         if (source instanceof TaskEntity &&
-                (((TaskEntity) source).isDeleted() || ((TaskEntity) source).isCanceled())) {
+            (((TaskEntity) source).isDeleted() || ((TaskEntity) source).isCanceled())) {
             return Task.TaskStatus.CANCELLED;
         } else if (source.isSuspended()) {
             return Task.TaskStatus.SUSPENDED;
