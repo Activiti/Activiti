@@ -16,10 +16,6 @@
 
 package org.activiti.runtime.api.model.impl;
 
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
 import org.activiti.api.task.model.Task;
 import org.activiti.api.task.model.impl.TaskImpl;
 import org.activiti.engine.TaskService;
@@ -28,10 +24,21 @@ import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.IdentityLinkType;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
 public class APITaskConverter extends ListConverter<org.activiti.engine.task.Task, Task> implements ModelConverter<org.activiti.engine.task.Task, Task> {
 
+    private final TaskService taskService;
+
     @Autowired
-    private TaskService taskService;
+    public APITaskConverter(TaskService taskService){
+        this.taskService = taskService;
+    }
 
     @Override
     public Task from(org.activiti.engine.task.Task internalTask) {

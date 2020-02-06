@@ -127,9 +127,8 @@ public class TaskRuntimeAutoConfiguration {
     }
 
     @Bean
-    public APITaskConverter apiTaskConverter() {
-        return new APITaskConverter(
-        );
+    public APITaskConverter apiTaskConverter(TaskService taskService) {
+        return new APITaskConverter(taskService);
     }
     
     @Bean

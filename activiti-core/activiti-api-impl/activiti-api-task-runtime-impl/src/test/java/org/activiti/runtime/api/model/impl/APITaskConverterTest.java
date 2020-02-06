@@ -16,26 +16,36 @@
 
 package org.activiti.runtime.api.model.impl;
 
-import static org.activiti.api.task.model.Task.TaskStatus.ASSIGNED;
-import static org.activiti.api.task.model.Task.TaskStatus.CANCELLED;
-import static org.activiti.api.task.model.Task.TaskStatus.CREATED;
-import static org.activiti.api.task.model.Task.TaskStatus.SUSPENDED;
-import static org.activiti.runtime.api.model.impl.MockTaskBuilder.taskBuilder;
-import static org.activiti.runtime.api.model.impl.MockTaskBuilder.taskEntityBuilder;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.MockitoAnnotations.initMocks;
-
-import java.util.Date;
-
 import org.activiti.api.task.model.Task;
+import org.activiti.engine.TaskService;
+import org.activiti.engine.impl.persistence.entity.IdentityLinkEntityImpl;
+import org.activiti.engine.task.IdentityLink;
+import org.activiti.engine.task.IdentityLinkType;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
+
+import java.util.Date;
+
+import static java.util.Arrays.asList;
+import static org.activiti.api.task.model.Task.TaskStatus.*;
+import static org.activiti.runtime.api.model.impl.MockTaskBuilder.taskBuilder;
+import static org.activiti.runtime.api.model.impl.MockTaskBuilder.taskEntityBuilder;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
+import static org.mockito.MockitoAnnotations.initMocks;
 
 public class APITaskConverterTest {
 
     @InjectMocks
     private APITaskConverter taskConverter;
+
+    @Mock
+    private TaskService taskService;
 
     @Before
     public void setUp() {
@@ -63,7 +73,7 @@ public class APITaskConverterTest {
                         .withAppVersion(1)
                         .withBusinessKey("businessKey")
                         .build()
-        );
+                                               );
 
         assertThat(convertedTask)
                 .isNotNull()
@@ -140,5 +150,43 @@ public class APITaskConverterTest {
                 .isNotNull()
                 .extracting(Task::getStatus)
                 .isEqualTo(CREATED);
+    }
+
+    @Test
+    public void should_returnCandidates_when_convertATaskWithCandidates() {
+
+        given(taskService.getIdentityLinksForTask(any()))
+                .willReturn(asList(
+                        buildIdentityLink(null, "group1", IdentityLinkType.CANDIDATE),
+                        buildIdentityLink("user1", null, IdentityLinkType.CANDIDATE),
+                        buildIdentityLink(null, "participant", IdentityLinkType.PARTICIPANT),
+                        buildIdentityLink("user2", null, IdentityLinkType.CANDIDATE)));
+
+        org.activiti.engine.task.Task source = taskBuilder()
+                                                       .withId("1111")
+                                                       .build();
+        Task convertedTask = taskConverter.fromWithCandidates(source);
+
+        assertThat(convertedTask)
+                .isNotNull();
+
+        assertThat(convertedTask.getCandidateGroups()).hasSize(1);
+        assertThat(convertedTask.getCandidateGroups()).containsExactlyInAnyOrder("group1");
+        assertThat(convertedTask.getCandidateUsers()).hasSize(2);
+        assertThat(convertedTask.getCandidateUsers()).containsExactlyInAnyOrder("user1", "user2");
+
+        verify(taskService).getIdentityLinksForTask(eq("1111"));
+    }
+
+    private IdentityLink buildIdentityLink(String userId, String groupId, String type) {
+        IdentityLinkEntityImpl identityLink = new IdentityLinkEntityImpl();
+        if(groupId != null){
+            identityLink.setGroupId(groupId);
+        }
+        if(userId != null){
+            identityLink.setUserId(userId);
+        }
+        identityLink.setType(type);
+        return identityLink;
     }
 }
