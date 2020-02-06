@@ -4,7 +4,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.activiti.build</groupId>
   <artifactId>activiti-parent</artifactId>
-  <version>7.1.190</version>
+  <version>7.1.0.M6</version>
   <packaging>pom</packaging>
   <name>Activiti :: Parent</name>
   <description>${project.name}</description>
