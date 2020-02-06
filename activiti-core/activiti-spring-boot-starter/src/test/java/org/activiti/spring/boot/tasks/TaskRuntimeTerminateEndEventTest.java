@@ -16,22 +16,11 @@
 
 package org.activiti.spring.boot.tasks;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Java6Assertions.tuple;
-
 import java.util.List;
-import java.util.stream.Collectors;
 
-import org.activiti.api.model.shared.event.RuntimeEvent;
 import org.activiti.api.process.model.ProcessInstance;
-import org.activiti.api.process.model.events.ProcessRuntimeEvent;
-import org.activiti.api.process.runtime.events.ProcessCancelledEvent;
 import org.activiti.api.task.model.Task;
-import org.activiti.api.task.model.events.TaskRuntimeEvent;
-import org.activiti.api.task.runtime.events.TaskCancelledEvent;
-import org.activiti.spring.boot.RuntimeTestConfiguration;
 import org.activiti.spring.boot.process.ProcessBaseRuntime;
-import org.activiti.spring.boot.security.util.SecurityUtil;
 import org.activiti.spring.boot.test.util.TaskCleanUpUtil;
 import org.activiti.test.LocalEventSource;
 import org.junit.After;
@@ -43,6 +32,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import static org.assertj.core.api.Assertions.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
