@@ -24,6 +24,7 @@ import org.activiti.api.task.runtime.events.TaskCandidateGroupAddedEvent;
 import org.activiti.api.task.runtime.events.TaskCandidateGroupRemovedEvent;
 import org.activiti.api.task.runtime.events.TaskCandidateUserAddedEvent;
 import org.activiti.api.task.runtime.events.TaskCandidateUserRemovedEvent;
+import org.activiti.api.task.runtime.events.TaskCompletedEvent;
 import org.activiti.api.task.runtime.events.TaskCreatedEvent;
 import org.activiti.api.task.runtime.events.TaskUpdatedEvent;
 import org.activiti.api.task.runtime.events.listener.TaskRuntimeEventListener;
