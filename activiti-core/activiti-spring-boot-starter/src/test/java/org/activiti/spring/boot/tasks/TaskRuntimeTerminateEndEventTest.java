@@ -60,9 +60,6 @@ public class TaskRuntimeTerminateEndEventTest {
     private TaskCleanUpUtil taskCleanUpUtil;
 
     @Autowired
-    private SecurityUtil securityUtil;
-
-    @Autowired
     private LocalEventSource localEventSource;
 
     @Autowired
@@ -89,45 +86,6 @@ public class TaskRuntimeTerminateEndEventTest {
 
         List<Task> taskAfterCompleted = taskBaseRuntime.getTasksByProcessInstanceId(process.getId());
         assertThat(taskAfterCompleted).hasSize(0);
-
-//        assertThat(RuntimeTestConfiguration.completedTasks).hasSize(1);
-        assertThat(taskRuntimeEventListeners.getCancelledTasks()).hasSize(1);
-
-        List<ProcessInstance> processInstanceList = processBaseRuntime.getProcessInstances();
-        assertThat(processInstanceList).hasSize(0);
-
-        List<ProcessCancelledEvent> processCancelledEvents = localEventSource.getEvents(ProcessCancelledEvent.class);
-        assertThat(processCancelledEvents).hasSize(1);
-
-    }
-
-    @Test
-    public void should_CancelledEventsHaveCancellationReasonSet(){
-
-        securityUtil.logInAs("user");
-
-        ProcessInstance processInstance = processBaseRuntime.startProcessWithProcessDefinitionKey("Process_KzwZAEl-");
-        assertThat(processInstance).isNotNull();
-
-        List<Task> tasks = taskBaseRuntime.getTasks(processInstance);
-        assertThat(tasks).hasSize(2);
-        Task task2 = tasks.get(1);
-
-        taskBaseRuntime.completeTask(task2.getId());
-
-        List<Task> tasksAfterCompletion = taskBaseRuntime.getTasks(processInstance);
-        assertThat(tasksAfterCompletion).hasSize(0);
-
-        List<TaskCancelledEvent> taskCancelledEvents =
-            localEventSource.getEvents(TaskCancelledEvent.class);
-        assertThat(taskCancelledEvents).hasSize(1);
-        assertThat(taskCancelledEvents.get(0).getReason()).contains("Terminated by end event");
-
-        List<ProcessCancelledEvent> processCancelledEvents =
-            localEventSource.getEvents(ProcessCancelledEvent.class);
-
-        assertThat(processCancelledEvents).hasSize(1);
-        assertThat(processCancelledEvents.get(0).getCause()).contains("Terminated by end event");
 
     }
 
