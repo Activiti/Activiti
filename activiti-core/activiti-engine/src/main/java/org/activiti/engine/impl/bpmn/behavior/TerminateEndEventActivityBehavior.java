@@ -174,9 +174,9 @@ public class TerminateEndEventActivityBehavior extends FlowNodeActivityBehavior 
 
     List<ExecutionEntity> childExecutions = executionEntityManager.collectChildren(rootExecutionEntity);
     for (int i=childExecutions.size()-1; i>=0; i--) {
-      executionEntityManager.deleteExecutionAndRelatedData(childExecutions.get(i), deleteReason);
+      executionEntityManager.cancelExecutionAndRelatedData(childExecutions.get(i), deleteReason);
     }
-    executionEntityManager.deleteExecutionAndRelatedData(rootExecutionEntity, deleteReason);
+    executionEntityManager.cancelExecutionAndRelatedData(rootExecutionEntity, deleteReason);
   }
 
   protected void sendProcessInstanceCancelledEvent(DelegateExecution execution, FlowElement terminateEndEvent) {

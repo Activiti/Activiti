@@ -16,14 +16,19 @@
 
 package org.activiti.spring.boot.tasks;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.List;
 
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.task.model.Task;
+import org.activiti.api.task.runtime.events.TaskCancelledEvent;
 import org.activiti.spring.boot.process.ProcessBaseRuntime;
+import org.activiti.spring.boot.security.util.SecurityUtil;
 import org.activiti.spring.boot.test.util.TaskCleanUpUtil;
 import org.activiti.test.LocalEventSource;
 import org.junit.After;
+import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,8 +38,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @ContextConfiguration
@@ -42,6 +45,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class TaskRuntimeTerminateEndEventTest {
 
     private static final String TASK_PROCESS_TERMINATE_EVENT = "ProcessTerminateEvent";
+    private static final String PROCESS_TERMINATE_EVENT = "Process_KzwZAEl-";
+
 
     @Autowired
     private TaskBaseRuntime taskBaseRuntime;
@@ -51,16 +56,21 @@ public class TaskRuntimeTerminateEndEventTest {
     private TaskCleanUpUtil taskCleanUpUtil;
 
     @Autowired
-    private LocalEventSource localEventSource;
+    private SecurityUtil securityUtil;
 
     @Autowired
-    private TaskRuntimeEventListeners taskRuntimeEventListeners;
+    private LocalEventSource localEventSource;
+
+    @Before
+    public void setUp(){
+        localEventSource.clearEvents();
+
+    }
 
     @After
     public void tearDown(){
         taskCleanUpUtil.cleanUpWithAdmin();
         localEventSource.clearEvents();
-        taskRuntimeEventListeners.clearEvents();
     }
 
     @Test
@@ -77,6 +87,30 @@ public class TaskRuntimeTerminateEndEventTest {
 
         List<Task> taskAfterCompleted = taskBaseRuntime.getTasksByProcessInstanceId(process.getId());
         assertThat(taskAfterCompleted).hasSize(0);
+    }
+
+    @Test
+    public void should_CancelledTasksByTerminateEndEventHaveCancellationReasonSet(){
+
+        securityUtil.logInAs("user");
+
+        ProcessInstance processInstance = processBaseRuntime.startProcessWithProcessDefinitionKey(PROCESS_TERMINATE_EVENT);
+        assertThat(processInstance).isNotNull();
+
+        List<Task> tasks = taskBaseRuntime.getTasks(processInstance);
+        assertThat(tasks).hasSize(2);
+        Task task2 = tasks.get(1);
+
+        taskBaseRuntime.completeTask(task2.getId());
+
+        List<Task> tasksAfterCompletion = taskBaseRuntime.getTasks(processInstance);
+        assertThat(tasksAfterCompletion).hasSize(0);
+
+        List<TaskCancelledEvent> taskCancelledEvents =
+            localEventSource.getEvents(TaskCancelledEvent.class);
+
+        assertThat(taskCancelledEvents).hasSize(1);
+        assertThat(taskCancelledEvents.get(0).getReason()).contains("Terminated by end event");
 
     }
 
