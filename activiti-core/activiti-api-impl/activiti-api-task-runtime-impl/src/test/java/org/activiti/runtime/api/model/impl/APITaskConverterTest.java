@@ -29,7 +29,10 @@ import org.mockito.Mock;
 import java.util.Date;
 
 import static java.util.Arrays.asList;
-import static org.activiti.api.task.model.Task.TaskStatus.*;
+import static org.activiti.api.task.model.Task.TaskStatus.ASSIGNED;
+import static org.activiti.api.task.model.Task.TaskStatus.CANCELLED;
+import static org.activiti.api.task.model.Task.TaskStatus.CREATED;
+import static org.activiti.api.task.model.Task.TaskStatus.SUSPENDED;
 import static org.activiti.runtime.api.model.impl.MockTaskBuilder.taskBuilder;
 import static org.activiti.runtime.api.model.impl.MockTaskBuilder.taskEntityBuilder;
 import static org.assertj.core.api.Assertions.assertThat;

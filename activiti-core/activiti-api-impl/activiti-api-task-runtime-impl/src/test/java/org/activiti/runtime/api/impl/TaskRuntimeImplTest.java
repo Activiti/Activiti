@@ -22,21 +22,15 @@ import org.activiti.api.task.model.builders.TaskPayloadBuilder;
 import org.activiti.api.task.model.impl.TaskImpl;
 import org.activiti.api.task.model.payloads.UpdateTaskPayload;
 import org.activiti.engine.TaskService;
-import org.activiti.engine.impl.TaskQueryImpl;
 import org.activiti.engine.task.IdentityLink;
-import org.activiti.engine.task.IdentityLinkType;
 import org.activiti.runtime.api.model.impl.APITaskConverter;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
-import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class TaskRuntimeImplTest {
