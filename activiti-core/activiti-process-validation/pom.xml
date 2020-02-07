@@ -32,10 +32,10 @@
       <artifactId>assertj-core</artifactId>
       <scope>test</scope>
     </dependency>
-      <dependency>
-          <groupId>de.odysseus.juel</groupId>
-          <artifactId>juel-api</artifactId>
-      </dependency>
+    <dependency>
+      <groupId>de.odysseus.juel</groupId>
+      <artifactId>juel-api</artifactId>
+    </dependency>
     <dependency>
       <groupId>de.odysseus.juel</groupId>
       <artifactId>juel-impl</artifactId>
