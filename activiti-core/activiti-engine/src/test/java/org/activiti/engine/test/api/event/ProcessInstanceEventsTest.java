@@ -435,10 +435,10 @@ public class ProcessInstanceEventsTest extends PluggableActivitiTestCase {
       ActivitiActivityCancelledEventImpl activityEvent = (ActivitiActivityCancelledEventImpl) event;
       if (activityEvent.getActivityId().equals("preNormalTerminateTask")) {
         assertThat("The user task must be terminated", activityEvent.getActivityId(), is("preNormalTerminateTask"));
-        assertThat("The cause must be terminate end event", ((FlowNode) activityEvent.getCause()).getId(), is("EndEvent_2"));
+        assertThat("The cause must be terminate end event", activityEvent.getCause(), is("Terminated by end event: EndEvent_2"));
       } else if (activityEvent.getActivityId().equals("EndEvent_2")) {
         assertThat("The end event must be terminated", activityEvent.getActivityId(), is("EndEvent_2"));
-        assertThat("The cause must be terminate end event", ((FlowNode) activityEvent.getCause()).getId(), is("EndEvent_2"));
+        assertThat("The cause must be terminate end event", activityEvent.getCause(), is("Terminated by end event: EndEvent_2"));
       }
       
     }
@@ -487,17 +487,17 @@ public class ProcessInstanceEventsTest extends PluggableActivitiTestCase {
       if (activityEvent.getActivityId().equals("theTask")) {
         
         assertThat("The user task must be terminated in the called sub process.", activityEvent.getActivityId(), is("theTask"));
-        assertThat("The cause must be terminate end event", ((FlowNode) activityEvent.getCause()).getId(), is("EndEvent_3"));
+        assertThat("The cause must be terminate end event", activityEvent.getCause(), is("Terminated by end event: EndEvent_3"));
         
       } else if (activityEvent.getActivityId().equals("CallActivity_1")) {
         
         assertThat("The call activity must be terminated", activityEvent.getActivityId(), is("CallActivity_1"));
-        assertThat("The cause must be terminate end event", ((FlowNode) activityEvent.getCause()).getId(), is("EndEvent_3"));
+        assertThat("The cause must be terminate end event", activityEvent.getCause(), is("Terminated by end event: EndEvent_3"));
         
       } else if (activityEvent.getActivityId().equals("EndEvent_3")) {
         
         assertThat("The end event must be terminated", activityEvent.getActivityId(), is("EndEvent_3"));
-        assertThat("The cause must be terminate end event", ((FlowNode) activityEvent.getCause()).getId(), is("EndEvent_3"));
+        assertThat("The cause must be terminate end event", activityEvent.getCause(), is("Terminated by end event: EndEvent_3"));
         
       }
       
