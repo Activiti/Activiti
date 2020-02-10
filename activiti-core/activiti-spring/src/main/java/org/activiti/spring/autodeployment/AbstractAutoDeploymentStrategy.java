@@ -128,13 +128,15 @@ public abstract class AbstractAutoDeploymentStrategy implements AutoDeploymentSt
     }
 
     protected DeploymentBuilder loadApplicationUpgradeContext(DeploymentBuilder deploymentBuilder) {
-        loadProjectManifest(deploymentBuilder);
-        loadEnforcedAppVersion(deploymentBuilder);
+        if(applicationUpgradeContextService != null){
+            loadProjectManifest(deploymentBuilder);
+            loadEnforcedAppVersion(deploymentBuilder);
+        }
         return deploymentBuilder;
     }
 
     private void loadProjectManifest(DeploymentBuilder deploymentBuilder) {
-        if (applicationUpgradeContextService != null && applicationUpgradeContextService.hasProjectManifest()) {
+        if (applicationUpgradeContextService.hasProjectManifest()) {
             try {
                 deploymentBuilder.setProjectManifest(applicationUpgradeContextService.loadProjectManifest());
             } catch (IOException e) {
@@ -144,7 +146,7 @@ public abstract class AbstractAutoDeploymentStrategy implements AutoDeploymentSt
     }
 
     private void loadEnforcedAppVersion(DeploymentBuilder deploymentBuilder) {
-        if (applicationUpgradeContextService != null && applicationUpgradeContextService.hasEnforcedAppVersion()) {
+        if (applicationUpgradeContextService.hasEnforcedAppVersion()) {
             deploymentBuilder.setEnforcedAppVersion(applicationUpgradeContextService.getEnforcedAppVersion());
             LOGGER.warn("Enforced application version set to" + applicationUpgradeContextService.getEnforcedAppVersion().toString());
         } else {
