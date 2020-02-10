@@ -22,7 +22,7 @@ public class ApplicationUpgradeContextServiceNullValuesIT {
     private ApplicationUpgradeContextService applicationUpgradeContextService;
 
     @Test
-    public void should_ThrowException_When_NoManifestPresent() {
+    public void should_throwException_when_noManifestPresent() {
 
         assertThat(applicationUpgradeContextService.hasProjectManifest()).isFalse();
         Throwable thrown = catchThrowable(() -> applicationUpgradeContextService.loadProjectManifest());
@@ -32,7 +32,7 @@ public class ApplicationUpgradeContextServiceNullValuesIT {
     }
 
     @Test
-    public void should_Not_HaveDefaultEnforcedAppVersion() {
+    public void should_not_haveDefaultEnforcedAppVersion() {
         assertThat(applicationUpgradeContextService.hasEnforcedAppVersion()).isFalse();
     }
 }

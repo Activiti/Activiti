@@ -22,7 +22,7 @@ public class ApplicationUpgradeContextServiceIT {
     private ApplicationUpgradeContextService applicationUpgradeContextService;
 
     @Test
-    public void should_RetrieveManifest_When_Called() throws IOException {
+    public void should_retrieveManifest_when_called() throws IOException {
 
         assertThat(applicationUpgradeContextService.hasProjectManifest()).isTrue();
 
@@ -39,7 +39,7 @@ public class ApplicationUpgradeContextServiceIT {
     }
 
     @Test
-    public void should_HaveEnforcedAppVersionSet() {
+    public void should_haveEnforcedAppVersionSet() {
         assertThat(applicationUpgradeContextService.hasEnforcedAppVersion()).isTrue();
         assertThat(applicationUpgradeContextService.getEnforcedAppVersion()).isEqualTo(1);
     }
