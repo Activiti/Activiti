@@ -27,6 +27,7 @@ public class ActivitiEventImpl implements ActivitiEvent {
   protected String executionId;
   protected String processInstanceId;
   protected String processDefinitionId;
+  private String reason;
 
   /**
    * Creates a new event implementation, not part of an execution context.
@@ -84,5 +85,12 @@ public class ActivitiEventImpl implements ActivitiEvent {
   public String toString() {
     return getClass() + " - " + type;
   }
-  
+
+    public String getReason() {
+        return reason;
+    }
+
+    public void setReason(String reason) {
+        this.reason = reason;
+    }
 }
