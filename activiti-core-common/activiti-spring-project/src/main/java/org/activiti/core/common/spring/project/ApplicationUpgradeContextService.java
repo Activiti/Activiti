@@ -49,19 +49,19 @@ public class ApplicationUpgradeContextService {
         Optional<Resource> resourceOptional = retrieveResource();
 
         return read(resourceOptional
-                            .orElseThrow(() -> new FileNotFoundException("'" + projectManifestFilePath + "' manifest not found."))
-                            .getInputStream());
+                        .orElseThrow(() -> new FileNotFoundException("'" + projectManifestFilePath + "' manifest not found."))
+                        .getInputStream());
     }
 
-    public boolean hasProjectManifest(){
+    public boolean hasProjectManifest() {
         return retrieveResource().isPresent();
     }
 
-    public boolean hasEnforcedAppVersion(){
-        return this.enforcedAppVersion !=0;
+    public boolean hasEnforcedAppVersion() {
+        return this.enforcedAppVersion != 0;
     }
 
-    public Integer getEnforcedAppVersion(){
+    public Integer getEnforcedAppVersion() {
         return this.enforcedAppVersion;
     }
 }
