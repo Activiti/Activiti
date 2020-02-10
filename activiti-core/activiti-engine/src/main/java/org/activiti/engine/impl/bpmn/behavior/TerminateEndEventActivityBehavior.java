@@ -186,7 +186,7 @@ public class TerminateEndEventActivityBehavior extends FlowNodeActivityBehavior 
 
         Context.getProcessEngineConfiguration().getEventDispatcher()
             .dispatchEvent(ActivitiEventBuilder.createCancelledEvent(execution.getId(), execution.getProcessInstanceId(),
-                execution.getProcessDefinitionId(), execution.getCurrentFlowElement()));
+                execution.getProcessDefinitionId(), createDeleteReason(terminateEndEvent.getId())));
       }
     }
 
@@ -224,8 +224,8 @@ public class TerminateEndEventActivityBehavior extends FlowNodeActivityBehavior 
                 execution.getProcessDefinitionId(), parseActivityType((FlowNode) execution.getCurrentFlowElement()), terminateEndEvent));
   }
 
-  protected String createDeleteReason(String activityId) {
-    return DeleteReason.TERMINATE_END_EVENT + " (" + activityId + ")";
+  public static String createDeleteReason(String activityId) {
+      return activityId != null ?  DeleteReason.TERMINATE_END_EVENT + ": " + activityId : DeleteReason.TERMINATE_END_EVENT;
   }
 
   public boolean isTerminateAll() {

@@ -38,7 +38,8 @@ public class ToTaskCancelledConverter implements EventConverter<TaskCancelledEve
         if (isTaskCancelled(internalEvent)) {
             TaskEntity taskEntity = (TaskEntity) internalEvent.getEntity();
             Task task = taskConverter.from(taskEntity, Task.TaskStatus.CANCELLED);
-            event = new TaskCancelledImpl(task);
+            String reason = internalEvent.getReason();
+            event = new TaskCancelledImpl(task, reason);
         }
         return Optional.ofNullable(event);
     }

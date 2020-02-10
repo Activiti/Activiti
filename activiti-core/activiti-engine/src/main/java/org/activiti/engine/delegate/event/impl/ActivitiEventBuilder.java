@@ -32,6 +32,7 @@ import org.activiti.engine.delegate.event.ActivitiProcessStartedEvent;
 import org.activiti.engine.delegate.event.ActivitiSequenceFlowTakenEvent;
 import org.activiti.engine.delegate.event.ActivitiSignalEvent;
 import org.activiti.engine.delegate.event.ActivitiVariableEvent;
+import org.activiti.engine.impl.bpmn.behavior.TerminateEndEventActivityBehavior;
 import org.activiti.engine.impl.context.ExecutionContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.IdentityLinkEntity;
@@ -388,6 +389,7 @@ public class ActivitiEventBuilder {
         event.setProcessInstanceId(((Task) persistedObject).getProcessInstanceId());
         event.setExecutionId(((Task) persistedObject).getExecutionId());
         event.setProcessDefinitionId(((Task) persistedObject).getProcessDefinitionId());
+        //((ActivitiEntityEventImpl)event).setReason(TerminateEndEventActivityBehavior.createDeleteReason(null));
       } else if (persistedObject instanceof ProcessDefinition) {
         event.setProcessDefinitionId(((ProcessDefinition) persistedObject).getId());
       }

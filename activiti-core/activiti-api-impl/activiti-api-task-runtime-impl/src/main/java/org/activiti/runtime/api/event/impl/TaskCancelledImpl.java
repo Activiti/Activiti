@@ -23,16 +23,20 @@ import org.activiti.api.task.runtime.events.TaskCancelledEvent;
 
 public class TaskCancelledImpl extends RuntimeEventImpl<Task, TaskRuntimeEvent.TaskEvents> implements TaskCancelledEvent {
 
-    public TaskCancelledImpl() {
-    }
+    private final String reason;
 
-    public TaskCancelledImpl(Task entity) {
+    public TaskCancelledImpl(Task entity, String reason) {
         super(entity);
+        this.reason = reason;
     }
 
     @Override
     public TaskRuntimeEvent.TaskEvents getEventType() {
         return TaskRuntimeEvent.TaskEvents.TASK_CANCELLED;
+    }
+
+    public String getReason(){
+        return reason;
     }
 
 }

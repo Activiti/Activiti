@@ -24,18 +24,19 @@ import org.activiti.engine.delegate.event.ActivitiEntityEvent;
  */
 public class ActivitiEntityEventImpl extends ActivitiEventImpl implements ActivitiEntityEvent {
 
-  protected Object entity;
+    protected Object entity;
 
-  public ActivitiEntityEventImpl(Object entity, ActivitiEventType type) {
-    super(type);
-    if (entity == null) {
-      throw new ActivitiIllegalArgumentException("Entity cannot be null.");
+    public ActivitiEntityEventImpl(Object entity,
+                                   ActivitiEventType type) {
+        super(type);
+        if (entity == null) {
+            throw new ActivitiIllegalArgumentException("Entity cannot be null.");
+        }
+        this.entity = entity;
     }
-    this.entity = entity;
-  }
 
-  @Override
-  public Object getEntity() {
-    return entity;
-  }
+    @Override
+    public Object getEntity() {
+        return entity;
+    }
 }
