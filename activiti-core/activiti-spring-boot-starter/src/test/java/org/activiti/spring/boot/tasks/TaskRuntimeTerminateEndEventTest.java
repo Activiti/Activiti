@@ -16,14 +16,13 @@
 
 package org.activiti.spring.boot.tasks;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.util.List;
 
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.task.model.Task;
 import org.activiti.spring.boot.process.ProcessBaseRuntime;
 import org.activiti.spring.boot.test.util.TaskCleanUpUtil;
+import org.activiti.test.LocalEventSource;
 import org.junit.After;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -33,6 +32,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
@@ -49,13 +50,21 @@ public class TaskRuntimeTerminateEndEventTest {
     @Autowired
     private TaskCleanUpUtil taskCleanUpUtil;
 
+    @Autowired
+    private LocalEventSource localEventSource;
+
+    @Autowired
+    private TaskRuntimeEventListeners taskRuntimeEventListeners;
+
     @After
-    public void taskCleanUp(){
+    public void tearDown(){
         taskCleanUpUtil.cleanUpWithAdmin();
+        localEventSource.clearEvents();
+        taskRuntimeEventListeners.clearEvents();
     }
 
     @Test
-    public void processTerminateEventWithParallelTasks() {
+    public void should_ProcessesAndTasksDisappear_whenTerminateEventIsExecuted() {
         ProcessInstance process = processBaseRuntime.startProcessWithProcessDefinitionKey(TASK_PROCESS_TERMINATE_EVENT);
 
         List<Task> taskList = taskBaseRuntime.getTasksByProcessInstanceId(process.getId());
@@ -68,6 +77,7 @@ public class TaskRuntimeTerminateEndEventTest {
 
         List<Task> taskAfterCompleted = taskBaseRuntime.getTasksByProcessInstanceId(process.getId());
         assertThat(taskAfterCompleted).hasSize(0);
+
     }
 
 }

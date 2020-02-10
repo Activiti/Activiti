@@ -38,4 +38,8 @@ public class TaskRuntimeEventListeners {
     public List<Task> getCancelledTasks() {
         return cancelledTasks;
     }
+
+    public void clearEvents() {
+        cancelledTasks.clear();
+    }
 }

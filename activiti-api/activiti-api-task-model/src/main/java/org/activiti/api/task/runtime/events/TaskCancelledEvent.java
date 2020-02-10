@@ -21,4 +21,6 @@ import org.activiti.api.task.model.Task;
 
 public interface TaskCancelledEvent extends TaskRuntimeEvent<Task> {
 
+    String getReason();
+
 }

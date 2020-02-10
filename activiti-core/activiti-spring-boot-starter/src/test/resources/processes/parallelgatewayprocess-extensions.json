@@ -1,0 +1,24 @@
+{
+  "id": "process-00dbb280-30c5-49db-9240-21cb91bd0ae0",
+  "type": "PROCESS",
+  "name": "parallelgatewayprocess",
+  "extensions": {
+    "Process_KzwZAEl-": {
+      "constants": {},
+      "mappings": {},
+      "properties": {},
+      "assignments": {
+        "Task_1ucfvnp": {
+          "type": "static",
+          "assignment": "assignee",
+          "id": "Task_1ucfvnp"
+        },
+        "Task_1j4bcoh": {
+          "type": "static",
+          "assignment": "assignee",
+          "id": "Task_1j4bcoh"
+        }
+      }
+    }
+  }
+}

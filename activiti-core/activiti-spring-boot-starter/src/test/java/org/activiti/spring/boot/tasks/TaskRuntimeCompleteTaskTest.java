@@ -224,7 +224,4 @@ public class TaskRuntimeCompleteTaskTest {
                         tuple("start2", "start2"));
 
     }
-
-    
-
 }

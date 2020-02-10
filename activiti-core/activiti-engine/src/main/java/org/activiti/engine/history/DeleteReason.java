@@ -22,7 +22,7 @@ public interface DeleteReason {
   
   String PROCESS_INSTANCE_DELETED = "process instance deleted";
   
-  String TERMINATE_END_EVENT = "terminate end event";
+  String TERMINATE_END_EVENT = "Terminated by end event";
   
   String BOUNDARY_EVENT_INTERRUPTING = "boundary event";
   
