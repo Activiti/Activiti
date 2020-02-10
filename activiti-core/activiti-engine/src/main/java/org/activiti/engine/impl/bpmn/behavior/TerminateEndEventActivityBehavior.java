@@ -174,9 +174,9 @@ public class TerminateEndEventActivityBehavior extends FlowNodeActivityBehavior 
 
     List<ExecutionEntity> childExecutions = executionEntityManager.collectChildren(rootExecutionEntity);
     for (int i=childExecutions.size()-1; i>=0; i--) {
-      executionEntityManager.deleteExecutionAndRelatedData(childExecutions.get(i), deleteReason);
+      executionEntityManager.cancelExecutionAndRelatedData(childExecutions.get(i), deleteReason);
     }
-    executionEntityManager.deleteExecutionAndRelatedData(rootExecutionEntity, deleteReason);
+    executionEntityManager.cancelExecutionAndRelatedData(rootExecutionEntity, deleteReason);
   }
 
   protected void sendProcessInstanceCancelledEvent(DelegateExecution execution, FlowElement terminateEndEvent) {
@@ -207,22 +207,8 @@ public class TerminateEndEventActivityBehavior extends FlowNodeActivityBehavior 
     if (subProcessInstance != null) {
       dispatchExecutionCancelled(subProcessInstance, terminateEndEvent);
     }
-
-    // activity with message/signal boundary events
-    FlowElement currentFlowElement = execution.getCurrentFlowElement();
-    if (currentFlowElement instanceof FlowNode) {
-      dispatchActivityCancelled(execution, terminateEndEvent);
-    }
   }
-
-  protected void dispatchActivityCancelled(DelegateExecution execution, FlowElement terminateEndEvent) {
-    Context.getProcessEngineConfiguration()
-        .getEventDispatcher()
-        .dispatchEvent(
-            ActivitiEventBuilder.createActivityCancelledEvent(execution.getCurrentFlowElement().getId(),
-                execution.getCurrentFlowElement().getName(), execution.getId(), execution.getProcessInstanceId(),
-                execution.getProcessDefinitionId(), parseActivityType((FlowNode) execution.getCurrentFlowElement()), terminateEndEvent));
-  }
+  
 
   public static String createDeleteReason(String activityId) {
       return activityId != null ?  DeleteReason.TERMINATE_END_EVENT + ": " + activityId : DeleteReason.TERMINATE_END_EVENT;

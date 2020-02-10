@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.bpmn.model.SequenceFlow;
 import org.activiti.bpmn.model.UserTask;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.delegate.event.ActivitiEventType;
@@ -673,34 +674,47 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
 
   }
 
-  private void deleteOrCancelUserTask(ExecutionEntity executionEntity, String deleteReason, boolean cancel) {
+  private void deleteUserTask(ExecutionEntity executionEntity, String deleteReason){
       boolean enableExecutionRelationshipCounts = isExecutionRelatedEntityCountEnabled(executionEntity);
 
-      // Delete current user tasks
       if (!enableExecutionRelationshipCounts ||
           (enableExecutionRelationshipCounts && ((CountingExecutionEntity) executionEntity).getTaskCount() > 0)) {
           TaskEntityManager taskEntityManager = getTaskEntityManager();
           Collection<TaskEntity> tasksForExecution = taskEntityManager.findTasksByExecutionId(executionEntity.getId());
           for (TaskEntity taskEntity : tasksForExecution) {
-              taskEntityManager.deleteTask(taskEntity, deleteReason, false, cancel);
+              taskEntityManager.deleteTask(taskEntity, deleteReason, false, false);
           }
       }
   }
 
+    private void cancelUserTask(ExecutionEntity executionEntity, String deleteReason){
+        boolean enableExecutionRelationshipCounts = isExecutionRelatedEntityCountEnabled(executionEntity);
+
+        if (!enableExecutionRelationshipCounts ||
+            (enableExecutionRelationshipCounts && ((CountingExecutionEntity) executionEntity).getTaskCount() > 0)) {
+            TaskEntityManager taskEntityManager = getTaskEntityManager();
+            Collection<TaskEntity> tasksForExecution = taskEntityManager.findTasksByExecutionId(executionEntity.getId());
+            for (TaskEntity taskEntity : tasksForExecution) {
+                taskEntityManager.deleteTask(taskEntity, deleteReason, false, true);
+            }
+        }
+    }
+
   private void deleteDataForExecution(ExecutionEntity executionEntity, String deleteReason) {
       deleteExecutionEntity(executionEntity,deleteReason);
-      deleteOrCancelUserTask(executionEntity, deleteReason, false);
+      deleteUserTask(executionEntity, deleteReason);
   }
 
   private void cancelDataForExecution(ExecutionEntity executionEntity, String deleteReason) {
       boolean isActive = executionEntity.isActive();
 
       deleteExecutionEntity(executionEntity,deleteReason);
-      deleteOrCancelUserTask(executionEntity, deleteReason, true);
+      cancelUserTask(executionEntity, deleteReason);
 
       if (isActive &&
           executionEntity.getCurrentFlowElement() != null &&
-          !(executionEntity.getCurrentFlowElement() instanceof UserTask)) {
+          !(executionEntity.getCurrentFlowElement() instanceof UserTask) &&
+          !(executionEntity.getCurrentFlowElement() instanceof SequenceFlow)) {
           getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createActivityCancelledEvent(executionEntity, deleteReason));
       }
     }

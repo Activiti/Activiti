@@ -389,7 +389,7 @@ public class ActivitiEventBuilder {
         event.setProcessInstanceId(((Task) persistedObject).getProcessInstanceId());
         event.setExecutionId(((Task) persistedObject).getExecutionId());
         event.setProcessDefinitionId(((Task) persistedObject).getProcessDefinitionId());
-        //((ActivitiEntityEventImpl)event).setReason(TerminateEndEventActivityBehavior.createDeleteReason(null));
+        event.setReason(TerminateEndEventActivityBehavior.createDeleteReason(null));
       } else if (persistedObject instanceof ProcessDefinition) {
         event.setProcessDefinitionId(((ProcessDefinition) persistedObject).getId());
       }
