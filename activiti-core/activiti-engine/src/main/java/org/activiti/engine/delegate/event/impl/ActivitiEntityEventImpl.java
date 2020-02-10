@@ -26,8 +26,6 @@ public class ActivitiEntityEventImpl extends ActivitiEventImpl implements Activi
 
     protected Object entity;
 
-    protected String reason;
-
     public ActivitiEntityEventImpl(Object entity,
                                    ActivitiEventType type) {
         super(type);
@@ -40,14 +38,5 @@ public class ActivitiEntityEventImpl extends ActivitiEventImpl implements Activi
     @Override
     public Object getEntity() {
         return entity;
-    }
-
-    @Override
-    public String getReason() {
-        return reason;
-    }
-
-    public void setReason(String reason) {
-        this.reason = reason;
     }
 }
