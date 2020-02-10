@@ -96,6 +96,7 @@ public class TaskRuntimeUpdateTaskTest {
                                                          .withDescription("test task update description")
                                                          .withDueDate(new Date())
                                                          .withPriority(50)
+                                                         .withCandidateUsers("garth")
                                                          .build());
 
         assertThat(RuntimeTestConfiguration.createdTasks).contains(standaloneTask.getId());

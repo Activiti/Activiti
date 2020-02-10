@@ -77,6 +77,7 @@ public class TaskRuntimeClaimReleaseTest {
 
         Task standAloneTask = taskRuntime.create(TaskPayloadBuilder.create()
                 .withName("group task")
+                .withCandidateUsers("garth")
                 .withCandidateGroup("activitiTeam")
                 .build());
 
