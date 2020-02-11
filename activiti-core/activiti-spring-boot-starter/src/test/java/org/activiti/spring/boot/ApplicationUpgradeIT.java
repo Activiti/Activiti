@@ -67,6 +67,7 @@ public class ApplicationUpgradeIT {
 
         Deployment deployment2 = repositoryService.createDeployment()
                 .setProjectManifest(projectManifest)
+                .setEnforcedAppVersion(2)
                 .enableDuplicateFiltering()
                 .name("deploymentName")
                 .deploy();
