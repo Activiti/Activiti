@@ -67,7 +67,6 @@ public class ApplicationUpgradeIT {
 
         Deployment deployment2 = repositoryService.createDeployment()
                 .setProjectManifest(projectManifest)
-                .setEnforcedAppVersion(2)
                 .enableDuplicateFiltering()
                 .name("deploymentName")
                 .deploy();
@@ -81,10 +80,10 @@ public class ApplicationUpgradeIT {
     public void should_getLatestProcessDefinitionByKey_when_multipleVersions() {
         ProjectManifest projectManifest = new ProjectManifest();
         projectManifest.setVersion("12");
-        deploySingleTaskProcess(projectManifest, 1);
+        deploySingleTaskProcess(projectManifest);
 
         projectManifest.setVersion("34");
-        deploySingleTaskProcess(projectManifest, 2);
+        deploySingleTaskProcess(projectManifest);
 
         securityUtil.logInAs("user");
 
@@ -98,14 +97,32 @@ public class ApplicationUpgradeIT {
     }
 
     @Test
-    public void should_updateDeploymentVersion_when_sameProjectManifestVersionAndEnforcedAppVersionIsSet(){
+    public void should_updateDeploymentVersion_when_onlyEnforcedAppVersionIsSet(){
 
+        Deployment deployment1 = repositoryService.createDeployment()
+            .setEnforcedAppVersion(1)
+            .enableDuplicateFiltering()
+            .name("deploymentName")
+            .deploy();
+        deploymentIds.add(deployment1.getId());
+        assertThat(deployment1.getVersion()).isEqualTo(1);
+
+        Deployment deployment2 = repositoryService.createDeployment()
+            .setEnforcedAppVersion(2)
+            .enableDuplicateFiltering()
+            .name("deploymentName")
+            .deploy();
+        deploymentIds.add(deployment2.getId());
+        assertThat(deployment2.getVersion()).isEqualTo(2);
+    }
+
+    @Test
+    public void should_updateDeploymentVersion_when_onlyProjectManifestVersionIsSet(){
         ProjectManifest projectManifest = new ProjectManifest();
         projectManifest.setVersion("2");
 
         Deployment deployment1 = repositoryService.createDeployment()
             .setProjectManifest(projectManifest)
-            .setEnforcedAppVersion(1)
             .enableDuplicateFiltering()
             .name("deploymentName")
             .deploy();
@@ -113,6 +130,8 @@ public class ApplicationUpgradeIT {
 
         assertThat(deployment1.getVersion()).isEqualTo(1);
         assertThat(deployment1.getProjectReleaseVersion()).isEqualTo("2");
+
+        projectManifest.setVersion("17");
 
         Deployment deployment2 = repositoryService.createDeployment()
             .setProjectManifest(projectManifest)
@@ -122,15 +141,43 @@ public class ApplicationUpgradeIT {
             .deploy();
         deploymentIds.add(deployment2.getId());
         assertThat(deployment2.getVersion()).isEqualTo(2);
-        assertThat(deployment2.getProjectReleaseVersion()).isEqualTo("2");
+        assertThat(deployment2.getProjectReleaseVersion()).isEqualTo("17");
+    }
+
+    @Test
+    public void should_enforcedAppVersionTakePriorityOverProjectManifestVersion() {
+        ProjectManifest projectManifest = new ProjectManifest();
+        projectManifest.setVersion("2");
+
+        Deployment deployment1 = repositoryService.createDeployment()
+            .setEnforcedAppVersion(1)
+            .setProjectManifest(projectManifest)
+            .enableDuplicateFiltering()
+            .name("deploymentName")
+            .deploy();
+        deploymentIds.add(deployment1.getId());
+
+        assertThat(deployment1.getVersion()).isEqualTo(1);
+        assertThat(deployment1.getProjectReleaseVersion()).isEqualTo("2");
+
+        projectManifest.setVersion("17");
+
+        Deployment deployment2 = repositoryService.createDeployment()
+            .setEnforcedAppVersion(5)
+            .setProjectManifest(projectManifest)
+            .enableDuplicateFiltering()
+            .name("deploymentName")
+            .deploy();
+        deploymentIds.add(deployment2.getId());
+        assertThat(deployment2.getVersion()).isEqualTo(5);
+        assertThat(deployment2.getProjectReleaseVersion()).isEqualTo("17");
+
 
     }
 
-    private void deploySingleTaskProcess(ProjectManifest projectManifest,
-                                         Integer enforcedAppVersion) {
+    private void deploySingleTaskProcess(ProjectManifest projectManifest) {
         Deployment deployment = repositoryService.createDeployment()
             .setProjectManifest(projectManifest)
-            .setEnforcedAppVersion(enforcedAppVersion)
             .enableDuplicateFiltering()
             .tenantId("tenantId")
             .name(DEPLOYMENT_TYPE_NAME)
