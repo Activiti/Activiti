@@ -18,7 +18,7 @@ import javax.xml.stream.XMLStreamWriter;
 import org.activiti.bpmn.converter.util.BpmnXMLUtil;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BpmnModel;
-import org.activiti.bpmn.model.ManualTask;
+import org.activiti.bpmn.model.FlowNode;
 import org.activiti.bpmn.model.Task;
 
 /**
@@ -26,29 +26,33 @@ import org.activiti.bpmn.model.Task;
  */
 public class TaskXMLConverter extends BaseBpmnXMLConverter {
 
-  public Class<? extends BaseElement> getBpmnElementType() {
-    return Task.class;
-  }
+    @Override
+    public Class<? extends BaseElement> getBpmnElementType() {
+        return Task.class;
+    }
 
-  @Override
-  protected String getXMLElementName() {
-    return ELEMENT_TASK;
-  }
+    @Override
+    protected String getXMLElementName() {
+        return ELEMENT_TASK;
+    }
 
-  @Override
-  protected BaseElement convertXMLToElement(XMLStreamReader xtr, BpmnModel model) throws Exception {
-    ManualTask manualTask = new ManualTask();
-    BpmnXMLUtil.addXMLLocation(manualTask, xtr);
-    parseChildElements(getXMLElementName(), manualTask, model, xtr);
-    return manualTask;
-  }
+    @Override
+    protected BaseElement convertXMLToElement(XMLStreamReader xtr, BpmnModel model) throws Exception {
+        Task task = new Task();
+        BpmnXMLUtil.addXMLLocation(task, xtr);
+        parseChildElements(getXMLElementName(), task, model, xtr);
+        return task;
+    }
 
-  @Override
-  protected void writeAdditionalAttributes(BaseElement element, BpmnModel model, XMLStreamWriter xtw) throws Exception {
-  }
+    @Override
+    protected void writeAdditionalAttributes(BaseElement element, BpmnModel model, XMLStreamWriter xtw)
+                                                                                                        throws Exception {
+    }
 
-  @Override
-  protected void writeAdditionalChildElements(BaseElement element, BpmnModel model, XMLStreamWriter xtw) throws Exception {
+    @Override
+    protected void writeAdditionalChildElements(BaseElement element, BpmnModel model, XMLStreamWriter xtw)
+                                                                                                           throws Exception {
+        BpmnXMLUtil.writeIncomingAndOutgoingFlowElement((FlowNode) element, xtw);
+    }
 
-  }
 }
