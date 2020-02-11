@@ -80,10 +80,10 @@ public class ApplicationUpgradeIT {
     public void should_getLatestProcessDefinitionByKey_when_multipleVersions() {
         ProjectManifest projectManifest = new ProjectManifest();
         projectManifest.setVersion("12");
-        deploySingleTaskProcess(projectManifest);
+        deploySingleTaskProcess(projectManifest, 1);
 
         projectManifest.setVersion("34");
-        deploySingleTaskProcess(projectManifest);
+        deploySingleTaskProcess(projectManifest, 2);
 
         securityUtil.logInAs("user");
 
@@ -125,9 +125,11 @@ public class ApplicationUpgradeIT {
 
     }
 
-    private void deploySingleTaskProcess(ProjectManifest projectManifest) {
+    private void deploySingleTaskProcess(ProjectManifest projectManifest,
+                                         Integer enforcedAppVersion) {
         Deployment deployment = repositoryService.createDeployment()
             .setProjectManifest(projectManifest)
+            .setEnforcedAppVersion(enforcedAppVersion)
             .enableDuplicateFiltering()
             .tenantId("tenantId")
             .name(DEPLOYMENT_TYPE_NAME)

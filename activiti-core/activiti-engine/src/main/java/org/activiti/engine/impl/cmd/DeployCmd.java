@@ -85,8 +85,6 @@ public class DeployCmd<T> implements Command<Deployment>, Serializable {
 
                   if (deploymentBuilder.hasEnforcedAppVersion()) {
                       deployment.setVersion(deploymentBuilder.getEnforcedAppVersion());
-                  } else {
-                      deployment.setVersion(existingDeployment.getVersion() + 1);
                   }
               }
           }
@@ -129,13 +127,8 @@ public class DeployCmd<T> implements Command<Deployment>, Serializable {
     protected boolean deploymentsDiffer(DeploymentEntity deployment,
                                         DeploymentEntity saved) {
 
-        if (deploymentBuilder.hasProjectManifestSet()) {
-
-            if (!deployment.getProjectReleaseVersion().equals(saved.getProjectReleaseVersion())) {
-                return true;
-            } else {
-                return !deploymentBuilder.getEnforcedAppVersion().equals(saved.getVersion());
-            }
+        if (deploymentBuilder.hasEnforcedAppVersion()) {
+            return !deploymentBuilder.getEnforcedAppVersion().equals(saved.getVersion());
 
         } else {
 
