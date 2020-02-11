@@ -4,7 +4,10 @@
         <bpmn2:startEvent id="StartEvent_1">
             <bpmn2:outgoing>SequenceFlow_0afdugi</bpmn2:outgoing>
         </bpmn2:startEvent>
-        <bpmn2:manualTask id="Task_0cshed6" name="Task"></bpmn2:manualTask>
+        <bpmn2:manualTask id="Task_0cshed6" name="Task">
+        	<bpmn2:incoming>SequenceFlow_0afdugi</bpmn2:incoming>
+      		<bpmn2:outgoing>SequenceFlow_1b9bcj9</bpmn2:outgoing>
+      	</bpmn2:manualTask>
         <bpmn2:sequenceFlow id="SequenceFlow_0afdugi" sourceRef="StartEvent_1" targetRef="Task_0cshed6"></bpmn2:sequenceFlow>
         <bpmn2:endEvent id="EndEvent_119q0er">
             <bpmn2:incoming>SequenceFlow_1b9bcj9</bpmn2:incoming>
