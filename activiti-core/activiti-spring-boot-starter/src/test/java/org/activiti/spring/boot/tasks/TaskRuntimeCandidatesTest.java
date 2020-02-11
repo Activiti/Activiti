@@ -55,6 +55,7 @@ public class TaskRuntimeCandidatesTest {
 
         Task createTask = taskRuntime.create(TaskPayloadBuilder.create()
                 .withName("task for dean")
+                                                     .withCandidateUsers("garth")
                 .withAssignee("dean") //but he should still be assigned the task
                 .build());
 
@@ -67,8 +68,7 @@ public class TaskRuntimeCandidatesTest {
         assertThat(task.getStatus()).isEqualTo(Task.TaskStatus.ASSIGNED);
 
         Set<String> userCandidatesOnTask = task.getCandidateUsers();
-        assertThat(userCandidatesOnTask).isNotNull();
-        assertThat(userCandidatesOnTask.size()).isEqualTo(1);
+        assertThat(userCandidatesOnTask).hasSize(1);
 
         List<String> userCandidates = taskRuntime.userCandidates(createTask.getId());
         assertThat(userCandidates).hasSize(1);
