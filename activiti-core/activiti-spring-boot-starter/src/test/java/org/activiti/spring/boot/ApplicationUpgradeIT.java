@@ -97,7 +97,7 @@ public class ApplicationUpgradeIT {
     }
 
     @Test
-    public void should_UpdateDeploymentVersion_when_SameProjectManifestVersionAndEnforcedAppVersionIsSet(){
+    public void should_updateDeploymentVersion_when_sameProjectManifestVersionAndEnforcedAppVersionIsSet(){
 
         ProjectManifest projectManifest = new ProjectManifest();
         projectManifest.setVersion("2");

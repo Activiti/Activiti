@@ -32,7 +32,7 @@ public class ApplicationUpgradeContextServiceNullValuesIT {
     }
 
     @Test
-    public void should_not_haveDefaultEnforcedAppVersion() {
+    public void should_notHaveDefaultEnforcedAppVersion() {
         assertThat(applicationUpgradeContextService.hasEnforcedAppVersion()).isFalse();
     }
 }

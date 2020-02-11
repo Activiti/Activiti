@@ -22,7 +22,7 @@ public class ApplicationUpgradeContextServiceIT {
     private ApplicationUpgradeContextService applicationUpgradeContextService;
 
     @Test
-    public void should_retrieveManifest_when_called() throws IOException {
+    public void should_retrieveManifest() throws IOException {
 
         assertThat(applicationUpgradeContextService.hasProjectManifest()).isTrue();
 
