@@ -58,7 +58,7 @@ public class ApplicationUpgradeContextService {
     }
 
     public boolean hasEnforcedAppVersion() {
-        return this.enforcedAppVersion != 0;
+        return this.enforcedAppVersion > 0;
     }
 
     public Integer getEnforcedAppVersion() {
