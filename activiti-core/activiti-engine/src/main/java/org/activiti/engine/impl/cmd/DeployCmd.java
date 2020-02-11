@@ -78,53 +78,11 @@ public class DeployCmd<T> implements Command<Deployment>, Serializable {
             }
 
             if (existingDeployment != null) {
-  ///////////////////
-
-//                boolean deploymentsDiffer;
-//
-//                if (deploymentBuilder.hasEnforcedAppVersion()) {
-//                    deploymentsDiffer = deploymentsDifferWhenEnforcedAppVersionIsSet(deployment,
-//                                                                                     existingDeployment);
-//                    if (deploymentsDiffer) {
-//                        deployment.setVersion(deploymentBuilder.getEnforcedAppVersion());
-//                    } else {
-//                        return existingDeployment;
-//                    }
-//                } else if (deploymentBuilder.hasProjectManifestSet()) {
-//                    deploymentsDiffer = deploymentsDifferWhenProjectManifestIsSet(deployment,
-//                                                                                  existingDeployment);
-//                    if (deploymentsDiffer) {
-//                        deployment.setVersion(existingDeployment.getVersion() + 1);
-//                    } else {
-//                        return existingDeployment;
-//                    }
-//                } else {
-//                    deploymentsDiffer = deploymentsDifferDefault(deployment,
-//                                                                 existingDeployment);
-//                    if (!deploymentsDiffer) {
-//                        return existingDeployment;
-//                    }
-//                }
-
-
-/////////////////
                 if(deploymentsDiffer(deployment, existingDeployment)){
                     applyUpgradeLogic(deployment, existingDeployment);
                 } else {
                     return existingDeployment;
                 }
-
-
-
-//                if (!deploymentsDiffer(deployment,
-//                                       existingDeployment)) {
-//                    return existingDeployment;
-//                } else {
-//
-//                    if (deploymentBuilder.hasEnforcedAppVersion()) {
-//                        deployment.setVersion(deploymentBuilder.getEnforcedAppVersion());
-//                    }
-//                }
             }
         }
 
