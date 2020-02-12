@@ -47,44 +47,44 @@ public class DeployCmd<T> implements Command<Deployment>, Serializable {
     return executeDeploy(commandContext);
   }
 
-    protected Deployment executeDeploy(CommandContext commandContext) {
-        DeploymentEntity deployment = deploymentBuilder.getDeployment();
+  protected Deployment executeDeploy(CommandContext commandContext) {
+    DeploymentEntity deployment = deploymentBuilder.getDeployment();
 
-        deployment.setDeploymentTime(commandContext.getProcessEngineConfiguration().getClock().getCurrentTime());
+    deployment.setDeploymentTime(commandContext.getProcessEngineConfiguration().getClock().getCurrentTime());
 
-        setProjectReleaseVersion(deployment);
-        deployment.setVersion(1);
+    setProjectReleaseVersion(deployment);
+    deployment.setVersion(1);
 
-        if (deploymentBuilder.isDuplicateFilterEnabled()) {
+    if (deploymentBuilder.isDuplicateFilterEnabled()) {
 
-            List<Deployment> existingDeployments = new ArrayList<Deployment>();
-            if (deployment.getTenantId() == null || ProcessEngineConfiguration.NO_TENANT_ID.equals(deployment.getTenantId())) {
-                DeploymentEntity existingDeployment = commandContext.getDeploymentEntityManager().findLatestDeploymentByName(deployment.getName());
-                if (existingDeployment != null) {
-                    existingDeployments.add(existingDeployment);
-                }
-            } else {
-                List<Deployment> deploymentList = commandContext.getProcessEngineConfiguration().getRepositoryService().createDeploymentQuery().deploymentName(deployment.getName())
-                    .deploymentTenantId(deployment.getTenantId()).orderByDeploymentId().desc().list();
-
-                if (!deploymentList.isEmpty()) {
-                    existingDeployments.addAll(deploymentList);
-                }
-            }
-
-            DeploymentEntity existingDeployment = null;
-            if (!existingDeployments.isEmpty()) {
-                existingDeployment = (DeploymentEntity) existingDeployments.get(0);
-            }
-
+        List<Deployment> existingDeployments = new ArrayList<Deployment>();
+        if (deployment.getTenantId() == null || ProcessEngineConfiguration.NO_TENANT_ID.equals(deployment.getTenantId())) {
+            DeploymentEntity existingDeployment = commandContext.getDeploymentEntityManager().findLatestDeploymentByName(deployment.getName());
             if (existingDeployment != null) {
-                if(deploymentsDiffer(deployment, existingDeployment)){
-                    applyUpgradeLogic(deployment, existingDeployment);
-                } else {
-                    return existingDeployment;
-                }
+                existingDeployments.add(existingDeployment);
+            }
+        } else {
+            List<Deployment> deploymentList = commandContext.getProcessEngineConfiguration().getRepositoryService().createDeploymentQuery().deploymentName(deployment.getName())
+                .deploymentTenantId(deployment.getTenantId()).orderByDeploymentId().desc().list();
+
+            if (!deploymentList.isEmpty()) {
+                existingDeployments.addAll(deploymentList);
             }
         }
+
+        DeploymentEntity existingDeployment = null;
+        if (!existingDeployments.isEmpty()) {
+            existingDeployment = (DeploymentEntity) existingDeployments.get(0);
+        }
+
+        if (existingDeployment != null) {
+            if(deploymentsDiffer(deployment, existingDeployment)){
+                applyUpgradeLogic(deployment, existingDeployment);
+            } else {
+                return existingDeployment;
+            }
+        }
+    }
 
     deployment.setNew(true);
 
