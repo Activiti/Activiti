@@ -175,6 +175,26 @@ public class ApplicationUpgradeIT {
 
     }
 
+    @Test
+    public void should_noUpgradeTakePlace_when_enforcedAppVersionAndProjectManifestVersionAreNotSet() {
+
+        Deployment deployment1 = repositoryService.createDeployment()
+            .enableDuplicateFiltering()
+            .name("deploymentName")
+            .deploy();
+        deploymentIds.add(deployment1.getId());
+
+        assertThat(deployment1.getVersion()).isEqualTo(1);
+
+        Deployment deployment2 = repositoryService.createDeployment()
+            .enableDuplicateFiltering()
+            .name("deploymentName")
+            .deploy();
+        deploymentIds.add(deployment2.getId());
+
+        assertThat(deployment2.getVersion()).isEqualTo(1);
+    }
+
     private void deploySingleTaskProcess(ProjectManifest projectManifest) {
         Deployment deployment = repositoryService.createDeployment()
             .setProjectManifest(projectManifest)
