@@ -10,18 +10,22 @@ import org.activiti.core.common.project.model.ProjectManifest;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.ResourcePatternResolver;
 
-public class ProjectModelService {
+public class ApplicationUpgradeContextService {
 
     private String projectManifestFilePath;
+
+    private Integer enforcedAppVersion;
 
     private final ObjectMapper objectMapper;
 
     private ResourcePatternResolver resourceLoader;
 
-    public ProjectModelService(String path,
-                               ObjectMapper objectMapper,
-                               ResourcePatternResolver resourceLoader) {
+    public ApplicationUpgradeContextService(String path,
+                                            Integer enforcedAppVersion,
+                                            ObjectMapper objectMapper,
+                                            ResourcePatternResolver resourceLoader) {
         this.projectManifestFilePath = path;
+        this.enforcedAppVersion = enforcedAppVersion;
         this.objectMapper = objectMapper;
         this.resourceLoader = resourceLoader;
     }
@@ -45,11 +49,19 @@ public class ProjectModelService {
         Optional<Resource> resourceOptional = retrieveResource();
 
         return read(resourceOptional
-                            .orElseThrow(() -> new FileNotFoundException("'" + projectManifestFilePath + "' manifest not found."))
-                            .getInputStream());
+                        .orElseThrow(() -> new FileNotFoundException("'" + projectManifestFilePath + "' manifest not found."))
+                        .getInputStream());
     }
 
-    public boolean hasProjectManifest(){
+    public boolean hasProjectManifest() {
         return retrieveResource().isPresent();
+    }
+
+    public boolean hasEnforcedAppVersion() {
+        return this.enforcedAppVersion > 0;
+    }
+
+    public Integer getEnforcedAppVersion() {
+        return this.enforcedAppVersion;
     }
 }

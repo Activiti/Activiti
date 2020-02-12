@@ -20,11 +20,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.activiti.core.common.spring.project.ProjectModelService;
+import org.activiti.core.common.spring.project.ApplicationUpgradeContextService;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.DeploymentBuilder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
 
 /**
@@ -42,8 +40,8 @@ public class ResourceParentFolderAutoDeploymentStrategy extends AbstractAutoDepl
 
   private static final String DEPLOYMENT_NAME_PATTERN = "%s.%s";
 
-  public ResourceParentFolderAutoDeploymentStrategy(ProjectModelService projectModelService) {
-      super(projectModelService);
+  public ResourceParentFolderAutoDeploymentStrategy(ApplicationUpgradeContextService applicationUpgradeContextService) {
+      super(applicationUpgradeContextService);
   }
 
   @Override
@@ -72,7 +70,7 @@ public class ResourceParentFolderAutoDeploymentStrategy extends AbstractAutoDepl
                                          resource);
       }
 
-      loadProjectManifest(deploymentBuilder).deploy();
+      loadApplicationUpgradeContext(deploymentBuilder).deploy();
     }
 
   }

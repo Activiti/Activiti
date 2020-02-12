@@ -1,2 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-org.activiti.core.common.spring.project.conf.ProjectModelAutoConfiguration
+org.activiti.core.common.spring.project.conf.ApplicationUpgradeContextAutoConfiguration

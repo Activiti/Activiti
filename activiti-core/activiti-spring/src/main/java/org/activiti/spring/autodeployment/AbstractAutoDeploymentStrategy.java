@@ -18,7 +18,7 @@ import java.util.List;
 
 import org.activiti.bpmn.converter.BpmnXMLConverter;
 import org.activiti.bpmn.model.BpmnModel;
-import org.activiti.core.common.spring.project.ProjectModelService;
+import org.activiti.core.common.spring.project.ApplicationUpgradeContextService;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.impl.util.io.InputStreamSource;
 import org.activiti.engine.repository.DeploymentBuilder;
@@ -37,10 +37,10 @@ public abstract class AbstractAutoDeploymentStrategy implements AutoDeploymentSt
 
     protected static final Logger LOGGER = LoggerFactory.getLogger(AbstractAutoDeploymentStrategy.class);
 
-    private ProjectModelService projectModelService;
+    private ApplicationUpgradeContextService applicationUpgradeContextService;
 
-    public AbstractAutoDeploymentStrategy(ProjectModelService projectModelService) {
-        this.projectModelService = projectModelService;
+    public AbstractAutoDeploymentStrategy(ApplicationUpgradeContextService applicationUpgradeContextService) {
+        this.applicationUpgradeContextService = applicationUpgradeContextService;
     }
 
     /**
@@ -127,14 +127,30 @@ public abstract class AbstractAutoDeploymentStrategy implements AutoDeploymentSt
         return resource.endsWith(".bpmn20.xml") || resource.endsWith(".bpmn");
     }
 
-    protected DeploymentBuilder loadProjectManifest(DeploymentBuilder deploymentBuilder) {
-        if (projectModelService != null && projectModelService.hasProjectManifest()) {
+    protected DeploymentBuilder loadApplicationUpgradeContext(DeploymentBuilder deploymentBuilder) {
+        if(applicationUpgradeContextService != null){
+            loadProjectManifest(deploymentBuilder);
+            loadEnforcedAppVersion(deploymentBuilder);
+        }
+        return deploymentBuilder;
+    }
+
+    private void loadProjectManifest(DeploymentBuilder deploymentBuilder) {
+        if (applicationUpgradeContextService.hasProjectManifest()) {
             try {
-                deploymentBuilder.setProjectManifest(projectModelService.loadProjectManifest());
+                deploymentBuilder.setProjectManifest(applicationUpgradeContextService.loadProjectManifest());
             } catch (IOException e) {
                 LOGGER.warn("Manifest of application not found. Project release version will not be set for deployment.");
             }
         }
-        return deploymentBuilder;
+    }
+
+    private void loadEnforcedAppVersion(DeploymentBuilder deploymentBuilder) {
+        if (applicationUpgradeContextService.hasEnforcedAppVersion()) {
+            deploymentBuilder.setEnforcedAppVersion(applicationUpgradeContextService.getEnforcedAppVersion());
+            LOGGER.warn("Enforced application version set to" + applicationUpgradeContextService.getEnforcedAppVersion().toString());
+        } else {
+            LOGGER.warn("Enforced application version not set.");
+        }
     }
 }

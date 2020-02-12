@@ -14,7 +14,7 @@
 package org.activiti.spring.autodeployment;
 
 
-import org.activiti.core.common.spring.project.ProjectModelService;
+import org.activiti.core.common.spring.project.ApplicationUpgradeContextService;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.DeploymentBuilder;
 import org.springframework.core.io.Resource;
@@ -31,8 +31,8 @@ public class SingleResourceAutoDeploymentStrategy extends AbstractAutoDeployment
    */
   public static final String DEPLOYMENT_MODE = "single-resource";
 
-  public SingleResourceAutoDeploymentStrategy(ProjectModelService projectModelService) {
-      super(projectModelService);
+  public SingleResourceAutoDeploymentStrategy(ApplicationUpgradeContextService applicationUpgradeContextService) {
+      super(applicationUpgradeContextService);
   }
 
     @Override
@@ -54,7 +54,7 @@ public class SingleResourceAutoDeploymentStrategy extends AbstractAutoDeployment
       deploymentBuilder.addInputStream(resourceName,
                                        resource);
 
-      loadProjectManifest(deploymentBuilder).deploy();
+      loadApplicationUpgradeContext(deploymentBuilder).deploy();
 
     }
   }

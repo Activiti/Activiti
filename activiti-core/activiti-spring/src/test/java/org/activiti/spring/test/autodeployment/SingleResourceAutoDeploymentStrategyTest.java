@@ -37,7 +37,7 @@ public class SingleResourceAutoDeploymentStrategyTest extends AbstractAutoDeploy
     @Before
     public void before() throws Exception {
         super.before();
-        deploymentStrategy = new SingleResourceAutoDeploymentStrategy(projectModelServiceMock);
+        deploymentStrategy = new SingleResourceAutoDeploymentStrategy(applicationUpgradeContextServiceMock);
         assertNotNull(deploymentStrategy);
     }
 

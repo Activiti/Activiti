@@ -57,6 +57,7 @@ public class DeploymentBuilderImpl implements DeploymentBuilder, Serializable {
   protected Date processDefinitionsActivationDate;
   protected Map<String, Object> deploymentProperties = new HashMap<>();
   private ProjectManifest projectManifest;
+  private Integer enforcedAppVersion;
 
   public DeploymentBuilderImpl(RepositoryServiceImpl repositoryService) {
     this(repositoryService,
@@ -95,6 +96,19 @@ public class DeploymentBuilderImpl implements DeploymentBuilder, Serializable {
 
   public boolean hasProjectManifestSet(){
       return this.projectManifest != null;
+  }
+
+  public DeploymentBuilder setEnforcedAppVersion(Integer enforcedAppVersion){
+      this.enforcedAppVersion = enforcedAppVersion;
+      return this;
+  }
+
+  public Integer getEnforcedAppVersion(){
+      return this.enforcedAppVersion;
+  }
+
+  public boolean hasEnforcedAppVersion(){
+      return this.enforcedAppVersion != null;
   }
 
   @Override
