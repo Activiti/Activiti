@@ -1,9 +1,9 @@
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -52,37 +52,37 @@ public class DeployCmd<T> implements Command<Deployment>, Serializable {
 
     deployment.setDeploymentTime(commandContext.getProcessEngineConfiguration().getClock().getCurrentTime());
 
-    setProjectReleaseVersion(deployment);
-    deployment.setVersion(1);
+      setProjectReleaseVersion(deployment);
+      deployment.setVersion(1);
 
-    if (deploymentBuilder.isDuplicateFilterEnabled()) {
+      if (deploymentBuilder.isDuplicateFilterEnabled()) {
 
-        List<Deployment> existingDeployments = new ArrayList<Deployment>();
-        if (deployment.getTenantId() == null || ProcessEngineConfiguration.NO_TENANT_ID.equals(deployment.getTenantId())) {
-            DeploymentEntity existingDeployment = commandContext.getDeploymentEntityManager().findLatestDeploymentByName(deployment.getName());
-            if (existingDeployment != null) {
-                existingDeployments.add(existingDeployment);
-            }
-        } else {
-            List<Deployment> deploymentList = commandContext.getProcessEngineConfiguration().getRepositoryService().createDeploymentQuery().deploymentName(deployment.getName())
-                .deploymentTenantId(deployment.getTenantId()).orderByDeploymentId().desc().list();
-
-            if (!deploymentList.isEmpty()) {
-                existingDeployments.addAll(deploymentList);
-            }
-        }
-
-        DeploymentEntity existingDeployment = null;
-        if (!existingDeployments.isEmpty()) {
-            existingDeployment = (DeploymentEntity) existingDeployments.get(0);
-        }
-
+      List<Deployment> existingDeployments = new ArrayList<Deployment>();
+      if (deployment.getTenantId() == null || ProcessEngineConfiguration.NO_TENANT_ID.equals(deployment.getTenantId())) {
+        DeploymentEntity existingDeployment = commandContext.getDeploymentEntityManager().findLatestDeploymentByName(deployment.getName());
         if (existingDeployment != null) {
-            if(deploymentsDiffer(deployment, existingDeployment)){
-                applyUpgradeLogic(deployment, existingDeployment);
-            } else {
-                return existingDeployment;
-            }
+          existingDeployments.add(existingDeployment);
+        }
+      } else {
+        List<Deployment> deploymentList = commandContext.getProcessEngineConfiguration().getRepositoryService().createDeploymentQuery().deploymentName(deployment.getName())
+            .deploymentTenantId(deployment.getTenantId()).orderByDeploymentId().desc().list();
+
+        if (!deploymentList.isEmpty()) {
+          existingDeployments.addAll(deploymentList);
+        }
+      }
+
+      DeploymentEntity existingDeployment = null;
+      if (!existingDeployments.isEmpty()) {
+        existingDeployment = (DeploymentEntity) existingDeployments.get(0);
+      }
+
+      if (existingDeployment != null) {
+          if(deploymentsDiffer(deployment, existingDeployment)){
+              applyUpgradeLogic(deployment, existingDeployment);
+          } else {
+              return existingDeployment;
+          }
         }
     }
 
@@ -114,69 +114,72 @@ public class DeployCmd<T> implements Command<Deployment>, Serializable {
     return deployment;
   }
 
-    private void setProjectReleaseVersion(DeploymentEntity deployment) {
-        if (deploymentBuilder.hasProjectManifestSet()) {
-            deployment.setProjectReleaseVersion(deploymentBuilder.getProjectManifest().getVersion());
-        }
-    }
-
-    private void applyUpgradeLogic(DeploymentEntity deployment, DeploymentEntity existingDeployment) {
-        if (deploymentBuilder.hasEnforcedAppVersion()) {
-            deployment.setVersion(deploymentBuilder.getEnforcedAppVersion());
-        } else if (deploymentBuilder.hasProjectManifestSet()) {
-            deployment.setVersion(existingDeployment.getVersion() + 1);
-        }
-    }
-
-    private boolean deploymentsDifferWhenEnforcedAppVersionIsSet(DeploymentEntity saved){
-        return !deploymentBuilder.getEnforcedAppVersion().equals(saved.getVersion());
-    }
-
-    private boolean deploymentsDifferWhenProjectManifestIsSet(DeploymentEntity deployment, DeploymentEntity saved){
-        return !deployment.getProjectReleaseVersion().equals(saved.getProjectReleaseVersion());
-    }
-
-    private boolean deploymentsDifferDefault(DeploymentEntity deployment, DeploymentEntity saved){
-        if (deployment.getResources() == null || saved.getResources() == null) {
-            return true;
-        }
-
-        Map<String, ResourceEntity> resources = deployment.getResources();
-        Map<String, ResourceEntity> savedResources = saved.getResources();
-
-        for (String resourceName : resources.keySet()) {
-            ResourceEntity savedResource = savedResources.get(resourceName);
-
-            if (savedResource == null) {
-                return true;
-            }
-
-            if (!savedResource.isGenerated()) {
-                ResourceEntity resource = resources.get(resourceName);
-
-                byte[] bytes = resource.getBytes();
-                byte[] savedBytes = savedResource.getBytes();
-                if (!Arrays.equals(bytes,
-                                   savedBytes)) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    protected boolean deploymentsDiffer(DeploymentEntity deployment,
-                                        DeploymentEntity saved) {
-
-        if (deploymentBuilder.hasEnforcedAppVersion()) {
-            return deploymentsDifferWhenEnforcedAppVersionIsSet(saved);
-        } else if (deploymentBuilder.hasProjectManifestSet()) {
-            return deploymentsDifferWhenProjectManifestIsSet(deployment, saved);
-        } else {
-            return deploymentsDifferDefault(deployment, saved);
-
-        }
+  private void setProjectReleaseVersion(DeploymentEntity deployment) {
+      if (deploymentBuilder.hasProjectManifestSet()) {
+          deployment.setProjectReleaseVersion(deploymentBuilder.getProjectManifest().getVersion());
+      }
   }
+
+  private void applyUpgradeLogic(DeploymentEntity deployment,
+                                 DeploymentEntity existingDeployment) {
+      if (deploymentBuilder.hasEnforcedAppVersion()) {
+          deployment.setVersion(deploymentBuilder.getEnforcedAppVersion());
+      } else if (deploymentBuilder.hasProjectManifestSet()) {
+          deployment.setVersion(existingDeployment.getVersion() + 1);
+      }
+  }
+
+  protected boolean deploymentsDiffer(DeploymentEntity deployment,
+                                      DeploymentEntity saved) {
+
+      if (deploymentBuilder.hasEnforcedAppVersion()) {
+          return deploymentsDifferWhenEnforcedAppVersionIsSet(saved);
+      } else if (deploymentBuilder.hasProjectManifestSet()) {
+          return deploymentsDifferWhenProjectManifestIsSet(deployment, saved);
+      } else {
+          return deploymentsDifferDefault(deployment, saved);
+      }
+  }
+
+  private boolean deploymentsDifferWhenEnforcedAppVersionIsSet(DeploymentEntity saved){
+      return !deploymentBuilder.getEnforcedAppVersion().equals(saved.getVersion());
+  }
+
+  private boolean deploymentsDifferWhenProjectManifestIsSet(DeploymentEntity deployment,
+                                                            DeploymentEntity saved){
+      return !deployment.getProjectReleaseVersion().equals(saved.getProjectReleaseVersion());
+  }
+
+  private boolean deploymentsDifferDefault(DeploymentEntity deployment, DeploymentEntity saved){
+      if (deployment.getResources() == null || saved.getResources() == null) {
+          return true;
+      }
+
+      Map<String, ResourceEntity> resources = deployment.getResources();
+      Map<String, ResourceEntity> savedResources = saved.getResources();
+
+      for (String resourceName : resources.keySet()) {
+          ResourceEntity savedResource = savedResources.get(resourceName);
+
+          if (savedResource == null) {
+              return true;
+          }
+
+          if (!savedResource.isGenerated()) {
+              ResourceEntity resource = resources.get(resourceName);
+
+              byte[] bytes = resource.getBytes();
+              byte[] savedBytes = savedResource.getBytes();
+              if (!Arrays.equals(bytes,
+                                 savedBytes)) {
+                  return true;
+              }
+          }
+      }
+      return false;
+  }
+
+
 
   protected void scheduleProcessDefinitionActivation(CommandContext commandContext, DeploymentEntity deployment) {
     for (ProcessDefinitionEntity processDefinitionEntity : deployment.getDeployedArtifacts(ProcessDefinitionEntity.class)) {
@@ -192,5 +195,5 @@ public class DeployCmd<T> implements Command<Deployment>, Serializable {
       activateProcessDefinitionCmd.execute(commandContext);
     }
   }
-  
+
 }
