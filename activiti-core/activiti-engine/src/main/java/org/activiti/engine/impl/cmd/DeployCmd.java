@@ -114,11 +114,11 @@ public class DeployCmd<T> implements Command<Deployment>, Serializable {
     return deployment;
   }
 
-  private void setProjectReleaseVersion(DeploymentEntity deployment) {
-      if (deploymentBuilder.hasProjectManifestSet()) {
-          deployment.setProjectReleaseVersion(deploymentBuilder.getProjectManifest().getVersion());
-      }
-  }
+    private void setProjectReleaseVersion(DeploymentEntity deployment) {
+        if (deploymentBuilder.hasProjectManifestSet()) {
+            deployment.setProjectReleaseVersion(deploymentBuilder.getProjectManifest().getVersion());
+        }
+    }
 
   private void applyUpgradeLogic(DeploymentEntity deployment,
                                  DeploymentEntity existingDeployment) {
