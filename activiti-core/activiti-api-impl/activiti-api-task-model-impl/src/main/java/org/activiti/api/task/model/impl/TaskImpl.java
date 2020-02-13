@@ -85,7 +85,8 @@ public class TaskImpl extends ApplicationElementImpl implements Task {
         this.assignee = assignee;
     }
 
-    public List<String> getCandidateUsers(){
+    @Override
+    public List<String> getCandidateUsers() {
         return candidateUsers;
     }
 
@@ -93,7 +94,8 @@ public class TaskImpl extends ApplicationElementImpl implements Task {
         this.candidateUsers = candidateUsers;
     }
 
-    public List<String> getCandidateGroups(){
+    @Override
+    public List<String> getCandidateGroups() {
         return candidateGroups;
     }
 
