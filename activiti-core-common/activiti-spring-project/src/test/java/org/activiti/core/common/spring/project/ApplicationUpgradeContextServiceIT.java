@@ -3,7 +3,7 @@ package org.activiti.core.common.spring.project;
 import java.io.IOException;
 
 import org.activiti.core.common.project.model.ProjectManifest;
-import org.activiti.core.common.spring.project.conf.ProjectModelAutoConfiguration;
+import org.activiti.core.common.spring.project.conf.ApplicationUpgradeContextAutoConfiguration;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,19 +14,19 @@ import org.springframework.test.context.junit4.SpringRunner;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = ProjectModelAutoConfiguration.class, webEnvironment = SpringBootTest.WebEnvironment.NONE)
+@SpringBootTest(classes = ApplicationUpgradeContextAutoConfiguration.class, webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @TestPropertySource(locations = "classpath:application.properties")
-public class ProjectModelServiceIT {
+public class ApplicationUpgradeContextServiceIT {
 
     @Autowired
-    private ProjectModelService projectModelService;
+    private ApplicationUpgradeContextService applicationUpgradeContextService;
 
     @Test
-    public void should_RetrieveManifest_When_Called() throws IOException {
+    public void should_retrieveManifest() throws IOException {
 
-        assertThat(projectModelService.hasProjectManifest()).isTrue();
+        assertThat(applicationUpgradeContextService.hasProjectManifest()).isTrue();
 
-        ProjectManifest projectModel = projectModelService.loadProjectManifest();
+        ProjectManifest projectModel = applicationUpgradeContextService.loadProjectManifest();
 
         assertThat(projectModel.getCreatedBy()).isEqualTo("superadminuser");
         assertThat(projectModel.getCreationDate()).isEqualTo("2019-08-16T15:58:46.056+0000");
@@ -37,4 +37,11 @@ public class ProjectModelServiceIT {
         assertThat(projectModel.getName()).isEqualTo("projectA");
         assertThat(projectModel.getVersion()).isEqualTo("2");
     }
+
+    @Test
+    public void should_haveEnforcedAppVersionSet() {
+        assertThat(applicationUpgradeContextService.hasEnforcedAppVersion()).isTrue();
+        assertThat(applicationUpgradeContextService.getEnforcedAppVersion()).isEqualTo(1);
+    }
+
 }

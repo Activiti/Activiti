@@ -13,7 +13,7 @@
 
 package org.activiti.spring.autodeployment;
 
-import org.activiti.core.common.spring.project.ProjectModelService;
+import org.activiti.core.common.spring.project.ApplicationUpgradeContextService;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.DeploymentBuilder;
 import org.springframework.core.io.Resource;
@@ -28,8 +28,8 @@ public class DefaultAutoDeploymentStrategy extends AbstractAutoDeploymentStrateg
      */
     public static final String DEPLOYMENT_MODE = "default";
 
-    public DefaultAutoDeploymentStrategy(ProjectModelService projectModelService) {
-        super(projectModelService);
+    public DefaultAutoDeploymentStrategy(ApplicationUpgradeContextService applicationUpgradeContextService) {
+        super(applicationUpgradeContextService);
     }
 
     @Override
@@ -55,6 +55,6 @@ public class DefaultAutoDeploymentStrategy extends AbstractAutoDeploymentStrateg
                                              resource);
         }
 
-        loadProjectManifest(deploymentBuilder).deploy();
+        loadApplicationUpgradeContext(deploymentBuilder).deploy();
     }
 }

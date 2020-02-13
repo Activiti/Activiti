@@ -13,7 +13,7 @@
 
 package org.activiti.spring;
 
-import org.activiti.core.common.spring.project.ProjectModelService;
+import org.activiti.core.common.spring.project.ApplicationUpgradeContextService;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessEngineConfiguration;
@@ -40,8 +40,6 @@ import org.springframework.transaction.PlatformTransactionManager;
 import javax.sql.DataSource;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
 
@@ -64,14 +62,14 @@ public class SpringProcessEngineConfiguration extends ProcessEngineConfiguration
         this(null);
     }
 
-    public SpringProcessEngineConfiguration(ProjectModelService projectModelService) {
+    public SpringProcessEngineConfiguration(ApplicationUpgradeContextService applicationUpgradeContextService) {
       this.transactionsExternallyManaged = true;
-      defaultAutoDeploymentStrategy = new DefaultAutoDeploymentStrategy(projectModelService);
+      defaultAutoDeploymentStrategy = new DefaultAutoDeploymentStrategy(applicationUpgradeContextService);
       deploymentStrategies.add(defaultAutoDeploymentStrategy);
-      deploymentStrategies.add(new SingleResourceAutoDeploymentStrategy(projectModelService));
-      deploymentStrategies.add(new ResourceParentFolderAutoDeploymentStrategy(projectModelService));
-      deploymentStrategies.add(new FailOnNoProcessAutoDeploymentStrategy(projectModelService));
-      deploymentStrategies.add(new NeverFailAutoDeploymentStrategy(projectModelService));
+      deploymentStrategies.add(new SingleResourceAutoDeploymentStrategy(applicationUpgradeContextService));
+      deploymentStrategies.add(new ResourceParentFolderAutoDeploymentStrategy(applicationUpgradeContextService));
+      deploymentStrategies.add(new FailOnNoProcessAutoDeploymentStrategy(applicationUpgradeContextService));
+      deploymentStrategies.add(new NeverFailAutoDeploymentStrategy(applicationUpgradeContextService));
   }
 
   @Override

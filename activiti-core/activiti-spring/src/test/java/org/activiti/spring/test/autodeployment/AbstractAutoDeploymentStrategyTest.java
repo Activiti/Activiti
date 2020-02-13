@@ -16,11 +16,10 @@ package org.activiti.spring.test.autodeployment;
 import java.io.File;
 import java.io.InputStream;
 
-import org.activiti.core.common.spring.project.ProjectModelService;
+import org.activiti.core.common.spring.project.ApplicationUpgradeContextService;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.DeploymentBuilder;
-import org.activiti.spring.SpringProcessEngineConfiguration;
 import org.junit.Before;
 import org.mockito.Mock;
 import org.springframework.core.io.ByteArrayResource;
@@ -76,7 +75,7 @@ public class AbstractAutoDeploymentStrategyTest {
     private Deployment deploymentMock;
 
     @Mock
-    protected ProjectModelService projectModelServiceMock;
+    protected ApplicationUpgradeContextService applicationUpgradeContextServiceMock;
 
     protected final String deploymentNameHint = "nameHint";
 

@@ -1,6 +1,6 @@
 package org.activiti.spring.autodeployment;
 
-import org.activiti.core.common.spring.project.ProjectModelService;
+import org.activiti.core.common.spring.project.ApplicationUpgradeContextService;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.DeploymentBuilder;
 import org.slf4j.Logger;
@@ -13,8 +13,8 @@ public class NeverFailAutoDeploymentStrategy extends AbstractAutoDeploymentStrat
 
     public static final String DEPLOYMENT_MODE = "never-fail";
 
-    public NeverFailAutoDeploymentStrategy(ProjectModelService projectModelService) {
-        super(projectModelService);
+    public NeverFailAutoDeploymentStrategy(ApplicationUpgradeContextService applicationUpgradeContextService) {
+        super(applicationUpgradeContextService);
     }
 
     @Override
@@ -40,7 +40,7 @@ public class NeverFailAutoDeploymentStrategy extends AbstractAutoDeploymentStrat
             }
         }
 
-        deploymentBuilder = loadProjectManifest(deploymentBuilder);
+        deploymentBuilder = loadApplicationUpgradeContext(deploymentBuilder);
 
         if (validProcessCount != 0) {
             deploymentBuilder.deploy();
