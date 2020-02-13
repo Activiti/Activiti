@@ -17,8 +17,8 @@
 package org.activiti.api.task.model.impl;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 
 import org.activiti.api.runtime.model.impl.ApplicationElementImpl;
 import org.activiti.api.task.model.Task;
@@ -44,8 +44,8 @@ public class TaskImpl extends ApplicationElementImpl implements Task {
     private Integer processDefinitionVersion;
     private String businessKey;
     private String taskDefinitionKey;
-    private Set<String> candidateUsers;
-    private Set<String> candidateGroups;
+    private List<String> candidateUsers;
+    private List<String> candidateGroups;
 
     public TaskImpl() {
     }
@@ -86,20 +86,20 @@ public class TaskImpl extends ApplicationElementImpl implements Task {
     }
 
     @Override
-    public Set<String> getCandidateUsers() {
+    public List<String> getCandidateUsers() {
         return candidateUsers;
     }
 
-    public void setCandidateUsers(Set<String> candidateUsers) {
+    public void setCandidateUsers(List<String> candidateUsers) {
         this.candidateUsers = candidateUsers;
     }
 
     @Override
-    public Set<String> getCandidateGroups() {
+    public List<String> getCandidateGroups() {
         return candidateGroups;
     }
 
-    public void setCandidateGroups(Set<String> candidateGroups) {
+    public void setCandidateGroups(List<String> candidateGroups) {
         this.candidateGroups = candidateGroups;
     }
 

@@ -67,7 +67,7 @@ public class TaskRuntimeCandidatesTest {
         assertThat(task.getAssignee()).isEqualTo("dean");
         assertThat(task.getStatus()).isEqualTo(Task.TaskStatus.ASSIGNED);
 
-        Set<String> userCandidatesOnTask = task.getCandidateUsers();
+        List<String> userCandidatesOnTask = task.getCandidateUsers();
         assertThat(userCandidatesOnTask).hasSize(1);
 
         List<String> userCandidates = taskRuntime.userCandidates(createTask.getId());
@@ -136,7 +136,7 @@ public class TaskRuntimeCandidatesTest {
                 .contains("test");
 
         TaskImpl task = (TaskImpl) taskRuntime.task(createTask.getId());
-        Set<String> groupCandidatesOnTask = task.getCandidateGroups();
+        List<String> groupCandidatesOnTask = task.getCandidateGroups();
         assertThat(groupCandidatesOnTask).hasSize(1);
 
         List<String> groupCandidates = taskRuntime.groupCandidates(createTask.getId());

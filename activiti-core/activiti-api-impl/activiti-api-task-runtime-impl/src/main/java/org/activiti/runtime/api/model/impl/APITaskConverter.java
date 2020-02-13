@@ -82,15 +82,15 @@ public class APITaskConverter extends ListConverter<org.activiti.engine.task.Tas
         destination.setCandidateUsers(extractCandidatesBy(candidates, IdentityLink::getUserId));
     }
 
-    private Set<String> extractCandidatesBy(List<IdentityLink> candidates, Function<IdentityLink, String> extractor) {
-        Set<String> result = Collections.emptySet();
+    private List<String> extractCandidatesBy(List<IdentityLink> candidates, Function<IdentityLink, String> extractor) {
+        List<String> result = Collections.emptyList();
         if (candidates != null) {
             result = candidates
                              .stream()
                              .filter(candidate -> IdentityLinkType.CANDIDATE.equals(candidate.getType()))
                              .map(extractor::apply)
                              .filter(Objects::nonNull)
-                             .collect(Collectors.toSet());
+                             .collect(Collectors.toList());
         }
         return result;
     }

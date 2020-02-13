@@ -19,6 +19,7 @@ package org.activiti.api.task.model;
 import org.activiti.api.model.shared.model.ApplicationElement;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 public interface Task extends ApplicationElement {
@@ -72,7 +73,7 @@ public interface Task extends ApplicationElement {
     
     String getTaskDefinitionKey();
 
-    Set<String> getCandidateUsers();
+    List<String> getCandidateUsers();
 
-    Set<String> getCandidateGroups();
+    List<String> getCandidateGroups();
 }
