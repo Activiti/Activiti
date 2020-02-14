@@ -1,8 +1,6 @@
 package org.activiti.editor.language.xml;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 import org.activiti.bpmn.converter.BpmnXMLConverter;
 import org.activiti.bpmn.model.BpmnModel;
@@ -23,18 +21,17 @@ public class SimpleUserTaskConverterTest extends AbstractConverterTest {
         BpmnModel bpmnModel = readXMLFile();
         BpmnModel parsedModel = exportAndReadXMLFile(bpmnModel);
         validateModel(parsedModel);
-        deployProcess(parsedModel);
     }
 
     @Override
     protected String getResource() {
-        return "simpleusertaskmodel.bpmn";
+        return "simpleUserTaskModel.bpmn";
     }
 
     private void validateModel(BpmnModel model) throws Exception {
         FlowElement flowElement = model.getMainProcess().getFlowElement("UserTask_0ej3luy");
-        assertNotNull(flowElement);
-        assertTrue(flowElement instanceof UserTask);
+        assertThat(flowElement).isNotNull();
+        assertThat(flowElement instanceof UserTask).isTrue();
 
         checkXml(model);
     }
