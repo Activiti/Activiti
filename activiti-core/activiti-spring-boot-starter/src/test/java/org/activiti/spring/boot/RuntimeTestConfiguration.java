@@ -94,6 +94,13 @@ public class RuntimeTestConfiguration {
                                                                "password",
                                                                userAuthorities));
 
+        List<GrantedAuthority> johnAuthorities = new ArrayList<>();
+        johnAuthorities.add(new SimpleGrantedAuthority("ROLE_ACTIVITI_USER"));
+        johnAuthorities.add(new SimpleGrantedAuthority("GROUP_activitiTeam"));
+
+        extendedInMemoryUserDetailsManager.createUser(new User("john",
+                                                               "password",
+                                                               johnAuthorities));
 
         List<GrantedAuthority> adminAuthorities = new ArrayList<>();
         adminAuthorities.add(new SimpleGrantedAuthority("ROLE_ACTIVITI_ADMIN"));

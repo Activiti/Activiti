@@ -69,7 +69,7 @@ public class TaskRuntimeClaimReleaseTest {
     }
 
     @Test
-    public void createStandaloneTaskForGroup() {
+    public void should_claimAndRelease_when_userIsInCandidateGroup() {
         securityUtil.logInAs("garth");
 
         Task standAloneTask = taskRuntime.create(TaskPayloadBuilder.create()
@@ -100,7 +100,7 @@ public class TaskRuntimeClaimReleaseTest {
     }
 
     @Test
-    public void createStandaloneTaskReleaseUnAuthorized() {
+    public void should_throwIllegalStateException_when_releaseNotAssignedTask() {
         securityUtil.logInAs("garth");
 
         Task standAloneTask = taskRuntime.create(TaskPayloadBuilder.create()
@@ -122,7 +122,7 @@ public class TaskRuntimeClaimReleaseTest {
     }
 
     @Test
-    public void createStandaloneTaskAndClaimAndReleaseUnAuthorized() {
+    public void should_throwNotFoundException_when_releaseNotAssignedTask() {
         securityUtil.logInAs("garth");
 
         Task standAloneTask = taskRuntime.create(TaskPayloadBuilder.create()
@@ -143,7 +143,7 @@ public class TaskRuntimeClaimReleaseTest {
         assertThat(claimedTask.getStatus()).isEqualTo(Task.TaskStatus.ASSIGNED);
 
         // UnAuthorized release, task is assigned not to you and hence not visible anymore
-        securityUtil.logInAs("garth");
+        securityUtil.logInAs("john");
 
         Throwable throwable = catchThrowable(() ->
                 taskRuntime.release(TaskPayloadBuilder.release().withTaskId(standAloneTask.getId()).build()));
