@@ -76,8 +76,51 @@ public class TaskRuntimeDeleteTaskTest {
                 .withCandidateGroup("activitiTeam")
                 .build());
 
-        Page<Task> tasks = taskRuntime.tasks(Pageable.of(0,
-                50));
+        Page<Task> tasks = taskRuntime.tasks(Pageable.of(0, 50));
+
+        assertThat(tasks.getContent()).hasSize(1);
+        Task task = tasks.getContent().get(0);
+
+        assertThat(task.getAssignee()).isNull();
+        assertThat(task.getStatus()).isEqualTo(Task.TaskStatus.CREATED);
+
+        // Before claim 'john' can view the task because it is in activitiTeam group
+        securityUtil.logInAs("john");
+        assertThat(taskRuntime.task(task.getId())).isNotNull();
+
+        // Claim a task created for a group
+        securityUtil.logInAs("user");
+
+        Task claimedTask = taskRuntime.claim(TaskPayloadBuilder.claim().withTaskId(task.getId()).build());
+        assertThat(claimedTask.getAssignee()).isEqualTo("user");
+        assertThat(claimedTask.getStatus()).isEqualTo(Task.TaskStatus.ASSIGNED);
+
+
+        //Try to delete a task that you cannot see because it was assigned
+        securityUtil.logInAs("john");
+
+        //when
+        Throwable throwable = catchThrowable(() ->
+                taskRuntime.delete(TaskPayloadBuilder.delete().withTaskId(task.getId()).build()));
+
+        //then
+        assertThat(throwable)
+                .isInstanceOf(NotFoundException.class)
+                .hasMessage("Unable to find task for the given id: " + standAloneTask.getId() + " for user: john (with groups: [activitiTeam] & with roles: [ACTIVITI_USER])");
+
+    }
+
+    @Test
+    public void should_ownerDeleteItsTask_when_aTaskIsAssignedToSomeOneElse() {
+
+        securityUtil.logInAs("garth");
+
+        Task standAloneTask = taskRuntime.create(TaskPayloadBuilder.create()
+                                                         .withName("simple task")
+                                                         .withCandidateGroup("activitiTeam")
+                                                         .build());
+
+        Page<Task> tasks = taskRuntime.tasks(Pageable.of(0, 50));
 
         assertThat(tasks.getContent()).hasSize(1);
         Task task = tasks.getContent().get(0);
@@ -93,16 +136,10 @@ public class TaskRuntimeDeleteTaskTest {
         assertThat(claimedTask.getStatus()).isEqualTo(Task.TaskStatus.ASSIGNED);
 
 
-        //Try to delete a task that you cannot see because it was assigned
+        //Try to delete a task where the user is the owner
         securityUtil.logInAs("garth");
 
-        //when
-        Throwable throwable = catchThrowable(() ->
-                taskRuntime.delete(TaskPayloadBuilder.delete().withTaskId(task.getId()).build()));
-
-        //then
-        assertThat(throwable)
-                .isInstanceOf(NotFoundException.class);
+        assertThat(taskRuntime.delete(TaskPayloadBuilder.delete().withTaskId(task.getId()).build())).isNotNull();
 
     }
 

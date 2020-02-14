@@ -184,6 +184,9 @@ public class TaskRuntimeHelperTest {
         TaskQuery taskQuery = mock(TaskQuery.class);
         given(taskQuery.taskCandidateOrAssigned(AUTHENTICATED_USER,
                 groups)).willReturn(taskQuery);
+        given(taskQuery.taskOwner(AUTHENTICATED_USER)).willReturn(taskQuery);
+        given(taskQuery.or()).willReturn(taskQuery);
+        given(taskQuery.endOr()).willReturn(taskQuery);
         given(taskQuery.taskId("taskId")).willReturn(taskQuery);
         Task internalTask = mock(Task.class);
         given(taskQuery.singleResult()).willReturn(internalTask);
@@ -207,6 +210,9 @@ public class TaskRuntimeHelperTest {
         TaskQuery taskQuery = mock(TaskQuery.class);
         given(taskQuery.taskCandidateOrAssigned(AUTHENTICATED_USER,
                 groups)).willReturn(taskQuery);
+        given(taskQuery.taskOwner(AUTHENTICATED_USER)).willReturn(taskQuery);
+        given(taskQuery.or()).willReturn(taskQuery);
+        given(taskQuery.endOr()).willReturn(taskQuery);
         given(taskQuery.taskId("taskId")).willReturn(taskQuery);
         given(taskQuery.singleResult()).willReturn(null);
 
