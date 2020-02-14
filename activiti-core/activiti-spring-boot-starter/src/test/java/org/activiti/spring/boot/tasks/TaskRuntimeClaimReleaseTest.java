@@ -39,6 +39,37 @@ public class TaskRuntimeClaimReleaseTest {
     }
 
     @Test
+    public void should_userClaimATask_when_taskHasNotAssignOrCandidates() {
+        securityUtil.logInAs("garth");
+
+        Task standAloneTask = taskRuntime.create(TaskPayloadBuilder.create()
+                                                         .withName("group task")
+                                                         .build());
+
+        // the owner should be able to see the created task
+        Page<Task> tasks = taskRuntime.tasks(Pageable.of(0,
+                                                         50));
+
+        assertThat(tasks.getContent()).hasSize(1);
+        Task task = tasks.getContent().get(0);
+
+        assertThat(task.getAssignee()).isNull();
+        assertThat(task.getStatus()).isEqualTo(Task.TaskStatus.CREATED);
+        assertThat(task.getAssignee()).isNull();
+        assertThat(task.getCandidateUsers()).isNullOrEmpty();
+        assertThat(task.getCandidateGroups()).isNullOrEmpty();
+
+        Task claimedTask = taskRuntime.claim(TaskPayloadBuilder.claim().withTaskId(task.getId()).build());
+        assertThat(claimedTask.getAssignee()).isEqualTo("garth");
+        assertThat(claimedTask.getStatus()).isEqualTo(Task.TaskStatus.ASSIGNED);
+        assertThat(claimedTask.getTaskDefinitionKey()).isNull();
+
+        Task releasedTask = taskRuntime.release(TaskPayloadBuilder.release().withTaskId(claimedTask.getId()).build());
+        assertThat(releasedTask.getAssignee()).isNull();
+        assertThat(releasedTask.getStatus()).isEqualTo(Task.TaskStatus.CREATED);
+    }
+
+    @Test
     public void createStandaloneTaskForGroup() {
         securityUtil.logInAs("garth");
 
