@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:activiti="http://activiti.org/bpmn" id="model-b1254046-d9a4-446e-927e-06903a88a1ef" name="task" targetNamespace="http://bpmn.io/schema/bpmn" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd">
+  <bpmn2:process id="Process_CGAzXCyL" name="task" isExecutable="true">
+    <bpmn2:documentation />
+    <bpmn2:startEvent id="Event_1">
+      <bpmn2:outgoing>SequenceFlow_12e82d4</bpmn2:outgoing>
+    </bpmn2:startEvent>
+    <bpmn2:endEvent id="EndEvent_1na5mf1">
+      <bpmn2:incoming>SequenceFlow_0zx88mt</bpmn2:incoming>
+    </bpmn2:endEvent>
+    <bpmn2:sequenceFlow id="SequenceFlow_12e82d4" sourceRef="Event_1" targetRef="UserTask_0ej3luy" />
+    <bpmn2:sequenceFlow id="SequenceFlow_0zx88mt" sourceRef="UserTask_0ej3luy" targetRef="EndEvent_1na5mf1" />
+    <bpmn2:userTask id="UserTask_0ej3luy" activiti:assignee="kermit">
+      <bpmn2:incoming>SequenceFlow_12e82d4</bpmn2:incoming>
+      <bpmn2:outgoing>SequenceFlow_0zx88mt</bpmn2:outgoing>
+    </bpmn2:userTask>
+  </bpmn2:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_CGAzXCyL">
+      <bpmndi:BPMNShape id="_BPMNShape_Event_2" bpmnElement="Event_1">
+        <dc:Bounds x="412" y="240" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_1na5mf1_di" bpmnElement="EndEvent_1na5mf1">
+        <dc:Bounds x="742" y="240" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_12e82d4_di" bpmnElement="SequenceFlow_12e82d4">
+        <di:waypoint x="448" y="258" />
+        <di:waypoint x="530" y="258" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_0zx88mt_di" bpmnElement="SequenceFlow_0zx88mt">
+        <di:waypoint x="630" y="258" />
+        <di:waypoint x="742" y="258" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="UserTask_1avn4z6_di" bpmnElement="UserTask_0ej3luy">
+        <dc:Bounds x="530" y="218" width="100" height="80" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn2:definitions>
+
