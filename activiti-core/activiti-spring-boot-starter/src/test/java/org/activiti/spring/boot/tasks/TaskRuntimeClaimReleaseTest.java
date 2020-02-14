@@ -153,4 +153,36 @@ public class TaskRuntimeClaimReleaseTest {
                 .isInstanceOf(NotFoundException.class);
     }
 
+    @Test
+    public void should_throwIllegalStateException_when_ownerTryToReleaseAnUssignedTask() {
+        securityUtil.logInAs("garth");
+
+        Task standAloneTask = taskRuntime.create(TaskPayloadBuilder.create()
+                                                         .withName("group task")
+                                                         .withCandidateGroup("activitiTeam")
+                                                         .build());
+
+
+        assertThat(standAloneTask.getAssignee()).isNull();
+        assertThat(standAloneTask.getStatus()).isEqualTo(Task.TaskStatus.CREATED);
+
+        securityUtil.logInAs("user");
+
+
+        // Claim task
+        Task claimedTask = taskRuntime.claim(TaskPayloadBuilder.claim().withTaskId(standAloneTask.getId()).build());
+        assertThat(claimedTask.getAssignee()).isEqualTo("user");
+        assertThat(claimedTask.getStatus()).isEqualTo(Task.TaskStatus.ASSIGNED);
+
+        // UnAuthorized release, task is assigned not to you and hence not visible anymore
+        securityUtil.logInAs("garth");
+
+        Throwable throwable = catchThrowable(() ->
+                                                     taskRuntime.release(TaskPayloadBuilder.release().withTaskId(standAloneTask.getId()).build()));
+
+        //then
+        assertThat(throwable)
+                .isInstanceOf(IllegalStateException.class);
+    }
+
 }
