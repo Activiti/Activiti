@@ -171,8 +171,13 @@ public class TaskRuntimeHelper {
 
             List<String> userRoles = securityManager.getAuthenticatedUserRoles();
             List<String> userGroups = securityManager.getAuthenticatedUserGroups();
-            org.activiti.engine.task.Task task = taskService.createTaskQuery().taskCandidateOrAssigned(authenticatedUserId,
-                    userGroups).taskId(taskId).singleResult();
+            org.activiti.engine.task.Task task = taskService.createTaskQuery()
+                                                         .or()
+                                                         .taskCandidateOrAssigned(authenticatedUserId, userGroups)
+                                                         .taskOwner(authenticatedUserId)
+                                                         .endOr()
+                                                         .taskId(taskId)
+                                                         .singleResult();
             if (task == null) {
                 throw new NotFoundException("Unable to find task for the given id: " + taskId + " for user: " + authenticatedUserId + " (with groups: " + userGroups + " & with roles: " + userRoles + ")");
             }
@@ -207,9 +212,9 @@ public class TaskRuntimeHelper {
         if (!isAdmin) {
             assertCanModifyTask(getInternalTask(createTaskVariablePayload.getTaskId()));
         }
-        
+
         taskVariablesValidator.handleCreateTaskVariablePayload(createTaskVariablePayload);
-        
+
         assertVariableDoesNotExist(createTaskVariablePayload);
 
         taskService.setVariableLocal(createTaskVariablePayload.getTaskId(),
@@ -232,14 +237,14 @@ public class TaskRuntimeHelper {
         }
 
         taskVariablesValidator.handleUpdateTaskVariablePayload(updateTaskVariablePayload);
-  
+
         assertVariableExists(updateTaskVariablePayload);
 
         taskService.setVariableLocal(updateTaskVariablePayload.getTaskId(),
                 updateTaskVariablePayload.getName(),
                 updateTaskVariablePayload.getValue());
     }
-    
+
     private void assertVariableExists(UpdateTaskVariablePayload updateTaskVariablePayload) {
         Map<String, VariableInstance> variables = taskService.getVariableInstancesLocal(updateTaskVariablePayload.getTaskId());
 
@@ -251,19 +256,19 @@ public class TaskRuntimeHelper {
             throw new IllegalStateException("Variable does not exist");
         }
     }
-    
+
     public void handleCompleteTaskPayload(CompleteTaskPayload completeTaskPayload) {
-        
+
         completeTaskPayload.setVariables(taskVariablesValidator
                                          .handlePayloadVariables(completeTaskPayload.getVariables()));
-       
+
     }
-    
+
     public void handleSaveTaskPayload(SaveTaskPayload saveTaskPayload) {
-        
+
         saveTaskPayload.setVariables(taskVariablesValidator
                                      .handlePayloadVariables(saveTaskPayload.getVariables()));
-       
+
     }
 
 }

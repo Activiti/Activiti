@@ -194,7 +194,7 @@ public class TaskRuntimeImpl implements TaskRuntime {
         try {
             task = task(releaseTaskPayload.getTaskId());
         } catch (IllegalStateException ex) {
-            throw new IllegalStateException("The authenticated user cannot claim task" + releaseTaskPayload.getTaskId() + " due it is not a candidate for it");
+            throw new IllegalStateException("The authenticated user cannot release task" + releaseTaskPayload.getTaskId() + " due it is not a candidate for it");
         }
         // validate the the task doesn't have an assignee
         if (task.getAssignee() == null || task.getAssignee().isEmpty()) {
