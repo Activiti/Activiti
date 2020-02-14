@@ -16,6 +16,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.activiti.engine.ActivitiOptimisticLockingException;
 import org.activiti.engine.impl.cmd.AcquireTimerJobsCmd;
+import org.activiti.engine.impl.cmd.ExecuteTimerJobsCmd;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
@@ -56,17 +57,10 @@ public class AcquireTimerJobsRunnable implements Runnable {
       try {
         final AcquiredTimerJobEntities acquiredJobs = commandExecutor.execute(new AcquireTimerJobsCmd(asyncExecutor));
 
-        commandExecutor.execute(new Command<Void>() {
+        for (TimerJobEntity job : acquiredJobs.getJobs()) {
+          commandExecutor.execute(new ExecuteTimerJobsCmd(asyncExecutor, job));
+        }
 
-          @Override
-          public Void execute(CommandContext commandContext) {
-            for (TimerJobEntity job : acquiredJobs.getJobs()) {
-              jobManager.moveTimerJobToExecutableJob(job);
-            }
-            return null;
-          }
-        });
-        
         // if all jobs were executed
         millisToWait = asyncExecutor.getDefaultTimerJobAcquireWaitTimeInMillis();
         int jobsAcquired = acquiredJobs.size();

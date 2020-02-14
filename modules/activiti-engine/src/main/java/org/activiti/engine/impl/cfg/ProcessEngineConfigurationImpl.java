@@ -1728,6 +1728,10 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       defaultAsyncExecutor.setDefaultTimerJobAcquireWaitTimeInMillis(asyncExecutorDefaultTimerJobAcquireWaitTime);
       defaultAsyncExecutor.setDefaultAsyncJobAcquireWaitTimeInMillis(asyncExecutorDefaultAsyncJobAcquireWaitTime);
 
+      // Acquisition size
+      defaultAsyncExecutor.setMaxTimerJobsPerAcquisition(asyncExecutorMaxTimerJobsPerAcquisition);
+      defaultAsyncExecutor.setMaxAsyncJobsDuePerAcquisition(asyncExecutorMaxAsyncJobsDuePerAcquisition);
+
       // Queue full wait time
       defaultAsyncExecutor.setDefaultQueueSizeFullWaitTimeInMillis(asyncExecutorDefaultQueueSizeFullWaitTime);
 

@@ -40,22 +40,9 @@ public class AcquireTimerJobsCmd implements Command<AcquiredTimerJobEntities> {
         .findTimerJobsToExecute(new Page(0, asyncExecutor.getMaxAsyncJobsDuePerAcquisition()));
 
     for (TimerJobEntity job : timerJobs) {
-      lockJob(commandContext, job, asyncExecutor.getAsyncJobLockTimeInMillis());
       acquiredJobs.addJob(job);
     }
 
     return acquiredJobs;
-  }
-
-  protected void lockJob(CommandContext commandContext, TimerJobEntity job, int lockTimeInMillis) {
-    
-    // This will trigger an optimistic locking exception when two concurrent executors 
-    // try to lock, as the revision will not match.
-    
-    GregorianCalendar gregorianCalendar = new GregorianCalendar();
-    gregorianCalendar.setTime(commandContext.getProcessEngineConfiguration().getClock().getCurrentTime());
-    gregorianCalendar.add(Calendar.MILLISECOND, lockTimeInMillis);
-    job.setLockOwner(asyncExecutor.getLockOwner());
-    job.setLockExpirationTime(gregorianCalendar.getTime());
   }
 }
