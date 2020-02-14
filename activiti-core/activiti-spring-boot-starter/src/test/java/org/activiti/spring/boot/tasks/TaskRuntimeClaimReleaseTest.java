@@ -39,7 +39,7 @@ public class TaskRuntimeClaimReleaseTest {
     }
 
     @Test
-    public void should_userClaimATask_when_taskHasNotAssignOrCandidates() {
+    public void should_ownerClaimATask_when_taskHasNotAssignOrCandidates() {
         securityUtil.logInAs("garth");
 
         Task standAloneTask = taskRuntime.create(TaskPayloadBuilder.create()
@@ -47,8 +47,7 @@ public class TaskRuntimeClaimReleaseTest {
                                                          .build());
 
         // the owner should be able to see the created task
-        Page<Task> tasks = taskRuntime.tasks(Pageable.of(0,
-                                                         50));
+        Page<Task> tasks = taskRuntime.tasks(Pageable.of(0, 50));
 
         assertThat(tasks.getContent()).hasSize(1);
         Task task = tasks.getContent().get(0);
@@ -78,9 +77,7 @@ public class TaskRuntimeClaimReleaseTest {
                 .withCandidateGroup("activitiTeam")
                 .build());
 
-        // the owner should be able to see the created task
-        Page<Task> tasks = taskRuntime.tasks(Pageable.of(0,
-                50));
+        Page<Task> tasks = taskRuntime.tasks(Pageable.of(0, 50));
 
         assertThat(tasks.getContent()).hasSize(1);
         Task task = tasks.getContent().get(0);
