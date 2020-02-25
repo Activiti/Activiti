@@ -205,13 +205,13 @@ public abstract class BaseBpmnXMLConverter implements BpmnXMLConstants {
       xtw.writeEndElement();
     }
 
+    writeAdditionalChildElements(baseElement, model, xtw);
+    
     if (baseElement instanceof Activity) {
-      final Activity activity = (Activity) baseElement;
-      MultiInstanceExport.writeMultiInstance(activity, xtw);
+        final Activity activity = (Activity) baseElement;
+        MultiInstanceExport.writeMultiInstance(activity, xtw);
 
     }
-
-    writeAdditionalChildElements(baseElement, model, xtw);
 
     xtw.writeEndElement();
   }
