@@ -18,7 +18,6 @@ import javax.xml.stream.XMLStreamWriter;
 import org.activiti.bpmn.converter.util.BpmnXMLUtil;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BpmnModel;
-import org.activiti.bpmn.model.FlowNode;
 import org.activiti.bpmn.model.ThrowEvent;
 
 /**
@@ -50,7 +49,6 @@ public class ThrowEventXMLConverter extends BaseBpmnXMLConverter {
 
   @Override
   protected void writeAdditionalChildElements(BaseElement element, BpmnModel model, XMLStreamWriter xtw) throws Exception {
-    BpmnXMLUtil.writeIncomingAndOutgoingFlowElement((FlowNode)element, xtw);
     ThrowEvent throwEvent = (ThrowEvent) element;
     writeEventDefinitions(throwEvent, throwEvent.getEventDefinitions(), model, xtw);
   }
