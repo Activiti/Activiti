@@ -205,14 +205,16 @@ public abstract class BaseBpmnXMLConverter implements BpmnXMLConstants {
       xtw.writeEndElement();
     }
 
-    writeAdditionalChildElements(baseElement, model, xtw);
+    writeIncomingOutgoingFlowElements(baseElement, model, xtw);
     
     if (baseElement instanceof Activity) {
         final Activity activity = (Activity) baseElement;
         MultiInstanceExport.writeMultiInstance(activity, xtw);
 
     }
-
+    
+    writeAdditionalChildElements(baseElement, model, xtw);
+    
     xtw.writeEndElement();
   }
 
@@ -229,6 +231,8 @@ public abstract class BaseBpmnXMLConverter implements BpmnXMLConstants {
   }
 
   protected abstract void writeAdditionalChildElements(BaseElement element, BpmnModel model, XMLStreamWriter xtw) throws Exception;
+  
+  
 
   // To BpmnModel converter convenience methods
 
@@ -534,4 +538,11 @@ public abstract class BaseBpmnXMLConverter implements BpmnXMLConstants {
   protected void writeQualifiedAttribute(String attributeName, String value, XMLStreamWriter xtw) throws Exception {
     BpmnXMLUtil.writeQualifiedAttribute(attributeName, value, xtw);
   }
+  
+  protected void writeIncomingOutgoingFlowElements(BaseElement element, BpmnModel model, XMLStreamWriter xtw) throws Exception {
+      if(FlowNode.class.isAssignableFrom(element.getClass())) {
+          BpmnXMLUtil.writeIncomingAndOutgoingFlowElement((FlowNode) element, xtw);   
+      } 
+  }
+  
 }

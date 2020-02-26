@@ -30,7 +30,6 @@ import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.CustomProperty;
 import org.activiti.bpmn.model.ExtensionAttribute;
-import org.activiti.bpmn.model.FlowNode;
 import org.activiti.bpmn.model.Resource;
 import org.activiti.bpmn.model.UserTask;
 import org.activiti.bpmn.model.alfresco.AlfrescoUserTask;
@@ -225,7 +224,6 @@ public Class<? extends BaseElement> getBpmnElementType() {
   
   @Override
   protected void writeAdditionalChildElements(BaseElement element, BpmnModel model, XMLStreamWriter xtw) throws Exception {
-      BpmnXMLUtil.writeIncomingAndOutgoingFlowElement((FlowNode) element, xtw);
   }
   
   public class HumanPerformerParser extends BaseChildElementParser {
