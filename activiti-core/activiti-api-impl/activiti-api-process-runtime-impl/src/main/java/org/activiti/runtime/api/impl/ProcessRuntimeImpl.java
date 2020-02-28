@@ -138,10 +138,10 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
     }
 
     private void checkProcessDefinitionBelongsToLatestDeployment(org.activiti.engine.repository.ProcessDefinition processDefinition) {
-        if (processDefinition.getAppVersion() != null) {
-            if (!selectLatestDeployment().getVersion().equals(processDefinition.getAppVersion())) {
-                throw new UnprocessableEntityException("Process definition with the given id:'" + processDefinition.getId() + "' belongs to a different application version.");
-            }
+        Integer appVersion = processDefinition.getAppVersion();
+
+        if (appVersion != null && !selectLatestDeployment().getVersion().equals(appVersion)) {
+            throw new UnprocessableEntityException("Process definition with the given id:'" + processDefinition.getId() + "' belongs to a different application version.");
         }
     }
 
