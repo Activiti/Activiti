@@ -87,7 +87,23 @@
             </column>
         </createTable>
 
-    </changeSet>
+        <createTable tableName="ACT_GE_PROPERTY">
+            <column name="NAME_" type="varchar(64)">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="VALUE_" type="varchar(300)">
+                <constraints nullable="false" />
+            </column>
+            <column name="REV_" type="integer(11)">
+                <constraints nullable="true" />
+            </column>
+        </createTable>
 
+        <insert tableName="ACT_GE_PROPERTY">
+            <column name="NAME_" value="next.dbid"></column>
+            <column name="VALUE_" value="1"></column>
+            <column name="REV_" valueNumeric="1"></column>
+        </insert>
+    </changeSet>
 
 </databaseChangeLog>

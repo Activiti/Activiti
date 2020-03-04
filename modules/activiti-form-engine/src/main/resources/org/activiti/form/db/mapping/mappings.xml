@@ -20,5 +20,6 @@
     <mapper resource="org/activiti/form/db/mapping/entity/Form.xml" />
     <mapper resource="org/activiti/form/db/mapping/entity/Resource.xml" />
     <mapper resource="org/activiti/form/db/mapping/entity/SubmittedForm.xml" />
+    <mapper resource="org/activiti/form/db/mapping/entity/Property.xml" />
   </mappers>
 </configuration>
