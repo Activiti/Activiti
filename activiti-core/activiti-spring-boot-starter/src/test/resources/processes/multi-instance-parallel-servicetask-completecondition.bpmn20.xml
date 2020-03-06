@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definition"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xmlns:activiti="http://activiti.org/bpmn"
+             targetNamespace="Examples">
+
+    <process id="miParallelServiceTaskCompletionCondition">
+        <startEvent id="startevent1" name="Start"></startEvent>
+        <sequenceFlow id="flow1" name="" sourceRef="startevent1" targetRef="miServiceTask"></sequenceFlow>
+
+        <serviceTask id="miServiceTask" name="miServiceTask ${loopCounter}" implementation="testConnectorMultiInstanceExecution">
+            <multiInstanceLoopCharacteristics>
+                <loopCardinality>${4}</loopCardinality>
+                <completionCondition>${nrOfCompletedInstances/nrOfInstances >= 0.5}</completionCondition>
+            </multiInstanceLoopCharacteristics>
+        </serviceTask>
+
+        <sequenceFlow id="flow3" name="" sourceRef="miServiceTask" targetRef="theEnd"></sequenceFlow>
+        <endEvent id="theEnd"></endEvent>
+    </process>
+
+</definitions>

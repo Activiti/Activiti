@@ -1,0 +1,78 @@
+{
+  "id": "taskVarMapping-model",
+  "type": "PROCESS",
+  "name": "process",
+  "extensions": {
+    "taskVarMapping": {
+      "properties": {
+        "process-variable-unmapped-1-id": {
+          "id": "process-variable-unmapped-1-id",
+          "name": "process_variable_unmapped_1",
+          "type": "string",
+          "required": true,
+          "value": "unmapped1Value"
+        },
+        "process-variable-inputmap-1-id": {
+          "id": "process-variable-inputmap-1-id",
+          "name": "process_variable_inputmap_1",
+          "type": "string",
+          "required": true,
+          "value": "inputmap1Value"
+        },
+        "process-variable-outputmap-1-id": {
+          "id": "process-variable-outputmap-1-id",
+          "name": "process_variable_outputmap_1",
+          "type": "string",
+          "required": true,
+          "value": "outputmap1Value"
+        },
+        "process-variable-date-id": {
+          "id": "process-variable-date-id",
+          "name": "process-variable-date",
+          "type": "date",
+          "required": true,
+          "value": "2019-09-01"
+        },
+        "process-variable-datetime-id": {
+          "id": "process-variable-datetime-id",
+          "name": "process-variable-datetime",
+          "type": "date",
+          "required": true,
+          "value": "2019-09-01T10:20:30.000Z"
+        }
+      },
+      "mappings": {
+        "simpleTask": {
+          "inputs": {
+            "task_input_variable_name_1": {
+              "type": "variable",
+              "value": "process_variable_inputmap_1"
+            },
+            "task-variable-date": {
+              "type": "variable",
+              "value": "process-variable-date"
+            },
+            "task-variable-datetime": {
+              "type": "variable",
+              "value": "process-variable-datetime"
+            }
+          },
+          "outputs": {
+            "process_variable_outputmap_1": {
+              "type": "variable",
+              "value": "task_output_variable_name_1"
+            },
+            "process-variable-date": {
+              "type": "variable",
+              "value": "task-variable-date"
+            },
+            "process-variable-datetime": {
+              "type": "variable",
+              "value": "task-variable-datetime"
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="Examples">
+
+  <process id="twoTasksProcess">
+
+    <startEvent id="theStart" />
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="firstTask" />
+    <userTask id="firstTask" name="First task" />
+    <sequenceFlow id="flow2" sourceRef="firstTask" targetRef="secondTask" />
+    <userTask id="secondTask" name="Second task" />
+    <sequenceFlow id="flow3" sourceRef="secondTask" targetRef="theEnd" />
+    <endEvent id="theEnd" />
+
+  </process>
+
+</definitions>

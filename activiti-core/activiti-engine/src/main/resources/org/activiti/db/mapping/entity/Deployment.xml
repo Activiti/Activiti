@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+  
+<mapper namespace="org.activiti.engine.impl.persistence.entity.DeploymentEntityImpl">
+
+  <!-- DEPLOYMENT INSERT -->
+  
+  <insert id="insertDeployment" parameterType="org.activiti.engine.impl.persistence.entity.DeploymentEntityImpl">
+    insert into ${prefix}ACT_RE_DEPLOYMENT(ID_, NAME_, CATEGORY_, KEY_, TENANT_ID_, DEPLOY_TIME_, ENGINE_VERSION_, VERSION_, PROJECT_RELEASE_VERSION_)
+    values(#{id, jdbcType=VARCHAR}, #{name, jdbcType=VARCHAR}, #{category, jdbcType=VARCHAR}, #{key, jdbcType=VARCHAR}, #{tenantId, jdbcType=VARCHAR}, #{deploymentTime, jdbcType=TIMESTAMP}, #{engineVersion, jdbcType=VARCHAR}, #{version, jdbcType=INTEGER}, #{projectReleaseVersion, jdbcType=VARCHAR})
+  </insert>
+
+  <insert id="bulkInsertDeployment" parameterType="java.util.List">
+    insert into ${prefix}ACT_RE_DEPLOYMENT(ID_, NAME_, CATEGORY_, KEY_, TENANT_ID_, DEPLOY_TIME_)
+    values
+      <foreach collection="list" item="deployment" index="index" separator=",">
+        (#{deployment.id, jdbcType=VARCHAR},
+         #{deployment.name, jdbcType=VARCHAR},
+         #{deployment.category, jdbcType=VARCHAR},
+         #{deployment.key, jdbcType=VARCHAR},
+         #{deployment.tenantId, jdbcType=VARCHAR},
+         #{deployment.deploymentTime, jdbcType=TIMESTAMP}),
+         #{deployment.version, jdbcType=INTEGER},
+         #{deployment.projectReleaseVersion, jdbcType=VARCHAR}
+      </foreach>
+  </insert>
+
+  <insert id="bulkInsertDeployment" databaseId="oracle" parameterType="java.util.List">
+    INSERT ALL 
+      <foreach collection="list" item="deployment" index="index">
+        into ${prefix}ACT_RE_DEPLOYMENT(ID_, NAME_, CATEGORY_, KEY_, TENANT_ID_, DEPLOY_TIME_) VALUES 
+          (#{deployment.id, jdbcType=VARCHAR},
+           #{deployment.name, jdbcType=VARCHAR},
+           #{deployment.category, jdbcType=VARCHAR},
+           #{deployment.key, jdbcType=VARCHAR},
+           #{deployment.tenantId, jdbcType=VARCHAR},
+           #{deployment.deploymentTime, jdbcType=TIMESTAMP}),
+           #{deployment.version, jdbcType=INTEGER},
+           #{deployment.projectReleaseVersion, jdbcType=VARCHAR}
+      </foreach>
+    SELECT * FROM dual
+  </insert>
+
+  <!-- DEPLOYMENT UPDATE -->
+  
+  <update id="updateDeployment" parameterType="org.activiti.engine.impl.persistence.entity.DeploymentEntityImpl">
+    update ${prefix}ACT_RE_DEPLOYMENT set
+      CATEGORY_ = #{category, jdbcType=VARCHAR},
+      KEY_ = #{key, jdbcType=VARCHAR},
+      TENANT_ID_ = #{tenantId, jdbcType=VARCHAR},
+      VERSION_ = #{version, jdbcType=INTEGER}
+    where ID_ = #{id, jdbcType=VARCHAR}
+  </update>
+  
+  <!-- DEPLOYMENT DELETE -->
+  
+  <delete id="deleteDeployment" parameterType="string">
+    delete from ${prefix}ACT_RE_DEPLOYMENT where ID_ = #{id}
+  </delete>
+
+  <!-- DEPLOYMENT RESULTMAP -->
+  
+  <resultMap id="deploymentResultMap" type="org.activiti.engine.impl.persistence.entity.DeploymentEntityImpl">
+    <id property="id" column="ID_" jdbcType="VARCHAR" />
+    <result property="name" column="NAME_" jdbcType="VARCHAR" />
+    <result property="category" column="CATEGORY_" jdbcType="VARCHAR" />
+    <result property="key" column="KEY_" jdbcType="VARCHAR" />
+    <result property="tenantId" column="TENANT_ID_" jdbcType="VARCHAR" />
+    <result property="deploymentTime" column="DEPLOY_TIME_" jdbcType="TIMESTAMP"/>
+    <result property="engineVersion" column="ENGINE_VERSION_" jdbcType="VARCHAR" />
+    <result property="version" column="VERSION_" jdbcType="INTEGER" />
+    <result property="projectReleaseVersion" column="PROJECT_RELEASE_VERSION_" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <!-- DEPLOYMENT SELECT -->
+
+  <select id="selectDeploymentsByQueryCriteria" parameterType="org.activiti.engine.impl.DeploymentQueryImpl" resultMap="deploymentResultMap">
+  	${limitBefore}
+    select distinct RES.* ${limitBetween}
+    <include refid="selectDeploymentsByQueryCriteriaSql"/>
+    ${orderBy}
+    ${limitAfter}
+  </select>
+
+  <select id="selectDeploymentCountByQueryCriteria" parameterType="org.activiti.engine.impl.DeploymentQueryImpl" resultType="long">
+    select count(distinct RES.ID_)
+    <include refid="selectDeploymentsByQueryCriteriaSql"/>
+  </select>
+  
+  <sql id="selectDeploymentsByQueryCriteriaSql">  
+    from ${prefix}ACT_RE_DEPLOYMENT RES
+    <if test="processDefinitionKey != null or processDefinitionKeyLike != null">
+    	inner join ${prefix}ACT_RE_PROCDEF PROCDEF on RES.ID_ = PROCDEF.DEPLOYMENT_ID_
+    </if>
+    <where>
+      <if test="deploymentId != null">
+        RES.ID_ = #{deploymentId}
+      </if>
+      <if test="name != null">
+        and RES.NAME_ = #{name}
+      </if>
+      <if test="nameLike != null">
+        and RES.NAME_ like #{nameLike}${wildcardEscapeClause}
+      </if>
+      <if test="category != null">
+        and RES.CATEGORY_ = #{category}
+      </if>
+      <if test="categoryLike != null">
+        and RES.CATEGORY_ like #{categoryLike}${wildcardEscapeClause}
+      </if>
+      <if test="categoryNotEquals != null">
+        and ( RES.CATEGORY_ &lt;&gt; #{categoryNotEquals} OR RES.CATEGORY_ is null )  
+      </if>
+      <if test="key != null">
+        and RES.KEY_ = #{key}
+      </if>
+      <if test="keyLike != null">
+        and RES.KEY_ like #{keyLike}${wildcardEscapeClause}
+      </if>
+      <if test="tenantId != null">
+        and RES.TENANT_ID_ = #{tenantId}
+      </if>
+      <if test="tenantIdLike != null">
+        and RES.TENANT_ID_ like #{tenantIdLike}${wildcardEscapeClause}
+      </if>
+      <if test="withoutTenantId">
+        and (RES.TENANT_ID_ = '' or RES.TENANT_ID_ is null)
+      </if>
+      <if test="processDefinitionKey != null">
+        and PROCDEF.KEY_ = #{processDefinitionKey}
+      </if>
+      <if test="processDefinitionKeyLike != null">
+        and PROCDEF.KEY_ like #{processDefinitionKeyLike}${wildcardEscapeClause}
+      </if>
+      <if test="latest">
+        and RES.DEPLOY_TIME_ = (select max(DEPLOY_TIME_) from ${prefix}ACT_RE_DEPLOYMENT where KEY_ = RES.KEY_ 
+             <if test="tenantId != null">
+	           and TENANT_ID_ = #{tenantId}
+	         </if>
+	         <if test="tenantIdLike != null">
+	           and TENANT_ID_ like #{tenantIdLike}${wildcardEscapeClause}
+	         </if>
+	         <if test="withoutTenantId">
+	           and (TENANT_ID_ = '' or TENANT_ID_ is null)
+	         </if>
+	         <if test="tenantId == null and tenantIdLike == null and !withoutTenantId">
+	           and ( (TENANT_ID_ IS NOT NULL and TENANT_ID_ = RES.TENANT_ID_) or (TENANT_ID_ IS NULL and RES.TENANT_ID_ IS NULL) )
+	         </if>
+        )
+      </if>
+    </where>
+  </sql>
+    
+  <select id="selectDeploymentsByName" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="deploymentResultMap">
+    select * from ${prefix}ACT_RE_DEPLOYMENT D where NAME_=#{parameter} order by D.DEPLOY_TIME_ desc
+  </select>
+  
+  <select id="selectDeployment" parameterType="string" resultMap="deploymentResultMap">
+    select * from ${prefix}ACT_RE_DEPLOYMENT where ID_ = #{id, jdbcType=VARCHAR}
+  </select>
+
+  <select id="selectLatestDeployment" parameterType="string" resultMap="deploymentResultMap">
+    select * from ${prefix}ACT_RE_DEPLOYMENT
+    where VERSION_ = (select max(VERSION_) from ${prefix}ACT_RE_DEPLOYMENT)
+    and NAME_ = #{name, jdbcType=VARCHAR}
+    and PROJECT_RELEASE_VERSION_ IS NOT NULL
+  </select>
+
+  <!-- mysql specific -->
+  <select id="selectDeploymentsByQueryCriteria" databaseId="mysql" parameterType="org.activiti.engine.impl.DeploymentQueryImpl" resultMap="deploymentResultMap">
+  	${limitBefore}
+    select distinct RES.* ${limitBetween}
+    <include refid="selectDeploymentsByQueryCriteriaSql"/>
+   	${orderBy}
+    ${limitAfter}
+  </select>
+  
+  <!-- mysql specific -->
+  <select id="selectDeploymentCountByQueryCriteria" databaseId="mysql" parameterType="org.activiti.engine.impl.DeploymentQueryImpl" resultType="long">
+    select distinct count(RES.ID_)
+    <include refid="selectDeploymentsByQueryCriteriaSql"/>
+  </select>
+
+  <select id="selectDeploymentByNativeQuery" parameterType="java.util.Map" resultMap="deploymentResultMap">
+    <include refid="org.activiti.engine.db.common.selectByNativeQuery"/>
+  </select>
+
+  <select id="selectDeploymentCountByNativeQuery" parameterType="java.util.Map" resultType="long">
+    ${sql}
+  </select>
+
+</mapper>

@@ -1,0 +1,48 @@
+{
+  "id": "parentproc-843144bc-3797-40db-8edc-d23190b118e7-model",
+  "name": "parentProcessCallActivityMappingEmptyMappingWithTask.bpmn20.xml",
+  "extensions": {
+    "parentproc-843144bc-3797-40db-8edc-d23190b118e7": {
+      "properties": {
+        "age-id": {
+          "id": "age-id",
+          "name": "age",
+          "type": "integer",
+          "value": 20
+        },
+        "name-id": {
+          "id": "name-id",
+          "name": "name",
+          "type": "string",
+          "required": true,
+          "value": "inName"
+        },
+        "input-unmapped-variable-with-non-matching-name-id": {
+          "id": "input-unmapped-variable-with-non-matching-connector-input-name-id",
+          "name": "input_unmapped_variable_with_non_matching_connector_input_name",
+          "type": "string",
+          "required": false,
+          "value": "inTest"
+        },
+        "output-unmapped-variable-with-non-matching-name-id": {
+          "id": "output-unmapped-variable-with-non-matching-name-id",
+          "name": "output_unmapped_variable_with_non_matching_connector_output_name",
+          "type": "string",
+          "required": false,
+          "value": "default"
+        }
+      },
+      "mappings": {
+        "Task_0v0jw9c": {
+          "inputs": {
+          },
+          "outputs": {
+          }
+        }
+      },
+      "constants": {
+        "Task_0v0jw9c": {}
+      }
+    }
+  }
+}

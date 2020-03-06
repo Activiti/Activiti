@@ -1,0 +1,47 @@
+{
+  "id":"subprocess-fb5f2386-709a-4947-9aa0-bbf31497384g-model",
+  "name":"mySubProcess123.bpmn",
+  "extensions": {
+    "subprocess-fb5f2386-709a-4947-9aa0-bbf31497384g": {
+      "properties": {
+        "subprocess-input-var1-id": {
+          "id": "subprocess-input-var1-id",
+          "name": "subprocess_input_var1",
+          "type": "string",
+          "required": true,
+          "value": "value1"
+        },
+        "subprocess-input-var2-id": {
+          "id": "subprocess-input-var2-id",
+          "name": "subprocess_input_var2",
+          "type": "integer",
+          "value": 2
+        },
+        "subprocess-input-var3-id": {
+          "id": "subprocess-input-var3-id",
+          "name": "subprocess_input_var3",
+          "type": "integer",
+          "value": 3
+        },
+        "subprocess-static-value-id": {
+          "id": "subprocess-static-value-id",
+          "name": "subprocess_static_value",
+          "type": "string",
+          "value": "static some value"
+        },
+        "subprocess-out-vari-1id": {
+          "id": "subprocess-out-var1-id",
+          "name": "subprocess_out_var1",
+          "type": "string",
+          "value": "outValue"
+        },
+        "subprocess-out-var2-id": {
+          "id": "subprocess-out-var2-id",
+          "name": "subprocess_out_var2",
+          "type": "integer",
+          "value": 222
+        }
+      }
+    }
+  }
+}

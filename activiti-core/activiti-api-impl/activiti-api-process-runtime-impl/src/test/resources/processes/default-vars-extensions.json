@@ -1,0 +1,45 @@
+{
+    "id": "defaultVarsProcess",
+    "extensions": {
+        "Process_DefaultVarsProcess": {
+          "properties": {
+            "d440ff7b-0ac8-4a97-b163-51a6ec49faa1": {
+              "id": "d440ff7b-0ac8-4a97-b163-51a6ec49faa1",
+              "name": "age",
+              "type": "integer",
+              "required": false
+            },
+            "bbcf2eee-3e4a-45f3-b9b7-42be5dcb10bf": {
+              "id": "bbcf2eee-3e4a-45f3-b9b7-42be5dcb10bf",
+              "name": "name",
+              "type": "string",
+              "required": true,
+              "value": "Nobody"
+            },
+            "379dc1a1-481d-4617-a027-ef39fdadf225": {
+              "id": "379dc1a1-481d-4617-a027-ef39fdadf225",
+              "name": "positionInTheQueue",
+              "type": "integer",
+              "required": false,
+              "value": 10
+            },
+            "379dc1a1-481d-4617-a027-ef39fdadf555": {
+              "id": "379dc1a1-481d-4617-a027-ef39fdadf555",
+              "name": "jsonvar",
+              "type": "json",
+              "required": false,
+              "value": {
+                "varone": "value"
+              }
+            },
+            "379dc1a1-481d-4617-a027-ef39fdadf6666": {
+              "id": "379dc1a1-481d-4617-a027-ef39fdadf6666",
+              "name": "filevar",
+              "type": "file",
+              "required": false,
+              "value": {}
+            }
+          }
+        }
+    }
+}

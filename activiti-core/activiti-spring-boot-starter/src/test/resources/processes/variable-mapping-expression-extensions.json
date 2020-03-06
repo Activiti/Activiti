@@ -1,0 +1,160 @@
+{
+  "id": "connectorVarMappingExpressionModel",
+  "name": "myProcess.bpmn",
+  "extensions": {
+    "connectorVarMappingExpression": {
+      "properties": {
+        "age-id": {
+          "id": "age-id",
+          "name": "age",
+          "type": "integer",
+          "value": 20
+        },
+        "name-id": {
+          "id": "name-id",
+          "name": "name",
+          "type": "string",
+          "required": true,
+          "value": "John"
+        },
+        "surname-id": {
+          "id": "surname-id",
+          "name": "surname",
+          "type": "string",
+          "required": true,
+          "value": "Doe"
+        },
+        "data-id": {
+          "id": "data-id",
+          "name": "data",
+          "type": "json",
+          "required": false,
+          "value": {
+            "age-in-months": "${age * 12}",
+            "full-name": "${name} ${surname}",
+            "list": [
+              "first",
+              "${name}",
+              "${surname}",
+              "last"
+            ],
+            "demoString": "expressionResolved"
+          }
+        },
+        "user-msg-id": {
+          "id": "user-msg-id",
+          "name": "user-msg",
+          "type": "string",
+          "required": true,
+          "value": "Hello ${name.concat(' ').concat(surname)}, today is your ${age}th birthday! It means ${age * 365.25} days of life"
+        },
+        "variable-to-resolve-id": {
+          "id": "variable-to-resolve-id",
+          "name": "variableToResolve",
+          "type": "string",
+          "required": false,
+          "value": "${name}"
+        },
+        "input-unmapped-variable-with-matching-name-id": {
+          "id": "input-unmapped-variable-with-matching-name-id",
+          "name": "input-unmapped-variable-with-matching-name",
+          "type": "string",
+          "required": false,
+          "value": "${surname}"
+        },
+        "input-unmapped-variable-with-non-matching-name-id": {
+          "id": "input-unmapped-variable-with-non-matching-connector-input-name-id",
+          "name": "input-unmapped-variable-with-non-matching-connector-input-name",
+          "type": "string",
+          "required": false,
+          "value": "inTestExpression"
+        },
+        "out-unmapped-variable-matching-name-id": {
+          "id": "out-unmapped-variable-matching-name-id",
+          "name": "out-unmapped-variable-matching-name",
+          "type": "string",
+          "required": false,
+          "value": "defaultExpression"
+        },
+        "output-unmapped-variable-with-non-matching-name-id": {
+          "id": "output-unmapped-variable-with-non-matching-name-id",
+          "name": "output-unmapped-variable-with-non-matching-connector-output-name",
+          "type": "string",
+          "required": false,
+          "value": "defaultExpression"
+        },
+        "property-with-no-default-value-id": {
+          "id": "property-with-no-default-value-id",
+          "name": "property-with-no-default-value-name",
+          "type": "string",
+          "required": false
+        },
+        "local-resident-id": {
+          "id": "local-resident-id",
+          "name": "resident",
+          "type": "boolean",
+          "required": false,
+          "value": true
+        }
+      },
+      "mappings": {
+        "serviceTask": {
+          "inputs": {
+            "input-variable-name-1": {
+              "type": "variable",
+              "value": "data"
+            },
+            "input-variable-name-2": {
+              "type": "variable",
+              "value": "age"
+            },
+            "input-variable-name-3": {
+              "type": "variable",
+              "value": "user-msg"
+            },
+            "input-variable-expression": {
+              "type": "variable",
+              "value": "variableToResolve"
+            },
+            "input-value-expression": {
+              "type": "value",
+              "value": "${name}"
+            },
+            "input-variable-name-4": {
+              "type": "variable",
+              "value": "property-with-no-default-value-name"
+            },
+            "input-json-template": {
+              "type": "value",
+              "value": {
+                "name": "${name}",
+                "age": "${age}",
+                "resident": "${resident}"
+              }
+            }
+          },
+          "outputs": {
+            "name": {
+              "type": "variable",
+              "value": "out-variable-name-1"
+            },
+            "age": {
+              "type": "variable",
+              "value": "out-variable-name-2"
+            }
+          }
+        }
+      },
+      "constants": {
+        "serviceTask": {
+          "input-static-value": {
+            "value": "a static value"
+          },
+          "integer-constant": {
+            "value": 10
+          }
+        }
+      }
+    }
+  }
+}

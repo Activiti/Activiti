@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definition"
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="Examples">
+
+  <process id="miParallelUserTasksOutputCollection">
+
+    <startEvent id="theStart" />
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="miTasks" />
+
+    <userTask id="miTasks" name="My Task ${loopCounter}" activiti:assignee="user">
+      <multiInstanceLoopCharacteristics isSequential="false">
+        <loopCardinality>2</loopCardinality>
+        <loopDataOutputRef>meals</loopDataOutputRef>
+        <outputDataItem name="meal"/>
+      </multiInstanceLoopCharacteristics>
+    </userTask>
+
+    <userTask id="wait" name="Wait" activiti:assignee="user">
+    </userTask>
+
+    <sequenceFlow id="flow3" sourceRef="miTasks" targetRef="wait" />
+    <sequenceFlow id="flow4" sourceRef="wait" targetRef="theEnd" />
+    <endEvent id="theEnd" />
+
+  </process>
+
+</definitions>

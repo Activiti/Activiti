@@ -1,0 +1,46 @@
+{
+  "id": "taskVariableEmptyMappingWithContants",
+  "extensions": {
+    "Process_taskVariableEmptyMappingWithContants": {
+      "properties": {
+        "process-variable-unmapped-1-id": {
+          "id": "process-variable-unmapped-1-id",
+          "name": "process_variable_unmapped_1",
+          "type": "string",
+          "required": true,
+          "value": "unmapped1Value"
+        },
+        "process-variable-inputmap-1-id": {
+          "id": "process-variable-inputmap-1-id",
+          "name": "process_variable_inputmap_1",
+          "type": "string",
+          "required": true,
+          "value": "inputmap1Value"
+        },
+        "process-variable-outputmap-1-id": {
+          "id": "process-variable-outputmap-1-id",
+          "name": "process_variable_outputmap_1",
+          "type": "string",
+          "required": true,
+          "value": "outputmap1Value"
+        }
+      },
+      "mappings": {
+        "simpleTask": {
+          "inputs": {},
+          "outputs": {}
+        }
+      },
+      "constants": {
+        "simpleTask": {
+          "process_constant_inputmap_2": {
+            "value": "constant_value"
+          },
+          "process_constant_1_2": {
+            "value": "constant_2_value"
+          }
+        }
+      }
+    }
+  }
+}

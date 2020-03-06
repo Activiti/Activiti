@@ -1,0 +1,26 @@
+{
+   "id":"startMessagePayloadModel",
+   "name":"ProcessRuntimeBPMNMessageIT.startMessagePayload.bpmn20.xml",
+   "extensions":{
+     "startMessagePayload": {
+       "properties": {
+         "process_variable_name_id": {
+           "id": "process_variable_id",
+           "name": "process_variable_name",
+           "type": "string",
+           "required": true
+         }
+       },
+       "mappings": {
+         "StartEvent_1": {
+           "outputs": {
+             "process_variable_name": {
+               "type": "variable",
+               "value": "message_variable_name"
+             }
+           }
+         }
+       }
+     }
+   }
+}

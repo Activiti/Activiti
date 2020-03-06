@@ -1,0 +1,69 @@
+{
+  "id": "taskVarMapping",
+  "extensions": {
+    "Process_expressionMappingInputVariable": {
+      "properties": {
+        "variable-1-id": {
+          "id": "variable-1-id",
+          "name": "process_variable_1",
+          "type": "string",
+          "required": true,
+          "value": "variable_value_1"
+        },
+        "variable-2-id": {
+          "id": "variable-2-id",
+          "name": "process_variable_2",
+          "type": "string",
+          "required": true,
+          "value": "variable_value_2"
+        },
+        "variable-3-id": {
+          "id": "variable-3-id",
+          "name": "process_variable_3",
+          "type": "string",
+          "required": false
+        },
+        "variable-4-id": {
+          "id": "variable-4-id",
+          "name": "process_variable_4",
+          "type": "string",
+          "required": false
+        }
+      },
+      "mappings": {
+        "simpleTask": {
+          "inputs": {
+            "task_input_variable_name_1": {
+              "type": "VARIABLE",
+              "value": "${process_variable_1}"
+            },
+            "task_input_variable_name_2": {
+              "type": "VALUE",
+              "value": "static_value_1"
+            }
+          },
+          "outputs": {
+            "process_variable_3": {
+              "type": "VARIABLE",
+              "value": "task_input_variable_name_1"
+            },
+            "process_variable_4": {
+              "type": "VALUE",
+              "value": "static_value_2"
+            }
+          }
+        }
+      },
+      "constants": {
+        "simpleTask": {
+          "process_constant_1": {
+            "value": "constant_1_value"
+          },
+          "process_constant_2": {
+            "value": "constant_2_value"
+          }
+        }
+      }
+    }
+  }
+}

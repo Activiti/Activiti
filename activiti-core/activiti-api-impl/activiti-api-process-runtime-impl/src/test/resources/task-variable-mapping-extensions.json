@@ -1,0 +1,89 @@
+{
+  "id": "taskVarMapping",
+  "extensions": {
+    "Process_taskVarMapping": {
+      "properties": {
+        "process-variable-unmapped-1-id": {
+          "id": "process-variable-unmapped-1-id",
+          "name": "process_variable_unmapped_1",
+          "type": "string",
+          "required": true,
+          "value": "unmapped1Value"
+        },
+        "process-variable-inputmap-1-id": {
+          "id": "process-variable-inputmap-1-id",
+          "name": "process_variable_inputmap_1",
+          "type": "string",
+          "required": true,
+          "value": "new-input-value"
+        },
+        "process-variable-inputmap-2-id": {
+          "id": "process-variable-inputmap-2-id",
+          "name": "process_constant_inputmap_2",
+          "type": "string",
+          "required": true,
+          "value": "inputmap2Value"
+        },
+        "process-variable-outputmap-1-id": {
+          "id": "process-variable-outputmap-1-id",
+          "name": "process_variable_outputmap_1",
+          "type": "string",
+          "required": true,
+          "value": "outputmap1Value"
+        },
+        "property-with-no-default-value-id": {
+          "id": "property-with-no-default-value-id",
+          "name": "property-with-no-default-value",
+          "type": "string",
+          "required": false
+        }
+      },
+      "mappings": {
+        "simpleTask": {
+          "inputs": {
+            "task_input_variable_name_1": {
+              "type": "VARIABLE",
+              "value": "process_variable_inputmap_1"
+            },
+            "task_input_variable_name_2": {
+              "type": "VALUE",
+              "value": "the value"
+            },
+            "task_input_variable_mapped_with_null_process_variable": {
+              "type": "VARIABLE",
+              "value": "property-with-no-default-value"
+            }
+          },
+          "outputs": {
+            "process_variable_outputmap_1": {
+              "type": "VARIABLE",
+              "value": "task_output_variable_name_1"
+            },
+            "property-with-no-default-value": {
+              "type": "VARIABLE",
+              "value": "not-set-variable"
+            }
+          }
+        }
+      },
+      "constants": {
+        "simpleTask": {
+          "process_constant_inputmap_2": {
+            "value": "constant_value"
+          },
+          "process_constant_1_2": {
+            "value": "constant_2_value"
+          }
+        },
+        "simpleTask_2": {
+          "process_constant_2_1": {
+            "value": "constant_1_value"
+          },
+          "process_constant_2_2": {
+            "value": "constant_2_value"
+          }
+        }
+      }
+    }
+  }
+}

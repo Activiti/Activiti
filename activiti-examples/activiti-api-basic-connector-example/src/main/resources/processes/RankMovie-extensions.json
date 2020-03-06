@@ -1,0 +1,45 @@
+{
+  "id": "RankMovieIdModel",
+  "type": "PROCESS",
+  "name": "RankMovie",
+  "extensions": {
+    "RankMovieId": {
+      "mappings": {
+        "Task_1spvopd": {
+          "inputs": {
+            "movieName": {
+              "type": "variable",
+              "value": "movieToRank"
+            }
+          },
+          "outputs": {
+            "movieDesc": {
+              "type": "variable",
+              "value": "movieDescription"
+            }
+          }
+        }
+      },
+      "properties": {
+        "movieToRankId": {
+          "id": "movieToRankId",
+          "name": "movieToRank",
+          "type": "string",
+          "required": true
+        },
+        "movieDescId": {
+          "id": "movieDescId",
+          "name": "movieDesc",
+          "type": "string",
+          "required": false
+        },
+        "ratingId": {
+          "id": "ratingId",
+          "name": "rating",
+          "type": "integer",
+          "required": false
+        }
+      }
+    }
+  }
+}

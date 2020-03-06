@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:activiti="http://activiti.org/bpmn" id="sample-diagram" targetNamespace="http://bpmn.io/schema/bpmn" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd">
+  <bpmn2:process id="RankMovieId" name="RankMovie" isExecutable="true">
+    <bpmn2:documentation />
+    <bpmn2:startEvent id="StartEvent_1">
+      <bpmn2:outgoing>SequenceFlow_02b718w</bpmn2:outgoing>
+    </bpmn2:startEvent>
+    <bpmn2:sequenceFlow id="SequenceFlow_02b718w" sourceRef="StartEvent_1" targetRef="Task_1spvopd" />
+    <bpmn2:serviceTask id="Task_1spvopd" name="Get Movie Description" implementation="Movies.getMovieDesc">
+      <bpmn2:incoming>SequenceFlow_02b718w</bpmn2:incoming>
+      <bpmn2:outgoing>SequenceFlow_19i3kha</bpmn2:outgoing>
+    </bpmn2:serviceTask>
+    <bpmn2:exclusiveGateway id="ExclusiveGateway_00cvmz6">
+      <bpmn2:incoming>SequenceFlow_19i3kha</bpmn2:incoming>
+      <bpmn2:outgoing>SequenceFlow_1maw9gg</bpmn2:outgoing>
+      <bpmn2:outgoing>SequenceFlow_053d6ej</bpmn2:outgoing>
+    </bpmn2:exclusiveGateway>
+    <bpmn2:sequenceFlow id="SequenceFlow_19i3kha" sourceRef="Task_1spvopd" targetRef="ExclusiveGateway_00cvmz6" />
+    <bpmn2:sequenceFlow id="SequenceFlow_1maw9gg" sourceRef="ExclusiveGateway_00cvmz6" targetRef="Task_01uy47y">
+      <bpmn2:conditionExpression xsi:type="bpmn2:tFormalExpression">${movieDesc != null}</bpmn2:conditionExpression>
+    </bpmn2:sequenceFlow>
+    <bpmn2:sequenceFlow id="SequenceFlow_053d6ej" sourceRef="ExclusiveGateway_00cvmz6" targetRef="EndEvent_0r2untf">
+      <bpmn2:conditionExpression xsi:type="bpmn2:tFormalExpression">${movieDesc == null}</bpmn2:conditionExpression>
+    </bpmn2:sequenceFlow>
+    <bpmn2:endEvent id="EndEvent_0r2untf">
+      <bpmn2:incoming>SequenceFlow_053d6ej</bpmn2:incoming>
+    </bpmn2:endEvent>
+    <bpmn2:endEvent id="EndEvent_0211pj5">
+      <bpmn2:incoming>SequenceFlow_0hczb50</bpmn2:incoming>
+    </bpmn2:endEvent>
+    <bpmn2:userTask id="Task_01uy47y" name="Add Rating" activiti:assignee="reviewer">
+      <bpmn2:incoming>SequenceFlow_1maw9gg</bpmn2:incoming>
+      <bpmn2:outgoing>SequenceFlow_0hczb50</bpmn2:outgoing>
+    </bpmn2:userTask>
+    <bpmn2:sequenceFlow id="SequenceFlow_0hczb50" sourceRef="Task_01uy47y" targetRef="EndEvent_0211pj5" />
+  </bpmn2:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="RankMovieId">
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="206" y="143" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_02b718w_di" bpmnElement="SequenceFlow_02b718w">
+        <di:waypoint x="242" y="161" />
+        <di:waypoint x="292" y="161" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ServiceTask_0u8jifg_di" bpmnElement="Task_1spvopd">
+        <dc:Bounds x="292" y="121" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ExclusiveGateway_00cvmz6_di" bpmnElement="ExclusiveGateway_00cvmz6" isMarkerVisible="true">
+        <dc:Bounds x="442" y="136" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_19i3kha_di" bpmnElement="SequenceFlow_19i3kha">
+        <di:waypoint x="392" y="161" />
+        <di:waypoint x="442" y="161" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1maw9gg_di" bpmnElement="SequenceFlow_1maw9gg">
+        <di:waypoint x="492" y="161" />
+        <di:waypoint x="542" y="161" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_053d6ej_di" bpmnElement="SequenceFlow_053d6ej">
+        <di:waypoint x="467" y="186" />
+        <di:waypoint x="467" y="271" />
+        <di:waypoint x="574" y="271" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="EndEvent_0r2untf_di" bpmnElement="EndEvent_0r2untf">
+        <dc:Bounds x="574" y="253" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_0211pj5_di" bpmnElement="EndEvent_0211pj5">
+        <dc:Bounds x="696" y="143" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="UserTask_1a6ia1l_di" bpmnElement="Task_01uy47y">
+        <dc:Bounds x="542" y="121" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0hczb50_di" bpmnElement="SequenceFlow_0hczb50">
+        <di:waypoint x="642" y="161" />
+        <di:waypoint x="696" y="161" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn2:definitions>

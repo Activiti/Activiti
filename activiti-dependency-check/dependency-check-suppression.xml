@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<suppressions xmlns="https://jeremylong.github.io/DependencyCheck/dependency-suppression.1.1.xsd">
+  <suppress>
+    <notes><![CDATA[
+   file name: spring-security-core-5.1.7.RELEASE.jar
+   ]]></notes>
+    <gav regex="true">^org\.springframework\.security:spring-security-core:.*$</gav>
+    <cve>CVE-2018-1258</cve>
+  </suppress>
+  <suppress>
+    <notes><![CDATA[
+   file name: spring-security-web-5.1.7.RELEASE.jar
+   ]]></notes>
+    <gav regex="true">^org\.springframework\.security:spring-security-web:.*$</gav>
+    <cve>CVE-2018-1258</cve>
+  </suppress>
+  <suppress>
+    <notes><![CDATA[
+   file name: spring-security-config-5.1.7.RELEASE.jar
+   ]]></notes>
+    <gav regex="true">^org\.springframework\.security:spring-security-config:.*$</gav>
+    <cve>CVE-2018-1258</cve>
+  </suppress>
+  <suppress>
+    <notes><![CDATA[
+   file name: spring-boot-starter-integration-2.1.12.RELEASE.jar
+   ]]></notes>
+    <gav regex="true">^org\.springframework\.boot:spring-boot-starter-integration:.*$</gav>
+    <cve>CVE-2019-3772</cve>
+  </suppress>
+</suppressions>

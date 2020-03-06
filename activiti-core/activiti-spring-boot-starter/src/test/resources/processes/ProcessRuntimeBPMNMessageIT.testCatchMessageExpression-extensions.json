@@ -1,0 +1,41 @@
+{
+  "id":"testCatchMessageExpression",
+  "name":"ProcessRuntimeBPMNMessageIT.testCatchMessageExpression.bpmn20.xml",
+  "extensions": {
+    "testCatchMessageExpression": {
+      "properties": {
+        "e3384837-c071-4027-b02d-850839136f42": {
+          "id": "e3384837-c071-4027-b02d-850839136f42",
+          "name": "intermediate_var",
+          "type": "string",
+          "required": false,
+          "value": ""
+        },
+        "cc9cb897-dc96-4f1e-ae2f-efec6b9ca076": {
+          "id": "cc9cb897-dc96-4f1e-ae2f-efec6b9ca076",
+          "name": "inter_message_var",
+          "type": "string",
+          "required": true,
+          "value": "check2"
+        }
+      },
+      "mappings": {
+        "Task_0jmo194": {
+          "inputs": {
+            "Text0739ze": {
+              "type": "variable",
+              "value": "intermediate_var"
+            }
+          },
+          "outputs": {
+            "intermediate_var": {
+              "type": "variable",
+              "value": "Text0739ze"
+            }
+          }
+        }
+      },
+      "constants": {}
+    }
+  }
+}

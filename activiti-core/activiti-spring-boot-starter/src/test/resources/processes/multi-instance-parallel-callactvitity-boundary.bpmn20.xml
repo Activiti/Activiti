@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definition"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xmlns:activiti="http://activiti.org/bpmn"
+             targetNamespace="Examples">
+
+  <signal id="goMiParallelCallActivityBoundaryEvent" name="goMiParallelCallActivityBoundaryEvent"></signal>
+
+  <process id="miParallelCallActivityBoundaryEvent">
+    <startEvent id="StartEvent_1"/>
+
+    <sequenceFlow id="SequenceFlow_1jajnpy" sourceRef="StartEvent_1" targetRef="miCallActivity"/>
+
+    <endEvent id="EndEvent_1vhhezw">
+      <incoming>SequenceFlow_14aevtt</incoming>
+    </endEvent>
+
+    <sequenceFlow id="SequenceFlow_14aevtt" sourceRef="miCallActivity" targetRef="EndEvent_1vhhezw"/>
+
+    <callActivity id="miCallActivity" name="Call activity ${loopCounter}" calledElement="externalSubProcess">
+      <multiInstanceLoopCharacteristics isSequential="false">
+        <loopCardinality>${2}</loopCardinality>
+      </multiInstanceLoopCharacteristics>
+    </callActivity>
+
+    <sequenceFlow id="flow3" sourceRef="miCallActivity" targetRef="theEnd"/>
+    <endEvent id="theEnd"/>
+
+    <sequenceFlow id="SequenceFlow_0hboyq1" sourceRef="callActivityBoundary" targetRef="UserTask_0zvkbgi"/>
+
+    <sequenceFlow id="SequenceFlow_1pryz48" sourceRef="UserTask_0zvkbgi" targetRef="EndEvent_02ciezx"/>
+
+    <userTask id="UserTask_0zvkbgi" name="Escalation Task" activiti:assignee="user"/>
+
+    <endEvent id="EndEvent_02ciezx"/>
+
+    <boundaryEvent id="callActivityBoundary" attachedToRef="miCallActivity">
+      <signalEventDefinition signalRef="goMiParallelCallActivityBoundaryEvent"></signalEventDefinition>
+    </boundaryEvent>
+  </process>
+</definitions>

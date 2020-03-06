@@ -1,0 +1,26 @@
+{
+   "id":"intermediateThrowMessageEventModel",
+   "name":"intermediateThrowMessageEvent.bpmn20.xml",
+   "extensions":{
+     "intermediateThrowMessageEvent": {
+       "properties":{
+         "process_variable_name":{
+           "id":"process_variable_id",
+           "name":"process_variable_name",
+           "type":"string",
+           "value":"value"
+         }
+       },
+       "mappings":{
+         "IntermediateThrowEvent_0la4q0b":{
+           "inputs":{
+             "message_payload_variable":{
+               "type":"variable",
+               "value":"process_variable_name"
+             }
+           }
+         }
+       }
+     }
+   }
+}

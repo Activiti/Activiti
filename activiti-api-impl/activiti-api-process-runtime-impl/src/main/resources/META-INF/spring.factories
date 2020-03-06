@@ -1,4 +1,0 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-    org.conf.activiti.runtime.api.ConnectorsAutoConfiguration,\
-  org.conf.activiti.runtime.api.ProcessRuntimeAutoConfiguration,\
-  org.activiti.core.common.spring.connector.autoconfigure.ConnectorAutoConfiguration

@@ -1,0 +1,41 @@
+{
+  "id": "process-8abc839468e609ca0168e61201800004",
+  "type": "PROCESS",
+  "name": "RankMovieWithUUIDs",
+  "extensions": {
+    "process-8abc839468e609ca0168e61201800004": {
+      "properties": {
+        "35c54866-e134-4b9d-9d82-54e2052989f7": {
+          "id": "35c54866-e134-4b9d-9d82-54e2052989f7",
+          "name": "movieToRank",
+          "type": "string",
+          "required": true,
+          "value": ""
+        },
+        "0eac1bbd-2612-42cc-8e4a-0425cf273d4f": {
+          "id": "0eac1bbd-2612-42cc-8e4a-0425cf273d4f",
+          "name": "movieDesc",
+          "type": "string",
+          "required": false,
+          "value": ""
+        }
+      },
+      "mappings": {
+        "Task_1xqe2ob": {
+          "inputs": {
+            "movieName": {
+              "type": "variable",
+              "value": "movieToRank"
+            }
+          },
+          "outputs": {
+            "movieDesc": {
+              "type": "variable",
+              "value": "movieDescription"
+            }
+          }
+        }
+      }
+    }
+  }
+}

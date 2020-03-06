@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.activiti.build</groupId>
+    <artifactId>activiti-parent</artifactId>
+    <version>7.1.0-SNAPSHOT</version>
+  </parent>
+  <groupId>org.activiti.core.common</groupId>
+  <artifactId>activiti-core-common</artifactId>
+  <packaging>pom</packaging>
+  <name>Activiti :: Core :: Common :: Parent</name>
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.activiti.api</groupId>
+        <artifactId>activiti-api-dependencies</artifactId>
+        <version>${project.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+  <dependencies>
+    <dependency>
+      <groupId>org.activiti.api</groupId>
+      <artifactId>activiti-api-dependencies</artifactId>
+      <version>${project.version}</version>
+      <type>pom</type>
+    </dependency>
+  </dependencies>
+  <modules>
+    <module>activiti-core-common-dependencies</module>
+    <module>activiti-spring-identity</module>
+    <module>activiti-spring-security</module>
+    <module>activiti-spring-security-policies</module>
+    <module>activiti-spring-connector</module>
+    <module>activiti-connector-model</module>
+    <module>activiti-spring-application</module>
+    <module>activiti-spring-resource-finder</module>
+    <module>activiti-core-test</module>
+    <module>activiti-project-model</module>
+    <module>activiti-spring-project</module>
+    <module>activiti-common-util</module>
+  </modules>
+</project>

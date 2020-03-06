@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="processDefinitions"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:activiti="http://activiti.org/bpmn"
+             targetNamespace="processDefinitions">
+
+    <process id="connectorVarMapping">
+
+        <startEvent id="start"/>
+
+        <sequenceFlow id="flow1" sourceRef="start" targetRef="serviceTask"/>
+
+        <serviceTask id="serviceTask" implementation="Variable Mapping Connector.variableMappingActionName"/>
+
+        <sequenceFlow id="flow2" sourceRef="serviceTask" targetRef="userTask"/>
+
+        <userTask id="userTask"/>
+
+        <sequenceFlow id="flow3" sourceRef="userTask" targetRef="end"/>
+
+        <endEvent id="end"/>
+
+    </process>
+
+</definitions>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definition"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xmlns:activiti="http://activiti.org/bpmn"
+             targetNamespace="Examples">
+
+  <process id="miParallelSubprocess">
+
+    <startEvent id="theStart"/>
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="miSubProcess"/>
+
+    <subProcess id="miSubProcess">
+      <multiInstanceLoopCharacteristics isSequential="false">
+        <loopCardinality>${2}</loopCardinality>
+      </multiInstanceLoopCharacteristics>
+
+      <startEvent id="StartEvent_1kslv5t"/>
+
+      <sequenceFlow id="SequenceFlow_13jvdll" sourceRef="StartEvent_1kslv5t" targetRef="Task_1ooh9d4"/>
+
+      <endEvent id="EndEvent_1796dka"/>
+
+      <sequenceFlow id="SequenceFlow_0pa5c2s" sourceRef="Task_1ooh9d4" targetRef="EndEvent_1796dka"/>
+
+      <userTask id="Task_1ooh9d4" name="Task in sub-process ${loopCounter}" activiti:assignee="user"/>
+
+    </subProcess>
+
+    <sequenceFlow id="flow3" sourceRef="miSubProcess" targetRef="theEnd"/>
+    <endEvent id="theEnd"/>
+
+  </process>
+
+</definitions>

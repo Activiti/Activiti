@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definition"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xmlns:activiti="http://activiti.org/bpmn"
+             targetNamespace="Examples">
+
+  <signal id="goMiParallelSubProcessBoundaryEvent" name="goMiParallelSubProcessBoundaryEvent"></signal>
+
+  <process id="miParallelSubProcessBoundaryEvent">
+    <startEvent id="StartEvent_1"/>
+
+    <sequenceFlow id="SequenceFlow_1jajnpy" sourceRef="StartEvent_1" targetRef="miSubProcess"/>
+
+    <endEvent id="EndEvent_1vhhezw">
+      <incoming>SequenceFlow_14aevtt</incoming>
+    </endEvent>
+
+    <sequenceFlow id="SequenceFlow_14aevtt" sourceRef="miSubProcess" targetRef="EndEvent_1vhhezw"/>
+
+    <subProcess id="miSubProcess">
+      <multiInstanceLoopCharacteristics isSequential="false">
+        <loopCardinality>${2}</loopCardinality>
+      </multiInstanceLoopCharacteristics>
+
+      <startEvent id="StartEvent_1kslv5t"/>
+
+      <sequenceFlow id="SequenceFlow_13jvdll" sourceRef="StartEvent_1kslv5t" targetRef="Task_1ooh9d4"/>
+
+      <endEvent id="EndEvent_1796dka"/>
+
+      <sequenceFlow id="SequenceFlow_0pa5c2s" sourceRef="Task_1ooh9d4" targetRef="EndEvent_1796dka"/>
+
+      <userTask id="Task_1ooh9d4" name="Task in sub-process ${loopCounter}" activiti:assignee="user"/>
+
+    </subProcess>
+
+    <sequenceFlow id="flow3" sourceRef="miSubProcess" targetRef="theEnd"/>
+    <endEvent id="theEnd"/>
+
+    <sequenceFlow id="SequenceFlow_0hboyq1" sourceRef="timer" targetRef="UserTask_0zvkbgi"/>
+
+    <sequenceFlow id="SequenceFlow_1pryz48" sourceRef="UserTask_0zvkbgi" targetRef="EndEvent_02ciezx"/>
+
+    <userTask id="UserTask_0zvkbgi" name="Escalation Task" activiti:assignee="user"/>
+
+    <endEvent id="EndEvent_02ciezx"/>
+
+    <boundaryEvent id="timer" attachedToRef="miSubProcess">
+      <signalEventDefinition signalRef="goMiParallelSubProcessBoundaryEvent"></signalEventDefinition>
+
+    </boundaryEvent>
+  </process>
+</definitions>

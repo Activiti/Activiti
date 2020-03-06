@@ -1,0 +1,106 @@
+{
+  "id": "connectorVarMappingModel",
+  "name": "myProcess.bpmn",
+  "extensions": {
+    "connectorVarMapping": {
+      "properties": {
+        "age-id": {
+          "id": "age-id",
+          "name": "age",
+          "type": "integer",
+          "value": 20
+        },
+        "name-id": {
+          "id": "name-id",
+          "name": "name",
+          "type": "string",
+          "required": true,
+          "value": "inName"
+        },
+        "nick-name-id": {
+          "id": "nick-name-id",
+          "name": "nickName",
+          "type": "string",
+          "required": false,
+          "value": "testName"
+        },
+        "input-unmapped-variable-with-matching-name-id": {
+          "id": "input-unmapped-variable-with-matching-name-id",
+          "name": "input_unmapped_variable_with_matching_name",
+          "type": "string",
+          "required": false,
+          "value": "inTest"
+        },
+        "input-unmapped-variable-with-non-matching-name-id": {
+          "id": "input-unmapped-variable-with-non-matching-connector-input-name-id",
+          "name": "input_unmapped_variable_with_non_matching_connector_input_name",
+          "type": "string",
+          "required": false,
+          "value": "inTest"
+        },
+        "out-unmapped-variable-matching-name-id": {
+          "id": "out-unmapped-variable-matching-name-id",
+          "name": "out_unmapped_variable_matching_name",
+          "type": "string",
+          "required": false,
+          "value": "default"
+        },
+        "output-unmapped-variable-with-non-matching-name-id": {
+          "id": "output-unmapped-variable-with-non-matching-name-id",
+          "name": "output_unmapped_variable_with_non_matching_connector_output_name",
+          "type": "string",
+          "required": false,
+          "value": "default"
+        },
+        "property-with-no-default-value-id": {
+          "id": "property-with-no-default-value-id",
+          "name": "property_with_no_default_value_name",
+          "type": "string",
+          "required": false
+        }
+      },
+      "mappings": {
+        "serviceTask": {
+          "inputs": {
+            "input_variable_name_1": {
+              "type": "variable",
+              "value": "name"
+            },
+            "input_variable_name_2": {
+              "type": "variable",
+              "value": "age"
+            },
+            "input_variable_name_3": {
+              "type": "value",
+              "value": 5
+            },
+            "input_variable_name_4": {
+              "type": "variable",
+              "value": "property_with_no_default_value_name"
+            }
+          },
+          "outputs": {
+            "name": {
+              "type": "variable",
+              "value": "out_variable_name_1"
+            },
+            "age": {
+              "type": "variable",
+              "value": "out_variable_name_2"
+            }
+          }
+        }
+      },
+      "constants": {
+        "serviceTask": {
+          "input_static_value": {
+            "value": "a static value"
+          },
+          "integer_constant": {
+            "value": 10
+          }
+        }
+      }
+    }
+  }
+}

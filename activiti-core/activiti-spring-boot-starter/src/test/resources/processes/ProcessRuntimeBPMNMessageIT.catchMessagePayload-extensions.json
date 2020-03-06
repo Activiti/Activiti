@@ -1,0 +1,26 @@
+{
+   "id":"catchMessagePayload",
+   "name":"ProcessRuntimeBPMNMessageIT.catchMessagePayload.bpmn20.xml",
+   "extensions":{
+     "Process_catchMessagePayload": {
+       "properties":{
+         "process_variable_name":{
+           "id":"process_variable_id",
+           "name":"process_variable_name",
+           "type":"string",
+           "value":""
+         }
+       },
+       "mappings":{
+         "IntermediateCatchEvent_0tds4h7":{
+           "outputs":{
+             "process_variable_name":{
+               "type":"variable",
+               "value":"message_variable_name"
+             }
+           }
+         }
+       }
+     }
+   }
+}

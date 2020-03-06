@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:activiti="http://activiti.org/bpmn" id="Definitions_0gotmqy" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Activiti Modeler" exporterVersion="3.0.0-beta.3">
+  <bpmn:process id="eventSubprocessMessage" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1">
+      <bpmn:outgoing>SequenceFlow_1chdrii</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:endEvent id="EndEvent_101t6i7">
+      <bpmn:incoming>SequenceFlow_1lxtic6</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:subProcess id="Task_1vcr0eg" triggeredByEvent="true">
+      <bpmn:endEvent id="EndEvent_1kv9kp6">
+        <bpmn:incoming>SequenceFlow_15v7j32</bpmn:incoming>
+      </bpmn:endEvent>
+      <bpmn:sequenceFlow id="SequenceFlow_15v7j32" sourceRef="IntermediateCatchEvent_0mnnakm" targetRef="EndEvent_1kv9kp6" />
+      <bpmn:startEvent id="IntermediateCatchEvent_0mnnakm">
+        <bpmn:outgoing>SequenceFlow_15v7j32</bpmn:outgoing>
+        <bpmn:messageEventDefinition messageRef="Message_1urb4ji" activiti:correlationKey="${correlationKey}"/>
+      </bpmn:startEvent>
+    </bpmn:subProcess>
+    <bpmn:sequenceFlow id="SequenceFlow_1chdrii" sourceRef="StartEvent_1" targetRef="Task_1oi2uus" />
+    <bpmn:userTask id="Task_1oi2uus" name="Task">
+      <bpmn:incoming>SequenceFlow_1chdrii</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1lxtic6</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="SequenceFlow_1lxtic6" sourceRef="Task_1oi2uus" targetRef="EndEvent_101t6i7" />
+  </bpmn:process>
+  <bpmn:message id="Message_1urb4ji" name="testMessage" />
+  <bpmn:signal id="Signal_0e8qgn6" name="Signal_2ldti0q" activiti:scope="global" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="eventSubprocessMessage">
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="109" y="103" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_101t6i7_di" bpmnElement="EndEvent_101t6i7">
+        <dc:Bounds x="416" y="103" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="SubProcess_03hdpfo_di" bpmnElement="Task_1vcr0eg" isExpanded="true">
+        <dc:Bounds x="109" y="227" width="350" height="200" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_1kv9kp6_di" bpmnElement="EndEvent_1kv9kp6">
+        <dc:Bounds x="336" y="305" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_15v7j32_di" bpmnElement="SequenceFlow_15v7j32">
+        <di:waypoint x="227" y="323" />
+        <di:waypoint x="336" y="323" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1chdrii_di" bpmnElement="SequenceFlow_1chdrii">
+        <di:waypoint x="145" y="121" />
+        <di:waypoint x="234" y="121" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="UserTask_0e4gpoe_di" bpmnElement="Task_1oi2uus">
+        <dc:Bounds x="234" y="81" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_1lxtic6_di" bpmnElement="SequenceFlow_1lxtic6">
+        <di:waypoint x="334" y="121" />
+        <di:waypoint x="416" y="121" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="StartEvent_0fi21pk_di" bpmnElement="IntermediateCatchEvent_0mnnakm">
+        <dc:Bounds x="191" y="305" width="36" height="36" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

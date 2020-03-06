@@ -1,0 +1,35 @@
+{
+  "id":"jsonVarsProcessModel",
+  "extensions":{
+    "jsonVarsProcess": {
+      "properties":{
+        "d440ff7b-0ac8-4a97-b163-51a6ec49faa1":{
+          "id":"d440ff7b-0ac8-4a97-b163-51a6ec49faa1",
+          "name":"var1",
+          "type":"json",
+          "required":false,
+          "value":{
+            "testvalueelement1":"testvalueelement1",
+            "testlist": [1, 2, 3]
+          }
+        },
+        "379dc1a1-481d-4617-a027-ef39fdadf225":{
+          "id":"379dc1a1-481d-4617-a027-ef39fdadf225",
+          "name":"var2",
+          "type":"customtypeiseffectivelyjson",
+          "required":true
+        },
+        "379dc1a1-481d-4617-a027-ef39fdadf226":{
+          "id":"379dc1a1-481d-4617-a027-ef39fdadf225",
+          "name":"var3",
+          "type":"json",
+          "required":false,
+          "value":{
+            "testvalueelement1":"testvalueelement1",
+            "@class": "ClassNotOnClassPath"
+          }
+        }
+      }
+    }
+  }
+}
