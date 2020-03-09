@@ -77,5 +77,15 @@ public class VariableInstanceImpl<T> implements VariableInstance {
         return value;
     }
 
+    @Override
+    public String toString() {
+        return "VariableInstanceImpl{" +
+                "name='" + name + '\'' +
+                ", type='" + type + '\'' +
+                ", processInstanceId='" + processInstanceId + '\'' +
+                ", taskId='" + taskId + '\'' +
+                ", value='" + value.toString() + '\'' +
+                '}';
+    }
 
 }
