@@ -11,6 +11,9 @@
   <artifactId>activiti-examples</artifactId>
   <packaging>pom</packaging>
   <name>Activiti :: Examples :: Parent</name>
+  <properties>
+    <maven.deploy.skip>true</maven.deploy.skip>
+  </properties>
   <modules>
     <module>activiti-api-basic-full-example-bean</module>
     <module>activiti-api-basic-full-example-nobean</module>
