@@ -29,7 +29,7 @@ before_script:
 
 # Enable integration tests
 script:
-  - mvn verify -B -DskipITs=false
+  - mvn verify -B
 
 # Send coverage data
 after_success:
