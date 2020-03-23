@@ -262,7 +262,6 @@
           <executions>
             <execution>
               <id>attach-sources</id>
-              <phase>deploy</phase>
               <goals>
                 <goal>jar-no-fork</goal>
               </goals>
@@ -731,7 +730,6 @@
             <executions>
               <execution>
                 <id>sign-artifacts</id>
-                <phase>deploy</phase>
                 <goals>
                   <goal>sign</goal>
                 </goals>
