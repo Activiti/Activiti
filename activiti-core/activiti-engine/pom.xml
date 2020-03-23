@@ -153,9 +153,8 @@
     <dependency>
       <groupId>javax.xml.bind</groupId>
       <artifactId>jaxb-api</artifactId>
-      <scope>test</scope>
     </dependency>
-    <!-- Required for testing JTA -->
+    <!--Required for testing JTA-->
     <dependency>
       <groupId>org.codehaus.btm</groupId>
       <artifactId>btm</artifactId>
