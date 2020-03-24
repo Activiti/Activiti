@@ -1,9 +1,9 @@
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -25,37 +25,7 @@ import org.activiti.engine.RuntimeService;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventListener;
 import org.activiti.engine.delegate.event.ActivitiEventType;
-import org.activiti.engine.impl.cmd.ActivateProcessInstanceCmd;
-import org.activiti.engine.impl.cmd.AddEventListenerCommand;
-import org.activiti.engine.impl.cmd.AddIdentityLinkForProcessInstanceCmd;
-import org.activiti.engine.impl.cmd.CompleteAdhocSubProcessCmd;
-import org.activiti.engine.impl.cmd.DeleteIdentityLinkForProcessInstanceCmd;
-import org.activiti.engine.impl.cmd.DeleteProcessInstanceCmd;
-import org.activiti.engine.impl.cmd.DispatchEventCommand;
-import org.activiti.engine.impl.cmd.ExecuteActivityForAdhocSubProcessCmd;
-import org.activiti.engine.impl.cmd.FindActiveActivityIdsCmd;
-import org.activiti.engine.impl.cmd.GetDataObjectCmd;
-import org.activiti.engine.impl.cmd.GetDataObjectsCmd;
-import org.activiti.engine.impl.cmd.GetEnabledActivitiesForAdhocSubProcessCmd;
-import org.activiti.engine.impl.cmd.GetExecutionVariableCmd;
-import org.activiti.engine.impl.cmd.GetExecutionVariableInstanceCmd;
-import org.activiti.engine.impl.cmd.GetExecutionVariableInstancesCmd;
-import org.activiti.engine.impl.cmd.GetExecutionVariablesCmd;
-import org.activiti.engine.impl.cmd.GetExecutionsVariablesCmd;
-import org.activiti.engine.impl.cmd.GetIdentityLinksForProcessInstanceCmd;
-import org.activiti.engine.impl.cmd.GetProcessInstanceEventsCmd;
-import org.activiti.engine.impl.cmd.HasExecutionVariableCmd;
-import org.activiti.engine.impl.cmd.MessageEventReceivedCmd;
-import org.activiti.engine.impl.cmd.RemoveEventListenerCommand;
-import org.activiti.engine.impl.cmd.RemoveExecutionVariablesCmd;
-import org.activiti.engine.impl.cmd.SetExecutionVariablesCmd;
-import org.activiti.engine.impl.cmd.SetProcessInstanceBusinessKeyCmd;
-import org.activiti.engine.impl.cmd.SetProcessInstanceNameCmd;
-import org.activiti.engine.impl.cmd.SignalEventReceivedCmd;
-import org.activiti.engine.impl.cmd.StartProcessInstanceByMessageCmd;
-import org.activiti.engine.impl.cmd.StartProcessInstanceCmd;
-import org.activiti.engine.impl.cmd.SuspendProcessInstanceCmd;
-import org.activiti.engine.impl.cmd.TriggerCmd;
+import org.activiti.engine.impl.cmd.*;
 import org.activiti.engine.impl.persistence.entity.VariableInstance;
 import org.activiti.engine.impl.runtime.ProcessInstanceBuilderImpl;
 import org.activiti.engine.runtime.DataObject;
@@ -148,7 +118,7 @@ public class RuntimeServiceImpl extends ServiceImpl implements RuntimeService {
   public Map<String, VariableInstance> getVariableInstances(String executionId) {
     return commandExecutor.execute(new GetExecutionVariableInstancesCmd(executionId, null, false));
   }
-  
+
   public List<VariableInstance> getVariableInstancesByExecutionIds(Set<String> executionIds) {
     return commandExecutor.execute(new GetExecutionsVariablesCmd(executionIds));
   }
@@ -156,7 +126,7 @@ public class RuntimeServiceImpl extends ServiceImpl implements RuntimeService {
   public Map<String, Object> getVariablesLocal(String executionId) {
     return commandExecutor.execute(new GetExecutionVariablesCmd(executionId, null, true));
   }
-  
+
   public Map<String, VariableInstance> getVariableInstancesLocal(String executionId) {
     return commandExecutor.execute(new GetExecutionVariableInstancesCmd(executionId, null, true));
   }
@@ -164,7 +134,7 @@ public class RuntimeServiceImpl extends ServiceImpl implements RuntimeService {
   public Map<String, Object> getVariables(String executionId, Collection<String> variableNames) {
     return commandExecutor.execute(new GetExecutionVariablesCmd(executionId, variableNames, false));
   }
-  
+
   public Map<String, VariableInstance> getVariableInstances(String executionId, Collection<String> variableNames) {
     return commandExecutor.execute(new GetExecutionVariableInstancesCmd(executionId, variableNames, false));
   }
@@ -172,7 +142,7 @@ public class RuntimeServiceImpl extends ServiceImpl implements RuntimeService {
   public Map<String, Object> getVariablesLocal(String executionId, Collection<String> variableNames) {
     return commandExecutor.execute(new GetExecutionVariablesCmd(executionId, variableNames, true));
   }
-  
+
   public Map<String, VariableInstance> getVariableInstancesLocal(String executionId, Collection<String> variableNames) {
     return commandExecutor.execute(new GetExecutionVariableInstancesCmd(executionId, variableNames, true));
   }
@@ -180,7 +150,7 @@ public class RuntimeServiceImpl extends ServiceImpl implements RuntimeService {
   public Object getVariable(String executionId, String variableName) {
     return commandExecutor.execute(new GetExecutionVariableCmd(executionId, variableName, false));
   }
-  
+
   public VariableInstance getVariableInstance(String executionId, String variableName) {
     return commandExecutor.execute(new GetExecutionVariableInstanceCmd(executionId, variableName, false));
   }
@@ -196,7 +166,7 @@ public class RuntimeServiceImpl extends ServiceImpl implements RuntimeService {
   public Object getVariableLocal(String executionId, String variableName) {
     return commandExecutor.execute(new GetExecutionVariableCmd(executionId, variableName, true));
   }
-  
+
   public VariableInstance getVariableInstanceLocal(String executionId, String variableName) {
     return commandExecutor.execute(new GetExecutionVariableInstanceCmd(executionId, variableName, true));
   }
@@ -254,7 +224,7 @@ public class RuntimeServiceImpl extends ServiceImpl implements RuntimeService {
   public void removeVariablesLocal(String executionId, Collection<String> variableNames) {
     commandExecutor.execute(new RemoveExecutionVariablesCmd(executionId, variableNames, true));
   }
-  
+
   @Override
   public Map<String, DataObject> getDataObjects(String executionId) {
     return commandExecutor.execute(new GetDataObjectsCmd(executionId, null, false));
@@ -331,9 +301,9 @@ public class RuntimeServiceImpl extends ServiceImpl implements RuntimeService {
   public void trigger(String executionId, Map<String, Object> processVariables) {
     commandExecutor.execute(new TriggerCmd(executionId, processVariables));
   }
-  
+
   public void trigger(String executionId, Map<String, Object> processVariables, Map<String, Object> transientVariables) {
-    commandExecutor.execute(new TriggerCmd(executionId, processVariables, transientVariables));    
+    commandExecutor.execute(new TriggerCmd(executionId, processVariables, transientVariables));
   }
 
   public void addUserIdentityLink(String processInstanceId, String userId, String identityLinkType) {
@@ -498,17 +468,17 @@ public class RuntimeServiceImpl extends ServiceImpl implements RuntimeService {
   public List<Event> getProcessInstanceEvents(String processInstanceId) {
     return commandExecutor.execute(new GetProcessInstanceEventsCmd(processInstanceId));
   }
-  
+
   @Override
   public List<FlowNode> getEnabledActivitiesFromAdhocSubProcess(String executionId) {
     return commandExecutor.execute(new GetEnabledActivitiesForAdhocSubProcessCmd(executionId));
   }
-  
+
   @Override
   public Execution executeActivityInAdhocSubProcess(String executionId, String activityId) {
     return commandExecutor.execute(new ExecuteActivityForAdhocSubProcessCmd(executionId, activityId));
   }
-  
+
   @Override
   public void completeAdhocSubProcess(String executionId) {
     commandExecutor.execute(new CompleteAdhocSubProcessCmd(executionId));
@@ -527,6 +497,15 @@ public class RuntimeServiceImpl extends ServiceImpl implements RuntimeService {
     } else {
       throw new ActivitiIllegalArgumentException("No processDefinitionId, processDefinitionKey nor messageName provided");
     }
-    
+  }
+
+  public ProcessInstance createProcessInstance(ProcessInstanceBuilderImpl processInstanceBuilder) {
+    if (processInstanceBuilder.getProcessDefinitionId() != null || processInstanceBuilder.getProcessDefinitionKey() != null) {
+        return commandExecutor.execute(new CreateProcessInstanceByMessageCmd(processInstanceBuilder));
+//    } else if (processInstanceBuilder.getMessageName() != null) {
+//        return commandExecutor.execute(new CreateProcessInstanceByMessageCmd(processInstanceBuilder));
+    } else {
+        throw new ActivitiIllegalArgumentException("No processDefinitionId, processDefinitionKey nor messageName provided");
+    }
   }
 }

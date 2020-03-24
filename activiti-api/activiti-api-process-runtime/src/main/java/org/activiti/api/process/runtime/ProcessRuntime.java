@@ -74,6 +74,11 @@ public interface ProcessRuntime {
     ProcessInstance start(StartProcessPayload startProcessPayload);
 
     /**
+     * Create a new Process Instance based on the payload parameters
+     */
+    ProcessInstance create(StartProcessPayload startProcessPayload);
+
+    /**ProcessRuntimeImpl
      * Get all process instances by pages
      * - Notice that only in-flight or suspended processes will be returned here
      * - For already completed process instance check at the query service
@@ -81,7 +86,7 @@ public interface ProcessRuntime {
     Page<ProcessInstance> processInstances(Pageable pageable);
 
     /**
-     * Get all process instances by pages filtering by 
+     * Get all process instances by pages filtering by
      * - Notice that only in-flight or suspended processes will be returned here
      * - For already completed process instance check at the query service
      */
@@ -109,7 +114,7 @@ public interface ProcessRuntime {
      * Delete a Process Instance
      */
     ProcessInstance delete(DeleteProcessPayload deleteProcessPayload);
-    
+
     /**
      * Update a Process Instance
      */
@@ -126,9 +131,9 @@ public interface ProcessRuntime {
     void removeVariables(RemoveProcessVariablesPayload removeProcessVariablesPayload); // review if we need to return removed variables// DO WE NEED THIS?>
 
     void setVariables(SetProcessVariablesPayload setProcessVariablesPayload); // review if we need to return set variables
-    
+
     void receive(ReceiveMessagePayload messagePayload);
-    
+
     ProcessInstance start(StartMessagePayload messagePayload);
 
     Deployment selectLatestDeployment();

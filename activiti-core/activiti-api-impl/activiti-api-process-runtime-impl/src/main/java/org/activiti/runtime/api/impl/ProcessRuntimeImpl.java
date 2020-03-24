@@ -265,6 +265,24 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
     }
 
     @Override
+    public ProcessInstance create(StartProcessPayload startProcessPayload) {
+
+        ProcessDefinition processDefinition = getProcessDefinitionAndCheckUserHasRights(startProcessPayload.getProcessDefinitionId(),
+            startProcessPayload.getProcessDefinitionKey());
+
+        processVariablesValidator.checkStartProcessPayloadVariables(startProcessPayload, processDefinition.getId());
+
+        return processInstanceConverter.from(runtimeService
+            .createProcessInstanceBuilder()
+            .processDefinitionId(processDefinition.getId())
+            .processDefinitionKey(processDefinition.getKey())
+            .businessKey(startProcessPayload.getBusinessKey())
+            .variables(startProcessPayload.getVariables())
+            .name(startProcessPayload.getName())
+            .create());
+    }
+
+    @Override
     public ProcessInstance suspend(SuspendProcessPayload suspendProcessPayload) {
         ProcessInstance processInstance = processInstance(suspendProcessPayload.getProcessInstanceId());
 

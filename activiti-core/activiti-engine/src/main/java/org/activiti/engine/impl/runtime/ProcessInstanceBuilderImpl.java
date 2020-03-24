@@ -1,9 +1,9 @@
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -49,7 +49,7 @@ public class ProcessInstanceBuilderImpl implements ProcessInstanceBuilder {
     this.processDefinitionKey = processDefinitionKey;
     return this;
   }
-  
+
   public ProcessInstanceBuilder messageName(String messageName) {
     this.messageName = messageName;
     return this;
@@ -69,7 +69,7 @@ public class ProcessInstanceBuilderImpl implements ProcessInstanceBuilder {
     this.tenantId = tenantId;
     return this;
   }
-  
+
   public ProcessInstanceBuilder variables(Map<String, Object> variables) {
     if (this.variables == null) {
       this.variables = new HashMap<String, Object>();
@@ -89,7 +89,7 @@ public class ProcessInstanceBuilderImpl implements ProcessInstanceBuilder {
     this.variables.put(variableName, value);
     return this;
   }
-  
+
   public ProcessInstanceBuilder transientVariables(Map<String, Object> transientVariables) {
     if (this.transientVariables == null) {
       this.transientVariables = new HashMap<String, Object>();
@@ -101,7 +101,7 @@ public class ProcessInstanceBuilderImpl implements ProcessInstanceBuilder {
     }
     return this;
   }
-  
+
   public ProcessInstanceBuilder transientVariable(String variableName, Object value) {
     if (this.transientVariables == null) {
       this.transientVariables = new HashMap<String, Object>();
@@ -114,6 +114,10 @@ public class ProcessInstanceBuilderImpl implements ProcessInstanceBuilder {
     return runtimeService.startProcessInstance(this);
   }
 
+  public ProcessInstance create() {
+    return runtimeService.createProcessInstance(this);
+  }
+
   public String getProcessDefinitionId() {
     return processDefinitionId;
   }
@@ -121,7 +125,7 @@ public class ProcessInstanceBuilderImpl implements ProcessInstanceBuilder {
   public String getProcessDefinitionKey() {
     return processDefinitionKey;
   }
-  
+
   public String getMessageName() {
     return messageName;
   }
@@ -141,7 +145,7 @@ public class ProcessInstanceBuilderImpl implements ProcessInstanceBuilder {
   public Map<String, Object> getVariables() {
     return variables;
   }
-  
+
   public Map<String, Object> getTransientVariables() {
     return transientVariables;
   }
