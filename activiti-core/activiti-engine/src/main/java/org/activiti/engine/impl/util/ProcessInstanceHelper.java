@@ -49,12 +49,6 @@ import org.activiti.engine.runtime.ProcessInstance;
  */
 public class ProcessInstanceHelper {
 
-//  public ProcessInstance createProcessInstance(ProcessDefinitionEntity processDefinition,
-//      String businessKey, String processInstanceName, Map<String, Object> variables, Map<String, Object> transientVariables) {
-//
-//    return createAndStartProcessInstance(processDefinition, businessKey, processInstanceName, variables, transientVariables, false);
-//  }
-
     public ProcessInstance createAndStartProcessInstance(ProcessDefinition processDefinition,
                                                          String businessKey, String processInstanceName,
                                                          Map<String, Object> variables, Map<String, Object> transientVariables) {
