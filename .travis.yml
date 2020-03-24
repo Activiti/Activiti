@@ -38,12 +38,11 @@ script:
   - git add --all"
   - git commit -m "Release $(cat VERSION) --allow-empty
   - git tag -fa v$(cat VERSION) -m "Release version $(cat VERSION)"
-  - git push origin v$(cat VERSION)"
+  - git push origin v$(cat VERSION)
 
   - mvn clean deploy -DskipTests
 
-  - export VERSION=`cat VERSION`
-  - make updatebot/push-version 
+  - export VERSION| make updatebot/push-version 
 
 # Send coverage data
 after_success:
