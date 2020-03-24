@@ -8,7 +8,7 @@ public class BPMNActivityImpl extends BPMNElementImpl implements BPMNActivity {
 
     private String activityName;
     private String activityType;
-
+    private String executionId;
 
     public BPMNActivityImpl() {
     }
@@ -21,6 +21,7 @@ public class BPMNActivityImpl extends BPMNElementImpl implements BPMNActivity {
         this.activityType = activityType;
     }
 
+    @Override
     public String getActivityName() {
         return activityName;
     }
@@ -29,6 +30,7 @@ public class BPMNActivityImpl extends BPMNElementImpl implements BPMNActivity {
         this.activityName = activityName;
     }
 
+    @Override
     public String getActivityType() {
         return activityType;
     }
@@ -37,39 +39,52 @@ public class BPMNActivityImpl extends BPMNElementImpl implements BPMNActivity {
         this.activityType = activityType;
     }
 
+    @Override
+    public String getExecutionId() {
+        return this.executionId;
+    }
+
+    public void setExecutionId(String executionId) {
+        this.executionId = executionId;
+    }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) {
+    public boolean equals(Object obj) {
+        if (this == obj) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (!super.equals(obj)) {
             return false;
         }
-        BPMNActivityImpl that = (BPMNActivityImpl) o;
-
-        return Objects.equals(getElementId(),
-                that.getElementId()) &&
-                Objects.equals(activityName,
-                        that.activityName) &&
-                Objects.equals(activityType,
-                        that.activityType);
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        BPMNActivityImpl other = (BPMNActivityImpl) obj;
+        return Objects.equals(activityName, other.activityName) &&
+               Objects.equals(activityType, other.activityType) &&
+               Objects.equals(executionId, other.executionId);
     }
 
     @Override
     public int hashCode() {
-
-        return Objects.hash(getElementId(),
-                activityName,
-                activityType);
+        final int prime = 31;
+        int result = super.hashCode();
+        result = prime * result + Objects.hash(activityName, activityType, executionId);
+        return result;
     }
 
     @Override
     public String toString() {
-        return "BPMNActivityImpl{" +
-                "activityName='" + activityName + '\'' +
-                ", activityType='" + activityType + '\'' +
-                ", elementId='" + getElementId() + '\'' +
-                '}';
+        StringBuilder builder = new StringBuilder();
+        builder.append("BPMNActivityImpl [activityName=")
+               .append(activityName)
+               .append(", activityType=")
+               .append(activityType)
+               .append(", executionId=")
+               .append(executionId)
+               .append(", toString()=")
+               .append(super.toString())
+               .append("]");
+        return builder.toString();
     }
 }
