@@ -26,10 +26,25 @@ branches:
 
 before_script:
   - echo MAVEN_OPTS=-Xmx1536m > ~/.mavenrc
+  - sudo cp bin/jx-release-version /usr/bin/jx-release-version
+  - sudo cp bin/updatebot /usr/bin/updatebot
+  - echo $(jx-release-version) > VERSION
 
 # Enable integration tests
 script:
   - mvn verify -B
+  - git checkout develop
+  - mvn versions:set -DnewVersion=\$(cat VERSION)"
+  - mvn clean verify -B'
+  - git add --all"
+  - git commit -m \"Release \$(cat VERSION)\" --allow-empty"
+  - git tag -fa v$(cat VERSION) -m "Release version $(cat VERSION)"
+  - git push origin v$(cat VERSION)"
+
+  - mvn clean deploy -DskipTests'
+
+  - export VERSION=`cat VERSION`
+  - make updatebot/push-version 
 
 # Send coverage data
 after_success:
