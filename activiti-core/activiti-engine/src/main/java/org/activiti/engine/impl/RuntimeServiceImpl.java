@@ -76,7 +76,7 @@ import org.activiti.engine.task.IdentityLinkType;
 public class RuntimeServiceImpl extends ServiceImpl implements RuntimeService {
 
   public ProcessInstance startProcessInstanceByKey(String processDefinitionKey) {
-    return commandExecutor.execute(new StartProcessInstanceCmd<>(processDefinitionKey, null, null, null));
+    return commandExecutor.execute(new StartProcessInstanceCmd<ProcessInstance>(processDefinitionKey, null, null, null));
   }
 
   public ProcessInstance startProcessInstanceByKey(String processDefinitionKey, String businessKey) {
