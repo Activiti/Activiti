@@ -25,15 +25,17 @@ public interface IntegrationContext {
     String getProcessInstanceId();
 
     String getParentProcessInstanceId();
-    
+
+    String getExecutionId();
+
     String getProcessDefinitionId();
 
     String getProcessDefinitionKey();
 
     Integer getProcessDefinitionVersion();
-    
+
     String getBusinessKey();
-    
+
     String getConnectorType();
 
     String getAppVersion();

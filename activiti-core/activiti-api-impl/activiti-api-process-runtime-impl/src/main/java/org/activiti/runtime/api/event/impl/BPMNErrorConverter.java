@@ -26,12 +26,13 @@ public class BPMNErrorConverter {
         BPMNErrorImpl bpmnError = new BPMNErrorImpl(internalEvent.getActivityId(),
                                                     internalEvent.getActivityName(),
                                                     internalEvent.getActivityType());
-        
+
         bpmnError.setProcessDefinitionId(internalEvent.getProcessDefinitionId());
         bpmnError.setProcessInstanceId(internalEvent.getProcessInstanceId());
-   
+        bpmnError.setExecutionId(internalEvent.getExecutionId());
+
         bpmnError.setErrorId(internalEvent.getErrorId());
-        bpmnError.setErrorCode(internalEvent.getErrorCode());       
+        bpmnError.setErrorCode(internalEvent.getErrorCode());
 
         return bpmnError;
     }
