@@ -78,7 +78,7 @@ public interface ProcessRuntime {
      */
     ProcessInstance create(StartProcessPayload startProcessPayload);
 
-    /**ProcessRuntimeImpl
+    /**
      * Get all process instances by pages
      * - Notice that only in-flight or suspended processes will be returned here
      * - For already completed process instance check at the query service

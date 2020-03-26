@@ -16,40 +16,51 @@
 
 package org.activiti.runtime.api.impl;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.catchThrowable;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.MockitoAnnotations.initMocks;
-
-import java.util.Collections;
-import java.util.List;
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
+import org.activiti.api.process.model.payloads.StartProcessPayload;
 import org.activiti.api.process.model.payloads.UpdateProcessPayload;
 import org.activiti.api.runtime.model.impl.DeploymentImpl;
 import org.activiti.api.runtime.model.impl.ProcessInstanceImpl;
 import org.activiti.api.runtime.shared.UnprocessableEntityException;
+import org.activiti.bpmn.model.BpmnModel;
+import org.activiti.bpmn.model.Process;
 import org.activiti.core.common.spring.security.policies.ProcessSecurityPoliciesManager;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.RuntimeService;
+import org.activiti.engine.impl.AbstractQuery;
 import org.activiti.engine.impl.RepositoryServiceImpl;
+import org.activiti.engine.impl.RuntimeServiceImpl;
+import org.activiti.engine.impl.cmd.CreateProcessInstanceCmd;
+import org.activiti.engine.impl.cmd.GetBpmnModelCmd;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.persistence.entity.DeploymentEntityImpl;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntityImpl;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntityImpl;
+import org.activiti.engine.impl.runtime.ProcessInstanceBuilderImpl;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
+import org.activiti.engine.runtime.ProcessInstanceBuilder;
 import org.activiti.engine.runtime.ProcessInstanceQuery;
 import org.activiti.runtime.api.model.impl.APIDeploymentConverter;
+import org.activiti.runtime.api.model.impl.APIProcessDefinitionConverter;
 import org.activiti.runtime.api.model.impl.APIProcessInstanceConverter;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.*;
+import static org.mockito.MockitoAnnotations.initMocks;
 
 public class ProcessRuntimeImplTest {
 
@@ -70,15 +81,21 @@ public class ProcessRuntimeImplTest {
     @Mock
     private APIDeploymentConverter deploymentConverter;
 
+    @Mock
+    private ProcessVariablesPayloadValidator processVariableValidator;
+
+    private APIProcessDefinitionConverter processDefinitionConverter;
+
     @Before
     public void setUp() {
         initMocks(this);
 
         RepositoryServiceImpl repositoryService = new RepositoryServiceImpl();
         repositoryService.setCommandExecutor(commandExecutor);
+        processDefinitionConverter = new APIProcessDefinitionConverter(repositoryService);
 
         processRuntime = spy(new ProcessRuntimeImpl(repositoryService,
-                null,
+                processDefinitionConverter,
                 runtimeService,
                 securityPoliciesManager,
                 processInstanceConverter,
@@ -86,7 +103,7 @@ public class ProcessRuntimeImplTest {
                 deploymentConverter,
                 null,
                 null,
-                null));
+                processVariableValidator));
     }
 
     @Test
@@ -103,7 +120,6 @@ public class ProcessRuntimeImplTest {
         ProcessInstanceQuery processQuery = mock(ProcessInstanceQuery.class);
         doReturn(processQuery).when(processQuery).processInstanceId("processId");
         doReturn(processQuery).when(runtimeService).createProcessInstanceQuery();
-
 
         org.activiti.engine.runtime.ProcessInstance internalProcess = mock(org.activiti.engine.runtime.ProcessInstance.class);
 
@@ -138,7 +154,8 @@ public class ProcessRuntimeImplTest {
         given(deploymentConverter.from(latestDeploymentEntity)).willReturn(latestDeployment);
         given(commandExecutor.execute(any()))
             .willReturn(findProcessDefinitionResult)
-            .willReturn(latestDeploymentEntity);
+            .willReturn(latestDeploymentEntity)
+            .willReturn(latestDeployment);
 
         Throwable exception = catchThrowable(() -> processRuntime.processDefinition(processDefinitionId));
 
@@ -173,6 +190,58 @@ public class ProcessRuntimeImplTest {
         assertThat(exception)
             .isInstanceOf(ActivitiObjectNotFoundException.class)
             .hasMessage("Unable to find process definition for the given id:'processDefinitionId'");
+    }
+
+    @Test
+    public void should_createAprocessInstance_whenCreateIsCalled() {
+        String processDefinitionId = "processDefinitionId";
+        ProcessDefinitionEntityImpl processDefinition = new ProcessDefinitionEntityImpl();
+        processDefinition.setId(processDefinitionId);
+        processDefinition.setKey("key");
+        processDefinition.setAppVersion(1);
+        List<ProcessDefinition> findProcessDefinitionResult = Collections.singletonList(processDefinition);
+        Deployment latestDeploymentEntity = new DeploymentEntityImpl();
+        DeploymentImpl latestDeployment = new DeploymentImpl();
+        latestDeployment.setVersion(1);
+
+        ExecutionEntityImpl processInstance = new ExecutionEntityImpl();
+        processInstance.setBusinessKey("business-key-returned");
+        processInstance.setId("9999-9999");
+
+        BpmnModel model = new BpmnModel();
+        Process process = new Process();
+        process.setId("key");
+        model.addProcess(process);
+
+        RuntimeServiceImpl runtimeserviceImpl = new RuntimeServiceImpl();
+        runtimeserviceImpl.setCommandExecutor(commandExecutor);
+        ProcessInstanceBuilderImpl processInstanceBuilder = new ProcessInstanceBuilderImpl(runtimeserviceImpl);
+
+        given(securityPoliciesManager.canRead("key")).willReturn(true);
+        doReturn(true).when(securityPoliciesManager).canWrite("key");
+
+        given(deploymentConverter.from(latestDeploymentEntity)).willReturn(latestDeployment);
+        given(commandExecutor.execute(any(AbstractQuery.class)))
+            .willReturn(findProcessDefinitionResult)
+            .willReturn(latestDeploymentEntity)
+            .willReturn(latestDeployment);
+
+        when(commandExecutor.execute(any(GetBpmnModelCmd.class))).thenReturn(model);
+        when(commandExecutor.execute(any(CreateProcessInstanceCmd.class))).thenReturn(processInstance);
+        when(runtimeService.createProcessInstanceBuilder()).thenReturn(processInstanceBuilder);
+        when(processInstanceConverter.from(any(org.activiti.engine.runtime.ProcessInstance.class))).thenCallRealMethod();
+
+        StartProcessPayload startPayload = new StartProcessPayload(processDefinitionId,
+            "processDefinitionKey",
+            "test-create",
+            "business-key",
+            new HashMap<String, Object>());
+
+        ProcessInstance createdProcessInstance = processRuntime.create(startPayload);
+
+        assertThat(createdProcessInstance.getBusinessKey()).isEqualTo("business-key-returned");
+        assertThat(createdProcessInstance.getId()).isEqualTo("9999-9999");
+
     }
 
 }

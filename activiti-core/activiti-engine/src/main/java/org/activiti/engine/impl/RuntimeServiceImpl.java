@@ -490,7 +490,7 @@ public class RuntimeServiceImpl extends ServiceImpl implements RuntimeService {
   }
 
   public ProcessInstance startProcessInstance(ProcessInstanceBuilderImpl processInstanceBuilder) {
-    if (processInstanceBuilder.getProcessDefinitionId() != null || processInstanceBuilder.getProcessDefinitionKey() != null) {
+    if (processInstanceBuilder.hasProcessDefinitionIdOrKey()) {
       return commandExecutor.execute(new StartProcessInstanceCmd<ProcessInstance>(processInstanceBuilder));
     } else if (processInstanceBuilder.getMessageName() != null) {
       return commandExecutor.execute(new StartProcessInstanceByMessageCmd(processInstanceBuilder));
@@ -500,7 +500,7 @@ public class RuntimeServiceImpl extends ServiceImpl implements RuntimeService {
   }
 
   public ProcessInstance createProcessInstance(ProcessInstanceBuilderImpl processInstanceBuilder) {
-    if (processInstanceBuilder.getProcessDefinitionId() != null || processInstanceBuilder.getProcessDefinitionKey() != null) {
+    if (processInstanceBuilder.hasProcessDefinitionIdOrKey()) {
         return commandExecutor.execute(new CreateProcessInstanceCmd(processInstanceBuilder));
     } else {
         throw new ActivitiIllegalArgumentException("No processDefinitionId, processDefinitionKey nor messageName provided");

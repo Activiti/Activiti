@@ -110,6 +110,10 @@ public class ProcessInstanceBuilderImpl implements ProcessInstanceBuilder {
     return this;
   }
 
+  public boolean hasProcessDefinitionIdOrKey() {
+    return this.getProcessDefinitionId() != null || this.getProcessDefinitionKey() != null;
+  }
+
   public ProcessInstance start() {
     return runtimeService.startProcessInstance(this);
   }
