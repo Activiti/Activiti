@@ -40,7 +40,6 @@ import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntityImpl;
 import org.activiti.engine.impl.runtime.ProcessInstanceBuilderImpl;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
-import org.activiti.engine.runtime.ProcessInstanceBuilder;
 import org.activiti.engine.runtime.ProcessInstanceQuery;
 import org.activiti.runtime.api.model.impl.APIDeploymentConverter;
 import org.activiti.runtime.api.model.impl.APIProcessDefinitionConverter;
@@ -48,9 +47,6 @@ import org.activiti.runtime.api.model.impl.APIProcessInstanceConverter;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -84,14 +80,13 @@ public class ProcessRuntimeImplTest {
     @Mock
     private ProcessVariablesPayloadValidator processVariableValidator;
 
-    private APIProcessDefinitionConverter processDefinitionConverter;
-
     @Before
     public void setUp() {
         initMocks(this);
 
         RepositoryServiceImpl repositoryService = new RepositoryServiceImpl();
         repositoryService.setCommandExecutor(commandExecutor);
+        APIProcessDefinitionConverter processDefinitionConverter;
         processDefinitionConverter = new APIProcessDefinitionConverter(repositoryService);
 
         processRuntime = spy(new ProcessRuntimeImpl(repositoryService,

@@ -57,7 +57,7 @@ public class CreateProcessInstanceCmd implements Command<ProcessInstance> {
         ProcessDefinition processDefinition = this.getProcessDefinitionByProcessDefinitionId(processDefinitionId, deploymentCache);
         if(processDefinition == null) {
             processDefinition = (processDefinitionKey != null && hasNoTenant(tenantId)) ?
-                this.getProcessDefinitionByProcessDefinitionKey(processDefinitionKey, tenantId, deploymentCache):
+                this.getProcessDefinitionByProcessDefinitionKey(processDefinitionKey, deploymentCache):
                 this.getProcessDefinitionByProcessDefinitionKeyAndTenantId(processDefinitionKey, tenantId, deploymentCache);
             if (processDefinition == null) {
                 throw new ActivitiObjectNotFoundException("No process definition found for key '" + processDefinitionKey + "' for tenant identifier " + tenantId, ProcessDefinition.class);
@@ -76,7 +76,7 @@ public class CreateProcessInstanceCmd implements Command<ProcessInstance> {
         return processDefinition;
     }
 
-    private ProcessDefinition getProcessDefinitionByProcessDefinitionKey(String processDefinitionKey, String tenantId, DeploymentManager deploymentCache) {
+    private ProcessDefinition getProcessDefinitionByProcessDefinitionKey(String processDefinitionKey, DeploymentManager deploymentCache) {
         ProcessDefinition processDefinition = null;
         processDefinition = deploymentCache.findDeployedLatestProcessDefinitionByKey(processDefinitionKey);
         if (processDefinition == null) {
