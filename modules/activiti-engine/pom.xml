@@ -141,6 +141,11 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+      <groupId>org.mariadb.jdbc</groupId>
+      <artifactId>mariadb-java-client</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>net.sourceforge.jtds</groupId>
       <artifactId>jtds</artifactId>
       <scope>test</scope>
@@ -320,7 +325,7 @@
                   <tasks>
                     <echo message="updating activiti configuration to db ${database}" />
                     <copy file="${basedir}/../../qa/db/activiti.cfg.xml" todir="target/test-classes" overwrite="true">
-                      <filterset filtersfile="${user.home}/.activiti/jdbc/build.${database}.properties" />
+                      <filterset filtersfile="${basedir}/../../qa/build/${database}.properties" />
                     </copy>
                   </tasks>
                 </configuration>
@@ -354,7 +359,7 @@
                   <tasks>
                     <echo message="updating activiti configuration to db ${databasewithschema}" />
                     <copy file="${basedir}/../../qa/db/schema/activiti.cfg.xml" todir="target/test-classes" overwrite="true">
-                      <filterset filtersfile="${user.home}/.activiti/jdbc/build.${databasewithschema}.properties" />
+                      <filterset filtersfile="${basedir}/../../qa/build/${databasewithschema}.properties" />
                     </copy>
                   </tasks>
                 </configuration>
@@ -386,9 +391,9 @@
                 </goals>
                 <configuration>
                   <tasks>
-                    <echo message="updating activiti configuration to db ${databasemssql}" />
+                    <echo message="updating activiti configuration to db ${database}" />
                     <copy file="${basedir}/../../qa/db/mssql/activiti.cfg.xml" todir="target/test-classes" overwrite="true">
-                      <filterset filtersfile="${user.home}/.activiti/jdbc/build.${databasemssql}.properties" />
+                      <filterset filtersfile="${basedir}/../../qa/build/${database}.properties" />
                     </copy>
                   </tasks>
                 </configuration>
@@ -418,7 +423,7 @@
                   <tasks>
                     <echo message="updating activiti configuration config to db ${database}" />
                     <copy file="${basedir}/../../qa/spring/${database}/activiti.cfg.xml" todir="target/test-classes" overwrite="true">
-                      <filterset filtersfile="${user.home}/.activiti/jdbc/build.${database}.properties" />
+                      <filterset filtersfile="${basedir}/../../qa/build/${database}.properties" />
                     </copy>
                   </tasks>
                 </configuration>
@@ -469,7 +474,7 @@
                     <echo message="Copying jta enabled Activiti configuration file to target/test-classes" />
                   <echo message="Updating activiti configuration config to db ${database}" />
                   <copy file="${basedir}/../../qa/jta/${database}/activiti.cfg.xml" todir="target/test-classes" overwrite="true">
-                     <filterset filtersfile="${user.home}/.activiti/jdbc/build.${database}.properties" />
+                     <filterset filtersfile="${basedir}/../../qa/build/${database}.properties" />
                   </copy>
                 </tasks>
               </configuration>
@@ -562,7 +567,7 @@
                   <tasks>
                     <echo message="updating activiti configuration to db ${database}, using FULL history" />
                     <copy file="${basedir}/../../qa/db/historyfull.activiti.cfg.xml" todir="target/test-classes" overwrite="true">
-                      <filterset filtersfile="${user.home}/.activiti/jdbc/build.${database}.properties" />
+                      <filterset filtersfile="${basedir}/../../qa/build/${database}.properties" />
                     </copy>
                     <rename src="target/test-classes/historyfull.activiti.cfg.xml" dest="target/test-classes/activiti.cfg.xml"/>
                   </tasks>
@@ -830,6 +835,35 @@
           <scope>test</scope>
         </dependency>
       </dependencies>
+    </profile>
+
+    <profile>
+      <id>mariadb</id>
+      <activation>
+        <property>
+          <name>database</name>
+          <value>mariadb</value>
+        </property>
+      </activation>
+      <dependencies>
+        <dependency>
+          <groupId>org.mariadb.jdbc</groupId>
+          <artifactId>mariadb-java-client</artifactId>
+          <scope>test</scope>
+        </dependency>
+      </dependencies>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <configuration>
+              <excludes>
+                <exclude>**/*EscapeClauseTest.java</exclude>
+              </excludes>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
     </profile>
   </profiles>
 

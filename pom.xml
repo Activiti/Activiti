@@ -46,6 +46,7 @@
     <maven-surefire-plugin.version>2.18.1</maven-surefire-plugin.version>
     <maven-war-plugin.version>2.6</maven-war-plugin.version>
     <maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
+    <mariadb.jdbc.version>2.5.4</mariadb.jdbc.version>
     <!-- JVM params for test execution -->
     <argLine>-Duser.language=en</argLine>
     <!-- OSGi bundles properties -->
@@ -220,6 +221,12 @@
         <groupId>com.oracle.jdbc</groupId>
         <artifactId>ojdbc5</artifactId>
         <version>11.2.0.1.0</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.mariadb.jdbc</groupId>
+        <artifactId>mariadb-java-client</artifactId>
+        <version>${mariadb.jdbc.version}</version>
         <scope>test</scope>
       </dependency>
       <dependency>
