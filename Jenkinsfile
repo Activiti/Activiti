@@ -21,7 +21,7 @@ pipeline {
           container('maven') {
             sh "mvn versions:set -DnewVersion=$PREVIEW_VERSION"
             sh "mvn install -DskipITs"
-            sh "mvn deploy -DskipTests -DskipITs"
+            // sh "mvn deploy -DskipTests -DskipITs"
           }
         }
       }
