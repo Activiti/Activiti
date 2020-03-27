@@ -104,7 +104,6 @@ public class ProcessInstanceHelper {
         return processInstance;
     }
 
-  //TO DO
   public ProcessInstance createAndStartProcessInstanceByMessage(ProcessDefinition processDefinition, String businessKey, String messageName,
       Map<String, Object> messageVariables, Map<String, Object> transientVariables) {
 
@@ -157,7 +156,6 @@ public class ProcessInstanceHelper {
       return processInstance;
   }
 
-  //TO DO
   public ProcessInstance createAndStartProcessInstanceWithInitialFlowElement(ProcessDefinition processDefinition,
       String businessKey, String processInstanceName, FlowElement initialFlowElement,
       Process process, Map<String, Object> variables, Map<String, Object> transientVariables, boolean startProcessInstance) {
