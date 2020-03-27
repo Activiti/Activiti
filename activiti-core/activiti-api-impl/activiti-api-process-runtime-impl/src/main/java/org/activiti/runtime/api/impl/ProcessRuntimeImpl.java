@@ -419,7 +419,7 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
         }
     }
 
-    private ProcessDefinition getProcessDefinitionAndCheckUserHasRights(String processDefinitionId, String processDefinitionKey) {
+    protected ProcessDefinition getProcessDefinitionAndCheckUserHasRights(String processDefinitionId, String processDefinitionKey) {
 
         String checkId = processDefinitionKey != null ? processDefinitionKey : processDefinitionId;
 
