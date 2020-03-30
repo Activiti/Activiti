@@ -185,6 +185,23 @@ public class ProcessRuntimeIT {
     }
 
     @Test
+    public void should_createNewProcessInstanceWithoutRunningIt_whenCreateIsCalled() {
+
+        securityUtil.logInAs("user");
+
+        ProcessInstance categorizeProcess = processRuntime.create(ProcessPayloadBuilder.start()
+            .withProcessDefinitionKey(CATEGORIZE_PROCESS)
+            .withVariable("expectedKey",
+                true)
+            .build());
+
+        assertThat(RuntimeTestConfiguration.completedProcesses).doesNotContain(categorizeProcess.getId());
+        assertThat(categorizeProcess).isNotNull();
+
+        assertThat(categorizeProcess.getStatus()).isEqualTo(ProcessInstance.ProcessInstanceStatus.RUNNING);
+    }
+
+    @Test
     public void createProcessInstanceAndValidateDiscardPath() {
 
         securityUtil.logInAs("user");
