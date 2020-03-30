@@ -47,7 +47,6 @@ import org.activiti.engine.impl.persistence.entity.DeploymentEntityImpl;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntityImpl;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
-import org.activiti.engine.repository.ProcessDefinitionQuery;
 import org.activiti.engine.runtime.ProcessInstanceBuilder;
 import org.activiti.engine.runtime.ProcessInstanceQuery;
 import org.activiti.runtime.api.model.impl.APIDeploymentConverter;
@@ -81,17 +80,14 @@ public class ProcessRuntimeImplTest {
     private ProcessVariablesPayloadValidator processVariableValidator;
 
     @Mock
-    private RepositoryServiceImpl repositoryService;
-
-    @Mock
     APIProcessDefinitionConverter processDefinitionConverter;
-
-    @Mock
-    ProcessDefinitionQuery processDefinitionQuery;
 
     @Before
     public void setUp() {
         initMocks(this);
+
+        RepositoryServiceImpl repositoryService = new RepositoryServiceImpl();
+        repositoryService.setCommandExecutor(commandExecutor);
 
         processRuntime = spy(new ProcessRuntimeImpl(repositoryService,
                 processDefinitionConverter,
