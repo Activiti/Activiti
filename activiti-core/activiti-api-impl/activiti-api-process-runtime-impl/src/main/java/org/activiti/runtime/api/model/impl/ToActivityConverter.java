@@ -28,6 +28,8 @@ public class ToActivityConverter {
                                                              internalEvent.getActivityType());
         activity.setProcessDefinitionId(internalEvent.getProcessDefinitionId());
         activity.setProcessInstanceId(internalEvent.getProcessInstanceId());
+        activity.setExecutionId(internalEvent.getExecutionId());
+
         return activity;
     }
 
