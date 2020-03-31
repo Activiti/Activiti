@@ -22,7 +22,7 @@
     <javax.enterprise.concurrent-api.version>1.0</javax.enterprise.concurrent-api.version>
     <jaxb-api.version>2.3.1</jaxb-api.version>
     <jgraphx.version>3.9.8.1</jgraphx.version>
-    <json-unit.version>1.24.0</json-unit.version>
+    <json-unit.version>2.16.2</json-unit.version>
     <jsr250-api.version>1.0</jsr250-api.version>
     <juel.version>2.2.7</juel.version>
     <hibernate-jpa-2.1-api.version>1.0.2.Final</hibernate-jpa-2.1-api.version>
