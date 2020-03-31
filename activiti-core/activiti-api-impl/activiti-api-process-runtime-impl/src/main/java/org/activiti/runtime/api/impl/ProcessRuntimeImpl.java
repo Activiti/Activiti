@@ -56,6 +56,7 @@ import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.repository.ProcessDefinitionQuery;
+import org.activiti.engine.runtime.ProcessInstanceBuilder;
 import org.activiti.runtime.api.model.impl.APIDeploymentConverter;
 import org.activiti.runtime.api.model.impl.APIProcessDefinitionConverter;
 import org.activiti.runtime.api.model.impl.APIProcessInstanceConverter;
@@ -248,20 +249,27 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
 
     @Override
     public ProcessInstance start(StartProcessPayload startProcessPayload) {
+        return processInstanceConverter.from(this.createProcessInstanceBuilder(startProcessPayload).start());
+    }
 
+    @Override
+    public ProcessInstance create(StartProcessPayload startProcessPayload) {
+        return processInstanceConverter.from(this.createProcessInstanceBuilder(startProcessPayload).create());
+    }
+
+    private ProcessInstanceBuilder createProcessInstanceBuilder(StartProcessPayload startProcessPayload) {
         ProcessDefinition processDefinition = getProcessDefinitionAndCheckUserHasRights(startProcessPayload.getProcessDefinitionId(),
-                                                                                        startProcessPayload.getProcessDefinitionKey());
+            startProcessPayload.getProcessDefinitionKey());
 
         processVariablesValidator.checkStartProcessPayloadVariables(startProcessPayload, processDefinition.getId());
 
-        return processInstanceConverter.from(runtimeService
-                .createProcessInstanceBuilder()
-                .processDefinitionId(processDefinition.getId())
-                .processDefinitionKey(processDefinition.getKey())
-                .businessKey(startProcessPayload.getBusinessKey())
-                .variables(startProcessPayload.getVariables())
-                .name(startProcessPayload.getName())
-                .start());
+        return runtimeService
+            .createProcessInstanceBuilder()
+            .processDefinitionId(processDefinition.getId())
+            .processDefinitionKey(processDefinition.getKey())
+            .businessKey(startProcessPayload.getBusinessKey())
+            .variables(startProcessPayload.getVariables())
+            .name(startProcessPayload.getName());
     }
 
     @Override
@@ -411,7 +419,7 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
         }
     }
 
-    private ProcessDefinition getProcessDefinitionAndCheckUserHasRights(String processDefinitionId, String processDefinitionKey) {
+    protected ProcessDefinition getProcessDefinitionAndCheckUserHasRights(String processDefinitionId, String processDefinitionKey) {
 
         String checkId = processDefinitionKey != null ? processDefinitionKey : processDefinitionId;
 
@@ -430,8 +438,8 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
     public Deployment selectLatestDeployment(){
         return deploymentConverter.from(
                 repositoryService
-                        .createDeploymentQuery()
-                        .singleResult()
+                    .createDeploymentQuery()
+                    .singleResult()
         );
     }
 

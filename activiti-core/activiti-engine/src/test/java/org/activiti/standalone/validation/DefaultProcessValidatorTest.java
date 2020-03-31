@@ -56,7 +56,7 @@ public class DefaultProcessValidatorTest {
       Assert.assertNotNull(bpmnModel);
 
     List<ValidationError> allErrors = processValidator.validate(bpmnModel);
-    Assert.assertEquals(65, allErrors.size());
+    Assert.assertEquals(66, allErrors.size());
 
     String setName = ValidatorSetNames.ACTIVITI_EXECUTABLE_PROCESS; // shortening
                                                                     // it a
@@ -228,6 +228,10 @@ public class DefaultProcessValidatorTest {
     // Messages
     problems = findErrors(allErrors, setName, Problems.MESSAGE_INVALID_ITEM_REF, 1);
     assertCommonErrorFields(problems.get(0));
+
+    //Conditional expression
+      problems = findErrors(allErrors, setName, Problems.SEQ_FLOW_INVALID_CONDITIONAL_EXPRESSION, 1);
+      assertCommonErrorFields(problems.get(0));
 
   }
 
