@@ -1,37 +1,5 @@
-language: java
-sudo: required
-jdk:
-- openjdk8
-- openjdk11
-cache:
-  directories:
-  - "${HOME}/.m2/repository"
-services:
-- docker
-notifications:
-  webhooks:
-    urls:
-    - https://webhooks.gitter.im/e/4eabeeadee998a77068b
-    on_success: change
-    on_failure: always
-    on_start: never
-branches:
-  only:
-  - master
-  - develop
-before_install:
-  - mkdir -p $HOME/.m2
-  - cp settings.xml $HOME/.m2
-  - echo MAVEN_OPTS=-Xmx1536m > ~/.mavenrc
-  - curl -Ls https://github.com/jenkins-x/jx-release-version/releases/download/v1.0.24/jx-release-version_1.0.24_linux_amd64.tar.gz|  tar
-    xvz -C .
-  - curl -Ls -o updatebot.jar   https://repo1.maven.org/maven2/io/jenkins/updatebot/updatebot/1.1.53/updatebot-1.1.53.jar
-  - sudo cp jx-release-version /usr/bin/jx-release-version
-  - sudo cp updatebot.jar  /usr/bin/updatebot.jar
-  - echo "java -jar /usr/bin/updatebot.jar" > updatebot
-  - sudo cp updatebot  /usr/bin/updatebot
-  - sudo chmod a+x /usr/bin/updatebot
-  - echo $(jx-release-version) > VERSION
+import: Activiti/activiti-scripts:.travis.java.yml@dev-almerico-3212-movepropogation-to-trtavis
+
 stages:
 - name: verify
 - name: tag
@@ -63,7 +31,3 @@ jobs:
     stage: updatebot
     script:
     - export VERSION=$(cat VERSION)| make updatebot/push-version
-after_success: bash <(curl -s https://codecov.io/bash)
-after_failure:
-- cat **/target/surefire-reports/*.xml | grep -B 1 -A 10 "<error"
-- cat **/target/failsafe-reports/*.xml | grep -B 1 -A 10 "<error"
