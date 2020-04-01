@@ -198,7 +198,7 @@ public class ProcessRuntimeIT {
         assertThat(RuntimeTestConfiguration.completedProcesses).doesNotContain(categorizeProcess.getId());
         assertThat(categorizeProcess).isNotNull();
 
-        assertThat(categorizeProcess.getStatus()).isEqualTo(ProcessInstance.ProcessInstanceStatus.RUNNING);
+        assertThat(categorizeProcess.getStatus()).isEqualTo(ProcessInstance.ProcessInstanceStatus.CREATED);
     }
 
     @Test
