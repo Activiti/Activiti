@@ -21,7 +21,7 @@ jobs:
       git add --all
       git commit -m "Release $(cat VERSION)" --allow-empty
       git tag -fa v$(cat VERSION) -m "Release version $(cat VERSION)"
-      git push -f -q https://${GITHUB_TOKEN}@github.com/almerico/Activiti.git v$(cat VERSION)
+      git push -f -q https://${GITHUB_TOKEN}@github.com/Activiti/Activiti.git v$(cat VERSION)
   - name: Deploy to nexus
     stage: deploy
     script:
