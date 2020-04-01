@@ -156,6 +156,11 @@ public class ProcessInstanceHelper {
       return processInstance;
   }
 
+  private void updateProcessInstanceStartDate(ExecutionEntity processInstance) {
+      CommandContext commandContext = Context.getCommandContext();
+      commandContext.getExecutionEntityManager().updateProcessInstanceStartDate(processInstance);
+  }
+
   public ProcessInstance createAndStartProcessInstanceWithInitialFlowElement(ProcessDefinition processDefinition,
       String businessKey, String processInstanceName, FlowElement initialFlowElement,
       Process process, Map<String, Object> variables, Map<String, Object> transientVariables, boolean startProcessInstance) {
@@ -180,6 +185,7 @@ public class ProcessInstanceHelper {
 
         Process process = ProcessDefinitionUtil.getProcess(processInstance.getProcessDefinitionId());
 
+        updateProcessInstanceStartDate(processInstance);
 
         // Event sub process handling
         List<MessageEventSubscriptionEntity> messageEventSubscriptions = new LinkedList<>();

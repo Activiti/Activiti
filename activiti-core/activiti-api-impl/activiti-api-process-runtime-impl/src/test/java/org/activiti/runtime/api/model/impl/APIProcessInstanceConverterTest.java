@@ -55,6 +55,16 @@ public class APIProcessInstanceConverterTest {
     }
 
     @Test
+    public void should_returnStatusCreated_when_StartDateIsNull() {
+        ExecutionEntity internalProcessInstance = anInternalProcessInstance(APP_VERSION);
+        internalProcessInstance.setStartTime(null);
+
+        ProcessInstance result = subject.from(internalProcessInstance);
+
+        assertThat(result.getStatus()).isEqualTo(ProcessInstanceStatus.CREATED);
+    }
+
+    @Test
     public void should_convertFromInternalProcessInstance_when_withSuspendedStatus() {
         ExecutionEntity internalProcessInstance = anInternalProcessInstance(APP_VERSION);
 

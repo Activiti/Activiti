@@ -230,7 +230,6 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
 
     String authenticatedUserId = Authentication.getAuthenticatedUserId();
 
-    processInstanceExecution.setStartTime(Context.getProcessEngineConfiguration().getClock().getCurrentTime());
     processInstanceExecution.setStartUserId(authenticatedUserId);
 
     // Store in database
@@ -255,6 +254,10 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
     return processInstanceExecution;
   }
 
+  public ExecutionEntity updateProcessInstanceStartDate(ExecutionEntity processInstanceExecution) {
+      processInstanceExecution.setStartTime(Context.getProcessEngineConfiguration().getClock().getCurrentTime());
+      return update(processInstanceExecution);
+  }
   /**
    * Creates a new execution. properties processDefinition, processInstance and activity will be initialized.
    */
