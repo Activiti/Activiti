@@ -1,4 +1,4 @@
-import: Activiti/activiti-scripts:.travis.java.yml@dev-almerico-3212-movepropogation-to-trtavis
+import: Activiti/activiti-scripts:.travis.java.yml@develop
 
 stages:
 - name: verify
