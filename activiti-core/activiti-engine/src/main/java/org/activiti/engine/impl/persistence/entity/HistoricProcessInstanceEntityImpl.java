@@ -48,12 +48,13 @@ public class HistoricProcessInstanceEntityImpl extends HistoricScopeInstanceEnti
   protected List<HistoricVariableInstanceEntity> queryVariables;
 
   public HistoricProcessInstanceEntityImpl() {
-    
+
   }
 
   public HistoricProcessInstanceEntityImpl(ExecutionEntity processInstance) {
     id = processInstance.getId();
     processInstanceId = processInstance.getId();
+    name = processInstance.getName();
     businessKey = processInstance.getBusinessKey();
     processDefinitionId = processInstance.getProcessDefinitionId();
     processDefinitionKey = processInstance.getProcessDefinitionKey();
@@ -153,11 +154,11 @@ public class HistoricProcessInstanceEntityImpl extends HistoricScopeInstanceEnti
   public String getLocalizedName() {
     return localizedName;
   }
-  
+
   public void setLocalizedName(String localizedName) {
     this.localizedName = localizedName;
   }
-  
+
   public String getDescription() {
     if (localizedDescription != null && localizedDescription.length() > 0) {
       return localizedDescription;
@@ -165,19 +166,19 @@ public class HistoricProcessInstanceEntityImpl extends HistoricScopeInstanceEnti
       return description;
     }
   }
-  
+
   public void setDescription(String description) {
     this.description = description;
   }
-  
+
   public String getLocalizedDescription() {
     return localizedDescription;
   }
-  
+
   public void setLocalizedDescription(String localizedDescription) {
     this.localizedDescription = localizedDescription;
   }
-  
+
   public String getProcessDefinitionKey() {
     return processDefinitionKey;
   }

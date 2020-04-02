@@ -48,6 +48,8 @@ public class APIProcessInstanceConverter extends ListConverter<org.activiti.engi
             return ProcessInstance.ProcessInstanceStatus.SUSPENDED;
         } else if (internalProcessInstance.isEnded()) {
             return ProcessInstance.ProcessInstanceStatus.COMPLETED;
+        }else if(internalProcessInstance.getStartTime() == null){
+            return ProcessInstance.ProcessInstanceStatus.CREATED;
         }
         return ProcessInstance.ProcessInstanceStatus.RUNNING;
     }

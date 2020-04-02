@@ -17,9 +17,9 @@
 package org.activiti.engine.impl.persistence.entity;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 import java.util.ArrayList;
@@ -34,6 +34,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import static org.mockito.AdditionalAnswers.returnsFirstArg;
 
 public class ExecutionEntityManagerImplTest {
 
@@ -77,8 +78,6 @@ public class ExecutionEntityManagerImplTest {
         ExecutionEntity execution = new ExecutionEntityImpl();
         execution.setId("processInstanceId");
         given(executionDataManager.create()).willReturn(execution);
-        Date startTime = new Date();
-        given(clock.getCurrentTime()).willReturn(startTime);
 
         ExecutionEntity processInstanceResult = executionEntityManager.createProcessInstanceExecution(processDefinition, businessKey, tenantId, null);
 
@@ -89,7 +88,6 @@ public class ExecutionEntityManagerImplTest {
         assertThat(processInstanceResult.getAppVersion()).isEqualTo(3);
         assertThat(processInstanceResult.getBusinessKey()).isEqualTo(businessKey);
         assertThat(processInstanceResult.isScope()).isTrue();
-        assertThat(processInstanceResult.getStartTime()).isEqualTo(startTime);
         assertThat(processInstanceResult.getTenantId()).isEqualTo(tenantId);
         assertThat(processInstanceResult.getProcessInstanceId()).isEqualTo("processInstanceId");
         assertThat(processInstanceResult.getRootProcessInstanceId()).isEqualTo("processInstanceId");
@@ -170,5 +168,31 @@ public class ExecutionEntityManagerImplTest {
         verify(executionDataManager).insert(subProcessInstance);
         verify(eventDispatcher).isEnabled();
         assertThat(superExecution.getSubProcessInstance()).isEqualTo(subProcessInstance);
+    }
+
+
+    @Test
+    public void should_updateStartDateOfProcessInstance() {
+        ProcessDefinitionEntity processDefinition = new ProcessDefinitionEntityImpl();
+        processDefinition.setId("processDefinitionId");
+        processDefinition.setKey("processDefinitionKey");
+        processDefinition.setName("processDefinitionName");
+        processDefinition.setVersion(1);
+        String businessKey = "businessKey";
+        String tenantId = "tenantId";
+        Date startTime = new Date();
+        given(clock.getCurrentTime()).willReturn(startTime);
+        PerformanceSettings performanceSettings = mock(PerformanceSettings.class);
+        given(processEngineConfiguration.getPerformanceSettings()).willReturn(performanceSettings);
+        ExecutionEntity execution = new ExecutionEntityImpl();
+        execution.setId("processInstanceId");
+        given(executionDataManager.create()).willReturn(execution);
+        when(executionDataManager.update(any(ExecutionEntity.class))).then(returnsFirstArg());
+
+        ExecutionEntity processInstanceResult = executionEntityManager.createProcessInstanceExecution(processDefinition, businessKey, tenantId, null);
+        assertThat(processInstanceResult.getStartTime()).isNull();
+
+        ExecutionEntity processInstanceUpdated = executionEntityManager.updateProcessInstanceStartDate(processInstanceResult);
+        assertThat(processInstanceUpdated.getStartTime()).isEqualTo(startTime);
     }
 }
