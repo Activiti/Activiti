@@ -14,6 +14,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest
 public class DemoApplicationTests {
 
+    private static final String PROCESS_DEFINITION_KEY = "categorizeProcess";
+
     @Autowired
     private ProcessRuntime processRuntime;
 
@@ -23,8 +25,12 @@ public class DemoApplicationTests {
     @Test
     public void contextLoads() {
         securityUtil.logInAs("system");
-        ProcessDefinition processDefinition = processRuntime.processDefinition("categorizeProcess");
+
+        ProcessDefinition processDefinition = processRuntime.processDefinition(PROCESS_DEFINITION_KEY);
+
         assertThat(processDefinition).isNotNull();
+        assertThat(processDefinition.getKey()).isEqualTo(PROCESS_DEFINITION_KEY);
+        assertThat(processDefinition.getAppVersion()).isNull();
     }
 
 }

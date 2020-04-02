@@ -25,6 +25,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 import java.util.Collections;
@@ -132,6 +133,26 @@ public class ProcessRuntimeImplTest {
         //then
         verify(runtimeService).updateBusinessKey("processId", "businessKey");
         verifyNoMoreInteractions(internalProcess);
+    }
+
+    @Test
+    public void should_getProcessDefinitionById_when_appVersionIsNull() {
+        String processDefinitionId = "processDefinitionId";
+        String processDefinitionKey = "processDefinitionKey";
+
+        ProcessDefinitionEntityImpl processDefinition = new ProcessDefinitionEntityImpl();
+        processDefinition.setId(processDefinitionId);
+        processDefinition.setKey(processDefinitionKey);
+        processDefinition.setAppVersion(null);
+        List<ProcessDefinition> findProcessDefinitionResult = Collections.singletonList(processDefinition);
+
+        given(commandExecutor.execute(any())).willReturn(findProcessDefinitionResult);
+        given(securityPoliciesManager.canRead(processDefinitionKey)).willReturn(true);
+
+        processRuntime.processDefinition(processDefinitionId);
+
+        verify(processDefinitionConverter).from(processDefinition);
+        verifyZeroInteractions(deploymentConverter);
     }
 
     @Test
