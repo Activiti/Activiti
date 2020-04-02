@@ -31,6 +31,3 @@ jobs:
     stage: updatebot
     script:
     - export VERSION=$(cat VERSION)| make updatebot/push-version
-env:
-  global:
-    secure: "XqLfCDdsDgWYlH5XLc1RaJcWwaajNFYsrl6mM4gzj7UTUdw46ymwf9BuSVWOGG3Ti46OEryaLmwD1o0fAnDjbs7zFMDsyzfprkDS2Ju2nxteN9b1dKYuE0MuyKNSYtq6o6r+8HBMDprpe0gm4bcmRXYb/zaOdNPjRI7bYY2SRYA="
