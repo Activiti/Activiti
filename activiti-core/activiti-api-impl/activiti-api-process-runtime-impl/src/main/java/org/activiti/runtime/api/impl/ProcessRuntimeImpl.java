@@ -256,6 +256,18 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
     }
 
     @Override
+    public ProcessInstance startCreatedProcess(String processInstanceId) {
+        org.activiti.engine.runtime.ProcessInstance internalProcessInstance = runtimeService
+                                                                                .createProcessInstanceQuery()
+                                                                                .processInstanceId(processInstanceId)
+                                                                                .singleResult();
+        if (internalProcessInstance == null) {
+            throw new NotFoundException("Unable to find process instance for the given id:'" + processInstanceId + "'");
+        }
+       return processInstanceConverter.from(runtimeService.startCreatedProcessInstance(internalProcessInstance));
+    }
+
+    @Override
     public ProcessInstance create(StartProcessPayload startProcessPayload) {
         return processInstanceConverter.from(this.createProcessInstanceBuilder(startProcessPayload).create());
     }

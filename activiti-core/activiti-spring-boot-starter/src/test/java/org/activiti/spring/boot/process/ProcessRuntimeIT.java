@@ -17,9 +17,11 @@ import org.activiti.api.process.model.payloads.UpdateProcessPayload;
 import org.activiti.api.process.runtime.ProcessAdminRuntime;
 import org.activiti.api.process.runtime.ProcessRuntime;
 import org.activiti.api.process.runtime.conf.ProcessRuntimeConfiguration;
+import org.activiti.api.runtime.shared.NotFoundException;
 import org.activiti.api.runtime.shared.query.Page;
 import org.activiti.api.runtime.shared.query.Pageable;
 import org.activiti.core.common.spring.security.policies.ProcessSecurityPoliciesManager;
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.runtime.api.impl.ProcessAdminRuntimeImpl;
@@ -199,6 +201,48 @@ public class ProcessRuntimeIT {
         assertThat(categorizeProcess).isNotNull();
 
         assertThat(categorizeProcess.getStatus()).isEqualTo(ProcessInstance.ProcessInstanceStatus.CREATED);
+    }
+
+    @Test
+    public void should_startAnAlreadyCreatedProcess_when_startCreatedProcessIsCalled() {
+
+        securityUtil.logInAs("user");
+
+        ProcessInstance categorizeProcessCreated = processRuntime.create(ProcessPayloadBuilder.start()
+            .withProcessDefinitionKey(CATEGORIZE_PROCESS)
+            .withVariable("expectedKey",
+                true)
+            .build());
+        assertThat(categorizeProcessCreated.getStatus()).isEqualTo(ProcessInstance.ProcessInstanceStatus.CREATED);
+
+        ProcessInstance categorizeProcess = processRuntime.startCreatedProcess(categorizeProcessCreated.getId());
+
+        assertThat(RuntimeTestConfiguration.completedProcesses).contains(categorizeProcess.getId());
+        assertThat(categorizeProcess).isNotNull();
+        assertThat(categorizeProcess.getStatus()).isEqualTo(ProcessInstance.ProcessInstanceStatus.COMPLETED);
+    }
+
+    @Test
+    public void should_throwAnError_when_ProcessInstanceIsAlreadyStartedOrCompleted() {
+
+        securityUtil.logInAs("user");
+
+        ProcessInstance categorizeProcess = processRuntime.start(ProcessPayloadBuilder.start()
+            .withProcessDefinitionKey(CATEGORIZE_HUMAN_PROCESS)
+            .withVariable("expectedKey",
+                true)
+            .withVariable("name","garth")
+            .withVariable("age",45)
+            .withBusinessKey("my business key")
+            .build());
+
+        assertThat(categorizeProcess.getStatus()).isEqualTo(ProcessInstance.ProcessInstanceStatus.RUNNING);
+
+        Throwable throwable = catchThrowable(() -> processRuntime.startCreatedProcess(categorizeProcess.getId()));
+
+        assertThat(throwable)
+            .isInstanceOf(ActivitiIllegalArgumentException.class)
+            .hasMessage("Process instance "+categorizeProcess.getId()+" has already been started");
     }
 
     @Test
