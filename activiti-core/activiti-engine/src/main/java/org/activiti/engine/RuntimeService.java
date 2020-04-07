@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.activiti.api.runtime.shared.NotFoundException;
 import org.activiti.bpmn.model.FlowNode;
 import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.delegate.VariableScope;
@@ -47,12 +48,14 @@ public interface RuntimeService {
   ProcessInstanceBuilder createProcessInstanceBuilder();
 
   /**
-   * Starts a new process instance in the latest version of the process definition with the given key.
+   * Starts a process instance previously created.
    *
    * @param createdProcessInstance
    *          The already created process instance.
    * @throws ActivitiObjectNotFoundException
-   *           when no process definition is deployed with the given key.
+   *          when user does not have permission to start the process instance
+   * @throws NotFoundException
+   *          when no process instance with the given id is found
    */
   ProcessInstance startCreatedProcessInstance(ProcessInstance createdProcessInstance);
 

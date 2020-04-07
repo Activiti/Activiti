@@ -22,7 +22,7 @@ public class StartCreatedProcessInstanceCmd<T> implements Command<ProcessInstanc
     @Override
     public ProcessInstance execute(CommandContext commandContext) {
         if(this.internalProcessInstance.getStartTime() != null){
-            throw new ActivitiIllegalArgumentException("Process instance "+this.internalProcessInstance.getProcessInstanceId()+ " has already been started");
+            throw new ActivitiIllegalArgumentException("Process instance " + this.internalProcessInstance.getProcessInstanceId() + " has already been started");
         }
 
         ExecutionEntity processExecution = (ExecutionEntity) this.internalProcessInstance;

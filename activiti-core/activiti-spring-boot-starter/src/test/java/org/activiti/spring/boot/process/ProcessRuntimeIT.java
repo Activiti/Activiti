@@ -18,6 +18,9 @@ import org.activiti.api.process.runtime.ProcessRuntime;
 import org.activiti.api.process.runtime.conf.ProcessRuntimeConfiguration;
 import org.activiti.api.runtime.shared.query.Page;
 import org.activiti.api.runtime.shared.query.Pageable;
+import org.activiti.api.task.model.Task;
+import org.activiti.api.task.model.builders.TaskPayloadBuilder;
+import org.activiti.api.task.runtime.TaskRuntime;
 import org.activiti.core.common.spring.security.policies.ProcessSecurityPoliciesManager;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.RepositoryService;
@@ -48,6 +51,7 @@ public class ProcessRuntimeIT {
 
     private static final String CATEGORIZE_PROCESS = "categorizeProcess";
     private static final String CATEGORIZE_HUMAN_PROCESS = "categorizeHumanProcess";
+    private static final String SINGLE_TASK_PROCESS = "SingleTaskProcess";
     private static final String ONE_STEP_PROCESS = "OneStepProcess";
 
     private static final String SUB_PROCESS = "subProcess";
@@ -100,6 +104,9 @@ public class ProcessRuntimeIT {
 
     @Autowired
     private ProcessCleanUpUtil processCleanUpUtil;
+
+    @Autowired
+    private TaskRuntime taskRuntime;
 
     @After
     public void cleanUp(){
@@ -204,20 +211,33 @@ public class ProcessRuntimeIT {
     @Test
     public void should_startAnAlreadyCreatedProcess_when_startCreatedProcessIsCalled() {
 
-        securityUtil.logInAs("user");
+        securityUtil.logInAs("garth");
 
-        ProcessInstance categorizeProcessCreated = processRuntime.create(ProcessPayloadBuilder.start()
-            .withProcessDefinitionKey(CATEGORIZE_PROCESS)
-            .withVariable("expectedKey",
-                true)
+        ProcessInstance singleTaskProcessCreated = processRuntime.create(ProcessPayloadBuilder.start()
+            .withProcessDefinitionKey(SINGLE_TASK_PROCESS)
             .build());
-        assertThat(categorizeProcessCreated.getStatus()).isEqualTo(ProcessInstance.ProcessInstanceStatus.CREATED);
 
-        ProcessInstance categorizeProcess = processRuntime.startCreatedProcess(categorizeProcessCreated.getId());
+        assertThat(singleTaskProcessCreated.getStatus()).isEqualTo(ProcessInstance.ProcessInstanceStatus.CREATED);
+        Page<Task> tasks = taskRuntime.tasks(Pageable.of(0, 50),
+            TaskPayloadBuilder
+                .tasks()
+                .withProcessInstanceId(singleTaskProcessCreated.getId())
+                .build());
+        assertThat(tasks.getTotalItems()).isEqualTo(0);
 
-        assertThat(RuntimeTestConfiguration.completedProcesses).contains(categorizeProcess.getId());
-        assertThat(categorizeProcess).isNotNull();
-        assertThat(categorizeProcess.getStatus()).isEqualTo(ProcessInstance.ProcessInstanceStatus.COMPLETED);
+        ProcessInstance singleTaskProcessStarted = processRuntime.startCreatedProcess(singleTaskProcessCreated.getId());
+
+        tasks = taskRuntime.tasks(Pageable.of(0, 50),
+            TaskPayloadBuilder
+                .tasks()
+                .withProcessInstanceId(singleTaskProcessCreated.getId())
+                .build());
+        assertThat(tasks.getTotalItems()).isEqualTo(1);
+        assertThat(tasks.getContent().get(0).getName()).isEqualTo("my-task");
+
+        assertThat(RuntimeTestConfiguration.createdTasks).contains(tasks.getContent().get(0).getId());
+        assertThat(singleTaskProcessStarted).isNotNull();
+        assertThat(singleTaskProcessStarted.getStatus()).isEqualTo(ProcessInstance.ProcessInstanceStatus.RUNNING);
     }
 
     @Test

@@ -168,7 +168,7 @@ public class ExecutionListenerOnTransactionTest extends SpringActivitiTestCase {
     }
 
     @Deployment
-    public void testOnCloseFailureExecutionListenersWithTransactionalOperation() {
+    public void testOnCloseFailureExecutionListenersWithTransactionalOperation() throws InterruptedException {
 
         MyTransactionalOperationTransactionDependentExecutionListener.clear();
 
@@ -183,6 +183,7 @@ public class ExecutionListenerOnTransactionTest extends SpringActivitiTestCase {
                          historicProcessInstances.get(0).getProcessDefinitionKey());
         }
 
+        Thread.sleep(3);
         ProcessInstance secondProcessInstance = runtimeService.startProcessInstanceByKey("secondTransactionDependentExecutionListenerProcess");
         assertProcessEnded(secondProcessInstance.getId());
 

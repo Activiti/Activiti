@@ -31,14 +31,14 @@ public class MyTransactionalOperationTransactionDependentExecutionListener exten
   @Override
   public void notify(String processInstanceId, String executionId, FlowElement currentFlowElement,
                      Map<String, Object> executionVariables, Map<String, Object> customPropertiesMap) {
-    
+
     super.notify(processInstanceId, executionId, currentFlowElement, executionVariables, customPropertiesMap);
-    
+
     if (Context.getProcessEngineConfiguration().getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
       HistoryService historyService = Context.getProcessEngineConfiguration().getHistoryService();
-  
+
       // delete first historic instance
-      List<HistoricProcessInstance> historicProcessInstances = historyService.createHistoricProcessInstanceQuery().list();
+      List<HistoricProcessInstance> historicProcessInstances = historyService.createHistoricProcessInstanceQuery().orderByProcessInstanceStartTime().asc().list();
       historyService.deleteHistoricProcessInstance(historicProcessInstances.get(0).getId());
     }
   }
