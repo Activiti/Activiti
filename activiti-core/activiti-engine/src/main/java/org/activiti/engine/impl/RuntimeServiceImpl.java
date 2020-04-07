@@ -25,8 +25,39 @@ import org.activiti.engine.RuntimeService;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventListener;
 import org.activiti.engine.delegate.event.ActivitiEventType;
-
-import org.activiti.engine.impl.cmd.*;
+import org.activiti.engine.impl.cmd.DeleteProcessInstanceCmd;
+import org.activiti.engine.impl.cmd.GetExecutionVariablesCmd;
+import org.activiti.engine.impl.cmd.SetProcessInstanceBusinessKeyCmd;
+import org.activiti.engine.impl.cmd.StartCreatedProcessInstanceCmd;
+import org.activiti.engine.impl.cmd.StartProcessInstanceCmd;
+import org.activiti.engine.impl.cmd.GetExecutionVariableInstancesCmd;
+import org.activiti.engine.impl.cmd.GetExecutionsVariablesCmd;
+import org.activiti.engine.impl.cmd.GetExecutionVariableCmd;
+import org.activiti.engine.impl.cmd.SetProcessInstanceNameCmd;
+import org.activiti.engine.impl.cmd.ExecuteActivityForAdhocSubProcessCmd;
+import org.activiti.engine.impl.cmd.CompleteAdhocSubProcessCmd;
+import org.activiti.engine.impl.cmd.ActivateProcessInstanceCmd;
+import org.activiti.engine.impl.cmd.FindActiveActivityIdsCmd;
+import org.activiti.engine.impl.cmd.SuspendProcessInstanceCmd;
+import org.activiti.engine.impl.cmd.CreateProcessInstanceCmd;
+import org.activiti.engine.impl.cmd.DispatchEventCommand;
+import org.activiti.engine.impl.cmd.GetEnabledActivitiesForAdhocSubProcessCmd;
+import org.activiti.engine.impl.cmd.GetIdentityLinksForProcessInstanceCmd;
+import org.activiti.engine.impl.cmd.AddEventListenerCommand;
+import org.activiti.engine.impl.cmd.SignalEventReceivedCmd;
+import org.activiti.engine.impl.cmd.MessageEventReceivedCmd;
+import org.activiti.engine.impl.cmd.DeleteIdentityLinkForProcessInstanceCmd;
+import org.activiti.engine.impl.cmd.SetExecutionVariablesCmd;
+import org.activiti.engine.impl.cmd.GetExecutionVariableInstanceCmd;
+import org.activiti.engine.impl.cmd.HasExecutionVariableCmd;
+import org.activiti.engine.impl.cmd.RemoveExecutionVariablesCmd;
+import org.activiti.engine.impl.cmd.GetDataObjectsCmd;
+import org.activiti.engine.impl.cmd.GetDataObjectCmd;
+import org.activiti.engine.impl.cmd.RemoveEventListenerCommand;
+import org.activiti.engine.impl.cmd.StartProcessInstanceByMessageCmd;
+import org.activiti.engine.impl.cmd.TriggerCmd;
+import org.activiti.engine.impl.cmd.GetProcessInstanceEventsCmd;
+import org.activiti.engine.impl.cmd.AddIdentityLinkForProcessInstanceCmd;
 import org.activiti.engine.impl.persistence.entity.VariableInstance;
 import org.activiti.engine.impl.runtime.ProcessInstanceBuilderImpl;
 import org.activiti.engine.runtime.DataObject;
@@ -492,7 +523,7 @@ public class RuntimeServiceImpl extends ServiceImpl implements RuntimeService {
 
     @Override
     public ProcessInstance startCreatedProcessInstance(ProcessInstance createdProcessInstance) {
-        return commandExecutor.execute(new StartCreatedProcessInstanceCmd<ProcessInstance>(createdProcessInstance));
+        return commandExecutor.execute(new StartCreatedProcessInstanceCmd<>(createdProcessInstance));
     }
 
     public ProcessInstance startProcessInstance(ProcessInstanceBuilderImpl processInstanceBuilder) {

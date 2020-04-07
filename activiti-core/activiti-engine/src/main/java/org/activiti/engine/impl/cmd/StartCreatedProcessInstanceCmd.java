@@ -13,7 +13,6 @@ public class StartCreatedProcessInstanceCmd<T> implements Command<ProcessInstanc
 
     private static final long serialVersionUID = 1L;
     private ProcessInstance internalProcessInstance;
-    private ProcessInstanceHelper processInstanceHelper;
 
     public StartCreatedProcessInstanceCmd(ProcessInstance internalProcessInstance){
         this.internalProcessInstance = internalProcessInstance;
@@ -26,7 +25,7 @@ public class StartCreatedProcessInstanceCmd<T> implements Command<ProcessInstanc
         }
 
         ExecutionEntity processExecution = (ExecutionEntity) this.internalProcessInstance;
-        processInstanceHelper = commandContext.getProcessEngineConfiguration().getProcessInstanceHelper();
+        ProcessInstanceHelper processInstanceHelper = commandContext.getProcessEngineConfiguration().getProcessInstanceHelper();
         processInstanceHelper.startProcessInstance(processExecution, commandContext, processExecution.getVariables(), processExecution.getCurrentFlowElement());
         return processExecution;
     }
