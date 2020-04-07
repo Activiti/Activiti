@@ -1,4 +1,4 @@
-import: Activiti/activiti-scripts:.travis.java.yml@develop
+import: Activiti/activiti-scripts:.travis.java.yml@master
 
 stages:
 - name: verify
