@@ -19,6 +19,7 @@ package org.activiti.runtime.api.impl;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -269,6 +270,7 @@ public class ProcessRuntimeImplTest {
         apiProcessInstance.setBusinessKey("business-result");
         apiProcessInstance.setId("999-999");
         given(processInstanceConverter.from(internalProcess)).willReturn(apiProcessInstance);
+        given(securityPoliciesManager.canRead(any())).willReturn(true);
 
         //when
         ProcessInstance createdProcessInstance = processRuntime.startCreatedProcess(processInstanceId);

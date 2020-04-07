@@ -261,13 +261,12 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
                                                                                 .createProcessInstanceQuery()
                                                                                 .processInstanceId(processInstanceId)
                                                                                 .singleResult();
+        if (internalProcessInstance == null) {
+            throw new NotFoundException("Unable to find process instance for the given id:'" + processInstanceId + "'");
+        }
 
         if (!securityPoliciesManager.canRead(internalProcessInstance.getProcessDefinitionKey())) {
             throw new ActivitiObjectNotFoundException("You cannot read the process instance with Id:'" + processInstanceId + "' due to security policies violation");
-        }
-
-        if (internalProcessInstance == null) {
-            throw new NotFoundException("Unable to find process instance for the given id:'" + processInstanceId + "'");
         }
        return processInstanceConverter.from(runtimeService.startCreatedProcessInstance(internalProcessInstance));
     }
