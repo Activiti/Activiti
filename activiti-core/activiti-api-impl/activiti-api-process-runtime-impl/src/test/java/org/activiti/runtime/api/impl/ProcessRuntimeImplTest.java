@@ -20,7 +20,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 import java.util.Collections;
@@ -39,7 +45,6 @@ import org.activiti.core.common.spring.security.policies.ProcessSecurityPolicies
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.impl.RepositoryServiceImpl;
-import org.activiti.engine.impl.cmd.StartCreatedProcessInstanceCmd;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.persistence.entity.DeploymentEntityImpl;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntityImpl;
@@ -126,7 +131,7 @@ public class ProcessRuntimeImplTest {
                 .build();
 
         //when
-        ProcessInstance updatedProcess = processRuntime.update(updateProcessPayload);
+        processRuntime.update(updateProcessPayload);
 
         //then
         verify(runtimeService).updateBusinessKey("processId", "businessKey");
