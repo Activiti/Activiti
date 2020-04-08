@@ -1,9 +1,9 @@
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.activiti.api.runtime.shared.NotFoundException;
 import org.activiti.bpmn.model.FlowNode;
 import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.delegate.VariableScope;
@@ -39,16 +40,28 @@ import org.activiti.engine.task.IdentityLinkType;
 
 @Internal
 public interface RuntimeService {
-  
-  /** 
+
+  /**
    * Create a {@link ProcessInstanceBuilder}, that allows to set various options for starting a process instance,
-   * as an alternative to the various startProcessInstanceByXX methods. 
+   * as an alternative to the various startProcessInstanceByXX methods.
    */
   ProcessInstanceBuilder createProcessInstanceBuilder();
-  
+
+  /**
+   * Starts a process instance previously created.
+   *
+   * @param createdProcessInstance
+   *          The already created process instance.
+   * @throws ActivitiObjectNotFoundException
+   *          when user does not have permission to start the process instance
+   * @throws NotFoundException
+   *          when no process instance with the given id is found
+   */
+  ProcessInstance startCreatedProcessInstance(ProcessInstance createdProcessInstance);
+
   /**
    * Starts a new process instance in the latest version of the process definition with the given key.
-   * 
+   *
    * @param processDefinitionKey
    *          key of process definition, cannot be null.
    * @throws ActivitiObjectNotFoundException
@@ -58,11 +71,11 @@ public interface RuntimeService {
 
   /**
    * Starts a new process instance in the latest version of the process definition with the given key.
-   * 
+   *
    * A business key can be provided to associate the process instance with a certain identifier that has a clear business meaning. For example in an order process, the business key could be an order
    * id. This business key can then be used to easily look up that process instance , see {@link ProcessInstanceQuery#processInstanceBusinessKey(String)}. Providing such a business key is definitely a
    * best practice.
-   * 
+   *
    * @param processDefinitionKey
    *          key of process definition, cannot be null.
    * @param businessKey
@@ -74,7 +87,7 @@ public interface RuntimeService {
 
   /**
    * Starts a new process instance in the latest version of the process definition with the given key
-   * 
+   *
    * @param processDefinitionKey
    *          key of process definition, cannot be null.
    * @param variables
@@ -86,13 +99,13 @@ public interface RuntimeService {
 
   /**
    * Starts a new process instance in the latest version of the process definition with the given key.
-   * 
+   *
    * A business key can be provided to associate the process instance with a certain identifier that has a clear business meaning. For example in an order process, the business key could be an order
    * id. This business key can then be used to easily look up that process instance , see {@link ProcessInstanceQuery#processInstanceBusinessKey(String)}. Providing such a business key is definitely a
    * best practice.
-   * 
+   *
    * The combination of processdefinitionKey-businessKey must be unique.
-   * 
+   *
    * @param processDefinitionKey
    *          key of process definition, cannot be null.
    * @param variables
@@ -126,7 +139,7 @@ public interface RuntimeService {
 
   /**
    * Starts a new process instance in the exactly specified version of the process definition with the given id.
-   * 
+   *
    * @param processDefinitionId
    *          the id of the process definition, cannot be null.
    * @throws ActivitiObjectNotFoundException
@@ -136,11 +149,11 @@ public interface RuntimeService {
 
   /**
    * Starts a new process instance in the exactly specified version of the process definition with the given id.
-   * 
+   *
    * A business key can be provided to associate the process instance with a certain identifier that has a clear business meaning. For example in an order process, the business key could be an order
    * id. This business key can then be used to easily look up that process instance , see {@link ProcessInstanceQuery#processInstanceBusinessKey(String)}. Providing such a business key is definitely a
    * best practice.
-   * 
+   *
    * @param processDefinitionId
    *          the id of the process definition, cannot be null.
    * @param businessKey
@@ -152,7 +165,7 @@ public interface RuntimeService {
 
   /**
    * Starts a new process instance in the exactly specified version of the process definition with the given id.
-   * 
+   *
    * @param processDefinitionId
    *          the id of the process definition, cannot be null.
    * @param variables
@@ -164,11 +177,11 @@ public interface RuntimeService {
 
   /**
    * Starts a new process instance in the exactly specified version of the process definition with the given id.
-   * 
+   *
    * A business key can be provided to associate the process instance with a certain identifier that has a clear business meaning. For example in an order process, the business key could be an order
    * id. This business key can then be used to easily look up that process instance , see {@link ProcessInstanceQuery#processInstanceBusinessKey(String)}. Providing such a business key is definitely a
    * best practice.
-   * 
+   *
    * @param processDefinitionId
    *          the id of the process definition, cannot be null.
    * @param variables
@@ -182,7 +195,7 @@ public interface RuntimeService {
    * <p>
    * Signals the process engine that a message is received and starts a new {@link ProcessInstance}.
    * </p>
-   * 
+   *
    * <p>
    * Calling this method can have two different outcomes:
    * <ul>
@@ -190,15 +203,15 @@ public interface RuntimeService {
    * <li>If no subscription to a message with the given name exists, {@link ActivitiException} is thrown</li>
    * </ul>
    * </p>
-   * 
+   *
    * @param messageName
    *          the 'name' of the message as specified as an attribute on the bpmn20 {@code <message name="messageName" />} element.
-   * 
+   *
    * @return the {@link ProcessInstance} object representing the started process instance
-   * 
+   *
    * @throws ActivitiException
    *           if no subscription to a message with the given name exists
-   * 
+   *
    * @since 5.9
    */
   ProcessInstance startProcessInstanceByMessage(String messageName);
@@ -212,17 +225,17 @@ public interface RuntimeService {
    * <p>
    * Signals the process engine that a message is received and starts a new {@link ProcessInstance}.
    * </p>
-   * 
+   *
    * See {@link #startProcessInstanceByMessage(String, Map)}. This method allows specifying a business key.
-   * 
+   *
    * @param messageName
    *          the 'name' of the message as specified as an attribute on the bpmn20 {@code <message name="messageName" />} element.
    * @param businessKey
    *          the business key which is added to the started process instance
-   * 
+   *
    * @throws ActivitiException
    *           if no subscription to a message with the given name exists
-   * 
+   *
    * @since 5.10
    */
   ProcessInstance startProcessInstanceByMessage(String messageName, String businessKey);
@@ -236,18 +249,18 @@ public interface RuntimeService {
    * <p>
    * Signals the process engine that a message is received and starts a new {@link ProcessInstance}.
    * </p>
-   * 
+   *
    * See {@link #startProcessInstanceByMessage(String)}. In addition, this method allows specifying a the payload of the message as a map of process variables.
-   * 
+   *
    * @param messageName
    *          the 'name' of the message as specified as an attribute on the bpmn20 {@code <message name="messageName" />} element.
    * @param processVariables
    *          the 'payload' of the message. The variables are added as processes variables to the started process instance.
    * @return the {@link ProcessInstance} object representing the started process instance
-   * 
+   *
    * @throws ActivitiException
    *           if no subscription to a message with the given name exists
-   * 
+   *
    * @since 5.9
    */
   ProcessInstance startProcessInstanceByMessage(String messageName, Map<String, Object> processVariables);
@@ -261,9 +274,9 @@ public interface RuntimeService {
    * <p>
    * Signals the process engine that a message is received and starts a new {@link ProcessInstance}.
    * </p>
-   * 
+   *
    * See {@link #startProcessInstanceByMessage(String, Map)}. In addition, this method allows specifying a business key.
-   * 
+   *
    * @param messageName
    *          the 'name' of the message as specified as an attribute on the bpmn20 {@code <message name="messageName" />} element.
    * @param businessKey
@@ -271,10 +284,10 @@ public interface RuntimeService {
    * @param processVariables
    *          the 'payload' of the message. The variables are added as processes variables to the started process instance.
    * @return the {@link ProcessInstance} object representing the started process instance
-   * 
+   *
    * @throws ActivitiException
    *           if no subscription to a message with the given name exists
-   * 
+   *
    * @since 5.9
    */
   ProcessInstance startProcessInstanceByMessage(String messageName, String businessKey, Map<String, Object> processVariables);
@@ -286,7 +299,7 @@ public interface RuntimeService {
 
   /**
    * Delete an existing runtime process instance.
-   * 
+   *
    * @param processInstanceId
    *          id of process instance to delete, cannot be null.
    * @param deleteReason
@@ -298,7 +311,7 @@ public interface RuntimeService {
 
   /**
    * Finds the activity ids for all executions that are waiting in activities. This is a list because a single activity can be active multiple times.
-   * 
+   *
    * @param executionId
    *          id of the execution, cannot be null.
    * @throws ActivitiObjectNotFoundException
@@ -308,7 +321,7 @@ public interface RuntimeService {
 
   /**
    * Sends an external trigger to an activity instance that is waiting inside the given execution.
-   * 
+   *
    * @param executionId
    *          id of execution to signal, cannot be null.
    * @throws ActivitiObjectNotFoundException
@@ -318,7 +331,7 @@ public interface RuntimeService {
 
   /**
    * Sends an external trigger to an activity instance that is waiting inside the given execution.
-   * 
+   *
    * @param executionId
    *          id of execution to signal, cannot be null.
    * @param processVariables
@@ -327,8 +340,8 @@ public interface RuntimeService {
    *           when no execution is found for the given executionId.
    */
   void trigger(String executionId, Map<String, Object> processVariables);
-  
-  
+
+
   /**
    * Similar to {@link #trigger(String, Map)}, but with an extra parameter that allows to pass
    * transient variables.
@@ -337,7 +350,7 @@ public interface RuntimeService {
 
   /**
    * Updates the business key for the provided process instance
-   * 
+   *
    * @param processInstanceId
    *          id of the process instance to set the business key, cannot be null
    * @param businessKey
@@ -350,7 +363,7 @@ public interface RuntimeService {
 
   /**
    * Involves a user with a process instance. The type of identity link is defined by the given identityLinkType.
-   * 
+   *
    * @param processInstanceId
    *          id of the process instance, cannot be null.
    * @param userId
@@ -364,7 +377,7 @@ public interface RuntimeService {
 
   /**
    * Involves a group with a process instance. The type of identityLink is defined by the given identityLink.
-   * 
+   *
    * @param processInstanceId
    *          id of the process instance, cannot be null.
    * @param groupId
@@ -378,7 +391,7 @@ public interface RuntimeService {
 
   /**
    * Convenience shorthand for {@link #addUserIdentityLink(String, String, String)}; with type {@link IdentityLinkType#CANDIDATE}
-   * 
+   *
    * @param processInstanceId
    *          id of the process instance, cannot be null.
    * @param userId
@@ -390,7 +403,7 @@ public interface RuntimeService {
 
   /**
    * Convenience shorthand for {@link #addGroupIdentityLink(String, String, String)}; with type {@link IdentityLinkType#CANDIDATE}
-   * 
+   *
    * @param processInstanceId
    *          id of the process instance, cannot be null.
    * @param groupId
@@ -402,7 +415,7 @@ public interface RuntimeService {
 
   /**
    * Convenience shorthand for {@link #deleteUserIdentityLink(String, String, String)}; with type {@link IdentityLinkType#CANDIDATE}
-   * 
+   *
    * @param processInstanceId
    *          id of the process instance, cannot be null.
    * @param userId
@@ -414,7 +427,7 @@ public interface RuntimeService {
 
   /**
    * Convenience shorthand for {@link #deleteGroupIdentityLink(String, String, String)}; with type {@link IdentityLinkType#CANDIDATE}
-   * 
+   *
    * @param processInstanceId
    *          id of the process instance, cannot be null.
    * @param groupId
@@ -426,7 +439,7 @@ public interface RuntimeService {
 
   /**
    * Removes the association between a user and a process instance for the given identityLinkType.
-   * 
+   *
    * @param processInstanceId
    *          id of the process instance, cannot be null.
    * @param userId
@@ -440,7 +453,7 @@ public interface RuntimeService {
 
   /**
    * Removes the association between a group and a process instance for the given identityLinkType.
-   * 
+   *
    * @param processInstanceId
    *          id of the process instance, cannot be null.
    * @param groupId
@@ -462,7 +475,7 @@ public interface RuntimeService {
 
   /**
    * All variables visible from the given execution scope (including parent scopes).
-   * 
+   *
    * @param executionId
    *          id of execution, cannot be null.
    * @return the variables or an empty map if no such variables are found.
@@ -470,7 +483,7 @@ public interface RuntimeService {
    *           when no execution is found for the given executionId.
    */
   Map<String, Object> getVariables(String executionId);
-  
+
   /**
    * All variables visible from the given execution scope (including parent scopes).
    *
@@ -481,11 +494,11 @@ public interface RuntimeService {
    *           when no execution is found for the given executionId.
    */
   Map<String, VariableInstance> getVariableInstances(String executionId);
-  
+
   /**
    * All variables visible from the given execution scope (including parent
    * scopes).
-   * 
+   *
    * @param executionIds
    *          ids of execution, cannot be null.
    * @return the variables.
@@ -495,7 +508,7 @@ public interface RuntimeService {
   /**
    * All variable values that are defined in the execution scope, without taking outer scopes into account. If you have many task local variables and you only need a few, consider using
    * {@link #getVariablesLocal(String, Collection)} for better performance.
-   * 
+   *
    * @param executionId
    *          id of execution, cannot be null.
    * @return the variables or an empty map if no such variables are found.
@@ -503,7 +516,7 @@ public interface RuntimeService {
    *           when no execution is found for the given executionId.
    */
   Map<String, Object> getVariablesLocal(String executionId);
-  
+
   /**
    * All variable values that are defined in the execution scope, without taking outer scopes into account. If you have many task local variables and you only need a few, consider using
    * {@link #getVariableInstancesLocal(String, Collection)} for better performance.
@@ -518,7 +531,7 @@ public interface RuntimeService {
 
   /**
    * The variable values for all given variableNames, takes all variables into account which are visible from the given execution scope (including parent scopes).
-   * 
+   *
    * @param executionId
    *          id of execution, cannot be null.
    * @param variableNames
@@ -528,23 +541,23 @@ public interface RuntimeService {
    *           when no execution is found for the given executionId.
    */
   Map<String, Object> getVariables(String executionId, Collection<String> variableNames);
-  
+
   /**
    * The variable values for all given variableNames, takes all variables into account which are visible from the given execution scope (including parent scopes).
-   * 
+   *
    * @param executionId
    *          id of execution, cannot be null.
    * @param variableNames
-   *          the collection of variable names that should be retrieved. 
+   *          the collection of variable names that should be retrieved.
    * @return the variables or an empty map if no such variables are found.
    * @throws ActivitiObjectNotFoundException
    *           when no execution is found for the given executionId.
    */
-  Map<String, VariableInstance> getVariableInstances(String executionId, Collection<String> variableNames);  
+  Map<String, VariableInstance> getVariableInstances(String executionId, Collection<String> variableNames);
 
   /**
    * The variable values for the given variableNames only taking the given execution scope into account, not looking in outer scopes.
-   * 
+   *
    * @param executionId
    *          id of execution, cannot be null.
    * @param variableNames
@@ -554,7 +567,7 @@ public interface RuntimeService {
    *           when no execution is found for the given executionId.
    */
   Map<String, Object> getVariablesLocal(String executionId, Collection<String> variableNames);
-  
+
   /**
    * The variable values for the given variableNames only taking the given execution scope into account, not looking in outer scopes.
    *
@@ -571,7 +584,7 @@ public interface RuntimeService {
   /**
    * The variable value. Searching for the variable is done in all scopes that are visible to the given execution (including parent scopes). Returns null when no variable value is found with the given
    * name or when the value is set to null.
-   * 
+   *
    * @param executionId
    *          id of execution, cannot be null.
    * @param variableName
@@ -581,7 +594,7 @@ public interface RuntimeService {
    *           when no execution is found for the given executionId.
    */
   Object getVariable(String executionId, String variableName);
-  
+
   /**
    * The variable. Searching for the variable is done in all scopes that are visible to the given execution (including parent scopes). Returns null when no variable value is found with the given
    * name or when the value is set to null.
@@ -599,7 +612,7 @@ public interface RuntimeService {
   /**
    * The variable value. Searching for the variable is done in all scopes that are visible to the given execution (including parent scopes). Returns null when no variable value is found with the given
    * name or when the value is set to null. Throws ClassCastException when cannot cast variable to given class
-   * 
+   *
    * @param executionId
    *          id of execution, cannot be null.
    * @param variableName
@@ -622,7 +635,7 @@ public interface RuntimeService {
    * name or when the value is set to null.
    */
   Object getVariableLocal(String executionId, String variableName);
-  
+
   /**
    * The variable for an execution. Returns the variable when it is set for the execution (and not searching parent scopes). Returns null when no variable is found with the given
    * name or when the value is set to null.
@@ -650,12 +663,12 @@ public interface RuntimeService {
 
   /**
    * Update or create a variable for an execution.
-   * 
+   *
    * <p>
    * The variable is set according to the algorithm as documented for {@link VariableScope#setVariable(String, Object)}.
-   * 
+   *
    * @see VariableScope#setVariable(String, Object) {@link VariableScope#setVariable(String, Object)}
-   * 
+   *
    * @param executionId
    *          id of execution to set variable in, cannot be null.
    * @param variableName
@@ -669,7 +682,7 @@ public interface RuntimeService {
 
   /**
    * Update or create a variable for an execution (not considering parent scopes). If the variable is not already existing, it will be created in the given execution.
-   * 
+   *
    * @param executionId
    *          id of execution to set variable in, cannot be null.
    * @param variableName
@@ -685,9 +698,9 @@ public interface RuntimeService {
    * Update or create given variables for an execution (including parent scopes).
    * <p>
    * Variables are set according to the algorithm as documented for {@link VariableScope#setVariables(Map)}, applied separately to each variable.
-   * 
+   *
    * @see VariableScope#setVariables(Map) {@link VariableScope#setVariables(Map)}
-   * 
+   *
    * @param executionId
    *          id of the execution, cannot be null.
    * @param variables
@@ -699,7 +712,7 @@ public interface RuntimeService {
 
   /**
    * Update or create given variables for an execution (not considering parent scopes). If the variables are not already existing, it will be created in the given execution.
-   * 
+   *
    * @param executionId
    *          id of the execution, cannot be null.
    * @param variables
@@ -711,7 +724,7 @@ public interface RuntimeService {
 
   /**
    * Removes a variable for an execution.
-   * 
+   *
    * @param executionId
    *          id of execution to remove variable in.
    * @param variableName
@@ -721,7 +734,7 @@ public interface RuntimeService {
 
   /**
    * Removes a variable for an execution (not considering parent scopes).
-   * 
+   *
    * @param executionId
    *          id of execution to remove variable in.
    * @param variableName
@@ -731,7 +744,7 @@ public interface RuntimeService {
 
   /**
    * Removes variables for an execution.
-   * 
+   *
    * @param executionId
    *          id of execution to remove variable in.
    * @param variableNames
@@ -741,7 +754,7 @@ public interface RuntimeService {
 
   /**
    * Remove variables for an execution (not considering parent scopes).
-   * 
+   *
    * @param executionId
    *          id of execution to remove variable in.
    * @param variableNames
@@ -775,7 +788,7 @@ public interface RuntimeService {
    */
   Map<String, DataObject> getDataObjects(String executionId, String locale, boolean withLocalizationFallback);
 
-  
+
   /**
    * All DataObject values that are defined in the execution scope, without taking outer scopes into account. If you have many local DataObjects and you only need a few, consider using
    * {@link #getDataObjectsLocal(String, Collection)} for better performance.
@@ -797,20 +810,20 @@ public interface RuntimeService {
    * @param locale
    *          locale the DataObject name and description should be returned in (if available).
    * @param withLocalizationFallback
-   *          When true localization will fallback to more general locales if the specified locale is not found. 
+   *          When true localization will fallback to more general locales if the specified locale is not found.
    * @return the DataObjects or an empty map if no such variables are found.
    * @throws ActivitiObjectNotFoundException
    *           when no execution is found for the given executionId.
    */
   Map<String, DataObject> getDataObjectsLocal(String executionId, String locale, boolean withLocalizationFallback);
-  
+
   /**
    * The DataObjects for all given dataObjectNames, takes all dataObjects into account which are visible from the given execution scope (including parent scopes).
-   * 
+   *
    * @param executionId
    *          id of execution, cannot be null.
    * @param dataObjectNames
-   *          the collection of DataObject names that should be retrieved. 
+   *          the collection of DataObject names that should be retrieved.
    * @return the DataObject or an empty map if no DataObjects are found.
    * @throws ActivitiObjectNotFoundException
    *           when no execution is found for the given executionId.
@@ -819,7 +832,7 @@ public interface RuntimeService {
 
   /**
    * The DataObjects for all given dataObjectNames, takes all dataObjects into account which are visible from the given execution scope (including parent scopes).
-   * 
+   *
    * @param executionId
    *          id of execution, cannot be null.
    * @param dataObjectNames
@@ -827,13 +840,13 @@ public interface RuntimeService {
    * @param locale
    *          locale the DataObject name and description should be returned in (if available).
    * @param withLocalizationFallback
-   *          When true localization will fallback to more general locales if the specified locale is not found. 
+   *          When true localization will fallback to more general locales if the specified locale is not found.
    * @return the DataObjects or an empty map if no such dataObjects are found.
    * @throws ActivitiObjectNotFoundException
    *           when no execution is found for the given executionId.
    */
-  Map<String, DataObject> getDataObjects(String executionId, Collection<String> dataObjectNames, String locale, boolean withLocalizationFallback);  
-  
+  Map<String, DataObject> getDataObjects(String executionId, Collection<String> dataObjectNames, String locale, boolean withLocalizationFallback);
+
   /**
    * The DataObjects for the given dataObjectNames only taking the given execution scope into account, not looking in outer scopes.
    *
@@ -857,13 +870,13 @@ public interface RuntimeService {
    * @param locale
    *          locale the DataObject name and description should be returned in (if available).
    * @param withLocalizationFallback
-   *          When true localization will fallback to more general locales if the specified locale is not found. 
+   *          When true localization will fallback to more general locales if the specified locale is not found.
    * @return the DataObjects or an empty map if no DataObjects are found.
    * @throws ActivitiObjectNotFoundException
    *           when no execution is found for the given executionId.
    */
-  Map<String, DataObject> getDataObjectsLocal(String executionId, Collection<String> dataObjectNames, String locale, boolean withLocalizationFallback);  
-  
+  Map<String, DataObject> getDataObjectsLocal(String executionId, Collection<String> dataObjectNames, String locale, boolean withLocalizationFallback);
+
   /**
    * The DataObject. Searching for the DataObject is done in all scopes that are visible to the given execution (including parent scopes). Returns null when no DataObject value is found with the given
    * name or when the value is set to null.
@@ -889,13 +902,13 @@ public interface RuntimeService {
    * @param locale
    *          locale the DataObject name and description should be returned in (if available).
    * @param withLocalizationFallback
-   *          When true localization will fallback to more general locales including the default locale of the JVM if the specified locale is not found. 
+   *          When true localization will fallback to more general locales including the default locale of the JVM if the specified locale is not found.
    * @return the DataObject or null if the DataObject is undefined.
    * @throws ActivitiObjectNotFoundException
    *           when no execution is found for the given executionId.
    */
   DataObject getDataObject(String executionId, String dataObjectName, String locale, boolean withLocalizationFallback);
-  
+
   /**
    * The DataObject for an execution. Returns the DataObject when it is set for the execution (and not searching parent scopes). Returns null when no DataObject is found with the given
    * name.
@@ -927,8 +940,8 @@ public interface RuntimeService {
    *           when no execution is found for the given executionId.
    */
   DataObject getDataObjectLocal(String executionId, String dataObjectName, String locale, boolean withLocalizationFallback);
-  
-  
+
+
   // Queries ////////////////////////////////////////////////////////
 
   /**
@@ -955,11 +968,11 @@ public interface RuntimeService {
 
   /**
    * Suspends the process instance with the given id.
-   * 
+   *
    * If a process instance is in state suspended, activiti will not execute jobs (timers, messages) associated with this instance.
-   * 
+   *
    * If you have a process instance hierarchy, suspending one process instance form the hierarchy will not suspend other process instances form that hierarchy.
-   * 
+   *
    * @throws ActivitiObjectNotFoundException
    *           if no such processInstance can be found.
    * @throws ActivitiException
@@ -969,9 +982,9 @@ public interface RuntimeService {
 
   /**
    * Activates the process instance with the given id.
-   * 
+   *
    * If you have a process instance hierarchy, suspending one process instance form the hierarchy will not suspend other process instances form that hierarchy.
-   * 
+   *
    * @throws ActivitiObjectNotFoundException
    *           if no such processInstance can be found.
    * @throws ActivitiException
@@ -985,9 +998,9 @@ public interface RuntimeService {
   /**
    * Notifies the process engine that a signal event of name 'signalName' has been received. This method delivers the signal to all executions waiting on the signal.
    * <p/>
-   * 
+   *
    * <strong>NOTE:</strong> The waiting executions are notified synchronously.
-   * 
+   *
    * @param signalName
    *          the name of the signal event
    */
@@ -1001,7 +1014,7 @@ public interface RuntimeService {
   /**
    * Notifies the process engine that a signal event of name 'signalName' has been received. This method delivers the signal to all executions waiting on the signal.
    * <p/>
-   * 
+   *
    * @param signalName
    *          the name of the signal event
    */
@@ -1015,9 +1028,9 @@ public interface RuntimeService {
   /**
    * Notifies the process engine that a signal event of name 'signalName' has been received. This method delivers the signal to all executions waiting on the signal.
    * <p/>
-   * 
+   *
    * <strong>NOTE:</strong> The waiting executions are notified synchronously.
-   * 
+   *
    * @param signalName
    *          the name of the signal event
    * @param processVariables
@@ -1033,7 +1046,7 @@ public interface RuntimeService {
   /**
    * Notifies the process engine that a signal event of name 'signalName' has been received. This method delivers the signal to a single execution, being the execution referenced by 'executionId'. The
    * waiting execution is notified synchronously.
-   * 
+   *
    * @param signalName
    *          the name of the signal event
    * @param executionId
@@ -1048,7 +1061,7 @@ public interface RuntimeService {
   /**
    * Notifies the process engine that a signal event of name 'signalName' has been received. This method delivers the signal to a single execution, being the execution referenced by 'executionId'. The
    * waiting execution is notified synchronously.
-   * 
+   *
    * @param signalName
    *          the name of the signal event
    * @param executionId
@@ -1065,7 +1078,7 @@ public interface RuntimeService {
   /**
    * Notifies the process engine that a signal event of name 'signalName' has been received. This method delivers the signal to a single execution, being the execution referenced by 'executionId'. The
    * waiting execution is notified <strong>asynchronously</strong>.
-   * 
+   *
    * @param signalName
    *          the name of the signal event
    * @param executionId
@@ -1079,9 +1092,9 @@ public interface RuntimeService {
 
   /**
    * Notifies the process engine that a message event with name 'messageName' has been received and has been correlated to an execution with id 'executionId'.
-   * 
+   *
    * The waiting execution is notified synchronously.
-   * 
+   *
    * @param messageName
    *          the name of the message event
    * @param executionId
@@ -1095,9 +1108,9 @@ public interface RuntimeService {
 
   /**
    * Notifies the process engine that a message event with the name 'messageName' has been received and has been correlated to an execution with id 'executionId'.
-   * 
+   *
    * The waiting execution is notified synchronously.
-   * 
+   *
    * <p>
    * Variables are set for the scope of the execution of the message event subscribed to the message name. For example:
    * <p>
@@ -1106,9 +1119,9 @@ public interface RuntimeService {
    * <li>The scope for a boundary message event is that of the execution for the Activity the event is attached to</li>
    * <p>
    * Variables are set according to the algorithm as documented for {@link VariableScope#setVariables(Map)}, applied separately to each variable.
-   * 
+   *
    * @see VariableScope#setVariables(Map) {@link VariableScope#setVariables(Map)}
-   * 
+   *
    * @param messageName
    *          the name of the message event
    * @param executionId
@@ -1124,9 +1137,9 @@ public interface RuntimeService {
 
   /**
    * Notifies the process engine that a message event with the name 'messageName' has been received and has been correlated to an execution with id 'executionId'.
-   * 
+   *
    * The waiting execution is notified <strong>asynchronously</strong>.
-   * 
+   *
    * @param messageName
    *          the name of the message event
    * @param executionId
@@ -1140,7 +1153,7 @@ public interface RuntimeService {
 
   /**
    * Adds an event-listener which will be notified of ALL events by the dispatcher.
-   * 
+   *
    * @param listenerToAdd
    *          the listener to add
    */
@@ -1148,7 +1161,7 @@ public interface RuntimeService {
 
   /**
    * Adds an event-listener which will only be notified when an event occurs, which type is in the given types.
-   * 
+   *
    * @param listenerToAdd
    *          the listener to add
    * @param types
@@ -1158,7 +1171,7 @@ public interface RuntimeService {
 
   /**
    * Removes the given listener from this dispatcher. The listener will no longer be notified, regardless of the type(s) it was registered for in the first place.
-   * 
+   *
    * @param listenerToRemove
    *          listener to remove
    */
@@ -1166,10 +1179,10 @@ public interface RuntimeService {
 
   /**
    * Dispatches the given event to any listeners that are registered.
-   * 
+   *
    * @param event
    *          event to dispatch.
-   * 
+   *
    * @throws ActivitiException
    *           if an exception occurs when dispatching the event or when the {@link ActivitiEventDispatcher} is disabled.
    * @throws ActivitiIllegalArgumentException
@@ -1179,7 +1192,7 @@ public interface RuntimeService {
 
   /**
    * Sets the name for the process instance with the given id.
-   * 
+   *
    * @param processInstanceId
    *          id of the process instance to update
    * @param name
@@ -1188,19 +1201,19 @@ public interface RuntimeService {
    *           when the given process instance does not exist.
    */
   void setProcessInstanceName(String processInstanceId, String name);
-  
+
   /**
    * Gets enabled activities from ad-hoc sub process
-   * 
+   *
    * @param executionId
    *          id of the execution that has an ad-hoc sub process as current flow element
    * @return a list of enabled activities
    */
   List<FlowNode> getEnabledActivitiesFromAdhocSubProcess(String executionId);
-  
+
   /**
    * Executes an activity in a ad-hoc sub process
-   * 
+   *
    * @param executionId
    *          id of the execution that has an ad-hoc sub process as current flow element
    * @param activityId
@@ -1208,10 +1221,10 @@ public interface RuntimeService {
    * @return the newly created execution of the enabled activity
    */
   Execution executeActivityInAdhocSubProcess(String executionId, String activityId);
-  
+
   /**
    * Completes the ad-hoc sub process
-   * 
+   *
    * @param executionId
    *          id of the execution that has an ad-hoc sub process as current flow element
    */

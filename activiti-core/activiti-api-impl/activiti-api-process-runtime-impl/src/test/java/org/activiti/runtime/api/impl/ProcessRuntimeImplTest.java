@@ -26,6 +26,7 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 import java.util.Collections;
@@ -38,6 +39,7 @@ import org.activiti.api.process.model.payloads.UpdateProcessPayload;
 import org.activiti.api.runtime.model.impl.DeploymentImpl;
 import org.activiti.api.runtime.model.impl.ProcessDefinitionImpl;
 import org.activiti.api.runtime.model.impl.ProcessInstanceImpl;
+import org.activiti.api.runtime.shared.NotFoundException;
 import org.activiti.api.runtime.shared.UnprocessableEntityException;
 import org.activiti.core.common.spring.security.policies.ProcessSecurityPoliciesManager;
 import org.activiti.engine.ActivitiObjectNotFoundException;
@@ -45,6 +47,7 @@ import org.activiti.engine.RuntimeService;
 import org.activiti.engine.impl.RepositoryServiceImpl;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.persistence.entity.DeploymentEntityImpl;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntityImpl;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntityImpl;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
@@ -128,7 +131,7 @@ public class ProcessRuntimeImplTest {
                 .build();
 
         //when
-        ProcessInstance updatedProcess = processRuntime.update(updateProcessPayload);
+        processRuntime.update(updateProcessPayload);
 
         //then
         verify(runtimeService).updateBusinessKey("processId", "businessKey");
@@ -249,6 +252,47 @@ public class ProcessRuntimeImplTest {
         verify(processInstanceBuilder).businessKey(startPayload.getBusinessKey());
         verify(processInstanceBuilder).variables(startPayload.getVariables());
         verify(processInstanceBuilder).name(startPayload.getName());
+    }
+
+    @Test
+    public void should_startAnAlreadyCreatedProcessInstance_whenCalled() {
+        //given
+        String processInstanceId = "process-instance-id";
+        ProcessInstanceQuery processQuery = mock(ProcessInstanceQuery.class);
+        doReturn(processQuery).when(processQuery).processInstanceId(processInstanceId);
+        doReturn(processQuery).when(runtimeService).createProcessInstanceQuery();
+        org.activiti.engine.runtime.ProcessInstance internalProcess = new ExecutionEntityImpl();
+        internalProcess.setAppVersion(1);
+        doReturn(internalProcess).when(processQuery).singleResult();
+        when(runtimeService.startCreatedProcessInstance(internalProcess)).thenReturn(internalProcess);
+        ProcessInstanceImpl apiProcessInstance = new ProcessInstanceImpl();
+        apiProcessInstance.setBusinessKey("business-result");
+        apiProcessInstance.setId("999-999");
+        given(processInstanceConverter.from(internalProcess)).willReturn(apiProcessInstance);
+        given(securityPoliciesManager.canRead(any())).willReturn(true);
+
+        //when
+        ProcessInstance createdProcessInstance = processRuntime.startCreatedProcess(processInstanceId);
+
+        //then
+        assertThat(createdProcessInstance.getId()).isEqualTo("999-999");
+        assertThat(createdProcessInstance.getBusinessKey()).isEqualTo("business-result");
+    }
+
+    @Test
+    public void should_throwAndException_whenProcessIdDoesNotExists() {
+        //given
+        String processInstanceId = "process-instance-id";
+        ProcessInstanceQuery processQuery = mock(ProcessInstanceQuery.class);
+        doReturn(processQuery).when(processQuery).processInstanceId(processInstanceId);
+        doReturn(processQuery).when(runtimeService).createProcessInstanceQuery();
+        doReturn(null).when(processQuery).singleResult();
+
+        Throwable exception = catchThrowable(() -> processRuntime.startCreatedProcess(processInstanceId));
+
+        assertThat(exception)
+            .isInstanceOf(NotFoundException.class)
+            .hasMessage("Unable to find process instance for the given id:'process-instance-id'");
     }
 
 }

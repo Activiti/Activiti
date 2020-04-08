@@ -74,6 +74,11 @@ public interface ProcessRuntime {
     ProcessInstance start(StartProcessPayload startProcessPayload);
 
     /**
+     * Start an already created Process Instance based on the process instance id
+     */
+    ProcessInstance startCreatedProcess(String processInstanceId);
+
+    /**
      * Create a new Process Instance based on the payload parameters
      */
     ProcessInstance create(StartProcessPayload startProcessPayload);
