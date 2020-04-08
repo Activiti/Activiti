@@ -16,6 +16,7 @@ package org.activiti.spring.process.conf;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.activiti.common.util.DateFormatterProvider;
 import org.activiti.engine.RepositoryService;
@@ -81,7 +82,6 @@ public class ProcessExtensionsAutoConfiguration {
         variableTypeMap.put("integer", new JavaObjectVariableType(Integer.class));
         variableTypeMap.put("json", new JsonObjectVariableType(objectMapper));
         variableTypeMap.put("file", new JsonObjectVariableType(objectMapper));
-        variableTypeMap.put("folder", new JsonObjectVariableType(objectMapper));
         variableTypeMap.put("date", new DateVariableType(Date.class, dateFormatterProvider));
         variableTypeMap.put("datetime", new DateVariableType(Date.class, dateFormatterProvider));
         return variableTypeMap;
