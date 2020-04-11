@@ -13,6 +13,8 @@
 
 package org.activiti.engine.test.transactions;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.delegate.ActivityBehavior;
@@ -52,10 +54,10 @@ public class TransactionRollbackTest extends PluggableActivitiTestCase {
             fail("Starting the process instance should throw an exception");
 
         } catch (Exception e) {
-            assertEquals("Buzzz", e.getMessage());
+            assertThat(e.getMessage()).isEqualTo("Buzzz");
         }
 
-        assertEquals(0, runtimeService.createExecutionQuery().count());
+        assertThat(runtimeService.createExecutionQuery().count()).isEqualTo(0);
     }
 
     @Deployment(
@@ -67,10 +69,10 @@ public class TransactionRollbackTest extends PluggableActivitiTestCase {
             fail("Starting the process instance should throw an exception");
 
         } catch (Exception e) {
-            assertEquals("Buzzz", e.getMessage());
+            assertThat(e.getMessage()).isEqualTo("Buzzz");
         }
 
-        assertEquals(0, runtimeService.createExecutionQuery().count());
+        assertThat(runtimeService.createExecutionQuery().count()).isEqualTo(0);
 
     }
 
@@ -82,9 +84,9 @@ public class TransactionRollbackTest extends PluggableActivitiTestCase {
             fail("Starting the process instance should throw an error");
 
         } catch (Throwable e) {
-            assertEquals("Fizz", e.getMessage());
+            assertThat(e.getMessage()).isEqualTo("Fizz");
         }
 
-        assertEquals(0, runtimeService.createExecutionQuery().count());
+        assertThat(runtimeService.createExecutionQuery().count()).isEqualTo(0);
     }
 }

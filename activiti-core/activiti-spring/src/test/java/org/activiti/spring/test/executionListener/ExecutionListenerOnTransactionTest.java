@@ -12,6 +12,8 @@
  */
 package org.activiti.spring.test.executionListener;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -77,7 +79,7 @@ public class ExecutionListenerOnTransactionTest extends SpringActivitiTestCase {
                      currentActivities.get(0).getActivityName());
         assertEquals(processInstance.getId(),
                      currentActivities.get(0).getProcessInstanceId());
-        assertNotNull(currentActivities.get(0).getProcessInstanceId());
+        assertThat(currentActivities.get(0).getProcessInstanceId()).isNotNull();
 
         assertEquals(1,
                      managementService.createTimerJobQuery().processInstanceId(processInstance.getId()).count());

@@ -1,9 +1,9 @@
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -12,6 +12,8 @@
  */
 
 package org.activiti.engine.test.db;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 
@@ -35,7 +37,7 @@ public class ProcessDefinitionPersistenceTest extends PluggableActivitiTestCase 
 
     List<ProcessDefinition> processDefinitions = repositoryService.createProcessDefinitionQuery().list();
 
-    assertEquals(2, processDefinitions.size());
+    assertThat(processDefinitions.size()).isEqualTo(2);
 
     repositoryService.deleteDeployment(deploymentId);
   }
@@ -46,26 +48,26 @@ public class ProcessDefinitionPersistenceTest extends PluggableActivitiTestCase 
     String procDefId = repositoryService.createProcessDefinitionQuery().singleResult().getId();
     ProcessDefinition processDefinition = ((RepositoryServiceImpl) repositoryService).getDeployedProcessDefinition(procDefId);
 
-    assertEquals(procDefId, processDefinition.getId());
-    assertEquals("Process One", processDefinition.getName());
-    
+    assertThat(processDefinition.getId()).isEqualTo(procDefId);
+    assertThat(processDefinition.getName()).isEqualTo("Process One");
+
     Process process = repositoryService.getBpmnModel(processDefinition.getId()).getMainProcess();
     StartEvent startElement = (StartEvent) process.getFlowElement("start");
-    assertNotNull(startElement);
-    assertEquals("start", startElement.getId());
-    assertEquals("S t a r t", startElement.getName());
-    assertEquals("the start event", startElement.getDocumentation());
+    assertThat(startElement).isNotNull();
+    assertThat(startElement.getId()).isEqualTo("start");
+    assertThat(startElement.getName()).isEqualTo("S t a r t");
+    assertThat(startElement.getDocumentation()).isEqualTo("the start event");
     List<SequenceFlow> outgoingFlows = startElement.getOutgoingFlows();
-    assertEquals(1, outgoingFlows.size());
-    assertEquals("${a == b}", outgoingFlows.get(0).getConditionExpression());
+    assertThat(outgoingFlows.size()).isEqualTo(1);
+    assertThat(outgoingFlows.get(0).getConditionExpression()).isEqualTo("${a == b}");
 
     EndEvent endElement = (EndEvent) process.getFlowElement("end");
-    assertNotNull(endElement);
-    assertEquals("end", endElement.getId());
+    assertThat(endElement).isNotNull();
+    assertThat(endElement.getId()).isEqualTo("end");
 
-    assertEquals("flow1", outgoingFlows.get(0).getId());
-    assertEquals("Flow One", outgoingFlows.get(0).getName());
-    assertEquals("The only transitions in the process", outgoingFlows.get(0).getDocumentation());
+    assertThat(outgoingFlows.get(0).getId()).isEqualTo("flow1");
+    assertThat(outgoingFlows.get(0).getName()).isEqualTo("Flow One");
+    assertThat(outgoingFlows.get(0).getDocumentation()).isEqualTo("The only transitions in the process");
     assertSame(startElement, outgoingFlows.get(0).getSourceFlowElement());
     assertSame(endElement, outgoingFlows.get(0).getTargetFlowElement());
 
@@ -78,13 +80,13 @@ public class ProcessDefinitionPersistenceTest extends PluggableActivitiTestCase 
 
     List<ProcessDefinition> processDefinitions = repositoryService.createProcessDefinitionQuery().orderByProcessDefinitionName().asc().orderByProcessDefinitionVersion().asc().list();
 
-    assertEquals(2, processDefinitions.size());
+    assertThat(processDefinitions.size()).isEqualTo(2);
 
     String deployment2Id = repositoryService.createDeployment().addClasspathResource("org/activiti/engine/test/db/processOne.bpmn20.xml")
         .addClasspathResource("org/activiti/engine/test/db/processTwo.bpmn20.xml").deploy().getId();
 
-    assertEquals(4, repositoryService.createProcessDefinitionQuery().orderByProcessDefinitionName().asc().count());
-    assertEquals(2, repositoryService.createProcessDefinitionQuery().latestVersion().orderByProcessDefinitionName().asc().count());
+    assertThat(repositoryService.createProcessDefinitionQuery().orderByProcessDefinitionName().asc().count()).isEqualTo(4);
+    assertThat(repositoryService.createProcessDefinitionQuery().latestVersion().orderByProcessDefinitionName().asc().count()).isEqualTo(2);
 
     repositoryService.deleteDeployment(deployment1Id);
     repositoryService.deleteDeployment(deployment2Id);
@@ -94,13 +96,13 @@ public class ProcessDefinitionPersistenceTest extends PluggableActivitiTestCase 
     String deploymentId = repositoryService.createDeployment().addClasspathResource("org/activiti/engine/test/db/process-with-di.bpmn20.xml")
         .addClasspathResource("org/activiti/engine/test/db/process-without-di.bpmn20.xml").deploy().getId();
 
-    assertEquals(2, repositoryService.createProcessDefinitionQuery().count());
+    assertThat(repositoryService.createProcessDefinitionQuery().count()).isEqualTo(2);
 
     ProcessDefinition processWithDi = repositoryService.createProcessDefinitionQuery().processDefinitionKey("processWithDi").singleResult();
-    assertTrue(processWithDi.hasGraphicalNotation());
+    assertThat(processWithDi.hasGraphicalNotation()).isTrue();
 
     ProcessDefinition processWithoutDi = repositoryService.createProcessDefinitionQuery().processDefinitionKey("processWithoutDi").singleResult();
-    assertFalse(processWithoutDi.hasGraphicalNotation());
+    assertThat(processWithoutDi.hasGraphicalNotation()).isFalse();
 
     repositoryService.deleteDeployment(deploymentId);
 

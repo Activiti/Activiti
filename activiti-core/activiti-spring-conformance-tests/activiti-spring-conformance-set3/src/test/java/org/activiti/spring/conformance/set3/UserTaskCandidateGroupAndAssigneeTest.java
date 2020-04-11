@@ -27,7 +27,7 @@ import static org.activiti.test.matchers.ProcessTaskMatchers.taskWithName;
 import static org.activiti.test.matchers.SequenceFlowMatchers.sequenceFlow;
 import static org.activiti.test.matchers.TaskMatchers.task;
 import static org.activiti.test.matchers.TaskMatchers.withAssignee;
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)

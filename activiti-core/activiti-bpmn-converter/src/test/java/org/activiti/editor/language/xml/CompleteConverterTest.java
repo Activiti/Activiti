@@ -1,8 +1,6 @@
 package org.activiti.editor.language.xml;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.FlowElement;
@@ -35,29 +33,29 @@ public class CompleteConverterTest extends AbstractConverterTest {
 
   private void validateModel(BpmnModel model) {
     FlowElement flowElement = model.getMainProcess().getFlowElement("userTask1");
-    assertNotNull(flowElement);
-    assertTrue(flowElement instanceof UserTask);
-    assertEquals("userTask1", flowElement.getId());
+    assertThat(flowElement).isNotNull();
+    assertThat(flowElement instanceof UserTask).isTrue();
+    assertThat(flowElement.getId()).isEqualTo("userTask1");
 
     flowElement = model.getMainProcess().getFlowElement("catchsignal");
-    assertNotNull(flowElement);
-    assertTrue(flowElement instanceof IntermediateCatchEvent);
-    assertEquals("catchsignal", flowElement.getId());
+    assertThat(flowElement).isNotNull();
+    assertThat(flowElement instanceof IntermediateCatchEvent).isTrue();
+    assertThat(flowElement.getId()).isEqualTo("catchsignal");
     IntermediateCatchEvent catchEvent = (IntermediateCatchEvent) flowElement;
-    assertEquals(1, catchEvent.getEventDefinitions().size());
-    assertTrue(catchEvent.getEventDefinitions().get(0) instanceof SignalEventDefinition);
+    assertThat(catchEvent.getEventDefinitions().size()).isEqualTo(1);
+    assertThat(catchEvent.getEventDefinitions().get(0) instanceof SignalEventDefinition).isTrue();
     SignalEventDefinition signalEvent = (SignalEventDefinition) catchEvent.getEventDefinitions().get(0);
-    assertEquals("testSignal", signalEvent.getSignalRef());
+    assertThat(signalEvent.getSignalRef()).isEqualTo("testSignal");
 
     flowElement = model.getMainProcess().getFlowElement("subprocess");
-    assertNotNull(flowElement);
-    assertTrue(flowElement instanceof SubProcess);
-    assertEquals("subprocess", flowElement.getId());
+    assertThat(flowElement).isNotNull();
+    assertThat(flowElement instanceof SubProcess).isTrue();
+    assertThat(flowElement.getId()).isEqualTo("subprocess");
     SubProcess subProcess = (SubProcess) flowElement;
 
     flowElement = subProcess.getFlowElement("receiveTask");
-    assertNotNull(flowElement);
-    assertTrue(flowElement instanceof ReceiveTask);
-    assertEquals("receiveTask", flowElement.getId());
+    assertThat(flowElement).isNotNull();
+    assertThat(flowElement instanceof ReceiveTask).isTrue();
+    assertThat(flowElement.getId()).isEqualTo("receiveTask");
   }
 }

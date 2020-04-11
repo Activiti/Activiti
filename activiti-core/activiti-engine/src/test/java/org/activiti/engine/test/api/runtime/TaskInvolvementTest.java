@@ -1,5 +1,7 @@
 package org.activiti.engine.test.api.runtime;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -64,7 +66,7 @@ public class TaskInvolvementTest  extends PluggableActivitiTestCase {
             List<String> groups = new ArrayList<String>();
             groups.add("group1");
 
-            assertEquals(3, taskService.getIdentityLinksForTask(adhocTask.getId()).size());
+            assertThat(taskService.getIdentityLinksForTask(adhocTask.getId()).size()).isEqualTo(3);
             assertEquals(1, taskService.createTaskQuery()
                     //.taskId(adhocTask.getId())
                     .or()
@@ -169,7 +171,7 @@ public class TaskInvolvementTest  extends PluggableActivitiTestCase {
             List<String> groups = new ArrayList<String>();
             groups.add("group2");
 
-            assertEquals(3, taskService.getIdentityLinksForTask(adhocTask.getId()).size());
+            assertThat(taskService.getIdentityLinksForTask(adhocTask.getId()).size()).isEqualTo(3);
             assertEquals(0, taskService.createTaskQuery()
 
                     .taskInvolvedUser("involvedUser")

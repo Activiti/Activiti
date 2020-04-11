@@ -1,9 +1,9 @@
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -11,6 +11,8 @@
  * limitations under the License.
  */
 package org.activiti.engine.test.api.task;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -55,13 +57,13 @@ public class TaskAndVariablesQueryTest extends PluggableActivitiTestCase {
                      variableMap.size());
         assertEquals(0,
                      task.getProcessVariables().size());
-        assertNotNull(variableMap.get("testVar"));
+        assertThat(variableMap.get("testVar")).isNotNull();
         assertEquals("someVariable",
                      variableMap.get("testVar"));
-        assertNotNull(variableMap.get("testVar2"));
+        assertThat(variableMap.get("testVar2")).isNotNull();
         assertEquals(123,
                      variableMap.get("testVar2"));
-        assertNotNull(variableMap.get("testVarBinary"));
+        assertThat(variableMap.get("testVarBinary")).isNotNull();
         assertEquals("This is a binary variable",
                      new String((byte[]) variableMap.get("testVarBinary")));
 
@@ -88,7 +90,7 @@ public class TaskAndVariablesQueryTest extends PluggableActivitiTestCase {
                      task.getProcessVariables().size());
         assertEquals(0,
                      task.getTaskLocalVariables().size());
-        assertTrue((Boolean) task.getProcessVariables().get("processVar"));
+        assertThat((Boolean) task.getProcessVariables().get("processVar")).isTrue();
         assertEquals("This is a binary process variable",
                      new String((byte[]) task.getProcessVariables().get("binaryVariable")));
 
@@ -230,21 +232,21 @@ public class TaskAndVariablesQueryTest extends PluggableActivitiTestCase {
     public void testQueryWithIncludeTaskVariableAndTaskCategory() {
         List<Task> tasks = taskService.createTaskQuery().taskAssignee(GONZO).list();
         for (Task task : tasks) {
-            assertNotNull(task.getCategory());
+            assertThat(task.getCategory()).isNotNull();
             assertEquals("testCategory",
                          task.getCategory());
         }
 
         tasks = taskService.createTaskQuery().taskAssignee(GONZO).includeTaskLocalVariables().list();
         for (Task task : tasks) {
-            assertNotNull(task.getCategory());
+            assertThat(task.getCategory()).isNotNull();
             assertEquals("testCategory",
                          task.getCategory());
         }
 
         tasks = taskService.createTaskQuery().taskAssignee(GONZO).includeProcessVariables().list();
         for (Task task : tasks) {
-            assertNotNull(task.getCategory());
+            assertThat(task.getCategory()).isNotNull();
             assertEquals("testCategory",
                          task.getCategory());
         }
@@ -307,7 +309,7 @@ public class TaskAndVariablesQueryTest extends PluggableActivitiTestCase {
 
         task = taskService.createTaskQuery().includeProcessVariables().or().processVariableValueEquals("undefined",
                                                                                                        999).endOr().singleResult();
-        assertNull(task);
+        assertThat(task).isNull();
 
         task = taskService.createTaskQuery().includeProcessVariables().or().processVariableValueEquals("anotherProcessVar",
                                                                                                        123).processVariableValueEquals("undefined",
@@ -326,7 +328,7 @@ public class TaskAndVariablesQueryTest extends PluggableActivitiTestCase {
 
         task = taskService.createTaskQuery().includeProcessVariables().or().processVariableValueEquals("anotherProcessVar",
                                                                                                        999).endOr().singleResult();
-        assertNull(task);
+        assertThat(task).isNull();
 
         task = taskService.createTaskQuery().includeProcessVariables().or().processVariableValueEquals("anotherProcessVar",
                                                                                                        999).processVariableValueEquals("anotherProcessVar",
@@ -353,7 +355,7 @@ public class TaskAndVariablesQueryTest extends PluggableActivitiTestCase {
                                                        i);
         }
         query0 = query0.endOr();
-        assertNull(query0.singleResult());
+        assertThat(query0.singleResult()).isNull();
 
         TaskQuery query1 = taskService.createTaskQuery().includeProcessVariables().or().processVariableValueEquals("anotherProcessVar",
                                                                                                                    123);

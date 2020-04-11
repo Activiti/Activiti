@@ -29,7 +29,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
 import static org.activiti.runtime.api.impl.MappingExecutionContext.buildMappingExecutionContext;
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;

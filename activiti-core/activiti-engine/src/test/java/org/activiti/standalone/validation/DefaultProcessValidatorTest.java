@@ -31,7 +31,7 @@ import org.activiti.validation.ProcessValidatorFactory;
 import org.activiti.validation.ValidationError;
 import org.activiti.validation.validator.Problems;
 import org.activiti.validation.validator.ValidatorSetNames;
-import org.junit.Assert;
+import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -53,10 +53,10 @@ public class DefaultProcessValidatorTest {
 
       BpmnModel bpmnModel = readModel(
           "org/activiti/engine/test/validation/invalidProcess.bpmn20.xml");
-      Assert.assertNotNull(bpmnModel);
+      assertThat(bpmnModel).isNotNull();
 
     List<ValidationError> allErrors = processValidator.validate(bpmnModel);
-    Assert.assertEquals(66, allErrors.size());
+    assertThat(allErrors.size()).isEqualTo(66);
 
     String setName = ValidatorSetNames.ACTIVITI_EXECUTABLE_PROCESS; // shortening
                                                                     // it a
@@ -64,9 +64,9 @@ public class DefaultProcessValidatorTest {
 
     // isExecutable should be true
     List<ValidationError> problems = findErrors(allErrors, setName, Problems.ALL_PROCESS_DEFINITIONS_NOT_EXECUTABLE, 1);
-    Assert.assertNotNull(problems.get(0).getValidatorSetName());
-    Assert.assertNotNull(problems.get(0).getProblem());
-    Assert.assertNotNull(problems.get(0).getDefaultDescription());
+    assertThat(problems.get(0).getValidatorSetName()).isNotNull();
+    assertThat(problems.get(0).getProblem()).isNotNull();
+    assertThat(problems.get(0).getDefaultDescription()).isNotNull();
 
     // Event listeners
     problems = findErrors(allErrors, setName, Problems.EVENT_LISTENER_IMPLEMENTATION_MISSING, 1);
@@ -239,19 +239,19 @@ public class DefaultProcessValidatorTest {
     public void testWarningError() throws Exception {
         BpmnModel bpmnModel = readModel(
             "org/activiti/engine/test/validation/flowWithoutConditionNoDefaultFlow.bpmn20.xml");
-        Assert.assertNotNull(bpmnModel);
+        assertThat(bpmnModel).isNotNull();
 
-        Assert.assertNotNull(bpmnModel);
+        assertThat(bpmnModel).isNotNull();
         List<ValidationError> allErrors = processValidator.validate(bpmnModel);
-        Assert.assertEquals(1, allErrors.size());
-        Assert.assertTrue(allErrors.get(0).isWarning());
+        assertThat(allErrors.size()).isEqualTo(1);
+        assertThat(allErrors.get(0).isWarning()).isTrue();
     }
 
     @Test
     public void testValidMessageFlow() throws Exception {
         BpmnModel bpmnModel = readModel(
             "org/activiti/engine/test/validation/validMessageProcess.bpmn20.xml");
-        Assert.assertNotNull(bpmnModel);
+        assertThat(bpmnModel).isNotNull();
 
         assertThat(bpmnModel).isNotNull();
         List<ValidationError> allErrors = processValidator.validate(bpmnModel);
@@ -273,7 +273,7 @@ public class DefaultProcessValidatorTest {
     public void testInvalidMessageFlow() throws Exception {
         BpmnModel bpmnModel = readModel(
             "org/activiti/engine/test/validation/invalidMessageProcess.bpmn20.xml");
-        Assert.assertNotNull(bpmnModel);
+        assertThat(bpmnModel).isNotNull();
 
         assertThat(bpmnModel).isNotNull();
         List<ValidationError> allErrors = processValidator.validate(bpmnModel);
@@ -297,7 +297,7 @@ public class DefaultProcessValidatorTest {
     }
 
     List<ValidationError> errors = processValidator.validate(bpmnModel);
-    Assert.assertEquals(1, errors.size());
+    assertThat(errors.size()).isEqualTo(1);
   }
 
   /*
@@ -323,46 +323,46 @@ public class DefaultProcessValidatorTest {
     bpmnModel.addProcess(process);
 
     List<ValidationError> errors = processValidator.validate(bpmnModel);
-    Assert.assertEquals(3, errors.size());
+    assertThat(errors.size()).isEqualTo(3);
     for (ValidationError error : errors) {
-      Assert.assertTrue(error.isWarning());
-      Assert.assertNotNull(error.getValidatorSetName());
-      Assert.assertNotNull(error.getProblem());
-      Assert.assertNotNull(error.getDefaultDescription());
+      assertThat(error.isWarning()).isTrue();
+      assertThat(error.getValidatorSetName()).isNotNull();
+      assertThat(error.getProblem()).isNotNull();
+      assertThat(error.getDefaultDescription()).isNotNull();
     }
   }
 
   private void assertCommonProblemFieldForActivity(ValidationError error) {
     assertProcessElementError(error);
 
-    Assert.assertNotNull(error.getActivityId());
-    Assert.assertNotNull(error.getActivityName());
+    assertThat(error.getActivityId()).isNotNull();
+    assertThat(error.getActivityName()).isNotNull();
 
-    Assert.assertTrue(error.getActivityId().length() > 0);
-    Assert.assertTrue(error.getActivityName().length() > 0);
+    assertThat(error.getActivityId().length() > 0).isTrue();
+    assertThat(error.getActivityName().length() > 0).isTrue();
   }
 
   private void assertCommonErrorFields(ValidationError error) {
-    Assert.assertNotNull(error.getValidatorSetName());
-    Assert.assertNotNull(error.getProblem());
-    Assert.assertNotNull(error.getDefaultDescription());
-    Assert.assertTrue(error.getXmlLineNumber() > 0);
-    Assert.assertTrue(error.getXmlColumnNumber() > 0);
+    assertThat(error.getValidatorSetName()).isNotNull();
+    assertThat(error.getProblem()).isNotNull();
+    assertThat(error.getDefaultDescription()).isNotNull();
+    assertThat(error.getXmlLineNumber() > 0).isTrue();
+    assertThat(error.getXmlColumnNumber() > 0).isTrue();
   }
 
   private void assertProcessElementError(ValidationError error) {
     assertCommonErrorFields(error);
-    Assert.assertEquals("invalidProcess", error.getProcessDefinitionId());
-    Assert.assertEquals("The invalid process", error.getProcessDefinitionName());
+    assertThat(error.getProcessDefinitionId()).isEqualTo("invalidProcess");
+    assertThat(error.getProcessDefinitionName()).isEqualTo("The invalid process");
   }
 
   private List<ValidationError> findErrors(List<ValidationError> errors, String validatorSetName,
       String problemName, int expectedNrOfProblems) {
     List<ValidationError> results = findErrors(errors, validatorSetName, problemName);
-    Assert.assertEquals(expectedNrOfProblems, results.size());
+    assertThat(results.size()).isEqualTo(expectedNrOfProblems);
     for (ValidationError result : results) {
-      Assert.assertEquals(validatorSetName, result.getValidatorSetName());
-      Assert.assertEquals(problemName, result.getProblem());
+      assertThat(result.getValidatorSetName()).isEqualTo(validatorSetName);
+      assertThat(result.getProblem()).isEqualTo(problemName);
     }
     return results;
   }

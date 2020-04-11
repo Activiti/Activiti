@@ -1,9 +1,9 @@
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -11,6 +11,8 @@
  * limitations under the License.
  */
 package org.activiti.standalone.event;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 
@@ -28,7 +30,7 @@ import org.activiti.engine.test.api.event.TestActivitiEventListener;
 
 /**
  * Test for event-listeners that are registered on a process-definition scope, rather than on the global engine-wide scope, declared in the BPMN XML.
- * 
+ *
 
  */
 public class ProcessDefinitionScopedEventListenerDefinitionTest extends ResourceActivitiTestCase {
@@ -45,26 +47,26 @@ public class ProcessDefinitionScopedEventListenerDefinitionTest extends Resource
   @Deployment
   public void testProcessDefinitionListenerDefinition() throws Exception {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testEventListeners");
-    assertNotNull(testListenerBean);
+    assertThat(testListenerBean).isNotNull();
 
     Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     taskService.complete(task.getId());
 
     // Check if the listener (defined as bean) received events (only creation, not other events)
-    assertFalse(testListenerBean.getEventsReceived().isEmpty());
+    assertThat(testListenerBean.getEventsReceived().isEmpty()).isFalse();
     for (ActivitiEvent event : testListenerBean.getEventsReceived()) {
-      assertEquals(ActivitiEventType.ENTITY_CREATED, event.getType());
+      assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_CREATED);
     }
 
     // First event received should be creation of Process-instance
-    assertTrue(testListenerBean.getEventsReceived().get(0) instanceof ActivitiEntityEvent);
+    assertThat(testListenerBean.getEventsReceived().get(0) instanceof ActivitiEntityEvent).isTrue();
     ActivitiEntityEvent event = (ActivitiEntityEvent) testListenerBean.getEventsReceived().get(0);
-    assertTrue(event.getEntity() instanceof ProcessInstance);
-    assertEquals(processInstance.getId(), ((ProcessInstance) event.getEntity()).getId());
+    assertThat(event.getEntity() instanceof ProcessInstance).isTrue();
+    assertThat(((ProcessInstance) event.getEntity()).getId()).isEqualTo(processInstance.getId());
 
     // Check if listener, defined by classname, received all events
     List<ActivitiEvent> events = StaticTestActivitiEventListener.getEventsReceived();
-    assertFalse(events.isEmpty());
+    assertThat(events.isEmpty()).isFalse();
 
     boolean insertFound = false;
     boolean deleteFound = false;
@@ -76,8 +78,8 @@ public class ProcessDefinitionScopedEventListenerDefinitionTest extends Resource
         deleteFound = true;
       }
     }
-    assertTrue(insertFound);
-    assertTrue(deleteFound);
+    assertThat(insertFound).isTrue();
+    assertThat(deleteFound).isTrue();
   }
 
   /**
@@ -88,7 +90,7 @@ public class ProcessDefinitionScopedEventListenerDefinitionTest extends Resource
     // Deploy process with expression which references an unexisting bean
     org.activiti.engine.repository.Deployment deployment = repositoryService.createDeployment().addClasspathResource("org/activiti/standalone/event/invalidEventListenerExpression.bpmn20.xml").deploy();
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testInvalidEventExpression");
-    assertNotNull(processInstance);
+    assertThat(processInstance).isNotNull();
     repositoryService.deleteDeployment(deployment.getId(), true);
 
     // Deploy process with listener which references an unexisting class
@@ -112,8 +114,8 @@ public class ProcessDefinitionScopedEventListenerDefinitionTest extends Resource
       fail("Exception expected");
 
     } catch (ActivitiException ae) {
-      assertTrue(ae instanceof ActivitiIllegalArgumentException);
-      assertEquals("Invalid event-type: invalid", ae.getMessage());
+      assertThat(ae instanceof ActivitiIllegalArgumentException).isTrue();
+      assertThat(ae.getMessage()).isEqualTo("Invalid event-type: invalid");
     } finally {
       if (deployment != null) {
         repositoryService.deleteDeployment(deployment.getId(), true);
@@ -127,19 +129,19 @@ public class ProcessDefinitionScopedEventListenerDefinitionTest extends Resource
   @Deployment
   public void testProcessDefinitionListenerDefinitionEntities() throws Exception {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testEventListeners");
-    assertNotNull(processInstance);
+    assertThat(processInstance).isNotNull();
     Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
-    assertNotNull(task);
+    assertThat(task).isNotNull();
 
     // Attachment entity
     TestActivitiEventListener theListener = (TestActivitiEventListener) processEngineConfiguration.getBeans().get("testAttachmentEventListener");
-    assertNotNull(theListener);
-    assertEquals(0, theListener.getEventsReceived().size());
+    assertThat(theListener).isNotNull();
+    assertThat(theListener.getEventsReceived().size()).isEqualTo(0);
 
     taskService.createAttachment("test", task.getId(), processInstance.getId(), "test", "test", "url");
-    assertEquals(2, theListener.getEventsReceived().size());
-    assertEquals(ActivitiEventType.ENTITY_CREATED, theListener.getEventsReceived().get(0).getType());
-    assertEquals(ActivitiEventType.ENTITY_INITIALIZED, theListener.getEventsReceived().get(1).getType());
+    assertThat(theListener.getEventsReceived().size()).isEqualTo(2);
+    assertThat(theListener.getEventsReceived().get(0).getType()).isEqualTo(ActivitiEventType.ENTITY_CREATED);
+    assertThat(theListener.getEventsReceived().get(1).getType()).isEqualTo(ActivitiEventType.ENTITY_INITIALIZED);
 
   }
 

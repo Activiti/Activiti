@@ -15,7 +15,7 @@ import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
-import org.junit.Assert;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * A test case for the various implications of the tenancy support (tenant id column to entities + query support)
@@ -667,20 +667,20 @@ public class TenancyTest extends PluggableActivitiTestCase {
         }
 
         ProcessInstance processInstance = runtimeService.startProcessInstanceById(procDefIdA);
-        Assert.assertNotNull(processInstance);
+        assertThat(processInstance).isNotNull();
 
         // Activate process again
         repositoryService.activateProcessDefinitionByKey("oneTaskProcess",
                                                          tenantB);
 
         processInstance = runtimeService.startProcessInstanceById(procDefIdB);
-        Assert.assertNotNull(processInstance);
+        assertThat(processInstance).isNotNull();
 
         processInstance = runtimeService.startProcessInstanceById(procDefIdB2);
-        Assert.assertNotNull(processInstance);
+        assertThat(processInstance).isNotNull();
 
         processInstance = runtimeService.startProcessInstanceById(procDefIdA);
-        Assert.assertNotNull(processInstance);
+        assertThat(processInstance).isNotNull();
 
         // Suspending with NO tenant id should give an error, cause they both
         // have tenants
@@ -1066,18 +1066,18 @@ public class TenancyTest extends PluggableActivitiTestCase {
                                                                                                   CollectionUtil.singletonMap("sendFor",
                                                                                                                               "test"),
                                                                                                   tenantId);
-            Assert.assertNotNull(processInstance);
+            assertThat(processInstance).isNotNull();
 
-            Assert.assertEquals(1,
+            assertEquals(1,
                                 historyService.createHistoricProcessInstanceQuery().processDefinitionKey("process2").processInstanceTenantId(tenantId).count());
-            Assert.assertEquals(1,
+            assertEquals(1,
                                 historyService.createHistoricProcessInstanceQuery().processDefinitionKey("process2").count());
 
             // following line if executed will give activiti object not found
             // exception as the process1 is linked to a tenant id.
             try {
                 processInstance = runtimeService.startProcessInstanceByKey("process1");
-                Assert.fail();
+                fail();
             } catch (Exception e) {
 
             }

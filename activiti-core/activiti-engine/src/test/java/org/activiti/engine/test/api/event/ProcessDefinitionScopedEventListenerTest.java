@@ -1,9 +1,9 @@
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -11,6 +11,8 @@
  * limitations under the License.
  */
 package org.activiti.engine.test.api.event;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Map;
 
@@ -23,7 +25,7 @@ import org.activiti.engine.test.Deployment;
 
 /**
  * Test for event-listeners that are registered on a process-definition scope, rather than on the global engine-wide scope.
- * 
+ *
 
  */
 public class ProcessDefinitionScopedEventListenerTest extends PluggableActivitiTestCase {
@@ -37,28 +39,28 @@ public class ProcessDefinitionScopedEventListenerTest extends PluggableActivitiT
   @Deployment(resources = { "org/activiti/engine/test/api/runtime/oneTaskProcess.bpmn20.xml", "org/activiti/engine/test/api/event/simpleProcess.bpmn20.xml" })
   public void testProcessDefinitionScopedListener() throws Exception {
     ProcessDefinition firstDefinition = repositoryService.createProcessDefinitionQuery().deploymentId(deploymentIdFromDeploymentAnnotation).processDefinitionKey("oneTaskProcess").singleResult();
-    assertNotNull(firstDefinition);
+    assertThat(firstDefinition).isNotNull();
 
     ProcessDefinition secondDefinition = repositoryService.createProcessDefinitionQuery().deploymentId(deploymentIdFromDeploymentAnnotation).processDefinitionKey("simpleProcess").singleResult();
-    assertNotNull(firstDefinition);
+    assertThat(firstDefinition).isNotNull();
 
     // Fetch a reference to the process definition entity to add the listener
     TestActivitiEventListener listener = new TestActivitiEventListener();
     BpmnModel bpmnModel = repositoryService.getBpmnModel(firstDefinition.getId());
-    assertNotNull(bpmnModel);
+    assertThat(bpmnModel).isNotNull();
 
     ((ActivitiEventSupport) bpmnModel.getEventSupport()).addEventListener(listener);
 
     // Start a process for the first definition, events should be received
     ProcessInstance processInstance = runtimeService.startProcessInstanceById(firstDefinition.getId());
-    assertNotNull(processInstance);
+    assertThat(processInstance).isNotNull();
 
-    assertFalse(listener.getEventsReceived().isEmpty());
+    assertThat(listener.getEventsReceived().isEmpty()).isFalse();
     listener.clearEventsReceived();
 
     // Start an instance of the other definition
     ProcessInstance otherInstance = runtimeService.startProcessInstanceById(secondDefinition.getId());
-    assertNotNull(otherInstance);
-    assertTrue(listener.getEventsReceived().isEmpty());
+    assertThat(otherInstance).isNotNull();
+    assertThat(listener.getEventsReceived().isEmpty()).isTrue();
   }
 }

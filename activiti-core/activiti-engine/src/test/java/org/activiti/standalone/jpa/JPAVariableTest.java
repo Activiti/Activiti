@@ -1,9 +1,9 @@
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -13,10 +13,16 @@
 
 package org.activiti.standalone.jpa;
 
+import static java.util.Arrays.asList;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -202,231 +208,226 @@ public class JPAVariableTest extends AbstractActivitiTestCase {
         manager.close();
     }
 
-//  //@TODO: fix Caused by: org.h2.jdbc.JdbcSQLException: Concurrent update in table "JPA_ENTITY_FIELD": another transaction has updated or deleted the same row [90131-193]
-//  @Deployment
-//  public void testStoreJPAEntityAsVariable() {
-//    setupJPAEntities();
-//    // -----------------------------------------------------------------------------
-//    // Simple test, Start process with JPA entities as variables
-//    // -----------------------------------------------------------------------------
-//    Map<String, Object> variables = new HashMap<String, Object>();
-//    variables.put("simpleEntityFieldAccess", simpleEntityFieldAccess);
-//    variables.put("simpleEntityPropertyAccess", simpleEntityPropertyAccess);
-//    variables.put("subclassFieldAccess", subclassFieldAccess);
-//    variables.put("subclassPropertyAccess", subclassPropertyAccess);
-//
-//    // Start the process with the JPA-entities as variables. They will be
-//    // stored in the DB.
-//    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("JPAVariableProcess", variables);
-//
-//    // Read entity with @Id on field
-//    Object fieldAccessResult = runtimeService.getVariable(processInstance.getId(), "simpleEntityFieldAccess");
-//    assertTrue(fieldAccessResult instanceof FieldAccessJPAEntity);
-//    assertEquals(1L, ((FieldAccessJPAEntity) fieldAccessResult).getId().longValue());
-//    assertEquals("value1", ((FieldAccessJPAEntity) fieldAccessResult).getValue());
-//
-//    // Read entity with @Id on property
-//    Object propertyAccessResult = runtimeService.getVariable(processInstance.getId(), "simpleEntityPropertyAccess");
-//    assertTrue(propertyAccessResult instanceof PropertyAccessJPAEntity);
-//    assertEquals(1L, ((PropertyAccessJPAEntity) propertyAccessResult).getId().longValue());
-//    assertEquals("value2", ((PropertyAccessJPAEntity) propertyAccessResult).getValue());
-//
-//    // Read entity with @Id on field of mapped superclass
-//    Object subclassFieldResult = runtimeService.getVariable(processInstance.getId(), "subclassFieldAccess");
-//    assertTrue(subclassFieldResult instanceof SubclassFieldAccessJPAEntity);
-//    assertEquals(1L, ((SubclassFieldAccessJPAEntity) subclassFieldResult).getId().longValue());
-//    assertEquals("value3", ((SubclassFieldAccessJPAEntity) subclassFieldResult).getValue());
-//
-//    // Read entity with @Id on property of mapped superclass
-//    Object subclassPropertyResult = runtimeService.getVariable(processInstance.getId(), "subclassPropertyAccess");
-//    assertTrue(subclassPropertyResult instanceof SubclassPropertyAccessJPAEntity);
-//    assertEquals(1L, ((SubclassPropertyAccessJPAEntity) subclassPropertyResult).getId().longValue());
-//    assertEquals("value4", ((SubclassPropertyAccessJPAEntity) subclassPropertyResult).getValue());
-//
-//    // -----------------------------------------------------------------------------
-//    // Test updating JPA-entity to null-value and back again
-//    // -----------------------------------------------------------------------------
-//    Object currentValue = runtimeService.getVariable(processInstance.getId(), "simpleEntityFieldAccess");
-//    assertNotNull(currentValue);
-//    // Set to null
-//    runtimeService.setVariable(processInstance.getId(), "simpleEntityFieldAccess", null);
-//    currentValue = runtimeService.getVariable(processInstance.getId(), "simpleEntityFieldAccess");
-//    assertNull(currentValue);
-//    // Set to JPA-entity again
-//    runtimeService.setVariable(processInstance.getId(), "simpleEntityFieldAccess", simpleEntityFieldAccess);
-//    currentValue = runtimeService.getVariable(processInstance.getId(), "simpleEntityFieldAccess");
-//    assertNotNull(currentValue);
-//    assertTrue(currentValue instanceof FieldAccessJPAEntity);
-//    assertEquals(1L, ((FieldAccessJPAEntity) currentValue).getId().longValue());
-//
-//    // -----------------------------------------------------------------------------
-//    // Test all allowed types of ID values
-//    // -----------------------------------------------------------------------------
-//
-//    variables = new HashMap<String, Object>();
-//    variables.put("byteIdJPAEntity", byteIdJPAEntity);
-//    variables.put("shortIdJPAEntity", shortIdJPAEntity);
-//    variables.put("integerIdJPAEntity", integerIdJPAEntity);
-//    variables.put("longIdJPAEntity", longIdJPAEntity);
-//    variables.put("floatIdJPAEntity", floatIdJPAEntity);
-//    variables.put("doubleIdJPAEntity", doubleIdJPAEntity);
-//    variables.put("charIdJPAEntity", charIdJPAEntity);
-//    variables.put("stringIdJPAEntity", stringIdJPAEntity);
-//    variables.put("dateIdJPAEntity", dateIdJPAEntity);
-//    variables.put("sqlDateIdJPAEntity", sqlDateIdJPAEntity);
-//    variables.put("bigDecimalIdJPAEntity", bigDecimalIdJPAEntity);
-//    variables.put("bigIntegerIdJPAEntity", bigIntegerIdJPAEntity);
-//
-//    // Start the process with the JPA-entities as variables. They will be
-//    // stored in the DB.
-//    ProcessInstance processInstanceAllTypes = runtimeService.startProcessInstanceByKey("JPAVariableProcess", variables);
-//    Object byteIdResult = runtimeService.getVariable(processInstanceAllTypes.getId(), "byteIdJPAEntity");
-//    assertTrue(byteIdResult instanceof ByteIdJPAEntity);
-//    assertEquals(byteIdJPAEntity.getByteId(), ((ByteIdJPAEntity) byteIdResult).getByteId());
-//
-//    Object shortIdResult = runtimeService.getVariable(processInstanceAllTypes.getId(), "shortIdJPAEntity");
-//    assertTrue(shortIdResult instanceof ShortIdJPAEntity);
-//    assertEquals(shortIdJPAEntity.getShortId(), ((ShortIdJPAEntity) shortIdResult).getShortId());
-//
-//    Object integerIdResult = runtimeService.getVariable(processInstanceAllTypes.getId(), "integerIdJPAEntity");
-//    assertTrue(integerIdResult instanceof IntegerIdJPAEntity);
-//    assertEquals(integerIdJPAEntity.getIntId(), ((IntegerIdJPAEntity) integerIdResult).getIntId());
-//
-//    Object longIdResult = runtimeService.getVariable(processInstanceAllTypes.getId(), "longIdJPAEntity");
-//    assertTrue(longIdResult instanceof LongIdJPAEntity);
-//    assertEquals(longIdJPAEntity.getLongId(), ((LongIdJPAEntity) longIdResult).getLongId());
-//
-//    Object floatIdResult = runtimeService.getVariable(processInstanceAllTypes.getId(), "floatIdJPAEntity");
-//    assertTrue(floatIdResult instanceof FloatIdJPAEntity);
-//    assertEquals(floatIdJPAEntity.getFloatId(), ((FloatIdJPAEntity) floatIdResult).getFloatId());
-//
-//    Object doubleIdResult = runtimeService.getVariable(processInstanceAllTypes.getId(), "doubleIdJPAEntity");
-//    assertTrue(doubleIdResult instanceof DoubleIdJPAEntity);
-//    assertEquals(doubleIdJPAEntity.getDoubleId(), ((DoubleIdJPAEntity) doubleIdResult).getDoubleId());
-//
-//    Object charIdResult = runtimeService.getVariable(processInstanceAllTypes.getId(), "charIdJPAEntity");
-//    assertTrue(charIdResult instanceof CharIdJPAEntity);
-//    assertEquals(charIdJPAEntity.getCharId(), ((CharIdJPAEntity) charIdResult).getCharId());
-//
-//    Object stringIdResult = runtimeService.getVariable(processInstanceAllTypes.getId(), "stringIdJPAEntity");
-//    assertTrue(stringIdResult instanceof StringIdJPAEntity);
-//    assertEquals(stringIdJPAEntity.getStringId(), ((StringIdJPAEntity) stringIdResult).getStringId());
-//
-//    Object dateIdResult = runtimeService.getVariable(processInstanceAllTypes.getId(), "dateIdJPAEntity");
-//    assertTrue(dateIdResult instanceof DateIdJPAEntity);
-//    assertEquals(dateIdJPAEntity.getDateId(), ((DateIdJPAEntity) dateIdResult).getDateId());
-//
-//    Object sqlDateIdResult = runtimeService.getVariable(processInstanceAllTypes.getId(), "sqlDateIdJPAEntity");
-//    assertTrue(sqlDateIdResult instanceof SQLDateIdJPAEntity);
-//    assertEquals(sqlDateIdJPAEntity.getDateId(), ((SQLDateIdJPAEntity) sqlDateIdResult).getDateId());
-//
-//    Object bigDecimalIdResult = runtimeService.getVariable(processInstanceAllTypes.getId(), "bigDecimalIdJPAEntity");
-//    assertTrue(bigDecimalIdResult instanceof BigDecimalIdJPAEntity);
-//    assertEquals(bigDecimalIdJPAEntity.getBigDecimalId(), ((BigDecimalIdJPAEntity) bigDecimalIdResult).getBigDecimalId());
-//
-//    Object bigIntegerIdResult = runtimeService.getVariable(processInstanceAllTypes.getId(), "bigIntegerIdJPAEntity");
-//    assertTrue(bigIntegerIdResult instanceof BigIntegerIdJPAEntity);
-//    assertEquals(bigIntegerIdJPAEntity.getBigIntegerId(), ((BigIntegerIdJPAEntity) bigIntegerIdResult).getBigIntegerId());
-//  }
-//
-//  //@TODO: fix Caused by: org.h2.jdbc.JdbcSQLException: Value too long for column "ID_ DECIMAL(19, 2) NOT NULL": "12345678912345678900000.12 (25)"; SQL statement:
-//  @Deployment(resources = { "org/activiti/standalone/jpa/JPAVariableTest.testStoreJPAEntityAsVariable.bpmn20.xml" })
-//  public void testStoreJPAEntityListAsVariable() {
-//    setupJPAEntities();
-//    // -----------------------------------------------------------------------------
-//    // Simple test, Start process with lists of JPA entities as variables
-//    // -----------------------------------------------------------------------------
-//    Map<String, Object> variables = new HashMap<String, Object>();
-//    variables.put("simpleEntityFieldAccess", Arrays.asList(simpleEntityFieldAccess, simpleEntityFieldAccess, simpleEntityFieldAccess));
-//    variables.put("simpleEntityPropertyAccess", Arrays.asList(simpleEntityPropertyAccess, simpleEntityPropertyAccess, simpleEntityPropertyAccess));
-//    variables.put("subclassFieldAccess", Arrays.asList(subclassFieldAccess, subclassFieldAccess, subclassFieldAccess));
-//    variables.put("subclassPropertyAccess", Arrays.asList(subclassPropertyAccess, subclassPropertyAccess, subclassPropertyAccess));
-//
-//    // Start the process with the JPA-entities as variables. They will be
-//    // stored in the DB.
-//    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("JPAVariableProcess", variables);
-//
-//    // Read entity with @Id on field
-//    Object fieldAccessResult = runtimeService.getVariable(processInstance.getId(), "simpleEntityFieldAccess");
-//    assertTrue(fieldAccessResult instanceof List<?>);
-//    List<?> list = (List<?>) fieldAccessResult;
-//    assertEquals(3L, list.size());
-//    assertTrue(list.get(0) instanceof FieldAccessJPAEntity);
-//    assertEquals(((FieldAccessJPAEntity) list.get(0)).getId(), simpleEntityFieldAccess.getId());
-//
-//    // Read entity with @Id on property
-//    Object propertyAccessResult = runtimeService.getVariable(processInstance.getId(), "simpleEntityPropertyAccess");
-//    assertTrue(propertyAccessResult instanceof List<?>);
-//    list = (List<?>) propertyAccessResult;
-//    assertEquals(3L, list.size());
-//    assertTrue(list.get(0) instanceof PropertyAccessJPAEntity);
-//    assertEquals(((PropertyAccessJPAEntity) list.get(0)).getId(), simpleEntityPropertyAccess.getId());
-//
-//    // Read entity with @Id on field of mapped superclass
-//    Object subclassFieldResult = runtimeService.getVariable(processInstance.getId(), "subclassFieldAccess");
-//    assertTrue(subclassFieldResult instanceof List<?>);
-//    list = (List<?>) subclassFieldResult;
-//    assertEquals(3L, list.size());
-//    assertTrue(list.get(0) instanceof SubclassFieldAccessJPAEntity);
-//    assertEquals(((SubclassFieldAccessJPAEntity) list.get(0)).getId(), simpleEntityPropertyAccess.getId());
-//
-//    // Read entity with @Id on property of mapped superclass
-//    Object subclassPropertyResult = runtimeService.getVariable(processInstance.getId(), "subclassPropertyAccess");
-//    assertTrue(subclassPropertyResult instanceof List<?>);
-//    list = (List<?>) subclassPropertyResult;
-//    assertEquals(3L, list.size());
-//    assertTrue(list.get(0) instanceof SubclassPropertyAccessJPAEntity);
-//    assertEquals(((SubclassPropertyAccessJPAEntity) list.get(0)).getId(), simpleEntityPropertyAccess.getId());
-//  }
-//
-//  //@TODO: fix Caused by: org.h2.jdbc.JdbcSQLException: Concurrent update in table "JPA_ENTITY_FIELD": another transaction has updated or deleted the same row [90131-193]
-//  @Deployment(resources = { "org/activiti/standalone/jpa/JPAVariableTest.testStoreJPAEntityAsVariable.bpmn20.xml" })
-//  public void testStoreJPAEntityListAsVariableEdgeCases() {
-//    setupJPAEntities();
-//
-//    // Test using mixed JPA-entities which are not serializable, should not
-//    // be picked up by JPA list type en therefor fail
-//    // due to serialization error
-//    Map<String, Object> variables = new HashMap<String, Object>();
-//    variables.put("simpleEntityFieldAccess", Arrays.asList(simpleEntityFieldAccess, simpleEntityPropertyAccess));
-//
-//    try {
-//      runtimeService.startProcessInstanceByKey("JPAVariableProcess", variables);
-//      fail("Exception expected");
-//    } catch (ActivitiException ae) {
-//      // Expected
-//    }
-//
-//    // Test updating value to an empty list and back
-//    variables = new HashMap<String, Object>();
-//    variables.put("list", Arrays.asList(simpleEntityFieldAccess, simpleEntityFieldAccess));
-//
-//    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("JPAVariableProcess", variables);
-//
-//    runtimeService.setVariable(processInstance.getId(), "list", new ArrayList<String>());
-//    assertEquals(0L, ((List<?>) runtimeService.getVariable(processInstance.getId(), "list")).size());
-//
-//    runtimeService.setVariable(processInstance.getId(), "list", Arrays.asList(simpleEntityFieldAccess, simpleEntityFieldAccess));
-//    assertEquals(2L, ((List<?>) runtimeService.getVariable(processInstance.getId(), "list")).size());
-//    assertTrue(((List<?>) runtimeService.getVariable(processInstance.getId(), "list")).get(0) instanceof FieldAccessJPAEntity);
-//
-//    // Test updating to list of Strings
-//    runtimeService.setVariable(processInstance.getId(), "list", Arrays.asList("TEST", "TESTING"));
-//    assertEquals(2L, ((List<?>) runtimeService.getVariable(processInstance.getId(), "list")).size());
-//    assertTrue(((List<?>) runtimeService.getVariable(processInstance.getId(), "list")).get(0) instanceof String);
-//
-//    runtimeService.setVariable(processInstance.getId(), "list", Arrays.asList(simpleEntityFieldAccess, simpleEntityFieldAccess));
-//    assertEquals(2L, ((List<?>) runtimeService.getVariable(processInstance.getId(), "list")).size());
-//    assertTrue(((List<?>) runtimeService.getVariable(processInstance.getId(), "list")).get(0) instanceof FieldAccessJPAEntity);
-//
-//    // Test updating to null
-//    runtimeService.setVariable(processInstance.getId(), "list", null);
-//    assertNull(runtimeService.getVariable(processInstance.getId(), "list"));
-//
-//    runtimeService.setVariable(processInstance.getId(), "list", Arrays.asList(simpleEntityFieldAccess, simpleEntityFieldAccess));
-//    assertEquals(2L, ((List<?>) runtimeService.getVariable(processInstance.getId(), "list")).size());
-//    assertTrue(((List<?>) runtimeService.getVariable(processInstance.getId(), "list")).get(0) instanceof FieldAccessJPAEntity);
-//  }
+  //@TODO: fix Caused by: org.h2.jdbc.JdbcSQLException: Concurrent update in table "JPA_ENTITY_FIELD": another transaction has updated or deleted the same row [90131-193]
+  @Deployment
+  public void ignored_testStoreJPAEntityAsVariable() {
+    setupJPAEntities();
+    // -----------------------------------------------------------------------------
+    // Simple test, Start process with JPA entities as variables
+    // -----------------------------------------------------------------------------
+    Map<String, Object> variables = new HashMap<String, Object>();
+    variables.put("simpleEntityFieldAccess", simpleEntityFieldAccess);
+    variables.put("simpleEntityPropertyAccess", simpleEntityPropertyAccess);
+    variables.put("subclassFieldAccess", subclassFieldAccess);
+    variables.put("subclassPropertyAccess", subclassPropertyAccess);
+
+    // Start the process with the JPA-entities as variables. They will be
+    // stored in the DB.
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("JPAVariableProcess", variables);
+
+    // Read entity with @Id on field
+    Object fieldAccessResult = runtimeService.getVariable(processInstance.getId(), "simpleEntityFieldAccess");
+    assertThat(fieldAccessResult instanceof FieldAccessJPAEntity).isTrue();
+    assertThat(((FieldAccessJPAEntity) fieldAccessResult).getId().longValue()).isEqualTo(1L);
+    assertThat(((FieldAccessJPAEntity) fieldAccessResult).getValue()).isEqualTo("value1");
+
+    // Read entity with @Id on property
+    Object propertyAccessResult = runtimeService.getVariable(processInstance.getId(), "simpleEntityPropertyAccess");
+    assertThat(propertyAccessResult instanceof PropertyAccessJPAEntity).isTrue();
+    assertThat(((PropertyAccessJPAEntity) propertyAccessResult).getId().longValue()).isEqualTo(1L);
+    assertThat(((PropertyAccessJPAEntity) propertyAccessResult).getValue()).isEqualTo("value2");
+
+    // Read entity with @Id on field of mapped superclass
+    Object subclassFieldResult = runtimeService.getVariable(processInstance.getId(), "subclassFieldAccess");
+    assertThat(subclassFieldResult instanceof SubclassFieldAccessJPAEntity).isTrue();
+    assertThat(((SubclassFieldAccessJPAEntity) subclassFieldResult).getId().longValue()).isEqualTo(1L);
+    assertThat(((SubclassFieldAccessJPAEntity) subclassFieldResult).getValue()).isEqualTo("value3");
+
+    // Read entity with @Id on property of mapped superclass
+    Object subclassPropertyResult = runtimeService.getVariable(processInstance.getId(), "subclassPropertyAccess");
+    assertThat(subclassPropertyResult instanceof SubclassPropertyAccessJPAEntity).isTrue();
+    assertThat(((SubclassPropertyAccessJPAEntity) subclassPropertyResult).getId().longValue()).isEqualTo(1L);
+    assertThat(((SubclassPropertyAccessJPAEntity) subclassPropertyResult).getValue()).isEqualTo("value4");
+
+    // -----------------------------------------------------------------------------
+    // Test updating JPA-entity to null-value and back again
+    // -----------------------------------------------------------------------------
+    Object currentValue = runtimeService.getVariable(processInstance.getId(), "simpleEntityFieldAccess");
+    assertThat(currentValue).isNotNull();
+    // Set to null
+    runtimeService.setVariable(processInstance.getId(), "simpleEntityFieldAccess", null);
+    currentValue = runtimeService.getVariable(processInstance.getId(), "simpleEntityFieldAccess");
+    assertThat(currentValue).isNull();
+    // Set to JPA-entity again
+    runtimeService.setVariable(processInstance.getId(), "simpleEntityFieldAccess", simpleEntityFieldAccess);
+    currentValue = runtimeService.getVariable(processInstance.getId(), "simpleEntityFieldAccess");
+    assertThat(currentValue).isNotNull();
+    assertThat(currentValue instanceof FieldAccessJPAEntity).isTrue();
+    assertThat(((FieldAccessJPAEntity) currentValue).getId().longValue()).isEqualTo(1L);
+
+    // -----------------------------------------------------------------------------
+    // Test all allowed types of ID values
+    // -----------------------------------------------------------------------------
+
+    variables = new HashMap<String, Object>();
+    variables.put("byteIdJPAEntity", byteIdJPAEntity);
+    variables.put("shortIdJPAEntity", shortIdJPAEntity);
+    variables.put("integerIdJPAEntity", integerIdJPAEntity);
+    variables.put("longIdJPAEntity", longIdJPAEntity);
+    variables.put("floatIdJPAEntity", floatIdJPAEntity);
+    variables.put("doubleIdJPAEntity", doubleIdJPAEntity);
+    variables.put("charIdJPAEntity", charIdJPAEntity);
+    variables.put("stringIdJPAEntity", stringIdJPAEntity);
+    variables.put("dateIdJPAEntity", dateIdJPAEntity);
+    variables.put("sqlDateIdJPAEntity", sqlDateIdJPAEntity);
+    variables.put("bigDecimalIdJPAEntity", bigDecimalIdJPAEntity);
+    variables.put("bigIntegerIdJPAEntity", bigIntegerIdJPAEntity);
+
+    // Start the process with the JPA-entities as variables. They will be
+    // stored in the DB.
+    ProcessInstance processInstanceAllTypes = runtimeService.startProcessInstanceByKey("JPAVariableProcess", variables);
+    Object byteIdResult = runtimeService.getVariable(processInstanceAllTypes.getId(), "byteIdJPAEntity");
+    assertThat(byteIdResult instanceof ByteIdJPAEntity).isTrue();
+    assertThat(((ByteIdJPAEntity) byteIdResult).getByteId()).isEqualTo(byteIdJPAEntity.getByteId());
+
+    Object shortIdResult = runtimeService.getVariable(processInstanceAllTypes.getId(), "shortIdJPAEntity");
+    assertThat(shortIdResult instanceof ShortIdJPAEntity).isTrue();
+    assertThat(((ShortIdJPAEntity) shortIdResult).getShortId()).isEqualTo(shortIdJPAEntity.getShortId());
+
+    Object integerIdResult = runtimeService.getVariable(processInstanceAllTypes.getId(), "integerIdJPAEntity");
+    assertThat(integerIdResult instanceof IntegerIdJPAEntity).isTrue();
+    assertThat(((IntegerIdJPAEntity) integerIdResult).getIntId()).isEqualTo(integerIdJPAEntity.getIntId());
+
+    Object longIdResult = runtimeService.getVariable(processInstanceAllTypes.getId(), "longIdJPAEntity");
+    assertThat(longIdResult instanceof LongIdJPAEntity).isTrue();
+    assertThat(((LongIdJPAEntity) longIdResult).getLongId()).isEqualTo(longIdJPAEntity.getLongId());
+
+    Object floatIdResult = runtimeService.getVariable(processInstanceAllTypes.getId(), "floatIdJPAEntity");
+    assertThat(floatIdResult instanceof FloatIdJPAEntity).isTrue();
+    assertThat(((FloatIdJPAEntity) floatIdResult).getFloatId()).isEqualTo(floatIdJPAEntity.getFloatId());
+
+    Object doubleIdResult = runtimeService.getVariable(processInstanceAllTypes.getId(), "doubleIdJPAEntity");
+    assertThat(doubleIdResult instanceof DoubleIdJPAEntity).isTrue();
+    assertThat(((DoubleIdJPAEntity) doubleIdResult).getDoubleId()).isEqualTo(doubleIdJPAEntity.getDoubleId());
+
+    Object charIdResult = runtimeService.getVariable(processInstanceAllTypes.getId(), "charIdJPAEntity");
+    assertThat(charIdResult instanceof CharIdJPAEntity).isTrue();
+    assertThat(((CharIdJPAEntity) charIdResult).getCharId()).isEqualTo(charIdJPAEntity.getCharId());
+
+    Object stringIdResult = runtimeService.getVariable(processInstanceAllTypes.getId(), "stringIdJPAEntity");
+    assertThat(stringIdResult instanceof StringIdJPAEntity).isTrue();
+    assertThat(((StringIdJPAEntity) stringIdResult).getStringId()).isEqualTo(stringIdJPAEntity.getStringId());
+
+    Object dateIdResult = runtimeService.getVariable(processInstanceAllTypes.getId(), "dateIdJPAEntity");
+    assertThat(dateIdResult instanceof DateIdJPAEntity).isTrue();
+    assertThat(((DateIdJPAEntity) dateIdResult).getDateId()).isEqualTo(dateIdJPAEntity.getDateId());
+
+    Object sqlDateIdResult = runtimeService.getVariable(processInstanceAllTypes.getId(), "sqlDateIdJPAEntity");
+    assertThat(sqlDateIdResult instanceof SQLDateIdJPAEntity).isTrue();
+    assertThat(((SQLDateIdJPAEntity) sqlDateIdResult).getDateId()).isEqualTo(sqlDateIdJPAEntity.getDateId());
+
+    Object bigDecimalIdResult = runtimeService.getVariable(processInstanceAllTypes.getId(), "bigDecimalIdJPAEntity");
+    assertThat(bigDecimalIdResult instanceof BigDecimalIdJPAEntity).isTrue();
+    assertThat(((BigDecimalIdJPAEntity) bigDecimalIdResult).getBigDecimalId()).isEqualTo(bigDecimalIdJPAEntity.getBigDecimalId());
+
+    Object bigIntegerIdResult = runtimeService.getVariable(processInstanceAllTypes.getId(), "bigIntegerIdJPAEntity");
+    assertThat(bigIntegerIdResult instanceof BigIntegerIdJPAEntity).isTrue();
+    assertThat(((BigIntegerIdJPAEntity) bigIntegerIdResult).getBigIntegerId()).isEqualTo(bigIntegerIdJPAEntity.getBigIntegerId());
+  }
+
+  //@TODO: fix Caused by: org.h2.jdbc.JdbcSQLException: Value too long for column "ID_ DECIMAL(19, 2) NOT NULL": "12345678912345678900000.12 (25)"; SQL statement:
+  @Deployment(resources = { "org/activiti/standalone/jpa/JPAVariableTest.testStoreJPAEntityAsVariable.bpmn20.xml" })
+  public void ignored_testStoreJPAEntityListAsVariable() {
+    setupJPAEntities();
+    // -----------------------------------------------------------------------------
+    // Simple test, Start process with lists of JPA entities as variables
+    // -----------------------------------------------------------------------------
+    Map<String, Object> variables = new HashMap<String, Object>();
+    variables.put("simpleEntityFieldAccess", asList(simpleEntityFieldAccess, simpleEntityFieldAccess, simpleEntityFieldAccess));
+    variables.put("simpleEntityPropertyAccess", asList(simpleEntityPropertyAccess, simpleEntityPropertyAccess, simpleEntityPropertyAccess));
+    variables.put("subclassFieldAccess", asList(subclassFieldAccess, subclassFieldAccess, subclassFieldAccess));
+    variables.put("subclassPropertyAccess", asList(subclassPropertyAccess, subclassPropertyAccess, subclassPropertyAccess));
+
+    // Start the process with the JPA-entities as variables. They will be
+    // stored in the DB.
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("JPAVariableProcess", variables);
+
+    // Read entity with @Id on field
+    Object fieldAccessResult = runtimeService.getVariable(processInstance.getId(), "simpleEntityFieldAccess");
+    assertThat(fieldAccessResult instanceof List<?>).isTrue();
+    List<?> list = (List<?>) fieldAccessResult;
+    assertThat(list.size()).isEqualTo(3L);
+    assertThat(list.get(0) instanceof FieldAccessJPAEntity).isTrue();
+    assertThat(simpleEntityFieldAccess.getId()).isEqualTo(((FieldAccessJPAEntity) list.get(0)).getId());
+
+    // Read entity with @Id on property
+    Object propertyAccessResult = runtimeService.getVariable(processInstance.getId(), "simpleEntityPropertyAccess");
+    assertThat(propertyAccessResult instanceof List<?>).isTrue();
+    list = (List<?>) propertyAccessResult;
+    assertThat(list.size()).isEqualTo(3L);
+    assertThat(list.get(0) instanceof PropertyAccessJPAEntity).isTrue();
+    assertThat(simpleEntityPropertyAccess.getId()).isEqualTo(((PropertyAccessJPAEntity) list.get(0)).getId());
+
+    // Read entity with @Id on field of mapped superclass
+    Object subclassFieldResult = runtimeService.getVariable(processInstance.getId(), "subclassFieldAccess");
+    assertThat(subclassFieldResult instanceof List<?>).isTrue();
+    list = (List<?>) subclassFieldResult;
+    assertThat(list.size()).isEqualTo(3L);
+    assertThat(list.get(0) instanceof SubclassFieldAccessJPAEntity).isTrue();
+    assertThat(simpleEntityPropertyAccess.getId()).isEqualTo(((SubclassFieldAccessJPAEntity) list.get(0)).getId());
+
+    // Read entity with @Id on property of mapped superclass
+    Object subclassPropertyResult = runtimeService.getVariable(processInstance.getId(), "subclassPropertyAccess");
+    assertThat(subclassPropertyResult instanceof List<?>).isTrue();
+    list = (List<?>) subclassPropertyResult;
+    assertThat(list.size()).isEqualTo(3L);
+    assertThat(list.get(0) instanceof SubclassPropertyAccessJPAEntity).isTrue();
+    assertThat(simpleEntityPropertyAccess.getId()).isEqualTo(((SubclassPropertyAccessJPAEntity) list.get(0)).getId());
+  }
+
+  //@TODO: fix Caused by: org.h2.jdbc.JdbcSQLException: Concurrent update in table "JPA_ENTITY_FIELD": another transaction has updated or deleted the same row [90131-193]
+  @Deployment(resources = { "org/activiti/standalone/jpa/JPAVariableTest.testStoreJPAEntityAsVariable.bpmn20.xml" })
+  public void ignored_testStoreJPAEntityListAsVariableEdgeCases() {
+    setupJPAEntities();
+
+    // Test using mixed JPA-entities which are not serializable, should not
+    // be picked up by JPA list type en therefor fail due to serialization error
+    Map<String, Object> variablesForException = new HashMap<String, Object>();
+    variablesForException.put("simpleEntityFieldAccess", asList(simpleEntityFieldAccess, simpleEntityPropertyAccess));
+
+    assertThatExceptionOfType(ActivitiException.class)
+      .isThrownBy(() -> runtimeService.startProcessInstanceByKey("JPAVariableProcess", variablesForException));
+
+    // Test updating value to an empty list and back
+    Map<String, Object> variables = new HashMap<String, Object>();
+    variables.put("list", asList(simpleEntityFieldAccess, simpleEntityFieldAccess));
+
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("JPAVariableProcess", variables);
+
+    runtimeService.setVariable(processInstance.getId(), "list", new ArrayList<>());
+    assertThat(((List<?>) runtimeService.getVariable(processInstance.getId(), "list")).size()).isEqualTo(0L);
+
+    runtimeService.setVariable(processInstance.getId(), "list", asList(simpleEntityFieldAccess, simpleEntityFieldAccess));
+    assertThat(((List<?>) runtimeService.getVariable(processInstance.getId(), "list")).size()).isEqualTo(2L);
+    assertThat(((List<?>) runtimeService.getVariable(processInstance.getId(), "list")).get(0) instanceof FieldAccessJPAEntity).isTrue();
+
+    // Test updating to list of Strings
+    runtimeService.setVariable(processInstance.getId(), "list", asList("TEST", "TESTING"));
+    assertThat(((List<?>) runtimeService.getVariable(processInstance.getId(), "list")).size()).isEqualTo(2L);
+    assertThat(((List<?>) runtimeService.getVariable(processInstance.getId(), "list")).get(0) instanceof String).isTrue();
+
+    runtimeService.setVariable(processInstance.getId(), "list", asList(simpleEntityFieldAccess, simpleEntityFieldAccess));
+    assertThat(((List<?>) runtimeService.getVariable(processInstance.getId(), "list")).size()).isEqualTo(2L);
+    assertThat(((List<?>) runtimeService.getVariable(processInstance.getId(), "list")).get(0) instanceof FieldAccessJPAEntity).isTrue();
+
+    // Test updating to null
+    runtimeService.setVariable(processInstance.getId(), "list", null);
+    assertThat(runtimeService.getVariable(processInstance.getId(), "list")).isNull();
+
+    runtimeService.setVariable(processInstance.getId(), "list", asList(simpleEntityFieldAccess, simpleEntityFieldAccess));
+    assertThat(((List<?>) runtimeService.getVariable(processInstance.getId(), "list")).size()).isEqualTo(2L);
+    assertThat(((List<?>) runtimeService.getVariable(processInstance.getId(), "list")).get(0) instanceof FieldAccessJPAEntity).isTrue();
+  }
 
     // https://activiti.atlassian.net/browse/ACT-995
     @Deployment(resources = "org/activiti/standalone/jpa/JPAVariableTest.testQueryJPAVariable.bpmn20.xml")
@@ -558,9 +559,8 @@ public class JPAVariableTest extends AbstractActivitiTestCase {
         // Query the processInstance
         ProcessInstance result = runtimeService.createProcessInstanceQuery().variableValueEquals("entityToQuery",
                                                                                                  entityToQuery).singleResult();
-        assertNotNull(result);
-        assertEquals(result.getId(),
-                     processInstance.getId());
+        assertThat(result).isNotNull();
+        assertEquals(result.getId(), processInstance.getId());
 
         // Query with the same entity-type but with different ID should have no
         // result
@@ -569,7 +569,7 @@ public class JPAVariableTest extends AbstractActivitiTestCase {
 
         result = runtimeService.createProcessInstanceQuery().variableValueEquals("entityToQuery",
                                                                                  unexistingEntity).singleResult();
-        assertNull(result);
+        assertThat(result).isNull();
 
         // All other operators are unsupported
         try {
@@ -624,12 +624,10 @@ public class JPAVariableTest extends AbstractActivitiTestCase {
         ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("UpdateJPAValuesProcess",
                                                                                    variables);
 
-        // Servicetask in process 'UpdateJPAValuesProcess' should have set value
-        // on entityToUpdate.
+        // Servicetask in process 'UpdateJPAValuesProcess' should have set value on entityToUpdate.
         Object updatedEntity = runtimeService.getVariable(processInstance.getId(),
                                                           "entityToUpdate");
-        assertTrue(updatedEntity instanceof FieldAccessJPAEntity);
-        assertEquals("updatedValue",
-                     ((FieldAccessJPAEntity) updatedEntity).getValue());
+        assertThat(updatedEntity instanceof FieldAccessJPAEntity).isTrue();
+        assertEquals("updatedValue", ((FieldAccessJPAEntity) updatedEntity).getValue());
     }
 }

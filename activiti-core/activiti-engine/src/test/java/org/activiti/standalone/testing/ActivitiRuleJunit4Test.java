@@ -1,9 +1,9 @@
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -13,7 +13,7 @@
 
 package org.activiti.standalone.testing;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.activiti.engine.ManagementService;
 import org.activiti.engine.RuntimeService;
@@ -27,9 +27,9 @@ import org.junit.Test;
 
 /**
  * Test runners follow the this rule: - if the class extends Testcase, run as Junit 3 - otherwise use Junit 4
- * 
+ *
  * So this test can be included in the regular test suite without problems.
- * 
+ *
 
  */
 public class ActivitiRuleJunit4Test {
@@ -45,10 +45,10 @@ public class ActivitiRuleJunit4Test {
 
     TaskService taskService = activitiRule.getTaskService();
     Task task = taskService.createTaskQuery().singleResult();
-    assertEquals("My Task", task.getName());
+    assertThat(task.getName()).isEqualTo("My Task");
 
     taskService.complete(task.getId());
-    assertEquals(0, runtimeService.createProcessInstanceQuery().count());
+    assertThat(runtimeService.createProcessInstanceQuery().count()).isEqualTo(0);
   }
 
   // this is to show how JobTestHelper could be used to wait for jobs to be all processed
@@ -62,11 +62,11 @@ public class ActivitiRuleJunit4Test {
     runtimeService.startProcessInstanceByKey("asyncTask");
 
     // now there should be one job in the database:
-    assertEquals(1, managementService.createJobQuery().count());
+    assertThat(managementService.createJobQuery().count()).isEqualTo(1);
 
     JobTestHelper.waitForJobExecutorToProcessAllJobs(activitiRule, 5000L, 500L);
 
     // the job is done
-    assertEquals(0, managementService.createJobQuery().count());
+    assertThat(managementService.createJobQuery().count()).isEqualTo(0);
   }
 }

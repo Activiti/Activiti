@@ -1,9 +1,9 @@
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -12,6 +12,8 @@
  */
 
 package org.activiti.engine.test.cache;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 
@@ -67,11 +69,11 @@ public class ProcessDefinitionCacheTest extends AbstractTestCase {
         // Start a new Process instance
         ProcessInstance processInstance = processEngine.getRuntimeService().startProcessInstanceById(processDefinitions.get(0).getId());
         String processInstanceId = processInstance.getId();
-        assertNotNull(processInstance);
+        assertThat(processInstance).isNotNull();
 
         // Close the process engine
         processEngine.close();
-        assertNotNull(processEngine.getRuntimeService());
+        assertThat(processEngine.getRuntimeService()).isNotNull();
 
         // Reboot the process engine
         processEngine = new StandaloneProcessEngineConfiguration().setProcessEngineName("reboot-test").setDatabaseSchemaUpdate(ProcessEngineConfiguration.DB_SCHEMA_UPDATE_FALSE)
@@ -80,7 +82,7 @@ public class ProcessDefinitionCacheTest extends AbstractTestCase {
         // Check if the existing process instance is still alive
         processInstance = processEngine.getRuntimeService().createProcessInstanceQuery().processInstanceId(processInstanceId).singleResult();
 
-        assertNotNull(processInstance);
+        assertThat(processInstance).isNotNull();
 
         // Complete the task. That will end the process instance
         TaskService taskService = processEngine.getTaskService();
@@ -92,11 +94,11 @@ public class ProcessDefinitionCacheTest extends AbstractTestCase {
         // re-loaded into the process definition cache
         processInstance = processEngine.getRuntimeService().createProcessInstanceQuery().processInstanceId(processInstanceId).singleResult();
 
-        assertNull(processInstance);
+        assertThat(processInstance).isNull();
 
         // Extra check to see if a new process instance can be started as well
         processInstance = processEngine.getRuntimeService().startProcessInstanceById(processDefinitions.get(0).getId());
-        assertNotNull(processInstance);
+        assertThat(processInstance).isNotNull();
 
         // close the process engine
         processEngine.close();

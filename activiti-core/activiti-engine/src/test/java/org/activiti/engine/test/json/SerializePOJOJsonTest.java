@@ -1,5 +1,7 @@
 package org.activiti.engine.test.json;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -40,14 +42,14 @@ public class SerializePOJOJsonTest extends ResourceActivitiTestCase {
             @Override
             public void accept(IdentityLink i) {
                 if ("candidate".equals(i.getType()) ) {
-                    assertEquals("bob", i.getUserId());
+                    assertThat(i.getUserId()).isEqualTo("bob");
                 }
             }
         });
         taskService.complete(taskId);
         HistoricTaskInstance task = historyService.createHistoricTaskInstanceQuery().taskId(taskId).singleResult();
-        assertEquals("bob", task.getAssignee());
-        assertEquals("test", task.getCategory());
+        assertThat(task.getAssignee()).isEqualTo("bob");
+        assertThat(task.getCategory()).isEqualTo("test");
     }
 
     @Deployment
@@ -59,7 +61,7 @@ public class SerializePOJOJsonTest extends ResourceActivitiTestCase {
         String taskId = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult().getId();
         taskService.complete(taskId);
         List<Task> tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).list();
-        assertEquals(3, tasks.size());
+        assertThat(tasks.size()).isEqualTo(3);
         tasks.forEach(task -> taskService.complete(task.getId()));
 
     }
@@ -85,7 +87,7 @@ public class SerializePOJOJsonTest extends ResourceActivitiTestCase {
         taskId = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult().getId();
         taskService.complete(taskId);
         List<Task> tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).list();
-        assertEquals(3, tasks.size());
+        assertThat(tasks.size()).isEqualTo(3);
         tasks.forEach(task -> taskService.complete(task.getId()));
     }
 
@@ -102,7 +104,7 @@ public class SerializePOJOJsonTest extends ResourceActivitiTestCase {
         String taskId = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult().getId();
         taskService.complete(taskId);
         List<Task> tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).list();
-        assertEquals(3, tasks.size());
+        assertThat(tasks.size()).isEqualTo(3);
         tasks.forEach(task -> taskService.complete(task.getId()));
     }
 }

@@ -12,6 +12,8 @@
  */
 package org.activiti.examples.mgmt;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.Arrays;
 import java.util.Map;
 
@@ -32,13 +34,13 @@ public class ManagementServiceTest extends PluggableActivitiTestCase {
 
     String tablePrefix = processEngineConfiguration.getDatabaseTablePrefix();
 
-    assertEquals(new Long(4), tableCount.get(tablePrefix + "ACT_GE_PROPERTY"));
-    assertEquals(new Long(0), tableCount.get(tablePrefix + "ACT_GE_BYTEARRAY"));
-    assertEquals(new Long(0), tableCount.get(tablePrefix + "ACT_RE_DEPLOYMENT"));
-    assertEquals(new Long(0), tableCount.get(tablePrefix + "ACT_RU_EXECUTION"));
-    assertEquals(new Long(0), tableCount.get(tablePrefix + "ACT_RE_PROCDEF"));
-    assertEquals(new Long(0), tableCount.get(tablePrefix + "ACT_RU_TASK"));
-    assertEquals(new Long(0), tableCount.get(tablePrefix + "ACT_RU_IDENTITYLINK"));
+    assertThat(tableCount.get(tablePrefix + "ACT_GE_PROPERTY")).isEqualTo(new Long(4));
+    assertThat(tableCount.get(tablePrefix + "ACT_GE_BYTEARRAY")).isEqualTo(new Long(0));
+    assertThat(tableCount.get(tablePrefix + "ACT_RE_DEPLOYMENT")).isEqualTo(new Long(0));
+    assertThat(tableCount.get(tablePrefix + "ACT_RU_EXECUTION")).isEqualTo(new Long(0));
+    assertThat(tableCount.get(tablePrefix + "ACT_RE_PROCDEF")).isEqualTo(new Long(0));
+    assertThat(tableCount.get(tablePrefix + "ACT_RU_TASK")).isEqualTo(new Long(0));
+    assertThat(tableCount.get(tablePrefix + "ACT_RU_IDENTITYLINK")).isEqualTo(new Long(0));
   }
 
   public void testGetTableMetaData() {
@@ -46,14 +48,14 @@ public class ManagementServiceTest extends PluggableActivitiTestCase {
     String tablePrefix = processEngineConfiguration.getDatabaseTablePrefix();
 
     TableMetaData tableMetaData = managementService.getTableMetaData(tablePrefix+"ACT_RU_TASK");
-    assertEquals(tableMetaData.getColumnNames().size(), tableMetaData.getColumnTypes().size());
-    assertEquals(22, tableMetaData.getColumnNames().size());
+    assertThat(tableMetaData.getColumnTypes().size()).isEqualTo(tableMetaData.getColumnNames().size());
+    assertThat(tableMetaData.getColumnNames().size()).isEqualTo(22);
 
     int assigneeIndex = tableMetaData.getColumnNames().indexOf("ASSIGNEE_");
     int createTimeIndex = tableMetaData.getColumnNames().indexOf("CREATE_TIME_");
 
-    assertTrue(assigneeIndex >= 0);
-    assertTrue(createTimeIndex >= 0);
+    assertThat(assigneeIndex >= 0).isTrue();
+    assertThat(createTimeIndex >= 0).isTrue();
 
     assertOneOf(new String[] { "VARCHAR", "NVARCHAR2", "nvarchar", "NVARCHAR" }, tableMetaData.getColumnTypes().get(assigneeIndex));
     assertOneOf(new String[] { "TIMESTAMP", "TIMESTAMP(6)", "datetime", "DATETIME" }, tableMetaData.getColumnTypes().get(createTimeIndex));

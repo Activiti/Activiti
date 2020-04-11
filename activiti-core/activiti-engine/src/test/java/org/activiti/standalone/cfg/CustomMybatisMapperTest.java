@@ -1,5 +1,7 @@
 package org.activiti.standalone.cfg;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.List;
 import java.util.Map;
 
@@ -36,12 +38,12 @@ public class CustomMybatisMapperTest extends ResourceActivitiTestCase {
 
     // Verify
     List<Map<String, Object>> tasks = managementService.executeCustomSql(customSqlExecution);
-    assertEquals(5, tasks.size());
+    assertThat(tasks.size()).isEqualTo(5);
     for (int i = 0; i < 5; i++) {
       Map<String, Object> task = tasks.get(i);
-      assertNotNull(task.get("ID"));
-      assertNotNull(task.get("NAME"));
-      assertNotNull(task.get("CREATETIME"));
+      assertThat(task.get("ID")).isNotNull();
+      assertThat(task.get("NAME")).isNotNull();
+      assertThat(task.get("CREATETIME")).isNotNull();
     }
 
     // Cleanup
@@ -75,12 +77,12 @@ public class CustomMybatisMapperTest extends ResourceActivitiTestCase {
 
     // Verify
     List<Map<String, Object>> results = managementService.executeCustomSql(customSqlExecution);
-    assertEquals(5, results.size());
+    assertThat(results.size()).isEqualTo(5);
     for (int i = 0; i < 5; i++) {
       Map<String, Object> result = results.get(i);
       Long id = Long.valueOf((String) result.get("TASKID"));
       Long variableValue = (Long) result.get("VARIABLEVALUE");
-      assertEquals(id * 2, variableValue.longValue());
+      assertThat(variableValue.longValue()).isEqualTo(id * 2);
     }
 
     // Cleanup

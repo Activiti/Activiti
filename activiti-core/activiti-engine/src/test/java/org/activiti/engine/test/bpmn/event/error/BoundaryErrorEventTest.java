@@ -26,7 +26,7 @@ import org.activiti.engine.impl.util.JvmUtil;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Java6Assertions.catchThrowable;
 
 /**
@@ -41,12 +41,12 @@ public class BoundaryErrorEventTest extends PluggableActivitiTestCase {
 
     // After process start, usertask in subprocess should exist
     Task task = taskService.createTaskQuery().singleResult();
-    assertEquals("subprocessTask", task.getName());
+    assertThat(task.getName()).isEqualTo("subprocessTask");
 
     // After task completion, error end event is reached and caught
     taskService.complete(task.getId());
     task = taskService.createTaskQuery().singleResult();
-    assertEquals("task after catching the error", task.getName());
+    assertThat(task.getName()).isEqualTo("task after catching the error");
   }
 
   public void testThrowErrorWithEmptyErrorCode() {
@@ -90,15 +90,15 @@ public class BoundaryErrorEventTest extends PluggableActivitiTestCase {
     runtimeService.startProcessInstanceByKey("boundaryErrorTest");
 
     List<Task> tasks = taskService.createTaskQuery().orderByTaskName().asc().list();
-    assertEquals(2, tasks.size());
-    assertEquals("Inner subprocess task 1", tasks.get(0).getName());
-    assertEquals("Inner subprocess task 2", tasks.get(1).getName());
+    assertThat(tasks.size()).isEqualTo(2);
+    assertThat(tasks.get(0).getName()).isEqualTo("Inner subprocess task 1");
+    assertThat(tasks.get(1).getName()).isEqualTo("Inner subprocess task 2");
 
     // Completing task 2, will cause the end error event to throw error with code 123
     taskService.complete(tasks.get(1).getId());
     taskService.createTaskQuery().list();
     Task taskAfterError = taskService.createTaskQuery().singleResult();
-    assertEquals("task outside subprocess", taskAfterError.getName());
+    assertThat(taskAfterError.getName()).isEqualTo("task outside subprocess");
   }
 
   @Deployment
@@ -115,34 +115,34 @@ public class BoundaryErrorEventTest extends PluggableActivitiTestCase {
     // Completing task A will lead to task D
     String procId = runtimeService.startProcessInstanceByKey(processDefinitionKey).getId();
     List<Task> tasks = taskService.createTaskQuery().orderByTaskName().asc().list();
-    assertEquals(2, tasks.size());
-    assertEquals("task A", tasks.get(0).getName());
-    assertEquals("task B", tasks.get(1).getName());
+    assertThat(tasks.size()).isEqualTo(2);
+    assertThat(tasks.get(0).getName()).isEqualTo("task A");
+    assertThat(tasks.get(1).getName()).isEqualTo("task B");
     taskService.complete(tasks.get(0).getId());
     Task task = taskService.createTaskQuery().singleResult();
-    assertEquals("task D", task.getName());
+    assertThat(task.getName()).isEqualTo("task D");
     taskService.complete(task.getId());
     assertProcessEnded(procId);
 
     // Completing task B will lead to task C
     runtimeService.startProcessInstanceByKey(processDefinitionKey).getId();
     tasks = taskService.createTaskQuery().orderByTaskName().asc().list();
-    assertEquals(2, tasks.size());
-    assertEquals("task A", tasks.get(0).getName());
-    assertEquals("task B", tasks.get(1).getName());
+    assertThat(tasks.size()).isEqualTo(2);
+    assertThat(tasks.get(0).getName()).isEqualTo("task A");
+    assertThat(tasks.get(1).getName()).isEqualTo("task B");
     taskService.complete(tasks.get(1).getId());
 
     tasks = taskService.createTaskQuery().orderByTaskName().asc().list();
-    assertEquals(2, tasks.size());
-    assertEquals("task A", tasks.get(0).getName());
-    assertEquals("task C", tasks.get(1).getName());
+    assertThat(tasks.size()).isEqualTo(2);
+    assertThat(tasks.get(0).getName()).isEqualTo("task A");
+    assertThat(tasks.get(1).getName()).isEqualTo("task C");
     taskService.complete(tasks.get(1).getId());
     task = taskService.createTaskQuery().singleResult();
-    assertEquals("task A", task.getName());
+    assertThat(task.getName()).isEqualTo("task A");
 
     taskService.complete(task.getId());
     task = taskService.createTaskQuery().singleResult();
-    assertEquals("task D", task.getName());
+    assertThat(task.getName()).isEqualTo("task D");
   }
 
   @Deployment
@@ -153,7 +153,7 @@ public class BoundaryErrorEventTest extends PluggableActivitiTestCase {
     // ending the process instance
     String procId = runtimeService.startProcessInstanceByKey("deeplyNestedErrorThrown").getId();
     Task task = taskService.createTaskQuery().singleResult();
-    assertEquals("Nested task", task.getName());
+    assertThat(task.getName()).isEqualTo("Nested task");
     taskService.complete(task.getId(), CollectionUtil.singletonMap("input", 1));
     assertProcessEnded(procId);
 
@@ -161,10 +161,10 @@ public class BoundaryErrorEventTest extends PluggableActivitiTestCase {
     // all subprocesses
     procId = runtimeService.startProcessInstanceByKey("deeplyNestedErrorThrown").getId();
     task = taskService.createTaskQuery().singleResult();
-    assertEquals("Nested task", task.getName());
+    assertThat(task.getName()).isEqualTo("Nested task");
     taskService.complete(task.getId(), CollectionUtil.singletonMap("input", 2));
     task = taskService.createTaskQuery().singleResult();
-    assertEquals("task after catch", task.getName());
+    assertThat(task.getName()).isEqualTo("task after catch");
     taskService.complete(task.getId());
     assertProcessEnded(procId);
   }
@@ -179,7 +179,7 @@ public class BoundaryErrorEventTest extends PluggableActivitiTestCase {
     HistoricProcessInstance hip;
     if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
       hip = historyService.createHistoricProcessInstanceQuery().processInstanceId(procId).singleResult();
-      assertEquals("processEnd1", hip.getEndActivityId());
+      assertThat(hip.getEndActivityId()).isEqualTo("processEnd1");
     }
     // input == 2 -> error2 is thrown -> caught on subprocess1 -> proc inst
     // end 2
@@ -188,7 +188,7 @@ public class BoundaryErrorEventTest extends PluggableActivitiTestCase {
 
     if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
       hip = historyService.createHistoricProcessInstanceQuery().processInstanceId(procId).singleResult();
-      assertEquals("processEnd1", hip.getEndActivityId());
+      assertThat(hip.getEndActivityId()).isEqualTo("processEnd1");
     }
   }
 
@@ -197,13 +197,13 @@ public class BoundaryErrorEventTest extends PluggableActivitiTestCase {
   public void testCatchErrorOnCallActivity() {
     String procId = runtimeService.startProcessInstanceByKey("catchErrorOnCallActivity").getId();
     Task task = taskService.createTaskQuery().singleResult();
-    assertEquals("Task in subprocess", task.getName());
+    assertThat(task.getName()).isEqualTo("Task in subprocess");
 
     // Completing the task will reach the end error event,
     // which is caught on the call activity boundary
     taskService.complete(task.getId());
     task = taskService.createTaskQuery().singleResult();
-    assertEquals("Escalated Task", task.getName());
+    assertThat(task.getName()).isEqualTo("Escalated Task");
 
     // Completing the task will end the process instance
     taskService.complete(task.getId());
@@ -214,7 +214,7 @@ public class BoundaryErrorEventTest extends PluggableActivitiTestCase {
   public void testUncaughtError() {
     runtimeService.startProcessInstanceByKey("simpleSubProcess");
     Task task = taskService.createTaskQuery().singleResult();
-    assertEquals("Task in subprocess", task.getName());
+    assertThat(task.getName()).isEqualTo("Task in subprocess");
 
     try {
       // Completing the task will reach the end error event, which is never caught in the process
@@ -230,7 +230,7 @@ public class BoundaryErrorEventTest extends PluggableActivitiTestCase {
   public void testUncaughtErrorOnCallActivity() {
     runtimeService.startProcessInstanceByKey("uncaughtErrorOnCallActivity");
     Task task = taskService.createTaskQuery().singleResult();
-    assertEquals("Task in subprocess", task.getName());
+    assertThat(task.getName()).isEqualTo("Task in subprocess");
 
     try {
       // Completing the task will reach the end error event,
@@ -246,13 +246,13 @@ public class BoundaryErrorEventTest extends PluggableActivitiTestCase {
   public void testCatchErrorThrownByCallActivityOnSubprocess() {
     String procId = runtimeService.startProcessInstanceByKey("catchErrorOnSubprocess").getId();
     Task task = taskService.createTaskQuery().singleResult();
-    assertEquals("Task in subprocess", task.getName());
+    assertThat(task.getName()).isEqualTo("Task in subprocess");
 
     // Completing the task will reach the end error event,
     // which is caught on the call activity boundary
     taskService.complete(task.getId());
     task = taskService.createTaskQuery().singleResult();
-    assertEquals("Escalated Task", task.getName());
+    assertThat(task.getName()).isEqualTo("Escalated Task");
 
     // Completing the task will end the process instance
     taskService.complete(task.getId());
@@ -265,12 +265,12 @@ public class BoundaryErrorEventTest extends PluggableActivitiTestCase {
     String procId = runtimeService.startProcessInstanceByKey("catchErrorOnCallActivity2ndLevel").getId();
 
     Task task = taskService.createTaskQuery().singleResult();
-    assertEquals("Task in subprocess", task.getName());
+    assertThat(task.getName()).isEqualTo("Task in subprocess");
 
     taskService.complete(task.getId());
 
     task = taskService.createTaskQuery().singleResult();
-    assertEquals("Escalated Task", task.getName());
+    assertThat(task.getName()).isEqualTo("Escalated Task");
 
     // Completing the task will end the process instance
     taskService.complete(task.getId());
@@ -281,7 +281,7 @@ public class BoundaryErrorEventTest extends PluggableActivitiTestCase {
   public void testCatchErrorOnParallelMultiInstance() {
     String procId = runtimeService.startProcessInstanceByKey("catchErrorOnParallelMi").getId();
     List<Task> tasks = taskService.createTaskQuery().list();
-    assertEquals(5, tasks.size());
+    assertThat(tasks.size()).isEqualTo(5);
 
     // Complete two subprocesses, just to make it a bit more complex
     Map<String, Object> vars = new HashMap<String, Object>();
@@ -293,7 +293,7 @@ public class BoundaryErrorEventTest extends PluggableActivitiTestCase {
     vars.put("throwError", true);
     taskService.complete(tasks.get(1).getId(), vars);
 
-    assertEquals(0, taskService.createTaskQuery().count());
+    assertThat(taskService.createTaskQuery().count()).isEqualTo(0);
     assertProcessEnded(procId);
   }
 
@@ -427,9 +427,9 @@ public class BoundaryErrorEventTest extends PluggableActivitiTestCase {
   private void assertThatErrorHasBeenCaught(String procId) {
     // The service task will throw an error event,
     // which is caught on the service task boundary
-    assertEquals("No tasks found in task list.", 1, taskService.createTaskQuery().count());
+    assertThat(taskService.createTaskQuery().count()).as("No tasks found in task list.").isEqualTo(1);
     Task task = taskService.createTaskQuery().singleResult();
-    assertEquals("Escalated Task", task.getName());
+    assertThat(task.getName()).isEqualTo("Escalated Task");
 
     // Completing the task will end the process instance
     taskService.complete(task.getId());

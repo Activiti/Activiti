@@ -1,9 +1,9 @@
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -12,6 +12,8 @@
  */
 
 package org.activiti.engine.test.db;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 
@@ -31,7 +33,6 @@ import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
-
 
 public class ProcessInstanceMigrationTest extends PluggableActivitiTestCase {
 
@@ -81,7 +82,7 @@ public class ProcessInstanceMigrationTest extends PluggableActivitiTestCase {
       fail("ActivitiException expected");
     } catch (ActivitiObjectNotFoundException ae) {
       assertTextPresent("No process instance found for id = '42'.", ae.getMessage());
-      assertEquals(ProcessInstance.class, ae.getObjectClass());
+      assertThat(ae.getObjectClass()).isEqualTo(ProcessInstance.class);
     }
   }
 
@@ -113,7 +114,7 @@ public class ProcessInstanceMigrationTest extends PluggableActivitiTestCase {
       fail("ActivitiException expected");
     } catch (ActivitiObjectNotFoundException ae) {
       assertTextPresent("no processes deployed with key = 'receiveTask' and version = '23'", ae.getMessage());
-      assertEquals(ProcessDefinition.class, ae.getObjectClass());
+      assertThat(ae.getObjectClass()).isEqualTo(ProcessDefinition.class);
     }
   }
 
@@ -124,11 +125,11 @@ public class ProcessInstanceMigrationTest extends PluggableActivitiTestCase {
 
     // check that receive task has been reached
     Execution execution = runtimeService.createExecutionQuery().activityId("waitState1").singleResult();
-    assertNotNull(execution);
+    assertThat(execution).isNotNull();
 
     // deploy new version of the process definition
     org.activiti.engine.repository.Deployment deployment = repositoryService.createDeployment().addClasspathResource(TEST_PROCESS_ACTIVITY_MISSING).deploy();
-    assertEquals(2, repositoryService.createProcessDefinitionQuery().count());
+    assertThat(repositoryService.createProcessDefinitionQuery().count()).isEqualTo(2);
 
     // migrate process instance to new process definition version
     CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutor();
@@ -151,11 +152,11 @@ public class ProcessInstanceMigrationTest extends PluggableActivitiTestCase {
 
     // check that receive task has been reached
     Execution execution = runtimeService.createExecutionQuery().processInstanceId(pi.getId()).activityId("waitState1").singleResult();
-    assertNotNull(execution);
+    assertThat(execution).isNotNull();
 
     // deploy new version of the process definition
     org.activiti.engine.repository.Deployment deployment = repositoryService.createDeployment().addClasspathResource(TEST_PROCESS).deploy();
-    assertEquals(2, repositoryService.createProcessDefinitionQuery().count());
+    assertThat(repositoryService.createProcessDefinitionQuery().count()).isEqualTo(2);
 
     // migrate process instance to new process definition version
     CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutor();
@@ -167,20 +168,20 @@ public class ProcessInstanceMigrationTest extends PluggableActivitiTestCase {
     // check that the instance now uses the new process definition version
     ProcessDefinition newProcessDefinition = repositoryService.createProcessDefinitionQuery().processDefinitionVersion(2).singleResult();
     pi = runtimeService.createProcessInstanceQuery().processInstanceId(pi.getId()).singleResult();
-    assertEquals(newProcessDefinition.getId(), pi.getProcessDefinitionId());
+    assertThat(pi.getProcessDefinitionId()).isEqualTo(newProcessDefinition.getId());
 
     // check history
     if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
       HistoricProcessInstance historicPI = historyService.createHistoricProcessInstanceQuery().processInstanceId(pi.getId()).singleResult();
-      assertEquals(newProcessDefinition.getId(), historicPI.getProcessDefinitionId());
-      
+      assertThat(historicPI.getProcessDefinitionId()).isEqualTo(newProcessDefinition.getId());
+
       List<HistoricActivityInstance> historicActivities = historyService
           .createHistoricActivityInstanceQuery()
           .processInstanceId(pi.getId())
           .unfinished()
           .list();
-      assertEquals(1, historicActivities.size());
-      assertEquals(newProcessDefinition.getId(), historicActivities.get(0).getProcessDefinitionId());
+      assertThat(historicActivities.size()).isEqualTo(1);
+      assertThat(historicActivities.get(0).getProcessDefinitionId()).isEqualTo(newProcessDefinition.getId());
     }
 
     // undeploy "manually" deployed process definition
@@ -193,11 +194,11 @@ public class ProcessInstanceMigrationTest extends PluggableActivitiTestCase {
     ProcessInstance pi = runtimeService.startProcessInstanceByKey("forkJoin");
 
     // check that the user tasks have been reached
-    assertEquals(2, taskService.createTaskQuery().count());
+    assertThat(taskService.createTaskQuery().count()).isEqualTo(2);
 
     // deploy new version of the process definition
     org.activiti.engine.repository.Deployment deployment = repositoryService.createDeployment().addClasspathResource(TEST_PROCESS_WITH_PARALLEL_GATEWAY).deploy();
-    assertEquals(2, repositoryService.createProcessDefinitionQuery().count());
+    assertThat(repositoryService.createProcessDefinitionQuery().count()).isEqualTo(2);
 
     // migrate process instance to new process definition version
     CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutor();
@@ -208,7 +209,7 @@ public class ProcessInstanceMigrationTest extends PluggableActivitiTestCase {
     ProcessDefinition newProcessDefinition = repositoryService.createProcessDefinitionQuery().processDefinitionVersion(2).singleResult();
     List<Execution> executions = runtimeService.createExecutionQuery().processInstanceId(pi.getId()).list();
     for (Execution execution : executions) {
-      assertEquals(newProcessDefinition.getId(), ((ExecutionEntity) execution).getProcessDefinitionId());
+      assertThat(((ExecutionEntity) execution).getProcessDefinitionId()).isEqualTo(newProcessDefinition.getId());
     }
 
     // undeploy "manually" deployed process definition
@@ -222,11 +223,11 @@ public class ProcessInstanceMigrationTest extends PluggableActivitiTestCase {
 
     // check that receive task has been reached
     Execution execution = runtimeService.createExecutionQuery().activityId("waitState1").processDefinitionKey("childProcess").singleResult();
-    assertNotNull(execution);
+    assertThat(execution).isNotNull();
 
     // deploy new version of the process definition
     org.activiti.engine.repository.Deployment deployment = repositoryService.createDeployment().addClasspathResource(TEST_PROCESS_CALL_ACTIVITY).deploy();
-    assertEquals(2, repositoryService.createProcessDefinitionQuery().processDefinitionKey("parentProcess").count());
+    assertThat(repositoryService.createProcessDefinitionQuery().processDefinitionKey("parentProcess").count()).isEqualTo(2);
 
     // migrate process instance to new process definition version
     CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutor();
@@ -236,7 +237,7 @@ public class ProcessInstanceMigrationTest extends PluggableActivitiTestCase {
     runtimeService.trigger(execution.getId());
 
     // should be finished now
-    assertEquals(0, runtimeService.createProcessInstanceQuery().processInstanceId(pi.getId()).count());
+    assertThat(runtimeService.createProcessInstanceQuery().processInstanceId(pi.getId()).count()).isEqualTo(0);
 
     // undeploy "manually" deployed process definition
     repositoryService.deleteDeployment(deployment.getId(), true);
@@ -249,11 +250,11 @@ public class ProcessInstanceMigrationTest extends PluggableActivitiTestCase {
       ProcessInstance pi = runtimeService.startProcessInstanceByKey("userTask");
 
       // check that user task has been reached
-      assertEquals(1, taskService.createTaskQuery().processInstanceId(pi.getId()).count());
+      assertThat(taskService.createTaskQuery().processInstanceId(pi.getId()).count()).isEqualTo(1);
 
       // deploy new version of the process definition
       org.activiti.engine.repository.Deployment deployment = repositoryService.createDeployment().addClasspathResource(TEST_PROCESS_USER_TASK_V2).deploy();
-      assertEquals(2, repositoryService.createProcessDefinitionQuery().processDefinitionKey("userTask").count());
+      assertThat(repositoryService.createProcessDefinitionQuery().processDefinitionKey("userTask").count()).isEqualTo(2);
 
       ProcessDefinition newProcessDefinition = repositoryService.createProcessDefinitionQuery().processDefinitionKey("userTask").processDefinitionVersion(2).singleResult();
 
@@ -262,11 +263,11 @@ public class ProcessInstanceMigrationTest extends PluggableActivitiTestCase {
 
       // check UserTask
       Task task = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
-      assertEquals(newProcessDefinition.getId(), task.getProcessDefinitionId());
-      
+      assertThat(task.getProcessDefinitionId()).isEqualTo(newProcessDefinition.getId());
+
       if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
         HistoricTaskInstance historicTask = historyService.createHistoricTaskInstanceQuery().processInstanceId(pi.getId()).singleResult();
-        assertEquals(newProcessDefinition.getId(), historicTask.getProcessDefinitionId());
+        assertThat(historicTask.getProcessDefinitionId()).isEqualTo(newProcessDefinition.getId());
       }
 
       // continue
@@ -287,11 +288,11 @@ public class ProcessInstanceMigrationTest extends PluggableActivitiTestCase {
     ProcessInstance pi = runtimeService.startProcessInstanceByKey("forkJoinNested");
 
     // check that the user tasks have been reached
-    assertEquals(2, taskService.createTaskQuery().count());
+    assertThat(taskService.createTaskQuery().count()).isEqualTo(2);
 
     // deploy new version of the process definition
     org.activiti.engine.repository.Deployment deployment = repositoryService.createDeployment().addClasspathResource(TEST_PROCESS_NESTED_SUB_EXECUTIONS).deploy();
-    assertEquals(2, repositoryService.createProcessDefinitionQuery().count());
+    assertThat(repositoryService.createProcessDefinitionQuery().count()).isEqualTo(2);
 
     // migrate process instance to new process definition version
     CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutor();
@@ -302,7 +303,7 @@ public class ProcessInstanceMigrationTest extends PluggableActivitiTestCase {
     ProcessDefinition newProcessDefinition = repositoryService.createProcessDefinitionQuery().processDefinitionVersion(2).singleResult();
     List<Execution> executions = runtimeService.createExecutionQuery().processInstanceId(pi.getId()).list();
     for (Execution execution : executions) {
-      assertEquals(newProcessDefinition.getId(), ((ExecutionEntity) execution).getProcessDefinitionId());
+      assertThat(((ExecutionEntity) execution).getProcessDefinitionId()).isEqualTo(newProcessDefinition.getId());
     }
 
     // undeploy "manually" deployed process definition

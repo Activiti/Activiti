@@ -1,9 +1,9 @@
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -11,6 +11,8 @@
  * limitations under the License.
  */
 package org.activiti.engine.test.bpmn.event.timer;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -54,35 +56,35 @@ public class BoundaryTimerEventRepeatWithEndTest extends PluggableActivitiTestCa
     runtimeService.setVariable(processInstance.getId(), "EndDateForBoundary", dateStr);
 
     List<Task> tasks = taskService.createTaskQuery().list();
-    assertEquals(1, tasks.size());
+    assertThat(tasks.size()).isEqualTo(1);
 
     Task task = tasks.get(0);
-    assertEquals("Task A", task.getName());
+    assertThat(task.getName()).isEqualTo("Task A");
 
     // Test Boundary Events
     // complete will cause timer to be created
     taskService.complete(task.getId());
 
     List<Job> jobs = managementService.createTimerJobQuery().list();
-    assertEquals(1, jobs.size());
-    
+    assertThat(jobs.size()).isEqualTo(1);
+
     // boundary events
     Job executableJob = managementService.moveTimerToExecutableJob(jobs.get(0).getId());
     managementService.executeJob(executableJob.getId());
-    
-    assertEquals(0, managementService.createJobQuery().list().size());
+
+    assertThat(managementService.createJobQuery().list().size()).isEqualTo(0);
     jobs = managementService.createTimerJobQuery().list();
-    assertEquals(1, jobs.size());
+    assertThat(jobs.size()).isEqualTo(1);
 
     nextTimeCal.add(Calendar.MINUTE, 15); // after 15 minutes
     processEngineConfiguration.getClock().setCurrentTime(nextTimeCal.getTime());
 
     executableJob = managementService.moveTimerToExecutableJob(jobs.get(0).getId());
     managementService.executeJob(executableJob.getId());
-    
-    assertEquals(0, managementService.createJobQuery().list().size());
+
+    assertThat(managementService.createJobQuery().list().size()).isEqualTo(0);
     jobs = managementService.createTimerJobQuery().list();
-    assertEquals(1, jobs.size());
+    assertThat(jobs.size()).isEqualTo(1);
 
     nextTimeCal.add(Calendar.MINUTE, 5); // after another 5 minutes (20 minutes and 1 second from the baseTime) the BoundaryEndTime is reached
     nextTimeCal.add(Calendar.SECOND, 1);
@@ -90,44 +92,44 @@ public class BoundaryTimerEventRepeatWithEndTest extends PluggableActivitiTestCa
 
     executableJob = managementService.moveTimerToExecutableJob(jobs.get(0).getId());
     managementService.executeJob(executableJob.getId());
-    
+
     jobs = managementService.createTimerJobQuery().list();
-    assertEquals(0, jobs.size());
+    assertThat(jobs.size()).isEqualTo(0);
     jobs = managementService.createJobQuery().list();
-    assertEquals(0, jobs.size());
-    
+    assertThat(jobs.size()).isEqualTo(0);
+
     tasks = taskService.createTaskQuery().list();
     task = tasks.get(0);
-    assertEquals("Task B", task.getName());
-    assertEquals(1, tasks.size());
+    assertThat(task.getName()).isEqualTo("Task B");
+    assertThat(tasks.size()).isEqualTo(1);
     taskService.complete(task.getId());
 
     jobs = managementService.createTimerJobQuery().list();
-    assertEquals(0, jobs.size());
+    assertThat(jobs.size()).isEqualTo(0);
     jobs = managementService.createJobQuery().list();
-    assertEquals(0, jobs.size());
+    assertThat(jobs.size()).isEqualTo(0);
 
     if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
       HistoricProcessInstance historicInstance = historyService.createHistoricProcessInstanceQuery()
           .processInstanceId(processInstance.getId())
           .singleResult();
-      assertNotNull(historicInstance.getEndTime());
+      assertThat(historicInstance.getEndTime()).isNotNull();
     }
 
     // now all the process instances should be completed
     List<ProcessInstance> processInstances = runtimeService.createProcessInstanceQuery().list();
-    assertEquals(0, processInstances.size());
+    assertThat(processInstances.size()).isEqualTo(0);
 
     // no jobs
     jobs = managementService.createJobQuery().list();
-    assertEquals(0, jobs.size());
-    
+    assertThat(jobs.size()).isEqualTo(0);
+
     jobs = managementService.createTimerJobQuery().list();
-    assertEquals(0, jobs.size());
+    assertThat(jobs.size()).isEqualTo(0);
 
     // no tasks
     tasks = taskService.createTaskQuery().list();
-    assertEquals(0, tasks.size());
+    assertThat(tasks.size()).isEqualTo(0);
   }
 
 }

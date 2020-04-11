@@ -1,8 +1,8 @@
 package org.activiti.editor.language;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 
@@ -26,16 +26,16 @@ public class FlowNodeConverterTest extends AbstractConverterTest {
 
   private void validateModel(BpmnModel model) {
     FlowElement flowElement = model.getMainProcess().getFlowElement("sid-B074A0DD-934A-4053-A537-20ADF0781023", true);
-    assertNotNull(flowElement);
-    assertTrue(flowElement instanceof ExclusiveGateway);
+    assertThat(flowElement).isNotNull();
+    assertThat(flowElement instanceof ExclusiveGateway).isTrue();
     ExclusiveGateway gateway = (ExclusiveGateway) flowElement;
     List<SequenceFlow> sequenceFlows = gateway.getOutgoingFlows();
-    assertTrue(sequenceFlows.size() == 2);
-    assertTrue(sequenceFlows.get(0).getId().equals("sid-07A7E174-8857-4DE9-A7CD-A041706D79C3") || sequenceFlows.get(0).getId().equals("sid-C2068B1E-9A82-41C9-B876-C58E2736C186"));
-    assertTrue(sequenceFlows.get(1).getId().equals("sid-07A7E174-8857-4DE9-A7CD-A041706D79C3") || sequenceFlows.get(1).getId().equals("sid-C2068B1E-9A82-41C9-B876-C58E2736C186"));
-    assertTrue(sequenceFlows.get(0).getSourceRef().equals("sid-B074A0DD-934A-4053-A537-20ADF0781023"));
-    assertTrue(sequenceFlows.get(1).getSourceRef().equals("sid-B074A0DD-934A-4053-A537-20ADF0781023"));
-    assertEquals("sid-07A7E174-8857-4DE9-A7CD-A041706D79C3", gateway.getDefaultFlow());
+    assertThat(sequenceFlows.size() == 2).isTrue();
+    assertThat(sequenceFlows.get(0).getId().equals("sid-07A7E174-8857-4DE9-A7CD-A041706D79C3") || sequenceFlows.get(0).getId().equals("sid-C2068B1E-9A82-41C9-B876-C58E2736C186")).isTrue();
+    assertThat(sequenceFlows.get(1).getId().equals("sid-07A7E174-8857-4DE9-A7CD-A041706D79C3") || sequenceFlows.get(1).getId().equals("sid-C2068B1E-9A82-41C9-B876-C58E2736C186")).isTrue();
+    assertThat(sequenceFlows.get(0).getSourceRef().equals("sid-B074A0DD-934A-4053-A537-20ADF0781023")).isTrue();
+    assertThat(sequenceFlows.get(1).getSourceRef().equals("sid-B074A0DD-934A-4053-A537-20ADF0781023")).isTrue();
+    assertThat(gateway.getDefaultFlow()).isEqualTo("sid-07A7E174-8857-4DE9-A7CD-A041706D79C3");
   }
 
   protected String getResource() {

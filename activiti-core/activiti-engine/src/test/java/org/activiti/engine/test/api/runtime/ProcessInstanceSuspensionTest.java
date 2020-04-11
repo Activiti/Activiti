@@ -1,9 +1,9 @@
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -11,6 +11,8 @@
  * limitations under the License.
  */
 package org.activiti.engine.test.api.runtime;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Arrays;
 import java.util.Date;
@@ -37,7 +39,7 @@ public class ProcessInstanceSuspensionTest extends PluggableActivitiTestCase {
     runtimeService.startProcessInstanceByKey(processDefinition.getKey());
 
     ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().singleResult();
-    assertFalse(processInstance.isSuspended());
+    assertThat(processInstance.isSuspended()).isFalse();
 
   }
 
@@ -47,17 +49,17 @@ public class ProcessInstanceSuspensionTest extends PluggableActivitiTestCase {
     runtimeService.startProcessInstanceByKey(processDefinition.getKey());
 
     ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().singleResult();
-    assertFalse(processInstance.isSuspended());
+    assertThat(processInstance.isSuspended()).isFalse();
 
     // suspend
     runtimeService.suspendProcessInstanceById(processInstance.getId());
     processInstance = runtimeService.createProcessInstanceQuery().singleResult();
-    assertTrue(processInstance.isSuspended());
+    assertThat(processInstance.isSuspended()).isTrue();
 
     // activate
     runtimeService.activateProcessInstanceById(processInstance.getId());
     processInstance = runtimeService.createProcessInstanceQuery().singleResult();
-    assertFalse(processInstance.isSuspended());
+    assertThat(processInstance.isSuspended()).isFalse();
   }
 
   @Deployment(resources = { "org/activiti/engine/test/api/runtime/oneTaskProcess.bpmn20.xml" })
@@ -66,7 +68,7 @@ public class ProcessInstanceSuspensionTest extends PluggableActivitiTestCase {
     runtimeService.startProcessInstanceByKey(processDefinition.getKey());
 
     ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().singleResult();
-    assertFalse(processInstance.isSuspended());
+    assertThat(processInstance.isSuspended()).isFalse();
 
     try {
       // activate
@@ -84,7 +86,7 @@ public class ProcessInstanceSuspensionTest extends PluggableActivitiTestCase {
     runtimeService.startProcessInstanceByKey(processDefinition.getKey());
 
     ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().singleResult();
-    assertFalse(processInstance.isSuspended());
+    assertThat(processInstance.isSuspended()).isFalse();
 
     runtimeService.suspendProcessInstanceById(processInstance.getId());
 
@@ -102,18 +104,18 @@ public class ProcessInstanceSuspensionTest extends PluggableActivitiTestCase {
   public void testQueryForActiveAndSuspendedProcessInstances() {
     runtimeService.startProcessInstanceByKey("nestedSubProcessQueryTest");
 
-    assertEquals(5, runtimeService.createProcessInstanceQuery().count());
-    assertEquals(5, runtimeService.createProcessInstanceQuery().active().count());
-    assertEquals(0, runtimeService.createProcessInstanceQuery().suspended().count());
+    assertThat(runtimeService.createProcessInstanceQuery().count()).isEqualTo(5);
+    assertThat(runtimeService.createProcessInstanceQuery().active().count()).isEqualTo(5);
+    assertThat(runtimeService.createProcessInstanceQuery().suspended().count()).isEqualTo(0);
 
     ProcessInstance piToSuspend = runtimeService.createProcessInstanceQuery().processDefinitionKey("nestedSubProcessQueryTest").singleResult();
     runtimeService.suspendProcessInstanceById(piToSuspend.getId());
 
-    assertEquals(5, runtimeService.createProcessInstanceQuery().count());
-    assertEquals(4, runtimeService.createProcessInstanceQuery().active().count());
-    assertEquals(1, runtimeService.createProcessInstanceQuery().suspended().count());
+    assertThat(runtimeService.createProcessInstanceQuery().count()).isEqualTo(5);
+    assertThat(runtimeService.createProcessInstanceQuery().active().count()).isEqualTo(4);
+    assertThat(runtimeService.createProcessInstanceQuery().suspended().count()).isEqualTo(1);
 
-    assertEquals(piToSuspend.getId(), runtimeService.createProcessInstanceQuery().suspended().singleResult().getId());
+    assertThat(runtimeService.createProcessInstanceQuery().suspended().singleResult().getId()).isEqualTo(piToSuspend.getId());
   }
 
   @Deployment(resources = { "org/activiti/engine/test/api/runtime/oneTaskProcess.bpmn20.xml" })
@@ -130,14 +132,14 @@ public class ProcessInstanceSuspensionTest extends PluggableActivitiTestCase {
     // Assert that the task is now also suspended
     List<Task> tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).list();
     for (Task task : tasks) {
-      assertTrue(task.isSuspended());
+      assertThat(task.isSuspended()).isTrue();
     }
 
     // Activate process instance again
     runtimeService.activateProcessInstanceById(processInstance.getId());
     tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).list();
     for (Task task : tasks) {
-      assertFalse(task.isSuspended());
+      assertThat(task.isSuspended()).isFalse();
     }
   }
 
@@ -147,27 +149,27 @@ public class ProcessInstanceSuspensionTest extends PluggableActivitiTestCase {
     ProcessInstance processInstance = runtimeService.startProcessInstanceById(processDefinition.getId());
 
     Task task = taskService.createTaskQuery().singleResult();
-    assertNotNull(task);
+    assertThat(task).isNotNull();
 
     task = taskService.createTaskQuery().active().singleResult();
-    assertNotNull(task);
+    assertThat(task).isNotNull();
 
     // Suspend
     runtimeService.suspendProcessInstanceById(processInstance.getId());
-    assertEquals(1, taskService.createTaskQuery().count());
-    assertEquals(1, taskService.createTaskQuery().suspended().count());
-    assertEquals(0, taskService.createTaskQuery().active().count());
+    assertThat(taskService.createTaskQuery().count()).isEqualTo(1);
+    assertThat(taskService.createTaskQuery().suspended().count()).isEqualTo(1);
+    assertThat(taskService.createTaskQuery().active().count()).isEqualTo(0);
 
     // Activate
     runtimeService.activateProcessInstanceById(processInstance.getId());
-    assertEquals(1, taskService.createTaskQuery().count());
-    assertEquals(0, taskService.createTaskQuery().suspended().count());
-    assertEquals(1, taskService.createTaskQuery().active().count());
+    assertThat(taskService.createTaskQuery().count()).isEqualTo(1);
+    assertThat(taskService.createTaskQuery().suspended().count()).isEqualTo(0);
+    assertThat(taskService.createTaskQuery().active().count()).isEqualTo(1);
 
     // Completing should end the process instance
     task = taskService.createTaskQuery().singleResult();
     taskService.complete(task.getId());
-    assertEquals(0, runtimeService.createProcessInstanceQuery().count());
+    assertThat(runtimeService.createProcessInstanceQuery().count()).isEqualTo(0);
   }
 
   @Deployment
@@ -177,14 +179,14 @@ public class ProcessInstanceSuspensionTest extends PluggableActivitiTestCase {
 
     List<Execution> executions = runtimeService.createExecutionQuery().processInstanceId(processInstance.getId()).list();
     for (Execution execution : executions) {
-      assertTrue(execution.isSuspended());
+      assertThat(execution.isSuspended()).isTrue();
     }
 
     // Activate again
     runtimeService.activateProcessInstanceById(processInstance.getId());
     executions = runtimeService.createExecutionQuery().processInstanceId(processInstance.getId()).list();
     for (Execution execution : executions) {
-      assertFalse(execution.isSuspended());
+      assertThat(execution.isSuspended()).isFalse();
     }
 
     // Finish process
@@ -193,7 +195,7 @@ public class ProcessInstanceSuspensionTest extends PluggableActivitiTestCase {
         taskService.complete(task.getId());
       }
     }
-    assertEquals(0, runtimeService.createProcessInstanceQuery().count());
+    assertThat(runtimeService.createProcessInstanceQuery().count()).isEqualTo(0);
   }
 
   @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
@@ -325,22 +327,22 @@ public class ProcessInstanceSuspensionTest extends PluggableActivitiTestCase {
     // Test if process instance can be completed using the signal
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("signalSuspendedProcessInstance");
     runtimeService.signalEventReceived(signal);
-    assertEquals(0, runtimeService.createProcessInstanceQuery().count());
+    assertThat(runtimeService.createProcessInstanceQuery().count()).isEqualTo(0);
 
     // Now test when suspending the process instance: the process instance
     // shouldn't be continued
     processInstance = runtimeService.startProcessInstanceByKey("signalSuspendedProcessInstance");
     runtimeService.suspendProcessInstanceById(processInstance.getId());
     runtimeService.signalEventReceived(signal);
-    assertEquals(1, runtimeService.createProcessInstanceQuery().count());
+    assertThat(runtimeService.createProcessInstanceQuery().count()).isEqualTo(1);
 
     runtimeService.signalEventReceived(signal, new HashMap<String, Object>());
-    assertEquals(1, runtimeService.createProcessInstanceQuery().count());
+    assertThat(runtimeService.createProcessInstanceQuery().count()).isEqualTo(1);
 
     // Activate and try again
     runtimeService.activateProcessInstanceById(processInstance.getId());
     runtimeService.signalEventReceived(signal);
-    assertEquals(0, runtimeService.createProcessInstanceQuery().count());
+    assertThat(runtimeService.createProcessInstanceQuery().count()).isEqualTo(0);
   }
 
   @Deployment(resources = "org/activiti/engine/test/api/runtime/ProcessInstanceSuspensionTest.testSignalEventReceivedAfterProcessInstanceSuspended.bpmn20.xml")
@@ -352,7 +354,7 @@ public class ProcessInstanceSuspensionTest extends PluggableActivitiTestCase {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("signalSuspendedProcessInstance");
     runtimeService.startProcessInstanceByKey("signalSuspendedProcessInstance");
     runtimeService.signalEventReceived(signal);
-    assertEquals(0, runtimeService.createProcessInstanceQuery().count());
+    assertThat(runtimeService.createProcessInstanceQuery().count()).isEqualTo(0);
 
     // Now test when suspending the process instance: the process instance
     // shouldn't be continued
@@ -361,15 +363,15 @@ public class ProcessInstanceSuspensionTest extends PluggableActivitiTestCase {
     processInstance = runtimeService.startProcessInstanceByKey("signalSuspendedProcessInstance");
     runtimeService.suspendProcessInstanceById(processInstance.getId());
     runtimeService.signalEventReceived(signal);
-    assertEquals(2, runtimeService.createProcessInstanceQuery().count());
+    assertThat(runtimeService.createProcessInstanceQuery().count()).isEqualTo(2);
 
     runtimeService.signalEventReceived(signal, new HashMap<String, Object>());
-    assertEquals(2, runtimeService.createProcessInstanceQuery().count());
+    assertThat(runtimeService.createProcessInstanceQuery().count()).isEqualTo(2);
 
     // Activate and try again
     runtimeService.activateProcessInstanceById(processInstance.getId());
     runtimeService.signalEventReceived(signal);
-    assertEquals(1, runtimeService.createProcessInstanceQuery().count());
+    assertThat(runtimeService.createProcessInstanceQuery().count()).isEqualTo(1);
   }
 
   @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
@@ -379,7 +381,7 @@ public class ProcessInstanceSuspensionTest extends PluggableActivitiTestCase {
     ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
     ProcessInstance processInstance = runtimeService.startProcessInstanceById(processDefinition.getId());
     final Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
-    assertNotNull(task);
+    assertThat(task).isNotNull();
 
     // Suspend the process instance
     runtimeService.suspendProcessInstanceById(processInstance.getId());
@@ -556,24 +558,24 @@ public class ProcessInstanceSuspensionTest extends PluggableActivitiTestCase {
     // Suspending the process instance should also stop the execution of jobs for that process instance
     ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
     ProcessInstance processInstance = runtimeService.startProcessInstanceById(processDefinition.getId());
-    assertEquals(1, managementService.createTimerJobQuery().count());
+    assertThat(managementService.createTimerJobQuery().count()).isEqualTo(1);
     runtimeService.suspendProcessInstanceById(processInstance.getId());
-    assertEquals(1, managementService.createSuspendedJobQuery().count());
+    assertThat(managementService.createSuspendedJobQuery().count()).isEqualTo(1);
 
     // The jobs should not be executed now
     processEngineConfiguration.getClock().setCurrentTime(new Date(now.getTime() + (60 * 60 * 1000))); // Timer is set to fire on 5 minutes
     Job job = managementService.createTimerJobQuery().executable().singleResult();
-    assertNull(job);
+    assertThat(job).isNull();
 
-    assertEquals(1, managementService.createSuspendedJobQuery().count());
+    assertThat(managementService.createSuspendedJobQuery().count()).isEqualTo(1);
 
     // Activation of the process instance should now allow for job execution
     runtimeService.activateProcessInstanceById(processInstance.getId());
     waitForJobExecutorToProcessAllJobs(10000L, 100L);
-    assertEquals(0, managementService.createJobQuery().count());
-    assertEquals(0, managementService.createTimerJobQuery().count());
-    assertEquals(0, managementService.createSuspendedJobQuery().count());
-    assertEquals(0, runtimeService.createProcessInstanceQuery().count());
+    assertThat(managementService.createJobQuery().count()).isEqualTo(0);
+    assertThat(managementService.createTimerJobQuery().count()).isEqualTo(0);
+    assertThat(managementService.createSuspendedJobQuery().count()).isEqualTo(0);
+    assertThat(runtimeService.createProcessInstanceQuery().count()).isEqualTo(0);
   }
 
 }

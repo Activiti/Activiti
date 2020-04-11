@@ -1,9 +1,9 @@
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -11,6 +11,8 @@
  * limitations under the License.
  */
 package org.activiti.examples.processdefinitions;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -43,73 +45,73 @@ public class ProcessDefinitionsTest extends PluggableActivitiTestCase {
 
     List<ProcessDefinition> processDefinitions = repositoryService.createProcessDefinitionQuery().orderByProcessDefinitionKey().asc().orderByProcessDefinitionVersion().desc().list();
 
-    assertNotNull(processDefinitions);
+    assertThat(processDefinitions).isNotNull();
 
-    assertEquals(5, processDefinitions.size());
+    assertThat(processDefinitions.size()).isEqualTo(5);
 
     ProcessDefinition processDefinition = processDefinitions.get(0);
-    assertEquals("EN", processDefinition.getKey());
-    assertEquals("Expense Note 2", processDefinition.getName());
-    assertTrue(processDefinition.getId().startsWith("EN:2"));
-    assertEquals(2, processDefinition.getVersion());
+    assertThat(processDefinition.getKey()).isEqualTo("EN");
+    assertThat(processDefinition.getName()).isEqualTo("Expense Note 2");
+    assertThat(processDefinition.getId().startsWith("EN:2")).isTrue();
+    assertThat(processDefinition.getVersion()).isEqualTo(2);
 
     processDefinition = processDefinitions.get(1);
-    assertEquals("EN", processDefinition.getKey());
-    assertEquals("Expense Note 1", processDefinition.getName());
-    assertTrue(processDefinition.getId().startsWith("EN:1"));
-    assertEquals(1, processDefinition.getVersion());
+    assertThat(processDefinition.getKey()).isEqualTo("EN");
+    assertThat(processDefinition.getName()).isEqualTo("Expense Note 1");
+    assertThat(processDefinition.getId().startsWith("EN:1")).isTrue();
+    assertThat(processDefinition.getVersion()).isEqualTo(1);
 
     processDefinition = processDefinitions.get(2);
-    assertEquals("IDR", processDefinition.getKey());
-    assertEquals("Insurance Damage Report 3", processDefinition.getName());
-    assertTrue(processDefinition.getId().startsWith("IDR:3"));
-    assertEquals(3, processDefinition.getVersion());
+    assertThat(processDefinition.getKey()).isEqualTo("IDR");
+    assertThat(processDefinition.getName()).isEqualTo("Insurance Damage Report 3");
+    assertThat(processDefinition.getId().startsWith("IDR:3")).isTrue();
+    assertThat(processDefinition.getVersion()).isEqualTo(3);
 
     processDefinition = processDefinitions.get(3);
-    assertEquals("IDR", processDefinition.getKey());
-    assertEquals("Insurance Damage Report 2", processDefinition.getName());
-    assertTrue(processDefinition.getId().startsWith("IDR:2"));
-    assertEquals(2, processDefinition.getVersion());
+    assertThat(processDefinition.getKey()).isEqualTo("IDR");
+    assertThat(processDefinition.getName()).isEqualTo("Insurance Damage Report 2");
+    assertThat(processDefinition.getId().startsWith("IDR:2")).isTrue();
+    assertThat(processDefinition.getVersion()).isEqualTo(2);
 
     processDefinition = processDefinitions.get(4);
-    assertEquals("IDR", processDefinition.getKey());
-    assertEquals("Insurance Damage Report 1", processDefinition.getName());
-    assertTrue(processDefinition.getId().startsWith("IDR:1"));
-    assertEquals(1, processDefinition.getVersion());
+    assertThat(processDefinition.getKey()).isEqualTo("IDR");
+    assertThat(processDefinition.getName()).isEqualTo("Insurance Damage Report 1");
+    assertThat(processDefinition.getId().startsWith("IDR:1")).isTrue();
+    assertThat(processDefinition.getVersion()).isEqualTo(1);
 
     Set<String> queryDeploymentIds = new HashSet<String>();
     queryDeploymentIds.add(processDefinitions.get(0).getDeploymentId());
     queryDeploymentIds.add(processDefinitions.get(1).getDeploymentId());
     List<ProcessDefinition> queryProcessDefinitions = repositoryService.createProcessDefinitionQuery().deploymentIds(queryDeploymentIds).orderByProcessDefinitionKey().asc()
         .orderByProcessDefinitionVersion().desc().list();
-    assertEquals(2, queryProcessDefinitions.size());
+    assertThat(queryProcessDefinitions.size()).isEqualTo(2);
 
     processDefinition = queryProcessDefinitions.get(0);
-    assertEquals("EN", processDefinition.getKey());
-    assertEquals("Expense Note 2", processDefinition.getName());
+    assertThat(processDefinition.getKey()).isEqualTo("EN");
+    assertThat(processDefinition.getName()).isEqualTo("Expense Note 2");
 
     processDefinition = queryProcessDefinitions.get(1);
-    assertEquals("EN", processDefinition.getKey());
-    assertEquals("Expense Note 1", processDefinition.getName());
+    assertThat(processDefinition.getKey()).isEqualTo("EN");
+    assertThat(processDefinition.getName()).isEqualTo("Expense Note 1");
 
     queryDeploymentIds = new HashSet<String>();
     queryDeploymentIds.add(processDefinitions.get(0).getDeploymentId());
     queryDeploymentIds.add(processDefinitions.get(3).getDeploymentId());
     queryDeploymentIds.add(processDefinitions.get(4).getDeploymentId());
     queryProcessDefinitions = repositoryService.createProcessDefinitionQuery().deploymentIds(queryDeploymentIds).list();
-    assertEquals(3, queryProcessDefinitions.size());
+    assertThat(queryProcessDefinitions.size()).isEqualTo(3);
 
     processDefinition = queryProcessDefinitions.get(0);
-    assertEquals("EN", processDefinition.getKey());
-    assertEquals("Expense Note 2", processDefinition.getName());
+    assertThat(processDefinition.getKey()).isEqualTo("EN");
+    assertThat(processDefinition.getName()).isEqualTo("Expense Note 2");
 
     processDefinition = processDefinitions.get(3);
-    assertEquals("IDR", processDefinition.getKey());
-    assertEquals("Insurance Damage Report 2", processDefinition.getName());
+    assertThat(processDefinition.getKey()).isEqualTo("IDR");
+    assertThat(processDefinition.getName()).isEqualTo("Insurance Damage Report 2");
 
     processDefinition = processDefinitions.get(4);
-    assertEquals("IDR", processDefinition.getKey());
-    assertEquals("Insurance Damage Report 1", processDefinition.getName());
+    assertThat(processDefinition.getKey()).isEqualTo("IDR");
+    assertThat(processDefinition.getName()).isEqualTo("Insurance Damage Report 1");
 
     deleteDeployments(deploymentIds);
   }
@@ -121,20 +123,20 @@ public class ProcessDefinitionsTest extends PluggableActivitiTestCase {
 
     List<ProcessDefinition> processDefinitions = repositoryService.createProcessDefinitionQuery().orderByProcessDefinitionKey().asc().orderByProcessDefinitionVersion().desc().list();
 
-    assertNotNull(processDefinitions);
-    assertEquals(2, processDefinitions.size());
+    assertThat(processDefinitions).isNotNull();
+    assertThat(processDefinitions.size()).isEqualTo(2);
 
     ProcessDefinition processDefinition = processDefinitions.get(0);
-    assertEquals("IDR", processDefinition.getKey());
-    assertEquals("Insurance Damage Report", processDefinition.getName());
-    assertTrue(processDefinition.getId().startsWith("IDR:2"));
-    assertEquals(2, processDefinition.getVersion());
+    assertThat(processDefinition.getKey()).isEqualTo("IDR");
+    assertThat(processDefinition.getName()).isEqualTo("Insurance Damage Report");
+    assertThat(processDefinition.getId().startsWith("IDR:2")).isTrue();
+    assertThat(processDefinition.getVersion()).isEqualTo(2);
 
     processDefinition = processDefinitions.get(1);
-    assertEquals("IDR", processDefinition.getKey());
-    assertEquals("Insurance Damage Report", processDefinition.getName());
-    assertTrue(processDefinition.getId().startsWith("IDR:1"));
-    assertEquals(1, processDefinition.getVersion());
+    assertThat(processDefinition.getKey()).isEqualTo("IDR");
+    assertThat(processDefinition.getName()).isEqualTo("Insurance Damage Report");
+    assertThat(processDefinition.getId().startsWith("IDR:1")).isTrue();
+    assertThat(processDefinition.getVersion()).isEqualTo(1);
 
     deleteDeployments(deploymentIds);
   }
@@ -142,7 +144,7 @@ public class ProcessDefinitionsTest extends PluggableActivitiTestCase {
   public void testProcessDefinitionDescription() {
     String deploymentId = deployProcessString(("<definitions " + NAMESPACE + " " + TARGET_NAMESPACE + ">" + "  <process id='test' name='test'><documentation>This is a test</documentation></process></definitions>"));
     ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().deploymentId(deploymentId).singleResult();
-    assertEquals("This is a test", processDefinition.getDescription());
+    assertThat(processDefinition.getDescription()).isEqualTo("This is a test");
 
     deleteDeployments(Collections.singletonList(deploymentId));
   }

@@ -12,6 +12,8 @@
  */
 package org.activiti.engine.test.bpmn.event;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
@@ -30,10 +32,10 @@ public class IntermediateNoneEventTest extends PluggableActivitiTestCase {
 
   @Deployment
   public void testIntermediateNoneTimerEvent() throws Exception {
-    assertFalse(listenerExecuted);
+    assertThat(listenerExecuted).isFalse();
     ProcessInstance pi = runtimeService.startProcessInstanceByKey("intermediateNoneEventExample");
     assertProcessEnded(pi.getProcessInstanceId());
-    assertTrue(listenerExecuted);
+    assertThat(listenerExecuted).isTrue();
   }
 
 }

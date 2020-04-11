@@ -1,9 +1,9 @@
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -13,7 +13,8 @@
 
 package org.activiti.spring.test.autodeployment;
 
-import java.net.URISyntaxException;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -67,8 +68,7 @@ public class SpringAutoDeployTest extends AbstractTestCase {
         expectedProcessDefinitionKeys.add("b");
         expectedProcessDefinitionKeys.add("c");
 
-        assertEquals(expectedProcessDefinitionKeys,
-                     processDefinitionKeys);
+        assertEquals(expectedProcessDefinitionKeys, processDefinitionKeys);
     }
 
     public void testNoRedeploymentForSpringContainerRestart() throws Exception {
@@ -83,27 +83,23 @@ public class SpringAutoDeployTest extends AbstractTestCase {
         // Creating a new app context with same resources doesn't lead to more
         // deployments
         new ClassPathXmlApplicationContext(CTX_NO_DROP_PATH);
-        assertEquals(1,
-                     deploymentQuery.count());
-        assertEquals(3,
-                     processDefinitionQuery.count());
+        assertEquals(1, deploymentQuery.count());
+        assertEquals(3, processDefinitionQuery.count());
     }
 
     // Updating the bpmn20 file should lead to a new deployment when restarting
     // the Spring container
     public void testResourceRedeploymentAfterProcessDefinitionChange() throws Exception {
         createAppContext(CTX_PATH);
-        assertEquals(1,
-                     repositoryService.createDeploymentQuery().count());
+        assertEquals(1, repositoryService.createDeploymentQuery().count());
         ((AbstractXmlApplicationContext) applicationContext).close();
 
         String filePath = "org/activiti/spring/test/autodeployment/autodeploy.a.bpmn20.xml";
         String originalBpmnFileContent = IoUtil.readFileAsString(filePath);
         String updatedBpmnFileContent = originalBpmnFileContent.replace("flow1",
                                                                         "fromStartToEndFlow");
-        assertTrue(updatedBpmnFileContent.length() > originalBpmnFileContent.length());
-        IoUtil.writeStringToFile(updatedBpmnFileContent,
-                                 filePath);
+        assertThat(updatedBpmnFileContent.length() > originalBpmnFileContent.length()).isTrue();
+        IoUtil.writeStringToFile(updatedBpmnFileContent, filePath);
 
         // Classic produced/consumer problem here:
         // The file is already written in Java, but not yet completely persisted
@@ -170,19 +166,14 @@ public class SpringAutoDeployTest extends AbstractTestCase {
 
     private void removeAllDeployments() {
         for (Deployment deployment : repositoryService.createDeploymentQuery().list()) {
-            repositoryService.deleteDeployment(deployment.getId(),
-                                               true);
+            repositoryService.deleteDeployment(deployment.getId(), true);
         }
     }
 
     private boolean waitUntilFileIsWritten(String filePath,
-                                           int expectedBytes) throws URISyntaxException {
+                                           int expectedBytes) throws Exception {
         while (IoUtil.getFile(filePath).length() != (long) expectedBytes) {
-            try {
-                wait(100L);
-            } catch (InterruptedException e) {
-                fail(e.getMessage());
-            }
+            wait(100L);
         }
         return true;
     }

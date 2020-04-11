@@ -1,8 +1,6 @@
 package org.activiti.editor.language;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.InputStream;
 
@@ -44,10 +42,10 @@ public abstract class AbstractConverterTest {
   }
 
   protected EventDefinition extractEventDefinition(FlowElement flowElement) {
-    assertNotNull(flowElement);
-    assertTrue(flowElement instanceof Event);
+    assertThat(flowElement).isNotNull();
+    assertThat(flowElement instanceof Event).isTrue();
     Event event = (Event) flowElement;
-    assertFalse(event.getEventDefinitions().isEmpty());
+    assertThat(event.getEventDefinitions().isEmpty()).isFalse();
     return event.getEventDefinitions().get(0);
   }
 

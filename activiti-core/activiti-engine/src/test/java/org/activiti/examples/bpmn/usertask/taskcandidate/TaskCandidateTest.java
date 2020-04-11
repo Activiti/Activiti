@@ -1,9 +1,9 @@
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -11,6 +11,8 @@
  * limitations under the License.
  */
 package org.activiti.examples.bpmn.usertask.taskcandidate;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -44,26 +46,26 @@ public class TaskCandidateTest extends PluggableActivitiTestCase {
 
     // Task should not yet be assigned to kermit
     List<Task> tasks = taskService.createTaskQuery().taskAssignee(KERMIT).list();
-    assertTrue(tasks.isEmpty());
+    assertThat(tasks.isEmpty()).isTrue();
 
     // The task should be visible in the candidate task list
     tasks = taskService.createTaskQuery().taskCandidateUser(KERMIT,KERMITSGROUPS).list();
-    assertEquals(1, tasks.size());
+    assertThat(tasks.size()).isEqualTo(1);
     Task task = tasks.get(0);
-    assertEquals("Pay out expenses", task.getName());
+    assertThat(task.getName()).isEqualTo("Pay out expenses");
 
     // Claim the task
     taskService.claim(task.getId(), KERMIT);
 
     // The task must now be gone from the candidate task list
     tasks = taskService.createTaskQuery().taskCandidateUser(KERMIT,KERMITSGROUPS).list();
-    assertTrue(tasks.isEmpty());
+    assertThat(tasks.isEmpty()).isTrue();
 
     // The task will be visible on the personal task list
     tasks = taskService.createTaskQuery().taskAssignee(KERMIT).list();
-    assertEquals(1, tasks.size());
+    assertThat(tasks.size()).isEqualTo(1);
     task = tasks.get(0);
-    assertEquals("Pay out expenses", task.getName());
+    assertThat(task.getName()).isEqualTo("Pay out expenses");
 
     // Completing the task ends the process
     taskService.complete(task.getId());
@@ -80,36 +82,36 @@ public class TaskCandidateTest extends PluggableActivitiTestCase {
     // Task should not yet be assigned to anyone
     List<Task> tasks = taskService.createTaskQuery().taskAssignee(KERMIT).list();
 
-    assertTrue(tasks.isEmpty());
+    assertThat(tasks.isEmpty()).isTrue();
     tasks = taskService.createTaskQuery().taskAssignee(GONZO).list();
 
-    assertTrue(tasks.isEmpty());
+    assertThat(tasks.isEmpty()).isTrue();
 
     // The task should be visible in the candidate task list of Gonzo and
     // Kermit
     // and anyone in the mgmt/accountancy group
-    assertEquals(1, taskService.createTaskQuery().taskCandidateUser(KERMIT,KERMITSGROUPS).list().size());
-    assertEquals(1, taskService.createTaskQuery().taskCandidateUser(GONZO,GONZOSGROUPS).list().size());
-    assertEquals(1, taskService.createTaskQuery().taskCandidateGroup("management").count());
-    assertEquals(1, taskService.createTaskQuery().taskCandidateGroup("accountancy").count());
-    assertEquals(0, taskService.createTaskQuery().taskCandidateGroup("sales").count());
+    assertThat(taskService.createTaskQuery().taskCandidateUser(KERMIT,KERMITSGROUPS).list().size()).isEqualTo(1);
+    assertThat(taskService.createTaskQuery().taskCandidateUser(GONZO,GONZOSGROUPS).list().size()).isEqualTo(1);
+    assertThat(taskService.createTaskQuery().taskCandidateGroup("management").count()).isEqualTo(1);
+    assertThat(taskService.createTaskQuery().taskCandidateGroup("accountancy").count()).isEqualTo(1);
+    assertThat(taskService.createTaskQuery().taskCandidateGroup("sales").count()).isEqualTo(0);
 
     // Gonzo claims the task
     tasks = taskService.createTaskQuery().taskCandidateUser(GONZO,GONZOSGROUPS).list();
     Task task = tasks.get(0);
-    assertEquals("Approve expenses", task.getName());
+    assertThat(task.getName()).isEqualTo("Approve expenses");
     taskService.claim(task.getId(), GONZO);
 
     // The task must now be gone from the candidate task lists
-    assertTrue(taskService.createTaskQuery().taskCandidateUser(KERMIT,KERMITSGROUPS).list().isEmpty());
-    assertTrue(taskService.createTaskQuery().taskCandidateUser(GONZO,GONZOSGROUPS).list().isEmpty());
-    assertEquals(0, taskService.createTaskQuery().taskCandidateGroup("management").count());
+    assertThat(taskService.createTaskQuery().taskCandidateUser(KERMIT,KERMITSGROUPS).list().isEmpty()).isTrue();
+    assertThat(taskService.createTaskQuery().taskCandidateUser(GONZO,GONZOSGROUPS).list().isEmpty()).isTrue();
+    assertThat(taskService.createTaskQuery().taskCandidateGroup("management").count()).isEqualTo(0);
 
     // The task will be visible on the personal task list of Gonzo
-    assertEquals(1, taskService.createTaskQuery().taskAssignee(GONZO).count());
+    assertThat(taskService.createTaskQuery().taskAssignee(GONZO).count()).isEqualTo(1);
 
     // But not on the personal task list of (for example) Kermit
-    assertEquals(0, taskService.createTaskQuery().taskAssignee(KERMIT).count());
+    assertThat(taskService.createTaskQuery().taskAssignee(KERMIT).count()).isEqualTo(0);
 
     // Completing the task ends the process
     taskService.complete(task.getId());
@@ -121,33 +123,33 @@ public class TaskCandidateTest extends PluggableActivitiTestCase {
   public void testMultipleCandidateUsers() {
     runtimeService.startProcessInstanceByKey("multipleCandidateUsersExample", Collections.singletonMap("Variable", (Object) "var"));
 
-    assertEquals(1, taskService.createTaskQuery().taskCandidateUser(GONZO,GONZOSGROUPS).list().size());
-    assertEquals(1, taskService.createTaskQuery().taskCandidateUser(KERMIT,KERMITSGROUPS).list().size());
+    assertThat(taskService.createTaskQuery().taskCandidateUser(GONZO,GONZOSGROUPS).list().size()).isEqualTo(1);
+    assertThat(taskService.createTaskQuery().taskCandidateUser(KERMIT,KERMITSGROUPS).list().size()).isEqualTo(1);
 
     List<Task> tasks = taskService.createTaskQuery().taskInvolvedUser(KERMIT).list();
-    assertEquals(1, tasks.size());
+    assertThat(tasks.size()).isEqualTo(1);
 
     Task task = tasks.get(0);
     taskService.setVariableLocal(task.getId(), "taskVar", 123);
     tasks = taskService.createTaskQuery().taskInvolvedUser(KERMIT).includeProcessVariables().includeTaskLocalVariables().list();
     task = tasks.get(0);
 
-    assertEquals(1, task.getProcessVariables().size());
-    assertEquals(1, task.getTaskLocalVariables().size());
+    assertThat(task.getProcessVariables().size()).isEqualTo(1);
+    assertThat(task.getTaskLocalVariables().size()).isEqualTo(1);
     taskService.addUserIdentityLink(task.getId(), GONZO, "test");
 
     tasks = taskService.createTaskQuery().taskInvolvedUser(GONZO).includeProcessVariables().includeTaskLocalVariables().list();
-    assertEquals(1, tasks.size());
-    assertEquals(1, task.getProcessVariables().size());
-    assertEquals(1, task.getTaskLocalVariables().size());
+    assertThat(tasks.size()).isEqualTo(1);
+    assertThat(task.getProcessVariables().size()).isEqualTo(1);
+    assertThat(task.getTaskLocalVariables().size()).isEqualTo(1);
   }
 
   @Deployment
   public void testMixedCandidateUserAndGroup() {
     runtimeService.startProcessInstanceByKey("mixedCandidateUserAndGroupExample");
 
-    assertEquals(1, taskService.createTaskQuery().taskCandidateUser(GONZO,GONZOSGROUPS).list().size());
-    assertEquals(1, taskService.createTaskQuery().taskCandidateUser(KERMIT,KERMITSGROUPS).list().size());
+    assertThat(taskService.createTaskQuery().taskCandidateUser(GONZO,GONZOSGROUPS).list().size()).isEqualTo(1);
+    assertThat(taskService.createTaskQuery().taskCandidateUser(KERMIT,KERMITSGROUPS).list().size()).isEqualTo(1);
   }
 
   // test if candidate group works with expression, when there is a function
@@ -158,7 +160,7 @@ public class TaskCandidateTest extends PluggableActivitiTestCase {
     params.put("testBean", new TestBean());
 
     runtimeService.startProcessInstanceByKey("candidateWithExpression", params);
-    assertEquals(1, taskService.createTaskQuery().taskCandidateUser(KERMIT,KERMITSGROUPS).list().size());
+    assertThat(taskService.createTaskQuery().taskCandidateUser(KERMIT,KERMITSGROUPS).list().size()).isEqualTo(1);
 
   }
 
@@ -170,8 +172,8 @@ public class TaskCandidateTest extends PluggableActivitiTestCase {
     params.put("testBean", new TestBean());
 
     runtimeService.startProcessInstanceByKey("candidateWithExpression", params);
-    assertEquals(1, taskService.createTaskQuery().taskCandidateUser(KERMIT,KERMITSGROUPS).count());
-    assertEquals(1, taskService.createTaskQuery().taskCandidateGroup("sales").count());
+    assertThat(taskService.createTaskQuery().taskCandidateUser(KERMIT,KERMITSGROUPS).count()).isEqualTo(1);
+    assertThat(taskService.createTaskQuery().taskCandidateGroup("sales").count()).isEqualTo(1);
   }
 
 }

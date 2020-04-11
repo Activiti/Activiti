@@ -1,9 +1,9 @@
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -11,6 +11,8 @@
  * limitations under the License.
  */
 package org.activiti.examples.bpmn.gateway;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.HashMap;
 import java.util.List;
@@ -24,9 +26,7 @@ import org.activiti.engine.test.Deployment;
 
 /**
  * Example of using the exclusive gateway.
- * 
-
-
+ *
  */
 public class InclusiveGatewayTest extends PluggableActivitiTestCase {
 
@@ -46,7 +46,7 @@ public class InclusiveGatewayTest extends PluggableActivitiTestCase {
     variables.put("input", 1);
     ProcessInstance pi = runtimeService.startProcessInstanceByKey("inclusiveGateway", variables);
     List<Task> tasks = taskService.createTaskQuery().processInstanceId(pi.getId()).list();
-    assertEquals(3, tasks.size());
+    assertThat(tasks.size()).isEqualTo(3);
     Map<String, String> expectedMessages = new HashMap<String, String>();
     expectedMessages.put(TASK1_NAME, TASK1_NAME);
     expectedMessages.put(TASK2_NAME, TASK2_NAME);
@@ -54,32 +54,32 @@ public class InclusiveGatewayTest extends PluggableActivitiTestCase {
     for (Task task : tasks) {
       expectedMessages.remove(task.getName());
     }
-    assertEquals(0, expectedMessages.size());
+    assertThat(expectedMessages.size()).isEqualTo(0);
 
     // Test with input == 2
     variables.put("input", 2);
     pi = runtimeService.startProcessInstanceByKey("inclusiveGateway", variables);
     tasks = taskService.createTaskQuery().processInstanceId(pi.getId()).list();
-    assertEquals(2, tasks.size());
+    assertThat(tasks.size()).isEqualTo(2);
     expectedMessages = new HashMap<String, String>();
     expectedMessages.put(TASK2_NAME, TASK2_NAME);
     expectedMessages.put(TASK3_NAME, TASK3_NAME);
     for (Task task : tasks) {
       expectedMessages.remove(task.getName());
     }
-    assertEquals(0, expectedMessages.size());
+    assertThat(expectedMessages.size()).isEqualTo(0);
 
     // Test with input == 3
     variables.put("input", 3);
     pi = runtimeService.startProcessInstanceByKey("inclusiveGateway", variables);
     tasks = taskService.createTaskQuery().processInstanceId(pi.getId()).list();
-    assertEquals(1, tasks.size());
+    assertThat(tasks.size()).isEqualTo(1);
     expectedMessages = new HashMap<String, String>();
     expectedMessages.put(TASK3_NAME, TASK3_NAME);
     for (Task task : tasks) {
       expectedMessages.remove(task.getName());
     }
-    assertEquals(0, expectedMessages.size());
+    assertThat(expectedMessages.size()).isEqualTo(0);
 
     // Test with input == 4
     variables.put("input", 4);

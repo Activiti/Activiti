@@ -1,5 +1,7 @@
 package org.activiti.standalone.jpa;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -23,7 +25,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Test for JPA enhancement support
- * 
+ *
 
  */
 public class JPAEnhancedVariableTest extends AbstractActivitiTestCase {
@@ -112,9 +114,9 @@ public class JPAEnhancedVariableTest extends AbstractActivitiTestCase {
       String name = entry.getKey();
       Object value = entry.getValue();
       if (name.equals("fieldEntity")) {
-        assertTrue(value instanceof FieldAccessJPAEntity);
+        assertThat(value instanceof FieldAccessJPAEntity).isTrue();
       } else if (name.equals("propertyEntity")) {
-        assertTrue(value instanceof PropertyAccessJPAEntity);
+        assertThat(value instanceof PropertyAccessJPAEntity).isTrue();
       } else {
         fail();
       }
@@ -137,14 +139,14 @@ public class JPAEnhancedVariableTest extends AbstractActivitiTestCase {
 
     Task task = getTask(instance);
     List list = (List) task.getProcessVariables().get("list1");
-    assertTrue(list.size() == 2);
-    assertTrue(list.get(0) instanceof FieldAccessJPAEntity);
-    assertTrue(list.get(1) instanceof FieldAccessJPAEntity);
+    assertThat(list.size() == 2).isTrue();
+    assertThat(list.get(0) instanceof FieldAccessJPAEntity).isTrue();
+    assertThat(list.get(1) instanceof FieldAccessJPAEntity).isTrue();
 
     list = (List) task.getProcessVariables().get("list2");
-    assertTrue(list.size() == 2);
-    assertTrue(list.get(0) instanceof PropertyAccessJPAEntity);
-    assertTrue(list.get(1) instanceof PropertyAccessJPAEntity);
+    assertThat(list.size() == 2).isTrue();
+    assertThat(list.get(0) instanceof PropertyAccessJPAEntity).isTrue();
+    assertThat(list.get(1) instanceof PropertyAccessJPAEntity).isTrue();
 
     // start process with enhanced and persisted only jpa variables in the
     // same list
@@ -153,11 +155,11 @@ public class JPAEnhancedVariableTest extends AbstractActivitiTestCase {
 
     task = getTask(instance);
     list = (List) task.getProcessVariables().get("list");
-    assertTrue(list.size() == 2);
-    assertTrue(list.get(0) instanceof FieldAccessJPAEntity);
-    assertTrue(((FieldAccessJPAEntity) list.get(0)).getId().equals(1L));
-    assertTrue(list.get(1) instanceof FieldAccessJPAEntity);
-    assertTrue(((FieldAccessJPAEntity) list.get(1)).getId().equals(2L));
+    assertThat(list.size() == 2).isTrue();
+    assertThat(list.get(0) instanceof FieldAccessJPAEntity).isTrue();
+    assertThat(((FieldAccessJPAEntity) list.get(0)).getId().equals(1L)).isTrue();
+    assertThat(list.get(1) instanceof FieldAccessJPAEntity).isTrue();
+    assertThat(((FieldAccessJPAEntity) list.get(1)).getId().equals(2L)).isTrue();
 
     // shuffle list and start a new process
     params.putAll(Collections.singletonMap("list", Arrays.asList(fieldEntity2, fieldEntity)));
@@ -165,11 +167,11 @@ public class JPAEnhancedVariableTest extends AbstractActivitiTestCase {
 
     task = getTask(instance);
     list = (List) task.getProcessVariables().get("list");
-    assertTrue(list.size() == 2);
-    assertTrue(list.get(0) instanceof FieldAccessJPAEntity);
-    assertTrue(((FieldAccessJPAEntity) list.get(0)).getId().equals(2L));
-    assertTrue(list.get(1) instanceof FieldAccessJPAEntity);
-    assertTrue(((FieldAccessJPAEntity) list.get(1)).getId().equals(1L));
+    assertThat(list.size() == 2).isTrue();
+    assertThat(list.get(0) instanceof FieldAccessJPAEntity).isTrue();
+    assertThat(((FieldAccessJPAEntity) list.get(0)).getId().equals(2L)).isTrue();
+    assertThat(list.get(1) instanceof FieldAccessJPAEntity).isTrue();
+    assertThat(((FieldAccessJPAEntity) list.get(1)).getId().equals(1L)).isTrue();
 
     // start process with mixed jpa entities in list
     try {

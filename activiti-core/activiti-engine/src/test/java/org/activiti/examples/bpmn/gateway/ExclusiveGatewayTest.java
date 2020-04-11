@@ -1,9 +1,9 @@
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -11,6 +11,8 @@
  * limitations under the License.
  */
 package org.activiti.examples.bpmn.gateway;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -23,7 +25,7 @@ import org.activiti.engine.test.Deployment;
 
 /**
  * Example of using the exclusive gateway.
- * 
+ *
 
  */
 public class ExclusiveGatewayTest extends PluggableActivitiTestCase {
@@ -41,19 +43,19 @@ public class ExclusiveGatewayTest extends PluggableActivitiTestCase {
     variables.put("input", 1);
     ProcessInstance pi = runtimeService.startProcessInstanceByKey("exclusiveGateway", variables);
     Task task = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
-    assertEquals("Send e-mail for more information", task.getName());
+    assertThat(task.getName()).isEqualTo("Send e-mail for more information");
 
     // Test with input == 2
     variables.put("input", 2);
     pi = runtimeService.startProcessInstanceByKey("exclusiveGateway", variables);
     task = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
-    assertEquals("Check account balance", task.getName());
+    assertThat(task.getName()).isEqualTo("Check account balance");
 
     // Test with input == 3
     variables.put("input", 3);
     pi = runtimeService.startProcessInstanceByKey("exclusiveGateway", variables);
     task = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
-    assertEquals("Call customer", task.getName());
+    assertThat(task.getName()).isEqualTo("Call customer");
 
     // Test with input == 4
     variables.put("input", 4);

@@ -1,9 +1,9 @@
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -12,6 +12,8 @@
  */
 
 package org.activiti.engine.test.history;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -74,9 +76,9 @@ public class HistoricTaskInstanceTest extends PluggableActivitiTestCase {
                      historicTaskInstance.getTaskDefinitionKey());
         assertEquals("expressionFormKey",
                      historicTaskInstance.getFormKey());
-        assertNull(historicTaskInstance.getEndTime());
-        assertNull(historicTaskInstance.getDurationInMillis());
-        assertNull(historicTaskInstance.getWorkTimeInMillis());
+        assertThat(historicTaskInstance.getEndTime()).isNull();
+        assertThat(historicTaskInstance.getDurationInMillis()).isNull();
+        assertThat(historicTaskInstance.getWorkTimeInMillis()).isNull();
 
         runtimeService.setVariable(processInstanceId,
                                    "deadline",
@@ -88,8 +90,8 @@ public class HistoricTaskInstanceTest extends PluggableActivitiTestCase {
         assertEquals(1,
                      historyService.createHistoricTaskInstanceQuery().count());
         historicTaskInstance = historyService.createHistoricTaskInstanceQuery().singleResult();
-        assertNotNull(historicTaskInstance.getClaimTime());
-        assertNull(historicTaskInstance.getWorkTimeInMillis());
+        assertThat(historicTaskInstance.getClaimTime()).isNotNull();
+        assertThat(historicTaskInstance.getWorkTimeInMillis()).isNull();
         assertEquals("expressionFormKey",
                      historicTaskInstance.getFormKey());
 
@@ -111,15 +113,15 @@ public class HistoricTaskInstanceTest extends PluggableActivitiTestCase {
                      historicTaskInstance.getDueDate());
         assertEquals("kermit",
                      historicTaskInstance.getAssignee());
-        assertNull(historicTaskInstance.getDeleteReason());
+        assertThat(historicTaskInstance.getDeleteReason()).isNull();
         assertEquals(taskDefinitionKey,
                      historicTaskInstance.getTaskDefinitionKey());
         assertEquals("expressionFormKey",
                      historicTaskInstance.getFormKey());
-        assertNotNull(historicTaskInstance.getEndTime());
-        assertNotNull(historicTaskInstance.getDurationInMillis());
-        assertNotNull(historicTaskInstance.getClaimTime());
-        assertNotNull(historicTaskInstance.getWorkTimeInMillis());
+        assertThat(historicTaskInstance.getEndTime()).isNotNull();
+        assertThat(historicTaskInstance.getDurationInMillis()).isNotNull();
+        assertThat(historicTaskInstance.getClaimTime()).isNotNull();
+        assertThat(historicTaskInstance.getWorkTimeInMillis()).isNotNull();
 
         historyService.deleteHistoricTaskInstance(taskId);
 
@@ -758,7 +760,7 @@ public class HistoricTaskInstanceTest extends PluggableActivitiTestCase {
     public void testHistoricIdentityLinksOnTask() throws Exception {
         ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("historicIdentityLinks");
         Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
-        assertNotNull(task);
+        assertThat(task).isNotNull();
 
         // Set additional identity-link not coming from process
         taskService.addUserIdentityLink(task.getId(),
@@ -798,10 +800,10 @@ public class HistoricTaskInstanceTest extends PluggableActivitiTestCase {
             }
         }
 
-        assertTrue(foundAssignee);
-        assertTrue(foundCandidateGroup);
-        assertTrue(foundCandidateUser);
-        assertTrue(foundCustom);
+        assertThat(foundAssignee).isTrue();
+        assertThat(foundCandidateGroup).isTrue();
+        assertThat(foundCandidateUser).isTrue();
+        assertThat(foundCustom).isTrue();
 
         // Now complete the task and check if links are still there
         taskService.complete(task.getId());
@@ -851,7 +853,7 @@ public class HistoricTaskInstanceTest extends PluggableActivitiTestCase {
     public void testVariableUpdateOrderHistoricTaskInstance() throws Exception {
         ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("historicTask");
         Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
-        assertNotNull(task);
+        assertThat(task).isNotNull();
 
         // Update task and process-variable 10 times
         for (int i = 0; i < 10; i++) {

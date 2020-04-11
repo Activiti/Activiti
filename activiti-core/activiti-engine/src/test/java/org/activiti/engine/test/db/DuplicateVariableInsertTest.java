@@ -1,9 +1,9 @@
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -11,6 +11,8 @@
  * limitations under the License.
  */
 package org.activiti.engine.test.db;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -73,12 +75,12 @@ public class DuplicateVariableInsertTest extends PluggableActivitiTestCase {
     secondInsertThread.join();
 
     // One of the 2 threads should get an optimistic lock exception
-    assertEquals(1, exceptions.size());
+    assertThat(exceptions.size()).isEqualTo(1);
 
     // One variable should be set
     Map<String, Object> variables = runtimeService.getVariables(processInstance.getId());
-    assertEquals(1, variables.size());
-    assertEquals("12345", variables.get("var"));
+    assertThat(variables.size()).isEqualTo(1);
+    assertThat(variables.get("var")).isEqualTo("12345");
     runtimeService.deleteProcessInstance(processInstance.getId(), "ShouldNotFail");
   }
 
@@ -126,21 +128,21 @@ public class DuplicateVariableInsertTest extends PluggableActivitiTestCase {
     secondInsertThread.join();
 
     // One of the 2 threads should get an optimistic lock exception
-    assertEquals(1, exceptions.size());
-    assertTrue(exceptions.get(0) instanceof ActivitiOptimisticLockingException);
+    assertThat(exceptions.size()).isEqualTo(1);
+    assertThat(exceptions.get(0) instanceof ActivitiOptimisticLockingException).isTrue();
 
     // One variable should be set
     Map<String, Object> variables = runtimeService.getVariables(processInstance.getId());
-    assertEquals(1, variables.size());
-    assertEquals("12345", variables.get("var"));
+    assertThat(variables.size()).isEqualTo(1);
+    assertThat(variables.get("var")).isEqualTo("12345");
     runtimeService.deleteProcessInstance(processInstance.getId(), "ShouldNotFail");
   }
 
   /**
    * Command wrapping a SetExecutionVariablesCmd, waiting in to start and end on the barriers passed in.
-   * 
+   *
 
-   * 
+   *
    */
   private class SetVariableWithBarriersCommand implements Command<Void> {
 
@@ -179,9 +181,9 @@ public class DuplicateVariableInsertTest extends PluggableActivitiTestCase {
 
   /**
    * Command wrapping a SetTaskVariablesCmd, waiting in to start and end on the barriers passed in.
-   * 
+   *
 
-   * 
+   *
    */
   private class SetTaskVariableWithBarriersCommand implements Command<Void> {
 

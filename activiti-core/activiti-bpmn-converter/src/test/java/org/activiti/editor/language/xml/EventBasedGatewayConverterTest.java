@@ -1,8 +1,6 @@
 package org.activiti.editor.language.xml;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 
@@ -15,7 +13,7 @@ import org.junit.Test;
 
 /**
  * Test for ACT-1657
- * 
+ *
 
  */
 public class EventBasedGatewayConverterTest extends AbstractConverterTest {
@@ -32,15 +30,15 @@ public class EventBasedGatewayConverterTest extends AbstractConverterTest {
 
   private void validateModel(BpmnModel model) {
     FlowElement flowElement = model.getMainProcess().getFlowElement("eventBasedGateway");
-    assertNotNull(flowElement);
-    assertTrue(flowElement instanceof EventGateway);
+    assertThat(flowElement).isNotNull();
+    assertThat(flowElement instanceof EventGateway).isTrue();
 
     EventGateway gateway = (EventGateway) flowElement;
     List<ActivitiListener> listeners = gateway.getExecutionListeners();
-    assertEquals(1, listeners.size());
+    assertThat(listeners.size()).isEqualTo(1);
     ActivitiListener listener = listeners.get(0);
-    assertTrue(ImplementationType.IMPLEMENTATION_TYPE_CLASS.equals(listener.getImplementationType()));
-    assertEquals("org.test.TestClass", listener.getImplementation());
-    assertEquals("start", listener.getEvent());
+    assertThat(ImplementationType.IMPLEMENTATION_TYPE_CLASS.equals(listener.getImplementationType())).isTrue();
+    assertThat(listener.getImplementation()).isEqualTo("org.test.TestClass");
+    assertThat(listener.getEvent()).isEqualTo("start");
   }
 }

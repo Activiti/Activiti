@@ -1,9 +1,9 @@
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -11,6 +11,8 @@
  * limitations under the License.
  */
 package org.activiti.engine.test.cfg;
+
+import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +28,7 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandInterceptor;
 import org.activiti.engine.impl.interceptor.RetryInterceptor;
 import org.junit.After;
-import org.junit.Assert;
+import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -37,9 +39,9 @@ import org.junit.Test;
 public class RetryInterceptorTest {
 
   protected ProcessEngine processEngine;
-  
+
   protected RetryInterceptor retryInterceptor;
-  
+
   @Before
   public void setupProcessEngine() {
     ProcessEngineConfigurationImpl processEngineConfiguration = (ProcessEngineConfigurationImpl) new StandaloneInMemProcessEngineConfiguration();
@@ -50,7 +52,7 @@ public class RetryInterceptorTest {
     processEngineConfiguration.setCustomPreCommandInterceptors(interceptors);
     processEngine = processEngineConfiguration.buildProcessEngine();
   }
-  
+
   @After
   public void shutdownProcessEngine() {
     processEngine.close();
@@ -58,25 +60,25 @@ public class RetryInterceptorTest {
 
   @Test
   public void testRetryInterceptor() {
-    
+
     try {
       processEngine.getManagementService().executeCommand(new CommandThrowingOptimisticLockingException());
-      Assert.fail("ActivitiException expected.");
+      fail("ActivitiException expected.");
     } catch (ActivitiException e) {
-      Assert.assertTrue(e.getMessage().contains(retryInterceptor.getNumOfRetries() + " retries failed"));
+      assertThat(e.getMessage().contains(retryInterceptor.getNumOfRetries() + " retries failed")).isTrue();
     }
-    
-    Assert.assertEquals(retryInterceptor.getNumOfRetries() + 1, counter.get()); // +1, we retry 3 times, so one extra for the regular execution
+
+    assertThat(counter.get()).isEqualTo(retryInterceptor.getNumOfRetries() + 1); // +1, we retry 3 times, so one extra for the regular execution
   }
 
   public static AtomicInteger counter = new AtomicInteger();
-  
+
   protected class CommandThrowingOptimisticLockingException implements Command<Void> {
-    
+
     public Void execute(CommandContext commandContext) {
-      
+
       counter.incrementAndGet();
-      
+
       throw new ActivitiOptimisticLockingException("");
     }
   }

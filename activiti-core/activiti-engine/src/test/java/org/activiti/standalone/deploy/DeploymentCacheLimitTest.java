@@ -1,9 +1,9 @@
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -11,6 +11,8 @@
  * limitations under the License.
  */
 package org.activiti.standalone.deploy;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.text.MessageFormat;
 
@@ -33,16 +35,16 @@ public class DeploymentCacheLimitTest extends ResourceActivitiTestCase {
                                          // above
 
     DefaultDeploymentCache<ProcessDefinitionCacheEntry> processDefinitionCache = (DefaultDeploymentCache<ProcessDefinitionCacheEntry>) processEngineConfiguration.getProcessDefinitionCache();
-    assertEquals(0, processDefinitionCache.size());
+    assertThat(processDefinitionCache.size()).isEqualTo(0);
 
     String processDefinitionTemplate = DeploymentCacheTestUtil.readTemplateFile("/org/activiti/standalone/deploy/deploymentCacheTest.bpmn20.xml");
     for (int i = 1; i <= 5; i++) {
       repositoryService.createDeployment().addString("Process " + i + ".bpmn20.xml", MessageFormat.format(processDefinitionTemplate, i)).deploy();
 
       if (i < processDefinitionCacheLimit) {
-        assertEquals(i, processDefinitionCache.size());
+        assertThat(processDefinitionCache.size()).isEqualTo(i);
       } else {
-        assertEquals(processDefinitionCacheLimit, processDefinitionCache.size());
+        assertThat(processDefinitionCache.size()).isEqualTo(processDefinitionCacheLimit);
       }
     }
 

@@ -8,7 +8,8 @@ import org.activiti.engine.impl.util.io.InputStreamSource;
 import org.activiti.validation.ValidationError;
 import org.junit.Test;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
 
 public class AsyncPropertyValidatorTest {
 

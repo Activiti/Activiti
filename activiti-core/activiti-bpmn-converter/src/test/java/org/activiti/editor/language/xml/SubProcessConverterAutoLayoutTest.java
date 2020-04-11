@@ -1,8 +1,6 @@
 package org.activiti.editor.language.xml;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 
@@ -42,32 +40,32 @@ public class SubProcessConverterAutoLayoutTest extends AbstractConverterTest {
 
   private void validateModel(BpmnModel model) {
     FlowElement flowElement = model.getMainProcess().getFlowElement("start1");
-    assertNotNull(flowElement);
-    assertTrue(flowElement instanceof StartEvent);
-    assertEquals("start1", flowElement.getId());
+    assertThat(flowElement).isNotNull();
+    assertThat(flowElement instanceof StartEvent).isTrue();
+    assertThat(flowElement.getId()).isEqualTo("start1");
 
     flowElement = model.getMainProcess().getFlowElement("userTask1");
-    assertNotNull(flowElement);
-    assertTrue(flowElement instanceof UserTask);
-    assertEquals("userTask1", flowElement.getId());
+    assertThat(flowElement).isNotNull();
+    assertThat(flowElement instanceof UserTask).isTrue();
+    assertThat(flowElement.getId()).isEqualTo("userTask1");
     UserTask userTask = (UserTask) flowElement;
-    assertTrue(userTask.getCandidateUsers().size() == 1);
-    assertTrue(userTask.getCandidateGroups().size() == 1);
+    assertThat(userTask.getCandidateUsers().size() == 1).isTrue();
+    assertThat(userTask.getCandidateGroups().size() == 1).isTrue();
 
     flowElement = model.getMainProcess().getFlowElement("subprocess1");
-    assertNotNull(flowElement);
-    assertTrue(flowElement instanceof SubProcess);
-    assertEquals("subprocess1", flowElement.getId());
+    assertThat(flowElement).isNotNull();
+    assertThat(flowElement instanceof SubProcess).isTrue();
+    assertThat(flowElement.getId()).isEqualTo("subprocess1");
     SubProcess subProcess = (SubProcess) flowElement;
-    assertTrue(subProcess.getFlowElements().size() == 6);
+    assertThat(subProcess.getFlowElements().size() == 6).isTrue();
 
     List<ValuedDataObject> dataObjects = ((SubProcess) flowElement).getDataObjects();
-    assertTrue(dataObjects.size() == 1);
+    assertThat(dataObjects.size() == 1).isTrue();
 
     ValuedDataObject dataObj = dataObjects.get(0);
-    assertEquals("SubTest", dataObj.getName());
-    assertEquals("xsd:string", dataObj.getItemSubjectRef().getStructureRef());
-    assertTrue(dataObj.getValue() instanceof String);
-    assertEquals("Testing", dataObj.getValue());
+    assertThat(dataObj.getName()).isEqualTo("SubTest");
+    assertThat(dataObj.getItemSubjectRef().getStructureRef()).isEqualTo("xsd:string");
+    assertThat(dataObj.getValue() instanceof String).isTrue();
+    assertThat(dataObj.getValue()).isEqualTo("Testing");
   }
 }

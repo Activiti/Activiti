@@ -1,9 +1,9 @@
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -11,6 +11,9 @@
  * limitations under the License.
  */
 package org.activiti.engine.test.api.event;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
@@ -26,8 +29,7 @@ import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.task.Task;
 
 /**
- * 
-
+ *
  */
 public abstract class ActivitiEventDispatcherTest extends PluggableActivitiTestCase {
 
@@ -57,9 +59,9 @@ public abstract class ActivitiEventDispatcherTest extends PluggableActivitiTestC
     dispatcher.dispatchEvent(event1);
     dispatcher.dispatchEvent(event2);
 
-    assertEquals(2, newListener.getEventsReceived().size());
-    assertEquals(event1, newListener.getEventsReceived().get(0));
-    assertEquals(event2, newListener.getEventsReceived().get(1));
+    assertThat(newListener.getEventsReceived().size()).isEqualTo(2);
+    assertThat(newListener.getEventsReceived().get(0)).isEqualTo(event1);
+    assertThat(newListener.getEventsReceived().get(1)).isEqualTo(event2);
 
     // Remove listener and dispatch events again, listener should not be
     // invoked
@@ -68,7 +70,7 @@ public abstract class ActivitiEventDispatcherTest extends PluggableActivitiTestC
     dispatcher.dispatchEvent(event1);
     dispatcher.dispatchEvent(event2);
 
-    assertTrue(newListener.getEventsReceived().isEmpty());
+    assertThat(newListener.getEventsReceived().isEmpty()).isTrue();
   }
 
   /**
@@ -90,9 +92,9 @@ public abstract class ActivitiEventDispatcherTest extends PluggableActivitiTestC
     dispatcher.dispatchEvent(event2);
     dispatcher.dispatchEvent(event3);
 
-    assertEquals(2, newListener.getEventsReceived().size());
-    assertEquals(event1, newListener.getEventsReceived().get(0));
-    assertEquals(event2, newListener.getEventsReceived().get(1));
+    assertThat(newListener.getEventsReceived().size()).isEqualTo(2);
+    assertThat(newListener.getEventsReceived().get(0)).isEqualTo(event1);
+    assertThat(newListener.getEventsReceived().get(1)).isEqualTo(event2);
 
     // Remove listener and dispatch events again, listener should not be
     // invoked
@@ -101,7 +103,7 @@ public abstract class ActivitiEventDispatcherTest extends PluggableActivitiTestC
     dispatcher.dispatchEvent(event1);
     dispatcher.dispatchEvent(event2);
 
-    assertTrue(newListener.getEventsReceived().isEmpty());
+    assertThat(newListener.getEventsReceived().isEmpty()).isTrue();
   }
 
   /**
@@ -122,7 +124,7 @@ public abstract class ActivitiEventDispatcherTest extends PluggableActivitiTestC
     dispatcher.dispatchEvent(event1);
     dispatcher.dispatchEvent(event2);
 
-    assertTrue(newListener.getEventsReceived().isEmpty());
+    assertThat(newListener.getEventsReceived().isEmpty()).isTrue();
   }
 
   /**
@@ -140,35 +142,35 @@ public abstract class ActivitiEventDispatcherTest extends PluggableActivitiTestC
 
     // Dispatch create event
     dispatcher.dispatchEvent(createEvent);
-    assertTrue(listener.isCreateReceived());
-    assertFalse(listener.isUpdateReceived());
-    assertFalse(listener.isCustomReceived());
-    assertFalse(listener.isInitializeReceived());
-    assertFalse(listener.isDeleteReceived());
+    assertThat(listener.isCreateReceived()).isTrue();
+    assertThat(listener.isUpdateReceived()).isFalse();
+    assertThat(listener.isCustomReceived()).isFalse();
+    assertThat(listener.isInitializeReceived()).isFalse();
+    assertThat(listener.isDeleteReceived()).isFalse();
     listener.reset();
 
     // Dispatch update event
     dispatcher.dispatchEvent(updateEvent);
-    assertTrue(listener.isUpdateReceived());
-    assertFalse(listener.isCreateReceived());
-    assertFalse(listener.isCustomReceived());
-    assertFalse(listener.isDeleteReceived());
+    assertThat(listener.isUpdateReceived()).isTrue();
+    assertThat(listener.isCreateReceived()).isFalse();
+    assertThat(listener.isCustomReceived()).isFalse();
+    assertThat(listener.isDeleteReceived()).isFalse();
     listener.reset();
 
     // Dispatch delete event
     dispatcher.dispatchEvent(deleteEvent);
-    assertTrue(listener.isDeleteReceived());
-    assertFalse(listener.isCreateReceived());
-    assertFalse(listener.isCustomReceived());
-    assertFalse(listener.isUpdateReceived());
+    assertThat(listener.isDeleteReceived()).isTrue();
+    assertThat(listener.isCreateReceived()).isFalse();
+    assertThat(listener.isCustomReceived()).isFalse();
+    assertThat(listener.isUpdateReceived()).isFalse();
     listener.reset();
 
     // Dispatch other event
     dispatcher.dispatchEvent(otherEvent);
-    assertTrue(listener.isCustomReceived());
-    assertFalse(listener.isCreateReceived());
-    assertFalse(listener.isUpdateReceived());
-    assertFalse(listener.isDeleteReceived());
+    assertThat(listener.isCustomReceived()).isTrue();
+    assertThat(listener.isCreateReceived()).isFalse();
+    assertThat(listener.isUpdateReceived()).isFalse();
+    assertThat(listener.isDeleteReceived()).isFalse();
     listener.reset();
 
     // Test typed entity-listener
@@ -178,14 +180,14 @@ public abstract class ActivitiEventDispatcherTest extends PluggableActivitiTestC
     dispatcher.addEventListener(listener);
     dispatcher.dispatchEvent(createEvent);
 
-    assertTrue(listener.isCreateReceived());
+    assertThat(listener.isCreateReceived()).isTrue();
     listener.reset();
 
     // Dispatch event for a execution, should NOT be received
     ActivitiEntityEventImpl createEventForExecution = new ActivitiEntityEventImpl(new ExecutionEntityImpl(), ActivitiEventType.ENTITY_CREATED);
 
     dispatcher.dispatchEvent(createEventForExecution);
-    assertFalse(listener.isCreateReceived());
+    assertThat(listener.isCreateReceived()).isFalse();
   }
 
   /**
@@ -202,7 +204,7 @@ public abstract class ActivitiEventDispatcherTest extends PluggableActivitiTestC
     ActivitiEventImpl event = new ActivitiEventImpl(ActivitiEventType.ENTITY_CREATED);
     try {
       dispatcher.dispatchEvent(event);
-      assertEquals(1, secondListener.getEventsReceived().size());
+      assertThat(secondListener.getEventsReceived().size()).isEqualTo(1);
     } catch (Throwable t) {
       fail("No exception expected");
     }
@@ -221,12 +223,12 @@ public abstract class ActivitiEventDispatcherTest extends PluggableActivitiTestC
       dispatcher.dispatchEvent(event);
       fail("Exception expected");
     } catch (Throwable t) {
-      assertTrue(t instanceof ActivitiException);
-      assertTrue(t.getCause() instanceof RuntimeException);
-      assertEquals("Test exception", t.getCause().getMessage());
+      assertThat(t instanceof ActivitiException).isTrue();
+      assertThat(t.getCause() instanceof RuntimeException).isTrue();
+      assertThat(t.getCause().getMessage()).isEqualTo("Test exception");
 
       // Second listener should NOT have been called
-      assertEquals(0, secondListener.getEventsReceived().size());
+      assertThat(secondListener.getEventsReceived().size()).isEqualTo(0);
     }
   }
 
@@ -237,41 +239,37 @@ public abstract class ActivitiEventDispatcherTest extends PluggableActivitiTestC
   public void activitiEventTypeParsing() throws Exception {
     // Check with empty null
     ActivitiEventType[] types = ActivitiEventType.getTypesFromString(null);
-    assertNotNull(types);
-    assertEquals(0, types.length);
+    assertThat(types).isNotNull();
+    assertThat(types.length).isEqualTo(0);
 
     // Check with empty string
     types = ActivitiEventType.getTypesFromString("");
-    assertNotNull(types);
-    assertEquals(0, types.length);
+    assertThat(types).isNotNull();
+    assertThat(types.length).isEqualTo(0);
 
     // Single value
     types = ActivitiEventType.getTypesFromString("ENTITY_CREATED");
-    assertNotNull(types);
-    assertEquals(1, types.length);
-    assertEquals(ActivitiEventType.ENTITY_CREATED, types[0]);
+    assertThat(types).isNotNull();
+    assertThat(types.length).isEqualTo(1);
+    assertThat(types[0]).isEqualTo(ActivitiEventType.ENTITY_CREATED);
 
     // Multiple value
     types = ActivitiEventType.getTypesFromString("ENTITY_CREATED,ENTITY_DELETED");
-    assertNotNull(types);
-    assertEquals(2, types.length);
-    assertEquals(ActivitiEventType.ENTITY_CREATED, types[0]);
-    assertEquals(ActivitiEventType.ENTITY_DELETED, types[1]);
+    assertThat(types).isNotNull();
+    assertThat(types.length).isEqualTo(2);
+    assertThat(types[0]).isEqualTo(ActivitiEventType.ENTITY_CREATED);
+    assertThat(types[1]).isEqualTo(ActivitiEventType.ENTITY_DELETED);
 
     // Additional separators should be ignored
     types = ActivitiEventType.getTypesFromString(",ENTITY_CREATED,,ENTITY_DELETED,,,");
-    assertNotNull(types);
-    assertEquals(2, types.length);
-    assertEquals(ActivitiEventType.ENTITY_CREATED, types[0]);
-    assertEquals(ActivitiEventType.ENTITY_DELETED, types[1]);
+    assertThat(types).isNotNull();
+    assertThat(types.length).isEqualTo(2);
+    assertThat(types[0]).isEqualTo(ActivitiEventType.ENTITY_CREATED);
+    assertThat(types[1]).isEqualTo(ActivitiEventType.ENTITY_DELETED);
 
     // Invalid type name
-    try {
-      ActivitiEventType.getTypesFromString("WHOOPS,ENTITY_DELETED");
-      fail("Exception expected");
-    } catch (ActivitiIllegalArgumentException expected) {
-      // Expected exception
-      assertEquals("Invalid event-type: WHOOPS", expected.getMessage());
-    }
+    assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
+      .isThrownBy(() -> ActivitiEventType.getTypesFromString("WHOOPS,ENTITY_DELETED"))
+      .withMessage("Invalid event-type: WHOOPS");
   }
 }

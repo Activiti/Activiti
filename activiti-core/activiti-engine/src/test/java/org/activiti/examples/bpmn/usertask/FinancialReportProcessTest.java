@@ -1,5 +1,7 @@
 package org.activiti.examples.bpmn.usertask;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -24,21 +26,21 @@ public class FinancialReportProcessTest extends PluggableActivitiTestCase {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("financialReport");
 
     List<Task> tasks = taskService.createTaskQuery().taskCandidateUser("fozzie",FOZZIESGROUPS).list();
-    assertEquals(1, tasks.size());
+    assertThat(tasks.size()).isEqualTo(1);
     Task task = tasks.get(0);
-    assertEquals("Write monthly financial report", task.getName());
+    assertThat(task.getName()).isEqualTo("Write monthly financial report");
 
     taskService.claim(task.getId(), FOZZIE);
     tasks = taskService.createTaskQuery().taskAssignee(FOZZIE).list();
 
-    assertEquals(1, tasks.size());
+    assertThat(tasks.size()).isEqualTo(1);
     taskService.complete(task.getId());
 
     tasks = taskService.createTaskQuery().taskCandidateUser(FOZZIE,FOZZIESGROUPS).list();
-    assertEquals(0, tasks.size());
+    assertThat(tasks.size()).isEqualTo(0);
     tasks = taskService.createTaskQuery().taskCandidateUser(KERMIT,KERMITSGROUPS).list();
-    assertEquals(1, tasks.size());
-    assertEquals("Verify monthly financial report", tasks.get(0).getName());
+    assertThat(tasks.size()).isEqualTo(1);
+    assertThat(tasks.get(0).getName()).isEqualTo("Verify monthly financial report");
     taskService.complete(tasks.get(0).getId());
 
     assertProcessEnded(processInstance.getId());

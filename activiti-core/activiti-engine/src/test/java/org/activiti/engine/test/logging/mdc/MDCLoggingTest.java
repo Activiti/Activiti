@@ -1,8 +1,6 @@
 package org.activiti.engine.test.logging.mdc;
 
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.List;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.logging.LogMDC;
@@ -37,7 +35,7 @@ public class MDCLoggingTest extends PluggableActivitiTestCase {
         console.setName("MemoryAppender");
 
         rootLogger.addAppender(console);
-    
+
     LogMDC.setMDCEnabled(true);
   }
 
@@ -57,10 +55,10 @@ public class MDCLoggingTest extends PluggableActivitiTestCase {
     }
     String messages = console.toString();
 
-    assertTrue(messages.contains("ProcessDefinitionId=" + TestService.processDefinitionId));
-    assertTrue(messages.contains("executionId=" + TestService.executionId));
-    assertTrue(messages.contains("mdcProcessInstanceID=" + TestService.processInstanceId));
-    assertTrue(messages.contains("mdcBusinessKey=" + (TestService.businessKey == null ? "" : TestService.businessKey)));
+    assertThat(messages.contains("ProcessDefinitionId=" + TestService.processDefinitionId)).isTrue();
+    assertThat(messages.contains("executionId=" + TestService.executionId)).isTrue();
+    assertThat(messages.contains("mdcProcessInstanceID=" + TestService.processInstanceId)).isTrue();
+    assertThat(messages.contains("mdcBusinessKey=" + (TestService.businessKey == null ? "" : TestService.businessKey))).isTrue();
     console.clear();
     unsetCustomLogger();
 
@@ -70,6 +68,6 @@ public class MDCLoggingTest extends PluggableActivitiTestCase {
     } catch (Exception e) {
       // expected exception
     }
-    assertFalse(console.toString().contains("ProcessDefinitionId=" + TestService.processDefinitionId));
+    assertThat(console.toString().contains("ProcessDefinitionId=" + TestService.processDefinitionId)).isFalse();
   }
 }

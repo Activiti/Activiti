@@ -1,9 +1,9 @@
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -11,6 +11,8 @@
  * limitations under the License.
  */
 package org.activiti.examples.task;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.HashMap;
 import java.util.List;
@@ -43,33 +45,33 @@ public class StandaloneTaskTest extends PluggableActivitiTestCase {
 
     // Retrieve task list for kermit
     List<Task> tasks = taskService.createTaskQuery().taskCandidateUser("kermit").list();
-    assertEquals(1, tasks.size());
-    assertEquals("testTask", tasks.get(0).getName());
+    assertThat(tasks.size()).isEqualTo(1);
+    assertThat(tasks.get(0).getName()).isEqualTo("testTask");
 
     // Retrieve task list for gonzo
     tasks = taskService.createTaskQuery().taskCandidateUser("gonzo").list();
-    assertEquals(1, tasks.size());
-    assertEquals("testTask", tasks.get(0).getName());
+    assertThat(tasks.size()).isEqualTo(1);
+    assertThat(tasks.get(0).getName()).isEqualTo("testTask");
 
     task.setName("Update name");
     taskService.saveTask(task);
     tasks = taskService.createTaskQuery().taskCandidateUser("kermit").list();
-    assertEquals(1, tasks.size());
-    assertEquals("Update name", tasks.get(0).getName());
+    assertThat(tasks.size()).isEqualTo(1);
+    assertThat(tasks.get(0).getName()).isEqualTo("Update name");
 
     // Claim task
     taskService.claim(taskId, "kermit");
 
     // Tasks shouldn't appear in the candidate tasklists anymore
-    assertTrue(taskService.createTaskQuery().taskCandidateUser("kermit").list().isEmpty());
-    assertTrue(taskService.createTaskQuery().taskCandidateUser("gonzo").list().isEmpty());
+    assertThat(taskService.createTaskQuery().taskCandidateUser("kermit").list().isEmpty()).isTrue();
+    assertThat(taskService.createTaskQuery().taskCandidateUser("gonzo").list().isEmpty()).isTrue();
 
     // Complete task
     taskService.deleteTask(taskId, true);
 
     // Task should be removed from runtime data
     // TODO: check for historic data when implemented!
-    assertNull(taskService.createTaskQuery().taskId(taskId).singleResult());
+    assertThat(taskService.createTaskQuery().taskId(taskId).singleResult()).isNull();
   }
 
   public void testOptimisticLockingThrownOnMultipleUpdates() {
@@ -100,15 +102,15 @@ public class StandaloneTaskTest extends PluggableActivitiTestCase {
   public void testRevisionUpdatedOnSave() {
     Task task = taskService.newTask();
     taskService.saveTask(task);
-    assertEquals(1, ((TaskEntity) task).getRevision());
+    assertThat(((TaskEntity) task).getRevision()).isEqualTo(1);
 
     task.setDescription("first modification");
     taskService.saveTask(task);
-    assertEquals(2, ((TaskEntity) task).getRevision());
+    assertThat(((TaskEntity) task).getRevision()).isEqualTo(2);
 
     task.setDescription("second modification");
     taskService.saveTask(task);
-    assertEquals(3, ((TaskEntity) task).getRevision());
+    assertThat(((TaskEntity) task).getRevision()).isEqualTo(3);
 
     taskService.deleteTask(task.getId(), true);
   }
@@ -117,23 +119,23 @@ public class StandaloneTaskTest extends PluggableActivitiTestCase {
   public void testRevisionUpdatedOnSaveWhenFetchedUsingQuery() {
     Task task = taskService.newTask();
     taskService.saveTask(task);
-    assertEquals(1, ((TaskEntity) task).getRevision());
+    assertThat(((TaskEntity) task).getRevision()).isEqualTo(1);
 
     task.setAssignee("kermit");
     taskService.saveTask(task);
-    assertEquals(2, ((TaskEntity) task).getRevision());
+    assertThat(((TaskEntity) task).getRevision()).isEqualTo(2);
 
     // Now fetch the task through the query api
     task = taskService.createTaskQuery().singleResult();
-    assertEquals(2, ((TaskEntity) task).getRevision());
+    assertThat(((TaskEntity) task).getRevision()).isEqualTo(2);
     task.setPriority(1);
     taskService.saveTask(task);
 
-    assertEquals(3, ((TaskEntity) task).getRevision());
+    assertThat(((TaskEntity) task).getRevision()).isEqualTo(3);
 
     taskService.deleteTask(task.getId(), true);
   }
-  
+
   public void testHistoricVariableOkOnUpdate() {
     if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
   		// 1. create a task
@@ -142,22 +144,22 @@ public class StandaloneTaskTest extends PluggableActivitiTestCase {
   		task.setOwner("josOwner");
   		task.setAssignee("JosAssignee");
   		taskService.saveTask(task);
-  		 
+
   		// 2. set task variables
   		Map<String, Object> taskVariables = new HashMap<String, Object>();
   		taskVariables.put("finishedAmount", 0);
   		taskService.setVariables(task.getId(), taskVariables);
-  		 
+
   		// 3. complete this task with a new variable
   		Map<String, Object> finishVariables = new HashMap<String, Object>();
   		finishVariables.put("finishedAmount", 40);
   		taskService.complete(task.getId(), finishVariables);
-  		 
+
   		// 4. get completed variable
   		List<HistoricVariableInstance> hisVarList = historyService.createHistoricVariableInstanceQuery().taskId(task.getId()).list();
-  		assertEquals(1, hisVarList.size());
-  		assertEquals(40, hisVarList.get(0).getValue());
-  		
+  		assertThat(hisVarList.size()).isEqualTo(1);
+  		assertThat(hisVarList.get(0).getValue()).isEqualTo(40);
+
   		// Cleanup
   		historyService.deleteHistoricTaskInstance(task.getId());
     }

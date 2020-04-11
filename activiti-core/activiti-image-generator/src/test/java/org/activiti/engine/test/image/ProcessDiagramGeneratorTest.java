@@ -22,7 +22,8 @@ import org.apache.batik.util.XMLResourceDescriptor;
 import org.apache.commons.io.IOUtils;
 
 import static java.util.Collections.emptyList;
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 public class ProcessDiagramGeneratorTest extends PluggableActivitiTestCase {
 
@@ -59,16 +60,16 @@ public class ProcessDiagramGeneratorTest extends PluggableActivitiTestCase {
         List<String> activityIds = runtimeService.getActiveActivityIds(task.getProcessInstanceId());
         InputStream diagram = imageGenerator
                 .generateDiagram(repositoryService.getBpmnModel(task.getProcessDefinitionId()), activityIds);
-        assertNotNull(diagram);
+        assertThat(diagram).isNotNull();
 
         List<String> highLightedFlows = Arrays.asList("flow1", "flow2", "flow3", "flow4", "flow5", "flow6");
         diagram = imageGenerator.generateDiagram(repositoryService.getBpmnModel(task.getProcessDefinitionId()),
                                                  activityIds, highLightedFlows);
-        assertNotNull(diagram);
+        assertThat(diagram).isNotNull();
 
         diagram = imageGenerator.generateDiagram(repositoryService.getBpmnModel(task.getProcessDefinitionId()),
                                                  activityIds, highLightedFlows, activityFontName, labelFontName, annotationFontName);
-        assertNotNull(diagram);
+        assertThat(diagram).isNotNull();
     }
 
     @Deployment
@@ -85,11 +86,11 @@ public class ProcessDiagramGeneratorTest extends PluggableActivitiTestCase {
         List<String> highLightedFlows = new ArrayList<>();
         InputStream diagram = imageGenerator.generateDiagram(repositoryService.getBpmnModel(id),
                                                  activityIds, highLightedFlows);
-        assertNotNull(diagram);
+        assertThat(diagram).isNotNull();
 
         diagram = imageGenerator.generateDiagram(repositoryService.getBpmnModel(id),
                                                  activityIds, highLightedFlows, activityFontName, labelFontName, annotationFontName);
-        assertNotNull(diagram);
+        assertThat(diagram).isNotNull();
     }
     @Deployment
     public void testTransactionElements() throws Exception {
@@ -105,11 +106,11 @@ public class ProcessDiagramGeneratorTest extends PluggableActivitiTestCase {
         List<String> highLightedFlows = new ArrayList<>();
         InputStream diagram = imageGenerator.generateDiagram(repositoryService.getBpmnModel(id),
                                                  activityIds, highLightedFlows);
-        assertNotNull(diagram);
+        assertThat(diagram).isNotNull();
 
         diagram = imageGenerator.generateDiagram(repositoryService.getBpmnModel(id),
                                                  activityIds, highLightedFlows, activityFontName, labelFontName, annotationFontName);
-        assertNotNull(diagram);
+        assertThat(diagram).isNotNull();
     }
 
     @Deployment
@@ -222,7 +223,7 @@ public class ProcessDiagramGeneratorTest extends PluggableActivitiTestCase {
 
     private void checkDiagramElements(List<String> elementIdList, SVGOMDocument svg) {
         for (String elementId : elementIdList) {
-            assertNotNull(svg.getElementById(elementId));
+            assertThat(svg.getElementById(elementId)).isNotNull();
         }
     }
 

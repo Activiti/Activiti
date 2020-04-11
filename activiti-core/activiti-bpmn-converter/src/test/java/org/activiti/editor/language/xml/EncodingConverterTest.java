@@ -7,9 +7,7 @@ import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.UserTask;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class EncodingConverterTest extends AbstractConverterTest {
 
@@ -28,12 +26,12 @@ public class EncodingConverterTest extends AbstractConverterTest {
 
   private void validateModel(BpmnModel model) {
     FlowElement flowElement = model.getMainProcess().getFlowElement("writeReportTask");
-    assertNotNull(flowElement);
-    assertTrue(flowElement instanceof UserTask);
-    assertEquals("writeReportTask", flowElement.getId());
+    assertThat(flowElement).isNotNull();
+    assertThat(flowElement instanceof UserTask).isTrue();
+    assertThat(flowElement.getId()).isEqualTo("writeReportTask");
     UserTask userTask = (UserTask) flowElement;
-    assertEquals("writeReportTask", userTask.getId());
-    assertEquals("Fazer relatório", userTask.getName());
+    assertThat(userTask.getId()).isEqualTo("writeReportTask");
+    assertThat(userTask.getName()).isEqualTo("Fazer relatório");
   }
 
   protected String getResource() {

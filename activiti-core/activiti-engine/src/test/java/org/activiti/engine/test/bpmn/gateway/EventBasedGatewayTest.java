@@ -1,9 +1,9 @@
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -12,6 +12,8 @@
  */
 
 package org.activiti.engine.test.bpmn.gateway;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Date;
 
@@ -52,7 +54,7 @@ public class EventBasedGatewayTest extends PluggableActivitiTestCase {
                      managementService.createTimerJobQuery().count());
 
         Task task = taskService.createTaskQuery().taskName("afterSignal").singleResult();
-        assertNotNull(task);
+        assertThat(task).isNotNull();
         taskService.complete(task.getId());
 
         assertHistoricActivitiesDeleteReason(pi1,
@@ -89,7 +91,7 @@ public class EventBasedGatewayTest extends PluggableActivitiTestCase {
 
         Task task = taskService.createTaskQuery().taskName("afterTimer").singleResult();
 
-        assertNotNull(task);
+        assertThat(task).isNotNull();
 
         taskService.complete(task.getId());
 
@@ -116,10 +118,10 @@ public class EventBasedGatewayTest extends PluggableActivitiTestCase {
                      managementService.createTimerJobQuery().count());
 
         Execution execution = runtimeService.createExecutionQuery().messageEventSubscriptionName("newInvoice").singleResult();
-        assertNotNull(execution);
+        assertThat(execution).isNotNull();
 
         execution = runtimeService.createExecutionQuery().signalEventSubscriptionName("alert").singleResult();
-        assertNotNull(execution);
+        assertThat(execution).isNotNull();
 
         processEngineConfiguration.getClock().setCurrentTime(new Date(processEngineConfiguration.getClock().getCurrentTime().getTime() + 10000));
 
@@ -137,7 +139,7 @@ public class EventBasedGatewayTest extends PluggableActivitiTestCase {
                      managementService.createJobQuery().count());
 
         Task task = taskService.createTaskQuery().taskName("afterMessage").singleResult();
-        assertNotNull(task);
+        assertThat(task).isNotNull();
         taskService.complete(task.getId());
 
         assertHistoricActivitiesDeleteReason(processInstance,
@@ -167,10 +169,10 @@ public class EventBasedGatewayTest extends PluggableActivitiTestCase {
         // Trying to fire the signal should fail, job not yet created
         runtimeService.signalEventReceived("alert");
         Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
-        assertNull(task);
+        assertThat(task).isNull();
 
         Job job = managementService.createJobQuery().processInstanceId(processInstance.getId()).singleResult();
-        assertNotNull(job);
+        assertThat(job).isNotNull();
 
         managementService.executeJob(job.getId());
         runtimeService.signalEventReceived("alert");

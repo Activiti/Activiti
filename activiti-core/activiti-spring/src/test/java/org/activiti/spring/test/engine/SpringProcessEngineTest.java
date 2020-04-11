@@ -6,11 +6,11 @@ import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import static org.junit.Assert.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Spring process engine base test
- * 
+ *
 
  */
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -19,8 +19,8 @@ public class SpringProcessEngineTest {
 
   @Test
   public void testGetEngineFromCache() {
-    assertNotNull(ProcessEngines.getDefaultProcessEngine());
-    assertNotNull(ProcessEngines.getProcessEngine("default"));
+    assertThat(ProcessEngines.getDefaultProcessEngine()).isNotNull();
+    assertThat(ProcessEngines.getProcessEngine("default")).isNotNull();
   }
 
 }

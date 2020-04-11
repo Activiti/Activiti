@@ -1,7 +1,9 @@
 /**
- * 
+ *
  */
 package org.activiti.engine.test.jobexecutor;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -12,7 +14,6 @@ import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.Job;
 
 /**
-
  */
 public class JobExecutorCmdExceptionTest extends PluggableActivitiTestCase {
 
@@ -40,7 +41,7 @@ public class JobExecutorCmdExceptionTest extends PluggableActivitiTestCase {
     });
 
     Job job = managementService.createJobQuery().singleResult();
-    assertEquals(3, job.getRetries());
+    assertThat(job.getRetries()).isEqualTo(3);
 
     try {
       managementService.executeJob(job.getId());
@@ -50,7 +51,7 @@ public class JobExecutorCmdExceptionTest extends PluggableActivitiTestCase {
     }
 
     job = managementService.createTimerJobQuery().singleResult();
-    assertEquals(2, job.getRetries());
+    assertThat(job.getRetries()).isEqualTo(2);
 
     try {
       managementService.moveTimerToExecutableJob(job.getId());
@@ -61,7 +62,7 @@ public class JobExecutorCmdExceptionTest extends PluggableActivitiTestCase {
     }
 
     job = managementService.createTimerJobQuery().singleResult();
-    assertEquals(1, job.getRetries());
+    assertThat(job.getRetries()).isEqualTo(1);
 
     managementService.moveTimerToExecutableJob(job.getId());
     managementService.executeJob(job.getId());
@@ -80,7 +81,7 @@ public class JobExecutorCmdExceptionTest extends PluggableActivitiTestCase {
     });
 
     Job job = managementService.createJobQuery().singleResult();
-    assertEquals(3, job.getRetries());
+    assertThat(job.getRetries()).isEqualTo(3);
 
     try {
       managementService.executeJob(job.getId());
@@ -90,7 +91,7 @@ public class JobExecutorCmdExceptionTest extends PluggableActivitiTestCase {
     }
 
     job = managementService.createTimerJobQuery().singleResult();
-    assertEquals(2, job.getRetries());
+    assertThat(job.getRetries()).isEqualTo(2);
 
     try {
       managementService.moveTimerToExecutableJob(job.getId());
@@ -101,7 +102,7 @@ public class JobExecutorCmdExceptionTest extends PluggableActivitiTestCase {
     }
 
     job = managementService.createTimerJobQuery().singleResult();
-    assertEquals(1, job.getRetries());
+    assertThat(job.getRetries()).isEqualTo(1);
 
     try {
       managementService.moveTimerToExecutableJob(job.getId());
@@ -112,7 +113,7 @@ public class JobExecutorCmdExceptionTest extends PluggableActivitiTestCase {
     }
 
     job = managementService.createDeadLetterJobQuery().singleResult();
-    assertNotNull(job);
+    assertThat(job).isNotNull();
 
     managementService.deleteDeadLetterJob(job.getId());
   }

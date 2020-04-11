@@ -25,7 +25,8 @@ import org.activiti.api.task.model.events.TaskRuntimeEvent;
 import org.activiti.api.task.runtime.events.TaskAssignedEvent;
 import org.activiti.api.task.runtime.events.TaskCreatedEvent;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
 
 public class ProcessTaskMatchers {
 

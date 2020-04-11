@@ -11,7 +11,7 @@ import org.activiti.bpmn.model.Process;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.test.Deployment;
-import org.junit.Assert;
+import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Test;
 
 /**
@@ -29,7 +29,7 @@ public class LaneExtensionTest extends PluggableActivitiTestCase {
     Process bpmnProcess = bpmnModel.getMainProcess();
     for (Lane l : bpmnProcess.getLanes()) {
       Map<String, List<ExtensionElement>> extensions = l.getExtensionElements();
-      Assert.assertTrue(extensions.size() > 0);
+      assertThat(extensions.size() > 0).isTrue();
     }
   }
 
