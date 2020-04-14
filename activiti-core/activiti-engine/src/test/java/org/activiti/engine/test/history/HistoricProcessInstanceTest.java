@@ -14,6 +14,7 @@
 package org.activiti.engine.test.history;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -366,26 +367,14 @@ public class HistoricProcessInstanceTest extends PluggableActivitiTestCase {
   }
 
   public void testInvalidSorting() {
-    try {
-      historyService.createHistoricProcessInstanceQuery().asc();
-      fail();
-    } catch (ActivitiIllegalArgumentException e) {
+    assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
+      .isThrownBy(() -> historyService.createHistoricProcessInstanceQuery().asc());
 
-    }
+    assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
+      .isThrownBy(() -> historyService.createHistoricProcessInstanceQuery().desc());
 
-    try {
-      historyService.createHistoricProcessInstanceQuery().desc();
-      fail();
-    } catch (ActivitiIllegalArgumentException e) {
-
-    }
-
-    try {
-      historyService.createHistoricProcessInstanceQuery().orderByProcessInstanceId().list();
-      fail();
-    } catch (ActivitiIllegalArgumentException e) {
-
-    }
+    assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
+      .isThrownBy(() -> historyService.createHistoricProcessInstanceQuery().orderByProcessInstanceId().list());
   }
 
   @Deployment(resources = { "org/activiti/engine/test/history/oneTaskProcess.bpmn20.xml" })

@@ -60,7 +60,7 @@ public class CustomExtensionsConverterTest extends AbstractConverterTest {
 
     FlowElement flowElement = model.getMainProcess().getFlowElement("servicetask");
     assertThat(flowElement).isNotNull();
-    assertThat(flowElement instanceof ServiceTask).isTrue();
+    assertThat(flowElement).isInstanceOf(ServiceTask.class);
     assertThat(flowElement.getId()).isEqualTo("servicetask");
     ServiceTask serviceTask = (ServiceTask) flowElement;
     assertThat(serviceTask.getId()).isEqualTo("servicetask");
@@ -85,7 +85,7 @@ public class CustomExtensionsConverterTest extends AbstractConverterTest {
     BoundaryEvent boundaryEvent = serviceTask.getBoundaryEvents().get(0);
     assertThat(boundaryEvent.getId()).isEqualTo("timerEvent");
     assertThat(boundaryEvent.getEventDefinitions().size()).isEqualTo(1);
-    assertThat(boundaryEvent.getEventDefinitions().get(0) instanceof TimerEventDefinition).isTrue();
+    assertThat(boundaryEvent.getEventDefinitions().get(0)).isInstanceOf(TimerEventDefinition.class);
     extensionElementMap = boundaryEvent.getEventDefinitions().get(0).getExtensionElements();
     validateExtensionElements(extensionElementMap);
   }

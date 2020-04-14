@@ -13,6 +13,7 @@
 package org.activiti.examples.bpmn.gateway;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -59,13 +60,9 @@ public class ExclusiveGatewayTest extends PluggableActivitiTestCase {
 
     // Test with input == 4
     variables.put("input", 4);
-    try {
-      runtimeService.startProcessInstanceByKey("exclusiveGateway", variables);
-      fail();
-    } catch (ActivitiException e) {
-      // Exception is expected since no outgoing sequence flow matches
-    }
-
+    // Exception is expected since no outgoing sequence flow matches
+    assertThatExceptionOfType(ActivitiException.class)
+      .isThrownBy(() -> runtimeService.startProcessInstanceByKey("exclusiveGateway", variables));
   }
 
 }

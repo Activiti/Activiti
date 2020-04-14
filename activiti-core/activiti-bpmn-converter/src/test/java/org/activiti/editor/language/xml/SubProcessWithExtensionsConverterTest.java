@@ -1,7 +1,6 @@
 package org.activiti.editor.language.xml;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.fail;
 
 import java.util.HashMap;
 import java.util.List;
@@ -118,12 +117,12 @@ public class SubProcessWithExtensionsConverterTest extends AbstractConverterTest
   private void validateModel(BpmnModel model) {
     FlowElement flowElement = model.getMainProcess().getFlowElement("start1");
     assertThat(flowElement).isNotNull();
-    assertThat(flowElement instanceof StartEvent).isTrue();
+    assertThat(flowElement).isInstanceOf(StartEvent.class);
     assertThat(flowElement.getId()).isEqualTo("start1");
 
     flowElement = model.getMainProcess().getFlowElement("subprocess1");
     assertThat(flowElement).isNotNull();
-    assertThat(flowElement instanceof SubProcess).isTrue();
+    assertThat(flowElement).isInstanceOf(SubProcess.class);
     assertThat(flowElement.getId()).isEqualTo("subprocess1");
     SubProcess subProcess = (SubProcess) flowElement;
     assertThat(subProcess.getLoopCharacteristics().isSequential()).isTrue();

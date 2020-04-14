@@ -223,8 +223,8 @@ public abstract class ActivitiEventDispatcherTest extends PluggableActivitiTestC
       dispatcher.dispatchEvent(event);
       fail("Exception expected");
     } catch (Throwable t) {
-      assertThat(t instanceof ActivitiException).isTrue();
-      assertThat(t.getCause() instanceof RuntimeException).isTrue();
+      assertThat(t).isInstanceOf(ActivitiException.class);
+      assertThat(t.getCause()).isInstanceOf(RuntimeException.class);
       assertThat(t.getCause().getMessage()).isEqualTo("Test exception");
 
       // Second listener should NOT have been called

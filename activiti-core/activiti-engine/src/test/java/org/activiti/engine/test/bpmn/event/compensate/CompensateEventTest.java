@@ -13,6 +13,7 @@
 
 package org.activiti.engine.test.bpmn.event.compensate;
 
+import static java.util.Collections.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.activiti.engine.history.HistoricActivityInstance;
@@ -230,7 +231,7 @@ public class CompensateEventTest extends PluggableActivitiTestCase {
     // As such, to verify that the extra compensation executions have no effect on the regular process execution
 
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("compensateProcess",
-        CollectionUtil.singletonMap("doCompensation", false));
+        singletonMap("doCompensation", false));
 
     Task afterBookHotelTask = taskService.createTaskQuery().processInstanceId(processInstance.getId())
         .taskDefinitionKey("afterBookHotel").singleResult();

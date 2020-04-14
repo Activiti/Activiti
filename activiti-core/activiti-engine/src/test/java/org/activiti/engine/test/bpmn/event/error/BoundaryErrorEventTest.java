@@ -26,6 +26,7 @@ import org.activiti.engine.impl.util.JvmUtil;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
+import static java.util.Collections.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Java6Assertions.catchThrowable;
 
@@ -154,7 +155,7 @@ public class BoundaryErrorEventTest extends PluggableActivitiTestCase {
     String procId = runtimeService.startProcessInstanceByKey("deeplyNestedErrorThrown").getId();
     Task task = taskService.createTaskQuery().singleResult();
     assertThat(task.getName()).isEqualTo("Nested task");
-    taskService.complete(task.getId(), CollectionUtil.singletonMap("input", 1));
+    taskService.complete(task.getId(), singletonMap("input", 1));
     assertProcessEnded(procId);
 
     // Input == 2 -> error2 will be thrown, leading to a userTask outside
@@ -162,7 +163,7 @@ public class BoundaryErrorEventTest extends PluggableActivitiTestCase {
     procId = runtimeService.startProcessInstanceByKey("deeplyNestedErrorThrown").getId();
     task = taskService.createTaskQuery().singleResult();
     assertThat(task.getName()).isEqualTo("Nested task");
-    taskService.complete(task.getId(), CollectionUtil.singletonMap("input", 2));
+    taskService.complete(task.getId(), singletonMap("input", 2));
     task = taskService.createTaskQuery().singleResult();
     assertThat(task.getName()).isEqualTo("task after catch");
     taskService.complete(task.getId());
@@ -173,7 +174,7 @@ public class BoundaryErrorEventTest extends PluggableActivitiTestCase {
   public void testDeeplyNestedErrorThrownOnlyAutomaticSteps() {
     // input == 1 -> error2 is thrown -> caught on subprocess2 -> end event
     // in subprocess -> proc inst end 1
-    String procId = runtimeService.startProcessInstanceByKey("deeplyNestedErrorThrown", CollectionUtil.singletonMap("input", 1)).getId();
+    String procId = runtimeService.startProcessInstanceByKey("deeplyNestedErrorThrown", singletonMap("input", 1)).getId();
     assertProcessEnded(procId);
 
     HistoricProcessInstance hip;
@@ -183,7 +184,7 @@ public class BoundaryErrorEventTest extends PluggableActivitiTestCase {
     }
     // input == 2 -> error2 is thrown -> caught on subprocess1 -> proc inst
     // end 2
-    procId = runtimeService.startProcessInstanceByKey("deeplyNestedErrorThrown", CollectionUtil.singletonMap("input", 1)).getId();
+    procId = runtimeService.startProcessInstanceByKey("deeplyNestedErrorThrown", singletonMap("input", 1)).getId();
     assertProcessEnded(procId);
 
     if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {

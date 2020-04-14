@@ -14,6 +14,7 @@
 package org.activiti.engine.test.api.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -161,12 +162,9 @@ public class RepositoryServiceTest extends PluggableActivitiTestCase {
     assertThat(repositoryService.createProcessDefinitionQuery().active().count()).isEqualTo(0);
 
     // Shouldn't be able to start a process instance
-    try {
-      runtimeService.startProcessInstanceByKey("oneTaskProcess");
-      fail();
-    } catch (ActivitiException e) {
-      assertTextPresentIgnoreCase("suspended", e.getMessage());
-    }
+    assertThatExceptionOfType(ActivitiException.class)
+      .isThrownBy(() -> runtimeService.startProcessInstanceByKey("oneTaskProcess"))
+      .withMessageContaining("suspended");
 
     // Move time four days forward, the timer will fire and the process
     // definitions will be active
@@ -306,20 +304,15 @@ public class RepositoryServiceTest extends PluggableActivitiTestCase {
   }
 
   @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
-  public void testProcessDefinitionEntitySerializable() {
+  public void testProcessDefinitionEntitySerializable() throws Exception {
     String procDefId = repositoryService.createProcessDefinitionQuery().singleResult().getId();
     ProcessDefinition processDefinition = repositoryService.getProcessDefinition(procDefId);
 
-    try {
-      ByteArrayOutputStream baos = new ByteArrayOutputStream();
-      new ObjectOutputStream(baos).writeObject(processDefinition);
+    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    new ObjectOutputStream(baos).writeObject(processDefinition);
 
-      byte[] bytes = baos.toByteArray();
-      assertThat(bytes.length > 0).isTrue();
-    } catch (IOException e) {
-      e.printStackTrace();
-      fail();
-    }
+    byte[] bytes = baos.toByteArray();
+    assertThat(bytes).isNotEmpty();
   }
 
   @Deployment

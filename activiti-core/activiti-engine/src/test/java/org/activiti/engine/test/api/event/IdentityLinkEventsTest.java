@@ -49,7 +49,7 @@ public class IdentityLinkEventsTest extends PluggableActivitiTestCase {
 
     ActivitiEntityEvent event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
     assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_CREATED);
-    assertThat(event.getEntity() instanceof IdentityLink).isTrue();
+    assertThat(event.getEntity()).isInstanceOf(IdentityLink.class);
     assertThat(event.getProcessDefinitionId()).isEqualTo(processDefinition.getId());
     assertThat(event.getProcessInstanceId()).isNull();
     assertThat(event.getExecutionId()).isNull();
@@ -59,7 +59,7 @@ public class IdentityLinkEventsTest extends PluggableActivitiTestCase {
 
     event = (ActivitiEntityEvent) listener.getEventsReceived().get(2);
     assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_CREATED);
-    assertThat(event.getEntity() instanceof IdentityLink).isTrue();
+    assertThat(event.getEntity()).isInstanceOf(IdentityLink.class);
     assertThat(event.getProcessDefinitionId()).isEqualTo(processDefinition.getId());
     assertThat(event.getProcessInstanceId()).isNull();
     assertThat(event.getExecutionId()).isNull();
@@ -74,13 +74,13 @@ public class IdentityLinkEventsTest extends PluggableActivitiTestCase {
     assertThat(listener.getEventsReceived().size()).isEqualTo(2);
     event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
     assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_DELETED);
-    assertThat(event.getEntity() instanceof IdentityLink).isTrue();
+    assertThat(event.getEntity()).isInstanceOf(IdentityLink.class);
     assertThat(event.getProcessDefinitionId()).isEqualTo(processDefinition.getId());
     assertThat(event.getProcessInstanceId()).isNull();
     assertThat(event.getExecutionId()).isNull();
     event = (ActivitiEntityEvent) listener.getEventsReceived().get(1);
     assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_DELETED);
-    assertThat(event.getEntity() instanceof IdentityLink).isTrue();
+    assertThat(event.getEntity()).isInstanceOf(IdentityLink.class);
     assertThat(event.getProcessDefinitionId()).isEqualTo(processDefinition.getId());
     assertThat(event.getProcessInstanceId()).isNull();
     assertThat(event.getExecutionId()).isNull();
@@ -99,7 +99,7 @@ public class IdentityLinkEventsTest extends PluggableActivitiTestCase {
 
     ActivitiEntityEvent event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
     assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_CREATED);
-    assertThat(event.getEntity() instanceof IdentityLink).isTrue();
+    assertThat(event.getEntity()).isInstanceOf(IdentityLink.class);
     assertThat(event.getProcessInstanceId()).isEqualTo(processInstance.getId());
     assertThat(event.getExecutionId()).isEqualTo(processInstance.getId());
     assertThat(event.getProcessDefinitionId()).isEqualTo(processInstance.getProcessDefinitionId());
@@ -118,7 +118,7 @@ public class IdentityLinkEventsTest extends PluggableActivitiTestCase {
 
     event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
     assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_DELETED);
-    assertThat(event.getEntity() instanceof IdentityLink).isTrue();
+    assertThat(event.getEntity()).isInstanceOf(IdentityLink.class);
     link = (IdentityLink) event.getEntity();
     assertThat(link.getUserId()).isEqualTo("kermit");
     assertThat(link.getType()).isEqualTo("test");
@@ -144,7 +144,7 @@ public class IdentityLinkEventsTest extends PluggableActivitiTestCase {
 
     ActivitiEntityEvent event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
     assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_CREATED);
-    assertThat(event.getEntity() instanceof IdentityLink).isTrue();
+    assertThat(event.getEntity()).isInstanceOf(IdentityLink.class);
     IdentityLink link = (IdentityLink) event.getEntity();
     assertThat(link.getUserId()).isEqualTo("kermit");
     assertThat(link.getType()).isEqualTo("candidate");
@@ -160,7 +160,7 @@ public class IdentityLinkEventsTest extends PluggableActivitiTestCase {
 
     event = (ActivitiEntityEvent) listener.getEventsReceived().get(4);
     assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_CREATED);
-    assertThat(event.getEntity() instanceof IdentityLink).isTrue();
+    assertThat(event.getEntity()).isInstanceOf(IdentityLink.class);
     link = (IdentityLink) event.getEntity();
     assertThat(link.getGroupId()).isEqualTo("sales");
     assertThat(link.getType()).isEqualTo("candidate");

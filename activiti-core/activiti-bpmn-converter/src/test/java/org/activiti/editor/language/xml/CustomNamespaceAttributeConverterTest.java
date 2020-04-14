@@ -49,7 +49,7 @@ public class CustomNamespaceAttributeConverterTest extends AbstractConverterTest
 
     FlowElement flowElement = model.getMainProcess().getFlowElement("usertask");
     assertThat(flowElement).isNotNull();
-    assertThat(flowElement instanceof UserTask).isTrue();
+    assertThat(flowElement).isInstanceOf(UserTask.class);
     assertThat(flowElement.getId()).isEqualTo("usertask");
     UserTask userTask = (UserTask) flowElement;
     assertThat(userTask.getId()).isEqualTo("usertask");

@@ -48,6 +48,6 @@ public class PoolsConverterTest extends AbstractConverterTest {
     assertThat(lane.getFlowReferences().size()).isEqualTo(2);
     FlowElement flowElement = process.getFlowElement("flow1");
     assertThat(flowElement).isNotNull();
-    assertThat(flowElement instanceof SequenceFlow).isTrue();
+    assertThat(flowElement).isInstanceOf(SequenceFlow.class);
   }
 }

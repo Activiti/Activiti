@@ -13,6 +13,7 @@
 
 package org.activiti.examples.groovy;
 
+import static java.util.Collections.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Date;
@@ -34,13 +35,10 @@ public class GroovyScriptTest extends PluggableActivitiTestCase {
     public void testScriptExecution() {
         int[] inputArray = new int[]{1, 2, 3, 4, 5};
         ProcessInstance pi = runtimeService.startProcessInstanceByKey("scriptExecution",
-                                                                      CollectionUtil.singletonMap("inputArray",
-                                                                                                  inputArray));
+                                                                      singletonMap("inputArray", inputArray));
 
-        Integer result = (Integer) runtimeService.getVariable(pi.getId(),
-                                                              "sum");
-        assertEquals(15,
-                     result.intValue());
+        Integer result = (Integer) runtimeService.getVariable(pi.getId(), "sum");
+        assertEquals(15, result.intValue());
     }
 
     @Deployment

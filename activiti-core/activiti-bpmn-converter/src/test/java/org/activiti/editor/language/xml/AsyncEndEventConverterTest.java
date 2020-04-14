@@ -30,7 +30,7 @@ public class AsyncEndEventConverterTest extends AbstractConverterTest {
   private void validateModel(BpmnModel model) {
     FlowElement flowElement = model.getMainProcess().getFlowElement("endEvent");
     assertThat(flowElement).isNotNull();
-    assertThat(flowElement instanceof EndEvent).isTrue();
+    assertThat(flowElement).isInstanceOf(EndEvent.class);
     assertThat(flowElement.getId()).isEqualTo("endEvent");
     EndEvent endEvent = (EndEvent) flowElement;
     assertThat(endEvent.getId()).isEqualTo("endEvent");

@@ -13,17 +13,17 @@
 
 package org.activiti.engine.test.history;
 
+import static java.util.Collections.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.util.List;
-
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.history.HistoricActivityInstanceQuery;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
-import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
@@ -245,26 +245,14 @@ public class HistoricActivityInstanceTest extends PluggableActivitiTestCase {
   }
 
   public void testInvalidSorting() {
-    try {
-      historyService.createHistoricActivityInstanceQuery().asc().list();
-      fail();
-    } catch (ActivitiIllegalArgumentException e) {
+    assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
+      .isThrownBy(() -> historyService.createHistoricActivityInstanceQuery().asc().list());
 
-    }
+    assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
+      .isThrownBy(() -> historyService.createHistoricActivityInstanceQuery().desc().list());
 
-    try {
-      historyService.createHistoricActivityInstanceQuery().desc().list();
-      fail();
-    } catch (ActivitiIllegalArgumentException e) {
-
-    }
-
-    try {
-      historyService.createHistoricActivityInstanceQuery().orderByHistoricActivityInstanceDuration().list();
-      fail();
-    } catch (ActivitiIllegalArgumentException e) {
-
-    }
+    assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
+      .isThrownBy(() -> historyService.createHistoricActivityInstanceQuery().orderByHistoricActivityInstanceDuration().list());
   }
 
   /**
@@ -347,7 +335,7 @@ public class HistoricActivityInstanceTest extends PluggableActivitiTestCase {
 
   @Deployment
   public void testLoop() {
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("historic-activity-loops", CollectionUtil.singletonMap("input", 0));
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("historic-activity-loops", singletonMap("input", 0));
 
     // completing 10 user tasks
     // 15 service tasks should have passed
@@ -357,7 +345,7 @@ public class HistoricActivityInstanceTest extends PluggableActivitiTestCase {
       Number inputNumber = (Number) taskService.getVariable(task.getId(), "input");
       int input = inputNumber.intValue();
       assertThat(input).isEqualTo(i);
-      taskService.complete(task.getId(), CollectionUtil.singletonMap("input", input + 1));
+      taskService.complete(task.getId(), singletonMap("input", input + 1));
       task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     }
 

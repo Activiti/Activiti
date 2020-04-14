@@ -31,7 +31,7 @@ public class MultiInstanceUserTaskConverterTest extends AbstractConverterTest {
     private void validateModel(BpmnModel model) throws Exception {
         FlowElement flowElement = model.getMainProcess().getFlowElement("UserTask_0br0ocv");
         assertThat(flowElement).isNotNull();
-        assertThat(flowElement instanceof UserTask).isTrue();
+        assertThat(flowElement).isInstanceOf(UserTask.class);
 
         checkXml(model);
     }

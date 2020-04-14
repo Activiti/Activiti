@@ -13,6 +13,7 @@
 
 package org.activiti.engine.test.bpmn.sequenceflow;
 
+import static java.util.Collections.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
@@ -28,13 +29,13 @@ public class DefaultSequenceFlowTest extends PluggableActivitiTestCase {
 
   @Deployment
   public void testDefaultSequenceFlowOnTask() {
-    String procId = runtimeService.startProcessInstanceByKey("defaultSeqFlow", CollectionUtil.singletonMap("input", 2)).getId();
+    String procId = runtimeService.startProcessInstanceByKey("defaultSeqFlow", singletonMap("input", 2)).getId();
     assertThat(runtimeService.createExecutionQuery().processInstanceId(procId).activityId("task2").singleResult()).isNotNull();
 
-    procId = runtimeService.startProcessInstanceByKey("defaultSeqFlow", CollectionUtil.singletonMap("input", 3)).getId();
+    procId = runtimeService.startProcessInstanceByKey("defaultSeqFlow", singletonMap("input", 3)).getId();
     assertThat(runtimeService.createExecutionQuery().processInstanceId(procId).activityId("task3").singleResult()).isNotNull();
 
-    procId = runtimeService.startProcessInstanceByKey("defaultSeqFlow", CollectionUtil.singletonMap("input", 123)).getId();
+    procId = runtimeService.startProcessInstanceByKey("defaultSeqFlow", singletonMap("input", 123)).getId();
     assertThat(runtimeService.createExecutionQuery().processInstanceId(procId).activityId("task1").singleResult()).isNotNull();
   }
 

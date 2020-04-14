@@ -34,19 +34,19 @@ public class CatchEventConverterTest extends AbstractConverterTest {
 
     FlowElement timerElement = model.getMainProcess().getFlowElement("timer_evt", true);
     EventDefinition timerEvent = extractEventDefinition(timerElement);
-    assertThat(timerEvent instanceof TimerEventDefinition).isTrue();
+    assertThat(timerEvent).isInstanceOf(TimerEventDefinition.class);
     TimerEventDefinition ted = (TimerEventDefinition) timerEvent;
     assertThat(ted.getTimeDuration()).isEqualTo("PT5M");
 
     FlowElement signalElement = model.getMainProcess().getFlowElement("signal_evt", true);
     EventDefinition signalEvent = extractEventDefinition(signalElement);
-    assertThat(signalEvent instanceof SignalEventDefinition).isTrue();
+    assertThat(signalEvent).isInstanceOf(SignalEventDefinition.class);
     SignalEventDefinition sed = (SignalEventDefinition) signalEvent;
     assertThat(sed.getSignalRef()).isEqualTo("signal_ref");
 
     FlowElement messageElement = model.getMainProcess().getFlowElement("message_evt", true);
     EventDefinition messageEvent = extractEventDefinition(messageElement);
-    assertThat(messageEvent instanceof MessageEventDefinition).isTrue();
+    assertThat(messageEvent).isInstanceOf(MessageEventDefinition.class);
     MessageEventDefinition med = (MessageEventDefinition) messageEvent;
     assertThat(med.getMessageRef()).isEqualTo("message_ref");
 

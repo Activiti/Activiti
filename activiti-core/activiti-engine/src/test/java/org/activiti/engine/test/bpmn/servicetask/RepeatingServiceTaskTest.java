@@ -24,7 +24,7 @@ public class RepeatingServiceTaskTest extends PluggableActivitiTestCase {
   public void testMultipleInvocationsInSameTransation() {
     // ProcessInstance processInstance =
     // runtimeService.startProcessInstanceByKey("repeating",
-    // CollectionUtil.singletonMap("count", 0));
+    // singletonMap("count", 0));
     // assertThat(processInstance.isEnded()).isTrue();
   }
 

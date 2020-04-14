@@ -43,7 +43,7 @@ public class MapExceptionConverterTest extends AbstractConverterTest {
         BpmnModel bpmnModel = readXMLFile();
         FlowElement flowElement = bpmnModel.getMainProcess().getFlowElement("servicetaskWithAndTrueAndChildren");
         assertThat(flowElement).isNotNull();
-        assertThat(flowElement instanceof ServiceTask).isTrue();
+        assertThat(flowElement).isInstanceOf(ServiceTask.class);
         assertThat(flowElement.getId()).isEqualTo("servicetaskWithAndTrueAndChildren");
         ServiceTask serviceTask = (ServiceTask) flowElement;
         assertThat(serviceTask.getMapExceptions()).isNotNull();
@@ -65,7 +65,7 @@ public class MapExceptionConverterTest extends AbstractConverterTest {
         // check service task with andChildren Set to True
         FlowElement flowElement = model.getMainProcess().getFlowElement("servicetaskWithAndTrueAndChildren");
         assertThat(flowElement).isNotNull();
-        assertThat(flowElement instanceof ServiceTask).isTrue();
+        assertThat(flowElement).isInstanceOf(ServiceTask.class);
         assertThat(flowElement.getId()).isEqualTo("servicetaskWithAndTrueAndChildren");
         ServiceTask serviceTask = (ServiceTask) flowElement;
         assertThat(serviceTask.getMapExceptions()).isNotNull();
@@ -89,7 +89,7 @@ public class MapExceptionConverterTest extends AbstractConverterTest {
         // if no map exception is defined, getMapException should return a not null empty list
         FlowElement flowElement1 = model.getMainProcess().getFlowElement("servicetaskWithNoMapException");
         assertThat(flowElement1).isNotNull();
-        assertThat(flowElement1 instanceof ServiceTask).isTrue();
+        assertThat(flowElement1).isInstanceOf(ServiceTask.class);
         assertThat(flowElement1.getId()).isEqualTo("servicetaskWithNoMapException");
         ServiceTask serviceTask1 = (ServiceTask) flowElement1;
         assertThat(serviceTask1.getMapExceptions()).isNotNull();

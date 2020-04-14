@@ -41,13 +41,13 @@ public class DeploymentEventsTest extends PluggableActivitiTestCase {
 
       // Check create-event
       assertThat(listener.getEventsReceived().size()).isEqualTo(2);
-      assertThat(listener.getEventsReceived().get(0) instanceof ActivitiEntityEvent).isTrue();
+      assertThat(listener.getEventsReceived().get(0)).isInstanceOf(ActivitiEntityEvent.class);
 
       ActivitiEntityEvent event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
       assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_CREATED);
       assertThat(((Deployment) event.getEntity()).getId()).isEqualTo(deployment.getId());
 
-      assertThat(listener.getEventsReceived().get(1) instanceof ActivitiEntityEvent).isTrue();
+      assertThat(listener.getEventsReceived().get(1)).isInstanceOf(ActivitiEntityEvent.class);
       event = (ActivitiEntityEvent) listener.getEventsReceived().get(1);
       assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_INITIALIZED);
       assertThat(((Deployment) event.getEntity()).getId()).isEqualTo(deployment.getId());
@@ -57,7 +57,7 @@ public class DeploymentEventsTest extends PluggableActivitiTestCase {
       // Check update event when category is updated
       repositoryService.setDeploymentCategory(deployment.getId(), "test");
       assertThat(listener.getEventsReceived().size()).isEqualTo(1);
-      assertThat(listener.getEventsReceived().get(0) instanceof ActivitiEntityEvent).isTrue();
+      assertThat(listener.getEventsReceived().get(0)).isInstanceOf(ActivitiEntityEvent.class);
 
       event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
       assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_UPDATED);
@@ -68,7 +68,7 @@ public class DeploymentEventsTest extends PluggableActivitiTestCase {
       // Check delete event when category is updated
       repositoryService.deleteDeployment(deployment.getId(), true);
       assertThat(listener.getEventsReceived().size()).isEqualTo(1);
-      assertThat(listener.getEventsReceived().get(0) instanceof ActivitiEntityEvent).isTrue();
+      assertThat(listener.getEventsReceived().get(0)).isInstanceOf(ActivitiEntityEvent.class);
 
       event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
       assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_DELETED);

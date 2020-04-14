@@ -77,7 +77,7 @@ public class ProcessInstanceLogQueryAndByteArrayTypeVariableTest extends Pluggab
 			assertThat(events.size()).isEqualTo(1);
 
 			for (HistoricData event : events) {
-				assertThat(event instanceof HistoricVariableInstance).isTrue();
+				assertThat(event).isInstanceOf(HistoricVariableInstance.class);
 				assertThat(LARGE_STRING_VALUE).isEqualTo(((HistoricVariableInstanceEntity) event).getValue());
 			}
 		}
@@ -97,7 +97,7 @@ public class ProcessInstanceLogQueryAndByteArrayTypeVariableTest extends Pluggab
       assertThat(events.size()).isEqualTo(1);
 
       for (HistoricData event : events) {
-        assertThat(event instanceof HistoricVariableUpdate).isTrue();
+        assertThat(event).isInstanceOf(HistoricVariableUpdate.class);
         assertThat(LARGE_STRING_VALUE).isEqualTo(((HistoricDetailVariableInstanceUpdateEntity) event).getValue());
       }
     }

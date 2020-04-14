@@ -59,9 +59,9 @@ public class ProcessDefinitionScopedEventListenerDefinitionTest extends Resource
     }
 
     // First event received should be creation of Process-instance
-    assertThat(testListenerBean.getEventsReceived().get(0) instanceof ActivitiEntityEvent).isTrue();
+    assertThat(testListenerBean.getEventsReceived().get(0)).isInstanceOf(ActivitiEntityEvent.class);
     ActivitiEntityEvent event = (ActivitiEntityEvent) testListenerBean.getEventsReceived().get(0);
-    assertThat(event.getEntity() instanceof ProcessInstance).isTrue();
+    assertThat(event.getEntity()).isInstanceOf(ProcessInstance.class);
     assertThat(((ProcessInstance) event.getEntity()).getId()).isEqualTo(processInstance.getId());
 
     // Check if listener, defined by classname, received all events
@@ -114,7 +114,7 @@ public class ProcessDefinitionScopedEventListenerDefinitionTest extends Resource
       fail("Exception expected");
 
     } catch (ActivitiException ae) {
-      assertThat(ae instanceof ActivitiIllegalArgumentException).isTrue();
+      assertThat(ae).isInstanceOf(ActivitiIllegalArgumentException.class);
       assertThat(ae.getMessage()).isEqualTo("Invalid event-type: invalid");
     } finally {
       if (deployment != null) {

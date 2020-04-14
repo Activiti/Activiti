@@ -39,7 +39,7 @@ public class DataStoreConverterTest extends AbstractConverterTest {
 
     FlowElement refElement = model.getFlowElement("DataStoreReference_1");
     assertThat(refElement).isNotNull();
-    assertThat(refElement instanceof DataStoreReference).isTrue();
+    assertThat(refElement).isInstanceOf(DataStoreReference.class);
 
     assertThat(model.getPools().size()).isEqualTo(1);
     Pool pool = model.getPools().get(0);

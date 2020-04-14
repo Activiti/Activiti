@@ -38,23 +38,23 @@ public class SimpleConverterTest extends AbstractConverterTest {
 
     FlowElement flowElement = model.getMainProcess().getFlowElement("flow1", true);
     assertThat(flowElement).isNotNull();
-    assertThat(flowElement instanceof SequenceFlow).isTrue();
+    assertThat(flowElement).isInstanceOf(SequenceFlow.class);
     assertThat(flowElement.getId()).isEqualTo("flow1");
 
     flowElement = model.getMainProcess().getFlowElement("catchEvent", true);
     assertThat(flowElement).isNotNull();
-    assertThat(flowElement instanceof IntermediateCatchEvent).isTrue();
+    assertThat(flowElement).isInstanceOf(IntermediateCatchEvent.class);
     assertThat(flowElement.getId()).isEqualTo("catchEvent");
     IntermediateCatchEvent catchEvent = (IntermediateCatchEvent) flowElement;
     assertThat(catchEvent.getEventDefinitions().size() == 1).isTrue();
     EventDefinition eventDefinition = catchEvent.getEventDefinitions().get(0);
-    assertThat(eventDefinition instanceof TimerEventDefinition).isTrue();
+    assertThat(eventDefinition).isInstanceOf(TimerEventDefinition.class);
     TimerEventDefinition timerDefinition = (TimerEventDefinition) eventDefinition;
     assertThat(timerDefinition.getTimeDuration()).isEqualTo("PT5M");
 
     flowElement = model.getMainProcess().getFlowElement("flow1Condition", true);
     assertThat(flowElement).isNotNull();
-    assertThat(flowElement instanceof SequenceFlow).isTrue();
+    assertThat(flowElement).isInstanceOf(SequenceFlow.class);
     assertThat(flowElement.getId()).isEqualTo("flow1Condition");
     SequenceFlow flow = (SequenceFlow) flowElement;
     assertThat(flow.getConditionExpression()).isEqualTo("${number <= 1}");

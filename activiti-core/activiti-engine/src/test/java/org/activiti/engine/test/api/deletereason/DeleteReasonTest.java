@@ -109,7 +109,7 @@ public class DeleteReasonTest extends PluggableActivitiTestCase {
 
     if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
       assertThat(historyService.createHistoricProcessInstanceQuery()
-          .processInstanceId(processInstance.getId()).singleResult().getDeleteReason()).isNull();;
+          .processInstanceId(processInstance.getId()).singleResult().getDeleteReason()).isNull();
 
       List<HistoricTaskInstance> historicTaskInstances = historyService.createHistoricTaskInstanceQuery()
           .processInstanceId(processInstance.getId()).list();

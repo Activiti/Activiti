@@ -46,7 +46,7 @@ public class IntermediateThrowCatchSignalEventConverterTest extends AbstractConv
 
       FlowElement flowElement = model.getMainProcess().getFlowElement(id);
       assertThat(flowElement).isNotNull();
-      assertThat(flowElement instanceof ThrowEvent).isTrue();
+      assertThat(flowElement).isInstanceOf(ThrowEvent.class);
 
       ThrowEvent throwEvent = (ThrowEvent) flowElement;
 
@@ -65,7 +65,7 @@ public class IntermediateThrowCatchSignalEventConverterTest extends AbstractConv
 
       FlowElement flowElement = model.getMainProcess().getFlowElement(id);
       assertThat(flowElement).isNotNull();
-      assertThat(flowElement instanceof IntermediateCatchEvent).isTrue();
+      assertThat(flowElement).isInstanceOf(IntermediateCatchEvent.class);
 
       IntermediateCatchEvent catchEvent = (IntermediateCatchEvent) flowElement;
 
@@ -80,7 +80,7 @@ public class IntermediateThrowCatchSignalEventConverterTest extends AbstractConv
 
   private void checkSignalEventDefinition(Event event, String signalRef) {
 
-      assertThat(event.getEventDefinitions().get(0) instanceof SignalEventDefinition).isTrue();
+      assertThat(event.getEventDefinitions().get(0)).isInstanceOf(SignalEventDefinition.class);
       SignalEventDefinition signalEventDefinition = (SignalEventDefinition) event.getEventDefinitions().get(0);
 
       assertThat(signalEventDefinition.getSignalRef()).isEqualTo(signalRef);

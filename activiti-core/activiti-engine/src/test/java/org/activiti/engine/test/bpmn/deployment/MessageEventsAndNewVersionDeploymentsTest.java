@@ -14,6 +14,7 @@
 package org.activiti.engine.test.bpmn.deployment;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -193,10 +194,8 @@ public class MessageEventsAndNewVersionDeploymentsTest extends PluggableActiviti
     String deploymentId2 = deployProcessWithoutEvents();
     assertThat(getAllEventSubscriptions().size()).isEqualTo(0);
     assertThat(runtimeService.createProcessInstanceQuery().count()).isEqualTo(1);
-    try {
-      runtimeService.startProcessInstanceByMessage("myStartMessage");
-      fail();
-    } catch (Exception e) { }
+    assertThatExceptionOfType(Exception.class)
+      .isThrownBy(() -> runtimeService.startProcessInstanceByMessage("myStartMessage"));
     assertThat(runtimeService.createProcessInstanceQuery().count()).isEqualTo(1);
     assertEventSubscriptionsCount(0);
 
@@ -265,10 +264,8 @@ public class MessageEventsAndNewVersionDeploymentsTest extends PluggableActiviti
     String deploymentId1 = deployStartMessageTestProcess();
     String deploymentId2 = deployProcessWithoutEvents();
     assertEventSubscriptionsCount(0);
-    try {
-      runtimeService.startProcessInstanceByMessage("myStartMessage");
-      fail();
-    } catch (Exception e) {}
+    assertThatExceptionOfType(Exception.class)
+      .isThrownBy(() -> runtimeService.startProcessInstanceByMessage("myStartMessage"));
     assertThat(runtimeService.createExecutionQuery().count()).isEqualTo(0);
     repositoryService.deleteDeployment(deploymentId2, true);
     assertEventSubscriptionsCount(1); // the first is now the one with the signal
@@ -283,25 +280,19 @@ public class MessageEventsAndNewVersionDeploymentsTest extends PluggableActiviti
     String deploymentId2 = deployProcessWithoutEvents();
     String deploymentId3 = deployStartMessageTestProcess();
     String deploymentId4 = deployProcessWithoutEvents();
-    try {
-      runtimeService.startProcessInstanceByMessage("myStartMessage");
-      fail();
-    } catch (Exception e) {}
+    assertThatExceptionOfType(Exception.class)
+      .isThrownBy(() -> runtimeService.startProcessInstanceByMessage("myStartMessage"));
     assertThat(runtimeService.createExecutionQuery().count()).isEqualTo(0);
 
     repositoryService.deleteDeployment(deploymentId2, true);
     repositoryService.deleteDeployment(deploymentId3, true);
-    try {
-      runtimeService.startProcessInstanceByMessage("myStartMessage");
-      fail();
-    } catch (Exception e) {}
+    assertThatExceptionOfType(Exception.class)
+      .isThrownBy(() -> runtimeService.startProcessInstanceByMessage("myStartMessage"));
     assertThat(runtimeService.createExecutionQuery().count()).isEqualTo(0);
 
     repositoryService.deleteDeployment(deploymentId1, true);
-    try {
-      runtimeService.startProcessInstanceByMessage("myStartMessage");
-      fail();
-    } catch (Exception e) {}
+    assertThatExceptionOfType(Exception.class)
+      .isThrownBy(() -> runtimeService.startProcessInstanceByMessage("myStartMessage"));
     assertThat(runtimeService.createExecutionQuery().count()).isEqualTo(0);
     cleanup(deploymentId4);
   }
@@ -311,18 +302,14 @@ public class MessageEventsAndNewVersionDeploymentsTest extends PluggableActiviti
     String deploymentId2 = deployProcessWithoutEvents();
     String deploymentId3 = deployStartMessageTestProcess();
     String deploymentId4 = deployProcessWithoutEvents();
-    try {
-      runtimeService.startProcessInstanceByMessage("myStartMessage");
-      fail();
-    } catch (Exception e) {}
+    assertThatExceptionOfType(Exception.class)
+      .isThrownBy(() -> runtimeService.startProcessInstanceByMessage("myStartMessage"));
     assertThat(runtimeService.createExecutionQuery().count()).isEqualTo(0);
 
     repositoryService.deleteDeployment(deploymentId2, true);
     repositoryService.deleteDeployment(deploymentId3, true);
-    try {
-      runtimeService.startProcessInstanceByMessage("myStartMessage");
-      fail();
-    } catch (Exception e) {}
+    assertThatExceptionOfType(Exception.class)
+      .isThrownBy(() -> runtimeService.startProcessInstanceByMessage("myStartMessage"));
     assertThat(runtimeService.createExecutionQuery().count()).isEqualTo(0);
 
     repositoryService.deleteDeployment(deploymentId4, true);
@@ -351,10 +338,8 @@ public class MessageEventsAndNewVersionDeploymentsTest extends PluggableActiviti
 
     // Deploy version with only a boundary signal
     String deploymentId2 = deployBoundaryMessageTestProcess();
-    try {
-      runtimeService.startProcessInstanceByMessage("myStartMessage");
-      fail();
-    } catch (Exception e) {}
+    assertThatExceptionOfType(Exception.class)
+      .isThrownBy(() -> runtimeService.startProcessInstanceByMessage("myStartMessage"));
     assertThat(runtimeService.createProcessInstanceQuery().count()).isEqualTo(2);
     assertEventSubscriptionsCount(2); // 2 boundary events remain
 
@@ -366,10 +351,8 @@ public class MessageEventsAndNewVersionDeploymentsTest extends PluggableActiviti
 
     // Delete last version again, making the one with the boundary the latest
     repositoryService.deleteDeployment(deploymentId3, true);
-    try {
-      runtimeService.startProcessInstanceByMessage("myStartMessage");
-      fail();
-    } catch (Exception e) {}
+    assertThatExceptionOfType(Exception.class)
+      .isThrownBy(() -> runtimeService.startProcessInstanceByMessage("myStartMessage"));
     assertThat(runtimeService.createProcessInstanceQuery().count()).isEqualTo(2); // -1, cause process instance of deploymentId3 is gone too
     assertEventSubscriptionsCount(2); // The 2 boundary remains
 
@@ -411,10 +394,8 @@ public class MessageEventsAndNewVersionDeploymentsTest extends PluggableActiviti
     assertThat(runtimeService.createProcessInstanceQuery().count()).isEqualTo(10);
     assertEventSubscriptionsCount(10); // Remains 10: 1 one was removed, but one added for the new message
 
-    try {
-      runtimeService.startProcessInstanceByMessage("myMessage");
-      fail();
-    } catch (Exception e) {}
+    assertThatExceptionOfType(Exception.class)
+     .isThrownBy(() -> runtimeService.startProcessInstanceByMessage("myMessage"));
 
     cleanup(deploymentId1, deploymentId2);
   }

@@ -59,12 +59,12 @@ public class SubProcessMultiDiagramConverterTest extends AbstractConverterTest {
   private void validateModel(BpmnModel model) {
     FlowElement flowElement = model.getMainProcess().getFlowElement("start1");
     assertThat(flowElement).isNotNull();
-    assertThat(flowElement instanceof StartEvent).isTrue();
+    assertThat(flowElement).isInstanceOf(StartEvent.class);
     assertThat(flowElement.getId()).isEqualTo("start1");
 
     flowElement = model.getMainProcess().getFlowElement("userTask1");
     assertThat(flowElement).isNotNull();
-    assertThat(flowElement instanceof UserTask).isTrue();
+    assertThat(flowElement).isInstanceOf(UserTask.class);
     assertThat(flowElement.getId()).isEqualTo("userTask1");
     UserTask userTask = (UserTask) flowElement;
     assertThat(userTask.getCandidateUsers().size() == 1).isTrue();
@@ -72,7 +72,7 @@ public class SubProcessMultiDiagramConverterTest extends AbstractConverterTest {
 
     flowElement = model.getMainProcess().getFlowElement("subprocess1");
     assertThat(flowElement).isNotNull();
-    assertThat(flowElement instanceof SubProcess).isTrue();
+    assertThat(flowElement).isInstanceOf(SubProcess.class);
     assertThat(flowElement.getId()).isEqualTo("subprocess1");
     SubProcess subProcess = (SubProcess) flowElement;
     assertThat(subProcess.getFlowElements().size() == 11).isTrue();

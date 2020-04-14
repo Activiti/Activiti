@@ -14,6 +14,7 @@
 package org.activiti.engine.test.bpmn.event.message;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.util.Date;
 import java.util.List;
@@ -106,12 +107,9 @@ public class MessageBoundaryEventTest extends PluggableActivitiTestCase {
     runtimeService.messageEventReceived("messageName_1", execution1.getId());
 
     // this should then throw an exception because execution2 no longer exists
-    try {
-      runtimeService.messageEventReceived("messageName_2", execution2.getId());
-      fail();
-    } catch (Exception e) {
-      // This is good
-    }
+    String executionIdForException = execution2.getId();
+    assertThatExceptionOfType(Exception.class)
+      .isThrownBy(() -> runtimeService.messageEventReceived("messageName_2", executionIdForException));
 
     userTask = taskService.createTaskQuery().singleResult();
     assertThat(userTask).isNotNull();
@@ -156,18 +154,13 @@ public class MessageBoundaryEventTest extends PluggableActivitiTestCase {
     assertThat(execution1.getId().equals(execution2.getId())).isFalse();
 
     // /////////////////////////////////////////////////////////////////////////////////
-    // 1. first message received cancels all tasks and the executions and
-    // both subscriptions
+    // 1. first message received cancels all tasks and the executions and both subscriptions
     runtimeService.messageEventReceived("messageName_1", execution1.getId());
 
-    // this should then throw an exception because execution2 no longer
-    // exists
-    try {
-      runtimeService.messageEventReceived("messageName_2", execution2.getId());
-      fail();
-    } catch (Exception e) {
-      // This is good
-    }
+    // this should then throw an exception because execution2 no longer exists
+    String executionIdForException = execution2.getId();
+    assertThatExceptionOfType(Exception.class)
+      .isThrownBy(() -> runtimeService.messageEventReceived("messageName_2", executionIdForException));
 
     // only process instance and running execution left
     assertThat(runtimeService.createExecutionQuery().count()).isEqualTo(2);

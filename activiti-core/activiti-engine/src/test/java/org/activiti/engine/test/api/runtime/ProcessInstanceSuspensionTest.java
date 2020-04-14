@@ -13,6 +13,7 @@
 package org.activiti.engine.test.api.runtime;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.util.Arrays;
 import java.util.Date;
@@ -20,6 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.Execution;
@@ -206,117 +208,61 @@ public class ProcessInstanceSuspensionTest extends PluggableActivitiTestCase {
     ProcessInstance processInstance = runtimeService.startProcessInstanceById(processDefinition.getId());
     runtimeService.suspendProcessInstanceById(processInstance.getId());
 
-    try {
-      runtimeService.messageEventReceived("someMessage", processInstance.getId());
-      fail();
-    } catch (ActivitiException e) {
-      // This is expected
-      e.getMessage().contains("is suspended");
-    }
+    assertThatExceptionOfType(ActivitiException.class)
+      .isThrownBy(() -> runtimeService.messageEventReceived("someMessage", processInstance.getId()))
+      .withMessageContaining("is suspended");
 
-    try {
-      runtimeService.messageEventReceived("someMessage", processInstance.getId(), new HashMap<String, Object>());
-      fail();
-    } catch (ActivitiException e) {
-      // This is expected
-      e.getMessage().contains("is suspended");
-    }
+    assertThatExceptionOfType(ActivitiException.class)
+      .isThrownBy(() -> runtimeService.messageEventReceived("someMessage", processInstance.getId(), new HashMap<>()))
+      .withMessageContaining("is suspended");
 
-    try {
-      runtimeService.removeVariable(processInstance.getId(), "someVariable");
-      fail();
-    } catch (ActivitiException e) {
-      // This is expected
-      e.getMessage().contains("is suspended");
-    }
+    assertThatExceptionOfType(ActivitiException.class)
+      .isThrownBy(() -> runtimeService.removeVariable(processInstance.getId(), "someVariable"))
+      .withMessageContaining("is suspended");
 
-    try {
-      runtimeService.removeVariableLocal(processInstance.getId(), "someVariable");
-      fail();
-    } catch (ActivitiException e) {
-      // This is expected
-      e.getMessage().contains("is suspended");
-    }
+    assertThatExceptionOfType(ActivitiException.class)
+      .isThrownBy(() -> runtimeService.removeVariableLocal(processInstance.getId(), "someVariable"))
+      .withMessageContaining("is suspended");
 
-    try {
-      runtimeService.removeVariables(processInstance.getId(), Arrays.asList("one", "two", "three"));
-      fail();
-    } catch (ActivitiException e) {
-      // This is expected
-      e.getMessage().contains("is suspended");
-    }
+    assertThatExceptionOfType(ActivitiException.class)
+      .isThrownBy(() -> runtimeService.removeVariables(processInstance.getId(), Arrays.asList("one", "two", "three")))
+      .withMessageContaining("is suspended");
 
-    try {
-      runtimeService.removeVariablesLocal(processInstance.getId(), Arrays.asList("one", "two", "three"));
-      fail();
-    } catch (ActivitiException e) {
-      // This is expected
-      e.getMessage().contains("is suspended");
-    }
+    assertThatExceptionOfType(ActivitiException.class)
+      .isThrownBy(() -> runtimeService.removeVariablesLocal(processInstance.getId(), Arrays.asList("one", "two", "three")))
+      .withMessageContaining("is suspended");
 
-    try {
-      runtimeService.setVariable(processInstance.getId(), "someVariable", "someValue");
-      fail();
-    } catch (ActivitiException e) {
-      // This is expected
-      e.getMessage().contains("is suspended");
-    }
+    assertThatExceptionOfType(ActivitiException.class)
+      .isThrownBy(() -> runtimeService.setVariable(processInstance.getId(), "someVariable", "someValue"))
+      .withMessageContaining("is suspended");
 
-    try {
-      runtimeService.setVariableLocal(processInstance.getId(), "someVariable", "someValue");
-      fail();
-    } catch (ActivitiException e) {
-      // This is expected
-      e.getMessage().contains("is suspended");
-    }
+    assertThatExceptionOfType(ActivitiException.class)
+      .isThrownBy(() -> runtimeService.setVariableLocal(processInstance.getId(), "someVariable", "someValue"))
+      .withMessageContaining("is suspended");
 
-    try {
-      runtimeService.setVariables(processInstance.getId(), new HashMap<String, Object>());
-      fail();
-    } catch (ActivitiException e) {
-      // This is expected
-      e.getMessage().contains("is suspended");
-    }
+    assertThatExceptionOfType(ActivitiException.class)
+      .isThrownBy(() -> runtimeService.setVariables(processInstance.getId(), new HashMap<>()))
+      .withMessageContaining("is suspended");
 
-    try {
-      runtimeService.setVariablesLocal(processInstance.getId(), new HashMap<String, Object>());
-      fail();
-    } catch (ActivitiException e) {
-      // This is expected
-      e.getMessage().contains("is suspended");
-    }
+    assertThatExceptionOfType(ActivitiException.class)
+      .isThrownBy(() -> runtimeService.setVariablesLocal(processInstance.getId(), new HashMap<>()))
+      .withMessageContaining("is suspended");
 
-    try {
-      runtimeService.trigger(processInstance.getId());
-      fail();
-    } catch (ActivitiException e) {
-      // This is expected
-      e.getMessage().contains("is suspended");
-    }
+    assertThatExceptionOfType(ActivitiException.class)
+      .isThrownBy(() -> runtimeService.trigger(processInstance.getId()))
+      .withMessageContaining("is suspended");
 
-    try {
-      runtimeService.trigger(processInstance.getId(), new HashMap<String, Object>());
-      fail();
-    } catch (ActivitiException e) {
-      // This is expected
-      e.getMessage().contains("is suspended");
-    }
+    assertThatExceptionOfType(ActivitiException.class)
+      .isThrownBy(() -> runtimeService.trigger(processInstance.getId(), new HashMap<>()))
+      .withMessageContaining("is suspended");
 
-    try {
-      runtimeService.signalEventReceived("someSignal", processInstance.getId());
-      fail();
-    } catch (ActivitiException e) {
-      // This is expected
-      e.getMessage().contains("is suspended");
-    }
+    assertThatExceptionOfType(ActivitiException.class)
+      .isThrownBy(() -> runtimeService.signalEventReceived("someSignal", processInstance.getId()))
+      .withMessageContaining("is suspended");
 
-    try {
-      runtimeService.signalEventReceived("someSignal", processInstance.getId(), new HashMap<String, Object>());
-      fail();
-    } catch (ActivitiException e) {
-      // This is expected
-      e.getMessage().contains("is suspended");
-    }
+    assertThatExceptionOfType(ActivitiException.class)
+      .isThrownBy(() -> runtimeService.signalEventReceived("someSignal", processInstance.getId(), new HashMap<>()))
+      .withMessageContaining("is suspended");
   }
 
   @Deployment

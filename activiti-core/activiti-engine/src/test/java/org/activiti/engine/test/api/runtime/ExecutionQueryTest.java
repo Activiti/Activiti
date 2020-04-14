@@ -27,6 +27,7 @@
 package org.activiti.engine.test.api.runtime;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -195,11 +196,8 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
     assertThat(query.list().size()).isEqualTo(4);
     assertThat(query.count()).isEqualTo(4);
 
-    try {
-      assertThat(query.singleResult()).isNull();
-      fail();
-    } catch (ActivitiException e) {
-    }
+    assertThatExceptionOfType(ActivitiException.class)
+      .isThrownBy(() -> query.singleResult());
   }
 
   public void testQueryByInvalidActivityId() {
@@ -248,12 +246,8 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
   }
 
   public void testQueryInvalidSorting() {
-    try {
-      runtimeService.createExecutionQuery().orderByProcessDefinitionKey().list();
-      fail();
-    } catch (ActivitiException e) {
-
-    }
+    assertThatExceptionOfType(ActivitiException.class)
+      .isThrownBy(() -> runtimeService.createExecutionQuery().orderByProcessDefinitionKey().list());
   }
 
   public void testQueryByBusinessKey() {
@@ -1640,7 +1634,7 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
     assertThat(executions.size()).isEqualTo(2);
     for (Execution execution : executions) {
       if (execution.getParentId() == null) {
-        assertThat(processInstance.getId() != execution.getProcessInstanceId()).isTrue();
+        assertThat(processInstance.getId()).isNotEqualTo(execution.getProcessInstanceId());
       } else if (execution.getParentId().equals(execution.getProcessInstanceId())) {
         assertThat(execution.getActivityId()).isEqualTo("embeddedSubprocess" );
       } else {

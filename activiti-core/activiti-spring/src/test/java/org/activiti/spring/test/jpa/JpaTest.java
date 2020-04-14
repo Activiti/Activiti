@@ -30,7 +30,7 @@ public class JpaTest extends SpringActivitiTestCase {
     // spring bean
     Object value = runtimeService.getVariable(processInstance.getId(), "loanRequest");
     assertThat(value).isNotNull();
-    assertThat(value instanceof LoanRequest).isTrue();
+    assertThat(value).isInstanceOf(LoanRequest.class);
     LoanRequest request = (LoanRequest) value;
     assertThat(request.getCustomerName()).isEqualTo("John Doe");
     assertThat(request.getAmount().longValue()).isEqualTo(15000L);
@@ -65,7 +65,7 @@ public class JpaTest extends SpringActivitiTestCase {
     // spring bean
     Object value = runtimeService.getVariable(processInstance.getId(), "loanRequest");
     assertThat(value).isNotNull();
-    assertThat(value instanceof LoanRequest).isTrue();
+    assertThat(value).isInstanceOf(LoanRequest.class);
     LoanRequest request = (LoanRequest) value;
     assertThat(request.getCustomerName()).isEqualTo("Jane Doe");
     assertThat(request.getAmount().longValue()).isEqualTo(50000L);

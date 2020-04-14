@@ -13,6 +13,7 @@
 
 package org.activiti.engine.test.bpmn.multiinstance;
 
+import static java.util.Collections.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.ArrayList;
@@ -41,11 +42,8 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.task.TaskQuery;
 import org.activiti.engine.test.Deployment;
-import org.assertj.core.api.Assertions;
 
 /**
-
-
  */
 public class MultiInstanceTest extends PluggableActivitiTestCase {
 
@@ -67,7 +65,7 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
 
   private void checkSequentialUserTasks(String processDefinitionKey, String elementIndexVariable) {
     int nrOfLoops = 3;
-    String procId = runtimeService.startProcessInstanceByKey(processDefinitionKey, CollectionUtil.singletonMap(NR_OF_LOOPS_KEY, nrOfLoops)).getId();
+    String procId = runtimeService.startProcessInstanceByKey(processDefinitionKey, singletonMap(NR_OF_LOOPS_KEY, nrOfLoops)).getId();
 
     Execution outerInstance = retrieveOuterExecution(procId);
 
@@ -80,16 +78,16 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
 
   private Execution retrieveOuterExecution(String procId) {
     List<Execution> executions = runtimeService.createExecutionQuery().parentId(procId).list();
-    Assertions.assertThat(executions).hasSize(1);
+    assertThat(executions).hasSize(1);
     Execution outerInstance = executions.get(0);
-    Assertions.assertThat(outerInstance.getActivityId()).isEqualTo("miTasks");
+    assertThat(outerInstance.getActivityId()).isEqualTo("miTasks");
     return outerInstance;
   }
 
   private void checkAndCompleteTask(String expectedAssignee, int expectedLoopCounter, int nrOfLoops, String elementIndexVariable, Execution outerInstance) {
     Task task = taskService.createTaskQuery().singleResult();
-    Assertions.assertThat(task.getName()).isEqualTo("My Task");
-    Assertions.assertThat(task.getAssignee()).isEqualTo(expectedAssignee);
+    assertThat(task.getName()).isEqualTo("My Task");
+    assertThat(task.getAssignee()).isEqualTo(expectedAssignee);
 
     checkInnerInstanceVariables(task, expectedLoopCounter, elementIndexVariable);
     checkOuterInstanceVariables(outerInstance, expectedLoopCounter, nrOfLoops, elementIndexVariable);
@@ -100,26 +98,26 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
   private void checkOuterInstanceVariables(Execution outerInstance, int loopCounter, int nrOfLoops, String elementIndexVariable) {
     Map<String, Object> localVariables = runtimeService.getVariablesLocal(outerInstance.getId());
     // this variable should be available only in the inner instance: see BPMN specification table 10.30, page 194
-    Assertions.assertThat(localVariables).doesNotContainKey(elementIndexVariable);
+    assertThat(localVariables).doesNotContainKey(elementIndexVariable);
 
-    Assertions.assertThat(localVariables).containsKeys(NR_OF_INSTANCES_KEY, NR_OF_ACTIVE_INSTANCES_KEY, NR_OF_COMPLETED_INSTANCES_KEY);
-    Assertions.assertThat(localVariables.get(NR_OF_INSTANCES_KEY)).isEqualTo(nrOfLoops);
-    Assertions.assertThat(localVariables.get(NR_OF_ACTIVE_INSTANCES_KEY)).isEqualTo(1);
-    Assertions.assertThat(localVariables.get(NR_OF_COMPLETED_INSTANCES_KEY)).isEqualTo(loopCounter);
+    assertThat(localVariables).containsKeys(NR_OF_INSTANCES_KEY, NR_OF_ACTIVE_INSTANCES_KEY, NR_OF_COMPLETED_INSTANCES_KEY);
+    assertThat(localVariables.get(NR_OF_INSTANCES_KEY)).isEqualTo(nrOfLoops);
+    assertThat(localVariables.get(NR_OF_ACTIVE_INSTANCES_KEY)).isEqualTo(1);
+    assertThat(localVariables.get(NR_OF_COMPLETED_INSTANCES_KEY)).isEqualTo(loopCounter);
   }
 
   private void checkInnerInstanceVariables(Task task, int loopCounter, String elementIndexVariable) {
     Map<String, Object> localVariables = runtimeService.getVariablesLocal(task.getExecutionId());
     // these variables should be available only in the outer instance: see BPMN specification table 10.30, page 194
-    Assertions.assertThat(localVariables).doesNotContainKeys(NR_OF_INSTANCES_KEY, NR_OF_ACTIVE_INSTANCES_KEY, NR_OF_COMPLETED_INSTANCES_KEY);
+    assertThat(localVariables).doesNotContainKeys(NR_OF_INSTANCES_KEY, NR_OF_ACTIVE_INSTANCES_KEY, NR_OF_COMPLETED_INSTANCES_KEY);
 
-    Assertions.assertThat(localVariables).containsKey(elementIndexVariable);
-    Assertions.assertThat(localVariables.get(elementIndexVariable)).isEqualTo(loopCounter);
+    assertThat(localVariables).containsKey(elementIndexVariable);
+    assertThat(localVariables.get(elementIndexVariable)).isEqualTo(loopCounter);
   }
 
   @Deployment(resources = { "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.sequentialUserTasks.bpmn20.xml" })
   public void testSequentialUserTasksHistory() {
-    String procId = runtimeService.startProcessInstanceByKey("miSequentialUserTasks", CollectionUtil.singletonMap(NR_OF_LOOPS_KEY, 4)).getId();
+    String procId = runtimeService.startProcessInstanceByKey("miSequentialUserTasks", singletonMap(NR_OF_LOOPS_KEY, 4)).getId();
     for (int i = 0; i < 4; i++) {
       taskService.complete(taskService.createTaskQuery().singleResult().getId());
     }
@@ -150,7 +148,7 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
 
   @Deployment(resources = { "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.sequentialUserTasks.bpmn20.xml" })
   public void testSequentialUserTasksWithTimer() {
-    String procId = runtimeService.startProcessInstanceByKey("miSequentialUserTasks", CollectionUtil.singletonMap(NR_OF_LOOPS_KEY, 3)).getId();
+    String procId = runtimeService.startProcessInstanceByKey("miSequentialUserTasks", singletonMap(NR_OF_LOOPS_KEY, 3)).getId();
 
     // Complete 1 tasks
     taskService.complete(taskService.createTaskQuery().singleResult().getId());
@@ -168,7 +166,7 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
 
   @Deployment(resources = { "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.sequentialUserTasks.bpmn20.xml" })
   public void testSequentialUserTasksCompletionCondition() {
-    String procId = runtimeService.startProcessInstanceByKey("miSequentialUserTasks", CollectionUtil.singletonMap(NR_OF_LOOPS_KEY, 10)).getId();
+    String procId = runtimeService.startProcessInstanceByKey("miSequentialUserTasks", singletonMap(NR_OF_LOOPS_KEY, 10)).getId();
 
     // 10 tasks are to be created, but completionCondition stops them at 5
     for (int i = 0; i < 5; i++) {
@@ -222,10 +220,10 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
 
   private void checkBuiltInOuterVariables(Execution outerExecution, int expetedActiveNumber, int expectedCompletedNumber) {
     Map<String, Object> variables = runtimeService.getVariablesLocal(outerExecution.getId());
-    Assertions.assertThat(variables).containsEntry(NR_OF_INSTANCES_KEY, 3);
-    Assertions.assertThat(variables).containsEntry(NR_OF_ACTIVE_INSTANCES_KEY, expetedActiveNumber);
-    Assertions.assertThat(variables).containsEntry(NR_OF_COMPLETED_INSTANCES_KEY, expectedCompletedNumber);
-    Assertions.assertThat(variables).doesNotContainKey(LOOP_COUNTER_KEY);
+    assertThat(variables).containsEntry(NR_OF_INSTANCES_KEY, 3);
+    assertThat(variables).containsEntry(NR_OF_ACTIVE_INSTANCES_KEY, expetedActiveNumber);
+    assertThat(variables).containsEntry(NR_OF_COMPLETED_INSTANCES_KEY, expectedCompletedNumber);
+    assertThat(variables).doesNotContainKey(LOOP_COUNTER_KEY);
   }
 
   @Deployment(resources = { "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.testParallelUserTasks.bpmn20.xml" })
@@ -293,7 +291,7 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
   @Deployment
   public void testParallelUserTasksBasedOnCollection() {
     List<String> assigneeList = Arrays.asList("kermit", "gonzo", "mispiggy", "fozzie", "bubba");
-    String procId = runtimeService.startProcessInstanceByKey("miParallelUserTasksBasedOnCollection", CollectionUtil.singletonMap("assigneeList", assigneeList)).getId();
+    String procId = runtimeService.startProcessInstanceByKey("miParallelUserTasksBasedOnCollection", singletonMap("assigneeList", assigneeList)).getId();
 
     List<Task> tasks = taskService.createTaskQuery().orderByTaskAssignee().asc().list();
     assertThat(tasks.size()).isEqualTo(5);
@@ -735,7 +733,7 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
 
   @Deployment
   public void testParallelSubProcessAllAutomatic() {
-    String procId = runtimeService.startProcessInstanceByKey("miParallelSubprocessAllAutomatics", CollectionUtil.singletonMap(NR_OF_LOOPS_KEY, 5)).getId();
+    String procId = runtimeService.startProcessInstanceByKey("miParallelSubprocessAllAutomatics", singletonMap(NR_OF_LOOPS_KEY, 5)).getId();
 
     for (int i = 0; i < 5; i++) {
       List<Execution> waitSubExecutions = runtimeService.createExecutionQuery().activityId("subProcessWait").list();
@@ -755,7 +753,7 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
 
   @Deployment(resources = { "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.testParallelSubProcessAllAutomatic.bpmn20.xml" })
   public void testParallelSubProcessAllAutomaticCompletionCondition() {
-    String procId = runtimeService.startProcessInstanceByKey("miParallelSubprocessAllAutomatics", CollectionUtil.singletonMap(NR_OF_LOOPS_KEY, 10)).getId();
+    String procId = runtimeService.startProcessInstanceByKey("miParallelSubprocessAllAutomatics", singletonMap(NR_OF_LOOPS_KEY, 10)).getId();
 
     for (int i = 0; i < 6; i++) {
       List<Execution> waitSubExecutions = runtimeService.createExecutionQuery().activityId("subProcessWait").list();
@@ -1030,7 +1028,7 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
   // ACT-764
   @Deployment
   public void testSequentialServiceTaskWithClass() {
-    ProcessInstance procInst = runtimeService.startProcessInstanceByKey("multiInstanceServiceTask", CollectionUtil.singletonMap("result", 5));
+    ProcessInstance procInst = runtimeService.startProcessInstanceByKey("multiInstanceServiceTask", singletonMap("result", 5));
     Integer result = (Integer) runtimeService.getVariable(procInst.getId(), "result");
     assertThat(result.intValue()).isEqualTo(160);
 

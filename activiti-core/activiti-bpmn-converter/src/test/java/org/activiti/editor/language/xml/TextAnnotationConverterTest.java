@@ -30,7 +30,7 @@ public class TextAnnotationConverterTest extends AbstractConverterTest {
   private void validateModel(BpmnModel model) {
     FlowElement flowElement = model.getFlowElement("_5");
     assertThat(flowElement).isNotNull();
-    assertThat(flowElement instanceof ScriptTask).isTrue();
+    assertThat(flowElement).isInstanceOf(ScriptTask.class);
     assertThat(flowElement.getId()).isEqualTo("_5");
     ScriptTask scriptTask = (ScriptTask) flowElement;
     assertThat(scriptTask.getId()).isEqualTo("_5");

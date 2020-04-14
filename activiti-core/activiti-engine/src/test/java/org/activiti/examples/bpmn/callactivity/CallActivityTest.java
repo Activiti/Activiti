@@ -13,6 +13,7 @@
 
 package org.activiti.examples.bpmn.callactivity;
 
+import static java.util.Collections.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.HashMap;
@@ -46,7 +47,7 @@ public class CallActivityTest extends PluggableActivitiTestCase {
 
     // Completing the task with approval, will end the subprocess and
     // continue the original process
-    taskService.complete(verifyCreditTask.getId(), CollectionUtil.singletonMap("creditApproved", true));
+    taskService.complete(verifyCreditTask.getId(), singletonMap("creditApproved", true));
     Task prepareAndShipTask = taskQuery.singleResult();
     assertThat(prepareAndShipTask.getName()).isEqualTo("Prepare and Ship");
   }

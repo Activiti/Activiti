@@ -12,7 +12,9 @@
  */
 package org.activiti.engine.test.bpmn.gateway;
 
+import static java.util.Collections.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,7 +25,6 @@ import java.util.Map;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
-import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
@@ -44,9 +45,9 @@ public class InclusiveGatewayTest extends PluggableActivitiTestCase {
   @Deployment
   public void testDivergingInclusiveGateway() {
     for (int i = 1; i <= 3; i++) {
-      ProcessInstance pi = runtimeService.startProcessInstanceByKey("inclusiveGwDiverging", CollectionUtil.singletonMap("input", i));
+      ProcessInstance pi = runtimeService.startProcessInstanceByKey("inclusiveGwDiverging", singletonMap("input", i));
       List<Task> tasks = taskService.createTaskQuery().processInstanceId(pi.getId()).list();
-      List<String> expectedNames = new ArrayList<String>();
+      List<String> expectedNames = new ArrayList<>();
       if (i == 1) {
         expectedNames.add(TASK1_NAME);
       }
@@ -65,7 +66,7 @@ public class InclusiveGatewayTest extends PluggableActivitiTestCase {
 
   @Deployment
   public void testMergingInclusiveGateway() {
-    ProcessInstance pi = runtimeService.startProcessInstanceByKey("inclusiveGwMerging", CollectionUtil.singletonMap("input", 2));
+    ProcessInstance pi = runtimeService.startProcessInstanceByKey("inclusiveGwMerging", singletonMap("input", 2));
     assertThat(taskService.createTaskQuery().count()).isEqualTo(1);
 
     runtimeService.deleteProcessInstance(pi.getId(), "testing deletion");
@@ -73,7 +74,7 @@ public class InclusiveGatewayTest extends PluggableActivitiTestCase {
 
   @Deployment
   public void testPartialMergingInclusiveGateway() {
-    ProcessInstance pi = runtimeService.startProcessInstanceByKey("partialInclusiveGwMerging", CollectionUtil.singletonMap("input", 2));
+    ProcessInstance pi = runtimeService.startProcessInstanceByKey("partialInclusiveGwMerging", singletonMap("input", 2));
     Task partialTask = taskService.createTaskQuery().singleResult();
     assertThat(partialTask.getTaskDefinitionKey()).isEqualTo("partialTask");
 
@@ -87,12 +88,8 @@ public class InclusiveGatewayTest extends PluggableActivitiTestCase {
 
   @Deployment
   public void testNoSequenceFlowSelected() {
-    try {
-      runtimeService.startProcessInstanceByKey("inclusiveGwNoSeqFlowSelected", CollectionUtil.singletonMap("input", 4));
-      fail();
-    } catch (ActivitiException e) {
-      // Exception expected
-    }
+    assertThatExceptionOfType(ActivitiException.class)
+      .isThrownBy(() -> runtimeService.startProcessInstanceByKey("inclusiveGwNoSeqFlowSelected", singletonMap("input", 4)));
   }
 
   /**
@@ -151,24 +148,20 @@ public class InclusiveGatewayTest extends PluggableActivitiTestCase {
     // Starting a process instance will lead to an exception if whitespace
     // are
     // incorrectly handled
-    runtimeService.startProcessInstanceByKey("inclusiveWhiteSpaceInExpression", CollectionUtil.singletonMap("input", 1));
+    runtimeService.startProcessInstanceByKey("inclusiveWhiteSpaceInExpression", singletonMap("input", 1));
   }
 
   @Deployment(resources = { "org/activiti/engine/test/bpmn/gateway/InclusiveGatewayTest.testDivergingInclusiveGateway.bpmn20.xml" })
   public void testUnknownVariableInExpression() {
-    // Instead of 'input' we're starting a process instance with the name
-    // 'iinput' (ie. a typo)
-    try {
-      runtimeService.startProcessInstanceByKey("inclusiveGwDiverging", CollectionUtil.singletonMap("iinput", 1));
-      fail();
-    } catch (ActivitiException e) {
-      assertTextPresent("Unknown property used in expression", e.getMessage());
-    }
+    // Instead of 'input' we're starting a process instance with the name 'iinput' (ie. a typo)
+    assertThatExceptionOfType(ActivitiException.class)
+      .isThrownBy(() -> runtimeService.startProcessInstanceByKey("inclusiveGwDiverging", singletonMap("iinput", 1)))
+      .withMessageContaining("Unknown property used in expression");
   }
 
   @Deployment
   public void testDecideBasedOnBeanProperty() {
-    runtimeService.startProcessInstanceByKey("inclusiveDecisionBasedOnBeanProperty", CollectionUtil.singletonMap("order", new InclusiveGatewayTestOrder(150)));
+    runtimeService.startProcessInstanceByKey("inclusiveDecisionBasedOnBeanProperty", singletonMap("order", new InclusiveGatewayTestOrder(150)));
     List<Task> tasks = taskService.createTaskQuery().list();
     assertThat(tasks.size()).isEqualTo(2);
     Map<String, String> expectedNames = new HashMap<String, String>();
@@ -187,21 +180,17 @@ public class InclusiveGatewayTest extends PluggableActivitiTestCase {
     orders.add(new InclusiveGatewayTestOrder(300));
     orders.add(new InclusiveGatewayTestOrder(175));
 
-    try {
-      runtimeService.startProcessInstanceByKey("inclusiveDecisionBasedOnListOrArrayOfBeans", CollectionUtil.singletonMap("orders", orders));
-      fail();
-    } catch (ActivitiException e) {
-      // expect an exception to be thrown here as there is
-    }
+    assertThatExceptionOfType(ActivitiException.class)
+      .isThrownBy(() -> runtimeService.startProcessInstanceByKey("inclusiveDecisionBasedOnListOrArrayOfBeans", singletonMap("orders", orders)));
 
     orders.set(1, new InclusiveGatewayTestOrder(175));
-    ProcessInstance pi = runtimeService.startProcessInstanceByKey("inclusiveDecisionBasedOnListOrArrayOfBeans", CollectionUtil.singletonMap("orders", orders));
+    ProcessInstance pi = runtimeService.startProcessInstanceByKey("inclusiveDecisionBasedOnListOrArrayOfBeans", singletonMap("orders", orders));
     Task task = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
     assertThat(task).isNotNull();
     assertThat(task.getName()).isEqualTo(BEAN_TASK3_NAME);
 
     orders.set(1, new InclusiveGatewayTestOrder(125));
-    pi = runtimeService.startProcessInstanceByKey("inclusiveDecisionBasedOnListOrArrayOfBeans", CollectionUtil.singletonMap("orders", orders));
+    pi = runtimeService.startProcessInstanceByKey("inclusiveDecisionBasedOnListOrArrayOfBeans", singletonMap("orders", orders));
     List<Task> tasks = taskService.createTaskQuery().processInstanceId(pi.getId()).list();
     assertThat(tasks).isNotNull();
     assertThat(tasks.size()).isEqualTo(2);
@@ -216,7 +205,7 @@ public class InclusiveGatewayTest extends PluggableActivitiTestCase {
     // Arrays are usable in exactly the same way
     InclusiveGatewayTestOrder[] orderArray = orders.toArray(new InclusiveGatewayTestOrder[orders.size()]);
     orderArray[1].setPrice(10);
-    pi = runtimeService.startProcessInstanceByKey("inclusiveDecisionBasedOnListOrArrayOfBeans", CollectionUtil.singletonMap("orders", orderArray));
+    pi = runtimeService.startProcessInstanceByKey("inclusiveDecisionBasedOnListOrArrayOfBeans", singletonMap("orders", orderArray));
     tasks = taskService.createTaskQuery().processInstanceId(pi.getId()).list();
     assertThat(tasks).isNotNull();
     assertThat(tasks.size()).isEqualTo(3);
@@ -232,12 +221,12 @@ public class InclusiveGatewayTest extends PluggableActivitiTestCase {
 
   @Deployment
   public void testDecideBasedOnBeanMethod() {
-    ProcessInstance pi = runtimeService.startProcessInstanceByKey("inclusiveDecisionBasedOnBeanMethod", CollectionUtil.singletonMap("order", new InclusiveGatewayTestOrder(200)));
+    ProcessInstance pi = runtimeService.startProcessInstanceByKey("inclusiveDecisionBasedOnBeanMethod", singletonMap("order", new InclusiveGatewayTestOrder(200)));
     Task task = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
     assertThat(task).isNotNull();
     assertThat(task.getName()).isEqualTo(BEAN_TASK3_NAME);
 
-    pi = runtimeService.startProcessInstanceByKey("inclusiveDecisionBasedOnBeanMethod", CollectionUtil.singletonMap("order", new InclusiveGatewayTestOrder(125)));
+    pi = runtimeService.startProcessInstanceByKey("inclusiveDecisionBasedOnBeanMethod", singletonMap("order", new InclusiveGatewayTestOrder(125)));
     List<Task> tasks = taskService.createTaskQuery().processInstanceId(pi.getId()).list();
     assertThat(tasks.size()).isEqualTo(2);
     List<String> expectedNames = new ArrayList<String>();
@@ -248,29 +237,22 @@ public class InclusiveGatewayTest extends PluggableActivitiTestCase {
     }
     assertThat(expectedNames.size()).isEqualTo(0);
 
-    try {
-      runtimeService.startProcessInstanceByKey("inclusiveDecisionBasedOnBeanMethod", CollectionUtil.singletonMap("order", new InclusiveGatewayTestOrder(300)));
-      fail();
-    } catch (ActivitiException e) {
-      // Should get an exception indicating that no path could be taken
-    }
+    assertThatExceptionOfType(ActivitiException.class)
+      .isThrownBy(() -> runtimeService.startProcessInstanceByKey("inclusiveDecisionBasedOnBeanMethod", singletonMap("order", new InclusiveGatewayTestOrder(300))));
 
   }
 
   @Deployment
   public void testInvalidMethodExpression() {
-    try {
-      runtimeService.startProcessInstanceByKey("inclusiveInvalidMethodExpression", CollectionUtil.singletonMap("order", new InclusiveGatewayTestOrder(50)));
-      fail();
-    } catch (ActivitiException e) {
-      assertTextPresent("Unknown method used in expression", e.getMessage());
-    }
+    assertThatExceptionOfType(ActivitiException.class)
+      .isThrownBy(() -> runtimeService.startProcessInstanceByKey("inclusiveInvalidMethodExpression", singletonMap("order", new InclusiveGatewayTestOrder(50))))
+      .withMessageContaining("Unknown method used in expression");
   }
 
   @Deployment
   public void testDefaultSequenceFlow() {
     // Input == 1 -> default is not selected, other 2 tasks are selected
-    ProcessInstance pi = runtimeService.startProcessInstanceByKey("inclusiveGwDefaultSequenceFlow", CollectionUtil.singletonMap("input", 1));
+    ProcessInstance pi = runtimeService.startProcessInstanceByKey("inclusiveGwDefaultSequenceFlow", singletonMap("input", 1));
     List<Task> tasks = taskService.createTaskQuery().processInstanceId(pi.getId()).list();
     assertThat(tasks.size()).isEqualTo(2);
     Map<String, String> expectedNames = new HashMap<String, String>();
@@ -283,24 +265,24 @@ public class InclusiveGatewayTest extends PluggableActivitiTestCase {
     runtimeService.deleteProcessInstance(pi.getId(), null);
 
     // Input == 3 -> default is not selected, "one or three" is selected
-    pi = runtimeService.startProcessInstanceByKey("inclusiveGwDefaultSequenceFlow", CollectionUtil.singletonMap("input", 3));
+    pi = runtimeService.startProcessInstanceByKey("inclusiveGwDefaultSequenceFlow", singletonMap("input", 3));
     Task task = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
     assertThat(task.getName()).isEqualTo("Input is three or one");
 
     // Default input
-    pi = runtimeService.startProcessInstanceByKey("inclusiveGwDefaultSequenceFlow", CollectionUtil.singletonMap("input", 5));
+    pi = runtimeService.startProcessInstanceByKey("inclusiveGwDefaultSequenceFlow", singletonMap("input", 5));
     task = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
     assertThat(task.getName()).isEqualTo("Default input");
   }
 
   @Deployment
   public void testNoIdOnSequenceFlow() {
-    ProcessInstance pi = runtimeService.startProcessInstanceByKey("inclusiveNoIdOnSequenceFlow", CollectionUtil.singletonMap("input", 3));
+    ProcessInstance pi = runtimeService.startProcessInstanceByKey("inclusiveNoIdOnSequenceFlow", singletonMap("input", 3));
     Task task = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
     assertThat(task.getName()).isEqualTo("Input is more than one");
 
     // Both should be enabled on 1
-    pi = runtimeService.startProcessInstanceByKey("inclusiveNoIdOnSequenceFlow", CollectionUtil.singletonMap("input", 1));
+    pi = runtimeService.startProcessInstanceByKey("inclusiveNoIdOnSequenceFlow", singletonMap("input", 1));
     List<Task> tasks = taskService.createTaskQuery().processInstanceId(pi.getId()).list();
     assertThat(tasks.size()).isEqualTo(2);
     Map<String, String> expectedNames = new HashMap<String, String>();
@@ -319,7 +301,7 @@ public class InclusiveGatewayTest extends PluggableActivitiTestCase {
    */
   @Deployment
   public void testLoop() {
-    ProcessInstance pi = runtimeService.startProcessInstanceByKey("inclusiveTestLoop", CollectionUtil.singletonMap("counter", 1));
+    ProcessInstance pi = runtimeService.startProcessInstanceByKey("inclusiveTestLoop", singletonMap("counter", 1));
 
     Task task = taskService.createTaskQuery().singleResult();
     assertThat(task.getName()).isEqualTo("task C");
@@ -375,15 +357,12 @@ public class InclusiveGatewayTest extends PluggableActivitiTestCase {
     processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(processInstance.getId()).singleResult();
     assertThat(processInstance).isNull();
 
-    variableMap = new HashMap<String, Object>();
-    variableMap.put("a", 2);
-    variableMap.put("b", 2);
-    try {
-      runtimeService.startProcessInstanceByKey("InclusiveGateway", variableMap);
-      fail();
-    } catch (ActivitiException e) {
-      assertThat(e.getMessage().contains("No outgoing sequence flow")).isTrue();
-    }
+    Map<String, Object> variableMapForException = new HashMap();
+    variableMapForException.put("a", 2);
+    variableMapForException.put("b", 2);
+    assertThatExceptionOfType(ActivitiException.class)
+      .isThrownBy(() -> runtimeService.startProcessInstanceByKey("InclusiveGateway", variableMapForException))
+      .withMessageContaining("No outgoing sequence flow");
   }
 
   @Deployment(resources = { "org/activiti/engine/test/bpmn/gateway/InclusiveGatewayTest.testJoinAfterCall.bpmn20.xml",
@@ -496,7 +475,7 @@ public class InclusiveGatewayTest extends PluggableActivitiTestCase {
     assertThat(taskCInPi1).isNotNull();
 
     // Start second process instance, continue A. Process instance should be in B
-    ProcessInstance processInstance2 = runtimeService.startProcessInstanceByKey("testMultipleProcessInstancesMergedBug", CollectionUtil.singletonMap("var", "goToB"));
+    ProcessInstance processInstance2 = runtimeService.startProcessInstanceByKey("testMultipleProcessInstancesMergedBug", singletonMap("var", "goToB"));
     taskService.complete(taskService.createTaskQuery().processInstanceId(processInstance2.getId()).taskName("A").singleResult().getId());
     Task taskBInPi2 = taskService.createTaskQuery().processInstanceId(processInstance2.getId()).singleResult();
     assertThat(taskBInPi2).isNotNull();

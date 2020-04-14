@@ -103,7 +103,7 @@ public class ResetExpiredJobsTest extends PluggableActivitiTestCase {
     }
 
     Job job = jobQuery.singleResult();
-    assertThat(job instanceof JobEntity).isTrue();
+    assertThat(job).isInstanceOf(JobEntity.class);
     JobEntity jobEntity = (JobEntity) job;
 
     if (locked) {

@@ -12,6 +12,7 @@
  */
 package org.activiti.engine.test.bpmn.event.end;
 
+import static java.util.Collections.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
@@ -41,13 +42,13 @@ public class TerminateMultiInstanceEndEventTest extends PluggableActivitiTestCas
     // Complete 2 tasks by going to task C. The 3th tasks goes to the MI terminate end and shuts down the MI.
     for (int i=0; i<2; i++) {
       Task bTask = bTasks.get(i);
-      taskService.complete(bTask.getId(), CollectionUtil.singletonMap("myVar", "toC"));
+      taskService.complete(bTask.getId(), singletonMap("myVar", "toC"));
     }
 
     bTasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskName("B").list();
     assertThat(bTasks.size()).isEqualTo(6);
 
-    taskService.complete(bTasks.get(0).getId(), CollectionUtil.singletonMap("myVar", "toEnd"));
+    taskService.complete(bTasks.get(0).getId(), singletonMap("myVar", "toEnd"));
 
     Task afterMiTask = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     assertThat(afterMiTask.getName()).isEqualTo("AfterMi");
@@ -65,7 +66,7 @@ public class TerminateMultiInstanceEndEventTest extends PluggableActivitiTestCas
 
     List<Task> bTasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).list();
     assertThat(bTasks.size()).isEqualTo(1);
-    taskService.complete(bTasks.get(0).getId(), CollectionUtil.singletonMap("myVar", "toC"));
+    taskService.complete(bTasks.get(0).getId(), singletonMap("myVar", "toC"));
 
     List<Task> cTasks = taskService.createTaskQuery().taskName("C").list();
     assertThat(cTasks.size()).isEqualTo(1);
@@ -73,7 +74,7 @@ public class TerminateMultiInstanceEndEventTest extends PluggableActivitiTestCas
 
     bTasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskName("B").list();
     assertThat(bTasks.size()).isEqualTo(1);
-    taskService.complete(bTasks.get(0).getId(), CollectionUtil.singletonMap("myVar", "toEnd"));
+    taskService.complete(bTasks.get(0).getId(), singletonMap("myVar", "toEnd"));
 
     Task afterMiTask = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     assertThat(afterMiTask.getName()).isEqualTo("AfterMi");
@@ -207,7 +208,7 @@ public class TerminateMultiInstanceEndEventTest extends PluggableActivitiTestCas
   @Deployment
   public void testTerminateNestedMiEmbeddedSubprocess() {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-        "terminateNestedMiEmbeddedSubprocess", CollectionUtil.singletonMap("var", "notEnd"));
+        "terminateNestedMiEmbeddedSubprocess", singletonMap("var", "notEnd"));
 
     List<Task> aTasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskName("A").list();
     assertThat(aTasks.size()).isEqualTo(12);
@@ -254,7 +255,7 @@ public class TerminateMultiInstanceEndEventTest extends PluggableActivitiTestCas
   @Deployment(resources = "org/activiti/engine/test/bpmn/event/end/TerminateMultiInstanceEndEventTest.testTerminateNestedMiEmbeddedSubprocess.bpmn20.xml")
   public void testTerminateNestedMiEmbeddedSubprocess2() {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-        "terminateNestedMiEmbeddedSubprocess", CollectionUtil.singletonMap("var", "toEnd"));
+        "terminateNestedMiEmbeddedSubprocess", singletonMap("var", "toEnd"));
 
     List<Task> aTasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskName("A").list();
     assertThat(aTasks.size()).isEqualTo(12);
@@ -266,7 +267,7 @@ public class TerminateMultiInstanceEndEventTest extends PluggableActivitiTestCas
   @Deployment
   public void testTerminateNestedMiEmbeddedSubprocessWithOneLoopCardinality() {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-        "terminateNestedMiEmbeddedSubprocess", CollectionUtil.singletonMap("var", "notEnd"));
+        "terminateNestedMiEmbeddedSubprocess", singletonMap("var", "notEnd"));
 
     List<Task> aTasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskName("A").list();
     assertThat(aTasks.size()).isEqualTo(1);

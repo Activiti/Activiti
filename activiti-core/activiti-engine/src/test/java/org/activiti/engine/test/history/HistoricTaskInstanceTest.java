@@ -14,6 +14,7 @@
 package org.activiti.engine.test.history;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -824,26 +825,14 @@ public class HistoricTaskInstanceTest extends PluggableActivitiTestCase {
     }
 
     public void testInvalidSorting() {
-        try {
-            historyService.createHistoricTaskInstanceQuery().asc();
-            fail();
-        } catch (ActivitiIllegalArgumentException e) {
+        assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
+            .isThrownBy(() -> historyService.createHistoricTaskInstanceQuery().asc());
 
-        }
+        assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
+            .isThrownBy(() -> historyService.createHistoricTaskInstanceQuery().desc());
 
-        try {
-            historyService.createHistoricTaskInstanceQuery().desc();
-            fail();
-        } catch (ActivitiIllegalArgumentException e) {
-
-        }
-
-        try {
-            historyService.createHistoricTaskInstanceQuery().orderByProcessInstanceId().list();
-            fail();
-        } catch (ActivitiIllegalArgumentException e) {
-
-        }
+        assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
+            .isThrownBy(() -> historyService.createHistoricTaskInstanceQuery().orderByProcessInstanceId().list());
     }
 
     /**

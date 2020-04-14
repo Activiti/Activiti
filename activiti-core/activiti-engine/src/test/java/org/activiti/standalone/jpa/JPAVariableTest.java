@@ -227,25 +227,25 @@ public class JPAVariableTest extends AbstractActivitiTestCase {
 
     // Read entity with @Id on field
     Object fieldAccessResult = runtimeService.getVariable(processInstance.getId(), "simpleEntityFieldAccess");
-    assertThat(fieldAccessResult instanceof FieldAccessJPAEntity).isTrue();
+    assertThat(fieldAccessResult).isInstanceOf(FieldAccessJPAEntity.class);
     assertThat(((FieldAccessJPAEntity) fieldAccessResult).getId().longValue()).isEqualTo(1L);
     assertThat(((FieldAccessJPAEntity) fieldAccessResult).getValue()).isEqualTo("value1");
 
     // Read entity with @Id on property
     Object propertyAccessResult = runtimeService.getVariable(processInstance.getId(), "simpleEntityPropertyAccess");
-    assertThat(propertyAccessResult instanceof PropertyAccessJPAEntity).isTrue();
+    assertThat(propertyAccessResult).isInstanceOf(PropertyAccessJPAEntity.class);
     assertThat(((PropertyAccessJPAEntity) propertyAccessResult).getId().longValue()).isEqualTo(1L);
     assertThat(((PropertyAccessJPAEntity) propertyAccessResult).getValue()).isEqualTo("value2");
 
     // Read entity with @Id on field of mapped superclass
     Object subclassFieldResult = runtimeService.getVariable(processInstance.getId(), "subclassFieldAccess");
-    assertThat(subclassFieldResult instanceof SubclassFieldAccessJPAEntity).isTrue();
+    assertThat(subclassFieldResult).isInstanceOf(SubclassFieldAccessJPAEntity.class);
     assertThat(((SubclassFieldAccessJPAEntity) subclassFieldResult).getId().longValue()).isEqualTo(1L);
     assertThat(((SubclassFieldAccessJPAEntity) subclassFieldResult).getValue()).isEqualTo("value3");
 
     // Read entity with @Id on property of mapped superclass
     Object subclassPropertyResult = runtimeService.getVariable(processInstance.getId(), "subclassPropertyAccess");
-    assertThat(subclassPropertyResult instanceof SubclassPropertyAccessJPAEntity).isTrue();
+    assertThat(subclassPropertyResult).isInstanceOf(SubclassPropertyAccessJPAEntity.class);
     assertThat(((SubclassPropertyAccessJPAEntity) subclassPropertyResult).getId().longValue()).isEqualTo(1L);
     assertThat(((SubclassPropertyAccessJPAEntity) subclassPropertyResult).getValue()).isEqualTo("value4");
 
@@ -262,7 +262,7 @@ public class JPAVariableTest extends AbstractActivitiTestCase {
     runtimeService.setVariable(processInstance.getId(), "simpleEntityFieldAccess", simpleEntityFieldAccess);
     currentValue = runtimeService.getVariable(processInstance.getId(), "simpleEntityFieldAccess");
     assertThat(currentValue).isNotNull();
-    assertThat(currentValue instanceof FieldAccessJPAEntity).isTrue();
+    assertThat(currentValue).isInstanceOf(FieldAccessJPAEntity.class);
     assertThat(((FieldAccessJPAEntity) currentValue).getId().longValue()).isEqualTo(1L);
 
     // -----------------------------------------------------------------------------
@@ -287,51 +287,51 @@ public class JPAVariableTest extends AbstractActivitiTestCase {
     // stored in the DB.
     ProcessInstance processInstanceAllTypes = runtimeService.startProcessInstanceByKey("JPAVariableProcess", variables);
     Object byteIdResult = runtimeService.getVariable(processInstanceAllTypes.getId(), "byteIdJPAEntity");
-    assertThat(byteIdResult instanceof ByteIdJPAEntity).isTrue();
+    assertThat(byteIdResult).isInstanceOf(ByteIdJPAEntity.class);
     assertThat(((ByteIdJPAEntity) byteIdResult).getByteId()).isEqualTo(byteIdJPAEntity.getByteId());
 
     Object shortIdResult = runtimeService.getVariable(processInstanceAllTypes.getId(), "shortIdJPAEntity");
-    assertThat(shortIdResult instanceof ShortIdJPAEntity).isTrue();
+    assertThat(shortIdResult).isInstanceOf(ShortIdJPAEntity.class);
     assertThat(((ShortIdJPAEntity) shortIdResult).getShortId()).isEqualTo(shortIdJPAEntity.getShortId());
 
     Object integerIdResult = runtimeService.getVariable(processInstanceAllTypes.getId(), "integerIdJPAEntity");
-    assertThat(integerIdResult instanceof IntegerIdJPAEntity).isTrue();
+    assertThat(integerIdResult).isInstanceOf(IntegerIdJPAEntity.class);
     assertThat(((IntegerIdJPAEntity) integerIdResult).getIntId()).isEqualTo(integerIdJPAEntity.getIntId());
 
     Object longIdResult = runtimeService.getVariable(processInstanceAllTypes.getId(), "longIdJPAEntity");
-    assertThat(longIdResult instanceof LongIdJPAEntity).isTrue();
+    assertThat(longIdResult).isInstanceOf(LongIdJPAEntity.class);
     assertThat(((LongIdJPAEntity) longIdResult).getLongId()).isEqualTo(longIdJPAEntity.getLongId());
 
     Object floatIdResult = runtimeService.getVariable(processInstanceAllTypes.getId(), "floatIdJPAEntity");
-    assertThat(floatIdResult instanceof FloatIdJPAEntity).isTrue();
+    assertThat(floatIdResult).isInstanceOf(FloatIdJPAEntity.class);
     assertThat(((FloatIdJPAEntity) floatIdResult).getFloatId()).isEqualTo(floatIdJPAEntity.getFloatId());
 
     Object doubleIdResult = runtimeService.getVariable(processInstanceAllTypes.getId(), "doubleIdJPAEntity");
-    assertThat(doubleIdResult instanceof DoubleIdJPAEntity).isTrue();
+    assertThat(doubleIdResult).isInstanceOf(DoubleIdJPAEntity.class);
     assertThat(((DoubleIdJPAEntity) doubleIdResult).getDoubleId()).isEqualTo(doubleIdJPAEntity.getDoubleId());
 
     Object charIdResult = runtimeService.getVariable(processInstanceAllTypes.getId(), "charIdJPAEntity");
-    assertThat(charIdResult instanceof CharIdJPAEntity).isTrue();
+    assertThat(charIdResult).isInstanceOf(CharIdJPAEntity.class);
     assertThat(((CharIdJPAEntity) charIdResult).getCharId()).isEqualTo(charIdJPAEntity.getCharId());
 
     Object stringIdResult = runtimeService.getVariable(processInstanceAllTypes.getId(), "stringIdJPAEntity");
-    assertThat(stringIdResult instanceof StringIdJPAEntity).isTrue();
+    assertThat(stringIdResult).isInstanceOf(StringIdJPAEntity.class);
     assertThat(((StringIdJPAEntity) stringIdResult).getStringId()).isEqualTo(stringIdJPAEntity.getStringId());
 
     Object dateIdResult = runtimeService.getVariable(processInstanceAllTypes.getId(), "dateIdJPAEntity");
-    assertThat(dateIdResult instanceof DateIdJPAEntity).isTrue();
+    assertThat(dateIdResult).isInstanceOf(DateIdJPAEntity.class);
     assertThat(((DateIdJPAEntity) dateIdResult).getDateId()).isEqualTo(dateIdJPAEntity.getDateId());
 
     Object sqlDateIdResult = runtimeService.getVariable(processInstanceAllTypes.getId(), "sqlDateIdJPAEntity");
-    assertThat(sqlDateIdResult instanceof SQLDateIdJPAEntity).isTrue();
+    assertThat(sqlDateIdResult).isInstanceOf(SQLDateIdJPAEntity.class);
     assertThat(((SQLDateIdJPAEntity) sqlDateIdResult).getDateId()).isEqualTo(sqlDateIdJPAEntity.getDateId());
 
     Object bigDecimalIdResult = runtimeService.getVariable(processInstanceAllTypes.getId(), "bigDecimalIdJPAEntity");
-    assertThat(bigDecimalIdResult instanceof BigDecimalIdJPAEntity).isTrue();
+    assertThat(bigDecimalIdResult).isInstanceOf(BigDecimalIdJPAEntity.class);
     assertThat(((BigDecimalIdJPAEntity) bigDecimalIdResult).getBigDecimalId()).isEqualTo(bigDecimalIdJPAEntity.getBigDecimalId());
 
     Object bigIntegerIdResult = runtimeService.getVariable(processInstanceAllTypes.getId(), "bigIntegerIdJPAEntity");
-    assertThat(bigIntegerIdResult instanceof BigIntegerIdJPAEntity).isTrue();
+    assertThat(bigIntegerIdResult).isInstanceOf(BigIntegerIdJPAEntity.class);
     assertThat(((BigIntegerIdJPAEntity) bigIntegerIdResult).getBigIntegerId()).isEqualTo(bigIntegerIdJPAEntity.getBigIntegerId());
   }
 
@@ -354,34 +354,34 @@ public class JPAVariableTest extends AbstractActivitiTestCase {
 
     // Read entity with @Id on field
     Object fieldAccessResult = runtimeService.getVariable(processInstance.getId(), "simpleEntityFieldAccess");
-    assertThat(fieldAccessResult instanceof List<?>).isTrue();
+    assertThat(fieldAccessResult).isInstanceOf(List.class);
     List<?> list = (List<?>) fieldAccessResult;
     assertThat(list.size()).isEqualTo(3L);
-    assertThat(list.get(0) instanceof FieldAccessJPAEntity).isTrue();
+    assertThat(list.get(0)).isInstanceOf(FieldAccessJPAEntity.class);
     assertThat(simpleEntityFieldAccess.getId()).isEqualTo(((FieldAccessJPAEntity) list.get(0)).getId());
 
     // Read entity with @Id on property
     Object propertyAccessResult = runtimeService.getVariable(processInstance.getId(), "simpleEntityPropertyAccess");
-    assertThat(propertyAccessResult instanceof List<?>).isTrue();
+    assertThat(propertyAccessResult).isInstanceOf(List.class);
     list = (List<?>) propertyAccessResult;
     assertThat(list.size()).isEqualTo(3L);
-    assertThat(list.get(0) instanceof PropertyAccessJPAEntity).isTrue();
+    assertThat(list.get(0)).isInstanceOf(PropertyAccessJPAEntity.class);
     assertThat(simpleEntityPropertyAccess.getId()).isEqualTo(((PropertyAccessJPAEntity) list.get(0)).getId());
 
     // Read entity with @Id on field of mapped superclass
     Object subclassFieldResult = runtimeService.getVariable(processInstance.getId(), "subclassFieldAccess");
-    assertThat(subclassFieldResult instanceof List<?>).isTrue();
+    assertThat(subclassFieldResult).isInstanceOf(List.class);
     list = (List<?>) subclassFieldResult;
     assertThat(list.size()).isEqualTo(3L);
-    assertThat(list.get(0) instanceof SubclassFieldAccessJPAEntity).isTrue();
+    assertThat(list.get(0)).isInstanceOf(SubclassFieldAccessJPAEntity.class);
     assertThat(simpleEntityPropertyAccess.getId()).isEqualTo(((SubclassFieldAccessJPAEntity) list.get(0)).getId());
 
     // Read entity with @Id on property of mapped superclass
     Object subclassPropertyResult = runtimeService.getVariable(processInstance.getId(), "subclassPropertyAccess");
-    assertThat(subclassPropertyResult instanceof List<?>).isTrue();
+    assertThat(subclassPropertyResult).isInstanceOf(List.class);
     list = (List<?>) subclassPropertyResult;
     assertThat(list.size()).isEqualTo(3L);
-    assertThat(list.get(0) instanceof SubclassPropertyAccessJPAEntity).isTrue();
+    assertThat(list.get(0)).isInstanceOf(SubclassPropertyAccessJPAEntity.class);
     assertThat(simpleEntityPropertyAccess.getId()).isEqualTo(((SubclassPropertyAccessJPAEntity) list.get(0)).getId());
   }
 
@@ -409,16 +409,16 @@ public class JPAVariableTest extends AbstractActivitiTestCase {
 
     runtimeService.setVariable(processInstance.getId(), "list", asList(simpleEntityFieldAccess, simpleEntityFieldAccess));
     assertThat(((List<?>) runtimeService.getVariable(processInstance.getId(), "list")).size()).isEqualTo(2L);
-    assertThat(((List<?>) runtimeService.getVariable(processInstance.getId(), "list")).get(0) instanceof FieldAccessJPAEntity).isTrue();
+    assertThat(((List<?>) runtimeService.getVariable(processInstance.getId(), "list")).get(0)).isInstanceOf(FieldAccessJPAEntity.class);
 
     // Test updating to list of Strings
     runtimeService.setVariable(processInstance.getId(), "list", asList("TEST", "TESTING"));
     assertThat(((List<?>) runtimeService.getVariable(processInstance.getId(), "list")).size()).isEqualTo(2L);
-    assertThat(((List<?>) runtimeService.getVariable(processInstance.getId(), "list")).get(0) instanceof String).isTrue();
+    assertThat(((List<?>) runtimeService.getVariable(processInstance.getId(), "list")).get(0)).isInstanceOf(String.class);
 
     runtimeService.setVariable(processInstance.getId(), "list", asList(simpleEntityFieldAccess, simpleEntityFieldAccess));
     assertThat(((List<?>) runtimeService.getVariable(processInstance.getId(), "list")).size()).isEqualTo(2L);
-    assertThat(((List<?>) runtimeService.getVariable(processInstance.getId(), "list")).get(0) instanceof FieldAccessJPAEntity).isTrue();
+    assertThat(((List<?>) runtimeService.getVariable(processInstance.getId(), "list")).get(0)).isInstanceOf(FieldAccessJPAEntity.class);
 
     // Test updating to null
     runtimeService.setVariable(processInstance.getId(), "list", null);
@@ -426,7 +426,7 @@ public class JPAVariableTest extends AbstractActivitiTestCase {
 
     runtimeService.setVariable(processInstance.getId(), "list", asList(simpleEntityFieldAccess, simpleEntityFieldAccess));
     assertThat(((List<?>) runtimeService.getVariable(processInstance.getId(), "list")).size()).isEqualTo(2L);
-    assertThat(((List<?>) runtimeService.getVariable(processInstance.getId(), "list")).get(0) instanceof FieldAccessJPAEntity).isTrue();
+    assertThat(((List<?>) runtimeService.getVariable(processInstance.getId(), "list")).get(0)).isInstanceOf(FieldAccessJPAEntity.class);
   }
 
     // https://activiti.atlassian.net/browse/ACT-995
@@ -627,7 +627,7 @@ public class JPAVariableTest extends AbstractActivitiTestCase {
         // Servicetask in process 'UpdateJPAValuesProcess' should have set value on entityToUpdate.
         Object updatedEntity = runtimeService.getVariable(processInstance.getId(),
                                                           "entityToUpdate");
-        assertThat(updatedEntity instanceof FieldAccessJPAEntity).isTrue();
+        assertThat(updatedEntity).isInstanceOf(FieldAccessJPAEntity.class);
         assertEquals("updatedValue", ((FieldAccessJPAEntity) updatedEntity).getValue());
     }
 }

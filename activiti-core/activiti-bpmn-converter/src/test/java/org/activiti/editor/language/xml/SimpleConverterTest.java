@@ -44,35 +44,35 @@ public class SimpleConverterTest extends AbstractConverterTest {
 
     FlowElement flowElement = model.getMainProcess().getFlowElement("flow1");
     assertThat(flowElement).isNotNull();
-    assertThat(flowElement instanceof SequenceFlow).isTrue();
+    assertThat(flowElement).isInstanceOf(SequenceFlow.class);
     assertThat(flowElement.getId()).isEqualTo("flow1");
 
     flowElement = model.getMainProcess().getFlowElement("catchEvent");
     assertThat(flowElement).isNotNull();
-    assertThat(flowElement instanceof IntermediateCatchEvent).isTrue();
+    assertThat(flowElement).isInstanceOf(IntermediateCatchEvent.class);
     assertThat(flowElement.getId()).isEqualTo("catchEvent");
     IntermediateCatchEvent catchEvent = (IntermediateCatchEvent) flowElement;
     assertThat(catchEvent.getEventDefinitions().size() == 1).isTrue();
     EventDefinition eventDefinition = catchEvent.getEventDefinitions().get(0);
-    assertThat(eventDefinition instanceof TimerEventDefinition).isTrue();
+    assertThat(eventDefinition).isInstanceOf(TimerEventDefinition.class);
     TimerEventDefinition timerDefinition = (TimerEventDefinition) eventDefinition;
     assertThat(timerDefinition.getTimeDuration()).isEqualTo("PT5M");
 
     flowElement = model.getMainProcess().getFlowElement("userTask1");
     assertThat(flowElement).isNotNull();
-    assertThat(flowElement instanceof UserTask).isTrue();
+    assertThat(flowElement).isInstanceOf(UserTask.class);
     UserTask task = (UserTask) flowElement;
     assertThat(task.getDocumentation()).isEqualTo("task doc");
 
     flowElement = model.getMainProcess().getFlowElement("flow1Condition");
     assertThat(flowElement).isNotNull();
-    assertThat(flowElement instanceof SequenceFlow).isTrue();
+    assertThat(flowElement).isInstanceOf(SequenceFlow.class);
     assertThat(flowElement.getId()).isEqualTo("flow1Condition");
     SequenceFlow flow = (SequenceFlow) flowElement;
     assertThat(flow.getConditionExpression()).isEqualTo("${number <= 1}");
 
     flowElement = model.getMainProcess().getFlowElement("gateway1");
     assertThat(flowElement).isNotNull();
-    assertThat(flowElement instanceof ExclusiveGateway).isTrue();
+    assertThat(flowElement).isInstanceOf(ExclusiveGateway.class);
   }
 }

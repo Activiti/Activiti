@@ -12,6 +12,8 @@
  */
 package org.activiti.engine.test.bpmn.event.timer;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.io.ByteArrayInputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -48,7 +50,7 @@ public class StartTimerEventTest extends PluggableActivitiTestCase {
                                            200L);
 
         List<ProcessInstance> pi = runtimeService.createProcessInstanceQuery().processDefinitionKey("startTimerEventExample").list();
-        assertEquals(1, pi.size());
+        assertThat(pi).hasSize(1);
 
         assertEquals(0, jobQuery.count());
     }
@@ -64,7 +66,7 @@ public class StartTimerEventTest extends PluggableActivitiTestCase {
                                            200L);
 
         List<ProcessInstance> pi = runtimeService.createProcessInstanceQuery().processDefinitionKey("startTimerEventExample").list();
-        assertEquals(1, pi.size());
+        assertThat(pi).hasSize(1);
 
         assertEquals(0, jobQuery.count());
     }
@@ -142,7 +144,7 @@ public class StartTimerEventTest extends PluggableActivitiTestCase {
                                            200L);
 
         List<ProcessInstance> pi = runtimeService.createProcessInstanceQuery().processDefinitionKey("startTimerEventExample").list();
-        assertEquals(1, pi.size());
+        assertThat(pi).hasSize(1);
 
         assertEquals(0, jobQuery.count());
     }

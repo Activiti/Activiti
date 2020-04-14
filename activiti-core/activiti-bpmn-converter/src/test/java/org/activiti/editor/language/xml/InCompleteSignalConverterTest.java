@@ -27,7 +27,7 @@ public class InCompleteSignalConverterTest extends AbstractConverterTest {
   private void validateModel(BpmnModel model) {
     FlowElement flowElement = model.getMainProcess().getFlowElement("task");
     assertThat(flowElement).isNotNull();
-    assertThat(flowElement instanceof UserTask).isTrue();
+    assertThat(flowElement).isInstanceOf(UserTask.class);
     assertThat(flowElement.getId()).isEqualTo("task");
 
     ProcessValidator processValidator = new ProcessValidatorFactory().createDefaultProcessValidator();

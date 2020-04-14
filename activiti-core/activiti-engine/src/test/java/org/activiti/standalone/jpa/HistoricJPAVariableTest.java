@@ -93,7 +93,7 @@ public class HistoricJPAVariableTest extends AbstractActivitiTestCase {
 				.processInstanceId(processInstanceId).variableName("simpleEntityFieldAccess").singleResult();
 
 		Object value = historicVariableInstance.getValue();
-		assertThat(value instanceof FieldAccessJPAEntity).isTrue();
+		assertThat(value).isInstanceOf(FieldAccessJPAEntity.class);
 		assertThat(simpleEntityFieldAccess.getValue()).isEqualTo(((FieldAccessJPAEntity)value).getValue());
 	}
 
@@ -122,7 +122,7 @@ public class HistoricJPAVariableTest extends AbstractActivitiTestCase {
 
 		for (HistoricData event : events) {
 			Object value = ((HistoricVariableInstanceEntity) event).getValue();
-			assertThat(value instanceof FieldAccessJPAEntity).isTrue();
+			assertThat(value).isInstanceOf(FieldAccessJPAEntity.class);
 			assertThat(simpleEntityFieldAccess.getValue()).isEqualTo(((FieldAccessJPAEntity)value).getValue());
 		}
 	}
@@ -154,7 +154,7 @@ public class HistoricJPAVariableTest extends AbstractActivitiTestCase {
 
     for (HistoricData event : events) {
       Object value = ((HistoricDetailVariableInstanceUpdateEntity) event).getValue();
-      assertThat(value instanceof FieldAccessJPAEntity).isTrue();
+      assertThat(value).isInstanceOf(FieldAccessJPAEntity.class);
       assertThat(simpleEntityFieldAccess.getValue()).isEqualTo(((FieldAccessJPAEntity)value).getValue());
     }
   }

@@ -456,9 +456,9 @@ public class JobEventsTest extends PluggableActivitiTestCase {
     assertThat(event.getProcessDefinitionId()).isEqualTo(entity.getProcessDefinitionId());
     assertThat(event.getExecutionId()).isNotNull();
 
-    assertThat(event instanceof ActivitiEntityEvent).isTrue();
+    assertThat(event).isInstanceOf(ActivitiEntityEvent.class);
     ActivitiEntityEvent entityEvent = (ActivitiEntityEvent) event;
-    assertThat(entityEvent.getEntity() instanceof Job).isTrue();
+    assertThat(entityEvent.getEntity()).isInstanceOf(Job.class);
     assertThat(((Job) entityEvent.getEntity()).getId()).isEqualTo(entity.getId());
   }
 

@@ -14,6 +14,7 @@
 package org.activiti.engine.test.bpmn.parse;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.util.List;
 
@@ -22,6 +23,7 @@ import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.GraphicInfo;
 import org.activiti.bpmn.model.Process;
 import org.activiti.bpmn.model.SequenceFlow;
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.impl.test.TestHelper;
 import org.activiti.engine.repository.ProcessDefinition;
@@ -34,13 +36,11 @@ import org.activiti.engine.test.Deployment;
 public class BpmnParseTest extends PluggableActivitiTestCase {
 
   public void testInvalidProcessDefinition() {
-    try {
-      String resource = TestHelper.getBpmnProcessDefinitionResource(getClass(), "testInvalidProcessDefinition");
-      repositoryService.createDeployment().name(resource).addClasspathResource(resource).deploy();
-      fail();
-    } catch (XMLException e) {
-      // expected exception
-    }
+    assertThatExceptionOfType(XMLException.class)
+      .isThrownBy(() -> {
+        String resource = TestHelper.getBpmnProcessDefinitionResource(getClass(), "testInvalidProcessDefinition");
+        repositoryService.createDeployment().name(resource).addClasspathResource(resource).deploy();
+      });
   }
 
   public void testParseWithBpmnNamespacePrefix() {

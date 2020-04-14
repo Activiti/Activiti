@@ -43,7 +43,7 @@ public class ProcessDefinitionEventsTest extends PluggableActivitiTestCase {
 
     // Check create-event
     assertThat(listener.getEventsReceived().size()).isEqualTo(2);
-    assertThat(listener.getEventsReceived().get(0) instanceof ActivitiEntityEvent).isTrue();
+    assertThat(listener.getEventsReceived().get(0)).isInstanceOf(ActivitiEntityEvent.class);
 
     ActivitiEntityEvent event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
     assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_CREATED);
@@ -57,7 +57,7 @@ public class ProcessDefinitionEventsTest extends PluggableActivitiTestCase {
     // Check update event when category is updated
     repositoryService.setProcessDefinitionCategory(processDefinition.getId(), "test");
     assertThat(listener.getEventsReceived().size()).isEqualTo(1);
-    assertThat(listener.getEventsReceived().get(0) instanceof ActivitiEntityEvent).isTrue();
+    assertThat(listener.getEventsReceived().get(0)).isInstanceOf(ActivitiEntityEvent.class);
 
     event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
     assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_UPDATED);
@@ -83,7 +83,7 @@ public class ProcessDefinitionEventsTest extends PluggableActivitiTestCase {
     deploymentIdFromDeploymentAnnotation = null;
 
     assertThat(listener.getEventsReceived().size()).isEqualTo(1);
-    assertThat(listener.getEventsReceived().get(0) instanceof ActivitiEntityEvent).isTrue();
+    assertThat(listener.getEventsReceived().get(0)).isInstanceOf(ActivitiEntityEvent.class);
 
     event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
     assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_DELETED);

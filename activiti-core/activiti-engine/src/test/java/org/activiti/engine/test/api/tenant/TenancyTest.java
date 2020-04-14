@@ -15,7 +15,10 @@ import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
+
+import static java.util.Collections.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 /**
  * A test case for the various implications of the tenancy support (tenant id column to entities + query support)
@@ -371,75 +374,47 @@ public class TenancyTest extends PluggableActivitiTestCase {
         String newTenantId = "NEW TENANT ID";
 
         String deploymentId = repositoryService.createProcessDefinitionQuery().processDefinitionId(processDefinitionIdWithTenant).singleResult().getDeploymentId();
-        repositoryService.changeDeploymentTenantId(deploymentId,
-                                                   newTenantId);
+        repositoryService.changeDeploymentTenantId(deploymentId, newTenantId);
 
         // Verify tenant id
         Deployment deployment = repositoryService.createDeploymentQuery().deploymentId(deploymentId).singleResult();
-        assertEquals(newTenantId,
-                     deployment.getTenantId());
+        assertEquals(newTenantId, deployment.getTenantId());
 
         // Verify deployment
-        assertEquals(2,
-                     repositoryService.createDeploymentQuery().list().size());
-        assertEquals(0,
-                     repositoryService.createDeploymentQuery().deploymentTenantId(TEST_TENANT_ID).list().size());
-        assertEquals(1,
-                     repositoryService.createDeploymentQuery().deploymentTenantId(newTenantId).list().size());
-        assertEquals(1,
-                     repositoryService.createDeploymentQuery().deploymentWithoutTenantId().list().size());
+        assertEquals(2, repositoryService.createDeploymentQuery().list().size());
+        assertEquals(0, repositoryService.createDeploymentQuery().deploymentTenantId(TEST_TENANT_ID).list().size());
+        assertEquals(1, repositoryService.createDeploymentQuery().deploymentTenantId(newTenantId).list().size());
+        assertEquals(1, repositoryService.createDeploymentQuery().deploymentWithoutTenantId().list().size());
 
         // Verify process definition
-        assertEquals(2,
-                     repositoryService.createProcessDefinitionQuery().list().size());
-        assertEquals(0,
-                     repositoryService.createProcessDefinitionQuery().processDefinitionTenantId(TEST_TENANT_ID).list().size());
-        assertEquals(1,
-                     repositoryService.createProcessDefinitionQuery().processDefinitionTenantId(newTenantId).list().size());
-        assertEquals(1,
-                     repositoryService.createProcessDefinitionQuery().processDefinitionTenantId(newTenantId).list().size());
+        assertEquals(2, repositoryService.createProcessDefinitionQuery().list().size());
+        assertEquals(0, repositoryService.createProcessDefinitionQuery().processDefinitionTenantId(TEST_TENANT_ID).list().size());
+        assertEquals(1, repositoryService.createProcessDefinitionQuery().processDefinitionTenantId(newTenantId).list().size());
+        assertEquals(1, repositoryService.createProcessDefinitionQuery().processDefinitionTenantId(newTenantId).list().size());
 
         // Verify process instances
-        assertEquals(nrOfProcessInstancesNoTenant + nrOfProcessInstancesWithTenant,
-                     runtimeService.createProcessInstanceQuery().list().size());
-        assertEquals(0,
-                     runtimeService.createProcessInstanceQuery().processInstanceTenantId(TEST_TENANT_ID).list().size());
-        assertEquals(nrOfProcessInstancesWithTenant,
-                     runtimeService.createProcessInstanceQuery().processInstanceTenantId(newTenantId).list().size());
-        assertEquals(nrOfProcessInstancesNoTenant,
-                     runtimeService.createProcessInstanceQuery().processInstanceWithoutTenantId().list().size());
+        assertEquals(nrOfProcessInstancesNoTenant + nrOfProcessInstancesWithTenant, runtimeService.createProcessInstanceQuery().list().size());
+        assertEquals(0, runtimeService.createProcessInstanceQuery().processInstanceTenantId(TEST_TENANT_ID).list().size());
+        assertEquals(nrOfProcessInstancesWithTenant, runtimeService.createProcessInstanceQuery().processInstanceTenantId(newTenantId).list().size());
+        assertEquals(nrOfProcessInstancesNoTenant, runtimeService.createProcessInstanceQuery().processInstanceWithoutTenantId().list().size());
 
         // Verify executions
-        assertEquals(3 * (nrOfProcessInstancesNoTenant + nrOfProcessInstancesWithTenant),
-                     runtimeService.createExecutionQuery().list().size());
-        assertEquals(3 * nrOfProcessInstancesNoTenant,
-                     runtimeService.createExecutionQuery().executionWithoutTenantId().list().size());
-        assertEquals(0,
-                     runtimeService.createExecutionQuery().executionTenantId(TEST_TENANT_ID).list().size());
-        assertEquals(3 * nrOfProcessInstancesWithTenant,
-                     runtimeService.createExecutionQuery().executionTenantId(newTenantId).list().size());
-        assertEquals(3 * nrOfProcessInstancesWithTenant,
-                     runtimeService.createExecutionQuery().executionTenantIdLike("NEW%").list().size());
+        assertEquals(3 * (nrOfProcessInstancesNoTenant + nrOfProcessInstancesWithTenant), runtimeService.createExecutionQuery().list().size());
+        assertEquals(3 * nrOfProcessInstancesNoTenant, runtimeService.createExecutionQuery().executionWithoutTenantId().list().size());
+        assertEquals(0, runtimeService.createExecutionQuery().executionTenantId(TEST_TENANT_ID).list().size());
+        assertEquals(3 * nrOfProcessInstancesWithTenant, runtimeService.createExecutionQuery().executionTenantId(newTenantId).list().size());
+        assertEquals(3 * nrOfProcessInstancesWithTenant, runtimeService.createExecutionQuery().executionTenantIdLike("NEW%").list().size());
 
         // Verify tasks
-        assertEquals(2 * (nrOfProcessInstancesNoTenant + nrOfProcessInstancesWithTenant),
-                     taskService.createTaskQuery().list().size());
-        assertEquals(0,
-                     taskService.createTaskQuery().taskTenantId(TEST_TENANT_ID).list().size());
-        assertEquals(2 * nrOfProcessInstancesWithTenant,
-                     taskService.createTaskQuery().taskTenantId(newTenantId).list().size());
-        assertEquals(2 * nrOfProcessInstancesNoTenant,
-                     taskService.createTaskQuery().taskWithoutTenantId().list().size());
+        assertEquals(2 * (nrOfProcessInstancesNoTenant + nrOfProcessInstancesWithTenant), taskService.createTaskQuery().list().size());
+        assertEquals(0, taskService.createTaskQuery().taskTenantId(TEST_TENANT_ID).list().size());
+        assertEquals(2 * nrOfProcessInstancesWithTenant, taskService.createTaskQuery().taskTenantId(newTenantId).list().size());
+        assertEquals(2 * nrOfProcessInstancesNoTenant, taskService.createTaskQuery().taskWithoutTenantId().list().size());
 
         // Remove the tenant id and verify results
-        try {
-            repositoryService.changeDeploymentTenantId(deploymentId,
-                                                       "");
-            fail(); // should clash: there is already a process definition with
-            // the same key
-        } catch (Exception e) {
-
-        }
+        // should clash: there is already a process definition with the same key
+        assertThatExceptionOfType(Exception.class)
+            .isThrownBy(() -> repositoryService.changeDeploymentTenantId(deploymentId, ""));
     }
 
     public void testChangeDeploymentIdWithClash() {
@@ -448,54 +423,46 @@ public class TenancyTest extends PluggableActivitiTestCase {
 
         // Changing the one with tenant now back to one without should clash,
         // cause there already exists one
-        try {
-            repositoryService.changeDeploymentTenantId(processDefinitionIdWithTenant,
-                                                       "");
-            fail();
-        } catch (Exception e) {
-        }
+        assertThatExceptionOfType(Exception.class)
+            .isThrownBy(() -> repositoryService.changeDeploymentTenantId(processDefinitionIdWithTenant, ""));
 
         // Deploying another version should just up the version
         String processDefinitionIdNoTenant2 = deployOneTaskTestProcess();
-        assertEquals(2,
-                     repositoryService.createProcessDefinitionQuery().processDefinitionId(processDefinitionIdNoTenant2).singleResult().getVersion());
+        assertEquals(2, repositoryService.createProcessDefinitionQuery().processDefinitionId(processDefinitionIdNoTenant2).singleResult().getVersion());
     }
 
     public void testJobTenancyAfterTenantChange() {
 
         // Deploy process with a timer and an async step AND with a tenant
-        String deploymentId = repositoryService.createDeployment().addClasspathResource("org/activiti/engine/test/api/tenant/TenancyTest.testJobTenancy.bpmn20.xml").tenantId(TEST_TENANT_ID).deploy()
-                .getId();
+        String deploymentId = repositoryService.createDeployment()
+            .addClasspathResource("org/activiti/engine/test/api/tenant/TenancyTest.testJobTenancy.bpmn20.xml").tenantId(TEST_TENANT_ID)
+            .deploy()
+            .getId();
 
         String newTenant = "newTenant";
-        repositoryService.changeDeploymentTenantId(deploymentId,
-                                                   newTenant);
+        repositoryService.changeDeploymentTenantId(deploymentId, newTenant);
 
         // verify job (timer start)
         Job job = managementService.createTimerJobQuery().singleResult();
-        assertEquals(newTenant,
-                     job.getTenantId());
+        assertEquals(newTenant, job.getTenantId());
         managementService.moveTimerToExecutableJob(job.getId());
         managementService.executeJob(job.getId());
 
         // Verify Job tenancy (process intermediary timer)
         job = managementService.createTimerJobQuery().singleResult();
-        assertEquals(newTenant,
-                     job.getTenantId());
+        assertEquals(newTenant, job.getTenantId());
 
         // Start process, and verify async job has correct tenant id
         managementService.moveTimerToExecutableJob(job.getId());
         managementService.executeJob(job.getId());
         job = managementService.createJobQuery().singleResult();
-        assertEquals(newTenant,
-                     job.getTenantId());
+        assertEquals(newTenant, job.getTenantId());
 
         // Finish process
         managementService.executeJob(job.getId());
 
         // clean up
-        repositoryService.deleteDeployment(deploymentId,
-                                           true);
+        repositoryService.deleteDeployment(deploymentId, true);
     }
 
     public void testHistoryTenancy() {
@@ -522,49 +489,31 @@ public class TenancyTest extends PluggableActivitiTestCase {
             }
 
             // Verify process instances
-            assertEquals(TEST_TENANT_ID,
-                         historyService.createHistoricProcessInstanceQuery().processDefinitionId(processDefinitionIdWithTenant).list().get(0).getTenantId());
-            assertEquals("",
-                         historyService.createHistoricProcessInstanceQuery().processDefinitionId(processDefinitionIdNoTenant).list().get(0).getTenantId());
-            assertEquals(nrOfProcessInstancesWithTenant + nrOfProcessInstancesNoTenant,
-                         historyService.createHistoricProcessInstanceQuery().list().size());
-            assertEquals(nrOfProcessInstancesWithTenant,
-                         historyService.createHistoricProcessInstanceQuery().processInstanceTenantId(TEST_TENANT_ID).list().size());
-            assertEquals(nrOfProcessInstancesWithTenant,
-                         historyService.createHistoricProcessInstanceQuery().processInstanceTenantIdLike("%e%").list().size());
-            assertEquals(nrOfProcessInstancesNoTenant,
-                         historyService.createHistoricProcessInstanceQuery().processInstanceWithoutTenantId().list().size());
+            assertEquals(TEST_TENANT_ID, historyService.createHistoricProcessInstanceQuery().processDefinitionId(processDefinitionIdWithTenant).list().get(0).getTenantId());
+            assertEquals("", historyService.createHistoricProcessInstanceQuery().processDefinitionId(processDefinitionIdNoTenant).list().get(0).getTenantId());
+            assertEquals(nrOfProcessInstancesWithTenant + nrOfProcessInstancesNoTenant, historyService.createHistoricProcessInstanceQuery().list().size());
+            assertEquals(nrOfProcessInstancesWithTenant, historyService.createHistoricProcessInstanceQuery().processInstanceTenantId(TEST_TENANT_ID).list().size());
+            assertEquals(nrOfProcessInstancesWithTenant, historyService.createHistoricProcessInstanceQuery().processInstanceTenantIdLike("%e%").list().size());
+            assertEquals(nrOfProcessInstancesNoTenant, historyService.createHistoricProcessInstanceQuery().processInstanceWithoutTenantId().list().size());
 
             // verify tasks
-            assertEquals(TEST_TENANT_ID,
-                         historyService.createHistoricTaskInstanceQuery().processDefinitionId(processDefinitionIdWithTenant).list().get(0).getTenantId());
-            assertEquals("",
-                         historyService.createHistoricTaskInstanceQuery().processDefinitionId(processDefinitionIdNoTenant).list().get(0).getTenantId());
-            assertEquals(nrOfProcessInstancesWithTenant + nrOfProcessInstancesNoTenant,
-                         historyService.createHistoricTaskInstanceQuery().list().size());
-            assertEquals(nrOfProcessInstancesWithTenant,
-                         historyService.createHistoricTaskInstanceQuery().taskTenantId(TEST_TENANT_ID).list().size());
-            assertEquals(nrOfProcessInstancesWithTenant,
-                         historyService.createHistoricTaskInstanceQuery().taskTenantIdLike("my%").list().size());
-            assertEquals(nrOfProcessInstancesNoTenant,
-                         historyService.createHistoricTaskInstanceQuery().taskWithoutTenantId().list().size());
+            assertEquals(TEST_TENANT_ID, historyService.createHistoricTaskInstanceQuery().processDefinitionId(processDefinitionIdWithTenant).list().get(0).getTenantId());
+            assertEquals("", historyService.createHistoricTaskInstanceQuery().processDefinitionId(processDefinitionIdNoTenant).list().get(0).getTenantId());
+            assertEquals(nrOfProcessInstancesWithTenant + nrOfProcessInstancesNoTenant, historyService.createHistoricTaskInstanceQuery().list().size());
+            assertEquals(nrOfProcessInstancesWithTenant, historyService.createHistoricTaskInstanceQuery().taskTenantId(TEST_TENANT_ID).list().size());
+            assertEquals(nrOfProcessInstancesWithTenant, historyService.createHistoricTaskInstanceQuery().taskTenantIdLike("my%").list().size());
+            assertEquals(nrOfProcessInstancesNoTenant, historyService.createHistoricTaskInstanceQuery().taskWithoutTenantId().list().size());
 
             // verify activities
             List<HistoricActivityInstance> activityInstances = historyService.createHistoricActivityInstanceQuery().processDefinitionId(processDefinitionIdWithTenant).list();
             for (HistoricActivityInstance historicActivityInstance : activityInstances) {
-                assertEquals(TEST_TENANT_ID,
-                             historicActivityInstance.getTenantId());
+                assertEquals(TEST_TENANT_ID, historicActivityInstance.getTenantId());
             }
-            assertEquals("",
-                         historyService.createHistoricActivityInstanceQuery().processDefinitionId(processDefinitionIdNoTenant).list().get(0).getTenantId());
-            assertEquals(3 * (nrOfProcessInstancesWithTenant + nrOfProcessInstancesNoTenant),
-                         historyService.createHistoricActivityInstanceQuery().list().size());
-            assertEquals(3 * nrOfProcessInstancesWithTenant,
-                         historyService.createHistoricActivityInstanceQuery().activityTenantId(TEST_TENANT_ID).list().size());
-            assertEquals(3 * nrOfProcessInstancesWithTenant,
-                         historyService.createHistoricActivityInstanceQuery().activityTenantIdLike("my%").list().size());
-            assertEquals(3 * nrOfProcessInstancesNoTenant,
-                         historyService.createHistoricActivityInstanceQuery().activityWithoutTenantId().list().size());
+            assertEquals("", historyService.createHistoricActivityInstanceQuery().processDefinitionId(processDefinitionIdNoTenant).list().get(0).getTenantId());
+            assertEquals(3 * (nrOfProcessInstancesWithTenant + nrOfProcessInstancesNoTenant), historyService.createHistoricActivityInstanceQuery().list().size());
+            assertEquals(3 * nrOfProcessInstancesWithTenant, historyService.createHistoricActivityInstanceQuery().activityTenantId(TEST_TENANT_ID).list().size());
+            assertEquals(3 * nrOfProcessInstancesWithTenant, historyService.createHistoricActivityInstanceQuery().activityTenantIdLike("my%").list().size());
+            assertEquals(3 * nrOfProcessInstancesNoTenant, historyService.createHistoricActivityInstanceQuery().activityWithoutTenantId().list().size());
         }
     }
 
@@ -573,28 +522,19 @@ public class TenancyTest extends PluggableActivitiTestCase {
         String tentanA = "tenantA";
         String tenantB = "tenantB";
 
-        // Deploy the same process (same process definition key) for two
-        // different tenants.
+        // Deploy the same process (same process definition key) for two different tenants.
         String procDefIdA = deployTestProcessWithTestTenant(tentanA);
         String procDefIdB = deployTestProcessWithTestTenant(tenantB);
 
         // verify query
-        assertEquals("oneTaskProcess",
-                     repositoryService.createProcessDefinitionQuery().processDefinitionId(procDefIdA).singleResult().getKey());
-        assertEquals(1,
-                     repositoryService.createProcessDefinitionQuery().processDefinitionId(procDefIdA).singleResult().getVersion());
-        assertEquals("oneTaskProcess",
-                     repositoryService.createProcessDefinitionQuery().processDefinitionId(procDefIdB).singleResult().getKey());
-        assertEquals(1,
-                     repositoryService.createProcessDefinitionQuery().processDefinitionId(procDefIdB).singleResult().getVersion());
-        assertEquals(2,
-                     repositoryService.createProcessDefinitionQuery().processDefinitionKey("oneTaskProcess").list().size());
-        assertEquals(1,
-                     repositoryService.createProcessDefinitionQuery().processDefinitionKey("oneTaskProcess").processDefinitionTenantId(tentanA).list().size());
-        assertEquals(1,
-                     repositoryService.createProcessDefinitionQuery().processDefinitionKey("oneTaskProcess").processDefinitionTenantId(tenantB).list().size());
-        assertEquals(0,
-                     repositoryService.createProcessDefinitionQuery().processDefinitionKey("oneTaskProcess").processDefinitionWithoutTenantId().list().size());
+        assertEquals("oneTaskProcess", repositoryService.createProcessDefinitionQuery().processDefinitionId(procDefIdA).singleResult().getKey());
+        assertEquals(1, repositoryService.createProcessDefinitionQuery().processDefinitionId(procDefIdA).singleResult().getVersion());
+        assertEquals("oneTaskProcess", repositoryService.createProcessDefinitionQuery().processDefinitionId(procDefIdB).singleResult().getKey());
+        assertEquals(1, repositoryService.createProcessDefinitionQuery().processDefinitionId(procDefIdB).singleResult().getVersion());
+        assertEquals(2, repositoryService.createProcessDefinitionQuery().processDefinitionKey("oneTaskProcess").list().size());
+        assertEquals(1, repositoryService.createProcessDefinitionQuery().processDefinitionKey("oneTaskProcess").processDefinitionTenantId(tentanA).list().size());
+        assertEquals(1, repositoryService.createProcessDefinitionQuery().processDefinitionKey("oneTaskProcess").processDefinitionTenantId(tenantB).list().size());
+        assertEquals(0, repositoryService.createProcessDefinitionQuery().processDefinitionKey("oneTaskProcess").processDefinitionWithoutTenantId().list().size());
 
         // Deploy second version
         procDefIdA = deployTestProcessWithTestTenant(tentanA);
@@ -621,13 +561,10 @@ public class TenancyTest extends PluggableActivitiTestCase {
                      repositoryService.createProcessDefinitionQuery().processDefinitionKey("oneTaskProcess").processDefinitionWithoutTenantId().list().size());
 
         // Now, start process instances by process definition key (no tenant)
-        try {
-            runtimeService.startProcessInstanceByKey("oneTaskProcess");
-            fail(); // shouldn't happen, there is no process definition with that
-            // key that has no tenant, it has to give an exception as
-            // such!
-        } catch (Exception e) {
-        }
+        // shouldn't happen, there is no process definition with that
+        // key that has no tenant, it has to give an exception as such!
+        assertThatExceptionOfType(Exception.class)
+            .isThrownBy(() -> runtimeService.startProcessInstanceByKey("oneTaskProcess"));
 
         ProcessInstance processInstance = runtimeService.startProcessInstanceByKeyAndTenantId("oneTaskProcess",
                                                                                               tentanA);
@@ -742,16 +679,11 @@ public class TenancyTest extends PluggableActivitiTestCase {
         repositoryService.createDeployment().addClasspathResource("org/activiti/engine/test/api/tenant/TenancyTest.testMultiTenancySignals.bpmn20.xml").deploy();
         repositoryService.createDeployment().addClasspathResource("org/activiti/engine/test/api/tenant/TenancyTest.testMultiTenancySignals.bpmn20.xml").tenantId(TEST_TENANT_ID).deploy();
 
-        // Start 4 proc instances for the one with a tenant and 5 for the one
-        // without tenant
-        runtimeService.startProcessInstanceByKeyAndTenantId("testMtSignalCatch",
-                                                            TEST_TENANT_ID);
-        runtimeService.startProcessInstanceByKeyAndTenantId("testMtSignalCatch",
-                                                            TEST_TENANT_ID);
-        runtimeService.startProcessInstanceByKeyAndTenantId("testMtSignalCatch",
-                                                            TEST_TENANT_ID);
-        runtimeService.startProcessInstanceByKeyAndTenantId("testMtSignalCatch",
-                                                            TEST_TENANT_ID);
+        // Start 4 proc instances for the one with a tenant and 5 for the one without tenant
+        runtimeService.startProcessInstanceByKeyAndTenantId("testMtSignalCatch", TEST_TENANT_ID);
+        runtimeService.startProcessInstanceByKeyAndTenantId("testMtSignalCatch", TEST_TENANT_ID);
+        runtimeService.startProcessInstanceByKeyAndTenantId("testMtSignalCatch", TEST_TENANT_ID);
+        runtimeService.startProcessInstanceByKeyAndTenantId("testMtSignalCatch", TEST_TENANT_ID);
         runtimeService.startProcessInstanceByKey("testMtSignalCatch");
         runtimeService.startProcessInstanceByKey("testMtSignalCatch");
         runtimeService.startProcessInstanceByKey("testMtSignalCatch");
@@ -759,51 +691,37 @@ public class TenancyTest extends PluggableActivitiTestCase {
         runtimeService.startProcessInstanceByKey("testMtSignalCatch");
 
         // Verify
-        assertEquals(4,
-                     taskService.createTaskQuery().taskName("My task").taskTenantId(TEST_TENANT_ID).count());
-        assertEquals(5,
-                     taskService.createTaskQuery().taskName("My task").taskWithoutTenantId().count());
+        assertEquals(4, taskService.createTaskQuery().taskName("My task").taskTenantId(TEST_TENANT_ID).count());
+        assertEquals(5, taskService.createTaskQuery().taskName("My task").taskWithoutTenantId().count());
 
         // Signal through API (with tenant)
-        runtimeService.signalEventReceivedWithTenantId("The Signal",
-                                                       TEST_TENANT_ID);
-        assertEquals(4,
-                     taskService.createTaskQuery().taskName("Task after signal").taskTenantId(TEST_TENANT_ID).count());
-        assertEquals(0,
-                     taskService.createTaskQuery().taskName("Task after signal").taskWithoutTenantId().count());
+        runtimeService.signalEventReceivedWithTenantId("The Signal", TEST_TENANT_ID);
+        assertEquals(4, taskService.createTaskQuery().taskName("Task after signal").taskTenantId(TEST_TENANT_ID).count());
+        assertEquals(0, taskService.createTaskQuery().taskName("Task after signal").taskWithoutTenantId().count());
 
         // Signal through API (without tenant)
         runtimeService.signalEventReceived("The Signal");
-        assertEquals(4,
-                     taskService.createTaskQuery().taskName("Task after signal").taskTenantId(TEST_TENANT_ID).count());
-        assertEquals(5,
-                     taskService.createTaskQuery().taskName("Task after signal").taskWithoutTenantId().count());
+        assertEquals(4, taskService.createTaskQuery().taskName("Task after signal").taskTenantId(TEST_TENANT_ID).count());
+        assertEquals(5, taskService.createTaskQuery().taskName("Task after signal").taskWithoutTenantId().count());
 
         // Cleanup
         for (Deployment deployment : repositoryService.createDeploymentQuery().list()) {
-            repositoryService.deleteDeployment(deployment.getId(),
-                                               true);
+            repositoryService.deleteDeployment(deployment.getId(), true);
         }
     }
 
     public void testSignalThroughApiTenancyReversed() { // cause reversing the
-        // order of calling DID
-        // leave to an error!
+        // order of calling DID leave to an error!
 
         // Deploy process both with and without tenant
         repositoryService.createDeployment().addClasspathResource("org/activiti/engine/test/api/tenant/TenancyTest.testMultiTenancySignals.bpmn20.xml").deploy();
         repositoryService.createDeployment().addClasspathResource("org/activiti/engine/test/api/tenant/TenancyTest.testMultiTenancySignals.bpmn20.xml").tenantId(TEST_TENANT_ID).deploy();
 
-        // Start 4 proc instances for the one with a tenant and 5 for the one
-        // without tenant
-        runtimeService.startProcessInstanceByKeyAndTenantId("testMtSignalCatch",
-                                                            TEST_TENANT_ID);
-        runtimeService.startProcessInstanceByKeyAndTenantId("testMtSignalCatch",
-                                                            TEST_TENANT_ID);
-        runtimeService.startProcessInstanceByKeyAndTenantId("testMtSignalCatch",
-                                                            TEST_TENANT_ID);
-        runtimeService.startProcessInstanceByKeyAndTenantId("testMtSignalCatch",
-                                                            TEST_TENANT_ID);
+        // Start 4 proc instances for the one with a tenant and 5 for the one without tenant
+        runtimeService.startProcessInstanceByKeyAndTenantId("testMtSignalCatch", TEST_TENANT_ID);
+        runtimeService.startProcessInstanceByKeyAndTenantId("testMtSignalCatch", TEST_TENANT_ID);
+        runtimeService.startProcessInstanceByKeyAndTenantId("testMtSignalCatch", TEST_TENANT_ID);
+        runtimeService.startProcessInstanceByKeyAndTenantId("testMtSignalCatch", TEST_TENANT_ID);
         runtimeService.startProcessInstanceByKey("testMtSignalCatch");
         runtimeService.startProcessInstanceByKey("testMtSignalCatch");
         runtimeService.startProcessInstanceByKey("testMtSignalCatch");
@@ -811,30 +729,22 @@ public class TenancyTest extends PluggableActivitiTestCase {
         runtimeService.startProcessInstanceByKey("testMtSignalCatch");
 
         // Verify
-        assertEquals(4,
-                     taskService.createTaskQuery().taskName("My task").taskTenantId(TEST_TENANT_ID).count());
-        assertEquals(5,
-                     taskService.createTaskQuery().taskName("My task").taskWithoutTenantId().count());
+        assertEquals(4, taskService.createTaskQuery().taskName("My task").taskTenantId(TEST_TENANT_ID).count());
+        assertEquals(5, taskService.createTaskQuery().taskName("My task").taskWithoutTenantId().count());
 
         // Signal through API (without tenant)
         runtimeService.signalEventReceived("The Signal");
-        assertEquals(0,
-                     taskService.createTaskQuery().taskName("Task after signal").taskTenantId(TEST_TENANT_ID).count());
-        assertEquals(5,
-                     taskService.createTaskQuery().taskName("Task after signal").taskWithoutTenantId().count());
+        assertEquals(0, taskService.createTaskQuery().taskName("Task after signal").taskTenantId(TEST_TENANT_ID).count());
+        assertEquals(5, taskService.createTaskQuery().taskName("Task after signal").taskWithoutTenantId().count());
 
         // Signal through API (with tenant)
-        runtimeService.signalEventReceivedWithTenantId("The Signal",
-                                                       TEST_TENANT_ID);
-        assertEquals(4,
-                     taskService.createTaskQuery().taskName("Task after signal").taskTenantId(TEST_TENANT_ID).count());
-        assertEquals(5,
-                     taskService.createTaskQuery().taskName("Task after signal").taskWithoutTenantId().count());
+        runtimeService.signalEventReceivedWithTenantId("The Signal", TEST_TENANT_ID);
+        assertEquals(4, taskService.createTaskQuery().taskName("Task after signal").taskTenantId(TEST_TENANT_ID).count());
+        assertEquals(5, taskService.createTaskQuery().taskName("Task after signal").taskWithoutTenantId().count());
 
         // Cleanup
         for (Deployment deployment : repositoryService.createDeploymentQuery().list()) {
-            repositoryService.deleteDeployment(deployment.getId(),
-                                               true);
+            repositoryService.deleteDeployment(deployment.getId(), true);
         }
     }
 
@@ -846,14 +756,10 @@ public class TenancyTest extends PluggableActivitiTestCase {
 
         // Start 4 proc instances for the one with a tenant and 5 for the one
         // without tenant
-        runtimeService.startProcessInstanceByKeyAndTenantId("testMtSignalCatch",
-                                                            TEST_TENANT_ID);
-        runtimeService.startProcessInstanceByKeyAndTenantId("testMtSignalCatch",
-                                                            TEST_TENANT_ID);
-        runtimeService.startProcessInstanceByKeyAndTenantId("testMtSignalCatch",
-                                                            TEST_TENANT_ID);
-        runtimeService.startProcessInstanceByKeyAndTenantId("testMtSignalCatch",
-                                                            TEST_TENANT_ID);
+        runtimeService.startProcessInstanceByKeyAndTenantId("testMtSignalCatch", TEST_TENANT_ID);
+        runtimeService.startProcessInstanceByKeyAndTenantId("testMtSignalCatch", TEST_TENANT_ID);
+        runtimeService.startProcessInstanceByKeyAndTenantId("testMtSignalCatch", TEST_TENANT_ID);
+        runtimeService.startProcessInstanceByKeyAndTenantId("testMtSignalCatch", TEST_TENANT_ID);
         runtimeService.startProcessInstanceByKey("testMtSignalCatch");
         runtimeService.startProcessInstanceByKey("testMtSignalCatch");
         runtimeService.startProcessInstanceByKey("testMtSignalCatch");
@@ -861,49 +767,37 @@ public class TenancyTest extends PluggableActivitiTestCase {
         runtimeService.startProcessInstanceByKey("testMtSignalCatch");
 
         // Verify
-        assertEquals(4,
-                     taskService.createTaskQuery().taskName("My task").taskTenantId(TEST_TENANT_ID).count());
-        assertEquals(5,
-                     taskService.createTaskQuery().taskName("My task").taskWithoutTenantId().count());
+        assertEquals(4, taskService.createTaskQuery().taskName("My task").taskTenantId(TEST_TENANT_ID).count());
+        assertEquals(5, taskService.createTaskQuery().taskName("My task").taskWithoutTenantId().count());
 
         // Signal through API (with tenant)
-        runtimeService.signalEventReceivedAsyncWithTenantId("The Signal",
-                                                            TEST_TENANT_ID);
-        assertEquals(0,
-                     taskService.createTaskQuery().taskName("Task after signal").taskTenantId(TEST_TENANT_ID).count());
-        assertEquals(0,
-                     taskService.createTaskQuery().taskName("Task after signal").taskWithoutTenantId().count());
+        runtimeService.signalEventReceivedAsyncWithTenantId("The Signal", TEST_TENANT_ID);
+        assertEquals(0, taskService.createTaskQuery().taskName("Task after signal").taskTenantId(TEST_TENANT_ID).count());
+        assertEquals(0, taskService.createTaskQuery().taskName("Task after signal").taskWithoutTenantId().count());
 
         for (Job job : managementService.createJobQuery().list()) {
             managementService.executeJob(job.getId());
         }
 
-        assertEquals(4,
-                     taskService.createTaskQuery().taskName("Task after signal").taskTenantId(TEST_TENANT_ID).count());
-        assertEquals(0,
-                     taskService.createTaskQuery().taskName("Task after signal").taskWithoutTenantId().count());
+        assertEquals(4, taskService.createTaskQuery().taskName("Task after signal").taskTenantId(TEST_TENANT_ID).count());
+        assertEquals(0, taskService.createTaskQuery().taskName("Task after signal").taskWithoutTenantId().count());
 
         // Signal through API (without tenant)
         runtimeService.signalEventReceivedAsync("The Signal");
 
-        assertEquals(4,
-                     taskService.createTaskQuery().taskName("Task after signal").taskTenantId(TEST_TENANT_ID).count());
-        assertEquals(0,
-                     taskService.createTaskQuery().taskName("Task after signal").taskWithoutTenantId().count());
+        assertEquals(4, taskService.createTaskQuery().taskName("Task after signal").taskTenantId(TEST_TENANT_ID).count());
+        assertEquals(0, taskService.createTaskQuery().taskName("Task after signal").taskWithoutTenantId().count());
 
         for (Job job : managementService.createJobQuery().list()) {
             managementService.executeJob(job.getId());
         }
 
-        assertEquals(4,
-                     taskService.createTaskQuery().taskName("Task after signal").taskTenantId(TEST_TENANT_ID).count());
-        assertEquals(5,
-                     taskService.createTaskQuery().taskName("Task after signal").taskWithoutTenantId().count());
+        assertEquals(4, taskService.createTaskQuery().taskName("Task after signal").taskTenantId(TEST_TENANT_ID).count());
+        assertEquals(5, taskService.createTaskQuery().taskName("Task after signal").taskWithoutTenantId().count());
 
         // Cleanup
         for (Deployment deployment : repositoryService.createDeploymentQuery().list()) {
-            repositoryService.deleteDeployment(deployment.getId(),
-                                               true);
+            repositoryService.deleteDeployment(deployment.getId(), true);
         }
     }
 
@@ -915,50 +809,33 @@ public class TenancyTest extends PluggableActivitiTestCase {
 
         // Signaling without tenant
         runtimeService.signalEventReceived("The Signal");
-        assertEquals(3,
-                     runtimeService.createProcessInstanceQuery().count());
-        assertEquals(3,
-                     runtimeService.createProcessInstanceQuery().processInstanceWithoutTenantId().count());
-        assertEquals(0,
-                     runtimeService.createProcessInstanceQuery().processInstanceTenantId(TEST_TENANT_ID).count());
+        assertEquals(3, runtimeService.createProcessInstanceQuery().count());
+        assertEquals(3, runtimeService.createProcessInstanceQuery().processInstanceWithoutTenantId().count());
+        assertEquals(0, runtimeService.createProcessInstanceQuery().processInstanceTenantId(TEST_TENANT_ID).count());
 
         // Signalling with tenant
-        runtimeService.signalEventReceivedWithTenantId("The Signal",
-                                                       TEST_TENANT_ID);
-        assertEquals(6,
-                     runtimeService.createProcessInstanceQuery().count());
-        assertEquals(3,
-                     runtimeService.createProcessInstanceQuery().processInstanceWithoutTenantId().count());
-        assertEquals(3,
-                     runtimeService.createProcessInstanceQuery().processInstanceTenantId(TEST_TENANT_ID).count());
+        runtimeService.signalEventReceivedWithTenantId("The Signal", TEST_TENANT_ID);
+        assertEquals(6, runtimeService.createProcessInstanceQuery().count());
+        assertEquals(3, runtimeService.createProcessInstanceQuery().processInstanceWithoutTenantId().count());
+        assertEquals(3, runtimeService.createProcessInstanceQuery().processInstanceTenantId(TEST_TENANT_ID).count());
 
-        // Start a process instance with a boundary catch (with and without
-        // tenant)
+        // Start a process instance with a boundary catch (with and without tenant)
         runtimeService.startProcessInstanceByKey("processWithSignalCatch");
-        runtimeService.startProcessInstanceByKeyAndTenantId("processWithSignalCatch",
-                                                            TEST_TENANT_ID);
+        runtimeService.startProcessInstanceByKeyAndTenantId("processWithSignalCatch", TEST_TENANT_ID);
 
         runtimeService.signalEventReceived("The Signal");
-        assertEquals(11,
-                     runtimeService.createProcessInstanceQuery().count());
-        assertEquals(7,
-                     runtimeService.createProcessInstanceQuery().processInstanceWithoutTenantId().count());
-        assertEquals(4,
-                     runtimeService.createProcessInstanceQuery().processInstanceTenantId(TEST_TENANT_ID).count());
+        assertEquals(11, runtimeService.createProcessInstanceQuery().count());
+        assertEquals(7, runtimeService.createProcessInstanceQuery().processInstanceWithoutTenantId().count());
+        assertEquals(4, runtimeService.createProcessInstanceQuery().processInstanceTenantId(TEST_TENANT_ID).count());
 
-        runtimeService.signalEventReceivedWithTenantId("The Signal",
-                                                       TEST_TENANT_ID);
-        assertEquals(14,
-                     runtimeService.createProcessInstanceQuery().count());
-        assertEquals(7,
-                     runtimeService.createProcessInstanceQuery().processInstanceWithoutTenantId().count());
-        assertEquals(7,
-                     runtimeService.createProcessInstanceQuery().processInstanceTenantId(TEST_TENANT_ID).count());
+        runtimeService.signalEventReceivedWithTenantId("The Signal", TEST_TENANT_ID);
+        assertEquals(14, runtimeService.createProcessInstanceQuery().count());
+        assertEquals(7, runtimeService.createProcessInstanceQuery().processInstanceWithoutTenantId().count());
+        assertEquals(7, runtimeService.createProcessInstanceQuery().processInstanceTenantId(TEST_TENANT_ID).count());
 
         // Cleanup
         for (Deployment deployment : repositoryService.createDeploymentQuery().list()) {
-            repositoryService.deleteDeployment(deployment.getId(),
-                                               true);
+            repositoryService.deleteDeployment(deployment.getId(), true);
         }
     }
 
@@ -969,83 +846,58 @@ public class TenancyTest extends PluggableActivitiTestCase {
         repositoryService.createDeployment().addClasspathResource("org/activiti/engine/test/api/tenant/TenancyTest.testMessageTenancy.bpmn20.xml").tenantId(TEST_TENANT_ID).deploy();
 
         // Verify query
-        assertEquals(2,
-                     repositoryService.createProcessDefinitionQuery().messageEventSubscriptionName("My message").count());
-        assertEquals(1,
-                     repositoryService.createProcessDefinitionQuery().messageEventSubscriptionName("My message").processDefinitionWithoutTenantId().count());
-        assertEquals(1,
-                     repositoryService.createProcessDefinitionQuery().messageEventSubscriptionName("My message").processDefinitionTenantId(TEST_TENANT_ID).count());
+        assertEquals(2, repositoryService.createProcessDefinitionQuery().messageEventSubscriptionName("My message").count());
+        assertEquals(1, repositoryService.createProcessDefinitionQuery().messageEventSubscriptionName("My message").processDefinitionWithoutTenantId().count());
+        assertEquals(1, repositoryService.createProcessDefinitionQuery().messageEventSubscriptionName("My message").processDefinitionTenantId(TEST_TENANT_ID).count());
 
         // Start a process instance by message without tenant
         runtimeService.startProcessInstanceByMessage("My message");
         runtimeService.startProcessInstanceByMessage("My message");
 
-        assertEquals(2,
-                     taskService.createTaskQuery().taskName("My task").count());
-        assertEquals(2,
-                     taskService.createTaskQuery().taskName("My task").taskWithoutTenantId().count());
-        assertEquals(0,
-                     taskService.createTaskQuery().taskName("My task").taskTenantId(TEST_TENANT_ID).count());
+        assertEquals(2, taskService.createTaskQuery().taskName("My task").count());
+        assertEquals(2, taskService.createTaskQuery().taskName("My task").taskWithoutTenantId().count());
+        assertEquals(0, taskService.createTaskQuery().taskName("My task").taskTenantId(TEST_TENANT_ID).count());
 
         // Start a process instance by message with tenant
-        runtimeService.startProcessInstanceByMessageAndTenantId("My message",
-                                                                TEST_TENANT_ID);
-        runtimeService.startProcessInstanceByMessageAndTenantId("My message",
-                                                                TEST_TENANT_ID);
-        runtimeService.startProcessInstanceByMessageAndTenantId("My message",
-                                                                TEST_TENANT_ID);
-        assertEquals(5,
-                     taskService.createTaskQuery().taskName("My task").count());
-        assertEquals(2,
-                     taskService.createTaskQuery().taskName("My task").taskWithoutTenantId().count());
-        assertEquals(3,
-                     taskService.createTaskQuery().taskName("My task").taskTenantId(TEST_TENANT_ID).count());
+        runtimeService.startProcessInstanceByMessageAndTenantId("My message", TEST_TENANT_ID);
+        runtimeService.startProcessInstanceByMessageAndTenantId("My message", TEST_TENANT_ID);
+        runtimeService.startProcessInstanceByMessageAndTenantId("My message", TEST_TENANT_ID);
+        assertEquals(5, taskService.createTaskQuery().taskName("My task").count());
+        assertEquals(2, taskService.createTaskQuery().taskName("My task").taskWithoutTenantId().count());
+        assertEquals(3, taskService.createTaskQuery().taskName("My task").taskTenantId(TEST_TENANT_ID).count());
 
         // Cleanup
         for (Deployment deployment : repositoryService.createDeploymentQuery().list()) {
-            repositoryService.deleteDeployment(deployment.getId(),
-                                               true);
+            repositoryService.deleteDeployment(deployment.getId(), true);
         }
     }
 
     public void testStartProcessInstanceByMessageTenancyReversed() { // same as
-        // above,
-        // but now
-        // reversed
+        // above, but now reversed
 
         // Deploy process both with and without tenant
         repositoryService.createDeployment().addClasspathResource("org/activiti/engine/test/api/tenant/TenancyTest.testMessageTenancy.bpmn20.xml").deploy();
         repositoryService.createDeployment().addClasspathResource("org/activiti/engine/test/api/tenant/TenancyTest.testMessageTenancy.bpmn20.xml").tenantId(TEST_TENANT_ID).deploy();
 
         // Start a process instance by message with tenant
-        runtimeService.startProcessInstanceByMessageAndTenantId("My message",
-                                                                TEST_TENANT_ID);
-        runtimeService.startProcessInstanceByMessageAndTenantId("My message",
-                                                                TEST_TENANT_ID);
-        runtimeService.startProcessInstanceByMessageAndTenantId("My message",
-                                                                TEST_TENANT_ID);
-        assertEquals(3,
-                     taskService.createTaskQuery().taskName("My task").count());
-        assertEquals(0,
-                     taskService.createTaskQuery().taskName("My task").taskWithoutTenantId().count());
-        assertEquals(3,
-                     taskService.createTaskQuery().taskName("My task").taskTenantId(TEST_TENANT_ID).count());
+        runtimeService.startProcessInstanceByMessageAndTenantId("My message", TEST_TENANT_ID);
+        runtimeService.startProcessInstanceByMessageAndTenantId("My message", TEST_TENANT_ID);
+        runtimeService.startProcessInstanceByMessageAndTenantId("My message", TEST_TENANT_ID);
+        assertEquals(3, taskService.createTaskQuery().taskName("My task").count());
+        assertEquals(0, taskService.createTaskQuery().taskName("My task").taskWithoutTenantId().count());
+        assertEquals(3, taskService.createTaskQuery().taskName("My task").taskTenantId(TEST_TENANT_ID).count());
 
         // Start a process instance by message without tenant
         runtimeService.startProcessInstanceByMessage("My message");
         runtimeService.startProcessInstanceByMessage("My message");
 
-        assertEquals(5,
-                     taskService.createTaskQuery().taskName("My task").count());
-        assertEquals(2,
-                     taskService.createTaskQuery().taskName("My task").taskWithoutTenantId().count());
-        assertEquals(3,
-                     taskService.createTaskQuery().taskName("My task").taskTenantId(TEST_TENANT_ID).count());
+        assertEquals(5, taskService.createTaskQuery().taskName("My task").count());
+        assertEquals(2, taskService.createTaskQuery().taskName("My task").taskWithoutTenantId().count());
+        assertEquals(3, taskService.createTaskQuery().taskName("My task").taskTenantId(TEST_TENANT_ID).count());
 
         // Cleanup
         for (Deployment deployment : repositoryService.createDeploymentQuery().list()) {
-            repositoryService.deleteDeployment(deployment.getId(),
-                                               true);
+            repositoryService.deleteDeployment(deployment.getId(), true);
         }
     }
 
@@ -1063,8 +915,7 @@ public class TenancyTest extends PluggableActivitiTestCase {
             // exception
             ProcessInstance processInstance = runtimeService.startProcessInstanceByKeyAndTenantId("process1",
                                                                                                   null,
-                                                                                                  CollectionUtil.singletonMap("sendFor",
-                                                                                                                              "test"),
+                                                                                                  singletonMap("sendFor", "test"),
                                                                                                   tenantId);
             assertThat(processInstance).isNotNull();
 
@@ -1075,17 +926,12 @@ public class TenancyTest extends PluggableActivitiTestCase {
 
             // following line if executed will give activiti object not found
             // exception as the process1 is linked to a tenant id.
-            try {
-                processInstance = runtimeService.startProcessInstanceByKey("process1");
-                fail();
-            } catch (Exception e) {
-
-            }
+            assertThatExceptionOfType(Exception.class)
+                .isThrownBy(() -> runtimeService.startProcessInstanceByKey("process1"));
 
             // Cleanup
             for (Deployment deployment : repositoryService.createDeploymentQuery().list()) {
-                repositoryService.deleteDeployment(deployment.getId(),
-                                                   true);
+                repositoryService.deleteDeployment(deployment.getId(), true);
             }
         }
     }

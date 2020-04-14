@@ -13,6 +13,7 @@
 
 package org.activiti.engine.test.bpmn.event.signal;
 
+import static java.util.Collections.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Arrays;
@@ -282,7 +283,7 @@ public class SignalEventTest extends PluggableActivitiTestCase {
     // First task should be to select the developers
     Task task = taskService.createTaskQuery().singleResult();
     assertThat(task.getName()).isEqualTo("Enter developers");
-    taskService.complete(task.getId(), CollectionUtil.singletonMap("developers", Arrays.asList("developerOne", "developerTwo", "developerThree")));
+    taskService.complete(task.getId(), singletonMap("developers", Arrays.asList("developerOne", "developerTwo", "developerThree")));
 
     // Should be three distinct tasks for each developer
     assertThat(taskService.createTaskQuery().taskAssignee("developerOne").singleResult().getName()).isEqualTo("Develop specifications");
@@ -295,7 +296,7 @@ public class SignalEventTest extends PluggableActivitiTestCase {
 
     // When the kermit task is completed, it throws a signal which should
     // cancel the multi instance
-    taskService.complete(task.getId(), CollectionUtil.singletonMap("negotationFailed", true));
+    taskService.complete(task.getId(), singletonMap("negotationFailed", true));
 
     // No tasks should be open then and process should have ended
     assertThat(taskService.createTaskQuery().count()).isEqualTo(0);

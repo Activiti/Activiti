@@ -34,7 +34,7 @@ public class ScopedConverterTest extends AbstractConverterTest {
   private void validateModel(BpmnModel model) {
     FlowElement flowElement = model.getMainProcess().getFlowElement("outerSubProcess");
     assertThat(flowElement).isNotNull();
-    assertThat(flowElement instanceof SubProcess).isTrue();
+    assertThat(flowElement).isInstanceOf(SubProcess.class);
     assertThat(flowElement.getId()).isEqualTo("outerSubProcess");
     SubProcess outerSubProcess = (SubProcess) flowElement;
     List<BoundaryEvent> eventList = outerSubProcess.getBoundaryEvents();
@@ -44,7 +44,7 @@ public class ScopedConverterTest extends AbstractConverterTest {
 
     FlowElement subElement = outerSubProcess.getFlowElement("innerSubProcess");
     assertThat(subElement).isNotNull();
-    assertThat(subElement instanceof SubProcess).isTrue();
+    assertThat(subElement).isInstanceOf(SubProcess.class);
     assertThat(subElement.getId()).isEqualTo("innerSubProcess");
     SubProcess innerSubProcess = (SubProcess) subElement;
     eventList = innerSubProcess.getBoundaryEvents();
@@ -54,7 +54,7 @@ public class ScopedConverterTest extends AbstractConverterTest {
 
     FlowElement taskElement = innerSubProcess.getFlowElement("usertask");
     assertThat(taskElement).isNotNull();
-    assertThat(taskElement instanceof UserTask).isTrue();
+    assertThat(taskElement).isInstanceOf(UserTask.class);
     UserTask userTask = (UserTask) taskElement;
     assertThat(userTask.getId()).isEqualTo("usertask");
     eventList = userTask.getBoundaryEvents();

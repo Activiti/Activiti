@@ -18,7 +18,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
@@ -76,7 +75,7 @@ public class FullHistoryTest extends ResourceActivitiTestCase {
 
         List<HistoricDetail> historicDetails = historyService.createHistoricDetailQuery().orderByVariableName().asc().orderByVariableRevision().asc().list();
 
-        assertEquals(10, historicDetails.size());
+        assertThat(historicDetails).hasSize(10);
 
         HistoricVariableUpdate historicVariableUpdate = (HistoricVariableUpdate) historicDetails.get(0);
         assertEquals("bytes", historicVariableUpdate.getVariableName());
@@ -275,7 +274,7 @@ public class FullHistoryTest extends ResourceActivitiTestCase {
     public void testHistoricVariableInstanceQuery() {
         Map<String, Object> variables = new HashMap<String, Object>();
         variables.put("process", "one");
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("receiveTask", variables);
+        runtimeService.startProcessInstanceByKey("receiveTask", variables);
         runtimeService.trigger(runtimeService.createExecutionQuery().activityId("waitState").singleResult().getId());
 
         assertEquals(1, historyService.createHistoricVariableInstanceQuery().variableName("process").count());
@@ -403,7 +402,7 @@ public class FullHistoryTest extends ResourceActivitiTestCase {
 
         // end process instance
         List<Task> tasks = taskService.createTaskQuery().list();
-        assertEquals(1, tasks.size());
+        assertThat(tasks).hasSize(1);
         taskService.complete(tasks.get(0).getId());
         assertProcessEnded(processInstance.getId());
 
@@ -615,54 +614,26 @@ public class FullHistoryTest extends ResourceActivitiTestCase {
     }
 
     public void testHistoricDetailQueryInvalidSorting() throws Exception {
-        try {
-            historyService.createHistoricDetailQuery().asc().list();
-            fail();
-        } catch (ActivitiIllegalArgumentException e) {
+        assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
+            .isThrownBy(() -> historyService.createHistoricDetailQuery().asc().list());
 
-        }
+        assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
+            .isThrownBy(() -> historyService.createHistoricDetailQuery().desc().list());
 
-        try {
-            historyService.createHistoricDetailQuery().desc().list();
-            fail();
-        } catch (ActivitiIllegalArgumentException e) {
+        assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
+            .isThrownBy(() -> historyService.createHistoricDetailQuery().orderByProcessInstanceId().list());
 
-        }
+        assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
+            .isThrownBy(() -> historyService.createHistoricDetailQuery().orderByTime().list());
 
-        try {
-            historyService.createHistoricDetailQuery().orderByProcessInstanceId().list();
-            fail();
-        } catch (ActivitiIllegalArgumentException e) {
+        assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
+            .isThrownBy(() -> historyService.createHistoricDetailQuery().orderByVariableName().list());
 
-        }
+        assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
+            .isThrownBy(() -> historyService.createHistoricDetailQuery().orderByVariableRevision().list());
 
-        try {
-            historyService.createHistoricDetailQuery().orderByTime().list();
-            fail();
-        } catch (ActivitiIllegalArgumentException e) {
-
-        }
-
-        try {
-            historyService.createHistoricDetailQuery().orderByVariableName().list();
-            fail();
-        } catch (ActivitiIllegalArgumentException e) {
-
-        }
-
-        try {
-            historyService.createHistoricDetailQuery().orderByVariableRevision().list();
-            fail();
-        } catch (ActivitiIllegalArgumentException e) {
-
-        }
-
-        try {
-            historyService.createHistoricDetailQuery().orderByVariableType().list();
-            fail();
-        } catch (ActivitiIllegalArgumentException e) {
-
-        }
+        assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
+            .isThrownBy(() -> historyService.createHistoricDetailQuery().orderByVariableType().list());
     }
 
     @Deployment
@@ -1450,7 +1421,7 @@ public class FullHistoryTest extends ResourceActivitiTestCase {
                      variableUpdates.size());
         HistoricVariableUpdate update = (HistoricVariableUpdate) variableUpdates.get(0);
         assertThat(update.getValue()).isNotNull();
-        assertThat(update.getValue() instanceof FieldAccessJPAEntity).isTrue();
+        assertThat(update.getValue()).isInstanceOf(FieldAccessJPAEntity.class);
 
         assertEquals(entity.getId(),
                      ((FieldAccessJPAEntity) update.getValue()).getId());
@@ -1525,17 +1496,17 @@ public class FullHistoryTest extends ResourceActivitiTestCase {
         ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess", vars);
 
         // Verify runtime
-        assertEquals(3, runtimeService.getVariables(processInstance.getId()).size());
-        assertEquals(3, runtimeService.getVariables(processInstance.getId(), asList("var1", "var2", "var3")).size());
+        assertThat(runtimeService.getVariables(processInstance.getId())).hasSize(3);
+        assertThat(runtimeService.getVariables(processInstance.getId(), asList("var1", "var2", "var3"))).hasSize(3);
         assertThat(runtimeService.getVariable(processInstance.getId(), "var2")).isNotNull();
 
         // Verify history
-        assertEquals(3, historyService.createHistoricVariableInstanceQuery().list().size());
+        assertThat(historyService.createHistoricVariableInstanceQuery().list()).hasSize(3);
         assertThat(historyService.createHistoricVariableInstanceQuery().processInstanceId(processInstance.getId()).variableName("var2").singleResult()).isNotNull();
 
         // Verify historic details
         List<HistoricDetail> details = historyService.createHistoricDetailQuery().processInstanceId(processInstance.getId()).variableUpdates().orderByTime().asc().list();
-        assertEquals(3, details.size()); // 3 vars
+        assertThat(details).hasSize(3); // 3 vars
         for (HistoricDetail historicDetail : details) {
             assertThat(((HistoricVariableUpdate) historicDetail).getValue()).isNotNull();
         }
@@ -1545,17 +1516,17 @@ public class FullHistoryTest extends ResourceActivitiTestCase {
         runtimeService.removeVariable(processInstance.getId(), "var2");
 
         // Verify runtime
-        assertEquals(2, runtimeService.getVariables(processInstance.getId()).size());
-        assertEquals(2, runtimeService.getVariables(processInstance.getId(), Arrays.asList("var1", "var2", "var3")).size());
+        assertThat(runtimeService.getVariables(processInstance.getId())).hasSize(2);
+        assertThat(runtimeService.getVariables(processInstance.getId(), asList("var1", "var2", "var3"))).hasSize(2);
         assertThat(runtimeService.getVariable(processInstance.getId(), "var2")).isNull();
 
         // Verify history
-        assertEquals(2, historyService.createHistoricVariableInstanceQuery().list().size());
+        assertThat(historyService.createHistoricVariableInstanceQuery().list()).hasSize(2);
         assertThat(historyService.createHistoricVariableInstanceQuery().processInstanceId(processInstance.getId()).variableName("var2").singleResult()).isNull();
 
         // Verify historic details
         details = historyService.createHistoricDetailQuery().processInstanceId(processInstance.getId()).variableUpdates().orderByTime().asc().list();
-        assertEquals(4, details.size()); // 3 vars + 1 delete
+        assertThat(details).hasSize(4); // 3 vars + 1 delete
 
         // The last entry should be the delete
         for (int i = 0; i < details.size(); i++) {

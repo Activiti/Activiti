@@ -26,6 +26,7 @@ import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 /**
  *
@@ -109,12 +110,8 @@ public class AsyncTaskTest extends PluggableActivitiTestCase {
     assertThat(managementService.createJobQuery().count()).isEqualTo(1);
     Job job = managementService.createJobQuery().singleResult();
 
-    try {
-      managementService.executeJob(job.getId());
-      fail();
-    } catch (Exception e) {
-      // exception expected
-    }
+    assertThatExceptionOfType(Exception.class)
+      .isThrownBy(() -> managementService.executeJob(job.getId()));
 
     // the service failed: the execution is still sitting in the service task:
     Execution execution = null;

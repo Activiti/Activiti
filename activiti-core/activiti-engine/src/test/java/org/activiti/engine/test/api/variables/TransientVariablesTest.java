@@ -12,6 +12,7 @@
  */
 package org.activiti.engine.test.api.variables;
 
+import static java.util.Collections.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.ArrayList;
@@ -144,7 +145,7 @@ public class TransientVariablesTest extends PluggableActivitiTestCase {
 
   @Deployment
   public void testTransientVariableShadowsPersistentVariable() {
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("transientVarsTest", CollectionUtil.singletonMap("theVar", "Hello World"));
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("transientVarsTest", singletonMap("theVar", "Hello World"));
     Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     String varValue = (String) taskService.getVariable(task.getId(), "resultVar");
     assertThat(varValue).isEqualTo("I am shadowed");
@@ -155,10 +156,10 @@ public class TransientVariablesTest extends PluggableActivitiTestCase {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("transientVarsTest");
 
     Execution executionInWait1 = runtimeService.createExecutionQuery().activityId("wait1").singleResult();
-    runtimeService.trigger(executionInWait1.getId(), CollectionUtil.singletonMap("persistentVar", "persistentValue01"));
+    runtimeService.trigger(executionInWait1.getId(), singletonMap("persistentVar", "persistentValue01"));
 
     Execution executionInWait2 = runtimeService.createExecutionQuery().activityId("wait2").singleResult();
-    runtimeService.trigger(executionInWait2.getId(), CollectionUtil.singletonMap("anotherPersistentVar", "persistentValue02"), CollectionUtil.singletonMap("transientVar", "transientValue"));
+    runtimeService.trigger(executionInWait2.getId(), singletonMap("anotherPersistentVar", "persistentValue02"), singletonMap("transientVar", "transientValue"));
 
     Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     String result = (String) taskService.getVariable(task.getId(), "result");

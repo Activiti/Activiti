@@ -12,7 +12,11 @@
  */
 package org.activiti.examples.bpmn.servicetask;
 
+import static java.util.Collections.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.catchThrowable;
+import static org.assertj.core.api.Assertions.catchThrowableOfType;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -34,7 +38,7 @@ public class JavaServiceTaskTest extends PluggableActivitiTestCase {
 
   @Deployment
   public void testJavaServiceDelegation() {
-    ProcessInstance pi = runtimeService.startProcessInstanceByKey("javaServiceDelegation", CollectionUtil.singletonMap("input", "Activiti BPM Engine"));
+    ProcessInstance pi = runtimeService.startProcessInstanceByKey("javaServiceDelegation", singletonMap("input", "Activiti BPM Engine"));
     Execution execution = runtimeService.createExecutionQuery().processInstanceId(pi.getId()).activityId("waitState").singleResult();
     assertThat(runtimeService.getVariable(execution.getId(), "input")).isEqualTo("ACTIVITI BPM ENGINE");
   }
@@ -95,23 +99,20 @@ public class JavaServiceTaskTest extends PluggableActivitiTestCase {
 
   @Deployment
   public void testUnexistingClassDelegation() {
-    try {
-      runtimeService.startProcessInstanceByKey("unexistingClassDelegation");
-      fail();
-    } catch (ActivitiException e) {
-      assertThat(e.getMessage().contains("couldn't instantiate class org.activiti.BogusClass")).isTrue();
-      assertThat(e.getCause()).isNotNull();
-      assertThat(e.getCause() instanceof ActivitiClassLoadingException).isTrue();
-    }
+    ActivitiException e = catchThrowableOfType(
+      () -> runtimeService.startProcessInstanceByKey("unexistingClassDelegation"),
+      ActivitiException.class);
+    assertThat(e).hasMessageContaining("couldn't instantiate class org.activiti.BogusClass");
+    assertThat(e.getCause()).isNotNull();
+    assertThat(e.getCause()).isInstanceOf(ActivitiClassLoadingException.class);
   }
 
   public void testIllegalUseOfResultVariableName() {
-    try {
-      repositoryService.createDeployment().addClasspathResource("org/activiti/examples/bpmn/servicetask/JavaServiceTaskTest.testIllegalUseOfResultVariableName.bpmn20.xml").deploy();
-      fail();
-    } catch (ActivitiException e) {
-      assertThat(e.getMessage().contains("resultVariable")).isTrue();
-    }
+    assertThatExceptionOfType(ActivitiException.class)
+      .isThrownBy(() -> repositoryService.createDeployment()
+        .addClasspathResource("org/activiti/examples/bpmn/servicetask/JavaServiceTaskTest.testIllegalUseOfResultVariableName.bpmn20.xml")
+        .deploy())
+      .withMessageContaining("resultVariable");
   }
 
   @Deployment

@@ -41,7 +41,7 @@ public class ExecutionEventsTest extends PluggableActivitiTestCase {
 
     // Check create-event
     assertThat(listener.getEventsReceived().size()).isEqualTo(6);
-    assertThat(listener.getEventsReceived().get(0) instanceof ActivitiEntityEvent).isTrue();
+    assertThat(listener.getEventsReceived().get(0)).isInstanceOf(ActivitiEntityEvent.class);
 
     ActivitiEntityEvent event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
     assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_CREATED);

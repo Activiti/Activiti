@@ -13,6 +13,7 @@
 package org.activiti.engine.test.jobexecutor;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.Assert.fail;
 
 import java.util.Date;
@@ -20,6 +21,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.impl.asyncexecutor.AsyncExecutor;
 import org.activiti.engine.impl.asyncexecutor.DefaultAsyncJobExecutor;
@@ -28,6 +30,7 @@ import org.activiti.engine.impl.cfg.StandaloneInMemProcessEngineConfiguration;
 import org.activiti.engine.impl.test.JobTestHelper;
 import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.test.cfg.RetryInterceptorTest;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -36,7 +39,6 @@ import org.slf4j.LoggerFactory;
 /**
  * Tests specifically for the {@link AsyncExecutor}.
  *
-
  */
 public class AsyncExecutorTest {
 
@@ -56,12 +58,9 @@ public class AsyncExecutorTest {
 
       // Move clock 3 minutes. Nothing should happen
       addSecondsToCurrentTime(processEngine, 180L);
-      try {
-        waitForAllJobsBeingExecuted(processEngine, 500L);
-        fail();
-      } catch (ActivitiException e) {
-        // Expected
-      }
+      ProcessEngine processEngineForException = processEngine;
+      assertThatExceptionOfType(ActivitiException.class)
+        .isThrownBy(() -> waitForAllJobsBeingExecuted(processEngineForException, 500L));
       assertThat(processEngine.getTaskService().createTaskQuery().taskName("The Task").count()).isEqualTo(1);
       assertThat(processEngine.getTaskService().createTaskQuery().taskName("Task after timer").count()).isEqualTo(0);
       assertThat(processEngine.getManagementService().createTimerJobQuery().count()).isEqualTo(1);
@@ -79,7 +78,6 @@ public class AsyncExecutorTest {
 
       assertThat(getAsyncExecutorJobCount(processEngine)).isEqualTo(1);
     } finally {
-
       // Clean up
       if (processEngine != null) {
         cleanup(processEngine);

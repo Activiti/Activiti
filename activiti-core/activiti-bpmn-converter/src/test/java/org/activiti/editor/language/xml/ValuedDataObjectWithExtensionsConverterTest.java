@@ -1,7 +1,6 @@
 package org.activiti.editor.language.xml;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.fail;
 
 import java.util.HashMap;
 import java.util.List;
@@ -118,7 +117,7 @@ public class ValuedDataObjectWithExtensionsConverterTest extends AbstractConvert
   private void validateModel(BpmnModel model) {
     FlowElement flowElement = model.getMainProcess().getFlowElement("start1");
     assertThat(flowElement).isNotNull();
-    assertThat(flowElement instanceof StartEvent).isTrue();
+    assertThat(flowElement).isInstanceOf(StartEvent.class);
     assertThat(flowElement.getId()).isEqualTo("start1");
 
     // verify the main process data objects
@@ -134,7 +133,7 @@ public class ValuedDataObjectWithExtensionsConverterTest extends AbstractConvert
     assertThat(dataObj.getId()).isEqualTo("dObj1");
     assertThat(dataObj.getName()).isEqualTo("StringTest");
     assertThat(dataObj.getItemSubjectRef().getStructureRef()).isEqualTo("xsd:string");
-    assertThat(dataObj.getValue() instanceof String).isTrue();
+    assertThat(dataObj.getValue()).isInstanceOf(String.class);
     assertThat(dataObj.getValue()).isEqualTo("Testing123");
 
     /*
@@ -157,7 +156,7 @@ public class ValuedDataObjectWithExtensionsConverterTest extends AbstractConvert
 
     flowElement = model.getMainProcess().getFlowElement("subprocess1");
     assertThat(flowElement).isNotNull();
-    assertThat(flowElement instanceof SubProcess).isTrue();
+    assertThat(flowElement).isInstanceOf(SubProcess.class);
     assertThat(flowElement.getId()).isEqualTo("subprocess1");
     SubProcess subProcess = (SubProcess) flowElement;
     assertThat(subProcess.getFlowElements().size()).isEqualTo(6);
@@ -175,7 +174,7 @@ public class ValuedDataObjectWithExtensionsConverterTest extends AbstractConvert
     assertThat(dataObj.getId()).isEqualTo("dObj2");
     assertThat(dataObj.getName()).isEqualTo("BooleanTest");
     assertThat(dataObj.getItemSubjectRef().getStructureRef()).isEqualTo("xsd:boolean");
-    assertThat(dataObj.getValue() instanceof Boolean).isTrue();
+    assertThat(dataObj.getValue()).isInstanceOf(Boolean.class);
     assertThat(dataObj.getValue()).isEqualTo(Boolean.TRUE);
 
     /*

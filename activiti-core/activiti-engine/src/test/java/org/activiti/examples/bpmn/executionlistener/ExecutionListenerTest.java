@@ -124,7 +124,7 @@ public class ExecutionListenerTest extends PluggableActivitiTestCase {
 
     Object varSetByListener = runtimeService.getVariable(processInstance.getId(), "var");
     assertThat(varSetByListener).isNotNull();
-    assertThat(varSetByListener instanceof String).isTrue();
+    assertThat(varSetByListener).isInstanceOf(String.class);
 
     // Result is a concatenation of fixed injected field and injected expression
     assertThat(varSetByListener).isEqualTo("Yes, I am listening!");

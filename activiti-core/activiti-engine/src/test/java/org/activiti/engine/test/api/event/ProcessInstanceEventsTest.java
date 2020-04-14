@@ -54,7 +54,7 @@ public class ProcessInstanceEventsTest extends PluggableActivitiTestCase {
 
     // Check create-event
     assertThat(listener.getEventsReceived().size()).isEqualTo(6);
-    assertThat(listener.getEventsReceived().get(0) instanceof ActivitiEntityEvent).isTrue();
+    assertThat(listener.getEventsReceived().get(0)).isInstanceOf(ActivitiEntityEvent.class);
 
     // process instance create event
     ActivitiEntityEvent event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
@@ -88,13 +88,13 @@ public class ProcessInstanceEventsTest extends PluggableActivitiTestCase {
     assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_UPDATED);
     assertThat(event.getProcessInstanceId()).isEqualTo(processInstance.getId());
     assertThat(event.getProcessDefinitionId()).isEqualTo(processInstance.getProcessDefinitionId());
-    assertThat(event instanceof ActivitiEntityEventImpl).isTrue();
+    assertThat(event).isInstanceOf(ActivitiEntityEventImpl.class);
 
     event = (ActivitiEntityEvent) listener.getEventsReceived().get(5);
     assertThat(event.getType()).isEqualTo(ActivitiEventType.PROCESS_STARTED);
     assertThat(event.getProcessInstanceId()).isEqualTo(processInstance.getId());
     assertThat(event.getProcessDefinitionId()).isEqualTo(processInstance.getProcessDefinitionId());
-    assertThat(event instanceof ActivitiProcessStartedEvent).isTrue();
+    assertThat(event).isInstanceOf(ActivitiProcessStartedEvent.class);
     assertThat(((ActivitiProcessStartedEvent)event).getNestedProcessDefinitionId()).isNull();
     assertThat(((ActivitiProcessStartedEvent)event).getNestedProcessInstanceId()).isNull();
 
@@ -192,7 +192,7 @@ public class ProcessInstanceEventsTest extends PluggableActivitiTestCase {
 
     // Check create-event one main process the second one Scope execution, and the third one subprocess
     assertThat(listener.getEventsReceived().size()).isEqualTo(10);
-    assertThat(listener.getEventsReceived().get(0) instanceof ActivitiEntityEvent).isTrue();
+    assertThat(listener.getEventsReceived().get(0)).isInstanceOf(ActivitiEntityEvent.class);
 
     // process instance created event
     ActivitiEntityEvent event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
@@ -234,7 +234,7 @@ public class ProcessInstanceEventsTest extends PluggableActivitiTestCase {
     assertThat(event.getType()).isEqualTo(ActivitiEventType.PROCESS_STARTED);
     assertThat(event.getProcessInstanceId()).isEqualTo(processInstance.getId());
     assertThat(event.getProcessDefinitionId()).isEqualTo(processInstance.getProcessDefinitionId());
-    assertThat(event instanceof ActivitiProcessStartedEvent).isTrue();
+    assertThat(event).isInstanceOf(ActivitiProcessStartedEvent.class);
     assertThat(((ActivitiProcessStartedEvent)event).getNestedProcessDefinitionId()).isNull();
     assertThat(((ActivitiProcessStartedEvent)event).getNestedProcessInstanceId()).isNull();
 
@@ -267,7 +267,7 @@ public class ProcessInstanceEventsTest extends PluggableActivitiTestCase {
     assertThat(event.getType()).isEqualTo(ActivitiEventType.PROCESS_STARTED);
     assertThat(event.getProcessInstanceId()).isEqualTo(subProcessInstanceId);
     assertThat(event.getProcessDefinitionId()).isEqualTo(subProcessDefinitionId);
-    assertThat(event instanceof ActivitiProcessStartedEvent).isTrue();
+    assertThat(event).isInstanceOf(ActivitiProcessStartedEvent.class);
     assertThat(((ActivitiProcessStartedEvent) event).getNestedProcessDefinitionId()).isEqualTo(processDefinitionId);
     assertThat(((ActivitiProcessStartedEvent) event).getNestedProcessInstanceId()).isEqualTo(processInstance.getId());
 

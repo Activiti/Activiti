@@ -1,6 +1,9 @@
 package org.activiti.standalone.jpa;
 
+import static java.util.Arrays.asList;
+import static java.util.Collections.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -26,7 +29,6 @@ import org.slf4j.LoggerFactory;
 /**
  * Test for JPA enhancement support
  *
-
  */
 public class JPAEnhancedVariableTest extends AbstractActivitiTestCase {
 
@@ -114,9 +116,9 @@ public class JPAEnhancedVariableTest extends AbstractActivitiTestCase {
       String name = entry.getKey();
       Object value = entry.getValue();
       if (name.equals("fieldEntity")) {
-        assertThat(value instanceof FieldAccessJPAEntity).isTrue();
+        assertThat(value).isInstanceOf(FieldAccessJPAEntity.class);
       } else if (name.equals("propertyEntity")) {
-        assertThat(value instanceof PropertyAccessJPAEntity).isTrue();
+        assertThat(value).isInstanceOf(PropertyAccessJPAEntity.class);
       } else {
         fail();
       }
@@ -140,13 +142,13 @@ public class JPAEnhancedVariableTest extends AbstractActivitiTestCase {
     Task task = getTask(instance);
     List list = (List) task.getProcessVariables().get("list1");
     assertThat(list.size() == 2).isTrue();
-    assertThat(list.get(0) instanceof FieldAccessJPAEntity).isTrue();
-    assertThat(list.get(1) instanceof FieldAccessJPAEntity).isTrue();
+    assertThat(list.get(0)).isInstanceOf(FieldAccessJPAEntity.class);
+    assertThat(list.get(1)).isInstanceOf(FieldAccessJPAEntity.class);
 
     list = (List) task.getProcessVariables().get("list2");
     assertThat(list.size() == 2).isTrue();
-    assertThat(list.get(0) instanceof PropertyAccessJPAEntity).isTrue();
-    assertThat(list.get(1) instanceof PropertyAccessJPAEntity).isTrue();
+    assertThat(list.get(0)).isInstanceOf(PropertyAccessJPAEntity.class);
+    assertThat(list.get(1)).isInstanceOf(PropertyAccessJPAEntity.class);
 
     // start process with enhanced and persisted only jpa variables in the
     // same list
@@ -156,9 +158,9 @@ public class JPAEnhancedVariableTest extends AbstractActivitiTestCase {
     task = getTask(instance);
     list = (List) task.getProcessVariables().get("list");
     assertThat(list.size() == 2).isTrue();
-    assertThat(list.get(0) instanceof FieldAccessJPAEntity).isTrue();
+    assertThat(list.get(0)).isInstanceOf(FieldAccessJPAEntity.class);
     assertThat(((FieldAccessJPAEntity) list.get(0)).getId().equals(1L)).isTrue();
-    assertThat(list.get(1) instanceof FieldAccessJPAEntity).isTrue();
+    assertThat(list.get(1)).isInstanceOf(FieldAccessJPAEntity.class);
     assertThat(((FieldAccessJPAEntity) list.get(1)).getId().equals(2L)).isTrue();
 
     // shuffle list and start a new process
@@ -168,19 +170,13 @@ public class JPAEnhancedVariableTest extends AbstractActivitiTestCase {
     task = getTask(instance);
     list = (List) task.getProcessVariables().get("list");
     assertThat(list.size() == 2).isTrue();
-    assertThat(list.get(0) instanceof FieldAccessJPAEntity).isTrue();
+    assertThat(list.get(0)).isInstanceOf(FieldAccessJPAEntity.class);
     assertThat(((FieldAccessJPAEntity) list.get(0)).getId().equals(2L)).isTrue();
-    assertThat(list.get(1) instanceof FieldAccessJPAEntity).isTrue();
+    assertThat(list.get(1)).isInstanceOf(FieldAccessJPAEntity.class);
     assertThat(((FieldAccessJPAEntity) list.get(1)).getId().equals(1L)).isTrue();
 
     // start process with mixed jpa entities in list
-    try {
-      params = new HashMap<String, Object>();
-      params.put("list", Arrays.asList(fieldEntity, propertyEntity));
-      instance = processEngine.getRuntimeService().startProcessInstanceByKey("JPAVariableProcess", params);
-      fail();
-    } catch (Exception e) {
-      /* do nothing */
-    }
+    assertThatExceptionOfType(Exception.class).isThrownBy(() -> processEngine.getRuntimeService()
+      .startProcessInstanceByKey("JPAVariableProcess", singletonMap("list", asList(fieldEntity, propertyEntity))));
   }
 }

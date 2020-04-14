@@ -27,7 +27,7 @@ public class EncodingConverterTest extends AbstractConverterTest {
   private void validateModel(BpmnModel model) {
     FlowElement flowElement = model.getMainProcess().getFlowElement("writeReportTask");
     assertThat(flowElement).isNotNull();
-    assertThat(flowElement instanceof UserTask).isTrue();
+    assertThat(flowElement).isInstanceOf(UserTask.class);
     assertThat(flowElement.getId()).isEqualTo("writeReportTask");
     UserTask userTask = (UserTask) flowElement;
     assertThat(userTask.getId()).isEqualTo("writeReportTask");

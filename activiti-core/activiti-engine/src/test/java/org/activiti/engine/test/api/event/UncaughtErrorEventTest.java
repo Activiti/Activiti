@@ -14,7 +14,6 @@ package org.activiti.engine.test.api.event;
 
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
-import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.BpmnError;
 
 import org.activiti.engine.delegate.event.ActivitiEvent;
@@ -24,7 +23,6 @@ import org.activiti.engine.test.Deployment;
 /**
  * Test case for {@link ActivitiEvent} thrown when a BPMNError is not caught in the process.
  *
-
  */
 public class UncaughtErrorEventTest extends PluggableActivitiTestCase {
 

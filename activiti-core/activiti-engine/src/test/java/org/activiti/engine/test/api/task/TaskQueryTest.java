@@ -13,6 +13,7 @@
 package org.activiti.engine.test.api.task;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -346,11 +347,8 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
     assertThat(query.list().size()).isEqualTo(0);
     assertThat(query.count()).isEqualTo(0);
 
-    try {
-      taskService.createTaskQuery().or().taskId("invalid").taskNameLike(null).singleResult();
-      fail();
-    } catch (ActivitiIllegalArgumentException e) {
-    }
+    assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
+      .isThrownBy(() -> taskService.createTaskQuery().or().taskId("invalid").taskNameLike(null).singleResult());
   }
 
   public void testQueryByInvalidNameLikeOr() {
@@ -359,11 +357,8 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
     assertThat(query.list().size()).isEqualTo(0);
     assertThat(query.count()).isEqualTo(0);
 
-    try {
-      taskService.createTaskQuery().or().taskId("invalid").taskNameLike(null).singleResult();
-      fail();
-    } catch (ActivitiIllegalArgumentException e) {
-    }
+    assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
+      .isThrownBy(() -> taskService.createTaskQuery().or().taskId("invalid").taskNameLike(null).singleResult());
   }
 
   public void testQueryByDescription() {
@@ -371,11 +366,8 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
     assertThat(query.list().size()).isEqualTo(6);
     assertThat(query.count()).isEqualTo(6);
 
-    try {
-      query.singleResult();
-      fail();
-    } catch (ActivitiException e) {
-    }
+    assertThatExceptionOfType(ActivitiException.class)
+      .isThrownBy(() -> query.singleResult());
   }
 
   public void testQueryByDescriptionOr() {
@@ -383,11 +375,8 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
     assertThat(query.list().size()).isEqualTo(6);
     assertThat(query.count()).isEqualTo(6);
 
-    try {
-      query.singleResult();
-      fail();
-    } catch (ActivitiException e) {
-    }
+    assertThatExceptionOfType(ActivitiException.class)
+      .isThrownBy(() -> query.singleResult());
   }
 
   public void testQueryByInvalidDescription() {
@@ -396,12 +385,8 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
     assertThat(query.list().size()).isEqualTo(0);
     assertThat(query.count()).isEqualTo(0);
 
-    try {
-      taskService.createTaskQuery().or().taskId("invalid").taskDescription(null).list();
-      fail();
-    } catch (ActivitiIllegalArgumentException e) {
-
-    }
+    assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
+      .isThrownBy(() -> taskService.createTaskQuery().or().taskId("invalid").taskDescription(null).list());
   }
 
   public void testQueryByInvalidDescriptionOr() {
@@ -410,12 +395,8 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
     assertThat(query.list().size()).isEqualTo(0);
     assertThat(query.count()).isEqualTo(0);
 
-    try {
-      taskService.createTaskQuery().or().taskId("invalid").taskDescription(null).list();
-      fail();
-    } catch (ActivitiIllegalArgumentException e) {
-
-    }
+    assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
+      .isThrownBy(() -> taskService.createTaskQuery().or().taskId("invalid").taskDescription(null).list());
   }
 
   public void testQueryByDescriptionLike() {
@@ -438,12 +419,8 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
     assertThat(query.list().size()).isEqualTo(0);
     assertThat(query.count()).isEqualTo(0);
 
-    try {
-      taskService.createTaskQuery().or().taskId("invalid").taskDescriptionLike(null).list();
-      fail();
-    } catch (ActivitiIllegalArgumentException e) {
-
-    }
+    assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
+      .isThrownBy(() -> taskService.createTaskQuery().or().taskId("invalid").taskDescriptionLike(null).list());
   }
 
   public void testQueryByInvalidDescriptionLikeOr() {
@@ -452,26 +429,21 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
     assertThat(query.list().size()).isEqualTo(0);
     assertThat(query.count()).isEqualTo(0);
 
-    try {
-      taskService.createTaskQuery().or().taskId("invalid").taskDescriptionLike(null).list();
-      fail();
-    } catch (ActivitiIllegalArgumentException e) {
-
-    }
+    assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
+      .isThrownBy(() -> taskService.createTaskQuery().or().taskId("invalid").taskDescriptionLike(null).list());
   }
 
-  public void testQueryByPriority() {
+  public void testQueryByPriorityTenThrowsException() {
     TaskQuery query = taskService.createTaskQuery().taskPriority(10);
     assertThat(query.list().size()).isEqualTo(2);
     assertThat(query.count()).isEqualTo(2);
 
-    try {
-      query.singleResult();
-      fail();
-    } catch (ActivitiException e) {
-    }
+    assertThatExceptionOfType(ActivitiException.class)
+      .isThrownBy(() -> query.singleResult());
+  }
 
-    query = taskService.createTaskQuery().taskPriority(100);
+  public void testQueryByPriority() {
+    TaskQuery query = taskService.createTaskQuery().taskPriority(100);
     assertThat(query.singleResult()).isNull();
     assertThat(query.list().size()).isEqualTo(0);
     assertThat(query.count()).isEqualTo(0);
@@ -489,18 +461,17 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
     assertThat(query.list().size()).isEqualTo(6);
   }
 
-  public void testQueryByPriorityOr() {
+  public void testQueryByPriorityTenOrThrowsException() {
     TaskQuery query = taskService.createTaskQuery().or().taskId("invalid").taskPriority(10);
     assertThat(query.list().size()).isEqualTo(2);
     assertThat(query.count()).isEqualTo(2);
 
-    try {
-      query.singleResult();
-      fail();
-    } catch (ActivitiException e) {
-    }
+    assertThatExceptionOfType(ActivitiException.class)
+      .isThrownBy(() -> query.singleResult());
+  }
 
-    query = taskService.createTaskQuery().or().taskId("invalid").taskPriority(100);
+  public void testQueryByPriorityOr() {
+    TaskQuery query = taskService.createTaskQuery().or().taskId("invalid").taskPriority(100);
     assertThat(query.singleResult()).isNull();
     assertThat(query.list().size()).isEqualTo(0);
     assertThat(query.count()).isEqualTo(0);
@@ -782,35 +753,25 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
   }
 
   public void testQueryByNullCandidateUser() {
-    try {
-      taskService.createTaskQuery().taskCandidateUser(null,null).list();
-      fail();
-    } catch (ActivitiIllegalArgumentException e) {
-    }
+    assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
+      .isThrownBy(() -> taskService.createTaskQuery().taskCandidateUser(null,null).list());
   }
 
   public void testQueryByNullCandidateUserOr() {
-    try {
-      taskService.createTaskQuery().or().taskId("invalid").taskCandidateUser(null,null).list();
-      fail();
-    } catch (ActivitiIllegalArgumentException e) {
-    }
+    assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
+      .isThrownBy(() -> taskService.createTaskQuery().or().taskId("invalid").taskCandidateUser(null,null).list());
   }
 
   public void testQueryByCandidateGroup() {
     TaskQuery query = taskService.createTaskQuery().taskCandidateGroup("management");
     assertThat(query.count()).isEqualTo(3);
     assertThat(query.list().size()).isEqualTo(3);
-    try {
-      query.singleResult();
-      fail("expected exception");
-    } catch (ActivitiException e) {
-      // OK
-    }
+    assertThatExceptionOfType(ActivitiException.class)
+      .isThrownBy(() -> query.singleResult());
 
-    query = taskService.createTaskQuery().taskCandidateGroup("sales");
-    assertThat(query.count()).isEqualTo(0);
-    assertThat(query.list().size()).isEqualTo(0);
+    TaskQuery querySales = taskService.createTaskQuery().taskCandidateGroup("sales");
+    assertThat(querySales.count()).isEqualTo(0);
+    assertThat(querySales.list().size()).isEqualTo(0);
   }
 
   public void testQueryByCandidateGroupOr() {

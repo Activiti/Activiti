@@ -12,7 +12,9 @@
  */
 package org.activiti.engine.test.api.runtime;
 
+import static java.util.Collections.emptySet;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -87,12 +89,8 @@ public class ProcessInstanceQueryTest extends PluggableActivitiTestCase {
 
   public void testQueryNoSpecificsSingleResult() {
     ProcessInstanceQuery query = runtimeService.createProcessInstanceQuery();
-    try {
-      query.singleResult();
-      fail();
-    } catch (ActivitiException e) {
-      // Exception is expected
-    }
+    assertThatExceptionOfType(ActivitiException.class)
+      .isThrownBy(() -> query.singleResult());
   }
 
   public void testQueryByProcessDefinitionKeySingleResult() {
@@ -112,12 +110,8 @@ public class ProcessInstanceQueryTest extends PluggableActivitiTestCase {
     assertThat(query.count()).isEqualTo(PROCESS_DEFINITION_KEY_DEPLOY_COUNT);
     assertThat(query.list().size()).isEqualTo(PROCESS_DEFINITION_KEY_DEPLOY_COUNT);
 
-    try {
-      query.singleResult();
-      fail();
-    } catch (ActivitiException e) {
-      // Exception is expected
-    }
+    assertThatExceptionOfType(ActivitiException.class)
+      .isThrownBy(() -> query.singleResult());
   }
 
   public void testQueryByProcessDefinitionKeys() {
@@ -128,28 +122,16 @@ public class ProcessInstanceQueryTest extends PluggableActivitiTestCase {
     ProcessInstanceQuery query = runtimeService.createProcessInstanceQuery().processDefinitionKeys(processDefinitionKeySet);
     assertThat(query.count()).isEqualTo(PROCESS_DEPLOY_COUNT);
     assertThat(query.list().size()).isEqualTo(PROCESS_DEPLOY_COUNT);
-    try {
-      query.singleResult();
-      fail();
-    } catch (ActivitiException e) {
-      // Exception is expected
-    }
+    assertThatExceptionOfType(ActivitiException.class)
+      .isThrownBy(() -> query.singleResult());
   }
 
   public void testQueryByInvalidProcessDefinitionKeys() {
-    try {
-      runtimeService.createProcessInstanceQuery().processDefinitionKeys(null);
-      fail();
-    } catch (ActivitiException e) {
-      // Exception is expected
-    }
+    assertThatExceptionOfType(ActivitiException.class)
+      .isThrownBy(() -> runtimeService.createProcessInstanceQuery().processDefinitionKeys(null));
 
-    try {
-      runtimeService.createProcessInstanceQuery().processDefinitionKeys(Collections.<String> emptySet());
-      fail();
-    } catch (ActivitiException e) {
-      // Exception is expected
-    }
+    assertThatExceptionOfType(ActivitiException.class)
+      .isThrownBy(() -> runtimeService.createProcessInstanceQuery().processDefinitionKeys(emptySet()));
   }
 
   public void testQueryByProcessInstanceId() {
@@ -263,12 +245,8 @@ public class ProcessInstanceQueryTest extends PluggableActivitiTestCase {
   public void testQueryByInvalidBusinessKey() {
     assertThat(runtimeService.createProcessInstanceQuery().processInstanceBusinessKey("invalid").count()).isEqualTo(0);
 
-    try {
-      runtimeService.createProcessInstanceQuery().processInstanceBusinessKey(null).count();
-      fail();
-    } catch (ActivitiIllegalArgumentException e) {
-
-    }
+    assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
+      .isThrownBy(() -> runtimeService.createProcessInstanceQuery().processInstanceBusinessKey(null).count());
   }
 
   public void testQueryByProcessDefinitionId() {
@@ -276,12 +254,8 @@ public class ProcessInstanceQueryTest extends PluggableActivitiTestCase {
     ProcessInstanceQuery query1 = runtimeService.createProcessInstanceQuery().processDefinitionId(processDefinition1.getId());
     assertThat(query1.count()).isEqualTo(PROCESS_DEFINITION_KEY_DEPLOY_COUNT);
     assertThat(query1.list().size()).isEqualTo(PROCESS_DEFINITION_KEY_DEPLOY_COUNT);
-    try {
-      query1.singleResult();
-      fail();
-    } catch (ActivitiException e) {
-      // Exception is expected
-    }
+    assertThatExceptionOfType(ActivitiException.class)
+      .isThrownBy(() -> query1.singleResult());
 
     final ProcessDefinition processDefinition2 = repositoryService.createProcessDefinitionQuery().processDefinitionKey(PROCESS_DEFINITION_KEY_2).singleResult();
     ProcessInstanceQuery query2 = runtimeService.createProcessInstanceQuery().processDefinitionId(processDefinition2.getId());
@@ -301,28 +275,16 @@ public class ProcessInstanceQueryTest extends PluggableActivitiTestCase {
     ProcessInstanceQuery query = runtimeService.createProcessInstanceQuery().processDefinitionIds(processDefinitionIdSet);
     assertThat(query.count()).isEqualTo(PROCESS_DEPLOY_COUNT);
     assertThat(query.list().size()).isEqualTo(PROCESS_DEPLOY_COUNT);
-    try {
-      query.singleResult();
-      fail();
-    } catch (ActivitiException e) {
-      // Exception is expected
-    }
+    assertThatExceptionOfType(ActivitiException.class)
+      .isThrownBy(() -> query.singleResult());
   }
 
   public void testQueryByInvalidProcessDefinitionIds() {
-    try {
-      runtimeService.createProcessInstanceQuery().processDefinitionIds(null);
-      fail();
-    } catch (ActivitiException e) {
-      // Exception is expected
-    }
+    assertThatExceptionOfType(ActivitiException.class)
+      .isThrownBy(() -> runtimeService.createProcessInstanceQuery().processDefinitionIds(null));
 
-    try {
-      runtimeService.createProcessInstanceQuery().processDefinitionIds(Collections.<String> emptySet());
-      fail();
-    } catch (ActivitiException e) {
-      // Exception is expected
-    }
+    assertThatExceptionOfType(ActivitiException.class)
+      .isThrownBy(() -> runtimeService.createProcessInstanceQuery().processDefinitionIds(emptySet()));
   }
 
   public void testQueryByProcessDefinitionName() {
@@ -609,17 +571,9 @@ public class ProcessInstanceQueryTest extends PluggableActivitiTestCase {
   }
 
   public void testQueryInvalidSorting() {
-    try {
-      runtimeService.createProcessInstanceQuery().orderByProcessDefinitionId().list(); // asc
-                                                                                       // -
-                                                                                       // desc
-                                                                                       // not
-                                                                                       // called
-                                                                                       // ->
-                                                                                       // exception
-      fail();
-    } catch (ActivitiIllegalArgumentException e) {
-    }
+    // asc - desc not called -> exception
+    assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
+      .isThrownBy(() -> runtimeService.createProcessInstanceQuery().orderByProcessDefinitionId().list());
   }
 
   @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })

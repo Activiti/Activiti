@@ -42,7 +42,7 @@ public class FormPropertiesConverterTest extends AbstractConverterTest {
 
     FlowElement startFlowElement = model.getMainProcess().getFlowElement("startNode");
     assertThat(startFlowElement).isNotNull();
-    assertThat(startFlowElement instanceof StartEvent).isTrue();
+    assertThat(startFlowElement).isInstanceOf(StartEvent.class);
     StartEvent startEvent = (StartEvent) startFlowElement;
 
     for (FormProperty formProperty :startEvent.getFormProperties()) {
@@ -51,7 +51,7 @@ public class FormPropertiesConverterTest extends AbstractConverterTest {
 
     FlowElement userFlowElement = model.getMainProcess().getFlowElement("userTask");
     assertThat(userFlowElement).isNotNull();
-    assertThat(userFlowElement instanceof UserTask).isTrue();
+    assertThat(userFlowElement).isInstanceOf(UserTask.class);
     UserTask userTask = (UserTask) userFlowElement;
 
     List<FormProperty> formProperties = userTask.getFormProperties();

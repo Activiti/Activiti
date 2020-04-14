@@ -13,6 +13,7 @@
 
 package org.activiti.engine.test.history;
 
+import static java.util.Collections.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.groups.Tuple.tuple;
 
@@ -55,7 +56,7 @@ public class HistoricVariableInstanceTest extends PluggableActivitiTestCase {
       assertThat(runtimeService.createProcessInstanceQuery().subProcessInstanceId(subProcessInstance.getId()).singleResult().getId()).isEqualTo(pi.getId());
 
       // Completing the task with approval, will end the subprocess and continue the original process
-      taskService.complete(verifyCreditTask.getId(), CollectionUtil.singletonMap("creditApproved", true));
+      taskService.complete(verifyCreditTask.getId(), singletonMap("creditApproved", true));
       Task prepareAndShipTask = taskQuery.singleResult();
       assertThat(prepareAndShipTask.getName()).isEqualTo("Prepare and Ship");
     }
@@ -69,7 +70,7 @@ public class HistoricVariableInstanceTest extends PluggableActivitiTestCase {
       Task userTask = taskQuery.singleResult();
       assertThat(userTask.getName()).isEqualTo("userTask1");
 
-      taskService.complete(userTask.getId(), CollectionUtil.singletonMap("myVar", "test789"));
+      taskService.complete(userTask.getId(), singletonMap("myVar", "test789"));
 
       assertProcessEnded(processInstance.getId());
 
@@ -109,7 +110,7 @@ public class HistoricVariableInstanceTest extends PluggableActivitiTestCase {
       Task userTask = taskQuery.singleResult();
       assertThat(userTask.getName()).isEqualTo("userTask1");
 
-      taskService.complete(userTask.getId(), CollectionUtil.singletonMap("myVar", "test789"));
+      taskService.complete(userTask.getId(), singletonMap("myVar", "test789"));
 
       assertProcessEnded(processInstance.getId());
 
@@ -620,7 +621,7 @@ public class HistoricVariableInstanceTest extends PluggableActivitiTestCase {
       Task userTask = taskQuery.singleResult();
       assertThat(userTask.getName()).isEqualTo("userTask1");
 
-      taskService.complete(userTask.getId(), CollectionUtil.singletonMap("myVar", "test789"));
+      taskService.complete(userTask.getId(), singletonMap("myVar", "test789"));
 
       assertProcessEnded(processInstance.getId());
 

@@ -13,6 +13,7 @@
 
 package org.activiti.engine.test.bpmn.subprocess;
 
+import static java.util.Collections.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Date;
@@ -127,7 +128,7 @@ public class SubProcessTest extends PluggableActivitiTestCase {
   public void testNestedSimpleSubProcess() {
 
     // Start and delete a process with a nested subprocess when it is not yet ended
-    ProcessInstance pi = runtimeService.startProcessInstanceByKey("nestedSimpleSubProcess", CollectionUtil.singletonMap("someVar", "abc"));
+    ProcessInstance pi = runtimeService.startProcessInstanceByKey("nestedSimpleSubProcess", singletonMap("someVar", "abc"));
     runtimeService.deleteProcessInstance(pi.getId(), "deleted");
 
     // After staring the process, the task in the inner subprocess must be active

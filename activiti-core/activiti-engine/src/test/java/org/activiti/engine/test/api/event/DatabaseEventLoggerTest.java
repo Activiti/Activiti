@@ -1,5 +1,6 @@
 package org.activiti.engine.test.api.event;
 
+import static java.util.Collections.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.IOException;
@@ -62,7 +63,7 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
 
     // Run process to gather data
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKeyAndTenantId("DatabaseEventLoggerProcess",
-        CollectionUtil.singletonMap("testVar", "helloWorld"), testTenant);
+        singletonMap("testVar", "helloWorld"), testTenant);
 
     // Verify event log entries
     List<EventLogEntry> eventLogEntries = managementService.getEventLogEntries(null, null);
@@ -423,7 +424,7 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
     String deploymentId = repositoryService.createDeployment().addClasspathResource("org/activiti/engine/test/api/event/DatabaseEventLoggerProcess.bpmn20.xml").deploy().getId();
 
     // Run process to gather data
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("DatabaseEventLoggerProcess", CollectionUtil.singletonMap("testVar", "helloWorld"));
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("DatabaseEventLoggerProcess", singletonMap("testVar", "helloWorld"));
 
     // Verify event log entries
     List<EventLogEntry> eventLogEntries = managementService.getEventLogEntries(null, null);

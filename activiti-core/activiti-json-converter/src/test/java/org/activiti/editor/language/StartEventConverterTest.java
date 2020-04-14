@@ -36,7 +36,7 @@ public class StartEventConverterTest extends AbstractConverterTest {
   private void validateModel(BpmnModel model) {
 
     FlowElement flowElement = model.getMainProcess().getFlowElement("start", true);
-    assertThat(flowElement instanceof StartEvent).isTrue();
+    assertThat(flowElement).isInstanceOf(StartEvent.class);
 
     StartEvent startEvent = (StartEvent) flowElement;
     assertThat(startEvent.getId()).isEqualTo("start");

@@ -212,7 +212,6 @@ public class Activiti6ExecutionTest extends PluggableActivitiTestCase {
       } else {
         childExecution = execution;
 
-        assertThat(execution.getId().equals(execution.getProcessInstanceId()) == false).isTrue();
         assertThat(execution.getActivityId()).isEqualTo("theTask1");
       }
     }
@@ -243,7 +242,7 @@ public class Activiti6ExecutionTest extends PluggableActivitiTestCase {
     assertThat(executionList.size()).isEqualTo(2);
 
     task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
-    assertThat(childExecution.getId().equals(task.getExecutionId()) == false).isTrue();
+    assertThat(childExecution.getId()).isNotEqualTo(task.getExecutionId());
 
     Execution finalTaskExecution = runtimeService.createExecutionQuery().executionId(task.getExecutionId()).singleResult();
     assertThat(finalTaskExecution.getActivityId()).isEqualTo("theTask2");

@@ -77,7 +77,7 @@ public class ProcessInstanceLogQueryTest extends PluggableActivitiTestCase {
     assertThat(events.size()).isEqualTo(2);
 
     for (HistoricData event : events) {
-      assertThat(event instanceof HistoricTaskInstance).isTrue();
+      assertThat(event).isInstanceOf(HistoricTaskInstance.class);
     }
   }
 
@@ -87,7 +87,7 @@ public class ProcessInstanceLogQueryTest extends PluggableActivitiTestCase {
     assertThat(events.size()).isEqualTo(3);
 
     for (HistoricData event : events) {
-      assertThat(event instanceof Comment).isTrue();
+      assertThat(event).isInstanceOf(Comment.class);
     }
   }
 
@@ -99,9 +99,9 @@ public class ProcessInstanceLogQueryTest extends PluggableActivitiTestCase {
     for (int i = 0; i < 5; i++) {
       HistoricData event = events.get(i);
       if (i < 2) { // tasks are created before comments
-        assertThat(event instanceof HistoricTaskInstance).isTrue();
+        assertThat(event).isInstanceOf(HistoricTaskInstance.class);
       } else {
-        assertThat(event instanceof Comment).isTrue();
+        assertThat(event).isInstanceOf(Comment.class);
       }
     }
   }
@@ -112,7 +112,7 @@ public class ProcessInstanceLogQueryTest extends PluggableActivitiTestCase {
     assertThat(events.size()).isEqualTo(5);
 
     for (HistoricData event : events) {
-      assertThat(event instanceof HistoricActivityInstance).isTrue();
+      assertThat(event).isInstanceOf(HistoricActivityInstance.class);
     }
   }
 
@@ -123,7 +123,7 @@ public class ProcessInstanceLogQueryTest extends PluggableActivitiTestCase {
       assertThat(events.size()).isEqualTo(2);
 
       for (HistoricData event : events) {
-        assertThat(event instanceof HistoricVariableInstance).isTrue();
+        assertThat(event).isInstanceOf(HistoricVariableInstance.class);
       }
     }
   }
@@ -135,7 +135,7 @@ public class ProcessInstanceLogQueryTest extends PluggableActivitiTestCase {
       assertThat(events.size()).isEqualTo(3);
 
       for (HistoricData event : events) {
-        assertThat(event instanceof HistoricVariableUpdate).isTrue();
+        assertThat(event).isInstanceOf(HistoricVariableUpdate.class);
       }
     }
   }

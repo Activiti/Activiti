@@ -14,6 +14,7 @@
 package org.activiti.engine.test.bpmn.deployment;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.io.InputStream;
 import java.util.List;
@@ -75,14 +76,13 @@ public class BpmnDeploymentTest extends PluggableActivitiTestCase {
   }
 
   public void testViolateBPMNIdMaximumLength() {
-    try {
-      repositoryService.createDeployment()
+    assertThatExceptionOfType(Exception.class)
+      .isThrownBy(() -> {
+        repositoryService.createDeployment()
           .addClasspathResource("org/activiti/engine/test/bpmn/deployment/definitionWithLongTargetNamespace.bpmn20.xml")
           .deploy();
-      fail();
-    } catch (ActivitiException e) {
-      assertTextPresent(Problems.BPMN_MODEL_TARGET_NAMESPACE_TOO_LONG, e.getMessage());
-    }
+      })
+      .withMessageContaining(Problems.BPMN_MODEL_TARGET_NAMESPACE_TOO_LONG);
 
     // Verify that nothing is deployed
     assertThat(repositoryService.createDeploymentQuery().count()).isEqualTo(0);
@@ -90,43 +90,39 @@ public class BpmnDeploymentTest extends PluggableActivitiTestCase {
 
 
   public void testViolateProcessDefinitionIdMaximumLength() {
-    try {
-      repositoryService.createDeployment()
-        .addClasspathResource("org/activiti/engine/test/bpmn/deployment/processWithLongId.bpmn20.xml")
-        .deploy();
-      fail();
-    } catch (ActivitiException e) {
-      assertTextPresent(Problems.PROCESS_DEFINITION_ID_TOO_LONG, e.getMessage());
-    }
+    assertThatExceptionOfType(ActivitiException.class)
+      .isThrownBy(() -> {
+        repositoryService.createDeployment()
+          .addClasspathResource("org/activiti/engine/test/bpmn/deployment/processWithLongId.bpmn20.xml")
+          .deploy();
+      }).withMessageContaining(Problems.PROCESS_DEFINITION_ID_TOO_LONG);
 
     // Verify that nothing is deployed
     assertThat(repositoryService.createDeploymentQuery().count()).isEqualTo(0);
   }
 
   public void testViolateProcessDefinitionNameAndDescriptionMaximumLength() {
-    try {
-      repositoryService.createDeployment()
+    assertThatExceptionOfType(ActivitiException.class)
+      .isThrownBy(() -> {
+        repositoryService.createDeployment()
           .addClasspathResource("org/activiti/engine/test/bpmn/deployment/processWithLongNameAndDescription.bpmn20.xml")
           .deploy();
-      fail();
-    } catch (ActivitiException e) {
-      assertTextPresent(Problems.PROCESS_DEFINITION_NAME_TOO_LONG, e.getMessage());
-      assertTextPresent(Problems.PROCESS_DEFINITION_DOCUMENTATION_TOO_LONG, e.getMessage());
-    }
+      })
+      .withMessageContaining(Problems.PROCESS_DEFINITION_NAME_TOO_LONG)
+      .withMessageContaining(Problems.PROCESS_DEFINITION_DOCUMENTATION_TOO_LONG);
 
     // Verify that nothing is deployed
     assertThat(repositoryService.createDeploymentQuery().count()).isEqualTo(0);
   }
 
   public void testViolateDefinitionTargetNamespaceMaximumLength() {
-    try {
-      repositoryService.createDeployment()
+    assertThatExceptionOfType(ActivitiException.class)
+      .isThrownBy(() -> {
+        repositoryService.createDeployment()
           .addClasspathResource("org/activiti/engine/test/bpmn/deployment/BpmnDeploymentTest.definitionWithLongTargetNamespace.bpmn20.xml")
           .deploy();
-      fail();
-    } catch (ActivitiException e) {
-      assertTextPresent(Problems.BPMN_MODEL_TARGET_NAMESPACE_TOO_LONG, e.getMessage());
-    }
+      })
+      .withMessageContaining(Problems.BPMN_MODEL_TARGET_NAMESPACE_TOO_LONG);
 
     // Verify that nothing is deployed
     assertThat(repositoryService.createDeploymentQuery().count()).isEqualTo(0);
@@ -151,15 +147,17 @@ public class BpmnDeploymentTest extends PluggableActivitiTestCase {
   }
 
   public void testDeployTwoProcessesWithDuplicateIdAtTheSameTime() {
-    try {
-      String bpmnResourceName = "org/activiti/engine/test/bpmn/deployment/BpmnDeploymentTest.testGetBpmnXmlFileThroughService.bpmn20.xml";
-      String bpmnResourceName2 = "org/activiti/engine/test/bpmn/deployment/BpmnDeploymentTest.testGetBpmnXmlFileThroughService2.bpmn20.xml";
-      repositoryService.createDeployment().enableDuplicateFiltering().addClasspathResource(bpmnResourceName).addClasspathResource(bpmnResourceName2).name("duplicateAtTheSameTime").deploy();
-      fail();
-    } catch (Exception e) {
-      // Verify that nothing is deployed
-      assertThat(repositoryService.createDeploymentQuery().count()).isEqualTo(0);
-    }
+    String bpmnResourceName = "org/activiti/engine/test/bpmn/deployment/BpmnDeploymentTest.testGetBpmnXmlFileThroughService.bpmn20.xml";
+    String bpmnResourceName2 = "org/activiti/engine/test/bpmn/deployment/BpmnDeploymentTest.testGetBpmnXmlFileThroughService2.bpmn20.xml";
+    assertThatExceptionOfType(Exception.class)
+      .isThrownBy(() -> {
+        repositoryService.createDeployment().enableDuplicateFiltering()
+          .addClasspathResource(bpmnResourceName).addClasspathResource(bpmnResourceName2).name("duplicateAtTheSameTime")
+          .deploy();
+      });
+
+    // Verify that nothing is deployed
+    assertThat(repositoryService.createDeploymentQuery().count()).isEqualTo(0);
   }
 
   public void testDeployDifferentFiles() {

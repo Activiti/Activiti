@@ -36,12 +36,12 @@ public class SubProcessConverterTest extends AbstractConverterTest {
   private void validateModel(BpmnModel model) {
     FlowElement flowElement = model.getMainProcess().getFlowElement("start1");
     assertThat(flowElement).isNotNull();
-    assertThat(flowElement instanceof StartEvent).isTrue();
+    assertThat(flowElement).isInstanceOf(StartEvent.class);
     assertThat(flowElement.getId()).isEqualTo("start1");
 
     flowElement = model.getMainProcess().getFlowElement("userTask1");
     assertThat(flowElement).isNotNull();
-    assertThat(flowElement instanceof UserTask).isTrue();
+    assertThat(flowElement).isInstanceOf(UserTask.class);
     assertThat(flowElement.getId()).isEqualTo("userTask1");
     UserTask userTask = (UserTask) flowElement;
     assertThat(userTask.getCandidateUsers().size() == 1).isTrue();
@@ -50,7 +50,7 @@ public class SubProcessConverterTest extends AbstractConverterTest {
 
     flowElement = model.getMainProcess().getFlowElement("subprocess1");
     assertThat(flowElement).isNotNull();
-    assertThat(flowElement instanceof SubProcess).isTrue();
+    assertThat(flowElement).isInstanceOf(SubProcess.class);
     assertThat(flowElement.getId()).isEqualTo("subprocess1");
     SubProcess subProcess = (SubProcess) flowElement;
     assertThat(subProcess.getLoopCharacteristics().isSequential()).isTrue();
@@ -66,13 +66,13 @@ public class SubProcessConverterTest extends AbstractConverterTest {
 
     flowElement = model.getMainProcess().getFlowElement("boundaryEvent1");
     assertThat(flowElement).isNotNull();
-    assertThat(flowElement instanceof BoundaryEvent).isTrue();
+    assertThat(flowElement).isInstanceOf(BoundaryEvent.class);
     assertThat(flowElement.getId()).isEqualTo("boundaryEvent1");
     BoundaryEvent boundaryEvent = (BoundaryEvent) flowElement;
     assertThat(boundaryEvent.getAttachedToRef()).isNotNull();
     assertThat(boundaryEvent.getAttachedToRef().getId()).isEqualTo("subprocess1");
     assertThat(boundaryEvent.getEventDefinitions().size()).isEqualTo(1);
-    assertThat(boundaryEvent.getEventDefinitions().get(0) instanceof TimerEventDefinition).isTrue();
+    assertThat(boundaryEvent.getEventDefinitions().get(0)).isInstanceOf(TimerEventDefinition.class);
 
     assertThat(model.getMainProcess().getExecutionListeners().size()).isEqualTo(1);
     ActivitiListener listenerMainProcess = model.getMainProcess().getExecutionListeners().get(0);

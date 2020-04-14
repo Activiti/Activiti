@@ -45,9 +45,9 @@ public class ExpressionBeanAccessTest extends ResourceActivitiTestCase {
       fail("Exception expected");
     } catch (ActivitiException ae) {
       assertThat(ae.getCause()).isNotNull();
-      assertThat(ae.getCause() instanceof RuntimeException).isTrue();
+      assertThat(ae.getCause()).isInstanceOf(RuntimeException.class);
       RuntimeException runtimeException = (RuntimeException) ae.getCause();
-      assertThat(runtimeException.getCause() instanceof PropertyNotFoundException).isTrue();
+      assertThat(runtimeException.getCause()).isInstanceOf(PropertyNotFoundException.class);
     }
   }
 }

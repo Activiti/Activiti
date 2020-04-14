@@ -26,6 +26,7 @@ import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.catchThrowable;
 
 /**
@@ -82,11 +83,9 @@ public class MessageIntermediateEventTest extends PluggableActivitiTestCase {
     Map<String, Object> variableMap = new HashMap<String, Object>();
     variableMap.put("myMessageName", null);
 
-      Throwable throwable = catchThrowable(() -> runtimeService.startProcessInstanceByKey("process",
-                                                                                        variableMap));
-      assertThat(throwable)
-              .isInstanceOf(ActivitiIllegalArgumentException.class)
-              .hasMessage("Expression '${myMessageName}' is null");
+    assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
+      .isThrownBy(() -> runtimeService.startProcessInstanceByKey("process", variableMap))
+      .withMessage("Expression '${myMessageName}' is null");
   }
 
   @Deployment

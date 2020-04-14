@@ -13,7 +13,6 @@
 package org.activiti.standalone.validation;
 
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.junit.Assert.fail;
 
 import org.activiti.bpmn.exceptions.XMLException;
 import org.activiti.engine.ActivitiException;

@@ -47,6 +47,7 @@ import org.activiti.engine.task.IdentityLinkType;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
+import static java.util.Collections.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
@@ -375,40 +376,30 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
         Task task = taskService.newTask();
         task.setOwner("johndoe");
         taskService.saveTask(task);
-        taskService.delegateTask(task.getId(),
-                                 "joesmoe");
+        taskService.delegateTask(task.getId(), "joesmoe");
         String taskId = task.getId();
 
         task = taskService.createTaskQuery().taskId(taskId).singleResult();
-        assertEquals("johndoe",
-                     task.getOwner());
-        assertEquals("joesmoe",
-                     task.getAssignee());
-        assertEquals(DelegationState.PENDING,
-                     task.getDelegationState());
+        assertEquals("johndoe", task.getOwner());
+        assertEquals("joesmoe", task.getAssignee());
+        assertEquals(DelegationState.PENDING, task.getDelegationState());
 
         // try to complete (should fail)
-        try {
-            taskService.complete(task.getId());
-            fail();
-        } catch (ActivitiException e) {
-        }
+        Task exceptionTask = task;
+        assertThatExceptionOfType(ActivitiException.class)
+            .isThrownBy(() -> taskService.complete(exceptionTask.getId()));
 
         taskService.resolveTask(taskId);
         task = taskService.createTaskQuery().taskId(taskId).singleResult();
-        assertEquals("johndoe",
-                     task.getOwner());
-        assertEquals("johndoe",
-                     task.getAssignee());
-        assertEquals(DelegationState.RESOLVED,
-                     task.getDelegationState());
+        assertEquals("johndoe", task.getOwner());
+        assertEquals("johndoe", task.getAssignee());
+        assertEquals(DelegationState.RESOLVED, task.getDelegationState());
 
         task.setAssignee(null);
         task.setDelegationState(null);
         taskService.saveTask(task);
         task = taskService.createTaskQuery().taskId(taskId).singleResult();
-        assertEquals("johndoe",
-                     task.getOwner());
+        assertEquals("johndoe", task.getOwner());
         assertThat(task.getAssignee()).isNull();
         assertThat(task.getDelegationState()).isNull();
 
@@ -1353,7 +1344,7 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
 
             List<HistoricDetail> resultSet = historyService.createHistoricDetailQuery().processInstanceId(processInstanceId).list();
             for (HistoricDetail currentHistoricDetail : resultSet) {
-                assertThat(currentHistoricDetail instanceof HistoricDetailVariableInstanceUpdateEntity).isTrue();
+                assertThat(currentHistoricDetail).isInstanceOf(HistoricDetailVariableInstanceUpdateEntity.class);
                 HistoricDetailVariableInstanceUpdateEntity historicVariableUpdate = (HistoricDetailVariableInstanceUpdateEntity) currentHistoricDetail;
 
                 if (historicVariableUpdate.getName().equals(variableName)) {
@@ -1597,23 +1588,15 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
     }
 
     public void testResolveTaskNullTaskId() {
-        try {
-            taskService.resolveTask(null);
-            fail();
-        } catch (ActivitiException ae) {
-            assertTextPresent("taskId is null",
-                              ae.getMessage());
-        }
+        assertThatExceptionOfType(ActivitiException.class)
+            .isThrownBy(() -> taskService.resolveTask(null))
+            .withMessageContaining("taskId is null");
     }
 
     public void testResolveTaskUnexistingTaskId() {
-        try {
-            taskService.resolveTask("blergh");
-            fail();
-        } catch (ActivitiException ae) {
-            assertTextPresent("Cannot find task with id",
-                              ae.getMessage());
-        }
+        assertThatExceptionOfType(ActivitiException.class)
+            .isThrownBy(() -> taskService.resolveTask("blergh"))
+            .withMessageContaining("Cannot find task with id");
     }
 
     public void testResolveTaskWithParametersNullParameters() {
@@ -1749,28 +1732,23 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
     @Deployment
     public void testFormKeyExpression() {
         runtimeService.startProcessInstanceByKey("testFormExpression",
-                                                 CollectionUtil.singletonMap("var",
-                                                                             "abc"));
+                                                 singletonMap("var", "abc"));
 
         Task task = taskService.createTaskQuery().singleResult();
-        assertEquals("first-form.json",
-                     task.getFormKey());
+        assertEquals("first-form.json", task.getFormKey());
         taskService.complete(task.getId());
 
         task = taskService.createTaskQuery().singleResult();
-        assertEquals("form-abc.json",
-                     task.getFormKey());
+        assertEquals("form-abc.json", task.getFormKey());
 
         task.setFormKey("form-changed.json");
         taskService.saveTask(task);
         task = taskService.createTaskQuery().singleResult();
-        assertEquals("form-changed.json",
-                     task.getFormKey());
+        assertEquals("form-changed.json", task.getFormKey());
 
         if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
             HistoricTaskInstance historicTaskInstance = historyService.createHistoricTaskInstanceQuery().taskId(task.getId()).singleResult();
-            assertEquals("form-changed.json",
-                         historicTaskInstance.getFormKey());
+            assertEquals("form-changed.json", historicTaskInstance.getFormKey());
         }
     }
 

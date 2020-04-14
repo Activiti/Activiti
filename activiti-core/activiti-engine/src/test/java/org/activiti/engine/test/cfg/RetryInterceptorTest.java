@@ -12,7 +12,8 @@
  */
 package org.activiti.engine.test.cfg;
 
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,13 +29,10 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandInterceptor;
 import org.activiti.engine.impl.interceptor.RetryInterceptor;
 import org.junit.After;
-import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Before;
 import org.junit.Test;
 
 /**
-
-
  */
 public class RetryInterceptorTest {
 
@@ -61,12 +59,9 @@ public class RetryInterceptorTest {
   @Test
   public void testRetryInterceptor() {
 
-    try {
-      processEngine.getManagementService().executeCommand(new CommandThrowingOptimisticLockingException());
-      fail("ActivitiException expected.");
-    } catch (ActivitiException e) {
-      assertThat(e.getMessage().contains(retryInterceptor.getNumOfRetries() + " retries failed")).isTrue();
-    }
+    assertThatExceptionOfType(ActivitiException.class)
+      .isThrownBy(() -> processEngine.getManagementService().executeCommand(new CommandThrowingOptimisticLockingException()))
+      .withMessageContaining(retryInterceptor.getNumOfRetries() + " retries failed");
 
     assertThat(counter.get()).isEqualTo(retryInterceptor.getNumOfRetries() + 1); // +1, we retry 3 times, so one extra for the regular execution
   }
