@@ -465,8 +465,7 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
                                processVariables);
 
         Map<String, Object> variables = runtimeService.getVariables(processInstance.getId());
-        assertEquals(variables,
-                     processVariables);
+        assertEquals(variables, processVariables);
     }
 
     public void testGetVariablesUnexistingExecutionId() {

@@ -846,12 +846,8 @@ public class HistoricTaskInstanceTest extends PluggableActivitiTestCase {
 
         // Update task and process-variable 10 times
         for (int i = 0; i < 10; i++) {
-            taskService.setVariableLocal(task.getId(),
-                                         "taskVar",
-                                         i);
-            runtimeService.setVariable(task.getExecutionId(),
-                                       "procVar",
-                                       i);
+            taskService.setVariableLocal(task.getId(), "taskVar", i);
+            runtimeService.setVariable(task.getExecutionId(), "procVar", i);
         }
 
         taskService.complete(task.getId());
@@ -860,13 +856,11 @@ public class HistoricTaskInstanceTest extends PluggableActivitiTestCase {
         HistoricTaskInstance taskInstance = historyService.createHistoricTaskInstanceQuery().taskId(task.getId()).includeProcessVariables().singleResult();
 
         Object varValue = taskInstance.getProcessVariables().get("procVar");
-        assertEquals(9,
-                     varValue);
+        assertEquals(9, varValue);
 
         taskInstance = historyService.createHistoricTaskInstanceQuery().taskId(task.getId()).includeTaskLocalVariables().singleResult();
 
         varValue = taskInstance.getTaskLocalVariables().get("taskVar");
-        assertEquals(9,
-                     varValue);
+        assertEquals(9, varValue);
     }
 }

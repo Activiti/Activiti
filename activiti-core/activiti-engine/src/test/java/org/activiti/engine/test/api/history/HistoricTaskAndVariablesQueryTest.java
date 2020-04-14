@@ -349,16 +349,12 @@ public class HistoricTaskAndVariablesQueryTest extends PluggableActivitiTestCase
             task = historyService.createHistoricTaskInstanceQuery().includeTaskLocalVariables().or().finished().taskVariableValueEquals("localVar",
                                                                                                                                         "nonExisting").endOr().singleResult();
             variableMap = task.getTaskLocalVariables();
-            assertEquals(2,
-                         variableMap.size());
-            assertEquals(0,
-                         task.getProcessVariables().size());
+            assertEquals(2, variableMap.size());
+            assertEquals(0, task.getProcessVariables().size());
             assertThat(variableMap.get("testVar")).isNotNull();
-            assertEquals("someVariable",
-                         variableMap.get("testVar"));
+            assertEquals("someVariable", variableMap.get("testVar"));
             assertThat(variableMap.get("testVar2")).isNotNull();
-            assertEquals(123,
-                         variableMap.get("testVar2"));
+            assertEquals(123, variableMap.get("testVar2"));
         }
     }
 
@@ -366,22 +362,16 @@ public class HistoricTaskAndVariablesQueryTest extends PluggableActivitiTestCase
     public void testOrQueryMultipleVariableValues() {
         if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
             Map<String, Object> startMap = new HashMap<String, Object>();
-            startMap.put("processVar",
-                         true);
-            startMap.put("anotherProcessVar",
-                         123);
-            runtimeService.startProcessInstanceByKey("oneTaskProcess",
-                                                     startMap);
+            startMap.put("processVar", true);
+            startMap.put("anotherProcessVar", 123);
+            runtimeService.startProcessInstanceByKey("oneTaskProcess", startMap);
 
-            startMap.put("anotherProcessVar",
-                         999);
-            runtimeService.startProcessInstanceByKey("oneTaskProcess",
-                                                     startMap);
+            startMap.put("anotherProcessVar", 999);
+            runtimeService.startProcessInstanceByKey("oneTaskProcess", startMap);
 
             HistoricTaskInstanceQuery query0 = historyService.createHistoricTaskInstanceQuery().includeProcessVariables().or();
             for (int i = 0; i < 20; i++) {
-                query0 = query0.processVariableValueEquals("anotherProcessVar",
-                                                           i);
+                query0 = query0.processVariableValueEquals("anotherProcessVar", i);
             }
             query0 = query0.endOr();
             assertThat(query0.singleResult()).isNull();
@@ -389,17 +379,13 @@ public class HistoricTaskAndVariablesQueryTest extends PluggableActivitiTestCase
             HistoricTaskInstanceQuery query1 = historyService.createHistoricTaskInstanceQuery().includeProcessVariables().or().processVariableValueEquals("anotherProcessVar",
                                                                                                                                                           123);
             for (int i = 0; i < 20; i++) {
-                query1 = query1.processVariableValueEquals("anotherProcessVar",
-                                                           i);
+                query1 = query1.processVariableValueEquals("anotherProcessVar", i);
             }
             query1 = query1.endOr();
             HistoricTaskInstance task = query1.singleResult();
-            assertEquals(2,
-                         task.getProcessVariables().size());
-            assertEquals(true,
-                         task.getProcessVariables().get("processVar"));
-            assertEquals(123,
-                         task.getProcessVariables().get("anotherProcessVar"));
+            assertEquals(2, task.getProcessVariables().size());
+            assertEquals(true, task.getProcessVariables().get("processVar"));
+            assertEquals(123, task.getProcessVariables().get("anotherProcessVar"));
         }
     }
 
@@ -553,47 +539,34 @@ public class HistoricTaskAndVariablesQueryTest extends PluggableActivitiTestCase
         if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
             List<HistoricTaskInstance> tasks = historyService.createHistoricTaskInstanceQuery().includeProcessVariables().includeTaskLocalVariables().orderByTaskPriority().desc().listPage(0,
                                                                                                                                                                                             1);
-            assertEquals(1,
-                         tasks.size());
+            assertEquals(1, tasks.size());
             HistoricTaskInstance task = tasks.get(0);
             Map<String, Object> variableMap = task.getTaskLocalVariables();
-            assertEquals(2,
-                         variableMap.size());
-            assertEquals("someVariable",
-                         variableMap.get("testVar"));
-            assertEquals(123,
-                         variableMap.get("testVar2"));
+            assertEquals(2, variableMap.size());
+            assertEquals("someVariable", variableMap.get("testVar"));
+            assertEquals(123, variableMap.get("testVar2"));
 
             tasks = historyService.createHistoricTaskInstanceQuery().includeProcessVariables().includeTaskLocalVariables().orderByTaskPriority().asc().listPage(1,
                                                                                                                                                                 2);
-            assertEquals(2,
-                         tasks.size());
+            assertEquals(2, tasks.size());
             task = tasks.get(1);
             variableMap = task.getTaskLocalVariables();
-            assertEquals(2,
-                         variableMap.size());
-            assertEquals("someVariable",
-                         variableMap.get("testVar"));
-            assertEquals(123,
-                         variableMap.get("testVar2"));
+            assertEquals(2, variableMap.size());
+            assertEquals("someVariable", variableMap.get("testVar"));
+            assertEquals(123, variableMap.get("testVar2"));
 
             tasks = historyService.createHistoricTaskInstanceQuery().includeProcessVariables().includeTaskLocalVariables().orderByTaskPriority().asc().listPage(2,
                                                                                                                                                                 4);
-            assertEquals(1,
-                         tasks.size());
+            assertEquals(1, tasks.size());
             task = tasks.get(0);
             variableMap = task.getTaskLocalVariables();
-            assertEquals(2,
-                         variableMap.size());
-            assertEquals("someVariable",
-                         variableMap.get("testVar"));
-            assertEquals(123,
-                         variableMap.get("testVar2"));
+            assertEquals(2, variableMap.size());
+            assertEquals("someVariable", variableMap.get("testVar"));
+            assertEquals(123, variableMap.get("testVar2"));
 
             tasks = historyService.createHistoricTaskInstanceQuery().includeProcessVariables().includeTaskLocalVariables().orderByTaskPriority().asc().listPage(4,
                                                                                                                                                                 2);
-            assertEquals(0,
-                         tasks.size());
+            assertEquals(0, tasks.size());
         }
     }
 

@@ -748,8 +748,7 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
 
         // Verify task parameters set on execution
         Map<String, Object> variables = runtimeService.getVariables(processInstance.getId());
-        assertEquals(1,
-                     variables.size());
+        assertEquals(1, variables.size());
         assertEquals("myValue",
                      variables.get("myParam"));
     }
@@ -781,10 +780,8 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
 
         // Verify task parameters set on execution
         Map<String, Object> variables = runtimeService.getVariables(processInstance.getId());
-        assertEquals(1,
-                     variables.size());
-        assertEquals("myValue",
-                     variables.get("myParam"));
+        assertEquals(1, variables.size());
+        assertEquals("myValue", variables.get("myParam"));
     }
 
     @Deployment
@@ -1670,10 +1667,8 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
 
         // Verify task parameters set on execution
         Map<String, Object> variables = runtimeService.getVariables(processInstance.getId());
-        assertEquals(1,
-                     variables.size());
-        assertEquals("myValue",
-                     variables.get("myParam"));
+        assertEquals(1, variables.size());
+        assertEquals("myValue", variables.get("myParam"));
     }
 
     @Deployment(resources = {"org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml"})
@@ -1758,16 +1753,11 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
 
         Task currentTask = taskService.createTaskQuery().singleResult();
 
-        taskService.setVariableLocal(currentTask.getId(),
-                                     "variable1",
-                                     "value1");
+        taskService.setVariableLocal(currentTask.getId(), "variable1", "value1");
 
-        String variable = taskService.getVariableLocal(currentTask.getId(),
-                                                       "variable1",
-                                                       String.class);
+        String variable = taskService.getVariableLocal(currentTask.getId(), "variable1", String.class);
 
-        assertEquals("value1",
-                     variable);
+        assertEquals("value1", variable);
     }
 
     @Deployment(resources = {"org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml"})
@@ -1776,9 +1766,7 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
 
         Task currentTask = taskService.createTaskQuery().singleResult();
 
-        String variable = taskService.getVariableLocal(currentTask.getId(),
-                                                       "variable1",
-                                                       String.class);
+        String variable = taskService.getVariableLocal(currentTask.getId(), "variable1", String.class);
 
         assertThat(variable).isNull();
     }
@@ -1803,16 +1791,11 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
 
         Task currentTask = taskService.createTaskQuery().singleResult();
 
-        taskService.setVariable(currentTask.getId(),
-                                "variable1",
-                                "value1");
+        taskService.setVariable(currentTask.getId(), "variable1", "value1");
 
-        String variable = taskService.getVariable(currentTask.getId(),
-                                                  "variable1",
-                                                  String.class);
+        String variable = taskService.getVariable(currentTask.getId(), "variable1", String.class);
 
-        assertEquals("value1",
-                     variable);
+        assertEquals("value1", variable);
     }
 
     @Deployment(resources = {"org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml"})
@@ -1821,9 +1804,7 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
 
         Task currentTask = taskService.createTaskQuery().singleResult();
 
-        String variable = taskService.getVariable(currentTask.getId(),
-                                                  "variable1",
-                                                  String.class);
+        String variable = taskService.getVariable(currentTask.getId(), "variable1", String.class);
 
         assertThat(variable).isNull();
     }
@@ -1834,9 +1815,7 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
 
         Task currentTask = taskService.createTaskQuery().singleResult();
 
-        taskService.setVariable(currentTask.getId(),
-                                "variable1",
-                                "value1");
+        taskService.setVariable(currentTask.getId(), "variable1", "value1");
 
         assertThatExceptionOfType(ClassCastException.class)
             .isThrownBy(() -> taskService.getVariable(currentTask.getId(), "variable1", Boolean.class));
@@ -1849,8 +1828,7 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
         assertThat(task.getClaimTime()).isNull();
 
         // Claim task
-        taskService.claim(task.getId(),
-                          "user");
+        taskService.claim(task.getId(), "user");
         task = taskService.createTaskQuery().taskId(task.getId()).singleResult();
 
         assertThat(task.getClaimTime()).isNotNull();
@@ -1861,7 +1839,6 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
 
         assertThat(task.getClaimTime()).isNull();
 
-        taskService.deleteTask(task.getId(),
-                               true);
+        taskService.deleteTask(task.getId(), true);
     }
 }

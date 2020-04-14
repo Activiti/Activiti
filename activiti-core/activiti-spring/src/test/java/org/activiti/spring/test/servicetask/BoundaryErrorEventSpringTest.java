@@ -48,12 +48,9 @@ public class BoundaryErrorEventSpringTest extends SpringActivitiTestCase {
     private void assertThatErrorHasBeenCaught(String procId) {
         // The service task will throw an error event,
         // which is caught on the service task boundary
-        assertEquals("No tasks found in task list.",
-                     1,
-                     taskService.createTaskQuery().count());
+        assertEquals("No tasks found in task list.", 1, taskService.createTaskQuery().count());
         Task task = taskService.createTaskQuery().singleResult();
-        assertEquals("Escalated Task",
-                     task.getName());
+        assertEquals("Escalated Task", task.getName());
 
         // Completing the task will end the process instance
         taskService.complete(task.getId());

@@ -68,8 +68,8 @@ public class ProcessDefinitionPersistenceTest extends PluggableActivitiTestCase 
     assertThat(outgoingFlows.get(0).getId()).isEqualTo("flow1");
     assertThat(outgoingFlows.get(0).getName()).isEqualTo("Flow One");
     assertThat(outgoingFlows.get(0).getDocumentation()).isEqualTo("The only transitions in the process");
-    assertSame(startElement, outgoingFlows.get(0).getSourceFlowElement());
-    assertSame(endElement, outgoingFlows.get(0).getTargetFlowElement());
+    assertThat(outgoingFlows.get(0).getSourceFlowElement()).isSameAs(startElement);
+    assertThat(outgoingFlows.get(0).getTargetFlowElement()).isSameAs(endElement);
 
     repositoryService.deleteDeployment(deploymentId);
   }
