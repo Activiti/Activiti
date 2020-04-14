@@ -16,6 +16,7 @@
 
 package org.activiti.runtime.api.impl;
 
+import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.ArgumentMatchers.any;
@@ -27,7 +28,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -58,7 +58,7 @@ public class TaskRuntimeHelperTest {
 
     @Mock
     private APITaskConverter taskConverter;
-    
+
     @Mock
     private TaskVariablesPayloadValidator taskVariablesValidator;
 
@@ -178,12 +178,11 @@ public class TaskRuntimeHelperTest {
     @Test
     public void getInternalTaskWithChecksShouldReturnMatchinTaskFromTaskQuery() {
         //given
-        List<String> groups = Collections.singletonList("doctor");
+        List<String> groups = singletonList("doctor");
         given(securityManager.getAuthenticatedUserGroups()).willReturn(groups);
 
         TaskQuery taskQuery = mock(TaskQuery.class);
-        given(taskQuery.taskCandidateOrAssigned(AUTHENTICATED_USER,
-                groups)).willReturn(taskQuery);
+        given(taskQuery.taskCandidateOrAssigned(AUTHENTICATED_USER, groups)).willReturn(taskQuery);
         given(taskQuery.taskOwner(AUTHENTICATED_USER)).willReturn(taskQuery);
         given(taskQuery.or()).willReturn(taskQuery);
         given(taskQuery.endOr()).willReturn(taskQuery);
@@ -204,12 +203,11 @@ public class TaskRuntimeHelperTest {
     @Test
     public void getInternalTaskWithChecksShouldThrowNotFoundExceptionWhenNoTaskIsFound() {
         //given
-        List<String> groups = Collections.singletonList("doctor");
+        List<String> groups = singletonList("doctor");
         given(securityManager.getAuthenticatedUserGroups()).willReturn(groups);
 
         TaskQuery taskQuery = mock(TaskQuery.class);
-        given(taskQuery.taskCandidateOrAssigned(AUTHENTICATED_USER,
-                groups)).willReturn(taskQuery);
+        given(taskQuery.taskCandidateOrAssigned(AUTHENTICATED_USER, groups)).willReturn(taskQuery);
         given(taskQuery.taskOwner(AUTHENTICATED_USER)).willReturn(taskQuery);
         given(taskQuery.or()).willReturn(taskQuery);
         given(taskQuery.endOr()).willReturn(taskQuery);

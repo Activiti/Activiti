@@ -16,7 +16,6 @@ package org.activiti.engine.test.db;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.InputStream;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -26,7 +25,6 @@ import org.activiti.engine.impl.util.IoUtil;
 import org.activiti.engine.repository.Deployment;
 
 /**
-
  */
 public class DeploymentPersistenceTest extends PluggableActivitiTestCase {
 
@@ -49,10 +47,10 @@ public class DeploymentPersistenceTest extends PluggableActivitiTestCase {
     assertThat(new HashSet<String>(resourceNames)).isEqualTo(expectedResourceNames);
 
     InputStream resourceStream = repositoryService.getResourceAsStream(deploymentId, "org/activiti/test/HelloWorld.string");
-    assertThat(Arrays.equals("hello world".getBytes(), IoUtil.readInputStream(resourceStream, "test"))).isTrue();
+    assertThat(IoUtil.readInputStream(resourceStream, "test")).isEqualTo("hello world".getBytes());
 
     resourceStream = repositoryService.getResourceAsStream(deploymentId, "org/activiti/test/TheAnswer.string");
-    assertThat(Arrays.equals("42".getBytes(), IoUtil.readInputStream(resourceStream, "test"))).isTrue();
+    assertThat(IoUtil.readInputStream(resourceStream, "test")).isEqualTo("42".getBytes());
 
     repositoryService.deleteDeployment(deploymentId);
   }

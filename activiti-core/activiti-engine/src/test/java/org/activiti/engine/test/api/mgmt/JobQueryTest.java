@@ -418,7 +418,7 @@ public class JobQueryTest extends PluggableActivitiTestCase {
     assertThat(failedJob).isNotNull();
     assertThat(failedJob.getProcessInstanceId()).isEqualTo(processInstance.getId());
     assertThat(failedJob.getExceptionMessage()).isNotNull();
-    assertTextPresent(EXCEPTION_MESSAGE, failedJob.getExceptionMessage());
+    assertThat(failedJob.getExceptionMessage()).contains(EXCEPTION_MESSAGE);
   }
 
   private void verifyQueryResults(JobQuery query, int countExpected) {

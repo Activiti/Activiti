@@ -12,9 +12,9 @@
  */
 package org.activiti.engine.test.bpmn.usertask;
 
+import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.Arrays;
 import java.util.List;
 
 import org.activiti.bpmn.exceptions.XMLException;
@@ -32,13 +32,13 @@ import org.activiti.engine.test.Deployment;
 public class TaskAssignmentExtensionsTest extends PluggableActivitiTestCase {
 
   private static final String KERMIT = "kermit";
-  private static final List<String> KERMITSGROUPS = Arrays.asList("management","accountancy");
+  private static final List<String> KERMITSGROUPS = asList("management","accountancy");
 
   private static final String GONZO = "gonzo";
-  private static final List<String> GONZOSGROUPS = Arrays.asList();
+  private static final List<String> GONZOSGROUPS = asList();
 
   private static final String FOZZIE = "fozzie";
-  private static final List<String> FOZZIESGROUPS = Arrays.asList("management");
+  private static final List<String> FOZZIESGROUPS = asList("management");
 
   @Deployment
   public void testAssigneeExtension() {

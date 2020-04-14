@@ -98,7 +98,7 @@ public class VariablesTest extends PluggableActivitiTestCase {
     assertThat(variables.get("dateVar")).isEqualTo(now);
     assertThat(variables.get("nullVar")).isEqualTo(null);
     assertThat(variables.get("serializableVar")).isEqualTo(serializable);
-    assertThat(Arrays.equals(bytes1, (byte[]) variables.get("bytesVar"))).isTrue();
+    assertThat((byte[]) variables.get("bytesVar")).isEqualTo(bytes1);
     assertThat(variables.get("customVar1")).isEqualTo(new CustomType(bytes2));
     assertThat(variables.get("customVar2")).isEqualTo(null);
     assertThat(variables.size()).isEqualTo(11);
@@ -1075,7 +1075,7 @@ public class VariablesTest extends PluggableActivitiTestCase {
     assertThat(variables.get("dateVar")).isEqualTo(now);
     assertThat(variables.get("nullVar")).isEqualTo(null);
     assertThat(variables.get("serializableVar")).isEqualTo(serializable);
-    assertThat(Arrays.equals(bytes, (byte[]) variables.get("bytesVar"))).isTrue();
+    assertThat(variables.get("bytesVar")).isEqualTo(bytes);
     assertThat(variables.size()).isEqualTo(8);
 
     // check if the id of the variable is the same or not

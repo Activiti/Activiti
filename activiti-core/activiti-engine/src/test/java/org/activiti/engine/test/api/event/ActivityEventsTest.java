@@ -12,12 +12,12 @@
  */
 package org.activiti.engine.test.api.event;
 
+import static java.util.Collections.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.List;
 
 import org.activiti.engine.delegate.event.ActivitiActivityCancelledEvent;
@@ -247,7 +247,7 @@ public class ActivityEventsTest extends PluggableActivitiTestCase {
 
     // Check signal using event, and pass in additional payload
     Execution executionWithSignalEvent = runtimeService.createExecutionQuery().activityId("shipOrder").singleResult();
-    runtimeService.signalEventReceived("alert", executionWithSignalEvent.getId(), Collections.singletonMap("test", (Object) "test"));
+    runtimeService.signalEventReceived("alert", executionWithSignalEvent.getId(), singletonMap("test", (Object) "test"));
     assertThat(listener.getEventsReceived().size()).isEqualTo(1);
     assertThat(listener.getEventsReceived().get(0)).isInstanceOf(ActivitiSignalEvent.class);
     signalEvent = (ActivitiSignalEvent) listener.getEventsReceived().get(0);

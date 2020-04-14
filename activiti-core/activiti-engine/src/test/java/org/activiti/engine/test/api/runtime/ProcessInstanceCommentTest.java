@@ -48,7 +48,7 @@ public class ProcessInstanceCommentTest extends PluggableActivitiTestCase {
       try {
         taskService.addComment(null, processInstance.getId(), "Hello World 2");
       } catch (ActivitiException e) {
-        assertTextPresent("Cannot add a comment to a suspended execution", e.getMessage());
+        assertThat(e.getMessage()).contains("Cannot add a comment to a suspended execution");
       }
 
       // Delete comments again

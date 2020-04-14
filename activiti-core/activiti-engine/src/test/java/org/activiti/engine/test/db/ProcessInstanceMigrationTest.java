@@ -50,28 +50,28 @@ public class ProcessInstanceMigrationTest extends PluggableActivitiTestCase {
       new SetProcessDefinitionVersionCmd(null, 23);
       fail("ActivitiException expected");
     } catch (ActivitiIllegalArgumentException ae) {
-      assertTextPresent("The process instance id is mandatory, but 'null' has been provided.", ae.getMessage());
+      assertThat(ae.getMessage()).contains("The process instance id is mandatory, but 'null' has been provided.");
     }
 
     try {
       new SetProcessDefinitionVersionCmd("", 23);
       fail("ActivitiException expected");
     } catch (ActivitiIllegalArgumentException ae) {
-      assertTextPresent("The process instance id is mandatory, but '' has been provided.", ae.getMessage());
+      assertThat(ae.getMessage()).contains("The process instance id is mandatory, but '' has been provided.");
     }
 
     try {
       new SetProcessDefinitionVersionCmd("42", null);
       fail("ActivitiException expected");
     } catch (ActivitiIllegalArgumentException ae) {
-      assertTextPresent("The process definition version is mandatory, but 'null' has been provided.", ae.getMessage());
+      assertThat(ae.getMessage()).contains("The process definition version is mandatory, but 'null' has been provided.");
     }
 
     try {
       new SetProcessDefinitionVersionCmd("42", -1);
       fail("ActivitiException expected");
     } catch (ActivitiIllegalArgumentException ae) {
-      assertTextPresent("The process definition version must be positive, but '-1' has been provided.", ae.getMessage());
+      assertThat(ae.getMessage()).contains("The process definition version must be positive, but '-1' has been provided.");
     }
   }
 
@@ -81,7 +81,7 @@ public class ProcessInstanceMigrationTest extends PluggableActivitiTestCase {
       commandExecutor.execute(new SetProcessDefinitionVersionCmd("42", 23));
       fail("ActivitiException expected");
     } catch (ActivitiObjectNotFoundException ae) {
-      assertTextPresent("No process instance found for id = '42'.", ae.getMessage());
+      assertThat(ae.getMessage()).contains("No process instance found for id = '42'.");
       assertThat(ae.getObjectClass()).isEqualTo(ProcessInstance.class);
     }
   }
@@ -113,7 +113,7 @@ public class ProcessInstanceMigrationTest extends PluggableActivitiTestCase {
       commandExecutor.execute(new SetProcessDefinitionVersionCmd(pi.getId(), 23));
       fail("ActivitiException expected");
     } catch (ActivitiObjectNotFoundException ae) {
-      assertTextPresent("no processes deployed with key = 'receiveTask' and version = '23'", ae.getMessage());
+      assertThat(ae.getMessage()).contains("no processes deployed with key = 'receiveTask' and version = '23'");
       assertThat(ae.getObjectClass()).isEqualTo(ProcessDefinition.class);
     }
   }
@@ -138,7 +138,7 @@ public class ProcessInstanceMigrationTest extends PluggableActivitiTestCase {
       commandExecutor.execute(setProcessDefinitionVersionCmd);
       fail("ActivitiException expected");
     } catch (ActivitiException ae) {
-      assertTextPresent("The new process definition (key = 'receiveTask') does not contain the current activity (id = 'waitState1') of the process instance (id = '", ae.getMessage());
+      assertThat(ae.getMessage()).contains("The new process definition (key = 'receiveTask') does not contain the current activity (id = 'waitState1') of the process instance (id = '");
     }
 
     // undeploy "manually" deployed process definition

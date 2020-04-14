@@ -16,12 +16,12 @@
 
 package org.activiti.runtime.api.impl;
 
+import static java.util.Collections.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-import java.util.Collections;
 import java.util.Map;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.el.ExpressionManager;
@@ -46,7 +46,7 @@ public class SimpleMapExpressionEvaluatorTest {
     @Test
     public void evaluate_should_returnResultOfGetValueWithMap() {
         //given
-        Map<String, Object> context = Collections.singletonMap("city", "London");
+        Map<String, Object> context = singletonMap("city", "London");
         SimpleMapExpressionEvaluator evaluator = new SimpleMapExpressionEvaluator(
             context);
         Expression expression = mock(Expression.class);

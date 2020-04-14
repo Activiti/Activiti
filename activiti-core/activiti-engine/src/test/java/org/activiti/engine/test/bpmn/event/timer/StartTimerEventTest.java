@@ -42,7 +42,7 @@ public class StartTimerEventTest extends PluggableActivitiTestCase {
 
         // After process start, there should be timer created
         TimerJobQuery jobQuery = managementService.createTimerJobQuery();
-        assertEquals(1, jobQuery.count());
+        assertThat(jobQuery.count()).isEqualTo(1);
 
         // After setting the clock to time '50 minutes and 5 seconds', the second timer should fire
         processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + ((50 * 60 * 1000) + 5000)));
@@ -52,14 +52,14 @@ public class StartTimerEventTest extends PluggableActivitiTestCase {
         List<ProcessInstance> pi = runtimeService.createProcessInstanceQuery().processDefinitionKey("startTimerEventExample").list();
         assertThat(pi).hasSize(1);
 
-        assertEquals(0, jobQuery.count());
+        assertThat(jobQuery.count()).isEqualTo(0);
     }
 
     @Deployment
     public void testFixedDateStartTimerEvent() throws Exception {
         // After process start, there should be timer created
         TimerJobQuery jobQuery = managementService.createTimerJobQuery();
-        assertEquals(1, jobQuery.count());
+        assertThat(jobQuery.count()).isEqualTo(1);
 
         processEngineConfiguration.getClock().setCurrentTime(new SimpleDateFormat("dd/MM/yyyy hh:mm:ss").parse("15/11/2036 11:12:30"));
         waitForJobExecutorToProcessAllJobs(5000L,
@@ -68,7 +68,7 @@ public class StartTimerEventTest extends PluggableActivitiTestCase {
         List<ProcessInstance> pi = runtimeService.createProcessInstanceQuery().processDefinitionKey("startTimerEventExample").list();
         assertThat(pi).hasSize(1);
 
-        assertEquals(0, jobQuery.count());
+        assertThat(jobQuery.count()).isEqualTo(0);
     }
 
     // FIXME: This test likes to run in an endless loop when invoking the
@@ -79,7 +79,7 @@ public class StartTimerEventTest extends PluggableActivitiTestCase {
 
         // After process start, there should be timer created
         TimerJobQuery jobQuery = managementService.createTimerJobQuery();
-        assertEquals(1, jobQuery.count());
+        assertThat(jobQuery.count()).isEqualTo(1);
 
         final ProcessInstanceQuery piq = runtimeService.createProcessInstanceQuery().processDefinitionKey("startTimerEventExample");
 
@@ -92,7 +92,7 @@ public class StartTimerEventTest extends PluggableActivitiTestCase {
                                           }
                                       });
 
-        assertEquals(1, jobQuery.count());
+        assertThat(jobQuery.count()).isEqualTo(1);
 
         moveByMinutes(5);
         waitForJobExecutorOnCondition(10000,
@@ -103,7 +103,7 @@ public class StartTimerEventTest extends PluggableActivitiTestCase {
                                           }
                                       });
 
-        assertEquals(1, jobQuery.count());
+        assertThat(jobQuery.count()).isEqualTo(1);
         // have to manually delete pending timer
         cleanDB();
     }
@@ -118,26 +118,26 @@ public class StartTimerEventTest extends PluggableActivitiTestCase {
 
         // After process start, there should be timer created
         TimerJobQuery jobQuery = managementService.createTimerJobQuery();
-        assertEquals(1, jobQuery.count());
+        assertThat(jobQuery.count()).isEqualTo(1);
 
         moveByMinutes(6);
         String jobId = managementService.createTimerJobQuery().executable().singleResult().getId();
         managementService.moveTimerToExecutableJob(jobId);
         managementService.executeJob(jobId);
-        assertEquals(1, jobQuery.count());
+        assertThat(jobQuery.count()).isEqualTo(1);
 
         moveByMinutes(6);
         jobId = managementService.createTimerJobQuery().executable().singleResult().getId();
         managementService.moveTimerToExecutableJob(jobId);
         managementService.executeJob(jobId);
-        assertEquals(0, jobQuery.count());
+        assertThat(jobQuery.count()).isEqualTo(0);
     }
 
     @Deployment
     public void testExpressionStartTimerEvent() throws Exception {
         // ACT-1415: fixed start-date is an expression
         TimerJobQuery jobQuery = managementService.createTimerJobQuery();
-        assertEquals(1, jobQuery.count());
+        assertThat(jobQuery.count()).isEqualTo(1);
 
         processEngineConfiguration.getClock().setCurrentTime(new SimpleDateFormat("dd/MM/yyyy hh:mm:ss").parse("15/11/2036 11:12:30"));
         waitForJobExecutorToProcessAllJobs(5000L,
@@ -146,7 +146,7 @@ public class StartTimerEventTest extends PluggableActivitiTestCase {
         List<ProcessInstance> pi = runtimeService.createProcessInstanceQuery().processDefinitionKey("startTimerEventExample").list();
         assertThat(pi).hasSize(1);
 
-        assertEquals(0, jobQuery.count());
+        assertThat(jobQuery.count()).isEqualTo(0);
     }
 
     @Deployment
@@ -155,7 +155,7 @@ public class StartTimerEventTest extends PluggableActivitiTestCase {
 
         // After process start, there should be timer created
         TimerJobQuery jobQuery = managementService.createTimerJobQuery();
-        assertEquals(1, jobQuery.count());
+        assertThat(jobQuery.count()).isEqualTo(1);
 
         // we deploy new process version, with some small change
         String process = new String(IoUtil.readInputStream(getClass().getResourceAsStream("StartTimerEventTest.testVersionUpgradeShouldCancelJobs.bpmn20.xml"),
@@ -164,7 +164,7 @@ public class StartTimerEventTest extends PluggableActivitiTestCase {
         String id = repositoryService.createDeployment().addInputStream("StartTimerEventTest.testVersionUpgradeShouldCancelJobs.bpmn20.xml",
                                                                         new ByteArrayInputStream(process.getBytes())).deploy().getId();
 
-        assertEquals(1, jobQuery.count());
+        assertThat(jobQuery.count()).isEqualTo(1);
 
         moveByMinutes(5);
         waitForJobExecutorOnCondition(10000,

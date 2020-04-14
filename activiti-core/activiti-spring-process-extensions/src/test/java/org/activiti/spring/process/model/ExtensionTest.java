@@ -4,9 +4,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 
-import java.util.Collections;
 import java.util.HashMap;
 
+import static java.util.Collections.emptyMap;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -19,8 +19,8 @@ public class ExtensionTest {
     @Before
     public void setUp() {
         initMocks(this);
-        given(processVariablesMapping.getInputs()).willReturn(Collections.emptyMap());
-        given(processVariablesMapping.getOutputs()).willReturn(Collections.emptyMap());
+        given(processVariablesMapping.getInputs()).willReturn(emptyMap());
+        given(processVariablesMapping.getOutputs()).willReturn(emptyMap());
     }
 
     @Test

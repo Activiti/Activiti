@@ -16,11 +16,8 @@ package org.activiti.examples.groovy;
 import static java.util.Collections.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.Date;
 import java.util.List;
-
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
-import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.JobQuery;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -38,7 +35,7 @@ public class GroovyScriptTest extends PluggableActivitiTestCase {
                                                                       singletonMap("inputArray", inputArray));
 
         Integer result = (Integer) runtimeService.getVariable(pi.getId(), "sum");
-        assertEquals(15, result.intValue());
+        assertThat(result.intValue()).isEqualTo(15);
     }
 
     @Deployment
@@ -47,7 +44,7 @@ public class GroovyScriptTest extends PluggableActivitiTestCase {
 
         // Since 'def' is used, the 'scriptVar' will be script local and not automatically stored as a process variable.
         assertThat(runtimeService.getVariable(pi.getId(), "scriptVar")).isNull();
-        assertEquals("test123", runtimeService.getVariable(pi.getId(), "myVar"));
+        assertThat(runtimeService.getVariable(pi.getId(), "myVar")).isEqualTo("test123");
     }
 
     @Deployment
@@ -57,10 +54,10 @@ public class GroovyScriptTest extends PluggableActivitiTestCase {
 
         JobQuery jobQuery = managementService.createJobQuery().processInstanceId(processInstance.getId());
         List<Job> jobs = jobQuery.list();
-        assertEquals(1, jobs.size());
+        assertThat(jobs).hasSize(1);
 
         // After setting the clock to time '1 hour and 5 seconds', the second timer should fire
-        waitForJobExecutorToProcessAllJobs(5000L, 100L);assertEquals(0L, jobQuery.count());
+        waitForJobExecutorToProcessAllJobs(5000L, 100L);assertThat(jobQuery.count()).isEqualTo(0L);
 
         assertProcessEnded(processInstance.getId());
     }

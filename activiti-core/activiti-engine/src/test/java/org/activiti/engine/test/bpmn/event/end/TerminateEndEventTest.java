@@ -12,9 +12,9 @@
  */
 package org.activiti.engine.test.bpmn.event.end;
 
+import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -835,12 +835,12 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
 
 		// Verify the tasks
 		List<Task> tasks = assertTaskNames(processInstance,
-				Arrays.asList("B", "B", "B", "B", "Before A", "Before A", "Before A", "Before A", "Before B", "Before C"));
+				asList("B", "B", "B", "B", "Before A", "Before A", "Before A", "Before A", "Before B", "Before C"));
 
 		// Completing 'before c'
 		taskService.complete(tasks.get(9).getId());
 		tasks = assertTaskNames(processInstance,
-				Arrays.asList("After C", "B", "B", "B", "B", "Before A", "Before A", "Before A", "Before A", "Before B"));
+				asList("After C", "B", "B", "B", "B", "Before A", "Before A", "Before A", "Before A", "Before B"));
 
 		// Completing 'before A' of one instance
 		Task task = taskService.createTaskQuery().taskName("task_subprocess_1").singleResult();
@@ -855,7 +855,7 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
 		}
 
 		tasks = assertTaskNames(processInstance,
-				Arrays.asList("After A", "After C", "B", "B", "B", "B", "Before A", "Before A", "Before A", "Before B"));
+				asList("After A", "After C", "B", "B", "B", "B", "Before A", "Before A", "Before A", "Before B"));
 
 	}
 
@@ -865,7 +865,7 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
 
 		// Verify the tasks
 		List<Task> tasks = assertTaskNames(processInstance,
-				Arrays.asList("B", "B", "B", "B", "Before A", "Before A", "Before A", "Before A", "Before B", "Before C"));
+				asList("B", "B", "B", "B", "Before A", "Before A", "Before A", "Before A", "Before B", "Before C"));
 
 		// Completing 'Before B' should lead to process instance termination
 		taskService.complete(tasks.get(8).getId());
@@ -875,7 +875,7 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
 		// Completing 'Before C' too
 		processInstance = runtimeService.startProcessInstanceByKey("TestNestedCallActivities");
 		tasks = assertTaskNames(processInstance,
-				Arrays.asList("B", "B", "B", "B", "Before A", "Before A", "Before A", "Before A", "Before B", "Before C"));
+				asList("B", "B", "B", "B", "Before A", "Before A", "Before A", "Before A", "Before B", "Before C"));
 		taskService.complete(tasks.get(9).getId());
 		assertProcessEnded(processInstance.getId());
 		assertHistoricProcessInstanceDetails(processInstance);
@@ -883,7 +883,7 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
 		// Now the tricky one. 'Before A' leads to 'callActivity A', which calls subprocess02 which terminates
 		processInstance = runtimeService.startProcessInstanceByKey("TestNestedCallActivities");
 		tasks = assertTaskNames(processInstance,
-				Arrays.asList("B", "B", "B", "B", "Before A", "Before A", "Before A", "Before A", "Before B", "Before C"));
+				asList("B", "B", "B", "B", "Before A", "Before A", "Before A", "Before A", "Before B", "Before C"));
 		taskService.complete(tasks.get(5).getId());
 		Task task = taskService.createTaskQuery().taskName("subprocess1_task").singleResult();
 		assertThat(task).isNotNull();

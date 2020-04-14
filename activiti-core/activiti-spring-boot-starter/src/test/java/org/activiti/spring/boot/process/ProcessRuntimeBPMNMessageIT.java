@@ -16,12 +16,12 @@
 
 package org.activiti.spring.boot.process;
 
+import static java.util.Collections.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.assertj.core.api.Assertions.tuple;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import org.activiti.api.model.shared.event.RuntimeEvent;
@@ -194,8 +194,7 @@ public class ProcessRuntimeBPMNMessageIT {
                                       "Test Message",
                                       "value",
                                       "businessKey",
-                                      Collections.singletonMap("message_payload_variable",
-                                                               "value")));
+                                      singletonMap("message_payload_variable", "value")));
     }
 
     @Test
@@ -241,7 +240,7 @@ public class ProcessRuntimeBPMNMessageIT {
                                       "testMessage",
                                       "foo",
                                       process.getBusinessKey(),
-                                      Collections.singletonMap("message_variable_name",
+                                      singletonMap("message_variable_name",
                                                                "value")));
 
         // and
@@ -281,7 +280,7 @@ public class ProcessRuntimeBPMNMessageIT {
                                                         "startMessagePayload",
                                                         null,
                                                         process.getBusinessKey(),
-                                                        Collections.singletonMap("message_variable_name",
+                                                        singletonMap("message_variable_name",
                                                                                  "value")));
 
         // and
@@ -322,7 +321,7 @@ public class ProcessRuntimeBPMNMessageIT {
                                       "testMessage",
                                       null,
                                       process.getBusinessKey(),
-                                      Collections.singletonMap("key",
+                                      singletonMap("key",
                                                                "value")));
     }
 
@@ -368,7 +367,7 @@ public class ProcessRuntimeBPMNMessageIT {
                                       "testMessage",
                                       "foo",
                                       process.getBusinessKey(),
-                                      Collections.singletonMap("key",
+                                      singletonMap("key",
                                                                "value")));
     }
 
@@ -444,7 +443,7 @@ public class ProcessRuntimeBPMNMessageIT {
                                       "testMessage",
                                       "foo",
                                       process.getBusinessKey(),
-                                      Collections.singletonMap("key",
+                                      singletonMap("key",
                                                                "value")));
     }
 
@@ -490,7 +489,7 @@ public class ProcessRuntimeBPMNMessageIT {
                                                         "testMessage",
                                                         "foo",
                                                         process.getBusinessKey(),
-                                                        Collections.singletonMap("key",
+                                                        singletonMap("key",
                                                                                  "value")));
     }
 
@@ -535,7 +534,7 @@ public class ProcessRuntimeBPMNMessageIT {
                                                         "testMessage",
                                                         "foo",
                                                         process.getBusinessKey(),
-                                                        Collections.singletonMap("key",
+                                                        singletonMap("key",
                                                                                  "value")));
     }
 
@@ -579,7 +578,7 @@ public class ProcessRuntimeBPMNMessageIT {
                                                         "testMessage",
                                                         "foo",
                                                         process.getBusinessKey(),
-                                                        Collections.singletonMap("key",
+                                                        singletonMap("key",
                                                                                  "value")));
     }
 

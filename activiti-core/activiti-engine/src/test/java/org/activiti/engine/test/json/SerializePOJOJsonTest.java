@@ -1,8 +1,8 @@
 package org.activiti.engine.test.json;
 
+import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,7 +32,7 @@ public class SerializePOJOJsonTest extends ResourceActivitiTestCase {
         mapInMap.put("user", "bob");
         map.put("mapInMap", mapInMap);
         vars.put("userMap", map);
-        List<String> list = Arrays.asList("bob", "john", "hannah");
+        List<String> list = asList("bob", "john", "hannah");
         vars.put("userCollection", list);
         ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testJsonVarInExpression", vars);
         String taskId = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult().getId();
@@ -55,7 +55,7 @@ public class SerializePOJOJsonTest extends ResourceActivitiTestCase {
     @Deployment
     public void testCollectionJsonVarInExpression() throws Exception {
         Map<String, Object> vars = new HashMap<String, Object>();
-        List<String> list = Arrays.asList("bob", "john", "hannah");
+        List<String> list = asList("bob", "john", "hannah");
         vars.put("userCollection", list);
         ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testCollectionJsonVarInExpression", vars);
         String taskId = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult().getId();
@@ -69,7 +69,7 @@ public class SerializePOJOJsonTest extends ResourceActivitiTestCase {
     @Deployment
     public void testCollectionInJsonVarInExpression() throws Exception {
         Map<String, Object> vars = new HashMap<String, Object>();
-        List<String> list = Arrays.asList("bob", "john", "hannah");
+        List<String> list = asList("bob", "john", "hannah");
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("userCollection", list);
         vars.put("userMap", map);
@@ -79,7 +79,7 @@ public class SerializePOJOJsonTest extends ResourceActivitiTestCase {
         taskService.createTaskQuery().processInstanceId(processInstance.getId()).list().forEach(task -> taskService.complete(task.getId()));
 
         vars = new HashMap<String, Object>();
-        List<SomeSerializable> beanList = Arrays.asList(new SomeSerializable("bob"), new SomeSerializable("john"), new SomeSerializable("hannah"));
+        List<SomeSerializable> beanList = asList(new SomeSerializable("bob"), new SomeSerializable("john"), new SomeSerializable("hannah"));
         map = new HashMap<String, Object>();
         map.put("userCollection", beanList);
         vars.put("userMap", map);
@@ -96,7 +96,7 @@ public class SerializePOJOJsonTest extends ResourceActivitiTestCase {
         Map<String, Object> vars = new HashMap<String, Object>();
         Map<String, Object> map = new HashMap<String, Object>();
         vars = new HashMap<String, Object>();
-        List<SomeSerializable> beanList = Arrays.asList(new SomeSerializable("bob"), new SomeSerializable("john"), new SomeSerializable("hannah"));
+        List<SomeSerializable> beanList = asList(new SomeSerializable("bob"), new SomeSerializable("john"), new SomeSerializable("hannah"));
         map = new HashMap<String, Object>();
         map.put("userCollection", beanList);
         vars.put("userMap", map);

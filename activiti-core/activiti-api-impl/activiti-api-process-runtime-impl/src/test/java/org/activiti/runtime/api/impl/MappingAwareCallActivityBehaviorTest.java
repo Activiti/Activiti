@@ -16,7 +16,6 @@
 
 package org.activiti.runtime.api.impl;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,6 +27,8 @@ import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
+import static java.util.Collections.emptyMap;
+import static java.util.Collections.singletonMap;
 import static org.activiti.runtime.api.impl.MappingExecutionContext.buildMappingExecutionContext;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
@@ -55,8 +56,7 @@ public class MappingAwareCallActivityBehaviorTest {
         //given
         DelegateExecution execution = buildExecution();
         ProcessDefinition processDefinition = mock(ProcessDefinition.class);
-        Map<String, Object> providerVariables = Collections.singletonMap("var1",
-                                                         "v1");
+        Map<String, Object> providerVariables = singletonMap("var1", "v1");
         given(mappingProvider.calculateInputVariables(execution)).willReturn(providerVariables);
 
         HashMap<String, Object> initiatorVariables = new HashMap<>(providerVariables);
@@ -79,9 +79,8 @@ public class MappingAwareCallActivityBehaviorTest {
     public void calculateOutBoundVariablesShouldReturnValueFromMappingProvider() {
         //given
         DelegateExecution execution = buildExecution();
-        Map<String, Object> availableVariables = Collections.emptyMap();
-        Map<String, Object> providerVariables = Collections.singletonMap("var",
-                                                         "value");
+        Map<String, Object> availableVariables = emptyMap();
+        Map<String, Object> providerVariables = singletonMap("var", "value");
         given(mappingProvider.calculateOutPutVariables(buildMappingExecutionContext(execution),
                                                        availableVariables))
                 .willReturn(providerVariables);

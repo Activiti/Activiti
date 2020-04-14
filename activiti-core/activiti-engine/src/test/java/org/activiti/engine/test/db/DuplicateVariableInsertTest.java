@@ -12,10 +12,10 @@
  */
 package org.activiti.engine.test.db;
 
+import static java.util.Collections.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.BrokenBarrierException;
@@ -166,7 +166,7 @@ public class DuplicateVariableInsertTest extends PluggableActivitiTestCase {
         throw new RuntimeException(e);
       }
 
-      new SetExecutionVariablesCmd(executionId, Collections.singletonMap("var", "12345"), false).execute(commandContext);
+      new SetExecutionVariablesCmd(executionId, singletonMap("var", "12345"), false).execute(commandContext);
 
       try {
         endBarrier.await();
@@ -207,7 +207,7 @@ public class DuplicateVariableInsertTest extends PluggableActivitiTestCase {
         throw new RuntimeException(e);
       }
 
-      new SetTaskVariablesCmd(taskId, Collections.singletonMap("var", "12345"), false).execute(commandContext);
+      new SetTaskVariablesCmd(taskId, singletonMap("var", "12345"), false).execute(commandContext);
 
       try {
         endBarrier.await();

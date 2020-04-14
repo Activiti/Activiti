@@ -13,10 +13,10 @@
 
 package org.activiti.engine.test.bpmn.event.signal;
 
+import static java.util.Arrays.asList;
 import static java.util.Collections.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -283,7 +283,7 @@ public class SignalEventTest extends PluggableActivitiTestCase {
     // First task should be to select the developers
     Task task = taskService.createTaskQuery().singleResult();
     assertThat(task.getName()).isEqualTo("Enter developers");
-    taskService.complete(task.getId(), singletonMap("developers", Arrays.asList("developerOne", "developerTwo", "developerThree")));
+    taskService.complete(task.getId(), singletonMap("developers", asList("developerOne", "developerTwo", "developerThree")));
 
     // Should be three distinct tasks for each developer
     assertThat(taskService.createTaskQuery().taskAssignee("developerOne").singleResult().getName()).isEqualTo("Develop specifications");
@@ -385,7 +385,7 @@ public class SignalEventTest extends PluggableActivitiTestCase {
     assertThat(taskService.createTaskQuery().count()).isEqualTo(3);
 
     List<Task> tasks = taskService.createTaskQuery().orderByTaskName().asc().list();
-    List<String> names = Arrays.asList("A", "B", "C");
+    List<String> names = asList("A", "B", "C");
     for (int i = 0; i < tasks.size(); i++) {
       assertThat(tasks.get(i).getName()).isEqualTo("Task in process " + names.get(i));
     }
@@ -431,7 +431,7 @@ public class SignalEventTest extends PluggableActivitiTestCase {
     assertThat(taskService.createTaskQuery().count()).isEqualTo(3);
 
     List<Task> tasks = taskService.createTaskQuery().orderByTaskName().asc().list();
-    List<String> names = Arrays.asList("A", "B", "C");
+    List<String> names = asList("A", "B", "C");
     for (int i = 0; i < tasks.size(); i++) {
       assertThat(tasks.get(i).getName()).isEqualTo("Task in process " + names.get(i));
     }
@@ -472,7 +472,7 @@ public class SignalEventTest extends PluggableActivitiTestCase {
     assertThat(taskService.createTaskQuery().count()).isEqualTo(3);
 
     List<Task> tasks = taskService.createTaskQuery().orderByTaskName().asc().list();
-    List<String> names = Arrays.asList("A", "B", "C");
+    List<String> names = asList("A", "B", "C");
     for (int i = 0; i < tasks.size(); i++) {
       assertThat(tasks.get(i).getName()).isEqualTo("Task in process " + names.get(i));
     }
@@ -512,7 +512,7 @@ public class SignalEventTest extends PluggableActivitiTestCase {
     assertThat(taskService.createTaskQuery().count()).isEqualTo(3);
 
     List<Task> tasks = taskService.createTaskQuery().orderByTaskName().asc().list();
-    List<String> names = Arrays.asList("A", "B", "C");
+    List<String> names = asList("A", "B", "C");
     for (int i = 0; i < tasks.size(); i++) {
       assertThat(tasks.get(i).getName()).isEqualTo("Task in process " + names.get(i));
     }

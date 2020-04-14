@@ -5,8 +5,6 @@ import static java.util.Collections.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -135,8 +133,8 @@ public class JPAEnhancedVariableTest extends AbstractActivitiTestCase {
 
     // start process with lists of enhanced jpa variables
     Map<String, Object> params = new HashMap<String, Object>();
-    params.put("list1", Arrays.asList(fieldEntity, fieldEntity));
-    params.put("list2", Arrays.asList(propertyEntity, propertyEntity));
+    params.put("list1", asList(fieldEntity, fieldEntity));
+    params.put("list2", asList(propertyEntity, propertyEntity));
     ProcessInstance instance = processEngine.getRuntimeService().startProcessInstanceByKey("JPAVariableProcess", params);
 
     Task task = getTask(instance);
@@ -152,7 +150,7 @@ public class JPAEnhancedVariableTest extends AbstractActivitiTestCase {
 
     // start process with enhanced and persisted only jpa variables in the
     // same list
-    params.putAll(Collections.singletonMap("list", Arrays.asList(fieldEntity, fieldEntity2)));
+    params.putAll(singletonMap("list", asList(fieldEntity, fieldEntity2)));
     instance = processEngine.getRuntimeService().startProcessInstanceByKey("JPAVariableProcess", params);
 
     task = getTask(instance);
@@ -164,7 +162,7 @@ public class JPAEnhancedVariableTest extends AbstractActivitiTestCase {
     assertThat(((FieldAccessJPAEntity) list.get(1)).getId().equals(2L)).isTrue();
 
     // shuffle list and start a new process
-    params.putAll(Collections.singletonMap("list", Arrays.asList(fieldEntity2, fieldEntity)));
+    params.putAll(singletonMap("list", asList(fieldEntity2, fieldEntity)));
     instance = processEngine.getRuntimeService().startProcessInstanceByKey("JPAVariableProcess", params);
 
     task = getTask(instance);

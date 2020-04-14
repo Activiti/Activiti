@@ -16,12 +16,12 @@
 
 package org.activiti.engine.impl.bpmn.deployer;
 
+import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-import java.util.Collections;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntityImpl;
 import org.junit.Before;
 import org.junit.Test;
@@ -47,8 +47,7 @@ public class BpmnDeployerTest {
         ParsedDeployment parsedDeployment = mock(ParsedDeployment.class);
         ProcessDefinitionEntityImpl parsedProcessDefinition = new ProcessDefinitionEntityImpl();
 
-        given(parsedDeployment.getAllProcessDefinitions()).willReturn(Collections.singletonList(
-            parsedProcessDefinition));
+        given(parsedDeployment.getAllProcessDefinitions()).willReturn(singletonList(parsedProcessDefinition));
 
         ProcessDefinitionEntityImpl persistedProcessDefinition = new ProcessDefinitionEntityImpl();
         persistedProcessDefinition.setId("procId");

@@ -13,13 +13,13 @@
 
 package org.activiti.engine.test.api.history;
 
+import static java.util.Arrays.asList;
 import static java.util.Collections.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -579,8 +579,8 @@ public class HistoryServiceTest extends PluggableActivitiTestCase {
     // Test LESS_THAN, should return 2 results
     processInstances = historyService.createHistoricProcessInstanceQuery().variableValueLessThan("stringVar", "abcdeg").list();
     assertThat(processInstances.size()).isEqualTo(2);
-    List<String> expectedIds = Arrays.asList(processInstance1.getId(), processInstance2.getId());
-    List<String> ids = new ArrayList<String>(Arrays.asList(processInstances.get(0).getId(), processInstances.get(1).getId()));
+    List<String> expectedIds = asList(processInstance1.getId(), processInstance2.getId());
+    List<String> ids = new ArrayList<String>(asList(processInstances.get(0).getId(), processInstances.get(1).getId()));
     ids.removeAll(expectedIds);
     assertThat(ids.isEmpty()).isTrue();
 
@@ -590,8 +590,8 @@ public class HistoryServiceTest extends PluggableActivitiTestCase {
     // Test LESS_THAN_OR_EQUAL
     processInstances = historyService.createHistoricProcessInstanceQuery().variableValueLessThanOrEqual("stringVar", "abcdef").list();
     assertThat(processInstances.size()).isEqualTo(2);
-    expectedIds = Arrays.asList(processInstance1.getId(), processInstance2.getId());
-    ids = new ArrayList<String>(Arrays.asList(processInstances.get(0).getId(), processInstances.get(1).getId()));
+    expectedIds = asList(processInstance1.getId(), processInstance2.getId());
+    ids = new ArrayList<String>(asList(processInstances.get(0).getId(), processInstances.get(1).getId()));
     ids.removeAll(expectedIds);
     assertThat(ids.isEmpty()).isTrue();
 
@@ -621,8 +621,8 @@ public class HistoryServiceTest extends PluggableActivitiTestCase {
 
     processInstances = historyService.createHistoricProcessInstanceQuery().variableValueEquals("abcdef").list();
     assertThat(processInstances.size()).isEqualTo(2);
-    expectedIds = Arrays.asList(processInstance1.getId(), processInstance2.getId());
-    ids = new ArrayList<String>(Arrays.asList(processInstances.get(0).getId(), processInstances.get(1).getId()));
+    expectedIds = asList(processInstance1.getId(), processInstance2.getId());
+    ids = new ArrayList<String>(asList(processInstances.get(0).getId(), processInstances.get(1).getId()));
     ids.removeAll(expectedIds);
     assertThat(ids.isEmpty()).isTrue();
 
@@ -753,8 +753,8 @@ public class HistoryServiceTest extends PluggableActivitiTestCase {
     processInstances = historyService.createHistoricProcessInstanceQuery().variableValueLessThan("dateVar", nextYear.getTime()).list();
     assertThat(processInstances.size()).isEqualTo(2);
 
-    List<String> expectedIds = Arrays.asList(processInstance1.getId(), processInstance2.getId());
-    List<String> ids = new ArrayList<String>(Arrays.asList(processInstances.get(0).getId(), processInstances.get(1).getId()));
+    List<String> expectedIds = asList(processInstance1.getId(), processInstance2.getId());
+    List<String> ids = new ArrayList<String>(asList(processInstances.get(0).getId(), processInstances.get(1).getId()));
     ids.removeAll(expectedIds);
     assertThat(ids.isEmpty()).isTrue();
 
@@ -774,8 +774,8 @@ public class HistoryServiceTest extends PluggableActivitiTestCase {
 
     processInstances = historyService.createHistoricProcessInstanceQuery().variableValueEquals(date1).list();
     assertThat(processInstances.size()).isEqualTo(2);
-    expectedIds = Arrays.asList(processInstance1.getId(), processInstance2.getId());
-    ids = new ArrayList<String>(Arrays.asList(processInstances.get(0).getId(), processInstances.get(1).getId()));
+    expectedIds = asList(processInstance1.getId(), processInstance2.getId());
+    ids = new ArrayList<String>(asList(processInstances.get(0).getId(), processInstances.get(1).getId()));
     ids.removeAll(expectedIds);
     assertThat(ids.isEmpty()).isTrue();
 

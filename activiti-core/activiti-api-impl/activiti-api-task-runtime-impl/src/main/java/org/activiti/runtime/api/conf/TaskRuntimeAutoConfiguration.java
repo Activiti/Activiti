@@ -16,7 +16,8 @@
 
 package org.activiti.runtime.api.conf;
 
-import java.util.Collections;
+import static java.util.Collections.emptyList;
+
 import java.util.List;
 
 import org.activiti.api.runtime.shared.events.VariableEventListener;
@@ -130,7 +131,7 @@ public class TaskRuntimeAutoConfiguration {
     public APITaskConverter apiTaskConverter(TaskService taskService) {
         return new APITaskConverter(taskService);
     }
-    
+
     @Bean
     public TaskVariablesPayloadValidator taskVariablesValidator(DateFormatterProvider dateFormatterProvider,
                                                                 VariableNameValidator variableNameValidator) {
@@ -166,7 +167,7 @@ public class TaskRuntimeAutoConfiguration {
     }
 
     private <T> List<T> getInitializedTaskRuntimeEventListeners(List<T> taskRuntimeEventListeners) {
-        return taskRuntimeEventListeners != null ? taskRuntimeEventListeners : Collections.emptyList();
+        return taskRuntimeEventListeners != null ? taskRuntimeEventListeners : emptyList();
     }
 
     @Bean
@@ -285,5 +286,5 @@ public class TaskRuntimeAutoConfiguration {
                                                                                                    new ToTaskCandidateGroupRemovedConverter(taskCandidateGroupConverter)),
                                                      ActivitiEventType.ENTITY_DELETED);
     }
-    
+
 }

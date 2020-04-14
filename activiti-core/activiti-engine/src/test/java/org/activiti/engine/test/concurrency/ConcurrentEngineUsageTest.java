@@ -13,9 +13,9 @@
 
 package org.activiti.engine.test.concurrency;
 
+import static java.util.Collections.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -82,7 +82,7 @@ public class ConcurrentEngineUsageTest extends PluggableActivitiTestCase {
     boolean success = false;
     while (retries > 0 && !success) {
       try {
-        runtimeService.startProcessInstanceByKey("concurrentProcess", Collections.singletonMap("assignee", (Object) runningUser));
+        runtimeService.startProcessInstanceByKey("concurrentProcess", singletonMap("assignee", (Object) runningUser));
         success = true;
       } catch (PersistenceException pe) {
         retries = retries - 1;

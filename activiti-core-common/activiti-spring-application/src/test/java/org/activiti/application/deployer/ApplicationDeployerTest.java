@@ -16,14 +16,13 @@
 
 package org.activiti.application.deployer;
 
-import java.util.Arrays;
-
 import org.activiti.application.ApplicationContent;
 import org.activiti.application.ApplicationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 
+import static java.util.Arrays.asList;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -46,7 +45,7 @@ public class ApplicationDeployerTest {
     public void setUp() {
         initMocks(this);
         deployer = new ApplicationDeployer(applicationLoader,
-                                           Arrays.asList(firstDeployer, secondDeployer));
+                                           asList(firstDeployer, secondDeployer));
     }
 
     @Test
@@ -54,8 +53,7 @@ public class ApplicationDeployerTest {
         //given
         ApplicationContent firstApp = mock(ApplicationContent.class);
         ApplicationContent secondApp = mock(ApplicationContent.class);
-        given(applicationLoader.loadApplications()).willReturn(Arrays.asList(firstApp,
-                                                                             secondApp));
+        given(applicationLoader.loadApplications()).willReturn(asList(firstApp, secondApp));
 
         //when
         deployer.deploy();

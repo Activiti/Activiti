@@ -85,7 +85,7 @@ public class ScriptTaskTest extends PluggableActivitiTestCase {
     try {
       repositoryService.createDeployment().addClasspathResource("org/activiti/examples/bpmn/scripttask/ScriptTaskTest.testNoScriptProvided.bpmn20.xml").deploy();
     } catch (ActivitiException e) {
-      assertTextPresent("No script provided", e.getMessage());
+      assertThat(e.getMessage()).contains("No script provided");
     }
   }
 

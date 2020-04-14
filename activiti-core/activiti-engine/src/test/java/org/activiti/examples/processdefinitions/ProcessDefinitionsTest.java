@@ -12,11 +12,11 @@
  */
 package org.activiti.examples.processdefinitions;
 
+import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -26,8 +26,6 @@ import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.repository.ProcessDefinition;
 
 /**
-
-
  */
 public class ProcessDefinitionsTest extends PluggableActivitiTestCase {
 
@@ -146,7 +144,7 @@ public class ProcessDefinitionsTest extends PluggableActivitiTestCase {
     ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().deploymentId(deploymentId).singleResult();
     assertThat(processDefinition.getDescription()).isEqualTo("This is a test");
 
-    deleteDeployments(Collections.singletonList(deploymentId));
+    deleteDeployments(singletonList(deploymentId));
   }
 
   private String deployProcessString(String processString) {

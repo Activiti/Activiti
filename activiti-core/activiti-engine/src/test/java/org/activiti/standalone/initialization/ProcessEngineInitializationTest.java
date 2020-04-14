@@ -39,7 +39,7 @@ public class ProcessEngineInitializationTest extends AbstractTestCase {
       fail("expected exception");
     } catch (Exception e) {
       // OK
-      assertTextPresent("no activiti tables in db", e.getMessage());
+      assertThat(e.getMessage()).contains("no activiti tables in db");
     }
   }
 
@@ -81,7 +81,7 @@ public class ProcessEngineInitializationTest extends AbstractTestCase {
 
       fail("expected exception");
     } catch (ActivitiWrongDbException e) {
-      assertTextPresent("version mismatch", e.getMessage());
+      assertThat(e.getMessage()).contains("version mismatch");
       assertThat(e.getDbVersion()).isEqualTo("25.7");
       assertThat(e.getLibraryVersion()).isEqualTo(ProcessEngine.VERSION);
     }

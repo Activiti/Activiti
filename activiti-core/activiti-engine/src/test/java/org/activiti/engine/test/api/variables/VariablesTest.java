@@ -1,10 +1,10 @@
 package org.activiti.engine.test.api.variables;
 
+import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
@@ -324,14 +324,14 @@ public class VariablesTest extends PluggableActivitiTestCase {
 
   public void testGetVariablesWithCollectionThroughRuntimeService() {
 
-    Map<String, Object> vars = runtimeService.getVariables(processInstanceId, Arrays.asList("intVar1", "intVar3", "intVar5", "intVar9"));
+    Map<String, Object> vars = runtimeService.getVariables(processInstanceId, asList("intVar1", "intVar3", "intVar5", "intVar9"));
     assertThat(vars.size()).isEqualTo(4);
     assertThat(vars.get("intVar1")).isEqualTo(100);
     assertThat(vars.get("intVar3")).isEqualTo(300);
     assertThat(vars.get("intVar5")).isEqualTo(500);
     assertThat(vars.get("intVar9")).isEqualTo(900);
 
-    assertThat(runtimeService.getVariablesLocal(processInstanceId, Arrays.asList("intVar1", "intVar3", "intVar5", "intVar9")).size()).isEqualTo(4);
+    assertThat(runtimeService.getVariablesLocal(processInstanceId, asList("intVar1", "intVar3", "intVar5", "intVar9")).size()).isEqualTo(4);
 
     // Trying the same after moving the process
     Task task = taskService.createTaskQuery().singleResult();
@@ -341,7 +341,7 @@ public class VariablesTest extends PluggableActivitiTestCase {
     String executionId = task.getExecutionId();
     assertThat(processInstanceId.equals(executionId)).isFalse();
 
-    assertThat(runtimeService.getVariablesLocal(executionId, Arrays.asList("intVar1", "intVar3", "intVar5", "intVar9")).size()).isEqualTo(0);
+    assertThat(runtimeService.getVariablesLocal(executionId, asList("intVar1", "intVar3", "intVar5", "intVar9")).size()).isEqualTo(0);
 
   }
 
@@ -461,8 +461,8 @@ public class VariablesTest extends PluggableActivitiTestCase {
     assertThat(taskService.getVariablesLocal(task.getId()).size()).isEqualTo(0);
 
     // Get collection of variables
-    assertThat(taskService.getVariables(task.getId(), Arrays.asList("intVar2", "intVar5")).size()).isEqualTo(2);
-    assertThat(taskService.getVariablesLocal(task.getId(), Arrays.asList("intVar2", "intVar5")).size()).isEqualTo(0);
+    assertThat(taskService.getVariables(task.getId(), asList("intVar2", "intVar5")).size()).isEqualTo(2);
+    assertThat(taskService.getVariablesLocal(task.getId(), asList("intVar2", "intVar5")).size()).isEqualTo(0);
 
     // Get Variable
     assertThat(taskService.getVariable(task.getId(), "stringVar3")).isEqualTo("stringVarValue-3");
@@ -473,8 +473,8 @@ public class VariablesTest extends PluggableActivitiTestCase {
     taskService.setVariableLocal(task.getId(), "localTaskVar", "localTaskVarValue");
     assertThat(taskService.getVariables(task.getId()).size()).isEqualTo(71);
     assertThat(taskService.getVariablesLocal(task.getId()).size()).isEqualTo(1);
-    assertThat(taskService.getVariables(task.getId(), Arrays.asList("intVar2", "intVar5")).size()).isEqualTo(2);
-    assertThat(taskService.getVariablesLocal(task.getId(), Arrays.asList("intVar2", "intVar5")).size()).isEqualTo(0);
+    assertThat(taskService.getVariables(task.getId(), asList("intVar2", "intVar5")).size()).isEqualTo(2);
+    assertThat(taskService.getVariablesLocal(task.getId(), asList("intVar2", "intVar5")).size()).isEqualTo(0);
     assertThat(taskService.getVariable(task.getId(), "localTaskVar")).isEqualTo("localTaskVarValue");
     assertThat(taskService.getVariableLocal(task.getId(), "localTaskVar")).isEqualTo("localTaskVarValue");
 
@@ -675,7 +675,7 @@ public class VariablesTest extends PluggableActivitiTestCase {
 
   public static class TestJavaDelegate13 implements JavaDelegate {
     public void execute(DelegateExecution execution) {
-      Map<String, Object> vars = execution.getVariables(Arrays.asList("testVar1", "testVar2", "testVar3"), false);
+      Map<String, Object> vars = execution.getVariables(asList("testVar1", "testVar2", "testVar3"), false);
 
       String testVar1 = (String) vars.get("testVar1");
       String testVar2 = (String) vars.get("testVar2");

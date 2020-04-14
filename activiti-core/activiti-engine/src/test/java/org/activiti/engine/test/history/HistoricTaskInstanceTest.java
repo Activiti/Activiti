@@ -856,11 +856,11 @@ public class HistoricTaskInstanceTest extends PluggableActivitiTestCase {
         HistoricTaskInstance taskInstance = historyService.createHistoricTaskInstanceQuery().taskId(task.getId()).includeProcessVariables().singleResult();
 
         Object varValue = taskInstance.getProcessVariables().get("procVar");
-        assertEquals(9, varValue);
+        assertThat(varValue).isEqualTo(9);
 
         taskInstance = historyService.createHistoricTaskInstanceQuery().taskId(task.getId()).includeTaskLocalVariables().singleResult();
 
         varValue = taskInstance.getTaskLocalVariables().get("taskVar");
-        assertEquals(9, varValue);
+        assertThat(varValue).isEqualTo(9);
     }
 }

@@ -12,9 +12,9 @@
  */
 package org.activiti.engine.test.api.task;
 
+import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -59,7 +59,7 @@ public class DelegateTaskTest extends PluggableActivitiTestCase {
 
     // Start process instance
     Map<String, Object> variables = new HashMap<String, Object>();
-    variables.put("approvers", Collections.singletonList("kermit")); // , "gonzo", "mispiggy"));
+    variables.put("approvers", singletonList("kermit")); // , "gonzo", "mispiggy"));
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("delegateTaskTest", variables);
 
     // Assert there are three tasks with the default category

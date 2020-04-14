@@ -13,10 +13,10 @@
 
 package org.activiti.engine.impl.test;
 
+import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
@@ -54,7 +54,7 @@ import junit.framework.AssertionFailedError;
 
 public abstract class AbstractActivitiTestCase extends AbstractTestCase {
 
-  private static final List<String> TABLENAMES_EXCLUDED_FROM_DB_CLEAN_CHECK = Collections.singletonList("ACT_GE_PROPERTY");
+  private static final List<String> TABLENAMES_EXCLUDED_FROM_DB_CLEAN_CHECK = singletonList("ACT_GE_PROPERTY");
 
   protected ProcessEngine processEngine;
 

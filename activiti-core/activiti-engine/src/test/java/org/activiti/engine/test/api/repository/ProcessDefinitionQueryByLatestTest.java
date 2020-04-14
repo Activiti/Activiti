@@ -1,9 +1,9 @@
 package org.activiti.engine.test.api.repository;
 
+import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
@@ -46,7 +46,7 @@ public class ProcessDefinitionQueryByLatestTest extends PluggableActivitiTestCas
 
 	public void testQueryByLatestAndId() throws Exception {
 		// Deploy
-		List<String> xmlFileNameList = Arrays.asList("name_testProcess1_one.bpmn20.xml",
+		List<String> xmlFileNameList = asList("name_testProcess1_one.bpmn20.xml",
 				"name_testProcess1_two.bpmn20.xml", "name_testProcess2_one.bpmn20.xml");
 		List<String> deploymentIdList = deploy(xmlFileNameList);
 
@@ -76,7 +76,7 @@ public class ProcessDefinitionQueryByLatestTest extends PluggableActivitiTestCas
 
 	public void testQueryByLatestAndName() throws Exception {
 		// Deploy
-		List<String> xmlFileNameList = Arrays.asList("name_testProcess1_one.bpmn20.xml",
+		List<String> xmlFileNameList = asList("name_testProcess1_one.bpmn20.xml",
 				"name_testProcess1_two.bpmn20.xml", "name_testProcess2_one.bpmn20.xml");
 		List<String> deploymentIdList = deploy(xmlFileNameList);
 
@@ -100,7 +100,7 @@ public class ProcessDefinitionQueryByLatestTest extends PluggableActivitiTestCas
 
 	public void testQueryByLatestAndVersion() throws Exception {
 		// Deploy
-		List<String> xmlFileNameList = Arrays.asList("version_testProcess1_one.bpmn20.xml",
+		List<String> xmlFileNameList = asList("version_testProcess1_one.bpmn20.xml",
 				"version_testProcess1_two.bpmn20.xml", "version_testProcess2_one.bpmn20.xml");
 		List<String> deploymentIdList = deploy(xmlFileNameList);
 
@@ -116,7 +116,7 @@ public class ProcessDefinitionQueryByLatestTest extends PluggableActivitiTestCas
 
 	public void testQueryByLatestAndDeploymentId() throws Exception {
 		// Deploy
-		List<String> xmlFileNameList = Arrays.asList("name_testProcess1_one.bpmn20.xml",
+		List<String> xmlFileNameList = asList("name_testProcess1_one.bpmn20.xml",
 				"name_testProcess1_two.bpmn20.xml", "name_testProcess2_one.bpmn20.xml");
 		List<String> deploymentIdList = deploy(xmlFileNameList);
 

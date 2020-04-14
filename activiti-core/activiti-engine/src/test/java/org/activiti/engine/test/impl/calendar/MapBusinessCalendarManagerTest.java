@@ -13,9 +13,9 @@
 
 package org.activiti.engine.test.impl.calendar;
 
+import static java.util.Collections.emptyMap;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,7 +27,6 @@ import org.activiti.engine.impl.calendar.MapBusinessCalendarManager;
 import junit.framework.TestCase;
 
 /**
- * Created by martin.grofcik
  */
 public class MapBusinessCalendarManagerTest extends TestCase {
 
@@ -41,7 +40,7 @@ public class MapBusinessCalendarManagerTest extends TestCase {
   }
 
   public void testInvalidCalendarNameRequest() {
-    @SuppressWarnings("unchecked") MapBusinessCalendarManager businessCalendarManager = new MapBusinessCalendarManager(Collections.EMPTY_MAP);
+    MapBusinessCalendarManager businessCalendarManager = new MapBusinessCalendarManager(emptyMap());
 
     try {
       businessCalendarManager.getBusinessCalendar("INVALID");

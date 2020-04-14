@@ -13,11 +13,11 @@
 
 package org.activiti.engine.test.history;
 
+import static java.util.Arrays.asList;
 import static java.util.Collections.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.groups.Tuple.tuple;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -224,7 +224,7 @@ public class HistoricVariableInstanceTest extends PluggableActivitiTestCase {
         .processInstanceId(processInstanceId).orderByVariableName().asc().list();
     assertThat(historicVariableInstances.size()).isEqualTo(5);
 
-   List<String> expectedVariableNames =  Arrays.asList("executionVar0", "executionVar1", "startVar", "taskVar0", "taskVar1");
+   List<String> expectedVariableNames =  asList("executionVar0", "executionVar1", "startVar", "taskVar0", "taskVar1");
    for (int i=0; i<expectedVariableNames.size(); i++) {
      assertThat(historicVariableInstances.get(i).getVariableName()).isEqualTo(expectedVariableNames.get(i));
    }

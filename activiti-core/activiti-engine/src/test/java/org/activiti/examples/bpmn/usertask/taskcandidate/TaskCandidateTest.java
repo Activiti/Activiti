@@ -12,10 +12,10 @@
  */
 package org.activiti.examples.bpmn.usertask.taskcandidate;
 
+import static java.util.Arrays.asList;
+import static java.util.Collections.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,15 +26,14 @@ import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
 /**
-
  */
 public class TaskCandidateTest extends PluggableActivitiTestCase {
 
   private static final String KERMIT = "kermit";
-  private static final List<String> KERMITSGROUPS = Arrays.asList("accountancy");
+  private static final List<String> KERMITSGROUPS = asList("accountancy");
 
   private static final String GONZO = "gonzo";
-  private static final List<String> GONZOSGROUPS = Arrays.asList("management","accountancy","sales");
+  private static final List<String> GONZOSGROUPS = asList("management","accountancy","sales");
 
 
 
@@ -121,7 +120,7 @@ public class TaskCandidateTest extends PluggableActivitiTestCase {
 
   @Deployment
   public void testMultipleCandidateUsers() {
-    runtimeService.startProcessInstanceByKey("multipleCandidateUsersExample", Collections.singletonMap("Variable", (Object) "var"));
+    runtimeService.startProcessInstanceByKey("multipleCandidateUsersExample", singletonMap("Variable", (Object) "var"));
 
     assertThat(taskService.createTaskQuery().taskCandidateUser(GONZO,GONZOSGROUPS).list().size()).isEqualTo(1);
     assertThat(taskService.createTaskQuery().taskCandidateUser(KERMIT,KERMITSGROUPS).list().size()).isEqualTo(1);

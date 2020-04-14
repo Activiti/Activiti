@@ -25,9 +25,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 
-import java.util.Collections;
 import java.util.Optional;
 
+import static java.util.Collections.singletonList;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
@@ -48,7 +48,7 @@ public class TimerRetriesDecrementedListenerDelegateTest {
     @Before
     public void setUp() {
         initMocks(this);
-        listenerDelegate = new TimerRetriesDecrementedListenerDelegate(Collections.singletonList(listener), converter);
+        listenerDelegate = new TimerRetriesDecrementedListenerDelegate(singletonList(listener), converter);
     }
 
     @Test

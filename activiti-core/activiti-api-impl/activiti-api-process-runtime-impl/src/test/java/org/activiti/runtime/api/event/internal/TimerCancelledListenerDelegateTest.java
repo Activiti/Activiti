@@ -25,9 +25,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 
-import java.util.Collections;
 import java.util.Optional;
 
+import static java.util.Collections.singletonList;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
@@ -48,7 +48,7 @@ public class TimerCancelledListenerDelegateTest {
     @Before
     public void setUp() {
         initMocks(this);
-        listenerDelegate = new TimerCancelledListenerDelegate(Collections.singletonList(listener), converter);
+        listenerDelegate = new TimerCancelledListenerDelegate(singletonList(listener), converter);
     }
 
     @Test

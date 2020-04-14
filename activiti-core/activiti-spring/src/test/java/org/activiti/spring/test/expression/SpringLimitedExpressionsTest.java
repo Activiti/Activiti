@@ -51,7 +51,7 @@ public class SpringLimitedExpressionsTest extends SpringActivitiTestCase {
         String beanOutput = (String) runtimeService.getVariable(processInstance.getId(),
                                                                 "beanOutput");
         assertThat(beanOutput).isNotNull();
-        assertEquals("Activiti BPMN 2.0 process engine", beanOutput);
+        assertThat(beanOutput).isEqualTo("Activiti BPMN 2.0 process engine");
 
         // Finish the task, should continue to serviceTask which uses a bean that is present
         // in application-context, but not exposed explicitly in "beans", should throw error!

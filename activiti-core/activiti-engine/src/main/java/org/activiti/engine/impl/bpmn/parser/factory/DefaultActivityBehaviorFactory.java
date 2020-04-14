@@ -1,9 +1,9 @@
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -12,7 +12,8 @@
  */
 package org.activiti.engine.impl.bpmn.parser.factory;
 
-import java.util.Collections;
+import static java.util.Collections.emptyList;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -118,7 +119,7 @@ import org.apache.commons.lang3.StringUtils;
 public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory implements ActivityBehaviorFactory {
 
     public static final String DEFAULT_SERVICE_TASK_BEAN_NAME = "defaultServiceTaskBehavior";
-    
+
     private final ClassDelegateFactory classDelegateFactory;
 
     public DefaultActivityBehaviorFactory(ClassDelegateFactory classDelegateFactory) {
@@ -411,7 +412,7 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
 
     public EventSubProcessMessageStartEventActivityBehavior createEventSubProcessMessageStartEventActivityBehavior(StartEvent startEvent,
                                                                                                                    MessageEventDefinition messageEventDefinition) {
-        MessageExecutionContext messageExecutionContext = createMessageExecutionContext(startEvent, 
+        MessageExecutionContext messageExecutionContext = createMessageExecutionContext(startEvent,
                                                                                         messageEventDefinition);
 
         return new EventSubProcessMessageStartEventActivityBehavior(messageEventDefinition,
@@ -461,7 +462,7 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
 
     public IntermediateCatchMessageEventActivityBehavior createIntermediateCatchMessageEventActivityBehavior(IntermediateCatchEvent intermediateCatchEvent,
                                                                                                              MessageEventDefinition messageEventDefinition) {
-        MessageExecutionContext messageExecutionContext = createMessageExecutionContext(intermediateCatchEvent, 
+        MessageExecutionContext messageExecutionContext = createMessageExecutionContext(intermediateCatchEvent,
                                                                                         messageEventDefinition);
         return new IntermediateCatchMessageEventActivityBehavior(messageEventDefinition,
                                                                  messageExecutionContext);
@@ -567,7 +568,7 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
     public BoundaryMessageEventActivityBehavior createBoundaryMessageEventActivityBehavior(BoundaryEvent boundaryEvent,
                                                                                            MessageEventDefinition messageEventDefinition,
                                                                                            boolean interrupting) {
-        MessageExecutionContext messageExecutionContext = createMessageExecutionContext(boundaryEvent, 
+        MessageExecutionContext messageExecutionContext = createMessageExecutionContext(boundaryEvent,
                                                                                         messageEventDefinition);
         return new BoundaryMessageEventActivityBehavior(messageEventDefinition,
                                                         interrupting,
@@ -579,10 +580,10 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
                                                                                                  MessageEventDefinition messageEventDefinition,
                                                                                                  Message message) {
         ThrowMessageDelegate throwMessageDelegate = createThrowMessageDelegate(messageEventDefinition);
-        MessageExecutionContext messageExecutionContext = createMessageExecutionContext(throwEvent, 
+        MessageExecutionContext messageExecutionContext = createMessageExecutionContext(throwEvent,
                                                                                         messageEventDefinition);
         return new IntermediateThrowMessageEventActivityBehavior(throwEvent,
-                                                                 messageEventDefinition, 
+                                                                 messageEventDefinition,
                                                                  throwMessageDelegate,
                                                                  messageExecutionContext);
     }
@@ -592,56 +593,56 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
                                                                                            MessageEventDefinition messageEventDefinition,
                                                                                            Message message) {
         ThrowMessageDelegate throwMessageDelegate = createThrowMessageDelegate(messageEventDefinition);
-        MessageExecutionContext messageExecutionContext = createMessageExecutionContext(endEvent, 
+        MessageExecutionContext messageExecutionContext = createMessageExecutionContext(endEvent,
                                                                                         messageEventDefinition);
         return new ThrowMessageEndEventActivityBehavior(endEvent,
                                                         messageEventDefinition,
                                                         throwMessageDelegate,
                                                         messageExecutionContext);
     }
-    
+
     protected ThrowMessageDelegate createThrowMessageDelegate(MessageEventDefinition messageEventDefinition) {
         Map<String, List<ExtensionAttribute>> attributes = messageEventDefinition.getAttributes();
-        
+
         return checkClassDelegate(attributes)
                     .map(this::createThrowMessageJavaDelegate).map(Optional::of)
                     .orElseGet(() -> checkDelegateExpression(attributes).map(this::createThrowMessageDelegateExpression))
                     .orElseGet(this::createDefaultThrowMessageDelegate);
     }
-    
-    public MessageExecutionContext createMessageExecutionContext(Event bpmnEvent, 
+
+    public MessageExecutionContext createMessageExecutionContext(Event bpmnEvent,
                                                                  MessageEventDefinition messageEventDefinition) {
-        MessagePayloadMappingProvider mappingProvider = createMessagePayloadMappingProvider(bpmnEvent, 
+        MessagePayloadMappingProvider mappingProvider = createMessagePayloadMappingProvider(bpmnEvent,
                                                                                             messageEventDefinition);
         return getMessageExecutionContextFactory().create(messageEventDefinition,
                                                           mappingProvider,
                                                           expressionManager);
     }
-    
+
     public ThrowMessageDelegate createThrowMessageJavaDelegate(String className) {
         Class<? extends ThrowMessageDelegate> clazz = ReflectUtil.loadClass(className)
                                                                  .asSubclass(ThrowMessageDelegate.class);
-        
-        return new ThrowMessageJavaDelegate(clazz, Collections.emptyList());
+
+        return new ThrowMessageJavaDelegate(clazz, emptyList());
     }
 
     public ThrowMessageDelegate createThrowMessageDelegateExpression(String delegateExpression) {
-        Expression expression = expressionManager.createExpression(delegateExpression);        
-        
-        return new ThrowMessageDelegateExpression(expression, Collections.emptyList());
+        Expression expression = expressionManager.createExpression(delegateExpression);
+
+        return new ThrowMessageDelegateExpression(expression, emptyList());
     }
-    
+
     public ThrowMessageDelegate createDefaultThrowMessageDelegate() {
         return getThrowMessageDelegateFactory().create();
     }
-    
-    public MessagePayloadMappingProvider createMessagePayloadMappingProvider(Event bpmnEvent, 
+
+    public MessagePayloadMappingProvider createMessagePayloadMappingProvider(Event bpmnEvent,
                                                                              MessageEventDefinition messageEventDefinition) {
-        return getMessagePayloadMappingProviderFactory().create(bpmnEvent, 
+        return getMessagePayloadMappingProviderFactory().create(bpmnEvent,
                                                                 messageEventDefinition,
                                                                 getExpressionManager());
     }
-    
+
     protected Optional<String> checkClassDelegate(Map<String, List<ExtensionAttribute>> attributes ) {
         return getAttributeValue(attributes, "class");
     }
@@ -649,8 +650,8 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
     protected Optional<String> checkDelegateExpression(Map<String, List<ExtensionAttribute>> attributes ) {
         return getAttributeValue(attributes, "delegateExpression");
     }
-    
-    protected Optional<String> getAttributeValue(Map<String, List<ExtensionAttribute>> attributes, 
+
+    protected Optional<String> getAttributeValue(Map<String, List<ExtensionAttribute>> attributes,
                                                  String name) {
         return Optional.ofNullable(attributes)
                        .filter(it -> it.containsKey("activiti"))
@@ -659,5 +660,5 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
                                         .filter(el -> name.equals(el.getName()))
                                         .findAny())
                        .map(ExtensionAttribute::getValue);
-    }      
+    }
 }

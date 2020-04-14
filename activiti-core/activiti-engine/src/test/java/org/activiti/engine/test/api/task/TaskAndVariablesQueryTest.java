@@ -12,11 +12,11 @@
  */
 package org.activiti.engine.test.api.task;
 
+import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,8 +35,7 @@ public class TaskAndVariablesQueryTest extends PluggableActivitiTestCase {
     private List<String> multipleTaskIds;
 
     private static final String KERMIT = "kermit";
-    private static final List<String> KERMITSGROUPS = Arrays.asList("management",
-                                                                    "accountancy");
+    private static final List<String> KERMITSGROUPS = asList("management", "accountancy");
 
     private static final String GONZO = "gonzo";
 
@@ -45,29 +44,28 @@ public class TaskAndVariablesQueryTest extends PluggableActivitiTestCase {
     }
 
     public void tearDown() throws Exception {
-        taskService.deleteTasks(taskIds,
-                                true);
+        taskService.deleteTasks(taskIds, true);
     }
 
     @Deployment
     public void testQuery() {
         Task task = taskService.createTaskQuery().includeTaskLocalVariables().taskAssignee(GONZO).singleResult();
         Map<String, Object> variableMap = task.getTaskLocalVariables();
-        assertEquals(3, variableMap.size());
-        assertEquals(0, task.getProcessVariables().size());
+        assertThat(variableMap).hasSize(3);
+        assertThat(task.getProcessVariables()).hasSize(0);
         assertThat(variableMap.get("testVar")).isNotNull();
-        assertEquals("someVariable", variableMap.get("testVar"));
+        assertThat(variableMap.get("testVar")).isEqualTo("someVariable");
         assertThat(variableMap.get("testVar2")).isNotNull();
-        assertEquals(123, variableMap.get("testVar2"));
+        assertThat(variableMap.get("testVar2")).isEqualTo(123);
         assertThat(variableMap.get("testVarBinary")).isNotNull();
-        assertEquals("This is a binary variable", new String((byte[]) variableMap.get("testVarBinary")));
+        assertThat(new String((byte[]) variableMap.get("testVarBinary"))).isEqualTo("This is a binary variable");
 
         List<Task> tasks = taskService.createTaskQuery().list();
-        assertEquals(3, tasks.size());
+        assertThat(tasks).hasSize(3);
 
         task = taskService.createTaskQuery().includeProcessVariables().taskAssignee(GONZO).singleResult();
-        assertEquals(0, task.getProcessVariables().size());
-        assertEquals(0, task.getTaskLocalVariables().size());
+        assertThat(task.getProcessVariables()).hasSize(0);
+        assertThat(task.getTaskLocalVariables()).hasSize(0);
 
         Map<String, Object> startMap = new HashMap<String, Object>();
         startMap.put("processVar", true);
@@ -75,93 +73,93 @@ public class TaskAndVariablesQueryTest extends PluggableActivitiTestCase {
         runtimeService.startProcessInstanceByKey("oneTaskProcess", startMap);
 
         task = taskService.createTaskQuery().includeProcessVariables().taskAssignee(KERMIT).singleResult();
-        assertEquals(2, task.getProcessVariables().size());
-        assertEquals(0, task.getTaskLocalVariables().size());
+        assertThat(task.getProcessVariables()).hasSize(2);
+        assertThat(task.getTaskLocalVariables()).hasSize(0);
         assertThat((Boolean) task.getProcessVariables().get("processVar")).isTrue();
-        assertEquals("This is a binary process variable", new String((byte[]) task.getProcessVariables().get("binaryVariable")));
+        assertThat(new String((byte[]) task.getProcessVariables().get("binaryVariable"))).isEqualTo("This is a binary process variable");
 
         taskService.setVariable(task.getId(), "anotherProcessVar", 123);
         taskService.setVariableLocal(task.getId(), "localVar", "test");
 
         task = taskService.createTaskQuery().includeTaskLocalVariables().taskAssignee(KERMIT).singleResult();
-        assertEquals(0, task.getProcessVariables().size());
-        assertEquals(1, task.getTaskLocalVariables().size());
-        assertEquals("test", task.getTaskLocalVariables().get("localVar"));
+        assertThat(task.getProcessVariables()).hasSize(0);
+        assertThat(task.getTaskLocalVariables()).hasSize(1);
+        assertThat(task.getTaskLocalVariables().get("localVar")).isEqualTo("test");
 
         task = taskService.createTaskQuery().includeProcessVariables().taskAssignee(KERMIT).singleResult();
-        assertEquals(3, task.getProcessVariables().size());
-        assertEquals(0, task.getTaskLocalVariables().size());
-        assertEquals(true, task.getProcessVariables().get("processVar"));
-        assertEquals(123, task.getProcessVariables().get("anotherProcessVar"));
-        assertEquals("This is a binary process variable", new String((byte[]) task.getProcessVariables().get("binaryVariable")));
+        assertThat(task.getProcessVariables()).hasSize(3);
+        assertThat(task.getTaskLocalVariables()).hasSize(0);
+        assertThat(task.getProcessVariables().get("processVar")).isEqualTo(true);
+        assertThat(task.getProcessVariables().get("anotherProcessVar")).isEqualTo(123);
+        assertThat(new String((byte[]) task.getProcessVariables().get("binaryVariable"))).isEqualTo("This is a binary process variable");
 
         tasks = taskService.createTaskQuery().includeTaskLocalVariables().taskCandidateUser(KERMIT, KERMITSGROUPS).list();
-        assertEquals(2, tasks.size());
-        assertEquals(2, tasks.get(0).getTaskLocalVariables().size());
-        assertEquals("test", tasks.get(0).getTaskLocalVariables().get("test"));
-        assertEquals(0, tasks.get(0).getProcessVariables().size());
+        assertThat(tasks).hasSize(2);
+        assertThat(tasks.get(0).getTaskLocalVariables()).hasSize(2);
+        assertThat(tasks.get(0).getTaskLocalVariables().get("test")).isEqualTo("test");
+        assertThat(tasks.get(0).getProcessVariables()).hasSize(0);
 
         tasks = taskService.createTaskQuery().includeProcessVariables().taskCandidateUser(KERMIT, KERMITSGROUPS).list();
-        assertEquals(2, tasks.size());
-        assertEquals(0, tasks.get(0).getProcessVariables().size());
-        assertEquals(0, tasks.get(0).getTaskLocalVariables().size());
+        assertThat(tasks).hasSize(2);
+        assertThat(tasks.get(0).getProcessVariables()).hasSize(0);
+        assertThat(tasks.get(0).getTaskLocalVariables()).hasSize(0);
 
         task = taskService.createTaskQuery().includeTaskLocalVariables().taskAssignee(KERMIT).taskVariableValueEquals("localVar",
                                                                                                                       "test").singleResult();
-        assertEquals(0, task.getProcessVariables().size());
-        assertEquals(1, task.getTaskLocalVariables().size());
-        assertEquals("test", task.getTaskLocalVariables().get("localVar"));
+        assertThat(task.getProcessVariables()).hasSize(0);
+        assertThat(task.getTaskLocalVariables()).hasSize(1);
+        assertThat(task.getTaskLocalVariables().get("localVar")).isEqualTo("test");
 
         task = taskService.createTaskQuery().includeProcessVariables().taskAssignee(KERMIT).taskVariableValueEquals("localVar",
                                                                                                                     "test").singleResult();
-        assertEquals(3, task.getProcessVariables().size());
-        assertEquals(0, task.getTaskLocalVariables().size());
-        assertEquals(true, task.getProcessVariables().get("processVar"));
-        assertEquals(123, task.getProcessVariables().get("anotherProcessVar"));
+        assertThat(task.getProcessVariables()).hasSize(3);
+        assertThat(task.getTaskLocalVariables()).hasSize(0);
+        assertThat(task.getProcessVariables().get("processVar")).isEqualTo(true);
+        assertThat(task.getProcessVariables().get("anotherProcessVar")).isEqualTo(123);
 
         task = taskService.createTaskQuery().includeTaskLocalVariables().includeProcessVariables().taskAssignee(KERMIT).singleResult();
-        assertEquals(3, task.getProcessVariables().size());
-        assertEquals(1, task.getTaskLocalVariables().size());
-        assertEquals("test", task.getTaskLocalVariables().get("localVar"));
-        assertEquals(true, task.getProcessVariables().get("processVar"));
-        assertEquals(123, task.getProcessVariables().get("anotherProcessVar"));
-        assertEquals("This is a binary process variable", new String((byte[]) task.getProcessVariables().get("binaryVariable")));
+        assertThat(task.getProcessVariables()).hasSize(3);
+        assertThat(task.getTaskLocalVariables()).hasSize(1);
+        assertThat(task.getTaskLocalVariables().get("localVar")).isEqualTo("test");
+        assertThat(task.getProcessVariables().get("processVar")).isEqualTo(true);
+        assertThat(task.getProcessVariables().get("anotherProcessVar")).isEqualTo(123);
+        assertThat(new String((byte[]) task.getProcessVariables().get("binaryVariable"))).isEqualTo("This is a binary process variable");
     }
 
     public void testQueryWithPagingAndVariables() {
         List<Task> tasks = taskService.createTaskQuery().includeProcessVariables().includeTaskLocalVariables().orderByTaskPriority().desc().listPage(0,
                                                                                                                                                      1);
-        assertEquals(1, tasks.size());
+        assertThat(tasks).hasSize(1);
         Task task = tasks.get(0);
         Map<String, Object> variableMap = task.getTaskLocalVariables();
-        assertEquals(3, variableMap.size());
-        assertEquals("someVariable", variableMap.get("testVar"));
-        assertEquals(123, variableMap.get("testVar2"));
-        assertEquals("This is a binary variable", new String((byte[]) variableMap.get("testVarBinary")));
+        assertThat(variableMap).hasSize(3);
+        assertThat(variableMap.get("testVar")).isEqualTo("someVariable");
+        assertThat(variableMap.get("testVar2")).isEqualTo(123);
+        assertThat(new String((byte[]) variableMap.get("testVarBinary"))).isEqualTo("This is a binary variable");
 
         tasks = taskService.createTaskQuery().includeProcessVariables().includeTaskLocalVariables().orderByTaskPriority().asc().listPage(1,
                                                                                                                                          2);
-        assertEquals(2, tasks.size());
+        assertThat(tasks).hasSize(2);
         task = tasks.get(1);
         variableMap = task.getTaskLocalVariables();
-        assertEquals(3, variableMap.size());
-        assertEquals("someVariable", variableMap.get("testVar"));
-        assertEquals(123, variableMap.get("testVar2"));
-        assertEquals("This is a binary variable", new String((byte[]) variableMap.get("testVarBinary")));
+        assertThat(variableMap).hasSize(3);
+        assertThat(variableMap.get("testVar")).isEqualTo("someVariable");
+        assertThat(variableMap.get("testVar2")).isEqualTo(123);
+        assertThat(new String((byte[]) variableMap.get("testVarBinary"))).isEqualTo("This is a binary variable");
 
         tasks = taskService.createTaskQuery().includeProcessVariables().includeTaskLocalVariables().orderByTaskPriority().asc().listPage(2,
                                                                                                                                          4);
-        assertEquals(1, tasks.size());
+        assertThat(tasks).hasSize(1);
         task = tasks.get(0);
         variableMap = task.getTaskLocalVariables();
-        assertEquals(3, variableMap.size());
-        assertEquals("someVariable", variableMap.get("testVar"));
-        assertEquals(123, variableMap.get("testVar2"));
-        assertEquals("This is a binary variable", new String((byte[]) variableMap.get("testVarBinary")));
+        assertThat(variableMap).hasSize(3);
+        assertThat(variableMap.get("testVar")).isEqualTo("someVariable");
+        assertThat(variableMap.get("testVar2")).isEqualTo(123);
+        assertThat(new String((byte[]) variableMap.get("testVarBinary"))).isEqualTo("This is a binary variable");
 
         tasks = taskService.createTaskQuery().includeProcessVariables().includeTaskLocalVariables().orderByTaskPriority().asc().listPage(4,
                                                                                                                                          2);
-        assertEquals(0, tasks.size());
+        assertThat(tasks).hasSize(0);
     }
 
     // Unit test for https://activiti.atlassian.net/browse/ACT-4152
@@ -169,19 +167,19 @@ public class TaskAndVariablesQueryTest extends PluggableActivitiTestCase {
         List<Task> tasks = taskService.createTaskQuery().taskAssignee(GONZO).list();
         for (Task task : tasks) {
             assertThat(task.getCategory()).isNotNull();
-            assertEquals("testCategory", task.getCategory());
+            assertThat(task.getCategory()).isEqualTo("testCategory");
         }
 
         tasks = taskService.createTaskQuery().taskAssignee(GONZO).includeTaskLocalVariables().list();
         for (Task task : tasks) {
             assertThat(task.getCategory()).isNotNull();
-            assertEquals("testCategory", task.getCategory());
+            assertThat(task.getCategory()).isEqualTo("testCategory");
         }
 
         tasks = taskService.createTaskQuery().taskAssignee(GONZO).includeProcessVariables().list();
         for (Task task : tasks) {
             assertThat(task.getCategory()).isNotNull();
-            assertEquals("testCategory", task.getCategory());
+            assertThat(task.getCategory()).isEqualTo("testCategory");
         }
     }
 

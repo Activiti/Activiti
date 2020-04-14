@@ -16,6 +16,7 @@
 
 package org.activiti.spring;
 
+import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 import static org.mockito.BDDMockito.given;
@@ -25,7 +26,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 import java.io.ByteArrayInputStream;
-import java.util.Arrays;
 import java.util.List;
 
 import org.activiti.api.process.model.events.ProcessDeployedEvent;
@@ -64,8 +64,7 @@ public class ProcessDeployedEventProducerTest {
         initMocks(this);
         producer = new ProcessDeployedEventProducer(repositoryService,
                                                     converter,
-                                                    Arrays.asList(firstListener,
-                                                                  secondListener),
+                                                    asList(firstListener, secondListener),
                                                     eventPublisher);
     }
 
@@ -75,13 +74,13 @@ public class ProcessDeployedEventProducerTest {
         ProcessDefinitionQuery definitionQuery = mock(ProcessDefinitionQuery.class);
         given(repositoryService.createProcessDefinitionQuery()).willReturn(definitionQuery);
 
-        List<ProcessDefinition> internalProcessDefinitions = Arrays.asList(mock(ProcessDefinition.class),
-                                                                           mock(ProcessDefinition.class));
+        List<ProcessDefinition> internalProcessDefinitions = asList(mock(ProcessDefinition.class),
+                                                                    mock(ProcessDefinition.class));
 
         given(definitionQuery.list()).willReturn(internalProcessDefinitions);
 
-        List<org.activiti.api.process.model.ProcessDefinition> apiProcessDefinitions = Arrays.asList(buildAPIProcessDefinition("id1"),
-                                                                                                     buildAPIProcessDefinition("id2"));
+        List<org.activiti.api.process.model.ProcessDefinition> apiProcessDefinitions = asList(buildAPIProcessDefinition("id1"),
+                                                                                              buildAPIProcessDefinition("id2"));
         given(converter.from(internalProcessDefinitions)).willReturn(apiProcessDefinitions);
         given(repositoryService.getProcessModel("id1")).willReturn(new ByteArrayInputStream("content1".getBytes()));
         given(repositoryService.getProcessModel("id2")).willReturn(new ByteArrayInputStream("content2".getBytes()));

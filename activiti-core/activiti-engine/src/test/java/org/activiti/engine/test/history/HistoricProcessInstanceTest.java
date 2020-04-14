@@ -13,13 +13,13 @@
 
 package org.activiti.engine.test.history;
 
+import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -159,9 +159,9 @@ public class HistoricProcessInstanceTest extends PluggableActivitiTestCase {
     assertThat(historyService.createHistoricProcessInstanceQuery().processInstanceId(processInstance.getId()).count()).isEqualTo(1);
     assertThat(historyService.createHistoricProcessInstanceQuery().processDefinitionId(processInstance.getProcessDefinitionId()).count()).isEqualTo(1);
     assertThat(historyService.createHistoricProcessInstanceQuery().processDefinitionKey("oneTaskProcess").count()).isEqualTo(1);
-    assertThat(historyService.createHistoricProcessInstanceQuery().processDefinitionKeyIn(Collections.singletonList("oneTaskProcess")).count()).isEqualTo(1);
-    assertThat(historyService.createHistoricProcessInstanceQuery().processDefinitionKeyIn(Arrays.asList("undefined", "oneTaskProcess")).count()).isEqualTo(1);
-    assertThat(historyService.createHistoricProcessInstanceQuery().processDefinitionKeyIn(Arrays.asList("undefined1", "undefined2")).count()).isEqualTo(0);
+    assertThat(historyService.createHistoricProcessInstanceQuery().processDefinitionKeyIn(singletonList("oneTaskProcess")).count()).isEqualTo(1);
+    assertThat(historyService.createHistoricProcessInstanceQuery().processDefinitionKeyIn(asList("undefined", "oneTaskProcess")).count()).isEqualTo(1);
+    assertThat(historyService.createHistoricProcessInstanceQuery().processDefinitionKeyIn(asList("undefined1", "undefined2")).count()).isEqualTo(0);
     assertThat(historyService.createHistoricProcessInstanceQuery().processInstanceBusinessKey("businessKey123").count()).isEqualTo(1);
 
     List<String> excludeIds = new ArrayList<String>();
@@ -251,8 +251,8 @@ public class HistoricProcessInstanceTest extends PluggableActivitiTestCase {
     assertThat(historyService.createHistoricProcessInstanceQuery().or().finished().count()).isEqualTo(0);
     assertThat(historyService.createHistoricProcessInstanceQuery().or().processInstanceId(processInstance.getId()).processDefinitionId("undefined").endOr().count()).isEqualTo(1);
     assertThat(historyService.createHistoricProcessInstanceQuery().or().processDefinitionId(processInstance.getProcessDefinitionId()).processDefinitionKey("undefined").count()).isEqualTo(1);
-    assertThat(historyService.createHistoricProcessInstanceQuery().or().processDefinitionId("undefined").processDefinitionKeyIn(Arrays.asList("undefined", "oneTaskProcess")).endOr().count()).isEqualTo(1);
-    assertThat(historyService.createHistoricProcessInstanceQuery().or().processDefinitionId("undefined").processDefinitionKeyIn(Arrays.asList("undefined1", "undefined2")).endOr().count()).isEqualTo(0);
+    assertThat(historyService.createHistoricProcessInstanceQuery().or().processDefinitionId("undefined").processDefinitionKeyIn(asList("undefined", "oneTaskProcess")).endOr().count()).isEqualTo(1);
+    assertThat(historyService.createHistoricProcessInstanceQuery().or().processDefinitionId("undefined").processDefinitionKeyIn(asList("undefined1", "undefined2")).endOr().count()).isEqualTo(0);
     assertThat(historyService.createHistoricProcessInstanceQuery().or().processDefinitionKey("oneTaskProcess").processDefinitionId("undefined").endOr().count()).isEqualTo(1);
     assertThat(historyService.createHistoricProcessInstanceQuery().or().processInstanceBusinessKey("businessKey123").processDefinitionId("undefined").endOr().count()).isEqualTo(1);
 

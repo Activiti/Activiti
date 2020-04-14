@@ -560,7 +560,7 @@ public class JPAVariableTest extends AbstractActivitiTestCase {
         ProcessInstance result = runtimeService.createProcessInstanceQuery().variableValueEquals("entityToQuery",
                                                                                                  entityToQuery).singleResult();
         assertThat(result).isNotNull();
-        assertEquals(result.getId(), processInstance.getId());
+        assertThat(processInstance.getId()).isEqualTo(result.getId());
 
         // Query with the same entity-type but with different ID should have no
         // result
@@ -628,6 +628,6 @@ public class JPAVariableTest extends AbstractActivitiTestCase {
         Object updatedEntity = runtimeService.getVariable(processInstance.getId(),
                                                           "entityToUpdate");
         assertThat(updatedEntity).isInstanceOf(FieldAccessJPAEntity.class);
-        assertEquals("updatedValue", ((FieldAccessJPAEntity) updatedEntity).getValue());
+        assertThat(((FieldAccessJPAEntity) updatedEntity).getValue()).isEqualTo("updatedValue");
     }
 }

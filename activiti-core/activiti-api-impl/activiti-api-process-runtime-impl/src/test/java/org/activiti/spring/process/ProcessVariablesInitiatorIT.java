@@ -16,6 +16,8 @@
 
 package org.activiti.spring.process;
 
+import static java.util.Collections.emptyMap;
+import static java.util.Collections.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.BDDMockito.given;
@@ -23,7 +25,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 import java.io.InputStream;
-import java.util.Collections;
 import java.util.Map;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -118,7 +119,7 @@ public class ProcessVariablesInitiatorIT {
 
             //when
             Map<String, Object> variables = processVariablesInitiator.calculateVariablesFromExtensionFile(processDefinition,
-                                                                                                          Collections.singletonMap("name",
+                                                                                                          singletonMap("name",
                                                                                                                                    "Peter"));
 
             //then
@@ -144,7 +145,7 @@ public class ProcessVariablesInitiatorIT {
 
             //when
             Throwable thrownException = catchThrowable(() -> processVariablesInitiator.calculateVariablesFromExtensionFile(processDefinition,
-                                                                                                                     Collections.emptyMap())
+                                                                                                                     emptyMap())
             );
 
             //then
@@ -169,7 +170,7 @@ public class ProcessVariablesInitiatorIT {
 
             //when
             Throwable thrownException = catchThrowable(() -> processVariablesInitiator.calculateVariablesFromExtensionFile(processDefinition,
-                                                                                                                     Collections.singletonMap("age", "invalidNumber"))
+                                                                                                                     singletonMap("age", "invalidNumber"))
             );
 
             //then

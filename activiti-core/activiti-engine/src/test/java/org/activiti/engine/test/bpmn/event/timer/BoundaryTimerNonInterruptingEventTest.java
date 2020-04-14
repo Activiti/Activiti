@@ -30,7 +30,6 @@ import org.activiti.engine.task.TaskQuery;
 import org.activiti.engine.test.Deployment;
 
 /**
-
  */
 public class BoundaryTimerNonInterruptingEventTest extends PluggableActivitiTestCase {
 

@@ -20,7 +20,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.mail.internet.MimeMessage;
-
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.test.Deployment;
 import org.subethamail.wiser.Wiser;
@@ -66,13 +65,13 @@ public class EmailServiceTaskTest extends PluggableActivitiTestCase {
         runtimeService.startProcessInstanceByKey("sendMailExample", vars);
 
         List<WiserMessage> messages = wiser.getMessages();
-        assertEquals(1, messages.size());
+        assertThat(messages).hasSize(1);
 
         WiserMessage message = messages.get(0);
         MimeMessage mimeMessage = message.getMimeMessage();
 
-        assertEquals("Your order " + orderId + " has been shipped", mimeMessage.getHeader("Subject", null));
-        assertEquals(from, mimeMessage.getHeader("From", null));
+        assertThat(mimeMessage.getHeader("Subject", null)).isEqualTo("Your order " + orderId + " has been shipped");
+        assertThat(mimeMessage.getHeader("From", null)).isEqualTo(from);
         assertThat(mimeMessage.getHeader("To", null)).contains(recipient);
     }
 

@@ -16,6 +16,7 @@
 
 package org.activiti.runtime.api.impl;
 
+import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.ArgumentMatchers.any;
@@ -29,7 +30,6 @@ import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import org.activiti.api.process.model.ProcessInstance;
@@ -147,7 +147,7 @@ public class ProcessRuntimeImplTest {
         processDefinition.setId(processDefinitionId);
         processDefinition.setKey(processDefinitionKey);
         processDefinition.setAppVersion(null);
-        List<ProcessDefinition> findProcessDefinitionResult = Collections.singletonList(processDefinition);
+        List<ProcessDefinition> findProcessDefinitionResult = singletonList(processDefinition);
 
         given(commandExecutor.execute(any())).willReturn(findProcessDefinitionResult);
         given(securityPoliciesManager.canRead(processDefinitionKey)).willReturn(true);
@@ -164,7 +164,7 @@ public class ProcessRuntimeImplTest {
         ProcessDefinitionEntityImpl processDefinition = new ProcessDefinitionEntityImpl();
         processDefinition.setId(processDefinitionId);
         processDefinition.setAppVersion(1);
-        List<ProcessDefinition> findProcessDefinitionResult = Collections.singletonList(processDefinition);
+        List<ProcessDefinition> findProcessDefinitionResult = singletonList(processDefinition);
 
         Deployment latestDeploymentEntity = new DeploymentEntityImpl();
         DeploymentImpl latestDeployment = new DeploymentImpl();
@@ -191,7 +191,7 @@ public class ProcessRuntimeImplTest {
         processDefinition.setId(processDefinitionId);
         processDefinition.setKey(processDefinitionKey);
         processDefinition.setAppVersion(1);
-        List<ProcessDefinition> findProcessDefinitionResult = Collections.singletonList(processDefinition);
+        List<ProcessDefinition> findProcessDefinitionResult = singletonList(processDefinition);
 
         Deployment latestDeploymentEntity = new DeploymentEntityImpl();
         DeploymentImpl deployment = new DeploymentImpl();

@@ -16,7 +16,8 @@
 
 package org.activiti.runtime.api.conf;
 
-import java.util.Collections;
+import static java.util.Collections.emptyList;
+
 import java.util.List;
 
 import org.activiti.api.model.shared.event.VariableCreatedEvent;
@@ -50,7 +51,7 @@ public class CommonRuntimeAutoConfiguration {
     }
 
     private <T> List<T> getInitializedListeners(List<T> eventListeners) {
-        return eventListeners != null ? eventListeners : Collections.emptyList();
+        return eventListeners != null ? eventListeners : emptyList();
     }
 
     @Bean
@@ -58,7 +59,7 @@ public class CommonRuntimeAutoConfiguration {
                                                                     @Autowired(required = false) List<VariableEventListener<VariableUpdatedEvent>> listeners) {
         return () -> runtimeService.addEventListener(new VariableUpdatedListenerDelegate(getInitializedListeners(listeners), new ToVariableUpdatedConverter()), ActivitiEventType.VARIABLE_UPDATED);
     }
-    
+
     @Bean
     public VariableNameValidator variableNameValidator() {
         return new VariableNameValidator();

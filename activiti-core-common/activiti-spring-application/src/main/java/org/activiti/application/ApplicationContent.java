@@ -16,8 +16,9 @@
 
 package org.activiti.application;
 
+import static java.util.Collections.emptyList;
+
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,7 +34,7 @@ public class ApplicationContent {
     }
 
     public List<FileContent> getFileContents(String entryType) {
-        return entries.getOrDefault(entryType, Collections.emptyList());
+        return entries.getOrDefault(entryType, emptyList());
     }
 
 }

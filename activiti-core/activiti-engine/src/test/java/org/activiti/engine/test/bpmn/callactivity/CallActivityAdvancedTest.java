@@ -13,9 +13,9 @@
 
 package org.activiti.engine.test.bpmn.callactivity;
 
+import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -78,8 +78,8 @@ public class CallActivityAdvancedTest extends PluggableActivitiTestCase {
       List<HistoricActivityInstance> historicInstances = historyService.createHistoricActivityInstanceQuery().processInstanceId(taskInSubProcess.getProcessInstanceId()).list();
 
       // Should contain a start-event, the task and an end-event
-      assertThat(historicInstances.size()).isEqualTo(3L);
-      Set<String> expectedActivities = new HashSet<String>(Arrays.asList(new String[] { "theStart", "task", "theEnd" }));
+      assertThat(historicInstances).hasSize(3);
+      Set<String> expectedActivities = new HashSet<String>(asList("theStart", "task", "theEnd" ));
 
       for (HistoricActivityInstance act : historicInstances) {
         expectedActivities.remove(act.getActivityId());

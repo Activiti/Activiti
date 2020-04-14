@@ -68,7 +68,7 @@ public class SpringAutoDeployTest extends AbstractTestCase {
         expectedProcessDefinitionKeys.add("b");
         expectedProcessDefinitionKeys.add("c");
 
-        assertEquals(expectedProcessDefinitionKeys, processDefinitionKeys);
+        assertThat(processDefinitionKeys).isEqualTo(expectedProcessDefinitionKeys);
     }
 
     public void testNoRedeploymentForSpringContainerRestart() throws Exception {
@@ -83,15 +83,15 @@ public class SpringAutoDeployTest extends AbstractTestCase {
         // Creating a new app context with same resources doesn't lead to more
         // deployments
         new ClassPathXmlApplicationContext(CTX_NO_DROP_PATH);
-        assertEquals(1, deploymentQuery.count());
-        assertEquals(3, processDefinitionQuery.count());
+        assertThat(deploymentQuery.count()).isEqualTo(1);
+        assertThat(processDefinitionQuery.count()).isEqualTo(3);
     }
 
     // Updating the bpmn20 file should lead to a new deployment when restarting
     // the Spring container
     public void testResourceRedeploymentAfterProcessDefinitionChange() throws Exception {
         createAppContext(CTX_PATH);
-        assertEquals(1, repositoryService.createDeploymentQuery().count());
+        assertThat(repositoryService.createDeploymentQuery().count()).isEqualTo(1);
         ((AbstractXmlApplicationContext) applicationContext).close();
 
         String filePath = "org/activiti/spring/test/autodeployment/autodeploy.a.bpmn20.xml";

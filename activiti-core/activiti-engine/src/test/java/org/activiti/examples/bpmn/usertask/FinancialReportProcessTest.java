@@ -1,8 +1,8 @@
 package org.activiti.examples.bpmn.usertask;
 
+import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.Arrays;
 import java.util.List;
 
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
@@ -14,10 +14,10 @@ public class FinancialReportProcessTest extends PluggableActivitiTestCase {
 
 
   private static final String KERMIT = "kermit";
-  private static final List<String> KERMITSGROUPS = Arrays.asList("management");
+  private static final List<String> KERMITSGROUPS = asList("management");
 
   private static final String FOZZIE = "fozzie";
-  private static final List<String> FOZZIESGROUPS = Arrays.asList("accountancy");
+  private static final List<String> FOZZIESGROUPS = asList("accountancy");
 
 
   @Deployment(resources = { "org/activiti/examples/bpmn/usertask/FinancialReportProcess.bpmn20.xml" })

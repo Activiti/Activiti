@@ -12,10 +12,10 @@
  */
 package org.activiti.engine.test.api.runtime;
 
+import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -225,11 +225,11 @@ public class ProcessInstanceSuspensionTest extends PluggableActivitiTestCase {
       .withMessageContaining("is suspended");
 
     assertThatExceptionOfType(ActivitiException.class)
-      .isThrownBy(() -> runtimeService.removeVariables(processInstance.getId(), Arrays.asList("one", "two", "three")))
+      .isThrownBy(() -> runtimeService.removeVariables(processInstance.getId(), asList("one", "two", "three")))
       .withMessageContaining("is suspended");
 
     assertThatExceptionOfType(ActivitiException.class)
-      .isThrownBy(() -> runtimeService.removeVariablesLocal(processInstance.getId(), Arrays.asList("one", "two", "three")))
+      .isThrownBy(() -> runtimeService.removeVariablesLocal(processInstance.getId(), asList("one", "two", "three")))
       .withMessageContaining("is suspended");
 
     assertThatExceptionOfType(ActivitiException.class)
@@ -408,7 +408,7 @@ public class ProcessInstanceSuspensionTest extends PluggableActivitiTestCase {
 
     // Removing variables on the task should fail
     try {
-      taskService.removeVariables(task.getId(), Arrays.asList("one", "two"));
+      taskService.removeVariables(task.getId(), asList("one", "two"));
       fail("It is not allowed to remove variables on a task of a suspended process instance");
     } catch (ActivitiException e) {
       // This is good
@@ -416,7 +416,7 @@ public class ProcessInstanceSuspensionTest extends PluggableActivitiTestCase {
 
     // Removing variables on the task should fail
     try {
-      taskService.removeVariablesLocal(task.getId(), Arrays.asList("one", "two"));
+      taskService.removeVariablesLocal(task.getId(), asList("one", "two"));
       fail("It is not allowed to remove variables on a task of a suspended process instance");
     } catch (ActivitiException e) {
       // This is good

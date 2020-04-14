@@ -1,5 +1,6 @@
 package org.activiti.runtime.api.impl;
 
+import static java.util.Arrays.asList;
 import static org.activiti.runtime.api.impl.MappingExecutionContext.buildMappingExecutionContext;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
@@ -10,7 +11,6 @@ import static org.mockito.MockitoAnnotations.initMocks;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -397,28 +397,20 @@ public class VariablesMappingProviderTest {
             "Process_expressionProperty");
 
         String[] array = {"1", "this expressionResolved is OK", "2"};
-        List<String> list = Arrays.asList(array);
+        List<String> list = asList(array);
 
         Map<String, Object> var1 = new HashMap<>();
-        var1.put("prop1",
-                 "property 1");
-        var1.put("prop2",
-                 "expressionResolved");
-        var1.put("prop3",
-                 list);
+        var1.put("prop1", "property 1");
+        var1.put("prop2", "expressionResolved");
+        var1.put("prop3", list);
 
         Map<String, Object> inputVariables = variablesMappingProvider.calculateInputVariables(execution);
         assertThat(inputVariables).isNotEmpty();
-        assertThat(inputVariables.entrySet()).extracting(Map.Entry::getKey,
-                                                         Map.Entry::getValue)
-                                             .containsOnly(tuple("process_constant_1",
-                                                                 "constant_1_value"),
-                                                           tuple("process_constant_2",
-                                                                 "constant_2_value"),
-                                                           tuple("task_input_variable_name_1",
-                                                                 var1),
-                                                           tuple("task_input_variable_name_2",
-                                                                 "static_value_1"));
+        assertThat(inputVariables.entrySet()).extracting(Map.Entry::getKey, Map.Entry::getValue)
+                                             .containsOnly(tuple("process_constant_1", "constant_1_value"),
+                                                           tuple("process_constant_2", "constant_2_value"),
+                                                           tuple("task_input_variable_name_1", var1),
+                                                           tuple("task_input_variable_name_2", "static_value_1"));
     }
 
     @Test(expected = ActivitiIllegalArgumentException.class)

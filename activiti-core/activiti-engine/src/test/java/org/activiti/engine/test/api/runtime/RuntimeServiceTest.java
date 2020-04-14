@@ -13,14 +13,20 @@
 
 package org.activiti.engine.test.api.runtime;
 
+import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
+import static java.util.Collections.emptyMap;
+import static java.util.Collections.singletonMap;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.catchThrowableOfType;
+
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
@@ -32,18 +38,12 @@ import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.impl.persistence.entity.HistoricDetailVariableInstanceUpdateEntity;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
-import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.runtime.ProcessInstanceBuilder;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
-
-import static java.util.Arrays.asList;
-import static java.util.Collections.singletonMap;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 public class RuntimeServiceTest extends PluggableActivitiTestCase {
 
@@ -132,28 +132,27 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
         // by key
         ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess", "123");
         assertThat(processInstance).isNotNull();
-        assertEquals("123", processInstance.getBusinessKey());
-        assertEquals(1, runtimeService.createProcessInstanceQuery().processDefinitionKey("oneTaskProcess").count());
+        assertThat(processInstance.getBusinessKey()).isEqualTo("123");
+        assertThat(runtimeService.createProcessInstanceQuery().processDefinitionKey("oneTaskProcess").count()).isEqualTo(1);
 
         // by key with variables
         processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess",
                                                                    "456",
                                                                    singletonMap("var", "value"));
         assertThat(processInstance).isNotNull();
-        assertEquals(2, runtimeService.createProcessInstanceQuery().processDefinitionKey("oneTaskProcess").count());
-        assertEquals("value", runtimeService.getVariable(processInstance.getId(), "var"));
+        assertThat(runtimeService.createProcessInstanceQuery().processDefinitionKey("oneTaskProcess").count()).isEqualTo(2);
+        assertThat(runtimeService.getVariable(processInstance.getId(), "var")).isEqualTo("value");
 
         // by id
         processInstance = runtimeService.startProcessInstanceById(processDefinition.getId(), "789");
         assertThat(processInstance).isNotNull();
-        assertEquals(3, runtimeService.createProcessInstanceQuery().processDefinitionKey("oneTaskProcess").count());
+        assertThat(runtimeService.createProcessInstanceQuery().processDefinitionKey("oneTaskProcess").count()).isEqualTo(3);
 
         // by id with variables
-        processInstance = runtimeService.startProcessInstanceById(processDefinition.getId(), "101123",
-                                                                  singletonMap("var", "value2"));
+        processInstance = runtimeService.startProcessInstanceById(processDefinition.getId(), "101123", singletonMap("var", "value2"));
         assertThat(processInstance).isNotNull();
-        assertEquals(4, runtimeService.createProcessInstanceQuery().processDefinitionKey("oneTaskProcess").count());
-        assertEquals("value2", runtimeService.getVariable(processInstance.getId(), "var"));
+        assertThat(runtimeService.createProcessInstanceQuery().processDefinitionKey("oneTaskProcess").count()).isEqualTo(4);
+        assertThat(runtimeService.getVariable(processInstance.getId(), "var")).isEqualTo("value2");
     }
 
     @Deployment(resources = {"org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml"})
@@ -165,8 +164,8 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
         // by key
         ProcessInstance processInstance = processInstanceBuilder.processDefinitionKey("oneTaskProcess").businessKey("123").start();
         assertThat(processInstance).isNotNull();
-        assertEquals("123", processInstance.getBusinessKey());
-        assertEquals(1, runtimeService.createProcessInstanceQuery().processDefinitionKey("oneTaskProcess").count());
+        assertThat(processInstance.getBusinessKey()).isEqualTo("123");
+        assertThat(runtimeService.createProcessInstanceQuery().processDefinitionKey("oneTaskProcess").count()).isEqualTo(1);
 
         processInstanceBuilder = runtimeService.createProcessInstanceBuilder();
 
@@ -174,35 +173,35 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
         processInstance = processInstanceBuilder.processDefinitionKey("oneTaskProcess").businessKey("456").variable("var",
                                                                                                                     "value").name("processName1").start();
         assertThat(processInstance).isNotNull();
-        assertEquals(2, runtimeService.createProcessInstanceQuery().processDefinitionKey("oneTaskProcess").count());
-        assertEquals("processName1", processInstance.getName());
-        assertEquals("456", processInstance.getBusinessKey());
-        assertEquals("value", runtimeService.getVariable(processInstance.getId(), "var"));
+        assertThat(runtimeService.createProcessInstanceQuery().processDefinitionKey("oneTaskProcess").count()).isEqualTo(2);
+        assertThat(processInstance.getName()).isEqualTo("processName1");
+        assertThat(processInstance.getBusinessKey()).isEqualTo("456");
+        assertThat(runtimeService.getVariable(processInstance.getId(), "var")).isEqualTo("value");
 
         processInstanceBuilder = runtimeService.createProcessInstanceBuilder();
 
         // by id
         processInstance = processInstanceBuilder.processDefinitionId(processDefinition.getId()).businessKey("789").start();
         assertThat(processInstance).isNotNull();
-        assertEquals(3, runtimeService.createProcessInstanceQuery().processDefinitionKey("oneTaskProcess").count());
-        assertEquals("789", processInstance.getBusinessKey());
+        assertThat(runtimeService.createProcessInstanceQuery().processDefinitionKey("oneTaskProcess").count()).isEqualTo(3);
+        assertThat(processInstance.getBusinessKey()).isEqualTo("789");
 
         processInstanceBuilder = runtimeService.createProcessInstanceBuilder();
         // by id with variables
         processInstance = processInstanceBuilder.processDefinitionId(processDefinition.getId()).businessKey("101123").variable("var",
                                                                                                                                "value2").start();
         assertThat(processInstance).isNotNull();
-        assertEquals(4, runtimeService.createProcessInstanceQuery().processDefinitionKey("oneTaskProcess").count());
-        assertEquals("value2", runtimeService.getVariable(processInstance.getId(), "var"));
-        assertEquals("101123", processInstance.getBusinessKey());
+        assertThat(runtimeService.createProcessInstanceQuery().processDefinitionKey("oneTaskProcess").count()).isEqualTo(4);
+        assertThat(runtimeService.getVariable(processInstance.getId(), "var")).isEqualTo("value2");
+        assertThat(processInstance.getBusinessKey()).isEqualTo("101123");
 
         processInstanceBuilder = runtimeService.createProcessInstanceBuilder();
         // by id and processInstance name
         processInstance = processInstanceBuilder.processDefinitionId(processDefinition.getId()).businessKey("101124").name("processName2").start();
         assertThat(processInstance).isNotNull();
-        assertEquals(5, runtimeService.createProcessInstanceQuery().processDefinitionKey("oneTaskProcess").count());
-        assertEquals("processName2", processInstance.getName());
-        assertEquals("101124", processInstance.getBusinessKey());
+        assertThat(runtimeService.createProcessInstanceQuery().processDefinitionKey("oneTaskProcess").count()).isEqualTo(5);
+        assertThat(processInstance.getName()).isEqualTo("processName2");
+        assertThat(processInstance.getBusinessKey()).isEqualTo("101124");
     }
 
     @Deployment(resources = {"org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml"})
@@ -465,7 +464,7 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
                                processVariables);
 
         Map<String, Object> variables = runtimeService.getVariables(processInstance.getId());
-        assertEquals(variables, processVariables);
+        assertThat(processVariables).isEqualTo(variables);
     }
 
     public void testGetVariablesUnexistingExecutionId() {
@@ -572,38 +571,23 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
         runtimeService.setVariables(processInstance.getId(),
                                     vars);
 
-        assertEquals("value1",
-                     runtimeService.getVariable(processInstance.getId(),
-                                                "variable1"));
-        assertEquals("value2",
-                     runtimeService.getVariable(processInstance.getId(),
-                                                "variable2"));
+        assertEquals("value1", runtimeService.getVariable(processInstance.getId(), "variable1"));
+        assertEquals("value2", runtimeService.getVariable(processInstance.getId(), "variable2"));
     }
 
-    @SuppressWarnings("unchecked")
     public void testSetVariablesUnexistingExecutionId() {
-        try {
-            runtimeService.setVariables("unexistingexecution",
-                                        Collections.EMPTY_MAP);
-            fail("ActivitiException expected");
-        } catch (ActivitiObjectNotFoundException ae) {
-            assertTextPresent("execution unexistingexecution doesn't exist",
-                              ae.getMessage());
-            assertEquals(Execution.class,
-                         ae.getObjectClass());
-        }
+        ActivitiObjectNotFoundException ae = catchThrowableOfType(
+            () -> runtimeService.setVariables("unexistingexecution", emptyMap()),
+            ActivitiObjectNotFoundException.class);
+
+        assertThat(ae).hasMessageContaining("execution unexistingexecution doesn't exist");
+        assertThat(ae.getObjectClass()).isEqualTo(Execution.class);
     }
 
-    @SuppressWarnings("unchecked")
     public void testSetVariablesNullExecutionId() {
-        try {
-            runtimeService.setVariables(null,
-                                        Collections.EMPTY_MAP);
-            fail("ActivitiException expected");
-        } catch (ActivitiIllegalArgumentException ae) {
-            assertTextPresent("executionId is null",
-                              ae.getMessage());
-        }
+        assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
+            .isThrownBy(() -> runtimeService.setVariables(null, emptyMap()))
+            .withMessageContaining("executionId is null");
     }
 
     private void checkHistoricVariableUpdateEntity(String variableName,
@@ -634,80 +618,61 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
     @Deployment(resources = {"org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml"})
     public void testRemoveVariable() {
         Map<String, Object> vars = new HashMap<String, Object>();
-        vars.put("variable1",
-                 "value1");
-        vars.put("variable2",
-                 "value2");
+        vars.put("variable1", "value1");
+        vars.put("variable2", "value2");
 
         ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
-        runtimeService.setVariables(processInstance.getId(),
-                                    vars);
+        runtimeService.setVariables(processInstance.getId(), vars);
 
-        runtimeService.removeVariable(processInstance.getId(),
-                                      "variable1");
+        runtimeService.removeVariable(processInstance.getId(), "variable1");
 
-        assertThat(runtimeService.getVariable(processInstance.getId(),
-                                              "variable1")).isNull();
-        assertThat(runtimeService.getVariableLocal(processInstance.getId(),
-                                                   "variable1")).isNull();
-        assertEquals("value2",
-                     runtimeService.getVariable(processInstance.getId(),
-                                                "variable2"));
+        assertThat(runtimeService.getVariable(processInstance.getId(), "variable1")).isNull();
+        assertThat(runtimeService.getVariableLocal(processInstance.getId(), "variable1")).isNull();
+        assertEquals("value2", runtimeService.getVariable(processInstance.getId(), "variable2"));
 
-        checkHistoricVariableUpdateEntity("variable1",
-                                          processInstance.getId());
+        checkHistoricVariableUpdateEntity("variable1", processInstance.getId());
     }
 
     @Deployment(resources = {"org/activiti/engine/test/api/oneSubProcess.bpmn20.xml"})
     public void testRemoveVariableInParentScope() {
         Map<String, Object> vars = new HashMap<String, Object>();
-        vars.put("variable1",
-                 "value1");
-        vars.put("variable2",
-                 "value2");
+        vars.put("variable1", "value1");
+        vars.put("variable2", "value2");
 
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("startSimpleSubProcess",
-                                                                                   vars);
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("startSimpleSubProcess", vars);
         Task currentTask = taskService.createTaskQuery().singleResult();
 
         runtimeService.removeVariable(currentTask.getExecutionId(),
                                       "variable1");
 
-        assertThat(runtimeService.getVariable(processInstance.getId(),
-                                              "variable1")).isNull();
+        assertThat(runtimeService.getVariable(processInstance.getId(), "variable1")).isNull();
         assertEquals("value2",
-                     runtimeService.getVariable(processInstance.getId(),
-                                                "variable2"));
+                     runtimeService.getVariable(processInstance.getId(), "variable2"));
 
-        checkHistoricVariableUpdateEntity("variable1",
-                                          processInstance.getId());
+        checkHistoricVariableUpdateEntity("variable1", processInstance.getId());
     }
 
     public void testRemoveVariableNullExecutionId() {
         try {
-            runtimeService.removeVariable(null,
-                                          "variable");
+            runtimeService.removeVariable(null, "variable");
             fail("ActivitiException expected");
         } catch (ActivitiIllegalArgumentException ae) {
-            assertTextPresent("executionId is null",
-                              ae.getMessage());
+            assertTextPresent("executionId is null", ae.getMessage());
         }
     }
 
     @Deployment(resources = {"org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml"})
     public void testRemoveVariableLocal() {
         Map<String, Object> vars = new HashMap<String, Object>();
-        vars.put("variable1",
-                 "value1");
-        vars.put("variable2",
-                 "value2");
+        vars.put("variable1", "value1");
+        vars.put("variable2", "value2");
 
         ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess", vars);
         runtimeService.removeVariableLocal(processInstance.getId(), "variable1");
 
         assertThat(runtimeService.getVariable(processInstance.getId(), "variable1")).isNull();
         assertThat(runtimeService.getVariableLocal(processInstance.getId(), "variable1")).isNull();
-        assertEquals("value2", runtimeService.getVariable(processInstance.getId(), "variable2"));
+        assertThat(runtimeService.getVariable(processInstance.getId(), "variable2")).isEqualTo("value2");
 
         checkHistoricVariableUpdateEntity("variable1", processInstance.getId());
     }
@@ -722,31 +687,26 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
         Task currentTask = taskService.createTaskQuery().singleResult();
         runtimeService.setVariableLocal(currentTask.getExecutionId(), "localVariable", "local value");
 
-        assertEquals("local value", runtimeService.getVariableLocal(currentTask.getExecutionId(), "localVariable"));
+        assertThat(runtimeService.getVariableLocal(currentTask.getExecutionId(),"localVariable")).isEqualTo("local value");
 
         runtimeService.removeVariableLocal(currentTask.getExecutionId(), "localVariable");
 
         assertThat(runtimeService.getVariable(currentTask.getExecutionId(), "localVariable")).isNull();
         assertThat(runtimeService.getVariableLocal(currentTask.getExecutionId(), "localVariable")).isNull();
 
-        assertEquals("value1", runtimeService.getVariable(processInstance.getId(), "variable1"));
-        assertEquals("value2", runtimeService.getVariable(processInstance.getId(), "variable2"));
+        assertThat(runtimeService.getVariable(processInstance.getId(),"variable1")).isEqualTo("value1");
+        assertThat(runtimeService.getVariable(processInstance.getId(),"variable2")).isEqualTo("value2");
 
-        assertEquals("value1", runtimeService.getVariable(currentTask.getExecutionId(), "variable1"));
-        assertEquals("value2", runtimeService.getVariable(currentTask.getExecutionId(), "variable2"));
+        assertThat(runtimeService.getVariable(currentTask.getExecutionId(), "variable1")).isEqualTo("value1");
+        assertThat(runtimeService.getVariable(currentTask.getExecutionId(),"variable2")).isEqualTo("value2");
 
         checkHistoricVariableUpdateEntity("localVariable", processInstance.getId());
     }
 
     public void testRemoveLocalVariableNullExecutionId() {
-        try {
-            runtimeService.removeVariableLocal(null,
-                                               "variable");
-            fail("ActivitiException expected");
-        } catch (ActivitiIllegalArgumentException ae) {
-            assertTextPresent("executionId is null",
-                              ae.getMessage());
-        }
+        assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
+            .isThrownBy(() -> runtimeService.removeVariableLocal(null, "variable"))
+            .withMessageContaining("executionId is null");
     }
 
     @Deployment(resources = {"org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml"})
@@ -765,8 +725,8 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
         assertThat(runtimeService.getVariable(processInstance.getId(), "variable2")).isNull();
         assertThat(runtimeService.getVariableLocal(processInstance.getId(), "variable2")).isNull();
 
-        assertEquals("value3", runtimeService.getVariable(processInstance.getId(), "variable3"));
-        assertEquals("value3", runtimeService.getVariableLocal(processInstance.getId(), "variable3"));
+        assertThat(runtimeService.getVariable(processInstance.getId(),"variable3")).isEqualTo("value3");
+        assertThat(runtimeService.getVariableLocal(processInstance.getId(),"variable3")).isEqualTo("value3");
 
         checkHistoricVariableUpdateEntity("variable1", processInstance.getId());
         checkHistoricVariableUpdateEntity("variable2", processInstance.getId());
@@ -790,28 +750,22 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
         assertThat(runtimeService.getVariable(processInstance.getId(), "variable2")).isNull();
         assertThat(runtimeService.getVariableLocal(processInstance.getId(), "variable2")).isNull();
 
-        assertEquals("value3", runtimeService.getVariable(processInstance.getId(), "variable3"));
-        assertEquals("value3", runtimeService.getVariableLocal(processInstance.getId(), "variable3"));
+        assertThat(runtimeService.getVariable(processInstance.getId(),"variable3")).isEqualTo("value3");
+        assertThat(runtimeService.getVariableLocal(processInstance.getId(),"variable3")).isEqualTo("value3");
 
         assertThat(runtimeService.getVariable(currentTask.getExecutionId(), "variable1")).isNull();
         assertThat(runtimeService.getVariable(currentTask.getExecutionId(), "variable2")).isNull();
 
-        assertEquals("value3", runtimeService.getVariable(currentTask.getExecutionId(), "variable3"));
+        assertThat(runtimeService.getVariable(currentTask.getExecutionId(),"variable3")).isEqualTo("value3");
 
         checkHistoricVariableUpdateEntity("variable1", processInstance.getId());
         checkHistoricVariableUpdateEntity("variable2", processInstance.getId());
     }
 
-    @SuppressWarnings("unchecked")
     public void testRemoveVariablesNullExecutionId() {
-        try {
-            runtimeService.removeVariables(null,
-                                           Collections.EMPTY_LIST);
-            fail("ActivitiException expected");
-        } catch (ActivitiIllegalArgumentException ae) {
-            assertTextPresent("executionId is null",
-                              ae.getMessage());
-        }
+        assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
+            .isThrownBy(() -> runtimeService.removeVariables(null, emptyList()))
+            .withMessageContaining("executionId is null");
     }
 
     @Deployment(resources = {"org/activiti/engine/test/api/oneSubProcess.bpmn20.xml"})
@@ -830,19 +784,19 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
         runtimeService.setVariablesLocal(currentTask.getExecutionId(), varsToDelete);
         runtimeService.setVariableLocal(currentTask.getExecutionId(), "variable6", "value6");
 
-        assertEquals("value3", runtimeService.getVariable(currentTask.getExecutionId(), "variable3"));
-        assertEquals("value3", runtimeService.getVariableLocal(currentTask.getExecutionId(), "variable3"));
-        assertEquals("value4", runtimeService.getVariable(currentTask.getExecutionId(), "variable4"));
-        assertEquals("value4", runtimeService.getVariableLocal(currentTask.getExecutionId(), "variable4"));
-        assertEquals("value5", runtimeService.getVariable(currentTask.getExecutionId(), "variable5"));
-        assertEquals("value5", runtimeService.getVariableLocal(currentTask.getExecutionId(), "variable5"));
-        assertEquals("value6", runtimeService.getVariable(currentTask.getExecutionId(), "variable6"));
-        assertEquals("value6", runtimeService.getVariableLocal(currentTask.getExecutionId(), "variable6"));
+        assertThat(runtimeService.getVariable(currentTask.getExecutionId(), "variable3")).isEqualTo("value3");
+        assertThat(runtimeService.getVariableLocal(currentTask.getExecutionId(), "variable3")).isEqualTo("value3");
+        assertThat(runtimeService.getVariable(currentTask.getExecutionId(), "variable4")).isEqualTo("value4");
+        assertThat(runtimeService.getVariableLocal(currentTask.getExecutionId(), "variable4")).isEqualTo("value4");
+        assertThat(runtimeService.getVariable(currentTask.getExecutionId(), "variable5")).isEqualTo("value5");
+        assertThat(runtimeService.getVariableLocal(currentTask.getExecutionId(), "variable5")).isEqualTo("value5");
+        assertThat(runtimeService.getVariable(currentTask.getExecutionId(), "variable6")).isEqualTo("value6");
+        assertThat(runtimeService.getVariableLocal(currentTask.getExecutionId(), "variable6")).isEqualTo("value6");
 
         runtimeService.removeVariablesLocal(currentTask.getExecutionId(), varsToDelete.keySet());
 
-        assertEquals("value1", runtimeService.getVariable(currentTask.getExecutionId(), "variable1"));
-        assertEquals("value2", runtimeService.getVariable(currentTask.getExecutionId(), "variable2"));
+        assertThat(runtimeService.getVariable(currentTask.getExecutionId(), "variable1")).isEqualTo("value1");
+        assertThat(runtimeService.getVariable(currentTask.getExecutionId(), "variable2")).isEqualTo("value2");
 
         assertThat(runtimeService.getVariable(currentTask.getExecutionId(), "variable3")).isNull();
         assertThat(runtimeService.getVariableLocal(currentTask.getExecutionId(), "variable3")).isNull();
@@ -851,19 +805,17 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
         assertThat(runtimeService.getVariable(currentTask.getExecutionId(), "variable5")).isNull();
         assertThat(runtimeService.getVariableLocal(currentTask.getExecutionId(), "variable5")).isNull();
 
-        assertEquals("value6", runtimeService.getVariable(currentTask.getExecutionId(), "variable6"));
-        assertEquals("value6", runtimeService.getVariableLocal(currentTask.getExecutionId(), "variable6"));
+        assertThat(runtimeService.getVariable(currentTask.getExecutionId(), "variable6")).isEqualTo("value6");
+        assertThat(runtimeService.getVariableLocal(currentTask.getExecutionId(), "variable6")).isEqualTo("value6");
 
         checkHistoricVariableUpdateEntity("variable3", processInstance.getId());
         checkHistoricVariableUpdateEntity("variable4", processInstance.getId());
         checkHistoricVariableUpdateEntity("variable5", processInstance.getId());
     }
 
-    @SuppressWarnings("unchecked")
     public void testRemoveVariablesLocalNullExecutionId() {
         try {
-            runtimeService.removeVariablesLocal(null,
-                                                Collections.EMPTY_LIST);
+            runtimeService.removeVariablesLocal(null, emptyList());
             fail("ActivitiException expected");
         } catch (ActivitiIllegalArgumentException ae) {
             assertTextPresent("executionId is null",
@@ -1158,7 +1110,7 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
         processEngineConfiguration.getClock().setCurrentTime(noon);
         final ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
 
-        assertEquals(noon, processInstance.getStartTime());
+        assertThat(processInstance.getStartTime()).isEqualTo(noon);
     }
 
     @Deployment(resources = {"org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml"})

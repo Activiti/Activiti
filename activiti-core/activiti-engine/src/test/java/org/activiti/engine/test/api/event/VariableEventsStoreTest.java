@@ -12,9 +12,9 @@
  */
 package org.activiti.engine.test.api.event;
 
+import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -74,7 +74,7 @@ public class VariableEventsStoreTest extends PluggableActivitiTestCase {
     vars.put("myVar", "value");
     vars.put("myVar2", "value");
     taskService.setVariablesLocal(task.getId(), vars);
-    taskService.removeVariablesLocal(task.getId(), Arrays.asList("myVar", "myVar2"));
+    taskService.removeVariablesLocal(task.getId(), asList("myVar", "myVar2"));
 
     assertThat(listener.getEventsReceived().size()).isEqualTo(6);
     assertThat(managementService.getEventLogEntries(null, null).size()).isEqualTo(6);
