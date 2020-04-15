@@ -38,7 +38,7 @@ public class Activiti6ExecutionTest extends PluggableActivitiTestCase {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
 
     List<Execution> executionList = runtimeService.createExecutionQuery().processInstanceId(processInstance.getId()).list();
-    assertThat(executionList.size()).isEqualTo(2);
+    assertThat(executionList).hasSize(2);
 
     Execution rootProcessInstance = null;
     Execution childExecution = null;
@@ -69,7 +69,7 @@ public class Activiti6ExecutionTest extends PluggableActivitiTestCase {
       List<HistoricActivityInstance> historicActivities = historyService.createHistoricActivityInstanceQuery()
           .processInstanceId(processInstance.getId())
           .list();
-      assertThat(historicActivities.size()).isEqualTo(3);
+      assertThat(historicActivities).hasSize(3);
 
       List<String> activityIds = new ArrayList<String>();
       activityIds.add("theStart");
@@ -81,7 +81,7 @@ public class Activiti6ExecutionTest extends PluggableActivitiTestCase {
         assertThat(historicActivityInstance.getExecutionId()).isEqualTo(childExecution.getId());
       }
 
-      assertThat(activityIds.size()).isEqualTo(0);
+      assertThat(activityIds).hasSize(0);
     }
   }
 
@@ -91,7 +91,7 @@ public class Activiti6ExecutionTest extends PluggableActivitiTestCase {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneNestedTaskProcess");
 
     List<Execution> executionList = runtimeService.createExecutionQuery().processInstanceId(processInstance.getId()).list();
-    assertThat(executionList.size()).isEqualTo(2);
+    assertThat(executionList).hasSize(2);
 
     Execution rootProcessInstance = null;
     Execution childExecution = null;
@@ -119,7 +119,7 @@ public class Activiti6ExecutionTest extends PluggableActivitiTestCase {
     taskService.complete(task.getId());
 
     executionList = runtimeService.createExecutionQuery().processInstanceId(processInstance.getId()).list();
-    assertThat(executionList.size()).isEqualTo(3);
+    assertThat(executionList).hasSize(3);
 
     task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     assertThat(task.getTaskDefinitionKey()).isEqualTo("subTask");
@@ -133,7 +133,7 @@ public class Activiti6ExecutionTest extends PluggableActivitiTestCase {
     taskService.complete(task.getId());
 
     executionList = runtimeService.createExecutionQuery().processInstanceId(processInstance.getId()).list();
-    assertThat(executionList.size()).isEqualTo(2);
+    assertThat(executionList).hasSize(2);
 
     task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     assertThat(childExecution.getId()).isNotEqualTo(task.getExecutionId());
@@ -151,7 +151,7 @@ public class Activiti6ExecutionTest extends PluggableActivitiTestCase {
       List<HistoricActivityInstance> historicActivities = historyService.createHistoricActivityInstanceQuery()
           .processInstanceId(processInstance.getId())
           .list();
-      assertThat(historicActivities.size()).isEqualTo(8);
+      assertThat(historicActivities).hasSize(8);
 
       List<String> activityIds = new ArrayList<String>();
       activityIds.add("theStart");
@@ -188,7 +188,7 @@ public class Activiti6ExecutionTest extends PluggableActivitiTestCase {
         }
       }
 
-      assertThat(activityIds.size()).isEqualTo(0);
+      assertThat(activityIds).hasSize(0);
     }
   }
 
@@ -198,7 +198,7 @@ public class Activiti6ExecutionTest extends PluggableActivitiTestCase {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("subProcessWithTimer");
 
     List<Execution> executionList = runtimeService.createExecutionQuery().processInstanceId(processInstance.getId()).list();
-    assertThat(executionList.size()).isEqualTo(2);
+    assertThat(executionList).hasSize(2);
 
     Execution rootProcessInstance = null;
     Execution childExecution = null;
@@ -225,7 +225,7 @@ public class Activiti6ExecutionTest extends PluggableActivitiTestCase {
     taskService.complete(task.getId());
 
     executionList = runtimeService.createExecutionQuery().processInstanceId(processInstance.getId()).list();
-    assertThat(executionList.size()).isEqualTo(4);
+    assertThat(executionList).hasSize(4);
 
     task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     assertThat(task.getTaskDefinitionKey()).isEqualTo("subTask");
@@ -239,7 +239,7 @@ public class Activiti6ExecutionTest extends PluggableActivitiTestCase {
     taskService.complete(task.getId());
 
     executionList = runtimeService.createExecutionQuery().processInstanceId(processInstance.getId()).list();
-    assertThat(executionList.size()).isEqualTo(2);
+    assertThat(executionList).hasSize(2);
 
     task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     assertThat(childExecution.getId()).isNotEqualTo(task.getExecutionId());
@@ -257,7 +257,7 @@ public class Activiti6ExecutionTest extends PluggableActivitiTestCase {
       List<HistoricActivityInstance> historicActivities = historyService.createHistoricActivityInstanceQuery()
           .processInstanceId(processInstance.getId())
           .list();
-      assertThat(historicActivities.size()).isEqualTo(8);
+      assertThat(historicActivities).hasSize(8);
 
       List<String> activityIds = new ArrayList<String>();
       activityIds.add("theStart");
@@ -294,7 +294,7 @@ public class Activiti6ExecutionTest extends PluggableActivitiTestCase {
         }
       }
 
-      assertThat(activityIds.size()).isEqualTo(0);
+      assertThat(activityIds).hasSize(0);
     }
   }
 
@@ -321,7 +321,7 @@ public class Activiti6ExecutionTest extends PluggableActivitiTestCase {
 
     // Verify Events
     List<ActivitiEvent> events = listener.getEventsReceived();
-    assertThat(events.size()).isEqualTo(2);
+    assertThat(events).hasSize(2);
 
     ActivitiActivityEvent event = (ActivitiActivityEvent) events.get(0);
     assertThat(event.getActivityType()).isEqualTo("subProcess");

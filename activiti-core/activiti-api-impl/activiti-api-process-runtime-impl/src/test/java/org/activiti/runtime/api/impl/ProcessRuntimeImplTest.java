@@ -16,6 +16,7 @@
 
 package org.activiti.runtime.api.impl;
 
+import static java.util.Collections.emptyMap;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
@@ -223,24 +224,21 @@ public class ProcessRuntimeImplTest {
             "key",
             "test-create",
             "business-key",
-            new HashMap<>());
+            emptyMap());
 
         doReturn(processDefinition)
             .when(processRuntime)
                 .getProcessDefinitionAndCheckUserHasRights(startPayload.getProcessDefinitionId(),
                     startPayload.getProcessDefinitionKey());
 
-        ProcessInstanceBuilder processInstanceBuilder = mock(ProcessInstanceBuilder.class,
-            Answers.RETURNS_SELF);
-        given(runtimeService.createProcessInstanceBuilder()).willReturn(
-            processInstanceBuilder);
+        ProcessInstanceBuilder processInstanceBuilder = mock(ProcessInstanceBuilder.class, Answers.RETURNS_SELF);
+        given(runtimeService.createProcessInstanceBuilder()).willReturn(processInstanceBuilder);
         org.activiti.engine.runtime.ProcessInstance internalProcessInstance = mock(
             org.activiti.engine.runtime.ProcessInstance.class);
         given(processInstanceBuilder.create()).willReturn(internalProcessInstance);
 
         ProcessInstanceImpl apiProcessInstance = new ProcessInstanceImpl();
-        given(processInstanceConverter.from(internalProcessInstance)).willReturn(
-            apiProcessInstance);
+        given(processInstanceConverter.from(internalProcessInstance)).willReturn(apiProcessInstance);
 
         //when
         ProcessInstance createdProcessInstance = processRuntime.create(startPayload);

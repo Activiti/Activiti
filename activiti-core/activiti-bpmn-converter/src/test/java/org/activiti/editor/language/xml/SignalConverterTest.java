@@ -25,7 +25,7 @@ public class SignalConverterTest extends AbstractConverterTest {
 
   private void validateModel(BpmnModel model) {
     Collection<Signal> signals = model.getSignals();
-    assertThat(signals.size()).isEqualTo(2);
+    assertThat(signals).hasSize(2);
   }
 
   protected String getResource() {

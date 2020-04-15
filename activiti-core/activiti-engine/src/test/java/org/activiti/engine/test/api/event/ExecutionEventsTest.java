@@ -40,7 +40,7 @@ public class ExecutionEventsTest extends PluggableActivitiTestCase {
     assertThat(processInstance).isNotNull();
 
     // Check create-event
-    assertThat(listener.getEventsReceived().size()).isEqualTo(6);
+    assertThat(listener.getEventsReceived()).hasSize(6);
     assertThat(listener.getEventsReceived().get(0)).isInstanceOf(ActivitiEntityEvent.class);
 
     ActivitiEntityEvent event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
@@ -64,7 +64,7 @@ public class ExecutionEventsTest extends PluggableActivitiTestCase {
     runtimeService.suspendProcessInstanceById(processInstance.getId());
     runtimeService.activateProcessInstanceById(processInstance.getId());
 
-    assertThat(listener.getEventsReceived().size()).isEqualTo(4);
+    assertThat(listener.getEventsReceived()).hasSize(4);
     event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
     assertThat(((Execution) event.getEntity()).getProcessInstanceId()).isEqualTo(processInstance.getId());
     assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_SUSPENDED);
@@ -88,7 +88,7 @@ public class ExecutionEventsTest extends PluggableActivitiTestCase {
     repositoryService.suspendProcessDefinitionById(processInstance.getProcessDefinitionId(), true, null);
     repositoryService.activateProcessDefinitionById(processInstance.getProcessDefinitionId(), true, null);
 
-    assertThat(listener.getEventsReceived().size()).isEqualTo(4);
+    assertThat(listener.getEventsReceived()).hasSize(4);
 
     event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
     assertThat(((Execution) event.getEntity()).getProcessInstanceId()).isEqualTo(processInstance.getId());
@@ -110,7 +110,7 @@ public class ExecutionEventsTest extends PluggableActivitiTestCase {
 
     // Check update-event when business-key is updated
     runtimeService.updateBusinessKey(processInstance.getId(), "thekey");
-    assertThat(listener.getEventsReceived().size()).isEqualTo(1);
+    assertThat(listener.getEventsReceived()).hasSize(1);
     event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
     assertThat(((Execution) event.getEntity()).getId()).isEqualTo(processInstance.getId());
     assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_UPDATED);

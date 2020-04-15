@@ -40,28 +40,28 @@ public class HistoricProcessInstanceQueryAndWithExceptionTest extends PluggableA
 
       HistoricProcessInstanceQuery queryNoException = historyService.createHistoricProcessInstanceQuery();
       assertThat(queryNoException.count()).isEqualTo(1);
-      assertThat(queryNoException.list().size()).isEqualTo(1);
+      assertThat(queryNoException.list()).hasSize(1);
       assertThat(queryNoException.list().get(0).getId()).isEqualTo(processNoException.getId());
 
       HistoricProcessInstanceQuery queryWithException = historyService.createHistoricProcessInstanceQuery();
       assertThat(queryWithException.withJobException().count()).isEqualTo(0);
-      assertThat(queryWithException.withJobException().list().size()).isEqualTo(0);
+      assertThat(queryWithException.withJobException().list()).hasSize(0);
 
       ProcessInstance processWithException1 = startProcessInstanceWithFailingJob(PROCESS_DEFINITION_KEY_WITH_EXCEPTION_1);
       TimerJobQuery jobQuery1 = managementService.createTimerJobQuery().processInstanceId(processWithException1.getId());
       assertThat(jobQuery1.withException().count()).isEqualTo(1);
-      assertThat(jobQuery1.withException().list().size()).isEqualTo(1);
+      assertThat(jobQuery1.withException().list()).hasSize(1);
       assertThat(queryWithException.withJobException().count()).isEqualTo(1);
-      assertThat(queryWithException.withJobException().list().size()).isEqualTo(1);
+      assertThat(queryWithException.withJobException().list()).hasSize(1);
       assertThat(queryWithException.withJobException().list().get(0).getId()).isEqualTo(processWithException1.getId());
 
       ProcessInstance processWithException2 = startProcessInstanceWithFailingJob(PROCESS_DEFINITION_KEY_WITH_EXCEPTION_2);
       TimerJobQuery jobQuery2 = managementService.createTimerJobQuery().processInstanceId(processWithException2.getId());
       assertThat(jobQuery2.withException().count()).isEqualTo(2);
-      assertThat(jobQuery2.withException().list().size()).isEqualTo(2);
+      assertThat(jobQuery2.withException().list()).hasSize(2);
 
       assertThat(queryWithException.withJobException().count()).isEqualTo(2);
-      assertThat(queryWithException.withJobException().list().size()).isEqualTo(2);
+      assertThat(queryWithException.withJobException().list()).hasSize(2);
       assertThat(queryWithException.withJobException().processDefinitionKey(PROCESS_DEFINITION_KEY_WITH_EXCEPTION_1).list().get(0).getId()).isEqualTo(processWithException1.getId());
       assertThat(queryWithException.withJobException().processDefinitionKey(PROCESS_DEFINITION_KEY_WITH_EXCEPTION_2).list().get(0).getId()).isEqualTo(processWithException2.getId());
     }

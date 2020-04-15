@@ -106,7 +106,7 @@ public class SubProcessTest extends PluggableActivitiTestCase {
     managementService.executeJob(job.getId());
 
     List<Task> tasksAfterTimer = taskQuery.list();
-    assertThat(tasksAfterTimer.size()).isEqualTo(2);
+    assertThat(tasksAfterTimer).hasSize(2);
     Task taskAfterTimer1 = tasksAfterTimer.get(0);
     Task taskAfterTimer2 = tasksAfterTimer.get(1);
     assertThat(taskAfterTimer1.getName()).isEqualTo("Task after timer 1");
@@ -366,7 +366,7 @@ public class SubProcessTest extends PluggableActivitiTestCase {
 
     // verify main process scoped variables
     Map<String, Object> variables = runtimeService.getVariables(pi.getId());
-    assertThat(variables.size()).isEqualTo(2);
+    assertThat(variables).hasSize(2);
     Iterator<String> varNameIt = variables.keySet().iterator();
     while (varNameIt.hasNext()) {
       String varName = varNameIt.next();
@@ -390,7 +390,7 @@ public class SubProcessTest extends PluggableActivitiTestCase {
 
     // verify current scoped variables - includes subprocess variables
     variables = runtimeService.getVariables(currentTask.getExecutionId());
-    assertThat(variables.size()).isEqualTo(3);
+    assertThat(variables).hasSize(3);
 
     varNameIt = variables.keySet().iterator();
     while (varNameIt.hasNext()) {
@@ -413,7 +413,7 @@ public class SubProcessTest extends PluggableActivitiTestCase {
 
     // verify main process scoped variables
     variables = runtimeService.getVariables(pi.getId());
-    assertThat(variables.size()).isEqualTo(2);
+    assertThat(variables).hasSize(2);
     varNameIt = variables.keySet().iterator();
     while (varNameIt.hasNext()) {
       String varName = varNameIt.next();
@@ -429,7 +429,7 @@ public class SubProcessTest extends PluggableActivitiTestCase {
     currentTask = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
     // Verify there are no local variables assigned to the current task. (subprocess variables are gone).
     variables = runtimeService.getVariablesLocal(currentTask.getExecutionId());
-    assertThat(variables.size()).isEqualTo(0);
+    assertThat(variables).hasSize(0);
 
     // After completing the final task in the main process,
     // the process scope is destroyed and the process ends

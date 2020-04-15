@@ -40,16 +40,16 @@ public class VariableEventsStoreTest extends PluggableActivitiTestCase {
   public void testStartEndProcessInstanceVariableEvents() throws Exception {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess", singletonMap("var1", "value1"));
 
-    assertThat(listener.getEventsReceived().size()).isEqualTo(1);
+    assertThat(listener.getEventsReceived()).hasSize(1);
     assertThat(listener.getEventsReceived().get(0).getType()).isEqualTo(ActivitiEventType.VARIABLE_CREATED);
-    assertThat(managementService.getEventLogEntries(null, null).size()).isEqualTo(1);
+    assertThat(managementService.getEventLogEntries(null, null)).hasSize(1);
 
     Task task = taskService.createTaskQuery().processInstanceId( processInstance.getId()).singleResult();
     taskService.complete(task.getId());
 
-    assertThat(listener.getEventsReceived().size()).isEqualTo(2);
+    assertThat(listener.getEventsReceived()).hasSize(2);
     assertThat(listener.getEventsReceived().get(1).getType()).isEqualTo(ActivitiEventType.VARIABLE_DELETED);
-    assertThat(managementService.getEventLogEntries(null, null).size()).isEqualTo(2);
+    assertThat(managementService.getEventLogEntries(null, null)).hasSize(2);
 
   }
 
@@ -59,15 +59,15 @@ public class VariableEventsStoreTest extends PluggableActivitiTestCase {
 
     taskService.setVariableLocal(task.getId(), "myVar", "value");
 
-    assertThat(listener.getEventsReceived().size()).isEqualTo(1);
+    assertThat(listener.getEventsReceived()).hasSize(1);
     assertThat(listener.getEventsReceived().get(0).getType()).isEqualTo(ActivitiEventType.VARIABLE_CREATED);
-    assertThat(managementService.getEventLogEntries(null, null).size()).isEqualTo(1);
+    assertThat(managementService.getEventLogEntries(null, null)).hasSize(1);
 
     taskService.removeVariableLocal(task.getId(), "myVar");
 
-    assertThat(listener.getEventsReceived().size()).isEqualTo(2);
+    assertThat(listener.getEventsReceived()).hasSize(2);
     assertThat(listener.getEventsReceived().get(1).getType()).isEqualTo(ActivitiEventType.VARIABLE_DELETED);
-    assertThat(managementService.getEventLogEntries(null, null).size()).isEqualTo(2);
+    assertThat(managementService.getEventLogEntries(null, null)).hasSize(2);
 
     // bulk insert delete var test
     taskService.setVariablesLocal(task.getId(), map(
@@ -76,8 +76,8 @@ public class VariableEventsStoreTest extends PluggableActivitiTestCase {
         ));
     taskService.removeVariablesLocal(task.getId(), asList("myVar", "myVar2"));
 
-    assertThat(listener.getEventsReceived().size()).isEqualTo(6);
-    assertThat(managementService.getEventLogEntries(null, null).size()).isEqualTo(6);
+    assertThat(listener.getEventsReceived()).hasSize(6);
+    assertThat(managementService.getEventLogEntries(null, null)).hasSize(6);
 
     taskService.complete(task.getId());
     historyService.deleteHistoricTaskInstance(task.getId());

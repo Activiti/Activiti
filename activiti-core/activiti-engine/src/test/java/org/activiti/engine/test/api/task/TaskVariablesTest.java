@@ -148,7 +148,7 @@ public class TaskVariablesTest extends PluggableActivitiTestCase {
     taskIds.add(taskList1.get(0).getId());
     taskIds.add(taskList1.get(1).getId());
     List<VariableInstance> variables = taskService.getVariableInstancesLocalByTaskIds(taskIds);
-    assertThat(variables.size()).isEqualTo(2);
+    assertThat(variables).hasSize(2);
     checkVariable(taskList1.get(0).getId(), "taskVar1" , "sayHello1", variables);
     checkVariable(taskList1.get(1).getId(), "taskVar2" , "sayHello2", variables);
 
@@ -159,7 +159,7 @@ public class TaskVariablesTest extends PluggableActivitiTestCase {
     taskIds.add(taskList2.get(0).getId());
     taskIds.add(taskList2.get(1).getId());
     variables = taskService.getVariableInstancesLocalByTaskIds(taskIds);
-    assertThat(variables.size()).isEqualTo(4);
+    assertThat(variables).hasSize(4);
     checkVariable(taskList1.get(0).getId(), "taskVar1" , "sayHello1", variables);
     checkVariable(taskList1.get(1).getId(), "taskVar2" , "sayHello2", variables);
     checkVariable(taskList2.get(0).getId(), "taskVar3" , "sayHello3", variables);
@@ -170,7 +170,7 @@ public class TaskVariablesTest extends PluggableActivitiTestCase {
     taskIds.add(taskList1.get(0).getId());
     taskIds.add(taskList2.get(1).getId());
     variables = taskService.getVariableInstancesLocalByTaskIds(taskIds);
-    assertThat(variables.size()).isEqualTo(2);
+    assertThat(variables).hasSize(2);
     checkVariable(taskList1.get(0).getId(), "taskVar1" , "sayHello1", variables);
     checkVariable(taskList2.get(1).getId(), "taskVar4" , "sayHello4", variables);
   }

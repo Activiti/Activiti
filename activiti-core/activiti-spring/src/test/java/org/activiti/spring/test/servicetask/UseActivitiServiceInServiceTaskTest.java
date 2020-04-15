@@ -38,7 +38,7 @@ public class UseActivitiServiceInServiceTaskTest extends SpringActivitiTestCase 
     // Starting the process should lead to two processes being started,
     // The other one started from the java delegate in the service task
     List<ProcessInstance> processInstances = runtimeService.createProcessInstanceQuery().list();
-    assertThat(processInstances.size()).isEqualTo(2);
+    assertThat(processInstances).hasSize(2);
 
     boolean startProcessFromDelegateFound = false;
     boolean oneTaskProcessFound = false;
@@ -65,7 +65,7 @@ public class UseActivitiServiceInServiceTaskTest extends SpringActivitiTestCase 
     // Starting the process should lead to two processes being started,
     // The other one started from the java delegate in the service task
     List<ProcessInstance> processInstances = runtimeService.createProcessInstanceQuery().list();
-    assertThat(processInstances.size()).isEqualTo(2);
+    assertThat(processInstances).hasSize(2);
 
     boolean startProcessFromDelegateFound = false;
     boolean oneTaskProcessFound = false;

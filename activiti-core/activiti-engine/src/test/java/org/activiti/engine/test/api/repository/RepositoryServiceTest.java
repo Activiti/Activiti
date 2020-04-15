@@ -43,7 +43,7 @@ public class RepositoryServiceTest extends PluggableActivitiTestCase {
   @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
   public void testStartProcessInstanceById() {
     List<ProcessDefinition> processDefinitions = repositoryService.createProcessDefinitionQuery().list();
-    assertThat(processDefinitions.size()).isEqualTo(1);
+    assertThat(processDefinitions).hasSize(1);
 
     ProcessDefinition processDefinition = processDefinitions.get(0);
     assertThat(processDefinition.getKey()).isEqualTo("oneTaskProcess");
@@ -53,7 +53,7 @@ public class RepositoryServiceTest extends PluggableActivitiTestCase {
   @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
   public void testFindProcessDefinitionById() {
     List<ProcessDefinition> definitions = repositoryService.createProcessDefinitionQuery().list();
-    assertThat(definitions.size()).isEqualTo(1);
+    assertThat(definitions).hasSize(1);
 
     ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().processDefinitionId(definitions.get(0).getId()).singleResult();
     runtimeService.startProcessInstanceByKey("oneTaskProcess");
@@ -68,7 +68,7 @@ public class RepositoryServiceTest extends PluggableActivitiTestCase {
   @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
   public void testDeleteDeploymentWithRunningInstances() {
     List<ProcessDefinition> processDefinitions = repositoryService.createProcessDefinitionQuery().list();
-    assertThat(processDefinitions.size()).isEqualTo(1);
+    assertThat(processDefinitions).hasSize(1);
     ProcessDefinition processDefinition = processDefinitions.get(0);
 
     runtimeService.startProcessInstanceById(processDefinition.getId());
@@ -105,7 +105,7 @@ public class RepositoryServiceTest extends PluggableActivitiTestCase {
   @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
   public void testDeleteDeploymentCascadeWithRunningInstances() {
     List<ProcessDefinition> processDefinitions = repositoryService.createProcessDefinitionQuery().list();
-    assertThat(processDefinitions.size()).isEqualTo(1);
+    assertThat(processDefinitions).hasSize(1);
     ProcessDefinition processDefinition = processDefinitions.get(0);
 
     runtimeService.startProcessInstanceById(processDefinition.getId());
@@ -283,42 +283,42 @@ public class RepositoryServiceTest extends PluggableActivitiTestCase {
     // Some basic assertions
     BpmnModel bpmnModel = repositoryService.getBpmnModel(processDefinition.getId());
     assertThat(bpmnModel).isNotNull();
-    assertThat(bpmnModel.getProcesses().size()).isEqualTo(1);
+    assertThat(bpmnModel.getProcesses()).hasSize(1);
     assertThat(!bpmnModel.getLocationMap().isEmpty()).isTrue();
     assertThat(!bpmnModel.getFlowLocationMap().isEmpty()).isTrue();
 
     // Test the flow
     org.activiti.bpmn.model.Process process = bpmnModel.getProcesses().get(0);
     List<StartEvent> startEvents = process.findFlowElementsOfType(StartEvent.class);
-    assertThat(startEvents.size()).isEqualTo(1);
+    assertThat(startEvents).hasSize(1);
     StartEvent startEvent = startEvents.get(0);
-    assertThat(startEvent.getOutgoingFlows().size()).isEqualTo(1);
-    assertThat(startEvent.getIncomingFlows().size()).isEqualTo(0);
+    assertThat(startEvent.getOutgoingFlows()).hasSize(1);
+    assertThat(startEvent.getIncomingFlows()).hasSize(0);
 
     String nextElementId = startEvent.getOutgoingFlows().get(0).getTargetRef();
     UserTask userTask = (UserTask) process.getFlowElement(nextElementId);
     assertThat(userTask.getName()).isEqualTo("First Task");
 
-    assertThat(userTask.getOutgoingFlows().size()).isEqualTo(1);
-    assertThat(userTask.getIncomingFlows().size()).isEqualTo(1);
+    assertThat(userTask.getOutgoingFlows()).hasSize(1);
+    assertThat(userTask.getIncomingFlows()).hasSize(1);
     nextElementId = userTask.getOutgoingFlows().get(0).getTargetRef();
     ParallelGateway parallelGateway = (ParallelGateway) process.getFlowElement(nextElementId);
-    assertThat(parallelGateway.getOutgoingFlows().size()).isEqualTo(2);
+    assertThat(parallelGateway.getOutgoingFlows()).hasSize(2);
 
     nextElementId = parallelGateway.getOutgoingFlows().get(0).getTargetRef();
-    assertThat(parallelGateway.getIncomingFlows().size()).isEqualTo(1);
+    assertThat(parallelGateway.getIncomingFlows()).hasSize(1);
     userTask = (UserTask) process.getFlowElement(nextElementId);
-    assertThat(userTask.getOutgoingFlows().size()).isEqualTo(1);
+    assertThat(userTask.getOutgoingFlows()).hasSize(1);
 
     nextElementId = userTask.getOutgoingFlows().get(0).getTargetRef();
     parallelGateway = (ParallelGateway) process.getFlowElement(nextElementId);
-    assertThat(parallelGateway.getOutgoingFlows().size()).isEqualTo(1);
-    assertThat(parallelGateway.getIncomingFlows().size()).isEqualTo(2);
+    assertThat(parallelGateway.getOutgoingFlows()).hasSize(1);
+    assertThat(parallelGateway.getIncomingFlows()).hasSize(2);
 
     nextElementId = parallelGateway.getOutgoingFlows().get(0).getTargetRef();
     EndEvent endEvent = (EndEvent) process.getFlowElement(nextElementId);
-    assertThat(endEvent.getOutgoingFlows().size()).isEqualTo(0);
-    assertThat(endEvent.getIncomingFlows().size()).isEqualTo(1);
+    assertThat(endEvent.getOutgoingFlows()).hasSize(0);
+    assertThat(endEvent.getIncomingFlows()).hasSize(1);
   }
 
   /**

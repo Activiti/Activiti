@@ -26,20 +26,20 @@ public class FinancialReportProcessTest extends PluggableActivitiTestCase {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("financialReport");
 
     List<Task> tasks = taskService.createTaskQuery().taskCandidateUser("fozzie",FOZZIESGROUPS).list();
-    assertThat(tasks.size()).isEqualTo(1);
+    assertThat(tasks).hasSize(1);
     Task task = tasks.get(0);
     assertThat(task.getName()).isEqualTo("Write monthly financial report");
 
     taskService.claim(task.getId(), FOZZIE);
     tasks = taskService.createTaskQuery().taskAssignee(FOZZIE).list();
 
-    assertThat(tasks.size()).isEqualTo(1);
+    assertThat(tasks).hasSize(1);
     taskService.complete(task.getId());
 
     tasks = taskService.createTaskQuery().taskCandidateUser(FOZZIE,FOZZIESGROUPS).list();
-    assertThat(tasks.size()).isEqualTo(0);
+    assertThat(tasks).hasSize(0);
     tasks = taskService.createTaskQuery().taskCandidateUser(KERMIT,KERMITSGROUPS).list();
-    assertThat(tasks.size()).isEqualTo(1);
+    assertThat(tasks).hasSize(1);
     assertThat(tasks.get(0).getName()).isEqualTo("Verify monthly financial report");
     taskService.complete(tasks.get(0).getId());
 

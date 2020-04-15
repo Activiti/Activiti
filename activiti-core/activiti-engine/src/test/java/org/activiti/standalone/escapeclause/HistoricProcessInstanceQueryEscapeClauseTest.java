@@ -95,37 +95,37 @@ public class HistoricProcessInstanceQueryEscapeClauseTest extends AbstractEscape
         processDefinitionKeyNotIn4.add("______________");
 
         HistoricProcessInstanceQuery query = historyService.createHistoricProcessInstanceQuery().processDefinitionKeyNotIn(processDefinitionKeyNotIn1);
-        assertThat(query.list().size()).isEqualTo(2);
-        assertThat(query.list().size()).isEqualTo(2);
+        assertThat(query.list()).hasSize(2);
+        assertThat(query.list()).hasSize(2);
 
         query = historyService.createHistoricProcessInstanceQuery().processDefinitionKeyNotIn(processDefinitionKeyNotIn2);
-        assertThat(query.list().size()).isEqualTo(2);
-        assertThat(query.list().size()).isEqualTo(2);
+        assertThat(query.list()).hasSize(2);
+        assertThat(query.list()).hasSize(2);
 
         query = historyService.createHistoricProcessInstanceQuery().processDefinitionKeyNotIn(processDefinitionKeyNotIn3);
-        assertThat(query.list().size()).isEqualTo(0);
-        assertThat(query.list().size()).isEqualTo(0);
+        assertThat(query.list()).hasSize(0);
+        assertThat(query.list()).hasSize(0);
 
         query = historyService.createHistoricProcessInstanceQuery().processDefinitionKeyNotIn(processDefinitionKeyNotIn4);
-        assertThat(query.list().size()).isEqualTo(0);
-        assertThat(query.list().size()).isEqualTo(0);
+        assertThat(query.list()).hasSize(0);
+        assertThat(query.list()).hasSize(0);
 
         // orQuery
         query = historyService.createHistoricProcessInstanceQuery().or().processDefinitionKeyNotIn(processDefinitionKeyNotIn1).processDefinitionId("undefined");
-        assertThat(query.list().size()).isEqualTo(2);
-        assertThat(query.list().size()).isEqualTo(2);
+        assertThat(query.list()).hasSize(2);
+        assertThat(query.list()).hasSize(2);
 
         query = historyService.createHistoricProcessInstanceQuery().or().processDefinitionKeyNotIn(processDefinitionKeyNotIn2).processDefinitionId("undefined");
-        assertThat(query.list().size()).isEqualTo(2);
-        assertThat(query.list().size()).isEqualTo(2);
+        assertThat(query.list()).hasSize(2);
+        assertThat(query.list()).hasSize(2);
 
         query = historyService.createHistoricProcessInstanceQuery().or().processDefinitionKeyNotIn(processDefinitionKeyNotIn3).processDefinitionId("undefined");
-        assertThat(query.list().size()).isEqualTo(0);
-        assertThat(query.list().size()).isEqualTo(0);
+        assertThat(query.list()).hasSize(0);
+        assertThat(query.list()).hasSize(0);
 
         query = historyService.createHistoricProcessInstanceQuery().or().processDefinitionKeyNotIn(processDefinitionKeyNotIn4).processDefinitionId("undefined");
-        assertThat(query.list().size()).isEqualTo(0);
-        assertThat(query.list().size()).isEqualTo(0);
+        assertThat(query.list()).hasSize(0);
+        assertThat(query.list()).hasSize(0);
     }
   }
 

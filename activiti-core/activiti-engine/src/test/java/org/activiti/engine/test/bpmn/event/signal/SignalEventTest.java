@@ -203,14 +203,14 @@ public class SignalEventTest extends PluggableActivitiTestCase {
     ProcessInstance pi = runtimeService.startProcessInstanceByKey("nonInterruptingSignalEvent");
 
     List<Task> tasks = taskService.createTaskQuery().processInstanceId(pi.getProcessInstanceId()).list();
-    assertThat(tasks.size()).isEqualTo(1);
+    assertThat(tasks).hasSize(1);
     Task currentTask = tasks.get(0);
     assertThat(currentTask.getName()).isEqualTo("My User Task");
 
     runtimeService.signalEventReceived("alert");
 
     tasks = taskService.createTaskQuery().processInstanceId(pi.getProcessInstanceId()).list();
-    assertThat(tasks.size()).isEqualTo(2);
+    assertThat(tasks).hasSize(2);
 
     for (Task task : tasks) {
       assertThat(task.getName()).isIn("My User Task", "My Second User Task");
@@ -219,7 +219,7 @@ public class SignalEventTest extends PluggableActivitiTestCase {
     taskService.complete(taskService.createTaskQuery().taskName("My User Task").singleResult().getId());
 
     tasks = taskService.createTaskQuery().processInstanceId(pi.getProcessInstanceId()).list();
-    assertThat(tasks.size()).isEqualTo(1);
+    assertThat(tasks).hasSize(1);
     currentTask = tasks.get(0);
     assertThat(currentTask.getName()).isEqualTo("My Second User Task");
   }
@@ -231,7 +231,7 @@ public class SignalEventTest extends PluggableActivitiTestCase {
   public void testNonInterruptingSignalWithSubProcess() {
     ProcessInstance pi = runtimeService.startProcessInstanceByKey("nonInterruptingSignalWithSubProcess");
     List<Task> tasks = taskService.createTaskQuery().processInstanceId(pi.getProcessInstanceId()).list();
-    assertThat(tasks.size()).isEqualTo(1);
+    assertThat(tasks).hasSize(1);
 
     Task currentTask = tasks.get(0);
     assertThat(currentTask.getName()).isEqualTo("Approve");
@@ -239,7 +239,7 @@ public class SignalEventTest extends PluggableActivitiTestCase {
     runtimeService.signalEventReceived("alert");
 
     tasks = taskService.createTaskQuery().processInstanceId(pi.getProcessInstanceId()).list();
-    assertThat(tasks.size()).isEqualTo(2);
+    assertThat(tasks).hasSize(2);
 
     for (Task task : tasks) {
       assertThat(task.getName()).isIn("Approve", "Review");
@@ -248,7 +248,7 @@ public class SignalEventTest extends PluggableActivitiTestCase {
     taskService.complete(taskService.createTaskQuery().taskName("Approve").singleResult().getId());
 
     tasks = taskService.createTaskQuery().processInstanceId(pi.getProcessInstanceId()).list();
-    assertThat(tasks.size()).isEqualTo(1);
+    assertThat(tasks).hasSize(1);
 
     currentTask = tasks.get(0);
     assertThat(currentTask.getName()).isEqualTo("Review");
@@ -256,7 +256,7 @@ public class SignalEventTest extends PluggableActivitiTestCase {
     taskService.complete(taskService.createTaskQuery().taskName("Review").singleResult().getId());
 
     tasks = taskService.createTaskQuery().processInstanceId(pi.getProcessInstanceId()).list();
-    assertThat(tasks.size()).isEqualTo(1);
+    assertThat(tasks).hasSize(1);
   }
 
   @Deployment
@@ -623,7 +623,7 @@ public class SignalEventTest extends PluggableActivitiTestCase {
 
     // there should be two open tasks
     List<Task> tasks = taskService.createTaskQuery().list();
-    assertThat(tasks.size()).isEqualTo(2);
+    assertThat(tasks).hasSize(2);
 
     // get current second task
     Task secondTask = taskService.createTaskQuery().processInstanceId(secondProcessInstance.getProcessInstanceId()).singleResult();
@@ -644,7 +644,7 @@ public class SignalEventTest extends PluggableActivitiTestCase {
     taskService.complete(firstTask.getId());
 
     List<Task> usingTask = taskService.createTaskQuery().taskName("Use the file").list();
-    assertThat(usingTask.size()).isEqualTo(1);
+    assertThat(usingTask).hasSize(1);
   }
 
   @Deployment

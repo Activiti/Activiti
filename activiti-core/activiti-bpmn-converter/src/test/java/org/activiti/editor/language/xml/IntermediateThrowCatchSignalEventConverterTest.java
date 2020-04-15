@@ -32,7 +32,7 @@ public class IntermediateThrowCatchSignalEventConverterTest extends AbstractConv
   }
 
   private void validateModel(BpmnModel model)  throws Exception {
-      assertThat(model.getDefinitionsAttributes().size()).isEqualTo(2);
+      assertThat(model.getDefinitionsAttributes()).hasSize(2);
 
       checkThrowEvent(model, "IntermediateThrowEvent_1kdg748", "Signal_1xjaioc");
       checkCatchEvent(model, "IntermediateThrowEvent_1uj8tzz", "Signal_1xjaioc");
@@ -50,9 +50,9 @@ public class IntermediateThrowCatchSignalEventConverterTest extends AbstractConv
 
       ThrowEvent throwEvent = (ThrowEvent) flowElement;
 
-      assertThat(throwEvent.getIncomingFlows().size()).isEqualTo(1);
-      assertThat(throwEvent.getOutgoingFlows().size()).isEqualTo(1);
-      assertThat(throwEvent.getEventDefinitions().size()).isEqualTo(1);
+      assertThat(throwEvent.getIncomingFlows()).hasSize(1);
+      assertThat(throwEvent.getOutgoingFlows()).hasSize(1);
+      assertThat(throwEvent.getEventDefinitions()).hasSize(1);
 
       assertThat(throwEvent.getIncomingFlows().get(0).getXmlRowNumber()).isLessThan(throwEvent.getEventDefinitions().get(0).getXmlRowNumber());
 
@@ -69,9 +69,9 @@ public class IntermediateThrowCatchSignalEventConverterTest extends AbstractConv
 
       IntermediateCatchEvent catchEvent = (IntermediateCatchEvent) flowElement;
 
-      assertThat(catchEvent.getIncomingFlows().size()).isEqualTo(1);
-      assertThat(catchEvent.getOutgoingFlows().size()).isEqualTo(1);
-      assertThat(catchEvent.getEventDefinitions().size()).isEqualTo(1);
+      assertThat(catchEvent.getIncomingFlows()).hasSize(1);
+      assertThat(catchEvent.getOutgoingFlows()).hasSize(1);
+      assertThat(catchEvent.getEventDefinitions()).hasSize(1);
 
       assertThat(catchEvent.getIncomingFlows().get(0).getXmlRowNumber()).isLessThan(catchEvent.getEventDefinitions().get(0).getXmlRowNumber());
 

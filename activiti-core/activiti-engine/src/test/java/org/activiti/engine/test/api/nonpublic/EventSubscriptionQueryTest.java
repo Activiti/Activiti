@@ -57,10 +57,10 @@ public class EventSubscriptionQueryTest extends PluggableActivitiTestCase {
     });
 
     List<EventSubscriptionEntity> list = newEventSubscriptionQuery().eventName("messageName").list();
-    assertThat(list.size()).isEqualTo(2);
+    assertThat(list).hasSize(2);
 
     list = newEventSubscriptionQuery().eventName("messageName2").list();
-    assertThat(list.size()).isEqualTo(1);
+    assertThat(list).hasSize(1);
 
     cleanDb();
 
@@ -88,10 +88,10 @@ public class EventSubscriptionQueryTest extends PluggableActivitiTestCase {
     });
 
     List<EventSubscriptionEntity> list = newEventSubscriptionQuery().eventType("signal").list();
-    assertThat(list.size()).isEqualTo(1);
+    assertThat(list).hasSize(1);
 
     list = newEventSubscriptionQuery().eventType("message").list();
-    assertThat(list.size()).isEqualTo(2);
+    assertThat(list).hasSize(2);
 
     cleanDb();
 
@@ -122,10 +122,10 @@ public class EventSubscriptionQueryTest extends PluggableActivitiTestCase {
     });
 
     List<EventSubscriptionEntity> list = newEventSubscriptionQuery().activityId("someOtherActivity").list();
-    assertThat(list.size()).isEqualTo(1);
+    assertThat(list).hasSize(1);
 
     list = newEventSubscriptionQuery().activityId("someActivity").eventType("message").list();
-    assertThat(list.size()).isEqualTo(2);
+    assertThat(list).hasSize(2);
 
     cleanDb();
 
@@ -151,13 +151,13 @@ public class EventSubscriptionQueryTest extends PluggableActivitiTestCase {
     });
 
     List<EventSubscriptionEntity> list = newEventSubscriptionQuery().activityId("someOtherActivity").list();
-    assertThat(list.size()).isEqualTo(1);
+    assertThat(list).hasSize(1);
 
     final EventSubscriptionEntity entity = list.get(0);
 
     list = newEventSubscriptionQuery().eventSubscriptionId(entity.getId()).list();
 
-    assertThat(list.size()).isEqualTo(1);
+    assertThat(list).hasSize(1);
 
     cleanDb();
 

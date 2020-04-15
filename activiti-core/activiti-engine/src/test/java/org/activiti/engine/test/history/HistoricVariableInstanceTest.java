@@ -74,7 +74,7 @@ public class HistoricVariableInstanceTest extends PluggableActivitiTestCase {
       assertProcessEnded(processInstance.getId());
 
       List<HistoricVariableInstance> variables = historyService.createHistoricVariableInstanceQuery().list();
-      assertThat(variables.size()).isEqualTo(1);
+      assertThat(variables).hasSize(1);
 
       HistoricVariableInstanceEntity historicVariable = (HistoricVariableInstanceEntity) variables.get(0);
       assertThat(historicVariable.getTextValue()).isEqualTo("test456");
@@ -91,7 +91,7 @@ public class HistoricVariableInstanceTest extends PluggableActivitiTestCase {
       assertProcessEnded(processInstance.getId());
 
       List<HistoricVariableInstance> variables = historyService.createHistoricVariableInstanceQuery().list();
-      assertThat(variables.size()).isEqualTo(1);
+      assertThat(variables).hasSize(1);
 
       HistoricVariableInstanceEntity historicVariable = (HistoricVariableInstanceEntity) variables.get(0);
       assertThat(historicVariable.getTextValue()).isEqualTo("test456");
@@ -114,7 +114,7 @@ public class HistoricVariableInstanceTest extends PluggableActivitiTestCase {
       assertProcessEnded(processInstance.getId());
 
       List<HistoricVariableInstance> variables = historyService.createHistoricVariableInstanceQuery().orderByVariableName().asc().list();
-      assertThat(variables.size()).isEqualTo(2);
+      assertThat(variables).hasSize(2);
 
       HistoricVariableInstanceEntity historicVariable = (HistoricVariableInstanceEntity) variables.get(0);
       assertThat(historicVariable.getName()).isEqualTo("myVar");
@@ -136,7 +136,7 @@ public class HistoricVariableInstanceTest extends PluggableActivitiTestCase {
       assertProcessEnded(processInstance.getId());
 
       List<HistoricVariableInstance> variables = historyService.createHistoricVariableInstanceQuery().list();
-      assertThat(variables.size()).isEqualTo(1);
+      assertThat(variables).hasSize(1);
 
       HistoricVariableInstanceEntity historicVariable = (HistoricVariableInstanceEntity) variables.get(0);
       assertThat(historicVariable.getTextValue()).isEqualTo("test456");
@@ -153,7 +153,7 @@ public class HistoricVariableInstanceTest extends PluggableActivitiTestCase {
       assertProcessEnded(processInstance.getId());
 
       List<HistoricVariableInstance> variables = historyService.createHistoricVariableInstanceQuery().orderByVariableName().asc().list();
-      assertThat(variables.size()).isEqualTo(2);
+      assertThat(variables).hasSize(2);
 
       HistoricVariableInstanceEntity historicVariable = (HistoricVariableInstanceEntity) variables.get(0);
       assertThat(historicVariable.getName()).isEqualTo("myVar");
@@ -175,30 +175,30 @@ public class HistoricVariableInstanceTest extends PluggableActivitiTestCase {
       assertProcessEnded(processInstance.getId());
 
       assertThat(historyService.createHistoricVariableInstanceQuery().count()).isEqualTo(4);
-      assertThat(historyService.createHistoricVariableInstanceQuery().list().size()).isEqualTo(4);
+      assertThat(historyService.createHistoricVariableInstanceQuery().list()).hasSize(4);
       assertThat(historyService.createHistoricVariableInstanceQuery().orderByProcessInstanceId().asc().count()).isEqualTo(4);
-      assertThat(historyService.createHistoricVariableInstanceQuery().orderByProcessInstanceId().asc().list().size()).isEqualTo(4);
+      assertThat(historyService.createHistoricVariableInstanceQuery().orderByProcessInstanceId().asc().list()).hasSize(4);
       assertThat(historyService.createHistoricVariableInstanceQuery().orderByVariableName().asc().count()).isEqualTo(4);
-      assertThat(historyService.createHistoricVariableInstanceQuery().orderByVariableName().asc().list().size()).isEqualTo(4);
+      assertThat(historyService.createHistoricVariableInstanceQuery().orderByVariableName().asc().list()).hasSize(4);
 
       assertThat(historyService.createHistoricVariableInstanceQuery().processInstanceId(processInstance.getId()).count()).isEqualTo(2);
-      assertThat(historyService.createHistoricVariableInstanceQuery().processInstanceId(processInstance.getId()).list().size()).isEqualTo(2);
+      assertThat(historyService.createHistoricVariableInstanceQuery().processInstanceId(processInstance.getId()).list()).hasSize(2);
       assertThat(historyService.createHistoricVariableInstanceQuery().variableName("myVar").count()).isEqualTo(2);
-      assertThat(historyService.createHistoricVariableInstanceQuery().variableName("myVar").list().size()).isEqualTo(2);
+      assertThat(historyService.createHistoricVariableInstanceQuery().variableName("myVar").list()).hasSize(2);
       assertThat(historyService.createHistoricVariableInstanceQuery().variableNameLike("myVar1").count()).isEqualTo(2);
-      assertThat(historyService.createHistoricVariableInstanceQuery().variableNameLike("myVar1").list().size()).isEqualTo(2);
+      assertThat(historyService.createHistoricVariableInstanceQuery().variableNameLike("myVar1").list()).hasSize(2);
 
       List<HistoricVariableInstance> variables = historyService.createHistoricVariableInstanceQuery().list();
-      assertThat(variables.size()).isEqualTo(4);
+      assertThat(variables).hasSize(4);
 
       assertThat(historyService.createHistoricVariableInstanceQuery().variableValueEquals("myVar", "test123").count()).isEqualTo(1);
-      assertThat(historyService.createHistoricVariableInstanceQuery().variableValueEquals("myVar", "test123").list().size()).isEqualTo(1);
+      assertThat(historyService.createHistoricVariableInstanceQuery().variableValueEquals("myVar", "test123").list()).hasSize(1);
       assertThat(historyService.createHistoricVariableInstanceQuery().variableValueEquals("myVar1", "test456").count()).isEqualTo(1);
-      assertThat(historyService.createHistoricVariableInstanceQuery().variableValueEquals("myVar1", "test456").list().size()).isEqualTo(1);
+      assertThat(historyService.createHistoricVariableInstanceQuery().variableValueEquals("myVar1", "test456").list()).hasSize(1);
       assertThat(historyService.createHistoricVariableInstanceQuery().variableValueEquals("myVar", "test666").count()).isEqualTo(1);
-      assertThat(historyService.createHistoricVariableInstanceQuery().variableValueEquals("myVar", "test666").list().size()).isEqualTo(1);
+      assertThat(historyService.createHistoricVariableInstanceQuery().variableValueEquals("myVar", "test666").list()).hasSize(1);
       assertThat(historyService.createHistoricVariableInstanceQuery().variableValueEquals("myVar1", "test666").count()).isEqualTo(1);
-      assertThat(historyService.createHistoricVariableInstanceQuery().variableValueEquals("myVar1", "test666").list().size()).isEqualTo(1);
+      assertThat(historyService.createHistoricVariableInstanceQuery().variableValueEquals("myVar1", "test666").list()).hasSize(1);
 
       assertThat(historyService.createHistoricActivityInstanceQuery().count()).isEqualTo(8);
       assertThat(historyService.createHistoricDetailQuery().count()).isEqualTo(5);
@@ -221,7 +221,7 @@ public class HistoricVariableInstanceTest extends PluggableActivitiTestCase {
     // Verify historic variable instance queries
     List<HistoricVariableInstance> historicVariableInstances = historyService.createHistoricVariableInstanceQuery()
         .processInstanceId(processInstanceId).orderByVariableName().asc().list();
-    assertThat(historicVariableInstances.size()).isEqualTo(5);
+    assertThat(historicVariableInstances).hasSize(5);
 
    List<String> expectedVariableNames =  asList("executionVar0", "executionVar1", "startVar", "taskVar0", "taskVar1");
    for (int i=0; i<expectedVariableNames.size(); i++) {
@@ -231,45 +231,45 @@ public class HistoricVariableInstanceTest extends PluggableActivitiTestCase {
    // by execution id
    historicVariableInstances = historyService.createHistoricVariableInstanceQuery()
        .executionId(tasks.get(0).getExecutionId()).orderByVariableName().asc().list();
-   assertThat(historicVariableInstances.size()).isEqualTo(2);
+   assertThat(historicVariableInstances).hasSize(2);
    assertThat(historicVariableInstances.get(0).getVariableName()).isEqualTo("executionVar0");
    assertThat(historicVariableInstances.get(1).getVariableName()).isEqualTo("taskVar0");
    historicVariableInstances = historyService.createHistoricVariableInstanceQuery()
        .executionId(tasks.get(1).getExecutionId()).orderByVariableName().asc().list();
-   assertThat(historicVariableInstances.size()).isEqualTo(2);
+   assertThat(historicVariableInstances).hasSize(2);
    assertThat(historicVariableInstances.get(0).getVariableName()).isEqualTo("executionVar1");
    assertThat(historicVariableInstances.get(1).getVariableName()).isEqualTo("taskVar1");
 
    // By process instance id and execution id
    historicVariableInstances = historyService.createHistoricVariableInstanceQuery()
        .processInstanceId(processInstanceId).executionId(tasks.get(0).getExecutionId()).orderByVariableName().asc().list();
-   assertThat(historicVariableInstances.size()).isEqualTo(2);
+   assertThat(historicVariableInstances).hasSize(2);
    assertThat(historicVariableInstances.get(0).getVariableName()).isEqualTo("executionVar0");
    assertThat(historicVariableInstances.get(1).getVariableName()).isEqualTo("taskVar0");
    historicVariableInstances = historyService.createHistoricVariableInstanceQuery()
       .processInstanceId(processInstanceId).executionId(tasks.get(1).getExecutionId()).orderByVariableName().asc().list();
-   assertThat(historicVariableInstances.size()).isEqualTo(2);
+   assertThat(historicVariableInstances).hasSize(2);
    assertThat(historicVariableInstances.get(0).getVariableName()).isEqualTo("executionVar1");
    assertThat(historicVariableInstances.get(1).getVariableName()).isEqualTo("taskVar1");
 
    // By task id
    historicVariableInstances = historyService.createHistoricVariableInstanceQuery()
        .taskId(tasks.get(0).getId()).list();
-   assertThat(historicVariableInstances.size()).isEqualTo(1);
+   assertThat(historicVariableInstances).hasSize(1);
    assertThat(historicVariableInstances.get(0).getVariableName()).isEqualTo("taskVar0");
    historicVariableInstances = historyService.createHistoricVariableInstanceQuery()
        .taskId(tasks.get(1).getId()).list();
-   assertThat(historicVariableInstances.size()).isEqualTo(1);
+   assertThat(historicVariableInstances).hasSize(1);
    assertThat(historicVariableInstances.get(0).getVariableName()).isEqualTo("taskVar1");
 
    // By task id and process instance id
    historicVariableInstances = historyService.createHistoricVariableInstanceQuery()
        .processInstanceId(processInstanceId).taskId(tasks.get(0).getId()).list();
-   assertThat(historicVariableInstances.size()).isEqualTo(1);
+   assertThat(historicVariableInstances).hasSize(1);
    assertThat(historicVariableInstances.get(0).getVariableName()).isEqualTo("taskVar0");
    historicVariableInstances = historyService.createHistoricVariableInstanceQuery()
       .processInstanceId(processInstanceId).taskId(tasks.get(1).getId()).list();
-   assertThat(historicVariableInstances.size()).isEqualTo(1);
+   assertThat(historicVariableInstances).hasSize(1);
    assertThat(historicVariableInstances.get(0).getVariableName()).isEqualTo("taskVar1");
 
   }
@@ -365,7 +365,7 @@ public class HistoricVariableInstanceTest extends PluggableActivitiTestCase {
     taskIds.add(tasks.get(1).getId());
     List<HistoricVariableInstance> historicVariableInstances = historyService.createHistoricVariableInstanceQuery().taskIds(taskIds).list();
     assertThat(historyService.createHistoricVariableInstanceQuery().taskIds(taskIds).count()).isEqualTo(2);
-    assertThat(historicVariableInstances.size()).isEqualTo(2);
+    assertThat(historicVariableInstances).hasSize(2);
     assertThat(historicVariableInstances.get(0).getVariableName()).isEqualTo("taskVar1");
     assertThat(historicVariableInstances.get(0).getValue()).isEqualTo("hello1");
     assertThat(historicVariableInstances.get(1).getVariableName()).isEqualTo("taskVar2");
@@ -375,7 +375,7 @@ public class HistoricVariableInstanceTest extends PluggableActivitiTestCase {
     taskIds.add(tasks.get(0).getId());
     historicVariableInstances = historyService.createHistoricVariableInstanceQuery().taskIds(taskIds).list();
     assertThat(historyService.createHistoricVariableInstanceQuery().taskIds(taskIds).count()).isEqualTo(1);
-    assertThat(historicVariableInstances.size()).isEqualTo(1);
+    assertThat(historicVariableInstances).hasSize(1);
     assertThat(historicVariableInstances.get(0).getVariableName()).isEqualTo("taskVar1");
     assertThat(historicVariableInstances.get(0).getValue()).isEqualTo("hello1");
   }
@@ -447,7 +447,7 @@ public class HistoricVariableInstanceTest extends PluggableActivitiTestCase {
 
       // check history
       List<HistoricDetail> updates = historyService.createHistoricDetailQuery().variableUpdates().list();
-      assertThat(updates.size()).isEqualTo(2);
+      assertThat(updates).hasSize(2);
 
       Map<String, HistoricVariableUpdate> updatesMap = new HashMap<String, HistoricVariableUpdate>();
       HistoricVariableUpdate update = (HistoricVariableUpdate) updates.get(0);
@@ -531,18 +531,18 @@ public class HistoricVariableInstanceTest extends PluggableActivitiTestCase {
       ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("myProc", variables);
       assertThat(processInstance).isNotNull();
 
-      assertThat(historyService.createNativeHistoricVariableInstanceQuery().sql(baseQuerySql).list().size()).isEqualTo(3);
+      assertThat(historyService.createNativeHistoricVariableInstanceQuery().sql(baseQuerySql).list()).hasSize(3);
 
       String sqlWithConditions = baseQuerySql + " where NAME_ = #{name}";
       assertThat(historyService.createNativeHistoricVariableInstanceQuery().sql(sqlWithConditions).parameter("name", "myVar").singleResult().getValue()).isEqualTo("test123");
 
       sqlWithConditions = baseQuerySql + " where NAME_ like #{name}";
-      assertThat(historyService.createNativeHistoricVariableInstanceQuery().sql(sqlWithConditions).parameter("name", "var%").list().size()).isEqualTo(2);
+      assertThat(historyService.createNativeHistoricVariableInstanceQuery().sql(sqlWithConditions).parameter("name", "var%").list()).hasSize(2);
 
       // paging
-      assertThat(historyService.createNativeHistoricVariableInstanceQuery().sql(baseQuerySql).listPage(0, 3).size()).isEqualTo(3);
-      assertThat(historyService.createNativeHistoricVariableInstanceQuery().sql(baseQuerySql).listPage(1, 3).size()).isEqualTo(2);
-      assertThat(historyService.createNativeHistoricVariableInstanceQuery().sql(sqlWithConditions).parameter("name", "var%").listPage(0, 2).size()).isEqualTo(2);
+      assertThat(historyService.createNativeHistoricVariableInstanceQuery().sql(baseQuerySql).listPage(0, 3)).hasSize(3);
+      assertThat(historyService.createNativeHistoricVariableInstanceQuery().sql(baseQuerySql).listPage(1, 3)).hasSize(2);
+      assertThat(historyService.createNativeHistoricVariableInstanceQuery().sql(sqlWithConditions).parameter("name", "var%").listPage(0, 2)).hasSize(2);
     }
 
   }
@@ -562,17 +562,17 @@ public class HistoricVariableInstanceTest extends PluggableActivitiTestCase {
       ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("myProc", variables);
       assertThat(processInstance).isNotNull();
 
-      assertThat(historyService.createNativeHistoricDetailQuery().sql(baseQuerySql).list().size()).isEqualTo(3);
+      assertThat(historyService.createNativeHistoricDetailQuery().sql(baseQuerySql).list()).hasSize(3);
 
       String sqlWithConditions = baseQuerySql + " where NAME_ = #{name} and TYPE_ = #{type}";
       assertThat(historyService.createNativeHistoricDetailQuery().sql(sqlWithConditions).parameter("name", "myVar").parameter("type", "VariableUpdate").singleResult()).isNotNull();
 
       sqlWithConditions = baseQuerySql + " where NAME_ like #{name}";
-      assertThat(historyService.createNativeHistoricDetailQuery().sql(sqlWithConditions).parameter("name", "var%").list().size()).isEqualTo(2);
+      assertThat(historyService.createNativeHistoricDetailQuery().sql(sqlWithConditions).parameter("name", "var%").list()).hasSize(2);
 
       // paging
-      assertThat(historyService.createNativeHistoricDetailQuery().sql(baseQuerySql).listPage(0, 3).size()).isEqualTo(3);
-      assertThat(historyService.createNativeHistoricDetailQuery().sql(baseQuerySql).listPage(1, 3).size()).isEqualTo(2);
+      assertThat(historyService.createNativeHistoricDetailQuery().sql(baseQuerySql).listPage(0, 3)).hasSize(3);
+      assertThat(historyService.createNativeHistoricDetailQuery().sql(baseQuerySql).listPage(1, 3)).hasSize(2);
     }
   }
 
@@ -625,7 +625,7 @@ public class HistoricVariableInstanceTest extends PluggableActivitiTestCase {
       assertProcessEnded(processInstance.getId());
 
       List<HistoricVariableInstance> variables = historyService.createHistoricVariableInstanceQuery().executionId(processInstance.getId()).list();
-      assertThat(variables.size()).isEqualTo(1);
+      assertThat(variables).hasSize(1);
 
       HistoricVariableInstanceEntity historicVariable = (HistoricVariableInstanceEntity) variables.get(0);
       assertThat(historicVariable.getTextValue()).isEqualTo("test456");

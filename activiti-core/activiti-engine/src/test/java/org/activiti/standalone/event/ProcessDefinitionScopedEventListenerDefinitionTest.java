@@ -125,10 +125,10 @@ public class ProcessDefinitionScopedEventListenerDefinitionTest extends Resource
     // Attachment entity
     TestActivitiEventListener theListener = (TestActivitiEventListener) processEngineConfiguration.getBeans().get("testAttachmentEventListener");
     assertThat(theListener).isNotNull();
-    assertThat(theListener.getEventsReceived().size()).isEqualTo(0);
+    assertThat(theListener.getEventsReceived()).hasSize(0);
 
     taskService.createAttachment("test", task.getId(), processInstance.getId(), "test", "test", "url");
-    assertThat(theListener.getEventsReceived().size()).isEqualTo(2);
+    assertThat(theListener.getEventsReceived()).hasSize(2);
     assertThat(theListener.getEventsReceived().get(0).getType()).isEqualTo(ActivitiEventType.ENTITY_CREATED);
     assertThat(theListener.getEventsReceived().get(1).getType()).isEqualTo(ActivitiEventType.ENTITY_INITIALIZED);
 

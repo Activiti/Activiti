@@ -46,18 +46,18 @@ public class StandaloneTaskTest extends PluggableActivitiTestCase {
 
     // Retrieve task list for kermit
     List<Task> tasks = taskService.createTaskQuery().taskCandidateUser("kermit").list();
-    assertThat(tasks.size()).isEqualTo(1);
+    assertThat(tasks).hasSize(1);
     assertThat(tasks.get(0).getName()).isEqualTo("testTask");
 
     // Retrieve task list for gonzo
     tasks = taskService.createTaskQuery().taskCandidateUser("gonzo").list();
-    assertThat(tasks.size()).isEqualTo(1);
+    assertThat(tasks).hasSize(1);
     assertThat(tasks.get(0).getName()).isEqualTo("testTask");
 
     task.setName("Update name");
     taskService.saveTask(task);
     tasks = taskService.createTaskQuery().taskCandidateUser("kermit").list();
-    assertThat(tasks.size()).isEqualTo(1);
+    assertThat(tasks).hasSize(1);
     assertThat(tasks.get(0).getName()).isEqualTo("Update name");
 
     // Claim task
@@ -155,7 +155,7 @@ public class StandaloneTaskTest extends PluggableActivitiTestCase {
 
   		// 4. get completed variable
   		List<HistoricVariableInstance> hisVarList = historyService.createHistoricVariableInstanceQuery().taskId(task.getId()).list();
-  		assertThat(hisVarList.size()).isEqualTo(1);
+  		assertThat(hisVarList).hasSize(1);
   		assertThat(hisVarList.get(0).getValue()).isEqualTo(40);
 
   		// Cleanup

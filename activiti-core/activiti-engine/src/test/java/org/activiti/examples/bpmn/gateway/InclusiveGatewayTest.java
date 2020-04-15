@@ -47,7 +47,7 @@ public class InclusiveGatewayTest extends PluggableActivitiTestCase {
     variables.put("input", 1);
     ProcessInstance pi = runtimeService.startProcessInstanceByKey("inclusiveGateway", variables);
     List<Task> tasks = taskService.createTaskQuery().processInstanceId(pi.getId()).list();
-    assertThat(tasks.size()).isEqualTo(3);
+    assertThat(tasks).hasSize(3);
     Map<String, String> expectedMessages = new HashMap<String, String>();
     expectedMessages.put(TASK1_NAME, TASK1_NAME);
     expectedMessages.put(TASK2_NAME, TASK2_NAME);
@@ -55,32 +55,32 @@ public class InclusiveGatewayTest extends PluggableActivitiTestCase {
     for (Task task : tasks) {
       expectedMessages.remove(task.getName());
     }
-    assertThat(expectedMessages.size()).isEqualTo(0);
+    assertThat(expectedMessages).hasSize(0);
 
     // Test with input == 2
     variables.put("input", 2);
     pi = runtimeService.startProcessInstanceByKey("inclusiveGateway", variables);
     tasks = taskService.createTaskQuery().processInstanceId(pi.getId()).list();
-    assertThat(tasks.size()).isEqualTo(2);
+    assertThat(tasks).hasSize(2);
     expectedMessages = new HashMap<String, String>();
     expectedMessages.put(TASK2_NAME, TASK2_NAME);
     expectedMessages.put(TASK3_NAME, TASK3_NAME);
     for (Task task : tasks) {
       expectedMessages.remove(task.getName());
     }
-    assertThat(expectedMessages.size()).isEqualTo(0);
+    assertThat(expectedMessages).hasSize(0);
 
     // Test with input == 3
     variables.put("input", 3);
     pi = runtimeService.startProcessInstanceByKey("inclusiveGateway", variables);
     tasks = taskService.createTaskQuery().processInstanceId(pi.getId()).list();
-    assertThat(tasks.size()).isEqualTo(1);
+    assertThat(tasks).hasSize(1);
     expectedMessages = new HashMap<String, String>();
     expectedMessages.put(TASK3_NAME, TASK3_NAME);
     for (Task task : tasks) {
       expectedMessages.remove(task.getName());
     }
-    assertThat(expectedMessages.size()).isEqualTo(0);
+    assertThat(expectedMessages).hasSize(0);
 
     // Test with input == 4
     variables.put("input", 4);

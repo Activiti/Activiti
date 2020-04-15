@@ -49,7 +49,7 @@ public class TaskListenerOnTransactionTest extends PluggableActivitiTestCase {
     taskService.complete(task.getId());
 
     List<CurrentTaskTransactionDependentTaskListener.CurrentTask> currentTasks = CurrentTaskTransactionDependentTaskListener.getCurrentTasks();
-    assertThat(currentTasks.size()).isEqualTo(1);
+    assertThat(currentTasks).hasSize(1);
 
     assertThat(currentTasks.get(0).getTaskId()).isEqualTo("usertask1");
     assertThat(currentTasks.get(0).getTaskName()).isEqualTo("User Task 1");
@@ -86,7 +86,7 @@ public class TaskListenerOnTransactionTest extends PluggableActivitiTestCase {
     }
 
     List<CurrentTaskTransactionDependentTaskListener.CurrentTask> currentTasks = CurrentTaskTransactionDependentTaskListener.getCurrentTasks();
-    assertThat(currentTasks.size()).isEqualTo(2);
+    assertThat(currentTasks).hasSize(2);
 
     assertThat(currentTasks.get(0).getTaskId()).isEqualTo("usertask1");
     assertThat(currentTasks.get(0).getTaskName()).isEqualTo("User Task 1");
@@ -115,16 +115,16 @@ public class TaskListenerOnTransactionTest extends PluggableActivitiTestCase {
     taskService.complete(task.getId());
 
     List<CurrentTaskTransactionDependentTaskListener.CurrentTask> currentTasks = CurrentTaskTransactionDependentTaskListener.getCurrentTasks();
-    assertThat(currentTasks.size()).isEqualTo(2);
+    assertThat(currentTasks).hasSize(2);
 
     assertThat(currentTasks.get(0).getTaskId()).isEqualTo("usertask1");
     assertThat(currentTasks.get(0).getTaskName()).isEqualTo("User Task 1");
-    assertThat(currentTasks.get(1).getExecutionVariables().size()).isEqualTo(1);
+    assertThat(currentTasks.get(1).getExecutionVariables()).hasSize(1);
     assertThat(currentTasks.get(0).getExecutionVariables().get("injectedExecutionVariable")).isEqualTo("test1");
 
     assertThat(currentTasks.get(1).getTaskId()).isEqualTo("usertask2");
     assertThat(currentTasks.get(1).getTaskName()).isEqualTo("User Task 2");
-    assertThat(currentTasks.get(1).getExecutionVariables().size()).isEqualTo(1);
+    assertThat(currentTasks.get(1).getExecutionVariables()).hasSize(1);
     assertThat(currentTasks.get(1).getExecutionVariables().get("injectedExecutionVariable")).isEqualTo("test2");
   }
 
@@ -137,7 +137,7 @@ public class TaskListenerOnTransactionTest extends PluggableActivitiTestCase {
 
     if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
       List<HistoricProcessInstance> historicProcessInstances = historyService.createHistoricProcessInstanceQuery().list();
-      assertThat(historicProcessInstances.size()).isEqualTo(1);
+      assertThat(historicProcessInstances).hasSize(1);
       assertThat(historicProcessInstances.get(0).getProcessDefinitionKey()).isEqualTo("transactionDependentTaskListenerProcess");
     }
 
@@ -151,12 +151,12 @@ public class TaskListenerOnTransactionTest extends PluggableActivitiTestCase {
     if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
       // first historic process instance was deleted by task listener
       List<HistoricProcessInstance> historicProcessInstances = historyService.createHistoricProcessInstanceQuery().list();
-      assertThat(historicProcessInstances.size()).isEqualTo(1);
+      assertThat(historicProcessInstances).hasSize(1);
       assertThat(historicProcessInstances.get(0).getProcessDefinitionKey()).isEqualTo("secondTransactionDependentTaskListenerProcess");
     }
 
     List<MyTransactionalOperationTransactionDependentTaskListener.CurrentTask> currentTasks = MyTransactionalOperationTransactionDependentTaskListener.getCurrentTasks();
-    assertThat(currentTasks.size()).isEqualTo(1);
+    assertThat(currentTasks).hasSize(1);
 
     assertThat(currentTasks.get(0).getTaskId()).isEqualTo("usertask1");
     assertThat(currentTasks.get(0).getTaskName()).isEqualTo("User Task 1");
@@ -172,11 +172,11 @@ public class TaskListenerOnTransactionTest extends PluggableActivitiTestCase {
     taskService.complete(task.getId());
 
     List<CurrentTaskTransactionDependentTaskListener.CurrentTask> currentTasks = CurrentTaskTransactionDependentTaskListener.getCurrentTasks();
-    assertThat(currentTasks.size()).isEqualTo(1);
+    assertThat(currentTasks).hasSize(1);
 
     assertThat(currentTasks.get(0).getTaskId()).isEqualTo("usertask1");
     assertThat(currentTasks.get(0).getTaskName()).isEqualTo("User Task 1");
-    assertThat(currentTasks.get(0).getCustomPropertiesMap().size()).isEqualTo(1);
+    assertThat(currentTasks.get(0).getCustomPropertiesMap()).hasSize(1);
     assertThat(currentTasks.get(0).getCustomPropertiesMap().get("customProp1")).isEqualTo("usertask1");
   }
 

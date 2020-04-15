@@ -48,7 +48,7 @@ public class ValuedDataObjectConverterTest extends AbstractConverterTest {
 
     // verify the main process data objects
     List<ValuedDataObject> dataObjects = model.getProcess(null).getDataObjects();
-    assertThat(dataObjects.size()).isEqualTo(7);
+    assertThat(dataObjects).hasSize(7);
 
     Map<String, ValuedDataObject> objectMap = new HashMap<String, ValuedDataObject>();
     for (ValuedDataObject valueObj : dataObjects) {
@@ -97,10 +97,10 @@ public class ValuedDataObjectConverterTest extends AbstractConverterTest {
     assertThat(dataObj.getItemSubjectRef().getStructureRef()).isEqualTo("xsd:long");
     assertThat(dataObj.getValue()).isInstanceOf(Long.class);
     assertThat(dataObj.getValue()).isEqualTo(new Long(-123456));
-    assertThat(dataObj.getExtensionElements().size()).isEqualTo(1);
+    assertThat(dataObj.getExtensionElements()).hasSize(1);
     List<ExtensionElement> testValues = dataObj.getExtensionElements().get("testvalue");
     assertThat(testValues).isNotNull();
-    assertThat(testValues.size()).isEqualTo(1);
+    assertThat(testValues).hasSize(1);
     assertThat(testValues.get(0).getName()).isEqualTo("testvalue");
     assertThat(testValues.get(0).getElementText()).isEqualTo("test");
 
@@ -122,11 +122,11 @@ public class ValuedDataObjectConverterTest extends AbstractConverterTest {
     assertThat(flowElement).isInstanceOf(SubProcess.class);
     assertThat(flowElement.getId()).isEqualTo("subprocess1");
     SubProcess subProcess = (SubProcess) flowElement;
-    assertThat(subProcess.getFlowElements().size()).isEqualTo(11);
+    assertThat(subProcess.getFlowElements()).hasSize(11);
 
     // verify the sub process data objects
     dataObjects = subProcess.getDataObjects();
-    assertThat(dataObjects.size()).isEqualTo(6);
+    assertThat(dataObjects).hasSize(6);
 
     objectMap = new HashMap<String, ValuedDataObject>();
     for (ValuedDataObject valueObj : dataObjects) {

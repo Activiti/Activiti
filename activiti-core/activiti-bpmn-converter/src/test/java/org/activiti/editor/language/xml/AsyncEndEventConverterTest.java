@@ -37,13 +37,13 @@ public class AsyncEndEventConverterTest extends AbstractConverterTest {
     assertThat(endEvent.isAsynchronous()).isTrue();
 
     List<ActivitiListener> listeners = endEvent.getExecutionListeners();
-    assertThat(listeners.size()).isEqualTo(1);
+    assertThat(listeners).hasSize(1);
     ActivitiListener listener = listeners.get(0);
     assertThat(ImplementationType.IMPLEMENTATION_TYPE_CLASS.equals(listener.getImplementationType())).isTrue();
     assertThat(listener.getImplementation()).isEqualTo("org.test.TestClass");
     assertThat(listener.getEvent()).isEqualTo("start");
 
-    assertThat(endEvent.getIncomingFlows().size()).isEqualTo(1);
+    assertThat(endEvent.getIncomingFlows()).hasSize(1);
     SequenceFlow sequence = endEvent.getIncomingFlows().get(0);
     assertThat(sequence.getId()).isEqualTo("sid-91C0F3A0-649F-462E-A1C1-1CE499FEDE3E");
   }

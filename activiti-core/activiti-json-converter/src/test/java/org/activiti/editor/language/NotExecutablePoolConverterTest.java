@@ -32,7 +32,7 @@ public class NotExecutablePoolConverterTest extends AbstractConverterTest {
     String idPool = "idPool";
     String idProcess = "poolProcess";
 
-    assertThat(model.getPools().size()).isEqualTo(1);
+    assertThat(model.getPools()).hasSize(1);
 
     Pool pool = model.getPool(idPool);
     assertThat(pool.getId()).isEqualTo(idPool);
@@ -42,7 +42,7 @@ public class NotExecutablePoolConverterTest extends AbstractConverterTest {
     Process process = model.getProcess(idPool);
     assertThat(process.getId()).isEqualTo(idProcess);
     assertThat(process.isExecutable()).isFalse();
-    assertThat(process.getLanes().size()).isEqualTo(3);
+    assertThat(process.getLanes()).hasSize(3);
 
   }
 }

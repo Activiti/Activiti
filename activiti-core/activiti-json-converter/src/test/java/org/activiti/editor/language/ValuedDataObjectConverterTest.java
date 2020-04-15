@@ -49,7 +49,7 @@ public class ValuedDataObjectConverterTest extends AbstractConverterTest {
 
     // verify main process data objects
     List<ValuedDataObject> dataObjects = model.getMainProcess().getDataObjects();
-    assertThat(dataObjects.size()).isEqualTo(6);
+    assertThat(dataObjects).hasSize(6);
     for (ValuedDataObject dObj : dataObjects) {
       if ("dObj1".equals(dObj.getId())) {
         assertThat(dObj.getClass()).isEqualTo(StringDataObject.class);
@@ -101,11 +101,11 @@ public class ValuedDataObjectConverterTest extends AbstractConverterTest {
     assertThat(flowElement).isInstanceOf(SubProcess.class);
     assertThat(flowElement.getId()).isEqualTo("subprocess1");
     SubProcess subProcess = (SubProcess) flowElement;
-    assertThat(subProcess.getFlowElements().size()).isEqualTo(11);
+    assertThat(subProcess.getFlowElements()).hasSize(11);
 
     // verify subprocess data objects
     dataObjects = ((SubProcess) flowElement).getDataObjects();
-    assertThat(dataObjects.size()).isEqualTo(6);
+    assertThat(dataObjects).hasSize(6);
     for (ValuedDataObject dObj : dataObjects) {
       if ("dObj1".equals(dObj.getId())) {
         assertThat(dObj.getClass()).isEqualTo(StringDataObject.class);
@@ -147,7 +147,7 @@ public class ValuedDataObjectConverterTest extends AbstractConverterTest {
         assertThat(dObj.getItemSubjectRef().getStructureRef()).isEqualTo("xsd:long");
         assertThat(dObj.getValue()).isInstanceOf(Long.class);
         assertThat(dObj.getValue()).isEqualTo(new Long(456123));
-        assertThat(dObj.getExtensionElements().size()).isEqualTo(1);
+        assertThat(dObj.getExtensionElements()).hasSize(1);
       }
     }
   }

@@ -14,7 +14,9 @@
 package org.activiti.engine.test.api.history;
 
 import static java.util.Arrays.asList;
+import static java.util.Collections.emptyMap;
 import static java.util.Collections.singletonMap;
+import static org.activiti.engine.impl.util.CollectionUtil.map;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
@@ -56,7 +58,7 @@ public class HistoryServiceTest extends PluggableActivitiTestCase {
 
     // Complete the task and check if the size is count 1
     List<Task> tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).list();
-    assertThat(tasks.size()).isEqualTo(1);
+    assertThat(tasks).hasSize(1);
     taskService.complete(tasks.get(0).getId());
     assertThat(historyService.createHistoricProcessInstanceQuery().count() == 1).isTrue();
   }
@@ -68,7 +70,7 @@ public class HistoryServiceTest extends PluggableActivitiTestCase {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
 
     List<Task> tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).list();
-    assertThat(tasks.size()).isEqualTo(1);
+    assertThat(tasks).hasSize(1);
     taskService.complete(tasks.get(0).getId());
 
     historyService.createHistoricTaskInstanceQuery().orderByDeleteReason().asc().list();
@@ -97,7 +99,7 @@ public class HistoryServiceTest extends PluggableActivitiTestCase {
     assertThat(historicProcessInstance.getStartActivityId()).isEqualTo("theStart");
 
     List<Task> tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).list();
-    assertThat(tasks.size()).isEqualTo(1);
+    assertThat(tasks).hasSize(1);
     taskService.complete(tasks.get(0).getId());
 
     historicProcessInstance = historyService.createHistoricProcessInstanceQuery().singleResult();
@@ -135,7 +137,7 @@ public class HistoryServiceTest extends PluggableActivitiTestCase {
     assertThat(historicProcessInstance.getId()).isEqualTo(pi.getId());
 
     List<HistoricProcessInstance> instanceList = historyService.createHistoricProcessInstanceQuery().excludeSubprocesses(false).list();
-    assertThat(instanceList.size()).isEqualTo(2);
+    assertThat(instanceList).hasSize(2);
   }
 
   @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml", "org/activiti/examples/bpmn/callactivity/orderProcess.bpmn20.xml",
@@ -152,9 +154,7 @@ public class HistoryServiceTest extends PluggableActivitiTestCase {
 
     // now complete the task to end the process instance
     Task task = taskService.createTaskQuery().processDefinitionKey("checkCreditProcess").singleResult();
-    Map<String, Object> map = new HashMap<String, Object>();
-    map.put("creditApproved", true);
-    taskService.complete(task.getId(), map);
+    taskService.complete(task.getId(), singletonMap("creditApproved", true));
 
     // and make sure the super process instance is set correctly on the
     // HistoricProcessInstance
@@ -179,7 +179,7 @@ public class HistoryServiceTest extends PluggableActivitiTestCase {
 
     List<HistoricProcessInstance> processInstances = processInstanceQuery.list();
     assertThat(processInstances).isNotNull();
-    assertThat(processInstances.size()).isEqualTo(5);
+    assertThat(processInstances).hasSize(5);
 
     for (HistoricProcessInstance historicProcessInstance : processInstances) {
       assertThat(processInstanceIds.contains(historicProcessInstance.getId())).isTrue();
@@ -258,7 +258,7 @@ public class HistoryServiceTest extends PluggableActivitiTestCase {
 
     List<HistoricProcessInstance> processInstances = processInstanceQuery.list();
     assertThat(processInstances).isNotNull();
-    assertThat(processInstances.size()).isEqualTo(5);
+    assertThat(processInstances).hasSize(5);
 
     processInstanceQuery = historyService.createHistoricProcessInstanceQuery().deploymentId("invalid");
     assertThat(processInstanceQuery.count()).isEqualTo(0);
@@ -281,7 +281,7 @@ public class HistoryServiceTest extends PluggableActivitiTestCase {
 
     List<HistoricProcessInstance> processInstances = processInstanceQuery.list();
     assertThat(processInstances).isNotNull();
-    assertThat(processInstances.size()).isEqualTo(5);
+    assertThat(processInstances).hasSize(5);
 
     deploymentIds = new ArrayList<String>();
     deploymentIds.add("invalid");
@@ -303,7 +303,7 @@ public class HistoryServiceTest extends PluggableActivitiTestCase {
 
     List<HistoricTaskInstance> taskInstances = taskInstanceQuery.list();
     assertThat(taskInstances).isNotNull();
-    assertThat(taskInstances.size()).isEqualTo(5);
+    assertThat(taskInstances).hasSize(5);
 
     taskInstanceQuery = historyService.createHistoricTaskInstanceQuery().deploymentId("invalid");
     assertThat(taskInstanceQuery.count()).isEqualTo(0);
@@ -325,7 +325,7 @@ public class HistoryServiceTest extends PluggableActivitiTestCase {
 
     List<HistoricTaskInstance> taskInstances = taskInstanceQuery.list();
     assertThat(taskInstances).isNotNull();
-    assertThat(taskInstances.size()).isEqualTo(5);
+    assertThat(taskInstances).hasSize(5);
 
     deploymentIds.add("invalid");
     taskInstanceQuery = historyService.createHistoricTaskInstanceQuery().deploymentIdIn(deploymentIds);
@@ -351,7 +351,7 @@ public class HistoryServiceTest extends PluggableActivitiTestCase {
 
     List<HistoricTaskInstance> taskInstances = taskInstanceQuery.list();
     assertThat(taskInstances).isNotNull();
-    assertThat(taskInstances.size()).isEqualTo(5);
+    assertThat(taskInstances).hasSize(5);
 
     taskInstanceQuery = historyService.createHistoricTaskInstanceQuery().or().deploymentId("invalid").endOr();
     assertThat(taskInstanceQuery.count()).isEqualTo(0);
@@ -437,7 +437,7 @@ public class HistoryServiceTest extends PluggableActivitiTestCase {
 
     List<HistoricTaskInstance> taskInstances = taskInstanceQuery.list();
     assertThat(taskInstances).isNotNull();
-    assertThat(taskInstances.size()).isEqualTo(5);
+    assertThat(taskInstances).hasSize(5);
 
     deploymentIds.add("invalid");
     taskInstanceQuery = historyService.createHistoricTaskInstanceQuery().or().deploymentIdIn(deploymentIds).processDefinitionId("invalid").endOr();
@@ -460,7 +460,7 @@ public class HistoryServiceTest extends PluggableActivitiTestCase {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
 
     List<HistoricTaskInstance> tasks = historyService.createHistoricTaskInstanceQuery().processDefinitionId(processInstance.getProcessDefinitionId()).list();
-    assertThat(tasks.size()).isEqualTo(1);
+    assertThat(tasks).hasSize(1);
     assertThat(tasks.get(0).getName()).isEqualTo("my task");
     assertThat(tasks.get(0).getDescription()).isNull();
 
@@ -469,22 +469,22 @@ public class HistoryServiceTest extends PluggableActivitiTestCase {
     dynamicBpmnService.saveProcessDefinitionInfo(processInstance.getProcessDefinitionId(), infoNode);
 
     tasks = historyService.createHistoricTaskInstanceQuery().processDefinitionId(processInstance.getProcessDefinitionId()).list();
-    assertThat(tasks.size()).isEqualTo(1);
+    assertThat(tasks).hasSize(1);
     assertThat(tasks.get(0).getName()).isEqualTo("my task");
     assertThat(tasks.get(0).getDescription()).isNull();
 
     tasks = historyService.createHistoricTaskInstanceQuery().processDefinitionId(processInstance.getProcessDefinitionId()).locale("en-GB").list();
-    assertThat(tasks.size()).isEqualTo(1);
+    assertThat(tasks).hasSize(1);
     assertThat(tasks.get(0).getName()).isEqualTo("My localized name");
     assertThat(tasks.get(0).getDescription()).isEqualTo("My localized description");
 
     tasks = historyService.createHistoricTaskInstanceQuery().processDefinitionId(processInstance.getProcessDefinitionId()).listPage(0, 10);
-    assertThat(tasks.size()).isEqualTo(1);
+    assertThat(tasks).hasSize(1);
     assertThat(tasks.get(0).getName()).isEqualTo("my task");
     assertThat(tasks.get(0).getDescription()).isNull();
 
     tasks = historyService.createHistoricTaskInstanceQuery().processDefinitionId(processInstance.getProcessDefinitionId()).locale("en-GB").listPage(0, 10);
-    assertThat(tasks.size()).isEqualTo(1);
+    assertThat(tasks).hasSize(1);
     assertThat(tasks.get(0).getName()).isEqualTo("My localized name");
     assertThat(tasks.get(0).getDescription()).isEqualTo("My localized description");
 
@@ -503,18 +503,15 @@ public class HistoryServiceTest extends PluggableActivitiTestCase {
 
   @Deployment(resources = { "org/activiti/engine/test/api/runtime/concurrentExecution.bpmn20.xml" })
   public void testHistoricVariableInstancesOnParallelExecution() {
-    Map<String, Object> vars = new HashMap<String, Object>();
-    vars.put("rootValue", "test");
-    ProcessInstance pi = runtimeService.startProcessInstanceByKey("concurrent", vars);
+    ProcessInstance pi = runtimeService.startProcessInstanceByKey("concurrent", singletonMap("rootValue", "test"));
 
     List<Task> tasks = taskService.createTaskQuery().processInstanceId(pi.getId()).list();
     for (Task task : tasks) {
-      Map<String, Object> variables = new HashMap<String, Object>();
       // set token local variable
       log.debug("setting variables on task {}, execution {}", task.getId(), task.getExecutionId());
       runtimeService.setVariableLocal(task.getExecutionId(), "parallelValue1", task.getName());
       runtimeService.setVariableLocal(task.getExecutionId(), "parallelValue2", "test");
-      taskService.complete(task.getId(), variables);
+      taskService.complete(task.getId(), emptyMap());
     }
     taskService.complete(taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult().getId());
 
@@ -530,27 +527,24 @@ public class HistoryServiceTest extends PluggableActivitiTestCase {
    */
   @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
   public void testQueryStringVariable() {
-    Map<String, Object> vars = new HashMap<String, Object>();
-    vars.put("stringVar", "abcdef");
-    ProcessInstance processInstance1 = runtimeService.startProcessInstanceByKey("oneTaskProcess", vars);
+    ;
+    ProcessInstance processInstance1 = runtimeService.startProcessInstanceByKey("oneTaskProcess", singletonMap("stringVar", "abcdef"));
     taskService.complete(taskService.createTaskQuery().processInstanceId(processInstance1.getId()).singleResult().getId());
 
-    vars = new HashMap<String, Object>();
-    vars.put("stringVar", "abcdef");
-    vars.put("stringVar2", "ghijkl");
-    ProcessInstance processInstance2 = runtimeService.startProcessInstanceByKey("oneTaskProcess", vars);
+    ProcessInstance processInstance2 = runtimeService.startProcessInstanceByKey("oneTaskProcess", map(
+      "stringVar", "abcdef",
+      "stringVar2", "ghijkl"
+    ));
     taskService.complete(taskService.createTaskQuery().processInstanceId(processInstance2.getId()).singleResult().getId());
 
-    vars = new HashMap<String, Object>();
-    vars.put("stringVar", "azerty");
-    ProcessInstance processInstance3 = runtimeService.startProcessInstanceByKey("oneTaskProcess", vars);
+    ProcessInstance processInstance3 = runtimeService.startProcessInstanceByKey("oneTaskProcess", singletonMap("stringVar", "azerty"));
     taskService.complete(taskService.createTaskQuery().processInstanceId(processInstance3.getId()).singleResult().getId());
 
     // Test EQUAL on single string variable, should result in 2 matches
     HistoricProcessInstanceQuery query = historyService.createHistoricProcessInstanceQuery().variableValueEquals("stringVar", "abcdef");
     List<HistoricProcessInstance> processInstances = query.list();
     assertThat(processInstances).isNotNull();
-    assertThat(processInstances.size()).isEqualTo(2);
+    assertThat(processInstances).hasSize(2);
 
     // Test EQUAL on two string variables, should result in single match
     query = historyService.createHistoricProcessInstanceQuery().variableValueEquals("stringVar", "abcdef").variableValueEquals("stringVar2", "ghijkl");
@@ -577,7 +571,7 @@ public class HistoryServiceTest extends PluggableActivitiTestCase {
 
     // Test LESS_THAN, should return 2 results
     processInstances = historyService.createHistoricProcessInstanceQuery().variableValueLessThan("stringVar", "abcdeg").list();
-    assertThat(processInstances.size()).isEqualTo(2);
+    assertThat(processInstances).hasSize(2);
     List<String> expectedIds = asList(processInstance1.getId(), processInstance2.getId());
     List<String> ids = new ArrayList<String>(asList(processInstances.get(0).getId(), processInstances.get(1).getId()));
     ids.removeAll(expectedIds);
@@ -588,7 +582,7 @@ public class HistoryServiceTest extends PluggableActivitiTestCase {
 
     // Test LESS_THAN_OR_EQUAL
     processInstances = historyService.createHistoricProcessInstanceQuery().variableValueLessThanOrEqual("stringVar", "abcdef").list();
-    assertThat(processInstances.size()).isEqualTo(2);
+    assertThat(processInstances).hasSize(2);
     expectedIds = asList(processInstance1.getId(), processInstance2.getId());
     ids = new ArrayList<String>(asList(processInstances.get(0).getId(), processInstances.get(1).getId()));
     ids.removeAll(expectedIds);
@@ -619,7 +613,7 @@ public class HistoryServiceTest extends PluggableActivitiTestCase {
     assertThat(resultInstance.getId()).isEqualTo(processInstance3.getId());
 
     processInstances = historyService.createHistoricProcessInstanceQuery().variableValueEquals("abcdef").list();
-    assertThat(processInstances.size()).isEqualTo(2);
+    assertThat(processInstances).hasSize(2);
     expectedIds = asList(processInstance1.getId(), processInstance2.getId());
     ids = new ArrayList<String>(asList(processInstances.get(0).getId(), processInstances.get(1).getId()));
     ids.removeAll(expectedIds);
@@ -679,23 +673,21 @@ public class HistoryServiceTest extends PluggableActivitiTestCase {
   public void testQueryDateVariable() throws Exception {
     Map<String, Object> vars = new HashMap<String, Object>();
     Date date1 = Calendar.getInstance().getTime();
-    vars.put("dateVar", date1);
+    ;
 
-    ProcessInstance processInstance1 = runtimeService.startProcessInstanceByKey("oneTaskProcess", vars);
+    ProcessInstance processInstance1 = runtimeService.startProcessInstanceByKey("oneTaskProcess", singletonMap("dateVar", date1));
     taskService.complete(taskService.createTaskQuery().processInstanceId(processInstance1.getId()).singleResult().getId());
 
     Date date2 = Calendar.getInstance().getTime();
-    vars = new HashMap<String, Object>();
-    vars.put("dateVar", date1);
-    vars.put("dateVar2", date2);
-    ProcessInstance processInstance2 = runtimeService.startProcessInstanceByKey("oneTaskProcess", vars);
+    ProcessInstance processInstance2 = runtimeService.startProcessInstanceByKey("oneTaskProcess", map(
+      "dateVar", date1,
+      "dateVar2", date2
+    ));
     taskService.complete(taskService.createTaskQuery().processInstanceId(processInstance2.getId()).singleResult().getId());
 
     Calendar nextYear = Calendar.getInstance();
     nextYear.add(Calendar.YEAR, 1);
-    vars = new HashMap<String, Object>();
-    vars.put("dateVar", nextYear.getTime());
-    ProcessInstance processInstance3 = runtimeService.startProcessInstanceByKey("oneTaskProcess", vars);
+    ProcessInstance processInstance3 = runtimeService.startProcessInstanceByKey("oneTaskProcess", singletonMap("dateVar", nextYear.getTime()));
     taskService.complete(taskService.createTaskQuery().processInstanceId(processInstance3.getId()).singleResult().getId());
 
     Calendar nextMonth = Calendar.getInstance();
@@ -711,7 +703,7 @@ public class HistoryServiceTest extends PluggableActivitiTestCase {
     HistoricProcessInstanceQuery query = historyService.createHistoricProcessInstanceQuery().variableValueEquals("dateVar", date1);
     List<HistoricProcessInstance> processInstances = query.list();
     assertThat(processInstances).isNotNull();
-    assertThat(processInstances.size()).isEqualTo(2);
+    assertThat(processInstances).hasSize(2);
 
     // Query on two short variables, should result in single value
     query = historyService.createHistoricProcessInstanceQuery().variableValueEquals("dateVar", date1).variableValueEquals("dateVar2", date2);
@@ -750,7 +742,7 @@ public class HistoryServiceTest extends PluggableActivitiTestCase {
 
     // Test LESS_THAN
     processInstances = historyService.createHistoricProcessInstanceQuery().variableValueLessThan("dateVar", nextYear.getTime()).list();
-    assertThat(processInstances.size()).isEqualTo(2);
+    assertThat(processInstances).hasSize(2);
 
     List<String> expectedIds = asList(processInstance1.getId(), processInstance2.getId());
     List<String> ids = new ArrayList<String>(asList(processInstances.get(0).getId(), processInstances.get(1).getId()));
@@ -762,7 +754,7 @@ public class HistoryServiceTest extends PluggableActivitiTestCase {
 
     // Test LESS_THAN_OR_EQUAL
     processInstances = historyService.createHistoricProcessInstanceQuery().variableValueLessThanOrEqual("dateVar", nextYear.getTime()).list();
-    assertThat(processInstances.size()).isEqualTo(3);
+    assertThat(processInstances).hasSize(3);
 
     assertThat(historyService.createHistoricProcessInstanceQuery().variableValueLessThanOrEqual("dateVar", oneYearAgo.getTime()).count()).isEqualTo(0);
 
@@ -772,7 +764,7 @@ public class HistoryServiceTest extends PluggableActivitiTestCase {
     assertThat(resultInstance.getId()).isEqualTo(processInstance3.getId());
 
     processInstances = historyService.createHistoricProcessInstanceQuery().variableValueEquals(date1).list();
-    assertThat(processInstances.size()).isEqualTo(2);
+    assertThat(processInstances).hasSize(2);
     expectedIds = asList(processInstance1.getId(), processInstance2.getId());
     ids = new ArrayList<String>(asList(processInstances.get(0).getId(), processInstances.get(1).getId()));
     ids.removeAll(expectedIds);
@@ -792,8 +784,8 @@ public class HistoryServiceTest extends PluggableActivitiTestCase {
     // are tested in the TaskQueryTest
     runtimeService.startProcessInstanceByKey("oneTaskProcess");
     assertThat(historyService.createNativeHistoricProcessInstanceQuery().sql("SELECT count(*) FROM " + managementService.getTableName(HistoricProcessInstance.class)).count()).isEqualTo(1);
-    assertThat(historyService.createNativeHistoricProcessInstanceQuery().sql("SELECT * FROM " + managementService.getTableName(HistoricProcessInstance.class)).list().size()).isEqualTo(1);
-    // assertEquals(1,
+    assertThat(historyService.createNativeHistoricProcessInstanceQuery().sql("SELECT * FROM " + managementService.getTableName(HistoricProcessInstance.class)).list()).hasSize(1);
+    // assertThat(1,
     // historyService.createNativeHistoricProcessInstanceQuery().sql("SELECT * FROM "
     // +
     // managementService.getTableName(HistoricProcessInstance.class)).listPage(0,
@@ -804,16 +796,16 @@ public class HistoryServiceTest extends PluggableActivitiTestCase {
   public void testNativeHistoricTaskInstanceTest() {
     runtimeService.startProcessInstanceByKey("oneTaskProcess");
     assertThat(historyService.createNativeHistoricTaskInstanceQuery().sql("SELECT count(*) FROM " + managementService.getTableName(HistoricProcessInstance.class)).count()).isEqualTo(1);
-    assertThat(historyService.createNativeHistoricTaskInstanceQuery().sql("SELECT * FROM " + managementService.getTableName(HistoricProcessInstance.class)).list().size()).isEqualTo(1);
-    assertThat(historyService.createNativeHistoricTaskInstanceQuery().sql("SELECT * FROM " + managementService.getTableName(HistoricProcessInstance.class)).listPage(0, 1).size()).isEqualTo(1);
+    assertThat(historyService.createNativeHistoricTaskInstanceQuery().sql("SELECT * FROM " + managementService.getTableName(HistoricProcessInstance.class)).list()).hasSize(1);
+    assertThat(historyService.createNativeHistoricTaskInstanceQuery().sql("SELECT * FROM " + managementService.getTableName(HistoricProcessInstance.class)).listPage(0, 1)).hasSize(1);
   }
 
   @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
   public void testNativeHistoricActivityInstanceTest() {
     runtimeService.startProcessInstanceByKey("oneTaskProcess");
     assertThat(historyService.createNativeHistoricActivityInstanceQuery().sql("SELECT count(*) FROM " + managementService.getTableName(HistoricProcessInstance.class)).count()).isEqualTo(1);
-    assertThat(historyService.createNativeHistoricActivityInstanceQuery().sql("SELECT * FROM " + managementService.getTableName(HistoricProcessInstance.class)).list().size()).isEqualTo(1);
-    assertThat(historyService.createNativeHistoricActivityInstanceQuery().sql("SELECT * FROM " + managementService.getTableName(HistoricProcessInstance.class)).listPage(0, 1).size()).isEqualTo(1);
+    assertThat(historyService.createNativeHistoricActivityInstanceQuery().sql("SELECT * FROM " + managementService.getTableName(HistoricProcessInstance.class)).list()).hasSize(1);
+    assertThat(historyService.createNativeHistoricActivityInstanceQuery().sql("SELECT * FROM " + managementService.getTableName(HistoricProcessInstance.class)).listPage(0, 1)).hasSize(1);
   }
 
   @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
@@ -824,12 +816,12 @@ public class HistoryServiceTest extends PluggableActivitiTestCase {
     runtimeService.startProcessInstanceByKey(processDefinitionKey);
 
     assertThat(historyService.createHistoricProcessInstanceQuery().processDefinitionName(processDefinitionName).list().get(0).getProcessDefinitionName()).isEqualTo(processDefinitionName);
-    assertThat(historyService.createHistoricProcessInstanceQuery().processDefinitionName(processDefinitionName).list().size()).isEqualTo(1);
+    assertThat(historyService.createHistoricProcessInstanceQuery().processDefinitionName(processDefinitionName).list()).hasSize(1);
     assertThat(historyService.createHistoricProcessInstanceQuery().processDefinitionName(processDefinitionName).count()).isEqualTo(1);
-    assertThat(historyService.createHistoricProcessInstanceQuery().processDefinitionName("invalid").list().size()).isEqualTo(0);
+    assertThat(historyService.createHistoricProcessInstanceQuery().processDefinitionName("invalid").list()).hasSize(0);
     assertThat(historyService.createHistoricProcessInstanceQuery().processDefinitionName("invalid").count()).isEqualTo(0);
     assertThat(historyService.createHistoricProcessInstanceQuery().or().processDefinitionName(processDefinitionName).processDefinitionId("invalid").endOr().list().get(0).getProcessDefinitionName()).isEqualTo(processDefinitionName);
-    assertThat(historyService.createHistoricProcessInstanceQuery().or().processDefinitionName(processDefinitionName).processDefinitionId("invalid").endOr().list().size()).isEqualTo(1);
+    assertThat(historyService.createHistoricProcessInstanceQuery().or().processDefinitionName(processDefinitionName).processDefinitionId("invalid").endOr().list()).hasSize(1);
     assertThat(historyService.createHistoricProcessInstanceQuery().or().processDefinitionName(processDefinitionName).processDefinitionId("invalid").endOr().count()).isEqualTo(1);
   }
 
@@ -839,11 +831,11 @@ public class HistoryServiceTest extends PluggableActivitiTestCase {
     String processDefinitionCategory = "ExamplesCategory";
     runtimeService.startProcessInstanceByKey(processDefinitionKey);
 
-    assertThat(historyService.createHistoricProcessInstanceQuery().processDefinitionCategory(processDefinitionCategory).list().size()).isEqualTo(1);
+    assertThat(historyService.createHistoricProcessInstanceQuery().processDefinitionCategory(processDefinitionCategory).list()).hasSize(1);
     assertThat(historyService.createHistoricProcessInstanceQuery().processDefinitionCategory(processDefinitionCategory).count()).isEqualTo(1);
-    assertThat(historyService.createHistoricProcessInstanceQuery().processDefinitionCategory("invalid").list().size()).isEqualTo(0);
+    assertThat(historyService.createHistoricProcessInstanceQuery().processDefinitionCategory("invalid").list()).hasSize(0);
     assertThat(historyService.createHistoricProcessInstanceQuery().processDefinitionCategory("invalid").count()).isEqualTo(0);
-    assertThat(historyService.createHistoricProcessInstanceQuery().or().processDefinitionCategory(processDefinitionCategory).processDefinitionId("invalid").endOr().list().size()).isEqualTo(1);
+    assertThat(historyService.createHistoricProcessInstanceQuery().or().processDefinitionCategory(processDefinitionCategory).processDefinitionId("invalid").endOr().list()).hasSize(1);
     assertThat(historyService.createHistoricProcessInstanceQuery().or().processDefinitionCategory(processDefinitionCategory).processDefinitionId("invalid").endOr().count()).isEqualTo(1);
   }
 

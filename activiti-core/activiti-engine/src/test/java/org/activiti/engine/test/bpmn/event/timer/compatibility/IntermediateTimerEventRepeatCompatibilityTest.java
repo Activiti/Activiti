@@ -66,10 +66,10 @@ public class IntermediateTimerEventRepeatCompatibilityTest extends TimerEventCom
     runtimeService.setVariable(processInstance.getId(), "EndDateForCatch2", endDateForIntermediate2);
 
     List<Task> tasks = taskService.createTaskQuery().list();
-    assertThat(tasks.size()).isEqualTo(1);
+    assertThat(tasks).hasSize(1);
 
     tasks = taskService.createTaskQuery().list();
-    assertThat(tasks.size()).isEqualTo(1);
+    assertThat(tasks).hasSize(1);
     Task task = tasks.get(0);
     assertThat(task.getName()).isEqualTo("Task A");
 
@@ -88,10 +88,10 @@ public class IntermediateTimerEventRepeatCompatibilityTest extends TimerEventCom
     // expect to execute because the time is reached.
 
     List<Job> jobs = managementService.createJobQuery().list();
-    assertThat(jobs.size()).isEqualTo(0);
+    assertThat(jobs).hasSize(0);
 
     tasks = taskService.createTaskQuery().list();
-    assertThat(tasks.size()).isEqualTo(1);
+    assertThat(tasks).hasSize(1);
     task = tasks.get(0);
     assertThat(task.getName()).isEqualTo("Task C");
 
@@ -110,18 +110,18 @@ public class IntermediateTimerEventRepeatCompatibilityTest extends TimerEventCom
 
     // now All the process instances should be completed
     List<ProcessInstance> processInstances = runtimeService.createProcessInstanceQuery().list();
-    assertThat(processInstances.size()).isEqualTo(0);
+    assertThat(processInstances).hasSize(0);
 
     // no jobs
     jobs = managementService.createJobQuery().list();
-    assertThat(jobs.size()).isEqualTo(0);
+    assertThat(jobs).hasSize(0);
 
     jobs = managementService.createTimerJobQuery().list();
-    assertThat(jobs.size()).isEqualTo(0);
+    assertThat(jobs).hasSize(0);
 
     // no tasks
     tasks = taskService.createTaskQuery().list();
-    assertThat(tasks.size()).isEqualTo(0);
+    assertThat(tasks).hasSize(0);
 
   }
 

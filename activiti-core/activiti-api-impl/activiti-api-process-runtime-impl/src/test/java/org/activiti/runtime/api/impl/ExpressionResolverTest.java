@@ -18,6 +18,7 @@ package org.activiti.runtime.api.impl;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonMap;
+import static org.activiti.engine.impl.util.CollectionUtil.map;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
@@ -256,15 +257,15 @@ public class ExpressionResolverTest {
 
         JsonNode node = mapper.readTree("{\"name\":\"${name}\",\"place\":\"${place}\",\"age\":\"${age}\"}");
 
-        Map<String, Object> resultMap = new HashMap<>();
-        resultMap.put("name", "John");resultMap.put("place", null);
-        resultMap.put("age", 30);
-
         //when
         Map<String, Object> result = expressionResolver.resolveExpressionsMap(expressionEvaluator,
                                                                               singletonMap("node", node));
         //then
-        assertThat(result).containsEntry("node", resultMap);
+        assertThat(result).containsEntry("node", map(
+            "name", "John",
+            "place", null,
+            "age", 30
+        ));
     }
 
     @Test
@@ -276,15 +277,14 @@ public class ExpressionResolverTest {
 
         JsonNode node = mapper.readTree("{\"name\":\"${name}\",\"age\": 30}");
 
-        Map<String, Object> resultMap = new HashMap<>();
-        resultMap.put("name", "${name}");
-        resultMap.put("age", 30);
-
         //when
         Map<String, Object> result = expressionResolver.resolveExpressionsMap(expressionEvaluator,
                                                                               singletonMap("node", node));
         //then
-        assertThat(result).containsEntry("node", resultMap);
+        assertThat(result).containsEntry("node", map(
+            "name", "${name}",
+            "age", 30
+        ));
     }
 
     @Test
@@ -330,34 +330,23 @@ public class ExpressionResolverTest {
         Expression playerExpression = buildExpression("${player}");
         given(expressionEvaluator.evaluate(playerExpression, expressionManager, delegateInterceptor)).willReturn("Agatha");
 
-        Map<String, Object> players = new HashMap<>();
-        players.put("Red",
-                    "John");
-        players.put("Green",
-                    "Peter");
-        players.put("Blue",
-                    "Mary");
-        players.put("Yellow",
-                    "${player}");
-
-        Map<String, Object> resultMap = new HashMap<>();
-        resultMap.put("Red",
-                      "John");
-        resultMap.put("Green",
-                      "Peter");
-        resultMap.put("Blue",
-                      "Mary");
-        resultMap.put("Yellow",
-                      "Agatha");
-
         //when
         Map<String, Object> result = expressionResolver.resolveExpressionsMap(expressionEvaluator,
                                                                               singletonMap("players",
-                                                                                                       players));
+                                                                              map(
+                                                                                  "Red", "John",
+                                                                                  "Green", "Peter",
+                                                                                  "Blue", "Mary",
+                                                                                  "Yellow", "${player}"
+                                                                              )));
 
         //then
-        assertThat(result).containsEntry("players",
-                                         resultMap);
+        assertThat(result).containsEntry("players", map(
+            "Red", "John",
+            "Green", "Peter",
+            "Blue", "Mary",
+            "Yellow", "Agatha"
+        ));
     }
 
     @Test
@@ -367,24 +356,19 @@ public class ExpressionResolverTest {
         Expression playerExpression = buildExpression("${player}");
         given(expressionEvaluator.evaluate(playerExpression, expressionManager, delegateInterceptor)).willThrow(new ActivitiException("Invalid property"));
 
-        Map<String, Object> players = new HashMap<>();
-        players.put("Red",
-                    "John");
-        players.put("Green",
-                    "Peter");
-        players.put("Blue",
-                    "Mary");
-        players.put("Yellow",
-                    "${player}");
+        Map<String, Object> players = map(
+            "Red", "John",
+            "Green", "Peter",
+            "Blue", "Mary",
+            "Yellow", "${player}"
+        );
 
         //when
         Map<String, Object> result = expressionResolver.resolveExpressionsMap(expressionEvaluator,
-                                                                              singletonMap("players",
-                                                                                                       players));
+                                                                              singletonMap("players",players));
 
         //then
-        assertThat(result).containsEntry("players",
-                                         players);
+        assertThat(result).containsEntry("players", players);
     }
 
     private Expression buildExpression(String expressionContent) {

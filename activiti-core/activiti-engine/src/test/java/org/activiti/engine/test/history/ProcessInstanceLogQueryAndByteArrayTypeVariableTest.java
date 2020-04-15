@@ -74,7 +74,7 @@ public class ProcessInstanceLogQueryAndByteArrayTypeVariableTest extends Pluggab
 				.includeVariables()
 				.singleResult();
 			List<HistoricData> events = log.getHistoricData();
-			assertThat(events.size()).isEqualTo(1);
+			assertThat(events).hasSize(1);
 
 			for (HistoricData event : events) {
 				assertThat(event).isInstanceOf(HistoricVariableInstance.class);
@@ -94,7 +94,7 @@ public class ProcessInstanceLogQueryAndByteArrayTypeVariableTest extends Pluggab
         .includeVariableUpdates()
         .singleResult();
       List<HistoricData> events = log.getHistoricData();
-      assertThat(events.size()).isEqualTo(1);
+      assertThat(events).hasSize(1);
 
       for (HistoricData event : events) {
         assertThat(event).isInstanceOf(HistoricVariableUpdate.class);

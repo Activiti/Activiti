@@ -45,7 +45,7 @@ public class DeleteReasonTest extends PluggableActivitiTestCase {
 
       List<HistoricTaskInstance> historicTaskInstances = historyService.createHistoricTaskInstanceQuery()
           .processInstanceId(processInstance.getId()).list();
-      assertThat(historicTaskInstances.size()).isEqualTo(4);
+      assertThat(historicTaskInstances).hasSize(4);
 
       // Task A is completed normally, the others are deleted
       for (HistoricTaskInstance historicTaskInstance : historicTaskInstances) {
@@ -79,7 +79,7 @@ public class DeleteReasonTest extends PluggableActivitiTestCase {
 
       List<HistoricTaskInstance> historicTaskInstances = historyService.createHistoricTaskInstanceQuery()
           .processInstanceId(processInstance.getId()).list();
-      assertThat(historicTaskInstances.size()).isEqualTo(4);
+      assertThat(historicTaskInstances).hasSize(4);
 
       // Task A is completed normally, the others are deleted
       for (HistoricTaskInstance historicTaskInstance : historicTaskInstances) {
@@ -113,7 +113,7 @@ public class DeleteReasonTest extends PluggableActivitiTestCase {
 
       List<HistoricTaskInstance> historicTaskInstances = historyService.createHistoricTaskInstanceQuery()
           .processInstanceId(processInstance.getId()).list();
-      assertThat(historicTaskInstances.size()).isEqualTo(5);
+      assertThat(historicTaskInstances).hasSize(5);
 
       for (HistoricTaskInstance historicTaskInstance : historicTaskInstances) {
         assertThat(historicTaskInstance.getDeleteReason()).isNull();
@@ -138,7 +138,7 @@ public class DeleteReasonTest extends PluggableActivitiTestCase {
 
       List<HistoricActivityInstance> historicActivityInstances = historyService.createHistoricActivityInstanceQuery()
           .activityId("A").processInstanceId(processInstance.getId()).list();
-      assertThat(historicActivityInstances.size()).isEqualTo(1);
+      assertThat(historicActivityInstances).hasSize(1);
 
       for (HistoricActivityInstance historicActivityInstance : historicActivityInstances) {
         assertThat(historicActivityInstance.getDeleteReason()).isEqualTo(DeleteReason.PROCESS_INSTANCE_DELETED);

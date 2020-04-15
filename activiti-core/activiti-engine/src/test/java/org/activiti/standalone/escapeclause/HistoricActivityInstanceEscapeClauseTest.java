@@ -54,12 +54,12 @@ public class HistoricActivityInstanceEscapeClauseTest extends AbstractEscapeClau
 
     HistoricActivityInstanceQuery query = historyService.createHistoricActivityInstanceQuery().activityId("noop").activityTenantIdLike("%\\%%");
     assertThat(query.singleResult().getTenantId()).isEqualTo("One%");
-    assertThat(query.list().size()).isEqualTo(1);
+    assertThat(query.list()).hasSize(1);
     assertThat(query.count()).isEqualTo(1);
 
     query = historyService.createHistoricActivityInstanceQuery().activityId("noop").activityTenantIdLike("%\\_%");
     assertThat(query.singleResult().getTenantId()).isEqualTo("Two_");
-    assertThat(query.list().size()).isEqualTo(1);
+    assertThat(query.list()).hasSize(1);
     assertThat(query.count()).isEqualTo(1);
   }
 }

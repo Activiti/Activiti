@@ -61,7 +61,7 @@ public class SubProcessConverterTest extends AbstractConverterTest {
     BoundaryEvent boundaryEvent = (BoundaryEvent) flowElement;
     assertThat(boundaryEvent.getAttachedToRef()).isNotNull();
     assertThat(boundaryEvent.getAttachedToRef().getId()).isEqualTo("subprocess1");
-    assertThat(boundaryEvent.getEventDefinitions().size()).isEqualTo(1);
+    assertThat(boundaryEvent.getEventDefinitions()).hasSize(1);
     assertThat(boundaryEvent.getEventDefinitions().get(0)).isInstanceOf(TimerEventDefinition.class);
   }
 }

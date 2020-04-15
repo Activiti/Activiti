@@ -188,7 +188,7 @@ public class MessageBoundaryEventTest extends PluggableActivitiTestCase {
 
     List<Task> userTasks = taskService.createTaskQuery().list();
     assertThat(userTasks).isNotNull();
-    assertThat(userTasks.size()).isEqualTo(5);
+    assertThat(userTasks).hasSize(5);
 
     // as long as tasks exists, the message subscriptions exist
     for (int i = 0; i < userTasks.size() - 1; i++) {
@@ -453,17 +453,17 @@ public class MessageBoundaryEventTest extends PluggableActivitiTestCase {
     // 5 user tasks
     List<Task> userTasks = taskService.createTaskQuery().list();
     assertThat(userTasks).isNotNull();
-    assertThat(userTasks.size()).isEqualTo(5);
+    assertThat(userTasks).hasSize(5);
 
     // there are 5 event subscriptions to the event on the inner user task
     List<Execution> executions = runtimeService.createExecutionQuery().messageEventSubscriptionName("messageName").list();
     assertThat(executions).isNotNull();
-    assertThat(executions.size()).isEqualTo(5);
+    assertThat(executions).hasSize(5);
 
     // there is a single event subscription for the event on the subprocess
     executions = runtimeService.createExecutionQuery().messageEventSubscriptionName("messageName2").list();
     assertThat(executions).isNotNull();
-    assertThat(executions.size()).isEqualTo(1);
+    assertThat(executions).hasSize(1);
 
     // if we complete the outer message event, all inner executions are
     // removed
@@ -471,7 +471,7 @@ public class MessageBoundaryEventTest extends PluggableActivitiTestCase {
     runtimeService.messageEventReceived("messageName2", outerScopeExecution.getId());
 
     executions = runtimeService.createExecutionQuery().messageEventSubscriptionName("messageName").list();
-    assertThat(executions.size()).isEqualTo(0);
+    assertThat(executions).hasSize(0);
 
     Task userTask = taskService.createTaskQuery().singleResult();
     assertThat(userTask).isNotNull();
@@ -593,7 +593,7 @@ public class MessageBoundaryEventTest extends PluggableActivitiTestCase {
     // ///////////////////////////////////
     // Complete the after timer tasks
     final List<Task> tasks = taskService.createTaskQuery().taskDefinitionKey("taskAfterTaskTimer").list();
-    assertThat(tasks.size()).isEqualTo(2);
+    assertThat(tasks).hasSize(2);
 
     taskService.complete(tasks.get(0).getId());
     taskService.complete(tasks.get(1).getId());

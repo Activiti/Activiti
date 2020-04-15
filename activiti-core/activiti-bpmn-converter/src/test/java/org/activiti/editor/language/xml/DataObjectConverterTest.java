@@ -45,7 +45,7 @@ public class DataObjectConverterTest extends AbstractConverterTest {
 
     // verify the main process data objects
     List<ValuedDataObject> dataObjects = model.getMainProcess().getDataObjects();
-    assertThat(dataObjects.size()).isEqualTo(7);
+    assertThat(dataObjects).hasSize(7);
 
     Map<String, ValuedDataObject> objectMap = new HashMap<String, ValuedDataObject>();
     for (ValuedDataObject valueObj : dataObjects) {
@@ -93,11 +93,11 @@ public class DataObjectConverterTest extends AbstractConverterTest {
     assertThat(flowElement).isInstanceOf(SubProcess.class);
     assertThat(flowElement.getId()).isEqualTo("subprocess1");
     SubProcess subProcess = (SubProcess) flowElement;
-    assertThat(subProcess.getFlowElements().size()).isEqualTo(11);
+    assertThat(subProcess.getFlowElements()).hasSize(11);
 
     // verify the sub process data objects
     dataObjects = subProcess.getDataObjects();
-    assertThat(dataObjects.size()).isEqualTo(6);
+    assertThat(dataObjects).hasSize(6);
 
     objectMap = new HashMap<String, ValuedDataObject>();
     for (ValuedDataObject valueObj : dataObjects) {

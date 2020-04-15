@@ -40,7 +40,7 @@ public class MessageIntermediateEventTest extends PluggableActivitiTestCase {
 
     List<String> activeActivityIds = runtimeService.getActiveActivityIds(pi.getId());
     assertThat(activeActivityIds).isNotNull();
-    assertThat(activeActivityIds.size()).isEqualTo(1);
+    assertThat(activeActivityIds).hasSize(1);
     assertThat(activeActivityIds.contains("messageCatch")).isTrue();
 
     String messageName = "newInvoiceMessage";
@@ -64,7 +64,7 @@ public class MessageIntermediateEventTest extends PluggableActivitiTestCase {
 
     List<String> activeActivityIds = runtimeService.getActiveActivityIds(pi.getId());
     assertThat(activeActivityIds).isNotNull();
-    assertThat(activeActivityIds.size()).isEqualTo(1);
+    assertThat(activeActivityIds).hasSize(1);
     assertThat(activeActivityIds.contains("messageCatch")).isTrue();
 
     String messageName = "testMessage";
@@ -95,7 +95,7 @@ public class MessageIntermediateEventTest extends PluggableActivitiTestCase {
 
     List<String> activeActivityIds = runtimeService.getActiveActivityIds(pi.getId());
     assertThat(activeActivityIds).isNotNull();
-    assertThat(activeActivityIds.size()).isEqualTo(2);
+    assertThat(activeActivityIds).hasSize(2);
     assertThat(activeActivityIds.contains("messageCatch1")).isTrue();
     assertThat(activeActivityIds.contains("messageCatch2")).isTrue();
 
@@ -103,7 +103,7 @@ public class MessageIntermediateEventTest extends PluggableActivitiTestCase {
     List<Execution> executions = runtimeService.createExecutionQuery().messageEventSubscriptionName(messageName).list();
 
     assertThat(executions).isNotNull();
-    assertThat(executions.size()).isEqualTo(2);
+    assertThat(executions).hasSize(2);
 
     runtimeService.messageEventReceived(messageName, executions.get(0).getId());
 

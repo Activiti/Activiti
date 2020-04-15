@@ -280,7 +280,7 @@ public class TransactionSubProcessTest extends PluggableActivitiTestCase {
     List<EventSubscriptionEntity> eventSubscriptionEntities = createEventSubscriptionQuery().eventType("compensate").list();
 
     // there are 10 compensation event subscriptions
-    assertThat(eventSubscriptionEntities.size()).isEqualTo(10);
+    assertThat(eventSubscriptionEntities).hasSize(10);
 
     Task task = taskService.createTaskQuery().listPage(0, 1).get(0);
 
@@ -308,7 +308,7 @@ public class TransactionSubProcessTest extends PluggableActivitiTestCase {
     List<EventSubscriptionEntity> EventSubscriptionEntitys = createEventSubscriptionQuery().eventType("compensate").list();
 
     // there are 10 compensation event subscriptions
-    assertThat(EventSubscriptionEntitys.size()).isEqualTo(10);
+    assertThat(EventSubscriptionEntitys).hasSize(10);
 
     // first complete the inner user-tasks
     List<Task> tasks = taskService.createTaskQuery().list();

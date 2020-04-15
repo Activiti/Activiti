@@ -63,14 +63,14 @@ public class TaskInfoQueryTest extends PluggableActivitiTestCase {
     TaskInfoQueryWrapper taskInfoQueryWrapper = new TaskInfoQueryWrapper(taskService.createTaskQuery());
     List<? extends TaskInfo> taskInfos = taskInfoQueryWrapper.getTaskInfoQuery().or().taskNameLike("%k1%").taskDueAfter(new Date(now.getTime() + (3 * 24L * 60L * 60L * 1000L))).endOr().list();
 
-    assertThat(taskInfos.size()).isEqualTo(3);
+    assertThat(taskInfos).hasSize(3);
 
     if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
       // History
       taskInfoQueryWrapper = new TaskInfoQueryWrapper(historyService.createHistoricTaskInstanceQuery());
       taskInfos = taskInfoQueryWrapper.getTaskInfoQuery().or().taskNameLike("%k1%").taskDueAfter(new Date(now.getTime() + (3 * 24L * 60L * 60L * 1000L))).endOr().list();
 
-      assertThat(taskInfos.size()).isEqualTo(3);
+      assertThat(taskInfos).hasSize(3);
     }
   }
 

@@ -49,21 +49,21 @@ public class UserTaskConverterTest extends AbstractConverterTest {
     assertThat(userTask.getBusinessCalendarName()).isEqualTo("customCalendarName");
 
     assertThat(userTask.getAssignee()).isEqualTo("kermit");
-    assertThat(userTask.getCandidateUsers().size()).isEqualTo(2);
+    assertThat(userTask.getCandidateUsers()).hasSize(2);
     assertThat(userTask.getCandidateUsers().contains("kermit")).isTrue();
     assertThat(userTask.getCandidateUsers().contains("fozzie")).isTrue();
-    assertThat(userTask.getCandidateGroups().size()).isEqualTo(2);
+    assertThat(userTask.getCandidateGroups()).hasSize(2);
     assertThat(userTask.getCandidateGroups().contains("management")).isTrue();
     assertThat(userTask.getCandidateGroups().contains("sales")).isTrue();
 
-    assertThat(userTask.getCustomUserIdentityLinks().size()).isEqualTo(1);
-    assertThat(userTask.getCustomGroupIdentityLinks().size()).isEqualTo(2);
+    assertThat(userTask.getCustomUserIdentityLinks()).hasSize(1);
+    assertThat(userTask.getCustomGroupIdentityLinks()).hasSize(2);
     assertThat(userTask.getCustomUserIdentityLinks().get("businessAdministrator").contains("kermit")).isTrue();
     assertThat(userTask.getCustomGroupIdentityLinks().get("manager").contains("management")).isTrue();
     assertThat(userTask.getCustomGroupIdentityLinks().get("businessAdministrator").contains("management")).isTrue();
 
     List<FormProperty> formProperties = userTask.getFormProperties();
-    assertThat(formProperties.size()).isEqualTo(3);
+    assertThat(formProperties).hasSize(3);
     FormProperty formProperty = formProperties.get(0);
     assertThat(formProperty.getId()).isEqualTo("formId");
     assertThat(formProperty.getName()).isEqualTo("formName");
@@ -82,10 +82,10 @@ public class UserTaskConverterTest extends AbstractConverterTest {
     assertThat(formProperty.getType()).isEqualTo("enum");
     assertThat(StringUtils.isEmpty(formProperty.getVariable())).isTrue();
     assertThat(StringUtils.isEmpty(formProperty.getExpression())).isTrue();
-    assertThat(formProperty.getFormValues().size()).isEqualTo(2);
+    assertThat(formProperty.getFormValues()).hasSize(2);
 
     List<ActivitiListener> listeners = userTask.getTaskListeners();
-    assertThat(listeners.size()).isEqualTo(3);
+    assertThat(listeners).hasSize(3);
     ActivitiListener listener = listeners.get(0);
     assertThat(ImplementationType.IMPLEMENTATION_TYPE_CLASS.equals(listener.getImplementationType())).isTrue();
     assertThat(listener.getImplementation()).isEqualTo("org.test.TestClass");
@@ -106,7 +106,7 @@ public class UserTaskConverterTest extends AbstractConverterTest {
     assertThat(listener.getCustomPropertiesResolverImplementation()).isEqualTo("${delegateResolverExpression}");
 
     List<ActivitiListener> executionListeners = userTask.getExecutionListeners();
-    assertThat(executionListeners.size()).isEqualTo(1);
+    assertThat(executionListeners).hasSize(1);
     ActivitiListener executionListener = executionListeners.get(0);
     assertThat(executionListener.getEvent()).isEqualTo("end");
     assertThat(executionListener.getOnTransaction()).isEqualTo("before-commit");

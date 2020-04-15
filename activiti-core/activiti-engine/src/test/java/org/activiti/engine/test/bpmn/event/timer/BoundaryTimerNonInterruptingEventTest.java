@@ -45,7 +45,7 @@ public class BoundaryTimerNonInterruptingEventTest extends PluggableActivitiTest
 
     TimerJobQuery jobQuery = managementService.createTimerJobQuery().processInstanceId(pi.getId());
     List<Job> jobs = jobQuery.list();
-    assertThat(jobs.size()).isEqualTo(2);
+    assertThat(jobs).hasSize(2);
 
     // After setting the clock to time '1 hour and 5 seconds', the first timer should fire
     processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + ((60 * 60 * 1000) + 5000)));
@@ -109,7 +109,7 @@ public class BoundaryTimerNonInterruptingEventTest extends PluggableActivitiTest
 
     TimerJobQuery jobQuery = managementService.createTimerJobQuery().processInstanceId(pi.getId());
     List<Job> jobs = jobQuery.list();
-    assertThat(jobs.size()).isEqualTo(1);
+    assertThat(jobs).hasSize(1);
 
     // After setting the clock to time '1 hour and 5 seconds', the first timer should fire
     processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + ((60 * 60 * 1000) + 5000)));
@@ -188,7 +188,7 @@ public class BoundaryTimerNonInterruptingEventTest extends PluggableActivitiTest
     String processInstanceId = runtimeService.startProcessInstanceByKey("nonInterruptingCycle").getId();
 
     List<Job> jobs = managementService.createTimerJobQuery().processInstanceId(processInstanceId).list();
-    assertThat(jobs.size()).isEqualTo(1);
+    assertThat(jobs).hasSize(1);
 
     // boundary events
     waitForJobExecutorToProcessAllJobs(2000, 100);
@@ -255,13 +255,13 @@ public class BoundaryTimerNonInterruptingEventTest extends PluggableActivitiTest
 
     TimerJobQuery jobQuery = managementService.createTimerJobQuery().processInstanceId(pi.getId());
     List<Job> jobs = jobQuery.list();
-    assertThat(jobs.size()).isEqualTo(1);
+    assertThat(jobs).hasSize(1);
 
     // The Execution Query should work normally and find executions in state "task"
     List<Execution> executions = runtimeService.createExecutionQuery().activityId("task").list();
-    assertThat(executions.size()).isEqualTo(1);
+    assertThat(executions).hasSize(1);
     List<String> activeActivityIds = runtimeService.getActiveActivityIds(executions.get(0).getId());
-    assertThat(activeActivityIds.size()).isEqualTo(2);
+    assertThat(activeActivityIds).hasSize(2);
     Collections.sort(activeActivityIds);
     assertThat(activeActivityIds.get(0)).isEqualTo("task");
     assertThat(activeActivityIds.get(1)).isEqualTo("timer");

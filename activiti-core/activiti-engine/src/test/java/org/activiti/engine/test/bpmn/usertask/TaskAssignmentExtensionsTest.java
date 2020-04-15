@@ -45,7 +45,7 @@ public class TaskAssignmentExtensionsTest extends PluggableActivitiTestCase {
   public void testAssigneeExtension() {
     runtimeService.startProcessInstanceByKey("assigneeExtension");
     List<Task> tasks = taskService.createTaskQuery().taskAssignee(KERMIT).list();
-    assertThat(tasks.size()).isEqualTo(1);
+    assertThat(tasks).hasSize(1);
     assertThat(tasks.get(0).getName()).isEqualTo("my task");
   }
 
@@ -60,7 +60,7 @@ public class TaskAssignmentExtensionsTest extends PluggableActivitiTestCase {
   public void testOwnerExtension() {
     runtimeService.startProcessInstanceByKey("ownerExtension");
     List<Task> tasks = taskService.createTaskQuery().taskOwner(GONZO).list();
-    assertThat(tasks.size()).isEqualTo(1);
+    assertThat(tasks).hasSize(1);
     assertThat(tasks.get(0).getName()).isEqualTo("my task");
   }
 
@@ -68,9 +68,9 @@ public class TaskAssignmentExtensionsTest extends PluggableActivitiTestCase {
   public void testCandidateUsersExtension() {
     runtimeService.startProcessInstanceByKey("candidateUsersExtension");
     List<Task> tasks = taskService.createTaskQuery().taskCandidateUser(KERMIT,KERMITSGROUPS).list();
-    assertThat(tasks.size()).isEqualTo(1);
+    assertThat(tasks).hasSize(1);
     tasks = taskService.createTaskQuery().taskCandidateUser(GONZO,GONZOSGROUPS).list();
-    assertThat(tasks.size()).isEqualTo(1);
+    assertThat(tasks).hasSize(1);
   }
 
   @Deployment
@@ -80,11 +80,11 @@ public class TaskAssignmentExtensionsTest extends PluggableActivitiTestCase {
     // Bugfix check: potentially the query could return 2 tasks since
     // kermit is a member of the two candidate groups
     List<Task> tasks = taskService.createTaskQuery().taskCandidateUser(KERMIT,KERMITSGROUPS).list();
-    assertThat(tasks.size()).isEqualTo(1);
+    assertThat(tasks).hasSize(1);
     assertThat(tasks.get(0).getName()).isEqualTo("make profit");
 
     tasks = taskService.createTaskQuery().taskCandidateUser(FOZZIE,FOZZIESGROUPS).list();
-    assertThat(tasks.size()).isEqualTo(1);
+    assertThat(tasks).hasSize(1);
     assertThat(tasks.get(0).getName()).isEqualTo("make profit");
 
     // Test the task query find-by-candidate-group operation
@@ -100,16 +100,16 @@ public class TaskAssignmentExtensionsTest extends PluggableActivitiTestCase {
     runtimeService.startProcessInstanceByKey("mixedCandidateUser");
 
     List<Task> tasks = taskService.createTaskQuery().taskCandidateUser(KERMIT,KERMITSGROUPS).list();
-    assertThat(tasks.size()).isEqualTo(1);
+    assertThat(tasks).hasSize(1);
 
     tasks = taskService.createTaskQuery().taskCandidateUser(FOZZIE,FOZZIESGROUPS).list();
-    assertThat(tasks.size()).isEqualTo(1);
+    assertThat(tasks).hasSize(1);
 
     tasks = taskService.createTaskQuery().taskCandidateUser(GONZO,GONZOSGROUPS).list();
-    assertThat(tasks.size()).isEqualTo(1);
+    assertThat(tasks).hasSize(1);
 
     tasks = taskService.createTaskQuery().taskCandidateUser("mispiggy",null).list();
-    assertThat(tasks.size()).isEqualTo(0);
+    assertThat(tasks).hasSize(0);
   }
 
 }

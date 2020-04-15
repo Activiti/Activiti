@@ -42,7 +42,7 @@ public class CallActivityConverterTest extends AbstractConverterTest {
     assertThat(callActivity.getCalledElement()).isEqualTo("processId");
 
     List<IOParameter> parameters = callActivity.getInParameters();
-    assertThat(parameters.size()).isEqualTo(2);
+    assertThat(parameters).hasSize(2);
     IOParameter parameter = parameters.get(0);
     assertThat(parameter.getSource()).isEqualTo("test");
     assertThat(parameter.getTarget()).isEqualTo("test");
@@ -51,7 +51,7 @@ public class CallActivityConverterTest extends AbstractConverterTest {
     assertThat(parameter.getTarget()).isEqualTo("test");
 
     parameters = callActivity.getOutParameters();
-    assertThat(parameters.size()).isEqualTo(1);
+    assertThat(parameters).hasSize(1);
     parameter = parameters.get(0);
     assertThat(parameter.getSource()).isEqualTo("test");
     assertThat(parameter.getTarget()).isEqualTo("test");

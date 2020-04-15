@@ -48,12 +48,12 @@ public class JobExecutorCmdHappyTest extends JobExecutorTestCase {
     assertThat(job).isNotNull();
     assertThat(job.getId()).isEqualTo(jobId);
 
-    assertThat(tweetHandler.getMessages().size()).isEqualTo(0);
+    assertThat(tweetHandler.getMessages()).hasSize(0);
 
     managementService.executeJob(job.getId());
 
     assertThat(tweetHandler.getMessages().get(0)).isEqualTo("i'm coding a test");
-    assertThat(tweetHandler.getMessages().size()).isEqualTo(1);
+    assertThat(tweetHandler.getMessages()).hasSize(1);
   }
 
   static final long SOME_TIME = 928374923546L;
@@ -87,12 +87,12 @@ public class JobExecutorCmdHappyTest extends JobExecutorTestCase {
 
     assertThat(job.getId()).isEqualTo(jobId);
 
-    assertThat(tweetHandler.getMessages().size()).isEqualTo(0);
+    assertThat(tweetHandler.getMessages()).hasSize(0);
 
     Job executableJob = managementService.moveTimerToExecutableJob(jobId);
     commandExecutor.execute(new ExecuteAsyncJobCmd(executableJob.getId()));
 
     assertThat(tweetHandler.getMessages().get(0)).isEqualTo("i'm coding a test");
-    assertThat(tweetHandler.getMessages().size()).isEqualTo(1);
+    assertThat(tweetHandler.getMessages()).hasSize(1);
   }
 }

@@ -29,7 +29,7 @@ public class EventListenerConverterTest extends AbstractConverterTest {
     Process process = model.getMainProcess();
     assertThat(process).isNotNull();
     assertThat(process.getEventListeners()).isNotNull();
-    assertThat(process.getEventListeners().size()).isEqualTo(8);
+    assertThat(process.getEventListeners()).hasSize(8);
 
     // Listener with class
     EventListener listener = process.getEventListeners().get(0);

@@ -33,6 +33,6 @@ public class InCompleteSignalConverterTest extends AbstractConverterTest {
     ProcessValidator processValidator = new ProcessValidatorFactory().createDefaultProcessValidator();
     List<ValidationError> errors = processValidator.validate(model);
     assertThat(errors).isNotNull();
-    assertThat(errors.size()).isEqualTo(2);
+    assertThat(errors).hasSize(2);
   }
 }

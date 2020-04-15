@@ -35,10 +35,10 @@ public class CustomNamespaceAttributeConverterTest extends AbstractConverterTest
   private void validateModel(BpmnModel model) {
     Process process = model.getMainProcess();
     assertThat(process.getAttributes()).isNotNull();
-    assertThat(process.getAttributes().size()).isEqualTo(1);
+    assertThat(process.getAttributes()).hasSize(1);
     List<ExtensionAttribute> attributes = process.getAttributes().get("version");
     assertThat(attributes).isNotNull();
-    assertThat(attributes.size()).isEqualTo(1);
+    assertThat(attributes).hasSize(1);
     ExtensionAttribute attribute = attributes.get(0);
     // custom:version = "9"
     assertThat(attribute).isNotNull();
@@ -57,11 +57,11 @@ public class CustomNamespaceAttributeConverterTest extends AbstractConverterTest
 
     Map<String, List<ExtensionAttribute>> attributesMap = userTask.getAttributes();
     assertThat(attributesMap).isNotNull();
-    assertThat(attributesMap.size()).isEqualTo(2);
+    assertThat(attributesMap).hasSize(2);
 
     attributes = attributesMap.get("id");
     assertThat(attributes).isNotNull();
-    assertThat(attributes.size()).isEqualTo(1);
+    assertThat(attributes).hasSize(1);
     ExtensionAttribute a = attributes.get(0);
     assertThat(a).isNotNull();
     assertThat(a.getName()).isEqualTo("id");
@@ -71,7 +71,7 @@ public class CustomNamespaceAttributeConverterTest extends AbstractConverterTest
 
     attributes = attributesMap.get("attr");
     assertThat(attributes).isNotNull();
-    assertThat(attributes.size()).isEqualTo(1);
+    assertThat(attributes).hasSize(1);
     a = attributes.get(0);
     assertThat(a).isNotNull();
     assertThat(a.getName()).isEqualTo("attr");

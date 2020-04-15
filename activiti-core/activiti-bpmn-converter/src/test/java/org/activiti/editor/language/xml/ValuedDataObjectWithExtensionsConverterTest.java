@@ -122,7 +122,7 @@ public class ValuedDataObjectWithExtensionsConverterTest extends AbstractConvert
 
     // verify the main process data objects
     List<ValuedDataObject> dataObjects = model.getMainProcess().getDataObjects();
-    assertThat(dataObjects.size()).isEqualTo(1);
+    assertThat(dataObjects).hasSize(1);
 
     Map<String, ValuedDataObject> objectMap = new HashMap<String, ValuedDataObject>();
     for (ValuedDataObject valueObj : dataObjects) {
@@ -140,7 +140,7 @@ public class ValuedDataObjectWithExtensionsConverterTest extends AbstractConvert
      * Verify DataObject attributes extension
      */
     Map<String, String> attributes = getDataObjectAttributes(dataObj);
-    assertThat(attributes.size()).isEqualTo(2);
+    assertThat(attributes).hasSize(2);
     assertThat(attributes).containsOnlyKeys("Attr1", "Attr2");
     assertThat(attributes.get("Attr1")).isEqualTo("1");
     assertThat(attributes.get("Attr2")).isEqualTo("2");
@@ -159,11 +159,11 @@ public class ValuedDataObjectWithExtensionsConverterTest extends AbstractConvert
     assertThat(flowElement).isInstanceOf(SubProcess.class);
     assertThat(flowElement.getId()).isEqualTo("subprocess1");
     SubProcess subProcess = (SubProcess) flowElement;
-    assertThat(subProcess.getFlowElements().size()).isEqualTo(6);
+    assertThat(subProcess.getFlowElements()).hasSize(6);
 
     // verify the sub process data objects
     dataObjects = subProcess.getDataObjects();
-    assertThat(dataObjects.size()).isEqualTo(1);
+    assertThat(dataObjects).hasSize(1);
 
     objectMap = new HashMap<String, ValuedDataObject>();
     for (ValuedDataObject valueObj : dataObjects) {

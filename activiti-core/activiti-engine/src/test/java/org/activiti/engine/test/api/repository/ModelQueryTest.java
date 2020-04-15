@@ -63,7 +63,7 @@ public class ModelQueryTest extends PluggableActivitiTestCase {
 
   public void testQueryNoCriteria() {
     ModelQuery query = repositoryService.createModelQuery();
-    assertThat(query.list().size()).isEqualTo(1);
+    assertThat(query.list()).hasSize(1);
     assertThat(query.count()).isEqualTo(1);
   }
 
@@ -72,14 +72,14 @@ public class ModelQueryTest extends PluggableActivitiTestCase {
     Model model = query.singleResult();
     assertThat(model).isNotNull();
     assertThat(new String(repositoryService.getModelEditorSource(model.getId()), "utf-8")).isEqualTo("bytes");
-    assertThat(query.list().size()).isEqualTo(1);
+    assertThat(query.list()).hasSize(1);
     assertThat(query.count()).isEqualTo(1);
   }
 
   public void testQueryByInvalidName() {
     ModelQuery query = repositoryService.createModelQuery().modelName("invalid");
     assertThat(query.singleResult()).isNull();
-    assertThat(query.list().size()).isEqualTo(0);
+    assertThat(query.list()).hasSize(0);
     assertThat(query.count()).isEqualTo(0);
   }
 
@@ -88,14 +88,14 @@ public class ModelQueryTest extends PluggableActivitiTestCase {
     Model model = query.singleResult();
     assertThat(model).isNotNull();
     assertThat(new String(repositoryService.getModelEditorSource(model.getId()), "utf-8")).isEqualTo("bytes");
-    assertThat(query.list().size()).isEqualTo(1);
+    assertThat(query.list()).hasSize(1);
     assertThat(query.count()).isEqualTo(1);
   }
 
   public void testQueryByInvalidNameLike() {
     ModelQuery query = repositoryService.createModelQuery().modelNameLike("%invalid%");
     assertThat(query.singleResult()).isNull();
-    assertThat(query.list().size()).isEqualTo(0);
+    assertThat(query.list()).hasSize(0);
     assertThat(query.count()).isEqualTo(0);
   }
 
@@ -103,7 +103,7 @@ public class ModelQueryTest extends PluggableActivitiTestCase {
     ModelQuery query = repositoryService.createModelQuery().modelName("my model").modelKey("someKey");
     Model model = query.singleResult();
     assertThat(model).isNotNull();
-    assertThat(query.list().size()).isEqualTo(1);
+    assertThat(query.list()).hasSize(1);
     assertThat(query.count()).isEqualTo(1);
   }
 
@@ -111,52 +111,52 @@ public class ModelQueryTest extends PluggableActivitiTestCase {
     ModelQuery query = repositoryService.createModelQuery().modelKey("someKey");
     Model model = query.singleResult();
     assertThat(model).isNotNull();
-    assertThat(query.list().size()).isEqualTo(1);
+    assertThat(query.list()).hasSize(1);
     assertThat(query.count()).isEqualTo(1);
   }
 
   public void testQueryByInvalidKey() {
     ModelQuery query = repositoryService.createModelQuery().modelKey("invalid");
     assertThat(query.singleResult()).isNull();
-    assertThat(query.list().size()).isEqualTo(0);
+    assertThat(query.list()).hasSize(0);
     assertThat(query.count()).isEqualTo(0);
   }
 
   public void testQueryByCategory() {
     ModelQuery query = repositoryService.createModelQuery().modelCategory("test");
-    assertThat(query.list().size()).isEqualTo(1);
+    assertThat(query.list()).hasSize(1);
     assertThat(query.count()).isEqualTo(1);
   }
 
   public void testQueryByInvalidCategory() {
     ModelQuery query = repositoryService.createModelQuery().modelCategory("invalid");
     assertThat(query.singleResult()).isNull();
-    assertThat(query.list().size()).isEqualTo(0);
+    assertThat(query.list()).hasSize(0);
     assertThat(query.count()).isEqualTo(0);
   }
 
   public void testQueryByCategoryLike() {
     ModelQuery query = repositoryService.createModelQuery().modelCategoryLike("%te%");
-    assertThat(query.list().size()).isEqualTo(1);
+    assertThat(query.list()).hasSize(1);
     assertThat(query.count()).isEqualTo(1);
   }
 
   public void testQueryByInvalidCategoryLike() {
     ModelQuery query = repositoryService.createModelQuery().modelCategoryLike("%invalid%");
     assertThat(query.singleResult()).isNull();
-    assertThat(query.list().size()).isEqualTo(0);
+    assertThat(query.list()).hasSize(0);
     assertThat(query.count()).isEqualTo(0);
   }
 
   public void testQueryByCategoryNotEquals() {
     ModelQuery query = repositoryService.createModelQuery().modelCategoryNotEquals("aap");
-    assertThat(query.list().size()).isEqualTo(1);
+    assertThat(query.list()).hasSize(1);
     assertThat(query.count()).isEqualTo(1);
   }
 
   public void testQueryByVersion() {
     ModelQuery query = repositoryService.createModelQuery().modelVersion(1);
-    assertThat(query.list().size()).isEqualTo(1);
+    assertThat(query.list()).hasSize(1);
     assertThat(query.count()).isEqualTo(1);
   }
 
@@ -194,7 +194,7 @@ public class ModelQueryTest extends PluggableActivitiTestCase {
   public void testNotDeployed() {
     ModelQuery query = repositoryService.createModelQuery().notDeployed();
     assertThat(query.count()).isEqualTo(1);
-    assertThat(query.list().size()).isEqualTo(1);
+    assertThat(query.list()).hasSize(1);
   }
 
   public void testOrderBy() {
@@ -240,9 +240,9 @@ public class ModelQueryTest extends PluggableActivitiTestCase {
     models = repositoryService.createModelQuery().modelNameLike("%model%").orderByModelName().asc().list();
 
     assertThat(models.get(0).getName()).isEqualTo("my model");
-    assertThat(models.size()).isEqualTo(1);
+    assertThat(models).hasSize(1);
 
-    assertThat(repositoryService.createModelQuery().orderByModelId().asc().list().size()).isEqualTo(1);
+    assertThat(repositoryService.createModelQuery().orderByModelId().asc().list()).hasSize(1);
   }
 
   public void testNativeQuery() {
@@ -251,13 +251,13 @@ public class ModelQueryTest extends PluggableActivitiTestCase {
     String tableName = managementService.getTableName(Model.class);
     String baseQuerySql = "SELECT * FROM " + tableName;
 
-    assertThat(repositoryService.createNativeModelQuery().sql(baseQuerySql).list().size()).isEqualTo(1);
+    assertThat(repositoryService.createNativeModelQuery().sql(baseQuerySql).list()).hasSize(1);
 
-    assertThat(repositoryService.createNativeProcessDefinitionQuery().sql(baseQuerySql + " where NAME_ = #{name}").parameter("name", "my model").list().size()).isEqualTo(1);
+    assertThat(repositoryService.createNativeProcessDefinitionQuery().sql(baseQuerySql + " where NAME_ = #{name}").parameter("name", "my model").list()).hasSize(1);
 
     // paging
-    assertThat(repositoryService.createNativeProcessDefinitionQuery().sql(baseQuerySql).listPage(0, 1).size()).isEqualTo(1);
-    assertThat(repositoryService.createNativeProcessDefinitionQuery().sql(baseQuerySql).listPage(1, 5).size()).isEqualTo(0);
+    assertThat(repositoryService.createNativeProcessDefinitionQuery().sql(baseQuerySql).listPage(0, 1)).hasSize(1);
+    assertThat(repositoryService.createNativeProcessDefinitionQuery().sql(baseQuerySql).listPage(1, 5)).hasSize(0);
   }
 
   public void testKeyAndLatest() throws Exception {

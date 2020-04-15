@@ -51,7 +51,7 @@ public class JobEventsTest extends PluggableActivitiTestCase {
     assertThat(theJob).isNotNull();
 
     // Check if create-event has been dispatched
-    assertThat(listener.getEventsReceived().size()).isEqualTo(3);
+    assertThat(listener.getEventsReceived()).hasSize(3);
     ActivitiEvent event = listener.getEventsReceived().get(0);
     assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_CREATED);
     checkEventContext(event, theJob);
@@ -68,7 +68,7 @@ public class JobEventsTest extends PluggableActivitiTestCase {
 
     // Update the job-entity. Check if update event is dispatched with update job entity
     managementService.setTimerJobRetries(theJob.getId(), 5);
-    assertThat(listener.getEventsReceived().size()).isEqualTo(1);
+    assertThat(listener.getEventsReceived()).hasSize(1);
     event = listener.getEventsReceived().get(0);
     assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_UPDATED);
     Job updatedJob = (Job) ((ActivitiEntityEvent) event).getEntity();
@@ -87,7 +87,7 @@ public class JobEventsTest extends PluggableActivitiTestCase {
     managementService.executeJob(jobId);
 
     // Check delete-event has been dispatched
-    assertThat(listener.getEventsReceived().size()).isEqualTo(6);
+    assertThat(listener.getEventsReceived()).hasSize(6);
 
     event = listener.getEventsReceived().get(0);
     assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_CREATED);
@@ -136,7 +136,7 @@ public class JobEventsTest extends PluggableActivitiTestCase {
     assertThat(theJob).isNotNull();
 
     // Check if create-event has been dispatched
-    assertThat(listener.getEventsReceived().size()).isEqualTo(3);
+    assertThat(listener.getEventsReceived()).hasSize(3);
     ActivitiEvent event = listener.getEventsReceived().get(0);
     assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_CREATED);
     checkEventContext(event, theJob);
@@ -153,7 +153,7 @@ public class JobEventsTest extends PluggableActivitiTestCase {
 
     // no timer jobs will be fired
     waitForJobExecutorToProcessAllJobs(2000, 200);
-    assertThat(listener.getEventsReceived().size()).isEqualTo(0);
+    assertThat(listener.getEventsReceived()).hasSize(0);
     assertThat(managementService.createTimerJobQuery().processInstanceId(processInstance.getId()).count()).isEqualTo(1);
     Job firstTimerInstance = managementService.createTimerJobQuery().processInstanceId(processInstance.getId()).singleResult();
 
@@ -295,7 +295,7 @@ public class JobEventsTest extends PluggableActivitiTestCase {
     waitForJobExecutorToProcessAllJobs(2000, 100);
 
     // Check Timer fired event has been dispatched
-    assertThat(listener.getEventsReceived().size()).isEqualTo(6);
+    assertThat(listener.getEventsReceived()).hasSize(6);
 
     // timer entity created first
     assertThat(listener.getEventsReceived().get(0).getType()).isEqualTo(ActivitiEventType.ENTITY_CREATED);
@@ -357,7 +357,7 @@ public class JobEventsTest extends PluggableActivitiTestCase {
     assertThat(theJob).isNotNull();
 
     // Check delete-event has been dispatched
-    assertThat(listener.getEventsReceived().size()).isEqualTo(8);
+    assertThat(listener.getEventsReceived()).hasSize(8);
 
     // First, the timer was fired
     ActivitiEvent event = listener.getEventsReceived().get(0);

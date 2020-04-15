@@ -257,7 +257,7 @@ public class ProcessDefinitionQueryTest extends PluggableActivitiTestCase {
     // Typical use case
     query = repositoryService.createProcessDefinitionQuery().orderByProcessDefinitionKey().asc().orderByProcessDefinitionVersion().desc();
     List<ProcessDefinition> processDefinitions = query.list();
-    assertThat(processDefinitions.size()).isEqualTo(3);
+    assertThat(processDefinitions).hasSize(3);
 
     assertThat(processDefinitions.get(0).getKey()).isEqualTo("one");
     assertThat(processDefinitions.get(0).getVersion()).isEqualTo(2);
@@ -268,7 +268,7 @@ public class ProcessDefinitionQueryTest extends PluggableActivitiTestCase {
   }
 
   private void verifyQueryResults(ProcessDefinitionQuery query, int countExpected) {
-    assertThat(query.list().size()).isEqualTo(countExpected);
+    assertThat(query.list()).hasSize(countExpected);
     assertThat(query.count()).isEqualTo(countExpected);
 
     if (countExpected == 1) {
@@ -304,15 +304,15 @@ public class ProcessDefinitionQueryTest extends PluggableActivitiTestCase {
     String tableName = managementService.getTableName(ProcessDefinition.class);
     String baseQuerySql = "SELECT * FROM " + tableName;
 
-    assertThat(repositoryService.createNativeProcessDefinitionQuery().sql(baseQuerySql).list().size()).isEqualTo(3);
+    assertThat(repositoryService.createNativeProcessDefinitionQuery().sql(baseQuerySql).list()).hasSize(3);
 
-    assertThat(repositoryService.createNativeProcessDefinitionQuery().sql(baseQuerySql + " where KEY_ like #{key}").parameter("key", "%o%").list().size()).isEqualTo(3);
+    assertThat(repositoryService.createNativeProcessDefinitionQuery().sql(baseQuerySql + " where KEY_ like #{key}").parameter("key", "%o%").list()).hasSize(3);
 
-    assertThat(repositoryService.createNativeProcessDefinitionQuery().sql(baseQuerySql + " where NAME_ = #{name}").parameter("name", "One").list().size()).isEqualTo(2);
+    assertThat(repositoryService.createNativeProcessDefinitionQuery().sql(baseQuerySql + " where NAME_ = #{name}").parameter("name", "One").list()).hasSize(2);
 
     // paging
-    assertThat(repositoryService.createNativeProcessDefinitionQuery().sql(baseQuerySql).listPage(0, 2).size()).isEqualTo(2);
-    assertThat(repositoryService.createNativeProcessDefinitionQuery().sql(baseQuerySql).listPage(1, 3).size()).isEqualTo(2);
+    assertThat(repositoryService.createNativeProcessDefinitionQuery().sql(baseQuerySql).listPage(0, 2)).hasSize(2);
+    assertThat(repositoryService.createNativeProcessDefinitionQuery().sql(baseQuerySql).listPage(1, 3)).hasSize(2);
   }
 
   public void testQueryByProcessDefinitionIds() {
@@ -323,7 +323,7 @@ public class ProcessDefinitionQueryTest extends PluggableActivitiTestCase {
   	}
 
   	List<ProcessDefinition> queryResults = repositoryService.createProcessDefinitionQuery().processDefinitionIds(ids).list();
-  	assertThat(ids.size()).isEqualTo(queryResults.size());
+  	assertThat(ids).hasSize(queryResults.size());
   	for (ProcessDefinition processDefinition : queryResults) {
   		assertThat(ids.contains(processDefinition.getId())).isTrue();
   	}

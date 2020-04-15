@@ -54,30 +54,30 @@ public class DeploymentQueryEscapeClauseTest extends AbstractEscapeClauseTestCas
   public void testQueryByNameLike() {
     DeploymentQuery query = repositoryService.createDeploymentQuery().deploymentNameLike("%\\%%");
     assertThat(query.singleResult().getName()).isEqualTo("one%");
-    assertThat(query.list().size()).isEqualTo(1);
+    assertThat(query.list()).hasSize(1);
     assertThat(query.count()).isEqualTo(1);
 
     query = repositoryService.createDeploymentQuery().deploymentNameLike("%\\_%");
     assertThat(query.singleResult().getName()).isEqualTo("two_");
-    assertThat(query.list().size()).isEqualTo(1);
+    assertThat(query.list()).hasSize(1);
     assertThat(query.count()).isEqualTo(1);
   }
 
   public void testQueryByProcessDefinitionKeyLike() {
     DeploymentQuery query = repositoryService.createDeploymentQuery().processDefinitionKeyLike("%\\_%");
-    assertThat(query.list().size()).isEqualTo(1);
+    assertThat(query.list()).hasSize(1);
     assertThat(query.count()).isEqualTo(1);
   }
 
   public void testQueryByTenantIdLike() {
     DeploymentQuery query = repositoryService.createDeploymentQuery().deploymentTenantIdLike("%\\%%");
     assertThat(query.singleResult().getTenantId()).isEqualTo("One%");
-    assertThat(query.list().size()).isEqualTo(1);
+    assertThat(query.list()).hasSize(1);
     assertThat(query.count()).isEqualTo(1);
 
     query = repositoryService.createDeploymentQuery().deploymentTenantIdLike("%\\_%");
     assertThat(query.singleResult().getTenantId()).isEqualTo("Two_");
-    assertThat(query.list().size()).isEqualTo(1);
+    assertThat(query.list()).hasSize(1);
     assertThat(query.count()).isEqualTo(1);
   }
 

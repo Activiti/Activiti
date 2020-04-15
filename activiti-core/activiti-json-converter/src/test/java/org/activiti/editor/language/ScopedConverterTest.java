@@ -37,7 +37,7 @@ public class ScopedConverterTest extends AbstractConverterTest {
     assertThat(flowElement.getId()).isEqualTo("outerSubProcess");
     SubProcess outerSubProcess = (SubProcess) flowElement;
     List<BoundaryEvent> eventList = outerSubProcess.getBoundaryEvents();
-    assertThat(eventList.size()).isEqualTo(1);
+    assertThat(eventList).hasSize(1);
     BoundaryEvent boundaryEvent = eventList.get(0);
     assertThat(boundaryEvent.getId()).isEqualTo("outerBoundaryEvent");
 
@@ -47,7 +47,7 @@ public class ScopedConverterTest extends AbstractConverterTest {
     assertThat(subElement.getId()).isEqualTo("innerSubProcess");
     SubProcess innerSubProcess = (SubProcess) subElement;
     eventList = innerSubProcess.getBoundaryEvents();
-    assertThat(eventList.size()).isEqualTo(1);
+    assertThat(eventList).hasSize(1);
     boundaryEvent = eventList.get(0);
     assertThat(boundaryEvent.getId()).isEqualTo("innerBoundaryEvent");
 
@@ -57,7 +57,7 @@ public class ScopedConverterTest extends AbstractConverterTest {
     UserTask userTask = (UserTask) taskElement;
     assertThat(userTask.getId()).isEqualTo("usertask");
     eventList = userTask.getBoundaryEvents();
-    assertThat(eventList.size()).isEqualTo(1);
+    assertThat(eventList).hasSize(1);
     boundaryEvent = eventList.get(0);
     assertThat(boundaryEvent.getId()).isEqualTo("taskBoundaryEvent");
   }

@@ -1,9 +1,9 @@
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -120,27 +120,22 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants,
                                                                  graphicInfo.getY() - subProcessY);
         shapesArrayNode.add(flowElementNode);
         ObjectNode propertiesNode = objectMapper.createObjectNode();
-        propertiesNode.put(PROPERTY_OVERRIDE_ID,
-                           baseElement.getId());
+        propertiesNode.put(PROPERTY_OVERRIDE_ID, baseElement.getId());
 
         if (baseElement instanceof FlowElement) {
             FlowElement flowElement = (FlowElement) baseElement;
             if (StringUtils.isNotEmpty(flowElement.getName())) {
-                propertiesNode.put(PROPERTY_NAME,
-                                   flowElement.getName());
+                propertiesNode.put(PROPERTY_NAME, flowElement.getName());
             }
 
             if (StringUtils.isNotEmpty(flowElement.getDocumentation())) {
-                propertiesNode.put(PROPERTY_DOCUMENTATION,
-                                   flowElement.getDocumentation());
+                propertiesNode.put(PROPERTY_DOCUMENTATION, flowElement.getDocumentation());
             }
         }
 
-        convertElementToJson(propertiesNode,
-                             baseElement);
+        convertElementToJson(propertiesNode, baseElement);
 
-        flowElementNode.set(EDITOR_SHAPE_PROPERTIES,
-                            propertiesNode);
+        flowElementNode.set(EDITOR_SHAPE_PROPERTIES, propertiesNode);
         ArrayNode outgoingArrayNode = objectMapper.createArrayNode();
 
         if (baseElement instanceof FlowNode) {
@@ -476,55 +471,41 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants,
         ArrayNode propertiesArrayNode = objectMapper.createArrayNode();
         for (FormProperty property : formProperties) {
             ObjectNode propertyItemNode = objectMapper.createObjectNode();
-            propertyItemNode.put(PROPERTY_FORM_ID,
-                                 property.getId());
-            propertyItemNode.put(PROPERTY_FORM_NAME,
-                                 property.getName());
-            propertyItemNode.put(PROPERTY_FORM_TYPE,
-                                 property.getType());
+            propertyItemNode.put(PROPERTY_FORM_ID, property.getId());
+            propertyItemNode.put(PROPERTY_FORM_NAME, property.getName());
+            propertyItemNode.put(PROPERTY_FORM_TYPE, property.getType());
             if (StringUtils.isNotEmpty(property.getExpression())) {
-                propertyItemNode.put(PROPERTY_FORM_EXPRESSION,
-                                     property.getExpression());
+                propertyItemNode.put(PROPERTY_FORM_EXPRESSION, property.getExpression());
             } else {
                 propertyItemNode.putNull(PROPERTY_FORM_EXPRESSION);
             }
             if (StringUtils.isNotEmpty(property.getVariable())) {
-                propertyItemNode.put(PROPERTY_FORM_VARIABLE,
-                                     property.getVariable());
+                propertyItemNode.put(PROPERTY_FORM_VARIABLE, property.getVariable());
             } else {
                 propertyItemNode.putNull(PROPERTY_FORM_VARIABLE);
             }
             if (StringUtils.isNotEmpty(property.getDatePattern())) {
-                propertyItemNode.put(PROPERTY_FORM_DATE_PATTERN,
-                                     property.getDatePattern());
+                propertyItemNode.put(PROPERTY_FORM_DATE_PATTERN, property.getDatePattern());
             }
             if (CollectionUtils.isNotEmpty(property.getFormValues())) {
                 ArrayNode valuesNode = objectMapper.createArrayNode();
                 for (FormValue formValue : property.getFormValues()) {
                     ObjectNode valueNode = objectMapper.createObjectNode();
-                    valueNode.put(PROPERTY_FORM_ENUM_VALUES_NAME,
-                                  formValue.getName());
-                    valueNode.put(PROPERTY_FORM_ENUM_VALUES_ID,
-                                  formValue.getId());
+                    valueNode.put(PROPERTY_FORM_ENUM_VALUES_NAME, formValue.getName());
+                    valueNode.put(PROPERTY_FORM_ENUM_VALUES_ID, formValue.getId());
                     valuesNode.add(valueNode);
                 }
-                propertyItemNode.set(PROPERTY_FORM_ENUM_VALUES,
-                                     valuesNode);
+                propertyItemNode.set(PROPERTY_FORM_ENUM_VALUES, valuesNode);
             }
-            propertyItemNode.put(PROPERTY_FORM_REQUIRED,
-                                 property.isRequired());
-            propertyItemNode.put(PROPERTY_FORM_READABLE,
-                                 property.isReadable());
-            propertyItemNode.put(PROPERTY_FORM_WRITABLE,
-                                 property.isWriteable());
+            propertyItemNode.put(PROPERTY_FORM_REQUIRED, property.isRequired());
+            propertyItemNode.put(PROPERTY_FORM_READABLE, property.isReadable());
+            propertyItemNode.put(PROPERTY_FORM_WRITABLE, property.isWriteable());
 
             propertiesArrayNode.add(propertyItemNode);
         }
 
-        formPropertiesNode.set("formProperties",
-                               propertiesArrayNode);
-        propertiesNode.set(PROPERTY_FORM_PROPERTIES,
-                           formPropertiesNode);
+        formPropertiesNode.set("formProperties", propertiesArrayNode);
+        propertiesNode.set(PROPERTY_FORM_PROPERTIES, formPropertiesNode);
     }
 
     protected void addFieldExtensions(List<FieldExtension> extensions,
@@ -533,23 +514,18 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants,
         ArrayNode itemsNode = objectMapper.createArrayNode();
         for (FieldExtension extension : extensions) {
             ObjectNode propertyItemNode = objectMapper.createObjectNode();
-            propertyItemNode.put(PROPERTY_SERVICETASK_FIELD_NAME,
-                                 extension.getFieldName());
+            propertyItemNode.put(PROPERTY_SERVICETASK_FIELD_NAME, extension.getFieldName());
             if (StringUtils.isNotEmpty(extension.getStringValue())) {
-                propertyItemNode.put(PROPERTY_SERVICETASK_FIELD_STRING_VALUE,
-                                     extension.getStringValue());
+                propertyItemNode.put(PROPERTY_SERVICETASK_FIELD_STRING_VALUE, extension.getStringValue());
             }
             if (StringUtils.isNotEmpty(extension.getExpression())) {
-                propertyItemNode.put(PROPERTY_SERVICETASK_FIELD_EXPRESSION,
-                                     extension.getExpression());
+                propertyItemNode.put(PROPERTY_SERVICETASK_FIELD_EXPRESSION, extension.getExpression());
             }
             itemsNode.add(propertyItemNode);
         }
 
-        fieldExtensionsNode.set("fields",
-                                itemsNode);
-        propertiesNode.set(PROPERTY_SERVICETASK_FIELDS,
-                           fieldExtensionsNode);
+        fieldExtensionsNode.set("fields", itemsNode);
+        propertiesNode.set(PROPERTY_SERVICETASK_FIELDS, fieldExtensionsNode);
     }
 
     protected void addEventProperties(Event event,
@@ -596,10 +572,8 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants,
                 }
             } else if (eventDefinition instanceof TerminateEventDefinition) {
                 TerminateEventDefinition terminateEventDefinition = (TerminateEventDefinition) eventDefinition;
-                propertiesNode.put(PROPERTY_TERMINATE_ALL,
-                                   terminateEventDefinition.isTerminateAll());
-                propertiesNode.put(PROPERTY_TERMINATE_MULTI_INSTANCE,
-                                   terminateEventDefinition.isTerminateMultiInstance());
+                propertiesNode.put(PROPERTY_TERMINATE_ALL, terminateEventDefinition.isTerminateAll());
+                propertiesNode.put(PROPERTY_TERMINATE_MULTI_INSTANCE, terminateEventDefinition.isTerminateMultiInstance());
             }
         }
     }
@@ -607,8 +581,7 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants,
     protected void convertJsonToFormProperties(JsonNode objectNode,
                                                BaseElement element) {
 
-        JsonNode formPropertiesNode = getProperty(PROPERTY_FORM_PROPERTIES,
-                                                  objectNode);
+        JsonNode formPropertiesNode = getProperty(PROPERTY_FORM_PROPERTIES, objectNode);
         if (formPropertiesNode != null) {
             formPropertiesNode = BpmnJsonConverterUtil.validateIfNodeIsTextual(formPropertiesNode);
             JsonNode propertiesArray = formPropertiesNode.get("formProperties");

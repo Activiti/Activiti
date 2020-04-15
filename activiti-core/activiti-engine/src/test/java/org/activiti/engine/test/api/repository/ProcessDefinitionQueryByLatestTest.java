@@ -58,16 +58,16 @@ public class ProcessDefinitionQueryByLatestTest extends PluggableActivitiTestCas
 
 		ProcessDefinitionQuery idQuery1 = repositoryService.createProcessDefinitionQuery().processDefinitionId(processDefinitionIdList.get(0)).latestVersion();
 		List<ProcessDefinition>  processDefinitions = idQuery1.list();
-		assertThat(processDefinitions.size()).isEqualTo(0);
+		assertThat(processDefinitions).hasSize(0);
 
 		ProcessDefinitionQuery idQuery2 = repositoryService.createProcessDefinitionQuery().processDefinitionId(processDefinitionIdList.get(1)).latestVersion();
 		processDefinitions = idQuery2.list();
-		assertThat(processDefinitions.size()).isEqualTo(1);
+		assertThat(processDefinitions).hasSize(1);
 		assertThat(processDefinitions.get(0).getKey()).isEqualTo("testProcess1");
 
 		ProcessDefinitionQuery idQuery3 = repositoryService.createProcessDefinitionQuery().processDefinitionId(processDefinitionIdList.get(2)).latestVersion();
 		processDefinitions = idQuery3.list();
-		assertThat(processDefinitions.size()).isEqualTo(1);
+		assertThat(processDefinitions).hasSize(1);
 		assertThat(processDefinitions.get(0).getKey()).isEqualTo("testProcess2");
 
 		// Undeploy
@@ -83,14 +83,14 @@ public class ProcessDefinitionQueryByLatestTest extends PluggableActivitiTestCas
 		// name
 		ProcessDefinitionQuery nameQuery = repositoryService.createProcessDefinitionQuery().processDefinitionName("one").latestVersion();
 		List<ProcessDefinition> processDefinitions = nameQuery.list();
-		assertThat(processDefinitions.size()).isEqualTo(1);
+		assertThat(processDefinitions).hasSize(1);
 		assertThat(processDefinitions.get(0).getVersion()).isEqualTo(1);
 		assertThat(processDefinitions.get(0).getKey()).isEqualTo("testProcess2");
 
 		// nameLike
 		ProcessDefinitionQuery nameLikeQuery = repositoryService.createProcessDefinitionQuery().processDefinitionName("one").latestVersion();
 		processDefinitions = nameLikeQuery.list();
-		assertThat(processDefinitions.size()).isEqualTo(1);
+		assertThat(processDefinitions).hasSize(1);
 		assertThat(processDefinitions.get(0).getVersion()).isEqualTo(1);
 		assertThat(processDefinitions.get(0).getKey()).isEqualTo("testProcess2");
 
@@ -107,7 +107,7 @@ public class ProcessDefinitionQueryByLatestTest extends PluggableActivitiTestCas
 		// version
 		ProcessDefinitionQuery nameQuery = repositoryService.createProcessDefinitionQuery().processDefinitionVersion(1).latestVersion();
 		List<ProcessDefinition> processDefinitions = nameQuery.list();
-		assertThat(processDefinitions.size()).isEqualTo(1);
+		assertThat(processDefinitions).hasSize(1);
 		assertThat(processDefinitions.get(0).getKey()).isEqualTo("testProcess2");
 
 		// Undeploy
@@ -123,11 +123,11 @@ public class ProcessDefinitionQueryByLatestTest extends PluggableActivitiTestCas
 		// deploymentId
 		ProcessDefinitionQuery deploymentQuery1 = repositoryService.createProcessDefinitionQuery().deploymentId(deploymentIdList.get(0)).latestVersion();
 		List<ProcessDefinition> processDefinitions = deploymentQuery1.list();
-		assertThat(processDefinitions.size()).isEqualTo(0);
+		assertThat(processDefinitions).hasSize(0);
 
 		ProcessDefinitionQuery deploymentQuery2 = repositoryService.createProcessDefinitionQuery().deploymentId(deploymentIdList.get(1)).latestVersion();
 		processDefinitions = deploymentQuery2.list();
-		assertThat(processDefinitions.size()).isEqualTo(1);
+		assertThat(processDefinitions).hasSize(1);
 		assertThat(processDefinitions.get(0).getKey()).isEqualTo("testProcess1");
 
 		// Undeploy

@@ -33,7 +33,7 @@ public class SimpleConverterTest extends AbstractConverterTest {
   }
 
   private void validateModel(BpmnModel model) {
-    assertThat(model.getDefinitionsAttributes().size()).isEqualTo(2);
+    assertThat(model.getDefinitionsAttributes()).hasSize(2);
     assertThat(model.getDefinitionsAttributeValue("http://activiti.com/modeler", "version")).isEqualTo("2.2A");
     assertThat(model.getDefinitionsAttributeValue("http://activiti.com/modeler", "exportDate")).isEqualTo("20140312T10:45:23");
 

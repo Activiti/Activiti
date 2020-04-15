@@ -35,7 +35,7 @@ public class TaskAssigneeTest extends PluggableActivitiTestCase {
 
     // Get task list
     List<Task> tasks = taskService.createTaskQuery().taskAssignee("kermit").list();
-    assertThat(tasks.size()).isEqualTo(1);
+    assertThat(tasks).hasSize(1);
     Task myTask = tasks.get(0);
     assertThat(myTask.getName()).isEqualTo("Schedule meeting");
     assertThat(myTask.getDescription()).isEqualTo("Schedule an engineering meeting for next week with the new hire.");

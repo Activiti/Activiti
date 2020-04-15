@@ -65,7 +65,7 @@ public class BpmnParseTest extends PluggableActivitiTestCase {
 //
 //    // Check if diagram has been created based on Diagram Interchange when  it's not a headless instance
 //    List<String> resourceNames = repositoryService.getDeploymentResourceNames(repositoryService.createProcessDefinitionQuery().singleResult().getDeploymentId());
-//    assertThat(resourceNames.size()).isEqualTo(2);
+//    assertThat(resourceNames).hasSize(2);
 //
 //    assertActivityBounds(bpmnModel, "theStart", 70, 255, 30, 30);
 //    assertActivityBounds(bpmnModel, "task1", 176, 230, 100, 80);
@@ -105,7 +105,7 @@ public class BpmnParseTest extends PluggableActivitiTestCase {
     ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().processDefinitionKey("TestAnnotation").singleResult();
     BpmnModel model = repositoryService.getBpmnModel(processDefinition.getId());
     Process mainProcess = model.getMainProcess();
-    assertThat(mainProcess.getExtensionElements().size()).isEqualTo(0);
+    assertThat(mainProcess.getExtensionElements()).hasSize(0);
   }
 
   public void testParseSwitchedSourceAndTargetRefsForAssociations() {
@@ -125,7 +125,7 @@ public class BpmnParseTest extends PluggableActivitiTestCase {
 
   protected void assertSequenceFlowWayPoints(BpmnModel bpmnModel, String sequenceFlowId, Integer... waypoints) {
     List<GraphicInfo> graphicInfos = bpmnModel.getFlowLocationGraphicInfo(sequenceFlowId);
-    assertThat(graphicInfos.size()).isEqualTo(waypoints.length / 2);
+    assertThat(graphicInfos).hasSize(waypoints.length / 2);
     for (int i = 0; i < waypoints.length; i += 2) {
       Integer x = waypoints[i];
       Integer y = waypoints[i+1];

@@ -44,7 +44,7 @@ public class ManagementServiceTest extends PluggableActivitiTestCase {
     String tablePrefix = processEngineConfiguration.getDatabaseTablePrefix();
 
     TableMetaData tableMetaData = managementService.getTableMetaData(tablePrefix + "ACT_RU_TASK");
-    assertThat(tableMetaData.getColumnTypes().size()).isEqualTo(tableMetaData.getColumnNames().size());
+    assertThat(tableMetaData.getColumnTypes()).hasSize(tableMetaData.getColumnNames().size());
     assertThat(tableMetaData.getColumnNames()).hasSize(22);
 
     int assigneeIndex = tableMetaData.getColumnNames().indexOf("ASSIGNEE_");

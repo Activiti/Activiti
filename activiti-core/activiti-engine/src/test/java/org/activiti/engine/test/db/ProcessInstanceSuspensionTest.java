@@ -36,14 +36,14 @@ public class ProcessInstanceSuspensionTest extends PluggableActivitiTestCase {
 
     // the acquirejobs command sees the job:
     List<TimerJobEntity> acquiredJobs = executeAcquireJobsCommand();
-    assertThat(acquiredJobs.size()).isEqualTo(1);
+    assertThat(acquiredJobs).hasSize(1);
 
     // suspend the process instance:
     runtimeService.suspendProcessInstanceById(pi.getId());
 
     // now, the acquirejobs command does not see the job:
     acquiredJobs = executeAcquireJobsCommand();
-    assertThat(acquiredJobs.size()).isEqualTo(0);
+    assertThat(acquiredJobs).hasSize(0);
   }
 
   @Deployment(resources = { "org/activiti/engine/test/db/oneJobProcess.bpmn20.xml" })
@@ -60,14 +60,14 @@ public class ProcessInstanceSuspensionTest extends PluggableActivitiTestCase {
 
     // the acquire jobs command sees the job:
     List<TimerJobEntity> acquiredJobs = executeAcquireJobsCommand();
-    assertThat(acquiredJobs.size()).isEqualTo(1);
+    assertThat(acquiredJobs).hasSize(1);
 
     // suspend the process instance:
     repositoryService.suspendProcessDefinitionById(pd.getId(), true, null);
 
     // now, the acquire jobs command does not see the job:
     acquiredJobs = executeAcquireJobsCommand();
-    assertThat(acquiredJobs.size()).isEqualTo(0);
+    assertThat(acquiredJobs).hasSize(0);
   }
 
   @Deployment(resources = { "org/activiti/engine/test/db/oneJobProcess.bpmn20.xml" })
@@ -84,14 +84,14 @@ public class ProcessInstanceSuspensionTest extends PluggableActivitiTestCase {
 
     // the acquire jobs command sees the job:
     List<TimerJobEntity> acquiredJobs = executeAcquireJobsCommand();
-    assertThat(acquiredJobs.size()).isEqualTo(1);
+    assertThat(acquiredJobs).hasSize(1);
 
     // suspend the process instance:
     repositoryService.suspendProcessDefinitionById(pd.getId());
 
     // the acquire jobs command still sees the job, because the process instances are not suspended:
     acquiredJobs = executeAcquireJobsCommand();
-    assertThat(acquiredJobs.size()).isEqualTo(1);
+    assertThat(acquiredJobs).hasSize(1);
   }
 
   @Deployment
@@ -116,7 +116,7 @@ public class ProcessInstanceSuspensionTest extends PluggableActivitiTestCase {
       }
 
     });
-    assertThat(jobs.size()).isEqualTo(1);
+    assertThat(jobs).hasSize(1);
 
     // Suspend process instance
     runtimeService.suspendProcessInstanceById(procInst.getId());
@@ -130,7 +130,7 @@ public class ProcessInstanceSuspensionTest extends PluggableActivitiTestCase {
       }
     });
 
-    assertThat(jobs.size()).isEqualTo(0);
+    assertThat(jobs).hasSize(0);
   }
 
   protected void makeSureJobDue(final Job job) {

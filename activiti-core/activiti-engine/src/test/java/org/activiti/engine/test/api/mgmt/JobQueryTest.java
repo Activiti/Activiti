@@ -309,7 +309,7 @@ public class JobQueryTest extends PluggableActivitiTestCase {
     assertThat(job).isNotNull();
 
     List<Job> list = managementService.createJobQuery().withException().list();
-    assertThat(list.size()).isEqualTo(1);
+    assertThat(list).hasSize(1);
 
     deleteJobInDatabase();
 
@@ -320,7 +320,7 @@ public class JobQueryTest extends PluggableActivitiTestCase {
     assertThat(job).isNotNull();
 
     list = managementService.createJobQuery().withException().list();
-    assertThat(list.size()).isEqualTo(1);
+    assertThat(list).hasSize(1);
 
     deleteJobInDatabase();
 
@@ -362,7 +362,7 @@ public class JobQueryTest extends PluggableActivitiTestCase {
     TimerJobQuery query = managementService.createTimerJobQuery().timers().executable().orderByJobRetries().asc().orderByJobDuedate().desc();
 
     List<Job> jobs = query.list();
-    assertThat(jobs.size()).isEqualTo(3);
+    assertThat(jobs).hasSize(3);
 
     assertThat(jobs.get(0).getRetries()).isEqualTo(2);
     assertThat(jobs.get(1).getRetries()).isEqualTo(3);
@@ -422,7 +422,7 @@ public class JobQueryTest extends PluggableActivitiTestCase {
   }
 
   private void verifyQueryResults(JobQuery query, int countExpected) {
-    assertThat(query.list().size()).isEqualTo(countExpected);
+    assertThat(query.list()).hasSize(countExpected);
     assertThat(query.count()).isEqualTo(countExpected);
 
     if (countExpected == 1) {
@@ -440,7 +440,7 @@ public class JobQueryTest extends PluggableActivitiTestCase {
   }
 
   private void verifyQueryResults(TimerJobQuery query, int countExpected) {
-    assertThat(query.list().size()).isEqualTo(countExpected);
+    assertThat(query.list()).hasSize(countExpected);
     assertThat(query.count()).isEqualTo(countExpected);
 
     if (countExpected == 1) {

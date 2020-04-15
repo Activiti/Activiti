@@ -59,11 +59,11 @@ public class ProcessWithCompensationConverterTest {
       }
     }, false, false);
 
-    assertThat(bpmnModel1.getLocationMap().size()).isEqualTo(10);
-    assertThat(bpmnModel2.getLocationMap().size()).isEqualTo(10);
+    assertThat(bpmnModel1.getLocationMap()).hasSize(10);
+    assertThat(bpmnModel2.getLocationMap()).hasSize(10);
 
-    assertThat(bpmnModel1.getFlowLocationMap().size()).isEqualTo(7);
-    assertThat(bpmnModel2.getFlowLocationMap().size()).isEqualTo(7);
+    assertThat(bpmnModel1.getFlowLocationMap()).hasSize(7);
+    assertThat(bpmnModel2.getFlowLocationMap()).hasSize(7);
   }
 
 }

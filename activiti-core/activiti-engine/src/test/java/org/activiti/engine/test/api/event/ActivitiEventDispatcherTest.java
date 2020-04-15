@@ -59,7 +59,7 @@ public abstract class ActivitiEventDispatcherTest extends PluggableActivitiTestC
     dispatcher.dispatchEvent(event1);
     dispatcher.dispatchEvent(event2);
 
-    assertThat(newListener.getEventsReceived().size()).isEqualTo(2);
+    assertThat(newListener.getEventsReceived()).hasSize(2);
     assertThat(newListener.getEventsReceived().get(0)).isEqualTo(event1);
     assertThat(newListener.getEventsReceived().get(1)).isEqualTo(event2);
 
@@ -92,7 +92,7 @@ public abstract class ActivitiEventDispatcherTest extends PluggableActivitiTestC
     dispatcher.dispatchEvent(event2);
     dispatcher.dispatchEvent(event3);
 
-    assertThat(newListener.getEventsReceived().size()).isEqualTo(2);
+    assertThat(newListener.getEventsReceived()).hasSize(2);
     assertThat(newListener.getEventsReceived().get(0)).isEqualTo(event1);
     assertThat(newListener.getEventsReceived().get(1)).isEqualTo(event2);
 
@@ -204,7 +204,7 @@ public abstract class ActivitiEventDispatcherTest extends PluggableActivitiTestC
     ActivitiEventImpl event = new ActivitiEventImpl(ActivitiEventType.ENTITY_CREATED);
     try {
       dispatcher.dispatchEvent(event);
-      assertThat(secondListener.getEventsReceived().size()).isEqualTo(1);
+      assertThat(secondListener.getEventsReceived()).hasSize(1);
     } catch (Throwable t) {
       fail("No exception expected");
     }
@@ -225,7 +225,7 @@ public abstract class ActivitiEventDispatcherTest extends PluggableActivitiTestC
         .satisfies(ae -> assertThat(ae.getCause()).hasMessage("Test exception"));
 
     // Second listener should NOT have been called
-    assertThat(secondListener.getEventsReceived().size()).isEqualTo(0);
+    assertThat(secondListener.getEventsReceived()).hasSize(0);
   }
 
   /**

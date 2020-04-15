@@ -1289,34 +1289,6 @@ public class FullHistoryTest extends ResourceActivitiTestCase {
         assertEquals(0,
                      historyService.createHistoricProcessInstanceQuery().variableValueGreaterThan("longVar",
                                                                                                   12345L).count());
-        // assertEquals(1,
-        // historyService.createHistoricProcessInstanceQuery().variableValueGreaterThan("longVar",
-        // 12344L).count());
-        // assertEquals(1,
-        // historyService.createHistoricProcessInstanceQuery().variableValueGreaterThanOrEqual("longVar",
-        // 12345L).count());
-        // assertEquals(1,
-        // historyService.createHistoricProcessInstanceQuery().variableValueGreaterThanOrEqual("longVar",
-        // 12344L).count());
-        // assertEquals(0,
-        // historyService.createHistoricProcessInstanceQuery().variableValueGreaterThanOrEqual("longVar",
-        // 12346L).count());
-        //
-        // assertEquals(0,
-        // historyService.createHistoricProcessInstanceQuery().variableValueLessThan("longVar",
-        // 12345L).count());
-        // assertEquals(1,
-        // historyService.createHistoricProcessInstanceQuery().variableValueLessThan("longVar",
-        // 12346L).count());
-        // assertEquals(1,
-        // historyService.createHistoricProcessInstanceQuery().variableValueLessThanOrEqual("longVar",
-        // 12345L).count());
-        // assertEquals(1,
-        // historyService.createHistoricProcessInstanceQuery().variableValueLessThanOrEqual("longVar",
-        // 12346L).count());
-        // assertEquals(0,
-        // historyService.createHistoricProcessInstanceQuery().variableValueLessThanOrEqual("longVar",
-        // 12344L).count());
     }
 
     @Deployment(resources = {"org/activiti/standalone/history/FullHistoryTest.testVariableUpdatesAreLinkedToActivity.bpmn20.xml"})

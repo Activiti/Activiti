@@ -75,11 +75,11 @@ public class DuplicateVariableInsertTest extends PluggableActivitiTestCase {
     secondInsertThread.join();
 
     // One of the 2 threads should get an optimistic lock exception
-    assertThat(exceptions.size()).isEqualTo(1);
+    assertThat(exceptions).hasSize(1);
 
     // One variable should be set
     Map<String, Object> variables = runtimeService.getVariables(processInstance.getId());
-    assertThat(variables.size()).isEqualTo(1);
+    assertThat(variables).hasSize(1);
     assertThat(variables.get("var")).isEqualTo("12345");
     runtimeService.deleteProcessInstance(processInstance.getId(), "ShouldNotFail");
   }
@@ -128,12 +128,12 @@ public class DuplicateVariableInsertTest extends PluggableActivitiTestCase {
     secondInsertThread.join();
 
     // One of the 2 threads should get an optimistic lock exception
-    assertThat(exceptions.size()).isEqualTo(1);
+    assertThat(exceptions).hasSize(1);
     assertThat(exceptions.get(0)).isInstanceOf(ActivitiOptimisticLockingException.class);
 
     // One variable should be set
     Map<String, Object> variables = runtimeService.getVariables(processInstance.getId());
-    assertThat(variables.size()).isEqualTo(1);
+    assertThat(variables).hasSize(1);
     assertThat(variables.get("var")).isEqualTo("12345");
     runtimeService.deleteProcessInstance(processInstance.getId(), "ShouldNotFail");
   }

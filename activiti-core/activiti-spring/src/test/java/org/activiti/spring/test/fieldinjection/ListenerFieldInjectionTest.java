@@ -50,26 +50,26 @@ public class ListenerFieldInjectionTest extends SpringActivitiTestCase {
       // Process start execution listener
       Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
       Map<String, Object> variables = runtimeService.getVariables(processInstance.getId());
-      assertThat(variables.size()).isEqualTo(2);
+      assertThat(variables).hasSize(2);
       assertThat(((Number) variables.get("processStartValue")).intValue()).isEqualTo(4200);
 
       // Sequence flow execution listener
       taskService.complete(task.getId());
       task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
       variables = runtimeService.getVariables(processInstance.getId());
-      assertThat(variables.size()).isEqualTo(3);
+      assertThat(variables).hasSize(3);
       assertThat(((Number) variables.get("sequenceFlowValue")).intValue()).isEqualTo(420000);
 
       // task listeners
       taskService.complete(task.getId());
       task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
       variables = runtimeService.getVariables(processInstance.getId());
-      assertThat(variables.size()).isEqualTo(4);
+      assertThat(variables).hasSize(4);
       assertThat(((Number) variables.get("taskCreateValue")).intValue()).isEqualTo(210000);
 
       taskService.complete(task.getId());
       variables = runtimeService.getVariables(processInstance.getId());
-      assertThat(variables.size()).isEqualTo(5);
+      assertThat(variables).hasSize(5);
       assertThat(((Number) variables.get("taskCompleteValue")).intValue()).isEqualTo(105000);
 
       assertThat(TestExecutionListener.INSTANCE_COUNT.get()).isEqualTo(1);

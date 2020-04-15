@@ -121,7 +121,7 @@ public class ChangeConfigAndRebootEngineTest extends ResourceActivitiTestCase {
 
   protected void assertExecutions(ProcessInstance processInstance, boolean expectedCountIsEnabledFlag) {
     List<Execution> executions = runtimeService.createExecutionQuery().processInstanceId(processInstance.getId()).list();
-    assertThat(executions.size()).isEqualTo(2);
+    assertThat(executions).hasSize(2);
     for (Execution execution : executions) {
       CountingExecutionEntity countingExecutionEntity = (CountingExecutionEntity) execution;
       assertThat(countingExecutionEntity.isCountEnabled()).isEqualTo(expectedCountIsEnabledFlag);

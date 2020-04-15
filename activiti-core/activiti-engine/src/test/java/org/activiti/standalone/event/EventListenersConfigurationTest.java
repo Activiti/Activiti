@@ -43,7 +43,7 @@ public class EventListenersConfigurationTest extends ResourceActivitiTestCase {
     ActivitiEvent event = new ActivitiEventImpl(ActivitiEventType.CUSTOM);
     processEngineConfiguration.getEventDispatcher().dispatchEvent(event);
 
-    assertThat(listener.getEventsReceived().size()).isEqualTo(1);
+    assertThat(listener.getEventsReceived()).hasSize(1);
     assertThat(listener.getEventsReceived().get(0)).isEqualTo(event);
   }
 }

@@ -175,7 +175,7 @@ public class TransientVariablesTest extends PluggableActivitiTestCase {
         .start();
     Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     assertThat(task.getName()).isEqualTo("A");
-    assertThat(runtimeService.getVariables(processInstance.getId()).size()).isEqualTo(0);
+    assertThat(runtimeService.getVariables(processInstance.getId())).hasSize(0);
 
     processInstance =runtimeService.createProcessInstanceBuilder()
         .processDefinitionKey("transientVarsTest")
@@ -183,7 +183,7 @@ public class TransientVariablesTest extends PluggableActivitiTestCase {
         .start();
     task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     assertThat(task.getName()).isEqualTo("B");
-    assertThat(runtimeService.getVariables(processInstance.getId()).size()).isEqualTo(0);
+    assertThat(runtimeService.getVariables(processInstance.getId())).hasSize(0);
 
     processInstance = runtimeService.createProcessInstanceBuilder()
         .processDefinitionKey("transientVarsTest")
@@ -191,7 +191,7 @@ public class TransientVariablesTest extends PluggableActivitiTestCase {
         .start();
     task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     assertThat(task.getName()).isEqualTo("Default");
-    assertThat(runtimeService.getVariables(processInstance.getId()).size()).isEqualTo(0);
+    assertThat(runtimeService.getVariables(processInstance.getId())).hasSize(0);
   }
 
   @Deployment
@@ -205,7 +205,7 @@ public class TransientVariablesTest extends PluggableActivitiTestCase {
         .start();
     Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     assertThat(task.getName()).isEqualTo("A");
-    assertThat(runtimeService.getVariables(processInstance.getId()).size()).isEqualTo(0);
+    assertThat(runtimeService.getVariables(processInstance.getId())).hasSize(0);
 
     processInstance =runtimeService.createProcessInstanceBuilder()
         .processDefinitionId(processDefinitionId)
@@ -213,7 +213,7 @@ public class TransientVariablesTest extends PluggableActivitiTestCase {
         .start();
     task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     assertThat(task.getName()).isEqualTo("B");
-    assertThat(runtimeService.getVariables(processInstance.getId()).size()).isEqualTo(0);
+    assertThat(runtimeService.getVariables(processInstance.getId())).hasSize(0);
 
     processInstance = runtimeService.createProcessInstanceBuilder()
         .processDefinitionId(processDefinitionId)
@@ -221,7 +221,7 @@ public class TransientVariablesTest extends PluggableActivitiTestCase {
         .start();
     task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     assertThat(task.getName()).isEqualTo("Default");
-    assertThat(runtimeService.getVariables(processInstance.getId()).size()).isEqualTo(0);
+    assertThat(runtimeService.getVariables(processInstance.getId())).hasSize(0);
   }
 
   @Deployment
@@ -233,7 +233,7 @@ public class TransientVariablesTest extends PluggableActivitiTestCase {
         .start();
     Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     assertThat(task.getName()).isEqualTo("A");
-    assertThat(runtimeService.getVariables(processInstance.getId()).size()).isEqualTo(0);
+    assertThat(runtimeService.getVariables(processInstance.getId())).hasSize(0);
 
     processInstance =runtimeService.createProcessInstanceBuilder()
         .messageName("myMessage")
@@ -241,7 +241,7 @@ public class TransientVariablesTest extends PluggableActivitiTestCase {
         .start();
     task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     assertThat(task.getName()).isEqualTo("B");
-    assertThat(runtimeService.getVariables(processInstance.getId()).size()).isEqualTo(0);
+    assertThat(runtimeService.getVariables(processInstance.getId())).hasSize(0);
 
     processInstance = runtimeService.createProcessInstanceBuilder()
         .messageName("myMessage")
@@ -249,7 +249,7 @@ public class TransientVariablesTest extends PluggableActivitiTestCase {
         .start();
     task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     assertThat(task.getName()).isEqualTo("Default");
-    assertThat(runtimeService.getVariables(processInstance.getId()).size()).isEqualTo(0);
+    assertThat(runtimeService.getVariables(processInstance.getId())).hasSize(0);
   }
 
 

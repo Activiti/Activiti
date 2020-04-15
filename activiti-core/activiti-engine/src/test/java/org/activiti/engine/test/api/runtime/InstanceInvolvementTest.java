@@ -43,7 +43,7 @@ public class InstanceInvolvementTest extends PluggableActivitiTestCase {
 
     // there are supposed to be 3 tasks
     List<Task> tasks = taskService.createTaskQuery().processInstanceId(instanceId).list();
-    assertThat(tasks.size()).isEqualTo(3);
+    assertThat(tasks).hasSize(3);
 
     // "user1" should now be involved as the starter of the new process
     // instance. "user2" is still not involved.
@@ -77,7 +77,7 @@ public class InstanceInvolvementTest extends PluggableActivitiTestCase {
     assertThat(containsIdentityLink(identityLinks, "user2", "participant")).isTrue();
     assertThat(containsIdentityLink(identityLinks, "user3", "participant")).isTrue();
     assertThat(containsIdentityLink(identityLinks, "user4", "custom")).isTrue();
-    assertThat(identityLinks.size()).isEqualTo(4);
+    assertThat(identityLinks).hasSize(4);
 
     // "user1" completes the remaining task, ending the process
     completeTaskAsUser(tasks.get(2).getId(), "user1");

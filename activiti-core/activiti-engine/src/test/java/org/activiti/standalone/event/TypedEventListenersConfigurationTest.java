@@ -43,7 +43,7 @@ public class TypedEventListenersConfigurationTest extends ResourceActivitiTestCa
     ActivitiEvent event = new ActivitiEventImpl(ActivitiEventType.CUSTOM);
     processEngineConfiguration.getEventDispatcher().dispatchEvent(event);
 
-    assertThat(listener.getEventsReceived().size()).isEqualTo(1);
+    assertThat(listener.getEventsReceived()).hasSize(1);
     assertThat(listener.getEventsReceived().get(0)).isEqualTo(event);
     listener.clearEventsReceived();
 
@@ -53,7 +53,7 @@ public class TypedEventListenersConfigurationTest extends ResourceActivitiTestCa
     event = new ActivitiEventImpl(ActivitiEventType.ENTITY_UPDATED);
     processEngineConfiguration.getEventDispatcher().dispatchEvent(event);
 
-    assertThat(listener.getEventsReceived().size()).isEqualTo(2);
+    assertThat(listener.getEventsReceived()).hasSize(2);
     assertThat(listener.getEventsReceived().get(0).getType()).isEqualTo(ActivitiEventType.ENTITY_DELETED);
     assertThat(listener.getEventsReceived().get(1).getType()).isEqualTo(ActivitiEventType.ENTITY_UPDATED);
     listener.clearEventsReceived();

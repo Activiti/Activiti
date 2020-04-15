@@ -45,7 +45,7 @@ public class CommentEventsTest extends PluggableActivitiTestCase {
 
       // Create link-comment
       Comment comment = taskService.addComment(task.getId(), task.getProcessInstanceId(), "comment");
-      assertThat(listener.getEventsReceived().size()).isEqualTo(2);
+      assertThat(listener.getEventsReceived()).hasSize(2);
       ActivitiEntityEvent event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
       assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_CREATED);
       assertThat(event.getProcessInstanceId()).isEqualTo(processInstance.getId());
@@ -60,7 +60,7 @@ public class CommentEventsTest extends PluggableActivitiTestCase {
 
       // Finally, delete comment
       taskService.deleteComment(comment.getId());
-      assertThat(listener.getEventsReceived().size()).isEqualTo(1);
+      assertThat(listener.getEventsReceived()).hasSize(1);
       event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
       assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_DELETED);
       assertThat(event.getProcessInstanceId()).isEqualTo(processInstance.getId());
@@ -81,7 +81,7 @@ public class CommentEventsTest extends PluggableActivitiTestCase {
 
         // Create link-comment
         Comment comment = taskService.addComment(task.getId(), null, "comment");
-        assertThat(listener.getEventsReceived().size()).isEqualTo(2);
+        assertThat(listener.getEventsReceived()).hasSize(2);
         ActivitiEntityEvent event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
         assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_CREATED);
         assertThat(event.getProcessInstanceId()).isNull();
@@ -96,7 +96,7 @@ public class CommentEventsTest extends PluggableActivitiTestCase {
 
         // Finally, delete comment
         taskService.deleteComment(comment.getId());
-        assertThat(listener.getEventsReceived().size()).isEqualTo(1);
+        assertThat(listener.getEventsReceived()).hasSize(1);
         event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
         assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_DELETED);
         assertThat(event.getProcessInstanceId()).isNull();

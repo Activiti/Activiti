@@ -28,7 +28,7 @@ public class MessageFlowConverterTest extends AbstractConverterTest {
   }
 
   private void validateModel(BpmnModel model) {
-    assertThat(model.getDataStores().size()).isEqualTo(1);
+    assertThat(model.getDataStores()).hasSize(1);
     DataStore dataStore = model.getDataStore("DATASTORE_1");
     assertThat(dataStore).isNotNull();
     assertThat(dataStore.getId()).isEqualTo("DATASTORE_1");
@@ -47,7 +47,7 @@ public class MessageFlowConverterTest extends AbstractConverterTest {
     assertThat(messageFlow.getSourceRef()).isEqualTo("task2");
     assertThat(messageFlow.getTargetRef()).isEqualTo("task3");
 
-    assertThat(model.getPools().size()).isEqualTo(2);
+    assertThat(model.getPools()).hasSize(2);
     Pool pool = model.getPools().get(0);
     assertThat(pool.getId()).isEqualTo("participant1");
     assertThat(pool.getName()).isEqualTo("Participant 1");

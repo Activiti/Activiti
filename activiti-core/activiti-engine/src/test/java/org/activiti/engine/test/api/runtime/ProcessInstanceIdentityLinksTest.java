@@ -46,11 +46,11 @@ public class ProcessInstanceIdentityLinksTest extends PluggableActivitiTestCase 
     assertThat(identityLink.getType()).isEqualTo(IdentityLinkType.PARTICIPANT);
     assertThat(identityLink.getProcessInstanceId()).isEqualTo(processInstanceId);
 
-    assertThat(identityLinks.size()).isEqualTo(1);
+    assertThat(identityLinks).hasSize(1);
 
     runtimeService.deleteParticipantUser(processInstanceId, "kermit");
 
-    assertThat(runtimeService.getIdentityLinksForProcessInstance(processInstanceId).size()).isEqualTo(0);
+    assertThat(runtimeService.getIdentityLinksForProcessInstance(processInstanceId)).hasSize(0);
   }
 
   @Deployment(resources = "org/activiti/engine/test/api/runtime/IdentityLinksProcess.bpmn20.xml")
@@ -69,17 +69,17 @@ public class ProcessInstanceIdentityLinksTest extends PluggableActivitiTestCase 
     assertThat(identityLink.getType()).isEqualTo(IdentityLinkType.PARTICIPANT);
     assertThat(identityLink.getProcessInstanceId()).isEqualTo(processInstanceId);
 
-    assertThat(identityLinks.size()).isEqualTo(1);
+    assertThat(identityLinks).hasSize(1);
 
     if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
       List<Event> processInstanceEvents = runtimeService.getProcessInstanceEvents(processInstanceId);
-      assertThat(processInstanceEvents.size()).isEqualTo(1);
+      assertThat(processInstanceEvents).hasSize(1);
       Event processInstanceEvent = processInstanceEvents.get(0);
       assertThat(processInstanceEvent.getAction()).isEqualTo(Event.ACTION_ADD_GROUP_LINK);
       List<String> processInstanceEventMessageParts = processInstanceEvent.getMessageParts();
       assertThat(processInstanceEventMessageParts.get(0)).isEqualTo("muppets");
       assertThat(processInstanceEventMessageParts.get(1)).isEqualTo(IdentityLinkType.PARTICIPANT);
-      assertThat(processInstanceEventMessageParts.size()).isEqualTo(2);
+      assertThat(processInstanceEventMessageParts).hasSize(2);
     }
 
     runtimeService.deleteParticipantGroup(processInstanceId, "muppets");
@@ -91,11 +91,11 @@ public class ProcessInstanceIdentityLinksTest extends PluggableActivitiTestCase 
       List<String> processInstanceEventMessageParts = processIsntanceEvent.getMessageParts();
       assertThat(processInstanceEventMessageParts.get(0)).isEqualTo("muppets");
       assertThat(processInstanceEventMessageParts.get(1)).isEqualTo(IdentityLinkType.PARTICIPANT);
-      assertThat(processInstanceEventMessageParts.size()).isEqualTo(2);
-      assertThat(processInstanceEvents.size()).isEqualTo(2);
+      assertThat(processInstanceEventMessageParts).hasSize(2);
+      assertThat(processInstanceEvents).hasSize(2);
     }
 
-    assertThat(runtimeService.getIdentityLinksForProcessInstance(processInstanceId).size()).isEqualTo(0);
+    assertThat(runtimeService.getIdentityLinksForProcessInstance(processInstanceId)).hasSize(0);
   }
 
   private Event findProcessInstanceEvent(List<Event> processInstanceEvents, String action) {
@@ -123,11 +123,11 @@ public class ProcessInstanceIdentityLinksTest extends PluggableActivitiTestCase 
     assertThat(identityLink.getType()).isEqualTo("interestee");
     assertThat(identityLink.getProcessInstanceId()).isEqualTo(processInstanceId);
 
-    assertThat(identityLinks.size()).isEqualTo(1);
+    assertThat(identityLinks).hasSize(1);
 
     runtimeService.deleteUserIdentityLink(processInstanceId, "kermit", "interestee");
 
-    assertThat(runtimeService.getIdentityLinksForProcessInstance(processInstanceId).size()).isEqualTo(0);
+    assertThat(runtimeService.getIdentityLinksForProcessInstance(processInstanceId)).hasSize(0);
   }
 
   @Deployment(resources = "org/activiti/engine/test/api/runtime/IdentityLinksProcess.bpmn20.xml")
@@ -146,11 +146,11 @@ public class ProcessInstanceIdentityLinksTest extends PluggableActivitiTestCase 
     assertThat(identityLink.getType()).isEqualTo("playing");
     assertThat(identityLink.getProcessInstanceId()).isEqualTo(processInstanceId);
 
-    assertThat(identityLinks.size()).isEqualTo(1);
+    assertThat(identityLinks).hasSize(1);
 
     runtimeService.deleteGroupIdentityLink(processInstanceId, "muppets", "playing");
 
-    assertThat(runtimeService.getIdentityLinksForProcessInstance(processInstanceId).size()).isEqualTo(0);
+    assertThat(runtimeService.getIdentityLinksForProcessInstance(processInstanceId)).hasSize(0);
   }
 
 }

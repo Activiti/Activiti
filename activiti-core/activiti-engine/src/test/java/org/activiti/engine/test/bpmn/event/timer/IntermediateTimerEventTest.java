@@ -59,7 +59,7 @@ public class IntermediateTimerEventTest extends PluggableActivitiTestCase {
 
     ProcessInstance pi = runtimeService.startProcessInstanceByKey("timerEventWithStartAndDuration");
     List<Task> tasks = taskService.createTaskQuery().list();
-    assertThat(tasks.size()).isEqualTo(1);
+    assertThat(tasks).hasSize(1);
     Task task = tasks.get(0);
     assertThat(task.getName()).isEqualTo("Task A");
 
@@ -87,7 +87,7 @@ public class IntermediateTimerEventTest extends PluggableActivitiTestCase {
     assertThat(jobQuery.count()).isEqualTo(0);
 
     tasks = taskService.createTaskQuery().list();
-    assertThat(tasks.size()).isEqualTo(1);
+    assertThat(tasks).hasSize(1);
     task = tasks.get(0);
     assertThat(task.getName()).isEqualTo("Task B");
     taskService.complete(task.getId());
@@ -115,7 +115,7 @@ public class IntermediateTimerEventTest extends PluggableActivitiTestCase {
 
     // After setting the clock to one second in the future the timers should fire
     List<Job> jobs = managementService.createTimerJobQuery().executable().list();
-    assertThat(jobs.size()).isEqualTo(2);
+    assertThat(jobs).hasSize(2);
     for (Job job : jobs) {
       managementService.moveTimerToExecutableJob(job.getId());
       managementService.executeJob(job.getId());

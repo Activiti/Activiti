@@ -56,7 +56,7 @@ public class DefaultProcessValidatorTest {
       assertThat(bpmnModel).isNotNull();
 
     List<ValidationError> allErrors = processValidator.validate(bpmnModel);
-    assertThat(allErrors.size()).isEqualTo(66);
+    assertThat(allErrors).hasSize(66);
 
     String setName = ValidatorSetNames.ACTIVITI_EXECUTABLE_PROCESS; // shortening
                                                                     // it a
@@ -243,7 +243,7 @@ public class DefaultProcessValidatorTest {
 
         assertThat(bpmnModel).isNotNull();
         List<ValidationError> allErrors = processValidator.validate(bpmnModel);
-        assertThat(allErrors.size()).isEqualTo(1);
+        assertThat(allErrors).hasSize(1);
         assertThat(allErrors.get(0).isWarning()).isTrue();
     }
 
@@ -297,7 +297,7 @@ public class DefaultProcessValidatorTest {
     }
 
     List<ValidationError> errors = processValidator.validate(bpmnModel);
-    assertThat(errors.size()).isEqualTo(1);
+    assertThat(errors).hasSize(1);
   }
 
   /*
@@ -323,7 +323,7 @@ public class DefaultProcessValidatorTest {
     bpmnModel.addProcess(process);
 
     List<ValidationError> errors = processValidator.validate(bpmnModel);
-    assertThat(errors.size()).isEqualTo(3);
+    assertThat(errors).hasSize(3);
     for (ValidationError error : errors) {
       assertThat(error.isWarning()).isTrue();
       assertThat(error.getValidatorSetName()).isNotNull();
@@ -359,7 +359,7 @@ public class DefaultProcessValidatorTest {
   private List<ValidationError> findErrors(List<ValidationError> errors, String validatorSetName,
       String problemName, int expectedNrOfProblems) {
     List<ValidationError> results = findErrors(errors, validatorSetName, problemName);
-    assertThat(results.size()).isEqualTo(expectedNrOfProblems);
+    assertThat(results).hasSize(expectedNrOfProblems);
     for (ValidationError result : results) {
       assertThat(result.getValidatorSetName()).isEqualTo(validatorSetName);
       assertThat(result.getProblem()).isEqualTo(problemName);

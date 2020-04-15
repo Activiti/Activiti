@@ -41,7 +41,7 @@ public class CustomFlowExecutionListenerTest extends ResourceActivitiTestCase {
     assertThat(variable.getVariableName()).isEqualTo("flow1_activiti_conditions");
     @SuppressWarnings("unchecked")
     List<String> conditions = (List<String>) variable.getValue();
-    assertThat(conditions.size()).isEqualTo(2);
+    assertThat(conditions).hasSize(2);
     assertThat(conditions.get(0)).isEqualTo("hello");
     assertThat(conditions.get(1)).isEqualTo("world");
   }

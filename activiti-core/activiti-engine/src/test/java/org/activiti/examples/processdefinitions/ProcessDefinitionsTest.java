@@ -45,7 +45,7 @@ public class ProcessDefinitionsTest extends PluggableActivitiTestCase {
 
     assertThat(processDefinitions).isNotNull();
 
-    assertThat(processDefinitions.size()).isEqualTo(5);
+    assertThat(processDefinitions).hasSize(5);
 
     ProcessDefinition processDefinition = processDefinitions.get(0);
     assertThat(processDefinition.getKey()).isEqualTo("EN");
@@ -82,7 +82,7 @@ public class ProcessDefinitionsTest extends PluggableActivitiTestCase {
     queryDeploymentIds.add(processDefinitions.get(1).getDeploymentId());
     List<ProcessDefinition> queryProcessDefinitions = repositoryService.createProcessDefinitionQuery().deploymentIds(queryDeploymentIds).orderByProcessDefinitionKey().asc()
         .orderByProcessDefinitionVersion().desc().list();
-    assertThat(queryProcessDefinitions.size()).isEqualTo(2);
+    assertThat(queryProcessDefinitions).hasSize(2);
 
     processDefinition = queryProcessDefinitions.get(0);
     assertThat(processDefinition.getKey()).isEqualTo("EN");
@@ -97,7 +97,7 @@ public class ProcessDefinitionsTest extends PluggableActivitiTestCase {
     queryDeploymentIds.add(processDefinitions.get(3).getDeploymentId());
     queryDeploymentIds.add(processDefinitions.get(4).getDeploymentId());
     queryProcessDefinitions = repositoryService.createProcessDefinitionQuery().deploymentIds(queryDeploymentIds).list();
-    assertThat(queryProcessDefinitions.size()).isEqualTo(3);
+    assertThat(queryProcessDefinitions).hasSize(3);
 
     processDefinition = queryProcessDefinitions.get(0);
     assertThat(processDefinition.getKey()).isEqualTo("EN");
@@ -122,7 +122,7 @@ public class ProcessDefinitionsTest extends PluggableActivitiTestCase {
     List<ProcessDefinition> processDefinitions = repositoryService.createProcessDefinitionQuery().orderByProcessDefinitionKey().asc().orderByProcessDefinitionVersion().desc().list();
 
     assertThat(processDefinitions).isNotNull();
-    assertThat(processDefinitions.size()).isEqualTo(2);
+    assertThat(processDefinitions).hasSize(2);
 
     ProcessDefinition processDefinition = processDefinitions.get(0);
     assertThat(processDefinition.getKey()).isEqualTo("IDR");

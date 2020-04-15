@@ -52,7 +52,7 @@ public class RuntimeVariablesTest extends PluggableActivitiTestCase {
     Set<String> executionIds = new HashSet<String>();
     executionIds.add(processInstance1.getId());
     List<VariableInstance> variables = runtimeService.getVariableInstancesByExecutionIds(executionIds);
-    assertThat(variables.size()).isEqualTo(1);
+    assertThat(variables).hasSize(1);
     checkVariable(processInstance1.getId(), "executionVar1", "helloWorld1", variables);
 
     // 2 process
@@ -60,7 +60,7 @@ public class RuntimeVariablesTest extends PluggableActivitiTestCase {
     executionIds.add(processInstance1.getId());
     executionIds.add(processInstance2.getId());
     variables = runtimeService.getVariableInstancesByExecutionIds(executionIds);
-    assertThat(variables.size()).isEqualTo(2);
+    assertThat(variables).hasSize(2);
     checkVariable(processInstance1.getId(), "executionVar1", "helloWorld1", variables);
     checkVariable(processInstance2.getId(), "executionVar2", "helloWorld2", variables);
   }

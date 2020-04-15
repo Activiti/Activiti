@@ -260,7 +260,7 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
 
     // Completing the task once should only destroy ONE multi instance
     List<Task> tasks = taskService.createTaskQuery().processInstanceId(pi.getId()).taskDefinitionKey("task").list();
-    assertThat(tasks.size()).isEqualTo(5);
+    assertThat(tasks).hasSize(5);
 
     for (int i=0; i<5; i++) {
     	taskService.complete(tasks.get(i).getId());
@@ -391,7 +391,7 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
     ProcessInstance pi = runtimeService.startProcessInstanceByKey("terminateEndEventExample");
 
     List<Task> tasks = taskService.createTaskQuery().processInstanceId(pi.getId()).list();
-    assertThat(tasks.size()).isEqualTo(2);
+    assertThat(tasks).hasSize(2);
 
     Task task = taskService.createTaskQuery().processInstanceId(pi.getId()).taskName("User Task").singleResult();
     taskService.complete(task.getId());
@@ -405,7 +405,7 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
     ProcessInstance pi = runtimeService.startProcessInstanceByKey("terminateEndEventExample");
 
     List<Task> tasks = taskService.createTaskQuery().processInstanceId(pi.getId()).list();
-    assertThat(tasks.size()).isEqualTo(4); // 3 user tasks in MI  +1 (preNormalEnd) = 4 (2 were killed because it went directly to the terminate end event)
+    assertThat(tasks).hasSize(4); // 3 user tasks in MI  +1 (preNormalEnd) = 4 (2 were killed because it went directly to the terminate end event)
 
     long executionEntitiesCount = runtimeService.createExecutionQuery().count();
     assertThat(executionEntitiesCount).isEqualTo(9);
@@ -433,7 +433,7 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
     taskService.complete(task.getId());
 
     List<Task> tasks = taskService.createTaskQuery().processInstanceId(pi.getId()).taskName("User Task").list();
-    assertThat(tasks.size()).isEqualTo(3);
+    assertThat(tasks).hasSize(3);
 
     for (Task t : tasks) {
     	taskService.complete(t.getId());
@@ -575,10 +575,10 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
   	ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testMiCallActivity");
 
   	List<Task> aTasks = taskService.createTaskQuery().taskName("A").list();
-  	assertThat(aTasks.size()).isEqualTo(5);
+  	assertThat(aTasks).hasSize(5);
 
   	List<Task> bTasks = taskService.createTaskQuery().taskName("B").list();
-  	assertThat(bTasks.size()).isEqualTo(5);
+  	assertThat(bTasks).hasSize(5);
 
   	// Completing B should terminate one instance (it goes to a terminate end event)
   	int bTasksCompleted = 0;
@@ -588,7 +588,7 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
   		bTasksCompleted++;
 
   		aTasks = taskService.createTaskQuery().taskName("A").list();
-    	assertThat(aTasks.size()).isEqualTo(5-bTasksCompleted);
+    	assertThat(aTasks).hasSize(5-bTasksCompleted);
   	}
 
   	Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
@@ -604,10 +604,10 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
   	ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testMiCallActivity");
 
   	List<Task> aTasks = taskService.createTaskQuery().taskName("A").list();
-  	assertThat(aTasks.size()).isEqualTo(1);
+  	assertThat(aTasks).hasSize(1);
 
   	List<Task> bTasks = taskService.createTaskQuery().taskName("B").list();
-  	assertThat(bTasks.size()).isEqualTo(1);
+  	assertThat(bTasks).hasSize(1);
 
   	// Completing B should terminate one instance (it goes to a terminate end event)
   	for (int i=0; i<9; i++) {
@@ -738,7 +738,7 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
 
 		// Should have 7 tasks C active
 		List<Task> tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskName("C").list();
-		assertThat(tasks.size()).isEqualTo(7);
+		assertThat(tasks).hasSize(7);
 
 		// Completing these should lead to task I being active
 		for (Task task : tasks) {
@@ -750,7 +750,7 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
 
 		// Should have 3 instances of E active
 		tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskName("E").list();
-		assertThat(tasks.size()).isEqualTo(3);
+		assertThat(tasks).hasSize(3);
 
 		// Completing these should make H active
 		for (Task t : tasks) {

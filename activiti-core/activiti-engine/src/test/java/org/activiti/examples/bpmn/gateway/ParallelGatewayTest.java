@@ -35,7 +35,7 @@ public class ParallelGatewayTest extends PluggableActivitiTestCase {
     TaskQuery query = taskService.createTaskQuery().processInstanceId(pi.getId()).orderByTaskName().asc();
 
     List<Task> tasks = query.list();
-    assertThat(tasks.size()).isEqualTo(2);
+    assertThat(tasks).hasSize(2);
     // the tasks are ordered by name (see above)
     Task task1 = tasks.get(0);
     assertThat(task1.getName()).isEqualTo("Receive Payment");
@@ -47,7 +47,7 @@ public class ParallelGatewayTest extends PluggableActivitiTestCase {
     taskService.complete(tasks.get(1).getId());
 
     tasks = query.list();
-    assertThat(tasks.size()).isEqualTo(1);
+    assertThat(tasks).hasSize(1);
     assertThat(tasks.get(0).getName()).isEqualTo("Archive Order");
   }
 
@@ -58,7 +58,7 @@ public class ParallelGatewayTest extends PluggableActivitiTestCase {
     TaskQuery query = taskService.createTaskQuery().processInstanceId(pi.getId()).orderByTaskName().asc();
 
     List<Task> tasks = query.list();
-    assertThat(tasks.size()).isEqualTo(3);
+    assertThat(tasks).hasSize(3);
     // the tasks are ordered by name (see above)
     Task task1 = tasks.get(0);
     assertThat(task1.getName()).isEqualTo("Task 1");
@@ -73,7 +73,7 @@ public class ParallelGatewayTest extends PluggableActivitiTestCase {
 
     tasks = query.list();
     Task task3 = tasks.get(0);
-    assertThat(tasks.size()).isEqualTo(2);
+    assertThat(tasks).hasSize(2);
     assertThat(task3.getName()).isEqualTo("Task 3");
     Task task4 = tasks.get(1);
     assertThat(task4.getName()).isEqualTo("Task 4");

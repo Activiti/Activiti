@@ -35,12 +35,12 @@ public class TaskAssignmentCandidateTest extends PluggableActivitiTestCase {
       .createTaskQuery()
       .taskCandidateGroup("management")
       .list();
-    assertThat(tasks.size()).isEqualTo(1);
+    assertThat(tasks).hasSize(1);
     assertThat(tasks.get(0).getTaskDefinitionKey()).isEqualTo("theTask");
     taskService.complete(tasks.get(0).getId());
 
     tasks = taskService.createTaskQuery().taskCandidateGroup("accounting").list();
-    assertThat(tasks.size()).isEqualTo(1);
+    assertThat(tasks).hasSize(1);
     assertThat(tasks.get(0).getTaskDefinitionKey()).isEqualTo("theOtherTask");
     taskService.complete(tasks.get(0).getId());
   }

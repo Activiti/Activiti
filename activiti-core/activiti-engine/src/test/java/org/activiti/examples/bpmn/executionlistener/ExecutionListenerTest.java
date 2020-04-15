@@ -78,7 +78,7 @@ public class ExecutionListenerTest extends PluggableActivitiTestCase {
     assertProcessEnded(processInstance.getId());
 
     List<RecordedEvent> events = RecorderExecutionListener.getRecordedEvents();
-    assertThat(events.size()).isEqualTo(1);
+    assertThat(events).hasSize(1);
     RecordedEvent event = events.get(0);
     assertThat(event.getParameter()).isEqualTo("End Process Listener");
   }
@@ -91,7 +91,7 @@ public class ExecutionListenerTest extends PluggableActivitiTestCase {
     assertProcessEnded(processInstance.getId());
 
     List<RecordedEvent> recordedEvents = RecorderExecutionListener.getRecordedEvents();
-    assertThat(recordedEvents.size()).isEqualTo(4);
+    assertThat(recordedEvents).hasSize(4);
 
     assertThat(recordedEvents.get(0).getActivityId()).isEqualTo("theStart");
     assertThat(recordedEvents.get(0).getActivityName()).isEqualTo("Start Event");
@@ -139,7 +139,7 @@ public class ExecutionListenerTest extends PluggableActivitiTestCase {
     assertProcessEnded(processInstance.getId());
 
     List<CurrentActivity> currentActivities = CurrentActivityExecutionListener.getCurrentActivities();
-    assertThat(currentActivities.size()).isEqualTo(3);
+    assertThat(currentActivities).hasSize(3);
 
     assertThat(currentActivities.get(0).getActivityId()).isEqualTo("theStart");
     assertThat(currentActivities.get(0).getActivityName()).isEqualTo("Start Event");
@@ -158,7 +158,7 @@ public class ExecutionListenerTest extends PluggableActivitiTestCase {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("executionListenersProcess");
 
     List<RecordedEvent> recordedEvents = RecorderExecutionListener.getRecordedEvents();
-    assertThat(recordedEvents.size()).isEqualTo(1);
+    assertThat(recordedEvents).hasSize(1);
     assertThat(recordedEvents.get(0).getParameter()).isEqualTo("Process Start");
 
     RecorderExecutionListener.clear();
@@ -170,7 +170,7 @@ public class ExecutionListenerTest extends PluggableActivitiTestCase {
 
     recordedEvents = RecorderExecutionListener.getRecordedEvents();
 
-    assertThat(recordedEvents.size()).isEqualTo(3);
+    assertThat(recordedEvents).hasSize(3);
     assertThat(recordedEvents.get(0).getParameter()).isEqualTo("Subprocess Start");
     assertThat(recordedEvents.get(1).getParameter()).isEqualTo("Subprocess End");
     assertThat(recordedEvents.get(2).getParameter()).isEqualTo("Process End");

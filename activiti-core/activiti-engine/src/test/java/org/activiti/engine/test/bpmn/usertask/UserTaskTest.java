@@ -49,14 +49,14 @@ public class UserTaskTest extends PluggableActivitiTestCase {
     // the next test verifies that if an execution creates a task, that no
     // events are created during creation of the task.
     if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
-      assertThat(taskService.getTaskEvents(task.getId()).size()).isEqualTo(0);
+      assertThat(taskService.getTaskEvents(task.getId())).hasSize(0);
     }
   }
 
   @Deployment
   public void testQuerySortingWithParameter() {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
-    assertThat(taskService.createTaskQuery().processInstanceId(processInstance.getId()).list().size()).isEqualTo(1);
+    assertThat(taskService.createTaskQuery().processInstanceId(processInstance.getId()).list()).hasSize(1);
   }
 
   @Deployment
@@ -67,7 +67,7 @@ public class UserTaskTest extends PluggableActivitiTestCase {
     runtimeService.startProcessInstanceByKey("ForkProcess");
     List<Task> taskList = taskService.createTaskQuery().list();
     assertThat(taskList).isNotNull();
-    assertThat(taskList.size()).isEqualTo(2);
+    assertThat(taskList).hasSize(2);
 
     // make sure user task exists
     Task task = taskService.createTaskQuery().taskDefinitionKey("SimpleUser").singleResult();
@@ -138,7 +138,7 @@ public class UserTaskTest extends PluggableActivitiTestCase {
 
     // Verify query and check form key
     task = taskService.createTaskQuery().includeProcessVariables().singleResult();
-    assertThat(task.getProcessVariables().size()).isEqualTo(vars.size());
+    assertThat(task.getProcessVariables()).hasSize(vars.size());
 
     assertThat(task.getFormKey()).isEqualTo("test123");
   }

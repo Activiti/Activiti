@@ -49,7 +49,7 @@ public class TaskCandidateTest extends PluggableActivitiTestCase {
 
     // The task should be visible in the candidate task list
     tasks = taskService.createTaskQuery().taskCandidateUser(KERMIT,KERMITSGROUPS).list();
-    assertThat(tasks.size()).isEqualTo(1);
+    assertThat(tasks).hasSize(1);
     Task task = tasks.get(0);
     assertThat(task.getName()).isEqualTo("Pay out expenses");
 
@@ -62,7 +62,7 @@ public class TaskCandidateTest extends PluggableActivitiTestCase {
 
     // The task will be visible on the personal task list
     tasks = taskService.createTaskQuery().taskAssignee(KERMIT).list();
-    assertThat(tasks.size()).isEqualTo(1);
+    assertThat(tasks).hasSize(1);
     task = tasks.get(0);
     assertThat(task.getName()).isEqualTo("Pay out expenses");
 
@@ -89,8 +89,8 @@ public class TaskCandidateTest extends PluggableActivitiTestCase {
     // The task should be visible in the candidate task list of Gonzo and
     // Kermit
     // and anyone in the mgmt/accountancy group
-    assertThat(taskService.createTaskQuery().taskCandidateUser(KERMIT,KERMITSGROUPS).list().size()).isEqualTo(1);
-    assertThat(taskService.createTaskQuery().taskCandidateUser(GONZO,GONZOSGROUPS).list().size()).isEqualTo(1);
+    assertThat(taskService.createTaskQuery().taskCandidateUser(KERMIT,KERMITSGROUPS).list()).hasSize(1);
+    assertThat(taskService.createTaskQuery().taskCandidateUser(GONZO,GONZOSGROUPS).list()).hasSize(1);
     assertThat(taskService.createTaskQuery().taskCandidateGroup("management").count()).isEqualTo(1);
     assertThat(taskService.createTaskQuery().taskCandidateGroup("accountancy").count()).isEqualTo(1);
     assertThat(taskService.createTaskQuery().taskCandidateGroup("sales").count()).isEqualTo(0);
@@ -122,33 +122,33 @@ public class TaskCandidateTest extends PluggableActivitiTestCase {
   public void testMultipleCandidateUsers() {
     runtimeService.startProcessInstanceByKey("multipleCandidateUsersExample", singletonMap("Variable", (Object) "var"));
 
-    assertThat(taskService.createTaskQuery().taskCandidateUser(GONZO,GONZOSGROUPS).list().size()).isEqualTo(1);
-    assertThat(taskService.createTaskQuery().taskCandidateUser(KERMIT,KERMITSGROUPS).list().size()).isEqualTo(1);
+    assertThat(taskService.createTaskQuery().taskCandidateUser(GONZO,GONZOSGROUPS).list()).hasSize(1);
+    assertThat(taskService.createTaskQuery().taskCandidateUser(KERMIT,KERMITSGROUPS).list()).hasSize(1);
 
     List<Task> tasks = taskService.createTaskQuery().taskInvolvedUser(KERMIT).list();
-    assertThat(tasks.size()).isEqualTo(1);
+    assertThat(tasks).hasSize(1);
 
     Task task = tasks.get(0);
     taskService.setVariableLocal(task.getId(), "taskVar", 123);
     tasks = taskService.createTaskQuery().taskInvolvedUser(KERMIT).includeProcessVariables().includeTaskLocalVariables().list();
     task = tasks.get(0);
 
-    assertThat(task.getProcessVariables().size()).isEqualTo(1);
-    assertThat(task.getTaskLocalVariables().size()).isEqualTo(1);
+    assertThat(task.getProcessVariables()).hasSize(1);
+    assertThat(task.getTaskLocalVariables()).hasSize(1);
     taskService.addUserIdentityLink(task.getId(), GONZO, "test");
 
     tasks = taskService.createTaskQuery().taskInvolvedUser(GONZO).includeProcessVariables().includeTaskLocalVariables().list();
-    assertThat(tasks.size()).isEqualTo(1);
-    assertThat(task.getProcessVariables().size()).isEqualTo(1);
-    assertThat(task.getTaskLocalVariables().size()).isEqualTo(1);
+    assertThat(tasks).hasSize(1);
+    assertThat(task.getProcessVariables()).hasSize(1);
+    assertThat(task.getTaskLocalVariables()).hasSize(1);
   }
 
   @Deployment
   public void testMixedCandidateUserAndGroup() {
     runtimeService.startProcessInstanceByKey("mixedCandidateUserAndGroupExample");
 
-    assertThat(taskService.createTaskQuery().taskCandidateUser(GONZO,GONZOSGROUPS).list().size()).isEqualTo(1);
-    assertThat(taskService.createTaskQuery().taskCandidateUser(KERMIT,KERMITSGROUPS).list().size()).isEqualTo(1);
+    assertThat(taskService.createTaskQuery().taskCandidateUser(GONZO,GONZOSGROUPS).list()).hasSize(1);
+    assertThat(taskService.createTaskQuery().taskCandidateUser(KERMIT,KERMITSGROUPS).list()).hasSize(1);
   }
 
   // test if candidate group works with expression, when there is a function
@@ -159,7 +159,7 @@ public class TaskCandidateTest extends PluggableActivitiTestCase {
     params.put("testBean", new TestBean());
 
     runtimeService.startProcessInstanceByKey("candidateWithExpression", params);
-    assertThat(taskService.createTaskQuery().taskCandidateUser(KERMIT,KERMITSGROUPS).list().size()).isEqualTo(1);
+    assertThat(taskService.createTaskQuery().taskCandidateUser(KERMIT,KERMITSGROUPS).list()).hasSize(1);
 
   }
 

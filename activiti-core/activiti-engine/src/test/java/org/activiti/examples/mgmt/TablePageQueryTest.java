@@ -35,14 +35,14 @@ public class TablePageQueryTest extends PluggableActivitiTestCase {
 
     assertThat(tablePage.getFirstResult()).isEqualTo(0);
     assertThat(tablePage.getSize()).isEqualTo(5);
-    assertThat(tablePage.getRows().size()).isEqualTo(5);
+    assertThat(tablePage.getRows()).hasSize(5);
     assertThat(tablePage.getTotal()).isEqualTo(20);
 
     tablePage = managementService.createTablePageQuery().tableName(tablePrefix + "ACT_RU_TASK").listPage(14, 10);
 
     assertThat(tablePage.getFirstResult()).isEqualTo(14);
     assertThat(tablePage.getSize()).isEqualTo(6);
-    assertThat(tablePage.getRows().size()).isEqualTo(6);
+    assertThat(tablePage.getRows()).hasSize(6);
     assertThat(tablePage.getTotal()).isEqualTo(20);
 
     taskService.deleteTasks(taskIds, true);
@@ -66,7 +66,7 @@ public class TablePageQueryTest extends PluggableActivitiTestCase {
   }
 
   private void verifyTaskNames(String[] expectedTaskNames, List<Map<String, Object>> rowData) {
-    assertThat(rowData.size()).isEqualTo(expectedTaskNames.length);
+    assertThat(rowData).hasSize(expectedTaskNames.length);
     String columnKey = "NAME_";
 
     // mybatis will return the correct case for postgres table columns from

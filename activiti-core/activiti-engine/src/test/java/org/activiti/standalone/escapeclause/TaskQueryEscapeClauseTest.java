@@ -379,7 +379,7 @@ public class TaskQueryEscapeClauseTest extends AbstractEscapeClauseTestCase {
     if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
         // processDefinitionNameLike
         List<Task> list = taskService.createTaskQuery().processDefinitionNameLike("%\\%%").orderByTaskCreateTime().asc().list();
-        assertThat(list.size()).isEqualTo(2);
+        assertThat(list).hasSize(2);
         List<String> taskIds = new ArrayList<String>(2);
         taskIds.add(list.get(0).getId());
         taskIds.add(list.get(1).getId());
@@ -388,7 +388,7 @@ public class TaskQueryEscapeClauseTest extends AbstractEscapeClauseTestCase {
 
         // orQuery
         list = taskService.createTaskQuery().or().processDefinitionNameLike("%\\%%").processDefinitionId("undefined").orderByTaskCreateTime().asc().list();
-        assertThat(list.size()).isEqualTo(2);
+        assertThat(list).hasSize(2);
         taskIds = new ArrayList<String>(2);
         taskIds.add(list.get(0).getId());
         taskIds.add(list.get(1).getId());

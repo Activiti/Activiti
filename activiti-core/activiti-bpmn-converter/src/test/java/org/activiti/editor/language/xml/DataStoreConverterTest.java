@@ -29,7 +29,7 @@ public class DataStoreConverterTest extends AbstractConverterTest {
   }
 
   private void validateModel(BpmnModel model) {
-    assertThat(model.getDataStores().size()).isEqualTo(1);
+    assertThat(model.getDataStores()).hasSize(1);
     DataStore dataStore = model.getDataStore("DataStore_1");
     assertThat(dataStore).isNotNull();
     assertThat(dataStore.getId()).isEqualTo("DataStore_1");
@@ -41,7 +41,7 @@ public class DataStoreConverterTest extends AbstractConverterTest {
     assertThat(refElement).isNotNull();
     assertThat(refElement).isInstanceOf(DataStoreReference.class);
 
-    assertThat(model.getPools().size()).isEqualTo(1);
+    assertThat(model.getPools()).hasSize(1);
     Pool pool = model.getPools().get(0);
     assertThat(pool.getId()).isEqualTo("pool1");
   }

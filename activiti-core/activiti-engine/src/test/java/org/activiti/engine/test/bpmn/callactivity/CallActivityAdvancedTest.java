@@ -132,7 +132,7 @@ public class CallActivityAdvancedTest extends PluggableActivitiTestCase {
     // the whole process instance
     taskService.complete(taskBeforeSubProcess.getId());
     assertProcessEnded(processInstance.getId());
-    assertThat(runtimeService.createExecutionQuery().list().size()).isEqualTo(0);
+    assertThat(runtimeService.createExecutionQuery().list()).hasSize(0);
   }
 
   @Deployment(resources = { "org/activiti/engine/test/bpmn/callactivity/CallActivity.testCallParallelSubProcess.bpmn20.xml",
@@ -143,7 +143,7 @@ public class CallActivityAdvancedTest extends PluggableActivitiTestCase {
     // The two tasks in the parallel subprocess should be active
     TaskQuery taskQuery = taskService.createTaskQuery().orderByTaskName().asc();
     List<Task> tasks = taskQuery.list();
-    assertThat(tasks.size()).isEqualTo(2);
+    assertThat(tasks).hasSize(2);
 
     Task taskA = tasks.get(0);
     Task taskB = tasks.get(1);
@@ -152,7 +152,7 @@ public class CallActivityAdvancedTest extends PluggableActivitiTestCase {
 
     // Completing the first task should not end the subprocess
     taskService.complete(taskA.getId());
-    assertThat(taskQuery.list().size()).isEqualTo(1);
+    assertThat(taskQuery.list()).hasSize(1);
 
     // Completing the second task should end the subprocess and end the
     // whole process instance
@@ -242,7 +242,7 @@ public class CallActivityAdvancedTest extends PluggableActivitiTestCase {
 
     // Completing the task ends the complete process
     taskService.complete(escalatedTask.getId());
-    assertThat(runtimeService.createExecutionQuery().list().size()).isEqualTo(0);
+    assertThat(runtimeService.createExecutionQuery().list()).hasSize(0);
 
     if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
       assertThat(historyService.createHistoricProcessInstanceQuery().processInstanceId(pi2.getId()).singleResult()
@@ -262,20 +262,20 @@ public class CallActivityAdvancedTest extends PluggableActivitiTestCase {
 
     List<ProcessInstance> instanceList = runtimeService.createProcessInstanceQuery().list();
     assertThat(instanceList).isNotNull();
-    assertThat(instanceList.size()).isEqualTo(3);
+    assertThat(instanceList).hasSize(3);
 
     List<Task> taskList = taskService.createTaskQuery().list();
     assertThat(taskList).isNotNull();
-    assertThat(taskList.size()).isEqualTo(2);
+    assertThat(taskList).hasSize(2);
 
     runtimeService.deleteProcessInstance(processInstance.getId(), "Test cascading");
 
     instanceList = runtimeService.createProcessInstanceQuery().list();
     assertThat(instanceList).isNotNull();
-    assertThat(instanceList.size()).isEqualTo(0);
+    assertThat(instanceList).hasSize(0);
 
     taskList = taskService.createTaskQuery().list();
     assertThat(taskList).isNotNull();
-    assertThat(taskList.size()).isEqualTo(0);
+    assertThat(taskList).hasSize(0);
   }
 }

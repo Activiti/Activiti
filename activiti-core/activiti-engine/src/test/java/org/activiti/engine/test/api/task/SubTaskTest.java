@@ -100,21 +100,21 @@ public class SubTaskTest extends PluggableActivitiTestCase {
     taskService.saveTask(subTask2);
 
     List<Task> tasks = taskService.createTaskQuery().taskAssignee("test").list();
-    assertThat(tasks.size()).isEqualTo(3);
+    assertThat(tasks).hasSize(3);
 
     runtimeService.deleteProcessInstance(processInstance.getId(), "none");
 
     tasks = taskService.createTaskQuery().taskAssignee("test").list();
-    assertThat(tasks.size()).isEqualTo(0);
+    assertThat(tasks).hasSize(0);
 
     if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
       List<HistoricTaskInstance> historicTasks = historyService.createHistoricTaskInstanceQuery().taskAssignee("test").list();
-      assertThat(historicTasks.size()).isEqualTo(3);
+      assertThat(historicTasks).hasSize(3);
 
       historyService.deleteHistoricProcessInstance(processInstance.getId());
 
       historicTasks = historyService.createHistoricTaskInstanceQuery().taskAssignee("test").list();
-      assertThat(historicTasks.size()).isEqualTo(0);
+      assertThat(historicTasks).hasSize(0);
     }
 
     repositoryService.deleteDeployment(deployment.getId(), true);

@@ -45,7 +45,7 @@ public class StartEventConverterTest extends AbstractConverterTest {
     assertThat(startEvent.getInitiator()).isEqualTo("startInitiator");
     assertThat(startEvent.getDocumentation()).isEqualTo("startDoc");
 
-    assertThat(startEvent.getExecutionListeners().size()).isEqualTo(2);
+    assertThat(startEvent.getExecutionListeners()).hasSize(2);
     ActivitiListener executionListener = startEvent.getExecutionListeners().get(0);
     assertThat(executionListener.getEvent()).isEqualTo("start");
     assertThat(executionListener.getImplementation()).isEqualTo("org.test.TestClass");
@@ -57,7 +57,7 @@ public class StartEventConverterTest extends AbstractConverterTest {
     assertThat(executionListener.getImplementationType()).isEqualTo(ImplementationType.IMPLEMENTATION_TYPE_EXPRESSION);
 
     List<FormProperty> formProperties = startEvent.getFormProperties();
-    assertThat(formProperties.size()).isEqualTo(2);
+    assertThat(formProperties).hasSize(2);
 
     FormProperty formProperty = formProperties.get(0);
     assertThat(formProperty.getId()).isEqualTo("startFormProp1");

@@ -100,7 +100,7 @@ public class ActivityEventsTest extends PluggableActivitiTestCase {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("activityProcess");
     assertThat(processInstance).isNotNull();
 
-    assertThat(listener.getEventsReceived().size()).isEqualTo(3);
+    assertThat(listener.getEventsReceived()).hasSize(3);
 
     // Start-event activity started
     ActivitiActivityEvent activityEvent = (ActivitiActivityEvent) listener.getEventsReceived().get(0);
@@ -135,7 +135,7 @@ public class ActivityEventsTest extends PluggableActivitiTestCase {
     // Subprocess execution is created
     Execution execution = runtimeService.createExecutionQuery().parentId(processInstance.getId()).singleResult();
     assertThat(execution).isNotNull();
-    assertThat(listener.getEventsReceived().size()).isEqualTo(5);
+    assertThat(listener.getEventsReceived()).hasSize(5);
     activityEvent = (ActivitiActivityEvent) listener.getEventsReceived().get(0);
     assertThat(activityEvent.getType()).isEqualTo(ActivitiEventType.ACTIVITY_COMPLETED);
     assertThat(activityEvent.getActivityId()).isEqualTo("shipOrder");
@@ -178,7 +178,7 @@ public class ActivityEventsTest extends PluggableActivitiTestCase {
 
     taskService.complete(subTask.getId());
 
-    assertThat(listener.getEventsReceived().size()).isEqualTo(10);
+    assertThat(listener.getEventsReceived()).hasSize(10);
 
     activityEvent = (ActivitiActivityEvent) listener.getEventsReceived().get(0);
     assertThat(activityEvent.getType()).isEqualTo(ActivitiEventType.ACTIVITY_COMPLETED);
@@ -235,7 +235,7 @@ public class ActivityEventsTest extends PluggableActivitiTestCase {
     assertThat(executionWithSignal).isNotNull();
 
     runtimeService.trigger(executionWithSignal.getId());
-    assertThat(listener.getEventsReceived().size()).isEqualTo(1);
+    assertThat(listener.getEventsReceived()).hasSize(1);
     assertThat(listener.getEventsReceived().get(0)).isInstanceOf(ActivitiSignalEvent.class);
     ActivitiSignalEvent signalEvent = (ActivitiSignalEvent) listener.getEventsReceived().get(0);
     assertThat(signalEvent.getType()).isEqualTo(ActivitiEventType.ACTIVITY_SIGNALED);
@@ -250,7 +250,7 @@ public class ActivityEventsTest extends PluggableActivitiTestCase {
     // Check signal using event, and pass in additional payload
     Execution executionWithSignalEvent = runtimeService.createExecutionQuery().activityId("shipOrder").singleResult();
     runtimeService.signalEventReceived("alert", executionWithSignalEvent.getId(), singletonMap("test", (Object) "test"));
-    assertThat(listener.getEventsReceived().size()).isEqualTo(1);
+    assertThat(listener.getEventsReceived()).hasSize(1);
     assertThat(listener.getEventsReceived().get(0)).isInstanceOf(ActivitiSignalEvent.class);
     signalEvent = (ActivitiSignalEvent) listener.getEventsReceived().get(0);
     assertThat(signalEvent.getType()).isEqualTo(ActivitiEventType.ACTIVITY_SIGNALED);
@@ -279,7 +279,7 @@ public class ActivityEventsTest extends PluggableActivitiTestCase {
     Execution executionWithSignalEvent = runtimeService.createExecutionQuery().activityId("shipOrder").singleResult();
 
     taskService.complete(task.getId());
-    assertThat(listener.getEventsReceived().size()).isEqualTo(1L);
+    assertThat(listener.getEventsReceived()).hasSize(1);
 
     assertThat(listener.getEventsReceived().get(0)).isInstanceOf(ActivitiSignalEvent.class);
     ActivitiSignalEvent signalEvent = (ActivitiSignalEvent) listener.getEventsReceived().get(0);
@@ -304,7 +304,7 @@ public class ActivityEventsTest extends PluggableActivitiTestCase {
     assertThat(executionWithMessage).isNotNull();
 
     runtimeService.messageEventReceived("messageName", executionWithMessage.getId());
-    assertThat(listener.getEventsReceived().size()).isEqualTo(2);
+    assertThat(listener.getEventsReceived()).hasSize(2);
 
     // First, an ACTIVITY_MESSAGE_WAITING event is expected
     assertThat(listener.getEventsReceived().get(0)).isInstanceOf(ActivitiMessageEvent.class);
@@ -346,7 +346,7 @@ public class ActivityEventsTest extends PluggableActivitiTestCase {
 
     // Only a message-event should be present, no signal-event, since the event-subprocess is
     // not signaled, but executed instead
-    assertThat(listener.getEventsReceived().size()).isEqualTo(3);
+    assertThat(listener.getEventsReceived()).hasSize(3);
 
     // An ACTIVITY_MESSAGE_WAITING event is expected
     assertThat(listener.getEventsReceived().get(0)).isInstanceOf(ActivitiMessageEvent.class);
@@ -394,7 +394,7 @@ public class ActivityEventsTest extends PluggableActivitiTestCase {
     // Complete task, next a compensation event will be thrown
     taskService.complete(task.getId());
 
-    assertThat(listener.getEventsReceived().size()).isEqualTo(1);
+    assertThat(listener.getEventsReceived()).hasSize(1);
 
     // A compensate-event is expected
     assertThat(listener.getEventsReceived().get(0)).isInstanceOf(ActivitiActivityEvent.class);
@@ -488,7 +488,7 @@ public class ActivityEventsTest extends PluggableActivitiTestCase {
     waitForJobExecutorToProcessAllJobs(2000, 1000);
 
     // Check timeout has been dispatched
-    assertThat(listener.getEventsReceived().size()).isEqualTo(1);
+    assertThat(listener.getEventsReceived()).hasSize(1);
     ActivitiEvent activitiEvent = listener.getEventsReceived().get(0);
     assertThat(activitiEvent.getType()).as("ACTIVITY_CANCELLED event expected").isEqualTo(ActivitiEventType.ACTIVITY_CANCELLED);
     assertThat(((ActivitiActivityCancelledEvent) activitiEvent).getCause()).isEqualTo("boundary event (timer)");
@@ -508,7 +508,7 @@ public class ActivityEventsTest extends PluggableActivitiTestCase {
     waitForJobExecutorToProcessAllJobs(2000, 200);
 
     // Check timeout-events have been dispatched
-    assertThat(listener.getEventsReceived().size()).isEqualTo(4);
+    assertThat(listener.getEventsReceived()).hasSize(4);
     List<String> eventIdList = new ArrayList<String>();
     for (ActivitiEvent event : listener.getEventsReceived()) {
       assertThat(event.getType()).isEqualTo(ActivitiEventType.ACTIVITY_CANCELLED);
@@ -567,7 +567,7 @@ public class ActivityEventsTest extends PluggableActivitiTestCase {
     assertThat(taskExecution).isNotNull();
 
     runtimeService.messageEventReceived("message_1", executionWithMessage.getId());
-    assertThat(listener.getEventsReceived().size()).isEqualTo(3);
+    assertThat(listener.getEventsReceived()).hasSize(3);
 
     // First, an ACTIVITY_MESSAGE_WAITING event is expected
     assertThat(listener.getEventsReceived().get(0)).isInstanceOf(ActivitiMessageEvent.class);
@@ -617,7 +617,7 @@ public class ActivityEventsTest extends PluggableActivitiTestCase {
     assertThat(executionWithMessage).isNotNull();
 
     runtimeService.messageEventReceived("message_1", executionWithMessage.getId());
-    assertThat(listener.getEventsReceived().size()).isEqualTo(4);
+    assertThat(listener.getEventsReceived()).hasSize(4);
 
     // First, an ACTIVITY_MESSAGE_WAITING event is expected
     assertThat(listener.getEventsReceived().get(0)).isInstanceOf(ActivitiMessageEvent.class);
@@ -670,7 +670,7 @@ public class ActivityEventsTest extends PluggableActivitiTestCase {
     assertThat(executionWithSignal).isNotNull();
 
     runtimeService.signalEventReceived("signalName");
-    assertThat(listener.getEventsReceived().size()).isEqualTo(3);
+    assertThat(listener.getEventsReceived()).hasSize(3);
 
     assertThat(listener.getEventsReceived().get(0)).isInstanceOf(ActivitiSignalEventImpl.class);
     ActivitiSignalEventImpl signalEvent = (ActivitiSignalEventImpl) listener.getEventsReceived().get(0);
@@ -708,7 +708,7 @@ public class ActivityEventsTest extends PluggableActivitiTestCase {
     runtimeService.signalEventReceived("signalName");
 
     // Next, an signal-event is expected, as a result of the message
-    assertThat(listener.getEventsReceived().size()).isEqualTo(2);
+    assertThat(listener.getEventsReceived()).hasSize(2);
 
     assertThat(listener.getEventsReceived().get(0)).isInstanceOf(ActivitiSignalEventImpl.class);
     ActivitiSignalEventImpl signalEvent = (ActivitiSignalEventImpl) listener.getEventsReceived().get(0);

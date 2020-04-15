@@ -240,7 +240,7 @@ public class AsyncTaskTest extends PluggableActivitiTestCase {
 
     if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
       List<HistoricVariableInstance> variables = historyService.createHistoricVariableInstanceQuery().processInstanceId(processInstance.getId()).list();
-      assertThat(variables.size()).isEqualTo(3);
+      assertThat(variables).hasSize(3);
 
       Object historyValue = null;
       for (HistoricVariableInstance variable : variables) {

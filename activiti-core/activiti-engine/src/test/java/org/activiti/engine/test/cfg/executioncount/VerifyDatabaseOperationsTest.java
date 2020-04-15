@@ -263,7 +263,7 @@ public class VerifyDatabaseOperationsTest extends PluggableActivitiTestCase {
         System.out.println(command);
       }
     }
-    assertThat(allStats.size()).isEqualTo(commands.length);
+    assertThat(allStats).hasSize(commands.length);
 
     for (String command : commands) {
       assertThat(getStatsForCommand(command, allStats)).as("Could not get stats for " + command).isNotNull();
@@ -316,7 +316,7 @@ public class VerifyDatabaseOperationsTest extends PluggableActivitiTestCase {
 
   protected void assertNoInserts(String commandClass) {
     CommandStats stats = getStats(commandClass);
-    assertThat(stats.getDbInserts().size()).isEqualTo(0);
+    assertThat(stats.getDbInserts()).hasSize(0);
   }
 
   protected void assertNoUpdatesAndDeletes(String commandClass) {
@@ -326,12 +326,12 @@ public class VerifyDatabaseOperationsTest extends PluggableActivitiTestCase {
 
   protected void assertNoDeletes(String commandClass) {
     CommandStats stats = getStats(commandClass);
-    assertThat(stats.getDbDeletes().size()).isEqualTo(0);
+    assertThat(stats.getDbDeletes()).hasSize(0);
   }
 
   protected void assertNoUpdates(String commandClass) {
     CommandStats stats = getStats(commandClass);
-    assertThat(stats.getDbUpdates().size()).isEqualTo(0);
+    assertThat(stats.getDbUpdates()).hasSize(0);
   }
 
   protected CommandStats getStats(String commandClass) {

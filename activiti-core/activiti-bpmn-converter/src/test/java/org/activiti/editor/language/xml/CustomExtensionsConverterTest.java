@@ -41,10 +41,10 @@ public class CustomExtensionsConverterTest extends AbstractConverterTest {
   private void validateModel(BpmnModel model) {
     Process process = model.getMainProcess();
     assertThat(process.getAttributes()).isNotNull();
-    assertThat(process.getAttributes().size()).isEqualTo(1);
+    assertThat(process.getAttributes()).hasSize(1);
     List<ExtensionAttribute> attributes = process.getAttributes().get("version");
     assertThat(attributes).isNotNull();
-    assertThat(attributes.size()).isEqualTo(1);
+    assertThat(attributes).hasSize(1);
     ExtensionAttribute attribute = attributes.get(0);
     // custom:version = "9"
     assertThat(attribute).isNotNull();
@@ -67,7 +67,7 @@ public class CustomExtensionsConverterTest extends AbstractConverterTest {
     assertThat(serviceTask.getName()).isEqualTo("Service task");
 
     List<FieldExtension> fields = serviceTask.getFieldExtensions();
-    assertThat(fields.size()).isEqualTo(2);
+    assertThat(fields).hasSize(2);
     FieldExtension field = (FieldExtension) fields.get(0);
     assertThat(field.getFieldName()).isEqualTo("testField");
     assertThat(field.getStringValue()).isEqualTo("test");
@@ -81,17 +81,17 @@ public class CustomExtensionsConverterTest extends AbstractConverterTest {
     extensionElementMap = serviceTask.getExtensionElements();
     validateExtensionElements(extensionElementMap);
 
-    assertThat(serviceTask.getBoundaryEvents().size()).isEqualTo(1);
+    assertThat(serviceTask.getBoundaryEvents()).hasSize(1);
     BoundaryEvent boundaryEvent = serviceTask.getBoundaryEvents().get(0);
     assertThat(boundaryEvent.getId()).isEqualTo("timerEvent");
-    assertThat(boundaryEvent.getEventDefinitions().size()).isEqualTo(1);
+    assertThat(boundaryEvent.getEventDefinitions()).hasSize(1);
     assertThat(boundaryEvent.getEventDefinitions().get(0)).isInstanceOf(TimerEventDefinition.class);
     extensionElementMap = boundaryEvent.getEventDefinitions().get(0).getExtensionElements();
     validateExtensionElements(extensionElementMap);
   }
 
   protected void validateExecutionListeners(List<ActivitiListener> listeners) {
-    assertThat(listeners.size()).isEqualTo(3);
+    assertThat(listeners).hasSize(3);
     ActivitiListener listener = (ActivitiListener) listeners.get(0);
     assertThat(ImplementationType.IMPLEMENTATION_TYPE_CLASS.equals(listener.getImplementationType())).isTrue();
     assertThat(listener.getImplementation()).isEqualTo("org.test.TestClass");
@@ -114,20 +114,20 @@ public class CustomExtensionsConverterTest extends AbstractConverterTest {
   }
 
   protected void validateExtensionElements(Map<String, List<ExtensionElement>> extensionElementMap) {
-    assertThat(extensionElementMap.size()).isEqualTo(1);
+    assertThat(extensionElementMap).hasSize(1);
 
     List<ExtensionElement> extensionElements = extensionElementMap.get("test");
-    assertThat(extensionElements.size()).isEqualTo(2);
+    assertThat(extensionElements).hasSize(2);
 
     ExtensionElement extensionElement = extensionElements.get(0);
     assertThat(extensionElement).isNotNull();
     assertThat(extensionElement.getName()).isEqualTo("test");
     assertThat(extensionElement.getNamespacePrefix()).isEqualTo("custom");
     assertThat(extensionElement.getNamespace()).isEqualTo("http://custom.org/bpmn");
-    assertThat(extensionElement.getAttributes().size()).isEqualTo(2);
+    assertThat(extensionElement.getAttributes()).hasSize(2);
 
     List<ExtensionAttribute> attributes = extensionElement.getAttributes().get("id");
-    assertThat(attributes.size()).isEqualTo(1);
+    assertThat(attributes).hasSize(1);
     ExtensionAttribute attribute = attributes.get(0);
     assertThat(attribute).isNotNull();
     assertThat(attribute.getName()).isEqualTo("id");
@@ -136,42 +136,42 @@ public class CustomExtensionsConverterTest extends AbstractConverterTest {
     assertThat(attribute.getNamespacePrefix()).isNull();
 
     attributes = extensionElement.getAttributes().get("name");
-    assertThat(attributes.size()).isEqualTo(1);
+    assertThat(attributes).hasSize(1);
     attribute = attributes.get(0);
     assertThat(attribute).isNotNull();
     assertThat(attribute.getName()).isEqualTo("name");
     assertThat(attribute.getValue()).isEqualTo("test");
 
-    assertThat(extensionElement.getChildElements().size()).isEqualTo(2);
+    assertThat(extensionElement.getChildElements()).hasSize(2);
     List<ExtensionElement> childExtensions = extensionElement.getChildElements().get("name");
-    assertThat(childExtensions.size()).isEqualTo(2);
+    assertThat(childExtensions).hasSize(2);
 
     ExtensionElement childExtension = childExtensions.get(0);
     assertThat(childExtension).isNotNull();
     assertThat(childExtension.getName()).isEqualTo("name");
     assertThat(childExtension.getNamespacePrefix()).isEqualTo("custom");
     assertThat(childExtension.getNamespace()).isEqualTo("http://custom.org/bpmn");
-    assertThat(childExtension.getAttributes().size()).isEqualTo(0);
-    assertThat(childExtension.getChildElements().size()).isEqualTo(1);
+    assertThat(childExtension.getAttributes()).hasSize(0);
+    assertThat(childExtension.getChildElements()).hasSize(1);
 
     List<ExtensionElement> subChildExtensions = childExtension.getChildElements().get("test");
-    assertThat(subChildExtensions.size()).isEqualTo(1);
+    assertThat(subChildExtensions).hasSize(1);
 
     childExtension = subChildExtensions.get(0);
     assertThat(childExtension).isNotNull();
     assertThat(childExtension.getName()).isEqualTo("test");
     assertThat(childExtension.getNamespacePrefix()).isEqualTo("custom");
     assertThat(childExtension.getNamespace()).isEqualTo("http://custom.org/bpmn");
-    assertThat(childExtension.getAttributes().size()).isEqualTo(0);
-    assertThat(childExtension.getChildElements().size()).isEqualTo(0);
+    assertThat(childExtension.getAttributes()).hasSize(0);
+    assertThat(childExtension.getChildElements()).hasSize(0);
     assertThat(childExtension.getElementText()).isEqualTo("test");
 
     childExtensions = extensionElement.getChildElements().get("description");
-    assertThat(childExtensions.size()).isEqualTo(1);
+    assertThat(childExtensions).hasSize(1);
     childExtension = childExtensions.get(0);
     assertThat(childExtension).isNotNull();
     assertThat(childExtension.getName()).isEqualTo("description");
-    assertThat(childExtension.getAttributes().size()).isEqualTo(1);
+    assertThat(childExtension.getAttributes()).hasSize(1);
     attributes = childExtension.getAttributes().get("id");
     attribute = attributes.get(0);
     assertThat(attribute).isNotNull();
@@ -185,10 +185,10 @@ public class CustomExtensionsConverterTest extends AbstractConverterTest {
     assertThat(extensionElement.getName()).isEqualTo("test");
     assertThat(extensionElement.getNamespacePrefix()).isEqualTo("custom");
     assertThat(extensionElement.getNamespace()).isEqualTo("http://custom.org/bpmn");
-    assertThat(extensionElement.getAttributes().size()).isEqualTo(2);
+    assertThat(extensionElement.getAttributes()).hasSize(2);
 
     attributes = extensionElement.getAttributes().get("id");
-    assertThat(attributes.size()).isEqualTo(1);
+    assertThat(attributes).hasSize(1);
     attribute = attributes.get(0);
     assertThat(attribute).isNotNull();
     assertThat(attribute.getName()).isEqualTo("id");
@@ -197,7 +197,7 @@ public class CustomExtensionsConverterTest extends AbstractConverterTest {
     assertThat(attribute.getNamespacePrefix()).isNull();
 
     attributes = extensionElement.getAttributes().get("name");
-    assertThat(attributes.size()).isEqualTo(1);
+    assertThat(attributes).hasSize(1);
     attribute = attributes.get(0);
     assertThat(attribute).isNotNull();
     assertThat(attribute.getName()).isEqualTo("name");

@@ -38,7 +38,7 @@ public class CustomMybatisMapperTest extends ResourceActivitiTestCase {
 
     // Verify
     List<Map<String, Object>> tasks = managementService.executeCustomSql(customSqlExecution);
-    assertThat(tasks.size()).isEqualTo(5);
+    assertThat(tasks).hasSize(5);
     for (int i = 0; i < 5; i++) {
       Map<String, Object> task = tasks.get(i);
       assertThat(task.get("ID")).isNotNull();
@@ -77,7 +77,7 @@ public class CustomMybatisMapperTest extends ResourceActivitiTestCase {
 
     // Verify
     List<Map<String, Object>> results = managementService.executeCustomSql(customSqlExecution);
-    assertThat(results.size()).isEqualTo(5);
+    assertThat(results).hasSize(5);
     for (int i = 0; i < 5; i++) {
       Map<String, Object> result = results.get(i);
       Long id = Long.valueOf((String) result.get("TASKID"));

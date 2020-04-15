@@ -40,7 +40,7 @@ public class DeploymentEventsTest extends PluggableActivitiTestCase {
       assertThat(deployment).isNotNull();
 
       // Check create-event
-      assertThat(listener.getEventsReceived().size()).isEqualTo(2);
+      assertThat(listener.getEventsReceived()).hasSize(2);
       assertThat(listener.getEventsReceived().get(0)).isInstanceOf(ActivitiEntityEvent.class);
 
       ActivitiEntityEvent event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
@@ -56,7 +56,7 @@ public class DeploymentEventsTest extends PluggableActivitiTestCase {
 
       // Check update event when category is updated
       repositoryService.setDeploymentCategory(deployment.getId(), "test");
-      assertThat(listener.getEventsReceived().size()).isEqualTo(1);
+      assertThat(listener.getEventsReceived()).hasSize(1);
       assertThat(listener.getEventsReceived().get(0)).isInstanceOf(ActivitiEntityEvent.class);
 
       event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
@@ -67,7 +67,7 @@ public class DeploymentEventsTest extends PluggableActivitiTestCase {
 
       // Check delete event when category is updated
       repositoryService.deleteDeployment(deployment.getId(), true);
-      assertThat(listener.getEventsReceived().size()).isEqualTo(1);
+      assertThat(listener.getEventsReceived()).hasSize(1);
       assertThat(listener.getEventsReceived().get(0)).isInstanceOf(ActivitiEntityEvent.class);
 
       event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);

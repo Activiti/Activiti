@@ -43,13 +43,13 @@ public class DelegateTaskTest extends PluggableActivitiTestCase {
 
     @SuppressWarnings("unchecked")
     Set<String> candidateUsers = (Set<String>) taskService.getVariable(task.getId(), DelegateTaskTestTaskListener.VARNAME_CANDIDATE_USERS);
-    assertThat(candidateUsers.size()).isEqualTo(2);
+    assertThat(candidateUsers).hasSize(2);
     assertThat(candidateUsers.contains("kermit")).isTrue();
     assertThat(candidateUsers.contains("gonzo")).isTrue();
 
     @SuppressWarnings("unchecked")
     Set<String> candidateGroups = (Set<String>) taskService.getVariable(task.getId(), DelegateTaskTestTaskListener.VARNAME_CANDIDATE_GROUPS);
-    assertThat(candidateGroups.size()).isEqualTo(2);
+    assertThat(candidateGroups).hasSize(2);
     assertThat(candidateGroups.contains("management")).isTrue();
     assertThat(candidateGroups.contains("accountancy")).isTrue();
   }

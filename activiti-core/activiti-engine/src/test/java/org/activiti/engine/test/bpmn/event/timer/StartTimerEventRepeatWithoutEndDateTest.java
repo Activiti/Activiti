@@ -74,7 +74,7 @@ public class StartTimerEventRepeatWithoutEndDateTest extends PluggableActivitiTe
     // when the process is deployed there will be created a timerStartEvent
     // job which will wait to be executed.
     List<Job> jobs = managementService.createTimerJobQuery().list();
-    assertThat(jobs.size()).isEqualTo(1);
+    assertThat(jobs).hasSize(1);
 
     // dueDate should be after 24 hours from the process deployment
     Calendar dueDateCalendar = Calendar.getInstance();
@@ -85,11 +85,11 @@ public class StartTimerEventRepeatWithoutEndDateTest extends PluggableActivitiTe
 
     // No process instances
     List<ProcessInstance> processInstances = runtimeService.createProcessInstanceQuery().list();
-    assertThat(processInstances.size()).isEqualTo(0);
+    assertThat(processInstances).hasSize(0);
 
     // No tasks
     List<Task> tasks = taskService.createTaskQuery().list();
-    assertThat(tasks.size()).isEqualTo(0);
+    assertThat(tasks).hasSize(0);
 
     // ADVANCE THE CLOCK
     // advance the clock after 9 days from starting the process ->
@@ -102,15 +102,15 @@ public class StartTimerEventRepeatWithoutEndDateTest extends PluggableActivitiTe
 
     // After time advanced 9 days there should be 9 process instance started
     processInstances = runtimeService.createProcessInstanceQuery().list();
-    assertThat(processInstances.size()).isEqualTo(9);
+    assertThat(processInstances).hasSize(9);
 
     // 9 task to be executed (the userTask "Task A")
     tasks = taskService.createTaskQuery().list();
-    assertThat(tasks.size()).isEqualTo(9);
+    assertThat(tasks).hasSize(9);
 
     // one new job will be created (and the old one will be deleted after execution)
     jobs = managementService.createTimerJobQuery().list();
-    assertThat(jobs.size()).isEqualTo(1);
+    assertThat(jobs).hasSize(1);
 
     // check if the last job to be executed has the dueDate set correctly
     // (10'th repeat after 10 dec. => dueDate must have DueDate = 20 dec.)
@@ -130,19 +130,19 @@ public class StartTimerEventRepeatWithoutEndDateTest extends PluggableActivitiTe
     // After the 10nth startEvent Execution should have 10 process instances started
     // (since the first one was not completed)
     processInstances = runtimeService.createProcessInstanceQuery().list();
-    assertThat(processInstances.size()).isEqualTo(10);
+    assertThat(processInstances).hasSize(10);
 
     // the current job will be deleted after execution and a new one will
     // not be created. (all 10 has already executed)
     jobs = managementService.createTimerJobQuery().list();
-    assertThat(jobs.size()).isEqualTo(0);
+    assertThat(jobs).hasSize(0);
     jobs = managementService.createJobQuery().list();
-    assertThat(jobs.size()).isEqualTo(0);
+    assertThat(jobs).hasSize(0);
 
     // 10 tasks to be executed (the userTask "Task A")
     // one task for each process instance
     tasks = taskService.createTaskQuery().list();
-    assertThat(tasks.size()).isEqualTo(10);
+    assertThat(tasks).hasSize(10);
 
     // FINAL CHECK
     // count "timer fired" events
@@ -180,23 +180,23 @@ public class StartTimerEventRepeatWithoutEndDateTest extends PluggableActivitiTe
       tasks = taskService.createTaskQuery().processInstanceId(processInstance.getProcessInstanceId()).list();
       Task task = tasks.get(0);
       assertThat(task.getName()).isEqualTo("Task A");
-      assertThat(tasks.size()).isEqualTo(1);
+      assertThat(tasks).hasSize(1);
       taskService.complete(task.getId());
     }
 
     // now All the process instances should be completed
     processInstances = runtimeService.createProcessInstanceQuery().list();
-    assertThat(processInstances.size()).isEqualTo(0);
+    assertThat(processInstances).hasSize(0);
 
     // no jobs
     jobs = managementService.createTimerJobQuery().list();
-    assertThat(jobs.size()).isEqualTo(0);
+    assertThat(jobs).hasSize(0);
     jobs = managementService.createJobQuery().list();
-    assertThat(jobs.size()).isEqualTo(0);
+    assertThat(jobs).hasSize(0);
 
     // no tasks
     tasks = taskService.createTaskQuery().list();
-    assertThat(tasks.size()).isEqualTo(0);
+    assertThat(tasks).hasSize(0);
 
     listener.clearEventsReceived();
     processEngineConfiguration.setClock(previousClock);

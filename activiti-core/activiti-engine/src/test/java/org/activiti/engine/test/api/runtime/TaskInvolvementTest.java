@@ -65,7 +65,7 @@ public class TaskInvolvementTest  extends PluggableActivitiTestCase {
             List<String> groups = new ArrayList<String>();
             groups.add("group1");
 
-            assertThat(taskService.getIdentityLinksForTask(adhocTask.getId()).size()).isEqualTo(3);
+            assertThat(taskService.getIdentityLinksForTask(adhocTask.getId())).hasSize(3);
             assertThat(taskService.createTaskQuery()
                     //.taskId(adhocTask.getId())
                     .or()
@@ -168,7 +168,7 @@ public class TaskInvolvementTest  extends PluggableActivitiTestCase {
             List<String> groups = new ArrayList<String>();
             groups.add("group2");
 
-            assertThat(taskService.getIdentityLinksForTask(adhocTask.getId()).size()).isEqualTo(3);
+            assertThat(taskService.getIdentityLinksForTask(adhocTask.getId())).hasSize(3);
             assertThat(taskService.createTaskQuery()
                     .taskInvolvedUser("involvedUser")
                     .taskInvolvedGroupsIn(groups)

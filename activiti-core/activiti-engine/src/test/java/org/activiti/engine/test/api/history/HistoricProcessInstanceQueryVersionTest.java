@@ -1,5 +1,6 @@
 package org.activiti.engine.test.api.history;
 
+import static java.util.Collections.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.ArrayList;
@@ -28,17 +29,13 @@ public class HistoricProcessInstanceQueryVersionTest extends PluggableActivitiTe
 
     processInstanceIds = new ArrayList<String>();
 
-    Map<String, Object> startMap = new HashMap<String, Object>();
-    startMap.put("test", 123);
-    processInstanceIds.add(runtimeService.startProcessInstanceByKey(PROCESS_DEFINITION_KEY, startMap).getId());
+    processInstanceIds.add(runtimeService.startProcessInstanceByKey(PROCESS_DEFINITION_KEY, singletonMap("test", 123)).getId());
 
     newDeployment = repositoryService.createDeployment()
           .addClasspathResource(DEPLOYMENT_FILE_PATH)
           .deploy();
 
-    startMap.clear();
-    startMap.put("anothertest", 456);
-    processInstanceIds.add(runtimeService.startProcessInstanceByKey(PROCESS_DEFINITION_KEY, startMap).getId());
+    processInstanceIds.add(runtimeService.startProcessInstanceByKey(PROCESS_DEFINITION_KEY, singletonMap("anothertest", 456)).getId());
   }
 
   protected void tearDown() throws Exception {
@@ -53,8 +50,8 @@ public class HistoricProcessInstanceQueryVersionTest extends PluggableActivitiTe
     assertThat(historyService.createHistoricProcessInstanceQuery().processDefinitionVersion(2).count()).isEqualTo(1);
     assertThat(historyService.createHistoricProcessInstanceQuery().processDefinitionVersion(3).count()).isEqualTo(0);
     assertThat(historyService.createHistoricProcessInstanceQuery().processDefinitionVersion(1).count()).isEqualTo(1);
-    assertThat(historyService.createHistoricProcessInstanceQuery().processDefinitionVersion(2).list().size()).isEqualTo(1);
-    assertThat(historyService.createHistoricProcessInstanceQuery().processDefinitionVersion(3).list().size()).isEqualTo(0);
+    assertThat(historyService.createHistoricProcessInstanceQuery().processDefinitionVersion(2).list()).hasSize(1);
+    assertThat(historyService.createHistoricProcessInstanceQuery().processDefinitionVersion(3).list()).hasSize(0);
 
     // Variables Case
     if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
@@ -81,19 +78,19 @@ public class HistoricProcessInstanceQueryVersionTest extends PluggableActivitiTe
     assertThat(historyService.createHistoricProcessInstanceQuery().processDefinitionKey(PROCESS_DEFINITION_KEY).processDefinitionVersion(2).count()).isEqualTo(1);
     assertThat(historyService.createHistoricProcessInstanceQuery().processDefinitionKey("undefined").processDefinitionVersion(1).count()).isEqualTo(0);
     assertThat(historyService.createHistoricProcessInstanceQuery().processDefinitionKey("undefined").processDefinitionVersion(2).count()).isEqualTo(0);
-    assertThat(historyService.createHistoricProcessInstanceQuery().processDefinitionKey(PROCESS_DEFINITION_KEY).processDefinitionVersion(1).list().size()).isEqualTo(1);
-    assertThat(historyService.createHistoricProcessInstanceQuery().processDefinitionKey(PROCESS_DEFINITION_KEY).processDefinitionVersion(2).list().size()).isEqualTo(1);
-    assertThat(historyService.createHistoricProcessInstanceQuery().processDefinitionKey("undefined").processDefinitionVersion(1).list().size()).isEqualTo(0);
-    assertThat(historyService.createHistoricProcessInstanceQuery().processDefinitionKey("undefined").processDefinitionVersion(2).list().size()).isEqualTo(0);
+    assertThat(historyService.createHistoricProcessInstanceQuery().processDefinitionKey(PROCESS_DEFINITION_KEY).processDefinitionVersion(1).list()).hasSize(1);
+    assertThat(historyService.createHistoricProcessInstanceQuery().processDefinitionKey(PROCESS_DEFINITION_KEY).processDefinitionVersion(2).list()).hasSize(1);
+    assertThat(historyService.createHistoricProcessInstanceQuery().processDefinitionKey("undefined").processDefinitionVersion(1).list()).hasSize(0);
+    assertThat(historyService.createHistoricProcessInstanceQuery().processDefinitionKey("undefined").processDefinitionVersion(2).list()).hasSize(0);
   }
 
   public void testHistoricProcessInstanceOrQueryByProcessDefinitionVersion() {
     assertThat(historyService.createHistoricProcessInstanceQuery().or().processDefinitionVersion(1).processDefinitionId("undefined").endOr().count()).isEqualTo(1);
     assertThat(historyService.createHistoricProcessInstanceQuery().or().processDefinitionVersion(2).processDefinitionId("undefined").endOr().count()).isEqualTo(1);
     assertThat(historyService.createHistoricProcessInstanceQuery().or().processDefinitionVersion(3).processDefinitionId("undefined").endOr().count()).isEqualTo(0);
-    assertThat(historyService.createHistoricProcessInstanceQuery().or().processDefinitionVersion(1).processDefinitionId("undefined").endOr().list().size()).isEqualTo(1);
-    assertThat(historyService.createHistoricProcessInstanceQuery().or().processDefinitionVersion(2).processDefinitionId("undefined").endOr().list().size()).isEqualTo(1);
-    assertThat(historyService.createHistoricProcessInstanceQuery().or().processDefinitionVersion(3).processDefinitionId("undefined").endOr().list().size()).isEqualTo(0);
+    assertThat(historyService.createHistoricProcessInstanceQuery().or().processDefinitionVersion(1).processDefinitionId("undefined").endOr().list()).hasSize(1);
+    assertThat(historyService.createHistoricProcessInstanceQuery().or().processDefinitionVersion(2).processDefinitionId("undefined").endOr().list()).hasSize(1);
+    assertThat(historyService.createHistoricProcessInstanceQuery().or().processDefinitionVersion(3).processDefinitionId("undefined").endOr().list()).hasSize(0);
 
     // Variables Case
     if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {

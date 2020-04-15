@@ -1,5 +1,7 @@
 package org.activiti.spring.test.jpa;
 
+import static org.activiti.engine.impl.util.CollectionUtil.map;
+import static org.activiti.engine.impl.util.CollectionUtil.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.HashMap;
@@ -20,14 +22,13 @@ public class JpaTest extends SpringActivitiTestCase {
 
   public void testJpaVariableHappyPath() {
     before();
-    Map<String, Object> variables = new HashMap<String, Object>();
-    variables.put("customerName", "John Doe");
-    variables.put("amount", 15000L);
 
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("LoanRequestProcess", variables);
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("LoanRequestProcess", map(
+      "customerName", "John Doe",
+      "amount", 15000L
+    ));
 
-    // Variable should be present containing the loanRequest created by the
-    // spring bean
+    // Variable should be present containing the loanRequest created by the spring bean
     Object value = runtimeService.getVariable(processInstance.getId(), "loanRequest");
     assertThat(value).isNotNull();
     assertThat(value).isInstanceOf(LoanRequest.class);
@@ -37,15 +38,11 @@ public class JpaTest extends SpringActivitiTestCase {
     assertThat(request.isApproved()).isFalse();
 
     // We will approve the request, which will update the entity
-    variables = new HashMap<String, Object>();
-    variables.put("approvedByManager", Boolean.TRUE);
-
     Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     assertThat(task).isNotNull();
-    taskService.complete(task.getId(), variables);
+    taskService.complete(task.getId(), singletonMap("approvedByManager", Boolean.TRUE));
 
-    // If approved, the processsInstance should be finished, gateway based
-    // on loanRequest.approved value
+    // If approved, the processsInstance should be finished, gateway based on loanRequest.approved value
     assertThat(runtimeService.createProcessInstanceQuery().processInstanceId(processInstance.getId()).count()).isEqualTo(0);
 
     // Cleanup
@@ -55,14 +52,13 @@ public class JpaTest extends SpringActivitiTestCase {
   public void testJpaVariableDisapprovalPath() {
 
     before();
-    Map<String, Object> variables = new HashMap<String, Object>();
-    variables.put("customerName", "Jane Doe");
-    variables.put("amount", 50000);
 
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("LoanRequestProcess", variables);
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("LoanRequestProcess", map(
+      "customerName", "Jane Doe",
+      "amount", 50000
+    ));
 
-    // Variable should be present containing the loanRequest created by the
-    // spring bean
+    // Variable should be present containing the loanRequest created by the spring bean
     Object value = runtimeService.getVariable(processInstance.getId(), "loanRequest");
     assertThat(value).isNotNull();
     assertThat(value).isInstanceOf(LoanRequest.class);
@@ -72,20 +68,15 @@ public class JpaTest extends SpringActivitiTestCase {
     assertThat(request.isApproved()).isFalse();
 
     // We will disapprove the request, which will update the entity
-    variables = new HashMap<String, Object>();
-    variables.put("approvedByManager", Boolean.FALSE);
-
     Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     assertThat(task).isNotNull();
-    taskService.complete(task.getId(), variables);
+    taskService.complete(task.getId(), singletonMap("approvedByManager", Boolean.FALSE));
 
     runtimeService.getVariable(processInstance.getId(), "loanRequest");
     request = (LoanRequest) value;
     assertThat(request.isApproved()).isFalse();
 
-    // If disapproved, an extra task will be available instead of the
-    // process
-    // ending
+    // If disapproved, an extra task will be available instead of the process ending
     task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     assertThat(task).isNotNull();
     assertThat(task.getName()).isEqualTo("Send rejection letter");

@@ -38,7 +38,7 @@ public class SubProcessTest extends PluggableActivitiTestCase {
     List<Task> tasks = taskService.createTaskQuery().processInstanceId(pi.getId()).orderByTaskName().asc().list();
 
     // Tasks are ordered by name (see query)
-    assertThat(tasks.size()).isEqualTo(2);
+    assertThat(tasks).hasSize(2);
     Task investigateHardwareTask = tasks.get(0);
     Task investigateSoftwareTask = tasks.get(1);
     assertThat(investigateHardwareTask.getName()).isEqualTo("Investigate hardware");

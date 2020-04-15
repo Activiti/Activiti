@@ -39,7 +39,7 @@ public class CustomMybatisXMLMapperTest extends ResourceActivitiTestCase {
 
     // test default query as well
     List<Task> tasks = taskService.createTaskQuery().list();
-    assertThat(tasks.size()).isEqualTo(5);
+    assertThat(tasks).hasSize(5);
 
     Task task = taskService.createTaskQuery().taskName("2").singleResult();
     assertThat(task.getName()).isEqualTo("2");
@@ -63,7 +63,7 @@ public class CustomMybatisXMLMapperTest extends ResourceActivitiTestCase {
       }
     });
 
-    assertThat(tasks.size()).isEqualTo(5);
+    assertThat(tasks).hasSize(5);
 
     // Cleanup
     deleteCustomTasks(tasks);
@@ -78,7 +78,7 @@ public class CustomMybatisXMLMapperTest extends ResourceActivitiTestCase {
 
     List<CustomTask> tasks = new CustomTaskQuery(managementService).unOwned().list();
 
-    assertThat(tasks.size()).isEqualTo(5);
+    assertThat(tasks).hasSize(5);
     assertThat(new CustomTaskQuery(managementService).unOwned().count()).isEqualTo(5);
 
     tasks = new CustomTaskQuery(managementService).list();
@@ -111,7 +111,7 @@ public class CustomMybatisXMLMapperTest extends ResourceActivitiTestCase {
 
     List<CustomTask> tasks = new CustomTaskQuery(managementService).listPage(0, 10);
 
-    assertThat(tasks.size()).isEqualTo(10);
+    assertThat(tasks).hasSize(10);
 
     tasks = new CustomTaskQuery(managementService).list();
 
@@ -127,7 +127,7 @@ public class CustomMybatisXMLMapperTest extends ResourceActivitiTestCase {
 
     List<CustomTask> tasks = new CustomTaskQuery(managementService).orderByTaskPriority().desc().list();
 
-    assertThat(tasks.size()).isEqualTo(5);
+    assertThat(tasks).hasSize(5);
 
     for (int i = 0, j = 4; i < 5; i++, j--) {
       CustomTask task = tasks.get(i);
@@ -136,7 +136,7 @@ public class CustomMybatisXMLMapperTest extends ResourceActivitiTestCase {
 
     tasks = new CustomTaskQuery(managementService).orderByTaskPriority().asc().list();
 
-    assertThat(tasks.size()).isEqualTo(5);
+    assertThat(tasks).hasSize(5);
 
     for (int i = 0; i < 5; i++) {
       CustomTask task = tasks.get(i);
@@ -170,22 +170,22 @@ public class CustomMybatisXMLMapperTest extends ResourceActivitiTestCase {
 
     assertThat(new AttachmentQuery(managementService).count()).isEqualTo(18);
     List<Attachment> attachments = new AttachmentQuery(managementService).list();
-    assertThat(attachments.size()).isEqualTo(18);
+    assertThat(attachments).hasSize(18);
 
     attachments = new AttachmentQuery(managementService).listPage(0, 10);
-    assertThat(attachments.size()).isEqualTo(10);
+    assertThat(attachments).hasSize(10);
 
     assertThat(new AttachmentQuery(managementService).taskId(taskId).count()).isEqualTo(3);
     attachments = new AttachmentQuery(managementService).taskId(taskId).list();
-    assertThat(attachments.size()).isEqualTo(3);
+    assertThat(attachments).hasSize(3);
 
     assertThat(new AttachmentQuery(managementService).userId("kermit").count()).isEqualTo(2);
     attachments = new AttachmentQuery(managementService).userId("kermit").list();
-    assertThat(attachments.size()).isEqualTo(2);
+    assertThat(attachments).hasSize(2);
 
     assertThat(new AttachmentQuery(managementService).attachmentType("image/jpeg").count()).isEqualTo(1);
     attachments = new AttachmentQuery(managementService).attachmentType("image/jpeg").list();
-    assertThat(attachments.size()).isEqualTo(1);
+    assertThat(attachments).hasSize(1);
 
     assertThat(new AttachmentQuery(managementService).orderByAttachmentName().desc().list().get(0).getName()).isEqualTo("zattachment3");
 

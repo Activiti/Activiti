@@ -157,7 +157,7 @@ public class ProcessInstanceMigrationTest extends PluggableActivitiTestCase {
           .processInstanceId(pi.getId())
           .unfinished()
           .list();
-      assertThat(historicActivities.size()).isEqualTo(1);
+      assertThat(historicActivities).hasSize(1);
       assertThat(historicActivities.get(0).getProcessDefinitionId()).isEqualTo(newProcessDefinition.getId());
     }
 

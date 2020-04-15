@@ -18,7 +18,7 @@ public class CommaSplitterTest {
     String testString = "Test String";
     List<String> result = CommaSplitter.splitCommas(testString);
     assertThat(result).isNotNull();
-    assertThat(result.size()).isEqualTo(1);
+    assertThat(result).hasSize(1);
     assertThat(result.get(0)).isEqualTo(testString);
   }
 
@@ -27,7 +27,7 @@ public class CommaSplitterTest {
     String testString = "Test,String";
     List<String> result = CommaSplitter.splitCommas(testString);
     assertThat(result).isNotNull();
-    assertThat(result.size()).isEqualTo(2);
+    assertThat(result).hasSize(2);
     assertThat(result.get(0)).isEqualTo("Test");
     assertThat(result.get(1)).isEqualTo("String");
   }
@@ -37,7 +37,7 @@ public class CommaSplitterTest {
     String testString = "does,anybody,realy,reads,this,nonsense";
     List<String> result = CommaSplitter.splitCommas(testString);
     assertThat(result).isNotNull();
-    assertThat(result.size()).isEqualTo(6);
+    assertThat(result).hasSize(6);
     assertThat(result.get(0)).isEqualTo("does");
     assertThat(result.get(1)).isEqualTo("anybody");
     assertThat(result.get(2)).isEqualTo("realy");
@@ -51,7 +51,7 @@ public class CommaSplitterTest {
     String testString = ",first,second";
     List<String> result = CommaSplitter.splitCommas(testString);
     assertThat(result).isNotNull();
-    assertThat(result.size()).isEqualTo(2);
+    assertThat(result).hasSize(2);
     assertThat(result.get(0)).isEqualTo("first");
     assertThat(result.get(1)).isEqualTo("second");
 
@@ -62,7 +62,7 @@ public class CommaSplitterTest {
     String testString = "first,second,";
     List<String> result = CommaSplitter.splitCommas(testString);
     assertThat(result).isNotNull();
-    assertThat(result.size()).isEqualTo(2);
+    assertThat(result).hasSize(2);
     assertThat(result.get(0)).isEqualTo("first");
     assertThat(result.get(1)).isEqualTo("second");
 
@@ -73,7 +73,7 @@ public class CommaSplitterTest {
     String testString = ",first,second,";
     List<String> result = CommaSplitter.splitCommas(testString);
     assertThat(result).isNotNull();
-    assertThat(result.size()).isEqualTo(2);
+    assertThat(result).hasSize(2);
     assertThat(result.get(0)).isEqualTo("first");
     assertThat(result.get(1)).isEqualTo("second");
   }
@@ -83,7 +83,7 @@ public class CommaSplitterTest {
     String testString = "${first,second}";
     List<String> result = CommaSplitter.splitCommas(testString);
     assertThat(result).isNotNull();
-    assertThat(result.size()).isEqualTo(1);
+    assertThat(result).hasSize(1);
     assertThat(result.get(0)).isEqualTo(testString);
   }
 
@@ -92,7 +92,7 @@ public class CommaSplitterTest {
     String testString = "${Everything,should,be,made,as,simple,as,possible},but,no,simpler";
     List<String> result = CommaSplitter.splitCommas(testString);
     assertThat(result).isNotNull();
-    assertThat(result.size()).isEqualTo(4);
+    assertThat(result).hasSize(4);
     assertThat(result.get(0)).isEqualTo("${Everything,should,be,made,as,simple,as,possible}");
     assertThat(result.get(1)).isEqualTo("but");
     assertThat(result.get(2)).isEqualTo("no");

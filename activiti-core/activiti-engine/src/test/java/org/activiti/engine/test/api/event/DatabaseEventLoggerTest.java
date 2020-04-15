@@ -76,7 +76,7 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
       }
     }
 
-    assertThat(eventLogEntries.size()).isEqualTo(15);
+    assertThat(eventLogEntries).hasSize(15);
 
     long lastLogNr = -1;
     for (int i = 0; i < eventLogEntries.size(); i++) {
@@ -118,7 +118,7 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
         assertThat(data.get(Fields.TENANT_ID)).isEqualTo(testTenant);
 
         Map<String, Object> variableMap = (Map<String, Object>) data.get(Fields.VARIABLES);
-        assertThat(variableMap.size()).isEqualTo(1);
+        assertThat(variableMap).hasSize(1);
         assertThat(variableMap.get("testVar")).isEqualTo("helloWorld");
 
         assertThat(data.containsKey(Fields.NAME)).isFalse();
@@ -280,7 +280,7 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
 
     // Verify events
     eventLogEntries = managementService.getEventLogEntries(lastLogNr, 100L);
-    assertThat(eventLogEntries.size()).isEqualTo(17);
+    assertThat(eventLogEntries).hasSize(17);
 
     for (int i = 0; i < eventLogEntries.size(); i++) {
 
@@ -308,7 +308,7 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
         assertThat(data.get(Fields.USER_ID)).isNotNull();
 
         Map<String, Object> variableMap = (Map<String, Object>) data.get(Fields.VARIABLES);
-        assertThat(variableMap.size()).isEqualTo(1);
+        assertThat(variableMap).hasSize(1);
         assertThat(variableMap.get("test")).isEqualTo("test");
 
         assertThat(data.containsKey(Fields.DESCRIPTION)).isFalse();
@@ -435,7 +435,7 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
       }
     }
 
-    assertThat(eventLogEntries.size()).isEqualTo(15);
+    assertThat(eventLogEntries).hasSize(15);
 
     for (int i = 0; i < eventLogEntries.size(); i++) {
 
@@ -528,7 +528,7 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
     taskService.saveTask(task);
 
     List<EventLogEntry> events = managementService.getEventLogEntries(null, null);
-    assertThat(events.size()).isEqualTo(4);
+    assertThat(events).hasSize(4);
     assertThat(events.get(0).getType()).isEqualTo("TASK_CREATED");
     assertThat(events.get(1).getType()).isEqualTo("TASK_ASSIGNED");
     assertThat(events.get(2).getType()).isEqualTo("TASK_ASSIGNED");

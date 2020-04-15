@@ -42,7 +42,7 @@ public class CompleteConverterTest extends AbstractConverterTest {
     assertThat(flowElement).isInstanceOf(IntermediateCatchEvent.class);
     assertThat(flowElement.getId()).isEqualTo("catchsignal");
     IntermediateCatchEvent catchEvent = (IntermediateCatchEvent) flowElement;
-    assertThat(catchEvent.getEventDefinitions().size()).isEqualTo(1);
+    assertThat(catchEvent.getEventDefinitions()).hasSize(1);
     assertThat(catchEvent.getEventDefinitions().get(0)).isInstanceOf(SignalEventDefinition.class);
     SignalEventDefinition signalEvent = (SignalEventDefinition) catchEvent.getEventDefinitions().get(0);
     assertThat(signalEvent.getSignalRef()).isEqualTo("testSignal");

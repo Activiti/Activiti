@@ -36,7 +36,7 @@ public class HistoricProcessInstanceQueryTest extends PluggableActivitiTestCase 
 
     if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
       List<HistoricProcessInstance> processes = historyService.createHistoricProcessInstanceQuery().processInstanceId(processInstanceId).list();
-      assertThat(processes.size()).isEqualTo(1);
+      assertThat(processes).hasSize(1);
       assertThat(processes.get(0).getName()).isNull();
       assertThat(processes.get(0).getDescription()).isNull();
 
@@ -49,22 +49,22 @@ public class HistoricProcessInstanceQueryTest extends PluggableActivitiTestCase 
       dynamicBpmnService.saveProcessDefinitionInfo(processInstance.getProcessDefinitionId(), infoNode);
 
       processes = historyService.createHistoricProcessInstanceQuery().processInstanceId(processInstanceId).list();
-      assertThat(processes.size()).isEqualTo(1);
+      assertThat(processes).hasSize(1);
       assertThat(processes.get(0).getName()).isNull();
       assertThat(processes.get(0).getDescription()).isNull();
 
       processes = historyService.createHistoricProcessInstanceQuery().processInstanceId(processInstanceId).locale("en-GB").list();
-      assertThat(processes.size()).isEqualTo(1);
+      assertThat(processes).hasSize(1);
       assertThat(processes.get(0).getName()).isEqualTo("Historic Process Name 'en-GB'");
       assertThat(processes.get(0).getDescription()).isEqualTo("Historic Process Description 'en-GB'");
 
       processes = historyService.createHistoricProcessInstanceQuery().processInstanceId(processInstanceId).listPage(0,10);
-      assertThat(processes.size()).isEqualTo(1);
+      assertThat(processes).hasSize(1);
       assertThat(processes.get(0).getName()).isNull();
       assertThat(processes.get(0).getDescription()).isNull();
 
       processes = historyService.createHistoricProcessInstanceQuery().processInstanceId(processInstanceId).locale("en-GB").listPage(0,10);
-      assertThat(processes.size()).isEqualTo(1);
+      assertThat(processes).hasSize(1);
       assertThat(processes.get(0).getName()).isEqualTo("Historic Process Name 'en-GB'");
       assertThat(processes.get(0).getDescription()).isEqualTo("Historic Process Description 'en-GB'");
 

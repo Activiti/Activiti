@@ -43,7 +43,7 @@ public class MessageStartEventTest extends PluggableActivitiTestCase {
 
     List<EventSubscriptionEntity> eventSubscriptions = new EventSubscriptionQueryImpl(processEngineConfiguration.getCommandExecutor()).list();
 
-    assertThat(eventSubscriptions.size()).isEqualTo(1);
+    assertThat(eventSubscriptions).hasSize(1);
 
     repositoryService.deleteDeployment(deploymentId);
   }
@@ -76,8 +76,8 @@ public class MessageStartEventTest extends PluggableActivitiTestCase {
     List<EventSubscriptionEntity> eventSubscriptions = new EventSubscriptionQueryImpl(processEngineConfiguration.getCommandExecutor()).list();
     List<ProcessDefinition> processDefinitions = repositoryService.createProcessDefinitionQuery().list();
 
-    assertThat(eventSubscriptions.size()).isEqualTo(1);
-    assertThat(processDefinitions.size()).isEqualTo(1);
+    assertThat(eventSubscriptions).hasSize(1);
+    assertThat(processDefinitions).hasSize(1);
 
     String newDeploymentId = repositoryService.createDeployment().addClasspathResource("org/activiti/engine/test/bpmn/event/message/MessageStartEventTest.testSingleMessageStartEvent.bpmn20.xml")
         .deploy().getId();
@@ -85,8 +85,8 @@ public class MessageStartEventTest extends PluggableActivitiTestCase {
     List<EventSubscriptionEntity> newEventSubscriptions = new EventSubscriptionQueryImpl(processEngineConfiguration.getCommandExecutor()).list();
     List<ProcessDefinition> newProcessDefinitions = repositoryService.createProcessDefinitionQuery().list();
 
-    assertThat(newEventSubscriptions.size()).isEqualTo(1);
-    assertThat(newProcessDefinitions.size()).isEqualTo(2);
+    assertThat(newEventSubscriptions).hasSize(1);
+    assertThat(newProcessDefinitions).hasSize(2);
     for (ProcessDefinition processDefinition : newProcessDefinitions) {
       if (processDefinition.getVersion() == 1) {
         for (EventSubscriptionEntity subscription : newEventSubscriptions) {

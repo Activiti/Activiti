@@ -54,7 +54,7 @@ public class DeploymentQueryTest extends PluggableActivitiTestCase {
 
   public void testQueryNoCriteria() {
     DeploymentQuery query = repositoryService.createDeploymentQuery();
-    assertThat(query.list().size()).isEqualTo(2);
+    assertThat(query.list()).hasSize(2);
     assertThat(query.count()).isEqualTo(2);
 
     assertThatExceptionOfType(ActivitiException.class)
@@ -64,14 +64,14 @@ public class DeploymentQueryTest extends PluggableActivitiTestCase {
   public void testQueryByDeploymentId() {
     DeploymentQuery query = repositoryService.createDeploymentQuery().deploymentId(deploymentOneId);
     assertThat(query.singleResult()).isNotNull();
-    assertThat(query.list().size()).isEqualTo(1);
+    assertThat(query.list()).hasSize(1);
     assertThat(query.count()).isEqualTo(1);
   }
 
   public void testQueryByInvalidDeploymentId() {
     DeploymentQuery query = repositoryService.createDeploymentQuery().deploymentId("invalid");
     assertThat(query.singleResult()).isNull();
-    assertThat(query.list().size()).isEqualTo(0);
+    assertThat(query.list()).hasSize(0);
     assertThat(query.count()).isEqualTo(0);
 
     assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
@@ -81,14 +81,14 @@ public class DeploymentQueryTest extends PluggableActivitiTestCase {
   public void testQueryByName() {
     DeploymentQuery query = repositoryService.createDeploymentQuery().deploymentName("org/activiti/engine/test/repository/two.bpmn20.xml");
     assertThat(query.singleResult()).isNotNull();
-    assertThat(query.list().size()).isEqualTo(1);
+    assertThat(query.list()).hasSize(1);
     assertThat(query.count()).isEqualTo(1);
   }
 
   public void testQueryByInvalidName() {
     DeploymentQuery query = repositoryService.createDeploymentQuery().deploymentName("invalid");
     assertThat(query.singleResult()).isNull();
-    assertThat(query.list().size()).isEqualTo(0);
+    assertThat(query.list()).hasSize(0);
     assertThat(query.count()).isEqualTo(0);
 
     assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
@@ -97,7 +97,7 @@ public class DeploymentQueryTest extends PluggableActivitiTestCase {
 
   public void testQueryByNameLike() {
     DeploymentQuery query = repositoryService.createDeploymentQuery().deploymentNameLike("%activiti%");
-    assertThat(query.list().size()).isEqualTo(2);
+    assertThat(query.list()).hasSize(2);
     assertThat(query.count()).isEqualTo(2);
 
     assertThatExceptionOfType(ActivitiException.class)
@@ -107,7 +107,7 @@ public class DeploymentQueryTest extends PluggableActivitiTestCase {
   public void testQueryByInvalidNameLike() {
     DeploymentQuery query = repositoryService.createDeploymentQuery().deploymentNameLike("invalid");
     assertThat(query.singleResult()).isNull();
-    assertThat(query.list().size()).isEqualTo(0);
+    assertThat(query.list()).hasSize(0);
     assertThat(query.count()).isEqualTo(0);
 
     assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
@@ -116,27 +116,27 @@ public class DeploymentQueryTest extends PluggableActivitiTestCase {
 
   public void testQueryByNameAndCategory() {
     DeploymentQuery query = repositoryService.createDeploymentQuery().deploymentCategory("testCategory").deploymentNameLike("%activiti%");
-    assertThat(query.list().size()).isEqualTo(1);
+    assertThat(query.list()).hasSize(1);
     assertThat(query.count()).isEqualTo(1);
     assertThat(query.singleResult()).isNotNull();
   }
 
   public void testQueryByProcessDefinitionKey() {
     DeploymentQuery query = repositoryService.createDeploymentQuery().processDefinitionKey("one");
-    assertThat(query.list().size()).isEqualTo(1);
+    assertThat(query.list()).hasSize(1);
     assertThat(query.count()).isEqualTo(1);
     assertThat(query.singleResult()).isNotNull();
   }
 
   public void testQueryByProcessDefinitionKeyLike() {
     DeploymentQuery query = repositoryService.createDeploymentQuery().processDefinitionKeyLike("%o%");
-    assertThat(query.list().size()).isEqualTo(2);
+    assertThat(query.list()).hasSize(2);
     assertThat(query.count()).isEqualTo(2);
   }
 
   public void testQueryByInvalidProcessDefinitionKeyLike() {
     DeploymentQuery query = repositoryService.createDeploymentQuery().processDefinitionKeyLike("invalid");
-    assertThat(query.list().size()).isEqualTo(0);
+    assertThat(query.list()).hasSize(0);
     assertThat(query.count()).isEqualTo(0);
   }
 
@@ -154,11 +154,11 @@ public class DeploymentQueryTest extends PluggableActivitiTestCase {
     deployments = repositoryService.createDeploymentQuery().deploymentNameLike("%one%").orderByDeploymentName().asc().list();
 
     assertThat(deployments.get(0).getName()).isEqualTo("org/activiti/engine/test/repository/one.bpmn20.xml");
-    assertThat(deployments.size()).isEqualTo(1);
+    assertThat(deployments).hasSize(1);
 
-    assertThat(repositoryService.createDeploymentQuery().orderByDeploymentId().asc().list().size()).isEqualTo(2);
+    assertThat(repositoryService.createDeploymentQuery().orderByDeploymentId().asc().list()).hasSize(2);
 
-    assertThat(repositoryService.createDeploymentQuery().orderByDeploymenTime().asc().list().size()).isEqualTo(2);
+    assertThat(repositoryService.createDeploymentQuery().orderByDeploymenTime().asc().list()).hasSize(2);
 
   }
 
@@ -168,13 +168,13 @@ public class DeploymentQueryTest extends PluggableActivitiTestCase {
     String tableName = managementService.getTableName(Deployment.class);
     String baseQuerySql = "SELECT * FROM " + tableName;
 
-    assertThat(repositoryService.createNativeDeploymentQuery().sql(baseQuerySql).list().size()).isEqualTo(2);
+    assertThat(repositoryService.createNativeDeploymentQuery().sql(baseQuerySql).list()).hasSize(2);
 
-    assertThat(repositoryService.createNativeDeploymentQuery().sql(baseQuerySql + " where NAME_ = #{name}").parameter("name", "org/activiti/engine/test/repository/one.bpmn20.xml").list().size()).isEqualTo(1);
+    assertThat(repositoryService.createNativeDeploymentQuery().sql(baseQuerySql + " where NAME_ = #{name}").parameter("name", "org/activiti/engine/test/repository/one.bpmn20.xml").list()).hasSize(1);
 
     // paging
-    assertThat(repositoryService.createNativeDeploymentQuery().sql(baseQuerySql).listPage(0, 2).size()).isEqualTo(2);
-    assertThat(repositoryService.createNativeDeploymentQuery().sql(baseQuerySql).listPage(1, 3).size()).isEqualTo(1);
+    assertThat(repositoryService.createNativeDeploymentQuery().sql(baseQuerySql).listPage(0, 2)).hasSize(2);
+    assertThat(repositoryService.createNativeDeploymentQuery().sql(baseQuerySql).listPage(1, 3)).hasSize(1);
   }
 
 }

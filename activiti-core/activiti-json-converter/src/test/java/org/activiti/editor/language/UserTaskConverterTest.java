@@ -50,15 +50,15 @@ public class UserTaskConverterTest extends AbstractConverterTest {
     assertThat(userTask.getCategory()).isEqualTo("defaultCategory");
 
     assertThat(userTask.getAssignee()).isEqualTo("kermit");
-    assertThat(userTask.getCandidateUsers().size()).isEqualTo(2);
+    assertThat(userTask.getCandidateUsers()).hasSize(2);
     assertThat(userTask.getCandidateUsers().contains("kermit")).isTrue();
     assertThat(userTask.getCandidateUsers().contains("fozzie")).isTrue();
-    assertThat(userTask.getCandidateGroups().size()).isEqualTo(2);
+    assertThat(userTask.getCandidateGroups()).hasSize(2);
     assertThat(userTask.getCandidateGroups().contains("management")).isTrue();
     assertThat(userTask.getCandidateGroups().contains("sales")).isTrue();
 
     List<FormProperty> formProperties = userTask.getFormProperties();
-    assertThat(formProperties.size()).isEqualTo(2);
+    assertThat(formProperties).hasSize(2);
     FormProperty formProperty = formProperties.get(0);
     assertThat(formProperty.getId()).isEqualTo("formId");
     assertThat(formProperty.getName()).isEqualTo("formName");
@@ -73,12 +73,12 @@ public class UserTaskConverterTest extends AbstractConverterTest {
     assertThat(StringUtils.isEmpty(formProperty.getExpression())).isTrue();
 
     List<ActivitiListener> listeners = userTask.getTaskListeners();
-    assertThat(listeners.size()).isEqualTo(3);
+    assertThat(listeners).hasSize(3);
     ActivitiListener listener = (ActivitiListener) listeners.get(0);
     assertThat(ImplementationType.IMPLEMENTATION_TYPE_CLASS.equals(listener.getImplementationType())).isTrue();
     assertThat(listener.getImplementation()).isEqualTo("org.test.TestClass");
     assertThat(listener.getEvent()).isEqualTo("create");
-    assertThat(listener.getFieldExtensions().size()).isEqualTo(2);
+    assertThat(listener.getFieldExtensions()).hasSize(2);
     assertThat(listener.getFieldExtensions().get(0).getFieldName()).isEqualTo("testField");
     assertThat(listener.getFieldExtensions().get(0).getStringValue()).isEqualTo("test");
     listener = (ActivitiListener) listeners.get(1);

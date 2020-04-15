@@ -47,7 +47,7 @@ public class MapExceptionConverterTest extends AbstractConverterTest {
         assertThat(flowElement.getId()).isEqualTo("servicetaskWithAndTrueAndChildren");
         ServiceTask serviceTask = (ServiceTask) flowElement;
         assertThat(serviceTask.getMapExceptions()).isNotNull();
-        assertThat(serviceTask.getMapExceptions().size()).isEqualTo(1);
+        assertThat(serviceTask.getMapExceptions()).hasSize(1);
         assertThat(serviceTask.getMapExceptions().get(0).getClassName()).isNotNull();
         assertThat(serviceTask.getMapExceptions().get(0).getClassName().length()).isEqualTo(0);
     }
@@ -69,7 +69,7 @@ public class MapExceptionConverterTest extends AbstractConverterTest {
         assertThat(flowElement.getId()).isEqualTo("servicetaskWithAndTrueAndChildren");
         ServiceTask serviceTask = (ServiceTask) flowElement;
         assertThat(serviceTask.getMapExceptions()).isNotNull();
-        assertThat(serviceTask.getMapExceptions().size()).isEqualTo(3);
+        assertThat(serviceTask.getMapExceptions()).hasSize(3);
 
         // check a normal mapException, with hasChildren == true
         assertThat(serviceTask.getMapExceptions().get(0).getErrorCode()).isEqualTo("myErrorCode1");
@@ -93,6 +93,6 @@ public class MapExceptionConverterTest extends AbstractConverterTest {
         assertThat(flowElement1.getId()).isEqualTo("servicetaskWithNoMapException");
         ServiceTask serviceTask1 = (ServiceTask) flowElement1;
         assertThat(serviceTask1.getMapExceptions()).isNotNull();
-        assertThat(serviceTask1.getMapExceptions().size()).isEqualTo(0);
+        assertThat(serviceTask1.getMapExceptions()).hasSize(0);
     }
 }

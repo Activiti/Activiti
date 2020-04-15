@@ -39,7 +39,7 @@ public class BoundaryTimerEventRepeatCompatibilityTest extends TimerEventCompati
     runtimeService.setVariable(processInstance.getId(), "EndDateForBoundary", dateStr);
 
     List<Task> tasks = taskService.createTaskQuery().list();
-    assertThat(tasks.size()).isEqualTo(1);
+    assertThat(tasks).hasSize(1);
 
     Task task = tasks.get(0);
     assertThat(task.getName()).isEqualTo("Task A");
@@ -49,7 +49,7 @@ public class BoundaryTimerEventRepeatCompatibilityTest extends TimerEventCompati
     taskService.complete(task.getId());
 
     List<Job> jobs = managementService.createTimerJobQuery().list();
-    assertThat(jobs.size()).isEqualTo(1);
+    assertThat(jobs).hasSize(1);
 
     // change the job in old mode (the configuration should not be json in
     // "old mode" but a simple string).
@@ -62,7 +62,7 @@ public class BoundaryTimerEventRepeatCompatibilityTest extends TimerEventCompati
 
     // a new job must be prepared because there are 10 repeats 2 seconds interval
     jobs = managementService.createTimerJobQuery().list();
-    assertThat(jobs.size()).isEqualTo(1);
+    assertThat(jobs).hasSize(1);
 
     for (int i = 0; i < 9; i++) {
       nextTimeCal.add(Calendar.SECOND, 2);
@@ -71,7 +71,7 @@ public class BoundaryTimerEventRepeatCompatibilityTest extends TimerEventCompati
       // a new job must be prepared because there are 10 repeats 2 seconds interval
 
       jobs = managementService.createTimerJobQuery().list();
-      assertThat(jobs.size()).isEqualTo(1);
+      assertThat(jobs).hasSize(1);
     }
 
     nextTimeCal.add(Calendar.SECOND, 2);
@@ -86,7 +86,7 @@ public class BoundaryTimerEventRepeatCompatibilityTest extends TimerEventCompati
     tasks = taskService.createTaskQuery().list();
     task = tasks.get(0);
     assertThat(task.getName()).isEqualTo("Task B");
-    assertThat(tasks.size()).isEqualTo(1);
+    assertThat(tasks).hasSize(1);
     taskService.complete(task.getId());
 
     try {
@@ -97,17 +97,17 @@ public class BoundaryTimerEventRepeatCompatibilityTest extends TimerEventCompati
 
     // now All the process instances should be completed
     List<ProcessInstance> processInstances = runtimeService.createProcessInstanceQuery().list();
-    assertThat(processInstances.size()).isEqualTo(0);
+    assertThat(processInstances).hasSize(0);
 
     // no jobs
     jobs = managementService.createJobQuery().list();
-    assertThat(jobs.size()).isEqualTo(0);
+    assertThat(jobs).hasSize(0);
     jobs = managementService.createTimerJobQuery().list();
-    assertThat(jobs.size()).isEqualTo(0);
+    assertThat(jobs).hasSize(0);
 
     // no tasks
     tasks = taskService.createTaskQuery().list();
-    assertThat(tasks.size()).isEqualTo(0);
+    assertThat(tasks).hasSize(0);
 
   }
 

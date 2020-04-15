@@ -37,7 +37,7 @@ public class ProcessDefinitionPersistenceTest extends PluggableActivitiTestCase 
 
     List<ProcessDefinition> processDefinitions = repositoryService.createProcessDefinitionQuery().list();
 
-    assertThat(processDefinitions.size()).isEqualTo(2);
+    assertThat(processDefinitions).hasSize(2);
 
     repositoryService.deleteDeployment(deploymentId);
   }
@@ -58,7 +58,7 @@ public class ProcessDefinitionPersistenceTest extends PluggableActivitiTestCase 
     assertThat(startElement.getName()).isEqualTo("S t a r t");
     assertThat(startElement.getDocumentation()).isEqualTo("the start event");
     List<SequenceFlow> outgoingFlows = startElement.getOutgoingFlows();
-    assertThat(outgoingFlows.size()).isEqualTo(1);
+    assertThat(outgoingFlows).hasSize(1);
     assertThat(outgoingFlows.get(0).getConditionExpression()).isEqualTo("${a == b}");
 
     EndEvent endElement = (EndEvent) process.getFlowElement("end");
@@ -80,7 +80,7 @@ public class ProcessDefinitionPersistenceTest extends PluggableActivitiTestCase 
 
     List<ProcessDefinition> processDefinitions = repositoryService.createProcessDefinitionQuery().orderByProcessDefinitionName().asc().orderByProcessDefinitionVersion().asc().list();
 
-    assertThat(processDefinitions.size()).isEqualTo(2);
+    assertThat(processDefinitions).hasSize(2);
 
     String deployment2Id = repositoryService.createDeployment().addClasspathResource("org/activiti/engine/test/db/processOne.bpmn20.xml")
         .addClasspathResource("org/activiti/engine/test/db/processTwo.bpmn20.xml").deploy().getId();

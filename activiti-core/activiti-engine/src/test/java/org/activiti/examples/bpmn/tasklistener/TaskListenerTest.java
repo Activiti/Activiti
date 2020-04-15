@@ -187,25 +187,25 @@ public class TaskListenerTest extends PluggableActivitiTestCase {
 
     List<Task> tasks = taskService.createTaskQuery().list();
     assertThat(tasks).isNotNull();
-    assertThat(tasks.size()).isEqualTo(1);
+    assertThat(tasks).hasSize(1);
 
     Task task = taskService.createTaskQuery().taskName("User Task 1").singleResult();
     assertThat(task).isNotNull();
 
-    assertThat(TaskDeleteListener.getCurrentMessages().size()).isEqualTo(0);
-    assertThat(TaskSimpleCompleteListener.getCurrentMessages().size()).isEqualTo(0);
+    assertThat(TaskDeleteListener.getCurrentMessages()).hasSize(0);
+    assertThat(TaskSimpleCompleteListener.getCurrentMessages()).hasSize(0);
 
     taskService.complete(task.getId());
 
     tasks = taskService.createTaskQuery().list();
 
     assertThat(tasks).isNotNull();
-    assertThat(tasks.size()).isEqualTo(0);
+    assertThat(tasks).hasSize(0);
 
-    assertThat(TaskDeleteListener.getCurrentMessages().size()).isEqualTo(1);
+    assertThat(TaskDeleteListener.getCurrentMessages()).hasSize(1);
     assertThat(TaskDeleteListener.getCurrentMessages().get(0)).isEqualTo("Delete Task Listener executed.");
 
-    assertThat(TaskSimpleCompleteListener.getCurrentMessages().size()).isEqualTo(1);
+    assertThat(TaskSimpleCompleteListener.getCurrentMessages()).hasSize(1);
     assertThat(TaskSimpleCompleteListener.getCurrentMessages().get(0)).isEqualTo("Complete Task Listener executed.");
   }
 
@@ -216,24 +216,24 @@ public class TaskListenerTest extends PluggableActivitiTestCase {
 
     List<Task> tasks = taskService.createTaskQuery().list();
     assertThat(tasks).isNotNull();
-    assertThat(tasks.size()).isEqualTo(1);
+    assertThat(tasks).hasSize(1);
 
     Task task = taskService.createTaskQuery().taskName("User Task 1").singleResult();
     assertThat(task).isNotNull();
 
-    assertThat(TaskDeleteListener.getCurrentMessages().size()).isEqualTo(0);
-    assertThat(TaskSimpleCompleteListener.getCurrentMessages().size()).isEqualTo(0);
+    assertThat(TaskDeleteListener.getCurrentMessages()).hasSize(0);
+    assertThat(TaskSimpleCompleteListener.getCurrentMessages()).hasSize(0);
 
     runtimeService.deleteProcessInstance(processInstance.getProcessInstanceId(), "");
 
     tasks = taskService.createTaskQuery().list();
 
     assertThat(tasks).isNotNull();
-    assertThat(tasks.size()).isEqualTo(0);
+    assertThat(tasks).hasSize(0);
 
-    assertThat(TaskDeleteListener.getCurrentMessages().size()).isEqualTo(1);
+    assertThat(TaskDeleteListener.getCurrentMessages()).hasSize(1);
     assertThat(TaskDeleteListener.getCurrentMessages().get(0)).isEqualTo("Delete Task Listener executed.");
 
-    assertThat(TaskSimpleCompleteListener.getCurrentMessages().size()).isEqualTo(0);
+    assertThat(TaskSimpleCompleteListener.getCurrentMessages()).hasSize(0);
   }
 }

@@ -53,7 +53,7 @@ public class ProcessInstanceEventsTest extends PluggableActivitiTestCase {
     assertThat(processInstance).isNotNull();
 
     // Check create-event
-    assertThat(listener.getEventsReceived().size()).isEqualTo(6);
+    assertThat(listener.getEventsReceived()).hasSize(6);
     assertThat(listener.getEventsReceived().get(0)).isInstanceOf(ActivitiEntityEvent.class);
 
     // process instance create event
@@ -104,7 +104,7 @@ public class ProcessInstanceEventsTest extends PluggableActivitiTestCase {
     runtimeService.suspendProcessInstanceById(processInstance.getId());
     runtimeService.activateProcessInstanceById(processInstance.getId());
 
-    assertThat(listener.getEventsReceived().size()).isEqualTo(4);
+    assertThat(listener.getEventsReceived()).hasSize(4);
     event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
     assertThat(((ProcessInstance) event.getEntity()).getId()).isEqualTo(processInstance.getId());
     assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_SUSPENDED);
@@ -134,7 +134,7 @@ public class ProcessInstanceEventsTest extends PluggableActivitiTestCase {
     repositoryService.suspendProcessDefinitionById(processInstance.getProcessDefinitionId(), true, null);
     repositoryService.activateProcessDefinitionById(processInstance.getProcessDefinitionId(), true, null);
 
-    assertThat(listener.getEventsReceived().size()).isEqualTo(4);
+    assertThat(listener.getEventsReceived()).hasSize(4);
     event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
     assertThat(((ProcessInstance) event.getEntity()).getId()).isEqualTo(processInstance.getId());
     assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_SUSPENDED);
@@ -161,7 +161,7 @@ public class ProcessInstanceEventsTest extends PluggableActivitiTestCase {
 
     // Check update-event when business-key is updated
     runtimeService.updateBusinessKey(processInstance.getId(), "thekey");
-    assertThat(listener.getEventsReceived().size()).isEqualTo(1);
+    assertThat(listener.getEventsReceived()).hasSize(1);
     event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
     assertThat(((ProcessInstance) event.getEntity()).getId()).isEqualTo(processInstance.getId());
     assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_UPDATED);
@@ -173,7 +173,7 @@ public class ProcessInstanceEventsTest extends PluggableActivitiTestCase {
     runtimeService.deleteProcessInstance(processInstance.getId(), "Testing events");
 
     List<ActivitiEvent> processCancelledEvents = listener.filterEvents(ActivitiEventType.PROCESS_CANCELLED);
-    assertThat(processCancelledEvents.size()).isEqualTo(1);
+    assertThat(processCancelledEvents).hasSize(1);
     ActivitiCancelledEvent cancelledEvent = (ActivitiCancelledEvent) processCancelledEvents.get(0);
     assertThat(cancelledEvent.getType()).isEqualTo(ActivitiEventType.PROCESS_CANCELLED);
     assertThat(cancelledEvent.getProcessInstanceId()).isEqualTo(processInstance.getId());
@@ -191,7 +191,7 @@ public class ProcessInstanceEventsTest extends PluggableActivitiTestCase {
     String processDefinitionId = processInstance.getProcessDefinitionId();
 
     // Check create-event one main process the second one Scope execution, and the third one subprocess
-    assertThat(listener.getEventsReceived().size()).isEqualTo(10);
+    assertThat(listener.getEventsReceived()).hasSize(10);
     assertThat(listener.getEventsReceived().get(0)).isInstanceOf(ActivitiEntityEvent.class);
 
     // process instance created event
@@ -523,7 +523,7 @@ public class ProcessInstanceEventsTest extends PluggableActivitiTestCase {
     Task task = taskService.createTaskQuery().singleResult();
     assertThat(task.getName()).isEqualTo("Task in subprocess");
     List<ProcessInstance> subProcesses = runtimeService.createProcessInstanceQuery().superProcessInstanceId(pi.getId()).list();
-    assertThat(subProcesses.size()).isEqualTo(1);
+    assertThat(subProcesses).hasSize(1);
 
     // Completing the task will reach the end error event,
     // which is caught on the call activity boundary

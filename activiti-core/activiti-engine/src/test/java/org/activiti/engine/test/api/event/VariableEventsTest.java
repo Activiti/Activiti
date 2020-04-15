@@ -44,9 +44,7 @@ public class VariableEventsTest extends PluggableActivitiTestCase {
         assertThat(processInstance).isNotNull();
 
         // Check create event
-        runtimeService.setVariable(processInstance.getId(),
-                                   "testVariable",
-                                   "The value");
+        runtimeService.setVariable(processInstance.getId(), "testVariable", "The value");
         assertThat(listener.getEventsReceived()).hasSize(1);
         ActivitiVariableEvent event = (ActivitiVariableEvent) listener.getEventsReceived().get(0);
         assertThat(event.getType()).isEqualTo(ActivitiEventType.VARIABLE_CREATED);
@@ -100,7 +98,6 @@ public class VariableEventsTest extends PluggableActivitiTestCase {
             .containsExactly(
                 ActivitiEventType.VARIABLE_CREATED,
                 ActivitiEventType.VARIABLE_CREATED,
-                ActivitiEventType.VARIABLE_CREATED,
                 ActivitiEventType.VARIABLE_UPDATED,
                 ActivitiEventType.VARIABLE_UPDATED,
                 ActivitiEventType.VARIABLE_DELETED,
@@ -115,10 +112,8 @@ public class VariableEventsTest extends PluggableActivitiTestCase {
 
     @Deployment(resources = {"org/activiti/engine/test/api/runtime/oneTaskProcess.bpmn20.xml"})
     public void testStartEndProcessInstanceVariableEvents() throws Exception {
-        Map<String, Object> variables = new HashMap<String, Object>();
-        variables.put("var1", "value1");
         ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess",
-                                                                                   variables);
+                                                                                   singletonMap("var1", "value1"));
 
         assertThat(listener.getEventsReceived()).hasSize(1);
         assertThat(listener.getEventsReceived().get(0).getType()).isEqualTo(ActivitiEventType.VARIABLE_CREATED);
@@ -136,12 +131,8 @@ public class VariableEventsTest extends PluggableActivitiTestCase {
     @Deployment(resources = {"org/activiti/engine/test/api/runtime/oneTaskProcess.bpmn20.xml"})
     public void testProcessInstanceVariableEventsOnStart() throws Exception {
 
-        HashMap<String, Object> vars = new HashMap<String, Object>();
-        vars.put("testVariable",
-                 "The value");
-
         ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess",
-                                                                                   vars);
+                                                                                   singletonMap("testVariable", "The value"));
         assertThat(processInstance).isNotNull();
 
         // Check create event
@@ -168,9 +159,7 @@ public class VariableEventsTest extends PluggableActivitiTestCase {
         Execution child = runtimeService.createExecutionQuery().parentId(processInstance.getId()).singleResult();
         assertThat(child).isNotNull();
 
-        runtimeService.setVariableLocal(child.getId(),
-                                        "test",
-                                        1234567);
+        runtimeService.setVariableLocal(child.getId(), "test", 1234567);
 
         assertThat(listener.getEventsReceived()).hasSize(1);
         ActivitiVariableEvent event = (ActivitiVariableEvent) listener.getEventsReceived().get(0);
@@ -249,14 +238,9 @@ public class VariableEventsTest extends PluggableActivitiTestCase {
         Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
         assertThat(task).isNotNull();
 
-        taskService.setVariableLocal(task.getId(),
-                                     "testVariable",
-                                     "The value");
-        taskService.setVariableLocal(task.getId(),
-                                     "testVariable",
-                                     "Updated value");
-        taskService.removeVariableLocal(task.getId(),
-                                        "testVariable");
+        taskService.setVariableLocal(task.getId(), "testVariable", "The value");
+        taskService.setVariableLocal(task.getId(), "testVariable", "Updated value");
+        taskService.removeVariableLocal(task.getId(), "testVariable");
 
         // Check create event
         assertThat(listener.getEventsReceived()).hasSize(3);

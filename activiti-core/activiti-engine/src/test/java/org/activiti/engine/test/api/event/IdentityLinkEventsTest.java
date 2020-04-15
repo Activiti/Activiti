@@ -45,7 +45,7 @@ public class IdentityLinkEventsTest extends PluggableActivitiTestCase {
     // Add candidate user and group
     repositoryService.addCandidateStarterUser(processDefinition.getId(), "kermit");
     repositoryService.addCandidateStarterGroup(processDefinition.getId(), "sales");
-    assertThat(listener.getEventsReceived().size()).isEqualTo(4);
+    assertThat(listener.getEventsReceived()).hasSize(4);
 
     ActivitiEntityEvent event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
     assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_CREATED);
@@ -71,7 +71,7 @@ public class IdentityLinkEventsTest extends PluggableActivitiTestCase {
     // Delete identity links
     repositoryService.deleteCandidateStarterUser(processDefinition.getId(), "kermit");
     repositoryService.deleteCandidateStarterGroup(processDefinition.getId(), "sales");
-    assertThat(listener.getEventsReceived().size()).isEqualTo(2);
+    assertThat(listener.getEventsReceived()).hasSize(2);
     event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
     assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_DELETED);
     assertThat(event.getEntity()).isInstanceOf(IdentityLink.class);
@@ -95,7 +95,7 @@ public class IdentityLinkEventsTest extends PluggableActivitiTestCase {
 
     // Add identity link
     runtimeService.addUserIdentityLink(processInstance.getId(), "kermit", "test");
-    assertThat(listener.getEventsReceived().size()).isEqualTo(2);
+    assertThat(listener.getEventsReceived()).hasSize(2);
 
     ActivitiEntityEvent event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
     assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_CREATED);
@@ -114,7 +114,7 @@ public class IdentityLinkEventsTest extends PluggableActivitiTestCase {
 
     // Deleting process should delete identity link
     runtimeService.deleteProcessInstance(processInstance.getId(), "test");
-    assertThat(listener.getEventsReceived().size()).isEqualTo(1);
+    assertThat(listener.getEventsReceived()).hasSize(1);
 
     event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
     assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_DELETED);
@@ -140,7 +140,7 @@ public class IdentityLinkEventsTest extends PluggableActivitiTestCase {
 
     // Three events are received, since the user link on the task also
     // creates an involvement in the process
-    assertThat(listener.getEventsReceived().size()).isEqualTo(6);
+    assertThat(listener.getEventsReceived()).hasSize(6);
 
     ActivitiEntityEvent event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
     assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_CREATED);
@@ -177,7 +177,7 @@ public class IdentityLinkEventsTest extends PluggableActivitiTestCase {
 
     // Deleting process should delete identity link
     runtimeService.deleteProcessInstance(processInstance.getId(), "test");
-    assertThat(listener.getEventsReceived().size()).isEqualTo(3);
+    assertThat(listener.getEventsReceived()).hasSize(3);
 
     event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
     assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_DELETED);
@@ -203,15 +203,15 @@ public class IdentityLinkEventsTest extends PluggableActivitiTestCase {
     taskService.addCandidateGroup(task.getId(), "sales");
 
     // Three events are received, since the user link on the task also creates an involvement in the process. See previous test
-    assertThat(listener.getEventsReceived().size()).isEqualTo(6);
+    assertThat(listener.getEventsReceived()).hasSize(6);
 
     listener.clearEventsReceived();
     taskService.deleteCandidateUser(task.getId(), "kermit");
-    assertThat(listener.getEventsReceived().size()).isEqualTo(1);
+    assertThat(listener.getEventsReceived()).hasSize(1);
 
     listener.clearEventsReceived();
     taskService.deleteCandidateGroup(task.getId(), "sales");
-    assertThat(listener.getEventsReceived().size()).isEqualTo(1);
+    assertThat(listener.getEventsReceived()).hasSize(1);
   }
 
   @Override

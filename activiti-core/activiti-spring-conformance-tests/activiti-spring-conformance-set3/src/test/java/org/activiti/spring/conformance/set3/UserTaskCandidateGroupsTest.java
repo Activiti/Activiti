@@ -102,7 +102,7 @@ public class UserTaskCandidateGroupsTest {
                         TaskRuntimeEvent.TaskEvents.TASK_CREATED);
 
         clearEvents();
-        
+
         taskRuntime.claim(TaskPayloadBuilder.claim().withTaskId(task.getId()).build());
 
         assertThat(RuntimeTestConfiguration.collectedEvents)
@@ -139,7 +139,7 @@ public class UserTaskCandidateGroupsTest {
 
         List<String> candidateUsers = taskRuntime.userCandidates(task.getId());
 
-        assertThat(candidateUsers.size()).isEqualTo(0);
+        assertThat(candidateUsers).hasSize(0);
 
         List<String> candidateGroups = taskRuntime.groupCandidates(task.getId());
         assertThat(candidateGroups).contains("group2");
@@ -175,5 +175,5 @@ public class UserTaskCandidateGroupsTest {
     public void clearEvents() {
         RuntimeTestConfiguration.collectedEvents.clear();
     }
-    
+
 }

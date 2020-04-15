@@ -47,7 +47,7 @@ public class BpmnDeploymentTest extends PluggableActivitiTestCase {
     List<String> deploymentResources = repositoryService.getDeploymentResourceNames(deploymentId);
 
     // verify bpmn file name
-    assertThat(deploymentResources.size()).isEqualTo(1);
+    assertThat(deploymentResources).hasSize(1);
     String bpmnResourceName = "org/activiti/engine/test/bpmn/deployment/BpmnDeploymentTest.testGetBpmnXmlFileThroughService.bpmn20.xml";
     assertThat(deploymentResources.get(0)).isEqualTo(bpmnResourceName);
 
@@ -136,12 +136,12 @@ public class BpmnDeploymentTest extends PluggableActivitiTestCase {
     List<String> deploymentResources = repositoryService.getDeploymentResourceNames(deploymentId);
 
     // verify bpmn file name
-    assertThat(deploymentResources.size()).isEqualTo(1);
+    assertThat(deploymentResources).hasSize(1);
     assertThat(deploymentResources.get(0)).isEqualTo(bpmnResourceName);
 
     repositoryService.createDeployment().enableDuplicateFiltering().addClasspathResource(bpmnResourceName).name("twice").deploy();
     List<org.activiti.engine.repository.Deployment> deploymentList = repositoryService.createDeploymentQuery().list();
-    assertThat(deploymentList.size()).isEqualTo(1);
+    assertThat(deploymentList).hasSize(1);
 
     repositoryService.deleteDeployment(deploymentId);
   }
@@ -168,13 +168,13 @@ public class BpmnDeploymentTest extends PluggableActivitiTestCase {
     List<String> deploymentResources = repositoryService.getDeploymentResourceNames(deploymentId);
 
     // verify bpmn file name
-    assertThat(deploymentResources.size()).isEqualTo(1);
+    assertThat(deploymentResources).hasSize(1);
     assertThat(deploymentResources.get(0)).isEqualTo(bpmnResourceName);
 
     bpmnResourceName = "org/activiti/engine/test/bpmn/deployment/BpmnDeploymentTest.testProcessDiagramResource.bpmn20.xml";
     repositoryService.createDeployment().enableDuplicateFiltering().addClasspathResource(bpmnResourceName).name("twice").deploy();
     List<org.activiti.engine.repository.Deployment> deploymentList = repositoryService.createDeploymentQuery().list();
-    assertThat(deploymentList.size()).isEqualTo(2);
+    assertThat(deploymentList).hasSize(2);
 
     for (org.activiti.engine.repository.Deployment deployment : deploymentList) {
       repositoryService.deleteDeployment(deployment.getId());
@@ -189,7 +189,7 @@ public class BpmnDeploymentTest extends PluggableActivitiTestCase {
     assertThat(processDefinition.getResourceName()).isEqualTo("org/activiti/engine/test/bpmn/deployment/BpmnDeploymentTest.testProcessDiagramResource.bpmn20.xml");
     BpmnModel processModel = repositoryService.getBpmnModel(processDefinition.getId());
     List<StartEvent> startEvents = processModel.getMainProcess().findFlowElementsOfType(StartEvent.class);
-    assertThat(startEvents.size()).isEqualTo(1);
+    assertThat(startEvents).hasSize(1);
     assertThat(startEvents.get(0).getFormKey()).isEqualTo("someFormKey");
 
     String diagramResourceName = processDefinition.getDiagramResourceName();
@@ -230,14 +230,14 @@ public class BpmnDeploymentTest extends PluggableActivitiTestCase {
     List<String> deploymentResources = repositoryService.getDeploymentResourceNames(deploymentId);
 
     // verify bpmn file name
-    assertThat(deploymentResources.size()).isEqualTo(1);
+    assertThat(deploymentResources).hasSize(1);
     assertThat(deploymentResources.get(0)).isEqualTo(bpmnResourceName);
 
     repositoryService.createDeployment().enableDuplicateFiltering().addClasspathResource(bpmnResourceName).name("twice").tenantId("Tenant_B").deploy();
     List<org.activiti.engine.repository.Deployment> deploymentList = repositoryService.createDeploymentQuery().list();
     // Now, we should have two deployment for same process file, one for
     // each tenant
-    assertThat(deploymentList.size()).isEqualTo(2);
+    assertThat(deploymentList).hasSize(2);
 
     for (org.activiti.engine.repository.Deployment deployment : deploymentList) {
       repositoryService.deleteDeployment(deployment.getId());

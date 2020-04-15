@@ -34,7 +34,7 @@ public class PoolConverterTest extends AbstractConverterTest {
     String idPool = "idPool";
     String idProcess = "poolProcess";
 
-    assertThat(model.getPools().size()).isEqualTo(1);
+    assertThat(model.getPools()).hasSize(1);
 
     Pool pool = model.getPool(idPool);
     assertThat(pool.getId()).isEqualTo(idPool);
@@ -44,12 +44,12 @@ public class PoolConverterTest extends AbstractConverterTest {
     Process process = model.getProcess(idPool);
     assertThat(process.getId()).isEqualTo(idProcess);
     assertThat(process.isExecutable()).isTrue();
-    assertThat(process.getLanes().size()).isEqualTo(3);
+    assertThat(process.getLanes()).hasSize(3);
 
     Lane lane = process.getLanes().get(0);
     assertThat(lane.getId()).isEqualTo("idLane1");
     assertThat(lane.getName()).isEqualTo("Lane 1");
-    assertThat(lane.getFlowReferences().size()).isEqualTo(7);
+    assertThat(lane.getFlowReferences()).hasSize(7);
     assertThat(lane.getFlowReferences().contains("startevent")).isTrue();
     assertThat(lane.getFlowReferences().contains("usertask1")).isTrue();
     assertThat(lane.getFlowReferences().contains("usertask6")).isTrue();
@@ -58,14 +58,14 @@ public class PoolConverterTest extends AbstractConverterTest {
     lane = process.getLanes().get(1);
     assertThat(lane.getId()).isEqualTo("idLane2");
     assertThat(lane.getName()).isEqualTo("Lane 2");
-    assertThat(lane.getFlowReferences().size()).isEqualTo(4);
+    assertThat(lane.getFlowReferences()).hasSize(4);
     assertThat(lane.getFlowReferences().contains("usertask2")).isTrue();
     assertThat(lane.getFlowReferences().contains("usertask5")).isTrue();
 
     lane = process.getLanes().get(2);
     assertThat(lane.getId()).isEqualTo("idLane3");
     assertThat(lane.getName()).isEqualTo("Lane 3");
-    assertThat(lane.getFlowReferences().size()).isEqualTo(4);
+    assertThat(lane.getFlowReferences()).hasSize(4);
     assertThat(lane.getFlowReferences().contains("usertask3")).isTrue();
     assertThat(lane.getFlowReferences().contains("usertask4")).isTrue();
 

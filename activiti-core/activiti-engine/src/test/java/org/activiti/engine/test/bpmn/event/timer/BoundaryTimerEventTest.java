@@ -67,7 +67,7 @@ public class BoundaryTimerEventTest extends PluggableActivitiTestCase {
     ProcessInstance pi = runtimeService.startProcessInstanceByKey("multipleTimersOnUserTask");
     TimerJobQuery jobQuery = managementService.createTimerJobQuery().processInstanceId(pi.getId());
     List<Job> jobs = jobQuery.list();
-    assertThat(jobs.size()).isEqualTo(3);
+    assertThat(jobs).hasSize(3);
 
     // After setting the clock to time '1 hour and 5 seconds', the second
     // timer should fire
@@ -87,7 +87,7 @@ public class BoundaryTimerEventTest extends PluggableActivitiTestCase {
 
     runtimeService.startProcessInstanceByKey("timerOnNestedSubprocesses");
     List<Task> tasks = taskService.createTaskQuery().orderByTaskName().asc().list();
-    assertThat(tasks.size()).isEqualTo(2);
+    assertThat(tasks).hasSize(2);
     assertThat(tasks.get(0).getName()).isEqualTo("Inner subprocess task 1");
     assertThat(tasks.get(1).getName()).isEqualTo("Inner subprocess task 2");
 
@@ -114,7 +114,7 @@ public class BoundaryTimerEventTest extends PluggableActivitiTestCase {
 
     TimerJobQuery jobQuery = managementService.createTimerJobQuery().processInstanceId(pi.getId());
     List<Job> jobs = jobQuery.list();
-    assertThat(jobs.size()).isEqualTo(1);
+    assertThat(jobs).hasSize(1);
 
     // After setting the clock to time '1 hour and 5 seconds', the second
     // timer should fire
@@ -143,7 +143,7 @@ public class BoundaryTimerEventTest extends PluggableActivitiTestCase {
     //NO job scheduled as null expression set
     TimerJobQuery jobQuery = managementService.createTimerJobQuery().processInstanceId(pi.getId());
     List<Job> jobs = jobQuery.list();
-    assertThat(jobs.size()).isEqualTo(0);
+    assertThat(jobs).hasSize(0);
 
     // which means the process is still running waiting for human task input.
     ProcessInstance processInstance = processEngine
@@ -270,7 +270,7 @@ public class BoundaryTimerEventTest extends PluggableActivitiTestCase {
     assertThat(tasks).hasSize(1);
     assertThat(tasks.get(0).getName()).isEqualTo("First Task");
     List<Job> jobList = managementService.createTimerJobQuery().list();
-    assertThat(jobList.size()).isEqualTo(1);
+    assertThat(jobList).hasSize(1);
 
     // let's see what's happening after 2 minutes
     // nothing should change since the timer have to executed after 10 minutes
@@ -289,7 +289,7 @@ public class BoundaryTimerEventTest extends PluggableActivitiTestCase {
     assertThat(tasks).hasSize(1);
     assertThat(tasks.get(0).getName()).isEqualTo("First Task");
     jobList = managementService.createTimerJobQuery().list();
-    assertThat(jobList.size()).isEqualTo(1);
+    assertThat(jobList).hasSize(1);
 
     // after another 8 minutes (the timer will have to execute because it wasa set to be executed @ 10 minutes after process start)
     long tenMinutes = 8L * 60L * 1000L;
@@ -306,12 +306,12 @@ public class BoundaryTimerEventTest extends PluggableActivitiTestCase {
     // there should be only one userTask and it should be the one triggered by the boundary timer event.
     // after the boundary event is triggered there should be no active job.
     tasks = taskService.createTaskQuery().list();
-    assertThat(tasks.size()).isEqualTo(1);
+    assertThat(tasks).hasSize(1);
     assertThat(tasks.get(0).getName()).isEqualTo("Second Task");
     jobList = managementService.createJobQuery().list();
-    assertThat(jobList.size()).isEqualTo(0);
+    assertThat(jobList).hasSize(0);
     jobList = managementService.createTimerJobQuery().list();
-    assertThat(jobList.size()).isEqualTo(0);
+    assertThat(jobList).hasSize(0);
   }
 
 
@@ -333,10 +333,10 @@ public class BoundaryTimerEventTest extends PluggableActivitiTestCase {
 
     // there should be a userTask waiting for user input
     List<Task> tasks = taskService.createTaskQuery().list();
-    assertThat(tasks.size()).isEqualTo(1);
+    assertThat(tasks).hasSize(1);
     assertThat(tasks.get(0).getName()).isEqualTo("Start");
     List<Job> jobList = managementService.createTimerJobQuery().list();
-    assertThat(jobList.size()).isEqualTo(1);
+    assertThat(jobList).hasSize(1);
 
     // after another 2 minutes
     long tenMinutes = 2L * 60L * 1000L;

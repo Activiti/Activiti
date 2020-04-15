@@ -95,7 +95,7 @@ public class JsonTest extends PluggableActivitiTestCase {
     if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
       List<HistoricVariableInstance> historicVariableInstances = historyService.createHistoricVariableInstanceQuery()
           .processInstanceId(processInstance.getProcessInstanceId()).orderByVariableName().asc().list();
-      assertThat(historicVariableInstances.size()).isEqualTo(2);
+      assertThat(historicVariableInstances).hasSize(2);
 
       assertThat(historicVariableInstances.get(0).getVariableName()).isEqualTo(BIG_JSON_OBJ);
       value = (ObjectNode) historicVariableInstances.get(0).getValue();
