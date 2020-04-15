@@ -70,24 +70,17 @@ public class ExecutionListenerOnTransactionTest extends SpringActivitiTestCase {
         }
 
         List<CurrentActivityTransactionDependentExecutionListener.CurrentActivity> currentActivities = CurrentActivityTransactionDependentExecutionListener.getCurrentActivities();
-        assertEquals(1,
-                     currentActivities.size());
+        assertThat(currentActivities).hasSize(1);
 
-        assertEquals("serviceTask1",
-                     currentActivities.get(0).getActivityId());
-        assertEquals("Service Task 1",
-                     currentActivities.get(0).getActivityName());
-        assertEquals(processInstance.getId(),
-                     currentActivities.get(0).getProcessInstanceId());
+        assertThat(currentActivities.get(0).getActivityId()).isEqualTo("serviceTask1");
+        assertThat(currentActivities.get(0).getActivityName()).isEqualTo("Service Task 1");
+        assertThat(currentActivities.get(0).getProcessInstanceId()).isEqualTo(processInstance.getId());
         assertThat(currentActivities.get(0).getProcessInstanceId()).isNotNull();
 
-        assertEquals(1,
-                     managementService.createTimerJobQuery().processInstanceId(processInstance.getId()).count());
+        assertThat(managementService.createTimerJobQuery().processInstanceId(processInstance.getId()).count()).isEqualTo(1);
         List<String> activeActivityIds = runtimeService.getActiveActivityIds(processInstance.getId());
-        assertEquals(1,
-                     activeActivityIds.size());
-        assertEquals("serviceTask2",
-                     activeActivityIds.get(0));
+        assertThat(activeActivityIds).hasSize(1);
+        assertThat(activeActivityIds.get(0)).isEqualTo("serviceTask2");
     }
 
     @Deployment
@@ -116,20 +109,15 @@ public class ExecutionListenerOnTransactionTest extends SpringActivitiTestCase {
         }
 
         List<CurrentActivityTransactionDependentExecutionListener.CurrentActivity> currentActivities = CurrentActivityTransactionDependentExecutionListener.getCurrentActivities();
-        assertEquals(2,
-                     currentActivities.size());
+        assertThat(currentActivities).hasSize(2);
 
         // the before commit listener
-        assertEquals("serviceTask1",
-                     currentActivities.get(0).getActivityId());
-        assertEquals("Service Task 1",
-                     currentActivities.get(0).getActivityName());
+        assertThat(currentActivities.get(0).getActivityId()).isEqualTo("serviceTask1");
+        assertThat(currentActivities.get(0).getActivityName()).isEqualTo("Service Task 1");
 
         // the before rolled-back listener
-        assertEquals("serviceTask3",
-                     currentActivities.get(1).getActivityId());
-        assertEquals("Service Task 3",
-                     currentActivities.get(1).getActivityName());
+        assertThat(currentActivities.get(1).getActivityId()).isEqualTo("serviceTask3");
+        assertThat(currentActivities.get(1).getActivityName()).isEqualTo("Service Task 3");
     }
 
     @Deployment

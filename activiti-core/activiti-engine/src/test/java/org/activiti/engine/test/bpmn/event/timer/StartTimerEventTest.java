@@ -193,12 +193,10 @@ public class StartTimerEventTest extends PluggableActivitiTestCase {
                                               }
                                           }
                                       });
-        assertEquals(1,
-                     jobQuery.count());
+        assertThat(jobQuery.count()).isEqualTo(1);
 
         cleanDB();
-        repositoryService.deleteDeployment(id,
-                                           true);
+        repositoryService.deleteDeployment(id, true);
     }
 
     @Deployment
@@ -209,8 +207,7 @@ public class StartTimerEventTest extends PluggableActivitiTestCase {
 
         // After process start, there should be timer created
         TimerJobQuery jobQuery = managementService.createTimerJobQuery();
-        assertEquals(1,
-                     jobQuery.count());
+        assertThat(jobQuery.count()).isEqualTo(1);
 
         // Reset deployment cache
         processEngineConfiguration.getProcessDefinitionCache().clear();
@@ -220,8 +217,7 @@ public class StartTimerEventTest extends PluggableActivitiTestCase {
         runtimeService.startProcessInstanceByKey("startTimer");
 
         // No new jobs should have been created
-        assertEquals(1,
-                     jobQuery.count());
+        assertThat(jobQuery.count()).isEqualTo(1);
     }
 
     // Test for ACT-1533
@@ -234,16 +230,14 @@ public class StartTimerEventTest extends PluggableActivitiTestCase {
 
         // After process start, there should be timer created
         TimerJobQuery jobQuery = managementService.createTimerJobQuery();
-        assertEquals(1,
-                     jobQuery.count());
+        assertThat(jobQuery.count()).isEqualTo(1);
 
         //we deploy new process version, with some small change
         String processChanged = processXml.replaceAll("beforeChange",
                                                       "changed");
         String secondDeploymentId = repositoryService.createDeployment().addInputStream("StartTimerEventTest.testVersionUpgradeShouldCancelJobs.bpmn20.xml",
                                                                                         new ByteArrayInputStream(processChanged.getBytes())).deploy().getId();
-        assertEquals(1,
-                     jobQuery.count());
+        assertThat(jobQuery.count()).isEqualTo(1);
 
         // Remove the first deployment
         repositoryService.deleteDeployment(firstDeploymentId,
@@ -251,8 +245,7 @@ public class StartTimerEventTest extends PluggableActivitiTestCase {
 
         // The removal of an old version should not affect timer deletion
         // ACT-1533: this was a bug, and the timer was deleted!
-        assertEquals(1,
-                     jobQuery.count());
+        assertThat(jobQuery.count()).isEqualTo(1);
 
         // Cleanup
         cleanDB();
@@ -268,12 +261,9 @@ public class StartTimerEventTest extends PluggableActivitiTestCase {
                     .addClasspathResource("org/activiti/engine/test/bpmn/event/timer/StartTimerEventTest.testOldJobsDeletedOnRedeploy.bpmn20.xml")
                     .deploy();
 
-            assertEquals(i + 1,
-                         repositoryService.createDeploymentQuery().count());
-            assertEquals(i + 1,
-                         repositoryService.createProcessDefinitionQuery().count());
-            assertEquals(1,
-                         managementService.createTimerJobQuery().count());
+            assertThat(repositoryService.createDeploymentQuery().count()).isEqualTo(i + 1);
+            assertThat(repositoryService.createProcessDefinitionQuery().count()).isEqualTo(i + 1);
+            assertThat(managementService.createTimerJobQuery().count()).isEqualTo(1);
         }
 
         // Cleanup
@@ -282,10 +272,8 @@ public class StartTimerEventTest extends PluggableActivitiTestCase {
                                                true);
         }
 
-        assertEquals(0,
-                     managementService.createTimerJobQuery().count());
-        assertEquals(0,
-                     managementService.createJobQuery().count());
+        assertThat(managementService.createTimerJobQuery().count()).isEqualTo(0);
+        assertThat(managementService.createJobQuery().count()).isEqualTo(0);
     }
 
     public void testTimersRecreatedOnDeploymentDelete() {
@@ -300,78 +288,57 @@ public class StartTimerEventTest extends PluggableActivitiTestCase {
                 .addClasspathResource("org/activiti/engine/test/bpmn/event/timer/StartTimerEventTest.testTimersRecreatedOnDeploymentDelete_v1.bpmn20.xml")
                 .deploy().getId();
 
-        assertEquals(1,
-                     repositoryService.createDeploymentQuery().count());
-        assertEquals(1,
-                     repositoryService.createProcessDefinitionQuery().count());
-        assertEquals(1,
-                     managementService.createTimerJobQuery().count());
+        assertThat(repositoryService.createDeploymentQuery().count()).isEqualTo(1);
+        assertThat(repositoryService.createProcessDefinitionQuery().count()).isEqualTo(1);
+        assertThat(managementService.createTimerJobQuery().count()).isEqualTo(1);
 
         // Deploy v2: no timer -> previous should be deleted
         String deployment2 = repositoryService.createDeployment()
                 .addClasspathResource("org/activiti/engine/test/bpmn/event/timer/StartTimerEventTest.testTimersRecreatedOnDeploymentDelete_v2.bpmn20.xml")
                 .deploy().getId();
 
-        assertEquals(2,
-                     repositoryService.createDeploymentQuery().count());
-        assertEquals(2,
-                     repositoryService.createProcessDefinitionQuery().count());
-        assertEquals(0,
-                     managementService.createTimerJobQuery().count());
+        assertThat(repositoryService.createDeploymentQuery().count()).isEqualTo(2);
+        assertThat(repositoryService.createProcessDefinitionQuery().count()).isEqualTo(2);
+        assertThat(managementService.createTimerJobQuery().count()).isEqualTo(0);
 
         // Deploy v3: no timer
         String deployment3 = repositoryService.createDeployment()
                 .addClasspathResource("org/activiti/engine/test/bpmn/event/timer/StartTimerEventTest.testTimersRecreatedOnDeploymentDelete_v3.bpmn20.xml")
                 .deploy().getId();
 
-        assertEquals(3,
-                     repositoryService.createDeploymentQuery().count());
-        assertEquals(3,
-                     repositoryService.createProcessDefinitionQuery().count());
-        assertEquals(0,
-                     managementService.createTimerJobQuery().count());
+        assertThat(repositoryService.createDeploymentQuery().count()).isEqualTo(3);
+        assertThat(repositoryService.createProcessDefinitionQuery().count()).isEqualTo(3);
+        assertThat(managementService.createTimerJobQuery().count()).isEqualTo(0);
 
         // Deploy v4: no timer
         String deployment4 = repositoryService.createDeployment()
                 .addClasspathResource("org/activiti/engine/test/bpmn/event/timer/StartTimerEventTest.testTimersRecreatedOnDeploymentDelete_v4.bpmn20.xml")
                 .deploy().getId();
 
-        assertEquals(4,
-                     repositoryService.createDeploymentQuery().count());
-        assertEquals(4,
-                     repositoryService.createProcessDefinitionQuery().count());
-        assertEquals(1,
-                     managementService.createTimerJobQuery().count());
+        assertThat(repositoryService.createDeploymentQuery().count()).isEqualTo(4);
+        assertThat(repositoryService.createProcessDefinitionQuery().count()).isEqualTo(4);
+        assertThat(managementService.createTimerJobQuery().count()).isEqualTo(1);
 
         // Delete v4 -> V3 active. No timer active anymore (v3 doesn't have a timer)
         repositoryService.deleteDeployment(deployment4,
                                            true);
-        assertEquals(3,
-                     repositoryService.createDeploymentQuery().count());
-        assertEquals(3,
-                     repositoryService.createProcessDefinitionQuery().count());
-        assertEquals(0,
-                     managementService.createTimerJobQuery().count());
+        assertThat(repositoryService.createDeploymentQuery().count()).isEqualTo(3);
+        assertThat(repositoryService.createProcessDefinitionQuery().count()).isEqualTo(3);
+        assertThat(managementService.createTimerJobQuery().count()).isEqualTo(0);
 
         // Delete v2 --> V3 still active, nothing changed there
         repositoryService.deleteDeployment(deployment2,
                                            true);
-        assertEquals(2,
-                     repositoryService.createDeploymentQuery().count());
-        assertEquals(2,
-                     repositoryService.createProcessDefinitionQuery().count());
-        assertEquals(0,
-                     managementService.createTimerJobQuery().count()); // v3 is still active
+        assertThat(repositoryService.createDeploymentQuery().count()).isEqualTo(2);
+        assertThat(repositoryService.createProcessDefinitionQuery().count()).isEqualTo(2);
+        assertThat(managementService.createTimerJobQuery().count()).isEqualTo(0); // v3 is still active
 
         // Delete v3 -> fallback to v1
         repositoryService.deleteDeployment(deployment3,
                                            true);
-        assertEquals(1,
-                     repositoryService.createDeploymentQuery().count());
-        assertEquals(1,
-                     repositoryService.createProcessDefinitionQuery().count());
-        assertEquals(1,
-                     managementService.createTimerJobQuery().count());
+        assertThat(repositoryService.createDeploymentQuery().count()).isEqualTo(1);
+        assertThat(repositoryService.createProcessDefinitionQuery().count()).isEqualTo(1);
+        assertThat(managementService.createTimerJobQuery().count()).isEqualTo(1);
 
         // Cleanup
         for (ProcessDefinition processDefinition : repositoryService.createProcessDefinitionQuery().processDefinitionKey("timer").orderByProcessDefinitionVersion().desc().list()) {
@@ -379,8 +346,7 @@ public class StartTimerEventTest extends PluggableActivitiTestCase {
                                                true);
         }
 
-        assertEquals(0,
-                     managementService.createTimerJobQuery().count());
+        assertThat(managementService.createTimerJobQuery().count()).isEqualTo(0);
     }
 
     // Same test as above, but now with tenants
@@ -401,12 +367,9 @@ public class StartTimerEventTest extends PluggableActivitiTestCase {
                 .tenantId(testTenant)
                 .deploy().getId();
 
-        assertEquals(1,
-                     repositoryService.createDeploymentQuery().deploymentTenantId(testTenant).count());
-        assertEquals(1,
-                     repositoryService.createProcessDefinitionQuery().processDefinitionTenantId(testTenant).count());
-        assertEquals(1,
-                     managementService.createTimerJobQuery().jobTenantId(testTenant).count());
+        assertThat(repositoryService.createDeploymentQuery().deploymentTenantId(testTenant).count()).isEqualTo(1);
+        assertThat(repositoryService.createProcessDefinitionQuery().processDefinitionTenantId(testTenant).count()).isEqualTo(1);
+        assertThat(managementService.createTimerJobQuery().jobTenantId(testTenant).count()).isEqualTo(1);
 
         // Deploy v2: no timer -> previous should be deleted
         String deployment2 = repositoryService.createDeployment()
@@ -414,12 +377,9 @@ public class StartTimerEventTest extends PluggableActivitiTestCase {
                 .tenantId(testTenant)
                 .deploy().getId();
 
-        assertEquals(2,
-                     repositoryService.createDeploymentQuery().deploymentTenantId(testTenant).count());
-        assertEquals(2,
-                     repositoryService.createProcessDefinitionQuery().processDefinitionTenantId(testTenant).count());
-        assertEquals(0,
-                     managementService.createTimerJobQuery().jobTenantId(testTenant).count());
+        assertThat(repositoryService.createDeploymentQuery().deploymentTenantId(testTenant).count()).isEqualTo(2);
+        assertThat(repositoryService.createProcessDefinitionQuery().processDefinitionTenantId(testTenant).count()).isEqualTo(2);
+        assertThat(managementService.createTimerJobQuery().jobTenantId(testTenant).count()).isEqualTo(0);
 
         // Deploy v3: no timer
         String deployment3 = repositoryService.createDeployment()
@@ -427,12 +387,9 @@ public class StartTimerEventTest extends PluggableActivitiTestCase {
                 .tenantId(testTenant)
                 .deploy().getId();
 
-        assertEquals(3,
-                     repositoryService.createDeploymentQuery().deploymentTenantId(testTenant).count());
-        assertEquals(3,
-                     repositoryService.createProcessDefinitionQuery().processDefinitionTenantId(testTenant).count());
-        assertEquals(0,
-                     managementService.createTimerJobQuery().jobTenantId(testTenant).count());
+        assertThat(repositoryService.createDeploymentQuery().deploymentTenantId(testTenant).count()).isEqualTo(3);
+        assertThat(repositoryService.createProcessDefinitionQuery().processDefinitionTenantId(testTenant).count()).isEqualTo(3);
+        assertThat(managementService.createTimerJobQuery().jobTenantId(testTenant).count()).isEqualTo(0);
 
         // Deploy v4: no timer
         String deployment4 = repositoryService.createDeployment()
@@ -440,51 +397,36 @@ public class StartTimerEventTest extends PluggableActivitiTestCase {
                 .tenantId(testTenant)
                 .deploy().getId();
 
-        assertEquals(4,
-                     repositoryService.createDeploymentQuery().deploymentTenantId(testTenant).count());
-        assertEquals(4,
-                     repositoryService.createProcessDefinitionQuery().processDefinitionTenantId(testTenant).count());
-        assertEquals(1,
-                     managementService.createTimerJobQuery().jobTenantId(testTenant).count());
+        assertThat(repositoryService.createDeploymentQuery().deploymentTenantId(testTenant).count()).isEqualTo(4);
+        assertThat(repositoryService.createProcessDefinitionQuery().processDefinitionTenantId(testTenant).count()).isEqualTo(4);
+        assertThat(managementService.createTimerJobQuery().jobTenantId(testTenant).count()).isEqualTo(1);
 
         // Delete v4 -> V3 active. No timer active anymore (v3 doesn't have a timer)
         repositoryService.deleteDeployment(deployment4,
                                            true);
-        assertEquals(3,
-                     repositoryService.createDeploymentQuery().deploymentTenantId(testTenant).count());
-        assertEquals(3,
-                     repositoryService.createProcessDefinitionQuery().processDefinitionTenantId(testTenant).count());
-        assertEquals(0,
-                     managementService.createTimerJobQuery().jobTenantId(testTenant).count());
+        assertThat(repositoryService.createDeploymentQuery().deploymentTenantId(testTenant).count()).isEqualTo(3);
+        assertThat(repositoryService.createProcessDefinitionQuery().processDefinitionTenantId(testTenant).count()).isEqualTo(3);
+        assertThat(managementService.createTimerJobQuery().jobTenantId(testTenant).count()).isEqualTo(0);
 
         // Delete v2 --> V3 still active, nothing changed there
         repositoryService.deleteDeployment(deployment2,
                                            true);
-        assertEquals(2,
-                     repositoryService.createDeploymentQuery().deploymentTenantId(testTenant).count());
-        assertEquals(2,
-                     repositoryService.createProcessDefinitionQuery().processDefinitionTenantId(testTenant).count());
-        assertEquals(0,
-                     managementService.createTimerJobQuery().jobTenantId(testTenant).count());
+        assertThat(repositoryService.createDeploymentQuery().deploymentTenantId(testTenant).count()).isEqualTo(2);
+        assertThat(repositoryService.createProcessDefinitionQuery().processDefinitionTenantId(testTenant).count()).isEqualTo(2);
+        assertThat(managementService.createTimerJobQuery().jobTenantId(testTenant).count()).isEqualTo(0);
 
         // Delete v3 -> fallback to v1
-        repositoryService.deleteDeployment(deployment3,
-                                           true);
-        assertEquals(1,
-                     repositoryService.createDeploymentQuery().deploymentTenantId(testTenant).count());
-        assertEquals(1,
-                     repositoryService.createProcessDefinitionQuery().processDefinitionTenantId(testTenant).count());
-        assertEquals(1,
-                     managementService.createTimerJobQuery().jobTenantId(testTenant).count());
+        repositoryService.deleteDeployment(deployment3, true);
+        assertThat(repositoryService.createDeploymentQuery().deploymentTenantId(testTenant).count()).isEqualTo(1);
+        assertThat(repositoryService.createProcessDefinitionQuery().processDefinitionTenantId(testTenant).count()).isEqualTo(1);
+        assertThat(managementService.createTimerJobQuery().jobTenantId(testTenant).count()).isEqualTo(1);
 
         // Cleanup
         for (ProcessDefinition processDefinition : repositoryService.createProcessDefinitionQuery().processDefinitionKey("timer").orderByProcessDefinitionVersion().desc().list()) {
-            repositoryService.deleteDeployment(processDefinition.getDeploymentId(),
-                                               true);
+            repositoryService.deleteDeployment(processDefinition.getDeploymentId(), true);
         }
 
-        assertEquals(0,
-                     managementService.createTimerJobQuery().count());
+        assertThat(managementService.createTimerJobQuery().count()).isEqualTo(0);
     }
 
     // Can't use @Deployment, we need to control the clock very strict to have a good test
@@ -499,12 +441,10 @@ public class StartTimerEventTest extends PluggableActivitiTestCase {
                 .deploy().getId();
 
         // After deployment, should have 4 jobs for the 4 timer events
-        assertEquals(4,
-                     managementService.createTimerJobQuery().count());
-        assertEquals(0,
-                     managementService.createTimerJobQuery().executable().count());
+        assertThat(managementService.createTimerJobQuery().count()).isEqualTo(4);
+        assertThat(managementService.createTimerJobQuery().executable().count()).isEqualTo(0);
 
-        // Path A : triggered at start + 10 seconds (18:50:11) (R2)
+        // Path A: triggered at start + 10 seconds (18:50:11) (R2)
         // Path B: triggered at start + 5 seconds (18:50:06) (R3)
         // Path C: triggered at start + 15 seconds (18:50:16) (R1)
         // path D: triggerd at 18:50:20 (Cron)
@@ -513,18 +453,15 @@ public class StartTimerEventTest extends PluggableActivitiTestCase {
         Date newDate = new Date(startTime.getTime() + (7 * 1000));
         processEngineConfiguration.getClock().setCurrentTime(newDate);
         List<Job> executableTimers = managementService.createTimerJobQuery().executable().list();
-        assertEquals(1,
-                     executableTimers.size());
+        assertThat(executableTimers).hasSize(1);
 
         executeJobs(executableTimers);
         validateTaskCounts(0,
                            1,
                            0,
                            0);
-        assertEquals(4,
-                     managementService.createTimerJobQuery().count());
-        assertEquals(0,
-                     managementService.createTimerJobQuery().executable().count());
+        assertThat(managementService.createTimerJobQuery().count()).isEqualTo(4);
+        assertThat(managementService.createTimerJobQuery().executable().count()).isEqualTo(0);
 
         // New situation:
         // Path A : triggered at start + 10 seconds (18:50:11) (R2)
@@ -537,17 +474,14 @@ public class StartTimerEventTest extends PluggableActivitiTestCase {
         processEngineConfiguration.getClock().setCurrentTime(newDate);
 
         executableTimers = managementService.createTimerJobQuery().executable().list();
-        assertEquals(2,
-                     executableTimers.size());
+        assertThat(executableTimers).hasSize(2);
         executeJobs(executableTimers);
         validateTaskCounts(1,
                            2,
                            0,
                            0);
-        assertEquals(4,
-                     managementService.createTimerJobQuery().count());
-        assertEquals(0,
-                     managementService.createTimerJobQuery().executable().count());
+        assertThat(managementService.createTimerJobQuery().count()).isEqualTo(4);
+        assertThat(managementService.createTimerJobQuery().executable().count()).isEqualTo(0);
 
         // New situation:
         // Path A : triggered at start + 2*10 seconds (18:50:21) (R1 - was R2) [CHANGED]
@@ -560,8 +494,7 @@ public class StartTimerEventTest extends PluggableActivitiTestCase {
         processEngineConfiguration.getClock().setCurrentTime(newDate);
 
         executableTimers = managementService.createTimerJobQuery().executable().list();
-        assertEquals(2,
-                     executableTimers.size());
+        assertThat(executableTimers).hasSize(2);
         executeJobs(executableTimers);
         validateTaskCounts(1,
                            3,

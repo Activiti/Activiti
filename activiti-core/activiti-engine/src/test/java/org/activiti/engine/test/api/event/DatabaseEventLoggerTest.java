@@ -274,9 +274,7 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
     // Completing two tasks
     for (Task task : taskService.createTaskQuery().list()) {
       Authentication.setAuthenticatedUserId(task.getAssignee());
-      Map<String, Object> varMap = new HashMap<String, Object>();
-      varMap.put("test", "test");
-      taskService.complete(task.getId(), varMap);
+      taskService.complete(task.getId(), singletonMap("test", "test"));
       Authentication.setAuthenticatedUserId(null);
     }
 

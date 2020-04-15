@@ -817,7 +817,7 @@ public class HistoricTaskInstanceTest extends PluggableActivitiTestCase {
 
         assertThatExceptionOfType(ActivitiObjectNotFoundException.class)
             .isThrownBy(() -> historyService.getHistoricIdentityLinksForTask(task.getId()).size())
-            .satisfies(ae -> assertEquals(HistoricTaskInstance.class, ae.getObjectClass()));
+            .satisfies(ae -> assertThat(ae.getObjectClass())).isEqualTo(HistoricTaskInstance.class);
     }
 
     public void testInvalidSorting() {

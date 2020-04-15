@@ -12,6 +12,7 @@
  */
 package org.activiti.engine.test.api.event;
 
+import static java.util.Collections.emptyMap;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Date;
@@ -256,8 +257,7 @@ public class TaskEventsTest extends PluggableActivitiTestCase {
       Task task = taskService.createTaskQuery().singleResult();
 
       // Complete first task
-      Map<String, Object> taskParams = new HashMap<String, Object>();
-      taskService.complete(task.getId(), taskParams, true);
+      taskService.complete(task.getId(), emptyMap(), true);
 
       ActivitiEntityEvent event = (ActivitiEntityEvent) tlistener.getEventsReceived().get(0);
       assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_CREATED);

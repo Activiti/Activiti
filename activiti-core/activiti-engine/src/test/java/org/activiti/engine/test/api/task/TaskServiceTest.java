@@ -69,12 +69,12 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
 
         // Fetch the task again and update
         task = taskService.createTaskQuery().taskId(task.getId()).singleResult();
-        assertEquals("description", task.getDescription());
-        assertEquals("taskname", task.getName());
-        assertEquals("taskassignee", task.getAssignee());
-        assertEquals("taskowner", task.getOwner());
-        assertEquals(dueDate, task.getDueDate());
-        assertEquals(0, task.getPriority());
+        assertThat(task.getDescription()).isEqualTo("description");
+        assertThat(task.getName()).isEqualTo("taskname");
+        assertThat(task.getAssignee()).isEqualTo("taskassignee");
+        assertThat(task.getOwner()).isEqualTo("taskowner");
+        assertThat(task.getDueDate()).isEqualTo(dueDate);
+        assertThat(task.getPriority()).isEqualTo(0);
 
         task.setName("updatedtaskname");
         task.setDescription("updateddescription");
@@ -86,21 +86,21 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
         taskService.saveTask(task);
 
         task = taskService.createTaskQuery().taskId(task.getId()).singleResult();
-        assertEquals("updatedtaskname", task.getName());
-        assertEquals("updateddescription", task.getDescription());
-        assertEquals("updatedassignee", task.getAssignee());
-        assertEquals("updatedowner", task.getOwner());
-        assertEquals(dueDate, task.getDueDate());
-        assertEquals(1, task.getPriority());
+        assertThat(task.getName()).isEqualTo("updatedtaskname");
+        assertThat(task.getDescription()).isEqualTo("updateddescription");
+        assertThat(task.getAssignee()).isEqualTo("updatedassignee");
+        assertThat(task.getOwner()).isEqualTo("updatedowner");
+        assertThat(task.getDueDate()).isEqualTo(dueDate);
+        assertThat(task.getPriority()).isEqualTo(1);
 
         if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
             HistoricTaskInstance historicTaskInstance = historyService.createHistoricTaskInstanceQuery().taskId(task.getId()).singleResult();
-            assertEquals("updatedtaskname", historicTaskInstance.getName());
-            assertEquals("updateddescription", historicTaskInstance.getDescription());
-            assertEquals("updatedassignee", historicTaskInstance.getAssignee());
-            assertEquals("updatedowner", historicTaskInstance.getOwner());
-            assertEquals(dueDate, historicTaskInstance.getDueDate());
-            assertEquals(1, historicTaskInstance.getPriority());
+            assertThat(historicTaskInstance.getName()).isEqualTo("updatedtaskname");
+            assertThat(historicTaskInstance.getDescription()).isEqualTo("updateddescription");
+            assertThat(historicTaskInstance.getAssignee()).isEqualTo("updatedassignee");
+            assertThat(historicTaskInstance.getOwner()).isEqualTo("updatedowner");
+            assertThat(historicTaskInstance.getDueDate()).isEqualTo(dueDate);
+            assertThat(historicTaskInstance.getPriority()).isEqualTo(1);
         }
 
         // Finally, delete task
@@ -114,13 +114,13 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
 
         // Fetch the task again and update
         task = taskService.createTaskQuery().taskId(task.getId()).singleResult();
-        assertEquals("johndoe", task.getOwner());
+        assertThat(task.getOwner()).isEqualTo("johndoe");
 
         task.setOwner("joesmoe");
         taskService.saveTask(task);
 
         task = taskService.createTaskQuery().taskId(task.getId()).singleResult();
-        assertEquals("joesmoe", task.getOwner());
+        assertThat(task.getOwner()).isEqualTo("joesmoe");
 
         // Finally, delete task
         taskService.deleteTask(task.getId(), true);
@@ -141,8 +141,8 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
                             null,
                             "look at this \n       isn't this great? slkdjf sldkfjs ldkfjs ldkfjs ldkfj sldkfj sldkfj sldkjg laksfg sdfgsd;flgkj ksajdhf skjdfh ksjdhf skjdhf kalskjgh lskh dfialurhg kajsh dfuieqpgkja rzvkfnjviuqerhogiuvysbegkjz lkhf ais liasduh flaisduh ajiasudh vaisudhv nsfd");
             Comment comment = taskService.getTaskComments(taskId).get(0);
-            assertEquals("johndoe", comment.getUserId());
-            assertEquals(taskId, comment.getTaskId());
+            assertThat(comment.getUserId()).isEqualTo("johndoe");
+            assertThat(comment.getTaskId()).isEqualTo(taskId);
             assertThat(comment.getProcessInstanceId()).isNull();
             assertEquals("look at this isn't this great? slkdjf sldkfjs ldkfjs ldkfjs ldkfj sldkfj sldkfj sldkjg laksfg sdfgsd;flgkj ksajdhf skjdfh ksjdhf skjdhf kalskjgh lskh dfialurhg ...",
                          ((Event) comment).getMessage());
@@ -182,26 +182,26 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
                                                             customType2,
                                                             "This is another custom comment. Type2 this time!");
 
-            assertEquals(CommentEntity.TYPE_COMMENT, comment.getType());
-            assertEquals(customType1, customComment1.getType());
-            assertEquals(customType2, customComment3.getType());
+            assertThat(comment.getType()).isEqualTo(CommentEntity.TYPE_COMMENT);
+            assertThat(customComment1.getType()).isEqualTo(customType1);
+            assertThat(customComment3.getType()).isEqualTo(customType2);
 
             assertThat(taskService.getComment(comment.getId())).isNotNull();
             assertThat(taskService.getComment(customComment1.getId())).isNotNull();
 
             List<Comment> regularComments = taskService.getTaskComments(taskId);
-            assertEquals(1, regularComments.size());
-            assertEquals("This is a regular comment", regularComments.get(0).getFullMessage());
+            assertThat(regularComments).hasSize(1);
+            assertThat(regularComments.get(0).getFullMessage()).isEqualTo("This is a regular comment");
 
             List<Event> allComments = taskService.getTaskEvents(taskId);
-            assertEquals(4, allComments.size());
+            assertThat(allComments).hasSize(4);
 
             List<Comment> type2Comments = taskService.getCommentsByType(customType2);
-            assertEquals(1, type2Comments.size());
-            assertEquals("This is another custom comment. Type2 this time!", type2Comments.get(0).getFullMessage());
+            assertThat(type2Comments).hasSize(1);
+            assertThat(type2Comments.get(0).getFullMessage()).isEqualTo("This is another custom comment. Type2 this time!");
 
             List<Comment> taskTypeComments = taskService.getTaskComments(taskId, customType1);
-            assertEquals(2, taskTypeComments.size());
+            assertThat(taskTypeComments).hasSize(2);
 
             // Clean up
             taskService.deleteTask(taskId, true);
@@ -519,7 +519,7 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
         assertThatExceptionOfType(ActivitiObjectNotFoundException.class)
             .isThrownBy(() -> taskService.claim("unexistingtaskid", "user"))
             .withMessageContaining("Cannot find task with id unexistingtaskid")
-            .satisfies(ae -> assertEquals(Task.class, ae.getObjectClass()));
+            .satisfies(ae -> assertThat(ae.getObjectClass())).isEqualTo(Task.class);
     }
 
     public void testClaimAlreadyClaimedTaskByOtherUser() {
@@ -557,7 +557,7 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
         // Claim task the first time
         taskService.claim(task.getId(), "user");
         task = taskService.createTaskQuery().taskId(task.getId()).singleResult();
-        assertEquals("user", task.getAssignee());
+        assertThat(task.getAssignee()).isEqualTo("user");
 
         // Unclaim the task
         taskService.unclaim(task.getId());
@@ -578,7 +578,7 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
         assertThatExceptionOfType(ActivitiObjectNotFoundException.class)
             .isThrownBy(() -> taskService.complete("unexistingtask"))
             .withMessageContaining("Cannot find task with id unexistingtask")
-            .satisfies(ae -> assertEquals(Task.class, ae.getObjectClass()));
+            .satisfies(ae -> assertThat(ae.getObjectClass())).isEqualTo(Task.class);
     }
 
     public void testCompleteTaskWithParametersNullTaskId() {
@@ -591,7 +591,7 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
         assertThatExceptionOfType(ActivitiObjectNotFoundException.class)
             .isThrownBy(() -> taskService.complete("unexistingtask"))
             .withMessageContaining("Cannot find task with id unexistingtask")
-            .satisfies(ae -> assertEquals(Task.class, ae.getObjectClass()));
+            .satisfies(ae -> assertThat(ae.getObjectClass())).isEqualTo(Task.class);
     }
 
     public void testCompleteTaskWithParametersNullParameters() {
@@ -710,12 +710,12 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
 
         // Fetch task
         Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
-        assertEquals("my task", task.getName());
-        assertEquals("myFormKey", task.getFormKey());
-        assertEquals("myAssignee", task.getAssignee());
-        assertEquals("myOwner", task.getOwner());
-        assertEquals("myCategory", task.getCategory());
-        assertEquals(60, task.getPriority());
+        assertThat(task.getName()).isEqualTo("my task");
+        assertThat(task.getFormKey()).isEqualTo("myFormKey");
+        assertThat(task.getAssignee()).isEqualTo("myAssignee");
+        assertThat(task.getOwner()).isEqualTo("myOwner");
+        assertThat(task.getCategory()).isEqualTo("myCategory");
+        assertThat(task.getPriority()).isEqualTo(60);
         assertThat(task.getDueDate()).isNotNull();
 
         // Complete task
@@ -723,12 +723,12 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
 
         if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
             HistoricTaskInstance historicTask = historyService.createHistoricTaskInstanceQuery().taskId(task.getId()).singleResult();
-            assertEquals("my task", historicTask.getName());
-            assertEquals("myFormKey", historicTask.getFormKey());
-            assertEquals("myAssignee", historicTask.getAssignee());
-            assertEquals("myOwner", historicTask.getOwner());
-            assertEquals("myCategory", historicTask.getCategory());
-            assertEquals(60, historicTask.getPriority());
+            assertThat(historicTask.getName()).isEqualTo("my task");
+            assertThat(historicTask.getFormKey()).isEqualTo("myFormKey");
+            assertThat(historicTask.getAssignee()).isEqualTo("myAssignee");
+            assertThat(historicTask.getOwner()).isEqualTo("myOwner");
+            assertThat(historicTask.getCategory()).isEqualTo("myCategory");
+            assertThat(historicTask.getPriority()).isEqualTo(60);
             assertThat(historicTask.getDueDate()).isNotNull();
         }
     }
@@ -744,7 +744,7 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
 
         // Fetch task again
         task = taskService.createTaskQuery().taskId(task.getId()).singleResult();
-        assertEquals("user", task.getAssignee());
+        assertThat(task.getAssignee()).isEqualTo("user");
 
         // Set assignee to null
         taskService.setAssignee(task.getId(), null);
@@ -762,7 +762,7 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
         assertThatExceptionOfType(ActivitiObjectNotFoundException.class)
             .isThrownBy(() -> taskService.setAssignee("unexistingTaskId", "user"))
             .withMessageContaining("Cannot find task with id unexistingTaskId")
-            .satisfies(ae -> assertEquals(Task.class, ae.getObjectClass()));
+            .satisfies(ae -> assertThat(ae.getObjectClass())).isEqualTo(Task.class);
     }
 
     public void testAddCandidateUserDuplicate() {
@@ -795,7 +795,7 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
         assertThatExceptionOfType(ActivitiObjectNotFoundException.class)
             .isThrownBy(() -> taskService.addCandidateUser("unexistingTaskId", "user"))
             .withMessageContaining("Cannot find task with id unexistingTaskId")
-            .satisfies(ae -> assertEquals(Task.class, ae.getObjectClass()));
+            .satisfies(ae -> assertThat(ae.getObjectClass())).isEqualTo(Task.class);
     }
 
     public void testAddCandidateGroupNullTaskId() {
@@ -814,7 +814,7 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
         assertThatExceptionOfType(ActivitiObjectNotFoundException.class)
             .isThrownBy(() -> taskService.addCandidateGroup("unexistingTaskId", "group"))
             .withMessageContaining("Cannot find task with id unexistingTaskId")
-            .satisfies(ae -> assertEquals(Task.class, ae.getObjectClass()));
+            .satisfies(ae -> assertThat(ae.getObjectClass())).isEqualTo(Task.class);
     }
 
     public void testAddGroupIdentityLinkNullTaskId() {
@@ -833,7 +833,7 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
         assertThatExceptionOfType(ActivitiObjectNotFoundException.class)
             .isThrownBy(() -> taskService.addGroupIdentityLink("unexistingTaskId", "user", IdentityLinkType.CANDIDATE))
             .withMessageContaining("Cannot find task with id unexistingTaskId")
-            .satisfies(ae -> assertEquals(Task.class, ae.getObjectClass()));
+            .satisfies(ae -> assertThat(ae.getObjectClass())).isEqualTo(Task.class);
     }
 
     public void testAddUserIdentityLinkNullTaskId() {
@@ -852,7 +852,7 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
         assertThatExceptionOfType(ActivitiObjectNotFoundException.class)
             .isThrownBy(() -> taskService.addUserIdentityLink("unexistingTaskId", "user", IdentityLinkType.CANDIDATE))
             .withMessageContaining("Cannot find task with id unexistingTaskId")
-            .satisfies(ae -> assertEquals(Task.class, ae.getObjectClass()));
+            .satisfies(ae -> assertThat(ae.getObjectClass())).isEqualTo(Task.class);
     }
 
     public void testGetIdentityLinksWithCandidateUser() {
@@ -862,10 +862,10 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
 
         taskService.addCandidateUser(taskId, "kermit");
         List<IdentityLink> identityLinks = taskService.getIdentityLinksForTask(taskId);
-        assertEquals(1, identityLinks.size());
-        assertEquals("kermit", identityLinks.get(0).getUserId());
+        assertThat(identityLinks).hasSize(1);
+        assertThat(identityLinks.get(0).getUserId()).isEqualTo("kermit");
         assertThat(identityLinks.get(0).getGroupId()).isNull();
-        assertEquals(IdentityLinkType.CANDIDATE, identityLinks.get(0).getType());
+        assertThat(identityLinks.get(0).getType()).isEqualTo(IdentityLinkType.CANDIDATE);
 
         // cleanup
         taskService.deleteTask(taskId, true);
@@ -1019,7 +1019,7 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
         assertThatExceptionOfType(ActivitiObjectNotFoundException.class)
             .isThrownBy(() -> taskService.setPriority("unexistingtask", 12345))
             .withMessageContaining("Cannot find task with id unexistingtask")
-            .satisfies(ae -> assertEquals(Task.class, ae.getObjectClass()));
+            .satisfies(ae -> assertThat(ae.getObjectClass())).isEqualTo(Task.class);
     }
 
     public void testSetPriorityNullTaskId() {
@@ -1384,7 +1384,7 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
 
         // Fetch first task
         Task task = taskService.createTaskQuery().singleResult();
-        assertEquals("First task", task.getName());
+        assertThat(task.getName()).isEqualTo("First task");
 
         taskService.delegateTask(task.getId(), "johndoe");
 
@@ -1395,7 +1395,7 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
 
         // Verify that task is resolved
         task = taskService.createTaskQuery().taskDelegationState(DelegationState.RESOLVED).singleResult();
-        assertEquals("First task", task.getName());
+        assertThat(task.getName()).isEqualTo("First task");
 
         // Verify task parameters set on execution
         Map<String, Object> variables = runtimeService.getVariables(processInstance.getId());

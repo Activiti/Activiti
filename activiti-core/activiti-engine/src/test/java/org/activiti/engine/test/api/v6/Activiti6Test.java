@@ -139,7 +139,7 @@ public class Activiti6Test extends PluggableActivitiTestCase {
         // on, try it!
         Map<String, Object> vars = new HashMap<String, Object>();
         vars.put("counter",
-                 new Integer(0));
+                 Integer.valueOf(0));
         vars.put("maxCount",
                  maxCount);
         ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testLongServiceTaskLoop",

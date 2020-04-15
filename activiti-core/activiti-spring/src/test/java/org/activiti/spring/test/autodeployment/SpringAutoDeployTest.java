@@ -74,11 +74,9 @@ public class SpringAutoDeployTest extends AbstractTestCase {
     public void testNoRedeploymentForSpringContainerRestart() throws Exception {
         createAppContext(CTX_PATH);
         DeploymentQuery deploymentQuery = repositoryService.createDeploymentQuery();
-        assertEquals(1,
-                     deploymentQuery.count());
+        assertThat(deploymentQuery.count()).isEqualTo(1);
         ProcessDefinitionQuery processDefinitionQuery = repositoryService.createProcessDefinitionQuery();
-        assertEquals(3,
-                     processDefinitionQuery.count());
+        assertThat(processDefinitionQuery.count()).isEqualTo(3);
 
         // Creating a new app context with same resources doesn't lead to more
         // deployments
@@ -123,42 +121,32 @@ public class SpringAutoDeployTest extends AbstractTestCase {
 
         // Assertions come AFTER the file write! Otherwise the process file is
         // messed up if the assertions fail.
-        assertEquals(2,
-                     repositoryService.createDeploymentQuery().count());
-        assertEquals(6,
-                     repositoryService.createProcessDefinitionQuery().count());
+        assertThat(repositoryService.createDeploymentQuery().count()).isEqualTo(2);
+        assertThat(repositoryService.createProcessDefinitionQuery().count()).isEqualTo(6);
     }
 
     public void testAutoDeployWithCreateDropOnCleanDb() {
         createAppContext(CTX_CREATE_DROP_CLEAN_DB);
-        assertEquals(1,
-                     repositoryService.createDeploymentQuery().count());
-        assertEquals(3,
-                     repositoryService.createProcessDefinitionQuery().count());
+        assertThat(repositoryService.createDeploymentQuery().count()).isEqualTo(1);
+        assertThat(repositoryService.createProcessDefinitionQuery().count()).isEqualTo(3);
     }
 
     public void testAutoDeployWithDeploymentModeDefault() {
         createAppContext(CTX_DEPLOYMENT_MODE_DEFAULT);
-        assertEquals(1,
-                     repositoryService.createDeploymentQuery().count());
-        assertEquals(3,
-                     repositoryService.createProcessDefinitionQuery().count());
+        assertThat(repositoryService.createDeploymentQuery().count()).isEqualTo(1);
+        assertThat(repositoryService.createProcessDefinitionQuery().count()).isEqualTo(3);
     }
 
     public void testAutoDeployWithDeploymentModeSingleResource() {
         createAppContext(CTX_DEPLOYMENT_MODE_SINGLE_RESOURCE);
-        assertEquals(3,
-                     repositoryService.createDeploymentQuery().count());
-        assertEquals(3,
-                     repositoryService.createProcessDefinitionQuery().count());
+        assertThat(repositoryService.createDeploymentQuery().count()).isEqualTo(3);
+        assertThat(repositoryService.createProcessDefinitionQuery().count()).isEqualTo(3);
     }
 
     public void testAutoDeployWithDeploymentModeResourceParentFolder() {
         createAppContext(CTX_DEPLOYMENT_MODE_RESOURCE_PARENT_FOLDER);
-        assertEquals(2,
-                     repositoryService.createDeploymentQuery().count());
-        assertEquals(4,
-                     repositoryService.createProcessDefinitionQuery().count());
+        assertThat(repositoryService.createDeploymentQuery().count()).isEqualTo(2);
+        assertThat(repositoryService.createProcessDefinitionQuery().count()).isEqualTo(4);
     }
 
     // --Helper methods

@@ -89,7 +89,7 @@ public class ValuedDataObjectConverterTest extends AbstractConverterTest {
     assertThat(dataObj.getName()).isEqualTo("IntegerTest");
     assertThat(dataObj.getItemSubjectRef().getStructureRef()).isEqualTo("xsd:int");
     assertThat(dataObj.getValue()).isInstanceOf(Integer.class);
-    assertThat(dataObj.getValue()).isEqualTo(new Integer(123));
+    assertThat(dataObj.getValue()).isEqualTo(Integer.valueOf(123));
 
     dataObj = objectMap.get("dObj6");
     assertThat(dataObj.getId()).isEqualTo("dObj6");
@@ -166,7 +166,7 @@ public class ValuedDataObjectConverterTest extends AbstractConverterTest {
     assertThat(dataObj.getName()).isEqualTo("IntegerSubTest");
     assertThat(dataObj.getItemSubjectRef().getStructureRef()).isEqualTo("xsd:int");
     assertThat(dataObj.getValue()).isInstanceOf(Integer.class);
-    assertThat(dataObj.getValue()).isEqualTo(new Integer(45));
+    assertThat(dataObj.getValue()).isEqualTo(Integer.valueOf(45));
 
     dataObj = objectMap.get("dObj12");
     assertThat(dataObj.getId()).isEqualTo("dObj12");

@@ -13,6 +13,8 @@
 package org.activiti.engine.test.api.event;
 
 import static java.util.Arrays.asList;
+import static java.util.Collections.singletonMap;
+import static org.activiti.engine.impl.util.CollectionUtil.map;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.HashMap;
@@ -36,9 +38,7 @@ public class VariableEventsStoreTest extends PluggableActivitiTestCase {
 
   @Deployment(resources = {"org/activiti/engine/test/api/runtime/oneTaskProcess.bpmn20.xml"})
   public void testStartEndProcessInstanceVariableEvents() throws Exception {
-    Map<String, Object> variables = new HashMap<String, Object>();
-    variables.put("var1", "value1");
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess", variables);
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess", singletonMap("var1", "value1"));
 
     assertThat(listener.getEventsReceived().size()).isEqualTo(1);
     assertThat(listener.getEventsReceived().get(0).getType()).isEqualTo(ActivitiEventType.VARIABLE_CREATED);
@@ -70,10 +70,10 @@ public class VariableEventsStoreTest extends PluggableActivitiTestCase {
     assertThat(managementService.getEventLogEntries(null, null).size()).isEqualTo(2);
 
     // bulk insert delete var test
-    Map<String, String> vars = new HashMap<String, String>();
-    vars.put("myVar", "value");
-    vars.put("myVar2", "value");
-    taskService.setVariablesLocal(task.getId(), vars);
+    taskService.setVariablesLocal(task.getId(), map(
+        "myVar", "value",
+        "myVar2", "value"
+        ));
     taskService.removeVariablesLocal(task.getId(), asList("myVar", "myVar2"));
 
     assertThat(listener.getEventsReceived().size()).isEqualTo(6);

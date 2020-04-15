@@ -151,9 +151,9 @@ public class CallActivityTest extends ResourceActivitiTestCase {
         HistoricVariableInstanceQuery variableInstanceQuery = historyService.createHistoricVariableInstanceQuery();
         List<HistoricVariableInstance> variableInstances = variableInstanceQuery.processInstanceId(calledInstanceId).list();
 
-        assertEquals(4, variableInstances.size());
+        assertThat(variableInstances).hasSize(4);
         for (HistoricVariableInstance variable : variableInstances) {
-            assertEquals(variables.get(variable.getVariableName()), variable.getValue());
+            assertThat(variable.getValue()).isEqualTo(variables.get(variable.getVariableName()));
         }
     }
 

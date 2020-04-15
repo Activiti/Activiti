@@ -87,10 +87,9 @@ public class VariableEventsTest extends PluggableActivitiTestCase {
         listener.clearEventsReceived();
 
         // Create, update and delete multiple variables
-        Map<String, Object> vars = new HashMap<String, Object>();
+        Map<String, Object> vars = new HashMap();
         vars.put("test", 123);
         vars.put("test2", 456);
-        runtimeService.setVariables(processInstance.getId(), vars);
         runtimeService.setVariables(processInstance.getId(), vars);
         runtimeService.removeVariables(processInstance.getId(), vars.keySet());
 

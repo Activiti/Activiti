@@ -267,8 +267,8 @@ public class BoundaryTimerEventTest extends PluggableActivitiTestCase {
 
     // there should be a userTask waiting for user input
     List<Task> tasks = taskService.createTaskQuery().list();
-    assertEquals(1,tasks.size());
-    assertEquals("First Task",tasks.get(0).getName());
+    assertThat(tasks).hasSize(1);
+    assertThat(tasks.get(0).getName()).isEqualTo("First Task");
     List<Job> jobList = managementService.createTimerJobQuery().list();
     assertThat(jobList.size()).isEqualTo(1);
 
@@ -287,7 +287,7 @@ public class BoundaryTimerEventTest extends PluggableActivitiTestCase {
 
     tasks = taskService.createTaskQuery().list();
     assertEquals(1,tasks.size());
-    assertEquals("First Task",tasks.get(0).getName());
+    assertThat(tasks.get(0).getName()).isEqualTo("First Task");
     jobList = managementService.createTimerJobQuery().list();
     assertThat(jobList.size()).isEqualTo(1);
 
@@ -307,7 +307,7 @@ public class BoundaryTimerEventTest extends PluggableActivitiTestCase {
     // after the boundary event is triggered there should be no active job.
     tasks = taskService.createTaskQuery().list();
     assertThat(tasks.size()).isEqualTo(1);
-    assertEquals("Second Task",tasks.get(0).getName());
+    assertThat(tasks.get(0).getName()).isEqualTo("Second Task");
     jobList = managementService.createJobQuery().list();
     assertThat(jobList.size()).isEqualTo(0);
     jobList = managementService.createTimerJobQuery().list();
@@ -334,7 +334,7 @@ public class BoundaryTimerEventTest extends PluggableActivitiTestCase {
     // there should be a userTask waiting for user input
     List<Task> tasks = taskService.createTaskQuery().list();
     assertThat(tasks.size()).isEqualTo(1);
-    assertEquals("Start",tasks.get(0).getName());
+    assertThat(tasks.get(0).getName()).isEqualTo("Start");
     List<Job> jobList = managementService.createTimerJobQuery().list();
     assertThat(jobList.size()).isEqualTo(1);
 
@@ -352,11 +352,11 @@ public class BoundaryTimerEventTest extends PluggableActivitiTestCase {
 
     // there should be no userTask
     tasks = taskService.createTaskQuery().list();
-    assertEquals(0,tasks.size());
+    assertThat(tasks).hasSize(0);
     jobList = managementService.createJobQuery().list();
-    assertEquals(0,jobList.size());
+    assertThat(jobList).hasSize(0);
     jobList = managementService.createTimerJobQuery().list();
-    assertEquals(0,jobList.size());
+    assertThat(jobList).hasSize(0);
   }
 
 }

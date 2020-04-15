@@ -17,9 +17,9 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
 import static java.util.Collections.singletonMap;
+import static org.activiti.engine.impl.util.CollectionUtil.map;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.assertj.core.api.Assertions.catchThrowableOfType;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -68,7 +68,7 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
         runtimeService.startProcessInstanceByKey("oneTaskProcess", vars);
         Task task = taskService.createTaskQuery().includeProcessVariables().singleResult();
         assertThat(task.getProcessVariables()).isNotNull();
-        assertEquals(longString.toString(), task.getProcessVariables().get("longString"));
+        assertThat(task.getProcessVariables().get("longString")).isEqualTo(longString.toString());
     }
 
     public void testStartProcessInstanceByKeyNullKey() {
@@ -80,7 +80,7 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
         assertThatExceptionOfType(ActivitiObjectNotFoundException.class)
             .isThrownBy(() -> runtimeService.startProcessInstanceByKey("unexistingkey"))
             .withMessageContaining("no processes deployed with key")
-            .satisfies(ae -> assertEquals(ProcessDefinition.class, ae.getObjectClass()));
+            .satisfies(ae -> assertThat(ae.getObjectClass())).isEqualTo(ProcessDefinition.class);
     }
 
     public void testStartProcessInstanceByIdNullId() {
@@ -92,13 +92,13 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
         assertThatExceptionOfType(ActivitiObjectNotFoundException.class)
             .isThrownBy(() -> runtimeService.startProcessInstanceById("unexistingId"))
             .withMessageContaining("no deployed process definition found with id")
-            .satisfies(ae -> assertEquals(ProcessDefinition.class, ae.getObjectClass()));
+            .satisfies(ae -> assertThat(ae.getObjectClass())).isEqualTo(ProcessDefinition.class);
     }
 
     @Deployment(resources = {"org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml"})
     public void testStartProcessInstanceByIdNullVariables() {
         runtimeService.startProcessInstanceByKey("oneTaskProcess", (Map<String, Object>) null);
-        assertEquals(1, runtimeService.createProcessInstanceQuery().processDefinitionKey("oneTaskProcess").count());
+        assertThat(runtimeService.createProcessInstanceQuery().processDefinitionKey("oneTaskProcess").count()).isEqualTo(1);
     }
 
     @Deployment(resources = {"org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml"})
@@ -188,8 +188,7 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
         // Behaviour changed: https://activiti.atlassian.net/browse/ACT-1860
         runtimeService.startProcessInstanceByKey("oneTaskProcess",
                                                  "123");
-        assertEquals(2,
-                     runtimeService.createProcessInstanceQuery().processInstanceBusinessKey("123").count());
+        assertThat(runtimeService.createProcessInstanceQuery().processInstanceBusinessKey("123").count()).isEqualTo(2);
     }
 
     // some databases might react strange on having multiple times null for the
@@ -203,37 +202,29 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
         runtimeService.startProcessInstanceByKey("oneTaskProcess");
         runtimeService.startProcessInstanceByKey("oneTaskProcess");
 
-        assertEquals(3,
-                     runtimeService.createProcessInstanceQuery().count());
+        assertThat(runtimeService.createProcessInstanceQuery().count()).isEqualTo(3);
     }
 
     @Deployment(resources = {"org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml"})
     public void testDeleteProcessInstance() {
         ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
-        assertEquals(1,
-                     runtimeService.createProcessInstanceQuery().processDefinitionKey("oneTaskProcess").count());
+        assertThat(runtimeService.createProcessInstanceQuery().processDefinitionKey("oneTaskProcess").count()).isEqualTo(1);
 
         String deleteReason = "testing instance deletion";
-        runtimeService.deleteProcessInstance(processInstance.getId(),
-                                             deleteReason);
-        assertEquals(0,
-                     runtimeService.createProcessInstanceQuery().processDefinitionKey("oneTaskProcess").count());
+        runtimeService.deleteProcessInstance(processInstance.getId(), deleteReason);
+        assertThat(runtimeService.createProcessInstanceQuery().processDefinitionKey("oneTaskProcess").count()).isEqualTo(0);
 
-        // test that the delete reason of the process instance shows up as
-        // delete reason of the task in history
-        // ACT-848
+        // test that the delete reason of the process instance shows up as delete reason of the task in history ACT-848
         if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
 
             HistoricTaskInstance historicTaskInstance = historyService.createHistoricTaskInstanceQuery().processInstanceId(processInstance.getId()).singleResult();
 
-            assertEquals(deleteReason,
-                         historicTaskInstance.getDeleteReason());
+            assertThat(historicTaskInstance.getDeleteReason()).isEqualTo(deleteReason);
 
             HistoricProcessInstance historicInstance = historyService.createHistoricProcessInstanceQuery().processInstanceId(processInstance.getId()).singleResult();
 
             assertThat(historicInstance).isNotNull();
-            assertEquals(deleteReason,
-                         historicInstance.getDeleteReason());
+            assertThat(historicInstance.getDeleteReason()).isEqualTo(deleteReason);
             assertThat(historicInstance.getEndTime()).isNotNull();
         }
     }
@@ -241,21 +232,17 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
     @Deployment(resources = {"org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml"})
     public void testDeleteProcessInstanceNullReason() {
         ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
-        assertEquals(1,
-                     runtimeService.createProcessInstanceQuery().processDefinitionKey("oneTaskProcess").count());
+        assertThat(runtimeService.createProcessInstanceQuery().processDefinitionKey("oneTaskProcess").count()).isEqualTo(1);
 
         // Deleting without a reason should be possible
-        runtimeService.deleteProcessInstance(processInstance.getId(),
-                                             null);
-        assertEquals(0,
-                     runtimeService.createProcessInstanceQuery().processDefinitionKey("oneTaskProcess").count());
+        runtimeService.deleteProcessInstance(processInstance.getId(), null);
+        assertThat(runtimeService.createProcessInstanceQuery().processDefinitionKey("oneTaskProcess").count()).isEqualTo(0);
 
         if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
             HistoricProcessInstance historicInstance = historyService.createHistoricProcessInstanceQuery().processInstanceId(processInstance.getId()).singleResult();
 
             assertThat(historicInstance).isNotNull();
-            assertEquals(DeleteReason.PROCESS_INSTANCE_DELETED,
-                         historicInstance.getDeleteReason());
+            assertThat(historicInstance.getDeleteReason()).isEqualTo(DeleteReason.PROCESS_INSTANCE_DELETED);
         }
     }
 
@@ -263,7 +250,7 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
         assertThatExceptionOfType(ActivitiObjectNotFoundException.class)
             .isThrownBy(() -> runtimeService.deleteProcessInstance("enexistingInstanceId", null))
             .withMessageContaining("No process instance found for id")
-            .satisfies(ae -> assertEquals(ProcessInstance.class, ae.getObjectClass()));
+            .satisfies(ae -> assertThat(ae.getObjectClass())).isEqualTo(ProcessInstance.class);
     }
 
     public void testDeleteProcessInstanceNullId() {
@@ -278,14 +265,14 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
 
         List<String> activities = runtimeService.getActiveActivityIds(processInstance.getId());
         assertThat(activities).isNotNull();
-        assertEquals(1, activities.size());
+        assertThat(activities).hasSize(1);
     }
 
     public void testFindActiveActivityIdsUnexistingExecututionId() {
         assertThatExceptionOfType(ActivitiObjectNotFoundException.class)
             .isThrownBy(() -> runtimeService.getActiveActivityIds("unexistingExecutionId"))
             .withMessageContaining("execution unexistingExecutionId doesn't exist")
-            .satisfies(ae -> assertEquals(Execution.class, ae.getObjectClass()));
+            .satisfies(ae -> assertThat(ae.getObjectClass())).isEqualTo(Execution.class);
     }
 
     public void testFindActiveActivityIdsNullExecututionId() {
@@ -302,8 +289,7 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
         ProcessInstance processInstance = processEngine.getRuntimeService().startProcessInstanceByKey("errorEventSubprocess");
 
         List<String> activeActivities = runtimeService.getActiveActivityIds(processInstance.getId());
-        assertEquals(5,
-                     activeActivities.size());
+        assertThat(activeActivities).hasSize(5);
 
         List<Task> tasks = taskService.createTaskQuery().list();
         assertThat(tasks).hasSize(2);
@@ -325,12 +311,10 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
         runtimeService.trigger(execution.getId());
 
         activeActivities = runtimeService.getActiveActivityIds(processInstance.getId());
-        assertEquals(4,
-                     activeActivities.size());
+        assertThat(activeActivities).hasSize(4);
 
         tasks = taskService.createTaskQuery().list();
-        assertEquals(2,
-                     tasks.size());
+        assertThat(tasks).hasSize(2);
 
         Task beforeErrorUserTask = null;
         for (Task task : tasks) {
@@ -346,12 +330,10 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
         taskService.complete(beforeErrorUserTask.getId());
 
         activeActivities = runtimeService.getActiveActivityIds(processInstance.getId());
-        assertEquals(2,
-                     activeActivities.size());
+        assertThat(activeActivities).hasSize(2);
 
         tasks = taskService.createTaskQuery().list();
-        assertEquals(2,
-                     tasks.size());
+        assertThat(tasks).hasSize(2);
 
         Task afterErrorUserTask = null;
         for (Task task : tasks) {
@@ -367,12 +349,12 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
         taskService.complete(afterErrorUserTask.getId());
 
         tasks = taskService.createTaskQuery().list();
-        assertEquals(1, tasks.size());
-        assertEquals("MainUserTask", tasks.get(0).getName());
+        assertThat(tasks).hasSize(1);
+        assertThat(tasks.get(0).getName()).isEqualTo("MainUserTask");
 
         activeActivities = runtimeService.getActiveActivityIds(processInstance.getId());
-        assertEquals(1, activeActivities.size());
-        assertEquals("MainUserTask", activeActivities.get(0));
+        assertThat(activeActivities).hasSize(1);
+        assertThat(activeActivities.get(0)).isEqualTo("MainUserTask");
 
         taskService.complete(tasks.get(0).getId());
         assertProcessEnded(processInstance.getId());
@@ -382,7 +364,7 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
         assertThatExceptionOfType(ActivitiObjectNotFoundException.class)
             .isThrownBy(() -> runtimeService.trigger("unexistingExecutionId"))
             .withMessageContaining("execution unexistingExecutionId doesn't exist")
-            .satisfies(ae -> assertEquals(Execution.class, ae.getObjectClass()));
+            .satisfies(ae -> assertThat(ae.getObjectClass())).isEqualTo(Execution.class);
     }
 
     public void testSignalNullExecutionId() {
@@ -412,7 +394,7 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
         assertThatExceptionOfType(ActivitiObjectNotFoundException.class)
             .isThrownBy(() -> runtimeService.getVariables("unexistingExecutionId"))
             .withMessageContaining("execution unexistingExecutionId doesn't exist")
-            .satisfies(ae -> assertEquals(Execution.class, ae.getObjectClass()));
+            .satisfies(ae -> assertThat(ae.getObjectClass())).isEqualTo(Execution.class);
     }
 
     public void testGetVariablesNullExecutionId() {
@@ -425,7 +407,7 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
         assertThatExceptionOfType(ActivitiObjectNotFoundException.class)
             .isThrownBy(() -> runtimeService.getVariables("unexistingExecutionId"))
             .withMessageContaining("execution unexistingExecutionId doesn't exist")
-            .satisfies(ae -> assertEquals(Execution.class, ae.getObjectClass()));
+            .satisfies(ae -> assertThat(ae.getObjectClass())).isEqualTo(Execution.class);
     }
 
     public void testGetVariableNullExecutionId() {
@@ -445,7 +427,7 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
         assertThatExceptionOfType(ActivitiObjectNotFoundException.class)
             .isThrownBy(() -> runtimeService.setVariable("unexistingExecutionId", "variableName", "value"))
             .withMessageContaining("execution unexistingExecutionId doesn't exist")
-            .satisfies(ae -> assertEquals(Execution.class, ae.getObjectClass()));
+            .satisfies(ae -> assertThat(ae.getObjectClass())).isEqualTo(Execution.class);
     }
 
     public void testSetVariableNullExecutionId() {
@@ -466,15 +448,14 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
 
     @Deployment(resources = {"org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml"})
     public void testSetVariables() {
-        Map<String, Object> vars = new HashMap<String, Object>();
-        vars.put("variable1", "value1");
-        vars.put("variable2", "value2");
-
         ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
-        runtimeService.setVariables(processInstance.getId(), vars);
+        runtimeService.setVariables(processInstance.getId(), map(
+            "variable1", "value1",
+            "variable2", "value2"
+        ));
 
-        assertEquals("value1", runtimeService.getVariable(processInstance.getId(), "variable1"));
-        assertEquals("value2", runtimeService.getVariable(processInstance.getId(), "variable2"));
+        assertThat(runtimeService.getVariable(processInstance.getId(),"variable1")).isEqualTo("value1");
+        assertThat(runtimeService.getVariable(processInstance.getId(),"variable2")).isEqualTo("value2");
     }
 
     public void testSetVariablesUnexistingExecutionId() {
@@ -720,11 +701,11 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
 
         startSignalCatchProcesses();
         // 15, because the signal catch is a scope
-        assertEquals(15, runtimeService.createExecutionQuery().count());
+        assertThat(runtimeService.createExecutionQuery().count()).isEqualTo(15);
         runtimeService.signalEventReceived("alert");
-        assertEquals(9, runtimeService.createExecutionQuery().count());
+        assertThat(runtimeService.createExecutionQuery().count()).isEqualTo(9);
         runtimeService.signalEventReceived("panic");
-        assertEquals(0, runtimeService.createExecutionQuery().count());
+        assertThat(runtimeService.createExecutionQuery().count()).isEqualTo(0);
 
         startSignalCatchProcesses();
 
@@ -733,14 +714,14 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
             List<Execution> page = runtimeService.createExecutionQuery().signalEventSubscriptionName("alert").listPage(0, 1);
             runtimeService.signalEventReceived("alert", page.get(0).getId());
 
-            assertEquals(executions - 1, runtimeService.createExecutionQuery().signalEventSubscriptionName("alert").count());
+            assertThat(runtimeService.createExecutionQuery().signalEventSubscriptionName("alert").count()).isEqualTo(executions - 1);
         }
 
         for (int executions = 3; executions > 0; executions--) {
             List<Execution> page = runtimeService.createExecutionQuery().signalEventSubscriptionName("panic").listPage(0, 1);
             runtimeService.signalEventReceived("panic", page.get(0).getId());
 
-            assertEquals(executions - 1, runtimeService.createExecutionQuery().signalEventSubscriptionName("panic").count());
+            assertThat(runtimeService.createExecutionQuery().signalEventSubscriptionName("panic").count()).isEqualTo(executions - 1);
         }
     }
 
@@ -750,34 +731,34 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
 
         startMessageCatchProcesses();
         // 12, because the signal catch is a scope
-        assertEquals(12, runtimeService.createExecutionQuery().count());
+        assertThat(runtimeService.createExecutionQuery().count()).isEqualTo(12);
 
         // signal the executions one at a time:
         for (int executions = 3; executions > 0; executions--) {
             List<Execution> page = runtimeService.createExecutionQuery().messageEventSubscriptionName("alert").listPage(0, 1);
             runtimeService.messageEventReceived("alert", page.get(0).getId());
 
-            assertEquals(executions - 1, runtimeService.createExecutionQuery().messageEventSubscriptionName("alert").count());
+            assertThat(runtimeService.createExecutionQuery().messageEventSubscriptionName("alert").count()).isEqualTo(executions - 1);
         }
 
         for (int executions = 3; executions > 0; executions--) {
             List<Execution> page = runtimeService.createExecutionQuery().messageEventSubscriptionName("panic").listPage(0, 1);
             runtimeService.messageEventReceived("panic", page.get(0).getId());
 
-            assertEquals(executions - 1, runtimeService.createExecutionQuery().messageEventSubscriptionName("panic").count());
+            assertThat(runtimeService.createExecutionQuery().messageEventSubscriptionName("panic").count()).isEqualTo(executions - 1);
         }
     }
 
     public void testSignalEventReceivedNonExistingExecution() {
         assertThatExceptionOfType(ActivitiObjectNotFoundException.class)
             .isThrownBy(() -> runtimeService.signalEventReceived("alert", "nonexistingExecution"))
-            .satisfies(ae -> assertEquals(Execution.class, ae.getObjectClass()));
+            .satisfies(ae -> assertThat(ae.getObjectClass())).isEqualTo(Execution.class);
     }
 
     public void testMessageEventReceivedNonExistingExecution() {
         assertThatExceptionOfType(ActivitiObjectNotFoundException.class)
             .isThrownBy(() -> runtimeService.messageEventReceived("alert", "nonexistingExecution"))
-            .satisfies(ae -> assertEquals(Execution.class, ae.getObjectClass()));
+            .satisfies(ae -> assertThat(ae.getObjectClass())).isEqualTo(Execution.class);
     }
 
     @Deployment(resources = {"org/activiti/engine/test/api/runtime/RuntimeServiceTest.catchAlertSignal.bpmn20.xml"})
@@ -798,7 +779,7 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
         runtimeService.setProcessInstanceName(processInstance.getId(), "New name");
         processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(processInstance.getId()).singleResult();
         assertThat(processInstance).isNotNull();
-        assertEquals("New name", processInstance.getName());
+        assertThat(processInstance.getName()).isEqualTo("New name");
 
         // Set the name to null
         runtimeService.setProcessInstanceName(processInstance.getId(), null);
@@ -809,7 +790,7 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
         // Set name for unexisting process instance, should fail
         assertThatExceptionOfType(ActivitiObjectNotFoundException.class)
             .isThrownBy(() -> runtimeService.setProcessInstanceName("unexisting", null))
-            .satisfies(ae -> assertEquals(ProcessInstance.class, ae.getObjectClass()));
+            .satisfies(ae -> assertThat(ae.getObjectClass())).isEqualTo(ProcessInstance.class);
 
         processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(processInstance.getId()).singleResult();
         assertThat(processInstance).isNotNull();
@@ -965,8 +946,7 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
         Authentication.setAuthenticatedUserId(authenticatedUser);
         final ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
 
-        assertEquals(authenticatedUser,
-                     processInstance.getStartUserId());
+        assertThat(processInstance.getStartUserId()).isEqualTo(authenticatedUser);
     }
 
     @Deployment(resources = {"org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml"})

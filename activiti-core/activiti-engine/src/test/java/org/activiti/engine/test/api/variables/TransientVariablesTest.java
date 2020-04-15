@@ -264,7 +264,7 @@ public class TransientVariablesTest extends PluggableActivitiTestCase {
   public static class FetchDataServiceTask implements JavaDelegate {
     public void execute(DelegateExecution execution) {
       execution.setTransientVariable("response", "author=kermit;version=3;message=Hello World");
-      execution.setTransientVariable("status", new Integer(200));
+      execution.setTransientVariable("status", Integer.valueOf(200));
     }
   }
 

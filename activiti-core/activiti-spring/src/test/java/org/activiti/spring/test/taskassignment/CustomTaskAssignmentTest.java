@@ -13,6 +13,7 @@
 package org.activiti.spring.test.taskassignment;
 
 import static java.util.Collections.singletonMap;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 
@@ -49,19 +50,19 @@ public class CustomTaskAssignmentTest extends SpringActivitiTestCase {
     public void testSetCandidateUsersThroughSpringService() {
         runtimeService.startProcessInstanceByKey("candidateUsersThroughSpringService",
                                                  singletonMap("emp", "fozzie"));
-        assertEquals(1, taskService.createTaskQuery().taskCandidateUser("kermit").count());
-        assertEquals(1, taskService.createTaskQuery().taskCandidateUser("fozzie").count());
-        assertEquals(1, taskService.createTaskQuery().taskCandidateUser("gonzo").count());
-        assertEquals(0, taskService.createTaskQuery().taskCandidateUser("mispiggy").count());
+        assertThat(taskService.createTaskQuery().taskCandidateUser("kermit").count()).isEqualTo(1);
+        assertThat(taskService.createTaskQuery().taskCandidateUser("fozzie").count()).isEqualTo(1);
+        assertThat(taskService.createTaskQuery().taskCandidateUser("gonzo").count()).isEqualTo(1);
+        assertThat(taskService.createTaskQuery().taskCandidateUser("mispiggy").count()).isEqualTo(0);
     }
 
     @Deployment
     public void testSetCandidateGroupsThroughSpringService() {
         runtimeService.startProcessInstanceByKey("candidateUsersThroughSpringService",
                                                  singletonMap("emp", "fozzie"));
-        assertEquals(1, taskService.createTaskQuery().taskCandidateGroup("management").count());
-        assertEquals(1, taskService.createTaskQuery().taskCandidateGroup("directors").count());
-        assertEquals(1, taskService.createTaskQuery().taskCandidateGroup("accountancy").count());
-        assertEquals(0, taskService.createTaskQuery().taskCandidateGroup("sales").count());
+        assertThat(taskService.createTaskQuery().taskCandidateGroup("management").count()).isEqualTo(1);
+        assertThat(taskService.createTaskQuery().taskCandidateGroup("directors").count()).isEqualTo(1);
+        assertThat(taskService.createTaskQuery().taskCandidateGroup("accountancy").count()).isEqualTo(1);
+        assertThat(taskService.createTaskQuery().taskCandidateGroup("sales").count()).isEqualTo(0);
     }
 }
