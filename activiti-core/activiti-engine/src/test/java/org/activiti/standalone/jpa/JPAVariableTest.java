@@ -264,7 +264,7 @@ public class JPAVariableTest extends AbstractActivitiTestCase {
         assertThat(((FieldAccessJPAEntity) currentValue).getId().longValue()).isEqualTo(1L);
     }
 
-    @Deployment
+    @Deployment(resources = {"org/activiti/standalone/jpa/JPAVariableTest.testStoreJPAEntityAsVariable.bpmn20.xml"})
     public void testStoreJPAEntityAsVariableAllAllowedIdTypes() {
         setupJPAEntities();
         // -----------------------------------------------------------------------------
