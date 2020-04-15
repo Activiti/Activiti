@@ -1,7 +1,6 @@
 package org.activiti.engine.test.regression;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.util.List;
 

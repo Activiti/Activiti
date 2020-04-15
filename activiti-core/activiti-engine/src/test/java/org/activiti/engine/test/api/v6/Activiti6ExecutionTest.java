@@ -52,7 +52,7 @@ public class Activiti6ExecutionTest extends PluggableActivitiTestCase {
       } else {
         childExecution = execution;
 
-        assertThat(execution.getId().equals(execution.getProcessInstanceId()) == false).isTrue();
+        assertThat(execution.getId()).isNotEqualTo(execution.getProcessInstanceId());
         assertThat(execution.getActivityId()).isEqualTo("theTask");
       }
     }

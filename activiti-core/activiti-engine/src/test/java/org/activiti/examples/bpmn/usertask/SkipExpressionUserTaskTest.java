@@ -33,7 +33,7 @@ public class SkipExpressionUserTaskTest extends PluggableActivitiTestCase {
         Map<String, Object> variables3 = new HashMap<String, Object>();
         variables3.put("_ACTIVITI_SKIP_EXPRESSION_ENABLED", true);
         variables3.put("skip", true);
-        ProcessInstance pi3 = runtimeService.startProcessInstanceByKey("skipExpressionUserTask", variables3);
+        runtimeService.startProcessInstanceByKey("skipExpressionUserTask", variables3);
         List<Task> tasks3 = taskService.createTaskQuery().list();
         assertThat(tasks3).hasSize(0);
     }

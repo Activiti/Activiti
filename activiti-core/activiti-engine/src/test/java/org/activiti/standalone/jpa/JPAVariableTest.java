@@ -211,7 +211,7 @@ public class JPAVariableTest extends AbstractActivitiTestCase {
 
   //@TODO: fix Caused by: org.h2.jdbc.JdbcSQLException: Concurrent update in table "JPA_ENTITY_FIELD": another transaction has updated or deleted the same row [90131-193]
   @Deployment
-  public void ignored_testStoreJPAEntityAsVariable() {
+  public void ignoredTestStoreJPAEntityAsVariable() {
     setupJPAEntities();
     // -----------------------------------------------------------------------------
     // Simple test, Start process with JPA entities as variables
@@ -338,7 +338,7 @@ public class JPAVariableTest extends AbstractActivitiTestCase {
 
   //@TODO: fix Caused by: org.h2.jdbc.JdbcSQLException: Value too long for column "ID_ DECIMAL(19, 2) NOT NULL": "12345678912345678900000.12 (25)"; SQL statement:
   @Deployment(resources = { "org/activiti/standalone/jpa/JPAVariableTest.testStoreJPAEntityAsVariable.bpmn20.xml" })
-  public void ignored_testStoreJPAEntityListAsVariable() {
+  public void ignoredTestStoreJPAEntityListAsVariable() {
     setupJPAEntities();
     // -----------------------------------------------------------------------------
     // Simple test, Start process with lists of JPA entities as variables
@@ -388,7 +388,7 @@ public class JPAVariableTest extends AbstractActivitiTestCase {
 
   //@TODO: fix Caused by: org.h2.jdbc.JdbcSQLException: Concurrent update in table "JPA_ENTITY_FIELD": another transaction has updated or deleted the same row [90131-193]
   @Deployment(resources = { "org/activiti/standalone/jpa/JPAVariableTest.testStoreJPAEntityAsVariable.bpmn20.xml" })
-  public void ignored_testStoreJPAEntityListAsVariableEdgeCases() {
+  public void ignoredTestStoreJPAEntityListAsVariableEdgeCases() {
     setupJPAEntities();
 
     // Test using mixed JPA-entities which are not serializable, should not

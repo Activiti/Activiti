@@ -17,9 +17,6 @@ import static java.util.Collections.singletonMap;
 import static org.activiti.engine.impl.util.CollectionUtil.map;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.event.EventLogEntry;
 import org.activiti.engine.impl.persistence.entity.EventLogEntryEntity;

@@ -17,7 +17,6 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.util.List;
 
-import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.delegate.event.ActivitiEvent;
@@ -28,12 +27,10 @@ import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 import org.activiti.engine.test.api.event.StaticTestActivitiEventListener;
 import org.activiti.engine.test.api.event.TestActivitiEventListener;
-import org.activiti.validation.validator.Problems;
 
 /**
  * Test for event-listeners that are registered on a process-definition scope, rather than on the global engine-wide scope, declared in the BPMN XML.
  *
-
  */
 public class ProcessDefinitionScopedEventListenerDefinitionTest extends ResourceActivitiTestCase {
 

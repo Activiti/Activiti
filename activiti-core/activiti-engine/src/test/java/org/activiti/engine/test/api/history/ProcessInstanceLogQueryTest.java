@@ -3,9 +3,7 @@ package org.activiti.engine.test.api.history;
 import static org.activiti.engine.impl.util.CollectionUtil.map;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.history.HistoricData;
@@ -19,7 +17,6 @@ import org.activiti.engine.task.Comment;
 import org.activiti.engine.task.Task;
 
 /**
-
  */
 public class ProcessInstanceLogQueryTest extends PluggableActivitiTestCase {
 

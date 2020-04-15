@@ -27,10 +27,8 @@ import org.activiti.engine.test.Deployment;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.assertj.core.api.Assertions.catchThrowable;
 
 /**
-
  */
 public class MessageIntermediateEventTest extends PluggableActivitiTestCase {
 
