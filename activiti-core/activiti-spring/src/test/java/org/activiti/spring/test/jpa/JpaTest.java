@@ -4,9 +4,6 @@ import static org.activiti.engine.impl.util.CollectionUtil.map;
 import static org.activiti.engine.impl.util.CollectionUtil.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
@@ -15,7 +12,6 @@ import org.springframework.test.context.ContextConfiguration;
 
 /**
  *
-
  */
 @ContextConfiguration(locations = "JPASpringTest-context.xml")
 public class JpaTest extends SpringActivitiTestCase {

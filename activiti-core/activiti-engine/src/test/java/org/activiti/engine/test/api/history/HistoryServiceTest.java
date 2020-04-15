@@ -527,7 +527,6 @@ public class HistoryServiceTest extends PluggableActivitiTestCase {
    */
   @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
   public void testQueryStringVariable() {
-    ;
     ProcessInstance processInstance1 = runtimeService.startProcessInstanceByKey("oneTaskProcess", singletonMap("stringVar", "abcdef"));
     taskService.complete(taskService.createTaskQuery().processInstanceId(processInstance1.getId()).singleResult().getId());
 
