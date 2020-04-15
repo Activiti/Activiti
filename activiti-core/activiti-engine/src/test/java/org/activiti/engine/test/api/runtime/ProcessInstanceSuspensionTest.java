@@ -13,6 +13,7 @@
 package org.activiti.engine.test.api.runtime;
 
 import static java.util.Arrays.asList;
+import static org.activiti.engine.impl.util.CollectionUtil.map;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
@@ -72,14 +73,8 @@ public class ProcessInstanceSuspensionTest extends PluggableActivitiTestCase {
     ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().singleResult();
     assertThat(processInstance.isSuspended()).isFalse();
 
-    try {
-      // activate
-      runtimeService.activateProcessInstanceById(processInstance.getId());
-      fail("Expected activiti exception");
-    } catch (ActivitiException e) {
-      // expected
-    }
-
+    assertThatExceptionOfType(ActivitiException.class)
+      .isThrownBy(() -> runtimeService.activateProcessInstanceById(processInstance.getId()));
   }
 
   @Deployment(resources = { "org/activiti/engine/test/api/runtime/oneTaskProcess.bpmn20.xml" })
@@ -92,13 +87,8 @@ public class ProcessInstanceSuspensionTest extends PluggableActivitiTestCase {
 
     runtimeService.suspendProcessInstanceById(processInstance.getId());
 
-    try {
-      runtimeService.suspendProcessInstanceById(processInstance.getId());
-      fail("Expected activiti exception");
-    } catch (ActivitiException e) {
-      // expected
-    }
-
+    assertThatExceptionOfType(ActivitiException.class)
+      .isThrownBy(() -> runtimeService.suspendProcessInstanceById(processInstance.getId()));
   }
 
   @Deployment(resources = { "org/activiti/engine/test/api/runtime/superProcessWithMultipleNestedSubProcess.bpmn20.xml", "org/activiti/engine/test/api/runtime/nestedSubProcess.bpmn20.xml",
@@ -337,162 +327,100 @@ public class ProcessInstanceSuspensionTest extends PluggableActivitiTestCase {
     // to create separate tests for each of them.
 
     // Completing the task should fail
-    try {
-      taskService.complete(task.getId());
-      fail("It is not allowed to complete a task of a suspended process instance");
-    } catch (ActivitiException e) {
-      // This is good
-    }
+    assertThatExceptionOfType(ActivitiException.class)
+      .as("It is not allowed to complete a task of a suspended process instance")
+      .isThrownBy(() -> taskService.complete(task.getId()));
 
     // Claiming the task should fail
-    try {
-      taskService.claim(task.getId(), "jos");
-      fail("It is not allowed to claim a task of a suspended process instance");
-    } catch (ActivitiException e) {
-      // This is good
-    }
+    assertThatExceptionOfType(ActivitiException.class)
+      .as("It is not allowed to claim a task of a suspended process instance")
+      .isThrownBy(() -> taskService.claim(task.getId(), "jos"));
 
     // Setting variable on the task should fail
-    try {
-      taskService.setVariable(task.getId(), "someVar", "someValue");
-      fail("It is not allowed to set a variable on a task of a suspended process instance");
-    } catch (ActivitiException e) {
-      // This is good
-    }
+    assertThatExceptionOfType(ActivitiException.class)
+      .as("It is not allowed to set a variable on a task of a suspended process instance")
+      .isThrownBy(() -> taskService.setVariable(task.getId(), "someVar", "someValue"));
 
     // Setting variable on the task should fail
-    try {
-      taskService.setVariableLocal(task.getId(), "someVar", "someValue");
-      fail("It is not allowed to set a variable on a task of a suspended process instance");
-    } catch (ActivitiException e) {
-      // This is good
-    }
+    assertThatExceptionOfType(ActivitiException.class)
+      .as("It is not allowed to set a variable on a task of a suspended process instance")
+      .isThrownBy(() -> taskService.setVariableLocal(task.getId(), "someVar", "someValue"));
 
     // Setting variables on the task should fail
-    try {
-      HashMap<String, String> variables = new HashMap<String, String>();
-      variables.put("varOne", "one");
-      variables.put("varTwo", "two");
-      taskService.setVariables(task.getId(), variables);
-      fail("It is not allowed to set variables on a task of a suspended process instance");
-    } catch (ActivitiException e) {
-      // This is good
-    }
+    assertThatExceptionOfType(ActivitiException.class)
+      .as("It is not allowed to set variables on a task of a suspended process instance")
+      .isThrownBy(() -> taskService.setVariables(task.getId(), map("varOne", "one", "varTwo", "two")));
 
     // Setting variables on the task should fail
-    try {
-      HashMap<String, String> variables = new HashMap<String, String>();
-      variables.put("varOne", "one");
-      variables.put("varTwo", "two");
-      taskService.setVariablesLocal(task.getId(), variables);
-      fail("It is not allowed to set variables on a task of a suspended process instance");
-    } catch (ActivitiException e) {
-      // This is good
-    }
+    assertThatExceptionOfType(ActivitiException.class)
+      .as("It is not allowed to set variables on a task of a suspended process instance")
+      .isThrownBy(() -> taskService.setVariablesLocal(task.getId(), map("varOne", "one", "varTwo", "two")));
 
     // Removing variable on the task should fail
-    try {
-      taskService.removeVariable(task.getId(), "someVar");
-      fail("It is not allowed to remove a variable on a task of a suspended process instance");
-    } catch (ActivitiException e) {
-      // This is good
-    }
+    assertThatExceptionOfType(ActivitiException.class)
+      .as("It is not allowed to remove a variable on a task of a suspended process instance")
+      .isThrownBy(() -> taskService.removeVariable(task.getId(), "someVar"));
 
     // Removing variable on the task should fail
-    try {
-      taskService.removeVariableLocal(task.getId(), "someVar");
-      fail("It is not allowed to remove a variable on a task of a suspended process instance");
-    } catch (ActivitiException e) {
-      // This is good
-    }
+    assertThatExceptionOfType(ActivitiException.class)
+      .as("It is not allowed to remove a variable on a task of a suspended process instance")
+      .isThrownBy(() -> taskService.removeVariableLocal(task.getId(), "someVar"));
 
     // Removing variables on the task should fail
-    try {
-      taskService.removeVariables(task.getId(), asList("one", "two"));
-      fail("It is not allowed to remove variables on a task of a suspended process instance");
-    } catch (ActivitiException e) {
-      // This is good
-    }
+    assertThatExceptionOfType(ActivitiException.class)
+      .as("It is not allowed to remove variables on a task of a suspended process instance")
+      .isThrownBy(() -> taskService.removeVariables(task.getId(), asList("one", "two")));
 
     // Removing variables on the task should fail
-    try {
-      taskService.removeVariablesLocal(task.getId(), asList("one", "two"));
-      fail("It is not allowed to remove variables on a task of a suspended process instance");
-    } catch (ActivitiException e) {
-      // This is good
-    }
+    assertThatExceptionOfType(ActivitiException.class)
+      .as("It is not allowed to remove variables on a task of a suspended process instance")
+      .isThrownBy(() -> taskService.removeVariablesLocal(task.getId(), asList("one", "two")));
 
     // Adding candidate groups on the task should fail
-    try {
-      taskService.addCandidateGroup(task.getId(), "blahGroup");
-      fail("It is not allowed to add a candidate group on a task of a suspended process instance");
-    } catch (ActivitiException e) {
-      // This is good
-    }
+    assertThatExceptionOfType(ActivitiException.class)
+      .as("It is not allowed to add a candidate group on a task of a suspended process instance")
+      .isThrownBy(() -> taskService.addCandidateGroup(task.getId(), "blahGroup"));
 
     // Adding candidate users on the task should fail
-    try {
-      taskService.addCandidateUser(task.getId(), "blahUser");
-      fail("It is not allowed to add a candidate user on a task of a suspended process instance");
-    } catch (ActivitiException e) {
-      // This is good
-    }
+    assertThatExceptionOfType(ActivitiException.class)
+      .as("It is not allowed to add a candidate user on a task of a suspended process instance")
+      .isThrownBy(() -> taskService.addCandidateUser(task.getId(), "blahUser"));
 
     // Adding candidate users on the task should fail
-    try {
-      taskService.addGroupIdentityLink(task.getId(), "blahGroup", IdentityLinkType.CANDIDATE);
-      fail("It is not allowed to add a candidate user on a task of a suspended process instance");
-    } catch (ActivitiException e) {
-      // This is good
-    }
+    assertThatExceptionOfType(ActivitiException.class)
+      .as("It is not allowed to add a candidate user on a task of a suspended process instance")
+      .isThrownBy(() -> taskService.addGroupIdentityLink(task.getId(), "blahGroup", IdentityLinkType.CANDIDATE));
 
     // Adding an identity link on the task should fail
-    try {
-      taskService.addUserIdentityLink(task.getId(), "blahUser", IdentityLinkType.OWNER);
-      fail("It is not allowed to add an identityLink on a task of a suspended process instance");
-    } catch (ActivitiException e) {
-      // This is good
-    }
+    assertThatExceptionOfType(ActivitiException.class)
+      .as("It is not allowed to add an identityLink on a task of a suspended process instance")
+      .isThrownBy(() -> taskService.addUserIdentityLink(task.getId(), "blahUser", IdentityLinkType.OWNER));
 
     // Adding a comment on the task should fail
-    try {
-      taskService.addComment(task.getId(), processInstance.getId(), "test comment");
-      fail("It is not allowed to add a comment on a task of a suspended process instance");
-    } catch (ActivitiException e) {
-      // This is good
-    }
+    assertThatExceptionOfType(ActivitiException.class)
+      .as("It is not allowed to add a comment on a task of a suspended process instance")
+      .isThrownBy(() -> taskService.addComment(task.getId(), processInstance.getId(), "test comment"));
 
     // Adding an attachment on the task should fail
-    try {
-      taskService.createAttachment("text", task.getId(), processInstance.getId(), "testName", "testDescription", "http://test.com");
-      fail("It is not allowed to add an attachment on a task of a suspended process instance");
-    } catch (ActivitiException e) {
-      // This is good
-    }
+    assertThatExceptionOfType(ActivitiException.class)
+      .as("It is not allowed to add an attachment on a task of a suspended process instance")
+      .isThrownBy(() -> taskService.createAttachment("text", task.getId(), processInstance.getId(),
+          "testName", "testDescription", "http://test.com"));
 
     // Set an assignee on the task should fail
-    try {
-      taskService.setAssignee(task.getId(), "mispiggy");
-      fail("It is not allowed to set an assignee on a task of a suspended process instance");
-    } catch (ActivitiException e) {
-      // This is good
-    }
+    assertThatExceptionOfType(ActivitiException.class)
+      .as("It is not allowed to set an assignee on a task of a suspended process instance")
+      .isThrownBy(() -> taskService.setAssignee(task.getId(), "mispiggy"));
 
     // Set an owner on the task should fail
-    try {
-      taskService.setOwner(task.getId(), "kermit");
-      fail("It is not allowed to set an owner on a task of a suspended process instance");
-    } catch (ActivitiException e) {
-      // This is good
-    }
+    assertThatExceptionOfType(ActivitiException.class)
+      .as("It is not allowed to set an owner on a task of a suspended process instance")
+      .isThrownBy(() -> taskService.setOwner(task.getId(), "kermit"));
 
     // Set priority on the task should fail
-    try {
-      taskService.setPriority(task.getId(), 99);
-      fail("It is not allowed to set a priority on a task of a suspended process instance");
-    } catch (ActivitiException e) {
-      // This is good
-    }
+    assertThatExceptionOfType(ActivitiException.class)
+      .as("It is not allowed to set a priority on a task of a suspended process instance")
+      .isThrownBy(() -> taskService.setPriority(task.getId(), 99));
   }
 
   @Deployment

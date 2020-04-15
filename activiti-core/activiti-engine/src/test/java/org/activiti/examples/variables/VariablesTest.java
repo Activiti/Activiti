@@ -12,7 +12,10 @@
  */
 package org.activiti.examples.variables;
 
+import static java.util.Collections.emptyMap;
+import static java.util.Collections.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.history.HistoricVariableInstance;
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.persistence.entity.VariableInstance;
@@ -1113,10 +1117,7 @@ public class VariablesTest extends PluggableActivitiTestCase {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("taskAssigneeProcess");
     Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
 
-    Map<String, Object> variables = new HashMap<String, Object>();
-    variables.put("testProperty", "434");
-
-    taskService.complete(task.getId(), variables);
+    taskService.complete(task.getId(), singletonMap("testProperty", "434"));
     String resultVar = (String) runtimeService.getVariable(processInstance.getId(), "testProperty");
 
     assertThat(resultVar).isEqualTo("434");
@@ -1127,24 +1128,18 @@ public class VariablesTest extends PluggableActivitiTestCase {
     // If no variable is given, no variable should be set and script test should throw exception
     processInstance = runtimeService.startProcessInstanceByKey("taskAssigneeProcess");
     task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
-    variables = new HashMap<String, Object>();
-    try {
-      taskService.complete(task.getId(), variables);
-      fail("Should throw exception as testProperty is not defined and used in Script task");
-    } catch (Exception e) {
-      runtimeService.deleteProcessInstance(processInstance.getId(), "intentional exception in script task");
-
-      assertThat(e.getClass().toString()).isEqualTo("class org.activiti.engine.ActivitiException");
-    }
+    String taskId = task.getId();
+    assertThatExceptionOfType(ActivitiException.class)
+      .as("Should throw exception as testProperty is not defined and used in Script task")
+      .isThrownBy(() -> taskService.complete(taskId, emptyMap()));
+    runtimeService.deleteProcessInstance(processInstance.getId(), "intentional exception in script task");
 
     // No we put null property, This should be put into the variable. We do not expect exceptions
     processInstance = runtimeService.startProcessInstanceByKey("taskAssigneeProcess");
     task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
-    variables = new HashMap<String, Object>();
-    variables.put("testProperty", null);
 
     try {
-      taskService.complete(task.getId(), variables);
+      taskService.complete(task.getId(), singletonMap("testProperty", null));
     } catch (Exception e) {
       fail("Should not throw exception as the testProperty is defined, although null");
     }

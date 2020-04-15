@@ -20,6 +20,7 @@ import org.activiti.engine.test.Deployment;
 import java.io.File;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 /**
  * This class shows an example of configurable agenda usage.
@@ -40,14 +41,10 @@ public class WatchDogAgendaTest extends ResourceActivitiTestCase {
 
     @Deployment(resources = "org/activiti/examples/runtime/WatchDogAgendaTest-endlessloop.bpmn20.xml")
     public void testWatchDogWithEndLessLoop() {
-        try {
-            this.runtimeService.startProcessInstanceByKey("endlessloop");
-            fail("ActivitiException with 'WatchDog limit exceeded.' message expected.");
-        } catch (ActivitiException e) {
-            if (!"WatchDog limit exceeded.".equals(e.getMessage())) {
-                fail("Unexpected exception " + e);
-            }
-        }
+        assertThatExceptionOfType(ActivitiException.class)
+            .as("ActivitiException with 'WatchDog limit exceeded.' message expected.")
+            .isThrownBy(() -> this.runtimeService.startProcessInstanceByKey("endlessloop"))
+            .withMessageContaining("WatchDog limit exceeded.");
      }
 
 }

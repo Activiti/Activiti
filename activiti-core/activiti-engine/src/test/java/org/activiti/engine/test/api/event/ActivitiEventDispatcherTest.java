@@ -14,6 +14,7 @@ package org.activiti.engine.test.api.event;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.catchThrowable;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
@@ -219,17 +220,13 @@ public abstract class ActivitiEventDispatcherTest extends PluggableActivitiTestC
     dispatcher.addEventListener(listener);
     dispatcher.addEventListener(secondListener);
 
-    try {
-      dispatcher.dispatchEvent(event);
-      fail("Exception expected");
-    } catch (Throwable t) {
-      assertThat(t).isInstanceOf(ActivitiException.class);
-      assertThat(t.getCause()).isInstanceOf(RuntimeException.class);
-      assertThat(t.getCause().getMessage()).isEqualTo("Test exception");
+    Throwable t = catchThrowable(() -> dispatcher.dispatchEvent(event));
+    assertThat(t).isInstanceOf(ActivitiException.class);
+    assertThat(t).hasCauseInstanceOf(RuntimeException.class);
+    assertThat(t.getCause()).hasMessage("Test exception");
 
-      // Second listener should NOT have been called
-      assertThat(secondListener.getEventsReceived().size()).isEqualTo(0);
-    }
+    // Second listener should NOT have been called
+    assertThat(secondListener.getEventsReceived().size()).isEqualTo(0);
   }
 
   /**

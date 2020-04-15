@@ -15,6 +15,7 @@ package org.activiti.engine.test.impl.calendar;
 
 import static java.util.Collections.emptyMap;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -42,20 +43,14 @@ public class MapBusinessCalendarManagerTest extends TestCase {
   public void testInvalidCalendarNameRequest() {
     MapBusinessCalendarManager businessCalendarManager = new MapBusinessCalendarManager(emptyMap());
 
-    try {
-      businessCalendarManager.getBusinessCalendar("INVALID");
-      fail("ActivitiException expected");
-    } catch (ActivitiException e) {
-      assertThat(e.getMessage()).contains("INVALID does not exist");
-    }
+    assertThatExceptionOfType(ActivitiException.class)
+      .isThrownBy(() -> businessCalendarManager.getBusinessCalendar("INVALID"))
+      .withMessageContaining("INVALID does not exist");
   }
 
   public void testNullCalendars() {
-    try {
-      new MapBusinessCalendarManager(null);
-      fail("AssertionError expected");
-    } catch(IllegalArgumentException e) {
-      // Expected error
-    }
+    assertThatExceptionOfType(IllegalArgumentException.class)
+      .isThrownBy(() -> new MapBusinessCalendarManager(null));
   }
+
 }

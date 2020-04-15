@@ -4,6 +4,7 @@
 package org.activiti.engine.test.jobexecutor;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -40,28 +41,23 @@ public class JobExecutorCmdExceptionTest extends PluggableActivitiTestCase {
       }
     });
 
-    Job job = managementService.createJobQuery().singleResult();
-    assertThat(job.getRetries()).isEqualTo(3);
+    assertThatExceptionOfType(Exception.class)
+      .isThrownBy(() -> {
+        Job job = managementService.createJobQuery().singleResult();
+        assertThat(job.getRetries()).isEqualTo(3);
+        managementService.executeJob(job.getId());
+      });
 
-    try {
-      managementService.executeJob(job.getId());
-      fail("exception expected");
-    } catch (Exception e) {
-      // exception expected;
-    }
+    assertThatExceptionOfType(Exception.class)
+      .isThrownBy(() -> {
+        Job job = managementService.createTimerJobQuery().singleResult();
+        assertThat(job.getRetries()).isEqualTo(2);
 
-    job = managementService.createTimerJobQuery().singleResult();
-    assertThat(job.getRetries()).isEqualTo(2);
+        managementService.moveTimerToExecutableJob(job.getId());
+        managementService.executeJob(job.getId());
+      });
 
-    try {
-      managementService.moveTimerToExecutableJob(job.getId());
-      managementService.executeJob(job.getId());
-      fail("exception expected");
-    } catch (Exception e) {
-      // exception expected;
-    }
-
-    job = managementService.createTimerJobQuery().singleResult();
+    Job job = managementService.createTimerJobQuery().singleResult();
     assertThat(job.getRetries()).isEqualTo(1);
 
     managementService.moveTimerToExecutableJob(job.getId());
@@ -80,39 +76,31 @@ public class JobExecutorCmdExceptionTest extends PluggableActivitiTestCase {
       }
     });
 
-    Job job = managementService.createJobQuery().singleResult();
-    assertThat(job.getRetries()).isEqualTo(3);
 
-    try {
-      managementService.executeJob(job.getId());
-      fail("exception expected");
-    } catch (Exception e) {
-      // exception expected;
-    }
+    assertThatExceptionOfType(Exception.class)
+      .isThrownBy(() -> {
+        Job job = managementService.createJobQuery().singleResult();
+        assertThat(job.getRetries()).isEqualTo(3);
+        managementService.executeJob(job.getId());
+      });
 
-    job = managementService.createTimerJobQuery().singleResult();
-    assertThat(job.getRetries()).isEqualTo(2);
+    assertThatExceptionOfType(Exception.class)
+      .isThrownBy(() -> {
+        Job job = managementService.createTimerJobQuery().singleResult();
+        assertThat(job.getRetries()).isEqualTo(2);
+        managementService.moveTimerToExecutableJob(job.getId());
+        managementService.executeJob(job.getId());
+      });
 
-    try {
-      managementService.moveTimerToExecutableJob(job.getId());
-      managementService.executeJob(job.getId());
-      fail("exception expected");
-    } catch (Exception e) {
-      // exception expected;
-    }
+    assertThatExceptionOfType(Exception.class)
+      .isThrownBy(() -> {
+        Job job = managementService.createTimerJobQuery().singleResult();
+        assertThat(job.getRetries()).isEqualTo(1);
+        managementService.moveTimerToExecutableJob(job.getId());
+        managementService.executeJob(job.getId());
+      });
 
-    job = managementService.createTimerJobQuery().singleResult();
-    assertThat(job.getRetries()).isEqualTo(1);
-
-    try {
-      managementService.moveTimerToExecutableJob(job.getId());
-      managementService.executeJob(job.getId());
-      fail("exception expected");
-    } catch (Exception e) {
-      // exception expected;
-    }
-
-    job = managementService.createDeadLetterJobQuery().singleResult();
+    Job job = managementService.createDeadLetterJobQuery().singleResult();
     assertThat(job).isNotNull();
 
     managementService.deleteDeadLetterJob(job.getId());

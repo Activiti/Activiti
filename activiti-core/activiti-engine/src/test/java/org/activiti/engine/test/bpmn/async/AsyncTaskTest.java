@@ -501,15 +501,16 @@ public class AsyncTaskTest extends PluggableActivitiTestCase {
   }
 
   private void waitForAllExecutionsToComplete(long timeout, long sleep) throws InterruptedException {
-      int counter = 0;
+      long counter = 0;
 
       while(runtimeService.createExecutionQuery().count() > 0) {
           Thread.sleep(sleep);
           counter += sleep;
 
           // timeout
-          if(counter > timeout)
-              fail("Should have finished all process executions within " + timeout + " ms");
+          assertThat(counter)
+              .as("Should have finished all process executions within " + timeout + " ms")
+              .isLessThan(timeout);
       }
   }
 

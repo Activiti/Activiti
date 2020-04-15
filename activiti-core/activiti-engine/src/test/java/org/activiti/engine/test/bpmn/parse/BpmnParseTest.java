@@ -23,7 +23,6 @@ import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.GraphicInfo;
 import org.activiti.bpmn.model.Process;
 import org.activiti.bpmn.model.SequenceFlow;
-import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.impl.test.TestHelper;
 import org.activiti.engine.repository.ProcessDefinition;
@@ -31,7 +30,6 @@ import org.activiti.engine.test.Deployment;
 
 /**
  *
-
  */
 public class BpmnParseTest extends PluggableActivitiTestCase {
 

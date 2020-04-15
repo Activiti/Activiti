@@ -1,6 +1,7 @@
 package org.activiti.engine.test.regression;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.util.List;
 
@@ -59,16 +60,12 @@ public class ProcessValidationExecutedAfterDeployTest extends PluggableActivitiT
     clearDeploymentCache();
 
     ProcessDefinition definition = getLatestProcessDefinitionVersionByKey("testProcess1");
-    if (definition == null) {
-      fail("Error occurred in fetching process model.");
-    }
+    assertThat(definition).as("Error occurred in fetching process model.").isNotNull();
     try {
       repositoryService.getProcessModel(definition.getId());
-      assertThat(true).isTrue();
     } catch (ActivitiException e) {
       fail("Error occurred in fetching process model.");
     }
-
     for (org.activiti.engine.repository.Deployment deployment : repositoryService.createDeploymentQuery().list()) {
       repositoryService.deleteDeployment(deployment.getId());
     }

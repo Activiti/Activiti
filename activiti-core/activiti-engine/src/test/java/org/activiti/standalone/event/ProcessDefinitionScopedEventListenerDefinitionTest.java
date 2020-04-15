@@ -13,6 +13,7 @@
 package org.activiti.standalone.event;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.util.List;
 
@@ -27,6 +28,7 @@ import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 import org.activiti.engine.test.api.event.StaticTestActivitiEventListener;
 import org.activiti.engine.test.api.event.TestActivitiEventListener;
+import org.activiti.validation.validator.Problems;
 
 /**
  * Test for event-listeners that are registered on a process-definition scope, rather than on the global engine-wide scope, declared in the BPMN XML.
@@ -103,24 +105,11 @@ public class ProcessDefinitionScopedEventListenerDefinitionTest extends Resource
    * Test to verify if event listeners defined in the BPMN XML which have illegal event-types cause an exception on deploy.
    */
   public void testProcessDefinitionListenerDefinitionIllegalType() throws Exception {
-    // In case deployment doesn't fail, we delete the deployment in the
-    // finally block to
-    // ensure clean DB for subsequent tests
-    org.activiti.engine.repository.Deployment deployment = null;
-    try {
-
-      deployment = repositoryService.createDeployment().addClasspathResource("org/activiti/standalone/event/invalidEventListenerType.bpmn20.xml").deploy();
-
-      fail("Exception expected");
-
-    } catch (ActivitiException ae) {
-      assertThat(ae).isInstanceOf(ActivitiIllegalArgumentException.class);
-      assertThat(ae.getMessage()).isEqualTo("Invalid event-type: invalid");
-    } finally {
-      if (deployment != null) {
-        repositoryService.deleteDeployment(deployment.getId(), true);
-      }
-    }
+    assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
+      .isThrownBy(() -> repositoryService.createDeployment()
+        .addClasspathResource("org/activiti/standalone/event/invalidEventListenerType.bpmn20.xml")
+        .deploy())
+      .withMessageContaining("Invalid event-type: invalid");
   }
 
   /**

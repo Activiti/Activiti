@@ -14,6 +14,7 @@
 package org.activiti.standalone.jpa;
 
 import static java.util.Arrays.asList;
+import static java.util.Collections.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
@@ -472,89 +473,50 @@ public class JPAVariableTest extends AbstractActivitiTestCase {
     @Deployment
     public void testIllegalEntities() {
         setupIllegalJPAEntities();
-        // Starting process instance with a variable that has a compound primary
-        // key, which is not supported.
-        Map<String, Object> variables = new HashMap<String, Object>();
-        variables.put("compoundIdJPAEntity",
-                      compoundIdJPAEntity);
+        // Starting process instance with a variable that has a compound primary key, which is not supported.
 
-        try {
-            runtimeService.startProcessInstanceByKey("JPAVariableProcessExceptions",
-                                                     variables);
-            fail("Exception expected");
-        } catch (ActivitiException ae) {
-            assertTextPresent("Cannot find field or method with annotation @Id on class",
-                              ae.getMessage());
-            assertTextPresent("only single-valued primary keys are supported on JPA-entities",
-                              ae.getMessage());
-        }
+        assertThatExceptionOfType(ActivitiException.class)
+            .isThrownBy(() -> runtimeService.startProcessInstanceByKey("JPAVariableProcessExceptions",
+                singletonMap("compoundIdJPAEntity", compoundIdJPAEntity)))
+            .withMessageContaining("Cannot find field or method with annotation @Id on class")
+            .withMessageContaining("only single-valued primary keys are supported on JPA-entities");
 
         // Starting process instance with a variable that has null as ID-value
-        variables = new HashMap<String, Object>();
-        variables.put("nullValueEntity",
-                      new FieldAccessJPAEntity());
-
-        try {
-            runtimeService.startProcessInstanceByKey("JPAVariableProcessExceptions",
-                                                     variables);
-            fail("Exception expected");
-        } catch (ActivitiIllegalArgumentException ae) {
-            assertTextPresent("Value of primary key for JPA-Entity cannot be null",
-                              ae.getMessage());
-        }
+        assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
+            .isThrownBy(() -> runtimeService.startProcessInstanceByKey("JPAVariableProcessExceptions",
+                singletonMap("nullValueEntity", new FieldAccessJPAEntity())))
+            .withMessageContaining("Value of primary key for JPA-Entity cannot be null");
 
         // Starting process instance with an invalid type of ID
-        // Under normal circumstances, JPA will throw an exception for this of
-        // the class is
-        // present in the PU when creating EntityanagerFactory, but we test it
-        // *just in case*
-        variables = new HashMap<String, Object>();
+        // Under normal circumstances, JPA will throw an exception for this of the class is
+        // present in the PU when creating EntityManagerFactory, but we test it *just in case*
         IllegalIdClassJPAEntity illegalIdTypeEntity = new IllegalIdClassJPAEntity();
         illegalIdTypeEntity.setId(Calendar.getInstance());
-        variables.put("illegalTypeId",
-                      illegalIdTypeEntity);
 
-        try {
-            runtimeService.startProcessInstanceByKey("JPAVariableProcessExceptions",
-                                                     variables);
-            fail("Exception expected");
-        } catch (ActivitiException ae) {
-            assertTextPresent("Unsupported Primary key type for JPA-Entity",
-                              ae.getMessage());
-        }
+        assertThatExceptionOfType(ActivitiException.class)
+            .isThrownBy(() -> runtimeService.startProcessInstanceByKey("JPAVariableProcessExceptions",
+                singletonMap("illegalTypeId", illegalIdTypeEntity)))
+            .withMessageContaining("Unsupported Primary key type for JPA-Entity");
 
         // Start process instance with JPA-entity which has an ID but isn't
-        // persisted. When reading
-        // the variable we should get an exception.
-        variables = new HashMap<String, Object>();
+        // persisted. When reading the variable we should get an exception.
         FieldAccessJPAEntity nonPersistentEntity = new FieldAccessJPAEntity();
         nonPersistentEntity.setId(9999L);
-        variables.put("nonPersistentEntity",
-                      nonPersistentEntity);
 
         ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("JPAVariableProcessExceptions",
-                                                                                   variables);
+                                                                                   singletonMap("nonPersistentEntity", nonPersistentEntity));
 
-        try {
-            runtimeService.getVariable(processInstance.getId(),
-                                       "nonPersistentEntity");
-            fail("Exception expected");
-        } catch (ActivitiException ae) {
-            assertTextPresent("Entity does not exist: " + FieldAccessJPAEntity.class.getName() + " - 9999",
-                              ae.getMessage());
-        }
+        assertThatExceptionOfType(ActivitiException.class)
+            .isThrownBy(() -> runtimeService.getVariable(processInstance.getId(), "nonPersistentEntity"))
+            .withMessageContaining("Entity does not exist: " + FieldAccessJPAEntity.class.getName() + " - 9999");
     }
 
     @Deployment
     public void testQueryJPAVariable() {
         setupQueryJPAEntity();
 
-        Map<String, Object> variables = new HashMap<String, Object>();
-        variables.put("entityToQuery",
-                      entityToQuery);
-
         ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("JPAVariableProcess",
-                                                                                   variables);
+                                                                                   singletonMap("entityToQuery", entityToQuery));
 
         // Query the processInstance
         ProcessInstance result = runtimeService.createProcessInstanceQuery().variableValueEquals("entityToQuery",
@@ -562,8 +524,7 @@ public class JPAVariableTest extends AbstractActivitiTestCase {
         assertThat(result).isNotNull();
         assertThat(processInstance.getId()).isEqualTo(result.getId());
 
-        // Query with the same entity-type but with different ID should have no
-        // result
+        // Query with the same entity-type but with different ID should have no result
         FieldAccessJPAEntity unexistingEntity = new FieldAccessJPAEntity();
         unexistingEntity.setId(8888L);
 
@@ -571,55 +532,28 @@ public class JPAVariableTest extends AbstractActivitiTestCase {
                                                                                  unexistingEntity).singleResult();
         assertThat(result).isNull();
 
-        // All other operators are unsupported
-        try {
-            runtimeService.createProcessInstanceQuery().variableValueNotEquals("entityToQuery",
-                                                                               entityToQuery).singleResult();
-            fail("Exception expected");
-        } catch (ActivitiIllegalArgumentException ae) {
-            assertTextPresent("JPA entity variables can only be used in 'variableValueEquals'",
-                              ae.getMessage());
-        }
-        try {
-            runtimeService.createProcessInstanceQuery().variableValueGreaterThan("entityToQuery",
-                                                                                 entityToQuery).singleResult();
-            fail("Exception expected");
-        } catch (ActivitiIllegalArgumentException ae) {
-            assertTextPresent("JPA entity variables can only be used in 'variableValueEquals'",
-                              ae.getMessage());
-        }
-        try {
-            runtimeService.createProcessInstanceQuery().variableValueGreaterThanOrEqual("entityToQuery",
-                                                                                        entityToQuery).singleResult();
-            fail("Exception expected");
-        } catch (ActivitiIllegalArgumentException ae) {
-            assertTextPresent("JPA entity variables can only be used in 'variableValueEquals'",
-                              ae.getMessage());
-        }
-        try {
-            runtimeService.createProcessInstanceQuery().variableValueLessThan("entityToQuery",
-                                                                              entityToQuery).singleResult();
-            fail("Exception expected");
-        } catch (ActivitiIllegalArgumentException ae) {
-            assertTextPresent("JPA entity variables can only be used in 'variableValueEquals'",
-                              ae.getMessage());
-        }
-        try {
-            runtimeService.createProcessInstanceQuery().variableValueLessThanOrEqual("entityToQuery",
-                                                                                     entityToQuery).singleResult();
-            fail("Exception expected");
-        } catch (ActivitiIllegalArgumentException ae) {
-            assertTextPresent("JPA entity variables can only be used in 'variableValueEquals'",
-                              ae.getMessage());
-        }
+        assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
+            .isThrownBy(() -> runtimeService.createProcessInstanceQuery().variableValueNotEquals("entityToQuery", entityToQuery).singleResult())
+            .withMessageContaining("JPA entity variables can only be used in 'variableValueEquals'");
+        assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
+            .isThrownBy(() -> runtimeService.createProcessInstanceQuery().variableValueGreaterThan("entityToQuery", entityToQuery).singleResult())
+            .withMessageContaining("JPA entity variables can only be used in 'variableValueEquals'");
+        assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
+            .isThrownBy(() -> runtimeService.createProcessInstanceQuery().variableValueGreaterThanOrEqual("entityToQuery", entityToQuery).singleResult())
+            .withMessageContaining("JPA entity variables can only be used in 'variableValueEquals'");
+        assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
+            .isThrownBy(() -> runtimeService.createProcessInstanceQuery().variableValueLessThan("entityToQuery", entityToQuery).singleResult())
+            .withMessageContaining("JPA entity variables can only be used in 'variableValueEquals'");
+        assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
+            .isThrownBy(() -> runtimeService.createProcessInstanceQuery().variableValueLessThanOrEqual("entityToQuery", entityToQuery).singleResult())
+            .withMessageContaining("JPA entity variables can only be used in 'variableValueEquals'");
     }
 
     @Deployment
     public void testUpdateJPAEntityValues() {
         setupJPAEntityToUpdate();
         Map<String, Object> variables = new HashMap<String, Object>();
-        variables.put("entityToUpdate",
-                      entityToUpdate);
+        variables.put("entityToUpdate", entityToUpdate);
 
         ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("UpdateJPAValuesProcess",
                                                                                    variables);

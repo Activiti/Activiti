@@ -102,15 +102,14 @@ public class RuntimeVariablesTest extends PluggableActivitiTestCase {
     assertThat(variableInstances.get("executionVar1").getValue()).isEqualTo(serializableTypeVar);
   }
 
-  private void checkVariable(String executionId, String name, String value, List<VariableInstance> variables){
-    for (VariableInstance variable : variables){
-      if (executionId.equals(variable.getExecutionId())){
-        assertThat(variable.getName()).isEqualTo(name);
-        assertThat(variable.getValue()).isEqualTo(value);
-        return;
-      }
-    }
-    fail();
+  private void checkVariable(String executionId, String name, String value, List<VariableInstance> variables) {
+    assertThat(variables)
+      .filteredOn(variable -> executionId.equals(variable.getExecutionId()))
+      .first()
+      .satisfies(variable -> {
+          assertThat(variable.getName()).isEqualTo(name);
+          assertThat(variable.getValue()).isEqualTo(value);
+      });
   }
 
   @Deployment(resources={

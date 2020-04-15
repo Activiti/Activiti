@@ -392,20 +392,14 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
     assertThat(execution.getId()).isEqualTo(processInstance1.getId());
 
     // Pass in null-value, should cause exception
-    try {
-      execution = runtimeService.createExecutionQuery().variableValueEqualsIgnoreCase("upper", null).singleResult();
-      fail("Exception expected");
-    } catch (ActivitiIllegalArgumentException ae) {
-      assertThat(ae.getMessage()).isEqualTo("value is null");
-    }
+    assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
+      .isThrownBy(() -> runtimeService.createExecutionQuery().variableValueEqualsIgnoreCase("upper", null).singleResult())
+      .withMessageContaining("value is null");
 
     // Pass in null name, should cause exception
-    try {
-      execution = runtimeService.createExecutionQuery().variableValueEqualsIgnoreCase(null, "abcdefg").singleResult();
-      fail("Exception expected");
-    } catch (ActivitiIllegalArgumentException ae) {
-      assertThat(ae.getMessage()).isEqualTo("name is null");
-    }
+    assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
+      .isThrownBy(() -> runtimeService.createExecutionQuery().variableValueEqualsIgnoreCase(null, "abcdefg").singleResult())
+      .withMessageContaining("name is null");
 
     // Test NOT equals
     execution = runtimeService.createExecutionQuery().variableValueNotEqualsIgnoreCase("upper", "UIOP").singleResult();
@@ -419,20 +413,14 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
     assertThat(execution).isNotNull();
 
     // Pass in null-value, should cause exception
-    try {
-      execution = runtimeService.createExecutionQuery().variableValueNotEqualsIgnoreCase("upper", null).singleResult();
-      fail("Exception expected");
-    } catch (ActivitiIllegalArgumentException ae) {
-      assertThat(ae.getMessage()).isEqualTo("value is null");
-    }
+    assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
+      .isThrownBy(() -> runtimeService.createExecutionQuery().variableValueNotEqualsIgnoreCase("upper", null).singleResult())
+      .withMessageContaining("value is null");
 
     // Pass in null name, should cause exception
-    try {
-      execution = runtimeService.createExecutionQuery().variableValueNotEqualsIgnoreCase(null, "abcdefg").singleResult();
-      fail("Exception expected");
-    } catch (ActivitiIllegalArgumentException ae) {
-      assertThat(ae.getMessage()).isEqualTo("name is null");
-    }
+    assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
+      .isThrownBy(() -> runtimeService.createExecutionQuery().variableValueNotEqualsIgnoreCase(null, "abcdefg").singleResult())
+      .withMessageContaining("name is null");
   }
 
   @Deployment(resources={"org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml"})
@@ -452,20 +440,14 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
     assertThat(execution.getId()).isEqualTo(processInstance1.getId());
 
     // Pass in null-value, should cause exception
-    try {
-      execution = runtimeService.createExecutionQuery().variableValueLike("var1", null).singleResult();
-      fail("Exception expected");
-    } catch(ActivitiIllegalArgumentException ae) {
-      assertThat(ae.getMessage()).isEqualTo("Only string values can be used with 'like' condition");
-    }
+    assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
+      .isThrownBy(() -> runtimeService.createExecutionQuery().variableValueLike("var1", null).singleResult())
+      .withMessage("Only string values can be used with 'like' condition");
 
     // Pass in null name, should cause exception
-    try {
-      execution = runtimeService.createExecutionQuery().variableValueLike(null, "abcdefg").singleResult();
-      fail("Exception expected");
-    } catch(ActivitiIllegalArgumentException ae) {
-      assertThat(ae.getMessage()).isEqualTo("name is null");
-    }
+    assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
+      .isThrownBy(() -> runtimeService.createExecutionQuery().variableValueLike(null, "abcdefg").singleResult())
+      .withMessageContaining("name is null");
   }
 
   @Deployment(resources={"org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml"})
@@ -494,20 +476,14 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
     assertThat(execution.getId()).isEqualTo(processInstance1.getId());
 
     // Pass in null-value, should cause exception
-    try {
-      execution = runtimeService.createExecutionQuery().variableValueEqualsIgnoreCase("upper", null).singleResult();
-      fail("Exception expected");
-    } catch(ActivitiIllegalArgumentException ae) {
-      assertThat(ae.getMessage()).isEqualTo("value is null");
-    }
+    assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
+      .isThrownBy(() -> runtimeService.createExecutionQuery().variableValueEqualsIgnoreCase("upper", null).singleResult())
+      .withMessageContaining("value is null");
 
     // Pass in null name, should cause exception
-    try {
-      execution = runtimeService.createExecutionQuery().variableValueEqualsIgnoreCase(null, "abcdefg").singleResult();
-      fail("Exception expected");
-    } catch(ActivitiIllegalArgumentException ae) {
-      assertThat(ae.getMessage()).isEqualTo("name is null");
-    }
+    assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
+      .isThrownBy(() -> runtimeService.createExecutionQuery().variableValueEqualsIgnoreCase(null, "abcdefg").singleResult())
+      .withMessageContaining("name is null");
   }
 
   @Deployment(resources={
@@ -1040,33 +1016,21 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
     assertThat(execution.getId()).isEqualTo(processInstance1.getId());
 
     // Test unsupported operations
-    try {
-      runtimeService.createProcessInstanceQuery().variableValueGreaterThan("booleanVar", true);
-      fail("Exception expected");
-    } catch (ActivitiIllegalArgumentException ae) {
-      assertThat(ae.getMessage()).contains("Booleans and null cannot be used in 'greater than' condition");
-    }
+    assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
+      .isThrownBy(() -> runtimeService.createProcessInstanceQuery().variableValueGreaterThan("booleanVar", true))
+      .withMessageContaining("Booleans and null cannot be used in 'greater than' condition");
 
-    try {
-      runtimeService.createProcessInstanceQuery().variableValueGreaterThanOrEqual("booleanVar", true);
-      fail("Exception expected");
-    } catch (ActivitiIllegalArgumentException ae) {
-      assertThat(ae.getMessage()).contains("Booleans and null cannot be used in 'greater than or equal' condition");
-    }
+    assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
+      .isThrownBy(() -> runtimeService.createProcessInstanceQuery().variableValueGreaterThanOrEqual("booleanVar", true))
+      .withMessageContaining("Booleans and null cannot be used in 'greater than or equal' condition");
 
-    try {
-      runtimeService.createProcessInstanceQuery().variableValueLessThan("booleanVar", true);
-      fail("Exception expected");
-    } catch (ActivitiIllegalArgumentException ae) {
-      assertThat(ae.getMessage()).contains("Booleans and null cannot be used in 'less than' condition");
-    }
+    assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
+      .isThrownBy(() -> runtimeService.createProcessInstanceQuery().variableValueLessThan("booleanVar", true))
+      .withMessageContaining("Booleans and null cannot be used in 'less than' condition");
 
-    try {
-      runtimeService.createProcessInstanceQuery().variableValueLessThanOrEqual("booleanVar", true);
-      fail("Exception expected");
-    } catch (ActivitiIllegalArgumentException ae) {
-      assertThat(ae.getMessage()).contains("Booleans and null cannot be used in 'less than or equal' condition");
-    }
+    assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
+      .isThrownBy(() -> runtimeService.createProcessInstanceQuery().variableValueLessThanOrEqual("booleanVar", true))
+      .withMessageContaining("Booleans and null cannot be used in 'less than or equal' condition");
 
     runtimeService.deleteProcessInstance(processInstance1.getId(), "test");
     runtimeService.deleteProcessInstance(processInstance2.getId(), "test");
@@ -1152,40 +1116,25 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
     assertThat(execution.getId()).isEqualTo(processInstance1.getId());
 
     // All other variable queries with null should throw exception
-    try {
-      runtimeService.createExecutionQuery().variableValueGreaterThan("nullVar", null);
-      fail("Exception expected");
-    } catch (ActivitiIllegalArgumentException ae) {
-      assertThat(ae.getMessage()).contains("Booleans and null cannot be used in 'greater than' condition");
-    }
+    assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
+      .isThrownBy(() -> runtimeService.createExecutionQuery().variableValueGreaterThan("nullVar", null))
+      .withMessageContaining("Booleans and null cannot be used in 'greater than' condition");
 
-    try {
-      runtimeService.createExecutionQuery().variableValueGreaterThanOrEqual("nullVar", null);
-      fail("Exception expected");
-    } catch (ActivitiIllegalArgumentException ae) {
-      assertThat(ae.getMessage()).contains("Booleans and null cannot be used in 'greater than or equal' condition");
-    }
+    assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
+      .isThrownBy(() -> runtimeService.createExecutionQuery().variableValueGreaterThanOrEqual("nullVar", null))
+      .withMessageContaining("Booleans and null cannot be used in 'greater than or equal' condition");
 
-    try {
-      runtimeService.createExecutionQuery().variableValueLessThan("nullVar", null);
-      fail("Exception expected");
-    } catch (ActivitiIllegalArgumentException ae) {
-      assertThat(ae.getMessage()).contains("Booleans and null cannot be used in 'less than' condition");
-    }
+    assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
+      .isThrownBy(() -> runtimeService.createExecutionQuery().variableValueLessThan("nullVar", null))
+      .withMessageContaining("Booleans and null cannot be used in 'less than' condition");
 
-    try {
-      runtimeService.createExecutionQuery().variableValueLessThanOrEqual("nullVar", null);
-      fail("Exception expected");
-    } catch (ActivitiIllegalArgumentException ae) {
-      assertThat(ae.getMessage()).contains("Booleans and null cannot be used in 'less than or equal' condition");
-    }
+    assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
+      .isThrownBy(() -> runtimeService.createExecutionQuery().variableValueLessThanOrEqual("nullVar", null))
+      .withMessageContaining("Booleans and null cannot be used in 'less than or equal' condition");
 
-    try {
-      runtimeService.createExecutionQuery().variableValueLike("nullVar", null);
-      fail("Exception expected");
-    } catch (ActivitiIllegalArgumentException ae) {
-      assertThat(ae.getMessage()).contains("Only string values can be used with 'like' condition");
-    }
+    assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
+      .isThrownBy(() -> runtimeService.createExecutionQuery().variableValueLike("nullVar", null))
+      .withMessageContaining("Only string values can be used with 'like' condition");
 
     runtimeService.deleteProcessInstance(processInstance1.getId(), "test");
     runtimeService.deleteProcessInstance(processInstance2.getId(), "test");
@@ -1206,66 +1155,39 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
 
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess", vars);
 
-    try {
-      runtimeService.createExecutionQuery().variableValueEquals("bytesVar", "test".getBytes()).list();
-      fail("Expected exception");
-    } catch (ActivitiIllegalArgumentException ae) {
-      assertThat(ae.getMessage()).contains("Variables of type ByteArray cannot be used to query");
-    }
+    assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
+      .isThrownBy(() -> runtimeService.createExecutionQuery().variableValueEquals("bytesVar", "test".getBytes()).list())
+      .withMessageContaining("Variables of type ByteArray cannot be used to query");
 
-    try {
-      runtimeService.createExecutionQuery().variableValueEquals("serializableVar", new DummySerializable()).list();
-      fail("Expected exception");
-    } catch (ActivitiIllegalArgumentException ae) {
-      assertThat(ae.getMessage()).contains("Variables of type ByteArray cannot be used to query");
-    }
+    assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
+      .isThrownBy(() -> runtimeService.createExecutionQuery().variableValueEquals("serializableVar", new DummySerializable()).list())
+      .withMessageContaining("Variables of type ByteArray cannot be used to query");
 
     runtimeService.deleteProcessInstance(processInstance.getId(), "test");
   }
 
   public void testQueryVariablesNullNameArgument() {
-    try {
-      runtimeService.createExecutionQuery().variableValueEquals(null, "value");
-      fail("Expected exception");
-    } catch (ActivitiIllegalArgumentException ae) {
-      assertThat(ae.getMessage()).contains("name is null");
-    }
-    try {
-      runtimeService.createExecutionQuery().variableValueNotEquals(null, "value");
-      fail("Expected exception");
-    } catch (ActivitiIllegalArgumentException ae) {
-      assertThat(ae.getMessage()).contains("name is null");
-    }
-    try {
-      runtimeService.createExecutionQuery().variableValueGreaterThan(null, "value");
-      fail("Expected exception");
-    } catch (ActivitiIllegalArgumentException ae) {
-      assertThat(ae.getMessage()).contains("name is null");
-    }
-    try {
-      runtimeService.createExecutionQuery().variableValueGreaterThanOrEqual(null, "value");
-      fail("Expected exception");
-    } catch (ActivitiIllegalArgumentException ae) {
-      assertThat(ae.getMessage()).contains("name is null");
-    }
-    try {
-      runtimeService.createExecutionQuery().variableValueLessThan(null, "value");
-      fail("Expected exception");
-    } catch (ActivitiIllegalArgumentException ae) {
-      assertThat(ae.getMessage()).contains("name is null");
-    }
-    try {
-      runtimeService.createExecutionQuery().variableValueLessThanOrEqual(null, "value");
-      fail("Expected exception");
-    } catch (ActivitiIllegalArgumentException ae) {
-      assertThat(ae.getMessage()).contains("name is null");
-    }
-    try {
-      runtimeService.createExecutionQuery().variableValueLike(null, "value");
-      fail("Expected exception");
-    } catch (ActivitiIllegalArgumentException ae) {
-      assertThat(ae.getMessage()).contains("name is null");
-    }
+    assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
+      .isThrownBy(() -> runtimeService.createExecutionQuery().variableValueEquals(null, "value"))
+      .withMessageContaining("name is null");
+    assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
+      .isThrownBy(() -> runtimeService.createExecutionQuery().variableValueNotEquals(null, "value"))
+      .withMessageContaining("name is null");
+    assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
+      .isThrownBy(() -> runtimeService.createExecutionQuery().variableValueGreaterThan(null, "value"))
+      .withMessageContaining("name is null");
+    assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
+      .isThrownBy(() -> runtimeService.createExecutionQuery().variableValueGreaterThanOrEqual(null, "value"))
+      .withMessageContaining("name is null");
+    assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
+      .isThrownBy(() -> runtimeService.createExecutionQuery().variableValueLessThan(null, "value"))
+      .withMessageContaining("name is null");
+    assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
+      .isThrownBy(() -> runtimeService.createExecutionQuery().variableValueLessThanOrEqual(null, "value"))
+      .withMessageContaining("name is null");
+    assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
+      .isThrownBy(() -> runtimeService.createExecutionQuery().variableValueLike(null, "value"))
+      .withMessageContaining("name is null");
   }
 
   @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })

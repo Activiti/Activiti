@@ -14,6 +14,7 @@
 package org.activiti.engine.test.bpmn.subprocess;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.io.InputStream;
 import java.util.HashMap;
@@ -67,20 +68,16 @@ public class CallActivityTest extends ResourceActivitiTestCase {
 
         suspendProcessDefinitions(messageTriggeredBpmnDeployment);
 
-        try {
-            ProcessInstance childProcessInstance = runtimeService.startProcessInstanceByMessage("TRIGGER_PROCESS_MESSAGE");
-            fail("Exception expected");
-        } catch (ActivitiException ae) {
-            assertTextPresent("Cannot start process instance. Process definition Message Triggered Process",
-                              ae.getMessage());
-        }
+        assertThatExceptionOfType(ActivitiException.class)
+            .isThrownBy(() -> runtimeService.startProcessInstanceByMessage("TRIGGER_PROCESS_MESSAGE"))
+            .withMessageContaining("Cannot start process instance. Process definition Message Triggered Process");
     }
 
     public void testInstantiateChildProcess() throws Exception {
         BpmnModel childBpmnModel = loadBPMNModel(CHILD_PROCESS_RESOURCE);
 
         processEngine.getRepositoryService().createDeployment().name("childProcessDeployment").addBpmnModel("childProcess.bpmn20.xml",
-                                                                                                                                         childBpmnModel).deploy();
+                                                                                                             childBpmnModel).deploy();
 
         ProcessInstance childProcessInstance = runtimeService.startProcessInstanceByKey("childProcess");
         assertThat(childProcessInstance).isNotNull();
@@ -94,13 +91,9 @@ public class CallActivityTest extends ResourceActivitiTestCase {
 
         suspendProcessDefinitions(childDeployment);
 
-        try {
-            runtimeService.startProcessInstanceByKey("childProcess");
-            fail("Exception expected");
-        } catch (ActivitiException ae) {
-            assertTextPresent("Cannot start process instance. Process definition Child Process",
-                              ae.getMessage());
-        }
+        assertThatExceptionOfType(ActivitiException.class)
+            .isThrownBy(() -> runtimeService.startProcessInstanceByKey("childProcess"))
+            .withMessageContaining("Cannot start process instance. Process definition Child Process");
     }
 
     public void testInstantiateSubprocess() throws Exception {
@@ -115,13 +108,9 @@ public class CallActivityTest extends ResourceActivitiTestCase {
 
         suspendProcessDefinitions(childDeployment);
 
-        try {
-            runtimeService.startProcessInstanceByKey("masterProcess");
-            fail("Exception expected");
-        } catch (ActivitiException ae) {
-            assertTextPresent("Cannot start process instance. Process definition Child Process",
-                              ae.getMessage());
-        }
+        assertThatExceptionOfType(ActivitiException.class)
+            .isThrownBy(() -> runtimeService.startProcessInstanceByKey("masterProcess"))
+            .withMessageContaining("Cannot start process instance. Process definition Child Process");
     }
 
     public void testInheritVariablesSubprocess() throws Exception {
@@ -162,11 +151,9 @@ public class CallActivityTest extends ResourceActivitiTestCase {
         HistoricVariableInstanceQuery variableInstanceQuery = historyService.createHistoricVariableInstanceQuery();
         List<HistoricVariableInstance> variableInstances = variableInstanceQuery.processInstanceId(calledInstanceId).list();
 
-        assertEquals(4,
-                     variableInstances.size());
+        assertEquals(4, variableInstances.size());
         for (HistoricVariableInstance variable : variableInstances) {
-            assertEquals(variables.get(variable.getVariableName()),
-                         variable.getValue());
+            assertEquals(variables.get(variable.getVariableName()), variable.getValue());
         }
     }
 

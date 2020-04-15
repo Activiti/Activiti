@@ -14,9 +14,11 @@
 package org.activiti.engine.test.bpmn.subprocess.transaction;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.util.List;
 
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.EventSubscriptionQueryImpl;
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
@@ -329,37 +331,25 @@ public class TransactionSubProcessTest extends PluggableActivitiTestCase {
   }
 
   public void testMultipleCancelBoundaryFails() {
-    try {
-      repositoryService.createDeployment().addClasspathResource("org/activiti/engine/test/bpmn/subprocess/transaction/TransactionSubProcessTest.testMultipleCancelBoundaryFails.bpmn20.xml").deploy();
-      fail("exception expected");
-    } catch (Exception e) {
-      if (!e.getMessage().contains("multiple boundary events with cancelEventDefinition not supported on same transaction")) {
-        fail("different exception expected");
-      }
-    }
+    assertThatExceptionOfType(ActivitiException.class)
+      .isThrownBy(() -> repositoryService.createDeployment().addClasspathResource("org/activiti/engine/test/bpmn/subprocess/transaction/TransactionSubProcessTest.testMultipleCancelBoundaryFails.bpmn20.xml").deploy())
+      .withMessageContaining("multiple boundary events with cancelEventDefinition not supported on same transaction");
   }
 
   public void testCancelBoundaryNoTransactionFails() {
-    try {
-      repositoryService.createDeployment().addClasspathResource("org/activiti/engine/test/bpmn/subprocess/transaction/TransactionSubProcessTest.testCancelBoundaryNoTransactionFails.bpmn20.xml")
-          .deploy();
-      fail("exception expected");
-    } catch (Exception e) {
-      if (!e.getMessage().contains("boundary event with cancelEventDefinition only supported on transaction subprocesses")) {
-        fail("different exception expected");
-      }
-    }
+    assertThatExceptionOfType(Exception.class)
+      .isThrownBy(() -> repositoryService.createDeployment()
+        .addClasspathResource("org/activiti/engine/test/bpmn/subprocess/transaction/TransactionSubProcessTest.testCancelBoundaryNoTransactionFails.bpmn20.xml")
+        .deploy())
+      .withMessageContaining("boundary event with cancelEventDefinition only supported on transaction subprocesses");
   }
 
   public void testCancelEndNoTransactionFails() {
-    try {
-      repositoryService.createDeployment().addClasspathResource("org/activiti/engine/test/bpmn/subprocess/transaction/TransactionSubProcessTest.testCancelEndNoTransactionFails.bpmn20.xml").deploy();
-      fail("exception expected");
-    } catch (Exception e) {
-      if (!e.getMessage().contains("end event with cancelEventDefinition only supported inside transaction subprocess")) {
-        fail("different exception expected");
-      }
-    }
+    assertThatExceptionOfType(Exception.class)
+      .isThrownBy(() -> repositoryService.createDeployment()
+        .addClasspathResource("org/activiti/engine/test/bpmn/subprocess/transaction/TransactionSubProcessTest.testCancelEndNoTransactionFails.bpmn20.xml")
+        .deploy())
+      .withMessageContaining("end event with cancelEventDefinition only supported inside transaction subprocess");
   }
 
   private EventSubscriptionQueryImpl createEventSubscriptionQuery() {

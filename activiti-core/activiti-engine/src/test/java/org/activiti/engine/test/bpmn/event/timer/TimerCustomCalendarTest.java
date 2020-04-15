@@ -1,9 +1,9 @@
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -13,6 +13,7 @@
 
 package org.activiti.engine.test.bpmn.event.timer;
 
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -79,12 +80,10 @@ public class TimerCustomCalendarTest extends ResourceActivitiTestCase {
 
   @Deployment
   public void testInvalidDurationTimerCalendar() {
-    try {
-      this.runtimeService.startProcessInstanceByKey("testCustomDurationCalendar");
-      fail("Activiti exception expected - calendar not found");
-    } catch (ActivitiException e) {
-      assertThat(e.getMessage(), containsString("INVALID does not exist"));
-    }
+    assertThatExceptionOfType(ActivitiException.class)
+      .as("Activiti exception expected - calendar not found")
+      .isThrownBy(() -> this.runtimeService.startProcessInstanceByKey("testCustomDurationCalendar"))
+      .withMessageContaining("INVALID does not exist");
   }
 
   @Deployment

@@ -424,20 +424,19 @@ public class JobEventsTest extends PluggableActivitiTestCase {
 
     // Process Cancelled event should not be sent for the subprocess
     List<ActivitiEvent> eventsReceived = activitiEventListener.getEventsReceived();
-    for (ActivitiEvent eventReceived : eventsReceived) {
-      if (ActivitiEventType.PROCESS_CANCELLED.equals(eventReceived.getType())) {
-        fail("Should not have received PROCESS_CANCELLED event");
-      }
-    }
+    assertThat(eventsReceived)
+        .filteredOn(eventReceived -> ActivitiEventType.PROCESS_CANCELLED.equals(eventReceived.getType()))
+        .as("Should not have received PROCESS_CANCELLED event")
+        .isEmpty();
 
     // validate the activityType string
     for (ActivitiEvent eventReceived : eventsReceived) {
       if (ActivitiEventType.ACTIVITY_CANCELLED.equals(eventReceived.getType())) {
         ActivitiActivityEvent event = (ActivitiActivityEvent) eventReceived;
         String activityType = event.getActivityType();
-        if (!"userTask".equals(activityType) && (!"subProcess".equals(activityType)) && (!"endEvent".equals(activityType))) {
-          fail("Unexpected activity type: " + activityType);
-        }
+        assertThat(activityType)
+            .as("Unexpected activity type: " + activityType)
+            .isIn("userTask", "subProcess", "endEvent");
       }
     }
 

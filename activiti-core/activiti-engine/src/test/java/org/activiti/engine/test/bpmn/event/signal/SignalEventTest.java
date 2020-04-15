@@ -16,16 +16,17 @@ package org.activiti.engine.test.bpmn.event.signal;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.el.PropertyNotFoundException;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.EventSubscriptionQueryImpl;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
-import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -34,7 +35,6 @@ import org.activiti.engine.test.Deployment;
 import org.activiti.validation.validator.Problems;
 
 /**
-
  */
 public class SignalEventTest extends PluggableActivitiTestCase {
 
@@ -161,47 +161,34 @@ public class SignalEventTest extends PluggableActivitiTestCase {
   }
 
   public void testDuplicateSignalNames() {
-    try {
-      repositoryService.createDeployment().addClasspathResource("org/activiti/engine/test/bpmn/event/signal/SignalEventTests.duplicateSignalNames.bpmn20.xml").deploy();
-      fail("exception expected");
-    } catch (Exception e) {
-      if (!e.getMessage().contains(Problems.SIGNAL_DUPLICATE_NAME)) {
-        fail("different exception expected");
-      }
-    }
+    assertThatExceptionOfType(Exception.class)
+      .isThrownBy(() -> repositoryService.createDeployment()
+        .addClasspathResource("org/activiti/engine/test/bpmn/event/signal/SignalEventTests.duplicateSignalNames.bpmn20.xml").deploy())
+      .withMessageContaining(Problems.SIGNAL_DUPLICATE_NAME);
   }
 
   public void testNoSignalName() {
-    try {
-      repositoryService.createDeployment().addClasspathResource("org/activiti/engine/test/bpmn/event/signal/SignalEventTests.noSignalName.bpmn20.xml").deploy();
-      fail("exception expected");
-    } catch (Exception e) {
-      if (!e.getMessage().contains(Problems.SIGNAL_MISSING_NAME)) {
-        fail("different exception expected, was " + e.getMessage());
-      }
-    }
+    assertThatExceptionOfType(Exception.class)
+      .isThrownBy(() -> repositoryService.createDeployment()
+        .addClasspathResource("org/activiti/engine/test/bpmn/event/signal/SignalEventTests.noSignalName.bpmn20.xml")
+        .deploy())
+      .withMessageContaining(Problems.SIGNAL_MISSING_NAME);
   }
 
   public void testSignalNoId() {
-    try {
-      repositoryService.createDeployment().addClasspathResource("org/activiti/engine/test/bpmn/event/signal/SignalEventTests.signalNoId.bpmn20.xml").deploy();
-      fail("exception expected");
-    } catch (Exception e) {
-      if (!e.getMessage().contains(Problems.SIGNAL_MISSING_ID)) {
-        fail("different exception expected");
-      }
-    }
+    assertThatExceptionOfType(Exception.class)
+      .isThrownBy(() -> repositoryService.createDeployment()
+        .addClasspathResource("org/activiti/engine/test/bpmn/event/signal/SignalEventTests.signalNoId.bpmn20.xml")
+        .deploy())
+      .withMessageContaining(Problems.SIGNAL_MISSING_ID);
   }
 
   public void testSignalNoRef() {
-    try {
-      repositoryService.createDeployment().addClasspathResource("org/activiti/engine/test/bpmn/event/signal/SignalEventTests.signalNoRef.bpmn20.xml").deploy();
-      fail("exception expected");
-    } catch (Exception e) {
-      if (!e.getMessage().contains(Problems.SIGNAL_EVENT_MISSING_SIGNAL_REF)) {
-        fail("different exception expected");
-      }
-    }
+    assertThatExceptionOfType(Exception.class)
+      .isThrownBy(() -> repositoryService.createDeployment()
+        .addClasspathResource("org/activiti/engine/test/bpmn/event/signal/SignalEventTests.signalNoRef.bpmn20.xml")
+        .deploy())
+      .withMessageContaining(Problems.SIGNAL_EVENT_MISSING_SIGNAL_REF);
   }
 
   private EventSubscriptionQueryImpl createEventSubscriptionQuery() {
@@ -226,9 +213,7 @@ public class SignalEventTest extends PluggableActivitiTestCase {
     assertThat(tasks.size()).isEqualTo(2);
 
     for (Task task : tasks) {
-      if (!task.getName().equals("My User Task") && !task.getName().equals("My Second User Task")) {
-        fail("Expected: <My User Task> or <My Second User Task> but was <" + task.getName() + ">.");
-      }
+      assertThat(task.getName()).isIn("My User Task", "My Second User Task");
     }
 
     taskService.complete(taskService.createTaskQuery().taskName("My User Task").singleResult().getId());
@@ -257,9 +242,7 @@ public class SignalEventTest extends PluggableActivitiTestCase {
     assertThat(tasks.size()).isEqualTo(2);
 
     for (Task task : tasks) {
-      if (!task.getName().equals("Approve") && !task.getName().equals("Review")) {
-        fail("Expected: <Approve> or <Review> but was <" + task.getName() + ">.");
-      }
+      assertThat(task.getName()).isIn("Approve", "Review");
     }
 
     taskService.complete(taskService.createTaskQuery().taskName("Approve").singleResult().getId());
@@ -362,13 +345,8 @@ public class SignalEventTest extends PluggableActivitiTestCase {
 
     assertThat(execution).isNotNull();
 
-    try {
-      runtimeService.trigger(execution.getId());
-      fail("ActivitiException expected");
-    } catch (ActivitiException ae) {
-      // Exception expected
-    }
-
+    assertThatExceptionOfType(ActivitiException.class)
+      .isThrownBy(() -> runtimeService.trigger(execution.getId()));
   }
 
   public void testSignalStartEventFromProcess() {
@@ -376,8 +354,7 @@ public class SignalEventTest extends PluggableActivitiTestCase {
     // Deploy test processes
     repositoryService.createDeployment().addClasspathResource("org/activiti/engine/test/bpmn/event/signal/SignalEventTest.testSignalStartEvent.bpmn20.xml").deploy();
 
-    // Starting the process that fires the signal should start three process
-    // instances that are listening on that signal
+    // Starting the process that fires the signal should start three process instances that are listening on that signal
     runtimeService.startProcessInstanceByKey("processWithSignalThrow");
 
     // Verify
@@ -543,26 +520,23 @@ public class SignalEventTest extends PluggableActivitiTestCase {
 
   public void testSignalStartEventSuspendedProcessDefinition() {
 
-       // Deploy test processes
-       repositoryService.createDeployment()
-         .addClasspathResource("org/activiti/engine/test/bpmn/event/signal/SignalEventTest.testSignalStartEvent.bpmn20.xml")
-         .deploy();
+    // Deploy test processes
+    repositoryService.createDeployment()
+      .addClasspathResource("org/activiti/engine/test/bpmn/event/signal/SignalEventTest.testSignalStartEvent.bpmn20.xml")
+      .deploy();
 
-       repositoryService.suspendProcessDefinitionByKey("processWithSignalStart1");
+    repositoryService.suspendProcessDefinitionByKey("processWithSignalStart1");
 
-       try {
-         runtimeService.signalEventReceived("The Signal");
-         fail("ActivitiException expected. Process definition is suspended");
-       } catch (ActivitiException ae) {
-         // ignore
-       }
+    assertThatExceptionOfType(ActivitiException.class)
+      .as("ActivitiException expected. Process definition is suspended")
+      .isThrownBy(() -> runtimeService.signalEventReceived("The Signal"));
 
-       // Cleanup
-       for (org.activiti.engine.repository.Deployment deployment : repositoryService.createDeploymentQuery().list()) {
-         repositoryService.deleteDeployment(deployment.getId(), true);
-       }
+    // Cleanup
+    for (org.activiti.engine.repository.Deployment deployment : repositoryService.createDeploymentQuery().list()) {
+      repositoryService.deleteDeployment(deployment.getId(), true);
+    }
 
-      }
+  }
 
   @Deployment
   public void testEarlyFinishedProcess() {

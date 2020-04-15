@@ -13,6 +13,7 @@
 package org.activiti.standalone.initialization;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -29,18 +30,15 @@ import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 
 /**
-
  */
 public class ProcessEngineInitializationTest extends AbstractTestCase {
 
   public void testNoTables() {
-    try {
-      ProcessEngineConfiguration.createProcessEngineConfigurationFromResource("org/activiti/standalone/initialization/notables.activiti.cfg.xml").buildProcessEngine();
-      fail("expected exception");
-    } catch (Exception e) {
-      // OK
-      assertThat(e.getMessage()).contains("no activiti tables in db");
-    }
+    assertThatExceptionOfType(Exception.class)
+      .isThrownBy(() -> ProcessEngineConfiguration
+        .createProcessEngineConfigurationFromResource("org/activiti/standalone/initialization/notables.activiti.cfg.xml")
+        .buildProcessEngine())
+      .withMessageContaining("no activiti tables in db");
   }
 
   public void testVersionMismatch() {
@@ -73,18 +71,17 @@ public class ProcessEngineInitializationTest extends AbstractTestCase {
       sqlSession.close();
     }
 
-    try {
-      // now we can see what happens if when a process engine is being
-      // build with a version mismatch between library and db tables
-      ProcessEngineConfiguration.createProcessEngineConfigurationFromResource("org/activiti/standalone/initialization/notables.activiti.cfg.xml")
-          .setDatabaseSchemaUpdate(ProcessEngineConfiguration.DB_SCHEMA_UPDATE_FALSE).buildProcessEngine();
-
-      fail("expected exception");
-    } catch (ActivitiWrongDbException e) {
-      assertThat(e.getMessage()).contains("version mismatch");
-      assertThat(e.getDbVersion()).isEqualTo("25.7");
-      assertThat(e.getLibraryVersion()).isEqualTo(ProcessEngine.VERSION);
-    }
+    // now we can see what happens if when a process engine is being
+    // build with a version mismatch between library and db tables
+    assertThatExceptionOfType(ActivitiWrongDbException.class)
+      .isThrownBy(() -> ProcessEngineConfiguration
+        .createProcessEngineConfigurationFromResource("org/activiti/standalone/initialization/notables.activiti.cfg.xml")
+        .setDatabaseSchemaUpdate(ProcessEngineConfiguration.DB_SCHEMA_UPDATE_FALSE).buildProcessEngine())
+      .withMessageContaining("version mismatch")
+      .satisfies(e -> {
+        assertThat(e.getDbVersion()).isEqualTo("25.7");
+        assertThat(e.getLibraryVersion()).isEqualTo(ProcessEngine.VERSION);
+      });
 
     // closing the original process engine to drop the db tables
     processEngine.close();

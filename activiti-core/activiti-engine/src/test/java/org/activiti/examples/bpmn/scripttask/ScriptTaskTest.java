@@ -28,8 +28,6 @@ import org.activiti.engine.test.Deployment;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
-
-
  */
 public class ScriptTaskTest extends PluggableActivitiTestCase {
 

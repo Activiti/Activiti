@@ -13,6 +13,7 @@
 package org.activiti.engine.test.bpmn.servicetask;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.util.List;
 
@@ -52,18 +53,11 @@ public class CallServiceInServiceTaskTest extends PluggableActivitiTestCase {
 
   @Deployment
   public void testRollBackOnException() {
-    Exception expectedException = null;
-    try {
-      runtimeService.startProcessInstanceByKey("startProcessFromDelegate");
-      fail("expected exception");
-    } catch (Exception e) {
-      expectedException = e;
-    }
-    assertThat(expectedException).isNotNull();
+    assertThatExceptionOfType(Exception.class)
+      .isThrownBy(() -> runtimeService.startProcessInstanceByKey("startProcessFromDelegate"));
 
     // Starting the process should cause a rollback of both processes
     assertThat(runtimeService.createProcessInstanceQuery().count()).isEqualTo(0);
   }
-
 
 }

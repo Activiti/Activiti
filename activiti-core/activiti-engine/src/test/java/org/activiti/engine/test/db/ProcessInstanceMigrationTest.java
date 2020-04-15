@@ -14,6 +14,7 @@
 package org.activiti.engine.test.db;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.util.List;
 
@@ -46,44 +47,29 @@ public class ProcessInstanceMigrationTest extends PluggableActivitiTestCase {
   private static final String TEST_PROCESS_NESTED_SUB_EXECUTIONS = "org/activiti/engine/test/db/ProcessInstanceMigrationTest.testSetProcessDefinitionVersionSubExecutionsNested.bpmn20.xml";
 
   public void testSetProcessDefinitionVersionEmptyArguments() {
-    try {
-      new SetProcessDefinitionVersionCmd(null, 23);
-      fail("ActivitiException expected");
-    } catch (ActivitiIllegalArgumentException ae) {
-      assertThat(ae.getMessage()).contains("The process instance id is mandatory, but 'null' has been provided.");
-    }
+    assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
+      .isThrownBy(() -> new SetProcessDefinitionVersionCmd(null, 23))
+      .withMessageContaining("The process instance id is mandatory, but 'null' has been provided.");
 
-    try {
-      new SetProcessDefinitionVersionCmd("", 23);
-      fail("ActivitiException expected");
-    } catch (ActivitiIllegalArgumentException ae) {
-      assertThat(ae.getMessage()).contains("The process instance id is mandatory, but '' has been provided.");
-    }
+    assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
+      .isThrownBy(() -> new SetProcessDefinitionVersionCmd("", 23))
+      .withMessageContaining("The process instance id is mandatory, but '' has been provided.");
 
-    try {
-      new SetProcessDefinitionVersionCmd("42", null);
-      fail("ActivitiException expected");
-    } catch (ActivitiIllegalArgumentException ae) {
-      assertThat(ae.getMessage()).contains("The process definition version is mandatory, but 'null' has been provided.");
-    }
+    assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
+      .isThrownBy(() -> new SetProcessDefinitionVersionCmd("42", null))
+      .withMessageContaining("The process definition version is mandatory, but 'null' has been provided.");
 
-    try {
-      new SetProcessDefinitionVersionCmd("42", -1);
-      fail("ActivitiException expected");
-    } catch (ActivitiIllegalArgumentException ae) {
-      assertThat(ae.getMessage()).contains("The process definition version must be positive, but '-1' has been provided.");
-    }
+    assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
+      .isThrownBy(() -> new SetProcessDefinitionVersionCmd("42", -1))
+      .withMessageContaining("The process definition version must be positive, but '-1' has been provided.");
   }
 
   public void testSetProcessDefinitionVersionNonExistingPI() {
     CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutor();
-    try {
-      commandExecutor.execute(new SetProcessDefinitionVersionCmd("42", 23));
-      fail("ActivitiException expected");
-    } catch (ActivitiObjectNotFoundException ae) {
-      assertThat(ae.getMessage()).contains("No process instance found for id = '42'.");
-      assertThat(ae.getObjectClass()).isEqualTo(ProcessInstance.class);
-    }
+    assertThatExceptionOfType(ActivitiObjectNotFoundException.class)
+      .isThrownBy(() -> commandExecutor.execute(new SetProcessDefinitionVersionCmd("42", 23)))
+      .withMessageContaining("No process instance found for id = '42'.")
+      .satisfies(ae -> assertThat(ae.getObjectClass()).isEqualTo(ProcessInstance.class));
   }
 
   @Deployment(resources = { TEST_PROCESS_WITH_PARALLEL_GATEWAY })
@@ -94,13 +80,10 @@ public class ProcessInstanceMigrationTest extends PluggableActivitiTestCase {
     Execution execution = runtimeService.createExecutionQuery().activityId("receivePayment").singleResult();
     CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutor();
     SetProcessDefinitionVersionCmd command = new SetProcessDefinitionVersionCmd(execution.getId(), 1);
-    try {
-      commandExecutor.execute(command);
-      fail("ActivitiException expected");
-    } catch (ActivitiException ae) {
-      assertTextPresent("A process instance id is required, but the provided id '" + execution.getId() + "' points to a child execution of process instance '" + pi.getId() + "'. Please invoke the "
-          + command.getClass().getSimpleName() + " with a root execution id.", ae.getMessage());
-    }
+    assertThatExceptionOfType(ActivitiException.class)
+      .isThrownBy(() -> commandExecutor.execute(command))
+      .withMessageContaining("A process instance id is required, but the provided id '" + execution.getId() + "' points to a child execution of process instance '" + pi.getId() + "'. Please invoke the "
+          + command.getClass().getSimpleName() + " with a root execution id.");
   }
 
   @Deployment(resources = { TEST_PROCESS })
@@ -109,13 +92,10 @@ public class ProcessInstanceMigrationTest extends PluggableActivitiTestCase {
     ProcessInstance pi = runtimeService.startProcessInstanceByKey("receiveTask");
 
     CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutor();
-    try {
-      commandExecutor.execute(new SetProcessDefinitionVersionCmd(pi.getId(), 23));
-      fail("ActivitiException expected");
-    } catch (ActivitiObjectNotFoundException ae) {
-      assertThat(ae.getMessage()).contains("no processes deployed with key = 'receiveTask' and version = '23'");
-      assertThat(ae.getObjectClass()).isEqualTo(ProcessDefinition.class);
-    }
+    assertThatExceptionOfType(ActivitiObjectNotFoundException.class)
+      .isThrownBy(() -> commandExecutor.execute(new SetProcessDefinitionVersionCmd(pi.getId(), 23)))
+      .withMessageContaining("no processes deployed with key = 'receiveTask' and version = '23'")
+      .satisfies(ae -> assertThat(ae.getObjectClass()).isEqualTo(ProcessDefinition.class));
   }
 
   @Deployment(resources = { TEST_PROCESS })
@@ -134,12 +114,9 @@ public class ProcessInstanceMigrationTest extends PluggableActivitiTestCase {
     // migrate process instance to new process definition version
     CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutor();
     SetProcessDefinitionVersionCmd setProcessDefinitionVersionCmd = new SetProcessDefinitionVersionCmd(pi.getId(), 2);
-    try {
-      commandExecutor.execute(setProcessDefinitionVersionCmd);
-      fail("ActivitiException expected");
-    } catch (ActivitiException ae) {
-      assertThat(ae.getMessage()).contains("The new process definition (key = 'receiveTask') does not contain the current activity (id = 'waitState1') of the process instance (id = '");
-    }
+    assertThatExceptionOfType(ActivitiException.class)
+      .isThrownBy(() -> commandExecutor.execute(setProcessDefinitionVersionCmd))
+      .withMessageContaining("The new process definition (key = 'receiveTask') does not contain the current activity (id = 'waitState1') of the process instance (id = '");
 
     // undeploy "manually" deployed process definition
     repositoryService.deleteDeployment(deployment.getId(), true);

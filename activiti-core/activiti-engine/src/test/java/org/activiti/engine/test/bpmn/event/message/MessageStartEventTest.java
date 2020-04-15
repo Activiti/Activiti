@@ -14,6 +14,7 @@
 package org.activiti.engine.test.bpmn.event.message;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.tuple;
 
 import java.util.ArrayList;
@@ -50,25 +51,22 @@ public class MessageStartEventTest extends PluggableActivitiTestCase {
   public void testSameMessageNameFails() {
     String deploymentId = repositoryService.createDeployment().addClasspathResource("org/activiti/engine/test/bpmn/event/message/MessageStartEventTest.testSingleMessageStartEvent.bpmn20.xml")
         .deploy().getId();
-    try {
-      repositoryService.createDeployment().addClasspathResource("org/activiti/engine/test/bpmn/event/message/otherProcessWithNewInvoiceMessage.bpmn20.xml").deploy();
-      fail("exception expected");
-    } catch (ActivitiException e) {
-      assertThat(e.getMessage().contains("there already is a message event subscription for the message with name")).isTrue();
-    }
+    assertThatExceptionOfType(ActivitiException.class)
+      .isThrownBy(() -> repositoryService.createDeployment()
+        .addClasspathResource("org/activiti/engine/test/bpmn/event/message/otherProcessWithNewInvoiceMessage.bpmn20.xml")
+        .deploy())
+      .withMessageContaining("there already is a message event subscription for the message with name");
 
     // clean db:
     repositoryService.deleteDeployment(deploymentId);
-
   }
 
   public void testSameMessageNameInSameProcessFails() {
-    try {
-      repositoryService.createDeployment().addClasspathResource("org/activiti/engine/test/bpmn/event/message/testSameMessageNameInSameProcessFails.bpmn20.xml").deploy();
-      fail("exception expected: Cannot have more than one message event subscription with name 'newInvoiceMessage' for scope");
-    } catch (ActivitiException e) {
-      e.printStackTrace();
-    }
+    assertThatExceptionOfType(ActivitiException.class)
+      .as("exception expected: Cannot have more than one message event subscription with name 'newInvoiceMessage' for scope")
+      .isThrownBy(() -> repositoryService.createDeployment()
+        .addClasspathResource("org/activiti/engine/test/bpmn/event/message/testSameMessageNameInSameProcessFails.bpmn20.xml")
+        .deploy());
   }
 
   public void testUpdateProcessVersionCancelsSubscriptions() {

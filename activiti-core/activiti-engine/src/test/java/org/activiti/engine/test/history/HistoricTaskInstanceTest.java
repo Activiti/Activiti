@@ -815,13 +815,9 @@ public class HistoricTaskInstanceTest extends PluggableActivitiTestCase {
         // to get links
         historyService.deleteHistoricTaskInstance(task.getId());
 
-        try {
-            historyService.getHistoricIdentityLinksForTask(task.getId()).size();
-            fail("Exception expected");
-        } catch (ActivitiObjectNotFoundException aonfe) {
-            assertEquals(HistoricTaskInstance.class,
-                         aonfe.getObjectClass());
-        }
+        assertThatExceptionOfType(ActivitiObjectNotFoundException.class)
+            .isThrownBy(() -> historyService.getHistoricIdentityLinksForTask(task.getId()).size())
+            .satisfies(ae -> assertEquals(HistoricTaskInstance.class, ae.getObjectClass()));
     }
 
     public void testInvalidSorting() {

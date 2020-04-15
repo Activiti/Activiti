@@ -1,6 +1,7 @@
 package org.activiti.engine.test.logging.mdc;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.logging.LogMDC;
@@ -47,12 +48,8 @@ public class MDCLoggingTest extends PluggableActivitiTestCase {
   public void testLogger() {
     setCustomLogger();
 
-    try {
-      runtimeService.startProcessInstanceByKey("testLoggerProcess");
-      fail("Expected exception");
-    } catch (Exception e) {
-      // expected exception
-    }
+    assertThatExceptionOfType(Exception.class)
+      .isThrownBy(() -> runtimeService.startProcessInstanceByKey("testLoggerProcess"));
     String messages = console.toString();
 
     assertThat(messages.contains("ProcessDefinitionId=" + TestService.processDefinitionId)).isTrue();
@@ -62,12 +59,8 @@ public class MDCLoggingTest extends PluggableActivitiTestCase {
     console.clear();
     unsetCustomLogger();
 
-    try {
-      runtimeService.startProcessInstanceByKey("testLoggerProcess");
-      fail("Expected exception");
-    } catch (Exception e) {
-      // expected exception
-    }
+    assertThatExceptionOfType(Exception.class)
+      .isThrownBy(() -> runtimeService.startProcessInstanceByKey("testLoggerProcess"));
     assertThat(console.toString().contains("ProcessDefinitionId=" + TestService.processDefinitionId)).isFalse();
   }
 }

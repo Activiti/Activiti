@@ -14,6 +14,7 @@
 package org.activiti.engine.test.bpmn.subprocess.adhoc;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -171,12 +172,9 @@ public class AdhocSubProcessTest extends PluggableActivitiTestCase {
     Task subProcessTask = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
     assertThat(subProcessTask.getName()).isEqualTo("Task in subprocess");
 
-    try {
-      runtimeService.executeActivityInAdhocSubProcess(execution.getId(), "subProcessTask2");
-      fail("exception expected because can only enable one activity in a sequential ad-hoc sub process");
-    } catch (ActivitiException e) {
-      // expected
-    }
+    assertThatExceptionOfType(ActivitiException.class)
+      .as("exception expected because can only enable one activity in a sequential ad-hoc sub process")
+      .isThrownBy(() -> runtimeService.executeActivityInAdhocSubProcess(execution.getId(), "subProcessTask2"));
 
     taskService.complete(subProcessTask.getId());
 
@@ -215,12 +213,9 @@ public class AdhocSubProcessTest extends PluggableActivitiTestCase {
 
     taskService.complete(subProcessTask.getId());
 
-    try {
-      runtimeService.executeActivityInAdhocSubProcess(execution.getId(), "subProcessTask2");
-      fail("exception expected because can only enable one activity in a sequential ad-hoc sub process");
-    } catch (ActivitiException e) {
-      // expected
-    }
+    assertThatExceptionOfType(ActivitiException.class)
+      .as("exception expected because can only enable one activity in a sequential ad-hoc sub process")
+      .isThrownBy(() -> runtimeService.executeActivityInAdhocSubProcess(execution.getId(), "subProcessTask2"));
 
     subProcessTask = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
     assertThat(subProcessTask.getName()).isEqualTo("The next task");

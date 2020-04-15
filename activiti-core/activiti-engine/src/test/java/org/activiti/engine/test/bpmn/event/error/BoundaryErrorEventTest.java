@@ -21,18 +21,15 @@ import org.activiti.engine.delegate.BpmnError;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
-import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.impl.util.JvmUtil;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
 import static java.util.Collections.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Java6Assertions.catchThrowable;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 /**
-
-
  */
 public class BoundaryErrorEventTest extends PluggableActivitiTestCase {
 
@@ -51,39 +48,39 @@ public class BoundaryErrorEventTest extends PluggableActivitiTestCase {
   }
 
   public void testThrowErrorWithEmptyErrorCode() {
-    Throwable throwable = catchThrowable(() -> repositoryService
-            .createDeployment()
-            .addClasspathResource("org/activiti/engine/test/bpmn/event/error/BoundaryErrorEventTest.testThrowErrorWithEmptyErrorCode.bpmn20.xml")
-            .deploy());
-    assertThat(throwable).isInstanceOf(ActivitiException.class)
-            .hasMessageContaining("activiti-error-missing-error-code");
+    assertThatExceptionOfType(ActivitiException.class)
+        .isThrownBy(() -> repositoryService
+          .createDeployment()
+          .addClasspathResource("org/activiti/engine/test/bpmn/event/error/BoundaryErrorEventTest.testThrowErrorWithEmptyErrorCode.bpmn20.xml")
+          .deploy())
+        .withMessageContaining("activiti-error-missing-error-code");
   }
 
   public void testThrowErrorWithoutErrorCode() {
-    Throwable throwable = catchThrowable(() -> repositoryService
-            .createDeployment()
-            .addClasspathResource("org/activiti/engine/test/bpmn/event/error/BoundaryErrorEventTest.testThrowErrorWithoutErrorCode.bpmn20.xml")
-            .deploy());
-    assertThat(throwable).isInstanceOf(ActivitiException.class)
-            .hasMessageContaining("activiti-error-missing-error-code");
+    assertThatExceptionOfType(ActivitiException.class)
+      .isThrownBy(() -> repositoryService
+        .createDeployment()
+        .addClasspathResource("org/activiti/engine/test/bpmn/event/error/BoundaryErrorEventTest.testThrowErrorWithoutErrorCode.bpmn20.xml")
+        .deploy())
+      .withMessageContaining("activiti-error-missing-error-code");
   }
 
   public void testCatchErrorOnEmbeddedSubprocessWithEmptyErrorCode() {
-    Throwable throwable = catchThrowable(() -> repositoryService
-            .createDeployment()
-            .addClasspathResource("org/activiti/engine/test/bpmn/event/error/BoundaryErrorEventTest.testCatchErrorOnEmbeddedSubprocessWithEmptyErrorCode.bpmn20.xml")
-            .deploy());
-    assertThat(throwable).isInstanceOf(ActivitiException.class)
-            .hasMessageContaining("activiti-error-missing-error-code");
+    assertThatExceptionOfType(ActivitiException.class)
+      .isThrownBy(() -> repositoryService
+        .createDeployment()
+        .addClasspathResource("org/activiti/engine/test/bpmn/event/error/BoundaryErrorEventTest.testCatchErrorOnEmbeddedSubprocessWithEmptyErrorCode.bpmn20.xml")
+        .deploy())
+      .withMessageContaining("activiti-error-missing-error-code");
   }
 
   public void testCatchErrorOnEmbeddedSubprocessWithoutErrorCode() {
-    Throwable throwable = catchThrowable(() -> repositoryService
-            .createDeployment()
-            .addClasspathResource("org/activiti/engine/test/bpmn/event/error/BoundaryErrorEventTest.testCatchErrorOnEmbeddedSubprocessWithoutErrorCode.bpmn20.xml")
-            .deploy());
-    assertThat(throwable).isInstanceOf(ActivitiException.class)
-            .hasMessageContaining("activiti-error-missing-error-code");
+    assertThatExceptionOfType(ActivitiException.class)
+      .isThrownBy(() -> repositoryService
+        .createDeployment()
+        .addClasspathResource("org/activiti/engine/test/bpmn/event/error/BoundaryErrorEventTest.testCatchErrorOnEmbeddedSubprocessWithoutErrorCode.bpmn20.xml")
+        .deploy())
+      .withMessageContaining("activiti-error-missing-error-code");
   }
 
   @Deployment
@@ -217,13 +214,10 @@ public class BoundaryErrorEventTest extends PluggableActivitiTestCase {
     Task task = taskService.createTaskQuery().singleResult();
     assertThat(task.getName()).isEqualTo("Task in subprocess");
 
-    try {
-      // Completing the task will reach the end error event, which is never caught in the process
-      taskService.complete(task.getId());
-      fail("No catching boundary event found for error with errorCode 'myError', neither in same process nor in parent process but no Exception is thrown");
-    } catch (BpmnError e) {
-      assertThat(e.getMessage()).contains("No catching boundary event found for error with errorCode 'myError', neither in same process nor in parent process");
-    }
+    // Completing the task will reach the end error event, which is never caught in the process
+    assertThatExceptionOfType(BpmnError.class)
+        .isThrownBy(() -> taskService.complete(task.getId()))
+        .withMessageContaining("No catching boundary event found for error with errorCode 'myError', neither in same process nor in parent process");
   }
 
   @Deployment(resources = { "org/activiti/engine/test/bpmn/event/error/BoundaryErrorEventTest.testUncaughtErrorOnCallActivity-parent.bpmn20.xml",
@@ -394,13 +388,10 @@ public class BoundaryErrorEventTest extends PluggableActivitiTestCase {
 
   @Deployment(resources = { "org/activiti/engine/test/bpmn/event/error/BoundaryErrorEventTest.testUncaughtErrorOnScriptTask.bpmn20.xml" })
   public void testUncaughtErrorOnScriptTask() {
-    try {
-      String procId = runtimeService.startProcessInstanceByKey("uncaughtErrorOnScriptTask").getId();
-      fail("The script throws error event with errorCode 'errorUncaught', but no catching boundary event was defined. An exception is expected which did not occur");
-      assertProcessEnded(procId);
-    } catch (BpmnError e) {
-      assertThat(e.getMessage()).contains("No catching boundary event found for error with errorCode 'errorUncaught', neither in same process nor in parent process");
-    }
+    assertThatExceptionOfType(BpmnError.class)
+      .as("The script throws error event with errorCode 'errorUncaught', but no catching boundary event was defined. An exception is expected which did not occur")
+      .isThrownBy(() -> runtimeService.startProcessInstanceByKey("uncaughtErrorOnScriptTask").getId())
+      .withMessageContaining("No catching boundary event found for error with errorCode 'errorUncaught', neither in same process nor in parent process");
   }
 
   @Deployment

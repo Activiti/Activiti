@@ -17,7 +17,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectOutputStream;
 import java.util.Date;
@@ -38,8 +37,6 @@ import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.test.Deployment;
 
 /**
-
-
  */
 public class RepositoryServiceTest extends PluggableActivitiTestCase {
 
@@ -76,53 +73,33 @@ public class RepositoryServiceTest extends PluggableActivitiTestCase {
 
     runtimeService.startProcessInstanceById(processDefinition.getId());
 
-    // Try to delete the deployment
-    try {
-      repositoryService.deleteDeployment(processDefinition.getDeploymentId());
-      fail("Exception expected");
-    } catch (RuntimeException ae) {
-      // Exception expected when deleting deployment with running process
-    }
+    // Exception expected when deleting deployment with running process
+    assertThatExceptionOfType(RuntimeException.class)
+      .isThrownBy(() -> repositoryService.deleteDeployment(processDefinition.getDeploymentId()));
   }
 
   public void testDeleteDeploymentNullDeploymentId() {
-    try {
-      repositoryService.deleteDeployment(null);
-      fail("ActivitiException expected");
-    } catch (ActivitiIllegalArgumentException ae) {
-      assertThat(ae.getMessage()).contains("deploymentId is null");
-    }
+    assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
+      .isThrownBy(() -> repositoryService.deleteDeployment(null))
+      .withMessageContaining("deploymentId is null");
   }
 
   public void testDeleteDeploymentCascadeNullDeploymentId() {
-    try {
-      repositoryService.deleteDeployment(null, true);
-      fail("ActivitiException expected");
-    } catch (ActivitiIllegalArgumentException ae) {
-      assertThat(ae.getMessage()).contains("deploymentId is null");
-    }
+    assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
+      .isThrownBy(() -> repositoryService.deleteDeployment(null, true))
+      .withMessageContaining("deploymentId is null");
   }
 
   public void testDeleteDeploymentNonExistentDeploymentId() {
-    try {
-      repositoryService.deleteDeployment("foobar");
-      fail("ActivitiException expected");
-    } catch (ActivitiObjectNotFoundException ae) {
-      assertThat(ae.getMessage()).contains("Could not find a deployment with id 'foobar'.");
-    } catch (Throwable t) {
-      fail("Unexpected exception: " + t);
-    }
+    assertThatExceptionOfType(ActivitiObjectNotFoundException.class)
+      .isThrownBy(() -> repositoryService.deleteDeployment("foobar"))
+      .withMessageContaining("Could not find a deployment with id 'foobar'.");
   }
 
   public void testDeleteDeploymentCascadeNonExistentDeploymentId() {
-    try {
-      repositoryService.deleteDeployment("foobar", true);
-      fail("ActivitiException expected");
-    } catch (ActivitiObjectNotFoundException ae) {
-      assertThat(ae.getMessage()).contains("Could not find a deployment with id 'foobar'.");
-    } catch (Throwable t) {
-      fail("Unexpected exception: " + t);
-    }
+    assertThatExceptionOfType(ActivitiObjectNotFoundException.class)
+      .isThrownBy(() -> repositoryService.deleteDeployment("foobar", true))
+      .withMessageContaining("Could not find a deployment with id 'foobar'.");
   }
 
   @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
@@ -138,12 +115,9 @@ public class RepositoryServiceTest extends PluggableActivitiTestCase {
   }
 
   public void testFindDeploymentResourceNamesNullDeploymentId() {
-    try {
-      repositoryService.getDeploymentResourceNames(null);
-      fail("ActivitiException expected");
-    } catch (ActivitiIllegalArgumentException ae) {
-      assertThat(ae.getMessage()).contains("deploymentId is null");
-    }
+    assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
+      .isThrownBy(() -> repositoryService.getDeploymentResourceNames(null))
+      .withMessageContaining("deploymentId is null");
   }
 
   public void testDeploymentWithDelayedProcessDefinitionActivation() {
@@ -190,41 +164,29 @@ public class RepositoryServiceTest extends PluggableActivitiTestCase {
     // Get hold of the deployment id
     org.activiti.engine.repository.Deployment deployment = repositoryService.createDeploymentQuery().singleResult();
 
-    try {
-      repositoryService.getResourceAsStream(deployment.getId(), "org/activiti/engine/test/api/unexistingProcess.bpmn.xml");
-      fail("ActivitiException expected");
-    } catch (ActivitiObjectNotFoundException ae) {
-      assertThat(ae.getMessage()).contains("no resource found with name");
-      assertThat(ae.getObjectClass()).isEqualTo(InputStream.class);
-    }
+    assertThatExceptionOfType(ActivitiObjectNotFoundException.class)
+      .isThrownBy(() -> repositoryService.getResourceAsStream(deployment.getId(), "org/activiti/engine/test/api/unexistingProcess.bpmn.xml"))
+      .withMessageContaining("no resource found with name")
+      .satisfies(ae -> assertThat(ae.getObjectClass()).isEqualTo(InputStream.class));
   }
 
   @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
   public void testGetResourceAsStreamUnexistingDeployment() {
 
-    try {
-      repositoryService.getResourceAsStream("unexistingdeployment", "org/activiti/engine/test/api/unexistingProcess.bpmn.xml");
-      fail("ActivitiException expected");
-    } catch (ActivitiObjectNotFoundException ae) {
-      assertThat(ae.getMessage()).contains("deployment does not exist");
-      assertThat(ae.getObjectClass()).isEqualTo(org.activiti.engine.repository.Deployment.class);
-    }
+    assertThatExceptionOfType(ActivitiObjectNotFoundException.class)
+      .isThrownBy(() -> repositoryService.getResourceAsStream("unexistingdeployment", "org/activiti/engine/test/api/unexistingProcess.bpmn.xml"))
+      .withMessageContaining("deployment does not exist")
+      .satisfies(ae -> assertThat(ae.getObjectClass()).isEqualTo(org.activiti.engine.repository.Deployment.class));
   }
 
   public void testGetResourceAsStreamNullArguments() {
-    try {
-      repositoryService.getResourceAsStream(null, "resource");
-      fail("ActivitiException expected");
-    } catch (ActivitiIllegalArgumentException ae) {
-      assertThat(ae.getMessage()).contains("deploymentId is null");
-    }
+    assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
+      .isThrownBy(() -> repositoryService.getResourceAsStream(null, "resource"))
+      .withMessageContaining("deploymentId is null");
 
-    try {
-      repositoryService.getResourceAsStream("deployment", null);
-      fail("ActivitiException expected");
-    } catch (ActivitiIllegalArgumentException ae) {
-      assertThat(ae.getMessage()).contains("resourceName is null");
-    }
+    assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
+      .isThrownBy(() -> repositoryService.getResourceAsStream("deployment", null))
+      .withMessageContaining("resourceName is null");
   }
 
   public void testNewModelPersistence() {

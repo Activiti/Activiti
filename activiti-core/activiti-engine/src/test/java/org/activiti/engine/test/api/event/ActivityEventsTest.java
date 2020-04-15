@@ -13,6 +13,7 @@
 package org.activiti.engine.test.api.event;
 
 import static java.util.Collections.singletonMap;
+import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 
@@ -20,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import java.util.stream.Collectors;
 import org.activiti.engine.delegate.event.ActivitiActivityCancelledEvent;
 import org.activiti.engine.delegate.event.ActivitiActivityEvent;
 import org.activiti.engine.delegate.event.ActivitiErrorEvent;
@@ -425,26 +427,22 @@ public class ActivityEventsTest extends PluggableActivitiTestCase {
     ProcessInstance afterErrorInstance = runtimeService.createProcessInstanceQuery().processInstanceId(processInstance.getId()).singleResult();
     assertThat(afterErrorInstance).isNull();
 
-    ActivitiErrorEvent errorEvent = null;
+    List<ActivitiErrorEvent> errorEvents = listener.getEventsReceived().stream()
+        .filter(ActivitiErrorEvent.class::isInstance)
+        .map(ActivitiErrorEvent.class::cast)
+        .collect(toList());
 
-    for (ActivitiEvent event : listener.getEventsReceived()) {
-      if (event instanceof ActivitiErrorEvent) {
-        if (errorEvent == null) {
-          errorEvent = (ActivitiErrorEvent) event;
-        } else {
-          fail("Only one ActivityErrorEvent expected");
-        }
-      }
-    }
+    assertThat(errorEvents).as("Only one ActivityErrorEvent expected").hasSize(1);
 
-    assertThat(errorEvent).isNotNull();
+    ActivitiErrorEvent errorEvent = errorEvents.get(0);
+
     assertThat(errorEvent.getType()).isEqualTo(ActivitiEventType.ACTIVITY_ERROR_RECEIVED);
     assertThat(errorEvent.getActivityId()).isEqualTo("catchError");
     assertThat(errorEvent.getErrorId()).isEqualTo("myError");
     assertThat(errorEvent.getErrorCode()).isEqualTo("123");
     assertThat(errorEvent.getProcessInstanceId()).isEqualTo(processInstance.getId());
     assertThat(errorEvent.getProcessDefinitionId()).isEqualTo(processInstance.getProcessDefinitionId());
-    assertThat(processInstance.getId().equals(errorEvent.getExecutionId())).isFalse();
+    assertThat(errorEvent.getExecutionId()).isNotEqualTo(processInstance.getId());
   }
 
   /**
@@ -459,26 +457,22 @@ public class ActivityEventsTest extends PluggableActivitiTestCase {
     ProcessInstance afterErrorInstance = runtimeService.createProcessInstanceQuery().processInstanceId(processInstance.getId()).singleResult();
     assertThat(afterErrorInstance).isNull();
 
-    ActivitiErrorEvent errorEvent = null;
+    List<ActivitiErrorEvent> errorEvents = listener.getEventsReceived().stream()
+      .filter(ActivitiErrorEvent.class::isInstance)
+      .map(ActivitiErrorEvent.class::cast)
+      .collect(toList());
 
-    for (ActivitiEvent event : listener.getEventsReceived()) {
-      if (event instanceof ActivitiErrorEvent) {
-        if (errorEvent == null) {
-          errorEvent = (ActivitiErrorEvent) event;
-        } else {
-          fail("Only one ActivityErrorEvent expected");
-        }
-      }
-    }
+    assertThat(errorEvents).as("Only one ActivityErrorEvent expected").hasSize(1);
 
-    assertThat(errorEvent).isNotNull();
+    ActivitiErrorEvent errorEvent = errorEvents.get(0);
+
     assertThat(errorEvent.getType()).isEqualTo(ActivitiEventType.ACTIVITY_ERROR_RECEIVED);
     assertThat(errorEvent.getActivityId()).isEqualTo("catchError");
     assertThat(errorEvent.getErrorId()).isEqualTo("23");
     assertThat(errorEvent.getErrorCode()).isEqualTo("23");
     assertThat(errorEvent.getProcessInstanceId()).isEqualTo(processInstance.getId());
     assertThat(errorEvent.getProcessDefinitionId()).isEqualTo(processInstance.getProcessDefinitionId());
-    assertThat(processInstance.getId().equals(errorEvent.getExecutionId())).isFalse();
+    assertThat(errorEvent.getExecutionId()).isNotEqualTo(processInstance.getId());
   }
 
   @Deployment(resources = "org/activiti/engine/test/api/event/JobEventsTest.testJobEntityEvents.bpmn20.xml")

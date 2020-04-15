@@ -14,6 +14,7 @@
 package org.activiti.engine.test.bpmn.gateway;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.util.Date;
 
@@ -151,15 +152,9 @@ public class EventBasedGatewayTest extends PluggableActivitiTestCase {
     }
 
     public void testConnectedToActivity() {
-
-        try {
-            repositoryService.createDeployment().addClasspathResource("org/activiti/engine/test/bpmn/gateway/EventBasedGatewayTest.testConnectedToActivity.bpmn20.xml").deploy();
-            fail("exception expected");
-        } catch (Exception e) {
-            if (!e.getMessage().contains("Event based gateway can only be connected to elements of type intermediateCatchEvent")) {
-                fail("different exception expected");
-            }
-        }
+        assertThatExceptionOfType(Exception.class)
+            .isThrownBy(() -> repositoryService.createDeployment().addClasspathResource("org/activiti/engine/test/bpmn/gateway/EventBasedGatewayTest.testConnectedToActivity.bpmn20.xml").deploy())
+            .withMessageContaining("Event based gateway can only be connected to elements of type intermediateCatchEvent");
     }
 
     @Deployment

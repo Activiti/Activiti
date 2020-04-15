@@ -441,22 +441,14 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
     }
 
     public void testSaveTaskNullTask() {
-        try {
-            taskService.saveTask(null);
-            fail("ActivitiException expected");
-        } catch (ActivitiIllegalArgumentException ae) {
-            assertTextPresent("task is null",
-                              ae.getMessage());
-        }
+        assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
+            .isThrownBy(() -> taskService.saveTask(null))
+            .withMessageContaining("task is null");
     }
 
     public void testDeleteTaskNullTaskId() {
-        try {
-            taskService.deleteTask(null);
-            fail("ActivitiException expected");
-        } catch (ActivitiIllegalArgumentException ae) {
-            // Expected exception
-        }
+        assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
+            .isThrownBy(() -> taskService.deleteTask(null));
     }
 
     public void testDeleteTaskUnexistingTaskId() {
@@ -465,12 +457,8 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
     }
 
     public void testDeleteTasksNullTaskIds() {
-        try {
-            taskService.deleteTasks(null);
-            fail("ActivitiException expected");
-        } catch (ActivitiIllegalArgumentException ae) {
-            // Expected exception
-        }
+        assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
+            .isThrownBy(() -> taskService.deleteTasks(null));
     }
 
     public void testDeleteTasksTaskIdsUnexistingTaskId() {
@@ -478,12 +466,8 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
         Task existingTask = taskService.newTask();
         taskService.saveTask(existingTask);
 
-        // The unexisting taskId's should be silently ignored. Existing task
-        // should
-        // have been deleted.
-        taskService.deleteTasks(asList("unexistingtaskid1",
-                                              existingTask.getId()),
-                                true);
+        // The unexisting taskId's should be silently ignored. Existing task should have been deleted.
+        taskService.deleteTasks(asList("unexistingtaskid1", existingTask.getId()), true);
 
         existingTask = taskService.createTaskQuery().taskId(existingTask.getId()).singleResult();
         assertThat(existingTask).isNull();
@@ -526,28 +510,16 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
     }
 
     public void testClaimNullArguments() {
-        try {
-            taskService.claim(null,
-                              "userid");
-            fail("ActivitiException expected");
-        } catch (ActivitiIllegalArgumentException ae) {
-            assertTextPresent("taskId is null",
-                              ae.getMessage());
-        }
+        assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
+            .isThrownBy(() -> taskService.claim(null, "userid"))
+            .withMessageContaining("taskId is null");
     }
 
     public void testClaimUnexistingTaskId() {
-
-        try {
-            taskService.claim("unexistingtaskid",
-                              "user");
-            fail("ActivitiException expected");
-        } catch (ActivitiObjectNotFoundException ae) {
-            assertTextPresent("Cannot find task with id unexistingtaskid",
-                              ae.getMessage());
-            assertEquals(Task.class,
-                         ae.getObjectClass());
-        }
+        assertThatExceptionOfType(ActivitiObjectNotFoundException.class)
+            .isThrownBy(() -> taskService.claim("unexistingtaskid", "user"))
+            .withMessageContaining("Cannot find task with id unexistingtaskid")
+            .satisfies(ae -> assertEquals(Task.class, ae.getObjectClass()));
     }
 
     public void testClaimAlreadyClaimedTaskByOtherUser() {
@@ -555,20 +527,13 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
         taskService.saveTask(task);
 
         // Claim task the first time
-        taskService.claim(task.getId(),
-                          "firstuser");
+        taskService.claim(task.getId(), "firstuser");
 
-        try {
-            taskService.claim(task.getId(),
-                              "seconduser");
-            fail("ActivitiException expected");
-        } catch (ActivitiTaskAlreadyClaimedException ae) {
-            assertTextPresent("Task '" + task.getId() + "' is already claimed by someone else.",
-                              ae.getMessage());
-        }
+        assertThatExceptionOfType(ActivitiTaskAlreadyClaimedException.class)
+            .isThrownBy(() -> taskService.claim(task.getId(), "seconduser"))
+            .withMessageContaining("Task '" + task.getId() + "' is already claimed by someone else.");
 
-        taskService.deleteTask(task.getId(),
-                               true);
+        taskService.deleteTask(task.getId(), true);
     }
 
     public void testClaimAlreadyClaimedTaskBySameUser() {
@@ -576,17 +541,13 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
         taskService.saveTask(task);
 
         // Claim task the first time
-        taskService.claim(task.getId(),
-                          "user");
+        taskService.claim(task.getId(), "user");
         task = taskService.createTaskQuery().taskId(task.getId()).singleResult();
 
-        // Claim the task again with the same user. No exception should be
-        // thrown
-        taskService.claim(task.getId(),
-                          "user");
+        // Claim the task again with the same user. No exception should be thrown
+        taskService.claim(task.getId(), "user");
 
-        taskService.deleteTask(task.getId(),
-                               true);
+        taskService.deleteTask(task.getId(), true);
     }
 
     public void testUnClaimTask() {
@@ -594,11 +555,9 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
         taskService.saveTask(task);
 
         // Claim task the first time
-        taskService.claim(task.getId(),
-                          "user");
+        taskService.claim(task.getId(), "user");
         task = taskService.createTaskQuery().taskId(task.getId()).singleResult();
-        assertEquals("user",
-                     task.getAssignee());
+        assertEquals("user", task.getAssignee());
 
         // Unclaim the task
         taskService.unclaim(task.getId());
@@ -606,52 +565,33 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
         task = taskService.createTaskQuery().taskId(task.getId()).singleResult();
         assertThat(task.getAssignee()).isNull();
 
-        taskService.deleteTask(task.getId(),
-                               true);
+        taskService.deleteTask(task.getId(), true);
     }
 
     public void testCompleteTaskNullTaskId() {
-        try {
-            taskService.complete(null);
-            fail("ActivitiException expected");
-        } catch (ActivitiIllegalArgumentException ae) {
-            assertTextPresent("taskId is null",
-                              ae.getMessage());
-        }
+        assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
+            .isThrownBy(() -> taskService.complete(null))
+            .withMessageContaining("taskId is null");
     }
 
     public void testCompleteTaskUnexistingTaskId() {
-        try {
-            taskService.complete("unexistingtask");
-            fail("ActivitiException expected");
-        } catch (ActivitiObjectNotFoundException ae) {
-            assertTextPresent("Cannot find task with id unexistingtask",
-                              ae.getMessage());
-            assertEquals(Task.class,
-                         ae.getObjectClass());
-        }
+        assertThatExceptionOfType(ActivitiObjectNotFoundException.class)
+            .isThrownBy(() -> taskService.complete("unexistingtask"))
+            .withMessageContaining("Cannot find task with id unexistingtask")
+            .satisfies(ae -> assertEquals(Task.class, ae.getObjectClass()));
     }
 
     public void testCompleteTaskWithParametersNullTaskId() {
-        try {
-            taskService.complete(null);
-            fail("ActivitiException expected");
-        } catch (ActivitiIllegalArgumentException ae) {
-            assertTextPresent("taskId is null",
-                              ae.getMessage());
-        }
+        assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
+            .isThrownBy(() -> taskService.complete(null))
+            .withMessageContaining("taskId is null");
     }
 
     public void testCompleteTaskWithParametersUnexistingTaskId() {
-        try {
-            taskService.complete("unexistingtask");
-            fail("ActivitiException expected");
-        } catch (ActivitiObjectNotFoundException ae) {
-            assertTextPresent("Cannot find task with id unexistingtask",
-                              ae.getMessage());
-            assertEquals(Task.class,
-                         ae.getObjectClass());
-        }
+        assertThatExceptionOfType(ActivitiObjectNotFoundException.class)
+            .isThrownBy(() -> taskService.complete("unexistingtask"))
+            .withMessageContaining("Cannot find task with id unexistingtask")
+            .satisfies(ae -> assertEquals(Task.class, ae.getObjectClass()));
     }
 
     public void testCompleteTaskWithParametersNullParameters() {
@@ -819,17 +759,10 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
     }
 
     public void testSetAssigneeUnexistingTask() {
-
-        try {
-            taskService.setAssignee("unexistingTaskId",
-                                    "user");
-            fail("ActivitiException expected");
-        } catch (ActivitiObjectNotFoundException ae) {
-            assertTextPresent("Cannot find task with id unexistingTaskId",
-                              ae.getMessage());
-            assertEquals(Task.class,
-                         ae.getObjectClass());
-        }
+        assertThatExceptionOfType(ActivitiObjectNotFoundException.class)
+            .isThrownBy(() -> taskService.setAssignee("unexistingTaskId", "user"))
+            .withMessageContaining("Cannot find task with id unexistingTaskId")
+            .satisfies(ae -> assertEquals(Task.class, ae.getObjectClass()));
     }
 
     public void testAddCandidateUserDuplicate() {
@@ -859,131 +792,67 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
     }
 
     public void testAddCandidateUserUnexistingTask() {
-
-        try {
-            taskService.addCandidateUser("unexistingTaskId",
-                                         "user");
-            fail("ActivitiException expected");
-        } catch (ActivitiObjectNotFoundException ae) {
-            assertTextPresent("Cannot find task with id unexistingTaskId",
-                              ae.getMessage());
-            assertEquals(Task.class,
-                         ae.getObjectClass());
-        }
+        assertThatExceptionOfType(ActivitiObjectNotFoundException.class)
+            .isThrownBy(() -> taskService.addCandidateUser("unexistingTaskId", "user"))
+            .withMessageContaining("Cannot find task with id unexistingTaskId")
+            .satisfies(ae -> assertEquals(Task.class, ae.getObjectClass()));
     }
 
     public void testAddCandidateGroupNullTaskId() {
-        try {
-            taskService.addCandidateGroup(null,
-                                          "groupId");
-            fail("ActivitiException expected");
-        } catch (ActivitiIllegalArgumentException ae) {
-            assertTextPresent("taskId is null",
-                              ae.getMessage());
-        }
+        assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
+            .isThrownBy(() -> taskService.addCandidateGroup(null, "groupId"))
+            .withMessageContaining("taskId is null");
     }
 
     public void testAddCandidateGroupNullGroupId() {
-        try {
-            taskService.addCandidateGroup("taskId",
-                                          null);
-            fail("ActivitiException expected");
-        } catch (ActivitiIllegalArgumentException ae) {
-            assertTextPresent("identityId is null",
-                              ae.getMessage());
-        }
+        assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
+            .isThrownBy(() -> taskService.addCandidateGroup("taskId", null))
+            .withMessageContaining("identityId is null");
     }
 
     public void testAddCandidateGroupUnexistingTask() {
-
-        try {
-            taskService.addCandidateGroup("unexistingTaskId",
-                                          "group");
-            fail("ActivitiException expected");
-        } catch (ActivitiObjectNotFoundException ae) {
-            assertTextPresent("Cannot find task with id unexistingTaskId",
-                              ae.getMessage());
-            assertEquals(Task.class,
-                         ae.getObjectClass());
-        }
+        assertThatExceptionOfType(ActivitiObjectNotFoundException.class)
+            .isThrownBy(() -> taskService.addCandidateGroup("unexistingTaskId", "group"))
+            .withMessageContaining("Cannot find task with id unexistingTaskId")
+            .satisfies(ae -> assertEquals(Task.class, ae.getObjectClass()));
     }
 
     public void testAddGroupIdentityLinkNullTaskId() {
-        try {
-            taskService.addGroupIdentityLink(null,
-                                             "groupId",
-                                             IdentityLinkType.CANDIDATE);
-            fail("ActivitiException expected");
-        } catch (ActivitiIllegalArgumentException ae) {
-            assertTextPresent("taskId is null",
-                              ae.getMessage());
-        }
+        assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
+            .isThrownBy(() -> taskService.addGroupIdentityLink(null, "groupId", IdentityLinkType.CANDIDATE))
+            .withMessageContaining("taskId is null");
     }
 
     public void testAddGroupIdentityLinkNullUserId() {
-        try {
-            taskService.addGroupIdentityLink("taskId",
-                                             null,
-                                             IdentityLinkType.CANDIDATE);
-            fail("ActivitiException expected");
-        } catch (ActivitiIllegalArgumentException ae) {
-            assertTextPresent("identityId is null",
-                              ae.getMessage());
-        }
+        assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
+            .isThrownBy(() -> taskService.addGroupIdentityLink("taskId", null, IdentityLinkType.CANDIDATE))
+            .withMessageContaining("identityId is null");
     }
 
     public void testAddGroupIdentityLinkUnexistingTask() {
-
-        try {
-            taskService.addGroupIdentityLink("unexistingTaskId",
-                                             "user",
-                                             IdentityLinkType.CANDIDATE);
-            fail("ActivitiException expected");
-        } catch (ActivitiObjectNotFoundException ae) {
-            assertTextPresent("Cannot find task with id unexistingTaskId",
-                              ae.getMessage());
-            assertEquals(Task.class,
-                         ae.getObjectClass());
-        }
+        assertThatExceptionOfType(ActivitiObjectNotFoundException.class)
+            .isThrownBy(() -> taskService.addGroupIdentityLink("unexistingTaskId", "user", IdentityLinkType.CANDIDATE))
+            .withMessageContaining("Cannot find task with id unexistingTaskId")
+            .satisfies(ae -> assertEquals(Task.class, ae.getObjectClass()));
     }
 
     public void testAddUserIdentityLinkNullTaskId() {
-        try {
-            taskService.addUserIdentityLink(null,
-                                            "userId",
-                                            IdentityLinkType.CANDIDATE);
-            fail("ActivitiException expected");
-        } catch (ActivitiIllegalArgumentException ae) {
-            assertTextPresent("taskId is null",
-                              ae.getMessage());
-        }
+        assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
+            .isThrownBy(() -> taskService.addUserIdentityLink(null, "userId", IdentityLinkType.CANDIDATE))
+            .withMessageContaining("taskId is null");
     }
 
     public void testAddUserIdentityLinkNullUserId() {
-        try {
-            taskService.addUserIdentityLink("taskId",
-                                            null,
-                                            IdentityLinkType.CANDIDATE);
-            fail("ActivitiException expected");
-        } catch (ActivitiIllegalArgumentException ae) {
-            assertTextPresent("identityId is null",
-                              ae.getMessage());
-        }
+        assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
+            .isThrownBy(() -> taskService.addUserIdentityLink("taskId", null, IdentityLinkType.CANDIDATE))
+            .withMessageContaining("identityId is null");
     }
 
     public void testAddUserIdentityLinkUnexistingTask() {
-
-        try {
-            taskService.addUserIdentityLink("unexistingTaskId",
-                                            "user",
-                                            IdentityLinkType.CANDIDATE);
-            fail("ActivitiException expected");
-        } catch (ActivitiObjectNotFoundException ae) {
-            assertTextPresent("Cannot find task with id unexistingTaskId",
-                              ae.getMessage());
-            assertEquals(Task.class,
-                         ae.getObjectClass());
-        }
+        assertThatExceptionOfType(ActivitiObjectNotFoundException.class)
+            .isThrownBy(() -> taskService.addUserIdentityLink("unexistingTaskId", "user", IdentityLinkType.CANDIDATE))
+            .withMessageContaining("Cannot find task with id unexistingTaskId")
+            .satisfies(ae -> assertEquals(Task.class, ae.getObjectClass()));
     }
 
     public void testGetIdentityLinksWithCandidateUser() {
@@ -991,20 +860,15 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
         taskService.saveTask(task);
         String taskId = task.getId();
 
-        taskService.addCandidateUser(taskId,
-                                     "kermit");
+        taskService.addCandidateUser(taskId, "kermit");
         List<IdentityLink> identityLinks = taskService.getIdentityLinksForTask(taskId);
-        assertEquals(1,
-                     identityLinks.size());
-        assertEquals("kermit",
-                     identityLinks.get(0).getUserId());
+        assertEquals(1, identityLinks.size());
+        assertEquals("kermit", identityLinks.get(0).getUserId());
         assertThat(identityLinks.get(0).getGroupId()).isNull();
-        assertEquals(IdentityLinkType.CANDIDATE,
-                     identityLinks.get(0).getType());
+        assertEquals(IdentityLinkType.CANDIDATE, identityLinks.get(0).getType());
 
         // cleanup
-        taskService.deleteTask(taskId,
-                               true);
+        taskService.deleteTask(taskId, true);
     }
 
     public void testGetIdentityLinksWithCandidateGroup() {
@@ -1152,27 +1016,16 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
     }
 
     public void testSetPriorityUnexistingTaskId() {
-        try {
-            taskService.setPriority("unexistingtask",
-                                    12345);
-            fail("ActivitiException expected");
-        } catch (ActivitiObjectNotFoundException ae) {
-            assertTextPresent("Cannot find task with id unexistingtask",
-                              ae.getMessage());
-            assertEquals(Task.class,
-                         ae.getObjectClass());
-        }
+        assertThatExceptionOfType(ActivitiObjectNotFoundException.class)
+            .isThrownBy(() -> taskService.setPriority("unexistingtask", 12345))
+            .withMessageContaining("Cannot find task with id unexistingtask")
+            .satisfies(ae -> assertEquals(Task.class, ae.getObjectClass()));
     }
 
     public void testSetPriorityNullTaskId() {
-        try {
-            taskService.setPriority(null,
-                                    12345);
-            fail("ActivitiException expected");
-        } catch (ActivitiIllegalArgumentException ae) {
-            assertTextPresent("taskId is null",
-                              ae.getMessage());
-        }
+        assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
+            .isThrownBy(() -> taskService.setPriority(null, 12345))
+            .withMessageContaining("taskId is null");
     }
 
     public void testSetDueDate() {
@@ -1201,25 +1054,15 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
     }
 
     public void testSetDueDateUnexistingTaskId() {
-        try {
-            taskService.setDueDate("unexistingtask",
-                                   new Date());
-            fail("ActivitiException expected");
-        } catch (ActivitiException ae) {
-            assertTextPresent("Cannot find task with id unexistingtask",
-                              ae.getMessage());
-        }
+        assertThatExceptionOfType(ActivitiException.class)
+            .isThrownBy(() -> taskService.setDueDate("unexistingtask", new Date()))
+            .withMessageContaining("Cannot find task with id unexistingtask");
     }
 
     public void testSetDueDateNullTaskId() {
-        try {
-            taskService.setDueDate(null,
-                                   new Date());
-            fail("ActivitiException expected");
-        } catch (ActivitiException ae) {
-            assertTextPresent("taskId is null",
-                              ae.getMessage());
-        }
+        assertThatExceptionOfType(ActivitiException.class)
+            .isThrownBy(() -> taskService.setDueDate(null, new Date()))
+            .withMessageContaining("taskId is null");
     }
 
     /**
@@ -1393,14 +1236,9 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
     }
 
     public void testRemoveVariableLocalNullTaskId() {
-        try {
-            taskService.removeVariableLocal(null,
-                                            "variable");
-            fail("ActivitiException expected");
-        } catch (ActivitiIllegalArgumentException ae) {
-            assertTextPresent("taskId is null",
-                              ae.getMessage());
-        }
+        assertThatExceptionOfType(ActivitiException.class)
+            .isThrownBy(() -> taskService.removeVariableLocal(null, "variable"))
+            .withMessageContaining("taskId is null");
     }
 
     @Deployment(resources = {"org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml"})
@@ -1452,14 +1290,11 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
         task1.setDescription("test description one");
         taskService.saveTask(task1);
 
-        try {
-            task2.setDescription("test description two");
-            taskService.saveTask(task2);
-
-            fail("Expecting exception");
-        } catch (ActivitiOptimisticLockingException e) {
-            // Expected exception
-        }
+        assertThatExceptionOfType(ActivitiOptimisticLockingException.class)
+            .isThrownBy(() -> {
+                task2.setDescription("test description two");
+                taskService.saveTask(task2);
+            });
     }
 
     public void testDeleteTaskWithDeleteReason() {

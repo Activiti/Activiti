@@ -13,6 +13,7 @@
 package org.activiti.examples.task;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.util.HashMap;
 import java.util.List;
@@ -88,12 +89,9 @@ public class StandaloneTaskTest extends PluggableActivitiTestCase {
 
     // second modification on the initial instance
     task2.setDescription("second modification");
-    try {
-      taskService.saveTask(task2);
-      fail("should get an exception here as the task was modified by someone else.");
-    } catch (ActivitiOptimisticLockingException expected) {
-      // exception was thrown as expected
-    }
+    assertThatExceptionOfType(ActivitiOptimisticLockingException.class)
+      .as("should get an exception here as the task was modified by someone else.")
+      .isThrownBy(() -> taskService.saveTask(task2));
 
     taskService.deleteTask(taskId, true);
   }

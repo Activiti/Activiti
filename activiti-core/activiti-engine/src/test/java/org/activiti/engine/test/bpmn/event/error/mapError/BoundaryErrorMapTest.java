@@ -13,6 +13,7 @@
 package org.activiti.engine.test.bpmn.event.error.mapError;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,7 +25,6 @@ import org.activiti.engine.test.Deployment;
 import org.activiti.standalone.testing.helpers.ServiceTaskTestMock;
 
 /**
-
  */
 public class BoundaryErrorMapTest extends PluggableActivitiTestCase {
 
@@ -48,12 +48,10 @@ public class BoundaryErrorMapTest extends PluggableActivitiTestCase {
     vars.put("exceptionClass", JAXBException.class.getName());
     assertThat(ServiceTaskTestMock.CALL_COUNT.get()).isEqualTo(0);
 
-    try {
-      runtimeService.startProcessInstanceByKey("processWithSingleExceptionMap", vars);
-      fail("exception expected, as there is no matching exception map");
-    } catch (Exception e) {
-      assertThat(FlagDelegate.isVisited()).isFalse();
-    }
+    assertThatExceptionOfType(Exception.class)
+        .as("exception expected, as there is no matching exception map")
+        .isThrownBy(() -> runtimeService.startProcessInstanceByKey("processWithSingleExceptionMap", vars));
+    assertThat(FlagDelegate.isVisited()).isFalse();
   }
 
   // exception matches by inheritance

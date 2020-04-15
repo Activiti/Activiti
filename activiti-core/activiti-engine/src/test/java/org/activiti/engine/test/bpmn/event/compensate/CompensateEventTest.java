@@ -15,12 +15,12 @@ package org.activiti.engine.test.bpmn.event.compensate;
 
 import static java.util.Collections.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.history.HistoricActivityInstanceQuery;
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
-import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
@@ -29,7 +29,6 @@ import org.activiti.engine.test.EnableVerboseExecutionTreeLogging;
 import org.activiti.engine.test.bpmn.event.compensate.helper.SetVariablesDelegate;
 
 /**
-
  */
 @EnableVerboseExecutionTreeLogging
 public class CompensateEventTest extends PluggableActivitiTestCase {
@@ -156,22 +155,18 @@ public class CompensateEventTest extends PluggableActivitiTestCase {
   }
 
   public void testMultipleCompensationCatchEventsFails() {
-    try {
-      repositoryService.createDeployment().addClasspathResource("org/activiti/engine/test/bpmn/event/compensate/CompensateEventTest.testMultipleCompensationCatchEventsFails.bpmn20.xml").deploy();
-      fail("exception expected");
-    } catch (Exception e) {
-    }
+    assertThatExceptionOfType(Exception.class)
+      .isThrownBy(() -> repositoryService.createDeployment()
+        .addClasspathResource("org/activiti/engine/test/bpmn/event/compensate/CompensateEventTest.testMultipleCompensationCatchEventsFails.bpmn20.xml")
+        .deploy());
   }
 
   public void testInvalidActivityRefFails() {
-    try {
-      repositoryService.createDeployment().addClasspathResource("org/activiti/engine/test/bpmn/event/compensate/CompensateEventTest.testInvalidActivityRefFails.bpmn20.xml").deploy();
-      fail("exception expected");
-    } catch (Exception e) {
-      if (!e.getMessage().contains("Invalid attribute value for 'activityRef':")) {
-        fail("different exception expected");
-      }
-    }
+    assertThatExceptionOfType(Exception.class)
+      .isThrownBy(() -> repositoryService.createDeployment()
+        .addClasspathResource("org/activiti/engine/test/bpmn/event/compensate/CompensateEventTest.testInvalidActivityRefFails.bpmn20.xml")
+        .deploy())
+      .withMessageContaining("Invalid attribute value for 'activityRef':");
   }
 
   @Deployment(resources = { "org/activiti/engine/test/bpmn/event/compensate/CompensateEventTest.testCompensationStepEndRecorded.bpmn20.xml" })

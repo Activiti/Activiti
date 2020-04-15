@@ -10,28 +10,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.activiti.standalone.initialization;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.sql.SQLException;
-
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.impl.test.AbstractTestCase;
 
 /**
-
+ *
  */
 public class NoDbConnectionTest extends AbstractTestCase {
 
-  public void testNoDbConnection() {
-    try {
-      ProcessEngineConfiguration.createProcessEngineConfigurationFromResource("org/activiti/standalone/initialization/nodbconnection.activiti.cfg.xml").buildProcessEngine();
-      fail("expected exception");
-    } catch (RuntimeException e) {
-      assertThat(containsSqlException(e)).isTrue();
+    public void testNoDbConnection() {
+        assertThatExceptionOfType(RuntimeException.class)
+            .isThrownBy(() -> ProcessEngineConfiguration
+                .createProcessEngineConfigurationFromResource("org/activiti/standalone/initialization/nodbconnection.activiti.cfg.xml")
+                .buildProcessEngine())
+            .matches(this::containsSqlException);
     }
-  }
 
   private boolean containsSqlException(Throwable e) {
     if (e == null) {

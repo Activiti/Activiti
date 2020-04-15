@@ -18,7 +18,6 @@ import static java.util.Collections.unmodifiableMap;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -35,10 +34,6 @@ import org.activiti.engine.impl.variable.VariableType;
 import org.activiti.engine.impl.variable.VariableTypes;
 
 /**
-
-
-
-
  */
 public abstract class VariableScopeImpl extends AbstractEntity implements Serializable, VariableScope {
 

@@ -14,6 +14,7 @@
 package org.activiti.standalone.el;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import javax.el.PropertyNotFoundException;
 
@@ -40,14 +41,9 @@ public class ExpressionBeanAccessTest extends ResourceActivitiTestCase {
 
     // After signaling, an expression tries to use a bean that is present in
     // the configuration but is not added to the beans-list
-    try {
-      runtimeService.trigger(runtimeService.createExecutionQuery().processInstanceId(pi.getId()).onlyChildExecutions().singleResult().getId());
-      fail("Exception expected");
-    } catch (ActivitiException ae) {
-      assertThat(ae.getCause()).isNotNull();
-      assertThat(ae.getCause()).isInstanceOf(RuntimeException.class);
-      RuntimeException runtimeException = (RuntimeException) ae.getCause();
-      assertThat(runtimeException.getCause()).isInstanceOf(PropertyNotFoundException.class);
-    }
+    assertThatExceptionOfType(ActivitiException.class)
+      .isThrownBy(() -> runtimeService.trigger(runtimeService.createExecutionQuery().processInstanceId(pi.getId()).onlyChildExecutions().singleResult().getId()))
+      .withCauseInstanceOf(RuntimeException.class)
+      .withRootCauseInstanceOf(PropertyNotFoundException.class);
   }
 }

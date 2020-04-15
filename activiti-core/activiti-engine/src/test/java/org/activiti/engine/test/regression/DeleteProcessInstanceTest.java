@@ -1,6 +1,7 @@
 package org.activiti.engine.test.regression;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -78,35 +79,27 @@ public class DeleteProcessInstanceTest extends PluggableActivitiTestCase {
     assertThat(executionJava.isEnded()).isFalse();
 
     // Try to execute job 3 times
-    Job jobJava = managementService.createJobQuery().processInstanceId(instanceJava.getId()).singleResult();
-    assertThat(jobJava).isNotNull();
+    Job jobJavaForException = managementService.createJobQuery().processInstanceId(instanceJava.getId()).singleResult();
+    assertThat(jobJavaForException).isNotNull();
 
-    try {
-      managementService.executeJob(jobJava.getId());
-      fail("Expected exception");
-    } catch (Exception e) {
-      // expected
-    }
+    assertThatExceptionOfType(Exception.class)
+      .isThrownBy(() -> managementService.executeJob(jobJavaForException.getId()));
 
-    try {
-      managementService.moveTimerToExecutableJob(jobJava.getId());
-      managementService.executeJob(jobJava.getId());
-      fail("Expected exception");
-    } catch (Exception e) {
-      // expected
-    }
+    assertThatExceptionOfType(Exception.class)
+      .isThrownBy(() -> {
+        managementService.moveTimerToExecutableJob(jobJavaForException.getId());
+        managementService.executeJob(jobJavaForException.getId());
+      });
 
-    try {
-      managementService.moveTimerToExecutableJob(jobJava.getId());
-      managementService.executeJob(jobJava.getId());
-      fail("Expected exception");
-    } catch (Exception e) {
-      // expected
-    }
+    assertThatExceptionOfType(Exception.class)
+      .isThrownBy(() -> {
+          managementService.moveTimerToExecutableJob(jobJavaForException.getId());
+          managementService.executeJob(jobJavaForException.getId());
+      });
 
     // Assert that there is a failed job.
     assertThat(managementService.createTimerJobQuery().processInstanceId(instanceJava.getId()).count()).isEqualTo(0);
-    jobJava = managementService.createDeadLetterJobQuery().processInstanceId(instanceJava.getId()).singleResult();
+    Job jobJava = managementService.createDeadLetterJobQuery().processInstanceId(instanceJava.getId()).singleResult();
     assertThat(jobJava).isNotNull();
 
     // Delete the process instance.

@@ -282,14 +282,10 @@ public class HistoricTaskAndVariablesQueryTest extends PluggableActivitiTestCase
                                              "nonExisting")
                     .endOr()
                     .orderByTaskCreateTime().asc().list();
-            assertEquals(3,
-                         tasks.size());
-            assertEquals(1,
-                         tasks.get(0).getTaskLocalVariables().size());
-            assertEquals("test",
-                         tasks.get(0).getTaskLocalVariables().get("test"));
-            assertEquals(0,
-                         tasks.get(0).getProcessVariables().size());
+            assertEquals(3, tasks.size());
+            assertEquals(1, tasks.get(0).getTaskLocalVariables().size());
+            assertEquals("test", tasks.get(0).getTaskLocalVariables().get("test"));
+            assertEquals(0, tasks.get(0).getProcessVariables().size());
 
             tasks = historyService.createHistoricTaskInstanceQuery().includeProcessVariables()
                     .or()
@@ -298,50 +294,35 @@ public class HistoricTaskAndVariablesQueryTest extends PluggableActivitiTestCase
                                              "nonExisting")
                     .endOr()
                     .orderByTaskCreateTime().asc().list();
-            assertEquals(3,
-                         tasks.size());
-            assertEquals(0,
-                         tasks.get(0).getProcessVariables().size());
-            assertEquals(0,
-                         tasks.get(0).getTaskLocalVariables().size());
+            assertEquals(3, tasks.size());
+            assertEquals(0, tasks.get(0).getProcessVariables().size());
+            assertEquals(0, tasks.get(0).getTaskLocalVariables().size());
 
             task = historyService.createHistoricTaskInstanceQuery().includeTaskLocalVariables().taskAssignee(KERMIT).or().taskVariableValueEquals("localVar",
                                                                                                                                                   "test")
                     .taskVariableValueEquals("localVar",
                                              "nonExisting").endOr().singleResult();
-            assertEquals(0,
-                         task.getProcessVariables().size());
-            assertEquals(1,
-                         task.getTaskLocalVariables().size());
-            assertEquals("test",
-                         task.getTaskLocalVariables().get("localVar"));
+            assertEquals(0, task.getProcessVariables().size());
+            assertEquals(1, task.getTaskLocalVariables().size());
+            assertEquals("test", task.getTaskLocalVariables().get("localVar"));
 
             task = historyService.createHistoricTaskInstanceQuery().includeProcessVariables().taskAssignee(KERMIT).or().taskVariableValueEquals("localVar",
                                                                                                                                                 "test")
                     .taskVariableValueEquals("localVar",
                                              "nonExisting").endOr().singleResult();
-            assertEquals(2,
-                         task.getProcessVariables().size());
-            assertEquals(0,
-                         task.getTaskLocalVariables().size());
-            assertEquals(true,
-                         task.getProcessVariables().get("processVar"));
-            assertEquals(123,
-                         task.getProcessVariables().get("anotherProcessVar"));
+            assertEquals(2, task.getProcessVariables().size());
+            assertEquals(0, task.getTaskLocalVariables().size());
+            assertEquals(true, task.getProcessVariables().get("processVar"));
+            assertEquals(123, task.getProcessVariables().get("anotherProcessVar"));
 
             task = historyService.createHistoricTaskInstanceQuery().includeTaskLocalVariables().includeProcessVariables().or().taskAssignee(KERMIT).taskVariableValueEquals("localVar",
                                                                                                                                                                             "nonExisting")
                     .endOr().singleResult();
-            assertEquals(2,
-                         task.getProcessVariables().size());
-            assertEquals(1,
-                         task.getTaskLocalVariables().size());
-            assertEquals("test",
-                         task.getTaskLocalVariables().get("localVar"));
-            assertEquals(true,
-                         task.getProcessVariables().get("processVar"));
-            assertEquals(123,
-                         task.getProcessVariables().get("anotherProcessVar"));
+            assertEquals(2, task.getProcessVariables().size());
+            assertEquals(1, task.getTaskLocalVariables().size());
+            assertEquals("test", task.getTaskLocalVariables().get("localVar"));
+            assertEquals(true, task.getProcessVariables().get("processVar"));
+            assertEquals(123, task.getProcessVariables().get("anotherProcessVar"));
 
             task = historyService.createHistoricTaskInstanceQuery().taskAssignee(GONZO).singleResult();
             taskService.complete(task.getId());
@@ -394,82 +375,66 @@ public class HistoricTaskAndVariablesQueryTest extends PluggableActivitiTestCase
             ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
             List<HistoricTaskInstance> tasks = historyService.createHistoricTaskInstanceQuery().taskCandidateUser(KERMIT,
                                                                                                                   KERMITSGROUPS).list();
-            assertEquals(3,
-                         tasks.size());
+            assertEquals(3, tasks.size());
 
             tasks = historyService.createHistoricTaskInstanceQuery().taskCandidateUser(GONZO,
                                                                                        GONZOSGROUPS).list();
-            assertEquals(0,
-                         tasks.size());
+            assertEquals(0, tasks.size());
 
             tasks = historyService.createHistoricTaskInstanceQuery().taskCandidateUser(FOZZIE,
                                                                                        FOZZIESGROUPS).list();
-            assertEquals(1,
-                         tasks.size());
+            assertEquals(1, tasks.size());
 
             tasks = historyService.createHistoricTaskInstanceQuery().taskCandidateGroup("management").list();
-            assertEquals(1,
-                         tasks.size());
+            assertEquals(1, tasks.size());
             List<String> groups = new ArrayList<String>();
             groups.add("management");
             groups.add("accountancy");
             tasks = historyService.createHistoricTaskInstanceQuery().taskCandidateGroupIn(groups).list();
-            assertEquals(1,
-                         tasks.size());
+            assertEquals(1, tasks.size());
 
             tasks = historyService.createHistoricTaskInstanceQuery().taskCandidateUser(KERMIT,
                                                                                        KERMITSGROUPS).taskCandidateGroupIn(groups).list();
-            assertEquals(3,
-                         tasks.size());
+            assertEquals(3, tasks.size());
 
             tasks = historyService.createHistoricTaskInstanceQuery().taskCandidateUser(GONZO,
                                                                                        GONZOSGROUPS).taskCandidateGroupIn(groups).list();
-            assertEquals(1,
-                         tasks.size());
+            assertEquals(1, tasks.size());
 
             Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
             taskService.complete(task.getId());
 
-            assertEquals(0,
-                         taskService.createTaskQuery().processInstanceId(processInstance.getId()).count());
+            assertEquals(0, taskService.createTaskQuery().processInstanceId(processInstance.getId()).count());
 
             tasks = historyService.createHistoricTaskInstanceQuery().taskCandidateUser(KERMIT,
                                                                                        KERMITSGROUPS).list();
-            assertEquals(3,
-                         tasks.size());
+            assertEquals(3, tasks.size());
 
             tasks = historyService.createHistoricTaskInstanceQuery().taskCandidateUser(GONZO,
                                                                                        GONZOSGROUPS).list();
-            assertEquals(0,
-                         tasks.size());
+            assertEquals(0, tasks.size());
 
             tasks = historyService.createHistoricTaskInstanceQuery().taskCandidateUser(FOZZIE,
                                                                                        FOZZIESGROUPS).list();
-            assertEquals(1,
-                         tasks.size());
+            assertEquals(1, tasks.size());
 
             tasks = historyService.createHistoricTaskInstanceQuery().taskCandidateGroup("management").list();
-            assertEquals(1,
-                         tasks.size());
+            assertEquals(1, tasks.size());
 
             tasks = historyService.createHistoricTaskInstanceQuery().taskCandidateUser(KERMIT,
                                                                                        KERMITSGROUPS).taskCandidateGroupIn(asList("management")).list();
-            assertEquals(3,
-                         tasks.size());
+            assertEquals(3, tasks.size());
 
             tasks = historyService.createHistoricTaskInstanceQuery().taskCandidateUser(GONZO,
                                                                                        GONZOSGROUPS).taskCandidateGroupIn(asList("management")).list();
-            assertEquals(1,
-                         tasks.size());
+            assertEquals(1, tasks.size());
 
             tasks = historyService.createHistoricTaskInstanceQuery().taskCandidateUser(GONZO,
                                                                                        GONZOSGROUPS).taskCandidateGroupIn(asList("invalid")).list();
-            assertEquals(0,
-                         tasks.size());
+            assertEquals(0, tasks.size());
 
             tasks = historyService.createHistoricTaskInstanceQuery().taskCandidateGroupIn(groups).list();
-            assertEquals(1,
-                         tasks.size());
+            assertEquals(1, tasks.size());
         }
     }
 
@@ -485,52 +450,41 @@ public class HistoricTaskAndVariablesQueryTest extends PluggableActivitiTestCase
             runtimeService.startProcessInstanceByKey("oneTaskProcess");
             List<HistoricTaskInstance> tasks = historyService.createHistoricTaskInstanceQuery().taskCandidateUser(KERMIT,
                                                                                                                   KERMITSGROUPS).list();
-            assertEquals(3,
-                         tasks.size());
+            assertEquals(3, tasks.size());
 
             tasks = historyService.createHistoricTaskInstanceQuery().taskCandidateUser(GONZO).list();
-            assertEquals(0,
-                         tasks.size());
+            assertEquals(0, tasks.size());
 
             tasks = historyService.createHistoricTaskInstanceQuery().taskCandidateUser(FOZZIE).list();
-            assertEquals(1,
-                         tasks.size());
+            assertEquals(1, tasks.size());
 
             List<String> groups = new ArrayList<String>();
             groups.add("management");
             groups.add("accountancy");
 
             tasks = historyService.createHistoricTaskInstanceQuery().taskCandidateUser(KERMIT).taskCandidateGroupIn(groups).list();
-            assertEquals(3,
-                         tasks.size());
+            assertEquals(3, tasks.size());
 
             tasks = historyService.createHistoricTaskInstanceQuery().taskCandidateUser(GONZO).taskCandidateGroupIn(groups).list();
-            assertEquals(1,
-                         tasks.size());
+            assertEquals(1, tasks.size());
 
             tasks = historyService.createHistoricTaskInstanceQuery().taskCandidateUser(KERMIT).list();
-            assertEquals(3,
-                         tasks.size());
+            assertEquals(3, tasks.size());
 
             tasks = historyService.createHistoricTaskInstanceQuery().taskCandidateUser(GONZO).list();
-            assertEquals(0,
-                         tasks.size());
+            assertEquals(0, tasks.size());
 
             tasks = historyService.createHistoricTaskInstanceQuery().taskCandidateUser(FOZZIE).list();
-            assertEquals(1,
-                         tasks.size());
+            assertEquals(1, tasks.size());
 
             tasks = historyService.createHistoricTaskInstanceQuery().taskCandidateUser(KERMIT).taskCandidateGroupIn(asList("management")).list();
-            assertEquals(3,
-                         tasks.size());
+            assertEquals(3, tasks.size());
 
             tasks = historyService.createHistoricTaskInstanceQuery().taskCandidateUser(GONZO).taskCandidateGroupIn(asList("management")).list();
-            assertEquals(1,
-                         tasks.size());
+            assertEquals(1, tasks.size());
 
             tasks = historyService.createHistoricTaskInstanceQuery().taskCandidateUser(GONZO).taskCandidateGroupIn(asList("invalid")).list();
-            assertEquals(0,
-                         tasks.size());
+            assertEquals(0, tasks.size());
         }
     }
 
@@ -583,8 +537,7 @@ public class HistoricTaskAndVariablesQueryTest extends PluggableActivitiTestCase
             task.setDueDate(dueDate);
             taskService.saveTask(task);
 
-            assertEquals(0,
-                         historyService.createHistoricTaskInstanceQuery().processInstanceId(processInstance.getId()).withoutTaskDueDate().count());
+            assertEquals(0, historyService.createHistoricTaskInstanceQuery().processInstanceId(processInstance.getId()).withoutTaskDueDate().count());
 
             task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
 
@@ -592,8 +545,7 @@ public class HistoricTaskAndVariablesQueryTest extends PluggableActivitiTestCase
             task.setDueDate(null);
             taskService.saveTask(task);
 
-            assertEquals(1,
-                         historyService.createHistoricTaskInstanceQuery().processInstanceId(processInstance.getId()).withoutTaskDueDate().count());
+            assertEquals(1, historyService.createHistoricTaskInstanceQuery().processInstanceId(processInstance.getId()).withoutTaskDueDate().count());
         }
     }
 
@@ -602,22 +554,19 @@ public class HistoricTaskAndVariablesQueryTest extends PluggableActivitiTestCase
         List<HistoricTaskInstance> tasks = historyService.createHistoricTaskInstanceQuery().taskAssignee(GONZO).list();
         for (HistoricTaskInstance task : tasks) {
             assertThat(task.getCategory()).isNotNull();
-            assertEquals("testCategory",
-                         task.getCategory());
+            assertEquals("testCategory", task.getCategory());
         }
 
         tasks = historyService.createHistoricTaskInstanceQuery().taskAssignee(GONZO).includeTaskLocalVariables().list();
         for (HistoricTaskInstance task : tasks) {
             assertThat(task.getCategory()).isNotNull();
-            assertEquals("testCategory",
-                         task.getCategory());
+            assertEquals("testCategory", task.getCategory());
         }
 
         tasks = historyService.createHistoricTaskInstanceQuery().taskAssignee(GONZO).includeProcessVariables().list();
         for (HistoricTaskInstance task : tasks) {
             assertThat(task.getCategory()).isNotNull();
-            assertEquals("testCategory",
-                         task.getCategory());
+            assertEquals("testCategory", task.getCategory());
         }
     }
 

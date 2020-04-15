@@ -14,6 +14,7 @@ package org.activiti.engine.test.bpmn.usertask;
 
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.util.List;
 
@@ -49,13 +50,10 @@ public class TaskAssignmentExtensionsTest extends PluggableActivitiTestCase {
   }
 
   public void testDuplicateAssigneeDeclaration() {
-    try {
-      String resource = TestHelper.getBpmnProcessDefinitionResource(getClass(), "testDuplicateAssigneeDeclaration");
-      repositoryService.createDeployment().addClasspathResource(resource).deploy();
-      fail("Invalid BPMN 2.0 process should not parse, but it gets parsed successfully");
-    } catch (XMLException e) {
-      // Exception is to be expected
-    }
+    String resource = TestHelper.getBpmnProcessDefinitionResource(getClass(), "testDuplicateAssigneeDeclaration");
+    assertThatExceptionOfType(XMLException.class)
+      .as("Invalid BPMN 2.0 process should not parse, but it gets parsed successfully")
+      .isThrownBy(() -> repositoryService.createDeployment().addClasspathResource(resource).deploy());
   }
 
   @Deployment

@@ -735,15 +735,10 @@ public class FullHistoryTest extends ResourceActivitiTestCase {
         assertEquals(0,
                      historyService.createHistoricTaskInstanceQuery().processInstanceId(processInstance.getId()).count());
 
-        try {
-            // Delete the historic process-instance, which is still running
-            historyService.deleteHistoricProcessInstance("unexisting");
-            fail("Exception expected when deleting process-instance that is still running");
-        } catch (ActivitiException ae) {
-            // Expected exception
-            assertTextPresent("No historic process instance found with id: unexisting",
-                              ae.getMessage());
-        }
+        assertThatExceptionOfType(ActivitiException.class)
+            .as("Exception expected when deleting process-instance that is still running")
+            .isThrownBy(() -> historyService.deleteHistoricProcessInstance("unexisting"))
+            .withMessageContaining("No historic process instance found with id: unexisting");
     }
 
     @Deployment
@@ -751,15 +746,10 @@ public class FullHistoryTest extends ResourceActivitiTestCase {
         ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("HistoricTaskInstanceTest");
         assertThat(processInstance).isNotNull();
 
-        try {
-            // Delete the historic process-instance, which is still running
-            historyService.deleteHistoricProcessInstance(processInstance.getId());
-            fail("Exception expected when deleting process-instance that is still running");
-        } catch (ActivitiException ae) {
-            // Expected exception
-            assertTextPresent("Process instance is still running, cannot delete historic process instance",
-                              ae.getMessage());
-        }
+        assertThatExceptionOfType(ActivitiException.class)
+            .as("Exception expected when deleting process-instance that is still running")
+            .isThrownBy(() -> historyService.deleteHistoricProcessInstance(processInstance.getId()))
+            .withMessageContaining("Process instance is still running, cannot delete historic process instance");
     }
 
     @Deployment

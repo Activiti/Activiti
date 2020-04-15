@@ -12,11 +12,11 @@
  */
 package org.activiti.spring.test.fieldinjection;
 
+import static java.util.Collections.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Map;
 
-import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 import org.activiti.spring.impl.test.SpringActivitiTestCase;
@@ -24,14 +24,13 @@ import org.springframework.test.context.ContextConfiguration;
 
 
 /**
-
  */
 @ContextConfiguration("classpath:org/activiti/spring/test/fieldinjection/fieldInjectionSpringTest-context.xml")
 public class ServiceTaskFieldInjectionTest extends SpringActivitiTestCase {
 
     @Deployment
     public void testDelegateExpressionWithSingletonBean() {
-      runtimeService.startProcessInstanceByKey("delegateExpressionSingleton", CollectionUtil.singletonMap("input", 100));
+      runtimeService.startProcessInstanceByKey("delegateExpressionSingleton", singletonMap("input", 100));
       Task task = taskService.createTaskQuery().singleResult();
       Map<String, Object> variables = taskService.getVariables(task.getId());
 
@@ -47,7 +46,7 @@ public class ServiceTaskFieldInjectionTest extends SpringActivitiTestCase {
 
     @Deployment
     public void testDelegateExpressionWithPrototypeBean() {
-      runtimeService.startProcessInstanceByKey("delegateExpressionPrototype", CollectionUtil.singletonMap("input", 100));
+      runtimeService.startProcessInstanceByKey("delegateExpressionPrototype", singletonMap("input", 100));
       Task task = taskService.createTaskQuery().singleResult();
       Map<String, Object> variables = taskService.getVariables(task.getId());
 

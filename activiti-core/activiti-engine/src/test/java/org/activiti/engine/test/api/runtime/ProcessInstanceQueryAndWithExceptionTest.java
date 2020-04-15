@@ -1,9 +1,9 @@
 package org.activiti.engine.test.api.runtime;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.util.List;
-
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.JavaDelegate;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
@@ -72,12 +72,9 @@ public class ProcessInstanceQueryAndWithExceptionTest extends PluggableActivitiT
       .processInstanceId(processInstance.getId())
       .list();
 
-    for(Job job : jobList){
-        try {
-          managementService.executeJob(job.getId());
-          fail("RuntimeException");
-        } catch(RuntimeException re) {
-      }
+    for (Job job : jobList) {
+      assertThatExceptionOfType(RuntimeException.class)
+        .isThrownBy(() -> managementService.executeJob(job.getId()));
     }
     return processInstance;
   }

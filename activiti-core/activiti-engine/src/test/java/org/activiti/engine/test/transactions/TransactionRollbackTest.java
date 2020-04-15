@@ -14,6 +14,7 @@
 package org.activiti.engine.test.transactions;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.DelegateExecution;
@@ -48,44 +49,32 @@ public class TransactionRollbackTest extends PluggableActivitiTestCase {
 
     @Deployment
     public void testRollback() {
-        try {
-            runtimeService.startProcessInstanceByKey("RollbackProcess");
-
-            fail("Starting the process instance should throw an exception");
-
-        } catch (Exception e) {
-            assertThat(e.getMessage()).isEqualTo("Buzzz");
-        }
+        assertThatExceptionOfType(Exception.class)
+            .as("Starting the process instance should throw an exception")
+            .isThrownBy(() -> runtimeService.startProcessInstanceByKey("RollbackProcess"))
+            .withMessage("Buzzz");
 
         assertThat(runtimeService.createExecutionQuery().count()).isEqualTo(0);
     }
 
     @Deployment(
-            resources = {"org/activiti/engine/test/transactions/trivial.bpmn20.xml", "org/activiti/engine/test/transactions/rollbackAfterSubProcess.bpmn20.xml"})
+        resources = {"org/activiti/engine/test/transactions/trivial.bpmn20.xml",
+            "org/activiti/engine/test/transactions/rollbackAfterSubProcess.bpmn20.xml"})
     public void testRollbackAfterSubProcess() {
-        try {
-            runtimeService.startProcessInstanceByKey("RollbackAfterSubProcess");
-
-            fail("Starting the process instance should throw an exception");
-
-        } catch (Exception e) {
-            assertThat(e.getMessage()).isEqualTo("Buzzz");
-        }
+        assertThatExceptionOfType(Exception.class)
+            .as("Starting the process instance should throw an exception")
+            .isThrownBy(() -> runtimeService.startProcessInstanceByKey("RollbackAfterSubProcess"))
+            .withMessage("Buzzz");
 
         assertThat(runtimeService.createExecutionQuery().count()).isEqualTo(0);
-
     }
 
     @Deployment
     public void testRollbackAfterError() {
-        try {
-            runtimeService.startProcessInstanceByKey("RollbackProcess");
-
-            fail("Starting the process instance should throw an error");
-
-        } catch (Throwable e) {
-            assertThat(e.getMessage()).isEqualTo("Fizz");
-        }
+        assertThatExceptionOfType(Throwable.class)
+            .as("Starting the process instance should throw an error")
+            .isThrownBy(() -> runtimeService.startProcessInstanceByKey("RollbackProcess"))
+            .withMessage("Fizz");
 
         assertThat(runtimeService.createExecutionQuery().count()).isEqualTo(0);
     }

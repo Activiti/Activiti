@@ -74,14 +74,13 @@ public class MessageBoundaryEventTest extends PluggableActivitiTestCase {
   }
 
   public void testDoubleBoundaryMessageEventSameMessageId() {
-    // deployment fails when two boundary message events have the same
-    // messageId
-    try {
-      repositoryService.createDeployment().addClasspathResource("org/activiti/engine/test/bpmn/event/message/MessageBoundaryEventTest.testDoubleBoundaryMessageEventSameMessageId.bpmn20.xml").deploy();
-      fail("Deployment should fail because Activiti cannot handle two boundary message events with same messageId.");
-    } catch (Exception e) {
-      assertThat(repositoryService.createDeploymentQuery().count()).isEqualTo(0);
-    }
+    // deployment fails when two boundary message events have the same messageId
+    assertThatExceptionOfType(Exception.class)
+      .as("Deployment should fail because Activiti cannot handle two boundary message events with same messageId.")
+      .isThrownBy(() -> repositoryService.createDeployment()
+        .addClasspathResource("org/activiti/engine/test/bpmn/event/message/MessageBoundaryEventTest.testDoubleBoundaryMessageEventSameMessageId.bpmn20.xml")
+        .deploy());
+    assertThat(repositoryService.createDeploymentQuery().count()).isEqualTo(0);
   }
 
   @Deployment
