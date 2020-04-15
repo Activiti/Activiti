@@ -90,7 +90,7 @@ public class TimerCustomCalendarTest extends ResourceActivitiTestCase {
 
     List<Job> jobs = this.managementService.createTimerJobQuery().list();
     assertThat(jobs).as("One job is scheduled").hasSize(1);
-    assertThat(jobs).as("Job must be scheduled by custom business calendar to Date(0)").isEqualTo(new Date(0));
+    assertThat(jobs.get(0).getDuedate()).as("Job must be scheduled by custom business calendar to Date(0)").isEqualTo(new Date(0));
 
     managementService.moveTimerToExecutableJob(jobs.get(0).getId());
     managementService.executeJob(jobs.get(0).getId());
