@@ -15,7 +15,6 @@ package org.activiti.examples.bpmn.servicetask;
 import static java.util.Collections.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.assertj.core.api.Assertions.catchThrowableOfType;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -95,12 +94,10 @@ public class JavaServiceTaskTest extends PluggableActivitiTestCase {
 
   @Deployment
   public void testUnexistingClassDelegation() {
-    ActivitiException e = catchThrowableOfType(
-      () -> runtimeService.startProcessInstanceByKey("unexistingClassDelegation"),
-      ActivitiException.class);
-    assertThat(e).hasMessageContaining("couldn't instantiate class org.activiti.BogusClass");
-    assertThat(e.getCause()).isNotNull();
-    assertThat(e.getCause()).isInstanceOf(ActivitiClassLoadingException.class);
+    assertThatExceptionOfType(ActivitiException.class)
+      .isThrownBy(() -> runtimeService.startProcessInstanceByKey("unexistingClassDelegation"))
+      .withMessageContaining("couldn't instantiate class org.activiti.BogusClass")
+      .withCauseInstanceOf(ActivitiClassLoadingException.class);
   }
 
   public void testIllegalUseOfResultVariableName() {

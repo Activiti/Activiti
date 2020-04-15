@@ -15,7 +15,6 @@ package org.activiti.engine.test.api.mgmt;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.assertj.core.api.Assertions.catchThrowableOfType;
 
 import java.util.Date;
 
@@ -55,11 +54,10 @@ public class ManagementServiceTest extends PluggableActivitiTestCase {
   }
 
   public void testExecuteJobUnexistingJob() {
-    JobNotFoundException e = catchThrowableOfType(
-      () -> managementService.executeJob("unexistingjob"), JobNotFoundException.class);
-
-    assertThat(e).hasMessageContaining("No job found with id");
-    assertThat(e.getObjectClass()).isEqualTo(Job.class);
+    assertThatExceptionOfType(JobNotFoundException.class)
+      .isThrownBy(() -> managementService.executeJob("unexistingjob"))
+      .withMessageContaining("No job found with id")
+      .satisfies(ae -> assertThat(ae.getObjectClass()).isEqualTo(Job.class));
   }
 
   @Deployment
@@ -94,12 +92,10 @@ public class ManagementServiceTest extends PluggableActivitiTestCase {
   }
 
   public void testGetJobExceptionStacktraceUnexistingJobId() {
-    ActivitiObjectNotFoundException e = catchThrowableOfType(
-      () -> managementService.getJobExceptionStacktrace("unexistingjob"),
-      ActivitiObjectNotFoundException.class);
-
-    assertThat(e).hasMessage("No job found with id unexistingjob");
-    assertThat(e.getObjectClass()).isEqualTo(Job.class);
+    assertThatExceptionOfType(ActivitiObjectNotFoundException.class)
+      .isThrownBy(() -> managementService.getJobExceptionStacktrace("unexistingjob"))
+      .withMessageContaining("No job found with id unexistingjob")
+      .satisfies(ae -> assertThat(ae.getObjectClass()).isEqualTo(Job.class));
   }
 
   public void testgetJobExceptionStacktraceNullJobId() {
@@ -128,36 +124,28 @@ public class ManagementServiceTest extends PluggableActivitiTestCase {
   }
 
   public void testSetJobRetriesUnexistingJobId() {
-    ActivitiObjectNotFoundException e = catchThrowableOfType(
-      () -> managementService.setJobRetries("unexistingjob", 5),
-      ActivitiObjectNotFoundException.class);
-
-    assertThat(e).hasMessageContaining("No job found with id 'unexistingjob'.");
-    assertThat(e.getObjectClass()).isEqualTo(Job.class);
+    assertThatExceptionOfType(ActivitiObjectNotFoundException.class)
+      .isThrownBy(() -> managementService.setJobRetries("unexistingjob", 5))
+      .withMessageContaining("No job found with id 'unexistingjob'.")
+      .satisfies(ae -> assertThat(ae.getObjectClass()).isEqualTo(Job.class));
   }
 
   public void testSetJobRetriesEmptyJobId() {
-    ActivitiIllegalArgumentException e = catchThrowableOfType(
-      () -> managementService.setJobRetries("", 5),
-      ActivitiIllegalArgumentException.class);
-
-    assertThat(e).hasMessageContaining("The job id is mandatory, but '' has been provided.");
+    assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
+      .isThrownBy(() -> managementService.setJobRetries("", 5))
+      .withMessageContaining("The job id is mandatory, but '' has been provided.");
   }
 
   public void testSetJobRetriesJobIdNull() {
-    ActivitiIllegalArgumentException e = catchThrowableOfType(
-      () -> managementService.setJobRetries(null, 5),
-      ActivitiIllegalArgumentException.class);
-
-    assertThat(e).hasMessageContaining("The job id is mandatory, but 'null' has been provided.");
+    assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
+      .isThrownBy(() -> managementService.setJobRetries(null, 5))
+      .withMessageContaining("The job id is mandatory, but 'null' has been provided.");
   }
 
   public void testSetJobRetriesNegativeNumberOfRetries() {
-    ActivitiIllegalArgumentException e = catchThrowableOfType(
-      () -> managementService.setJobRetries("unexistingjob", -1),
-      ActivitiIllegalArgumentException.class);
-
-    assertThat(e).hasMessageContaining("The number of job retries must be a non-negative Integer, but '-1' has been provided.");
+    assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
+      .isThrownBy(() -> managementService.setJobRetries("unexistingjob", -1))
+      .withMessageContaining("The number of job retries must be a non-negative Integer, but '-1' has been provided.");
   }
 
   public void testDeleteJobNullJobId() {
@@ -167,11 +155,10 @@ public class ManagementServiceTest extends PluggableActivitiTestCase {
   }
 
   public void testDeleteJobUnexistingJob() {
-    ActivitiObjectNotFoundException ae = catchThrowableOfType(
-      () -> managementService.deleteJob("unexistingjob"), ActivitiObjectNotFoundException.class);
-
-    assertThat(ae).hasMessageContaining("No job found with id");
-    assertThat(ae.getObjectClass()).isEqualTo(Job.class);
+    assertThatExceptionOfType(ActivitiObjectNotFoundException.class)
+      .isThrownBy(() -> managementService.deleteJob("unexistingjob"))
+      .withMessageContaining("No job found with id")
+      .satisfies(ae -> assertThat(ae.getObjectClass()).isEqualTo(Job.class));
   }
 
   @Deployment(resources = { "org/activiti/engine/test/api/mgmt/timerOnTask.bpmn20.xml" })

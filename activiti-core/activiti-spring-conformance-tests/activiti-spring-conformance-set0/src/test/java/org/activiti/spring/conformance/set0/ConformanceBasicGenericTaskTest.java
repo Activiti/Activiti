@@ -86,7 +86,6 @@ public class ConformanceBasicGenericTaskTest {
         assertThat(throwable)
                 .isInstanceOf(NotFoundException.class);
 
-
         assertThat(RuntimeTestConfiguration.collectedEvents)
                 .extracting(RuntimeEvent::getEventType)
                 .containsExactly(

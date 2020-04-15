@@ -232,8 +232,7 @@ public class SubTaskQueryTest extends PluggableActivitiTestCase {
 
         TaskQuery query = taskService.createTaskQuery().taskParentTaskId(rootTask.getId());
 
-        assertEquals(2,
-                query.count());
+        assertThat(query.count()).isEqualTo(2);
 
         query = taskService.createTaskQuery().taskAssignee("gonzo").taskParentTaskId(rootTask.getId());
 

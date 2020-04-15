@@ -80,7 +80,8 @@ public class ApplicationServiceTest {
         Throwable thrown = catchThrowable(() -> applicationService.loadApplications());
 
         //then
-        assertThat(thrown).isInstanceOf(ApplicationLoadException.class)
-                .hasCause(ioException);
+        assertThat(thrown)
+            .isInstanceOf(ApplicationLoadException.class)
+            .hasCause(ioException);
     }
 }

@@ -172,7 +172,6 @@ public class RepositoryServiceTest extends PluggableActivitiTestCase {
 
   @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
   public void testGetResourceAsStreamUnexistingDeployment() {
-
     assertThatExceptionOfType(ActivitiObjectNotFoundException.class)
       .isThrownBy(() -> repositoryService.getResourceAsStream("unexistingdeployment", "org/activiti/engine/test/api/unexistingProcess.bpmn.xml"))
       .withMessageContaining("deployment does not exist")

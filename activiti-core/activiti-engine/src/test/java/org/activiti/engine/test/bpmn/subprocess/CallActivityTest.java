@@ -196,8 +196,7 @@ public class CallActivityTest extends ResourceActivitiTestCase {
         variableInstanceQuery.processInstanceId(calledInstanceId);
         List<HistoricVariableInstance> variableInstances = variableInstanceQuery.list();
 
-        assertEquals(0,
-                     variableInstances.size());
+        assertThat(variableInstances).hasSize(0);
     }
 
     private void suspendProcessDefinitions(Deployment childDeployment) {

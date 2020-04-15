@@ -189,20 +189,20 @@ public class TaskVariablesTest extends PluggableActivitiTestCase {
     Task userTask2 = taskService.createTaskQuery().taskDefinitionKey("usertask2").singleResult();
 
     //both should have the process variables copied into their local
-    assertEquals(startVariables,taskService.getVariablesLocal(userTask1.getId()));
-    assertEquals(startVariables,taskService.getVariablesLocal(userTask2.getId()));
+    assertThat(taskService.getVariablesLocal(userTask1.getId())).isEqualTo(startVariables);
+    assertThat(taskService.getVariablesLocal(userTask2.getId())).isEqualTo(startVariables);
 
 
     //if one modifies, the other should not see the modification
     taskService.setVariableLocal(userTask1.getId(),"start1","modifiedstart1");
 
-    assertEquals(taskService.getVariablesLocal(userTask2.getId()),startVariables);
+    assertThat(startVariables).isEqualTo(taskService.getVariablesLocal(userTask2.getId()));
     taskService.complete(userTask1.getId());
 
     //after completion the process variable should be updated but only that one and not task2's local variable
-    assertEquals("modifiedstart1",runtimeService.getVariable(processInstance1.getId(),"start1"));
+    assertThat(runtimeService.getVariable(processInstance1.getId(),"start1")).isEqualTo("modifiedstart1");
     assertThat(runtimeService.getVariable(processInstance1.getId(),"start2")).isEqualTo("start2");
-    assertEquals(startVariables,taskService.getVariablesLocal(userTask2.getId()));
+    assertThat(taskService.getVariablesLocal(userTask2.getId())).isEqualTo(startVariables);
 
     processEngineConfiguration.setCopyVariablesToLocalForTasks(false);
   }

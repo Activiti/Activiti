@@ -72,10 +72,8 @@ public class Activiti6Test extends PluggableActivitiTestCase {
         assertThat(processInstance.isEnded()).isFalse();
 
         Task task = taskService.createTaskQuery().singleResult();
-        assertEquals("The famous task",
-                     task.getName());
-        assertEquals("kermit",
-                     task.getAssignee());
+        assertThat(task.getName()).isEqualTo("The famous task");
+        assertThat(task.getAssignee()).isEqualTo("kermit");
     }
 
     @Test
@@ -86,19 +84,15 @@ public class Activiti6Test extends PluggableActivitiTestCase {
         assertThat(processInstance.isEnded()).isFalse();
 
         List<Task> tasks = taskService.createTaskQuery().processDefinitionKey("simpleParallelGateway").orderByTaskName().asc().list();
-        assertEquals(2,
-                     tasks.size());
-        assertEquals("Task a",
-                     tasks.get(0).getName());
-        assertEquals("Task b",
-                     tasks.get(1).getName());
+        assertThat(tasks).hasSize(2);
+        assertThat(tasks.get(0).getName()).isEqualTo("Task a");
+        assertThat(tasks.get(1).getName()).isEqualTo("Task b");
 
         for (Task task : tasks) {
             taskService.complete(task.getId());
         }
 
-        assertEquals(0,
-                     runtimeService.createProcessInstanceQuery().count());
+        assertThat(runtimeService.createProcessInstanceQuery().count()).isEqualTo(0);
     }
 
     @Test
@@ -109,23 +103,17 @@ public class Activiti6Test extends PluggableActivitiTestCase {
         assertThat(processInstance.isEnded()).isFalse();
 
         List<Task> tasks = taskService.createTaskQuery().processDefinitionKey("simpleParallelGateway").orderByTaskName().asc().list();
-        assertEquals(4,
-                     tasks.size());
-        assertEquals("Task a",
-                     tasks.get(0).getName());
-        assertEquals("Task b1",
-                     tasks.get(1).getName());
-        assertEquals("Task b2",
-                     tasks.get(2).getName());
-        assertEquals("Task c",
-                     tasks.get(3).getName());
+        assertThat(tasks).hasSize(4);
+        assertThat(tasks.get(0).getName()).isEqualTo("Task a");
+        assertThat(tasks.get(1).getName()).isEqualTo("Task b1");
+        assertThat(tasks.get(2).getName()).isEqualTo("Task b2");
+        assertThat(tasks.get(3).getName()).isEqualTo("Task c");
 
         for (Task task : tasks) {
             taskService.complete(task.getId());
         }
 
-        assertEquals(0,
-                     runtimeService.createProcessInstanceQuery().count());
+        assertThat(runtimeService.createProcessInstanceQuery().count()).isEqualTo(0);
     }
 
     /*
@@ -147,15 +135,12 @@ public class Activiti6Test extends PluggableActivitiTestCase {
         assertThat(processInstance).isNotNull();
         assertThat(processInstance.isEnded()).isTrue();
 
-        assertEquals(maxCount,
-                     CountingServiceTaskTestDelegate.CALL_COUNT.get());
-        assertEquals(0,
-                     runtimeService.createExecutionQuery().count());
+        assertThat(CountingServiceTaskTestDelegate.CALL_COUNT.get()).isEqualTo(maxCount);
+        assertThat(runtimeService.createExecutionQuery().count()).isEqualTo(0);
 
         if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
-            assertEquals(maxCount,
-                         historyService.createHistoricActivityInstanceQuery()
-                                 .processInstanceId(processInstance.getId()).activityId("serviceTask").count());
+            assertThat(historyService.createHistoricActivityInstanceQuery()
+                                 .processInstanceId(processInstance.getId()).activityId("serviceTask").count()).isEqualTo(maxCount);
         }
     }
 
@@ -174,8 +159,7 @@ public class Activiti6Test extends PluggableActivitiTestCase {
 
         Number sumVariable = (Number) runtimeService.getVariable(processInstance.getId(),
                                                                  "sum");
-        assertEquals(3,
-                     sumVariable.intValue());
+        assertThat(sumVariable.intValue()).isEqualTo(3);
 
         Execution execution = runtimeService.createExecutionQuery().processInstanceId(processInstance.getId()).onlyChildExecutions().singleResult();
         assertThat(execution).isNotNull();
@@ -197,12 +181,10 @@ public class Activiti6Test extends PluggableActivitiTestCase {
         managementService.executeJob(job.getId());
 
         Task task = taskService.createTaskQuery().singleResult();
-        assertEquals("Task after timer",
-                     task.getName());
+        assertThat(task.getName()).isEqualTo("Task after timer");
 
         taskService.complete(task.getId());
-        assertEquals(0,
-                     runtimeService.createExecutionQuery().count());
+        assertThat(runtimeService.createExecutionQuery().count()).isEqualTo(0);
     }
 
     @Test
@@ -212,18 +194,14 @@ public class Activiti6Test extends PluggableActivitiTestCase {
         assertThat(processInstance).isNotNull();
         assertThat(processInstance.isEnded()).isFalse();
 
-        assertEquals(1,
-                     managementService.createTimerJobQuery().count());
+        assertThat(managementService.createTimerJobQuery().count()).isEqualTo(1);
 
         Task task = taskService.createTaskQuery().singleResult();
-        assertEquals("The famous task",
-                     task.getName());
+        assertThat(task.getName()).isEqualTo("The famous task");
         taskService.complete(task.getId());
 
-        assertEquals(0,
-                     managementService.createTimerJobQuery().count());
-        assertEquals(0,
-                     runtimeService.createExecutionQuery().count());
+        assertThat(managementService.createTimerJobQuery().count()).isEqualTo(0);
+        assertThat(runtimeService.createExecutionQuery().count()).isEqualTo(0);
     }
 
     @Test
@@ -243,16 +221,14 @@ public class Activiti6Test extends PluggableActivitiTestCase {
         managementService.executeJob(job.getId());
 
         List<Task> tasks = taskService.createTaskQuery().orderByTaskName().asc().list();
-        assertEquals(2,
-                     tasks.size());
+        assertThat(tasks).hasSize(2);
 
         // Completing them both should complete the process instance
         for (Task task : tasks) {
             taskService.complete(task.getId());
         }
 
-        assertEquals(0,
-                     runtimeService.createExecutionQuery().count());
+        assertThat(runtimeService.createExecutionQuery().count()).isEqualTo(0);
 
         // Second test: complete tasks: first task associated with child
         // execution, then parent execution (easier case)
@@ -266,8 +242,7 @@ public class Activiti6Test extends PluggableActivitiTestCase {
         for (Task task : tasks) {
             taskService.complete(task.getId());
         }
-        assertEquals(0,
-                     runtimeService.createExecutionQuery().count());
+        assertThat(runtimeService.createExecutionQuery().count()).isEqualTo(0);
     }
 
     @Test
@@ -399,96 +374,67 @@ public class Activiti6Test extends PluggableActivitiTestCase {
 
         // Completing B should end the process
         taskService.complete(tasks.get(0).getId());
-        assertEquals(0,
-                     managementService.createTimerJobQuery().count());
-        assertEquals(0,
-                     runtimeService.createExecutionQuery().count());
+        assertThat(managementService.createTimerJobQuery().count()).isEqualTo(0);
+        assertThat(runtimeService.createExecutionQuery().count()).isEqualTo(0);
 
         // Use case 2: The non interrupting timer on B fires
         processInstance = runtimeService.startProcessInstanceByKey("nonInterruptingWithInclusiveMerge");
         tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).orderByTaskName().asc().list();
-        assertEquals(2,
-                     tasks.size());
-        assertEquals("A",
-                     tasks.get(0).getName());
-        assertEquals("B",
-                     tasks.get(1).getName());
-        assertEquals(2,
-                     managementService.createTimerJobQuery().count());
+        assertThat(tasks).hasSize(2);
+        assertThat(tasks.get(0).getName()).isEqualTo("A");
+        assertThat(tasks.get(1).getName()).isEqualTo("B");
+        assertThat(managementService.createTimerJobQuery().count()).isEqualTo(2);
 
         // Completing B
         taskService.complete(tasks.get(1).getId());
         tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).orderByTaskName().asc().list();
-        assertEquals(1,
-                     tasks.size());
-        assertEquals("A",
-                     tasks.get(0).getName());
-        assertEquals(1,
-                     managementService.createTimerJobQuery().count());
+        assertThat(tasks).hasSize(1);
+        assertThat(tasks.get(0).getName()).isEqualTo("A");
+        assertThat(managementService.createTimerJobQuery().count()).isEqualTo(1);
 
         // Firing the timer should activate E and F too
         String jobId = managementService.createTimerJobQuery().singleResult().getId();
         managementService.moveTimerToExecutableJob(jobId);
         managementService.executeJob(jobId);
         tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).orderByTaskName().asc().list();
-        assertEquals(3,
-                     tasks.size());
-        assertEquals("A",
-                     tasks.get(0).getName());
-        assertEquals("C",
-                     tasks.get(1).getName());
-        assertEquals("D",
-                     tasks.get(2).getName());
+        assertThat(tasks).hasSize(3);
+        assertThat(tasks.get(0).getName()).isEqualTo("A");
+        assertThat(tasks.get(1).getName()).isEqualTo("C");
+        assertThat(tasks.get(2).getName()).isEqualTo("D");
 
         // Firing the timer on D
-        assertEquals(1,
-                     managementService.createTimerJobQuery().count());
+        assertThat(managementService.createTimerJobQuery().count()).isEqualTo(1);
         jobId = managementService.createTimerJobQuery().singleResult().getId();
         managementService.moveTimerToExecutableJob(jobId);
         managementService.executeJob(jobId);
         tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).orderByTaskName().asc().list();
-        assertEquals(4,
-                     tasks.size());
-        assertEquals("A",
-                     tasks.get(0).getName());
-        assertEquals("C",
-                     tasks.get(1).getName());
-        assertEquals("D",
-                     tasks.get(2).getName());
-        assertEquals("G",
-                     tasks.get(3).getName());
+        assertThat(tasks).hasSize(4);
+        assertThat(tasks.get(0).getName()).isEqualTo("A");
+        assertThat(tasks.get(1).getName()).isEqualTo("C");
+        assertThat(tasks.get(2).getName()).isEqualTo("D");
+        assertThat(tasks.get(3).getName()).isEqualTo("G");
 
         // Completing C, D, A and G in that order to give the engine a bit of exercise
         taskService.complete(taskService.createTaskQuery().taskName("C").singleResult().getId());
         tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).orderByTaskName().asc().list();
-        assertEquals(3,
-                     tasks.size());
-        assertEquals("A",
-                     tasks.get(0).getName());
-        assertEquals("D",
-                     tasks.get(1).getName());
-        assertEquals("G",
-                     tasks.get(2).getName());
+        assertThat(tasks).hasSize(3);
+        assertThat(tasks.get(0).getName()).isEqualTo("A");
+        assertThat(tasks.get(1).getName()).isEqualTo("D");
+        assertThat(tasks.get(2).getName()).isEqualTo("G");
 
         taskService.complete(taskService.createTaskQuery().taskName("D").singleResult().getId());
         tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).orderByTaskName().asc().list();
-        assertEquals(2,
-                     tasks.size());
-        assertEquals("A",
-                     tasks.get(0).getName());
-        assertEquals("G",
-                     tasks.get(1).getName());
+        assertThat(tasks).hasSize(2);
+        assertThat(tasks.get(0).getName()).isEqualTo("A");
+        assertThat(tasks.get(1).getName()).isEqualTo("G");
 
         taskService.complete(taskService.createTaskQuery().taskName("A").singleResult().getId());
         tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).orderByTaskName().asc().list();
-        assertEquals(1,
-                     tasks.size());
-        assertEquals("G",
-                     tasks.get(0).getName());
+        assertThat(tasks).hasSize(1);
+        assertThat(tasks.get(0).getName()).isEqualTo("G");
 
         taskService.complete(taskService.createTaskQuery().taskName("G").singleResult().getId());
-        assertEquals(0,
-                     runtimeService.createExecutionQuery().count());
+        assertThat(runtimeService.createExecutionQuery().count()).isEqualTo(0);
     }
 
     /**
@@ -503,35 +449,26 @@ public class Activiti6Test extends PluggableActivitiTestCase {
         ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("trickyInclusiveMerge");
         assertThat(processInstance).isNotNull();
         assertThat(processInstance.isEnded()).isFalse();
-        assertEquals(3,
-                     taskService.createTaskQuery().count());
+        assertThat(taskService.createTaskQuery().count()).isEqualTo(3);
 
         Task taskC = taskService.createTaskQuery().taskName("C").singleResult();
         taskService.complete(taskC.getId());
         List<Task> tasks = taskService.createTaskQuery().orderByTaskName().asc().list();
-        assertEquals(3,
-                     tasks.size());
-        assertEquals("A",
-                     tasks.get(0).getName());
-        assertEquals("B",
-                     tasks.get(1).getName());
-        assertEquals("E",
-                     tasks.get(2).getName());
+        assertThat(tasks).hasSize(3);
+        assertThat(tasks.get(0).getName()).isEqualTo("A");
+        assertThat(tasks.get(1).getName()).isEqualTo("B");
+        assertThat(tasks.get(2).getName()).isEqualTo("E");
 
         taskService.complete(tasks.get(0).getId());
         taskService.complete(tasks.get(1).getId());
         tasks = taskService.createTaskQuery().orderByTaskName().asc().list();
-        assertEquals(2,
-                     tasks.size());
-        assertEquals("D",
-                     tasks.get(0).getName());
-        assertEquals("E",
-                     tasks.get(1).getName());
+        assertThat(tasks).hasSize(2);
+        assertThat(tasks.get(0).getName()).isEqualTo("D");
+        assertThat(tasks.get(1).getName()).isEqualTo("E");
 
         taskService.complete(tasks.get(0).getId());
         taskService.complete(tasks.get(1).getId());
-        assertEquals(0,
-                     runtimeService.createExecutionQuery().count());
+        assertThat(runtimeService.createExecutionQuery().count()).isEqualTo(0);
     }
 
     /**
@@ -547,44 +484,33 @@ public class Activiti6Test extends PluggableActivitiTestCase {
         // Instead, it's done by the InactivatedActivityBehavior
 
         runtimeService.startProcessInstanceByKey("trickyInclusiveMerge");
-        assertEquals(3,
-                     taskService.createTaskQuery().count());
+        assertThat(taskService.createTaskQuery().count()).isEqualTo(3);
 
         List<Task> tasks = taskService.createTaskQuery().orderByTaskName().asc().list();
-        assertEquals(3,
-                     tasks.size());
-        assertEquals("A",
-                     tasks.get(0).getName());
-        assertEquals("B",
-                     tasks.get(1).getName());
-        assertEquals("C",
-                     tasks.get(2).getName());
+        assertThat(tasks).hasSize(3);
+        assertThat(tasks.get(0).getName()).isEqualTo("A");
+        assertThat(tasks.get(1).getName()).isEqualTo("B");
+        assertThat(tasks.get(2).getName()).isEqualTo("C");
         taskService.complete(tasks.get(0).getId());
         taskService.complete(tasks.get(1).getId());
 
         // C should still be open
         tasks = taskService.createTaskQuery().orderByTaskName().asc().list();
-        assertEquals(1,
-                     tasks.size());
-        assertEquals("C",
-                     tasks.get(0).getName());
+        assertThat(tasks).hasSize(1);
+        assertThat(tasks.get(0).getName()).isEqualTo("C");
 
         // If C is now completed, the inclusive gateway should also be completed
         // and D and E should be open tasks
         taskService.complete(tasks.get(0).getId());
         tasks = taskService.createTaskQuery().orderByTaskName().asc().list();
-        assertEquals(2,
-                     tasks.size());
-        assertEquals("D",
-                     tasks.get(0).getName());
-        assertEquals("E",
-                     tasks.get(1).getName());
+        assertThat(tasks).hasSize(2);
+        assertThat(tasks.get(0).getName()).isEqualTo("D");
+        assertThat(tasks.get(1).getName()).isEqualTo("E");
 
         // Completing them should just end the process instance
         taskService.complete(tasks.get(0).getId());
         taskService.complete(tasks.get(1).getId());
-        assertEquals(0,
-                     runtimeService.createExecutionQuery().count());
+        assertThat(runtimeService.createExecutionQuery().count()).isEqualTo(0);
     }
 
     /**

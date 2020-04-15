@@ -80,7 +80,7 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
         assertThatExceptionOfType(ActivitiObjectNotFoundException.class)
             .isThrownBy(() -> runtimeService.startProcessInstanceByKey("unexistingkey"))
             .withMessageContaining("no processes deployed with key")
-            .satisfies(ae -> assertThat(ae.getObjectClass())).isEqualTo(ProcessDefinition.class);
+            .satisfies(ae -> assertThat(ae.getObjectClass()).isEqualTo(ProcessDefinition.class));
     }
 
     public void testStartProcessInstanceByIdNullId() {
@@ -92,7 +92,7 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
         assertThatExceptionOfType(ActivitiObjectNotFoundException.class)
             .isThrownBy(() -> runtimeService.startProcessInstanceById("unexistingId"))
             .withMessageContaining("no deployed process definition found with id")
-            .satisfies(ae -> assertThat(ae.getObjectClass())).isEqualTo(ProcessDefinition.class);
+            .satisfies(ae -> assertThat(ae.getObjectClass()).isEqualTo(ProcessDefinition.class));
     }
 
     @Deployment(resources = {"org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml"})
@@ -250,7 +250,7 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
         assertThatExceptionOfType(ActivitiObjectNotFoundException.class)
             .isThrownBy(() -> runtimeService.deleteProcessInstance("enexistingInstanceId", null))
             .withMessageContaining("No process instance found for id")
-            .satisfies(ae -> assertThat(ae.getObjectClass())).isEqualTo(ProcessInstance.class);
+            .satisfies(ae -> assertThat(ae.getObjectClass()).isEqualTo(ProcessInstance.class));
     }
 
     public void testDeleteProcessInstanceNullId() {
@@ -272,7 +272,7 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
         assertThatExceptionOfType(ActivitiObjectNotFoundException.class)
             .isThrownBy(() -> runtimeService.getActiveActivityIds("unexistingExecutionId"))
             .withMessageContaining("execution unexistingExecutionId doesn't exist")
-            .satisfies(ae -> assertThat(ae.getObjectClass())).isEqualTo(Execution.class);
+            .satisfies(ae -> assertThat(ae.getObjectClass()).isEqualTo(Execution.class));
     }
 
     public void testFindActiveActivityIdsNullExecututionId() {
@@ -364,7 +364,7 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
         assertThatExceptionOfType(ActivitiObjectNotFoundException.class)
             .isThrownBy(() -> runtimeService.trigger("unexistingExecutionId"))
             .withMessageContaining("execution unexistingExecutionId doesn't exist")
-            .satisfies(ae -> assertThat(ae.getObjectClass())).isEqualTo(Execution.class);
+            .satisfies(ae -> assertThat(ae.getObjectClass()).isEqualTo(Execution.class));
     }
 
     public void testSignalNullExecutionId() {
@@ -394,7 +394,7 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
         assertThatExceptionOfType(ActivitiObjectNotFoundException.class)
             .isThrownBy(() -> runtimeService.getVariables("unexistingExecutionId"))
             .withMessageContaining("execution unexistingExecutionId doesn't exist")
-            .satisfies(ae -> assertThat(ae.getObjectClass())).isEqualTo(Execution.class);
+            .satisfies(ae -> assertThat(ae.getObjectClass()).isEqualTo(Execution.class));
     }
 
     public void testGetVariablesNullExecutionId() {
@@ -407,7 +407,7 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
         assertThatExceptionOfType(ActivitiObjectNotFoundException.class)
             .isThrownBy(() -> runtimeService.getVariables("unexistingExecutionId"))
             .withMessageContaining("execution unexistingExecutionId doesn't exist")
-            .satisfies(ae -> assertThat(ae.getObjectClass())).isEqualTo(Execution.class);
+            .satisfies(ae -> assertThat(ae.getObjectClass()).isEqualTo(Execution.class));
     }
 
     public void testGetVariableNullExecutionId() {
@@ -427,7 +427,7 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
         assertThatExceptionOfType(ActivitiObjectNotFoundException.class)
             .isThrownBy(() -> runtimeService.setVariable("unexistingExecutionId", "variableName", "value"))
             .withMessageContaining("execution unexistingExecutionId doesn't exist")
-            .satisfies(ae -> assertThat(ae.getObjectClass())).isEqualTo(Execution.class);
+            .satisfies(ae -> assertThat(ae.getObjectClass()).isEqualTo(Execution.class));
     }
 
     public void testSetVariableNullExecutionId() {
@@ -752,13 +752,13 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
     public void testSignalEventReceivedNonExistingExecution() {
         assertThatExceptionOfType(ActivitiObjectNotFoundException.class)
             .isThrownBy(() -> runtimeService.signalEventReceived("alert", "nonexistingExecution"))
-            .satisfies(ae -> assertThat(ae.getObjectClass())).isEqualTo(Execution.class);
+            .satisfies(ae -> assertThat(ae.getObjectClass()).isEqualTo(Execution.class));
     }
 
     public void testMessageEventReceivedNonExistingExecution() {
         assertThatExceptionOfType(ActivitiObjectNotFoundException.class)
             .isThrownBy(() -> runtimeService.messageEventReceived("alert", "nonexistingExecution"))
-            .satisfies(ae -> assertThat(ae.getObjectClass())).isEqualTo(Execution.class);
+            .satisfies(ae -> assertThat(ae.getObjectClass()).isEqualTo(Execution.class));
     }
 
     @Deployment(resources = {"org/activiti/engine/test/api/runtime/RuntimeServiceTest.catchAlertSignal.bpmn20.xml"})
@@ -790,7 +790,7 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
         // Set name for unexisting process instance, should fail
         assertThatExceptionOfType(ActivitiObjectNotFoundException.class)
             .isThrownBy(() -> runtimeService.setProcessInstanceName("unexisting", null))
-            .satisfies(ae -> assertThat(ae.getObjectClass())).isEqualTo(ProcessInstance.class);
+            .satisfies(ae -> assertThat(ae.getObjectClass()).isEqualTo(ProcessInstance.class));
 
         processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(processInstance.getId()).singleResult();
         assertThat(processInstance).isNotNull();

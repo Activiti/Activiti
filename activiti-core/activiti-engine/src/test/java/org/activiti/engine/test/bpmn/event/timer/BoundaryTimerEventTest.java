@@ -286,7 +286,7 @@ public class BoundaryTimerEventTest extends PluggableActivitiTestCase {
     }
 
     tasks = taskService.createTaskQuery().list();
-    assertEquals(1,tasks.size());
+    assertThat(tasks).hasSize(1);
     assertThat(tasks.get(0).getName()).isEqualTo("First Task");
     jobList = managementService.createTimerJobQuery().list();
     assertThat(jobList.size()).isEqualTo(1);

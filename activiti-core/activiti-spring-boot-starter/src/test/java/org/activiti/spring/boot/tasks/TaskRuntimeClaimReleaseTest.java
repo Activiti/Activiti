@@ -151,8 +151,7 @@ public class TaskRuntimeClaimReleaseTest {
         // UnAuthorized release, task is assigned not to you and hence not visible anymore
         securityUtil.logInAs("john");
 
-        Throwable throwable = catchThrowable(() ->
-                                                     taskRuntime.task(standAloneTask.getId()));
+        Throwable throwable = catchThrowable(() -> taskRuntime.task(standAloneTask.getId()));
 
         //then
         assertThat(throwable)

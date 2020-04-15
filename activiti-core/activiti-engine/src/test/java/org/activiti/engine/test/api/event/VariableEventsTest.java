@@ -13,11 +13,11 @@
 package org.activiti.engine.test.api.event;
 
 import static java.util.Collections.singletonMap;
+import static org.activiti.engine.impl.util.CollectionUtil.map;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.ActivitiVariableEvent;
@@ -87,24 +87,29 @@ public class VariableEventsTest extends PluggableActivitiTestCase {
         listener.clearEventsReceived();
 
         // Create, update and delete multiple variables
-        Map<String, Object> vars = new HashMap();
-        vars.put("test", 123);
-        vars.put("test2", 456);
+        Map<String, Object> vars = map(
+            "test", 123,
+            "test2", 456);
+        runtimeService.setVariables(processInstance.getId(), vars);
         runtimeService.setVariables(processInstance.getId(), vars);
         runtimeService.removeVariables(processInstance.getId(), vars.keySet());
 
         assertThat(listener.getEventsReceived()).hasSize(6);
-        assertThat(listener.getEventsReceived().get(0).getType()).isEqualTo(ActivitiEventType.VARIABLE_CREATED);
-        assertThat(listener.getEventsReceived().get(1).getType()).isEqualTo(ActivitiEventType.VARIABLE_CREATED);
-        assertThat(listener.getEventsReceived().get(2).getType()).isEqualTo(ActivitiEventType.VARIABLE_UPDATED);
-        assertThat(listener.getEventsReceived().get(3).getType()).isEqualTo(ActivitiEventType.VARIABLE_UPDATED);
-        assertThat(listener.getEventsReceived().get(4).getType()).isEqualTo(ActivitiEventType.VARIABLE_DELETED);
-        assertThat(listener.getEventsReceived().get(5).getType()).isEqualTo(ActivitiEventType.VARIABLE_DELETED);
+        assertThat(listener.getEventsReceived())
+            .extracting(ActivitiEvent::getType)
+            .containsExactly(
+                ActivitiEventType.VARIABLE_CREATED,
+                ActivitiEventType.VARIABLE_CREATED,
+                ActivitiEventType.VARIABLE_CREATED,
+                ActivitiEventType.VARIABLE_UPDATED,
+                ActivitiEventType.VARIABLE_UPDATED,
+                ActivitiEventType.VARIABLE_DELETED,
+                ActivitiEventType.VARIABLE_DELETED
+            );
         listener.clearEventsReceived();
 
         // Delete nonexistent variable should not dispatch event
-        runtimeService.removeVariable(processInstance.getId(),
-                                      "unexistingVariable");
+        runtimeService.removeVariable(processInstance.getId(), "unexistingVariable");
         assertThat(listener.getEventsReceived().isEmpty()).isTrue();
     }
 

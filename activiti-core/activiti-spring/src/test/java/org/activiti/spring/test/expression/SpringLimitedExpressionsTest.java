@@ -14,7 +14,7 @@
 package org.activiti.spring.test.expression;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.catchThrowableOfType;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.util.List;
 
@@ -58,7 +58,8 @@ public class SpringLimitedExpressionsTest extends SpringActivitiTestCase {
         Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
         assertThat(task).isNotNull();
 
-        ActivitiException ae = catchThrowableOfType(() -> taskService.complete(task.getId()), ActivitiException.class);
-        assertThat(ae.getCause()).hasMessageContaining("Unknown property used in expression");
+        assertThatExceptionOfType(ActivitiException.class)
+          .isThrownBy(() -> taskService.complete(task.getId()))
+          .satisfies(ae -> assertThat(ae.getCause()).hasMessageContaining("Unknown property used in expression"));
     }
 }

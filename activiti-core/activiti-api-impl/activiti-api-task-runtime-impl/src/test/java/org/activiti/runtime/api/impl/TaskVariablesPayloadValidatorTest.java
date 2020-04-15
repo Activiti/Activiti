@@ -183,24 +183,21 @@ public class TaskVariablesPayloadValidatorTest {
         //then
         assertThat(handledDatePayload.getValue()).isEqualTo(true);
     }
-    
+
     @Test
     public void should_returnErrorList_when_setVariableWithWrongCharactersInName() throws Exception {
 
         CreateTaskVariablePayload payload = TaskPayloadBuilder.createVariable()
-                .withVariable("wrong-name",
-                              10)
+                .withVariable("wrong-name", 10)
                 .build();
 
         String expectedTypeErrorMessage = "wrong-name";
 
         Throwable throwable = catchThrowable(() -> taskVariablesPayloadValidator.handleCreateTaskVariablePayload(payload));
 
-        assertThat(throwable).isInstanceOf(IllegalStateException.class); 
-        
-        assertThat(throwable.getMessage())
-            .contains(expectedTypeErrorMessage);
-        
+        assertThat(throwable)
+            .isInstanceOf(IllegalStateException.class)
+            .hasMessageContaining(expectedTypeErrorMessage);
     }
 
 }

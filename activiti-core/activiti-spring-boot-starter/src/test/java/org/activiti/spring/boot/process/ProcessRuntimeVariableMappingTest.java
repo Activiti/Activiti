@@ -110,9 +110,9 @@ public class ProcessRuntimeVariableMappingTest {
 
         Throwable throwable = catchThrowable(() -> processBaseRuntime.startProcessWithProcessDefinitionKey(OUTPUT_MAPPING_EXPRESSION_VARIABLE_PROCESS));
 
-        assertThat(throwable).isInstanceOf(ActivitiException.class);
-
-        assertThat(throwable.getMessage()).contains("Expressions are not allowed as variable values in the output mapping");
+        assertThat(throwable)
+            .isInstanceOf(ActivitiException.class)
+            .hasMessageContaining("Expressions are not allowed as variable values in the output mapping");
     }
 
     @Test

@@ -36,23 +36,16 @@ public class EventBasedGatewayTest extends PluggableActivitiTestCase {
 
         ProcessInstance pi1 = runtimeService.startProcessInstanceByKey("catchSignal");
 
-        assertEquals(1,
-                     createEventSubscriptionQuery().count());
-        assertEquals(1,
-                     runtimeService.createProcessInstanceQuery().count());
-        assertEquals(1,
-                     managementService.createTimerJobQuery().count());
+        assertThat(createEventSubscriptionQuery().count()).isEqualTo(1);
+        assertThat(runtimeService.createProcessInstanceQuery().count()).isEqualTo(1);
+        assertThat(managementService.createTimerJobQuery().count()).isEqualTo(1);
 
         ProcessInstance pi2 = runtimeService.startProcessInstanceByKey("throwSignal");
 
-        assertEquals(0,
-                     createEventSubscriptionQuery().count());
-        assertEquals(1,
-                     runtimeService.createProcessInstanceQuery().count());
-        assertEquals(0,
-                     managementService.createJobQuery().count());
-        assertEquals(0,
-                     managementService.createTimerJobQuery().count());
+        assertThat(createEventSubscriptionQuery().count()).isEqualTo(0);
+        assertThat(runtimeService.createProcessInstanceQuery().count()).isEqualTo(1);
+        assertThat(managementService.createJobQuery().count()).isEqualTo(0);
+        assertThat(managementService.createTimerJobQuery().count()).isEqualTo(0);
 
         Task task = taskService.createTaskQuery().taskName("afterSignal").singleResult();
         assertThat(task).isNotNull();
@@ -68,12 +61,9 @@ public class EventBasedGatewayTest extends PluggableActivitiTestCase {
 
         ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("catchSignal");
 
-        assertEquals(1,
-                     createEventSubscriptionQuery().count());
-        assertEquals(1,
-                     runtimeService.createProcessInstanceQuery().count());
-        assertEquals(1,
-                     managementService.createTimerJobQuery().count());
+        assertThat(createEventSubscriptionQuery().count()).isEqualTo(1);
+        assertThat(runtimeService.createProcessInstanceQuery().count()).isEqualTo(1);
+        assertThat(managementService.createTimerJobQuery().count()).isEqualTo(1);
 
         processEngineConfiguration.getClock().setCurrentTime(new Date(processEngineConfiguration.getClock().getCurrentTime().getTime() + 10000));
 
@@ -81,14 +71,10 @@ public class EventBasedGatewayTest extends PluggableActivitiTestCase {
         waitForJobExecutorToProcessAllJobs(10000,
                                            100);
 
-        assertEquals(0,
-                     createEventSubscriptionQuery().count());
-        assertEquals(1,
-                     runtimeService.createProcessInstanceQuery().count());
-        assertEquals(0,
-                     managementService.createJobQuery().count());
-        assertEquals(0,
-                     managementService.createTimerJobQuery().count());
+        assertThat(createEventSubscriptionQuery().count()).isEqualTo(0);
+        assertThat(runtimeService.createProcessInstanceQuery().count()).isEqualTo(1);
+        assertThat(managementService.createJobQuery().count()).isEqualTo(0);
+        assertThat(managementService.createTimerJobQuery().count()).isEqualTo(0);
 
         Task task = taskService.createTaskQuery().taskName("afterTimer").singleResult();
 
@@ -106,17 +92,12 @@ public class EventBasedGatewayTest extends PluggableActivitiTestCase {
 
         ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("catchSignal");
 
-        assertEquals(2,
-                     createEventSubscriptionQuery().count());
+        assertThat(createEventSubscriptionQuery().count()).isEqualTo(2);
         EventSubscriptionQueryImpl messageEventSubscriptionQuery = createEventSubscriptionQuery().eventType("message");
-        assertEquals(1,
-                     messageEventSubscriptionQuery.count());
-        assertEquals(1,
-                     createEventSubscriptionQuery().eventType("signal").count());
-        assertEquals(1,
-                     runtimeService.createProcessInstanceQuery().count());
-        assertEquals(1,
-                     managementService.createTimerJobQuery().count());
+        assertThat(messageEventSubscriptionQuery.count()).isEqualTo(1);
+        assertThat(createEventSubscriptionQuery().eventType("signal").count()).isEqualTo(1);
+        assertThat(runtimeService.createProcessInstanceQuery().count()).isEqualTo(1);
+        assertThat(managementService.createTimerJobQuery().count()).isEqualTo(1);
 
         Execution execution = runtimeService.createExecutionQuery().messageEventSubscriptionName("newInvoice").singleResult();
         assertThat(execution).isNotNull();
@@ -130,14 +111,10 @@ public class EventBasedGatewayTest extends PluggableActivitiTestCase {
         runtimeService.messageEventReceived(messageEventSubscription.getEventName(),
                                             messageEventSubscription.getExecutionId());
 
-        assertEquals(0,
-                     createEventSubscriptionQuery().count());
-        assertEquals(1,
-                     runtimeService.createProcessInstanceQuery().count());
-        assertEquals(0,
-                     managementService.createTimerJobQuery().count());
-        assertEquals(0,
-                     managementService.createJobQuery().count());
+        assertThat(createEventSubscriptionQuery().count()).isEqualTo(0);
+        assertThat(runtimeService.createProcessInstanceQuery().count()).isEqualTo(1);
+        assertThat(managementService.createTimerJobQuery().count()).isEqualTo(0);
+        assertThat(managementService.createJobQuery().count()).isEqualTo(0);
 
         Task task = taskService.createTaskQuery().taskName("afterMessage").singleResult();
         assertThat(task).isNotNull();
@@ -172,8 +149,7 @@ public class EventBasedGatewayTest extends PluggableActivitiTestCase {
         managementService.executeJob(job.getId());
         runtimeService.signalEventReceived("alert");
         task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
-        assertEquals("afterSignal",
-                     task.getName());
+        assertThat(task.getName()).isEqualTo("afterSignal");
     }
 
     private EventSubscriptionQueryImpl createEventSubscriptionQuery() {

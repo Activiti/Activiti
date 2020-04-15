@@ -563,8 +563,8 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
       groups.add("group1");
 
       assertThat(taskService.getIdentityLinksForTask(adhocTask.getId()).size()).isEqualTo(3);
-      assertEquals(1, taskService.createTaskQuery()
-          .taskId(adhocTask.getId()).taskInvolvedGroupsIn(groups).count());
+      assertThat(taskService.createTaskQuery()
+          .taskId(adhocTask.getId()).taskInvolvedGroupsIn(groups).count()).isEqualTo(1);
     } finally {
       List<Task> allTasks = taskService.createTaskQuery().list();
       for (Task task : allTasks) {
@@ -2253,8 +2253,7 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
     assertThat(taskService.createNativeTaskQuery().sql("SELECT * FROM " + managementService.getTableName(Task.class) + " T WHERE T.NAME_ = 'gonzoTask'").list().size()).isEqualTo(1);
 
     // use parameters
-    assertEquals(1, taskService.createNativeTaskQuery().sql("SELECT count(*) FROM " + managementService.getTableName(Task.class) + " T WHERE T.NAME_ = #{taskName}").parameter("taskName", "gonzoTask")
-        .count());
+    assertThat(taskService.createNativeTaskQuery().sql("SELECT count(*) FROM " + managementService.getTableName(Task.class) + " T WHERE T.NAME_ = #{taskName}").parameter("taskName", "gonzoTask").count()).isEqualTo(1);
   }
 
   /**

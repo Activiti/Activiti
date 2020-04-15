@@ -109,7 +109,6 @@ public class UserTaskCandidateDeleteRuntimeTest {
         assertThat(throwable)
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessage("You cannot delete a task where you are not the assignee/owner");
-
     }
 
     @After

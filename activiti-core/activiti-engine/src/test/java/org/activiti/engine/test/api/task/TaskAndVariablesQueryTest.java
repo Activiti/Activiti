@@ -203,8 +203,7 @@ public class TaskAndVariablesQueryTest extends PluggableActivitiTestCase {
                     .listPage(0,
                               200);
             // 100 tasks created by generateMultipleTestTasks and 3 created previously at setUp
-            assertEquals(expectedNumberOfTasks,
-                         tasks.size());
+            assertThat(tasks).hasSize(expectedNumberOfTasks);
 
             tasks = taskService.createTaskQuery()
                     .includeProcessVariables()
@@ -214,8 +213,7 @@ public class TaskAndVariablesQueryTest extends PluggableActivitiTestCase {
                     .asc()
                     .listPage(50,
                               100);
-            assertEquals(53,
-                         tasks.size());
+            assertThat(tasks).hasSize(53);
         } finally {
             taskService.deleteTasks(multipleTaskIds,
                                     true);
@@ -233,10 +231,8 @@ public class TaskAndVariablesQueryTest extends PluggableActivitiTestCase {
         Task task = taskService.createTaskQuery().includeProcessVariables().or().processVariableValueEquals("undefined",
                                                                                                             999).processVariableValueEquals("anotherProcessVar",
                                                                                                                                             123).endOr().singleResult();
-        assertEquals(1,
-                     task.getProcessVariables().size());
-        assertEquals(123,
-                     task.getProcessVariables().get("anotherProcessVar"));
+        assertThat(task.getProcessVariables()).hasSize(1);
+        assertThat(task.getProcessVariables().get("anotherProcessVar")).isEqualTo(123);
 
         task = taskService.createTaskQuery().includeProcessVariables().or().processVariableValueEquals("undefined",
                                                                                                        999).endOr().singleResult();
@@ -245,17 +241,13 @@ public class TaskAndVariablesQueryTest extends PluggableActivitiTestCase {
         task = taskService.createTaskQuery().includeProcessVariables().or().processVariableValueEquals("anotherProcessVar",
                                                                                                        123).processVariableValueEquals("undefined",
                                                                                                                                        999).endOr().singleResult();
-        assertEquals(1,
-                     task.getProcessVariables().size());
-        assertEquals(123,
-                     task.getProcessVariables().get("anotherProcessVar"));
+        assertThat(task.getProcessVariables()).hasSize(1);
+        assertThat(task.getProcessVariables().get("anotherProcessVar")).isEqualTo(123);
 
         task = taskService.createTaskQuery().includeProcessVariables().or().processVariableValueEquals("anotherProcessVar",
                                                                                                        123).endOr().singleResult();
-        assertEquals(1,
-                     task.getProcessVariables().size());
-        assertEquals(123,
-                     task.getProcessVariables().get("anotherProcessVar"));
+        assertThat(task.getProcessVariables()).hasSize(1);
+        assertThat(task.getProcessVariables().get("anotherProcessVar")).isEqualTo(123);
 
         task = taskService.createTaskQuery().includeProcessVariables().or().processVariableValueEquals("anotherProcessVar",
                                                                                                        999).endOr().singleResult();
@@ -264,10 +256,8 @@ public class TaskAndVariablesQueryTest extends PluggableActivitiTestCase {
         task = taskService.createTaskQuery().includeProcessVariables().or().processVariableValueEquals("anotherProcessVar",
                                                                                                        999).processVariableValueEquals("anotherProcessVar",
                                                                                                                                        123).endOr().singleResult();
-        assertEquals(1,
-                     task.getProcessVariables().size());
-        assertEquals(123,
-                     task.getProcessVariables().get("anotherProcessVar"));
+        assertThat(task.getProcessVariables()).hasSize(1);
+        assertThat(task.getProcessVariables().get("anotherProcessVar")).isEqualTo(123);
     }
 
     @Deployment
@@ -296,10 +286,8 @@ public class TaskAndVariablesQueryTest extends PluggableActivitiTestCase {
         }
         query1 = query1.endOr();
         Task task = query1.singleResult();
-        assertEquals(2,
-                     task.getProcessVariables().size());
-        assertEquals(123,
-                     task.getProcessVariables().get("anotherProcessVar"));
+        assertThat(task.getProcessVariables()).hasSize(2);
+        assertThat(task.getProcessVariables().get("anotherProcessVar")).isEqualTo(123);
     }
 
     /**

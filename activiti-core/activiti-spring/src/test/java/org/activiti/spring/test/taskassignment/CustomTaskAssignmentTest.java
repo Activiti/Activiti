@@ -42,8 +42,7 @@ public class CustomTaskAssignmentTest extends SpringActivitiTestCase {
     public void testSetAssigneeThroughSpringService() {
         runtimeService.startProcessInstanceByKey("assigneeThroughSpringService",
                                                  singletonMap("emp", "fozzie"));
-        assertEquals(1,
-                     taskService.createTaskQuery().taskAssignee("Kermit The Frog").count());
+        assertThat(taskService.createTaskQuery().taskAssignee("Kermit The Frog").count()).isEqualTo(1);
     }
 
     @Deployment

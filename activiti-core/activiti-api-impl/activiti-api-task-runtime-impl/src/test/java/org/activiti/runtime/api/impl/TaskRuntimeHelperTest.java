@@ -30,7 +30,6 @@ import static org.mockito.MockitoAnnotations.initMocks;
 
 import java.util.Date;
 import java.util.List;
-
 import org.activiti.api.runtime.shared.NotFoundException;
 import org.activiti.api.runtime.shared.security.SecurityManager;
 import org.activiti.api.task.model.builders.TaskPayloadBuilder;
@@ -127,8 +126,7 @@ public class TaskRuntimeHelperTest {
                 .build();
 
         //when
-        Throwable throwable = catchThrowable(() -> taskRuntimeHelper.applyUpdateTaskPayload(false,
-                updateTaskPayload));
+        Throwable throwable = catchThrowable(() -> taskRuntimeHelper.applyUpdateTaskPayload(false, updateTaskPayload));
 
         //then
         assertThat(throwable)
@@ -217,9 +215,7 @@ public class TaskRuntimeHelperTest {
         given(taskService.createTaskQuery()).willReturn(taskQuery);
 
         //when
-        Throwable thrown = catchThrowable(() ->
-                taskRuntimeHelper.getInternalTaskWithChecks("taskId")
-        );
+        Throwable thrown = catchThrowable(() -> taskRuntimeHelper.getInternalTaskWithChecks("taskId"));
 
         //then
         assertThat(thrown)
@@ -233,14 +229,12 @@ public class TaskRuntimeHelperTest {
         given(securityManager.getAuthenticatedUserId()).willReturn(null);
 
         //when
-        Throwable thrown = catchThrowable(() ->
-                taskRuntimeHelper.getInternalTaskWithChecks("taskId")
-        );
+        Throwable thrown = catchThrowable(() -> taskRuntimeHelper.getInternalTaskWithChecks("taskId"));
 
         //then
         assertThat(thrown)
-                .isInstanceOf(IllegalStateException.class)
-                .hasMessage("There is no authenticated user, we need a user authenticated to find tasks");
+            .isInstanceOf(IllegalStateException.class)
+            .hasMessage("There is no authenticated user, we need a user authenticated to find tasks");
     }
 
 }

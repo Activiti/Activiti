@@ -500,10 +500,8 @@ public class StartTimerEventTest extends PluggableActivitiTestCase {
                            3,
                            1,
                            0);
-        assertEquals(2,
-                     managementService.createTimerJobQuery().count());
-        assertEquals(0,
-                     managementService.createTimerJobQuery().executable().count());
+        assertThat(managementService.createTimerJobQuery().count()).isEqualTo(2);
+        assertThat(managementService.createTimerJobQuery().executable().count()).isEqualTo(0);
 
         // New situation:
         // Path A : triggered at start + 2*10 seconds (18:50:21) (R1 - was R2) [CHANGED]
@@ -516,17 +514,14 @@ public class StartTimerEventTest extends PluggableActivitiTestCase {
         processEngineConfiguration.getClock().setCurrentTime(newDate);
 
         executableTimers = managementService.createTimerJobQuery().executable().list();
-        assertEquals(2,
-                     executableTimers.size());
+        assertThat(executableTimers).hasSize(2);
         executeJobs(executableTimers);
         validateTaskCounts(2,
                            3,
                            1,
                            1);
-        assertEquals(1,
-                     managementService.createTimerJobQuery().count());
-        assertEquals(0,
-                     managementService.createTimerJobQuery().executable().count());
+        assertThat(managementService.createTimerJobQuery().count()).isEqualTo(1);
+        assertThat(managementService.createTimerJobQuery().executable().count()).isEqualTo(0);
 
         // New situation:
         // Path A : all repeats used up
@@ -543,18 +538,10 @@ public class StartTimerEventTest extends PluggableActivitiTestCase {
                                     long taskBCount,
                                     long taskCCount,
                                     long taskDCount) {
-        assertEquals("task A counts are incorrect",
-                     taskACount,
-                     taskService.createTaskQuery().taskName("Task A").count());
-        assertEquals("task B counts are incorrect",
-                     taskBCount,
-                     taskService.createTaskQuery().taskName("Task B").count());
-        assertEquals("task C counts are incorrect",
-                     taskCCount,
-                     taskService.createTaskQuery().taskName("Task C").count());
-        assertEquals("task D counts are incorrect",
-                     taskDCount,
-                     taskService.createTaskQuery().taskName("Task D").count());
+        assertThat(taskService.createTaskQuery().taskName("Task A").count()).as("task A counts are incorrect").isEqualTo(taskACount);
+        assertThat(taskService.createTaskQuery().taskName("Task B").count()).as("task B counts are incorrect").isEqualTo(taskBCount);
+        assertThat(taskService.createTaskQuery().taskName("Task C").count()).as("task C counts are incorrect").isEqualTo(taskCCount);
+        assertThat(taskService.createTaskQuery().taskName("Task D").count()).as("task D counts are incorrect").isEqualTo(taskDCount);
     }
 
     private void executeJobs(List<Job> jobs) {

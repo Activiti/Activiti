@@ -85,22 +85,14 @@ public class TenancyTest extends PluggableActivitiTestCase {
 
         deployTestProcessWithTestTenant();
 
-        assertEquals(TEST_TENANT_ID,
-                     repositoryService.createDeploymentQuery().singleResult().getTenantId());
-        assertEquals(1,
-                     repositoryService.createDeploymentQuery().deploymentTenantId(TEST_TENANT_ID).list().size());
-        assertEquals(1,
-                     repositoryService.createDeploymentQuery().deploymentId(autoCleanedUpDeploymentIds.get(0)).deploymentTenantId(TEST_TENANT_ID).list().size());
-        assertEquals(1,
-                     repositoryService.createDeploymentQuery().deploymentTenantIdLike("my%").list().size());
-        assertEquals(1,
-                     repositoryService.createDeploymentQuery().deploymentTenantIdLike("%TenantId").list().size());
-        assertEquals(1,
-                     repositoryService.createDeploymentQuery().deploymentTenantIdLike("m%Ten%").list().size());
-        assertEquals(0,
-                     repositoryService.createDeploymentQuery().deploymentTenantIdLike("noexisting%").list().size());
-        assertEquals(0,
-                     repositoryService.createDeploymentQuery().deploymentWithoutTenantId().list().size());
+        assertThat(repositoryService.createDeploymentQuery().singleResult().getTenantId()).isEqualTo(TEST_TENANT_ID);
+        assertThat(repositoryService.createDeploymentQuery().deploymentTenantId(TEST_TENANT_ID).list()).hasSize(1);
+        assertThat(repositoryService.createDeploymentQuery().deploymentId(autoCleanedUpDeploymentIds.get(0)).deploymentTenantId(TEST_TENANT_ID).list()).hasSize(1);
+        assertThat(repositoryService.createDeploymentQuery().deploymentTenantIdLike("my%").list()).hasSize(1);
+        assertThat(repositoryService.createDeploymentQuery().deploymentTenantIdLike("%TenantId").list()).hasSize(1);
+        assertThat(repositoryService.createDeploymentQuery().deploymentTenantIdLike("m%Ten%").list()).hasSize(1);
+        assertThat(repositoryService.createDeploymentQuery().deploymentTenantIdLike("noexisting%").list()).hasSize(0);
+        assertThat(repositoryService.createDeploymentQuery().deploymentWithoutTenantId().list()).hasSize(0);
     }
 
     public void testProcessDefinitionTenancy() {
@@ -108,42 +100,27 @@ public class TenancyTest extends PluggableActivitiTestCase {
         // Deploy a process with tenant and verify
 
         String processDefinitionIdWithTenant = deployTestProcessWithTestTenant();
-        assertEquals(TEST_TENANT_ID,
-                     repositoryService.createProcessDefinitionQuery().processDefinitionId(processDefinitionIdWithTenant).singleResult().getTenantId());
-        assertEquals(1,
-                     repositoryService.createProcessDefinitionQuery().processDefinitionTenantId(TEST_TENANT_ID).list().size());
-        assertEquals(1,
-                     repositoryService.createProcessDefinitionQuery().processDefinitionTenantIdLike("m%").list().size());
-        assertEquals(0,
-                     repositoryService.createProcessDefinitionQuery().processDefinitionTenantIdLike("somethingElse%").list().size());
-        assertEquals(0,
-                     repositoryService.createProcessDefinitionQuery().processDefinitionWithoutTenantId().list().size());
+        assertThat(repositoryService.createProcessDefinitionQuery().processDefinitionId(processDefinitionIdWithTenant).singleResult().getTenantId()).isEqualTo(TEST_TENANT_ID);
+        assertThat(repositoryService.createProcessDefinitionQuery().processDefinitionTenantId(TEST_TENANT_ID).list()).hasSize(1);
+        assertThat(repositoryService.createProcessDefinitionQuery().processDefinitionTenantIdLike("m%").list()).hasSize(1);
+        assertThat(repositoryService.createProcessDefinitionQuery().processDefinitionTenantIdLike("somethingElse%").list()).hasSize(0);
+        assertThat(repositoryService.createProcessDefinitionQuery().processDefinitionWithoutTenantId().list()).hasSize(0);
 
         // Deploy another process, without tenant
         String processDefinitionIdWithoutTenant = deployOneTaskTestProcess();
-        assertEquals(2,
-                     repositoryService.createProcessDefinitionQuery().list().size());
-        assertEquals(1,
-                     repositoryService.createProcessDefinitionQuery().processDefinitionTenantId(TEST_TENANT_ID).list().size());
-        assertEquals(1,
-                     repositoryService.createProcessDefinitionQuery().processDefinitionTenantIdLike("m%").list().size());
-        assertEquals(0,
-                     repositoryService.createProcessDefinitionQuery().processDefinitionTenantIdLike("somethingElse%").list().size());
-        assertEquals(1,
-                     repositoryService.createProcessDefinitionQuery().processDefinitionWithoutTenantId().list().size());
+        assertThat(repositoryService.createProcessDefinitionQuery().list()).hasSize(2);
+        assertThat(repositoryService.createProcessDefinitionQuery().processDefinitionTenantId(TEST_TENANT_ID).list()).hasSize(1);
+        assertThat(repositoryService.createProcessDefinitionQuery().processDefinitionTenantIdLike("m%").list()).hasSize(1);
+        assertThat(repositoryService.createProcessDefinitionQuery().processDefinitionTenantIdLike("somethingElse%").list()).hasSize(0);
+        assertThat(repositoryService.createProcessDefinitionQuery().processDefinitionWithoutTenantId().list()).hasSize(1);
 
         // Deploy another process with the same tenant
         String processDefinitionIdWithTenant2 = deployTestProcessWithTestTenant();
-        assertEquals(3,
-                     repositoryService.createProcessDefinitionQuery().list().size());
-        assertEquals(2,
-                     repositoryService.createProcessDefinitionQuery().processDefinitionTenantId(TEST_TENANT_ID).list().size());
-        assertEquals(2,
-                     repositoryService.createProcessDefinitionQuery().processDefinitionTenantIdLike("m%").list().size());
-        assertEquals(0,
-                     repositoryService.createProcessDefinitionQuery().processDefinitionTenantIdLike("somethingElse%").list().size());
-        assertEquals(1,
-                     repositoryService.createProcessDefinitionQuery().processDefinitionWithoutTenantId().list().size());
+        assertThat(repositoryService.createProcessDefinitionQuery().list()).hasSize(3);
+        assertThat(repositoryService.createProcessDefinitionQuery().processDefinitionTenantId(TEST_TENANT_ID).list()).hasSize(2);
+        assertThat(repositoryService.createProcessDefinitionQuery().processDefinitionTenantIdLike("m%").list()).hasSize(2);
+        assertThat(repositoryService.createProcessDefinitionQuery().processDefinitionTenantIdLike("somethingElse%").list()).hasSize(0);
+        assertThat(repositoryService.createProcessDefinitionQuery().processDefinitionWithoutTenantId().list()).hasSize(1);
 
         // Extra check: we deployed the one task process twice, but once with
         // tenant and once without. The latest query should show this.

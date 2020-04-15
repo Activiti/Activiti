@@ -111,7 +111,6 @@ public class UserTaskAssigneeDeleteRuntimeTest {
         assertThat(throwable)
                 .isInstanceOf(ActivitiException.class)
                 .hasMessage("The task cannot be deleted because is part of a running process");
-
     }
 
 
@@ -124,7 +123,7 @@ public class UserTaskAssigneeDeleteRuntimeTest {
         }
         clearEvents();
     }
-    
+
     public void clearEvents() {
         RuntimeTestConfiguration.collectedEvents.clear();
     }

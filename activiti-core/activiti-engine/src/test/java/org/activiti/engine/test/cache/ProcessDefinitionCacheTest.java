@@ -63,8 +63,7 @@ public class ProcessDefinitionCacheTest extends AbstractTestCase {
         // verify existence of process definition
         List<ProcessDefinition> processDefinitions = processEngine.getRepositoryService().createProcessDefinitionQuery().list();
 
-        assertEquals(1,
-                     processDefinitions.size());
+        assertThat(processDefinitions).hasSize(1);
 
         // Start a new Process instance
         ProcessInstance processInstance = processEngine.getRuntimeService().startProcessInstanceById(processDefinitions.get(0).getId());
@@ -130,16 +129,13 @@ public class ProcessDefinitionCacheTest extends AbstractTestCase {
         String processDefinitionId = repositoryService2.createProcessDefinitionQuery().singleResult().getId();
         runtimeService2.startProcessInstanceById(processDefinitionId);
         Task task = taskService2.createTaskQuery().singleResult();
-        assertEquals("original task",
-                     task.getName());
+        assertThat(task.getName()).isEqualTo("original task");
 
         // Delete the deployment on second process engine
         repositoryService2.deleteDeployment(deploymentId,
                                             true);
-        assertEquals(0,
-                     repositoryService2.createDeploymentQuery().count());
-        assertEquals(0,
-                     runtimeService2.createProcessInstanceQuery().count());
+        assertThat(repositoryService2.createDeploymentQuery().count()).isEqualTo(0);
+        assertThat(runtimeService2.createProcessInstanceQuery().count()).isEqualTo(0);
 
         // deploy a revised version of the process: start->revisedTask->end on
         // first process engine
@@ -159,8 +155,7 @@ public class ProcessDefinitionCacheTest extends AbstractTestCase {
         repositoryService2.createProcessDefinitionQuery().singleResult().getId();
         runtimeService2.startProcessInstanceByKey("oneTaskProcess");
         task = taskService2.createTaskQuery().singleResult();
-        assertEquals("revised task",
-                     task.getName());
+        assertThat(task.getName()).isEqualTo("revised task");
 
         // cleanup
         repositoryService1.deleteDeployment(deploymentId,
