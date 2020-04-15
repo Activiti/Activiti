@@ -153,11 +153,11 @@ public class JPAVariableTest extends AbstractActivitiTestCase {
             manager.persist(stringIdJPAEntity);
 
             bigDecimalIdJPAEntity = new BigDecimalIdJPAEntity();
-            bigDecimalIdJPAEntity.setBigDecimalId(new BigDecimal("12345678912345678900000.123456789123456789"));
+            bigDecimalIdJPAEntity.setBigDecimalId(new BigDecimal("12345678912345.12"));
             manager.persist(bigDecimalIdJPAEntity);
 
             bigIntegerIdJPAEntity = new BigIntegerIdJPAEntity();
-            bigIntegerIdJPAEntity.setBigIntegerId(new BigInteger("12345678912345678912345678900000"));
+            bigIntegerIdJPAEntity.setBigIntegerId(new BigInteger("12345678912345678"));
             manager.persist(bigIntegerIdJPAEntity);
 
             manager.flush();
@@ -209,9 +209,8 @@ public class JPAVariableTest extends AbstractActivitiTestCase {
         manager.close();
     }
 
-  //@TODO: fix Caused by: org.h2.jdbc.JdbcSQLException: Concurrent update in table "JPA_ENTITY_FIELD": another transaction has updated or deleted the same row [90131-193]
   @Deployment
-  public void ignoredTestStoreJPAEntityAsVariable() {
+  public void testStoreJPAEntityAsVariable() {
     setupJPAEntities();
     // -----------------------------------------------------------------------------
     // Simple test, Start process with JPA entities as variables
@@ -336,9 +335,8 @@ public class JPAVariableTest extends AbstractActivitiTestCase {
     assertThat(((BigIntegerIdJPAEntity) bigIntegerIdResult).getBigIntegerId()).isEqualTo(bigIntegerIdJPAEntity.getBigIntegerId());
   }
 
-  //@TODO: fix Caused by: org.h2.jdbc.JdbcSQLException: Value too long for column "ID_ DECIMAL(19, 2) NOT NULL": "12345678912345678900000.12 (25)"; SQL statement:
   @Deployment(resources = { "org/activiti/standalone/jpa/JPAVariableTest.testStoreJPAEntityAsVariable.bpmn20.xml" })
-  public void ignoredTestStoreJPAEntityListAsVariable() {
+  public void testStoreJPAEntityListAsVariable() {
     setupJPAEntities();
     // -----------------------------------------------------------------------------
     // Simple test, Start process with lists of JPA entities as variables
@@ -386,9 +384,8 @@ public class JPAVariableTest extends AbstractActivitiTestCase {
     assertThat(simpleEntityPropertyAccess.getId()).isEqualTo(((SubclassPropertyAccessJPAEntity) list.get(0)).getId());
   }
 
-  //@TODO: fix Caused by: org.h2.jdbc.JdbcSQLException: Concurrent update in table "JPA_ENTITY_FIELD": another transaction has updated or deleted the same row [90131-193]
   @Deployment(resources = { "org/activiti/standalone/jpa/JPAVariableTest.testStoreJPAEntityAsVariable.bpmn20.xml" })
-  public void ignoredTestStoreJPAEntityListAsVariableEdgeCases() {
+  public void testStoreJPAEntityListAsVariableEdgeCases() {
     setupJPAEntities();
 
     // Test using mixed JPA-entities which are not serializable, should not
