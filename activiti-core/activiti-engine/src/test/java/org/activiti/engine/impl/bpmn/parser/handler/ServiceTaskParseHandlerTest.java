@@ -20,8 +20,8 @@ import org.activiti.bpmn.model.ServiceTask;
 import org.activiti.engine.impl.bpmn.behavior.ServiceTaskDelegateExpressionActivityBehavior;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.bpmn.parser.factory.ActivityBehaviorFactory;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
@@ -41,7 +41,7 @@ public class ServiceTaskParseHandlerTest {
     @Mock
     private ActivityBehaviorFactory activityBehaviorFactory;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         initMocks(this);
         given(bpmnParse.getActivityBehaviorFactory()).willReturn(activityBehaviorFactory);

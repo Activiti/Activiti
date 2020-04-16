@@ -13,12 +13,10 @@ import org.activiti.api.task.runtime.TaskRuntime;
 import org.activiti.spring.conformance.util.security.SecurityUtil;
 import org.activiti.test.operations.ProcessOperations;
 import org.activiti.test.operations.TaskOperations;
-import org.junit.After;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.activiti.test.matchers.BPMNStartEventMatchers.startEvent;
 import static org.activiti.test.matchers.EndEventMatchers.endEvent;
@@ -31,7 +29,6 @@ import static org.activiti.test.matchers.TaskMatchers.withAssignee;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Java6Assertions.tuple;
 
-@RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 public class BasicInclusiveGatewayTest {
 
@@ -167,7 +164,7 @@ public class BasicInclusiveGatewayTest {
         assertThat(tasks.getTotalItems()).isEqualTo(0);
     }
 
-    @After
+    @AfterEach
     public void cleanup() {
         securityUtil.logInAs("admin");
         Page<ProcessInstance> processInstancePage = processAdminRuntime.processInstances(Pageable.of(0, 50));

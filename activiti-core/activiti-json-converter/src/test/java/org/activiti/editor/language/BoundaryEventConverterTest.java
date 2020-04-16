@@ -10,7 +10,7 @@ import org.activiti.bpmn.model.ErrorEventDefinition;
 import org.activiti.bpmn.model.MessageEventDefinition;
 import org.activiti.bpmn.model.SignalEventDefinition;
 import org.activiti.bpmn.model.TimerEventDefinition;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class BoundaryEventConverterTest extends AbstractConverterTest {
 

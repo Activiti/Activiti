@@ -32,8 +32,8 @@ import org.activiti.engine.delegate.event.impl.ActivitiEntityEventImpl;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.runtime.api.model.impl.APITaskConverter;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
@@ -45,7 +45,7 @@ public class ToTaskCancelledConverterTest {
     @Mock
     private APITaskConverter taskConverter;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         initMocks(this);
     }

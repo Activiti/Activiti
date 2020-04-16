@@ -1,9 +1,9 @@
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,7 +20,7 @@ import org.activiti.core.common.spring.project.ApplicationUpgradeContextService;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.DeploymentBuilder;
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.mockito.Mock;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.ContextResource;
@@ -85,7 +85,7 @@ public class AbstractAutoDeploymentStrategyTest {
     protected final String resourceName4 = "/opt/processes/resourceName4.zip";
     protected final String resourceName5 = "/opt/processes/resourceName5.jar";
 
-    @Before
+    @BeforeEach
     public void before() throws Exception {
         initMocks(this);
         when(resourceMock1.getPathWithinContext()).thenReturn(resourceName1);

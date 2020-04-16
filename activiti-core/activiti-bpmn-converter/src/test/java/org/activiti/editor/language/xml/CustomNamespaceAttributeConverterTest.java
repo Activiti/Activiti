@@ -10,7 +10,7 @@ import org.activiti.bpmn.model.ExtensionAttribute;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.Process;
 import org.activiti.bpmn.model.UserTask;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class CustomNamespaceAttributeConverterTest extends AbstractConverterTest {
 

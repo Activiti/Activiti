@@ -20,8 +20,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.core.io.Resource;
@@ -44,7 +44,7 @@ public class ApplicationServiceTest {
     @Mock
     private ApplicationReader applicationReader;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         initMocks(this);
     }

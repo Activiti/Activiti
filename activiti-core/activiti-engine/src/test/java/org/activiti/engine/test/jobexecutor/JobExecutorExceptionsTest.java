@@ -21,7 +21,7 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.runtime.TimerJobQuery;
 import org.activiti.engine.test.Deployment;
 import static org.assertj.core.api.Assertions.assertThat;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
 

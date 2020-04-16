@@ -30,8 +30,8 @@ import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.persistence.entity.data.ExecutionDataManager;
 import org.activiti.engine.runtime.Clock;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import static org.mockito.AdditionalAnswers.returnsFirstArg;
@@ -53,7 +53,7 @@ public class ExecutionEntityManagerImplTest {
     @Mock
     private Clock clock;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         initMocks(this);
         given(processEngineConfiguration.getClock()).willReturn(clock);

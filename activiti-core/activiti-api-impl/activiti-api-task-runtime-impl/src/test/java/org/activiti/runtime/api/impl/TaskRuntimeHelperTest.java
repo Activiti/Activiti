@@ -39,8 +39,8 @@ import org.activiti.engine.TaskService;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.task.TaskQuery;
 import org.activiti.runtime.api.model.impl.APITaskConverter;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 
 public class TaskRuntimeHelperTest {
@@ -61,7 +61,7 @@ public class TaskRuntimeHelperTest {
     @Mock
     private TaskVariablesPayloadValidator taskVariablesValidator;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         initMocks(this);
         taskRuntimeHelper = spy(new TaskRuntimeHelper(taskService,

@@ -92,6 +92,7 @@ public class ProcessDiagramGeneratorTest extends PluggableActivitiTestCase {
                                                  activityIds, highLightedFlows, activityFontName, labelFontName, annotationFontName);
         assertThat(diagram).isNotNull();
     }
+
     @Deployment
     public void testTransactionElements() throws Exception {
         ProcessDiagramGenerator imageGenerator = new DefaultProcessDiagramGenerator();
@@ -232,4 +233,5 @@ public class ProcessDiagramGeneratorTest extends PluggableActivitiTestCase {
         SAXSVGDocumentFactory factory = new SAXSVGDocumentFactory(parser);
         return (SVGOMDocument) factory.createDocument(null, resourceStream);
     }
+
 }

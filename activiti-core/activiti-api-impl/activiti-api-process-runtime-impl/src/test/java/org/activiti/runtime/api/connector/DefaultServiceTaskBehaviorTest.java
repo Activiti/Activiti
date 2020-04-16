@@ -18,8 +18,8 @@ package org.activiti.runtime.api.connector;
 
 import org.activiti.api.process.runtime.connector.Connector;
 import org.activiti.engine.delegate.DelegateExecution;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.context.ApplicationContext;
@@ -37,7 +37,7 @@ public class DefaultServiceTaskBehaviorTest {
     @Mock
     private ApplicationContext context;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         initMocks(this);
     }

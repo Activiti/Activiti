@@ -14,7 +14,7 @@ import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.StartEvent;
 import org.activiti.bpmn.model.SubProcess;
 import org.activiti.bpmn.model.ValuedDataObject;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * @see <a href="https://activiti.atlassian.net/browse/ACT-1847">https://activiti.atlassian.net/browse/ACT-1847</a>

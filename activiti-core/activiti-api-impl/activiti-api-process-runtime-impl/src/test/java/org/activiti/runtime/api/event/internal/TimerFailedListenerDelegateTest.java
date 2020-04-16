@@ -21,8 +21,8 @@ import org.activiti.api.process.runtime.events.listener.BPMNElementEventListener
 import org.activiti.api.runtime.event.impl.BPMNTimerFailedEventImpl;
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.runtime.api.event.impl.ToTimerFailedConverter;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 
 import java.util.Optional;
@@ -45,7 +45,7 @@ public class TimerFailedListenerDelegateTest {
     @Mock
     private ToTimerFailedConverter converter;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         initMocks(this);
         listenerDelegate = new TimerFailedListenerDelegate(singletonList(listener), converter);

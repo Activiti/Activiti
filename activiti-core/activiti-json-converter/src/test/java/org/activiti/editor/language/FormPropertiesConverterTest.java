@@ -1,7 +1,7 @@
 package org.activiti.editor.language;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.fail;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,7 +14,7 @@ import org.activiti.bpmn.model.FormProperty;
 import org.activiti.bpmn.model.FormValue;
 import org.activiti.bpmn.model.StartEvent;
 import org.activiti.bpmn.model.UserTask;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class FormPropertiesConverterTest extends AbstractConverterTest {
 

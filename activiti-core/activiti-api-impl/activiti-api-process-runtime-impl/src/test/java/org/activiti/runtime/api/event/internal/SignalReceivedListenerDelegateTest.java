@@ -22,8 +22,8 @@ import org.activiti.api.runtime.event.impl.BPMNSignalReceivedEventImpl;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiSignalEventImpl;
 import org.activiti.runtime.api.event.impl.ToSignalReceivedConverter;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 
 import java.util.Optional;
@@ -47,7 +47,7 @@ public class SignalReceivedListenerDelegateTest {
     @Mock
     private ToSignalReceivedConverter converter;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         initMocks(this);
         listenerDelegate = new SignalReceivedListenerDelegate(asList(firstListener, secondListener), converter);

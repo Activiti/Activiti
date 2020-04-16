@@ -9,8 +9,7 @@ import org.springframework.test.context.support.AbstractTestExecutionListener;
  * Removes all deployments at the end of a complete test class.
  * <p>
  * Use this as follows in a Spring test:
- * 
-
+ *
  * {@literal @}RunWith(SpringJUnit4ClassRunner.class)
  * {@literal @}TestExecutionListeners(CleanTestExecutionListener.class)
  * {@literal @}ContextConfiguration("...")

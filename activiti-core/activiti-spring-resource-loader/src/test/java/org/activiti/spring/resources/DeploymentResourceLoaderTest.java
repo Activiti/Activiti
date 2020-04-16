@@ -4,7 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.impl.util.IoUtil;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;

@@ -32,8 +32,8 @@ import org.activiti.validation.ValidationError;
 import org.activiti.validation.validator.Problems;
 import org.activiti.validation.validator.ValidatorSetNames;
 import static org.assertj.core.api.Assertions.assertThat;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
 
@@ -42,7 +42,7 @@ public class DefaultProcessValidatorTest {
 
   private ProcessValidator processValidator;
 
-  @Before
+  @BeforeEach
   public void setupProcessValidator() {
     ProcessValidatorFactory processValidatorFactory = new ProcessValidatorFactory();
     this.processValidator = processValidatorFactory.createDefaultProcessValidator();

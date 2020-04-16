@@ -9,7 +9,7 @@ import org.activiti.bpmn.model.ReceiveTask;
 import org.activiti.bpmn.model.SignalEventDefinition;
 import org.activiti.bpmn.model.SubProcess;
 import org.activiti.bpmn.model.UserTask;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class CompleteConverterTest extends AbstractConverterTest {
 

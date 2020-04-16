@@ -21,7 +21,7 @@ import org.activiti.engine.test.mock.NoOpServiceTasks;
 import org.activiti.standalone.testing.helpers.ServiceTaskTestMock;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
 

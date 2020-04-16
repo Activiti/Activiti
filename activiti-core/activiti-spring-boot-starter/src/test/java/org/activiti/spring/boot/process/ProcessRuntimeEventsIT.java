@@ -8,23 +8,20 @@ import org.activiti.api.process.runtime.ProcessRuntime;
 import org.activiti.spring.boot.RuntimeTestConfiguration;
 import org.activiti.spring.boot.security.util.SecurityUtil;
 import org.activiti.spring.boot.test.util.ProcessCleanUpUtil;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 
-@RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 public class ProcessRuntimeEventsIT {
 
     private static final String SINGLE_TASK_PROCESS = "SingleTaskProcess";
-    
+
     @Autowired
     private ProcessRuntime processRuntime;
 
@@ -34,7 +31,7 @@ public class ProcessRuntimeEventsIT {
     @Autowired
     private ProcessCleanUpUtil processCleanUpUtil;
 
-    @Before
+    @BeforeEach
     public void init() {
         //Reset test variables
         RuntimeTestConfiguration.processImageConnectorExecuted = false;
@@ -45,7 +42,7 @@ public class ProcessRuntimeEventsIT {
         RuntimeTestConfiguration.sequenceFlowTakenEvents.clear();
     }
 
-    @After
+    @AfterEach
     public void cleanUp(){
         processCleanUpUtil.cleanUpWithAdmin();
     }

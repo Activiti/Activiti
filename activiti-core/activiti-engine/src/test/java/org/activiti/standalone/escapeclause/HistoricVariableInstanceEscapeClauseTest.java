@@ -21,7 +21,7 @@ import org.activiti.engine.history.HistoricVariableInstance;
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class HistoricVariableInstanceEscapeClauseTest extends AbstractEscapeClauseTestCase {
 

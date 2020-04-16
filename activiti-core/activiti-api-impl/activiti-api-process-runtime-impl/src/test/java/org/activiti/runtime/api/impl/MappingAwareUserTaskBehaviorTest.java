@@ -19,8 +19,8 @@ package org.activiti.runtime.api.impl;
 import java.util.Map;
 
 import org.activiti.engine.delegate.DelegateExecution;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
@@ -40,7 +40,7 @@ public class MappingAwareUserTaskBehaviorTest {
     @Mock
     private VariablesMappingProvider mappingProvider;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         initMocks(this);
     }

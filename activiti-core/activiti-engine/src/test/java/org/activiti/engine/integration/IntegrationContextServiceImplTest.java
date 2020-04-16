@@ -20,8 +20,8 @@ import org.activiti.engine.impl.cmd.integration.DeleteIntegrationContextCmd;
 import org.activiti.engine.impl.cmd.integration.RetrieveIntegrationContextsCmd;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.persistence.entity.integration.IntegrationContextEntity;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
@@ -40,7 +40,7 @@ public class IntegrationContextServiceImplTest {
     @Mock
     private CommandExecutor commandExecutor;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         initMocks(this);
     }

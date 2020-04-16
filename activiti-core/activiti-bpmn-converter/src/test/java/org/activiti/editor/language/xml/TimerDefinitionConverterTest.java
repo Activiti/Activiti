@@ -7,7 +7,7 @@ import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.IntermediateCatchEvent;
 import org.activiti.bpmn.model.StartEvent;
 import org.activiti.bpmn.model.TimerEventDefinition;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class TimerDefinitionConverterTest extends AbstractConverterTest {
 

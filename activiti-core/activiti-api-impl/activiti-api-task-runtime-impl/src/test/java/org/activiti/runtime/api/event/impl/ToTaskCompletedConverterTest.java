@@ -20,8 +20,8 @@ import org.activiti.api.task.runtime.events.TaskCompletedEvent;
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.task.Task;
 import org.activiti.runtime.api.model.impl.APITaskConverter;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
@@ -38,7 +38,7 @@ public class ToTaskCompletedConverterTest {
     @Mock
     private APITaskConverter taskConverter;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         initMocks(this);
     }

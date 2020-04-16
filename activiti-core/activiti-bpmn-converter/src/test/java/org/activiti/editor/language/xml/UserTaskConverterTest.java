@@ -11,7 +11,7 @@ import org.activiti.bpmn.model.FormProperty;
 import org.activiti.bpmn.model.ImplementationType;
 import org.activiti.bpmn.model.UserTask;
 import org.apache.commons.lang3.StringUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class UserTaskConverterTest extends AbstractConverterTest {
 

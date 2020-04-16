@@ -8,19 +8,16 @@ import org.activiti.api.runtime.shared.query.Page;
 import org.activiti.api.runtime.shared.query.Pageable;
 import org.activiti.spring.boot.security.util.SecurityUtil;
 import org.activiti.spring.boot.test.util.ProcessCleanUpUtil;
-import org.junit.After;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @TestPropertySource("classpath:application-with-sec-policies.properties")
 public class ProcessRuntimeSecurityPoliciesIT {
@@ -37,7 +34,7 @@ public class ProcessRuntimeSecurityPoliciesIT {
     @Autowired
     private ProcessCleanUpUtil processCleanUpUtil;
 
-    @After
+    @AfterEach
     public void cleanUp(){
         processCleanUpUtil.cleanUpWithAdmin();
     }

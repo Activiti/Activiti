@@ -8,7 +8,7 @@ import java.util.List;
 import org.activiti.engine.ActivitiException;
 import org.activiti.spring.autodeployment.FailOnNoProcessAutoDeploymentStrategy;
 import org.activiti.spring.impl.test.SpringActivitiTestCase;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.test.context.ContextConfiguration;

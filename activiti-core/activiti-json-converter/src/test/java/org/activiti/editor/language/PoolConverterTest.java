@@ -8,7 +8,7 @@ import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.Lane;
 import org.activiti.bpmn.model.Pool;
 import org.activiti.bpmn.model.Process;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class PoolConverterTest extends AbstractConverterTest {
 

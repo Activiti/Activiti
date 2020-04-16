@@ -28,7 +28,7 @@ import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class Activiti6ExecutionTest extends PluggableActivitiTestCase {
 

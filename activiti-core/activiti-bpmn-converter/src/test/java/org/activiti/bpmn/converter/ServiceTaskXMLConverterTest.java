@@ -23,8 +23,8 @@ import org.activiti.bpmn.constants.BpmnXMLConstants;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.ServiceTask;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Answers;
 import org.mockito.Mock;
 import org.mockito.Spy;
@@ -51,7 +51,7 @@ public class ServiceTaskXMLConverterTest {
     @Mock
     private ServiceTask serviceTask;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         initMocks(this);
     }

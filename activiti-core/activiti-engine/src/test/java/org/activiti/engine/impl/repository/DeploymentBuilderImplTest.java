@@ -20,8 +20,8 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.activiti.engine.ActivitiException;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Answers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -46,7 +46,7 @@ public class DeploymentBuilderImplTest {
     @Mock(answer = Answers.RETURNS_MOCKS)
     private Resource resource;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         initMocks(this);
     }

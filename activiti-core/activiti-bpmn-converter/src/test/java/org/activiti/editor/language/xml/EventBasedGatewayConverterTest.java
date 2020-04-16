@@ -9,7 +9,7 @@ import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.EventGateway;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.ImplementationType;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test for ACT-1657

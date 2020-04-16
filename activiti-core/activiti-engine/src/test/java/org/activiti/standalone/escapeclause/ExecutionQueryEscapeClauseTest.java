@@ -19,7 +19,7 @@ import java.util.Map;
 
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ExecutionQueryEscapeClauseTest extends AbstractEscapeClauseTestCase {
 

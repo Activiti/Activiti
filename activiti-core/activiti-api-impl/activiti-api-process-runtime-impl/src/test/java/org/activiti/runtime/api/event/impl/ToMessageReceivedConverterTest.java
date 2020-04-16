@@ -24,8 +24,8 @@ import static org.mockito.MockitoAnnotations.initMocks;
 import org.activiti.api.process.model.events.BPMNMessageReceivedEvent;
 import org.activiti.api.runtime.model.impl.BPMNMessageImpl;
 import org.activiti.engine.delegate.event.ActivitiMessageEvent;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
@@ -37,7 +37,7 @@ public class ToMessageReceivedConverterTest {
     @Mock
     private BPMNMessageConverter bpmnMessageConverter;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         initMocks(this);
     }
@@ -50,7 +50,7 @@ public class ToMessageReceivedConverterTest {
         given(internalEvent.getProcessInstanceId()).willReturn("procInstId");
 
         BPMNMessageImpl bpmnMessage = new BPMNMessageImpl("myMessage");
-        
+
         given(bpmnMessageConverter.convertToBPMNMessage(internalEvent)).willReturn(bpmnMessage);
 
         //when
