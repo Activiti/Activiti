@@ -1,7 +1,7 @@
 package org.activiti.editor.language;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.EventDefinition;
@@ -34,21 +34,21 @@ public class CatchEventConverterTest extends AbstractConverterTest {
 
     FlowElement timerElement = model.getMainProcess().getFlowElement("timer_evt", true);
     EventDefinition timerEvent = extractEventDefinition(timerElement);
-    assertTrue(timerEvent instanceof TimerEventDefinition);
+    assertThat(timerEvent).isInstanceOf(TimerEventDefinition.class);
     TimerEventDefinition ted = (TimerEventDefinition) timerEvent;
-    assertEquals("PT5M", ted.getTimeDuration());
+    assertThat(ted.getTimeDuration()).isEqualTo("PT5M");
 
     FlowElement signalElement = model.getMainProcess().getFlowElement("signal_evt", true);
     EventDefinition signalEvent = extractEventDefinition(signalElement);
-    assertTrue(signalEvent instanceof SignalEventDefinition);
+    assertThat(signalEvent).isInstanceOf(SignalEventDefinition.class);
     SignalEventDefinition sed = (SignalEventDefinition) signalEvent;
-    assertEquals("signal_ref", sed.getSignalRef());
+    assertThat(sed.getSignalRef()).isEqualTo("signal_ref");
 
     FlowElement messageElement = model.getMainProcess().getFlowElement("message_evt", true);
     EventDefinition messageEvent = extractEventDefinition(messageElement);
-    assertTrue(messageEvent instanceof MessageEventDefinition);
+    assertThat(messageEvent).isInstanceOf(MessageEventDefinition.class);
     MessageEventDefinition med = (MessageEventDefinition) messageEvent;
-    assertEquals("message_ref", med.getMessageRef());
+    assertThat(med.getMessageRef()).isEqualTo("message_ref");
 
   }
 

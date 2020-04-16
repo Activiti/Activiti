@@ -12,7 +12,8 @@
  */
 package org.activiti.bpmn.converter.export;
 
-import java.util.Arrays;
+import static java.util.Arrays.asList;
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -28,9 +29,9 @@ import org.apache.commons.lang3.StringUtils;
 public class DefinitionsRootExport implements BpmnXMLConstants {
 
   /** default namespaces for definitions */
-  protected static final Set<String> defaultNamespaces = new HashSet<String>(Arrays.asList(BPMN2_PREFIX, XSI_PREFIX, XSD_PREFIX, ACTIVITI_EXTENSIONS_PREFIX, BPMNDI_PREFIX, OMGDC_PREFIX, OMGDI_PREFIX));
+  protected static final Set<String> defaultNamespaces = new HashSet<String>(asList(BPMN2_PREFIX, XSI_PREFIX, XSD_PREFIX, ACTIVITI_EXTENSIONS_PREFIX, BPMNDI_PREFIX, OMGDC_PREFIX, OMGDI_PREFIX));
 
-  protected static final List<ExtensionAttribute> defaultAttributes = Arrays.asList(new ExtensionAttribute(TYPE_LANGUAGE_ATTRIBUTE), new ExtensionAttribute(EXPRESSION_LANGUAGE_ATTRIBUTE),
+  protected static final List<ExtensionAttribute> defaultAttributes = asList(new ExtensionAttribute(TYPE_LANGUAGE_ATTRIBUTE), new ExtensionAttribute(EXPRESSION_LANGUAGE_ATTRIBUTE),
       new ExtensionAttribute(TARGET_NAMESPACE_ATTRIBUTE));
 
   @SuppressWarnings("unchecked")

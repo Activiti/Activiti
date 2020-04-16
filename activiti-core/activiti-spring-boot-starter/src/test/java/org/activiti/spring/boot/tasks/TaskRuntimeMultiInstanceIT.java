@@ -16,12 +16,12 @@
 
 package org.activiti.spring.boot.tasks;
 
+import static java.util.Arrays.asList;
+import static java.util.Collections.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 import static org.awaitility.Awaitility.await;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -1454,8 +1454,8 @@ public class TaskRuntimeMultiInstanceIT {
         List<Task> tasks = taskBaseRuntime.getTasks(processInstance);
         assertThat(tasks).hasSize(2);
 
-        taskBaseRuntime.completeTask(tasks.get(0), Collections.singletonMap("meal", "pizza"));
-        taskBaseRuntime.completeTask(tasks.get(1), Collections.singletonMap("meal", "pasta"));
+        taskBaseRuntime.completeTask(tasks.get(0), singletonMap("meal", "pizza"));
+        taskBaseRuntime.completeTask(tasks.get(1), singletonMap("meal", "pasta"));
 
         List<VariableInstance> variables = processBaseRuntime.getVariables(processInstance);
 
@@ -1464,7 +1464,7 @@ public class TaskRuntimeMultiInstanceIT {
                 VariableInstance::getValue)
             .contains(
                 tuple("meals",
-                    Arrays.asList("pizza", "pasta")));
+                    asList("pizza", "pasta")));
     }
 
     @Test
@@ -1473,20 +1473,17 @@ public class TaskRuntimeMultiInstanceIT {
 
         List<Task> tasks = taskBaseRuntime.getTasks(processInstance);
         assertThat(tasks).hasSize(1);
-        taskBaseRuntime.completeTask(tasks.get(0), Collections.singletonMap("meal", "pizza"));
+        taskBaseRuntime.completeTask(tasks.get(0), singletonMap("meal", "pizza"));
 
         tasks = taskBaseRuntime.getTasks(processInstance);
         assertThat(tasks).hasSize(1);
-        taskBaseRuntime.completeTask(tasks.get(0), Collections.singletonMap("meal", "pasta"));
+        taskBaseRuntime.completeTask(tasks.get(0), singletonMap("meal", "pasta"));
 
         List<VariableInstance> variables = processBaseRuntime.getVariables(processInstance);
 
         assertThat(variables)
-            .extracting(VariableInstance::getName,
-                VariableInstance::getValue)
-            .contains(
-                tuple("meals",
-                    Arrays.asList("pizza", "pasta")));
+            .extracting(VariableInstance::getName, VariableInstance::getValue)
+            .contains(tuple("meals", asList("pizza", "pasta")));
     }
 
 }

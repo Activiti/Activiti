@@ -1,7 +1,7 @@
 package org.activiti.editor.language;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.Pool;
@@ -32,17 +32,17 @@ public class NotExecutablePoolConverterTest extends AbstractConverterTest {
     String idPool = "idPool";
     String idProcess = "poolProcess";
 
-    assertEquals(1, model.getPools().size());
+    assertThat(model.getPools()).hasSize(1);
 
     Pool pool = model.getPool(idPool);
-    assertEquals(idPool, pool.getId());
-    assertEquals(idProcess, pool.getProcessRef());
-    assertFalse(pool.isExecutable());
+    assertThat(pool.getId()).isEqualTo(idPool);
+    assertThat(pool.getProcessRef()).isEqualTo(idProcess);
+    assertThat(pool.isExecutable()).isFalse();
 
     Process process = model.getProcess(idPool);
-    assertEquals(idProcess, process.getId());
-    assertFalse(process.isExecutable());
-    assertEquals(3, process.getLanes().size());
+    assertThat(process.getId()).isEqualTo(idProcess);
+    assertThat(process.isExecutable()).isFalse();
+    assertThat(process.getLanes()).hasSize(3);
 
   }
 }

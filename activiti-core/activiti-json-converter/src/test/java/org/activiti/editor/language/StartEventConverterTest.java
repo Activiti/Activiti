@@ -1,7 +1,7 @@
 package org.activiti.editor.language;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 
@@ -36,38 +36,38 @@ public class StartEventConverterTest extends AbstractConverterTest {
   private void validateModel(BpmnModel model) {
 
     FlowElement flowElement = model.getMainProcess().getFlowElement("start", true);
-    assertTrue(flowElement instanceof StartEvent);
+    assertThat(flowElement).isInstanceOf(StartEvent.class);
 
     StartEvent startEvent = (StartEvent) flowElement;
-    assertEquals("start", startEvent.getId());
-    assertEquals("startName", startEvent.getName());
-    assertEquals("startFormKey", startEvent.getFormKey());
-    assertEquals("startInitiator", startEvent.getInitiator());
-    assertEquals("startDoc", startEvent.getDocumentation());
- 
-    assertEquals(2, startEvent.getExecutionListeners().size());
+    assertThat(startEvent.getId()).isEqualTo("start");
+    assertThat(startEvent.getName()).isEqualTo("startName");
+    assertThat(startEvent.getFormKey()).isEqualTo("startFormKey");
+    assertThat(startEvent.getInitiator()).isEqualTo("startInitiator");
+    assertThat(startEvent.getDocumentation()).isEqualTo("startDoc");
+
+    assertThat(startEvent.getExecutionListeners()).hasSize(2);
     ActivitiListener executionListener = startEvent.getExecutionListeners().get(0);
-    assertEquals("start", executionListener.getEvent());
-    assertEquals("org.test.TestClass", executionListener.getImplementation());
-    assertEquals(ImplementationType.IMPLEMENTATION_TYPE_CLASS, executionListener.getImplementationType());
-    
+    assertThat(executionListener.getEvent()).isEqualTo("start");
+    assertThat(executionListener.getImplementation()).isEqualTo("org.test.TestClass");
+    assertThat(executionListener.getImplementationType()).isEqualTo(ImplementationType.IMPLEMENTATION_TYPE_CLASS);
+
     executionListener = startEvent.getExecutionListeners().get(1);
-    assertEquals("end", executionListener.getEvent());
-    assertEquals("${someExpression}", executionListener.getImplementation());
-    assertEquals(ImplementationType.IMPLEMENTATION_TYPE_EXPRESSION, executionListener.getImplementationType());
-    
+    assertThat(executionListener.getEvent()).isEqualTo("end");
+    assertThat(executionListener.getImplementation()).isEqualTo("${someExpression}");
+    assertThat(executionListener.getImplementationType()).isEqualTo(ImplementationType.IMPLEMENTATION_TYPE_EXPRESSION);
+
     List<FormProperty> formProperties = startEvent.getFormProperties();
-    assertEquals(2, formProperties.size());
+    assertThat(formProperties).hasSize(2);
 
     FormProperty formProperty = formProperties.get(0);
-    assertEquals("startFormProp1", formProperty.getId());
-    assertEquals("startFormProp1", formProperty.getName());
-    assertEquals("string", formProperty.getType());
+    assertThat(formProperty.getId()).isEqualTo("startFormProp1");
+    assertThat(formProperty.getName()).isEqualTo("startFormProp1");
+    assertThat(formProperty.getType()).isEqualTo("string");
 
     formProperty = formProperties.get(1);
-    assertEquals("startFormProp2", formProperty.getId());
-    assertEquals("startFormProp2", formProperty.getName());
-    assertEquals("boolean", formProperty.getType());
+    assertThat(formProperty.getId()).isEqualTo("startFormProp2");
+    assertThat(formProperty.getName()).isEqualTo("startFormProp2");
+    assertThat(formProperty.getType()).isEqualTo("boolean");
 
   }
 

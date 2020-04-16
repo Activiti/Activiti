@@ -1,5 +1,7 @@
 package org.activiti.engine.test.api.runtime;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 
 public class ExecutionAndProcessInstanceQueryVersionTest extends PluggableActivitiTestCase {
@@ -15,13 +17,13 @@ public class ExecutionAndProcessInstanceQueryVersionTest extends PluggableActivi
     oldDeployment = repositoryService.createDeployment()
       .addClasspathResource(DEPLOYMENT_FILE_PATH)
       .deploy();
-    
+
     runtimeService.startProcessInstanceByKey(PROCESS_DEFINITION_KEY).getId();
-    
+
     newDeployment = repositoryService.createDeployment()
           .addClasspathResource(DEPLOYMENT_FILE_PATH)
           .deploy();
-        
+
     runtimeService.startProcessInstanceByKey(PROCESS_DEFINITION_KEY).getId();
   }
 
@@ -31,51 +33,51 @@ public class ExecutionAndProcessInstanceQueryVersionTest extends PluggableActivi
   }
 
   public void testProcessInstanceQueryByProcessDefinitionVersion() {
-    assertEquals(1, runtimeService.createProcessInstanceQuery().processDefinitionVersion(1).count());
-    assertEquals(1, runtimeService.createProcessInstanceQuery().processDefinitionVersion(2).count());
-    assertEquals(0, runtimeService.createProcessInstanceQuery().processDefinitionVersion(3).count());
-    assertEquals(1, runtimeService.createProcessInstanceQuery().processDefinitionVersion(1).count());
-    assertEquals(1, runtimeService.createProcessInstanceQuery().processDefinitionVersion(2).list().size());
-    assertEquals(0, runtimeService.createProcessInstanceQuery().processDefinitionVersion(3).list().size());
+    assertThat(runtimeService.createProcessInstanceQuery().processDefinitionVersion(1).count()).isEqualTo(1);
+    assertThat(runtimeService.createProcessInstanceQuery().processDefinitionVersion(2).count()).isEqualTo(1);
+    assertThat(runtimeService.createProcessInstanceQuery().processDefinitionVersion(3).count()).isEqualTo(0);
+    assertThat(runtimeService.createProcessInstanceQuery().processDefinitionVersion(1).count()).isEqualTo(1);
+    assertThat(runtimeService.createProcessInstanceQuery().processDefinitionVersion(2).list()).hasSize(1);
+    assertThat(runtimeService.createProcessInstanceQuery().processDefinitionVersion(3).list()).hasSize(0);
   }
 
   public void testProcessInstanceQueryByProcessDefinitionVersionAndKey() {
-    assertEquals(1, runtimeService.createProcessInstanceQuery().processDefinitionKey(PROCESS_DEFINITION_KEY).processDefinitionVersion(1).count());
-    assertEquals(1, runtimeService.createProcessInstanceQuery().processDefinitionKey(PROCESS_DEFINITION_KEY).processDefinitionVersion(2).count());
-    assertEquals(0, runtimeService.createProcessInstanceQuery().processDefinitionKey("undefined").processDefinitionVersion(1).count());
-    assertEquals(0, runtimeService.createProcessInstanceQuery().processDefinitionKey("undefined").processDefinitionVersion(2).count());
-    assertEquals(1, runtimeService.createProcessInstanceQuery().processDefinitionKey(PROCESS_DEFINITION_KEY).processDefinitionVersion(1).list().size());
-    assertEquals(1, runtimeService.createProcessInstanceQuery().processDefinitionKey(PROCESS_DEFINITION_KEY).processDefinitionVersion(2).list().size());
-    assertEquals(0, runtimeService.createProcessInstanceQuery().processDefinitionKey("undefined").processDefinitionVersion(1).list().size());
-    assertEquals(0, runtimeService.createProcessInstanceQuery().processDefinitionKey("undefined").processDefinitionVersion(2).list().size());
+    assertThat(runtimeService.createProcessInstanceQuery().processDefinitionKey(PROCESS_DEFINITION_KEY).processDefinitionVersion(1).count()).isEqualTo(1);
+    assertThat(runtimeService.createProcessInstanceQuery().processDefinitionKey(PROCESS_DEFINITION_KEY).processDefinitionVersion(2).count()).isEqualTo(1);
+    assertThat(runtimeService.createProcessInstanceQuery().processDefinitionKey("undefined").processDefinitionVersion(1).count()).isEqualTo(0);
+    assertThat(runtimeService.createProcessInstanceQuery().processDefinitionKey("undefined").processDefinitionVersion(2).count()).isEqualTo(0);
+    assertThat(runtimeService.createProcessInstanceQuery().processDefinitionKey(PROCESS_DEFINITION_KEY).processDefinitionVersion(1).list()).hasSize(1);
+    assertThat(runtimeService.createProcessInstanceQuery().processDefinitionKey(PROCESS_DEFINITION_KEY).processDefinitionVersion(2).list()).hasSize(1);
+    assertThat(runtimeService.createProcessInstanceQuery().processDefinitionKey("undefined").processDefinitionVersion(1).list()).hasSize(0);
+    assertThat(runtimeService.createProcessInstanceQuery().processDefinitionKey("undefined").processDefinitionVersion(2).list()).hasSize(0);
   }
-  
+
   public void testProcessInstanceOrQueryByProcessDefinitionVersion() {
-    assertEquals(1, runtimeService.createProcessInstanceQuery().or().processDefinitionVersion(1).processDefinitionId("undefined").endOr().count());
-    assertEquals(1, runtimeService.createProcessInstanceQuery().or().processDefinitionVersion(2).processDefinitionId("undefined").endOr().count());
-    assertEquals(0, runtimeService.createProcessInstanceQuery().or().processDefinitionVersion(3).processDefinitionId("undefined").endOr().count());
-    assertEquals(1, runtimeService.createProcessInstanceQuery().or().processDefinitionVersion(1).processDefinitionId("undefined").endOr().list().size());
-    assertEquals(1, runtimeService.createProcessInstanceQuery().or().processDefinitionVersion(2).processDefinitionId("undefined").endOr().list().size());
-    assertEquals(0, runtimeService.createProcessInstanceQuery().or().processDefinitionVersion(3).processDefinitionId("undefined").endOr().list().size());
+    assertThat(runtimeService.createProcessInstanceQuery().or().processDefinitionVersion(1).processDefinitionId("undefined").endOr().count()).isEqualTo(1);
+    assertThat(runtimeService.createProcessInstanceQuery().or().processDefinitionVersion(2).processDefinitionId("undefined").endOr().count()).isEqualTo(1);
+    assertThat(runtimeService.createProcessInstanceQuery().or().processDefinitionVersion(3).processDefinitionId("undefined").endOr().count()).isEqualTo(0);
+    assertThat(runtimeService.createProcessInstanceQuery().or().processDefinitionVersion(1).processDefinitionId("undefined").endOr().list()).hasSize(1);
+    assertThat(runtimeService.createProcessInstanceQuery().or().processDefinitionVersion(2).processDefinitionId("undefined").endOr().list()).hasSize(1);
+    assertThat(runtimeService.createProcessInstanceQuery().or().processDefinitionVersion(3).processDefinitionId("undefined").endOr().list()).hasSize(0);
   }
 
   public void testExecutionQueryByProcessDefinitionVersion() {
-    assertEquals(2, runtimeService.createExecutionQuery().processDefinitionVersion(1).count());
-    assertEquals(2, runtimeService.createExecutionQuery().processDefinitionVersion(2).count());
-    assertEquals(0, runtimeService.createExecutionQuery().processDefinitionVersion(3).count());
-    assertEquals(2, runtimeService.createExecutionQuery().processDefinitionVersion(1).list().size());
-    assertEquals(2, runtimeService.createExecutionQuery().processDefinitionVersion(2).list().size());
-    assertEquals(0, runtimeService.createExecutionQuery().processDefinitionVersion(3).list().size());
+    assertThat(runtimeService.createExecutionQuery().processDefinitionVersion(1).count()).isEqualTo(2);
+    assertThat(runtimeService.createExecutionQuery().processDefinitionVersion(2).count()).isEqualTo(2);
+    assertThat(runtimeService.createExecutionQuery().processDefinitionVersion(3).count()).isEqualTo(0);
+    assertThat(runtimeService.createExecutionQuery().processDefinitionVersion(1).list()).hasSize(2);
+    assertThat(runtimeService.createExecutionQuery().processDefinitionVersion(2).list()).hasSize(2);
+    assertThat(runtimeService.createExecutionQuery().processDefinitionVersion(3).list()).hasSize(0);
   }
-  
+
   public void testExecutionQueryByProcessDefinitionVersionAndKey() {
-    assertEquals(2, runtimeService.createExecutionQuery().processDefinitionKey(PROCESS_DEFINITION_KEY).processDefinitionVersion(1).count());
-    assertEquals(2, runtimeService.createExecutionQuery().processDefinitionKey(PROCESS_DEFINITION_KEY).processDefinitionVersion(2).count());
-    assertEquals(0, runtimeService.createExecutionQuery().processDefinitionKey("undefined").processDefinitionVersion(1).count());
-    assertEquals(0, runtimeService.createExecutionQuery().processDefinitionKey("undefined").processDefinitionVersion(2).count());
-    assertEquals(2, runtimeService.createExecutionQuery().processDefinitionKey(PROCESS_DEFINITION_KEY).processDefinitionVersion(1).list().size());
-    assertEquals(2, runtimeService.createExecutionQuery().processDefinitionKey(PROCESS_DEFINITION_KEY).processDefinitionVersion(2).list().size());
-    assertEquals(0, runtimeService.createExecutionQuery().processDefinitionKey("undefined").processDefinitionVersion(1).list().size());
-    assertEquals(0, runtimeService.createExecutionQuery().processDefinitionKey("undefined").processDefinitionVersion(2).list().size());
+    assertThat(runtimeService.createExecutionQuery().processDefinitionKey(PROCESS_DEFINITION_KEY).processDefinitionVersion(1).count()).isEqualTo(2);
+    assertThat(runtimeService.createExecutionQuery().processDefinitionKey(PROCESS_DEFINITION_KEY).processDefinitionVersion(2).count()).isEqualTo(2);
+    assertThat(runtimeService.createExecutionQuery().processDefinitionKey("undefined").processDefinitionVersion(1).count()).isEqualTo(0);
+    assertThat(runtimeService.createExecutionQuery().processDefinitionKey("undefined").processDefinitionVersion(2).count()).isEqualTo(0);
+    assertThat(runtimeService.createExecutionQuery().processDefinitionKey(PROCESS_DEFINITION_KEY).processDefinitionVersion(1).list()).hasSize(2);
+    assertThat(runtimeService.createExecutionQuery().processDefinitionKey(PROCESS_DEFINITION_KEY).processDefinitionVersion(2).list()).hasSize(2);
+    assertThat(runtimeService.createExecutionQuery().processDefinitionKey("undefined").processDefinitionVersion(1).list()).hasSize(0);
+    assertThat(runtimeService.createExecutionQuery().processDefinitionKey("undefined").processDefinitionVersion(2).list()).hasSize(0);
   }
 }

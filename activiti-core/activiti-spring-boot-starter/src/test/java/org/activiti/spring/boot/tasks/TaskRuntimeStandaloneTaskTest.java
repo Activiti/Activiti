@@ -161,8 +161,7 @@ public class TaskRuntimeStandaloneTaskTest {
                 .isInstanceOf(IllegalStateException.class);
 
 
-        Page<Task> tasks = taskRuntime.tasks(Pageable.of(0,
-                50));
+        Page<Task> tasks = taskRuntime.tasks(Pageable.of(0, 50));
 
         assertThat(tasks.getContent()).hasSize(0);
     }
@@ -192,7 +191,6 @@ public class TaskRuntimeStandaloneTaskTest {
 
         assertThat(throwable)
                 .isInstanceOf(IllegalStateException.class);
-
     }
 
     @Test
@@ -220,7 +218,6 @@ public class TaskRuntimeStandaloneTaskTest {
 
         assertThat(throwable)
                 .isInstanceOf(IllegalStateException.class);
-
     }
 
     @Test
@@ -245,7 +242,6 @@ public class TaskRuntimeStandaloneTaskTest {
 
         assertThat(throwable)
                 .isInstanceOf(IllegalStateException.class);
-
     }
 
     @Test
@@ -270,6 +266,5 @@ public class TaskRuntimeStandaloneTaskTest {
 
         assertThat(throwable)
                 .isInstanceOf(IllegalStateException.class);
-
     }
 }

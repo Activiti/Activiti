@@ -1,7 +1,6 @@
 package org.activiti.editor.language.xml;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
 
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.EndEvent;
@@ -29,23 +28,23 @@ public class EndEventConverterTest extends AbstractConverterTest {
   }
 
   private void validateModel(BpmnModel model) {
-    assertEquals(2, model.getDefinitionsAttributes().size());
-    
+    assertThat(model.getDefinitionsAttributes()).hasSize(2);
+
     FlowElement flowElement = model.getMainProcess().getFlowElement("EndEvent_0mdpjzn");
     assertThat(flowElement).isNotNull();
-    assertThat(flowElement instanceof EndEvent).isTrue();
-    
+    assertThat(flowElement).isInstanceOf(EndEvent.class);
+
     EndEvent endEvent = (EndEvent) flowElement;
-    
-    assertThat(endEvent.getIncomingFlows().size()).isEqualTo(1);
-    assertThat(endEvent.getEventDefinitions().size()).isEqualTo(1);
-    
+
+    assertThat(endEvent.getIncomingFlows()).hasSize(1);
+    assertThat(endEvent.getEventDefinitions()).hasSize(1);
+
     //Check that incoming xml element is coming before error event definition
     assertThat(endEvent.getIncomingFlows().get(0).getXmlRowNumber()).isLessThan(endEvent.getEventDefinitions().get(0).getXmlRowNumber());
-    
-    assertThat(endEvent.getEventDefinitions().get(0) instanceof ErrorEventDefinition).isTrue();
+
+    assertThat(endEvent.getEventDefinitions().get(0)).isInstanceOf(ErrorEventDefinition.class);
     ErrorEventDefinition errorEventDefinition = (ErrorEventDefinition) endEvent.getEventDefinitions().get(0);
-    
+
     assertThat(errorEventDefinition.getErrorRef()).isEqualTo("Error_01agmko");
   }
 }

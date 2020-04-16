@@ -16,6 +16,8 @@
 
 package org.activiti.runtime.api.model.impl;
 
+import static java.util.Collections.emptyList;
+
 import org.activiti.api.task.model.Task;
 import org.activiti.api.task.model.impl.TaskImpl;
 import org.activiti.engine.TaskService;
@@ -24,7 +26,6 @@ import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.IdentityLinkType;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
@@ -82,7 +83,7 @@ public class APITaskConverter extends ListConverter<org.activiti.engine.task.Tas
     }
 
     private List<String> extractCandidatesBy(List<IdentityLink> candidates, Function<IdentityLink, String> extractor) {
-        List<String> result = Collections.emptyList();
+        List<String> result = emptyList();
         if (candidates != null) {
             result = candidates
                              .stream()

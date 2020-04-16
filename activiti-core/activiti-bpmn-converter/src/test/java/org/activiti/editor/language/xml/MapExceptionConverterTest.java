@@ -1,12 +1,14 @@
 package org.activiti.editor.language.xml;
 
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+
 import org.activiti.bpmn.exceptions.XMLException;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.ServiceTask;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class MapExceptionConverterTest extends AbstractConverterTest {
 
@@ -19,28 +21,19 @@ public class MapExceptionConverterTest extends AbstractConverterTest {
     @Test
     public void testMapExceptionWithInvalidHasChildren() throws Exception {
         resourceName = "mapException/mapExceptionInvalidHasChildrenModel.bpmn";
-        try {
-            readXMLFile();
-            fail("No exception is thrown for mapExecution with invalid boolean for hasChildren");
-        } catch (XMLException x) {
-            assertTrue(x.getMessage().indexOf("is not valid boolean") != -1);
-        } catch (Exception e) {
-            fail("wrong exception thrown. XmlException expected, " + e.getClass() + " thrown");
-        }
+        assertThatExceptionOfType(XMLException.class)
+            .as("No exception is thrown for mapExecution with invalid boolean for hasChildren")
+            .isThrownBy(() -> readXMLFile())
+            .withMessageContaining("is not valid boolean");
     }
 
     @Test
     public void testMapExceptionWithNoErrorCode() throws Exception {
         resourceName = "mapException/mapExceptionNoErrorCode.bpmn";
-        try {
-
-            readXMLFile();
-            fail("No exception is thrown for mapExecution with no Error Code");
-        } catch (XMLException x) {
-            assertTrue(x.getMessage().indexOf("No errorCode defined") != -1);
-        } catch (Exception e) {
-            fail("wrong exception thrown. XmlException expected, " + e.getClass() + " thrown");
-        }
+        assertThatExceptionOfType(XMLException.class)
+            .as("No exception is thrown for mapExecution with no Error Code")
+            .isThrownBy(() -> readXMLFile())
+            .withMessageContaining("No errorCode defined");
     }
 
     @Test
@@ -49,17 +42,14 @@ public class MapExceptionConverterTest extends AbstractConverterTest {
 
         BpmnModel bpmnModel = readXMLFile();
         FlowElement flowElement = bpmnModel.getMainProcess().getFlowElement("servicetaskWithAndTrueAndChildren");
-        assertNotNull(flowElement);
-        assertTrue(flowElement instanceof ServiceTask);
-        assertEquals("servicetaskWithAndTrueAndChildren",
-                     flowElement.getId());
+        assertThat(flowElement).isNotNull();
+        assertThat(flowElement).isInstanceOf(ServiceTask.class);
+        assertThat(flowElement.getId()).isEqualTo("servicetaskWithAndTrueAndChildren");
         ServiceTask serviceTask = (ServiceTask) flowElement;
-        assertNotNull(serviceTask.getMapExceptions());
-        assertEquals(1,
-                     serviceTask.getMapExceptions().size());
-        assertNotNull(serviceTask.getMapExceptions().get(0).getClassName());
-        assertEquals(0,
-                     serviceTask.getMapExceptions().get(0).getClassName().length());
+        assertThat(serviceTask.getMapExceptions()).isNotNull();
+        assertThat(serviceTask.getMapExceptions()).hasSize(1);
+        assertThat(serviceTask.getMapExceptions().get(0).getClassName()).isNotNull();
+        assertThat(serviceTask.getMapExceptions().get(0).getClassName().length()).isEqualTo(0);
     }
 
     @Test
@@ -74,49 +64,35 @@ public class MapExceptionConverterTest extends AbstractConverterTest {
 
         // check service task with andChildren Set to True
         FlowElement flowElement = model.getMainProcess().getFlowElement("servicetaskWithAndTrueAndChildren");
-        assertNotNull(flowElement);
-        assertTrue(flowElement instanceof ServiceTask);
-        assertEquals("servicetaskWithAndTrueAndChildren",
-                     flowElement.getId());
+        assertThat(flowElement).isNotNull();
+        assertThat(flowElement).isInstanceOf(ServiceTask.class);
+        assertThat(flowElement.getId()).isEqualTo("servicetaskWithAndTrueAndChildren");
         ServiceTask serviceTask = (ServiceTask) flowElement;
-        assertNotNull(serviceTask.getMapExceptions());
-        assertEquals(3,
-                     serviceTask.getMapExceptions().size());
+        assertThat(serviceTask.getMapExceptions()).isNotNull();
+        assertThat(serviceTask.getMapExceptions()).hasSize(3);
 
         // check a normal mapException, with hasChildren == true
-        assertEquals("myErrorCode1",
-                     serviceTask.getMapExceptions().get(0).getErrorCode());
-        assertEquals("com.activiti.Something1",
-                     serviceTask.getMapExceptions().get(0).getClassName());
-        assertTrue(serviceTask.getMapExceptions().get(0).isAndChildren());
+        assertThat(serviceTask.getMapExceptions().get(0).getErrorCode()).isEqualTo("myErrorCode1");
+        assertThat(serviceTask.getMapExceptions().get(0).getClassName()).isEqualTo("com.activiti.Something1");
+        assertThat(serviceTask.getMapExceptions().get(0).isAndChildren()).isTrue();
 
         // check a normal mapException, with hasChildren == false
-        assertEquals("myErrorCode2",
-                     serviceTask.getMapExceptions().get(1).getErrorCode());
-        assertEquals("com.activiti.Something2",
-                     serviceTask.getMapExceptions().get(1).getClassName());
-        assertFalse(serviceTask.getMapExceptions().get(1).isAndChildren());
+        assertThat(serviceTask.getMapExceptions().get(1).getErrorCode()).isEqualTo("myErrorCode2");
+        assertThat(serviceTask.getMapExceptions().get(1).getClassName()).isEqualTo("com.activiti.Something2");
+        assertThat(serviceTask.getMapExceptions().get(1).isAndChildren()).isFalse();
 
-        // check a normal mapException, with no hasChildren Defined, default
-        // should
-        // be false
-        assertEquals("myErrorCode3",
-                     serviceTask.getMapExceptions().get(2).getErrorCode());
-        assertEquals("com.activiti.Something3",
-                     serviceTask.getMapExceptions().get(2).getClassName());
-        assertFalse(serviceTask.getMapExceptions().get(2).isAndChildren());
+        // check a normal mapException, with no hasChildren Defined, default should be false
+        assertThat(serviceTask.getMapExceptions().get(2).getErrorCode()).isEqualTo("myErrorCode3");
+        assertThat(serviceTask.getMapExceptions().get(2).getClassName()).isEqualTo("com.activiti.Something3");
+        assertThat(serviceTask.getMapExceptions().get(2).isAndChildren()).isFalse();
 
-        // if no map exception is defined, getMapException should return a not
-        // null
-        // empty list
+        // if no map exception is defined, getMapException should return a not null empty list
         FlowElement flowElement1 = model.getMainProcess().getFlowElement("servicetaskWithNoMapException");
-        assertNotNull(flowElement1);
-        assertTrue(flowElement1 instanceof ServiceTask);
-        assertEquals("servicetaskWithNoMapException",
-                     flowElement1.getId());
+        assertThat(flowElement1).isNotNull();
+        assertThat(flowElement1).isInstanceOf(ServiceTask.class);
+        assertThat(flowElement1.getId()).isEqualTo("servicetaskWithNoMapException");
         ServiceTask serviceTask1 = (ServiceTask) flowElement1;
-        assertNotNull(serviceTask1.getMapExceptions());
-        assertEquals(0,
-                     serviceTask1.getMapExceptions().size());
+        assertThat(serviceTask1.getMapExceptions()).isNotNull();
+        assertThat(serviceTask1.getMapExceptions()).hasSize(0);
     }
 }

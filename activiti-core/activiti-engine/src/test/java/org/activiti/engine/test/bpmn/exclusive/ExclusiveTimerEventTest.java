@@ -12,6 +12,8 @@
  */
 package org.activiti.engine.test.bpmn.exclusive;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.Date;
 
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
@@ -30,13 +32,13 @@ public class ExclusiveTimerEventTest extends PluggableActivitiTestCase {
     // After process start, there should be 3 timers created
     ProcessInstance pi = runtimeService.startProcessInstanceByKey("exclusiveTimers");
     TimerJobQuery jobQuery = managementService.createTimerJobQuery().processInstanceId(pi.getId());
-    assertEquals(3, jobQuery.count());
+    assertThat(jobQuery.count()).isEqualTo(3);
 
     // After setting the clock to time '50minutes and 5 seconds', the timers should fire
     processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + ((50 * 60 * 1000) + 5000)));
     waitForJobExecutorToProcessAllJobsAndExecutableTimerJobs(5000L, 500L);
 
-    assertEquals(0, jobQuery.count());
+    assertThat(jobQuery.count()).isEqualTo(0);
     assertProcessEnded(pi.getProcessInstanceId());
   }
 }

@@ -1,9 +1,9 @@
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -12,12 +12,13 @@
  */
 package org.activiti.engine.test.api.event;
 
+import static java.util.Collections.singletonMap;
+import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.List;
 
 import org.activiti.engine.delegate.event.ActivitiActivityCancelledEvent;
@@ -40,9 +41,7 @@ import org.activiti.engine.test.Deployment;
 
 /**
  * Test case for all {@link ActivitiEvent}s related to activities.
- * 
-
-
+ *
  */
 public class ActivityEventsTest extends PluggableActivitiTestCase {
 
@@ -96,127 +95,127 @@ public class ActivityEventsTest extends PluggableActivitiTestCase {
     listener.setIgnoreRawActivityEvents(false);
 
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("activityProcess");
-    assertNotNull(processInstance);
+    assertThat(processInstance).isNotNull();
 
-    assertEquals(3, listener.getEventsReceived().size());
+    assertThat(listener.getEventsReceived()).hasSize(3);
 
     // Start-event activity started
     ActivitiActivityEvent activityEvent = (ActivitiActivityEvent) listener.getEventsReceived().get(0);
-    assertEquals(ActivitiEventType.ACTIVITY_STARTED, activityEvent.getType());
-    assertEquals("theStart", activityEvent.getActivityId());
-    assertTrue(!processInstance.getId().equals(activityEvent.getExecutionId()));
-    assertEquals(processInstance.getProcessInstanceId(), activityEvent.getProcessInstanceId());
-    assertEquals(processInstance.getProcessDefinitionId(), activityEvent.getProcessDefinitionId());
+    assertThat(activityEvent.getType()).isEqualTo(ActivitiEventType.ACTIVITY_STARTED);
+    assertThat(activityEvent.getActivityId()).isEqualTo("theStart");
+    assertThat(!processInstance.getId().equals(activityEvent.getExecutionId())).isTrue();
+    assertThat(activityEvent.getProcessInstanceId()).isEqualTo(processInstance.getProcessInstanceId());
+    assertThat(activityEvent.getProcessDefinitionId()).isEqualTo(processInstance.getProcessDefinitionId());
 
     // Start-event finished
     activityEvent = (ActivitiActivityEvent) listener.getEventsReceived().get(1);
-    assertEquals(ActivitiEventType.ACTIVITY_COMPLETED, activityEvent.getType());
-    assertEquals("theStart", activityEvent.getActivityId());
-    assertTrue(!processInstance.getId().equals(activityEvent.getExecutionId()));
-    assertEquals(processInstance.getProcessInstanceId(), activityEvent.getProcessInstanceId());
-    assertEquals(processInstance.getProcessDefinitionId(), activityEvent.getProcessDefinitionId());
+    assertThat(activityEvent.getType()).isEqualTo(ActivitiEventType.ACTIVITY_COMPLETED);
+    assertThat(activityEvent.getActivityId()).isEqualTo("theStart");
+    assertThat(!processInstance.getId().equals(activityEvent.getExecutionId())).isTrue();
+    assertThat(activityEvent.getProcessInstanceId()).isEqualTo(processInstance.getProcessInstanceId());
+    assertThat(activityEvent.getProcessDefinitionId()).isEqualTo(processInstance.getProcessDefinitionId());
 
     // Usertask started
     activityEvent = (ActivitiActivityEvent) listener.getEventsReceived().get(2);
-    assertEquals(ActivitiEventType.ACTIVITY_STARTED, activityEvent.getType());
-    assertEquals("shipOrder", activityEvent.getActivityId());
-    assertTrue(!processInstance.getId().equals(activityEvent.getExecutionId()));
-    assertEquals(processInstance.getProcessInstanceId(), activityEvent.getProcessInstanceId());
-    assertEquals(processInstance.getProcessDefinitionId(), activityEvent.getProcessDefinitionId());
+    assertThat(activityEvent.getType()).isEqualTo(ActivitiEventType.ACTIVITY_STARTED);
+    assertThat(activityEvent.getActivityId()).isEqualTo("shipOrder");
+    assertThat(!processInstance.getId().equals(activityEvent.getExecutionId())).isTrue();
+    assertThat(activityEvent.getProcessInstanceId()).isEqualTo(processInstance.getProcessInstanceId());
+    assertThat(activityEvent.getProcessDefinitionId()).isEqualTo(processInstance.getProcessDefinitionId());
 
     // Complete usertask
     listener.clearEventsReceived();
     Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
-    assertNotNull(task);
+    assertThat(task).isNotNull();
     taskService.complete(task.getId());
 
     // Subprocess execution is created
     Execution execution = runtimeService.createExecutionQuery().parentId(processInstance.getId()).singleResult();
-    assertNotNull(execution);
-    assertEquals(5, listener.getEventsReceived().size());
+    assertThat(execution).isNotNull();
+    assertThat(listener.getEventsReceived()).hasSize(5);
     activityEvent = (ActivitiActivityEvent) listener.getEventsReceived().get(0);
-    assertEquals(ActivitiEventType.ACTIVITY_COMPLETED, activityEvent.getType());
-    assertEquals("shipOrder", activityEvent.getActivityId());
-    assertTrue(!processInstance.getId().equals(activityEvent.getExecutionId()));
-    assertEquals(processInstance.getProcessInstanceId(), activityEvent.getProcessInstanceId());
-    assertEquals(processInstance.getProcessDefinitionId(), activityEvent.getProcessDefinitionId());
+    assertThat(activityEvent.getType()).isEqualTo(ActivitiEventType.ACTIVITY_COMPLETED);
+    assertThat(activityEvent.getActivityId()).isEqualTo("shipOrder");
+    assertThat(!processInstance.getId().equals(activityEvent.getExecutionId())).isTrue();
+    assertThat(activityEvent.getProcessInstanceId()).isEqualTo(processInstance.getProcessInstanceId());
+    assertThat(activityEvent.getProcessDefinitionId()).isEqualTo(processInstance.getProcessDefinitionId());
 
     activityEvent = (ActivitiActivityEvent) listener.getEventsReceived().get(1);
-    assertEquals(ActivitiEventType.ACTIVITY_STARTED, activityEvent.getType());
-    assertEquals("subProcess", activityEvent.getActivityId());
-    assertEquals(execution.getId(), activityEvent.getExecutionId());
-    assertEquals(processInstance.getProcessInstanceId(), activityEvent.getProcessInstanceId());
-    assertEquals(processInstance.getProcessDefinitionId(), activityEvent.getProcessDefinitionId());
+    assertThat(activityEvent.getType()).isEqualTo(ActivitiEventType.ACTIVITY_STARTED);
+    assertThat(activityEvent.getActivityId()).isEqualTo("subProcess");
+    assertThat(activityEvent.getExecutionId()).isEqualTo(execution.getId());
+    assertThat(activityEvent.getProcessInstanceId()).isEqualTo(processInstance.getProcessInstanceId());
+    assertThat(activityEvent.getProcessDefinitionId()).isEqualTo(processInstance.getProcessDefinitionId());
 
     activityEvent = (ActivitiActivityEvent) listener.getEventsReceived().get(2);
-    assertEquals(ActivitiEventType.ACTIVITY_STARTED, activityEvent.getType());
-    assertEquals("subProcessStart", activityEvent.getActivityId());
-    assertTrue(!execution.getId().equals(activityEvent.getExecutionId()));
-    assertEquals(processInstance.getProcessInstanceId(), activityEvent.getProcessInstanceId());
-    assertEquals(processInstance.getProcessDefinitionId(), activityEvent.getProcessDefinitionId());
+    assertThat(activityEvent.getType()).isEqualTo(ActivitiEventType.ACTIVITY_STARTED);
+    assertThat(activityEvent.getActivityId()).isEqualTo("subProcessStart");
+    assertThat(!execution.getId().equals(activityEvent.getExecutionId())).isTrue();
+    assertThat(activityEvent.getProcessInstanceId()).isEqualTo(processInstance.getProcessInstanceId());
+    assertThat(activityEvent.getProcessDefinitionId()).isEqualTo(processInstance.getProcessDefinitionId());
 
     activityEvent = (ActivitiActivityEvent) listener.getEventsReceived().get(3);
-    assertEquals(ActivitiEventType.ACTIVITY_COMPLETED, activityEvent.getType());
-    assertEquals("subProcessStart", activityEvent.getActivityId());
-    assertTrue(!execution.getId().equals(activityEvent.getExecutionId()));
-    assertEquals(processInstance.getProcessInstanceId(), activityEvent.getProcessInstanceId());
-    assertEquals(processInstance.getProcessDefinitionId(), activityEvent.getProcessDefinitionId());
+    assertThat(activityEvent.getType()).isEqualTo(ActivitiEventType.ACTIVITY_COMPLETED);
+    assertThat(activityEvent.getActivityId()).isEqualTo("subProcessStart");
+    assertThat(!execution.getId().equals(activityEvent.getExecutionId())).isTrue();
+    assertThat(activityEvent.getProcessInstanceId()).isEqualTo(processInstance.getProcessInstanceId());
+    assertThat(activityEvent.getProcessDefinitionId()).isEqualTo(processInstance.getProcessDefinitionId());
 
     activityEvent = (ActivitiActivityEvent) listener.getEventsReceived().get(4);
-    assertEquals(ActivitiEventType.ACTIVITY_STARTED, activityEvent.getType());
-    assertEquals("subTask", activityEvent.getActivityId());
-    assertTrue(!execution.getId().equals(activityEvent.getExecutionId()));
-    assertEquals(processInstance.getProcessInstanceId(), activityEvent.getProcessInstanceId());
-    assertEquals(processInstance.getProcessDefinitionId(), activityEvent.getProcessDefinitionId());
+    assertThat(activityEvent.getType()).isEqualTo(ActivitiEventType.ACTIVITY_STARTED);
+    assertThat(activityEvent.getActivityId()).isEqualTo("subTask");
+    assertThat(!execution.getId().equals(activityEvent.getExecutionId())).isTrue();
+    assertThat(activityEvent.getProcessInstanceId()).isEqualTo(processInstance.getProcessInstanceId());
+    assertThat(activityEvent.getProcessDefinitionId()).isEqualTo(processInstance.getProcessDefinitionId());
     listener.clearEventsReceived();
 
     // Check gateway and intermediate throw event
     Task subTask = taskService.createTaskQuery().processInstanceId(processInstance.getProcessInstanceId()).singleResult();
-    assertNotNull(subTask);
+    assertThat(subTask).isNotNull();
 
     taskService.complete(subTask.getId());
 
-    assertEquals(10, listener.getEventsReceived().size());
+    assertThat(listener.getEventsReceived()).hasSize(10);
 
     activityEvent = (ActivitiActivityEvent) listener.getEventsReceived().get(0);
-    assertEquals(ActivitiEventType.ACTIVITY_COMPLETED, activityEvent.getType());
-    assertEquals("subTask", activityEvent.getActivityId());
+    assertThat(activityEvent.getType()).isEqualTo(ActivitiEventType.ACTIVITY_COMPLETED);
+    assertThat(activityEvent.getActivityId()).isEqualTo("subTask");
 
     activityEvent = (ActivitiActivityEvent) listener.getEventsReceived().get(1);
-    assertEquals(ActivitiEventType.ACTIVITY_STARTED, activityEvent.getType());
-    assertEquals("gateway", activityEvent.getActivityId());
+    assertThat(activityEvent.getType()).isEqualTo(ActivitiEventType.ACTIVITY_STARTED);
+    assertThat(activityEvent.getActivityId()).isEqualTo("gateway");
 
     activityEvent = (ActivitiActivityEvent) listener.getEventsReceived().get(2);
-    assertEquals(ActivitiEventType.ACTIVITY_COMPLETED, activityEvent.getType());
-    assertEquals("gateway", activityEvent.getActivityId());
+    assertThat(activityEvent.getType()).isEqualTo(ActivitiEventType.ACTIVITY_COMPLETED);
+    assertThat(activityEvent.getActivityId()).isEqualTo("gateway");
 
     activityEvent = (ActivitiActivityEvent) listener.getEventsReceived().get(3);
-    assertEquals(ActivitiEventType.ACTIVITY_STARTED, activityEvent.getType());
-    assertEquals("throwMessageEvent", activityEvent.getActivityId());
+    assertThat(activityEvent.getType()).isEqualTo(ActivitiEventType.ACTIVITY_STARTED);
+    assertThat(activityEvent.getActivityId()).isEqualTo("throwMessageEvent");
 
     activityEvent = (ActivitiActivityEvent) listener.getEventsReceived().get(4);
-    assertEquals(ActivitiEventType.ACTIVITY_COMPLETED, activityEvent.getType());
-    assertEquals("throwMessageEvent", activityEvent.getActivityId());
+    assertThat(activityEvent.getType()).isEqualTo(ActivitiEventType.ACTIVITY_COMPLETED);
+    assertThat(activityEvent.getActivityId()).isEqualTo("throwMessageEvent");
 
     activityEvent = (ActivitiActivityEvent) listener.getEventsReceived().get(5);
-    assertEquals(ActivitiEventType.ACTIVITY_STARTED, activityEvent.getType());
-    assertEquals("endSubProcess", activityEvent.getActivityId());
+    assertThat(activityEvent.getType()).isEqualTo(ActivitiEventType.ACTIVITY_STARTED);
+    assertThat(activityEvent.getActivityId()).isEqualTo("endSubProcess");
 
     activityEvent = (ActivitiActivityEvent) listener.getEventsReceived().get(6);
-    assertEquals(ActivitiEventType.ACTIVITY_COMPLETED, activityEvent.getType());
-    assertEquals("endSubProcess", activityEvent.getActivityId());
+    assertThat(activityEvent.getType()).isEqualTo(ActivitiEventType.ACTIVITY_COMPLETED);
+    assertThat(activityEvent.getActivityId()).isEqualTo("endSubProcess");
 
     activityEvent = (ActivitiActivityEvent) listener.getEventsReceived().get(7);
-    assertEquals(ActivitiEventType.ACTIVITY_COMPLETED, activityEvent.getType());
-    assertEquals("subProcess", activityEvent.getActivityId());
+    assertThat(activityEvent.getType()).isEqualTo(ActivitiEventType.ACTIVITY_COMPLETED);
+    assertThat(activityEvent.getActivityId()).isEqualTo("subProcess");
 
     activityEvent = (ActivitiActivityEvent) listener.getEventsReceived().get(8);
-    assertEquals(ActivitiEventType.ACTIVITY_STARTED, activityEvent.getType());
-    assertEquals("theEnd", activityEvent.getActivityId());
+    assertThat(activityEvent.getType()).isEqualTo(ActivitiEventType.ACTIVITY_STARTED);
+    assertThat(activityEvent.getActivityId()).isEqualTo("theEnd");
 
     activityEvent = (ActivitiActivityEvent) listener.getEventsReceived().get(9);
-    assertEquals(ActivitiEventType.ACTIVITY_COMPLETED, activityEvent.getType());
-    assertEquals("theEnd", activityEvent.getActivityId());
+    assertThat(activityEvent.getType()).isEqualTo(ActivitiEventType.ACTIVITY_COMPLETED);
+    assertThat(activityEvent.getActivityId()).isEqualTo("theEnd");
   }
 
   /**
@@ -226,38 +225,38 @@ public class ActivityEventsTest extends PluggableActivitiTestCase {
   public void testActivitySignalEvents() throws Exception {
     // Two paths are active in the process, one receive-task and one intermediate catching signal-event
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("signalProcess");
-    assertNotNull(processInstance);
+    assertThat(processInstance).isNotNull();
 
     // Check regular signal through API
     Execution executionWithSignal = runtimeService.createExecutionQuery().activityId("receivePayment").singleResult();
-    assertNotNull(executionWithSignal);
+    assertThat(executionWithSignal).isNotNull();
 
     runtimeService.trigger(executionWithSignal.getId());
-    assertEquals(1, listener.getEventsReceived().size());
-    assertTrue(listener.getEventsReceived().get(0) instanceof ActivitiSignalEvent);
+    assertThat(listener.getEventsReceived()).hasSize(1);
+    assertThat(listener.getEventsReceived().get(0)).isInstanceOf(ActivitiSignalEvent.class);
     ActivitiSignalEvent signalEvent = (ActivitiSignalEvent) listener.getEventsReceived().get(0);
-    assertEquals(ActivitiEventType.ACTIVITY_SIGNALED, signalEvent.getType());
-    assertEquals("receivePayment", signalEvent.getActivityId());
-    assertEquals(executionWithSignal.getId(), signalEvent.getExecutionId());
-    assertEquals(executionWithSignal.getProcessInstanceId(), signalEvent.getProcessInstanceId());
-    assertEquals(processInstance.getProcessDefinitionId(), signalEvent.getProcessDefinitionId());
-    assertNull(signalEvent.getSignalName());
-    assertNull(signalEvent.getSignalData());
+    assertThat(signalEvent.getType()).isEqualTo(ActivitiEventType.ACTIVITY_SIGNALED);
+    assertThat(signalEvent.getActivityId()).isEqualTo("receivePayment");
+    assertThat(signalEvent.getExecutionId()).isEqualTo(executionWithSignal.getId());
+    assertThat(signalEvent.getProcessInstanceId()).isEqualTo(executionWithSignal.getProcessInstanceId());
+    assertThat(signalEvent.getProcessDefinitionId()).isEqualTo(processInstance.getProcessDefinitionId());
+    assertThat(signalEvent.getSignalName()).isNull();
+    assertThat(signalEvent.getSignalData()).isNull();
     listener.clearEventsReceived();
 
     // Check signal using event, and pass in additional payload
     Execution executionWithSignalEvent = runtimeService.createExecutionQuery().activityId("shipOrder").singleResult();
-    runtimeService.signalEventReceived("alert", executionWithSignalEvent.getId(), Collections.singletonMap("test", (Object) "test"));
-    assertEquals(1, listener.getEventsReceived().size());
-    assertTrue(listener.getEventsReceived().get(0) instanceof ActivitiSignalEvent);
+    runtimeService.signalEventReceived("alert", executionWithSignalEvent.getId(), singletonMap("test", (Object) "test"));
+    assertThat(listener.getEventsReceived()).hasSize(1);
+    assertThat(listener.getEventsReceived().get(0)).isInstanceOf(ActivitiSignalEvent.class);
     signalEvent = (ActivitiSignalEvent) listener.getEventsReceived().get(0);
-    assertEquals(ActivitiEventType.ACTIVITY_SIGNALED, signalEvent.getType());
-    assertEquals("shipOrder", signalEvent.getActivityId());
-    assertEquals(executionWithSignalEvent.getId(), signalEvent.getExecutionId());
-    assertEquals(executionWithSignalEvent.getProcessInstanceId(), signalEvent.getProcessInstanceId());
-    assertEquals(processInstance.getProcessDefinitionId(), signalEvent.getProcessDefinitionId());
-    assertEquals("alert", signalEvent.getSignalName());
-    assertNotNull(signalEvent.getSignalData());
+    assertThat(signalEvent.getType()).isEqualTo(ActivitiEventType.ACTIVITY_SIGNALED);
+    assertThat(signalEvent.getActivityId()).isEqualTo("shipOrder");
+    assertThat(signalEvent.getExecutionId()).isEqualTo(executionWithSignalEvent.getId());
+    assertThat(signalEvent.getProcessInstanceId()).isEqualTo(executionWithSignalEvent.getProcessInstanceId());
+    assertThat(signalEvent.getProcessDefinitionId()).isEqualTo(processInstance.getProcessDefinitionId());
+    assertThat(signalEvent.getSignalName()).isEqualTo("alert");
+    assertThat(signalEvent.getSignalData()).isNotNull();
     listener.clearEventsReceived();
 
     assertDatabaseEventPresent(ActivitiEventType.ACTIVITY_SIGNALED);
@@ -269,25 +268,25 @@ public class ActivityEventsTest extends PluggableActivitiTestCase {
   @Deployment
   public void testActivitySignalEventsWithinProcess() throws Exception {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("signalProcess");
-    assertNotNull(processInstance);
+    assertThat(processInstance).isNotNull();
 
     Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
-    assertNotNull(task);
+    assertThat(task).isNotNull();
 
     Execution executionWithSignalEvent = runtimeService.createExecutionQuery().activityId("shipOrder").singleResult();
 
     taskService.complete(task.getId());
-    assertEquals(1L, listener.getEventsReceived().size());
+    assertThat(listener.getEventsReceived()).hasSize(1);
 
-    assertTrue(listener.getEventsReceived().get(0) instanceof ActivitiSignalEvent);
+    assertThat(listener.getEventsReceived().get(0)).isInstanceOf(ActivitiSignalEvent.class);
     ActivitiSignalEvent signalEvent = (ActivitiSignalEvent) listener.getEventsReceived().get(0);
-    assertEquals(ActivitiEventType.ACTIVITY_SIGNALED, signalEvent.getType());
-    assertEquals("shipOrder", signalEvent.getActivityId());
-    assertEquals(executionWithSignalEvent.getId(), signalEvent.getExecutionId());
-    assertEquals(executionWithSignalEvent.getProcessInstanceId(), signalEvent.getProcessInstanceId());
-    assertEquals(processInstance.getProcessDefinitionId(), signalEvent.getProcessDefinitionId());
-    assertEquals("alert", signalEvent.getSignalName());
-    assertNull(signalEvent.getSignalData());
+    assertThat(signalEvent.getType()).isEqualTo(ActivitiEventType.ACTIVITY_SIGNALED);
+    assertThat(signalEvent.getActivityId()).isEqualTo("shipOrder");
+    assertThat(signalEvent.getExecutionId()).isEqualTo(executionWithSignalEvent.getId());
+    assertThat(signalEvent.getProcessInstanceId()).isEqualTo(executionWithSignalEvent.getProcessInstanceId());
+    assertThat(signalEvent.getProcessDefinitionId()).isEqualTo(processInstance.getProcessDefinitionId());
+    assertThat(signalEvent.getSignalName()).isEqualTo("alert");
+    assertThat(signalEvent.getSignalData()).isNull();
   }
 
   /**
@@ -296,35 +295,35 @@ public class ActivityEventsTest extends PluggableActivitiTestCase {
   @Deployment
   public void testActivityMessageEvents() throws Exception {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("messageProcess");
-    assertNotNull(processInstance);
+    assertThat(processInstance).isNotNull();
 
     Execution executionWithMessage = runtimeService.createExecutionQuery().activityId("shipOrder").singleResult();
-    assertNotNull(executionWithMessage);
+    assertThat(executionWithMessage).isNotNull();
 
     runtimeService.messageEventReceived("messageName", executionWithMessage.getId());
-    assertEquals(2, listener.getEventsReceived().size());
+    assertThat(listener.getEventsReceived()).hasSize(2);
 
     // First, an ACTIVITY_MESSAGE_WAITING event is expected
-    assertTrue(listener.getEventsReceived().get(0) instanceof ActivitiMessageEvent);
+    assertThat(listener.getEventsReceived().get(0)).isInstanceOf(ActivitiMessageEvent.class);
     ActivitiMessageEvent messageEvent = (ActivitiMessageEvent) listener.getEventsReceived().get(0);
-    assertEquals(ActivitiEventType.ACTIVITY_MESSAGE_WAITING, messageEvent.getType());
-    assertEquals("shipOrder", messageEvent.getActivityId());
-    assertEquals(executionWithMessage.getId(), messageEvent.getExecutionId());
-    assertEquals(executionWithMessage.getProcessInstanceId(), messageEvent.getProcessInstanceId());
-    assertEquals(processInstance.getProcessDefinitionId(), messageEvent.getProcessDefinitionId());
-    assertEquals("messageName", messageEvent.getMessageName());
-    assertNull(messageEvent.getMessageData());
+    assertThat(messageEvent.getType()).isEqualTo(ActivitiEventType.ACTIVITY_MESSAGE_WAITING);
+    assertThat(messageEvent.getActivityId()).isEqualTo("shipOrder");
+    assertThat(messageEvent.getExecutionId()).isEqualTo(executionWithMessage.getId());
+    assertThat(messageEvent.getProcessInstanceId()).isEqualTo(executionWithMessage.getProcessInstanceId());
+    assertThat(messageEvent.getProcessDefinitionId()).isEqualTo(processInstance.getProcessDefinitionId());
+    assertThat(messageEvent.getMessageName()).isEqualTo("messageName");
+    assertThat(messageEvent.getMessageData()).isNull();
 
     // Second, an ACTIVITY_MESSAGE_RECEIVED event is expected
-    assertTrue(listener.getEventsReceived().get(1) instanceof ActivitiMessageEvent);
+    assertThat(listener.getEventsReceived().get(1)).isInstanceOf(ActivitiMessageEvent.class);
     messageEvent = (ActivitiMessageEvent) listener.getEventsReceived().get(1);
-    assertEquals(ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED, messageEvent.getType());
-    assertEquals("shipOrder", messageEvent.getActivityId());
-    assertEquals(executionWithMessage.getId(), messageEvent.getExecutionId());
-    assertEquals(executionWithMessage.getProcessInstanceId(), messageEvent.getProcessInstanceId());
-    assertEquals(processInstance.getProcessDefinitionId(), messageEvent.getProcessDefinitionId());
-    assertEquals("messageName", messageEvent.getMessageName());
-    assertNull(messageEvent.getMessageData());
+    assertThat(messageEvent.getType()).isEqualTo(ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED);
+    assertThat(messageEvent.getActivityId()).isEqualTo("shipOrder");
+    assertThat(messageEvent.getExecutionId()).isEqualTo(executionWithMessage.getId());
+    assertThat(messageEvent.getProcessInstanceId()).isEqualTo(executionWithMessage.getProcessInstanceId());
+    assertThat(messageEvent.getProcessDefinitionId()).isEqualTo(processInstance.getProcessDefinitionId());
+    assertThat(messageEvent.getMessageName()).isEqualTo("messageName");
+    assertThat(messageEvent.getMessageData()).isNull();
 
     assertDatabaseEventPresent(ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED);
   }
@@ -335,47 +334,47 @@ public class ActivityEventsTest extends PluggableActivitiTestCase {
   @Deployment
   public void testActivityMessageEventsInEventSubprocess() throws Exception {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("messageProcess");
-    assertNotNull(processInstance);
+    assertThat(processInstance).isNotNull();
 
     Execution executionWithMessage = runtimeService.createExecutionQuery().messageEventSubscriptionName("messageName").singleResult();
-    assertNotNull(executionWithMessage);
+    assertThat(executionWithMessage).isNotNull();
 
     runtimeService.messageEventReceived("messageName", executionWithMessage.getId());
 
     // Only a message-event should be present, no signal-event, since the event-subprocess is
     // not signaled, but executed instead
-    assertEquals(3, listener.getEventsReceived().size());
+    assertThat(listener.getEventsReceived()).hasSize(3);
 
     // An ACTIVITY_MESSAGE_WAITING event is expected
-    assertTrue(listener.getEventsReceived().get(0) instanceof ActivitiMessageEvent);
+    assertThat(listener.getEventsReceived().get(0)).isInstanceOf(ActivitiMessageEvent.class);
     ActivitiMessageEvent messageEvent = (ActivitiMessageEvent) listener.getEventsReceived().get(0);
-    assertEquals(ActivitiEventType.ACTIVITY_MESSAGE_WAITING, messageEvent.getType());
-    assertEquals("catchMessage", messageEvent.getActivityId());
-    assertEquals(executionWithMessage.getId(), messageEvent.getExecutionId());
-    assertEquals(executionWithMessage.getProcessInstanceId(), messageEvent.getProcessInstanceId());
-    assertEquals(processInstance.getProcessDefinitionId(), messageEvent.getProcessDefinitionId());
-    assertEquals("messageName", messageEvent.getMessageName());
-    assertNull(messageEvent.getMessageData());
+    assertThat(messageEvent.getType()).isEqualTo(ActivitiEventType.ACTIVITY_MESSAGE_WAITING);
+    assertThat(messageEvent.getActivityId()).isEqualTo("catchMessage");
+    assertThat(messageEvent.getExecutionId()).isEqualTo(executionWithMessage.getId());
+    assertThat(messageEvent.getProcessInstanceId()).isEqualTo(executionWithMessage.getProcessInstanceId());
+    assertThat(messageEvent.getProcessDefinitionId()).isEqualTo(processInstance.getProcessDefinitionId());
+    assertThat(messageEvent.getMessageName()).isEqualTo("messageName");
+    assertThat(messageEvent.getMessageData()).isNull();
 
     // An ACTIVITY_MESSAGE_RECEIVED event is expected
-    assertTrue(listener.getEventsReceived().get(1) instanceof ActivitiMessageEvent);
+    assertThat(listener.getEventsReceived().get(1)).isInstanceOf(ActivitiMessageEvent.class);
     messageEvent = (ActivitiMessageEvent) listener.getEventsReceived().get(1);
-    assertEquals(ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED, messageEvent.getType());
-    assertEquals("catchMessage", messageEvent.getActivityId());
-    assertEquals(executionWithMessage.getId(), messageEvent.getExecutionId());
-    assertEquals(executionWithMessage.getProcessInstanceId(), messageEvent.getProcessInstanceId());
-    assertEquals(processInstance.getProcessDefinitionId(), messageEvent.getProcessDefinitionId());
-    assertEquals("messageName", messageEvent.getMessageName());
-    assertNull(messageEvent.getMessageData());
+    assertThat(messageEvent.getType()).isEqualTo(ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED);
+    assertThat(messageEvent.getActivityId()).isEqualTo("catchMessage");
+    assertThat(messageEvent.getExecutionId()).isEqualTo(executionWithMessage.getId());
+    assertThat(messageEvent.getProcessInstanceId()).isEqualTo(executionWithMessage.getProcessInstanceId());
+    assertThat(messageEvent.getProcessDefinitionId()).isEqualTo(processInstance.getProcessDefinitionId());
+    assertThat(messageEvent.getMessageName()).isEqualTo("messageName");
+    assertThat(messageEvent.getMessageData()).isNull();
 
     // An ACTIVITY_CANCELLED event is expected
-    assertTrue(listener.getEventsReceived().get(2) instanceof ActivitiActivityCancelledEvent);
+    assertThat(listener.getEventsReceived().get(2)).isInstanceOf(ActivitiActivityCancelledEvent.class);
     ActivitiActivityEvent activityEvent = (ActivitiActivityEvent) listener.getEventsReceived().get(2);
-    assertEquals(ActivitiEventType.ACTIVITY_CANCELLED, activityEvent.getType());
-    assertEquals("shipOrder", activityEvent.getActivityId());
-    assertEquals("userTask", activityEvent.getActivityType());
-    assertEquals(executionWithMessage.getProcessInstanceId(), activityEvent.getProcessInstanceId());
-    assertEquals(processInstance.getProcessDefinitionId(), activityEvent.getProcessDefinitionId());
+    assertThat(activityEvent.getType()).isEqualTo(ActivitiEventType.ACTIVITY_CANCELLED);
+    assertThat(activityEvent.getActivityId()).isEqualTo("shipOrder");
+    assertThat(activityEvent.getActivityType()).isEqualTo("userTask");
+    assertThat(activityEvent.getProcessInstanceId()).isEqualTo(executionWithMessage.getProcessInstanceId());
+    assertThat(activityEvent.getProcessDefinitionId()).isEqualTo(processInstance.getProcessDefinitionId());
   }
 
   /**
@@ -384,31 +383,31 @@ public class ActivityEventsTest extends PluggableActivitiTestCase {
   @Deployment
   public void testActivityCompensationEvents() throws Exception {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("compensationProcess");
-    assertNotNull(processInstance);
+    assertThat(processInstance).isNotNull();
 
     Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
-    assertNotNull(task);
+    assertThat(task).isNotNull();
 
     // Complete task, next a compensation event will be thrown
     taskService.complete(task.getId());
 
-    assertEquals(1, listener.getEventsReceived().size());
+    assertThat(listener.getEventsReceived()).hasSize(1);
 
     // A compensate-event is expected
-    assertTrue(listener.getEventsReceived().get(0) instanceof ActivitiActivityEvent);
+    assertThat(listener.getEventsReceived().get(0)).isInstanceOf(ActivitiActivityEvent.class);
     ActivitiActivityEvent activityEvent = (ActivitiActivityEvent) listener.getEventsReceived().get(0);
-    assertEquals(ActivitiEventType.ACTIVITY_COMPENSATE, activityEvent.getType());
-    assertEquals("compensate", activityEvent.getActivityId());
+    assertThat(activityEvent.getType()).isEqualTo(ActivitiEventType.ACTIVITY_COMPENSATE);
+    assertThat(activityEvent.getActivityId()).isEqualTo("compensate");
     // A new execution is created for the compensation-event, this should be
     // visible in the event
-    assertFalse(processInstance.getId().equals(activityEvent.getExecutionId()));
-    assertEquals(processInstance.getProcessInstanceId(), activityEvent.getProcessInstanceId());
-    assertEquals(processInstance.getProcessDefinitionId(), activityEvent.getProcessDefinitionId());
+    assertThat(processInstance.getId().equals(activityEvent.getExecutionId())).isFalse();
+    assertThat(activityEvent.getProcessInstanceId()).isEqualTo(processInstance.getProcessInstanceId());
+    assertThat(activityEvent.getProcessDefinitionId()).isEqualTo(processInstance.getProcessDefinitionId());
 
     // Check if the process is still alive
     processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(processInstance.getId()).singleResult();
 
-    assertNotNull(processInstance);
+    assertThat(processInstance).isNotNull();
 
     assertDatabaseEventPresent(ActivitiEventType.ACTIVITY_COMPENSATE);
   }
@@ -419,32 +418,28 @@ public class ActivityEventsTest extends PluggableActivitiTestCase {
   @Deployment
   public void testActivityErrorEvents() throws Exception {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("errorProcess");
-    assertNotNull(processInstance);
+    assertThat(processInstance).isNotNull();
 
     // Error-handling should have ended the process
     ProcessInstance afterErrorInstance = runtimeService.createProcessInstanceQuery().processInstanceId(processInstance.getId()).singleResult();
-    assertNull(afterErrorInstance);
+    assertThat(afterErrorInstance).isNull();
 
-    ActivitiErrorEvent errorEvent = null;
+    List<ActivitiErrorEvent> errorEvents = listener.getEventsReceived().stream()
+        .filter(ActivitiErrorEvent.class::isInstance)
+        .map(ActivitiErrorEvent.class::cast)
+        .collect(toList());
 
-    for (ActivitiEvent event : listener.getEventsReceived()) {
-      if (event instanceof ActivitiErrorEvent) {
-        if (errorEvent == null) {
-          errorEvent = (ActivitiErrorEvent) event;
-        } else {
-          fail("Only one ActivityErrorEvent expected");
-        }
-      }
-    }
+    assertThat(errorEvents).as("Only one ActivityErrorEvent expected").hasSize(1);
 
-    assertNotNull(errorEvent);
-    assertEquals(ActivitiEventType.ACTIVITY_ERROR_RECEIVED, errorEvent.getType());
-    assertEquals("catchError", errorEvent.getActivityId());
-    assertEquals("myError", errorEvent.getErrorId());
-    assertEquals("123", errorEvent.getErrorCode());
-    assertEquals(processInstance.getId(), errorEvent.getProcessInstanceId());
-    assertEquals(processInstance.getProcessDefinitionId(), errorEvent.getProcessDefinitionId());
-    assertFalse(processInstance.getId().equals(errorEvent.getExecutionId()));
+    ActivitiErrorEvent errorEvent = errorEvents.get(0);
+
+    assertThat(errorEvent.getType()).isEqualTo(ActivitiEventType.ACTIVITY_ERROR_RECEIVED);
+    assertThat(errorEvent.getActivityId()).isEqualTo("catchError");
+    assertThat(errorEvent.getErrorId()).isEqualTo("myError");
+    assertThat(errorEvent.getErrorCode()).isEqualTo("123");
+    assertThat(errorEvent.getProcessInstanceId()).isEqualTo(processInstance.getId());
+    assertThat(errorEvent.getProcessDefinitionId()).isEqualTo(processInstance.getProcessDefinitionId());
+    assertThat(errorEvent.getExecutionId()).isNotEqualTo(processInstance.getId());
   }
 
   /**
@@ -453,39 +448,35 @@ public class ActivityEventsTest extends PluggableActivitiTestCase {
   @Deployment
   public void testActivityErrorEventsFromBPMNError() throws Exception {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("errorProcess");
-    assertNotNull(processInstance);
+    assertThat(processInstance).isNotNull();
 
     // Error-handling should have ended the process
     ProcessInstance afterErrorInstance = runtimeService.createProcessInstanceQuery().processInstanceId(processInstance.getId()).singleResult();
-    assertNull(afterErrorInstance);
+    assertThat(afterErrorInstance).isNull();
 
-    ActivitiErrorEvent errorEvent = null;
+    List<ActivitiErrorEvent> errorEvents = listener.getEventsReceived().stream()
+      .filter(ActivitiErrorEvent.class::isInstance)
+      .map(ActivitiErrorEvent.class::cast)
+      .collect(toList());
 
-    for (ActivitiEvent event : listener.getEventsReceived()) {
-      if (event instanceof ActivitiErrorEvent) {
-        if (errorEvent == null) {
-          errorEvent = (ActivitiErrorEvent) event;
-        } else {
-          fail("Only one ActivityErrorEvent expected");
-        }
-      }
-    }
+    assertThat(errorEvents).as("Only one ActivityErrorEvent expected").hasSize(1);
 
-    assertNotNull(errorEvent);
-    assertEquals(ActivitiEventType.ACTIVITY_ERROR_RECEIVED, errorEvent.getType());
-    assertEquals("catchError", errorEvent.getActivityId());
-    assertEquals("23", errorEvent.getErrorId());
-    assertEquals("23", errorEvent.getErrorCode());
-    assertEquals(processInstance.getId(), errorEvent.getProcessInstanceId());
-    assertEquals(processInstance.getProcessDefinitionId(), errorEvent.getProcessDefinitionId());
-    assertFalse(processInstance.getId().equals(errorEvent.getExecutionId()));
+    ActivitiErrorEvent errorEvent = errorEvents.get(0);
+
+    assertThat(errorEvent.getType()).isEqualTo(ActivitiEventType.ACTIVITY_ERROR_RECEIVED);
+    assertThat(errorEvent.getActivityId()).isEqualTo("catchError");
+    assertThat(errorEvent.getErrorId()).isEqualTo("23");
+    assertThat(errorEvent.getErrorCode()).isEqualTo("23");
+    assertThat(errorEvent.getProcessInstanceId()).isEqualTo(processInstance.getId());
+    assertThat(errorEvent.getProcessDefinitionId()).isEqualTo(processInstance.getProcessDefinitionId());
+    assertThat(errorEvent.getExecutionId()).isNotEqualTo(processInstance.getId());
   }
 
   @Deployment(resources = "org/activiti/engine/test/api/event/JobEventsTest.testJobEntityEvents.bpmn20.xml")
   public void testActivityTimeOutEvent() {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testJobEvents");
     Job theJob = managementService.createTimerJobQuery().processInstanceId(processInstance.getId()).singleResult();
-    assertNotNull(theJob);
+    assertThat(theJob).isNotNull();
 
     // Force timer to fire
     Calendar tomorrow = Calendar.getInstance();
@@ -494,9 +485,9 @@ public class ActivityEventsTest extends PluggableActivitiTestCase {
     waitForJobExecutorToProcessAllJobs(2000, 1000);
 
     // Check timeout has been dispatched
-    assertEquals(1, listener.getEventsReceived().size());
+    assertThat(listener.getEventsReceived()).hasSize(1);
     ActivitiEvent activitiEvent = listener.getEventsReceived().get(0);
-    assertEquals("ACTIVITY_CANCELLED event expected", ActivitiEventType.ACTIVITY_CANCELLED, activitiEvent.getType());
+    assertThat(activitiEvent.getType()).as("ACTIVITY_CANCELLED event expected").isEqualTo(ActivitiEventType.ACTIVITY_CANCELLED);
     assertThat(((ActivitiActivityCancelledEvent) activitiEvent).getCause()).isEqualTo("boundary event (timer)");
   }
 
@@ -504,7 +495,7 @@ public class ActivityEventsTest extends PluggableActivitiTestCase {
   public void testActivityTimeOutEventInSubProcess() {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("timerOnNestedSubprocesses");
     Job theJob = managementService.createTimerJobQuery().processInstanceId(processInstance.getId()).singleResult();
-    assertNotNull(theJob);
+    assertThat(theJob).isNotNull();
 
     // Force timer to fire
     Calendar timeToFire = Calendar.getInstance();
@@ -514,24 +505,24 @@ public class ActivityEventsTest extends PluggableActivitiTestCase {
     waitForJobExecutorToProcessAllJobs(2000, 200);
 
     // Check timeout-events have been dispatched
-    assertEquals(4, listener.getEventsReceived().size());
+    assertThat(listener.getEventsReceived()).hasSize(4);
     List<String> eventIdList = new ArrayList<String>();
     for (ActivitiEvent event : listener.getEventsReceived()) {
       assertThat(event.getType()).isEqualTo(ActivitiEventType.ACTIVITY_CANCELLED);
       assertThat(((ActivitiActivityCancelledEvent) event).getCause()).isEqualTo("boundary event (boundaryTimer)");
       eventIdList.add(((ActivitiActivityEventImpl) event).getActivityId());
     }
-    assertTrue(eventIdList.indexOf("innerTask1") >= 0);
-    assertTrue(eventIdList.indexOf("innerTask2") >= 0);
-    assertTrue(eventIdList.indexOf("subprocess") >= 0);
-    assertTrue(eventIdList.indexOf("innerSubprocess") >= 0);
+    assertThat(eventIdList.indexOf("innerTask1") >= 0).isTrue();
+    assertThat(eventIdList.indexOf("innerTask2") >= 0).isTrue();
+    assertThat(eventIdList.indexOf("subprocess") >= 0).isTrue();
+    assertThat(eventIdList.indexOf("innerSubprocess") >= 0).isTrue();
   }
 
   @Deployment
   public void testActivityTimeOutEventInCallActivity() {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("timerOnCallActivity");
     Job theJob = managementService.createTimerJobQuery().processInstanceId(processInstance.getId()).singleResult();
-    assertNotNull(theJob);
+    assertThat(theJob).isNotNull();
 
     // Force timer to fire
     Calendar timeToFire = Calendar.getInstance();
@@ -565,7 +556,7 @@ public class ActivityEventsTest extends PluggableActivitiTestCase {
   @Deployment
   public void testActivityMessageBoundaryEventsOnUserTask() throws Exception {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("messageOnUserTaskProcess");
-    assertNotNull(processInstance);
+    assertThat(processInstance).isNotNull();
 
     Execution executionWithMessage = runtimeService.createExecutionQuery().messageEventSubscriptionName("message_1").singleResult();
     assertThat(executionWithMessage).isNotNull();
@@ -573,39 +564,39 @@ public class ActivityEventsTest extends PluggableActivitiTestCase {
     assertThat(taskExecution).isNotNull();
 
     runtimeService.messageEventReceived("message_1", executionWithMessage.getId());
-    assertEquals(3, listener.getEventsReceived().size());
+    assertThat(listener.getEventsReceived()).hasSize(3);
 
     // First, an ACTIVITY_MESSAGE_WAITING event is expected
-    assertTrue(listener.getEventsReceived().get(0) instanceof ActivitiMessageEvent);
+    assertThat(listener.getEventsReceived().get(0)).isInstanceOf(ActivitiMessageEvent.class);
     ActivitiMessageEvent messageEvent = (ActivitiMessageEvent) listener.getEventsReceived().get(0);
-    assertEquals(ActivitiEventType.ACTIVITY_MESSAGE_WAITING, messageEvent.getType());
-    assertEquals("boundaryMessageEventCatching", messageEvent.getActivityId());
-    assertEquals(executionWithMessage.getId(), messageEvent.getExecutionId());
-    assertEquals(executionWithMessage.getProcessInstanceId(), messageEvent.getProcessInstanceId());
-    assertEquals(processInstance.getProcessDefinitionId(), messageEvent.getProcessDefinitionId());
-    assertEquals("message_1", messageEvent.getMessageName());
-    assertNull(messageEvent.getMessageData());
+    assertThat(messageEvent.getType()).isEqualTo(ActivitiEventType.ACTIVITY_MESSAGE_WAITING);
+    assertThat(messageEvent.getActivityId()).isEqualTo("boundaryMessageEventCatching");
+    assertThat(messageEvent.getExecutionId()).isEqualTo(executionWithMessage.getId());
+    assertThat(messageEvent.getProcessInstanceId()).isEqualTo(executionWithMessage.getProcessInstanceId());
+    assertThat(messageEvent.getProcessDefinitionId()).isEqualTo(processInstance.getProcessDefinitionId());
+    assertThat(messageEvent.getMessageName()).isEqualTo("message_1");
+    assertThat(messageEvent.getMessageData()).isNull();
 
     // Second, an ACTIVITY_MESSAGE_RECEIVED event is expected
-    assertTrue(listener.getEventsReceived().get(1) instanceof ActivitiMessageEvent);
+    assertThat(listener.getEventsReceived().get(1)).isInstanceOf(ActivitiMessageEvent.class);
     messageEvent = (ActivitiMessageEvent) listener.getEventsReceived().get(1);
-    assertEquals(ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED, messageEvent.getType());
-    assertEquals(ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED, messageEvent.getType());
-    assertEquals("boundaryMessageEventCatching", messageEvent.getActivityId());
-    assertEquals(executionWithMessage.getId(), messageEvent.getExecutionId());
-    assertEquals(executionWithMessage.getProcessInstanceId(), messageEvent.getProcessInstanceId());
-    assertEquals(processInstance.getProcessDefinitionId(), messageEvent.getProcessDefinitionId());
-    assertEquals("message_1", messageEvent.getMessageName());
-    assertNull(messageEvent.getMessageData());
+    assertThat(messageEvent.getType()).isEqualTo(ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED);
+    assertThat(messageEvent.getType()).isEqualTo(ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED);
+    assertThat(messageEvent.getActivityId()).isEqualTo("boundaryMessageEventCatching");
+    assertThat(messageEvent.getExecutionId()).isEqualTo(executionWithMessage.getId());
+    assertThat(messageEvent.getProcessInstanceId()).isEqualTo(executionWithMessage.getProcessInstanceId());
+    assertThat(messageEvent.getProcessDefinitionId()).isEqualTo(processInstance.getProcessDefinitionId());
+    assertThat(messageEvent.getMessageName()).isEqualTo("message_1");
+    assertThat(messageEvent.getMessageData()).isNull();
 
     // Next, an signal-event is expected, as a result of the message
     assertThat(listener.getEventsReceived().get(2)).isInstanceOf(ActivitiActivityCancelledEvent.class);
     ActivitiActivityCancelledEvent cancelledEvent = (ActivitiActivityCancelledEvent) listener.getEventsReceived().get(2);
-    assertEquals(ActivitiEventType.ACTIVITY_CANCELLED, cancelledEvent.getType());
-    assertEquals("cloudformtask1", cancelledEvent.getActivityId());
+    assertThat(cancelledEvent.getType()).isEqualTo(ActivitiEventType.ACTIVITY_CANCELLED);
+    assertThat(cancelledEvent.getActivityId()).isEqualTo("cloudformtask1");
     assertThat(cancelledEvent.getExecutionId()).isEqualTo(taskExecution.getId());
-    assertEquals(executionWithMessage.getProcessInstanceId(), cancelledEvent.getProcessInstanceId());
-    assertEquals(processInstance.getProcessDefinitionId(), cancelledEvent.getProcessDefinitionId());
+    assertThat(cancelledEvent.getProcessInstanceId()).isEqualTo(executionWithMessage.getProcessInstanceId());
+    assertThat(cancelledEvent.getProcessDefinitionId()).isEqualTo(processInstance.getProcessDefinitionId());
     assertThat(cancelledEvent.getCause()).isEqualTo("boundary event (boundaryMessageEventCatching)");
 
     assertDatabaseEventPresent(ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED);
@@ -617,51 +608,51 @@ public class ActivityEventsTest extends PluggableActivitiTestCase {
   @Deployment
   public void testActivityMessageBoundaryEventsOnSubProcess() throws Exception {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("messageOnSubProcess");
-    assertNotNull(processInstance);
+    assertThat(processInstance).isNotNull();
 
     Execution executionWithMessage = runtimeService.createExecutionQuery().activityId("boundaryMessageEventCatching").singleResult();
-    assertNotNull(executionWithMessage);
+    assertThat(executionWithMessage).isNotNull();
 
     runtimeService.messageEventReceived("message_1", executionWithMessage.getId());
-    assertEquals(4, listener.getEventsReceived().size());
+    assertThat(listener.getEventsReceived()).hasSize(4);
 
     // First, an ACTIVITY_MESSAGE_WAITING event is expected
-    assertTrue(listener.getEventsReceived().get(0) instanceof ActivitiMessageEvent);
+    assertThat(listener.getEventsReceived().get(0)).isInstanceOf(ActivitiMessageEvent.class);
     ActivitiMessageEvent messageEvent = (ActivitiMessageEvent) listener.getEventsReceived().get(0);
-    assertEquals(ActivitiEventType.ACTIVITY_MESSAGE_WAITING, messageEvent.getType());
-    assertEquals("boundaryMessageEventCatching", messageEvent.getActivityId());
-    assertEquals(executionWithMessage.getId(), messageEvent.getExecutionId());
-    assertEquals(executionWithMessage.getProcessInstanceId(), messageEvent.getProcessInstanceId());
-    assertEquals(processInstance.getProcessDefinitionId(), messageEvent.getProcessDefinitionId());
-    assertEquals("message_1", messageEvent.getMessageName());
-    assertNull(messageEvent.getMessageData());
+    assertThat(messageEvent.getType()).isEqualTo(ActivitiEventType.ACTIVITY_MESSAGE_WAITING);
+    assertThat(messageEvent.getActivityId()).isEqualTo("boundaryMessageEventCatching");
+    assertThat(messageEvent.getExecutionId()).isEqualTo(executionWithMessage.getId());
+    assertThat(messageEvent.getProcessInstanceId()).isEqualTo(executionWithMessage.getProcessInstanceId());
+    assertThat(messageEvent.getProcessDefinitionId()).isEqualTo(processInstance.getProcessDefinitionId());
+    assertThat(messageEvent.getMessageName()).isEqualTo("message_1");
+    assertThat(messageEvent.getMessageData()).isNull();
 
     // Second, an ACTIVITY_MESSAGE_RECEIVED event is expected
-    assertTrue(listener.getEventsReceived().get(1) instanceof ActivitiMessageEvent);
+    assertThat(listener.getEventsReceived().get(1)).isInstanceOf(ActivitiMessageEvent.class);
     messageEvent = (ActivitiMessageEvent) listener.getEventsReceived().get(1);
-    assertEquals(ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED, messageEvent.getType());
-    assertEquals("boundaryMessageEventCatching", messageEvent.getActivityId());
-    assertEquals(executionWithMessage.getId(), messageEvent.getExecutionId());
-    assertEquals(executionWithMessage.getProcessInstanceId(), messageEvent.getProcessInstanceId());
-    assertEquals(processInstance.getProcessDefinitionId(), messageEvent.getProcessDefinitionId());
-    assertEquals("message_1", messageEvent.getMessageName());
-    assertNull(messageEvent.getMessageData());
+    assertThat(messageEvent.getType()).isEqualTo(ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED);
+    assertThat(messageEvent.getActivityId()).isEqualTo("boundaryMessageEventCatching");
+    assertThat(messageEvent.getExecutionId()).isEqualTo(executionWithMessage.getId());
+    assertThat(messageEvent.getProcessInstanceId()).isEqualTo(executionWithMessage.getProcessInstanceId());
+    assertThat(messageEvent.getProcessDefinitionId()).isEqualTo(processInstance.getProcessDefinitionId());
+    assertThat(messageEvent.getMessageName()).isEqualTo("message_1");
+    assertThat(messageEvent.getMessageData()).isNull();
 
     // Next, a signal-event is expected, as a result of the message
-    assertTrue(listener.getEventsReceived().get(2) instanceof ActivitiActivityCancelledEvent);
+    assertThat(listener.getEventsReceived().get(2)).isInstanceOf(ActivitiActivityCancelledEvent.class);
     ActivitiActivityCancelledEvent cancelledEvent = (ActivitiActivityCancelledEvent) listener.getEventsReceived().get(2);
-    assertEquals(ActivitiEventType.ACTIVITY_CANCELLED, cancelledEvent.getType());
-    assertEquals("cloudformtask1", cancelledEvent.getActivityId());
-    assertEquals(executionWithMessage.getProcessInstanceId(), cancelledEvent.getProcessInstanceId());
-    assertEquals(processInstance.getProcessDefinitionId(), cancelledEvent.getProcessDefinitionId());
+    assertThat(cancelledEvent.getType()).isEqualTo(ActivitiEventType.ACTIVITY_CANCELLED);
+    assertThat(cancelledEvent.getActivityId()).isEqualTo("cloudformtask1");
+    assertThat(cancelledEvent.getProcessInstanceId()).isEqualTo(executionWithMessage.getProcessInstanceId());
+    assertThat(cancelledEvent.getProcessDefinitionId()).isEqualTo(processInstance.getProcessDefinitionId());
     assertThat(cancelledEvent.getCause()).isEqualTo("boundary event (boundaryMessageEventCatching)");
 
-    assertTrue(listener.getEventsReceived().get(3) instanceof ActivitiActivityCancelledEvent);
+    assertThat(listener.getEventsReceived().get(3)).isInstanceOf(ActivitiActivityCancelledEvent.class);
     cancelledEvent = (ActivitiActivityCancelledEvent) listener.getEventsReceived().get(3);
-    assertEquals(ActivitiEventType.ACTIVITY_CANCELLED, cancelledEvent.getType());
-    assertEquals("subProcess", cancelledEvent.getActivityId());
-    assertEquals(executionWithMessage.getProcessInstanceId(), cancelledEvent.getProcessInstanceId());
-    assertEquals(processInstance.getProcessDefinitionId(), cancelledEvent.getProcessDefinitionId());
+    assertThat(cancelledEvent.getType()).isEqualTo(ActivitiEventType.ACTIVITY_CANCELLED);
+    assertThat(cancelledEvent.getActivityId()).isEqualTo("subProcess");
+    assertThat(cancelledEvent.getProcessInstanceId()).isEqualTo(executionWithMessage.getProcessInstanceId());
+    assertThat(cancelledEvent.getProcessDefinitionId()).isEqualTo(processInstance.getProcessDefinitionId());
     assertThat(cancelledEvent.getCause()).isEqualTo("boundary event (boundaryMessageEventCatching)");
 
     assertDatabaseEventPresent(ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED);
@@ -670,65 +661,65 @@ public class ActivityEventsTest extends PluggableActivitiTestCase {
   @Deployment
   public void testActivitySignalBoundaryEventsOnSubProcess() throws Exception {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("signalOnSubProcess");
-    assertNotNull(processInstance);
+    assertThat(processInstance).isNotNull();
 
     Execution executionWithSignal = runtimeService.createExecutionQuery().activityId("userTaskInsideProcess").singleResult();
-    assertNotNull(executionWithSignal);
+    assertThat(executionWithSignal).isNotNull();
 
     runtimeService.signalEventReceived("signalName");
-    assertEquals(3, listener.getEventsReceived().size());
-    
-    assertTrue(listener.getEventsReceived().get(0) instanceof ActivitiSignalEventImpl);
+    assertThat(listener.getEventsReceived()).hasSize(3);
+
+    assertThat(listener.getEventsReceived().get(0)).isInstanceOf(ActivitiSignalEventImpl.class);
     ActivitiSignalEventImpl signalEvent = (ActivitiSignalEventImpl) listener.getEventsReceived().get(0);
-    assertEquals(ActivitiEventType.ACTIVITY_SIGNALED, signalEvent.getType());
-    assertEquals("boundarySignalEventCatching", signalEvent.getActivityId());
-    assertEquals(executionWithSignal.getProcessInstanceId(), signalEvent.getProcessInstanceId());
-    assertEquals(processInstance.getProcessDefinitionId(), signalEvent.getProcessDefinitionId());
-    
-    assertTrue(listener.getEventsReceived().get(2) instanceof ActivitiActivityCancelledEvent);
+    assertThat(signalEvent.getType()).isEqualTo(ActivitiEventType.ACTIVITY_SIGNALED);
+    assertThat(signalEvent.getActivityId()).isEqualTo("boundarySignalEventCatching");
+    assertThat(signalEvent.getProcessInstanceId()).isEqualTo(executionWithSignal.getProcessInstanceId());
+    assertThat(signalEvent.getProcessDefinitionId()).isEqualTo(processInstance.getProcessDefinitionId());
+
+    assertThat(listener.getEventsReceived().get(2)).isInstanceOf(ActivitiActivityCancelledEvent.class);
     ActivitiActivityCancelledEvent cancelEvent = (ActivitiActivityCancelledEvent) listener.getEventsReceived().get(2);
-    assertEquals(ActivitiEventType.ACTIVITY_CANCELLED, cancelEvent.getType());
-    assertEquals("subProcess", cancelEvent.getActivityId());
-    assertEquals(executionWithSignal.getProcessInstanceId(), cancelEvent.getProcessInstanceId());
-    assertEquals(processInstance.getProcessDefinitionId(), cancelEvent.getProcessDefinitionId());
+    assertThat(cancelEvent.getType()).isEqualTo(ActivitiEventType.ACTIVITY_CANCELLED);
+    assertThat(cancelEvent.getActivityId()).isEqualTo("subProcess");
+    assertThat(cancelEvent.getProcessInstanceId()).isEqualTo(executionWithSignal.getProcessInstanceId());
+    assertThat(cancelEvent.getProcessDefinitionId()).isEqualTo(processInstance.getProcessDefinitionId());
     assertThat(cancelEvent.getCause()).isEqualTo("boundary event (boundarySignalEventCatching)");
 
-    assertTrue(listener.getEventsReceived().get(1) instanceof ActivitiActivityCancelledEvent);
+    assertThat(listener.getEventsReceived().get(1)).isInstanceOf(ActivitiActivityCancelledEvent.class);
     cancelEvent = (ActivitiActivityCancelledEvent) listener.getEventsReceived().get(1);
-    assertEquals(ActivitiEventType.ACTIVITY_CANCELLED, cancelEvent.getType());
-    assertEquals("userTaskInsideProcess", cancelEvent.getActivityId());
-    assertEquals(executionWithSignal.getId(), cancelEvent.getExecutionId());
-    assertEquals(executionWithSignal.getProcessInstanceId(), cancelEvent.getProcessInstanceId());
-    assertEquals(processInstance.getProcessDefinitionId(), cancelEvent.getProcessDefinitionId());
+    assertThat(cancelEvent.getType()).isEqualTo(ActivitiEventType.ACTIVITY_CANCELLED);
+    assertThat(cancelEvent.getActivityId()).isEqualTo("userTaskInsideProcess");
+    assertThat(cancelEvent.getExecutionId()).isEqualTo(executionWithSignal.getId());
+    assertThat(cancelEvent.getProcessInstanceId()).isEqualTo(executionWithSignal.getProcessInstanceId());
+    assertThat(cancelEvent.getProcessDefinitionId()).isEqualTo(processInstance.getProcessDefinitionId());
     assertThat(cancelEvent.getCause()).isEqualTo("boundary event (boundarySignalEventCatching)");
   }
 
   @Deployment
   public void testActivitySignalBoundaryEventsOnUserTask() throws Exception {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("signalOnUserTask");
-    assertNotNull(processInstance);
+    assertThat(processInstance).isNotNull();
 
     Execution executionWithSignal = runtimeService.createExecutionQuery().activityId("userTask").singleResult();
-    assertNotNull(executionWithSignal);
+    assertThat(executionWithSignal).isNotNull();
 
     runtimeService.signalEventReceived("signalName");
 
     // Next, an signal-event is expected, as a result of the message
-    assertEquals(2, listener.getEventsReceived().size());
-    
-    assertTrue(listener.getEventsReceived().get(0) instanceof ActivitiSignalEventImpl);
+    assertThat(listener.getEventsReceived()).hasSize(2);
+
+    assertThat(listener.getEventsReceived().get(0)).isInstanceOf(ActivitiSignalEventImpl.class);
     ActivitiSignalEventImpl signalEvent = (ActivitiSignalEventImpl) listener.getEventsReceived().get(0);
-    assertEquals(ActivitiEventType.ACTIVITY_SIGNALED, signalEvent.getType());
-    assertEquals("boundarySignalEventCatching", signalEvent.getActivityId());
-    assertEquals(executionWithSignal.getProcessInstanceId(), signalEvent.getProcessInstanceId());
-    assertEquals(processInstance.getProcessDefinitionId(), signalEvent.getProcessDefinitionId());
-    
-    assertTrue(listener.getEventsReceived().get(1) instanceof ActivitiActivityCancelledEvent);
+    assertThat(signalEvent.getType()).isEqualTo(ActivitiEventType.ACTIVITY_SIGNALED);
+    assertThat(signalEvent.getActivityId()).isEqualTo("boundarySignalEventCatching");
+    assertThat(signalEvent.getProcessInstanceId()).isEqualTo(executionWithSignal.getProcessInstanceId());
+    assertThat(signalEvent.getProcessDefinitionId()).isEqualTo(processInstance.getProcessDefinitionId());
+
+    assertThat(listener.getEventsReceived().get(1)).isInstanceOf(ActivitiActivityCancelledEvent.class);
     ActivitiActivityCancelledEvent cancelEvent = (ActivitiActivityCancelledEvent) listener.getEventsReceived().get(1);
-    assertEquals(ActivitiEventType.ACTIVITY_CANCELLED, cancelEvent.getType());
-    assertEquals("userTask", cancelEvent.getActivityId());
-    assertEquals(executionWithSignal.getProcessInstanceId(), cancelEvent.getProcessInstanceId());
-    assertEquals(processInstance.getProcessDefinitionId(), cancelEvent.getProcessDefinitionId());
+    assertThat(cancelEvent.getType()).isEqualTo(ActivitiEventType.ACTIVITY_CANCELLED);
+    assertThat(cancelEvent.getActivityId()).isEqualTo("userTask");
+    assertThat(cancelEvent.getProcessInstanceId()).isEqualTo(executionWithSignal.getProcessInstanceId());
+    assertThat(cancelEvent.getProcessDefinitionId()).isEqualTo(processInstance.getProcessDefinitionId());
     assertThat(cancelEvent.getCause()).isEqualTo("boundary event (boundarySignalEventCatching)");
   }
 
@@ -741,7 +732,7 @@ public class ActivityEventsTest extends PluggableActivitiTestCase {
         found = true;
       }
     }
-    assertTrue(found);
+    assertThat(found).isTrue();
   }
 
 }

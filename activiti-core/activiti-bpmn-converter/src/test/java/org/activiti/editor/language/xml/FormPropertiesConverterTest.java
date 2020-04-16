@@ -1,14 +1,11 @@
 package org.activiti.editor.language.xml;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.FormProperty;
@@ -24,42 +21,42 @@ public class FormPropertiesConverterTest extends AbstractConverterTest {
     BpmnModel bpmnModel = readXMLFile();
     validateModel(bpmnModel);
   }
-  
-  @Test 
+
+  @Test
   public void doubleConversionValidation() throws Exception {
     BpmnModel bpmnModel = readXMLFile();
     validateModel(bpmnModel);
     bpmnModel = exportAndReadXMLFile(bpmnModel);
     validateModel(bpmnModel);
   }
-  
+
   protected String getResource() {
     return "formPropertiesProcess.bpmn";
   }
 
   private void validateModel(BpmnModel model) {
-    assertEquals("formPropertiesProcess", model.getMainProcess().getId());
-    assertEquals("User registration", model.getMainProcess().getName());
-    assertEquals(true, model.getMainProcess().isExecutable());
+    assertThat(model.getMainProcess().getId()).isEqualTo("formPropertiesProcess");
+    assertThat(model.getMainProcess().getName()).isEqualTo("User registration");
+    assertThat(model.getMainProcess().isExecutable()).isEqualTo(true);
 
     FlowElement startFlowElement = model.getMainProcess().getFlowElement("startNode");
-    assertNotNull(startFlowElement);
-    assertTrue(startFlowElement instanceof StartEvent);
+    assertThat(startFlowElement).isNotNull();
+    assertThat(startFlowElement).isInstanceOf(StartEvent.class);
     StartEvent startEvent = (StartEvent) startFlowElement;
 
     for (FormProperty formProperty :startEvent.getFormProperties()) {
-      assertEquals(true, formProperty.isRequired());
+      assertThat(formProperty.isRequired()).isEqualTo(true);
     }
 
     FlowElement userFlowElement = model.getMainProcess().getFlowElement("userTask");
-    assertNotNull(userFlowElement);
-    assertTrue(userFlowElement instanceof UserTask);
+    assertThat(userFlowElement).isNotNull();
+    assertThat(userFlowElement).isInstanceOf(UserTask.class);
     UserTask userTask = (UserTask) userFlowElement;
 
     List<FormProperty> formProperties = userTask.getFormProperties();
 
-    assertNotNull(formProperties);
-    assertEquals("Invalid form properties list: ", 8, formProperties.size());
+    assertThat(formProperties).isNotNull();
+    assertThat(formProperties).as("Invalid form properties list: ").hasSize(8);
 
     for (FormProperty formProperty :formProperties) {
       if (formProperty.getId().equals("new_property_1")) {
@@ -94,16 +91,16 @@ public class FormPropertiesConverterTest extends AbstractConverterTest {
   }
 
   private void checkFormProperty(FormProperty formProperty, boolean shouldBeRequired, boolean shouldBeReadable, boolean shouldBeWritable) {
-    assertEquals(shouldBeRequired, formProperty.isRequired());
-    assertEquals(shouldBeReadable, formProperty.isReadable());
-    assertEquals(shouldBeWritable, formProperty.isWriteable());
+    assertThat(formProperty.isRequired()).isEqualTo(shouldBeRequired);
+    assertThat(formProperty.isReadable()).isEqualTo(shouldBeReadable);
+    assertThat(formProperty.isWriteable()).isEqualTo(shouldBeWritable);
   }
 
   private void checkFormPropertyFormValues(List<Map<String, Object>> formValues) {
-    List<Map<String, Object>> expectedFormValues = new ArrayList<Map<String,Object>>();
     Map<String, Object> formValue1 = new HashMap<String, Object>();
     formValue1.put("id", "value1");
     formValue1.put("name", "Value 1");
+
     Map<String, Object> formValue2 = new HashMap<String, Object>();
     formValue2.put("id", "value2");
     formValue2.put("name", "Value 2");
@@ -116,11 +113,11 @@ public class FormPropertiesConverterTest extends AbstractConverterTest {
     formValue4.put("id", "value4");
     formValue4.put("name", "Value 4");
 
-    expectedFormValues.add(formValue1);
-    expectedFormValues.add(formValue2);
-    expectedFormValues.add(formValue3);
-    expectedFormValues.add(formValue4);
-
-    assertEquals(expectedFormValues, formValues);
+    assertThat(formValues).containsExactly(
+        formValue1,
+        formValue2,
+        formValue3,
+        formValue4
+    );
   }
 }

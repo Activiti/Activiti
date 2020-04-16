@@ -1,9 +1,9 @@
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -11,6 +11,8 @@
  * limitations under the License.
  */
 package org.activiti.examples.bpmn.executionlistener;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.HashMap;
 import java.util.List;
@@ -35,12 +37,12 @@ public class CustomFlowExecutionListenerTest extends ResourceActivitiTestCase {
     variableMap.put("customFlowBean", new CustomFlowBean());
     runtimeService.startProcessInstanceByKey("scriptExecutionListenerProcess", variableMap);
     HistoricVariableInstance variable = historyService.createHistoricVariableInstanceQuery().variableName("flow1_activiti_conditions").singleResult();
-    assertNotNull(variable);
-    assertEquals("flow1_activiti_conditions", variable.getVariableName());
+    assertThat(variable).isNotNull();
+    assertThat(variable.getVariableName()).isEqualTo("flow1_activiti_conditions");
     @SuppressWarnings("unchecked")
     List<String> conditions = (List<String>) variable.getValue();
-    assertEquals(2, conditions.size());
-    assertEquals("hello", conditions.get(0));
-    assertEquals("world", conditions.get(1));
+    assertThat(conditions).hasSize(2);
+    assertThat(conditions.get(0)).isEqualTo("hello");
+    assertThat(conditions.get(1)).isEqualTo("world");
   }
 }

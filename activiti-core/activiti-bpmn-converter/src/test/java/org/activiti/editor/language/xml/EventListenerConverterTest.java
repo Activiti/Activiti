@@ -1,8 +1,6 @@
 package org.activiti.editor.language.xml;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.EventListener;
@@ -12,7 +10,7 @@ import org.junit.Test;
 
 /**
  * Test for ACT-1657
- * 
+ *
 
  */
 public class EventListenerConverterTest extends AbstractConverterTest {
@@ -29,57 +27,57 @@ public class EventListenerConverterTest extends AbstractConverterTest {
 
   private void validateModel(BpmnModel model) {
     Process process = model.getMainProcess();
-    assertNotNull(process);
-    assertNotNull(process.getEventListeners());
-    assertEquals(8, process.getEventListeners().size());
+    assertThat(process).isNotNull();
+    assertThat(process.getEventListeners()).isNotNull();
+    assertThat(process.getEventListeners()).hasSize(8);
 
     // Listener with class
     EventListener listener = process.getEventListeners().get(0);
-    assertEquals("ENTITY_CREATE", listener.getEvents());
-    assertEquals("org.activiti.test.MyListener", listener.getImplementation());
-    assertEquals(ImplementationType.IMPLEMENTATION_TYPE_CLASS, listener.getImplementationType());
+    assertThat(listener.getEvents()).isEqualTo("ENTITY_CREATE");
+    assertThat(listener.getImplementation()).isEqualTo("org.activiti.test.MyListener");
+    assertThat(listener.getImplementationType()).isEqualTo(ImplementationType.IMPLEMENTATION_TYPE_CLASS);
 
     // Listener with class, but no specific event (== all events)
     listener = process.getEventListeners().get(1);
-    assertNull(listener.getEvents());
-    assertEquals("org.activiti.test.AllEventTypesListener", listener.getImplementation());
-    assertEquals(ImplementationType.IMPLEMENTATION_TYPE_CLASS, listener.getImplementationType());
+    assertThat(listener.getEvents()).isNull();
+    assertThat(listener.getImplementation()).isEqualTo("org.activiti.test.AllEventTypesListener");
+    assertThat(listener.getImplementationType()).isEqualTo(ImplementationType.IMPLEMENTATION_TYPE_CLASS);
 
     // Listener with delegate expression
     listener = process.getEventListeners().get(2);
-    assertEquals("ENTITY_DELETE", listener.getEvents());
-    assertEquals("${myListener}", listener.getImplementation());
-    assertEquals(ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION, listener.getImplementationType());
+    assertThat(listener.getEvents()).isEqualTo("ENTITY_DELETE");
+    assertThat(listener.getImplementation()).isEqualTo("${myListener}");
+    assertThat(listener.getImplementationType()).isEqualTo(ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION);
 
     // Listener that throws a signal-event
     listener = process.getEventListeners().get(3);
-    assertEquals("ENTITY_DELETE", listener.getEvents());
-    assertEquals("theSignal", listener.getImplementation());
-    assertEquals(ImplementationType.IMPLEMENTATION_TYPE_THROW_SIGNAL_EVENT, listener.getImplementationType());
+    assertThat(listener.getEvents()).isEqualTo("ENTITY_DELETE");
+    assertThat(listener.getImplementation()).isEqualTo("theSignal");
+    assertThat(listener.getImplementationType()).isEqualTo(ImplementationType.IMPLEMENTATION_TYPE_THROW_SIGNAL_EVENT);
 
     // Listener that throws a global signal-event
     listener = process.getEventListeners().get(4);
-    assertEquals("ENTITY_DELETE", listener.getEvents());
-    assertEquals("theSignal", listener.getImplementation());
-    assertEquals(ImplementationType.IMPLEMENTATION_TYPE_THROW_GLOBAL_SIGNAL_EVENT, listener.getImplementationType());
+    assertThat(listener.getEvents()).isEqualTo("ENTITY_DELETE");
+    assertThat(listener.getImplementation()).isEqualTo("theSignal");
+    assertThat(listener.getImplementationType()).isEqualTo(ImplementationType.IMPLEMENTATION_TYPE_THROW_GLOBAL_SIGNAL_EVENT);
 
     // Listener that throws a message-event
     listener = process.getEventListeners().get(5);
-    assertEquals("ENTITY_DELETE", listener.getEvents());
-    assertEquals("theMessage", listener.getImplementation());
-    assertEquals(ImplementationType.IMPLEMENTATION_TYPE_THROW_MESSAGE_EVENT, listener.getImplementationType());
+    assertThat(listener.getEvents()).isEqualTo("ENTITY_DELETE");
+    assertThat(listener.getImplementation()).isEqualTo("theMessage");
+    assertThat(listener.getImplementationType()).isEqualTo(ImplementationType.IMPLEMENTATION_TYPE_THROW_MESSAGE_EVENT);
 
     // Listener that throws an error-event
     listener = process.getEventListeners().get(6);
-    assertEquals("ENTITY_DELETE", listener.getEvents());
-    assertEquals("123", listener.getImplementation());
-    assertEquals(ImplementationType.IMPLEMENTATION_TYPE_THROW_ERROR_EVENT, listener.getImplementationType());
+    assertThat(listener.getEvents()).isEqualTo("ENTITY_DELETE");
+    assertThat(listener.getImplementation()).isEqualTo("123");
+    assertThat(listener.getImplementationType()).isEqualTo(ImplementationType.IMPLEMENTATION_TYPE_THROW_ERROR_EVENT);
 
     // Listener restricted to a specific entity
     listener = process.getEventListeners().get(7);
-    assertEquals("ENTITY_DELETE", listener.getEvents());
-    assertEquals("123", listener.getImplementation());
-    assertEquals(ImplementationType.IMPLEMENTATION_TYPE_THROW_ERROR_EVENT, listener.getImplementationType());
-    assertEquals("job", listener.getEntityType());
+    assertThat(listener.getEvents()).isEqualTo("ENTITY_DELETE");
+    assertThat(listener.getImplementation()).isEqualTo("123");
+    assertThat(listener.getImplementationType()).isEqualTo(ImplementationType.IMPLEMENTATION_TYPE_THROW_ERROR_EVENT);
+    assertThat(listener.getEntityType()).isEqualTo("job");
   }
 }

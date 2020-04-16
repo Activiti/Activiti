@@ -18,7 +18,6 @@ package org.activiti.application;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Collections;
 import java.util.List;
 
 import org.junit.Before;
@@ -27,6 +26,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.core.io.Resource;
 
+import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.BDDMockito.given;
@@ -55,7 +55,7 @@ public class ApplicationServiceTest {
         Resource applicationResource = mock(Resource.class);
         given(applicationResource.getInputStream()).willReturn(mock(InputStream.class));
 
-        given(applicationDiscovery.discoverApplications()).willReturn(Collections.singletonList(applicationResource));
+        given(applicationDiscovery.discoverApplications()).willReturn(singletonList(applicationResource));
 
         ApplicationContent applicationContent = new ApplicationContent();
         given(applicationReader.read(applicationResource.getInputStream())).willReturn(applicationContent);
@@ -74,14 +74,14 @@ public class ApplicationServiceTest {
         IOException ioException = new IOException();
         given(applicationResource.getInputStream()).willThrow(ioException);
 
-        given(applicationDiscovery.discoverApplications()).willReturn(Collections.singletonList(applicationResource));
+        given(applicationDiscovery.discoverApplications()).willReturn(singletonList(applicationResource));
 
         //when
-        Throwable thrown = catchThrowable(() ->
-                                                  applicationService.loadApplications());
+        Throwable thrown = catchThrowable(() -> applicationService.loadApplications());
 
         //then
-        assertThat(thrown).isInstanceOf(ApplicationLoadException.class)
-                .hasCause(ioException);
+        assertThat(thrown)
+            .isInstanceOf(ApplicationLoadException.class)
+            .hasCause(ioException);
     }
 }

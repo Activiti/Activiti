@@ -12,6 +12,8 @@
  */
 package org.activiti.engine.test.bpmn.event.end;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.activiti.engine.ActivitiOptimisticLockingException;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -28,7 +30,7 @@ public class EndEventTest extends PluggableActivitiTestCase {
   public void testConcurrentEndOfSameProcess() throws Exception {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskWithDelay");
     Task task = taskService.createTaskQuery().singleResult();
-    assertNotNull(task);
+    assertThat(task).isNotNull();
 
     // We will now start two threads that both complete the task.
     // In the process, the task is followed by a delay of three seconds
@@ -38,8 +40,8 @@ public class EndEventTest extends PluggableActivitiTestCase {
     TaskCompleter taskCompleter1 = new TaskCompleter(task.getId());
     TaskCompleter taskCompleter2 = new TaskCompleter(task.getId());
 
-    assertFalse(taskCompleter1.isSucceeded());
-    assertFalse(taskCompleter2.isSucceeded());
+    assertThat(taskCompleter1.isSucceeded()).isFalse();
+    assertThat(taskCompleter2.isSucceeded()).isFalse();
 
     taskCompleter1.start();
     taskCompleter2.start();
@@ -54,7 +56,7 @@ public class EndEventTest extends PluggableActivitiTestCase {
       successCount++;
     }
 
-    assertEquals("(Only) one thread should have been able to successfully end the process", 1, successCount);
+    assertThat(successCount).as("(Only) one thread should have been able to successfully end the process").isEqualTo(1);
     assertProcessEnded(processInstance.getId());
   }
 

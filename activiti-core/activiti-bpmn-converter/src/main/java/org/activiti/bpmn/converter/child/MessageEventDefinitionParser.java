@@ -16,7 +16,8 @@
 
 package org.activiti.bpmn.converter.child;
 
-import java.util.Collections;
+import static java.util.Collections.singletonMap;
+
 import java.util.List;
 import javax.xml.stream.XMLStreamReader;
 import org.activiti.bpmn.converter.util.BpmnXMLUtil;
@@ -46,9 +47,9 @@ public class MessageEventDefinitionParser extends BaseChildElementParser {
     List<ExtensionAttribute> attributes = parseExtensionAttributes(xtr, parentElement, model);
 
     if(!attributes.isEmpty()) {
-        eventDefinition.setAttributes(Collections.singletonMap(ACTIVITI_EXTENSIONS_PREFIX, attributes));
+        eventDefinition.setAttributes(singletonMap(ACTIVITI_EXTENSIONS_PREFIX, attributes));
     }
-    
+
     if (!StringUtils.isEmpty(eventDefinition.getMessageRef())) {
 
       int indexOfP = eventDefinition.getMessageRef().indexOf(':');

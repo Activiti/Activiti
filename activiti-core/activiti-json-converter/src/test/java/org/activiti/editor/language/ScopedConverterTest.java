@@ -1,8 +1,6 @@
 package org.activiti.editor.language;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 
@@ -34,33 +32,33 @@ public class ScopedConverterTest extends AbstractConverterTest {
 
   private void validateModel(BpmnModel model) {
     FlowElement flowElement = model.getMainProcess().getFlowElement("outerSubProcess", true);
-    assertNotNull(flowElement);
-    assertTrue(flowElement instanceof SubProcess);
-    assertEquals("outerSubProcess", flowElement.getId());
+    assertThat(flowElement).isNotNull();
+    assertThat(flowElement).isInstanceOf(SubProcess.class);
+    assertThat(flowElement.getId()).isEqualTo("outerSubProcess");
     SubProcess outerSubProcess = (SubProcess) flowElement;
     List<BoundaryEvent> eventList = outerSubProcess.getBoundaryEvents();
-    assertEquals(1, eventList.size());
+    assertThat(eventList).hasSize(1);
     BoundaryEvent boundaryEvent = eventList.get(0);
-    assertEquals("outerBoundaryEvent", boundaryEvent.getId());
+    assertThat(boundaryEvent.getId()).isEqualTo("outerBoundaryEvent");
 
     FlowElement subElement = outerSubProcess.getFlowElement("innerSubProcess");
-    assertNotNull(subElement);
-    assertTrue(subElement instanceof SubProcess);
-    assertEquals("innerSubProcess", subElement.getId());
+    assertThat(subElement).isNotNull();
+    assertThat(subElement).isInstanceOf(SubProcess.class);
+    assertThat(subElement.getId()).isEqualTo("innerSubProcess");
     SubProcess innerSubProcess = (SubProcess) subElement;
     eventList = innerSubProcess.getBoundaryEvents();
-    assertEquals(1, eventList.size());
+    assertThat(eventList).hasSize(1);
     boundaryEvent = eventList.get(0);
-    assertEquals("innerBoundaryEvent", boundaryEvent.getId());
+    assertThat(boundaryEvent.getId()).isEqualTo("innerBoundaryEvent");
 
     FlowElement taskElement = innerSubProcess.getFlowElement("usertask");
-    assertNotNull(taskElement);
-    assertTrue(taskElement instanceof UserTask);
+    assertThat(taskElement).isNotNull();
+    assertThat(taskElement).isInstanceOf(UserTask.class);
     UserTask userTask = (UserTask) taskElement;
-    assertEquals("usertask", userTask.getId());
+    assertThat(userTask.getId()).isEqualTo("usertask");
     eventList = userTask.getBoundaryEvents();
-    assertEquals(1, eventList.size());
+    assertThat(eventList).hasSize(1);
     boundaryEvent = eventList.get(0);
-    assertEquals("taskBoundaryEvent", boundaryEvent.getId());
+    assertThat(boundaryEvent.getId()).isEqualTo("taskBoundaryEvent");
   }
 }

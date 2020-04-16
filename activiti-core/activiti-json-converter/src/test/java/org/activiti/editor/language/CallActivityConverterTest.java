@@ -1,8 +1,8 @@
 package org.activiti.editor.language;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 
@@ -33,27 +33,27 @@ public class CallActivityConverterTest extends AbstractConverterTest {
 
   private void validateModel(BpmnModel model) {
     FlowElement flowElement = model.getMainProcess().getFlowElement("callactivity", true);
-    assertNotNull(flowElement);
-    assertTrue(flowElement instanceof CallActivity);
+    assertThat(flowElement).isNotNull();
+    assertThat(flowElement).isInstanceOf(CallActivity.class);
     CallActivity callActivity = (CallActivity) flowElement;
-    assertEquals("callactivity", callActivity.getId());
-    assertEquals("Call activity", callActivity.getName());
+    assertThat(callActivity.getId()).isEqualTo("callactivity");
+    assertThat(callActivity.getName()).isEqualTo("Call activity");
 
-    assertEquals("processId", callActivity.getCalledElement());
+    assertThat(callActivity.getCalledElement()).isEqualTo("processId");
 
     List<IOParameter> parameters = callActivity.getInParameters();
-    assertEquals(2, parameters.size());
+    assertThat(parameters).hasSize(2);
     IOParameter parameter = parameters.get(0);
-    assertEquals("test", parameter.getSource());
-    assertEquals("test", parameter.getTarget());
+    assertThat(parameter.getSource()).isEqualTo("test");
+    assertThat(parameter.getTarget()).isEqualTo("test");
     parameter = parameters.get(1);
-    assertEquals("${test}", parameter.getSourceExpression());
-    assertEquals("test", parameter.getTarget());
+    assertThat(parameter.getSourceExpression()).isEqualTo("${test}");
+    assertThat(parameter.getTarget()).isEqualTo("test");
 
     parameters = callActivity.getOutParameters();
-    assertEquals(1, parameters.size());
+    assertThat(parameters).hasSize(1);
     parameter = parameters.get(0);
-    assertEquals("test", parameter.getSource());
-    assertEquals("test", parameter.getTarget());
+    assertThat(parameter.getSource()).isEqualTo("test");
+    assertThat(parameter.getTarget()).isEqualTo("test");
   }
 }

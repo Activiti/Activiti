@@ -427,7 +427,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   protected TaskEntityManager taskEntityManager;
   protected VariableInstanceEntityManager variableInstanceEntityManager;
   private IntegrationContextManager integrationContextManager;
-  private EventSubscriptionPayloadMappingProvider eventSubscriptionPayloadMappingProvider = 
+  private EventSubscriptionPayloadMappingProvider eventSubscriptionPayloadMappingProvider =
                                                               new EventSubscriptionPayloadMappingProvider() {};
   // History Manager
 

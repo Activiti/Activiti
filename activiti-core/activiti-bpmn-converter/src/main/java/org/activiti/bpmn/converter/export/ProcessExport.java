@@ -12,7 +12,8 @@
  */
 package org.activiti.bpmn.converter.export;
 
-import java.util.Arrays;
+import static java.util.Arrays.asList;
+
 import java.util.List;
 
 import javax.xml.stream.XMLStreamWriter;
@@ -27,7 +28,7 @@ public class ProcessExport implements BpmnXMLConstants {
   /**
    * default attributes taken from process instance attributes
    */
-  public static final List<ExtensionAttribute> defaultProcessAttributes = Arrays.asList(new ExtensionAttribute(ATTRIBUTE_ID), new ExtensionAttribute(ATTRIBUTE_NAME), new ExtensionAttribute(
+  public static final List<ExtensionAttribute> defaultProcessAttributes = asList(new ExtensionAttribute(ATTRIBUTE_ID), new ExtensionAttribute(ATTRIBUTE_NAME), new ExtensionAttribute(
       ATTRIBUTE_PROCESS_EXECUTABLE), new ExtensionAttribute(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_PROCESS_CANDIDATE_USERS), new ExtensionAttribute(ACTIVITI_EXTENSIONS_NAMESPACE,
       ATTRIBUTE_PROCESS_CANDIDATE_GROUPS));
 

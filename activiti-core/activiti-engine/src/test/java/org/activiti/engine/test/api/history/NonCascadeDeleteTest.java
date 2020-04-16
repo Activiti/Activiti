@@ -1,5 +1,7 @@
 package org.activiti.engine.test.api.history;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
@@ -9,15 +11,15 @@ import org.junit.Test;
 public class NonCascadeDeleteTest extends PluggableActivitiTestCase {
 
   private static String PROCESS_DEFINITION_KEY = "oneTaskProcess";
-  
+
   private String deploymentId;
-  
+
   private String processInstanceId;
-  
+
   protected void setUp() throws Exception {
     super.setUp();
   }
-  
+
   protected void tearDown() throws Exception {
 	  super.tearDown();
   }
@@ -30,19 +32,19 @@ public class NonCascadeDeleteTest extends PluggableActivitiTestCase {
     processInstanceId = runtimeService.startProcessInstanceByKey(PROCESS_DEFINITION_KEY).getId();
     Task task = taskService.createTaskQuery().processInstanceId(processInstanceId).singleResult();
     taskService.complete(task.getId());
-    
+
     if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
         HistoricProcessInstance processInstance = historyService.createHistoricProcessInstanceQuery().processInstanceId(processInstanceId).singleResult();
-        assertEquals(PROCESS_DEFINITION_KEY, processInstance.getProcessDefinitionKey());
+        assertThat(processInstance.getProcessDefinitionKey()).isEqualTo(PROCESS_DEFINITION_KEY);
 
         // Delete deployment and historic process instance remains.
         repositoryService.deleteDeployment(deploymentId, false);
 
         HistoricProcessInstance processInstanceAfterDelete = historyService.createHistoricProcessInstanceQuery().processInstanceId(processInstanceId).singleResult();
-        assertNull(processInstanceAfterDelete.getProcessDefinitionKey());
-        assertNull(processInstanceAfterDelete.getProcessDefinitionName());
-        assertNull(processInstanceAfterDelete.getProcessDefinitionVersion());
-        
+        assertThat(processInstanceAfterDelete.getProcessDefinitionKey()).isNull();
+        assertThat(processInstanceAfterDelete.getProcessDefinitionName()).isNull();
+        assertThat(processInstanceAfterDelete.getProcessDefinitionVersion()).isNull();
+
         // clean
         historyService.deleteHistoricProcessInstance(processInstanceId);
     }

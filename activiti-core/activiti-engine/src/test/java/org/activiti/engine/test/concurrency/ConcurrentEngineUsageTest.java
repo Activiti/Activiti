@@ -1,9 +1,9 @@
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -13,7 +13,9 @@
 
 package org.activiti.engine.test.concurrency;
 
-import java.util.Collections;
+import static java.util.Collections.singletonMap;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -30,7 +32,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Test that uses a number of threads to start processes and complete tasks concurrently.
- * 
+ *
 
  */
 public class ConcurrentEngineUsageTest extends PluggableActivitiTestCase {
@@ -61,15 +63,15 @@ public class ConcurrentEngineUsageTest extends PluggableActivitiTestCase {
         executor.shutdownNow();
 
       }
-      assertEquals(0, executor.getActiveCount());
+      assertThat(executor.getActiveCount()).isEqualTo(0);
 
       // Check there are no processes active anymore
-      assertEquals(0, runtimeService.createProcessInstanceQuery().count());
+      assertThat(runtimeService.createProcessInstanceQuery().count()).isEqualTo(0);
 
       if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
         // Check if all processes and tasks are complete
-        assertEquals(numberOfProcessesPerThread * numberOfThreads, historyService.createHistoricProcessInstanceQuery().finished().count());
-        assertEquals(totalNumberOfTasks, historyService.createHistoricTaskInstanceQuery().finished().count());
+        assertThat(historyService.createHistoricProcessInstanceQuery().finished().count()).isEqualTo(numberOfProcessesPerThread * numberOfThreads);
+        assertThat(historyService.createHistoricTaskInstanceQuery().finished().count()).isEqualTo(totalNumberOfTasks);
       }
     }
   }
@@ -80,7 +82,7 @@ public class ConcurrentEngineUsageTest extends PluggableActivitiTestCase {
     boolean success = false;
     while (retries > 0 && !success) {
       try {
-        runtimeService.startProcessInstanceByKey("concurrentProcess", Collections.singletonMap("assignee", (Object) runningUser));
+        runtimeService.startProcessInstanceByKey("concurrentProcess", singletonMap("assignee", (Object) runningUser));
         success = true;
       } catch (PersistenceException pe) {
         retries = retries - 1;

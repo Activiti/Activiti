@@ -1,7 +1,6 @@
 package org.activiti.editor.language.xml;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.DataStore;
@@ -29,34 +28,34 @@ public class MessageFlowConverterTest extends AbstractConverterTest {
   }
 
   private void validateModel(BpmnModel model) {
-    assertEquals(1, model.getDataStores().size());
+    assertThat(model.getDataStores()).hasSize(1);
     DataStore dataStore = model.getDataStore("DATASTORE_1");
-    assertNotNull(dataStore);
-    assertEquals("DATASTORE_1", dataStore.getId());
-    assertEquals("test", dataStore.getName());
-    assertEquals("ITEM_1", dataStore.getItemSubjectRef());
+    assertThat(dataStore).isNotNull();
+    assertThat(dataStore.getId()).isEqualTo("DATASTORE_1");
+    assertThat(dataStore.getName()).isEqualTo("test");
+    assertThat(dataStore.getItemSubjectRef()).isEqualTo("ITEM_1");
 
     MessageFlow messageFlow = model.getMessageFlow("MESSAGEFLOW_1");
-    assertNotNull(messageFlow);
-    assertEquals("test 1", messageFlow.getName());
-    assertEquals("task1", messageFlow.getSourceRef());
-    assertEquals("task2", messageFlow.getTargetRef());
+    assertThat(messageFlow).isNotNull();
+    assertThat(messageFlow.getName()).isEqualTo("test 1");
+    assertThat(messageFlow.getSourceRef()).isEqualTo("task1");
+    assertThat(messageFlow.getTargetRef()).isEqualTo("task2");
 
     messageFlow = model.getMessageFlow("MESSAGEFLOW_2");
-    assertNotNull(messageFlow);
-    assertEquals("test 2", messageFlow.getName());
-    assertEquals("task2", messageFlow.getSourceRef());
-    assertEquals("task3", messageFlow.getTargetRef());
+    assertThat(messageFlow).isNotNull();
+    assertThat(messageFlow.getName()).isEqualTo("test 2");
+    assertThat(messageFlow.getSourceRef()).isEqualTo("task2");
+    assertThat(messageFlow.getTargetRef()).isEqualTo("task3");
 
-    assertEquals(2, model.getPools().size());
+    assertThat(model.getPools()).hasSize(2);
     Pool pool = model.getPools().get(0);
-    assertEquals("participant1", pool.getId());
-    assertEquals("Participant 1", pool.getName());
-    assertEquals("PROCESS_1", pool.getProcessRef());
+    assertThat(pool.getId()).isEqualTo("participant1");
+    assertThat(pool.getName()).isEqualTo("Participant 1");
+    assertThat(pool.getProcessRef()).isEqualTo("PROCESS_1");
 
     pool = model.getPools().get(1);
-    assertEquals("participant2", pool.getId());
-    assertEquals("Participant 2", pool.getName());
-    assertEquals("PROCESS_2", pool.getProcessRef());
+    assertThat(pool.getId()).isEqualTo("participant2");
+    assertThat(pool.getName()).isEqualTo("Participant 2");
+    assertThat(pool.getProcessRef()).isEqualTo("PROCESS_2");
   }
 }

@@ -1,5 +1,7 @@
 package org.activiti.examples.bpmn.servicetask;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,7 +21,7 @@ public class MethodExpressionServiceTaskTest extends PluggableActivitiTestCase {
 
     ProcessInstance pi = runtimeService.startProcessInstanceByKey("setServiceResultToProcessVariables", variables);
 
-    assertEquals("ok", runtimeService.getVariable(pi.getId(), "result"));
+    assertThat(runtimeService.getVariable(pi.getId(), "result")).isEqualTo("ok");
   }
 
   @Deployment
@@ -30,7 +32,7 @@ public class MethodExpressionServiceTaskTest extends PluggableActivitiTestCase {
 
     ProcessInstance pi = runtimeService.startProcessInstanceByKey("setServiceResultToProcessVariablesWithSkipExpression", variables);
 
-    assertEquals("ok", runtimeService.getVariable(pi.getId(), "result"));
+    assertThat(runtimeService.getVariable(pi.getId(), "result")).isEqualTo("ok");
 
     Map<String, Object> variables2 = new HashMap<String, Object>();
     variables2.put("okReturningService", new OkReturningService());
@@ -39,7 +41,7 @@ public class MethodExpressionServiceTaskTest extends PluggableActivitiTestCase {
 
     ProcessInstance pi2 = runtimeService.startProcessInstanceByKey("setServiceResultToProcessVariablesWithSkipExpression", variables2);
 
-    assertEquals(null, runtimeService.getVariable(pi2.getId(), "result"));
+    assertThat(runtimeService.getVariable(pi2.getId(), "result")).isEqualTo(null);
 
   }
 }

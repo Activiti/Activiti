@@ -1,9 +1,9 @@
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -11,6 +11,8 @@
  * limitations under the License.
  */
 package org.activiti.standalone.event;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventType;
@@ -20,7 +22,7 @@ import org.activiti.engine.test.api.event.TestActivitiEventListener;
 
 /**
  * Test to verify event-listeners, which are configured in the cfg.xml, are notified.
- * 
+ *
 
  */
 public class TypedEventListenersConfigurationTest extends ResourceActivitiTestCase {
@@ -32,7 +34,7 @@ public class TypedEventListenersConfigurationTest extends ResourceActivitiTestCa
   public void testEventListenerConfiguration() {
     // Fetch the listener to check received events
     TestActivitiEventListener listener = (TestActivitiEventListener) processEngineConfiguration.getBeans().get("eventListener");
-    assertNotNull(listener);
+    assertThat(listener).isNotNull();
 
     // Clear any events received (eg. engine initialisation)
     listener.clearEventsReceived();
@@ -41,8 +43,8 @@ public class TypedEventListenersConfigurationTest extends ResourceActivitiTestCa
     ActivitiEvent event = new ActivitiEventImpl(ActivitiEventType.CUSTOM);
     processEngineConfiguration.getEventDispatcher().dispatchEvent(event);
 
-    assertEquals(1, listener.getEventsReceived().size());
-    assertEquals(event, listener.getEventsReceived().get(0));
+    assertThat(listener.getEventsReceived()).hasSize(1);
+    assertThat(listener.getEventsReceived().get(0)).isEqualTo(event);
     listener.clearEventsReceived();
 
     // Dispatch another event the listener is registered for
@@ -51,14 +53,14 @@ public class TypedEventListenersConfigurationTest extends ResourceActivitiTestCa
     event = new ActivitiEventImpl(ActivitiEventType.ENTITY_UPDATED);
     processEngineConfiguration.getEventDispatcher().dispatchEvent(event);
 
-    assertEquals(2, listener.getEventsReceived().size());
-    assertEquals(ActivitiEventType.ENTITY_DELETED, listener.getEventsReceived().get(0).getType());
-    assertEquals(ActivitiEventType.ENTITY_UPDATED, listener.getEventsReceived().get(1).getType());
+    assertThat(listener.getEventsReceived()).hasSize(2);
+    assertThat(listener.getEventsReceived().get(0).getType()).isEqualTo(ActivitiEventType.ENTITY_DELETED);
+    assertThat(listener.getEventsReceived().get(1).getType()).isEqualTo(ActivitiEventType.ENTITY_UPDATED);
     listener.clearEventsReceived();
 
     // Dispatch an event that is NOT part of the types configured
     event = new ActivitiEventImpl(ActivitiEventType.ENTITY_CREATED);
     processEngineConfiguration.getEventDispatcher().dispatchEvent(event);
-    assertTrue(listener.getEventsReceived().isEmpty());
+    assertThat(listener.getEventsReceived().isEmpty()).isTrue();
   }
 }

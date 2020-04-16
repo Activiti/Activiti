@@ -74,7 +74,6 @@ public class TaskRuntimeUnAuthorizedTest {
         //then
         assertThat(throwable)
                 .isInstanceOf(NotFoundException.class);
-
     }
 
 }

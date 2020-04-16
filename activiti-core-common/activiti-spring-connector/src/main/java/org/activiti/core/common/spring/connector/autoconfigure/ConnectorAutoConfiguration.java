@@ -16,6 +16,8 @@
 
 package org.activiti.core.common.spring.connector.autoconfigure;
 
+import static java.util.Collections.emptyList;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.activiti.core.common.model.connector.ConnectorDefinition;
 import org.activiti.core.common.spring.connector.ConnectorDefinitionService;
@@ -27,7 +29,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.support.ResourcePatternResolver;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.List;
 
 @Configuration
@@ -50,6 +51,6 @@ public class ConnectorAutoConfiguration {
     @ConditionalOnMissingBean
     public List<ConnectorDefinition> connectorDefinitions(ConnectorDefinitionService connectorDefinitionService) throws IOException {
         List<ConnectorDefinition> connectorDefinitions = connectorDefinitionService.get();
-        return connectorDefinitions == null? Collections.emptyList() : connectorDefinitions;
+        return connectorDefinitions == null? emptyList() : connectorDefinitions;
     }
 }

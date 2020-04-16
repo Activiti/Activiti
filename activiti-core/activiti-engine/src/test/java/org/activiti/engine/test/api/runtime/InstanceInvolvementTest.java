@@ -1,9 +1,9 @@
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -12,6 +12,8 @@
  */
 
 package org.activiti.engine.test.api.runtime;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 
@@ -41,7 +43,7 @@ public class InstanceInvolvementTest extends PluggableActivitiTestCase {
 
     // there are supposed to be 3 tasks
     List<Task> tasks = taskService.createTaskQuery().processInstanceId(instanceId).list();
-    assertEquals(3, tasks.size());
+    assertThat(tasks).hasSize(3);
 
     // "user1" should now be involved as the starter of the new process
     // instance. "user2" is still not involved.
@@ -71,11 +73,11 @@ public class InstanceInvolvementTest extends PluggableActivitiTestCase {
     // note that since "user1" already is the starter, he is not involved as
     // a participant as well
     List<IdentityLink> identityLinks = runtimeService.getIdentityLinksForProcessInstance(instanceId);
-    assertTrue(containsIdentityLink(identityLinks, "user1", "starter"));
-    assertTrue(containsIdentityLink(identityLinks, "user2", "participant"));
-    assertTrue(containsIdentityLink(identityLinks, "user3", "participant"));
-    assertTrue(containsIdentityLink(identityLinks, "user4", "custom"));
-    assertEquals(4, identityLinks.size());
+    assertThat(containsIdentityLink(identityLinks, "user1", "starter")).isTrue();
+    assertThat(containsIdentityLink(identityLinks, "user2", "participant")).isTrue();
+    assertThat(containsIdentityLink(identityLinks, "user3", "participant")).isTrue();
+    assertThat(containsIdentityLink(identityLinks, "user4", "custom")).isTrue();
+    assertThat(identityLinks).hasSize(4);
 
     // "user1" completes the remaining task, ending the process
     completeTaskAsUser(tasks.get(2).getId(), "user1");
@@ -108,16 +110,16 @@ public class InstanceInvolvementTest extends PluggableActivitiTestCase {
     runtimeService.addUserIdentityLink(processInstance.getId(), "kermit", "type1");
     runtimeService.addUserIdentityLink(processInstance.getId(), "kermit", "type2");
 
-    assertEquals(1L, runtimeService.createProcessInstanceQuery().involvedUser("kermit").count());
+    assertThat(runtimeService.createProcessInstanceQuery().involvedUser("kermit").count()).isEqualTo(1L);
   }
 
   private void assertNoInvolvement(String userId) {
-    assertEquals(0L, runtimeService.createProcessInstanceQuery().involvedUser(userId).count());
+    assertThat(runtimeService.createProcessInstanceQuery().involvedUser(userId).count()).isEqualTo(0L);
   }
 
   private void assertInvolvement(String userId, String instanceId) {
     ProcessInstance involvedInstance = runtimeService.createProcessInstanceQuery().involvedUser(userId).singleResult();
-    assertEquals(instanceId, involvedInstance.getId());
+    assertThat(involvedInstance.getId()).isEqualTo(instanceId);
   }
 
   private String startProcessAsUser(String processId, String userId) {

@@ -16,7 +16,6 @@
 
 package org.activiti.runtime.api.impl;
 
-import java.util.Collections;
 import java.util.Map;
 
 import org.activiti.engine.delegate.DelegateExecution;
@@ -25,8 +24,10 @@ import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
+import static java.util.Collections.emptyMap;
+import static java.util.Collections.singletonMap;
 import static org.activiti.runtime.api.impl.MappingExecutionContext.buildMappingExecutionContext;
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -48,8 +49,7 @@ public class MappingAwareUserTaskBehaviorTest {
     public void calculateInputVariablesShouldReturnValueFromMappingProvider() {
         //given
         DelegateExecution execution = buildExecution();
-        Map<String, Object> providerVariables = Collections.singletonMap("var",
-                                                         "value");
+        Map<String, Object> providerVariables = singletonMap("var", "value");
         given(mappingProvider.calculateInputVariables(execution)).willReturn(providerVariables);
 
         //when
@@ -63,9 +63,8 @@ public class MappingAwareUserTaskBehaviorTest {
     public void calculateOutBoundVariablesShouldReturnValueFromMappingProvider() {
         //given
         DelegateExecution execution = buildExecution();
-        Map<String, Object> availableVariables = Collections.emptyMap();
-        Map<String, Object> providerVariables = Collections.singletonMap("var",
-                                                         "value");
+        Map<String, Object> availableVariables = emptyMap();
+        Map<String, Object> providerVariables = singletonMap("var", "value");
         given(mappingProvider.calculateOutPutVariables(buildMappingExecutionContext(execution),
                                                        availableVariables))
                 .willReturn(providerVariables);

@@ -16,14 +16,13 @@
 
 package org.activiti.runtime.api.impl;
 
+import static org.activiti.engine.impl.util.CollectionUtil.map;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 
 import java.time.Duration;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
-
 import org.activiti.api.task.model.builders.TaskPayloadBuilder;
 import org.activiti.api.task.model.payloads.CreateTaskVariablePayload;
 import org.activiti.api.task.model.payloads.UpdateTaskVariablePayload;
@@ -38,13 +37,13 @@ public class TaskVariablesPayloadValidatorTest {
     @Test
     public void should_convertStringToDate_when_stringRepresentsADate() {
         //given
-        HashMap<String, Object> payloadMap = new HashMap<>();
-        payloadMap.put("date", "1970-01-01");
-        payloadMap.put("dateTime", "1970-01-01T01:01:01.001Z");
-        payloadMap.put("notADate", "this is not a date");
-        payloadMap.put("int", 1);
-        payloadMap.put("boolean", true);
-
+        Map<String, Object> payloadMap = map(
+            "date", "1970-01-01",
+            "dateTime", "1970-01-01T01:01:01.001Z",
+            "notADate", "this is not a date",
+            "int", 1,
+            "boolean", true
+        );
 
         //calculate number of milliseconds after 1970-01-01T00:00:00.000Z
         long time = Duration.ofHours(1).toMillis() + Duration.ofMinutes(1).toMillis() + Duration.ofSeconds(1).toMillis() + 1;
@@ -183,24 +182,21 @@ public class TaskVariablesPayloadValidatorTest {
         //then
         assertThat(handledDatePayload.getValue()).isEqualTo(true);
     }
-    
+
     @Test
     public void should_returnErrorList_when_setVariableWithWrongCharactersInName() throws Exception {
 
         CreateTaskVariablePayload payload = TaskPayloadBuilder.createVariable()
-                .withVariable("wrong-name",
-                              10)
+                .withVariable("wrong-name", 10)
                 .build();
 
         String expectedTypeErrorMessage = "wrong-name";
 
         Throwable throwable = catchThrowable(() -> taskVariablesPayloadValidator.handleCreateTaskVariablePayload(payload));
 
-        assertThat(throwable).isInstanceOf(IllegalStateException.class); 
-        
-        assertThat(throwable.getMessage())
-            .contains(expectedTypeErrorMessage);
-        
+        assertThat(throwable)
+            .isInstanceOf(IllegalStateException.class)
+            .hasMessageContaining(expectedTypeErrorMessage);
     }
 
 }

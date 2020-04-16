@@ -107,18 +107,13 @@ public class BasicExclusiveGatewayErrorTest {
 
         clearEvents();
 
-
-
         Throwable throwable = catchThrowable(() ->  taskRuntime.complete(TaskPayloadBuilder.complete().withTaskId(task.getId()).build()));
 
         //@TODO: this is leaking ActivitiException.class we should validate expressions before running the process
         // https://github.com/Activiti/Activiti/issues/2328
         assertThat(throwable)
-                .isInstanceOf(ActivitiException.class);
-        assertThat(throwable).
-                hasMessageContaining("condition expression returns non-Boolean");
-
-
+                .isInstanceOf(ActivitiException.class)
+                .hasMessageContaining("condition expression returns non-Boolean");
 
     }
 
@@ -132,7 +127,7 @@ public class BasicExclusiveGatewayErrorTest {
         }
         clearEvents();
     }
-    
+
     public void clearEvents() {
         RuntimeTestConfiguration.collectedEvents.clear();
     }

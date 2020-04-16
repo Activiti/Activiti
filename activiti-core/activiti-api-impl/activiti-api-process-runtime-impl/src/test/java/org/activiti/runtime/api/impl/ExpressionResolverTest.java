@@ -16,6 +16,9 @@
 
 package org.activiti.runtime.api.impl;
 
+import static java.util.Arrays.asList;
+import static java.util.Collections.singletonMap;
+import static org.activiti.engine.impl.util.CollectionUtil.map;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
@@ -25,9 +28,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.activiti.engine.ActivitiException;
@@ -123,8 +123,7 @@ public class ExpressionResolverTest {
     @Test
     public void containsExpression_should_returnFalse_when_MapValueDoesNotContainExpressionPattern() {
         //given
-        Map<String, Integer> source = Collections.singletonMap("age",
-                                                               10);
+        Map<String, Integer> source = singletonMap("age", 10);
 
         //when
         boolean containsExpression = expressionResolver.containsExpression(source);
@@ -136,8 +135,7 @@ public class ExpressionResolverTest {
     @Test
     public void containsExpression_should_returnTrue_when_MapValueContainsExpressionPattern() {
         //given
-        Map<String, String> source = Collections.singletonMap("age",
-                                                              "${age}");
+        Map<String, String> source = singletonMap("age", "${age}");
 
         //when
         boolean containsExpression = expressionResolver.containsExpression(source);
@@ -149,8 +147,7 @@ public class ExpressionResolverTest {
     @Test
     public void containsExpression_should_returnFalse_when_ListDoesNotContainExpressionPattern() {
         //given
-        List<String> source = Arrays.asList("first",
-                                            "second");
+        List<String> source = asList("first", "second");
         //when
         boolean containsExpression = expressionResolver.containsExpression(source);
 
@@ -161,9 +158,7 @@ public class ExpressionResolverTest {
     @Test
     public void containsExpression_should_returnTrue_when_ListContainsExpressionPattern() {
         //given
-        List<String> source = Arrays.asList("first",
-                                            "${position}",
-                                            "third");
+        List<String> source = asList("first", "${position}", "third");
         //when
         boolean containsExpression = expressionResolver.containsExpression(source);
 
@@ -179,11 +174,9 @@ public class ExpressionResolverTest {
 
         //when
         Map<String, Object> result = expressionResolver.resolveExpressionsMap(expressionEvaluator,
-                                                                              Collections.singletonMap("name",
-                                                                                                       "${name}"));
+                                                                              singletonMap("name", "${name}"));
         //then
-        assertThat(result).containsEntry("name",
-                                         "John");
+        assertThat(result).containsEntry("name", "John");
     }
 
     @Test
@@ -197,34 +190,28 @@ public class ExpressionResolverTest {
 
         //when
         Map<String, Object> result = expressionResolver.resolveExpressionsMap(expressionEvaluator,
-                                                                              Collections.singletonMap("welcomeMessage",
-                                                                                                       "Welcome to ${place}, ${name}!"));
+                                                                              singletonMap("welcomeMessage", "Welcome to ${place}, ${name}!"));
         //then
-        assertThat(result).containsEntry("welcomeMessage",
-                                         "Welcome to London, John!");
+        assertThat(result).containsEntry("welcomeMessage", "Welcome to London, John!");
     }
 
     @Test
     public void resolveExpressionsMap_should_returnItself_when_stringIsEmpty() {
         //when
         Map<String, Object> result = expressionResolver.resolveExpressionsMap(expressionEvaluator,
-                                                                              Collections.singletonMap("empty",
-                                                                                                       ""));
+                                                                              singletonMap("empty", ""));
 
         //then
-        assertThat(result).containsEntry("empty",
-                                         "");
+        assertThat(result).containsEntry("empty", "");
     }
 
     @Test
     public void resolveExpressionsMap_should_returnItself_when_stringIsNull() {
         //when
         Map<String, Object> result = expressionResolver.resolveExpressionsMap(expressionEvaluator,
-                                                                              Collections.singletonMap("empty",
-                                                                                                       null));
+                                                                              singletonMap("empty", null));
         //then
-        assertThat(result).containsEntry("empty",
-                                         null);
+        assertThat(result).containsEntry("empty", null);
     }
 
     @Test
@@ -235,11 +222,9 @@ public class ExpressionResolverTest {
 
         //when
         Map<String, Object> result = expressionResolver.resolveExpressionsMap(expressionEvaluator,
-                                                                              Collections.singletonMap("result",
-                                                                                                       "Welcome to ${nonResolvableExpression}!"));
+                                                                              singletonMap("result", "Welcome to ${nonResolvableExpression}!"));
         //then
-        assertThat(result).containsEntry("result",
-                                         "Welcome to ${nonResolvableExpression}!");
+        assertThat(result).containsEntry("result", "Welcome to ${nonResolvableExpression}!");
     }
 
     @Test
@@ -250,8 +235,7 @@ public class ExpressionResolverTest {
 
         //when
         Map<String, Object> result = expressionResolver.resolveExpressionsMap(expressionEvaluator,
-                                                                              Collections.singletonMap("result",
-                                                                                                       "${nonResolvableExpression}"));
+                                                                              singletonMap("result", "${nonResolvableExpression}"));
         //then
         assertThat(result).containsEntry("result",
                                          "${nonResolvableExpression}");
@@ -259,8 +243,7 @@ public class ExpressionResolverTest {
     }
 
     @Test
-    public void resolveExpressionsMap_should_replaceExpressionByValue_when_ObjectNodeContainsAnExpression()
-                                                                                                           throws IOException {
+    public void resolveExpressionsMap_should_replaceExpressionByValue_when_ObjectNodeContainsAnExpression() throws IOException {
         //given
         Expression nameExpression = buildExpression("${name}");
         given(expressionEvaluator.evaluate(nameExpression, expressionManager, delegateInterceptor)).willReturn("John");
@@ -273,21 +256,15 @@ public class ExpressionResolverTest {
 
         JsonNode node = mapper.readTree("{\"name\":\"${name}\",\"place\":\"${place}\",\"age\":\"${age}\"}");
 
-        Map<String, Object> resultMap = new HashMap<>();
-        resultMap.put("name",
-                      "John");
-        resultMap.put("place",
-                      null);
-        resultMap.put("age",
-                      30);
-
         //when
         Map<String, Object> result = expressionResolver.resolveExpressionsMap(expressionEvaluator,
-                                                                              Collections.singletonMap("node",
-                                                                                                       node));
+                                                                              singletonMap("node", node));
         //then
-        assertThat(result).containsEntry("node",
-                                         resultMap);
+        assertThat(result).containsEntry("node", map(
+            "name", "John",
+            "place", null,
+            "age", 30
+        ));
     }
 
     @Test
@@ -299,19 +276,14 @@ public class ExpressionResolverTest {
 
         JsonNode node = mapper.readTree("{\"name\":\"${name}\",\"age\": 30}");
 
-        Map<String, Object> resultMap = new HashMap<>();
-        resultMap.put("name",
-                      "${name}");
-        resultMap.put("age",
-                      30);
-
         //when
         Map<String, Object> result = expressionResolver.resolveExpressionsMap(expressionEvaluator,
-                                                                              Collections.singletonMap("node",
-                                                                                                       node));
+                                                                              singletonMap("node", node));
         //then
-        assertThat(result).containsEntry("node",
-                                         resultMap);
+        assertThat(result).containsEntry("node", map(
+            "name", "${name}",
+            "age", 30
+        ));
     }
 
     @Test
@@ -322,15 +294,14 @@ public class ExpressionResolverTest {
 
         //when
         Map<String, Object> result = expressionResolver.resolveExpressionsMap(expressionEvaluator,
-                                                                              Collections.singletonMap("places",
-                                                                                                       Arrays.asList("${place}",
-                                                                                                                     "Paris",
-                                                                                                                     "Berlin")));
+                                                                              singletonMap("places", asList("${place}",
+                                                                                                            "Paris",
+                                                                                                            "Berlin")));
         //then
         assertThat(result).containsEntry("places",
-                                         Arrays.asList("London",
-                                                       "Paris",
-                                                       "Berlin"));
+                                         asList("London",
+                                                "Paris",
+                                                "Berlin"));
     }
 
     @Test
@@ -341,13 +312,13 @@ public class ExpressionResolverTest {
 
         //when
         Map<String, Object> result = expressionResolver.resolveExpressionsMap(expressionEvaluator,
-                                                                              Collections.singletonMap("places",
-                                                                                                       Arrays.asList("${place}",
+                                                                              singletonMap("places",
+                                                                                                       asList("${place}",
                                                                                                                      "Paris",
                                                                                                                      "Berlin")));
         //then
         assertThat(result).containsEntry("places",
-                                         Arrays.asList("${place}",
+                                         asList("${place}",
                                                        "Paris",
                                                        "Berlin"));
     }
@@ -358,34 +329,23 @@ public class ExpressionResolverTest {
         Expression playerExpression = buildExpression("${player}");
         given(expressionEvaluator.evaluate(playerExpression, expressionManager, delegateInterceptor)).willReturn("Agatha");
 
-        Map<String, Object> players = new HashMap<>();
-        players.put("Red",
-                    "John");
-        players.put("Green",
-                    "Peter");
-        players.put("Blue",
-                    "Mary");
-        players.put("Yellow",
-                    "${player}");
-
-        Map<String, Object> resultMap = new HashMap<>();
-        resultMap.put("Red",
-                      "John");
-        resultMap.put("Green",
-                      "Peter");
-        resultMap.put("Blue",
-                      "Mary");
-        resultMap.put("Yellow",
-                      "Agatha");
-
         //when
         Map<String, Object> result = expressionResolver.resolveExpressionsMap(expressionEvaluator,
-                                                                              Collections.singletonMap("players",
-                                                                                                       players));
+                                                                              singletonMap("players",
+                                                                              map(
+                                                                                  "Red", "John",
+                                                                                  "Green", "Peter",
+                                                                                  "Blue", "Mary",
+                                                                                  "Yellow", "${player}"
+                                                                              )));
 
         //then
-        assertThat(result).containsEntry("players",
-                                         resultMap);
+        assertThat(result).containsEntry("players", map(
+            "Red", "John",
+            "Green", "Peter",
+            "Blue", "Mary",
+            "Yellow", "Agatha"
+        ));
     }
 
     @Test
@@ -395,24 +355,19 @@ public class ExpressionResolverTest {
         Expression playerExpression = buildExpression("${player}");
         given(expressionEvaluator.evaluate(playerExpression, expressionManager, delegateInterceptor)).willThrow(new ActivitiException("Invalid property"));
 
-        Map<String, Object> players = new HashMap<>();
-        players.put("Red",
-                    "John");
-        players.put("Green",
-                    "Peter");
-        players.put("Blue",
-                    "Mary");
-        players.put("Yellow",
-                    "${player}");
+        Map<String, Object> players = map(
+            "Red", "John",
+            "Green", "Peter",
+            "Blue", "Mary",
+            "Yellow", "${player}"
+        );
 
         //when
         Map<String, Object> result = expressionResolver.resolveExpressionsMap(expressionEvaluator,
-                                                                              Collections.singletonMap("players",
-                                                                                                       players));
+                                                                              singletonMap("players",players));
 
         //then
-        assertThat(result).containsEntry("players",
-                                         players);
+        assertThat(result).containsEntry("players", players);
     }
 
     private Expression buildExpression(String expressionContent) {

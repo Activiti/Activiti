@@ -74,7 +74,7 @@ public class TaskRuntimeCandidatesTest {
                                          .withCandidateUser("garth")
                                          .build());
 
-        assertThat(RuntimeTestConfiguration.taskCandidateUserRemovedEvents.size()).isEqualTo(1);
+        assertThat(RuntimeTestConfiguration.taskCandidateUserRemovedEvents).hasSize(1);
         assertThat(RuntimeTestConfiguration.taskCandidateUserRemovedEvents)
         .extracting(event -> event.getEntity().getUserId())
         .contains("garth");
@@ -93,7 +93,7 @@ public class TaskRuntimeCandidatesTest {
                                       .withCandidateUser("garth")
                                       .build());
 
-        assertThat(RuntimeTestConfiguration.taskCandidateUserAddedEvents.size()).isEqualTo(2);
+        assertThat(RuntimeTestConfiguration.taskCandidateUserAddedEvents).hasSize(2);
         assertThat(RuntimeTestConfiguration.taskCandidateUserAddedEvents)
         .extracting(event -> event.getEntity().getUserId())
         .contains("garth",
@@ -125,7 +125,7 @@ public class TaskRuntimeCandidatesTest {
                                                .build());
 
 
-        assertThat(RuntimeTestConfiguration.taskCandidateGroupAddedEvents.size()).isEqualTo(1);
+        assertThat(RuntimeTestConfiguration.taskCandidateGroupAddedEvents).hasSize(1);
         assertThat(RuntimeTestConfiguration.taskCandidateGroupAddedEvents)
                 .extracting(event -> event.getEntity().getGroupId())
                 .contains("test");
@@ -143,7 +143,7 @@ public class TaskRuntimeCandidatesTest {
                                                  .withCandidateGroup("test")
                                                  .build());
 
-        assertThat(RuntimeTestConfiguration.taskCandidateGroupRemovedEvents.size()).isEqualTo(1);
+        assertThat(RuntimeTestConfiguration.taskCandidateGroupRemovedEvents).hasSize(1);
         assertThat(RuntimeTestConfiguration.taskCandidateGroupRemovedEvents)
                 .extracting(event -> event.getEntity().getGroupId())
                 .contains("test");

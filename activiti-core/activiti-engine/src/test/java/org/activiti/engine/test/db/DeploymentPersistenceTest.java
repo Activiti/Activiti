@@ -1,9 +1,9 @@
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -13,8 +13,9 @@
 
 package org.activiti.engine.test.db;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.io.InputStream;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -24,7 +25,6 @@ import org.activiti.engine.impl.util.IoUtil;
 import org.activiti.engine.repository.Deployment;
 
 /**
-
  */
 public class DeploymentPersistenceTest extends PluggableActivitiTestCase {
 
@@ -33,24 +33,24 @@ public class DeploymentPersistenceTest extends PluggableActivitiTestCase {
         .deploy();
 
     List<Deployment> deployments = repositoryService.createDeploymentQuery().list();
-    assertEquals(1, deployments.size());
+    assertThat(deployments).hasSize(1);
     deployment = deployments.get(0);
 
-    assertEquals("strings", deployment.getName());
-    assertNotNull(deployment.getDeploymentTime());
+    assertThat(deployment.getName()).isEqualTo("strings");
+    assertThat(deployment.getDeploymentTime()).isNotNull();
 
     String deploymentId = deployment.getId();
     List<String> resourceNames = repositoryService.getDeploymentResourceNames(deploymentId);
     Set<String> expectedResourceNames = new HashSet<String>();
     expectedResourceNames.add("org/activiti/test/HelloWorld.string");
     expectedResourceNames.add("org/activiti/test/TheAnswer.string");
-    assertEquals(expectedResourceNames, new HashSet<String>(resourceNames));
+    assertThat(new HashSet<String>(resourceNames)).isEqualTo(expectedResourceNames);
 
     InputStream resourceStream = repositoryService.getResourceAsStream(deploymentId, "org/activiti/test/HelloWorld.string");
-    assertTrue(Arrays.equals("hello world".getBytes(), IoUtil.readInputStream(resourceStream, "test")));
+    assertThat(IoUtil.readInputStream(resourceStream, "test")).isEqualTo("hello world".getBytes());
 
     resourceStream = repositoryService.getResourceAsStream(deploymentId, "org/activiti/test/TheAnswer.string");
-    assertTrue(Arrays.equals("42".getBytes(), IoUtil.readInputStream(resourceStream, "test")));
+    assertThat(IoUtil.readInputStream(resourceStream, "test")).isEqualTo("42".getBytes());
 
     repositoryService.deleteDeployment(deploymentId);
   }

@@ -13,6 +13,8 @@
 
 package org.activiti.spring.test.servicetask;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.List;
 
 import org.activiti.engine.task.Task;
@@ -21,7 +23,7 @@ import org.activiti.spring.impl.test.SpringActivitiTestCase;
 import org.springframework.test.context.ContextConfiguration;
 
 /**
- * @see https://activiti.atlassian.net/browse/ACT-1166
+ * @link https://activiti.atlassian.net/browse/ACT-1166
  */
 @ContextConfiguration("classpath:org/activiti/spring/test/servicetask/serviceraskSpringTestCatchError-context.xml")
 public class BoundaryErrorEventSpringTest extends SpringActivitiTestCase {
@@ -48,12 +50,11 @@ public class BoundaryErrorEventSpringTest extends SpringActivitiTestCase {
     private void assertThatErrorHasBeenCaught(String procId) {
         // The service task will throw an error event,
         // which is caught on the service task boundary
-        assertEquals("No tasks found in task list.",
-                     1,
-                     taskService.createTaskQuery().count());
+        assertThat(taskService.createTaskQuery().count())
+            .as("No tasks found in task list.")
+            .isEqualTo(1);
         Task task = taskService.createTaskQuery().singleResult();
-        assertEquals("Escalated Task",
-                     task.getName());
+        assertThat(task.getName()).isEqualTo("Escalated Task");
 
         // Completing the task will end the process instance
         taskService.complete(task.getId());

@@ -28,7 +28,7 @@ import static org.activiti.test.matchers.ProcessTaskMatchers.taskWithName;
 import static org.activiti.test.matchers.SequenceFlowMatchers.sequenceFlow;
 import static org.activiti.test.matchers.TaskMatchers.task;
 import static org.activiti.test.matchers.TaskMatchers.withAssignee;
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Java6Assertions.tuple;
 
 @RunWith(SpringRunner.class)
@@ -48,10 +48,10 @@ public class BasicInclusiveGatewayTest {
 
     @Autowired
     private ProcessAdminRuntime processAdminRuntime;
-    
+
     @Autowired
     private ProcessOperations processOperations;
-    
+
     @Autowired
     private TaskOperations taskOperations;
 
@@ -59,7 +59,7 @@ public class BasicInclusiveGatewayTest {
     public void testProcessExecutionWithInclusiveGateway() {
         //given
         securityUtil.logInAs("user1");
-        
+
         //given
         ProcessInstance processInstance = processOperations.start(ProcessPayloadBuilder
                 .start()
@@ -73,7 +73,7 @@ public class BasicInclusiveGatewayTest {
                 .expectFields(processInstance().status(ProcessInstance.ProcessInstanceStatus.RUNNING),
                               processInstance().name("my-process-instance-name"),
                               processInstance().businessKey("my-business-key"))
-       
+
                 .expect(processInstance().hasTask("Start Process",
                                                   Task.TaskStatus.ASSIGNED,
                                                   withAssignee("user1")))
@@ -85,23 +85,23 @@ public class BasicInclusiveGatewayTest {
                               taskWithName("Start Process").hasBeenAssigned()
                 )
                 .andReturn();
-  
+
         // I should be able to get the process instance from the Runtime
         ProcessInstance processInstanceById = processRuntime.processInstance(processInstance.getId());
         assertThat(processInstanceById).isEqualTo(processInstance);
-        
+
         // I should get a task for User1
         GetTasksPayload processInstanceTasksPayload = TaskPayloadBuilder
                                                       .tasks()
                                                       .withProcessInstanceId(processInstance.getId())
                                                       .build();
-        
+
         Page<Task> tasks = taskRuntime.tasks(Pageable.of(0,
                                                          50),
                                              processInstanceTasksPayload);
         assertThat(tasks.getTotalItems()).isEqualTo(1);
         Task task = tasks.getContent().get(0);
-        
+
         //given
         taskOperations.complete(TaskPayloadBuilder
                                 .complete()
@@ -110,8 +110,8 @@ public class BasicInclusiveGatewayTest {
         //then
                 .expectEvents(task().hasBeenCompleted(),
                               sequenceFlow("flow2").hasBeenTaken(),
-                              inclusiveGateway("inclusiveGateway").hasBeenStarted(), 
-                              inclusiveGateway("inclusiveGateway").hasBeenCompleted(), 
+                              inclusiveGateway("inclusiveGateway").hasBeenStarted(),
+                              inclusiveGateway("inclusiveGateway").hasBeenCompleted(),
                               sequenceFlow("flow3").hasBeenTaken(),
                               taskWithName("Send e-mail").hasBeenCreated(),
                               sequenceFlow("flow4").hasBeenTaken(),
@@ -121,14 +121,14 @@ public class BasicInclusiveGatewayTest {
                         processInstance().hasTask("Check account",
                                                   Task.TaskStatus.ASSIGNED)
                 );
-        
+
         //then - two tasks should be available
         tasks = taskRuntime.tasks(Pageable.of(0, 50));
         assertThat(tasks.getTotalItems()).isEqualTo(2);
-        
+
         Task task1 = tasks.getContent().get(0);
         Task task2 = tasks.getContent().get(1);
-        
+
         //given
         taskOperations.complete(TaskPayloadBuilder
                                 .complete()
@@ -139,18 +139,18 @@ public class BasicInclusiveGatewayTest {
                               inclusiveGateway("inclusiveGatewayEnd").hasBeenStarted())
                 .expect(processInstance().hasTask(task2.getName(),
                                                   task2.getStatus()));
-        
+
         //then - only second task should be available
         tasks = taskRuntime.tasks(Pageable.of(0, 50));
         assertThat(tasks.getTotalItems()).isEqualTo(1);
-        
+
         assertThat(tasks.getContent())
         .extracting(Task::getStatus, Task::getName)
         .contains(
                 tuple(  task2.getStatus(),
                         task2.getName())
         );
-        
+
         //complete second task
         taskOperations.complete(TaskPayloadBuilder
                                 .complete()
@@ -161,10 +161,10 @@ public class BasicInclusiveGatewayTest {
                               inclusiveGateway("inclusiveGatewayEnd").hasBeenCompleted(),
                               endEvent("theEnd").hasBeenStarted(),
                               endEvent("theEnd").hasBeenCompleted());
-         
+
         //No tasks should be available
         tasks = taskRuntime.tasks(Pageable.of(0, 50));
-        assertThat(tasks.getTotalItems()).isEqualTo(0);              
+        assertThat(tasks.getTotalItems()).isEqualTo(0);
     }
 
     @After
@@ -174,7 +174,7 @@ public class BasicInclusiveGatewayTest {
         for (ProcessInstance pi : processInstancePage.getContent()) {
             processAdminRuntime.delete(ProcessPayloadBuilder.delete(pi.getId()));
         }
-        
+
     }
-    
+
 }

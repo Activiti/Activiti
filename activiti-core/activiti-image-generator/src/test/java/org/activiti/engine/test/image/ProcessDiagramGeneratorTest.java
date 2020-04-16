@@ -2,7 +2,6 @@ package org.activiti.engine.test.image;
 
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.activiti.bpmn.model.BpmnModel;
@@ -21,8 +20,10 @@ import org.apache.batik.anim.dom.SVGOMDocument;
 import org.apache.batik.util.XMLResourceDescriptor;
 import org.apache.commons.io.IOUtils;
 
+import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 public class ProcessDiagramGeneratorTest extends PluggableActivitiTestCase {
 
@@ -59,16 +60,16 @@ public class ProcessDiagramGeneratorTest extends PluggableActivitiTestCase {
         List<String> activityIds = runtimeService.getActiveActivityIds(task.getProcessInstanceId());
         InputStream diagram = imageGenerator
                 .generateDiagram(repositoryService.getBpmnModel(task.getProcessDefinitionId()), activityIds);
-        assertNotNull(diagram);
+        assertThat(diagram).isNotNull();
 
-        List<String> highLightedFlows = Arrays.asList("flow1", "flow2", "flow3", "flow4", "flow5", "flow6");
+        List<String> highLightedFlows = asList("flow1", "flow2", "flow3", "flow4", "flow5", "flow6");
         diagram = imageGenerator.generateDiagram(repositoryService.getBpmnModel(task.getProcessDefinitionId()),
                                                  activityIds, highLightedFlows);
-        assertNotNull(diagram);
+        assertThat(diagram).isNotNull();
 
         diagram = imageGenerator.generateDiagram(repositoryService.getBpmnModel(task.getProcessDefinitionId()),
                                                  activityIds, highLightedFlows, activityFontName, labelFontName, annotationFontName);
-        assertNotNull(diagram);
+        assertThat(diagram).isNotNull();
     }
 
     @Deployment
@@ -85,11 +86,11 @@ public class ProcessDiagramGeneratorTest extends PluggableActivitiTestCase {
         List<String> highLightedFlows = new ArrayList<>();
         InputStream diagram = imageGenerator.generateDiagram(repositoryService.getBpmnModel(id),
                                                  activityIds, highLightedFlows);
-        assertNotNull(diagram);
+        assertThat(diagram).isNotNull();
 
         diagram = imageGenerator.generateDiagram(repositoryService.getBpmnModel(id),
                                                  activityIds, highLightedFlows, activityFontName, labelFontName, annotationFontName);
-        assertNotNull(diagram);
+        assertThat(diagram).isNotNull();
     }
     @Deployment
     public void testTransactionElements() throws Exception {
@@ -105,11 +106,11 @@ public class ProcessDiagramGeneratorTest extends PluggableActivitiTestCase {
         List<String> highLightedFlows = new ArrayList<>();
         InputStream diagram = imageGenerator.generateDiagram(repositoryService.getBpmnModel(id),
                                                  activityIds, highLightedFlows);
-        assertNotNull(diagram);
+        assertThat(diagram).isNotNull();
 
         diagram = imageGenerator.generateDiagram(repositoryService.getBpmnModel(id),
                                                  activityIds, highLightedFlows, activityFontName, labelFontName, annotationFontName);
-        assertNotNull(diagram);
+        assertThat(diagram).isNotNull();
     }
 
     @Deployment
@@ -125,29 +126,29 @@ public class ProcessDiagramGeneratorTest extends PluggableActivitiTestCase {
         try (final InputStream resourceStream = imageGenerator.generateDiagram(bpmnModel, activityFontName,
                                                                                labelFontName, annotationFontName)) {
             SVGOMDocument svg = parseXml(resourceStream);
-            List<String> startEventIdList = Arrays.asList("startevent1", "errorstartevent1", "signalstartevent1",
+            List<String> startEventIdList = asList("startevent1", "errorstartevent1", "signalstartevent1",
                                                           "messagestartevent1", "timerstartevent1");
             checkDiagramElements(startEventIdList, svg);
-            List<String> userTaskIdList = Arrays.asList("usertask1", "usertask2", "usertask3", "usertask4", "usertask5",
+            List<String> userTaskIdList = asList("usertask1", "usertask2", "usertask3", "usertask4", "usertask5",
                                                         "usertask6", "usertask7", "usertask8", "usertask9", "usertask10", "usertask11", "usertask12",
                                                         "usertask13", "usertask14", "usertask15", "usertask16", "usertask17", "usertask18", "usertask19");
             checkDiagramElements(userTaskIdList, svg);
-            List<String> scriptTaskIdList = Arrays.asList("scripttask1", "scripttask2", "scripttask3");
+            List<String> scriptTaskIdList = asList("scripttask1", "scripttask2", "scripttask3");
             checkDiagramElements(scriptTaskIdList, svg);
-            List<String> otherTaskIdList = Arrays.asList("servicetask1", "mailtask1", "manualtask1", "receivetask1",
+            List<String> otherTaskIdList = asList("servicetask1", "mailtask1", "manualtask1", "receivetask1",
                     "callactivity1");
             checkDiagramElements(otherTaskIdList, svg);
-            List<String> intermediateEvent = Arrays.asList("timerintermediatecatchevent1",
+            List<String> intermediateEvent = asList("timerintermediatecatchevent1",
                                                            "signalintermediatecatchevent1", "messageintermediatecatchevent1", "signalintermediatethrowevent1",
                                                            "compensationintermediatethrowevent1", "noneintermediatethrowevent1");
             checkDiagramElements(intermediateEvent, svg);
-            List<String> gatewayIdList = Arrays.asList("parallelgateway1", "parallelgateway2", "exclusivegateway1",
+            List<String> gatewayIdList = asList("parallelgateway1", "parallelgateway2", "exclusivegateway1",
                                                        "exclusivegateway3", "inclusivegateway1", "inclusivegateway2", "eventgateway1");
             checkDiagramElements(gatewayIdList, svg);
-            List<String> containerIdList = Arrays.asList("subprocess1", "eventsubprocess1", "pool1", "pool2", "pool3",
+            List<String> containerIdList = asList("subprocess1", "eventsubprocess1", "pool1", "pool2", "pool3",
                                                          "lane1", "lane2", "lane3", "lane4");
             checkDiagramElements(containerIdList, svg);
-            List<String> endEventIdList = Arrays.asList("errorendevent1", "endevent1", "endevent2", "endevent3",
+            List<String> endEventIdList = asList("errorendevent1", "endevent1", "endevent2", "endevent3",
                                                         "endevent4", "endevent5", "endevent6", "endevent7", "endevent8", "endevent9", "endevent10",
                                                         "endevent11", "endevent12");
             checkDiagramElements(endEventIdList, svg);
@@ -222,7 +223,7 @@ public class ProcessDiagramGeneratorTest extends PluggableActivitiTestCase {
 
     private void checkDiagramElements(List<String> elementIdList, SVGOMDocument svg) {
         for (String elementId : elementIdList) {
-            assertNotNull(svg.getElementById(elementId));
+            assertThat(svg.getElementById(elementId)).isNotNull();
         }
     }
 

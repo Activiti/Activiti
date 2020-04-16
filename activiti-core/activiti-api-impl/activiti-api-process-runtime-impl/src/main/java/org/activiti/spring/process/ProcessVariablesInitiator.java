@@ -13,7 +13,8 @@
 
 package org.activiti.spring.process;
 
-import java.util.Collections;
+import static java.util.Collections.emptyMap;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -109,7 +110,7 @@ public class ProcessVariablesInitiator extends ProcessInstanceHelper {
     }
 
     private Map<String, Object> processVariables(Map<String, Object> variables, Map<String, VariableDefinition> variableDefinitionMap) {
-        Map<String, Object> newVarsMap = new HashMap<>(Optional.ofNullable(variables).orElse(Collections.emptyMap()));
+        Map<String, Object> newVarsMap = new HashMap<>(Optional.ofNullable(variables).orElse(emptyMap()));
         variableDefinitionMap.forEach((k, v) -> {
             if (!newVarsMap.containsKey(v.getName()) && v.getValue() != null) {
                 newVarsMap.put(v.getName(), createDefaultVariableValue(v));

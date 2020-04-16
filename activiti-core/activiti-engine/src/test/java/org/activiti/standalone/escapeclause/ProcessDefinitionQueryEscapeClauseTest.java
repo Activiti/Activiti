@@ -1,9 +1,9 @@
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -12,10 +12,12 @@
  */
 package org.activiti.standalone.escapeclause;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.activiti.engine.repository.ProcessDefinitionQuery;
 
 public class ProcessDefinitionQueryEscapeClauseTest extends AbstractEscapeClauseTestCase {
-  
+
   private String deploymentOneId;
   private String deploymentTwoId;
 
@@ -37,10 +39,10 @@ public class ProcessDefinitionQueryEscapeClauseTest extends AbstractEscapeClause
         .addClasspathResource("org/activiti/engine/test/repository/two_.bpmn20.xml")
         .deploy()
         .getId();
-    
+
     super.setUp();
   }
-  
+
   @Override
   protected void tearDown() throws Exception {
     super.tearDown();
@@ -50,61 +52,61 @@ public class ProcessDefinitionQueryEscapeClauseTest extends AbstractEscapeClause
 
   public void testQueryByNameLike() {
     ProcessDefinitionQuery query = repositoryService.createProcessDefinitionQuery().processDefinitionNameLike("%\\%%");
-    assertEquals("One%", query.singleResult().getName());
-    assertEquals(1, query.list().size());
-    assertEquals(1, query.count());
-    
+    assertThat(query.singleResult().getName()).isEqualTo("One%");
+    assertThat(query.list()).hasSize(1);
+    assertThat(query.count()).isEqualTo(1);
+
     query = repositoryService.createProcessDefinitionQuery().processDefinitionNameLike("%\\_%");
-    assertEquals("Two_", query.singleResult().getName());
-    assertEquals(1, query.list().size());
-    assertEquals(1, query.count());
+    assertThat(query.singleResult().getName()).isEqualTo("Two_");
+    assertThat(query.list()).hasSize(1);
+    assertThat(query.count()).isEqualTo(1);
   }
-  
+
   public void testQueryByCategoryLike() {
     ProcessDefinitionQuery query = repositoryService.createProcessDefinitionQuery().processDefinitionCategoryLike("%\\_%");
-    assertEquals("Examples_", query.singleResult().getCategory());
-    assertEquals(1, query.list().size());
-    assertEquals(1, query.count());
+    assertThat(query.singleResult().getCategory()).isEqualTo("Examples_");
+    assertThat(query.list()).hasSize(1);
+    assertThat(query.count()).isEqualTo(1);
   }
-  
+
   public void testQueryByKeyLike() {
     ProcessDefinitionQuery query = repositoryService.createProcessDefinitionQuery().processDefinitionKeyLike("%\\_%");
-    assertEquals("two_", query.singleResult().getKey());
-    assertEquals(1, query.list().size());
-    assertEquals(1, query.count());
+    assertThat(query.singleResult().getKey()).isEqualTo("two_");
+    assertThat(query.list()).hasSize(1);
+    assertThat(query.count()).isEqualTo(1);
   }
-  
+
   public void testQueryByResourceNameLike() {
     ProcessDefinitionQuery query = repositoryService.createProcessDefinitionQuery().processDefinitionResourceNameLike("%\\%%");
-    assertEquals("org/activiti/engine/test/repository/one%.bpmn20.xml", query.singleResult().getResourceName());
-    assertEquals(1, query.list().size());
-    assertEquals(1, query.count());
-    
+    assertThat(query.singleResult().getResourceName()).isEqualTo("org/activiti/engine/test/repository/one%.bpmn20.xml");
+    assertThat(query.list()).hasSize(1);
+    assertThat(query.count()).isEqualTo(1);
+
     query = repositoryService.createProcessDefinitionQuery().processDefinitionResourceNameLike("%\\_%");
-    assertEquals("org/activiti/engine/test/repository/two_.bpmn20.xml", query.singleResult().getResourceName());
-    assertEquals(1, query.list().size());
-    assertEquals(1, query.count());
+    assertThat(query.singleResult().getResourceName()).isEqualTo("org/activiti/engine/test/repository/two_.bpmn20.xml");
+    assertThat(query.list()).hasSize(1);
+    assertThat(query.count()).isEqualTo(1);
   }
-  
+
   public void testQueryByTenantIdLike() {
     ProcessDefinitionQuery query = repositoryService.createProcessDefinitionQuery().processDefinitionTenantIdLike("%\\%%");
-    assertEquals("One%", query.singleResult().getTenantId());
-    assertEquals(1, query.list().size());
-    assertEquals(1, query.count());
-    
+    assertThat(query.singleResult().getTenantId()).isEqualTo("One%");
+    assertThat(query.list()).hasSize(1);
+    assertThat(query.count()).isEqualTo(1);
+
     query = repositoryService.createProcessDefinitionQuery().processDefinitionTenantIdLike("%\\_%");
-    assertEquals("Two_", query.singleResult().getTenantId());
-    assertEquals(1, query.list().size());
-    assertEquals(1, query.count());
-    
+    assertThat(query.singleResult().getTenantId()).isEqualTo("Two_");
+    assertThat(query.list()).hasSize(1);
+    assertThat(query.count()).isEqualTo(1);
+
     query = repositoryService.createProcessDefinitionQuery().latestVersion().processDefinitionTenantIdLike("%\\%%");
-    assertEquals("One%", query.singleResult().getTenantId());
-    assertEquals(1, query.list().size());
-    assertEquals(1, query.count());
-    
+    assertThat(query.singleResult().getTenantId()).isEqualTo("One%");
+    assertThat(query.list()).hasSize(1);
+    assertThat(query.count()).isEqualTo(1);
+
     query = repositoryService.createProcessDefinitionQuery().latestVersion().processDefinitionTenantIdLike("%\\_%");
-    assertEquals("Two_", query.singleResult().getTenantId());
-    assertEquals(1, query.list().size());
-    assertEquals(1, query.count());
+    assertThat(query.singleResult().getTenantId()).isEqualTo("Two_");
+    assertThat(query.list()).hasSize(1);
+    assertThat(query.count()).isEqualTo(1);
   }
 }

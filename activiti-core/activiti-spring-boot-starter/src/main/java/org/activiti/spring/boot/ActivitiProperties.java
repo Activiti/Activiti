@@ -1,9 +1,9 @@
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -12,7 +12,8 @@
  */
 package org.activiti.spring.boot;
 
-import java.util.Arrays;
+import static java.util.Arrays.asList;
+
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
@@ -38,7 +39,7 @@ public class ActivitiProperties {
   private boolean dbHistoryUsed = false;
   private HistoryLevel historyLevel = HistoryLevel.NONE;
   private String processDefinitionLocationPrefix = ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX + "**/processes/";
-  private List<String> processDefinitionLocationSuffixes = Arrays.asList("**.bpmn20.xml", "**.bpmn");
+  private List<String> processDefinitionLocationSuffixes = asList("**.bpmn20.xml", "**.bpmn");
   private List<String> customMybatisMappers;
   private List<String> customMybatisXMLMappers;
   private boolean useStrongUuids = true;
@@ -192,11 +193,11 @@ public class ActivitiProperties {
   public void setCustomMybatisXMLMappers(List<String> customMybatisXMLMappers) {
     this.customMybatisXMLMappers = customMybatisXMLMappers;
   }
-  
+
   public boolean isUseStrongUuids() {
 	return useStrongUuids;
   }
-  
+
   public void setUseStrongUuids(boolean useStrongUuids) {
 	this.useStrongUuids = useStrongUuids;
   }

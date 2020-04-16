@@ -1,6 +1,6 @@
 package org.activiti.editor.language.xml;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Collection;
 
@@ -25,7 +25,7 @@ public class SignalConverterTest extends AbstractConverterTest {
 
   private void validateModel(BpmnModel model) {
     Collection<Signal> signals = model.getSignals();
-    assertEquals(2, signals.size());
+    assertThat(signals).hasSize(2);
   }
 
   protected String getResource() {

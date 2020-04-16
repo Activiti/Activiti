@@ -31,7 +31,7 @@ public class TaskConverterTest extends AbstractConverterTest {
     private void validateModel(BpmnModel model) throws Exception {
         FlowElement flowElement = model.getMainProcess().getFlowElement("Task_17unmd8");
         assertThat(flowElement).isNotNull();
-        assertThat(flowElement instanceof Task).isTrue();
+        assertThat(flowElement).isInstanceOf(Task.class);
 
         checkXml(model);
     }

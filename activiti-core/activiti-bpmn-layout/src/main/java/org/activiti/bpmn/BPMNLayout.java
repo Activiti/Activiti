@@ -13,7 +13,7 @@ import com.mxgraph.view.mxGraph;
 
 /**
  * BPMNLayout
- * 
+ *
 
  */
 public class BPMNLayout extends mxGraphLayout {
@@ -64,7 +64,7 @@ public class BPMNLayout extends mxGraphLayout {
   protected int nodeDistance = 20;
 
   /**
-   * 
+   *
    * @param graph
    */
   public BPMNLayout(mxGraph graph) {
@@ -72,7 +72,7 @@ public class BPMNLayout extends mxGraphLayout {
   }
 
   /**
-   * 
+   *
    * @param graph
    * @param horizontal
    */
@@ -81,7 +81,7 @@ public class BPMNLayout extends mxGraphLayout {
   }
 
   /**
-   * 
+   *
    * @param graph
    * @param horizontal
    * @param invert
@@ -99,7 +99,7 @@ public class BPMNLayout extends mxGraphLayout {
 
   /**
    * Returns a boolean indicating if the given <em>mxCell</em> should be ignored as a vertex. This returns true if the cell has no connections.
-   * 
+   *
    * @param vertex
    *          Object that represents the vertex to be tested.
    * @return Returns true if the vertex should be ignored.
@@ -217,7 +217,7 @@ public class BPMNLayout extends mxGraphLayout {
     mxIGraphModel model = graph.getModel();
     List<Object> roots = graph.findTreeRoots(parent, true, invert);
     // if (getGraph().isOrganizationElement(parent)) {
-    // roots = Arrays.asList(graph.getSelectionCells());
+    // roots = asList(graph.getSelectionCells());
     // }
     for (Object root : roots) {
       parent = model.getParent(root);
@@ -445,7 +445,7 @@ public class BPMNLayout extends mxGraphLayout {
   }
 
   /**
-	 * 
+	 *
 	 */
   protected void attachParent(TreeNode node, double height) {
     double x = nodeDistance + levelDistance;
@@ -464,7 +464,7 @@ public class BPMNLayout extends mxGraphLayout {
   }
 
   /**
-	 * 
+	 *
 	 */
   protected void layoutLeaf(TreeNode node) {
     double dist = 2 * nodeDistance;
@@ -476,7 +476,7 @@ public class BPMNLayout extends mxGraphLayout {
   }
 
   /**
-	 * 
+	 *
 	 */
   protected double join(TreeNode node) {
     double dist = 2 * nodeDistance;
@@ -500,7 +500,7 @@ public class BPMNLayout extends mxGraphLayout {
   }
 
   /**
-	 * 
+	 *
 	 */
   protected double merge(Polygon p1, Polygon p2) {
     double x = 0;
@@ -544,7 +544,7 @@ public class BPMNLayout extends mxGraphLayout {
   }
 
   /**
-	 * 
+	 *
 	 */
   protected double offset(double p1, double p2, double a1, double a2, double b1, double b2) {
     double d = 0;
@@ -583,7 +583,7 @@ public class BPMNLayout extends mxGraphLayout {
   }
 
   /**
-	 * 
+	 *
 	 */
   protected Polyline bridge(Polyline line1, double x1, double y1, Polyline line2, double x2, double y2) {
     double dx = x2 + line2.dx - x1;
@@ -604,7 +604,7 @@ public class BPMNLayout extends mxGraphLayout {
   }
 
   /**
-	 * 
+	 *
 	 */
   protected TreeNode createNode(Object cell) {
     TreeNode node = new TreeNode(cell);
@@ -625,7 +625,7 @@ public class BPMNLayout extends mxGraphLayout {
   }
 
   /**
-	 * 
+	 *
 	 */
   protected mxRectangle apply(TreeNode node, mxRectangle bounds) {
     mxRectangle g = graph.getModel().getGeometry(node.cell);
@@ -647,38 +647,38 @@ public class BPMNLayout extends mxGraphLayout {
   }
 
   /**
-	 * 
+	 *
 	 */
   protected Polyline createLine(double dx, double dy, Polyline next) {
     return new Polyline(dx, dy, next);
   }
 
   /**
-	 * 
+	 *
 	 */
   protected static class TreeNode {
     /**
-		 * 
+		 *
 		 */
     protected Object cell;
 
     /**
-		 * 
+		 *
 		 */
     protected double x, y, width, height, offsetX, offsetY;
 
     /**
-		 * 
+		 *
 		 */
     protected TreeNode child, next; // parent, sibling
 
     /**
-		 * 
+		 *
 		 */
     protected Polygon contour = new Polygon();
 
     /**
-		 * 
+		 *
 		 */
     public TreeNode(Object cell) {
       this.cell = cell;
@@ -687,34 +687,34 @@ public class BPMNLayout extends mxGraphLayout {
   }
 
   /**
-	 * 
+	 *
 	 */
   protected static class Polygon {
 
     /**
-		 * 
+		 *
 		 */
     protected Polyline lowerHead, lowerTail, upperHead, upperTail;
 
   }
 
   /**
-	 * 
+	 *
 	 */
   protected static class Polyline {
 
     /**
-		 * 
+		 *
 		 */
     protected double dx, dy;
 
     /**
-		 * 
+		 *
 		 */
     protected Polyline next;
 
     /**
-		 * 
+		 *
 		 */
     protected Polyline(double dx, double dy, Polyline next) {
       this.dx = dx;

@@ -1,7 +1,8 @@
 package org.activiti.examples;
 
+import static java.util.Collections.singletonList;
+
 import java.text.SimpleDateFormat;
-import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -109,7 +110,7 @@ public class DemoApplication implements CommandLineRunner {
                 List<VariableInstance> variables = taskRuntime.variables(TaskPayloadBuilder.variables().withTaskId(t.getId()).build());
                 VariableInstance variableInstance = variables.get(0);
                 if (variableInstance.getName().equals("content")) {
-                    LinkedHashMap contentToProcess = objectMapper.convertValue(variableInstance.getValue(),LinkedHashMap.class);
+                    LinkedHashMap contentToProcess = objectMapper.convertValue(variableInstance.getValue(), LinkedHashMap.class);
                     logger.info("> Content received inside the task to approve: " + contentToProcess);
 
                     if (contentToProcess.get("body").toString().contains("activiti")) {
@@ -137,9 +138,8 @@ public class DemoApplication implements CommandLineRunner {
     public Connector tagTextConnector() {
         return integrationContext -> {
             LinkedHashMap contentToTag = (LinkedHashMap) integrationContext.getInBoundVariables().get("content");
-            contentToTag.put("tags", Collections.singletonList(" :) "));
-            integrationContext.addOutBoundVariable("content",
-                    contentToTag);
+            contentToTag.put("tags", singletonList(" :) "));
+            integrationContext.addOutBoundVariable("content", contentToTag);
             logger.info("Final Content: " + contentToTag);
             return integrationContext;
         };
@@ -149,9 +149,8 @@ public class DemoApplication implements CommandLineRunner {
     public Connector discardTextConnector() {
         return integrationContext -> {
             LinkedHashMap contentToDiscard = (LinkedHashMap) integrationContext.getInBoundVariables().get("content");
-            contentToDiscard.put("tags", Collections.singletonList(" :( "));
-            integrationContext.addOutBoundVariable("content",
-                    contentToDiscard);
+            contentToDiscard.put("tags", singletonList(" :( "));
+            integrationContext.addOutBoundVariable("content", contentToDiscard);
             logger.info("Final Content: " + contentToDiscard);
             return integrationContext;
         };

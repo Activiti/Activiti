@@ -1,10 +1,10 @@
 package org.activiti.spring.boot.process;
 
+import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.assertj.core.api.Assertions.tuple;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -76,17 +76,13 @@ public class ProcessRuntimeVariableMappingTest {
         List<VariableInstance> variables = processBaseRuntime.getProcessVariablesByProcessId(processInstance.getId());
 
         String[] array = {"first", "${name}", "${surname}", "last"};
-        List<String> list = Arrays.asList(array);
+        List<String> list = asList(array);
 
         Map<String, Object> dataMap = new HashMap<>();
-        dataMap.put("age-in-months",
-                    "${age * 12}");
-        dataMap.put("full-name",
-                    "${name} ${surname}");
-        dataMap.put("demoString",
-                    "expressionResolved");
-        dataMap.put("list",
-                    list);
+        dataMap.put("age-in-months", "${age * 12}");
+        dataMap.put("full-name", "${name} ${surname}");
+        dataMap.put("demoString", "expressionResolved");
+        dataMap.put("list", list);
         JsonNode data = mapper.convertValue(dataMap, JsonNode.class);
 
         assertThat(variables).extracting(VariableInstance::getName,
@@ -114,9 +110,9 @@ public class ProcessRuntimeVariableMappingTest {
 
         Throwable throwable = catchThrowable(() -> processBaseRuntime.startProcessWithProcessDefinitionKey(OUTPUT_MAPPING_EXPRESSION_VARIABLE_PROCESS));
 
-        assertThat(throwable).isInstanceOf(ActivitiException.class);
-
-        assertThat(throwable.getMessage()).contains("Expressions are not allowed as variable values in the output mapping");
+        assertThat(throwable)
+            .isInstanceOf(ActivitiException.class)
+            .hasMessageContaining("Expressions are not allowed as variable values in the output mapping");
     }
 
     @Test

@@ -31,7 +31,7 @@ public class ManualTaskConverterTest extends AbstractConverterTest {
     private void validateModel(BpmnModel model) throws Exception {
         FlowElement flowElement = model.getMainProcess().getFlowElement("ManualTask_0ej3luy");
         assertThat(flowElement).isNotNull();
-        assertThat(flowElement instanceof ManualTask).isTrue();
+        assertThat(flowElement).isInstanceOf(ManualTask.class);
 
         checkXml(model);
     }

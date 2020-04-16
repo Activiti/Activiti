@@ -123,7 +123,6 @@ public class UserTaskAssigneeRuntimeTest {
         assertThat(throwable)
                 .isInstanceOf(NotFoundException.class);
 
-
         assertThat(RuntimeTestConfiguration.collectedEvents)
                 .extracting(RuntimeEvent::getEventType)
                 .containsExactly(
@@ -157,7 +156,7 @@ public class UserTaskAssigneeRuntimeTest {
 
 
     }
-    
+
     public void clearEvents() {
         RuntimeTestConfiguration.collectedEvents.clear();
     }

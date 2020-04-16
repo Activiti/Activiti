@@ -1,8 +1,6 @@
 package org.activiti.editor.language.xml;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -60,23 +58,23 @@ public class SubProcessMultiDiagramConverterNoDITest extends AbstractConverterTe
 
   private void validateModel(BpmnModel model) {
     FlowElement flowElement = model.getMainProcess().getFlowElement("start1");
-    assertNotNull(flowElement);
-    assertTrue(flowElement instanceof StartEvent);
-    assertEquals("start1", flowElement.getId());
+    assertThat(flowElement).isNotNull();
+    assertThat(flowElement).isInstanceOf(StartEvent.class);
+    assertThat(flowElement.getId()).isEqualTo("start1");
 
     flowElement = model.getMainProcess().getFlowElement("userTask1");
-    assertNotNull(flowElement);
-    assertTrue(flowElement instanceof UserTask);
-    assertEquals("userTask1", flowElement.getId());
+    assertThat(flowElement).isNotNull();
+    assertThat(flowElement).isInstanceOf(UserTask.class);
+    assertThat(flowElement.getId()).isEqualTo("userTask1");
     UserTask userTask = (UserTask) flowElement;
-    assertTrue(userTask.getCandidateUsers().size() == 1);
-    assertTrue(userTask.getCandidateGroups().size() == 1);
+    assertThat(userTask.getCandidateUsers().size() == 1).isTrue();
+    assertThat(userTask.getCandidateGroups().size() == 1).isTrue();
 
     flowElement = model.getMainProcess().getFlowElement("subprocess1");
-    assertNotNull(flowElement);
-    assertTrue(flowElement instanceof SubProcess);
-    assertEquals("subprocess1", flowElement.getId());
+    assertThat(flowElement).isNotNull();
+    assertThat(flowElement).isInstanceOf(SubProcess.class);
+    assertThat(flowElement.getId()).isEqualTo("subprocess1");
     SubProcess subProcess = (SubProcess) flowElement;
-    assertTrue(subProcess.getFlowElements().size() == 11);
+    assertThat(subProcess.getFlowElements().size() == 11).isTrue();
   }
 }

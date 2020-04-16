@@ -12,9 +12,10 @@
  */
 package org.activiti.engine.impl.bpmn.behavior;
 
-import java.util.Arrays;
+import static java.util.Arrays.asList;
+import static java.util.Collections.emptyMap;
+
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -243,7 +244,7 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
         if (commandContext.getProcessEngineConfiguration().isCopyVariablesToLocalForTasks()) {
           return execution.getVariables();
         } else {
-          return Collections.emptyMap();
+          return emptyMap();
         }
   }
 
@@ -253,7 +254,7 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
       if(commandContext.getProcessEngineConfiguration().isCopyVariablesToLocalForTasks()){
           return taskVariables;
       }
-      return Collections.emptyMap();
+      return emptyMap();
   }
 
   public void trigger(DelegateExecution execution, String signalName, Object signalData) {
@@ -406,6 +407,6 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
    * @return
    */
   protected List<String> extractCandidates(String str) {
-    return Arrays.asList(str.split("[\\s]*,[\\s]*"));
+    return asList(str.split("[\\s]*,[\\s]*"));
   }
 }

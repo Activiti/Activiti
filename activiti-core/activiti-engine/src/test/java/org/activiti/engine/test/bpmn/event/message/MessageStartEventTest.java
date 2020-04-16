@@ -1,9 +1,9 @@
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -14,6 +14,7 @@
 package org.activiti.engine.test.bpmn.event.message;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.tuple;
 
 import java.util.ArrayList;
@@ -42,7 +43,7 @@ public class MessageStartEventTest extends PluggableActivitiTestCase {
 
     List<EventSubscriptionEntity> eventSubscriptions = new EventSubscriptionQueryImpl(processEngineConfiguration.getCommandExecutor()).list();
 
-    assertEquals(1, eventSubscriptions.size());
+    assertThat(eventSubscriptions).hasSize(1);
 
     repositoryService.deleteDeployment(deploymentId);
   }
@@ -50,25 +51,22 @@ public class MessageStartEventTest extends PluggableActivitiTestCase {
   public void testSameMessageNameFails() {
     String deploymentId = repositoryService.createDeployment().addClasspathResource("org/activiti/engine/test/bpmn/event/message/MessageStartEventTest.testSingleMessageStartEvent.bpmn20.xml")
         .deploy().getId();
-    try {
-      repositoryService.createDeployment().addClasspathResource("org/activiti/engine/test/bpmn/event/message/otherProcessWithNewInvoiceMessage.bpmn20.xml").deploy();
-      fail("exception expected");
-    } catch (ActivitiException e) {
-      assertTrue(e.getMessage().contains("there already is a message event subscription for the message with name"));
-    }
+    assertThatExceptionOfType(ActivitiException.class)
+      .isThrownBy(() -> repositoryService.createDeployment()
+        .addClasspathResource("org/activiti/engine/test/bpmn/event/message/otherProcessWithNewInvoiceMessage.bpmn20.xml")
+        .deploy())
+      .withMessageContaining("there already is a message event subscription for the message with name");
 
     // clean db:
     repositoryService.deleteDeployment(deploymentId);
-
   }
 
   public void testSameMessageNameInSameProcessFails() {
-    try {
-      repositoryService.createDeployment().addClasspathResource("org/activiti/engine/test/bpmn/event/message/testSameMessageNameInSameProcessFails.bpmn20.xml").deploy();
-      fail("exception expected: Cannot have more than one message event subscription with name 'newInvoiceMessage' for scope");
-    } catch (ActivitiException e) {
-      e.printStackTrace();
-    }
+    assertThatExceptionOfType(ActivitiException.class)
+      .as("exception expected: Cannot have more than one message event subscription with name 'newInvoiceMessage' for scope")
+      .isThrownBy(() -> repositoryService.createDeployment()
+        .addClasspathResource("org/activiti/engine/test/bpmn/event/message/testSameMessageNameInSameProcessFails.bpmn20.xml")
+        .deploy());
   }
 
   public void testUpdateProcessVersionCancelsSubscriptions() {
@@ -78,8 +76,8 @@ public class MessageStartEventTest extends PluggableActivitiTestCase {
     List<EventSubscriptionEntity> eventSubscriptions = new EventSubscriptionQueryImpl(processEngineConfiguration.getCommandExecutor()).list();
     List<ProcessDefinition> processDefinitions = repositoryService.createProcessDefinitionQuery().list();
 
-    assertEquals(1, eventSubscriptions.size());
-    assertEquals(1, processDefinitions.size());
+    assertThat(eventSubscriptions).hasSize(1);
+    assertThat(processDefinitions).hasSize(1);
 
     String newDeploymentId = repositoryService.createDeployment().addClasspathResource("org/activiti/engine/test/bpmn/event/message/MessageStartEventTest.testSingleMessageStartEvent.bpmn20.xml")
         .deploy().getId();
@@ -87,20 +85,20 @@ public class MessageStartEventTest extends PluggableActivitiTestCase {
     List<EventSubscriptionEntity> newEventSubscriptions = new EventSubscriptionQueryImpl(processEngineConfiguration.getCommandExecutor()).list();
     List<ProcessDefinition> newProcessDefinitions = repositoryService.createProcessDefinitionQuery().list();
 
-    assertEquals(1, newEventSubscriptions.size());
-    assertEquals(2, newProcessDefinitions.size());
+    assertThat(newEventSubscriptions).hasSize(1);
+    assertThat(newProcessDefinitions).hasSize(2);
     for (ProcessDefinition processDefinition : newProcessDefinitions) {
       if (processDefinition.getVersion() == 1) {
         for (EventSubscriptionEntity subscription : newEventSubscriptions) {
-          assertFalse(subscription.getConfiguration().equals(processDefinition.getId()));
+          assertThat(subscription.getConfiguration().equals(processDefinition.getId())).isFalse();
         }
       } else {
         for (EventSubscriptionEntity subscription : newEventSubscriptions) {
-          assertTrue(subscription.getConfiguration().equals(processDefinition.getId()));
+          assertThat(subscription.getConfiguration().equals(processDefinition.getId())).isTrue();
         }
       }
     }
-    assertFalse(eventSubscriptions.equals(newEventSubscriptions));
+    assertThat(eventSubscriptions.equals(newEventSubscriptions)).isFalse();
 
     repositoryService.deleteDeployment(deploymentId);
     repositoryService.deleteDeployment(newDeploymentId);
@@ -113,10 +111,10 @@ public class MessageStartEventTest extends PluggableActivitiTestCase {
 
     ProcessInstance processInstance = runtimeService.startProcessInstanceByMessage("newInvoiceMessage");
 
-    assertFalse(processInstance.isEnded());
+    assertThat(processInstance.isEnded()).isFalse();
 
     Task task = taskService.createTaskQuery().singleResult();
-    assertNotNull(task);
+    assertThat(task).isNotNull();
 
     taskService.complete(task.getId());
 
@@ -127,10 +125,10 @@ public class MessageStartEventTest extends PluggableActivitiTestCase {
 
     processInstance = runtimeService.startProcessInstanceByKey("singleMessageStartEvent");
 
-    assertFalse(processInstance.isEnded());
+    assertThat(processInstance.isEnded()).isFalse();
 
     task = taskService.createTaskQuery().singleResult();
-    assertNotNull(task);
+    assertThat(task).isNotNull();
 
     taskService.complete(task.getId());
 
@@ -145,10 +143,10 @@ public class MessageStartEventTest extends PluggableActivitiTestCase {
 
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testProcess");
 
-    assertFalse(processInstance.isEnded());
+    assertThat(processInstance.isEnded()).isFalse();
 
     Task task = taskService.createTaskQuery().taskDefinitionKey("taskAfterNoneStart").singleResult();
-    assertNotNull(task);
+    assertThat(task).isNotNull();
 
     taskService.complete(task.getId());
 
@@ -158,10 +156,10 @@ public class MessageStartEventTest extends PluggableActivitiTestCase {
 
     processInstance = runtimeService.startProcessInstanceByMessage("newInvoiceMessage");
 
-    assertFalse(processInstance.isEnded());
+    assertThat(processInstance.isEnded()).isFalse();
 
     task = taskService.createTaskQuery().taskDefinitionKey("taskAfterMessageStart").singleResult();
-    assertNotNull(task);
+    assertThat(task).isNotNull();
 
     taskService.complete(task.getId());
 
@@ -176,10 +174,10 @@ public class MessageStartEventTest extends PluggableActivitiTestCase {
 
     ProcessInstance processInstance = runtimeService.startProcessInstanceByMessage("newInvoiceMessage");
 
-    assertFalse(processInstance.isEnded());
+    assertThat(processInstance.isEnded()).isFalse();
 
     Task task = taskService.createTaskQuery().taskDefinitionKey("taskAfterMessageStart").singleResult();
-    assertNotNull(task);
+    assertThat(task).isNotNull();
 
     taskService.complete(task.getId());
 
@@ -189,10 +187,10 @@ public class MessageStartEventTest extends PluggableActivitiTestCase {
 
     processInstance = runtimeService.startProcessInstanceByMessage("newInvoiceMessage2");
 
-    assertFalse(processInstance.isEnded());
+    assertThat(processInstance.isEnded()).isFalse();
 
     task = taskService.createTaskQuery().taskDefinitionKey("taskAfterMessageStart2").singleResult();
-    assertNotNull(task);
+    assertThat(task).isNotNull();
 
     taskService.complete(task.getId());
 
@@ -201,19 +199,19 @@ public class MessageStartEventTest extends PluggableActivitiTestCase {
     // starting the process using startProcessInstanceByKey is possible, the
     // first message start event will be the default:
     processInstance = runtimeService.startProcessInstanceByKey("testProcess");
-    assertFalse(processInstance.isEnded());
+    assertThat(processInstance.isEnded()).isFalse();
     task = taskService.createTaskQuery().taskDefinitionKey("taskAfterMessageStart").singleResult();
-    assertNotNull(task);
+    assertThat(task).isNotNull();
     taskService.complete(task.getId());
     assertProcessEnded(processInstance.getId());
   }
-  
+
   @Deployment(resources = "org/activiti/engine/test/bpmn/event/message/MessageStartEventTest.testSingleMessageStartEvent.bpmn20.xml")
   public void testMessageStartEventDispatchActivitiMessageReceivedBeforeProcessStarted() {
 
-    // given 
-    List<ActivitiEvent> events = new ArrayList<>();  
-      
+    // given
+    List<ActivitiEvent> events = new ArrayList<>();
+
     runtimeService.addEventListener(new ActivitiEventListener() {
         @Override
         public void onEvent(ActivitiEvent event) {
@@ -227,7 +225,7 @@ public class MessageStartEventTest extends PluggableActivitiTestCase {
 
     // when
     ProcessInstance process = runtimeService.startProcessInstanceByMessage("newInvoiceMessage");
-    
+
     String executionId = runtimeService.createExecutionQuery()
                                        .processInstanceId(process.getId())
                                        .onlyChildExecutions()
@@ -236,7 +234,7 @@ public class MessageStartEventTest extends PluggableActivitiTestCase {
 
     // then ACTIVITY_MESSAGE_RECEIVED should be fired before PROCESS_STARTED
     assertThat(events)
-                .filteredOn(event -> event.getType() == ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED 
+                .filteredOn(event -> event.getType() == ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED
                                         || event.getType() == ActivitiEventType.PROCESS_STARTED)
                 .extracting("type",
                             "processDefinitionId",
