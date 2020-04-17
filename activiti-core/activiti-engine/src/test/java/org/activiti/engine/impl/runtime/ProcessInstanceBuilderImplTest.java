@@ -23,8 +23,8 @@ import static org.mockito.MockitoAnnotations.initMocks;
 
 import org.activiti.engine.impl.RuntimeServiceImpl;
 import org.activiti.engine.runtime.ProcessInstance;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
@@ -36,7 +36,7 @@ public class ProcessInstanceBuilderImplTest {
     @Mock
     private RuntimeServiceImpl runtimeService;
 
-    @BeforeEach
+    @Before
     public void setUp() throws Exception {
         initMocks(this);
     }

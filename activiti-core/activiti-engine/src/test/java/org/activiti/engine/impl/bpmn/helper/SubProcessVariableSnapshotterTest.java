@@ -3,7 +3,7 @@ package org.activiti.engine.impl.bpmn.helper;
 import java.util.Map;
 
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 import static java.util.Collections.singletonMap;
 import static org.mockito.Mockito.mock;

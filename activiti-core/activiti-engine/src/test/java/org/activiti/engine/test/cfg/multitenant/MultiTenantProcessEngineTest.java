@@ -28,10 +28,10 @@ import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.h2.jdbcx.JdbcDataSource;
-import org.junit.jupiter.api.AfterEach;
+import org.junit.After;
 import static org.assertj.core.api.Assertions.assertThat;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
 
@@ -42,12 +42,12 @@ public class MultiTenantProcessEngineTest {
   private MultiSchemaMultiTenantProcessEngineConfiguration config;
   private ProcessEngine processEngine;
 
-  @BeforeEach
+  @Before
   public void setup() {
     setupTenantInfoHolder();
   }
 
-  @AfterEach
+  @After
   public void close() {
     processEngine.close();
   }

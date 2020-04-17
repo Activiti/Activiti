@@ -17,22 +17,22 @@ import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.test.ActivitiRule;
 import org.activiti.engine.test.impl.logger.ProcessExecutionLoggerConfigurator;
 import org.h2.tools.Server;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Rule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * Parent class for internal Activiti tests.
- *
+ * 
  * Boots up a process engine and caches it.
- *
+ * 
  * When using H2 and the default schema name, it will also boot the H2 webapp (reachable with browser on http://localhost:8082/)
- *
+ * 
  */
 public class AbstractActviti6Test {
-
+  
   private static final Logger logger = LoggerFactory.getLogger(AbstractActviti6Test.class);
 
   public static String H2_TEST_JDBC_URL = "jdbc:h2:mem:activiti;DB_CLOSE_DELAY=1000";
@@ -48,7 +48,7 @@ public class AbstractActviti6Test {
   protected HistoryService historyService;
   protected ManagementService managementService;
 
-  @BeforeEach
+  @Before
   public void initProcessEngine() {
     if (cachedProcessEngine == null) {
       cachedProcessEngine = activitiRule.getProcessEngine();
@@ -69,12 +69,12 @@ public class AbstractActviti6Test {
     this.managementService = cachedProcessEngine.getManagementService();
   }
 
-  @AfterEach
+  @After
   public void resetClock() {
     activitiRule.getProcessEngine().getProcessEngineConfiguration().getClock().reset();
   }
 
-  @AfterEach
+  @After
   public void logCommandInvokerDebugInfo() {
 
     ProcessExecutionLoggerConfigurator loggerConfigurator = null;

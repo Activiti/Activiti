@@ -23,7 +23,7 @@ import org.activiti.engine.task.Task;
 import org.activiti.engine.test.ActivitiRule;
 import org.activiti.engine.test.Deployment;
 import org.junit.Rule;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 /**
  * Test runners follow the this rule: - if the class extends Testcase, run as Junit 3 - otherwise use Junit 4

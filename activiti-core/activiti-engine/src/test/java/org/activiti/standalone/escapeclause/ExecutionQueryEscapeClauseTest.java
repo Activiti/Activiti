@@ -19,6 +19,7 @@ import java.util.Map;
 
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
+import org.junit.Test;
 
 public class ExecutionQueryEscapeClauseTest extends AbstractEscapeClauseTestCase {
 
@@ -72,6 +73,7 @@ public class ExecutionQueryEscapeClauseTest extends AbstractEscapeClauseTestCase
     assertThat(execution).isNotNull();
   }
 
+  @Test
   public void testQueryLikeByQueryVariableValue() {
     Execution execution = runtimeService.createExecutionQuery().variableValueLike("var1", "%\\%%").singleResult();
     assertThat(execution).isNotNull();
@@ -82,6 +84,7 @@ public class ExecutionQueryEscapeClauseTest extends AbstractEscapeClauseTestCase
     assertThat(execution.getId()).isEqualTo(processInstance2.getId());
   }
 
+  @Test
   public void testQueryLikeIgnoreCaseByQueryVariableValue() {
     Execution execution = runtimeService.createExecutionQuery().variableValueLikeIgnoreCase("var1", "%\\%%").singleResult();
     assertThat(execution).isNotNull();
@@ -92,6 +95,7 @@ public class ExecutionQueryEscapeClauseTest extends AbstractEscapeClauseTestCase
     assertThat(execution.getId()).isEqualTo(processInstance2.getId());
   }
 
+  @Test
   public void testQueryLikeByQueryProcessVariableValue() {
     Execution execution = runtimeService.createExecutionQuery().onlyChildExecutions().processVariableValueLike("var1", "%\\%%").singleResult();
     assertThat(execution).isNotNull();
@@ -100,6 +104,7 @@ public class ExecutionQueryEscapeClauseTest extends AbstractEscapeClauseTestCase
     assertThat(execution).isNotNull();
   }
 
+  @Test
   public void testQueryLikeIgnoreCaseByQueryProcessVariableValue() {
     Execution execution = runtimeService.createExecutionQuery().onlyChildExecutions().processVariableValueLikeIgnoreCase("var1", "%\\%%").singleResult();
     assertThat(execution).isNotNull();

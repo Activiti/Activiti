@@ -20,8 +20,8 @@ import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.integration.IntegrationContextEntity;
 import org.activiti.engine.impl.persistence.entity.integration.IntegrationContextManager;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.Mock;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -40,7 +40,7 @@ public class RetrieveIntegrationContextCmdTest {
     @Mock
     private IntegrationContextManager integrationContextManager;
 
-    @BeforeEach
+    @Before
     public void setUp() throws Exception {
         initMocks(this);
         given(commandContext.getProcessEngineConfiguration()).willReturn(processEngineConfiguration);

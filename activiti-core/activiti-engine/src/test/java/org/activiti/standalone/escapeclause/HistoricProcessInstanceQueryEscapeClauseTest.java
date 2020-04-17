@@ -24,6 +24,7 @@ import org.activiti.engine.history.HistoricProcessInstanceQuery;
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
+import org.junit.Test;
 
 public class HistoricProcessInstanceQueryEscapeClauseTest extends AbstractEscapeClauseTestCase {
 
@@ -77,6 +78,7 @@ public class HistoricProcessInstanceQueryEscapeClauseTest extends AbstractEscape
     repositoryService.deleteDeployment(deploymentTwoId, true);
   }
 
+  @Test
   public void testQueryByProcessKeyNotIn(){
     if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
         // processKeyNotIn
@@ -127,6 +129,7 @@ public class HistoricProcessInstanceQueryEscapeClauseTest extends AbstractEscape
     }
   }
 
+  @Test
   public void testQueryByTenantIdLike() {
     if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
         // tenantIdLike
@@ -149,6 +152,7 @@ public class HistoricProcessInstanceQueryEscapeClauseTest extends AbstractEscape
     }
   }
 
+  @Test
   public void testQueryByProcessInstanceNameLike() {
     if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
         // processInstanceNameLike
@@ -171,6 +175,7 @@ public class HistoricProcessInstanceQueryEscapeClauseTest extends AbstractEscape
     }
   }
 
+  @Test
   public void testQueryByProcessInstanceNameLikeIgnoreCase() {
     if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
     	// processInstanceNameLike
@@ -192,6 +197,8 @@ public class HistoricProcessInstanceQueryEscapeClauseTest extends AbstractEscape
         assertThat(historicProcessInstance.getId()).isEqualTo(processInstance2.getId());
     }
   }
+
+  @Test
   public void testQueryLikeByQueryVariableValue() {
     if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
         // queryVariableValue
@@ -214,6 +221,7 @@ public class HistoricProcessInstanceQueryEscapeClauseTest extends AbstractEscape
     }
   }
 
+  @Test
   public void testQueryLikeIgnoreCaseByQueryVariableValue() {
     if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
         // queryVariableValueIgnoreCase

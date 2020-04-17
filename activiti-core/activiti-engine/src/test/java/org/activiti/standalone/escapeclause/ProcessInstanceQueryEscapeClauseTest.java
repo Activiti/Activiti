@@ -18,7 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.activiti.engine.runtime.ProcessInstance;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 public class ProcessInstanceQueryEscapeClauseTest extends AbstractEscapeClauseTestCase {
 

@@ -20,7 +20,7 @@ import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import static org.assertj.core.api.Assertions.assertThat;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 /**
 

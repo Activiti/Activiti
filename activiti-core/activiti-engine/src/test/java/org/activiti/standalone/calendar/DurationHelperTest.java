@@ -26,7 +26,7 @@ import org.activiti.engine.impl.calendar.DurationHelper;
 import org.activiti.engine.impl.util.DefaultClockImpl;
 import org.activiti.engine.runtime.Clock;
 import org.apache.commons.lang3.time.DateUtils;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 public class DurationHelperTest {
 

@@ -20,8 +20,8 @@ import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.persistence.entity.data.integration.MybatisIntegrationContextDataManager;
 import org.activiti.engine.impl.persistence.entity.integration.IntegrationContextEntity;
 import org.activiti.engine.impl.persistence.entity.integration.IntegrationContextEntityImpl;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
@@ -39,7 +39,7 @@ public class MybatisIntegrationContextDataManagerTest {
     @Mock
     private DbSqlSession dbSqlSession;
 
-    @BeforeEach
+    @Before
     public void setUp() throws Exception {
         initMocks(this);
         doReturn(dbSqlSession).when(manager).getDbSqlSession();

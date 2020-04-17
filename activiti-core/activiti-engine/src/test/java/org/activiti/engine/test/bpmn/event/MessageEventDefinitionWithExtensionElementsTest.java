@@ -21,7 +21,7 @@ import org.activiti.bpmn.model.Message;
 import org.activiti.bpmn.model.MessageEventDefinition;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.bpmn.parser.handler.MessageEventDefinitionParseHandler;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import org.mockito.Mockito;
 
 public class MessageEventDefinitionWithExtensionElementsTest {

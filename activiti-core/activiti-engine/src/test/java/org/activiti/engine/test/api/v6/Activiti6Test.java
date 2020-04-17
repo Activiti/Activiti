@@ -28,7 +28,7 @@ import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 /**
  * These are the first tests ever written for Activiti 6.

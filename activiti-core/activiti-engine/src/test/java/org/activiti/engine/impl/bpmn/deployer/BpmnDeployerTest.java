@@ -23,8 +23,8 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntityImpl;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
@@ -36,7 +36,7 @@ public class BpmnDeployerTest {
     @Mock
     private BpmnDeploymentHelper bpmnDeploymentHelper;
 
-    @BeforeEach
+    @Before
     public void setUp() throws Exception {
         initMocks(this);
     }

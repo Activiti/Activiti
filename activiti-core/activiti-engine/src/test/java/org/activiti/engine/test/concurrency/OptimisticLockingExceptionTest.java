@@ -26,13 +26,15 @@ import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
-
 import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.Test;
 
 /**
+
  */
 public class OptimisticLockingExceptionTest extends PluggableActivitiTestCase {
 
+  @Test
   @Deployment(resources = { "org/activiti/engine/test/concurrency/CompetingJoinTest.testCompetingJoins.bpmn20.xml" })
   public void testOptimisticLockExceptionForConcurrentJoin() throws Exception {
 

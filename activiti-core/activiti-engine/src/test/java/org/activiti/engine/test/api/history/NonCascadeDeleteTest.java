@@ -6,6 +6,7 @@ import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.task.Task;
+import org.junit.Test;
 
 public class NonCascadeDeleteTest extends PluggableActivitiTestCase {
 
@@ -22,7 +23,7 @@ public class NonCascadeDeleteTest extends PluggableActivitiTestCase {
   protected void tearDown() throws Exception {
 	  super.tearDown();
   }
-
+  @Test
   public void testHistoricProcessInstanceQuery(){
     deploymentId = repositoryService.createDeployment()
       .addClasspathResource("org/activiti/engine/test/api/runtime/oneTaskProcess.bpmn20.xml")

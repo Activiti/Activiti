@@ -21,9 +21,9 @@ import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.impl.cfg.StandaloneInMemProcessEngineConfiguration;
 import org.activiti.engine.repository.Deployment;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
 
@@ -34,7 +34,7 @@ public class DisabledSchemaValidationTest {
 
   protected RepositoryService repositoryService;
 
-  @BeforeEach
+  @Before
   public void setup() {
     this.processEngine = new StandaloneInMemProcessEngineConfiguration()
       .setProcessEngineName(this.getClass().getName())
@@ -43,7 +43,7 @@ public class DisabledSchemaValidationTest {
     this.repositoryService = processEngine.getRepositoryService();
   }
 
-  @AfterEach
+  @After
   public void tearDown() {
     for (Deployment deployment : repositoryService.createDeploymentQuery().list()) {
       repositoryService.deleteDeployment(deployment.getId());
