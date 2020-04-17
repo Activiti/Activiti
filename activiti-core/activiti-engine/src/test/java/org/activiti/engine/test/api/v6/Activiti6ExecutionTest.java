@@ -28,11 +28,9 @@ import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
-import org.junit.jupiter.api.Test;
 
 public class Activiti6ExecutionTest extends PluggableActivitiTestCase {
 
-  @Test
   @Deployment
   public void testOneTaskProcess() {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
@@ -85,7 +83,6 @@ public class Activiti6ExecutionTest extends PluggableActivitiTestCase {
     }
   }
 
-  @Test
   @Deployment
   public void testOneNestedTaskProcess() {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneNestedTaskProcess");
@@ -192,7 +189,6 @@ public class Activiti6ExecutionTest extends PluggableActivitiTestCase {
     }
   }
 
-  @Test
   @Deployment
   public void testSubProcessWithTimer() {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("subProcessWithTimer");
@@ -298,7 +294,6 @@ public class Activiti6ExecutionTest extends PluggableActivitiTestCase {
     }
   }
 
-  @Test
   @Deployment
   public void testSubProcessEvents() {
     SubProcessEventListener listener = new SubProcessEventListener();

@@ -39,9 +39,6 @@ import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
 import org.activiti.engine.impl.test.ResourceActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -204,7 +201,7 @@ public class MessageThrowCatchEventTest extends ResourceActivitiTestCase {
         }
     };
 
-    @BeforeEach
+    @Override
     public void setUp() throws Exception {
         super.setUp();
 
@@ -229,13 +226,12 @@ public class MessageThrowCatchEventTest extends ResourceActivitiTestCase {
 
     }
 
-    @AfterEach
+    @Override
     public void tearDown() {
         runtimeService.removeEventListener(spyMessageListener);
         runtimeService.removeEventListener(catchMessageListener);
     }
 
-    @Test
     public void testMyThrowMessageDelegateFactory() {
         assertThat(StandaloneProcessEngineConfiguration.class.cast(processEngine.getProcessEngineConfiguration())
                                                              .getActivityBehaviorFactory())

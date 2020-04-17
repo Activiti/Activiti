@@ -165,7 +165,6 @@
         <version>${batik.version}</version>
         <scope>test</scope>
       </dependency>
-      <!-- Test -->
       <dependency>
         <groupId>net.javacrumbs.json-unit</groupId>
         <artifactId>json-unit-fluent</artifactId>

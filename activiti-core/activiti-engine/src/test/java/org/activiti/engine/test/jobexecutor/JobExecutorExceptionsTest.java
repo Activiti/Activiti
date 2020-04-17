@@ -20,15 +20,13 @@ import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.runtime.TimerJobQuery;
 import org.activiti.engine.test.Deployment;
+
 import static org.assertj.core.api.Assertions.assertThat;
-import org.junit.jupiter.api.Test;
 
 /**
-
  */
 public class JobExecutorExceptionsTest extends PluggableActivitiTestCase {
 
-  @Test
   @Deployment(resources = { "org/activiti/engine/test/api/mgmt/ManagementServiceTest.testGetJobExceptionStacktrace.bpmn20.xml" })
   public void testQueryByExceptionWithRealJobExecutor() {
     TimerJobQuery query = managementService.createTimerJobQuery().withException();
