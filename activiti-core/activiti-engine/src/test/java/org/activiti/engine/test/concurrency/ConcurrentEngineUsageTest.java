@@ -37,7 +37,7 @@ import org.slf4j.LoggerFactory;
  */
 public class ConcurrentEngineUsageTest extends PluggableActivitiTestCase {
 
-  private static Logger log = LoggerFactory.getLogger(ConcurrentEngineUsageTest.class);
+  private static final Logger logger = LoggerFactory.getLogger(ConcurrentEngineUsageTest.class);
   private static final int MAX_RETRIES = 5;
 
   @Deployment
@@ -59,7 +59,7 @@ public class ConcurrentEngineUsageTest extends PluggableActivitiTestCase {
       executor.shutdown();
       boolean isEnded = executor.awaitTermination(20000, TimeUnit.MILLISECONDS);
       if (!isEnded) {
-        log.error("Executor was not shut down after timeout, not al tasks have been executed");
+        logger.error("Executor was not shut down after timeout, not al tasks have been executed");
         executor.shutdownNow();
 
       }
@@ -86,7 +86,7 @@ public class ConcurrentEngineUsageTest extends PluggableActivitiTestCase {
         success = true;
       } catch (PersistenceException pe) {
         retries = retries - 1;
-        log.debug("Retrying process start - " + (MAX_RETRIES - retries));
+        logger.debug("Retrying process start - " + (MAX_RETRIES - retries));
         try {
           Thread.sleep(timeout);
         } catch (InterruptedException ignore) {
@@ -95,7 +95,7 @@ public class ConcurrentEngineUsageTest extends PluggableActivitiTestCase {
       }
     }
     if (!success) {
-      log.debug("Retrying process start FAILED " + MAX_RETRIES + " times");
+      logger.debug("Retrying process start FAILED " + MAX_RETRIES + " times");
     }
   }
 
@@ -109,7 +109,7 @@ public class ConcurrentEngineUsageTest extends PluggableActivitiTestCase {
         success = true;
       } catch (PersistenceException pe) {
         retries = retries - 1;
-        log.debug("Retrying task completion - " + (MAX_RETRIES - retries));
+        logger.debug("Retrying task completion - " + (MAX_RETRIES - retries));
         try {
           Thread.sleep(timeout);
         } catch (InterruptedException ignore) {
@@ -119,7 +119,7 @@ public class ConcurrentEngineUsageTest extends PluggableActivitiTestCase {
     }
 
     if (!success) {
-      log.debug("Retrying task completion FAILED " + MAX_RETRIES + " times");
+      logger.debug("Retrying task completion FAILED " + MAX_RETRIES + " times");
     }
   }
 

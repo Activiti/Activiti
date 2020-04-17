@@ -50,9 +50,13 @@ import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
 
 import junit.framework.AssertionFailedError;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public abstract class AbstractActivitiTestCase extends AbstractTestCase {
+
+  private static final Logger logger = LoggerFactory.getLogger(AbstractActivitiTestCase.class);
 
   private static final List<String> TABLENAMES_EXCLUDED_FROM_DB_CLEAN_CHECK = singletonList("ACT_GE_PROPERTY");
 
@@ -100,14 +104,12 @@ public abstract class AbstractActivitiTestCase extends AbstractTestCase {
       validateHistoryData();
 
     } catch (AssertionFailedError e) {
-      log.error(EMPTY_LINE);
-      log.error("ASSERTION FAILED: {}", e, e);
+      logger.error("ASSERTION FAILED: {}", e, e);
       exception = e;
       throw e;
 
     } catch (Throwable e) {
-      log.error(EMPTY_LINE);
-      log.error("EXCEPTION: {}", e, e);
+      logger.error("EXCEPTION: {}", e, e);
       exception = e;
       throw e;
 
@@ -194,7 +196,7 @@ public abstract class AbstractActivitiTestCase extends AbstractTestCase {
    * DB is not clean. If the DB is not clean, it is cleaned by performing a create a drop.
    */
   protected void assertAndEnsureCleanDb() throws Throwable {
-    log.debug("verifying that db is clean after test");
+    logger.debug("verifying that db is clean after test");
     Map<String, Long> tableCounts = managementService.getTableCount();
     StringBuilder outputMessage = new StringBuilder();
     for (String tableName : tableCounts.keySet()) {
@@ -208,10 +210,9 @@ public abstract class AbstractActivitiTestCase extends AbstractTestCase {
     }
     if (outputMessage.length() > 0) {
       outputMessage.insert(0, "DB NOT CLEAN: \n");
-      log.error(EMPTY_LINE);
-      log.error(outputMessage.toString());
+      logger.error(outputMessage.toString());
 
-      log.info("dropping and recreating db");
+      logger.info("dropping and recreating db");
 
       CommandExecutor commandExecutor = ((ProcessEngineImpl) processEngine).getProcessEngineConfiguration().getCommandExecutor();
       CommandConfig config = new CommandConfig().transactionNotSupported();
@@ -230,7 +231,7 @@ public abstract class AbstractActivitiTestCase extends AbstractTestCase {
         fail(outputMessage.toString());
       }
     } else {
-      log.info("database was clean");
+      logger.info("database was clean");
     }
   }
 

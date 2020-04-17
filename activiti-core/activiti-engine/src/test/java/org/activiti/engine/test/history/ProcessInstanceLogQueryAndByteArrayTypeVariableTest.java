@@ -70,10 +70,10 @@ public class ProcessInstanceLogQueryAndByteArrayTypeVariableTest extends Pluggab
 
 	public void testIncludeVariables() {
 		if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.FULL)) {
-			ProcessInstanceHistoryLog log = historyService.createProcessInstanceHistoryLogQuery(processInstanceId)
+			ProcessInstanceHistoryLog processInstanceHistoryLog = historyService.createProcessInstanceHistoryLogQuery(processInstanceId)
 				.includeVariables()
 				.singleResult();
-			List<HistoricData> events = log.getHistoricData();
+			List<HistoricData> events = processInstanceHistoryLog.getHistoricData();
 			assertThat(events).hasSize(1);
 
 			for (HistoricData event : events) {
@@ -90,10 +90,10 @@ public class ProcessInstanceLogQueryAndByteArrayTypeVariableTest extends Pluggab
           .processInstanceId(processInstanceId).variableName("var").singleResult();
       assertThat(LARGE_STRING_VALUE).isEqualTo(historicVariableInstance.getValue());
 
-      ProcessInstanceHistoryLog log = historyService.createProcessInstanceHistoryLogQuery(processInstanceId)
+      ProcessInstanceHistoryLog processInstanceHistoryLog = historyService.createProcessInstanceHistoryLogQuery(processInstanceId)
         .includeVariableUpdates()
         .singleResult();
-      List<HistoricData> events = log.getHistoricData();
+      List<HistoricData> events = processInstanceHistoryLog.getHistoricData();
       assertThat(events).hasSize(1);
 
       for (HistoricData event : events) {

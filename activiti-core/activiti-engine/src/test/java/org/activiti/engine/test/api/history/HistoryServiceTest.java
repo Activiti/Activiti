@@ -44,10 +44,14 @@ import org.activiti.engine.test.Deployment;
 import org.activiti.engine.test.api.runtime.ProcessInstanceQueryTest;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  */
 public class HistoryServiceTest extends PluggableActivitiTestCase {
+
+  private static final Logger logger = LoggerFactory.getLogger(HistoryServiceTest.class);
 
   @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
   public void testHistoricProcessInstanceQuery() {
@@ -508,7 +512,7 @@ public class HistoryServiceTest extends PluggableActivitiTestCase {
     List<Task> tasks = taskService.createTaskQuery().processInstanceId(pi.getId()).list();
     for (Task task : tasks) {
       // set token local variable
-      log.debug("setting variables on task {}, execution {}", task.getId(), task.getExecutionId());
+      logger.debug("setting variables on task {}, execution {}", task.getId(), task.getExecutionId());
       runtimeService.setVariableLocal(task.getExecutionId(), "parallelValue1", task.getName());
       runtimeService.setVariableLocal(task.getExecutionId(), "parallelValue2", "test");
       taskService.complete(task.getId(), emptyMap());

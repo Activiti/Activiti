@@ -23,13 +23,13 @@ import org.slf4j.LoggerFactory;
  */
 public class DeleteProcessInstanceTest extends PluggableActivitiTestCase {
 
-  private static Logger log = LoggerFactory.getLogger(DeleteProcessInstanceTest.class);
+  private static Logger logger = LoggerFactory.getLogger(DeleteProcessInstanceTest.class);
 
   @Deployment
   public void testNoEndTimeSet() {
 
     // Note that the instance with a Task Type of "user" is being started.
-    log.info("Starting an instance of \"Demo Partial Deletion\" with a Task Type of \"user\".");
+    logger.info("Starting an instance of \"Demo Partial Deletion\" with a Task Type of \"user\".");
 
     // Set the inputs for the first process instance, which we will be able
     // to completely delete.
@@ -39,7 +39,7 @@ public class DeleteProcessInstanceTest extends PluggableActivitiTestCase {
     // Start the process instance & ensure it's started.
     ProcessInstance instanceUser = runtimeService.startProcessInstanceByKey("DemoPartialDeletion", inputParamsUser);
     assertThat(instanceUser).isNotNull();
-    log.info("Process instance (of process model " + instanceUser.getProcessDefinitionId() + ") started with id: " + instanceUser.getId() + ".");
+    logger.info("Process instance (of process model " + instanceUser.getProcessDefinitionId() + ") started with id: " + instanceUser.getId() + ".");
 
     // Assert that the process instance is active.
     Execution executionUser = runtimeService.createExecutionQuery().processInstanceId(instanceUser.getProcessInstanceId()).onlyChildExecutions().singleResult();
@@ -57,12 +57,12 @@ public class DeleteProcessInstanceTest extends PluggableActivitiTestCase {
       // end time.
       HistoricProcessInstance hInstanceUser = historyService.createHistoricProcessInstanceQuery().processInstanceId(instanceUser.getId()).singleResult();
       assertThat(hInstanceUser.getEndTime()).isNotNull();
-      log.info("End time for the deleted instance of \"Demo Partial Deletion\" that was started with a Task Type of \"user\": " + hInstanceUser.getEndTime() + ".");
-      log.info("Successfully deleted the instance of \"Demo Partial Deletion\" that was started with a Task Type of \"user\".");
+      logger.info("End time for the deleted instance of \"Demo Partial Deletion\" that was started with a Task Type of \"user\": " + hInstanceUser.getEndTime() + ".");
+      logger.info("Successfully deleted the instance of \"Demo Partial Deletion\" that was started with a Task Type of \"user\".");
     }
 
     // Note that the instance with a Task Type of "java" is being started.
-    log.info("Starting an instance of \"Demo Partial Deletion\" with a Task Type of \"java\".");
+    logger.info("Starting an instance of \"Demo Partial Deletion\" with a Task Type of \"java\".");
 
     // Set the inputs for the second process instance, which we will NOT be
     // able to completely delete.
@@ -72,7 +72,7 @@ public class DeleteProcessInstanceTest extends PluggableActivitiTestCase {
     // Start the process instance & ensure it's started.
     ProcessInstance instanceJava = runtimeService.startProcessInstanceByKey("DemoPartialDeletion", inputParamsJava);
     assertThat(instanceJava).isNotNull();
-    log.info("Process instance (of process model " + instanceJava.getProcessDefinitionId() + ") started with id: " + instanceJava.getId() + ".");
+    logger.info("Process instance (of process model " + instanceJava.getProcessDefinitionId() + ") started with id: " + instanceJava.getId() + ".");
 
     // Assert that the process instance is active.
     Execution executionJava = runtimeService.createExecutionQuery().processInstanceId(instanceJava.getProcessInstanceId()).onlyChildExecutions().singleResult();

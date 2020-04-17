@@ -115,10 +115,10 @@ public class HistoricJPAVariableTest extends AbstractActivitiTestCase {
 		}
 
 		// Get JPAEntity Variable by ProcessInstanceHistoryLogQuery
-		ProcessInstanceHistoryLog log = historyService.createProcessInstanceHistoryLogQuery(processInstanceId)
+		ProcessInstanceHistoryLog processInstanceHistoryLog = historyService.createProcessInstanceHistoryLogQuery(processInstanceId)
 				.includeVariables()
 				.singleResult();
-		List<HistoricData> events = log.getHistoricData();
+		List<HistoricData> events = processInstanceHistoryLog.getHistoricData();
 
 		for (HistoricData event : events) {
 			Object value = ((HistoricVariableInstanceEntity) event).getValue();
@@ -147,10 +147,10 @@ public class HistoricJPAVariableTest extends AbstractActivitiTestCase {
     }
 
     // Get JPAEntity Variable by ProcessInstanceHistoryLogQuery
-    ProcessInstanceHistoryLog log = historyService.createProcessInstanceHistoryLogQuery(processInstanceId)
+    ProcessInstanceHistoryLog processInstanceHistoryLog = historyService.createProcessInstanceHistoryLogQuery(processInstanceId)
         .includeVariableUpdates()
         .singleResult();
-    List<HistoricData> events = log.getHistoricData();
+    List<HistoricData> events = processInstanceHistoryLog.getHistoricData();
 
     for (HistoricData event : events) {
       Object value = ((HistoricDetailVariableInstanceUpdateEntity) event).getValue();

@@ -50,7 +50,7 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class TestHelper {
 
-  private static Logger log = LoggerFactory.getLogger(TestHelper.class);
+  private static final Logger logger = LoggerFactory.getLogger(TestHelper.class);
 
   public static final String EMPTY_LINE = "\n";
 
@@ -76,12 +76,12 @@ public abstract class TestHelper {
     try {
       method = testClass.getMethod(methodName, (Class<?>[]) null);
     } catch (Exception e) {
-      log.warn("Could not get method by reflection. This could happen if you are using @Parameters in combination with annotations.", e);
+      logger.warn("Could not get method by reflection. This could happen if you are using @Parameters in combination with annotations.", e);
       return null;
     }
     Deployment deploymentAnnotation = method.getAnnotation(Deployment.class);
     if (deploymentAnnotation != null) {
-      log.debug("annotation @Deployment creates deployment for {}.{}", testClass.getSimpleName(), methodName);
+      logger.debug("annotation @Deployment creates deployment for {}.{}", testClass.getSimpleName(), methodName);
       String[] resources = deploymentAnnotation.resources();
       if (resources.length == 0) {
         String name = method.getName();
@@ -106,7 +106,7 @@ public abstract class TestHelper {
   }
 
   public static void annotationDeploymentTearDown(ProcessEngine processEngine, String deploymentId, Class<?> testClass, String methodName) {
-    log.debug("annotation @Deployment deletes deployment for {}.{}", testClass.getSimpleName(), methodName);
+    logger.debug("annotation @Deployment deletes deployment for {}.{}", testClass.getSimpleName(), methodName);
     if (deploymentId != null) {
       try {
         processEngine.getRepositoryService().deleteDeployment(deploymentId, true);
@@ -123,7 +123,7 @@ public abstract class TestHelper {
     try {
       method = testClass.getMethod(methodName, (Class<?>[]) null);
     } catch (Exception e) {
-      log.warn("Could not get method by reflection. This could happen if you are using @Parameters in combination with annotations.", e);
+      logger.warn("Could not get method by reflection. This could happen if you are using @Parameters in combination with annotations.", e);
       return;
     }
 
@@ -214,9 +214,9 @@ public abstract class TestHelper {
   public static ProcessEngine getProcessEngine(String configurationResource) {
     ProcessEngine processEngine = processEngines.get(configurationResource);
     if (processEngine == null) {
-      log.debug("==== BUILDING PROCESS ENGINE ========================================================================");
+      logger.debug("==== BUILDING PROCESS ENGINE ========================================================================");
       processEngine = ProcessEngineConfiguration.createProcessEngineConfigurationFromResource(configurationResource).buildProcessEngine();
-      log.debug("==== PROCESS ENGINE CREATED =========================================================================");
+      logger.debug("==== PROCESS ENGINE CREATED =========================================================================");
       processEngines.put(configurationResource, processEngine);
     }
     return processEngine;
@@ -234,7 +234,7 @@ public abstract class TestHelper {
    * DB is not clean. If the DB is not clean, it is cleaned by performing a create a drop.
    */
   public static void assertAndEnsureCleanDb(ProcessEngine processEngine) {
-    log.debug("verifying that db is clean after test");
+    logger.debug("verifying that db is clean after test");
     Map<String, Long> tableCounts = processEngine.getManagementService().getTableCount();
     StringBuilder outputMessage = new StringBuilder();
     for (String tableName : tableCounts.keySet()) {
@@ -247,8 +247,8 @@ public abstract class TestHelper {
     }
     if (outputMessage.length() > 0) {
       outputMessage.insert(0, "DB NOT CLEAN: \n");
-      log.error(EMPTY_LINE);
-      log.error(outputMessage.toString());
+      logger.error(EMPTY_LINE);
+      logger.error(outputMessage.toString());
 
       ((ProcessEngineImpl) processEngine).getProcessEngineConfiguration().getCommandExecutor().execute(new Command<Object>() {
         public Object execute(CommandContext commandContext) {

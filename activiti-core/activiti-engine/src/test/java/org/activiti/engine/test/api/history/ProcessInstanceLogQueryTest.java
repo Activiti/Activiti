@@ -60,18 +60,18 @@ public class ProcessInstanceLogQueryTest extends PluggableActivitiTestCase {
   }
 
   public void testBaseProperties() {
-    ProcessInstanceHistoryLog log = historyService.createProcessInstanceHistoryLogQuery(processInstanceId).singleResult();
-    assertThat(log.getId()).isNotNull();
-    assertThat(log.getProcessDefinitionId()).isNotNull();
-    assertThat(log.getStartActivityId()).isNotNull();
-    assertThat(log.getDurationInMillis()).isNotNull();
-    assertThat(log.getEndTime()).isNotNull();
-    assertThat(log.getStartTime()).isNotNull();
+    ProcessInstanceHistoryLog processInstanceHistoryLog = historyService.createProcessInstanceHistoryLogQuery(processInstanceId).singleResult();
+    assertThat(processInstanceHistoryLog.getId()).isNotNull();
+    assertThat(processInstanceHistoryLog.getProcessDefinitionId()).isNotNull();
+    assertThat(processInstanceHistoryLog.getStartActivityId()).isNotNull();
+    assertThat(processInstanceHistoryLog.getDurationInMillis()).isNotNull();
+    assertThat(processInstanceHistoryLog.getEndTime()).isNotNull();
+    assertThat(processInstanceHistoryLog.getStartTime()).isNotNull();
   }
 
   public void testIncludeTasks() {
-    ProcessInstanceHistoryLog log = historyService.createProcessInstanceHistoryLogQuery(processInstanceId).includeTasks().singleResult();
-    List<HistoricData> events = log.getHistoricData();
+    ProcessInstanceHistoryLog processInstanceHistoryLog = historyService.createProcessInstanceHistoryLogQuery(processInstanceId).includeTasks().singleResult();
+    List<HistoricData> events = processInstanceHistoryLog.getHistoricData();
     assertThat(events).hasSize(2);
 
     for (HistoricData event : events) {
@@ -80,8 +80,8 @@ public class ProcessInstanceLogQueryTest extends PluggableActivitiTestCase {
   }
 
   public void testIncludeComments() {
-    ProcessInstanceHistoryLog log = historyService.createProcessInstanceHistoryLogQuery(processInstanceId).includeComments().singleResult();
-    List<HistoricData> events = log.getHistoricData();
+    ProcessInstanceHistoryLog processInstanceHistoryLog = historyService.createProcessInstanceHistoryLogQuery(processInstanceId).includeComments().singleResult();
+    List<HistoricData> events = processInstanceHistoryLog.getHistoricData();
     assertThat(events).hasSize(3);
 
     for (HistoricData event : events) {
@@ -90,8 +90,8 @@ public class ProcessInstanceLogQueryTest extends PluggableActivitiTestCase {
   }
 
   public void testIncludeTasksandComments() {
-    ProcessInstanceHistoryLog log = historyService.createProcessInstanceHistoryLogQuery(processInstanceId).includeTasks().includeComments().singleResult();
-    List<HistoricData> events = log.getHistoricData();
+    ProcessInstanceHistoryLog processInstanceHistoryLog = historyService.createProcessInstanceHistoryLogQuery(processInstanceId).includeTasks().includeComments().singleResult();
+    List<HistoricData> events = processInstanceHistoryLog.getHistoricData();
     assertThat(events).hasSize(5);
 
     for (int i = 0; i < 5; i++) {
@@ -105,8 +105,8 @@ public class ProcessInstanceLogQueryTest extends PluggableActivitiTestCase {
   }
 
   public void testIncludeActivities() {
-    ProcessInstanceHistoryLog log = historyService.createProcessInstanceHistoryLogQuery(processInstanceId).includeActivities().singleResult();
-    List<HistoricData> events = log.getHistoricData();
+    ProcessInstanceHistoryLog processInstanceHistoryLog = historyService.createProcessInstanceHistoryLogQuery(processInstanceId).includeActivities().singleResult();
+    List<HistoricData> events = processInstanceHistoryLog.getHistoricData();
     assertThat(events).hasSize(5);
 
     for (HistoricData event : events) {
@@ -116,8 +116,8 @@ public class ProcessInstanceLogQueryTest extends PluggableActivitiTestCase {
 
   public void testIncludeVariables() {
     if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.FULL)) {
-      ProcessInstanceHistoryLog log = historyService.createProcessInstanceHistoryLogQuery(processInstanceId).includeVariables().singleResult();
-      List<HistoricData> events = log.getHistoricData();
+      ProcessInstanceHistoryLog processInstanceHistoryLog = historyService.createProcessInstanceHistoryLogQuery(processInstanceId).includeVariables().singleResult();
+      List<HistoricData> events = processInstanceHistoryLog.getHistoricData();
       assertThat(events).hasSize(2);
 
       for (HistoricData event : events) {
@@ -128,8 +128,8 @@ public class ProcessInstanceLogQueryTest extends PluggableActivitiTestCase {
 
   public void testIncludeVariableUpdates() {
     if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.FULL)) {
-      ProcessInstanceHistoryLog log = historyService.createProcessInstanceHistoryLogQuery(processInstanceId).includeVariableUpdates().singleResult();
-      List<HistoricData> events = log.getHistoricData();
+      ProcessInstanceHistoryLog processInstanceHistoryLog = historyService.createProcessInstanceHistoryLogQuery(processInstanceId).includeVariableUpdates().singleResult();
+      List<HistoricData> events = processInstanceHistoryLog.getHistoricData();
       assertThat(events).hasSize(3);
 
       for (HistoricData event : events) {
@@ -140,9 +140,9 @@ public class ProcessInstanceLogQueryTest extends PluggableActivitiTestCase {
 
   public void testEverything() {
     if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.FULL)) {
-      ProcessInstanceHistoryLog log = historyService.createProcessInstanceHistoryLogQuery(processInstanceId).includeTasks().includeActivities().includeComments().includeVariables()
+      ProcessInstanceHistoryLog processInstanceHistoryLog = historyService.createProcessInstanceHistoryLogQuery(processInstanceId).includeTasks().includeActivities().includeComments().includeVariables()
           .includeVariableUpdates().singleResult();
-      List<HistoricData> events = log.getHistoricData();
+      List<HistoricData> events = processInstanceHistoryLog.getHistoricData();
       assertThat(events).hasSize(15);
     }
   }
