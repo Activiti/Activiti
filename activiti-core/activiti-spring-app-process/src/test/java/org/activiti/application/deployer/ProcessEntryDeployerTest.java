@@ -21,8 +21,8 @@ import org.activiti.application.ApplicationEntry;
 import org.activiti.application.FileContent;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.DeploymentBuilder;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Answers;
 import org.mockito.InOrder;
 import org.mockito.InjectMocks;
@@ -41,7 +41,7 @@ public class ProcessEntryDeployerTest {
     @Mock
     private RepositoryService repositoryService;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         initMocks(this);
     }

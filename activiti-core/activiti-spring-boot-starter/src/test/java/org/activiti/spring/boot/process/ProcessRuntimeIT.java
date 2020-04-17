@@ -7,7 +7,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
-
 import org.activiti.api.process.model.Deployment;
 import org.activiti.api.process.model.ProcessDefinition;
 import org.activiti.api.process.model.ProcessInstance;
@@ -19,7 +18,11 @@ import org.activiti.api.process.runtime.ProcessRuntime;
 import org.activiti.api.process.runtime.conf.ProcessRuntimeConfiguration;
 import org.activiti.api.runtime.shared.query.Page;
 import org.activiti.api.runtime.shared.query.Pageable;
+import org.activiti.api.task.model.Task;
+import org.activiti.api.task.model.builders.TaskPayloadBuilder;
+import org.activiti.api.task.runtime.TaskRuntime;
 import org.activiti.core.common.spring.security.policies.ProcessSecurityPoliciesManager;
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.runtime.api.impl.ProcessAdminRuntimeImpl;
@@ -32,22 +35,20 @@ import org.activiti.runtime.api.model.impl.APIVariableInstanceConverter;
 import org.activiti.spring.boot.RuntimeTestConfiguration;
 import org.activiti.spring.boot.security.util.SecurityUtil;
 import org.activiti.spring.boot.test.util.ProcessCleanUpUtil;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.test.context.junit4.SpringRunner;
 
-@RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 public class ProcessRuntimeIT {
 
     private static final String CATEGORIZE_PROCESS = "categorizeProcess";
     private static final String CATEGORIZE_HUMAN_PROCESS = "categorizeHumanProcess";
+    private static final String SINGLE_TASK_PROCESS = "SingleTaskProcess";
     private static final String ONE_STEP_PROCESS = "OneStepProcess";
 
     private static final String SUB_PROCESS = "subProcess";
@@ -101,12 +102,15 @@ public class ProcessRuntimeIT {
     @Autowired
     private ProcessCleanUpUtil processCleanUpUtil;
 
-    @After
+    @Autowired
+    private TaskRuntime taskRuntime;
+
+    @AfterEach
     public void cleanUp(){
         processCleanUpUtil.cleanUpWithAdmin();
     }
 
-    @Before
+    @BeforeEach
     public void init() {
         eventPublisher = spy(applicationEventPublisher);
 
@@ -198,7 +202,62 @@ public class ProcessRuntimeIT {
         assertThat(RuntimeTestConfiguration.completedProcesses).doesNotContain(categorizeProcess.getId());
         assertThat(categorizeProcess).isNotNull();
 
+        assertThat(categorizeProcess.getStatus()).isEqualTo(ProcessInstance.ProcessInstanceStatus.CREATED);
+    }
+
+    @Test
+    public void should_startAnAlreadyCreatedProcess_when_startCreatedProcessIsCalled() {
+
+        securityUtil.logInAs("garth");
+
+        ProcessInstance singleTaskProcessCreated = processRuntime.create(ProcessPayloadBuilder.start()
+            .withProcessDefinitionKey(SINGLE_TASK_PROCESS)
+            .build());
+
+        assertThat(singleTaskProcessCreated.getStatus()).isEqualTo(ProcessInstance.ProcessInstanceStatus.CREATED);
+        Page<Task> tasks = taskRuntime.tasks(Pageable.of(0, 50),
+            TaskPayloadBuilder
+                .tasks()
+                .withProcessInstanceId(singleTaskProcessCreated.getId())
+                .build());
+        assertThat(tasks.getTotalItems()).isEqualTo(0);
+
+        ProcessInstance singleTaskProcessStarted = processRuntime.startCreatedProcess(singleTaskProcessCreated.getId());
+
+        tasks = taskRuntime.tasks(Pageable.of(0, 50),
+            TaskPayloadBuilder
+                .tasks()
+                .withProcessInstanceId(singleTaskProcessCreated.getId())
+                .build());
+        assertThat(tasks.getTotalItems()).isEqualTo(1);
+        assertThat(tasks.getContent().get(0).getName()).isEqualTo("my-task");
+
+        assertThat(RuntimeTestConfiguration.createdTasks).contains(tasks.getContent().get(0).getId());
+        assertThat(singleTaskProcessStarted).isNotNull();
+        assertThat(singleTaskProcessStarted.getStatus()).isEqualTo(ProcessInstance.ProcessInstanceStatus.RUNNING);
+    }
+
+    @Test
+    public void should_throwAnError_when_ProcessInstanceIsAlreadyStartedOrCompleted() {
+
+        securityUtil.logInAs("user");
+
+        ProcessInstance categorizeProcess = processRuntime.start(ProcessPayloadBuilder.start()
+            .withProcessDefinitionKey(CATEGORIZE_HUMAN_PROCESS)
+            .withVariable("expectedKey",
+                true)
+            .withVariable("name","garth")
+            .withVariable("age",45)
+            .withBusinessKey("my business key")
+            .build());
+
         assertThat(categorizeProcess.getStatus()).isEqualTo(ProcessInstance.ProcessInstanceStatus.RUNNING);
+
+        Throwable throwable = catchThrowable(() -> processRuntime.startCreatedProcess(categorizeProcess.getId()));
+
+        assertThat(throwable)
+            .isInstanceOf(ActivitiIllegalArgumentException.class)
+            .hasMessage("Process instance "+categorizeProcess.getId()+" has already been started");
     }
 
     @Test
@@ -374,7 +433,7 @@ public class ProcessRuntimeIT {
         assertThat(getSingleProcessInstance).isNotNull();
         assertThat(getSingleProcessInstance.getStatus()).isEqualTo(ProcessInstance.ProcessInstanceStatus.RUNNING);
 
-        // I need to clean up the Process Instances that I started because @WithMockUser cannot be used in @Before method
+        // I need to clean up the Process Instances that I started because @WithMockUser cannot be used in @BeforeEach method
         ProcessInstance deletedProcessInstance = processRuntime.delete(ProcessPayloadBuilder.delete(getSingleProcessInstance));
         assertThat(deletedProcessInstance).isNotNull();
 

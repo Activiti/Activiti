@@ -1,9 +1,9 @@
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -13,15 +13,17 @@
 
 package org.activiti.engine.test.history;
 
-import java.util.List;
+import static java.util.Collections.singletonMap;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
+import java.util.List;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.history.HistoricActivityInstanceQuery;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
-import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
@@ -39,13 +41,13 @@ public class HistoricActivityInstanceTest extends PluggableActivitiTestCase {
 
     HistoricActivityInstance historicActivityInstance = historyService.createHistoricActivityInstanceQuery().activityId("noop").singleResult();
 
-    assertEquals("noop", historicActivityInstance.getActivityId());
-    assertEquals("serviceTask", historicActivityInstance.getActivityType());
-    assertNotNull(historicActivityInstance.getProcessDefinitionId());
-    assertEquals(processInstance.getId(), historicActivityInstance.getProcessInstanceId());
-    assertNotNull(historicActivityInstance.getStartTime());
-    assertNotNull(historicActivityInstance.getEndTime());
-    assertTrue(historicActivityInstance.getDurationInMillis() >= 0);
+    assertThat(historicActivityInstance.getActivityId()).isEqualTo("noop");
+    assertThat(historicActivityInstance.getActivityType()).isEqualTo("serviceTask");
+    assertThat(historicActivityInstance.getProcessDefinitionId()).isNotNull();
+    assertThat(historicActivityInstance.getProcessInstanceId()).isEqualTo(processInstance.getId());
+    assertThat(historicActivityInstance.getStartTime()).isNotNull();
+    assertThat(historicActivityInstance.getEndTime()).isNotNull();
+    assertThat(historicActivityInstance.getDurationInMillis() >= 0).isTrue();
   }
 
   @Deployment
@@ -54,124 +56,124 @@ public class HistoricActivityInstanceTest extends PluggableActivitiTestCase {
 
     HistoricActivityInstance historicActivityInstance = historyService.createHistoricActivityInstanceQuery().activityId("receive").singleResult();
 
-    assertEquals("receive", historicActivityInstance.getActivityId());
-    assertEquals("receiveTask", historicActivityInstance.getActivityType());
-    assertNull(historicActivityInstance.getEndTime());
-    assertNull(historicActivityInstance.getDurationInMillis());
-    assertNotNull(historicActivityInstance.getProcessDefinitionId());
-    assertEquals(processInstance.getId(), historicActivityInstance.getProcessInstanceId());
-    assertNotNull(historicActivityInstance.getStartTime());
+    assertThat(historicActivityInstance.getActivityId()).isEqualTo("receive");
+    assertThat(historicActivityInstance.getActivityType()).isEqualTo("receiveTask");
+    assertThat(historicActivityInstance.getEndTime()).isNull();
+    assertThat(historicActivityInstance.getDurationInMillis()).isNull();
+    assertThat(historicActivityInstance.getProcessDefinitionId()).isNotNull();
+    assertThat(historicActivityInstance.getProcessInstanceId()).isEqualTo(processInstance.getId());
+    assertThat(historicActivityInstance.getStartTime()).isNotNull();
 
     Execution execution = runtimeService.createExecutionQuery().onlyChildExecutions().processInstanceId(processInstance.getId()).singleResult();
     runtimeService.trigger(execution.getId());
 
     historicActivityInstance = historyService.createHistoricActivityInstanceQuery().activityId("receive").singleResult();
 
-    assertEquals("receive", historicActivityInstance.getActivityId());
-    assertEquals("receiveTask", historicActivityInstance.getActivityType());
-    assertNotNull(historicActivityInstance.getEndTime());
-    assertTrue(historicActivityInstance.getDurationInMillis() >= 0);
-    assertNotNull(historicActivityInstance.getProcessDefinitionId());
-    assertEquals(processInstance.getId(), historicActivityInstance.getProcessInstanceId());
-    assertNotNull(historicActivityInstance.getStartTime());
+    assertThat(historicActivityInstance.getActivityId()).isEqualTo("receive");
+    assertThat(historicActivityInstance.getActivityType()).isEqualTo("receiveTask");
+    assertThat(historicActivityInstance.getEndTime()).isNotNull();
+    assertThat(historicActivityInstance.getDurationInMillis() >= 0).isTrue();
+    assertThat(historicActivityInstance.getProcessDefinitionId()).isNotNull();
+    assertThat(historicActivityInstance.getProcessInstanceId()).isEqualTo(processInstance.getId());
+    assertThat(historicActivityInstance.getStartTime()).isNotNull();
   }
-  
+
   @Deployment
   public void testHistoricActivityInstanceUnfinished() {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
-    assertNotNull(processInstance);
+    assertThat(processInstance).isNotNull();
 
     HistoricActivityInstanceQuery historicActivityInstanceQuery = historyService.createHistoricActivityInstanceQuery();
 
     long finishedActivityInstanceCount = historicActivityInstanceQuery.finished().count();
-    assertEquals("The Start event is completed", 1, finishedActivityInstanceCount);
-     
+    assertThat(finishedActivityInstanceCount).as("The Start event is completed").isEqualTo(1);
+
     long unfinishedActivityInstanceCount = historicActivityInstanceQuery.unfinished().count();
-    assertEquals("One active (unfinished) User Task", 1, unfinishedActivityInstanceCount);
-   
+    assertThat(unfinishedActivityInstanceCount).as("One active (unfinished) User Task").isEqualTo(1);
+
   }
 
   @Deployment
   public void testHistoricActivityInstanceQuery() {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("noopProcess");
 
-    assertEquals(0, historyService.createHistoricActivityInstanceQuery().activityId("nonExistingActivityId").list().size());
-    assertEquals(1, historyService.createHistoricActivityInstanceQuery().activityId("noop").list().size());
+    assertThat(historyService.createHistoricActivityInstanceQuery().activityId("nonExistingActivityId").list()).hasSize(0);
+    assertThat(historyService.createHistoricActivityInstanceQuery().activityId("noop").list()).hasSize(1);
 
-    assertEquals(0, historyService.createHistoricActivityInstanceQuery().activityType("nonExistingActivityType").list().size());
-    assertEquals(1, historyService.createHistoricActivityInstanceQuery().activityType("serviceTask").list().size());
+    assertThat(historyService.createHistoricActivityInstanceQuery().activityType("nonExistingActivityType").list()).hasSize(0);
+    assertThat(historyService.createHistoricActivityInstanceQuery().activityType("serviceTask").list()).hasSize(1);
 
-    assertEquals(0, historyService.createHistoricActivityInstanceQuery().activityName("nonExistingActivityName").list().size());
-    assertEquals(1, historyService.createHistoricActivityInstanceQuery().activityName("No operation").list().size());
+    assertThat(historyService.createHistoricActivityInstanceQuery().activityName("nonExistingActivityName").list()).hasSize(0);
+    assertThat(historyService.createHistoricActivityInstanceQuery().activityName("No operation").list()).hasSize(1);
 
-    assertEquals(0, historyService.createHistoricActivityInstanceQuery().taskAssignee("nonExistingAssignee").list().size());
+    assertThat(historyService.createHistoricActivityInstanceQuery().taskAssignee("nonExistingAssignee").list()).hasSize(0);
 
-    assertEquals(0, historyService.createHistoricActivityInstanceQuery().executionId("nonExistingExecutionId").list().size());
+    assertThat(historyService.createHistoricActivityInstanceQuery().executionId("nonExistingExecutionId").list()).hasSize(0);
 
     if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
-      assertEquals(3, historyService.createHistoricActivityInstanceQuery().processInstanceId(processInstance.getId()).list().size());
+      assertThat(historyService.createHistoricActivityInstanceQuery().processInstanceId(processInstance.getId()).list()).hasSize(3);
     } else {
-      assertEquals(0, historyService.createHistoricActivityInstanceQuery().executionId(processInstance.getId()).list().size());
+      assertThat(historyService.createHistoricActivityInstanceQuery().executionId(processInstance.getId()).list()).hasSize(0);
     }
 
-    assertEquals(0, historyService.createHistoricActivityInstanceQuery().processInstanceId("nonExistingProcessInstanceId").list().size());
+    assertThat(historyService.createHistoricActivityInstanceQuery().processInstanceId("nonExistingProcessInstanceId").list()).hasSize(0);
 
     if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
-      assertEquals(3, historyService.createHistoricActivityInstanceQuery().processInstanceId(processInstance.getId()).list().size());
+      assertThat(historyService.createHistoricActivityInstanceQuery().processInstanceId(processInstance.getId()).list()).hasSize(3);
     } else {
-      assertEquals(0, historyService.createHistoricActivityInstanceQuery().processInstanceId(processInstance.getId()).list().size());
+      assertThat(historyService.createHistoricActivityInstanceQuery().processInstanceId(processInstance.getId()).list()).hasSize(0);
     }
 
-    assertEquals(0, historyService.createHistoricActivityInstanceQuery().processDefinitionId("nonExistingProcessDefinitionId").list().size());
+    assertThat(historyService.createHistoricActivityInstanceQuery().processDefinitionId("nonExistingProcessDefinitionId").list()).hasSize(0);
 
     if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
-      assertEquals(3, historyService.createHistoricActivityInstanceQuery().processDefinitionId(processInstance.getProcessDefinitionId()).list().size());
+      assertThat(historyService.createHistoricActivityInstanceQuery().processDefinitionId(processInstance.getProcessDefinitionId()).list()).hasSize(3);
     } else {
-      assertEquals(0, historyService.createHistoricActivityInstanceQuery().processDefinitionId(processInstance.getProcessDefinitionId()).list().size());
+      assertThat(historyService.createHistoricActivityInstanceQuery().processDefinitionId(processInstance.getProcessDefinitionId()).list()).hasSize(0);
     }
 
-    assertEquals(0, historyService.createHistoricActivityInstanceQuery().unfinished().list().size());
+    assertThat(historyService.createHistoricActivityInstanceQuery().unfinished().list()).hasSize(0);
 
     if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
-      assertEquals(3, historyService.createHistoricActivityInstanceQuery().finished().list().size());
+      assertThat(historyService.createHistoricActivityInstanceQuery().finished().list()).hasSize(3);
     } else {
-      assertEquals(0, historyService.createHistoricActivityInstanceQuery().finished().list().size());
+      assertThat(historyService.createHistoricActivityInstanceQuery().finished().list()).hasSize(0);
     }
 
     if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
       HistoricActivityInstance historicActivityInstance = historyService.createHistoricActivityInstanceQuery().list().get(0);
-      assertEquals(1, historyService.createHistoricActivityInstanceQuery().activityInstanceId(historicActivityInstance.getId()).list().size());
+      assertThat(historyService.createHistoricActivityInstanceQuery().activityInstanceId(historicActivityInstance.getId()).list()).hasSize(1);
     }
   }
 
   @Deployment
   public void testHistoricActivityInstanceForEventsQuery() {
     ProcessInstance pi = runtimeService.startProcessInstanceByKey("eventProcess");
-    assertEquals(1, taskService.createTaskQuery().count());
+    assertThat(taskService.createTaskQuery().count()).isEqualTo(1);
     runtimeService.signalEventReceived("signal");
     assertProcessEnded(pi.getId());
 
-    assertEquals(1, historyService.createHistoricActivityInstanceQuery().activityId("noop").list().size());
-    assertEquals(1, historyService.createHistoricActivityInstanceQuery().activityId("userTask").list().size());
-    assertEquals(1, historyService.createHistoricActivityInstanceQuery().activityId("intermediate-event").list().size());
-    assertEquals(1, historyService.createHistoricActivityInstanceQuery().activityId("start").list().size());
-    assertEquals(1, historyService.createHistoricActivityInstanceQuery().activityId("end").list().size());
+    assertThat(historyService.createHistoricActivityInstanceQuery().activityId("noop").list()).hasSize(1);
+    assertThat(historyService.createHistoricActivityInstanceQuery().activityId("userTask").list()).hasSize(1);
+    assertThat(historyService.createHistoricActivityInstanceQuery().activityId("intermediate-event").list()).hasSize(1);
+    assertThat(historyService.createHistoricActivityInstanceQuery().activityId("start").list()).hasSize(1);
+    assertThat(historyService.createHistoricActivityInstanceQuery().activityId("end").list()).hasSize(1);
 
     // TODO: Discuss if boundary events will occur in the log!
-    // assertEquals(1,
+    // assertThat(1,
     // historyService.createHistoricActivityInstanceQuery().activityId("boundaryEvent").list().size());
 
     HistoricActivityInstance intermediateEvent = historyService.createHistoricActivityInstanceQuery().activityId("intermediate-event").singleResult();
-    assertNotNull(intermediateEvent.getStartTime());
-    assertNotNull(intermediateEvent.getEndTime());
+    assertThat(intermediateEvent.getStartTime()).isNotNull();
+    assertThat(intermediateEvent.getEndTime()).isNotNull();
 
     HistoricActivityInstance startEvent = historyService.createHistoricActivityInstanceQuery().activityId("start").singleResult();
-    assertNotNull(startEvent.getStartTime());
-    assertNotNull(startEvent.getEndTime());
+    assertThat(startEvent.getStartTime()).isNotNull();
+    assertThat(startEvent.getEndTime()).isNotNull();
 
     HistoricActivityInstance endEvent = historyService.createHistoricActivityInstanceQuery().activityId("end").singleResult();
-    assertNotNull(endEvent.getStartTime());
-    assertNotNull(endEvent.getEndTime());
+    assertThat(endEvent.getStartTime()).isNotNull();
+    assertThat(endEvent.getEndTime()).isNotNull();
   }
 
   @Deployment
@@ -183,8 +185,8 @@ public class HistoricActivityInstanceTest extends PluggableActivitiTestCase {
     HistoricActivityInstance historicActivityInstance = historyService.createHistoricActivityInstanceQuery().activityId("theTask").singleResult();
 
     Task task = taskService.createTaskQuery().singleResult();
-    assertEquals(task.getId(), historicActivityInstance.getTaskId());
-    assertEquals("kermit", historicActivityInstance.getAssignee());
+    assertThat(historicActivityInstance.getTaskId()).isEqualTo(task.getId());
+    assertThat(historicActivityInstance.getAssignee()).isEqualTo("kermit");
   }
 
   @Deployment(resources = { "org/activiti/engine/test/history/calledProcess.bpmn20.xml", "org/activiti/engine/test/history/HistoricActivityInstanceTest.testCallSimpleSubProcess.bpmn20.xml" })
@@ -195,7 +197,7 @@ public class HistoricActivityInstanceTest extends PluggableActivitiTestCase {
 
     HistoricProcessInstance oldInstance = historyService.createHistoricProcessInstanceQuery().processDefinitionKey("calledProcess").singleResult();
 
-    assertEquals(oldInstance.getId(), historicActivityInstance.getCalledProcessInstanceId());
+    assertThat(historicActivityInstance.getCalledProcessInstanceId()).isEqualTo(oldInstance.getId());
   }
 
   @Deployment
@@ -209,60 +211,48 @@ public class HistoricActivityInstanceTest extends PluggableActivitiTestCase {
       expectedActivityInstances = 0;
     }
 
-    assertEquals(expectedActivityInstances, historyService.createHistoricActivityInstanceQuery().orderByHistoricActivityInstanceId().asc().list().size());
-    assertEquals(expectedActivityInstances, historyService.createHistoricActivityInstanceQuery().orderByHistoricActivityInstanceStartTime().asc().list().size());
-    assertEquals(expectedActivityInstances, historyService.createHistoricActivityInstanceQuery().orderByHistoricActivityInstanceEndTime().asc().list().size());
-    assertEquals(expectedActivityInstances, historyService.createHistoricActivityInstanceQuery().orderByHistoricActivityInstanceDuration().asc().list().size());
-    assertEquals(expectedActivityInstances, historyService.createHistoricActivityInstanceQuery().orderByExecutionId().asc().list().size());
-    assertEquals(expectedActivityInstances, historyService.createHistoricActivityInstanceQuery().orderByProcessDefinitionId().asc().list().size());
-    assertEquals(expectedActivityInstances, historyService.createHistoricActivityInstanceQuery().orderByProcessInstanceId().asc().list().size());
+    assertThat(historyService.createHistoricActivityInstanceQuery().orderByHistoricActivityInstanceId().asc().list()).hasSize(expectedActivityInstances);
+    assertThat(historyService.createHistoricActivityInstanceQuery().orderByHistoricActivityInstanceStartTime().asc().list()).hasSize(expectedActivityInstances);
+    assertThat(historyService.createHistoricActivityInstanceQuery().orderByHistoricActivityInstanceEndTime().asc().list()).hasSize(expectedActivityInstances);
+    assertThat(historyService.createHistoricActivityInstanceQuery().orderByHistoricActivityInstanceDuration().asc().list()).hasSize(expectedActivityInstances);
+    assertThat(historyService.createHistoricActivityInstanceQuery().orderByExecutionId().asc().list()).hasSize(expectedActivityInstances);
+    assertThat(historyService.createHistoricActivityInstanceQuery().orderByProcessDefinitionId().asc().list()).hasSize(expectedActivityInstances);
+    assertThat(historyService.createHistoricActivityInstanceQuery().orderByProcessInstanceId().asc().list()).hasSize(expectedActivityInstances);
 
-    assertEquals(expectedActivityInstances, historyService.createHistoricActivityInstanceQuery().orderByHistoricActivityInstanceId().desc().list().size());
-    assertEquals(expectedActivityInstances, historyService.createHistoricActivityInstanceQuery().orderByHistoricActivityInstanceStartTime().desc().list().size());
-    assertEquals(expectedActivityInstances, historyService.createHistoricActivityInstanceQuery().orderByHistoricActivityInstanceEndTime().desc().list().size());
-    assertEquals(expectedActivityInstances, historyService.createHistoricActivityInstanceQuery().orderByHistoricActivityInstanceDuration().desc().list().size());
-    assertEquals(expectedActivityInstances, historyService.createHistoricActivityInstanceQuery().orderByExecutionId().desc().list().size());
-    assertEquals(expectedActivityInstances, historyService.createHistoricActivityInstanceQuery().orderByProcessDefinitionId().desc().list().size());
-    assertEquals(expectedActivityInstances, historyService.createHistoricActivityInstanceQuery().orderByProcessInstanceId().desc().list().size());
+    assertThat(historyService.createHistoricActivityInstanceQuery().orderByHistoricActivityInstanceId().desc().list()).hasSize(expectedActivityInstances);
+    assertThat(historyService.createHistoricActivityInstanceQuery().orderByHistoricActivityInstanceStartTime().desc().list()).hasSize(expectedActivityInstances);
+    assertThat(historyService.createHistoricActivityInstanceQuery().orderByHistoricActivityInstanceEndTime().desc().list()).hasSize(expectedActivityInstances);
+    assertThat(historyService.createHistoricActivityInstanceQuery().orderByHistoricActivityInstanceDuration().desc().list()).hasSize(expectedActivityInstances);
+    assertThat(historyService.createHistoricActivityInstanceQuery().orderByExecutionId().desc().list()).hasSize(expectedActivityInstances);
+    assertThat(historyService.createHistoricActivityInstanceQuery().orderByProcessDefinitionId().desc().list()).hasSize(expectedActivityInstances);
+    assertThat(historyService.createHistoricActivityInstanceQuery().orderByProcessInstanceId().desc().list()).hasSize(expectedActivityInstances);
 
-    assertEquals(expectedActivityInstances, historyService.createHistoricActivityInstanceQuery().orderByHistoricActivityInstanceId().asc().count());
-    assertEquals(expectedActivityInstances, historyService.createHistoricActivityInstanceQuery().orderByHistoricActivityInstanceStartTime().asc().count());
-    assertEquals(expectedActivityInstances, historyService.createHistoricActivityInstanceQuery().orderByHistoricActivityInstanceEndTime().asc().count());
-    assertEquals(expectedActivityInstances, historyService.createHistoricActivityInstanceQuery().orderByHistoricActivityInstanceDuration().asc().count());
-    assertEquals(expectedActivityInstances, historyService.createHistoricActivityInstanceQuery().orderByExecutionId().asc().count());
-    assertEquals(expectedActivityInstances, historyService.createHistoricActivityInstanceQuery().orderByProcessDefinitionId().asc().count());
-    assertEquals(expectedActivityInstances, historyService.createHistoricActivityInstanceQuery().orderByProcessInstanceId().asc().count());
+    assertThat(historyService.createHistoricActivityInstanceQuery().orderByHistoricActivityInstanceId().asc().count()).isEqualTo(expectedActivityInstances);
+    assertThat(historyService.createHistoricActivityInstanceQuery().orderByHistoricActivityInstanceStartTime().asc().count()).isEqualTo(expectedActivityInstances);
+    assertThat(historyService.createHistoricActivityInstanceQuery().orderByHistoricActivityInstanceEndTime().asc().count()).isEqualTo(expectedActivityInstances);
+    assertThat(historyService.createHistoricActivityInstanceQuery().orderByHistoricActivityInstanceDuration().asc().count()).isEqualTo(expectedActivityInstances);
+    assertThat(historyService.createHistoricActivityInstanceQuery().orderByExecutionId().asc().count()).isEqualTo(expectedActivityInstances);
+    assertThat(historyService.createHistoricActivityInstanceQuery().orderByProcessDefinitionId().asc().count()).isEqualTo(expectedActivityInstances);
+    assertThat(historyService.createHistoricActivityInstanceQuery().orderByProcessInstanceId().asc().count()).isEqualTo(expectedActivityInstances);
 
-    assertEquals(expectedActivityInstances, historyService.createHistoricActivityInstanceQuery().orderByHistoricActivityInstanceId().desc().count());
-    assertEquals(expectedActivityInstances, historyService.createHistoricActivityInstanceQuery().orderByHistoricActivityInstanceStartTime().desc().count());
-    assertEquals(expectedActivityInstances, historyService.createHistoricActivityInstanceQuery().orderByHistoricActivityInstanceEndTime().desc().count());
-    assertEquals(expectedActivityInstances, historyService.createHistoricActivityInstanceQuery().orderByHistoricActivityInstanceDuration().desc().count());
-    assertEquals(expectedActivityInstances, historyService.createHistoricActivityInstanceQuery().orderByExecutionId().desc().count());
-    assertEquals(expectedActivityInstances, historyService.createHistoricActivityInstanceQuery().orderByProcessDefinitionId().desc().count());
-    assertEquals(expectedActivityInstances, historyService.createHistoricActivityInstanceQuery().orderByProcessInstanceId().desc().count());
+    assertThat(historyService.createHistoricActivityInstanceQuery().orderByHistoricActivityInstanceId().desc().count()).isEqualTo(expectedActivityInstances);
+    assertThat(historyService.createHistoricActivityInstanceQuery().orderByHistoricActivityInstanceStartTime().desc().count()).isEqualTo(expectedActivityInstances);
+    assertThat(historyService.createHistoricActivityInstanceQuery().orderByHistoricActivityInstanceEndTime().desc().count()).isEqualTo(expectedActivityInstances);
+    assertThat(historyService.createHistoricActivityInstanceQuery().orderByHistoricActivityInstanceDuration().desc().count()).isEqualTo(expectedActivityInstances);
+    assertThat(historyService.createHistoricActivityInstanceQuery().orderByExecutionId().desc().count()).isEqualTo(expectedActivityInstances);
+    assertThat(historyService.createHistoricActivityInstanceQuery().orderByProcessDefinitionId().desc().count()).isEqualTo(expectedActivityInstances);
+    assertThat(historyService.createHistoricActivityInstanceQuery().orderByProcessInstanceId().desc().count()).isEqualTo(expectedActivityInstances);
   }
 
   public void testInvalidSorting() {
-    try {
-      historyService.createHistoricActivityInstanceQuery().asc().list();
-      fail();
-    } catch (ActivitiIllegalArgumentException e) {
+    assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
+      .isThrownBy(() -> historyService.createHistoricActivityInstanceQuery().asc().list());
 
-    }
+    assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
+      .isThrownBy(() -> historyService.createHistoricActivityInstanceQuery().desc().list());
 
-    try {
-      historyService.createHistoricActivityInstanceQuery().desc().list();
-      fail();
-    } catch (ActivitiIllegalArgumentException e) {
-
-    }
-
-    try {
-      historyService.createHistoricActivityInstanceQuery().orderByHistoricActivityInstanceDuration().list();
-      fail();
-    } catch (ActivitiIllegalArgumentException e) {
-
-    }
+    assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
+      .isThrownBy(() -> historyService.createHistoricActivityInstanceQuery().orderByHistoricActivityInstanceDuration().list());
   }
 
   /**
@@ -273,16 +263,16 @@ public class HistoricActivityInstanceTest extends PluggableActivitiTestCase {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("boundaryEventProcess");
     // Complete the task with the boundary-event on it
     Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
-    assertNotNull(task);
+    assertThat(task).isNotNull();
     taskService.complete(task.getId());
 
-    assertEquals(0L, runtimeService.createProcessInstanceQuery().processInstanceId(processInstance.getId()).count());
+    assertThat(runtimeService.createProcessInstanceQuery().processInstanceId(processInstance.getId()).count()).isEqualTo(0L);
 
     // Check if there is NO historic activity instance for a boundary-event
     // that has not triggered
     HistoricActivityInstance historicActivityInstance = historyService.createHistoricActivityInstanceQuery().activityId("boundary").processInstanceId(processInstance.getId()).singleResult();
 
-    assertNull(historicActivityInstance);
+    assertThat(historicActivityInstance).isNull();
 
     // Now check the history when the boundary-event is fired
     processInstance = runtimeService.startProcessInstanceByKey("boundaryEventProcess");
@@ -291,13 +281,13 @@ public class HistoricActivityInstanceTest extends PluggableActivitiTestCase {
 
     Execution signalExecution = runtimeService.createExecutionQuery().signalEventSubscriptionName("alert").singleResult();
     runtimeService.signalEventReceived("alert", signalExecution.getId());
-    assertEquals(0L, runtimeService.createProcessInstanceQuery().processInstanceId(processInstance.getId()).count());
+    assertThat(runtimeService.createProcessInstanceQuery().processInstanceId(processInstance.getId()).count()).isEqualTo(0L);
 
     historicActivityInstance = historyService.createHistoricActivityInstanceQuery().activityId("boundary").processInstanceId(processInstance.getId()).singleResult();
 
-    assertNotNull(historicActivityInstance);
-    assertNotNull(historicActivityInstance.getStartTime());
-    assertNotNull(historicActivityInstance.getEndTime());
+    assertThat(historicActivityInstance).isNotNull();
+    assertThat(historicActivityInstance.getStartTime()).isNotNull();
+    assertThat(historicActivityInstance.getEndTime()).isNotNull();
   }
 
   /**
@@ -307,14 +297,14 @@ public class HistoricActivityInstanceTest extends PluggableActivitiTestCase {
   public void testEventBasedGateway() {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("catchSignal");
     Execution waitingExecution = runtimeService.createExecutionQuery().signalEventSubscriptionName("alert").singleResult();
-    assertNotNull(waitingExecution);
+    assertThat(waitingExecution).isNotNull();
     runtimeService.signalEventReceived("alert", waitingExecution.getId());
 
-    assertEquals(0L, runtimeService.createProcessInstanceQuery().processInstanceId(processInstance.getId()).count());
+    assertThat(runtimeService.createProcessInstanceQuery().processInstanceId(processInstance.getId()).count()).isEqualTo(0L);
 
     HistoricActivityInstance historicActivityInstance = historyService.createHistoricActivityInstanceQuery().activityId("eventBasedgateway").processInstanceId(processInstance.getId()).singleResult();
 
-    assertNotNull(historicActivityInstance);
+    assertThat(historicActivityInstance).isNotNull();
   }
 
   /**
@@ -325,7 +315,7 @@ public class HistoricActivityInstanceTest extends PluggableActivitiTestCase {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("forkJoin");
 
     List<Task> tasksToComplete = taskService.createTaskQuery().processInstanceId(processInstance.getId()).list();
-    assertEquals(2, tasksToComplete.size());
+    assertThat(tasksToComplete).hasSize(2);
 
     // Complete both tasks, second task-complete should end the fork-gateway
     // and set time
@@ -334,44 +324,44 @@ public class HistoricActivityInstanceTest extends PluggableActivitiTestCase {
 
     List<HistoricActivityInstance> historicActivityInstance = historyService.createHistoricActivityInstanceQuery().activityId("join").processInstanceId(processInstance.getId()).list();
 
-    assertNotNull(historicActivityInstance);
+    assertThat(historicActivityInstance).isNotNull();
 
     // History contains 2 entries for parallel join (one for each path
     // arriving in the join), should contain end-time
-    assertEquals(2, historicActivityInstance.size());
-    assertNotNull(historicActivityInstance.get(0).getEndTime());
-    assertNotNull(historicActivityInstance.get(1).getEndTime());
+    assertThat(historicActivityInstance).hasSize(2);
+    assertThat(historicActivityInstance.get(0).getEndTime()).isNotNull();
+    assertThat(historicActivityInstance.get(1).getEndTime()).isNotNull();
   }
-  
+
   @Deployment
   public void testLoop() {
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("historic-activity-loops", CollectionUtil.singletonMap("input", 0));
-    
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("historic-activity-loops", singletonMap("input", 0));
+
     // completing 10 user tasks
     // 15 service tasks should have passed
-    
+
     for (int i=0; i<10; i++) {
       Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
       Number inputNumber = (Number) taskService.getVariable(task.getId(), "input");
       int input = inputNumber.intValue();
-      assertEquals(i, input);
-      taskService.complete(task.getId(), CollectionUtil.singletonMap("input", input + 1));
+      assertThat(input).isEqualTo(i);
+      taskService.complete(task.getId(), singletonMap("input", input + 1));
       task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     }
-    
+
     // Verify history
     List<HistoricActivityInstance> taskActivityInstances = historyService.createHistoricActivityInstanceQuery().activityType("userTask").list();
-    assertEquals(10, taskActivityInstances.size());
+    assertThat(taskActivityInstances).hasSize(10);
     for (HistoricActivityInstance historicActivityInstance : taskActivityInstances) {
-      assertNotNull(historicActivityInstance.getStartTime());
-      assertNotNull(historicActivityInstance.getEndTime());
+      assertThat(historicActivityInstance.getStartTime()).isNotNull();
+      assertThat(historicActivityInstance.getEndTime()).isNotNull();
     }
-    
+
     List<HistoricActivityInstance> serviceTaskInstances = historyService.createHistoricActivityInstanceQuery().activityType("serviceTask").list();
-    assertEquals(15, serviceTaskInstances.size());
+    assertThat(serviceTaskInstances).hasSize(15);
     for (HistoricActivityInstance historicActivityInstance : serviceTaskInstances) {
-      assertNotNull(historicActivityInstance.getStartTime());
-      assertNotNull(historicActivityInstance.getEndTime());
+      assertThat(historicActivityInstance.getStartTime()).isNotNull();
+      assertThat(historicActivityInstance.getEndTime()).isNotNull();
     }
   }
 

@@ -16,8 +16,9 @@
 
 package org.activiti.spring.resources;
 
+import static java.util.Arrays.asList;
+
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.core.io.Resource;
@@ -30,7 +31,7 @@ public class DummyResourceFinderDescriptor implements ResourceFinderDescriptor {
 
     public DummyResourceFinderDescriptor(String locationPrefix,
                                          String ... suffixes) {
-        this.suffixes = Arrays.asList(suffixes);
+        this.suffixes = asList(suffixes);
         this.locationPrefix = locationPrefix;
     }
 

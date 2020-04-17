@@ -21,7 +21,7 @@ import org.activiti.api.process.model.ProcessInstance.ProcessInstanceStatus;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntityImpl;
 import org.activiti.engine.impl.persistence.entity.SuspensionState;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.Date;
 
@@ -52,6 +52,16 @@ public class APIProcessInstanceConverterTest {
 
         assertValidProcessInstanceResult(result);
         assertThat(result.getStatus()).isEqualTo(ProcessInstanceStatus.RUNNING);
+    }
+
+    @Test
+    public void should_returnStatusCreated_when_StartDateIsNull() {
+        ExecutionEntity internalProcessInstance = anInternalProcessInstance(APP_VERSION);
+        internalProcessInstance.setStartTime(null);
+
+        ProcessInstance result = subject.from(internalProcessInstance);
+
+        assertThat(result.getStatus()).isEqualTo(ProcessInstanceStatus.CREATED);
     }
 
     @Test

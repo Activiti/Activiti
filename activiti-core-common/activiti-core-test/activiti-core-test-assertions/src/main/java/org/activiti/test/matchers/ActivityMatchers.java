@@ -23,7 +23,8 @@ import org.activiti.api.process.model.events.BPMNActivityCompletedEvent;
 import org.activiti.api.process.model.events.BPMNActivityEvent;
 import org.activiti.api.process.model.events.BPMNActivityStartedEvent;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
 
 public abstract class ActivityMatchers {
 

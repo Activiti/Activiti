@@ -22,15 +22,12 @@ import org.activiti.api.runtime.shared.query.Pageable;
 import org.activiti.api.task.model.events.TaskRuntimeEvent;
 import org.activiti.spring.conformance.util.RuntimeTestConfiguration;
 import org.activiti.spring.conformance.util.security.SecurityUtil;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
 
-@RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 public class SignalThrowCatchTest {
 
@@ -43,12 +40,12 @@ public class SignalThrowCatchTest {
     @Autowired
     private SecurityUtil securityUtil;
 
-    @Before
+    @BeforeEach
     public void cleanUp() {
         clearEvents();
     }
 
-    @After
+    @AfterEach
     public void cleanup() {
         securityUtil.logInAs("admin");
         Page<ProcessInstance> processInstancePage = processAdminRuntime.processInstances(Pageable.of(0,
@@ -97,7 +94,7 @@ public class SignalThrowCatchTest {
         securityUtil.logInAs("user1");
 
         ProcessInstance processInstance = startIntermediateCatchEventSignalProcess();
-        
+
         assertThat(RuntimeTestConfiguration.collectedEvents)
         .extracting(RuntimeEvent::getEventType)
         .containsExactly(
@@ -110,7 +107,7 @@ public class SignalThrowCatchTest {
         );
         BPMNActivityImpl signalCatchEvent = (BPMNActivityImpl)RuntimeTestConfiguration.collectedEvents.get(5).getEntity();
         assertThat(signalCatchEvent.getActivityType()).isEqualTo("intermediateCatchEvent");
-               
+
         clearEvents();
         SignalPayload signalPayload = ProcessPayloadBuilder.signal()
                 .withName("Test")
@@ -137,7 +134,7 @@ public class SignalThrowCatchTest {
         assertThat(event.getProcessInstanceId()).isEqualTo(processInstance.getId());
         assertThat(event.getEntity().getSignalPayload()).isNotNull();
         assertThat(event.getEntity().getSignalPayload().getName()).isEqualTo(signalPayload.getName());
-        assertThat(event.getEntity().getSignalPayload().getVariables().size()).isEqualTo(signalPayload.getVariables().size());
+        assertThat(event.getEntity().getSignalPayload().getVariables()).hasSize(signalPayload.getVariables().size());
         assertThat(event.getEntity().getSignalPayload().getVariables().get("signal_variable")).isEqualTo("test");
 
     }
@@ -147,7 +144,7 @@ public class SignalThrowCatchTest {
         securityUtil.logInAs("user1");
 
         ProcessInstance processInstanceCatch = startIntermediateCatchEventSignalProcess();
-        
+
         assertThat(RuntimeTestConfiguration.collectedEvents)
         .extracting(RuntimeEvent::getEventType)
         .contains(
@@ -160,9 +157,9 @@ public class SignalThrowCatchTest {
         );
         BPMNActivityImpl signalCatchEvent = (BPMNActivityImpl)RuntimeTestConfiguration.collectedEvents.get(5).getEntity();
         assertThat(signalCatchEvent.getActivityType()).isEqualTo("intermediateCatchEvent");
-        
+
         clearEvents();
-        
+
         startThrowSignalProcess();
 
         assertThat(RuntimeTestConfiguration.collectedEvents)
@@ -204,7 +201,7 @@ public class SignalThrowCatchTest {
         securityUtil.logInAs("user1");
 
         ProcessInstance processInstance = startBoundaryEventSignalProcess();
-        
+
         assertThat(RuntimeTestConfiguration.collectedEvents)
         .extracting(RuntimeEvent::getEventType)
         .containsExactly(
@@ -216,13 +213,13 @@ public class SignalThrowCatchTest {
                 BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
                 TaskRuntimeEvent.TaskEvents.TASK_CREATED
         );
-        
+
         BPMNActivityImpl signalCatchEvent = (BPMNActivityImpl)RuntimeTestConfiguration.collectedEvents.get(5).getEntity();
         assertThat(signalCatchEvent.getActivityType()).isEqualTo("userTask");
         assertThat(signalCatchEvent.getActivityName()).isEqualTo("Boundary container");
 
         clearEvents();
-        
+
         SignalPayload signalPayload = ProcessPayloadBuilder.signal()
                 .withName("Test")
                 .withVariable("signal_variable",
@@ -250,7 +247,7 @@ public class SignalThrowCatchTest {
         assertThat(event.getProcessInstanceId()).isEqualTo(processInstance.getId());
         assertThat(event.getEntity().getSignalPayload()).isNotNull();
         assertThat(event.getEntity().getSignalPayload().getName()).isEqualTo(signalPayload.getName());
-        assertThat(event.getEntity().getSignalPayload().getVariables().size()).isEqualTo(signalPayload.getVariables().size());
+        assertThat(event.getEntity().getSignalPayload().getVariables()).hasSize(signalPayload.getVariables().size());
         assertThat(event.getEntity().getSignalPayload().getVariables().get("signal_variable")).isEqualTo("test");
 
         clearEvents();
@@ -286,7 +283,7 @@ public class SignalThrowCatchTest {
         assertThat(event.getEntity()).isNotNull();
         assertThat(event.getEntity().getSignalPayload()).isNotNull();
         assertThat(event.getEntity().getSignalPayload().getName()).isEqualTo(signalPayload.getName());
-        assertThat(event.getEntity().getSignalPayload().getVariables().size()).isEqualTo(signalPayload.getVariables().size());
+        assertThat(event.getEntity().getSignalPayload().getVariables()).hasSize(signalPayload.getVariables().size());
         assertThat(event.getEntity().getSignalPayload().getVariables().get("signal_variable")).isEqualTo("test");
 
         clearEvents();
@@ -320,7 +317,7 @@ public class SignalThrowCatchTest {
                                                                .withName("boundary-signal-instance-name")
                                                                .build());
     }
-    
+
     public void clearEvents() {
         RuntimeTestConfiguration.collectedEvents.clear();
     }

@@ -1,5 +1,7 @@
 package org.activiti.engine.test.api.runtime;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,21 +24,20 @@ public class TaskInvolvementTest  extends PluggableActivitiTestCase {
             List<String> groups = new ArrayList<String>();
             groups.add("group1");
 
-
-            assertEquals(1, taskService.createTaskQuery()
+            assertThat(taskService.createTaskQuery()
                     .or()
                     .taskInvolvedUser("involvedUser")
                     .taskInvolvedGroupsIn(groups)
                     .endOr()
-                    .count());
+                    .count()).isEqualTo(1);
 
             if(processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
-                assertEquals(1, historyService.createHistoricTaskInstanceQuery()
+                assertThat(historyService.createHistoricTaskInstanceQuery()
                         .or()
                         .taskInvolvedUser("involvedUser")
                         .taskInvolvedGroupsIn(groups)
                         .endOr()
-                        .count());
+                        .count()).isEqualTo(1);
             }
 
         } finally {
@@ -64,23 +65,23 @@ public class TaskInvolvementTest  extends PluggableActivitiTestCase {
             List<String> groups = new ArrayList<String>();
             groups.add("group1");
 
-            assertEquals(3, taskService.getIdentityLinksForTask(adhocTask.getId()).size());
-            assertEquals(1, taskService.createTaskQuery()
+            assertThat(taskService.getIdentityLinksForTask(adhocTask.getId())).hasSize(3);
+            assertThat(taskService.createTaskQuery()
                     //.taskId(adhocTask.getId())
                     .or()
                     .taskInvolvedUser("involvedUser")
                     .taskInvolvedGroupsIn(groups)
                     .endOr()
-                    .count());
+                    .count()).isEqualTo(1);
 
             if(processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
-                assertEquals(1, historyService.createHistoricTaskInstanceQuery()
+                assertThat(historyService.createHistoricTaskInstanceQuery()
                         .or().taskCategory("j").taskPriority(10).endOr()
                         .or()
                         .taskInvolvedUser("involvedUser")
                         .taskInvolvedGroupsIn(groups)
                         .endOr()
-                        .count());
+                        .count()).isEqualTo(1);
             }
         } finally {
             List<Task> allTasks = taskService.createTaskQuery().list();
@@ -118,29 +119,29 @@ public class TaskInvolvementTest  extends PluggableActivitiTestCase {
             List<String> groups = new ArrayList<String>();
             groups.add("group1");
 
-            assertEquals(2, taskService.createTaskQuery()
+            assertThat(taskService.createTaskQuery()
                     //.taskId(adhocTask.getId())
                     .or()
                     .taskInvolvedUser("user1")
                     .taskInvolvedGroupsIn(groups)
                     .endOr()
-                    .count());
+                    .count()).isEqualTo(2);
 
-            assertEquals(2, taskService.createTaskQuery()
+            assertThat(taskService.createTaskQuery()
                     //.taskId(adhocTask.getId())
                     .or()
                     .taskCandidateUser("user1")
                     .taskInvolvedGroupsIn(groups)
                     .endOr()
-                    .count());
+                    .count()).isEqualTo(2);
 
-            assertEquals(2, taskService.createTaskQuery()
+            assertThat(taskService.createTaskQuery()
                     //.taskId(adhocTask.getId())
                     .or()
                     .taskCandidateGroup("group2")
                     .taskInvolvedGroupsIn(groups)
                     .endOr()
-                    .count());
+                    .count()).isEqualTo(2);
 
         } finally {
             List<Task> allTasks = taskService.createTaskQuery().list();
@@ -164,26 +165,20 @@ public class TaskInvolvementTest  extends PluggableActivitiTestCase {
             taskService.saveTask(adhocTask);
             taskService.addGroupIdentityLink(adhocTask.getId(), "group1", IdentityLinkType.PARTICIPANT);
 
-
-
             List<String> groups = new ArrayList<String>();
             groups.add("group2");
 
-            assertEquals(3, taskService.getIdentityLinksForTask(adhocTask.getId()).size());
-            assertEquals(0, taskService.createTaskQuery()
-
+            assertThat(taskService.getIdentityLinksForTask(adhocTask.getId())).hasSize(3);
+            assertThat(taskService.createTaskQuery()
                     .taskInvolvedUser("involvedUser")
                     .taskInvolvedGroupsIn(groups)
+                    .count()).isEqualTo(0);
 
-                    .count());
-
-            if(processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
-                assertEquals(0, historyService.createHistoricTaskInstanceQuery()
-
+            if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
+                assertThat(historyService.createHistoricTaskInstanceQuery()
                         .taskInvolvedUser("involvedUser")
                         .taskInvolvedGroupsIn(groups)
-
-                        .count());
+                        .count()).isEqualTo(0);
             }
 
         } finally {
@@ -251,16 +246,11 @@ public class TaskInvolvementTest  extends PluggableActivitiTestCase {
             orGroup.add("group2");
             orGroup.add("group4");
 
-            assertEquals(2, taskService.createTaskQuery()
-
+            assertThat(taskService.createTaskQuery()
                     .taskInvolvedUser("user1")
                     .taskInvolvedGroupsIn(andGroup)
-
                     .or().taskInvolvedGroupsIn(orGroup).endOr()
-
-                    .count());
-
-
+                    .count()).isEqualTo(2);
 
         } finally {
             List<Task> allTasks = taskService.createTaskQuery().list();
@@ -362,31 +352,25 @@ public class TaskInvolvementTest  extends PluggableActivitiTestCase {
             orGroup.add("group2");
             orGroup.add("group4");
 
-            assertEquals(4, taskService.createTaskQuery()
-
+            assertThat(taskService.createTaskQuery()
                     .taskInvolvedUser("user1")
                     .taskInvolvedGroupsIn(andGroup)
-
                     .or()
                     .taskInvolvedGroupsIn(orGroup)
                     .taskInvolvedUser("user2")
                     .endOr()
+                    .count()).isEqualTo(4);
 
-                    .count());
+            if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
 
-            if(processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
-
-                assertEquals(4, historyService.createHistoricTaskInstanceQuery()
-
+                assertThat(historyService.createHistoricTaskInstanceQuery()
                         .taskInvolvedUser("user1")
                         .taskInvolvedGroupsIn(andGroup)
-
                         .or()
                         .taskInvolvedGroupsIn(orGroup)
                         .taskInvolvedUser("user2")
                         .endOr()
-
-                        .count());
+                        .count()).isEqualTo(4);
             }
 
 

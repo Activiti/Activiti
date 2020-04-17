@@ -1,9 +1,9 @@
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -19,7 +19,7 @@ import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
-import org.junit.Assert;
+import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Test;
 
 /**
@@ -38,11 +38,11 @@ public class SubProcessTest extends PluggableActivitiTestCase {
     List<Task> tasks = taskService.createTaskQuery().processInstanceId(pi.getId()).orderByTaskName().asc().list();
 
     // Tasks are ordered by name (see query)
-    Assert.assertEquals(2, tasks.size());
+    assertThat(tasks).hasSize(2);
     Task investigateHardwareTask = tasks.get(0);
     Task investigateSoftwareTask = tasks.get(1);
-    Assert.assertEquals("Investigate hardware", investigateHardwareTask.getName());
-    Assert.assertEquals("Investigate software", investigateSoftwareTask.getName());
+    assertThat(investigateHardwareTask.getName()).isEqualTo("Investigate hardware");
+    assertThat(investigateSoftwareTask.getName()).isEqualTo("Investigate software");
 
     // Completing both the tasks finishes the subprocess and enables the
     // task after the subprocess
@@ -50,7 +50,7 @@ public class SubProcessTest extends PluggableActivitiTestCase {
     taskService.complete(investigateSoftwareTask.getId());
 
     Task writeReportTask = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
-    Assert.assertEquals("Write report", writeReportTask.getName());
+    assertThat(writeReportTask.getName()).isEqualTo("Write report");
 
     // Clean up
     repositoryService.deleteDeployment(deployment.getId(), true);

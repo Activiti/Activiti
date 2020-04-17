@@ -15,14 +15,11 @@ import org.activiti.api.task.runtime.TaskRuntime;
 import org.activiti.spring.boot.RuntimeTestConfiguration;
 import org.activiti.spring.boot.security.util.SecurityUtil;
 import org.activiti.spring.boot.test.util.TaskCleanUpUtil;
-import org.junit.After;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
 
-@RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 public class TaskRuntimeStandaloneTaskTest {
 
@@ -38,7 +35,7 @@ public class TaskRuntimeStandaloneTaskTest {
     @Autowired
     private TaskRuntimeEventListeners taskRuntimeEventListeners;
 
-    @After
+    @AfterEach
     public void taskCleanUp(){
         taskCleanUpUtil.cleanUpWithAdmin();
     }
@@ -161,8 +158,7 @@ public class TaskRuntimeStandaloneTaskTest {
                 .isInstanceOf(IllegalStateException.class);
 
 
-        Page<Task> tasks = taskRuntime.tasks(Pageable.of(0,
-                50));
+        Page<Task> tasks = taskRuntime.tasks(Pageable.of(0, 50));
 
         assertThat(tasks.getContent()).hasSize(0);
     }
@@ -192,7 +188,6 @@ public class TaskRuntimeStandaloneTaskTest {
 
         assertThat(throwable)
                 .isInstanceOf(IllegalStateException.class);
-
     }
 
     @Test
@@ -220,7 +215,6 @@ public class TaskRuntimeStandaloneTaskTest {
 
         assertThat(throwable)
                 .isInstanceOf(IllegalStateException.class);
-
     }
 
     @Test
@@ -245,7 +239,6 @@ public class TaskRuntimeStandaloneTaskTest {
 
         assertThat(throwable)
                 .isInstanceOf(IllegalStateException.class);
-
     }
 
     @Test
@@ -270,6 +263,5 @@ public class TaskRuntimeStandaloneTaskTest {
 
         assertThat(throwable)
                 .isInstanceOf(IllegalStateException.class);
-
     }
 }

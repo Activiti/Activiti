@@ -1,8 +1,9 @@
 package org.activiti.spring.test.email;
 
-import java.util.HashMap;
+import static java.util.Collections.emptyMap;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 
 import javax.mail.NoSuchProviderException;
@@ -28,16 +29,11 @@ public class JndiEmailTest extends SpringActivitiTestCase {
     @BeforeClass
     public void setUp() {
         Properties props = new Properties();
-        props.put("mail.transport.protocol",
-                  "smtp");
-        props.put("mail.smtp.provider.class",
-                  MockEmailTransport.class.getName());
-        props.put("mail.smtp.class",
-                  MockEmailTransport.class.getName());
-        props.put("mail.smtp.provider.vendor",
-                  "test");
-        props.put("mail.smtp.provider.version",
-                  "0.0.0");
+        props.put("mail.transport.protocol", "smtp");
+        props.put("mail.smtp.provider.class", MockEmailTransport.class.getName());
+        props.put("mail.smtp.class", MockEmailTransport.class.getName());
+        props.put("mail.smtp.provider.vendor", "test");
+        props.put("mail.smtp.provider.version", "0.0.0");
 
         Provider provider = new Provider(Type.TRANSPORT,
                                          "smtp",
@@ -49,22 +45,18 @@ public class JndiEmailTest extends SpringActivitiTestCase {
         try {
             mailSession.setProvider(provider);
             builder = SimpleNamingContextBuilder.emptyActivatedContextBuilder();
-            builder.bind("java:comp/env/Session",
-                         mailSession);
+            builder.bind("java:comp/env/Session", mailSession);
         } catch (NamingException e) {
-            logger.error("Naming error in email setup",
-                         e);
+            logger.error("Naming error in email setup", e);
         } catch (NoSuchProviderException e) {
-            logger.error("provider error in email setup",
-                         e);
+            logger.error("provider error in email setup", e);
         }
     }
 
     private void cleanUp() {
         List<org.activiti.engine.repository.Deployment> deployments = repositoryService.createDeploymentQuery().list();
         for (org.activiti.engine.repository.Deployment deployment : deployments) {
-            repositoryService.deleteDeployment(deployment.getId(),
-                                               true);
+            repositoryService.deleteDeployment(deployment.getId(), true);
         }
     }
 
@@ -75,10 +67,7 @@ public class JndiEmailTest extends SpringActivitiTestCase {
 
     @Deployment(resources = {"org/activiti/spring/test/email/EmailTaskUsingJndi.bpmn20.xml"})
     public void testEmailUsingJndi() {
-        Map<String, Object> variables = new HashMap<String, Object>();
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("EmailJndiProcess",
-                                                                                   variables);
-        assertEquals(0,
-                     runtimeService.createProcessInstanceQuery().processInstanceId(processInstance.getId()).count());
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("EmailJndiProcess", emptyMap());
+        assertThat(runtimeService.createProcessInstanceQuery().processInstanceId(processInstance.getId()).count()).isEqualTo(0);
     }
 }

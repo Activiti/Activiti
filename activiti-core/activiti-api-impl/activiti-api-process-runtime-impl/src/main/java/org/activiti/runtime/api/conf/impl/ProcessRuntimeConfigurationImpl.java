@@ -16,11 +16,12 @@
 
 package org.activiti.runtime.api.conf.impl;
 
+import static java.util.Collections.unmodifiableList;
+
 import org.activiti.api.process.runtime.conf.ProcessRuntimeConfiguration;
 import org.activiti.api.process.runtime.events.listener.ProcessRuntimeEventListener;
 import org.activiti.api.runtime.shared.events.VariableEventListener;
 
-import java.util.Collections;
 import java.util.List;
 
 public class ProcessRuntimeConfigurationImpl implements ProcessRuntimeConfiguration {
@@ -36,12 +37,12 @@ public class ProcessRuntimeConfigurationImpl implements ProcessRuntimeConfigurat
 
     @Override
     public List<ProcessRuntimeEventListener<?>> processEventListeners() {
-        return Collections.unmodifiableList(processRuntimeEventListeners);
+        return unmodifiableList(processRuntimeEventListeners);
     }
 
     @Override
     public List<VariableEventListener<?>> variableEventListeners() {
-        return Collections.unmodifiableList(variableEventListeners);
+        return unmodifiableList(variableEventListeners);
     }
 
 }

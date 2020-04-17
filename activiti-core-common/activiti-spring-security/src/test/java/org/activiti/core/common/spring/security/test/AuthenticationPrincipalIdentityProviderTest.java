@@ -20,7 +20,7 @@ package org.activiti.core.common.spring.security.test;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.activiti.core.common.spring.security.AuthenticationPrincipalIdentityProvider;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.AuthorityUtils;
@@ -28,24 +28,24 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 
 public class AuthenticationPrincipalIdentityProviderTest {
-    
+
     private AuthenticationPrincipalIdentityProvider subject = new AuthenticationPrincipalIdentityProvider();
 
     @Test
     public void testGetUserId() {
         // given
-        Authentication authentication = new UsernamePasswordAuthenticationToken("username", 
-                                                                                "password", 
+        Authentication authentication = new UsernamePasswordAuthenticationToken("username",
+                                                                                "password",
                                                                                 AuthorityUtils.createAuthorityList("ROLE_user"));
-        
+
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        
+
         // when
         String result = subject.getUserId(authentication);
-        
+
         // then
         assertThat(result).isNotEmpty()
-                          .contains("username");        
+                          .contains("username");
     }
 
 }

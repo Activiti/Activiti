@@ -1,15 +1,16 @@
 package org.activiti.engine.impl.db;
 
-import java.util.Collections;
+import static java.util.Collections.singletonList;
+
 import java.util.List;
 
 /**
  * This class is used for auto-upgrade purposes.
- * 
+ *
  * The idea is that instances of this class are put in a sequential order, and that the current version is determined from the ACT_GE_PROPERTY table.
- * 
+ *
  * Since sometimes in the past, a version is ambiguous (eg. 5.12 => 5.12, 5.12.1, 5.12T) this class act as a wrapper with a smarter matches() method.
- * 
+ *
 
  */
 public class ActivitiVersion {
@@ -19,7 +20,7 @@ public class ActivitiVersion {
 
   public ActivitiVersion(String mainVersion) {
     this.mainVersion = mainVersion;
-    this.alternativeVersionStrings = Collections.singletonList(mainVersion);
+    this.alternativeVersionStrings = singletonList(mainVersion);
   }
 
   public ActivitiVersion(String mainVersion, List<String> alternativeVersionStrings) {

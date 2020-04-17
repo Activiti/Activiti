@@ -1,9 +1,9 @@
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -11,6 +11,8 @@
  * limitations under the License.
  */
 package org.activiti.engine.test.api.event;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.delegate.event.ActivitiEvent;
@@ -24,8 +26,7 @@ import org.activiti.engine.test.Deployment;
 
 /**
  * Test case for all {@link ActivitiEvent}s related to comments.
- * 
-
+ *
  */
 public class CommentEventsTest extends PluggableActivitiTestCase {
 
@@ -40,33 +41,33 @@ public class CommentEventsTest extends PluggableActivitiTestCase {
       ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
 
       Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
-      assertNotNull(task);
+      assertThat(task).isNotNull();
 
       // Create link-comment
       Comment comment = taskService.addComment(task.getId(), task.getProcessInstanceId(), "comment");
-      assertEquals(2, listener.getEventsReceived().size());
+      assertThat(listener.getEventsReceived()).hasSize(2);
       ActivitiEntityEvent event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
-      assertEquals(ActivitiEventType.ENTITY_CREATED, event.getType());
-      assertEquals(processInstance.getId(), event.getProcessInstanceId());
-      assertEquals(processInstance.getId(), event.getExecutionId());
-      assertEquals(processInstance.getProcessDefinitionId(), event.getProcessDefinitionId());
+      assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_CREATED);
+      assertThat(event.getProcessInstanceId()).isEqualTo(processInstance.getId());
+      assertThat(event.getExecutionId()).isEqualTo(processInstance.getId());
+      assertThat(event.getProcessDefinitionId()).isEqualTo(processInstance.getProcessDefinitionId());
       Comment commentFromEvent = (Comment) event.getEntity();
-      assertEquals(comment.getId(), commentFromEvent.getId());
+      assertThat(commentFromEvent.getId()).isEqualTo(comment.getId());
 
       event = (ActivitiEntityEvent) listener.getEventsReceived().get(1);
-      assertEquals(ActivitiEventType.ENTITY_INITIALIZED, event.getType());
+      assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_INITIALIZED);
       listener.clearEventsReceived();
 
       // Finally, delete comment
       taskService.deleteComment(comment.getId());
-      assertEquals(1, listener.getEventsReceived().size());
+      assertThat(listener.getEventsReceived()).hasSize(1);
       event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
-      assertEquals(ActivitiEventType.ENTITY_DELETED, event.getType());
-      assertEquals(processInstance.getId(), event.getProcessInstanceId());
-      assertEquals(processInstance.getId(), event.getExecutionId());
-      assertEquals(processInstance.getProcessDefinitionId(), event.getProcessDefinitionId());
+      assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_DELETED);
+      assertThat(event.getProcessInstanceId()).isEqualTo(processInstance.getId());
+      assertThat(event.getExecutionId()).isEqualTo(processInstance.getId());
+      assertThat(event.getProcessDefinitionId()).isEqualTo(processInstance.getProcessDefinitionId());
       commentFromEvent = (Comment) event.getEntity();
-      assertEquals(comment.getId(), commentFromEvent.getId());
+      assertThat(commentFromEvent.getId()).isEqualTo(comment.getId());
     }
   }
 
@@ -76,33 +77,33 @@ public class CommentEventsTest extends PluggableActivitiTestCase {
       try {
         task = taskService.newTask();
         taskService.saveTask(task);
-        assertNotNull(task);
+        assertThat(task).isNotNull();
 
         // Create link-comment
         Comment comment = taskService.addComment(task.getId(), null, "comment");
-        assertEquals(2, listener.getEventsReceived().size());
+        assertThat(listener.getEventsReceived()).hasSize(2);
         ActivitiEntityEvent event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
-        assertEquals(ActivitiEventType.ENTITY_CREATED, event.getType());
-        assertNull(event.getProcessInstanceId());
-        assertNull(event.getExecutionId());
-        assertNull(event.getProcessDefinitionId());
+        assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_CREATED);
+        assertThat(event.getProcessInstanceId()).isNull();
+        assertThat(event.getExecutionId()).isNull();
+        assertThat(event.getProcessDefinitionId()).isNull();
         Comment commentFromEvent = (Comment) event.getEntity();
-        assertEquals(comment.getId(), commentFromEvent.getId());
+        assertThat(commentFromEvent.getId()).isEqualTo(comment.getId());
 
         event = (ActivitiEntityEvent) listener.getEventsReceived().get(1);
-        assertEquals(ActivitiEventType.ENTITY_INITIALIZED, event.getType());
+        assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_INITIALIZED);
         listener.clearEventsReceived();
 
         // Finally, delete comment
         taskService.deleteComment(comment.getId());
-        assertEquals(1, listener.getEventsReceived().size());
+        assertThat(listener.getEventsReceived()).hasSize(1);
         event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
-        assertEquals(ActivitiEventType.ENTITY_DELETED, event.getType());
-        assertNull(event.getProcessInstanceId());
-        assertNull(event.getExecutionId());
-        assertNull(event.getProcessDefinitionId());
+        assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_DELETED);
+        assertThat(event.getProcessInstanceId()).isNull();
+        assertThat(event.getExecutionId()).isNull();
+        assertThat(event.getProcessDefinitionId()).isNull();
         commentFromEvent = (Comment) event.getEntity();
-        assertEquals(comment.getId(), commentFromEvent.getId());
+        assertThat(commentFromEvent.getId()).isEqualTo(comment.getId());
 
       } finally {
         if (task != null && task.getId() != null) {

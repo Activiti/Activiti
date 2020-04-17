@@ -1,5 +1,7 @@
 package org.activiti.spring.test.components.scope;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
@@ -10,8 +12,6 @@ import org.springframework.util.StringUtils;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static org.junit.Assert.*;
 
 class ProcessScopeTestEngine {
   private int customerId = 43;
@@ -36,28 +36,28 @@ class ProcessScopeTestEngine {
 
     String statefulObjectVariableKey = keyForObjectType(runtimeVars, StatefulObject.class);
 
-    assertTrue(!runtimeVars.isEmpty());
-    assertTrue(StringUtils.hasText(statefulObjectVariableKey));
+    assertThat(!runtimeVars.isEmpty()).isTrue();
+    assertThat(StringUtils.hasText(statefulObjectVariableKey)).isTrue();
 
     StatefulObject scopedObject = (StatefulObject) runtimeService.getVariable(processInstance.getId(), statefulObjectVariableKey);
-    assertNotNull(scopedObject);
-    assertTrue(StringUtils.hasText(scopedObject.getName()));
-    assertEquals(2, scopedObject.getVisitedCount());
+    assertThat(scopedObject).isNotNull();
+    assertThat(StringUtils.hasText(scopedObject.getName())).isTrue();
+    assertThat(scopedObject.getVisitedCount()).isEqualTo(2);
 
     // the process has paused
     String procId = processInstance.getProcessInstanceId();
 
     List<Task> tasks = taskService.createTaskQuery().executionId(procId).list();
-    assertEquals(1, tasks.size());
+    assertThat(tasks.size()).isEqualTo(1);
 
     Task t = tasks.iterator().next();
     this.taskService.claim(t.getId(), "me");
     this.taskService.complete(t.getId());
 
     scopedObject = (StatefulObject) runtimeService.getVariable(processInstance.getId(), statefulObjectVariableKey);
-    assertEquals(3, scopedObject.getVisitedCount());
+    assertThat(scopedObject.getVisitedCount()).isEqualTo(3);
 
-    assertEquals(customerId, scopedObject.getCustomerId());
+    assertThat(scopedObject.getCustomerId()).isEqualTo(customerId);
     return scopedObject;
   }
 
@@ -69,8 +69,8 @@ class ProcessScopeTestEngine {
 
     StatefulObject one = run();
     StatefulObject two = run();
-    assertNotSame(one.getName(), two.getName());
-    assertEquals(one.getVisitedCount(), two.getVisitedCount());
+    assertThat(two.getName()).isNotSameAs(one.getName());
+    assertThat(two.getVisitedCount()).isEqualTo(one.getVisitedCount());
   }
 
   public ProcessScopeTestEngine(ProcessEngine processEngine) {

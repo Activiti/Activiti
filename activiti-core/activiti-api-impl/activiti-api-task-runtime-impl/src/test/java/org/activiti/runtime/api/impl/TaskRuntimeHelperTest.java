@@ -16,6 +16,7 @@
 
 package org.activiti.runtime.api.impl;
 
+import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.ArgumentMatchers.any;
@@ -27,10 +28,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-
 import org.activiti.api.runtime.shared.NotFoundException;
 import org.activiti.api.runtime.shared.security.SecurityManager;
 import org.activiti.api.task.model.builders.TaskPayloadBuilder;
@@ -40,8 +39,8 @@ import org.activiti.engine.TaskService;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.task.TaskQuery;
 import org.activiti.runtime.api.model.impl.APITaskConverter;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 
 public class TaskRuntimeHelperTest {
@@ -58,11 +57,11 @@ public class TaskRuntimeHelperTest {
 
     @Mock
     private APITaskConverter taskConverter;
-    
+
     @Mock
     private TaskVariablesPayloadValidator taskVariablesValidator;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         initMocks(this);
         taskRuntimeHelper = spy(new TaskRuntimeHelper(taskService,
@@ -127,8 +126,7 @@ public class TaskRuntimeHelperTest {
                 .build();
 
         //when
-        Throwable throwable = catchThrowable(() -> taskRuntimeHelper.applyUpdateTaskPayload(false,
-                updateTaskPayload));
+        Throwable throwable = catchThrowable(() -> taskRuntimeHelper.applyUpdateTaskPayload(false, updateTaskPayload));
 
         //then
         assertThat(throwable)
@@ -178,12 +176,11 @@ public class TaskRuntimeHelperTest {
     @Test
     public void getInternalTaskWithChecksShouldReturnMatchinTaskFromTaskQuery() {
         //given
-        List<String> groups = Collections.singletonList("doctor");
+        List<String> groups = singletonList("doctor");
         given(securityManager.getAuthenticatedUserGroups()).willReturn(groups);
 
         TaskQuery taskQuery = mock(TaskQuery.class);
-        given(taskQuery.taskCandidateOrAssigned(AUTHENTICATED_USER,
-                groups)).willReturn(taskQuery);
+        given(taskQuery.taskCandidateOrAssigned(AUTHENTICATED_USER, groups)).willReturn(taskQuery);
         given(taskQuery.taskOwner(AUTHENTICATED_USER)).willReturn(taskQuery);
         given(taskQuery.or()).willReturn(taskQuery);
         given(taskQuery.endOr()).willReturn(taskQuery);
@@ -204,12 +201,11 @@ public class TaskRuntimeHelperTest {
     @Test
     public void getInternalTaskWithChecksShouldThrowNotFoundExceptionWhenNoTaskIsFound() {
         //given
-        List<String> groups = Collections.singletonList("doctor");
+        List<String> groups = singletonList("doctor");
         given(securityManager.getAuthenticatedUserGroups()).willReturn(groups);
 
         TaskQuery taskQuery = mock(TaskQuery.class);
-        given(taskQuery.taskCandidateOrAssigned(AUTHENTICATED_USER,
-                groups)).willReturn(taskQuery);
+        given(taskQuery.taskCandidateOrAssigned(AUTHENTICATED_USER, groups)).willReturn(taskQuery);
         given(taskQuery.taskOwner(AUTHENTICATED_USER)).willReturn(taskQuery);
         given(taskQuery.or()).willReturn(taskQuery);
         given(taskQuery.endOr()).willReturn(taskQuery);
@@ -219,9 +215,7 @@ public class TaskRuntimeHelperTest {
         given(taskService.createTaskQuery()).willReturn(taskQuery);
 
         //when
-        Throwable thrown = catchThrowable(() ->
-                taskRuntimeHelper.getInternalTaskWithChecks("taskId")
-        );
+        Throwable thrown = catchThrowable(() -> taskRuntimeHelper.getInternalTaskWithChecks("taskId"));
 
         //then
         assertThat(thrown)
@@ -235,14 +229,12 @@ public class TaskRuntimeHelperTest {
         given(securityManager.getAuthenticatedUserId()).willReturn(null);
 
         //when
-        Throwable thrown = catchThrowable(() ->
-                taskRuntimeHelper.getInternalTaskWithChecks("taskId")
-        );
+        Throwable thrown = catchThrowable(() -> taskRuntimeHelper.getInternalTaskWithChecks("taskId"));
 
         //then
         assertThat(thrown)
-                .isInstanceOf(IllegalStateException.class)
-                .hasMessage("There is no authenticated user, we need a user authenticated to find tasks");
+            .isInstanceOf(IllegalStateException.class)
+            .hasMessage("There is no authenticated user, we need a user authenticated to find tasks");
     }
 
 }

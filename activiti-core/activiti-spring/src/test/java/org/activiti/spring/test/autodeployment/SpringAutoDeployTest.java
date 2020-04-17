@@ -1,9 +1,9 @@
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -13,7 +13,8 @@
 
 package org.activiti.spring.test.autodeployment;
 
-import java.net.URISyntaxException;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -67,43 +68,36 @@ public class SpringAutoDeployTest extends AbstractTestCase {
         expectedProcessDefinitionKeys.add("b");
         expectedProcessDefinitionKeys.add("c");
 
-        assertEquals(expectedProcessDefinitionKeys,
-                     processDefinitionKeys);
+        assertThat(processDefinitionKeys).isEqualTo(expectedProcessDefinitionKeys);
     }
 
     public void testNoRedeploymentForSpringContainerRestart() throws Exception {
         createAppContext(CTX_PATH);
         DeploymentQuery deploymentQuery = repositoryService.createDeploymentQuery();
-        assertEquals(1,
-                     deploymentQuery.count());
+        assertThat(deploymentQuery.count()).isEqualTo(1);
         ProcessDefinitionQuery processDefinitionQuery = repositoryService.createProcessDefinitionQuery();
-        assertEquals(3,
-                     processDefinitionQuery.count());
+        assertThat(processDefinitionQuery.count()).isEqualTo(3);
 
         // Creating a new app context with same resources doesn't lead to more
         // deployments
         new ClassPathXmlApplicationContext(CTX_NO_DROP_PATH);
-        assertEquals(1,
-                     deploymentQuery.count());
-        assertEquals(3,
-                     processDefinitionQuery.count());
+        assertThat(deploymentQuery.count()).isEqualTo(1);
+        assertThat(processDefinitionQuery.count()).isEqualTo(3);
     }
 
     // Updating the bpmn20 file should lead to a new deployment when restarting
     // the Spring container
     public void testResourceRedeploymentAfterProcessDefinitionChange() throws Exception {
         createAppContext(CTX_PATH);
-        assertEquals(1,
-                     repositoryService.createDeploymentQuery().count());
+        assertThat(repositoryService.createDeploymentQuery().count()).isEqualTo(1);
         ((AbstractXmlApplicationContext) applicationContext).close();
 
         String filePath = "org/activiti/spring/test/autodeployment/autodeploy.a.bpmn20.xml";
         String originalBpmnFileContent = IoUtil.readFileAsString(filePath);
         String updatedBpmnFileContent = originalBpmnFileContent.replace("flow1",
                                                                         "fromStartToEndFlow");
-        assertTrue(updatedBpmnFileContent.length() > originalBpmnFileContent.length());
-        IoUtil.writeStringToFile(updatedBpmnFileContent,
-                                 filePath);
+        assertThat(updatedBpmnFileContent.length() > originalBpmnFileContent.length()).isTrue();
+        IoUtil.writeStringToFile(updatedBpmnFileContent, filePath);
 
         // Classic produced/consumer problem here:
         // The file is already written in Java, but not yet completely persisted
@@ -127,42 +121,32 @@ public class SpringAutoDeployTest extends AbstractTestCase {
 
         // Assertions come AFTER the file write! Otherwise the process file is
         // messed up if the assertions fail.
-        assertEquals(2,
-                     repositoryService.createDeploymentQuery().count());
-        assertEquals(6,
-                     repositoryService.createProcessDefinitionQuery().count());
+        assertThat(repositoryService.createDeploymentQuery().count()).isEqualTo(2);
+        assertThat(repositoryService.createProcessDefinitionQuery().count()).isEqualTo(6);
     }
 
     public void testAutoDeployWithCreateDropOnCleanDb() {
         createAppContext(CTX_CREATE_DROP_CLEAN_DB);
-        assertEquals(1,
-                     repositoryService.createDeploymentQuery().count());
-        assertEquals(3,
-                     repositoryService.createProcessDefinitionQuery().count());
+        assertThat(repositoryService.createDeploymentQuery().count()).isEqualTo(1);
+        assertThat(repositoryService.createProcessDefinitionQuery().count()).isEqualTo(3);
     }
 
     public void testAutoDeployWithDeploymentModeDefault() {
         createAppContext(CTX_DEPLOYMENT_MODE_DEFAULT);
-        assertEquals(1,
-                     repositoryService.createDeploymentQuery().count());
-        assertEquals(3,
-                     repositoryService.createProcessDefinitionQuery().count());
+        assertThat(repositoryService.createDeploymentQuery().count()).isEqualTo(1);
+        assertThat(repositoryService.createProcessDefinitionQuery().count()).isEqualTo(3);
     }
 
     public void testAutoDeployWithDeploymentModeSingleResource() {
         createAppContext(CTX_DEPLOYMENT_MODE_SINGLE_RESOURCE);
-        assertEquals(3,
-                     repositoryService.createDeploymentQuery().count());
-        assertEquals(3,
-                     repositoryService.createProcessDefinitionQuery().count());
+        assertThat(repositoryService.createDeploymentQuery().count()).isEqualTo(3);
+        assertThat(repositoryService.createProcessDefinitionQuery().count()).isEqualTo(3);
     }
 
     public void testAutoDeployWithDeploymentModeResourceParentFolder() {
         createAppContext(CTX_DEPLOYMENT_MODE_RESOURCE_PARENT_FOLDER);
-        assertEquals(2,
-                     repositoryService.createDeploymentQuery().count());
-        assertEquals(4,
-                     repositoryService.createProcessDefinitionQuery().count());
+        assertThat(repositoryService.createDeploymentQuery().count()).isEqualTo(2);
+        assertThat(repositoryService.createProcessDefinitionQuery().count()).isEqualTo(4);
     }
 
     // --Helper methods
@@ -170,19 +154,14 @@ public class SpringAutoDeployTest extends AbstractTestCase {
 
     private void removeAllDeployments() {
         for (Deployment deployment : repositoryService.createDeploymentQuery().list()) {
-            repositoryService.deleteDeployment(deployment.getId(),
-                                               true);
+            repositoryService.deleteDeployment(deployment.getId(), true);
         }
     }
 
     private boolean waitUntilFileIsWritten(String filePath,
-                                           int expectedBytes) throws URISyntaxException {
+                                           int expectedBytes) throws Exception {
         while (IoUtil.getFile(filePath).length() != (long) expectedBytes) {
-            try {
-                wait(100L);
-            } catch (InterruptedException e) {
-                fail(e.getMessage());
-            }
+            wait(100L);
         }
         return true;
     }

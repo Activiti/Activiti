@@ -15,14 +15,11 @@ import org.activiti.api.runtime.shared.NotFoundException;
 import org.activiti.bpmn.model.ServiceTask;
 import org.activiti.spring.conformance.util.RuntimeTestConfiguration;
 import org.activiti.spring.conformance.util.security.SecurityUtil;
-import org.junit.After;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
 
-@RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 public class ConformanceServiceTaskTest {
 
@@ -34,9 +31,9 @@ public class ConformanceServiceTaskTest {
     @Autowired
     private SecurityUtil securityUtil;
 
-    @After
+    @AfterEach
     public void cleanUp() {
-        Set1RuntimeTestConfiguration.reset(); 
+        Set1RuntimeTestConfiguration.reset();
     }
 
     /*
@@ -55,7 +52,7 @@ public class ConformanceServiceTaskTest {
      *   - PROCESS_COMPLETED
      *  And the Process Instance Status should be Completed
      *  Connectors are executed in a Sync fashion, so the logic will be exexuted and the BPMN Activity completed automatically.
-     *  IntegrationContext attributes shall capture and contain valid execution context of the underlying process instance. 
+     *  IntegrationContext attributes shall capture and contain valid execution context of the underlying process instance.
      *  No further operation can be executed on the process due the fact that it start and finish in the same transaction
      */
     @Test
@@ -102,11 +99,11 @@ public class ConformanceServiceTaskTest {
         assertThat(integrationContext.getProcessDefinitionKey()).isEqualTo(processInstance.getProcessDefinitionKey());
         assertThat(integrationContext.getProcessDefinitionVersion()).isEqualTo(1);
         assertThat(integrationContext.getParentProcessInstanceId()).isNull();
-        
+
         assertThat(integrationContext.getClientId()).isNotNull();
         assertThat(integrationContext.getClientName()).isEqualTo("My Service Task");
         assertThat(integrationContext.getClientType()).isEqualTo(ServiceTask.class.getSimpleName());
-        
+
         // and then
         assertThat(RuntimeTestConfiguration.collectedEvents)
                 .extracting(RuntimeEvent::getEventType)

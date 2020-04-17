@@ -22,7 +22,7 @@ import static org.mockito.Mockito.mock;
 
 import org.activiti.api.runtime.model.impl.BPMNErrorImpl;
 import org.activiti.engine.delegate.event.ActivitiErrorEvent;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class BPMNErrorConverterTest {
 
@@ -30,7 +30,7 @@ public class BPMNErrorConverterTest {
 
     @Test
     public void convertShouldReturnBPMNError() {
-  
+
         ActivitiErrorEvent internalEvent = mock(ActivitiErrorEvent.class);
         given(internalEvent.getErrorId()).willReturn("errorId");
         given(internalEvent.getErrorCode()).willReturn("errorCode");
@@ -38,7 +38,7 @@ public class BPMNErrorConverterTest {
         given(internalEvent.getActivityType()).willReturn("activityType");
         given(internalEvent.getProcessDefinitionId()).willReturn("procDefId");
         given(internalEvent.getProcessInstanceId()).willReturn("procInstId");
-        
+
         BPMNErrorImpl bpmnError = bpmnErrorConverter.convertToBPMNError(internalEvent);
 
         //then

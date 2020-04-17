@@ -21,8 +21,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.activiti.core.common.spring.security.AuthenticationPrincipalGroupsProvider;
 import org.activiti.core.common.spring.security.SimpleGrantedAuthoritiesGroupsMapper;
 import org.activiti.core.common.spring.security.SimpleGrantedAuthoritiesResolver;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.AuthorityUtils;
@@ -32,10 +32,10 @@ import java.util.List;
 
 
 public class AuthenticationPrincipalGroupsProviderTest {
-    
+
     private AuthenticationPrincipalGroupsProvider subject;
-    
-    @Before
+
+    @BeforeEach
     public void setUp() {
         subject = new AuthenticationPrincipalGroupsProvider(new SimpleGrantedAuthoritiesResolver(),
                                                             new SimpleGrantedAuthoritiesGroupsMapper());
@@ -44,19 +44,19 @@ public class AuthenticationPrincipalGroupsProviderTest {
     @Test
     public void testGetGroups() {
         // given
-        Authentication authentication = new UsernamePasswordAuthenticationToken("username", 
-                                                                                "password", 
+        Authentication authentication = new UsernamePasswordAuthenticationToken("username",
+                                                                                "password",
                                                                                 AuthorityUtils.createAuthorityList("ROLE_user",
                                                                                                                    "GROUP_users"));
-        
+
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        
+
         // when
         List<String> result = subject.getGroups(authentication);
-        
+
         // then
         assertThat(result).isNotEmpty()
-                          .containsExactly("users");              
+                          .containsExactly("users");
     }
 
 }

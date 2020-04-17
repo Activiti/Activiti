@@ -1,5 +1,7 @@
 package org.activiti.engine.test.api.variables;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
@@ -15,31 +17,31 @@ import org.activiti.engine.test.Deployment;
 
  */
 public class SerializableVariableTest extends PluggableActivitiTestCase {
-  
+
   @Deployment
   public void testUpdateSerializableInServiceTask() {
     Map<String, Object> vars = new HashMap<String, Object>();
     vars.put("myVar", new TestSerializableVariable(1));
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testUpdateSerializableInServiceTask", vars);
-    
+
     // There is a task here, such the VariableInstanceEntityImpl is inserter first, and updated later
     // (instead of being inserted/updated in the same Tx)
     Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     taskService.complete(task.getId());
-    
+
     TestSerializableVariable testSerializableVariable = (TestSerializableVariable) runtimeService.getVariable(processInstance.getId(), "myVar");
-    assertEquals(2, testSerializableVariable.getNumber());
+    assertThat(testSerializableVariable.getNumber()).isEqualTo(2);
   }
-  
+
   public static class TestUpdateSerializableVariableDelegate implements JavaDelegate {
-    
+
     public void execute(DelegateExecution execution) {
       TestSerializableVariable var = (TestSerializableVariable) execution.getVariable("myVar");
       var.setNumber(2);
     }
-    
+
   }
-  
+
   public static class TestSerializableVariable implements Serializable {
 
     private static final long serialVersionUID = 1L;

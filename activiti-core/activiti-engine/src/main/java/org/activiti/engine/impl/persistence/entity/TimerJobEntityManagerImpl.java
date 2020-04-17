@@ -1,9 +1,9 @@
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -13,7 +13,8 @@
 
 package org.activiti.engine.impl.persistence.entity;
 
-import java.util.Arrays;
+import static java.util.Arrays.asList;
+
 import java.util.Date;
 import java.util.List;
 
@@ -235,7 +236,7 @@ public class TimerJobEntityManagerImpl extends AbstractEntityManager<TimerJobEnt
 
     protected void setNewRepeat(JobEntity timerEntity,
                                 int newRepeatValue) {
-        List<String> expression = Arrays.asList(timerEntity.getRepeat().split("/"));
+        List<String> expression = asList(timerEntity.getRepeat().split("/"));
         expression = expression.subList(1,
                                         expression.size());
         StringBuilder repeatBuilder = new StringBuilder("R");
@@ -270,7 +271,7 @@ public class TimerJobEntityManagerImpl extends AbstractEntityManager<TimerJobEnt
 
     protected int calculateRepeatValue(JobEntity timerEntity) {
         int times = -1;
-        List<String> expression = Arrays.asList(timerEntity.getRepeat().split("/"));
+        List<String> expression = asList(timerEntity.getRepeat().split("/"));
         if (expression.size() > 1 && expression.get(0).startsWith("R") && expression.get(0).length() > 1) {
             times = Integer.parseInt(expression.get(0).substring(1));
             if (times > 0) {

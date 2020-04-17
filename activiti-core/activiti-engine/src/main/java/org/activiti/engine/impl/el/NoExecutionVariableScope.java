@@ -1,9 +1,9 @@
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -13,8 +13,10 @@
 
 package org.activiti.engine.impl.el;
 
+import static java.util.Collections.emptyMap;
+import static java.util.Collections.emptySet;
+
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
@@ -24,9 +26,7 @@ import org.activiti.engine.impl.persistence.entity.VariableInstance;
 /**
  * Variable-scope only used to resolve variables when NO execution is active but expression-resolving is needed. This occurs eg. when start-form properties have default's defined. Even though
  * variables are not available yet, expressions should be resolved anyway.
- * 
-
-
+ *
  */
 public class NoExecutionVariableScope implements VariableScope {
 
@@ -39,38 +39,32 @@ public class NoExecutionVariableScope implements VariableScope {
     return INSTANCE;
   }
 
-  @SuppressWarnings("unchecked")
   public Map<String, Object> getVariables() {
-    return Collections.EMPTY_MAP;
-  }
-  
-  @SuppressWarnings("unchecked")
-  public Map<String, Object> getVariablesLocal() {
-    return Collections.EMPTY_MAP;
+    return emptyMap();
   }
 
-  @SuppressWarnings("unchecked")
+  public Map<String, Object> getVariablesLocal() {
+    return emptyMap();
+  }
+
   @Override
   public Map<String, Object> getVariables(Collection<String> variableNames) {
-    return Collections.EMPTY_MAP;
+    return emptyMap();
   }
 
-  @SuppressWarnings("unchecked")
   @Override
   public Map<String, Object> getVariables(Collection<String> variableNames, boolean fetchAllVariables) {
-    return Collections.EMPTY_MAP;
+    return emptyMap();
   }
 
-  @SuppressWarnings("unchecked")
   @Override
   public Map<String, Object> getVariablesLocal(Collection<String> variableNames) {
-    return Collections.EMPTY_MAP;
+    return emptyMap();
   }
 
-  @SuppressWarnings("unchecked")
   @Override
   public Map<String, Object> getVariablesLocal(Collection<String> variableNames, boolean fetchAllVariables) {
-    return Collections.EMPTY_MAP;
+    return emptyMap();
   }
 
   public Object getVariable(String variableName) {
@@ -100,7 +94,7 @@ public class NoExecutionVariableScope implements VariableScope {
   public <T> T getVariableLocal(String variableName, Class<T> variableClass) {
     return null;
   }
-  
+
   @Override
   public Map<String, VariableInstance> getVariableInstances() {
     return null;
@@ -151,9 +145,8 @@ public class NoExecutionVariableScope implements VariableScope {
     return null;
   }
 
-  @SuppressWarnings("unchecked")
   public Set<String> getVariableNames() {
-    return Collections.EMPTY_SET;
+    return emptySet();
   }
 
   public Set<String> getVariableNamesLocal() {

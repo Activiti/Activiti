@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
 import org.activiti.api.model.shared.model.VariableInstance;
 import org.activiti.api.process.model.Deployment;
 import org.activiti.api.process.model.ProcessDefinition;
@@ -45,8 +46,8 @@ import org.activiti.api.process.runtime.conf.ProcessRuntimeConfiguration;
 import org.activiti.api.runtime.model.impl.ProcessDefinitionMetaImpl;
 import org.activiti.api.runtime.model.impl.ProcessInstanceImpl;
 import org.activiti.api.runtime.model.impl.ProcessInstanceMetaImpl;
-import org.activiti.api.runtime.shared.UnprocessableEntityException;
 import org.activiti.api.runtime.shared.NotFoundException;
+import org.activiti.api.runtime.shared.UnprocessableEntityException;
 import org.activiti.api.runtime.shared.query.Page;
 import org.activiti.api.runtime.shared.query.Pageable;
 import org.activiti.core.common.spring.security.policies.ActivitiForbiddenException;
@@ -136,8 +137,10 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
             .findFirst();
     }
 
-    private void checkProcessDefinitionBelongsToLatestDeployment(org.activiti.engine.repository.ProcessDefinition processDefinition){
-        if (!selectLatestDeployment().getVersion().equals(processDefinition.getAppVersion())) {
+    private void checkProcessDefinitionBelongsToLatestDeployment(org.activiti.engine.repository.ProcessDefinition processDefinition) {
+        Integer appVersion = processDefinition.getAppVersion();
+
+        if (appVersion != null && !selectLatestDeployment().getVersion().equals(appVersion)) {
             throw new UnprocessableEntityException("Process definition with the given id:'" + processDefinition.getId() + "' belongs to a different application version.");
         }
     }
@@ -250,6 +253,22 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
     @Override
     public ProcessInstance start(StartProcessPayload startProcessPayload) {
         return processInstanceConverter.from(this.createProcessInstanceBuilder(startProcessPayload).start());
+    }
+
+    @Override
+    public ProcessInstance startCreatedProcess(String processInstanceId) {
+        org.activiti.engine.runtime.ProcessInstance internalProcessInstance = runtimeService
+                                                                                .createProcessInstanceQuery()
+                                                                                .processInstanceId(processInstanceId)
+                                                                                .singleResult();
+        if (internalProcessInstance == null) {
+            throw new NotFoundException("Unable to find process instance for the given id:'" + processInstanceId + "'");
+        }
+
+        if (!securityPoliciesManager.canRead(internalProcessInstance.getProcessDefinitionKey())) {
+            throw new ActivitiObjectNotFoundException("You cannot read the process instance with Id:'" + processInstanceId + "' due to security policies violation");
+        }
+       return processInstanceConverter.from(runtimeService.startCreatedProcessInstance(internalProcessInstance));
     }
 
     @Override

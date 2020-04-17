@@ -16,13 +16,12 @@
 
 package org.activiti.core.common.spring.security.policies;
 
-import java.util.Collections;
 import java.util.Set;
 
 import org.activiti.api.process.model.payloads.GetProcessDefinitionsPayload;
-import org.activiti.core.common.spring.security.policies.SecurityPoliciesProcessDefinitionRestrictionApplier;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
+import static java.util.Collections.singleton;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class SecurityPoliciesProcessDefinitionRestrictionApplierTest {
@@ -32,7 +31,7 @@ public class SecurityPoliciesProcessDefinitionRestrictionApplierTest {
     @Test
     public void restrictToKeysAddFilterOnGivenKeys() {
         //given
-        Set<String> keys = Collections.singleton("procDef");
+        Set<String> keys = singleton("procDef");
 
         //when
         GetProcessDefinitionsPayload filter = restrictionApplier.restrictToKeys(keys);

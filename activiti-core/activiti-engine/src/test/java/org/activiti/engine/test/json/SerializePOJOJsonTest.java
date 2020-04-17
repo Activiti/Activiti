@@ -1,6 +1,8 @@
 package org.activiti.engine.test.json;
 
-import java.util.Arrays;
+import static java.util.Arrays.asList;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,7 +32,7 @@ public class SerializePOJOJsonTest extends ResourceActivitiTestCase {
         mapInMap.put("user", "bob");
         map.put("mapInMap", mapInMap);
         vars.put("userMap", map);
-        List<String> list = Arrays.asList("bob", "john", "hannah");
+        List<String> list = asList("bob", "john", "hannah");
         vars.put("userCollection", list);
         ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testJsonVarInExpression", vars);
         String taskId = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult().getId();
@@ -40,26 +42,26 @@ public class SerializePOJOJsonTest extends ResourceActivitiTestCase {
             @Override
             public void accept(IdentityLink i) {
                 if ("candidate".equals(i.getType()) ) {
-                    assertEquals("bob", i.getUserId());
+                    assertThat(i.getUserId()).isEqualTo("bob");
                 }
             }
         });
         taskService.complete(taskId);
         HistoricTaskInstance task = historyService.createHistoricTaskInstanceQuery().taskId(taskId).singleResult();
-        assertEquals("bob", task.getAssignee());
-        assertEquals("test", task.getCategory());
+        assertThat(task.getAssignee()).isEqualTo("bob");
+        assertThat(task.getCategory()).isEqualTo("test");
     }
 
     @Deployment
     public void testCollectionJsonVarInExpression() throws Exception {
         Map<String, Object> vars = new HashMap<String, Object>();
-        List<String> list = Arrays.asList("bob", "john", "hannah");
+        List<String> list = asList("bob", "john", "hannah");
         vars.put("userCollection", list);
         ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testCollectionJsonVarInExpression", vars);
         String taskId = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult().getId();
         taskService.complete(taskId);
         List<Task> tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).list();
-        assertEquals(3, tasks.size());
+        assertThat(tasks).hasSize(3);
         tasks.forEach(task -> taskService.complete(task.getId()));
 
     }
@@ -67,7 +69,7 @@ public class SerializePOJOJsonTest extends ResourceActivitiTestCase {
     @Deployment
     public void testCollectionInJsonVarInExpression() throws Exception {
         Map<String, Object> vars = new HashMap<String, Object>();
-        List<String> list = Arrays.asList("bob", "john", "hannah");
+        List<String> list = asList("bob", "john", "hannah");
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("userCollection", list);
         vars.put("userMap", map);
@@ -77,7 +79,7 @@ public class SerializePOJOJsonTest extends ResourceActivitiTestCase {
         taskService.createTaskQuery().processInstanceId(processInstance.getId()).list().forEach(task -> taskService.complete(task.getId()));
 
         vars = new HashMap<String, Object>();
-        List<SomeSerializable> beanList = Arrays.asList(new SomeSerializable("bob"), new SomeSerializable("john"), new SomeSerializable("hannah"));
+        List<SomeSerializable> beanList = asList(new SomeSerializable("bob"), new SomeSerializable("john"), new SomeSerializable("hannah"));
         map = new HashMap<String, Object>();
         map.put("userCollection", beanList);
         vars.put("userMap", map);
@@ -85,7 +87,7 @@ public class SerializePOJOJsonTest extends ResourceActivitiTestCase {
         taskId = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult().getId();
         taskService.complete(taskId);
         List<Task> tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).list();
-        assertEquals(3, tasks.size());
+        assertThat(tasks).hasSize(3);
         tasks.forEach(task -> taskService.complete(task.getId()));
     }
 
@@ -94,7 +96,7 @@ public class SerializePOJOJsonTest extends ResourceActivitiTestCase {
         Map<String, Object> vars = new HashMap<String, Object>();
         Map<String, Object> map = new HashMap<String, Object>();
         vars = new HashMap<String, Object>();
-        List<SomeSerializable> beanList = Arrays.asList(new SomeSerializable("bob"), new SomeSerializable("john"), new SomeSerializable("hannah"));
+        List<SomeSerializable> beanList = asList(new SomeSerializable("bob"), new SomeSerializable("john"), new SomeSerializable("hannah"));
         map = new HashMap<String, Object>();
         map.put("userCollection", beanList);
         vars.put("userMap", map);
@@ -102,7 +104,7 @@ public class SerializePOJOJsonTest extends ResourceActivitiTestCase {
         String taskId = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult().getId();
         taskService.complete(taskId);
         List<Task> tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).list();
-        assertEquals(3, tasks.size());
+        assertThat(tasks).hasSize(3);
         tasks.forEach(task -> taskService.complete(task.getId()));
     }
 }

@@ -1,8 +1,6 @@
 package org.activiti.editor.language.xml;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 
@@ -12,7 +10,7 @@ import org.activiti.bpmn.model.UserTask;
 import org.activiti.validation.ProcessValidator;
 import org.activiti.validation.ProcessValidatorFactory;
 import org.activiti.validation.ValidationError;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class InCompleteSignalConverterTest extends AbstractConverterTest {
 
@@ -28,13 +26,13 @@ public class InCompleteSignalConverterTest extends AbstractConverterTest {
 
   private void validateModel(BpmnModel model) {
     FlowElement flowElement = model.getMainProcess().getFlowElement("task");
-    assertNotNull(flowElement);
-    assertTrue(flowElement instanceof UserTask);
-    assertEquals("task", flowElement.getId());
+    assertThat(flowElement).isNotNull();
+    assertThat(flowElement).isInstanceOf(UserTask.class);
+    assertThat(flowElement.getId()).isEqualTo("task");
 
     ProcessValidator processValidator = new ProcessValidatorFactory().createDefaultProcessValidator();
     List<ValidationError> errors = processValidator.validate(model);
-    assertNotNull(errors);
-    assertEquals(2, errors.size());
+    assertThat(errors).isNotNull();
+    assertThat(errors).hasSize(2);
   }
 }

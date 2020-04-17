@@ -8,18 +8,15 @@ import org.activiti.api.task.runtime.TaskRuntime;
 import org.activiti.spring.boot.RuntimeTestConfiguration;
 import org.activiti.spring.boot.security.util.SecurityUtil;
 import org.activiti.spring.boot.test.util.TaskCleanUpUtil;
-import org.junit.After;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 public class TaskRuntimeCandidatesTest {
 
@@ -35,7 +32,7 @@ public class TaskRuntimeCandidatesTest {
     @Autowired
     private TaskCleanUpUtil taskCleanUpUtil;
 
-    @After
+    @AfterEach
     public void taskCleanUp(){
         taskCleanUpUtil.cleanUpWithAdmin();
     }
@@ -74,7 +71,7 @@ public class TaskRuntimeCandidatesTest {
                                          .withCandidateUser("garth")
                                          .build());
 
-        assertThat(RuntimeTestConfiguration.taskCandidateUserRemovedEvents.size()).isEqualTo(1);
+        assertThat(RuntimeTestConfiguration.taskCandidateUserRemovedEvents).hasSize(1);
         assertThat(RuntimeTestConfiguration.taskCandidateUserRemovedEvents)
         .extracting(event -> event.getEntity().getUserId())
         .contains("garth");
@@ -93,7 +90,7 @@ public class TaskRuntimeCandidatesTest {
                                       .withCandidateUser("garth")
                                       .build());
 
-        assertThat(RuntimeTestConfiguration.taskCandidateUserAddedEvents.size()).isEqualTo(2);
+        assertThat(RuntimeTestConfiguration.taskCandidateUserAddedEvents).hasSize(2);
         assertThat(RuntimeTestConfiguration.taskCandidateUserAddedEvents)
         .extracting(event -> event.getEntity().getUserId())
         .contains("garth",
@@ -125,7 +122,7 @@ public class TaskRuntimeCandidatesTest {
                                                .build());
 
 
-        assertThat(RuntimeTestConfiguration.taskCandidateGroupAddedEvents.size()).isEqualTo(1);
+        assertThat(RuntimeTestConfiguration.taskCandidateGroupAddedEvents).hasSize(1);
         assertThat(RuntimeTestConfiguration.taskCandidateGroupAddedEvents)
                 .extracting(event -> event.getEntity().getGroupId())
                 .contains("test");
@@ -143,7 +140,7 @@ public class TaskRuntimeCandidatesTest {
                                                  .withCandidateGroup("test")
                                                  .build());
 
-        assertThat(RuntimeTestConfiguration.taskCandidateGroupRemovedEvents.size()).isEqualTo(1);
+        assertThat(RuntimeTestConfiguration.taskCandidateGroupRemovedEvents).hasSize(1);
         assertThat(RuntimeTestConfiguration.taskCandidateGroupRemovedEvents)
                 .extracting(event -> event.getEntity().getGroupId())
                 .contains("test");

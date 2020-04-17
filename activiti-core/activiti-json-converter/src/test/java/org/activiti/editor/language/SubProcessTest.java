@@ -1,9 +1,9 @@
 package org.activiti.editor.language;
 
 import org.activiti.bpmn.model.BpmnModel;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class SubProcessTest extends AbstractConverterTest {
 
@@ -16,7 +16,7 @@ public class SubProcessTest extends AbstractConverterTest {
   }
 
   private void validateModel(BpmnModel model) {
-    assertEquals(model.getMainProcess().getFlowElementMap().keySet().size(), 10);
+    assertThat(10).isEqualTo(model.getMainProcess().getFlowElementMap().keySet().size());
   }
 
   protected String getResource() {

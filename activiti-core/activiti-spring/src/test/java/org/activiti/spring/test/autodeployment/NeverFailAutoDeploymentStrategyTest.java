@@ -1,5 +1,7 @@
 package org.activiti.spring.test.autodeployment;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.List;
 
 import org.activiti.spring.autodeployment.NeverFailAutoDeploymentStrategy;
@@ -40,7 +42,7 @@ public class NeverFailAutoDeploymentStrategyTest extends SpringActivitiTestCase 
         final Resource[] resources = new Resource[]{new ClassPathResource(validName1)};
         NeverFailAutoDeploymentStrategy deploymentStrategy = new NeverFailAutoDeploymentStrategy(null);
         deploymentStrategy.deployResources(nameHint, resources, repositoryService);
-        assertEquals(1, repositoryService.createDeploymentQuery().count());
+        assertThat(repositoryService.createDeploymentQuery().count()).isEqualTo(1);
     }
 
     @Test
@@ -48,7 +50,7 @@ public class NeverFailAutoDeploymentStrategyTest extends SpringActivitiTestCase 
         final Resource[] resources = new Resource[]{new ClassPathResource(validName1), new ClassPathResource(invalidName1), new ClassPathResource(invalidName2)};
         NeverFailAutoDeploymentStrategy deploymentStrategy = new NeverFailAutoDeploymentStrategy(null);
         deploymentStrategy.deployResources(nameHint, resources, repositoryService);
-        assertEquals(1, repositoryService.createDeploymentQuery().count());
+        assertThat(repositoryService.createDeploymentQuery().count()).isEqualTo(1);
     }
 
     @Test
@@ -56,7 +58,7 @@ public class NeverFailAutoDeploymentStrategyTest extends SpringActivitiTestCase 
         final Resource[] resources = new Resource[]{new ClassPathResource(validName1), new ClassPathResource(invalidName1)};
         NeverFailAutoDeploymentStrategy deploymentStrategy = new NeverFailAutoDeploymentStrategy(null);
         deploymentStrategy.deployResources(nameHint, resources, repositoryService);
-        assertEquals(1, repositoryService.createDeploymentQuery().count());
+        assertThat(repositoryService.createDeploymentQuery().count()).isEqualTo(1);
     }
 
     @Test
@@ -64,7 +66,7 @@ public class NeverFailAutoDeploymentStrategyTest extends SpringActivitiTestCase 
         final Resource[] resources = new Resource[]{new ClassPathResource(validName1), new ClassPathResource(invalidName2)};
         NeverFailAutoDeploymentStrategy deploymentStrategy = new NeverFailAutoDeploymentStrategy(null);
         deploymentStrategy.deployResources(nameHint, resources, repositoryService);
-        assertEquals(1, repositoryService.createDeploymentQuery().count());
+        assertThat(repositoryService.createDeploymentQuery().count()).isEqualTo(1);
     }
 
     @Test
@@ -72,6 +74,6 @@ public class NeverFailAutoDeploymentStrategyTest extends SpringActivitiTestCase 
         final Resource[] resources = new Resource[]{new ClassPathResource(invalidName1)};
         NeverFailAutoDeploymentStrategy deploymentStrategy = new NeverFailAutoDeploymentStrategy(null);
         deploymentStrategy.deployResources(nameHint, resources, repositoryService);
-        assertEquals(0, repositoryService.createDeploymentQuery().count());
+        assertThat(repositoryService.createDeploymentQuery().count()).isEqualTo(0);
     }
 }

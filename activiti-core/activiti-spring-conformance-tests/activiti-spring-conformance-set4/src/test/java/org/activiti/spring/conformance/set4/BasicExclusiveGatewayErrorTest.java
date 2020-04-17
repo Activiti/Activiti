@@ -18,18 +18,15 @@ import org.activiti.api.task.runtime.TaskRuntime;
 import org.activiti.engine.ActivitiException;
 import org.activiti.spring.conformance.util.RuntimeTestConfiguration;
 import org.activiti.spring.conformance.util.security.SecurityUtil;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 
-@RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 public class BasicExclusiveGatewayErrorTest {
 
@@ -47,7 +44,7 @@ public class BasicExclusiveGatewayErrorTest {
     @Autowired
     private ProcessAdminRuntime processAdminRuntime;
 
-    @Before
+    @BeforeEach
     public void cleanUp() {
         clearEvents();
     }
@@ -107,23 +104,18 @@ public class BasicExclusiveGatewayErrorTest {
 
         clearEvents();
 
-
-
         Throwable throwable = catchThrowable(() ->  taskRuntime.complete(TaskPayloadBuilder.complete().withTaskId(task.getId()).build()));
 
         //@TODO: this is leaking ActivitiException.class we should validate expressions before running the process
         // https://github.com/Activiti/Activiti/issues/2328
         assertThat(throwable)
-                .isInstanceOf(ActivitiException.class);
-        assertThat(throwable).
-                hasMessageContaining("condition expression returns non-Boolean");
-
-
+                .isInstanceOf(ActivitiException.class)
+                .hasMessageContaining("condition expression returns non-Boolean");
 
     }
 
 
-    @After
+    @AfterEach
     public void cleanup() {
         securityUtil.logInAs("admin");
         Page<ProcessInstance> processInstancePage = processAdminRuntime.processInstances(Pageable.of(0, 50));
@@ -132,7 +124,7 @@ public class BasicExclusiveGatewayErrorTest {
         }
         clearEvents();
     }
-    
+
     public void clearEvents() {
         RuntimeTestConfiguration.collectedEvents.clear();
     }

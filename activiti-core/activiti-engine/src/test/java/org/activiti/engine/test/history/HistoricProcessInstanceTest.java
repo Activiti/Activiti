@@ -1,9 +1,9 @@
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -13,10 +13,13 @@
 
 package org.activiti.engine.test.history;
 
+import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -34,8 +37,6 @@ import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
 /**
-
-
  */
 public class HistoricProcessInstanceTest extends PluggableActivitiTestCase {
 
@@ -55,21 +56,21 @@ public class HistoricProcessInstanceTest extends PluggableActivitiTestCase {
     processEngineConfiguration.getClock().setCurrentTime(noon);
     final ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess", "myBusinessKey");
 
-    assertEquals(1, historyService.createHistoricProcessInstanceQuery().unfinished().count());
-    assertEquals(0, historyService.createHistoricProcessInstanceQuery().finished().count());
+    assertThat(historyService.createHistoricProcessInstanceQuery().unfinished().count()).isEqualTo(1);
+    assertThat(historyService.createHistoricProcessInstanceQuery().finished().count()).isEqualTo(0);
     HistoricProcessInstance historicProcessInstance = historyService.createHistoricProcessInstanceQuery().processInstanceId(processInstance.getId()).singleResult();
 
-    assertNotNull(historicProcessInstance);
-    assertEquals(processInstance.getId(), historicProcessInstance.getId());
-    assertEquals(processInstance.getBusinessKey(), historicProcessInstance.getBusinessKey());
-    assertEquals(processInstance.getProcessDefinitionId(), historicProcessInstance.getProcessDefinitionId());
-    assertEquals(noon, historicProcessInstance.getStartTime());
-    assertNull(historicProcessInstance.getEndTime());
-    assertNull(historicProcessInstance.getDurationInMillis());
+    assertThat(historicProcessInstance).isNotNull();
+    assertThat(historicProcessInstance.getId()).isEqualTo(processInstance.getId());
+    assertThat(historicProcessInstance.getBusinessKey()).isEqualTo(processInstance.getBusinessKey());
+    assertThat(historicProcessInstance.getProcessDefinitionId()).isEqualTo(processInstance.getProcessDefinitionId());
+    assertThat(historicProcessInstance.getStartTime()).isEqualTo(noon);
+    assertThat(historicProcessInstance.getEndTime()).isNull();
+    assertThat(historicProcessInstance.getDurationInMillis()).isNull();
 
     List<Task> tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).list();
 
-    assertEquals(1, tasks.size());
+    assertThat(tasks).hasSize(1);
 
     // in this test scenario we assume that 25 seconds after the process
     // start, the
@@ -80,36 +81,36 @@ public class HistoricProcessInstanceTest extends PluggableActivitiTestCase {
 
     historicProcessInstance = historyService.createHistoricProcessInstanceQuery().processInstanceId(processInstance.getId()).singleResult();
 
-    assertNotNull(historicProcessInstance);
-    assertEquals(processInstance.getId(), historicProcessInstance.getId());
-    assertEquals(processInstance.getProcessDefinitionId(), historicProcessInstance.getProcessDefinitionId());
-    assertEquals(noon, historicProcessInstance.getStartTime());
-    assertEquals(twentyFiveSecsAfterNoon, historicProcessInstance.getEndTime());
-    assertEquals(new Long(25 * 1000), historicProcessInstance.getDurationInMillis());
+    assertThat(historicProcessInstance).isNotNull();
+    assertThat(historicProcessInstance.getId()).isEqualTo(processInstance.getId());
+    assertThat(historicProcessInstance.getProcessDefinitionId()).isEqualTo(processInstance.getProcessDefinitionId());
+    assertThat(historicProcessInstance.getStartTime()).isEqualTo(noon);
+    assertThat(historicProcessInstance.getEndTime()).isEqualTo(twentyFiveSecsAfterNoon);
+    assertThat(historicProcessInstance.getDurationInMillis()).isEqualTo(new Long(25 * 1000));
 
-    assertEquals(0, historyService.createHistoricProcessInstanceQuery().unfinished().count());
-    assertEquals(1, historyService.createHistoricProcessInstanceQuery().finished().count());
+    assertThat(historyService.createHistoricProcessInstanceQuery().unfinished().count()).isEqualTo(0);
+    assertThat(historyService.createHistoricProcessInstanceQuery().finished().count()).isEqualTo(1);
   }
 
   @Deployment(resources = { "org/activiti/engine/test/history/oneTaskProcess.bpmn20.xml" })
   public void testDeleteProcessInstanceHistoryCreated() {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
-    assertNotNull(processInstance);
+    assertThat(processInstance).isNotNull();
 
     // delete process instance should not delete the history
     runtimeService.deleteProcessInstance(processInstance.getId(), "cancel");
     HistoricProcessInstance historicProcessInstance = historyService.createHistoricProcessInstanceQuery().processInstanceId(processInstance.getId()).singleResult();
-    assertNotNull(historicProcessInstance.getEndTime());
+    assertThat(historicProcessInstance.getEndTime()).isNotNull();
   }
 
   /*
    * @Deployment(resources = {"org/activiti/engine/test/history/oneTaskProcess.bpmn20.xml"}) public void testHistoricProcessInstanceVariables() { Map<String,Object> vars = new
    * HashMap<String,Object>(); vars.put("foo", "bar"); vars.put("baz", "boo");
-   * 
+   *
    * runtimeService.startProcessInstanceByKey("oneTaskProcess", vars);
-   * 
-   * assertEquals(1, historyService.createHistoricProcessInstanceQuery().processVariableEquals ("foo", "bar").count()); assertEquals(1, historyService.createHistoricProcessInstanceQuery
-   * ().processVariableEquals("baz", "boo").count()); assertEquals(1, historyService .createHistoricProcessInstanceQuery().processVariableEquals("foo", "bar").processVariableEquals("baz",
+   *
+   * assertThat(historyService.createHistoricProcessInstanceQuery().processVariableEquals ("foo", "bar").count()).isEqualTo(1); assertThat(1, historyService.createHistoricProcessInstanceQuery
+   * ().processVariableEquals("baz", "boo").count()); assertThat(1, historyService .createHistoricProcessInstanceQuery().processVariableEquals("foo", "bar").processVariableEquals("baz",
    * "boo").count()); }
    */
 
@@ -127,61 +128,61 @@ public class HistoricProcessInstanceTest extends PluggableActivitiTestCase {
     hourFromNow.add(Calendar.HOUR_OF_DAY, 1);
 
     // Name and name like
-    assertEquals("The name", historyService.createHistoricProcessInstanceQuery().processInstanceName("The name").singleResult().getName());
-    assertEquals(1, historyService.createHistoricProcessInstanceQuery().processInstanceName("The name").count());
-    assertEquals(0, historyService.createHistoricProcessInstanceQuery().processInstanceName("Other name").count());
+    assertThat(historyService.createHistoricProcessInstanceQuery().processInstanceName("The name").singleResult().getName()).isEqualTo("The name");
+    assertThat(historyService.createHistoricProcessInstanceQuery().processInstanceName("The name").count()).isEqualTo(1);
+    assertThat(historyService.createHistoricProcessInstanceQuery().processInstanceName("Other name").count()).isEqualTo(0);
 
-    assertEquals(1, historyService.createHistoricProcessInstanceQuery().processInstanceNameLike("% name").count());
-    assertEquals(0, historyService.createHistoricProcessInstanceQuery().processInstanceNameLike("%nope").count());
+    assertThat(historyService.createHistoricProcessInstanceQuery().processInstanceNameLike("% name").count()).isEqualTo(1);
+    assertThat(historyService.createHistoricProcessInstanceQuery().processInstanceNameLike("%nope").count()).isEqualTo(0);
 
     // Query after update name
     runtimeService.setProcessInstanceName(processInstance.getId(), "New name");
-    assertEquals("New name", historyService.createHistoricProcessInstanceQuery().processInstanceName("New name").singleResult().getName());
-    assertEquals(1, historyService.createHistoricProcessInstanceQuery().processInstanceName("New name").count());
-    assertEquals(0, historyService.createHistoricProcessInstanceQuery().processInstanceName("The name").count());
+    assertThat(historyService.createHistoricProcessInstanceQuery().processInstanceName("New name").singleResult().getName()).isEqualTo("New name");
+    assertThat(historyService.createHistoricProcessInstanceQuery().processInstanceName("New name").count()).isEqualTo(1);
+    assertThat(historyService.createHistoricProcessInstanceQuery().processInstanceName("The name").count()).isEqualTo(0);
 
-    assertEquals(1, historyService.createHistoricProcessInstanceQuery().processInstanceNameLike("New %").count());
-    assertEquals(0, historyService.createHistoricProcessInstanceQuery().processInstanceNameLike("The %").count());
+    assertThat(historyService.createHistoricProcessInstanceQuery().processInstanceNameLike("New %").count()).isEqualTo(1);
+    assertThat(historyService.createHistoricProcessInstanceQuery().processInstanceNameLike("The %").count()).isEqualTo(0);
 
     // Start/end dates
-    assertEquals(0, historyService.createHistoricProcessInstanceQuery().finishedBefore(hourAgo.getTime()).count());
-    assertEquals(0, historyService.createHistoricProcessInstanceQuery().finishedBefore(hourFromNow.getTime()).count());
-    assertEquals(0, historyService.createHistoricProcessInstanceQuery().finishedAfter(hourAgo.getTime()).count());
-    assertEquals(0, historyService.createHistoricProcessInstanceQuery().finishedAfter(hourFromNow.getTime()).count());
-    assertEquals(1, historyService.createHistoricProcessInstanceQuery().startedBefore(hourFromNow.getTime()).count());
-    assertEquals(0, historyService.createHistoricProcessInstanceQuery().startedBefore(hourAgo.getTime()).count());
-    assertEquals(1, historyService.createHistoricProcessInstanceQuery().startedAfter(hourAgo.getTime()).count());
-    assertEquals(0, historyService.createHistoricProcessInstanceQuery().startedAfter(hourFromNow.getTime()).count());
+    assertThat(historyService.createHistoricProcessInstanceQuery().finishedBefore(hourAgo.getTime()).count()).isEqualTo(0);
+    assertThat(historyService.createHistoricProcessInstanceQuery().finishedBefore(hourFromNow.getTime()).count()).isEqualTo(0);
+    assertThat(historyService.createHistoricProcessInstanceQuery().finishedAfter(hourAgo.getTime()).count()).isEqualTo(0);
+    assertThat(historyService.createHistoricProcessInstanceQuery().finishedAfter(hourFromNow.getTime()).count()).isEqualTo(0);
+    assertThat(historyService.createHistoricProcessInstanceQuery().startedBefore(hourFromNow.getTime()).count()).isEqualTo(1);
+    assertThat(historyService.createHistoricProcessInstanceQuery().startedBefore(hourAgo.getTime()).count()).isEqualTo(0);
+    assertThat(historyService.createHistoricProcessInstanceQuery().startedAfter(hourAgo.getTime()).count()).isEqualTo(1);
+    assertThat(historyService.createHistoricProcessInstanceQuery().startedAfter(hourFromNow.getTime()).count()).isEqualTo(0);
 
     // General fields
-    assertEquals(0, historyService.createHistoricProcessInstanceQuery().finished().count());
-    assertEquals(1, historyService.createHistoricProcessInstanceQuery().processInstanceId(processInstance.getId()).count());
-    assertEquals(1, historyService.createHistoricProcessInstanceQuery().processDefinitionId(processInstance.getProcessDefinitionId()).count());
-    assertEquals(1, historyService.createHistoricProcessInstanceQuery().processDefinitionKey("oneTaskProcess").count());
-    assertEquals(1, historyService.createHistoricProcessInstanceQuery().processDefinitionKeyIn(Collections.singletonList("oneTaskProcess")).count());
-    assertEquals(1, historyService.createHistoricProcessInstanceQuery().processDefinitionKeyIn(Arrays.asList("undefined", "oneTaskProcess")).count());
-    assertEquals(0, historyService.createHistoricProcessInstanceQuery().processDefinitionKeyIn(Arrays.asList("undefined1", "undefined2")).count());
-    assertEquals(1, historyService.createHistoricProcessInstanceQuery().processInstanceBusinessKey("businessKey123").count());
+    assertThat(historyService.createHistoricProcessInstanceQuery().finished().count()).isEqualTo(0);
+    assertThat(historyService.createHistoricProcessInstanceQuery().processInstanceId(processInstance.getId()).count()).isEqualTo(1);
+    assertThat(historyService.createHistoricProcessInstanceQuery().processDefinitionId(processInstance.getProcessDefinitionId()).count()).isEqualTo(1);
+    assertThat(historyService.createHistoricProcessInstanceQuery().processDefinitionKey("oneTaskProcess").count()).isEqualTo(1);
+    assertThat(historyService.createHistoricProcessInstanceQuery().processDefinitionKeyIn(singletonList("oneTaskProcess")).count()).isEqualTo(1);
+    assertThat(historyService.createHistoricProcessInstanceQuery().processDefinitionKeyIn(asList("undefined", "oneTaskProcess")).count()).isEqualTo(1);
+    assertThat(historyService.createHistoricProcessInstanceQuery().processDefinitionKeyIn(asList("undefined1", "undefined2")).count()).isEqualTo(0);
+    assertThat(historyService.createHistoricProcessInstanceQuery().processInstanceBusinessKey("businessKey123").count()).isEqualTo(1);
 
     List<String> excludeIds = new ArrayList<String>();
     excludeIds.add("unexistingProcessDefinition");
 
-    assertEquals(1, historyService.createHistoricProcessInstanceQuery().processDefinitionKeyNotIn(excludeIds).count());
+    assertThat(historyService.createHistoricProcessInstanceQuery().processDefinitionKeyNotIn(excludeIds).count()).isEqualTo(1);
 
     excludeIds.add("oneTaskProcess");
-    assertEquals(0, historyService.createHistoricProcessInstanceQuery().processDefinitionKeyNotIn(excludeIds).count());
+    assertThat(historyService.createHistoricProcessInstanceQuery().processDefinitionKeyNotIn(excludeIds).count()).isEqualTo(0);
 
     // After finishing process
     taskService.complete(taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult().getId());
-    assertEquals(1, historyService.createHistoricProcessInstanceQuery().finished().count());
-    assertEquals(0, historyService.createHistoricProcessInstanceQuery().finishedBefore(hourAgo.getTime()).count());
-    assertEquals(1, historyService.createHistoricProcessInstanceQuery().finishedBefore(hourFromNow.getTime()).count());
-    assertEquals(1, historyService.createHistoricProcessInstanceQuery().finishedAfter(hourAgo.getTime()).count());
-    assertEquals(0, historyService.createHistoricProcessInstanceQuery().finishedAfter(hourFromNow.getTime()).count());
+    assertThat(historyService.createHistoricProcessInstanceQuery().finished().count()).isEqualTo(1);
+    assertThat(historyService.createHistoricProcessInstanceQuery().finishedBefore(hourAgo.getTime()).count()).isEqualTo(0);
+    assertThat(historyService.createHistoricProcessInstanceQuery().finishedBefore(hourFromNow.getTime()).count()).isEqualTo(1);
+    assertThat(historyService.createHistoricProcessInstanceQuery().finishedAfter(hourAgo.getTime()).count()).isEqualTo(1);
+    assertThat(historyService.createHistoricProcessInstanceQuery().finishedAfter(hourFromNow.getTime()).count()).isEqualTo(0);
 
     // Check identity links
-    assertEquals(1, historyService.createHistoricProcessInstanceQuery().involvedUser("kermit").count());
-    assertEquals(0, historyService.createHistoricProcessInstanceQuery().involvedUser("gonzo").count());
+    assertThat(historyService.createHistoricProcessInstanceQuery().involvedUser("kermit").count()).isEqualTo(1);
+    assertThat(historyService.createHistoricProcessInstanceQuery().involvedUser("gonzo").count()).isEqualTo(0);
   }
 
   @Deployment(resources = { "org/activiti/engine/test/history/oneTaskProcess.bpmn20.xml" })
@@ -198,14 +199,14 @@ public class HistoricProcessInstanceTest extends PluggableActivitiTestCase {
     hourFromNow.add(Calendar.HOUR_OF_DAY, 1);
 
     // Name and name like
-    assertEquals("The name", historyService.createHistoricProcessInstanceQuery().or().processInstanceName("The name").processDefinitionId("undefined").endOr().singleResult().getName());
-    assertEquals(1, historyService.createHistoricProcessInstanceQuery().or().processInstanceName("The name").processDefinitionId("undefined").endOr().count());
-    assertEquals(0, historyService.createHistoricProcessInstanceQuery().or().processInstanceName("Other name").processDefinitionId("undefined").endOr().count());
+    assertThat(historyService.createHistoricProcessInstanceQuery().or().processInstanceName("The name").processDefinitionId("undefined").endOr().singleResult().getName()).isEqualTo("The name");
+    assertThat(historyService.createHistoricProcessInstanceQuery().or().processInstanceName("The name").processDefinitionId("undefined").endOr().count()).isEqualTo(1);
+    assertThat(historyService.createHistoricProcessInstanceQuery().or().processInstanceName("Other name").processDefinitionId("undefined").endOr().count()).isEqualTo(0);
 
-    assertEquals(1, historyService.createHistoricProcessInstanceQuery().or().processInstanceNameLike("% name").processDefinitionId("undefined").endOr().count());
-    assertEquals(0, historyService.createHistoricProcessInstanceQuery().or().processInstanceNameLike("%nope").processDefinitionId("undefined").endOr().count());
-    
-    assertEquals(1, historyService.createHistoricProcessInstanceQuery()
+    assertThat(historyService.createHistoricProcessInstanceQuery().or().processInstanceNameLike("% name").processDefinitionId("undefined").endOr().count()).isEqualTo(1);
+    assertThat(historyService.createHistoricProcessInstanceQuery().or().processInstanceNameLike("%nope").processDefinitionId("undefined").endOr().count()).isEqualTo(0);
+
+    assertThat(historyService.createHistoricProcessInstanceQuery()
         .or()
           .processInstanceName("The name")
           .processDefinitionId("undefined")
@@ -214,9 +215,9 @@ public class HistoricProcessInstanceTest extends PluggableActivitiTestCase {
           .processInstanceNameLike("% name")
           .processDefinitionId("undefined")
         .endOr()
-        .count());
-    
-    assertEquals(0, historyService.createHistoricProcessInstanceQuery()
+        .count()).isEqualTo(1);
+
+    assertThat(historyService.createHistoricProcessInstanceQuery()
         .or()
           .processInstanceName("The name")
           .processDefinitionId("undefined")
@@ -225,88 +226,88 @@ public class HistoricProcessInstanceTest extends PluggableActivitiTestCase {
           .processInstanceNameLike("undefined")
           .processDefinitionId("undefined")
         .endOr()
-        .count());
-    
+        .count()).isEqualTo(0);
+
     // Query after update name
     runtimeService.setProcessInstanceName(processInstance.getId(), "New name");
-    assertEquals("New name", historyService.createHistoricProcessInstanceQuery().or().processInstanceName("New name").processDefinitionId("undefined").endOr().singleResult().getName());
-    assertEquals(1, historyService.createHistoricProcessInstanceQuery().or().processInstanceName("New name").processDefinitionId("undefined").endOr().count());
-    assertEquals(0, historyService.createHistoricProcessInstanceQuery().or().processInstanceName("The name").processDefinitionId("undefined").endOr().count());
+    assertThat(historyService.createHistoricProcessInstanceQuery().or().processInstanceName("New name").processDefinitionId("undefined").endOr().singleResult().getName()).isEqualTo("New name");
+    assertThat(historyService.createHistoricProcessInstanceQuery().or().processInstanceName("New name").processDefinitionId("undefined").endOr().count()).isEqualTo(1);
+    assertThat(historyService.createHistoricProcessInstanceQuery().or().processInstanceName("The name").processDefinitionId("undefined").endOr().count()).isEqualTo(0);
 
-    assertEquals(1, historyService.createHistoricProcessInstanceQuery().or().processInstanceNameLike("New %").processDefinitionId("undefined").endOr().count());
-    assertEquals(0, historyService.createHistoricProcessInstanceQuery().or().processInstanceNameLike("The %").processDefinitionId("undefined").endOr().count());
+    assertThat(historyService.createHistoricProcessInstanceQuery().or().processInstanceNameLike("New %").processDefinitionId("undefined").endOr().count()).isEqualTo(1);
+    assertThat(historyService.createHistoricProcessInstanceQuery().or().processInstanceNameLike("The %").processDefinitionId("undefined").endOr().count()).isEqualTo(0);
 
     // Start/end dates
-    assertEquals(0, historyService.createHistoricProcessInstanceQuery().or().finishedBefore(hourAgo.getTime()).processDefinitionId("undefined").endOr().count());
-    assertEquals(0, historyService.createHistoricProcessInstanceQuery().or().finishedBefore(hourFromNow.getTime()).processDefinitionId("undefined").endOr().count());
-    assertEquals(0, historyService.createHistoricProcessInstanceQuery().or().finishedAfter(hourAgo.getTime()).processDefinitionId("undefined").endOr().count());
-    assertEquals(0, historyService.createHistoricProcessInstanceQuery().or().finishedAfter(hourFromNow.getTime()).processDefinitionId("undefined").endOr().count());
-    assertEquals(1, historyService.createHistoricProcessInstanceQuery().or().startedBefore(hourFromNow.getTime()).processDefinitionId("undefined").endOr().count());
-    assertEquals(0, historyService.createHistoricProcessInstanceQuery().or().startedBefore(hourAgo.getTime()).processDefinitionId("undefined").endOr().count());
-    assertEquals(1, historyService.createHistoricProcessInstanceQuery().or().startedAfter(hourAgo.getTime()).processDefinitionId("undefined").endOr().count());
-    assertEquals(0, historyService.createHistoricProcessInstanceQuery().or().startedAfter(hourFromNow.getTime()).processDefinitionId("undefined").endOr().count());
+    assertThat(historyService.createHistoricProcessInstanceQuery().or().finishedBefore(hourAgo.getTime()).processDefinitionId("undefined").endOr().count()).isEqualTo(0);
+    assertThat(historyService.createHistoricProcessInstanceQuery().or().finishedBefore(hourFromNow.getTime()).processDefinitionId("undefined").endOr().count()).isEqualTo(0);
+    assertThat(historyService.createHistoricProcessInstanceQuery().or().finishedAfter(hourAgo.getTime()).processDefinitionId("undefined").endOr().count()).isEqualTo(0);
+    assertThat(historyService.createHistoricProcessInstanceQuery().or().finishedAfter(hourFromNow.getTime()).processDefinitionId("undefined").endOr().count()).isEqualTo(0);
+    assertThat(historyService.createHistoricProcessInstanceQuery().or().startedBefore(hourFromNow.getTime()).processDefinitionId("undefined").endOr().count()).isEqualTo(1);
+    assertThat(historyService.createHistoricProcessInstanceQuery().or().startedBefore(hourAgo.getTime()).processDefinitionId("undefined").endOr().count()).isEqualTo(0);
+    assertThat(historyService.createHistoricProcessInstanceQuery().or().startedAfter(hourAgo.getTime()).processDefinitionId("undefined").endOr().count()).isEqualTo(1);
+    assertThat(historyService.createHistoricProcessInstanceQuery().or().startedAfter(hourFromNow.getTime()).processDefinitionId("undefined").endOr().count()).isEqualTo(0);
 
     // General fields
-    assertEquals(0, historyService.createHistoricProcessInstanceQuery().or().finished().count());
-    assertEquals(1, historyService.createHistoricProcessInstanceQuery().or().processInstanceId(processInstance.getId()).processDefinitionId("undefined").endOr().count());
-    assertEquals(1, historyService.createHistoricProcessInstanceQuery().or().processDefinitionId(processInstance.getProcessDefinitionId()).processDefinitionKey("undefined").count());
-    assertEquals(1, historyService.createHistoricProcessInstanceQuery().or().processDefinitionId("undefined").processDefinitionKeyIn(Arrays.asList("undefined", "oneTaskProcess")).endOr().count());
-    assertEquals(0, historyService.createHistoricProcessInstanceQuery().or().processDefinitionId("undefined").processDefinitionKeyIn(Arrays.asList("undefined1", "undefined2")).endOr().count());
-    assertEquals(1, historyService.createHistoricProcessInstanceQuery().or().processDefinitionKey("oneTaskProcess").processDefinitionId("undefined").endOr().count());
-    assertEquals(1, historyService.createHistoricProcessInstanceQuery().or().processInstanceBusinessKey("businessKey123").processDefinitionId("undefined").endOr().count());
+    assertThat(historyService.createHistoricProcessInstanceQuery().or().finished().count()).isEqualTo(0);
+    assertThat(historyService.createHistoricProcessInstanceQuery().or().processInstanceId(processInstance.getId()).processDefinitionId("undefined").endOr().count()).isEqualTo(1);
+    assertThat(historyService.createHistoricProcessInstanceQuery().or().processDefinitionId(processInstance.getProcessDefinitionId()).processDefinitionKey("undefined").count()).isEqualTo(1);
+    assertThat(historyService.createHistoricProcessInstanceQuery().or().processDefinitionId("undefined").processDefinitionKeyIn(asList("undefined", "oneTaskProcess")).endOr().count()).isEqualTo(1);
+    assertThat(historyService.createHistoricProcessInstanceQuery().or().processDefinitionId("undefined").processDefinitionKeyIn(asList("undefined1", "undefined2")).endOr().count()).isEqualTo(0);
+    assertThat(historyService.createHistoricProcessInstanceQuery().or().processDefinitionKey("oneTaskProcess").processDefinitionId("undefined").endOr().count()).isEqualTo(1);
+    assertThat(historyService.createHistoricProcessInstanceQuery().or().processInstanceBusinessKey("businessKey123").processDefinitionId("undefined").endOr().count()).isEqualTo(1);
 
     List<String> excludeIds = new ArrayList<String>();
     excludeIds.add("unexistingProcessDefinition");
 
-    assertEquals(1, historyService.createHistoricProcessInstanceQuery().or().processDefinitionKeyNotIn(excludeIds).processDefinitionId("undefined").endOr().count());
+    assertThat(historyService.createHistoricProcessInstanceQuery().or().processDefinitionKeyNotIn(excludeIds).processDefinitionId("undefined").endOr().count()).isEqualTo(1);
 
     excludeIds.add("oneTaskProcess");
-    assertEquals(0, historyService.createHistoricProcessInstanceQuery().or().processDefinitionKeyNotIn(excludeIds).processDefinitionId("undefined").endOr().count());
+    assertThat(historyService.createHistoricProcessInstanceQuery().or().processDefinitionKeyNotIn(excludeIds).processDefinitionId("undefined").endOr().count()).isEqualTo(0);
 
     // After finishing process
     taskService.complete(taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult().getId());
-    assertEquals(1, historyService.createHistoricProcessInstanceQuery().or().finished().processDefinitionId("undefined").endOr().count());
-    assertEquals(0, historyService.createHistoricProcessInstanceQuery().or().finishedBefore(hourAgo.getTime()).processDefinitionId("undefined").endOr().count());
-    assertEquals(1, historyService.createHistoricProcessInstanceQuery().or().finishedBefore(hourFromNow.getTime()).processDefinitionId("undefined").endOr().count());
-    assertEquals(1, historyService.createHistoricProcessInstanceQuery().or().finishedAfter(hourAgo.getTime()).processDefinitionId("undefined").endOr().count());
-    assertEquals(0, historyService.createHistoricProcessInstanceQuery().or().finishedAfter(hourFromNow.getTime()).processDefinitionId("undefined").endOr().count());
+    assertThat(historyService.createHistoricProcessInstanceQuery().or().finished().processDefinitionId("undefined").endOr().count()).isEqualTo(1);
+    assertThat(historyService.createHistoricProcessInstanceQuery().or().finishedBefore(hourAgo.getTime()).processDefinitionId("undefined").endOr().count()).isEqualTo(0);
+    assertThat(historyService.createHistoricProcessInstanceQuery().or().finishedBefore(hourFromNow.getTime()).processDefinitionId("undefined").endOr().count()).isEqualTo(1);
+    assertThat(historyService.createHistoricProcessInstanceQuery().or().finishedAfter(hourAgo.getTime()).processDefinitionId("undefined").endOr().count()).isEqualTo(1);
+    assertThat(historyService.createHistoricProcessInstanceQuery().or().finishedAfter(hourFromNow.getTime()).processDefinitionId("undefined").endOr().count()).isEqualTo(0);
 
     // Check identity links
-    assertEquals(1, historyService.createHistoricProcessInstanceQuery().or().involvedUser("kermit").processDefinitionId("undefined").endOr().count());
-    assertEquals(0, historyService.createHistoricProcessInstanceQuery().or().involvedUser("gonzo").processDefinitionId("undefined").endOr().count());
+    assertThat(historyService.createHistoricProcessInstanceQuery().or().involvedUser("kermit").processDefinitionId("undefined").endOr().count()).isEqualTo(1);
+    assertThat(historyService.createHistoricProcessInstanceQuery().or().involvedUser("gonzo").processDefinitionId("undefined").endOr().count()).isEqualTo(0);
   }
 
   @Deployment(resources = { "org/activiti/engine/test/history/oneTaskProcess.bpmn20.xml" })
   public void testHistoricProcessInstanceSorting() {
     ProcessInstance processInstance1 = runtimeService.startProcessInstanceByKey("oneTaskProcess");
 
-    assertEquals(1, historyService.createHistoricProcessInstanceQuery().orderByProcessInstanceId().asc().list().size());
-    assertEquals(1, historyService.createHistoricProcessInstanceQuery().orderByProcessInstanceStartTime().asc().list().size());
-    assertEquals(1, historyService.createHistoricProcessInstanceQuery().orderByProcessInstanceEndTime().asc().list().size());
-    assertEquals(1, historyService.createHistoricProcessInstanceQuery().orderByProcessInstanceDuration().asc().list().size());
-    assertEquals(1, historyService.createHistoricProcessInstanceQuery().orderByProcessDefinitionId().asc().list().size());
-    assertEquals(1, historyService.createHistoricProcessInstanceQuery().orderByProcessInstanceBusinessKey().asc().list().size());
+    assertThat(historyService.createHistoricProcessInstanceQuery().orderByProcessInstanceId().asc().list()).hasSize(1);
+    assertThat(historyService.createHistoricProcessInstanceQuery().orderByProcessInstanceStartTime().asc().list()).hasSize(1);
+    assertThat(historyService.createHistoricProcessInstanceQuery().orderByProcessInstanceEndTime().asc().list()).hasSize(1);
+    assertThat(historyService.createHistoricProcessInstanceQuery().orderByProcessInstanceDuration().asc().list()).hasSize(1);
+    assertThat(historyService.createHistoricProcessInstanceQuery().orderByProcessDefinitionId().asc().list()).hasSize(1);
+    assertThat(historyService.createHistoricProcessInstanceQuery().orderByProcessInstanceBusinessKey().asc().list()).hasSize(1);
 
-    assertEquals(1, historyService.createHistoricProcessInstanceQuery().orderByProcessInstanceId().desc().list().size());
-    assertEquals(1, historyService.createHistoricProcessInstanceQuery().orderByProcessInstanceStartTime().desc().list().size());
-    assertEquals(1, historyService.createHistoricProcessInstanceQuery().orderByProcessInstanceEndTime().desc().list().size());
-    assertEquals(1, historyService.createHistoricProcessInstanceQuery().orderByProcessInstanceDuration().desc().list().size());
-    assertEquals(1, historyService.createHistoricProcessInstanceQuery().orderByProcessDefinitionId().desc().list().size());
-    assertEquals(1, historyService.createHistoricProcessInstanceQuery().orderByProcessInstanceBusinessKey().desc().list().size());
+    assertThat(historyService.createHistoricProcessInstanceQuery().orderByProcessInstanceId().desc().list()).hasSize(1);
+    assertThat(historyService.createHistoricProcessInstanceQuery().orderByProcessInstanceStartTime().desc().list()).hasSize(1);
+    assertThat(historyService.createHistoricProcessInstanceQuery().orderByProcessInstanceEndTime().desc().list()).hasSize(1);
+    assertThat(historyService.createHistoricProcessInstanceQuery().orderByProcessInstanceDuration().desc().list()).hasSize(1);
+    assertThat(historyService.createHistoricProcessInstanceQuery().orderByProcessDefinitionId().desc().list()).hasSize(1);
+    assertThat(historyService.createHistoricProcessInstanceQuery().orderByProcessInstanceBusinessKey().desc().list()).hasSize(1);
 
-    assertEquals(1, historyService.createHistoricProcessInstanceQuery().orderByProcessInstanceId().asc().count());
-    assertEquals(1, historyService.createHistoricProcessInstanceQuery().orderByProcessInstanceStartTime().asc().count());
-    assertEquals(1, historyService.createHistoricProcessInstanceQuery().orderByProcessInstanceEndTime().asc().count());
-    assertEquals(1, historyService.createHistoricProcessInstanceQuery().orderByProcessInstanceDuration().asc().count());
-    assertEquals(1, historyService.createHistoricProcessInstanceQuery().orderByProcessDefinitionId().asc().count());
-    assertEquals(1, historyService.createHistoricProcessInstanceQuery().orderByProcessInstanceBusinessKey().asc().count());
+    assertThat(historyService.createHistoricProcessInstanceQuery().orderByProcessInstanceId().asc().count()).isEqualTo(1);
+    assertThat(historyService.createHistoricProcessInstanceQuery().orderByProcessInstanceStartTime().asc().count()).isEqualTo(1);
+    assertThat(historyService.createHistoricProcessInstanceQuery().orderByProcessInstanceEndTime().asc().count()).isEqualTo(1);
+    assertThat(historyService.createHistoricProcessInstanceQuery().orderByProcessInstanceDuration().asc().count()).isEqualTo(1);
+    assertThat(historyService.createHistoricProcessInstanceQuery().orderByProcessDefinitionId().asc().count()).isEqualTo(1);
+    assertThat(historyService.createHistoricProcessInstanceQuery().orderByProcessInstanceBusinessKey().asc().count()).isEqualTo(1);
 
-    assertEquals(1, historyService.createHistoricProcessInstanceQuery().orderByProcessInstanceId().desc().count());
-    assertEquals(1, historyService.createHistoricProcessInstanceQuery().orderByProcessInstanceStartTime().desc().count());
-    assertEquals(1, historyService.createHistoricProcessInstanceQuery().orderByProcessInstanceEndTime().desc().count());
-    assertEquals(1, historyService.createHistoricProcessInstanceQuery().orderByProcessInstanceDuration().desc().count());
-    assertEquals(1, historyService.createHistoricProcessInstanceQuery().orderByProcessDefinitionId().desc().count());
-    assertEquals(1, historyService.createHistoricProcessInstanceQuery().orderByProcessInstanceBusinessKey().desc().count());
+    assertThat(historyService.createHistoricProcessInstanceQuery().orderByProcessInstanceId().desc().count()).isEqualTo(1);
+    assertThat(historyService.createHistoricProcessInstanceQuery().orderByProcessInstanceStartTime().desc().count()).isEqualTo(1);
+    assertThat(historyService.createHistoricProcessInstanceQuery().orderByProcessInstanceEndTime().desc().count()).isEqualTo(1);
+    assertThat(historyService.createHistoricProcessInstanceQuery().orderByProcessInstanceDuration().desc().count()).isEqualTo(1);
+    assertThat(historyService.createHistoricProcessInstanceQuery().orderByProcessDefinitionId().desc().count()).isEqualTo(1);
+    assertThat(historyService.createHistoricProcessInstanceQuery().orderByProcessInstanceBusinessKey().desc().count()).isEqualTo(1);
 
     ProcessInstance processInstance2 = runtimeService.startProcessInstanceByKey("oneTaskProcess");
 
@@ -320,72 +321,60 @@ public class HistoricProcessInstanceTest extends PluggableActivitiTestCase {
       taskService.complete(task.getId());
     }
 
-    assertEquals(2, historyService.createHistoricProcessInstanceQuery().orderByProcessInstanceId().asc().list().size());
-    assertEquals(2, historyService.createHistoricProcessInstanceQuery().orderByProcessInstanceStartTime().asc().list().size());
-    assertEquals(2, historyService.createHistoricProcessInstanceQuery().orderByProcessInstanceEndTime().asc().list().size());
-    assertEquals(2, historyService.createHistoricProcessInstanceQuery().orderByProcessInstanceDuration().asc().list().size());
-    assertEquals(2, historyService.createHistoricProcessInstanceQuery().orderByProcessDefinitionId().asc().list().size());
-    assertEquals(2, historyService.createHistoricProcessInstanceQuery().orderByProcessInstanceBusinessKey().asc().list().size());
+    assertThat(historyService.createHistoricProcessInstanceQuery().orderByProcessInstanceId().asc().list()).hasSize(2);
+    assertThat(historyService.createHistoricProcessInstanceQuery().orderByProcessInstanceStartTime().asc().list()).hasSize(2);
+    assertThat(historyService.createHistoricProcessInstanceQuery().orderByProcessInstanceEndTime().asc().list()).hasSize(2);
+    assertThat(historyService.createHistoricProcessInstanceQuery().orderByProcessInstanceDuration().asc().list()).hasSize(2);
+    assertThat(historyService.createHistoricProcessInstanceQuery().orderByProcessDefinitionId().asc().list()).hasSize(2);
+    assertThat(historyService.createHistoricProcessInstanceQuery().orderByProcessInstanceBusinessKey().asc().list()).hasSize(2);
 
-    assertEquals(2, historyService.createHistoricProcessInstanceQuery().orderByProcessInstanceId().desc().list().size());
-    assertEquals(2, historyService.createHistoricProcessInstanceQuery().orderByProcessInstanceStartTime().desc().list().size());
-    assertEquals(2, historyService.createHistoricProcessInstanceQuery().orderByProcessInstanceEndTime().desc().list().size());
-    assertEquals(2, historyService.createHistoricProcessInstanceQuery().orderByProcessInstanceDuration().desc().list().size());
-    assertEquals(2, historyService.createHistoricProcessInstanceQuery().orderByProcessDefinitionId().desc().list().size());
-    assertEquals(2, historyService.createHistoricProcessInstanceQuery().orderByProcessInstanceBusinessKey().desc().list().size());
+    assertThat(historyService.createHistoricProcessInstanceQuery().orderByProcessInstanceId().desc().list()).hasSize(2);
+    assertThat(historyService.createHistoricProcessInstanceQuery().orderByProcessInstanceStartTime().desc().list()).hasSize(2);
+    assertThat(historyService.createHistoricProcessInstanceQuery().orderByProcessInstanceEndTime().desc().list()).hasSize(2);
+    assertThat(historyService.createHistoricProcessInstanceQuery().orderByProcessInstanceDuration().desc().list()).hasSize(2);
+    assertThat(historyService.createHistoricProcessInstanceQuery().orderByProcessDefinitionId().desc().list()).hasSize(2);
+    assertThat(historyService.createHistoricProcessInstanceQuery().orderByProcessInstanceBusinessKey().desc().list()).hasSize(2);
 
-    assertEquals(2, historyService.createHistoricProcessInstanceQuery().orderByProcessInstanceId().asc().count());
-    assertEquals(2, historyService.createHistoricProcessInstanceQuery().orderByProcessInstanceStartTime().asc().count());
-    assertEquals(2, historyService.createHistoricProcessInstanceQuery().orderByProcessInstanceEndTime().asc().count());
-    assertEquals(2, historyService.createHistoricProcessInstanceQuery().orderByProcessInstanceDuration().asc().count());
-    assertEquals(2, historyService.createHistoricProcessInstanceQuery().orderByProcessDefinitionId().asc().count());
-    assertEquals(2, historyService.createHistoricProcessInstanceQuery().orderByProcessInstanceBusinessKey().asc().count());
+    assertThat(historyService.createHistoricProcessInstanceQuery().orderByProcessInstanceId().asc().count()).isEqualTo(2);
+    assertThat(historyService.createHistoricProcessInstanceQuery().orderByProcessInstanceStartTime().asc().count()).isEqualTo(2);
+    assertThat(historyService.createHistoricProcessInstanceQuery().orderByProcessInstanceEndTime().asc().count()).isEqualTo(2);
+    assertThat(historyService.createHistoricProcessInstanceQuery().orderByProcessInstanceDuration().asc().count()).isEqualTo(2);
+    assertThat(historyService.createHistoricProcessInstanceQuery().orderByProcessDefinitionId().asc().count()).isEqualTo(2);
+    assertThat(historyService.createHistoricProcessInstanceQuery().orderByProcessInstanceBusinessKey().asc().count()).isEqualTo(2);
 
-    assertEquals(2, historyService.createHistoricProcessInstanceQuery().orderByProcessInstanceId().desc().count());
-    assertEquals(2, historyService.createHistoricProcessInstanceQuery().orderByProcessInstanceStartTime().desc().count());
-    assertEquals(2, historyService.createHistoricProcessInstanceQuery().orderByProcessInstanceEndTime().desc().count());
-    assertEquals(2, historyService.createHistoricProcessInstanceQuery().orderByProcessInstanceDuration().desc().count());
-    assertEquals(2, historyService.createHistoricProcessInstanceQuery().orderByProcessDefinitionId().desc().count());
-    assertEquals(2, historyService.createHistoricProcessInstanceQuery().orderByProcessInstanceBusinessKey().desc().count());
+    assertThat(historyService.createHistoricProcessInstanceQuery().orderByProcessInstanceId().desc().count()).isEqualTo(2);
+    assertThat(historyService.createHistoricProcessInstanceQuery().orderByProcessInstanceStartTime().desc().count()).isEqualTo(2);
+    assertThat(historyService.createHistoricProcessInstanceQuery().orderByProcessInstanceEndTime().desc().count()).isEqualTo(2);
+    assertThat(historyService.createHistoricProcessInstanceQuery().orderByProcessInstanceDuration().desc().count()).isEqualTo(2);
+    assertThat(historyService.createHistoricProcessInstanceQuery().orderByProcessDefinitionId().desc().count()).isEqualTo(2);
+    assertThat(historyService.createHistoricProcessInstanceQuery().orderByProcessInstanceBusinessKey().desc().count()).isEqualTo(2);
 
     // Verify orderByProcessInstanceEndTime
     List<HistoricProcessInstance> historicProcessInstances = historyService.createHistoricProcessInstanceQuery().orderByProcessInstanceEndTime().desc().list();
     List<String> processInstanceIds = new ArrayList<String>(2);
     processInstanceIds.add(historicProcessInstances.get(0).getId());
     processInstanceIds.add(historicProcessInstances.get(1).getId());
-    assertTrue(processInstanceIds.contains(processInstance1.getId()));
-    assertTrue(processInstanceIds.contains(processInstance2.getId()));
+    assertThat(processInstanceIds.contains(processInstance1.getId())).isTrue();
+    assertThat(processInstanceIds.contains(processInstance2.getId())).isTrue();
 
     // Verify again, with variables included (bug reported on that)
     historicProcessInstances = historyService.createHistoricProcessInstanceQuery().orderByProcessInstanceEndTime().desc().includeProcessVariables().list();
     processInstanceIds = new ArrayList<String>(2);
     processInstanceIds.add(historicProcessInstances.get(0).getId());
     processInstanceIds.add(historicProcessInstances.get(1).getId());
-    assertTrue(processInstanceIds.contains(processInstance1.getId()));
-    assertTrue(processInstanceIds.contains(processInstance2.getId()));
+    assertThat(processInstanceIds.contains(processInstance1.getId())).isTrue();
+    assertThat(processInstanceIds.contains(processInstance2.getId())).isTrue();
   }
 
   public void testInvalidSorting() {
-    try {
-      historyService.createHistoricProcessInstanceQuery().asc();
-      fail();
-    } catch (ActivitiIllegalArgumentException e) {
+    assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
+      .isThrownBy(() -> historyService.createHistoricProcessInstanceQuery().asc());
 
-    }
+    assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
+      .isThrownBy(() -> historyService.createHistoricProcessInstanceQuery().desc());
 
-    try {
-      historyService.createHistoricProcessInstanceQuery().desc();
-      fail();
-    } catch (ActivitiIllegalArgumentException e) {
-
-    }
-
-    try {
-      historyService.createHistoricProcessInstanceQuery().orderByProcessInstanceId().list();
-      fail();
-    } catch (ActivitiIllegalArgumentException e) {
-
-    }
+    assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
+      .isThrownBy(() -> historyService.createHistoricProcessInstanceQuery().orderByProcessInstanceId().list());
   }
 
   @Deployment(resources = { "org/activiti/engine/test/history/oneTaskProcess.bpmn20.xml" })
@@ -396,7 +385,7 @@ public class HistoricProcessInstanceTest extends PluggableActivitiTestCase {
       ProcessInstance pi = runtimeService.startProcessInstanceByKey("oneTaskProcess");
       runtimeService.deleteProcessInstance(pi.getId(), deleteReason);
       HistoricProcessInstance hpi = historyService.createHistoricProcessInstanceQuery().processInstanceId(pi.getId()).singleResult();
-      assertEquals(deleteReason, hpi.getDeleteReason());
+      assertThat(hpi.getDeleteReason()).isEqualTo(deleteReason);
     }
   }
 
@@ -408,22 +397,22 @@ public class HistoricProcessInstanceTest extends PluggableActivitiTestCase {
 
       // Check historic links
       List<HistoricIdentityLink> historicLinks = historyService.getHistoricIdentityLinksForProcessInstance(pi.getId());
-      assertEquals(1, historicLinks.size());
+      assertThat(historicLinks).hasSize(1);
 
-      assertEquals("myType", historicLinks.get(0).getType());
-      assertEquals("kermit", historicLinks.get(0).getUserId());
-      assertNull(historicLinks.get(0).getGroupId());
-      assertEquals(pi.getId(), historicLinks.get(0).getProcessInstanceId());
+      assertThat(historicLinks.get(0).getType()).isEqualTo("myType");
+      assertThat(historicLinks.get(0).getUserId()).isEqualTo("kermit");
+      assertThat(historicLinks.get(0).getGroupId()).isNull();
+      assertThat(historicLinks.get(0).getProcessInstanceId()).isEqualTo(pi.getId());
 
       // When process is ended, link should remain
       taskService.complete(taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult().getId());
-      assertNull(runtimeService.createProcessInstanceQuery().processInstanceId(pi.getId()).singleResult());
+      assertThat(runtimeService.createProcessInstanceQuery().processInstanceId(pi.getId()).singleResult()).isNull();
 
-      assertEquals(1, historyService.getHistoricIdentityLinksForProcessInstance(pi.getId()).size());
+      assertThat(historyService.getHistoricIdentityLinksForProcessInstance(pi.getId())).hasSize(1);
 
       // When process is deleted, identitylinks shouldn't exist anymore
       historyService.deleteHistoricProcessInstance(pi.getId());
-      assertEquals(0, historyService.getHistoricIdentityLinksForProcessInstance(pi.getId()).size());
+      assertThat(historyService.getHistoricIdentityLinksForProcessInstance(pi.getId())).hasSize(0);
     }
   }
 
@@ -439,11 +428,11 @@ public class HistoricProcessInstanceTest extends PluggableActivitiTestCase {
       runtimeService.deleteProcessInstance(pi.getId(), "testing");
 
       // The parent and child process should be present in history
-      assertEquals(2L, historyService.createHistoricProcessInstanceQuery().count());
+      assertThat(historyService.createHistoricProcessInstanceQuery().count()).isEqualTo(2L);
 
       // Deleting the parent process should cascade the child-process
       historyService.deleteHistoricProcessInstance(pi.getId());
-      assertEquals(0L, historyService.createHistoricProcessInstanceQuery().count());
+      assertThat(historyService.createHistoricProcessInstanceQuery().count()).isEqualTo(0L);
     }
   }
 
@@ -456,8 +445,8 @@ public class HistoricProcessInstanceTest extends PluggableActivitiTestCase {
     ProcessInstance processInstance1 = builder.start();
 
     HistoricProcessInstance historicProcessInstance = historyService.createHistoricProcessInstanceQuery().processInstanceId(processInstance1.getProcessInstanceId()).singleResult();
-    assertEquals(piName, historicProcessInstance.getName());
-    assertEquals(1, historyService.createHistoricProcessInstanceQuery().processInstanceName(piName).list().size());
+    assertThat(historicProcessInstance.getName()).isEqualTo(piName);
+    assertThat(historyService.createHistoricProcessInstanceQuery().processInstanceName(piName).list()).hasSize(1);
   }
 
   /**
@@ -479,32 +468,32 @@ public class HistoricProcessInstanceTest extends PluggableActivitiTestCase {
     // Verify name and tenant id (didn't work on mssql and db2) on process
     // instance
     List<ProcessInstance> processInstances = runtimeService.createProcessInstanceQuery().includeProcessVariables().list();
-    assertEquals(1, processInstances.size());
+    assertThat(processInstances).hasSize(1);
     processInstance = processInstances.get(0);
 
-    assertEquals(processInstanceName, processInstance.getName());
-    assertEquals(tenantId, processInstance.getTenantId());
+    assertThat(processInstance.getName()).isEqualTo(processInstanceName);
+    assertThat(processInstance.getTenantId()).isEqualTo(tenantId);
 
     Map<String, Object> processInstanceVars = processInstance.getProcessVariables();
-    assertEquals(2, processInstanceVars.size());
-    assertEquals("Kermit", processInstanceVars.get("name"));
-    assertEquals(60, processInstanceVars.get("age"));
+    assertThat(processInstanceVars).hasSize(2);
+    assertThat(processInstanceVars.get("name")).isEqualTo("Kermit");
+    assertThat(processInstanceVars.get("age")).isEqualTo(60);
 
     // Verify name and tenant id (didn't work on mssql and db2) on historic
     // process instance
     List<HistoricProcessInstance> historicProcessInstances = historyService.createHistoricProcessInstanceQuery().includeProcessVariables().list();
-    assertEquals(1, historicProcessInstances.size());
+    assertThat(historicProcessInstances).hasSize(1);
     HistoricProcessInstance historicProcessInstance = historicProcessInstances.get(0);
 
     // Verify name and tenant id (didn't work on mssql and db2) on process
     // instance
-    assertEquals(processInstanceName, historicProcessInstance.getName());
-    assertEquals(tenantId, historicProcessInstance.getTenantId());
+    assertThat(historicProcessInstance.getName()).isEqualTo(processInstanceName);
+    assertThat(historicProcessInstance.getTenantId()).isEqualTo(tenantId);
 
     Map<String, Object> historicProcessInstanceVars = historicProcessInstance.getProcessVariables();
-    assertEquals(2, historicProcessInstanceVars.size());
-    assertEquals("Kermit", historicProcessInstanceVars.get("name"));
-    assertEquals(60, historicProcessInstanceVars.get("age"));
+    assertThat(historicProcessInstanceVars).hasSize(2);
+    assertThat(historicProcessInstanceVars.get("name")).isEqualTo("Kermit");
+    assertThat(historicProcessInstanceVars.get("age")).isEqualTo(60);
 
     // cleanup
     repositoryService.deleteDeployment(deploymentId, true);

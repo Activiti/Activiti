@@ -1,8 +1,6 @@
 package org.activiti.editor.language.xml;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.FlowElement;
@@ -10,7 +8,7 @@ import org.activiti.bpmn.model.Lane;
 import org.activiti.bpmn.model.Pool;
 import org.activiti.bpmn.model.Process;
 import org.activiti.bpmn.model.SequenceFlow;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class PoolsConverterTest extends AbstractConverterTest {
 
@@ -33,23 +31,23 @@ public class PoolsConverterTest extends AbstractConverterTest {
   }
 
   private void validateModel(BpmnModel model) {
-    assertEquals(1, model.getPools().size());
+    assertThat(model.getPools()).hasSize(1);
     Pool pool = model.getPools().get(0);
-    assertEquals("pool1", pool.getId());
-    assertEquals("Pool", pool.getName());
+    assertThat(pool.getId()).isEqualTo("pool1");
+    assertThat(pool.getName()).isEqualTo("Pool");
     Process process = model.getProcess(pool.getId());
-    assertNotNull(process);
-    assertEquals(2, process.getLanes().size());
+    assertThat(process).isNotNull();
+    assertThat(process.getLanes()).hasSize(2);
     Lane lane = process.getLanes().get(0);
-    assertEquals("lane1", lane.getId());
-    assertEquals("Lane 1", lane.getName());
-    assertEquals(2, lane.getFlowReferences().size());
+    assertThat(lane.getId()).isEqualTo("lane1");
+    assertThat(lane.getName()).isEqualTo("Lane 1");
+    assertThat(lane.getFlowReferences()).hasSize(2);
     lane = process.getLanes().get(1);
-    assertEquals("lane2", lane.getId());
-    assertEquals("Lane 2", lane.getName());
-    assertEquals(2, lane.getFlowReferences().size());
+    assertThat(lane.getId()).isEqualTo("lane2");
+    assertThat(lane.getName()).isEqualTo("Lane 2");
+    assertThat(lane.getFlowReferences()).hasSize(2);
     FlowElement flowElement = process.getFlowElement("flow1");
-    assertNotNull(flowElement);
-    assertTrue(flowElement instanceof SequenceFlow);
+    assertThat(flowElement).isNotNull();
+    assertThat(flowElement).isInstanceOf(SequenceFlow.class);
   }
 }

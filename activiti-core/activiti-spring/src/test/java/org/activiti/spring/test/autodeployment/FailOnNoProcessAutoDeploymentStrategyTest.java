@@ -1,5 +1,8 @@
 package org.activiti.spring.test.autodeployment;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+
 import java.util.List;
 
 import org.activiti.engine.ActivitiException;
@@ -41,7 +44,7 @@ public class FailOnNoProcessAutoDeploymentStrategyTest extends SpringActivitiTes
         final Resource[] resources = new Resource[]{new ClassPathResource(validName1)};
         FailOnNoProcessAutoDeploymentStrategy deploymentStrategy = new FailOnNoProcessAutoDeploymentStrategy(null);
         deploymentStrategy.deployResources(nameHint, resources, repositoryService);
-        assertEquals(1, repositoryService.createDeploymentQuery().count());
+        assertThat(repositoryService.createDeploymentQuery().count()).isEqualTo(1);
     }
 
     @Test
@@ -49,7 +52,7 @@ public class FailOnNoProcessAutoDeploymentStrategyTest extends SpringActivitiTes
         final Resource[] resources = new Resource[]{new ClassPathResource(validName1), new ClassPathResource(invalidName1), new ClassPathResource(invalidName2)};
         FailOnNoProcessAutoDeploymentStrategy deploymentStrategy = new FailOnNoProcessAutoDeploymentStrategy(null);
         deploymentStrategy.deployResources(nameHint, resources, repositoryService);
-        assertEquals(1, repositoryService.createDeploymentQuery().count());
+        assertThat(repositoryService.createDeploymentQuery().count()).isEqualTo(1);
     }
 
     @Test
@@ -57,7 +60,7 @@ public class FailOnNoProcessAutoDeploymentStrategyTest extends SpringActivitiTes
         final Resource[] resources = new Resource[]{new ClassPathResource(validName1), new ClassPathResource(invalidName1)};
         FailOnNoProcessAutoDeploymentStrategy deploymentStrategy = new FailOnNoProcessAutoDeploymentStrategy(null);
         deploymentStrategy.deployResources(nameHint, resources, repositoryService);
-        assertEquals(1, repositoryService.createDeploymentQuery().count());
+        assertThat(repositoryService.createDeploymentQuery().count()).isEqualTo(1);
     }
 
     @Test
@@ -65,20 +68,16 @@ public class FailOnNoProcessAutoDeploymentStrategyTest extends SpringActivitiTes
         final Resource[] resources = new Resource[]{new ClassPathResource(validName1), new ClassPathResource(invalidName2)};
         FailOnNoProcessAutoDeploymentStrategy deploymentStrategy = new FailOnNoProcessAutoDeploymentStrategy(null);
         deploymentStrategy.deployResources(nameHint, resources, repositoryService);
-        assertEquals(1, repositoryService.createDeploymentQuery().count());
+        assertThat(repositoryService.createDeploymentQuery().count()).isEqualTo(1);
     }
 
     @Test
     public void testOnlyInvalidResources() {
         final Resource[] resources = new Resource[]{new ClassPathResource(invalidName1)};
         FailOnNoProcessAutoDeploymentStrategy deploymentStrategy = new FailOnNoProcessAutoDeploymentStrategy(null);
-        try {
-            deploymentStrategy.deployResources(nameHint, resources, repositoryService);
-        } catch (ActivitiException e) {
-            assertEquals("No process definition was deployed.", e.getMessage());
-            assertEquals(0, repositoryService.createDeploymentQuery().count());
-            return;
-        }
-        fail();
+        assertThatExceptionOfType(ActivitiException.class)
+          .isThrownBy(() -> deploymentStrategy.deployResources(nameHint, resources, repositoryService))
+          .withMessage("No process definition was deployed.");
+        assertThat(repositoryService.createDeploymentQuery().count()).isEqualTo(0);
     }
 }

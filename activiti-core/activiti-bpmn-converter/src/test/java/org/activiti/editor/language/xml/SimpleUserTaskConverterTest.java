@@ -6,7 +6,7 @@ import org.activiti.bpmn.converter.BpmnXMLConverter;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.UserTask;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class SimpleUserTaskConverterTest extends AbstractConverterTest {
 
@@ -31,7 +31,7 @@ public class SimpleUserTaskConverterTest extends AbstractConverterTest {
     private void validateModel(BpmnModel model) throws Exception {
         FlowElement flowElement = model.getMainProcess().getFlowElement("UserTask_0ej3luy");
         assertThat(flowElement).isNotNull();
-        assertThat(flowElement instanceof UserTask).isTrue();
+        assertThat(flowElement).isInstanceOf(UserTask.class);
 
         checkXml(model);
     }

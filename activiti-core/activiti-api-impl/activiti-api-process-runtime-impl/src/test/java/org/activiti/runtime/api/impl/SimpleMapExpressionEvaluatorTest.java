@@ -16,18 +16,18 @@
 
 package org.activiti.runtime.api.impl;
 
+import static java.util.Collections.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-import java.util.Collections;
 import java.util.Map;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.interceptor.DelegateInterceptor;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 
 public class SimpleMapExpressionEvaluatorTest {
@@ -38,7 +38,7 @@ public class SimpleMapExpressionEvaluatorTest {
     @Mock
     private DelegateInterceptor delegateInterceptor;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         initMocks(this);
     }
@@ -46,7 +46,7 @@ public class SimpleMapExpressionEvaluatorTest {
     @Test
     public void evaluate_should_returnResultOfGetValueWithMap() {
         //given
-        Map<String, Object> context = Collections.singletonMap("city", "London");
+        Map<String, Object> context = singletonMap("city", "London");
         SimpleMapExpressionEvaluator evaluator = new SimpleMapExpressionEvaluator(
             context);
         Expression expression = mock(Expression.class);
