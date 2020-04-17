@@ -19,8 +19,8 @@ import java.io.InputStream;
 import java.util.zip.ZipInputStream;
 
 import org.activiti.spring.autodeployment.ResourceParentFolderAutoDeploymentStrategy;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.Mock;
 import org.springframework.core.io.Resource;
 
@@ -46,7 +46,7 @@ public class ResourceParentFolderAutoDeploymentStrategyTest extends AbstractAuto
   private final String parentFilename1 = "parentFilename1";
   private final String parentFilename2 = "parentFilename2";
 
-  @BeforeEach
+  @Before
   public void before() throws Exception {
     super.before();
     deploymentStrategy = new ResourceParentFolderAutoDeploymentStrategy(applicationUpgradeContextServiceMock);

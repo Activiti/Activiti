@@ -19,14 +19,12 @@ import org.activiti.engine.TaskService;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.ActivitiRule;
 import org.activiti.engine.test.Deployment;
-import org.junit.jupiter.api.AfterEach;
+import org.junit.After;
 import org.junit.Rule;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -34,7 +32,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
 
  */
-@ExtendWith(SpringExtension.class)
+@RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("classpath:org/activiti/spring/test/junit4/springTypicalUsageTest-context.xml")
 public class SpringJunit4Test {
 
@@ -51,7 +49,7 @@ public class SpringJunit4Test {
   @Rule
   public ActivitiRule activitiSpringRule;
 
-  @AfterEach
+  @After
   public void closeProcessEngine() {
     // Required, since all the other tests seem to do a specific drop on the
     // end
