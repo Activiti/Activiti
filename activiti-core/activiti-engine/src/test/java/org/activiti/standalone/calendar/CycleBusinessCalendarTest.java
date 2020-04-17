@@ -19,12 +19,13 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.activiti.engine.impl.calendar.CycleBusinessCalendar;
-import org.activiti.engine.impl.test.AbstractTestCase;
 import org.activiti.engine.impl.util.DefaultClockImpl;
 import org.activiti.engine.runtime.Clock;
+import org.junit.Test;
 
-public class CycleBusinessCalendarTest extends AbstractTestCase {
+public class CycleBusinessCalendarTest {
 
+  @Test
   public void testSimpleCron() throws Exception {
     Clock testingClock = new DefaultClockImpl();
     CycleBusinessCalendar businessCalendar = new CycleBusinessCalendar(testingClock);
@@ -40,6 +41,7 @@ public class CycleBusinessCalendarTest extends AbstractTestCase {
     assertThat(duedate).isEqualTo(expectedDuedate);
   }
 
+  @Test
   public void testSimpleDuration() throws Exception {
     Clock testingClock = new DefaultClockImpl();
     CycleBusinessCalendar businessCalendar = new CycleBusinessCalendar(testingClock);

@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
+import junit.framework.TestCase;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.EndEvent;
 import org.activiti.bpmn.model.SequenceFlow;
@@ -54,7 +55,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-public abstract class AbstractActivitiTestCase extends AbstractTestCase {
+public abstract class AbstractActivitiTestCase extends TestCase {
 
   private static final Logger logger = LoggerFactory.getLogger(AbstractActivitiTestCase.class);
 
@@ -74,12 +75,12 @@ public abstract class AbstractActivitiTestCase extends AbstractTestCase {
   protected ManagementService managementService;
   protected DynamicBpmnService dynamicBpmnService;
 
-  @Override
   protected void setUp() throws Exception {
-    super.setUp();
-
     // Always reset authenticated user to avoid any mistakes
     Authentication.setAuthenticatedUserId(null);
+  }
+
+  protected void tearDown() throws Exception {
   }
 
   protected abstract void initializeProcessEngine();

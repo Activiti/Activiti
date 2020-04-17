@@ -19,14 +19,14 @@ import javax.sql.DataSource;
 
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
-import org.activiti.engine.impl.test.AbstractTestCase;
 import org.apache.ibatis.datasource.pooled.PooledDataSource;
+import org.junit.Test;
 
 /**
-
  */
-public class ConnectionPoolTest extends AbstractTestCase {
+public class ConnectionPoolTest {
 
+  @Test
   public void testMyBatisConnectionPoolProperlyConfigured() {
     ProcessEngineConfigurationImpl config = (ProcessEngineConfigurationImpl) ProcessEngineConfiguration
         .createProcessEngineConfigurationFromResource("org/activiti/engine/test/db/connection-pool.activiti.cfg.xml");
@@ -44,8 +44,7 @@ public class ConnectionPoolTest extends AbstractTestCase {
     assertThat(config.getJdbcMaxCheckoutTime()).isEqualTo(maxCheckoutTime);
     assertThat(config.getJdbcMaxWaitTime()).isEqualTo(maxWaitTime);
 
-    // Verify that these properties are correctly set in the MyBatis
-    // datasource
+    // Verify that these properties are correctly set in the MyBatis datasource
     DataSource datasource = config.getDbSqlSessionFactory().getSqlSessionFactory().getConfiguration().getEnvironment().getDataSource();
     assertThat(datasource).isInstanceOf(PooledDataSource.class);
 

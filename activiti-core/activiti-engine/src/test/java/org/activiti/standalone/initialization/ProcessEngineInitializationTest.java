@@ -25,14 +25,15 @@ import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.impl.ProcessEngineImpl;
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.db.DbSqlSessionFactory;
-import org.activiti.engine.impl.test.AbstractTestCase;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
+import org.junit.Test;
 
 /**
  */
-public class ProcessEngineInitializationTest extends AbstractTestCase {
+public class ProcessEngineInitializationTest {
 
+  @Test
   public void testNoTables() {
     assertThatExceptionOfType(Exception.class)
       .isThrownBy(() -> ProcessEngineConfiguration
@@ -41,6 +42,7 @@ public class ProcessEngineInitializationTest extends AbstractTestCase {
       .withMessageContaining("no activiti tables in db");
   }
 
+  @Test
   public void testVersionMismatch() {
     // first create the schema
     ProcessEngineImpl processEngine = (ProcessEngineImpl) ProcessEngineConfiguration.createProcessEngineConfigurationFromResource("org/activiti/standalone/initialization/notables.activiti.cfg.xml")

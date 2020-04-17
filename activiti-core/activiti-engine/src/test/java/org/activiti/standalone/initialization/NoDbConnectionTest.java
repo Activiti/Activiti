@@ -17,13 +17,14 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.sql.SQLException;
 import org.activiti.engine.ProcessEngineConfiguration;
-import org.activiti.engine.impl.test.AbstractTestCase;
+import org.junit.Test;
 
 /**
  *
  */
-public class NoDbConnectionTest extends AbstractTestCase {
+public class NoDbConnectionTest {
 
+    @Test
     public void testNoDbConnection() {
         assertThatExceptionOfType(RuntimeException.class)
             .isThrownBy(() -> ProcessEngineConfiguration
@@ -32,13 +33,8 @@ public class NoDbConnectionTest extends AbstractTestCase {
             .matches(this::containsSqlException);
     }
 
-  private boolean containsSqlException(Throwable e) {
-    if (e == null) {
-      return false;
+    private boolean containsSqlException(Throwable e) {
+        return e instanceof SQLException || containsSqlException(e.getCause());
     }
-    if (e instanceof SQLException) {
-      return true;
-    }
-    return containsSqlException(e.getCause());
-  }
+
 }

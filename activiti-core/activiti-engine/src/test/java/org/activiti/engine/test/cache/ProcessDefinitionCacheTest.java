@@ -26,20 +26,21 @@ import org.activiti.engine.TaskService;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.cfg.StandaloneInMemProcessEngineConfiguration;
 import org.activiti.engine.impl.cfg.StandaloneProcessEngineConfiguration;
-import org.activiti.engine.impl.test.AbstractTestCase;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
+import org.junit.Test;
 
 /**
  * Test cases for testing functionality when the process engine is rebooted.
  */
-public class ProcessDefinitionCacheTest extends AbstractTestCase {
+public class ProcessDefinitionCacheTest {
 
     // Test for a bug: when the process engine is rebooted the
     // cache is cleaned and the deployed process definition is
     // removed from the process cache. This led to problems because
     // the id wasn't fetched from the DB after a redeploy.
+    @Test
     public void testStartProcessInstanceByIdAfterReboot() {
 
         // In case this test is run in a test suite, previous engines might
@@ -106,6 +107,7 @@ public class ProcessDefinitionCacheTest extends AbstractTestCase {
         schemaProcessEngine.close();
     }
 
+    @Test
     public void testDeployRevisedProcessAfterDeleteOnOtherProcessEngine() {
 
         // Setup both process engines

@@ -19,15 +19,15 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.activiti.engine.impl.calendar.DurationBusinessCalendar;
-import org.activiti.engine.impl.test.AbstractTestCase;
 import org.activiti.engine.impl.util.DefaultClockImpl;
 import org.activiti.engine.runtime.Clock;
+import org.junit.Test;
 
 /**
-
  */
-public class DurationBusinessCalendarTest extends AbstractTestCase {
+public class DurationBusinessCalendarTest {
 
+  @Test
   public void testSimpleDuration() throws Exception {
     Clock testingClock = new DefaultClockImpl();
     DurationBusinessCalendar businessCalendar = new DurationBusinessCalendar(testingClock);

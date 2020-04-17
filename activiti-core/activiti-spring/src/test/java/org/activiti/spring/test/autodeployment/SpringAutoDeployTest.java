@@ -20,17 +20,19 @@ import java.util.List;
 import java.util.Set;
 
 import org.activiti.engine.RepositoryService;
-import org.activiti.engine.impl.test.AbstractTestCase;
 import org.activiti.engine.impl.util.IoUtil;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.DeploymentQuery;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.repository.ProcessDefinitionQuery;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.AbstractXmlApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-public class SpringAutoDeployTest extends AbstractTestCase {
+public class SpringAutoDeployTest {
 
     protected static final String CTX_PATH = "org/activiti/spring/test/autodeployment/SpringAutoDeployTest-context.xml";
     protected static final String CTX_NO_DROP_PATH = "org/activiti/spring/test/autodeployment/SpringAutoDeployTest-no-drop-context.xml";
@@ -47,13 +49,14 @@ public class SpringAutoDeployTest extends AbstractTestCase {
         this.repositoryService = applicationContext.getBean(RepositoryService.class);
     }
 
-    protected void tearDown() throws Exception {
+    @After
+    public void tearDown() {
         removeAllDeployments();
         this.applicationContext = null;
         this.repositoryService = null;
-        super.tearDown();
     }
 
+    @Test
     public void testBasicActivitiSpringIntegration() {
         createAppContext("org/activiti/spring/test/autodeployment/SpringAutoDeployTest-context.xml");
         List<ProcessDefinition> processDefinitions = repositoryService.createProcessDefinitionQuery().list();
@@ -71,6 +74,7 @@ public class SpringAutoDeployTest extends AbstractTestCase {
         assertThat(processDefinitionKeys).isEqualTo(expectedProcessDefinitionKeys);
     }
 
+    @Test
     public void testNoRedeploymentForSpringContainerRestart() throws Exception {
         createAppContext(CTX_PATH);
         DeploymentQuery deploymentQuery = repositoryService.createDeploymentQuery();
@@ -78,15 +82,14 @@ public class SpringAutoDeployTest extends AbstractTestCase {
         ProcessDefinitionQuery processDefinitionQuery = repositoryService.createProcessDefinitionQuery();
         assertThat(processDefinitionQuery.count()).isEqualTo(3);
 
-        // Creating a new app context with same resources doesn't lead to more
-        // deployments
+        // Creating a new app context with same resources doesn't lead to more deployments
         new ClassPathXmlApplicationContext(CTX_NO_DROP_PATH);
         assertThat(deploymentQuery.count()).isEqualTo(1);
         assertThat(processDefinitionQuery.count()).isEqualTo(3);
     }
 
-    // Updating the bpmn20 file should lead to a new deployment when restarting
-    // the Spring container
+    // Updating the bpmn20 file should lead to a new deployment when restarting the Spring container
+    @Test
     public void testResourceRedeploymentAfterProcessDefinitionChange() throws Exception {
         createAppContext(CTX_PATH);
         assertThat(repositoryService.createDeploymentQuery().count()).isEqualTo(1);
@@ -100,49 +103,45 @@ public class SpringAutoDeployTest extends AbstractTestCase {
         IoUtil.writeStringToFile(updatedBpmnFileContent, filePath);
 
         // Classic produced/consumer problem here:
-        // The file is already written in Java, but not yet completely persisted
-        // by
-        // the OS
-        // Constructing the new app context reads the same file which is
-        // sometimes
-        // not yet fully written to disk
-        waitUntilFileIsWritten(filePath,
-                               updatedBpmnFileContent.length());
+        // The file is already written in Java, but not yet completely persisted by the OS
+        // Constructing the new app context reads the same file which is sometimes not yet fully written to disk
+        waitUntilFileIsWritten(filePath, updatedBpmnFileContent.length());
 
         try {
             applicationContext = new ClassPathXmlApplicationContext(CTX_NO_DROP_PATH);
             repositoryService = (RepositoryService) applicationContext.getBean("repositoryService");
         } finally {
-            // Reset file content such that future test are not seeing something
-            // funny
-            IoUtil.writeStringToFile(originalBpmnFileContent,
-                                     filePath);
+            // Reset file content such that future test are not seeing something funny
+            IoUtil.writeStringToFile(originalBpmnFileContent, filePath);
         }
 
-        // Assertions come AFTER the file write! Otherwise the process file is
-        // messed up if the assertions fail.
+        // Assertions come AFTER the file write! Otherwise the process file is messed up if the assertions fail.
         assertThat(repositoryService.createDeploymentQuery().count()).isEqualTo(2);
         assertThat(repositoryService.createProcessDefinitionQuery().count()).isEqualTo(6);
     }
 
+    @Test
     public void testAutoDeployWithCreateDropOnCleanDb() {
         createAppContext(CTX_CREATE_DROP_CLEAN_DB);
         assertThat(repositoryService.createDeploymentQuery().count()).isEqualTo(1);
         assertThat(repositoryService.createProcessDefinitionQuery().count()).isEqualTo(3);
     }
 
+    @Test
     public void testAutoDeployWithDeploymentModeDefault() {
         createAppContext(CTX_DEPLOYMENT_MODE_DEFAULT);
         assertThat(repositoryService.createDeploymentQuery().count()).isEqualTo(1);
         assertThat(repositoryService.createProcessDefinitionQuery().count()).isEqualTo(3);
     }
 
+    @Test
     public void testAutoDeployWithDeploymentModeSingleResource() {
         createAppContext(CTX_DEPLOYMENT_MODE_SINGLE_RESOURCE);
         assertThat(repositoryService.createDeploymentQuery().count()).isEqualTo(3);
         assertThat(repositoryService.createProcessDefinitionQuery().count()).isEqualTo(3);
     }
 
+    @Test
     public void testAutoDeployWithDeploymentModeResourceParentFolder() {
         createAppContext(CTX_DEPLOYMENT_MODE_RESOURCE_PARENT_FOLDER);
         assertThat(repositoryService.createDeploymentQuery().count()).isEqualTo(2);
@@ -165,4 +164,5 @@ public class SpringAutoDeployTest extends AbstractTestCase {
         }
         return true;
     }
+
 }
