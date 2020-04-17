@@ -11,7 +11,7 @@ import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.FormProperty;
 import org.activiti.bpmn.model.ImplementationType;
 import org.activiti.bpmn.model.StartEvent;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class StartEventConverterTest extends AbstractConverterTest {
 

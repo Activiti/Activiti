@@ -12,7 +12,7 @@ import org.activiti.bpmn.model.FieldExtension;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.ImplementationType;
 import org.activiti.bpmn.model.ServiceTask;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ServiceTaskConverterTest extends AbstractConverterTest {
 

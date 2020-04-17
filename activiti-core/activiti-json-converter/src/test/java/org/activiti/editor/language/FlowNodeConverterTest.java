@@ -10,7 +10,7 @@ import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.ExclusiveGateway;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.SequenceFlow;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class FlowNodeConverterTest extends AbstractConverterTest {
 

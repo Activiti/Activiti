@@ -3,14 +3,11 @@ package org.activiti.spring.boot;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.activiti.spring.SpringAsyncExecutor;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
 
-@RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @TestPropertySource("classpath:application-async-executor.properties")
 public class AsyncExecutorConfigurationTest {
@@ -20,7 +17,7 @@ public class AsyncExecutorConfigurationTest {
 
     @Autowired
     private AsyncExecutorProperties properties;
-    
+
     @Test
     public void shouldConfigureAsyncExecutorProperties() {
         assertThat(asyncExecutor.getDefaultAsyncJobAcquireWaitTimeInMillis()).isEqualTo(properties.getDefaultAsyncJobAcquireWaitTimeInMillis());

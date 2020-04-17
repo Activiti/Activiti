@@ -22,7 +22,7 @@ import static org.mockito.Mockito.mock;
 
 import org.activiti.bpmn.model.UserTask;
 import org.activiti.engine.delegate.Expression;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class MappingAwareActivityBehaviorFactoryTest {
 

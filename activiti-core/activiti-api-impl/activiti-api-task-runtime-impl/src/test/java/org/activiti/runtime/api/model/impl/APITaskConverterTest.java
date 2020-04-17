@@ -21,8 +21,8 @@ import org.activiti.engine.TaskService;
 import org.activiti.engine.impl.persistence.entity.IdentityLinkEntityImpl;
 import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.IdentityLinkType;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
@@ -50,7 +50,7 @@ public class APITaskConverterTest {
     @Mock
     private TaskService taskService;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         initMocks(this);
     }

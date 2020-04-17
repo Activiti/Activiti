@@ -6,7 +6,7 @@ import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.EndEvent;
 import org.activiti.bpmn.model.ErrorEventDefinition;
 import org.activiti.bpmn.model.FlowElement;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class EndEventConverterTest extends AbstractConverterTest {
 

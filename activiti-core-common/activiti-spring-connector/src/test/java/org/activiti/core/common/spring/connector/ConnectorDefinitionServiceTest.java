@@ -18,8 +18,8 @@ package org.activiti.core.common.spring.connector;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.activiti.core.common.model.connector.ConnectorDefinition;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.core.io.support.ResourcePatternResolver;
 
@@ -39,7 +39,7 @@ public class ConnectorDefinitionServiceTest {
     @Mock
     private ResourcePatternResolver resourceLoader;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         initMocks(this);
         connectorDefinitionService = new ConnectorDefinitionService("/connectors",

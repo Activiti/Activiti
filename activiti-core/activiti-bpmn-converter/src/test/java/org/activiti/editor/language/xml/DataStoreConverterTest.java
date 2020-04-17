@@ -7,7 +7,7 @@ import org.activiti.bpmn.model.DataStore;
 import org.activiti.bpmn.model.DataStoreReference;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.Pool;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class DataStoreConverterTest extends AbstractConverterTest {
 

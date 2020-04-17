@@ -3,7 +3,7 @@ package org.activiti.editor.language.xml;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import org.activiti.bpmn.exceptions.XMLException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class EmptyModelTest extends AbstractConverterTest {
 

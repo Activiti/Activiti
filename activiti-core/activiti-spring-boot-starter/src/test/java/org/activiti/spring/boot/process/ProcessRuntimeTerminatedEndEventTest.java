@@ -10,18 +10,15 @@ import org.activiti.spring.boot.tasks.TaskBaseRuntime;
 import org.activiti.spring.boot.tasks.TaskRuntimeEventListeners;
 import org.activiti.spring.boot.test.util.TaskCleanUpUtil;
 import org.activiti.test.LocalEventSource;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @ContextConfiguration
 public class ProcessRuntimeTerminatedEndEventTest {
@@ -44,13 +41,13 @@ public class ProcessRuntimeTerminatedEndEventTest {
     @Autowired
     private TaskRuntimeEventListeners taskRuntimeEventListeners;
 
-    @Before
+    @BeforeEach
     public void setUp(){
         localEventSource.clearEvents();
 
     }
 
-    @After
+    @AfterEach
     public void tearDown(){
         taskCleanUpUtil.cleanUpWithAdmin();
         localEventSource.clearEvents();

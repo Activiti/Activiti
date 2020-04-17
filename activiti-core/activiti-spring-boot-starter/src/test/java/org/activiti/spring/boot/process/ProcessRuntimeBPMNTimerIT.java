@@ -38,25 +38,22 @@ import org.activiti.spring.boot.process.listener.DummyBPMNTimerScheduledListener
 import org.activiti.spring.boot.security.util.SecurityUtil;
 import org.activiti.spring.boot.test.util.ProcessCleanUpUtil;
 import org.assertj.core.groups.Tuple;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Date;
 import java.util.List;
 
-@RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @ActiveProfiles(ProcessRuntimeBPMNTimerIT.PROCESS_RUNTIME_BPMN_TIMER_IT)
 @Import({TimerTestConfigurator.class,
-         DummyBPMNTimerFiredListener.class, 
-         DummyBPMNTimerScheduledListener.class, 
+         DummyBPMNTimerFiredListener.class,
+         DummyBPMNTimerScheduledListener.class,
          DummyBPMNTimerCancelledListener.class,
          DummyBPMNTimerExecutedListener.class})
 public class ProcessRuntimeBPMNTimerIT {
@@ -93,13 +90,13 @@ public class ProcessRuntimeBPMNTimerIT {
     @Autowired
     private ProcessEngineConfiguration processEngineConfiguration;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         clear();
         processEngineConfiguration.getClock().reset();
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         processEngineConfiguration.getClock().reset();
         processCleanUpUtil.cleanUpWithAdmin();

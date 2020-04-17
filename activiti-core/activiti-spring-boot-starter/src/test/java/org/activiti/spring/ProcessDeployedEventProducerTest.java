@@ -34,8 +34,8 @@ import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.repository.ProcessDefinitionQuery;
 import org.activiti.runtime.api.model.impl.APIProcessDefinitionConverter;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.springframework.context.ApplicationEventPublisher;
@@ -59,7 +59,7 @@ public class ProcessDeployedEventProducerTest {
     @Mock
     private ApplicationEventPublisher eventPublisher;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         initMocks(this);
         producer = new ProcessDeployedEventProducer(repositoryService,

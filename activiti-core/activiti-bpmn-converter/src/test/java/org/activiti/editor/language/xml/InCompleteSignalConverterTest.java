@@ -10,7 +10,7 @@ import org.activiti.bpmn.model.UserTask;
 import org.activiti.validation.ProcessValidator;
 import org.activiti.validation.ProcessValidatorFactory;
 import org.activiti.validation.ValidationError;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class InCompleteSignalConverterTest extends AbstractConverterTest {
 

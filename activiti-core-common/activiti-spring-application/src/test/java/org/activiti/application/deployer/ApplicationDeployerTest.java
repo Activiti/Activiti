@@ -18,8 +18,8 @@ package org.activiti.application.deployer;
 
 import org.activiti.application.ApplicationContent;
 import org.activiti.application.ApplicationService;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 
 import static java.util.Arrays.asList;
@@ -41,7 +41,7 @@ public class ApplicationDeployerTest {
     @Mock
     private ApplicationEntryDeployer secondDeployer;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         initMocks(this);
         deployer = new ApplicationDeployer(applicationLoader,

@@ -20,7 +20,7 @@ import org.activiti.bpmn.model.StartEvent;
 import org.activiti.bpmn.model.StringDataObject;
 import org.activiti.bpmn.model.SubProcess;
 import org.activiti.bpmn.model.ValuedDataObject;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ValuedDataObjectConverterTest extends AbstractConverterTest {
 

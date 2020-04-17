@@ -9,7 +9,7 @@ import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.IntermediateCatchEvent;
 import org.activiti.bpmn.model.SignalEventDefinition;
 import org.activiti.bpmn.model.ThrowEvent;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class IntermediateThrowCatchSignalEventConverterTest extends AbstractConverterTest {
 
