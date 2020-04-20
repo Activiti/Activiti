@@ -7,6 +7,7 @@ import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.deploy.DeploymentManager;
 import org.activiti.engine.impl.runtime.ProcessInstanceBuilderImpl;
+import org.activiti.engine.impl.util.ProcessDefinitionRetriever;
 import org.activiti.engine.impl.util.ProcessInstanceHelper;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -49,52 +50,14 @@ public class CreateProcessInstanceCmd implements Command<ProcessInstance> {
 
     public ProcessInstance execute(CommandContext commandContext) {
 
-        if (processDefinitionId == null && processDefinitionKey == null) {
-            throw new ActivitiIllegalArgumentException("processDefinitionKey and processDefinitionId are null");
-        }
-
         DeploymentManager deploymentCache = commandContext.getProcessEngineConfiguration().getDeploymentManager();
-        ProcessDefinition processDefinition = this.getProcessDefinitionByProcessDefinitionId(processDefinitionId, deploymentCache);
-        if(processDefinition == null) {
-            processDefinition = (processDefinitionKey != null && hasNoTenant(tenantId)) ?
-                this.getProcessDefinitionByProcessDefinitionKey(processDefinitionKey, deploymentCache):
-                this.getProcessDefinitionByProcessDefinitionKeyAndTenantId(processDefinitionKey, tenantId, deploymentCache);
-            if (processDefinition == null) {
-                throw new ActivitiObjectNotFoundException("No process definition found for key '" + processDefinitionKey + "' for tenant identifier " + tenantId, ProcessDefinition.class);
-            }
-        }
+
+        ProcessDefinitionRetriever processRetriever = new ProcessDefinitionRetriever(this.tenantId, deploymentCache);
+        ProcessDefinition processDefinition = processRetriever.getProcessDefinition(this.processDefinitionId, this.processDefinitionKey);
 
         processInstanceHelper = commandContext.getProcessEngineConfiguration().getProcessInstanceHelper();
         return processInstanceHelper.createProcessInstance(processDefinition, businessKey, processInstanceName, variables, transientVariables);
     }
 
-    private ProcessDefinition getProcessDefinitionByProcessDefinitionId(String processDefinitionId, DeploymentManager deploymentCache){
-        ProcessDefinition processDefinition = null;
-        if (processDefinitionId != null) {
-            processDefinition = deploymentCache.findDeployedProcessDefinitionById(processDefinitionId);
-        }
-        return processDefinition;
-    }
-
-    private ProcessDefinition getProcessDefinitionByProcessDefinitionKey(String processDefinitionKey, DeploymentManager deploymentCache) {
-        ProcessDefinition processDefinition = null;
-        processDefinition = deploymentCache.findDeployedLatestProcessDefinitionByKey(processDefinitionKey);
-        if (processDefinition == null) {
-            throw new ActivitiObjectNotFoundException("No process definition found for key '" + processDefinitionKey + "'", ProcessDefinition.class);
-        }
-        return processDefinition;
-    }
-
-    private ProcessDefinition getProcessDefinitionByProcessDefinitionKeyAndTenantId(String processDefinitionKey, String tenantId, DeploymentManager deploymentCache) {
-        ProcessDefinition processDefinition = null;
-        if (processDefinitionKey != null && tenantId != null && !ProcessEngineConfiguration.NO_TENANT_ID.equals(tenantId)) {
-            processDefinition = deploymentCache.findDeployedLatestProcessDefinitionByKeyAndTenantId(processDefinitionKey, tenantId);
-        }
-        return processDefinition;
-    }
-
-    private boolean hasNoTenant(String tenantId){
-        return tenantId == null || ProcessEngineConfiguration.NO_TENANT_ID.equals(tenantId);
-    }
 
 }
