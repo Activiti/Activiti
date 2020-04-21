@@ -1,15 +1,16 @@
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.activiti.engine.impl.variable;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -20,15 +21,12 @@ import org.activiti.engine.ActivitiException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
-/**
-
- */
 public class LongJsonType extends SerializableType {
 
-  private static final Logger logger = LoggerFactory.getLogger(LongJsonType.class);
+    private static final Logger logger = LoggerFactory.getLogger(LongJsonType.class);
+    public static final String LONG_JSON = "longJson";
 
-  private final int minLength;
+    private final int minLength;
   private ObjectMapper objectMapper;
   private boolean serializePOJOsInVariablesToJson;
   private JsonTypeConverter jsonTypeConverter;
@@ -43,7 +41,7 @@ public class LongJsonType extends SerializableType {
   }
 
   public String getTypeName() {
-    return "longJson";
+    return LONG_JSON;
   }
 
   public boolean isAbleToStore(Object value) {
