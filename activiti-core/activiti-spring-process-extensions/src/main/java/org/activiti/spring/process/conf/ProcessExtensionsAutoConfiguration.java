@@ -84,6 +84,7 @@ public class ProcessExtensionsAutoConfiguration {
         variableTypeMap.put("folder", new JsonObjectVariableType(objectMapper));
         variableTypeMap.put("date", new DateVariableType(Date.class, dateFormatterProvider));
         variableTypeMap.put("datetime", new DateVariableType(Date.class, dateFormatterProvider));
+        variableTypeMap.put("array", new JsonObjectVariableType(objectMapper));
         return variableTypeMap;
     }
 
