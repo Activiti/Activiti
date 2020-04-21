@@ -1,9 +1,9 @@
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -14,24 +14,14 @@
 package org.activiti.spring;
 
 import java.util.Map;
-
-import javax.el.ArrayELResolver;
-import javax.el.BeanELResolver;
 import javax.el.CompositeELResolver;
-import javax.el.ELResolver;
-import javax.el.ListELResolver;
-import javax.el.MapELResolver;
-
-import org.activiti.engine.delegate.VariableScope;
 import org.activiti.engine.impl.el.ExpressionManager;
-import org.activiti.engine.impl.el.JsonNodeELResolver;
 import org.activiti.engine.impl.el.ReadOnlyMapELResolver;
-import org.activiti.engine.impl.el.VariableScopeElResolver;
 import org.springframework.context.ApplicationContext;
 
 /**
  * {@link ExpressionManager} that exposes the full application-context or a limited set of beans in expressions.
- * 
+ *
 
  */
 public class SpringExpressionManager extends ExpressionManager {
@@ -49,25 +39,16 @@ public class SpringExpressionManager extends ExpressionManager {
     this.applicationContext = applicationContext;
   }
 
-  @Override
-  protected ELResolver createElResolver(VariableScope variableScope) {
-    CompositeELResolver compositeElResolver = new CompositeELResolver();
-    compositeElResolver.add(new VariableScopeElResolver(variableScope));
+    @Override
+    protected void addBeansResolver(CompositeELResolver elResolver) {
+        if (beans != null) {
+            // Only expose limited set of beans in expressions
+            elResolver.add(new ReadOnlyMapELResolver(beans));
+        } else {
+            // Expose full application-context in expressions
+            elResolver.add(new ApplicationContextElResolver(applicationContext));
+        }
 
-    if (beans != null) {
-      // Only expose limited set of beans in expressions
-      compositeElResolver.add(new ReadOnlyMapELResolver(beans));
-    } else {
-      // Expose full application-context in expressions
-      compositeElResolver.add(new ApplicationContextElResolver(applicationContext));
     }
-
-    compositeElResolver.add(new ArrayELResolver());
-    compositeElResolver.add(new ListELResolver());
-    compositeElResolver.add(new MapELResolver());
-    compositeElResolver.add(new JsonNodeELResolver());
-    compositeElResolver.add(new BeanELResolver());
-    return compositeElResolver;
-  }
 
 }
