@@ -21,6 +21,7 @@ import static org.mockito.Mockito.mock;
 
 import org.activiti.engine.delegate.VariableScope;
 import org.activiti.engine.impl.identity.Authentication;
+import org.junit.AfterClass;
 import org.junit.Test;
 
 public class AuthenticatedUserELResolverTest {
@@ -28,6 +29,11 @@ public class AuthenticatedUserELResolverTest {
     private static final String AUTHENTICATED_USER_KEY = "authenticatedUserId";
 
     private AuthenticatedUserELResolver resolver = new AuthenticatedUserELResolver();
+
+    @AfterClass
+    public static void tearDown() {
+        Authentication.setAuthenticatedUserId(null);
+    }
 
     @Test
     public void canResolve_should_returnTrueWhenPropertyIsAuthenticatedUser() {
