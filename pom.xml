@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.activiti.build</groupId>
+  <groupId>org.activiti</groupId>
   <artifactId>activiti-parent</artifactId>
   <version>7.1.0-SNAPSHOT</version>
   <packaging>pom</packaging>
@@ -158,8 +159,11 @@
   </modules>
   <scm>
     <url>http://github.com/${project.scm.organisation}/${project.scm.repository}</url>
-    <connection>scm:git:git://github.com/${project.scm.organisation}/${project.scm.repository}.git</connection>
-    <developerConnection>scm:git:ssh://git@github.com/${project.scm.organisation}/${project.scm.repository}.git</developerConnection>
+    <connection>scm:git:git://github.com/${project.scm.organisation}/${project.scm.repository}.git
+    </connection>
+    <developerConnection>
+      scm:git:ssh://git@github.com/${project.scm.organisation}/${project.scm.repository}.git
+    </developerConnection>
     <tag>HEAD</tag>
   </scm>
   <issueManagement>
@@ -223,13 +227,14 @@
     <awaitility.version>3.0.0</awaitility.version>
 
     <!-- configuration properties for tests -->
-    <generated-assertions-folder>${project.build.directory}/generated-test-sources/assertions</generated-assertions-folder>
+    <generated-assertions-folder>${project.build.directory}/generated-test-sources/assertions
+    </generated-assertions-folder>
     <generated-assertions-package>org.activiti.test</generated-assertions-package>
   </properties>
   <dependencyManagement>
     <dependencies>
       <dependency>
-        <groupId>org.activiti.build</groupId>
+        <groupId>org.activiti</groupId>
         <artifactId>activiti-dependency-check</artifactId>
         <version>${project.version}</version>
         <type>xml</type>
@@ -332,19 +337,19 @@
                       <module name="RedundantImport"/>
                       <module name="AvoidStarImport">
                         <property name="excludes"
-                                  value="org.junit.Assert,org.assertj.core.api.Assertions,org.mockito.Mockito"/>
+                          value="org.junit.Assert,org.assertj.core.api.Assertions,org.mockito.Mockito"/>
                         <property name="allowClassImports" value="false"/>
                         <property name="allowStaticMemberImports" value="false"/>
                       </module>
                       <module name="CustomImportOrder">
                         <property name="customImportOrderRules"
-                                  value="STANDARD_JAVA_PACKAGE###THIRD_PARTY_PACKAGE###STATIC"/>
+                          value="STANDARD_JAVA_PACKAGE###THIRD_PARTY_PACKAGE###STATIC"/>
                         <property name="sortImportsInGroupAlphabetically" value="true"/>
                         <property name="separateLineBetweenGroups" value="true"/>
                       </module>
                       <module name="NeedBraces">
                         <property name="tokens"
-                                  value="LITERAL_IF, LITERAL_ELSE, LITERAL_FOR, LITERAL_WHILE, LITERAL_DO"/>
+                          value="LITERAL_IF, LITERAL_ELSE, LITERAL_FOR, LITERAL_WHILE, LITERAL_DO"/>
                       </module>
                       <module name="EqualsHashCode"/>
                     </module>
@@ -828,7 +833,7 @@
             </configuration>
             <dependencies>
               <dependency>
-                <groupId>org.activiti.build</groupId>
+                <groupId>org.activiti</groupId>
                 <artifactId>activiti-dependency-check</artifactId>
                 <version>${project.version}</version>
                 <type>xml</type>

@@ -12,7 +12,7 @@
   <name>Activiti :: Spring Resource Loader</name>
   <dependencies>
     <dependency>
-      <groupId>org.activiti.core.common</groupId>
+      <groupId>org.activiti</groupId>
       <artifactId>activiti-spring-resource-finder</artifactId>
     </dependency>
     <dependency>
