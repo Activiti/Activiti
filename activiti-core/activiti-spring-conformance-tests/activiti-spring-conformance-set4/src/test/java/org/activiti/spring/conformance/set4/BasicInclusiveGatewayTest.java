@@ -27,7 +27,7 @@ import static org.activiti.test.matchers.SequenceFlowMatchers.sequenceFlow;
 import static org.activiti.test.matchers.TaskMatchers.task;
 import static org.activiti.test.matchers.TaskMatchers.withAssignee;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Java6Assertions.tuple;
+import static org.assertj.core.api.Assertions.tuple;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 public class BasicInclusiveGatewayTest {
