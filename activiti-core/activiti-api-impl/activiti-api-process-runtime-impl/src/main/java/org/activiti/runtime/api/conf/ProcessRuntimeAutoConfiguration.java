@@ -215,7 +215,8 @@ public class ProcessRuntimeAutoConfiguration {
                 runtimeService,
                 processInstanceConverter,
                 eventPublisher,
-                processVariablesValidator
+                processVariablesValidator,
+                variableValuesPayloadConverter
         );
     }
 

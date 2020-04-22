@@ -136,7 +136,8 @@ public class ProcessRuntimeIT {
                                                      runtimeService,
                                                      processInstanceConverter,
                                                      eventPublisher,
-                                                     processVariablesValidator));
+                                                     processVariablesValidator,
+                                                     variableValuesPayloadConverter));
 
         //Reset test variables
         RuntimeTestConfiguration.processImageConnectorExecuted = false;

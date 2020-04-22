@@ -3,8 +3,6 @@ package org.activiti.spring.boot.process;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Collections;
@@ -12,12 +10,14 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.activiti.api.model.shared.model.VariableInstance;
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
+import org.activiti.api.process.model.payloads.StartProcessPayload;
 import org.activiti.api.process.model.payloads.VariableValue;
+import org.activiti.api.process.runtime.ProcessAdminRuntime;
 import org.activiti.api.process.runtime.ProcessRuntime;
-import org.activiti.api.process.runtime.conf.ProcessRuntimeConfiguration;
 import org.activiti.common.util.DateFormatterProvider;
 import org.activiti.runtime.api.impl.VariableValueConverter;
 import org.activiti.runtime.api.impl.VariableValuesPayloadConverter;
@@ -29,6 +29,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @ContextConfiguration
 public class StartProcessPayloadVariablesTest {
@@ -37,6 +40,9 @@ public class StartProcessPayloadVariablesTest {
 
     @Autowired
     private ProcessRuntime processRuntime;
+
+    @Autowired
+    private ProcessAdminRuntime processAdminRuntime;
 
     @Autowired
     private SecurityUtil securityUtil;
@@ -58,59 +64,43 @@ public class StartProcessPayloadVariablesTest {
     @Test
     public void processInstanceHasValidInitialVariables() {
         securityUtil.logInAs("user");
-        ProcessRuntimeConfiguration configuration = processRuntime.configuration();
-        assertThat(configuration).isNotNull();
 
-        VariableValue jsonNodeValue = new VariableValue("JsonNode", "{}");
-        Map<String, String> stringValue = new VariableValue("string", "name").toMap();
-        Map<String, String> intValue = new VariableValue("integer", "10").toMap();
-        Map<String, String> booleanValue = new VariableValue("boolean", "true").toMap();
-        Map<String, String> doubleValue = new VariableValue("double", "10.00").toMap();
-        Map<String, String> dateValue = new VariableValue("date", DATE_1970_01_01T01_01_01_001Z).toMap();
-        Map<String, String> bigDecimalValue = new VariableValue("BigDecimal", "10.00").toMap();
+        StartProcessPayload startProcessPayload = testStartProcessPayload();
 
         // start a process with vars then check default and specified vars exist
-        ProcessInstance initialVarsProcess = processRuntime.start(ProcessPayloadBuilder.start()
-                                                                                       .withProcessDefinitionKey("SingleTaskProcess")
-                                                                                       .withVariable("jsonNodeValue", jsonNodeValue)
-                                                                                       .withVariable("stringValue", stringValue)
-                                                                                       .withVariable("intValue", intValue)
-                                                                                       .withVariable("doubleValue", doubleValue)
-                                                                                       .withVariable("booleanValue", booleanValue)
-                                                                                       .withVariable("dateValue", dateValue)
-                                                                                       .withVariable("bigDecimalValue", bigDecimalValue)
-                                                                                       .withVariable("int", 10)
-                                                                                       .withVariable("boolean", true)
-                                                                                       .withVariable("double", 10.00)
-                                                                                       .withVariable("string", "name")
-                                                                                       .withVariable("date", dateFormatterProvider.parse(DATE_1970_01_01T01_01_01_001Z))
-                                                                                       .build());
+        ProcessInstance initialVarsProcess = processRuntime.start(startProcessPayload);
 
         assertThat(initialVarsProcess).isNotNull();
         assertThat(initialVarsProcess.getStatus()).isEqualTo(ProcessInstance.ProcessInstanceStatus.RUNNING);
 
         List<VariableInstance> variableInstances = processRuntime.variables(ProcessPayloadBuilder.variables().withProcessInstance(initialVarsProcess).build());
 
-        assertThat(variableInstances).isNotNull()
-                                     .hasSize(12)
-                                     .extracting("name","value")
-                                     .contains(tuple("jsonNodeValue",JsonNodeFactory.instance.objectNode()),
-                                               tuple("stringValue","name"),
-                                               tuple("intValue", 10),
-                                               tuple("doubleValue", 10.00),
-                                               tuple("booleanValue", true),
-                                               tuple("dateValue", dateFormatterProvider.parse(DATE_1970_01_01T01_01_01_001Z)),
-                                               tuple("bigDecimalValue", BigDecimal.valueOf(1000, 2)),
-                                               tuple("int", 10),
-                                               tuple("double", 10.00),
-                                               tuple("boolean", true),
-                                               tuple("string", "name"),
-                                               tuple("date", dateFormatterProvider.parse(DATE_1970_01_01T01_01_01_001Z)));
+        assertVariableInstancesAreConverted(variableInstances);
 
         // cleanup
         processRuntime.delete(ProcessPayloadBuilder.delete(initialVarsProcess));
     }
 
+    @Test
+    public void processAdminInstanceHasValidInitialVariables() {
+        securityUtil.logInAs("admin");
+
+        StartProcessPayload startProcessPayload = testStartProcessPayload();
+        // start a process with vars then check default and specified vars exist
+        ProcessInstance initialVarsProcess = processAdminRuntime.start(startProcessPayload);
+
+        assertThat(initialVarsProcess).isNotNull();
+        assertThat(initialVarsProcess.getStatus()).isEqualTo(ProcessInstance.ProcessInstanceStatus.RUNNING);
+
+        securityUtil.logInAs("user");
+
+        List<VariableInstance> variableInstances = processRuntime.variables(ProcessPayloadBuilder.variables().withProcessInstance(initialVarsProcess).build());
+
+        assertVariableInstancesAreConverted(variableInstances);
+
+        // cleanup
+        processRuntime.delete(ProcessPayloadBuilder.delete(initialVarsProcess));
+    }
 
     @Test
     public void testVariableValuesMapper() {
@@ -188,6 +178,51 @@ public class StartProcessPayloadVariablesTest {
     }
 
 
+    private StartProcessPayload testStartProcessPayload() {
+        VariableValue jsonNodeValue = new VariableValue("JsonNode", "{}");
+        Map<String, String> stringValue = new VariableValue("string", "name").toMap();
+        Map<String, String> intValue = new VariableValue("integer", "10").toMap();
+        Map<String, String> booleanValue = new VariableValue("boolean", "true").toMap();
+        Map<String, String> doubleValue = new VariableValue("double", "10.00").toMap();
+        Map<String, String> dateValue = new VariableValue("date", DATE_1970_01_01T01_01_01_001Z).toMap();
+        Map<String, String> bigDecimalValue = new VariableValue("BigDecimal", "10.00").toMap();
 
+        return ProcessPayloadBuilder.start()
+                                    .withProcessDefinitionKey("SingleTaskProcess")
+                                    .withVariable("jsonNodeValue", jsonNodeValue)
+                                    .withVariable("stringValue", stringValue)
+                                    .withVariable("intValue", intValue)
+                                    .withVariable("doubleValue", doubleValue)
+                                    .withVariable("booleanValue", booleanValue)
+                                    .withVariable("dateValue", dateValue)
+                                    .withVariable("bigDecimalValue", bigDecimalValue)
+                                    .withVariable("int", 10)
+                                    .withVariable("boolean", true)
+                                    .withVariable("double", 10.00)
+                                    .withVariable("string", "name")
+                                    .withVariable("date", dateFormatterProvider.parse(DATE_1970_01_01T01_01_01_001Z))
+                                    .build();
+    }
+
+    private void assertVariableInstancesAreConverted(List<VariableInstance> variableInstances) {
+        assertThat(variableInstances).isNotNull()
+                                     .hasSize(12)
+                                     .extracting("name", "value")
+                                     .contains(tuple("jsonNodeValue", JsonNodeFactory.instance.objectNode()),
+                                               tuple("stringValue", "name"),
+                                               tuple("intValue", 10),
+                                               tuple("doubleValue", 10.00),
+                                               tuple("booleanValue", true),
+                                               tuple("dateValue",
+                                                     dateFormatterProvider.parse(DATE_1970_01_01T01_01_01_001Z)),
+                                               tuple("bigDecimalValue", BigDecimal.valueOf(1000, 2)),
+                                               tuple("int", 10),
+                                               tuple("double", 10.00),
+                                               tuple("boolean", true),
+                                               tuple("string", "name"),
+                                               tuple("date",
+                                                     dateFormatterProvider.parse(DATE_1970_01_01T01_01_01_001Z)));
+
+    }
 
 }

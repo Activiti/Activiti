@@ -64,18 +64,22 @@ public class ProcessAdminRuntimeImpl implements ProcessAdminRuntime {
 
     private final ProcessVariablesPayloadValidator processVariablesValidator;
 
+    private final VariableValuesPayloadConverter variableValuesPayloadConverter;
+
     public ProcessAdminRuntimeImpl(RepositoryService repositoryService,
                                    APIProcessDefinitionConverter processDefinitionConverter,
                                    RuntimeService runtimeService,
                                    APIProcessInstanceConverter processInstanceConverter,
                                    ApplicationEventPublisher eventPublisher,
-                                   ProcessVariablesPayloadValidator processVariablesValidator) {
+                                   ProcessVariablesPayloadValidator processVariablesValidator,
+                                   VariableValuesPayloadConverter variableValuesPayloadConverter) {
         this.repositoryService = repositoryService;
         this.processDefinitionConverter = processDefinitionConverter;
         this.runtimeService = runtimeService;
         this.processInstanceConverter = processInstanceConverter;
         this.eventPublisher = eventPublisher;
         this.processVariablesValidator = processVariablesValidator;
+        this.variableValuesPayloadConverter = variableValuesPayloadConverter;
     }
 
     @Override
@@ -129,6 +133,8 @@ public class ProcessAdminRuntimeImpl implements ProcessAdminRuntime {
         if (processDefinition == null) {
             throw new IllegalStateException("At least Process Definition Id or Key needs to be provided to start a process");
         }
+
+        startProcessPayload = variableValuesPayloadConverter.convert(startProcessPayload);
 
         processVariablesValidator.checkStartProcessPayloadVariables(startProcessPayload, processDefinition.getId());
 

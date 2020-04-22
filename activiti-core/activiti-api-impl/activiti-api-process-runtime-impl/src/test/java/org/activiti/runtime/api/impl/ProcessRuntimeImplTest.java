@@ -108,6 +108,7 @@ public class ProcessRuntimeImplTest {
                 null,
                 processVariableValidator,
                 variableValuesPayloadConverter));
+
     }
 
     @Test
@@ -229,6 +230,8 @@ public class ProcessRuntimeImplTest {
             "test-create",
             "business-key",
             emptyMap());
+
+        doReturn(startPayload).when(variableValuesPayloadConverter).convert(startPayload);
 
         doReturn(processDefinition)
             .when(processRuntime)
