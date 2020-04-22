@@ -26,10 +26,7 @@ import org.activiti.api.process.model.payloads.StartProcessPayload;
 import org.activiti.api.process.model.payloads.VariableValue;
 import org.springframework.util.Assert;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 public class VariableValuesPayloadConverter {
-    private final ObjectMapper objectMapper = new ObjectMapper();
 
     private final VariableValueConverter variableValueConverter;
 
