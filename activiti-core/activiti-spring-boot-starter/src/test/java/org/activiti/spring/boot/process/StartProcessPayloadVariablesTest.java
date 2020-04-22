@@ -3,15 +3,15 @@ package org.activiti.spring.boot.process;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import java.math.BigDecimal;
-import java.text.ParseException;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.activiti.api.model.shared.model.VariableInstance;
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
@@ -28,10 +28,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @ContextConfiguration
@@ -60,7 +56,7 @@ public class StartProcessPayloadVariablesTest {
     }
 
     @Test
-    public void processInstanceHasValidInitialVariables() throws ParseException, JsonProcessingException {
+    public void processInstanceHasValidInitialVariables() {
         securityUtil.logInAs("user");
         ProcessRuntimeConfiguration configuration = processRuntime.configuration();
         assertThat(configuration).isNotNull();
@@ -104,7 +100,7 @@ public class StartProcessPayloadVariablesTest {
                                                tuple("doubleValue", 10.00),
                                                tuple("booleanValue", true),
                                                tuple("dateValue", dateFormatterProvider.parse(DATE_1970_01_01T01_01_01_001Z)),
-                                               tuple("bigDecimalValue", BigDecimal.valueOf(10.00)),
+                                               tuple("bigDecimalValue", BigDecimal.valueOf(1000, 2)),
                                                tuple("int", 10),
                                                tuple("double", 10.00),
                                                tuple("boolean", true),
@@ -117,7 +113,7 @@ public class StartProcessPayloadVariablesTest {
 
 
     @Test
-    public void testVariableValuesMapper() throws ParseException, JsonProcessingException {
+    public void testVariableValuesMapper() {
         // given
         VariableValuesPayloadConverter subject = new VariableValuesPayloadConverter(variableValueConverter);
 
@@ -135,7 +131,7 @@ public class StartProcessPayloadVariablesTest {
         input.put("doubleValue", new VariableValue("double", "10.00").toMap());
         input.put("localDateValue", new VariableValue("LocalDate", "2020-04-20").toMap());
         input.put("dateValue", new VariableValue("Date", DATE_1970_01_01T01_01_01_001Z).toMap());
-        input.put("bigDecimalValue", new VariableValue("BigDecimal", "10.01").toMap());
+        input.put("bigDecimalValue", new VariableValue("BigDecimal", "10.00").toMap());
         input.put("jsonNodeValue", new VariableValue("JsonNode", "{}").toMap());
         input.put("jsonNodeValue2", new VariableValue("JsonNode", "{}"));
         input.put("mapValue", new VariableValue("Map", "{}").toMap());
@@ -156,14 +152,14 @@ public class StartProcessPayloadVariablesTest {
                           .containsEntry("doubleValue", 10.00)
                           .containsEntry("localDateValue", LocalDate.of(2020, 4, 20))
                           .containsEntry("dateValue", dateFormatterProvider.parse(DATE_1970_01_01T01_01_01_001Z))
-                          .containsEntry("bigDecimalValue", BigDecimal.valueOf(10.01))
+                          .containsEntry("bigDecimalValue", BigDecimal.valueOf(1000, 2))
                           .containsEntry("jsonNodeValue", JsonNodeFactory.instance.objectNode())
                           .containsEntry("jsonNodeValue2", JsonNodeFactory.instance.objectNode())
                           .containsEntry("mapValue", Collections.emptyMap());
     }
 
     @Test
-    public void testVariableValueConverter() throws ParseException, JsonProcessingException {
+    public void testVariableValueConverter() {
         // when
         String nullValue = variableValueConverter.convert(new VariableValue("String", null));
         String stringValue = variableValueConverter.convert(new VariableValue("string", "name"));
@@ -173,7 +169,7 @@ public class StartProcessPayloadVariablesTest {
         Double doubleValue = variableValueConverter.convert(new VariableValue("double", "10.00"));
         LocalDate localDateValue = variableValueConverter.convert(new VariableValue("LocalDate", "2020-04-20"));
         Date dateValue = variableValueConverter.convert(new VariableValue("Date", DATE_1970_01_01T01_01_01_001Z));
-        BigDecimal bigDecimalValue = variableValueConverter.convert(new VariableValue("BigDecimal", "10.01"));
+        BigDecimal bigDecimalValue = variableValueConverter.convert(new VariableValue("BigDecimal", "10.00"));
         JsonNode jsonNodeValue = variableValueConverter.convert(new VariableValue("JsonNode", "{}"));
         Map<String, Object> mapValue = variableValueConverter.convert(new VariableValue("Map", "{}"));
 
@@ -186,7 +182,7 @@ public class StartProcessPayloadVariablesTest {
         assertThat(doubleValue).isEqualTo(10.00);
         assertThat(localDateValue).isEqualTo(LocalDate.of(2020, 4, 20));
         assertThat(dateValue).isEqualTo(dateFormatterProvider.parse(DATE_1970_01_01T01_01_01_001Z));
-        assertThat(bigDecimalValue).isEqualTo(BigDecimal.valueOf(10.01));
+        assertThat(bigDecimalValue).isEqualTo(BigDecimal.valueOf(1000, 2));
         assertThat(jsonNodeValue).isEqualTo(JsonNodeFactory.instance.objectNode());
         assertThat(mapValue).isEqualTo(Collections.emptyMap());
     }

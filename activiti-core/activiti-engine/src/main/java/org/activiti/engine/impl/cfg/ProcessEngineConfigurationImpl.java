@@ -12,11 +12,13 @@
  */
 package org.activiti.engine.impl.cfg;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.math.BigDecimal;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
@@ -1938,6 +1940,8 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       variableTypes.addType(new DoubleType());
       variableTypes.addType(new UUIDType());
 
+        objectMapper.configOverride(BigDecimal.class)
+            .setFormat(JsonFormat.Value.forShape(JsonFormat.Shape.STRING));
       JsonTypeConverter jsonTypeConverter = new JsonTypeConverter(objectMapper,
             javaClassFieldForJackson);
       variableTypes.addType(new JsonType(getMaxLengthString(), objectMapper,serializePOJOsInVariablesToJson,
