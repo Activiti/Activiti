@@ -18,6 +18,7 @@ package org.activiti.runtime.api.conf;
 
 import static java.util.Collections.emptyList;
 
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import org.activiti.api.process.model.events.BPMNActivityCancelledEvent;
@@ -108,14 +109,19 @@ import org.activiti.runtime.api.event.internal.TimerFailedListenerDelegate;
 import org.activiti.runtime.api.event.internal.TimerFiredListenerDelegate;
 import org.activiti.runtime.api.event.internal.TimerRetriesDecrementedListenerDelegate;
 import org.activiti.runtime.api.event.internal.TimerScheduledListenerDelegate;
+import org.activiti.runtime.api.impl.DateConverter;
 import org.activiti.runtime.api.impl.EventSubscriptionVariablesMappingProvider;
 import org.activiti.runtime.api.impl.ExpressionResolver;
+import org.activiti.runtime.api.impl.JsonNodeConverter;
+import org.activiti.runtime.api.impl.MapConverter;
 import org.activiti.runtime.api.impl.ProcessAdminRuntimeImpl;
 import org.activiti.runtime.api.impl.ProcessRuntimeImpl;
 import org.activiti.runtime.api.impl.ProcessVariablesPayloadValidator;
 import org.activiti.runtime.api.impl.RuntimeReceiveMessagePayloadEventListener;
 import org.activiti.runtime.api.impl.RuntimeSignalPayloadEventListener;
 import org.activiti.runtime.api.impl.VariableNameValidator;
+import org.activiti.runtime.api.impl.VariableValueConverter;
+import org.activiti.runtime.api.impl.VariableValuesPayloadConverter;
 import org.activiti.runtime.api.impl.VariablesMappingProvider;
 import org.activiti.runtime.api.message.ReceiveMessagePayloadEventListener;
 import org.activiti.runtime.api.model.impl.APIDeploymentConverter;
@@ -133,9 +139,11 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.convert.ApplicationConversionService;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.format.datetime.standard.DateTimeFormatterRegistrar;
 
 @Configuration
 @AutoConfigureAfter(CommonRuntimeAutoConfiguration.class)
@@ -178,7 +186,8 @@ public class ProcessRuntimeAutoConfiguration {
                                          APIDeploymentConverter apiDeploymentConverter,
                                          ProcessRuntimeConfiguration processRuntimeConfiguration,
                                          ApplicationEventPublisher eventPublisher,
-                                         ProcessVariablesPayloadValidator processVariablesValidator) {
+                                         ProcessVariablesPayloadValidator processVariablesValidator,
+                                         VariableValuesPayloadConverter variableValuesPayloadConverter) {
         return new ProcessRuntimeImpl(repositoryService,
                 processDefinitionConverter,
                 runtimeService,
@@ -188,7 +197,8 @@ public class ProcessRuntimeAutoConfiguration {
                 apiDeploymentConverter,
                 processRuntimeConfiguration,
                 eventPublisher,
-                processVariablesValidator);
+                processVariablesValidator,
+                variableValuesPayloadConverter);
     }
 
     @Bean
@@ -198,7 +208,8 @@ public class ProcessRuntimeAutoConfiguration {
                                                    RuntimeService runtimeService,
                                                    APIProcessInstanceConverter processInstanceConverter,
                                                    ApplicationEventPublisher eventPublisher,
-                                                   ProcessVariablesPayloadValidator processVariablesValidator) {
+                                                   ProcessVariablesPayloadValidator processVariablesValidator,
+                                                   VariableValuesPayloadConverter variableValuesPayloadConverter) {
         return new ProcessAdminRuntimeImpl(repositoryService,
                 processDefinitionConverter,
                 runtimeService,
@@ -250,6 +261,29 @@ public class ProcessRuntimeAutoConfiguration {
                 variableValidationService,
                 variableNameValidator,
                 expressionResolver);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public VariableValueConverter variableValueConverter(DateFormatterProvider dateFormatterProvider) {
+        ApplicationConversionService conversionService = (ApplicationConversionService) ApplicationConversionService.getSharedInstance();
+
+        conversionService.addConverter(new DateConverter(dateFormatterProvider));
+        conversionService.addConverter(new JsonNodeConverter());
+        conversionService.addConverter(new MapConverter());
+
+        DateTimeFormatterRegistrar registrar = new DateTimeFormatterRegistrar();
+        registrar.setDateFormatter(DateTimeFormatter.ofPattern(dateFormatterProvider.getDateFormatPattern()));
+        registrar.setDateTimeFormatter(DateTimeFormatter.ofPattern(dateFormatterProvider.getDateFormatPattern()));
+        registrar.registerFormatters(conversionService);
+
+        return new VariableValueConverter(conversionService);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public VariableValuesPayloadConverter variableValuesPayloadConverter(VariableValueConverter variableValueConverter) {
+        return new VariableValuesPayloadConverter(variableValueConverter);
     }
 
     @Bean

@@ -90,6 +90,8 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
 
     private final ProcessVariablesPayloadValidator processVariablesValidator;
 
+    private final VariableValuesPayloadConverter variableValuesPayloadConverter;
+
     public ProcessRuntimeImpl(RepositoryService repositoryService,
                               APIProcessDefinitionConverter processDefinitionConverter,
                               RuntimeService runtimeService,
@@ -99,7 +101,8 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
                               APIDeploymentConverter deploymentConverter,
                               ProcessRuntimeConfiguration configuration,
                               ApplicationEventPublisher eventPublisher,
-                              ProcessVariablesPayloadValidator processVariablesValidator) {
+                              ProcessVariablesPayloadValidator processVariablesValidator,
+                              VariableValuesPayloadConverter variableValuesPayloadConverter) {
         this.repositoryService = repositoryService;
         this.processDefinitionConverter = processDefinitionConverter;
         this.runtimeService = runtimeService;
@@ -110,6 +113,7 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
         this.configuration = configuration;
         this.eventPublisher = eventPublisher;
         this.processVariablesValidator = processVariablesValidator;
+        this.variableValuesPayloadConverter = variableValuesPayloadConverter;
     }
 
     @Override
@@ -252,6 +256,8 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
 
     @Override
     public ProcessInstance start(StartProcessPayload startProcessPayload) {
+
+
         return processInstanceConverter.from(this.createProcessInstanceBuilder(startProcessPayload).start());
     }
 
@@ -279,6 +285,8 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
     private ProcessInstanceBuilder createProcessInstanceBuilder(StartProcessPayload startProcessPayload) {
         ProcessDefinition processDefinition = getProcessDefinitionAndCheckUserHasRights(startProcessPayload.getProcessDefinitionId(),
             startProcessPayload.getProcessDefinitionKey());
+
+        startProcessPayload = variableValuesPayloadConverter.convert(startProcessPayload);
 
         processVariablesValidator.checkStartProcessPayloadVariables(startProcessPayload, processDefinition.getId());
 

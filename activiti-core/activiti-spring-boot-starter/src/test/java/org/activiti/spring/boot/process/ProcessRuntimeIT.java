@@ -1,12 +1,13 @@
 package org.activiti.spring.boot.process;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.activiti.api.process.model.Deployment;
 import org.activiti.api.process.model.ProcessDefinition;
 import org.activiti.api.process.model.ProcessInstance;
@@ -28,6 +29,7 @@ import org.activiti.engine.RuntimeService;
 import org.activiti.runtime.api.impl.ProcessAdminRuntimeImpl;
 import org.activiti.runtime.api.impl.ProcessRuntimeImpl;
 import org.activiti.runtime.api.impl.ProcessVariablesPayloadValidator;
+import org.activiti.runtime.api.impl.VariableValuesPayloadConverter;
 import org.activiti.runtime.api.model.impl.APIDeploymentConverter;
 import org.activiti.runtime.api.model.impl.APIProcessDefinitionConverter;
 import org.activiti.runtime.api.model.impl.APIProcessInstanceConverter;
@@ -88,6 +90,9 @@ public class ProcessRuntimeIT {
     ProcessVariablesPayloadValidator processVariablesValidator;
 
     @Autowired
+    VariableValuesPayloadConverter variableValuesPayloadConverter;
+
+    @Autowired
     private ProcessRuntimeConfiguration configuration;
 
     @Autowired
@@ -123,7 +128,8 @@ public class ProcessRuntimeIT {
                                                      deploymentConverter,
                                                      configuration,
                                                      eventPublisher,
-                                                     processVariablesValidator));
+                                                     processVariablesValidator,
+                                                     variableValuesPayloadConverter));
 
         processAdminRuntimeMock = spy(new ProcessAdminRuntimeImpl(repositoryService,
                                                      processDefinitionConverter,
