@@ -1,6 +1,8 @@
 package org.activiti.api.process.model.payloads;
 
 import java.io.Serializable;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -47,8 +49,16 @@ public class VariableValue implements Serializable {
         return Objects.equals(type, other.type) && Objects.equals(value, other.value);
     }
 
-    @Override
-    public String toString() {
+    public Map<String, String> toMap() {
+        Map<String, String> result = new LinkedHashMap<>(2);
+
+        result.put("type", type);
+        result.put("value", value);
+
+        return result;
+    }
+
+    public String toJson() {
         StringBuilder builder = new StringBuilder();
         builder.append("{\"type\":\"")
                .append(type)
@@ -60,7 +70,12 @@ public class VariableValue implements Serializable {
         return builder.toString();
     }
 
-    public String escape( String value )
+    @Override
+    public String toString() {
+        return toJson();
+    }
+
+    private String escape( String value )
     {
         StringBuilder builder = new StringBuilder();
         builder.append( "\"" );

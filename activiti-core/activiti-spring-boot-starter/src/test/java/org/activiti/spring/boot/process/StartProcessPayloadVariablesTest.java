@@ -65,16 +65,18 @@ public class StartProcessPayloadVariablesTest {
         ProcessRuntimeConfiguration configuration = processRuntime.configuration();
         assertThat(configuration).isNotNull();
 
-        String stringValue = new VariableValue("String", "name").toString();
-        String intValue = new VariableValue("Integer", "10").toString();
-        String booleanValue = new VariableValue("Boolean", "true").toString();
-        String doubleValue = new VariableValue("Double", "10.00").toString();
-        String dateValue = new VariableValue("Date", DATE_1970_01_01T01_01_01_001Z).toString();
-        String bigDecimalValue = new VariableValue("BigDecimal", "10.00").toString();
+        VariableValue jsonNodeValue = new VariableValue("JsonNode", "{}");
+        Map<String, String> stringValue = new VariableValue("string", "name").toMap();
+        Map<String, String> intValue = new VariableValue("integer", "10").toMap();
+        Map<String, String> booleanValue = new VariableValue("boolean", "true").toMap();
+        Map<String, String> doubleValue = new VariableValue("double", "10.00").toMap();
+        Map<String, String> dateValue = new VariableValue("date", DATE_1970_01_01T01_01_01_001Z).toMap();
+        Map<String, String> bigDecimalValue = new VariableValue("BigDecimal", "10.00").toMap();
 
         // start a process with vars then check default and specified vars exist
         ProcessInstance initialVarsProcess = processRuntime.start(ProcessPayloadBuilder.start()
                                                                                        .withProcessDefinitionKey("SingleTaskProcess")
+                                                                                       .withVariable("jsonNodeValue", jsonNodeValue)
                                                                                        .withVariable("stringValue", stringValue)
                                                                                        .withVariable("intValue", intValue)
                                                                                        .withVariable("doubleValue", doubleValue)
@@ -87,15 +89,17 @@ public class StartProcessPayloadVariablesTest {
                                                                                        .withVariable("string", "name")
                                                                                        .withVariable("date", dateFormatterProvider.parse(DATE_1970_01_01T01_01_01_001Z))
                                                                                        .build());
+
         assertThat(initialVarsProcess).isNotNull();
         assertThat(initialVarsProcess.getStatus()).isEqualTo(ProcessInstance.ProcessInstanceStatus.RUNNING);
 
         List<VariableInstance> variableInstances = processRuntime.variables(ProcessPayloadBuilder.variables().withProcessInstance(initialVarsProcess).build());
 
         assertThat(variableInstances).isNotNull()
-                                     .hasSize(11)
+                                     .hasSize(12)
                                      .extracting("name","value")
-                                     .contains(tuple("stringValue","name"),
+                                     .contains(tuple("jsonNodeValue",JsonNodeFactory.instance.objectNode()),
+                                               tuple("stringValue","name"),
                                                tuple("intValue", 10),
                                                tuple("doubleValue", 10.00),
                                                tuple("booleanValue", true),
@@ -122,18 +126,19 @@ public class StartProcessPayloadVariablesTest {
         input.put("int", 123);
         input.put("string", "123");
         input.put("bool", true);
-        input.put("nullValue", new VariableValue("String", null).toString());
-        input.put("stringValue", new VariableValue("string", "name").toString());
-        input.put("quoteValue", new VariableValue("string", "\"").toString());
-        input.put("intValue", new VariableValue("int", "10").toString());
-        input.put("longValue", new VariableValue("long", "10").toString());
-        input.put("booleanValue", new VariableValue("boolean", "true").toString());
-        input.put("doubleValue", new VariableValue("double", "10.00").toString());
-        input.put("localDateValue", new VariableValue("LocalDate", "2020-04-20").toString());
-        input.put("dateValue", new VariableValue("Date", DATE_1970_01_01T01_01_01_001Z).toString());
-        input.put("bigDecimalValue", new VariableValue("BigDecimal", "10.01").toString());
-        input.put("jsonNodeValue", new VariableValue("JsonNode", "{}").toString());
-        input.put("mapValue", new VariableValue("Map", "{}").toString());
+        input.put("nullValue", new VariableValue("String", null).toMap());
+        input.put("stringValue", new VariableValue("string", "name").toMap());
+        input.put("quoteValue", new VariableValue("string", "\"").toMap());
+        input.put("intValue", new VariableValue("int", "10").toMap());
+        input.put("longValue", new VariableValue("long", "10").toMap());
+        input.put("booleanValue", new VariableValue("boolean", "true").toMap());
+        input.put("doubleValue", new VariableValue("double", "10.00").toMap());
+        input.put("localDateValue", new VariableValue("LocalDate", "2020-04-20").toMap());
+        input.put("dateValue", new VariableValue("Date", DATE_1970_01_01T01_01_01_001Z).toMap());
+        input.put("bigDecimalValue", new VariableValue("BigDecimal", "10.01").toMap());
+        input.put("jsonNodeValue", new VariableValue("JsonNode", "{}").toMap());
+        input.put("jsonNodeValue2", new VariableValue("JsonNode", "{}"));
+        input.put("mapValue", new VariableValue("Map", "{}").toMap());
 
         // when
         Map<String, Object> result = subject.mapVariableValues(input);
@@ -153,6 +158,7 @@ public class StartProcessPayloadVariablesTest {
                           .containsEntry("dateValue", dateFormatterProvider.parse(DATE_1970_01_01T01_01_01_001Z))
                           .containsEntry("bigDecimalValue", BigDecimal.valueOf(10.01))
                           .containsEntry("jsonNodeValue", JsonNodeFactory.instance.objectNode())
+                          .containsEntry("jsonNodeValue2", JsonNodeFactory.instance.objectNode())
                           .containsEntry("mapValue", Collections.emptyMap());
     }
 

@@ -54,14 +54,24 @@ public class VariableValuesPayloadConverter {
     }
 
     private Map.Entry<String, Object> parseValue(Map.Entry<String, Object> entry) {
-        Object value = entry.getValue();
+        Object entryValue = entry.getValue();
 
         try {
-            VariableValue variableValue = objectMapper.readValue(value.toString(),
-                                                                 VariableValue.class);
-            value = variableValueConverter.convert(variableValue);
+            if(Map.class.isInstance(entryValue)) {
+                Map<String, String> valuesMap = Map.class.cast(entryValue);
+
+                if(valuesMap.containsKey("type") && valuesMap.containsKey("value")) {
+                    String type = (String) valuesMap.get("type");
+                    String value = (String) valuesMap.get("value");
+
+                    entryValue = variableValueConverter.convert(new VariableValue(type, value));
+                }
+
+            } else if (VariableValue.class.isInstance(entryValue)) {
+                entryValue = variableValueConverter.convert(VariableValue.class.cast(entryValue));
+            }
         } catch (Exception ignored) { }
 
-        return new AbstractMap.SimpleImmutableEntry<>(entry.getKey(), value);
+        return new AbstractMap.SimpleImmutableEntry<>(entry.getKey(), entryValue);
     }
 }
