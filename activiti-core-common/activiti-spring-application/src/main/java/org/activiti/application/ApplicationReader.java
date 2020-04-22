@@ -21,8 +21,7 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
-
-import org.apache.commons.io.IOUtils;
+import org.springframework.util.StreamUtils;
 
 public class ApplicationReader {
 
@@ -58,7 +57,7 @@ public class ApplicationReader {
 
     private byte[] readBytes(ZipInputStream zipInputStream) {
         try {
-            return IOUtils.toByteArray(zipInputStream);
+            return StreamUtils.copyToByteArray(zipInputStream);
         } catch (IOException e) {
             throw new ApplicationLoadException("Unable to read zip file",
                                               e);

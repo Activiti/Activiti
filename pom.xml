@@ -223,7 +223,6 @@
     <maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version>
     <spring-boot.version>2.1.12.RELEASE</spring-boot.version>
     <versions-maven-plugin.version>2.7</versions-maven-plugin.version>
-    <commons-io.version>2.6</commons-io.version>
     <awaitility.version>3.0.0</awaitility.version>
 
     <!-- configuration properties for tests -->
@@ -274,11 +273,6 @@
         <groupId>org.awaitility</groupId>
         <artifactId>awaitility</artifactId>
         <version>${awaitility.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>commons-io</groupId>
-        <artifactId>commons-io</artifactId>
-        <version>${commons-io.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
