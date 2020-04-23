@@ -10,7 +10,7 @@ import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.CallActivity;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.IOParameter;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class CallActivityConverterTest extends AbstractConverterTest {
 

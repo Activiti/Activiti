@@ -6,7 +6,7 @@ import org.activiti.bpmn.converter.BpmnXMLConverter;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.ManualTask;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ManualTaskConverterTest extends AbstractConverterTest {
 

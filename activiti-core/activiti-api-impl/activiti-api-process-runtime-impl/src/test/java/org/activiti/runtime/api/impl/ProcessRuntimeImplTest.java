@@ -56,8 +56,8 @@ import org.activiti.engine.runtime.ProcessInstanceQuery;
 import org.activiti.runtime.api.model.impl.APIDeploymentConverter;
 import org.activiti.runtime.api.model.impl.APIProcessDefinitionConverter;
 import org.activiti.runtime.api.model.impl.APIProcessInstanceConverter;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Answers;
 import org.mockito.Mock;
 
@@ -86,7 +86,7 @@ public class ProcessRuntimeImplTest {
     @Mock
     APIProcessDefinitionConverter processDefinitionConverter;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         initMocks(this);
 

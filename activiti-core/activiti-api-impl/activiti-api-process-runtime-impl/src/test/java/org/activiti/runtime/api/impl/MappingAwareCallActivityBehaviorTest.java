@@ -22,8 +22,8 @@ import java.util.Map;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.spring.process.ProcessVariablesInitiator;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
@@ -46,7 +46,7 @@ public class MappingAwareCallActivityBehaviorTest {
     @Mock
     private ProcessVariablesInitiator processVariablesInitiator;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         initMocks(this);
     }

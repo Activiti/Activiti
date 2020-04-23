@@ -6,7 +6,7 @@ import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.DataStore;
 import org.activiti.bpmn.model.MessageFlow;
 import org.activiti.bpmn.model.Pool;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class MessageFlowConverterTest extends AbstractConverterTest {
 

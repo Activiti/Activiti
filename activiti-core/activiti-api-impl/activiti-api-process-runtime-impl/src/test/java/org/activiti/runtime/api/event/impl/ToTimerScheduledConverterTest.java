@@ -19,8 +19,8 @@ package org.activiti.runtime.api.event.impl;
 import org.activiti.api.process.model.events.BPMNTimerScheduledEvent;
 import org.activiti.api.runtime.model.impl.BPMNTimerImpl;
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
@@ -39,7 +39,7 @@ public class ToTimerScheduledConverterTest {
     @Mock
     private BPMNTimerConverter bpmnTimerConverter;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         initMocks(this);
     }

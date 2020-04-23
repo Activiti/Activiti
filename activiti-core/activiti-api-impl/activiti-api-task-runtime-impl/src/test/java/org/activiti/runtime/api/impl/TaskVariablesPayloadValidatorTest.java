@@ -27,7 +27,7 @@ import org.activiti.api.task.model.builders.TaskPayloadBuilder;
 import org.activiti.api.task.model.payloads.CreateTaskVariablePayload;
 import org.activiti.api.task.model.payloads.UpdateTaskVariablePayload;
 import org.activiti.common.util.DateFormatterProvider;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class TaskVariablesPayloadValidatorTest {
 

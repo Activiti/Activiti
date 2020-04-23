@@ -8,17 +8,14 @@ import org.activiti.core.common.project.model.ProjectManifest;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.spring.boot.security.util.SecurityUtil;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 public class ApplicationUpgradeIT {
 
@@ -38,12 +35,12 @@ public class ApplicationUpgradeIT {
 
     private List<String> deploymentIds;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         deploymentIds = new ArrayList<>();
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         deploymentIds.forEach(deploymentId -> repositoryService.deleteDeployment(deploymentId, true));
     }

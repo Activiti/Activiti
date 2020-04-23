@@ -20,14 +20,11 @@ import org.activiti.api.task.model.builders.TaskPayloadBuilder;
 import org.activiti.api.task.runtime.TaskRuntime;
 import org.activiti.spring.boot.security.util.SecurityUtil;
 import org.activiti.spring.boot.test.util.TaskCleanUpUtil;
-import org.junit.After;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
 
-@RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 public class TaskRuntimeSaveTaskTest {
     private static final String COMPLETE_REVIEW_TASK_PROCESS = "CompleteReviewTaskProcess";
@@ -37,14 +34,14 @@ public class TaskRuntimeSaveTaskTest {
 
     @Autowired
     private ProcessRuntime processRuntime;
-    
+
     @Autowired
     private SecurityUtil securityUtil;
 
     @Autowired
     private TaskCleanUpUtil taskCleanUpUtil;
 
-    @After
+    @AfterEach
     public void taskCleanUp(){
         taskCleanUpUtil.cleanUpWithAdmin();
     }
@@ -91,7 +88,7 @@ public class TaskRuntimeSaveTaskTest {
                 .isInstanceOf(NotFoundException.class);
 
     }
-    
+
     @Test()
     public void testSaveCompleteReviewOutcomeTasksProcessWithVariables() {
         // given
@@ -115,9 +112,9 @@ public class TaskRuntimeSaveTaskTest {
 
         assertThat(variables).extracting(VariableInstance::getName, VariableInstance::getValue)
                              .containsExactly(tuple("name", ""));
-        
+
         taskRuntime.save(new SaveTaskPayloadBuilder().withTaskId(task1.getId()).withVariable("name", "wrong").build());
-        
+
         taskRuntime.complete(TaskPayloadBuilder.complete().withTaskId(task1.getId()).build());
 
         // reject task
@@ -129,7 +126,7 @@ public class TaskRuntimeSaveTaskTest {
 
         assertThat(variables1).extracting(VariableInstance::getName, VariableInstance::getValue)
                               .containsExactly(tuple("name", "wrong"));
-        
+
         taskRuntime.complete(TaskPayloadBuilder.complete().withTaskId(task2.getId()).withVariable("approved", false).build());
 
         // fix task
@@ -138,7 +135,7 @@ public class TaskRuntimeSaveTaskTest {
         Task task3 = taskRuntime.tasks(Pageable.of(0, 10),TaskPayloadBuilder.tasks().build()).getContent().get(0);
 
         taskRuntime.save(new SaveTaskPayloadBuilder().withTaskId(task3.getId()).withVariable("name", "correct").build());
-        
+
         taskRuntime.complete(TaskPayloadBuilder.complete().withTaskId(task3.getId()).build());
 
         // approve task
@@ -150,16 +147,16 @@ public class TaskRuntimeSaveTaskTest {
 
         assertThat(variables2).extracting(VariableInstance::getName, VariableInstance::getValue)
                               .contains(tuple("name", "correct"));
-        
+
         taskRuntime.complete(TaskPayloadBuilder.complete().withTaskId(task4.getId()).withVariable("approved", true).build());
-        
+
         // then process completes
         Throwable throwable = catchThrowable(() ->
-                assertThat(processRuntime.processInstance(processInstance.getId())).isNull());    
-        
+                assertThat(processRuntime.processInstance(processInstance.getId())).isNull());
+
         assertThat(throwable)
                 .isInstanceOf(NotFoundException.class);
-        
-    }        
-    
+
+    }
+
 }

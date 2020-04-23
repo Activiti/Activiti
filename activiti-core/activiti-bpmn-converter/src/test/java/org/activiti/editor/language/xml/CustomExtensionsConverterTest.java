@@ -16,7 +16,7 @@ import org.activiti.bpmn.model.ImplementationType;
 import org.activiti.bpmn.model.Process;
 import org.activiti.bpmn.model.ServiceTask;
 import org.activiti.bpmn.model.TimerEventDefinition;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class CustomExtensionsConverterTest extends AbstractConverterTest {
 

@@ -1,7 +1,7 @@
 package org.activiti.editor.language.xml;
 
 import org.activiti.bpmn.model.BpmnModel;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ChineseConverterTest extends AbstractConverterTest {
 

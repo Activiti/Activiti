@@ -1,7 +1,7 @@
 package org.activiti.spring.process.model;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 
 import java.util.HashMap;
@@ -16,7 +16,7 @@ public class ExtensionTest {
     @Mock
     private ProcessVariablesMapping processVariablesMapping;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         initMocks(this);
         given(processVariablesMapping.getInputs()).willReturn(emptyMap());

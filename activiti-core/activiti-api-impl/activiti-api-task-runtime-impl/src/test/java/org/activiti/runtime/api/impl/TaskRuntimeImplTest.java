@@ -24,8 +24,8 @@ import org.activiti.api.task.model.payloads.UpdateTaskPayload;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.task.IdentityLink;
 import org.activiti.runtime.api.model.impl.APITaskConverter;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
@@ -56,7 +56,7 @@ public class TaskRuntimeImplTest {
     @Mock
     private IdentityLink identityLink;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         initMocks(this);
     }

@@ -40,8 +40,8 @@ import org.activiti.spring.process.variable.types.DateVariableType;
 import org.activiti.spring.process.variable.types.JavaObjectVariableType;
 import org.activiti.spring.process.variable.types.JsonObjectVariableType;
 import org.activiti.spring.process.variable.types.VariableType;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 
 public class ProcessVariablesPayloadValidatorTest {
@@ -60,7 +60,7 @@ public class ProcessVariablesPayloadValidatorTest {
         objectMapper,
         new DefaultDelegateInterceptor());
 
-    @Before
+    @BeforeEach
     public void setUp() {
         initMocks(this);
 

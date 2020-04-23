@@ -10,7 +10,7 @@ import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.ParallelGateway;
 import org.activiti.bpmn.model.SequenceFlow;
 import org.activiti.bpmn.model.SubProcess;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class FlowNodeInSubProcessConverterTest extends AbstractConverterTest {
 

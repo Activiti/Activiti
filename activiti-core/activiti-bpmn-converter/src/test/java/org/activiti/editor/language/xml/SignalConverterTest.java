@@ -6,7 +6,7 @@ import java.util.Collection;
 
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.Signal;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class SignalConverterTest extends AbstractConverterTest {
 

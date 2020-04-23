@@ -5,6 +5,7 @@ import static org.activiti.engine.impl.util.CollectionUtil.map;
 import static org.activiti.engine.impl.util.CollectionUtil.singletonMap;
 import static org.activiti.runtime.api.impl.MappingExecutionContext.buildMappingExecutionContext;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.tuple;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
@@ -19,8 +20,8 @@ import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.spring.process.ProcessExtensionService;
 import org.activiti.spring.process.model.Extension;
 import org.activiti.spring.process.model.ProcessExtensionModel;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -33,7 +34,7 @@ public class VariablesMappingProviderTest {
     @Mock
     private ProcessExtensionService processExtensionService;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         initMocks(this);
     }
@@ -379,16 +380,17 @@ public class VariablesMappingProviderTest {
                                                            tuple("task_input_variable_name_2", "static_value_1"));
     }
 
-    @Test(expected = ActivitiIllegalArgumentException.class)
+    @Test
     public void should_throwActivitiIllegalArgumentException_when_expressionIsOutputMapping() throws Exception {
         DelegateExecution execution = initExpressionResolverTest("expression-in-mapping-output-value.json",
             "Process_expressionMappingOutputValue");
 
-        variablesMappingProvider.calculateOutPutVariables(buildMappingExecutionContext(execution),
+        assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
+            .isThrownBy(() ->  variablesMappingProvider.calculateOutPutVariables(buildMappingExecutionContext(execution),
                                                           map(
                                                               "task_input_variable_name_1", "variable_value_1",
                                                               "task_input_variable_name_2", "${expression}"
-                                                          ));
+                                                          )));
     }
 
     @Test

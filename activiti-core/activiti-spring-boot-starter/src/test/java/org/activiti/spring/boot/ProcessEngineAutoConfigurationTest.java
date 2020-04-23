@@ -22,8 +22,8 @@ import org.activiti.spring.boot.process.validation.AsyncPropertyValidator;
 import org.activiti.validation.ProcessValidator;
 import org.activiti.validation.validator.ValidatorSet;
 import org.assertj.core.api.Condition;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
@@ -38,7 +38,7 @@ public class ProcessEngineAutoConfigurationTest {
     @Mock
     private ApplicationUpgradeContextService applicationUpgradeContextServiceMock;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         initMocks(this);
     }

@@ -26,8 +26,8 @@ import java.util.Map;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.interceptor.DelegateInterceptor;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 
 public class SimpleMapExpressionEvaluatorTest {
@@ -38,7 +38,7 @@ public class SimpleMapExpressionEvaluatorTest {
     @Mock
     private DelegateInterceptor delegateInterceptor;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         initMocks(this);
     }

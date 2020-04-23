@@ -7,7 +7,7 @@ import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.EventSubProcess;
 import org.activiti.bpmn.model.Message;
 import org.activiti.bpmn.model.StartEvent;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class StartEventNonInterruptingEventSubprocessConverterTest extends AbstractConverterTest {
 

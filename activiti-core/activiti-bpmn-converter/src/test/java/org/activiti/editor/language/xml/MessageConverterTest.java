@@ -4,7 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.Message;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class MessageConverterTest extends AbstractConverterTest {
 
