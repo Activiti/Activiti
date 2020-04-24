@@ -32,6 +32,7 @@ import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 import java.util.List;
+
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
 import org.activiti.api.process.model.payloads.StartProcessPayload;
@@ -103,6 +104,7 @@ public class ProcessRuntimeImplTest {
                 null,
                 null,
                 processVariableValidator));
+
     }
 
     @Test

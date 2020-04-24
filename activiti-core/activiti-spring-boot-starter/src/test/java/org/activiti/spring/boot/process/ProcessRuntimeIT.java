@@ -1,12 +1,16 @@
 package org.activiti.spring.boot.process;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
+import static org.assertj.core.groups.Tuple.tuple;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.catchThrowable;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.verify;
+import org.activiti.api.model.shared.model.VariableInstance;
 import org.activiti.api.process.model.Deployment;
 import org.activiti.api.process.model.ProcessDefinition;
 import org.activiti.api.process.model.ProcessInstance;
@@ -137,11 +141,11 @@ public class ProcessRuntimeIT {
         RuntimeTestConfiguration.tagImageConnectorExecuted = false;
         RuntimeTestConfiguration.discardImageConnectorExecuted = false;
 
+        securityUtil.logInAs("user");
     }
 
     @Test
     public void shouldGetConfiguration() {
-        securityUtil.logInAs("user");
         //when
         ProcessRuntimeConfiguration configuration = processRuntime.configuration();
 
@@ -151,9 +155,6 @@ public class ProcessRuntimeIT {
 
     @Test
     public void shouldGetAvailableProcessDefinitionForTheGivenUser() {
-
-        securityUtil.logInAs("user");
-
         //when
         Page<ProcessDefinition> processDefinitionPage = processRuntime.processDefinitions(Pageable.of(0,
                 50));
@@ -168,9 +169,6 @@ public class ProcessRuntimeIT {
 
     @Test
     public void createProcessInstanceAndValidateHappyPath() {
-
-        securityUtil.logInAs("user");
-
         //when
         ProcessInstance categorizeProcess = processRuntime.start(ProcessPayloadBuilder.start()
                 .withProcessDefinitionKey(CATEGORIZE_PROCESS)
@@ -190,9 +188,6 @@ public class ProcessRuntimeIT {
 
     @Test
     public void should_createNewProcessInstanceWithoutRunningIt_whenCreateIsCalled() {
-
-        securityUtil.logInAs("user");
-
         ProcessInstance categorizeProcess = processRuntime.create(ProcessPayloadBuilder.start()
             .withProcessDefinitionKey(CATEGORIZE_PROCESS)
             .withVariable("expectedKey",
@@ -262,9 +257,6 @@ public class ProcessRuntimeIT {
 
     @Test
     public void createProcessInstanceAndValidateDiscardPath() {
-
-        securityUtil.logInAs("user");
-
         //when
         ProcessInstance categorizeProcess = processRuntime.start(ProcessPayloadBuilder.start()
                 .withProcessDefinitionKey(CATEGORIZE_PROCESS)
@@ -285,8 +277,6 @@ public class ProcessRuntimeIT {
 
     @Test
     public void shouldGetProcessDefinitionFromDefinitionKey() {
-        securityUtil.logInAs("user");
-
         //when
         ProcessDefinition categorizeHumanProcess = processRuntime.processDefinition(CATEGORIZE_HUMAN_PROCESS);
 
@@ -298,9 +288,6 @@ public class ProcessRuntimeIT {
 
     @Test
     public void getProcessInstances() {
-
-        securityUtil.logInAs("user");
-
         //when
         Page<ProcessInstance> processInstancePage = processRuntime.processInstances(Pageable.of(0,
                 50));
@@ -448,9 +435,6 @@ public class ProcessRuntimeIT {
 
     @Test
     public void deleteProcessInstance() {
-
-        securityUtil.logInAs("user");
-
         ProcessRuntimeConfiguration configuration = processRuntime.configuration();
         assertThat(configuration).isNotNull();
         Page<ProcessDefinition> processDefinitionPage = processRuntime.processDefinitions(Pageable.of(0,
@@ -495,7 +479,6 @@ public class ProcessRuntimeIT {
 
     @Test()
     public void adminFailTest() {
-        securityUtil.logInAs("user");
         //when
         Throwable throwable = catchThrowable(() -> processAdminRuntime.processInstance("fakeId"));
         //then
@@ -516,9 +499,6 @@ public class ProcessRuntimeIT {
 
     @Test
     public void updateProcessInstance() {
-
-        securityUtil.logInAs("user");
-
         ProcessRuntimeConfiguration configuration = processRuntime.configuration();
         assertThat(configuration).isNotNull();
         Page<ProcessDefinition> processDefinitionPage = processRuntime.processDefinitions(Pageable.of(0,
@@ -651,9 +631,6 @@ public class ProcessRuntimeIT {
 
     @Test
     public void getSubprocesses() {
-
-        securityUtil.logInAs("user");
-
         Page<ProcessInstance> processInstancePage;
         ProcessInstance parentProcess,subProcess;
 
@@ -706,8 +683,6 @@ public class ProcessRuntimeIT {
 
     @Test
     public void signal() {
-        securityUtil.logInAs("user");
-
         // when
         SignalPayload signalPayload = new SignalPayload("The Signal", null);
         processRuntimeMock.signal(signalPayload);
@@ -727,8 +702,6 @@ public class ProcessRuntimeIT {
 
     @Test
     public void signalAdmin() {
-        securityUtil.logInAs("admin");
-
         // when
         SignalPayload signalPayload = new SignalPayload("The Signal", null);
         processAdminRuntimeMock.signal(signalPayload);
@@ -747,8 +720,6 @@ public class ProcessRuntimeIT {
 
     @Test
     public void should_processInstanceAlwaysHaveAppVersion(){
-        securityUtil.logInAs("user");
-
         ProcessInstance processInstance = processRuntime.start(ProcessPayloadBuilder.start()
                                                                          .withProcessDefinitionKey(SUPER_PROCESS)
                                                                          .build());
@@ -757,8 +728,6 @@ public class ProcessRuntimeIT {
 
     @Test
     public void should_processDefinitionAlwaysHaveAppVersion(){
-        securityUtil.logInAs("user");
-
         Page<ProcessDefinition> processDefinitionPage = processRuntime.processDefinitions(Pageable.of(0,
                                                                                                       50));
         assertThat(processDefinitionPage.getContent()).isNotEmpty();
@@ -775,8 +744,6 @@ public class ProcessRuntimeIT {
 
     @Test
     public void should_selectLatestDeployment(){
-        securityUtil.logInAs("user");
-
         Deployment deployment = processRuntime.selectLatestDeployment();
 
         assertThat(deployment.getVersion()).isEqualTo(1);
@@ -786,8 +753,6 @@ public class ProcessRuntimeIT {
 
     @Test
     public void should_OnlyProcessDefinitionsFromLatestVersionRetrieved(){
-        securityUtil.logInAs("user");
-
         Deployment deployment = processRuntime.selectLatestDeployment();
 
         Page<ProcessDefinition> processDefinitionPage = processRuntime.processDefinitions(Pageable.of(0,
@@ -798,4 +763,28 @@ public class ProcessRuntimeIT {
                 .containsOnly(deployment.getVersion().toString());
     }
 
+
+    @Test
+    public void should_handleBigDecimalAndDoubleVariables() {
+        //given
+        BigDecimal bigDecimalValue = BigDecimal.valueOf(100000, 3);
+        double doubleValue = 2.0;
+        ProcessInstance processInstance = processRuntime.start(ProcessPayloadBuilder.start()
+            .withProcessDefinitionKey(CATEGORIZE_HUMAN_PROCESS)
+            .withVariable("bigDecimalVar", bigDecimalValue)
+            .withVariable("doubleVar", doubleValue)
+            .build());
+
+        //when
+        List<VariableInstance> variables = processRuntime.variables(
+            ProcessPayloadBuilder.variables().withProcessInstance(processInstance).build());
+
+        //then
+        assertThat(variables)
+            .extracting(VariableInstance::getName, VariableInstance::getValue)
+            .contains(
+                tuple("bigDecimalVar", bigDecimalValue),
+                tuple("doubleVar", doubleValue)
+                );
+    }
 }
