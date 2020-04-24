@@ -85,9 +85,6 @@ public class ProcessRuntimeImplTest {
     private ProcessVariablesPayloadValidator processVariableValidator;
 
     @Mock
-    private VariableValuesPayloadConverter variableValuesPayloadConverter;
-
-    @Mock
     APIProcessDefinitionConverter processDefinitionConverter;
 
     @BeforeEach
@@ -106,8 +103,7 @@ public class ProcessRuntimeImplTest {
                 deploymentConverter,
                 null,
                 null,
-                processVariableValidator,
-                variableValuesPayloadConverter));
+                processVariableValidator));
 
     }
 
@@ -230,8 +226,6 @@ public class ProcessRuntimeImplTest {
             "test-create",
             "business-key",
             emptyMap());
-
-        doReturn(startPayload).when(variableValuesPayloadConverter).convert(startPayload);
 
         doReturn(processDefinition)
             .when(processRuntime)

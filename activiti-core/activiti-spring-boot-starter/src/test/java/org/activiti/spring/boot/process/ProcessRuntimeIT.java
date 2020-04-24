@@ -31,7 +31,7 @@ import org.activiti.engine.RuntimeService;
 import org.activiti.runtime.api.impl.ProcessAdminRuntimeImpl;
 import org.activiti.runtime.api.impl.ProcessRuntimeImpl;
 import org.activiti.runtime.api.impl.ProcessVariablesPayloadValidator;
-import org.activiti.runtime.api.impl.VariableValuesPayloadConverter;
+import org.activiti.runtime.api.impl.ProcessVariablesPayloadConverter;
 import org.activiti.runtime.api.model.impl.APIDeploymentConverter;
 import org.activiti.runtime.api.model.impl.APIProcessDefinitionConverter;
 import org.activiti.runtime.api.model.impl.APIProcessInstanceConverter;
@@ -92,7 +92,7 @@ public class ProcessRuntimeIT {
     ProcessVariablesPayloadValidator processVariablesValidator;
 
     @Autowired
-    VariableValuesPayloadConverter variableValuesPayloadConverter;
+    ProcessVariablesPayloadConverter variableValuesPayloadConverter;
 
     @Autowired
     private ProcessRuntimeConfiguration configuration;
