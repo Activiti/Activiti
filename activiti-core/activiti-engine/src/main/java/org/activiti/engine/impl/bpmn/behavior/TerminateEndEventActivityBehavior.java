@@ -10,11 +10,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.activiti.engine.impl.bpmn.behavior;
 
+import java.util.List;
 import org.activiti.bpmn.model.CallActivity;
 import org.activiti.bpmn.model.FlowElement;
-import org.activiti.bpmn.model.FlowNode;
 import org.activiti.bpmn.model.SubProcess;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.event.ActivitiEventType;
@@ -27,8 +28,6 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
 import org.activiti.engine.impl.persistence.entity.HistoricActivityInstanceEntity;
-
-import java.util.List;
 
 /**
 
@@ -183,10 +182,13 @@ public class TerminateEndEventActivityBehavior extends FlowNodeActivityBehavior 
     if (Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
       if ((execution.isProcessInstanceType() && execution.getSuperExecutionId() == null) ||
           (execution.getParentId() == null && execution.getSuperExecutionId() != null)) {
-
-        Context.getProcessEngineConfiguration().getEventDispatcher()
-            .dispatchEvent(ActivitiEventBuilder.createCancelledEvent(execution.getId(), execution.getProcessInstanceId(),
-                execution.getProcessDefinitionId(), createDeleteReason(terminateEndEvent.getId())));
+          if (execution instanceof ExecutionEntity) {
+              Context.getProcessEngineConfiguration().getEventDispatcher()
+                  .dispatchEvent(
+                      ActivitiEventBuilder.createProcessCancelledEvent(
+                          ((ExecutionEntity) execution).getProcessInstance(),
+                          createDeleteReason(terminateEndEvent.getId())));
+          }
       }
     }
 
@@ -208,7 +210,7 @@ public class TerminateEndEventActivityBehavior extends FlowNodeActivityBehavior 
       dispatchExecutionCancelled(subProcessInstance, terminateEndEvent);
     }
   }
-  
+
 
   public static String createDeleteReason(String activityId) {
       return activityId != null ?  DeleteReason.TERMINATE_END_EVENT + ": " + activityId : DeleteReason.TERMINATE_END_EVENT;

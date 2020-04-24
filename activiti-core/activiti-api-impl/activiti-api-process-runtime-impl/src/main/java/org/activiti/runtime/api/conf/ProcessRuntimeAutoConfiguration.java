@@ -19,7 +19,6 @@ package org.activiti.runtime.api.conf;
 import static java.util.Collections.emptyList;
 
 import java.util.List;
-
 import org.activiti.api.process.model.events.BPMNActivityCancelledEvent;
 import org.activiti.api.process.model.events.BPMNActivityCompletedEvent;
 import org.activiti.api.process.model.events.BPMNActivityStartedEvent;
@@ -375,10 +374,13 @@ public class ProcessRuntimeAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean(name = "registerProcessCancelledListenerDelegate")
     public InitializingBean registerProcessCancelledListenerDelegate(RuntimeService runtimeService,
-                                                                     @Autowired(required = false) List<ProcessRuntimeEventListener<ProcessCancelledEvent>> eventListeners) {
-        return () -> runtimeService.addEventListener(new ProcessCancelledListenerDelegate(getInitializedListeners(eventListeners),
-                        new ToProcessCancelledConverter()),
-                ActivitiEventType.PROCESS_CANCELLED);
+        APIProcessInstanceConverter processInstanceConverter,
+        @Autowired(required = false) List<ProcessRuntimeEventListener<ProcessCancelledEvent>> eventListeners) {
+
+        return () -> runtimeService.addEventListener(
+            new ProcessCancelledListenerDelegate(getInitializedListeners(eventListeners),
+                new ToProcessCancelledConverter(processInstanceConverter)),
+            ActivitiEventType.PROCESS_CANCELLED);
     }
 
     @Bean
