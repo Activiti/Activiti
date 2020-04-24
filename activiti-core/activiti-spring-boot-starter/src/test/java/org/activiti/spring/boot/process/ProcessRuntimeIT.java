@@ -9,6 +9,7 @@ import static org.mockito.Mockito.verify;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
+
 import org.activiti.api.model.shared.model.VariableInstance;
 import org.activiti.api.process.model.Deployment;
 import org.activiti.api.process.model.ProcessDefinition;
@@ -31,7 +32,6 @@ import org.activiti.engine.RuntimeService;
 import org.activiti.runtime.api.impl.ProcessAdminRuntimeImpl;
 import org.activiti.runtime.api.impl.ProcessRuntimeImpl;
 import org.activiti.runtime.api.impl.ProcessVariablesPayloadValidator;
-import org.activiti.runtime.api.impl.ProcessVariablesPayloadConverter;
 import org.activiti.runtime.api.model.impl.APIDeploymentConverter;
 import org.activiti.runtime.api.model.impl.APIProcessDefinitionConverter;
 import org.activiti.runtime.api.model.impl.APIProcessInstanceConverter;
@@ -92,9 +92,6 @@ public class ProcessRuntimeIT {
     ProcessVariablesPayloadValidator processVariablesValidator;
 
     @Autowired
-    ProcessVariablesPayloadConverter variableValuesPayloadConverter;
-
-    @Autowired
     private ProcessRuntimeConfiguration configuration;
 
     @Autowired
@@ -130,16 +127,14 @@ public class ProcessRuntimeIT {
                                                      deploymentConverter,
                                                      configuration,
                                                      eventPublisher,
-                                                     processVariablesValidator,
-                                                     variableValuesPayloadConverter));
+                                                     processVariablesValidator));
 
         processAdminRuntimeMock = spy(new ProcessAdminRuntimeImpl(repositoryService,
                                                      processDefinitionConverter,
                                                      runtimeService,
                                                      processInstanceConverter,
                                                      eventPublisher,
-                                                     processVariablesValidator,
-                                                     variableValuesPayloadConverter));
+                                                     processVariablesValidator));
 
         //Reset test variables
         RuntimeTestConfiguration.processImageConnectorExecuted = false;
