@@ -179,10 +179,8 @@ public class TerminateEndEventActivityBehavior extends FlowNodeActivityBehavior 
   }
 
   protected void sendProcessInstanceCancelledEvent(DelegateExecution execution, FlowElement terminateEndEvent) {
-    if (Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-      if ((execution.isProcessInstanceType() && execution.getSuperExecutionId() == null) ||
-          (execution.getParentId() == null && execution.getSuperExecutionId() != null)) {
-          if (execution instanceof ExecutionEntity) {
+      if (Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+          if (execution.isProcessInstanceType() && execution instanceof ExecutionEntity) {
               Context.getProcessEngineConfiguration().getEventDispatcher()
                   .dispatchEvent(
                       ActivitiEventBuilder.createProcessCancelledEvent(
@@ -190,7 +188,6 @@ public class TerminateEndEventActivityBehavior extends FlowNodeActivityBehavior 
                           createDeleteReason(terminateEndEvent.getId())));
           }
       }
-    }
 
     dispatchExecutionCancelled(execution, terminateEndEvent);
   }
