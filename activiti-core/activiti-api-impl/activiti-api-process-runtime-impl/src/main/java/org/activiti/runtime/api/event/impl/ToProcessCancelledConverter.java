@@ -16,21 +16,25 @@
 
 package org.activiti.runtime.api.event.impl;
 
-import org.activiti.api.process.runtime.events.ProcessCancelledEvent;
-import org.activiti.api.runtime.model.impl.ProcessInstanceImpl;
-import org.activiti.engine.delegate.event.ActivitiCancelledEvent;
-
 import java.util.Optional;
+import org.activiti.api.process.runtime.events.ProcessCancelledEvent;
+import org.activiti.engine.delegate.event.ActivitiProcessCancelledEvent;
+import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.runtime.api.model.impl.APIProcessInstanceConverter;
 
-public class ToProcessCancelledConverter implements EventConverter<ProcessCancelledEvent, ActivitiCancelledEvent> {
+public class ToProcessCancelledConverter implements EventConverter<ProcessCancelledEvent, ActivitiProcessCancelledEvent> {
+
+    private final APIProcessInstanceConverter processInstanceConverter;
+
+    public ToProcessCancelledConverter(APIProcessInstanceConverter processInstanceConverter) {
+        this.processInstanceConverter = processInstanceConverter;
+    }
 
     @Override
-    public Optional<ProcessCancelledEvent> from(ActivitiCancelledEvent internalEvent) {
-        ProcessInstanceImpl processInstance = new ProcessInstanceImpl();
-        processInstance.setId(internalEvent.getProcessInstanceId());
-        processInstance.setProcessDefinitionId(internalEvent.getProcessDefinitionId());
+    public Optional<ProcessCancelledEvent> from(ActivitiProcessCancelledEvent internalEvent) {
         String cause = internalEvent.getCause() != null ? internalEvent.getCause().toString() : null;
-        return Optional.of(new ProcessCancelledImpl(processInstance,
+        return Optional.of(new ProcessCancelledImpl(
+            processInstanceConverter.from((ProcessInstance) internalEvent.getEntity()),
                 cause));
     }
 }
