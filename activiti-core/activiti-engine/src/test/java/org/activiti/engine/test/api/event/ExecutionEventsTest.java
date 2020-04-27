@@ -13,6 +13,7 @@
 package org.activiti.engine.test.api.event;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.groups.Tuple.tuple;
 
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventType;
@@ -118,9 +119,12 @@ public class ExecutionEventsTest extends PluggableActivitiTestCase {
 
     runtimeService.deleteProcessInstance(processInstance.getId(), "Testing events");
 
-    event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
-    assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_DELETED);
-    assertThat(((Execution) event.getEntity()).getProcessInstanceId()).isEqualTo(processInstance.getId());
+    assertThat(listener.getEventsReceived())
+        .extracting(ActivitiEvent::getType, ActivitiEvent::getProcessInstanceId)
+        .contains(
+            tuple(ActivitiEventType.PROCESS_CANCELLED, processInstance.getId()),
+            tuple(ActivitiEventType.ENTITY_DELETED, processInstance.getId())
+            );
     listener.clearEventsReceived();
   }
 
