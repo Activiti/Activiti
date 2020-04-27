@@ -116,7 +116,7 @@ public class ProcessRuntimeEventsIT {
 
 
     @Test
-    void should_emmitEventOnProcessDeletion() {
+    public void should_emmitEventOnProcessDeletion() {
         //given
         ProcessInstance processInstance = processRuntime.start(ProcessPayloadBuilder.start()
             .withProcessDefinitionKey(SINGLE_TASK_PROCESS)
