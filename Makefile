@@ -14,9 +14,9 @@ updatebot/push:
 updatebot/push-version:
 	@echo Doing updatebot push-version.....
 	updatebot push-version --kind maven \
-		org.activiti.dependencies:activiti-dependencies $(RELEASE_VERSION) \
-		org.activiti.api:activiti-api-dependencies $(RELEASE_VERSION) \
-		org.activiti.core.common:activiti-core-common-dependencies $(RELEASE_VERSION)
+		org.activiti:activiti-dependencies $(RELEASE_VERSION) \
+		org.activiti:activiti-api-dependencies $(RELEASE_VERSION) \
+		org.activiti:activiti-core-common-dependencies $(RELEASE_VERSION)
 
 updatebot/update:
 	@echo doing updatebot update $(RELEASE_VERSION)
