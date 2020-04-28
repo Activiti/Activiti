@@ -17,7 +17,7 @@
     <commons-fileupload.version>1.3.3</commons-fileupload.version>
     <el-api.version>2.2</el-api.version>
     <geronimo.version>1.1.1</geronimo.version>
-    <java-uuid-generator.version>3.1.4</java-uuid-generator.version>
+    <java-uuid-generator.version>4.0.1</java-uuid-generator.version>
     <javaGeom.version>0.11.1</javaGeom.version>
     <javax.enterprise.concurrent-api.version>1.0</javax.enterprise.concurrent-api.version>
     <jaxb-api.version>2.3.1</jaxb-api.version>
