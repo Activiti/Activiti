@@ -204,7 +204,7 @@
     <extra-enforcer-rules.version>1.2</extra-enforcer-rules.version>
     <jacoco-maven-plugin.version>0.8.5</jacoco-maven-plugin.version>
     <junit-jupiter.version>5.5.2</junit-jupiter.version>
-    <maven-checkstyle-plugin.version>3.1.0</maven-checkstyle-plugin.version>
+    <maven-checkstyle-plugin.version>3.1.1</maven-checkstyle-plugin.version>
     <maven-clean-plugin.version>3.1.0</maven-clean-plugin.version>
     <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
     <maven-deploy-plugin.version>2.8.2</maven-deploy-plugin.version>
@@ -215,7 +215,7 @@
     <maven-jar-plugin.version>3.1.2</maven-jar-plugin.version>
     <maven-javadoc-plugin.version>3.0.1</maven-javadoc-plugin.version>
     <maven-jxr-plugin.version>3.0.0</maven-jxr-plugin.version>
-    <maven-pmd-plugin.version>3.12.0</maven-pmd-plugin.version>
+    <maven-pmd-plugin.version>3.13.0</maven-pmd-plugin.version>
     <maven-project-info-reports-plugin.version>3.0.0</maven-project-info-reports-plugin.version>
     <maven-release-plugin.version>2.5.3</maven-release-plugin.version>
     <maven-resources-plugin.version>3.1.0</maven-resources-plugin.version>
