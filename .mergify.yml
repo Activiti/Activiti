@@ -6,7 +6,6 @@ pull_request_rules:
       - status-success=Travis CI - Pull Request
       - label!=do-not-merge
     actions:
-      delete_head_branch: {}
       merge:
         method: merge
         strict: true
@@ -20,7 +19,6 @@ pull_request_rules:
       - status-success=license/cla
       - label!=do-not-merge
     actions:
-      delete_head_branch: {}
       merge:
         method: squash
         strict: true

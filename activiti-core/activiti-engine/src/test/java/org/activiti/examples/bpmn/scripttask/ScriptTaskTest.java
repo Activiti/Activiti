@@ -1,9 +1,9 @@
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -11,6 +11,8 @@
  * limitations under the License.
  */
 package org.activiti.examples.bpmn.scripttask;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 import groovy.lang.MissingPropertyException;
 
@@ -26,8 +28,6 @@ import org.activiti.engine.test.Deployment;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
-
-
  */
 public class ScriptTaskTest extends PluggableActivitiTestCase {
 
@@ -39,8 +39,8 @@ public class ScriptTaskTest extends PluggableActivitiTestCase {
 
     ProcessInstance pi = runtimeService.startProcessInstanceByKey("setScriptResultToProcessVariable", variables);
 
-    assertEquals("hello", runtimeService.getVariable(pi.getId(), "existingProcessVariableName"));
-    assertEquals(pi.getId(), runtimeService.getVariable(pi.getId(), "newProcessVariableName"));
+    assertThat(runtimeService.getVariable(pi.getId(), "existingProcessVariableName")).isEqualTo("hello");
+    assertThat(runtimeService.getVariable(pi.getId(), "newProcessVariableName")).isEqualTo(pi.getId());
   }
 
   @Deployment
@@ -72,25 +72,25 @@ public class ScriptTaskTest extends PluggableActivitiTestCase {
   public void testAutoStoreVariables() {
     // The first script should NOT store anything as 'autoStoreVariables' is set to false
     String id = runtimeService.startProcessInstanceByKey("testAutoStoreVariables", CollectionUtil.map("a", 20, "b", 22)).getId();
-    assertNull(runtimeService.getVariable(id, "sum"));
+    assertThat(runtimeService.getVariable(id, "sum")).isNull();
 
     // The second script, after the user task will set the variable
     taskService.complete(taskService.createTaskQuery().singleResult().getId());
-    assertEquals(42, ((Number) runtimeService.getVariable(id, "sum")).intValue());
+    assertThat(((Number) runtimeService.getVariable(id, "sum")).intValue()).isEqualTo(42);
   }
 
   public void testNoScriptProvided() {
     try {
       repositoryService.createDeployment().addClasspathResource("org/activiti/examples/bpmn/scripttask/ScriptTaskTest.testNoScriptProvided.bpmn20.xml").deploy();
     } catch (ActivitiException e) {
-      assertTextPresent("No script provided", e.getMessage());
+      assertThat(e.getMessage()).contains("No script provided");
     }
   }
 
   @Deployment
   public void testDynamicScript() {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testDynamicScript", CollectionUtil.map("a", 20, "b", 22));
-    assertEquals(42, ((Number) runtimeService.getVariable(processInstance.getId(), "test")).intValue());
+    assertThat(((Number) runtimeService.getVariable(processInstance.getId(), "test")).intValue()).isEqualTo(42);
     taskService.complete(taskService.createTaskQuery().singleResult().getId());
     assertProcessEnded(processInstance.getId());
 
@@ -99,7 +99,7 @@ public class ScriptTaskTest extends PluggableActivitiTestCase {
     dynamicBpmnService.saveProcessDefinitionInfo(processDefinitionId, infoNode);
 
     processInstance = runtimeService.startProcessInstanceByKey("testDynamicScript", CollectionUtil.map("c", 10, "d", 12));
-    assertEquals(22, ((Number) runtimeService.getVariable(processInstance.getId(), "test2")).intValue());
+    assertThat(((Number) runtimeService.getVariable(processInstance.getId(), "test2")).intValue()).isEqualTo(22);
     taskService.complete(taskService.createTaskQuery().singleResult().getId());
     assertProcessEnded(processInstance.getId());
   }
@@ -115,7 +115,7 @@ public class ScriptTaskTest extends PluggableActivitiTestCase {
       }
     }
 
-    assertEquals(expectedExceptionClass, expectedException.getClass());
+    assertThat(expectedException.getClass()).isEqualTo(expectedExceptionClass);
   }
 
 }

@@ -28,7 +28,8 @@ import org.activiti.api.task.model.Task;
 import org.activiti.test.TaskSource;
 
 import static org.activiti.api.process.model.events.ProcessRuntimeEvent.ProcessEvents.PROCESS_STARTED;
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
 
 public class ProcessInstanceMatchers {
 

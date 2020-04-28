@@ -1,8 +1,9 @@
 package org.activiti.engine.test.api.history;
 
-import java.util.HashMap;
+import static org.activiti.engine.impl.util.CollectionUtil.map;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.List;
-import java.util.Map;
 
 import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.history.HistoricData;
@@ -16,7 +17,6 @@ import org.activiti.engine.task.Comment;
 import org.activiti.engine.task.Task;
 
 /**
-
  */
 public class ProcessInstanceLogQueryTest extends PluggableActivitiTestCase {
 
@@ -30,10 +30,10 @@ public class ProcessInstanceLogQueryTest extends PluggableActivitiTestCase {
     deployTwoTasksTestProcess();
 
     // Start process instance
-    Map<String, Object> vars = new HashMap<String, Object>();
-    vars.put("var1", "Hello");
-    vars.put("var2", 123);
-    this.processInstanceId = runtimeService.startProcessInstanceByKey("twoTasksProcess", vars).getId();
+    this.processInstanceId = runtimeService.startProcessInstanceByKey("twoTasksProcess", map(
+      "var1", "Hello",
+      "var2", 123
+    )).getId();
 
     // Add some comments
     taskService.addComment(null, processInstanceId, "Hello World");
@@ -61,45 +61,45 @@ public class ProcessInstanceLogQueryTest extends PluggableActivitiTestCase {
 
   public void testBaseProperties() {
     ProcessInstanceHistoryLog log = historyService.createProcessInstanceHistoryLogQuery(processInstanceId).singleResult();
-    assertNotNull(log.getId());
-    assertNotNull(log.getProcessDefinitionId());
-    assertNotNull(log.getStartActivityId());
-    assertNotNull(log.getDurationInMillis());
-    assertNotNull(log.getEndTime());
-    assertNotNull(log.getStartTime());
+    assertThat(log.getId()).isNotNull();
+    assertThat(log.getProcessDefinitionId()).isNotNull();
+    assertThat(log.getStartActivityId()).isNotNull();
+    assertThat(log.getDurationInMillis()).isNotNull();
+    assertThat(log.getEndTime()).isNotNull();
+    assertThat(log.getStartTime()).isNotNull();
   }
 
   public void testIncludeTasks() {
     ProcessInstanceHistoryLog log = historyService.createProcessInstanceHistoryLogQuery(processInstanceId).includeTasks().singleResult();
     List<HistoricData> events = log.getHistoricData();
-    assertEquals(2, events.size());
+    assertThat(events).hasSize(2);
 
     for (HistoricData event : events) {
-      assertTrue(event instanceof HistoricTaskInstance);
+      assertThat(event).isInstanceOf(HistoricTaskInstance.class);
     }
   }
 
   public void testIncludeComments() {
     ProcessInstanceHistoryLog log = historyService.createProcessInstanceHistoryLogQuery(processInstanceId).includeComments().singleResult();
     List<HistoricData> events = log.getHistoricData();
-    assertEquals(3, events.size());
+    assertThat(events).hasSize(3);
 
     for (HistoricData event : events) {
-      assertTrue(event instanceof Comment);
+      assertThat(event).isInstanceOf(Comment.class);
     }
   }
 
   public void testIncludeTasksandComments() {
     ProcessInstanceHistoryLog log = historyService.createProcessInstanceHistoryLogQuery(processInstanceId).includeTasks().includeComments().singleResult();
     List<HistoricData> events = log.getHistoricData();
-    assertEquals(5, events.size());
+    assertThat(events).hasSize(5);
 
     for (int i = 0; i < 5; i++) {
       HistoricData event = events.get(i);
       if (i < 2) { // tasks are created before comments
-        assertTrue(event instanceof HistoricTaskInstance);
+        assertThat(event).isInstanceOf(HistoricTaskInstance.class);
       } else {
-        assertTrue(event instanceof Comment);
+        assertThat(event).isInstanceOf(Comment.class);
       }
     }
   }
@@ -107,10 +107,10 @@ public class ProcessInstanceLogQueryTest extends PluggableActivitiTestCase {
   public void testIncludeActivities() {
     ProcessInstanceHistoryLog log = historyService.createProcessInstanceHistoryLogQuery(processInstanceId).includeActivities().singleResult();
     List<HistoricData> events = log.getHistoricData();
-    assertEquals(5, events.size());
+    assertThat(events).hasSize(5);
 
     for (HistoricData event : events) {
-      assertTrue(event instanceof HistoricActivityInstance);
+      assertThat(event).isInstanceOf(HistoricActivityInstance.class);
     }
   }
 
@@ -118,10 +118,10 @@ public class ProcessInstanceLogQueryTest extends PluggableActivitiTestCase {
     if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.FULL)) {
       ProcessInstanceHistoryLog log = historyService.createProcessInstanceHistoryLogQuery(processInstanceId).includeVariables().singleResult();
       List<HistoricData> events = log.getHistoricData();
-      assertEquals(2, events.size());
+      assertThat(events).hasSize(2);
 
       for (HistoricData event : events) {
-        assertTrue(event instanceof HistoricVariableInstance);
+        assertThat(event).isInstanceOf(HistoricVariableInstance.class);
       }
     }
   }
@@ -130,10 +130,10 @@ public class ProcessInstanceLogQueryTest extends PluggableActivitiTestCase {
     if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.FULL)) {
       ProcessInstanceHistoryLog log = historyService.createProcessInstanceHistoryLogQuery(processInstanceId).includeVariableUpdates().singleResult();
       List<HistoricData> events = log.getHistoricData();
-      assertEquals(3, events.size());
+      assertThat(events).hasSize(3);
 
       for (HistoricData event : events) {
-        assertTrue(event instanceof HistoricVariableUpdate);
+        assertThat(event).isInstanceOf(HistoricVariableUpdate.class);
       }
     }
   }
@@ -143,7 +143,7 @@ public class ProcessInstanceLogQueryTest extends PluggableActivitiTestCase {
       ProcessInstanceHistoryLog log = historyService.createProcessInstanceHistoryLogQuery(processInstanceId).includeTasks().includeActivities().includeComments().includeVariables()
           .includeVariableUpdates().singleResult();
       List<HistoricData> events = log.getHistoricData();
-      assertEquals(15, events.size());
+      assertThat(events).hasSize(15);
     }
   }
 

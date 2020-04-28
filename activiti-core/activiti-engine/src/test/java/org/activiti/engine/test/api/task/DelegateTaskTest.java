@@ -1,9 +1,9 @@
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -12,7 +12,9 @@
  */
 package org.activiti.engine.test.api.task;
 
-import java.util.Collections;
+import static java.util.Collections.singletonList;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,19 +39,19 @@ public class DelegateTaskTest extends PluggableActivitiTestCase {
     runtimeService.startProcessInstanceByKey("DelegateTaskTest.testGetCandidates");
 
     Task task = taskService.createTaskQuery().singleResult();
-    assertNotNull(task);
+    assertThat(task).isNotNull();
 
     @SuppressWarnings("unchecked")
     Set<String> candidateUsers = (Set<String>) taskService.getVariable(task.getId(), DelegateTaskTestTaskListener.VARNAME_CANDIDATE_USERS);
-    assertEquals(2, candidateUsers.size());
-    assertTrue(candidateUsers.contains("kermit"));
-    assertTrue(candidateUsers.contains("gonzo"));
+    assertThat(candidateUsers).hasSize(2);
+    assertThat(candidateUsers.contains("kermit")).isTrue();
+    assertThat(candidateUsers.contains("gonzo")).isTrue();
 
     @SuppressWarnings("unchecked")
     Set<String> candidateGroups = (Set<String>) taskService.getVariable(task.getId(), DelegateTaskTestTaskListener.VARNAME_CANDIDATE_GROUPS);
-    assertEquals(2, candidateGroups.size());
-    assertTrue(candidateGroups.contains("management"));
-    assertTrue(candidateGroups.contains("accountancy"));
+    assertThat(candidateGroups).hasSize(2);
+    assertThat(candidateGroups.contains("management")).isTrue();
+    assertThat(candidateGroups.contains("accountancy")).isTrue();
   }
 
   @Deployment
@@ -57,13 +59,13 @@ public class DelegateTaskTest extends PluggableActivitiTestCase {
 
     // Start process instance
     Map<String, Object> variables = new HashMap<String, Object>();
-    variables.put("approvers", Collections.singletonList("kermit")); // , "gonzo", "mispiggy"));
+    variables.put("approvers", singletonList("kermit")); // , "gonzo", "mispiggy"));
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("delegateTaskTest", variables);
 
     // Assert there are three tasks with the default category
     List<Task> tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).list();
     for (Task task : tasks) {
-      assertEquals("approval", task.getCategory());
+      assertThat(task.getCategory()).isEqualTo("approval");
       Map<String, Object> taskVariables = new HashMap<String, Object>();
       taskVariables.put("outcome", "approve");
       taskService.complete(task.getId(), taskVariables, true);
@@ -71,9 +73,9 @@ public class DelegateTaskTest extends PluggableActivitiTestCase {
 
     // After completion, the task category should be changed in the script
     // listener working on the delegate task
-    assertEquals(0, taskService.createTaskQuery().processInstanceId(processInstance.getId()).count());
+    assertThat(taskService.createTaskQuery().processInstanceId(processInstance.getId()).count()).isEqualTo(0);
     for (HistoricTaskInstance historicTaskInstance : historyService.createHistoricTaskInstanceQuery().list()) {
-      assertEquals("approved", historicTaskInstance.getCategory());
+      assertThat(historicTaskInstance.getCategory()).isEqualTo("approved");
     }
   }
 

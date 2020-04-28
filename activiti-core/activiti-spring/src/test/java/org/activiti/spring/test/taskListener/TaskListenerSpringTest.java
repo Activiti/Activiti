@@ -13,6 +13,8 @@
 
 package org.activiti.spring.test.taskListener;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.List;
 
 import org.activiti.engine.runtime.ProcessInstance;
@@ -30,8 +32,7 @@ public class TaskListenerSpringTest extends SpringActivitiTestCase {
     private void cleanUp() {
         List<org.activiti.engine.repository.Deployment> deployments = repositoryService.createDeploymentQuery().list();
         for (org.activiti.engine.repository.Deployment deployment : deployments) {
-            repositoryService.deleteDeployment(deployment.getId(),
-                                               true);
+            repositoryService.deleteDeployment(deployment.getId(), true);
         }
     }
 
@@ -47,15 +48,12 @@ public class TaskListenerSpringTest extends SpringActivitiTestCase {
         // Completing first task will set variable on process instance
         Task task = taskService.createTaskQuery().singleResult();
         taskService.complete(task.getId());
-        assertEquals("task1-complete",
-                     runtimeService.getVariable(processInstance.getId(),
-                                                "calledInExpression"));
+        assertThat(runtimeService.getVariable(processInstance.getId(), "calledInExpression")).isEqualTo("task1-complete");
 
         // Completing second task will set variable on process instance
         task = taskService.createTaskQuery().singleResult();
         taskService.complete(task.getId());
-        assertEquals("task2-notify",
-                     runtimeService.getVariable(processInstance.getId(),
-                                                "calledThroughNotify"));
+        assertThat(runtimeService.getVariable(processInstance.getId(), "calledThroughNotify")).isEqualTo("task2-notify");
     }
+
 }

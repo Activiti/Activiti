@@ -28,11 +28,11 @@
       <artifactId>activiti-engine</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.activiti.api</groupId>
+      <groupId>org.activiti</groupId>
       <artifactId>activiti-api-runtime-shared</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.activiti.core.common</groupId>
+      <groupId>org.activiti</groupId>
       <artifactId>activiti-spring-project</artifactId>
     </dependency>
     <dependency>
@@ -98,6 +98,11 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>org.subethamail</groupId>
       <artifactId>subethasmtp-wiser</artifactId>
       <scope>test</scope>
@@ -128,7 +133,6 @@
     <dependency>
       <groupId>javax.xml.bind</groupId>
       <artifactId>jaxb-api</artifactId>
-      <scope>test</scope>
     </dependency>
   </dependencies>
   <profiles>

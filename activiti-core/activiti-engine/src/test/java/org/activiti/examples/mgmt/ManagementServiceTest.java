@@ -12,9 +12,9 @@
  */
 package org.activiti.examples.mgmt;
 
-import java.util.Arrays;
-import java.util.Map;
+import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.Map;
 import org.activiti.engine.ManagementService;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.management.TableMetaData;
@@ -22,8 +22,6 @@ import org.activiti.engine.management.TableMetaData;
 /**
  * Test case for the various operations of the {@link ManagementService}
  *
-
-
  */
 public class ManagementServiceTest extends PluggableActivitiTestCase {
 
@@ -32,40 +30,31 @@ public class ManagementServiceTest extends PluggableActivitiTestCase {
 
     String tablePrefix = processEngineConfiguration.getDatabaseTablePrefix();
 
-    assertEquals(new Long(4), tableCount.get(tablePrefix + "ACT_GE_PROPERTY"));
-    assertEquals(new Long(0), tableCount.get(tablePrefix + "ACT_GE_BYTEARRAY"));
-    assertEquals(new Long(0), tableCount.get(tablePrefix + "ACT_RE_DEPLOYMENT"));
-    assertEquals(new Long(0), tableCount.get(tablePrefix + "ACT_RU_EXECUTION"));
-    assertEquals(new Long(0), tableCount.get(tablePrefix + "ACT_RE_PROCDEF"));
-    assertEquals(new Long(0), tableCount.get(tablePrefix + "ACT_RU_TASK"));
-    assertEquals(new Long(0), tableCount.get(tablePrefix + "ACT_RU_IDENTITYLINK"));
+    assertThat(tableCount.get(tablePrefix + "ACT_GE_PROPERTY")).isEqualTo(Long.valueOf(4));
+    assertThat(tableCount.get(tablePrefix + "ACT_GE_BYTEARRAY")).isEqualTo(Long.valueOf(0));
+    assertThat(tableCount.get(tablePrefix + "ACT_RE_DEPLOYMENT")).isEqualTo(Long.valueOf(0));
+    assertThat(tableCount.get(tablePrefix + "ACT_RU_EXECUTION")).isEqualTo(Long.valueOf(0));
+    assertThat(tableCount.get(tablePrefix + "ACT_RE_PROCDEF")).isEqualTo(Long.valueOf(0));
+    assertThat(tableCount.get(tablePrefix + "ACT_RU_TASK")).isEqualTo(Long.valueOf(0));
+    assertThat(tableCount.get(tablePrefix + "ACT_RU_IDENTITYLINK")).isEqualTo(Long.valueOf(0));
   }
 
   public void testGetTableMetaData() {
 
     String tablePrefix = processEngineConfiguration.getDatabaseTablePrefix();
 
-    TableMetaData tableMetaData = managementService.getTableMetaData(tablePrefix+"ACT_RU_TASK");
-    assertEquals(tableMetaData.getColumnNames().size(), tableMetaData.getColumnTypes().size());
-    assertEquals(22, tableMetaData.getColumnNames().size());
+    TableMetaData tableMetaData = managementService.getTableMetaData(tablePrefix + "ACT_RU_TASK");
+    assertThat(tableMetaData.getColumnTypes()).hasSize(tableMetaData.getColumnNames().size());
+    assertThat(tableMetaData.getColumnNames()).hasSize(22);
 
     int assigneeIndex = tableMetaData.getColumnNames().indexOf("ASSIGNEE_");
     int createTimeIndex = tableMetaData.getColumnNames().indexOf("CREATE_TIME_");
 
-    assertTrue(assigneeIndex >= 0);
-    assertTrue(createTimeIndex >= 0);
+    assertThat(assigneeIndex).isGreaterThanOrEqualTo(0);
+    assertThat(createTimeIndex).isGreaterThanOrEqualTo(0);
 
-    assertOneOf(new String[] { "VARCHAR", "NVARCHAR2", "nvarchar", "NVARCHAR" }, tableMetaData.getColumnTypes().get(assigneeIndex));
-    assertOneOf(new String[] { "TIMESTAMP", "TIMESTAMP(6)", "datetime", "DATETIME" }, tableMetaData.getColumnTypes().get(createTimeIndex));
-  }
-
-  private void assertOneOf(String[] possibleValues, String currentValue) {
-    for (String value : possibleValues) {
-      if (currentValue.equals(value)) {
-        return;
-      }
-    }
-    fail("Value '" + currentValue + "' should be one of: " + Arrays.deepToString(possibleValues));
+    assertThat(tableMetaData.getColumnTypes().get(assigneeIndex)).isIn("VARCHAR", "NVARCHAR2", "nvarchar", "NVARCHAR");
+    assertThat(tableMetaData.getColumnTypes().get(createTimeIndex)).isIn("TIMESTAMP", "TIMESTAMP(6)", "datetime", "DATETIME");
   }
 
 }

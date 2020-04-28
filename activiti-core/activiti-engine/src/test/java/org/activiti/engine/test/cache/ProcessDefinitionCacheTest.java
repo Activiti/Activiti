@@ -1,9 +1,9 @@
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -12,6 +12,8 @@
  */
 
 package org.activiti.engine.test.cache;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 
@@ -61,17 +63,16 @@ public class ProcessDefinitionCacheTest extends AbstractTestCase {
         // verify existence of process definition
         List<ProcessDefinition> processDefinitions = processEngine.getRepositoryService().createProcessDefinitionQuery().list();
 
-        assertEquals(1,
-                     processDefinitions.size());
+        assertThat(processDefinitions).hasSize(1);
 
         // Start a new Process instance
         ProcessInstance processInstance = processEngine.getRuntimeService().startProcessInstanceById(processDefinitions.get(0).getId());
         String processInstanceId = processInstance.getId();
-        assertNotNull(processInstance);
+        assertThat(processInstance).isNotNull();
 
         // Close the process engine
         processEngine.close();
-        assertNotNull(processEngine.getRuntimeService());
+        assertThat(processEngine.getRuntimeService()).isNotNull();
 
         // Reboot the process engine
         processEngine = new StandaloneProcessEngineConfiguration().setProcessEngineName("reboot-test").setDatabaseSchemaUpdate(ProcessEngineConfiguration.DB_SCHEMA_UPDATE_FALSE)
@@ -80,7 +81,7 @@ public class ProcessDefinitionCacheTest extends AbstractTestCase {
         // Check if the existing process instance is still alive
         processInstance = processEngine.getRuntimeService().createProcessInstanceQuery().processInstanceId(processInstanceId).singleResult();
 
-        assertNotNull(processInstance);
+        assertThat(processInstance).isNotNull();
 
         // Complete the task. That will end the process instance
         TaskService taskService = processEngine.getTaskService();
@@ -92,11 +93,11 @@ public class ProcessDefinitionCacheTest extends AbstractTestCase {
         // re-loaded into the process definition cache
         processInstance = processEngine.getRuntimeService().createProcessInstanceQuery().processInstanceId(processInstanceId).singleResult();
 
-        assertNull(processInstance);
+        assertThat(processInstance).isNull();
 
         // Extra check to see if a new process instance can be started as well
         processInstance = processEngine.getRuntimeService().startProcessInstanceById(processDefinitions.get(0).getId());
-        assertNotNull(processInstance);
+        assertThat(processInstance).isNotNull();
 
         // close the process engine
         processEngine.close();
@@ -128,16 +129,13 @@ public class ProcessDefinitionCacheTest extends AbstractTestCase {
         String processDefinitionId = repositoryService2.createProcessDefinitionQuery().singleResult().getId();
         runtimeService2.startProcessInstanceById(processDefinitionId);
         Task task = taskService2.createTaskQuery().singleResult();
-        assertEquals("original task",
-                     task.getName());
+        assertThat(task.getName()).isEqualTo("original task");
 
         // Delete the deployment on second process engine
         repositoryService2.deleteDeployment(deploymentId,
                                             true);
-        assertEquals(0,
-                     repositoryService2.createDeploymentQuery().count());
-        assertEquals(0,
-                     runtimeService2.createProcessInstanceQuery().count());
+        assertThat(repositoryService2.createDeploymentQuery().count()).isEqualTo(0);
+        assertThat(runtimeService2.createProcessInstanceQuery().count()).isEqualTo(0);
 
         // deploy a revised version of the process: start->revisedTask->end on
         // first process engine
@@ -157,8 +155,7 @@ public class ProcessDefinitionCacheTest extends AbstractTestCase {
         repositoryService2.createProcessDefinitionQuery().singleResult().getId();
         runtimeService2.startProcessInstanceByKey("oneTaskProcess");
         task = taskService2.createTaskQuery().singleResult();
-        assertEquals("revised task",
-                     task.getName());
+        assertThat(task.getName()).isEqualTo("revised task");
 
         // cleanup
         repositoryService1.deleteDeployment(deploymentId,

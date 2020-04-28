@@ -5,12 +5,21 @@ import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.model.payloads.DeleteProcessPayload;
 import org.activiti.api.process.model.payloads.GetProcessInstancesPayload;
 import org.activiti.api.process.model.payloads.ResumeProcessPayload;
+import org.activiti.api.process.model.payloads.StartProcessPayload;
 import org.activiti.api.process.model.payloads.SuspendProcessPayload;
 
 public class ProcessPayloadBuilder {
 
     public static StartProcessPayloadBuilder start() {
         return new StartProcessPayloadBuilder();
+    }
+
+    public static StartProcessPayloadBuilder start(StartProcessPayload from) {
+        return new StartProcessPayloadBuilder().withBusinessKey(from.getBusinessKey())
+                                               .withName(from.getName())
+                                               .withProcessDefinitionId(from.getProcessDefinitionId())
+                                               .withProcessDefinitionKey(from.getProcessDefinitionKey())
+                                               .withVariables(from.getVariables());
     }
 
     public static DeleteProcessPayloadBuilder delete() {
@@ -24,7 +33,7 @@ public class ProcessPayloadBuilder {
     public static ResumeProcessPayloadBuilder resume() {
         return new ResumeProcessPayloadBuilder();
     }
-    
+
     public static UpdateProcessPayloadBuilder update() {
         return new UpdateProcessPayloadBuilder();
     }
@@ -44,7 +53,7 @@ public class ProcessPayloadBuilder {
     public static SignalPayloadBuilder signal() {
         return new SignalPayloadBuilder();
     }
-    
+
     public static GetProcessDefinitionsPayloadBuilder processDefinitions() {
         return new GetProcessDefinitionsPayloadBuilder();
     }
@@ -52,11 +61,11 @@ public class ProcessPayloadBuilder {
     public static GetProcessInstancesPayloadBuilder processInstances() {
         return new GetProcessInstancesPayloadBuilder();
     }
-    
+
     public static GetProcessInstancesPayload subprocesses(String parentProcessInstanceId) {
         return new GetProcessInstancesPayloadBuilder().withParentProcessInstanceId(parentProcessInstanceId).build();
     }
-    
+
     public static GetProcessInstancesPayload subprocesses(ProcessInstance parentProcessInstance) {
         return new GetProcessInstancesPayloadBuilder().withParentProcessInstanceId(parentProcessInstance.getId()).build();
     }

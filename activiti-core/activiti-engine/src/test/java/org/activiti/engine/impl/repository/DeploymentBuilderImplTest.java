@@ -89,9 +89,7 @@ public class DeploymentBuilderImplTest {
         given(resource.getInputStream()).willThrow(new IOException());
 
         //when
-        Throwable thrown = catchThrowable(() ->
-                                                  deploymentBuilder.addInputStream("any.xml",
-                                                                                   resource));
+        Throwable thrown = catchThrowable(() -> deploymentBuilder.addInputStream("any.xml", resource));
 
         //then
         assertThat(thrown)

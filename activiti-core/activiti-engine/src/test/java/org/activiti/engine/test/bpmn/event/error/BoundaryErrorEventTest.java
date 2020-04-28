@@ -21,17 +21,15 @@ import org.activiti.engine.delegate.BpmnError;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
-import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.impl.util.JvmUtil;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
-import static org.assertj.core.api.Java6Assertions.catchThrowable;
+import static java.util.Collections.singletonMap;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 /**
-
-
  */
 public class BoundaryErrorEventTest extends PluggableActivitiTestCase {
 
@@ -41,48 +39,48 @@ public class BoundaryErrorEventTest extends PluggableActivitiTestCase {
 
     // After process start, usertask in subprocess should exist
     Task task = taskService.createTaskQuery().singleResult();
-    assertEquals("subprocessTask", task.getName());
+    assertThat(task.getName()).isEqualTo("subprocessTask");
 
     // After task completion, error end event is reached and caught
     taskService.complete(task.getId());
     task = taskService.createTaskQuery().singleResult();
-    assertEquals("task after catching the error", task.getName());
+    assertThat(task.getName()).isEqualTo("task after catching the error");
   }
 
   public void testThrowErrorWithEmptyErrorCode() {
-    Throwable throwable = catchThrowable(() -> repositoryService
-            .createDeployment()
-            .addClasspathResource("org/activiti/engine/test/bpmn/event/error/BoundaryErrorEventTest.testThrowErrorWithEmptyErrorCode.bpmn20.xml")
-            .deploy());
-    assertThat(throwable).isInstanceOf(ActivitiException.class)
-            .hasMessageContaining("activiti-error-missing-error-code");
+    assertThatExceptionOfType(ActivitiException.class)
+        .isThrownBy(() -> repositoryService
+          .createDeployment()
+          .addClasspathResource("org/activiti/engine/test/bpmn/event/error/BoundaryErrorEventTest.testThrowErrorWithEmptyErrorCode.bpmn20.xml")
+          .deploy())
+        .withMessageContaining("activiti-error-missing-error-code");
   }
 
   public void testThrowErrorWithoutErrorCode() {
-    Throwable throwable = catchThrowable(() -> repositoryService
-            .createDeployment()
-            .addClasspathResource("org/activiti/engine/test/bpmn/event/error/BoundaryErrorEventTest.testThrowErrorWithoutErrorCode.bpmn20.xml")
-            .deploy());
-    assertThat(throwable).isInstanceOf(ActivitiException.class)
-            .hasMessageContaining("activiti-error-missing-error-code");
+    assertThatExceptionOfType(ActivitiException.class)
+      .isThrownBy(() -> repositoryService
+        .createDeployment()
+        .addClasspathResource("org/activiti/engine/test/bpmn/event/error/BoundaryErrorEventTest.testThrowErrorWithoutErrorCode.bpmn20.xml")
+        .deploy())
+      .withMessageContaining("activiti-error-missing-error-code");
   }
 
   public void testCatchErrorOnEmbeddedSubprocessWithEmptyErrorCode() {
-    Throwable throwable = catchThrowable(() -> repositoryService
-            .createDeployment()
-            .addClasspathResource("org/activiti/engine/test/bpmn/event/error/BoundaryErrorEventTest.testCatchErrorOnEmbeddedSubprocessWithEmptyErrorCode.bpmn20.xml")
-            .deploy());
-    assertThat(throwable).isInstanceOf(ActivitiException.class)
-            .hasMessageContaining("activiti-error-missing-error-code");
+    assertThatExceptionOfType(ActivitiException.class)
+      .isThrownBy(() -> repositoryService
+        .createDeployment()
+        .addClasspathResource("org/activiti/engine/test/bpmn/event/error/BoundaryErrorEventTest.testCatchErrorOnEmbeddedSubprocessWithEmptyErrorCode.bpmn20.xml")
+        .deploy())
+      .withMessageContaining("activiti-error-missing-error-code");
   }
 
   public void testCatchErrorOnEmbeddedSubprocessWithoutErrorCode() {
-    Throwable throwable = catchThrowable(() -> repositoryService
-            .createDeployment()
-            .addClasspathResource("org/activiti/engine/test/bpmn/event/error/BoundaryErrorEventTest.testCatchErrorOnEmbeddedSubprocessWithoutErrorCode.bpmn20.xml")
-            .deploy());
-    assertThat(throwable).isInstanceOf(ActivitiException.class)
-            .hasMessageContaining("activiti-error-missing-error-code");
+    assertThatExceptionOfType(ActivitiException.class)
+      .isThrownBy(() -> repositoryService
+        .createDeployment()
+        .addClasspathResource("org/activiti/engine/test/bpmn/event/error/BoundaryErrorEventTest.testCatchErrorOnEmbeddedSubprocessWithoutErrorCode.bpmn20.xml")
+        .deploy())
+      .withMessageContaining("activiti-error-missing-error-code");
   }
 
   @Deployment
@@ -90,15 +88,15 @@ public class BoundaryErrorEventTest extends PluggableActivitiTestCase {
     runtimeService.startProcessInstanceByKey("boundaryErrorTest");
 
     List<Task> tasks = taskService.createTaskQuery().orderByTaskName().asc().list();
-    assertEquals(2, tasks.size());
-    assertEquals("Inner subprocess task 1", tasks.get(0).getName());
-    assertEquals("Inner subprocess task 2", tasks.get(1).getName());
+    assertThat(tasks).hasSize(2);
+    assertThat(tasks.get(0).getName()).isEqualTo("Inner subprocess task 1");
+    assertThat(tasks.get(1).getName()).isEqualTo("Inner subprocess task 2");
 
     // Completing task 2, will cause the end error event to throw error with code 123
     taskService.complete(tasks.get(1).getId());
     taskService.createTaskQuery().list();
     Task taskAfterError = taskService.createTaskQuery().singleResult();
-    assertEquals("task outside subprocess", taskAfterError.getName());
+    assertThat(taskAfterError.getName()).isEqualTo("task outside subprocess");
   }
 
   @Deployment
@@ -115,34 +113,34 @@ public class BoundaryErrorEventTest extends PluggableActivitiTestCase {
     // Completing task A will lead to task D
     String procId = runtimeService.startProcessInstanceByKey(processDefinitionKey).getId();
     List<Task> tasks = taskService.createTaskQuery().orderByTaskName().asc().list();
-    assertEquals(2, tasks.size());
-    assertEquals("task A", tasks.get(0).getName());
-    assertEquals("task B", tasks.get(1).getName());
+    assertThat(tasks).hasSize(2);
+    assertThat(tasks.get(0).getName()).isEqualTo("task A");
+    assertThat(tasks.get(1).getName()).isEqualTo("task B");
     taskService.complete(tasks.get(0).getId());
     Task task = taskService.createTaskQuery().singleResult();
-    assertEquals("task D", task.getName());
+    assertThat(task.getName()).isEqualTo("task D");
     taskService.complete(task.getId());
     assertProcessEnded(procId);
 
     // Completing task B will lead to task C
     runtimeService.startProcessInstanceByKey(processDefinitionKey).getId();
     tasks = taskService.createTaskQuery().orderByTaskName().asc().list();
-    assertEquals(2, tasks.size());
-    assertEquals("task A", tasks.get(0).getName());
-    assertEquals("task B", tasks.get(1).getName());
+    assertThat(tasks).hasSize(2);
+    assertThat(tasks.get(0).getName()).isEqualTo("task A");
+    assertThat(tasks.get(1).getName()).isEqualTo("task B");
     taskService.complete(tasks.get(1).getId());
 
     tasks = taskService.createTaskQuery().orderByTaskName().asc().list();
-    assertEquals(2, tasks.size());
-    assertEquals("task A", tasks.get(0).getName());
-    assertEquals("task C", tasks.get(1).getName());
+    assertThat(tasks).hasSize(2);
+    assertThat(tasks.get(0).getName()).isEqualTo("task A");
+    assertThat(tasks.get(1).getName()).isEqualTo("task C");
     taskService.complete(tasks.get(1).getId());
     task = taskService.createTaskQuery().singleResult();
-    assertEquals("task A", task.getName());
+    assertThat(task.getName()).isEqualTo("task A");
 
     taskService.complete(task.getId());
     task = taskService.createTaskQuery().singleResult();
-    assertEquals("task D", task.getName());
+    assertThat(task.getName()).isEqualTo("task D");
   }
 
   @Deployment
@@ -153,18 +151,18 @@ public class BoundaryErrorEventTest extends PluggableActivitiTestCase {
     // ending the process instance
     String procId = runtimeService.startProcessInstanceByKey("deeplyNestedErrorThrown").getId();
     Task task = taskService.createTaskQuery().singleResult();
-    assertEquals("Nested task", task.getName());
-    taskService.complete(task.getId(), CollectionUtil.singletonMap("input", 1));
+    assertThat(task.getName()).isEqualTo("Nested task");
+    taskService.complete(task.getId(), singletonMap("input", 1));
     assertProcessEnded(procId);
 
     // Input == 2 -> error2 will be thrown, leading to a userTask outside
     // all subprocesses
     procId = runtimeService.startProcessInstanceByKey("deeplyNestedErrorThrown").getId();
     task = taskService.createTaskQuery().singleResult();
-    assertEquals("Nested task", task.getName());
-    taskService.complete(task.getId(), CollectionUtil.singletonMap("input", 2));
+    assertThat(task.getName()).isEqualTo("Nested task");
+    taskService.complete(task.getId(), singletonMap("input", 2));
     task = taskService.createTaskQuery().singleResult();
-    assertEquals("task after catch", task.getName());
+    assertThat(task.getName()).isEqualTo("task after catch");
     taskService.complete(task.getId());
     assertProcessEnded(procId);
   }
@@ -173,22 +171,22 @@ public class BoundaryErrorEventTest extends PluggableActivitiTestCase {
   public void testDeeplyNestedErrorThrownOnlyAutomaticSteps() {
     // input == 1 -> error2 is thrown -> caught on subprocess2 -> end event
     // in subprocess -> proc inst end 1
-    String procId = runtimeService.startProcessInstanceByKey("deeplyNestedErrorThrown", CollectionUtil.singletonMap("input", 1)).getId();
+    String procId = runtimeService.startProcessInstanceByKey("deeplyNestedErrorThrown", singletonMap("input", 1)).getId();
     assertProcessEnded(procId);
 
     HistoricProcessInstance hip;
     if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
       hip = historyService.createHistoricProcessInstanceQuery().processInstanceId(procId).singleResult();
-      assertEquals("processEnd1", hip.getEndActivityId());
+      assertThat(hip.getEndActivityId()).isEqualTo("processEnd1");
     }
     // input == 2 -> error2 is thrown -> caught on subprocess1 -> proc inst
     // end 2
-    procId = runtimeService.startProcessInstanceByKey("deeplyNestedErrorThrown", CollectionUtil.singletonMap("input", 1)).getId();
+    procId = runtimeService.startProcessInstanceByKey("deeplyNestedErrorThrown", singletonMap("input", 1)).getId();
     assertProcessEnded(procId);
 
     if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
       hip = historyService.createHistoricProcessInstanceQuery().processInstanceId(procId).singleResult();
-      assertEquals("processEnd1", hip.getEndActivityId());
+      assertThat(hip.getEndActivityId()).isEqualTo("processEnd1");
     }
   }
 
@@ -197,13 +195,13 @@ public class BoundaryErrorEventTest extends PluggableActivitiTestCase {
   public void testCatchErrorOnCallActivity() {
     String procId = runtimeService.startProcessInstanceByKey("catchErrorOnCallActivity").getId();
     Task task = taskService.createTaskQuery().singleResult();
-    assertEquals("Task in subprocess", task.getName());
+    assertThat(task.getName()).isEqualTo("Task in subprocess");
 
     // Completing the task will reach the end error event,
     // which is caught on the call activity boundary
     taskService.complete(task.getId());
     task = taskService.createTaskQuery().singleResult();
-    assertEquals("Escalated Task", task.getName());
+    assertThat(task.getName()).isEqualTo("Escalated Task");
 
     // Completing the task will end the process instance
     taskService.complete(task.getId());
@@ -214,15 +212,12 @@ public class BoundaryErrorEventTest extends PluggableActivitiTestCase {
   public void testUncaughtError() {
     runtimeService.startProcessInstanceByKey("simpleSubProcess");
     Task task = taskService.createTaskQuery().singleResult();
-    assertEquals("Task in subprocess", task.getName());
+    assertThat(task.getName()).isEqualTo("Task in subprocess");
 
-    try {
-      // Completing the task will reach the end error event, which is never caught in the process
-      taskService.complete(task.getId());
-      fail("No catching boundary event found for error with errorCode 'myError', neither in same process nor in parent process but no Exception is thrown");
-    } catch (BpmnError e) {
-      assertTextPresent("No catching boundary event found for error with errorCode 'myError', neither in same process nor in parent process", e.getMessage());
-    }
+    // Completing the task will reach the end error event, which is never caught in the process
+    assertThatExceptionOfType(BpmnError.class)
+        .isThrownBy(() -> taskService.complete(task.getId()))
+        .withMessageContaining("No catching boundary event found for error with errorCode 'myError', neither in same process nor in parent process");
   }
 
   @Deployment(resources = { "org/activiti/engine/test/bpmn/event/error/BoundaryErrorEventTest.testUncaughtErrorOnCallActivity-parent.bpmn20.xml",
@@ -230,14 +225,14 @@ public class BoundaryErrorEventTest extends PluggableActivitiTestCase {
   public void testUncaughtErrorOnCallActivity() {
     runtimeService.startProcessInstanceByKey("uncaughtErrorOnCallActivity");
     Task task = taskService.createTaskQuery().singleResult();
-    assertEquals("Task in subprocess", task.getName());
+    assertThat(task.getName()).isEqualTo("Task in subprocess");
 
     try {
       // Completing the task will reach the end error event,
       // which is never caught in the process
       taskService.complete(task.getId());
     } catch (BpmnError e) {
-      assertTextPresent("No catching boundary event found for error with errorCode 'myError', neither in same process nor in parent process", e.getMessage());
+      assertThat(e.getMessage()).contains("No catching boundary event found for error with errorCode 'myError', neither in same process nor in parent process");
     }
   }
 
@@ -246,13 +241,13 @@ public class BoundaryErrorEventTest extends PluggableActivitiTestCase {
   public void testCatchErrorThrownByCallActivityOnSubprocess() {
     String procId = runtimeService.startProcessInstanceByKey("catchErrorOnSubprocess").getId();
     Task task = taskService.createTaskQuery().singleResult();
-    assertEquals("Task in subprocess", task.getName());
+    assertThat(task.getName()).isEqualTo("Task in subprocess");
 
     // Completing the task will reach the end error event,
     // which is caught on the call activity boundary
     taskService.complete(task.getId());
     task = taskService.createTaskQuery().singleResult();
-    assertEquals("Escalated Task", task.getName());
+    assertThat(task.getName()).isEqualTo("Escalated Task");
 
     // Completing the task will end the process instance
     taskService.complete(task.getId());
@@ -265,12 +260,12 @@ public class BoundaryErrorEventTest extends PluggableActivitiTestCase {
     String procId = runtimeService.startProcessInstanceByKey("catchErrorOnCallActivity2ndLevel").getId();
 
     Task task = taskService.createTaskQuery().singleResult();
-    assertEquals("Task in subprocess", task.getName());
+    assertThat(task.getName()).isEqualTo("Task in subprocess");
 
     taskService.complete(task.getId());
 
     task = taskService.createTaskQuery().singleResult();
-    assertEquals("Escalated Task", task.getName());
+    assertThat(task.getName()).isEqualTo("Escalated Task");
 
     // Completing the task will end the process instance
     taskService.complete(task.getId());
@@ -281,7 +276,7 @@ public class BoundaryErrorEventTest extends PluggableActivitiTestCase {
   public void testCatchErrorOnParallelMultiInstance() {
     String procId = runtimeService.startProcessInstanceByKey("catchErrorOnParallelMi").getId();
     List<Task> tasks = taskService.createTaskQuery().list();
-    assertEquals(5, tasks.size());
+    assertThat(tasks).hasSize(5);
 
     // Complete two subprocesses, just to make it a bit more complex
     Map<String, Object> vars = new HashMap<String, Object>();
@@ -293,7 +288,7 @@ public class BoundaryErrorEventTest extends PluggableActivitiTestCase {
     vars.put("throwError", true);
     taskService.complete(tasks.get(1).getId(), vars);
 
-    assertEquals(0, taskService.createTaskQuery().count());
+    assertThat(taskService.createTaskQuery().count()).isEqualTo(0);
     assertProcessEnded(procId);
   }
 
@@ -357,7 +352,7 @@ public class BoundaryErrorEventTest extends PluggableActivitiTestCase {
     try {
       runtimeService.startProcessInstanceByKey("catchErrorThrownByJavaDelegateOnCallActivity-child");
     } catch (BpmnError e) {
-      assertTextPresent("No catching boundary event found for error with errorCode '23', neither in same process nor in parent process", e.getMessage());
+      assertThat(e.getMessage()).contains("No catching boundary event found for error with errorCode '23', neither in same process nor in parent process");
     }
   }
 
@@ -367,7 +362,7 @@ public class BoundaryErrorEventTest extends PluggableActivitiTestCase {
     try {
       runtimeService.startProcessInstanceByKey("uncaughtErrorThrownByJavaDelegateOnCallActivity-parent");
     } catch (BpmnError e) {
-      assertTextPresent("No catching boundary event found for error with errorCode '23', neither in same process nor in parent process", e.getMessage());
+      assertThat(e.getMessage()).contains("No catching boundary event found for error with errorCode '23', neither in same process nor in parent process");
     }
   }
 
@@ -393,13 +388,10 @@ public class BoundaryErrorEventTest extends PluggableActivitiTestCase {
 
   @Deployment(resources = { "org/activiti/engine/test/bpmn/event/error/BoundaryErrorEventTest.testUncaughtErrorOnScriptTask.bpmn20.xml" })
   public void testUncaughtErrorOnScriptTask() {
-    try {
-      String procId = runtimeService.startProcessInstanceByKey("uncaughtErrorOnScriptTask").getId();
-      fail("The script throws error event with errorCode 'errorUncaught', but no catching boundary event was defined. An exception is expected which did not occur");
-      assertProcessEnded(procId);
-    } catch (BpmnError e) {
-      assertTextPresent("No catching boundary event found for error with errorCode 'errorUncaught', neither in same process nor in parent process", e.getMessage());
-    }
+    assertThatExceptionOfType(BpmnError.class)
+      .as("The script throws error event with errorCode 'errorUncaught', but no catching boundary event was defined. An exception is expected which did not occur")
+      .isThrownBy(() -> runtimeService.startProcessInstanceByKey("uncaughtErrorOnScriptTask").getId())
+      .withMessageContaining("No catching boundary event found for error with errorCode 'errorUncaught', neither in same process nor in parent process");
   }
 
   @Deployment
@@ -427,9 +419,9 @@ public class BoundaryErrorEventTest extends PluggableActivitiTestCase {
   private void assertThatErrorHasBeenCaught(String procId) {
     // The service task will throw an error event,
     // which is caught on the service task boundary
-    assertEquals("No tasks found in task list.", 1, taskService.createTaskQuery().count());
+    assertThat(taskService.createTaskQuery().count()).as("No tasks found in task list.").isEqualTo(1);
     Task task = taskService.createTaskQuery().singleResult();
-    assertEquals("Escalated Task", task.getName());
+    assertThat(task.getName()).isEqualTo("Escalated Task");
 
     // Completing the task will end the process instance
     taskService.complete(task.getId());

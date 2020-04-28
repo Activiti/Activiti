@@ -24,8 +24,8 @@ import static org.mockito.MockitoAnnotations.initMocks;
 import org.activiti.api.process.model.events.BPMNErrorReceivedEvent;
 import org.activiti.api.runtime.model.impl.BPMNErrorImpl;
 import org.activiti.engine.delegate.event.ActivitiErrorEvent;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
@@ -37,7 +37,7 @@ public class ToErrorReceivedConverterTest {
     @Mock
     private BPMNErrorConverter bpmnErrorConverter;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         initMocks(this);
     }
@@ -50,7 +50,7 @@ public class ToErrorReceivedConverterTest {
         given(internalEvent.getProcessInstanceId()).willReturn("procInstId");
 
         BPMNErrorImpl bpmnError = new BPMNErrorImpl("myError");
-        
+
         given(bpmnErrorConverter.convertToBPMNError(internalEvent)).willReturn(bpmnError);
 
         //when

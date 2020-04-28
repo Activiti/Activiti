@@ -1,48 +1,47 @@
 package org.activiti.editor.language.xml;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.Message;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class MessageConverterTest extends AbstractConverterTest {
-  
+
   @Test
   public void convertXMLToModel() throws Exception {
     BpmnModel bpmnModel = readXMLFile();
     validateModel(bpmnModel);
   }
-  
+
   @Test
   public void convertModelToXML() throws Exception {
     BpmnModel bpmnModel = readXMLFile();
     BpmnModel parsedModel = exportAndReadXMLFile(bpmnModel);
     validateModel(parsedModel);
   }
-  
+
   private void validateModel(BpmnModel model) {
     Message message = model.getMessage("writeReport");
-    assertNotNull(message);
-    assertEquals("Examples:writeReportItem", message.getItemRef());
-    assertEquals("newWriteReport", message.getName());
-    assertEquals("writeReport", message.getId());
+    assertThat(message).isNotNull();
+    assertThat(message.getItemRef()).isEqualTo("Examples:writeReportItem");
+    assertThat(message.getName()).isEqualTo("newWriteReport");
+    assertThat(message.getId()).isEqualTo("writeReport");
 
     Message message2 = model.getMessage("writeReport2");
-    assertNotNull(message2);
-    assertEquals("http://foo.bar.com/Examples:writeReportItem2", message2.getItemRef());
-    assertEquals("newWriteReport2", message2.getName());
-    assertEquals("writeReport2", message2.getId());
-    
+    assertThat(message2).isNotNull();
+    assertThat(message2.getItemRef()).isEqualTo("http://foo.bar.com/Examples:writeReportItem2");
+    assertThat(message2.getName()).isEqualTo("newWriteReport2");
+    assertThat(message2.getId()).isEqualTo("writeReport2");
+
     Message message3 = model.getMessage("writeReport3");
-    assertNotNull(message3);
-    assertEquals("Examples:writeReportItem3", message3.getItemRef());
-    assertEquals("newWriteReport3", message3.getName());
-    assertEquals("writeReport3", message3.getId());
+    assertThat(message3).isNotNull();
+    assertThat(message3.getItemRef()).isEqualTo("Examples:writeReportItem3");
+    assertThat(message3.getName()).isEqualTo("newWriteReport3");
+    assertThat(message3.getId()).isEqualTo("writeReport3");
 
   }
-  
+
   protected String getResource() {
         return "message.bpmn";
   }

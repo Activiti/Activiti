@@ -1,9 +1,9 @@
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -11,6 +11,8 @@
  * limitations under the License.
  */
 package org.activiti.standalone.history;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -40,12 +42,12 @@ public class BulkDeleteNoHistoryTest extends ResourceActivitiTestCase {
 
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess", variables);
     Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
-    assertNotNull(task);
+    assertThat(task).isNotNull();
 
     // Completing the task will cause a bulk delete of 4001 entities
     taskService.complete(task.getId());
 
     // Check if process is gone
-    assertEquals(0L, runtimeService.createProcessInstanceQuery().processInstanceId(processInstance.getId()).count());
+    assertThat(runtimeService.createProcessInstanceQuery().processInstanceId(processInstance.getId()).count()).isEqualTo(0L);
   }
 }

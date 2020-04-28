@@ -21,13 +21,13 @@ import org.activiti.api.process.runtime.events.listener.BPMNElementEventListener
 import org.activiti.api.runtime.event.impl.BPMNTimerRetriesDecrementedEventImpl;
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.runtime.api.event.impl.ToTimerRetriesDecrementedConverter;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 
-import java.util.Collections;
 import java.util.Optional;
 
+import static java.util.Collections.singletonList;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
@@ -45,10 +45,10 @@ public class TimerRetriesDecrementedListenerDelegateTest {
     @Mock
     private ToTimerRetriesDecrementedConverter converter;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         initMocks(this);
-        listenerDelegate = new TimerRetriesDecrementedListenerDelegate(Collections.singletonList(listener), converter);
+        listenerDelegate = new TimerRetriesDecrementedListenerDelegate(singletonList(listener), converter);
     }
 
     @Test

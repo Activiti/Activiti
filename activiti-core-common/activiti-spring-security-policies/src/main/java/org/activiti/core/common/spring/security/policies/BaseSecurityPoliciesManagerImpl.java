@@ -1,9 +1,10 @@
 package org.activiti.core.common.spring.security.policies;
 
+import static java.util.Arrays.asList;
+
 import org.activiti.api.runtime.shared.security.SecurityManager;
 import org.activiti.core.common.spring.security.policies.conf.SecurityPoliciesProperties;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -46,7 +47,7 @@ public abstract class BaseSecurityPoliciesManagerImpl implements SecurityPolicie
             if (isUserInPolicy(ssp, authenticatedUserId) || isGroupInPolicy(ssp, groups)) {
 
                 // Here if securityPolicyAccess is READ, it should also include WRITES, if it is NONE nothing, and if it is WRITE only WRITE
-                List<SecurityPolicyAccess> securityPolicyAccesses = Arrays.asList(securityPoliciesAccess);
+                List<SecurityPolicyAccess> securityPolicyAccesses = asList(securityPoliciesAccess);
                 if (securityPolicyAccesses.contains(SecurityPolicyAccess.WRITE)) {
                     if (ssp.getAccess().equals(SecurityPolicyAccess.WRITE)) {
                         definitionKeysAllowedByPolicy.get(ssp.getServiceName()).addAll(ssp.getKeys());

@@ -1,5 +1,7 @@
 package org.activiti.engine.test.db;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -16,8 +18,7 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
 
 /**
- * 
-
+ *
  */
 public class ProcessInstanceSuspensionTest extends PluggableActivitiTestCase {
 
@@ -29,20 +30,20 @@ public class ProcessInstanceSuspensionTest extends PluggableActivitiTestCase {
 
     // now there is one job:
     Job job = managementService.createTimerJobQuery().singleResult();
-    assertNotNull(job);
+    assertThat(job).isNotNull();
 
     makeSureJobDue(job);
 
     // the acquirejobs command sees the job:
     List<TimerJobEntity> acquiredJobs = executeAcquireJobsCommand();
-    assertEquals(1, acquiredJobs.size());
+    assertThat(acquiredJobs).hasSize(1);
 
     // suspend the process instance:
     runtimeService.suspendProcessInstanceById(pi.getId());
 
     // now, the acquirejobs command does not see the job:
     acquiredJobs = executeAcquireJobsCommand();
-    assertEquals(0, acquiredJobs.size());
+    assertThat(acquiredJobs).hasSize(0);
   }
 
   @Deployment(resources = { "org/activiti/engine/test/db/oneJobProcess.bpmn20.xml" })
@@ -50,55 +51,55 @@ public class ProcessInstanceSuspensionTest extends PluggableActivitiTestCase {
 
     ProcessDefinition pd = repositoryService.createProcessDefinitionQuery().singleResult();
     runtimeService.startProcessInstanceByKey(pd.getKey());
-    
+
     // now there is one job:
     Job job = managementService.createTimerJobQuery().singleResult();
-    assertNotNull(job);
+    assertThat(job).isNotNull();
 
     makeSureJobDue(job);
 
     // the acquire jobs command sees the job:
     List<TimerJobEntity> acquiredJobs = executeAcquireJobsCommand();
-    assertEquals(1, acquiredJobs.size());
+    assertThat(acquiredJobs).hasSize(1);
 
     // suspend the process instance:
     repositoryService.suspendProcessDefinitionById(pd.getId(), true, null);
 
     // now, the acquire jobs command does not see the job:
     acquiredJobs = executeAcquireJobsCommand();
-    assertEquals(0, acquiredJobs.size());
+    assertThat(acquiredJobs).hasSize(0);
   }
-  
+
   @Deployment(resources = { "org/activiti/engine/test/db/oneJobProcess.bpmn20.xml" })
   public void testJobsVisibleToAcquisitionIfDefinitionSuspendedWithoutProcessInstances() {
 
     ProcessDefinition pd = repositoryService.createProcessDefinitionQuery().singleResult();
     runtimeService.startProcessInstanceByKey(pd.getKey());
-    
+
     // now there is one job:
     Job job = managementService.createTimerJobQuery().singleResult();
-    assertNotNull(job);
+    assertThat(job).isNotNull();
 
     makeSureJobDue(job);
 
     // the acquire jobs command sees the job:
     List<TimerJobEntity> acquiredJobs = executeAcquireJobsCommand();
-    assertEquals(1, acquiredJobs.size());
+    assertThat(acquiredJobs).hasSize(1);
 
     // suspend the process instance:
     repositoryService.suspendProcessDefinitionById(pd.getId());
 
     // the acquire jobs command still sees the job, because the process instances are not suspended:
     acquiredJobs = executeAcquireJobsCommand();
-    assertEquals(1, acquiredJobs.size());
+    assertThat(acquiredJobs).hasSize(1);
   }
 
   @Deployment
   public void testSuspendedProcessTimerExecution() throws Exception {
     // Process with boundary timer-event that fires in 1 hour
     ProcessInstance procInst = runtimeService.startProcessInstanceByKey("suspendProcess");
-    assertNotNull(procInst);
-    assertEquals(1, managementService.createTimerJobQuery().processInstanceId(procInst.getId()).count());
+    assertThat(procInst).isNotNull();
+    assertThat(managementService.createTimerJobQuery().processInstanceId(procInst.getId()).count()).isEqualTo(1);
 
     // Roll time ahead to be sure timer is due to fire
     Calendar tomorrow = Calendar.getInstance();
@@ -113,9 +114,9 @@ public class ProcessInstanceSuspensionTest extends PluggableActivitiTestCase {
       public List<TimerJobEntity> execute(CommandContext commandContext) {
         return processEngineConfiguration.getTimerJobEntityManager().findTimerJobsToExecute(new Page(0, 1));
       }
-      
+
     });
-    assertEquals(1, jobs.size());
+    assertThat(jobs).hasSize(1);
 
     // Suspend process instance
     runtimeService.suspendProcessInstanceById(procInst.getId());
@@ -128,8 +129,8 @@ public class ProcessInstanceSuspensionTest extends PluggableActivitiTestCase {
         return processEngineConfiguration.getTimerJobEntityManager().findTimerJobsToExecute(new Page(0, 1));
       }
     });
-    
-    assertEquals(0, jobs.size());
+
+    assertThat(jobs).hasSize(0);
   }
 
   protected void makeSureJobDue(final Job job) {
@@ -148,7 +149,7 @@ public class ProcessInstanceSuspensionTest extends PluggableActivitiTestCase {
       public List<TimerJobEntity> execute(CommandContext commandContext) {
         return commandContext.getTimerJobEntityManager().findTimerJobsToExecute(new Page(0, 1));
       }
-      
+
     });
   }
 

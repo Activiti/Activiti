@@ -1,5 +1,7 @@
 package org.activiti.examples.bpmn.shell;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
@@ -31,7 +33,7 @@ public class ShellTaskTest extends PluggableActivitiTestCase {
   }
 
   public void testOsDetection() throws Exception {
-    assertTrue(osType != OsType.UNKOWN);
+    assertThat(osType != OsType.UNKOWN).isTrue();
   }
 
   @Deployment
@@ -41,8 +43,8 @@ public class ShellTaskTest extends PluggableActivitiTestCase {
       ProcessInstance pi = runtimeService.startProcessInstanceByKey("echoShellWindows");
 
       String st = (String) runtimeService.getVariable(pi.getId(), "resultVar");
-      assertNotNull(st);
-      assertTrue(st.startsWith("EchoTest"));
+      assertThat(st).isNotNull();
+      assertThat(st.startsWith("EchoTest")).isTrue();
     }
   }
 
@@ -53,8 +55,8 @@ public class ShellTaskTest extends PluggableActivitiTestCase {
       ProcessInstance pi = runtimeService.startProcessInstanceByKey("echoShellLinux");
 
       String st = (String) runtimeService.getVariable(pi.getId(), "resultVar");
-      assertNotNull(st);
-      assertTrue(st.startsWith("EchoTest"));
+      assertThat(st).isNotNull();
+      assertThat(st.startsWith("EchoTest")).isTrue();
     }
   }
 
@@ -65,8 +67,8 @@ public class ShellTaskTest extends PluggableActivitiTestCase {
       ProcessInstance pi = runtimeService.startProcessInstanceByKey("echoShellMac");
 
       String st = (String) runtimeService.getVariable(pi.getId(), "resultVar");
-      assertNotNull(st);
-      assertTrue(st.startsWith("EchoTest"));
+      assertThat(st).isNotNull();
+      assertThat(st.startsWith("EchoTest")).isTrue();
     }
   }
 }

@@ -25,28 +25,22 @@ import org.activiti.spring.boot.process.ProcessBaseRuntime;
 import org.activiti.spring.boot.security.util.SecurityUtil;
 import org.activiti.spring.boot.test.util.TaskCleanUpUtil;
 import org.activiti.test.LocalEventSource;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.FixMethodOrder;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.MethodSorters;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @ContextConfiguration
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class TaskRuntimeTerminateEndEventTest {
 
     private static final String TASK_PROCESS_TERMINATE_EVENT = "ProcessTerminateEvent";
-    private static final String PROCESS_TERMINATE_EVENT = "Process_KzwZAEl-";
 
+    private static final String PROCESS_TERMINATE_EVENT = "Process_KzwZAEl-";
 
     @Autowired
     private TaskBaseRuntime taskBaseRuntime;
@@ -61,13 +55,13 @@ public class TaskRuntimeTerminateEndEventTest {
     @Autowired
     private LocalEventSource localEventSource;
 
-    @Before
+    @BeforeEach
     public void setUp(){
         localEventSource.clearEvents();
 
     }
 
-    @After
+    @AfterEach
     public void tearDown(){
         taskCleanUpUtil.cleanUpWithAdmin();
         localEventSource.clearEvents();

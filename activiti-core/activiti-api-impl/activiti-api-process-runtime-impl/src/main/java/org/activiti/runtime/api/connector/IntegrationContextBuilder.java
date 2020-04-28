@@ -53,6 +53,7 @@ public class IntegrationContextBuilder {
         integrationContext.setProcessDefinitionId(execution.getProcessDefinitionId());
         integrationContext.setBusinessKey(execution.getProcessInstanceBusinessKey());
         integrationContext.setClientId(execution.getCurrentActivityId());
+        integrationContext.setExecutionId(execution.getId());
 
         if (ExecutionEntity.class.isInstance(execution)) {
             ExecutionContext executionContext = new ExecutionContext(ExecutionEntity.class.cast(execution));

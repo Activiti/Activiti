@@ -16,10 +16,11 @@
 
 package org.activiti.test;
 
+import static java.util.Arrays.asList;
+import static java.util.Collections.unmodifiableList;
 import static java.util.stream.Collectors.collectingAndThen;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -38,7 +39,7 @@ public class LocalEventSource implements EventSource {
 
     @Override
     public List<RuntimeEvent<?, ?>> getEvents() {
-        return Collections.unmodifiableList(collectedEvents);
+        return unmodifiableList(collectedEvents);
     }
 
     public void clearEvents() {
@@ -57,7 +58,7 @@ public class LocalEventSource implements EventSource {
     public List<RuntimeEvent<?, ?>> getEvents(Enum<?> ... eventTypes) {
         return collectedEvents
                 .stream()
-                .filter(event -> Arrays.asList(eventTypes).contains(event.getEventType()))
+                .filter(event -> asList(eventTypes).contains(event.getEventType()))
                 .collect(collectingAndThen(Collectors.toList(),
                                            Collections::unmodifiableList));
 

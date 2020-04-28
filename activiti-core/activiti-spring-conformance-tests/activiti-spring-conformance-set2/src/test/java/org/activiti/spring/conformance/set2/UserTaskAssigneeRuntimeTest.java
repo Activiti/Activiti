@@ -25,14 +25,11 @@ import org.activiti.api.task.runtime.conf.TaskRuntimeConfiguration;
 import org.activiti.api.task.runtime.events.listener.TaskRuntimeEventListener;
 import org.activiti.spring.conformance.util.RuntimeTestConfiguration;
 import org.activiti.spring.conformance.util.security.SecurityUtil;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
 
-@RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 public class UserTaskAssigneeRuntimeTest {
 
@@ -47,7 +44,7 @@ public class UserTaskAssigneeRuntimeTest {
     @Autowired
     private SecurityUtil securityUtil;
 
-    @Before
+    @BeforeEach
     public void cleanUp() {
         clearEvents();
     }
@@ -123,7 +120,6 @@ public class UserTaskAssigneeRuntimeTest {
         assertThat(throwable)
                 .isInstanceOf(NotFoundException.class);
 
-
         assertThat(RuntimeTestConfiguration.collectedEvents)
                 .extracting(RuntimeEvent::getEventType)
                 .containsExactly(
@@ -157,7 +153,7 @@ public class UserTaskAssigneeRuntimeTest {
 
 
     }
-    
+
     public void clearEvents() {
         RuntimeTestConfiguration.collectedEvents.clear();
     }

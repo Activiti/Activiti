@@ -31,8 +31,6 @@ import org.activiti.engine.impl.repository.DeploymentBuilderImpl;
 import org.activiti.engine.repository.Deployment;
 
 /**
-
-
  */
 public class DeployCmd<T> implements Command<Deployment>, Serializable {
 
@@ -170,8 +168,7 @@ public class DeployCmd<T> implements Command<Deployment>, Serializable {
 
               byte[] bytes = resource.getBytes();
               byte[] savedBytes = savedResource.getBytes();
-              if (!Arrays.equals(bytes,
-                                 savedBytes)) {
+              if (!Arrays.equals(bytes, savedBytes)) {
                   return true;
               }
           }

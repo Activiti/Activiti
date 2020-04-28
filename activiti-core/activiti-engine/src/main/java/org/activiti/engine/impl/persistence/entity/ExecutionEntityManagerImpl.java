@@ -21,11 +21,11 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.activiti.bpmn.model.SequenceFlow;
 import org.activiti.bpmn.model.UserTask;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.delegate.event.ActivitiEventType;
+import org.activiti.engine.delegate.event.ActivitiProcessCancelledEvent;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.history.DeleteReason;
 import org.activiti.engine.impl.ExecutionQueryImpl;
@@ -230,7 +230,6 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
 
     String authenticatedUserId = Authentication.getAuthenticatedUserId();
 
-    processInstanceExecution.setStartTime(Context.getProcessEngineConfiguration().getClock().getCurrentTime());
     processInstanceExecution.setStartUserId(authenticatedUserId);
 
     // Store in database
@@ -255,6 +254,10 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
     return processInstanceExecution;
   }
 
+  public ExecutionEntity updateProcessInstanceStartDate(ExecutionEntity processInstanceExecution) {
+      processInstanceExecution.setStartTime(Context.getProcessEngineConfiguration().getClock().getCurrentTime());
+      return update(processInstanceExecution);
+  }
   /**
    * Creates a new execution. properties processDefinition, processInstance and activity will be initialized.
    */
@@ -393,12 +396,9 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
 
     getTaskEntityManager().deleteTasksByProcessInstanceId(execution.getId(), deleteReason, deleteHistory);
 
-    if (getEventDispatcher().isEnabled()) {
-      getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createCancelledEvent(execution.getProcessInstanceId(),
-          execution.getProcessInstanceId(), null, deleteReason));
-    }
+      dispatchProcessCancelledEvent(execution, deleteReason);
 
-    // delete the execution BEFORE we delete the history, otherwise we will
+      // delete the execution BEFORE we delete the history, otherwise we will
     // produce orphan HistoricVariableInstance instances
 
     ExecutionEntity processInstanceExecutionEntity = execution.getProcessInstance();
@@ -422,7 +422,16 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
     processInstanceExecutionEntity.setDeleted(true);
   }
 
-  @Override
+    private void dispatchProcessCancelledEvent(ExecutionEntity execution, String deleteReason) {
+        if (getEventDispatcher().isEnabled()) {
+            ProcessInstance processInstance = execution.getProcessInstance();
+            ActivitiProcessCancelledEvent processCancelledEvent = ActivitiEventBuilder
+                .createProcessCancelledEvent(processInstance, deleteReason);
+            getEventDispatcher().dispatchEvent(processCancelledEvent);
+        }
+    }
+
+    @Override
   public void deleteExecutionAndRelatedData(ExecutionEntity executionEntity, String deleteReason) {
     getHistoryManager().recordActivityEnd(executionEntity, deleteReason);
     deleteDataForExecution(executionEntity, deleteReason);
@@ -476,8 +485,7 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
     	if (!cancel) {
     		getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.PROCESS_COMPLETED, processInstanceEntity));
     	} else {
-    		getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createCancelledEvent(processInstanceEntity.getId(),
-    				processInstanceEntity.getId(), processInstanceEntity.getProcessDefinitionId(), deleteReason));
+    		getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createProcessCancelledEvent(processInstanceEntity, deleteReason));
     	}
     }
 

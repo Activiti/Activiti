@@ -16,7 +16,8 @@
 
 package org.activiti.bpmn.converter.child.multi.instance;
 
-import java.util.Arrays;
+import static java.util.Arrays.asList;
+
 import java.util.List;
 import javax.xml.stream.XMLStreamReader;
 import org.activiti.bpmn.converter.child.BaseChildElementParser;
@@ -32,7 +33,7 @@ public class MultiInstanceParser extends BaseChildElementParser {
     private final List<ElementParser<MultiInstanceLoopCharacteristics>> multiInstanceElementParsers;
 
     public MultiInstanceParser() {
-        this(Arrays.asList(new LoopCardinalityParser(),
+        this(asList(new LoopCardinalityParser(),
             new MultiInstanceDataInputParser(),
             new MultiInstanceInputDataItemParser(),
             new MultiInstanceCompletionConditionParser(),

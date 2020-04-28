@@ -13,14 +13,15 @@ pipeline {
           branch 'PR-*'
         }
         environment {
-          PREVIEW_VERSION = "0.0.0-SNAPSHOT-$BRANCH_NAME-$BUILD_NUMBER"
+          PREVIEW_VERSION = "7.1.0-$BRANCH_NAME-$BUILD_NUMBER"
           PREVIEW_NAMESPACE = "$APP_NAME-$BRANCH_NAME".toLowerCase()
           HELM_RELEASE = "$PREVIEW_NAMESPACE".toLowerCase()
         }
         steps {
           container('maven') {
             sh "mvn versions:set -DnewVersion=$PREVIEW_VERSION"
-            sh "mvn install"
+            sh "mvn install -DskipITs"
+            // sh "mvn deploy -DskipTests -DskipITs"
           }
         }
       }
@@ -39,7 +40,7 @@ pipeline {
             sh "echo \$(jx-release-version) > VERSION"
             sh "mvn versions:set -DnewVersion=\$(cat VERSION)"
 
-            sh 'mvn clean verify'
+            sh 'mvn clean verify -DskipITs'
             sh "git add --all"
             sh "git commit -m \"Release \$(cat VERSION)\" --allow-empty"
             sh "git tag -fa v\$(cat VERSION) -m \"Release version \$(cat VERSION)\""

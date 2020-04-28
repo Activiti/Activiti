@@ -1,30 +1,22 @@
 package org.activiti.editor.language.xml;
 
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import org.activiti.bpmn.exceptions.XMLException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class EmptyModelTest extends AbstractConverterTest {
 
   @Test
   public void convertXMLToModel() throws Exception {
-    try {
-      readXMLFile();
-      fail("Expected xml exception");
-    } catch (XMLException e) {
-      // exception expected
-    }
+    assertThatExceptionOfType(XMLException.class)
+      .isThrownBy(() -> readXMLFile());
   }
 
   @Test
   public void convertModelToXML() throws Exception {
-    try {
-      readXMLFile();
-      fail("Expected xml exception");
-    } catch (XMLException e) {
-      // exception expected
-    }
+    assertThatExceptionOfType(XMLException.class)
+      .isThrownBy(() -> readXMLFile());
   }
 
   protected String getResource() {

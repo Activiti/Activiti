@@ -1,9 +1,9 @@
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -12,6 +12,9 @@
  */
 
 package org.activiti.engine.test.bpmn.parse;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.util.List;
 
@@ -26,31 +29,28 @@ import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.test.Deployment;
 
 /**
- * 
-
+ *
  */
 public class BpmnParseTest extends PluggableActivitiTestCase {
 
   public void testInvalidProcessDefinition() {
-    try {
-      String resource = TestHelper.getBpmnProcessDefinitionResource(getClass(), "testInvalidProcessDefinition");
-      repositoryService.createDeployment().name(resource).addClasspathResource(resource).deploy();
-      fail();
-    } catch (XMLException e) {
-      // expected exception
-    }
+    assertThatExceptionOfType(XMLException.class)
+      .isThrownBy(() -> {
+        String resource = TestHelper.getBpmnProcessDefinitionResource(getClass(), "testInvalidProcessDefinition");
+        repositoryService.createDeployment().name(resource).addClasspathResource(resource).deploy();
+      });
   }
 
   public void testParseWithBpmnNamespacePrefix() {
     repositoryService.createDeployment().addClasspathResource("org/activiti/engine/test/bpmn/parse/BpmnParseTest.testParseWithBpmnNamespacePrefix.bpmn20.xml").deploy();
-    assertEquals(1, repositoryService.createProcessDefinitionQuery().count());
+    assertThat(repositoryService.createProcessDefinitionQuery().count()).isEqualTo(1);
 
     repositoryService.deleteDeployment(repositoryService.createDeploymentQuery().singleResult().getId(), true);
   }
 
   public void testParseWithMultipleDocumentation() {
     repositoryService.createDeployment().addClasspathResource("org/activiti/engine/test/bpmn/parse/BpmnParseTest.testParseWithMultipleDocumentation.bpmn20.xml").deploy();
-    assertEquals(1, repositoryService.createProcessDefinitionQuery().count());
+    assertThat(repositoryService.createProcessDefinitionQuery().count()).isEqualTo(1);
 
     repositoryService.deleteDeployment(repositoryService.createDeploymentQuery().singleResult().getId(), true);
   }
@@ -65,7 +65,7 @@ public class BpmnParseTest extends PluggableActivitiTestCase {
 //
 //    // Check if diagram has been created based on Diagram Interchange when  it's not a headless instance
 //    List<String> resourceNames = repositoryService.getDeploymentResourceNames(repositoryService.createProcessDefinitionQuery().singleResult().getDeploymentId());
-//    assertEquals(2, resourceNames.size());
+//    assertThat(resourceNames).hasSize(2);
 //
 //    assertActivityBounds(bpmnModel, "theStart", 70, 255, 30, 30);
 //    assertActivityBounds(bpmnModel, "task1", 176, 230, 100, 80);
@@ -87,17 +87,17 @@ public class BpmnParseTest extends PluggableActivitiTestCase {
 
   @Deployment
   public void testParseNamespaceInConditionExpressionType() {
-    
+
     BpmnModel bpmnModel = repositoryService.getBpmnModel(repositoryService.createProcessDefinitionQuery().singleResult().getId());
     Process process = bpmnModel.getProcesses().get(0);
-    assertNotNull(process);
-    
+    assertThat(process).isNotNull();
+
     SequenceFlow sequenceFlow = (SequenceFlow) process.getFlowElement("SequenceFlow_3");
-    assertEquals("#{approved}", sequenceFlow.getConditionExpression());
-    
+    assertThat(sequenceFlow.getConditionExpression()).isEqualTo("#{approved}");
+
     sequenceFlow = (SequenceFlow) process.getFlowElement("SequenceFlow_4");
-    assertEquals("#{!approved}", sequenceFlow.getConditionExpression());
-    
+    assertThat(sequenceFlow.getConditionExpression()).isEqualTo("#{!approved}");
+
   }
 
   @Deployment
@@ -105,32 +105,32 @@ public class BpmnParseTest extends PluggableActivitiTestCase {
     ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().processDefinitionKey("TestAnnotation").singleResult();
     BpmnModel model = repositoryService.getBpmnModel(processDefinition.getId());
     Process mainProcess = model.getMainProcess();
-    assertEquals(0, mainProcess.getExtensionElements().size());
+    assertThat(mainProcess.getExtensionElements()).hasSize(0);
   }
 
   public void testParseSwitchedSourceAndTargetRefsForAssociations() {
     repositoryService.createDeployment().addClasspathResource("org/activiti/engine/test/bpmn/parse/BpmnParseTest.testParseSwitchedSourceAndTargetRefsForAssociations.bpmn20.xml").deploy();
 
-    assertEquals(1, repositoryService.createProcessDefinitionQuery().count());
+    assertThat(repositoryService.createProcessDefinitionQuery().count()).isEqualTo(1);
 
     repositoryService.deleteDeployment(repositoryService.createDeploymentQuery().singleResult().getId(), true);
   }
 
   protected void assertActivityBounds(BpmnModel bpmnModel, String activityId, Integer x, Integer y, Integer width, Integer height) {
-    assertEquals(x.doubleValue(), bpmnModel.getGraphicInfo(activityId).getX());
-    assertEquals(y.doubleValue(), bpmnModel.getGraphicInfo(activityId).getY());
-    assertEquals(width.doubleValue(), bpmnModel.getGraphicInfo(activityId).getWidth());
-    assertEquals(height.doubleValue(), bpmnModel.getGraphicInfo(activityId).getHeight());
+    assertThat(bpmnModel.getGraphicInfo(activityId).getX()).isEqualTo(x.doubleValue());
+    assertThat(bpmnModel.getGraphicInfo(activityId).getY()).isEqualTo(y.doubleValue());
+    assertThat(bpmnModel.getGraphicInfo(activityId).getWidth()).isEqualTo(width.doubleValue());
+    assertThat(bpmnModel.getGraphicInfo(activityId).getHeight()).isEqualTo(height.doubleValue());
   }
 
   protected void assertSequenceFlowWayPoints(BpmnModel bpmnModel, String sequenceFlowId, Integer... waypoints) {
     List<GraphicInfo> graphicInfos = bpmnModel.getFlowLocationGraphicInfo(sequenceFlowId);
-    assertEquals(waypoints.length / 2, graphicInfos.size());
+    assertThat(graphicInfos).hasSize(waypoints.length / 2);
     for (int i = 0; i < waypoints.length; i += 2) {
       Integer x = waypoints[i];
       Integer y = waypoints[i+1];
-      assertEquals(x.doubleValue(), graphicInfos.get(i/2).getX());
-      assertEquals(y.doubleValue(), graphicInfos.get(i/2).getY());
+      assertThat(graphicInfos.get(i/2).getX()).isEqualTo(x.doubleValue());
+      assertThat(graphicInfos.get(i/2).getY()).isEqualTo(y.doubleValue());
     }
   }
 

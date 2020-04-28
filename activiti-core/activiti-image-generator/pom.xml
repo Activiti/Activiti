@@ -2,17 +2,14 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-
   <parent>
     <groupId>org.activiti</groupId>
     <artifactId>activiti-core-dependencies</artifactId>
     <version>7.1.0-SNAPSHOT</version>
     <relativePath>../activiti-core-dependencies</relativePath>
   </parent>
-
   <artifactId>activiti-image-generator</artifactId>
   <name>Activiti :: Image Generator</name>
-
   <dependencies>
     <dependency>
       <groupId>org.activiti</groupId>
@@ -35,13 +32,8 @@
       <artifactId>slf4j-api</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.activiti</groupId>
-      <artifactId>activiti-engine</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
+      <groupId>org.junit.vintage</groupId>
+      <artifactId>junit-vintage-engine</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -69,6 +61,10 @@
       <artifactId>batik-parser</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.activiti</groupId>
+      <artifactId>activiti-engine</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
-
 </project>

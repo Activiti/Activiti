@@ -14,9 +14,10 @@
 
 package org.activiti.engine.impl.calendar;
 
+import static java.util.Arrays.asList;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -73,7 +74,7 @@ public class DurationHelper {
                           ClockReader clockReader) throws Exception {
         this.clockReader = clockReader;
         this.maxIterations = maxIterations;
-        List<String> expression = Arrays.asList(expressionS.split("/"));
+        List<String> expression = asList(expressionS.split("/"));
         datatypeFactory = DatatypeFactory.newInstance();
 
         if (expression.size() > 3 || expression.isEmpty()) {

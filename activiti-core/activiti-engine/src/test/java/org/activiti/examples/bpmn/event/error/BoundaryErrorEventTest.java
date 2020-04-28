@@ -1,9 +1,9 @@
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -11,6 +11,8 @@
  * limitations under the License.
  */
 package org.activiti.examples.bpmn.event.error;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.HashMap;
 import java.util.List;
@@ -50,14 +52,14 @@ public class BoundaryErrorEventTest extends PluggableActivitiTestCase {
     variables.put("customerName", "Alfresco");
     String procId = runtimeService.startProcessInstanceByKey("reviewSaledLead", variables).getId();
     Task task = taskService.createTaskQuery().taskAssignee("kermit").singleResult();
-    assertEquals("Provide new sales lead", task.getName());
+    assertThat(task.getName()).isEqualTo("Provide new sales lead");
 
     // After completing the task, the review subprocess will be active
     taskService.complete(task.getId());
     Task ratingTask = taskService.createTaskQuery().taskCandidateGroup("accountancy").singleResult();
-    assertEquals("Review customer rating", ratingTask.getName());
+    assertThat(ratingTask.getName()).isEqualTo("Review customer rating");
     Task profitabilityTask = taskService.createTaskQuery().taskCandidateGroup("management").singleResult();
-    assertEquals("Review profitability", profitabilityTask.getName());
+    assertThat(profitabilityTask.getName()).isEqualTo("Review profitability");
 
     // Complete the management task by stating that not enough info was
     // provided
@@ -68,14 +70,14 @@ public class BoundaryErrorEventTest extends PluggableActivitiTestCase {
 
     // The 'provide additional details' task should now be active
     Task provideDetailsTask = taskService.createTaskQuery().taskAssignee("kermit").singleResult();
-    assertEquals("Provide additional details", provideDetailsTask.getName());
+    assertThat(provideDetailsTask.getName()).isEqualTo("Provide additional details");
 
     // Providing more details (ie. completing the task), will activate the
     // subprocess again
     taskService.complete(provideDetailsTask.getId());
     List<Task> reviewTasks = taskService.createTaskQuery().orderByTaskName().asc().list();
-    assertEquals("Review customer rating", reviewTasks.get(0).getName());
-    assertEquals("Review profitability", reviewTasks.get(1).getName());
+    assertThat(reviewTasks.get(0).getName()).isEqualTo("Review customer rating");
+    assertThat(reviewTasks.get(1).getName()).isEqualTo("Review profitability");
 
     // Completing both tasks normally ends the process
     taskService.complete(reviewTasks.get(0).getId());

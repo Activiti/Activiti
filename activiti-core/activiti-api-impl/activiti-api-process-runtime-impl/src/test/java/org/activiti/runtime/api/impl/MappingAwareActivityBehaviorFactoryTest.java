@@ -16,14 +16,13 @@
 
 package org.activiti.runtime.api.impl;
 
+import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
-import java.util.Collections;
-
 import org.activiti.bpmn.model.UserTask;
 import org.activiti.engine.delegate.Expression;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class MappingAwareActivityBehaviorFactoryTest {
 
@@ -38,22 +37,20 @@ public class MappingAwareActivityBehaviorFactoryTest {
 
     @Test
     public void createCallActivityBehaviorShouldReturnMappingAwareCallActivityBehavior() {
-        assertThat(factory.createCallActivityBehavior("element",
-                                                      Collections.emptyList()))
+        assertThat(factory.createCallActivityBehavior("element", emptyList()))
                 .isInstanceOf(MappingAwareCallActivityBehavior.class);
     }
 
     @Test
     public void createCallActivityBehaviorWithExpressionShouldReturnMappingAwareCallActivityBehavior() {
-        assertThat(factory.createCallActivityBehavior(mock(Expression.class),
-                                                      Collections.emptyList()))
+        assertThat(factory.createCallActivityBehavior(mock(Expression.class), emptyList()))
                 .isInstanceOf(MappingAwareCallActivityBehavior.class);
     }
-    
+
     @Test
     public void getMessagePayloadMappingProviderFactoryShouldReturnJsonMessagePayloadMappingProvider() {
         assertThat(factory.getMessagePayloadMappingProviderFactory())
                 .isInstanceOf(JsonMessagePayloadMappingProviderFactory.class);
     }
-    
+
 }

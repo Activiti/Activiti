@@ -1,9 +1,9 @@
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -11,6 +11,8 @@
  * limitations under the License.
  */
 package org.activiti.engine.test.api.event;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.delegate.event.ActivitiEvent;
@@ -24,8 +26,7 @@ import org.activiti.engine.test.Deployment;
 
 /**
  * Test case for all {@link ActivitiEvent}s related to process definitions.
- * 
-
+ *
  */
 public class ProcessDefinitionEventsTest extends PluggableActivitiTestCase {
 
@@ -38,55 +39,55 @@ public class ProcessDefinitionEventsTest extends PluggableActivitiTestCase {
   public void testProcessDefinitionEvents() throws Exception {
     ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().processDefinitionKey("oneTaskProcess").singleResult();
 
-    assertNotNull(processDefinition);
+    assertThat(processDefinition).isNotNull();
 
     // Check create-event
-    assertEquals(2, listener.getEventsReceived().size());
-    assertTrue(listener.getEventsReceived().get(0) instanceof ActivitiEntityEvent);
+    assertThat(listener.getEventsReceived()).hasSize(2);
+    assertThat(listener.getEventsReceived().get(0)).isInstanceOf(ActivitiEntityEvent.class);
 
     ActivitiEntityEvent event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
-    assertEquals(ActivitiEventType.ENTITY_CREATED, event.getType());
-    assertEquals(processDefinition.getId(), ((ProcessDefinition) event.getEntity()).getId());
+    assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_CREATED);
+    assertThat(((ProcessDefinition) event.getEntity()).getId()).isEqualTo(processDefinition.getId());
 
     event = (ActivitiEntityEvent) listener.getEventsReceived().get(1);
-    assertEquals(ActivitiEventType.ENTITY_INITIALIZED, event.getType());
-    assertEquals(processDefinition.getId(), ((ProcessDefinition) event.getEntity()).getId());
+    assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_INITIALIZED);
+    assertThat(((ProcessDefinition) event.getEntity()).getId()).isEqualTo(processDefinition.getId());
     listener.clearEventsReceived();
 
     // Check update event when category is updated
     repositoryService.setProcessDefinitionCategory(processDefinition.getId(), "test");
-    assertEquals(1, listener.getEventsReceived().size());
-    assertTrue(listener.getEventsReceived().get(0) instanceof ActivitiEntityEvent);
+    assertThat(listener.getEventsReceived()).hasSize(1);
+    assertThat(listener.getEventsReceived().get(0)).isInstanceOf(ActivitiEntityEvent.class);
 
     event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
-    assertEquals(ActivitiEventType.ENTITY_UPDATED, event.getType());
-    assertEquals(processDefinition.getId(), ((ProcessDefinition) event.getEntity()).getId());
-    assertEquals("test", ((ProcessDefinition) event.getEntity()).getCategory());
+    assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_UPDATED);
+    assertThat(((ProcessDefinition) event.getEntity()).getId()).isEqualTo(processDefinition.getId());
+    assertThat(((ProcessDefinition) event.getEntity()).getCategory()).isEqualTo("test");
     listener.clearEventsReceived();
 
     // Check update event when suspended/activated
     repositoryService.suspendProcessDefinitionById(processDefinition.getId());
     repositoryService.activateProcessDefinitionById(processDefinition.getId());
 
-    assertEquals(2, listener.getEventsReceived().size());
+    assertThat(listener.getEventsReceived()).hasSize(2);
     event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
-    assertEquals(processDefinition.getId(), ((ProcessDefinition) event.getEntity()).getId());
-    assertEquals(ActivitiEventType.ENTITY_SUSPENDED, event.getType());
+    assertThat(((ProcessDefinition) event.getEntity()).getId()).isEqualTo(processDefinition.getId());
+    assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_SUSPENDED);
     event = (ActivitiEntityEvent) listener.getEventsReceived().get(1);
-    assertEquals(ActivitiEventType.ENTITY_ACTIVATED, event.getType());
-    assertEquals(processDefinition.getId(), ((ProcessDefinition) event.getEntity()).getId());
+    assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_ACTIVATED);
+    assertThat(((ProcessDefinition) event.getEntity()).getId()).isEqualTo(processDefinition.getId());
     listener.clearEventsReceived();
 
     // Check delete event when category is updated
     repositoryService.deleteDeployment(processDefinition.getDeploymentId(), true);
     deploymentIdFromDeploymentAnnotation = null;
 
-    assertEquals(1, listener.getEventsReceived().size());
-    assertTrue(listener.getEventsReceived().get(0) instanceof ActivitiEntityEvent);
+    assertThat(listener.getEventsReceived()).hasSize(1);
+    assertThat(listener.getEventsReceived().get(0)).isInstanceOf(ActivitiEntityEvent.class);
 
     event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
-    assertEquals(ActivitiEventType.ENTITY_DELETED, event.getType());
-    assertEquals(processDefinition.getId(), ((ProcessDefinition) event.getEntity()).getId());
+    assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_DELETED);
+    assertThat(((ProcessDefinition) event.getEntity()).getId()).isEqualTo(processDefinition.getId());
     listener.clearEventsReceived();
   }
 
@@ -115,7 +116,7 @@ public class ProcessDefinitionEventsTest extends PluggableActivitiTestCase {
       if (isEqual(after, activitiEvent))
         afterIndex = index;
     }
-    assertTrue(beforeIndex < afterIndex);
+    assertThat(beforeIndex < afterIndex).isTrue();
   }
 
   /**

@@ -16,9 +16,9 @@
 
 package org.activiti.spring.boot.tasks;
 
+import static java.util.Collections.emptyMap;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -59,11 +59,11 @@ public class TaskBaseRuntime {
     }
 
     public void completeTask(String taskId) {
-        completeTask(taskId, Collections.emptyMap());
+        completeTask(taskId, emptyMap());
     }
 
     public void completeTask(Task task) {
-        this.completeTask(task.getId(), Collections.emptyMap());
+        this.completeTask(task.getId(), emptyMap());
     }
 
     public void completeTask(Task task, Map<String, Object> variables) {

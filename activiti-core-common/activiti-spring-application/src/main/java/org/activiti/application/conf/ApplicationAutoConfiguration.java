@@ -16,7 +16,8 @@
 
 package org.activiti.application.conf;
 
-import java.util.Collections;
+import static java.util.Collections.emptyList;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -45,8 +46,8 @@ public class ApplicationAutoConfiguration {
                                                                                              applicationsLocation),
                                                                     new ApplicationReader(
                                                                            Optional.ofNullable(applicationEntryDiscoveries)
-                                                                                   .orElse(Collections.emptyList()))),
+                                                                                   .orElse(emptyList()))),
                                              Optional.ofNullable(applicationEntryDeployers)
-                                                     .orElse(Collections.emptyList())).deploy();
+                                                     .orElse(emptyList())).deploy();
     }
 }

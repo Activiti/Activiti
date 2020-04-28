@@ -13,9 +13,10 @@
 
 package org.activiti.spring.boot;
 
+import static java.util.Collections.emptyList;
+
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -202,10 +203,10 @@ public class ProcessEngineAutoConfiguration extends AbstractProcessEngineAutoCon
         return new ProcessDeployedEventProducer(repositoryService,
                 converter,
                 Optional.ofNullable(listeners)
-                        .orElse(Collections.emptyList()),
+                        .orElse(emptyList()),
                 eventPublisher);
     }
-    
+
     @Bean
     @ConditionalOnMissingBean
     public StartMessageDeployedEventProducer startMessageDeployedEventProducer(RepositoryService repositoryService,
@@ -221,7 +222,7 @@ public class ProcessEngineAutoConfiguration extends AbstractProcessEngineAutoCon
                                                      listeners,
                                                      eventPublisher);
     }
-    
+
 
     @Bean(name = BEHAVIOR_FACTORY_MAPPING_CONFIGURER)
     @ConditionalOnMissingBean(name = BEHAVIOR_FACTORY_MAPPING_CONFIGURER)

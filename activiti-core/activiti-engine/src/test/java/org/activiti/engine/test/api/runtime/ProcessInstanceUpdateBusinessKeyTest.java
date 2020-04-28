@@ -12,6 +12,8 @@
  */
 package org.activiti.engine.test.api.runtime;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.history.HistoricProcessInstance;
@@ -29,11 +31,11 @@ public class ProcessInstanceUpdateBusinessKeyTest extends PluggableActivitiTestC
     runtimeService.startProcessInstanceByKey("businessKeyProcess");
 
     ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().singleResult();
-    assertEquals("bzKey", processInstance.getBusinessKey());
+    assertThat(processInstance.getBusinessKey()).isEqualTo("bzKey");
 
     if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
       HistoricProcessInstance historicProcessInstance = historyService.createHistoricProcessInstanceQuery().singleResult();
-      assertEquals("bzKey", historicProcessInstance.getBusinessKey());
+      assertThat(historicProcessInstance.getBusinessKey()).isEqualTo("bzKey");
     }
   }
 
@@ -42,21 +44,21 @@ public class ProcessInstanceUpdateBusinessKeyTest extends PluggableActivitiTestC
     runtimeService.startProcessInstanceByKey("businessKeyProcess", "testKey");
 
     ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().singleResult();
-    assertEquals("testKey", processInstance.getBusinessKey());
+    assertThat(processInstance.getBusinessKey()).isEqualTo("testKey");
 
     if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
       HistoricProcessInstance historicProcessInstance = historyService.createHistoricProcessInstanceQuery().singleResult();
-      assertEquals("testKey", historicProcessInstance.getBusinessKey());
+      assertThat(historicProcessInstance.getBusinessKey()).isEqualTo("testKey");
     }
 
     runtimeService.updateBusinessKey(processInstance.getId(), "newKey");
 
     processInstance = runtimeService.createProcessInstanceQuery().singleResult();
-    assertEquals("newKey", processInstance.getBusinessKey());
+    assertThat(processInstance.getBusinessKey()).isEqualTo("newKey");
 
     if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
       HistoricProcessInstance historicProcessInstance = historyService.createHistoricProcessInstanceQuery().singleResult();
-      assertEquals("newKey", historicProcessInstance.getBusinessKey());
+      assertThat(historicProcessInstance.getBusinessKey()).isEqualTo("newKey");
     }
   }
 

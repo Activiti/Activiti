@@ -21,8 +21,8 @@ import org.activiti.api.runtime.model.impl.BPMNSignalImpl;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiSignalEventImpl;
 import org.activiti.runtime.api.model.impl.ToSignalConverter;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
@@ -38,7 +38,7 @@ public class ToSignalReceivedConverterTest {
     @Mock
     private ToSignalConverter toSignalConverter;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         initMocks(this);
     }
