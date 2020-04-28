@@ -26,7 +26,7 @@
     <jsr250-api.version>1.0</jsr250-api.version>
     <juel.version>2.2.7</juel.version>
     <hibernate-jpa-2.1-api.version>1.0.2.Final</hibernate-jpa-2.1-api.version>
-    <mybatis.version>3.5.0</mybatis.version>
+    <mybatis.version>3.5.4</mybatis.version>
     <subethasmtp-wiser.version>1.2</subethasmtp-wiser.version>
     <xmlgraphics-commons.version>2.2</xmlgraphics-commons.version>
     <subethasmtp-wiser.version>1.2</subethasmtp-wiser.version>
