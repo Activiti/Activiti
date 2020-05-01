@@ -114,7 +114,6 @@ public abstract class AbstractActivitiTestCase extends AbstractTestCase {
     } finally {
 
       if (deploymentIdFromDeploymentAnnotation != null) {
-          Thread.sleep(2000);
         TestHelper.annotationDeploymentTearDown(processEngine, deploymentIdFromDeploymentAnnotation, getClass(), getName());
         deploymentIdFromDeploymentAnnotation = null;
       }
