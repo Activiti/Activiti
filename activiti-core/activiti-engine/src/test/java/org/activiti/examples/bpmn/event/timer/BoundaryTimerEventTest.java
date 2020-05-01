@@ -26,7 +26,7 @@ import org.activiti.engine.test.Deployment;
 public class BoundaryTimerEventTest extends PluggableActivitiTestCase {
 
   @Deployment
-  public void testInterruptingTimerDuration() {
+  public void testInterruptingTimerDuration() throws Exception{
 
     // Start process instance
     ProcessInstance pi = runtimeService.startProcessInstanceByKey("escalationExample");
@@ -34,6 +34,8 @@ public class BoundaryTimerEventTest extends PluggableActivitiTestCase {
     // There should be one task, with a timer : first line support
     Task task = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
     assertThat(task.getName()).isEqualTo("First line support");
+
+      Thread.sleep(2000);
 
     // Manually execute the job
     Job timer = managementService.createTimerJobQuery().singleResult();
