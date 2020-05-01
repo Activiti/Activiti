@@ -15,27 +15,28 @@ package org.activiti.engine.test.regression;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 
 /**
- * All tests that do not belong to any other test case, but test a supposedly working feature go here.
- *
-
+ * All tests that do not belong to any other test case, but test a supposedly working feature go
+ * here.
  */
 public class RegressionTest extends PluggableActivitiTestCase {
 
-  // https://jira.codehaus.org/browse/ACT-1623
-  // NPE when eventbased gateway is after referenced event
-  public void testAct1623() throws Exception {
+    // https://jira.codehaus.org/browse/ACT-1623
+    // NPE when eventbased gateway is after referenced event
+    public void testAct1623() throws Exception {
 
-    // Deploy processes
-    String deploymentId = repositoryService.createDeployment().addClasspathResource("org/activiti/engine/test/regression/act1623-processOne.bpmn")
-        .addClasspathResource("org/activiti/engine/test/regression/act1623-processTwo.bpmn").deploy().getId();
+        // Deploy processes
+        String deploymentId = repositoryService.createDeployment()
+            .addClasspathResource("org/activiti/engine/test/regression/act1623-processOne.bpmn")
+            .addClasspathResource("org/activiti/engine/test/regression/act1623-processTwo.bpmn")
+            .deploy().getId();
 
-    runtimeService.startProcessInstanceByKey("ProcessOne");
+        runtimeService.startProcessInstanceByKey("ProcessOne");
 
-    //Quick fix for random test failure on Travis
-    Thread.sleep(2000);
+        //Quick fix for random test failure on Travis
+        Thread.sleep(2000);
 
-    // Clean
-    repositoryService.deleteDeployment(deploymentId, true);
-  }
+        // Clean
+        repositoryService.deleteDeployment(deploymentId, true);
+    }
 
 }
