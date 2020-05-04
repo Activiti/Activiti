@@ -26,18 +26,18 @@ import org.springframework.boot.test.context.TestComponent;
 @TestComponent
 public class DummyBPMNTimerFiredListener implements BPMNElementEventListener<BPMNTimerFiredEvent> {
 
-    private List<BPMNTimerFiredEvent> events = new LinkedList<>();
-    
+    private final List<BPMNTimerFiredEvent> events = new LinkedList<>();
+
     @Override
-    public void onEvent(BPMNTimerFiredEvent event) {
+    public synchronized void onEvent(BPMNTimerFiredEvent event) {
         events.add(event);
     }
-     
-    public List<BPMNTimerFiredEvent> getEvents() {
+
+    public synchronized List<BPMNTimerFiredEvent> getEvents() {
         return events;
     }
-    
-    public void clear(){
+
+    public synchronized void clear(){
         events.clear();
     }
 }
