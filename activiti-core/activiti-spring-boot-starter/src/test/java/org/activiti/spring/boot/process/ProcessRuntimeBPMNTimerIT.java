@@ -156,7 +156,7 @@ public class ProcessRuntimeBPMNTimerIT {
         assertThat(listenerFired.getEvents()).isEmpty();
 
         //when
-        long waitTime = 5 * 60 * 1000;
+        long waitTime = 10 * 60 * 1000;
         Date startTime = new Date();
         Date dueDate = new Date(startTime.getTime() + waitTime);
 

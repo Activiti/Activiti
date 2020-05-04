@@ -54,7 +54,7 @@ public class JobExecutorTest extends JobExecutorTestCase {
     currentCal.add(Calendar.MINUTE, 1);
     processEngineConfiguration.getClock().setCurrentTime(currentCal.getTime());
 
-    waitForJobExecutorToProcessAllJobs(8000L, 200L);
+    waitForJobExecutorToProcessAllJobs(50000L, 200L);
 
     Set<String> messages = new HashSet<String>(tweetHandler.getMessages());
     Set<String> expectedMessages = new HashSet<String>();
