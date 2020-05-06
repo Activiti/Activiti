@@ -57,12 +57,17 @@ import org.activiti.api.runtime.model.impl.IntegrationContextImpl;
 import org.activiti.api.runtime.model.impl.MessageSubscriptionImpl;
 import org.activiti.api.runtime.model.impl.ProcessDefinitionImpl;
 import org.activiti.api.runtime.model.impl.ProcessInstanceImpl;
+import org.activiti.api.runtime.model.impl.ProcessVariablesMap;
 import org.activiti.api.runtime.model.impl.StartMessageDeploymentDefinitionImpl;
 import org.activiti.api.runtime.model.impl.StartMessageSubscriptionImpl;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration;
+import org.springframework.boot.convert.ApplicationConversionService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
+import org.springframework.core.convert.ConversionService;
 
 import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.databind.BeanDescription;
@@ -79,6 +84,7 @@ public class ProcessModelAutoConfiguration {
 
     //this bean will be automatically injected inside boot's ObjectMapper
     @Bean
+    @Order(Ordered.HIGHEST_PRECEDENCE)
     public Module customizeProcessModelObjectMapper() {
         SimpleModule module = new SimpleModule("mapProcessModelInterfaces",
                                                Version.unknownVersion());
@@ -156,6 +162,15 @@ public class ProcessModelAutoConfiguration {
         module.registerSubtypes(new NamedType(MessageEventPayload.class,
                                               MessageEventPayload.class.getSimpleName()));
         module.setAbstractTypes(resolver);
+
+        // TODO externalize this
+        ConversionService conversionService = ApplicationConversionService.getSharedInstance();
+
+        module.addSerializer(new ProcessVariableValuesMapSerializer(conversionService));
+
+        module.addDeserializer(ProcessVariablesMap.class,
+                               new ProcessVariableValuesMapDeserializer(conversionService));
+
         return module;
     }
 }
