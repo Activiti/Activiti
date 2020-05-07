@@ -178,7 +178,10 @@ public class ProcessInstanceHelper {
         commandContext.getHistoryManager().recordProcessInstanceStart(processInstance, initialFlowElement);
     }
 
-    private void calculateProcessVariable(ExecutionEntity processInstance, Map<String, Object> variables, Map<String, Object> transientVariables){
+    private void createProcessVariables(ExecutionEntity processInstance,
+        Map<String, Object> variables, Map<String, Object> transientVariables,
+        Process process){
+        processInstance.setVariables(processDataObjects(process.getDataObjects()));
         // Set the variables passed into the start command
         if (variables != null) {
             for (String varName : variables.keySet()) {
@@ -203,9 +206,9 @@ public class ProcessInstanceHelper {
     }
 
     public void startProcessInstance(ExecutionEntity processInstance, CommandContext commandContext, Map<String, Object> variables, FlowElement initialFlowElement, Map<String, Object> transientVariables) {
-        recordStartProcessInstance(commandContext, initialFlowElement, processInstance);
-        calculateProcessVariable(processInstance, variables, transientVariables);
         Process process = ProcessDefinitionUtil.getProcess(processInstance.getProcessDefinitionId());
+        createProcessVariables(processInstance, variables, transientVariables, process);
+        recordStartProcessInstance(commandContext, initialFlowElement, processInstance);
 
         // Event sub process handling
         List<MessageEventSubscriptionEntity> messageEventSubscriptions = new LinkedList<>();
@@ -330,7 +333,6 @@ public class ProcessInstanceHelper {
 
         // Set processInstance name
         setProcessInstanceName(commandContext, processInstance, processInstanceName);
-        processInstance.setVariables(processDataObjects(process.getDataObjects()));
 
         // Create the first execution that will visit all the process definition elements
         ExecutionEntity execution = commandContext.getExecutionEntityManager().createChildExecution(processInstance);

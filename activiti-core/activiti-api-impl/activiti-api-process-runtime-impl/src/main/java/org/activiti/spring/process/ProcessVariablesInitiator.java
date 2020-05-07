@@ -20,9 +20,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-
 import org.activiti.bpmn.model.FlowElement;
-import org.activiti.bpmn.model.Process;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
@@ -82,31 +80,14 @@ public class ProcessVariablesInitiator extends ProcessInstanceHelper {
         return processedVariables;
     }
 
-    @Override
-    public ExecutionEntity createProcessInstanceWithInitialFlowElement(ProcessDefinition processDefinition,
-                                                                       String businessKey,
-                                                                       String processInstanceName,
-                                                                       FlowElement initialFlowElement,
-                                                                       Process process) {
-
-        return super.createProcessInstanceWithInitialFlowElement(processDefinition,
-                businessKey,
-                processInstanceName,
-                initialFlowElement,
-                process);
-    }
-
     public Map<String, Object> calculateOutputVariables(Map<String, Object> variables, ProcessDefinition processDefinition, FlowElement initialFlowElement) {
-        return calculateOutputVariables(variables, processDefinition, initialFlowElement.getId());
-    }
-
-    public Map<String, Object> calculateOutputVariables(Map<String, Object> variables, ProcessDefinition processDefinition, String flowElementId) {
         Map<String, Object> processVariables = variables;
 
         if (processExtensionService.hasExtensionsFor(processDefinition)) {
 
-            processVariables = mappingProvider.calculateOutPutVariables(MappingExecutionContext.buildMappingExecutionContext(processDefinition.getId(),
-                flowElementId),
+            processVariables = mappingProvider.calculateOutPutVariables(MappingExecutionContext.buildMappingExecutionContext(
+                processDefinition.getId(),
+                initialFlowElement.getId()),
                 variables);
 
             processVariables = calculateVariablesFromExtensionFile(processDefinition,
@@ -155,8 +136,7 @@ public class ProcessVariablesInitiator extends ProcessInstanceHelper {
 
     public void startProcessInstance(ExecutionEntity processInstance, CommandContext commandContext, Map<String, Object> variables, FlowElement initialFlowElement, Map<String, Object> transientVariables) {
         ProcessDefinition processDefinition = ProcessDefinitionUtil.getProcessDefinition(processInstance.getProcessDefinitionId());
-        Process process = ProcessDefinitionUtil.getProcess(processInstance.getProcessDefinitionId());
-        Map<String, Object> calculatedVariables = calculateOutputVariables(variables, processDefinition, process.getInitialFlowElement());
+        Map<String, Object> calculatedVariables = calculateOutputVariables(variables, processDefinition, initialFlowElement);
         super.startProcessInstance(processInstance, commandContext, calculatedVariables, initialFlowElement, transientVariables);
     }
 }
