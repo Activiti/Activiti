@@ -97,16 +97,13 @@ public class ProcessVariablesInitiator extends ProcessInstanceHelper {
     }
 
     public Map<String, Object> calculateOutputVariables(Map<String, Object> variables, ProcessDefinition processDefinition, FlowElement initialFlowElement) {
-        return calculateOutputVariables(variables, processDefinition, initialFlowElement.getId());
-    }
-
-    public Map<String, Object> calculateOutputVariables(Map<String, Object> variables, ProcessDefinition processDefinition, String flowElementId) {
         Map<String, Object> processVariables = variables;
 
         if (processExtensionService.hasExtensionsFor(processDefinition)) {
 
-            processVariables = mappingProvider.calculateOutPutVariables(MappingExecutionContext.buildMappingExecutionContext(processDefinition.getId(),
-                flowElementId),
+            processVariables = mappingProvider.calculateOutPutVariables(MappingExecutionContext.buildMappingExecutionContext(
+                processDefinition.getId(),
+                initialFlowElement.getId()),
                 variables);
 
             processVariables = calculateVariablesFromExtensionFile(processDefinition,
@@ -155,8 +152,7 @@ public class ProcessVariablesInitiator extends ProcessInstanceHelper {
 
     public void startProcessInstance(ExecutionEntity processInstance, CommandContext commandContext, Map<String, Object> variables, FlowElement initialFlowElement, Map<String, Object> transientVariables) {
         ProcessDefinition processDefinition = ProcessDefinitionUtil.getProcessDefinition(processInstance.getProcessDefinitionId());
-        Process process = ProcessDefinitionUtil.getProcess(processInstance.getProcessDefinitionId());
-        Map<String, Object> calculatedVariables = calculateOutputVariables(variables, processDefinition, process.getInitialFlowElement());
+        Map<String, Object> calculatedVariables = calculateOutputVariables(variables, processDefinition, initialFlowElement);
         super.startProcessInstance(processInstance, commandContext, calculatedVariables, initialFlowElement, transientVariables);
     }
 }
