@@ -20,9 +20,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-
 import org.activiti.bpmn.model.FlowElement;
-import org.activiti.bpmn.model.Process;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
@@ -80,20 +78,6 @@ public class ProcessVariablesInitiator extends ProcessInstanceHelper {
         }
 
         return processedVariables;
-    }
-
-    @Override
-    public ExecutionEntity createProcessInstanceWithInitialFlowElement(ProcessDefinition processDefinition,
-                                                                       String businessKey,
-                                                                       String processInstanceName,
-                                                                       FlowElement initialFlowElement,
-                                                                       Process process) {
-
-        return super.createProcessInstanceWithInitialFlowElement(processDefinition,
-                businessKey,
-                processInstanceName,
-                initialFlowElement,
-                process);
     }
 
     public Map<String, Object> calculateOutputVariables(Map<String, Object> variables, ProcessDefinition processDefinition, FlowElement initialFlowElement) {
