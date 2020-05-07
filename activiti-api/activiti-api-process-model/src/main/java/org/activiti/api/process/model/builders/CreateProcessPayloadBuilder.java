@@ -11,12 +11,6 @@ public class CreateProcessPayloadBuilder {
     public CreateProcessPayloadBuilder() {
     }
 
-    public CreateProcessPayloadBuilder(String processDefinitionId, String processDefinitionKey, String name) {
-        this.processDefinitionId = processDefinitionId;
-        this.processDefinitionKey = processDefinitionKey;
-        this.name = name;
-    }
-
     public CreateProcessPayloadBuilder withProcessDefinitionId(String processDefinitionId) {
         this.processDefinitionId = processDefinitionId;
         return this;

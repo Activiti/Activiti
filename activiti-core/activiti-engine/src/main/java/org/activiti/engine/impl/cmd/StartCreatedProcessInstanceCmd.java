@@ -17,12 +17,6 @@ public class StartCreatedProcessInstanceCmd<T> implements Command<ProcessInstanc
     private Map<String, Object> variables;
     private Map<String, Object> transientVariables;
 
-    public StartCreatedProcessInstanceCmd(ProcessInstance internalProcessInstance, Map<String, Object> variables, Map<String, Object> transientVariables){
-        this.internalProcessInstance = internalProcessInstance;
-        this.variables = variables;
-        this.transientVariables = transientVariables;
-    }
-
     public StartCreatedProcessInstanceCmd(ProcessInstance internalProcessInstance, Map<String, Object> variables){
         this.internalProcessInstance = internalProcessInstance;
         this.variables = variables;
