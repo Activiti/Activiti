@@ -27,8 +27,9 @@ public class ProcessPayloadBuilder {
 
     public static CreateProcessPayloadBuilder create(CreateProcessInstancePayload from) {
         return new CreateProcessPayloadBuilder().withName(from.getName())
-                                                .withProcessDefinitionId(from.getProcessDefinitionId())
-                                                .withProcessDefinitionKey(from.getProcessDefinitionKey());
+            .withProcessDefinitionId(from.getProcessDefinitionId())
+            .withProcessDefinitionKey(from.getProcessDefinitionKey())
+            .withBusinessKey(from.getBusinessKey());
     }
 
     public static DeleteProcessPayloadBuilder delete() {
