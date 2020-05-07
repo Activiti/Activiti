@@ -522,8 +522,8 @@ public class RuntimeServiceImpl extends ServiceImpl implements RuntimeService {
     }
 
     @Override
-    public ProcessInstance startCreatedProcessInstance(ProcessInstance createdProcessInstance) {
-        return commandExecutor.execute(new StartCreatedProcessInstanceCmd<>(createdProcessInstance));
+    public ProcessInstance startCreatedProcessInstance(ProcessInstance createdProcessInstance, Map<String, Object> variables) {
+        return commandExecutor.execute(new StartCreatedProcessInstanceCmd<>(createdProcessInstance, variables));
     }
 
     public ProcessInstance startProcessInstance(ProcessInstanceBuilderImpl processInstanceBuilder) {

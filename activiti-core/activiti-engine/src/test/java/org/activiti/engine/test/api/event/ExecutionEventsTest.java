@@ -49,11 +49,11 @@ public class ExecutionEventsTest extends PluggableActivitiTestCase {
     assertThat(((Execution) event.getEntity()).getProcessInstanceId()).isEqualTo(processInstance.getId());
 
     event = (ActivitiEntityEvent) listener.getEventsReceived().get(1);
-    assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_INITIALIZED);
+    assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_CREATED);
     assertThat(((Execution) event.getEntity()).getProcessInstanceId()).isEqualTo(processInstance.getId());
 
     event = (ActivitiEntityEvent) listener.getEventsReceived().get(2);
-    assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_CREATED);
+    assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_INITIALIZED);
     assertThat(((Execution) event.getEntity()).getProcessInstanceId()).isEqualTo(processInstance.getId());
 
     event = (ActivitiEntityEvent) listener.getEventsReceived().get(3);

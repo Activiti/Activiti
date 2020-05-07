@@ -29,6 +29,7 @@ import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.model.StartMessageDeploymentDefinition;
 import org.activiti.api.process.model.StartMessageSubscription;
 import org.activiti.api.process.model.events.StartMessageDeployedEvent;
+import org.activiti.api.process.model.payloads.CreateProcessInstancePayload;
 import org.activiti.api.process.model.payloads.DeleteProcessPayload;
 import org.activiti.api.process.model.payloads.GetProcessDefinitionsPayload;
 import org.activiti.api.process.model.payloads.GetProcessInstancesPayload;
@@ -118,7 +119,7 @@ public class ProcessModelAutoConfiguration {
                             StartMessageDeployedEventImpl.class);
         resolver.addMapping(StartMessageDeploymentDefinition.class,
                             StartMessageDeploymentDefinitionImpl.class);
-        
+
         module.registerSubtypes(new NamedType(ProcessInstanceResult.class,
                                               ProcessInstanceResult.class.getSimpleName()));
 
@@ -140,6 +141,8 @@ public class ProcessModelAutoConfiguration {
                                               TimerPayload.class.getSimpleName()));
         module.registerSubtypes(new NamedType(StartProcessPayload.class,
                                               StartProcessPayload.class.getSimpleName()));
+        module.registerSubtypes(new NamedType(CreateProcessInstancePayload.class,
+                                              CreateProcessInstancePayload.class.getSimpleName()));
         module.registerSubtypes(new NamedType(SuspendProcessPayload.class,
                                               SuspendProcessPayload.class.getSimpleName()));
         module.registerSubtypes(new NamedType(ResumeProcessPayload.class,

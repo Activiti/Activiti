@@ -86,9 +86,7 @@ public class SignalEventHandler extends AbstractEventHandler {
                                                                                                           null,
                                                                                                           null,
                                                                                                           flowElement,
-                                                                                                          process,
-                                                                                                          variables,
-                                                                                                          null);
+                                                                                                          process);
       DelegateExecution execution = executionEntity.getExecutions()
                                                    .get(0);
       dispatchActivitySignalledEvent(execution,
@@ -99,7 +97,8 @@ public class SignalEventHandler extends AbstractEventHandler {
       processInstanceHelper.startProcessInstance(executionEntity,
                                                  commandContext,
                                                  variables,
-                                                 flowElement);
+                                                 flowElement,
+                                 null);
     } else {
       throw new ActivitiException("Invalid signal handling: no execution nor process definition set");
     }
