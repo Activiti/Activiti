@@ -16,6 +16,7 @@ import org.activiti.api.process.model.ProcessDefinition;
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
 import org.activiti.api.process.model.payloads.SignalPayload;
+import org.activiti.api.process.model.payloads.StartProcessPayload;
 import org.activiti.api.process.model.payloads.UpdateProcessPayload;
 import org.activiti.api.process.runtime.ProcessAdminRuntime;
 import org.activiti.api.process.runtime.ProcessRuntime;
@@ -191,10 +192,8 @@ public class ProcessRuntimeIT {
 
     @Test
     public void should_createNewProcessInstanceWithoutRunningIt_whenCreateIsCalled() {
-        ProcessInstance categorizeProcess = processRuntime.create(ProcessPayloadBuilder.start()
+        ProcessInstance categorizeProcess = processRuntime.create(ProcessPayloadBuilder.create()
             .withProcessDefinitionKey(CATEGORIZE_PROCESS)
-            .withVariable("expectedKey",
-                true)
             .build());
 
         assertThat(RuntimeTestConfiguration.completedProcesses).doesNotContain(categorizeProcess.getId());
@@ -207,7 +206,7 @@ public class ProcessRuntimeIT {
     public void should_startAnAlreadyCreatedProcess_when_startCreatedProcessIsCalled() {
         securityUtil.logInAs("garth");
 
-        ProcessInstance singleTaskProcessCreated = processRuntime.create(ProcessPayloadBuilder.start()
+        ProcessInstance singleTaskProcessCreated = processRuntime.create(ProcessPayloadBuilder.create()
             .withProcessDefinitionKey(SINGLE_TASK_PROCESS)
             .build());
 
@@ -219,7 +218,7 @@ public class ProcessRuntimeIT {
                 .build());
         assertThat(tasks.getTotalItems()).isEqualTo(0);
 
-        ProcessInstance singleTaskProcessStarted = processRuntime.startCreatedProcess(singleTaskProcessCreated.getId());
+        ProcessInstance singleTaskProcessStarted = processRuntime.startCreatedProcess(singleTaskProcessCreated.getId(), new StartProcessPayload());
 
         tasks = taskRuntime.tasks(PAGEABLE,
             TaskPayloadBuilder
@@ -247,7 +246,7 @@ public class ProcessRuntimeIT {
 
         assertThat(categorizeProcess.getStatus()).isEqualTo(ProcessInstance.ProcessInstanceStatus.RUNNING);
 
-        Throwable throwable = catchThrowable(() -> processRuntime.startCreatedProcess(categorizeProcess.getId()));
+        Throwable throwable = catchThrowable(() -> processRuntime.startCreatedProcess(categorizeProcess.getId(), new StartProcessPayload()));
 
         assertThat(throwable)
             .isInstanceOf(ActivitiIllegalArgumentException.class)
@@ -641,7 +640,6 @@ public class ProcessRuntimeIT {
 
 
     }
-
 
     @Test
     public void signal() {

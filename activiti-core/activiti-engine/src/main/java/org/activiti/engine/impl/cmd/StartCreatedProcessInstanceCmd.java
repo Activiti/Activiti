@@ -1,5 +1,6 @@
 package org.activiti.engine.impl.cmd;
 
+import java.util.Map;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -13,9 +14,11 @@ public class StartCreatedProcessInstanceCmd<T> implements Command<ProcessInstanc
 
     private static final long serialVersionUID = 1L;
     private ProcessInstance internalProcessInstance;
+    private Map<String, Object> variables;
 
-    public StartCreatedProcessInstanceCmd(ProcessInstance internalProcessInstance){
+    public StartCreatedProcessInstanceCmd(ProcessInstance internalProcessInstance, Map<String, Object> variables){
         this.internalProcessInstance = internalProcessInstance;
+        this.variables = variables;
     }
 
     @Override
@@ -25,8 +28,17 @@ public class StartCreatedProcessInstanceCmd<T> implements Command<ProcessInstanc
         }
 
         ExecutionEntity processExecution = (ExecutionEntity) this.internalProcessInstance;
+
+        if (variables != null) {
+            for (String varName : variables.keySet()) {
+                processExecution.setVariable(varName, variables.get(varName));
+            }
+        }
         ProcessInstanceHelper processInstanceHelper = commandContext.getProcessEngineConfiguration().getProcessInstanceHelper();
+//        processInstanceHelper.
         processInstanceHelper.startProcessInstance(processExecution, commandContext, processExecution.getVariables(), processExecution.getCurrentFlowElement());
         return processExecution;
     }
+
+
 }

@@ -2,6 +2,7 @@ package org.activiti.api.process.model.builders;
 
 
 import org.activiti.api.process.model.ProcessInstance;
+import org.activiti.api.process.model.payloads.CreateProcessInstancePayload;
 import org.activiti.api.process.model.payloads.DeleteProcessPayload;
 import org.activiti.api.process.model.payloads.GetProcessInstancesPayload;
 import org.activiti.api.process.model.payloads.ResumeProcessPayload;
@@ -14,12 +15,20 @@ public class ProcessPayloadBuilder {
         return new StartProcessPayloadBuilder();
     }
 
+    public static CreateProcessPayloadBuilder create() { return new CreateProcessPayloadBuilder(); }
+
     public static StartProcessPayloadBuilder start(StartProcessPayload from) {
         return new StartProcessPayloadBuilder().withBusinessKey(from.getBusinessKey())
                                                .withName(from.getName())
                                                .withProcessDefinitionId(from.getProcessDefinitionId())
                                                .withProcessDefinitionKey(from.getProcessDefinitionKey())
                                                .withVariables(from.getVariables());
+    }
+
+    public static CreateProcessPayloadBuilder create(CreateProcessInstancePayload from) {
+        return new CreateProcessPayloadBuilder().withName(from.getName())
+                                                .withProcessDefinitionId(from.getProcessDefinitionId())
+                                                .withProcessDefinitionKey(from.getProcessDefinitionKey());
     }
 
     public static DeleteProcessPayloadBuilder delete() {

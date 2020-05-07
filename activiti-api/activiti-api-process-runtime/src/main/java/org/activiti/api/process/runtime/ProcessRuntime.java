@@ -24,6 +24,7 @@ import org.activiti.api.process.model.ProcessDefinition;
 import org.activiti.api.process.model.ProcessDefinitionMeta;
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.model.ProcessInstanceMeta;
+import org.activiti.api.process.model.payloads.CreateProcessInstancePayload;
 import org.activiti.api.process.model.payloads.DeleteProcessPayload;
 import org.activiti.api.process.model.payloads.GetProcessDefinitionsPayload;
 import org.activiti.api.process.model.payloads.GetProcessInstancesPayload;
@@ -76,12 +77,12 @@ public interface ProcessRuntime {
     /**
      * Start an already created Process Instance based on the process instance id
      */
-    ProcessInstance startCreatedProcess(String processInstanceId);
+    ProcessInstance startCreatedProcess(String processInstanceId, StartProcessPayload startProcessPayload);
 
     /**
      * Create a new Process Instance based on the payload parameters
      */
-    ProcessInstance create(StartProcessPayload startProcessPayload);
+    ProcessInstance create(CreateProcessInstancePayload startProcessPayload);
 
     /**
      * Get all process instances by pages

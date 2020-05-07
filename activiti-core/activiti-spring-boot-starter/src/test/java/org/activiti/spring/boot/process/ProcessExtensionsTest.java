@@ -179,4 +179,44 @@ public class ProcessExtensionsTest {
         );
 
     }
+    @Test
+    public void should_mapProcessVariables_when_createAndStartProcessAreCalled() {
+
+        securityUtil.logInAs("user");
+
+        ProcessInstance createdProcess = processRuntime.create(ProcessPayloadBuilder.create()
+            .withProcessDefinitionKey("process-b42a166d-605b-4eec-8b96-82b1253666bf")
+            .withName("TEST")
+            .build());
+
+        assertThat(createdProcess).isNotNull();
+        assertThat(createdProcess.getStatus()).isEqualTo(ProcessInstance.ProcessInstanceStatus.CREATED);
+
+        ProcessInstance startedProcess = processRuntime.startCreatedProcess(createdProcess.getId(),
+            ProcessPayloadBuilder.start()
+            .withProcessDefinitionKey("process-b42a166d-605b-4eec-8b96-82b1253666bf")
+            .withVariable("Text0xfems",
+                "name_value")
+            .withVariable("Text0rvs0o",
+                "email_value")
+            .withBusinessKey("my business key")
+            .build() );
+
+        assertThat(startedProcess).isNotNull();
+        assertThat(startedProcess.getStatus()).isEqualTo(ProcessInstance.ProcessInstanceStatus.RUNNING);
+
+        List<VariableInstance> variableInstances = processRuntime.variables(ProcessPayloadBuilder.variables()
+            .withProcessInstance(startedProcess).build());
+
+        assertThat(variableInstances)
+            .isNotNull()
+            .hasSize(2)
+            .extracting(VariableInstance::getName,
+                VariableInstance::getValue)
+            .containsOnly(
+                tuple("name", "name_value"),
+                tuple("email", "email_value")
+            );
+
+    }
 }

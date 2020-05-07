@@ -88,17 +88,8 @@ public class ProcessVariablesInitiator extends ProcessInstanceHelper {
                                                                        Process process,
                                                                        Map<String, Object> variables,
                                                                        Map<String, Object> transientVariables) {
-        Map<String, Object> processVariables = variables;
 
-        if (processExtensionService.hasExtensionsFor(processDefinition)) {
-
-            processVariables = mappingProvider.calculateOutPutVariables(MappingExecutionContext.buildMappingExecutionContext(processDefinition.getId(),
-                                                                                                                             initialFlowElement.getId()),
-                                                                        variables);
-
-            processVariables = calculateVariablesFromExtensionFile(processDefinition,
-                                                                   processVariables);
-        }
+        Map<String, Object> processVariables = this.calculateOutputVariables(variables, processDefinition, initialFlowElement);
 
         return super.createProcessInstanceWithInitialFlowElement(processDefinition,
                 businessKey,
@@ -107,6 +98,21 @@ public class ProcessVariablesInitiator extends ProcessInstanceHelper {
                 process,
                 processVariables,
                 transientVariables);
+    }
+
+    public Map<String, Object> calculateOutputVariables(Map<String, Object> variables, ProcessDefinition processDefinition, FlowElement initialFlowElement) {
+        Map<String, Object> processVariables = variables;
+
+        if (processExtensionService.hasExtensionsFor(processDefinition)) {
+
+            processVariables = mappingProvider.calculateOutPutVariables(MappingExecutionContext.buildMappingExecutionContext(processDefinition.getId(),
+                initialFlowElement.getId()),
+                variables);
+
+            processVariables = calculateVariablesFromExtensionFile(processDefinition,
+                processVariables);
+        }
+        return processVariables;
     }
 
     private Map<String, Object> processVariables(Map<String, Object> variables, Map<String, VariableDefinition> variableDefinitionMap) {

@@ -28,6 +28,7 @@ import org.activiti.api.process.model.ProcessDefinitionMeta;
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.model.ProcessInstanceMeta;
 import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
+import org.activiti.api.process.model.payloads.CreateProcessInstancePayload;
 import org.activiti.api.process.model.payloads.DeleteProcessPayload;
 import org.activiti.api.process.model.payloads.GetProcessDefinitionsPayload;
 import org.activiti.api.process.model.payloads.GetProcessInstancesPayload;
@@ -258,7 +259,7 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
     }
 
     @Override
-    public ProcessInstance startCreatedProcess(String processInstanceId) {
+    public ProcessInstance startCreatedProcess(String processInstanceId, StartProcessPayload startProcessPayload) {
         org.activiti.engine.runtime.ProcessInstance internalProcessInstance = runtimeService
                                                                                 .createProcessInstanceQuery()
                                                                                 .processInstanceId(processInstanceId)
@@ -270,11 +271,12 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
         if (!securityPoliciesManager.canRead(internalProcessInstance.getProcessDefinitionKey())) {
             throw new ActivitiObjectNotFoundException("You cannot read the process instance with Id:'" + processInstanceId + "' due to security policies violation");
         }
-       return processInstanceConverter.from(runtimeService.startCreatedProcessInstance(internalProcessInstance));
+       processVariablesValidator.checkStartProcessPayloadVariables(startProcessPayload, internalProcessInstance.getProcessDefinitionId());
+       return processInstanceConverter.from(runtimeService.startCreatedProcessInstance(internalProcessInstance, startProcessPayload.getVariables()));
     }
 
     @Override
-    public ProcessInstance create(StartProcessPayload startProcessPayload) {
+    public ProcessInstance create(CreateProcessInstancePayload startProcessPayload) {
         return processInstanceConverter.from(this.createProcessInstanceBuilder(startProcessPayload).create());
     }
 
@@ -291,6 +293,17 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
             .businessKey(startProcessPayload.getBusinessKey())
             .variables(startProcessPayload.getVariables())
             .name(startProcessPayload.getName());
+    }
+
+    private ProcessInstanceBuilder createProcessInstanceBuilder(CreateProcessInstancePayload createProcessPayload) {
+        ProcessDefinition processDefinition = getProcessDefinitionAndCheckUserHasRights(createProcessPayload.getProcessDefinitionId(),
+            createProcessPayload.getProcessDefinitionKey());
+
+        return runtimeService
+            .createProcessInstanceBuilder()
+            .processDefinitionId(processDefinition.getId())
+            .processDefinitionKey(processDefinition.getKey())
+            .name(createProcessPayload.getName());
     }
 
     @Override
