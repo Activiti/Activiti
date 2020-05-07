@@ -16,9 +16,7 @@
 
 package org.activiti.runtime.api.impl;
 
-import static java.util.Collections.emptyMap;
 import static java.util.Collections.singletonList;
-import static org.assertj.core.api.Assertions.anyOf;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.ArgumentMatchers.any;
@@ -34,8 +32,6 @@ import static org.mockito.MockitoAnnotations.initMocks;
 
 import java.util.HashMap;
 import java.util.List;
-
-import java.util.Map;
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
 import org.activiti.api.process.model.payloads.CreateProcessInstancePayload;
@@ -225,9 +221,11 @@ public class ProcessRuntimeImplTest {
         processDefinition.setId(processDefinitionId);
         processDefinition.setKey("key");
 
-        CreateProcessInstancePayload createPayload = new CreateProcessInstancePayload(processDefinitionId,
-            "key",
-            "test-create");
+        CreateProcessInstancePayload createPayload = ProcessPayloadBuilder.create()
+        .withProcessDefinitionId(processDefinitionId)
+            .withProcessDefinitionKey("key")
+            .withName("test-create")
+            .build();
 
         doReturn(processDefinition)
             .when(processRuntime)

@@ -1,6 +1,5 @@
 package org.activiti.api.process.model.payloads;
 
-import java.util.Map;
 import java.util.UUID;
 import org.activiti.api.model.shared.Payload;
 
@@ -9,18 +8,19 @@ public class CreateProcessInstancePayload implements Payload {
     private String processDefinitionId;
     private String processDefinitionKey;
     private String name;
+    private String businessKey;
 
     public CreateProcessInstancePayload() {
         this.id = UUID.randomUUID().toString();
     }
 
-    public CreateProcessInstancePayload(String processDefinitionId,
-                                        String processDefinitionKey,
-                                        String name) {
+    public CreateProcessInstancePayload(String processDefinitionId, String processDefinitionKey,
+        String name, String businessKey) {
         this();
         this.processDefinitionId = processDefinitionId;
         this.processDefinitionKey = processDefinitionKey;
         this.name = name;
+        this.businessKey = businessKey;
     }
 
     @Override
@@ -42,5 +42,9 @@ public class CreateProcessInstancePayload implements Payload {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getBusinessKey() {
+        return businessKey;
     }
 }

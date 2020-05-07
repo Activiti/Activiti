@@ -7,6 +7,7 @@ public class CreateProcessPayloadBuilder {
     private String processDefinitionId;
     private String processDefinitionKey;
     private String name;
+    private String businessKey;
 
     public CreateProcessPayloadBuilder() {
     }
@@ -26,9 +27,15 @@ public class CreateProcessPayloadBuilder {
         return this;
     }
 
+    public CreateProcessPayloadBuilder withBusinessKey(String businessKey) {
+        this.businessKey = businessKey;
+        return this;
+    }
+
     public CreateProcessInstancePayload build() {
         return new CreateProcessInstancePayload(processDefinitionId,
             processDefinitionKey,
-            name);
+            name,
+            businessKey);
     }
 }

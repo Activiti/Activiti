@@ -277,7 +277,7 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
 
     @Override
     public ProcessInstance create(CreateProcessInstancePayload startProcessPayload) {
-        return processInstanceConverter.from(this.createProcessInstanceBuilder(startProcessPayload).create());
+        return processInstanceConverter.from(createProcessInstanceBuilder(startProcessPayload).create());
     }
 
     private ProcessInstanceBuilder createProcessInstanceBuilder(StartProcessPayload startProcessPayload) {
@@ -303,6 +303,7 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
             .createProcessInstanceBuilder()
             .processDefinitionId(processDefinition.getId())
             .processDefinitionKey(processDefinition.getKey())
+            .businessKey(createProcessPayload.getBusinessKey())
             .name(createProcessPayload.getName());
     }
 
