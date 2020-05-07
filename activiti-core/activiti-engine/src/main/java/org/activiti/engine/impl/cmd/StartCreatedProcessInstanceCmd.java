@@ -15,6 +15,13 @@ public class StartCreatedProcessInstanceCmd<T> implements Command<ProcessInstanc
     private static final long serialVersionUID = 1L;
     private ProcessInstance internalProcessInstance;
     private Map<String, Object> variables;
+    private Map<String, Object> transientVariables;
+
+    public StartCreatedProcessInstanceCmd(ProcessInstance internalProcessInstance, Map<String, Object> variables, Map<String, Object> transientVariables){
+        this.internalProcessInstance = internalProcessInstance;
+        this.variables = variables;
+        this.transientVariables = transientVariables;
+    }
 
     public StartCreatedProcessInstanceCmd(ProcessInstance internalProcessInstance, Map<String, Object> variables){
         this.internalProcessInstance = internalProcessInstance;
@@ -28,15 +35,9 @@ public class StartCreatedProcessInstanceCmd<T> implements Command<ProcessInstanc
         }
 
         ExecutionEntity processExecution = (ExecutionEntity) this.internalProcessInstance;
-
-        if (variables != null) {
-            for (String varName : variables.keySet()) {
-                processExecution.setVariable(varName, variables.get(varName));
-            }
-        }
         ProcessInstanceHelper processInstanceHelper = commandContext.getProcessEngineConfiguration().getProcessInstanceHelper();
-//        processInstanceHelper.
-        processInstanceHelper.startProcessInstance(processExecution, commandContext, processExecution.getVariables(), processExecution.getCurrentFlowElement());
+        processInstanceHelper.startProcessInstance(processExecution, commandContext, variables,
+            processExecution.getCurrentFlowElement(), transientVariables);
         return processExecution;
     }
 
