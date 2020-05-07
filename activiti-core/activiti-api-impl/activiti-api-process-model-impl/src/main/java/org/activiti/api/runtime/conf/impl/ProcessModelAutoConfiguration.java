@@ -60,6 +60,7 @@ import org.activiti.api.runtime.model.impl.ProcessInstanceImpl;
 import org.activiti.api.runtime.model.impl.ProcessVariablesMap;
 import org.activiti.api.runtime.model.impl.StartMessageDeploymentDefinitionImpl;
 import org.activiti.api.runtime.model.impl.StartMessageSubscriptionImpl;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration;
 import org.springframework.boot.convert.ApplicationConversionService;
@@ -85,7 +86,7 @@ public class ProcessModelAutoConfiguration {
     //this bean will be automatically injected inside boot's ObjectMapper
     @Bean
     @Order(Ordered.HIGHEST_PRECEDENCE)
-    public Module customizeProcessModelObjectMapper() {
+    public Module customizeProcessModelObjectMapper(ObjectProvider<ConversionService> conversionServiceProvider) {
         SimpleModule module = new SimpleModule("mapProcessModelInterfaces",
                                                Version.unknownVersion());
         SimpleAbstractTypeResolver resolver = new SimpleAbstractTypeResolver() {
@@ -163,8 +164,7 @@ public class ProcessModelAutoConfiguration {
                                               MessageEventPayload.class.getSimpleName()));
         module.setAbstractTypes(resolver);
 
-        // TODO externalize this
-        ConversionService conversionService = ApplicationConversionService.getSharedInstance();
+        ConversionService conversionService = conversionServiceProvider.getIfUnique(ApplicationConversionService::getSharedInstance);
 
         module.addSerializer(new ProcessVariableValuesMapSerializer(conversionService));
 
@@ -173,4 +173,5 @@ public class ProcessModelAutoConfiguration {
 
         return module;
     }
+
 }
