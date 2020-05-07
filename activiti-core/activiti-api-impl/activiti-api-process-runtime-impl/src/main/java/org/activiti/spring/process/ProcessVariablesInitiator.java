@@ -155,7 +155,8 @@ public class ProcessVariablesInitiator extends ProcessInstanceHelper {
 
     public void startProcessInstance(ExecutionEntity processInstance, CommandContext commandContext, Map<String, Object> variables, FlowElement initialFlowElement, Map<String, Object> transientVariables) {
         ProcessDefinition processDefinition = ProcessDefinitionUtil.getProcessDefinition(processInstance.getProcessDefinitionId());
-        Map<String, Object> calculatedVariables = calculateOutputVariables(variables, processDefinition, processInstance.getCurrentActivityId());
+        Process process = ProcessDefinitionUtil.getProcess(processInstance.getProcessDefinitionId());
+        Map<String, Object> calculatedVariables = calculateOutputVariables(variables, processDefinition, process.getInitialFlowElement());
         super.startProcessInstance(processInstance, commandContext, calculatedVariables, initialFlowElement, transientVariables);
     }
 }
