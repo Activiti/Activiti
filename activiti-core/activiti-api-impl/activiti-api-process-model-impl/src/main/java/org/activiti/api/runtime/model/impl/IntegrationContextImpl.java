@@ -94,7 +94,9 @@ public class IntegrationContextImpl implements IntegrationContext {
 
     @Override
     public Map<String, Object> getInBoundVariables() {
-        return inBoundVariables.clone();
+        // FIXME review broken tests in ConformanceServiceTaskModifyVariableTest.shouldBeAbleToStartProcess:95
+        //return inBoundVariables.clone();
+        return inBoundVariables;
     }
 
     public void addInBoundVariables(Map<String, Object> inboundVariables) {
@@ -107,7 +109,9 @@ public class IntegrationContextImpl implements IntegrationContext {
 
     @Override
     public Map<String, Object> getOutBoundVariables() {
-        return outBoundVariables.clone();
+        // FIXME review broken tests in ConformanceServiceTaskModifyVariableTest.shouldBeAbleToStartProcess:95
+        //return outBoundVariables.clone();
+        return outBoundVariables;
     }
 
     @Override
