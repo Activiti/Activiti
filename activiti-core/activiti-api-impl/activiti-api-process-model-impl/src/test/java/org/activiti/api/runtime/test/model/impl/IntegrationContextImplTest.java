@@ -3,6 +3,7 @@ package org.activiti.api.runtime.test.model.impl;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 
 import org.activiti.api.process.model.IntegrationContext;
 import org.activiti.api.runtime.model.impl.IntegrationContextImpl;
@@ -34,17 +35,41 @@ class IntegrationContextImplTest {
     }
 
     @Test
-    void testIntegrationContextImpl() throws JsonParseException, JsonMappingException, IOException {
+    void testIntegrationContextInBoundVariables() throws JsonParseException, JsonMappingException, IOException {
         // given
-        IntegrationContext subject = new IntegrationContextImpl();
+        IntegrationContextImpl source = new IntegrationContextImpl();
+
+        source.addInBoundVariable("amount",
+                                  BigDecimal.valueOf(1000, 2));
 
         // when
-        String jsonNode = objectMapper.writeValueAsString(subject);
-
-        IntegrationContext result = objectMapper.readValue(jsonNode, IntegrationContext.class);
+        IntegrationContext target = exchangeIntegrationContext(source);
 
         // then
-        assertThat(result).isEqualTo(subject);
+        assertThat(target.getInBoundVariables()).containsEntry("amount",
+                                                               BigDecimal.valueOf(1000, 2));
+    }
+
+
+    @Test
+    void testIntegrationContextOutBoundVariables() throws JsonParseException, JsonMappingException, IOException {
+        // given
+        IntegrationContextImpl source = new IntegrationContextImpl();
+
+        source.addOutBoundVariable("amount",
+                                   BigDecimal.valueOf(1000, 2));
+
+        // when
+        IntegrationContext result = exchangeIntegrationContext(source);
+
+        // then
+        assertThat(result.getOutBoundVariables()).containsEntry("amount",
+                                                                BigDecimal.valueOf(1000, 2));
+    }
+
+    private IntegrationContext exchangeIntegrationContext(IntegrationContext source) throws IOException {
+        return objectMapper.readValue(objectMapper.writeValueAsString(source),
+                                      IntegrationContext.class);
     }
 
 }
