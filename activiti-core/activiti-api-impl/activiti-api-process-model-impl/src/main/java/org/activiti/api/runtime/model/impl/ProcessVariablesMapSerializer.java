@@ -24,23 +24,33 @@ public class ProcessVariablesMapSerializer extends StdSerializer<ProcessVariable
     }
 
     @Override
-    public void serialize(ProcessVariablesMap<String, Object> value, JsonGenerator gen,
+    public void serialize(ProcessVariablesMap<String, Object> processVariablesMap,
+                          JsonGenerator gen,
                           SerializerProvider serializers) throws IOException {
 
         HashMap<String, ProcessVariableValue> map = new HashMap<>();
-        for (Map.Entry<String, Object> entry: value.entrySet()) {
-            String entryType = entry.getValue()
-                                    .getClass()
-                                    .getName();
+        for (Map.Entry<String, Object> entry: processVariablesMap.entrySet()) {
+            String name = entry.getKey();
+            Object value = entry.getValue();
 
-            String entryValue = conversionService.convert(entry.getValue(),
-                                                          String.class);
+            if(value != null) {
+                String entryType = entry.getValue()
+                                        .getClass()
+                                        .getName();
 
-            ProcessVariableValue variableValue = new ProcessVariableValue(entryType,
-                                                                          entryValue);
+                String entryValue = conversionService.convert(entry.getValue(),
+                                                              String.class);
 
-            map.put(entry.getKey(),
-                    variableValue);
+                ProcessVariableValue variableValue = new ProcessVariableValue(entryType,
+                                                                              entryValue);
+                map.put(name,
+                        variableValue);
+
+            } else {
+                map.put(name,
+                        null);
+            }
+
         }
 
         gen.writeObject(map);

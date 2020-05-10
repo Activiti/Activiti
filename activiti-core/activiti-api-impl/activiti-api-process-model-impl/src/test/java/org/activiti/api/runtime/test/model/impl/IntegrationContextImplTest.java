@@ -30,10 +30,17 @@ class IntegrationContextImplTest {
     private static Object[] testValues = {BigDecimal.valueOf(1000, 2),
                                           Long.valueOf(100000000000L),
                                           Integer.valueOf(123),
-                                          String.valueOf("name"),
+                                          String.valueOf("string"),
                                           Boolean.valueOf(true),
                                           Double.valueOf(123.123),
-                                          Float.valueOf(123.123F)};
+                                          Float.valueOf(123.123F),
+                                          100000000000L,
+                                          123,
+                                          true,
+                                          123.123,
+                                          123.123f,
+                                          null
+                                          };
     @SpringBootApplication
     static class Application {
 

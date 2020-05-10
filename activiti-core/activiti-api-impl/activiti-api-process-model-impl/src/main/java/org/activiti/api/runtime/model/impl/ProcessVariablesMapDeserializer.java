@@ -29,15 +29,19 @@ public class ProcessVariablesMapDeserializer extends JsonDeserializer<ProcessVar
             String name = entry.getKey();
             JsonNode entryValue = entry.getValue();
 
-            String type = entryValue.get("type").textValue();
-            String value = entryValue.get("value").asText();
+            if(!entryValue.isNull()) {
+                String type = entryValue.get("type").textValue();
+                String value = entryValue.get("value").asText();
 
-            try {
-                Class<?> clazz = Class.forName(type);
-                Object result = conversionService.convert(value, clazz);
+                try {
+                    Class<?> clazz = Class.forName(type);
+                    Object result = conversionService.convert(value, clazz);
 
-                map.put(name, result);
-            } catch (ClassNotFoundException e) {
+                    map.put(name, result);
+                } catch (ClassNotFoundException e) {
+                    map.put(name, null);
+                }
+            } else {
                 map.put(name, null);
             }
         });
