@@ -34,9 +34,16 @@ public class ProcessVariablesMapSerializer extends StdSerializer<ProcessVariable
             Object value = entry.getValue();
 
             if(value != null) {
-                String entryType = entry.getValue()
-                                        .getClass()
-                                        .getName();
+                Class<?> entryTypeClass = entry.getValue()
+                                               .getClass();
+
+                String entryType;
+
+                if (Map.class.isInstance(value)) {
+                    entryType = Map.class.getName();
+                } else {
+                    entryType = entryTypeClass.getName();
+                }
 
                 String entryValue = conversionService.convert(entry.getValue(),
                                                               String.class);

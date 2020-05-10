@@ -4,15 +4,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.Instant;
+import java.util.Collections;
 import java.util.Date;
 import java.util.stream.Stream;
 
 import org.activiti.api.process.model.IntegrationContext;
 import org.activiti.api.runtime.model.impl.IntegrationContextImpl;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,14 +19,14 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.context.annotation.Bean;
-import org.springframework.core.convert.converter.Converter;
-import org.springframework.stereotype.Component;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+@ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = WebEnvironment.NONE)
 class IntegrationContextImplTest {
 
@@ -48,6 +47,7 @@ class IntegrationContextImplTest {
                                           123.123f,
                                           null,
                                           Date.from(Instant.now()),
+                                          Collections.singletonMap("key", "value")
                                           };
     @SpringBootApplication
     static class Application {
@@ -55,50 +55,6 @@ class IntegrationContextImplTest {
         @Bean
         public ObjectMapper objectMapper(Module customizeProcessModelObjectMapper) {
             return new ObjectMapper().registerModule(customizeProcessModelObjectMapper);
-        }
-
-        @Component
-        public class StringToDateConverter implements Converter<String, Date> {
-
-            private String dateFormatString = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX";
-
-            public StringToDateConverter() {
-            }
-
-//            public StringToDateConverter(String dateFormatString) {
-//                this.dateFormatString = dateFormatString;
-//            }
-
-            @Override
-            public Date convert(String source) {
-                DateFormat df = new SimpleDateFormat(dateFormatString);
-
-                try {
-                    return df.parse(source);
-                } catch (ParseException cause) {
-                    throw new RuntimeException(cause);
-                }
-            }
-        }
-
-        @Component
-        public class DateToStringConverter implements Converter<Date, String> {
-
-            private String dateFormatString = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX";
-
-            public DateToStringConverter() {
-            }
-
-//            public DateToStringConverter(String dateFormatString) {
-//                this.dateFormatString = dateFormatString;
-//            }
-
-            @Override
-            public String convert(Date source) {
-                DateFormat df = new SimpleDateFormat(dateFormatString);
-
-                return df.format(source);
-            }
         }
     }
 

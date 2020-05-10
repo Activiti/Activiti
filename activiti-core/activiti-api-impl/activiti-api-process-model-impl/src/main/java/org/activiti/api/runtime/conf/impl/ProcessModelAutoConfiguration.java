@@ -56,7 +56,9 @@ import org.activiti.api.runtime.model.impl.BPMNMessageImpl;
 import org.activiti.api.runtime.model.impl.BPMNSequenceFlowImpl;
 import org.activiti.api.runtime.model.impl.BPMNSignalImpl;
 import org.activiti.api.runtime.model.impl.BPMNTimerImpl;
+import org.activiti.api.runtime.model.impl.DateToStringConverter;
 import org.activiti.api.runtime.model.impl.IntegrationContextImpl;
+import org.activiti.api.runtime.model.impl.MapToStringConverter;
 import org.activiti.api.runtime.model.impl.MessageSubscriptionImpl;
 import org.activiti.api.runtime.model.impl.ProcessDefinitionImpl;
 import org.activiti.api.runtime.model.impl.ProcessInstanceImpl;
@@ -65,6 +67,8 @@ import org.activiti.api.runtime.model.impl.ProcessVariablesMapDeserializer;
 import org.activiti.api.runtime.model.impl.ProcessVariablesMapSerializer;
 import org.activiti.api.runtime.model.impl.StartMessageDeploymentDefinitionImpl;
 import org.activiti.api.runtime.model.impl.StartMessageSubscriptionImpl;
+import org.activiti.api.runtime.model.impl.StringToDateConverter;
+import org.activiti.api.runtime.model.impl.StringToMapConverter;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
@@ -72,6 +76,7 @@ import org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration;
 import org.springframework.boot.convert.ApplicationConversionService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.convert.ConversionService;
@@ -83,6 +88,7 @@ import com.fasterxml.jackson.databind.BeanDescription;
 import com.fasterxml.jackson.databind.DeserializationConfig;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.Module;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.jsontype.NamedType;
 import com.fasterxml.jackson.databind.module.SimpleAbstractTypeResolver;
 import com.fasterxml.jackson.databind.module.SimpleModule;
@@ -194,5 +200,27 @@ public class ProcessModelAutoConfiguration {
 
         return conversionService;
     }
+
+    @Bean
+    public StringToMapConverter stringToMapConverter(@Lazy ObjectMapper objectMapper) {
+        return new StringToMapConverter(objectMapper);
+    }
+
+    @Bean
+    public MapToStringConverter mapToStringConverter(@Lazy ObjectMapper objectMapper) {
+        return new MapToStringConverter(objectMapper);
+    }
+
+    @Bean
+    public StringToDateConverter stringToDateConverter() {
+        return new StringToDateConverter();
+    }
+
+    @Bean
+    public DateToStringConverter dateToStringConverter() {
+        return new DateToStringConverter();
+    }
+
+
 
 }
