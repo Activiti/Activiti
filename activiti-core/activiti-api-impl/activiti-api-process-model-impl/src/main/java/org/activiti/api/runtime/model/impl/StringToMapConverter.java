@@ -7,6 +7,7 @@ import org.springframework.core.convert.converter.Converter;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+@ProcessVariableTypeConverter
 public class StringToMapConverter implements Converter<String, Map<String, Object>> {
     private final ObjectMapper objectMapper;
 

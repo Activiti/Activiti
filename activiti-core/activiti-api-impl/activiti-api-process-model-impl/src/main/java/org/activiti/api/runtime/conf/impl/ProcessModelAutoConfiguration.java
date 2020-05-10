@@ -58,6 +58,7 @@ import org.activiti.api.runtime.model.impl.BPMNSignalImpl;
 import org.activiti.api.runtime.model.impl.BPMNTimerImpl;
 import org.activiti.api.runtime.model.impl.DateToStringConverter;
 import org.activiti.api.runtime.model.impl.IntegrationContextImpl;
+import org.activiti.api.runtime.model.impl.JsonNodeToStringConverter;
 import org.activiti.api.runtime.model.impl.MapToStringConverter;
 import org.activiti.api.runtime.model.impl.MessageSubscriptionImpl;
 import org.activiti.api.runtime.model.impl.ProcessDefinitionImpl;
@@ -68,7 +69,9 @@ import org.activiti.api.runtime.model.impl.ProcessVariablesMapSerializer;
 import org.activiti.api.runtime.model.impl.StartMessageDeploymentDefinitionImpl;
 import org.activiti.api.runtime.model.impl.StartMessageSubscriptionImpl;
 import org.activiti.api.runtime.model.impl.StringToDateConverter;
+import org.activiti.api.runtime.model.impl.StringToJsonNodeConverter;
 import org.activiti.api.runtime.model.impl.StringToMapConverter;
+import org.activiti.api.runtime.model.impl.ProcessVariableTypeConverter;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
@@ -98,7 +101,7 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 public class ProcessModelAutoConfiguration {
 
     @Autowired(required = false)
-//    @TypeConverter
+    @ProcessVariableTypeConverter
     private Set<Converter<?, ?>> converters = Collections.emptySet();
 
 
@@ -209,6 +212,16 @@ public class ProcessModelAutoConfiguration {
     @Bean
     public MapToStringConverter mapToStringConverter(@Lazy ObjectMapper objectMapper) {
         return new MapToStringConverter(objectMapper);
+    }
+
+    @Bean
+    public StringToJsonNodeConverter stringToJsonNodeConverter(@Lazy ObjectMapper objectMapper) {
+        return new StringToJsonNodeConverter(objectMapper);
+    }
+
+    @Bean
+    public JsonNodeToStringConverter jsonNodeToStringConverter(@Lazy ObjectMapper objectMapper) {
+        return new JsonNodeToStringConverter(objectMapper);
     }
 
     @Bean

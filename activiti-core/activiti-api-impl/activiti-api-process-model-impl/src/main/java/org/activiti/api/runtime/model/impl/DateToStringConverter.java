@@ -6,6 +6,7 @@ import java.util.Date;
 
 import org.springframework.core.convert.converter.Converter;
 
+@ProcessVariableTypeConverter
 public class DateToStringConverter implements Converter<Date, String> {
 
     private String dateFormatString = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX";

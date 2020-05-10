@@ -25,6 +25,8 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.TextNode;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = WebEnvironment.NONE)
@@ -47,7 +49,8 @@ class IntegrationContextImplTest {
                                           123.123f,
                                           null,
                                           Date.from(Instant.now()),
-                                          Collections.singletonMap("key", "value")
+                                          Collections.singletonMap("key", "value"),
+                                          JsonNodeFactory.instance.objectNode().set("key", TextNode.valueOf("value"))
                                           };
     @SpringBootApplication
     static class Application {

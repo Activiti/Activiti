@@ -8,9 +8,11 @@ import org.activiti.api.runtime.model.impl.ProcessVariablesMap.ProcessVariableVa
 import org.springframework.core.convert.ConversionService;
 
 import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 
+@ProcessVariableTypeConverter
 public class ProcessVariablesMapSerializer extends StdSerializer<ProcessVariablesMap<String, Object>> {
 
     private static final long serialVersionUID = 1L;
@@ -41,6 +43,9 @@ public class ProcessVariablesMapSerializer extends StdSerializer<ProcessVariable
 
                 if (Map.class.isInstance(value)) {
                     entryType = Map.class.getName();
+                }
+                else if (JsonNode.class.isInstance(value)) {
+                    entryType = JsonNode.class.getName();
                 } else {
                     entryType = entryTypeClass.getName();
                 }
