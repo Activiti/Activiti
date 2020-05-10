@@ -16,6 +16,9 @@
 
 package org.activiti.api.runtime.conf.impl;
 
+import java.util.Collections;
+import java.util.Set;
+
 import org.activiti.api.process.model.BPMNActivity;
 import org.activiti.api.process.model.BPMNError;
 import org.activiti.api.process.model.BPMNMessage;
@@ -57,12 +60,13 @@ import org.activiti.api.runtime.model.impl.IntegrationContextImpl;
 import org.activiti.api.runtime.model.impl.MessageSubscriptionImpl;
 import org.activiti.api.runtime.model.impl.ProcessDefinitionImpl;
 import org.activiti.api.runtime.model.impl.ProcessInstanceImpl;
+import org.activiti.api.runtime.model.impl.ProcessVariablesMap;
 import org.activiti.api.runtime.model.impl.ProcessVariablesMapDeserializer;
 import org.activiti.api.runtime.model.impl.ProcessVariablesMapSerializer;
-import org.activiti.api.runtime.model.impl.ProcessVariablesMap;
 import org.activiti.api.runtime.model.impl.StartMessageDeploymentDefinitionImpl;
 import org.activiti.api.runtime.model.impl.StartMessageSubscriptionImpl;
 import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration;
 import org.springframework.boot.convert.ApplicationConversionService;
@@ -71,6 +75,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.convert.ConversionService;
+import org.springframework.core.convert.converter.Converter;
+import org.springframework.format.support.FormattingConversionService;
 
 import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.databind.BeanDescription;
@@ -84,6 +90,11 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 @AutoConfigureBefore({JacksonAutoConfiguration.class})
 @Configuration
 public class ProcessModelAutoConfiguration {
+
+    @Autowired(required = false)
+//    @TypeConverter
+    private Set<Converter<?, ?>> converters = Collections.emptySet();
+
 
     //this bean will be automatically injected inside boot's ObjectMapper
     @Bean
@@ -166,7 +177,7 @@ public class ProcessModelAutoConfiguration {
                                               MessageEventPayload.class.getSimpleName()));
         module.setAbstractTypes(resolver);
 
-        ConversionService conversionService = conversionServiceProvider.getIfUnique(ApplicationConversionService::getSharedInstance);
+        ConversionService conversionService = conversionServiceProvider.getIfUnique(this::conversionService);
 
         module.addSerializer(new ProcessVariablesMapSerializer(conversionService));
 
@@ -174,6 +185,14 @@ public class ProcessModelAutoConfiguration {
                                new ProcessVariablesMapDeserializer(conversionService));
 
         return module;
+    }
+
+    public FormattingConversionService conversionService() {
+        ApplicationConversionService conversionService = new ApplicationConversionService();
+
+        converters.forEach(conversionService::addConverter);
+
+        return conversionService;
     }
 
 }
