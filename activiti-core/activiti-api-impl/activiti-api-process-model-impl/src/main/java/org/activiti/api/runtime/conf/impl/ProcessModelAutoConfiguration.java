@@ -57,6 +57,8 @@ import org.activiti.api.runtime.model.impl.IntegrationContextImpl;
 import org.activiti.api.runtime.model.impl.MessageSubscriptionImpl;
 import org.activiti.api.runtime.model.impl.ProcessDefinitionImpl;
 import org.activiti.api.runtime.model.impl.ProcessInstanceImpl;
+import org.activiti.api.runtime.model.impl.ProcessVariablesMapDeserializer;
+import org.activiti.api.runtime.model.impl.ProcessVariablesMapSerializer;
 import org.activiti.api.runtime.model.impl.ProcessVariablesMap;
 import org.activiti.api.runtime.model.impl.StartMessageDeploymentDefinitionImpl;
 import org.activiti.api.runtime.model.impl.StartMessageSubscriptionImpl;
@@ -166,10 +168,10 @@ public class ProcessModelAutoConfiguration {
 
         ConversionService conversionService = conversionServiceProvider.getIfUnique(ApplicationConversionService::getSharedInstance);
 
-        module.addSerializer(new ProcessVariableValuesMapSerializer(conversionService));
+        module.addSerializer(new ProcessVariablesMapSerializer(conversionService));
 
         module.addDeserializer(ProcessVariablesMap.class,
-                               new ProcessVariableValuesMapDeserializer(conversionService));
+                               new ProcessVariablesMapDeserializer(conversionService));
 
         return module;
     }

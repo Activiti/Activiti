@@ -1,8 +1,7 @@
-package org.activiti.api.runtime.conf.impl;
+package org.activiti.api.runtime.model.impl;
 
 import java.io.IOException;
 
-import org.activiti.api.runtime.model.impl.ProcessVariablesMap;
 import org.springframework.core.convert.ConversionService;
 
 import com.fasterxml.jackson.core.JsonParser;
@@ -11,11 +10,11 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
 
-public class ProcessVariableValuesMapDeserializer extends JsonDeserializer<ProcessVariablesMap<String, Object>> {
+public class ProcessVariablesMapDeserializer extends JsonDeserializer<ProcessVariablesMap<String, Object>> {
 
     private final ConversionService conversionService;
 
-    public ProcessVariableValuesMapDeserializer(ConversionService conversionService) {
+    public ProcessVariablesMapDeserializer(ConversionService conversionService) {
         this.conversionService = conversionService;
     }
 

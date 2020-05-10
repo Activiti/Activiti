@@ -1,4 +1,4 @@
-package org.activiti.api.runtime.test.conf.impl;
+package org.activiti.api.runtime.test.model.impl;
 
 import org.junit.jupiter.api.Test;
 

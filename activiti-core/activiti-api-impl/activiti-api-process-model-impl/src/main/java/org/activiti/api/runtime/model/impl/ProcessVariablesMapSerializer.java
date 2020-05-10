@@ -1,24 +1,23 @@
-package org.activiti.api.runtime.conf.impl;
+package org.activiti.api.runtime.model.impl;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.activiti.api.runtime.model.impl.ProcessVariableValue;
-import org.activiti.api.runtime.model.impl.ProcessVariablesMap;
+import org.activiti.api.runtime.model.impl.ProcessVariablesMap.ProcessVariableValue;
 import org.springframework.core.convert.ConversionService;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 
-public class ProcessVariableValuesMapSerializer extends StdSerializer<ProcessVariablesMap<String, Object>> {
+public class ProcessVariablesMapSerializer extends StdSerializer<ProcessVariablesMap<String, Object>> {
 
     private static final long serialVersionUID = 1L;
 
     private final ConversionService conversionService;
 
-    protected ProcessVariableValuesMapSerializer(ConversionService conversionService) {
+    public ProcessVariablesMapSerializer(ConversionService conversionService) {
         super(ProcessVariablesMap.class, true);
 
         this.conversionService = conversionService;
