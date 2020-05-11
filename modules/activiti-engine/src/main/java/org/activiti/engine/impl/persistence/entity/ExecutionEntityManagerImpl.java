@@ -645,9 +645,16 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
       List<EventSubscriptionEntity> eventSubscriptions = eventSubscriptionEntityManager.findEventSubscriptionsByExecution(executionEntity.getId());
       for (EventSubscriptionEntity eventSubscription : eventSubscriptions) {
         eventSubscriptionEntityManager.delete(eventSubscription);
+        //Added code for ACTIVITY_MESSAGE_CANCELLED event type
+        if (MessageEventSubscriptionEntity.EVENT_TYPE.equals(eventSubscription.getEventType())) {
+          if (getEventDispatcher().isEnabled()) {
+          getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createMessageEvent(ActivitiEventType.ACTIVITY_MESSAGE_CANCELLED,
+            eventSubscription.getActivityId(), eventSubscription.getEventName(), null, eventSubscription.getExecutionId(),
+            eventSubscription.getProcessInstanceId(), eventSubscription.getProcessDefinitionId()));
+          }
+        }
       }
-    }
-    
+    }    
   }
 
   // OTHER METHODS

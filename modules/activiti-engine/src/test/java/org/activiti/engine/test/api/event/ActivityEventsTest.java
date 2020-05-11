@@ -367,6 +367,54 @@ public class ActivityEventsTest extends PluggableActivitiTestCase {
     assertEquals(processInstance.getProcessDefinitionId(), messageEvent.getProcessDefinitionId());
     assertEquals("messageName", messageEvent.getMessageName());
     assertNull(messageEvent.getMessageData());
+    
+    assertDatabaseEventPresent(ActivitiEventType.ACTIVITY_MESSAGE_WAITING);
+    assertDatabaseEventPresent(ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED);
+  }
+  
+  /**
+   * Test events related to message events, called from the API, targeting an event-subprocess.
+   */
+  @Deployment(resources = "org/activiti/engine/test/api/event/ActivityEventsTest.testActivityMessageEventsInEventSubprocess.bpmn20.xml")
+  public void testActivityMessageEventsInEventSubprocessForCancel() throws Exception {
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("messageProcess");
+    assertNotNull(processInstance);
+
+    Execution executionWithMessage = runtimeService.createExecutionQuery().messageEventSubscriptionName("messageName").singleResult();
+    assertNotNull(executionWithMessage);
+
+    Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+    assertEquals("Wait", task.getName());
+
+    taskService.complete(task.getId());
+    
+    // Only a message events should be present, no signal-event, since the event-subprocess is
+    // not signaled, but executed instead
+    assertEquals(2, listener.getEventsReceived().size());
+    
+    // A message waiting event is expected
+    assertTrue(listener.getEventsReceived().get(0) instanceof ActivitiMessageEvent);
+    ActivitiMessageEvent messageEvent = (ActivitiMessageEvent) listener.getEventsReceived().get(0);
+    assertEquals(ActivitiEventType.ACTIVITY_MESSAGE_WAITING, messageEvent.getType());
+    assertEquals("catchMessage", messageEvent.getActivityId());
+    assertEquals(executionWithMessage.getId(), messageEvent.getExecutionId());
+    assertEquals(executionWithMessage.getProcessInstanceId(), messageEvent.getProcessInstanceId());
+    assertEquals(processInstance.getProcessDefinitionId(), messageEvent.getProcessDefinitionId());
+    assertEquals("messageName", messageEvent.getMessageName());
+    assertNull(messageEvent.getMessageData());
+
+    // A message cancelled event is expected
+    assertTrue(listener.getEventsReceived().get(1) instanceof ActivitiMessageEvent);
+    messageEvent = (ActivitiMessageEvent) listener.getEventsReceived().get(1);
+    assertEquals(ActivitiEventType.ACTIVITY_MESSAGE_CANCELLED, messageEvent.getType());
+    assertEquals("catchMessage", messageEvent.getActivityId());
+    assertEquals(executionWithMessage.getId(), messageEvent.getExecutionId());
+    assertEquals(executionWithMessage.getProcessInstanceId(), messageEvent.getProcessInstanceId());
+    assertEquals(processInstance.getProcessDefinitionId(), messageEvent.getProcessDefinitionId());
+    assertEquals("messageName", messageEvent.getMessageName());
+    assertNull(messageEvent.getMessageData());
+
+    assertDatabaseEventPresent(ActivitiEventType.ACTIVITY_MESSAGE_WAITING);
   }
 
   /**
@@ -575,7 +623,7 @@ public class ActivityEventsTest extends PluggableActivitiTestCase {
     assertTrue(listener.getEventsReceived().get(1) instanceof ActivitiMessageEvent);
     messageEvent = (ActivitiMessageEvent) listener.getEventsReceived().get(1);
     assertEquals(ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED, messageEvent.getType());
-    assertEquals(ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED, messageEvent.getType());
+    //assertEquals(ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED, messageEvent.getType());
     assertEquals("boundaryMessageEventCatching", messageEvent.getActivityId());
     assertEquals(executionWithMessage.getId(), messageEvent.getExecutionId());
     assertEquals(executionWithMessage.getProcessInstanceId(), messageEvent.getProcessInstanceId());
@@ -595,8 +643,52 @@ public class ActivityEventsTest extends PluggableActivitiTestCase {
     assertTrue(signalEvent.getCause() instanceof MessageEventSubscriptionEntity);
     MessageEventSubscriptionEntity cause = (MessageEventSubscriptionEntity) signalEvent.getCause();
     assertEquals("message_1", cause.getEventName());
-
+    
+    
+    assertDatabaseEventPresent(ActivitiEventType.ACTIVITY_MESSAGE_WAITING);
     assertDatabaseEventPresent(ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED);
+  }
+  
+  /**
+   * Test events related to message events, called from the API.
+   */
+  @Deployment(resources="org/activiti/engine/test/api/event/ActivityEventsTest.testActivityMessageBoundaryEventsOnUserTask.bpmn20.xml")
+  public void testActivityMessageBoundaryEventsOnUserTaskForCancel() throws Exception {
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("messageOnUserTaskProcess");
+    assertNotNull(processInstance);
+    
+    Execution executionWithMessage = runtimeService.createExecutionQuery().messageEventSubscriptionName("message_1").singleResult();
+    assertNotNull(executionWithMessage);
+    
+    Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+    assertEquals("User Task", task.getName());
+    taskService.complete(task.getId());
+
+    assertEquals(2, listener.getEventsReceived().size());
+
+    // First, a message waiting event is expected
+    assertTrue(listener.getEventsReceived().get(0) instanceof ActivitiMessageEvent);
+    ActivitiMessageEvent messageEvent = (ActivitiMessageEvent) listener.getEventsReceived().get(0);
+    assertEquals(ActivitiEventType.ACTIVITY_MESSAGE_WAITING, messageEvent.getType());
+    assertEquals("boundaryMessageEventCatching", messageEvent.getActivityId());
+    assertEquals(executionWithMessage.getId(), messageEvent.getExecutionId());
+    assertEquals(executionWithMessage.getProcessInstanceId(), messageEvent.getProcessInstanceId());
+    assertEquals(processInstance.getProcessDefinitionId(), messageEvent.getProcessDefinitionId());
+    assertEquals("message_1", messageEvent.getMessageName());
+    assertNull(messageEvent.getMessageData());
+
+    // Second, a message cancelled event is expected
+    assertTrue(listener.getEventsReceived().get(1) instanceof ActivitiMessageEvent);
+    messageEvent = (ActivitiMessageEvent) listener.getEventsReceived().get(1);
+    assertEquals(ActivitiEventType.ACTIVITY_MESSAGE_CANCELLED, messageEvent.getType());
+    assertEquals("boundaryMessageEventCatching", messageEvent.getActivityId());
+    assertEquals(executionWithMessage.getId(), messageEvent.getExecutionId());
+    assertEquals(executionWithMessage.getProcessInstanceId(), messageEvent.getProcessInstanceId());
+    assertEquals(processInstance.getProcessDefinitionId(), messageEvent.getProcessDefinitionId());
+    assertEquals("message_1", messageEvent.getMessageName());
+    assertNull(messageEvent.getMessageData());
+
+    assertDatabaseEventPresent(ActivitiEventType.ACTIVITY_MESSAGE_WAITING);
   }
 
   /**
@@ -657,8 +749,50 @@ public class ActivityEventsTest extends PluggableActivitiTestCase {
     assertTrue(signalEvent.getCause() instanceof MessageEventSubscriptionEntity);
     cause = (MessageEventSubscriptionEntity) signalEvent.getCause();
     assertEquals("message_1", cause.getEventName());
-
+    
+    assertDatabaseEventPresent(ActivitiEventType.ACTIVITY_MESSAGE_WAITING);
     assertDatabaseEventPresent(ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED);
+  }
+  
+  /**
+   * Test events related to message events, called from the API.
+   */
+  @Deployment(resources = "org/activiti/engine/test/api/event/ActivityEventsTest.testActivityMessageBoundaryEventsOnSubProcess.bpmn20.xml")
+  public void testActivityMessageBoundaryEventsOnSubProcessForCancel() throws Exception {
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("messageOnSubProcess");
+    assertNotNull(processInstance);
+
+    Execution executionWithMessage = runtimeService.createExecutionQuery().activityId("boundaryMessageEventCatching").singleResult();
+    assertNotNull(executionWithMessage);
+
+    Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+    taskService.complete(task.getId());
+
+    assertEquals(2, listener.getEventsReceived().size());
+
+    // First, a message waiting event is expected
+    assertTrue(listener.getEventsReceived().get(0) instanceof ActivitiMessageEvent);
+    ActivitiMessageEvent messageEvent = (ActivitiMessageEvent) listener.getEventsReceived().get(0);
+    assertEquals(ActivitiEventType.ACTIVITY_MESSAGE_WAITING, messageEvent.getType());
+    assertEquals("boundaryMessageEventCatching", messageEvent.getActivityId());
+    assertEquals(executionWithMessage.getId(), messageEvent.getExecutionId());
+    assertEquals(executionWithMessage.getProcessInstanceId(), messageEvent.getProcessInstanceId());
+    assertEquals(processInstance.getProcessDefinitionId(), messageEvent.getProcessDefinitionId());
+    assertEquals("message_1", messageEvent.getMessageName());
+    assertNull(messageEvent.getMessageData());
+
+    // Second, a message cancelled event is expected
+    assertTrue(listener.getEventsReceived().get(1) instanceof ActivitiMessageEvent);
+    messageEvent = (ActivitiMessageEvent) listener.getEventsReceived().get(1);
+    assertEquals(ActivitiEventType.ACTIVITY_MESSAGE_CANCELLED, messageEvent.getType());
+    assertEquals("boundaryMessageEventCatching", messageEvent.getActivityId());
+    assertEquals(executionWithMessage.getId(), messageEvent.getExecutionId());
+    assertEquals(executionWithMessage.getProcessInstanceId(), messageEvent.getProcessInstanceId());
+    assertEquals(processInstance.getProcessDefinitionId(), messageEvent.getProcessDefinitionId());
+    assertEquals("message_1", messageEvent.getMessageName());
+    assertNull(messageEvent.getMessageData());
+
+    assertDatabaseEventPresent(ActivitiEventType.ACTIVITY_MESSAGE_WAITING);
   }
 
   @Deployment

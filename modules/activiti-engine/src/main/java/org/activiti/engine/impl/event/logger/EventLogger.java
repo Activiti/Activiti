@@ -66,21 +66,23 @@ public class EventLogger implements ActivitiEventListener {
 
 	protected void initializeDefaultHandlers() {
 	  addEventHandler(ActivitiEventType.TASK_CREATED, TaskCreatedEventHandler.class);
-		addEventHandler(ActivitiEventType.TASK_COMPLETED, TaskCompletedEventHandler.class);
-		addEventHandler(ActivitiEventType.TASK_ASSIGNED, TaskAssignedEventHandler.class);
+	  addEventHandler(ActivitiEventType.TASK_COMPLETED, TaskCompletedEventHandler.class);
+	  addEventHandler(ActivitiEventType.TASK_ASSIGNED, TaskAssignedEventHandler.class);
 		
-		addEventHandler(ActivitiEventType.SEQUENCEFLOW_TAKEN, SequenceFlowTakenEventHandler.class);
+	  addEventHandler(ActivitiEventType.SEQUENCEFLOW_TAKEN, SequenceFlowTakenEventHandler.class);
 		
-		addEventHandler(ActivitiEventType.ACTIVITY_COMPLETED, ActivityCompletedEventHandler.class);
-		addEventHandler(ActivitiEventType.ACTIVITY_STARTED, ActivityStartedEventHandler.class);
-		addEventHandler(ActivitiEventType.ACTIVITY_SIGNALED, ActivitySignaledEventHandler.class);
-		addEventHandler(ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED, ActivityMessageEventHandler.class);
-		addEventHandler(ActivitiEventType.ACTIVITY_COMPENSATE, ActivityCompensatedEventHandler.class);
-		addEventHandler(ActivitiEventType.ACTIVITY_ERROR_RECEIVED, ActivityErrorReceivedEventHandler.class);
+	  addEventHandler(ActivitiEventType.ACTIVITY_COMPLETED, ActivityCompletedEventHandler.class);
+	  addEventHandler(ActivitiEventType.ACTIVITY_STARTED, ActivityStartedEventHandler.class);
+	  addEventHandler(ActivitiEventType.ACTIVITY_SIGNALED, ActivitySignaledEventHandler.class);
+	  addEventHandler(ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED, ActivityMessageEventHandler.class);
+	  addEventHandler(ActivitiEventType.ACTIVITY_MESSAGE_WAITING, ActivityMessageEventHandler.class);
+	  
+	  addEventHandler(ActivitiEventType.ACTIVITY_COMPENSATE, ActivityCompensatedEventHandler.class);
+	  addEventHandler(ActivitiEventType.ACTIVITY_ERROR_RECEIVED, ActivityErrorReceivedEventHandler.class);
 		
-		addEventHandler(ActivitiEventType.VARIABLE_CREATED, VariableCreatedEventHandler.class);
-		addEventHandler(ActivitiEventType.VARIABLE_DELETED, VariableDeletedEventHandler.class);
-		addEventHandler(ActivitiEventType.VARIABLE_UPDATED, VariableUpdatedEventHandler.class);
+	  addEventHandler(ActivitiEventType.VARIABLE_CREATED, VariableCreatedEventHandler.class);
+	  addEventHandler(ActivitiEventType.VARIABLE_DELETED, VariableDeletedEventHandler.class);
+	  addEventHandler(ActivitiEventType.VARIABLE_UPDATED, VariableUpdatedEventHandler.class);
   }
 	
 	@Override
