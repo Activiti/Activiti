@@ -1,0 +1,67 @@
+{
+  "resourceId": 976836,
+  "properties": {
+    "process_id": "alireza",
+    "name": "alireza",
+    "documentation": "",
+    "process_author": "",
+    "process_version": "",
+    "process_namespace": "http://www.activiti.org/processdef",
+    "executionlisteners": "",
+    "eventlisteners": "",
+    "signaldefinitions": null,
+    "messagedefinitions": null,
+    "executionvariables": ""
+  },
+  "stencil": {
+    "id": "BPMNDiagram"
+  },
+  "childShapes": [
+    {
+      "resourceId": "throwCompensationEvent",
+      "properties": {
+        "overrideid": "",
+        "name": "",
+        "documentation": "",
+        "executionlisteners": "",
+        "signalref": ""
+      },
+      "stencil": {
+        "id": "ThrowCompensationEvent"
+      },
+      "childShapes": [],
+      "outgoing": [],
+      "bounds": {
+        "lowerRight": {
+          "x": 292.5,
+          "y": 139
+        },
+        "upperLeft": {
+          "x": 262.5,
+          "y": 109
+        }
+      },
+      "dockers": [
+        {
+          "x": 277.5,
+          "y": 124
+        }
+      ]
+    }
+  ],
+  "bounds": {
+    "lowerRight": {
+      "x": 1200,
+      "y": 1050
+    },
+    "upperLeft": {
+      "x": 0,
+      "y": 0
+    }
+  },
+  "stencilset": {
+    "url": "stencilsets/bpmn2.0/bpmn2.0.json",
+    "namespace": "http://b3mn.org/stencilset/bpmn2.0#"
+  },
+  "ssextensions": []
+}

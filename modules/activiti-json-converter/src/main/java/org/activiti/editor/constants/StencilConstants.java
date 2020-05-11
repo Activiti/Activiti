@@ -66,6 +66,7 @@ public interface StencilConstants {
   final String STENCIL_EVENT_CATCH_MESSAGE = "CatchMessageEvent";
 
   final String STENCIL_EVENT_THROW_SIGNAL = "ThrowSignalEvent";
+  final String STENCIL_EVENT_THROW_COMPENSATION = "ThrowCompensationEvent";
   final String STENCIL_EVENT_THROW_NONE = "ThrowNoneEvent";
 
   final String STENCIL_SEQUENCE_FLOW = "SequenceFlow";
@@ -106,6 +107,8 @@ public interface StencilConstants {
 
   final String PROPERTY_ERRORREF = "errorref";
 
+  final String PROPERTY_ACTIVITYREF = "activityref";
+
   final String PROPERTY_CANCEL_ACTIVITY = "cancelactivity";
 
   final String PROPERTY_NONE_STARTEVENT_INITIATOR = "initiator";
@@ -118,6 +121,8 @@ public interface StencilConstants {
   final String PROPERTY_MULTIINSTANCE_COLLECTION = "multiinstance_collection";
   final String PROPERTY_MULTIINSTANCE_VARIABLE = "multiinstance_variable";
   final String PROPERTY_MULTIINSTANCE_CONDITION = "multiinstance_condition";
+
+  final String PROPERTY_ISFORCOMPENSATION = "isforcompensation";
 
   final String PROPERTY_TASK_LISTENERS = "tasklisteners";
   final String PROPERTY_EXECUTION_LISTENERS = "executionlisteners";
