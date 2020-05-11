@@ -1013,6 +1013,9 @@ public class DbSqlSession implements Session {
       if (dbSqlSessionFactory.getDatabaseCatalog() != null && dbSqlSessionFactory.getDatabaseCatalog().length() > 0) {
         catalog = dbSqlSessionFactory.getDatabaseCatalog();
       }
+      if (connection.getCatalog() != null && connection.getCatalog().length() > 0) {
+        catalog = connection.getCatalog();
+      }
 
       String schema = this.connectionMetadataDefaultSchema;
       if (dbSqlSessionFactory.getDatabaseSchema() != null && dbSqlSessionFactory.getDatabaseSchema().length() > 0) {
