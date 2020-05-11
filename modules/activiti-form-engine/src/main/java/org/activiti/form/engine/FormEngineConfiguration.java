@@ -57,28 +57,16 @@ import org.activiti.form.engine.impl.interceptor.CommandInvoker;
 import org.activiti.form.engine.impl.interceptor.LogInterceptor;
 import org.activiti.form.engine.impl.interceptor.SessionFactory;
 import org.activiti.form.engine.impl.parser.FormParseFactory;
+import org.activiti.form.engine.impl.persistence.DbIdGenerator;
 import org.activiti.form.engine.impl.persistence.StrongUuidGenerator;
 import org.activiti.form.engine.impl.persistence.deploy.DefaultDeploymentCache;
 import org.activiti.form.engine.impl.persistence.deploy.Deployer;
 import org.activiti.form.engine.impl.persistence.deploy.DeploymentCache;
 import org.activiti.form.engine.impl.persistence.deploy.DeploymentManager;
 import org.activiti.form.engine.impl.persistence.deploy.FormCacheEntry;
-import org.activiti.form.engine.impl.persistence.entity.FormDeploymentEntityManager;
-import org.activiti.form.engine.impl.persistence.entity.FormDeploymentEntityManagerImpl;
-import org.activiti.form.engine.impl.persistence.entity.FormEntityManager;
-import org.activiti.form.engine.impl.persistence.entity.FormEntityManagerImpl;
-import org.activiti.form.engine.impl.persistence.entity.ResourceEntityManager;
-import org.activiti.form.engine.impl.persistence.entity.ResourceEntityManagerImpl;
-import org.activiti.form.engine.impl.persistence.entity.SubmittedFormEntityManager;
-import org.activiti.form.engine.impl.persistence.entity.SubmittedFormEntityManagerImpl;
-import org.activiti.form.engine.impl.persistence.entity.data.FormDataManager;
-import org.activiti.form.engine.impl.persistence.entity.data.FormDeploymentDataManager;
-import org.activiti.form.engine.impl.persistence.entity.data.ResourceDataManager;
-import org.activiti.form.engine.impl.persistence.entity.data.SubmittedFormDataManager;
-import org.activiti.form.engine.impl.persistence.entity.data.impl.MybatisFormDataManager;
-import org.activiti.form.engine.impl.persistence.entity.data.impl.MybatisFormDeploymentDataManager;
-import org.activiti.form.engine.impl.persistence.entity.data.impl.MybatisResourceDataManager;
-import org.activiti.form.engine.impl.persistence.entity.data.impl.MybatisSubmittedFormDataManager;
+import org.activiti.form.engine.impl.persistence.entity.*;
+import org.activiti.form.engine.impl.persistence.entity.data.*;
+import org.activiti.form.engine.impl.persistence.entity.data.impl.*;
 import org.activiti.form.engine.impl.util.DefaultClockImpl;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -158,6 +146,8 @@ public class FormEngineConfiguration {
 
   protected String xmlEncoding = "UTF-8";
 
+  protected int idBlockSize = 2500;
+
   protected BeanFactory beanFactory;
 
   // COMMAND EXECUTORS ///////////////////////////////////////////////
@@ -190,12 +180,14 @@ public class FormEngineConfiguration {
   protected FormDataManager formDataManager;
   protected ResourceDataManager resourceDataManager;
   protected SubmittedFormDataManager submittedFormDataManager;
+  protected PropertyDataManager propertyDataManager;
 
   // ENTITY MANAGERS /////////////////////////////////////////////////
   protected FormDeploymentEntityManager deploymentEntityManager;
   protected FormEntityManager formEntityManager;
   protected ResourceEntityManager resourceEntityManager;
   protected SubmittedFormEntityManager submittedFormEntityManager;
+  protected PropertyEntityManager propertyEntityManager;
 
   protected CommandContextFactory commandContextFactory;
   protected TransactionContextFactory transactionContextFactory;
@@ -437,6 +429,10 @@ public class FormEngineConfiguration {
     if (submittedFormDataManager == null) {
       submittedFormDataManager = new MybatisSubmittedFormDataManager(this);
     }
+    if (propertyDataManager == null) {
+      propertyDataManager = new MybatisPropertyDataManager(this) {
+      };
+    }
   }
 
   public void initEntityManagers() {
@@ -451,6 +447,10 @@ public class FormEngineConfiguration {
     }
     if (submittedFormEntityManager == null) {
       submittedFormEntityManager = new SubmittedFormEntityManagerImpl(this, submittedFormDataManager);
+    }
+    if (propertyEntityManager == null) {
+      propertyEntityManager = new PropertyEntityManagerImpl(this,propertyDataManager) {
+      };
     }
   }
 
@@ -773,7 +773,11 @@ public class FormEngineConfiguration {
 
   public void initIdGenerator() {
     if (idGenerator == null) {
-      idGenerator = new StrongUuidGenerator();
+      DbIdGenerator dbIdGenerator = new DbIdGenerator();
+      dbIdGenerator.setIdBlockSize(idBlockSize);
+      dbIdGenerator.setCommandConfig(this.defaultCommandConfig);
+      dbIdGenerator.setCommandExecutor(this.commandExecutor);
+      idGenerator = dbIdGenerator;
     }
   }
 
@@ -1236,6 +1240,14 @@ public class FormEngineConfiguration {
     return this;
   }
 
+  public PropertyEntityManager getPropertyEntityManager() {
+    return propertyEntityManager;
+  }
+
+  public void setPropertyEntityManager(PropertyEntityManager propertyEntityManager) {
+    this.propertyEntityManager = propertyEntityManager;
+  }
+
   public CommandContextFactory getCommandContextFactory() {
     return commandContextFactory;
   }
@@ -1401,5 +1413,13 @@ public class FormEngineConfiguration {
   public FormEngineConfiguration setObjectMapper(ObjectMapper objectMapper) {
     this.objectMapper = objectMapper;
     return this;
+  }
+
+  public IdGenerator getIdGenerator() {
+    return idGenerator;
+  }
+
+  public void setIdGenerator(IdGenerator idGenerator) {
+    this.idGenerator = idGenerator;
   }
 }
