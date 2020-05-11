@@ -241,4 +241,6 @@ public interface StencilConstants {
   final String PROPERTY_DECISIONTABLE_REFERENCE_ID = "decisiontablereferenceid";
   final String PROPERTY_DECISIONTABLE_REFERENCE_NAME = "decisiontablereferencename";
   final String PROPERTY_DECISIONTABLE_REFERENCE_KEY = "decisionTableReferenceKey";
+
+  final String PROPERTY_LOCALIZATION = "localization";
 }
