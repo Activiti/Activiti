@@ -31,6 +31,7 @@ import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.ErrorEventDefinition;
 import org.activiti.bpmn.model.Event;
 import org.activiti.bpmn.model.EventDefinition;
+import org.activiti.bpmn.model.EventSubProcess;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.GraphicInfo;
 import org.activiti.bpmn.model.Lane;
@@ -39,6 +40,7 @@ import org.activiti.bpmn.model.Pool;
 import org.activiti.bpmn.model.SequenceFlow;
 import org.activiti.bpmn.model.ServiceTask;
 import org.activiti.bpmn.model.SignalEventDefinition;
+import org.activiti.bpmn.model.StartEvent;
 import org.activiti.bpmn.model.SubProcess;
 import org.activiti.bpmn.model.TextAnnotation;
 import org.activiti.bpmn.model.TimerEventDefinition;
@@ -218,6 +220,13 @@ public class BpmnDisplayJsonConverter {
                     
                     } else if ("mule".equals(serviceTask.getType())) {
                         elementNode.put("taskType", "mule");
+                    }
+                } else if (element instanceof StartEvent) {
+                    StartEvent startEvent = (StartEvent) element;
+                    if (startEvent.getSubProcess() instanceof EventSubProcess) {
+                        elementNode.put("interrupting", true);
+                    } else {
+                        elementNode.put("interrupting", false);
                     }
                 }
 

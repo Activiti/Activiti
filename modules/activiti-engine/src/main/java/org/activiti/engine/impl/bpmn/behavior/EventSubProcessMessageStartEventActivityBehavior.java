@@ -68,14 +68,19 @@ public class EventSubProcessMessageStartEventActivityBehavior extends AbstractBp
     ExecutionEntity executionEntity = (ExecutionEntity) execution;
     
     StartEvent startEvent = (StartEvent) execution.getCurrentFlowElement();
-    if (startEvent.isInterrupting()) {  
-      List<ExecutionEntity> childExecutions = executionEntityManager.findChildExecutionsByParentExecutionId(executionEntity.getParentId());
-      for (ExecutionEntity childExecution : childExecutions) {
-        if (childExecution.getId().equals(executionEntity.getId()) == false) {
-          executionEntityManager.deleteExecutionAndRelatedData(childExecution, 
-              DeleteReason.EVENT_SUBPROCESS_INTERRUPTING + "(" + startEvent.getId() + ")", false);
-        }
-      }
+    if (startEvent.isInterrupting()) { 
+    	String deleteReason=DeleteReason.EVENT_SUBPROCESS_INTERRUPTING + "(" + startEvent.getId() + ")";
+    	List<ExecutionEntity> childExecutions = executionEntityManager.collectChildren(executionEntity.getParent());
+    	for (int i = childExecutions.size() - 1; i >= 0; i--) {
+    		ExecutionEntity childExecutionEntity = childExecutions.get(i);
+    		if (!childExecutionEntity.isEnded() && !childExecutionEntity.getId().equals(executionEntity.getId())) {
+    			if(childExecutionEntity.isProcessInstanceType()){
+    				executionEntityManager.deleteProcessInstanceExecutionEntity(childExecutionEntity.getProcessInstanceId(), execution.getCurrentFlowElement() != null ? execution.getCurrentFlowElement().getId() : null, deleteReason, false, false);
+    			} else {
+    				executionEntityManager.deleteExecutionAndRelatedData(childExecutionEntity, deleteReason, false);
+    			}
+    		}
+    	}
     }
     
     EventSubscriptionEntityManager eventSubscriptionEntityManager = Context.getCommandContext().getEventSubscriptionEntityManager();

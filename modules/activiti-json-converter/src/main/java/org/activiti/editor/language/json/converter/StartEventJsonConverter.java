@@ -18,6 +18,7 @@ import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.ErrorEventDefinition;
 import org.activiti.bpmn.model.Event;
 import org.activiti.bpmn.model.EventDefinition;
+import org.activiti.bpmn.model.EventSubProcess;
 import org.activiti.bpmn.model.ExtensionElement;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.MessageEventDefinition;
@@ -93,6 +94,12 @@ public class StartEventJsonConverter extends BaseBpmnJsonConverter implements Fo
       }
     }
 
+    if (startEvent.getSubProcess() instanceof EventSubProcess) {
+        propertiesNode.put(PROPERTY_INTERRUPTING, true);
+    } else {
+        propertiesNode.put(PROPERTY_INTERRUPTING, false);
+    }
+    
     addFormProperties(startEvent.getFormProperties(), propertiesNode);
     addEventProperties(startEvent, propertiesNode);
   }
@@ -125,6 +132,13 @@ public class StartEventJsonConverter extends BaseBpmnJsonConverter implements Fo
     } else if (STENCIL_EVENT_START_SIGNAL.equals(stencilId)) {
       convertJsonToSignalDefinition(elementNode, startEvent);
     }
+    
+    if (!getPropertyValueAsBoolean(PROPERTY_INTERRUPTING, elementNode)) {
+        startEvent.setInterrupting(false);
+    }else {
+    	 startEvent.setInterrupting(true);
+    }
+    
     return startEvent;
   }
 

@@ -13,6 +13,7 @@
 
 package org.activiti.engine.test.bpmn.event.message;
 
+import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.impl.EventSubscriptionQueryImpl;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.Execution;
@@ -124,6 +125,24 @@ public class MessageEventSubprocessTest extends PluggableActivitiTestCase {
     // done!
     assertEquals(0, runtimeService.createExecutionQuery().count());
   }
+  
+  
+  @Deployment(resources = { "org/activiti/engine/test/bpmn/event/message/MessageEventSubprocessTest.testMessageEventSubProcessCallActivity.bpmn20.xml",
+  "org/activiti/engine/test/bpmn/event/message/MessageEventSubprocessTest.testMessageEventSubProcessCallActivityChild.bpmn20.xml" })
+  public void testMessageEventSubProcessCallActivity(){
+		ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("messageventsubprocessid1");
+		Execution execution = runtimeService.createExecutionQuery().messageEventSubscriptionName("eventmsg3").singleResult();
+		
+		runtimeService.messageEventReceived("eventmsg3", execution.getId());
+		
+		// check Sub Process's history
+		HistoricProcessInstance historicProcessInstance = historyService.createHistoricProcessInstanceQuery().superProcessInstanceId(processInstance.getId()).singleResult();
+		assertNotNull(historicProcessInstance.getEndTime());
+		
+		// check Process' history
+		historicProcessInstance = historyService.createHistoricProcessInstanceQuery().processInstanceId(processInstance.getId()).singleResult();
+		assertNull(historicProcessInstance.getEndTime());
+	}
 
   private EventSubscriptionQueryImpl createEventSubscriptionQuery() {
     return new EventSubscriptionQueryImpl(processEngineConfiguration.getCommandExecutor());
