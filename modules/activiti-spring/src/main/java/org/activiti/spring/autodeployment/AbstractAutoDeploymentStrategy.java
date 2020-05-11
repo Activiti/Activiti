@@ -18,8 +18,6 @@ import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.ContextResource;
 import org.springframework.core.io.Resource;
 
-import java.io.IOException;
-
 /**
  * Abstract base class for implementations of {@link AutoDeploymentStrategy}.
  * 
@@ -56,11 +54,7 @@ public abstract class AbstractAutoDeploymentStrategy implements AutoDeploymentSt
       resourceName = resource.getDescription();
 
     } else {
-      try {
-        resourceName = resource.getFile().getAbsolutePath();
-      } catch (IOException e) {
-        resourceName = resource.getFilename();
-      }
+      resourceName = resource.getFilename();
     }
     return resourceName;
   }
