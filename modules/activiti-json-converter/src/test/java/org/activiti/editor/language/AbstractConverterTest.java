@@ -6,6 +6,8 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.InputStream;
 
+import org.activiti.bpmn.converter.BpmnXMLConverter;
+import org.activiti.bpmn.converter.util.InputStreamProvider;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.Event;
 import org.activiti.bpmn.model.EventDefinition;
@@ -25,6 +27,15 @@ public abstract class AbstractConverterTest {
     return bpmnModel;
   }
 
+  protected BpmnModel readXmlFile() throws Exception {
+    final InputStream jsonStream = this.getClass().getClassLoader().getResourceAsStream(getResource());
+    return new BpmnXMLConverter().convertToBpmnModel(new InputStreamProvider() {
+      @Override
+      public InputStream getInputStream() {
+        return jsonStream;
+      }
+    }, false, false);
+  }
   protected BpmnModel convertToJsonAndBack(BpmnModel bpmnModel) {
     ObjectNode modelNode = new BpmnJsonConverter().convertToJson(bpmnModel);
     bpmnModel = new BpmnJsonConverter().convertToBpmnModel(modelNode);
