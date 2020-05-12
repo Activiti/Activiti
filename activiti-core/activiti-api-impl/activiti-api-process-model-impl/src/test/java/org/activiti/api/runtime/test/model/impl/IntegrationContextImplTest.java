@@ -89,18 +89,21 @@ class IntegrationContextImplTest {
 
     @ParameterizedTest
     @MethodSource
-    void testIntegrationContextInBoundVariables(Object value, Object result) throws JsonParseException, JsonMappingException, IOException {
+    void testIntegrationContextInBoundVariables(Object input,
+                                                Object output) throws JsonParseException,
+                                                                      JsonMappingException,
+                                                                      IOException {
         // given
         IntegrationContextImpl source = new IntegrationContextImpl();
 
         source.addInBoundVariable("variable",
-                                  value);
+                                  input);
         // when
         IntegrationContext target = exchangeIntegrationContext(source);
 
         // then
         assertThat(target.getInBoundVariables()).containsEntry("variable",
-                                                               result);
+                                                               output);
     }
 
     private static Stream<Arguments> testIntegrationContextOutBoundVariables() {
@@ -109,19 +112,22 @@ class IntegrationContextImplTest {
 
     @ParameterizedTest
     @MethodSource
-    public void testIntegrationContextOutBoundVariables(Object value, Object result) throws JsonParseException, JsonMappingException, IOException {
+    public void testIntegrationContextOutBoundVariables(Object input,
+                                                        Object output) throws JsonParseException,
+                                                                              JsonMappingException,
+                                                                              IOException {
         // given
         IntegrationContextImpl source = new IntegrationContextImpl();
 
         source.addOutBoundVariable("variable",
-                                   value);
+                                   input);
 
         // when
         IntegrationContext target = exchangeIntegrationContext(source);
 
         // then
         assertThat(target.getOutBoundVariables()).containsEntry("variable",
-                                                                result);
+                                                                output);
     }
 
     private IntegrationContext exchangeIntegrationContext(IntegrationContext source) throws IOException {
