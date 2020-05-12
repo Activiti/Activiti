@@ -24,7 +24,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.activiti.api.runtime.model.impl.ProcessVariablesMap.ProcessVariableValue;
 import org.springframework.core.convert.ConversionService;
 
 import com.fasterxml.jackson.core.JsonGenerator;
