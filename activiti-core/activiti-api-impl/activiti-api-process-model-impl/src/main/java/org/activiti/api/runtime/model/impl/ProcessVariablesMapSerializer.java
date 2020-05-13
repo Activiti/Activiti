@@ -17,11 +17,7 @@
 package org.activiti.api.runtime.model.impl;
 
 import java.io.IOException;
-import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.springframework.core.convert.ConversionService;
@@ -32,29 +28,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 
-@ProcessVariableTypeConverter
 public class ProcessVariablesMapSerializer extends StdSerializer<ProcessVariablesMap<String, Object>> {
 
     private static final long serialVersionUID = 1L;
     private static final ObjectMapper objectMapper = new ObjectMapper();
-    private static List<Class<?>> scalarTypes = Arrays.asList(int.class,
-                                                              byte.class,
-                                                              short.class,
-                                                              boolean.class,
-                                                              long.class,
-                                                              double.class,
-                                                              float.class,
-                                                              Integer.class,
-                                                              Byte.class,
-                                                              Short.class,
-                                                              Boolean.class,
-                                                              Long.class,
-                                                              Double.class,
-                                                              Float.class,
-                                                              BigDecimal.class,
-                                                              Date.class,
-                                                              String.class);
-
     private final ConversionService conversionService;
 
     public ProcessVariablesMapSerializer(ConversionService conversionService) {
@@ -74,28 +51,30 @@ public class ProcessVariablesMapSerializer extends StdSerializer<ProcessVariable
             Object value = entry.getValue();
 
             if(value != null) {
-                Class<?> entryTypeClass = entry.getValue()
-                                               .getClass();
+                Class<?> entryValueClass = entry.getValue()
+                                                .getClass();
 
-                Object entryObjectValue = entry.getValue();
                 String entryType;
 
-                if (scalarTypes.contains(entryTypeClass)) {
-                    entryType = entryTypeClass.getName();
-                }
-                else if (Map.class.isInstance(value)) {
-                    entryType = Map.class.getName();
-                }
-                else if (JsonNode.class.isInstance(value)) {
-                    entryType = JsonNode.class.getName();
+                if (conversionService.canConvert(entryValueClass, String.class)) {
+                    if (Map.class.isInstance(value)) {
+                        entryType = Map.class.getName();
+                    }
+                    else if (JsonNode.class.isInstance(value)) {
+                        entryType = JsonNode.class.getName();
+                    }
+                    else {
+                        entryType = entryValueClass.getName();
+                    }
                 }
                 else {
                     entryType = Map.class.getName();
-                    entryObjectValue = objectMapper.writeValueAsString(entryObjectValue);
+                    value = objectMapper.writeValueAsString(value);
                 }
 
-                String entryValue = conversionService.convert(entryObjectValue,
-                                                              String.class);
+
+                String entryValue = conversionService.convert(value,
+                                                       String.class);
 
                 ProcessVariableValue variableValue = new ProcessVariableValue(entryType,
                                                                               entryValue);
