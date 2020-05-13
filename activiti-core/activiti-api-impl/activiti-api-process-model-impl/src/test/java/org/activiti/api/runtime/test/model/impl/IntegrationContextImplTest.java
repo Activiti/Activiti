@@ -2,6 +2,12 @@ package org.activiti.api.runtime.test.model.impl;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.Module;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.TextNode;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -9,7 +15,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.stream.Stream;
-
 import org.activiti.api.process.model.IntegrationContext;
 import org.activiti.api.runtime.model.impl.IntegrationContextImpl;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -20,13 +25,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.context.annotation.Bean;
-
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.Module;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
-import com.fasterxml.jackson.databind.node.TextNode;
 
 @SpringBootTest(webEnvironment = WebEnvironment.NONE)
 class IntegrationContextImplTest {
@@ -58,13 +56,13 @@ class IntegrationContextImplTest {
                                              Arguments.of(JsonNodeFactory.instance.objectNode().set("key", TextNode.valueOf("value")),
                                                           JsonNodeFactory.instance.objectNode().set("key", TextNode.valueOf("value"))),
                                              Arguments.of(new CustomPojo("field1", "field2"),
-                                                          new LinkedHashMap<>() {{
+                                                          new LinkedHashMap<String, String>() {{
                                                               put("field1", "field1");
                                                               put("field2", "field2");
                                                           }}),
 
                                              Arguments.of(new CustomPojoAnnotated("field1", "field2"),
-                                                          new LinkedHashMap<>() {{
+                                                          new LinkedHashMap<String, String>() {{
                                                               put("@class", "org.activiti.api.runtime.test.model.impl.CustomPojoAnnotated");
                                                               put("field1", "field1");
                                                               put("field2", "field2");
