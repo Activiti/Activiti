@@ -16,17 +16,16 @@
 
 package org.activiti.api.runtime.model.impl;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.springframework.core.convert.ConversionService;
-
 import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import org.springframework.core.convert.ConversionService;
 
 public class ProcessVariablesMapSerializer extends StdSerializer<ProcessVariablesMap<String, Object>> {
 
@@ -42,52 +41,49 @@ public class ProcessVariablesMapSerializer extends StdSerializer<ProcessVariable
 
     @Override
     public void serialize(ProcessVariablesMap<String, Object> processVariablesMap,
-                          JsonGenerator gen,
-                          SerializerProvider serializers) throws IOException {
+        JsonGenerator gen,
+        SerializerProvider serializers) throws IOException {
 
         HashMap<String, ProcessVariableValue> map = new HashMap<>();
-        for (Map.Entry<String, Object> entry: processVariablesMap.entrySet()) {
+        for (Map.Entry<String, Object> entry : processVariablesMap.entrySet()) {
             String name = entry.getKey();
             Object value = entry.getValue();
-
-            if(value != null) {
-                Class<?> entryValueClass = entry.getValue()
-                                                .getClass();
-
-                String entryType;
-
-                if (conversionService.canConvert(entryValueClass, String.class)) {
-                    if (Map.class.isInstance(value)) {
-                        entryType = Map.class.getName();
-                    }
-                    else if (JsonNode.class.isInstance(value)) {
-                        entryType = JsonNode.class.getName();
-                    }
-                    else {
-                        entryType = entryValueClass.getName();
-                    }
-                }
-                else {
-                    entryType = Map.class.getName();
-                    value = objectMapper.writeValueAsString(value);
-                }
-
-
-                String entryValue = conversionService.convert(value,
-                                                       String.class);
-
-                ProcessVariableValue variableValue = new ProcessVariableValue(entryType,
-                                                                              entryValue);
-                map.put(name,
-                        variableValue);
-
-            } else {
-                map.put(name,
-                        null);
-            }
-
+            map.put(name, buildProcessVariableValue(value));
         }
 
         gen.writeObject(map);
+    }
+
+    private ProcessVariableValue buildProcessVariableValue(Object value)
+        throws JsonProcessingException {
+        ProcessVariableValue variableValue = null;
+        if (value != null) {
+            Class<?> entryValueClass = value.getClass();
+            boolean canConvert = conversionService.canConvert(entryValueClass, String.class);
+            if (!canConvert) {
+                value = objectMapper.writeValueAsString(value);
+            }
+            String entryType = resolveEntryType(value, canConvert);
+            String entryValue = conversionService.convert(value, String.class);
+
+            variableValue = new ProcessVariableValue(entryType, entryValue);
+        }
+        return variableValue;
+    }
+
+    private String resolveEntryType(Object value, boolean canConvert) {
+        String entryType;
+        if (canConvert) {
+            if (Map.class.isInstance(value)) {
+                entryType = Map.class.getName();
+            } else if (JsonNode.class.isInstance(value)) {
+                entryType = JsonNode.class.getName();
+            } else {
+                entryType = value.getClass().getName();
+            }
+        } else {
+            entryType = Map.class.getName();
+        }
+        return entryType;
     }
 }
