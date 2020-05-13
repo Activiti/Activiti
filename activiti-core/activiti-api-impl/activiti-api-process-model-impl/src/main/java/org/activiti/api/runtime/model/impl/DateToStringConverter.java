@@ -23,9 +23,6 @@ import org.springframework.core.convert.converter.Converter;
 @ProcessVariableTypeConverter
 public class DateToStringConverter implements Converter<Date, String> {
 
-    public DateToStringConverter() {
-    }
-
     @Override
     public String convert(Date source) {
         return source.toInstant().toString();
