@@ -84,7 +84,7 @@ public class IntegrationContextBuilder {
         }
 
 
-        integrationContext.setInBoundVariables(inboundVariablesProvider.calculateInputVariables(execution));
+        integrationContext.addInBoundVariables(inboundVariablesProvider.calculateInputVariables(execution));
 
         return integrationContext;
     }

@@ -52,4 +52,11 @@ public interface IntegrationContext {
 
     void addOutBoundVariables(Map<String, Object> variables);
 
+    <T> T getInBoundVariable(String name);
+
+    <T> T getInBoundVariable(String name, Class<T> type);
+
+    <T> T getOutBoundVariable(String name);
+
+    <T> T getOutBoundVariable(String name, Class<T> type);
 }
