@@ -2,8 +2,6 @@ package org.activiti.api.runtime.test.model.impl;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
@@ -83,11 +81,8 @@ class IntegrationContextImplTest {
     }
 
     @ParameterizedTest
-    @MethodSource
-    void testIntegrationContextInBoundVariables(Object input,
-                                                Object output) throws JsonParseException,
-                                                                      JsonMappingException,
-                                                                      IOException {
+    @MethodSource("testIntegrationContextInBoundVariables")
+    public void testIntegrationContextInBoundVariables(Object input, Object output) throws IOException {
         // given
         IntegrationContextImpl source = new IntegrationContextImpl();
 
@@ -106,11 +101,8 @@ class IntegrationContextImplTest {
     }
 
     @ParameterizedTest
-    @MethodSource
-    public void testIntegrationContextOutBoundVariables(Object input,
-                                                        Object output) throws JsonParseException,
-                                                                              JsonMappingException,
-                                                                              IOException {
+    @MethodSource("testIntegrationContextOutBoundVariables")
+    public void testIntegrationContextOutBoundVariables(Object input, Object output) throws IOException {
         // given
         IntegrationContextImpl source = new IntegrationContextImpl();
 
