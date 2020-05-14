@@ -31,32 +31,32 @@
     <developer>
       <id>balsarori</id>
       <name>Bassam Al-Sarori</name>
-      <organization>Alfresco</organization>
-      <organizationUrl>http://alfresco.com</organizationUrl>
+      <organization>${project.organization.name}</organization>
+      <organizationUrl>${project.organization.url}</organizationUrl>
     </developer>
     <developer>
       <id>daisuke-yoshimoto</id>
       <name>Daisuke Yoshimoto</name>
-      <organization>Alfresco</organization>
-      <organizationUrl>http://alfresco.com</organizationUrl>
+      <organization>${project.organization.name}</organization>
+      <organizationUrl>${project.organization.url}</organizationUrl>
     </developer>
     <developer>
       <id>erdemedeiros</id>
       <name>Elias De Medeiros</name>
-      <organization>Alfresco</organization>
-      <organizationUrl>http://alfresco.com</organizationUrl>
+      <organization>${project.organization.name}</organization>
+      <organizationUrl>${project.organization.url}</organizationUrl>
     </developer>
     <developer>
       <id>eromano</id>
       <name>Eugenio Romano</name>
-      <organization>Alfresco</organization>
-      <organizationUrl>http://alfresco.com</organizationUrl>
+      <organization>${project.organization.name}</organization>
+      <organizationUrl>${project.organization.url}</organizationUrl>
     </developer>
     <developer>
       <id>ffazzini</id>
       <name>Francesco Fazzini</name>
-      <organization>Alfresco</organization>
-      <organizationUrl>http://alfresco.com</organizationUrl>
+      <organization>${project.organization.name}</organization>
+      <organizationUrl>${project.organization.url}</organizationUrl>
     </developer>
     <developer>
       <id>igdianov</id>
@@ -67,26 +67,26 @@
     <developer>
       <id>jesty</id>
       <name>Davide Cerbo</name>
-      <organization>Alfresco</organization>
-      <organizationUrl>http://alfresco.com</organizationUrl>
+      <organization>${project.organization.name}</organization>
+      <organizationUrl>${project.organization.url}</organizationUrl>
     </developer>
     <developer>
       <id>magemello</id>
       <name>Mario Romano</name>
-      <organization>Alfresco</organization>
-      <organizationUrl>http://alfresco.com</organizationUrl>
+      <organization>${project.organization.name}</organization>
+      <organizationUrl>${project.organization.url}</organizationUrl>
     </developer>
     <developer>
       <id>mauriziovitale</id>
       <name>Maurizio Vitale</name>
-      <organization>Alfresco</organization>
-      <organizationUrl>http://alfresco.com</organizationUrl>
+      <organization>${project.organization.name}</organization>
+      <organizationUrl>${project.organization.url}</organizationUrl>
     </developer>
     <developer>
       <id>miguelruizdev</id>
       <name>Miguel Ruiz</name>
-      <organization>Alfresco</organization>
-      <organizationUrl>http://alfresco.com</organizationUrl>
+      <organization>${project.organization.name}</organization>
+      <organizationUrl>${project.organization.url}</organizationUrl>
     </developer>
     <developer>
       <id>mmartinadanx</id>
@@ -97,8 +97,8 @@
     <developer>
       <id>mteodori</id>
       <name>Marcello Teodori</name>
-      <organization>Alfresco</organization>
-      <organizationUrl>http://alfresco.com</organizationUrl>
+      <organization>${project.organization.name}</organization>
+      <organizationUrl>${project.organization.url}</organizationUrl>
     </developer>
     <developer>
       <id>nazarethjim</id>
@@ -115,20 +115,20 @@
     <developer>
       <id>popovicsandras</id>
       <name>András Popovics</name>
-      <organization>Alfresco</organization>
-      <organizationUrl>http://alfresco.com</organizationUrl>
+      <organization>${project.organization.name}</organization>
+      <organizationUrl>${project.organization.url}</organizationUrl>
     </developer>
     <developer>
       <id>robfrank</id>
       <name>Roberto Franchini</name>
-      <organization>Alfresco</organization>
-      <organizationUrl>http://alfresco.com</organizationUrl>
+      <organization>${project.organization.name}</organization>
+      <organizationUrl>${project.organization.url}</organizationUrl>
     </developer>
     <developer>
       <id>zoltanpalfi</id>
       <name>Zoltan Palfi</name>
-      <organization>Alfresco</organization>
-      <organizationUrl>http://alfresco.com</organizationUrl>
+      <organization>${project.organization.name}</organization>
+      <organizationUrl>${project.organization.url}</organizationUrl>
     </developer>
     <developer>
       <id>CTI777</id>
@@ -139,14 +139,14 @@
     <developer>
       <id>EquinoxBlack</id>
       <name>Rodion Savchuk</name>
-      <organization>Alfresco</organization>
-      <organizationUrl>http://alfresco.com</organizationUrl>
+      <organization>${project.organization.name}</organization>
+      <organizationUrl>${project.organization.url}</organizationUrl>
     </developer>
     <developer>
       <id>VitoAlbano</id>
       <name>Vito Albano</name>
-      <organization>Alfresco</organization>
-      <organizationUrl>http://alfresco.com</organizationUrl>
+      <organization>${project.organization.name}</organization>
+      <organizationUrl>${project.organization.url}</organizationUrl>
     </developer>
   </developers>
   <modules>
