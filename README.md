@@ -80,28 +80,10 @@ Configuring IntelliJ
 * Set the correct license header
     * Open menu *File*, menu item *Settings*
     * Click tree item *Copyright*, tree item *Copyright profiles*
-        * Click button *+* to add a *Copyright profile*
-        * Textfield *name*: `Alfresco, Inc. and/or its affiliates`
-        * Textarea with content:
-            ```
-            Copyright $today.year Alfresco, Inc. and/or its affiliates.
-
-            Licensed under the Apache License, Version 2.0 (the "License");
-            you may not use this file except in compliance with the License.
-            You may obtain a copy of the License at
-
-                  http://www.apache.org/licenses/LICENSE-2.0
-
-            Unless required by applicable law or agreed to in writing, software
-            distributed under the License is distributed on an "AS IS" BASIS,
-            WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-            See the License for the specific language governing permissions and
-            limitations under the License.
-            ```
-        * Note: Do not start or end with a newline character
-        * Note: Do not start with `/**`: it is not a valid javadoc.
+        * Click import button to import the *Copyright profile*
+        * Select the file: [Alfresco_Software.xml](./ide-configuration/intellij-configuration/copyright/Alfresco_Software.xml)
     * Click tree item *Copyright*
-        * Combobox *Default project copyright*: `Alfresco, Inc. and/or its affiliates`
+        * Combobox *Default project copyright*: `Alfresco Software`
 
 FAQ
 ===
