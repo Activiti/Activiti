@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     https://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,18 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/* Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+
 package org.activiti.engine.impl.cmd;
 
 import java.io.Serializable;
@@ -60,7 +49,7 @@ public class GetDataObjectsCmd implements Command<Map<String, DataObject>>, Seri
   protected boolean isLocal;
   protected String locale;
   protected boolean withLocalizationFallback;
-  
+
   public GetDataObjectsCmd(String executionId, Collection<String> dataObjectNames, boolean isLocal) {
     this.executionId = executionId;
     this.dataObjectNames = dataObjectNames;
@@ -87,7 +76,7 @@ public class GetDataObjectsCmd implements Command<Map<String, DataObject>>, Seri
     if (execution == null) {
       throw new ActivitiObjectNotFoundException("execution " + executionId + " doesn't exist", Execution.class);
     }
-    
+
     Map<String, VariableInstance> variables = null;
 
     if (dataObjectNames == null || dataObjectNames.isEmpty()) {
@@ -110,7 +99,7 @@ public class GetDataObjectsCmd implements Command<Map<String, DataObject>>, Seri
     Map<String,DataObject> dataObjects = null;
     if (variables != null) {
       dataObjects = new HashMap<>(variables.size());
-      
+
       for (Entry<String, VariableInstance> entry : variables.entrySet()) {
         String name = entry.getKey();
         VariableInstance variableEntity = (VariableInstance) entry.getValue();
@@ -119,7 +108,7 @@ public class GetDataObjectsCmd implements Command<Map<String, DataObject>>, Seri
         while (!executionEntity.isScope()) {
           executionEntity = executionEntity.getParent();
         }
-        
+
         BpmnModel bpmnModel = ProcessDefinitionUtil.getBpmnModel(execution.getProcessDefinitionId());
         ValuedDataObject foundDataObject = null;
         if (executionEntity.getParentId() == null) {
@@ -138,14 +127,14 @@ public class GetDataObjectsCmd implements Command<Map<String, DataObject>>, Seri
             }
           }
         }
-        
+
         String localizedName = null;
         String localizedDescription = null;
-        
-        if (locale != null && foundDataObject != null) {          
-          ObjectNode languageNode = Context.getLocalizationElementProperties(locale, foundDataObject.getId(), 
+
+        if (locale != null && foundDataObject != null) {
+          ObjectNode languageNode = Context.getLocalizationElementProperties(locale, foundDataObject.getId(),
               execution.getProcessDefinitionId(), withLocalizationFallback);
-          
+
           if (languageNode != null) {
             JsonNode nameNode = languageNode.get(DynamicBpmnConstants.LOCALIZATION_NAME);
             if (nameNode != null) {
@@ -157,14 +146,14 @@ public class GetDataObjectsCmd implements Command<Map<String, DataObject>>, Seri
             }
           }
         }
-        
+
         if (foundDataObject != null) {
-          dataObjects.put(name, new DataObjectImpl(variableEntity.getName(), variableEntity.getValue(), foundDataObject.getDocumentation(), 
+          dataObjects.put(name, new DataObjectImpl(variableEntity.getName(), variableEntity.getValue(), foundDataObject.getDocumentation(),
               foundDataObject.getType(), localizedName, localizedDescription, foundDataObject.getId()));
         }
       }
     }
-    
+
     return dataObjects;
   }
 }

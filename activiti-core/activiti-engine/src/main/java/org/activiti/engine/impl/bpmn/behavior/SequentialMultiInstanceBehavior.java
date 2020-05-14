@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     https://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,18 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/* Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+
 
 package org.activiti.engine.impl.bpmn.behavior;
 
@@ -51,21 +40,21 @@ public class SequentialMultiInstanceBehavior extends MultiInstanceActivityBehavi
    * Handles the sequential case of spawning the instances. Will only create one instance, since at most one instance can be active.
    */
   protected int createInstances(DelegateExecution multiInstanceExecution) {
-    
+
     int nrOfInstances = resolveNrOfInstances(multiInstanceExecution);
     if (nrOfInstances == 0) {
       return nrOfInstances;
     } else if (nrOfInstances < 0) {
       throw new ActivitiIllegalArgumentException("Invalid number of instances: must be a non-negative integer value" + ", but was " + nrOfInstances);
     }
-    
+
     // Create child execution that will execute the inner behavior
     ExecutionEntity childExecution = Context.getCommandContext().getExecutionEntityManager()
         .createChildExecution((ExecutionEntity) multiInstanceExecution);
     childExecution.setCurrentFlowElement(multiInstanceExecution.getCurrentFlowElement());
     multiInstanceExecution.setMultiInstanceRoot(true);
     multiInstanceExecution.setActive(false);
-    
+
     // Set Multi-instance variables
     setLoopVariable(multiInstanceExecution, NUMBER_OF_INSTANCES, nrOfInstances);
     setLoopVariable(multiInstanceExecution, NUMBER_OF_COMPLETED_INSTANCES, 0);
@@ -93,10 +82,10 @@ public class SequentialMultiInstanceBehavior extends MultiInstanceActivityBehavi
     logLoopDetails(childExecution, "instance completed", loopCounter, nrOfCompletedInstances, nrOfActiveInstances, nrOfInstances);
 
     updateResultCollection(childExecution, multiInstanceRootExecution);
-    
+
     Context.getCommandContext().getHistoryManager().recordActivityEnd((ExecutionEntity) childExecution, null);
     callActivityEndListeners(childExecution);
-    
+
     if (loopCounter >= nrOfInstances || completionConditionSatisfied(multiInstanceRootExecution)) {
       propagateLoopDataOutputRefToProcessInstance((ExecutionEntity) multiInstanceRootExecution);
       removeLocalLoopVariable(childExecution, getCollectionElementIndexVariable());
@@ -106,10 +95,10 @@ public class SequentialMultiInstanceBehavior extends MultiInstanceActivityBehavi
       Context.getCommandContext().getExecutionEntityManager().deleteChildExecutions((ExecutionEntity) multiInstanceRootExecution, "MI_END");
       dispatchActivityCompletedEvent(childExecution);
       super.leave(multiInstanceRootExecution);
-      
+
     } else {
       try {
-        
+
         if (childExecution.getCurrentFlowElement() instanceof SubProcess) {
           ExecutionEntityManager executionEntityManager = Context.getCommandContext().getExecutionEntityManager();
           ExecutionEntity executionToContinue = executionEntityManager.createChildExecution((ExecutionEntity) multiInstanceRootExecution);

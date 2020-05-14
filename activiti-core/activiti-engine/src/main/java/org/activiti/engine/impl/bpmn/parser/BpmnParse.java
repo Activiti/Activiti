@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     https://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,18 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/* Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+
 package org.activiti.engine.impl.bpmn.parser;
 
 import java.io.InputStream;
@@ -70,7 +59,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Specific parsing of one BPMN 2.0 XML file, created by the {@link BpmnParser}.
- * 
+ *
 
 
  */
@@ -123,7 +112,7 @@ public class BpmnParse implements BpmnXMLConstants {
 
   /**
    * Mapping containing values stored during the first phase of parsing since other elements can reference these messages.
-   * 
+   *
    * All the map's elements are defined outside the process definition(s), which means that this map doesn't need to be re-initialized for each new process definition.
    */
   protected Map<String, String> prefixs = new HashMap<String, String>();
@@ -200,7 +189,7 @@ public class BpmnParse implements BpmnXMLConstants {
           }
         }
       }
-      
+
       bpmnModel.setSourceSystemId(sourceSystemId);
       bpmnModel.setEventSupport(new ActivitiEventSupport());
 
@@ -280,7 +269,7 @@ public class BpmnParse implements BpmnXMLConstants {
     }
     this.streamSource = streamSource;
   }
-  
+
   public BpmnParse setSourceSystemId(String sourceSystemId) {
     this.sourceSystemId = sourceSystemId;
     return this;
@@ -370,7 +359,7 @@ public class BpmnParse implements BpmnXMLConstants {
           LOGGER.warn("Invalid reference in diagram interchange definition: " + bpmnReference + " does not reference a flow node");
         }
       }
-      
+
       for (String bpmnReference : bpmnModel.getFlowLocationMap().keySet()) {
         if (bpmnModel.getFlowElement(bpmnReference) == null) {
           // ACT-1625: don't warn when artifacts are referenced from DI
@@ -391,7 +380,7 @@ public class BpmnParse implements BpmnXMLConstants {
         ProcessDefinitionEntity processDefinition = getProcessDefinition(process.getId());
         if (processDefinition != null) {
           processDefinition.setGraphicalNotationDefined(true);
-          
+
           for (String edgeId : bpmnModel.getFlowLocationMap().keySet()) {
             if (bpmnModel.getFlowElement(edgeId) != null) {
               createBPMNEdge(edgeId, bpmnModel.getFlowLocationGraphicInfo(edgeId));
@@ -412,7 +401,7 @@ public class BpmnParse implements BpmnXMLConstants {
         waypoints.add((int) waypointInfo.getY());
       }
       sequenceFlow.setWaypoints(waypoints);
-      
+
     } else if (bpmnModel.getArtifact(key) != null) {
       // it's an association, so nothing to do
     } else {

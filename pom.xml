@@ -158,33 +158,34 @@
     <module>activiti-examples</module>
   </modules>
   <scm>
-    <url>http://github.com/${project.scm.organisation}/${project.scm.repository}</url>
-    <connection>scm:git:git://github.com/${project.scm.organisation}/${project.scm.repository}.git
+    <url>http://github.com/${project.scm.organization}/${project.scm.repository}</url>
+    <connection>
+      scm:git:git://github.com/${project.scm.organization}/${project.scm.repository}.git
     </connection>
     <developerConnection>
-      scm:git:ssh://git@github.com/${project.scm.organisation}/${project.scm.repository}.git
+      scm:git:ssh://git@github.com/${project.scm.organization}/${project.scm.repository}.git
     </developerConnection>
     <tag>HEAD</tag>
   </scm>
   <issueManagement>
     <system>GitHub</system>
-    <url>https://github.com/${project.scm.organisation}/Activiti/issues</url>
+    <url>https://github.com/${project.scm.organization}/Activiti/issues</url>
   </issueManagement>
   <ciManagement>
     <system>Travis</system>
-    <url>https://travis-ci.com/${project.scm.organisation}/${project.scm.repository}</url>
+    <url>https://travis-ci.com/${project.scm.organization}/${project.scm.repository}</url>
   </ciManagement>
   <distributionManagement>
     <site>
       <id>${project.scm.repository}-site</id>
-      <url>https://${project.scm.organisation}.github.io/${project.scm.repository}</url>
+      <url>https://${project.scm.organization}.github.io/${project.scm.repository}</url>
     </site>
   </distributionManagement>
   <properties>
     <!-- configuration properties -->
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <project.scm.organisation>Activiti</project.scm.organisation>
+    <project.scm.organization>Activiti</project.scm.organization>
     <project.scm.repository>Activiti</project.scm.repository>
     <project.year>2020</project.year>
 
@@ -284,6 +285,31 @@
           <groupId>com.mycila</groupId>
           <artifactId>license-maven-plugin</artifactId>
           <version>${license-maven-plugin.version}</version>
+          <configuration>
+            <inlineHeader>
+              <![CDATA[
+Copyright ${project.inceptionYear}-${project.year} ${project.organization.name}.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+            ]]>
+            </inlineHeader>
+            <includes>
+              <include>**/*.java</include>
+            </includes>
+            <mapping>
+              <java>SLASHSTAR_STYLE</java>
+            </mapping>
+          </configuration>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -465,32 +491,6 @@
       <plugin>
         <groupId>com.mycila</groupId>
         <artifactId>license-maven-plugin</artifactId>
-        <configuration>
-          <aggregate>true</aggregate>
-          <inlineHeader>
-            <![CDATA[
-Copyright ${project.inceptionYear}-${project.year} ${project.organization.name}.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    https://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-            ]]>
-          </inlineHeader>
-          <includes>
-            <include>**/*.java</include>
-          </includes>
-          <mapping>
-            <java>SLASHSTAR_STYLE</java>
-          </mapping>
-        </configuration>
         <executions>
           <execution>
             <id>validate-license</id>

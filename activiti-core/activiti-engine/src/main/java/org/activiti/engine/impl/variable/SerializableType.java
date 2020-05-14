@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     https://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,18 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/* Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+
 package org.activiti.engine.impl.variable;
 
 import java.io.ByteArrayInputStream;
@@ -50,17 +39,17 @@ import org.activiti.engine.impl.util.ReflectUtil;
 public class SerializableType extends ByteArrayType {
 
   public static final String TYPE_NAME = "serializable";
-  
+
   protected boolean trackDeserializedObjects;
-  
+
   public String getTypeName() {
     return TYPE_NAME;
   }
-  
+
   public SerializableType() {
-    
+
   }
-  
+
   public SerializableType(boolean trackDeserializedObjects) {
     this.trackDeserializedObjects = trackDeserializedObjects;
   }
@@ -70,13 +59,13 @@ public class SerializableType extends ByteArrayType {
     if (cachedObject != null) {
       return cachedObject;
     }
-    
+
     byte[] bytes = (byte[]) super.getValue(valueFields);
     if (bytes != null) {
-      
+
 	    Object deserializedObject = deserialize(bytes, valueFields);
       valueFields.setCachedValue(deserializedObject);
-      
+
       if (trackDeserializedObjects && valueFields instanceof VariableInstanceEntity) {
         Context.getCommandContext().addCloseListener(new VerifyDeserializedObjectCommandContextCloseListener(
             new DeserializedObject(this, valueFields.getCachedValue(), bytes, (VariableInstanceEntity)valueFields)));
@@ -90,9 +79,9 @@ public class SerializableType extends ByteArrayType {
   public void setValue(Object value, ValueFields valueFields) {
     byte[] bytes = serialize(value, valueFields);
     valueFields.setCachedValue(value);
-    
+
     super.setValue(bytes, valueFields);
-    
+
     if (trackDeserializedObjects && valueFields instanceof VariableInstanceEntity) {
       Context.getCommandContext().addCloseListener(new VerifyDeserializedObjectCommandContextCloseListener(
           new DeserializedObject(this, valueFields.getCachedValue(), bytes, (VariableInstanceEntity)valueFields)));
@@ -116,7 +105,7 @@ public class SerializableType extends ByteArrayType {
     }
     return baos.toByteArray();
   }
-  
+
   public Object deserialize(byte[] bytes, ValueFields valueFields) {
     ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
     try {

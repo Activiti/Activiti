@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     https://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,18 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/* Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+
 
 package org.activiti.engine.impl.cmd;
 
@@ -48,19 +37,19 @@ import org.activiti.engine.runtime.ProcessInstance;
 
 /**
  * {@link Command} that changes the process definition version of an existing process instance.
- * 
+ *
  * Warning: This command will NOT perform any migration magic and simply set the process definition version in the database, assuming that the user knows, what he or she is doing.
- * 
+ *
  * This is only useful for simple migrations. The new process definition MUST have the exact same activity id to make it still run.
- * 
+ *
  * Furthermore, activities referenced by sub-executions and jobs that belong to the process instance MUST exist in the new process definition version.
- * 
+ *
  * The command will fail, if there is already a {@link ProcessInstance} or {@link HistoricProcessInstance} using the new process definition version and the same business key as the
  * {@link ProcessInstance} that is to be migrated.
- * 
+ *
  * If the process instance is not currently waiting but actively running, then this would be a case for optimistic locking, meaning either the version update or the "real work" wins, i.e., this is a
  * race condition.
- * 
+ *
  * @see http://forums.activiti.org/en/viewtopic.php?t=2918
 
  */
@@ -96,7 +85,7 @@ public class SetProcessDefinitionVersionCmd implements Command<Void>, Serializab
       throw new ActivitiIllegalArgumentException("A process instance id is required, but the provided id " + "'" + processInstanceId + "' " + "points to a child execution of process instance " + "'"
           + processInstance.getProcessInstanceId() + "'. " + "Please invoke the " + getClass().getSimpleName() + " with a root execution id.");
     }
-    
+
     DeploymentManager deploymentCache = commandContext.getProcessEngineConfiguration().getDeploymentManager();
     ProcessDefinition currentProcessDefinition = deploymentCache.findDeployedProcessDefinitionById(processInstance.getProcessDefinitionId());
 
@@ -120,7 +109,7 @@ public class SetProcessDefinitionVersionCmd implements Command<Void>, Serializab
   protected void validateAndSwitchVersionOfExecution(CommandContext commandContext, ExecutionEntity execution, ProcessDefinition newProcessDefinition) {
     // check that the new process definition version contains the current activity
     org.activiti.bpmn.model.Process process = ProcessDefinitionUtil.getProcess(newProcessDefinition.getId());
-    if (execution.getActivityId() != null && process.getFlowElement(execution.getActivityId(), true) == null) { 
+    if (execution.getActivityId() != null && process.getFlowElement(execution.getActivityId(), true) == null) {
       throw new ActivitiException("The new process definition " + "(key = '" + newProcessDefinition.getKey() + "') " + "does not contain the current activity " + "(id = '"
           + execution.getActivityId() + "') " + "of the process instance " + "(id = '" + processInstanceId + "').");
     }

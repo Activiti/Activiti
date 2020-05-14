@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     https://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,18 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/* Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+
 
 package org.activiti.engine.impl;
 
@@ -40,7 +29,7 @@ import org.activiti.engine.query.Query;
 
 /**
  * Abstract query class that adds methods to query for variable values.
- * 
+ *
 
  */
 public abstract class AbstractVariableQueryImpl<T extends Query<?, ?>, U> extends AbstractQuery<T, U> {
@@ -165,23 +154,23 @@ public abstract class AbstractVariableQueryImpl<T extends Query<?, ?>, U> extend
   public T variableValueLike(String name, String value) {
     return variableValueLike(name, value, true);
   }
-  
+
   public T variableValueLikeIgnoreCase(String name, String value) {
     return variableValueLikeIgnoreCase(name, value, true);
   }
-  
+
   @SuppressWarnings("unchecked")
   protected T variableValueLike(String name, String value, boolean localScope) {
     addVariable(name, value, QueryOperator.LIKE, localScope);
     return (T) this;
   }
-  
+
   @SuppressWarnings("unchecked")
   protected T variableValueLikeIgnoreCase(String name, String value, boolean localScope) {
     addVariable(name, value.toLowerCase(), QueryOperator.LIKE_IGNORE_CASE, localScope);
     return (T) this;
   }
-  
+
   protected void addVariable(String name, Object value, QueryOperator operator, boolean localScope) {
     if(name == null) {
       throw new ActivitiIllegalArgumentException("name is null");
@@ -207,7 +196,7 @@ public abstract class AbstractVariableQueryImpl<T extends Query<?, ?>, U> extend
       if (operator == QueryOperator.NOT_EQUALS_IGNORE_CASE && !(value instanceof String)) {
         throw new ActivitiIllegalArgumentException("Only string values can be used with 'not equals ignore case' condition");
       }
-      
+
       if((operator == QueryOperator.LIKE || operator == QueryOperator.LIKE_IGNORE_CASE) && !(value instanceof String))
       {
         throw new ActivitiIllegalArgumentException("Only string values can be used with 'like' condition");
@@ -215,7 +204,7 @@ public abstract class AbstractVariableQueryImpl<T extends Query<?, ?>, U> extend
     }
     queryVariableValues.add(new QueryVariableValue(name, value, operator, localScope));
   }
-  
+
   protected boolean isBoolean(Object value) {
     if (value == null) {
       return false;
@@ -234,7 +223,7 @@ public abstract class AbstractVariableQueryImpl<T extends Query<?, ?>, U> extend
 
   public List<QueryVariableValue> getQueryVariableValues() {
     return queryVariableValues;
-  }   
+  }
 
   public boolean hasLocalQueryVariableValue() {
     for (QueryVariableValue qvv : queryVariableValues) {

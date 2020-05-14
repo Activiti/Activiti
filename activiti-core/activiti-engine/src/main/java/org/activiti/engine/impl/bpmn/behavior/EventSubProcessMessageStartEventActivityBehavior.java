@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     https://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,18 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/* Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+
 
 package org.activiti.engine.impl.bpmn.behavior;
 
@@ -52,16 +41,16 @@ import org.activiti.engine.impl.persistence.entity.MessageEventSubscriptionEntit
 
 /**
  * Implementation of the BPMN 2.0 event subprocess message start event.
- * 
+ *
 
  */
 public class EventSubProcessMessageStartEventActivityBehavior extends AbstractBpmnActivityBehavior {
 
   private static final long serialVersionUID = 1L;
-  
+
   protected final MessageEventDefinition messageEventDefinition;
   protected final MessageExecutionContext messageExecutionContext;
-  
+
   public EventSubProcessMessageStartEventActivityBehavior(MessageEventDefinition messageEventDefinition,
                                                           MessageExecutionContext messageExecutionContext) {
     this.messageEventDefinition = messageEventDefinition;
@@ -80,15 +69,15 @@ public class EventSubProcessMessageStartEventActivityBehavior extends AbstractBp
       execution.setVariablesLocal(dataObjectVars);
     }
   }
-  
+
   @Override
   public void trigger(DelegateExecution execution, String triggerName, Object triggerData) {
     CommandContext commandContext = Context.getCommandContext();
     ExecutionEntityManager executionEntityManager = commandContext.getExecutionEntityManager();
     ExecutionEntity executionEntity = (ExecutionEntity) execution;
-    
+
     StartEvent startEvent = (StartEvent) execution.getCurrentFlowElement();
-    if (startEvent.isInterrupting()) {  
+    if (startEvent.isInterrupting()) {
       List<ExecutionEntity> childExecutions = executionEntityManager.findChildExecutionsByParentExecutionId(executionEntity.getParentId());
       for (ExecutionEntity childExecution : childExecutions) {
         if (!childExecution.getId().equals(executionEntity.getId())) {
@@ -100,7 +89,7 @@ public class EventSubProcessMessageStartEventActivityBehavior extends AbstractBp
 
     // Should we use triggerName and triggerData, because message name expression can change?
     String messageName = messageExecutionContext.getMessageName(execution);
-    
+
     EventSubscriptionEntityManager eventSubscriptionEntityManager = Context.getCommandContext().getEventSubscriptionEntityManager();
     List<EventSubscriptionEntity> eventSubscriptions = executionEntity.getEventSubscriptions();
     for (EventSubscriptionEntity eventSubscription : eventSubscriptions) {
@@ -109,13 +98,13 @@ public class EventSubProcessMessageStartEventActivityBehavior extends AbstractBp
         eventSubscriptionEntityManager.delete(eventSubscription);
       }
     }
-    
+
     executionEntity.setCurrentFlowElement((SubProcess) executionEntity.getCurrentFlowElement().getParentContainer());
     executionEntity.setScope(true);
-    
+
     ExecutionEntity outgoingFlowExecution = executionEntityManager.createChildExecution(executionEntity);
     outgoingFlowExecution.setCurrentFlowElement(startEvent);
-    
+
     leave(outgoingFlowExecution);
   }
 

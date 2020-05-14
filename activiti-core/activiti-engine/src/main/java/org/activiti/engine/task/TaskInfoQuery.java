@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     https://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,18 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/* Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+
 package org.activiti.engine.task;
 
 import java.io.Serializable;
@@ -53,7 +42,7 @@ public interface TaskInfoQuery<T extends TaskInfoQuery<?, ?>, V extends TaskInfo
 
   /**
    * Only select tasks with a name that is in the given list
-   * 
+   *
    * @throws ActivitiIllegalArgumentException
    *           When passed name list is empty or <code>null</code> or contains <code>null String</code>.
    */
@@ -61,9 +50,9 @@ public interface TaskInfoQuery<T extends TaskInfoQuery<?, ?>, V extends TaskInfo
 
   /**
    * Only select tasks with a name that is in the given list
-   * 
+   *
    * This method, unlike the {@link #taskNameIn(List)} method will not take in account the upper/lower case: both the input parameters as the column value are lowercased when the query is executed.
-   * 
+   *
    * @throws ActivitiIllegalArgumentException
    *           When passed name list is empty or <code>null</code> or contains <code>null String</code>.
    */
@@ -76,7 +65,7 @@ public interface TaskInfoQuery<T extends TaskInfoQuery<?, ?>, V extends TaskInfo
 
   /**
    * Only select tasks with a name matching the parameter. The syntax is that of SQL: for example usage: nameLike(%activiti%)
-   * 
+   *
    * This method, unlike the {@link #taskNameLike(String)} method will not take in account the upper/lower case: both the input parameter as the column value are lowercased when the query is executed.
    */
   T taskNameLikeIgnoreCase(String nameLike);
@@ -91,7 +80,7 @@ public interface TaskInfoQuery<T extends TaskInfoQuery<?, ?>, V extends TaskInfo
 
   /**
    * Only select tasks with a description matching the parameter . The syntax is that of SQL: for example usage: descriptionLike(%activiti%)
-   * 
+   *
    * This method, unlike the {@link #taskDescriptionLike(String)} method will not take in account the upper/lower case: both the input parameter as the column value are lowercased when the query is
    * executed.
    */
@@ -116,7 +105,7 @@ public interface TaskInfoQuery<T extends TaskInfoQuery<?, ?>, V extends TaskInfo
 
   /**
    * Only select tasks which were last assigned to an assignee like the given value. The syntax that should be used is the same as in SQL, eg. %activiti%.
-   * 
+   *
    * This method, unlike the {@link #taskAssigneeLike(String)} method will not take in account the upper/lower case: both the input parameter as the column value are lowercased when the query is
    * executed.
    */
@@ -124,12 +113,12 @@ public interface TaskInfoQuery<T extends TaskInfoQuery<?, ?>, V extends TaskInfo
 
   /**
    *Only select tasks with an assignee that is in the given list
-   * 
+   *
    * @throws ActivitiIllegalArgumentException
    *           When passed name list is empty or <code>null</code> or contains <code>null String</code>.
    */
   T taskAssigneeIds(List<String> assigneeListIds);
-  
+
   /** Only select tasks for which the given user is the owner. */
   T taskOwner(String owner);
 
@@ -140,7 +129,7 @@ public interface TaskInfoQuery<T extends TaskInfoQuery<?, ?>, V extends TaskInfo
 
   /**
    * Only select tasks which were last assigned to an owner like the given value. The syntax that should be used is the same as in SQL, eg. %activiti%.
-   * 
+   *
    * This method, unlike the {@link #taskOwnerLike(String)} method will not take in account the upper/lower case: both the input parameter as the column value are lowercased when the query is
    * executed.
    */
@@ -166,7 +155,7 @@ public interface TaskInfoQuery<T extends TaskInfoQuery<?, ?>, V extends TaskInfo
 
   /**
    * Only select tasks for which the 'candidateGroup' is one of the given groups.
-   * 
+   *
    * @throws ActivitiIllegalArgumentException
    *           When query is executed and {@link #taskCandidateGroup(String)} or {@link #taskCandidateUser(String)} has been executed on the query instance. When passed group list is empty or
    *           <code>null</code>.
@@ -208,7 +197,7 @@ public interface TaskInfoQuery<T extends TaskInfoQuery<?, ?>, V extends TaskInfo
 
   /**
    * Only select tasks with a business key like the given value The syntax is that of SQL: for example usage: processInstanceBusinessKeyLike("%activiti%").
-   * 
+   *
    * This method, unlike the {@link #processInstanceBusinessKeyLike(String)} method will not take in account the upper/lower case: both the input parameter as the column value are lowercased when the
    * query is executed.
    */
@@ -287,15 +276,15 @@ public interface TaskInfoQuery<T extends TaskInfoQuery<?, ?>, V extends TaskInfo
 
   /**
    * Only select tasks which are part of a process instance which has a process definition key like the given value. The syntax that should be used is the same as in SQL, eg. %activiti%.
-   * 
+   *
    * This method, unlike the {@link #processDefinitionKeyLike(String)} method will not take in account the upper/lower case: both the input parameter as the column value are lowercased when the query
    * is executed.
    */
   T processDefinitionKeyLikeIgnoreCase(String processDefinitionKeyLikeIgnoreCase);
-  
+
   /** Only select tasks that have a process definition for which the key is present in the given list **/
   T processDefinitionKeyIn(List<String> processDefinitionKeys);
-  
+
   /**
    * Only select tasks which are part of a process instance which has the given process definition id.
    */
@@ -313,7 +302,7 @@ public interface TaskInfoQuery<T extends TaskInfoQuery<?, ?>, V extends TaskInfo
 
   /**
    * Only select tasks which are part of a process instance whose definition belongs to the category which is present in the given list.
-   * 
+   *
    * @throws ActivitiIllegalArgumentException
    *           When passed category list is empty or <code>null</code> or contains <code>null String</code>.
    * @param processCategoryInList
@@ -322,7 +311,7 @@ public interface TaskInfoQuery<T extends TaskInfoQuery<?, ?>, V extends TaskInfo
 
   /**
    * Only select tasks which are part of a process instance whose definition does not belong to the category which is present in the given list.
-   * 
+   *
    * @throws ActivitiIllegalArgumentException
    *           When passed category list is empty or <code>null</code> or contains <code>null String</code>.
    * @param processCategoryNotInList
@@ -376,7 +365,7 @@ public interface TaskInfoQuery<T extends TaskInfoQuery<?, ?>, V extends TaskInfo
   /**
    * Only select tasks which have a local variable value greater than the passed value when they ended. Booleans, Byte-arrays and {@link Serializable} objects (which are not primitive type wrappers)
    * are not supported.
-   * 
+   *
    * @param name
    *          cannot be null.
    * @param value
@@ -387,7 +376,7 @@ public interface TaskInfoQuery<T extends TaskInfoQuery<?, ?>, V extends TaskInfo
   /**
    * Only select tasks which have a local variable value greater than or equal to the passed value when they ended. Booleans, Byte-arrays and {@link Serializable} objects (which are not primitive type
    * wrappers) are not supported.
-   * 
+   *
    * @param name
    *          cannot be null.
    * @param value
@@ -398,7 +387,7 @@ public interface TaskInfoQuery<T extends TaskInfoQuery<?, ?>, V extends TaskInfo
   /**
    * Only select tasks which have a local variable value less than the passed value when the ended.Booleans, Byte-arrays and {@link Serializable} objects (which are not primitive type wrappers) are
    * not supported.
-   * 
+   *
    * @param name
    *          cannot be null.
    * @param value
@@ -409,7 +398,7 @@ public interface TaskInfoQuery<T extends TaskInfoQuery<?, ?>, V extends TaskInfo
   /**
    * Only select tasks which have a local variable value less than or equal to the passed value when they ended. Booleans, Byte-arrays and {@link Serializable} objects (which are not primitive type
    * wrappers) are not supported.
-   * 
+   *
    * @param name
    *          cannot be null.
    * @param value
@@ -419,14 +408,14 @@ public interface TaskInfoQuery<T extends TaskInfoQuery<?, ?>, V extends TaskInfo
 
   /**
    * Only select tasks which have a local variable value like the given value when they ended. This can be used on string variables only.
-   * 
+   *
    * @param name
    *          cannot be null.
    * @param value
    *          cannot be null. The string can include the wildcard character '%' to express like-strategy: starts with (string%), ends with (%string) or contains (%string%).
    */
   T taskVariableValueLike(String name, String value);
-  
+
   /** Only select tasks which have a local variable value like the given value (case insensitive)
    * when they ended. This can be used on string variables only.
    * @param name cannot be null.
@@ -434,7 +423,7 @@ public interface TaskInfoQuery<T extends TaskInfoQuery<?, ?>, V extends TaskInfo
    *          wildcard character '%' to express like-strategy: starts with
    *          (string%), ends with (%string) or contains (%string%). */
   T taskVariableValueLikeIgnoreCase(String name, String value);
-  
+
   /**
    * Only select tasks which are part of a process that has a variable with the given name set to the given value.
    */
@@ -472,7 +461,7 @@ public interface TaskInfoQuery<T extends TaskInfoQuery<?, ?>, V extends TaskInfo
   /**
    * Only select tasks which have a global variable value greater than the passed value when they ended. Booleans, Byte-arrays and {@link Serializable} objects (which are not primitive type wrappers)
    * are not supported.
-   * 
+   *
    * @param name
    *          cannot be null.
    * @param value
@@ -483,7 +472,7 @@ public interface TaskInfoQuery<T extends TaskInfoQuery<?, ?>, V extends TaskInfo
   /**
    * Only select tasks which have a global variable value greater than or equal to the passed value when they ended. Booleans, Byte-arrays and {@link Serializable} objects (which are not primitive
    * type wrappers) are not supported.
-   * 
+   *
    * @param name
    *          cannot be null.
    * @param value
@@ -494,7 +483,7 @@ public interface TaskInfoQuery<T extends TaskInfoQuery<?, ?>, V extends TaskInfo
   /**
    * Only select tasks which have a global variable value less than the passed value when the ended.Booleans, Byte-arrays and {@link Serializable} objects (which are not primitive type wrappers) are
    * not supported.
-   * 
+   *
    * @param name
    *          cannot be null.
    * @param value
@@ -505,7 +494,7 @@ public interface TaskInfoQuery<T extends TaskInfoQuery<?, ?>, V extends TaskInfo
   /**
    * Only select tasks which have a global variable value less than or equal to the passed value when they ended. Booleans, Byte-arrays and {@link Serializable} objects (which are not primitive type
    * wrappers) are not supported.
-   * 
+   *
    * @param name
    *          cannot be null.
    * @param value
@@ -515,14 +504,14 @@ public interface TaskInfoQuery<T extends TaskInfoQuery<?, ?>, V extends TaskInfo
 
   /**
    * Only select tasks which have a global variable value like the given value when they ended. This can be used on string variables only.
-   * 
+   *
    * @param name
    *          cannot be null.
    * @param value
    *          cannot be null. The string can include the wildcard character '%' to express like-strategy: starts with (string%), ends with (%string) or contains (%string%).
    */
   T processVariableValueLike(String name, String value);
-  
+
   /** Only select tasks which have a global variable value like the given value (case insensitive)
    * when they ended. This can be used on string variables only.
    * @param name cannot be null.
@@ -530,7 +519,7 @@ public interface TaskInfoQuery<T extends TaskInfoQuery<?, ?>, V extends TaskInfo
    *          wildcard character '%' to express like-strategy: starts with
    *          (string%), ends with (%string) or contains (%string%). */
   T processVariableValueLikeIgnoreCase(String name, String value);
-  
+
   /**
    * Include local task variables in the task query result
    */
@@ -540,25 +529,25 @@ public interface TaskInfoQuery<T extends TaskInfoQuery<?, ?>, V extends TaskInfo
    * Include global task variables in the task query result
    */
   T includeProcessVariables();
-  
+
   /**
    * Limit task variables
    */
   T limitTaskVariables(Integer taskVariablesLimit);
-  
+
   /**
    * Localize task name and description to specified locale.
    */
   T locale(String locale);
 
   /**
-   * Instruct localization to fallback to more general locales including the default locale of the JVM if the specified locale is not found. 
+   * Instruct localization to fallback to more general locales including the default locale of the JVM if the specified locale is not found.
    */
   T withLocalizationFallback();
-  
+
   /**
    * All query clauses called will be added to a single or-statement. This or-statement will be included with the other already existing clauses in the query, joined by an 'and'.
-   * 
+   *
    * Calling endOr() will add all clauses to the regular query again. Calling or() after endOr() has been called will result in an exception.
    */
   T or();

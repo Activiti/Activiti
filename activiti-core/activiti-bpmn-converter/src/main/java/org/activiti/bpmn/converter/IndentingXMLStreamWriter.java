@@ -5,20 +5,8 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     https://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-/* Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
- * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -53,14 +41,14 @@ public class IndentingXMLStreamWriter extends DelegatingXMLStreamWriter {
 
   /**
    * Return the current indent step.
-   * 
+   *
    * <p>
    * Return the current indent step: each start tag will be indented by this number of spaces times the number of ancestors that the element has.
    * </p>
-   * 
+   *
    * @return The number of spaces in each indentation step, or 0 or less for no indentation.
    * @see #setIndentStep(int)
-   * 
+   *
    * @deprecated Only return the length of the indent string.
    */
   public int getIndentStep() {
@@ -69,11 +57,11 @@ public class IndentingXMLStreamWriter extends DelegatingXMLStreamWriter {
 
   /**
    * Set the current indent step.
-   * 
+   *
    * @param indentStep
    *          The new indent step (0 or less for no indentation).
    * @see #getIndentStep()
-   * 
+   *
    * @deprecated Should use the version that takes string.
    */
   public void setIndentStep(int indentStep) {
@@ -116,7 +104,7 @@ public class IndentingXMLStreamWriter extends DelegatingXMLStreamWriter {
 
   /**
    * Print indentation for the current level.
-   * 
+   *
    * @exception org.xml.sax.SAXException
    *              If there is an error writing the indentation characters, or if a filter further down the chain raises an exception.
    */

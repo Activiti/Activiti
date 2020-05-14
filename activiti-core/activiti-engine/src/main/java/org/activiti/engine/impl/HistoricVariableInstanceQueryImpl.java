@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     https://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,18 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/* Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+
 
 package org.activiti.engine.impl;
 
@@ -94,7 +83,7 @@ public class HistoricVariableInstanceQueryImpl extends AbstractQuery<HistoricVar
     this.executionId = executionId;
     return this;
   }
-  
+
   public HistoricVariableInstanceQueryImpl executionIds(Set<String> executionIds) {
     if (executionIds == null) {
       throw new ActivitiIllegalArgumentException("executionIds is null");
@@ -121,7 +110,7 @@ public class HistoricVariableInstanceQueryImpl extends AbstractQuery<HistoricVar
     this.taskId = taskId;
     return this;
   }
-  
+
   public HistoricVariableInstanceQueryImpl taskIds(Set<String> taskIds) {
     if (taskIds == null) {
       throw new ActivitiIllegalArgumentException("taskIds is null");
@@ -172,7 +161,7 @@ public class HistoricVariableInstanceQueryImpl extends AbstractQuery<HistoricVar
     queryVariableValue = new QueryVariableValue(variableName, variableValue, QueryOperator.EQUALS, true);
     return this;
   }
-  
+
   public HistoricVariableInstanceQuery variableValueNotEquals(String variableName, Object variableValue) {
     if (variableName == null) {
       throw new ActivitiIllegalArgumentException("variableName is null");
@@ -184,7 +173,7 @@ public class HistoricVariableInstanceQueryImpl extends AbstractQuery<HistoricVar
     queryVariableValue = new QueryVariableValue(variableName, variableValue, QueryOperator.NOT_EQUALS, true);
     return this;
   }
-  
+
   public HistoricVariableInstanceQuery variableValueLike(String variableName, String variableValue) {
     if (variableName == null) {
       throw new ActivitiIllegalArgumentException("variableName is null");
@@ -196,7 +185,7 @@ public class HistoricVariableInstanceQueryImpl extends AbstractQuery<HistoricVar
     queryVariableValue = new QueryVariableValue(variableName, variableValue, QueryOperator.LIKE, true);
     return this;
   }
-  
+
   public HistoricVariableInstanceQuery variableValueLikeIgnoreCase(String variableName, String variableValue) {
     if (variableName == null) {
       throw new ActivitiIllegalArgumentException("variableName is null");

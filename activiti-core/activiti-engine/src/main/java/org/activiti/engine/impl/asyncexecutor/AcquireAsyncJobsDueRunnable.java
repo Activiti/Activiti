@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     https://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,18 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/* Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+
 package org.activiti.engine.impl.asyncexecutor;
 
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -37,7 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * 
+ *
 
  */
 public class AcquireAsyncJobsDueRunnable implements Runnable {
@@ -67,23 +56,23 @@ public class AcquireAsyncJobsDueRunnable implements Runnable {
       try {
         AcquiredJobEntities acquiredJobs = commandExecutor.execute(new AcquireJobsCmd(asyncExecutor));
 
-        boolean allJobsSuccessfullyOffered = true; 
+        boolean allJobsSuccessfullyOffered = true;
         for (JobEntity job : acquiredJobs.getJobs()) {
           boolean jobSuccessFullyOffered = asyncExecutor.executeAsyncJob(job);
           if (!jobSuccessFullyOffered) {
             allJobsSuccessfullyOffered = false;
           }
         }
-        
+
         // If all jobs are executed, we check if we got back the amount we expected
-        // If not, we will wait, as to not query the database needlessly. 
+        // If not, we will wait, as to not query the database needlessly.
         // Otherwise, we set the wait time to 0, as to query again immediately.
         millisToWait = asyncExecutor.getDefaultAsyncJobAcquireWaitTimeInMillis();
         int jobsAcquired = acquiredJobs.size();
         if (jobsAcquired >= asyncExecutor.getMaxAsyncJobsDuePerAcquisition()) {
-          millisToWait = 0; 
+          millisToWait = 0;
         }
-        
+
         // If the queue was full, we wait too (even if we got enough jobs back), as not overload the queue
         if (millisToWait == 0 && !allJobsSuccessfullyOffered) {
           millisToWait = asyncExecutor.getDefaultQueueSizeFullWaitTimeInMillis();

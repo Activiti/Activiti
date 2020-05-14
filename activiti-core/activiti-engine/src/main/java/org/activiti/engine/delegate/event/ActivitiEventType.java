@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     https://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,18 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/* Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+
 package org.activiti.engine.delegate.event;
 
 import java.util.ArrayList;
@@ -37,9 +26,9 @@ import org.apache.commons.lang3.StringUtils;
 
 /**
  * Enumeration containing all possible types of {@link ActivitiEvent}s.
- * 
+ *
 
- * 
+ *
  */
 public enum ActivitiEventType {
 
@@ -162,26 +151,26 @@ public enum ActivitiEventType {
    * {@link #ACTIVITY_COMPLETE} for the involved activity, if the error was delivered successfully.
    */
   ACTIVITY_ERROR_RECEIVED,
-  
+
   /**
-   * A event dispatched when a {@link HistoricActivityInstance} is created. 
+   * A event dispatched when a {@link HistoricActivityInstance} is created.
    * This is a specialized version of the {@link ActivitiEventType#ENTITY_CREATED} and {@link ActivitiEventType#ENTITY_INITIALIZED} event,
    * with the same use case as the {@link ActivitiEventType#ACTIVITY_STARTED}, but containing
    * slightly different data.
-   * 
+   *
    * Note this will be an {@link ActivitiEntityEvent}, where the entity is the {@link HistoricActivityInstance}.
-   *  
-   * Note that history (minimum level ACTIVITY) must be enabled to receive this event.  
+   *
+   * Note that history (minimum level ACTIVITY) must be enabled to receive this event.
    */
   HISTORIC_ACTIVITY_INSTANCE_CREATED,
-  
+
   /**
-   * A event dispatched when a {@link HistoricActivityInstance} is marked as ended. 
+   * A event dispatched when a {@link HistoricActivityInstance} is marked as ended.
    * his is a specialized version of the {@link ActivitiEventType#ENTITY_UPDATED} event,
    * with the same use case as the {@link ActivitiEventType#ACTIVITY_COMPLETED}, but containing
-   * slightly different data (e.g. the end time, the duration, etc.). 
-   *  
-   * Note that history (minimum level ACTIVITY) must be enabled to receive this event.  
+   * slightly different data (e.g. the end time, the duration, etc.).
+   *
+   * Note that history (minimum level ACTIVITY) must be enabled to receive this event.
    */
   HISTORIC_ACTIVITY_INSTANCE_ENDED,
 
@@ -236,7 +225,7 @@ public enum ActivitiEventType {
    * A process has been completed. Dispatched after the last activity is ACTIVITY_COMPLETED. Process is completed when it reaches state in which process instance does not have any transition to take.
    */
   PROCESS_COMPLETED,
-  
+
   /**
    * A process has been completed with an error end event.
    */
@@ -244,30 +233,30 @@ public enum ActivitiEventType {
 
   /**
    * A process has been cancelled. Dispatched when process instance is deleted by
-   * 
+   *
    * @see org.activiti.engine.impl.RuntimeServiceImpl#deleteProcessInstance(java.lang.String, java.lang.String), before DB delete.
    */
   PROCESS_CANCELLED,
-  
+
   /**
-   * A event dispatched when a {@link HistoricProcessInstance} is created. 
+   * A event dispatched when a {@link HistoricProcessInstance} is created.
    * This is a specialized version of the {@link ActivitiEventType#ENTITY_CREATED} and {@link ActivitiEventType#ENTITY_INITIALIZED} event,
    * with the same use case as the {@link ActivitiEventType#PROCESS_STARTED}, but containing
-   * slightly different data (e.g. the start time, the start user id, etc.). 
-   * 
+   * slightly different data (e.g. the start time, the start user id, etc.).
+   *
    * Note this will be an {@link ActivitiEntityEvent}, where the entity is the {@link HistoricProcessInstance}.
-   *  
-   * Note that history (minimum level ACTIVITY) must be enabled to receive this event.  
+   *
+   * Note that history (minimum level ACTIVITY) must be enabled to receive this event.
    */
   HISTORIC_PROCESS_INSTANCE_CREATED,
-  
+
   /**
-   * A event dispatched when a {@link HistoricProcessInstance} is marked as ended. 
+   * A event dispatched when a {@link HistoricProcessInstance} is marked as ended.
    * his is a specialized version of the {@link ActivitiEventType#ENTITY_UPDATED} event,
    * with the same use case as the {@link ActivitiEventType#PROCESS_COMPLETED}, but containing
-   * slightly different data (e.g. the end time, the duration, etc.). 
-   *  
-   * Note that history (minimum level ACTIVITY) must be enabled to receive this event.  
+   * slightly different data (e.g. the end time, the duration, etc.).
+   *
+   * Note that history (minimum level ACTIVITY) must be enabled to receive this event.
    */
   HISTORIC_PROCESS_INSTANCE_ENDED,
 

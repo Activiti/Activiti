@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     https://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,18 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/* Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+
 package org.activiti.engine.impl.bpmn.deployer;
 
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
@@ -37,7 +26,7 @@ import java.util.Map;
  * Static methods for working with BPMN and image resource names.
  */
 public class ResourceNameUtil {
-  
+
   public static final String[] BPMN_RESOURCE_SUFFIXES = new String[] { "bpmn20.xml", "bpmn" };
   public static final String[] DIAGRAM_SUFFIXES = new String[] { "png", "jpg", "gif", "svg" };
 
@@ -54,7 +43,7 @@ public class ResourceNameUtil {
     String bpmnFileResourceBase = ResourceNameUtil.stripBpmnFileSuffix(bpmnFileResource);
     return bpmnFileResourceBase + processKey + "." + diagramSuffix;
   }
-  
+
   /**
    * Finds the name of a resource for the diagram for a process definition.  Assumes that the
    * process definition's key and (BPMN) resource name are already set.
@@ -76,28 +65,28 @@ public class ResourceNameUtil {
    */
   public static String getProcessDiagramResourceNameFromDeployment(
       ProcessDefinitionEntity processDefinition, Map<String, ResourceEntity> resources) {
-    
+
     if (StringUtils.isEmpty(processDefinition.getResourceName())) {
       throw new IllegalStateException("Provided process definition must have its resource name set.");
     }
-    
+
     String bpmnResourceBase = stripBpmnFileSuffix(processDefinition.getResourceName());
     String key = processDefinition.getKey();
-    
+
     for (String diagramSuffix : DIAGRAM_SUFFIXES) {
       String possibleName = bpmnResourceBase + key + "." + diagramSuffix;
       if (resources.containsKey(possibleName)) {
         return possibleName;
       }
-      
+
       possibleName = bpmnResourceBase + diagramSuffix;
       if (resources.containsKey(possibleName)) {
         return possibleName;
       }
     }
-    
+
     return null;
   }
-  
+
 }
 

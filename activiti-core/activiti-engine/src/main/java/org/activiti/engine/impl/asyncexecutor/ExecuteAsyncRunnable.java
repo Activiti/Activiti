@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     https://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,18 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/* Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+
 package org.activiti.engine.impl.asyncexecutor;
 
 import org.activiti.engine.ActivitiOptimisticLockingException;
@@ -55,7 +44,7 @@ public class ExecuteAsyncRunnable implements Runnable {
   protected String jobId;
   protected Job job;
   protected ProcessEngineConfigurationImpl processEngineConfiguration;
-  
+
   public ExecuteAsyncRunnable(String jobId, ProcessEngineConfigurationImpl processEngineConfiguration) {
     this.jobId = jobId;
     this.processEngineConfiguration = processEngineConfiguration;
@@ -68,7 +57,7 @@ public class ExecuteAsyncRunnable implements Runnable {
   }
 
   public void run() {
-    
+
     if (job == null) {
       job = processEngineConfiguration.getCommandExecutor().execute(new Command<JobEntity>() {
         @Override
@@ -77,7 +66,7 @@ public class ExecuteAsyncRunnable implements Runnable {
         }
       });
     }
-    
+
     boolean lockNotNeededOrSuccess = lockJobIfNeeded();
 
     if (lockNotNeededOrSuccess) {
@@ -110,7 +99,7 @@ public class ExecuteAsyncRunnable implements Runnable {
       log.error(message, exception);
     }
   }
-  
+
   protected void unlockJobIfNeeded() {
     try {
       if (job.isExclusive()) {
@@ -132,7 +121,7 @@ public class ExecuteAsyncRunnable implements Runnable {
 
   /**
    * Returns true if lock succeeded, or no lock was needed.
-   * Returns false if locking was unsuccessfull. 
+   * Returns false if locking was unsuccessfull.
    */
   protected boolean lockJobIfNeeded() {
     try {
@@ -147,13 +136,13 @@ public class ExecuteAsyncRunnable implements Runnable {
 
       // Release the job again so it can be acquired later or by another node
       unacquireJob();
-      
+
       return false;
     }
-    
+
     return true;
   }
-  
+
   protected void unacquireJob() {
     CommandContext commandContext = Context.getCommandContext();
     if (commandContext != null) {
@@ -195,5 +184,5 @@ public class ExecuteAsyncRunnable implements Runnable {
 
     });
   }
-  
+
 }

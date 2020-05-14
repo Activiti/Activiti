@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     https://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,18 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/* Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+
 
 package org.activiti.engine.history;
 
@@ -72,7 +61,7 @@ public interface HistoricProcessInstanceQuery extends Query<HistoricProcessInsta
    * Only select historic process instances that don't have a process-definition of which the key is present in the given list
    */
   HistoricProcessInstanceQuery processDefinitionKeyNotIn(List<String> processDefinitionKeys);
-  
+
   /** Only select historic process instances whose process definition category is processDefinitionCategory. */
   HistoricProcessInstanceQuery processDefinitionCategory(String processDefinitionCategory);
 
@@ -119,7 +108,7 @@ public interface HistoricProcessInstanceQuery extends Query<HistoricProcessInsta
    * Only select process instances which had a global variable with the given value when they ended. The type only applies to already ended process instances, otherwise use a
    * {@link ProcessInstanceQuery} instead! of variable is determined based on the value, using types configured in {@link ProcessEngineConfiguration#getVariableTypes()}. Byte-arrays and
    * {@link Serializable} objects (which are not primitive type wrappers) are not supported.
-   * 
+   *
    * @param name
    *          of the variable, cannot be null.
    */
@@ -134,7 +123,7 @@ public interface HistoricProcessInstanceQuery extends Query<HistoricProcessInsta
 
   /**
    * Only select historic process instances which have a local string variable with the given value, case insensitive.
-   * 
+   *
    * @param name
    *          name of the variable, cannot be null.
    * @param value
@@ -145,7 +134,7 @@ public interface HistoricProcessInstanceQuery extends Query<HistoricProcessInsta
   /**
    * Only select process instances which had a global variable with the given name, but with a different value than the passed value when they ended. Only select process instances which have a
    * variable value greater than the passed value. Byte-arrays and {@link Serializable} objects (which are not primitive type wrappers) are not supported.
-   * 
+   *
    * @param name
    *          of the variable, cannot be null.
    */
@@ -154,7 +143,7 @@ public interface HistoricProcessInstanceQuery extends Query<HistoricProcessInsta
   /**
    * Only select process instances which had a global variable value greater than the passed value when they ended. Booleans, Byte-arrays and {@link Serializable} objects (which are not primitive type
    * wrappers) are not supported. Only select process instances which have a variable value greater than the passed value.
-   * 
+   *
    * @param name
    *          cannot be null.
    * @param value
@@ -165,7 +154,7 @@ public interface HistoricProcessInstanceQuery extends Query<HistoricProcessInsta
   /**
    * Only select process instances which had a global variable value greater than or equal to the passed value when they ended. Booleans, Byte-arrays and {@link Serializable} objects (which are not
    * primitive type wrappers) are not supported. Only applies to already ended process instances, otherwise use a {@link ProcessInstanceQuery} instead!
-   * 
+   *
    * @param name
    *          cannot be null.
    * @param value
@@ -176,7 +165,7 @@ public interface HistoricProcessInstanceQuery extends Query<HistoricProcessInsta
   /**
    * Only select process instances which had a global variable value less than the passed value when the ended. Only applies to already ended process instances, otherwise use a
    * {@link ProcessInstanceQuery} instead! Booleans, Byte-arrays and {@link Serializable} objects (which are not primitive type wrappers) are not supported.
-   * 
+   *
    * @param name
    *          cannot be null.
    * @param value
@@ -187,7 +176,7 @@ public interface HistoricProcessInstanceQuery extends Query<HistoricProcessInsta
   /**
    * Only select process instances which has a global variable value less than or equal to the passed value when they ended. Only applies to already ended process instances, otherwise use a
    * {@link ProcessInstanceQuery} instead! Booleans, Byte-arrays and {@link Serializable} objects (which are not primitive type wrappers) are not supported.
-   * 
+   *
    * @param name
    *          cannot be null.
    * @param value
@@ -198,14 +187,14 @@ public interface HistoricProcessInstanceQuery extends Query<HistoricProcessInsta
   /**
    * Only select process instances which had global variable value like the given value when they ended. Only applies to already ended process instances, otherwise use a {@link ProcessInstanceQuery}
    * instead! This can be used on string variables only.
-   * 
+   *
    * @param name
    *          cannot be null.
    * @param value
    *          cannot be null. The string can include the wildcard character '%' to express like-strategy: starts with (string%), ends with (%string) or contains (%string%).
    */
   HistoricProcessInstanceQuery variableValueLike(String name, String value);
-  
+
   /** Only select process instances which had global variable value like (case insensitive)
    * the given value when they ended. Only applies to already ended process instances,
    * otherwise use a {@link ProcessInstanceQuery} instead! This can be used on string
@@ -309,7 +298,7 @@ public interface HistoricProcessInstanceQuery extends Query<HistoricProcessInsta
    * Include process variables in the process query result
    */
   HistoricProcessInstanceQuery includeProcessVariables();
-  
+
   /**
    * Limit process instance variables
    */
@@ -319,7 +308,7 @@ public interface HistoricProcessInstanceQuery extends Query<HistoricProcessInsta
    * Only select process instances that failed due to an exception happening during a job execution.
    */
   HistoricProcessInstanceQuery withJobException();
-  
+
   /**
    * Only select process instances with the given name.
    */
@@ -334,14 +323,14 @@ public interface HistoricProcessInstanceQuery extends Query<HistoricProcessInsta
    * Only select process instances with a name like the given value, ignoring upper/lower case.
    */
   HistoricProcessInstanceQuery processInstanceNameLikeIgnoreCase(String nameLikeIgnoreCase);
-  
+
   /**
    * Localize historic process name and description to specified locale.
    */
   HistoricProcessInstanceQuery locale(String locale);
-  
+
   /**
-   * Instruct localization to fallback to more general locales including the default locale of the JVM if the specified locale is not found. 
+   * Instruct localization to fallback to more general locales including the default locale of the JVM if the specified locale is not found.
    */
   HistoricProcessInstanceQuery withLocalizationFallback();
 }

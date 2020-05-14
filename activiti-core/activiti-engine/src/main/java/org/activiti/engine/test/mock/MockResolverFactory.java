@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     https://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,18 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/* Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+
 package org.activiti.engine.test.mock;
 
 import org.activiti.engine.delegate.VariableScope;
@@ -37,7 +26,7 @@ import org.activiti.engine.impl.scripting.ResolverFactory;
  * <br>
  * In order to use it, you need to declare it as ResolverFactory, for example by using activiti.cfg.xml like this: <br>
  * <br>
- * 
+ *
  * &lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;<br>
  * &lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot;<br>
  * xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;<br>
@@ -61,9 +50,9 @@ import org.activiti.engine.impl.scripting.ResolverFactory;
  * &lt;/beans&gt; <br>
  * <br>
  * or by any other means of creating configuration.
- * 
+ *
 
- * 
+ *
  */
 public class MockResolverFactory implements ResolverFactory {
   @Override

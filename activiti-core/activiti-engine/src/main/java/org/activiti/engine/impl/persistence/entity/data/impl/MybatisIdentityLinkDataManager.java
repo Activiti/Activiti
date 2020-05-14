@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     https://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,18 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/* Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+
 package org.activiti.engine.impl.persistence.entity.data.impl;
 
 import java.util.HashMap;
@@ -43,9 +32,9 @@ import org.activiti.engine.impl.persistence.entity.data.impl.cachematcher.Identi
 
  */
 public class MybatisIdentityLinkDataManager extends AbstractDataManager<IdentityLinkEntity> implements IdentityLinkDataManager {
-  
+
   protected CachedEntityMatcher<IdentityLinkEntity> identityLinkByProcessInstanceMatcher = new IdentityLinksByProcInstMatcher();
- 
+
   public MybatisIdentityLinkDataManager(ProcessEngineConfigurationImpl processEngineConfiguration) {
     super(processEngineConfiguration);
   }
@@ -54,12 +43,12 @@ public class MybatisIdentityLinkDataManager extends AbstractDataManager<Identity
   public Class<? extends IdentityLinkEntity> getManagedEntityClass() {
     return IdentityLinkEntityImpl.class;
   }
-  
+
   @Override
   public IdentityLinkEntity create() {
     return new IdentityLinkEntityImpl();
   }
-  
+
   @Override
   @SuppressWarnings("unchecked")
   public List<IdentityLinkEntity> findIdentityLinksByTaskId(String taskId) {
@@ -109,10 +98,10 @@ public class MybatisIdentityLinkDataManager extends AbstractDataManager<Identity
     parameters.put("groupId", groupId);
     return getDbSqlSession().selectList("selectIdentityLinkByProcessDefinitionUserAndGroup", parameters);
   }
-  
+
   @Override
   public void deleteIdentityLinksByProcDef(String processDefId) {
     getDbSqlSession().delete("deleteIdentityLinkByProcDef", processDefId, IdentityLinkEntityImpl.class);
   }
-  
+
 }

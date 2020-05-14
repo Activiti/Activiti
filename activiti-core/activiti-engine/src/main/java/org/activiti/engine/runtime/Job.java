@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     https://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,18 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/* Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+
 
 package org.activiti.engine.runtime;
 
@@ -39,10 +28,10 @@ import org.activiti.engine.api.internal.Internal;
  */
 @Internal
 public interface Job {
-  
+
   String JOB_TYPE_TIMER = "timer";
   String JOB_TYPE_MESSAGE = "message";
-  
+
   boolean DEFAULT_EXCLUSIVE = true;
   int MAX_EXCEPTION_MESSAGE_LENGTH = 255;
 
@@ -79,7 +68,7 @@ public interface Job {
 
   /**
    * Returns the message of the exception that occurred, the last time the job was executed. Returns null when no exception occurred.
-   * 
+   *
    * To get the full exception stacktrace, use {@link ManagementService#getJobExceptionStacktrace(String)}
    */
   String getExceptionMessage();
@@ -88,22 +77,22 @@ public interface Job {
    * Get the tenant identifier for this job.
    */
   String getTenantId();
-  
+
   /**
    * Is the job exclusive?
    */
   boolean isExclusive();
-  
+
   /**
    * Get the job type for this job.
    */
   String getJobType();
-  
+
   /**
    * Get the job handler type.
    */
   String getJobHandlerType();
-  
+
   /**
    * Get the job configuration.
    */

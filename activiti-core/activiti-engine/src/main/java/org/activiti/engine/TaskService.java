@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     https://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,18 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/* Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+
 package org.activiti.engine;
 
 import java.io.InputStream;
@@ -50,14 +39,14 @@ import org.activiti.engine.task.TaskQuery;
 
 /**
  * Service which provides access to {@link Task} and form related operations.
- * 
+ *
  */
 @Internal
 public interface TaskService {
 
   /**
    * Creates a new task that is not related to any process instance.
-   * 
+   *
    * The returned task is transient and must be saved with {@link #saveTask(Task)} 'manually'.
    */
   Task newTask();
@@ -68,7 +57,7 @@ public interface TaskService {
   /**
    * Saves the given task to the persistent data store. If the task is already present in the persistent store, it is updated. After a new task has been saved, the task instance passed into this
    * method is updated with the id of the newly created task.
-   * 
+   *
    * @param task
    *          the task, cannot be null.
    */
@@ -76,7 +65,7 @@ public interface TaskService {
 
   /**
    * Deletes the given task, not deleting historic information that is related to this task.
-   * 
+   *
    * @param taskId
    *          The id of the task that will be deleted, cannot be null. If no task exists with the given taskId, the operation is ignored.
    * @throws ActivitiObjectNotFoundException
@@ -88,7 +77,7 @@ public interface TaskService {
 
   /**
    * Deletes all tasks of the given collection, not deleting historic information that is related to these tasks.
-   * 
+   *
    * @param taskIds
    *          The id's of the tasks that will be deleted, cannot be null. All id's in the list that don't have an existing task will be ignored.
    * @throws ActivitiObjectNotFoundException
@@ -100,7 +89,7 @@ public interface TaskService {
 
   /**
    * Deletes the given task.
-   * 
+   *
    * @param taskId
    *          The id of the task that will be deleted, cannot be null. If no task exists with the given taskId, the operation is ignored.
    * @param cascade
@@ -114,7 +103,7 @@ public interface TaskService {
 
   /**
    * Deletes all tasks of the given collection.
-   * 
+   *
    * @param taskIds
    *          The id's of the tasks that will be deleted, cannot be null. All id's in the list that don't have an existing task will be ignored.
    * @param cascade
@@ -128,7 +117,7 @@ public interface TaskService {
 
   /**
    * Deletes the given task, not deleting historic information that is related to this task..
-   * 
+   *
    * @param taskId
    *          The id of the task that will be deleted, cannot be null. If no task exists with the given taskId, the operation is ignored.
    * @param deleteReason
@@ -158,7 +147,7 @@ public interface TaskService {
 
   /**
    * Deletes all tasks of the given collection, not deleting historic information that is related to these tasks.
-   * 
+   *
    * @param taskIds
    *          The id's of the tasks that will be deleted, cannot be null. All id's in the list that don't have an existing task will be ignored.
    * @param deleteReason
@@ -189,7 +178,7 @@ public interface TaskService {
   /**
    * Claim responsibility for a task: the given user is made assignee for the task. The difference with {@link #setAssignee(String, String)} is that here a check is done if the task already has a user
    * assigned to it. No check is done whether the user is known by the identity component.
-   * 
+   *
    * @param taskId
    *          task to claim, cannot be null.
    * @param userId
@@ -203,7 +192,7 @@ public interface TaskService {
 
   /**
    * A shortcut to {@link #claim} with null user in order to unclaim the task
-   * 
+   *
    * @param taskId
    *          task to unclaim, cannot be null.
    * @throws ActivitiObjectNotFoundException
@@ -213,7 +202,7 @@ public interface TaskService {
 
   /**
    * Called when the task is successfully executed.
-   * 
+   *
    * @param taskId
    *          the id of the task to complete, cannot be null.
    * @throws ActivitiObjectNotFoundException
@@ -226,7 +215,7 @@ public interface TaskService {
   /**
    * Delegates the task to another user. This means that the assignee is set and the delegation state is set to {@link DelegationState#PENDING}. If no owner is set on the task, the owner is set to the
    * current assignee of the task.
-   * 
+   *
    * @param taskId
    *          The id of the task that will be delegated.
    * @param userId
@@ -239,7 +228,7 @@ public interface TaskService {
   /**
    * Marks that the assignee is done with this task and that it can be send back to the owner. Can only be called when this task is {@link DelegationState#PENDING} delegation. After this method
    * returns, the {@link Task#getDelegationState() delegationState} is set to {@link DelegationState#RESOLVED}.
-   * 
+   *
    * @param taskId
    *          the id of the task to resolve, cannot be null.
    * @throws ActivitiObjectNotFoundException
@@ -250,14 +239,14 @@ public interface TaskService {
   /**
    * Marks that the assignee is done with this task providing the required variables and that it can be sent back to the owner. Can only be called when this task is {@link DelegationState#PENDING}
    * delegation. After this method returns, the {@link Task#getDelegationState() delegationState} is set to {@link DelegationState#RESOLVED}.
-   * 
+   *
    * @param taskId
    * @param variables
    * @throws ProcessEngineException
    *           When no task exists with the given id.
    */
   void resolveTask(String taskId, Map<String, Object> variables);
-  
+
   /**
    * Similar to {@link #resolveTask(String, Map)}, but allows to set transient variables too.
    */
@@ -265,7 +254,7 @@ public interface TaskService {
 
   /**
    * Called when the task is successfully executed, and the required task parameters are given by the end-user.
-   * 
+   *
    * @param taskId
    *          the id of the task to complete, cannot be null.
    * @param variables
@@ -274,15 +263,15 @@ public interface TaskService {
    *           when no task exists with the given id.
    */
   void complete(String taskId, Map<String, Object> variables);
-  
+
   /**
-   * Similar to {@link #complete(String, Map)}, but allows to set transient variables too. 
+   * Similar to {@link #complete(String, Map)}, but allows to set transient variables too.
    */
   void complete(String taskId, Map<String, Object> variables, Map<String, Object> transientVariables);
 
   /**
    * Called when the task is successfully executed, and the required task parameters are given by the end-user.
-   * 
+   *
    * @param taskId
    *          the id of the task to complete, cannot be null.
    * @param variables
@@ -296,7 +285,7 @@ public interface TaskService {
 
   /**
    * Changes the assignee of the given task to the given userId. No check is done whether the user is known by the identity component.
-   * 
+   *
    * @param taskId
    *          id of the task, cannot be null.
    * @param userId
@@ -308,7 +297,7 @@ public interface TaskService {
 
   /**
    * Transfers ownership of this task to another user. No check is done whether the user is known by the identity component.
-   * 
+   *
    * @param taskId
    *          id of the task, cannot be null.
    * @param userId
@@ -326,7 +315,7 @@ public interface TaskService {
 
   /**
    * Convenience shorthand for {@link #addUserIdentityLink(String, String, String)}; with type {@link IdentityLinkType#CANDIDATE}
-   * 
+   *
    * @param taskId
    *          id of the task, cannot be null.
    * @param userId
@@ -338,7 +327,7 @@ public interface TaskService {
 
   /**
    * Convenience shorthand for {@link #addGroupIdentityLink(String, String, String)}; with type {@link IdentityLinkType#CANDIDATE}
-   * 
+   *
    * @param taskId
    *          id of the task, cannot be null.
    * @param groupId
@@ -350,7 +339,7 @@ public interface TaskService {
 
   /**
    * Involves a user with a task. The type of identity link is defined by the given identityLinkType.
-   * 
+   *
    * @param taskId
    *          id of the task, cannot be null.
    * @param userId
@@ -364,7 +353,7 @@ public interface TaskService {
 
   /**
    * Involves a group with a task. The type of identityLink is defined by the given identityLink.
-   * 
+   *
    * @param taskId
    *          id of the task, cannot be null.
    * @param groupId
@@ -378,7 +367,7 @@ public interface TaskService {
 
   /**
    * Convenience shorthand for {@link #deleteUserIdentityLink(String, String, String)}; with type {@link IdentityLinkType#CANDIDATE}
-   * 
+   *
    * @param taskId
    *          id of the task, cannot be null.
    * @param userId
@@ -390,7 +379,7 @@ public interface TaskService {
 
   /**
    * Convenience shorthand for {@link #deleteGroupIdentityLink(String, String, String)}; with type {@link IdentityLinkType#CANDIDATE}
-   * 
+   *
    * @param taskId
    *          id of the task, cannot be null.
    * @param groupId
@@ -402,7 +391,7 @@ public interface TaskService {
 
   /**
    * Removes the association between a user and a task for the given identityLinkType.
-   * 
+   *
    * @param taskId
    *          id of the task, cannot be null.
    * @param userId
@@ -416,7 +405,7 @@ public interface TaskService {
 
   /**
    * Removes the association between a group and a task for the given identityLinkType.
-   * 
+   *
    * @param taskId
    *          id of the task, cannot be null.
    * @param groupId
@@ -430,9 +419,9 @@ public interface TaskService {
 
   /**
    * Changes the priority of the task.
-   * 
+   *
    * Authorization: actual owner / business admin
-   * 
+   *
    * @param taskId
    *          id of the task, cannot be null.
    * @param priority
@@ -444,7 +433,7 @@ public interface TaskService {
 
   /**
    * Changes the due date of the task
-   * 
+   *
    * @param taskId
    *          id of the task, cannot be null.
    * @param dueDate
@@ -585,7 +574,7 @@ public interface TaskService {
 
   /** get a variable on a task */
   Map<String, Object> getVariablesLocal(String taskId, Collection<String> variableNames);
-  
+
   /** get all variables and search only in the task scope. */
   List<VariableInstance> getVariableInstancesLocalByTaskIds(Set<String> taskIds);
 
@@ -613,7 +602,7 @@ public interface TaskService {
    *           when no taskId is found for the given taskId.
    */
   Map<String, VariableInstance> getVariableInstancesLocal(String taskId, Collection<String> variableNames);
-  
+
   /**
    * Removes the variable from the task. When the variable does not exist, nothing happens.
    */
@@ -659,14 +648,14 @@ public interface TaskService {
    *           when no task is found for the given task.
    */
   Map<String, DataObject> getDataObjects(String taskId, String locale, boolean withLocalizationFallback);
-  
+
   /**
    * The DataObjects for all given dataObjectNames, takes all dataObjects into account which are visible from the given task scope (including parent scopes).
-   * 
+   *
    * @param taskId
    *          id of task, cannot be null.
    * @param dataObjectNames
-   *          the collection of DataObject names that should be retrieved. 
+   *          the collection of DataObject names that should be retrieved.
    * @return the DataObject or an empty map if no DataObjects are found.
    * @throws ActivitiObjectNotFoundException
    *           when no task is found for the given taskId.
@@ -675,7 +664,7 @@ public interface TaskService {
 
   /**
    * The DataObjects for all given dataObjectNames, takes all dataObjects into account which are visible from the given task scope (including parent scopes).
-   * 
+   *
    * @param taskId
    *          id of task, cannot be null.
    * @param dataObjectNames
@@ -683,13 +672,13 @@ public interface TaskService {
    * @param locale
    *          locale the DataObject name and description should be returned in (if available).
    * @param withLocalizationFallback
-   *          When true localization will fallback to more general locales if the specified locale is not found. 
+   *          When true localization will fallback to more general locales if the specified locale is not found.
    * @return the DataObjects or an empty map if no such dataObjects are found.
    * @throws ActivitiObjectNotFoundException
    *           when no task is found for the given task.
    */
-  Map<String, DataObject> getDataObjects(String taskId, Collection<String> dataObjectNames, String locale, boolean withLocalizationFallback);   
-  
+  Map<String, DataObject> getDataObjects(String taskId, Collection<String> dataObjectNames, String locale, boolean withLocalizationFallback);
+
   /**
    * The DataObject. Searching for the DataObject is done in all scopes that are visible to the given task (including parent scopes). Returns null when no DataObject value is found with the given
    * name.
@@ -715,14 +704,14 @@ public interface TaskService {
    * @param locale
    *          locale the DataObject name and description should be returned in (if available).
    * @param withLocalizationFallback
-   *          When true localization will fallback to more general locales including the default locale of the JVM if the specified locale is not found. 
+   *          When true localization will fallback to more general locales including the default locale of the JVM if the specified locale is not found.
    * @return the DataObject or null if the DataObject is undefined.
    * @throws ActivitiObjectNotFoundException
    *           when no task is found for the given taskId.
    */
   DataObject getDataObject(String taskId, String dataObjectName, String locale, boolean withLocalizationFallback);
 
-  
+
   /** Add a comment to a task and/or process instance. */
   Comment addComment(String taskId, String processInstanceId, String message);
 
@@ -739,7 +728,7 @@ public interface TaskService {
 
   /**
    * Removes an individual comment with the given id.
-   * 
+   *
    * @throws ActivitiObjectNotFoundException
    *           when no comment exists with the given id.
    */

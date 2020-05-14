@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     https://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,18 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/* Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+
 package org.activiti.engine.impl;
 
 import java.sql.Connection;
@@ -91,10 +80,10 @@ public class ManagementServiceImpl extends ServiceImpl implements ManagementServ
     if (jobId == null) {
       throw new ActivitiIllegalArgumentException("JobId is null");
     }
-    
+
     try {
       commandExecutor.execute(new ExecuteJobCmd(jobId));
-      
+
     } catch (RuntimeException e) {
       if (e instanceof ActivitiException) {
         throw e;
@@ -103,15 +92,15 @@ public class ManagementServiceImpl extends ServiceImpl implements ManagementServ
       }
     }
   }
-  
+
   public Job moveTimerToExecutableJob(String jobId) {
     return commandExecutor.execute(new MoveTimerToExecutableJobCmd(jobId));
   }
-  
+
   public Job moveJobToDeadLetterJob(String jobId) {
     return commandExecutor.execute(new MoveJobToDeadLetterJobCmd(jobId));
   }
-  
+
   @Override
   public Job moveDeadLetterJobToExecutableJob(String jobId, int retries) {
     return commandExecutor.execute(new MoveDeadLetterJobToExecutableJobCmd(jobId, retries));
@@ -120,11 +109,11 @@ public class ManagementServiceImpl extends ServiceImpl implements ManagementServ
   public void deleteJob(String jobId) {
     commandExecutor.execute(new DeleteJobCmd(jobId));
   }
-  
+
   public void deleteTimerJob(String jobId) {
     commandExecutor.execute(new DeleteTimerJobCmd(jobId));
   }
-  
+
   public void deleteDeadLetterJob(String jobId) {
     commandExecutor.execute(new DeleteDeadLetterJobCmd(jobId));
   }
@@ -132,7 +121,7 @@ public class ManagementServiceImpl extends ServiceImpl implements ManagementServ
   public void setJobRetries(String jobId, int retries) {
     commandExecutor.execute(new SetJobRetriesCmd(jobId, retries));
   }
-  
+
   public void setTimerJobRetries(String jobId, int retries) {
     commandExecutor.execute(new SetTimerJobRetriesCmd(jobId, retries));
   }
@@ -144,15 +133,15 @@ public class ManagementServiceImpl extends ServiceImpl implements ManagementServ
   public JobQuery createJobQuery() {
     return new JobQueryImpl(commandExecutor);
   }
-  
+
   public TimerJobQuery createTimerJobQuery() {
     return new TimerJobQueryImpl(commandExecutor);
   }
-  
+
   public SuspendedJobQuery createSuspendedJobQuery() {
     return new SuspendedJobQueryImpl(commandExecutor);
   }
-  
+
   public DeadLetterJobQuery createDeadLetterJobQuery() {
     return new DeadLetterJobQueryImpl(commandExecutor);
   }
@@ -160,15 +149,15 @@ public class ManagementServiceImpl extends ServiceImpl implements ManagementServ
   public String getJobExceptionStacktrace(String jobId) {
     return commandExecutor.execute(new GetJobExceptionStacktraceCmd(jobId, JobType.ASYNC));
   }
-  
+
   public String getTimerJobExceptionStacktrace(String jobId) {
     return commandExecutor.execute(new GetJobExceptionStacktraceCmd(jobId, JobType.TIMER));
   }
-  
+
   public String getSuspendedJobExceptionStacktrace(String jobId) {
     return commandExecutor.execute(new GetJobExceptionStacktraceCmd(jobId, JobType.SUSPENDED));
   }
-  
+
   public String getDeadLetterJobExceptionStacktrace(String jobId) {
     return commandExecutor.execute(new GetJobExceptionStacktraceCmd(jobId, JobType.DEADLETTER));
   }

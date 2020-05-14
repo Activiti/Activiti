@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     https://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,18 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/* Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+
 package org.activiti.engine.impl.bpmn.parser.factory;
 
 import org.activiti.bpmn.model.MessageEventDefinition;
@@ -57,8 +46,8 @@ public class DefaultMessageExecutionContext implements MessageExecutionContext {
         this.messageEventDefinition = messageEventDefinition;
         this.expressionManager = expressionManager;
         this.messagePayloadMappingProvider = messagePayloadMappingProvider;
-    }    
-    
+    }
+
     @Override
     public String getMessageName(DelegateExecution execution) {
         return evaluateExpression(Optional.ofNullable(messageEventDefinition.getMessageRef())
@@ -73,44 +62,44 @@ public class DefaultMessageExecutionContext implements MessageExecutionContext {
                                                      execution);
                        });
     }
-    
-    
-    
+
+
+
     public Optional<Map<String, Object>> getMessagePayload(DelegateExecution execution) {
         return messagePayloadMappingProvider.getMessagePayload(execution);
     }
-    
+
     @Override
     public ThrowMessage createThrowMessage(DelegateExecution execution) {
         String name = getMessageName(execution);
         Optional<String> correlationKey = getCorrelationKey(execution);
         Optional<String> businessKey = Optional.ofNullable(execution.getProcessInstanceBusinessKey());
         Optional<Map<String, Object>> payload = getMessagePayload(execution);
-        
+
         return ThrowMessage.builder()
                            .name(name)
                            .correlationKey(correlationKey)
                            .businessKey(businessKey)
                            .payload(payload)
                            .build();
-    }    
-    
+    }
+
     @Override
     public MessageEventSubscriptionEntity createMessageEventSubscription(CommandContext commandContext,
                                                                          DelegateExecution execution) {
-        
+
         String messageName = getMessageName(execution);
-        Optional<String> correlationKey = getCorrelationKey(execution); 
+        Optional<String> correlationKey = getCorrelationKey(execution);
 
         correlationKey.ifPresent(key -> assertNoExistingDuplicateEventSubscriptions(messageName,
                                                                                     key,
                                                                                     commandContext));
-        
+
         MessageEventSubscriptionEntity messageEvent = commandContext.getEventSubscriptionEntityManager()
                                                                     .insertMessageEvent(messageName,
                                                                                         ExecutionEntity.class.cast(execution));
         correlationKey.ifPresent(messageEvent::setConfiguration);
-        
+
         return messageEvent;
     }
 
@@ -121,15 +110,15 @@ public class DefaultMessageExecutionContext implements MessageExecutionContext {
     public MessagePayloadMappingProvider getMessagePayloadMappingProvider() {
         return messagePayloadMappingProvider;
     }
-    
-    protected String evaluateExpression(String expression, 
+
+    protected String evaluateExpression(String expression,
                                         DelegateExecution execution) {
         return Optional.ofNullable(expressionManager.createExpression(expression))
                        .map(it -> it.getValue(execution))
                        .map(Object::toString)
                        .orElseThrow(() -> new ActivitiIllegalArgumentException("Expression '" + expression + "' is null"));
     }
-    
+
     protected void assertNoExistingDuplicateEventSubscriptions(String messageName,
                                                                String correlationKey,
                                                                CommandContext commandContext) {
@@ -143,7 +132,7 @@ public class DefaultMessageExecutionContext implements MessageExecutionContext {
                                                        correlationKey))
                 .findFirst()
                 .ifPresent(subscription -> {
-                    throw new ActivitiIllegalArgumentException("Duplicate message subscription '" + subscription.getEventName() + 
+                    throw new ActivitiIllegalArgumentException("Duplicate message subscription '" + subscription.getEventName() +
                                                                "' with correlation key '" + subscription.getConfiguration() + "'");
                 });
 

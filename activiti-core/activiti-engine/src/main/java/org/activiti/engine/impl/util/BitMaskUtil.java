@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     https://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,26 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/* Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+
 
 package org.activiti.engine.impl.util;
 
 /**
  * Util class for manipulating bit-flag in ints.
- * 
+ *
  * Currently, only 8-bits are supported, but can be extended to use all 31 bits in the integer (1st of 32 bits is used for sign).
- * 
+ *
 
  */
 public class BitMaskUtil {
@@ -53,7 +42,7 @@ public class BitMaskUtil {
 
   /**
    * Set bit to '1' in the given int.
-   * 
+   *
    * @param current
    *          integer value
    * @param bitNumber
@@ -70,7 +59,7 @@ public class BitMaskUtil {
 
   /**
    * Set bit to '0' in the given int.
-   * 
+   *
    * @param current
    *          integer value
    * @param bitNumber
@@ -87,7 +76,7 @@ public class BitMaskUtil {
 
   /**
    * Check if the bit is set to '1'
-   * 
+   *
    * @param value
    *          integer to check bit
    * @param number
@@ -103,7 +92,7 @@ public class BitMaskUtil {
 
   /**
    * Set bit to '0' or '1' in the given int.
-   * 
+   *
    * @param current
    *          integer value
    * @param bitNumber

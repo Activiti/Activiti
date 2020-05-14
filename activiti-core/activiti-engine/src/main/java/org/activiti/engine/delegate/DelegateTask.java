@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     https://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,18 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/* Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+
 package org.activiti.engine.delegate;
 
 import java.util.Collection;
@@ -111,7 +100,7 @@ public interface DelegateTask extends VariableScope {
    * Returns the event name which triggered the task listener to fire for this task.
    */
   String getEventName();
-  
+
   ActivitiListener getCurrentActivitiListener();
 
   /**
@@ -165,7 +154,7 @@ public interface DelegateTask extends VariableScope {
 
   /**
    * Involves a user with a task. The type of identity link is defined by the given identityLinkType.
-   * 
+   *
    * @param userId
    *          id of the user involve, cannot be null.
    * @param identityLinkType
@@ -177,7 +166,7 @@ public interface DelegateTask extends VariableScope {
 
   /**
    * Involves a group with group task. The type of identityLink is defined by the given identityLink.
-   * 
+   *
    * @param groupId
    *          id of the group to involve, cannot be null.
    * @param identityLinkType
@@ -189,7 +178,7 @@ public interface DelegateTask extends VariableScope {
 
   /**
    * Convenience shorthand for {@link #deleteUserIdentityLink(String, String)} ; with type {@link IdentityLinkType#CANDIDATE}
-   * 
+   *
    * @param userId
    *          id of the user to use as candidate, cannot be null.
    * @throws ActivitiObjectNotFoundException
@@ -199,7 +188,7 @@ public interface DelegateTask extends VariableScope {
 
   /**
    * Convenience shorthand for {@link #deleteGroupIdentityLink(String, String, String)}; with type {@link IdentityLinkType#CANDIDATE}
-   * 
+   *
    * @param groupId
    *          id of the group to use as candidate, cannot be null.
    * @throws ActivitiObjectNotFoundException
@@ -209,7 +198,7 @@ public interface DelegateTask extends VariableScope {
 
   /**
    * Removes the association between a user and a task for the given identityLinkType.
-   * 
+   *
    * @param userId
    *          id of the user involve, cannot be null.
    * @param identityLinkType
@@ -221,7 +210,7 @@ public interface DelegateTask extends VariableScope {
 
   /**
    * Removes the association between a group and a task for the given identityLinkType.
-   * 
+   *
    * @param groupId
    *          id of the group to involve, cannot be null.
    * @param identityLinkType
@@ -233,7 +222,7 @@ public interface DelegateTask extends VariableScope {
 
   /**
    * Retrieves the candidate users and groups associated with the task.
-   * 
+   *
    * @return set of {@link IdentityLink}s of type {@link IdentityLinkType#CANDIDATE}.
    */
   Set<IdentityLink> getCandidates();

@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     https://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,18 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/* Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+
 package org.activiti.engine.impl.persistence.entity.data.impl;
 
 import java.util.HashMap;
@@ -45,7 +34,7 @@ import org.activiti.engine.repository.ProcessDefinition;
 
  */
 public class MybatisProcessDefinitionDataManager extends AbstractDataManager<ProcessDefinitionEntity> implements ProcessDefinitionDataManager {
-  
+
   public MybatisProcessDefinitionDataManager(ProcessEngineConfigurationImpl processEngineConfiguration) {
     super(processEngineConfiguration);
   }
@@ -54,12 +43,12 @@ public class MybatisProcessDefinitionDataManager extends AbstractDataManager<Pro
   public Class<? extends ProcessDefinitionEntity> getManagedEntityClass() {
     return ProcessDefinitionEntityImpl.class;
   }
-  
+
   @Override
   public ProcessDefinitionEntity create() {
     return new ProcessDefinitionEntityImpl();
   }
-  
+
   @Override
   public ProcessDefinitionEntity findLatestProcessDefinitionByKey(String processDefinitionKey) {
     return (ProcessDefinitionEntity) getDbSqlSession().selectOne("selectLatestProcessDefinitionByKey", processDefinitionKey);
@@ -121,7 +110,7 @@ public class MybatisProcessDefinitionDataManager extends AbstractDataManager<Pro
     parameters.put("tenantId", tenantId);
     return (ProcessDefinitionEntity) getDbSqlSession().selectOne("selectProcessDefinitionByDeploymentAndKeyAndTenantId", parameters);
   }
-  
+
   @Override
   public ProcessDefinitionEntity findProcessDefinitionByKeyAndVersion(String processDefinitionKey, Integer processDefinitionVersion) {
     Map<String, Object> params = new HashMap<String, Object>();
@@ -170,5 +159,5 @@ public class MybatisProcessDefinitionDataManager extends AbstractDataManager<Pro
     params.put("tenantId", newTenantId);
     getDbSqlSession().update("updateProcessDefinitionTenantIdForDeploymentId", params);
   }
-  
+
 }

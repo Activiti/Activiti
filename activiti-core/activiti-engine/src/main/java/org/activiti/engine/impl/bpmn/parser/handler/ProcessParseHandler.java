@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     https://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,18 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/* Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+
 package org.activiti.engine.impl.bpmn.parser.handler;
 
 import java.util.List;
@@ -75,17 +64,17 @@ public class ProcessParseHandler extends AbstractBpmnParseHandler<Process> {
     currentProcessDefinition.setCategory(bpmnParse.getBpmnModel().getTargetNamespace());
     currentProcessDefinition.setDescription(process.getDocumentation());
     currentProcessDefinition.setDeploymentId(bpmnParse.getDeployment().getId());
-    
+
     if (bpmnParse.getDeployment().getEngineVersion() != null) {
       currentProcessDefinition.setEngineVersion(bpmnParse.getDeployment().getEngineVersion());
     }
-    
+
     createEventListeners(bpmnParse, process.getEventListeners());
 
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Parsing process {}", currentProcessDefinition.getKey());
     }
-    
+
     bpmnParse.processFlowElements(process.getFlowElements());
     processArtifacts(bpmnParse, process.getArtifacts());
 
@@ -101,17 +90,17 @@ public class ProcessParseHandler extends AbstractBpmnParseHandler<Process> {
 
         if (ImplementationType.IMPLEMENTATION_TYPE_CLASS.equals(eventListener.getImplementationType())) {
           getEventSupport(bpmnParse.getBpmnModel()).addEventListener(bpmnParse.getListenerFactory().createClassDelegateEventListener(eventListener), types);
-        
+
         } else if (ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION.equals(eventListener.getImplementationType())) {
           getEventSupport(bpmnParse.getBpmnModel()).addEventListener(bpmnParse.getListenerFactory().createDelegateExpressionEventListener(eventListener), types);
-        
+
         } else if (ImplementationType.IMPLEMENTATION_TYPE_THROW_SIGNAL_EVENT.equals(eventListener.getImplementationType())
             || ImplementationType.IMPLEMENTATION_TYPE_THROW_GLOBAL_SIGNAL_EVENT.equals(eventListener.getImplementationType())
             || ImplementationType.IMPLEMENTATION_TYPE_THROW_MESSAGE_EVENT.equals(eventListener.getImplementationType())
             || ImplementationType.IMPLEMENTATION_TYPE_THROW_ERROR_EVENT.equals(eventListener.getImplementationType())) {
-        
+
           getEventSupport(bpmnParse.getBpmnModel()).addEventListener(bpmnParse.getListenerFactory().createEventThrowingEventListener(eventListener), types);
-        
+
         } else {
           LOGGER.warn("Unsupported implementation type for EventListener: " + eventListener.getImplementationType() + " for element " + bpmnParse.getCurrentFlowElement().getId());
         }
@@ -119,7 +108,7 @@ public class ProcessParseHandler extends AbstractBpmnParseHandler<Process> {
     }
 
   }
-  
+
   protected ActivitiEventSupport getEventSupport(BpmnModel bpmnModel) {
     return (ActivitiEventSupport) bpmnModel.getEventSupport();
   }
