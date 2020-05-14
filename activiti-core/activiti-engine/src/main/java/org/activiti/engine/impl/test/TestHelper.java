@@ -1,9 +1,12 @@
-/* Licensed under the Apache License, Version 2.0 (the "License");
+/*
+ * Copyright 2010-2020 Alfresco Software, Ltd.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -11,11 +14,13 @@
  * limitations under the License.
  */
 
+
 package org.activiti.engine.impl.test;
+
+import static java.util.Collections.singletonList;
 
 import java.io.InputStream;
 import java.lang.reflect.Method;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,7 +58,7 @@ public abstract class TestHelper {
 
   public static final String EMPTY_LINE = "\n";
 
-  public static final List<String> TABLENAMES_EXCLUDED_FROM_DB_CLEAN_CHECK = Collections.singletonList("ACT_GE_PROPERTY");
+  public static final List<String> TABLENAMES_EXCLUDED_FROM_DB_CLEAN_CHECK = singletonList("ACT_GE_PROPERTY");
 
   static Map<String, ProcessEngine> processEngines = new HashMap<String, ProcessEngine>();
 
@@ -97,12 +102,12 @@ public abstract class TestHelper {
            if (deploymentAnnotation.tenantId() != null
                    && deploymentAnnotation.tenantId().length() > 0) {
                    deploymentBuilder.tenantId(deploymentAnnotation.tenantId());
-                   } 
+                   }
       deploymentId = deploymentBuilder.deploy().getId();
     }
 
     return deploymentId;
-  } 
+  }
 
   public static void annotationDeploymentTearDown(ProcessEngine processEngine, String deploymentId, Class<?> testClass, String methodName) {
     log.debug("annotation @Deployment deletes deployment for {}.{}", testClass.getSimpleName(), methodName);

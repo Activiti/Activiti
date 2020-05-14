@@ -1,17 +1,23 @@
-package org.activiti.engine.test.bpmn.event.timer.compatibility;
-
-/* Licensed under the Apache License, Version 2.0 (the "License");
+/*
+ * Copyright 2010-2020 Alfresco Software, Ltd.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+
+package org.activiti.engine.test.bpmn.event.timer.compatibility;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -64,12 +70,12 @@ public class IntermediateTimerEventRepeatCompatibilityTest extends TimerEventCom
     runtimeService.setVariable(processInstance.getId(), "EndDateForCatch2", endDateForIntermediate2);
 
     List<Task> tasks = taskService.createTaskQuery().list();
-    assertEquals(1, tasks.size());
+    assertThat(tasks).hasSize(1);
 
     tasks = taskService.createTaskQuery().list();
-    assertEquals(1, tasks.size());
+    assertThat(tasks).hasSize(1);
     Task task = tasks.get(0);
-    assertEquals("Task A", task.getName());
+    assertThat(task.getName()).isEqualTo("Task A");
 
     // Test Timer Catch Intermediate Events after completing Task B (endDate
     // not reached but it will be executed according to the expression)
@@ -77,7 +83,7 @@ public class IntermediateTimerEventRepeatCompatibilityTest extends TimerEventCom
 
     waitForJobExecutorToProcessAllJobs(2000, 500);
     // Expected that job isn't executed because the timer is in t0
-    assertNotNull(managementService.createTimerJobQuery().processInstanceId(processInstance.getId()).singleResult());
+    assertThat(managementService.createTimerJobQuery().processInstanceId(processInstance.getId()).singleResult()).isNotNull();
 
     nextTimeCal.add(Calendar.HOUR, 1); // after 1 hour the event must be triggered and the flow will go to the next step
     processEngineConfiguration.getClock().setCurrentTime(nextTimeCal.getTime());
@@ -86,12 +92,12 @@ public class IntermediateTimerEventRepeatCompatibilityTest extends TimerEventCom
     // expect to execute because the time is reached.
 
     List<Job> jobs = managementService.createJobQuery().list();
-    assertEquals(0, jobs.size());
+    assertThat(jobs).hasSize(0);
 
     tasks = taskService.createTaskQuery().list();
-    assertEquals(1, tasks.size());
+    assertThat(tasks).hasSize(1);
     task = tasks.get(0);
-    assertEquals("Task C", task.getName());
+    assertThat(task.getName()).isEqualTo("Task C");
 
     // Test Timer Catch Intermediate Events after completing Task C
     taskService.complete(task.getId());
@@ -103,23 +109,23 @@ public class IntermediateTimerEventRepeatCompatibilityTest extends TimerEventCom
 
     if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
       HistoricProcessInstance historicInstance = historyService.createHistoricProcessInstanceQuery().processInstanceId(processInstance.getId()).singleResult();
-      assertNotNull(historicInstance.getEndTime());
+      assertThat(historicInstance.getEndTime()).isNotNull();
     }
 
     // now All the process instances should be completed
     List<ProcessInstance> processInstances = runtimeService.createProcessInstanceQuery().list();
-    assertEquals(0, processInstances.size());
+    assertThat(processInstances).hasSize(0);
 
     // no jobs
     jobs = managementService.createJobQuery().list();
-    assertEquals(0, jobs.size());
-    
+    assertThat(jobs).hasSize(0);
+
     jobs = managementService.createTimerJobQuery().list();
-    assertEquals(0, jobs.size());
+    assertThat(jobs).hasSize(0);
 
     // no tasks
     tasks = taskService.createTaskQuery().list();
-    assertEquals(0, tasks.size());
+    assertThat(tasks).hasSize(0);
 
   }
 

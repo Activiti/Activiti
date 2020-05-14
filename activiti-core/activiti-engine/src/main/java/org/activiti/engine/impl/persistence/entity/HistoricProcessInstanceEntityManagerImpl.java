@@ -1,9 +1,12 @@
-/* Licensed under the Apache License, Version 2.0 (the "License");
+/*
+ * Copyright 2010-2020 Alfresco Software, Ltd.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -11,9 +14,11 @@
  * limitations under the License.
  */
 
+
 package org.activiti.engine.impl.persistence.entity;
 
-import java.util.Collections;
+import static java.util.Collections.emptyList;
+
 import java.util.List;
 import java.util.Map;
 
@@ -24,28 +29,26 @@ import org.activiti.engine.impl.persistence.entity.data.DataManager;
 import org.activiti.engine.impl.persistence.entity.data.HistoricProcessInstanceDataManager;
 
 /**
-
-
  */
 public class HistoricProcessInstanceEntityManagerImpl extends AbstractEntityManager<HistoricProcessInstanceEntity> implements HistoricProcessInstanceEntityManager {
 
   protected HistoricProcessInstanceDataManager historicProcessInstanceDataManager;
-  
+
   public HistoricProcessInstanceEntityManagerImpl(ProcessEngineConfigurationImpl processEngineConfiguration, HistoricProcessInstanceDataManager historicProcessInstanceDataManager) {
     super(processEngineConfiguration);
     this.historicProcessInstanceDataManager = historicProcessInstanceDataManager;
   }
-  
+
   @Override
   protected DataManager<HistoricProcessInstanceEntity> getDataManager() {
     return historicProcessInstanceDataManager;
   }
-  
+
   @Override
   public HistoricProcessInstanceEntity create(ExecutionEntity processInstanceExecutionEntity) {
     return historicProcessInstanceDataManager.create(processInstanceExecutionEntity);
   }
-  
+
   @Override
   public void deleteHistoricProcessInstanceByProcessDefinitionId(String processDefinitionId) {
     if (getHistoryManager().isHistoryEnabled()) {
@@ -55,7 +58,7 @@ public class HistoricProcessInstanceEntityManagerImpl extends AbstractEntityMana
       }
     }
   }
-  
+
   @Override
   public void delete(String historicProcessInstanceId) {
     if (getHistoryManager().isHistoryEnabled()) {
@@ -93,7 +96,7 @@ public class HistoricProcessInstanceEntityManagerImpl extends AbstractEntityMana
     if (getHistoryManager().isHistoryEnabled()) {
       return historicProcessInstanceDataManager.findHistoricProcessInstancesByQueryCriteria(historicProcessInstanceQuery);
     }
-    return Collections.EMPTY_LIST;
+    return emptyList();
   }
 
   @Override
@@ -102,7 +105,7 @@ public class HistoricProcessInstanceEntityManagerImpl extends AbstractEntityMana
     if (getHistoryManager().isHistoryEnabled()) {
       return historicProcessInstanceDataManager.findHistoricProcessInstancesAndVariablesByQueryCriteria(historicProcessInstanceQuery);
     }
-    return Collections.EMPTY_LIST;
+    return emptyList();
   }
 
   @Override
@@ -122,5 +125,5 @@ public class HistoricProcessInstanceEntityManagerImpl extends AbstractEntityMana
   public void setHistoricProcessInstanceDataManager(HistoricProcessInstanceDataManager historicProcessInstanceDataManager) {
     this.historicProcessInstanceDataManager = historicProcessInstanceDataManager;
   }
-  
+
 }

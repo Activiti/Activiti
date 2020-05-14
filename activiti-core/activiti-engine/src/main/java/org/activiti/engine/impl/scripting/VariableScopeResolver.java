@@ -1,18 +1,23 @@
-/* Licensed under the Apache License, Version 2.0 (the "License");
+/*
+ * Copyright 2010-2020 Alfresco Software, Ltd.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.activiti.engine.impl.scripting;
 
-import java.util.Arrays;
+import static java.util.Arrays.asList;
+
 import java.util.List;
 
 import org.activiti.engine.ActivitiException;
@@ -27,9 +32,9 @@ public class VariableScopeResolver implements Resolver {
 
   protected ProcessEngineConfigurationImpl processEngineConfiguration;
   protected VariableScope variableScope;
-  
+
   protected String variableScopeKey = "execution";
-  
+
   protected static final String processEngineConfigurationKey = "processEngineConfiguration";
   protected static final String runtimeServiceKey = "runtimeService";
   protected static final String taskServiceKey = "taskService";
@@ -37,16 +42,16 @@ public class VariableScopeResolver implements Resolver {
   protected static final String managementServiceKey = "managementService";
   protected static final String historyServiceKey = "historyService";
   protected static final String formServiceKey = "formService";
-  
-  protected static final List<String> KEYS = Arrays.asList( 
-      processEngineConfigurationKey, runtimeServiceKey, taskServiceKey, 
+
+  protected static final List<String> KEYS = asList(
+      processEngineConfigurationKey, runtimeServiceKey, taskServiceKey,
       repositoryServiceKey, managementServiceKey, historyServiceKey, formServiceKey);
-  
+
 
   public VariableScopeResolver(ProcessEngineConfigurationImpl processEngineConfiguration, VariableScope variableScope) {
-    
+
     this.processEngineConfiguration = processEngineConfiguration;
-    
+
     if (variableScope == null) {
       throw new ActivitiIllegalArgumentException("variableScope cannot be null");
     }

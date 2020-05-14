@@ -1,11 +1,11 @@
 /*
- * Copyright 2018 Alfresco, Inc. and/or its affiliates.
+ * Copyright 2010-2020 Alfresco Software, Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.spring;
 
+import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 import static org.mockito.BDDMockito.given;
@@ -25,7 +25,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 import java.io.ByteArrayInputStream;
-import java.util.Arrays;
 import java.util.List;
 
 import org.activiti.api.process.model.events.ProcessDeployedEvent;
@@ -34,8 +33,8 @@ import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.repository.ProcessDefinitionQuery;
 import org.activiti.runtime.api.model.impl.APIProcessDefinitionConverter;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.springframework.context.ApplicationEventPublisher;
@@ -59,13 +58,12 @@ public class ProcessDeployedEventProducerTest {
     @Mock
     private ApplicationEventPublisher eventPublisher;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         initMocks(this);
         producer = new ProcessDeployedEventProducer(repositoryService,
                                                     converter,
-                                                    Arrays.asList(firstListener,
-                                                                  secondListener),
+                                                    asList(firstListener, secondListener),
                                                     eventPublisher);
     }
 
@@ -75,13 +73,13 @@ public class ProcessDeployedEventProducerTest {
         ProcessDefinitionQuery definitionQuery = mock(ProcessDefinitionQuery.class);
         given(repositoryService.createProcessDefinitionQuery()).willReturn(definitionQuery);
 
-        List<ProcessDefinition> internalProcessDefinitions = Arrays.asList(mock(ProcessDefinition.class),
-                                                                           mock(ProcessDefinition.class));
+        List<ProcessDefinition> internalProcessDefinitions = asList(mock(ProcessDefinition.class),
+                                                                    mock(ProcessDefinition.class));
 
         given(definitionQuery.list()).willReturn(internalProcessDefinitions);
 
-        List<org.activiti.api.process.model.ProcessDefinition> apiProcessDefinitions = Arrays.asList(buildAPIProcessDefinition("id1"),
-                                                                                                     buildAPIProcessDefinition("id2"));
+        List<org.activiti.api.process.model.ProcessDefinition> apiProcessDefinitions = asList(buildAPIProcessDefinition("id1"),
+                                                                                              buildAPIProcessDefinition("id2"));
         given(converter.from(internalProcessDefinitions)).willReturn(apiProcessDefinitions);
         given(repositoryService.getProcessModel("id1")).willReturn(new ByteArrayInputStream("content1".getBytes()));
         given(repositoryService.getProcessModel("id2")).willReturn(new ByteArrayInputStream("content2".getBytes()));

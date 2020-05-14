@@ -1,11 +1,11 @@
 /*
- * Copyright 2018 Alfresco, Inc. and/or its affiliates.
+ * Copyright 2010-2020 Alfresco Software, Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.spring.boot.tasks;
 
 import java.util.List;
@@ -25,28 +24,22 @@ import org.activiti.spring.boot.process.ProcessBaseRuntime;
 import org.activiti.spring.boot.security.util.SecurityUtil;
 import org.activiti.spring.boot.test.util.TaskCleanUpUtil;
 import org.activiti.test.LocalEventSource;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.FixMethodOrder;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.MethodSorters;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @ContextConfiguration
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class TaskRuntimeTerminateEndEventTest {
 
     private static final String TASK_PROCESS_TERMINATE_EVENT = "ProcessTerminateEvent";
-    private static final String PROCESS_TERMINATE_EVENT = "Process_KzwZAEl-";
 
+    private static final String PROCESS_TERMINATE_EVENT = "Process_KzwZAEl-";
 
     @Autowired
     private TaskBaseRuntime taskBaseRuntime;
@@ -61,13 +54,13 @@ public class TaskRuntimeTerminateEndEventTest {
     @Autowired
     private LocalEventSource localEventSource;
 
-    @Before
+    @BeforeEach
     public void setUp(){
         localEventSource.clearEvents();
 
     }
 
-    @After
+    @AfterEach
     public void tearDown(){
         taskCleanUpUtil.cleanUpWithAdmin();
         localEventSource.clearEvents();

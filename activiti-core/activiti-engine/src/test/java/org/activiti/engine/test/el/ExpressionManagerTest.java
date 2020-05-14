@@ -1,9 +1,12 @@
-/* Licensed under the Apache License, Version 2.0 (the "License");
+/*
+ * Copyright 2010-2020 Alfresco Software, Ltd.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -11,7 +14,10 @@
  * limitations under the License.
  */
 
+
 package org.activiti.engine.test.el;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -42,7 +48,7 @@ public class ExpressionManagerTest extends PluggableActivitiTestCase {
     vars.put("aString", "abcdefgh");
     runtimeService.startProcessInstanceByKey("methodExpressionProcess", vars);
 
-    assertEquals(0, runtimeService.createProcessInstanceQuery().processDefinitionKey("methodExpressionProcess").count());
+    assertThat(runtimeService.createProcessInstanceQuery().processDefinitionKey("methodExpressionProcess").count()).isEqualTo(0);
   }
 
   @Deployment
@@ -54,8 +60,8 @@ public class ExpressionManagerTest extends PluggableActivitiTestCase {
 
     // Check of the testMethod has been called with the current execution
     String value = (String) runtimeService.getVariable(processInstance.getId(), "testVar");
-    assertNotNull(value);
-    assertEquals("myValue", value);
+    assertThat(value).isNotNull();
+    assertThat(value).isEqualTo("myValue");
   }
 
   @Deployment
@@ -68,8 +74,8 @@ public class ExpressionManagerTest extends PluggableActivitiTestCase {
       // Check if the variable that has been set in service-task is the
       // authenticated user
       String value = (String) runtimeService.getVariable(processInstance.getId(), "theUser");
-      assertNotNull(value);
-      assertEquals("frederik", value);
+      assertThat(value).isNotNull();
+      assertThat(value).isEqualTo("frederik");
     } finally {
       // Cleanup
       Authentication.setAuthenticatedUserId(null);

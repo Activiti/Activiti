@@ -1,9 +1,25 @@
+/*
+ * Copyright 2010-2020 Alfresco Software, Ltd.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.activiti.core.common.spring.security.policies;
+
+import static java.util.Arrays.asList;
 
 import org.activiti.api.runtime.shared.security.SecurityManager;
 import org.activiti.core.common.spring.security.policies.conf.SecurityPoliciesProperties;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -46,7 +62,7 @@ public abstract class BaseSecurityPoliciesManagerImpl implements SecurityPolicie
             if (isUserInPolicy(ssp, authenticatedUserId) || isGroupInPolicy(ssp, groups)) {
 
                 // Here if securityPolicyAccess is READ, it should also include WRITES, if it is NONE nothing, and if it is WRITE only WRITE
-                List<SecurityPolicyAccess> securityPolicyAccesses = Arrays.asList(securityPoliciesAccess);
+                List<SecurityPolicyAccess> securityPolicyAccesses = asList(securityPoliciesAccess);
                 if (securityPolicyAccesses.contains(SecurityPolicyAccess.WRITE)) {
                     if (ssp.getAccess().equals(SecurityPolicyAccess.WRITE)) {
                         definitionKeysAllowedByPolicy.get(ssp.getServiceName()).addAll(ssp.getKeys());

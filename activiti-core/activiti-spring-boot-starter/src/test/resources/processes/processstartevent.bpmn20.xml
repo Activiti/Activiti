@@ -10,7 +10,7 @@
       <bpmn2:incoming>SequenceFlow_02tpwxe</bpmn2:incoming>
     </bpmn2:endEvent>
     <bpmn2:sequenceFlow id="SequenceFlow_02tpwxe" sourceRef="Task_145dbyt" targetRef="EndEvent_1i6v8az" />
-    <bpmn2:userTask id="Task_145dbyt" activiti:formKey="form-e5f26728-36c5-465c-b333-2194bbfa8891" activiti:assignee="hruser">
+    <bpmn2:userTask id="Task_145dbyt" activiti:formKey="form-e5f26728-36c5-465c-b333-2194bbfa8891" activiti:assignee="user">
       <bpmn2:incoming>SequenceFlow_0jpxym5</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_02tpwxe</bpmn2:outgoing>
     </bpmn2:userTask>

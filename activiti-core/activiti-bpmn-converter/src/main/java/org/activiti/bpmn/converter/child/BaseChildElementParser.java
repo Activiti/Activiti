@@ -1,8 +1,11 @@
-/* Licensed under the Apache License, Version 2.0 (the "License");
+/*
+ * Copyright 2010-2020 Alfresco Software, Ltd.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -12,7 +15,8 @@
  */
 package org.activiti.bpmn.converter.child;
 
-import java.util.Collections;
+import static java.util.Collections.unmodifiableList;
+
 import java.util.LinkedList;
 import java.util.List;
 
@@ -54,21 +58,21 @@ public abstract class BaseChildElementParser implements BpmnXMLConstants {
   public boolean accepts(BaseElement element) {
     return element != null;
   }
-  
-  protected List<ExtensionAttribute> parseExtensionAttributes(XMLStreamReader xtr, 
-                                                              BaseElement parentElement, 
+
+  protected List<ExtensionAttribute> parseExtensionAttributes(XMLStreamReader xtr,
+                                                              BaseElement parentElement,
                                                               BpmnModel model) {
     List<ExtensionAttribute> attributes = new LinkedList<>();
-      
+
     for(int i=0; i < xtr.getAttributeCount(); i++) {
       if(ACTIVITI_EXTENSIONS_NAMESPACE.equals(xtr.getAttributeNamespace(i))) {
-        ExtensionAttribute attr = new ExtensionAttribute(ACTIVITI_EXTENSIONS_NAMESPACE, 
+        ExtensionAttribute attr = new ExtensionAttribute(ACTIVITI_EXTENSIONS_NAMESPACE,
                                                          xtr.getAttributeLocalName(i));
         attr.setValue(xtr.getAttributeValue(i));
         attributes.add(attr);
       }
     }
-      
-    return Collections.unmodifiableList(attributes);
-  }  
+
+    return unmodifiableList(attributes);
+  }
 }

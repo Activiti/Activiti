@@ -1,16 +1,22 @@
-/* Licensed under the Apache License, Version 2.0 (the "License");
+/*
+ * Copyright 2010-2020 Alfresco Software, Ltd.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.activiti.examples.mgmt;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,17 +37,17 @@ public class TablePageQueryTest extends PluggableActivitiTestCase {
 
     TablePage tablePage = managementService.createTablePageQuery().tableName(tablePrefix + "ACT_RU_TASK").listPage(0, 5);
 
-    assertEquals(0, tablePage.getFirstResult());
-    assertEquals(5, tablePage.getSize());
-    assertEquals(5, tablePage.getRows().size());
-    assertEquals(20, tablePage.getTotal());
+    assertThat(tablePage.getFirstResult()).isEqualTo(0);
+    assertThat(tablePage.getSize()).isEqualTo(5);
+    assertThat(tablePage.getRows()).hasSize(5);
+    assertThat(tablePage.getTotal()).isEqualTo(20);
 
     tablePage = managementService.createTablePageQuery().tableName(tablePrefix + "ACT_RU_TASK").listPage(14, 10);
 
-    assertEquals(14, tablePage.getFirstResult());
-    assertEquals(6, tablePage.getSize());
-    assertEquals(6, tablePage.getRows().size());
-    assertEquals(20, tablePage.getTotal());
+    assertThat(tablePage.getFirstResult()).isEqualTo(14);
+    assertThat(tablePage.getSize()).isEqualTo(6);
+    assertThat(tablePage.getRows()).hasSize(6);
+    assertThat(tablePage.getTotal()).isEqualTo(20);
 
     taskService.deleteTasks(taskIds, true);
   }
@@ -64,7 +70,7 @@ public class TablePageQueryTest extends PluggableActivitiTestCase {
   }
 
   private void verifyTaskNames(String[] expectedTaskNames, List<Map<String, Object>> rowData) {
-    assertEquals(expectedTaskNames.length, rowData.size());
+    assertThat(rowData).hasSize(expectedTaskNames.length);
     String columnKey = "NAME_";
 
     // mybatis will return the correct case for postgres table columns from
@@ -74,7 +80,7 @@ public class TablePageQueryTest extends PluggableActivitiTestCase {
     }
 
     for (int i = 0; i < expectedTaskNames.length; i++) {
-      assertEquals(expectedTaskNames[i], rowData.get(i).get(columnKey));
+      assertThat(rowData.get(i).get(columnKey)).isEqualTo(expectedTaskNames[i]);
     }
   }
 

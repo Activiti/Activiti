@@ -1,7 +1,25 @@
+/*
+ * Copyright 2010-2020 Alfresco Software, Ltd.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 /**
- * 
+ *
  */
 package org.activiti.engine.test.jobexecutor;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -12,7 +30,6 @@ import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.Job;
 
 /**
-
  */
 public class JobExecutorCmdExceptionTest extends PluggableActivitiTestCase {
 
@@ -39,29 +56,24 @@ public class JobExecutorCmdExceptionTest extends PluggableActivitiTestCase {
       }
     });
 
-    Job job = managementService.createJobQuery().singleResult();
-    assertEquals(3, job.getRetries());
+    assertThatExceptionOfType(Exception.class)
+      .isThrownBy(() -> {
+        Job job = managementService.createJobQuery().singleResult();
+        assertThat(job.getRetries()).isEqualTo(3);
+        managementService.executeJob(job.getId());
+      });
 
-    try {
-      managementService.executeJob(job.getId());
-      fail("exception expected");
-    } catch (Exception e) {
-      // exception expected;
-    }
+    assertThatExceptionOfType(Exception.class)
+      .isThrownBy(() -> {
+        Job job = managementService.createTimerJobQuery().singleResult();
+        assertThat(job.getRetries()).isEqualTo(2);
 
-    job = managementService.createTimerJobQuery().singleResult();
-    assertEquals(2, job.getRetries());
+        managementService.moveTimerToExecutableJob(job.getId());
+        managementService.executeJob(job.getId());
+      });
 
-    try {
-      managementService.moveTimerToExecutableJob(job.getId());
-      managementService.executeJob(job.getId());
-      fail("exception expected");
-    } catch (Exception e) {
-      // exception expected;
-    }
-
-    job = managementService.createTimerJobQuery().singleResult();
-    assertEquals(1, job.getRetries());
+    Job job = managementService.createTimerJobQuery().singleResult();
+    assertThat(job.getRetries()).isEqualTo(1);
 
     managementService.moveTimerToExecutableJob(job.getId());
     managementService.executeJob(job.getId());
@@ -79,40 +91,32 @@ public class JobExecutorCmdExceptionTest extends PluggableActivitiTestCase {
       }
     });
 
-    Job job = managementService.createJobQuery().singleResult();
-    assertEquals(3, job.getRetries());
 
-    try {
-      managementService.executeJob(job.getId());
-      fail("exception expected");
-    } catch (Exception e) {
-      // exception expected;
-    }
+    assertThatExceptionOfType(Exception.class)
+      .isThrownBy(() -> {
+        Job job = managementService.createJobQuery().singleResult();
+        assertThat(job.getRetries()).isEqualTo(3);
+        managementService.executeJob(job.getId());
+      });
 
-    job = managementService.createTimerJobQuery().singleResult();
-    assertEquals(2, job.getRetries());
+    assertThatExceptionOfType(Exception.class)
+      .isThrownBy(() -> {
+        Job job = managementService.createTimerJobQuery().singleResult();
+        assertThat(job.getRetries()).isEqualTo(2);
+        managementService.moveTimerToExecutableJob(job.getId());
+        managementService.executeJob(job.getId());
+      });
 
-    try {
-      managementService.moveTimerToExecutableJob(job.getId());
-      managementService.executeJob(job.getId());
-      fail("exception expected");
-    } catch (Exception e) {
-      // exception expected;
-    }
+    assertThatExceptionOfType(Exception.class)
+      .isThrownBy(() -> {
+        Job job = managementService.createTimerJobQuery().singleResult();
+        assertThat(job.getRetries()).isEqualTo(1);
+        managementService.moveTimerToExecutableJob(job.getId());
+        managementService.executeJob(job.getId());
+      });
 
-    job = managementService.createTimerJobQuery().singleResult();
-    assertEquals(1, job.getRetries());
-
-    try {
-      managementService.moveTimerToExecutableJob(job.getId());
-      managementService.executeJob(job.getId());
-      fail("exception expected");
-    } catch (Exception e) {
-      // exception expected;
-    }
-
-    job = managementService.createDeadLetterJobQuery().singleResult();
-    assertNotNull(job);
+    Job job = managementService.createDeadLetterJobQuery().singleResult();
+    assertThat(job).isNotNull();
 
     managementService.deleteDeadLetterJob(job.getId());
   }

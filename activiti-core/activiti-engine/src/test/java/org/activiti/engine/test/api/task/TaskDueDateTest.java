@@ -1,16 +1,22 @@
-/* Licensed under the Apache License, Version 2.0 (the "License");
+/*
+ * Copyright 2010-2020 Alfresco Software, Ltd.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.activiti.engine.test.api.task;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Date;
 import java.util.List;
@@ -51,104 +57,104 @@ public class TaskDueDateTest extends PluggableActivitiTestCase {
     createTask("task4", null);
     createTask("task5", null);
 
-    assertEquals(6, taskService.createTaskQuery().count());
+    assertThat(taskService.createTaskQuery().count()).isEqualTo(6);
 
     // Sorting on due date asc should put the nulls at the end
     List<Task> tasks = taskService.createTaskQuery().orderByDueDateNullsLast().asc().list();
 
     for (int i = 0; i < 4; i++) {
-      assertNotNull(tasks.get(i).getDueDate());
+      assertThat(tasks.get(i).getDueDate()).isNotNull();
     }
 
-    assertEquals("task3", tasks.get(0).getName());
-    assertEquals("task1", tasks.get(1).getName());
-    assertEquals("task2", tasks.get(2).getName());
-    assertEquals("task0", tasks.get(3).getName());
-    assertNull(tasks.get(4).getDueDate());
-    assertNull(tasks.get(5).getDueDate());
+    assertThat(tasks.get(0).getName()).isEqualTo("task3");
+    assertThat(tasks.get(1).getName()).isEqualTo("task1");
+    assertThat(tasks.get(2).getName()).isEqualTo("task2");
+    assertThat(tasks.get(3).getName()).isEqualTo("task0");
+    assertThat(tasks.get(4).getDueDate()).isNull();
+    assertThat(tasks.get(5).getDueDate()).isNull();
 
     // The same, but now desc
     tasks = taskService.createTaskQuery().orderByDueDateNullsLast().desc().list();
 
     for (int i = 0; i < 4; i++) {
-      assertNotNull(tasks.get(i).getDueDate());
+      assertThat(tasks.get(i).getDueDate()).isNotNull();
     }
 
-    assertEquals("task0", tasks.get(0).getName());
-    assertEquals("task2", tasks.get(1).getName());
-    assertEquals("task1", tasks.get(2).getName());
-    assertEquals("task3", tasks.get(3).getName());
-    assertNull(tasks.get(4).getDueDate());
-    assertNull(tasks.get(5).getDueDate());
+    assertThat(tasks.get(0).getName()).isEqualTo("task0");
+    assertThat(tasks.get(1).getName()).isEqualTo("task2");
+    assertThat(tasks.get(2).getName()).isEqualTo("task1");
+    assertThat(tasks.get(3).getName()).isEqualTo("task3");
+    assertThat(tasks.get(4).getDueDate()).isNull();
+    assertThat(tasks.get(5).getDueDate()).isNull();
 
     // The same but now nulls first
     tasks = taskService.createTaskQuery().orderByDueDateNullsFirst().asc().list();
 
-    assertNull(tasks.get(0).getDueDate());
-    assertNull(tasks.get(1).getDueDate());
-    assertEquals("task3", tasks.get(2).getName());
-    assertEquals("task1", tasks.get(3).getName());
-    assertEquals("task2", tasks.get(4).getName());
-    assertEquals("task0", tasks.get(5).getName());
+    assertThat(tasks.get(0).getDueDate()).isNull();
+    assertThat(tasks.get(1).getDueDate()).isNull();
+    assertThat(tasks.get(2).getName()).isEqualTo("task3");
+    assertThat(tasks.get(3).getName()).isEqualTo("task1");
+    assertThat(tasks.get(4).getName()).isEqualTo("task2");
+    assertThat(tasks.get(5).getName()).isEqualTo("task0");
 
     // And now desc
     tasks = taskService.createTaskQuery().orderByDueDateNullsFirst().desc().list();
 
-    assertNull(tasks.get(0).getDueDate());
-    assertNull(tasks.get(1).getDueDate());
-    assertEquals("task0", tasks.get(2).getName());
-    assertEquals("task2", tasks.get(3).getName());
-    assertEquals("task1", tasks.get(4).getName());
-    assertEquals("task3", tasks.get(5).getName());
+    assertThat(tasks.get(0).getDueDate()).isNull();
+    assertThat(tasks.get(1).getDueDate()).isNull();
+    assertThat(tasks.get(2).getName()).isEqualTo("task0");
+    assertThat(tasks.get(3).getName()).isEqualTo("task2");
+    assertThat(tasks.get(4).getName()).isEqualTo("task1");
+    assertThat(tasks.get(5).getName()).isEqualTo("task3");
 
     if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
       // And now the same, but for history!
       List<HistoricTaskInstance> historicTasks = historyService.createHistoricTaskInstanceQuery().orderByDueDateNullsLast().asc().list();
 
       for (int i = 0; i < 4; i++) {
-        assertNotNull(historicTasks.get(i).getDueDate());
+        assertThat(historicTasks.get(i).getDueDate()).isNotNull();
       }
 
-      assertEquals("task3", historicTasks.get(0).getName());
-      assertEquals("task1", historicTasks.get(1).getName());
-      assertEquals("task2", historicTasks.get(2).getName());
-      assertEquals("task0", historicTasks.get(3).getName());
-      assertNull(historicTasks.get(4).getDueDate());
-      assertNull(historicTasks.get(5).getDueDate());
+      assertThat(historicTasks.get(0).getName()).isEqualTo("task3");
+      assertThat(historicTasks.get(1).getName()).isEqualTo("task1");
+      assertThat(historicTasks.get(2).getName()).isEqualTo("task2");
+      assertThat(historicTasks.get(3).getName()).isEqualTo("task0");
+      assertThat(historicTasks.get(4).getDueDate()).isNull();
+      assertThat(historicTasks.get(5).getDueDate()).isNull();
 
       // The same, but now desc
       historicTasks = historyService.createHistoricTaskInstanceQuery().orderByDueDateNullsLast().desc().list();
 
       for (int i = 0; i < 4; i++) {
-        assertNotNull(historicTasks.get(i).getDueDate());
+        assertThat(historicTasks.get(i).getDueDate()).isNotNull();
       }
 
-      assertEquals("task0", historicTasks.get(0).getName());
-      assertEquals("task2", historicTasks.get(1).getName());
-      assertEquals("task1", historicTasks.get(2).getName());
-      assertEquals("task3", historicTasks.get(3).getName());
-      assertNull(historicTasks.get(4).getDueDate());
-      assertNull(historicTasks.get(5).getDueDate());
+      assertThat(historicTasks.get(0).getName()).isEqualTo("task0");
+      assertThat(historicTasks.get(1).getName()).isEqualTo("task2");
+      assertThat(historicTasks.get(2).getName()).isEqualTo("task1");
+      assertThat(historicTasks.get(3).getName()).isEqualTo("task3");
+      assertThat(historicTasks.get(4).getDueDate()).isNull();
+      assertThat(historicTasks.get(5).getDueDate()).isNull();
 
       // The same but now nulls first
       historicTasks = historyService.createHistoricTaskInstanceQuery().orderByDueDateNullsFirst().asc().list();
 
-      assertNull(historicTasks.get(0).getDueDate());
-      assertNull(historicTasks.get(1).getDueDate());
-      assertEquals("task3", historicTasks.get(2).getName());
-      assertEquals("task1", historicTasks.get(3).getName());
-      assertEquals("task2", historicTasks.get(4).getName());
-      assertEquals("task0", historicTasks.get(5).getName());
+      assertThat(historicTasks.get(0).getDueDate()).isNull();
+      assertThat(historicTasks.get(1).getDueDate()).isNull();
+      assertThat(historicTasks.get(2).getName()).isEqualTo("task3");
+      assertThat(historicTasks.get(3).getName()).isEqualTo("task1");
+      assertThat(historicTasks.get(4).getName()).isEqualTo("task2");
+      assertThat(historicTasks.get(5).getName()).isEqualTo("task0");
 
       // And now desc
       historicTasks = historyService.createHistoricTaskInstanceQuery().orderByDueDateNullsFirst().desc().list();
 
-      assertNull(historicTasks.get(0).getDueDate());
-      assertNull(historicTasks.get(1).getDueDate());
-      assertEquals("task0", historicTasks.get(2).getName());
-      assertEquals("task2", historicTasks.get(3).getName());
-      assertEquals("task1", historicTasks.get(4).getName());
-      assertEquals("task3", historicTasks.get(5).getName());
+      assertThat(historicTasks.get(0).getDueDate()).isNull();
+      assertThat(historicTasks.get(1).getDueDate()).isNull();
+      assertThat(historicTasks.get(2).getName()).isEqualTo("task0");
+      assertThat(historicTasks.get(3).getName()).isEqualTo("task2");
+      assertThat(historicTasks.get(4).getName()).isEqualTo("task1");
+      assertThat(historicTasks.get(5).getName()).isEqualTo("task3");
     }
   }
 

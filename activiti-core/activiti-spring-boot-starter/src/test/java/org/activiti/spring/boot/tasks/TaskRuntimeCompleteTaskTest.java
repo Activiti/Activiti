@@ -1,3 +1,18 @@
+/*
+ * Copyright 2010-2020 Alfresco Software, Ltd.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.activiti.spring.boot.tasks;
 
 import java.util.HashMap;
@@ -18,28 +33,26 @@ import org.activiti.api.task.runtime.TaskRuntime;
 import org.activiti.spring.boot.security.util.SecurityUtil;
 import org.activiti.spring.boot.test.util.ProcessCleanUpUtil;
 import org.activiti.spring.boot.test.util.TaskCleanUpUtil;
-import org.junit.After;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.groups.Tuple.tuple;
 
-@RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 public class TaskRuntimeCompleteTaskTest {
 
     private static final String TWOTASK_PROCESS = "twoTaskProcess";
-    
+
     @Autowired
     private TaskRuntime taskRuntime;
-   
+
     @Autowired
     private ProcessRuntime processRuntime;
-    
+
     @Autowired
     private SecurityUtil securityUtil;
 
@@ -49,7 +62,7 @@ public class TaskRuntimeCompleteTaskTest {
     @Autowired
     private ProcessCleanUpUtil processCleanUpUtil;
 
-    @After
+    @AfterEach
     public void taskCleanUp(){
         taskCleanUpUtil.cleanUpWithAdmin();
         processCleanUpUtil.cleanUpWithAdmin();
@@ -105,15 +118,11 @@ public class TaskRuntimeCompleteTaskTest {
         securityUtil.logInAs("user");
 
         //when
-        Throwable throwable = catchThrowable(() ->
-                taskRuntime.complete(TaskPayloadBuilder.complete().withTaskId(task.getId()).build()));
-
         //then
-        assertThat(throwable)
-                .isInstanceOf(NotFoundException.class);
-
+        assertThatExceptionOfType(NotFoundException.class)
+            .isThrownBy(() -> taskRuntime.complete(TaskPayloadBuilder.complete().withTaskId(task.getId()).build()));
     }
-    
+
     @Test
     public void completeProcessTaskAndCheckReturnedTaskAndVariables() {
 
@@ -132,7 +141,7 @@ public class TaskRuntimeCompleteTaskTest {
         //both tasks should have same variables
         List<Task> tasks = taskRuntime.tasks(Pageable.of(0, 10),TaskPayloadBuilder.tasks().build()).getContent();
         List<VariableInstance> variables;
-        
+
         for (Task task : tasks) {
             variables = taskRuntime.variables(TaskPayloadBuilder.variables().withTaskId(task.getId()).build());
             assertThat(variables)
@@ -140,19 +149,19 @@ public class TaskRuntimeCompleteTaskTest {
                        .containsExactly(
                                tuple("start1", "start1"),
                                tuple("start2", "start2"));
-            
+
         }
-        
+
         Task task = tasks.get(0);
-        
+
         //claim task
         Task claimTask = taskRuntime.claim(TaskPayloadBuilder.claim().withTaskId(task.getId()).build());
-        
+
         assertThat(claimTask)
         .extracting(Task::getStatus,
                     Task::getOwner,
                     Task::getAssignee,
-                    Task::getName, 
+                    Task::getName,
                     Task::getDescription,
                     Task::getCreatedDate,
                     Task::getDueDate,
@@ -166,7 +175,7 @@ public class TaskRuntimeCompleteTaskTest {
                       TaskStatus.ASSIGNED,
                       task.getOwner(),
                       "user",
-                      task.getName(), 
+                      task.getName(),
                       task.getDescription(),
                       task.getCreatedDate(),
                       task.getDueDate(),
@@ -176,19 +185,19 @@ public class TaskRuntimeCompleteTaskTest {
                       task.getParentTaskId(),
                       task.getFormKey(),
                       task.getProcessDefinitionVersion());
-        
-       
-        
+
+
+
         //complete one task and change var
-        
+
         Task completeTask = taskRuntime.complete(TaskPayloadBuilder.complete().withTaskId(task.getId()).withVariable("start1","modagainstart1").build());
-               
+
         assertThat(completeTask)
             .isNotNull()
             .extracting(Task::getStatus,
                         Task::getOwner,
                         Task::getAssignee,
-                        Task::getName, 
+                        Task::getName,
                         Task::getDescription,
                         Task::getCreatedDate,
                         Task::getDueDate,
@@ -203,7 +212,7 @@ public class TaskRuntimeCompleteTaskTest {
                         TaskStatus.COMPLETED,
                         task.getOwner(),
                         claimTask.getAssignee(),
-                        task.getName(), 
+                        task.getName(),
                         task.getDescription(),
                         task.getCreatedDate(),
                         task.getDueDate(),
@@ -213,11 +222,11 @@ public class TaskRuntimeCompleteTaskTest {
                         task.getProcessInstanceId(),
                         task.getParentTaskId(),
                         task.getFormKey(),
-                        task.getProcessDefinitionVersion());     
+                        task.getProcessDefinitionVersion());
 
         //after completion of the process variable start1 should updated
         assertThat(processRuntime.variables(ProcessPayloadBuilder.variables().withProcessInstance(twoTaskInstance).build()))
-                .extracting(VariableInstance::getName, 
+                .extracting(VariableInstance::getName,
                             VariableInstance::getValue)
                 .containsExactly(
                         tuple("start1", "modagainstart1"),

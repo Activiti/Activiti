@@ -1,9 +1,12 @@
-/* Licensed under the Apache License, Version 2.0 (the "License");
+/*
+ * Copyright 2010-2020 Alfresco Software, Ltd.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -11,7 +14,10 @@
  * limitations under the License.
  */
 
+
 package org.activiti.engine.test.api.runtime;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 
@@ -25,7 +31,6 @@ import org.activiti.engine.task.IdentityLinkType;
 import org.activiti.engine.test.Deployment;
 
 /**
-
  */
 public class ProcessInstanceIdentityLinksTest extends PluggableActivitiTestCase {
 
@@ -40,16 +45,16 @@ public class ProcessInstanceIdentityLinksTest extends PluggableActivitiTestCase 
     List<IdentityLink> identityLinks = runtimeService.getIdentityLinksForProcessInstance(processInstanceId);
     IdentityLink identityLink = identityLinks.get(0);
 
-    assertNull(identityLink.getGroupId());
-    assertEquals("kermit", identityLink.getUserId());
-    assertEquals(IdentityLinkType.PARTICIPANT, identityLink.getType());
-    assertEquals(processInstanceId, identityLink.getProcessInstanceId());
+    assertThat(identityLink.getGroupId()).isNull();
+    assertThat(identityLink.getUserId()).isEqualTo("kermit");
+    assertThat(identityLink.getType()).isEqualTo(IdentityLinkType.PARTICIPANT);
+    assertThat(identityLink.getProcessInstanceId()).isEqualTo(processInstanceId);
 
-    assertEquals(1, identityLinks.size());
+    assertThat(identityLinks).hasSize(1);
 
     runtimeService.deleteParticipantUser(processInstanceId, "kermit");
 
-    assertEquals(0, runtimeService.getIdentityLinksForProcessInstance(processInstanceId).size());
+    assertThat(runtimeService.getIdentityLinksForProcessInstance(processInstanceId)).hasSize(0);
   }
 
   @Deployment(resources = "org/activiti/engine/test/api/runtime/IdentityLinksProcess.bpmn20.xml")
@@ -63,22 +68,22 @@ public class ProcessInstanceIdentityLinksTest extends PluggableActivitiTestCase 
     List<IdentityLink> identityLinks = runtimeService.getIdentityLinksForProcessInstance(processInstanceId);
     IdentityLink identityLink = identityLinks.get(0);
 
-    assertEquals("muppets", identityLink.getGroupId());
-    assertNull("kermit", identityLink.getUserId());
-    assertEquals(IdentityLinkType.PARTICIPANT, identityLink.getType());
-    assertEquals(processInstanceId, identityLink.getProcessInstanceId());
+    assertThat(identityLink.getGroupId()).isEqualTo("muppets");
+    assertThat(identityLink.getUserId()).as("kermit").isNull();
+    assertThat(identityLink.getType()).isEqualTo(IdentityLinkType.PARTICIPANT);
+    assertThat(identityLink.getProcessInstanceId()).isEqualTo(processInstanceId);
 
-    assertEquals(1, identityLinks.size());
+    assertThat(identityLinks).hasSize(1);
 
     if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
       List<Event> processInstanceEvents = runtimeService.getProcessInstanceEvents(processInstanceId);
-      assertEquals(1, processInstanceEvents.size());
+      assertThat(processInstanceEvents).hasSize(1);
       Event processInstanceEvent = processInstanceEvents.get(0);
-      assertEquals(Event.ACTION_ADD_GROUP_LINK, processInstanceEvent.getAction());
+      assertThat(processInstanceEvent.getAction()).isEqualTo(Event.ACTION_ADD_GROUP_LINK);
       List<String> processInstanceEventMessageParts = processInstanceEvent.getMessageParts();
-      assertEquals("muppets", processInstanceEventMessageParts.get(0));
-      assertEquals(IdentityLinkType.PARTICIPANT, processInstanceEventMessageParts.get(1));
-      assertEquals(2, processInstanceEventMessageParts.size());
+      assertThat(processInstanceEventMessageParts.get(0)).isEqualTo("muppets");
+      assertThat(processInstanceEventMessageParts.get(1)).isEqualTo(IdentityLinkType.PARTICIPANT);
+      assertThat(processInstanceEventMessageParts).hasSize(2);
     }
 
     runtimeService.deleteParticipantGroup(processInstanceId, "muppets");
@@ -86,15 +91,15 @@ public class ProcessInstanceIdentityLinksTest extends PluggableActivitiTestCase 
     if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
       List<Event> processInstanceEvents = runtimeService.getProcessInstanceEvents(processInstanceId);
       Event processIsntanceEvent = findProcessInstanceEvent(processInstanceEvents, Event.ACTION_DELETE_GROUP_LINK);
-      assertEquals(Event.ACTION_DELETE_GROUP_LINK, processIsntanceEvent.getAction());
+      assertThat(processIsntanceEvent.getAction()).isEqualTo(Event.ACTION_DELETE_GROUP_LINK);
       List<String> processInstanceEventMessageParts = processIsntanceEvent.getMessageParts();
-      assertEquals("muppets", processInstanceEventMessageParts.get(0));
-      assertEquals(IdentityLinkType.PARTICIPANT, processInstanceEventMessageParts.get(1));
-      assertEquals(2, processInstanceEventMessageParts.size());
-      assertEquals(2, processInstanceEvents.size());
+      assertThat(processInstanceEventMessageParts.get(0)).isEqualTo("muppets");
+      assertThat(processInstanceEventMessageParts.get(1)).isEqualTo(IdentityLinkType.PARTICIPANT);
+      assertThat(processInstanceEventMessageParts).hasSize(2);
+      assertThat(processInstanceEvents).hasSize(2);
     }
 
-    assertEquals(0, runtimeService.getIdentityLinksForProcessInstance(processInstanceId).size());
+    assertThat(runtimeService.getIdentityLinksForProcessInstance(processInstanceId)).hasSize(0);
   }
 
   private Event findProcessInstanceEvent(List<Event> processInstanceEvents, String action) {
@@ -117,16 +122,16 @@ public class ProcessInstanceIdentityLinksTest extends PluggableActivitiTestCase 
     List<IdentityLink> identityLinks = runtimeService.getIdentityLinksForProcessInstance(processInstanceId);
     IdentityLink identityLink = identityLinks.get(0);
 
-    assertNull(identityLink.getGroupId());
-    assertEquals("kermit", identityLink.getUserId());
-    assertEquals("interestee", identityLink.getType());
-    assertEquals(processInstanceId, identityLink.getProcessInstanceId());
+    assertThat(identityLink.getGroupId()).isNull();
+    assertThat(identityLink.getUserId()).isEqualTo("kermit");
+    assertThat(identityLink.getType()).isEqualTo("interestee");
+    assertThat(identityLink.getProcessInstanceId()).isEqualTo(processInstanceId);
 
-    assertEquals(1, identityLinks.size());
+    assertThat(identityLinks).hasSize(1);
 
     runtimeService.deleteUserIdentityLink(processInstanceId, "kermit", "interestee");
 
-    assertEquals(0, runtimeService.getIdentityLinksForProcessInstance(processInstanceId).size());
+    assertThat(runtimeService.getIdentityLinksForProcessInstance(processInstanceId)).hasSize(0);
   }
 
   @Deployment(resources = "org/activiti/engine/test/api/runtime/IdentityLinksProcess.bpmn20.xml")
@@ -140,16 +145,16 @@ public class ProcessInstanceIdentityLinksTest extends PluggableActivitiTestCase 
     List<IdentityLink> identityLinks = runtimeService.getIdentityLinksForProcessInstance(processInstanceId);
     IdentityLink identityLink = identityLinks.get(0);
 
-    assertEquals("muppets", identityLink.getGroupId());
-    assertNull("kermit", identityLink.getUserId());
-    assertEquals("playing", identityLink.getType());
-    assertEquals(processInstanceId, identityLink.getProcessInstanceId());
+    assertThat(identityLink.getGroupId()).isEqualTo("muppets");
+    assertThat(identityLink.getUserId()).as("kermit").isNull();
+    assertThat(identityLink.getType()).isEqualTo("playing");
+    assertThat(identityLink.getProcessInstanceId()).isEqualTo(processInstanceId);
 
-    assertEquals(1, identityLinks.size());
+    assertThat(identityLinks).hasSize(1);
 
     runtimeService.deleteGroupIdentityLink(processInstanceId, "muppets", "playing");
 
-    assertEquals(0, runtimeService.getIdentityLinksForProcessInstance(processInstanceId).size());
+    assertThat(runtimeService.getIdentityLinksForProcessInstance(processInstanceId)).hasSize(0);
   }
 
 }

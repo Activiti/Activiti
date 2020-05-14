@@ -1,11 +1,11 @@
 /*
- * Copyright 2018 Alfresco, Inc. and/or its affiliates.
+ * Copyright 2010-2020 Alfresco Software, Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,8 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.api.runtime.conf.impl;
+
+import java.util.Collections;
+import java.util.Set;
 
 import org.activiti.api.process.model.BPMNActivity;
 import org.activiti.api.process.model.BPMNError;
@@ -29,6 +31,7 @@ import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.model.StartMessageDeploymentDefinition;
 import org.activiti.api.process.model.StartMessageSubscription;
 import org.activiti.api.process.model.events.StartMessageDeployedEvent;
+import org.activiti.api.process.model.payloads.CreateProcessInstancePayload;
 import org.activiti.api.process.model.payloads.DeleteProcessPayload;
 import org.activiti.api.process.model.payloads.GetProcessDefinitionsPayload;
 import org.activiti.api.process.model.payloads.GetProcessInstancesPayload;
@@ -52,22 +55,42 @@ import org.activiti.api.runtime.model.impl.BPMNMessageImpl;
 import org.activiti.api.runtime.model.impl.BPMNSequenceFlowImpl;
 import org.activiti.api.runtime.model.impl.BPMNSignalImpl;
 import org.activiti.api.runtime.model.impl.BPMNTimerImpl;
+import org.activiti.api.runtime.model.impl.DateToStringConverter;
 import org.activiti.api.runtime.model.impl.IntegrationContextImpl;
+import org.activiti.api.runtime.model.impl.JsonNodeToStringConverter;
+import org.activiti.api.runtime.model.impl.MapToStringConverter;
 import org.activiti.api.runtime.model.impl.MessageSubscriptionImpl;
 import org.activiti.api.runtime.model.impl.ProcessDefinitionImpl;
 import org.activiti.api.runtime.model.impl.ProcessInstanceImpl;
+import org.activiti.api.runtime.model.impl.ProcessVariablesMap;
+import org.activiti.api.runtime.model.impl.ProcessVariablesMapDeserializer;
+import org.activiti.api.runtime.model.impl.ProcessVariablesMapSerializer;
 import org.activiti.api.runtime.model.impl.StartMessageDeploymentDefinitionImpl;
 import org.activiti.api.runtime.model.impl.StartMessageSubscriptionImpl;
+import org.activiti.api.runtime.model.impl.StringToDateConverter;
+import org.activiti.api.runtime.model.impl.StringToJsonNodeConverter;
+import org.activiti.api.runtime.model.impl.StringToMapConverter;
+import org.activiti.api.runtime.model.impl.ProcessVariableTypeConverter;
+import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration;
+import org.springframework.boot.convert.ApplicationConversionService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
+import org.springframework.core.convert.ConversionService;
+import org.springframework.core.convert.converter.Converter;
+import org.springframework.format.support.FormattingConversionService;
 
 import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.databind.BeanDescription;
 import com.fasterxml.jackson.databind.DeserializationConfig;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.Module;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.jsontype.NamedType;
 import com.fasterxml.jackson.databind.module.SimpleAbstractTypeResolver;
 import com.fasterxml.jackson.databind.module.SimpleModule;
@@ -76,9 +99,15 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 @Configuration
 public class ProcessModelAutoConfiguration {
 
+    @Autowired(required = false)
+    @ProcessVariableTypeConverter
+    private Set<Converter<?, ?>> converters = Collections.emptySet();
+
+
     //this bean will be automatically injected inside boot's ObjectMapper
     @Bean
-    public Module customizeProcessModelObjectMapper() {
+    @Order(Ordered.HIGHEST_PRECEDENCE)
+    public Module customizeProcessModelObjectMapper(ObjectProvider<ConversionService> conversionServiceProvider) {
         SimpleModule module = new SimpleModule("mapProcessModelInterfaces",
                                                Version.unknownVersion());
         SimpleAbstractTypeResolver resolver = new SimpleAbstractTypeResolver() {
@@ -118,7 +147,7 @@ public class ProcessModelAutoConfiguration {
                             StartMessageDeployedEventImpl.class);
         resolver.addMapping(StartMessageDeploymentDefinition.class,
                             StartMessageDeploymentDefinitionImpl.class);
-        
+
         module.registerSubtypes(new NamedType(ProcessInstanceResult.class,
                                               ProcessInstanceResult.class.getSimpleName()));
 
@@ -140,6 +169,8 @@ public class ProcessModelAutoConfiguration {
                                               TimerPayload.class.getSimpleName()));
         module.registerSubtypes(new NamedType(StartProcessPayload.class,
                                               StartProcessPayload.class.getSimpleName()));
+        module.registerSubtypes(new NamedType(CreateProcessInstancePayload.class,
+                                              CreateProcessInstancePayload.class.getSimpleName()));
         module.registerSubtypes(new NamedType(SuspendProcessPayload.class,
                                               SuspendProcessPayload.class.getSimpleName()));
         module.registerSubtypes(new NamedType(ResumeProcessPayload.class,
@@ -153,6 +184,55 @@ public class ProcessModelAutoConfiguration {
         module.registerSubtypes(new NamedType(MessageEventPayload.class,
                                               MessageEventPayload.class.getSimpleName()));
         module.setAbstractTypes(resolver);
+
+        ConversionService conversionService = conversionServiceProvider.getIfUnique(this::conversionService);
+
+        module.addSerializer(new ProcessVariablesMapSerializer(conversionService));
+
+        module.addDeserializer(ProcessVariablesMap.class,
+                               new ProcessVariablesMapDeserializer(conversionService));
+
         return module;
     }
+
+    public FormattingConversionService conversionService() {
+        ApplicationConversionService conversionService = new ApplicationConversionService();
+
+        converters.forEach(conversionService::addConverter);
+
+        return conversionService;
+    }
+
+    @Bean
+    public StringToMapConverter stringToMapConverter(@Lazy ObjectMapper objectMapper) {
+        return new StringToMapConverter(objectMapper);
+    }
+
+    @Bean
+    public MapToStringConverter mapToStringConverter(@Lazy ObjectMapper objectMapper) {
+        return new MapToStringConverter(objectMapper);
+    }
+
+    @Bean
+    public StringToJsonNodeConverter stringToJsonNodeConverter(@Lazy ObjectMapper objectMapper) {
+        return new StringToJsonNodeConverter(objectMapper);
+    }
+
+    @Bean
+    public JsonNodeToStringConverter jsonNodeToStringConverter(@Lazy ObjectMapper objectMapper) {
+        return new JsonNodeToStringConverter(objectMapper);
+    }
+
+    @Bean
+    public StringToDateConverter stringToDateConverter() {
+        return new StringToDateConverter();
+    }
+
+    @Bean
+    public DateToStringConverter dateToStringConverter() {
+        return new DateToStringConverter();
+    }
+
+
+
 }

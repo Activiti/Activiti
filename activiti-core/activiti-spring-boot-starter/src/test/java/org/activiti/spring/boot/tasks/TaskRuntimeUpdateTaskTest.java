@@ -1,3 +1,18 @@
+/*
+ * Copyright 2010-2020 Alfresco Software, Ltd.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.activiti.spring.boot.tasks;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -16,20 +31,17 @@ import org.activiti.api.task.runtime.TaskRuntime;
 import org.activiti.spring.boot.RuntimeTestConfiguration;
 import org.activiti.spring.boot.security.util.SecurityUtil;
 import org.activiti.spring.boot.test.util.TaskCleanUpUtil;
-import org.junit.After;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
 
-@RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 public class TaskRuntimeUpdateTaskTest {
 
     @Autowired
     private TaskRuntime taskRuntime;
-    
+
     @Autowired
     private TaskAdminRuntime taskAdminRuntime;
 
@@ -39,7 +51,7 @@ public class TaskRuntimeUpdateTaskTest {
     @Autowired
     private TaskCleanUpUtil taskCleanUpUtil;
 
-    @After
+    @AfterEach
     public void taskCleanUp(){
         taskCleanUpUtil.cleanUpWithAdmin();
     }
@@ -121,15 +133,16 @@ public class TaskRuntimeUpdateTaskTest {
 
         // try update
         Throwable thrown = catchThrowable(() -> taskRuntime.update(updateTaskPayload)); // task should be claimed before be updated
-        assertThat(thrown).isInstanceOf(IllegalStateException.class).hasMessage("You cannot update a task where you are not the assignee");
+        assertThat(thrown)
+            .isInstanceOf(IllegalStateException.class)
+            .hasMessage("You cannot update a task where you are not the assignee");
 
         // claim
         taskRuntime.claim(TaskPayloadBuilder.claim().withTaskId(standaloneTask.getId()).build());
 
         // update
         final Task updatedTask = taskRuntime.update(updateTaskPayload);
-        tasks = taskRuntime.tasks(Pageable.of(0,
-                                              50));
+        tasks = taskRuntime.tasks(Pageable.of(0, 50));
 
         assertThat(RuntimeTestConfiguration.updatedTasks).contains(updatedTask.getId());
         assertThat(tasks.getContent())
@@ -138,7 +151,7 @@ public class TaskRuntimeUpdateTaskTest {
                 .contains(tuple(Task.TaskStatus.ASSIGNED,
                                 standaloneTask.getId()));
     }
-    
+
     @Test
     public void createClaimAndAdminUpdateStandaloneTask() {
 
@@ -176,7 +189,7 @@ public class TaskRuntimeUpdateTaskTest {
         final Task updatedTask = taskAdminRuntime.update(updateTaskPayload);
         tasks = taskAdminRuntime.tasks(Pageable.of(0,
                                               50));
-        
+
         assertThat(RuntimeTestConfiguration.updatedTasks).contains(updatedTask.getId());
         assertThat(tasks.getContent())
                 .extracting("id",

@@ -1,15 +1,19 @@
-/* Licensed under the Apache License, Version 2.0 (the "License");
+/*
+ * Copyright 2010-2020 Alfresco Software, Ltd.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.activiti.engine.impl;
 
 import java.util.ArrayList;
@@ -85,7 +89,7 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
   protected String deploymentId;
   protected List<String> deploymentIds;
   protected List<ExecutionQueryImpl> orQueryObjects = new ArrayList<ExecutionQueryImpl>();
-  
+
   public ExecutionQueryImpl() {
   }
 
@@ -116,7 +120,7 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
     this.processDefinitionKey = processDefinitionKey;
     return this;
   }
-  
+
   @Override
   public ExecutionQuery processDefinitionCategory(String processDefinitionCategory) {
     if (processDefinitionCategory == null) {
@@ -134,7 +138,7 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
     this.processDefinitionName = processDefinitionName;
     return this;
   }
-  
+
   @Override
   public ExecutionQuery processDefinitionVersion(Integer processDefinitionVersion) {
     if (processDefinitionVersion == null) {
@@ -180,7 +184,7 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
       return this;
     }
   }
-  
+
   public ExecutionQuery processDefinitionKeys(Set<String> processDefinitionKeys) {
     if (processDefinitionKeys == null) {
       throw new ActivitiIllegalArgumentException("Process definition keys is null");
@@ -188,7 +192,7 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
     this.processDefinitionKeys = processDefinitionKeys;
     return this;
   }
-  
+
   public ExecutionQueryImpl executionId(String executionId) {
     if (executionId == null) {
       throw new ActivitiIllegalArgumentException("Execution id is null");
@@ -295,11 +299,11 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
   public ExecutionQuery processVariableValueNotEqualsIgnoreCase(String name, String value) {
     return variableValueNotEqualsIgnoreCase(name, value, false);
   }
-  
+
   public ExecutionQuery processVariableValueLike(String name, String value) {
     return variableValueLike(name, value, false);
   }
-  
+
   public ExecutionQuery processVariableValueLikeIgnoreCase(String name, String value) {
     return variableValueLikeIgnoreCase(name, value, false);
   }
@@ -341,7 +345,7 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
 
     return this;
   }
-  
+
   // ordering ////////////////////////////////////////////////////
 
   public ExecutionQueryImpl orderByProcessInstanceId() {
@@ -377,7 +381,7 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
     checkQueryOk();
     ensureVariablesInitialized();
     List<?> executions = commandContext.getExecutionEntityManager().findExecutionsByQueryCriteria(this, page);
-    
+
     if (Context.getProcessEngineConfiguration().getPerformanceSettings().isEnableLocalization()) {
       for (ExecutionEntity execution : (List<ExecutionEntity>) executions) {
         String activityId = null;
@@ -388,11 +392,11 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
                 .findDeployedProcessDefinitionById(execution.getProcessDefinitionId());
             activityId = processDefinition.getKey();
           }
-          
+
         } else {
           activityId = execution.getActivityId();
         }
-  
+
         if (activityId != null) {
           localize(execution, activityId);
         }
@@ -401,7 +405,7 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
 
     return (List<Execution>) executions;
   }
-  
+
   protected void localize(Execution execution, String activityId) {
     ExecutionEntity executionEntity = (ExecutionEntity) execution;
     executionEntity.setLocalizedName(null);
@@ -437,7 +441,7 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
   public String getProcessDefinitionId() {
     return processDefinitionId;
   }
-  
+
   public String getProcessDefinitionCategory() {
     return processDefinitionCategory;
   }
@@ -445,7 +449,7 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
   public String getProcessDefinitionName() {
     return processDefinitionName;
   }
-  
+
   public Integer getProcessDefinitionVersion() {
     return processDefinitionVersion;
   }

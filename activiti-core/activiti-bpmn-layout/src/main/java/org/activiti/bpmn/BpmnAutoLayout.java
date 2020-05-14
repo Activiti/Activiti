@@ -1,20 +1,23 @@
-/* Licensed under the Apache License, Version 2.0 (the "License");
+/*
+ * Copyright 2010-2020 Alfresco Software, Ltd.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.bpmn;
 
+import static java.util.Arrays.asList;
+
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
@@ -52,8 +55,7 @@ import org.activiti.bpmn.model.TextAnnotation;
 
 /**
  * Auto layouts a {@link BpmnModel}.
- * 
-
+ *
  */
 public class BpmnAutoLayout {
 
@@ -110,7 +112,7 @@ public class BpmnAutoLayout {
     graph.getModel().beginUpdate();
 
  // Subprocesses are handled in a new instance of BpmnAutoLayout, hence they instantiations of new maps here.
-    
+
     handledFlowElements = new HashMap<String, FlowElement>();
     handledArtifacts = new HashMap<String, Artifact>();
     generatedVertices = new HashMap<String, Object>();
@@ -119,7 +121,7 @@ public class BpmnAutoLayout {
 
     associations = new HashMap<String, Association>(); //Associations are gathered and processed afterwards, because we must be sure we already found source and target
     textAnnotations = new HashMap<String, TextAnnotation>(); // Text Annotations are gathered and processed afterwards, because we must be sure we already found the parent.
-    
+
     sequenceFlows = new HashMap<String, SequenceFlow>(); // Sequence flow are gathered and processed afterwards,because we mustbe sure we already found source and target
     boundaryEvents = new ArrayList<BoundaryEvent>(); // Boundary events are gathered and processed afterwards, because we must be sure we have its parent
 
@@ -407,7 +409,7 @@ public class BpmnAutoLayout {
 
         double closestDistance = Double.MAX_VALUE;
         mxPoint closestPoint = null;
-        for (mxPoint rhombusPoint : Arrays.asList(northPoint, southPoint, eastPoint, westPoint)) {
+        for (mxPoint rhombusPoint : asList(northPoint, southPoint, eastPoint, westPoint)) {
           double distance = euclidianDistance(startPoint, rhombusPoint);
           if (distance < closestDistance) {
             closestDistance = distance;
@@ -506,7 +508,7 @@ public class BpmnAutoLayout {
   /**
    * Since subprocesses are autolayouted independently (see {@link #handleSubProcess(FlowElement)}), the elements have x and y coordinates relative to the bounds of the subprocess (thinking the
    * subprocess is on (0,0). This however, does not work for nested subprocesses, as they need to take in account the x and y coordinates for each of the parent subproceses.
-   * 
+   *
    * This method is to be called after fully layouting one process, since ALL elements need to have x and y.
    */
   protected void translateNestedSubprocesses(Process process) {

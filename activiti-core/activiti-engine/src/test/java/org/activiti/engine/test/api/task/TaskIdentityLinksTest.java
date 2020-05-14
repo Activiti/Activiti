@@ -1,9 +1,12 @@
-/* Licensed under the Apache License, Version 2.0 (the "License");
+/*
+ * Copyright 2010-2020 Alfresco Software, Ltd.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -11,7 +14,10 @@
  * limitations under the License.
  */
 
+
 package org.activiti.engine.test.api.task;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 
@@ -42,16 +48,16 @@ public class TaskIdentityLinksTest extends PluggableActivitiTestCase {
     List<IdentityLink> identityLinks = taskService.getIdentityLinksForTask(taskId);
     IdentityLink identityLink = identityLinks.get(0);
 
-    assertNull(identityLink.getGroupId());
-    assertEquals("kermit", identityLink.getUserId());
-    assertEquals(IdentityLinkType.CANDIDATE, identityLink.getType());
-    assertEquals(taskId, identityLink.getTaskId());
+    assertThat(identityLink.getGroupId()).isNull();
+    assertThat(identityLink.getUserId()).isEqualTo("kermit");
+    assertThat(identityLink.getType()).isEqualTo(IdentityLinkType.CANDIDATE);
+    assertThat(identityLink.getTaskId()).isEqualTo(taskId);
 
-    assertEquals(1, identityLinks.size());
+    assertThat(identityLinks).hasSize(1);
 
     taskService.deleteCandidateUser(taskId, "kermit");
 
-    assertEquals(0, taskService.getIdentityLinksForTask(taskId).size());
+    assertThat(taskService.getIdentityLinksForTask(taskId)).hasSize(0);
   }
 
   @Deployment(resources = "org/activiti/engine/test/api/task/IdentityLinksProcess.bpmn20.xml")
@@ -65,22 +71,22 @@ public class TaskIdentityLinksTest extends PluggableActivitiTestCase {
     List<IdentityLink> identityLinks = taskService.getIdentityLinksForTask(taskId);
     IdentityLink identityLink = identityLinks.get(0);
 
-    assertEquals("muppets", identityLink.getGroupId());
-    assertNull("kermit", identityLink.getUserId());
-    assertEquals(IdentityLinkType.CANDIDATE, identityLink.getType());
-    assertEquals(taskId, identityLink.getTaskId());
+    assertThat(identityLink.getGroupId()).isEqualTo("muppets");
+    assertThat(identityLink.getUserId()).as("kermit").isNull();
+    assertThat(identityLink.getType()).isEqualTo(IdentityLinkType.CANDIDATE);
+    assertThat(identityLink.getTaskId()).isEqualTo(taskId);
 
-    assertEquals(1, identityLinks.size());
+    assertThat(identityLinks).hasSize(1);
 
     if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
       List<Event> taskEvents = taskService.getTaskEvents(taskId);
-      assertEquals(1, taskEvents.size());
+      assertThat(taskEvents).hasSize(1);
       Event taskEvent = taskEvents.get(0);
-      assertEquals(Event.ACTION_ADD_GROUP_LINK, taskEvent.getAction());
+      assertThat(taskEvent.getAction()).isEqualTo(Event.ACTION_ADD_GROUP_LINK);
       List<String> taskEventMessageParts = taskEvent.getMessageParts();
-      assertEquals("muppets", taskEventMessageParts.get(0));
-      assertEquals(IdentityLinkType.CANDIDATE, taskEventMessageParts.get(1));
-      assertEquals(2, taskEventMessageParts.size());
+      assertThat(taskEventMessageParts.get(0)).isEqualTo("muppets");
+      assertThat(taskEventMessageParts.get(1)).isEqualTo(IdentityLinkType.CANDIDATE);
+      assertThat(taskEventMessageParts).hasSize(2);
     }
 
     taskService.deleteCandidateGroup(taskId, "muppets");
@@ -88,15 +94,15 @@ public class TaskIdentityLinksTest extends PluggableActivitiTestCase {
     if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
       List<Event> taskEvents = taskService.getTaskEvents(taskId);
       Event taskEvent = findTaskEvent(taskEvents, Event.ACTION_DELETE_GROUP_LINK);
-      assertEquals(Event.ACTION_DELETE_GROUP_LINK, taskEvent.getAction());
+      assertThat(taskEvent.getAction()).isEqualTo(Event.ACTION_DELETE_GROUP_LINK);
       List<String> taskEventMessageParts = taskEvent.getMessageParts();
-      assertEquals("muppets", taskEventMessageParts.get(0));
-      assertEquals(IdentityLinkType.CANDIDATE, taskEventMessageParts.get(1));
-      assertEquals(2, taskEventMessageParts.size());
-      assertEquals(2, taskEvents.size());
+      assertThat(taskEventMessageParts.get(0)).isEqualTo("muppets");
+      assertThat(taskEventMessageParts.get(1)).isEqualTo(IdentityLinkType.CANDIDATE);
+      assertThat(taskEventMessageParts).hasSize(2);
+      assertThat(taskEvents).hasSize(2);
     }
 
-    assertEquals(0, taskService.getIdentityLinksForTask(taskId).size());
+    assertThat(taskService.getIdentityLinksForTask(taskId)).hasSize(0);
   }
 
   private Event findTaskEvent(List<Event> taskEvents, String action) {
@@ -119,16 +125,16 @@ public class TaskIdentityLinksTest extends PluggableActivitiTestCase {
     List<IdentityLink> identityLinks = taskService.getIdentityLinksForTask(taskId);
     IdentityLink identityLink = identityLinks.get(0);
 
-    assertNull(identityLink.getGroupId());
-    assertEquals("kermit", identityLink.getUserId());
-    assertEquals("interestee", identityLink.getType());
-    assertEquals(taskId, identityLink.getTaskId());
+    assertThat(identityLink.getGroupId()).isNull();
+    assertThat(identityLink.getUserId()).isEqualTo("kermit");
+    assertThat(identityLink.getType()).isEqualTo("interestee");
+    assertThat(identityLink.getTaskId()).isEqualTo(taskId);
 
-    assertEquals(1, identityLinks.size());
+    assertThat(identityLinks).hasSize(1);
 
     taskService.deleteUserIdentityLink(taskId, "kermit", "interestee");
 
-    assertEquals(0, taskService.getIdentityLinksForTask(taskId).size());
+    assertThat(taskService.getIdentityLinksForTask(taskId)).hasSize(0);
   }
 
   @Deployment(resources = "org/activiti/engine/test/api/task/IdentityLinksProcess.bpmn20.xml")
@@ -142,16 +148,16 @@ public class TaskIdentityLinksTest extends PluggableActivitiTestCase {
     List<IdentityLink> identityLinks = taskService.getIdentityLinksForTask(taskId);
     IdentityLink identityLink = identityLinks.get(0);
 
-    assertEquals("muppets", identityLink.getGroupId());
-    assertNull("kermit", identityLink.getUserId());
-    assertEquals("playing", identityLink.getType());
-    assertEquals(taskId, identityLink.getTaskId());
+    assertThat(identityLink.getGroupId()).isEqualTo("muppets");
+    assertThat(identityLink.getUserId()).as("kermit").isNull();
+    assertThat(identityLink.getType()).isEqualTo("playing");
+    assertThat(identityLink.getTaskId()).isEqualTo(taskId);
 
-    assertEquals(1, identityLinks.size());
+    assertThat(identityLinks).hasSize(1);
 
     taskService.deleteGroupIdentityLink(taskId, "muppets", "playing");
 
-    assertEquals(0, taskService.getIdentityLinksForTask(taskId).size());
+    assertThat(taskService.getIdentityLinksForTask(taskId)).hasSize(0);
   }
 
   public void testDeleteAssignee() {
@@ -162,8 +168,8 @@ public class TaskIdentityLinksTest extends PluggableActivitiTestCase {
     taskService.deleteUserIdentityLink(task.getId(), "nonExistingUser", IdentityLinkType.ASSIGNEE);
 
     task = taskService.createTaskQuery().taskId(task.getId()).singleResult();
-    assertNull(task.getAssignee());
-    assertEquals(0, taskService.getIdentityLinksForTask(task.getId()).size());
+    assertThat(task.getAssignee()).isNull();
+    assertThat(taskService.getIdentityLinksForTask(task.getId())).hasSize(0);
 
     // cleanup
     taskService.deleteTask(task.getId(), true);
@@ -177,8 +183,8 @@ public class TaskIdentityLinksTest extends PluggableActivitiTestCase {
     taskService.deleteUserIdentityLink(task.getId(), "nonExistingUser", IdentityLinkType.OWNER);
 
     task = taskService.createTaskQuery().taskId(task.getId()).singleResult();
-    assertNull(task.getOwner());
-    assertEquals(0, taskService.getIdentityLinksForTask(task.getId()).size());
+    assertThat(task.getOwner()).isNull();
+    assertThat(taskService.getIdentityLinksForTask(task.getId())).hasSize(0);
 
     // cleanup
     taskService.deleteTask(task.getId(), true);
@@ -192,10 +198,10 @@ public class TaskIdentityLinksTest extends PluggableActivitiTestCase {
 
     List<IdentityLink> identityLinks = taskService.getIdentityLinksForTask(taskId);
 
-    assertEquals(1, identityLinks.size());
+    assertThat(identityLinks).hasSize(1);
     IdentityLink identityLink = identityLinks.get(0);
 
-    assertEquals("user", identityLink.getUserId());
+    assertThat(identityLink.getUserId()).isEqualTo("user");
   }
 
   @Deployment(resources = "org/activiti/engine/test/api/task/IdentityLinksProcess.bpmn20.xml")
@@ -208,18 +214,18 @@ public class TaskIdentityLinksTest extends PluggableActivitiTestCase {
     taskService.deleteCandidateUser(taskId, "kermit");
 
     List<IdentityLink> identityLinks = taskService.getIdentityLinksForTask(taskId);
-    assertNotNull(identityLinks);
-    assertEquals(1, identityLinks.size());
+    assertThat(identityLinks).isNotNull();
+    assertThat(identityLinks).hasSize(1);
 
     IdentityLink identityLink = identityLinks.get(0);
-    assertEquals("muppets", identityLink.getGroupId());
-    assertEquals(null, identityLink.getUserId());
-    assertEquals(IdentityLinkType.CANDIDATE, identityLink.getType());
-    assertEquals(taskId, identityLink.getTaskId());
+    assertThat(identityLink.getGroupId()).isEqualTo("muppets");
+    assertThat(identityLink.getUserId()).isEqualTo(null);
+    assertThat(identityLink.getType()).isEqualTo(IdentityLinkType.CANDIDATE);
+    assertThat(identityLink.getTaskId()).isEqualTo(taskId);
 
     taskService.deleteCandidateGroup(taskId, "muppets");
 
-    assertEquals(0, taskService.getIdentityLinksForTask(taskId).size());
+    assertThat(taskService.getIdentityLinksForTask(taskId)).hasSize(0);
   }
 
   // Test custom identity links
@@ -228,18 +234,18 @@ public class TaskIdentityLinksTest extends PluggableActivitiTestCase {
     runtimeService.startProcessInstanceByKey("customIdentityLink");
 
     List<Task> tasks = taskService.createTaskQuery().taskInvolvedUser("kermit").list();
-    assertEquals(1, tasks.size());
+    assertThat(tasks).hasSize(1);
 
     List<IdentityLink> identityLinks = taskService.getIdentityLinksForTask(tasks.get(0).getId());
-    assertEquals(2, identityLinks.size());
+    assertThat(identityLinks).hasSize(2);
 
     for (IdentityLink idLink : identityLinks) {
-      assertEquals("businessAdministrator", idLink.getType());
+      assertThat(idLink.getType()).isEqualTo("businessAdministrator");
       String userId = idLink.getUserId();
       if (userId == null) {
-        assertEquals("management", idLink.getGroupId());
+        assertThat(idLink.getGroupId()).isEqualTo("management");
       } else {
-        assertEquals("kermit", userId);
+        assertThat(userId).isEqualTo("kermit");
       }
     }
   }

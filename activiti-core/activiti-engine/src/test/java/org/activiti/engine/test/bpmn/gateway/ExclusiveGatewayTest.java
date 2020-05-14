@@ -1,16 +1,24 @@
-/* Licensed under the Apache License, Version 2.0 (the "License");
+/*
+ * Copyright 2010-2020 Alfresco Software, Ltd.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.activiti.engine.test.bpmn.gateway;
+
+import static java.util.Collections.singletonMap;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,7 +27,6 @@ import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
-import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
@@ -33,8 +40,8 @@ public class ExclusiveGatewayTest extends PluggableActivitiTestCase {
   @Deployment
   public void testDivergingExclusiveGateway() {
     for (int i = 1; i <= 3; i++) {
-      ProcessInstance pi = runtimeService.startProcessInstanceByKey("exclusiveGwDiverging", CollectionUtil.singletonMap("input", i));
-      assertEquals("Task " + i, taskService.createTaskQuery().singleResult().getName());
+      ProcessInstance pi = runtimeService.startProcessInstanceByKey("exclusiveGwDiverging", singletonMap("input", i));
+      assertThat(taskService.createTaskQuery().singleResult().getName()).isEqualTo("Task " + i);
       runtimeService.deleteProcessInstance(pi.getId(), "testing deletion");
     }
   }
@@ -47,7 +54,7 @@ public class ExclusiveGatewayTest extends PluggableActivitiTestCase {
       variables.put("input", -i);
 
       ProcessInstance pi = runtimeService.startProcessInstanceByKey("exclusiveGwDivergingSkipExpression", variables);
-      assertEquals("Task " + i, taskService.createTaskQuery().singleResult().getName());
+      assertThat(taskService.createTaskQuery().singleResult().getName()).isEqualTo("Task " + i);
       runtimeService.deleteProcessInstance(pi.getId(), "testing deletion");
     }
   }
@@ -55,25 +62,22 @@ public class ExclusiveGatewayTest extends PluggableActivitiTestCase {
   @Deployment
   public void testMergingExclusiveGateway() {
     runtimeService.startProcessInstanceByKey("exclusiveGwMerging");
-    assertEquals(3, taskService.createTaskQuery().count());
+    assertThat(taskService.createTaskQuery().count()).isEqualTo(3);
   }
 
   // If there are multiple outgoing seqFlow with valid conditions, the first
   // defined one should be chosen.
   @Deployment
   public void testMultipleValidConditions() {
-    runtimeService.startProcessInstanceByKey("exclusiveGwMultipleValidConditions", CollectionUtil.singletonMap("input", 5));
-    assertEquals("Task 2", taskService.createTaskQuery().singleResult().getName());
+    runtimeService.startProcessInstanceByKey("exclusiveGwMultipleValidConditions", singletonMap("input", 5));
+    assertThat(taskService.createTaskQuery().singleResult().getName()).isEqualTo("Task 2");
   }
 
   @Deployment
   public void testNoSequenceFlowSelected() {
-    try {
-      runtimeService.startProcessInstanceByKey("exclusiveGwNoSeqFlowSelected", CollectionUtil.singletonMap("input", 4));
-      fail();
-    } catch (ActivitiException e) {
-      assertTextPresent("No outgoing sequence flow of the exclusive gateway " + "'exclusiveGw' could be selected for continuing the process", e.getMessage());
-    }
+    assertThatExceptionOfType(ActivitiException.class)
+      .isThrownBy(() -> runtimeService.startProcessInstanceByKey("exclusiveGwNoSeqFlowSelected", singletonMap("input", 4)))
+      .withMessageContaining("No outgoing sequence flow of the exclusive gateway " + "'exclusiveGw' could be selected for continuing the process");
   }
 
   /**
@@ -83,28 +87,24 @@ public class ExclusiveGatewayTest extends PluggableActivitiTestCase {
   public void testWhitespaceInExpression() {
     // Starting a process instance will lead to an exception if whitespace
     // are incorrectly handled
-    runtimeService.startProcessInstanceByKey("whiteSpaceInExpression", CollectionUtil.singletonMap("input", 1));
+    runtimeService.startProcessInstanceByKey("whiteSpaceInExpression", singletonMap("input", 1));
   }
 
   @Deployment(resources = { "org/activiti/engine/test/bpmn/gateway/ExclusiveGatewayTest.testDivergingExclusiveGateway.bpmn20.xml" })
   public void testUnknownVariableInExpression() {
-    // Instead of 'input' we're starting a process instance with the name
-    // 'iinput' (ie. a typo)
-    try {
-      runtimeService.startProcessInstanceByKey("exclusiveGwDiverging", CollectionUtil.singletonMap("iinput", 1));
-      fail();
-    } catch (ActivitiException e) {
-      assertTextPresent("Unknown property used in expression", e.getMessage());
-    }
+    // Instead of 'input' we're starting a process instance with the name 'iinput' (ie. a typo)
+    assertThatExceptionOfType(ActivitiException.class)
+      .isThrownBy(() -> runtimeService.startProcessInstanceByKey("exclusiveGwDiverging", singletonMap("iinput", 1)))
+      .withMessageContaining("Unknown property used in expression");
   }
 
   @Deployment
   public void testDecideBasedOnBeanProperty() {
-    runtimeService.startProcessInstanceByKey("decisionBasedOnBeanProperty", CollectionUtil.singletonMap("order", new ExclusiveGatewayTestOrder(150)));
+    runtimeService.startProcessInstanceByKey("decisionBasedOnBeanProperty", singletonMap("order", new ExclusiveGatewayTestOrder(150)));
 
     Task task = taskService.createTaskQuery().singleResult();
-    assertNotNull(task);
-    assertEquals("Standard service", task.getName());
+    assertThat(task).isNotNull();
+    assertThat(task.getName()).isEqualTo("Standard service");
   }
 
   @Deployment
@@ -114,53 +114,50 @@ public class ExclusiveGatewayTest extends PluggableActivitiTestCase {
     orders.add(new ExclusiveGatewayTestOrder(300));
     orders.add(new ExclusiveGatewayTestOrder(175));
 
-    ProcessInstance pi = runtimeService.startProcessInstanceByKey("decisionBasedOnListOrArrayOfBeans", CollectionUtil.singletonMap("orders", orders));
+    ProcessInstance pi = runtimeService.startProcessInstanceByKey("decisionBasedOnListOrArrayOfBeans", singletonMap("orders", orders));
 
     Task task = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
-    assertNotNull(task);
-    assertEquals("Gold Member service", task.getName());
+    assertThat(task).isNotNull();
+    assertThat(task.getName()).isEqualTo("Gold Member service");
 
     // Arrays are usable in exactly the same way
     ExclusiveGatewayTestOrder[] orderArray = orders.toArray(new ExclusiveGatewayTestOrder[orders.size()]);
     orderArray[1].setPrice(10);
-    pi = runtimeService.startProcessInstanceByKey("decisionBasedOnListOrArrayOfBeans", CollectionUtil.singletonMap("orders", orderArray));
+    pi = runtimeService.startProcessInstanceByKey("decisionBasedOnListOrArrayOfBeans", singletonMap("orders", orderArray));
 
     task = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
-    assertNotNull(task);
-    assertEquals("Basic service", task.getName());
+    assertThat(task).isNotNull();
+    assertThat(task.getName()).isEqualTo("Basic service");
   }
 
   @Deployment
   public void testDecideBasedOnBeanMethod() {
-    runtimeService.startProcessInstanceByKey("decisionBasedOnBeanMethod", CollectionUtil.singletonMap("order", new ExclusiveGatewayTestOrder(300)));
+    runtimeService.startProcessInstanceByKey("decisionBasedOnBeanMethod", singletonMap("order", new ExclusiveGatewayTestOrder(300)));
 
     Task task = taskService.createTaskQuery().singleResult();
-    assertNotNull(task);
-    assertEquals("Gold Member service", task.getName());
+    assertThat(task).isNotNull();
+    assertThat(task.getName()).isEqualTo("Gold Member service");
   }
 
   @Deployment
   public void testInvalidMethodExpression() {
-    try {
-      runtimeService.startProcessInstanceByKey("invalidMethodExpression", CollectionUtil.singletonMap("order", new ExclusiveGatewayTestOrder(50)));
-      fail();
-    } catch (ActivitiException e) {
-      assertTextPresent("Unknown method used in expression", e.getMessage());
-    }
+    assertThatExceptionOfType(ActivitiException.class)
+      .isThrownBy(() -> runtimeService.startProcessInstanceByKey("invalidMethodExpression", singletonMap("order", new ExclusiveGatewayTestOrder(50))))
+      .withMessageContaining("Unknown method used in expression");
   }
 
   @Deployment
   public void testDefaultSequenceFlow() {
 
     // Input == 1 -> default is not selected
-    String procId = runtimeService.startProcessInstanceByKey("exclusiveGwDefaultSequenceFlow", CollectionUtil.singletonMap("input", 1)).getId();
+    String procId = runtimeService.startProcessInstanceByKey("exclusiveGwDefaultSequenceFlow", singletonMap("input", 1)).getId();
     Task task = taskService.createTaskQuery().singleResult();
-    assertEquals("Input is one", task.getName());
+    assertThat(task.getName()).isEqualTo("Input is one");
     runtimeService.deleteProcessInstance(procId, null);
 
-    runtimeService.startProcessInstanceByKey("exclusiveGwDefaultSequenceFlow", CollectionUtil.singletonMap("input", 5)).getId();
+    runtimeService.startProcessInstanceByKey("exclusiveGwDefaultSequenceFlow", singletonMap("input", 5)).getId();
     task = taskService.createTaskQuery().singleResult();
-    assertEquals("Default input", task.getName());
+    assertThat(task.getName()).isEqualTo("Default input");
   }
 
   public void testInvalidProcessDefinition() {
@@ -175,36 +172,30 @@ public class ExclusiveGatewayTest extends PluggableActivitiTestCase {
 
         "    <userTask id='theTask1' name='Input is one' /> " + "    <userTask id='theTask2' name='Default input' /> " + "  </process>" + "</definitions>";
 
-    try {
-      repositoryService.createDeployment().addString("myprocess.bpmn20.xml", defaultFlowWithCondition).deploy();
-      fail();
-    } catch (Exception e) {
-    }
+    assertThatExceptionOfType(Exception.class)
+      .isThrownBy(() -> repositoryService.createDeployment().addString("myprocess.bpmn20.xml", defaultFlowWithCondition).deploy());
 
     String noOutgoingFlow = "<?xml version='1.0' encoding='UTF-8'?>"
         + "<definitions id='definitions' xmlns='http://www.omg.org/spec/BPMN/20100524/MODEL' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns:activiti='http://activiti.org/bpmn' targetNamespace='Examples'>"
         + "  <process id='exclusiveGwDefaultSequenceFlow'> " + "    <startEvent id='theStart' /> " + "    <sequenceFlow id='flow1' sourceRef='theStart' targetRef='exclusiveGw' /> "
         + "    <exclusiveGateway id='exclusiveGw' name='Exclusive Gateway' /> " + "  </process>" + "</definitions>";
-    try {
-      repositoryService.createDeployment().addString("myprocess.bpmn20.xml", noOutgoingFlow).deploy();
-      fail("Could deploy a process definition with a XOR Gateway without outgoing sequence flows.");
-    } catch (ActivitiException ex) {
-    }
-
+    assertThatExceptionOfType(ActivitiException.class)
+      .as("Could deploy a process definition with a XOR Gateway without outgoing sequence flows.")
+      .isThrownBy(() -> repositoryService.createDeployment().addString("myprocess.bpmn20.xml", noOutgoingFlow).deploy());
   }
-  
+
   @Deployment
   public void testAsyncExclusiveGateway() {
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("asyncExclusive", CollectionUtil.singletonMap("input", 1));
-    
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("asyncExclusive", singletonMap("input", 1));
+
     Job job = managementService.createJobQuery().processInstanceId(processInstance.getId()).singleResult();
-    assertNotNull(job);
-    
+    assertThat(job).isNotNull();
+
     managementService.executeJob(job.getId());
     Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
-    assertEquals("Input is one", task.getName());
+    assertThat(task.getName()).isEqualTo("Input is one");
   }
-  
+
   // From https://github.com/Activiti/Activiti/issues/796
   @Deployment
   public void testExclusiveDirectlyToEnd() {
@@ -214,7 +205,7 @@ public class ExclusiveGatewayTest extends PluggableActivitiTestCase {
     long count = historyService.createHistoricActivityInstanceQuery()
         .processInstanceId(startProcessInstanceByKey.getId()).unfinished()
         .count();
-    assertEquals(0, count);
+    assertThat(count).isEqualTo(0);
   }
 
 }

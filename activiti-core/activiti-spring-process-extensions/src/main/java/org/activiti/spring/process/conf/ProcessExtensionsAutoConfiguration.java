@@ -1,8 +1,11 @@
-/* Licensed under the Apache License, Version 2.0 (the "License");
+/*
+ * Copyright 2010-2020 Alfresco Software, Ltd.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -11,12 +14,12 @@
  * limitations under the License.
  */
 
+
 package org.activiti.spring.process.conf;
 
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.activiti.common.util.DateFormatterProvider;
 import org.activiti.engine.RepositoryService;
@@ -82,8 +85,10 @@ public class ProcessExtensionsAutoConfiguration {
         variableTypeMap.put("integer", new JavaObjectVariableType(Integer.class));
         variableTypeMap.put("json", new JsonObjectVariableType(objectMapper));
         variableTypeMap.put("file", new JsonObjectVariableType(objectMapper));
+        variableTypeMap.put("folder", new JsonObjectVariableType(objectMapper));
         variableTypeMap.put("date", new DateVariableType(Date.class, dateFormatterProvider));
         variableTypeMap.put("datetime", new DateVariableType(Date.class, dateFormatterProvider));
+        variableTypeMap.put("array", new JsonObjectVariableType(objectMapper));
         return variableTypeMap;
     }
 

@@ -1,18 +1,23 @@
-/* Licensed under the Apache License, Version 2.0 (the "License");
+/*
+ * Copyright 2010-2020 Alfresco Software, Ltd.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.activiti.engine.impl.persistence.entity.data.impl;
 
-import java.util.Collections;
+import static java.util.Collections.emptyList;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,9 +36,9 @@ import org.activiti.engine.task.Task;
 
  */
 public class MybatisTaskDataManager extends AbstractDataManager<TaskEntity> implements TaskDataManager {
-  
+
   protected CachedEntityMatcher<TaskEntity> tasksByExecutionIdMatcher = new TasksByExecutionIdMatcher();
-  
+
   public MybatisTaskDataManager(ProcessEngineConfigurationImpl processEngineConfiguration) {
     super(processEngineConfiguration);
   }
@@ -42,12 +47,12 @@ public class MybatisTaskDataManager extends AbstractDataManager<TaskEntity> impl
   public Class<? extends TaskEntity> getManagedEntityClass() {
     return TaskEntityImpl.class;
   }
-  
+
   @Override
   public TaskEntity create() {
     return new TaskEntityImpl();
   }
-  
+
   @Override
   public List<TaskEntity> findTasksByExecutionId(final String executionId) {
     return getList("selectTasksByExecutionId", executionId, tasksByExecutionIdMatcher, true);
@@ -65,7 +70,7 @@ public class MybatisTaskDataManager extends AbstractDataManager<TaskEntity> impl
     final String query = "selectTaskByQueryCriteria";
     return getDbSqlSession().selectList(query, taskQuery);
   }
-  
+
   @Override
   @SuppressWarnings("unchecked")
   public List<Task> findTasksAndVariablesByQueryCriteria(TaskQueryImpl taskQuery) {
@@ -73,7 +78,7 @@ public class MybatisTaskDataManager extends AbstractDataManager<TaskEntity> impl
     // paging doesn't work for combining task instances and variables due to
     // an outer join, so doing it in-memory
     if (taskQuery.getFirstResult() < 0 || taskQuery.getMaxResults() <= 0) {
-      return Collections.EMPTY_LIST;
+      return emptyList();
     }
 
     int firstResult = taskQuery.getFirstResult();
@@ -95,14 +100,14 @@ public class MybatisTaskDataManager extends AbstractDataManager<TaskEntity> impl
           int toIndex = firstResult + Math.min(maxResults, instanceList.size() - firstResult);
           return instanceList.subList(firstResult, toIndex);
         } else {
-          return Collections.EMPTY_LIST;
+          return emptyList();
         }
       } else {
         int toIndex = Math.min(maxResults, instanceList.size());
         return instanceList.subList(0, toIndex);
       }
     }
-    return Collections.EMPTY_LIST;
+    return emptyList();
   }
 
   @Override
@@ -126,7 +131,7 @@ public class MybatisTaskDataManager extends AbstractDataManager<TaskEntity> impl
   public List<Task> findTasksByParentTaskId(String parentTaskId) {
     return getDbSqlSession().selectList("selectTasksByParentTaskId", parentTaskId);
   }
-  
+
   @Override
   public void updateTaskTenantIdForDeployment(String deploymentId, String newTenantId) {
     HashMap<String, Object> params = new HashMap<String, Object>();
@@ -134,5 +139,5 @@ public class MybatisTaskDataManager extends AbstractDataManager<TaskEntity> impl
     params.put("tenantId", newTenantId);
     getDbSqlSession().update("updateTaskTenantIdForDeployment", params);
   }
-  
+
 }

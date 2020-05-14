@@ -1,18 +1,24 @@
-/* Licensed under the Apache License, Version 2.0 (the "License");
+/*
+ * Copyright 2010-2020 Alfresco Software, Ltd.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.activiti.examples.bpmn.tasklistener;
 
-import java.util.Arrays;
+import static java.util.Arrays.asList;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -31,33 +37,33 @@ public class CustomTaskAssignmentTest extends PluggableActivitiTestCase {
   @Deployment
   public void testCandidateGroupAssignment() {
     runtimeService.startProcessInstanceByKey("customTaskAssignment");
-    assertEquals(1, taskService.createTaskQuery().taskCandidateGroup("management").count());
-    assertEquals(1, taskService.createTaskQuery().taskCandidateUser("kermit", Arrays.asList("management")).count());
-    assertEquals(0, taskService.createTaskQuery().taskCandidateUser("fozzie",null).count());
+    assertThat(taskService.createTaskQuery().taskCandidateGroup("management").count()).isEqualTo(1);
+    assertThat(taskService.createTaskQuery().taskCandidateUser("kermit", asList("management")).count()).isEqualTo(1);
+    assertThat(taskService.createTaskQuery().taskCandidateUser("fozzie",null).count()).isEqualTo(0);
   }
 
   @Deployment
   public void testCandidateUserAssignment() {
     runtimeService.startProcessInstanceByKey("customTaskAssignment");
-    assertEquals(1, taskService.createTaskQuery().taskCandidateUser("kermit",null).count());
-    assertEquals(1, taskService.createTaskQuery().taskCandidateUser("fozzie",null).count());
-    assertEquals(0, taskService.createTaskQuery().taskCandidateUser("gonzo",null).count());
+    assertThat(taskService.createTaskQuery().taskCandidateUser("kermit",null).count()).isEqualTo(1);
+    assertThat(taskService.createTaskQuery().taskCandidateUser("fozzie",null).count()).isEqualTo(1);
+    assertThat(taskService.createTaskQuery().taskCandidateUser("gonzo",null).count()).isEqualTo(0);
   }
 
   @Deployment
   public void testAssigneeAssignment() {
     runtimeService.startProcessInstanceByKey("setAssigneeInListener");
-    assertNotNull(taskService.createTaskQuery().taskAssignee("kermit").singleResult());
-    assertEquals(0, taskService.createTaskQuery().taskAssignee("fozzie").count());
-    assertEquals(0, taskService.createTaskQuery().taskAssignee("gonzo").count());
+    assertThat(taskService.createTaskQuery().taskAssignee("kermit").singleResult()).isNotNull();
+    assertThat(taskService.createTaskQuery().taskAssignee("fozzie").count()).isEqualTo(0);
+    assertThat(taskService.createTaskQuery().taskAssignee("gonzo").count()).isEqualTo(0);
   }
 
   @Deployment
   public void testOverwriteExistingAssignments() {
     runtimeService.startProcessInstanceByKey("overrideAssigneeInListener");
-    assertNotNull(taskService.createTaskQuery().taskAssignee("kermit").singleResult());
-    assertEquals(0, taskService.createTaskQuery().taskAssignee("fozzie").count());
-    assertEquals(0, taskService.createTaskQuery().taskAssignee("gonzo").count());
+    assertThat(taskService.createTaskQuery().taskAssignee("kermit").singleResult()).isNotNull();
+    assertThat(taskService.createTaskQuery().taskAssignee("fozzie").count()).isEqualTo(0);
+    assertThat(taskService.createTaskQuery().taskAssignee("gonzo").count()).isEqualTo(0);
   }
 
   @Deployment
@@ -73,9 +79,9 @@ public class CustomTaskAssignmentTest extends PluggableActivitiTestCase {
     runtimeService.startProcessInstanceByKey("customTaskAssignment", variables);
 
     // check task lists
-    assertNotNull(taskService.createTaskQuery().taskAssignee("gonzo").singleResult());
-    assertEquals(0, taskService.createTaskQuery().taskAssignee("fozzie").count());
-    assertEquals(0, taskService.createTaskQuery().taskAssignee("kermit").count());
+    assertThat(taskService.createTaskQuery().taskAssignee("gonzo").singleResult()).isNotNull();
+    assertThat(taskService.createTaskQuery().taskAssignee("fozzie").count()).isEqualTo(0);
+    assertThat(taskService.createTaskQuery().taskAssignee("kermit").count()).isEqualTo(0);
   }
 
   @Deployment
@@ -83,18 +89,18 @@ public class CustomTaskAssignmentTest extends PluggableActivitiTestCase {
     runtimeService.startProcessInstanceByKey("releaseTaskProcess");
 
     Task task = taskService.createTaskQuery().taskAssignee("fozzie").singleResult();
-    assertNotNull(task);
+    assertThat(task).isNotNull();
     String taskId = task.getId();
 
     // Set assignee to null
     taskService.setAssignee(taskId, null);
 
     task = taskService.createTaskQuery().taskAssignee("fozzie").singleResult();
-    assertNull(task);
+    assertThat(task).isNull();
 
     task = taskService.createTaskQuery().taskId(taskId).singleResult();
-    assertNotNull(task);
-    assertNull(task.getAssignee());
+    assertThat(task).isNotNull();
+    assertThat(task.getAssignee()).isNull();
   }
 
 }

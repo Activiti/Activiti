@@ -1,9 +1,21 @@
+/*
+ * Copyright 2010-2020 Alfresco Software, Ltd.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.activiti.editor.language.xml;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.HashMap;
 import java.util.List;
@@ -17,7 +29,7 @@ import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.StartEvent;
 import org.activiti.bpmn.model.SubProcess;
 import org.activiti.bpmn.model.ValuedDataObject;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * @see <a href="https://activiti.atlassian.net/browse/ACT-2055">https://activiti.atlassian.net/browse/ACT-2055</a>
@@ -119,43 +131,37 @@ public class SubProcessWithExtensionsConverterTest extends AbstractConverterTest
 
   private void validateModel(BpmnModel model) {
     FlowElement flowElement = model.getMainProcess().getFlowElement("start1");
-    assertNotNull(flowElement);
-    assertTrue(flowElement instanceof StartEvent);
-    assertEquals("start1", flowElement.getId());
+    assertThat(flowElement).isNotNull();
+    assertThat(flowElement).isInstanceOf(StartEvent.class);
+    assertThat(flowElement.getId()).isEqualTo("start1");
 
     flowElement = model.getMainProcess().getFlowElement("subprocess1");
-    assertNotNull(flowElement);
-    assertTrue(flowElement instanceof SubProcess);
-    assertEquals("subprocess1", flowElement.getId());
+    assertThat(flowElement).isNotNull();
+    assertThat(flowElement).isInstanceOf(SubProcess.class);
+    assertThat(flowElement.getId()).isEqualTo("subprocess1");
     SubProcess subProcess = (SubProcess) flowElement;
-    assertTrue(subProcess.getLoopCharacteristics().isSequential());
-    assertEquals("10", subProcess.getLoopCharacteristics().getLoopCardinality());
-    assertEquals("${assignee == \"\"}", subProcess.getLoopCharacteristics().getCompletionCondition());
-    assertTrue(subProcess.getFlowElements().size() == 5);
+    assertThat(subProcess.getLoopCharacteristics().isSequential()).isTrue();
+    assertThat(subProcess.getLoopCharacteristics().getLoopCardinality()).isEqualTo("10");
+    assertThat(subProcess.getLoopCharacteristics().getCompletionCondition()).isEqualTo("${assignee == \"\"}");
+    assertThat(subProcess.getFlowElements()).hasSize(5);
 
     /*
      * Verify Subprocess attributes extension
      */
     Map<String, String> attributes = getSubprocessAttributes(flowElement);
-    assertEquals(2, attributes.size());
-    for (String key : attributes.keySet()) {
-      if (key.equals("Attr3")) {
-        assertTrue("3".equals(attributes.get(key)));
-      } else if (key.equals("Attr4")) {
-        assertTrue("4".equals(attributes.get(key)));
-      } else {
-        fail("Unknown key value");
-      }
-    }
+    assertThat(attributes).hasSize(2);
+    assertThat(attributes).containsOnlyKeys("Attr3", "Attr4");
+    assertThat(attributes.get("Attr3")).isEqualTo("3");
+    assertThat(attributes.get("Attr4")).isEqualTo("4");
 
     /*
      * Verify Subprocess localization extension
      */
     localization = getLocalization(flowElement);
-    assertEquals("rbkfn-2", localization.getResourceBundleKeyForName());
-    assertEquals("rbkfd-2", localization.getResourceBundleKeyForDescription());
-    assertEquals("leifn-2", localization.getLabeledEntityIdForName());
-    assertEquals("leifd-2", localization.getLabeledEntityIdForDescription());
+    assertThat(localization.getResourceBundleKeyForName()).isEqualTo("rbkfn-2");
+    assertThat(localization.getResourceBundleKeyForDescription()).isEqualTo("rbkfd-2");
+    assertThat(localization.getLabeledEntityIdForName()).isEqualTo("leifn-2");
+    assertThat(localization.getLabeledEntityIdForDescription()).isEqualTo("leifd-2");
   }
 
   protected static String getExtensionValue(String key, ValuedDataObject dataObj) {
