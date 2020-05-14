@@ -31,9 +31,12 @@ import org.activiti.engine.impl.cfg.multitenant.MultiSchemaMultiTenantProcessEng
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
+import org.activiti.engine.task.TaskQuery;
 import org.h2.jdbcx.JdbcDataSource;
 import org.junit.After;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -110,6 +113,11 @@ public class MultiTenantProcessEngineTest {
   }
 
   protected void runProcessInstanceTest() throws InterruptedException {
+    // deploy processes per user
+    deployProcesses("joram");
+    deployProcesses("raphael");
+    deployProcesses("tony");
+
     // Generate data
     startProcessInstances("joram");
     startProcessInstances("joram");
@@ -120,9 +128,9 @@ public class MultiTenantProcessEngineTest {
     startProcessInstances("tony");
 
     // Verify
-    assertData("joram", 6, 3);
-    assertData("raphael", 0, 0);
-    assertData("tony", 2, 1);
+    assertData("joram", 9, 3);
+    assertData("raphael", 2, 2);
+    assertData("tony", 3, 1);
 
     // Adding a new tenant
     tenantInfoHolder.addTenant("dailyplanet");
@@ -131,54 +139,107 @@ public class MultiTenantProcessEngineTest {
 
     config.registerTenant("dailyplanet", createDataSource("jdbc:h2:mem:activiti-mt-daily;DB_CLOSE_DELAY=1000", "sa", ""));
 
+    deployProcesses("louis");
+    deployProcesses("clark");
+
     // Start process instance for new tenant
     startProcessInstances("clark");
     startProcessInstances("clark");
-    assertData("clark", 4, 2);
+    assertData("clark", 6, 2);
 
     // Move the clock 2 hours (jobs fire in one hour)
     config.getClock().setCurrentTime(new Date(config.getClock().getCurrentTime().getTime() + (2 * 60 * 60 * 1000)));
     Thread.sleep(15000L); // acquire time is 10 seconds, so 15 should be ok
 
-    assertData("joram", 6, 0);
-    assertData("raphael", 0, 0);
-    assertData("tony", 2, 0);
-    assertData("clark", 4, 0);
+    // Verify
+    assertData("joram", 9, 0);
+    assertData("raphael", 2, 0);
+    assertData("tony", 3, 0);
+    assertData("clark", 6, 0);
+
+    // After completing first user-task in "TimerJob_test", there's an intermediate timer event and then a second user-task
+    // complete first user-task
+    completeTasks("joram");
+
+    // Move the clock 2 hours (jobs fire in one hour)
+    config.getClock().setCurrentTime(new Date(config.getClock().getCurrentTime().getTime() + (2 * 60 * 60 * 1000)));
+    Thread.sleep(15000L); // acquire time is 10 seconds, so 15 should be ok
+
+    // complete second user-task
+    completeTasks("joram");
+
+    // Verify
+    assertData("joram", 0, 0);
   }
 
-  private void startProcessInstances(String userId) {
 
-    System.out.println();
-    System.out.println("Starting process instance for user " + userId);
+  private void deployProcesses(String userId) {
+      tenantInfoHolder.setCurrentUserId(userId);
 
-    tenantInfoHolder.setCurrentUserId(userId);
-
-    Deployment deployment = processEngine.getRepositoryService().createDeployment()
+      Deployment deployment = processEngine.getRepositoryService().createDeployment()
           .addClasspathResource("org/activiti/engine/test/cfg/multitenant/oneTaskProcess.bpmn20.xml")
           .addClasspathResource("org/activiti/engine/test/cfg/multitenant/jobTest.bpmn20.xml")
+          .addClasspathResource("org/activiti/engine/test/cfg/multitenant/TimerJob_test.bpmn20.xml")
           .deploy();
-    System.out.println("Process deployed! Deployment id is " + deployment.getId());
+      System.out.println("Process deployed! Deployment id is " + deployment.getId());
 
-    Map<String, Object> vars = new HashMap<String, Object>();
-    vars.put("data", "Hello from " + userId);
+      tenantInfoHolder.clearCurrentUserId();
+      tenantInfoHolder.clearCurrentTenantId();
+  }
+  private void startProcessInstance( String userId, String processDefinitionKey ) {
+    tenantInfoHolder.setCurrentUserId(userId);
 
-    ProcessInstance processInstance = processEngine.getRuntimeService().startProcessInstanceByKey("oneTaskProcess", vars);
-    List<Task> tasks = processEngine.getTaskService().createTaskQuery().processInstanceId(processInstance.getId()).list();
-    System.out.println("Got " + tasks.size() + " tasks");
+    Map<String, Object> vars = new HashMap<>();
+    ProcessInstance processInstance = null;
+    List<Task> tasks;
 
+    switch( processDefinitionKey ) {
+      case "oneTaskProcess":
+        vars.put("data", "Hello from " + userId);
+
+        processInstance = processEngine.getRuntimeService().startProcessInstanceByKey("oneTaskProcess", vars);
+        break;
+      case "jobTest":
+        processInstance = processEngine.getRuntimeService().startProcessInstanceByKey("jobTest");
+        break;
+      case "TimerJob_test":
+        vars.put("name", "some test from " + userId);
+        vars.put("time", "PT1M");
+
+        processInstance = processEngine.getRuntimeService().startProcessInstanceByKey("TimerJob_test", vars);
+        break;
+      default:
+        fail("Invalid processDefinitionKey: "+processDefinitionKey);
+    }
+
+    if( processInstance!=null ) {
+      tasks = processEngine.getTaskService().createTaskQuery().processInstanceId(processInstance.getId()).list();
+      System.out.println("Got " + tasks.size() + " tasks");
+    }
     System.out.println("Got " + processEngine.getHistoryService().createHistoricProcessInstanceQuery().count() + " process instances in the system");
-
-    // Start a process instance with a Job
-    processEngine.getRuntimeService().startProcessInstanceByKey("jobTest");
 
     tenantInfoHolder.clearCurrentUserId();
     tenantInfoHolder.clearCurrentTenantId();
   }
 
+  private void startProcessInstances(String userId) {
+    startProcessInstance( userId, "oneTaskProcess" );
+    startProcessInstance( userId, "jobTest" );
+    startProcessInstance( userId, "TimerJob_test" );
+  }
+
   private void completeTasks(String userId) {
+    completeTasks(userId, null);
+  }
+  private void completeTasks(String userId, String processDefinitionKey) {
     tenantInfoHolder.setCurrentUserId(userId);
 
-   for (Task task : processEngine.getTaskService().createTaskQuery().list()) {
+    TaskQuery taskQuery = processEngine.getTaskService().createTaskQuery();
+    if( processDefinitionKey!=null ) {
+        taskQuery.processDefinitionKey(processDefinitionKey);
+    }
+
+   for (Task task : taskQuery.list()) {
      processEngine.getTaskService().complete(task.getId());
    }
 
