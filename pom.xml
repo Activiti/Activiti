@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.activiti</groupId>
   <artifactId>activiti-parent</artifactId>
@@ -12,13 +12,13 @@
   <url>https://www.activiti.org</url>
   <inceptionYear>2010</inceptionYear>
   <organization>
-    <name>Alfresco</name>
-    <url>http://www.alfresco.com</url>
+    <name>Alfresco Software, Ltd</name>
+    <url>https://www.alfresco.com</url>
   </organization>
   <licenses>
     <license>
-      <name>Apache v2</name>
-      <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
+      <name>Apache License, Version 2.0</name>
+      <url>https://www.apache.org/licenses/LICENSE-2.0</url>
     </license>
   </licenses>
   <developers>
@@ -31,32 +31,32 @@
     <developer>
       <id>balsarori</id>
       <name>Bassam Al-Sarori</name>
-      <organization>Alfresco</organization>
-      <organizationUrl>http://alfresco.com</organizationUrl>
+      <organization>${project.organization.name}</organization>
+      <organizationUrl>${project.organization.url}</organizationUrl>
     </developer>
     <developer>
       <id>daisuke-yoshimoto</id>
       <name>Daisuke Yoshimoto</name>
-      <organization>Alfresco</organization>
-      <organizationUrl>http://alfresco.com</organizationUrl>
+      <organization>${project.organization.name}</organization>
+      <organizationUrl>${project.organization.url}</organizationUrl>
     </developer>
     <developer>
       <id>erdemedeiros</id>
       <name>Elias De Medeiros</name>
-      <organization>Alfresco</organization>
-      <organizationUrl>http://alfresco.com</organizationUrl>
+      <organization>${project.organization.name}</organization>
+      <organizationUrl>${project.organization.url}</organizationUrl>
     </developer>
     <developer>
       <id>eromano</id>
       <name>Eugenio Romano</name>
-      <organization>Alfresco</organization>
-      <organizationUrl>http://alfresco.com</organizationUrl>
+      <organization>${project.organization.name}</organization>
+      <organizationUrl>${project.organization.url}</organizationUrl>
     </developer>
     <developer>
       <id>ffazzini</id>
       <name>Francesco Fazzini</name>
-      <organization>Alfresco</organization>
-      <organizationUrl>http://alfresco.com</organizationUrl>
+      <organization>${project.organization.name}</organization>
+      <organizationUrl>${project.organization.url}</organizationUrl>
     </developer>
     <developer>
       <id>igdianov</id>
@@ -67,26 +67,26 @@
     <developer>
       <id>jesty</id>
       <name>Davide Cerbo</name>
-      <organization>Alfresco</organization>
-      <organizationUrl>http://alfresco.com</organizationUrl>
+      <organization>${project.organization.name}</organization>
+      <organizationUrl>${project.organization.url}</organizationUrl>
     </developer>
     <developer>
       <id>magemello</id>
       <name>Mario Romano</name>
-      <organization>Alfresco</organization>
-      <organizationUrl>http://alfresco.com</organizationUrl>
+      <organization>${project.organization.name}</organization>
+      <organizationUrl>${project.organization.url}</organizationUrl>
     </developer>
     <developer>
       <id>mauriziovitale</id>
       <name>Maurizio Vitale</name>
-      <organization>Alfresco</organization>
-      <organizationUrl>http://alfresco.com</organizationUrl>
+      <organization>${project.organization.name}</organization>
+      <organizationUrl>${project.organization.url}</organizationUrl>
     </developer>
     <developer>
       <id>miguelruizdev</id>
       <name>Miguel Ruiz</name>
-      <organization>Alfresco</organization>
-      <organizationUrl>http://alfresco.com</organizationUrl>
+      <organization>${project.organization.name}</organization>
+      <organizationUrl>${project.organization.url}</organizationUrl>
     </developer>
     <developer>
       <id>mmartinadanx</id>
@@ -97,8 +97,8 @@
     <developer>
       <id>mteodori</id>
       <name>Marcello Teodori</name>
-      <organization>Alfresco</organization>
-      <organizationUrl>http://alfresco.com</organizationUrl>
+      <organization>${project.organization.name}</organization>
+      <organizationUrl>${project.organization.url}</organizationUrl>
     </developer>
     <developer>
       <id>nazarethjim</id>
@@ -115,20 +115,20 @@
     <developer>
       <id>popovicsandras</id>
       <name>András Popovics</name>
-      <organization>Alfresco</organization>
-      <organizationUrl>http://alfresco.com</organizationUrl>
+      <organization>${project.organization.name}</organization>
+      <organizationUrl>${project.organization.url}</organizationUrl>
     </developer>
     <developer>
       <id>robfrank</id>
       <name>Roberto Franchini</name>
-      <organization>Alfresco</organization>
-      <organizationUrl>http://alfresco.com</organizationUrl>
+      <organization>${project.organization.name}</organization>
+      <organizationUrl>${project.organization.url}</organizationUrl>
     </developer>
     <developer>
       <id>zoltanpalfi</id>
       <name>Zoltan Palfi</name>
-      <organization>Alfresco</organization>
-      <organizationUrl>http://alfresco.com</organizationUrl>
+      <organization>${project.organization.name}</organization>
+      <organizationUrl>${project.organization.url}</organizationUrl>
     </developer>
     <developer>
       <id>CTI777</id>
@@ -139,14 +139,14 @@
     <developer>
       <id>EquinoxBlack</id>
       <name>Rodion Savchuk</name>
-      <organization>Alfresco</organization>
-      <organizationUrl>http://alfresco.com</organizationUrl>
+      <organization>${project.organization.name}</organization>
+      <organizationUrl>${project.organization.url}</organizationUrl>
     </developer>
     <developer>
       <id>VitoAlbano</id>
       <name>Vito Albano</name>
-      <organization>Alfresco</organization>
-      <organizationUrl>http://alfresco.com</organizationUrl>
+      <organization>${project.organization.name}</organization>
+      <organizationUrl>${project.organization.url}</organizationUrl>
     </developer>
   </developers>
   <modules>
@@ -158,33 +158,34 @@
     <module>activiti-examples</module>
   </modules>
   <scm>
-    <url>http://github.com/${project.scm.organisation}/${project.scm.repository}</url>
-    <connection>scm:git:git://github.com/${project.scm.organisation}/${project.scm.repository}.git
+    <url>http://github.com/${project.scm.organization}/${project.scm.repository}</url>
+    <connection>
+      scm:git:git://github.com/${project.scm.organization}/${project.scm.repository}.git
     </connection>
     <developerConnection>
-      scm:git:ssh://git@github.com/${project.scm.organisation}/${project.scm.repository}.git
+      scm:git:ssh://git@github.com/${project.scm.organization}/${project.scm.repository}.git
     </developerConnection>
     <tag>HEAD</tag>
   </scm>
   <issueManagement>
     <system>GitHub</system>
-    <url>https://github.com/${project.scm.organisation}/Activiti/issues</url>
+    <url>https://github.com/${project.scm.organization}/Activiti/issues</url>
   </issueManagement>
   <ciManagement>
     <system>Travis</system>
-    <url>https://travis-ci.com/${project.scm.organisation}/${project.scm.repository}</url>
+    <url>https://travis-ci.com/${project.scm.organization}/${project.scm.repository}</url>
   </ciManagement>
   <distributionManagement>
     <site>
       <id>${project.scm.repository}-site</id>
-      <url>https://${project.scm.organisation}.github.io/${project.scm.repository}</url>
+      <url>https://${project.scm.organization}.github.io/${project.scm.repository}</url>
     </site>
   </distributionManagement>
   <properties>
     <!-- configuration properties -->
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <project.scm.organisation>Activiti</project.scm.organisation>
+    <project.scm.organization>Activiti</project.scm.organization>
     <project.scm.repository>Activiti</project.scm.repository>
     <project.year>2020</project.year>
 
@@ -204,6 +205,7 @@
     <extra-enforcer-rules.version>1.2</extra-enforcer-rules.version>
     <jacoco-maven-plugin.version>0.8.5</jacoco-maven-plugin.version>
     <junit-jupiter.version>5.5.2</junit-jupiter.version>
+    <license-maven-plugin.version>3.0</license-maven-plugin.version>
     <maven-checkstyle-plugin.version>3.1.1</maven-checkstyle-plugin.version>
     <maven-clean-plugin.version>3.1.0</maven-clean-plugin.version>
     <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
@@ -280,6 +282,36 @@
     <pluginManagement>
       <plugins>
         <plugin>
+          <groupId>com.mycila</groupId>
+          <artifactId>license-maven-plugin</artifactId>
+          <version>${license-maven-plugin.version}</version>
+          <configuration>
+            <inlineHeader>
+              <![CDATA[
+Copyright ${project.inceptionYear}-${project.year} ${project.organization.name}.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+            ]]>
+            </inlineHeader>
+            <includes>
+              <include>**/*.java</include>
+            </includes>
+            <mapping>
+              <java>SLASHSTAR_STYLE</java>
+            </mapping>
+          </configuration>
+        </plugin>
+        <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-source-plugin</artifactId>
           <version>${maven-source-plugin.version}</version>
@@ -331,19 +363,19 @@
                       <module name="RedundantImport"/>
                       <module name="AvoidStarImport">
                         <property name="excludes"
-                          value="org.junit.Assert,org.assertj.core.api.Assertions,org.mockito.Mockito"/>
+                                  value="org.junit.Assert,org.assertj.core.api.Assertions,org.mockito.Mockito"/>
                         <property name="allowClassImports" value="false"/>
                         <property name="allowStaticMemberImports" value="false"/>
                       </module>
                       <module name="CustomImportOrder">
                         <property name="customImportOrderRules"
-                          value="STANDARD_JAVA_PACKAGE###THIRD_PARTY_PACKAGE###STATIC"/>
+                                  value="STANDARD_JAVA_PACKAGE###THIRD_PARTY_PACKAGE###STATIC"/>
                         <property name="sortImportsInGroupAlphabetically" value="true"/>
                         <property name="separateLineBetweenGroups" value="true"/>
                       </module>
                       <module name="NeedBraces">
                         <property name="tokens"
-                          value="LITERAL_IF, LITERAL_ELSE, LITERAL_FOR, LITERAL_WHILE, LITERAL_DO"/>
+                                  value="LITERAL_IF, LITERAL_ELSE, LITERAL_FOR, LITERAL_WHILE, LITERAL_DO"/>
                       </module>
                       <module name="EqualsHashCode"/>
                     </module>
@@ -456,6 +488,19 @@
       </plugins>
     </pluginManagement>
     <plugins>
+      <plugin>
+        <groupId>com.mycila</groupId>
+        <artifactId>license-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>validate-license</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-source-plugin</artifactId>
