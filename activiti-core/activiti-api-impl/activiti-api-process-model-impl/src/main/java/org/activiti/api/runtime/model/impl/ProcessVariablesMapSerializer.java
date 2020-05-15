@@ -15,22 +15,54 @@
  */
 package org.activiti.api.runtime.model.impl;
 
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Stream;
+
+import org.springframework.core.convert.ConversionService;
+
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import org.springframework.core.convert.ConversionService;
 
 public class ProcessVariablesMapSerializer extends StdSerializer<ProcessVariablesMap<String, Object>> {
 
     private static final long serialVersionUID = 1L;
     private static final ObjectMapper objectMapper = new ObjectMapper();
     private final ConversionService conversionService;
+    private static List<Class<?>> scalarTypes = Arrays.asList(int.class,
+                                                              byte.class,
+                                                              short.class,
+                                                              boolean.class,
+                                                              long.class,
+                                                              double.class,
+                                                              float.class,
+                                                              char.class,
+                                                              Character.class,
+                                                              Integer.class,
+                                                              Byte.class,
+                                                              Short.class,
+                                                              Boolean.class,
+                                                              Long.class,
+                                                              Double.class,
+                                                              Float.class,
+                                                              BigDecimal.class,
+                                                              Date.class,
+                                                              String.class);
+
+    private static Class<?>[] containerTypes = {Map.class,
+                                                JsonNode.class,
+                                                List.class,
+                                                Set.class};
 
     public ProcessVariablesMapSerializer(ConversionService conversionService) {
         super(ProcessVariablesMap.class, true);
@@ -58,11 +90,12 @@ public class ProcessVariablesMapSerializer extends StdSerializer<ProcessVariable
         ProcessVariableValue variableValue = null;
         if (value != null) {
             Class<?> entryValueClass = value.getClass();
+
             boolean canConvert = conversionService.canConvert(entryValueClass, String.class);
             if (!canConvert) {
                 value = objectMapper.writeValueAsString(value);
             }
-            String entryType = resolveEntryType(value, canConvert);
+            String entryType = resolveEntryType(entryValueClass, value, canConvert);
             String entryValue = conversionService.convert(value, String.class);
 
             variableValue = new ProcessVariableValue(entryType, entryValue);
@@ -70,17 +103,20 @@ public class ProcessVariablesMapSerializer extends StdSerializer<ProcessVariable
         return variableValue;
     }
 
-    private String resolveEntryType(Object value, boolean canConvert) {
+    private String resolveEntryType(Class<?> clazz, Object value, boolean canConvert) {
         String entryType;
-        if (canConvert) {
-            if (Map.class.isInstance(value)) {
-                entryType = Map.class.getName();
-            } else if (JsonNode.class.isInstance(value)) {
-                entryType = JsonNode.class.getName();
-            } else {
-                entryType = value.getClass().getName();
-            }
-        } else {
+
+        if (scalarTypes.contains(clazz)) {
+            entryType = clazz.getName();
+        }
+        else if (canConvert) {
+            entryType = Stream.of(containerTypes)
+                              .filter(type -> type.isInstance(value))
+                              .findFirst()
+                              .map(Class::getName)
+                              .orElseGet(() -> clazz.getName());
+        }
+        else {
             entryType = Map.class.getName();
         }
         return entryType;
