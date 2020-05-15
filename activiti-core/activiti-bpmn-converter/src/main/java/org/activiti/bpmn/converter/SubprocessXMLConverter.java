@@ -1,9 +1,12 @@
-/* Licensed under the Apache License, Version 2.0 (the "License");
+/*
+ * Copyright 2010-2020 Alfresco Software, Ltd.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -136,7 +139,7 @@ public class SubprocessXMLConverter extends BpmnXMLConverter {
       if (element instanceof SubProcess) {
         subModels.addAll(parseSubModels(element, locations, flowLocations, labelLocations));
       }
-      
+
       if (element instanceof SequenceFlow && null != flowLocations.get(elementId)) {
         // must be an edge
         mainModel.getFlowLocationMap().put(elementId, flowLocations.get(elementId));
@@ -158,7 +161,7 @@ public class SubprocessXMLConverter extends BpmnXMLConverter {
     return subModels;
   }
 
-  private List<BpmnModel> parseSubModels(FlowElement subElement, Map<String, GraphicInfo> locations, 
+  private List<BpmnModel> parseSubModels(FlowElement subElement, Map<String, GraphicInfo> locations,
                                          Map<String, List<GraphicInfo>> flowLocations, Map<String, GraphicInfo> labelLocations) {
     List<BpmnModel> subModels = new ArrayList<BpmnModel>();
     BpmnModel subModel = new BpmnModel();
@@ -178,7 +181,7 @@ public class SubprocessXMLConverter extends BpmnXMLConverter {
       if (element instanceof SubProcess) {
         subModels.addAll(parseSubModels(element, locations, flowLocations, labelLocations));
       }
-      
+
       if (element instanceof SequenceFlow && null != flowLocations.get(elementId)) {
         // must be an edge
         subModel.getFlowLocationMap().put(elementId, flowLocations.get(elementId));

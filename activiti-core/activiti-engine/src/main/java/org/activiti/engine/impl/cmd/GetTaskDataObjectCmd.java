@@ -1,8 +1,11 @@
-/* Licensed under the Apache License, Version 2.0 (the "License");
+/*
+ * Copyright 2010-2020 Alfresco Software, Ltd.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -10,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 
 package org.activiti.engine.impl.cmd;
 
@@ -89,7 +93,7 @@ public class GetTaskDataObjectCmd implements Command<DataObject>, Serializable {
             foundDataObject = dataObjectDefinition;
             break;
           }
-        } 
+        }
       } else {
         SubProcess subProcess = (SubProcess) bpmnModel.getFlowElement(executionEntity.getActivityId());
         for (ValuedDataObject dataObjectDefinition : subProcess.getDataObjects()) {
@@ -101,9 +105,9 @@ public class GetTaskDataObjectCmd implements Command<DataObject>, Serializable {
       }
 
       if (locale != null && foundDataObject != null) {
-        ObjectNode languageNode = Context.getLocalizationElementProperties(locale, foundDataObject.getId(), 
+        ObjectNode languageNode = Context.getLocalizationElementProperties(locale, foundDataObject.getId(),
             task.getProcessDefinitionId(), withLocalizationFallback);
-        
+
         if (languageNode != null) {
           JsonNode nameNode = languageNode.get(DynamicBpmnConstants.LOCALIZATION_NAME);
           if (nameNode != null) {
@@ -117,7 +121,7 @@ public class GetTaskDataObjectCmd implements Command<DataObject>, Serializable {
       }
 
       if (foundDataObject != null) {
-        dataObject = new DataObjectImpl(variableEntity.getName(), variableEntity.getValue(), foundDataObject.getDocumentation(), 
+        dataObject = new DataObjectImpl(variableEntity.getName(), variableEntity.getValue(), foundDataObject.getDocumentation(),
             foundDataObject.getType(), localizedName, localizedDescription, foundDataObject.getId());
       }
     }

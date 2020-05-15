@@ -1,3 +1,18 @@
+/*
+ * Copyright 2010-2020 Alfresco Software, Ltd.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.activiti.spring.boot.process;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -9,13 +24,13 @@ import static org.mockito.Mockito.verify;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import org.activiti.api.model.shared.model.VariableInstance;
 import org.activiti.api.process.model.Deployment;
 import org.activiti.api.process.model.ProcessDefinition;
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
 import org.activiti.api.process.model.payloads.SignalPayload;
+import org.activiti.api.process.model.payloads.StartProcessPayload;
 import org.activiti.api.process.model.payloads.UpdateProcessPayload;
 import org.activiti.api.process.runtime.ProcessAdminRuntime;
 import org.activiti.api.process.runtime.ProcessRuntime;
@@ -191,25 +206,28 @@ public class ProcessRuntimeIT {
 
     @Test
     public void should_createNewProcessInstanceWithoutRunningIt_whenCreateIsCalled() {
-        ProcessInstance categorizeProcess = processRuntime.create(ProcessPayloadBuilder.start()
+        ProcessInstance categorizeProcess = processRuntime.create(ProcessPayloadBuilder.create()
             .withProcessDefinitionKey(CATEGORIZE_PROCESS)
-            .withVariable("expectedKey",
-                true)
+            .withName("My process instance")
+            .withBusinessKey("my business key")
             .build());
 
         assertThat(RuntimeTestConfiguration.completedProcesses).doesNotContain(categorizeProcess.getId());
         assertThat(categorizeProcess).isNotNull();
 
         assertThat(categorizeProcess.getStatus()).isEqualTo(ProcessInstance.ProcessInstanceStatus.CREATED);
+        assertThat(categorizeProcess.getName()).isEqualTo("My process instance");
+        assertThat(categorizeProcess.getBusinessKey()).isEqualTo("my business key");
     }
 
     @Test
     public void should_startAnAlreadyCreatedProcess_when_startCreatedProcessIsCalled() {
         securityUtil.logInAs("garth");
 
-        ProcessInstance singleTaskProcessCreated = processRuntime.create(ProcessPayloadBuilder.start()
-            .withProcessDefinitionKey(SINGLE_TASK_PROCESS)
-            .build());
+        ProcessInstance singleTaskProcessCreated = processRuntime
+            .create(ProcessPayloadBuilder.create()
+                .withProcessDefinitionKey(SINGLE_TASK_PROCESS)
+                .build());
 
         assertThat(singleTaskProcessCreated.getStatus()).isEqualTo(ProcessInstance.ProcessInstanceStatus.CREATED);
         Page<Task> tasks = taskRuntime.tasks(PAGEABLE,
@@ -219,7 +237,10 @@ public class ProcessRuntimeIT {
                 .build());
         assertThat(tasks.getTotalItems()).isEqualTo(0);
 
-        ProcessInstance singleTaskProcessStarted = processRuntime.startCreatedProcess(singleTaskProcessCreated.getId());
+        ProcessInstance singleTaskProcessStarted = processRuntime.startCreatedProcess(
+            singleTaskProcessCreated.getId(),
+                ProcessPayloadBuilder.start()
+                    .build());
 
         tasks = taskRuntime.tasks(PAGEABLE,
             TaskPayloadBuilder
@@ -247,7 +268,7 @@ public class ProcessRuntimeIT {
 
         assertThat(categorizeProcess.getStatus()).isEqualTo(ProcessInstance.ProcessInstanceStatus.RUNNING);
 
-        Throwable throwable = catchThrowable(() -> processRuntime.startCreatedProcess(categorizeProcess.getId()));
+        Throwable throwable = catchThrowable(() -> processRuntime.startCreatedProcess(categorizeProcess.getId(), new StartProcessPayload()));
 
         assertThat(throwable)
             .isInstanceOf(ActivitiIllegalArgumentException.class)
@@ -638,15 +659,15 @@ public class ProcessRuntimeIT {
         processRuntime.delete(ProcessPayloadBuilder.delete(subProcess));
         processRuntime.delete(ProcessPayloadBuilder.delete(parentProcess));
 
-
-
     }
 
-
     @Test
-    public void signal() {
+    public void should_startProcessViaSignal() {
         // when
-        SignalPayload signalPayload = new SignalPayload("The Signal", null);
+        SignalPayload signalPayload = ProcessPayloadBuilder.signal()
+        .withName("The Signal")
+            .withVariable("signalVar", "from signal")
+            .build();
         processRuntimeMock.signal(signalPayload);
 
         Page<ProcessInstance> processInstancePage = processRuntimeMock.processInstances(
@@ -658,6 +679,14 @@ public class ProcessRuntimeIT {
         assertThat(processInstancePage.getContent().get(0).getProcessDefinitionKey()).isEqualTo("processWithSignalStart1");
 
         verify(eventPublisher).publishEvent(signalPayload);
+
+        //when
+        List<VariableInstance> variables = processRuntime.variables(
+            ProcessPayloadBuilder.variables()
+                .withProcessInstance(processInstancePage.getContent().get(0)).build());
+        assertThat(variables)
+            .extracting(VariableInstance::getName, VariableInstance::getValue)
+            .containsExactly(tuple("signalVar", "from signal"));
 
         processRuntimeMock.delete(ProcessPayloadBuilder.delete(processInstancePage.getContent().get(0).getId()));
     }

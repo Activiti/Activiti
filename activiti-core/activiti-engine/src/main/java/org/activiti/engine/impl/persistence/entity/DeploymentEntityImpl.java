@@ -1,15 +1,19 @@
-/* Licensed under the Apache License, Version 2.0 (the "License");
+/*
+ * Copyright 2010-2020 Alfresco Software, Ltd.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 
 package org.activiti.engine.impl.persistence.entity;
 
@@ -43,14 +47,14 @@ public class DeploymentEntityImpl extends AbstractEntityNoRevision implements De
 
     // Backwards compatibility
   protected String engineVersion;
-  
+
   /**
    * Will only be used during actual deployment to pass deployed artifacts (eg process definitions). Will be null otherwise.
    */
   protected Map<Class<?>, List<Object>> deployedArtifacts;
-  
+
   public DeploymentEntityImpl() {
-    
+
   }
 
   public void addResource(ResourceEntity resource) {
@@ -61,7 +65,7 @@ public class DeploymentEntityImpl extends AbstractEntityNoRevision implements De
   }
 
   // lazy loading ///////////////////////////////////////////////////////////////
-  
+
   public Map<String, ResourceEntity> getResources() {
     if (resources == null && id != null) {
       List<ResourceEntity> resourcesList = Context.getCommandContext().getResourceEntityManager().findResourcesByDeploymentId(id);
@@ -82,7 +86,7 @@ public class DeploymentEntityImpl extends AbstractEntityNoRevision implements De
   }
 
   // Deployed artifacts manipulation ////////////////////////////////////////////
-  
+
   public void addDeployedArtifact(Object deployedArtifact) {
     if (deployedArtifacts == null) {
       deployedArtifacts = new HashMap<Class<?>, List<Object>>();
@@ -125,7 +129,7 @@ public class DeploymentEntityImpl extends AbstractEntityNoRevision implements De
   public void setCategory(String category) {
     this.category = category;
   }
-  
+
   public String getKey() {
     return key;
   }

@@ -1,22 +1,22 @@
-package org.activiti.engine.impl.calendar;
-
 /*
- * Included from org.quartz-scheduler/quartz/1.8.4
- * All content copyright Terracotta, Inc., unless otherwise indicated. All rights reserved.
+ * Included from Quartz Scheduler https://github.com/quartz-scheduler/quartz/blob/quartz-1.8.4/quartz/src/main/java/org/quartz/CronExpression.java
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not
- * use this file except in compliance with the License. You may obtain a copy
- * of the License at
+ * Copyright 2001-2009 Terracotta, Inc.
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * License for the specific language governing permissions and limitations
- * under the License.
- *
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
+
+package org.activiti.engine.impl.calendar;
 
 import java.io.Serializable;
 import java.text.ParseException;
@@ -38,7 +38,7 @@ import org.activiti.engine.runtime.ClockReader;
  * or &quot;At 1:30am every last Friday of the month&quot;.
  * <P>
  * Cron expressions are comprised of 6 required fields and one optional field separated by white space. The fields respectively are described as follows:
- * 
+ *
  * <table cellspacing="8">
  * <tr>
  * <th align="left">Field Name</th>
@@ -137,7 +137,7 @@ import org.activiti.engine.runtime.ClockReader;
  * 5th". A value of "1C" in the day-of-week field means "the first day included by the calendar on or after Sunday".-->
  * <P>
  * The legal characters and the names of months and days of the week are not case sensitive.
- * 
+ *
  * <p>
  * <b>NOTES:</b>
  * <ul>
@@ -147,11 +147,11 @@ import org.activiti.engine.runtime.ClockReader;
  * chooses. An example would be "0 0 14-6 ? * FRI-MON".</li>
  * </ul>
  * </p>
- * 
- * 
-
-
-
+ *
+ *
+ * @author Sharada Jambula, James House
+ * @author Contributions from Mads Henderson
+ * @author Refactoring from CronTrigger to CronExpression by Aaron Craven
  */
 public class CronExpression implements Serializable, Cloneable {
 
@@ -217,14 +217,14 @@ public class CronExpression implements Serializable, Cloneable {
 
   /**
    * Constructs a new <CODE>CronExpression</CODE> based on the specified parameter.
-   * 
+   *
    * @param cronExpression
    *          String representation of the cron expression the new object should represent
    * @param clockReader
    *          The reader which will provide the current time
    * @param timeZone
    *          The time zone that will be used for calculations
-   * 
+   *
    * @throws java.text.ParseException
    *           if the string expression cannot be parsed into a valid <CODE>CronExpression</CODE>
    */
@@ -235,7 +235,7 @@ public class CronExpression implements Serializable, Cloneable {
 
   /**
    * Constructs a new <CODE>CronExpression</CODE> based on the specified parameter.
-   * 
+   *
    * @param cronExpression
    *          String representation of the cron expression the new object should represent
    * @throws java.text.ParseException
@@ -269,7 +269,7 @@ public class CronExpression implements Serializable, Cloneable {
 
   /**
    * Returns the string representation of the <CODE>CronExpression</CODE>
-   * 
+   *
    * @return a string representation of the <CODE>CronExpression</CODE>
    */
   public String toString() {
@@ -1306,7 +1306,7 @@ public class CronExpression implements Serializable, Cloneable {
 
   /**
    * Advance the calendar to the particular hour paying particular attention to daylight saving problems.
-   * 
+   *
    * @param cal
    * @param hour
    */
