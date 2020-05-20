@@ -110,7 +110,7 @@ public class BpmnXMLUtil implements BpmnXMLConstants {
 
     boolean inExtensionElements = false;
     boolean readyWithChildElements = false;
-    while (readyWithChildElements == false && xtr.hasNext()) {
+    while (!readyWithChildElements && xtr.hasNext()) {
       xtr.next();
       if (xtr.isStartElement()) {
         if (ELEMENT_EXTENSIONS.equals(xtr.getLocalName())) {
@@ -163,7 +163,7 @@ public class BpmnXMLUtil implements BpmnXMLConstants {
     }
 
     boolean readyWithExtensionElement = false;
-    while (readyWithExtensionElement == false && xtr.hasNext()) {
+    while (!readyWithExtensionElement && xtr.hasNext()) {
       xtr.next();
       if (xtr.isCharacters() || XMLStreamReader.CDATA == xtr.getEventType()) {
         if (StringUtils.isNotEmpty(xtr.getText().trim())) {

@@ -263,7 +263,7 @@ public abstract class BaseBpmnXMLConverter implements BpmnXMLConstants {
     BpmnXMLUtil.addCustomAttributes(xtr, extensionElement, defaultElementAttributes);
 
     boolean readyWithExtensionElement = false;
-    while (readyWithExtensionElement == false && xtr.hasNext()) {
+    while (!readyWithExtensionElement && xtr.hasNext()) {
       xtr.next();
       if (xtr.isCharacters() || XMLStreamReader.CDATA == xtr.getEventType()) {
         if (StringUtils.isNotEmpty(xtr.getText().trim())) {
@@ -331,7 +331,7 @@ public abstract class BaseBpmnXMLConverter implements BpmnXMLConstants {
 
         if (StringUtils.isNotEmpty(property.getId())) {
 
-          if (didWriteExtensionStartElement == false) {
+          if (!didWriteExtensionStartElement) {
             xtw.writeStartElement(ELEMENT_EXTENSIONS);
             didWriteExtensionStartElement = true;
           }
@@ -345,10 +345,10 @@ public abstract class BaseBpmnXMLConverter implements BpmnXMLConstants {
           writeDefaultAttribute(ATTRIBUTE_FORM_VARIABLE, property.getVariable(), xtw);
           writeDefaultAttribute(ATTRIBUTE_FORM_DEFAULT, property.getDefaultExpression(), xtw);
           writeDefaultAttribute(ATTRIBUTE_FORM_DATEPATTERN, property.getDatePattern(), xtw);
-          if (property.isReadable() == false) {
+          if (!property.isReadable()) {
             writeDefaultAttribute(ATTRIBUTE_FORM_READABLE, ATTRIBUTE_VALUE_FALSE, xtw);
           }
-          if (property.isWriteable() == false) {
+          if (!property.isWriteable()) {
             writeDefaultAttribute(ATTRIBUTE_FORM_WRITABLE, ATTRIBUTE_VALUE_FALSE, xtw);
           }
           if (property.isRequired()) {

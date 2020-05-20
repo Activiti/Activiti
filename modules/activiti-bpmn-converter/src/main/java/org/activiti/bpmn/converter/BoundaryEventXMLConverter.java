@@ -72,7 +72,7 @@ public class BoundaryEventXMLConverter extends BaseBpmnXMLConverter {
     if (boundaryEvent.getEventDefinitions().size() == 1) {
       EventDefinition eventDef = boundaryEvent.getEventDefinitions().get(0);
 
-      if (eventDef instanceof ErrorEventDefinition == false) {
+      if (!(eventDef instanceof ErrorEventDefinition)) {
         writeDefaultAttribute(ATTRIBUTE_BOUNDARY_CANCELACTIVITY, String.valueOf(boundaryEvent.isCancelActivity()).toLowerCase(), xtw);
       }
     }

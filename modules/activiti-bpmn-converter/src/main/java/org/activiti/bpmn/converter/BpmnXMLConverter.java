@@ -319,7 +319,7 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
           activeSubProcessList.remove(activeSubProcessList.size() - 1);
         }
 
-        if (xtr.isStartElement() == false) {
+        if (!xtr.isStartElement()) {
           continue;
         }
 
@@ -580,7 +580,7 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
       if (subProcess instanceof EventSubProcess) {
         xtw.writeAttribute(ATTRIBUTE_TRIGGERED_BY, ATTRIBUTE_VALUE_TRUE);
         
-      } else if (subProcess instanceof Transaction == false) {
+      } else if (!(subProcess instanceof Transaction)) {
         if (subProcess.isAsynchronous()) {
           BpmnXMLUtil.writeQualifiedAttribute(ATTRIBUTE_ACTIVITY_ASYNCHRONOUS, ATTRIBUTE_VALUE_TRUE, xtw);
           if (subProcess.isNotExclusive()) {
