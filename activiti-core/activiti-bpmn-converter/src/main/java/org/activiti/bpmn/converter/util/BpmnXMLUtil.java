@@ -180,7 +180,7 @@ public class BpmnXMLUtil implements BpmnXMLConstants {
   }
 
   public static boolean writeExtensionElements(BaseElement baseElement, boolean didWriteExtensionStartElement, XMLStreamWriter xtw) throws Exception {
-    return didWriteExtensionStartElement = writeExtensionElements(baseElement, didWriteExtensionStartElement, null, xtw);
+    return writeExtensionElements(baseElement, didWriteExtensionStartElement, null, xtw);
   }
 
   public static boolean writeExtensionElements(BaseElement baseElement, boolean didWriteExtensionStartElement, Map<String, String> namespaceMap, XMLStreamWriter xtw) throws Exception {
