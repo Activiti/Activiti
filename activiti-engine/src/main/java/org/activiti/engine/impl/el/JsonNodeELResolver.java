@@ -226,7 +226,7 @@ public class JsonNodeELResolver extends ELResolver {
 					result = resultNode.toString();
 				}
 
-			} else {
+			} else if (resultNode != null) {
 				if (resultNode.isArray()) {
 					result = Context.getProcessEngineConfiguration().getObjectMapper().convertValue(resultNode,
 							List.class);
