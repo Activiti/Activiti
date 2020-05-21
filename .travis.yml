@@ -8,6 +8,7 @@ stages:
   if: type != pull_request
 - name: updatebot
   if: type != pull_request
+  
 jobs:
   include:
   - name: Verify build
