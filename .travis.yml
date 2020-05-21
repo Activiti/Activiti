@@ -15,6 +15,7 @@ jobs:
     stage: verify
     script:
     - mvn verify -B
+    
   - name: Create a tag
     stage: tag
     script: |
@@ -23,11 +24,13 @@ jobs:
       git commit -m "Release $(cat VERSION)" --allow-empty
       git tag -fa v$(cat VERSION) -m "Release version $(cat VERSION)"
       git push -f -q https://${GITHUB_TOKEN}@github.com/Activiti/Activiti.git v$(cat VERSION)
+      
   - name: Deploy to nexus
     stage: deploy
     script:
     - mvn versions:set -DnewVersion=$(cat VERSION)
     - mvn clean deploy -DskipTests
+    
   - name: Update versions in other components
     stage: updatebot
     script:
