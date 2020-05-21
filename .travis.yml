@@ -11,6 +11,7 @@ stages:
   
 jobs:
   include:
+  
   - name: Verify build
     stage: verify
     script:
