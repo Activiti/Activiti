@@ -17,10 +17,6 @@ package org.activiti.api.runtime.test.model.impl;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.fasterxml.jackson.databind.Module;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
-import com.fasterxml.jackson.databind.node.TextNode;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -28,6 +24,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.stream.Stream;
+
 import org.activiti.api.process.model.IntegrationContext;
 import org.activiti.api.runtime.model.impl.IntegrationContextImpl;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -38,6 +35,11 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.context.annotation.Bean;
+
+import com.fasterxml.jackson.databind.Module;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.TextNode;
 
 @SpringBootTest(webEnvironment = WebEnvironment.NONE)
 class IntegrationContextImplTest {
@@ -51,7 +53,6 @@ class IntegrationContextImplTest {
                                              Arguments.of(Long.valueOf(100000000000L), Long.valueOf(100000000000L)),
                                              Arguments.of(Integer.valueOf(123), Integer.valueOf(123)),
                                              Arguments.of(String.valueOf("string"), String.valueOf("string")),
-                                             Arguments.of(String.valueOf("item1,item2"), String.valueOf("item1,item2")),
                                              Arguments.of(String.valueOf("item1,item2"), String.valueOf("item1,item2")),
                                              Arguments.of(Boolean.valueOf(true), Boolean.valueOf(true)),
                                              Arguments.of('A', 'A'),
