@@ -1,14 +1,29 @@
+/*
+ * Copyright 2010-2020 Alfresco Software, Ltd.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.activiti.editor.language;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.Lane;
 import org.activiti.bpmn.model.Pool;
 import org.activiti.bpmn.model.Process;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class PoolConverterTest extends AbstractConverterTest {
 
@@ -34,56 +49,56 @@ public class PoolConverterTest extends AbstractConverterTest {
     String idPool = "idPool";
     String idProcess = "poolProcess";
 
-    assertEquals(1, model.getPools().size());
+    assertThat(model.getPools()).hasSize(1);
 
     Pool pool = model.getPool(idPool);
-    assertEquals(idPool, pool.getId());
-    assertEquals(idProcess, pool.getProcessRef());
-    assertTrue(pool.isExecutable());
+    assertThat(pool.getId()).isEqualTo(idPool);
+    assertThat(pool.getProcessRef()).isEqualTo(idProcess);
+    assertThat(pool.isExecutable()).isTrue();
 
     Process process = model.getProcess(idPool);
-    assertEquals(idProcess, process.getId());
-    assertTrue(process.isExecutable());
-    assertEquals(3, process.getLanes().size());
+    assertThat(process.getId()).isEqualTo(idProcess);
+    assertThat(process.isExecutable()).isTrue();
+    assertThat(process.getLanes()).hasSize(3);
 
     Lane lane = process.getLanes().get(0);
-    assertEquals("idLane1", lane.getId());
-    assertEquals("Lane 1", lane.getName());
-    assertEquals(7, lane.getFlowReferences().size());
-    assertTrue(lane.getFlowReferences().contains("startevent"));
-    assertTrue(lane.getFlowReferences().contains("usertask1"));
-    assertTrue(lane.getFlowReferences().contains("usertask6"));
-    assertTrue(lane.getFlowReferences().contains("endevent"));
+    assertThat(lane.getId()).isEqualTo("idLane1");
+    assertThat(lane.getName()).isEqualTo("Lane 1");
+    assertThat(lane.getFlowReferences()).hasSize(7);
+    assertThat(lane.getFlowReferences().contains("startevent")).isTrue();
+    assertThat(lane.getFlowReferences().contains("usertask1")).isTrue();
+    assertThat(lane.getFlowReferences().contains("usertask6")).isTrue();
+    assertThat(lane.getFlowReferences().contains("endevent")).isTrue();
 
     lane = process.getLanes().get(1);
-    assertEquals("idLane2", lane.getId());
-    assertEquals("Lane 2", lane.getName());
-    assertEquals(4, lane.getFlowReferences().size());
-    assertTrue(lane.getFlowReferences().contains("usertask2"));
-    assertTrue(lane.getFlowReferences().contains("usertask5"));
+    assertThat(lane.getId()).isEqualTo("idLane2");
+    assertThat(lane.getName()).isEqualTo("Lane 2");
+    assertThat(lane.getFlowReferences()).hasSize(4);
+    assertThat(lane.getFlowReferences().contains("usertask2")).isTrue();
+    assertThat(lane.getFlowReferences().contains("usertask5")).isTrue();
 
     lane = process.getLanes().get(2);
-    assertEquals("idLane3", lane.getId());
-    assertEquals("Lane 3", lane.getName());
-    assertEquals(4, lane.getFlowReferences().size());
-    assertTrue(lane.getFlowReferences().contains("usertask3"));
-    assertTrue(lane.getFlowReferences().contains("usertask4"));
+    assertThat(lane.getId()).isEqualTo("idLane3");
+    assertThat(lane.getName()).isEqualTo("Lane 3");
+    assertThat(lane.getFlowReferences()).hasSize(4);
+    assertThat(lane.getFlowReferences().contains("usertask3")).isTrue();
+    assertThat(lane.getFlowReferences().contains("usertask4")).isTrue();
 
-    assertNotNull(process.getFlowElement("startevent", true));
-    assertNotNull(process.getFlowElement("usertask1", true));
-    assertNotNull(process.getFlowElement("usertask2", true));
-    assertNotNull(process.getFlowElement("usertask3", true));
-    assertNotNull(process.getFlowElement("usertask4", true));
-    assertNotNull(process.getFlowElement("usertask5", true));
-    assertNotNull(process.getFlowElement("usertask6", true));
-    assertNotNull(process.getFlowElement("endevent", true));
+    assertThat(process.getFlowElement("startevent", true)).isNotNull();
+    assertThat(process.getFlowElement("usertask1", true)).isNotNull();
+    assertThat(process.getFlowElement("usertask2", true)).isNotNull();
+    assertThat(process.getFlowElement("usertask3", true)).isNotNull();
+    assertThat(process.getFlowElement("usertask4", true)).isNotNull();
+    assertThat(process.getFlowElement("usertask5", true)).isNotNull();
+    assertThat(process.getFlowElement("usertask6", true)).isNotNull();
+    assertThat(process.getFlowElement("endevent", true)).isNotNull();
 
-    assertNotNull(process.getFlowElement("flow1", true));
-    assertNotNull(process.getFlowElement("flow2", true));
-    assertNotNull(process.getFlowElement("flow3", true));
-    assertNotNull(process.getFlowElement("flow4", true));
-    assertNotNull(process.getFlowElement("flow5", true));
-    assertNotNull(process.getFlowElement("flow6", true));
-    assertNotNull(process.getFlowElement("flow7", true));
+    assertThat(process.getFlowElement("flow1", true)).isNotNull();
+    assertThat(process.getFlowElement("flow2", true)).isNotNull();
+    assertThat(process.getFlowElement("flow3", true)).isNotNull();
+    assertThat(process.getFlowElement("flow4", true)).isNotNull();
+    assertThat(process.getFlowElement("flow5", true)).isNotNull();
+    assertThat(process.getFlowElement("flow6", true)).isNotNull();
+    assertThat(process.getFlowElement("flow7", true)).isNotNull();
   }
 }

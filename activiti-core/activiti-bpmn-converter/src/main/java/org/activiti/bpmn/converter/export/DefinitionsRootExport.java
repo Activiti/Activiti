@@ -1,8 +1,11 @@
-/* Licensed under the Apache License, Version 2.0 (the "License");
+/*
+ * Copyright 2010-2020 Alfresco Software, Ltd.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -12,7 +15,8 @@
  */
 package org.activiti.bpmn.converter.export;
 
-import java.util.Arrays;
+import static java.util.Arrays.asList;
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -28,9 +32,9 @@ import org.apache.commons.lang3.StringUtils;
 public class DefinitionsRootExport implements BpmnXMLConstants {
 
   /** default namespaces for definitions */
-  protected static final Set<String> defaultNamespaces = new HashSet<String>(Arrays.asList(BPMN2_PREFIX, XSI_PREFIX, XSD_PREFIX, ACTIVITI_EXTENSIONS_PREFIX, BPMNDI_PREFIX, OMGDC_PREFIX, OMGDI_PREFIX));
+  protected static final Set<String> defaultNamespaces = new HashSet<String>(asList(BPMN2_PREFIX, XSI_PREFIX, XSD_PREFIX, ACTIVITI_EXTENSIONS_PREFIX, BPMNDI_PREFIX, OMGDC_PREFIX, OMGDI_PREFIX));
 
-  protected static final List<ExtensionAttribute> defaultAttributes = Arrays.asList(new ExtensionAttribute(TYPE_LANGUAGE_ATTRIBUTE), new ExtensionAttribute(EXPRESSION_LANGUAGE_ATTRIBUTE),
+  protected static final List<ExtensionAttribute> defaultAttributes = asList(new ExtensionAttribute(TYPE_LANGUAGE_ATTRIBUTE), new ExtensionAttribute(EXPRESSION_LANGUAGE_ATTRIBUTE),
       new ExtensionAttribute(TARGET_NAMESPACE_ATTRIBUTE));
 
   @SuppressWarnings("unchecked")

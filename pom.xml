@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.activiti.build</groupId>
+  <groupId>org.activiti</groupId>
   <artifactId>activiti-parent</artifactId>
   <version>7.1.0-SNAPSHOT</version>
   <packaging>pom</packaging>
@@ -11,13 +12,13 @@
   <url>https://www.activiti.org</url>
   <inceptionYear>2010</inceptionYear>
   <organization>
-    <name>Alfresco</name>
-    <url>http://www.alfresco.com</url>
+    <name>Alfresco Software, Ltd</name>
+    <url>https://www.alfresco.com</url>
   </organization>
   <licenses>
     <license>
-      <name>Apache v2</name>
-      <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
+      <name>Apache License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0</url>
     </license>
   </licenses>
   <developers>
@@ -30,32 +31,32 @@
     <developer>
       <id>balsarori</id>
       <name>Bassam Al-Sarori</name>
-      <organization>Alfresco</organization>
-      <organizationUrl>http://alfresco.com</organizationUrl>
+      <organization>${project.organization.name}</organization>
+      <organizationUrl>${project.organization.url}</organizationUrl>
     </developer>
     <developer>
       <id>daisuke-yoshimoto</id>
       <name>Daisuke Yoshimoto</name>
-      <organization>Alfresco</organization>
-      <organizationUrl>http://alfresco.com</organizationUrl>
+      <organization>${project.organization.name}</organization>
+      <organizationUrl>${project.organization.url}</organizationUrl>
     </developer>
     <developer>
       <id>erdemedeiros</id>
       <name>Elias De Medeiros</name>
-      <organization>Alfresco</organization>
-      <organizationUrl>http://alfresco.com</organizationUrl>
+      <organization>${project.organization.name}</organization>
+      <organizationUrl>${project.organization.url}</organizationUrl>
     </developer>
     <developer>
       <id>eromano</id>
       <name>Eugenio Romano</name>
-      <organization>Alfresco</organization>
-      <organizationUrl>http://alfresco.com</organizationUrl>
+      <organization>${project.organization.name}</organization>
+      <organizationUrl>${project.organization.url}</organizationUrl>
     </developer>
     <developer>
       <id>ffazzini</id>
       <name>Francesco Fazzini</name>
-      <organization>Alfresco</organization>
-      <organizationUrl>http://alfresco.com</organizationUrl>
+      <organization>${project.organization.name}</organization>
+      <organizationUrl>${project.organization.url}</organizationUrl>
     </developer>
     <developer>
       <id>igdianov</id>
@@ -66,26 +67,26 @@
     <developer>
       <id>jesty</id>
       <name>Davide Cerbo</name>
-      <organization>Alfresco</organization>
-      <organizationUrl>http://alfresco.com</organizationUrl>
+      <organization>${project.organization.name}</organization>
+      <organizationUrl>${project.organization.url}</organizationUrl>
     </developer>
     <developer>
       <id>magemello</id>
       <name>Mario Romano</name>
-      <organization>Alfresco</organization>
-      <organizationUrl>http://alfresco.com</organizationUrl>
+      <organization>${project.organization.name}</organization>
+      <organizationUrl>${project.organization.url}</organizationUrl>
     </developer>
     <developer>
       <id>mauriziovitale</id>
       <name>Maurizio Vitale</name>
-      <organization>Alfresco</organization>
-      <organizationUrl>http://alfresco.com</organizationUrl>
+      <organization>${project.organization.name}</organization>
+      <organizationUrl>${project.organization.url}</organizationUrl>
     </developer>
     <developer>
       <id>miguelruizdev</id>
       <name>Miguel Ruiz</name>
-      <organization>Alfresco</organization>
-      <organizationUrl>http://alfresco.com</organizationUrl>
+      <organization>${project.organization.name}</organization>
+      <organizationUrl>${project.organization.url}</organizationUrl>
     </developer>
     <developer>
       <id>mmartinadanx</id>
@@ -96,8 +97,8 @@
     <developer>
       <id>mteodori</id>
       <name>Marcello Teodori</name>
-      <organization>Alfresco</organization>
-      <organizationUrl>http://alfresco.com</organizationUrl>
+      <organization>${project.organization.name}</organization>
+      <organizationUrl>${project.organization.url}</organizationUrl>
     </developer>
     <developer>
       <id>nazarethjim</id>
@@ -114,20 +115,20 @@
     <developer>
       <id>popovicsandras</id>
       <name>András Popovics</name>
-      <organization>Alfresco</organization>
-      <organizationUrl>http://alfresco.com</organizationUrl>
+      <organization>${project.organization.name}</organization>
+      <organizationUrl>${project.organization.url}</organizationUrl>
     </developer>
     <developer>
       <id>robfrank</id>
       <name>Roberto Franchini</name>
-      <organization>Alfresco</organization>
-      <organizationUrl>http://alfresco.com</organizationUrl>
+      <organization>${project.organization.name}</organization>
+      <organizationUrl>${project.organization.url}</organizationUrl>
     </developer>
     <developer>
       <id>zoltanpalfi</id>
       <name>Zoltan Palfi</name>
-      <organization>Alfresco</organization>
-      <organizationUrl>http://alfresco.com</organizationUrl>
+      <organization>${project.organization.name}</organization>
+      <organizationUrl>${project.organization.url}</organizationUrl>
     </developer>
     <developer>
       <id>CTI777</id>
@@ -138,14 +139,14 @@
     <developer>
       <id>EquinoxBlack</id>
       <name>Rodion Savchuk</name>
-      <organization>Alfresco</organization>
-      <organizationUrl>http://alfresco.com</organizationUrl>
+      <organization>${project.organization.name}</organization>
+      <organizationUrl>${project.organization.url}</organizationUrl>
     </developer>
     <developer>
       <id>VitoAlbano</id>
       <name>Vito Albano</name>
-      <organization>Alfresco</organization>
-      <organizationUrl>http://alfresco.com</organizationUrl>
+      <organization>${project.organization.name}</organization>
+      <organizationUrl>${project.organization.url}</organizationUrl>
     </developer>
   </developers>
   <modules>
@@ -157,47 +158,52 @@
     <module>activiti-examples</module>
   </modules>
   <scm>
-    <url>http://github.com/${project.scm.organisation}/${project.scm.repository}</url>
-    <connection>scm:git:git://github.com/${project.scm.organisation}/${project.scm.repository}.git</connection>
-    <developerConnection>scm:git:ssh://git@github.com/${project.scm.organisation}/${project.scm.repository}.git</developerConnection>
+    <url>http://github.com/${project.scm.organization}/${project.scm.repository}</url>
+    <connection>
+      scm:git:git://github.com/${project.scm.organization}/${project.scm.repository}.git
+    </connection>
+    <developerConnection>
+      scm:git:ssh://git@github.com/${project.scm.organization}/${project.scm.repository}.git
+    </developerConnection>
     <tag>HEAD</tag>
   </scm>
   <issueManagement>
     <system>GitHub</system>
-    <url>https://github.com/${project.scm.organisation}/Activiti/issues</url>
+    <url>https://github.com/${project.scm.organization}/Activiti/issues</url>
   </issueManagement>
   <ciManagement>
     <system>Travis</system>
-    <url>https://travis-ci.com/${project.scm.organisation}/${project.scm.repository}</url>
+    <url>https://travis-ci.com/${project.scm.organization}/${project.scm.repository}</url>
   </ciManagement>
   <distributionManagement>
     <site>
       <id>${project.scm.repository}-site</id>
-      <url>https://${project.scm.organisation}.github.io/${project.scm.repository}</url>
+      <url>https://${project.scm.organization}.github.io/${project.scm.repository}</url>
     </site>
   </distributionManagement>
   <properties>
     <!-- configuration properties -->
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <project.scm.organisation>Activiti</project.scm.organisation>
+    <project.scm.organization>Activiti</project.scm.organization>
     <project.scm.repository>Activiti</project.scm.repository>
     <project.year>2020</project.year>
 
-    <java.release>8</java.release>
+    <java.release>11</java.release>
     <java.version>1.${java.release}</java.version>
+    <maven.compiler.release>${java.release}</maven.compiler.release>
     <maven.compiler.source>${java.version}</maven.compiler.source>
     <maven.compiler.target>${java.version}</maven.compiler.target>
 
     <!-- versions -->
-    <asm.version>6.2</asm.version>
-    <assertj-assertions-generator-maven-plugin.version>2.0.0</assertj-assertions-generator-maven-plugin.version>
+    <asm.version>7.0</asm.version>
     <build-helper-maven-plugin.version>3.0.0</build-helper-maven-plugin.version>
     <dependency-check-maven.version>5.3.0</dependency-check-maven.version>
     <exec-maven-plugin.version>1.6.0</exec-maven-plugin.version>
     <extra-enforcer-rules.version>1.2</extra-enforcer-rules.version>
     <jacoco-maven-plugin.version>0.8.5</jacoco-maven-plugin.version>
-    <maven-checkstyle-plugin.version>3.1.0</maven-checkstyle-plugin.version>
+    <license-maven-plugin.version>3.0</license-maven-plugin.version>
+    <maven-checkstyle-plugin.version>3.1.1</maven-checkstyle-plugin.version>
     <maven-clean-plugin.version>3.1.0</maven-clean-plugin.version>
     <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
     <maven-deploy-plugin.version>2.8.2</maven-deploy-plugin.version>
@@ -206,32 +212,43 @@
     <maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
     <maven-install-plugin.version>2.5.2</maven-install-plugin.version>
     <maven-jar-plugin.version>3.1.2</maven-jar-plugin.version>
-    <maven-javadoc-plugin.version>3.0.1</maven-javadoc-plugin.version>
+    <maven-javadoc-plugin.version>3.1.1</maven-javadoc-plugin.version>
     <maven-jxr-plugin.version>3.0.0</maven-jxr-plugin.version>
-    <maven-pmd-plugin.version>3.12.0</maven-pmd-plugin.version>
+    <maven-pmd-plugin.version>3.13.0</maven-pmd-plugin.version>
     <maven-project-info-reports-plugin.version>3.0.0</maven-project-info-reports-plugin.version>
     <maven-release-plugin.version>2.5.3</maven-release-plugin.version>
     <maven-resources-plugin.version>3.1.0</maven-resources-plugin.version>
-    <maven-site-plugin.version>3.7.1</maven-site-plugin.version>
-    <maven-source-plugin.version>3.0.1</maven-source-plugin.version>
+    <maven-site-plugin.version>3.8.2</maven-site-plugin.version>
+    <maven-source-plugin.version>3.1.0</maven-source-plugin.version>
     <maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version>
-    <spring-boot.version>2.1.12.RELEASE</spring-boot.version>
+    <spring-boot.version>2.2.7.RELEASE</spring-boot.version>
     <versions-maven-plugin.version>2.7</versions-maven-plugin.version>
-    <commons-io.version>2.6</commons-io.version>
-    <awaitility.version>3.0.0</awaitility.version>
 
     <!-- configuration properties for tests -->
-    <generated-assertions-folder>${project.build.directory}/generated-test-sources/assertions</generated-assertions-folder>
+    <generated-assertions-folder>
+      ${project.build.directory}/generated-test-sources/assertions
+    </generated-assertions-folder>
     <generated-assertions-package>org.activiti.test</generated-assertions-package>
   </properties>
   <dependencyManagement>
     <dependencies>
       <dependency>
-        <groupId>org.activiti.build</groupId>
+        <groupId>org.activiti</groupId>
         <artifactId>activiti-dependency-check</artifactId>
         <version>${project.version}</version>
         <type>xml</type>
         <classifier>suppression</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-test</artifactId>
+        <version>${spring-boot.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
       <dependency>
         <groupId>org.springframework.boot</groupId>
@@ -240,21 +257,41 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
-      <dependency>
-        <groupId>org.awaitility</groupId>
-        <artifactId>awaitility</artifactId>
-        <version>${awaitility.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>commons-io</groupId>
-        <artifactId>commons-io</artifactId>
-        <version>${commons-io.version}</version>
-      </dependency>
     </dependencies>
   </dependencyManagement>
   <build>
     <pluginManagement>
       <plugins>
+        <plugin>
+          <groupId>com.mycila</groupId>
+          <artifactId>license-maven-plugin</artifactId>
+          <version>${license-maven-plugin.version}</version>
+          <configuration>
+            <inlineHeader>
+              <![CDATA[
+Copyright ${project.inceptionYear}-${project.year} ${project.organization.name}.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+            ]]>
+            </inlineHeader>
+            <includes>
+              <include>**/*.java</include>
+            </includes>
+            <mapping>
+              <java>SLASHSTAR_STYLE</java>
+            </mapping>
+          </configuration>
+        </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-source-plugin</artifactId>
@@ -425,11 +462,6 @@
           </executions>
         </plugin>
         <plugin>
-          <groupId>org.assertj</groupId>
-          <artifactId>assertj-assertions-generator-maven-plugin</artifactId>
-          <version>${assertj-assertions-generator-maven-plugin.version}</version>
-        </plugin>
-        <plugin>
           <groupId>org.jacoco</groupId>
           <artifactId>jacoco-maven-plugin</artifactId>
           <version>${jacoco-maven-plugin.version}</version>
@@ -437,6 +469,19 @@
       </plugins>
     </pluginManagement>
     <plugins>
+      <plugin>
+        <groupId>com.mycila</groupId>
+        <artifactId>license-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>validate-license</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-source-plugin</artifactId>
@@ -781,22 +826,6 @@
                         </execute>
                       </action>
                     </pluginExecution>
-                    <pluginExecution>
-                      <pluginExecutionFilter>
-                        <groupId>org.assertj</groupId>
-                        <artifactId>assertj-assertions-generator-maven-plugin</artifactId>
-                        <versionRange>[${assertj-assertions-generator-maven-plugin.version},)</versionRange>
-                        <goals>
-                          <goal>generate-assertions</goal>
-                        </goals>
-                      </pluginExecutionFilter>
-                      <action>
-                        <execute>
-                          <runOnIncremental>true</runOnIncremental>
-                          <runOnConfiguration>true</runOnConfiguration>
-                        </execute>
-                      </action>
-                    </pluginExecution>
                   </pluginExecutions>
                 </lifecycleMappingMetadata>
               </configuration>
@@ -824,7 +853,7 @@
             </configuration>
             <dependencies>
               <dependency>
-                <groupId>org.activiti.build</groupId>
+                <groupId>org.activiti</groupId>
                 <artifactId>activiti-dependency-check</artifactId>
                 <version>${project.version}</version>
                 <type>xml</type>
@@ -841,15 +870,6 @@
           </plugin>
         </plugins>
       </build>
-    </profile>
-    <profile>
-      <id>jdk9+</id>
-      <activation>
-        <jdk>[9,)</jdk>
-      </activation>
-      <properties>
-        <maven.compiler.release>${java.release}</maven.compiler.release>
-      </properties>
     </profile>
   </profiles>
 </project>

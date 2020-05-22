@@ -11,7 +11,7 @@
   <name>Activiti :: API :: Task Runtime Implementation</name>
   <dependencies>
     <dependency>
-      <groupId>org.activiti.api</groupId>
+      <groupId>org.activiti</groupId>
       <artifactId>activiti-api-model-shared</artifactId>
     </dependency>
     <dependency>
@@ -19,15 +19,15 @@
       <artifactId>activiti-api-model-shared-impl</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.activiti.api</groupId>
+      <groupId>org.activiti</groupId>
       <artifactId>activiti-api-task-model</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.activiti.api</groupId>
+      <groupId>org.activiti</groupId>
       <artifactId>activiti-api-runtime-shared</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.activiti.api</groupId>
+      <groupId>org.activiti</groupId>
       <artifactId>activiti-api-task-runtime</artifactId>
     </dependency>
     <dependency>
@@ -63,28 +63,23 @@
       <artifactId>activiti-engine</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.activiti</groupId>
+      <artifactId>activiti-common-util</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-autoconfigure</artifactId>
       <optional>true</optional>
     </dependency>
     <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-test</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.assertj</groupId>
-      <artifactId>assertj-core</artifactId>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-engine</artifactId>
       <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.mockito</groupId>
-      <artifactId>mockito-core</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.activiti.core.common</groupId>
-      <artifactId>activiti-common-util</artifactId>
     </dependency>
   </dependencies>
 </project>

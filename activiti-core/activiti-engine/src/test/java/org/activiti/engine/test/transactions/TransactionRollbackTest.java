@@ -1,8 +1,11 @@
-/* Licensed under the Apache License, Version 2.0 (the "License");
+/*
+ * Copyright 2010-2020 Alfresco Software, Ltd.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -11,7 +14,11 @@
  * limitations under the License.
  */
 
+
 package org.activiti.engine.test.transactions;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.DelegateExecution;
@@ -46,45 +53,33 @@ public class TransactionRollbackTest extends PluggableActivitiTestCase {
 
     @Deployment
     public void testRollback() {
-        try {
-            runtimeService.startProcessInstanceByKey("RollbackProcess");
+        assertThatExceptionOfType(Exception.class)
+            .as("Starting the process instance should throw an exception")
+            .isThrownBy(() -> runtimeService.startProcessInstanceByKey("RollbackProcess"))
+            .withMessage("Buzzz");
 
-            fail("Starting the process instance should throw an exception");
-
-        } catch (Exception e) {
-            assertEquals("Buzzz", e.getMessage());
-        }
-
-        assertEquals(0, runtimeService.createExecutionQuery().count());
+        assertThat(runtimeService.createExecutionQuery().count()).isEqualTo(0);
     }
 
     @Deployment(
-            resources = {"org/activiti/engine/test/transactions/trivial.bpmn20.xml", "org/activiti/engine/test/transactions/rollbackAfterSubProcess.bpmn20.xml"})
+        resources = {"org/activiti/engine/test/transactions/trivial.bpmn20.xml",
+            "org/activiti/engine/test/transactions/rollbackAfterSubProcess.bpmn20.xml"})
     public void testRollbackAfterSubProcess() {
-        try {
-            runtimeService.startProcessInstanceByKey("RollbackAfterSubProcess");
+        assertThatExceptionOfType(Exception.class)
+            .as("Starting the process instance should throw an exception")
+            .isThrownBy(() -> runtimeService.startProcessInstanceByKey("RollbackAfterSubProcess"))
+            .withMessage("Buzzz");
 
-            fail("Starting the process instance should throw an exception");
-
-        } catch (Exception e) {
-            assertEquals("Buzzz", e.getMessage());
-        }
-
-        assertEquals(0, runtimeService.createExecutionQuery().count());
-
+        assertThat(runtimeService.createExecutionQuery().count()).isEqualTo(0);
     }
 
     @Deployment
     public void testRollbackAfterError() {
-        try {
-            runtimeService.startProcessInstanceByKey("RollbackProcess");
+        assertThatExceptionOfType(Throwable.class)
+            .as("Starting the process instance should throw an error")
+            .isThrownBy(() -> runtimeService.startProcessInstanceByKey("RollbackProcess"))
+            .withMessage("Fizz");
 
-            fail("Starting the process instance should throw an error");
-
-        } catch (Throwable e) {
-            assertEquals("Fizz", e.getMessage());
-        }
-
-        assertEquals(0, runtimeService.createExecutionQuery().count());
+        assertThat(runtimeService.createExecutionQuery().count()).isEqualTo(0);
     }
 }

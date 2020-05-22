@@ -1,8 +1,11 @@
-/* Licensed under the Apache License, Version 2.0 (the "License");
+/*
+ * Copyright 2010-2020 Alfresco Software, Ltd.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -11,7 +14,11 @@
  * limitations under the License.
  */
 
+
 package org.activiti.engine.impl.db;
+
+import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -22,9 +29,7 @@ import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -87,8 +92,8 @@ public class DbSqlSession implements Session {
         // 5.12.1 was a bugfix release on 5.12 and did NOT change the version in ACT_GE_PROPERTY
         // On top of that, DB2 create script for 5.12.1 was shipped with a 'T' suffix ...
         ACTIVITI_VERSIONS.add(new ActivitiVersion("5.12",
-                                                  Arrays.asList("5.12.1",
-                                                                "5.12T")));
+                                                  asList("5.12.1",
+                                                         "5.12T")));
 
         ACTIVITI_VERSIONS.add(new ActivitiVersion("5.13"));
         ACTIVITI_VERSIONS.add(new ActivitiVersion("5.14"));
@@ -399,7 +404,7 @@ public class DbSqlSession implements Session {
                                            boolean useCache) {
         statement = dbSqlSessionFactory.mapStatement(statement);
         if (firstResult == -1 || maxResults == -1) {
-            return Collections.EMPTY_LIST;
+            return emptyList();
         }
 
         List loadedObjects = sqlSession.selectList(statement,
@@ -418,7 +423,7 @@ public class DbSqlSession implements Session {
                                                         int maxResults) {
         statement = dbSqlSessionFactory.mapStatement(statement);
         if (firstResult == -1 || maxResults == -1) {
-            return Collections.EMPTY_LIST;
+            return emptyList();
         }
         return sqlSession.selectList(statement,
                                      parameter);

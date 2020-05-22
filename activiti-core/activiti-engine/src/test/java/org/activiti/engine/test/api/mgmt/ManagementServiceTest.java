@@ -1,9 +1,12 @@
-/* Licensed under the Apache License, Version 2.0 (the "License");
+/*
+ * Copyright 2010-2020 Alfresco Software, Ltd.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -11,7 +14,11 @@
  * limitations under the License.
  */
 
+
 package org.activiti.engine.test.api.mgmt;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.util.Date;
 
@@ -30,44 +37,31 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
 
 /**
-
-
-
-
  */
 public class ManagementServiceTest extends PluggableActivitiTestCase {
 
   public void testGetMetaDataForUnexistingTable() {
     TableMetaData metaData = managementService.getTableMetaData("unexistingtable");
-    assertNull(metaData);
+    assertThat(metaData).isNull();
   }
 
   public void testGetMetaDataNullTableName() {
-    try {
-      managementService.getTableMetaData(null);
-      fail("ActivitiException expected");
-    } catch (ActivitiIllegalArgumentException re) {
-      assertTextPresent("tableName is null", re.getMessage());
-    }
+    assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
+      .isThrownBy(() -> managementService.getTableMetaData(null))
+      .withMessageContaining("tableName is null");
   }
 
   public void testExecuteJobNullJobId() {
-    try {
-      managementService.executeJob(null);
-      fail("ActivitiException expected");
-    } catch (ActivitiIllegalArgumentException re) {
-      assertTextPresent("JobId is null", re.getMessage());
-    }
+    assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
+      .isThrownBy(() -> managementService.executeJob(null))
+      .withMessageContaining("JobId is null");
   }
 
   public void testExecuteJobUnexistingJob() {
-    try {
-      managementService.executeJob("unexistingjob");
-      fail("ActivitiException expected");
-    } catch (JobNotFoundException jnfe) {
-      assertTextPresent("No job found with id", jnfe.getMessage());
-      assertEquals(Job.class, jnfe.getObjectClass());
-    }
+    assertThatExceptionOfType(JobNotFoundException.class)
+      .isThrownBy(() -> managementService.executeJob("unexistingjob"))
+      .withMessageContaining("No job found with id")
+      .satisfies(ae -> assertThat(ae.getObjectClass()).isEqualTo(Job.class));
   }
 
   @Deployment
@@ -78,46 +72,40 @@ public class ManagementServiceTest extends PluggableActivitiTestCase {
     // timer event which we will execute manual for testing purposes.
     Job timerJob = managementService.createTimerJobQuery().processInstanceId(processInstance.getId()).singleResult();
 
-    assertNotNull("No job found for process instance", timerJob);
+    assertThat(timerJob).as("No job found for process instance").isNotNull();
 
-    try {
-      managementService.moveTimerToExecutableJob(timerJob.getId());
-      managementService.executeJob(timerJob.getId());
-      fail("RuntimeException from within the script task expected");
-    } catch (RuntimeException re) {
-      assertTextPresent("This is an exception thrown from scriptTask", re.getCause().getMessage());
-    }
+    assertThatExceptionOfType(RuntimeException.class)
+      .as("RuntimeException from within the script task expected")
+      .isThrownBy(() -> {
+        managementService.moveTimerToExecutableJob(timerJob.getId());
+        managementService.executeJob(timerJob.getId());
+      })
+      .withMessageContaining("This is an exception thrown from scriptTask");
 
     // Fetch the task to see that the exception that occurred is persisted
-    timerJob = managementService.createTimerJobQuery().processInstanceId(processInstance.getId()).singleResult();
+    Job reloadedTimerJob = managementService.createTimerJobQuery().processInstanceId(processInstance.getId()).singleResult();
 
-    assertNotNull(timerJob);
-    assertNotNull(timerJob.getExceptionMessage());
-    assertTextPresent("This is an exception thrown from scriptTask", timerJob.getExceptionMessage());
+    assertThat(reloadedTimerJob).isNotNull();
+    assertThat(reloadedTimerJob.getExceptionMessage()).isNotNull();
+    assertThat(reloadedTimerJob.getExceptionMessage()).contains("This is an exception thrown from scriptTask");
 
     // Get the full stacktrace using the managementService
-    String exceptionStack = managementService.getTimerJobExceptionStacktrace(timerJob.getId());
-    assertNotNull(exceptionStack);
-    assertTextPresent("This is an exception thrown from scriptTask", exceptionStack);
+    String exceptionStack = managementService.getTimerJobExceptionStacktrace(reloadedTimerJob.getId());
+    assertThat(exceptionStack).isNotNull();
+    assertThat(exceptionStack).contains("This is an exception thrown from scriptTask");
   }
 
-  public void testgetJobExceptionStacktraceUnexistingJobId() {
-    try {
-      managementService.getJobExceptionStacktrace("unexistingjob");
-      fail("ActivitiException expected");
-    } catch (ActivitiObjectNotFoundException re) {
-      assertTextPresent("No job found with id unexistingjob", re.getMessage());
-      assertEquals(Job.class, re.getObjectClass());
-    }
+  public void testGetJobExceptionStacktraceUnexistingJobId() {
+    assertThatExceptionOfType(ActivitiObjectNotFoundException.class)
+      .isThrownBy(() -> managementService.getJobExceptionStacktrace("unexistingjob"))
+      .withMessageContaining("No job found with id unexistingjob")
+      .satisfies(ae -> assertThat(ae.getObjectClass()).isEqualTo(Job.class));
   }
 
   public void testgetJobExceptionStacktraceNullJobId() {
-    try {
-      managementService.getJobExceptionStacktrace(null);
-      fail("ActivitiException expected");
-    } catch (ActivitiIllegalArgumentException re) {
-      assertTextPresent("jobId is null", re.getMessage());
-    }
+    assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
+      .isThrownBy(() -> managementService.getJobExceptionStacktrace(null))
+      .withMessageContaining("jobId is null");
   }
 
   @Deployment(resources = { "org/activiti/engine/test/api/mgmt/ManagementServiceTest.testGetJobExceptionStacktrace.bpmn20.xml" })
@@ -126,73 +114,55 @@ public class ManagementServiceTest extends PluggableActivitiTestCase {
 
     // The execution is waiting in the first usertask. This contains a boundary timer event.
     Job timerJob = managementService.createTimerJobQuery().processInstanceId(processInstance.getId()).singleResult();
-    
+
     Date duedate = timerJob.getDuedate();
 
-    assertNotNull("No job found for process instance", timerJob);
-    assertEquals(processEngineConfiguration.getAsyncExecutorNumberOfRetries(), timerJob.getRetries());
+    assertThat(timerJob).as("No job found for process instance").isNotNull();
+    assertThat(timerJob.getRetries()).isEqualTo(processEngineConfiguration.getAsyncExecutorNumberOfRetries());
 
     managementService.setTimerJobRetries(timerJob.getId(), 5);
 
     timerJob = managementService.createTimerJobQuery().processInstanceId(processInstance.getId()).singleResult();
-    assertEquals(5, timerJob.getRetries());
-    assertEquals(duedate, timerJob.getDuedate());
+    assertThat(timerJob.getRetries()).isEqualTo(5);
+    assertThat(timerJob.getDuedate()).isEqualTo(duedate);
   }
 
   public void testSetJobRetriesUnexistingJobId() {
-    try {
-      managementService.setJobRetries("unexistingjob", 5);
-      fail("ActivitiException expected");
-    } catch (ActivitiObjectNotFoundException re) {
-      assertTextPresent("No job found with id 'unexistingjob'.", re.getMessage());
-      assertEquals(Job.class, re.getObjectClass());
-    }
+    assertThatExceptionOfType(ActivitiObjectNotFoundException.class)
+      .isThrownBy(() -> managementService.setJobRetries("unexistingjob", 5))
+      .withMessageContaining("No job found with id 'unexistingjob'.")
+      .satisfies(ae -> assertThat(ae.getObjectClass()).isEqualTo(Job.class));
   }
 
   public void testSetJobRetriesEmptyJobId() {
-    try {
-      managementService.setJobRetries("", 5);
-      fail("ActivitiException expected");
-    } catch (ActivitiIllegalArgumentException re) {
-      assertTextPresent("The job id is mandatory, but '' has been provided.", re.getMessage());
-    }
+    assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
+      .isThrownBy(() -> managementService.setJobRetries("", 5))
+      .withMessageContaining("The job id is mandatory, but '' has been provided.");
   }
 
   public void testSetJobRetriesJobIdNull() {
-    try {
-      managementService.setJobRetries(null, 5);
-      fail("ActivitiException expected");
-    } catch (ActivitiIllegalArgumentException re) {
-      assertTextPresent("The job id is mandatory, but 'null' has been provided.", re.getMessage());
-    }
+    assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
+      .isThrownBy(() -> managementService.setJobRetries(null, 5))
+      .withMessageContaining("The job id is mandatory, but 'null' has been provided.");
   }
 
   public void testSetJobRetriesNegativeNumberOfRetries() {
-    try {
-      managementService.setJobRetries("unexistingjob", -1);
-      fail("ActivitiException expected");
-    } catch (ActivitiIllegalArgumentException re) {
-      assertTextPresent("The number of job retries must be a non-negative Integer, but '-1' has been provided.", re.getMessage());
-    }
+    assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
+      .isThrownBy(() -> managementService.setJobRetries("unexistingjob", -1))
+      .withMessageContaining("The number of job retries must be a non-negative Integer, but '-1' has been provided.");
   }
 
   public void testDeleteJobNullJobId() {
-    try {
-      managementService.deleteJob(null);
-      fail("ActivitiException expected");
-    } catch (ActivitiIllegalArgumentException re) {
-      assertTextPresent("jobId is null", re.getMessage());
-    }
+    assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
+      .isThrownBy(() -> managementService.deleteJob(null))
+      .withMessageContaining("jobId is null");
   }
 
   public void testDeleteJobUnexistingJob() {
-    try {
-      managementService.deleteJob("unexistingjob");
-      fail("ActivitiException expected");
-    } catch (ActivitiObjectNotFoundException ae) {
-      assertTextPresent("No job found with id", ae.getMessage());
-      assertEquals(Job.class, ae.getObjectClass());
-    }
+    assertThatExceptionOfType(ActivitiObjectNotFoundException.class)
+      .isThrownBy(() -> managementService.deleteJob("unexistingjob"))
+      .withMessageContaining("No job found with id")
+      .satisfies(ae -> assertThat(ae.getObjectClass()).isEqualTo(Job.class));
   }
 
   @Deployment(resources = { "org/activiti/engine/test/api/mgmt/timerOnTask.bpmn20.xml" })
@@ -200,11 +170,11 @@ public class ManagementServiceTest extends PluggableActivitiTestCase {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("timerOnTask");
     Job timerJob = managementService.createTimerJobQuery().processInstanceId(processInstance.getId()).singleResult();
 
-    assertNotNull("Task timer should be there", timerJob);
+    assertThat(timerJob).as("Task timer should be there").isNotNull();
     managementService.deleteTimerJob(timerJob.getId());
 
     timerJob = managementService.createTimerJobQuery().processInstanceId(processInstance.getId()).singleResult();
-    assertNull("There should be no job now. It was deleted", timerJob);
+    assertThat(timerJob).as("There should be no job now. It was deleted").isNull();
   }
 
   @Deployment(resources = { "org/activiti/engine/test/api/mgmt/timerOnTask.bpmn20.xml" })
@@ -224,12 +194,8 @@ public class ManagementServiceTest extends PluggableActivitiTestCase {
     commandExecutor.execute(acquireJobsCmd);
 
     // Try to delete the job. This should fail.
-    try {
-      managementService.deleteJob(timerJob.getId());
-      fail();
-    } catch (ActivitiException e) {
-      // Exception is expected
-    }
+    assertThatExceptionOfType(ActivitiException.class)
+      .isThrownBy(() -> managementService.deleteJob(timerJob.getId()));
 
     // Clean up
     managementService.moveTimerToExecutableJob(timerJob.getId());
@@ -240,6 +206,6 @@ public class ManagementServiceTest extends PluggableActivitiTestCase {
   // ManagementService doesn't seem to give actual table Name for EventSubscriptionEntity.class
   public void testGetTableName() {
     String table = managementService.getTableName(EventSubscriptionEntity.class);
-    assertEquals("ACT_RU_EVENT_SUBSCR", table);
+    assertThat(table).isEqualTo("ACT_RU_EVENT_SUBSCR");
   }
 }

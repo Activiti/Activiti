@@ -1,15 +1,19 @@
-/* Licensed under the Apache License, Version 2.0 (the "License");
+/*
+ * Copyright 2010-2020 Alfresco Software, Ltd.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.activiti.engine.runtime;
 
 import java.io.Serializable;
@@ -56,7 +60,7 @@ public interface ProcessInstanceQuery extends Query<ProcessInstanceQuery, Proces
    * Only select process instances that do not have a tenant id.
    */
   ProcessInstanceQuery processInstanceWithoutTenantId();
-  
+
   /** Only select process instances whose process definition category is processDefinitionCategory. */
   ProcessInstanceQuery processDefinitionCategory(String processDefinitionCategory);
 
@@ -65,7 +69,7 @@ public interface ProcessInstanceQuery extends Query<ProcessInstanceQuery, Proces
    * Select process instances whose process definition name is processDefinitionName
    */
   ProcessInstanceQuery processDefinitionName(String processDefinitionName);
-  
+
   /** Only select process instances with a certain process definition version.
   * Particulary useful when used in combination with {@link #processDefinitionKey(String)}
   */
@@ -125,7 +129,7 @@ public interface ProcessInstanceQuery extends Query<ProcessInstanceQuery, Proces
   /**
    * Only select process instances which have a global variable with the given value. The type of variable is determined based on the value, using types configured in
    * {@link ProcessEngineConfiguration#getVariableTypes()}. Byte-arrays and {@link Serializable} objects (which are not primitive type wrappers) are not supported.
-   * 
+   *
    * @param name
    *          name of the variable, cannot be null.
    */
@@ -143,7 +147,7 @@ public interface ProcessInstanceQuery extends Query<ProcessInstanceQuery, Proces
    * This method only works if your database has encoding/collation that supports case-sensitive queries. For example, use "collate UTF-8" on MySQL and for MSSQL, select one of the case-sensitive
    * Collations available (<a href="http://msdn.microsoft.com/en-us/library/ms144250(v=sql.105).aspx" >MSDN Server Collation Reference</a>).
    * </p>
-   * 
+   *
    * @param name
    *          name of the variable, cannot be null.
    * @param value
@@ -154,7 +158,7 @@ public interface ProcessInstanceQuery extends Query<ProcessInstanceQuery, Proces
   /**
    * Only select process instances which have a global variable with the given name, but with a different value than the passed value. Byte-arrays and {@link Serializable} objects (which are not
    * primitive type wrappers) are not supported.
-   * 
+   *
    * @param name
    *          name of the variable, cannot be null.
    */
@@ -166,7 +170,7 @@ public interface ProcessInstanceQuery extends Query<ProcessInstanceQuery, Proces
    * This method only works if your database has encoding/collation that supports case-sensitive queries. For example, use "collate UTF-8" on MySQL and for MSSQL, select one of the case-sensitive
    * Collations available (<a href="http://msdn.microsoft.com/en-us/library/ms144250(v=sql.105).aspx" >MSDN Server Collation Reference</a>).
    * </p>
-   * 
+   *
    * @param name
    *          name of the variable, cannot be null.
    * @param value
@@ -177,7 +181,7 @@ public interface ProcessInstanceQuery extends Query<ProcessInstanceQuery, Proces
   /**
    * Only select process instances which have a variable value greater than the passed value. Booleans, Byte-arrays and {@link Serializable} objects (which are not primitive type wrappers) are not
    * supported.
-   * 
+   *
    * @param name
    *          variable name, cannot be null.
    * @param value
@@ -188,7 +192,7 @@ public interface ProcessInstanceQuery extends Query<ProcessInstanceQuery, Proces
   /**
    * Only select process instances which have a global variable value greater than or equal to the passed value. Booleans, Byte-arrays and {@link Serializable} objects (which are not primitive type
    * wrappers) are not supported.
-   * 
+   *
    * @param name
    *          variable name, cannot be null.
    * @param value
@@ -199,7 +203,7 @@ public interface ProcessInstanceQuery extends Query<ProcessInstanceQuery, Proces
   /**
    * Only select process instances which have a global variable value less than the passed value. Booleans, Byte-arrays and {@link Serializable} objects (which are not primitive type wrappers) are not
    * supported.
-   * 
+   *
    * @param name
    *          variable name, cannot be null.
    * @param value
@@ -210,7 +214,7 @@ public interface ProcessInstanceQuery extends Query<ProcessInstanceQuery, Proces
   /**
    * Only select process instances which have a global variable value less than or equal to the passed value. Booleans, Byte-arrays and {@link Serializable} objects (which are not primitive type
    * wrappers) are not supported.
-   * 
+   *
    * @param name
    *          variable name, cannot be null.
    * @param value
@@ -220,24 +224,24 @@ public interface ProcessInstanceQuery extends Query<ProcessInstanceQuery, Proces
 
   /**
    * Only select process instances which have a global variable value like the given value. This be used on string variables only.
-   * 
+   *
    * @param name
    *          variable name, cannot be null.
    * @param value
    *          variable value, cannot be null. The string can include the wildcard character '%' to express like-strategy: starts with (string%), ends with (%string) or contains (%string%).
    */
   ProcessInstanceQuery variableValueLike(String name, String value);
-  
-  /** 
+
+  /**
    * Only select process instances which have a global variable value like the given value (case insensitive).
    * This be used on string variables only.
    * @param name variable name, cannot be null.
    * @param value variable value, cannot be null. The string can include the
-   * wildcard character '%' to express like-strategy: 
+   * wildcard character '%' to express like-strategy:
    * starts with (string%), ends with (%string) or contains (%string%).
    */
   ProcessInstanceQuery variableValueLikeIgnoreCase(String name, String value);
-  
+
   /**
    * Only select process instances which are suspended, either because the process instance itself is suspended or because the corresponding process definition is suspended
    */
@@ -262,14 +266,14 @@ public interface ProcessInstanceQuery extends Query<ProcessInstanceQuery, Proces
    * Only select process instances with a name like the given value, ignoring upper/lower case.
    */
   ProcessInstanceQuery processInstanceNameLikeIgnoreCase(String nameLikeIgnoreCase);
-  
+
   /**
    * Localize process name and description to specified locale.
    */
   ProcessInstanceQuery locale(String locale);
-  
+
   /**
-   * Instruct localization to fallback to more general locales including the default locale of the JVM if the specified locale is not found. 
+   * Instruct localization to fallback to more general locales including the default locale of the JVM if the specified locale is not found.
    */
   ProcessInstanceQuery withLocalizationFallback();
 
@@ -277,7 +281,7 @@ public interface ProcessInstanceQuery extends Query<ProcessInstanceQuery, Proces
    * Include process variables in the process query result
    */
   ProcessInstanceQuery includeProcessVariables();
-  
+
   /**
    * Limit process instance variables
    */
@@ -287,7 +291,7 @@ public interface ProcessInstanceQuery extends Query<ProcessInstanceQuery, Proces
    * Only select process instances that failed due to an exception happening during a job execution.
    */
   ProcessInstanceQuery withJobException();
-  
+
   /**
    * Begin an OR statement. Make sure you invoke the endOr method at the end of your OR statement.
    * Only one OR statement is allowed, for the second call to this method an exception will be thrown.

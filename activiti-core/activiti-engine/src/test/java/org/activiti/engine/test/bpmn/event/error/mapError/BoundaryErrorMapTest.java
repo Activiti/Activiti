@@ -1,16 +1,23 @@
-/* Licensed under the Apache License, Version 2.0 (the "License");
+/*
+ * Copyright 2010-2020 Alfresco Software, Ltd.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.activiti.engine.test.bpmn.event.error.mapError;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -22,7 +29,6 @@ import org.activiti.engine.test.Deployment;
 import org.activiti.standalone.testing.helpers.ServiceTaskTestMock;
 
 /**
-
  */
 public class BoundaryErrorMapTest extends PluggableActivitiTestCase {
 
@@ -34,7 +40,7 @@ public class BoundaryErrorMapTest extends PluggableActivitiTestCase {
     vars.put("exceptionClass", BoundaryErrorParentException.class.getName());
 
     runtimeService.startProcessInstanceByKey("processWithSingleExceptionMap", vars);
-    assertTrue(FlagDelegate.isVisited());
+    assertThat(FlagDelegate.isVisited()).isTrue();
   }
 
   // exception does not match the single mapping
@@ -44,14 +50,12 @@ public class BoundaryErrorMapTest extends PluggableActivitiTestCase {
 
     Map<String, Object> vars = new HashMap<String, Object>();
     vars.put("exceptionClass", JAXBException.class.getName());
-    assertEquals(0, ServiceTaskTestMock.CALL_COUNT.get());
+    assertThat(ServiceTaskTestMock.CALL_COUNT.get()).isEqualTo(0);
 
-    try {
-      runtimeService.startProcessInstanceByKey("processWithSingleExceptionMap", vars);
-      fail("exception expected, as there is no matching exception map");
-    } catch (Exception e) {
-      assertFalse(FlagDelegate.isVisited());
-    }
+    assertThatExceptionOfType(Exception.class)
+        .as("exception expected, as there is no matching exception map")
+        .isThrownBy(() -> runtimeService.startProcessInstanceByKey("processWithSingleExceptionMap", vars));
+    assertThat(FlagDelegate.isVisited()).isFalse();
   }
 
   // exception matches by inheritance
@@ -62,7 +66,7 @@ public class BoundaryErrorMapTest extends PluggableActivitiTestCase {
     FlagDelegate.reset();
 
     runtimeService.startProcessInstanceByKey("processWithSingleExceptionMap", vars);
-    assertTrue(FlagDelegate.isVisited());
+    assertThat(FlagDelegate.isVisited()).isTrue();
   }
 
   // check the default map
@@ -73,7 +77,7 @@ public class BoundaryErrorMapTest extends PluggableActivitiTestCase {
     FlagDelegate.reset();
 
     runtimeService.startProcessInstanceByKey("processWithSingleExceptionMap", vars);
-    assertTrue(FlagDelegate.isVisited());
+    assertThat(FlagDelegate.isVisited()).isTrue();
 
   }
 
@@ -84,7 +88,7 @@ public class BoundaryErrorMapTest extends PluggableActivitiTestCase {
     vars.put("exceptionClass", BoundaryErrorParentException.class.getName());
 
     runtimeService.startProcessInstanceByKey("processWithSingleExceptionMap", vars);
-    assertTrue(FlagDelegate.isVisited());
+    assertThat(FlagDelegate.isVisited()).isTrue();
   }
 
   @Deployment
@@ -94,6 +98,6 @@ public class BoundaryErrorMapTest extends PluggableActivitiTestCase {
     vars.put("exceptionClass", BoundaryErrorParentException.class.getName());
 
     runtimeService.startProcessInstanceByKey("subprocssWithSingleExceptionMap", vars);
-    assertTrue(FlagDelegate.isVisited());
+    assertThat(FlagDelegate.isVisited()).isTrue();
   }
 }

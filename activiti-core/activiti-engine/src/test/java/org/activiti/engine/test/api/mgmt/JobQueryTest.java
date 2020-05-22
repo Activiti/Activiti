@@ -1,9 +1,12 @@
-/* Licensed under the Apache License, Version 2.0 (the "License");
+/*
+ * Copyright 2010-2020 Alfresco Software, Ltd.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -11,7 +14,11 @@
  * limitations under the License.
  */
 
+
 package org.activiti.engine.test.api.mgmt;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -115,7 +122,7 @@ public class JobQueryTest extends PluggableActivitiTestCase {
   public void testQueryByNoCriteria() {
     JobQuery query = managementService.createJobQuery();
     verifyQueryResults(query, 1);
-    
+
     TimerJobQuery timerQuery = managementService.createTimerJobQuery();
     verifyQueryResults(timerQuery, 3);
   }
@@ -129,51 +136,42 @@ public class JobQueryTest extends PluggableActivitiTestCase {
     TimerJobQuery query = managementService.createTimerJobQuery().processInstanceId("invalid");
     verifyQueryResults(query, 0);
 
-    try {
-      managementService.createJobQuery().processInstanceId(null);
-      fail();
-    } catch (ActivitiIllegalArgumentException e) {
-    }
+    assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
+      .isThrownBy(() -> managementService.createJobQuery().processInstanceId(null));
   }
 
   public void testQueryByExecutionId() {
     Job job = managementService.createTimerJobQuery().processInstanceId(processInstanceIdOne).singleResult();
     TimerJobQuery query = managementService.createTimerJobQuery().executionId(job.getExecutionId());
-    assertEquals(query.singleResult().getId(), job.getId());
+    assertThat(job.getId()).isEqualTo(query.singleResult().getId());
     verifyQueryResults(query, 1);
   }
 
   public void testQueryByInvalidExecutionId() {
     JobQuery query = managementService.createJobQuery().executionId("invalid");
     verifyQueryResults(query, 0);
-    
+
     TimerJobQuery timerQuery = managementService.createTimerJobQuery().executionId("invalid");
     verifyQueryResults(timerQuery, 0);
 
-    try {
-      managementService.createJobQuery().executionId(null).list();
-      fail();
-    } catch (ActivitiIllegalArgumentException e) {
-    }
-    
-    try {
-      managementService.createTimerJobQuery().executionId(null).list();
-      fail();
-    } catch (ActivitiIllegalArgumentException e) {
-    }
+    assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
+      .isThrownBy(() -> managementService.createJobQuery().executionId(null).list());
+
+    assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
+      .isThrownBy(() -> managementService.createTimerJobQuery().executionId(null).list());
   }
 
   public void testQueryByRetriesLeft() {
     JobQuery query = managementService.createJobQuery();
     verifyQueryResults(query, 1);
-    
+
     TimerJobQuery timerQuery = managementService.createTimerJobQuery();
     verifyQueryResults(timerQuery, 3);
 
     final Job job = managementService.createTimerJobQuery().processInstanceId(processInstanceIdOne).singleResult();
     managementService.setTimerJobRetries(job.getId(), 0);
     managementService.moveJobToDeadLetterJob(job.getId());
-    
+
     // Re-running the query should give only 3 jobs now, since one job has retries=0
     verifyQueryResults(query, 1);
     verifyQueryResults(timerQuery, 2);
@@ -183,7 +181,7 @@ public class JobQueryTest extends PluggableActivitiTestCase {
     processEngineConfiguration.getClock().setCurrentTime(new Date(timerThreeFireTime.getTime() + ONE_SECOND)); // all obs should be executable at t3 + 1hour.1second
     JobQuery query = managementService.createJobQuery();
     verifyQueryResults(query, 1);
-    
+
     TimerJobQuery timerQuery = managementService.createTimerJobQuery().executable();
     verifyQueryResults(timerQuery, 3);
 
@@ -191,7 +189,7 @@ public class JobQueryTest extends PluggableActivitiTestCase {
     final Job job = managementService.createTimerJobQuery().processInstanceId(processInstanceIdOne).singleResult();
     managementService.setTimerJobRetries(job.getId(), 0);
     managementService.moveJobToDeadLetterJob(job.getId());
-    
+
     verifyQueryResults(query, 1);
     verifyQueryResults(timerQuery, 2);
 
@@ -200,7 +198,7 @@ public class JobQueryTest extends PluggableActivitiTestCase {
     processEngineConfiguration.getClock().setCurrentTime(testStartTime);
     verifyQueryResults(query, 1);
     verifyQueryResults(timerQuery, 0);
-    
+
     // Moving the job back to be executable
     managementService.moveDeadLetterJobToExecutableJob(job.getId(), 5);
     verifyQueryResults(query, 2);
@@ -210,7 +208,7 @@ public class JobQueryTest extends PluggableActivitiTestCase {
   public void testQueryByOnlyTimers() {
     JobQuery query = managementService.createJobQuery().timers();
     verifyQueryResults(query, 0);
-    
+
     TimerJobQuery timerQuery = managementService.createTimerJobQuery().timers();
     verifyQueryResults(timerQuery, 3);
   }
@@ -221,18 +219,15 @@ public class JobQueryTest extends PluggableActivitiTestCase {
   }
 
   public void testInvalidOnlyTimersUsage() {
-    try {
-      managementService.createJobQuery().timers().messages().list();
-      fail();
-    } catch (ActivitiIllegalArgumentException e) {
-      assertTextPresent("Cannot combine onlyTimers() with onlyMessages() in the same query", e.getMessage());
-    }
+    assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
+      .isThrownBy(() -> managementService.createJobQuery().timers().messages().list())
+      .withMessageContaining("Cannot combine onlyTimers() with onlyMessages() in the same query");
   }
 
   public void testQueryByDuedateLowerThan() {
     JobQuery query = managementService.createJobQuery().duedateLowerThan(testStartTime);
     verifyQueryResults(query, 0);
-    
+
     TimerJobQuery timerQuery = managementService.createTimerJobQuery().duedateLowerThan(testStartTime);
     verifyQueryResults(timerQuery, 0);
 
@@ -249,13 +244,13 @@ public class JobQueryTest extends PluggableActivitiTestCase {
   public void testQueryByDuedateHigherThan() {
     JobQuery query = managementService.createJobQuery().duedateHigherThan(testStartTime);
     verifyQueryResults(query, 0);
-    
+
     query = managementService.createJobQuery();
     verifyQueryResults(query, 1);
-    
+
     TimerJobQuery timerQuery = managementService.createTimerJobQuery().duedateHigherThan(testStartTime);
     verifyQueryResults(timerQuery, 3);
-    
+
     query = managementService.createJobQuery().duedateHigherThan(timerOneFireTime);
     verifyQueryResults(query, 0);
 
@@ -303,12 +298,10 @@ public class JobQueryTest extends PluggableActivitiTestCase {
   }
 
   public void testQueryByExceptionMessageNull() {
-    try {
-      managementService.createJobQuery().exceptionMessage(null);
-      fail("ActivitiException expected");
-    } catch (ActivitiIllegalArgumentException e) {
-      assertEquals("Provided exception message is null", e.getMessage());
-    }
+    assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
+      .as("ActivitiException expected")
+      .isThrownBy(() -> managementService.createJobQuery().exceptionMessage(null))
+      .withMessage("Provided exception message is null");
   }
 
   public void testJobQueryWithExceptions() throws Throwable {
@@ -317,10 +310,10 @@ public class JobQueryTest extends PluggableActivitiTestCase {
 
     Job job = managementService.createJobQuery().jobId(jobEntity.getId()).singleResult();
 
-    assertNotNull(job);
+    assertThat(job).isNotNull();
 
     List<Job> list = managementService.createJobQuery().withException().list();
-    assertEquals(1, list.size());
+    assertThat(list).hasSize(1);
 
     deleteJobInDatabase();
 
@@ -328,10 +321,10 @@ public class JobQueryTest extends PluggableActivitiTestCase {
 
     job = managementService.createJobQuery().jobId(jobEntity.getId()).singleResult();
 
-    assertNotNull(job);
+    assertThat(job).isNotNull();
 
     list = managementService.createJobQuery().withException().list();
-    assertEquals(1, list.size());
+    assertThat(list).hasSize(1);
 
     deleteJobInDatabase();
 
@@ -341,30 +334,30 @@ public class JobQueryTest extends PluggableActivitiTestCase {
 
   public void testQuerySorting() {
     // asc
-    assertEquals(1, managementService.createJobQuery().orderByJobId().asc().count());
-    assertEquals(1, managementService.createJobQuery().orderByJobDuedate().asc().count());
-    assertEquals(1, managementService.createJobQuery().orderByExecutionId().asc().count());
-    assertEquals(1, managementService.createJobQuery().orderByProcessInstanceId().asc().count());
-    assertEquals(1, managementService.createJobQuery().orderByJobRetries().asc().count());
-    
-    assertEquals(3, managementService.createTimerJobQuery().orderByJobId().asc().count());
-    assertEquals(3, managementService.createTimerJobQuery().orderByJobDuedate().asc().count());
-    assertEquals(3, managementService.createTimerJobQuery().orderByExecutionId().asc().count());
-    assertEquals(3, managementService.createTimerJobQuery().orderByProcessInstanceId().asc().count());
-    assertEquals(3, managementService.createTimerJobQuery().orderByJobRetries().asc().count());
+    assertThat(managementService.createJobQuery().orderByJobId().asc().count()).isEqualTo(1);
+    assertThat(managementService.createJobQuery().orderByJobDuedate().asc().count()).isEqualTo(1);
+    assertThat(managementService.createJobQuery().orderByExecutionId().asc().count()).isEqualTo(1);
+    assertThat(managementService.createJobQuery().orderByProcessInstanceId().asc().count()).isEqualTo(1);
+    assertThat(managementService.createJobQuery().orderByJobRetries().asc().count()).isEqualTo(1);
+
+    assertThat(managementService.createTimerJobQuery().orderByJobId().asc().count()).isEqualTo(3);
+    assertThat(managementService.createTimerJobQuery().orderByJobDuedate().asc().count()).isEqualTo(3);
+    assertThat(managementService.createTimerJobQuery().orderByExecutionId().asc().count()).isEqualTo(3);
+    assertThat(managementService.createTimerJobQuery().orderByProcessInstanceId().asc().count()).isEqualTo(3);
+    assertThat(managementService.createTimerJobQuery().orderByJobRetries().asc().count()).isEqualTo(3);
 
     // desc
-    assertEquals(1, managementService.createJobQuery().orderByJobId().desc().count());
-    assertEquals(1, managementService.createJobQuery().orderByJobDuedate().desc().count());
-    assertEquals(1, managementService.createJobQuery().orderByExecutionId().desc().count());
-    assertEquals(1, managementService.createJobQuery().orderByProcessInstanceId().desc().count());
-    assertEquals(1, managementService.createJobQuery().orderByJobRetries().desc().count());
-    
-    assertEquals(3, managementService.createTimerJobQuery().orderByJobId().desc().count());
-    assertEquals(3, managementService.createTimerJobQuery().orderByJobDuedate().desc().count());
-    assertEquals(3, managementService.createTimerJobQuery().orderByExecutionId().desc().count());
-    assertEquals(3, managementService.createTimerJobQuery().orderByProcessInstanceId().desc().count());
-    assertEquals(3, managementService.createTimerJobQuery().orderByJobRetries().desc().count());
+    assertThat(managementService.createJobQuery().orderByJobId().desc().count()).isEqualTo(1);
+    assertThat(managementService.createJobQuery().orderByJobDuedate().desc().count()).isEqualTo(1);
+    assertThat(managementService.createJobQuery().orderByExecutionId().desc().count()).isEqualTo(1);
+    assertThat(managementService.createJobQuery().orderByProcessInstanceId().desc().count()).isEqualTo(1);
+    assertThat(managementService.createJobQuery().orderByJobRetries().desc().count()).isEqualTo(1);
+
+    assertThat(managementService.createTimerJobQuery().orderByJobId().desc().count()).isEqualTo(3);
+    assertThat(managementService.createTimerJobQuery().orderByJobDuedate().desc().count()).isEqualTo(3);
+    assertThat(managementService.createTimerJobQuery().orderByExecutionId().desc().count()).isEqualTo(3);
+    assertThat(managementService.createTimerJobQuery().orderByProcessInstanceId().desc().count()).isEqualTo(3);
+    assertThat(managementService.createTimerJobQuery().orderByJobRetries().desc().count()).isEqualTo(3);
 
     // sorting on multiple fields
     setRetries(processInstanceIdTwo, 2);
@@ -373,31 +366,25 @@ public class JobQueryTest extends PluggableActivitiTestCase {
     TimerJobQuery query = managementService.createTimerJobQuery().timers().executable().orderByJobRetries().asc().orderByJobDuedate().desc();
 
     List<Job> jobs = query.list();
-    assertEquals(3, jobs.size());
+    assertThat(jobs).hasSize(3);
 
-    assertEquals(2, jobs.get(0).getRetries());
-    assertEquals(3, jobs.get(1).getRetries());
-    assertEquals(3, jobs.get(2).getRetries());
+    assertThat(jobs.get(0).getRetries()).isEqualTo(2);
+    assertThat(jobs.get(1).getRetries()).isEqualTo(3);
+    assertThat(jobs.get(2).getRetries()).isEqualTo(3);
 
-    assertEquals(processInstanceIdTwo, jobs.get(0).getProcessInstanceId());
-    assertEquals(processInstanceIdThree, jobs.get(1).getProcessInstanceId());
-    assertEquals(processInstanceIdOne, jobs.get(2).getProcessInstanceId());
+    assertThat(jobs.get(0).getProcessInstanceId()).isEqualTo(processInstanceIdTwo);
+    assertThat(jobs.get(1).getProcessInstanceId()).isEqualTo(processInstanceIdThree);
+    assertThat(jobs.get(2).getProcessInstanceId()).isEqualTo(processInstanceIdOne);
   }
 
   public void testQueryInvalidSortingUsage() {
-    try {
-      managementService.createJobQuery().orderByJobId().list();
-      fail();
-    } catch (ActivitiIllegalArgumentException e) {
-      assertTextPresent("call asc() or desc() after using orderByXX()", e.getMessage());
-    }
+    assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
+      .isThrownBy(() -> managementService.createJobQuery().orderByJobId().list())
+      .withMessageContaining("call asc() or desc() after using orderByXX()");
 
-    try {
-      managementService.createJobQuery().asc();
-      fail();
-    } catch (ActivitiIllegalArgumentException e) {
-      assertTextPresent("You should call any of the orderBy methods first before specifying a direction", e.getMessage());
-    }
+    assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
+      .isThrownBy(() -> managementService.createJobQuery().asc())
+      .withMessageContaining("You should call any of the orderBy methods first before specifying a direction");
   }
 
   // helper ////////////////////////////////////////////////////////////
@@ -415,17 +402,16 @@ public class JobQueryTest extends PluggableActivitiTestCase {
     // timer event which we will execute manual for testing purposes.
     Job timerJob = managementService.createTimerJobQuery().processInstanceId(processInstance.getId()).singleResult();
 
-    assertNotNull("No job found for process instance", timerJob);
+    assertThat(timerJob).as("No job found for process instance").isNotNull();
 
-    try {
-      managementService.moveTimerToExecutableJob(timerJob.getId());
-      managementService.executeJob(timerJob.getId());
-      fail("RuntimeException from within the script task expected");
-      
-    } catch (RuntimeException re) {
-      assertTextPresent(EXCEPTION_MESSAGE, re.getMessage());
-    }
-    
+    assertThatExceptionOfType(RuntimeException.class)
+      .as("RuntimeException from within the script task expected")
+      .isThrownBy(() -> {
+        managementService.moveTimerToExecutableJob(timerJob.getId());
+        managementService.executeJob(timerJob.getId());
+      })
+      .withMessageContaining(EXCEPTION_MESSAGE);
+
     return processInstance;
   }
 
@@ -433,52 +419,46 @@ public class JobQueryTest extends PluggableActivitiTestCase {
     verifyQueryResults(query, 1);
 
     Job failedJob = query.singleResult();
-    assertNotNull(failedJob);
-    assertEquals(processInstance.getId(), failedJob.getProcessInstanceId());
-    assertNotNull(failedJob.getExceptionMessage());
-    assertTextPresent(EXCEPTION_MESSAGE, failedJob.getExceptionMessage());
+    assertThat(failedJob).isNotNull();
+    assertThat(failedJob.getProcessInstanceId()).isEqualTo(processInstance.getId());
+    assertThat(failedJob.getExceptionMessage()).isNotNull();
+    assertThat(failedJob.getExceptionMessage()).contains(EXCEPTION_MESSAGE);
   }
-  
+
   private void verifyQueryResults(JobQuery query, int countExpected) {
-    assertEquals(countExpected, query.list().size());
-    assertEquals(countExpected, query.count());
+    assertThat(query.list()).hasSize(countExpected);
+    assertThat(query.count()).isEqualTo(countExpected);
 
     if (countExpected == 1) {
-      assertNotNull(query.singleResult());
+      assertThat(query.singleResult()).isNotNull();
     } else if (countExpected > 1) {
       verifySingleResultFails(query);
     } else if (countExpected == 0) {
-      assertNull(query.singleResult());
+      assertThat(query.singleResult()).isNull();
     }
   }
 
   private void verifySingleResultFails(JobQuery query) {
-    try {
-      query.singleResult();
-      fail();
-    } catch (ActivitiException e) {
-    }
+    assertThatExceptionOfType(ActivitiException.class)
+      .isThrownBy(() -> query.singleResult());
   }
 
   private void verifyQueryResults(TimerJobQuery query, int countExpected) {
-    assertEquals(countExpected, query.list().size());
-    assertEquals(countExpected, query.count());
+    assertThat(query.list()).hasSize(countExpected);
+    assertThat(query.count()).isEqualTo(countExpected);
 
     if (countExpected == 1) {
-      assertNotNull(query.singleResult());
+      assertThat(query.singleResult()).isNotNull();
     } else if (countExpected > 1) {
       verifySingleResultFails(query);
     } else if (countExpected == 0) {
-      assertNull(query.singleResult());
+      assertThat(query.singleResult()).isNull();
     }
   }
 
   private void verifySingleResultFails(TimerJobQuery query) {
-    try {
-      query.singleResult();
-      fail();
-    } catch (ActivitiException e) {
-    }
+    assertThatExceptionOfType(ActivitiException.class)
+      .isThrownBy(() -> query.singleResult());
   }
 
   private void createJobWithoutExceptionMsg() {
@@ -489,7 +469,7 @@ public class JobQueryTest extends PluggableActivitiTestCase {
         jobEntity.setJobType(Job.JOB_TYPE_MESSAGE);
         jobEntity.setLockOwner(UUID.randomUUID().toString());
         jobEntity.setRetries(0);
-        
+
         StringWriter stringWriter = new StringWriter();
         NullPointerException exception = new NullPointerException();
         exception.printStackTrace(new PrintWriter(stringWriter));
@@ -497,7 +477,7 @@ public class JobQueryTest extends PluggableActivitiTestCase {
 
         commandContext.getJobEntityManager().insert(jobEntity);
 
-        assertNotNull(jobEntity.getId());
+        assertThat(jobEntity.getId()).isNotNull();
 
         return null;
 
@@ -514,12 +494,12 @@ public class JobQueryTest extends PluggableActivitiTestCase {
         jobEntity.setJobType(Job.JOB_TYPE_MESSAGE);
         jobEntity.setLockOwner(UUID.randomUUID().toString());
         jobEntity.setRetries(0);
-        
+
         jobEntity.setExceptionMessage("I'm supposed to fail");
-        
+
         commandContext.getJobEntityManager().insert(jobEntity);
 
-        assertNotNull(jobEntity.getId());
+        assertThat(jobEntity.getId()).isNotNull();
 
         return null;
 

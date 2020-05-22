@@ -1,15 +1,19 @@
-/* Licensed under the Apache License, Version 2.0 (the "License");
+/*
+ * Copyright 2010-2020 Alfresco Software, Ltd.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.activiti.editor.language.json.converter;
 
 import java.util.Map;
@@ -29,7 +33,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
  */
 public class ServiceTaskJsonConverter extends BaseBpmnJsonConverter implements DecisionTableKeyAwareConverter {
-  
+
   protected Map<String, ModelInfo> decisionTableKeyMap;
 
   public static void fillTypes(Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap, Map<Class<? extends BaseElement>, Class<? extends BaseBpmnJsonConverter>> convertersToJsonMap) {
@@ -71,15 +75,15 @@ public class ServiceTaskJsonConverter extends BaseBpmnJsonConverter implements D
       setPropertyFieldValue(PROPERTY_MULETASK_LANGUAGE, "language", serviceTask, propertiesNode);
       setPropertyFieldValue(PROPERTY_MULETASK_PAYLOAD_EXPRESSION, "payloadExpression", serviceTask, propertiesNode);
       setPropertyFieldValue(PROPERTY_MULETASK_RESULT_VARIABLE, "resultVariable", serviceTask, propertiesNode);
-      
+
     } else if ("dmn".equalsIgnoreCase(serviceTask.getType())) {
       for (FieldExtension fieldExtension : serviceTask.getFieldExtensions()) {
         if (PROPERTY_DECISIONTABLE_REFERENCE_KEY.equals(fieldExtension.getFieldName()) &&
             decisionTableKeyMap != null && decisionTableKeyMap.containsKey(fieldExtension.getStringValue())) {
-          
+
           ObjectNode decisionReferenceNode = objectMapper.createObjectNode();
           propertiesNode.set(PROPERTY_DECISIONTABLE_REFERENCE, decisionReferenceNode);
-          
+
           ModelInfo modelInfo = decisionTableKeyMap.get(fieldExtension.getStringValue());
           decisionReferenceNode.put("id", modelInfo.getId());
           decisionReferenceNode.put("name", modelInfo.getName());
@@ -173,7 +177,7 @@ public class ServiceTaskJsonConverter extends BaseBpmnJsonConverter implements D
       }
     }
   }
-  
+
   @Override
   public void setDecisionTableKeyMap(Map<String, ModelInfo> decisionTableKeyMap) {
     this.decisionTableKeyMap = decisionTableKeyMap;

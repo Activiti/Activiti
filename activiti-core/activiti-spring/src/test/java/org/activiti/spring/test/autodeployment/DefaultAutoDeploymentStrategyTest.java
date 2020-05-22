@@ -1,9 +1,12 @@
-/* Licensed under the Apache License, Version 2.0 (the "License");
+/*
+ * Copyright 2010-2020 Alfresco Software, Ltd.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -11,7 +14,10 @@
  * limitations under the License.
  */
 
+
 package org.activiti.spring.test.autodeployment;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,8 +28,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.core.io.Resource;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.never;
@@ -43,9 +47,9 @@ public class DefaultAutoDeploymentStrategyTest extends AbstractAutoDeploymentStr
 
     @Test
     public void testHandlesMode() {
-        assertTrue(deploymentStrategy.handlesMode(DefaultAutoDeploymentStrategy.DEPLOYMENT_MODE));
-        assertFalse(deploymentStrategy.handlesMode("other-mode"));
-        assertFalse(deploymentStrategy.handlesMode(null));
+        assertThat(deploymentStrategy.handlesMode(DefaultAutoDeploymentStrategy.DEPLOYMENT_MODE)).isTrue();
+        assertThat(deploymentStrategy.handlesMode("other-mode")).isFalse();
+        assertThat(deploymentStrategy.handlesMode(null)).isFalse();
     }
 
     @Test

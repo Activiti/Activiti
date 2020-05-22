@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
+  <servers>
+    <server>
+      <id>alfresco</id>
+      <username>${env.MAVEN_USERNAME}</username>
+      <password>${env.MAVEN_PASSWORD}</password>
+    </server>
+    <server>
+      <id>central</id>
+      <username>${env.MAVEN_USERNAME}</username>
+      <password>${env.MAVEN_PASSWORD}</password>
+    </server>
+  </servers>
+  
+   <profiles>
+    <profile>
+      <id>central</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+      </activation>
+      <properties>
+        <altDeploymentRepository>central::default::https://artifacts.alfresco.com/nexus/content/repositories/activiti-snapshots/</altDeploymentRepository>
+        <altReleaseDeploymentRepository>central::default::https://oss.sonatype.org/service/local/staging/deploy/maven2/</altReleaseDeploymentRepository>
+        <altSnapshotDeploymentRepository>central::default::https://artifacts.alfresco.com/nexus/content/repositories/activiti-snapshots/</altSnapshotDeploymentRepository>
+      </properties>
+    </profile>
+    <profile>
+      <id>alfresco</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <properties>
+        <altDeploymentRepository>alfresco::default::https://artifacts.alfresco.com/nexus/content/repositories/activiti-snapshots/</altDeploymentRepository>
+        <altReleaseDeploymentRepository>alfresco::default::https://artifacts.alfresco.com/nexus/content/repositories/activiti-releases/</altReleaseDeploymentRepository>
+        <altSnapshotDeploymentRepository>alfresco::default::https://artifacts.alfresco.com/nexus/content/repositories/activiti-snapshots/</altSnapshotDeploymentRepository>
+      </properties>
+    </profile>
+  </profiles>
+  
+</settings>

@@ -1,11 +1,11 @@
 /*
- * Copyright 2019 Alfresco, Inc. and/or its affiliates.
+ * Copyright 2010-2020 Alfresco Software, Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,15 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.spring.boot.tasks;
 
+import static java.util.Arrays.asList;
+import static java.util.Collections.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 import static org.awaitility.Awaitility.await;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -52,17 +51,14 @@ import org.activiti.spring.boot.process.listener.DummyBPMNTimerScheduledListener
 import org.activiti.spring.boot.security.util.SecurityUtil;
 import org.activiti.spring.boot.test.util.ProcessCleanUpUtil;
 import org.activiti.test.LocalEventSource;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
 
-@RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @ActiveProfiles(ProcessRuntimeBPMNTimerIT.PROCESS_RUNTIME_BPMN_TIMER_IT)
 @Import({TimerTestConfigurator.class,
@@ -90,12 +86,12 @@ public class TaskRuntimeMultiInstanceIT {
     @Autowired
     private SecurityUtil securityUtil;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         localEventSource.clearEvents();
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         processCleanUpUtil.cleanUpWithAdmin();
         processEngineConfiguration.getClock().reset();
@@ -1454,8 +1450,8 @@ public class TaskRuntimeMultiInstanceIT {
         List<Task> tasks = taskBaseRuntime.getTasks(processInstance);
         assertThat(tasks).hasSize(2);
 
-        taskBaseRuntime.completeTask(tasks.get(0), Collections.singletonMap("meal", "pizza"));
-        taskBaseRuntime.completeTask(tasks.get(1), Collections.singletonMap("meal", "pasta"));
+        taskBaseRuntime.completeTask(tasks.get(0), singletonMap("meal", "pizza"));
+        taskBaseRuntime.completeTask(tasks.get(1), singletonMap("meal", "pasta"));
 
         List<VariableInstance> variables = processBaseRuntime.getVariables(processInstance);
 
@@ -1464,7 +1460,7 @@ public class TaskRuntimeMultiInstanceIT {
                 VariableInstance::getValue)
             .contains(
                 tuple("meals",
-                    Arrays.asList("pizza", "pasta")));
+                    asList("pizza", "pasta")));
     }
 
     @Test
@@ -1473,20 +1469,17 @@ public class TaskRuntimeMultiInstanceIT {
 
         List<Task> tasks = taskBaseRuntime.getTasks(processInstance);
         assertThat(tasks).hasSize(1);
-        taskBaseRuntime.completeTask(tasks.get(0), Collections.singletonMap("meal", "pizza"));
+        taskBaseRuntime.completeTask(tasks.get(0), singletonMap("meal", "pizza"));
 
         tasks = taskBaseRuntime.getTasks(processInstance);
         assertThat(tasks).hasSize(1);
-        taskBaseRuntime.completeTask(tasks.get(0), Collections.singletonMap("meal", "pasta"));
+        taskBaseRuntime.completeTask(tasks.get(0), singletonMap("meal", "pasta"));
 
         List<VariableInstance> variables = processBaseRuntime.getVariables(processInstance);
 
         assertThat(variables)
-            .extracting(VariableInstance::getName,
-                VariableInstance::getValue)
-            .contains(
-                tuple("meals",
-                    Arrays.asList("pizza", "pasta")));
+            .extracting(VariableInstance::getName, VariableInstance::getValue)
+            .contains(tuple("meals", asList("pizza", "pasta")));
     }
 
 }

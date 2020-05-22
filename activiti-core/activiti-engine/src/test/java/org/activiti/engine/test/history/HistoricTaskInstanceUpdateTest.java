@@ -1,9 +1,12 @@
-/* Licensed under the Apache License, Version 2.0 (the "License");
+/*
+ * Copyright 2010-2020 Alfresco Software, Ltd.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -11,7 +14,10 @@
  * limitations under the License.
  */
 
+
 package org.activiti.engine.test.history;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
@@ -38,13 +44,13 @@ public class HistoricTaskInstanceUpdateTest extends PluggableActivitiTestCase {
     taskService.saveTask(task);
 
     taskService.complete(task.getId());
-    assertEquals(1, historyService.createHistoricTaskInstanceQuery().count());
+    assertThat(historyService.createHistoricTaskInstanceQuery().count()).isEqualTo(1);
 
     HistoricTaskInstance historicTaskInstance = historyService.createHistoricTaskInstanceQuery().singleResult();
-    assertEquals("Updated name", historicTaskInstance.getName());
-    assertEquals("Updated description", historicTaskInstance.getDescription());
-    assertEquals("gonzo", historicTaskInstance.getAssignee());
-    assertEquals("task", historicTaskInstance.getTaskDefinitionKey());
+    assertThat(historicTaskInstance.getName()).isEqualTo("Updated name");
+    assertThat(historicTaskInstance.getDescription()).isEqualTo("Updated description");
+    assertThat(historicTaskInstance.getAssignee()).isEqualTo("gonzo");
+    assertThat(historicTaskInstance.getTaskDefinitionKey()).isEqualTo("task");
 
     // Validate fix of ACT-1923: updating assignee to null should be
     // reflected in history
@@ -58,11 +64,11 @@ public class HistoricTaskInstanceUpdateTest extends PluggableActivitiTestCase {
     taskService.saveTask(task);
 
     taskService.complete(task.getId());
-    assertEquals(1, historyService.createHistoricTaskInstanceQuery().processInstanceId(secondInstance.getId()).count());
+    assertThat(historyService.createHistoricTaskInstanceQuery().processInstanceId(secondInstance.getId()).count()).isEqualTo(1);
 
     historicTaskInstance = historyService.createHistoricTaskInstanceQuery().processInstanceId(secondInstance.getId()).singleResult();
-    assertNull(historicTaskInstance.getName());
-    assertNull(historicTaskInstance.getDescription());
-    assertNull(historicTaskInstance.getAssignee());
+    assertThat(historicTaskInstance.getName()).isNull();
+    assertThat(historicTaskInstance.getDescription()).isNull();
+    assertThat(historicTaskInstance.getAssignee()).isNull();
   }
 }

@@ -1,11 +1,11 @@
 /*
- * Copyright 2020 Alfresco, Inc. and/or its affiliates.
+ * Copyright 2010-2020 Alfresco Software, Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.runtime.api.impl;
 
 import java.util.List;
@@ -28,6 +27,7 @@ import org.activiti.api.process.model.ProcessDefinitionMeta;
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.model.ProcessInstanceMeta;
 import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
+import org.activiti.api.process.model.payloads.CreateProcessInstancePayload;
 import org.activiti.api.process.model.payloads.DeleteProcessPayload;
 import org.activiti.api.process.model.payloads.GetProcessDefinitionsPayload;
 import org.activiti.api.process.model.payloads.GetProcessInstancesPayload;
@@ -252,12 +252,31 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
 
     @Override
     public ProcessInstance start(StartProcessPayload startProcessPayload) {
+
+
         return processInstanceConverter.from(this.createProcessInstanceBuilder(startProcessPayload).start());
     }
 
     @Override
-    public ProcessInstance create(StartProcessPayload startProcessPayload) {
-        return processInstanceConverter.from(this.createProcessInstanceBuilder(startProcessPayload).create());
+    public ProcessInstance startCreatedProcess(String processInstanceId, StartProcessPayload startProcessPayload) {
+        org.activiti.engine.runtime.ProcessInstance internalProcessInstance = runtimeService
+                                                                                .createProcessInstanceQuery()
+                                                                                .processInstanceId(processInstanceId)
+                                                                                .singleResult();
+        if (internalProcessInstance == null) {
+            throw new NotFoundException("Unable to find process instance for the given id:'" + processInstanceId + "'");
+        }
+
+        if (!securityPoliciesManager.canRead(internalProcessInstance.getProcessDefinitionKey())) {
+            throw new ActivitiObjectNotFoundException("You cannot read the process instance with Id:'" + processInstanceId + "' due to security policies violation");
+        }
+       processVariablesValidator.checkStartProcessPayloadVariables(startProcessPayload, internalProcessInstance.getProcessDefinitionId());
+       return processInstanceConverter.from(runtimeService.startCreatedProcessInstance(internalProcessInstance, startProcessPayload.getVariables()));
+    }
+
+    @Override
+    public ProcessInstance create(CreateProcessInstancePayload startProcessPayload) {
+        return processInstanceConverter.from(createProcessInstanceBuilder(startProcessPayload).create());
     }
 
     private ProcessInstanceBuilder createProcessInstanceBuilder(StartProcessPayload startProcessPayload) {
@@ -273,6 +292,18 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
             .businessKey(startProcessPayload.getBusinessKey())
             .variables(startProcessPayload.getVariables())
             .name(startProcessPayload.getName());
+    }
+
+    private ProcessInstanceBuilder createProcessInstanceBuilder(CreateProcessInstancePayload createProcessPayload) {
+        ProcessDefinition processDefinition = getProcessDefinitionAndCheckUserHasRights(createProcessPayload.getProcessDefinitionId(),
+            createProcessPayload.getProcessDefinitionKey());
+
+        return runtimeService
+            .createProcessInstanceBuilder()
+            .processDefinitionId(processDefinition.getId())
+            .processDefinitionKey(processDefinition.getKey())
+            .businessKey(createProcessPayload.getBusinessKey())
+            .name(createProcessPayload.getName());
     }
 
     @Override

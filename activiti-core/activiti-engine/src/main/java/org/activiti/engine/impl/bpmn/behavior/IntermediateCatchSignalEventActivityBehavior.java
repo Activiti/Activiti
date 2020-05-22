@@ -1,8 +1,11 @@
-/* Licensed under the Apache License, Version 2.0 (the "License");
+/*
+ * Copyright 2010-2020 Alfresco Software, Ltd.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -10,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.activiti.engine.impl.bpmn.behavior;
 
 import java.util.List;
@@ -42,7 +46,7 @@ public class IntermediateCatchSignalEventActivityBehavior extends IntermediateCa
   public void execute(DelegateExecution execution) {
     CommandContext commandContext = Context.getCommandContext();
     ExecutionEntity executionEntity = (ExecutionEntity) execution;
-    
+
     String signalName = null;
     if (StringUtils.isNotEmpty(signalEventDefinition.getSignalRef())) {
       signalName = signalEventDefinition.getSignalRef();
@@ -51,7 +55,7 @@ public class IntermediateCatchSignalEventActivityBehavior extends IntermediateCa
           .createExpression(signalEventDefinition.getSignalExpression());
       signalName = signalExpression.getValue(execution).toString();
     }
-    
+
     commandContext.getEventSubscriptionEntityManager().insertSignalEvent(signalName, signal, executionEntity);
   }
 
@@ -60,11 +64,11 @@ public class IntermediateCatchSignalEventActivityBehavior extends IntermediateCa
     ExecutionEntity executionEntity = deleteSignalEventSubscription(execution);
     leaveIntermediateCatchEvent(executionEntity);
   }
-  
+
   @Override
   public void eventCancelledByEventGateway(DelegateExecution execution) {
     deleteSignalEventSubscription(execution);
-    Context.getCommandContext().getExecutionEntityManager().deleteExecutionAndRelatedData((ExecutionEntity) execution, 
+    Context.getCommandContext().getExecutionEntityManager().deleteExecutionAndRelatedData((ExecutionEntity) execution,
         DeleteReason.EVENT_BASED_GATEWAY_CANCEL);
   }
 

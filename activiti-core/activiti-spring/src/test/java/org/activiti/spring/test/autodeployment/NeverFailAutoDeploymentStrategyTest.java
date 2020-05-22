@@ -1,4 +1,21 @@
+/*
+ * Copyright 2010-2020 Alfresco Software, Ltd.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.activiti.spring.test.autodeployment;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 
@@ -40,7 +57,7 @@ public class NeverFailAutoDeploymentStrategyTest extends SpringActivitiTestCase 
         final Resource[] resources = new Resource[]{new ClassPathResource(validName1)};
         NeverFailAutoDeploymentStrategy deploymentStrategy = new NeverFailAutoDeploymentStrategy(null);
         deploymentStrategy.deployResources(nameHint, resources, repositoryService);
-        assertEquals(1, repositoryService.createDeploymentQuery().count());
+        assertThat(repositoryService.createDeploymentQuery().count()).isEqualTo(1);
     }
 
     @Test
@@ -48,7 +65,7 @@ public class NeverFailAutoDeploymentStrategyTest extends SpringActivitiTestCase 
         final Resource[] resources = new Resource[]{new ClassPathResource(validName1), new ClassPathResource(invalidName1), new ClassPathResource(invalidName2)};
         NeverFailAutoDeploymentStrategy deploymentStrategy = new NeverFailAutoDeploymentStrategy(null);
         deploymentStrategy.deployResources(nameHint, resources, repositoryService);
-        assertEquals(1, repositoryService.createDeploymentQuery().count());
+        assertThat(repositoryService.createDeploymentQuery().count()).isEqualTo(1);
     }
 
     @Test
@@ -56,7 +73,7 @@ public class NeverFailAutoDeploymentStrategyTest extends SpringActivitiTestCase 
         final Resource[] resources = new Resource[]{new ClassPathResource(validName1), new ClassPathResource(invalidName1)};
         NeverFailAutoDeploymentStrategy deploymentStrategy = new NeverFailAutoDeploymentStrategy(null);
         deploymentStrategy.deployResources(nameHint, resources, repositoryService);
-        assertEquals(1, repositoryService.createDeploymentQuery().count());
+        assertThat(repositoryService.createDeploymentQuery().count()).isEqualTo(1);
     }
 
     @Test
@@ -64,7 +81,7 @@ public class NeverFailAutoDeploymentStrategyTest extends SpringActivitiTestCase 
         final Resource[] resources = new Resource[]{new ClassPathResource(validName1), new ClassPathResource(invalidName2)};
         NeverFailAutoDeploymentStrategy deploymentStrategy = new NeverFailAutoDeploymentStrategy(null);
         deploymentStrategy.deployResources(nameHint, resources, repositoryService);
-        assertEquals(1, repositoryService.createDeploymentQuery().count());
+        assertThat(repositoryService.createDeploymentQuery().count()).isEqualTo(1);
     }
 
     @Test
@@ -72,6 +89,6 @@ public class NeverFailAutoDeploymentStrategyTest extends SpringActivitiTestCase 
         final Resource[] resources = new Resource[]{new ClassPathResource(invalidName1)};
         NeverFailAutoDeploymentStrategy deploymentStrategy = new NeverFailAutoDeploymentStrategy(null);
         deploymentStrategy.deployResources(nameHint, resources, repositoryService);
-        assertEquals(0, repositoryService.createDeploymentQuery().count());
+        assertThat(repositoryService.createDeploymentQuery().count()).isEqualTo(0);
     }
 }

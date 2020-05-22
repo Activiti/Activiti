@@ -1,16 +1,22 @@
-/* Licensed under the Apache License, Version 2.0 (the "License");
+/*
+ * Copyright 2010-2020 Alfresco Software, Ltd.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.activiti.standalone.idgenerator;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -26,64 +32,46 @@ import org.activiti.engine.test.Deployment;
  */
 public class UuidGeneratorTest extends ResourceActivitiTestCase {
 
-  public UuidGeneratorTest() throws Exception {
+  public UuidGeneratorTest() {
     super("org/activiti/standalone/idgenerator/uuidgenerator.test.activiti.cfg.xml");
   }
 
   @Deployment
-  public void testUuidGeneratorUsage() {
+  public void testUuidGeneratorUsage() throws Exception {
 
     ExecutorService executorService = Executors.newFixedThreadPool(10);
 
     // Start processes
     for (int i = 0; i < 50; i++) {
-      executorService.execute(new Runnable() {
-        public void run() {
-          try {
-            runtimeService.startProcessInstanceByKey("simpleProcess");
-          } catch (Exception e) {
-            e.printStackTrace();
-            fail();
-          }
-        }
-      });
+      executorService.execute(() -> runtimeService.startProcessInstanceByKey("simpleProcess"));
     }
 
     // Complete tasks
-    executorService.execute(new Runnable() {
+    executorService.execute(() -> {
+      boolean tasksFound = true;
+      while (tasksFound) {
+        List<Task> tasks = taskService.createTaskQuery().list();
+        for (Task task : tasks) {
+          taskService.complete(task.getId());
+        }
 
-      public void run() {
-        boolean tasksFound = true;
-        while (tasksFound) {
+        tasksFound = taskService.createTaskQuery().count() > 0;
 
-          List<Task> tasks = taskService.createTaskQuery().list();
-          for (Task task : tasks) {
-            taskService.complete(task.getId());
+        if (!tasksFound) {
+          try {
+            Thread.sleep(1500L); // just to be sure
+          } catch (InterruptedException e) {
+            e.printStackTrace();
           }
-
           tasksFound = taskService.createTaskQuery().count() > 0;
-
-          if (!tasksFound) {
-            try {
-              Thread.sleep(1500L); // just to be sure
-            } catch (InterruptedException e) {
-              e.printStackTrace();
-            }
-            tasksFound = taskService.createTaskQuery().count() > 0;
-          }
         }
       }
     });
 
-    try {
-      executorService.shutdown();
-      executorService.awaitTermination(1, TimeUnit.MINUTES);
-    } catch (InterruptedException e) {
-      e.printStackTrace();
-      fail();
-    }
+    executorService.shutdown();
+    executorService.awaitTermination(1, TimeUnit.MINUTES);
 
-    assertEquals(50, historyService.createHistoricProcessInstanceQuery().count());
+    assertThat(historyService.createHistoricProcessInstanceQuery().count()).isEqualTo(50);
   }
 
 }

@@ -1,11 +1,11 @@
 /*
- * Copyright 2019 Alfresco, Inc. and/or its affiliates.
+ * Copyright 2010-2020 Alfresco Software, Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.spring.process;
 
+import static java.util.Collections.emptyMap;
+import static java.util.Collections.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.BDDMockito.given;
@@ -23,7 +24,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 import java.io.InputStream;
-import java.util.Collections;
 import java.util.Map;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -34,16 +34,13 @@ import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.spring.process.model.ProcessExtensionModel;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.junit4.SpringRunner;
 
-@RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 public class ProcessVariablesInitiatorIT {
 
@@ -73,7 +70,7 @@ public class ProcessVariablesInitiatorIT {
 
     }
 
-    @Before
+    @BeforeEach
     public void setUp() {
         initMocks(this);
     }
@@ -118,7 +115,7 @@ public class ProcessVariablesInitiatorIT {
 
             //when
             Map<String, Object> variables = processVariablesInitiator.calculateVariablesFromExtensionFile(processDefinition,
-                                                                                                          Collections.singletonMap("name",
+                                                                                                          singletonMap("name",
                                                                                                                                    "Peter"));
 
             //then
@@ -144,7 +141,7 @@ public class ProcessVariablesInitiatorIT {
 
             //when
             Throwable thrownException = catchThrowable(() -> processVariablesInitiator.calculateVariablesFromExtensionFile(processDefinition,
-                                                                                                                     Collections.emptyMap())
+                                                                                                                     emptyMap())
             );
 
             //then
@@ -169,7 +166,7 @@ public class ProcessVariablesInitiatorIT {
 
             //when
             Throwable thrownException = catchThrowable(() -> processVariablesInitiator.calculateVariablesFromExtensionFile(processDefinition,
-                                                                                                                     Collections.singletonMap("age", "invalidNumber"))
+                                                                                                                     singletonMap("age", "invalidNumber"))
             );
 
             //then

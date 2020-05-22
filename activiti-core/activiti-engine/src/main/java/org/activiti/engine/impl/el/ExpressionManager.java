@@ -1,8 +1,11 @@
-/* Licensed under the Apache License, Version 2.0 (the "License");
+/*
+ * Copyright 2010-2020 Alfresco Software, Ltd.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -11,11 +14,12 @@
  * limitations under the License.
  */
 
+
 package org.activiti.engine.impl.el;
 
+import de.odysseus.el.ExpressionFactoryImpl;
 import java.util.HashMap;
 import java.util.Map;
-
 import javax.el.ArrayELResolver;
 import javax.el.BeanELResolver;
 import javax.el.CompositeELResolver;
@@ -25,8 +29,6 @@ import javax.el.ExpressionFactory;
 import javax.el.ListELResolver;
 import javax.el.MapELResolver;
 import javax.el.ValueExpression;
-
-import de.odysseus.el.ExpressionFactoryImpl;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.VariableScope;
 import org.activiti.engine.impl.bpmn.data.ItemInstance;
@@ -111,14 +113,18 @@ public class ExpressionManager {
     protected ELResolver createElResolver(VariableScope variableScope) {
         CompositeELResolver elResolver = new CompositeELResolver();
         elResolver.add(new VariableScopeElResolver(variableScope));
+        addBeansResolver(elResolver);
+        addBaseResolvers(elResolver);
+        return elResolver;
+    }
+
+    protected void addBeansResolver(CompositeELResolver elResolver) {
         if (beans != null) {
             // ACT-1102: Also expose all beans in configuration when using
             // standalone activiti, not
             // in spring-context
             elResolver.add(new ReadOnlyMapELResolver(beans));
         }
-        addBaseResolvers(elResolver);
-        return elResolver;
     }
 
     private void addBaseResolvers(CompositeELResolver elResolver) {

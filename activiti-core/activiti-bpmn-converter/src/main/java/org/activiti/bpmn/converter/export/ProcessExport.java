@@ -1,8 +1,11 @@
-/* Licensed under the Apache License, Version 2.0 (the "License");
+/*
+ * Copyright 2010-2020 Alfresco Software, Ltd.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -12,7 +15,8 @@
  */
 package org.activiti.bpmn.converter.export;
 
-import java.util.Arrays;
+import static java.util.Arrays.asList;
+
 import java.util.List;
 
 import javax.xml.stream.XMLStreamWriter;
@@ -27,7 +31,7 @@ public class ProcessExport implements BpmnXMLConstants {
   /**
    * default attributes taken from process instance attributes
    */
-  public static final List<ExtensionAttribute> defaultProcessAttributes = Arrays.asList(new ExtensionAttribute(ATTRIBUTE_ID), new ExtensionAttribute(ATTRIBUTE_NAME), new ExtensionAttribute(
+  public static final List<ExtensionAttribute> defaultProcessAttributes = asList(new ExtensionAttribute(ATTRIBUTE_ID), new ExtensionAttribute(ATTRIBUTE_NAME), new ExtensionAttribute(
       ATTRIBUTE_PROCESS_EXECUTABLE), new ExtensionAttribute(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_PROCESS_CANDIDATE_USERS), new ExtensionAttribute(ACTIVITI_EXTENSIONS_NAMESPACE,
       ATTRIBUTE_PROCESS_CANDIDATE_GROUPS));
 
