@@ -1,15 +1,19 @@
-/* Licensed under the Apache License, Version 2.0 (the "License");
+/*
+ * Copyright 2010-2020 Alfresco Software, Ltd.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.activiti.engine.impl.persistence.entity.data.impl;
 
 import java.util.List;
@@ -41,40 +45,40 @@ public class MybatisHistoricDetailDataManager extends AbstractDataManager<Histor
   public Class<? extends HistoricDetailEntity> getManagedEntityClass() {
     return HistoricDetailEntityImpl.class;
   }
-  
+
   @Override
   public HistoricDetailEntity create() {
     // Superclass is abstract
     throw new UnsupportedOperationException();
   }
-  
+
   @Override
   public HistoricDetailAssignmentEntity createHistoricDetailAssignment() {
     return new HistoricDetailAssignmentEntityImpl();
   }
-  
+
   @Override
   public HistoricDetailTransitionInstanceEntity createHistoricDetailTransitionInstance() {
     return new HistoricDetailTransitionInstanceEntityImpl();
   }
-  
+
   @Override
   public HistoricDetailVariableInstanceUpdateEntity createHistoricDetailVariableInstanceUpdate() {
     return new HistoricDetailVariableInstanceUpdateEntityImpl();
   }
-  
+
   @Override
   @SuppressWarnings("unchecked")
   public List<HistoricDetailEntity> findHistoricDetailsByProcessInstanceId(String processInstanceId) {
     return getDbSqlSession().selectList("selectHistoricDetailByProcessInstanceId", processInstanceId);
   }
-  
+
   @Override
   @SuppressWarnings("unchecked")
   public List<HistoricDetailEntity> findHistoricDetailsByTaskId(String taskId) {
     return getDbSqlSession().selectList("selectHistoricDetailByTaskId", taskId);
   }
-  
+
   @Override
   public long findHistoricDetailCountByQueryCriteria(HistoricDetailQueryImpl historicVariableUpdateQuery) {
     return (Long) getDbSqlSession().selectOne("selectHistoricDetailCountByQueryCriteria", historicVariableUpdateQuery);
@@ -85,7 +89,7 @@ public class MybatisHistoricDetailDataManager extends AbstractDataManager<Histor
   public List<HistoricDetail> findHistoricDetailsByQueryCriteria(HistoricDetailQueryImpl historicVariableUpdateQuery, Page page) {
     return getDbSqlSession().selectList("selectHistoricDetailsByQueryCriteria", historicVariableUpdateQuery, page);
   }
-  
+
   @Override
   @SuppressWarnings("unchecked")
   public List<HistoricDetail> findHistoricDetailsByNativeQuery(Map<String, Object> parameterMap, int firstResult, int maxResults) {
@@ -96,5 +100,5 @@ public class MybatisHistoricDetailDataManager extends AbstractDataManager<Histor
   public long findHistoricDetailCountByNativeQuery(Map<String, Object> parameterMap) {
     return (Long) getDbSqlSession().selectOne("selectHistoricDetailCountByNativeQuery", parameterMap);
   }
-  
+
 }

@@ -1,3 +1,18 @@
+/*
+ * Copyright 2010-2020 Alfresco Software, Ltd.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.activiti.spring.boot.process;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -7,16 +22,21 @@ import static org.assertj.core.api.Assertions.tuple;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
-
 import org.activiti.api.model.shared.model.VariableInstance;
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
 import org.activiti.api.process.runtime.ProcessRuntime;
 import org.activiti.api.process.runtime.conf.ProcessRuntimeConfiguration;
+import org.activiti.api.runtime.shared.query.Page;
+import org.activiti.api.runtime.shared.query.Pageable;
+import org.activiti.api.task.model.Task;
+import org.activiti.api.task.model.builders.TaskPayloadBuilder;
+import org.activiti.api.task.runtime.TaskRuntime;
 import org.activiti.engine.ActivitiException;
 import org.activiti.spring.boot.security.util.SecurityUtil;
 import org.activiti.spring.boot.test.util.ProcessCleanUpUtil;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -24,12 +44,15 @@ import org.springframework.test.context.ContextConfiguration;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @ContextConfiguration
-public class ProcessExtensionsTest {
+public class ProcessExtensionsIT {
 
     private static final String INITIAL_VARS_PROCESS = "Process_initialVarsProcess";
 
     @Autowired
     private ProcessRuntime processRuntime;
+
+    @Autowired
+    private TaskRuntime taskRuntime;
 
     @Autowired
     private SecurityUtil securityUtil;
@@ -42,11 +65,13 @@ public class ProcessExtensionsTest {
         processCleanUpUtil.cleanUpWithAdmin();
     }
 
+    @BeforeEach
+    void setUp() {
+        securityUtil.logInAs("user");
+    }
+
     @Test
     public void processInstanceHasInitialVariables() {
-
-        securityUtil.logInAs("user");
-
         ProcessRuntimeConfiguration configuration = processRuntime.configuration();
         assertThat(configuration).isNotNull();
 
@@ -79,9 +104,6 @@ public class ProcessExtensionsTest {
 
     @Test
     public void processInstanceHasValidInitialVariables() throws ParseException {
-
-
-        securityUtil.logInAs("user");
         ProcessRuntimeConfiguration configuration = processRuntime.configuration();
         assertThat(configuration).isNotNull();
 
@@ -118,7 +140,6 @@ public class ProcessExtensionsTest {
 
     @Test
     public void processInstanceFailsWithoutRequiredVariables() {
-        securityUtil.logInAs("user");
         ProcessRuntimeConfiguration configuration = processRuntime.configuration();
         assertThat(configuration).isNotNull();
 
@@ -133,8 +154,6 @@ public class ProcessExtensionsTest {
 
     @Test
     public void processInstanceFailsIfVariableTypeIncorrect() {
-
-        securityUtil.logInAs("user");
         ProcessRuntimeConfiguration configuration = processRuntime.configuration();
         assertThat(configuration).isNotNull();
 
@@ -151,9 +170,7 @@ public class ProcessExtensionsTest {
 
     @Test
     public void should_mapProcessVariables_when_startEventMappingExists() {
-
-        securityUtil.logInAs("user");
-
+        //given
         ProcessInstance process = processRuntime.start(ProcessPayloadBuilder.start()
                 .withProcessDefinitionKey("process-b42a166d-605b-4eec-8b96-82b1253666bf")
                 .withVariable("Text0xfems",
@@ -163,20 +180,92 @@ public class ProcessExtensionsTest {
                 .withBusinessKey("my business key")
                 .build());
 
-        assertThat(process).isNotNull();
-        assertThat(process.getStatus()).isEqualTo(ProcessInstance.ProcessInstanceStatus.RUNNING);
-
+        //when
         List<VariableInstance> variableInstances = processRuntime.variables(ProcessPayloadBuilder.variables().withProcessInstance(process).build());
 
+        //then
         assertThat(variableInstances)
-        .isNotNull()
-        .hasSize(2)
-        .extracting(VariableInstance::getName,
-                    VariableInstance::getValue)
-        .containsOnly(
-                      tuple("name", "name_value"),
-                      tuple("email", "email_value")
-        );
+            .isNotNull()
+            .hasSize(2)
+            .extracting(VariableInstance::getName,
+                VariableInstance::getValue)
+            .containsOnly(
+                tuple("name", "name_value"),
+                tuple("email", "email_value")
+            );
+
+        //when
+        List<VariableInstance> taskVariables = retrieveVariablesForFirstTaskOfProcess(process);
+
+        //then
+        assertThat(taskVariables)
+            .isNotNull()
+            .hasSize(2)
+            .extracting(VariableInstance::getName,
+                VariableInstance::getValue)
+            .containsOnly(
+                tuple("nameInTask", "name_value"),
+                tuple("emailInTask", "email_value")
+            );
+
+    }
+
+    private List<VariableInstance> retrieveVariablesForFirstTaskOfProcess(
+        ProcessInstance processInstance) {
+        Page<Task> tasks = taskRuntime.tasks(Pageable.of(0, 1),
+            TaskPayloadBuilder.tasksForProcess(processInstance).build());
+        assertThat(tasks.getContent()).hasSize(1);
+        return taskRuntime
+            .variables(TaskPayloadBuilder.variables()
+                .withTaskId(tasks.getContent().get(0).getId()).build());
+    }
+
+    @Test
+    public void should_mapProcessVariables_when_createAndStartProcessAreCalled() {
+        //given
+        ProcessInstance createdProcess = processRuntime.create(ProcessPayloadBuilder.create()
+            .withProcessDefinitionKey("process-b42a166d-605b-4eec-8b96-82b1253666bf")
+            .withName("TEST")
+            .build());
+
+        ProcessInstance startedProcess = processRuntime.startCreatedProcess(createdProcess.getId(),
+            ProcessPayloadBuilder.start()
+            .withProcessDefinitionKey("process-b42a166d-605b-4eec-8b96-82b1253666bf")
+            .withVariable("Text0xfems",
+                "name_value")
+            .withVariable("Text0rvs0o",
+                "email_value")
+            .withBusinessKey("my business key")
+            .build() );
+
+        //then
+        List<VariableInstance> variableInstances = processRuntime.variables(ProcessPayloadBuilder.variables()
+            .withProcessInstance(startedProcess).build());
+
+        assertThat(variableInstances)
+            .isNotNull()
+            .hasSize(2)
+            .extracting(VariableInstance::getName,
+                VariableInstance::getValue)
+            .containsOnly(
+                tuple("name", "name_value"),
+                tuple("email", "email_value")
+            );
+
+        //when
+        List<VariableInstance> taskVariables = retrieveVariablesForFirstTaskOfProcess(
+            createdProcess);
+
+
+        //then
+        assertThat(taskVariables)
+            .isNotNull()
+            .extracting(VariableInstance::getName,
+                VariableInstance::getValue)
+            .containsOnly(
+                tuple("nameInTask", "name_value"),
+                tuple("emailInTask", "email_value")
+            );
 
     }
 }

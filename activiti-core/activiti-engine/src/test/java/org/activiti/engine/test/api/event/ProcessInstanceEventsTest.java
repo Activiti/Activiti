@@ -1,8 +1,11 @@
-/* Licensed under the Apache License, Version 2.0 (the "License");
+/*
+ * Copyright 2010-2020 Alfresco Software, Ltd.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -10,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.activiti.engine.test.api.event;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -64,24 +68,24 @@ public class ProcessInstanceEventsTest extends PluggableActivitiTestCase {
     assertThat(event.getExecutionId()).isEqualTo(processInstance.getId());
     assertThat(event.getProcessDefinitionId()).isEqualTo(processInstance.getProcessDefinitionId());
 
-    event = (ActivitiEntityEvent) listener.getEventsReceived().get(1);
-    assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_INITIALIZED);
-    assertThat(event.getProcessInstanceId()).isEqualTo(processInstance.getId());
-    assertThat(event.getExecutionId()).isEqualTo(processInstance.getId());
-    assertThat(event.getProcessDefinitionId()).isEqualTo(processInstance.getProcessDefinitionId());
-
     // start event create event
-    event = (ActivitiEntityEvent) listener.getEventsReceived().get(2);
+    event = (ActivitiEntityEvent) listener.getEventsReceived().get(1);
     assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_CREATED);
     assertThat(event.getProcessInstanceId()).isEqualTo(processInstance.getId());
     assertThat(event.getExecutionId()).isNotEqualTo(processInstance.getId());
     assertThat(event.getProcessDefinitionId()).isEqualTo(processInstance.getProcessDefinitionId());
 
     // start event create initialized
-    event = (ActivitiEntityEvent) listener.getEventsReceived().get(3);
+    event = (ActivitiEntityEvent) listener.getEventsReceived().get(2);
     assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_INITIALIZED);
     assertThat(event.getProcessInstanceId()).isEqualTo(processInstance.getId());
     assertThat(event.getExecutionId()).isNotEqualTo(processInstance.getId());
+    assertThat(event.getProcessDefinitionId()).isEqualTo(processInstance.getProcessDefinitionId());
+
+    event = (ActivitiEntityEvent) listener.getEventsReceived().get(3);
+    assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_INITIALIZED);
+    assertThat(event.getProcessInstanceId()).isEqualTo(processInstance.getId());
+    assertThat(event.getExecutionId()).isEqualTo(processInstance.getId());
     assertThat(event.getProcessDefinitionId()).isEqualTo(processInstance.getProcessDefinitionId());
 
     event = (ActivitiEntityEvent) listener.getEventsReceived().get(4);
@@ -202,26 +206,26 @@ public class ProcessInstanceEventsTest extends PluggableActivitiTestCase {
     assertThat(event.getExecutionId()).isEqualTo(processInstance.getId());
     assertThat(event.getProcessDefinitionId()).isEqualTo(processDefinitionId);
 
-    event = (ActivitiEntityEvent) listener.getEventsReceived().get(1);
-    String processExecutionId = event.getExecutionId();
-    assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_INITIALIZED);
-    assertThat(event.getProcessInstanceId()).isEqualTo(processInstance.getId());
-    assertThat(processExecutionId).isEqualTo(processInstance.getId());
-    assertThat(event.getProcessDefinitionId()).isEqualTo(processDefinitionId);
-
     // start event created event
-    event = (ActivitiEntityEvent) listener.getEventsReceived().get(2);
-    processExecutionId = event.getExecutionId();
+    event = (ActivitiEntityEvent) listener.getEventsReceived().get(1);
+    String startChildExecutionId = event.getExecutionId();
     assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_CREATED);
     assertThat(event.getProcessInstanceId()).isEqualTo(processInstance.getId());
-    assertThat(processExecutionId).isNotEqualTo(processInstance.getId());
+    assertThat(startChildExecutionId).isNotEqualTo(processInstance.getId());
     assertThat(event.getProcessDefinitionId()).isEqualTo(processDefinitionId);
 
     // start event initialized event
-    event = (ActivitiEntityEvent) listener.getEventsReceived().get(3);
+    event = (ActivitiEntityEvent) listener.getEventsReceived().get(2);
     assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_INITIALIZED);
     assertThat(event.getProcessInstanceId()).isEqualTo(processInstance.getId());
     assertThat(((ExecutionEntity) event.getEntity()).getId()).isNotEqualTo(processInstance.getId());
+
+    event = (ActivitiEntityEvent) listener.getEventsReceived().get(3);
+    String mainProcessExecutionId = event.getExecutionId();
+    assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_INITIALIZED);
+    assertThat(event.getProcessInstanceId()).isEqualTo(processInstance.getId());
+    assertThat(mainProcessExecutionId).isEqualTo(processInstance.getId());
+    assertThat(event.getProcessDefinitionId()).isEqualTo(processDefinitionId);
 
     // Process Start Date
     event = (ActivitiEntityEvent) listener.getEventsReceived().get(4);
@@ -242,7 +246,7 @@ public class ProcessInstanceEventsTest extends PluggableActivitiTestCase {
     event = (ActivitiEntityEvent) listener.getEventsReceived().get(6);
     assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_CREATED);
     ExecutionEntity subProcessEntity = (ExecutionEntity) event.getEntity();
-    assertThat(subProcessEntity.getSuperExecutionId()).isEqualTo(processExecutionId);
+    assertThat(subProcessEntity.getSuperExecutionId()).isEqualTo(startChildExecutionId);
     String subProcessInstanceId = subProcessEntity.getProcessInstanceId();
 
     // sub process instance start created event

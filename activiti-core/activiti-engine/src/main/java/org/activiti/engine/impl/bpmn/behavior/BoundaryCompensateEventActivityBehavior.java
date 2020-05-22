@@ -1,15 +1,19 @@
-/* Licensed under the Apache License, Version 2.0 (the "License");
+/*
+ * Copyright 2010-2020 Alfresco Software, Ltd.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.activiti.engine.impl.bpmn.behavior;
 
 import java.util.List;
@@ -48,12 +52,12 @@ public class BoundaryCompensateEventActivityBehavior extends BoundaryEventActivi
   public void execute(DelegateExecution execution) {
     ExecutionEntity executionEntity = (ExecutionEntity) execution;
     BoundaryEvent boundaryEvent = (BoundaryEvent) execution.getCurrentFlowElement();
-    
+
     Process process = ProcessDefinitionUtil.getProcess(execution.getProcessDefinitionId());
     if (process == null) {
       throw new ActivitiException("Process model (id = " + execution.getId() + ") could not be found");
     }
-    
+
     Activity compensationActivity = null;
     List<Association> associations = process.findAssociationsWithSourceRefRecursive(boundaryEvent.getId());
     for (Association association : associations) {
@@ -66,29 +70,29 @@ public class BoundaryCompensateEventActivityBehavior extends BoundaryEventActivi
         }
       }
     }
-    
+
     if (compensationActivity == null) {
       throw new ActivitiException("Compensation activity could not be found (or it is missing 'isForCompensation=\"true\"'");
     }
-    
+
     // find SubProcess or Process instance execution
     ExecutionEntity scopeExecution = null;
     ExecutionEntity parentExecution = executionEntity.getParent();
     while (scopeExecution == null && parentExecution != null) {
       if (parentExecution.getCurrentFlowElement() instanceof SubProcess) {
         scopeExecution = parentExecution;
-        
+
       } else if (parentExecution.isProcessInstanceType()) {
         scopeExecution = parentExecution;
       } else {
         parentExecution = parentExecution.getParent();
       }
     }
-    
+
     if (scopeExecution == null) {
       throw new ActivitiException("Could not find a scope execution for compensation boundary event " + boundaryEvent.getId());
     }
-    
+
     Context.getCommandContext().getEventSubscriptionEntityManager().insertCompensationEvent(
         scopeExecution, compensationActivity.getId());
   }

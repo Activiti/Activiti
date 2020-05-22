@@ -1,15 +1,19 @@
-/* Licensed under the Apache License, Version 2.0 (the "License");
+/*
+ * Copyright 2010-2020 Alfresco Software, Ltd.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.activiti.engine.test;
 
 import java.util.ArrayList;
@@ -147,7 +151,7 @@ public class TestActivityBehaviorFactory extends AbstractBehaviorFactory impleme
   public ReceiveTaskActivityBehavior createReceiveTaskActivityBehavior(ReceiveTask receiveTask) {
     return wrappedActivityBehaviorFactory.createReceiveTaskActivityBehavior(receiveTask);
   }
-  
+
   @Override
   public UserTaskActivityBehavior createUserTaskActivityBehavior(UserTask userTask) {
     return wrappedActivityBehaviorFactory.createUserTaskActivityBehavior(userTask);
@@ -279,17 +283,17 @@ public class TestActivityBehaviorFactory extends AbstractBehaviorFactory impleme
   public SubProcessActivityBehavior createSubprocessActivityBehavior(SubProcess subProcess) {
     return wrappedActivityBehaviorFactory.createSubprocessActivityBehavior(subProcess);
   }
-  
+
   @Override
   public EventSubProcessErrorStartEventActivityBehavior createEventSubProcessErrorStartEventActivityBehavior(StartEvent startEvent) {
     return wrappedActivityBehaviorFactory.createEventSubProcessErrorStartEventActivityBehavior(startEvent);
   }
-  
+
   @Override
   public EventSubProcessMessageStartEventActivityBehavior createEventSubProcessMessageStartEventActivityBehavior(StartEvent startEvent, MessageEventDefinition messageEventDefinition) {
     return wrappedActivityBehaviorFactory.createEventSubProcessMessageStartEventActivityBehavior(startEvent, messageEventDefinition);
   }
-  
+
   @Override
   public AdhocSubProcessActivityBehavior createAdhocSubprocessActivityBehavior(SubProcess subProcess) {
     return wrappedActivityBehaviorFactory.createAdhocSubprocessActivityBehavior(subProcess);
@@ -388,7 +392,7 @@ public class TestActivityBehaviorFactory extends AbstractBehaviorFactory impleme
   public BoundaryMessageEventActivityBehavior createBoundaryMessageEventActivityBehavior(BoundaryEvent boundaryEvent, MessageEventDefinition messageEventDefinition, boolean interrupting) {
     return wrappedActivityBehaviorFactory.createBoundaryMessageEventActivityBehavior(boundaryEvent, messageEventDefinition, interrupting);
   }
-  
+
   @Override
   public BoundaryCompensateEventActivityBehavior createBoundaryCompensateEventActivityBehavior(BoundaryEvent boundaryEvent, CompensateEventDefinition compensateEventDefinition, boolean interrupting) {
     return wrappedActivityBehaviorFactory.createBoundaryCompensateEventActivityBehavior(boundaryEvent, compensateEventDefinition, interrupting);
@@ -398,19 +402,19 @@ public class TestActivityBehaviorFactory extends AbstractBehaviorFactory impleme
   public IntermediateThrowMessageEventActivityBehavior createThrowMessageEventActivityBehavior(ThrowEvent throwEvent,
                                                                                                MessageEventDefinition messageEventDefinition,
                                                                                                Message message) {
-      return wrappedActivityBehaviorFactory.createThrowMessageEventActivityBehavior(throwEvent, 
-                                                                                    messageEventDefinition, 
+      return wrappedActivityBehaviorFactory.createThrowMessageEventActivityBehavior(throwEvent,
+                                                                                    messageEventDefinition,
                                                                                     message);
   }
   @Override
   public ThrowMessageEndEventActivityBehavior createThrowMessageEndEventActivityBehavior(EndEvent endEvent,
                                                                                          MessageEventDefinition messageEventDefinition,
                                                                                          Message message) {
-      return wrappedActivityBehaviorFactory.createThrowMessageEndEventActivityBehavior(endEvent, 
-                                                                                       messageEventDefinition, 
+      return wrappedActivityBehaviorFactory.createThrowMessageEndEventActivityBehavior(endEvent,
+                                                                                       messageEventDefinition,
                                                                                        message);
   }
-  
+
   // Mock support //////////////////////////////////////////////////////
 
   public void addClassDelegateMock(String originalClassFqn, Class<?> mockClass) {
