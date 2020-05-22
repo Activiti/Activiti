@@ -469,7 +469,7 @@ public class ExecutionEntityImpl extends VariableScopeImpl implements ExecutionE
   }
 
   protected void ensureRootProcessInstanceInitialized() {
-    if (rootProcessInstance == null) {
+    if (rootProcessInstanceId == null) {
       rootProcessInstance = (ExecutionEntityImpl) Context.getCommandContext().getExecutionEntityManager().findById(rootProcessInstanceId);
     }
   }
