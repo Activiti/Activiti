@@ -1,15 +1,19 @@
-/* Licensed under the Apache License, Version 2.0 (the "License");
+/*
+ * Copyright 2010-2020 Alfresco Software, Ltd.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 
 package org.activiti.engine;
 
@@ -43,7 +47,7 @@ public interface RepositoryService {
 
   /**
    * Deletes the given deployment.
-   * 
+   *
    * @param deploymentId
    *          id of the deployment, cannot be null.
    * @throwns RuntimeException if there are still runtime or history process instances or jobs.
@@ -52,7 +56,7 @@ public interface RepositoryService {
 
   /**
    * Deletes the given deployment and cascade deletion to process instances, history process instances and jobs.
-   * 
+   *
    * @param deploymentId
    *          id of the deployment, cannot be null.
    */
@@ -60,15 +64,15 @@ public interface RepositoryService {
 
   /**
    * Sets the category of the deployment. Deployments can be queried by category: see {@link DeploymentQuery#deploymentCategory(String)}.
-   * 
+   *
    * @throws ActivitiObjectNotFoundException
    *           if no deployment with the provided id can be found.
    */
   void setDeploymentCategory(String deploymentId, String category);
-  
+
   /**
    * Sets the key of the deployment. Deployments can be queried by key: see {@link DeploymentQuery#deploymentKey(String)}.
-   * 
+   *
    * @throws ActivitiObjectNotFoundException
    *           if no deployment with the provided id can be found.
    */
@@ -76,7 +80,7 @@ public interface RepositoryService {
 
   /**
    * Retrieves a list of deployment resources for the given deployment, ordered alphabetically.
-   * 
+   *
    * @param deploymentId
    *          id of the deployment, cannot be null.
    */
@@ -84,7 +88,7 @@ public interface RepositoryService {
 
   /**
    * Gives access to a deployment resource through a stream of bytes.
-   * 
+   *
    * @param deploymentId
    *          id of the deployment, cannot be null.
    * @param resourceName
@@ -95,24 +99,24 @@ public interface RepositoryService {
   InputStream getResourceAsStream(String deploymentId, String resourceName);
 
   /**
-   * 
+   *
    * EXPERIMENTAL FEATURE!
-   * 
+   *
    * Changes the tenant identifier of a deployment to match the given tenant identifier. This change will cascade to any related entity: - process definitions related to the deployment - process
    * instances related to those process definitions - executions related to those process instances - tasks related to those process instances - jobs related to the process definitions and process
    * instances
-   * 
+   *
    * This method can be used in the case that there was no tenant identifier set on the deployment or those entities before.
-   * 
+   *
    * This method can be used to remove a tenant identifier from the deployment and related entities (simply pass null).
-   * 
+   *
    * Important: no optimistic locking will be done while executing the tenant identifier change!
-   * 
+   *
    * This is an experimental feature, mainly because it WILL NOT work properly in a clustered environment without special care: suppose some process instance is in flight. The process definition is in
    * the process definition cache. When a task or job is created when continuing the process instance, the process definition cache will be consulted to get the process definition and from it the
    * tenant identifier. Since it's cached, it will not be the new tenant identifier. This method does clear the cache for this engineinstance , but it will not be cleared on other nodes in a cluster
    * (unless using a shared process definition cache).
-   * 
+   *
    * @param deploymentId
    *          The id of the deployment of which the tenant identifier will be changed.
    * @param newTenantId
@@ -138,11 +142,11 @@ public interface RepositoryService {
 
   /**
    * Suspends the process definition with the given id.
-   * 
+   *
    * If a process definition is in state suspended, it will not be possible to start new process instances based on the process definition.
-   * 
+   *
    * <strong>Note: all the process instances of the process definition will still be active (ie. not suspended)!</strong>
-   * 
+   *
    * @throws ActivitiObjectNotFoundException
    *           if no such processDefinition can be found
    * @throws ActivitiException
@@ -152,14 +156,14 @@ public interface RepositoryService {
 
   /**
    * Suspends the process definition with the given id.
-   * 
+   *
    * If a process definition is in state suspended, it will not be possible to start new process instances based on the process definition.
-   * 
+   *
    * @param suspendProcessInstances
    *          If true, all the process instances of the provided process definition will be suspended too.
    * @param suspensionDate
    *          The date on which the process definition will be suspended. If null, the process definition is suspended immediately. Note: The job executor needs to be active to use this!
-   * 
+   *
    * @throws ActivitiObjectNotFoundException
    *           if no such processDefinition can be found.
    * @throws ActivitiException
@@ -169,11 +173,11 @@ public interface RepositoryService {
 
   /**
    * Suspends the <strong>all</strong> process definitions with the given key (= id in the bpmn20.xml file).
-   * 
+   *
    * If a process definition is in state suspended, it will not be possible to start new process instances based on the process definition.
-   * 
+   *
    * <strong>Note: all the process instances of the process definition will still be active (ie. not suspended)!</strong>
-   * 
+   *
    * @throws ActivitiObjectNotFoundException
    *           if no such processDefinition can be found
    * @throws ActivitiException
@@ -183,9 +187,9 @@ public interface RepositoryService {
 
   /**
    * Suspends the <strong>all</strong> process definitions with the given key (= id in the bpmn20.xml file).
-   * 
+   *
    * If a process definition is in state suspended, it will not be possible to start new process instances based on the process definition.
-   * 
+   *
    * @param suspendProcessInstances
    *          If true, all the process instances of the provided process definition will be suspended too.
    * @param suspensionDate
@@ -209,7 +213,7 @@ public interface RepositoryService {
 
   /**
    * Activates the process definition with the given id.
-   * 
+   *
    * @throws ActivitiObjectNotFoundException
    *           if no such processDefinition can be found or if the process definition is already in state active.
    */
@@ -217,10 +221,10 @@ public interface RepositoryService {
 
   /**
    * Activates the process definition with the given id.
-   * 
+   *
    * @param activationDate
    *          The date on which the process definition will be activated. If null, the process definition is activated immediately. Note: The job executor needs to be active to use this!
-   * 
+   *
    * @throws ActivitiObjectNotFoundException
    *           if no such processDefinition can be found.
    * @throws ActivitiException
@@ -230,7 +234,7 @@ public interface RepositoryService {
 
   /**
    * Activates the process definition with the given key (=id in the bpmn20.xml file).
-   * 
+   *
    * @throws ActivitiObjectNotFoundException
    *           if no such processDefinition can be found.
    * @throws ActivitiException
@@ -240,10 +244,10 @@ public interface RepositoryService {
 
   /**
    * Activates the process definition with the given key (=id in the bpmn20.xml file).
-   * 
+   *
    * @param activationDate
    *          The date on which the process definition will be activated. If null, the process definition is activated immediately. Note: The job executor needs to be active to use this!
-   * 
+   *
    * @throws ActivitiObjectNotFoundException
    *           if no such processDefinition can be found.
    * @throws ActivitiException
@@ -263,7 +267,7 @@ public interface RepositoryService {
 
   /**
    * Sets the category of the process definition. Process definitions can be queried by category: see {@link ProcessDefinitionQuery#processDefinitionCategory(String)}.
-   * 
+   *
    * @throws ActivitiObjectNotFoundException
    *           if no process definition with the provided id can be found.
    */
@@ -271,7 +275,7 @@ public interface RepositoryService {
 
   /**
    * Gives access to a deployed process model, e.g., a BPMN 2.0 XML file, through a stream of bytes.
-   * 
+   *
    * @param processDefinitionId
    *          id of a {@link ProcessDefinition}, cannot be null.
    * @throws ActivitiObjectNotFoundException
@@ -283,7 +287,7 @@ public interface RepositoryService {
    * Returns the {@link ProcessDefinition} including all BPMN information like additional Properties (e.g. documentation).
    */
   ProcessDefinition getProcessDefinition(String processDefinitionId);
-  
+
 
   /**
    * Checks if the process definition is suspended.
@@ -303,7 +307,7 @@ public interface RepositoryService {
 
   /**
    * Saves the model. If the model already existed, the model is updated otherwise a new model is created.
-   * 
+   *
    * @param model
    *          model to save, cannot be null.
    */
@@ -317,7 +321,7 @@ public interface RepositoryService {
 
   /**
    * Saves the model editor source for a model
-   * 
+   *
    * @param modelId
    *          id of model to delete, cannot be null. When an id is passed for an unexisting model, this operation is ignored.
    */
@@ -325,7 +329,7 @@ public interface RepositoryService {
 
   /**
    * Saves the model editor source extra for a model
-   * 
+   *
    * @param modelId
    *          id of model to delete, cannot be null. When an id is passed for an unexisting model, this operation is ignored.
    */
@@ -341,7 +345,7 @@ public interface RepositoryService {
 
   /**
    * Returns the {@link Model}
-   * 
+   *
    * @param modelId
    *          id of model
    */
@@ -349,7 +353,7 @@ public interface RepositoryService {
 
   /**
    * Returns the model editor source as a byte array
-   * 
+   *
    * @param modelId
    *          id of model
    */
@@ -357,7 +361,7 @@ public interface RepositoryService {
 
   /**
    * Returns the model editor source extra as a byte array
-   * 
+   *
    * @param modelId
    *          id of model
    */
@@ -365,7 +369,7 @@ public interface RepositoryService {
 
   /**
    * Authorizes a candidate user for a process definition.
-   * 
+   *
    * @param processDefinitionId
    *          id of the process definition, cannot be null.
    * @param userId
@@ -377,7 +381,7 @@ public interface RepositoryService {
 
   /**
    * Authorizes a candidate group for a process definition.
-   * 
+   *
    * @param processDefinitionId
    *          id of the process definition, cannot be null.
    * @param groupId
@@ -389,7 +393,7 @@ public interface RepositoryService {
 
   /**
    * Removes the authorization of a candidate user for a process definition.
-   * 
+   *
    * @param processDefinitionId
    *          id of the process definition, cannot be null.
    * @param userId
@@ -401,7 +405,7 @@ public interface RepositoryService {
 
   /**
    * Removes the authorization of a candidate group for a process definition.
-   * 
+   *
    * @param processDefinitionId
    *          id of the process definition, cannot be null.
    * @param groupId
@@ -419,12 +423,12 @@ public interface RepositoryService {
 
   /**
    * Validates the given process definition against the rules for executing a process definition on the Activiti engine.
-   * 
+   *
    * To create such a {@link BpmnModel} from a String, following code may be used:
-   * 
+   *
    * XMLInputFactory xif = XMLInputFactory.newInstance(); InputStreamReader in = new InputStreamReader(new ByteArrayInputStream(myProcess.getBytes()), "UTF-8"); // Change to other streams for eg from
    * classpath XMLStreamReader xtr = xif.createXMLStreamReader(in); bpmnModel = new BpmnXMLConverter().convertToBpmnModel(xtr);
-   * 
+   *
    */
   List<ValidationError> validateProcess(BpmnModel bpmnModel);
 

@@ -1,8 +1,11 @@
-/* Licensed under the Apache License, Version 2.0 (the "License");
+/*
+ * Copyright 2010-2020 Alfresco Software, Ltd.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -10,13 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.activiti.engine.impl.cfg;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.math.BigDecimal;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
@@ -427,7 +433,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   protected TaskEntityManager taskEntityManager;
   protected VariableInstanceEntityManager variableInstanceEntityManager;
   private IntegrationContextManager integrationContextManager;
-  private EventSubscriptionPayloadMappingProvider eventSubscriptionPayloadMappingProvider = 
+  private EventSubscriptionPayloadMappingProvider eventSubscriptionPayloadMappingProvider =
                                                               new EventSubscriptionPayloadMappingProvider() {};
   // History Manager
 
@@ -1938,6 +1944,8 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       variableTypes.addType(new DoubleType());
       variableTypes.addType(new UUIDType());
 
+        objectMapper.configOverride(BigDecimal.class)
+            .setFormat(JsonFormat.Value.forShape(JsonFormat.Shape.STRING));
       JsonTypeConverter jsonTypeConverter = new JsonTypeConverter(objectMapper,
             javaClassFieldForJackson);
       variableTypes.addType(new JsonType(getMaxLengthString(), objectMapper,serializePOJOsInVariablesToJson,

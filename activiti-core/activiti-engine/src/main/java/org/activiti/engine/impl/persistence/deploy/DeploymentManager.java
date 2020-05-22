@@ -1,15 +1,19 @@
-/* Licensed under the Apache License, Version 2.0 (the "License");
+/*
+ * Copyright 2010-2020 Alfresco Software, Ltd.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 
 package org.activiti.engine.impl.persistence.deploy;
 
@@ -44,7 +48,7 @@ public class DeploymentManager {
   protected ProcessDefinitionInfoCache processDefinitionInfoCache;
   protected DeploymentCache<Object> knowledgeBaseCache; // Needs to be object to avoid an import to Drools in this core class
   protected List<Deployer> deployers;
-  
+
   protected ProcessEngineConfigurationImpl processEngineConfiguration;
   protected ProcessDefinitionEntityManager processDefinitionEntityManager;
   protected DeploymentEntityManager deploymentEntityManager;
@@ -180,7 +184,7 @@ public class DeploymentManager {
   public void setProcessDefinitionCache(DeploymentCache<ProcessDefinitionCacheEntry> processDefinitionCache) {
     this.processDefinitionCache = processDefinitionCache;
   }
-  
+
   public ProcessDefinitionInfoCache getProcessDefinitionInfoCache() {
     return processDefinitionInfoCache;
   }
@@ -196,7 +200,7 @@ public class DeploymentManager {
   public void setKnowledgeBaseCache(DeploymentCache<Object> knowledgeBaseCache) {
     this.knowledgeBaseCache = knowledgeBaseCache;
   }
-  
+
   public ProcessEngineConfigurationImpl getProcessEngineConfiguration() {
     return processEngineConfiguration;
   }
@@ -220,5 +224,5 @@ public class DeploymentManager {
   public void setDeploymentEntityManager(DeploymentEntityManager deploymentEntityManager) {
     this.deploymentEntityManager = deploymentEntityManager;
   }
-  
+
 }

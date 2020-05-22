@@ -1,8 +1,11 @@
-/* Licensed under the Apache License, Version 2.0 (the "License");
+/*
+ * Copyright 2010-2020 Alfresco Software, Ltd.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -12,7 +15,8 @@
  */
 package org.activiti.bpmn.converter;
 
-import java.util.Arrays;
+import static java.util.Arrays.asList;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -62,9 +66,9 @@ public abstract class BaseBpmnXMLConverter implements BpmnXMLConstants {
 
   protected static final Logger LOGGER = LoggerFactory.getLogger(BaseBpmnXMLConverter.class);
 
-  protected static final List<ExtensionAttribute> defaultElementAttributes = Arrays.asList(new ExtensionAttribute(ATTRIBUTE_ID), new ExtensionAttribute(ATTRIBUTE_NAME));
+  protected static final List<ExtensionAttribute> defaultElementAttributes = asList(new ExtensionAttribute(ATTRIBUTE_ID), new ExtensionAttribute(ATTRIBUTE_NAME));
 
-  protected static final List<ExtensionAttribute> defaultActivityAttributes = Arrays.asList(new ExtensionAttribute(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_ACTIVITY_ASYNCHRONOUS),
+  protected static final List<ExtensionAttribute> defaultActivityAttributes = asList(new ExtensionAttribute(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_ACTIVITY_ASYNCHRONOUS),
       new ExtensionAttribute(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_ACTIVITY_EXCLUSIVE), new ExtensionAttribute(ATTRIBUTE_DEFAULT), new ExtensionAttribute(ACTIVITI_EXTENSIONS_NAMESPACE,
           ATTRIBUTE_ACTIVITY_ISFORCOMPENSATION));
 
@@ -206,15 +210,15 @@ public abstract class BaseBpmnXMLConverter implements BpmnXMLConstants {
     }
 
     writeIncomingOutgoingFlowElements(baseElement, model, xtw);
-    
+
     if (baseElement instanceof Activity) {
         final Activity activity = (Activity) baseElement;
         MultiInstanceExport.writeMultiInstance(activity, xtw);
 
     }
-    
+
     writeAdditionalChildElements(baseElement, model, xtw);
-    
+
     xtw.writeEndElement();
   }
 
@@ -231,8 +235,8 @@ public abstract class BaseBpmnXMLConverter implements BpmnXMLConstants {
   }
 
   protected abstract void writeAdditionalChildElements(BaseElement element, BpmnModel model, XMLStreamWriter xtw) throws Exception;
-  
-  
+
+
 
   // To BpmnModel converter convenience methods
 
@@ -538,11 +542,11 @@ public abstract class BaseBpmnXMLConverter implements BpmnXMLConstants {
   protected void writeQualifiedAttribute(String attributeName, String value, XMLStreamWriter xtw) throws Exception {
     BpmnXMLUtil.writeQualifiedAttribute(attributeName, value, xtw);
   }
-  
+
   protected void writeIncomingOutgoingFlowElements(BaseElement element, BpmnModel model, XMLStreamWriter xtw) throws Exception {
       if(FlowNode.class.isAssignableFrom(element.getClass())) {
-          BpmnXMLUtil.writeIncomingAndOutgoingFlowElement((FlowNode) element, xtw);   
-      } 
+          BpmnXMLUtil.writeIncomingAndOutgoingFlowElement((FlowNode) element, xtw);
+      }
   }
-  
+
 }

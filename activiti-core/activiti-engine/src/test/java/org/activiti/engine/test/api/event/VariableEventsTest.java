@@ -1,23 +1,26 @@
-/* Licensed under the Apache License, Version 2.0 (the "License");
+/*
+ * Copyright 2010-2020 Alfresco Software, Ltd.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.activiti.engine.test.api.event;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import static java.util.Collections.singletonMap;
+import static org.activiti.engine.impl.util.CollectionUtil.map;
+import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.Map;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.ActivitiVariableEvent;
@@ -41,130 +44,88 @@ public class VariableEventsTest extends PluggableActivitiTestCase {
     @Deployment(resources = {"org/activiti/engine/test/api/runtime/oneTaskProcess.bpmn20.xml"})
     public void testProcessInstanceVariableEvents() throws Exception {
         ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
-        assertNotNull(processInstance);
+        assertThat(processInstance).isNotNull();
 
         // Check create event
-        runtimeService.setVariable(processInstance.getId(),
-                                   "testVariable",
-                                   "The value");
-        assertEquals(1,
-                     listener.getEventsReceived().size());
+        runtimeService.setVariable(processInstance.getId(), "testVariable", "The value");
+        assertThat(listener.getEventsReceived()).hasSize(1);
         ActivitiVariableEvent event = (ActivitiVariableEvent) listener.getEventsReceived().get(0);
-        assertEquals(ActivitiEventType.VARIABLE_CREATED,
-                     event.getType());
-        assertEquals(processInstance.getProcessDefinitionId(),
-                     event.getProcessDefinitionId());
-        assertEquals(processInstance.getId(),
-                     event.getExecutionId());
-        assertEquals(processInstance.getId(),
-                     event.getProcessInstanceId());
-        assertNull(event.getTaskId());
-        assertEquals("testVariable",
-                     event.getVariableName());
-        assertEquals("The value",
-                     event.getVariableValue());
+        assertThat(event.getType()).isEqualTo(ActivitiEventType.VARIABLE_CREATED);
+        assertThat(event.getProcessDefinitionId()).isEqualTo(processInstance.getProcessDefinitionId());
+        assertThat(event.getExecutionId()).isEqualTo(processInstance.getId());
+        assertThat(event.getProcessInstanceId()).isEqualTo(processInstance.getId());
+        assertThat(event.getTaskId()).isNull();
+        assertThat(event.getVariableName()).isEqualTo("testVariable");
+        assertThat(event.getVariableValue()).isEqualTo("The value");
         listener.clearEventsReceived();
 
         // Update variable
-        runtimeService.setVariable(processInstance.getId(),
-                                   "testVariable",
-                                   "Updated value");
-        assertEquals(1,
-                     listener.getEventsReceived().size());
+        runtimeService.setVariable(processInstance.getId(), "testVariable", "Updated value");
+        assertThat(listener.getEventsReceived()).hasSize(1);
         event = (ActivitiVariableEvent) listener.getEventsReceived().get(0);
-        assertEquals(ActivitiEventType.VARIABLE_UPDATED,
-                     event.getType());
-        assertEquals(processInstance.getProcessDefinitionId(),
-                     event.getProcessDefinitionId());
-        assertEquals(processInstance.getId(),
-                     event.getExecutionId());
-        assertEquals(processInstance.getId(),
-                     event.getProcessInstanceId());
-        assertNull(event.getTaskId());
-        assertEquals("testVariable",
-                     event.getVariableName());
-        assertEquals("Updated value",
-                     event.getVariableValue());
+        assertThat(event.getType()).isEqualTo(ActivitiEventType.VARIABLE_UPDATED);
+        assertThat(event.getProcessDefinitionId()).isEqualTo(processInstance.getProcessDefinitionId());
+        assertThat(event.getExecutionId()).isEqualTo(processInstance.getId());
+        assertThat(event.getProcessInstanceId()).isEqualTo(processInstance.getId());
+        assertThat(event.getTaskId()).isNull();
+        assertThat(event.getVariableName()).isEqualTo("testVariable");
+        assertThat(event.getVariableValue()).isEqualTo("Updated value");
         listener.clearEventsReceived();
 
         // Delete variable
-        runtimeService.removeVariable(processInstance.getId(),
-                                      "testVariable");
-        assertEquals(1,
-                     listener.getEventsReceived().size());
+        runtimeService.removeVariable(processInstance.getId(), "testVariable");
+        assertThat(listener.getEventsReceived()).hasSize(1);
         event = (ActivitiVariableEvent) listener.getEventsReceived().get(0);
-        assertEquals(ActivitiEventType.VARIABLE_DELETED,
-                     event.getType());
+        assertThat(event.getType()).isEqualTo(ActivitiEventType.VARIABLE_DELETED);
         // process definition Id can't be recognized in DB flush
-        assertEquals(processInstance.getProcessDefinitionId(),
-                     event.getProcessDefinitionId());
-        assertEquals(processInstance.getId(),
-                     event.getExecutionId());
-        assertEquals(processInstance.getId(),
-                     event.getProcessInstanceId());
-        assertNull(event.getTaskId());
-        assertEquals("testVariable",
-                     event.getVariableName());
+        assertThat(event.getProcessDefinitionId()).isEqualTo(processInstance.getProcessDefinitionId());
+        assertThat(event.getExecutionId()).isEqualTo(processInstance.getId());
+        assertThat(event.getProcessInstanceId()).isEqualTo(processInstance.getId());
+        assertThat(event.getTaskId()).isNull();
+        assertThat(event.getVariableName()).isEqualTo("testVariable");
         // deleted variable value should be present now
-        assertEquals("Updated value",
-                     event.getVariableValue());
+        assertThat(event.getVariableValue()).isEqualTo("Updated value");
         listener.clearEventsReceived();
 
         // Create, update and delete multiple variables
-        Map<String, Object> vars = new HashMap<String, Object>();
-        vars.put("test",
-                 123);
-        vars.put("test2",
-                 456);
-        runtimeService.setVariables(processInstance.getId(),
-                                    vars);
-        runtimeService.setVariables(processInstance.getId(),
-                                    vars);
-        runtimeService.removeVariables(processInstance.getId(),
-                                       vars.keySet());
+        Map<String, Object> vars = map(
+            "test", 123,
+            "test2", 456);
+        runtimeService.setVariables(processInstance.getId(), vars);
+        runtimeService.setVariables(processInstance.getId(), vars);
+        runtimeService.removeVariables(processInstance.getId(), vars.keySet());
 
-        assertEquals(6,
-                     listener.getEventsReceived().size());
-        assertEquals(ActivitiEventType.VARIABLE_CREATED,
-                     listener.getEventsReceived().get(0).getType());
-        assertEquals(ActivitiEventType.VARIABLE_CREATED,
-                     listener.getEventsReceived().get(1).getType());
-        assertEquals(ActivitiEventType.VARIABLE_UPDATED,
-                     listener.getEventsReceived().get(2).getType());
-        assertEquals(ActivitiEventType.VARIABLE_UPDATED,
-                     listener.getEventsReceived().get(3).getType());
-        assertEquals(ActivitiEventType.VARIABLE_DELETED,
-                     listener.getEventsReceived().get(4).getType());
-        assertEquals(ActivitiEventType.VARIABLE_DELETED,
-                     listener.getEventsReceived().get(5).getType());
+        assertThat(listener.getEventsReceived()).hasSize(6);
+        assertThat(listener.getEventsReceived())
+            .extracting(ActivitiEvent::getType)
+            .containsExactly(
+                ActivitiEventType.VARIABLE_CREATED,
+                ActivitiEventType.VARIABLE_CREATED,
+                ActivitiEventType.VARIABLE_UPDATED,
+                ActivitiEventType.VARIABLE_UPDATED,
+                ActivitiEventType.VARIABLE_DELETED,
+                ActivitiEventType.VARIABLE_DELETED
+            );
         listener.clearEventsReceived();
 
         // Delete nonexistent variable should not dispatch event
-        runtimeService.removeVariable(processInstance.getId(),
-                                      "unexistingVariable");
-        assertTrue(listener.getEventsReceived().isEmpty());
+        runtimeService.removeVariable(processInstance.getId(), "unexistingVariable");
+        assertThat(listener.getEventsReceived().isEmpty()).isTrue();
     }
 
     @Deployment(resources = {"org/activiti/engine/test/api/runtime/oneTaskProcess.bpmn20.xml"})
     public void testStartEndProcessInstanceVariableEvents() throws Exception {
-        Map<String, Object> variables = new HashMap<String, Object>();
-        variables.put("var1",
-                      "value1");
         ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess",
-                                                                                   variables);
+                                                                                   singletonMap("var1", "value1"));
 
-        assertEquals(1,
-                     listener.getEventsReceived().size());
-        assertEquals(ActivitiEventType.VARIABLE_CREATED,
-                     listener.getEventsReceived().get(0).getType());
+        assertThat(listener.getEventsReceived()).hasSize(1);
+        assertThat(listener.getEventsReceived().get(0).getType()).isEqualTo(ActivitiEventType.VARIABLE_CREATED);
 
         Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
         taskService.complete(task.getId());
 
-        assertEquals(2,
-                     listener.getEventsReceived().size());
-        assertEquals(ActivitiEventType.VARIABLE_DELETED,
-                     listener.getEventsReceived().get(1).getType());
+        assertThat(listener.getEventsReceived()).hasSize(2);
+        assertThat(listener.getEventsReceived().get(1).getType()).isEqualTo(ActivitiEventType.VARIABLE_DELETED);
     }
 
     /**
@@ -173,31 +134,20 @@ public class VariableEventsTest extends PluggableActivitiTestCase {
     @Deployment(resources = {"org/activiti/engine/test/api/runtime/oneTaskProcess.bpmn20.xml"})
     public void testProcessInstanceVariableEventsOnStart() throws Exception {
 
-        HashMap<String, Object> vars = new HashMap<String, Object>();
-        vars.put("testVariable",
-                 "The value");
-
         ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess",
-                                                                                   vars);
-        assertNotNull(processInstance);
+                                                                                   singletonMap("testVariable", "The value"));
+        assertThat(processInstance).isNotNull();
 
         // Check create event
-        assertEquals(1,
-                     listener.getEventsReceived().size());
+        assertThat(listener.getEventsReceived()).hasSize(1);
         ActivitiVariableEvent event = (ActivitiVariableEvent) listener.getEventsReceived().get(0);
-        assertEquals(ActivitiEventType.VARIABLE_CREATED,
-                     event.getType());
-        assertEquals(processInstance.getProcessDefinitionId(),
-                     event.getProcessDefinitionId());
-        assertEquals(processInstance.getId(),
-                     event.getExecutionId());
-        assertEquals(processInstance.getId(),
-                     event.getProcessInstanceId());
-        assertNull(event.getTaskId());
-        assertEquals("testVariable",
-                     event.getVariableName());
-        assertEquals("The value",
-                     event.getVariableValue());
+        assertThat(event.getType()).isEqualTo(ActivitiEventType.VARIABLE_CREATED);
+        assertThat(event.getProcessDefinitionId()).isEqualTo(processInstance.getProcessDefinitionId());
+        assertThat(event.getExecutionId()).isEqualTo(processInstance.getId());
+        assertThat(event.getProcessInstanceId()).isEqualTo(processInstance.getId());
+        assertThat(event.getTaskId()).isNull();
+        assertThat(event.getVariableName()).isEqualTo("testVariable");
+        assertThat(event.getVariableValue()).isEqualTo("The value");
         listener.clearEventsReceived();
     }
 
@@ -207,26 +157,20 @@ public class VariableEventsTest extends PluggableActivitiTestCase {
     @Deployment
     public void testProcessInstanceVariableEventsOnChildExecution() throws Exception {
         ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("variableProcess");
-        assertNotNull(processInstance);
+        assertThat(processInstance).isNotNull();
 
         Execution child = runtimeService.createExecutionQuery().parentId(processInstance.getId()).singleResult();
-        assertNotNull(child);
+        assertThat(child).isNotNull();
 
-        runtimeService.setVariableLocal(child.getId(),
-                                        "test",
-                                        1234567);
+        runtimeService.setVariableLocal(child.getId(), "test", 1234567);
 
-        assertEquals(1,
-                     listener.getEventsReceived().size());
+        assertThat(listener.getEventsReceived()).hasSize(1);
         ActivitiVariableEvent event = (ActivitiVariableEvent) listener.getEventsReceived().get(0);
-        assertEquals(ActivitiEventType.VARIABLE_CREATED,
-                     event.getType());
+        assertThat(event.getType()).isEqualTo(ActivitiEventType.VARIABLE_CREATED);
 
         // Execution and process-id should differ
-        assertEquals(child.getId(),
-                     event.getExecutionId());
-        assertEquals(processInstance.getId(),
-                     event.getProcessInstanceId());
+        assertThat(event.getExecutionId()).isEqualTo(child.getId());
+        assertThat(event.getProcessInstanceId()).isEqualTo(processInstance.getId());
     }
 
     /**
@@ -235,78 +179,55 @@ public class VariableEventsTest extends PluggableActivitiTestCase {
     @Deployment
     public void ActivitiEventType() throws Exception {
         ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("variableProcess");
-        assertNotNull(processInstance);
+        assertThat(processInstance).isNotNull();
 
-        assertEquals(3,
-                     listener.getEventsReceived().size());
+        assertThat(listener.getEventsReceived()).hasSize(3);
 
         // Check create event
         ActivitiVariableEvent event = (ActivitiVariableEvent) listener.getEventsReceived().get(0);
-        assertEquals(ActivitiEventType.VARIABLE_CREATED,
-                     event.getType());
-        assertEquals(processInstance.getProcessDefinitionId(),
-                     event.getProcessDefinitionId());
-        assertEquals(processInstance.getId(),
-                     event.getExecutionId());
-        assertEquals(processInstance.getId(),
-                     event.getProcessInstanceId());
-        assertNull(event.getTaskId());
-        assertEquals("variable",
-                     event.getVariableName());
-        assertEquals(123,
-                     event.getVariableValue());
+        assertThat(event.getType()).isEqualTo(ActivitiEventType.VARIABLE_CREATED);
+        assertThat(event.getProcessDefinitionId()).isEqualTo(processInstance.getProcessDefinitionId());
+        assertThat(event.getExecutionId()).isEqualTo(processInstance.getId());
+        assertThat(event.getProcessInstanceId()).isEqualTo(processInstance.getId());
+        assertThat(event.getTaskId()).isNull();
+        assertThat(event.getVariableName()).isEqualTo("variable");
+        assertThat(event.getVariableValue()).isEqualTo(123);
 
         // Check update event
         event = (ActivitiVariableEvent) listener.getEventsReceived().get(1);
-        assertEquals(ActivitiEventType.VARIABLE_UPDATED,
-                     event.getType());
-        assertEquals(processInstance.getProcessDefinitionId(),
-                     event.getProcessDefinitionId());
-        assertEquals(processInstance.getId(),
-                     event.getExecutionId());
-        assertEquals(processInstance.getId(),
-                     event.getProcessInstanceId());
-        assertNull(event.getTaskId());
-        assertEquals("variable",
-                     event.getVariableName());
-        assertEquals(456,
-                     event.getVariableValue());
+        assertThat(event.getType()).isEqualTo(ActivitiEventType.VARIABLE_UPDATED);
+        assertThat(event.getProcessDefinitionId()).isEqualTo(processInstance.getProcessDefinitionId());
+        assertThat(event.getExecutionId()).isEqualTo(processInstance.getId());
+        assertThat(event.getProcessInstanceId()).isEqualTo(processInstance.getId());
+        assertThat(event.getTaskId()).isNull();
+        assertThat(event.getVariableName()).isEqualTo("variable");
+        assertThat(event.getVariableValue()).isEqualTo(456);
 
         // Check delete event
         event = (ActivitiVariableEvent) listener.getEventsReceived().get(2);
-        assertEquals(ActivitiEventType.VARIABLE_DELETED,
-                     event.getType());
-        assertEquals(processInstance.getProcessDefinitionId(),
-                     event.getProcessDefinitionId());
-        assertEquals(processInstance.getId(),
-                     event.getExecutionId());
-        assertEquals(processInstance.getId(),
-                     event.getProcessInstanceId());
-        assertNull(event.getTaskId());
-        assertEquals("variable",
-                     event.getVariableName());
-        assertEquals(456,
-                     event.getVariableValue());
+        assertThat(event.getType()).isEqualTo(ActivitiEventType.VARIABLE_DELETED);
+        assertThat(event.getProcessDefinitionId()).isEqualTo(processInstance.getProcessDefinitionId());
+        assertThat(event.getExecutionId()).isEqualTo(processInstance.getId());
+        assertThat(event.getProcessInstanceId()).isEqualTo(processInstance.getId());
+        assertThat(event.getTaskId()).isNull();
+        assertThat(event.getVariableName()).isEqualTo("variable");
+        assertThat(event.getVariableValue()).isEqualTo(456);
     }
 
     @Deployment
     public void testProcessInstanceVariableEventsOnCallActivity() throws Exception {
       ProcessInstance processInstance = runtimeService
           .startProcessInstanceByKey("callVariableProcess",
-              Collections.<String, Object>singletonMap("parentVar1",
-                  "parentVar1Value"));
-      assertNotNull(processInstance);
+              singletonMap("parentVar1", "parentVar1Value"));
+      assertThat(processInstance).isNotNull();
 
-      assertEquals(2,
-          listener.getEventsReceived().size());
+      assertThat(listener.getEventsReceived()).hasSize(2);
 
       ActivitiVariableEvent event = (ActivitiVariableEvent) listener.getEventsReceived().get(0);
-      assertEquals(ActivitiEventType.VARIABLE_CREATED,
-          event.getType());
+      assertThat(event.getType()).isEqualTo(ActivitiEventType.VARIABLE_CREATED);
 
       event = (ActivitiVariableEvent) listener.getEventsReceived().get(1);
-      assertEquals(ActivitiEventType.VARIABLE_DELETED,
-          event.getType());
+      assertThat(event.getType()).isEqualTo(ActivitiEventType.VARIABLE_DELETED);
     }
 
     /**
@@ -315,67 +236,42 @@ public class VariableEventsTest extends PluggableActivitiTestCase {
     @Deployment(resources = {"org/activiti/engine/test/api/runtime/oneTaskProcess.bpmn20.xml"})
     public void testTaskVariableEvents() throws Exception {
         ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
-        assertNotNull(processInstance);
+        assertThat(processInstance).isNotNull();
 
         Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
-        assertNotNull(task);
+        assertThat(task).isNotNull();
 
-        taskService.setVariableLocal(task.getId(),
-                                     "testVariable",
-                                     "The value");
-        taskService.setVariableLocal(task.getId(),
-                                     "testVariable",
-                                     "Updated value");
-        taskService.removeVariableLocal(task.getId(),
-                                        "testVariable");
+        taskService.setVariableLocal(task.getId(), "testVariable", "The value");
+        taskService.setVariableLocal(task.getId(), "testVariable", "Updated value");
+        taskService.removeVariableLocal(task.getId(), "testVariable");
 
         // Check create event
-        assertEquals(3,
-                     listener.getEventsReceived().size());
+        assertThat(listener.getEventsReceived()).hasSize(3);
         ActivitiVariableEvent event = (ActivitiVariableEvent) listener.getEventsReceived().get(0);
-        assertEquals(ActivitiEventType.VARIABLE_CREATED,
-                     event.getType());
-        assertEquals(processInstance.getProcessDefinitionId(),
-                     event.getProcessDefinitionId());
-        assertEquals(processInstance.getId(),
-                     event.getProcessInstanceId());
-        assertEquals(task.getId(),
-                     event.getTaskId());
-        assertEquals("testVariable",
-                     event.getVariableName());
-        assertEquals("The value",
-                     event.getVariableValue());
+        assertThat(event.getType()).isEqualTo(ActivitiEventType.VARIABLE_CREATED);
+        assertThat(event.getProcessDefinitionId()).isEqualTo(processInstance.getProcessDefinitionId());
+        assertThat(event.getProcessInstanceId()).isEqualTo(processInstance.getId());
+        assertThat(event.getTaskId()).isEqualTo(task.getId());
+        assertThat(event.getVariableName()).isEqualTo("testVariable");
+        assertThat(event.getVariableValue()).isEqualTo("The value");
 
         event = (ActivitiVariableEvent) listener.getEventsReceived().get(1);
-        assertEquals(ActivitiEventType.VARIABLE_UPDATED,
-                     event.getType());
-        assertEquals(processInstance.getProcessDefinitionId(),
-                     event.getProcessDefinitionId());
-        assertEquals(processInstance.getId(),
-                     event.getProcessInstanceId());
-        assertEquals(task.getId(),
-                     event.getTaskId());
-        assertEquals("testVariable",
-                     event.getVariableName());
-        assertEquals("Updated value",
-                     event.getVariableValue());
+        assertThat(event.getType()).isEqualTo(ActivitiEventType.VARIABLE_UPDATED);
+        assertThat(event.getProcessDefinitionId()).isEqualTo(processInstance.getProcessDefinitionId());
+        assertThat(event.getProcessInstanceId()).isEqualTo(processInstance.getId());
+        assertThat(event.getTaskId()).isEqualTo(task.getId());
+        assertThat(event.getVariableName()).isEqualTo("testVariable");
+        assertThat(event.getVariableValue()).isEqualTo("Updated value");
 
         event = (ActivitiVariableEvent) listener.getEventsReceived().get(2);
-        assertEquals(ActivitiEventType.VARIABLE_DELETED,
-                     event.getType());
-        assertEquals(processInstance.getProcessDefinitionId(),
-                     event.getProcessDefinitionId());
-        assertEquals(processInstance.getId(),
-                     event.getProcessInstanceId());
-        assertEquals(processInstance.getProcessDefinitionId(),
-                     event.getProcessDefinitionId());
-        assertEquals(task.getId(),
-                     event.getTaskId());
-        assertEquals("testVariable",
-                     event.getVariableName());
+        assertThat(event.getType()).isEqualTo(ActivitiEventType.VARIABLE_DELETED);
+        assertThat(event.getProcessDefinitionId()).isEqualTo(processInstance.getProcessDefinitionId());
+        assertThat(event.getProcessInstanceId()).isEqualTo(processInstance.getId());
+        assertThat(event.getProcessDefinitionId()).isEqualTo(processInstance.getProcessDefinitionId());
+        assertThat(event.getTaskId()).isEqualTo(task.getId());
+        assertThat(event.getVariableName()).isEqualTo("testVariable");
         // deleted values is returned
-        assertEquals("Updated value",
-                     event.getVariableValue());
+        assertThat(event.getVariableValue()).isEqualTo("Updated value");
         listener.clearEventsReceived();
     }
 
@@ -385,60 +281,41 @@ public class VariableEventsTest extends PluggableActivitiTestCase {
     @Deployment
     public void testTaskVariableEventsWithinProcess() throws Exception {
         ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("variableProcess");
-        assertNotNull(processInstance);
+        assertThat(processInstance).isNotNull();
 
         Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
-        assertNotNull(task);
+        assertThat(task).isNotNull();
 
-        assertEquals(3,
-                     listener.getEventsReceived().size());
+        assertThat(listener.getEventsReceived()).hasSize(3);
 
         // Check create event
         ActivitiVariableEvent event = (ActivitiVariableEvent) listener.getEventsReceived().get(0);
-        assertEquals(ActivitiEventType.VARIABLE_CREATED,
-                     event.getType());
-        assertEquals(processInstance.getProcessDefinitionId(),
-                     event.getProcessDefinitionId());
-        assertEquals(processInstance.getId(),
-                     event.getProcessInstanceId());
-        assertEquals(task.getId(),
-                     event.getTaskId());
-        assertEquals("variable",
-                     event.getVariableName());
-        assertEquals(123,
-                     event.getVariableValue());
+        assertThat(event.getType()).isEqualTo(ActivitiEventType.VARIABLE_CREATED);
+        assertThat(event.getProcessDefinitionId()).isEqualTo(processInstance.getProcessDefinitionId());
+        assertThat(event.getProcessInstanceId()).isEqualTo(processInstance.getId());
+        assertThat(event.getTaskId()).isEqualTo(task.getId());
+        assertThat(event.getVariableName()).isEqualTo("variable");
+        assertThat(event.getVariableValue()).isEqualTo(123);
 
         // Check update event
         event = (ActivitiVariableEvent) listener.getEventsReceived().get(1);
-        assertEquals(ActivitiEventType.VARIABLE_UPDATED,
-                     event.getType());
-        assertEquals(processInstance.getProcessDefinitionId(),
-                     event.getProcessDefinitionId());
-        assertEquals(processInstance.getId(),
-                     event.getProcessInstanceId());
-        assertEquals(task.getId(),
-                     event.getTaskId());
-        assertEquals("variable",
-                     event.getVariableName());
-        assertEquals(456,
-                     event.getVariableValue());
+        assertThat(event.getType()).isEqualTo(ActivitiEventType.VARIABLE_UPDATED);
+        assertThat(event.getProcessDefinitionId()).isEqualTo(processInstance.getProcessDefinitionId());
+        assertThat(event.getProcessInstanceId()).isEqualTo(processInstance.getId());
+        assertThat(event.getTaskId()).isEqualTo(task.getId());
+        assertThat(event.getVariableName()).isEqualTo("variable");
+        assertThat(event.getVariableValue()).isEqualTo(456);
 
         // Check delete event
         event = (ActivitiVariableEvent) listener.getEventsReceived().get(2);
-        assertEquals(ActivitiEventType.VARIABLE_DELETED,
-                     event.getType());
+        assertThat(event.getType()).isEqualTo(ActivitiEventType.VARIABLE_DELETED);
         // process definition Id can't be recognized in DB flush
-        assertEquals(processInstance.getProcessDefinitionId(),
-                     event.getProcessDefinitionId());
-        assertEquals(processInstance.getId(),
-                     event.getProcessInstanceId());
-        assertEquals(task.getId(),
-                     event.getTaskId());
-        assertEquals("variable",
-                     event.getVariableName());
+        assertThat(event.getProcessDefinitionId()).isEqualTo(processInstance.getProcessDefinitionId());
+        assertThat(event.getProcessInstanceId()).isEqualTo(processInstance.getId());
+        assertThat(event.getTaskId()).isEqualTo(task.getId());
+        assertThat(event.getVariableName()).isEqualTo("variable");
         // deleted variable value is returned
-        assertEquals(456,
-                     event.getVariableValue());
+        assertThat(event.getVariableValue()).isEqualTo(456);
     }
 
     /**
@@ -458,47 +335,34 @@ public class VariableEventsTest extends PluggableActivitiTestCase {
             taskService.removeVariable(newTask.getId(),
                                        "testVariable");
 
-            assertEquals(3,
-                         listener.getEventsReceived().size());
+            assertThat(listener.getEventsReceived()).hasSize(3);
             ActivitiVariableEvent event = (ActivitiVariableEvent) listener.getEventsReceived().get(0);
-            assertEquals(ActivitiEventType.VARIABLE_CREATED,
-                         event.getType());
-            assertNull(event.getProcessDefinitionId());
-            assertNull(event.getExecutionId());
-            assertNull(event.getProcessInstanceId());
-            assertEquals(newTask.getId(),
-                         event.getTaskId());
-            assertEquals("testVariable",
-                         event.getVariableName());
-            assertEquals(123,
-                         event.getVariableValue());
+            assertThat(event.getType()).isEqualTo(ActivitiEventType.VARIABLE_CREATED);
+            assertThat(event.getProcessDefinitionId()).isNull();
+            assertThat(event.getExecutionId()).isNull();
+            assertThat(event.getProcessInstanceId()).isNull();
+            assertThat(event.getTaskId()).isEqualTo(newTask.getId());
+            assertThat(event.getVariableName()).isEqualTo("testVariable");
+            assertThat(event.getVariableValue()).isEqualTo(123);
 
             event = (ActivitiVariableEvent) listener.getEventsReceived().get(1);
-            assertEquals(ActivitiEventType.VARIABLE_UPDATED,
-                         event.getType());
-            assertNull(event.getProcessDefinitionId());
-            assertNull(event.getExecutionId());
-            assertNull(event.getProcessInstanceId());
-            assertEquals(newTask.getId(),
-                         event.getTaskId());
-            assertEquals("testVariable",
-                         event.getVariableName());
-            assertEquals(456,
-                         event.getVariableValue());
+            assertThat(event.getType()).isEqualTo(ActivitiEventType.VARIABLE_UPDATED);
+            assertThat(event.getProcessDefinitionId()).isNull();
+            assertThat(event.getExecutionId()).isNull();
+            assertThat(event.getProcessInstanceId()).isNull();
+            assertThat(event.getTaskId()).isEqualTo(newTask.getId());
+            assertThat(event.getVariableName()).isEqualTo("testVariable");
+            assertThat(event.getVariableValue()).isEqualTo(456);
 
             event = (ActivitiVariableEvent) listener.getEventsReceived().get(2);
-            assertEquals(ActivitiEventType.VARIABLE_DELETED,
-                         event.getType());
-            assertNull(event.getProcessDefinitionId());
-            assertNull(event.getExecutionId());
-            assertNull(event.getProcessInstanceId());
-            assertEquals(newTask.getId(),
-                         event.getTaskId());
-            assertEquals("testVariable",
-                         event.getVariableName());
+            assertThat(event.getType()).isEqualTo(ActivitiEventType.VARIABLE_DELETED);
+            assertThat(event.getProcessDefinitionId()).isNull();
+            assertThat(event.getExecutionId()).isNull();
+            assertThat(event.getProcessInstanceId()).isNull();
+            assertThat(event.getTaskId()).isEqualTo(newTask.getId());
+            assertThat(event.getVariableName()).isEqualTo("testVariable");
             // deleted variable value is returned now
-            assertEquals(456,
-                         event.getVariableValue());
+            assertThat(event.getVariableValue()).isEqualTo(456);
         } finally {
 
             // Cleanup task and history to ensure a clean DB after test

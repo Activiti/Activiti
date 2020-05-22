@@ -1,11 +1,11 @@
 /*
- * Copyright 2018 Alfresco, Inc. and/or its affiliates.
+ * Copyright 2010-2020 Alfresco Software, Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.application;
 
 import java.io.IOException;
@@ -21,8 +20,7 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
-
-import org.apache.commons.io.IOUtils;
+import org.springframework.util.StreamUtils;
 
 public class ApplicationReader {
 
@@ -58,7 +56,7 @@ public class ApplicationReader {
 
     private byte[] readBytes(ZipInputStream zipInputStream) {
         try {
-            return IOUtils.toByteArray(zipInputStream);
+            return StreamUtils.copyToByteArray(zipInputStream);
         } catch (IOException e) {
             throw new ApplicationLoadException("Unable to read zip file",
                                               e);

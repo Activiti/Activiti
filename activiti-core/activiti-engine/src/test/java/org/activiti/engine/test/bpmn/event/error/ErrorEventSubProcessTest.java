@@ -1,16 +1,22 @@
-/* Licensed under the Apache License, Version 2.0 (the "License");
+/*
+ * Copyright 2010-2020 Alfresco Software, Ltd.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.activiti.engine.test.bpmn.event.error;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.task.Task;
@@ -34,9 +40,9 @@ public class ErrorEventSubProcessTest extends PluggableActivitiTestCase {
     String procId = runtimeService.startProcessInstanceByKey("CatchErrorInEmbeddedSubProcess").getId();
 
     // The process will throw an error event, which is caught and escalated by a User Task
-    assertEquals("No tasks found in task list.", 1, taskService.createTaskQuery().taskDefinitionKey("taskAfterErrorCatch2").count());
+    assertThat(taskService.createTaskQuery().taskDefinitionKey("taskAfterErrorCatch2").count()).as("No tasks found in task list.").isEqualTo(1);
     Task task = taskService.createTaskQuery().singleResult();
-    assertEquals("Escalated Task", task.getName());
+    assertThat(task.getName()).isEqualTo("Escalated Task");
 
     // Completing the task will end the process instance
     taskService.complete(task.getId());
@@ -84,9 +90,9 @@ public class ErrorEventSubProcessTest extends PluggableActivitiTestCase {
   private void assertThatErrorHasBeenCaught(String procId) {
     // The process will throw an error event,
     // which is caught and escalated by a User Task
-    assertEquals("No tasks found in task list.", 1, taskService.createTaskQuery().count());
+    assertThat(taskService.createTaskQuery().count()).as("No tasks found in task list.").isEqualTo(1);
     Task task = taskService.createTaskQuery().singleResult();
-    assertEquals("Escalated Task", task.getName());
+    assertThat(task.getName()).isEqualTo("Escalated Task");
 
     // Completing the Task will end the process instance
     taskService.complete(task.getId());

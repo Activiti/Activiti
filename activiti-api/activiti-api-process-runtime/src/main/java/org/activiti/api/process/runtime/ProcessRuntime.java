@@ -1,11 +1,11 @@
 /*
- * Copyright 2018 Alfresco, Inc. and/or its affiliates.
+ * Copyright 2010-2020 Alfresco Software, Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.api.process.runtime;
 
 import java.util.List;
@@ -24,6 +23,7 @@ import org.activiti.api.process.model.ProcessDefinition;
 import org.activiti.api.process.model.ProcessDefinitionMeta;
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.model.ProcessInstanceMeta;
+import org.activiti.api.process.model.payloads.CreateProcessInstancePayload;
 import org.activiti.api.process.model.payloads.DeleteProcessPayload;
 import org.activiti.api.process.model.payloads.GetProcessDefinitionsPayload;
 import org.activiti.api.process.model.payloads.GetProcessInstancesPayload;
@@ -74,6 +74,16 @@ public interface ProcessRuntime {
     ProcessInstance start(StartProcessPayload startProcessPayload);
 
     /**
+     * Start an already created Process Instance based on the process instance id
+     */
+    ProcessInstance startCreatedProcess(String processInstanceId, StartProcessPayload startProcessPayload);
+
+    /**
+     * Create a new Process Instance based on the payload parameters
+     */
+    ProcessInstance create(CreateProcessInstancePayload startProcessPayload);
+
+    /**
      * Get all process instances by pages
      * - Notice that only in-flight or suspended processes will be returned here
      * - For already completed process instance check at the query service
@@ -81,7 +91,7 @@ public interface ProcessRuntime {
     Page<ProcessInstance> processInstances(Pageable pageable);
 
     /**
-     * Get all process instances by pages filtering by 
+     * Get all process instances by pages filtering by
      * - Notice that only in-flight or suspended processes will be returned here
      * - For already completed process instance check at the query service
      */
@@ -109,7 +119,7 @@ public interface ProcessRuntime {
      * Delete a Process Instance
      */
     ProcessInstance delete(DeleteProcessPayload deleteProcessPayload);
-    
+
     /**
      * Update a Process Instance
      */
@@ -126,9 +136,9 @@ public interface ProcessRuntime {
     void removeVariables(RemoveProcessVariablesPayload removeProcessVariablesPayload); // review if we need to return removed variables// DO WE NEED THIS?>
 
     void setVariables(SetProcessVariablesPayload setProcessVariablesPayload); // review if we need to return set variables
-    
+
     void receive(ReceiveMessagePayload messagePayload);
-    
+
     ProcessInstance start(StartMessagePayload messagePayload);
 
     Deployment selectLatestDeployment();

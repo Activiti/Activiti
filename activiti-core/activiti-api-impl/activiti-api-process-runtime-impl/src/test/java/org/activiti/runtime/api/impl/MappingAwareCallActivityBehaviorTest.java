@@ -1,11 +1,11 @@
 /*
- * Copyright 2019 Alfresco, Inc. and/or its affiliates.
+ * Copyright 2010-2020 Alfresco Software, Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,23 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.runtime.api.impl;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.spring.process.ProcessVariablesInitiator;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
+import static java.util.Collections.emptyMap;
+import static java.util.Collections.singletonMap;
 import static org.activiti.runtime.api.impl.MappingExecutionContext.buildMappingExecutionContext;
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -45,7 +45,7 @@ public class MappingAwareCallActivityBehaviorTest {
     @Mock
     private ProcessVariablesInitiator processVariablesInitiator;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         initMocks(this);
     }
@@ -55,8 +55,7 @@ public class MappingAwareCallActivityBehaviorTest {
         //given
         DelegateExecution execution = buildExecution();
         ProcessDefinition processDefinition = mock(ProcessDefinition.class);
-        Map<String, Object> providerVariables = Collections.singletonMap("var1",
-                                                         "v1");
+        Map<String, Object> providerVariables = singletonMap("var1", "v1");
         given(mappingProvider.calculateInputVariables(execution)).willReturn(providerVariables);
 
         HashMap<String, Object> initiatorVariables = new HashMap<>(providerVariables);
@@ -79,9 +78,8 @@ public class MappingAwareCallActivityBehaviorTest {
     public void calculateOutBoundVariablesShouldReturnValueFromMappingProvider() {
         //given
         DelegateExecution execution = buildExecution();
-        Map<String, Object> availableVariables = Collections.emptyMap();
-        Map<String, Object> providerVariables = Collections.singletonMap("var",
-                                                         "value");
+        Map<String, Object> availableVariables = emptyMap();
+        Map<String, Object> providerVariables = singletonMap("var", "value");
         given(mappingProvider.calculateOutPutVariables(buildMappingExecutionContext(execution),
                                                        availableVariables))
                 .willReturn(providerVariables);

@@ -1,23 +1,28 @@
-/* Licensed under the Apache License, Version 2.0 (the "License");
+/*
+ * Copyright 2010-2020 Alfresco Software, Ltd.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.activiti.engine.impl.util;
+
+import static java.util.Arrays.asList;
 
 import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.net.URL;
-import java.util.Arrays;
 import java.util.Locale;
 import java.util.regex.Pattern;
 
@@ -29,7 +34,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
-
  */
 public abstract class ReflectUtil {
 
@@ -228,27 +232,18 @@ public abstract class ReflectUtil {
     Class<?> clazz = loadClass(className);
     Constructor<?> constructor = findMatchingConstructor(clazz, args);
     if (constructor == null) {
-      throw new ActivitiException("couldn't find constructor for " + className + " with args " + Arrays.asList(args));
+      throw new ActivitiException("couldn't find constructor for " + className + " with args " + asList(args));
     }
     try {
       return constructor.newInstance(args);
     } catch (Exception e) {
-      throw new ActivitiException("couldn't find constructor for " + className + " with args " + Arrays.asList(args), e);
+      throw new ActivitiException("couldn't find constructor for " + className + " with args " + asList(args), e);
     }
   }
 
   @SuppressWarnings({ "unchecked", "rawtypes" })
   private static <T> Constructor<T> findMatchingConstructor(Class<T> clazz, Object[] args) {
-    for (Constructor constructor : clazz.getDeclaredConstructors()) { // cannot
-                                                                      // use
-                                                                      // <?>
-                                                                      // or
-                                                                      // <T>
-                                                                      // due
-                                                                      // to
-                                                                      // JDK
-                                                                      // 5/6
-                                                                      // incompatibility
+    for (Constructor constructor : clazz.getDeclaredConstructors()) { // cannot use <?> or <T> due to JDK 5/6 incompatibility
       if (matches(constructor.getParameterTypes(), args)) {
         return constructor;
       }

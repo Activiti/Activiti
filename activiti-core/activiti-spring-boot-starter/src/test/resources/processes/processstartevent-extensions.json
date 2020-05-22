@@ -35,11 +35,11 @@
          },
          "Task_145dbyt": {
            "inputs": {
-             "Text0xfems": {
+             "nameInTask": {
                "type": "variable",
                "value": "name"
              },
-             "Text0rvs0o": {
+             "emailInTask": {
                "type": "variable",
                "value": "email"
              }

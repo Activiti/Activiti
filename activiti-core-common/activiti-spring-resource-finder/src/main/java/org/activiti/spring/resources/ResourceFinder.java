@@ -1,11 +1,11 @@
 /*
- * Copyright 2019 Alfresco, Inc. and/or its affiliates.
+ * Copyright 2010-2020 Alfresco Software, Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.spring.resources;
+
+import static java.util.Arrays.asList;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,26 +30,26 @@ import org.springframework.core.io.support.ResourcePatternResolver;
 public class ResourceFinder {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ResourceFinder.class);
-    
+
     private ResourcePatternResolver resourceLoader;
-    
+
     public ResourceFinder(ResourcePatternResolver resourceLoader) {
-        this.resourceLoader = resourceLoader;   
+        this.resourceLoader = resourceLoader;
     }
-    
+
     public List<Resource> discoverResources(ResourceFinderDescriptor resourceFinderDescriptor) throws IOException {
         List<Resource> resources = new ArrayList<>();
-                
+
         if (resourceFinderDescriptor.shouldLookUpResources()) {
             for (String suffix : resourceFinderDescriptor.getLocationSuffixes()) {
                 String path = resourceFinderDescriptor.getLocationPrefix() + suffix;
-                resources.addAll(Arrays.asList(resourceLoader.getResources(path)));
+                resources.addAll(asList(resourceLoader.getResources(path)));
             }
             if (resources.isEmpty()) {
                 LOGGER.info(resourceFinderDescriptor.getMsgForEmptyResources());
             } else {
                 resourceFinderDescriptor.validate(resources);
-                
+
                 List<String> foundResources = resources.stream().map(Resource::getFilename).collect(Collectors.toList());
                 LOGGER.info(resourceFinderDescriptor.getMsgForResourcesFound(foundResources));
             }
@@ -57,5 +57,5 @@ public class ResourceFinder {
         return resources;
     }
 
-  
+
 }

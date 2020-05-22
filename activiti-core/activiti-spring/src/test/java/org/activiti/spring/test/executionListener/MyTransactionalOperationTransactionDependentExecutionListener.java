@@ -1,8 +1,11 @@
-/* Licensed under the Apache License, Version 2.0 (the "License");
+/*
+ * Copyright 2010-2020 Alfresco Software, Ltd.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -10,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.activiti.spring.test.executionListener;
 
 import java.util.List;
@@ -31,14 +35,14 @@ public class MyTransactionalOperationTransactionDependentExecutionListener exten
   @Override
   public void notify(String processInstanceId, String executionId, FlowElement currentFlowElement,
                      Map<String, Object> executionVariables, Map<String, Object> customPropertiesMap) {
-    
+
     super.notify(processInstanceId, executionId, currentFlowElement, executionVariables, customPropertiesMap);
-    
+
     if (Context.getProcessEngineConfiguration().getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
       HistoryService historyService = Context.getProcessEngineConfiguration().getHistoryService();
-  
+
       // delete first historic instance
-      List<HistoricProcessInstance> historicProcessInstances = historyService.createHistoricProcessInstanceQuery().list();
+      List<HistoricProcessInstance> historicProcessInstances = historyService.createHistoricProcessInstanceQuery().orderByProcessInstanceStartTime().asc().list();
       historyService.deleteHistoricProcessInstance(historicProcessInstances.get(0).getId());
     }
   }

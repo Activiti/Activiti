@@ -1,4 +1,21 @@
+/*
+ * Copyright 2010-2020 Alfresco Software, Ltd.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.activiti.standalone.cfg;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 
@@ -33,14 +50,14 @@ public class CustomMybatisXMLMapperTest extends ResourceActivitiTestCase {
       }
     });
 
-    assertEquals("4", customTask.getName());
+    assertThat(customTask.getName()).isEqualTo("4");
 
     // test default query as well
     List<Task> tasks = taskService.createTaskQuery().list();
-    assertEquals(5, tasks.size());
+    assertThat(tasks).hasSize(5);
 
     Task task = taskService.createTaskQuery().taskName("2").singleResult();
-    assertEquals("2", task.getName());
+    assertThat(task.getName()).isEqualTo("2");
 
     // Cleanup
     deleteTasks(taskService.createTaskQuery().list());
@@ -61,7 +78,7 @@ public class CustomMybatisXMLMapperTest extends ResourceActivitiTestCase {
       }
     });
 
-    assertEquals(5, tasks.size());
+    assertThat(tasks).hasSize(5);
 
     // Cleanup
     deleteCustomTasks(tasks);
@@ -76,8 +93,8 @@ public class CustomMybatisXMLMapperTest extends ResourceActivitiTestCase {
 
     List<CustomTask> tasks = new CustomTaskQuery(managementService).unOwned().list();
 
-    assertEquals(5, tasks.size());
-    assertEquals(5, new CustomTaskQuery(managementService).unOwned().count());
+    assertThat(tasks).hasSize(5);
+    assertThat(new CustomTaskQuery(managementService).unOwned().count()).isEqualTo(5);
 
     tasks = new CustomTaskQuery(managementService).list();
 
@@ -94,7 +111,7 @@ public class CustomMybatisXMLMapperTest extends ResourceActivitiTestCase {
 
     CustomTask task = new CustomTaskQuery(managementService).taskOwner("kermit").singleResult();
 
-    assertEquals("kermit", task.getOwner());
+    assertThat(task.getOwner()).isEqualTo("kermit");
 
     List<CustomTask> tasks = new CustomTaskQuery(managementService).list();
     // Cleanup
@@ -109,7 +126,7 @@ public class CustomMybatisXMLMapperTest extends ResourceActivitiTestCase {
 
     List<CustomTask> tasks = new CustomTaskQuery(managementService).listPage(0, 10);
 
-    assertEquals(10, tasks.size());
+    assertThat(tasks).hasSize(10);
 
     tasks = new CustomTaskQuery(managementService).list();
 
@@ -125,20 +142,20 @@ public class CustomMybatisXMLMapperTest extends ResourceActivitiTestCase {
 
     List<CustomTask> tasks = new CustomTaskQuery(managementService).orderByTaskPriority().desc().list();
 
-    assertEquals(5, tasks.size());
+    assertThat(tasks).hasSize(5);
 
     for (int i = 0, j = 4; i < 5; i++, j--) {
       CustomTask task = tasks.get(i);
-      assertEquals(j * 20, task.getPriority());
+      assertThat(task.getPriority()).isEqualTo(j * 20);
     }
 
     tasks = new CustomTaskQuery(managementService).orderByTaskPriority().asc().list();
 
-    assertEquals(5, tasks.size());
+    assertThat(tasks).hasSize(5);
 
     for (int i = 0; i < 5; i++) {
       CustomTask task = tasks.get(i);
-      assertEquals(i * 20, task.getPriority());
+      assertThat(task.getPriority()).isEqualTo(i * 20);
     }
     // Cleanup
     deleteCustomTasks(tasks);
@@ -162,30 +179,30 @@ public class CustomMybatisXMLMapperTest extends ResourceActivitiTestCase {
       taskService.createAttachment(null, createTask(i + "", null, null, 0), null, "attachmentName" + i, "", "http://activiti.org/" + i);
     }
 
-    assertEquals(attachmentId, new AttachmentQuery(managementService).attachmentId(attachmentId).singleResult().getId());
+    assertThat(new AttachmentQuery(managementService).attachmentId(attachmentId).singleResult().getId()).isEqualTo(attachmentId);
 
-    assertEquals("attachment1", new AttachmentQuery(managementService).attachmentName("attachment1").singleResult().getName());
+    assertThat(new AttachmentQuery(managementService).attachmentName("attachment1").singleResult().getName()).isEqualTo("attachment1");
 
-    assertEquals(18, new AttachmentQuery(managementService).count());
+    assertThat(new AttachmentQuery(managementService).count()).isEqualTo(18);
     List<Attachment> attachments = new AttachmentQuery(managementService).list();
-    assertEquals(18, attachments.size());
+    assertThat(attachments).hasSize(18);
 
     attachments = new AttachmentQuery(managementService).listPage(0, 10);
-    assertEquals(10, attachments.size());
+    assertThat(attachments).hasSize(10);
 
-    assertEquals(3, new AttachmentQuery(managementService).taskId(taskId).count());
+    assertThat(new AttachmentQuery(managementService).taskId(taskId).count()).isEqualTo(3);
     attachments = new AttachmentQuery(managementService).taskId(taskId).list();
-    assertEquals(3, attachments.size());
+    assertThat(attachments).hasSize(3);
 
-    assertEquals(2, new AttachmentQuery(managementService).userId("kermit").count());
+    assertThat(new AttachmentQuery(managementService).userId("kermit").count()).isEqualTo(2);
     attachments = new AttachmentQuery(managementService).userId("kermit").list();
-    assertEquals(2, attachments.size());
+    assertThat(attachments).hasSize(2);
 
-    assertEquals(1, new AttachmentQuery(managementService).attachmentType("image/jpeg").count());
+    assertThat(new AttachmentQuery(managementService).attachmentType("image/jpeg").count()).isEqualTo(1);
     attachments = new AttachmentQuery(managementService).attachmentType("image/jpeg").list();
-    assertEquals(1, attachments.size());
+    assertThat(attachments).hasSize(1);
 
-    assertEquals("zattachment3", new AttachmentQuery(managementService).orderByAttachmentName().desc().list().get(0).getName());
+    assertThat(new AttachmentQuery(managementService).orderByAttachmentName().desc().list().get(0).getName()).isEqualTo("zattachment3");
 
     // Cleanup
     deleteTasks(taskService.createTaskQuery().list());

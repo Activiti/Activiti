@@ -1,9 +1,12 @@
-/* Licensed under the Apache License, Version 2.0 (the "License");
+/*
+ * Copyright 2010-2020 Alfresco Software, Ltd.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -61,7 +64,7 @@ public class SubProcess extends Activity implements FlowElementsContainer {
       }
     }
   }
-  
+
   public void removeFlowElement(String elementId) {
     FlowElement element = getFlowElement(elementId);
     if (element != null) {
@@ -72,13 +75,13 @@ public class SubProcess extends Activity implements FlowElementsContainer {
       }
     }
   }
-  
+
   public void removeFlowElementFromMap(String elementId) {
     if (StringUtils.isNotEmpty(elementId)) {
       flowElementMap.remove(elementId);
     }
   }
-  
+
   public Map<String, FlowElement> getFlowElementMap() {
     return flowElementMap;
   }
@@ -86,7 +89,7 @@ public class SubProcess extends Activity implements FlowElementsContainer {
   public void setFlowElementMap(Map<String, FlowElement> flowElementMap) {
     this.flowElementMap = flowElementMap;
   }
-  
+
   public boolean containsFlowElementId(String id) {
     return flowElementMap.containsKey(id);
   }
@@ -128,7 +131,7 @@ public class SubProcess extends Activity implements FlowElementsContainer {
 
     /*
      * This is required because data objects in Designer have no DI info and are added as properties, not flow elements
-     * 
+     *
      * Determine the differences between the 2 elements' data object
      */
     for (ValuedDataObject thisObject : getDataObjects()) {
@@ -156,12 +159,12 @@ public class SubProcess extends Activity implements FlowElementsContainer {
         addFlowElement(clone);
       }
     }
-    
+
     flowElementList.clear();
     for (FlowElement flowElement : otherElement.getFlowElements()) {
       addFlowElement(flowElement);
     }
-    
+
     artifactList.clear();
     for (Artifact artifact : otherElement.getArtifacts()) {
       addArtifact(artifact);

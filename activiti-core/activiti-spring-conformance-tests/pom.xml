@@ -11,6 +11,9 @@
   <artifactId>activiti-spring-conformance-tests</artifactId>
   <packaging>pom</packaging>
   <name>Activiti :: Spring :: Conformance Tests Parent</name>
+  <properties>
+    <maven.deploy.skip>true</maven.deploy.skip>
+  </properties>
   <modules>
     <module>activiti-spring-conformance-util</module>
     <module>activiti-spring-conformance-set0</module>

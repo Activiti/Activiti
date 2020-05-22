@@ -1,8 +1,11 @@
-/* Licensed under the Apache License, Version 2.0 (the "License");
+/*
+ * Copyright 2010-2020 Alfresco Software, Ltd.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -10,7 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.activiti.engine.test.bpmn.event.end;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.activiti.engine.ActivitiOptimisticLockingException;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
@@ -28,7 +34,7 @@ public class EndEventTest extends PluggableActivitiTestCase {
   public void testConcurrentEndOfSameProcess() throws Exception {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskWithDelay");
     Task task = taskService.createTaskQuery().singleResult();
-    assertNotNull(task);
+    assertThat(task).isNotNull();
 
     // We will now start two threads that both complete the task.
     // In the process, the task is followed by a delay of three seconds
@@ -38,8 +44,8 @@ public class EndEventTest extends PluggableActivitiTestCase {
     TaskCompleter taskCompleter1 = new TaskCompleter(task.getId());
     TaskCompleter taskCompleter2 = new TaskCompleter(task.getId());
 
-    assertFalse(taskCompleter1.isSucceeded());
-    assertFalse(taskCompleter2.isSucceeded());
+    assertThat(taskCompleter1.isSucceeded()).isFalse();
+    assertThat(taskCompleter2.isSucceeded()).isFalse();
 
     taskCompleter1.start();
     taskCompleter2.start();
@@ -54,7 +60,7 @@ public class EndEventTest extends PluggableActivitiTestCase {
       successCount++;
     }
 
-    assertEquals("(Only) one thread should have been able to successfully end the process", 1, successCount);
+    assertThat(successCount).as("(Only) one thread should have been able to successfully end the process").isEqualTo(1);
     assertProcessEnded(processInstance.getId());
   }
 

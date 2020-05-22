@@ -1,8 +1,21 @@
+/*
+ * Copyright 2010-2020 Alfresco Software, Ltd.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.activiti.editor.language.xml;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -17,7 +30,7 @@ import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.StartEvent;
 import org.activiti.bpmn.model.SubProcess;
 import org.activiti.bpmn.model.UserTask;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class SubProcessMultiDiagramConverterTest extends AbstractConverterTest {
 
@@ -60,23 +73,23 @@ public class SubProcessMultiDiagramConverterTest extends AbstractConverterTest {
 
   private void validateModel(BpmnModel model) {
     FlowElement flowElement = model.getMainProcess().getFlowElement("start1");
-    assertNotNull(flowElement);
-    assertTrue(flowElement instanceof StartEvent);
-    assertEquals("start1", flowElement.getId());
+    assertThat(flowElement).isNotNull();
+    assertThat(flowElement).isInstanceOf(StartEvent.class);
+    assertThat(flowElement.getId()).isEqualTo("start1");
 
     flowElement = model.getMainProcess().getFlowElement("userTask1");
-    assertNotNull(flowElement);
-    assertTrue(flowElement instanceof UserTask);
-    assertEquals("userTask1", flowElement.getId());
+    assertThat(flowElement).isNotNull();
+    assertThat(flowElement).isInstanceOf(UserTask.class);
+    assertThat(flowElement.getId()).isEqualTo("userTask1");
     UserTask userTask = (UserTask) flowElement;
-    assertTrue(userTask.getCandidateUsers().size() == 1);
-    assertTrue(userTask.getCandidateGroups().size() == 1);
+    assertThat(userTask.getCandidateUsers().size() == 1).isTrue();
+    assertThat(userTask.getCandidateGroups().size() == 1).isTrue();
 
     flowElement = model.getMainProcess().getFlowElement("subprocess1");
-    assertNotNull(flowElement);
-    assertTrue(flowElement instanceof SubProcess);
-    assertEquals("subprocess1", flowElement.getId());
+    assertThat(flowElement).isNotNull();
+    assertThat(flowElement).isInstanceOf(SubProcess.class);
+    assertThat(flowElement.getId()).isEqualTo("subprocess1");
     SubProcess subProcess = (SubProcess) flowElement;
-    assertTrue(subProcess.getFlowElements().size() == 11);
+    assertThat(subProcess.getFlowElements().size() == 11).isTrue();
   }
 }

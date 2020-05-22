@@ -1,8 +1,11 @@
-/* Licensed under the Apache License, Version 2.0 (the "License");
+/*
+ * Copyright 2010-2020 Alfresco Software, Ltd.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -10,16 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.activiti.engine.delegate.event.impl;
 
 import java.util.Map;
-
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.FlowNode;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.event.ActivitiActivityCancelledEvent;
 import org.activiti.engine.delegate.event.ActivitiActivityEvent;
-import org.activiti.engine.delegate.event.ActivitiCancelledEvent;
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.delegate.event.ActivitiEntityWithVariablesEvent;
 import org.activiti.engine.delegate.event.ActivitiErrorEvent;
@@ -28,6 +30,7 @@ import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.ActivitiExceptionEvent;
 import org.activiti.engine.delegate.event.ActivitiMembershipEvent;
 import org.activiti.engine.delegate.event.ActivitiMessageEvent;
+import org.activiti.engine.delegate.event.ActivitiProcessCancelledEvent;
 import org.activiti.engine.delegate.event.ActivitiProcessStartedEvent;
 import org.activiti.engine.delegate.event.ActivitiSequenceFlowTakenEvent;
 import org.activiti.engine.delegate.event.ActivitiSignalEvent;
@@ -39,6 +42,7 @@ import org.activiti.engine.impl.persistence.entity.IdentityLinkEntity;
 import org.activiti.engine.impl.variable.VariableType;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.Job;
+import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 
 /**
@@ -224,7 +228,7 @@ public class ActivitiEventBuilder {
     elementType = elementType.substring(0, 1).toLowerCase() + elementType.substring(1);
     return elementType;
   }
-  
+
   protected static String parseActivityBehavior(FlowNode flowNode) {
     Object behaviour = flowNode.getBehavior();
     if (behaviour != null) {
@@ -232,8 +236,8 @@ public class ActivitiEventBuilder {
     }
     return null;
   }
-  
-  public static ActivitiActivityCancelledEvent createActivityCancelledEvent(String activityId, String activityName, String executionId, 
+
+  public static ActivitiActivityCancelledEvent createActivityCancelledEvent(String activityId, String activityName, String executionId,
       String processInstanceId, String processDefinitionId, String activityType, Object cause) {
 
     ActivitiActivityCancelledEventImpl newEvent = new ActivitiActivityCancelledEventImpl();
@@ -263,34 +267,35 @@ public class ActivitiEventBuilder {
         return newEvent;
     }
 
-  public static ActivitiCancelledEvent createCancelledEvent(String executionId, String processInstanceId, String processDefinitionId, Object cause) {
-    ActivitiProcessCancelledEventImpl newEvent = new ActivitiProcessCancelledEventImpl();
-    newEvent.setExecutionId(executionId);
-    newEvent.setProcessDefinitionId(processDefinitionId);
-    newEvent.setProcessInstanceId(processInstanceId);
-    newEvent.setCause(cause);
-    return newEvent;
-  }
-  
-  public static ActivitiSignalEvent createActivitiySignalledEvent(DelegateExecution execution,
-                                                                  String signalName, 
+    public static ActivitiProcessCancelledEvent createProcessCancelledEvent(
+        ProcessInstance processInstance, Object cause) {
+        ActivitiProcessCancelledEventImpl newEvent = new ActivitiProcessCancelledEventImpl(processInstance);
+        newEvent.setExecutionId(processInstance.getId());
+        newEvent.setProcessDefinitionId(processInstance.getProcessDefinitionId());
+        newEvent.setProcessInstanceId(processInstance.getProcessInstanceId());
+        newEvent.setCause(cause);
+        return newEvent;
+    }
+
+    public static ActivitiSignalEvent createActivitiySignalledEvent(DelegateExecution execution,
+                                                                  String signalName,
                                                                   Object payload) {
     return  createSignalEvent(ActivitiEventType.ACTIVITY_SIGNALED,
                               execution,
                               signalName,
                               payload);
-  }    
+  }
 
   public static ActivitiMessageEvent createMessageReceivedEvent(DelegateExecution execution,
-                                                                String messageName, 
-                                                                String correlationKey, 
+                                                                String messageName,
+                                                                String correlationKey,
                                                                 Object payload) {
-    return createMessageEvent(ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED, 
-                              execution, 
-                              messageName, 
-                              correlationKey, 
-                              payload);  
-  } 
+    return createMessageEvent(ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED,
+                              execution,
+                              messageName,
+                              correlationKey,
+                              payload);
+  }
 
   public static ActivitiMessageEvent createMessageWaitingEvent(DelegateExecution execution,
                                                                String messageName,
@@ -312,22 +317,22 @@ public class ActivitiEventBuilder {
                               correlationKey,
                               payload);
   }
-  
-  private static ActivitiMessageEvent createMessageEvent(ActivitiEventType type, 
+
+  private static ActivitiMessageEvent createMessageEvent(ActivitiEventType type,
                                                          DelegateExecution execution,
-                                                         String messageName, 
-                                                         String correlationKey, 
+                                                         String messageName,
+                                                         String correlationKey,
                                                          Object payload) {
     ActivitiMessageEventImpl newEvent = new ActivitiMessageEventImpl(type);
     newEvent.setMessageName(messageName);
     newEvent.setMessageCorrelationKey(correlationKey);
-    newEvent.setMessageData(payload);  
+    newEvent.setMessageData(payload);
     newEvent.setMessageBusinessKey(execution.getProcessInstanceBusinessKey());
 
     applyExecution(newEvent, execution);
-    
+
     return newEvent;
-  } 
+  }
 
   public static ActivitiErrorEvent createErrorEvent(ActivitiEventType type, String activityId, String errorId, String errorCode,
       String executionId, String processInstanceId, String processDefinitionId) {
@@ -395,35 +400,35 @@ public class ActivitiEventBuilder {
       }
     }
   }
-  
+
   private static ActivitiSignalEvent createSignalEvent(ActivitiEventType type,
                                                        DelegateExecution execution,
                                                        String signalName,
                                                        Object payload) {
      ActivitiSignalEventImpl newEvent = new ActivitiSignalEventImpl(type);
      newEvent.setSignalName(signalName);
-     newEvent.setSignalData(payload);  
-     
+     newEvent.setSignalData(payload);
+
      applyExecution(newEvent, execution);
-     
+
      return newEvent;
-  }  
-  
-  private static void applyExecution(ActivitiActivityEventImpl newEvent, 
+  }
+
+  private static void applyExecution(ActivitiActivityEventImpl newEvent,
                                      DelegateExecution execution) {
     if (execution != null) {
       newEvent.setActivityId(execution.getCurrentActivityId());
       newEvent.setExecutionId(execution.getId());
       newEvent.setProcessDefinitionId(execution.getProcessDefinitionId());
       newEvent.setProcessInstanceId(execution.getProcessInstanceId());
-      
+
       if (execution.getCurrentFlowElement() instanceof FlowNode) {
           FlowNode flowNode = (FlowNode) execution.getCurrentFlowElement();
           newEvent.setActivityType(parseActivityType(flowNode));
           newEvent.setBehaviorClass(parseActivityBehavior(flowNode));
           newEvent.setActivityName(flowNode.getName());
       }
-    }  
+    }
   }
-  
+
 }

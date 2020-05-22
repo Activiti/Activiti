@@ -11,7 +11,7 @@
   <name>Activiti :: API :: Common Model Implementation</name>
   <dependencies>
     <dependency>
-      <groupId>org.activiti.api</groupId>
+      <groupId>org.activiti</groupId>
       <artifactId>activiti-api-model-shared</artifactId>
     </dependency>
     <dependency>

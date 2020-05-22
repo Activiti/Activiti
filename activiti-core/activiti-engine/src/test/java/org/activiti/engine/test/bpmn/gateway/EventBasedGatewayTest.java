@@ -1,9 +1,12 @@
-/* Licensed under the Apache License, Version 2.0 (the "License");
+/*
+ * Copyright 2010-2020 Alfresco Software, Ltd.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -11,7 +14,11 @@
  * limitations under the License.
  */
 
+
 package org.activiti.engine.test.bpmn.gateway;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.util.Date;
 
@@ -33,26 +40,19 @@ public class EventBasedGatewayTest extends PluggableActivitiTestCase {
 
         ProcessInstance pi1 = runtimeService.startProcessInstanceByKey("catchSignal");
 
-        assertEquals(1,
-                     createEventSubscriptionQuery().count());
-        assertEquals(1,
-                     runtimeService.createProcessInstanceQuery().count());
-        assertEquals(1,
-                     managementService.createTimerJobQuery().count());
+        assertThat(createEventSubscriptionQuery().count()).isEqualTo(1);
+        assertThat(runtimeService.createProcessInstanceQuery().count()).isEqualTo(1);
+        assertThat(managementService.createTimerJobQuery().count()).isEqualTo(1);
 
         ProcessInstance pi2 = runtimeService.startProcessInstanceByKey("throwSignal");
 
-        assertEquals(0,
-                     createEventSubscriptionQuery().count());
-        assertEquals(1,
-                     runtimeService.createProcessInstanceQuery().count());
-        assertEquals(0,
-                     managementService.createJobQuery().count());
-        assertEquals(0,
-                     managementService.createTimerJobQuery().count());
+        assertThat(createEventSubscriptionQuery().count()).isEqualTo(0);
+        assertThat(runtimeService.createProcessInstanceQuery().count()).isEqualTo(1);
+        assertThat(managementService.createJobQuery().count()).isEqualTo(0);
+        assertThat(managementService.createTimerJobQuery().count()).isEqualTo(0);
 
         Task task = taskService.createTaskQuery().taskName("afterSignal").singleResult();
-        assertNotNull(task);
+        assertThat(task).isNotNull();
         taskService.complete(task.getId());
 
         assertHistoricActivitiesDeleteReason(pi1,
@@ -65,12 +65,9 @@ public class EventBasedGatewayTest extends PluggableActivitiTestCase {
 
         ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("catchSignal");
 
-        assertEquals(1,
-                     createEventSubscriptionQuery().count());
-        assertEquals(1,
-                     runtimeService.createProcessInstanceQuery().count());
-        assertEquals(1,
-                     managementService.createTimerJobQuery().count());
+        assertThat(createEventSubscriptionQuery().count()).isEqualTo(1);
+        assertThat(runtimeService.createProcessInstanceQuery().count()).isEqualTo(1);
+        assertThat(managementService.createTimerJobQuery().count()).isEqualTo(1);
 
         processEngineConfiguration.getClock().setCurrentTime(new Date(processEngineConfiguration.getClock().getCurrentTime().getTime() + 10000));
 
@@ -78,18 +75,14 @@ public class EventBasedGatewayTest extends PluggableActivitiTestCase {
         waitForJobExecutorToProcessAllJobs(10000,
                                            100);
 
-        assertEquals(0,
-                     createEventSubscriptionQuery().count());
-        assertEquals(1,
-                     runtimeService.createProcessInstanceQuery().count());
-        assertEquals(0,
-                     managementService.createJobQuery().count());
-        assertEquals(0,
-                     managementService.createTimerJobQuery().count());
+        assertThat(createEventSubscriptionQuery().count()).isEqualTo(0);
+        assertThat(runtimeService.createProcessInstanceQuery().count()).isEqualTo(1);
+        assertThat(managementService.createJobQuery().count()).isEqualTo(0);
+        assertThat(managementService.createTimerJobQuery().count()).isEqualTo(0);
 
         Task task = taskService.createTaskQuery().taskName("afterTimer").singleResult();
 
-        assertNotNull(task);
+        assertThat(task).isNotNull();
 
         taskService.complete(task.getId());
 
@@ -103,23 +96,18 @@ public class EventBasedGatewayTest extends PluggableActivitiTestCase {
 
         ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("catchSignal");
 
-        assertEquals(2,
-                     createEventSubscriptionQuery().count());
+        assertThat(createEventSubscriptionQuery().count()).isEqualTo(2);
         EventSubscriptionQueryImpl messageEventSubscriptionQuery = createEventSubscriptionQuery().eventType("message");
-        assertEquals(1,
-                     messageEventSubscriptionQuery.count());
-        assertEquals(1,
-                     createEventSubscriptionQuery().eventType("signal").count());
-        assertEquals(1,
-                     runtimeService.createProcessInstanceQuery().count());
-        assertEquals(1,
-                     managementService.createTimerJobQuery().count());
+        assertThat(messageEventSubscriptionQuery.count()).isEqualTo(1);
+        assertThat(createEventSubscriptionQuery().eventType("signal").count()).isEqualTo(1);
+        assertThat(runtimeService.createProcessInstanceQuery().count()).isEqualTo(1);
+        assertThat(managementService.createTimerJobQuery().count()).isEqualTo(1);
 
         Execution execution = runtimeService.createExecutionQuery().messageEventSubscriptionName("newInvoice").singleResult();
-        assertNotNull(execution);
+        assertThat(execution).isNotNull();
 
         execution = runtimeService.createExecutionQuery().signalEventSubscriptionName("alert").singleResult();
-        assertNotNull(execution);
+        assertThat(execution).isNotNull();
 
         processEngineConfiguration.getClock().setCurrentTime(new Date(processEngineConfiguration.getClock().getCurrentTime().getTime() + 10000));
 
@@ -127,17 +115,13 @@ public class EventBasedGatewayTest extends PluggableActivitiTestCase {
         runtimeService.messageEventReceived(messageEventSubscription.getEventName(),
                                             messageEventSubscription.getExecutionId());
 
-        assertEquals(0,
-                     createEventSubscriptionQuery().count());
-        assertEquals(1,
-                     runtimeService.createProcessInstanceQuery().count());
-        assertEquals(0,
-                     managementService.createTimerJobQuery().count());
-        assertEquals(0,
-                     managementService.createJobQuery().count());
+        assertThat(createEventSubscriptionQuery().count()).isEqualTo(0);
+        assertThat(runtimeService.createProcessInstanceQuery().count()).isEqualTo(1);
+        assertThat(managementService.createTimerJobQuery().count()).isEqualTo(0);
+        assertThat(managementService.createJobQuery().count()).isEqualTo(0);
 
         Task task = taskService.createTaskQuery().taskName("afterMessage").singleResult();
-        assertNotNull(task);
+        assertThat(task).isNotNull();
         taskService.complete(task.getId());
 
         assertHistoricActivitiesDeleteReason(processInstance,
@@ -149,15 +133,9 @@ public class EventBasedGatewayTest extends PluggableActivitiTestCase {
     }
 
     public void testConnectedToActivity() {
-
-        try {
-            repositoryService.createDeployment().addClasspathResource("org/activiti/engine/test/bpmn/gateway/EventBasedGatewayTest.testConnectedToActivity.bpmn20.xml").deploy();
-            fail("exception expected");
-        } catch (Exception e) {
-            if (!e.getMessage().contains("Event based gateway can only be connected to elements of type intermediateCatchEvent")) {
-                fail("different exception expected");
-            }
-        }
+        assertThatExceptionOfType(Exception.class)
+            .isThrownBy(() -> repositoryService.createDeployment().addClasspathResource("org/activiti/engine/test/bpmn/gateway/EventBasedGatewayTest.testConnectedToActivity.bpmn20.xml").deploy())
+            .withMessageContaining("Event based gateway can only be connected to elements of type intermediateCatchEvent");
     }
 
     @Deployment
@@ -167,16 +145,15 @@ public class EventBasedGatewayTest extends PluggableActivitiTestCase {
         // Trying to fire the signal should fail, job not yet created
         runtimeService.signalEventReceived("alert");
         Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
-        assertNull(task);
+        assertThat(task).isNull();
 
         Job job = managementService.createJobQuery().processInstanceId(processInstance.getId()).singleResult();
-        assertNotNull(job);
+        assertThat(job).isNotNull();
 
         managementService.executeJob(job.getId());
         runtimeService.signalEventReceived("alert");
         task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
-        assertEquals("afterSignal",
-                     task.getName());
+        assertThat(task.getName()).isEqualTo("afterSignal");
     }
 
     private EventSubscriptionQueryImpl createEventSubscriptionQuery() {

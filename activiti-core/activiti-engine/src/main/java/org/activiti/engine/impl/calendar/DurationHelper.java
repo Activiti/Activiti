@@ -1,9 +1,11 @@
 /*
+ * Copyright 2010-2020 Alfresco Software, Ltd.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,9 +16,10 @@
 
 package org.activiti.engine.impl.calendar;
 
+import static java.util.Arrays.asList;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -73,7 +76,7 @@ public class DurationHelper {
                           ClockReader clockReader) throws Exception {
         this.clockReader = clockReader;
         this.maxIterations = maxIterations;
-        List<String> expression = Arrays.asList(expressionS.split("/"));
+        List<String> expression = asList(expressionS.split("/"));
         datatypeFactory = DatatypeFactory.newInstance();
 
         if (expression.size() > 3 || expression.isEmpty()) {

@@ -1,9 +1,11 @@
 /*
+ * Copyright 2010-2020 Alfresco Software, Ltd.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -11,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 
 package org.activiti.engine.history;
 
@@ -37,16 +40,16 @@ public interface HistoricProcessInstance {
 
   /** The process definition reference. */
   String getProcessDefinitionId();
-  
+
   /** The name of the process definition of the process instance. */
   String getProcessDefinitionName();
-  
+
   /** The key of the process definition of the process instance. */
   String getProcessDefinitionKey();
-  
+
   /** The version of the process definition of the process instance. */
   Integer getProcessDefinitionVersion();
-  
+
   /**
    * The deployment id of the process definition of the process instance.
    */
@@ -71,7 +74,7 @@ public interface HistoricProcessInstance {
 
   /**
    * The authenticated user that started this process instance.
-   * 
+   *
    * @see IdentityService#setAuthenticatedUserId(String)
    */
   String getStartUserId();
@@ -101,7 +104,7 @@ public interface HistoricProcessInstance {
    * The description for the process instance.
    */
   String getDescription();
-  
+
   /** Returns the process variables if requested in the process instance query */
   Map<String, Object> getProcessVariables();
 }

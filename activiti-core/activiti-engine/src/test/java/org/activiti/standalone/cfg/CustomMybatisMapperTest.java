@@ -1,4 +1,21 @@
+/*
+ * Copyright 2010-2020 Alfresco Software, Ltd.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.activiti.standalone.cfg;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 import java.util.Map;
@@ -36,12 +53,12 @@ public class CustomMybatisMapperTest extends ResourceActivitiTestCase {
 
     // Verify
     List<Map<String, Object>> tasks = managementService.executeCustomSql(customSqlExecution);
-    assertEquals(5, tasks.size());
+    assertThat(tasks).hasSize(5);
     for (int i = 0; i < 5; i++) {
       Map<String, Object> task = tasks.get(i);
-      assertNotNull(task.get("ID"));
-      assertNotNull(task.get("NAME"));
-      assertNotNull(task.get("CREATETIME"));
+      assertThat(task.get("ID")).isNotNull();
+      assertThat(task.get("NAME")).isNotNull();
+      assertThat(task.get("CREATETIME")).isNotNull();
     }
 
     // Cleanup
@@ -75,12 +92,12 @@ public class CustomMybatisMapperTest extends ResourceActivitiTestCase {
 
     // Verify
     List<Map<String, Object>> results = managementService.executeCustomSql(customSqlExecution);
-    assertEquals(5, results.size());
+    assertThat(results).hasSize(5);
     for (int i = 0; i < 5; i++) {
       Map<String, Object> result = results.get(i);
       Long id = Long.valueOf((String) result.get("TASKID"));
       Long variableValue = (Long) result.get("VARIABLEVALUE");
-      assertEquals(id * 2, variableValue.longValue());
+      assertThat(variableValue.longValue()).isEqualTo(id * 2);
     }
 
     // Cleanup

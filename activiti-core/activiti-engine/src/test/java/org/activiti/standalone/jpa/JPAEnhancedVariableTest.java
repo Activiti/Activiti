@@ -1,7 +1,25 @@
+/*
+ * Copyright 2010-2020 Alfresco Software, Ltd.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.activiti.standalone.jpa;
 
-import java.util.Arrays;
-import java.util.Collections;
+import static java.util.Arrays.asList;
+import static java.util.Collections.singletonMap;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,8 +41,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Test for JPA enhancement support
- * 
-
+ *
  */
 public class JPAEnhancedVariableTest extends AbstractActivitiTestCase {
 
@@ -112,9 +129,9 @@ public class JPAEnhancedVariableTest extends AbstractActivitiTestCase {
       String name = entry.getKey();
       Object value = entry.getValue();
       if (name.equals("fieldEntity")) {
-        assertTrue(value instanceof FieldAccessJPAEntity);
+        assertThat(value).isInstanceOf(FieldAccessJPAEntity.class);
       } else if (name.equals("propertyEntity")) {
-        assertTrue(value instanceof PropertyAccessJPAEntity);
+        assertThat(value).isInstanceOf(PropertyAccessJPAEntity.class);
       } else {
         fail();
       }
@@ -131,54 +148,48 @@ public class JPAEnhancedVariableTest extends AbstractActivitiTestCase {
 
     // start process with lists of enhanced jpa variables
     Map<String, Object> params = new HashMap<String, Object>();
-    params.put("list1", Arrays.asList(fieldEntity, fieldEntity));
-    params.put("list2", Arrays.asList(propertyEntity, propertyEntity));
+    params.put("list1", asList(fieldEntity, fieldEntity));
+    params.put("list2", asList(propertyEntity, propertyEntity));
     ProcessInstance instance = processEngine.getRuntimeService().startProcessInstanceByKey("JPAVariableProcess", params);
 
     Task task = getTask(instance);
     List list = (List) task.getProcessVariables().get("list1");
-    assertTrue(list.size() == 2);
-    assertTrue(list.get(0) instanceof FieldAccessJPAEntity);
-    assertTrue(list.get(1) instanceof FieldAccessJPAEntity);
+    assertThat(list.size() == 2).isTrue();
+    assertThat(list.get(0)).isInstanceOf(FieldAccessJPAEntity.class);
+    assertThat(list.get(1)).isInstanceOf(FieldAccessJPAEntity.class);
 
     list = (List) task.getProcessVariables().get("list2");
-    assertTrue(list.size() == 2);
-    assertTrue(list.get(0) instanceof PropertyAccessJPAEntity);
-    assertTrue(list.get(1) instanceof PropertyAccessJPAEntity);
+    assertThat(list.size() == 2).isTrue();
+    assertThat(list.get(0)).isInstanceOf(PropertyAccessJPAEntity.class);
+    assertThat(list.get(1)).isInstanceOf(PropertyAccessJPAEntity.class);
 
     // start process with enhanced and persisted only jpa variables in the
     // same list
-    params.putAll(Collections.singletonMap("list", Arrays.asList(fieldEntity, fieldEntity2)));
+    params.putAll(singletonMap("list", asList(fieldEntity, fieldEntity2)));
     instance = processEngine.getRuntimeService().startProcessInstanceByKey("JPAVariableProcess", params);
 
     task = getTask(instance);
     list = (List) task.getProcessVariables().get("list");
-    assertTrue(list.size() == 2);
-    assertTrue(list.get(0) instanceof FieldAccessJPAEntity);
-    assertTrue(((FieldAccessJPAEntity) list.get(0)).getId().equals(1L));
-    assertTrue(list.get(1) instanceof FieldAccessJPAEntity);
-    assertTrue(((FieldAccessJPAEntity) list.get(1)).getId().equals(2L));
+    assertThat(list.size() == 2).isTrue();
+    assertThat(list.get(0)).isInstanceOf(FieldAccessJPAEntity.class);
+    assertThat(((FieldAccessJPAEntity) list.get(0)).getId().equals(1L)).isTrue();
+    assertThat(list.get(1)).isInstanceOf(FieldAccessJPAEntity.class);
+    assertThat(((FieldAccessJPAEntity) list.get(1)).getId().equals(2L)).isTrue();
 
     // shuffle list and start a new process
-    params.putAll(Collections.singletonMap("list", Arrays.asList(fieldEntity2, fieldEntity)));
+    params.putAll(singletonMap("list", asList(fieldEntity2, fieldEntity)));
     instance = processEngine.getRuntimeService().startProcessInstanceByKey("JPAVariableProcess", params);
 
     task = getTask(instance);
     list = (List) task.getProcessVariables().get("list");
-    assertTrue(list.size() == 2);
-    assertTrue(list.get(0) instanceof FieldAccessJPAEntity);
-    assertTrue(((FieldAccessJPAEntity) list.get(0)).getId().equals(2L));
-    assertTrue(list.get(1) instanceof FieldAccessJPAEntity);
-    assertTrue(((FieldAccessJPAEntity) list.get(1)).getId().equals(1L));
+    assertThat(list.size() == 2).isTrue();
+    assertThat(list.get(0)).isInstanceOf(FieldAccessJPAEntity.class);
+    assertThat(((FieldAccessJPAEntity) list.get(0)).getId().equals(2L)).isTrue();
+    assertThat(list.get(1)).isInstanceOf(FieldAccessJPAEntity.class);
+    assertThat(((FieldAccessJPAEntity) list.get(1)).getId().equals(1L)).isTrue();
 
     // start process with mixed jpa entities in list
-    try {
-      params = new HashMap<String, Object>();
-      params.put("list", Arrays.asList(fieldEntity, propertyEntity));
-      instance = processEngine.getRuntimeService().startProcessInstanceByKey("JPAVariableProcess", params);
-      fail();
-    } catch (Exception e) {
-      /* do nothing */
-    }
+    assertThatExceptionOfType(Exception.class).isThrownBy(() -> processEngine.getRuntimeService()
+      .startProcessInstanceByKey("JPAVariableProcess", singletonMap("list", asList(fieldEntity, propertyEntity))));
   }
 }
