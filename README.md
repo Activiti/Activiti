@@ -135,6 +135,7 @@ the site will be generated at: `target/staging/index.html`
 
 Running on Travis, requires the following environment variable to be set:
 
+
 | Name | Description |
 |------|-------------|
 | MAVEN_USERNAME | Internal Maven repository username |
