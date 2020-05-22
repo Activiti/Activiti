@@ -1,15 +1,19 @@
-/* Licensed under the Apache License, Version 2.0 (the "License");
+/*
+ * Copyright 2010-2020 Alfresco Software, Ltd.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.activiti.engine.impl;
 
 import java.util.ArrayList;
@@ -115,7 +119,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   protected boolean orActive;
   protected List<TaskQueryImpl> orQueryObjects = new ArrayList<TaskQueryImpl>();
   protected TaskQueryImpl currentOrQueryObject = null;
-  
+
   public TaskQueryImpl() {
   }
 
@@ -136,7 +140,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
     if (taskId == null) {
       throw new ActivitiIllegalArgumentException("Task id is null");
     }
-    
+
     if (orActive) {
       currentOrQueryObject.taskId = taskId;
     } else {
@@ -149,7 +153,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
     if (name == null) {
       throw new ActivitiIllegalArgumentException("Task name is null");
     }
-    
+
     if(orActive) {
       currentOrQueryObject.name = name;
     } else {
@@ -232,7 +236,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
     if (nameLike == null) {
       throw new ActivitiIllegalArgumentException("Task namelike is null");
     }
-    
+
     if(orActive) {
       currentOrQueryObject.nameLike = nameLike;
     } else {
@@ -245,7 +249,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   	 if (nameLikeIgnoreCase == null) {
        throw new ActivitiIllegalArgumentException("Task nameLikeIgnoreCase is null");
      }
-     
+
      if(orActive) {
        currentOrQueryObject.nameLikeIgnoreCase = nameLikeIgnoreCase.toLowerCase();
      } else {
@@ -258,7 +262,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
     if (description == null) {
       throw new ActivitiIllegalArgumentException("Description is null");
     }
-    
+
     if(orActive) {
       currentOrQueryObject.description = description;
     } else {
@@ -520,11 +524,11 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
     if (candidateGroup == null) {
       throw new ActivitiIllegalArgumentException("Candidate group is null");
     }
-    
+
     if (candidateGroups != null) {
       throw new ActivitiIllegalArgumentException("Invalid query usage: cannot set both candidateGroup and candidateGroupIn");
     }
-    
+
     if (orActive) {
       currentOrQueryObject.candidateGroup = candidateGroup;
     } else {
@@ -580,15 +584,15 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
     if (candidateGroups == null) {
       throw new ActivitiIllegalArgumentException("Candidate group list is null");
     }
-    
+
     if (candidateGroups.isEmpty()) {
       throw new ActivitiIllegalArgumentException("Candidate group list is empty");
     }
-    
+
     if (candidateGroup != null) {
       throw new ActivitiIllegalArgumentException("Invalid query usage: cannot set both candidateGroupIn and candidateGroup");
     }
-    
+
     if (orActive) {
       currentOrQueryObject.candidateGroups = candidateGroups;
     } else {
@@ -849,7 +853,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
     }
     return this;
   }
-  
+
   public TaskQuery taskVariableValueLikeIgnoreCase(String name, String value) {
     if(orActive) {
       currentOrQueryObject.variableValueLikeIgnoreCase(name, value);
@@ -948,7 +952,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
     }
     return this;
   }
-  
+
   public TaskQuery processVariableValueLikeIgnoreCase(String name, String value) {
     if(orActive) {
       currentOrQueryObject.variableValueLikeIgnoreCase(name, value, false);
@@ -984,7 +988,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
     }
     return this;
   }
-  
+
   public TaskQuery processDefinitionKeyIn(List<String> processDefinitionKeys) {
     if (orActive) {
       this.currentOrQueryObject.processDefinitionKeys = processDefinitionKeys;
@@ -1170,7 +1174,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
     }
     return this;
   }
-  
+
   public TaskQuery locale(String locale) {
     this.locale = locale;
     return this;
@@ -1180,7 +1184,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
     withLocalizationFallback = true;
     return this;
   }
-  
+
   public TaskQuery includeTaskLocalVariables() {
     this.includeTaskLocalVariables = true;
     return this;
@@ -1190,7 +1194,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
     this.includeProcessVariables = true;
     return this;
   }
-  
+
   public TaskQuery limitTaskVariables(Integer taskVariablesLimit) {
     this.taskVariablesLimit = taskVariablesLimit;
     return this;
@@ -1233,7 +1237,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
     for (QueryVariableValue var : queryVariableValues) {
       var.initialize(types);
     }
-    
+
     for (TaskQueryImpl orQueryObject : orQueryObjects) {
       orQueryObject.ensureVariablesInitialized();
     }
@@ -1259,7 +1263,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
     if (!orActive) {
       throw new ActivitiException("endOr() can only be called after calling or()");
     }
-    
+
     orActive = false;
     currentOrQueryObject = null;
     return this;
@@ -1356,13 +1360,13 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
     } else {
       tasks = commandContext.getTaskEntityManager().findTasksByQueryCriteria(this);
     }
-    
+
     if (tasks != null && Context.getProcessEngineConfiguration().getPerformanceSettings().isEnableLocalization()) {
       for (Task task : tasks) {
         localize(task);
       }
     }
-    
+
     return tasks;
   }
 
@@ -1375,7 +1379,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   protected void localize(Task task) {
     task.setLocalizedName(null);
     task.setLocalizedDescription(null);
-    
+
     if (locale != null) {
       String processDefinitionId = task.getProcessDefinitionId();
       if (processDefinitionId != null) {
@@ -1385,7 +1389,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
           if (languageNameNode != null && !languageNameNode.isNull()) {
             task.setLocalizedName(languageNameNode.asText());
           }
-          
+
           JsonNode languageDescriptionNode = languageNode.get(DynamicBpmnConstants.LOCALIZATION_DESCRIPTION);
           if (languageDescriptionNode != null && !languageDescriptionNode.isNull()) {
             task.setLocalizedDescription(languageDescriptionNode.asText());

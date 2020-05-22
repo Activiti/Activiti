@@ -1,15 +1,19 @@
-/* Licensed under the Apache License, Version 2.0 (the "License");
+/*
+ * Copyright 2010-2020 Alfresco Software, Ltd.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.activiti.editor.constants;
 
 /**
@@ -180,7 +184,7 @@ public interface StencilConstants {
   final String PROPERTY_FORM_ENUM_VALUES = "enumValues";
   final String PROPERTY_FORM_ENUM_VALUES_NAME = "name";
   final String PROPERTY_FORM_ENUM_VALUES_ID = "id";
-  
+
   final String PROPERTY_DATA_PROPERTIES = "dataproperties";
   final String PROPERTY_DATA_ID = "dataproperty_id";
   final String PROPERTY_DATA_NAME = "dataproperty_name";
@@ -223,7 +227,7 @@ public interface StencilConstants {
   final String PROPERTY_SEQUENCEFLOW_CONDITION = "conditionsequenceflow";
   final String PROPERTY_SEQUENCEFLOW_ORDER = "sequencefloworder";
   final String PROPERTY_FORM_REFERENCE = "formreference";
-  
+
   final String PROPERTY_MESSAGE_DEFINITIONS = "messagedefinitions";
   final String PROPERTY_MESSAGE_DEFINITION_ID = "id";
   final String PROPERTY_MESSAGE_DEFINITION_NAME = "name";
@@ -233,10 +237,10 @@ public interface StencilConstants {
   final String PROPERTY_SIGNAL_DEFINITION_ID = "id";
   final String PROPERTY_SIGNAL_DEFINITION_NAME = "name";
   final String PROPERTY_SIGNAL_DEFINITION_SCOPE = "scope";
-  
+
   final String PROPERTY_TERMINATE_ALL = "terminateall";
   final String PROPERTY_TERMINATE_MULTI_INSTANCE = "terminateMultiInstance";
-  
+
   final String PROPERTY_DECISIONTABLE_REFERENCE = "decisiontaskdecisiontablereference";
   final String PROPERTY_DECISIONTABLE_REFERENCE_ID = "decisiontablereferenceid";
   final String PROPERTY_DECISIONTABLE_REFERENCE_NAME = "decisiontablereferencename";

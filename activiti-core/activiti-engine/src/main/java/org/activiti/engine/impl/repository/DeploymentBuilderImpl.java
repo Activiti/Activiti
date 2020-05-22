@@ -1,15 +1,19 @@
-/* Licensed under the Apache License, Version 2.0 (the "License");
+/*
+ * Copyright 2010-2020 Alfresco Software, Ltd.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.activiti.engine.impl.repository;
 
 import java.io.IOException;
@@ -49,7 +53,7 @@ public class DeploymentBuilderImpl implements DeploymentBuilder, Serializable {
 
   protected transient RepositoryServiceImpl repositoryService;
   protected transient ResourceEntityManager resourceEntityManager;
-  
+
   protected DeploymentEntity deployment;
   protected boolean isBpmn20XsdValidationEnabled = true;
   protected boolean isProcessValidationEnabled = true;
@@ -153,7 +157,7 @@ public class DeploymentBuilderImpl implements DeploymentBuilder, Serializable {
     deployment.addResource(resource);
     return this;
   }
-  
+
   public DeploymentBuilder addBytes(String resourceName, byte[] bytes) {
     if (bytes == null) {
       throw new ActivitiIllegalArgumentException("bytes is null");
@@ -161,7 +165,7 @@ public class DeploymentBuilderImpl implements DeploymentBuilder, Serializable {
     ResourceEntity resource = resourceEntityManager.create();
     resource.setName(resourceName);
     resource.setBytes(bytes);
-    
+
     deployment.addResource(resource);
     return this;
   }
@@ -206,7 +210,7 @@ public class DeploymentBuilderImpl implements DeploymentBuilder, Serializable {
     deployment.setCategory(category);
     return this;
   }
-  
+
   public DeploymentBuilder key(String key) {
     deployment.setKey(key);
     return this;
@@ -236,7 +240,7 @@ public class DeploymentBuilderImpl implements DeploymentBuilder, Serializable {
     this.processDefinitionsActivationDate = date;
     return this;
   }
-  
+
   @Override
   public DeploymentBuilder deploymentProperty(String propertyKey, Object propertyValue) {
     deploymentProperties.put(propertyKey, propertyValue);
@@ -273,5 +277,5 @@ public class DeploymentBuilderImpl implements DeploymentBuilder, Serializable {
   public Map<String, Object> getDeploymentProperties() {
     return deploymentProperties;
   }
-  
+
 }

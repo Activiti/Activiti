@@ -1,15 +1,19 @@
-/* Licensed under the Apache License, Version 2.0 (the "License");
+/*
+ * Copyright 2010-2020 Alfresco Software, Ltd.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.activiti.engine.impl.persistence.entity;
 
 import java.io.Serializable;
@@ -97,7 +101,7 @@ public class TaskEntityImpl extends VariableScopeImpl implements TaskEntity, Ser
   protected String businessKey;
 
   public TaskEntityImpl() {
-    
+
   }
 
   public Object getPersistentState() {
@@ -245,7 +249,7 @@ public class TaskEntityImpl extends VariableScopeImpl implements TaskEntity, Ser
   public void addGroupIdentityLink(String groupId, String identityLinkType) {
     Context.getCommandContext().getIdentityLinkEntityManager().addGroupIdentityLink(this, groupId, identityLinkType);
   }
-  
+
   public Set<IdentityLink> getCandidates() {
     Set<IdentityLink> potentialOwners = new HashSet<IdentityLink>();
     for (IdentityLinkEntity identityLinkEntity : getIdentityLinks()) {
@@ -304,7 +308,7 @@ public class TaskEntityImpl extends VariableScopeImpl implements TaskEntity, Ser
     this.assignee = assignee;
     assigneeUpdatedCount++;
   }
-  
+
   public void setOwner(String owner) {
     this.owner = owner;
   }
@@ -398,7 +402,7 @@ public class TaskEntityImpl extends VariableScopeImpl implements TaskEntity, Ser
       return description;
     }
   }
-  
+
   public String getLocalizedDescription() {
     return localizedDescription;
   }
@@ -442,7 +446,7 @@ public class TaskEntityImpl extends VariableScopeImpl implements TaskEntity, Ser
   public String getAssignee() {
     return assignee;
   }
-  
+
   public String getOriginalAssignee() {
     // Don't ask. A stupid hack for v5 compatibility
     if (assigneeUpdatedCount > 1) {
@@ -451,7 +455,7 @@ public class TaskEntityImpl extends VariableScopeImpl implements TaskEntity, Ser
       return assignee;
     }
   }
-  
+
   public String getTaskDefinitionKey() {
     return taskDefinitionKey;
   }
@@ -467,7 +471,7 @@ public class TaskEntityImpl extends VariableScopeImpl implements TaskEntity, Ser
   public void setEventName(String eventName) {
     this.eventName = eventName;
   }
-  
+
   public ActivitiListener getCurrentActivitiListener() {
     return currentActivitiListener;
   }
@@ -534,7 +538,7 @@ public class TaskEntityImpl extends VariableScopeImpl implements TaskEntity, Ser
   public void setCanceled(boolean isCanceled) {
 	  this.isCanceled = isCanceled;
   }
-  
+
   public String getParentTaskId() {
     return parentTaskId;
   }
