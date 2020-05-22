@@ -10,6 +10,9 @@ pull_request_rules:
         strict: true
   - name: automatic merge when CI passes and 1 approving reviews and label ready-to-merge
     conditions:
+      - "#approved-reviews-by>=1"	
+      - "#review-requested=0"	
+      - "#changes-requested-reviews-by=0"
       - status-success=Travis CI - Pull Request
       - status-success=license/cla
       - label!=do-not-merge
