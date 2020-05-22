@@ -1,15 +1,19 @@
-/* Licensed under the Apache License, Version 2.0 (the "License");
+/*
+ * Copyright 2010-2020 Alfresco Software, Ltd.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.activiti.engine.impl.bpmn.parser.factory;
 
 import org.activiti.bpmn.model.Activity;
@@ -94,18 +98,18 @@ import org.activiti.engine.impl.delegate.ActivityBehavior;
 /**
  * Factory class used by the {@link BpmnParser} and {@link BpmnParse} to instantiate the behaviour classes. For example when parsing an exclusive gateway, this factory will be requested to create a
  * new {@link ActivityBehavior} that will be set on the {@link ActivityImpl} of that step of the process and will implement the spec-compliant behavior of the exclusive gateway.
- * 
+ *
  * You can provide your own implementation of this class. This way, you can give different execution semantics to a standard bpmn xml construct. Eg. you could tweak the exclusive gateway to do
  * something completely different if you would want that. Creating your own {@link ActivityBehaviorFactory} is only advisable if you want to change the default behavior of any BPMN default construct.
  * And even then, think twice, because it won't be spec compliant bpmn anymore.
- * 
+ *
  * Note that you can always express any custom step as a service task with a class delegation.
- * 
+ *
  * The easiest and advisable way to implement your own {@link ActivityBehaviorFactory} is to extend the {@link DefaultActivityBehaviorFactory} class and override the method specific to the
  * {@link ActivityBehavior} you want to change.
- * 
+ *
  * An instance of this interface can be injected in the {@link ProcessEngineConfigurationImpl} and its subclasses.
- * 
+ *
 
  */
 @Internal
@@ -166,13 +170,13 @@ public interface ActivityBehaviorFactory {
   public abstract ParallelMultiInstanceBehavior createParallelMultiInstanceBehavior(Activity activity, AbstractBpmnActivityBehavior innerActivityBehavior);
 
   public abstract SubProcessActivityBehavior createSubprocessActivityBehavior(SubProcess subProcess);
-  
+
   public abstract EventSubProcessErrorStartEventActivityBehavior createEventSubProcessErrorStartEventActivityBehavior(StartEvent startEvent);
-  
+
   public abstract EventSubProcessMessageStartEventActivityBehavior createEventSubProcessMessageStartEventActivityBehavior(StartEvent startEvent, MessageEventDefinition messageEventDefinition);
 
   public abstract AdhocSubProcessActivityBehavior createAdhocSubprocessActivityBehavior(SubProcess subProcess);
-  
+
   public abstract CallActivityBehavior createCallActivityBehavior(CallActivity callActivity);
 
   public abstract TransactionActivityBehavior createTransactionActivityBehavior(Transaction transaction);
@@ -193,10 +197,10 @@ public interface ActivityBehaviorFactory {
 
   public abstract IntermediateThrowCompensationEventActivityBehavior createIntermediateThrowCompensationEventActivityBehavior(ThrowEvent throwEvent, CompensateEventDefinition compensateEventDefinition);
 
-  public abstract IntermediateThrowMessageEventActivityBehavior createThrowMessageEventActivityBehavior(ThrowEvent throwEvent, 
-                                                                                                        MessageEventDefinition messageEventDefinition, 
+  public abstract IntermediateThrowMessageEventActivityBehavior createThrowMessageEventActivityBehavior(ThrowEvent throwEvent,
+                                                                                                        MessageEventDefinition messageEventDefinition,
                                                                                                         Message message);
-  
+
   public abstract NoneEndEventActivityBehavior createNoneEndEventActivityBehavior(EndEvent endEvent);
 
   public abstract ErrorEndEventActivityBehavior createErrorEndEventActivityBehavior(EndEvent endEvent, ErrorEventDefinition errorEventDefinition);
@@ -214,7 +218,7 @@ public interface ActivityBehaviorFactory {
   public abstract BoundarySignalEventActivityBehavior createBoundarySignalEventActivityBehavior(BoundaryEvent boundaryEvent, SignalEventDefinition signalEventDefinition, Signal signal, boolean interrupting);
 
   public abstract BoundaryMessageEventActivityBehavior createBoundaryMessageEventActivityBehavior(BoundaryEvent boundaryEvent, MessageEventDefinition messageEventDefinition, boolean interrupting);
-  
+
   public abstract BoundaryCompensateEventActivityBehavior createBoundaryCompensateEventActivityBehavior(BoundaryEvent boundaryEvent, CompensateEventDefinition compensateEventDefinition, boolean interrupting);
 
   public abstract ThrowMessageEndEventActivityBehavior createThrowMessageEndEventActivityBehavior(EndEvent endEvent,

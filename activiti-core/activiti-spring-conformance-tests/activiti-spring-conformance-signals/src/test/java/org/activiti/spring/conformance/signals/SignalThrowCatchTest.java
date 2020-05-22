@@ -1,3 +1,18 @@
+/*
+ * Copyright 2010-2020 Alfresco Software, Ltd.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.activiti.spring.conformance.signals;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -268,8 +283,8 @@ public class SignalThrowCatchTest {
                 .extracting(RuntimeEvent::getEventType)
                 .containsExactly(
                         ProcessRuntimeEvent.ProcessEvents.PROCESS_CREATED,
-                        VariableEvent.VariableEvents.VARIABLE_CREATED,
                         BPMNSignalEvent.SignalEvents.SIGNAL_RECEIVED,
+                        VariableEvent.VariableEvents.VARIABLE_CREATED,
                         ProcessRuntimeEvent.ProcessEvents.PROCESS_STARTED,
                         BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
                         BPMNSequenceFlowTakenEvent.SequenceFlowEvents.SEQUENCE_FLOW_TAKEN,
@@ -278,7 +293,7 @@ public class SignalThrowCatchTest {
                         ProcessRuntimeEvent.ProcessEvents.PROCESS_COMPLETED
                 );
 
-        BPMNSignalReceivedEvent event = (BPMNSignalReceivedEvent) RuntimeTestConfiguration.collectedEvents.get(2);
+        BPMNSignalReceivedEvent event = (BPMNSignalReceivedEvent) RuntimeTestConfiguration.collectedEvents.get(1);
 
         assertThat(event.getEntity()).isNotNull();
         assertThat(event.getEntity().getSignalPayload()).isNotNull();

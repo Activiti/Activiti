@@ -3,7 +3,7 @@
          xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.activiti.core.common</groupId>
+    <groupId>org.activiti</groupId>
     <artifactId>activiti-core-common</artifactId>
     <version>7.1.0-SNAPSHOT</version>
   </parent>

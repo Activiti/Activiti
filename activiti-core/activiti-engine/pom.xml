@@ -15,11 +15,11 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.activiti.api</groupId>
+      <groupId>org.activiti</groupId>
       <artifactId>activiti-api-runtime-shared</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.activiti.core.common</groupId>
+      <groupId>org.activiti</groupId>
       <artifactId>activiti-project-model</artifactId>
     </dependency>
     <dependency>
@@ -129,11 +129,6 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>commons-io</groupId>
-      <artifactId>commons-io</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
       <groupId>joda-time</groupId>
       <artifactId>joda-time</artifactId>
     </dependency>
@@ -178,6 +173,15 @@
             <exclude>**/RepeatingServiceTaskTest.java</exclude>
           </excludes>
           <runOrder>alphabetical</runOrder>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>com.mycila</groupId>
+        <artifactId>license-maven-plugin</artifactId>
+        <configuration>
+          <excludes>
+            <exclude>**/CronExpression.java</exclude>
+          </excludes>
         </configuration>
       </plugin>
     </plugins>

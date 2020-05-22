@@ -1,8 +1,11 @@
-/* Licensed under the Apache License, Version 2.0 (the "License");
+/*
+ * Copyright 2010-2020 Alfresco Software, Ltd.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -10,11 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+
 package org.activiti.engine.impl.bpmn.behavior;
 
+import java.util.List;
 import org.activiti.bpmn.model.CallActivity;
 import org.activiti.bpmn.model.FlowElement;
-import org.activiti.bpmn.model.FlowNode;
 import org.activiti.bpmn.model.SubProcess;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.event.ActivitiEventType;
@@ -27,8 +32,6 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
 import org.activiti.engine.impl.persistence.entity.HistoricActivityInstanceEntity;
-
-import java.util.List;
 
 /**
 
@@ -180,15 +183,15 @@ public class TerminateEndEventActivityBehavior extends FlowNodeActivityBehavior 
   }
 
   protected void sendProcessInstanceCancelledEvent(DelegateExecution execution, FlowElement terminateEndEvent) {
-    if (Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-      if ((execution.isProcessInstanceType() && execution.getSuperExecutionId() == null) ||
-          (execution.getParentId() == null && execution.getSuperExecutionId() != null)) {
-
-        Context.getProcessEngineConfiguration().getEventDispatcher()
-            .dispatchEvent(ActivitiEventBuilder.createCancelledEvent(execution.getId(), execution.getProcessInstanceId(),
-                execution.getProcessDefinitionId(), createDeleteReason(terminateEndEvent.getId())));
+      if (Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+          if (execution.isProcessInstanceType() && execution instanceof ExecutionEntity) {
+              Context.getProcessEngineConfiguration().getEventDispatcher()
+                  .dispatchEvent(
+                      ActivitiEventBuilder.createProcessCancelledEvent(
+                          ((ExecutionEntity) execution).getProcessInstance(),
+                          createDeleteReason(terminateEndEvent.getId())));
+          }
       }
-    }
 
     dispatchExecutionCancelled(execution, terminateEndEvent);
   }
@@ -208,7 +211,7 @@ public class TerminateEndEventActivityBehavior extends FlowNodeActivityBehavior 
       dispatchExecutionCancelled(subProcessInstance, terminateEndEvent);
     }
   }
-  
+
 
   public static String createDeleteReason(String activityId) {
       return activityId != null ?  DeleteReason.TERMINATE_END_EVENT + ": " + activityId : DeleteReason.TERMINATE_END_EVENT;

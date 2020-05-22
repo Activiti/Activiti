@@ -1,15 +1,19 @@
-/* Licensed under the Apache License, Version 2.0 (the "License");
+/*
+ * Copyright 2010-2020 Alfresco Software, Ltd.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.activiti.engine.impl.cmd;
 
 import java.util.Collection;
@@ -55,7 +59,7 @@ public abstract class AbstractSetProcessInstanceStateCmd implements Command<Void
     if (!executionEntity.isProcessInstanceType()) {
       throw new ActivitiException("Cannot set suspension state for execution '" + processInstanceId + "': not a process instance.");
     }
-    
+
     SuspensionStateUtil.setSuspensionState(executionEntity, getNewState());
     commandContext.getExecutionEntityManager().update(executionEntity, false);
 
@@ -74,20 +78,20 @@ public abstract class AbstractSetProcessInstanceStateCmd implements Command<Void
       SuspensionStateUtil.setSuspensionState(taskEntity, getNewState());
       commandContext.getTaskEntityManager().update(taskEntity, false);
     }
-    
+
     // All jobs are suspended
     if (getNewState() == SuspensionState.ACTIVE) {
       List<SuspendedJobEntity> suspendedJobs = commandContext.getSuspendedJobEntityManager().findJobsByProcessInstanceId(processInstanceId);
       for (SuspendedJobEntity suspendedJob : suspendedJobs) {
         commandContext.getJobManager().activateSuspendedJob(suspendedJob);
       }
-      
+
     } else {
       List<TimerJobEntity> timerJobs = commandContext.getTimerJobEntityManager().findJobsByProcessInstanceId(processInstanceId);
       for (TimerJobEntity timerJob : timerJobs) {
         commandContext.getJobManager().moveJobToSuspendedJob(timerJob);
       }
-      
+
       List<JobEntity> jobs = commandContext.getJobEntityManager().findJobsByProcessInstanceId(processInstanceId);
       for (JobEntity job : jobs) {
         commandContext.getJobManager().moveJobToSuspendedJob(job);

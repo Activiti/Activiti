@@ -1,15 +1,19 @@
-/* Licensed under the Apache License, Version 2.0 (the "License");
+/*
+ * Copyright 2010-2020 Alfresco Software, Ltd.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 
 package org.activiti.engine.impl.db;
 
@@ -32,14 +36,14 @@ import org.apache.ibatis.session.SqlSessionFactory;
 
  */
 public class DbSqlSessionFactory implements SessionFactory {
-  
+
   protected static final Map<String, Map<String, String>> databaseSpecificStatements = new HashMap<String, Map<String, String>>();
 
   /**
    * A map {class, boolean}, to indicate whether or not a certain {@link Entity} class can be bulk inserted.
    */
   protected static Map<Class<? extends Entity>, Boolean> bulkInsertableMap;
-  
+
   protected String databaseType;
   protected String databaseTablePrefix = "";
   private boolean tablePrefixIsSchema;
@@ -55,8 +59,8 @@ public class DbSqlSessionFactory implements SessionFactory {
   protected SqlSessionFactory sqlSessionFactory;
   protected IdGenerator idGenerator;
   protected Map<String, String> statementMappings;
-  
-  // Caches, filled while executing processes 
+
+  // Caches, filled while executing processes
   protected Map<Class<?>,String> insertStatements = new ConcurrentHashMap<Class<?>, String>();
   protected Map<Class<?>,String> bulkInsertStatements = new ConcurrentHashMap<Class<?>, String>();
   protected Map<Class<?>,String> updateStatements = new ConcurrentHashMap<Class<?>, String>();
@@ -66,7 +70,7 @@ public class DbSqlSessionFactory implements SessionFactory {
 
   protected boolean isDbHistoryUsed = true;
   protected int maxNrOfStatementsInBulkInsert = 100;
-  
+
   public Class<?> getSessionType() {
     return DbSqlSession.class;
   }
@@ -96,12 +100,12 @@ public class DbSqlSessionFactory implements SessionFactory {
   public String getInsertStatement(Entity object) {
     return getStatement(object.getClass(), insertStatements, "insert");
   }
-  
-  
+
+
   public String getInsertStatement(Class<? extends Entity> clazz) {
     return getStatement(clazz, insertStatements, "insert");
   }
-  
+
   @SuppressWarnings("rawtypes")
   public String getBulkInsertStatement(Class clazz) {
     return getStatement(clazz, bulkInsertStatements, "bulkInsert");
@@ -165,17 +169,17 @@ public class DbSqlSessionFactory implements SessionFactory {
     this.databaseType = databaseType;
     this.statementMappings = databaseSpecificStatements.get(databaseType);
   }
-  
+
   public void setBulkInsertEnabled(boolean isBulkInsertEnabled, String databaseType) {
   	// If false, just keep don't initialize the map. Memory saved.
   	if (isBulkInsertEnabled) {
   		initBulkInsertEnabledMap(databaseType);
   	}
   }
-  
+
   protected void initBulkInsertEnabledMap(String databaseType) {
   	bulkInsertableMap = new HashMap<Class<? extends Entity>, Boolean>();
-  	
+
   	for (Class<? extends Entity> clazz : EntityDependencyOrder.INSERT_ORDER) {
   		bulkInsertableMap.put(clazz, Boolean.TRUE);
   	}
@@ -185,13 +189,13 @@ public class DbSqlSessionFactory implements SessionFactory {
 			bulkInsertableMap.put(EventLogEntryEntityImpl.class, Boolean.FALSE);
 		}
   }
-  
+
   public Boolean isBulkInsertable(Class<? extends Entity> entityClass) {
   	return bulkInsertableMap != null && bulkInsertableMap.containsKey(entityClass) && bulkInsertableMap.get(entityClass);
   }
 
   // getters and setters //////////////////////////////////////////////////////
-  
+
   public SqlSessionFactory getSqlSessionFactory() {
     return sqlSessionFactory;
   }
@@ -228,17 +232,17 @@ public class DbSqlSessionFactory implements SessionFactory {
     this.insertStatements = insertStatements;
   }
 
-  
+
   public Map<Class< ? >, String> getBulkInsertStatements() {
     return bulkInsertStatements;
   }
 
-  
+
   public void setBulkInsertStatements(Map<Class< ? >, String> bulkInsertStatements) {
     this.bulkInsertStatements = bulkInsertStatements;
   }
 
-  
+
   public Map<Class< ? >, String> getUpdateStatements() {
     return updateStatements;
   }

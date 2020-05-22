@@ -1,8 +1,11 @@
-/* Licensed under the Apache License, Version 2.0 (the "License");
+/*
+ * Copyright 2010-2020 Alfresco Software, Ltd.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -10,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 
 package org.activiti.engine.impl.persistence.entity;
 
@@ -21,11 +25,11 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.activiti.bpmn.model.SequenceFlow;
 import org.activiti.bpmn.model.UserTask;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.delegate.event.ActivitiEventType;
+import org.activiti.engine.delegate.event.ActivitiProcessCancelledEvent;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.history.DeleteReason;
 import org.activiti.engine.impl.ExecutionQueryImpl;
@@ -396,12 +400,9 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
 
     getTaskEntityManager().deleteTasksByProcessInstanceId(execution.getId(), deleteReason, deleteHistory);
 
-    if (getEventDispatcher().isEnabled()) {
-      getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createCancelledEvent(execution.getProcessInstanceId(),
-          execution.getProcessInstanceId(), null, deleteReason));
-    }
+      dispatchProcessCancelledEvent(execution, deleteReason);
 
-    // delete the execution BEFORE we delete the history, otherwise we will
+      // delete the execution BEFORE we delete the history, otherwise we will
     // produce orphan HistoricVariableInstance instances
 
     ExecutionEntity processInstanceExecutionEntity = execution.getProcessInstance();
@@ -425,7 +426,16 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
     processInstanceExecutionEntity.setDeleted(true);
   }
 
-  @Override
+    private void dispatchProcessCancelledEvent(ExecutionEntity execution, String deleteReason) {
+        if (getEventDispatcher().isEnabled()) {
+            ProcessInstance processInstance = execution.getProcessInstance();
+            ActivitiProcessCancelledEvent processCancelledEvent = ActivitiEventBuilder
+                .createProcessCancelledEvent(processInstance, deleteReason);
+            getEventDispatcher().dispatchEvent(processCancelledEvent);
+        }
+    }
+
+    @Override
   public void deleteExecutionAndRelatedData(ExecutionEntity executionEntity, String deleteReason) {
     getHistoryManager().recordActivityEnd(executionEntity, deleteReason);
     deleteDataForExecution(executionEntity, deleteReason);
@@ -479,8 +489,7 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
     	if (!cancel) {
     		getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.PROCESS_COMPLETED, processInstanceEntity));
     	} else {
-    		getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createCancelledEvent(processInstanceEntity.getId(),
-    				processInstanceEntity.getId(), processInstanceEntity.getProcessDefinitionId(), deleteReason));
+    		getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createProcessCancelledEvent(processInstanceEntity, deleteReason));
     	}
     }
 

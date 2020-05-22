@@ -1,11 +1,11 @@
 /*
- * Copyright 2018 Alfresco, Inc. and/or its affiliates.
+ * Copyright 2010-2020 Alfresco Software, Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,14 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.api.runtime.model.impl;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.activiti.api.process.model.IntegrationContext;
@@ -28,8 +27,8 @@ import org.activiti.api.process.model.IntegrationContext;
 public class IntegrationContextImpl implements IntegrationContext {
 
     private String id;
-    private Map<String, Object> inboundVariables = new HashMap<>();
-    private Map<String, Object> outBoundVariables = new HashMap<>();
+    private ProcessVariablesMap<String, Object> inBoundVariables = new ProcessVariablesMap<>();
+    private ProcessVariablesMap<String, Object> outBoundVariables = new ProcessVariablesMap<>();
     private String processInstanceId;
     private String parentProcessInstanceId;
     private String processDefinitionId;
@@ -94,11 +93,15 @@ public class IntegrationContextImpl implements IntegrationContext {
 
     @Override
     public Map<String, Object> getInBoundVariables() {
-        return inboundVariables;
+        return inBoundVariables;
     }
 
-    public void setInBoundVariables(Map<String, Object> inboundVariables) {
-        this.inboundVariables = inboundVariables;
+    public void addInBoundVariables(Map<String, Object> inboundVariables) {
+        this.inBoundVariables.putAll(inboundVariables);
+    }
+
+    public void addInBoundVariable(String name, Object value) {
+        this.inBoundVariables.put(name, value);
     }
 
     @Override
@@ -203,7 +206,7 @@ public class IntegrationContextImpl implements IntegrationContext {
                             connectorType,
                             executionId,
                             id,
-                            inboundVariables,
+                            inBoundVariables,
                             outBoundVariables,
                             parentProcessInstanceId,
                             processDefinitionId,
@@ -232,7 +235,7 @@ public class IntegrationContextImpl implements IntegrationContext {
                Objects.equals(connectorType, other.connectorType) &&
                Objects.equals(executionId, other.executionId) &&
                Objects.equals(id, other.id) &&
-               Objects.equals(inboundVariables, other.inboundVariables) &&
+               Objects.equals(inBoundVariables, other.inBoundVariables) &&
                Objects.equals(outBoundVariables, other.outBoundVariables) &&
                Objects.equals(parentProcessInstanceId, other.parentProcessInstanceId) &&
                Objects.equals(processDefinitionId, other.processDefinitionId) &&
@@ -248,7 +251,7 @@ public class IntegrationContextImpl implements IntegrationContext {
         builder.append("IntegrationContextImpl [id=")
                .append(id)
                .append(", inboundVariables=")
-               .append(inboundVariables != null ? toString(inboundVariables.entrySet(), maxLen) : null)
+               .append(inBoundVariables != null ? toString(inBoundVariables.entrySet(), maxLen) : null)
                .append(", outBoundVariables=")
                .append(outBoundVariables != null ? toString(outBoundVariables.entrySet(), maxLen) : null)
                .append(", processInstanceId=")
@@ -292,4 +295,37 @@ public class IntegrationContextImpl implements IntegrationContext {
         builder.append("]");
         return builder.toString();
     }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T> T getInBoundVariable(String name) {
+        return Optional.ofNullable(inBoundVariables)
+                       .map(it -> (T) inBoundVariables.get(name))
+                       .orElse(null);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T> T getInBoundVariable(String name, Class<T> type) {
+        return Optional.ofNullable(inBoundVariables)
+                       .map(it -> (T) inBoundVariables.get(name))
+                       .orElse(null);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T> T getOutBoundVariable(String name) {
+        return Optional.ofNullable(outBoundVariables)
+                       .map(it -> (T) it.get(name))
+                       .orElse(null);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T> T getOutBoundVariable(String name, Class<T> type) {
+        return Optional.ofNullable(outBoundVariables)
+                       .map(it -> (T) it.get(name))
+                       .orElse(null);
+    }
+
 }

@@ -1,15 +1,19 @@
-/* Licensed under the Apache License, Version 2.0 (the "License");
+/*
+ * Copyright 2010-2020 Alfresco Software, Ltd.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.activiti.engine.impl;
 
 import java.io.Serializable;
@@ -29,7 +33,7 @@ import org.activiti.engine.query.QueryProperty;
 
 /**
  * Abstract superclass for all query types.
- * 
+ *
 
  */
 public abstract class AbstractQuery<T extends Query<?, ?>, U> extends ListQueryParameterObject implements Command<Object>, Query<T, U>, Serializable {
@@ -174,7 +178,7 @@ public abstract class AbstractQuery<T extends Query<?, ?>, U> extends ListQueryP
 
   /**
    * Executes the actual query to retrieve the list of results.
-   * 
+   *
    * @param page
    *          used if the results must be paged. If null, no paging will be applied.
    */
@@ -243,7 +247,7 @@ public abstract class AbstractQuery<T extends Query<?, ?>, U> extends ListQueryP
       return orderBy;
     }
   }
-  
+
   public String getOrderByColumns() {
       return getOrderBy();
   }
