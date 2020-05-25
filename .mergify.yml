@@ -1,7 +1,7 @@
 pull_request_rules: 
   - name: automatic merge with strict
     conditions:
-      - author=jx-activiti-cloud
+      - author=alfresco-build-user
       - status-success=Travis CI - Pull Request
       - label!=do-not-merge
     actions:
