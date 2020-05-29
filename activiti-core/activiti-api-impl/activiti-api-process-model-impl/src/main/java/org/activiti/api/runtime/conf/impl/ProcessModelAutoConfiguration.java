@@ -58,19 +58,23 @@ import org.activiti.api.runtime.model.impl.BPMNTimerImpl;
 import org.activiti.api.runtime.model.impl.DateToStringConverter;
 import org.activiti.api.runtime.model.impl.IntegrationContextImpl;
 import org.activiti.api.runtime.model.impl.JsonNodeToStringConverter;
+import org.activiti.api.runtime.model.impl.ListToStringConverter;
 import org.activiti.api.runtime.model.impl.MapToStringConverter;
 import org.activiti.api.runtime.model.impl.MessageSubscriptionImpl;
 import org.activiti.api.runtime.model.impl.ProcessDefinitionImpl;
 import org.activiti.api.runtime.model.impl.ProcessInstanceImpl;
+import org.activiti.api.runtime.model.impl.ProcessVariableTypeConverter;
 import org.activiti.api.runtime.model.impl.ProcessVariablesMap;
 import org.activiti.api.runtime.model.impl.ProcessVariablesMapDeserializer;
 import org.activiti.api.runtime.model.impl.ProcessVariablesMapSerializer;
+import org.activiti.api.runtime.model.impl.SetToStringConverter;
 import org.activiti.api.runtime.model.impl.StartMessageDeploymentDefinitionImpl;
 import org.activiti.api.runtime.model.impl.StartMessageSubscriptionImpl;
 import org.activiti.api.runtime.model.impl.StringToDateConverter;
 import org.activiti.api.runtime.model.impl.StringToJsonNodeConverter;
+import org.activiti.api.runtime.model.impl.StringToListConverter;
 import org.activiti.api.runtime.model.impl.StringToMapConverter;
-import org.activiti.api.runtime.model.impl.ProcessVariableTypeConverter;
+import org.activiti.api.runtime.model.impl.StringToSetConverter;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
@@ -233,6 +237,23 @@ public class ProcessModelAutoConfiguration {
         return new DateToStringConverter();
     }
 
+    @Bean
+    public StringToListConverter sringToListConverter(@Lazy ObjectMapper objectMapper) {
+        return new StringToListConverter(objectMapper);
+    }
 
+    @Bean
+    public ListToStringConverter listToStringConverter(@Lazy ObjectMapper objectMapper) {
+        return new ListToStringConverter(objectMapper);
+    }
 
+    @Bean
+    public StringToSetConverter stringToSetConverter(@Lazy ObjectMapper objectMapper) {
+        return new StringToSetConverter(objectMapper);
+    }
+
+    @Bean
+    public SetToStringConverter setToStringConverter(@Lazy ObjectMapper objectMapper) {
+        return new SetToStringConverter(objectMapper);
+    }
 }
