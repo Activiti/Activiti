@@ -15,12 +15,14 @@
  */
 package org.activiti.api.runtime.test.model.impl;
 
+import static java.util.Collections.singleton;
+import static java.util.Collections.singletonList;
+import static java.util.Collections.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.Instant;
-import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.stream.Stream;
@@ -69,12 +71,11 @@ class IntegrationContextImplTest {
                                              Arguments.of(123.123f, 123.123f),
                                              Arguments.of(null, null),
                                              Arguments.of(Date.from(instant), Date.from(instant)),
-                                             Arguments.of(Collections.singletonList("item"),
-                                                          Collections.singletonList("item")),
-                                             Arguments.of(Collections.singleton("item"),
-                                                          Collections.singleton("item")),
-                                             Arguments.of(Collections.singletonMap("key", "value"),
-                                                          Collections.singletonMap("key", "value")),
+                                             Arguments.of(singletonList("item"), singletonList("item")),
+                                             Arguments.of(singletonList(singletonMap("key", "value")), singletonList(singletonMap("key", "value"))),
+                                             Arguments.of(singleton(singletonMap("key", "value")), singleton(singletonMap("key", "value"))),
+                                             Arguments.of(singleton("item"), singleton("item")),
+                                             Arguments.of(singletonMap("key", "value"), singletonMap("key", "value")),
                                              Arguments.of(JsonNodeFactory.instance.objectNode().set("key", TextNode.valueOf("value")),
                                                           JsonNodeFactory.instance.objectNode().set("key", TextNode.valueOf("value"))),
                                              Arguments.of(new CustomPojo("field1", "field2"),
