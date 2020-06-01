@@ -57,6 +57,7 @@ public class ProcessVariablesMapTypeRegistry {
                                                 JsonNode.class,
                                                 List.class,
                                                 Set.class};
+
     static {
         typeRegistry.put("byte", Byte.class);
         typeRegistry.put("character", Character.class);
@@ -94,7 +95,11 @@ public class ProcessVariablesMapTypeRegistry {
     }
 
     public static Class<?> forType(String type) {
-        return typeRegistry.getOrDefault(type, Map.class);
+        return forType(type, Map.class);
+    }
+
+    public static Class<?> forType(String type, Class<?> defaultType) {
+        return typeRegistry.getOrDefault(type, defaultType);
     }
 
     public static String forClass(Class<?> clazz) {
