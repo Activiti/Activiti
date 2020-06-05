@@ -23,6 +23,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.stream.Stream;
@@ -71,6 +74,8 @@ class IntegrationContextImplTest {
                                              Arguments.of(123.123f, 123.123f),
                                              Arguments.of(null, null),
                                              Arguments.of(Date.from(instant), Date.from(instant)),
+                                             Arguments.of(LocalDate.ofInstant(instant, ZoneOffset.UTC), LocalDate.ofInstant(instant, ZoneOffset.UTC)),
+                                             Arguments.of(LocalDateTime.ofInstant(instant, ZoneOffset.UTC), LocalDateTime.ofInstant(instant, ZoneOffset.UTC)),
                                              Arguments.of(singletonList("item"), singletonList("item")),
                                              Arguments.of(singletonList(singletonMap("key", "value")), singletonList(singletonMap("key", "value"))),
                                              Arguments.of(singleton(singletonMap("key", "value")), singleton(singletonMap("key", "value"))),

@@ -59,6 +59,8 @@ import org.activiti.api.runtime.model.impl.DateToStringConverter;
 import org.activiti.api.runtime.model.impl.IntegrationContextImpl;
 import org.activiti.api.runtime.model.impl.JsonNodeToStringConverter;
 import org.activiti.api.runtime.model.impl.ListToStringConverter;
+import org.activiti.api.runtime.model.impl.LocalDateTimeToStringConverter;
+import org.activiti.api.runtime.model.impl.LocalDateToStringConverter;
 import org.activiti.api.runtime.model.impl.MapToStringConverter;
 import org.activiti.api.runtime.model.impl.MessageSubscriptionImpl;
 import org.activiti.api.runtime.model.impl.ProcessDefinitionImpl;
@@ -73,6 +75,8 @@ import org.activiti.api.runtime.model.impl.StartMessageSubscriptionImpl;
 import org.activiti.api.runtime.model.impl.StringToDateConverter;
 import org.activiti.api.runtime.model.impl.StringToJsonNodeConverter;
 import org.activiti.api.runtime.model.impl.StringToListConverter;
+import org.activiti.api.runtime.model.impl.StringToLocalDateConverter;
+import org.activiti.api.runtime.model.impl.StringToLocalDateTimeConverter;
 import org.activiti.api.runtime.model.impl.StringToMapConverter;
 import org.activiti.api.runtime.model.impl.StringToSetConverter;
 import org.springframework.beans.factory.ObjectProvider;
@@ -235,6 +239,26 @@ public class ProcessModelAutoConfiguration {
     @Bean
     public DateToStringConverter dateToStringConverter() {
         return new DateToStringConverter();
+    }
+
+    @Bean
+    public StringToLocalDateTimeConverter stringToLocalDateTimeConverter() {
+        return new StringToLocalDateTimeConverter();
+    }
+
+    @Bean
+    public LocalDateTimeToStringConverter localDateTimeToStringConverter() {
+        return new LocalDateTimeToStringConverter();
+    }
+
+    @Bean
+    public StringToLocalDateConverter stringToLocalDateConverter() {
+        return new StringToLocalDateConverter();
+    }
+
+    @Bean
+    public LocalDateToStringConverter localDateToStringConverter() {
+        return new LocalDateToStringConverter();
     }
 
     @Bean
