@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.bpmn.behavior;
 
 import java.util.ArrayList;
@@ -81,10 +80,10 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
   private String outputDataItem;
 
   /**
+   * @param activity
+   *          The {@link Activity} which has multi instance behaviour
    * @param innerActivityBehavior
    *          The original {@link ActivityBehavior} of the activity that will be wrapped inside this behavior.
-   * @param isSequential
-   *          Indicates whether the multi instance behavior must be sequential or parallel
    */
   public MultiInstanceActivityBehavior(Activity activity, AbstractBpmnActivityBehavior innerActivityBehavior) {
     this.activity = activity;
@@ -94,6 +93,7 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
   public void execute(DelegateExecution execution) {
     if (getLocalLoopVariable(execution, getCollectionElementIndexVariable()) == null) {
 
+      clearLoopDataOutputRef(execution);
       int nrOfInstances = 0;
 
       try {
@@ -112,6 +112,12 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
       innerActivityBehavior.execute(execution);
     }
   }
+
+    private void clearLoopDataOutputRef(DelegateExecution execution) {
+        if (hasLoopDataOutputRef()) {
+          execution.setVariable(getLoopDataOutputRef(), new ArrayList<>());
+        }
+    }
 
   protected abstract int createInstances(DelegateExecution execution);
 
