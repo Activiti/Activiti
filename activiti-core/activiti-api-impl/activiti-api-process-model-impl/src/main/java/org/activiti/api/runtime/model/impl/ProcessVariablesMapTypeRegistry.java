@@ -18,6 +18,7 @@ package org.activiti.api.runtime.model.impl;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
@@ -51,7 +52,9 @@ public class ProcessVariablesMapTypeRegistry {
                                                               Float.class,
                                                               BigDecimal.class,
                                                               Date.class,
-                                                              String.class);
+                                                              String.class,
+                                                              LocalDateTime.class,
+                                                              LocalDate.class);
 
     private static Class<?>[] containerTypes = {Map.class,
                                                 JsonNode.class,
@@ -70,6 +73,7 @@ public class ProcessVariablesMapTypeRegistry {
         typeRegistry.put("float", Float.class);
         typeRegistry.put("date", Date.class);
         typeRegistry.put("localdate", LocalDate.class);
+        typeRegistry.put("localdatetime", LocalDateTime.class);
         typeRegistry.put("bigdecimal", BigDecimal.class);
         typeRegistry.put("json", JsonNode.class);
         typeRegistry.put("map", Map.class);
@@ -92,6 +96,7 @@ public class ProcessVariablesMapTypeRegistry {
         classRegistry.put(Map.class, "map");
         classRegistry.put(List.class, "list");
         classRegistry.put(Set.class, "set");
+        classRegistry.put(LocalDateTime.class, "localdatetime");
     }
 
     public static Class<?> forType(String type) {
