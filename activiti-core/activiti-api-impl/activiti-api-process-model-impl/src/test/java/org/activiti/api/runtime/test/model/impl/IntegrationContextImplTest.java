@@ -26,13 +26,17 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.Collections;
 import java.util.Currency;
 import java.util.Date;
 import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.stream.Stream;
 
 import org.activiti.api.process.model.IntegrationContext;
 import org.activiti.api.runtime.model.impl.IntegrationContextImpl;
+import org.activiti.api.runtime.model.impl.ProcessVariablesMap;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -42,6 +46,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.context.annotation.Bean;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
@@ -147,6 +153,40 @@ class IntegrationContextImplTest {
         // then
         assertThat(target.getOutBoundVariables()).containsEntry("variable",
                                                                 output);
+    }
+
+    @Test
+    public void testProcessVariablesMapDeserializerShouldFallbackToKeyValueMap() throws JsonProcessingException {
+        // given
+        Map<String, Object> map = new LinkedHashMap<>();
+
+        map.put("age", 123);
+        map.put("name", "John");
+        map.put("amount", 12.34);
+        map.put("bool", true);
+        map.put("nullable", null);
+        map.put("map", Collections.singletonMap("key", "value"));
+        map.put("list", Collections.singletonList("item"));
+        map.put("pojo", new CustomPojo("field1", "field2"));
+
+        String json = objectMapper.writeValueAsString(map);
+
+        // when
+        ProcessVariablesMap<String, Object> result = objectMapper.readValue(json, new TypeReference<ProcessVariablesMap<String, Object>>() {});
+
+        // then
+        assertThat(result).containsEntry("age", 123)
+                          .containsEntry("name", "John")
+                          .containsEntry("bool", true)
+                          .containsEntry("nullable", null)
+                          .containsEntry("amount", 12.34)
+                          .containsEntry("map", Collections.singletonMap("key", "value"))
+                          .containsEntry("list", Collections.singletonList("item"))
+                          .containsEntry("pojo",  new LinkedHashMap<String, String>() {{
+                              put("field1", "field1");
+                              put("field2", "field2");
+                          }});
+
     }
 
     private IntegrationContext exchangeIntegrationContext(IntegrationContext source) throws IOException {

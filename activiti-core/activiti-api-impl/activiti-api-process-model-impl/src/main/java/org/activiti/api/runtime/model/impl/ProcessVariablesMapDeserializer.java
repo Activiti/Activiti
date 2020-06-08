@@ -61,13 +61,11 @@ public class ProcessVariablesMapDeserializer extends JsonDeserializer<ProcessVar
                     map.put(name, result);
                 }
                 else {
-                    // TODO implement fallback
                     Object value = null;
                     try {
                         value = new ObjectMapper().treeToValue(entryValue,
                                                                Object.class);
                     } catch (JsonProcessingException e) {
-                        // TODO Auto-generated catch block
                         e.printStackTrace();
                     }
                     map.put(name, value);
