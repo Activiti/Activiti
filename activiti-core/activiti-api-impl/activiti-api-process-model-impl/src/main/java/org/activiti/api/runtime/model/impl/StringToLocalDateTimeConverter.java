@@ -18,6 +18,7 @@ package org.activiti.api.runtime.model.impl;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+
 import org.springframework.core.convert.converter.Converter;
 
 @ProcessVariableTypeConverter
@@ -25,7 +26,6 @@ public class StringToLocalDateTimeConverter implements Converter<String, LocalDa
 
     @Override
     public LocalDateTime convert(String source) {
-        DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("[yyyyMMdd][yyyy-MM-dd][yyyy-DDD]['T'[HHmmss][HHmm][HH:mm:ss][HH:mm][.SSSSSSSSS][.SSSSSS][.SSS][.SS][.S]][OOOO][O][z][XXXXX][XXXX]['['VV']']");
-        return LocalDateTime.parse(source, inputFormatter);
+        return LocalDateTime.parse(source, DateTimeFormatter.ISO_DATE_TIME);
     }
 }
