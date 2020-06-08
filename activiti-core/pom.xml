@@ -20,6 +20,7 @@
     <javaGeom.version>0.11.1</javaGeom.version>
     <javax.enterprise.concurrent-api.version>1.0</javax.enterprise.concurrent-api.version>
     <jaxb-api.version>2.3.1</jaxb-api.version>
+    <joda-time.version>2.10.6</joda-time.version>
     <jgraphx.version>3.9.8.1</jgraphx.version>
     <json-unit.version>1.24.0</json-unit.version>
     <jsr250-api.version>1.0</jsr250-api.version>
@@ -181,6 +182,11 @@
         <groupId>javax.xml.bind</groupId>
         <artifactId>jaxb-api</artifactId>
         <version>${jaxb-api.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>joda-time</groupId>
+        <artifactId>joda-time</artifactId>
+        <version>${joda-time.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
