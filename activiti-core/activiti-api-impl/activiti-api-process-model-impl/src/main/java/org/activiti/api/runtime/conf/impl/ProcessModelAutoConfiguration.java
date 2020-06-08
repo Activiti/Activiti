@@ -284,12 +284,12 @@ public class ProcessModelAutoConfiguration {
     }
 
     @Bean
-    public StringToObjectValueConverter stringToObjectConverter(@Lazy ObjectMapper objectMapper) {
+    public StringToObjectValueConverter stringToObjectValueConverter(@Lazy ObjectMapper objectMapper) {
         return new StringToObjectValueConverter(objectMapper);
     }
 
     @Bean
-    public ObjectValueToStringConverter objectToStringConverter(@Lazy ObjectMapper objectMapper) {
+    public ObjectValueToStringConverter objectValueToStringConverter(@Lazy ObjectMapper objectMapper) {
         return new ObjectValueToStringConverter(objectMapper);
     }
 
