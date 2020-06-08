@@ -18,10 +18,22 @@
       </multiInstanceLoopCharacteristics>
     </userTask>
 
+    <exclusiveGateway id="ExclusiveGateway_1an63e2">
+      <incoming>flow3</incoming>
+      <outgoing>SequenceFlow_0gny1qz</outgoing>
+      <outgoing>SequenceFlow_183arsy</outgoing>
+    </exclusiveGateway>
+    <sequenceFlow id="SequenceFlow_0gny1qz" name="Approved" sourceRef="ExclusiveGateway_1an63e2" targetRef="wait">
+      <conditionExpression xsi:type="tFormalExpression">${approved}</conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="SequenceFlow_183arsy" name="Rejected" sourceRef="ExclusiveGateway_1an63e2" targetRef="miTasks">
+      <conditionExpression xsi:type="tFormalExpression">${!approved}</conditionExpression>
+    </sequenceFlow>
+
     <userTask id="wait" name="Wait" activiti:assignee="user">
     </userTask>
 
-    <sequenceFlow id="flow3" sourceRef="miTasks" targetRef="wait" />
+    <sequenceFlow id="flow3" sourceRef="miTasks" targetRef="ExclusiveGateway_1an63e2" />
     <sequenceFlow id="flow4" sourceRef="wait" targetRef="theEnd" />
     <endEvent id="theEnd" />
 
