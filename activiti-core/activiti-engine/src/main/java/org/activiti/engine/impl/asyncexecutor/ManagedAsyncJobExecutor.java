@@ -30,7 +30,6 @@ import org.slf4j.LoggerFactory;
  *
  * In Java EE 7, all application servers should provide access to a {@link ManagedThreadFactory}.
  *
-
  */
 public class ManagedAsyncJobExecutor extends DefaultAsyncJobExecutor {
 
