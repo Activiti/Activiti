@@ -17,7 +17,6 @@ package org.activiti.api.runtime.model.impl;
 
 import org.springframework.core.convert.converter.Converter;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @ProcessVariableTypeConverter
@@ -31,9 +30,6 @@ public class StringToObjectValueConverter implements Converter<String, ObjectVal
     @Override
     public ObjectValue convert(String source) {
         try {
-
-            this.objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-
             return objectMapper.readValue(source, ObjectValue.class);
         } catch (Exception cause) {
             throw new RuntimeException(cause);

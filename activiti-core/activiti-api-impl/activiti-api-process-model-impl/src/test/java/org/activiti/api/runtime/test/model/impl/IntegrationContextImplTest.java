@@ -42,6 +42,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.context.annotation.Bean;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
@@ -104,7 +105,8 @@ class IntegrationContextImplTest {
 
         @Bean
         public ObjectMapper objectMapper(Module customizeProcessModelObjectMapper) {
-            return new ObjectMapper().registerModule(customizeProcessModelObjectMapper);
+            return new ObjectMapper().registerModule(customizeProcessModelObjectMapper)
+                                     .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         }
     }
 
