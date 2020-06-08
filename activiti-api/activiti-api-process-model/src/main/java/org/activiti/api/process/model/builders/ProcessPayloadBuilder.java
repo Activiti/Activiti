@@ -30,7 +30,9 @@ public class ProcessPayloadBuilder {
         return new StartProcessPayloadBuilder();
     }
 
-    public static CreateProcessPayloadBuilder create() { return new CreateProcessPayloadBuilder(); }
+    public static CreateProcessPayloadBuilder create() {
+        return new CreateProcessPayloadBuilder();
+    }
 
     public static StartProcessPayloadBuilder start(StartProcessPayload from) {
         return new StartProcessPayloadBuilder().withBusinessKey(from.getBusinessKey())
@@ -69,6 +71,14 @@ public class ProcessPayloadBuilder {
 
     public static SetVariablesPayloadBuilder setVariables() {
         return new SetVariablesPayloadBuilder();
+    }
+
+    public static SetVariablesPayloadBuilder setVariables(ProcessInstance processInstance) {
+        return new SetVariablesPayloadBuilder(processInstance);
+    }
+
+    public static SetVariablesPayloadBuilder setVariables(String processInstanceId) {
+        return new SetVariablesPayloadBuilder(processInstanceId);
     }
 
     public static RemoveVariablesPayloadBuilder removeVariables() {

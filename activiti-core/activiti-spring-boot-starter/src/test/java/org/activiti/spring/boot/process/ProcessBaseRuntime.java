@@ -47,9 +47,8 @@ public class ProcessBaseRuntime {
     }
 
     public List<ProcessInstance> getProcessInstances() {
-        List<ProcessInstance> processList = processRuntime
+        return processRuntime
                 .processInstances(DEFAULT_PAGEABLE, ProcessPayloadBuilder.processInstances().build()).getContent();
-        return processList;
     }
     public Page<ProcessInstance> getProcessInstancesPage() {
         return processRuntime.processInstances(DEFAULT_PAGEABLE);
@@ -81,6 +80,10 @@ public class ProcessBaseRuntime {
             .variables()
             .withProcessInstance(processInstance)
             .build());
+    }
+
+    public ProcessRuntime getProcessRuntime() {
+        return processRuntime;
     }
 
 }
