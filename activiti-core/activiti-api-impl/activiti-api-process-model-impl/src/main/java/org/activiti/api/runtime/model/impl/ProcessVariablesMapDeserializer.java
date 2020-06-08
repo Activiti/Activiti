@@ -51,7 +51,13 @@ public class ProcessVariablesMapDeserializer extends JsonDeserializer<ProcessVar
                 Class<?> clazz = ProcessVariablesMapTypeRegistry.forType(type);
                 Object result = conversionService.convert(value, clazz);
 
+                if(ObjectValue.class.isInstance(result)) {
+                    result = ObjectValue.class.cast(result)
+                                              .getObject();
+                }
+
                 map.put(name, result);
+
             } else {
                 map.put(name, null);
             }

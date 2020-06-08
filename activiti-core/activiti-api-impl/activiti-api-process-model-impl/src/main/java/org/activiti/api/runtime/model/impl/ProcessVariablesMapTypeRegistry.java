@@ -79,6 +79,7 @@ public class ProcessVariablesMapTypeRegistry {
         typeRegistry.put("map", Map.class);
         typeRegistry.put("set", Set.class);
         typeRegistry.put("list", List.class);
+        typeRegistry.put("object", ObjectValue.class);
 
         classRegistry.put(Byte.class, "byte");
         classRegistry.put(Character.class, "character");
@@ -97,10 +98,11 @@ public class ProcessVariablesMapTypeRegistry {
         classRegistry.put(List.class, "list");
         classRegistry.put(Set.class, "set");
         classRegistry.put(LocalDateTime.class, "localdatetime");
+        classRegistry.put(ObjectValue.class, "object");
     }
 
     public static Class<?> forType(String type) {
-        return forType(type, Map.class);
+        return forType(type, ObjectValue.class);
     }
 
     public static Class<?> forType(String type, Class<?> defaultType) {
@@ -108,7 +110,7 @@ public class ProcessVariablesMapTypeRegistry {
     }
 
     public static String forClass(Class<?> clazz) {
-        return classRegistry.getOrDefault(clazz, "map");
+        return classRegistry.getOrDefault(clazz, "object");
     }
 
     public static boolean isScalarType(Class<?> clazz) {
@@ -120,6 +122,16 @@ public class ProcessVariablesMapTypeRegistry {
         return Stream.of(containerTypes)
                      .filter(type -> type.isInstance(value))
                      .findFirst();
+    }
+
+    public static boolean canConvert(Object value) {
+        Class<?> clazz = value.getClass();
+
+        return scalarTypes.contains(clazz) || getContainerType(clazz, value).isPresent();
+    }
+
+    public static boolean containsType(String type) {
+        return typeRegistry.containsKey(type);
     }
 
 }

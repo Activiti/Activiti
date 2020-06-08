@@ -27,14 +27,12 @@ import org.springframework.core.convert.ConversionService;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 
 public class ProcessVariablesMapSerializer extends StdSerializer<ProcessVariablesMap<String, Object>> {
 
     private static final long serialVersionUID = 1L;
-    private static final ObjectMapper objectMapper = new ObjectMapper();
     private final ConversionService conversionService;
 
     public ProcessVariablesMapSerializer(ConversionService conversionService) {
@@ -61,17 +59,20 @@ public class ProcessVariablesMapSerializer extends StdSerializer<ProcessVariable
     private ProcessVariableValue buildProcessVariableValue(Object value)
         throws JsonProcessingException {
         ProcessVariableValue variableValue = null;
+
         if (value != null) {
             Class<?> entryValueClass = value.getClass();
-
-            if (!conversionService.canConvert(entryValueClass, String.class)) {
-                value = objectMapper.writeValueAsString(value);
-            }
             String entryType = resolveEntryType(entryValueClass, value);
+
+            if("object".equals(entryType)) {
+                value = new ObjectValue(value);
+            }
+
             String entryValue = conversionService.convert(value, String.class);
 
             variableValue = new ProcessVariableValue(entryType, entryValue);
         }
+
         return variableValue;
     }
 
@@ -83,8 +84,7 @@ public class ProcessVariablesMapSerializer extends StdSerializer<ProcessVariable
         }
         else {
             entryType = getContainerType(clazz, value)
-                            .orElse(Map.class);
-
+                            .orElse(ObjectValue.class);
         }
 
         return forClass(entryType);

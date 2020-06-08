@@ -63,6 +63,7 @@ import org.activiti.api.runtime.model.impl.LocalDateTimeToStringConverter;
 import org.activiti.api.runtime.model.impl.LocalDateToStringConverter;
 import org.activiti.api.runtime.model.impl.MapToStringConverter;
 import org.activiti.api.runtime.model.impl.MessageSubscriptionImpl;
+import org.activiti.api.runtime.model.impl.ObjectValueToStringConverter;
 import org.activiti.api.runtime.model.impl.ProcessDefinitionImpl;
 import org.activiti.api.runtime.model.impl.ProcessInstanceImpl;
 import org.activiti.api.runtime.model.impl.ProcessVariableTypeConverter;
@@ -78,6 +79,7 @@ import org.activiti.api.runtime.model.impl.StringToListConverter;
 import org.activiti.api.runtime.model.impl.StringToLocalDateConverter;
 import org.activiti.api.runtime.model.impl.StringToLocalDateTimeConverter;
 import org.activiti.api.runtime.model.impl.StringToMapConverter;
+import org.activiti.api.runtime.model.impl.StringToObjectValueConverter;
 import org.activiti.api.runtime.model.impl.StringToSetConverter;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -280,4 +282,15 @@ public class ProcessModelAutoConfiguration {
     public SetToStringConverter setToStringConverter(@Lazy ObjectMapper objectMapper) {
         return new SetToStringConverter(objectMapper);
     }
+
+    @Bean
+    public StringToObjectValueConverter stringToObjectConverter(@Lazy ObjectMapper objectMapper) {
+        return new StringToObjectValueConverter(objectMapper);
+    }
+
+    @Bean
+    public ObjectValueToStringConverter objectToStringConverter(@Lazy ObjectMapper objectMapper) {
+        return new ObjectValueToStringConverter(objectMapper);
+    }
+
 }
