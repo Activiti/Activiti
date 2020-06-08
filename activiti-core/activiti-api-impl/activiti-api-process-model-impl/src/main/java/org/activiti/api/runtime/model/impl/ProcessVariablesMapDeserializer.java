@@ -24,6 +24,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class ProcessVariablesMapDeserializer extends JsonDeserializer<ProcessVariablesMap<String, Object>> {
 
@@ -45,18 +46,32 @@ public class ProcessVariablesMapDeserializer extends JsonDeserializer<ProcessVar
             JsonNode entryValue = entry.getValue();
 
             if(!entryValue.isNull()) {
-                String type = entryValue.get("type").textValue();
-                String value = entryValue.get("value").asText();
+                if (entryValue.get("type") != null && entryValue.get("value") != null) {
+                    String type = entryValue.get("type").textValue();
+                    String value = entryValue.get("value").asText();
 
-                Class<?> clazz = ProcessVariablesMapTypeRegistry.forType(type);
-                Object result = conversionService.convert(value, clazz);
+                    Class<?> clazz = ProcessVariablesMapTypeRegistry.forType(type);
+                    Object result = conversionService.convert(value, clazz);
 
-                if(ObjectValue.class.isInstance(result)) {
-                    result = ObjectValue.class.cast(result)
-                                              .getObject();
+                    if(ObjectValue.class.isInstance(result)) {
+                        result = ObjectValue.class.cast(result)
+                                                  .getObject();
+                    }
+
+                    map.put(name, result);
                 }
-
-                map.put(name, result);
+                else {
+                    // TODO implement fallback
+                    Object value = null;
+                    try {
+                        value = new ObjectMapper().treeToValue(entryValue,
+                                                               Object.class);
+                    } catch (JsonProcessingException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
+                    map.put(name, value);
+                }
 
             } else {
                 map.put(name, null);
