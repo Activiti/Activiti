@@ -18,7 +18,7 @@ package org.activiti.spring.boot;
 
 import org.activiti.engine.ProcessEngine;
 import org.activiti.spring.boot.actuate.endpoint.ProcessEngineEndpoint;
-import org.springframework.boot.actuate.autoconfigure.endpoint.condition.ConditionalOnEnabledEndpoint;
+import org.springframework.boot.actuate.autoconfigure.endpoint.condition.ConditionalOnAvailableEndpoint;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -31,8 +31,9 @@ import org.springframework.context.annotation.Configuration;
 public class EndpointAutoConfiguration {
 
     @Bean
-    @ConditionalOnEnabledEndpoint
+    @ConditionalOnAvailableEndpoint
     public ProcessEngineEndpoint processEngineEndpoint(ProcessEngine engine) {
         return new ProcessEngineEndpoint(engine);
     }
+
 }
