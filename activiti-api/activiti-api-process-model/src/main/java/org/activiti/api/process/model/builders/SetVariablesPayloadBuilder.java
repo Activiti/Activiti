@@ -26,6 +26,17 @@ public class SetVariablesPayloadBuilder {
     private String processInstanceId;
     private Map<String, Object> variables = new HashMap<>();
 
+    public SetVariablesPayloadBuilder() {
+    }
+
+    public SetVariablesPayloadBuilder(String processInstanceId) {
+        this.processInstanceId = processInstanceId;
+    }
+
+    public SetVariablesPayloadBuilder(ProcessInstance processInstance) {
+        this.processInstanceId = processInstance.getId();
+    }
+
     public SetVariablesPayloadBuilder withProcessInstanceId(String processInstanceId) {
         this.processInstanceId = processInstanceId;
         return this;
