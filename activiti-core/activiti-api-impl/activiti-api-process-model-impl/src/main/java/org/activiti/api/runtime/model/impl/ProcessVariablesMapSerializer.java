@@ -15,6 +15,7 @@
  */
 package org.activiti.api.runtime.model.impl;
 
+import static org.activiti.api.runtime.model.impl.ProcessVariablesMapTypeRegistry.OBJECT_TYPE_KEY;
 import static org.activiti.api.runtime.model.impl.ProcessVariablesMapTypeRegistry.forClass;
 import static org.activiti.api.runtime.model.impl.ProcessVariablesMapTypeRegistry.getContainerType;
 import static org.activiti.api.runtime.model.impl.ProcessVariablesMapTypeRegistry.isScalarType;
@@ -26,13 +27,11 @@ import java.util.Map;
 import org.springframework.core.convert.ConversionService;
 
 import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 
 public class ProcessVariablesMapSerializer extends StdSerializer<ProcessVariablesMap<String, Object>> {
 
-    private static final String OBJECT = "object";
     private static final long serialVersionUID = 1L;
     private final ConversionService conversionService;
 
@@ -57,15 +56,14 @@ public class ProcessVariablesMapSerializer extends StdSerializer<ProcessVariable
         gen.writeObject(map);
     }
 
-    private ProcessVariableValue buildProcessVariableValue(Object value)
-        throws JsonProcessingException {
+    private ProcessVariableValue buildProcessVariableValue(Object value) {
         ProcessVariableValue variableValue = null;
 
         if (value != null) {
             Class<?> entryValueClass = value.getClass();
             String entryType = resolveEntryType(entryValueClass, value);
 
-            if(OBJECT.equals(entryType)) {
+            if (OBJECT_TYPE_KEY.equals(entryType)) {
                 value = new ObjectValue(value);
             }
 
@@ -82,8 +80,7 @@ public class ProcessVariablesMapSerializer extends StdSerializer<ProcessVariable
 
         if (isScalarType(clazz)) {
             entryType = clazz;
-        }
-        else {
+        } else {
             entryType = getContainerType(clazz, value)
                             .orElse(ObjectValue.class);
         }
