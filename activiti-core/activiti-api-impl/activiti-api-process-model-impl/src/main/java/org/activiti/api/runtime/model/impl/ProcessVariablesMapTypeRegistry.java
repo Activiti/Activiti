@@ -32,6 +32,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 public class ProcessVariablesMapTypeRegistry {
 
+    private static final String OBJECT = "object";
     private static Map<String, Class<?>> typeRegistry = new HashMap<>();
     private static Map<Class<?>, String> classRegistry = new HashMap<>();
     private static List<Class<?>> scalarTypes = Arrays.asList(int.class,
@@ -79,7 +80,7 @@ public class ProcessVariablesMapTypeRegistry {
         typeRegistry.put("map", Map.class);
         typeRegistry.put("set", Set.class);
         typeRegistry.put("list", List.class);
-        typeRegistry.put("object", ObjectValue.class);
+        typeRegistry.put(OBJECT, ObjectValue.class);
 
         classRegistry.put(Byte.class, "byte");
         classRegistry.put(Character.class, "character");
@@ -98,7 +99,7 @@ public class ProcessVariablesMapTypeRegistry {
         classRegistry.put(List.class, "list");
         classRegistry.put(Set.class, "set");
         classRegistry.put(LocalDateTime.class, "localdatetime");
-        classRegistry.put(ObjectValue.class, "object");
+        classRegistry.put(ObjectValue.class, OBJECT);
     }
 
     public static Class<?> forType(String type) {
@@ -110,7 +111,7 @@ public class ProcessVariablesMapTypeRegistry {
     }
 
     public static String forClass(Class<?> clazz) {
-        return classRegistry.getOrDefault(clazz, "object");
+        return classRegistry.getOrDefault(clazz, OBJECT);
     }
 
     public static boolean isScalarType(Class<?> clazz) {

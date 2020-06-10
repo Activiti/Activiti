@@ -32,6 +32,7 @@ import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 
 public class ProcessVariablesMapSerializer extends StdSerializer<ProcessVariablesMap<String, Object>> {
 
+    private static final String OBJECT = "object";
     private static final long serialVersionUID = 1L;
     private final ConversionService conversionService;
 
@@ -64,7 +65,7 @@ public class ProcessVariablesMapSerializer extends StdSerializer<ProcessVariable
             Class<?> entryValueClass = value.getClass();
             String entryType = resolveEntryType(entryValueClass, value);
 
-            if("object".equals(entryType)) {
+            if(OBJECT.equals(entryType)) {
                 value = new ObjectValue(value);
             }
 

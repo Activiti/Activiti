@@ -17,6 +17,8 @@ package org.activiti.api.runtime.model.impl;
 
 import java.io.IOException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.convert.ConversionService;
 
 import com.fasterxml.jackson.core.JsonParser;
@@ -27,7 +29,11 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class ProcessVariablesMapDeserializer extends JsonDeserializer<ProcessVariablesMap<String, Object>> {
+    private static final Logger logger = LoggerFactory.getLogger(ProcessVariablesMapDeserializer.class);
 
+    private static final String VALUE = "value";
+    private static final String TYPE = "type";
+    private final static ObjectMapper objectMapper = new ObjectMapper();
     private final ConversionService conversionService;
 
     public ProcessVariablesMapDeserializer(ConversionService conversionService) {
@@ -46,9 +52,9 @@ public class ProcessVariablesMapDeserializer extends JsonDeserializer<ProcessVar
             JsonNode entryValue = entry.getValue();
 
             if(!entryValue.isNull()) {
-                if (entryValue.get("type") != null && entryValue.get("value") != null) {
-                    String type = entryValue.get("type").textValue();
-                    String value = entryValue.get("value").asText();
+                if (entryValue.get(TYPE) != null && entryValue.get(VALUE) != null) {
+                    String type = entryValue.get(TYPE).textValue();
+                    String value = entryValue.get(VALUE).asText();
 
                     Class<?> clazz = ProcessVariablesMapTypeRegistry.forType(type);
                     Object result = conversionService.convert(value, clazz);
@@ -63,10 +69,10 @@ public class ProcessVariablesMapDeserializer extends JsonDeserializer<ProcessVar
                 else {
                     Object value = null;
                     try {
-                        value = new ObjectMapper().treeToValue(entryValue,
-                                                               Object.class);
+                        value = objectMapper.treeToValue(entryValue,
+                                                         Object.class);
                     } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                        logger.error("Unexpected Json Processing Exception: ", e);
                     }
                     map.put(name, value);
                 }

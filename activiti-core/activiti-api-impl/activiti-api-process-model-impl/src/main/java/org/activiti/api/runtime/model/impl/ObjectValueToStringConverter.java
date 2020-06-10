@@ -23,23 +23,26 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 @ProcessVariableTypeConverter
 public class ObjectValueToStringConverter implements Converter<ObjectValue, String> {
+    private static final String CLASS = "@class";
+    private static final String OBJECT = "object";
     private final ObjectMapper objectMapper;
 
     public ObjectValueToStringConverter(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public String convert(ObjectValue source) {
 
         try {
             Map<String, Object> value = objectMapper.convertValue(source, Map.class);
 
-            if (Map.class.isInstance(value.get("object"))) {
+            if (Map.class.isInstance(value.get(OBJECT))) {
                 Map<String, Object> object = objectMapper.convertValue(source.getObject(), Map.class);
 
-                if (object.containsKey("@class")) {
-                    Map.class.cast(value.get("object")).put("@class", object.get("@class"));
+                if (object.containsKey(CLASS)) {
+                    Map.class.cast(value.get(OBJECT)).put(CLASS, object.get(CLASS));
                 }
             }
 
