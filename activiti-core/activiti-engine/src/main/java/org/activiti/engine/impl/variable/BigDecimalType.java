@@ -18,38 +18,35 @@ package org.activiti.engine.impl.variable;
 
 import java.math.BigDecimal;
 
-/**
-
- */
 public class BigDecimalType implements VariableType {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  @Override
-  public String getTypeName() {
-    return "bigdecimal";
-  }
-
-  @Override
-  public boolean isCachable() {
-    return true;
-  }
-
-  @Override
-  public Object getValue(ValueFields valueFields) {
-    return new BigDecimal(valueFields.getTextValue());
-  }
-
-  @Override
-  public void setValue(Object value, ValueFields valueFields) {
-    valueFields.setTextValue(value.toString());
-  }
-
-  @Override
-  public boolean isAbleToStore(Object value) {
-    if (value == null) {
-      return true;
+    @Override
+    public String getTypeName() {
+        return "bigdecimal";
     }
-    return BigDecimal.class.isAssignableFrom(value.getClass());
-  }
+
+    @Override
+    public boolean isCachable() {
+        return true;
+    }
+
+    @Override
+    public Object getValue(ValueFields valueFields) {
+        return new BigDecimal(valueFields.getTextValue());
+    }
+
+    @Override
+    public void setValue(Object value, ValueFields valueFields) {
+        valueFields.setTextValue(value.toString());
+    }
+
+    @Override
+    public boolean isAbleToStore(Object value) {
+        if (value == null) {
+            return true;
+        }
+        return BigDecimal.class.isAssignableFrom(value.getClass());
+    }
 }
