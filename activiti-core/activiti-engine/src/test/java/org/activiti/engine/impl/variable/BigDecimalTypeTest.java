@@ -20,6 +20,7 @@ package org.activiti.engine.impl.variable;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.math.BigDecimal;
+
 import org.activiti.engine.impl.persistence.entity.VariableInstanceEntityImpl;
 import org.junit.Test;
 
@@ -76,4 +77,31 @@ public class BigDecimalTypeTest {
     public void isAbleToStore_should_returnFalse_when_itsNotBigDecimal() {
         assertThat(bigDecimalType.isAbleToStore("Anything that's not bigDecimal")).isFalse();
     }
+
+    @Test
+    public void getValue_should_convertNullValue() {
+        //given
+        ValueFields valueFields = new VariableInstanceEntityImpl();
+        valueFields.setTextValue(null);
+
+        //when
+        Object convertedValue = bigDecimalType.getValue(valueFields);
+
+        //then
+        assertThat(convertedValue).isNull();
+    }
+
+    @Test
+    public void setValue_should_setNullValue() {
+        //given
+        ValueFields valueFields = new VariableInstanceEntityImpl();
+        valueFields.setTextValue("someValue");
+
+        //when
+        bigDecimalType.setValue(null, valueFields);
+
+        //then
+        assertThat(valueFields.getTextValue()).isNull();
+    }
+
 }

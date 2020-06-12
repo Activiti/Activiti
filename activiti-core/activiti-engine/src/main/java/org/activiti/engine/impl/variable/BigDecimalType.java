@@ -17,6 +17,7 @@
 package org.activiti.engine.impl.variable;
 
 import java.math.BigDecimal;
+import java.util.Optional;
 
 public class BigDecimalType implements VariableType {
 
@@ -32,19 +33,26 @@ public class BigDecimalType implements VariableType {
 
     @Override
     public Object getValue(ValueFields valueFields) {
-        return new BigDecimal(valueFields.getTextValue());
+        return Optional.ofNullable(valueFields)
+                       .map(ValueFields::getTextValue)
+                       .map(BigDecimal::new)
+                       .orElse(null);
     }
 
     @Override
     public void setValue(Object value, ValueFields valueFields) {
-        valueFields.setTextValue(value.toString());
+        String textValue = Optional.ofNullable(value)
+                                   .map(Object::toString)
+                                   .orElse(null);
+
+        valueFields.setTextValue(textValue);
     }
 
     @Override
     public boolean isAbleToStore(Object value) {
-        if (value == null) {
-            return true;
-        }
-        return BigDecimal.class.isAssignableFrom(value.getClass());
+        return Optional.ofNullable(value)
+                       .map(Object::getClass)
+                       .map(BigDecimal.class::isAssignableFrom)
+                       .orElse(true);
     }
 }
