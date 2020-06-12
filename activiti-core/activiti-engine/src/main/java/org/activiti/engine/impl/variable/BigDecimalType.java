@@ -20,8 +20,6 @@ import java.math.BigDecimal;
 
 public class BigDecimalType implements VariableType {
 
-    private static final long serialVersionUID = 1L;
-
     @Override
     public String getTypeName() {
         return "bigdecimal";
