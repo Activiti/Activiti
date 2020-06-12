@@ -772,10 +772,13 @@ public class ProcessRuntimeIT {
 
         //then
         assertThat(variables)
-            .extracting(VariableInstance::getName, VariableInstance::getValue)
+            .extracting(
+                VariableInstance::getName,
+                VariableInstance::getValue,
+                VariableInstance::getType)
             .contains(
-                tuple("bigDecimalVar", bigDecimalValue),
-                tuple("doubleVar", doubleValue)
+                tuple("bigDecimalVar", bigDecimalValue, "bigdecimal"),
+                tuple("doubleVar", doubleValue, "double")
                 );
     }
 }
