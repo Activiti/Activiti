@@ -16,9 +16,6 @@
 
 package org.activiti.engine.impl.cfg;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -42,9 +39,11 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
 import javax.xml.namespace.QName;
+
 import org.activiti.api.runtime.shared.identity.UserGroupManager;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.DynamicBpmnService;
@@ -285,6 +284,7 @@ import org.activiti.engine.impl.util.DefaultClockImpl;
 import org.activiti.engine.impl.util.IoUtil;
 import org.activiti.engine.impl.util.ProcessInstanceHelper;
 import org.activiti.engine.impl.util.ReflectUtil;
+import org.activiti.engine.impl.variable.BigDecimalType;
 import org.activiti.engine.impl.variable.BooleanType;
 import org.activiti.engine.impl.variable.ByteArrayType;
 import org.activiti.engine.impl.variable.CustomObjectType;
@@ -329,6 +329,10 @@ import org.apache.ibatis.transaction.managed.ManagedTransactionFactory;
 import org.apache.ibatis.type.JdbcType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfiguration {
@@ -1943,6 +1947,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       variableTypes.addType(new JodaDateTimeType());
       variableTypes.addType(new DoubleType());
       variableTypes.addType(new UUIDType());
+      variableTypes.addType(new BigDecimalType());
 
         objectMapper.configOverride(BigDecimal.class)
             .setFormat(JsonFormat.Value.forShape(JsonFormat.Shape.STRING));
@@ -2185,7 +2190,8 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     return this;
   }
 
-  public RepositoryService getRepositoryService() {
+  @Override
+public RepositoryService getRepositoryService() {
     return repositoryService;
   }
 
@@ -2194,7 +2200,8 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     return this;
   }
 
-  public RuntimeService getRuntimeService() {
+  @Override
+public RuntimeService getRuntimeService() {
     return runtimeService;
   }
 
@@ -2203,7 +2210,8 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     return this;
   }
 
-  public HistoryService getHistoryService() {
+  @Override
+public HistoryService getHistoryService() {
     return historyService;
   }
 
@@ -2212,7 +2220,8 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     return this;
   }
 
-  public TaskService getTaskService() {
+  @Override
+public TaskService getTaskService() {
     return taskService;
   }
 
@@ -2221,7 +2230,8 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     return this;
   }
 
-  public ManagementService getManagementService() {
+  @Override
+public ManagementService getManagementService() {
     return managementService;
   }
 
@@ -2248,6 +2258,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
         return userGroupManager;
     }
 
+    @Override
     public IntegrationContextManager getIntegrationContextManager() {
         if (integrationContextManager == null) {
             integrationContextManager = new IntegrationContextManagerImpl(this,
@@ -2271,7 +2282,8 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
         return integrationContextService;
     }
 
-  public ProcessEngineConfigurationImpl getProcessEngineConfiguration() {
+  @Override
+public ProcessEngineConfigurationImpl getProcessEngineConfiguration() {
     return this;
   }
 
@@ -3463,7 +3475,8 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     return this;
   }
 
-  public ProcessEngineConfigurationImpl setClock(Clock clock) {
+  @Override
+public ProcessEngineConfigurationImpl setClock(Clock clock) {
     if (this.clock == null) {
       this.clock = clock;
     } else {
