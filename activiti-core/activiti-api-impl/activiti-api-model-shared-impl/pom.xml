@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.activiti</groupId>
     <artifactId>activiti-api-impl</artifactId>
-    <version>7.1.0-SNAPSHOT</version>
+    <version>7.1.255</version>
   </parent>
   <artifactId>activiti-api-model-shared-impl</artifactId>
   <name>Activiti :: API :: Common Model Implementation</name>
