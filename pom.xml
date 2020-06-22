@@ -196,7 +196,7 @@
     <maven.compiler.target>${java.version}</maven.compiler.target>
 
     <!-- versions -->
-    <asm.version>7.0</asm.version>
+    <asm.version>8.0.1</asm.version>
     <build-helper-maven-plugin.version>3.1.0</build-helper-maven-plugin.version>
     <dependency-check-maven.version>5.3.2</dependency-check-maven.version>
     <exec-maven-plugin.version>3.0.0</exec-maven-plugin.version>
