@@ -12,6 +12,9 @@
     <bpmn2:userTask id="simpleTask" activiti:formKey="c2890ecc-1b59-448b-8d8b-57498d978079" activiti:assignee="user" name="testSimpleTask">
       <bpmn2:incoming>SequenceFlow_0j0jsvc</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_1sdpteq</bpmn2:outgoing>
+      <bpmn2:multiInstanceLoopCharacteristics isSequential="false">
+        <bpmn2:loopCardinality>${2}</bpmn2:loopCardinality>
+      </bpmn2:multiInstanceLoopCharacteristics>
     </bpmn2:userTask>
     <bpmn2:sequenceFlow id="SequenceFlow_0j0jsvc" sourceRef="StartEvent_1" targetRef="simpleTask" />
     <bpmn2:userTask id="UserTask_0etiqwx">
