@@ -70,7 +70,7 @@ public class TaskRuntimeVariableMappingIT {
     }
 
     @Test
-    public void processTaskVarMapping() {
+    public void should_PassTaskOutputVariables_when_UsingVariableMapping() {
         ProcessInstance processInstance = processBaseRuntime.startProcessWithProcessDefinitionKey(TASK_VAR_MAPPING);
 
         Date date = dateFormatterProvider.parse("2019-09-01");
@@ -151,7 +151,7 @@ public class TaskRuntimeVariableMappingIT {
     }
 
     @Test
-    public void processTaskVarMappingForMultiInstance() {
+    public void should_PassLatestTaskOutputVariables_when_UsingMappingForMultiInstance() {
         ProcessInstance processInstance = processBaseRuntime.startProcessWithProcessDefinitionKey(TASK_VAR_MAPPING_MULTI_INSTANCE);
 
         Date date = dateFormatterProvider.parse("2019-09-01");
@@ -256,7 +256,7 @@ public class TaskRuntimeVariableMappingIT {
     }
 
     @Test
-    public void allVariablesShouldBePassedWhenThereIsNoMapping() {
+    public void should_PassAllVariables_When_ThereIsNoMapping() {
         ProcessInstance processInstance = processBaseRuntime.startProcessWithProcessDefinitionKey(TASK_VAR_NO_MAPPING);
 
         Task task = checkTasks(processInstance.getId());
@@ -326,7 +326,7 @@ public class TaskRuntimeVariableMappingIT {
     }
 
     @Test
-    public void taskShouldHaveNoVariablesWhenMappingIsEmpty() {
+    public void should_NotHaveTaskVariables_when_MappingIsEmpty() {
         ProcessInstance processInstance = processBaseRuntime.startProcessWithProcessDefinitionKey(TASK_EMPTY_VAR_MAPPING);
 
         List<Task> tasks = taskBaseRuntime.getTasksByProcessInstanceId(processInstance.getId());
