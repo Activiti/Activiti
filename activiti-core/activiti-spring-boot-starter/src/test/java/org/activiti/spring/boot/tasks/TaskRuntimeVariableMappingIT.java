@@ -42,6 +42,8 @@ public class TaskRuntimeVariableMappingIT {
 
     private static final String TASK_VAR_MAPPING = "taskVarMapping";
 
+    private static final String TASK_VAR_MAPPING_MULTI_INSTANCE = "taskVarMappingMultiInstance";
+
     private static final String TASK_VAR_NO_MAPPING = "taskVariableNoMapping";
 
     private static final String TASK_EMPTY_VAR_MAPPING = "taskVariableEmptyMapping";
@@ -74,12 +76,9 @@ public class TaskRuntimeVariableMappingIT {
         Date date = dateFormatterProvider.parse("2019-09-01");
         Date datetime = dateFormatterProvider.parse("2019-09-01T10:20:30.000Z");
 
-//        Task task = checkTasks(processInstance.getId());
+        Task task = checkTasks(processInstance.getId());
 
-        List<Task> tasks = taskBaseRuntime.getTasksByProcessInstanceId(processInstance.getId());
-        assertThat(tasks).hasSize(2);
-
-//        assertThat(task.getName()).isEqualTo("testSimpleTask");
+        assertThat(task.getName()).isEqualTo("testSimpleTask");
 
         List<VariableInstance> procVariables = processBaseRuntime.getProcessVariablesByProcessId(processInstance.getId());
         assertThat(procVariables)
@@ -104,7 +103,7 @@ public class TaskRuntimeVariableMappingIT {
                                     datetime)
                               );
 
-        List<VariableInstance> taskVariables = taskBaseRuntime.getTasksVariablesByTaskId(tasks.get(0).getId());
+        List<VariableInstance> taskVariables = taskBaseRuntime.getTasksVariablesByTaskId(task.getId());
 
         assertThat(taskVariables)
                 .isNotNull()
@@ -122,36 +121,13 @@ public class TaskRuntimeVariableMappingIT {
                                     datetime)
                               );
 
-        List<VariableInstance> taskVariables2 = taskBaseRuntime.getTasksVariablesByTaskId(tasks.get(1).getId());
-
-        assertThat(taskVariables2)
-            .isNotNull()
-            .extracting(VariableInstance::getName,
-                VariableInstance::getType,
-                VariableInstance::getValue)
-            .containsOnly(tuple("task_input_variable_name_1",
-                "string",
-                "inputmap1Value"),
-                tuple("task-variable-date",
-                    "date",
-                    date),
-                tuple("task-variable-datetime",
-                    "date",
-                    datetime)
-            );
-
         Map<String, Object> variables = new HashMap<>();
         variables.put("task_input_variable_name_1",
                       "outputValue"); //This should not be set to 'process_variable_inputmap_1'
         variables.put("task_output_variable_name_1",
                       "outputTaskValue"); //This should be set to 'process_variable_outputmap_1'
 
-        taskBaseRuntime.completeTask(tasks.get(0).getId(), variables);
-
-        variables.put("task_output_variable_name_1",
-            "outputTaskValue2" );
-
-        taskBaseRuntime.completeTask(tasks.get(1).getId(), variables);
+        taskBaseRuntime.completeTask(task.getId(), variables);
 
         procVariables = processBaseRuntime.getProcessVariablesByProcessId(processInstance.getId());
         assertThat(procVariables)
@@ -172,6 +148,111 @@ public class TaskRuntimeVariableMappingIT {
 
                 );
         processBaseRuntime.delete(processInstance.getId());
+    }
+
+    @Test
+    public void processTaskVarMappingForMultiInstance() {
+        ProcessInstance processInstance = processBaseRuntime.startProcessWithProcessDefinitionKey(TASK_VAR_MAPPING_MULTI_INSTANCE);
+
+        Date date = dateFormatterProvider.parse("2019-09-01");
+        Date datetime = dateFormatterProvider.parse("2019-09-01T10:20:30.000Z");
+
+        List<Task> tasks = taskBaseRuntime.getTasksByProcessInstanceId(processInstance.getId());
+        assertThat(tasks).hasSize(2);
+
+        List<VariableInstance> procVariables = processBaseRuntime.getProcessVariablesByProcessId(processInstance.getId());
+        assertThat(procVariables)
+            .isNotNull()
+            .extracting(VariableInstance::getName,
+                VariableInstance::getType,
+                VariableInstance::getValue)
+            .containsOnly(
+                tuple("process_variable_unmapped_1",
+                    "string",
+                    "unmapped1Value"),
+                tuple("process_variable_inputmap_1",
+                    "string",
+                    "inputmap1Value"),
+                tuple("process_variable_outputmap_1",
+                    "string",
+                    "outputmap1Value"),
+                tuple("process-variable-date",
+                    "date",
+                    date),
+                tuple("process-variable-datetime",
+                    "date",
+                    datetime)
+            );
+
+        List<VariableInstance> taskVariables = taskBaseRuntime.getTasksVariablesByTaskId(tasks.get(0).getId());
+
+        assertThat(taskVariables)
+            .isNotNull()
+            .extracting(VariableInstance::getName,
+                VariableInstance::getType,
+                VariableInstance::getValue)
+            .containsOnly(
+                tuple("task_input_variable_name_1",
+                    "string",
+                    "inputmap1Value"),
+                tuple("task-variable-date",
+                    "date",
+                    date),
+                tuple("task-variable-datetime",
+                    "date",
+                    datetime)
+            );
+
+        List<VariableInstance> taskVariables2 = taskBaseRuntime.getTasksVariablesByTaskId(tasks.get(1).getId());
+
+        assertThat(taskVariables2)
+            .isNotNull()
+            .extracting(VariableInstance::getName,
+                VariableInstance::getType,
+                VariableInstance::getValue)
+            .containsOnly(
+                tuple("task_input_variable_name_1",
+                    "string",
+                    "inputmap1Value"),
+                tuple("task-variable-date",
+                    "date",
+                    date),
+                tuple("task-variable-datetime",
+                    "date",
+                    datetime)
+            );
+
+        Map<String, Object> variables = new HashMap<>();
+        variables.put("task_input_variable_name_1",
+            "outputValue");
+        variables.put("task_output_variable_name_1",
+            "outputTaskValue");
+
+        taskBaseRuntime.completeTask(tasks.get(0).getId(), variables);
+        variables.put("task_output_variable_name_1",
+            "outputTaskValue2" );
+        taskBaseRuntime.completeTask(tasks.get(1).getId(), variables);
+
+        procVariables = processBaseRuntime.getProcessVariablesByProcessId(processInstance.getId());
+        assertThat(procVariables)
+            .isNotNull()
+            .extracting(VariableInstance::getName,
+                VariableInstance::getValue)
+            .containsOnly(
+                tuple("process_variable_unmapped_1",
+                    "unmapped1Value"),
+                tuple("process_variable_inputmap_1",
+                    "inputmap1Value"),
+                tuple("process_variable_outputmap_1",
+                    "outputTaskValue2"),
+                tuple("process-variable-date",
+                    date),
+                tuple("process-variable-datetime",
+                    datetime)
+            );
+
+        processBaseRuntime.delete(processInstance.getId());
+
     }
 
     @Test
