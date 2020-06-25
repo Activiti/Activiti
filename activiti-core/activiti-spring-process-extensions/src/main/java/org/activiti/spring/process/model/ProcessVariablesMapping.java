@@ -17,13 +17,12 @@
 
 package org.activiti.spring.process.model;
 
-import java.util.HashMap;
 import java.util.Map;
 
 public class ProcessVariablesMapping {
 
-    private Map<String, Mapping> inputs = new HashMap<>();
-    private Map<String, Mapping> outputs = new HashMap<>();
+    private Map<String, Mapping> inputs;
+    private Map<String, Mapping> outputs;
 
     public Map<String, Mapping> getInputs() {
         return inputs;

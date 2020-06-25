@@ -46,6 +46,8 @@ public class TaskRuntimeVariableMappingIT {
 
     private static final String TASK_VAR_NO_MAPPING = "taskVariableNoMapping";
 
+    private static final String TASK_VAR_NO_MAPPING_TWO_TASKS = "taskVariableNoMappingTwoTasks";
+
     private static final String TASK_EMPTY_VAR_MAPPING = "taskVariableEmptyMapping";
 
     @Autowired
@@ -375,4 +377,109 @@ public class TaskRuntimeVariableMappingIT {
 
         processBaseRuntime.delete(processInstance.getId());
     }
+
+    @Test
+    void should_multipleMappingTypesWork_when_thereAreMultipleEntitiesWithDifferentMappings() {
+
+        ProcessInstance processInstance = processBaseRuntime.startProcessWithProcessDefinitionKey(TASK_VAR_NO_MAPPING_TWO_TASKS);
+
+        Task taskWithNoMapping = checkTasks(processInstance.getId());
+
+        assertThat(taskWithNoMapping.getName()).isEqualTo("taskWithNoMapping");
+
+        List<VariableInstance> procVariables = processBaseRuntime.getProcessVariablesByProcessId(processInstance.getId());
+
+        assertThat(procVariables)
+            .isNotNull()
+            .extracting(VariableInstance::getName,
+                VariableInstance::getValue)
+            .containsOnly(tuple("process_variable_unmapped_1",
+                "unmapped1Value"),
+                tuple("process_variable_inputmap_1",
+                    "inputmap1Value"),
+                tuple("process_variable_outputmap_1",
+                    "outputmap1Value"));
+
+        List<VariableInstance> taskWithNoMappingVariables = taskBaseRuntime.getTasksVariablesByTaskId(taskWithNoMapping.getId());
+
+        assertThat(taskWithNoMappingVariables)
+            .isNotNull()
+            .extracting(VariableInstance::getName,
+                VariableInstance::getValue)
+            .containsOnly(tuple("process_variable_unmapped_1",
+                "unmapped1Value"),
+                tuple("process_variable_inputmap_1",
+                    "inputmap1Value"),
+                tuple("process_variable_outputmap_1",
+                    "outputmap1Value"));
+
+        Map<String, Object> variablesForNoMappingTask = new HashMap<>();
+        variablesForNoMappingTask.put("task_input_variable_name_1",
+            "outputValue");
+        variablesForNoMappingTask.put("task_output_variable_name_1",
+            "outputTaskValue");
+
+        taskBaseRuntime.completeTask(taskWithNoMapping.getId(), variablesForNoMappingTask);
+
+        procVariables = processBaseRuntime.getProcessVariablesByProcessId(processInstance.getId());
+        assertThat(procVariables)
+            .isNotNull()
+            .extracting(VariableInstance::getName,
+                VariableInstance::getValue)
+            .containsExactlyInAnyOrder(
+                tuple("process_variable_unmapped_1",
+                    "unmapped1Value"),
+                tuple("process_variable_inputmap_1",
+                    "inputmap1Value"),
+                tuple("process_variable_outputmap_1",
+                    "outputmap1Value"),
+                tuple("task_input_variable_name_1",
+                    "outputValue"),
+                tuple("task_output_variable_name_1",
+                    "outputTaskValue")
+                //since there is no mapping, all the variables are passed
+            );
+
+        Task taskWithMapping = checkTasks(processInstance.getId());
+
+        assertThat(taskWithMapping.getName()).isEqualTo("taskWithMapping");
+
+        List<VariableInstance> taskWithMappingVariables = taskBaseRuntime.getTasksVariablesByTaskId(taskWithMapping.getId());
+
+        assertThat(taskWithMappingVariables)
+            .isNotNull()
+            .extracting(VariableInstance::getName,
+                VariableInstance::getValue)
+            .containsOnly(tuple("task_input_variable_name_1",
+                "inputmap1Value"));
+
+        Map<String, Object> variablesForMappingTask = new HashMap<>();
+
+        variablesForMappingTask.put("task_completion_output_variable_name",
+            "wololo");
+
+        taskBaseRuntime.completeTask(taskWithMapping.getId(), variablesForMappingTask);
+
+        procVariables = processBaseRuntime.getProcessVariablesByProcessId(processInstance.getId());
+        assertThat(procVariables)
+            .isNotNull()
+            .extracting(VariableInstance::getName,
+                VariableInstance::getValue)
+            .containsExactlyInAnyOrder(
+                tuple("process_variable_unmapped_1",
+                    "unmapped1Value"),
+                tuple("process_variable_inputmap_1",
+                    "inputmap1Value"),
+                tuple("process_variable_outputmap_1",
+                    "wololo"),
+                tuple("task_input_variable_name_1",
+                    "outputValue"),
+                tuple("task_output_variable_name_1",
+                    "outputTaskValue") //only the output variable from taskWithMapping changes
+            );
+
+        processBaseRuntime.delete(processInstance.getId());
+
+    }
+
 }

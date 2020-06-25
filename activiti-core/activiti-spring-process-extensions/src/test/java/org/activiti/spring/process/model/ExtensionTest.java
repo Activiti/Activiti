@@ -32,14 +32,14 @@ public class ExtensionTest {
     private ProcessVariablesMapping processVariablesMapping;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         initMocks(this);
         given(processVariablesMapping.getInputs()).willReturn(emptyMap());
         given(processVariablesMapping.getOutputs()).willReturn(emptyMap());
     }
 
     @Test
-    public void hasEmptyInputsMappingShouldReturnTrueWhenInputsMapIsEmpty() {
+    void should_hasEmptyInputsMappingReturnTrue_when_InputsMapIsEmpty() {
         Extension extension = new Extension();
 
         HashMap<String, ProcessVariablesMapping> mapping = new HashMap<>();
@@ -50,7 +50,7 @@ public class ExtensionTest {
     }
 
     @Test
-    public void hasEmptyOutputsMappingShouldReturnTrueWhenOutputsMapIsEmpty() {
+    void should_hasEmptyOutputsMappingReturnTrue_when_OutputsMapIsEmpty() {
         Extension extension = new Extension();
         HashMap<String, ProcessVariablesMapping> mapping = new HashMap<>();
         mapping.put("elementId", processVariablesMapping);
@@ -60,7 +60,7 @@ public class ExtensionTest {
     }
 
     @Test
-    public void hasMappingShouldReturnTrueWhenThereIsMapping() {
+    void should_hasMappingReturnTrue_when_ThereIsMapping() {
         Extension extension = new Extension();
 
         HashMap<String, ProcessVariablesMapping> mapping = new HashMap<>();
@@ -71,10 +71,41 @@ public class ExtensionTest {
     }
 
     @Test
-    public void hasMappingShouldReturnFalseWhenThereIsNoMapping() {
+    void should_hasMappingReturnFalse_when_ThereIsNoMapping() {
         Extension extension = new Extension();
 
         assertThat(extension.hasMapping("elementId")).isFalse();
+    }
+
+    @Test
+    void should_hasEmptyMappingReturnTrue_when_thereIsMappingWithNoInputsOrNoOutputs() {
+        given(processVariablesMapping.getInputs()).willReturn(null);
+        given(processVariablesMapping.getOutputs()).willReturn(null);
+
+        Extension extension = new Extension();
+        HashMap<String, ProcessVariablesMapping> mapping = new HashMap<>();
+        ProcessVariablesMapping processVariablesMapping = new ProcessVariablesMapping();
+
+        mapping.put("elementId", processVariablesMapping);
+        extension.setMappings(mapping);
+
+        assertThat(extension.hasEmptyMapping("elementId")).isTrue();
+    }
+
+    @Test
+    void should_hasEmptyMappingReturnFalse_when_thereIsMappingWithInputsOrOutputs() {
+        given(processVariablesMapping.getInputs()).willReturn(null);
+        given(processVariablesMapping.getOutputs()).willReturn(null);
+
+        Extension extension = new Extension();
+        HashMap<String, ProcessVariablesMapping> mapping = new HashMap<>();
+        ProcessVariablesMapping processVariablesMapping = new ProcessVariablesMapping();
+
+        processVariablesMapping.setInputs(new HashMap<>());
+        mapping.put("elementId", processVariablesMapping);
+        extension.setMappings(mapping);
+
+        assertThat(extension.hasEmptyMapping("elementId")).isFalse();
     }
 
 }
