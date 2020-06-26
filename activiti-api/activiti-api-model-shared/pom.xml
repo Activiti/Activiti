@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.activiti</groupId>
     <artifactId>activiti-api-dependencies</artifactId>
-    <version>7.1.255</version>
+    <version>7.1.0-M8</version>
     <relativePath>../activiti-api-dependencies</relativePath>
   </parent>
   <artifactId>activiti-api-model-shared</artifactId>
