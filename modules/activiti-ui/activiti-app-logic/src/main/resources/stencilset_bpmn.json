@@ -174,16 +174,6 @@
       "popular" : true
     } ]
   }, {
-    "name" : "duedatedefinitionpackage",
-    "properties" : [ {
-      "id" : "duedatedefinition",
-      "type" : "String",
-      "title" : "Due date",
-      "value" : "",
-      "description" : "Due date of the user task.",
-      "popular" : true
-    } ]
-  }, {
     "name" : "servicetaskclasspackage",
     "properties" : [ {
       "id" : "servicetaskclass",
