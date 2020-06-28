@@ -4,7 +4,7 @@
 
 	<property file="${user.home}/.activiti/build.properties" />
 
-	<property name="activiti.version" value="6.0.0" />
+	<property name="activiti.version" value="6.0.1-SNAPSHOT" />
 	<property name="target.distro.root" value="target/zip/activiti-${activiti.version}" />
 	<property name="activiti.website" value="../../activiti-website" />
 
