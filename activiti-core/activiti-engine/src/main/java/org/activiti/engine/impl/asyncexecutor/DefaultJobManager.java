@@ -423,7 +423,6 @@ public class DefaultJobManager implements JobManager {
 
   protected void hintAsyncExecutor(JobEntity job) {
     AsyncJobAddedNotification jobAddedNotification = new AsyncJobAddedNotification(job, getAsyncExecutor());
-    //getCommandContext().addCloseListener(jobAddedNotification);
     TransactionContext transactionContext = Context.getTransactionContext();
 
     transactionContext.addTransactionListener(TransactionState.COMMITTED, new TransactionListener() {
