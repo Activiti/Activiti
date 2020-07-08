@@ -37,6 +37,9 @@ import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.calendar.BusinessCalendar;
 import org.activiti.engine.impl.calendar.CycleBusinessCalendar;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
+import org.activiti.engine.impl.cfg.TransactionContext;
+import org.activiti.engine.impl.cfg.TransactionListener;
+import org.activiti.engine.impl.cfg.TransactionState;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.el.NoExecutionVariableScope;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -420,7 +423,14 @@ public class DefaultJobManager implements JobManager {
 
   protected void hintAsyncExecutor(JobEntity job) {
     AsyncJobAddedNotification jobAddedNotification = new AsyncJobAddedNotification(job, getAsyncExecutor());
-    getCommandContext().addCloseListener(jobAddedNotification);
+    TransactionContext transactionContext = Context.getTransactionContext();
+
+    transactionContext.addTransactionListener(TransactionState.COMMITTED, new TransactionListener() {
+        @Override
+        public void execute(CommandContext commandContext) {
+            jobAddedNotification.closed(commandContext);
+        }
+    });
   }
 
   protected JobEntity internalCreateAsyncJob(ExecutionEntity execution, boolean exclusive) {
