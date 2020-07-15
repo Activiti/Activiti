@@ -105,7 +105,7 @@ public class RestExceptionHandlerAdvice {
     return createInfoFromException(e, BAD_REQUEST_MESSAGE_KEY);
   }
 
-  @ResponseStatus(HttpStatus.REQUEST_ENTITY_TOO_LARGE) // 413
+  @ResponseStatus(HttpStatus.PAYLOAD_TOO_LARGE) // 413
   @ExceptionHandler(MaxUploadSizeExceededException.class)
   @ResponseBody
   public ErrorInfo handleMaxFileSizeExceeded(MaxUploadSizeExceededException musee) {
