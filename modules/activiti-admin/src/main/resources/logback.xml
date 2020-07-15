@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+  <appender name="CA" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>%d{hh:mm:ss,SSS} [%t] %-5p %c %x - %m%n</pattern>
+    </encoder>
+  </appender>
+  <logger name="org.apache" level="WARN"/>
+  <logger name="org.springframework" level="WARN"/>
+  <logger name="org.apache.ibatis.level" level="INFO"/>
+  <logger name="org.springframework.security" level="WARN"/>
+  <logger name="org.hibernate" level="WARN"/>
+  <logger name="org.hibernate.validator" level="WARN"/>
+  <logger name="org.springframework.web" level="WARN"/>
+  <logger name="com.ryantenney" level="WARN"/>
+  <logger name="javax.activation.level" level="INFO"/>
+  <logger name="org.hibernate.engine.internal" level="WARN"/>
+  <logger name="com.codahale.metrics" level="WARN"/>
+  <logger name="com.zaxxer" level="WARN"/>
+  <root level="INFO">
+    <appender-ref ref="CA"/>
+  </root>
+</configuration>
