@@ -20,6 +20,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.context.Context;
@@ -27,7 +28,6 @@ import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.query.NativeQuery;
-import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -123,7 +123,7 @@ public abstract class AbstractNativeQuery<T extends NativeQuery<?, ?>, U> implem
       parameterMap.put("resultType", "LIST_PAGE");
       parameterMap.put("firstResult", firstResult);
       parameterMap.put("maxResults", maxResults);
-      if (StringUtils.isNotBlank(ObjectUtils.toString(parameterMap.get("orderBy")))) {
+      if (StringUtils.isNotBlank(Objects.toString(parameterMap.get("orderBy"), ""))) {
         parameterMap.put("orderByColumns", "RES." + parameterMap.get("orderBy"));
       } else {
         parameterMap.put("orderByColumns", "RES.ID_ asc");
