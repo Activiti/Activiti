@@ -64,4 +64,8 @@ public abstract class FlowNodeActivityBehavior implements TriggerableActivityBeh
     return elementType;
   }
 
+  public void setVariablesCalculator(VariablesCalculator variablesCalculator) {
+      bpmnActivityBehavior.setVariablesCalculator(variablesCalculator);
+  }
+
 }

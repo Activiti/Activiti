@@ -16,9 +16,9 @@
 package org.activiti.runtime.api.impl;
 
 import static java.util.Arrays.asList;
+import static org.activiti.engine.impl.bpmn.behavior.MappingExecutionContext.buildMappingExecutionContext;
 import static org.activiti.engine.impl.util.CollectionUtil.map;
 import static org.activiti.engine.impl.util.CollectionUtil.singletonMap;
-import static org.activiti.runtime.api.impl.MappingExecutionContext.buildMappingExecutionContext;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.tuple;
@@ -41,10 +41,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.test.util.ReflectionTestUtils;
 
-public class VariablesMappingProviderTest {
+public class ExtensionsVariablesMappingProviderTest {
 
     @InjectMocks
-    private VariablesMappingProvider variablesMappingProvider;
+    private ExtensionsVariablesMappingProvider variablesMappingProvider;
 
     @Mock
     private ProcessExtensionService processExtensionService;

@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.activiti.runtime.api.conf;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -22,7 +23,7 @@ import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.runtime.api.connector.DefaultServiceTaskBehavior;
 import org.activiti.runtime.api.connector.IntegrationContextBuilder;
 import org.activiti.runtime.api.impl.ExpressionResolver;
-import org.activiti.runtime.api.impl.VariablesMappingProvider;
+import org.activiti.runtime.api.impl.ExtensionsVariablesMappingProvider;
 import org.activiti.spring.process.ProcessExtensionService;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.ApplicationContext;
@@ -46,7 +47,8 @@ public class ConnectorsAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public IntegrationContextBuilder integrationContextBuilder(VariablesMappingProvider variablesMappingProvider) {
+    public IntegrationContextBuilder integrationContextBuilder(
+        ExtensionsVariablesMappingProvider variablesMappingProvider) {
         return new IntegrationContextBuilder(variablesMappingProvider);
     }
 
@@ -54,7 +56,7 @@ public class ConnectorsAutoConfiguration {
     @ConditionalOnMissingBean(name = DefaultActivityBehaviorFactory.DEFAULT_SERVICE_TASK_BEAN_NAME)
     public DefaultServiceTaskBehavior defaultServiceTaskBehavior(ApplicationContext applicationContext,
                                                                  IntegrationContextBuilder integrationContextBuilder,
-                                                                 VariablesMappingProvider outboundVariablesProvider) {
+                                                                 ExtensionsVariablesMappingProvider outboundVariablesProvider) {
         return new DefaultServiceTaskBehavior(applicationContext,
                                               integrationContextBuilder,
                                               outboundVariablesProvider);
@@ -62,9 +64,9 @@ public class ConnectorsAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public VariablesMappingProvider variablesMappingProvider(ProcessExtensionService processExtensionService,
+    public ExtensionsVariablesMappingProvider variablesMappingProvider(ProcessExtensionService processExtensionService,
                                                              ExpressionResolver expressionResolver) {
-        return new VariablesMappingProvider(processExtensionService,
+        return new ExtensionsVariablesMappingProvider(processExtensionService,
                                             expressionResolver);
     }
 }

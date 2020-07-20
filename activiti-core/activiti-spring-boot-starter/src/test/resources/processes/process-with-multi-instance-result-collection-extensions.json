@@ -1,0 +1,16 @@
+{
+  "id":"process-with-multi-instance-result-collection-model",
+  "name":"process-with-multi-instance-result-collection",
+  "extensions": {
+    "process-with-multi-instance-result-collection": {
+      "mappings": {
+        "serviceTask": {
+          "inputs": {
+          },
+          "outputs": {
+          }
+        }
+      }
+    }
+  }
+}

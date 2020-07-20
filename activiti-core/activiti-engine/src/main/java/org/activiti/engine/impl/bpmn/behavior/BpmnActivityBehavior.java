@@ -14,12 +14,14 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.bpmn.behavior;
+
+import static org.activiti.engine.impl.bpmn.behavior.MappingExecutionContext.buildMappingExecutionContext;
 
 import java.io.Serializable;
 import java.util.List;
 
+import org.activiti.engine.ActivitiEngineAgenda;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
@@ -36,6 +38,8 @@ import org.activiti.engine.impl.persistence.entity.TimerJobEntity;
 public class BpmnActivityBehavior implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
+    private VariablesCalculator variablesCalculator = new NoneVariablesCalculator();
 
     /**
      * Performs the default outgoing BPMN 2.0 behavior, which is having parallel paths of executions for the outgoing sequence flow.
@@ -94,7 +98,24 @@ public class BpmnActivityBehavior implements Serializable {
     protected void performOutgoingBehavior(ExecutionEntity execution,
                                            boolean checkConditions,
                                            boolean throwExceptionIfExecutionStuck) {
-        Context.getAgenda().planTakeOutgoingSequenceFlowsOperation(execution,
+        propagateVariablesToParent(execution);
+        getAgenda().planTakeOutgoingSequenceFlowsOperation(execution,
                                                                    true);
+    }
+
+    protected ActivitiEngineAgenda getAgenda() {
+        return Context.getAgenda();
+    }
+
+    private void propagateVariablesToParent(ExecutionEntity execution) {
+        ExecutionEntity parentExecution = execution.getParent();
+        if (parentExecution != null) {
+            parentExecution.setVariablesLocal(variablesCalculator
+                .calculateOutPutVariables(buildMappingExecutionContext(execution), execution.getVariablesLocal()));
+        }
+    }
+
+    public void setVariablesCalculator(VariablesCalculator variablesCalculator) {
+        this.variablesCalculator = variablesCalculator;
     }
 }
