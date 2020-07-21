@@ -198,8 +198,8 @@
     <!-- versions -->
     <asm.version>7.0</asm.version>
     <build-helper-maven-plugin.version>3.1.0</build-helper-maven-plugin.version>
-    <dependency-check-maven.version>5.3.0</dependency-check-maven.version>
-    <exec-maven-plugin.version>1.6.0</exec-maven-plugin.version>
+    <dependency-check-maven.version>5.3.2</dependency-check-maven.version>
+    <exec-maven-plugin.version>3.0.0</exec-maven-plugin.version>
     <extra-enforcer-rules.version>1.2</extra-enforcer-rules.version>
     <jacoco-maven-plugin.version>0.8.5</jacoco-maven-plugin.version>
     <license-maven-plugin.version>3.0</license-maven-plugin.version>
@@ -215,13 +215,13 @@
     <maven-javadoc-plugin.version>3.2.0</maven-javadoc-plugin.version>
     <maven-jxr-plugin.version>3.0.0</maven-jxr-plugin.version>
     <maven-pmd-plugin.version>3.13.0</maven-pmd-plugin.version>
-    <maven-project-info-reports-plugin.version>3.0.0</maven-project-info-reports-plugin.version>
+    <maven-project-info-reports-plugin.version>3.1.0</maven-project-info-reports-plugin.version>
     <maven-release-plugin.version>2.5.3</maven-release-plugin.version>
     <maven-resources-plugin.version>3.1.0</maven-resources-plugin.version>
-    <maven-site-plugin.version>3.8.2</maven-site-plugin.version>
+    <maven-site-plugin.version>3.9.0</maven-site-plugin.version>
     <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
     <maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version>
-    <spring-boot.version>2.3.0.RELEASE</spring-boot.version>
+    <spring-boot.version>2.2.8.RELEASE</spring-boot.version>
     <versions-maven-plugin.version>2.7</versions-maven-plugin.version>
 
     <!-- configuration properties for tests -->

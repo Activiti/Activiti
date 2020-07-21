@@ -15,6 +15,7 @@
  */
 package org.activiti.api.runtime.model.impl;
 
+import static org.activiti.api.runtime.model.impl.ProcessVariablesMapTypeRegistry.OBJECT_TYPE_KEY;
 import static org.activiti.api.runtime.model.impl.ProcessVariablesMapTypeRegistry.forClass;
 import static org.activiti.api.runtime.model.impl.ProcessVariablesMapTypeRegistry.getContainerType;
 import static org.activiti.api.runtime.model.impl.ProcessVariablesMapTypeRegistry.isScalarType;
@@ -26,15 +27,12 @@ import java.util.Map;
 import org.springframework.core.convert.ConversionService;
 
 import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 
 public class ProcessVariablesMapSerializer extends StdSerializer<ProcessVariablesMap<String, Object>> {
 
     private static final long serialVersionUID = 1L;
-    private static final ObjectMapper objectMapper = new ObjectMapper();
     private final ConversionService conversionService;
 
     public ProcessVariablesMapSerializer(ConversionService conversionService) {
@@ -58,20 +56,22 @@ public class ProcessVariablesMapSerializer extends StdSerializer<ProcessVariable
         gen.writeObject(map);
     }
 
-    private ProcessVariableValue buildProcessVariableValue(Object value)
-        throws JsonProcessingException {
+    private ProcessVariableValue buildProcessVariableValue(Object value) {
         ProcessVariableValue variableValue = null;
+
         if (value != null) {
             Class<?> entryValueClass = value.getClass();
-
-            if (!conversionService.canConvert(entryValueClass, String.class)) {
-                value = objectMapper.writeValueAsString(value);
-            }
             String entryType = resolveEntryType(entryValueClass, value);
+
+            if (OBJECT_TYPE_KEY.equals(entryType)) {
+                value = new ObjectValue(value);
+            }
+
             String entryValue = conversionService.convert(value, String.class);
 
             variableValue = new ProcessVariableValue(entryType, entryValue);
         }
+
         return variableValue;
     }
 
@@ -80,11 +80,9 @@ public class ProcessVariablesMapSerializer extends StdSerializer<ProcessVariable
 
         if (isScalarType(clazz)) {
             entryType = clazz;
-        }
-        else {
+        } else {
             entryType = getContainerType(clazz, value)
-                            .orElse(Map.class);
-
+                            .orElse(ObjectValue.class);
         }
 
         return forClass(entryType);
