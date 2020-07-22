@@ -25,6 +25,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.activiti.api.model.shared.event.RuntimeEvent;
+import org.activiti.api.process.model.events.BPMNTimerCancelledEvent;
+import org.activiti.api.process.model.events.BPMNTimerFiredEvent;
+import org.activiti.api.process.model.events.BPMNTimerScheduledEvent;
 import org.activiti.api.process.model.events.ProcessRuntimeEvent;
 import org.activiti.api.task.model.events.TaskRuntimeEvent;
 
@@ -69,6 +72,18 @@ public class LocalEventSource implements EventSource {
 
     public List<RuntimeEvent<?, ?>> getProcessInstanceEvents() {
         return getEvents(ProcessRuntimeEvent.ProcessEvents.values());
+    }
+
+    public List<BPMNTimerFiredEvent> getTimerFiredEvents() {
+        return getEvents(BPMNTimerFiredEvent.class);
+    }
+
+    public List<BPMNTimerScheduledEvent> getTimerScheduledEvents() {
+        return getEvents(BPMNTimerScheduledEvent.class);
+    }
+
+    public List<BPMNTimerCancelledEvent> getTimerCancelledEvents() {
+        return getEvents(BPMNTimerCancelledEvent.class);
     }
 
 }
