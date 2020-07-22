@@ -17,19 +17,19 @@ package org.activiti.spring.boot;
 
 import org.activiti.engine.impl.event.EventSubscriptionPayloadMappingProvider;
 import org.activiti.runtime.api.impl.MappingAwareActivityBehaviorFactory;
-import org.activiti.runtime.api.impl.VariablesMappingProvider;
+import org.activiti.runtime.api.impl.ExtensionsVariablesMappingProvider;
 import org.activiti.spring.SpringProcessEngineConfiguration;
 import org.activiti.spring.process.ProcessVariablesInitiator;
 
 public class DefaultActivityBehaviorFactoryMappingConfigurer implements ProcessEngineConfigurationConfigurer {
 
-    private VariablesMappingProvider variablesMappingProvider;
+    private ExtensionsVariablesMappingProvider variablesMappingProvider;
 
     private ProcessVariablesInitiator processVariablesInitiator;
-    
+
     private final EventSubscriptionPayloadMappingProvider eventSubscriptionPayloadMappingProvider;
 
-    public DefaultActivityBehaviorFactoryMappingConfigurer(VariablesMappingProvider variablesMappingProvider,
+    public DefaultActivityBehaviorFactoryMappingConfigurer(ExtensionsVariablesMappingProvider variablesMappingProvider,
                                                            ProcessVariablesInitiator processVariablesInitiator,
                                                            EventSubscriptionPayloadMappingProvider eventSubscriptionPayloadMappingProvider){
         this.variablesMappingProvider = variablesMappingProvider;

@@ -13,19 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.activiti.runtime.api.impl;
 
 import java.util.Map;
 
+import org.activiti.engine.impl.bpmn.behavior.MappingExecutionContext;
+import org.activiti.engine.impl.bpmn.behavior.VariablesCalculator;
 import org.activiti.engine.impl.event.EventSubscriptionPayloadMappingProvider;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
 
 public class EventSubscriptionVariablesMappingProvider implements EventSubscriptionPayloadMappingProvider {
 
-    private final VariablesMappingProvider variablesMappingProvider;
+    private final VariablesCalculator variablesCalculator;
 
-    public EventSubscriptionVariablesMappingProvider(VariablesMappingProvider variablesMappingProvider) {
-        this.variablesMappingProvider = variablesMappingProvider;
+    public EventSubscriptionVariablesMappingProvider(
+        VariablesCalculator variablesCalculator) {
+        this.variablesCalculator = variablesCalculator;
     }
 
     @SuppressWarnings("unchecked")
@@ -35,7 +39,7 @@ public class EventSubscriptionVariablesMappingProvider implements EventSubscript
             MappingExecutionContext context = new MappingExecutionContext(eventSubscription.getProcessDefinitionId(),
                                                                           eventSubscription.getActivityId());
 
-            return (T) variablesMappingProvider.calculateOutPutVariables(context, (Map<String, Object>) payload);
+            return (T) variablesCalculator.calculateOutPutVariables(context, (Map<String, Object>) payload);
         } else {
             return EventSubscriptionPayloadMappingProvider.super.apply(payload, eventSubscription);
         }

@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.activiti.runtime.api.conf;
 
 import static java.util.Collections.emptyList;
@@ -114,7 +115,7 @@ import org.activiti.runtime.api.impl.ProcessVariablesPayloadValidator;
 import org.activiti.runtime.api.impl.RuntimeReceiveMessagePayloadEventListener;
 import org.activiti.runtime.api.impl.RuntimeSignalPayloadEventListener;
 import org.activiti.runtime.api.impl.VariableNameValidator;
-import org.activiti.runtime.api.impl.VariablesMappingProvider;
+import org.activiti.runtime.api.impl.ExtensionsVariablesMappingProvider;
 import org.activiti.runtime.api.message.ReceiveMessagePayloadEventListener;
 import org.activiti.runtime.api.model.impl.APIDeploymentConverter;
 import org.activiti.runtime.api.model.impl.APIProcessDefinitionConverter;
@@ -161,7 +162,8 @@ public class ProcessRuntimeAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean(EventSubscriptionPayloadMappingProvider.class)
-    public EventSubscriptionPayloadMappingProvider eventSubscriptionPayloadMappingProvider(VariablesMappingProvider variablesMappingProvider) {
+    public EventSubscriptionPayloadMappingProvider eventSubscriptionPayloadMappingProvider(
+        ExtensionsVariablesMappingProvider variablesMappingProvider) {
         return new EventSubscriptionVariablesMappingProvider(variablesMappingProvider);
     }
 
@@ -229,7 +231,7 @@ public class ProcessRuntimeAutoConfiguration {
     public ProcessVariablesInitiator processVariablesInitiator(ProcessExtensionService processExtensionService,
                                                                VariableParsingService variableParsingService,
                                                                VariableValidationService variableValidationService,
-                                                               VariablesMappingProvider mappingProvider) {
+                                                               ExtensionsVariablesMappingProvider mappingProvider) {
         return new ProcessVariablesInitiator(processExtensionService,
                                              variableParsingService,
                                              variableValidationService,

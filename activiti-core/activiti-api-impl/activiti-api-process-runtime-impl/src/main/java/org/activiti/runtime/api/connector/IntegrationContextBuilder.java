@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.activiti.runtime.api.connector;
 
 import java.util.Objects;
@@ -25,13 +26,13 @@ import org.activiti.engine.impl.context.ExecutionContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.integration.IntegrationContextEntity;
 import org.activiti.engine.repository.ProcessDefinition;
-import org.activiti.runtime.api.impl.VariablesMappingProvider;
+import org.activiti.runtime.api.impl.ExtensionsVariablesMappingProvider;
 
 public class IntegrationContextBuilder {
 
-    private VariablesMappingProvider inboundVariablesProvider;
+    private ExtensionsVariablesMappingProvider inboundVariablesProvider;
 
-    public IntegrationContextBuilder(VariablesMappingProvider inboundVariablesProvider) {
+    public IntegrationContextBuilder(ExtensionsVariablesMappingProvider inboundVariablesProvider) {
         this.inboundVariablesProvider = inboundVariablesProvider;
     }
 

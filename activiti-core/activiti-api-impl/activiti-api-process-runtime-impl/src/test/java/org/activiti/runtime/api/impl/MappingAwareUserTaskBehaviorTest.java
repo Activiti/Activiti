@@ -25,7 +25,7 @@ import org.mockito.Mock;
 
 import static java.util.Collections.emptyMap;
 import static java.util.Collections.singletonMap;
-import static org.activiti.runtime.api.impl.MappingExecutionContext.buildMappingExecutionContext;
+import static org.activiti.engine.impl.bpmn.behavior.MappingExecutionContext.buildMappingExecutionContext;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
@@ -37,7 +37,7 @@ public class MappingAwareUserTaskBehaviorTest {
     private MappingAwareUserTaskBehavior behavior;
 
     @Mock
-    private VariablesMappingProvider mappingProvider;
+    private ExtensionsVariablesMappingProvider mappingProvider;
 
     @BeforeEach
     public void setUp() throws Exception {

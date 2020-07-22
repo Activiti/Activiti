@@ -1,0 +1,13 @@
+{
+  "id": "miSequentialUserTasksOutputCollection-model-id",
+  "name": "miSequentialUserTasksOutputCollection-model",
+  "extensions": {
+    "miSequentialUserTasksOutputCollection": {
+      "mappings": {
+        "miTasks" : {
+          "inputs" : {}
+        }
+      }
+    }
+  }
+}

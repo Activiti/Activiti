@@ -22,6 +22,7 @@ import org.activiti.bpmn.model.UserTask;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.bpmn.behavior.CallActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.UserTaskActivityBehavior;
+import org.activiti.engine.impl.bpmn.behavior.VariablesCalculator;
 import org.activiti.engine.impl.bpmn.parser.factory.ActivityBehaviorFactory;
 import org.activiti.engine.impl.bpmn.parser.factory.DefaultActivityBehaviorFactory;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
@@ -32,30 +33,32 @@ import org.activiti.spring.process.ProcessVariablesInitiator;
  */
 public class MappingAwareActivityBehaviorFactory extends DefaultActivityBehaviorFactory {
 
-    private VariablesMappingProvider variablesMappingProvider;
+    private VariablesCalculator variablesCalculator;
 
     private ProcessVariablesInitiator processVariablesInitiator;
 
-    public MappingAwareActivityBehaviorFactory(VariablesMappingProvider variablesMappingProvider,
+    public MappingAwareActivityBehaviorFactory(
+        VariablesCalculator variablesCalculator,
                                                ProcessVariablesInitiator processVariablesInitiator) {
         super();
-        this.variablesMappingProvider = variablesMappingProvider;
+        this.variablesCalculator = variablesCalculator;
         this.processVariablesInitiator = processVariablesInitiator;
 
-        this.setMessagePayloadMappingProviderFactory(new JsonMessagePayloadMappingProviderFactory(variablesMappingProvider));
+        this.setMessagePayloadMappingProviderFactory(new JsonMessagePayloadMappingProviderFactory(
+            variablesCalculator));
     }
 
     @Override
     public UserTaskActivityBehavior createUserTaskActivityBehavior(UserTask userTask) {
         return new MappingAwareUserTaskBehavior(userTask,
-                                                variablesMappingProvider);
+            variablesCalculator);
     }
 
     @Override
     protected CallActivityBehavior createCallActivityBehavior(Expression expression, List<MapExceptionEntry> mapExceptions) {
         return new MappingAwareCallActivityBehavior(expression,
                                                     mapExceptions,
-                                                    variablesMappingProvider,
+            variablesCalculator,
                                                     processVariablesInitiator);
     }
 
@@ -64,7 +67,7 @@ public class MappingAwareActivityBehaviorFactory extends DefaultActivityBehavior
                                                               List<MapExceptionEntry> mapExceptions) {
         return new MappingAwareCallActivityBehavior(calledElement,
                                                     mapExceptions,
-                                                    variablesMappingProvider,
+            variablesCalculator,
                                                     processVariablesInitiator);
     }
 }

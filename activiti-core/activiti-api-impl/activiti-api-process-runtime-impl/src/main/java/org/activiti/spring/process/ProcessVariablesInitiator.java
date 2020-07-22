@@ -24,13 +24,14 @@ import java.util.Optional;
 import java.util.Set;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.impl.bpmn.behavior.MappingExecutionContext;
+import org.activiti.engine.impl.bpmn.behavior.VariablesCalculator;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 import org.activiti.engine.impl.util.ProcessInstanceHelper;
 import org.activiti.engine.repository.ProcessDefinition;
-import org.activiti.runtime.api.impl.MappingExecutionContext;
-import org.activiti.runtime.api.impl.VariablesMappingProvider;
+import org.activiti.runtime.api.impl.ExtensionsVariablesMappingProvider;
 import org.activiti.spring.process.model.Extension;
 import org.activiti.spring.process.model.VariableDefinition;
 import org.activiti.spring.process.variable.VariableParsingService;
@@ -44,16 +45,16 @@ public class ProcessVariablesInitiator extends ProcessInstanceHelper {
 
     private final VariableValidationService variableValidationService;
 
-    private VariablesMappingProvider mappingProvider;
+    private VariablesCalculator variablesCalculator;
 
     public ProcessVariablesInitiator(ProcessExtensionService processExtensionService,
                                      VariableParsingService variableParsingService,
                                      VariableValidationService variableValidationService,
-                                     VariablesMappingProvider mappingProvider) {
+                                     VariablesCalculator variablesCalculator) {
         this.processExtensionService = processExtensionService;
         this.variableParsingService = variableParsingService;
         this.variableValidationService = variableValidationService;
-        this.mappingProvider = mappingProvider;
+        this.variablesCalculator = variablesCalculator;
     }
 
     public Map<String, Object> calculateVariablesFromExtensionFile(ProcessDefinition processDefinition,
@@ -87,7 +88,7 @@ public class ProcessVariablesInitiator extends ProcessInstanceHelper {
 
         if (processExtensionService.hasExtensionsFor(processDefinition)) {
 
-            processVariables = mappingProvider.calculateOutPutVariables(MappingExecutionContext.buildMappingExecutionContext(
+            processVariables = variablesCalculator.calculateOutPutVariables(MappingExecutionContext.buildMappingExecutionContext(
                 processDefinition.getId(),
                 initialFlowElement.getId()),
                 variables);

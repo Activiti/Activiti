@@ -17,16 +17,18 @@ package org.activiti.runtime.api.impl;
 
 import org.activiti.bpmn.model.Event;
 import org.activiti.bpmn.model.MessageEventDefinition;
+import org.activiti.engine.impl.bpmn.behavior.VariablesCalculator;
 import org.activiti.engine.impl.delegate.MessagePayloadMappingProvider;
 import org.activiti.engine.impl.delegate.MessagePayloadMappingProviderFactory;
 import org.activiti.engine.impl.el.ExpressionManager;
 
 public class JsonMessagePayloadMappingProviderFactory implements MessagePayloadMappingProviderFactory {
-    
-    private final VariablesMappingProvider variablesMappingProvider;
 
-    public JsonMessagePayloadMappingProviderFactory(VariablesMappingProvider variablesMappingProvider) {
-        this.variablesMappingProvider = variablesMappingProvider;
+    private final VariablesCalculator variablesCalculator;
+
+    public JsonMessagePayloadMappingProviderFactory(
+        VariablesCalculator variablesCalculator) {
+        this.variablesCalculator = variablesCalculator;
     }
 
     @Override
@@ -36,7 +38,7 @@ public class JsonMessagePayloadMappingProviderFactory implements MessagePayloadM
         return new JsonMessagePayloadMappingProvider(bpmnEvent,
                                                      messageEventDefinition,
                                                      expressionManager,
-                                                     variablesMappingProvider);
+            variablesCalculator);
     }
 
 }

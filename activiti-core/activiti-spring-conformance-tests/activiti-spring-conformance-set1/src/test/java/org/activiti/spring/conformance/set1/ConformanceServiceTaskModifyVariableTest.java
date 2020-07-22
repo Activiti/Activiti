@@ -60,6 +60,7 @@ public class ConformanceServiceTaskModifyVariableTest {
      *   - ACTIVITY_COMPLETED,
      *   - SEQUENCE_FLOW_TAKEN,
      *   - ACTIVITY_STARTED,
+     *   - VARIABLE_CREATED
      *   - VARIABLE_UPDATED
      *   - ACTIVITY_COMPLETED,
      *   - SEQUENCE_FLOW_TAKEN,
@@ -67,7 +68,7 @@ public class ConformanceServiceTaskModifyVariableTest {
      *   - ACTIVITY_COMPLETED,
      *   - PROCESS_COMPLETED
      *  And the Process Instance Status should be Completed
-     *  Connectors are executed in a Sync fashion, so the logic will be exexuted and the BPMN Activity completed automatically.
+     *  Connectors are executed in a Sync fashion, so the logic will be executed and the BPMN Activity completed automatically.
      *  No further operation can be executed on the process due the fact that it start and finish in the same transaction
      */
     @Test
@@ -115,6 +116,7 @@ public class ConformanceServiceTaskModifyVariableTest {
                         BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
                         BPMNSequenceFlowTakenEvent.SequenceFlowEvents.SEQUENCE_FLOW_TAKEN,
                         BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
+                        VariableEvent.VariableEvents.VARIABLE_CREATED,
                         VariableEvent.VariableEvents.VARIABLE_UPDATED,
                         BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
                         BPMNSequenceFlowTakenEvent.SequenceFlowEvents.SEQUENCE_FLOW_TAKEN,
@@ -122,7 +124,7 @@ public class ConformanceServiceTaskModifyVariableTest {
                         BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
                         ProcessRuntimeEvent.ProcessEvents.PROCESS_COMPLETED);
 
-        assertThat((String)((VariableUpdatedEvent)RuntimeTestConfiguration.collectedEvents.get(7)).getEntity().getValue()).isEqualTo("value1-modified");
+        assertThat((String)((VariableUpdatedEvent)RuntimeTestConfiguration.collectedEvents.get(8)).getEntity().getValue()).isEqualTo("value1-modified");
 
     }
 

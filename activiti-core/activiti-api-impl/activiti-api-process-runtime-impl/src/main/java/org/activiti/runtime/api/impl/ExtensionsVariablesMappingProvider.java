@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.activiti.runtime.api.impl;
 
 import static java.util.Collections.emptyMap;
@@ -22,6 +23,8 @@ import java.util.Map;
 import java.util.Optional;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.impl.bpmn.behavior.MappingExecutionContext;
+import org.activiti.engine.impl.bpmn.behavior.VariablesCalculator;
 import org.activiti.spring.process.ProcessExtensionService;
 import org.activiti.spring.process.model.ConstantDefinition;
 import org.activiti.spring.process.model.Extension;
@@ -30,13 +33,13 @@ import org.activiti.spring.process.model.ProcessConstantsMapping;
 import org.activiti.spring.process.model.ProcessVariablesMapping;
 import org.activiti.spring.process.model.VariableDefinition;
 
-public class VariablesMappingProvider {
+public class ExtensionsVariablesMappingProvider implements VariablesCalculator {
 
     private ProcessExtensionService processExtensionService;
 
     private ExpressionResolver expressionResolver;
 
-    public VariablesMappingProvider(ProcessExtensionService processExtensionService,
+    public ExtensionsVariablesMappingProvider(ProcessExtensionService processExtensionService,
                                     ExpressionResolver expressionResolver) {
         this.processExtensionService = processExtensionService;
         this.expressionResolver = expressionResolver;
