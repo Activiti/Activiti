@@ -74,7 +74,7 @@ public class VariablesMappingProvider {
 
         Map<String, Object> inboundVariables;
 
-        if (!extensions.hasMapping(execution.getCurrentActivityId())) {
+        if (extensions.hasEmptyMapping(execution.getCurrentActivityId())) {
             inboundVariables = execution.getVariables();
         } else {
             inboundVariables = calculateInputVariables(execution, extensions);
@@ -102,12 +102,14 @@ public class VariablesMappingProvider {
         ProcessVariablesMapping processVariablesMapping = extensions.getMappingForFlowElement(execution.getCurrentActivityId());
 
         Map<String, Mapping> inputMappings = processVariablesMapping.getInputs();
-        for (Map.Entry<String, Mapping> mapping : inputMappings.entrySet()) {
-            Optional<Object> mappedValue = calculateMappedValue(mapping.getValue(),
-                                                                execution,
-                                                                extensions);
-            mappedValue.ifPresent(value -> inboundVariables.put(mapping.getKey(),
-                                                                value));
+        if (inputMappings != null) {
+            for (Map.Entry<String, Mapping> mapping : inputMappings.entrySet()) {
+                Optional<Object> mappedValue = calculateMappedValue(mapping.getValue(),
+                    execution,
+                    extensions);
+                mappedValue.ifPresent(value -> inboundVariables.put(mapping.getKey(),
+                    value));
+            }
         }
         return inboundVariables;
     }
@@ -137,7 +139,7 @@ public class VariablesMappingProvider {
             return emptyMap();
         }
 
-        if (!extensions.hasMapping(mappingExecutionContext.getActivityId())) {
+        if (extensions.hasEmptyMapping(mappingExecutionContext.getActivityId())) {
             return (availableVariables != null ? new HashMap<>(availableVariables) : emptyMap());
         }
 

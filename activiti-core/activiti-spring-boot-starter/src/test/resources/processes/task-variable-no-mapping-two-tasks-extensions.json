@@ -3,7 +3,7 @@
   "type": "PROCESS",
   "name": "process",
   "extensions": {
-    "taskVariableNoMapping": {
+    "taskVariableNoMappingTwoTasks": {
       "properties": {
         "process-variable-unmapped-1-id": {
           "id": "process-variable-unmapped-1-id",
@@ -28,7 +28,21 @@
         }
       },
       "mappings": {
-        "simpleTask": {}
+        "taskWithMapping": {
+          "inputs": {
+            "task_input_variable_name_1": {
+              "type": "variable",
+              "value": "process_variable_inputmap_1"
+            }
+          },
+          "outputs": {
+            "process_variable_outputmap_1": {
+              "type": "variable",
+              "value": "task_completion_output_variable_name"
+            }
+          }
+        },
+        "taskWithNoMapping": { }
       }
     }
   }
