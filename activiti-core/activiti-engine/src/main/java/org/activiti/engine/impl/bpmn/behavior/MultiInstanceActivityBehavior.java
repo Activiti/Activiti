@@ -470,7 +470,7 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
         }
         // in the case where it's not a User Task, the local variables will be available directly
         // in the child execution
-        return childExecution.getVariable(getOutputDataItem());
+        return childExecution.getVariableLocal(getOutputDataItem());
     }
 
     protected void propagateLoopDataOutputRefToProcessInstance(ExecutionEntity miRootExecution) {
