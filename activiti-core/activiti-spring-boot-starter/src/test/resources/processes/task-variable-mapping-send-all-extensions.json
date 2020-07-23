@@ -1,9 +1,9 @@
 {
-  "id":"taskVariableNoMappingModel",
+  "id":"taskVariableMappingSendAllModel",
   "type": "PROCESS",
   "name": "process",
   "extensions": {
-    "taskVariableNoMapping": {
+    "taskVariableMappingSendAll": {
       "properties": {
         "process-variable-unmapped-1-id": {
           "id": "process-variable-unmapped-1-id",
@@ -27,7 +27,11 @@
           "value": "outputmap1Value"
         }
       },
-      "mappings": {}
+      "mappings": {
+        "simpleTask": {
+          "mappingType": "MAP_ALL"
+        }
+      }
     }
   }
 }

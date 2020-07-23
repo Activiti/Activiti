@@ -71,13 +71,13 @@ public class ExtensionsVariablesMappingProvider implements VariablesCalculator {
 
         Map<String, Object> constants = calculateConstants(execution, extensions);
 
-        if (extensions.hasEmptyInputsMapping(execution.getCurrentActivityId())) {
+        if (!extensions.hasMapping(execution.getCurrentActivityId())) {
             return constants;
         }
 
         Map<String, Object> inboundVariables;
 
-        if (!extensions.hasMapping(execution.getCurrentActivityId())) {
+        if (extensions.hasMappingType(execution.getCurrentActivityId()) && extensions.hasMappingTypeInputs(execution.getCurrentActivityId())) {
             inboundVariables = execution.getVariables();
         } else {
             inboundVariables = calculateInputVariables(execution, extensions);
@@ -136,11 +136,12 @@ public class ExtensionsVariablesMappingProvider implements VariablesCalculator {
 
         Extension extensions = processExtensionService.getExtensionsForId(mappingExecutionContext.getProcessDefinitionId());
 
-        if (extensions.hasEmptyOutputsMapping(mappingExecutionContext.getActivityId())) {
+        if (!extensions.hasMapping(mappingExecutionContext.getActivityId())) {
             return emptyMap();
         }
 
-        if (!extensions.hasMapping(mappingExecutionContext.getActivityId())) {
+        if (extensions.hasMappingType(mappingExecutionContext.getActivityId()) &&
+            extensions.hasMappingTypeOutputs(mappingExecutionContext.getActivityId())) {
             return (availableVariables != null ? new HashMap<>(availableVariables) : emptyMap());
         }
 

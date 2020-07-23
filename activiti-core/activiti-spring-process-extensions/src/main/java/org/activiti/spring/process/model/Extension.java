@@ -20,6 +20,7 @@ package org.activiti.spring.process.model;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import org.activiti.spring.process.model.ProcessVariablesMapping.MappingType;
 
 public class Extension {
 
@@ -94,6 +95,23 @@ public class Extension {
 
     public boolean hasMapping(String taskId) {
         return mappings.get(taskId) != null;
+    }
+
+    public boolean hasMappingType(String elementId) {
+        ProcessVariablesMapping processVariablesMapping = mappings.get(elementId);
+        return processVariablesMapping != null && processVariablesMapping.getMappingType() != null;
+    }
+
+    public boolean hasMappingTypeInputs (String elementId) {
+        ProcessVariablesMapping processVariablesMapping = mappings.get(elementId);
+        return processVariablesMapping.getMappingType().equals(MappingType.MAP_ALL_INPUTS) ||
+            processVariablesMapping.getMappingType().equals(MappingType.MAP_ALL);
+    }
+
+    public boolean hasMappingTypeOutputs(String elementId) {
+        ProcessVariablesMapping processVariablesMapping = mappings.get(elementId);
+        return processVariablesMapping.getMappingType().equals(MappingType.MAP_ALL_OUTPUTS) ||
+            processVariablesMapping.getMappingType().equals(MappingType.MAP_ALL);
     }
 
 
