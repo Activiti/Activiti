@@ -41,6 +41,11 @@
           "type": "integer",
           "value": 222
         }
+      },
+      "mappings": {
+        "Task_0oz023e": {
+          "mappingType": "MAP_ALL"
+        }
       }
     }
   }

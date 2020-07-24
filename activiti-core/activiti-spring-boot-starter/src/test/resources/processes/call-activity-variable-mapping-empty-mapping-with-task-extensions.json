@@ -32,14 +32,7 @@
           "value": "default"
         }
       },
-      "mappings": {
-        "Task_0v0jw9c": {
-          "inputs": {
-          },
-          "outputs": {
-          }
-        }
-      },
+      "mappings": {},
       "constants": {
         "Task_0v0jw9c": {}
       }
