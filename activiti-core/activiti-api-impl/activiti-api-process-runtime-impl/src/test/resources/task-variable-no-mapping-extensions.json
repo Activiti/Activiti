@@ -25,7 +25,11 @@
           "value": "outputmap1Value"
         }
       },
-      "mappings": {},
+      "mappings": {
+        "simpleTask": {
+          "mappingType": "MAP_ALL"
+        }
+      },
       "constants": {}
     }
   }

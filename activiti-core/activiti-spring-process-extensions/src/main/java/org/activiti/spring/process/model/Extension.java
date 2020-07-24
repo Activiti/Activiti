@@ -83,16 +83,6 @@ public class Extension {
         return null;
     }
 
-    public boolean hasEmptyInputsMapping(String elementId) {
-        ProcessVariablesMapping processVariablesMapping = mappings.get(elementId);
-        return processVariablesMapping != null && processVariablesMapping.getInputs().size() == 0;
-    }
-
-    public boolean hasEmptyOutputsMapping(String elementId) {
-        ProcessVariablesMapping processVariablesMapping = mappings.get(elementId);
-        return processVariablesMapping != null && processVariablesMapping.getOutputs().size() == 0;
-    }
-
     public boolean hasMapping(String taskId) {
         return mappings.get(taskId) != null;
     }

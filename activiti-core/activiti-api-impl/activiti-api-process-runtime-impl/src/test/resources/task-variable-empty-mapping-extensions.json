@@ -25,12 +25,7 @@
           "value": "outputmap1Value"
         }
       },
-      "mappings": {
-        "simpleTask": {
-          "inputs": {},
-          "outputs": {}
-        }
-      }
+      "mappings": {}
     }
   }
 }
