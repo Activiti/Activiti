@@ -1,0 +1,18 @@
+{
+  "id":"CompleteReviewTaskProcessModel",
+  "name":"myProcess234.bpmn",
+  "extensions": {
+    "CompleteReviewTaskProcess": {
+      "properties": {},
+      "mappings": {
+        "Task_03l0zc2": {
+          "mappingType": "MAP_ALL"
+        },
+        "Task_1on6ei6": {
+          "mappingType": "MAP_ALL"
+        }
+      },
+      "constants": {}
+    }
+  }
+}

@@ -16,6 +16,7 @@
 
 package org.activiti.engine.impl.jobexecutor;
 
+import java.util.HashMap;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.event.ActivitiEventType;
@@ -64,7 +65,7 @@ public class TimerStartEventJobHandler extends TimerEventHandler implements JobH
             throw new ActivitiException("Could not find matching FlowElement for activityId " + activityId);
           }
           ProcessInstanceHelper processInstanceHelper = commandContext.getProcessEngineConfiguration().getProcessInstanceHelper();
-          processInstanceHelper.createAndStartProcessInstanceWithInitialFlowElement(processDefinitionEntity, null, null, flowElement, process, null, null, true);
+          processInstanceHelper.createAndStartProcessInstanceWithInitialFlowElement(processDefinitionEntity, null, null, flowElement, process, new HashMap<>(), null, true);
         } else {
           new StartProcessInstanceCmd(processDefinitionEntity.getKey(), null, null, null, job.getTenantId()).execute(commandContext);
         }

@@ -184,12 +184,14 @@ public class ProcessExtensionsIT {
         //then
         assertThat(variableInstances)
             .isNotNull()
-            .hasSize(2)
+            .hasSize(4)
             .extracting(VariableInstance::getName,
                 VariableInstance::getValue)
             .containsOnly(
                 tuple("name", "name_value"),
-                tuple("email", "email_value")
+                tuple("email", "email_value"),
+                tuple("Text0xfems", "name_value"),
+                tuple("Text0rvs0o", "email_value")
             );
 
         //when
@@ -242,12 +244,14 @@ public class ProcessExtensionsIT {
 
         assertThat(variableInstances)
             .isNotNull()
-            .hasSize(2)
+            .hasSize(4)
             .extracting(VariableInstance::getName,
                 VariableInstance::getValue)
             .containsOnly(
                 tuple("name", "name_value"),
-                tuple("email", "email_value")
+                tuple("email", "email_value"),
+                tuple("Text0xfems", "name_value"),
+                tuple("Text0rvs0o", "email_value")
             );
 
         //when

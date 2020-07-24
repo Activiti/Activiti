@@ -1,0 +1,18 @@
+{
+  "id":"categorizeProcessConnectorsModel",
+  "name":"myProcess234.bpmn",
+  "extensions": {
+    "categorizeProcessConnectors": {
+      "properties": {},
+      "mappings": {
+        "Task_1ylvdew": {
+          "mappingType": "MAP_ALL"
+        },
+        "Task_0snvh02": {
+          "mappingType": "MAP_ALL"
+        }
+      },
+      "constants": {}
+    }
+  }
+}

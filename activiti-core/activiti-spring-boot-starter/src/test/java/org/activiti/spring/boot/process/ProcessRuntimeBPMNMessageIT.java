@@ -21,7 +21,9 @@ import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.assertj.core.api.Assertions.tuple;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import org.activiti.api.model.shared.event.RuntimeEvent;
 import org.activiti.api.model.shared.model.VariableInstance;
 import org.activiti.api.process.model.ProcessInstance;
@@ -278,8 +280,10 @@ public class ProcessRuntimeBPMNMessageIT {
                                                         "startMessagePayload",
                                                         null,
                                                         process.getBusinessKey(),
-                                                        singletonMap("message_variable_name",
-                                                                                 "value")));
+                                                        Map.of("message_variable_name",
+                                                              "value",
+                                                              "process_variable_name",
+                                                              "value")));
 
         // and
         List<VariableInstance> variables = processRuntime.variables(ProcessPayloadBuilder.variables()

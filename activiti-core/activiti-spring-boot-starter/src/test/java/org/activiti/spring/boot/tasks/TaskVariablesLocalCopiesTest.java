@@ -90,7 +90,7 @@ public class TaskVariablesLocalCopiesTest {
     }
 
     @Test
-    public void processInstanceVariablesCopiedIntoTasksByDefault() {
+    public void should_processInstanceVariablesBeCopiedIntoTasks() {
 
         securityUtil.logInAs("user");
 
