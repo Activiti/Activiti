@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import org.activiti.bpmn.model.Activity;
 import org.activiti.bpmn.model.BoundaryEvent;
 import org.activiti.bpmn.model.CompensateEventDefinition;
@@ -34,9 +35,11 @@ import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.bpmn.helper.ErrorPropagation;
+import org.activiti.engine.impl.cmd.CompleteTaskCmd;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.delegate.ActivityBehavior;
 import org.activiti.engine.impl.delegate.SubProcessActivityBehavior;
+import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
@@ -449,9 +452,25 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
             } else {
                 resultCollection = new ArrayList<>();
             }
-            resultCollection.add(childExecution.getVariable(getOutputDataItem()));
+            resultCollection.add(getResultElementItem(childExecution));
             setLoopVariable(miRootExecution, getLoopDataOutputRef(), resultCollection);
         }
+    }
+
+    private Object getResultElementItem(DelegateExecution childExecution) {
+        CommandContext commandContext = Context.getCommandContext();
+        if (commandContext.getCommand() instanceof CompleteTaskCmd) {
+            //in the case of a User Task, the variables are directly attached to the TaskEntity
+            //and not in the child execution. CompleteTaskCmd will delete the the task and all its
+            //variables, but before doing so it's keeping a cache of existing local variables that
+            //can be retrieve here and used int the result collection.
+            Map<String, Object> taskVariables = ((CompleteTaskCmd) commandContext
+                .getCommand()).getTaskVariables();
+            return taskVariables.get(getOutputDataItem());
+        }
+        // in the case where it's not a User Task, the local variables will be available directly
+        // in the child execution
+        return childExecution.getVariableLocal(getOutputDataItem());
     }
 
     protected void propagateLoopDataOutputRefToProcessInstance(ExecutionEntity miRootExecution) {

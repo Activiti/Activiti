@@ -15,6 +15,8 @@
  */
 package org.activiti.runtime.api.impl;
 
+import static org.activiti.engine.impl.bpmn.behavior.MappingExecutionContext.buildMappingExecutionContext;
+
 import java.util.List;
 import java.util.Map;
 
@@ -22,33 +24,32 @@ import org.activiti.bpmn.model.MapExceptionEntry;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.bpmn.behavior.CallActivityBehavior;
+import org.activiti.engine.impl.bpmn.behavior.VariablesCalculator;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.spring.process.ProcessVariablesInitiator;
 
-import static org.activiti.runtime.api.impl.MappingExecutionContext.buildMappingExecutionContext;
-
 public class MappingAwareCallActivityBehavior extends CallActivityBehavior {
 
-    private VariablesMappingProvider mappingProvider;
+    private VariablesCalculator variablesCalculator;
     private ProcessVariablesInitiator processVariablesInitiator;
 
     public MappingAwareCallActivityBehavior(String processDefinitionKey,
                                             List<MapExceptionEntry> mapExceptions,
-                                            VariablesMappingProvider mappingProvider,
+                                            VariablesCalculator variablesCalculator,
                                             ProcessVariablesInitiator processVariablesInitiator) {
         super(processDefinitionKey,
               mapExceptions);
-        this.mappingProvider = mappingProvider;
+        this.variablesCalculator = variablesCalculator;
         this.processVariablesInitiator = processVariablesInitiator;
     }
 
     public MappingAwareCallActivityBehavior(Expression processDefinitionExpression,
                                             List<MapExceptionEntry> mapExceptions,
-                                            VariablesMappingProvider mappingProvider,
+                                            VariablesCalculator variablesCalculator,
                                             ProcessVariablesInitiator processVariablesInitiator) {
         super(processDefinitionExpression,
               mapExceptions);
-        this.mappingProvider = mappingProvider;
+        this.variablesCalculator = variablesCalculator;
         this.processVariablesInitiator = processVariablesInitiator;
     }
 
@@ -56,7 +57,7 @@ public class MappingAwareCallActivityBehavior extends CallActivityBehavior {
     protected Map<String, Object> calculateInboundVariables(DelegateExecution execution,
                                                             ProcessDefinition processDefinition) {
 
-        Map<String, Object> inputVariables = mappingProvider.calculateInputVariables(execution);
+        Map<String, Object> inputVariables = variablesCalculator.calculateInputVariables(execution);
         return processVariablesInitiator.calculateVariablesFromExtensionFile(processDefinition,
                                                                                                   inputVariables);
     }
@@ -64,7 +65,7 @@ public class MappingAwareCallActivityBehavior extends CallActivityBehavior {
     @Override
     protected Map<String, Object> calculateOutBoundVariables(DelegateExecution execution,
                                                              Map<String, Object> availableVariables) {
-        return mappingProvider.calculateOutPutVariables(buildMappingExecutionContext(execution),
+        return variablesCalculator.calculateOutPutVariables(buildMappingExecutionContext(execution),
                                                         availableVariables);
     }
 }

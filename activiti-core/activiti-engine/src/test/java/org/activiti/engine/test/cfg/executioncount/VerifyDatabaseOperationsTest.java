@@ -252,7 +252,8 @@ public class VerifyDatabaseOperationsTest extends PluggableActivitiTestCase {
         "selectIdentityLinksByTask", 1L,
         "selectVariablesByTaskId", 1L,
         "selectExecutionsWithSameRootProcessInstanceId", 1L,
-        "selectTasksByExecutionId", 1L
+        "selectTasksByExecutionId", 1L,
+        "selectVariablesByExecutionId", 1L
         );
     assertDatabaseInserts("CompleteTaskCmd",
         "HistoricActivityInstanceEntityImpl", 1L);

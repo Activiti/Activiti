@@ -13,10 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.runtime.api.impl;
+package org.activiti.engine.impl.bpmn.behavior;
 
 import java.util.Objects;
-
 import org.activiti.engine.delegate.DelegateExecution;
 
 public class MappingExecutionContext {

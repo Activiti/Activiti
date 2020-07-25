@@ -31,7 +31,7 @@ import org.activiti.engine.impl.persistence.deploy.DeploymentManager;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.integration.IntegrationContextEntityImpl;
 import org.activiti.engine.repository.ProcessDefinition;
-import org.activiti.runtime.api.impl.VariablesMappingProvider;
+import org.activiti.runtime.api.impl.ExtensionsVariablesMappingProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -53,7 +53,7 @@ public class IntegrationContextBuilderTest {
     private IntegrationContextBuilder builder;
 
     @Mock
-    private VariablesMappingProvider inboundVariablesProvider;
+    private ExtensionsVariablesMappingProvider inboundVariablesProvider;
 
     @BeforeEach
     public void setUp() {

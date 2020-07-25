@@ -45,10 +45,6 @@ import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.spring.boot.process.ProcessBaseRuntime;
 import org.activiti.spring.boot.process.ProcessRuntimeBPMNTimerIT;
 import org.activiti.spring.boot.process.TimerTestConfigurator;
-import org.activiti.spring.boot.process.listener.DummyBPMNTimerCancelledListener;
-import org.activiti.spring.boot.process.listener.DummyBPMNTimerExecutedListener;
-import org.activiti.spring.boot.process.listener.DummyBPMNTimerFiredListener;
-import org.activiti.spring.boot.process.listener.DummyBPMNTimerScheduledListener;
 import org.activiti.spring.boot.security.util.SecurityUtil;
 import org.activiti.spring.boot.test.util.ProcessCleanUpUtil;
 import org.activiti.test.LocalEventSource;
@@ -59,14 +55,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
-
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @ActiveProfiles(ProcessRuntimeBPMNTimerIT.PROCESS_RUNTIME_BPMN_TIMER_IT)
 @Import({TimerTestConfigurator.class,
-        DummyBPMNTimerFiredListener.class,
-        DummyBPMNTimerScheduledListener.class,
-        DummyBPMNTimerCancelledListener.class,
-        DummyBPMNTimerExecutedListener.class})
+        MealsConnectorConfiguration.class})
 public class TaskRuntimeMultiInstanceIT {
 
     @Autowired
@@ -1510,5 +1502,29 @@ public class TaskRuntimeMultiInstanceIT {
             .extracting(VariableInstance::getName, VariableInstance::getValue)
             .contains(tuple("meals", asList("pizza", "pasta")));
     }
+
+    @Test
+    public void parallelMultiInstance_should_collectOutputValuesForServiceTask() {
+        //given
+        ProcessInstance processInstance = processBaseRuntime
+            .startProcessWithProcessDefinitionKey("process-with-multi-instance-result-collection");
+
+        //when
+        List<VariableInstance> variables = processBaseRuntime
+            .getProcessVariablesByProcessId(processInstance.getId());
+
+        //then
+        assertThat(variables)
+            .extracting(VariableInstance::getName)
+            .contains("meals");
+        VariableInstance meals = variables
+            .stream()
+            .filter(variableInstance -> "meals".equals(variableInstance.getName()))
+            .findFirst()
+            .orElse(null);
+        List<String> mealValues = meals.getValue();
+        assertThat(mealValues).containsExactlyInAnyOrder("pizza", "pasta");
+    }
+
 
 }
