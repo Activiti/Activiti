@@ -66,7 +66,7 @@ public class BpmnActivityBehaviorTest {
         bpmnActivityBehavior.performDefaultOutgoingBehavior(execution);
 
         //then
-        verify(parentExecution).setVariablesLocal(calculatedVariables);
+        verify(parentExecution).setVariables(calculatedVariables);
         verify(agenda).planTakeOutgoingSequenceFlowsOperation(execution, true);
 
     }
