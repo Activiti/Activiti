@@ -1,0 +1,16 @@
+{
+  "id":"multi-instance-service-task-result-collection-data-item-model",
+  "name":"multi-instance-service-task-result-collection-data-item",
+  "extensions": {
+    "multi-instance-service-task-result-collection-data-item": {
+      "mappings": {
+        "serviceTask": {
+          "inputs": {
+          },
+          "outputs": {
+          }
+        }
+      }
+    }
+  }
+}

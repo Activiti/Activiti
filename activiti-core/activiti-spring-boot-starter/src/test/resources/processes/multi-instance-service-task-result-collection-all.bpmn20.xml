@@ -4,17 +4,16 @@
              xmlns:activiti="http://activiti.org/bpmn"
              targetNamespace="processDefinitions">
 
-    <process id="process-with-multi-instance-result-collection">
+    <process id="multi-instance-service-task-result-collection-all">
 
         <startEvent id="start"/>
 
         <sequenceFlow id="flow1" sourceRef="start" targetRef="serviceTask"/>
 
         <serviceTask id="serviceTask" implementation="mealsConnector" >
-          <multiInstanceLoopCharacteristics isSequential="true">
+          <multiInstanceLoopCharacteristics isSequential="false">
             <loopCardinality>2</loopCardinality>
-            <loopDataOutputRef>meals</loopDataOutputRef>
-            <outputDataItem name="meal"/>
+            <loopDataOutputRef>miResult</loopDataOutputRef>
           </multiInstanceLoopCharacteristics>
         </serviceTask>
 

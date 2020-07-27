@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="processDefinitions"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:activiti="http://activiti.org/bpmn"
+             targetNamespace="processDefinitions">
+
+    <process id="multi-instance-service-task-result-collection-data-item">
+
+        <startEvent id="start"/>
+
+        <sequenceFlow id="flow1" sourceRef="start" targetRef="serviceTask"/>
+
+        <serviceTask id="serviceTask" implementation="mealsConnector" >
+          <multiInstanceLoopCharacteristics isSequential="false">
+            <loopCardinality>2</loopCardinality>
+            <loopDataOutputRef>meals</loopDataOutputRef>
+            <outputDataItem name="meal"/>
+          </multiInstanceLoopCharacteristics>
+        </serviceTask>
+
+        <sequenceFlow id="flow2" sourceRef="serviceTask" targetRef="userTask"/>
+
+        <userTask id="userTask" name="My user task" activiti:candidateUsers="user"/>
+
+        <sequenceFlow id="flow3" sourceRef="userTask" targetRef="end"/>
+
+        <endEvent id="end"/>
+
+    </process>
+
+</definitions>
