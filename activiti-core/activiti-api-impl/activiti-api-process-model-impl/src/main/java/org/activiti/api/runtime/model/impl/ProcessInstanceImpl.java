@@ -32,6 +32,7 @@ public class ProcessInstanceImpl extends ApplicationElementImpl implements Proce
     private ProcessInstanceStatus status;
     private String parentId;
     private Integer processDefinitionVersion;
+    private String processDefinitionName;
 
     public ProcessInstanceImpl() {
     }
@@ -85,6 +86,11 @@ public class ProcessInstanceImpl extends ApplicationElementImpl implements Proce
     public Integer getProcessDefinitionVersion() {
         return processDefinitionVersion;
     }
+
+    @Override
+    public String getProcessDefinitionName() {
+        return processDefinitionName;
+    }
     
     public void setId(String id) {
         this.id = id;
@@ -126,6 +132,10 @@ public class ProcessInstanceImpl extends ApplicationElementImpl implements Proce
         this.processDefinitionVersion = processDefinitionVersion;
     }
 
+    public void setProcessDefinitionName(String processDefinitionName) {
+        this.processDefinitionName = processDefinitionName;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -156,7 +166,9 @@ public class ProcessInstanceImpl extends ApplicationElementImpl implements Proce
                 Objects.equals(parentId,
                                that.parentId) &&
                 Objects.equals(processDefinitionVersion,
-                               that.processDefinitionVersion);
+                               that.processDefinitionVersion) &&
+                Objects.equals(processDefinitionName,
+                        that.processDefinitionName);
     }
 
     @Override
@@ -171,7 +183,8 @@ public class ProcessInstanceImpl extends ApplicationElementImpl implements Proce
                             businessKey,
                             status,
                             parentId,
-                            processDefinitionVersion);
+                            processDefinitionVersion,
+                            processDefinitionName);
     }
 
     @Override
@@ -187,6 +200,7 @@ public class ProcessInstanceImpl extends ApplicationElementImpl implements Proce
                 ", businessKey='" + businessKey + '\'' +
                 ", status=" + status +
                 ", processDefinitionVersion='" + processDefinitionVersion + '\'' +
+                ", processDefinitionName='" + processDefinitionName + '\'' +
                 '}';
     }
 }

@@ -48,5 +48,7 @@ public interface ProcessInstance extends ApplicationElement {
     String getParentId();
     
     Integer getProcessDefinitionVersion();
+    
+    String getProcessDefinitionName();
 
 }
