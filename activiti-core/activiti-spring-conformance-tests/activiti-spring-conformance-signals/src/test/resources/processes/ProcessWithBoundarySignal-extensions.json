@@ -1,0 +1,15 @@
+{
+  "id":"ProcessWithBoundarySignalModel",
+  "name":"myProcess234.bpmn",
+  "extensions": {
+    "ProcessWithBoundarySignal": {
+      "properties": {},
+      "mappings": {
+        "sid-864EA2C0-9EF1-4E6F-B6C4-FD0542B1F807": {
+          "mappingType": "MAP_ALL"
+        }
+      },
+      "constants": {}
+    }
+  }
+}
