@@ -23,6 +23,7 @@ import static org.awaitility.Awaitility.await;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import org.activiti.api.model.shared.event.RuntimeEvent;
 import org.activiti.api.model.shared.model.VariableInstance;
@@ -1483,6 +1484,28 @@ public class TaskRuntimeMultiInstanceIT {
         taskBaseRuntime.completeTask(tasks.get(1), singletonMap("meal", mealForSecondTask));
     }
 
+    @Test
+    public void parallelMultiInstance_should_collectAllTaskVariables_when_noOutputDataItem() {
+        //given
+        ProcessInstance processInstance = processBaseRuntime.startProcessWithProcessDefinitionKey("miParallelUserTasksAllOutputCollection");
+        List<Task> tasks = taskBaseRuntime.getTasks(processInstance);
+        assertThat(tasks).hasSize(2);
+        taskBaseRuntime.completeTask(tasks.get(0), Map.of("meal", "pizza", "size", "small"));
+        taskBaseRuntime.completeTask(tasks.get(1), Map.of("meal", "pasta", "size", "medium"));
+
+
+        //when
+        List<VariableInstance> variables = processBaseRuntime.getVariables(processInstance);
+
+        //then
+        assertThat(variables)
+            .extracting(VariableInstance::getName, VariableInstance::getValue)
+            .contains(
+                tuple("miResult",
+                    asList(
+                        Map.of("meal", "pizza", "size", "small"),
+                        Map.of("meal", "pasta", "size", "medium"))));
+    }
 
     @Test
     public void sequentialMultiInstance_should_collectOutputValues() {
@@ -1504,10 +1527,32 @@ public class TaskRuntimeMultiInstanceIT {
     }
 
     @Test
+    public void sequentialMultiInstance_should_collectAllTaskVariables_when_noOutputDataItem() {
+        ProcessInstance processInstance = processBaseRuntime.startProcessWithProcessDefinitionKey("miSequentialUserTasksAllOutputCollection");
+
+        List<Task> tasks = taskBaseRuntime.getTasks(processInstance);
+        assertThat(tasks).hasSize(1);
+        taskBaseRuntime.completeTask(tasks.get(0), Map.of("meal", "pizza", "size", "small"));
+
+        tasks = taskBaseRuntime.getTasks(processInstance);
+        assertThat(tasks).hasSize(1);
+        taskBaseRuntime.completeTask(tasks.get(0), Map.of("meal", "pasta", "size", "medium"));
+
+        List<VariableInstance> variables = processBaseRuntime.getVariables(processInstance);
+
+        assertThat(variables)
+            .extracting(VariableInstance::getName, VariableInstance::getValue)
+            .contains(tuple("miResult",
+                asList(
+                    Map.of("meal", "pizza", "size", "small"),
+                    Map.of("meal", "pasta", "size", "medium"))));
+    }
+
+    @Test
     public void parallelMultiInstance_should_collectOutputValuesForServiceTask() {
         //given
         ProcessInstance processInstance = processBaseRuntime
-            .startProcessWithProcessDefinitionKey("process-with-multi-instance-result-collection");
+            .startProcessWithProcessDefinitionKey("multi-instance-service-task-result-collection-data-item");
 
         //when
         List<VariableInstance> variables = processBaseRuntime
@@ -1524,6 +1569,25 @@ public class TaskRuntimeMultiInstanceIT {
             .orElse(null);
         List<String> mealValues = meals.getValue();
         assertThat(mealValues).containsExactlyInAnyOrder("pizza", "pasta");
+    }
+
+    @Test
+    public void parallelMultiInstance_should_collectAllOutputValuesForServiceTask_when_noDataItem() {
+        //given
+        ProcessInstance processInstance = processBaseRuntime
+            .startProcessWithProcessDefinitionKey("multi-instance-service-task-result-collection-all");
+
+        //when
+        List<VariableInstance> variables = processBaseRuntime
+            .getProcessVariablesByProcessId(processInstance.getId());
+
+        //then
+        assertThat(variables)
+            .extracting(VariableInstance::getName, VariableInstance::getValue)
+            .contains(tuple("miResult",
+                asList(
+                    Map.of("meal", "pizza", "size", "small"),
+                    Map.of("meal", "pasta", "size", "medium"))));
     }
 
 

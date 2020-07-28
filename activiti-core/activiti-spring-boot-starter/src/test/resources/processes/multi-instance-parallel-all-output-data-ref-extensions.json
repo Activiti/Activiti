@@ -1,0 +1,16 @@
+{
+  "id":"miParallelUserTasksAllOutputCollection-model",
+  "name":"miParallelUserTasksAllOutputCollection",
+  "extensions": {
+    "miParallelUserTasksAllOutputCollection": {
+      "mappings": {
+        "miTasks": {
+          "inputs": {
+          },
+          "outputs": {
+          }
+        }
+      }
+    }
+  }
+}

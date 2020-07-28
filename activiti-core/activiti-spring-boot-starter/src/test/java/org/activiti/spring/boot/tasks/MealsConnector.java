@@ -28,11 +28,14 @@ public class MealsConnector implements Connector {
 
     private List<String> meals = Arrays.asList("pizza", "pasta");
 
+    private List<String> sizes = Arrays.asList("small", "medium");
+
     @Override
     public IntegrationContext apply(
         IntegrationContext integrationContext) {
         int remainder = currentMealIndex.getAndIncrement() % meals.size();
         integrationContext.addOutBoundVariable("meal", meals.get(remainder));
+        integrationContext.addOutBoundVariable("size", sizes.get(remainder));
         return integrationContext;
     }
 

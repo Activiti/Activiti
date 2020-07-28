@@ -110,7 +110,7 @@ public class BpmnActivityBehavior implements Serializable {
     private void propagateVariablesToParent(ExecutionEntity execution) {
         ExecutionEntity parentExecution = execution.getParent();
         if (parentExecution != null) {
-            parentExecution.setVariablesLocal(variablesCalculator
+            parentExecution.setVariables(variablesCalculator
                 .calculateOutPutVariables(buildMappingExecutionContext(execution), execution.getVariablesLocal()));
         }
     }
