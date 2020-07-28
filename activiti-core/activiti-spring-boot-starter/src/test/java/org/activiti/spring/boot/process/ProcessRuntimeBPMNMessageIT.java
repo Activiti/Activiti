@@ -22,7 +22,6 @@ import static org.assertj.core.api.Assertions.tuple;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import org.activiti.api.model.shared.event.RuntimeEvent;
 import org.activiti.api.model.shared.model.VariableInstance;
 import org.activiti.api.process.model.ProcessInstance;
