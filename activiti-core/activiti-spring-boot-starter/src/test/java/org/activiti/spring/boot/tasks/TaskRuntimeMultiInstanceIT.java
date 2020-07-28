@@ -57,7 +57,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
-@ActiveProfiles(ProcessRuntimeBPMNTimerIT.PROCESS_RUNTIME_BPMN_TIMER_IT)
+@ActiveProfiles({ProcessRuntimeBPMNTimerIT.PROCESS_RUNTIME_BPMN_TIMER_IT, "multi-instance"})
 @Import({TimerTestConfigurator.class,
         MealsConnectorConfiguration.class})
 public class TaskRuntimeMultiInstanceIT {
