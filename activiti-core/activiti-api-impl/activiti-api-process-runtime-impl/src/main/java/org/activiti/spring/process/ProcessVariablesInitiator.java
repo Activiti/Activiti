@@ -88,12 +88,13 @@ public class ProcessVariablesInitiator extends ProcessInstanceHelper {
 
         if (processExtensionService.hasExtensionsFor(processDefinition)) {
 
-            processVariables.putAll(variablesCalculator.calculateOutPutVariables(MappingExecutionContext.buildMappingExecutionContext(
+            processVariables = variablesCalculator.calculateOutPutVariables(MappingExecutionContext.buildMappingExecutionContext(
                 processDefinition.getId(),
                 initialFlowElement.getId()),
-                variables));
+                variables);
 
-            processVariables.putAll(calculateVariablesFromExtensionFile(processDefinition, processVariables));
+            processVariables = calculateVariablesFromExtensionFile(processDefinition,
+                processVariables);
         }
         return processVariables;
     }
