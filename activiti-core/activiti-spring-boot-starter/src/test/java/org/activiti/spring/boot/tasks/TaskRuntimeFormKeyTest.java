@@ -35,7 +35,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
-@ContextConfiguration
 public class TaskRuntimeFormKeyTest {
 
     private static final String SINGLE_TASK_PROCESS = "SingleTaskProcess";

@@ -17,21 +17,20 @@ package org.activiti.spring.boot.security.util;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.Collection;
 import org.activiti.api.runtime.shared.security.SecurityManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.TestComponent;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.context.SecurityContextImpl;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.stereotype.Component;
 
-import java.util.Collection;
-
-@TestComponent
+@Component
 public class SecurityUtil {
 
     private Logger logger = LoggerFactory.getLogger(SecurityUtil.class);

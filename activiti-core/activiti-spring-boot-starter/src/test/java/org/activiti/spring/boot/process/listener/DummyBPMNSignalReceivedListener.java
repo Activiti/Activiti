@@ -20,9 +20,9 @@ import java.util.List;
 
 import org.activiti.api.process.model.events.BPMNSignalReceivedEvent;
 import org.activiti.api.process.runtime.events.listener.BPMNElementEventListener;
-import org.springframework.boot.test.context.TestComponent;
+import org.springframework.stereotype.Component;
 
-@TestComponent
+@Component
 public class DummyBPMNSignalReceivedListener implements BPMNElementEventListener<BPMNSignalReceivedEvent> {
 
     private List<BPMNSignalReceivedEvent> signalReceivedEvents = new LinkedList<>();

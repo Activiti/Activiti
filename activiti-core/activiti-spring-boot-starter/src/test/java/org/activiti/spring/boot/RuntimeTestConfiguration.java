@@ -44,27 +44,16 @@ import org.activiti.api.task.runtime.events.TaskCreatedEvent;
 import org.activiti.api.task.runtime.events.TaskUpdatedEvent;
 import org.activiti.api.task.runtime.events.listener.TaskRuntimeEventListener;
 import org.activiti.core.common.spring.identity.ExtendedInMemoryUserDetailsManager;
-import org.activiti.spring.boot.process.ProcessBaseRuntime;
-import org.activiti.spring.boot.security.util.SecurityUtil;
-import org.activiti.spring.boot.tasks.TaskBaseRuntime;
-import org.activiti.spring.boot.test.util.ProcessCleanUpUtil;
-import org.activiti.spring.boot.test.util.TaskCleanUpUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 @Configuration
-@Import({ProcessCleanUpUtil.class,
-         TaskCleanUpUtil.class,
-         SecurityUtil.class,
-         ProcessBaseRuntime.class,
-         TaskBaseRuntime.class})
 public class RuntimeTestConfiguration {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RuntimeTestConfiguration.class);

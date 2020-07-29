@@ -43,7 +43,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
-@ContextConfiguration
 public class ProcessExtensionsJsonVarsTest {
 
     private static final String JSON_VARS_PROCESS = "jsonVarsProcess";

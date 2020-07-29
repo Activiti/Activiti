@@ -22,9 +22,9 @@ import org.activiti.api.runtime.shared.query.Page;
 import org.activiti.api.runtime.shared.query.Pageable;
 import org.activiti.spring.boot.security.util.SecurityUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.TestComponent;
+import org.springframework.stereotype.Component;
 
-@TestComponent
+@Component
 public class ProcessCleanUpUtil {
 
     @Autowired

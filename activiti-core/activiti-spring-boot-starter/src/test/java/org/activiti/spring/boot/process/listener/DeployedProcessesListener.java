@@ -23,9 +23,9 @@ import java.util.Map;
 import org.activiti.api.process.model.ProcessDefinition;
 import org.activiti.api.process.model.events.ProcessDeployedEvent;
 import org.activiti.api.process.runtime.events.listener.ProcessRuntimeEventListener;
-import org.springframework.boot.test.context.TestComponent;
+import org.springframework.stereotype.Component;
 
-@TestComponent
+@Component
 public class DeployedProcessesListener implements ProcessRuntimeEventListener<ProcessDeployedEvent> {
 
     private List<ProcessDefinition> deployedProcesses = new ArrayList<>();

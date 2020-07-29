@@ -28,7 +28,6 @@ import java.io.File;
 import java.util.List;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
-@Import(DeployedProcessesListener.class)
 public class ProcessDeployedEventIT {
 
     private static final String CATEGORIZE_PROCESS = "categorizeProcess";

@@ -17,11 +17,11 @@ package org.activiti.spring.boot.process;
 
 import org.activiti.spring.SpringProcessEngineConfiguration;
 import org.activiti.spring.boot.ProcessEngineConfigurationConfigurer;
-import org.springframework.boot.test.context.TestComponent;
 import org.springframework.context.annotation.Profile;
+import org.springframework.stereotype.Component;
 
 @Profile(ProcessRuntimeBPMNTimerIT.PROCESS_RUNTIME_BPMN_TIMER_IT)
-@TestComponent
+@Component
 public class TimerTestConfigurator implements ProcessEngineConfigurationConfigurer {
 
     @Override

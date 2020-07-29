@@ -40,7 +40,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
-@Import(DummyBPMNSignalReceivedListener.class)
 public class ProcessRuntimeBPMNSignalReceivedIT {
 
     private static final String PROCESS_WITH_BOUNDARY_SIGNAL = "ProcessWithBoundarySignal";

@@ -22,9 +22,9 @@ import org.activiti.api.task.model.builders.TaskPayloadBuilder;
 import org.activiti.api.task.runtime.TaskAdminRuntime;
 import org.activiti.spring.boot.security.util.SecurityUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.TestComponent;
+import org.springframework.stereotype.Component;
 
-@TestComponent
+@Component
 public class TaskCleanUpUtil {
 
     @Autowired
