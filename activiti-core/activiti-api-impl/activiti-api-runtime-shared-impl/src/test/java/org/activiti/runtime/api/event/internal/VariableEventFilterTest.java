@@ -59,7 +59,7 @@ public class VariableEventFilterTest {
     }
 
     @Test
-    public void should_EmmitEvent_when_taskIdIsSet() {
+    public void should_EmmitEvent_when_executionIdIsNotEqualsToProcessInstanceIdAndTaskIdIsSet() {
         //given
         ActivitiVariableEventImpl event = new ActivitiVariableEventImpl(
             ActivitiEventType.VARIABLE_CREATED);
@@ -74,5 +74,20 @@ public class VariableEventFilterTest {
         assertThat(shouldEmmitEvent).isTrue();
     }
 
+    @Test
+    public void should_EmmitEvent_when_executionIdAndProcessInstanceIdAreNotSetAndTaskIdIsSet() {
+        //given
+        ActivitiVariableEventImpl event = new ActivitiVariableEventImpl(
+            ActivitiEventType.VARIABLE_CREATED);
+        event.setExecutionId(null);
+        event.setProcessInstanceId(null);
+        event.setTaskId("taskId");
+
+        //when
+        boolean shouldEmmitEvent = variableEventFilter.shouldEmmitEvent(event);
+
+        //then
+        assertThat(shouldEmmitEvent).isTrue();
+    }
 
 }
