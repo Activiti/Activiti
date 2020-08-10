@@ -13,8 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.activiti.runtime.api.event.internal;
 
+import java.util.List;
 import org.activiti.api.model.shared.event.VariableUpdatedEvent;
 import org.activiti.api.runtime.shared.events.VariableEventListener;
 import org.activiti.engine.delegate.event.ActivitiEvent;
@@ -22,31 +24,37 @@ import org.activiti.engine.delegate.event.ActivitiEventListener;
 import org.activiti.engine.delegate.event.ActivitiVariableEvent;
 import org.activiti.runtime.api.event.impl.ToVariableUpdatedConverter;
 
-import java.util.List;
-
 public class VariableUpdatedListenerDelegate implements ActivitiEventListener {
 
     private final List<VariableEventListener<VariableUpdatedEvent>> listeners;
 
     private final ToVariableUpdatedConverter converter;
 
-    public VariableUpdatedListenerDelegate(List<VariableEventListener<VariableUpdatedEvent>> listeners,
-                                           ToVariableUpdatedConverter converter) {
+    private final VariableEventFilter variableEventFilter;
+
+    public VariableUpdatedListenerDelegate(
+        List<VariableEventListener<VariableUpdatedEvent>> listeners,
+        ToVariableUpdatedConverter converter,
+        VariableEventFilter variableEventFilter) {
         this.listeners = listeners;
         this.converter = converter;
+        this.variableEventFilter = variableEventFilter;
     }
 
     @Override
     public void onEvent(ActivitiEvent event) {
         if (event instanceof ActivitiVariableEvent) {
-            converter.from((ActivitiVariableEvent) event)
+            ActivitiVariableEvent internalEvent = (ActivitiVariableEvent) event;
+            if (variableEventFilter.shouldEmmitEvent(internalEvent)) {
+                converter.from(internalEvent)
                     .ifPresent(convertedEvent -> {
                         if (listeners != null) {
-                            for ( VariableEventListener<VariableUpdatedEvent> listener : listeners ) {
+                            for (VariableEventListener<VariableUpdatedEvent> listener : listeners) {
                                 listener.onEvent(convertedEvent);
                             }
                         }
                     });
+            }
         }
     }
 
