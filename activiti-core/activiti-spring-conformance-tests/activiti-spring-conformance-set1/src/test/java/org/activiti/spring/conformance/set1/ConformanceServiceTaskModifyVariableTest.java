@@ -116,7 +116,6 @@ public class ConformanceServiceTaskModifyVariableTest {
                         BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
                         BPMNSequenceFlowTakenEvent.SequenceFlowEvents.SEQUENCE_FLOW_TAKEN,
                         BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
-                        VariableEvent.VariableEvents.VARIABLE_CREATED,
                         VariableEvent.VariableEvents.VARIABLE_UPDATED,
                         BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
                         BPMNSequenceFlowTakenEvent.SequenceFlowEvents.SEQUENCE_FLOW_TAKEN,
@@ -124,7 +123,7 @@ public class ConformanceServiceTaskModifyVariableTest {
                         BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
                         ProcessRuntimeEvent.ProcessEvents.PROCESS_COMPLETED);
 
-        assertThat((String)((VariableUpdatedEvent)RuntimeTestConfiguration.collectedEvents.get(8)).getEntity().getValue()).isEqualTo("value1-modified");
+        assertThat((String)((VariableUpdatedEvent)RuntimeTestConfiguration.collectedEvents.get(7)).getEntity().getValue()).isEqualTo("value1-modified");
 
     }
 
