@@ -74,4 +74,6 @@ public interface Task extends ApplicationElement {
     List<String> getCandidateUsers();
 
     List<String> getCandidateGroups();
+
+    String getProcessDefinitionName();
 }

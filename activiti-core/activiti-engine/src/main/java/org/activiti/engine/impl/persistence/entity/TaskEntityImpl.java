@@ -100,6 +100,8 @@ public class TaskEntityImpl extends VariableScopeImpl implements TaskEntity, Ser
 
   protected String businessKey;
 
+  protected String processDefinitionName;
+
   public TaskEntityImpl() {
 
   }
@@ -441,6 +443,14 @@ public class TaskEntityImpl extends VariableScopeImpl implements TaskEntity, Ser
 
   public void setProcessDefinitionId(String processDefinitionId) {
     this.processDefinitionId = processDefinitionId;
+  }
+
+  public String getProcessDefinitionName() {
+    return processDefinitionName;
+  }
+
+  public void setProcessDefinitionName(String processDefinitionName) {
+    this.processDefinitionName = processDefinitionName;
   }
 
   public String getAssignee() {

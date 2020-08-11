@@ -45,6 +45,7 @@ public class TaskImpl extends ApplicationElementImpl implements Task {
     private String taskDefinitionKey;
     private List<String> candidateUsers;
     private List<String> candidateGroups;
+    private String processDefinitionName;
 
     public TaskImpl() {
     }
@@ -252,6 +253,15 @@ public class TaskImpl extends ApplicationElementImpl implements Task {
     }
     
     @Override
+    public String getProcessDefinitionName() {
+        return processDefinitionName;
+    }
+
+    public void setProcessDefinitionName(String processDefinitionName) {
+        this.processDefinitionName = processDefinitionName;
+    }
+    
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -298,7 +308,9 @@ public class TaskImpl extends ApplicationElementImpl implements Task {
                 Objects.equals(businessKey,
                                task.businessKey) &&
                 Objects.equals(taskDefinitionKey,
-                               task.taskDefinitionKey);
+                               task.taskDefinitionKey) &&
+                Objects.equals(processDefinitionName,
+                        task.processDefinitionName);
     }
 
     @Override
@@ -322,7 +334,8 @@ public class TaskImpl extends ApplicationElementImpl implements Task {
                             duration,
                             processDefinitionVersion,
                             businessKey,
-                            taskDefinitionKey);
+                            taskDefinitionKey,
+                            processDefinitionName);
     }
 
     @Override
@@ -345,6 +358,7 @@ public class TaskImpl extends ApplicationElementImpl implements Task {
                 ", processDefinitionVersion=" + processDefinitionVersion +
                 ", businessKey=" + businessKey +
                 ", taskDefinitionKey=" + taskDefinitionKey +
+                ", processDefinitionName=" + processDefinitionName +
                 '}';
     }
 
