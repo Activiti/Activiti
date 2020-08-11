@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.activiti.runtime.api.event.internal;
 
 import org.activiti.api.model.shared.event.VariableCreatedEvent;
@@ -30,23 +31,31 @@ public class VariableCreatedListenerDelegate implements ActivitiEventListener {
 
     private final ToVariableCreatedConverter converter;
 
-    public VariableCreatedListenerDelegate(List<VariableEventListener<VariableCreatedEvent>> listeners,
-                                           ToVariableCreatedConverter converter) {
+    private final VariableEventFilter variableEventFilter;
+
+    public VariableCreatedListenerDelegate(
+        List<VariableEventListener<VariableCreatedEvent>> listeners,
+        ToVariableCreatedConverter converter,
+        VariableEventFilter variableEventFilter) {
         this.listeners = listeners;
         this.converter = converter;
+        this.variableEventFilter = variableEventFilter;
     }
 
     @Override
     public void onEvent(ActivitiEvent event) {
         if (event instanceof ActivitiVariableEvent) {
-            converter.from((ActivitiVariableEvent) event)
+            ActivitiVariableEvent internalEvent = (ActivitiVariableEvent) event;
+            if (variableEventFilter.shouldEmmitEvent(internalEvent)) {
+                converter.from(internalEvent)
                     .ifPresent(convertedEvent -> {
                         if (listeners != null) {
-                            for ( VariableEventListener<VariableCreatedEvent> listener : listeners ) {
+                            for (VariableEventListener<VariableCreatedEvent> listener : listeners) {
                                 listener.onEvent(convertedEvent);
                             }
                         }
                     });
+            }
         }
     }
 
