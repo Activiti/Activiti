@@ -22,7 +22,6 @@ import static org.assertj.core.api.Assertions.tuple;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.activiti.api.model.shared.event.RuntimeEvent;
 import org.activiti.api.model.shared.model.VariableInstance;
 import org.activiti.api.process.model.ProcessInstance;
@@ -33,8 +32,8 @@ import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
 import org.activiti.api.process.model.events.BPMNMessageEvent;
 import org.activiti.api.process.model.events.MessageSubscriptionCancelledEvent;
 import org.activiti.api.process.model.events.MessageSubscriptionEvent;
-import org.activiti.api.process.model.events.StartMessageDeployedEvent;
 import org.activiti.api.process.model.events.ProcessRuntimeEvent;
+import org.activiti.api.process.model.events.StartMessageDeployedEvent;
 import org.activiti.api.process.runtime.ProcessRuntime;
 import org.activiti.api.process.runtime.events.listener.ProcessRuntimeEventListener;
 import org.activiti.api.runtime.event.impl.StartMessageDeployedEvents;
@@ -45,7 +44,10 @@ import org.activiti.api.task.model.builders.TaskPayloadBuilder;
 import org.activiti.api.task.model.events.TaskRuntimeEvent;
 import org.activiti.api.task.runtime.TaskRuntime;
 import org.activiti.engine.ActivitiObjectNotFoundException;
+import org.activiti.spring.boot.Application;
 import org.activiti.spring.boot.MessageTestConfiguration;
+import org.activiti.spring.boot.process.ProcessRuntimeBPMNMessageIT.TestStartMessageDeployedApplicationEventListener;
+import org.activiti.spring.boot.process.ProcessRuntimeBPMNMessageIT.TestStartMessageDeployedRuntimeEventListener;
 import org.activiti.spring.boot.security.util.SecurityUtil;
 import org.activiti.spring.boot.tasks.TaskBaseRuntime;
 import org.activiti.spring.boot.test.util.ProcessCleanUpUtil;
@@ -56,13 +58,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.TestComponent;
-import org.springframework.context.annotation.Import;
 import org.springframework.context.event.EventListener;
+import org.springframework.stereotype.Component;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
-@Import({ProcessRuntimeBPMNMessageIT.TestStartMessageDeployedRuntimeEventListener.class,
-         ProcessRuntimeBPMNMessageIT.TestStartMessageDeployedApplicationEventListener.class})
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE,
+    classes = {Application.class,
+        TestStartMessageDeployedRuntimeEventListener.class,
+        TestStartMessageDeployedApplicationEventListener.class})
 public class ProcessRuntimeBPMNMessageIT {
 
     private static final String EVENT_GATEWAY_MESSAGE = "eventGatewayMessage";
@@ -83,7 +85,7 @@ public class ProcessRuntimeBPMNMessageIT {
 
     private static final String CATCH_MESSAGE_PAYLOAD = "Process_catchMessagePayload";
 
-    @TestComponent
+    @Component
     public static class TestStartMessageDeployedRuntimeEventListener implements ProcessRuntimeEventListener<StartMessageDeployedEvent>{
         private List<StartMessageDeployedEvent> startMessageDeployedEvents = new ArrayList<>();
 
@@ -97,7 +99,7 @@ public class ProcessRuntimeBPMNMessageIT {
         }
     }
 
-    @TestComponent
+    @Component
     public static class TestStartMessageDeployedApplicationEventListener {
         private List<StartMessageDeployedEvent> startMessageDeployedEvents = new ArrayList<>();
 

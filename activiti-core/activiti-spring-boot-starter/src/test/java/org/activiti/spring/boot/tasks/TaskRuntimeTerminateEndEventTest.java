@@ -15,8 +15,9 @@
  */
 package org.activiti.spring.boot.tasks;
 
-import java.util.List;
+import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.List;
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.task.model.Task;
 import org.activiti.api.task.runtime.events.TaskCancelledEvent;
@@ -29,12 +30,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ContextConfiguration;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
-@ContextConfiguration
 public class TaskRuntimeTerminateEndEventTest {
 
     private static final String TASK_PROCESS_TERMINATE_EVENT = "ProcessTerminateEvent";
