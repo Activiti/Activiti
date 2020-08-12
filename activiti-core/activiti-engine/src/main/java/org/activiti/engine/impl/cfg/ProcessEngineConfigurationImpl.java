@@ -16,6 +16,7 @@
 
 package org.activiti.engine.impl.cfg;
 
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -1949,6 +1950,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       variableTypes.addType(new UUIDType());
       variableTypes.addType(new BigDecimalType());
 
+        objectMapper.registerModule(new JavaTimeModule());
         objectMapper.configOverride(BigDecimal.class)
             .setFormat(JsonFormat.Value.forShape(JsonFormat.Shape.STRING));
       JsonTypeConverter jsonTypeConverter = new JsonTypeConverter(objectMapper,

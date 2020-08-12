@@ -25,8 +25,8 @@ public class JsonTypeConverter {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JsonType.class);
 
-    private ObjectMapper objectMapper;
-    private String javaClassFieldForJackson;
+    private final ObjectMapper objectMapper;
+    private final String javaClassFieldForJackson;
 
     public JsonTypeConverter(ObjectMapper objectMapper, String javaClassFieldForJackson) {
         this.objectMapper = objectMapper;

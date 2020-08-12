@@ -24,15 +24,27 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import org.junit.Before;
 import org.junit.Test;
 
 public class JsonTypeConverterTest {
 
     private static final String TYPE_PROPERTY_NAME = "@class";
-    private static ObjectMapper objectMapper = new ObjectMapper();
 
-    private JsonTypeConverter converter = new JsonTypeConverter(objectMapper, TYPE_PROPERTY_NAME);
+    private ObjectMapper objectMapper;
+    private JsonTypeConverter converter;
+
+    @Before
+    public void setUp() throws Exception {
+        objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        converter = new JsonTypeConverter(objectMapper, TYPE_PROPERTY_NAME);
+    }
 
     @Test
     public void should_convertToList() throws Exception {
@@ -74,6 +86,38 @@ public class JsonTypeConverterTest {
         assertThat(convertedValue).isInstanceOf(Person.class);
         assertThat(((Person) convertedValue).getFirstName()).isEqualTo("John");
         assertThat(((Person) convertedValue).getLastName()).isEqualTo("Doe");
+    }
+
+    @Test
+    public void should_convertLocalDateTime() throws Exception {
+        //given
+        LocalDateTime localDateTime = LocalDateTime.parse("2020-08-12T12:00", DateTimeFormatter.ISO_DATE_TIME);
+        String json = objectMapper.writeValueAsString(localDateTime.toString());
+
+        JsonNode jsonNode = objectMapper.readTree(json);
+
+        //when
+        Object convertedValue = converter.convertToValue(jsonNode, buildValueFields("localDateTime", localDateTime));
+
+        //then
+        assertThat(convertedValue).isInstanceOf(LocalDateTime.class);
+        assertThat(((LocalDateTime) convertedValue).toString()).isEqualTo("2020-08-12T12:00");
+    }
+
+    @Test
+    public void should_convertLocalDate() throws Exception {
+        //given
+        LocalDate localDate = LocalDate.parse("2020-08-12", DateTimeFormatter.ISO_DATE);
+        String json = objectMapper.writeValueAsString(localDate.toString());
+
+        JsonNode jsonNode = objectMapper.readTree(json);
+
+        //when
+        Object convertedValue = converter.convertToValue(jsonNode, buildValueFields("localDate", localDate));
+
+        //then
+        assertThat(convertedValue).isInstanceOf(LocalDate.class);
+        assertThat(((LocalDate) convertedValue).toString()).isEqualTo("2020-08-12");
     }
 
     @JsonTypeInfo(property = TYPE_PROPERTY_NAME, use = Id.CLASS)
