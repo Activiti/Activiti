@@ -300,6 +300,8 @@ import org.activiti.engine.impl.variable.JodaDateTimeType;
 import org.activiti.engine.impl.variable.JodaDateType;
 import org.activiti.engine.impl.variable.JsonType;
 import org.activiti.engine.impl.variable.JsonTypeConverter;
+import org.activiti.engine.impl.variable.LocalDateTimeType;
+import org.activiti.engine.impl.variable.LocalDateType;
 import org.activiti.engine.impl.variable.LongJsonType;
 import org.activiti.engine.impl.variable.LongStringType;
 import org.activiti.engine.impl.variable.LongType;
@@ -1943,6 +1945,8 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       variableTypes.addType(new IntegerType());
       variableTypes.addType(new LongType());
       variableTypes.addType(new DateType());
+      variableTypes.addType(new LocalDateTimeType());
+      variableTypes.addType(new LocalDateType());
       variableTypes.addType(new JodaDateType());
       variableTypes.addType(new JodaDateTimeType());
       variableTypes.addType(new DoubleType());
