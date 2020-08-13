@@ -22,6 +22,8 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.activiti.api.model.shared.model.VariableInstance;
@@ -756,14 +758,18 @@ public class ProcessRuntimeIT {
 
 
     @Test
-    public void should_handleBigDecimalAndDoubleVariables() {
+    public void should_handleBigDecimalAndDoubleAndLocalDateTimeVariables() {
         //given
         BigDecimal bigDecimalValue = BigDecimal.valueOf(100000, 3);
         double doubleValue = 2.0;
+        LocalDateTime localDateTime = LocalDateTime.parse("2020-08-12T12:00:00");
+        LocalDate localDate = LocalDate.parse("2020-08-10");
         ProcessInstance processInstance = processRuntime.start(ProcessPayloadBuilder.start()
             .withProcessDefinitionKey(CATEGORIZE_HUMAN_PROCESS)
             .withVariable("bigDecimalVar", bigDecimalValue)
             .withVariable("doubleVar", doubleValue)
+            .withVariable("localDateTimeVar", localDateTime)
+            .withVariable("localDateVar", localDate)
             .build());
 
         //when
@@ -778,7 +784,9 @@ public class ProcessRuntimeIT {
                 VariableInstance::getType)
             .contains(
                 tuple("bigDecimalVar", bigDecimalValue, "bigdecimal"),
-                tuple("doubleVar", doubleValue, "double")
+                tuple("doubleVar", doubleValue, "double"),
+                tuple("localDateTimeVar", localDateTime, "localDateTime"),
+                tuple("localDateVar", localDate, "localDate")
                 );
     }
 }
