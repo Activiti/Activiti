@@ -141,6 +141,6 @@ Running on Travis, requires the following environment variable to be set:
 | MAVEN_USERNAME | Internal Maven repository username |
 | MAVEN_PASSWORD | Internal Maven repository password |
 | GITHUB_TOKEN | Github token for git service account |
-| JX_RELEASE_VERSION | Jx realease version 1.0.24     |
+| JX_RELEASE_VERSION | Jx release version 1.0.24     |
 | UPDATEBOT_VERSION | Version of updatebot 1.1.53     |
 
