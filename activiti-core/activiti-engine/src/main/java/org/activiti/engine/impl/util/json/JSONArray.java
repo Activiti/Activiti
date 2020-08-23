@@ -713,7 +713,7 @@ public class JSONArray {
    *          The Map value.
    * @return this.
    * @throws JSONException
-   *           If the index is negative or if the the value is an invalid number.
+   *           If the index is negative or if the value is an invalid number.
    */
   public JSONArray put(int index, Map value) throws JSONException {
     put(index, new JSONObject(value));
@@ -729,7 +729,7 @@ public class JSONArray {
    *          The value to put into the array. The value should be a Boolean, Double, Integer, JSONArray, JSONObject, Long, or String, or the JSONObject.NULL object.
    * @return this.
    * @throws JSONException
-   *           If the index is negative or if the the value is an invalid number.
+   *           If the index is negative or if the value is an invalid number.
    */
   public JSONArray put(int index, Object value) throws JSONException {
     JSONObject.testValidity(value);

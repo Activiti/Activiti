@@ -342,7 +342,7 @@ public class FullHistoryTest extends ResourceActivitiTestCase {
         assertThat(startVarUpdate.getValue()).isEqualTo("initial value");
         assertThat(startVarUpdate.getRevision()).isEqualTo(0);
         assertThat(startVarUpdate.getProcessInstanceId()).isEqualTo(processInstance.getId());
-        // Date should the the one set when starting
+        // Date should the one set when starting
         assertThat(startVarUpdate.getTime()).isEqualTo(startedDate);
 
         HistoricVariableUpdate updatedStringVariable = (HistoricVariableUpdate) details.get(1);

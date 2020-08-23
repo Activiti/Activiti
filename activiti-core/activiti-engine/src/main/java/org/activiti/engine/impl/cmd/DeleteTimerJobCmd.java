@@ -74,7 +74,7 @@ public class DeleteTimerJobCmd implements Command<Object>, Serializable {
     }
 
     // We need to check if the job was locked, ie acquired by the job acquisition thread
-    // This happens if the the job was already acquired, but not yet executed.
+    // This happens if the job was already acquired, but not yet executed.
     // In that case, we can't allow to delete the job.
     if (job.getLockOwner() != null) {
       throw new ActivitiException("Cannot delete timer job when the job is being executed. Try again later.");

@@ -145,7 +145,7 @@ public class TaskRuntimeImpl implements TaskRuntime {
         } catch (IllegalStateException ex) {
             throw new IllegalStateException("The authenticated user cannot complete task" + completeTaskPayload.getTaskId() + " due he/she cannot access to the task");
         }
-        // validate the the task does have an assignee
+        // validate the task does have an assignee
         if (task.getAssignee() == null || task.getAssignee().isEmpty()) {
             throw new IllegalStateException("The task needs to be claimed before trying to complete it");
         }
@@ -173,7 +173,7 @@ public class TaskRuntimeImpl implements TaskRuntime {
         } catch (IllegalStateException ex) {
             throw new IllegalStateException("The authenticated user cannot claim task" + claimTaskPayload.getTaskId() + " due it is not a candidate for it");
         }
-        // validate the the task doesn't have an assignee
+        // validate the task doesn't have an assignee
         if (task.getAssignee() != null && !task.getAssignee().isEmpty()) {
             throw new IllegalStateException("The task was already claimed, the assignee of this task needs to release it first for you to claim it");
         }
@@ -195,7 +195,7 @@ public class TaskRuntimeImpl implements TaskRuntime {
         } catch (IllegalStateException ex) {
             throw new IllegalStateException("The authenticated user cannot release task" + releaseTaskPayload.getTaskId() + " due it is not a candidate for it");
         }
-        // validate the the task doesn't have an assignee
+        // validate the task doesn't have an assignee
         if (task.getAssignee() == null || task.getAssignee().isEmpty()) {
             throw new IllegalStateException("You cannot release a task that is not claimed");
         }
