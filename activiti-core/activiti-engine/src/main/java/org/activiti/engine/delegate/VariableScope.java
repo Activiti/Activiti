@@ -50,7 +50,7 @@ public interface VariableScope {
 
   /**
    * Returns all variables, as instances of the {@link VariableInstance} interface,
-   * which gives more information than only the the value (type, execution id, etc.)
+   * which gives more information than only the value (type, execution id, etc.)
    */
   Map<String, VariableInstance> getVariableInstances();
 
@@ -78,7 +78,7 @@ public interface VariableScope {
   /**
    * Similar to {@link #getVariables(Collection, boolean)} but returns the variables
    * as instances of the {@link VariableInstance} interface,
-   * which gives more information than only the the value (type, execution id, etc.)
+   * which gives more information than only the value (type, execution id, etc.)
    */
   Map<String, VariableInstance> getVariableInstances(Collection<String> variableNames, boolean fetchAllVariables);
 
