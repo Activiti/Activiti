@@ -44,7 +44,7 @@ package org.activiti.engine.impl.util.json;
  * interchange. It is understood by most database, spreadsheet, and organizer programs.
  * <p>
  * Each row of text represents a row in a table or a signalData record. Each row ends with a NEWLINE character. Each row contains one or more values. Values are separated by commas. A value can
- * contain any character except for comma, unless is is wrapped in single quotes or double quotes.
+ * contain any character except for comma, unless it is wrapped in single quotes or double quotes.
  * <p>
  * The first row usually contains the names of the columns.
  * <p>

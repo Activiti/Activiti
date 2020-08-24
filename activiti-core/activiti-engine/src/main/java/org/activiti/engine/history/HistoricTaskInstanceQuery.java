@@ -58,17 +58,17 @@ public interface HistoricTaskInstanceQuery extends TaskInfoQuery<HistoricTaskIns
   HistoricTaskInstanceQuery processUnfinished();
 
   /**
-   * Only select select historic task instances which are completed on the given date
+   * Only select historic task instances which are completed on the given date
    */
   HistoricTaskInstanceQuery taskCompletedOn(Date endDate);
 
   /**
-   * Only select select historic task instances which are completed before the given date
+   * Only select historic task instances which are completed before the given date
    */
   HistoricTaskInstanceQuery taskCompletedBefore(Date endDate);
 
   /**
-   * Only select select historic task instances which are completed after the given date
+   * Only select historic task instances which are completed after the given date
    */
   HistoricTaskInstanceQuery taskCompletedAfter(Date endDate);
 

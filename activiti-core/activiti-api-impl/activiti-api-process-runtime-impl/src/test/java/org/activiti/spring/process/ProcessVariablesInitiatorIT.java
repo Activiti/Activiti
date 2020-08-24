@@ -121,7 +121,7 @@ public class ProcessVariablesInitiatorIT {
             //then
             assertThat(variables)
                     .containsEntry("name", // value for variable "name" has been provided,
-                                   "Peter") // so default value should should be ignored.
+                                   "Peter") // so default value should be ignored.
                     .containsEntry("positionInTheQueue",
                                    10);
         }

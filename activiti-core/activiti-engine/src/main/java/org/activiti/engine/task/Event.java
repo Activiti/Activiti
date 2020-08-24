@@ -65,7 +65,7 @@ public interface Event extends Serializable {
   String getId();
 
   /**
-   * Indicates the type of of action and also indicates the meaning of the parts as exposed in {@link #getMessageParts()}
+   * Indicates the type of action and also indicates the meaning of the parts as exposed in {@link #getMessageParts()}
    */
   String getAction();
 
