@@ -1,25 +1,21 @@
 import: Activiti/activiti-scripts:.travis.java.yml@master
-
 stages:
 - name: verify
 - name: tag_deploy_updatebot
   if: type != pull_request
-
-  
 jobs:
   include:
   - name: Verify build
     stage: verify
     script:
     - mvn verify -B
-    
   - name: Create a tag deploy to nexus run updatebot
     stage: tag_deploy_updatebot
-    script: |
-      mvn versions:set -DnewVersion=$(cat VERSION) -DprocessAllModules=true -DgenerateBackupPoms=false 
-      git add --all
-      git commit -m "Release $(cat VERSION)" --allow-empty
-      git tag -fa v$(cat VERSION) -m "Release version $(cat VERSION)"
-      git push -f -q https://${GITHUB_TOKEN}@github.com/Activiti/Activiti.git v$(cat VERSION)
-      mvn clean deploy -DskipTests
-      export VERSION=$(cat VERSION)| make updatebot/push-version
+    script: "mvn versions:set -DnewVersion=$(cat VERSION) -DprocessAllModules=true
+      -DgenerateBackupPoms=false \ngit add --all\ngit commit -m \"Release $(cat VERSION)\"
+      --allow-empty\ngit tag -fa v$(cat VERSION) -m \"Release version $(cat VERSION)\"\ngit
+      push -f -q https://${GITHUB_TOKEN}@github.com/Activiti/Activiti.git v$(cat VERSION)\nmvn
+      clean deploy -DskipTests\nexport VERSION=$(cat VERSION)| make updatebot/push-version\n"
+notifications:
+  slack:
+    secure: RZ8ULqQgwJnjm88AaleamwqLMposxVytXFjagFtgQzs/zqCSXEnahFV3QVvJACZUdRrReueToDTWswkHuB74Tg0MbcpixDCm6voW4iPJqbnlf+wDz7eF4JFtxS311huXYfv7EA9/lMSCXiOCbsDJZFx+Cb1OmsZlQaJ+g1v24vY=
