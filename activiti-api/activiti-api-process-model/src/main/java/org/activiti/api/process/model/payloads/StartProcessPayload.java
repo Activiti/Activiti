@@ -75,4 +75,24 @@ public class StartProcessPayload implements Payload {
     public void setName(String name) {
         this.name = name;
     }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public void setProcessDefinitionId(String processDefinitionId) {
+        this.processDefinitionId = processDefinitionId;
+    }
+
+    public void setProcessDefinitionKey(String processDefinitionKey) {
+        this.processDefinitionKey = processDefinitionKey;
+    }
+
+    public void setBusinessKey(String businessKey) {
+        this.businessKey = businessKey;
+    }
+
+    public void setVariables(Map<String, Object> variables) {
+        this.variables = variables;
+    }
 }

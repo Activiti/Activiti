@@ -57,4 +57,9 @@ public class CompleteTaskPayload implements Payload {
     public void setVariables(Map<String, Object> variables) {
         this.variables = variables;
     }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
 }
