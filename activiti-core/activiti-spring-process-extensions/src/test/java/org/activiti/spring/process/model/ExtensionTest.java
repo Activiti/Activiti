@@ -22,7 +22,6 @@ import org.mockito.Mock;
 
 import java.util.HashMap;
 
-import static java.util.Collections.emptyMap;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -46,8 +45,8 @@ public class ExtensionTest {
         mapping.put("elementId", processVariablesMapping);
         extension.setMappings(mapping);
 
-        assertThat(extension.hasMappingTypeInputs("elementId")).isTrue();
-        assertThat(extension.hasMappingTypeOutputs("elementId")).isTrue();
+        assertThat(extension.shouldMapAllInputs("elementId")).isTrue();
+        assertThat(extension.shouldMapAllOutputs("elementId")).isTrue();
 
     }
 
@@ -60,8 +59,8 @@ public class ExtensionTest {
         mapping.put("elementId", processVariablesMapping);
         extension.setMappings(mapping);
 
-        assertThat(extension.hasMappingTypeInputs("elementId")).isTrue();
-        assertThat(extension.hasMappingTypeOutputs("elementId")).isFalse();
+        assertThat(extension.shouldMapAllInputs("elementId")).isTrue();
+        assertThat(extension.shouldMapAllOutputs("elementId")).isFalse();
 
     }
 
@@ -74,8 +73,8 @@ public class ExtensionTest {
         mapping.put("elementId", processVariablesMapping);
         extension.setMappings(mapping);
 
-        assertThat(extension.hasMappingTypeInputs("elementId")).isFalse();
-        assertThat(extension.hasMappingTypeOutputs("elementId")).isTrue();
+        assertThat(extension.shouldMapAllInputs("elementId")).isFalse();
+        assertThat(extension.shouldMapAllOutputs("elementId")).isTrue();
 
     }
 

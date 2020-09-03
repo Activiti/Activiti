@@ -156,7 +156,6 @@ public class TaskRuntimeVariableMappingIT {
         ProcessInstance processInstance = processBaseRuntime.startProcessWithProcessDefinitionKey(TASK_NO_MAPPING);
 
         List<Task> tasks = taskBaseRuntime.getTasksByProcessInstanceId(processInstance.getId());
-        assertThat(tasks).isNotEmpty();
         assertThat(tasks).hasSize(1);
 
         Task task = tasks.get(0);
@@ -199,7 +198,6 @@ public class TaskRuntimeVariableMappingIT {
                 tuple("process_variable_outputmap_1",
                     "outputmap1Value"));
 
-        processBaseRuntime.delete(processInstance.getId());
     }
 
     @Test
@@ -266,7 +264,7 @@ public class TaskRuntimeVariableMappingIT {
     }
 
     @Test
-    public void should_sendOnlyInputTaskVariables_when_thereIsMappingTypeMAP_ALL_INPUTS() {
+    public void should_sendAllInputTasksVariablesAndOnlySelectedOuputs_when_thereIsMappingTypeMAP_ALL_INPUTS() {
 
         ProcessInstance processInstance = processBaseRuntime.startProcessWithProcessDefinitionKey(TASK_MAP_ALL_INPUTS);
 
@@ -326,7 +324,7 @@ public class TaskRuntimeVariableMappingIT {
     }
 
     @Test
-    public void should_sendOnlyOutputTaskVariables_when_thereIsMappingTypeMAP_ALL_OUTPUTS() {
+    public void should_sendAllOutputTaskVariablesAndOnlySelectedInputs_when_thereIsMappingTypeMAP_ALL_OUTPUTS() {
 
         ProcessInstance processInstance = processBaseRuntime.startProcessWithProcessDefinitionKey(TASK_MAP_ALL_OUTPUTS);
 

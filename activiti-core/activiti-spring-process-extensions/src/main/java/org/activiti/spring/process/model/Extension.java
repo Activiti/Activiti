@@ -87,14 +87,14 @@ public class Extension {
         return mappings.get(taskId) != null;
     }
 
-    public boolean hasMappingTypeInputs (String elementId) {
+    public boolean shouldMapAllInputs(String elementId) {
         ProcessVariablesMapping processVariablesMapping = mappings.get(elementId);
         return processVariablesMapping.getMappingType() != null &&
             (processVariablesMapping.getMappingType().equals(MappingType.MAP_ALL_INPUTS) ||
             processVariablesMapping.getMappingType().equals(MappingType.MAP_ALL));
     }
 
-    public boolean hasMappingTypeOutputs(String elementId) {
+    public boolean shouldMapAllOutputs(String elementId) {
         ProcessVariablesMapping processVariablesMapping = mappings.get(elementId);
         return processVariablesMapping.getMappingType() != null &&
             (processVariablesMapping.getMappingType().equals(MappingType.MAP_ALL_OUTPUTS) ||

@@ -77,7 +77,7 @@ public class ExtensionsVariablesMappingProvider implements VariablesCalculator {
 
         Map<String, Object> inboundVariables;
 
-        if (extensions.hasMappingTypeInputs(execution.getCurrentActivityId())) {
+        if (extensions.shouldMapAllInputs(execution.getCurrentActivityId())) {
             inboundVariables = execution.getVariables();
         } else {
             inboundVariables = calculateInputVariables(execution, extensions);
@@ -140,7 +140,7 @@ public class ExtensionsVariablesMappingProvider implements VariablesCalculator {
             return emptyMap();
         }
 
-        if (extensions.hasMappingTypeOutputs(mappingExecutionContext.getActivityId())) {
+        if (extensions.shouldMapAllOutputs(mappingExecutionContext.getActivityId())) {
             return (availableVariables != null ? new HashMap<>(availableVariables) : emptyMap());
         }
 
