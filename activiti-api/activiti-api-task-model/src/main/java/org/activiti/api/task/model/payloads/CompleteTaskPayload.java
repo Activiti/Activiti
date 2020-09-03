@@ -58,8 +58,4 @@ public class CompleteTaskPayload implements Payload {
         this.variables = variables;
     }
 
-    public void setId(String id) {
-        this.id = id;
-    }
-
 }

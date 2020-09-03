@@ -76,10 +76,6 @@ public class StartProcessPayload implements Payload {
         this.name = name;
     }
 
-    public void setId(String id) {
-        this.id = id;
-    }
-
     public void setProcessDefinitionId(String processDefinitionId) {
         this.processDefinitionId = processDefinitionId;
     }
