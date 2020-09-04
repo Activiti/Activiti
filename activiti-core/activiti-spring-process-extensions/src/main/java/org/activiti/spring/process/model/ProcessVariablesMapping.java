@@ -22,6 +22,7 @@ import java.util.Map;
 
 public class ProcessVariablesMapping {
 
+    private MappingType mappingType;
     private Map<String, Mapping> inputs = new HashMap<>();
     private Map<String, Mapping> outputs = new HashMap<>();
 
@@ -41,5 +42,19 @@ public class ProcessVariablesMapping {
     }
     public void setOutputs(Map<String, Mapping> outputs) {
         this.outputs = outputs;
+    }
+
+    public MappingType getMappingType() {
+        return mappingType;
+    }
+
+    public void setMappingType(MappingType mappingType) {
+        this.mappingType = mappingType;
+    }
+
+    public enum MappingType {
+        MAP_ALL,
+        MAP_ALL_INPUTS,
+        MAP_ALL_OUTPUTS
     }
 }

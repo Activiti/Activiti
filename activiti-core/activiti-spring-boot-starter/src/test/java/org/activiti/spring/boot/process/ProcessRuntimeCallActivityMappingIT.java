@@ -43,8 +43,8 @@ public class ProcessRuntimeCallActivityMappingIT {
     private static final String PARENT_PROCESS_CALL_ACTIVITY = "parentproc-843144bc-3797-40db-8edc-d23190b118e5";
     private static final String SUB_PROCESS_CALL_ACTIVITY = "subprocess-fb5f2386-709a-4947-9aa0-bbf31497384g";
 
-    private static final String PARENT_PROCESS_CALL_ACTIVITY_EMPTY_MAPPING_NO_TASK = "parentproc-843144bc-3797-40db-8edc-d23190b118e6";
-    private static final String PARENT_PROCESS_CALL_ACTIVITY_EMPTY_MAPPING_WITH_TASK = "parentproc-843144bc-3797-40db-8edc-d23190b118e7";
+    private static final String PARENT_PROCESS_CALL_ACTIVITY_MAP_ALL_NO_TASK = "parentproc-843144bc-3797-40db-8edc-d23190b118e6";
+    private static final String PARENT_PROCESS_CALL_ACTIVITY_NO_MAPPING_WITH_TASK = "parentproc-843144bc-3797-40db-8edc-d23190b118e7";
 
     @Autowired
     private ProcessRuntime processRuntime;
@@ -134,7 +134,7 @@ public class ProcessRuntimeCallActivityMappingIT {
         ProcessInstance processInstance = processRuntime.start(
                 ProcessPayloadBuilder
                         .start()
-                        .withProcessDefinitionKey(PARENT_PROCESS_CALL_ACTIVITY_EMPTY_MAPPING_NO_TASK)
+                        .withProcessDefinitionKey(PARENT_PROCESS_CALL_ACTIVITY_MAP_ALL_NO_TASK)
                         .build());
         assertThat(processInstance).isNotNull();
 
@@ -262,7 +262,7 @@ public class ProcessRuntimeCallActivityMappingIT {
         ProcessInstance processInstance = processRuntime.start(
                 ProcessPayloadBuilder
                         .start()
-                        .withProcessDefinitionKey(PARENT_PROCESS_CALL_ACTIVITY_EMPTY_MAPPING_WITH_TASK)
+                        .withProcessDefinitionKey(PARENT_PROCESS_CALL_ACTIVITY_NO_MAPPING_WITH_TASK)
                         .build());
         assertThat(processInstance).isNotNull();
 

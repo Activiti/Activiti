@@ -279,7 +279,7 @@ public class ProcessRuntimeBPMNMessageIT {
                                                         null,
                                                         process.getBusinessKey(),
                                                         singletonMap("message_variable_name",
-                                                                                 "value")));
+                                                                     "value")));
 
         // and
         List<VariableInstance> variables = processRuntime.variables(ProcessPayloadBuilder.variables()

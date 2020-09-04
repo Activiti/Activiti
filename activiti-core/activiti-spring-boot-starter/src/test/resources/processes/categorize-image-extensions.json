@@ -1,0 +1,15 @@
+{
+  "id":"categorizeProcessModel",
+  "name":"myProcess234.bpmn",
+  "extensions": {
+    "categorizeProcess": {
+      "properties": {},
+      "mappings": {
+        "Task_1ylvdew": {
+          "mappingType": "MAP_ALL"
+        }
+      },
+      "constants": {}
+    }
+  }
+}

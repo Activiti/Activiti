@@ -15,13 +15,13 @@
  */
 package org.activiti.spring.process.model;
 
+import org.activiti.spring.process.model.ProcessVariablesMapping.MappingType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 
 import java.util.HashMap;
 
-import static java.util.Collections.emptyMap;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -34,33 +34,52 @@ public class ExtensionTest {
     @BeforeEach
     public void setUp() {
         initMocks(this);
-        given(processVariablesMapping.getInputs()).willReturn(emptyMap());
-        given(processVariablesMapping.getOutputs()).willReturn(emptyMap());
     }
 
     @Test
-    public void hasEmptyInputsMappingShouldReturnTrueWhenInputsMapIsEmpty() {
-        Extension extension = new Extension();
+    public void should_bothHasMappingTypeInputsAndOutputsReturnTrue_when_thereIsMappingTypeMAP_ALL() {
+        given(processVariablesMapping.getMappingType()).willReturn(MappingType.MAP_ALL);
 
-        HashMap<String, ProcessVariablesMapping> mapping = new HashMap<>();
-        mapping.put("elementId", processVariablesMapping);
-        extension.setMappings(mapping);
-
-        assertThat(extension.hasEmptyInputsMapping("elementId")).isTrue();
-    }
-
-    @Test
-    public void hasEmptyOutputsMappingShouldReturnTrueWhenOutputsMapIsEmpty() {
         Extension extension = new Extension();
         HashMap<String, ProcessVariablesMapping> mapping = new HashMap<>();
         mapping.put("elementId", processVariablesMapping);
         extension.setMappings(mapping);
 
-        assertThat(extension.hasEmptyOutputsMapping("elementId")).isTrue();
+        assertThat(extension.shouldMapAllInputs("elementId")).isTrue();
+        assertThat(extension.shouldMapAllOutputs("elementId")).isTrue();
+
     }
 
     @Test
-    public void hasMappingShouldReturnTrueWhenThereIsMapping() {
+    public void should_onlyHasMappingTypeInputsReturnTrue_when_thereIsMappingTypeMAP_ALL_INPUTS() {
+        given(processVariablesMapping.getMappingType()).willReturn(MappingType.MAP_ALL_INPUTS);
+
+        Extension extension = new Extension();
+        HashMap<String, ProcessVariablesMapping> mapping = new HashMap<>();
+        mapping.put("elementId", processVariablesMapping);
+        extension.setMappings(mapping);
+
+        assertThat(extension.shouldMapAllInputs("elementId")).isTrue();
+        assertThat(extension.shouldMapAllOutputs("elementId")).isFalse();
+
+    }
+
+    @Test
+    public void should_onlyHasMappingTypeOutputsReturnTrue_when_thereIsMappingTypeMAP_ALL_OUTPUTS() {
+        given(processVariablesMapping.getMappingType()).willReturn(MappingType.MAP_ALL_OUTPUTS);
+
+        Extension extension = new Extension();
+        HashMap<String, ProcessVariablesMapping> mapping = new HashMap<>();
+        mapping.put("elementId", processVariablesMapping);
+        extension.setMappings(mapping);
+
+        assertThat(extension.shouldMapAllInputs("elementId")).isFalse();
+        assertThat(extension.shouldMapAllOutputs("elementId")).isTrue();
+
+    }
+
+    @Test
+    public void should_hasMappingReturnTrue_when_thereIsMapping() {
         Extension extension = new Extension();
 
         HashMap<String, ProcessVariablesMapping> mapping = new HashMap<>();
@@ -71,9 +90,8 @@ public class ExtensionTest {
     }
 
     @Test
-    public void hasMappingShouldReturnFalseWhenThereIsNoMapping() {
+    public void should_hasMappingReturnFalse_when_thereIsNoMapping() {
         Extension extension = new Extension();
-
         assertThat(extension.hasMapping("elementId")).isFalse();
     }
 

@@ -1,7 +1,9 @@
 {
-  "id":"taskVariableNoMapping",
+  "id":"taskVariableMappingSendAllInputsModel",
+  "type": "PROCESS",
+  "name": "process",
   "extensions": {
-    "Process_taskVariableNoMapping": {
+    "taskVariableMappingSendAllInputs": {
       "properties": {
         "process-variable-unmapped-1-id": {
           "id": "process-variable-unmapped-1-id",
@@ -27,10 +29,15 @@
       },
       "mappings": {
         "simpleTask": {
-          "mappingType": "MAP_ALL"
+          "mappingType": "MAP_ALL_INPUTS",
+          "outputs": {
+            "process_variable_outputmap_1": {
+              "type": "variable",
+              "value": "task_output_variable_name_1"
+            }
+          }
         }
-      },
-      "constants": {}
+      }
     }
   }
 }
