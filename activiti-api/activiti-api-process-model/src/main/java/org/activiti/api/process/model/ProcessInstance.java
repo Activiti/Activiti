@@ -35,6 +35,8 @@ public interface ProcessInstance extends ApplicationElement {
 
     Date getStartDate();
 
+    Date getCompletedDate();
+
     String getInitiator();
 
     String getBusinessKey();
@@ -46,9 +48,9 @@ public interface ProcessInstance extends ApplicationElement {
     String getProcessDefinitionKey();
 
     String getParentId();
-    
+
     Integer getProcessDefinitionVersion();
-    
+
     String getProcessDefinitionName();
 
 }
