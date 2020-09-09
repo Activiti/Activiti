@@ -122,7 +122,7 @@ public class ProcessInstanceImpl extends ApplicationElementImpl implements Proce
         this.startDate = startDate;
     }
 
-    public void setCompletedDateDate(Date completedDate) {
+    public void setCompletedDate(Date completedDate) {
         this.completedDate = completedDate;
     }
 
