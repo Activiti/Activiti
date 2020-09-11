@@ -152,13 +152,14 @@ public class TaskRuntimeImpl implements TaskRuntime {
         if (!task.getAssignee().equals(authenticatedUserId)) {
             throw new IllegalStateException("You cannot complete the task if you are not assigned to it");
         }
-        
+
         taskRuntimeHelper.handleCompleteTaskPayload(completeTaskPayload);
-                
+
         taskService.complete(completeTaskPayload.getTaskId(),
                 completeTaskPayload.getVariables(), true);
 
 
+        ((TaskImpl) task).setCompletedBy(authenticatedUserId);
         ((TaskImpl) task).setStatus(Task.TaskStatus.COMPLETED);
 
         return task;
@@ -434,7 +435,7 @@ public class TaskRuntimeImpl implements TaskRuntime {
         taskRuntimeHelper.assertHasAccessToTask(saveTaskPayload.getTaskId());
 
         taskRuntimeHelper.handleSaveTaskPayload(saveTaskPayload);
-        
+
         taskService.setVariablesLocal(saveTaskPayload.getTaskId(),
                 saveTaskPayload.getVariables());
     }

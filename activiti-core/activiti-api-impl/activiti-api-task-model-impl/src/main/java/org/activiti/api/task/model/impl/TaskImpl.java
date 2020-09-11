@@ -45,6 +45,7 @@ public class TaskImpl extends ApplicationElementImpl implements Task {
     private String taskDefinitionKey;
     private List<String> candidateUsers;
     private List<String> candidateGroups;
+    private String completedBy;
 
     public TaskImpl() {
     }
@@ -218,16 +219,16 @@ public class TaskImpl extends ApplicationElementImpl implements Task {
     public void setDuration(Long duration) {
         this.duration = duration;
     }
-    
+
     @Override
-    public Integer getProcessDefinitionVersion() { 
-        return processDefinitionVersion; 
+    public Integer getProcessDefinitionVersion() {
+        return processDefinitionVersion;
     }
-    
+
     public void setProcessDefinitionVersion(Integer processDefinitionVersion) {
         this.processDefinitionVersion = processDefinitionVersion;
     }
-    
+
     @Override
     public String getBusinessKey() {
         return businessKey;
@@ -241,7 +242,7 @@ public class TaskImpl extends ApplicationElementImpl implements Task {
     public void setBusinessKey(String businessKey) {
         this.businessKey = businessKey;
     }
-    
+
     @Override
     public String getTaskDefinitionKey() {
         return taskDefinitionKey;
@@ -250,7 +251,15 @@ public class TaskImpl extends ApplicationElementImpl implements Task {
     public void setTaskDefinitionKey(String taskDefinitionKey) {
         this.taskDefinitionKey = taskDefinitionKey;
     }
-    
+
+    @Override public String getCompletedBy() {
+        return this.completedBy;
+    }
+    public void setCompletedBy(String completedBy){
+        this.completedBy=completedBy;
+    }
+
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -298,7 +307,9 @@ public class TaskImpl extends ApplicationElementImpl implements Task {
                 Objects.equals(businessKey,
                                task.businessKey) &&
                 Objects.equals(taskDefinitionKey,
-                               task.taskDefinitionKey);
+                               task.taskDefinitionKey) &&
+                Objects.equals(completedBy,
+                              task.completedBy);
     }
 
     @Override
@@ -322,7 +333,8 @@ public class TaskImpl extends ApplicationElementImpl implements Task {
                             duration,
                             processDefinitionVersion,
                             businessKey,
-                            taskDefinitionKey);
+                            taskDefinitionKey,
+                            completedBy);
     }
 
     @Override
@@ -345,6 +357,7 @@ public class TaskImpl extends ApplicationElementImpl implements Task {
                 ", processDefinitionVersion=" + processDefinitionVersion +
                 ", businessKey=" + businessKey +
                 ", taskDefinitionKey=" + taskDefinitionKey +
+                ", completedBy="+ completedBy +
                 '}';
     }
 

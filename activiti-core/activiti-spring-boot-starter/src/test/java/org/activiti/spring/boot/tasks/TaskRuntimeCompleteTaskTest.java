@@ -71,7 +71,8 @@ public class TaskRuntimeCompleteTaskTest {
     @Test
     public void createStandaloneTaskAndComplete() {
 
-        securityUtil.logInAs("garth");
+        String loginUser="garth";
+        securityUtil.logInAs(loginUser);
 
         Task standAloneTask = taskRuntime.create(TaskPayloadBuilder.create()
                 .withName("simple task")
@@ -89,6 +90,7 @@ public class TaskRuntimeCompleteTaskTest {
 
         Task completedTask = taskRuntime.complete(TaskPayloadBuilder.complete().withTaskId(task.getId()).build());
         assertThat(completedTask.getStatus()).isEqualTo(Task.TaskStatus.COMPLETED);
+        assertThat(completedTask.getCompletedBy()).isEqualTo("garth");
 
 
     }
