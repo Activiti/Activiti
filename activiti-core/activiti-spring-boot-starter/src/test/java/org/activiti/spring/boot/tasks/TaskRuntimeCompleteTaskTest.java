@@ -90,7 +90,7 @@ public class TaskRuntimeCompleteTaskTest {
 
         Task completedTask = taskRuntime.complete(TaskPayloadBuilder.complete().withTaskId(task.getId()).build());
         assertThat(completedTask.getStatus()).isEqualTo(Task.TaskStatus.COMPLETED);
-        assertThat(completedTask.getCompletedBy()).isEqualTo("garth");
+        assertThat(completedTask.getCompletedBy()).isEqualTo(loginUser);
 
 
     }
