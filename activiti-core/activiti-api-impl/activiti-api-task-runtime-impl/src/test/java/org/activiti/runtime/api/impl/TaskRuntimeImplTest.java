@@ -31,7 +31,6 @@ import org.activiti.runtime.api.model.impl.APITaskConverter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.activiti.engine.task.TaskQuery;
 import org.activiti.api.runtime.shared.NotFoundException;
 
 
@@ -59,16 +58,10 @@ public class TaskRuntimeImplTest {
     private APITaskConverter taskConverter;
 
     @Mock
-    private org.activiti.engine.task.Task engineTaskMock;
-
-    @Mock
     private SecurityManager securityManager;
 
     @Mock
     private TaskService taskService;
-
-    @Mock
-    private IdentityLink identityLink;
 
     @Mock
     private APIVariableInstanceConverter variableInstanceConverter;
