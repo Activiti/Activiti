@@ -17,6 +17,10 @@ package org.activiti.runtime.api.model.impl;
 
 import static java.util.Collections.emptyList;
 
+import java.util.List;
+import java.util.Objects;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import org.activiti.api.task.model.Task;
 import org.activiti.api.task.model.impl.TaskImpl;
 import org.activiti.engine.TaskService;
@@ -24,11 +28,6 @@ import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.IdentityLinkType;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.List;
-import java.util.Objects;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 public class APITaskConverter extends ListConverter<org.activiti.engine.task.Task, Task> implements ModelConverter<org.activiti.engine.task.Task, Task> {
 
@@ -53,10 +52,10 @@ public class APITaskConverter extends ListConverter<org.activiti.engine.task.Tas
     }
 
     public Task from(org.activiti.engine.task.Task internalTask,
-                     Task.TaskStatus status) {
+        Task.TaskStatus status) {
         TaskImpl task = new TaskImpl(internalTask.getId(),
-                                     internalTask.getName(),
-                                     status);
+            internalTask.getName(),
+            status);
         task.setProcessDefinitionId(internalTask.getProcessDefinitionId());
         task.setProcessInstanceId(internalTask.getProcessInstanceId());
         task.setAssignee(internalTask.getAssignee());
@@ -73,6 +72,15 @@ public class APITaskConverter extends ListConverter<org.activiti.engine.task.Tas
         task.setBusinessKey(internalTask.getBusinessKey());
 
         return task;
+    }
+
+    public Task fromWithCompletedBy(org.activiti.engine.task.Task internalTask,
+        Task.TaskStatus status, String completedBy) {
+
+        TaskImpl task = (TaskImpl) from(internalTask, status);
+        task.setCompletedBy(completedBy);
+        return task;
+
     }
 
     private void extractCandidateUsersAndGroups(org.activiti.engine.task.Task source, TaskImpl destination) {

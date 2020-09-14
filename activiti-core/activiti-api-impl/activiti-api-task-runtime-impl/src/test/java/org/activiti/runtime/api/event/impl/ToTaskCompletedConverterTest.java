@@ -15,6 +15,7 @@
  */
 package org.activiti.runtime.api.event.impl;
 
+import org.activiti.api.runtime.shared.security.SecurityManager;
 import org.activiti.api.task.runtime.events.TaskCompletedEvent;
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.task.Task;
@@ -37,6 +38,9 @@ public class ToTaskCompletedConverterTest {
     @Mock
     private APITaskConverter taskConverter;
 
+    @Mock
+    private SecurityManager securityManager;
+
     @BeforeEach
     public void setUp() {
         initMocks(this);
@@ -47,12 +51,15 @@ public class ToTaskCompletedConverterTest {
         //given
         Task internalTask = mock(Task.class);
         org.activiti.api.task.model.Task apiTask = mock(org.activiti.api.task.model.Task.class);
-        given(taskConverter.from(internalTask, org.activiti.api.task.model.Task.TaskStatus.COMPLETED)).willReturn(apiTask);
+        String loginUser="hruser";
+        given(securityManager.getAuthenticatedUserId()).willReturn(loginUser);
+        given(taskConverter.fromWithCompletedBy(internalTask, org.activiti.api.task.model.Task.TaskStatus.COMPLETED, loginUser)).willReturn(apiTask);
 
         ActivitiEntityEvent internalEvent = mock(ActivitiEntityEvent.class);
         given(internalEvent.getEntity()).willReturn(internalTask);
 
         //when
+
         TaskCompletedEvent taskCompletedEvent = toTaskCompletedConverter.from(internalEvent).orElse(null);
 
         //then

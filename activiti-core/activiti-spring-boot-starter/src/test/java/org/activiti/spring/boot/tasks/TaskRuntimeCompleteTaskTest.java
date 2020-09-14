@@ -23,6 +23,7 @@ import org.activiti.api.model.shared.model.VariableInstance;
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
 import org.activiti.api.process.runtime.ProcessRuntime;
+import org.activiti.api.process.runtime.events.ProcessCancelledEvent;
 import org.activiti.api.runtime.shared.NotFoundException;
 import org.activiti.api.runtime.shared.query.Page;
 import org.activiti.api.runtime.shared.query.Pageable;
@@ -30,10 +31,13 @@ import org.activiti.api.task.model.Task;
 import org.activiti.api.task.model.Task.TaskStatus;
 import org.activiti.api.task.model.builders.TaskPayloadBuilder;
 import org.activiti.api.task.runtime.TaskRuntime;
+import org.activiti.api.task.runtime.events.TaskCompletedEvent;
 import org.activiti.spring.boot.security.util.SecurityUtil;
 import org.activiti.spring.boot.test.util.ProcessCleanUpUtil;
 import org.activiti.spring.boot.test.util.TaskCleanUpUtil;
+import org.activiti.test.LocalEventSource;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -62,6 +66,14 @@ public class TaskRuntimeCompleteTaskTest {
     @Autowired
     private ProcessCleanUpUtil processCleanUpUtil;
 
+    @Autowired
+    private LocalEventSource localEventSource;
+
+    @BeforeEach
+    public void init(){
+        localEventSource.clearEvents();
+    }
+
     @AfterEach
     public void taskCleanUp(){
         taskCleanUpUtil.cleanUpWithAdmin();
@@ -89,6 +101,14 @@ public class TaskRuntimeCompleteTaskTest {
         assertThat(task.getStatus()).isEqualTo(Task.TaskStatus.ASSIGNED);
 
         Task completedTask = taskRuntime.complete(TaskPayloadBuilder.complete().withTaskId(task.getId()).build());
+        //then
+        List<TaskCompletedEvent> taskCompletedEvents = localEventSource
+            .getEvents(TaskCompletedEvent.class);
+        assertThat(taskCompletedEvents).hasSize(1);
+        assertThat(taskCompletedEvents)
+                .extracting(TaskCompletedEvent::getEntity)
+                .extracting(Task::getCompletedBy)
+                .containsExactly(loginUser);
         assertThat(completedTask.getStatus()).isEqualTo(Task.TaskStatus.COMPLETED);
         assertThat(completedTask.getCompletedBy()).isEqualTo(loginUser);
 
