@@ -23,6 +23,7 @@ import org.activiti.api.runtime.shared.security.SecurityManager;
 import org.activiti.api.task.model.Task;
 import org.activiti.api.task.model.builders.TaskPayloadBuilder;
 import org.activiti.api.task.model.impl.TaskImpl;
+import org.activiti.api.task.model.payloads.AssignTaskPayload;
 import org.activiti.api.task.model.payloads.CandidateGroupsPayload;
 import org.activiti.api.task.model.payloads.CandidateUsersPayload;
 import org.activiti.api.task.model.payloads.ClaimTaskPayload;
@@ -46,6 +47,7 @@ import org.activiti.runtime.api.model.impl.APITaskConverter;
 import org.activiti.runtime.api.model.impl.APIVariableInstanceConverter;
 import org.activiti.runtime.api.query.impl.PageImpl;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.activiti.api.runtime.shared.NotFoundException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -88,6 +90,10 @@ public class TaskRuntimeImpl implements TaskRuntime {
     @Override
     public Task task(String taskId) {
         return taskConverter.fromWithCandidates(taskRuntimeHelper.getInternalTaskWithChecks(taskId));
+    }
+    
+    private Task reassignedTask(String taskId) {
+        return taskConverter.fromWithCandidates(taskRuntimeHelper.getInternalTask(taskId));
     }
 
     @Override
@@ -441,6 +447,22 @@ public class TaskRuntimeImpl implements TaskRuntime {
     }
 
 
+    @Override
+    public Task assign(AssignTaskPayload assignTaskPayload) {
+        String assignee = assignTaskPayload.getAssignee();
+        String taskId = assignTaskPayload.getTaskId();
+
+        checkUserHasAccessToTask(taskId);
+        checkAssigneeIsACandidateUser(taskId, assignee);
+        
+        //We need to release, claim for assigned task is not working!
+        taskService.unclaim(taskId);
+        //Now assign a new user
+        taskService.claim(taskId, assignee);
+
+        return reassignedTask(taskId);
+    }
+
     private List<IdentityLink> getIdentityLinks(String taskId) {
         String authenticatedUserId = securityManager.getAuthenticatedUserId();
         if (authenticatedUserId != null && !authenticatedUserId.isEmpty()) {
@@ -454,6 +476,21 @@ public class TaskRuntimeImpl implements TaskRuntime {
             return taskService.getIdentityLinksForTask(taskId);
         }
         throw new IllegalStateException("There is no authenticated user, we need a user authenticated to find tasks");
+    }
+    
+    private void checkAssigneeIsACandidateUser(String taskId, String assignee) {
+        List<String> userCandidates = userCandidates(taskId);
+        if(!userCandidates.contains(assignee)){
+            throw new IllegalStateException("You cannot assign a task to " + assignee + " due it is not a candidate for it");
+        }
+    }
+    
+    private void checkUserHasAccessToTask(String taskId){
+        try {
+            taskRuntimeHelper.assertHasAccessToTask(taskId);
+        }catch (NotFoundException ex) {
+            throw new IllegalStateException("You cannot update a task where you are not the assignee");
+        }
     }
 
 }
