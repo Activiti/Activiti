@@ -34,10 +34,7 @@ public class ProcessEntryDeployer implements ApplicationEntryDeployer {
     @Override
     public void deployEntries(ApplicationContent application) {
         List<FileContent> processContents = application.getFileContents(ProcessEntryDiscovery.PROCESSES);
-        DeploymentBuilder deploymentBuilder = repositoryService.createDeployment()
-                                                               .enableDuplicateFiltering()
-                                                               .key("ApplicationAutoDeployment")
-                                                               .name("ApplicationAutoDeployment");
+        DeploymentBuilder deploymentBuilder = repositoryService.createDeployment().enableDuplicateFiltering().name("ApplicationAutoDeployment");
         for (FileContent processContent : processContents) {
             deploymentBuilder.addBytes(processContent.getName(), processContent.getContent());
         }
