@@ -45,14 +45,15 @@ public class APITaskConverter extends ListConverter<org.activiti.engine.task.Tas
     }
 
     public Task fromWithCandidates(org.activiti.engine.task.Task internalTask) {
-        TaskImpl task = (TaskImpl) from(internalTask,
+        TaskImpl task = buildFromInternalTask(internalTask,
                                         calculateStatus(internalTask));
         extractCandidateUsersAndGroups(internalTask, task);
         return task;
     }
 
-    public Task from(org.activiti.engine.task.Task internalTask,
-        Task.TaskStatus status) {
+    private TaskImpl buildFromInternalTask(org.activiti.engine.task.Task internalTask,
+        Task.TaskStatus status){
+
         TaskImpl task = new TaskImpl(internalTask.getId(),
             internalTask.getName(),
             status);
@@ -72,13 +73,21 @@ public class APITaskConverter extends ListConverter<org.activiti.engine.task.Tas
         task.setBusinessKey(internalTask.getBusinessKey());
 
         return task;
+
+    }
+
+    public Task from(org.activiti.engine.task.Task internalTask,
+        Task.TaskStatus status) {
+
+        return buildFromInternalTask(internalTask, status);
     }
 
     public Task fromWithCompletedBy(org.activiti.engine.task.Task internalTask,
         Task.TaskStatus status, String completedBy) {
 
-        TaskImpl task = (TaskImpl) from(internalTask, status);
+        TaskImpl task =  buildFromInternalTask(internalTask, status);
         task.setCompletedBy(completedBy);
+
         return task;
 
     }

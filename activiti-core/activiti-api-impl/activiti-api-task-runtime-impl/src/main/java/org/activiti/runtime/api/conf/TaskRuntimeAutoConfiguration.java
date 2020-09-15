@@ -181,7 +181,7 @@ public class TaskRuntimeAutoConfiguration {
     @Bean
     public InitializingBean registerTaskCompletedEventListener(RuntimeService runtimeService,
                                                                @Autowired(required = false) List<TaskRuntimeEventListener<TaskCompletedEvent>> listeners,
-                                                               APITaskConverter taskConverter,SecurityManager securityManager) {
+                                                               APITaskConverter taskConverter, SecurityManager securityManager) {
         return () -> runtimeService.addEventListener(new TaskCompletedListenerDelegate(getInitializedTaskRuntimeEventListeners(listeners),
                                                                                        new ToTaskCompletedConverter(taskConverter, securityManager)),
                                                      ActivitiEventType.TASK_COMPLETED);

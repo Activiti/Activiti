@@ -31,13 +31,13 @@ public class ToTaskCompletedConverter implements EventConverter<TaskCompletedEve
 
     public ToTaskCompletedConverter(APITaskConverter converter, SecurityManager securityManager) {
         this.converter = converter;
-        this.securityManager=securityManager;
+        this.securityManager = securityManager;
     }
 
     @Override
     public Optional<TaskCompletedEvent> from(ActivitiEntityEvent internalEvent) {
 
-        String completedBy=securityManager.getAuthenticatedUserId();
-        return Optional.of(new TaskCompletedImpl(converter.fromWithCompletedBy((Task) internalEvent.getEntity(), org.activiti.api.task.model.Task.TaskStatus.COMPLETED,completedBy)));
+        String completedBy = securityManager.getAuthenticatedUserId();
+        return Optional.of(new TaskCompletedImpl(converter.fromWithCompletedBy((Task) internalEvent.getEntity(), org.activiti.api.task.model.Task.TaskStatus.COMPLETED, completedBy)));
     }
 }
