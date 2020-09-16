@@ -473,6 +473,8 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
         return deploymentConverter.from(
                 repositoryService
                     .createDeploymentQuery()
+                    .deploymentName("SpringAutoDeployment")
+                    .latestVersion()
                     .singleResult()
         );
     }

@@ -19,7 +19,6 @@ package org.activiti.engine.repository;
 
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.api.internal.Internal;
-import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.query.Query;
 
 /**
@@ -106,6 +105,12 @@ public interface DeploymentQuery extends Query<DeploymentQuery, Deployment> {
    * Can only be used together with the deployment key.
    */
   DeploymentQuery latest();
+
+  /**
+   * Only select deployments where the deployment version is the latest value
+   * Can only be used together with the deployment name.
+   */
+  DeploymentQuery latestVersion();
 
   // sorting ////////////////////////////////////////////////////////
 

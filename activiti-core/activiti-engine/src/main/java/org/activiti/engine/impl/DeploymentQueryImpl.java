@@ -47,6 +47,7 @@ public class DeploymentQueryImpl extends AbstractQuery<DeploymentQuery, Deployme
   protected String processDefinitionKey;
   protected String processDefinitionKeyLike;
   protected boolean latest;
+  protected boolean latestVersion;
 
   public DeploymentQueryImpl() {
   }
@@ -169,6 +170,17 @@ public class DeploymentQueryImpl extends AbstractQuery<DeploymentQuery, Deployme
     return this;
   }
 
+  @Override
+  public DeploymentQuery latestVersion() {
+    if (name == null) {
+      throw new ActivitiIllegalArgumentException("latest version can only be used together with a deployment name");
+    }
+    
+    this.latestVersion = true;
+    
+    return this;
+  }  
+  
   // sorting ////////////////////////////////////////////////////////
 
   public DeploymentQuery orderByDeploymentId() {
@@ -241,5 +253,9 @@ public class DeploymentQueryImpl extends AbstractQuery<DeploymentQuery, Deployme
 
   public String getProcessDefinitionKeyLike() {
     return processDefinitionKeyLike;
+  }
+
+  public boolean isLatestVersion() {
+    return latestVersion;
   }
 }

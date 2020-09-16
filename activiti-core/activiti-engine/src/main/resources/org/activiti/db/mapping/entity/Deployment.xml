@@ -149,6 +149,11 @@
 	         </if>
         )
       </if>
+      <if test="latestVersion">
+        and RES.VERSION_ = (select max(VERSION_) from ${prefix}ACT_RE_DEPLOYMENT where NAME_ = RES.NAME_) 
+        and RES.PROJECT_RELEASE_VERSION_ IS NOT NULL 
+      </if>
+      
     </where>
   </sql>
     
