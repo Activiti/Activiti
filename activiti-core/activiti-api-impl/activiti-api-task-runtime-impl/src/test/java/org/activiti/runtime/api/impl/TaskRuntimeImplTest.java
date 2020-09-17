@@ -26,29 +26,30 @@ import org.activiti.api.task.model.payloads.AssignTaskPayload;
 import org.activiti.api.task.model.payloads.UpdateTaskPayload;
 import org.activiti.api.task.runtime.conf.TaskRuntimeConfiguration;
 import org.activiti.engine.TaskService;
-import org.activiti.engine.task.IdentityLink;
 import org.activiti.runtime.api.model.impl.APITaskConverter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.activiti.api.runtime.shared.NotFoundException;
-
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 import org.activiti.runtime.api.model.impl.APIVariableInstanceConverter;
+import org.mockito.Spy;
 
 public class TaskRuntimeImplTest {
 
     private static final String AUTHENTICATED_USER = "user";
     
+    @Spy
+    @InjectMocks
     private TaskRuntimeImpl taskRuntime;
 
     @Mock
@@ -72,13 +73,6 @@ public class TaskRuntimeImplTest {
     @BeforeEach
     public void setUp() {
         initMocks(this);
-        taskRuntime = spy(new TaskRuntimeImpl(taskService,
-                securityManager,
-                taskConverter,
-                variableInstanceConverter,
-                configuration,
-                taskRuntimeHelper));
-        
         when(securityManager.getAuthenticatedUserId()).thenReturn(AUTHENTICATED_USER);
     }
 
@@ -124,7 +118,7 @@ public class TaskRuntimeImplTest {
     }
 
     @Test
-    public void assign_should_updateTheTaskAssignee_whenAssigneeIsACandidateUser() {
+    public void assign_should_updateTaskAssignee_whenAssigneeIsACandidateUser() {
         //given
         String taskId = "taskId";
         String newAssignee = "newAssignee";
@@ -135,29 +129,13 @@ public class TaskRuntimeImplTest {
                 .build();
         List<String> userCandidates = Arrays.asList(newAssignee);
         doReturn(userCandidates).when(taskRuntime).userCandidates(taskId);
-        
+        TaskImpl task =  mock(TaskImpl.class);
+        given(task.getAssignee()).willReturn("user");
+        doReturn(task).when(taskConverter).fromWithCandidates(any());
+
         taskRuntime.assign(assignTaskPayload);
         
         verify(taskService).unclaim(taskId);
         verify(taskService).claim(taskId, newAssignee);
-    }
-
-    @Test
-    public void assign_should_returnIllegalStateException_when_userIsNotAssigneeOrOwner() {
-        //given
-        AssignTaskPayload assignTaskPayload = TaskPayloadBuilder
-                .assign()
-                .withTaskId("taskId")
-                .withAssignee("assignee")
-                .build();
-        doThrow(NotFoundException.class).when(taskRuntimeHelper).assertHasAccessToTask( "taskId");
-
-        //when
-        Throwable thrown = catchThrowable(() -> taskRuntime.assign(assignTaskPayload));
-
-        //then
-        assertThat(thrown)
-                .isInstanceOf(IllegalStateException.class)
-                .hasMessageStartingWith("You cannot update a task where you are not the assignee");
     }
 }

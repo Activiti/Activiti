@@ -18,6 +18,7 @@ package org.activiti.spring.boot.tasks;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 
+import org.activiti.api.runtime.shared.NotFoundException;
 import org.activiti.api.runtime.shared.query.Page;
 import org.activiti.api.runtime.shared.query.Pageable;
 import org.activiti.api.task.model.Task;
@@ -231,16 +232,35 @@ public class TaskRuntimeTaskAssigneeTest {
 
     @Test
     public void userCanReassignClaimedTaskToCandidateUsers() {
-
         String taskId = createTask("garth");
-        //assign the new task
-        userAssignTask(taskId,"garth", "dean");
-        //reassign task to candidate
-        userAssignTask(taskId,"dean", "garth");
+        claimTask(taskId,"garth");
+        userAssignTask(taskId, "garth", "dean");    
+        userAssignTask(taskId, "dean", "john");
+    }
 
-        test_shouldReturnIllegalStateExceptionWhenUserIsNotAssigneeOrOwner(taskId,"dean", "garth");
+    @Test
+    public void shouldReturnIllegalStateExceptionWhenTaskIsNotClaimed (){
+        String taskId = createTask("garth");
 
-        cleanUp(taskId);
+        Throwable thrown = catchThrowable(() -> 
+                userAssignTask(taskId, "dean", "dean"));
+        
+        assertThat(thrown)
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessageStartingWith("You cannot release a task that is not claimed");
+    }
+
+    @Test
+    public void shouldReturnNotFoundExceptionWhenTaskIsNotVisible(){
+        String taskId = createTask("garth");
+        claimTask(taskId,"garth");
+
+        Throwable thrown = catchThrowable(() ->
+                userAssignTask(taskId, "dean", "john"));
+
+        assertThat(thrown)
+                .isInstanceOf(NotFoundException.class)
+                .hasMessageStartingWith("Unable to find task for the given id");
     }
     
     private String createTask(String user){
@@ -250,52 +270,27 @@ public class TaskRuntimeTaskAssigneeTest {
                 .withName("group task")
                 .withCandidateUsers("dean")
                 .withCandidateUsers("garth")
+                .withCandidateUsers("john")
                 .build());
-
-        // the owner should be able to see the created task
+        
         Page<Task> tasks = taskRuntime.tasks(Pageable.of(0,
                 50));
 
-        assertThat(tasks.getContent()).hasSize(1);
-
         Task task = tasks.getContent().get(0);
-        assertThat(task.getAssignee()).isNull();
-        assertThat(task.getStatus()).isEqualTo(Task.TaskStatus.CREATED);
         return task.getId();
     }
     
     private void userAssignTask(String taskId, String user, String assignee){
         securityUtil.logInAs(user);
-        Task assignedTask = taskRuntime.assign(TaskPayloadBuilder
+        taskRuntime.assign(TaskPayloadBuilder
                 .assign()
                 .withTaskId(taskId)
                 .withAssignee(assignee)
                 .build());
-        assertThat(assignedTask.getAssignee()).isEqualTo(assignee);
-        assertThat(assignedTask.getStatus()).isEqualTo(Task.TaskStatus.ASSIGNED);
     }
-    
-    private void cleanUp(String taskId){
-        securityUtil.logInAs("admin");
-        taskAdminRuntime.delete(TaskPayloadBuilder
-                .delete()
-                .withTaskId(taskId)
-                .withReason("test clean up")
-                .build());
-    }
-    
-    private void test_shouldReturnIllegalStateExceptionWhenUserIsNotAssigneeOrOwner (String taskId, String user, String assignee){
+
+    private void claimTask(String taskId, String user){
         securityUtil.logInAs(user);
-
-        Throwable thrown = catchThrowable(() -> taskRuntime.assign(TaskPayloadBuilder
-                .assign()
-                .withTaskId(taskId)
-                .withAssignee(assignee)
-                .build()));
-
-        //then
-        assertThat(thrown)
-                .isInstanceOf(IllegalStateException.class)
-                .hasMessageStartingWith("You cannot update a task where you are not the assignee");
+        taskRuntime.claim(TaskPayloadBuilder.claim().withTaskId(taskId).build());
     }
 }
