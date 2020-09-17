@@ -24,7 +24,6 @@ import org.activiti.api.task.model.builders.TaskPayloadBuilder;
 import org.activiti.api.task.model.impl.TaskImpl;
 import org.activiti.api.task.model.payloads.AssignTaskPayload;
 import org.activiti.api.task.model.payloads.UpdateTaskPayload;
-import org.activiti.api.task.runtime.conf.TaskRuntimeConfiguration;
 import org.activiti.engine.TaskService;
 import org.activiti.runtime.api.model.impl.APITaskConverter;
 import org.junit.jupiter.api.BeforeEach;
@@ -41,7 +40,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
-import org.activiti.runtime.api.model.impl.APIVariableInstanceConverter;
 import org.mockito.Spy;
 
 public class TaskRuntimeImplTest {
@@ -63,12 +61,6 @@ public class TaskRuntimeImplTest {
 
     @Mock
     private TaskService taskService;
-
-    @Mock
-    private APIVariableInstanceConverter variableInstanceConverter;
-
-    @Mock
-    private TaskRuntimeConfiguration configuration;
 
     @BeforeEach
     public void setUp() {
