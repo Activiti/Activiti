@@ -21,6 +21,7 @@ import org.activiti.api.model.shared.model.VariableInstance;
 import org.activiti.api.runtime.shared.query.Page;
 import org.activiti.api.runtime.shared.query.Pageable;
 import org.activiti.api.task.model.Task;
+import org.activiti.api.task.model.payloads.AssignTaskPayload;
 import org.activiti.api.task.model.payloads.CandidateGroupsPayload;
 import org.activiti.api.task.model.payloads.CandidateUsersPayload;
 import org.activiti.api.task.model.payloads.ClaimTaskPayload;
@@ -133,4 +134,11 @@ public interface TaskRuntime {
     
     List<String> userCandidates(String taskId);
     List<String> groupCandidates(String taskId);
+
+    /**
+     * Assign a task that has been claimed before to a different user
+     * - Only the current assignee can perform the action
+     * - The new assignee should be part of the candidate users for this task
+     */
+    Task assign(AssignTaskPayload assignTaskPayload);
 }

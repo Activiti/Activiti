@@ -16,7 +16,9 @@
 package org.activiti.spring.boot.tasks;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
 
+import org.activiti.api.runtime.shared.NotFoundException;
 import org.activiti.api.runtime.shared.query.Page;
 import org.activiti.api.runtime.shared.query.Pageable;
 import org.activiti.api.task.model.Task;
@@ -228,5 +230,63 @@ public class TaskRuntimeTaskAssigneeTest {
                                               .build());
     }
 
+    @Test
+    public void userCanReassignClaimedTaskToCandidateUsers() {
+        String taskId = createTask("garth");
+        claimTask(taskId,"garth");
+        userAssignTask(taskId, "garth", "dean");    
+        userAssignTask(taskId, "dean", "john");
+    }
 
+    @Test
+    public void shouldReturnIllegalStateExceptionWhenTaskIsNotClaimed (){
+        String taskId = createTask("garth");
+
+        Throwable thrown = catchThrowable(() -> 
+                userAssignTask(taskId, "dean", "dean"));
+        
+        assertThat(thrown)
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessageStartingWith("You cannot release a task that is not claimed");
+    }
+
+    @Test
+    public void shouldReturnNotFoundExceptionWhenTaskIsNotVisible(){
+        String taskId = createTask("garth");
+        claimTask(taskId,"garth");
+
+        Throwable thrown = catchThrowable(() ->
+                userAssignTask(taskId, "dean", "john"));
+
+        assertThat(thrown)
+                .isInstanceOf(NotFoundException.class)
+                .hasMessageStartingWith("Unable to find task for the given id");
+    }
+    
+    private String createTask(String user){
+        securityUtil.logInAs(user);
+
+        Task task = taskRuntime.create(TaskPayloadBuilder.create()
+                .withName("group task")
+                .withCandidateUsers("dean")
+                .withCandidateUsers("garth")
+                .withCandidateUsers("john")
+                .build());
+        
+        return task.getId();
+    }
+    
+    private void userAssignTask(String taskId, String user, String assignee){
+        securityUtil.logInAs(user);
+        taskRuntime.assign(TaskPayloadBuilder
+                .assign()
+                .withTaskId(taskId)
+                .withAssignee(assignee)
+                .build());
+    }
+
+    private void claimTask(String taskId, String user){
+        securityUtil.logInAs(user);
+        taskRuntime.claim(TaskPayloadBuilder.claim().withTaskId(taskId).build());
+    }
 }
