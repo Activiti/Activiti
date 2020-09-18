@@ -473,12 +473,8 @@ public class TaskRuntimeImpl implements TaskRuntime {
     }
     
     private void assertCanReleaseTask(String taskId) {
-        Task task;
-        try {
-            task = task(taskId);
-        } catch (IllegalStateException ex) {
-            throw new IllegalStateException("The authenticated user cannot release task" + taskId + " due it is not a candidate for it");
-        }
+        Task task = task(taskId);
+        
         if (task.getAssignee() == null || task.getAssignee().isEmpty()) {
             throw new IllegalStateException("You cannot release a task that is not claimed");
         }
