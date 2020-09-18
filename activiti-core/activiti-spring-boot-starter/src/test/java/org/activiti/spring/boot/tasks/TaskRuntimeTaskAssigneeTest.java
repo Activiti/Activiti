@@ -266,17 +266,13 @@ public class TaskRuntimeTaskAssigneeTest {
     private String createTask(String user){
         securityUtil.logInAs(user);
 
-        taskRuntime.create(TaskPayloadBuilder.create()
+        Task task = taskRuntime.create(TaskPayloadBuilder.create()
                 .withName("group task")
                 .withCandidateUsers("dean")
                 .withCandidateUsers("garth")
                 .withCandidateUsers("john")
                 .build());
         
-        Page<Task> tasks = taskRuntime.tasks(Pageable.of(0,
-                50));
-
-        Task task = tasks.getContent().get(0);
         return task.getId();
     }
     

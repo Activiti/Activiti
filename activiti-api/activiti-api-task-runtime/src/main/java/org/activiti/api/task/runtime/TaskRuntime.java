@@ -136,10 +136,9 @@ public interface TaskRuntime {
     List<String> groupCandidates(String taskId);
 
     /**
-     * Assign a task with a new user
-     *  - If there is a user assigned, reassign it to the new user
-     *  - user should be a candidate-user for the task
-     *  - after the assign the task should be in assigned status
+     * Assign a task that has been claimed before to a different user
+     * - Only the current assignee can perform the action
+     * - The new assignee should be part of the candidate users for this task
      */
     Task assign(AssignTaskPayload assignTaskPayload);
 }
