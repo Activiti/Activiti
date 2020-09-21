@@ -1212,10 +1212,9 @@ public class DbSqlSession implements Session {
                                                     nextVersion.length() - "-SNAPSHOT".length());
             }
 
-            dbVersion = dbVersion.replace(".",
-                                          "");
-            nextVersion = nextVersion.replace(".",
-                                              "");
+            dbVersion = dbVersion.replaceAll("[-.]","");
+            nextVersion = nextVersion.replaceAll("[-.]", "");
+            
             log.info("Upgrade needed: {} -> {}. Looking for schema update resource for component '{}'",
                      dbVersion,
                      nextVersion,
