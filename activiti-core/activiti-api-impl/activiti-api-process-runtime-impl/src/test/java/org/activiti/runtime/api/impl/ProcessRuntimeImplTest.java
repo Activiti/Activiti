@@ -25,12 +25,12 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 import java.util.HashMap;
 import java.util.List;
+
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
 import org.activiti.api.process.model.payloads.CreateProcessInstancePayload;
@@ -84,13 +84,15 @@ public class ProcessRuntimeImplTest {
     private ProcessVariablesPayloadValidator processVariableValidator;
 
     @Mock
-    APIProcessDefinitionConverter processDefinitionConverter;
+    private APIProcessDefinitionConverter processDefinitionConverter;
+
+    private RepositoryServiceImpl repositoryService;
 
     @BeforeEach
     public void setUp() {
         initMocks(this);
 
-        RepositoryServiceImpl repositoryService = new RepositoryServiceImpl();
+        repositoryService = spy(new RepositoryServiceImpl());
         repositoryService.setCommandExecutor(commandExecutor);
 
         processRuntime = spy(new ProcessRuntimeImpl(repositoryService,
@@ -150,13 +152,19 @@ public class ProcessRuntimeImplTest {
         processDefinition.setAppVersion(null);
         List<ProcessDefinition> findProcessDefinitionResult = singletonList(processDefinition);
 
-        given(commandExecutor.execute(any())).willReturn(findProcessDefinitionResult);
+        DeploymentImpl deployment = new DeploymentImpl();
+        deployment.setId("deploymentId");
+        deployment.setName("SpringAutoDeployment");
+
+        given(deploymentConverter.from(any(Deployment.class))).willReturn(deployment);
+
+        given(commandExecutor.execute(any())).willReturn(new DeploymentEntityImpl())
+                                             .willReturn(findProcessDefinitionResult);
         given(securityPoliciesManager.canRead(processDefinitionKey)).willReturn(true);
 
         processRuntime.processDefinition(processDefinitionId);
 
         verify(processDefinitionConverter).from(processDefinition);
-        verifyZeroInteractions(deploymentConverter);
     }
 
     @Test
@@ -170,9 +178,11 @@ public class ProcessRuntimeImplTest {
         Deployment latestDeploymentEntity = new DeploymentEntityImpl();
         DeploymentImpl latestDeployment = new DeploymentImpl();
         latestDeployment.setVersion(2);
+        latestDeployment.setId("deploymentId");
 
         given(deploymentConverter.from(latestDeploymentEntity)).willReturn(latestDeployment);
         given(commandExecutor.execute(any()))
+            .willReturn(latestDeploymentEntity)
             .willReturn(findProcessDefinitionResult)
             .willReturn(latestDeploymentEntity)
             .willReturn(latestDeployment);
@@ -197,9 +207,11 @@ public class ProcessRuntimeImplTest {
         Deployment latestDeploymentEntity = new DeploymentEntityImpl();
         DeploymentImpl deployment = new DeploymentImpl();
         deployment.setVersion(1);
+        deployment.setId("deploymentId");
 
         given(deploymentConverter.from(latestDeploymentEntity)).willReturn(deployment);
         given(commandExecutor.execute(any()))
+            .willReturn(latestDeploymentEntity)
             .willReturn(findProcessDefinitionResult)
             .willReturn(latestDeploymentEntity);
 
