@@ -17,8 +17,8 @@ package org.activiti.runtime.api.impl;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.activiti.api.model.shared.model.VariableInstance;
 import org.activiti.api.process.model.Deployment;
@@ -128,7 +128,10 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
     }
 
     private Optional<org.activiti.engine.repository.ProcessDefinition> findLatestProcessDefinitionByKey(String processDefinitionKey) {
+        Deployment deployment = selectLatestDeployment();
+
         return repositoryService.createProcessDefinitionQuery()
+            .deploymentId(deployment.getId())
             .processDefinitionKey(processDefinitionKey)
             .orderByProcessDefinitionAppVersion()
             .desc()
@@ -140,7 +143,7 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
     private void checkProcessDefinitionBelongsToLatestDeployment(org.activiti.engine.repository.ProcessDefinition processDefinition) {
         Integer appVersion = processDefinition.getAppVersion();
 
-        if (appVersion != null && !selectLatestDeployment().getVersion().equals(appVersion)) {
+        if (appVersion != null && !Objects.equals(selectLatestDeployment().getVersion(), appVersion)) {
             throw new UnprocessableEntityException("Process definition with the given id:'" + processDefinition.getId() + "' belongs to a different application version.");
         }
     }
@@ -163,26 +166,18 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
         if (!securityKeysInPayload.getProcessDefinitionKeys().isEmpty()) {
             getProcessDefinitionsPayload.setProcessDefinitionKeys(securityKeysInPayload.getProcessDefinitionKeys());
         }
+
+        Deployment deployment = selectLatestDeployment();
+
         ProcessDefinitionQuery processDefinitionQuery = repositoryService
-                .createProcessDefinitionQuery();
+                .createProcessDefinitionQuery()
+                .deploymentId(deployment.getId());
         if (getProcessDefinitionsPayload.hasDefinitionKeys()) {
             processDefinitionQuery.processDefinitionKeys(getProcessDefinitionsPayload.getProcessDefinitionKeys());
         }
 
-        List<org.activiti.engine.repository.ProcessDefinition> currentVersionDefinitions = filterCurrentVersionDefinitions(processDefinitionQuery.list());
-
-        return new PageImpl<>(processDefinitionConverter.from(currentVersionDefinitions),
+        return new PageImpl<>(processDefinitionConverter.from(processDefinitionQuery.list()),
                               Math.toIntExact(processDefinitionQuery.count()));
-    }
-
-    private List<org.activiti.engine.repository.ProcessDefinition> filterCurrentVersionDefinitions (List<org.activiti.engine.repository.ProcessDefinition> allDefinitions){
-        int currentVersion = selectLatestDeployment().getVersion();
-        return allDefinitions
-                .stream()
-                .filter(processDefinition -> processDefinition.getAppVersion() == null ||
-                                             processDefinition.getAppVersion().equals(currentVersion))
-                //we fetch possible unversioned definitions from different types of deployments
-                .collect(Collectors.toList());
     }
 
     @Override
