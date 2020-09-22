@@ -25,6 +25,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -86,13 +87,11 @@ public class ProcessRuntimeImplTest {
     @Mock
     private APIProcessDefinitionConverter processDefinitionConverter;
 
-    private RepositoryServiceImpl repositoryService;
-
     @BeforeEach
     public void setUp() {
         initMocks(this);
 
-        repositoryService = spy(new RepositoryServiceImpl());
+        RepositoryServiceImpl repositoryService = new RepositoryServiceImpl();
         repositoryService.setCommandExecutor(commandExecutor);
 
         processRuntime = spy(new ProcessRuntimeImpl(repositoryService,
@@ -152,18 +151,13 @@ public class ProcessRuntimeImplTest {
         processDefinition.setAppVersion(null);
         List<ProcessDefinition> findProcessDefinitionResult = singletonList(processDefinition);
 
-        DeploymentImpl deployment = new DeploymentImpl();
-        deployment.setId("deploymentId");
-        deployment.setName("SpringAutoDeployment");
-
-        given(deploymentConverter.from(any(Deployment.class))).willReturn(deployment);
-
         given(commandExecutor.execute(any())).willReturn(findProcessDefinitionResult);
         given(securityPoliciesManager.canRead(processDefinitionKey)).willReturn(true);
 
         processRuntime.processDefinition(processDefinitionId);
 
         verify(processDefinitionConverter).from(processDefinition);
+        verifyZeroInteractions(deploymentConverter);
     }
 
     @Test
@@ -177,7 +171,6 @@ public class ProcessRuntimeImplTest {
         Deployment latestDeploymentEntity = new DeploymentEntityImpl();
         DeploymentImpl latestDeployment = new DeploymentImpl();
         latestDeployment.setVersion(2);
-        latestDeployment.setId("deploymentId");
 
         given(deploymentConverter.from(latestDeploymentEntity)).willReturn(latestDeployment);
         given(commandExecutor.execute(any()))
@@ -205,7 +198,6 @@ public class ProcessRuntimeImplTest {
         Deployment latestDeploymentEntity = new DeploymentEntityImpl();
         DeploymentImpl deployment = new DeploymentImpl();
         deployment.setVersion(1);
-        deployment.setId("deploymentId");
 
         given(deploymentConverter.from(latestDeploymentEntity)).willReturn(deployment);
         given(commandExecutor.execute(any()))
