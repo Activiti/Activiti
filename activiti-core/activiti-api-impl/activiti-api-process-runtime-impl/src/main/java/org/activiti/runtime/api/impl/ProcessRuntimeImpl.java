@@ -128,10 +128,8 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
     }
 
     private Optional<org.activiti.engine.repository.ProcessDefinition> findLatestProcessDefinitionByKey(String processDefinitionKey) {
-        Deployment deployment = selectLatestDeployment();
-
         return repositoryService.createProcessDefinitionQuery()
-            .deploymentId(deployment.getId())
+            .latestVersion()
             .processDefinitionKey(processDefinitionKey)
             .orderByProcessDefinitionAppVersion()
             .desc()
@@ -167,11 +165,10 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
             getProcessDefinitionsPayload.setProcessDefinitionKeys(securityKeysInPayload.getProcessDefinitionKeys());
         }
 
-        Deployment deployment = selectLatestDeployment();
-
         ProcessDefinitionQuery processDefinitionQuery = repositoryService
                 .createProcessDefinitionQuery()
-                .deploymentId(deployment.getId());
+                .latestVersion();
+
         if (getProcessDefinitionsPayload.hasDefinitionKeys()) {
             processDefinitionQuery.processDefinitionKeys(getProcessDefinitionsPayload.getProcessDefinitionKeys());
         }

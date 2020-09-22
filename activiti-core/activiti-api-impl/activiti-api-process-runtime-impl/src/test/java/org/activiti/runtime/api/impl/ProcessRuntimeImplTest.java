@@ -158,8 +158,7 @@ public class ProcessRuntimeImplTest {
 
         given(deploymentConverter.from(any(Deployment.class))).willReturn(deployment);
 
-        given(commandExecutor.execute(any())).willReturn(new DeploymentEntityImpl())
-                                             .willReturn(findProcessDefinitionResult);
+        given(commandExecutor.execute(any())).willReturn(findProcessDefinitionResult);
         given(securityPoliciesManager.canRead(processDefinitionKey)).willReturn(true);
 
         processRuntime.processDefinition(processDefinitionId);
@@ -182,7 +181,6 @@ public class ProcessRuntimeImplTest {
 
         given(deploymentConverter.from(latestDeploymentEntity)).willReturn(latestDeployment);
         given(commandExecutor.execute(any()))
-            .willReturn(latestDeploymentEntity)
             .willReturn(findProcessDefinitionResult)
             .willReturn(latestDeploymentEntity)
             .willReturn(latestDeployment);
@@ -211,7 +209,6 @@ public class ProcessRuntimeImplTest {
 
         given(deploymentConverter.from(latestDeploymentEntity)).willReturn(deployment);
         given(commandExecutor.execute(any()))
-            .willReturn(latestDeploymentEntity)
             .willReturn(findProcessDefinitionResult)
             .willReturn(latestDeploymentEntity);
 
