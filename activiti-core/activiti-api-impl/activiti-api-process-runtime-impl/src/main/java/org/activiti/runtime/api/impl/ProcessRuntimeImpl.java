@@ -17,7 +17,6 @@ package org.activiti.runtime.api.impl;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 
 import org.activiti.api.model.shared.model.VariableInstance;
@@ -141,7 +140,7 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
     private void checkProcessDefinitionBelongsToLatestDeployment(org.activiti.engine.repository.ProcessDefinition processDefinition) {
         Integer appVersion = processDefinition.getAppVersion();
 
-        if (appVersion != null && !Objects.equals(selectLatestDeployment().getVersion(), appVersion)) {
+        if (appVersion != null && !selectLatestDeployment().getVersion().equals(appVersion)) {
             throw new UnprocessableEntityException("Process definition with the given id:'" + processDefinition.getId() + "' belongs to a different application version.");
         }
     }
