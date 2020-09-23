@@ -108,7 +108,6 @@ public interface DeploymentQuery extends Query<DeploymentQuery, Deployment> {
 
   /**
    * Only select deployments where the deployment version is the latest value
-   * Can only be used together with the deployment name.
    */
   DeploymentQuery latestVersion();
 

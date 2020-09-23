@@ -172,10 +172,6 @@ public class DeploymentQueryImpl extends AbstractQuery<DeploymentQuery, Deployme
 
   @Override
   public DeploymentQuery latestVersion() {
-    if (name == null) {
-      throw new ActivitiIllegalArgumentException("latest version can only be used together with a deployment name");
-    }
-    
     this.latestVersion = true;
     
     return this;
