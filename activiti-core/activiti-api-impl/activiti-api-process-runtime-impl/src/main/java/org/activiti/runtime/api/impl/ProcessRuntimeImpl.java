@@ -18,7 +18,6 @@ package org.activiti.runtime.api.impl;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.activiti.api.model.shared.model.VariableInstance;
 import org.activiti.api.process.model.Deployment;
@@ -129,6 +128,7 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
 
     private Optional<org.activiti.engine.repository.ProcessDefinition> findLatestProcessDefinitionByKey(String processDefinitionKey) {
         return repositoryService.createProcessDefinitionQuery()
+            .latestVersion()
             .processDefinitionKey(processDefinitionKey)
             .orderByProcessDefinitionAppVersion()
             .desc()
@@ -163,26 +163,17 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
         if (!securityKeysInPayload.getProcessDefinitionKeys().isEmpty()) {
             getProcessDefinitionsPayload.setProcessDefinitionKeys(securityKeysInPayload.getProcessDefinitionKeys());
         }
+
         ProcessDefinitionQuery processDefinitionQuery = repositoryService
-                .createProcessDefinitionQuery();
+                .createProcessDefinitionQuery()
+                .latestVersion();
+
         if (getProcessDefinitionsPayload.hasDefinitionKeys()) {
             processDefinitionQuery.processDefinitionKeys(getProcessDefinitionsPayload.getProcessDefinitionKeys());
         }
 
-        List<org.activiti.engine.repository.ProcessDefinition> currentVersionDefinitions = filterCurrentVersionDefinitions(processDefinitionQuery.list());
-
-        return new PageImpl<>(processDefinitionConverter.from(currentVersionDefinitions),
+        return new PageImpl<>(processDefinitionConverter.from(processDefinitionQuery.list()),
                               Math.toIntExact(processDefinitionQuery.count()));
-    }
-
-    private List<org.activiti.engine.repository.ProcessDefinition> filterCurrentVersionDefinitions (List<org.activiti.engine.repository.ProcessDefinition> allDefinitions){
-        int currentVersion = selectLatestDeployment().getVersion();
-        return allDefinitions
-                .stream()
-                .filter(processDefinition -> processDefinition.getAppVersion() == null ||
-                                             processDefinition.getAppVersion().equals(currentVersion))
-                //we fetch possible unversioned definitions from different types of deployments
-                .collect(Collectors.toList());
     }
 
     @Override
@@ -473,6 +464,8 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
         return deploymentConverter.from(
                 repositoryService
                     .createDeploymentQuery()
+                    .deploymentName("SpringAutoDeployment")
+                    .latestVersion()
                     .singleResult()
         );
     }

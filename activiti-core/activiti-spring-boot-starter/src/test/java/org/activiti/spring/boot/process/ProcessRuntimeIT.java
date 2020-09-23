@@ -26,6 +26,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
+
 import org.activiti.api.model.shared.model.VariableInstance;
 import org.activiti.api.process.model.Deployment;
 import org.activiti.api.process.model.ProcessDefinition;
@@ -185,6 +186,41 @@ public class ProcessRuntimeIT {
                 .contains(CATEGORIZE_PROCESS,
                         CATEGORIZE_HUMAN_PROCESS,
                         ONE_STEP_PROCESS);
+    }
+
+    @Test
+    public void shouldGetAvailableLatestDeployments() {
+
+        //when
+        List<org.activiti.engine.repository.Deployment> deployments = repositoryService.createDeploymentQuery()
+                                                                                       .latestVersion()
+                                                                                       .list();
+        //then
+        assertThat(deployments).hasSize(2)
+                               .extracting("name", "version", "projectReleaseVersion")
+                               .contains(tuple("SpringAutoDeployment", 1, "1"),
+                                         tuple("ApplicationAutoDeployment", 1, null));
+
+        //when
+        org.activiti.engine.repository.Deployment applicationAutoDeployment = repositoryService.createDeploymentQuery()
+                                                                                     .deploymentName("ApplicationAutoDeployment")
+                                                                                     .latestVersion()
+                                                                                     .singleResult();
+        //then
+        assertThat(applicationAutoDeployment).isNotNull()
+                                             .extracting("name", "version", "projectReleaseVersion")
+                                             .contains("ApplicationAutoDeployment", 1, null);
+
+        //when
+        org.activiti.engine.repository.Deployment springAutoDeployment = repositoryService.createDeploymentQuery()
+                                                                                     .deploymentName("SpringAutoDeployment")
+                                                                                     .latestVersion()
+                                                                                     .singleResult();
+        //then
+        assertThat(springAutoDeployment).isNotNull()
+                                        .extracting("name", "version", "projectReleaseVersion")
+                                        .contains("SpringAutoDeployment", 1, "1");
+
     }
 
     @Test

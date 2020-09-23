@@ -149,6 +149,10 @@
 	         </if>
         )
       </if>
+      <if test="latestVersion">
+        and RES.VERSION_ = (select max(VERSION_) from ${prefix}ACT_RE_DEPLOYMENT where NAME_ = RES.NAME_) 
+      </if>
+      
     </where>
   </sql>
     
@@ -161,10 +165,9 @@
   </select>
 
   <select id="selectLatestDeployment" parameterType="string" resultMap="deploymentResultMap">
-    select * from ${prefix}ACT_RE_DEPLOYMENT
-    where VERSION_ = (select max(VERSION_) from ${prefix}ACT_RE_DEPLOYMENT)
-    and NAME_ = #{name, jdbcType=VARCHAR}
-    and PROJECT_RELEASE_VERSION_ IS NOT NULL
+    select * from ${prefix}ACT_RE_DEPLOYMENT RES
+    where VERSION_ = (select max(VERSION_) from ${prefix}ACT_RE_DEPLOYMENT and NAME_ = RES.NAME_)
+    and RES.NAME_ = #{name, jdbcType=VARCHAR}
   </select>
 
   <!-- mysql specific -->

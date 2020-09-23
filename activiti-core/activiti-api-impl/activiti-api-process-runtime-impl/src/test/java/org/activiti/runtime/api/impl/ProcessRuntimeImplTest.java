@@ -31,6 +31,7 @@ import static org.mockito.MockitoAnnotations.initMocks;
 
 import java.util.HashMap;
 import java.util.List;
+
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
 import org.activiti.api.process.model.payloads.CreateProcessInstancePayload;
@@ -84,7 +85,7 @@ public class ProcessRuntimeImplTest {
     private ProcessVariablesPayloadValidator processVariableValidator;
 
     @Mock
-    APIProcessDefinitionConverter processDefinitionConverter;
+    private APIProcessDefinitionConverter processDefinitionConverter;
 
     @BeforeEach
     public void setUp() {

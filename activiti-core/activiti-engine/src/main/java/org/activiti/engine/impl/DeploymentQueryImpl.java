@@ -20,7 +20,6 @@ package org.activiti.engine.impl;
 import java.io.Serializable;
 import java.util.List;
 
-import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
@@ -48,6 +47,7 @@ public class DeploymentQueryImpl extends AbstractQuery<DeploymentQuery, Deployme
   protected String processDefinitionKey;
   protected String processDefinitionKeyLike;
   protected boolean latest;
+  protected boolean latestVersion;
 
   public DeploymentQueryImpl() {
   }
@@ -170,6 +170,13 @@ public class DeploymentQueryImpl extends AbstractQuery<DeploymentQuery, Deployme
     return this;
   }
 
+  @Override
+  public DeploymentQuery latestVersion() {
+    this.latestVersion = true;
+    
+    return this;
+  }  
+  
   // sorting ////////////////////////////////////////////////////////
 
   public DeploymentQuery orderByDeploymentId() {
@@ -200,25 +207,6 @@ public class DeploymentQueryImpl extends AbstractQuery<DeploymentQuery, Deployme
   public List<Deployment> executeList(CommandContext commandContext, Page page) {
     checkQueryOk();
     return commandContext.getDeploymentEntityManager().findDeploymentsByQueryCriteria(this, page);
-  }
-
-  @Override
-  public Deployment executeSingleResult(CommandContext commandContext){
-
-    Deployment deployment = commandContext.getDeploymentEntityManager().selectLatestDeployment("SpringAutoDeployment");
-
-    if (deployment != null){
-      return deployment;
-    } else {
-      List<Deployment> results = executeList(commandContext, null);
-      if (results.size() == 1) {
-        return results.get(0);
-      } else if (results.size() > 1) {
-        throw new ActivitiException("Query return " + results.size() + " results instead of max 1");
-      }
-      return null;
-    }
-
   }
 
   // getters ////////////////////////////////////////////////////////
@@ -261,5 +249,9 @@ public class DeploymentQueryImpl extends AbstractQuery<DeploymentQuery, Deployme
 
   public String getProcessDefinitionKeyLike() {
     return processDefinitionKeyLike;
+  }
+
+  public boolean isLatestVersion() {
+    return latestVersion;
   }
 }
