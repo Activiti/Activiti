@@ -19,6 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import org.activiti.api.process.model.ProcessDefinition;
 import org.activiti.api.process.runtime.ProcessRuntime;
@@ -44,6 +45,8 @@ public class ApplicationUpgradeIT {
     private static final String MULTI_INSTANCE_PROCESS_DEFINITION_PATH = "processes/multi-instance-parallel-all-output-data-ref.bpmn20.xml";
     private static final String MULTI_INSTANCE_PROCESS_DEFINITION_KEY = "miParallelUserTasksAllOutputCollection";
     private static final String DEPLOYMENT_TYPE_NAME = "SpringAutoDeployment";
+    private static final String PROCESS_FROM_CUSTOM_DEPLOYMENT_KEY = "ProcessFromCustomDeployment";
+    private static final String ANOTHER_PROCESS_FROM_CUSTOM_DEPLOYMENT_KEY = "AnotherProcessFromCustomDeployment";
 
     @Autowired
     private RepositoryService repositoryService;
@@ -59,6 +62,7 @@ public class ApplicationUpgradeIT {
     @BeforeEach
     public void setUp() {
         deploymentIds = new ArrayList<>();
+        securityUtil.logInAs("user");
     }
 
     @AfterEach
@@ -103,8 +107,6 @@ public class ApplicationUpgradeIT {
         projectManifest.setVersion("34");
         Deployment latestDeployment = deployProcesses(projectManifest, SINGLE_TASK_PROCESS_DEFINITION_PATH);
 
-        securityUtil.logInAs("user");
-
         ProcessDefinition result = processRuntime.processDefinition(
             SINGLE_TASK_PROCESS_DEFINITION_KEY);
 
@@ -116,7 +118,8 @@ public class ApplicationUpgradeIT {
     }
 
     @Test
-    public void processDefinitions_should_returnOnlyTheProcessesInTheLatest_when_multipleVersions() {
+    public void processDefinitions_should_returnOnlyTheLatestVersion_when_multipleVersions() {
+        //given
         ProjectManifest projectManifest = new ProjectManifest();
         projectManifest.setVersion("12");
         deployProcesses(projectManifest, SINGLE_TASK_PROCESS_DEFINITION_PATH,
@@ -126,9 +129,10 @@ public class ApplicationUpgradeIT {
         Deployment latestDeployment = deployProcesses(projectManifest,
             MULTI_INSTANCE_PROCESS_DEFINITION_PATH);
 
-        securityUtil.logInAs("user");
-
+        //when
         Page<ProcessDefinition> result = processRuntime.processDefinitions(Pageable.of(0, 100));
+
+        //then
         assertThat(result.getContent())
             .filteredOn(processDefinition -> processDefinition.getKey().equals(
                 SINGLE_TASK_PROCESS_DEFINITION_KEY) || processDefinition.getKey()
@@ -138,6 +142,55 @@ public class ApplicationUpgradeIT {
             .containsExactly(
                 tuple(MULTI_INSTANCE_PROCESS_DEFINITION_KEY, latestDeployment.getVersion(),
                     String.valueOf(latestDeployment.getVersion())));
+
+    }
+
+    @Test
+    public void processDefinitions_should_returnProcesses_when_deploymentIsCreatedWithoutProjectManifest() {
+        //given
+        deployProcessesWithoutProjectManifest("customDeployment",
+            "custom-deployment/ProcessFromCustomDeployment.bpmn20.xml");
+
+        //when
+        Page<ProcessDefinition> result = processRuntime.processDefinitions(Pageable.of(0, 100));
+
+        //then
+        assertThat(result.getContent())
+            .filteredOn(processDefinition ->
+                PROCESS_FROM_CUSTOM_DEPLOYMENT_KEY.equals(processDefinition.getKey()))
+            .extracting(ProcessDefinition::getKey, ProcessDefinition::getVersion,
+                ProcessDefinition::getAppVersion)
+            .containsExactly(
+                tuple(PROCESS_FROM_CUSTOM_DEPLOYMENT_KEY, 1, null));
+
+    }
+
+    @Test
+    public void processDefinitions_should_returnOnlyTheLatestVersion_when_deploymentIsCreatedWithoutManifestAndIsUpdatedWithManifest() {
+        //given
+        ProjectManifest projectManifest = new ProjectManifest();
+        projectManifest.setVersion("12");
+
+        String deploymentName = "customDeployment";
+        deployProcessesWithoutProjectManifest(deploymentName,
+            "custom-deployment/ProcessFromCustomDeployment.bpmn20.xml");
+        Deployment latestCustomDeployment = deployProcesses(deploymentName, projectManifest,
+            "custom-deployment/AnotherProcessFromCustomDeployment.bpmn20.xml");
+
+        //when
+        Page<ProcessDefinition> result = processRuntime.processDefinitions(Pageable.of(0, 100));
+
+        //then
+        assertThat(result.getContent())
+            .filteredOn(processDefinition -> Arrays.asList(
+                PROCESS_FROM_CUSTOM_DEPLOYMENT_KEY,
+                ANOTHER_PROCESS_FROM_CUSTOM_DEPLOYMENT_KEY)
+                .contains(processDefinition.getKey()))
+            .extracting(ProcessDefinition::getKey, ProcessDefinition::getVersion,
+                ProcessDefinition::getAppVersion)
+            .containsExactly(
+                tuple(ANOTHER_PROCESS_FROM_CUSTOM_DEPLOYMENT_KEY, latestCustomDeployment.getVersion(),
+                    String.valueOf(latestCustomDeployment.getVersion())));
 
     }
 
@@ -240,11 +293,12 @@ public class ApplicationUpgradeIT {
         assertThat(deployment2.getVersion()).isEqualTo(1);
     }
 
-    private Deployment deployProcesses(ProjectManifest projectManifest, String ... processPaths) {
+    private Deployment deployProcesses(String deploymentName, ProjectManifest projectManifest,
+        String... processPaths) {
         DeploymentBuilder deploymentBuilder = repositoryService.createDeployment()
             .setProjectManifest(projectManifest)
             .enableDuplicateFiltering()
-            .name(DEPLOYMENT_TYPE_NAME);
+            .name(deploymentName);
         for (String processPath : processPaths) {
             deploymentBuilder.addClasspathResource(processPath);
         }
@@ -252,6 +306,14 @@ public class ApplicationUpgradeIT {
             .deploy();
         deploymentIds.add(deployment.getId());
         return deployment;
+    }
+
+    private Deployment deployProcesses(ProjectManifest projectManifest, String ... processPaths) {
+        return deployProcesses(DEPLOYMENT_TYPE_NAME, projectManifest, processPaths);
+    }
+
+    private Deployment deployProcessesWithoutProjectManifest(String deploymentName, String ... processPaths) {
+        return deployProcesses(deploymentName, null, processPaths);
     }
 
 }
