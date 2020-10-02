@@ -18,6 +18,8 @@ package org.activiti.runtime.api.impl;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.activiti.api.model.shared.model.VariableInstance;
 import org.activiti.api.process.model.Deployment;
@@ -129,12 +131,22 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
     private Optional<org.activiti.engine.repository.ProcessDefinition> findLatestProcessDefinitionByKey(String processDefinitionKey) {
         return repositoryService.createProcessDefinitionQuery()
             .latestVersion()
+            .deploymentIds(latestDeploymentIds())
             .processDefinitionKey(processDefinitionKey)
             .orderByProcessDefinitionAppVersion()
             .desc()
             .list()
             .stream()
             .findFirst();
+    }
+
+    private Set<String> latestDeploymentIds() {
+        return repositoryService.createDeploymentQuery()
+                                .latestVersion()
+                                .list()
+                                .stream()
+                                .map(org.activiti.engine.repository.Deployment::getId)
+                                .collect(Collectors.toSet());
     }
 
     private void checkProcessDefinitionBelongsToLatestDeployment(org.activiti.engine.repository.ProcessDefinition processDefinition) {
@@ -166,7 +178,8 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
 
         ProcessDefinitionQuery processDefinitionQuery = repositoryService
                 .createProcessDefinitionQuery()
-                .latestVersion();
+                .latestVersion()
+                .deploymentIds(latestDeploymentIds());
 
         if (getProcessDefinitionsPayload.hasDefinitionKeys()) {
             processDefinitionQuery.processDefinitionKeys(getProcessDefinitionsPayload.getProcessDefinitionKeys());
