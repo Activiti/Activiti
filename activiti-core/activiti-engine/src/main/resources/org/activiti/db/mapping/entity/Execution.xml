@@ -141,6 +141,7 @@
       DEADLETTER_JOB_COUNT_ = #{deadLetterJobCount, jdbcType=INTEGER},
       VAR_COUNT_ = #{variableCount, jdbcType=INTEGER},
       ID_LINK_COUNT_ = #{identityLinkCount, jdbcType=INTEGER},
+      START_TIME_ = #{startTime, jdbcType=TIMESTAMP},
       APP_VERSION_ = #{appVersion, jdbcType=INTEGER}
     where ID_ = #{id, jdbcType=VARCHAR}
       and REV_ = #{revision, jdbcType=INTEGER}
