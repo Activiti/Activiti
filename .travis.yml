@@ -4,13 +4,13 @@ stages:
 - name: verify
 - name: tag_deploy_updatebot
   if: type != pull_request
-  
+
 jobs:
   include:
   - name: Verify build
     stage: verify
     script:
-    - mvn verify -B
+    - mvn verify -B -T 2
   - name: Create a tag deploy to nexus run updatebot
     stage: tag_deploy_updatebot
     script: "mvn versions:set -DnewVersion=$(cat VERSION) -DprocessAllModules=true
