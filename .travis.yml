@@ -7,10 +7,22 @@ stages:
 
 jobs:
   include:
-  - name: Verify build
+  - name: Verify build Maven single thread
+    stage: verify
+    script:
+    - mvn verify -B
+  - name: Verify build Maven 2 threads
     stage: verify
     script:
     - mvn verify -B -T 2
+  - name: Verify build Maven 4 threads
+    stage: verify
+    script:
+    - mvn verify -B -T 4
+  - name: Verify build Maven 2 threads per CPU core
+    stage: verify
+    script:
+    - mvn verify -B -T 2C
   - name: Create a tag deploy to nexus run updatebot
     stage: tag_deploy_updatebot
     script: "mvn versions:set -DnewVersion=$(cat VERSION) -DprocessAllModules=true
