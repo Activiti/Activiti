@@ -291,6 +291,7 @@ public class ProcessRuntimeIT {
         assertThat(RuntimeTestConfiguration.createdTasks).contains(tasks.getContent().get(0).getId());
         assertThat(singleTaskProcessStarted).isNotNull();
         assertThat(singleTaskProcessStarted.getStatus()).isEqualTo(ProcessInstance.ProcessInstanceStatus.RUNNING);
+        assertThat(processRuntime.processInstance(singleTaskProcessStarted.getId()).getStatus()).isEqualTo(ProcessInstance.ProcessInstanceStatus.RUNNING);
     }
 
     @Test
