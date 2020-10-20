@@ -29,8 +29,10 @@ import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
 import org.activiti.api.process.model.payloads.CreateProcessInstancePayload;
@@ -49,7 +51,6 @@ import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.persistence.entity.DeploymentEntityImpl;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntityImpl;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntityImpl;
-import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstanceBuilder;
 import org.activiti.engine.runtime.ProcessInstanceQuery;
@@ -84,7 +85,7 @@ public class ProcessRuntimeImplTest {
     private ProcessVariablesPayloadValidator processVariableValidator;
 
     @Mock
-    APIProcessDefinitionConverter processDefinitionConverter;
+    private APIProcessDefinitionConverter processDefinitionConverter;
 
     @BeforeEach
     public void setUp() {
@@ -150,7 +151,11 @@ public class ProcessRuntimeImplTest {
         processDefinition.setAppVersion(null);
         List<ProcessDefinition> findProcessDefinitionResult = singletonList(processDefinition);
 
-        given(commandExecutor.execute(any())).willReturn(findProcessDefinitionResult);
+        DeploymentEntityImpl deploymentEntity = new DeploymentEntityImpl();
+        deploymentEntity.setId("deploymentId");
+
+        given(commandExecutor.execute(any())).willReturn(Arrays.asList(deploymentEntity))
+                                             .willReturn(findProcessDefinitionResult);
         given(securityPoliciesManager.canRead(processDefinitionKey)).willReturn(true);
 
         processRuntime.processDefinition(processDefinitionId);
@@ -167,12 +172,15 @@ public class ProcessRuntimeImplTest {
         processDefinition.setAppVersion(1);
         List<ProcessDefinition> findProcessDefinitionResult = singletonList(processDefinition);
 
-        Deployment latestDeploymentEntity = new DeploymentEntityImpl();
+        DeploymentEntityImpl latestDeploymentEntity = new DeploymentEntityImpl();
+        latestDeploymentEntity.setId("deploymentId");
+
         DeploymentImpl latestDeployment = new DeploymentImpl();
         latestDeployment.setVersion(2);
 
         given(deploymentConverter.from(latestDeploymentEntity)).willReturn(latestDeployment);
         given(commandExecutor.execute(any()))
+            .willReturn(Arrays.asList(latestDeploymentEntity))
             .willReturn(findProcessDefinitionResult)
             .willReturn(latestDeploymentEntity)
             .willReturn(latestDeployment);
@@ -194,12 +202,14 @@ public class ProcessRuntimeImplTest {
         processDefinition.setAppVersion(1);
         List<ProcessDefinition> findProcessDefinitionResult = singletonList(processDefinition);
 
-        Deployment latestDeploymentEntity = new DeploymentEntityImpl();
+        DeploymentEntityImpl latestDeploymentEntity = new DeploymentEntityImpl();
+        latestDeploymentEntity.setId("deploymentId");
         DeploymentImpl deployment = new DeploymentImpl();
         deployment.setVersion(1);
 
         given(deploymentConverter.from(latestDeploymentEntity)).willReturn(deployment);
         given(commandExecutor.execute(any()))
+            .willReturn(Arrays.asList(latestDeploymentEntity))
             .willReturn(findProcessDefinitionResult)
             .willReturn(latestDeploymentEntity);
 
