@@ -9,6 +9,7 @@ Activiti
 [![security status](https://www.meterian.io/badge/gh/Activiti/Activiti/security)](https://www.meterian.io/report/gh/Activiti/Activiti)
 [![stability status](https://www.meterian.io/badge/gh/Activiti/Activiti/stability)](https://www.meterian.io/report/gh/Activiti/Activiti)
 [![licensing status](https://www.meterian.io/badge/gh/Activiti/Activiti/licensing)](https://www.meterian.io/report/gh/Activiti/Activiti)
+|Code maintainability|[![QualityGate](https://quality-gate.com/backend/api/timeline?branchName=develop&projectName=Activiti_Activiti)](https://quality-gate.com/dashboard/branches/137137#overview)
 
 Homepage: <http://activiti.org>
 
