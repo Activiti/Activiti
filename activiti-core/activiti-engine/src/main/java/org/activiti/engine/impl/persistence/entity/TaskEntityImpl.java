@@ -204,8 +204,7 @@ public class TaskEntityImpl extends VariableScopeImpl implements TaskEntity, Ser
           .getProcessEngineConfiguration()
           .getEventDispatcher()
           .dispatchEvent(
-              ActivitiEventBuilder.createVariableEvent(ActivitiEventType.VARIABLE_UPDATED, variableInstance.getName(), value, variableInstance.getType(), variableInstance.getTaskId(),
-                  variableInstance.getExecutionId(), getProcessInstanceId(), getProcessDefinitionId()));
+              ActivitiEventBuilder.createVariableUpdateEvent(variableInstance, value, getProcessInstanceId(), getProcessDefinitionId()));
     }
   }
 

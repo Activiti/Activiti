@@ -39,6 +39,7 @@ import org.activiti.engine.impl.bpmn.behavior.TerminateEndEventActivityBehavior;
 import org.activiti.engine.impl.context.ExecutionContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.IdentityLinkEntity;
+import org.activiti.engine.impl.persistence.entity.VariableInstanceEntity;
 import org.activiti.engine.impl.variable.VariableType;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.Job;
@@ -358,6 +359,28 @@ public class ActivitiEventBuilder {
     newEvent.setProcessInstanceId(processInstanceId);
     return newEvent;
   }
+
+    public static ActivitiVariableUpdatedEventImpl createVariableUpdateEvent(VariableInstanceEntity variableInstance, Object variableValue,
+        String processInstanceId, String processDefinitionId) {
+        ActivitiVariableUpdatedEventImpl updateEvent = new ActivitiVariableUpdatedEventImpl();
+
+        String variableName = variableInstance.getName();
+        Object previousValue = variableInstance.getValue();
+        String executionId = variableInstance.getExecutionId();
+        String taskId = variableInstance.getTaskId();
+        VariableType variableType = variableInstance.getType();
+
+        updateEvent.setVariableName(variableName);
+        updateEvent.setVariableValue(variableValue);
+        updateEvent.setVariablePreviousValue(previousValue);
+        updateEvent.setVariableType(variableType);
+        updateEvent.setTaskId(taskId);
+        updateEvent.setExecutionId(executionId);
+        updateEvent.setProcessDefinitionId(processDefinitionId);
+        updateEvent.setProcessInstanceId(processInstanceId);
+
+        return updateEvent;
+    }
 
   public static ActivitiMembershipEvent createMembershipEvent(ActivitiEventType type, String groupId, String userId) {
     ActivitiMembershipEventImpl newEvent = new ActivitiMembershipEventImpl(type);

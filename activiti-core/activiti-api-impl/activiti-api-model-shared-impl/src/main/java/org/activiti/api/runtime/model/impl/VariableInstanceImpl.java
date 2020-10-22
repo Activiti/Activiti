@@ -28,14 +28,12 @@ public class VariableInstanceImpl<T> implements VariableInstance {
     public VariableInstanceImpl() {
     }
 
-    public VariableInstanceImpl(String name,
-                                String type,
-                                T value,
-                                String processInstanceId) {
+    public VariableInstanceImpl(String name, String type, T value, String processInstanceId, String taskId) {
         this.name = name;
         this.type = type;
         this.processInstanceId = processInstanceId;
         this.value = value;
+        this.taskId = taskId;
     }
 
     @Override

@@ -13,9 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.api.model.shared.event;
+package org.activiti.engine.delegate.event;
 
-public interface VariableUpdatedEvent extends VariableEvent {
+/**
+ * An {@link ActivitiVariableEvent} for an update variable event.
+ */
+public interface ActivitiVariableUpdatedEvent extends ActivitiVariableEvent {
 
-    <T> T getPreviousValue();
+    /**
+     * @return the previous value of the variable.
+     */
+    Object getVariablePreviousValue();
+
 }
