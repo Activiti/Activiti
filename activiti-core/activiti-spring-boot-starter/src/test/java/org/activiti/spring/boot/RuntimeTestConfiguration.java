@@ -74,10 +74,6 @@ public class RuntimeTestConfiguration {
 
     public static Set<String> cancelledProcesses = new HashSet<>();
 
-    public static Set<BPMNSequenceFlowTakenEvent> sequenceFlowTakenEvents = new HashSet<>();
-
-    public static Set<VariableCreatedEvent> variableCreatedEventsFromProcessInstance = new HashSet<>();
-
     public static Set<TaskCandidateUserAddedEvent> taskCandidateUserAddedEvents = new HashSet<>();
 
     public static Set<TaskCandidateUserRemovedEvent> taskCandidateUserRemovedEvents = new HashSet<>();
@@ -220,21 +216,6 @@ public class RuntimeTestConfiguration {
     @Bean
     public ProcessRuntimeEventListener<ProcessCompletedEvent> processCompletedListener() {
         return processCompleted -> completedProcesses.add(processCompleted.getEntity().getId());
-    }
-
-    @Bean
-    public BPMNElementEventListener<BPMNSequenceFlowTakenEvent> sequenceFlowTakenEventListener() {
-        return sequenceFlowTakenEvent -> sequenceFlowTakenEvents.add(sequenceFlowTakenEvent);
-    }
-
-    @Bean
-    public VariableEventListener<VariableCreatedEvent> variableCreatedEventFromProcessInstanceListener() {
-        return variableCreatedEvent -> {
-            //we filter out the events from tasks
-            if (variableCreatedEvent.getEntity().getTaskId() == null) {
-                variableCreatedEventsFromProcessInstance.add(variableCreatedEvent);
-            }
-        };
     }
 
     @Bean

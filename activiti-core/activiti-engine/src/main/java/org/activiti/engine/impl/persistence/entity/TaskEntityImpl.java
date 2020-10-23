@@ -196,16 +196,14 @@ public class TaskEntityImpl extends VariableScopeImpl implements TaskEntity, Ser
 
   @Override
   protected void updateVariableInstance(VariableInstanceEntity variableInstance, Object value, ExecutionEntity sourceActivityExecution) {
-    super.updateVariableInstance(variableInstance, value, sourceActivityExecution);
+      Object previousValue = variableInstance.getValue();
+      super.updateVariableInstance(variableInstance, value, sourceActivityExecution);
 
-    // Dispatch event, if needed
-    if (Context.getProcessEngineConfiguration() != null && Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-      Context
-          .getProcessEngineConfiguration()
-          .getEventDispatcher()
-          .dispatchEvent(
-              ActivitiEventBuilder.createVariableUpdateEvent(variableInstance, value, getProcessInstanceId(), getProcessDefinitionId()));
-    }
+      // Dispatch event, if needed
+      if (Context.getProcessEngineConfiguration() != null && Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+          Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder
+              .createVariableUpdateEvent(variableInstance, previousValue, getProcessInstanceId(), getProcessDefinitionId()));
+      }
   }
 
   // execution //////////////////////////////////////////////////////////////////

@@ -34,7 +34,7 @@ class ToVariableDeletedConverterTest {
 
     @Test
     void should_convertToVariableDeletedEvent() {
-        ActivitiVariableEventImpl internalEvent = new ActivitiVariableEventImpl(ActivitiEventType.VARIABLE_CREATED);
+        ActivitiVariableEventImpl internalEvent = new ActivitiVariableEventImpl(ActivitiEventType.VARIABLE_DELETED);
         internalEvent.setVariableName("variableName");
         internalEvent.setProcessInstanceId("processInstanceId");
         internalEvent.setTaskId("taskId");

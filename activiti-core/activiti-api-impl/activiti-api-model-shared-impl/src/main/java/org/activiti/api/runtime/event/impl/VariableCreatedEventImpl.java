@@ -34,8 +34,4 @@ public class VariableCreatedEventImpl extends VariableEventImpl implements Varia
         return VariableEvent.VariableEvents.VARIABLE_CREATED;
     }
 
-    @Override
-    public String getProcessInstanceId() {
-        return super.getProcessInstanceId();
-    }
 }

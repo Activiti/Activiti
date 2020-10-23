@@ -360,12 +360,12 @@ public class ActivitiEventBuilder {
     return newEvent;
   }
 
-    public static ActivitiVariableUpdatedEventImpl createVariableUpdateEvent(VariableInstanceEntity variableInstance, Object variableValue,
+    public static ActivitiVariableUpdatedEventImpl createVariableUpdateEvent(VariableInstanceEntity variableInstance, Object previousValue,
         String processInstanceId, String processDefinitionId) {
         ActivitiVariableUpdatedEventImpl updateEvent = new ActivitiVariableUpdatedEventImpl();
 
         String variableName = variableInstance.getName();
-        Object previousValue = variableInstance.getValue();
+        Object variableValue = variableInstance.getValue();
         String executionId = variableInstance.getExecutionId();
         String taskId = variableInstance.getTaskId();
         VariableType variableType = variableInstance.getType();
