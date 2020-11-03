@@ -72,5 +72,6 @@ public class ApplicationDeployedEventProducer extends AbstractActivitiSmartLifeC
 
     @Override
     public void doStop() {
+        //nothing
     }
 }
