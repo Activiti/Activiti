@@ -345,7 +345,7 @@ public class DynamicUserTaskTest extends PluggableActivitiTestCase {
     String processDefinitionId = processInstance.getProcessDefinitionId();
 
     Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
-    assertThat(task.getPriority()).isEqualTo(50);
+    assertThat(task.getPriority()).isEqualTo(0);
     assertThat(task.getCategory()).isNull();
     taskService.complete(task.getId());
 
