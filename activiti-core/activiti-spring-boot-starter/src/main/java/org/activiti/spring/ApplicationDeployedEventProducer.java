@@ -32,7 +32,7 @@ public class ApplicationDeployedEventProducer extends AbstractActivitiSmartLifeC
     private APIDeploymentConverter deploymentConverter;
     private List<ProcessRuntimeEventListener<ApplicationDeployedEvent>> listeners;
     private ApplicationEventPublisher eventPublisher;
-    private static final String APPLICATION_DEPLOYED_EVENT_NAME= "SpringAutoDeployment";
+    private static final String APPLICATION_DEPLOYMENT_NAME= "SpringAutoDeployment";
 
     public ApplicationDeployedEventProducer(RepositoryService repositoryService,
             APIDeploymentConverter deploymentConverter,
@@ -47,6 +47,9 @@ public class ApplicationDeployedEventProducer extends AbstractActivitiSmartLifeC
     @Override
     public void doStart() {
         List<ApplicationDeployedEvent> applicationDeployedEvents = getApplicationDeployedEvents();
+        for (ProcessRuntimeEventListener<ApplicationDeployedEvent> listener : listeners) {
+            applicationDeployedEvents.forEach(listener::onEvent);
+        }
         if (!applicationDeployedEvents.isEmpty()) {
             eventPublisher.publishEvent(new ApplicationDeployedEvents(applicationDeployedEvents));
         }
@@ -55,17 +58,13 @@ public class ApplicationDeployedEventProducer extends AbstractActivitiSmartLifeC
     private List<ApplicationDeployedEvent> getApplicationDeployedEvents() {
         List<Deployment> deployments = deploymentConverter.from(repositoryService
                         .createDeploymentQuery()
+                        .deploymentName(APPLICATION_DEPLOYMENT_NAME)
                         .list());
 
         List<ApplicationDeployedEvent> applicationDeployedEvents = new ArrayList<>();
         for (Deployment deployment : deployments) {
-            if(deployment.getName().equals(APPLICATION_DEPLOYED_EVENT_NAME)) {
-                ApplicationDeployedEventImpl applicationDeployedEvent = new ApplicationDeployedEventImpl(deployment);
-                applicationDeployedEvents.add(applicationDeployedEvent);
-                for (ProcessRuntimeEventListener<ApplicationDeployedEvent> listener : listeners) {
-                    listener.onEvent(applicationDeployedEvent);
-                }
-            }
+            ApplicationDeployedEventImpl applicationDeployedEvent = new ApplicationDeployedEventImpl(deployment);
+            applicationDeployedEvents.add(applicationDeployedEvent);
         }
         return applicationDeployedEvents;
     }

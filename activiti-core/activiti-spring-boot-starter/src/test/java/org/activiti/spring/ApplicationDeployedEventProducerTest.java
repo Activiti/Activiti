@@ -55,6 +55,8 @@ public class ApplicationDeployedEventProducerTest {
     @Mock
     private ProcessRuntimeEventListener<ApplicationDeployedEvent> secondListener;
 
+    private static final String APPLICATION_DEPLOYMENT_NAME= "SpringAutoDeployment";
+    
     @BeforeEach
     public void setUp() {
         initMocks(this);
@@ -71,12 +73,12 @@ public class ApplicationDeployedEventProducerTest {
 
         List<Deployment> internalDeployment = asList(mock(Deployment.class),
                 mock(Deployment.class));
-
+        
+        given(deploymentQuery.deploymentName(APPLICATION_DEPLOYMENT_NAME)).willReturn(deploymentQuery);
         given(deploymentQuery.list()).willReturn(internalDeployment);
 
         List<org.activiti.api.process.model.Deployment> apiDeployments= asList(
-                buildAPIDeployment("id1", "SpringAutoDeployment"),
-                buildAPIDeployment("id2", "deployment"));
+                buildAPIDeployment("id1", "SpringAutoDeployment"));
         given(converter.from(internalDeployment)).willReturn(apiDeployments);
         
         producer.start();
