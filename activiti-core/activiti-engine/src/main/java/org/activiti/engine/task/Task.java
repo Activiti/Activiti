@@ -30,7 +30,7 @@ public interface Task extends TaskInfo {
   /**
    * Default value used for priority when a new {@link Task} is created.
    */
-  int DEFAULT_PRIORITY = 50;
+  int DEFAULT_PRIORITY = 0;
 
   /** Name or title of the task. */
   void setName(String name);
