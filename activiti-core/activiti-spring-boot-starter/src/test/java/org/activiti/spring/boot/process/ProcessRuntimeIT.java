@@ -829,6 +829,8 @@ public class ProcessRuntimeIT {
     public void should_processAdminOnlyProcessDefinitionsFromLatestVersionRetrieved() {
         Deployment deployment = processRuntime.selectLatestDeployment();
 
+        securityUtil.logInAs("admin");
+
         Page<ProcessDefinition> processDefinitionPage = processAdminRuntime.processDefinitions(
             PAGEABLE);
 
