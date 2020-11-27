@@ -190,7 +190,6 @@ public class TaskRuntimeImpl implements TaskRuntime {
         if (claimTaskPayload.getAssignee() == null || claimTaskPayload.getAssignee().isEmpty()) {
             claimTaskPayload.setAssignee(authenticatedUserId);
         }
-        if (claimTaskPayload.get)
         taskService.claim(claimTaskPayload.getTaskId(),
                 claimTaskPayload.getAssignee());
 
