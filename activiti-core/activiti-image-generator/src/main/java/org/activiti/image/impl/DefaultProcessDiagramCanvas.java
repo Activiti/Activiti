@@ -1591,19 +1591,29 @@ public class DefaultProcessDiagramCanvas {
         g.setStroke(orginalStroke);
     }
 
+    public void drawHighLightCurrent(int x,
+        int y,
+        int width,
+        int height) {
+        drawHighLight(x,y, width, height, HIGHLIGHT_CURRENT_COLOR);
+    }
+
+    public void drawHighLightCompleted(int x,
+        int y,
+        int width,
+        int height) {
+        drawHighLight(x, y, width, height, HIGHLIGHT_COMPLETED_ACTIVITY_COLOR);
+    }
+
     public void drawHighLight(int x,
         int y,
         int width,
         int height,
-        boolean current) {
+        Color color) {
         Paint originalPaint = g.getPaint();
         Stroke originalStroke = g.getStroke();
 
-        if (current) {
-            g.setPaint(HIGHLIGHT_CURRENT_COLOR);
-        } else {
-            g.setPaint(HIGHLIGHT_COMPLETED_ACTIVITY_COLOR);
-        }
+        g.setPaint(color);
         g.setStroke(THICK_TASK_BORDER_STROKE);
 
         RoundRectangle2D rect = new RoundRectangle2D.Double(x,

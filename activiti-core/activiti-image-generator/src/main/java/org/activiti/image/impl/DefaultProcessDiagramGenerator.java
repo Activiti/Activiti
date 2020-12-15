@@ -1104,20 +1104,18 @@ public class DefaultProcessDiagramGenerator implements ProcessDiagramGenerator {
 
     private static void drawHighLightCurrent(DefaultProcessDiagramCanvas processDiagramCanvas,
         GraphicInfo graphicInfo) {
-        processDiagramCanvas.drawHighLight((int) graphicInfo.getX(),
+        processDiagramCanvas.drawHighLightCurrent((int) graphicInfo.getX(),
             (int) graphicInfo.getY(),
             (int) graphicInfo.getWidth(),
-            (int) graphicInfo.getHeight(),
-            true);
+            (int) graphicInfo.getHeight());
     }
 
     private static void drawTaskHighLightCompleted(DefaultProcessDiagramCanvas processDiagramCanvas,
         GraphicInfo graphicInfo) {
-        processDiagramCanvas.drawHighLight((int) graphicInfo.getX(),
+        processDiagramCanvas.drawHighLightCompleted((int) graphicInfo.getX(),
             (int) graphicInfo.getY(),
             (int) graphicInfo.getWidth(),
-            (int) graphicInfo.getHeight(),
-            false);
+            (int) graphicInfo.getHeight());
     }
 
     private static void drawEventHighLightCompleted(DefaultProcessDiagramCanvas processDiagramCanvas,
