@@ -73,6 +73,7 @@ public interface ProcessDiagramGenerator {
     InputStream generateDiagram(BpmnModel bpmnModel,
                                 List<String> highLightedActivities,
                                 List<String> highLightedFlows,
+                                List<String> currentActivities,
                                 String activityFontName,
                                 String labelFontName,
                                 String annotationFontName,
