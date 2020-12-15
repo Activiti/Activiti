@@ -805,7 +805,7 @@ public class DefaultProcessDiagramCanvas {
                                              boolean highLighted) {
         Paint originalPaint = g.getPaint();
         if (highLighted) {
-            g.setPaint(Color.magenta);
+            g.setPaint(HIGHLIGHT_CURRENT_COLOR);
         }
 
         Line2D.Double line = new Line2D.Double(srcX,
@@ -1403,6 +1403,18 @@ public class DefaultProcessDiagramCanvas {
         rhombus.addPoint(x + (width / 2),
                          y);
         g.draw(rhombus);
+    }
+
+    public void drawGatewayHighLightCompleted(GraphicInfo graphicInfo) {
+        Paint originalPaint = g.getPaint();
+        Stroke originalStroke = g.getStroke();
+        g.setPaint(HIGHLIGHT_COMPLETED_ACTIVITY_COLOR);
+        g.setStroke(THICK_TASK_BORDER_STROKE);
+
+        drawGateway(graphicInfo);
+
+        g.setPaint(originalPaint);
+        g.setStroke(originalStroke);
     }
 
     public void drawParallelGateway(String id,

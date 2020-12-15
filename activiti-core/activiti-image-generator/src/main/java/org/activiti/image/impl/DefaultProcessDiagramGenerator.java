@@ -895,6 +895,7 @@ public class DefaultProcessDiagramGenerator implements ProcessDiagramGenerator {
                                                      collapsed);
 
             // Draw highlighted activities
+
             if (currentActivities.contains(flowNode.getId())) {
                 drawHighLightCurrent(processDiagramCanvas,
                               bpmnModel.getGraphicInfo(flowNode.getId()));
@@ -902,10 +903,12 @@ public class DefaultProcessDiagramGenerator implements ProcessDiagramGenerator {
 
             if (highLightedActivities.contains(flowNode.getId())) {
                 Class flowNodeClass = flowNode.getClass();
-                if (flowNodeClass.equals(StartEvent.class) || flowNodeClass.equals(EndEvent.class)){
+                if (Event.class.isAssignableFrom(flowNodeClass)){
                     drawEventHighLightCompleted(processDiagramCanvas, bpmnModel.getGraphicInfo(flowNode.getId()));
-                } else if (Task.class.isAssignableFrom(flowNodeClass)) {
+                } else if (Task.class.isAssignableFrom(flowNodeClass) || CallActivity.class.isAssignableFrom(flowNodeClass) ) {
                     drawTaskHighLightCompleted(processDiagramCanvas, bpmnModel.getGraphicInfo(flowNode.getId()));
+                } else if (Gateway.class.isAssignableFrom(flowNodeClass)) {
+                    drawGatewayHighLightCompleted(processDiagramCanvas, bpmnModel.getGraphicInfo(flowNode.getId()));
                 }
             }
         }
@@ -1123,6 +1126,11 @@ public class DefaultProcessDiagramGenerator implements ProcessDiagramGenerator {
             (int) graphicInfo.getY(),
             (int) graphicInfo.getWidth(),
             (int) graphicInfo.getHeight());
+    }
+
+    private static void drawGatewayHighLightCompleted(DefaultProcessDiagramCanvas processDiagramCanvas,
+        GraphicInfo graphicInfo) {
+        processDiagramCanvas.drawGatewayHighLightCompleted(graphicInfo);
     }
 
     protected static DefaultProcessDiagramCanvas initProcessDiagramCanvas(BpmnModel bpmnModel,
