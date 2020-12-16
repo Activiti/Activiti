@@ -613,6 +613,7 @@ public class DefaultProcessDiagramGenerator implements ProcessDiagramGenerator {
         return generateDiagram(bpmnModel,
                                highLightedActivities,
                                highLightedFlows,
+                               emptyList(),
                                activityFontName,
                                labelFontName,
                                annotationFontName,
@@ -631,6 +632,7 @@ public class DefaultProcessDiagramGenerator implements ProcessDiagramGenerator {
         return generateDiagram(bpmnModel,
                                highLightedActivities,
                                highLightedFlows,
+                               emptyList(),
                                activityFontName,
                                labelFontName,
                                annotationFontName,
@@ -642,6 +644,7 @@ public class DefaultProcessDiagramGenerator implements ProcessDiagramGenerator {
     public InputStream generateDiagram(BpmnModel bpmnModel,
                                        List<String> highLightedActivities,
                                        List<String> highLightedFlows,
+                                       List<String> currentActivities,
                                        String activityFontName,
                                        String labelFontName,
                                        String annotationFontName,
@@ -659,6 +662,7 @@ public class DefaultProcessDiagramGenerator implements ProcessDiagramGenerator {
         return generateProcessDiagram(bpmnModel,
                                       highLightedActivities,
                                       highLightedFlows,
+                                      currentActivities,
                                       activityFontName,
                                       labelFontName,
                                       annotationFontName).generateImage();
@@ -686,6 +690,7 @@ public class DefaultProcessDiagramGenerator implements ProcessDiagramGenerator {
         return generateDiagram(bpmnModel,
                                highLightedActivities,
                                highLightedFlows,
+                               emptyList(),
                                null,
                                null,
                                null,
@@ -718,6 +723,7 @@ public class DefaultProcessDiagramGenerator implements ProcessDiagramGenerator {
     protected DefaultProcessDiagramCanvas generateProcessDiagram(BpmnModel bpmnModel,
                                                                  List<String> highLightedActivities,
                                                                  List<String> highLightedFlows,
+                                                                 List<String> currentActivities,
                                                                  String activityFontName,
                                                                  String labelFontName,
                                                                  String annotationFontName) {
@@ -753,6 +759,7 @@ public class DefaultProcessDiagramGenerator implements ProcessDiagramGenerator {
                 drawActivity(processDiagramCanvas,
                              bpmnModel,
                              flowNode,
+                             currentActivities,
                              highLightedActivities,
                              highLightedFlows);
             }
@@ -846,6 +853,7 @@ public class DefaultProcessDiagramGenerator implements ProcessDiagramGenerator {
     protected void drawActivity(DefaultProcessDiagramCanvas processDiagramCanvas,
                                 BpmnModel bpmnModel,
                                 FlowNode flowNode,
+                                List<String> currentActivities,
                                 List<String> highLightedActivities,
                                 List<String> highLightedFlows) {
 
@@ -887,9 +895,21 @@ public class DefaultProcessDiagramGenerator implements ProcessDiagramGenerator {
                                                      collapsed);
 
             // Draw highlighted activities
-            if (highLightedActivities.contains(flowNode.getId())) {
-                drawHighLight(processDiagramCanvas,
+
+            if (currentActivities.contains(flowNode.getId())) {
+                drawHighLightCurrent(processDiagramCanvas,
                               bpmnModel.getGraphicInfo(flowNode.getId()));
+            }
+
+            if (highLightedActivities.contains(flowNode.getId())) {
+                Class flowNodeClass = flowNode.getClass();
+                if (Event.class.isAssignableFrom(flowNodeClass)){
+                    drawEventHighLightCompleted(processDiagramCanvas, bpmnModel.getGraphicInfo(flowNode.getId()));
+                } else if (Task.class.isAssignableFrom(flowNodeClass) || CallActivity.class.isAssignableFrom(flowNodeClass) ) {
+                    drawTaskHighLightCompleted(processDiagramCanvas, bpmnModel.getGraphicInfo(flowNode.getId()));
+                } else if (Gateway.class.isAssignableFrom(flowNodeClass)) {
+                    drawGatewayHighLightCompleted(processDiagramCanvas, bpmnModel.getGraphicInfo(flowNode.getId()));
+                }
             }
         }
 
@@ -958,6 +978,7 @@ public class DefaultProcessDiagramGenerator implements ProcessDiagramGenerator {
                     drawActivity(processDiagramCanvas,
                                  bpmnModel,
                                  (FlowNode) nestedFlowElement,
+                                 currentActivities,
                                  highLightedActivities,
                                  highLightedFlows);
                 }
@@ -1081,12 +1102,33 @@ public class DefaultProcessDiagramGenerator implements ProcessDiagramGenerator {
         }
     }
 
-    private static void drawHighLight(DefaultProcessDiagramCanvas processDiagramCanvas,
-                                      GraphicInfo graphicInfo) {
-        processDiagramCanvas.drawHighLight((int) graphicInfo.getX(),
-                                           (int) graphicInfo.getY(),
-                                           (int) graphicInfo.getWidth(),
-                                           (int) graphicInfo.getHeight());
+    private static void drawHighLightCurrent(DefaultProcessDiagramCanvas processDiagramCanvas,
+        GraphicInfo graphicInfo) {
+        processDiagramCanvas.drawHighLightCurrent((int) graphicInfo.getX(),
+            (int) graphicInfo.getY(),
+            (int) graphicInfo.getWidth(),
+            (int) graphicInfo.getHeight());
+    }
+
+    private static void drawTaskHighLightCompleted(DefaultProcessDiagramCanvas processDiagramCanvas,
+        GraphicInfo graphicInfo) {
+        processDiagramCanvas.drawHighLightCompleted((int) graphicInfo.getX(),
+            (int) graphicInfo.getY(),
+            (int) graphicInfo.getWidth(),
+            (int) graphicInfo.getHeight());
+    }
+
+    private static void drawEventHighLightCompleted(DefaultProcessDiagramCanvas processDiagramCanvas,
+        GraphicInfo graphicInfo) {
+        processDiagramCanvas.drawEventHighLightCompleted((int) graphicInfo.getX(),
+            (int) graphicInfo.getY(),
+            (int) graphicInfo.getWidth(),
+            (int) graphicInfo.getHeight());
+    }
+
+    private static void drawGatewayHighLightCompleted(DefaultProcessDiagramCanvas processDiagramCanvas,
+        GraphicInfo graphicInfo) {
+        processDiagramCanvas.drawGatewayHighLightCompleted(graphicInfo);
     }
 
     protected static DefaultProcessDiagramCanvas initProcessDiagramCanvas(BpmnModel bpmnModel,
