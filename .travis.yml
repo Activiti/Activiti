@@ -1,4 +1,6 @@
-import: Activiti/activiti-scripts:.travis.java.yml@master
+import:
+  - source: Activiti/activiti-scripts:.travis.java.yml@master
+  - source: Activiti/activiti-scripts:.travis.maven_cache_repo_no_snapshots.yml@master
 stages:
 - name: verify
 - name: tag_deploy_updatebot
