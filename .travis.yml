@@ -4,7 +4,7 @@ import:
 stages:
 - name: verify
 - name: deploy_preview
-  if: type = pull_request
+  if: type = pull_request  AND head_branch =~ ^.*preview$"
 - name: tag_deploy_updatebot
   if: type != pull_request
 jobs:
