@@ -229,6 +229,7 @@ public class ProcessDiagramGeneratorTest extends PluggableActivitiTestCase {
             () -> imageGenerator.generateDiagram(bpmnModel,
                                                  emptyList(),
                                                  emptyList(),
+                                                 emptyList(),
                                                  activityFontName,
                                                  labelFontName,
                                                  annotationFontName,

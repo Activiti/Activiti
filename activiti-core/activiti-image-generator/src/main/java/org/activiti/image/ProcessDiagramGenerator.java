@@ -65,6 +65,7 @@ public interface ProcessDiagramGenerator {
      * @param bpmnModel bpmn model to get diagram for
      * @param highLightedActivities activities to highlight
      * @param highLightedFlows flows to highlight
+     * @param currentActivities current activities to highlight
      * @param activityFontName override the default activity font
      * @param labelFontName override the default label font
      * @param generateDefaultDiagram true if a default diagram should be generated if there is no graphic info available
@@ -73,6 +74,7 @@ public interface ProcessDiagramGenerator {
     InputStream generateDiagram(BpmnModel bpmnModel,
                                 List<String> highLightedActivities,
                                 List<String> highLightedFlows,
+                                List<String> currentActivities,
                                 String activityFontName,
                                 String labelFontName,
                                 String annotationFontName,
