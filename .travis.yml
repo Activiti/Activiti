@@ -3,6 +3,8 @@ import:
   - source: Activiti/activiti-scripts:.travis.maven_cache_repo_no_snapshots.yml@master
 stages:
 - name: verify
+- name: deploy_preview
+  if: type = pull_request AND head_branch =~ ^.*preview$
 - name: tag_deploy_updatebot
   if: type != pull_request
 jobs:
@@ -11,6 +13,11 @@ jobs:
     stage: verify
     script:
     - mvn verify -B
+  - name: Deploy Preview
+    stage: deploy_preview
+    script: |
+      mvn versions:set -DnewVersion=$(cat VERSION)-SNAPSHOT -DprocessAllModules=true -DgenerateBackupPoms=false  || travis_terminate 1
+      mvn clean deploy -DskipTests || travis_terminate 1
   - name: Create a tag deploy to nexus run updatebot
     stage: tag_deploy_updatebot
     script: |
