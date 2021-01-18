@@ -17,11 +17,11 @@ package org.activiti.spring.boot;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import org.activiti.api.process.model.ProcessDefinition;
+import org.activiti.api.process.runtime.ProcessAdminRuntime;
 import org.activiti.api.process.runtime.ProcessRuntime;
 import org.activiti.api.runtime.shared.query.Page;
 import org.activiti.api.runtime.shared.query.Pageable;
@@ -53,6 +53,9 @@ public class ApplicationUpgradeIT {
 
     @Autowired
     private ProcessRuntime processRuntime;
+
+    @Autowired
+    private ProcessAdminRuntime processAdminRuntime;
 
     @Autowired
     private SecurityUtil securityUtil;
@@ -115,6 +118,26 @@ public class ApplicationUpgradeIT {
         assertThat(result.getId()).contains(SINGLE_TASK_PROCESS_DEFINITION_KEY);
         assertThat(result.getAppVersion()).isEqualTo(String.valueOf(latestDeployment.getVersion()));
 
+    }
+
+    @Test
+    public void should_adminApiGetLatestProcessDefinitionByKey_when_multipleVersions() {
+        ProjectManifest projectManifest = new ProjectManifest();
+        projectManifest.setVersion("12");
+        deployProcesses(projectManifest, SINGLE_TASK_PROCESS_DEFINITION_PATH);
+
+        projectManifest.setVersion("34");
+        Deployment latestDeployment = deployProcesses(projectManifest, SINGLE_TASK_PROCESS_DEFINITION_PATH);
+
+        securityUtil.logInAs("admin");
+
+        ProcessDefinition result = processAdminRuntime.processDefinition(
+            SINGLE_TASK_PROCESS_DEFINITION_KEY);
+
+        assertThat(result).isNotNull();
+        assertThat(result.getName()).isEqualTo(PROCESS_NAME);
+        assertThat(result.getId()).contains(SINGLE_TASK_PROCESS_DEFINITION_KEY);
+        assertThat(result.getAppVersion()).isEqualTo(String.valueOf(latestDeployment.getVersion()));
     }
 
     @Test
