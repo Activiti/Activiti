@@ -58,6 +58,7 @@ public class RetryInterceptorTest {
   @After
   public void shutdownProcessEngine() {
     processEngine.close();
+    counter.set(0);
   }
 
   @Test
