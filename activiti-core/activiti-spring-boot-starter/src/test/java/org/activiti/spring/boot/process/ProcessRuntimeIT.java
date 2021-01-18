@@ -20,13 +20,11 @@ import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.assertj.core.groups.Tuple.tuple;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import org.activiti.api.model.shared.model.VariableInstance;
 import org.activiti.api.process.model.Deployment;
 import org.activiti.api.process.model.ProcessDefinition;
@@ -781,18 +779,18 @@ public class ProcessRuntimeIT {
         assertThat(deployment.getName()).isEqualTo("SpringAutoDeployment");
     }
 
+
     @Test
-    public void should_OnlyProcessDefinitionsFromLatestVersionRetrieved(){
+    public void should_OnlyProcessDefinitionsFromLatestVersionRetrieved() {
         Deployment deployment = processRuntime.selectLatestDeployment();
 
         Page<ProcessDefinition> processDefinitionPage = processRuntime.processDefinitions(
             PAGEABLE);
 
         assertThat(processDefinitionPage.getContent().stream().filter(c -> c.getKey().equals(SUPER_PROCESS)))
-                .extracting(ProcessDefinition::getAppVersion)
-                .containsOnly(deployment.getVersion().toString());
+            .extracting(ProcessDefinition::getAppVersion)
+            .containsOnly(deployment.getVersion().toString());
     }
-
 
     @Test
     public void should_handleBigDecimalAndDoubleAndLocalDateTimeVariables() {
@@ -824,6 +822,20 @@ public class ProcessRuntimeIT {
                 tuple("doubleVar", doubleValue, "double"),
                 tuple("localDateTimeVar", localDateTime, "localDateTime"),
                 tuple("localDateVar", localDate, "localDate")
-                );
+            );
+    }
+
+    @Test
+    public void should_processAdminOnlyProcessDefinitionsFromLatestVersionRetrieved() {
+        Deployment deployment = processRuntime.selectLatestDeployment();
+
+        securityUtil.logInAs("admin");
+
+        Page<ProcessDefinition> processDefinitionPage = processAdminRuntime.processDefinitions(
+            PAGEABLE);
+
+        assertThat(processDefinitionPage.getContent().stream().filter(c -> c.getKey().equals(SUPER_PROCESS)))
+            .extracting(ProcessDefinition::getAppVersion)
+            .containsOnly(deployment.getVersion().toString());
     }
 }
