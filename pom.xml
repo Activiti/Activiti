@@ -221,7 +221,7 @@
     <maven-site-plugin.version>3.9.0</maven-site-plugin.version>
     <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
     <maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version>
-    <spring-boot.version>2.4.1</spring-boot.version>
+    <spring-boot.version>2.4.2</spring-boot.version>
     <versions-maven-plugin.version>2.7</versions-maven-plugin.version>
 
     <!-- configuration properties for tests -->
