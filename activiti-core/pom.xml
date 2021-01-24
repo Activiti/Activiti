@@ -24,7 +24,7 @@
     <juel.version>2.2.7</juel.version>
     <mybatis.version>3.5.6</mybatis.version>
     <subethasmtp-wiser.version>1.2</subethasmtp-wiser.version>
-    <xmlgraphics-commons.version>2.4</xmlgraphics-commons.version>
+    <xmlgraphics-commons.version>2.6</xmlgraphics-commons.version>
   </properties>
   <dependencyManagement>
     <dependencies>
