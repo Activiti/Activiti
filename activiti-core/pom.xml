@@ -15,7 +15,7 @@
     <batik.version>1.14</batik.version>
     <checkstyle-maven-plugin.version>3.1.0</checkstyle-maven-plugin.version>
     <commons-email.version>1.5</commons-email.version>
-    <jakarta-enterprise-concurrent.version>1.1.2</jakarta-enterprise-concurrent.version>
+    <jakarta-enterprise-concurrent.version>2.0.0</jakarta-enterprise-concurrent.version>
     <java-uuid-generator.version>4.0.1</java-uuid-generator.version>
     <javaGeom.version>0.11.1</javaGeom.version>
     <jgraphx.version>4.1.0</jgraphx.version>
