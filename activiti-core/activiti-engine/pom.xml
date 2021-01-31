@@ -154,10 +154,6 @@
       <artifactId>hibernate-core</artifactId>
       <optional>true</optional>
     </dependency>
-    <dependency>
-      <groupId>mysql</groupId>
-      <artifactId>mysql-connector-java</artifactId>
-    </dependency>
   </dependencies>
 
   <build>
