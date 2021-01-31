@@ -1169,6 +1169,10 @@ public class DbSqlSession implements Session {
                 catalog = null;
             }
 
+            if (catalog == null && ProcessEngineConfigurationImpl.DATABASE_TYPE_MYSQL.equalsIgnoreCase(databaseType)) {
+                catalog = connection.getCatalog();
+            }
+
             try {
                 tables = databaseMetaData.getTables(catalog,
                                                     schema,
