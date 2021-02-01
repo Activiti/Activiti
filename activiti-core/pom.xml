@@ -20,7 +20,7 @@
     <javaGeom.version>0.11.1</javaGeom.version>
     <jgraphx.version>4.1.0</jgraphx.version>
     <joda-time.version>2.10.9</joda-time.version>
-    <json-unit.version>2.23.0</json-unit.version>
+    <json-unit.version>2.24.0</json-unit.version>
     <juel.version>2.2.7</juel.version>
     <mybatis.version>3.5.6</mybatis.version>
     <subethasmtp-wiser.version>1.2</subethasmtp-wiser.version>
