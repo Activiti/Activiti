@@ -27,6 +27,7 @@ import java.util.Optional;
 
 import javax.sql.DataSource;
 
+import org.activiti.api.process.model.events.ApplicationDeployedEvent;
 import org.activiti.api.process.model.events.ProcessDeployedEvent;
 import org.activiti.api.process.model.events.StartMessageDeployedEvent;
 import org.activiti.api.process.runtime.events.listener.ProcessRuntimeEventListener;
@@ -39,7 +40,9 @@ import org.activiti.engine.impl.event.EventSubscriptionPayloadMappingProvider;
 import org.activiti.engine.impl.persistence.StrongUuidGenerator;
 import org.activiti.runtime.api.event.impl.StartMessageSubscriptionConverter;
 import org.activiti.runtime.api.impl.ExtensionsVariablesMappingProvider;
+import org.activiti.runtime.api.model.impl.APIDeploymentConverter;
 import org.activiti.runtime.api.model.impl.APIProcessDefinitionConverter;
+import org.activiti.spring.ApplicationDeployedEventProducer;
 import org.activiti.spring.ProcessDeployedEventProducer;
 import org.activiti.spring.SpringAsyncExecutor;
 import org.activiti.spring.SpringProcessEngineConfiguration;
@@ -266,6 +269,19 @@ public class ProcessEngineAutoConfiguration extends AbstractProcessEngineAutoCon
 
             configuration.setAsyncFailedJobWaitTime(properties.getRetryWaitTimeInMillis());
         };
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public ApplicationDeployedEventProducer applicationDeployedEventProducer(RepositoryService repositoryService,
+            APIDeploymentConverter converter,
+            @Autowired(required = false) List<ProcessRuntimeEventListener<ApplicationDeployedEvent>> listeners,
+            ApplicationEventPublisher eventPublisher) {
+         return new ApplicationDeployedEventProducer(repositoryService,
+                converter,
+                Optional.ofNullable(listeners)
+                        .orElse(emptyList()),
+                eventPublisher);
     }
 
 }

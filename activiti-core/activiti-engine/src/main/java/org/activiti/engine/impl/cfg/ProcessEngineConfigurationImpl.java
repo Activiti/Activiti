@@ -1129,6 +1129,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     databaseTypeMappings.setProperty("DB2/PTX", DATABASE_TYPE_DB2);
     databaseTypeMappings.setProperty("DB2/2", DATABASE_TYPE_DB2);
     databaseTypeMappings.setProperty("DB2 UDB AS400", DATABASE_TYPE_DB2);
+    databaseTypeMappings.setProperty("MariaDB", DATABASE_TYPE_MYSQL);
     return databaseTypeMappings;
   }
 

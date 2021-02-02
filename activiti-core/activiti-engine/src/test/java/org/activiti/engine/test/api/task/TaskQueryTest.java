@@ -387,17 +387,17 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
     assertThat(query.list()).hasSize(0);
     assertThat(query.count()).isEqualTo(0);
 
-    query = taskService.createTaskQuery().taskMinPriority(50);
+    query = taskService.createTaskQuery().taskMinPriority(4);
     assertThat(query.list()).hasSize(3);
 
     query = taskService.createTaskQuery().taskMinPriority(10);
-    assertThat(query.list()).hasSize(5);
+    assertThat(query.list()).hasSize(2);
 
     query = taskService.createTaskQuery().taskMaxPriority(10);
-    assertThat(query.list()).hasSize(9);
+    assertThat(query.list()).hasSize(12);
 
     query = taskService.createTaskQuery().taskMaxPriority(3);
-    assertThat(query.list()).hasSize(6);
+    assertThat(query.list()).hasSize(9);
   }
 
   public void testQueryByPriorityTenOrThrowsException() {
@@ -415,17 +415,17 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
     assertThat(query.list()).hasSize(0);
     assertThat(query.count()).isEqualTo(0);
 
-    query = taskService.createTaskQuery().or().taskId("invalid").taskMinPriority(50);
+    query = taskService.createTaskQuery().or().taskId("invalid").taskMinPriority(4);
     assertThat(query.list()).hasSize(3);
 
     query = taskService.createTaskQuery().or().taskId("invalid").taskMinPriority(10);
-    assertThat(query.list()).hasSize(5);
+    assertThat(query.list()).hasSize(2);
 
     query = taskService.createTaskQuery().or().taskId("invalid").taskMaxPriority(10);
-    assertThat(query.list()).hasSize(9);
+    assertThat(query.list()).hasSize(12);
 
     query = taskService.createTaskQuery().or().taskId("invalid").taskMaxPriority(3);
-    assertThat(query.list()).hasSize(6);
+    assertThat(query.list()).hasSize(9);
   }
 
   public void testQueryByInvalidPriority() {

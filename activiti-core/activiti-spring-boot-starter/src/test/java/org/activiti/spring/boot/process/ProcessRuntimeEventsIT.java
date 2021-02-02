@@ -17,10 +17,14 @@ package org.activiti.spring.boot.process;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import org.activiti.api.model.shared.event.RuntimeEvent;
+import org.activiti.api.model.shared.event.VariableCreatedEvent;
+import org.activiti.api.model.shared.event.VariableUpdatedEvent;
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
+import org.activiti.api.process.model.events.BPMNSequenceFlowTakenEvent;
 import org.activiti.api.process.runtime.ProcessRuntime;
 import org.activiti.api.process.runtime.events.ProcessCancelledEvent;
 import org.activiti.spring.boot.RuntimeTestConfiguration;
@@ -38,7 +42,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 public class ProcessRuntimeEventsIT {
 
     private static final String SINGLE_TASK_PROCESS = "SingleTaskProcess";
-    public static final String LOGGED_USER = "user";
+    private static final String LOGGED_USER = "user";
 
     @Autowired
     private ProcessRuntime processRuntime;
@@ -59,8 +63,6 @@ public class ProcessRuntimeEventsIT {
         RuntimeTestConfiguration.tagImageConnectorExecuted = false;
         RuntimeTestConfiguration.discardImageConnectorExecuted = false;
         //Reset event collections
-        RuntimeTestConfiguration.variableCreatedEventsFromProcessInstance.clear();
-        RuntimeTestConfiguration.sequenceFlowTakenEvents.clear();
         localEventSource.clearEvents();
         securityUtil.logInAs(LOGGED_USER);
     }
@@ -71,64 +73,86 @@ public class ProcessRuntimeEventsIT {
     }
 
     @Test
-    public void shouldGetSameProcessInstanceIfForAllSequenceFlowTakenEvents(){
+    public void should_emitWithSameProcessInstanceForAllSequenceFlowTakenEvents(){
         //when
-        ProcessInstance categorizeProcess = processRuntime.start(ProcessPayloadBuilder.start()
+        ProcessInstance singleTaskProcess = processRuntime.start(ProcessPayloadBuilder.start()
                 .withProcessDefinitionKey(SINGLE_TASK_PROCESS)
-                .withVariable("name",
-                        "peter")
+                .withVariable("name", "peter")
                 .build());
+
         //then
-        assertThat(RuntimeTestConfiguration.sequenceFlowTakenEvents)
-                .extracting(event -> event.getProcessInstanceId())
-                .contains(categorizeProcess.getId());
+        assertThat(localEventSource.getEvents(BPMNSequenceFlowTakenEvent.class))
+            .extracting(RuntimeEvent::getProcessInstanceId)
+            .containsExactly(singleTaskProcess.getId());
     }
 
     @Test
-    public void shouldGetSameProcessInstanceIfForAllVariableCreatedEvents(){
+    public void should_emitSingleVariableCreatedEvent_when_createdWithVariable(){
         //when
-        ProcessInstance categorizeProcess = processRuntime.start(ProcessPayloadBuilder.start()
-                .withProcessDefinitionKey(SINGLE_TASK_PROCESS)
-                .withVariable("name",
-                        "peter")
-                .build());
+        ProcessInstance singleTaskProcess = processRuntime.start(ProcessPayloadBuilder.start()
+            .withProcessDefinitionKey(SINGLE_TASK_PROCESS)
+            .withVariable("name", "peter")
+            .build());
+
         //then
-        assertThat(RuntimeTestConfiguration.variableCreatedEventsFromProcessInstance)
-                .extracting(event -> event.getProcessInstanceId())
-                .contains(categorizeProcess.getId());
+        List<VariableCreatedEvent> variableCreatedEvents = localEventSource.getEvents(VariableCreatedEvent.class);
+        assertThat(variableCreatedEvents).hasSize(1);
+
+        VariableCreatedEvent variableCreatedEvent = variableCreatedEvents.get(0);
+        assertThat(variableCreatedEvent.getProcessInstanceId()).isEqualTo(singleTaskProcess.getId());
+        assertThat(variableCreatedEvent.getEntity().getName()).isEqualTo("name");
+        assertThat(variableCreatedEvent.getEntity().getType()).isEqualTo("string");
+        assertThat(variableCreatedEvent.getEntity().<String>getValue()).isEqualTo("peter");
+        assertThat(variableCreatedEvent.getEntity().getProcessInstanceId()).isEqualTo(singleTaskProcess.getId());
     }
 
     @Test
-    public void shouldGetJustOneVariableCreatedEvent(){
+    public void should_emitThreeVariableCreatedEvents_when_createdWithThreeVariables(){
         //when
-        processRuntime.start(ProcessPayloadBuilder.start()
-                .withProcessDefinitionKey(SINGLE_TASK_PROCESS)
-                .withVariable("name",
-                        "peter")
-                .build());
+        ProcessInstance singleTaskProcess = processRuntime.start(ProcessPayloadBuilder.start()
+            .withProcessDefinitionKey(SINGLE_TASK_PROCESS)
+            .withVariables(Map.ofEntries(
+                Map.entry("name", "peter"),
+                Map.entry("active", true),
+                Map.entry("age", 25)))
+            .build());
+
         //then
-        assertThat(RuntimeTestConfiguration.variableCreatedEventsFromProcessInstance)
-                .isNotEmpty()
-                .hasSize(1);
+        List<VariableCreatedEvent> variableCreatedEvents = localEventSource.getEvents(VariableCreatedEvent.class);
+        assertThat(variableCreatedEvents)
+            .hasSize(3)
+            .extracting(RuntimeEvent::getProcessInstanceId)
+            .containsOnly(singleTaskProcess.getId());
+        assertThat(variableCreatedEvents)
+            .extracting(event -> event.getEntity().getType())
+            .containsExactly("string", "boolean", "integer");
     }
 
     @Test
-    public void shouldGetJustThreeVariableCreatedEvent(){
-        //when
-        ProcessInstance categorizeProcess = processRuntime.start(ProcessPayloadBuilder.start()
-                .withProcessDefinitionKey(SINGLE_TASK_PROCESS)
-                .withVariables(new HashMap<String, Object>() {{
-                    put("name", "peter");
-                    put("surname", "peterson");
-                    put("age", 25);
-                }})
-                .build());
-        //then
-        assertThat(RuntimeTestConfiguration.variableCreatedEventsFromProcessInstance)
-                .isNotEmpty()
-                .hasSize(3);
-    }
+    public void should_emitSingleVariableUpdatedEvent_when_updatedWithVariable(){
+        //given
+        ProcessInstance singleTaskProcess = processRuntime.start(ProcessPayloadBuilder.start()
+            .withProcessDefinitionKey(SINGLE_TASK_PROCESS)
+            .withVariable("name", "peter")
+            .build());
 
+        //when
+        processRuntime.setVariables(ProcessPayloadBuilder.setVariables(singleTaskProcess)
+            .withVariable("name", "paul")
+            .withProcessInstance(singleTaskProcess)
+            .build());
+
+        //then
+        List<VariableUpdatedEvent> variableCreatedEvents = localEventSource.getEvents(VariableUpdatedEvent.class);
+        assertThat(variableCreatedEvents).hasSize(1);
+
+        VariableUpdatedEvent variableUpdatedEvent = variableCreatedEvents.get(0);
+        assertThat(variableUpdatedEvent.getEntity().getName()).isEqualTo("name");
+        assertThat(variableUpdatedEvent.getEntity().getType()).isEqualTo("string");
+        assertThat(variableUpdatedEvent.getEntity().<String>getValue()).isEqualTo("paul");
+        assertThat(variableUpdatedEvent.<String>getPreviousValue()).isEqualTo("peter");
+        assertThat(variableUpdatedEvent.getEntity().getProcessInstanceId()).isEqualTo(singleTaskProcess.getId());
+    }
 
     @Test
     public void should_emmitEventOnProcessDeletion() {
@@ -143,8 +167,7 @@ public class ProcessRuntimeEventsIT {
         processRuntime.delete(ProcessPayloadBuilder.delete(processInstance));
 
         //then
-        List<ProcessCancelledEvent> processCancelledEvents = localEventSource
-            .getEvents(ProcessCancelledEvent.class);
+        List<ProcessCancelledEvent> processCancelledEvents = localEventSource.getEvents(ProcessCancelledEvent.class);
         assertThat(processCancelledEvents).hasSize(1);
 
         ProcessCancelledEvent processCancelledEvent = processCancelledEvents.get(0);

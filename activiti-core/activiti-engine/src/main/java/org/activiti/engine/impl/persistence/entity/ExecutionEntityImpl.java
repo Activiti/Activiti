@@ -559,17 +559,14 @@ public class ExecutionEntityImpl extends VariableScopeImpl implements ExecutionE
 
   @Override
   protected void updateVariableInstance(VariableInstanceEntity variableInstance, Object value, ExecutionEntity sourceActivityExecution) {
-    super.updateVariableInstance(variableInstance, value, sourceActivityExecution);
+      Object previousValue = variableInstance.getValue();
+      super.updateVariableInstance(variableInstance, value, sourceActivityExecution);
 
-    // Dispatch event, if needed
-    if (Context.getProcessEngineConfiguration() != null && Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-      Context
-          .getProcessEngineConfiguration()
-          .getEventDispatcher()
-          .dispatchEvent(
-              ActivitiEventBuilder.createVariableEvent(ActivitiEventType.VARIABLE_UPDATED, variableInstance.getName(), value, variableInstance.getType(), variableInstance.getTaskId(),
-                  variableInstance.getExecutionId(), getProcessInstanceId(), getProcessDefinitionId()));
-    }
+      // Dispatch event, if needed
+      if (Context.getProcessEngineConfiguration() != null && Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+          Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
+              ActivitiEventBuilder.createVariableUpdateEvent(variableInstance, previousValue, getProcessInstanceId(), getProcessDefinitionId()));
+      }
   }
 
   @Override

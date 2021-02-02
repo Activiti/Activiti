@@ -13,9 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.api.model.shared.event;
+package org.activiti.api.process.model.events;
 
-public interface VariableUpdatedEvent extends VariableEvent {
+public interface ApplicationDeployedEvent extends ApplicationEvent{
 
-    <T> T getPreviousValue();
 }

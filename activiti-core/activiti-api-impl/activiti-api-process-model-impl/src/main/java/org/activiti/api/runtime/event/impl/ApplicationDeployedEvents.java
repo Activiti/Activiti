@@ -13,9 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.api.model.shared.event;
+package org.activiti.api.runtime.event.impl;
 
-public interface VariableUpdatedEvent extends VariableEvent {
+import java.util.List;
+import org.activiti.api.process.model.events.ApplicationDeployedEvent;
 
-    <T> T getPreviousValue();
+public class ApplicationDeployedEvents {
+
+    private List<ApplicationDeployedEvent> applicationDeployedEvents;
+
+    public ApplicationDeployedEvents(List<ApplicationDeployedEvent> applicationDeployedEvents) {
+        this.applicationDeployedEvents = applicationDeployedEvents;
+    }
+
+    public List<ApplicationDeployedEvent> getApplicationDeployedEvents() {
+        return applicationDeployedEvents;
+    }
 }
