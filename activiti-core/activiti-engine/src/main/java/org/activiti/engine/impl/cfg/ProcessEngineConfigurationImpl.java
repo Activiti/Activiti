@@ -322,6 +322,7 @@ import org.apache.ibatis.builder.xml.XMLConfigBuilder;
 import org.apache.ibatis.builder.xml.XMLMapperBuilder;
 import org.apache.ibatis.datasource.pooled.PooledDataSource;
 import org.apache.ibatis.mapping.Environment;
+import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.defaults.DefaultSqlSessionFactory;
@@ -849,6 +850,8 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 
   protected PerformanceSettings performanceSettings = new PerformanceSettings();
 
+  protected Map<String, String> shortKeyToIdKeyMap = new HashMap<>();
+
 
   // buildProcessEngine
   // ///////////////////////////////////////////////////////
@@ -1228,10 +1231,11 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 
     configuration.setEnvironment(environment);
 
+    configuration = parseMybatisConfiguration(parser);
+
     initMybatisTypeHandlers(configuration);
     initCustomMybatisMappers(configuration);
 
-    configuration = parseMybatisConfiguration(configuration, parser);
     return configuration;
   }
 
@@ -1247,17 +1251,44 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     }
   }
 
-  public Configuration parseMybatisConfiguration(Configuration configuration, XMLConfigBuilder parser) {
-    return parseCustomMybatisXMLMappers(parser.parse());
+  public Configuration parseMybatisConfiguration(XMLConfigBuilder parser) {
+    Configuration configuration = parser.parse();
+    createShortKeyMap(configuration);
+    return parseCustomMybatisXMLMappers(configuration);
+  }
+
+  private void createShortKeyMap(Configuration configuration) {
+      Collection<MappedStatement> collections = configuration.getMappedStatements();
+      for (MappedStatement mappedStatement : collections) {
+          String id = mappedStatement.getId();
+          String shortKey = getShortKey(id);
+          if (shortKey != null && !shortKeyToIdKeyMap.containsKey(shortKey)) {
+              shortKeyToIdKeyMap.put(shortKey, id);
+          }
+      }
+  }
+
+  public String getShortKey(String key) {
+      String shortKey = null;
+      if (key.contains(".")) {
+          shortKey = getShortName(key);
+      }
+      return shortKey;
+  }
+
+  private String getShortName(String key) {
+      String[] keyParts = key.split("\\.");
+      return keyParts[keyParts.length - 1];
   }
 
   public Configuration parseCustomMybatisXMLMappers(Configuration configuration) {
-    if (getCustomMybatisXMLMappers() != null)
-      // see XMLConfigBuilder.mapperElement()
-      for (String resource : getCustomMybatisXMLMappers()) {
-        XMLMapperBuilder mapperParser = new XMLMapperBuilder(getResourceAsStream(resource), configuration, resource, configuration.getSqlFragments());
-        mapperParser.parse();
-      }
+    if (getCustomMybatisXMLMappers() != null) {
+        // see XMLConfigBuilder.mapperElement()
+        for (String resource : getCustomMybatisXMLMappers()) {
+            XMLMapperBuilder mapperParser = new XMLMapperBuilder(getResourceAsStream(resource), configuration, resource, configuration.getSqlFragments());
+            mapperParser.parse();
+        }
+    }
     return configuration;
   }
 
@@ -1501,6 +1532,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     dbSqlSessionFactory.setDatabaseSchema(databaseSchema);
     dbSqlSessionFactory.setBulkInsertEnabled(isBulkInsertEnabled, databaseType);
     dbSqlSessionFactory.setMaxNrOfStatementsInBulkInsert(maxNrOfStatementsInBulkInsert);
+    dbSqlSessionFactory.setShortKeyToIdKeyMap(shortKeyToIdKeyMap);
     addSessionFactory(dbSqlSessionFactory);
   }
 
@@ -3694,4 +3726,11 @@ public ProcessEngineConfigurationImpl setClock(Clock clock) {
     this.eventSubscriptionPayloadMappingProvider = eventSubscriptionPayloadMappingProvider;
   }
 
+  public Map<String, String> getShortKeyToIdKeyMap() {
+    return shortKeyToIdKeyMap;
+  }
+
+  public void setShortKeyToIdKeyMap(Map<String, String> shortKeyToIdKeyMap) {
+    this.shortKeyToIdKeyMap = shortKeyToIdKeyMap;
+  }
 }
