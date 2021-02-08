@@ -1231,9 +1231,9 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 
     configuration.setEnvironment(environment);
 
-    configuration = parseMybatisConfiguration(parser);
-
     initMybatisTypeHandlers(configuration);
+
+    configuration = parseMybatisConfiguration(parser);
     initCustomMybatisMappers(configuration);
 
     return configuration;
@@ -1258,12 +1258,15 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   }
 
   private void createShortKeyMap(Configuration configuration) {
-      Collection<MappedStatement> collections = configuration.getMappedStatements();
-      for (MappedStatement mappedStatement : collections) {
-          String id = mappedStatement.getId();
-          String shortKey = getShortKey(id);
-          if (shortKey != null && !shortKeyToIdKeyMap.containsKey(shortKey)) {
-              shortKeyToIdKeyMap.put(shortKey, id);
+      Collection<? extends MappedStatement> collections = configuration.getMappedStatements();
+      for (Object object : collections) {
+          if (object instanceof MappedStatement) {
+              MappedStatement mappedStatement = (MappedStatement) object;
+              String id = mappedStatement.getId();
+              String shortKey = getShortKey(id);
+              if (shortKey != null && !shortKeyToIdKeyMap.containsKey(shortKey)) {
+                  shortKeyToIdKeyMap.put(shortKey, id);
+              }
           }
       }
   }
