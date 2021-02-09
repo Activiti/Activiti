@@ -19,6 +19,7 @@ package org.activiti.engine.impl.cfg;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.net.URL;
 import java.sql.Connection;
@@ -1259,6 +1260,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 
   private void createShortKeyMap(Configuration configuration) {
       Collection<? extends MappedStatement> collections = configuration.getMappedStatements();
+      List<String> problemKeyList = new ArrayList<>();
       for (Object object : collections) {
           if (object instanceof MappedStatement) {
               MappedStatement mappedStatement = (MappedStatement) object;
@@ -1267,11 +1269,19 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
               if (shortKey != null && !shortKeyToIdKeyMap.containsKey(shortKey)) {
                   shortKeyToIdKeyMap.put(shortKey, id);
               }
+          } else {
+              logSameShortKey(object);
           }
       }
   }
 
-  public String getShortKey(String key) {
+  private void logSameShortKey(Object object) {
+    Field field = ReflectUtil.getField("subject", object);
+    Object value = ReflectUtil.getFieldValue(field, object);
+    log.error("found duplicate key : [{}], please search and check it in xml", value);
+  }
+
+  private String getShortKey(String key) {
       String shortKey = null;
       if (key.contains(".")) {
           shortKey = getShortName(key);
