@@ -194,7 +194,7 @@ public abstract class ReflectUtil {
       field.setAccessible(true);
       return field.get(object);
     } catch (IllegalArgumentException | IllegalAccessException e) {
-      throw new ActivitiException("Could not set field " + field.toString(), e);
+      throw new ActivitiException("Could not get field " + field.toString() + " value", e);
     }
   }
 
