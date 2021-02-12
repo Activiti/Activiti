@@ -18,7 +18,7 @@
     <jakarta-enterprise-concurrent.version>1.1.2</jakarta-enterprise-concurrent.version>
     <java-uuid-generator.version>4.0.1</java-uuid-generator.version>
     <javaGeom.version>0.11.1</javaGeom.version>
-    <jgraphx.version>4.1.0</jgraphx.version>
+    <jgraphx.version>4.2.2</jgraphx.version>
     <joda-time.version>2.10.10</joda-time.version>
     <json-unit.version>2.24.0</json-unit.version>
     <juel.version>2.2.7</juel.version>
