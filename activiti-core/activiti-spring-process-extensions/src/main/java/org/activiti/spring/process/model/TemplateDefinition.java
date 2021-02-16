@@ -19,23 +19,27 @@ import java.util.Objects;
 
 public class TemplateDefinition {
 
+    public enum TemplateType {
+        variable,
+        file
+    }
     private TemplateType type;
 
-    private Object value;
+    private String value;
 
     TemplateDefinition() {
     }
 
-    public TemplateDefinition(TemplateType type, Object value) {
+    public TemplateDefinition(TemplateType type, String value) {
         this.type = type;
         this.value = value;
     }
 
-    public Object getValue() {
+    public String getValue() {
         return value;
     }
 
-    public void setValue(Object value) {
+    public void setValue(String value) {
         this.value = value;
     }
 
@@ -45,11 +49,6 @@ public class TemplateDefinition {
 
     public void setType(TemplateType type) {
         this.type = type;
-    }
-
-    public enum TemplateType {
-        variable,
-        file
     }
 
     @Override
