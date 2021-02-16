@@ -20,6 +20,7 @@ package org.activiti.spring.process.model;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+
 import org.activiti.spring.process.model.ProcessVariablesMapping.MappingType;
 
 public class Extension {
@@ -28,6 +29,7 @@ public class Extension {
     private Map<String, VariableDefinition> properties = new HashMap<>();
     private Map<String, ProcessVariablesMapping> mappings = new HashMap<>();
     private Map<String, ProcessConstantsMapping> constants = new HashMap<>();
+    private Map<String, TemplatesMapping> templates = new HashMap<>();
 
     public Map<String, VariableDefinition> getProperties() {
         return properties;
@@ -65,6 +67,11 @@ public class Extension {
         return processVariablesMapping != null ? processVariablesMapping : EMPTY_PROCESS_VARIABLES_MAPPING;
     }
 
+    public TemplatesMapping getTemplateForFlowElement(String flowElementUUID) {
+        TemplatesMapping templatesMapping = templates.get(flowElementUUID);
+        return templatesMapping != null ? templatesMapping : new TemplatesMapping();
+    }
+
     public VariableDefinition getProperty(String propertyUUID) {
         return properties != null ? properties.get(propertyUUID) : null;
     }
@@ -87,6 +94,10 @@ public class Extension {
         return mappings.get(taskId) != null;
     }
 
+    public boolean hasTemplate(String taskId) {
+        return templates.get(taskId) != null;
+    }
+
     public boolean shouldMapAllInputs(String elementId) {
         ProcessVariablesMapping processVariablesMapping = mappings.get(elementId);
         return processVariablesMapping.getMappingType() != null &&
@@ -101,5 +112,11 @@ public class Extension {
             processVariablesMapping.getMappingType().equals(MappingType.MAP_ALL));
     }
 
+    public Map<String, TemplatesMapping> getTemplates() {
+        return templates;
+    }
 
+    public void setTemplates(Map<String, TemplatesMapping> templates) {
+        this.templates = templates;
+    }
 }
