@@ -29,7 +29,7 @@ public class Extension {
     private Map<String, VariableDefinition> properties = new HashMap<>();
     private Map<String, ProcessVariablesMapping> mappings = new HashMap<>();
     private Map<String, ProcessConstantsMapping> constants = new HashMap<>();
-    private Map<String, TemplatesMapping> templates = new HashMap<>();
+    private Map<String, TemplateDefinition> templates = new HashMap<>();
 
     public Map<String, VariableDefinition> getProperties() {
         return properties;
@@ -67,9 +67,9 @@ public class Extension {
         return processVariablesMapping != null ? processVariablesMapping : EMPTY_PROCESS_VARIABLES_MAPPING;
     }
 
-    public TemplatesMapping getTemplateForFlowElement(String flowElementUUID) {
-        TemplatesMapping templatesMapping = templates.get(flowElementUUID);
-        return templatesMapping != null ? templatesMapping : new TemplatesMapping();
+    public TemplateDefinition getTemplateForFlowElement(String flowElementUUID) {
+        TemplateDefinition templatesMapping = templates.get(flowElementUUID);
+        return templatesMapping != null ? templatesMapping : new TemplateDefinition();
     }
 
     public VariableDefinition getProperty(String propertyUUID) {
@@ -112,11 +112,11 @@ public class Extension {
             processVariablesMapping.getMappingType().equals(MappingType.MAP_ALL));
     }
 
-    public Map<String, TemplatesMapping> getTemplates() {
+    public Map<String, TemplateDefinition> getTemplates() {
         return templates;
     }
 
-    public void setTemplates(Map<String, TemplatesMapping> templates) {
+    public void setTemplates(Map<String, TemplateDefinition> templates) {
         this.templates = templates;
     }
 }

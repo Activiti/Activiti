@@ -20,19 +20,8 @@ import java.util.Objects;
 public class TemplateDefinition {
 
     public enum TemplateType {
-        Variable("variable"),
-        File("file");
-
-        private final String value;
-
-        TemplateType(String value) {
-            this.value = value;
-        }
-
-        @Override
-        public String toString() {
-            return this.value;
-        }
+        VARIABLE,
+        FILE;
     }
     private TemplateType type;
 

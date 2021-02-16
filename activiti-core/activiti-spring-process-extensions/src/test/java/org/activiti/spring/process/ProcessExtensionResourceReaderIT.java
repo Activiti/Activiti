@@ -15,6 +15,8 @@
  */
 package org.activiti.spring.process;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.io.InputStream;
 
 import org.activiti.engine.RepositoryService;
@@ -23,8 +25,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 public class ProcessExtensionResourceReaderIT {
@@ -42,6 +42,20 @@ public class ProcessExtensionResourceReaderIT {
             assertThat(processExtensionModel).isNotNull();
             assertThat(processExtensionModel.getId()).isEqualTo("initialVarsProcess");
             assertThat(processExtensionModel.getExtensions("Process_initialVarsProcess").getProperties()).containsKey("d440ff7b-0ac8-4a97-b163-51a6ec49faa1");
+        }
+    }
+
+    @Test
+    public void shouldReadTemplateExtensionFromJsonFile() throws Exception{
+        try (InputStream inputStream = Thread.currentThread()
+                                             .getContextClassLoader()
+                                             .getResourceAsStream("processes/template-mapping-extensions.json")) {
+            ProcessExtensionModel processExtensionModel = reader.read(inputStream);
+
+            assertThat(processExtensionModel).isNotNull();
+            assertThat(processExtensionModel.getId()).isEqualTo("emailTemplateMapping");
+            assertThat(processExtensionModel.getExtensions("processDefinitionId")
+                                            .getTemplates()).hasSize(2);
         }
     }
 }

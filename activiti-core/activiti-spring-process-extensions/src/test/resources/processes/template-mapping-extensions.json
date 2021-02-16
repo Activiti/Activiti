@@ -1,0 +1,17 @@
+{
+  "id": "emailTemplateMapping",
+  "extensions": {
+    "processDefinitionId": {
+      "templates": {
+        "myTaskId1": {
+          "type": "file",
+          "value": "https://github.com/leemunroe/responsive-html-email-template/blob/master/email.html"
+        },
+        "myTaskId2": {
+          "type": "variable",
+          "value": "myTemplateVariable"
+        }
+      }
+    }
+  }
+}
