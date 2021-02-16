@@ -10,6 +10,10 @@
         "myTaskId2": {
           "type": "variable",
           "value": "myTemplateVariable"
+        },
+        "@": {
+          "type": "file",
+          "value": "classpath:templates/email.html"
         }
       }
     }
