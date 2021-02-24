@@ -41,7 +41,7 @@ jobs:
   deploy:
     runs-on: ubuntu-18.04
     needs: build
-    if: github.event_name != 'pull_request' || contains(github.head_ref, 'preview') || contains(github.head_ref, 'migrate-ci-to-github-actions)')
+    if: ${{ github.event_name != 'pull_request' || contains(github.head_ref, 'migrate-ci-to-github-actions') }}
     steps:
 
       - name: Checkout repository
@@ -72,12 +72,12 @@ jobs:
           JX_RELEASE_VERSION: 2.2.3
 
       - name: Bump branch version
-        if: github.event_name != 'pull_request'
+        if: ${{ github.event_name != 'pull_request' }}
         run: >-
           echo $(jx-release-version) > VERSION
 
       - name: Set preview version
-        if: github.event_name == 'pull_request'
+        if: ${{ github.event_name == 'pull_request' }}
         run: >-
           echo 0.0.1-${GITHUB_REF#refs/heads/}-$GITHUB_RUN_NUMBER > VERSION
 
