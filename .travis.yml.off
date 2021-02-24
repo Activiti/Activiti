@@ -1,0 +1,104 @@
+language: java
+
+jdk:
+  - openjdk11
+
+env:
+  global:
+    - MAVEN_CLI_OPTS=" --batch-mode --errors --fail-at-end --show-version -DinstallAtEnd=true -DdeployAtEnd=false -U  -q -Dlogging.level.root=off -Droot.log.level=off"
+    - MAVEN_TEST_OPTS=" -Dspring.main.banner-mode=off -Denforcer.skip -q "
+    - MAVEN_CMD="mvn ${MAVEN_CLI_OPTS} install ${MAVEN_TEST_OPTS}"
+    - UPDATEBOT_VERSION="1.1.53"
+    - JX_RELEASE_VERSION="1.0.24"
+    - GIT_EMAIL="build_user@alfresco.com"
+    - M2_REPOSITORY_DIR=${HOME}/.m2/repository
+
+cache:
+  directories:
+    - "${M2_REPOSITORY_DIR}"
+
+before_cache:
+  - find ${M2_REPOSITORY_DIR} -type d -name "*SNAPSHOT" -exec rm -rf {} +
+
+before_install:
+  - echo -e "https://${GITHUB_USER}:${GITHUB_TOKEN}@github.com" >>  ~/.git-credentials
+  - git config --global user.email "${GIT_EMAIL}"
+  - mkdir -p $HOME/.m2
+  - cp settings.xml $HOME/.m2
+  - echo MAVEN_OPTS=-Xmx1536m > ~/.mavenrc
+  - mkdir $HOME/tmp || echo "~/tmp creation"
+  - if ! [ -f $HOME/tmp/jx-release-version ]; then curl -Ls https://github.com/jenkins-x/jx-release-version/releases/download/v${JX_RELEASE_VERSION}/jx-release-version_${JX_RELEASE_VERSION}_linux_amd64.tar.gz|  tar xvz -C $HOME/tmp; fi
+  - if ! [ -f $HOME/tmp/updatebot.jar ]; then curl -Ls -o $HOME/tmp/updatebot.jar   https://repo1.maven.org/maven2/io/jenkins/updatebot/updatebot/${UPDATEBOT_VERSION}/updatebot-${UPDATEBOT_VERSION}.jar; fi
+  - sudo cp $HOME/tmp/jx-release-version /usr/bin/jx-release-version
+  - sudo cp $HOME/tmp/updatebot.jar  /usr/bin/updatebot.jar
+  - echo "java -jar /usr/bin/updatebot.jar \$@" > updatebot
+  - sudo cp updatebot  /usr/bin/updatebot
+  - sudo chmod a+x /usr/bin/updatebot
+  - echo "TRAVIS_BUILD_NUMBER=$TRAVIS_BUILD_NUMBER"
+  - echo "TRAVIS_BUILD_ID=$TRAVIS_BUILD_ID"
+  - if [[ $TRAVIS_PULL_REQUEST == "false" ]]; then export BRANCH_NAME=${TRAVIS_BRANCH}; else export BRANCH_NAME=PR-${TRAVIS_PULL_REQUEST}; fi
+  - if [[ $TRAVIS_PULL_REQUEST == "false" ]]; then echo $(jx-release-version) > VERSION; else echo 0.0.1-${BRANCH_NAME}-${TRAVIS_BUILD_NUMBER} > VERSION; fi
+  - export VERSION=$(cat VERSION)
+  - echo "VERSION=$VERSION"
+  - export PREVIEW_NAMESPACE=$(echo "${BRANCH_NAME}-${TRAVIS_BUILD_NUMBER}" | tr '[:upper:]' '[:lower:]')
+  - echo "PREVIEW_NAMESPACE=$PREVIEW_NAMESPACE"
+  - export GATEWAY_HOST="gateway.$PREVIEW_NAMESPACE.$GLOBAL_GATEWAY_DOMAIN"
+  - echo GATEWAY_HOST=$GATEWAY_HOST
+  - export SSO_HOST="identity.$PREVIEW_NAMESPACE.$GLOBAL_GATEWAY_DOMAIN"
+  - echo SSO_HOST=$SSO_HOST
+
+install: skip
+
+services:
+  - docker
+
+branches:
+  only:
+    - master
+    - develop
+
+# Send coverage data
+after_success:
+  bash <(curl -s https://codecov.io/bash)
+
+stages:
+- name: verify
+- name: deploy_preview
+  if: type = pull_request AND head_branch =~ ^.*preview$
+- name: tag_deploy_updatebot
+  if: type != pull_request
+
+jobs:
+  include:
+  - name: Verify build
+    stage: verify
+    script:
+    - mvn verify -B
+  - name: Deploy Preview
+    stage: deploy_preview
+    script: |
+      mvn versions:set -DnewVersion=$(cat VERSION)-SNAPSHOT -DprocessAllModules=true -DgenerateBackupPoms=false  || travis_terminate 1
+      mvn clean deploy -DskipTests || travis_terminate 1
+  - name: Create a tag deploy to nexus run updatebot
+    stage: tag_deploy_updatebot
+    script: |
+      (
+      set -e
+      mvn versions:set -DnewVersion=$(cat VERSION) -DprocessAllModules=true -DgenerateBackupPoms=false
+      git add --all
+      git commit -m "Release $(cat VERSION)" --allow-empty
+      git tag -fa v$(cat VERSION) -m "Release version $(cat VERSION)"
+      git push -f -q https://${GITHUB_TOKEN}@github.com/Activiti/Activiti.git v$(cat VERSION)
+      mvn clean deploy -DskipTests
+      export VERSION=$(cat VERSION)| make updatebot/push-version
+      )
+
+notifications:
+  slack:
+    secure: RZ8ULqQgwJnjm88AaleamwqLMposxVytXFjagFtgQzs/zqCSXEnahFV3QVvJACZUdRrReueToDTWswkHuB74Tg0MbcpixDCm6voW4iPJqbnlf+wDz7eF4JFtxS311huXYfv7EA9/lMSCXiOCbsDJZFx+Cb1OmsZlQaJ+g1v24vY=
+  webhooks:
+    urls:
+      - https://webhooks.gitter.im/e/4eabeeadee998a77068b
+    on_success: change
+    on_failure: always
+    on_start: never
