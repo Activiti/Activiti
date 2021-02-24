@@ -41,7 +41,7 @@ jobs:
   deploy:
     runs-on: ubuntu-18.04
     needs: build
-    if: github.event_name != 'pull_request' || contains(github.head_ref, 'preview')
+    if: github.event_name != 'pull_request' || contains(github.head_ref, 'preview') || contains(github.head_ref, 'migrate-ci-to-github-actions)')
     steps:
 
       - name: Checkout repository
