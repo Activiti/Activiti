@@ -33,14 +33,14 @@ jobs:
           restore-keys: ${{ runner.os }}-m2
 
       - name: Build with Maven
-        run: mvn --batch-mode --update-snapshots verify
+        run: mvn -B verify
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v1
 
       - name: Install jx-release-version
         if: ${{ github.event_name == 'push' }}
-        run: >-
+        run: |-
           curl -fsSL https://github.com/jenkins-x/jx-release-version/releases/download/v$JX_RELEASE_VERSION/jx-release-version-linux-amd64.tar.gz \
             | tar xz -C $HOME/bin jx-release-version
         env:
@@ -48,29 +48,27 @@ jobs:
 
       - name: Bump VERSION with jx-release-version
         if: ${{ github.event_name == 'push' }}
-        run: >-
-          echo $(jx-release-version) > VERSION
+        run: echo $(jx-release-version) > VERSION
 
       - name: Set preview version
         if: ${{ contains(github.head_ref, 'migrate-ci-to-github-actions') }}
-        run: >-
-          echo 0.0.1-${GITHUB_REF#refs/heads/}-$GITHUB_RUN_NUMBER > VERSION
+        run: echo 0.0.1-${GITHUB_REF#refs/heads/}-$GITHUB_RUN_NUMBER > VERSION
 
       - name: Set VERSION env variable
         run: echo "VERSION}=$(cat VERSION)" >> $GITHUB_ENV
 
       - name: Deploy with Maven
         if: ${{ github.event_name != 'pull_request' || contains(github.head_ref, 'migrate-ci-to-github-actions') }}
-        run: >-
-          mvn -s settings.xml versions:set -DnewVersion=$VERSION -DprocessAllModules=true -DgenerateBackupPoms=false
-          mvn deploy -DskipTests
+        run: |-
+          mvn -B versions:set -DnewVersion=$VERSION -DprocessAllModules=true -DgenerateBackupPoms=false
+          mvn -B -s settings.xml deploy -DskipTests
         env:
           MAVEN_USERNAME: ${{ secrets.MAVEN_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.MAVEN_PASSWORD }}
 
       - name: Create release tag
         if: ${{ github.event_name == 'push' }}
-        run: >-
+        run: |-
           git commit -am "Release $VERSION" --allow-empty
           git tag -fa v$VERSION -m "Release version $VERSION"
           git push -f -q https://$GITHUB_TOKEN@github.com/Activiti/Activiti.git v$VERSION
@@ -79,7 +77,7 @@ jobs:
 
       - name: Install updatebot
         if: ${{ github.event_name == 'push' }}
-        run: >-
+        run: |-
           curl -fsSLo $HOME/bin/updatebot.jar \
             https://repo1.maven.org/maven2/io/jenkins/updatebot/updatebot/$UPDATEBOT_VERSION/updatebot-$UPDATEBOT_VERSION.jar
           echo "java -jar $HOME/bin/updatebot.jar \$@" > $HOME/bin/updatebot
@@ -89,7 +87,7 @@ jobs:
 
       - name: Run updatebot
         if: ${{ github.event_name == 'push' }}
-        run: >-
+        run: |-
           updatebot push-version --kind maven \
             org.activiti:activiti-dependencies $VERSION \
             org.activiti:activiti-api-dependencies $VERSION \
