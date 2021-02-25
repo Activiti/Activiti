@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema elementFormDefault="qualified" attributeFormDefault="unqualified"	
+	xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	targetNamespace="http://www.omg.org/spec/BPMN/20100524/MODEL">
+
+	<xsd:include schemaLocation="Included.xsd"/>
+
+	<xsd:element name="definitions" type="tDefinitions"/>
+	<xsd:complexType name="tDefinitions">
+		<xsd:sequence>
+			<xsd:element ref="extension" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+</xsd:schema>

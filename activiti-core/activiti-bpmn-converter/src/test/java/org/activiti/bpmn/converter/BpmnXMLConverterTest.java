@@ -1,0 +1,40 @@
+package org.activiti.bpmn.converter;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
+
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
+import javax.xml.XMLConstants;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
+import org.junit.jupiter.api.Test;
+
+public class BpmnXMLConverterTest {
+    
+    private BpmnXMLConverter bpmnXMLConverter = new BpmnXMLConverter();
+    SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+
+    @Test
+    public void should_createSchema_when_pathContainsDecodedUTF8Characters() throws Exception {
+        assertThatCode(() -> {
+            bpmnXMLConverter.createSchema(factory, getDecodedUrl("你好/Main.xsd"));
+        }).doesNotThrowAnyException();
+    }
+
+    private URL getDecodedUrl(String path) throws MalformedURLException {
+        URL resource = getClass().getClassLoader().getResource(path);
+        String decodedURL = URLDecoder.decode(resource.toExternalForm(), StandardCharsets.UTF_8);
+        return new URL(decodedURL);
+    }
+
+    @Test
+    public void should_createSchema() throws Exception { 
+        Schema schema = bpmnXMLConverter.createSchema(factory, getClass().getClassLoader()
+                .getResource("org/activiti/impl/bpmn/parser/BPMN20.xsd"));
+        assertThat(schema).isNotNull();
+    }
+    
+}
