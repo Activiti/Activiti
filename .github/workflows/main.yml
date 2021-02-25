@@ -52,7 +52,7 @@ jobs:
 
       - name: Set preview version
         if: ${{ contains(github.head_ref, 'migrate-ci-to-github-actions') }}
-        run: echo 0.0.1-${GITHUB_HEAD_REF##*/}-$GITHUB_RUN_NUMBER > VERSION
+        run: echo 0.0.1-${${GITHUB_HEAD_REF#refs/heads/}/\//_}-${GITHUB_RUN_NUMBER}-SNAPSHOT > VERSION
 
       - name: Set VERSION env variable
         run: echo "VERSION=$(cat VERSION)" >> $GITHUB_ENV
@@ -63,8 +63,8 @@ jobs:
           mvn -B versions:set -DnewVersion=$VERSION -DprocessAllModules=true -DgenerateBackupPoms=false
           mvn -B -s settings.xml deploy -DskipTests
         env:
-          MAVEN_USERNAME: ${{ secrets.MAVEN_USERNAME }}
-          MAVEN_PASSWORD: ${{ secrets.MAVEN_PASSWORD }}
+          MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
 
       - name: Create release tag
         if: ${{ github.event_name == 'push' }}
