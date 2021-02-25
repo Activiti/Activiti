@@ -29,6 +29,7 @@ jobs:
       - name: Download Maven
         if: ${{ env.ACT }}
         run: |
+          apt-get update && apt-get install -y libfontconfig1
           curl -fsSL https://www-eu.apache.org/dist/maven/maven-3/$MAVEN_VERSION/binaries/apache-maven-$MAVEN_VERSION-bin.tar.gz \
             | tar xz -C /usr/share
           ln -s /usr/share/apache-maven-$MAVEN_VERSION/bin/mvn /usr/bin/mvn
