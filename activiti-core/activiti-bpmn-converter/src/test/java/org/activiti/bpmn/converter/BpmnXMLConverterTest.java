@@ -30,7 +30,7 @@ import org.junit.jupiter.api.Test;
 public class BpmnXMLConverterTest {
     
     private BpmnXMLConverter bpmnXMLConverter = new BpmnXMLConverter();
-    SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+    private SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
 
     @Test
     public void should_createSchema_when_pathContainsDecodedUTF8Characters() throws Exception {
