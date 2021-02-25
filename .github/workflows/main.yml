@@ -38,12 +38,6 @@ jobs:
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v1
 
-  deploy:
-    runs-on: ubuntu-18.04
-    needs: build
-    if: ${{ github.event_name != 'pull_request' || contains(github.head_ref, 'migrate-ci-to-github-actions') }}
-    steps:
-
       - name: Install jx-release-version
         if: ${{ github.event_name == 'push' }}
         run: >-
