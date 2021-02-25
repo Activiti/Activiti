@@ -44,40 +44,21 @@ jobs:
     if: ${{ github.event_name != 'pull_request' || contains(github.head_ref, 'migrate-ci-to-github-actions') }}
     steps:
 
-      - name: Checkout repository
-        uses: actions/checkout@v2
-
-      - name: Setup Java JDK 11
-        uses: actions/setup-java@v1
-        with:
-          java-version: 11
-
-      - name: Cache Maven packages
-        uses: actions/cache@v2
-        with:
-          path: ~/.m2
-          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-m2
-
-      - name: Add tool dir
-        run: >-
-          mkdir $HOME/bin
-          echo "$HOME/bin" >> $GITHUB_PATH
-
       - name: Install jx-release-version
+        if: ${{ github.event_name == 'push' }}
         run: >-
           curl -fsSL https://github.com/jenkins-x/jx-release-version/releases/download/v$JX_RELEASE_VERSION/jx-release-version-linux-amd64.tar.gz \
             | tar xz -C $HOME/bin jx-release-version
         env:
           JX_RELEASE_VERSION: 2.2.3
 
-      - name: Bump branch version
-        if: ${{ github.event_name != 'pull_request' }}
+      - name: Bump VERSION with jx-release-version
+        if: ${{ github.event_name == 'push' }}
         run: >-
           echo $(jx-release-version) > VERSION
 
       - name: Set preview version
-        if: ${{ github.event_name == 'pull_request' }}
+        if: ${{ contains(github.head_ref, 'migrate-ci-to-github-actions') }}
         run: >-
           echo 0.0.1-${GITHUB_REF#refs/heads/}-$GITHUB_RUN_NUMBER > VERSION
 
@@ -85,6 +66,7 @@ jobs:
         run: echo "VERSION}=$(cat VERSION)" >> $GITHUB_ENV
 
       - name: Deploy with Maven
+        if: ${{ github.event_name != 'pull_request' || contains(github.head_ref, 'migrate-ci-to-github-actions') }}
         run: >-
           mvn -s settings.xml versions:set -DnewVersion=$VERSION -DprocessAllModules=true -DgenerateBackupPoms=false
           mvn deploy -DskipTests
@@ -93,6 +75,7 @@ jobs:
           MAVEN_PASSWORD: ${{ secrets.MAVEN_PASSWORD }}
 
       - name: Create release tag
+        if: ${{ github.event_name == 'push' }}
         run: >-
           git commit -am "Release $VERSION" --allow-empty
           git tag -fa v$VERSION -m "Release version $VERSION"
@@ -101,6 +84,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Install updatebot
+        if: ${{ github.event_name == 'push' }}
         run: >-
           curl -fsSLo $HOME/bin/updatebot.jar \
             https://repo1.maven.org/maven2/io/jenkins/updatebot/updatebot/$UPDATEBOT_VERSION/updatebot-$UPDATEBOT_VERSION.jar
@@ -110,6 +94,7 @@ jobs:
           UPDATEBOT_VERSION: 1.1.62
 
       - name: Run updatebot
+        if: ${{ github.event_name == 'push' }}
         run: >-
           updatebot push-version --kind maven \
             org.activiti:activiti-dependencies $VERSION \
