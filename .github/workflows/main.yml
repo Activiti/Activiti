@@ -25,6 +25,16 @@ jobs:
         with:
           java-version: 11
 
+      # step required for https://github.com/nektos/act/issues/161 to run locally with https://github.com/nektos/act
+      - name: Download Maven
+        if: ${{ env.ACT }}
+        run: |
+          curl -fsSL https://www-eu.apache.org/dist/maven/maven-3/$MAVEN_VERSION/binaries/apache-maven-$MAVEN_VERSION-bin.tar.gz \
+            | tar xz -C /usr/share
+          ln -s /usr/share/apache-maven-$MAVEN_VERSION/bin/mvn /usr/bin/mvn
+        env:
+          MAVEN_VERSION: 3.6.3
+
       - name: Cache Maven packages
         uses: actions/cache@v2
         with:
