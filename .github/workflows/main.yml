@@ -52,7 +52,7 @@ jobs:
 
       - name: Set preview version
         if: ${{ contains(github.head_ref, 'migrate-ci-to-github-actions') }}
-        run: echo 0.0.1-${GITHUB_REF#refs/heads/}-$GITHUB_RUN_NUMBER > VERSION
+        run: echo 0.0.1-${GITHUB_HEAD_REF##*/}-$GITHUB_RUN_NUMBER > VERSION
 
       - name: Set VERSION env variable
         run: echo "VERSION=$(cat VERSION)" >> $GITHUB_ENV
