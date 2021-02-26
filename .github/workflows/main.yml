@@ -52,11 +52,11 @@ jobs:
       - name: Install jx-release-version
         if: ${{ github.event_name == 'push' }}
         run: |
-          curl -fsSL https://github.com/jenkins-x/jx-release-version/releases/download/v$JX_RELEASE_VERSION/jx-release-version-linux-amd64.tar.gz \
+          curl -fsSL https://github.com/jenkins-x/jx-release-version/releases/download/v$JX_RELEASE_VERSION_VERSION/jx-release-version-linux-amd64.tar.gz \
             | tar xz -C /usr/local/bin jx-release-version
           echo jx-release-version $(jx-release-version --version)
         env:
-          JX_RELEASE_VERSION: 2.2.3
+          JX_RELEASE_VERSION_VERSION: 2.2.3
 
       - name: Bump VERSION with jx-release-version
         if: ${{ github.event_name == 'push' }}
