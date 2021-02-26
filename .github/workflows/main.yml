@@ -1,0 +1,122 @@
+name: CI
+
+# Controls when the action will run.
+on:
+  # Triggers the workflow on push or pull request events but only for the default branch
+  push:
+    branches: [ develop ]
+  pull_request:
+    branches: [ develop ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+
+  build:
+    runs-on: ubuntu-18.04
+    steps:
+
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Setup Java JDK 11
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+
+      # step required for https://github.com/nektos/act/issues/161 to run locally with https://github.com/nektos/act
+      - name: Download Maven
+        if: ${{ env.ACT }}
+        run: |
+          apt-get update && apt-get install -y libfontconfig1
+          curl -fsSL https://www-eu.apache.org/dist/maven/maven-3/$MAVEN_VERSION/binaries/apache-maven-$MAVEN_VERSION-bin.tar.gz \
+            | tar xz -C /usr/share
+          ln -s /usr/share/apache-maven-$MAVEN_VERSION/bin/mvn /usr/bin/mvn
+        env:
+          MAVEN_VERSION: 3.6.3
+
+      - name: Cache Maven packages
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+
+      - name: Build with Maven
+        run: mvn -B verify
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v1
+
+      - name: Install jx-release-version
+        if: ${{ github.event_name == 'push' }}
+        run: |
+          curl -fsSL https://github.com/jenkins-x/jx-release-version/releases/download/v$JX_RELEASE_VERSION_VERSION/jx-release-version-linux-amd64.tar.gz \
+            | tar xz -C /usr/local/bin jx-release-version
+          echo jx-release-version $(jx-release-version --version)
+        env:
+          JX_RELEASE_VERSION_VERSION: 2.2.3
+
+      - name: Bump VERSION with jx-release-version
+        if: ${{ github.event_name == 'push' }}
+        run: echo $(jx-release-version) > VERSION
+
+      - name: Set preview version
+        if: ${{ contains(github.head_ref, 'preview') }}
+        run: |
+          BRANCH_NAME=${GITHUB_HEAD_REF#refs/heads/}
+          echo 0.0.1-${BRANCH_NAME/\//-}-${GITHUB_RUN_NUMBER}-SNAPSHOT > VERSION
+
+      - name: Set VERSION env variable
+        if: ${{ github.event_name == 'push' || contains(github.head_ref, 'preview') }}
+        run: |
+          VERSION=$(cat VERSION)
+          echo set VERSION=$VERSION
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+
+      - name: Deploy with Maven
+        if: ${{ github.event_name == 'push' || contains(github.head_ref, 'preview') }}
+        run: |
+          mvn -B versions:set -DnewVersion=$VERSION -DprocessAllModules=true -DgenerateBackupPoms=false
+          mvn -B -s settings.xml deploy -DskipTests
+        env:
+          MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
+
+      - name: Configure git user
+        if: ${{ github.event_name == 'push' }}
+        run: |
+          git config user.name $GITHUB_USERNAME
+          git config user.email $GITHUB_USERNAME@users.noreply.github.com
+        env:
+          GITHUB_USERNAME: alfresco-build-user
+
+      - name: Create release tag
+        if: ${{ github.event_name == 'push' }}
+        run: |
+          git commit -am "Release $VERSION" --allow-empty
+          git tag -fa v$VERSION -m "Release version $VERSION"
+          git push -f -q v$VERSION
+
+      - name: Install updatebot
+        if: ${{ github.event_name == 'push' }}
+        run: |
+          curl -fsSLo /usr/bin/updatebot.jar \
+            https://repo1.maven.org/maven2/io/jenkins/updatebot/updatebot/$UPDATEBOT_VERSION/updatebot-$UPDATEBOT_VERSION.jar
+          echo "java -jar /usr/bin/updatebot.jar \$@" > /usr/bin/updatebot
+          chmod +x /usr/bin/updatebot
+          echo updatebot $(updatebot version)
+        env:
+          UPDATEBOT_VERSION: 1.1.60
+
+      - name: Run updatebot
+        if: ${{ github.event_name == 'push' }}
+        run: |
+          updatebot push-version --kind maven \
+            org.activiti:activiti-dependencies $VERSION \
+            org.activiti:activiti-api-dependencies $VERSION \
+            org.activiti:activiti-core-dependencies $VERSION \
+            org.activiti:activiti-core-common-dependencies $VERSION
+        env:
+          UPDATEBOT_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
