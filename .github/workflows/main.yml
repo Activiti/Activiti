@@ -17,13 +17,13 @@ jobs:
     runs-on: ubuntu-18.04
     steps:
 
-      - name: Print user
-        run: |
-          echo GITHUB_ACTOR=$GITHUB_ACTOR
-          exit 1
-
       - name: Checkout repository
         uses: actions/checkout@v2
+
+      - name: Print user
+        run: |
+          gh pr list
+          exit 1
 
       - name: Setup Java JDK 11
         uses: actions/setup-java@v1
@@ -92,8 +92,10 @@ jobs:
       - name: Configure git user
         if: ${{ github.event_name == 'push' }}
         run: |
-          git config user.name "$GITHUB_ACTOR"
-          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+          git config user.name $GITHUB_USERNAME
+          git config user.email $GITHUB_USERNAME@users.noreply.github.com
+        env:
+          GITHUB_USERNAME: alfresco-build-user
 
       - name: Create release tag
         if: ${{ github.event_name == 'push' }}
