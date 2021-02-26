@@ -24,6 +24,8 @@ jobs:
         run: |
           gh pr list
           exit 1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup Java JDK 11
         uses: actions/setup-java@v1
