@@ -17,6 +17,11 @@ jobs:
     runs-on: ubuntu-18.04
     steps:
 
+      - name: Print user
+        run: |
+          echo GITHUB_ACTOR=$GITHUB_ACTOR
+          exit 1
+
       - name: Checkout repository
         uses: actions/checkout@v2
 
