@@ -51,9 +51,10 @@ jobs:
 
       - name: Install jx-release-version
         if: ${{ github.event_name == 'push' }}
-        run: |-
+        run: |
           curl -fsSL https://github.com/jenkins-x/jx-release-version/releases/download/v$JX_RELEASE_VERSION/jx-release-version-linux-amd64.tar.gz \
-            | tar xz -C $HOME/bin jx-release-version
+            | tar xz -C /usr/local/bin jx-release-version
+          echo jx-release-version $(jx-release-version --version)
         env:
           JX_RELEASE_VERSION: 2.2.3
 
@@ -63,44 +64,52 @@ jobs:
 
       - name: Set preview version
         if: ${{ contains(github.head_ref, 'migrate-ci-to-github-actions') }}
-        run: |-
+        run: |
           BRANCH_NAME=${GITHUB_HEAD_REF#refs/heads/}
           echo 0.0.1-${BRANCH_NAME/\//-}-${GITHUB_RUN_NUMBER}-SNAPSHOT > VERSION
 
       - name: Set VERSION env variable
-        run: echo "VERSION=$(cat VERSION)" >> $GITHUB_ENV
+        run: |
+          VERSION=$(cat VERSION)
+          echo set VERSION=$VERSION
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
 
       - name: Deploy with Maven
         if: ${{ github.event_name != 'pull_request' || contains(github.head_ref, 'migrate-ci-to-github-actions') }}
-        run: |-
+        run: |
           mvn -B versions:set -DnewVersion=$VERSION -DprocessAllModules=true -DgenerateBackupPoms=false
           mvn -B -s settings.xml deploy -DskipTests
         env:
           MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
 
+      - name: Configure git user
+        if: ${{ github.event_name == 'push' }}
+        run: |
+          git config user.name "$GITHUB_ACTOR"
+          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+
       - name: Create release tag
         if: ${{ github.event_name == 'push' }}
-        run: |-
+        run: |
           git commit -am "Release $VERSION" --allow-empty
           git tag -fa v$VERSION -m "Release version $VERSION"
-          git push -f -q https://$GITHUB_TOKEN@github.com/Activiti/Activiti.git v$VERSION
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          git push -f -q v$VERSION
 
       - name: Install updatebot
         if: ${{ github.event_name == 'push' }}
-        run: |-
-          curl -fsSLo $HOME/bin/updatebot.jar \
+        run: |
+          curl -fsSLo /usr/bin/updatebot.jar \
             https://repo1.maven.org/maven2/io/jenkins/updatebot/updatebot/$UPDATEBOT_VERSION/updatebot-$UPDATEBOT_VERSION.jar
-          echo "java -jar $HOME/bin/updatebot.jar \$@" > $HOME/bin/updatebot
-          chmod +x $HOME/bin/updatebot
+          echo "java -jar /usr/bin/updatebot.jar \$@" > /usr/bin/updatebot
+          chmod +x /usr/bin/updatebot
+          echo updatebot $(updatebot version)
         env:
-          UPDATEBOT_VERSION: 1.1.62
+          UPDATEBOT_VERSION: 1.1.60
 
       - name: Run updatebot
         if: ${{ github.event_name == 'push' }}
-        run: |-
+        run: |
           updatebot push-version --kind maven \
             org.activiti:activiti-dependencies $VERSION \
             org.activiti:activiti-api-dependencies $VERSION \
