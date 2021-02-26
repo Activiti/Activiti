@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema elementFormDefault="qualified" attributeFormDefault="unqualified"
+	xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" 
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+	targetNamespace="http://www.omg.org/spec/BPMN/20100524/MODEL">
+
+	<xsd:element name="extension" type="tExtension"/>
+	<xsd:complexType name="tExtension">
+		<xsd:attribute name="definition" type="xsd:QName"/>
+		<xsd:attribute name="mustUnderstand" type="xsd:boolean" use="optional" default="false"/>
+	</xsd:complexType>
+
+</xsd:schema>
