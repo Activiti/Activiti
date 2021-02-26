@@ -69,13 +69,14 @@ jobs:
           echo 0.0.1-${BRANCH_NAME/\//-}-${GITHUB_RUN_NUMBER}-SNAPSHOT > VERSION
 
       - name: Set VERSION env variable
+        if: ${{ github.event_name == 'push' || contains(github.head_ref, 'preview') }}
         run: |
           VERSION=$(cat VERSION)
           echo set VERSION=$VERSION
           echo "VERSION=$VERSION" >> $GITHUB_ENV
 
       - name: Deploy with Maven
-        if: ${{ github.event_name != 'pull_request' || contains(github.head_ref, 'preview') }}
+        if: ${{ github.event_name == 'push' || contains(github.head_ref, 'preview') }}
         run: |
           mvn -B versions:set -DnewVersion=$VERSION -DprocessAllModules=true -DgenerateBackupPoms=false
           mvn -B -s settings.xml deploy -DskipTests
