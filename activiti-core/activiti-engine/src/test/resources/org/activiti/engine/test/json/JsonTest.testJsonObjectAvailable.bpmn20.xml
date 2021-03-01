@@ -5,13 +5,13 @@
   targetNamespace="Examples">
 
   <process id="testJsonAvailableProcess" name="Test JSON available process">
-  
+
     <startEvent id="theStart" />
     <sequenceFlow id="flow1" sourceRef="theStart" targetRef="userTask" />
     <userTask id="userTask" />
     <sequenceFlow id="flow2" sourceRef="userTask" targetRef="script1" />
-    <scriptTask id="script1" scriptFormat="JavaScript">
-        <script><![CDATA[var jsonObj = execution.getVariable("myJsonObj");
+    <scriptTask id="script1" scriptFormat="groovy">
+        <script><![CDATA[def jsonObj = execution.getVariable("myJsonObj");
 java.lang.System.out.println('JSON:'+jsonObj);
 java.lang.System.out.println('  var:'+jsonObj.get('var'));
 java.lang.System.out.println('  var2:'+jsonObj.get('var2'));
@@ -29,7 +29,7 @@ java.lang.System.out.println('  var2:'+jsonObj.get('var2'));
     <userTask id="userTaskSuccess" />
     <sequenceFlow id="flow4" sourceRef="userTaskSuccess" targetRef="theEndSuccess" />
     <endEvent id="theEndSuccess" />
-    
+
   </process>
 
 </definitions>

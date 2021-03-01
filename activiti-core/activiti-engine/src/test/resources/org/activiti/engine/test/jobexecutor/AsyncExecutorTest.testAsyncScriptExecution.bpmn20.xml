@@ -3,7 +3,7 @@
   <process id="asyncScript" name="asyncScript" isExecutable="true">
     <startEvent id="startEvent1"/>
     <sequenceFlow id="sid-1A341B40-2063-4D35-A607-4E0DBD35C3A0" sourceRef="startEvent1" targetRef="sid-B1E9D667-AB66-444E-9346-36A8FA71C68E"/>
-    <scriptTask id="sid-B1E9D667-AB66-444E-9346-36A8FA71C68E" name="The Script task" activiti:async="true" activiti:exclusive="false" scriptFormat="javascript" activiti:autoStoreVariables="false">
+    <scriptTask id="sid-B1E9D667-AB66-444E-9346-36A8FA71C68E" name="The Script task" activiti:async="true" activiti:exclusive="false" scriptFormat="groovy" activiti:autoStoreVariables="false">
       <script>execution.setVariable('test', '123');</script>
     </scriptTask>
     <userTask id="sid-9F529DCE-73D6-4281-BD31-B002F5DF8808" name="Task after script"/>

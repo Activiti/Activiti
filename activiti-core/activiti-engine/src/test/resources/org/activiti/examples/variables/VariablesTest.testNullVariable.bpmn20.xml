@@ -11,7 +11,7 @@
     <userTask id="usertask2" name="User Task"></userTask>
     <sequenceFlow id="flow1" name="" sourceRef="startevent1" targetRef="usertask1"></sequenceFlow>
     <sequenceFlow id="flow4" name="" sourceRef="usertask2" targetRef="endevent1"></sequenceFlow>
-    <scriptTask id="scripttask1" name="Script Task" scriptFormat="javascript">
+    <scriptTask id="scripttask1" name="Script Task" scriptFormat="groovy">
       <script><![CDATA[testVar=testProperty]]></script>
     </scriptTask>
     <sequenceFlow id="flow5" name="" sourceRef="usertask1" targetRef="scripttask1"></sequenceFlow>

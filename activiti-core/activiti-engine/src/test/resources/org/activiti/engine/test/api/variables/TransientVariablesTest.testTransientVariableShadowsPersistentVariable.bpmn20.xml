@@ -11,7 +11,7 @@
         <modeler:editor-resource-id><![CDATA[sid-78575621-2BF9-4F12-AC51-4A7A069A5630]]></modeler:editor-resource-id>
       </extensionElements>
     </sequenceFlow>
-    <scriptTask id="sid-11CD6DCF-DD91-4D7F-8743-459CD9F42A8B" name="Set transient var" scriptFormat="javascript" activiti:autoStoreVariables="false">
+    <scriptTask id="sid-11CD6DCF-DD91-4D7F-8743-459CD9F42A8B" name="Set transient var" scriptFormat="groovy" activiti:autoStoreVariables="false">
       <extensionElements>
         <modeler:editor-resource-id><![CDATA[sid-11CD6DCF-DD91-4D7F-8743-459CD9F42A8B]]></modeler:editor-resource-id>
       </extensionElements>
@@ -39,7 +39,7 @@
         <modeler:editor-resource-id><![CDATA[sid-22D98EA5-8EAC-41C5-96F3-FBA45B46AA34]]></modeler:editor-resource-id>
       </extensionElements>
     </sequenceFlow>
-    <scriptTask id="sid-469F0D65-9684-48A9-92F6-352B090AD718" name="Set persistent var based on transient var" scriptFormat="javascript" activiti:autoStoreVariables="false">
+    <scriptTask id="sid-469F0D65-9684-48A9-92F6-352B090AD718" name="Set persistent var based on transient var" scriptFormat="groovy" activiti:autoStoreVariables="false">
       <extensionElements>
         <modeler:editor-resource-id><![CDATA[sid-469F0D65-9684-48A9-92F6-352B090AD718]]></modeler:editor-resource-id>
       </extensionElements>
