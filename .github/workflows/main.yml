@@ -13,8 +13,18 @@ on:
 
 jobs:
 
+  pre-commit:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Set up python
+        uses: actions/setup-python@v2
+      - name: Run pre-commit
+        uses: pre-commit/action@v2.0.0
+
   build:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     steps:
 
       - name: Checkout repository
@@ -51,13 +61,7 @@ jobs:
 
       - name: Install jx-release-version
         if: ${{ github.event_name == 'push' }}
-        run: |
-          curl -fsSL https://github.com/jenkins-x-plugins/jx-release-version/releases/download/v$JX_RELEASE_VERSION_VERSION/jx-release-version-linux-amd64.tar.gz \
-            | tar xz jx-release-version
-          sudo mv jx-release-version /usr/local/bin/
-          echo jx-release-version $(jx-release-version --version)
-        env:
-          JX_RELEASE_VERSION_VERSION: 2.2.3
+        uses: Alfresco/alfresco-build-tools/.github/actions/setup-jx-release-version@v1.1.0
 
       - name: Bump version with jx-release-version
         if: ${{ github.event_name == 'push' }}
@@ -104,15 +108,7 @@ jobs:
 
       - name: Install updatebot
         if: ${{ github.event_name == 'push' }}
-        run: |
-          curl -fsSLo updatebot.jar \
-            https://repo1.maven.org/maven2/io/jenkins/updatebot/updatebot/$UPDATEBOT_VERSION/updatebot-$UPDATEBOT_VERSION.jar
-          echo "java -jar /usr/local/bin/updatebot.jar \$@" > updatebot
-          chmod +x updatebot
-          sudo mv updatebot* /usr/local/bin/
-          echo updatebot $(updatebot version)
-        env:
-          UPDATEBOT_VERSION: 1.1.60
+        uses: Alfresco/alfresco-build-tools/.github/actions/setup-updatebot@v1.1.0
 
       - name: Run updatebot
         if: ${{ github.event_name == 'push' }}
