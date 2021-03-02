@@ -68,7 +68,7 @@ public class DeploymentResourceLoaderTest {
         //then
         assertThat(loaded)
                 .hasSize(1)
-                .contains("a selected resource\r");
+                .contains("a selected resource\n");
 
     }
 }
