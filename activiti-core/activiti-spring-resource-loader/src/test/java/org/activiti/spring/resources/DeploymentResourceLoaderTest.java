@@ -64,11 +64,17 @@ public class DeploymentResourceLoaderTest {
 
         //when
         List<String> loaded = deploymentResourceLoader.loadResourcesForDeployment("123456", selectorReader);
-
-        //then
-        assertThat(loaded)
+        String osName = System.getProperties().getProperty("os.name").trim().toUpperCase();
+        if (osName.equalsIgnoreCase("LINUX")) {
+            //then
+            assertThat(loaded)
                 .hasSize(1)
                 .contains("a selected resource\n");
-
+        } else {
+            //then
+            assertThat(loaded)
+                .hasSize(1)
+                .contains("a selected resource\r\n");
+        }
     }
 }
