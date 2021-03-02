@@ -5,26 +5,26 @@
   targetNamespace="Examples">
 
   <process id="oneTaskProcess">
-
+  
     <startEvent id="theStart" />
     <sequenceFlow id="flow1" sourceRef="theStart" targetRef="theTask" />
-
-    <scriptTask id="theTask" scriptFormat="groovy">
+    
+    <scriptTask id="theTask" scriptFormat="JavaScript">
       <script><![CDATA[
-
-        def sum = a + b;
+        
+        var sum = a + b;           
         execution.setVariable("sum", sum);
-
+            
         ]]></script>
     </scriptTask>
     <sequenceFlow id="flow2" sourceRef="theTask" targetRef="receiveTask" />
-
+    
     <receiveTask id="receiveTask" />
-
+    
     <sequenceFlow id="flow3" sourceRef="receiveTask" targetRef="theEnd" />
-
+    
     <endEvent id="theEnd" />
-
+    
   </process>
 
 </definitions>

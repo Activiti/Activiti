@@ -99,7 +99,7 @@ public class ScriptTaskTest extends PluggableActivitiTestCase {
     assertProcessEnded(processInstance.getId());
 
     String processDefinitionId = processInstance.getProcessDefinitionId();
-    ObjectNode infoNode = dynamicBpmnService.changeScriptTaskScript("script1", "def sum = c + d;\nexecution.setVariable('test2', sum);");
+    ObjectNode infoNode = dynamicBpmnService.changeScriptTaskScript("script1", "var sum = c + d;\nexecution.setVariable('test2', sum);");
     dynamicBpmnService.saveProcessDefinitionInfo(processDefinitionId, infoNode);
 
     processInstance = runtimeService.startProcessInstanceByKey("testDynamicScript", CollectionUtil.map("c", 10, "d", 12));

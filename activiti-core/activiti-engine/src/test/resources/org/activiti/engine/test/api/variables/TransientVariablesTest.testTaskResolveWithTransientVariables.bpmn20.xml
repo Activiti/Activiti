@@ -28,7 +28,7 @@
         <modeler:editor-resource-id><![CDATA[sid-A0FA6B83-37EC-4B8D-BD6B-6A622AB36251]]></modeler:editor-resource-id>
       </extensionElements>
     </sequenceFlow>
-    <scriptTask id="sid-30D22945-EC22-403B-B0B3-CB28EFDDD68E" name="Set more transient vars" scriptFormat="groovy" activiti:autoStoreVariables="false">
+    <scriptTask id="sid-30D22945-EC22-403B-B0B3-CB28EFDDD68E" name="Set more transient vars" scriptFormat="javascript" activiti:autoStoreVariables="false">
       <extensionElements>
         <modeler:editor-resource-id><![CDATA[sid-30D22945-EC22-403B-B0B3-CB28EFDDD68E]]></modeler:editor-resource-id>
       </extensionElements>

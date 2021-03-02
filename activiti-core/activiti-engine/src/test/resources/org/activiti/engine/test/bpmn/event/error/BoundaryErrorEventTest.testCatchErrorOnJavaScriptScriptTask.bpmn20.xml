@@ -11,19 +11,19 @@
         <startEvent id="theStart" />
         <sequenceFlow id="flow1" sourceRef="theStart" targetRef="theScript" />
 
-        <scriptTask id="theScript" scriptFormat="groovy">
+        <scriptTask id="theScript" scriptFormat="JavaScript">
             <script><![CDATA[
 
             var JvmUtil = Packages.org.activiti.engine.impl.util.JvmUtil;
             var BpmnError = Packages.org.activiti.engine.delegate.BpmnError;
 
             if (JvmUtil.isJDK8()) {
-
+            
               throw new BpmnError("errorOne");
 
             } else {
 
-              var Context = Packages.sun.org.mozilla.groovy.internal.Context;
+              var Context = Packages.sun.org.mozilla.javascript.internal.Context;
               Context.throwAsScriptRuntimeEx(new org.activiti.engine.delegate.BpmnError("errorOne"));
 
             }
