@@ -19,7 +19,7 @@ import org.activiti.api.process.model.MessageSubscription;
 import org.activiti.api.process.model.events.MessageSubscriptionCancelledEvent;
 import org.activiti.api.process.model.events.MessageSubscriptionEvent;
 
-public class MessageSubscriptionCancelledEventImpl extends RuntimeEventImpl<MessageSubscription, MessageSubscriptionEvent.MessageSubscriptionEvents> 
+public class MessageSubscriptionCancelledEventImpl extends RuntimeEventImpl<MessageSubscription, MessageSubscriptionEvent.MessageSubscriptionEvents>
                                                    implements MessageSubscriptionCancelledEvent {
 
     public MessageSubscriptionCancelledEventImpl() {
@@ -27,7 +27,7 @@ public class MessageSubscriptionCancelledEventImpl extends RuntimeEventImpl<Mess
 
     public MessageSubscriptionCancelledEventImpl(MessageSubscription entity) {
         super(entity);
-        
+
         setProcessInstanceId(entity.getProcessInstanceId());
         setProcessDefinitionId(entity.getProcessDefinitionId());
     }

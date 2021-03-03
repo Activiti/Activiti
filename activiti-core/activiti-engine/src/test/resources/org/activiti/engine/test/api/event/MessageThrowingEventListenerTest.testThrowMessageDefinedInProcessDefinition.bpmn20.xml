@@ -3,7 +3,7 @@
 	xmlns:activiti="http://activiti.org/bpmn" targetNamespace="Examples">
 
 	<message id="myMessage" name="Message" />
-	
+
 	<process id="testMessage">
 		<extensionElements>
 			<activiti:eventListener events="TASK_ASSIGNED" throwEvent="message" messageName="Message" />

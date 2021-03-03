@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<definitions 
+<definitions
   targetNamespace="Examples"
   xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -12,21 +12,21 @@
   expressionLanguage="http://www.w3.org/1999/XPath">
 
   <process id="testTimerStartEvent" name="timerStartEventExample">
-  
+
     <startEvent id="theStart">
      	<timerEventDefinition>
                 <timeDuration>PT30M</timeDuration>
         </timerEventDefinition>
-    </startEvent>    
-    
+    </startEvent>
+
     <sequenceFlow sourceRef="theStart" targetRef="task" />
-    
+
     <userTask id="task" name="User Task"></userTask>
-    
+
     <sequenceFlow sourceRef="task" targetRef="theEnd" />
-        
+
     <endEvent id="theEnd" />
-    
+
   </process>
 
 </definitions>

@@ -28,7 +28,7 @@ import javax.xml.validation.SchemaFactory;
 import org.junit.jupiter.api.Test;
 
 public class BpmnXMLConverterTest {
-    
+
     private BpmnXMLConverter bpmnXMLConverter = new BpmnXMLConverter();
     private SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
 
@@ -46,10 +46,10 @@ public class BpmnXMLConverterTest {
     }
 
     @Test
-    public void should_createSchema() throws Exception { 
+    public void should_createSchema() throws Exception {
         Schema schema = bpmnXMLConverter.createSchema(factory, getClass().getClassLoader()
                 .getResource("org/activiti/impl/bpmn/parser/BPMN20.xsd"));
         assertThat(schema).isNotNull();
     }
-    
+
 }

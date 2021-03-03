@@ -3,23 +3,23 @@
    <process name="testJoin" id="testJoin">
       <startEvent id="StartNoneEvent" name="StartNoneEvent" />
       <sequenceFlow id="SequenceFlow_3" name="SequenceFlow" sourceRef="StartNoneEvent" targetRef="Main_Task" />
-      
+
       <userTask id="Main_Task" name="Main Task" />
       <sequenceFlow id="SequenceFlow_4" name="SequenceFlow" sourceRef="Main_Task" targetRef="ParallelGateway" />
-      
+
       <boundaryEvent attachedToRef="Main_Task" cancelActivity="false" id="IntermediateTimerEvent" name="IntermediateTimerEvent">
 			<timerEventDefinition>
 				<timeDuration>PT1H</timeDuration>
-			</timerEventDefinition>      
+			</timerEventDefinition>
       </boundaryEvent>
       <sequenceFlow id="SequenceFlow" name="SequenceFlow" sourceRef="IntermediateTimerEvent" targetRef="Escalation_Task" />
-      
+
       <userTask id="Escalation_Task" name="Escalation Task" />
       <sequenceFlow id="SequenceFlow_2" name="SequenceFlow" sourceRef="Escalation_Task" targetRef="ParallelGateway" />
-      
+
       <parallelGateway gatewayDirection="Converging" id="ParallelGateway" name="ParallelGateway" />
       <sequenceFlow id="SequenceFlow_5" name="SequenceFlow" sourceRef="ParallelGateway" targetRef="EndNoneEvent" />
-      
+
       <endEvent id="EndNoneEvent" name="EndNoneEvent" />
    </process>
    <bpmndi:BPMNDiagram id="sid-48d6e871-e3e2-4875-b12a-e97fe63571ea">

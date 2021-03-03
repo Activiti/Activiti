@@ -4,4 +4,3 @@ org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
     org.activiti.spring.boot.EndpointAutoConfiguration,\
     org.activiti.spring.boot.ProcessEngineAutoConfiguration,\
     org.activiti.spring.boot.ActivitiMethodSecurityAutoConfiguration
-    

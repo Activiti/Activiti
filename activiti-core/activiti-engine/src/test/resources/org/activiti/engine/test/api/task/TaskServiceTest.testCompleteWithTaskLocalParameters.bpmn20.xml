@@ -5,7 +5,7 @@
   targetNamespace="TwoTaskCategory">
 
   <process id="testTaskLocalVars" name="The Two Task Process" activiti:candidateStarterUsers="kermit">
-  
+
     <startEvent id="theStart" />
     <sequenceFlow id="flow1" sourceRef="theStart" targetRef="theTask" />
     <userTask id="theTask" name="my task">
@@ -16,18 +16,18 @@
                   var a = task.getVariableLocal('a');
                   var b = task.getVariableLocal('b');
                   var sum = new java.lang.Integer(a + b);
-                  task.setVariable('sum', sum);              
+                  task.setVariable('sum', sum);
                 </activiti:string>
               </activiti:field>
               <activiti:field name="language" stringValue="JavaScript" />
             </activiti:taskListener>
         </extensionElements>
-    </userTask>    
+    </userTask>
     <sequenceFlow id="flow2" sourceRef="theTask" targetRef="theSecondTask" />
-    <userTask id="theSecondTask" name="my task" />    
+    <userTask id="theSecondTask" name="my task" />
     <sequenceFlow id="flow3" sourceRef="theSecondTask" targetRef="theEnd" />
     <endEvent id="theEnd" />
-    
+
   </process>
 
 </definitions>

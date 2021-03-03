@@ -5,4 +5,3 @@ github:
     - name: activiti-cloud
       branch: develop
       useSinglePullRequest: true
-

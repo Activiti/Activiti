@@ -36,8 +36,8 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.springframework.context.ApplicationEventPublisher;
 
-public class ApplicationDeployedEventProducerTest { 
-    
+public class ApplicationDeployedEventProducerTest {
+
     private ApplicationDeployedEventProducer producer;
 
     @Mock
@@ -56,7 +56,7 @@ public class ApplicationDeployedEventProducerTest {
     private ProcessRuntimeEventListener<ApplicationDeployedEvent> secondListener;
 
     private static final String APPLICATION_DEPLOYMENT_NAME= "SpringAutoDeployment";
-    
+
     @BeforeEach
     public void setUp() {
         initMocks(this);
@@ -73,16 +73,16 @@ public class ApplicationDeployedEventProducerTest {
 
         List<Deployment> internalDeployment = asList(mock(Deployment.class),
                 mock(Deployment.class));
-        
+
         given(deploymentQuery.deploymentName(APPLICATION_DEPLOYMENT_NAME)).willReturn(deploymentQuery);
         given(deploymentQuery.list()).willReturn(internalDeployment);
 
         List<org.activiti.api.process.model.Deployment> apiDeployments= asList(
                 buildAPIDeployment("id1", "SpringAutoDeployment"));
         given(converter.from(internalDeployment)).willReturn(apiDeployments);
-        
+
         producer.start();
-        
+
         ArgumentCaptor<ApplicationDeployedEvent> captor = ArgumentCaptor.forClass(ApplicationDeployedEvent.class);
         verify(firstListener).onEvent(captor.capture());
         verify(secondListener).onEvent(captor.capture());
@@ -96,7 +96,7 @@ public class ApplicationDeployedEventProducerTest {
         ArgumentCaptor<ApplicationDeployedEvents> captorPublisher = ArgumentCaptor.forClass(ApplicationDeployedEvents.class);
         verify(eventPublisher).publishEvent(captorPublisher.capture());
     }
-    
+
     private org.activiti.api.process.model.Deployment buildAPIDeployment(String deploymentId, String deploymentName) {
         org.activiti.api.process.model.Deployment deployment = mock(org.activiti.api.process.model.Deployment.class);
         given(deployment.getId()).willReturn(deploymentId);

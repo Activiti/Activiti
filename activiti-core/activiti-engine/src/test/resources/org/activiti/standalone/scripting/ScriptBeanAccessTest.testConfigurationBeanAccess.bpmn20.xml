@@ -17,9 +17,9 @@
   xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
   xmlns:activiti="http://activiti.org/bpmn"
   targetNamespace="Examples">
-  
+
   <process id="ScriptBeanAccess">
-  
+
     <startEvent id="theStart" />
 
     <scriptTask id="theScriptTaskWithExistingProcessVariableName" scriptFormat="juel" activiti:resultVariable="myVariable">
@@ -30,7 +30,7 @@
 
     <sequenceFlow id="flow1" sourceRef="theStart" targetRef="theScriptTaskWithExistingProcessVariableName" />
     <sequenceFlow id="flow2" sourceRef="theScriptTaskWithExistingProcessVariableName" targetRef="wait" />
-    
+
   </process>
 
 </definitions>

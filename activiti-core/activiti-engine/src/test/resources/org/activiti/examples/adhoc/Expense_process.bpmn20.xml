@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <definitions targetNamespace="adhoc"
-  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" 
-  xmlns:ns3="http://activiti.org/bpmn" 
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:ns3="http://activiti.org/bpmn"
   xmlns:ns5="http://www.omg.org/spec/DD/20100524/DC"
-  xmlns:ns4="http://www.omg.org/spec/DD/20100524/DI" 
+  xmlns:ns4="http://www.omg.org/spec/DD/20100524/DI"
   xmlns:ns6="http://www.omg.org/spec/BPMN/20100524/DI">
 	<process name="Expense process" id="adhoc_Expense_process">
 		<documentation id="adhoc_Expense_process_documentation"> Example process created using Activiti KickStart</documentation>

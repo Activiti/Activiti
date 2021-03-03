@@ -3,7 +3,7 @@
   xmlns:activiti="http://activiti.org/bpmn" targetNamespace="Examples">
 
   <signal id="mySignal" name="Signal" />
-  
+
   <process id="globalSignalProcessExternal">
     <startEvent id="Start" />
     <sequenceFlow sourceRef="Start" targetRef="signal" />

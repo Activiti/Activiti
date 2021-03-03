@@ -128,4 +128,3 @@ public class ParsedDeploymentTest extends PluggableActivitiTestCase {
     return builder.toString();
   }
 }
-

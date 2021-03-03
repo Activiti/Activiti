@@ -38,7 +38,7 @@ public class ActivityCompensatedEventHandler extends AbstractDatabaseEventLogger
     putInMapIfNotNull(data, Fields.PROCESS_INSTANCE_ID, activityEvent.getProcessInstanceId());
     putInMapIfNotNull(data, Fields.EXECUTION_ID, activityEvent.getExecutionId());
     putInMapIfNotNull(data, Fields.ACTIVITY_TYPE, activityEvent.getActivityType());
- 
+
     return createEventLogEntry(activityEvent.getProcessDefinitionId(), activityEvent.getProcessInstanceId(), activityEvent.getExecutionId(), null, data);
   }
 

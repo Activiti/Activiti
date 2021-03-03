@@ -38,20 +38,20 @@ public class MessageTestConfiguration {
     public BPMNElementEventListener<BPMNMessageSentEvent> messageSentEventListener() {
         return bpmnMessageSentEvent -> messageEvents.add(bpmnMessageSentEvent);
     }
-    
+
     @Bean
     public BPMNElementEventListener<BPMNMessageReceivedEvent> messageReceivedEventListener() {
         return bpmnMessageReceivedEvent -> messageEvents.add(bpmnMessageReceivedEvent);
     }
-    
+
     @Bean
     public BPMNElementEventListener<BPMNMessageWaitingEvent> messageWaitingEventListener() {
         return bpmnMessageWaitingEvent -> messageEvents.add(bpmnMessageWaitingEvent);
-    }  
-    
+    }
+
     @Bean
     public ProcessRuntimeEventListener<MessageSubscriptionCancelledEvent> messageSubscriptionCancelledEventListener() {
         return messageSubscriptionCancelledEvent -> messageSubscriptionCancelledEvents.add(messageSubscriptionCancelledEvent);
-    }  
- 
+    }
+
 }

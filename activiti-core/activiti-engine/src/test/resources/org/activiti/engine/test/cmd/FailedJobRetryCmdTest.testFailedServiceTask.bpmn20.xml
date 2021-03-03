@@ -14,11 +14,11 @@
 	       		<activiti:failedJobRetryTimeCycle>R5/PT5M</activiti:failedJobRetryTimeCycle>
 	       	</extensionElements>
 		</serviceTask>
-        
+
 		<sequenceFlow id="flow2" sourceRef="failingServiceTask" targetRef="theEnd" />
-		
+
 		<endEvent id="theEnd" />
 
 	</process>
-	
+
 </definitions>

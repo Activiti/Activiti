@@ -96,10 +96,10 @@ public class MessageEventPayload implements Payload {
         if (getClass() != obj.getClass())
             return false;
         MessageEventPayload other = (MessageEventPayload) obj;
-        return Objects.equals(businessKey, other.businessKey) 
-                && Objects.equals(correlationKey, other.correlationKey) 
-                && Objects.equals(id, other.id) 
-                && Objects.equals(name, other.name) 
+        return Objects.equals(businessKey, other.businessKey)
+                && Objects.equals(correlationKey, other.correlationKey)
+                && Objects.equals(id, other.id)
+                && Objects.equals(name, other.name)
                 && Objects.equals(variables, other.variables);
     }
 

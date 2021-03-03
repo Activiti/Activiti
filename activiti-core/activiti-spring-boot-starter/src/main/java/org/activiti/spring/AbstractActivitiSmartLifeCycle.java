@@ -23,19 +23,19 @@ import org.springframework.context.SmartLifecycle;
 public abstract class AbstractActivitiSmartLifeCycle implements SmartLifecycle, DisposableBean {
 
     private static Logger logger = LoggerFactory.getLogger(AbstractActivitiSmartLifeCycle.class);
-    
+
     private Object lifeCycleMonitor = new Object();
     private boolean autoStartup = true;
     private int phase = DEFAULT_PHASE;
     private volatile boolean running = false;
-    
+
     public AbstractActivitiSmartLifeCycle() {
     }
-    
+
     public abstract void doStart();
 
     public abstract void doStop();
-    
+
     /**
      * Set whether to auto-start the activation after this component
      * has been initialized and the context has been refreshed.
@@ -73,15 +73,15 @@ public abstract class AbstractActivitiSmartLifeCycle implements SmartLifecycle, 
     public int getPhase() {
         return this.phase;
     }
-    
+
     @Override
     public void start() {
         synchronized (this.lifeCycleMonitor) {
             if (!this.running) {
                 logger.info("Starting...");
-                
+
                 doStart();
-                
+
                 this.running = true;
                 logger.info("Started.");
             }
@@ -94,7 +94,7 @@ public abstract class AbstractActivitiSmartLifeCycle implements SmartLifecycle, 
             if (this.running) {
                 logger.info("Stopping...");
                 doStop();
-                
+
                 this.running = false;
                 logger.info("Stopped.");
             }
@@ -118,5 +118,5 @@ public abstract class AbstractActivitiSmartLifeCycle implements SmartLifecycle, 
     public void destroy() {
         stop();
     }
-    
+
 }

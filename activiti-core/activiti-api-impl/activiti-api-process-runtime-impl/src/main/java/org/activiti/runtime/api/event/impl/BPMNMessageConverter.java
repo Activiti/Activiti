@@ -29,11 +29,11 @@ public class BPMNMessageConverter {
         BPMNMessageImpl bpmnMessage = new BPMNMessageImpl(internalEvent.getActivityId());
         bpmnMessage.setProcessDefinitionId(internalEvent.getProcessDefinitionId());
         bpmnMessage.setProcessInstanceId(internalEvent.getProcessInstanceId());
-   
+
         bpmnMessage.setMessagePayload(new MessageEventPayload(internalEvent.getMessageName(),
                                                               internalEvent.getMessageCorrelationKey(),
                                                               internalEvent.getMessageBusinessKey(),
-                                                              (Map<String, Object>)internalEvent.getMessageData()));        
+                                                              (Map<String, Object>)internalEvent.getMessageData()));
 
         return bpmnMessage;
     }

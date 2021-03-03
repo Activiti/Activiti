@@ -6,13 +6,13 @@
 
   <process id="historicProcessLocalization" name="Historic Process Name">
   	<documentation>Historic Process Description</documentation>
-  
+
     <startEvent id="theStart" />
     <sequenceFlow id="flow1" sourceRef="theStart" targetRef="theProcessTask" />
-    <userTask id="theProcessTask" name="my process task" />    
+    <userTask id="theProcessTask" name="my process task" />
     <sequenceFlow id="flow2" sourceRef="theProcessTask" targetRef="theEnd" />
     <endEvent id="theEnd" />
-    
+
   </process>
 
 </definitions>

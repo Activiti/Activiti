@@ -234,7 +234,7 @@ public class TaskRuntimeTaskAssigneeTest {
     public void userCanReassignClaimedTaskToCandidateUsers() {
         String taskId = createTask("garth");
         claimTask(taskId,"garth");
-        userAssignTask(taskId, "garth", "dean");    
+        userAssignTask(taskId, "garth", "dean");
         userAssignTask(taskId, "dean", "john");
     }
 
@@ -242,9 +242,9 @@ public class TaskRuntimeTaskAssigneeTest {
     public void shouldReturnIllegalStateExceptionWhenTaskIsNotClaimed (){
         String taskId = createTask("garth");
 
-        Throwable thrown = catchThrowable(() -> 
+        Throwable thrown = catchThrowable(() ->
                 userAssignTask(taskId, "dean", "dean"));
-        
+
         assertThat(thrown)
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessageStartingWith("You cannot release a task that is not claimed");
@@ -262,7 +262,7 @@ public class TaskRuntimeTaskAssigneeTest {
                 .isInstanceOf(NotFoundException.class)
                 .hasMessageStartingWith("Unable to find task for the given id");
     }
-    
+
     private String createTask(String user){
         securityUtil.logInAs(user);
 
@@ -272,10 +272,10 @@ public class TaskRuntimeTaskAssigneeTest {
                 .withCandidateUsers("garth")
                 .withCandidateUsers("john")
                 .build());
-        
+
         return task.getId();
     }
-    
+
     private void userAssignTask(String taskId, String user, String assignee){
         securityUtil.logInAs(user);
         taskRuntime.assign(TaskPayloadBuilder

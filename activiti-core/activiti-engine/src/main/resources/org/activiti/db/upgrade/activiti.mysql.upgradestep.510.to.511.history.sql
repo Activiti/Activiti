@@ -19,7 +19,7 @@ create index ACT_IDX_HI_PROCVAR_NAME_TYPE on ACT_HI_VARINST(NAME_, VAR_TYPE_);
 
 alter table ACT_HI_ACTINST
 	add TASK_ID_ varchar(64);
-	
+
 alter table ACT_HI_ACTINST
 	add CALL_PROC_INST_ID_ varchar(64);
 
@@ -28,5 +28,5 @@ alter table ACT_HI_DETAIL
 
 alter table ACT_HI_DETAIL
 	MODIFY EXECUTION_ID_ varchar(64) null;
-	
+
 create index ACT_IDX_HI_ACT_INST_PROCINST on ACT_HI_ACTINST(PROC_INST_ID_, ACT_ID_);

@@ -24,11 +24,11 @@ public class MessagePayloadBuilder {
     public static StartMessagePayloadBuilder start(String name) {
         return new StartMessagePayloadBuilder().withName(name);
     }
-    
+
     public static StartMessagePayloadBuilder from(StartMessagePayload startMessagePayload) {
         return StartMessagePayloadBuilder.from(startMessagePayload);
     }
-    
+
     public static ReceiveMessagePayloadBuilder receive(String name) {
         return new ReceiveMessagePayloadBuilder().withName(name);
     }
@@ -36,13 +36,13 @@ public class MessagePayloadBuilder {
     public static ReceiveMessagePayloadBuilder from(ReceiveMessagePayload receiveMessagePayload) {
         return ReceiveMessagePayloadBuilder.from(receiveMessagePayload);
     }
-    
+
     public static MessageEventPayloadBuilder event(String name) {
         return new MessageEventPayloadBuilder().withName(name);
     }
-    
+
     public static MessageEventPayloadBuilder from(MessageEventPayload messageEventPayload) {
         return MessageEventPayloadBuilder.from(messageEventPayload);
     }
-    
+
 }

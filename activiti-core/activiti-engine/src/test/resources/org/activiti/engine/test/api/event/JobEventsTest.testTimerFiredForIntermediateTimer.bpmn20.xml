@@ -5,7 +5,7 @@
              targetNamespace="Examples">
 
   <process id="testTimerFiredForIntermediateTimer">
-  
+
     <startEvent id="theStart"/>
 
     <sequenceFlow sourceRef="theStart" targetRef="intermediate"/>
@@ -23,7 +23,7 @@
     <sequenceFlow sourceRef="receive" targetRef="theEnd"/>
 
     <endEvent id="theEnd" />
-    
+
   </process>
 
 </definitions>

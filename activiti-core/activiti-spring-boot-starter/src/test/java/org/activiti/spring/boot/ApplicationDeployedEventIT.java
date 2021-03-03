@@ -29,11 +29,11 @@ public class ApplicationDeployedEventIT {
     @Autowired
     private DeployedApplicationListener listener;
     private static final String DEPLOYMENT_TYPE_NAME = "SpringAutoDeployment";
-    
+
     @Test
     public void shouldTriggerApplicationDeployedEvents() {
        List<Deployment> deployedApplications = listener.getDeployedApplication();
-       
+
        assertThat(deployedApplications)
                .extracting(Deployment::getName)
                .containsExactly(DEPLOYMENT_TYPE_NAME);

@@ -33,6 +33,6 @@ public class ActivitiMethodSecurityAutoConfiguration {
                                 securedEnabled = true,
                                 jsr250Enabled = true)
     public static class ActivitiMethodSecurityConfiguration extends GlobalMethodSecurityConfiguration {
-        
+
     }
 }

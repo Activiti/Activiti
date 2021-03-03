@@ -37,7 +37,7 @@
 
         <sequenceFlow id="flow22" sourceRef="timerFiredTask" targetRef="nonInterruptingEnd"/>
         <endEvent id="nonInterruptingEnd"/>
- 
+
         <sequenceFlow id="flow3" sourceRef="task2" targetRef="task2Completed"/>
 
         <scriptTask id="task2Completed" name="Execute script" scriptFormat="groovy">

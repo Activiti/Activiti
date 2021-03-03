@@ -8,12 +8,12 @@ alter table ACT_RU_IDENTITYLINK
     add constraint ACT_FK_ATHRZ_PROCEDEF
     foreign key (PROC_DEF_ID_)
     references ACT_RE_PROCDEF;
-    
-alter table ACT_RU_EXECUTION 
+
+alter table ACT_RU_EXECUTION
 	add CACHED_ENT_STATE_ integer;
 
 update ACT_RU_EXECUTION set CACHED_ENT_STATE_ = 7;
-	
+
 alter table ACT_RE_PROCDEF
     add constraint ACT_UNIQ_PROCDEF
     unique (KEY_,VERSION_);

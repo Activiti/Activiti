@@ -52,7 +52,7 @@
     </sequenceFlow>
     <serviceTask id="sid-02D828E3-3F55-4E2D-A669-11E47FDB98AF" name="Process Data 02" activiti:class="org.activiti.engine.test.api.variables.TransientVariablesTest$ProcessDataDelegate">
       <extensionElements>
-        <activiti:field name="dataVariableName" expression="transientVar02"/> 
+        <activiti:field name="dataVariableName" expression="transientVar02"/>
         <activiti:field name="resultVariableName" expression="transientResult02"/>
         <modeler:editor-resource-id><![CDATA[sid-02D828E3-3F55-4E2D-A669-11E47FDB98AF]]></modeler:editor-resource-id>
       </extensionElements>

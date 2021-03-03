@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<definitions id="definitions" 
+<definitions id="definitions"
   xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
   xmlns:activiti="http://activiti.org/bpmn"
   targetNamespace="Examples">
-  
+
   <process id="receiveTask">
-  
+
     <extensionElements>
       <activiti:executionListener class="org.activiti.standalone.history.VariableUpdateExecutionListener" event="start">
         <activiti:field name="varName" stringValue="zVar1" />
       </activiti:executionListener>
     </extensionElements>
-  
+
     <startEvent id="theStart" />
-    
+
     <sequenceFlow id="flow1" sourceRef="theStart" targetRef="serviceTask">
       <extensionElements>
         <activiti:executionListener class="org.activiti.standalone.history.VariableUpdateExecutionListener">
@@ -32,15 +32,15 @@
         </activiti:executionListener>
       </extensionElements>
     </serviceTask>
-    
+
     <sequenceFlow id="flow2" sourceRef="serviceTask" targetRef="waitState" />
-    
+
     <receiveTask id="waitState" name="Wait State" />
-    
+
     <sequenceFlow id="flow3" sourceRef="waitState" targetRef="theEnd" />
-    
+
     <endEvent id="theEnd" />
-    
+
   </process>
 
 </definitions>

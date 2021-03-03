@@ -6,11 +6,11 @@
   targetNamespace="Examples_">
 
   <process id="two_" name="Two_">
-  
+
     <startEvent id="start" />
     <sequenceFlow id="flow1" sourceRef="start" targetRef="end" />
     <endEvent id="end" />
-    
+
   </process>
 
 </definitions>

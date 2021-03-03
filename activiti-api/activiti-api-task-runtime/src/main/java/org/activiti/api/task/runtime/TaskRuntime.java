@@ -106,7 +106,7 @@ public interface TaskRuntime {
      * - This method also check that the task is assigned to the currently authenticated user
      */
     void save(SaveTaskPayload saveTaskPayload);
-    
+
     /**
      * Updates details of a task
      * - The authenticated user should be able to see the task in order to update its details
@@ -121,17 +121,17 @@ public interface TaskRuntime {
      * - this method returns a shallow Task with the necessary information to validate that the task was deleted
      */
     Task delete(DeleteTaskPayload deleteTaskPayload);
-    
+
     void createVariable(CreateTaskVariablePayload createTaskVariablePayload);
     void updateVariable(UpdateTaskVariablePayload updateTaskVariablePayload);
     List<VariableInstance> variables(GetTaskVariablesPayload getTaskVariablesPayload);
-    
+
     void addCandidateUsers(CandidateUsersPayload candidateUsersPayload);
     void deleteCandidateUsers(CandidateUsersPayload candidateUsersPayload);
-    
+
     void addCandidateGroups(CandidateGroupsPayload candidateGroupsPayload);
     void deleteCandidateGroups(CandidateGroupsPayload candidateGroupsPayload);
-    
+
     List<String> userCandidates(String taskId);
     List<String> groupCandidates(String taskId);
 

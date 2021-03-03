@@ -37,7 +37,7 @@ public class BPMNErrorImpl extends BPMNActivityImpl implements BPMNError {
         this.setActivityName(activityName);
         this.setActivityType(activityType);
     }
-    
+
     public String getErrorCode() {
         return errorCode;
     }
@@ -45,7 +45,7 @@ public class BPMNErrorImpl extends BPMNActivityImpl implements BPMNError {
     public void setErrorCode(String errorCode) {
         this.errorCode = errorCode;
     }
-    
+
     public String getErrorId() {
         return errorId;
     }
@@ -93,7 +93,7 @@ public class BPMNErrorImpl extends BPMNActivityImpl implements BPMNError {
                 ", elementId='" + getElementId() + '\'' +
                 ", errorId='" + getErrorId() + '\'' +
                 ", errorCode='" + getErrorCode() + '\'' +
-                '}';       
+                '}';
     }
- 
+
 }

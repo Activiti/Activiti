@@ -6,13 +6,13 @@
   targetNamespace="Examples">
 
   <process id="testLongServiceTaskLoop">
-  
+
     <startEvent id="theStart" />
     <sequenceFlow id="flow1" sourceRef="theStart" targetRef="serviceTask" />
-    
+
     <serviceTask id="serviceTask" activiti:class="org.activiti.engine.test.api.v6.CountingServiceTaskTestDelegate"/>
     <sequenceFlow id="flow2" sourceRef="serviceTask" targetRef="exclusiveGw" />
-    
+
     <exclusiveGateway id="exclusiveGw" />
     <sequenceFlow id="flow3" sourceRef="exclusiveGw" targetRef="serviceTask">
       <conditionExpression xsi:type="tFormalExpression">
@@ -24,9 +24,9 @@
       	<![CDATA[${counter == maxCount}]]>
       </conditionExpression>
     </sequenceFlow>
-    
+
     <endEvent id="theEnd" />
-    
+
   </process>
 
 </definitions>

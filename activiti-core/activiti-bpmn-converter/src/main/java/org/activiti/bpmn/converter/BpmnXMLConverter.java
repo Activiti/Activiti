@@ -250,7 +250,7 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
       throw new XMLException("BPMN XSD could not be found", e);
     }
   }
-  
+
   public BpmnModel convertToBpmnModel(InputStreamProvider inputStreamProvider, boolean validateSchema, boolean enableSafeBpmnXml) {
     return convertToBpmnModel(inputStreamProvider, validateSchema, enableSafeBpmnXml, DEFAULT_ENCODING);
   }

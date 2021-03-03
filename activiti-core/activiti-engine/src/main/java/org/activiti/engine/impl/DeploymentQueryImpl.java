@@ -173,10 +173,10 @@ public class DeploymentQueryImpl extends AbstractQuery<DeploymentQuery, Deployme
   @Override
   public DeploymentQuery latestVersion() {
     this.latestVersion = true;
-    
+
     return this;
-  }  
-  
+  }
+
   // sorting ////////////////////////////////////////////////////////
 
   public DeploymentQuery orderByDeploymentId() {

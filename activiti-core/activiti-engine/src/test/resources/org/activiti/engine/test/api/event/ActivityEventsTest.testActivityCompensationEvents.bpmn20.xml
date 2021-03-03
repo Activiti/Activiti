@@ -25,7 +25,7 @@
       <compensateEventDefinition />
     </intermediateThrowEvent>
     <sequenceFlow sourceRef="throwCompensation" targetRef="secondUserTask" />
-    
+
     <userTask id="secondUserTask" />
     <sequenceFlow sourceRef="secondUserTask" targetRef="theEnd" />
 

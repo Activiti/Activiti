@@ -11,7 +11,7 @@
 
 		<serviceTask id="bookHotel" activiti:expression="${true}" />
 		<sequenceFlow sourceRef="bookHotel" targetRef="afterBookHotel" />
-		
+
 		<boundaryEvent id="compensateBookHotelEvt" name="Boundary event" attachedToRef="bookHotel">
 			<compensateEventDefinition />
 		</boundaryEvent>
@@ -43,7 +43,7 @@
 
 		<userTask id="afterBookHotel" name="After book hotel" />
 		<sequenceFlow sourceRef="afterBookHotel" targetRef="exclusive" />
-		
+
 		<exclusiveGateway id="exclusive" default="toCompensate" />
 		<sequenceFlow id="toCompensate" sourceRef="exclusive" targetRef="throwCompensate">
 		</sequenceFlow>
@@ -53,15 +53,15 @@
 		  ]]>
 		  </conditionExpression>
 		</sequenceFlow>
-		
-		
+
+
 		<intermediateThrowEvent id="throwCompensate">
       <compensateEventDefinition  />
     </intermediateThrowEvent>
     <sequenceFlow sourceRef="throwCompensate" targetRef="end" />
 
 		<endEvent id="end" />
-		
+
 		<association associationDirection="One" sourceRef="compensateBookHotelEvt" targetRef="undoBookHotel" />
 
 	</process>

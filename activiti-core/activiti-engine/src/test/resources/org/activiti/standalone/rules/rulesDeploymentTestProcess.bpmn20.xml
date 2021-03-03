@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<definitions id="definitions" 
+<definitions id="definitions"
   xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
   xmlns:activiti="http://activiti.org/bpmn"
   targetNamespace="Examples">
-  
+
   <process id="rulesDeployment">
-  
+
     <startEvent id="start"/>
     <sequenceFlow id="flow1" sourceRef="start" targetRef="ruleTask" />
     <businessRuleTask id="ruleTask" activiti:ruleVariablesInput="${order}" activiti:resultVariable="rulesOutput"/>
@@ -14,7 +14,7 @@
     <receiveTask id="receiveTask" />
     <sequenceFlow id="flow3" sourceRef="receiveTask" targetRef="end" />
     <endEvent id="end" />
-    
+
   </process>
 
 </definitions>

@@ -28,5 +28,5 @@ alter table ACT_HI_DETAIL
 
 alter table ACT_HI_DETAIL
 	modify EXECUTION_ID_ NVARCHAR2(64) null;
-	
+
 create index ACT_IDX_HI_ACT_INST_PROCINST on ACT_HI_ACTINST(PROC_INST_ID_, ACT_ID_);

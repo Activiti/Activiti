@@ -81,7 +81,7 @@ public class TaskModelAutoConfiguration {
 
         module.registerSubtypes(new NamedType(SaveTaskPayload.class,
                                               SaveTaskPayload.class.getSimpleName()));
-        
+
         module.registerSubtypes(new NamedType(CreateTaskPayload.class,
                                               CreateTaskPayload.class.getSimpleName()));
 

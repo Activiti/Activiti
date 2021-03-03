@@ -4,23 +4,23 @@
 
   <error id="error" errorCode="123" />
   <process id="testError">
-  
+
     <startEvent id="theStart" />
     <sequenceFlow id="flow1" sourceRef="theStart" targetRef="userTask" />
-    
+
     <userTask id="userTask" />
-    
+
     <boundaryEvent id="catchError" attachedToRef="userTask">
       <errorEventDefinition />
     </boundaryEvent>
-    
+
     <sequenceFlow id="flow3" sourceRef="catchError" targetRef="escalatedTask" />
-    
+
     <userTask id="escalatedTask" name="Escalated Task" />
     <sequenceFlow id="flow4" sourceRef="userTask" targetRef="theEnd" />
-    
+
     <endEvent id="theEnd" />
-    
+
   </process>
 
 </definitions>

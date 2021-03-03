@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <definitions id="definitions"
 	xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
-	xmlns:activiti="http://activiti.org/bpmn" 
+	xmlns:activiti="http://activiti.org/bpmn"
 	targetNamespace="Examples">
 
 
@@ -15,7 +15,7 @@
 -->
  	 <userTask id="waitState" name="Test User Task" >
           </userTask>
-                
+
 
 		<sequenceFlow sourceRef="waitState" targetRef="end" />
 
@@ -24,6 +24,6 @@
 
 	</process>
 
-	
+
 
 </definitions>

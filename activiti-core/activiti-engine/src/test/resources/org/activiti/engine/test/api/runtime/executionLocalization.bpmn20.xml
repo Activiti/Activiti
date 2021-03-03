@@ -11,7 +11,7 @@
     		<activiti:documentation>Descripción del proceso</activiti:documentation>
     	</activiti:localization>
     </extensionElements>
-    	
+
     <startEvent id="theStart" />
     <sequenceFlow id="flow1" sourceRef="theStart" targetRef="subProcess" />
     <subProcess id="subProcess" name="SubProcess Name">
@@ -21,7 +21,7 @@
     		<activiti:documentation>Subproceso Descripción</activiti:documentation>
     	</activiti:localization>
       </extensionElements>
-    	
+
       <startEvent id="subStart" />
       <sequenceFlow id="flow3" sourceRef="subStart" targetRef="subTask" />
       <userTask id="subTask" name="sub task" />

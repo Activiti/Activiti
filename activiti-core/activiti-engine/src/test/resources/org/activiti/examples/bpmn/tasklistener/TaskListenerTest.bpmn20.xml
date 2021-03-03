@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<definitions id="taskListenerExample" 
+<definitions id="taskListenerExample"
   xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
   xmlns:activiti="http://activiti.org/bpmn"
 	targetNamespace="Examples">
-	
+
 	<process id="taskListenerProcess" name="Task  Listener Example">
-	
+
 		<startEvent id="theStart" />
-		
+
 		<sequenceFlow id="flow1" sourceRef="theStart" targetRef="task1" />
 
 		<userTask id="task1" name="Schedule meeting" >
@@ -24,9 +24,9 @@
             <activiti:taskListener event="all" class="org.activiti.examples.bpmn.tasklistener.TaskAllEventsListener" />
 		  </extensionElements>
 		</userTask>
-		
+
 		<sequenceFlow id="flow2" sourceRef="task1" targetRef="task2" />
-		
+
 		<userTask id="task2" name="Write meeting notes" >
       <documentation>
         Write meeting notes after meeting with management.
@@ -35,11 +35,11 @@
         <activiti:taskListener event="create" expression="${execution.setVariable('greeting2', task.name)}" />
       </extensionElements>
     </userTask>
-    
+
     <sequenceFlow id="flow3" sourceRef="task2" targetRef="theEnd" />
-		
+
 		<endEvent id="theEnd" />
-		
+
 	</process>
 
 </definitions>
