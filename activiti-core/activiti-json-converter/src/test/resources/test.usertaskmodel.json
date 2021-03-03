@@ -59,10 +59,10 @@
             "looptype" : "None",
             "name" : "User task",
             "prioritydefinition" : "40",
-            "tasklisteners" : {"taskListeners": [{"event": "create", "className": "org.test.TestClass", "expression": "", "delegateExpression": "", "fields": [{"name": "testField", "stringValue": "test", "expression": ""}, {"name": "testField2", "stringValue": "", "expression": "${expression}"}]}, 
-            	{"event": "assignment", "className": "", "expression": "${someExpression}", "delegateExpression": "", "fields": "undefined"}, 
+            "tasklisteners" : {"taskListeners": [{"event": "create", "className": "org.test.TestClass", "expression": "", "delegateExpression": "", "fields": [{"name": "testField", "stringValue": "test", "expression": ""}, {"name": "testField2", "stringValue": "", "expression": "${expression}"}]},
+            	{"event": "assignment", "className": "", "expression": "${someExpression}", "delegateExpression": "", "fields": "undefined"},
             	{"event": "complete", "className": "", "expression": "", "delegateExpression": "${someDelegateExpression}", "fields": "undefined"}]},
-            "usertaskassignment" : { "assignment" : { "assignee" : "kermit", "owner": "gonzo", 
+            "usertaskassignment" : { "assignment" : { "assignee" : "kermit", "owner": "gonzo",
             		"candidateUsers": [{"value":"kermit"},{"value":"fozzie"}], "candidateGroups": [{"value":"management"},{"value":"sales"}] }
             }
           },

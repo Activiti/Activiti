@@ -5,11 +5,11 @@
              targetNamespace="test">
 
   <process id="testProcess1" name="one">
-  
+
     <startEvent id="start" />
     <sequenceFlow id="flow1" sourceRef="start" targetRef="end" />
     <endEvent id="end" />
-    
+
   </process>
 
 </definitions>

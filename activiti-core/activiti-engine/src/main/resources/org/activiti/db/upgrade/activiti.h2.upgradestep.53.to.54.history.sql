@@ -1,7 +1,7 @@
-alter table ACT_HI_DETAIL 
+alter table ACT_HI_DETAIL
 add DUE_DATE_ timestamp;
 
-alter table ACT_HI_TASKINST 
+alter table ACT_HI_TASKINST
 add DUE_DATE_ timestamp;
 
 create table ACT_HI_COMMENT (

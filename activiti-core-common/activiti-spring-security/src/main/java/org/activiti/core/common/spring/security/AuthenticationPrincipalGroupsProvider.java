@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class AuthenticationPrincipalGroupsProvider implements PrincipalGroupsProvider {
-    
+
     private final GrantedAuthoritiesResolver grantedAuthoritiesResolver;
     private final GrantedAuthoritiesGroupsMapper grantedAuthoritiesGroupsMapper;
 
@@ -32,7 +32,7 @@ public class AuthenticationPrincipalGroupsProvider implements PrincipalGroupsPro
         this.grantedAuthoritiesResolver = grantedAuthoritiesResolver;
         this.grantedAuthoritiesGroupsMapper = grantedAuthoritiesGroupsMapper;
     }
-    
+
     @Override
     public List<String> getGroups(@NonNull Principal principal) {
         return Optional.of(principal)
@@ -43,6 +43,6 @@ public class AuthenticationPrincipalGroupsProvider implements PrincipalGroupsPro
 
     protected SecurityException securityException() {
         return new SecurityException("Invalid principal groups");
-    }    
+    }
 
 }

@@ -5,12 +5,12 @@
   xmlns:tns="http://activiti.org/bpmn"
   xmlns:sem="http://www.omg.org/spec/BPMN/20100524/MODEL"
   elementFormDefault="qualified">
-  
-<import namespace="http://www.omg.org/spec/BPMN/20100524/MODEL" schemaLocation="Semantic.xsd" />  
-  
+
+<import namespace="http://www.omg.org/spec/BPMN/20100524/MODEL" schemaLocation="Semantic.xsd" />
+
   <!-- TODO
-  
-    
+
+
        formKey
 
        formProperty id="" type variable expression writable required
@@ -23,21 +23,21 @@
       attributes introduced by Activiti.
     </documentation>
   </annotation>
-  
+
   <attribute name="initiator" type="string">
     <annotation>
       <documentation>
         Attribute on a start event.
-        Denotes a process variable in which the process initiator set in the 
+        Denotes a process variable in which the process initiator set in the
         identityService.setAuthenticatedUserId(userId) is captured.
       </documentation>
     </annotation>
   </attribute>
-  
+
   <attribute name="history">
     <annotation>
       <documentation>
-        Attribute on the process element. 
+        Attribute on the process element.
         Allows to set the history level for this specific process definition
         differently from the history level set in the process engine configuration.
       </documentation>
@@ -51,11 +51,11 @@
       </restriction>
     </simpleType>
   </attribute>
-  
+
   <attribute name="formKey" type="string">
     <annotation>
       <documentation>
-        Attribute used on a startEvent or a userTask. 
+        Attribute used on a startEvent or a userTask.
         The value can be anything. The default form support in Activiti
         assumes that this is a reference to a form html file insed the deployment
         of the process definition. But this key can also be something completely different,
@@ -63,16 +63,16 @@
       </documentation>
     </annotation>
   </attribute>
-  
+
   <attribute name="formHandlerClass">
     <annotation>
       <documentation>
         Attribute on a startEvent or userTask.
-        Allows to specify a custom class that will be called during the parsing 
+        Allows to specify a custom class that will be called during the parsing
         of the form information. Thus way, it is possible to use custom forms and form handling.
-        This class must implement the 
+        This class must implement the
         org.activiti.engine.inpl.form.FormHamdler/StartFormHandler/taskFormHandler interface
-        (specific interface depending on the activity). 
+        (specific interface depending on the activity).
       </documentation>
     </annotation>
     <simpleType>
@@ -82,7 +82,7 @@
       </restriction>
     </simpleType>
   </attribute>
-  
+
   <element name="formProperty">
     <annotation>
       <documentation>
@@ -110,7 +110,7 @@
       <attribute name="type" type="string">
         <annotation>
           <documentation>
-            The type of the property (see documentation for supported types). 
+            The type of the property (see documentation for supported types).
             Default is 'string'.
           </documentation>
         </annotation>
@@ -152,7 +152,7 @@
       </attribute>
     </complexType>
   </element>
-  
+
   <attribute name="class">
     <annotation>
       <documentation>
@@ -169,7 +169,7 @@
       </restriction>
     </simpleType>
   </attribute>
-  
+
   <attribute name="type">
     <annotation>
       <documentation>
@@ -182,25 +182,25 @@
       </restriction>
     </simpleType>
   </attribute>
-  
+
   <attribute name="resultVariable" type="string">
     <annotation>
       <documentation>
         Attribute on Service and Script Task corresponding with a process variable name.
-        The result of executing the service task logic or the script will be stored 
+        The result of executing the service task logic or the script will be stored
         in this process variable.
       </documentation>
     </annotation>
   </attribute>
-  
+
   <attribute name="expression" type="string">
     <annotation>
       <documentation>
-        Allows to specify an expression that is evaluated at runtime.     
+        Allows to specify an expression that is evaluated at runtime.
       </documentation>
     </annotation>
   </attribute>
-  
+
   <attribute name="delegateExpression">
     <annotation>
       <documentation>
@@ -228,7 +228,7 @@
       <attribute name="expression" type="tns:tExpression" use="optional" />
     </complexType>
   </element>
-  
+
   <simpleType name="tExpression">
     <annotation>
       <documentation>
@@ -239,7 +239,7 @@
     <restriction base="string">
     </restriction>
   </simpleType>
-  
+
   <attribute name="assignee" type="string">
     <annotation>
       <documentation>
@@ -248,7 +248,7 @@
       </documentation>
     </annotation>
   </attribute>
-  
+
   <attribute name="dueDate" type="tns:tExpression">
     <annotation>
       <documentation>
@@ -257,7 +257,7 @@
       </documentation>
     </annotation>
   </attribute>
-  
+
   <attribute name="candidateUsers">
     <annotation>
       <documentation>
@@ -268,7 +268,7 @@
       </documentation>
     </annotation>
   </attribute>
-  
+
   <attribute name="candidateGroups">
     <annotation>
       <documentation>
@@ -284,37 +284,37 @@
     <annotation>
       <documentation>
         Process attribute to set the potential starts of a process.
-        Provided user(s) will be able to start the process.        
+        Provided user(s) will be able to start the process.
         In case of multiple user ids, a comma-separated list must be provided.
         Also supports expressions that evaluate to a String or Collection&lt;String&gt;.
       </documentation>
     </annotation>
   </attribute>
-  
+
   <attribute name="candidateStarterGroups">
     <annotation>
       <documentation>
         Process attribute to set the potential starts of a process.
-        Provided group(s) will be able to start the process.        
+        Provided group(s) will be able to start the process.
         In case of multiple group ids, a comma-separated list must be provided.
         Also supports expressions that evaluate to a String or Collection&lt;String&gt;.
       </documentation>
     </annotation>
   </attribute>
-  
+
   <complexType name="tPotentialStarter">
 	<complexContent>
 		<extension base="sem:tHumanPerformer" />
 	</complexContent>
   </complexType>
-  
+
   <element name="potentialStarter" type="string" />
-  
+
   <element name="taskListener">
     <annotation>
       <documentation>
-        Extension element for User Tasks used to execute custom Java logic or an 
-        expression upon the occurrence of a certain event. 
+        Extension element for User Tasks used to execute custom Java logic or an
+        expression upon the occurrence of a certain event.
       </documentation>
     </annotation>
     <complexType>
@@ -361,12 +361,12 @@
       </attribute>
     </complexType>
   </element>
-  
+
   <element name="executionListener">
     <annotation>
       <documentation>
-        Extension element for any activities and sequenceflow, used to execute custom Java logic or an 
-        expression upon the occurrence of a certain event. 
+        Extension element for any activities and sequenceflow, used to execute custom Java logic or an
+        expression upon the occurrence of a certain event.
       </documentation>
     </annotation>
     <complexType>
@@ -413,7 +413,7 @@
       </attribute>
     </complexType>
   </element>
-  
+
   <element name="in">
     <annotation>
       <documentation>
@@ -440,17 +440,17 @@
       <attribute name="target" type="string" use="required" />
     </complexType>
   </element>
-  
+
   <attribute name="collection" type="string">
     <annotation>
       <documentation>
         To be used on the multiInstanceLoopCharacteristics element, referencing a collection.
-        For each element in the collection, an instance will be created. Can be an expression 
+        For each element in the collection, an instance will be created. Can be an expression
         or reference to a process variable.
       </documentation>
     </annotation>
   </attribute>
-  
+
   <attribute name="elementVariable" type="string">
     <annotation>
       <documentation>
@@ -460,5 +460,5 @@
       </documentation>
     </annotation>
   </attribute>
-  
+
 </schema>

@@ -29,12 +29,12 @@ public class UpdateProcessPayloadBuilder {
         this.name = name;
         return this;
     }
-    
+
     public UpdateProcessPayloadBuilder withDescription(String description) {
         this.description = description;
         return this;
-    } 
-    
+    }
+
     public UpdateProcessPayloadBuilder withBusinessKey(String businessKey) {
         this.businessKey = businessKey;
         return this;
@@ -44,13 +44,13 @@ public class UpdateProcessPayloadBuilder {
         this.processInstanceId = processInstanceId;
         return this;
     }
-    
+
     public UpdateProcessPayloadBuilder withProcessInstance(ProcessInstance processInstance) {
         this.processInstanceId = processInstance.getId();
         this.businessKey = processInstance.getBusinessKey();
         this.name = processInstance.getName();
         return this;
-    } 
+    }
 
 
     public UpdateProcessPayload build() {

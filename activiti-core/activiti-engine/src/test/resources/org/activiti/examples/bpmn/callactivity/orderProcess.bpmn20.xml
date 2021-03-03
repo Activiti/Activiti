@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <definitions id="definitions"
-	xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" 
+	xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
 	xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI"
@@ -14,13 +14,13 @@
 
     <manualTask id="receiveOrder" name="Receive Order" />
     <sequenceFlow id="flow2" sourceRef="receiveOrder" targetRef="callCheckCreditProcess" />
-    
+
     <callActivity id="callCheckCreditProcess" name="Check credit" calledElement="checkCreditProcess" />
     <sequenceFlow id="flow3" sourceRef="callCheckCreditProcess" targetRef="prepareAndShipTask" />
-   
+
     <userTask id="prepareAndShipTask" name="Prepare and Ship" />
     <sequenceFlow id="flow4" sourceRef="prepareAndShipTask" targetRef="theEnd" />
-		
+
 		<endEvent id="theEnd" />
 
 	</process>

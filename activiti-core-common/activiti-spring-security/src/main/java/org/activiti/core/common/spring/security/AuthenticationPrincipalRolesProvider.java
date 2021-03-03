@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class AuthenticationPrincipalRolesProvider implements PrincipalRolesProvider {
-    
+
     private final GrantedAuthoritiesResolver grantedAuthoritiesResolver;
     private final GrantedAuthoritiesRolesMapper grantedAuthoritiesRolesMapper;
 
@@ -32,7 +32,7 @@ public class AuthenticationPrincipalRolesProvider implements PrincipalRolesProvi
         this.grantedAuthoritiesResolver = grantedAuthoritiesResolver;
         this.grantedAuthoritiesRolesMapper = grantedAuthoritiesRolesMapper;
     }
-    
+
     @Override
     public List<String> getRoles(@NonNull Principal principal) {
         return Optional.of(principal)
@@ -40,9 +40,9 @@ public class AuthenticationPrincipalRolesProvider implements PrincipalRolesProvi
                        .map(grantedAuthoritiesRolesMapper::getRoles)
                        .orElseThrow(this::securityException);
     }
-    
+
     protected SecurityException securityException() {
         return new SecurityException("Invalid principal rolese");
-    }    
-    
+    }
+
 }

@@ -1,9 +1,9 @@
 alter table ACT_RU_TASK
 	add FORM_KEY_ nvarchar(255);
-	
+
 alter table ACT_RU_EXECUTION
 	add NAME_ nvarchar(255);
-	
+
 create table ACT_EVT_LOG (
     LOG_NR_ numeric(19,0) IDENTITY(1,1),
     TYPE_ nvarchar(64),
@@ -18,6 +18,6 @@ create table ACT_EVT_LOG (
     LOCK_TIME_ datetime null,
     IS_PROCESSED_ tinyint default 0,
     primary key (LOG_NR_)
-);  	
-	
+);
+
 update ACT_GE_PROPERTY set VALUE_ = '5.16' where NAME_ = 'schema.version';

@@ -4,7 +4,7 @@
 	<xsd:element name="Font" type="dc:Font" />
 	<xsd:element name="Point" type="dc:Point" />
 	<xsd:element name="Bounds" type="dc:Bounds" />
-	
+
 	<xsd:complexType name="Font">
 		<xsd:attribute name="name" type="xsd:string" />
 		<xsd:attribute name="size" type="xsd:double" />
@@ -13,12 +13,12 @@
 		<xsd:attribute name="isUnderline" type="xsd:boolean" />
 		<xsd:attribute name="isStrikeThrough" type="xsd:boolean" />
 	</xsd:complexType>
-	
+
 	<xsd:complexType name="Point">
 		<xsd:attribute name="x" type="xsd:double" use="required" />
 		<xsd:attribute name="y" type="xsd:double" use="required" />
 	</xsd:complexType>
-	
+
 	<xsd:complexType name="Bounds">
 		<xsd:attribute name="x" type="xsd:double" use="required" />
 		<xsd:attribute name="y" type="xsd:double" use="required" />

@@ -38,7 +38,7 @@ public class ActivityMessageEventHandler extends AbstractDatabaseEventLoggerEven
     putInMapIfNotNull(data, Fields.PROCESS_INSTANCE_ID, messageEvent.getProcessInstanceId());
     putInMapIfNotNull(data, Fields.EXECUTION_ID, messageEvent.getExecutionId());
     putInMapIfNotNull(data, Fields.ACTIVITY_TYPE, messageEvent.getActivityType());
-    
+
     putInMapIfNotNull(data, Fields.MESSAGE_NAME, messageEvent.getMessageName());
     putInMapIfNotNull(data, Fields.MESSAGE_DATA, messageEvent.getMessageData());
 

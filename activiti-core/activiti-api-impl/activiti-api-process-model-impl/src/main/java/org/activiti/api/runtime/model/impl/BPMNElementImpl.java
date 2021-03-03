@@ -42,13 +42,13 @@ public class BPMNElementImpl implements BPMNElement {
     public void setProcessDefinitionId(String processDefinitionId) {
         this.processDefinitionId = processDefinitionId;
     }
-    
- 
+
+
     @Override
     public String getElementId() {
         return elementId;
     }
-    
+
     public void setElementId(String elementId) {
         this.elementId = elementId;
     }

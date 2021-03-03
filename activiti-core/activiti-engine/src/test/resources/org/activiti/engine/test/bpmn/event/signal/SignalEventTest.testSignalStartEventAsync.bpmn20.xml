@@ -14,7 +14,7 @@
 		<sequenceFlow id="flow2" sourceRef="theTask" targetRef="theEnd" />
 		<endEvent id="theEnd" />
 	</process>
-	
+
 	<process id="processWithSignalStart2">
         <startEvent id="theStart2">
           <signalEventDefinition id="theSignalEventDefinition2" signalRef="theSignal" />
@@ -24,7 +24,7 @@
         <sequenceFlow id="flow4" sourceRef="theTask2" targetRef="theEnd2" />
         <endEvent id="theEnd2" />
     </process>
-    
+
     <process id="processWithSignalStart3">
         <startEvent id="theStart3">
           <signalEventDefinition id="theSignalEventDefinition3" signalRef="theSignal" />
@@ -34,7 +34,7 @@
         <sequenceFlow id="flow6" sourceRef="theTask3" targetRef="theEnd3" />
         <endEvent id="theEnd3" />
     </process>
-    
+
     <process id="processWithSignalThrow">
         <startEvent id="theStart4">
         </startEvent>
@@ -45,7 +45,7 @@
         <sequenceFlow id="flow8" sourceRef="signalThrow" targetRef="theEnd4" />
         <endEvent id="theEnd4" />
     </process>
-    
+
      <process id="processWithSignalCatch">
         <startEvent id="theStart5">
         </startEvent>

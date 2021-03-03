@@ -20,7 +20,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "spring.activiti.async-executor")
 public class AsyncExecutorProperties {
     private int retryWaitTimeInMillis = 500;
-    
+
     /**
      * The number of retries for a job. Default value is 3.
      */
@@ -28,13 +28,13 @@ public class AsyncExecutorProperties {
 
     /**
      * The minimal number of threads that are kept alive in the threadpool for job
-     * execution. Default value = 2. 
+     * execution. Default value = 2.
      */
     private int corePoolSize = 2;
 
     /**
      * The maximum number of threads that are created in the threadpool for job
-     * execution. Default value = 10. 
+     * execution. Default value = 10.
      */
     private int maxPoolSize = 10;
 
@@ -50,7 +50,7 @@ public class AsyncExecutorProperties {
 
     /**
      * The size of the queue on which jobs to be executed are placed, before they
-     * are actually executed. Default value = 100. 
+     * are actually executed. Default value = 100.
      */
     private int queueSize = 100;
 
@@ -96,8 +96,8 @@ public class AsyncExecutorProperties {
     /**
      * The time (in milliseconds) the async job acquisition thread will wait to
      * execute the next acquirement query. This happens when no new async jobs
-     * were found or when less async jobs have been fetched than set. 
-     * 
+     * were found or when less async jobs have been fetched than set.
+     *
      * Default value = 10 seconds.
      *
      */
@@ -145,7 +145,7 @@ public class AsyncExecutorProperties {
     private int resetExpiredJobsInterval = 60 * 1000;
 
     /**
-     * The 'cleanup' thread resets expired jobs  so they can be re-acquired by other executors. 
+     * The 'cleanup' thread resets expired jobs  so they can be re-acquired by other executors.
      * This setting defines the size of the page being used when fetching these expired jobs.
      */
     private int resetExpiredJobsPageSize = 3;
@@ -154,131 +154,131 @@ public class AsyncExecutorProperties {
      * Set this to true when using the message queue based job executor. Default is false.
      */
     private boolean messageQueueMode = false;
-    
+
     public int getCorePoolSize() {
         return corePoolSize;
     }
-    
+
     public void setCorePoolSize(int corePoolSize) {
         this.corePoolSize = corePoolSize;
     }
-    
+
     public int getMaxPoolSize() {
         return maxPoolSize;
     }
-    
+
     public void setMaxPoolSize(int maxPoolSize) {
         this.maxPoolSize = maxPoolSize;
     }
-    
+
     public long getKeepAliveTime() {
         return keepAliveTime;
     }
-    
+
     public void setKeepAliveTime(long keepAliveTime) {
         this.keepAliveTime = keepAliveTime;
     }
-    
+
     public int getQueueSize() {
         return queueSize;
     }
-    
+
     public void setQueueSize(int queueSize) {
         this.queueSize = queueSize;
     }
-    
+
     public long getSecondsToWaitOnShutdown() {
         return secondsToWaitOnShutdown;
     }
-    
+
     public void setSecondsToWaitOnShutdown(long secondsToWaitOnShutdown) {
         this.secondsToWaitOnShutdown = secondsToWaitOnShutdown;
     }
-    
+
     public boolean isMessageQueueMode() {
         return messageQueueMode;
     }
-    
+
     public void setMessageQueueMode(boolean isMessageQueueMode) {
         this.messageQueueMode = isMessageQueueMode;
     }
-    
+
     public int getMaxTimerJobsPerAcquisition() {
         return maxTimerJobsPerAcquisition;
     }
-    
+
     public void setMaxTimerJobsPerAcquisition(int maxTimerJobsPerAcquisition) {
         this.maxTimerJobsPerAcquisition = maxTimerJobsPerAcquisition;
     }
-    
+
     public int getMaxAsyncJobsDuePerAcquisition() {
         return maxAsyncJobsDuePerAcquisition;
     }
-    
+
     public void setMaxAsyncJobsDuePerAcquisition(int maxAsyncJobsDuePerAcquisition) {
         this.maxAsyncJobsDuePerAcquisition = maxAsyncJobsDuePerAcquisition;
     }
-    
+
     public int getDefaultTimerJobAcquireWaitTimeInMillis() {
         return defaultTimerJobAcquireWaitTimeInMillis;
     }
-    
+
     public void setDefaultTimerJobAcquireWaitTimeInMillis(int defaultTimerJobAcquireWaitTimeInMillis) {
         this.defaultTimerJobAcquireWaitTimeInMillis = defaultTimerJobAcquireWaitTimeInMillis;
     }
-    
+
     public int getDefaultAsyncJobAcquireWaitTimeInMillis() {
         return defaultAsyncJobAcquireWaitTimeInMillis;
     }
-    
+
     public void setDefaultAsyncJobAcquireWaitTimeInMillis(int defaultAsyncJobAcquireWaitTimeInMillis) {
         this.defaultAsyncJobAcquireWaitTimeInMillis = defaultAsyncJobAcquireWaitTimeInMillis;
     }
-    
+
     public int getDefaultQueueSizeFullWaitTime() {
         return defaultQueueSizeFullWaitTime;
     }
-    
+
     public void setDefaultQueueSizeFullWaitTime(int defaultQueueSizeFullWaitTime) {
         this.defaultQueueSizeFullWaitTime = defaultQueueSizeFullWaitTime;
     }
-    
+
     public int getTimerLockTimeInMillis() {
         return timerLockTimeInMillis;
     }
-    
+
     public void setTimerLockTimeInMillis(int timerLockTimeInMillis) {
         this.timerLockTimeInMillis = timerLockTimeInMillis;
     }
-    
+
     public int getAsyncJobLockTimeInMillis() {
         return asyncJobLockTimeInMillis;
     }
-    
+
     public void setAsyncJobLockTimeInMillis(int asyncJobLockTimeInMillis) {
         this.asyncJobLockTimeInMillis = asyncJobLockTimeInMillis;
     }
-    
+
     public int getRetryWaitTimeInMillis() {
         return retryWaitTimeInMillis;
     }
-    
+
     public void setRetryWaitTimeInMillis(int retryWaitTimeInMillis) {
         this.retryWaitTimeInMillis = retryWaitTimeInMillis;
     }
-    
+
     public int getResetExpiredJobsInterval() {
         return resetExpiredJobsInterval;
     }
-    
+
     public void setResetExpiredJobsInterval(int resetExpiredJobsInterval) {
         this.resetExpiredJobsInterval = resetExpiredJobsInterval;
     }
-    
+
     public int getResetExpiredJobsPageSize() {
         return resetExpiredJobsPageSize;
     }
-    
+
     public void setResetExpiredJobsPageSize(int resetExpiredJobsPageSize) {
         this.resetExpiredJobsPageSize = resetExpiredJobsPageSize;
     }

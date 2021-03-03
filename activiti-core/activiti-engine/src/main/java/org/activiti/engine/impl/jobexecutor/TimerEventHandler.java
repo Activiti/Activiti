@@ -23,7 +23,7 @@ public class TimerEventHandler {
   public static final String PROPERTYNAME_TIMER_ACTIVITY_ID = "activityId";
   public static final String PROPERTYNAME_END_DATE_EXPRESSION = "timerEndDate";
   public static final String PROPERTYNAME_CALENDAR_NAME_EXPRESSION = "calendarName";
-  
+
   public static String createConfiguration(String id, String endDate, String calendarName) {
     JSONObject cfgJson = new JSONObject();
     cfgJson.put(PROPERTYNAME_TIMER_ACTIVITY_ID, id);
@@ -54,7 +54,7 @@ public class TimerEventHandler {
       return jobHandlerConfiguration;
     }
   }
-  
+
   public static String geCalendarNameFromConfiguration(String jobHandlerConfiguration) {
     try {
       JSONObject cfgJson = new JSONObject(jobHandlerConfiguration);

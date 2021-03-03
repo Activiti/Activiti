@@ -24,7 +24,7 @@ public class CandidateUsersPayloadBuilder {
 
     private String taskId;
     private List<String> candidateUsers = new ArrayList<>();
- 
+
     public CandidateUsersPayloadBuilder withTaskId(String taskId) {
         this.taskId = taskId;
         return this;

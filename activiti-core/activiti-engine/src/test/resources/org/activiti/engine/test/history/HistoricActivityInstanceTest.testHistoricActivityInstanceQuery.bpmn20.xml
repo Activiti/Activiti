@@ -6,15 +6,15 @@
   targetNamespace="Examples">
 
   <process id="noopProcess">
-  
+
     <startEvent id="start" />
     <sequenceFlow id="flow1" sourceRef="start" targetRef="noop" />
-    
-    <serviceTask id="noop" name="No operation" activiti:class="org.activiti.engine.test.history.Noop" />    
+
+    <serviceTask id="noop" name="No operation" activiti:class="org.activiti.engine.test.history.Noop" />
     <sequenceFlow id="flow2" sourceRef="noop" targetRef="end" />
-    
+
     <endEvent id="end" />
-    
+
   </process>
 
 </definitions>

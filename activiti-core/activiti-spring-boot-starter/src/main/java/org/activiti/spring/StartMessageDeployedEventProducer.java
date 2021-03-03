@@ -38,7 +38,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEventPublisher;
 
 public class StartMessageDeployedEventProducer extends AbstractActivitiSmartLifeCycle {
-    
+
     private static Logger logger = LoggerFactory.getLogger(StartMessageDeployedEventProducer.class);
 
     private RepositoryService repositoryService;
@@ -47,7 +47,7 @@ public class StartMessageDeployedEventProducer extends AbstractActivitiSmartLife
     private StartMessageSubscriptionConverter subscriptionConverter;
     private List<ProcessRuntimeEventListener<StartMessageDeployedEvent>> listeners;
     private ApplicationEventPublisher eventPublisher;
-    
+
     public StartMessageDeployedEventProducer(RepositoryService repositoryService,
                                         ManagementService managementService,
                                         StartMessageSubscriptionConverter subscriptionConverter,
@@ -61,11 +61,11 @@ public class StartMessageDeployedEventProducer extends AbstractActivitiSmartLife
         this.listeners = listeners;
         this.eventPublisher = eventPublisher;
     }
-    
+
     public void doStart() {
         List<ProcessDefinition> processDefinitions = converter.from(repositoryService.createProcessDefinitionQuery().list());
         List<StartMessageDeployedEvent> messageDeployedEvents = new ArrayList<>();
-        
+
         for (ProcessDefinition processDefinition : processDefinitions) {
             managementService.executeCommand(new FindStartMessageEventSubscriptions(processDefinition.getId()))
                              .stream()
@@ -79,20 +79,20 @@ public class StartMessageDeployedEventProducer extends AbstractActivitiSmartLife
                                                                                                    .build())
                              .forEach(messageDeployedEvents::add);
         }
-        
+
         managementService.executeCommand(new DispatchStartMessageDeployedEvents(messageDeployedEvents));
 
         if (!messageDeployedEvents.isEmpty()) {
             eventPublisher.publishEvent(new StartMessageDeployedEvents(messageDeployedEvents));
         }
     }
-    
+
     public void doStop() {
         // nothing
     }
 
     class DispatchStartMessageDeployedEvents implements Command<Void> {
-        
+
         private final List<StartMessageDeployedEvent> messageDeployedEvents;
 
         public DispatchStartMessageDeployedEvents(List<StartMessageDeployedEvent> messageDeployedEvents) {
@@ -104,13 +104,13 @@ public class StartMessageDeployedEventProducer extends AbstractActivitiSmartLife
                 messageDeployedEvents.stream()
                                      .forEach(listener::onEvent);
             }
-            
+
             return null;
         }
-    }    
+    }
 
     static class FindStartMessageEventSubscriptions implements Command<List<MessageEventSubscriptionEntity>> {
-        
+
         private static final String MESSAGE = "message";
         private final String processDefinitionId;
 

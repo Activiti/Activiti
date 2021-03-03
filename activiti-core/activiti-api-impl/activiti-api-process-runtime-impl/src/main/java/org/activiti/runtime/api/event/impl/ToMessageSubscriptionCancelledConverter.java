@@ -32,13 +32,13 @@ public class ToMessageSubscriptionCancelledConverter implements EventConverter<M
 
     @Override
     public Optional<MessageSubscriptionCancelledEvent> from(ActivitiEntityEvent internalEvent) {
-        
+
         return Optional.of(internalEvent)
                        .map(ActivitiEntityEvent::getEntity)
                        .filter(MessageEventSubscriptionEntity.class::isInstance)
                        .map(MessageEventSubscriptionEntity.class::cast)
                        .map(converter::convertToMessageSubscription)
                        .map(MessageSubscriptionCancelledEventImpl::new);
-                       
+
     }
 }

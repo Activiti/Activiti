@@ -7,7 +7,7 @@
           <activiti:eventListener class="org.activiti.engine.test.api.event.StaticTestActivitiEventListener" />
           <activiti:eventListener delegateExpression="${testEventListener}" events="ENTITY_CREATED"/>
         </extensionElements>
-        
+
 		<startEvent id="theStart" />
 		<sequenceFlow sourceRef="theStart" targetRef="task" />
 		<userTask id="task" />

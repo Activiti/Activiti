@@ -7,14 +7,14 @@
 
 		<startEvent id="theStart" />
 		<sequenceFlow id="flow1" sourceRef="theStart" targetRef="fork" />
-		
+
 		<parallelGateway id="fork" />
 		<sequenceFlow id="flow2" sourceRef="fork" targetRef="firstTask" />
 		<sequenceFlow id="flow3" sourceRef="fork" targetRef="secondTask" />
-		
+
     <userTask id="firstTask" />
     <sequenceFlow id="flow4" sourceRef="firstTask" targetRef="join" />
-    
+
     <boundaryEvent id="timer" attachedToRef="firstTask" cancelActivity="false">
       <timerEventDefinition>
         <timeDuration>PT1H</timeDuration>
@@ -24,10 +24,10 @@
     <userTask id="timerFiredTask" />
     <sequenceFlow id="flow6" sourceRef="timerFiredTask" targetRef="nonInterruptingEnd" />
     <endEvent id="nonInterruptingEnd" />
-    
+
     <userTask id="secondTask" />
     <sequenceFlow id="flow7" sourceRef="secondTask" targetRef="join" />
-    
+
     <parallelGateway id="join" />
     <sequenceFlow id="flow8" sourceRef="join" targetRef="theEnd" />
 

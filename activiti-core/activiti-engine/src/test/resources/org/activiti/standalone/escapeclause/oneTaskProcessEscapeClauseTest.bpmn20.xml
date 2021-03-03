@@ -6,7 +6,7 @@
 
   <process id="oneTaskProcess" name="The One Task Process%">
     <documentation>This is a process for testing purposes</documentation>
-  
+
     <startEvent id="theStart" />
     <sequenceFlow id="flow1" sourceRef="theStart" targetRef="theTask1" />
     <userTask id="theTask1" name="my task%">
@@ -18,7 +18,7 @@
     </userTask>
     <sequenceFlow id="flow3" sourceRef="theTask2" targetRef="theEnd" />
     <endEvent id="theEnd" />
-    
+
   </process>
 
 </definitions>

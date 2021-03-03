@@ -19,7 +19,7 @@
 <mapper namespace="org.activiti.engine.impl.persistence.entity.HistoricVariableInstanceEntityImpl">
 
   <!-- HISTORIC PROCESS VARIABLE INSERT -->
-  
+
   <insert id="insertHistoricVariableInstance" parameterType="org.activiti.engine.impl.persistence.entity.HistoricVariableInstanceEntityImpl">
     insert into ${prefix}ACT_HI_VARINST (ID_, PROC_INST_ID_, EXECUTION_ID_, TASK_ID_, NAME_, REV_, VAR_TYPE_, BYTEARRAY_ID_, DOUBLE_, LONG_ , TEXT_, TEXT2_, CREATE_TIME_, LAST_UPDATED_TIME_)
     values (
@@ -42,7 +42,7 @@
 
   <insert id="bulkInsertHistoricVariableInstance" parameterType="java.util.List">
     insert into ${prefix}ACT_HI_VARINST (ID_, PROC_INST_ID_, EXECUTION_ID_, TASK_ID_, NAME_, REV_, VAR_TYPE_, BYTEARRAY_ID_, DOUBLE_, LONG_ , TEXT_, TEXT2_, CREATE_TIME_, LAST_UPDATED_TIME_)
-    values 
+    values
       <foreach collection="list" item="historicVariable" index="index" separator=",">
         (#{historicVariable.id, jdbcType=VARCHAR},
          #{historicVariable.processInstanceId, jdbcType=VARCHAR},
@@ -62,10 +62,10 @@
   </insert>
 
   <insert id="bulkInsertHistoricVariableInstance" databaseId="oracle" parameterType="java.util.List">
-    INSERT ALL 
+    INSERT ALL
       <foreach collection="list" item="historicVariable" index="index">
       INTO ${prefix}ACT_HI_VARINST (ID_, PROC_INST_ID_, EXECUTION_ID_, TASK_ID_, NAME_, REV_,
-      VAR_TYPE_, BYTEARRAY_ID_, DOUBLE_, LONG_ , TEXT_, TEXT2_, CREATE_TIME_, LAST_UPDATED_TIME_) VALUES 
+      VAR_TYPE_, BYTEARRAY_ID_, DOUBLE_, LONG_ , TEXT_, TEXT2_, CREATE_TIME_, LAST_UPDATED_TIME_) VALUES
           (#{historicVariable.id, jdbcType=VARCHAR},
            #{historicVariable.processInstanceId, jdbcType=VARCHAR},
            #{historicVariable.executionId, jdbcType=VARCHAR},
@@ -85,7 +85,7 @@
   </insert>
 
   <!-- HISTORIC PROCESS VARIABLE UPDATE -->
-  
+
   <update id="updateHistoricVariableInstance" parameterType="org.activiti.engine.impl.persistence.entity.HistoricVariableInstanceEntityImpl">
     update ${prefix}ACT_HI_VARINST set
       REV_ = #{revisionNext, jdbcType=INTEGER},
@@ -99,20 +99,20 @@
     where ID_ = #{id, jdbcType=VARCHAR}
       and REV_ = #{revision, jdbcType=INTEGER}
   </update>
-  
+
   <!-- HISTORIC PROCESS VARIABLE DELETE -->
 
   <delete id="deleteHistoricVariableInstance" parameterType="org.activiti.engine.impl.persistence.entity.HistoricVariableInstanceEntityImpl">
     delete from ${prefix}ACT_HI_VARINST where ID_ = #{id} and REV_ = #{revision}
   </delete>
-  
+
   <delete id="bulkDeleteHistoricVariableInstance" parameterType="java.util.Collection">
-    delete from ${prefix}ACT_HI_VARINST where 
+    delete from ${prefix}ACT_HI_VARINST where
     <foreach item="variable" collection="list" index="index" separator=" or ">
         ID_ = #{variable.id, jdbcType=VARCHAR}
     </foreach>
   </delete>
-  
+
   <!-- HISTORIC PROCESS VARIABLE RESULTMAP -->
   <resultMap id="historicProcessVariableResultMap" type="org.activiti.engine.impl.persistence.entity.HistoricVariableInstanceEntityImpl">
     <id property="id" column="ID_" jdbcType="VARCHAR" />
@@ -130,7 +130,7 @@
     <result property="createTime" column="CREATE_TIME_" jdbcType="TIMESTAMP" />
     <result property="lastUpdatedTime" column="LAST_UPDATED_TIME_" jdbcType="TIMESTAMP" />
   </resultMap>
-  
+
   <!-- HISTORIC VARIABLE SELECT -->
 
   <select id="selectHistoricVariableInstanceByQueryCriteria" parameterType="org.activiti.engine.impl.HistoricVariableInstanceQueryImpl" resultMap="historicProcessVariableResultMap">
@@ -140,12 +140,12 @@
     ${orderBy}
     ${limitAfter}
   </select>
-  
+
   <select id="selectHistoricVariableInstanceCountByQueryCriteria" parameterType="org.activiti.engine.impl.HistoricVariableInstanceQueryImpl" resultType="long">
     select count(RES.ID_)
     <include refid="selectHistoricVariableInstanceByQueryCriteriaSql"/>
   </select>
-  
+
   <sql id="selectHistoricVariableInstanceByQueryCriteriaSql">
     from ${prefix}ACT_HI_VARINST RES
     <where>
@@ -182,7 +182,7 @@
       <if test="variableNameLike != null">
         and RES.NAME_ like #{variableNameLike}${wildcardEscapeClause}
       </if>
-      
+
       <!-- PLEASE NOTE: If you change anything have a look into the Execution, the same query object is used there! -->
       <if test="queryVariableValue != null" >
         <if test="!queryVariableValue.type.equals('null')">
@@ -246,15 +246,15 @@
       <when test="queryVariableValue.operator.equals('LESS_THAN_OR_EQUAL')">&lt;=</when>
    </choose>
   </sql>
-  
+
   <select id="selectHistoricVariableInstanceByVariableInstanceId" resultMap="historicProcessVariableResultMap">
     select * from ${prefix}ACT_HI_VARINST where ID_ = #{variableInstanceId}
   </select>
-  
+
   <select id="selectHistoricVariableInstanceByProcessInstanceId" resultMap="historicProcessVariableResultMap">
     select * from ${prefix}ACT_HI_VARINST where PROC_INST_ID_ = #{parameter}
   </select>
-  
+
   <select id="selectHistoricVariableInstanceByTaskId" resultMap="historicProcessVariableResultMap">
     select * from ${prefix}ACT_HI_VARINST where TASK_ID_ = #{parameter}
   </select>
@@ -266,5 +266,5 @@
   <select id="selectHistoricVariableInstanceCountByNativeQuery" parameterType="java.util.Map" resultType="long">
     ${sql}
   </select>
-  
+
 </mapper>

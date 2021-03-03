@@ -12,7 +12,7 @@
         <intermediateThrowEvent  id="noneEvent">
           <extensionElements>
             <activiti:executionListener class="org.activiti.engine.test.bpmn.event.IntermediateNoneEventTest$MyExecutionListener" event="start" />
-          </extensionElements>        
+          </extensionElements>
         </intermediateThrowEvent>
 
         <sequenceFlow id="flow2" sourceRef="noneEvent" targetRef="theEnd"/>

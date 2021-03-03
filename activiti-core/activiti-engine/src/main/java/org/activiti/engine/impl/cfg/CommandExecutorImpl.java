@@ -22,7 +22,7 @@ import org.activiti.engine.impl.interceptor.CommandInterceptor;
 
 /**
  * Command executor that passes commands to the first interceptor in the chain. If no {@link CommandConfig} is passed, the default configuration will be used.
- * 
+ *
 
 
  */
@@ -39,7 +39,7 @@ public class CommandExecutorImpl implements CommandExecutor {
   public CommandInterceptor getFirst() {
     return first;
   }
-  
+
   public void setFirst(CommandInterceptor commandInterceptor) {
     this.first = commandInterceptor;
   }

@@ -74,10 +74,10 @@ execution.setVariable("sendEmail",sendEmail);</script>
       <script>testStartTime=new Date().toString();
 timerStartTime = (String) execution.getVariable("timerString");
 System.out.println("""
- 
- 
+
+
 *** Starting Timer Test Instance on ${testStartTime} with timerString=${timerStartTime}
- 
+
 """);</script>
     </scriptTask>
     <sequenceFlow id="sid-C920660F-08B8-4728-89A7-D5BDC3087DA8" sourceRef="sid-F868E99C-FC2C-4F43-93E0-60327AF519B5" targetRef="init-sample-1"></sequenceFlow>
