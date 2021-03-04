@@ -30,13 +30,13 @@ public interface RuntimeEvent<ENTITY_TYPE, EVENT_TYPE extends Enum<?>> extends S
     String getProcessInstanceId();
 
     String getParentProcessInstanceId();
-    
+
     String getProcessDefinitionId();
-    
+
     String getProcessDefinitionKey();
 
     Integer getProcessDefinitionVersion();
-    
+
     String getBusinessKey();
 
 }

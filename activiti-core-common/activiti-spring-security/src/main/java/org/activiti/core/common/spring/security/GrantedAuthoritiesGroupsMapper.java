@@ -21,7 +21,7 @@ import java.util.Collection;
 import java.util.List;
 
 public interface GrantedAuthoritiesGroupsMapper {
-    
+
     List<String> getGroups(Collection<? extends GrantedAuthority> authorities);
 
 }

@@ -34,9 +34,9 @@ public class Set1RuntimeTestConfiguration {
     public Connector serviceImplementation() {
         return integrationContext -> {
             connector1Executed = true;
-            
+
             resultIntegrationContext = integrationContext;
-            
+
             return integrationContext;
         };
     }
@@ -50,12 +50,12 @@ public class Set1RuntimeTestConfiguration {
         };
     }
 
-    
+
     public static IntegrationContext getResultIntegrationContext() {
         return resultIntegrationContext;
     }
 
-    
+
     public static void reset() {
         RuntimeTestConfiguration.collectedEvents.clear();
 
@@ -64,12 +64,12 @@ public class Set1RuntimeTestConfiguration {
         connector2Executed = false;
     }
 
-    
+
     public static boolean isConnector1Executed() {
         return connector1Executed;
     }
 
-    
+
     public static boolean isConnector2Executed() {
         return connector2Executed;
     }

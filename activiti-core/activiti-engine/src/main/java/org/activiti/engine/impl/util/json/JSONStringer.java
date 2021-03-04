@@ -48,13 +48,13 @@ import java.io.StringWriter;
  * A JSONStringer instance provides a <code>value</code> method for appending values to the text, and a <code>key</code> method for adding keys before values in objects. There are <code>array</code>
  * and <code>endArray</code> methods that make and bound array values, and <code>object</code> and <code>endObject</code> methods which make and bound object values. All of these methods return the
  * JSONWriter instance, permitting cascade style. For example,
- * 
+ *
  * <pre>
  * myString = new JSONStringer().object().key(&quot;JSON&quot;).value(&quot;Hello, World!&quot;).endObject().toString();
  * </pre>
- * 
+ *
  * which produces the string
- * 
+ *
  * <pre>
  * {"JSON":"Hello, World!"}
  * </pre>
@@ -63,7 +63,7 @@ import java.io.StringWriter;
  * 20 levels deep.
  * <p>
  * This can sometimes be easier than using a JSONObject to build a string.
- * 
+ *
 
  * @version 2008-09-18
  */
@@ -78,7 +78,7 @@ public class JSONStringer extends JSONWriter {
   /**
    * Return the JSON text. This method is used to obtain the product of the JSONStringer instance. It will return <code>null</code> if there was a problem in the construction of the JSON text (such as
    * the calls to <code>array</code> were not properly balanced with calls to <code>endArray</code>).
-   * 
+   *
    * @return The JSON text.
    */
   public String toString() {

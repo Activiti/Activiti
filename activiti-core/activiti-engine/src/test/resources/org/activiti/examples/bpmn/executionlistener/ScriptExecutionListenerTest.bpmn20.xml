@@ -3,7 +3,7 @@
 
 	<process id="scriptExecutionListenerProcess" name="Script Execution Listener Example">
 		<startEvent id="startevent1" name="Start"></startEvent>
-			
+
 		<sequenceFlow id="flow1" name="" sourceRef="startevent1" targetRef="endevent1">
 			<extensionElements>
 				<activiti:executionListener event="take" class="org.activiti.engine.impl.bpmn.listener.ScriptExecutionListener">
@@ -20,8 +20,8 @@
 				</activiti:executionListener>
 			</extensionElements>
 		</sequenceFlow>
-		
+
 		<endEvent id="endevent1" name="End"></endEvent>
-	  
+
 	</process>
 </definitions>

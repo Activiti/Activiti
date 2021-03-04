@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <definitions id="definitions"
-	targetNamespace="http://activiti.org/bpmn20" 
+	targetNamespace="http://activiti.org/bpmn20"
   xmlns:activiti="http://activiti.org/bpmn"
-  xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" 
+  xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
   xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC"
-  xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" 
+  xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI"
 	xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL">
-	
+
 	<process id="financialReport" name="Monthly financial report process">
-	
+
 		<startEvent id="theStart" />
-		
+
 		<sequenceFlow id="flow1" sourceRef="theStart" targetRef="writeReportTask" />
-		
+
 		<userTask id="writeReportTask" name="Write monthly financial report" >
 		  <documentation>
         Write monthly financial report for publication to shareholders.
@@ -23,13 +23,13 @@
         </resourceAssignmentExpression>
       </potentialOwner>
 		</userTask>
-		
+
 		<sequenceFlow id="flow2" sourceRef="writeReportTask" targetRef="verifyReportTask" />
-			
+
 		<userTask id="verifyReportTask" name="Verify monthly financial report" >
 		  <documentation>
         Verify monthly financial report composed by the accountancy department.
-        This financial report is going to be sent to all the company shareholders.  
+        This financial report is going to be sent to all the company shareholders.
       </documentation>
       <potentialOwner>
         <resourceAssignmentExpression>
@@ -37,11 +37,11 @@
         </resourceAssignmentExpression>
       </potentialOwner>
 		</userTask>
-		
+
 		<sequenceFlow id="flow3" sourceRef="verifyReportTask" targetRef="theEnd" />
-			
+
 		<endEvent id="theEnd" />
-			
+
 	</process>
 
 	<bpmndi:BPMNDiagram>
@@ -72,5 +72,5 @@
 			</bpmndi:BPMNEdge>
 		</bpmndi:BPMNPlane>
 	</bpmndi:BPMNDiagram>
-	
+
 </definitions>

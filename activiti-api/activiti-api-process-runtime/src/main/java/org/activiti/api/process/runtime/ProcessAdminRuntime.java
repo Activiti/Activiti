@@ -99,7 +99,7 @@ public interface ProcessAdminRuntime {
      * Resume a suspended process instance
      */
     ProcessInstance resume(ResumeProcessPayload resumeProcessPayload);
-    
+
     /**
      * Update a Process Instance
      */
@@ -111,6 +111,6 @@ public interface ProcessAdminRuntime {
     void removeVariables(RemoveProcessVariablesPayload removeProcessVariablesPayload);
 
     void receive(ReceiveMessagePayload messagePayload);
-    
+
     ProcessInstance start(StartMessagePayload messagePayload);
 }

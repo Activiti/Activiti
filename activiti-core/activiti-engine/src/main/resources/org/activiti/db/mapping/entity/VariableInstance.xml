@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?> 
+<?xml version="1.0" encoding="UTF-8" ?>
 
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
@@ -32,7 +32,7 @@
     parameterType="java.util.List">
     INSERT INTO ${prefix}ACT_RU_VARIABLE (ID_, REV_,
           TYPE_, NAME_, PROC_INST_ID_, EXECUTION_ID_, TASK_ID_, BYTEARRAY_ID_,
-          DOUBLE_, LONG_ , TEXT_, TEXT2_) VALUES 
+          DOUBLE_, LONG_ , TEXT_, TEXT2_) VALUES
       <foreach collection="list" item="variable" index="index" separator=",">
          (#{variable.id, jdbcType=VARCHAR},
           1,
@@ -54,7 +54,7 @@
       <foreach collection="list" item="variable" index="index">
           INTO ${prefix}ACT_RU_VARIABLE (ID_, REV_,
           TYPE_, NAME_, PROC_INST_ID_, EXECUTION_ID_, TASK_ID_, BYTEARRAY_ID_,
-          DOUBLE_, LONG_ , TEXT_, TEXT2_) VALUES 
+          DOUBLE_, LONG_ , TEXT_, TEXT2_) VALUES
          (#{variable.id, jdbcType=VARCHAR},
           1,
           #{variable.typeName, jdbcType=VARCHAR },
@@ -66,7 +66,7 @@
           #{variable.doubleValue, jdbcType=DOUBLE},
           #{variable.longValue, jdbcType=BIGINT},
           #{variable.textValue, jdbcType=VARCHAR},
-          #{variable.textValue2, jdbcType=VARCHAR}) 
+          #{variable.textValue2, jdbcType=VARCHAR})
       </foreach>
     SELECT * FROM dual
   </insert>
@@ -138,7 +138,7 @@
     where EXECUTION_ID_ = #{parameter, jdbcType=VARCHAR}
     and TASK_ID_ is null
   </select>
-  
+
   <select id="selectVariablesByExecutionIds"
     parameterType="org.activiti.engine.impl.db.ListQueryParameterObject"
     resultMap="variableInstanceResultMap">
@@ -149,31 +149,31 @@
       #{item}
     </foreach>
   </select>
-  
+
   <select id="selectVariableInstanceByExecutionAndName" parameterType="java.util.Map" resultMap="variableInstanceResultMap">
-	select * from ${prefix}ACT_RU_VARIABLE 
+	select * from ${prefix}ACT_RU_VARIABLE
     where EXECUTION_ID_ = #{executionId, jdbcType=VARCHAR} and NAME_= #{name, jdbcType=VARCHAR} and TASK_ID_ is null
   </select>
-  
+
   <select id="selectVariableInstancesByExecutionAndNames" parameterType="java.util.Map" resultMap="variableInstanceResultMap">
-	select * from ${prefix}ACT_RU_VARIABLE 
+	select * from ${prefix}ACT_RU_VARIABLE
     where EXECUTION_ID_ = #{parameter.executionId, jdbcType=VARCHAR} and TASK_ID_ is null
     <if test="parameter.names != null and parameter.names.size > 0">
     and (
       <foreach collection="parameter.names" index="index" item="name" separator=" or ">
-      	NAME_= #{name, jdbcType=VARCHAR}	
-      </foreach>	    
+      	NAME_= #{name, jdbcType=VARCHAR}
+      </foreach>
     )
     </if>
   </select>
-  
+
   <select id="selectVariablesByTaskId"
     parameterType="org.activiti.engine.impl.db.ListQueryParameterObject"
     resultMap="variableInstanceResultMap">
     select * from ${prefix}ACT_RU_VARIABLE where
     TASK_ID_ = #{parameter, jdbcType=VARCHAR}
   </select>
-  
+
   <select id="selectVariablesByTaskIds"
     parameterType="org.activiti.engine.impl.db.ListQueryParameterObject"
     resultMap="variableInstanceResultMap">
@@ -183,20 +183,20 @@
       #{item}
     </foreach>
   </select>
-  
+
   <select id="selectVariableInstanceByTaskAndName" parameterType="java.util.Map" resultMap="variableInstanceResultMap">
-	select * from ${prefix}ACT_RU_VARIABLE 
+	select * from ${prefix}ACT_RU_VARIABLE
     where TASK_ID_ = #{taskId, jdbcType=VARCHAR} and NAME_= #{name, jdbcType=VARCHAR}
   </select>
-  
+
   <select id="selectVariableInstancesByTaskAndNames" parameterType="java.util.Map" resultMap="variableInstanceResultMap">
-	select * from ${prefix}ACT_RU_VARIABLE 
-    where TASK_ID_ = #{parameter.taskId, jdbcType=VARCHAR} 
+	select * from ${prefix}ACT_RU_VARIABLE
+    where TASK_ID_ = #{parameter.taskId, jdbcType=VARCHAR}
     <if test="parameter.names != null and parameter.names.size > 0">
     and (
       <foreach collection="parameter.names" index="index" item="name" separator=" or ">
-      	NAME_= #{name, jdbcType=VARCHAR}	
-      </foreach>	    
+      	NAME_= #{name, jdbcType=VARCHAR}
+      </foreach>
     )
     </if>
   </select>

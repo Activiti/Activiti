@@ -1,8 +1,8 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" targetNamespace="http://www.omg.org/spec/DD/20100524/DI" elementFormDefault="qualified" attributeFormDefault="unqualified">
 
 	<xsd:import namespace="http://www.omg.org/spec/DD/20100524/DC" schemaLocation="DC.xsd" />
-	
+
 	<xsd:element name="DiagramElement" type="di:DiagramElement" />
 	<xsd:element name="Diagram" type="di:Diagram" />
 	<xsd:element name="Style" type="di:Style" />
@@ -13,7 +13,7 @@
 	<xsd:element name="LabeledEdge" type="di:LabeledEdge" />
 	<xsd:element name="Label" type="di:Label" />
 	<xsd:element name="LabeledShape" type="di:LabeledShape" />
-	
+
 	<xsd:complexType abstract="true" name="DiagramElement">
 		<xsd:sequence>
 			<xsd:element name="extension" minOccurs="0">
@@ -27,20 +27,20 @@
 		<xsd:attribute name="id" type="xsd:ID" />
 		<xsd:anyAttribute namespace="##other" processContents="lax" />
 	</xsd:complexType>
-	
+
 	<xsd:complexType abstract="true" name="Diagram">
 		<xsd:attribute name="name" type="xsd:string" />
 		<xsd:attribute name="documentation" type="xsd:string" />
 		<xsd:attribute name="resolution" type="xsd:double" />
 		<xsd:attribute name="id" type="xsd:ID" />
 	</xsd:complexType>
-	
+
 	<xsd:complexType abstract="true" name="Node">
 		<xsd:complexContent>
 			<xsd:extension base="di:DiagramElement" />
 		</xsd:complexContent>
 	</xsd:complexType>
-	
+
 	<xsd:complexType abstract="true" name="Edge">
 		<xsd:complexContent>
 			<xsd:extension base="di:DiagramElement">
@@ -50,13 +50,13 @@
 			</xsd:extension>
 		</xsd:complexContent>
 	</xsd:complexType>
-	
+
 	<xsd:complexType abstract="true" name="LabeledEdge">
 		<xsd:complexContent>
 			<xsd:extension base="di:Edge" />
 		</xsd:complexContent>
 	</xsd:complexType>
-	
+
 	<xsd:complexType abstract="true" name="Shape">
 		<xsd:complexContent>
 			<xsd:extension base="di:Node">
@@ -66,13 +66,13 @@
 			</xsd:extension>
 		</xsd:complexContent>
 	</xsd:complexType>
-	
+
 	<xsd:complexType abstract="true" name="LabeledShape">
 		<xsd:complexContent>
 			<xsd:extension base="di:Shape" />
 		</xsd:complexContent>
 	</xsd:complexType>
-	
+
 	<xsd:complexType abstract="true" name="Label">
 		<xsd:complexContent>
 			<xsd:extension base="di:Node">
@@ -82,7 +82,7 @@
 			</xsd:extension>
 		</xsd:complexContent>
 	</xsd:complexType>
-	
+
 	<xsd:complexType abstract="true" name="Plane">
 		<xsd:complexContent>
 			<xsd:extension base="di:Node">
@@ -92,9 +92,9 @@
 			</xsd:extension>
 		</xsd:complexContent>
 	</xsd:complexType>
-	
+
 	<xsd:complexType abstract="true" name="Style">
 		<xsd:attribute name="id" type="xsd:ID" />
 	</xsd:complexType>
-	
+
 </xsd:schema>

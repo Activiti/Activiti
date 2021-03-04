@@ -7,18 +7,18 @@
   <process id="suspendProcess" name="The One Task Process">
     <startEvent id="theStart" />
     <sequenceFlow id="flow1" sourceRef="theStart" targetRef="theTask" />
-    <userTask id="theTask" name="my task" />   
-     
+    <userTask id="theTask" name="my task" />
+
     <boundaryEvent id="escalationTimer" cancelActivity="true" attachedToRef="theTask">
       <timerEventDefinition>
         <timeDuration>PT1H</timeDuration>
       </timerEventDefinition>
-    </boundaryEvent>  
-    
+    </boundaryEvent>
+
     <sequenceFlow id="flow2" sourceRef="theTask" targetRef="theEnd" />
     <sequenceFlow id="flow3" sourceRef="escalationTimer" targetRef="theEnd" />
     <endEvent id="theEnd" />
-    
+
   </process>
 
 </definitions>

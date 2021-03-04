@@ -13,12 +13,12 @@
     <signalEventDefinition signalRef="theSignal" />
    </intermediateThrowEvent>
     <sequenceFlow id="flow3" sourceRef="signalThrow" targetRef="theEnd" />
-    
+
     <endEvent id="theEnd" />
   </process>
-  
+
   <process id="processWithSignalCatch">
-  
+
     <startEvent id="theStart2" />
     <sequenceFlow id="flow4" sourceRef="theStart2" targetRef="userTaskWithSignalCatch" />
 
@@ -28,12 +28,12 @@
     </boundaryEvent>
     <sequenceFlow id="flow5" sourceRef="userTaskWithSignalCatch" targetRef="theEnd2" />
     <sequenceFlow id="flow6" sourceRef="signalCatch" targetRef="userTaskAfterSignalCatch" />
-    
+
     <userTask id="userTaskAfterSignalCatch" name="userTaskAfterSignalCatch" />
-    
+
     <endEvent id="theEnd2" />
-  
+
   </process>
-  
+
 
 </definitions>

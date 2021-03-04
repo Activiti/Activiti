@@ -5,7 +5,7 @@
 >
   <persistence-unit name="activiti-jpa-pu">
     <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
-    
+
     <class>org.activiti.standalone.jpa.FieldAccessJPAEntity</class>
     <class>org.activiti.standalone.jpa.PropertyAccessJPAEntity</class>
     <class>org.activiti.standalone.jpa.SubclassFieldAccessJPAEntity</class>
@@ -13,7 +13,7 @@
     <!-- Mapped superclasses -->
     <class>org.activiti.standalone.jpa.MappedSuperClassFieldAccessJPAEntity</class>
     <class>org.activiti.standalone.jpa.MappedSuperClassPropertyAccessJPAEntity</class>
-    
+
     <!-- Variable types -->
     <class>org.activiti.standalone.jpa.ByteIdJPAEntity</class>
     <class>org.activiti.standalone.jpa.ShortIdJPAEntity</class>
@@ -27,11 +27,11 @@
     <class>org.activiti.standalone.jpa.SQLDateIdJPAEntity</class>
     <class>org.activiti.standalone.jpa.BigIntegerIdJPAEntity</class>
     <class>org.activiti.standalone.jpa.BigDecimalIdJPAEntity</class>
-    
+
     <!-- Exceptional entities -->
     <class>org.activiti.standalone.jpa.CompoundIdJPAEntity</class>
     <class>org.activiti.standalone.jpa.EmbeddableCompoundId</class>
-    
+
     <exclude-unlisted-classes>true</exclude-unlisted-classes>
     <properties>
         <property name="javax.persistence.jdbc.driver" value="org.h2.Driver" />

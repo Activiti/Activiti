@@ -8,18 +8,18 @@
   <process id="errorProcess">
 
     <startEvent id="theStart" />
-  
+
     <sequenceFlow sourceRef="theStart" targetRef="subProcess" />
-    
+
     <subProcess id="subProcess">
       <startEvent id="subStart"></startEvent>
       <sequenceFlow sourceRef="subStart" targetRef="subEnd" />
       <endEvent id="subEnd">
         <errorEventDefinition errorRef="myError" />
-      </endEvent>  
-      
+      </endEvent>
+
     </subProcess>
-    
+
     <sequenceFlow sourceRef="subProcess" targetRef="theEnd" />
 
     <endEvent id="theEnd" />

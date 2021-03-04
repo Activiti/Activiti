@@ -126,18 +126,18 @@ public class ProcessInstanceHistoryLogQueryImpl implements ProcessInstanceHistor
     if (includeVariables) {
       List<HistoricVariableInstance> variables = commandContext.getHistoricVariableInstanceEntityManager().findHistoricVariableInstancesByQueryCriteria(
           new HistoricVariableInstanceQueryImpl(commandExecutor).processInstanceId(processInstanceId), null);
-      
+
       // Make sure all variables values are fetched (similar to the HistoricVariableInstance query)
       for (HistoricVariableInstance historicVariableInstance : variables) {
         historicVariableInstance.getValue();
-        
+
         // make sure JPA entities are cached for later retrieval
         HistoricVariableInstanceEntity variableEntity = (HistoricVariableInstanceEntity) historicVariableInstance;
         if (JPAEntityVariableType.TYPE_NAME.equals(variableEntity.getVariableType().getTypeName()) || JPAEntityListVariableType.TYPE_NAME.equals(variableEntity.getVariableType().getTypeName())) {
           ((CacheableVariable) variableEntity.getVariableType()).setForceCacheable(true);
         }
       }
-      
+
       processInstanceHistoryLog.addHistoricData(variables);
     }
 
@@ -151,13 +151,13 @@ public class ProcessInstanceHistoryLogQueryImpl implements ProcessInstanceHistor
     if (includeVariableUpdates) {
       List<? extends HistoricData> variableUpdates = commandContext.getHistoricDetailEntityManager().findHistoricDetailsByQueryCriteria(
           new HistoricDetailQueryImpl(commandExecutor).variableUpdates(), null);
-      
+
       // Make sure all variables values are fetched (similar to the HistoricVariableInstance query)
       for (HistoricData historicData : variableUpdates) {
         HistoricVariableUpdate variableUpdate = (HistoricVariableUpdate) historicData;
         variableUpdate.getValue();
       }
-      
+
       processInstanceHistoryLog.addHistoricData(variableUpdates);
     }
 

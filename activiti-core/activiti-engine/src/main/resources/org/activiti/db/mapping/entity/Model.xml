@@ -1,64 +1,64 @@
-<?xml version="1.0" encoding="UTF-8" ?> 
+<?xml version="1.0" encoding="UTF-8" ?>
 
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
-  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
 <mapper namespace="org.activiti.engine.impl.persistence.entity.ModelEntityImpl">
 
   <!-- MODEL INSERT -->
-  
+
   <insert id="insertModel" parameterType="org.activiti.engine.impl.persistence.entity.ModelEntityImpl">
     insert into ${prefix}ACT_RE_MODEL(ID_, REV_, NAME_, KEY_, CATEGORY_, CREATE_TIME_, LAST_UPDATE_TIME_, VERSION_, META_INFO_, DEPLOYMENT_ID_, EDITOR_SOURCE_VALUE_ID_, EDITOR_SOURCE_EXTRA_VALUE_ID_, TENANT_ID_)
-    values(#{id, jdbcType=VARCHAR}, 
+    values(#{id, jdbcType=VARCHAR},
            1,
-           #{name, jdbcType=VARCHAR}, 
-           #{key, jdbcType=VARCHAR}, 
-           #{category, jdbcType=VARCHAR}, 
+           #{name, jdbcType=VARCHAR},
+           #{key, jdbcType=VARCHAR},
+           #{category, jdbcType=VARCHAR},
            #{createTime, jdbcType=TIMESTAMP},
            #{lastUpdateTime, jdbcType=TIMESTAMP},
-           #{version, jdbcType=INTEGER}, 
-           #{metaInfo, jdbcType=VARCHAR}, 
+           #{version, jdbcType=INTEGER},
+           #{metaInfo, jdbcType=VARCHAR},
            #{deploymentId, jdbcType=VARCHAR},
-           #{editorSourceValueId, jdbcType=VARCHAR}, 
+           #{editorSourceValueId, jdbcType=VARCHAR},
            #{editorSourceExtraValueId, jdbcType=VARCHAR},
            #{tenantId, jdbcType=VARCHAR})
   </insert>
 
   <insert id="bulkInsertModel" parameterType="java.util.List">
     INSERT INTO ${prefix}ACT_RE_MODEL(ID_, REV_, NAME_, KEY_, CATEGORY_, CREATE_TIME_, LAST_UPDATE_TIME_, VERSION_, META_INFO_, DEPLOYMENT_ID_, EDITOR_SOURCE_VALUE_ID_, EDITOR_SOURCE_EXTRA_VALUE_ID_, TENANT_ID_)
-    VALUES 
-      <foreach collection="list" item="model" index="index" separator=","> 
-        (#{model.id, jdbcType=VARCHAR}, 
+    VALUES
+      <foreach collection="list" item="model" index="index" separator=",">
+        (#{model.id, jdbcType=VARCHAR},
          1,
-         #{model.name, jdbcType=VARCHAR}, 
-         #{model.key, jdbcType=VARCHAR}, 
-         #{model.category, jdbcType=VARCHAR}, 
+         #{model.name, jdbcType=VARCHAR},
+         #{model.key, jdbcType=VARCHAR},
+         #{model.category, jdbcType=VARCHAR},
          #{model.createTime, jdbcType=TIMESTAMP},
          #{model.lastUpdateTime, jdbcType=TIMESTAMP},
-         #{model.version, jdbcType=INTEGER}, 
-         #{model.metaInfo, jdbcType=VARCHAR}, 
+         #{model.version, jdbcType=INTEGER},
+         #{model.metaInfo, jdbcType=VARCHAR},
          #{model.deploymentId, jdbcType=VARCHAR},
-         #{model.editorSourceValueId, jdbcType=VARCHAR}, 
+         #{model.editorSourceValueId, jdbcType=VARCHAR},
          #{model.editorSourceExtraValueId, jdbcType=VARCHAR},
          #{model.tenantId, jdbcType=VARCHAR})
      </foreach>
   </insert>
 
   <insert id="bulkInsertModel" databaseId="oracle" parameterType="java.util.List">
-    INSERT ALL 
-      <foreach collection="list" item="model" index="index"> 
+    INSERT ALL
+      <foreach collection="list" item="model" index="index">
         INTO ${prefix}ACT_RE_MODEL(ID_, REV_, NAME_, KEY_, CATEGORY_, CREATE_TIME_, LAST_UPDATE_TIME_,
-        VERSION_, META_INFO_, DEPLOYMENT_ID_, EDITOR_SOURCE_VALUE_ID_, EDITOR_SOURCE_EXTRA_VALUE_ID_, TENANT_ID_) VALUES 
-          (#{model.id, jdbcType=VARCHAR}, 
+        VERSION_, META_INFO_, DEPLOYMENT_ID_, EDITOR_SOURCE_VALUE_ID_, EDITOR_SOURCE_EXTRA_VALUE_ID_, TENANT_ID_) VALUES
+          (#{model.id, jdbcType=VARCHAR},
            1,
-           #{model.name, jdbcType=VARCHAR}, 
-           #{model.key, jdbcType=VARCHAR}, 
-           #{model.category, jdbcType=VARCHAR}, 
+           #{model.name, jdbcType=VARCHAR},
+           #{model.key, jdbcType=VARCHAR},
+           #{model.category, jdbcType=VARCHAR},
            #{model.createTime, jdbcType=TIMESTAMP},
            #{model.lastUpdateTime, jdbcType=TIMESTAMP},
-           #{model.version, jdbcType=INTEGER}, 
-           #{model.metaInfo, jdbcType=VARCHAR}, 
+           #{model.version, jdbcType=INTEGER},
+           #{model.metaInfo, jdbcType=VARCHAR},
            #{model.deploymentId, jdbcType=VARCHAR},
-           #{model.editorSourceValueId, jdbcType=VARCHAR}, 
+           #{model.editorSourceValueId, jdbcType=VARCHAR},
            #{model.editorSourceExtraValueId, jdbcType=VARCHAR},
            #{model.tenantId, jdbcType=VARCHAR})
      </foreach>
@@ -82,15 +82,15 @@
     where ID_ = #{id, jdbcType=VARCHAR} and REV_ = #{revision, jdbcType=INTEGER}
   </update>
 
-  
+
   <!-- MODEL DELETE -->
-  
+
   <delete id="deleteModel" parameterType="org.activiti.engine.impl.persistence.entity.ModelEntityImpl">
     delete from ${prefix}ACT_RE_MODEL where ID_ = #{id} and REV_ = #{revision}
   </delete>
 
   <!-- MODEL RESULTMAP -->
-  
+
   <resultMap id="modelResultMap" type="org.activiti.engine.impl.persistence.entity.ModelEntityImpl">
     <id property="id" column="ID_" jdbcType="VARCHAR" />
     <result property="revision" column="REV_" jdbcType="INTEGER"/>
@@ -121,8 +121,8 @@
     select count(distinct RES.ID_)
     <include refid="selectModelsByQueryCriteriaSql"/>
   </select>
-  
-  <sql id="selectModelsByQueryCriteriaSql">  
+
+  <sql id="selectModelsByQueryCriteriaSql">
     from ${prefix}ACT_RE_MODEL RES
     <where>
       <if test="id != null">
@@ -144,7 +144,7 @@
         and RES.CATEGORY_ like #{categoryLike}${wildcardEscapeClause}
       </if>
       <if test="categoryNotEquals != null">
-        and ( RES.CATEGORY_ &lt;&gt; #{categoryNotEquals} OR RES.CATEGORY_ is null )  
+        and ( RES.CATEGORY_ &lt;&gt; #{categoryNotEquals} OR RES.CATEGORY_ is null )
       </if>
       <if test="version != null">
         and RES.VERSION_ = #{version}
@@ -172,11 +172,11 @@
       </if>
     </where>
   </sql>
-  
+
   <select id="selectModel" parameterType="string" resultMap="modelResultMap">
     select * from ${prefix}ACT_RE_MODEL where ID_ = #{id, jdbcType=VARCHAR}
   </select>
-  
+
   <!-- mysql specific -->
   <select id="selectModelCountByQueryCriteria" databaseId="mysql" parameterType="org.activiti.engine.impl.ModelQueryImpl" resultType="long">
     select distinct count(RES.ID_)

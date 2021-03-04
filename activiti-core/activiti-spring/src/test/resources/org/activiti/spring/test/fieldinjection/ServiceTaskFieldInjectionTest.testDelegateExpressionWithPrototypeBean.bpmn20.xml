@@ -19,7 +19,7 @@
         </serviceTask>
 
         <sequenceFlow id="flow2" sourceRef="serviceTask1" targetRef="serviceTask2"/>
-        
+
         <serviceTask id="serviceTask2" activiti:delegateExpression="${prototypeDelegateExpressionBean}">
             <extensionElements>
                 <activiti:field name="fieldA" expression="${123}"/>
@@ -27,7 +27,7 @@
                 <activiti:field name="resultVariableName" stringValue="resultServiceTask2"/>
             </extensionElements>
         </serviceTask>
-        
+
         <sequenceFlow id="flow3" sourceRef="serviceTask2" targetRef="userTask"/>
 
         <userTask id="userTask" name="theTask"/>

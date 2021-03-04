@@ -5,10 +5,10 @@
   targetNamespace="Examples">
 
   <bpmn:process id="myProcess">
-  
+
     <bpmn:startEvent id="theStart" />
     <bpmn:sequenceFlow id="flow1" sourceRef="theStart" targetRef="theTask" />
-    <bpmn:userTask id="theTask" name="my task" />    
+    <bpmn:userTask id="theTask" name="my task" />
     <bpmn:sequenceFlow id="flow2" sourceRef="theTask" targetRef="theEnd" />
     <bpmn:endEvent id="theEnd" />
 

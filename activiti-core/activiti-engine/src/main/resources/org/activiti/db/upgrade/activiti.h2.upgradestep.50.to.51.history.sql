@@ -1,4 +1,4 @@
-alter table ACT_HI_DETAIL 
+alter table ACT_HI_DETAIL
 add TASK_ID_ varchar(64);
 
 create table ACT_HI_TASKINST (

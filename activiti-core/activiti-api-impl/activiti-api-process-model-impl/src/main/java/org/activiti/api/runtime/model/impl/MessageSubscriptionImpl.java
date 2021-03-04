@@ -21,7 +21,7 @@ import java.util.Objects;
 import org.activiti.api.process.model.MessageSubscription;
 
 public class MessageSubscriptionImpl implements MessageSubscription {
-    
+
     private String id;
     private String eventName;
     private String executionId;
@@ -46,35 +46,35 @@ public class MessageSubscriptionImpl implements MessageSubscription {
 
     MessageSubscriptionImpl() {
     }
-    
+
     public String getId() {
         return id;
     }
-    
+
     public String getEventName() {
         return eventName;
     }
-    
+
     public String getExecutionId() {
         return executionId;
     }
-    
+
     public String getProcessInstanceId() {
         return processInstanceId;
     }
-    
+
     public String getProcessDefinitionId() {
         return processDefinitionId;
     }
-    
+
     public String getConfiguration() {
         return configuration;
     }
-    
+
     public String getActivityId() {
         return activityId;
     }
-    
+
     public Date getCreated() {
         return created;
     }
@@ -103,13 +103,13 @@ public class MessageSubscriptionImpl implements MessageSubscription {
             return false;
         }
         MessageSubscriptionImpl other = (MessageSubscriptionImpl) obj;
-        return Objects.equals(activityId, other.activityId) && 
-                Objects.equals(configuration, other.configuration) && 
-                Objects.equals(created, other.created) && 
-                Objects.equals(eventName, other.eventName) && 
-                Objects.equals(executionId, other.executionId) && 
-                Objects.equals(id, other.id) && 
-                Objects.equals(processDefinitionId, other.processDefinitionId) && 
+        return Objects.equals(activityId, other.activityId) &&
+                Objects.equals(configuration, other.configuration) &&
+                Objects.equals(created, other.created) &&
+                Objects.equals(eventName, other.eventName) &&
+                Objects.equals(executionId, other.executionId) &&
+                Objects.equals(id, other.id) &&
+                Objects.equals(processDefinitionId, other.processDefinitionId) &&
                 Objects.equals(processInstanceId, other.processInstanceId);
     }
 
@@ -136,12 +136,12 @@ public class MessageSubscriptionImpl implements MessageSubscription {
         return builder2.toString();
     }
 
-    
+
     public String getBusinessKey() {
         return businessKey;
     }
 
-    
+
     /**
      * Creates a builder to build {@link MessageSubscriptionImpl}.
      * @return created builder
@@ -149,7 +149,7 @@ public class MessageSubscriptionImpl implements MessageSubscription {
     public static Builder builder() {
         return new Builder();
     }
-    
+
     /**
      * Creates a builder to build {@link MessageSubscriptionImpl} and initialize it with the given object.
      * @param messageEventSubscriptionImpl to initialize the builder with

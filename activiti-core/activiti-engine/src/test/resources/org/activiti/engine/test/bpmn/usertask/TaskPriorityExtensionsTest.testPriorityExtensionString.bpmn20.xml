@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<definitions id="taskPriorityExtensionTest" 
+<definitions id="taskPriorityExtensionTest"
   xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
   xmlns:activiti="http://activiti.org/bpmn"
   targetNamespace="Examples">
-  
+
   <process id="taskPriorityExtensionString">
     <startEvent id="start" />
     <sequenceFlow id="flow1" sourceRef="start" targetRef="task" />

@@ -36,7 +36,7 @@ public class SecurityUtil {
     private final UserDetailsService userDetailsService;
 
     private final SecurityManager securityManager;
-    
+
     public SecurityUtil(UserDetailsService userDetailsService,
                         SecurityManager securityManager) {
         this.userDetailsService = userDetailsService;

@@ -2,7 +2,7 @@
 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
   <process id="process" name="process1" isExecutable="true">
   	<extensionElements>
-		<activiti:eventListener events="ENTITY_CREATE" class="org.activiti.test.MyListener" />  	
+		<activiti:eventListener events="ENTITY_CREATE" class="org.activiti.test.MyListener" />
 		<activiti:eventListener class="org.activiti.test.AllEventTypesListener" />
 		<activiti:eventListener events="ENTITY_DELETE" delegateExpression="${myListener}" />
 		<activiti:eventListener events="ENTITY_DELETE" throwEvent="signal" signalName="theSignal" />

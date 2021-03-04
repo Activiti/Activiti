@@ -43,10 +43,10 @@ public class ActivitiSpringSecurityAutoConfiguration {
     public GrantedAuthoritiesResolver grantedAuthoritiesResolver() {
         return new SimpleGrantedAuthoritiesResolver();
     }
-    
+
     @Bean
     @ConditionalOnMissingBean
-    public GrantedAuthoritiesGroupsMapper grantedAuthoritiesGroupsMapper() { 
+    public GrantedAuthoritiesGroupsMapper grantedAuthoritiesGroupsMapper() {
         return new SimpleGrantedAuthoritiesGroupsMapper();
     };
 
@@ -55,24 +55,24 @@ public class ActivitiSpringSecurityAutoConfiguration {
     public GrantedAuthoritiesRolesMapper grantedAuthoritiesRolesMapper() {
         return new SimpleGrantedAuthoritiesRolesMapper();
     }
-    
+
     @Bean
     @ConditionalOnMissingBean
     public SecurityContextPrincipalProvider securityContextPrincipalProvider() {
         return new LocalSpringSecurityContextPrincipalProvider();
-    }    
-    
+    }
+
     @Bean
     @ConditionalOnMissingBean
     public PrincipalIdentityProvider principalIdentityProvider() {
         return new AuthenticationPrincipalIdentityProvider();
-    }    
+    }
 
     @Bean
     @ConditionalOnMissingBean
     public PrincipalGroupsProvider principalGroupsProvider(GrantedAuthoritiesResolver grantedAuthoritiesResolver,
                                                            GrantedAuthoritiesGroupsMapper grantedAuthoritiesGroupsMapper) {
-        return new AuthenticationPrincipalGroupsProvider(grantedAuthoritiesResolver, 
+        return new AuthenticationPrincipalGroupsProvider(grantedAuthoritiesResolver,
                                                          grantedAuthoritiesGroupsMapper);
     }
 
@@ -80,10 +80,10 @@ public class ActivitiSpringSecurityAutoConfiguration {
     @ConditionalOnMissingBean
     public PrincipalRolesProvider principalRolessProvider(GrantedAuthoritiesResolver grantedAuthoritiesResolver,
                                                           GrantedAuthoritiesRolesMapper grantedAuthoritiesRolesMapper) {
-        return new AuthenticationPrincipalRolesProvider(grantedAuthoritiesResolver, 
+        return new AuthenticationPrincipalRolesProvider(grantedAuthoritiesResolver,
                                                         grantedAuthoritiesRolesMapper);
     }
-    
+
     @Bean
     @ConditionalOnMissingBean
     public SecurityManager securityManager(SecurityContextPrincipalProvider securityContextPrincipalProvider,

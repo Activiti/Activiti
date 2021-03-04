@@ -19,7 +19,7 @@ import java.security.Principal;
 import java.util.List;
 
 public interface PrincipalRolesProvider {
-    
+
     List<String> getRoles(Principal principal);
 
 }

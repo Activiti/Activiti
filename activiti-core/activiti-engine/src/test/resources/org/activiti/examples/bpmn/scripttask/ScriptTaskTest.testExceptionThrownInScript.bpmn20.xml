@@ -17,11 +17,11 @@
   xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
   xmlns:activiti="http://activiti.org/bpmn"
   targetNamespace="Examples">
-  
+
   <process id="failingScript">
-  
+
     <startEvent id="theStart" />
-    
+
     <sequenceFlow id="flow1" sourceRef="theStart" targetRef="theScript" />
 
     <scriptTask id="theScript" scriptFormat="groovy">
@@ -29,11 +29,11 @@
         org.activiti.examples.bpmn.scripttask.ScriptTaskTestPojo.foo();
       </script>
     </scriptTask>
-    
+
     <sequenceFlow id="flow2" sourceRef="theScript" targetRef="theEnd" />
 
     <endEvent id="theEnd" />
-    
+
   </process>
 
 </definitions>

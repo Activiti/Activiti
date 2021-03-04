@@ -2,7 +2,7 @@
 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
   xmlns:activiti="http://activiti.org/bpmn" targetNamespace="Examples">
   <process id="variableProcess">
-  
+
     <startEvent id="theStart" />
     <sequenceFlow sourceRef="theStart" targetRef="theEnd">
       <extensionElements>
@@ -10,7 +10,7 @@
       </extensionElements>
     </sequenceFlow>
     <endEvent id="theEnd" />
-    
+
   </process>
 
 </definitions>

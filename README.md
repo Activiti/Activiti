@@ -13,9 +13,9 @@ Activiti
 Homepage: <http://activiti.org>
 
 
-Activiti is a light-weight workflow and Business Process Management (BPM) Platform targeted at business people, developers and system admins. Its core is a super-fast and rock-solid BPMN 2 process engine for Java. It's open-source and distributed under the Apache license. Activiti runs in any Java application, on a server, on a cluster or in the cloud. It integrates perfectly with Spring, it is extremely lightweight and based on simple concepts. 
+Activiti is a light-weight workflow and Business Process Management (BPM) Platform targeted at business people, developers and system admins. Its core is a super-fast and rock-solid BPMN 2 process engine for Java. It's open-source and distributed under the Apache license. Activiti runs in any Java application, on a server, on a cluster or in the cloud. It integrates perfectly with Spring, it is extremely lightweight and based on simple concepts.
 
-**__NOTE: We moved to the master branch all the content of the development branch that we were using to design and code the next major version of the project. If you want to contribute with version 6.x please look at the 6.x branch.__** 
+**__NOTE: We moved to the master branch all the content of the development branch that we were using to design and code the next major version of the project. If you want to contribute with version 6.x please look at the 6.x branch.__**
 
 If you want to read more about our Repositories structure you can read our [GitBook](https://activiti.gitbooks.io/activiti-7-developers-guide/content/).
 
@@ -41,7 +41,7 @@ Configuring IntelliJ
     * Click tree item *Code Style*, click cogwheel and select *Import scheme*, then *IntelliJ code style xml*
     * Browse where you downloaded the xml and open it. Check that GoogleStyle is the active scheme.
         * Note: IntelliJ IDEA doesn't format your code automatically. You have to press Ctrl+Alt+L keyboard combination to trigger auto formatting when coding is done.
-    * There's an `.editorconfig` what has definition for indents, file encoding, line endings. 
+    * There's an `.editorconfig` what has definition for indents, file encoding, line endings.
     * If you disable it, you need to set the file encoding and number of spaces correctly manually.
     * Eclipse code style xml: [https://google.github.io/styleguide/eclipse-java-google-style.xml]
     * Eclipse needs [editorconfig-eclipse](https://marketplace.eclipse.org/content/editorconfig-eclipse) plugin in order to support EditorConfig files.
@@ -116,7 +116,7 @@ mvn license:format
 ## Checkstyle
 
 To check if your code style respect all the rules:
- 
+
 ```bash
 mvn checkstyle:check -DskipCheckstyle=false
 ```
@@ -140,4 +140,3 @@ Running on [GitHub Actions](https://github.com/features/actions), requires the f
 | NEXUS_USERNAME | Internal Maven repository username |
 | NEXUS_PASSWORD | Internal Maven repository password |
 | GITHUB_TOKEN | GitHub token |
-

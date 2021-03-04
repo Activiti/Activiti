@@ -84,7 +84,7 @@ public class BPMNSequenceFlowImpl extends BPMNElementImpl implements BPMNSequenc
     public void setTargetActivityType(String targetActivityType) {
         this.targetActivityType = targetActivityType;
     }
-    
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

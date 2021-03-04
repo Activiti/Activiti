@@ -47,7 +47,7 @@
          <incoming>sid-9EA0C560-F2C7-4F87-96B3-DA7808AED511</incoming>
          <outgoing>sid-0B72B1A2-4C68-4391-9390-C161176D429D</outgoing>
       </userTask>
-      <callActivity completionQuantity="1" id="sid-80012F94-DFDA-40F6-A1DF-B3E4251EED21" isForCompensation="false" name="Call child process" startQuantity="1" 
+      <callActivity completionQuantity="1" id="sid-80012F94-DFDA-40F6-A1DF-B3E4251EED21" isForCompensation="false" name="Call child process" startQuantity="1"
       calledElement="child-process">
          <extensionElements>
             <signavio:signavioStencil id="CollapsedSubprocess"/>

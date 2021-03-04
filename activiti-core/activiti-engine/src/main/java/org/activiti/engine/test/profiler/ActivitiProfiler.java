@@ -58,7 +58,7 @@ public class ActivitiProfiler implements ProcessEngineConfigurator {
     public int getPriority() {
         return 0;
     }
-    
+
     public void reset() {
       if (currentProfileSession != null) {
         stopCurrentProfileSession();

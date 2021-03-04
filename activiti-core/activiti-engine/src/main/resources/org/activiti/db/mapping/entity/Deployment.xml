@@ -1,11 +1,11 @@
-<?xml version="1.0" encoding="UTF-8" ?> 
+<?xml version="1.0" encoding="UTF-8" ?>
 
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
-  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
 <mapper namespace="org.activiti.engine.impl.persistence.entity.DeploymentEntityImpl">
 
   <!-- DEPLOYMENT INSERT -->
-  
+
   <insert id="insertDeployment" parameterType="org.activiti.engine.impl.persistence.entity.DeploymentEntityImpl">
     insert into ${prefix}ACT_RE_DEPLOYMENT(ID_, NAME_, CATEGORY_, KEY_, TENANT_ID_, DEPLOY_TIME_, ENGINE_VERSION_, VERSION_, PROJECT_RELEASE_VERSION_)
     values(#{id, jdbcType=VARCHAR}, #{name, jdbcType=VARCHAR}, #{category, jdbcType=VARCHAR}, #{key, jdbcType=VARCHAR}, #{tenantId, jdbcType=VARCHAR}, #{deploymentTime, jdbcType=TIMESTAMP}, #{engineVersion, jdbcType=VARCHAR}, #{version, jdbcType=INTEGER}, #{projectReleaseVersion, jdbcType=VARCHAR})
@@ -27,9 +27,9 @@
   </insert>
 
   <insert id="bulkInsertDeployment" databaseId="oracle" parameterType="java.util.List">
-    INSERT ALL 
+    INSERT ALL
       <foreach collection="list" item="deployment" index="index">
-        into ${prefix}ACT_RE_DEPLOYMENT(ID_, NAME_, CATEGORY_, KEY_, TENANT_ID_, DEPLOY_TIME_) VALUES 
+        into ${prefix}ACT_RE_DEPLOYMENT(ID_, NAME_, CATEGORY_, KEY_, TENANT_ID_, DEPLOY_TIME_) VALUES
           (#{deployment.id, jdbcType=VARCHAR},
            #{deployment.name, jdbcType=VARCHAR},
            #{deployment.category, jdbcType=VARCHAR},
@@ -43,7 +43,7 @@
   </insert>
 
   <!-- DEPLOYMENT UPDATE -->
-  
+
   <update id="updateDeployment" parameterType="org.activiti.engine.impl.persistence.entity.DeploymentEntityImpl">
     update ${prefix}ACT_RE_DEPLOYMENT set
       CATEGORY_ = #{category, jdbcType=VARCHAR},
@@ -52,15 +52,15 @@
       VERSION_ = #{version, jdbcType=INTEGER}
     where ID_ = #{id, jdbcType=VARCHAR}
   </update>
-  
+
   <!-- DEPLOYMENT DELETE -->
-  
+
   <delete id="deleteDeployment" parameterType="string">
     delete from ${prefix}ACT_RE_DEPLOYMENT where ID_ = #{id}
   </delete>
 
   <!-- DEPLOYMENT RESULTMAP -->
-  
+
   <resultMap id="deploymentResultMap" type="org.activiti.engine.impl.persistence.entity.DeploymentEntityImpl">
     <id property="id" column="ID_" jdbcType="VARCHAR" />
     <result property="name" column="NAME_" jdbcType="VARCHAR" />
@@ -87,8 +87,8 @@
     select count(distinct RES.ID_)
     <include refid="selectDeploymentsByQueryCriteriaSql"/>
   </select>
-  
-  <sql id="selectDeploymentsByQueryCriteriaSql">  
+
+  <sql id="selectDeploymentsByQueryCriteriaSql">
     from ${prefix}ACT_RE_DEPLOYMENT RES
     <if test="processDefinitionKey != null or processDefinitionKeyLike != null">
     	inner join ${prefix}ACT_RE_PROCDEF PROCDEF on RES.ID_ = PROCDEF.DEPLOYMENT_ID_
@@ -110,7 +110,7 @@
         and RES.CATEGORY_ like #{categoryLike}${wildcardEscapeClause}
       </if>
       <if test="categoryNotEquals != null">
-        and ( RES.CATEGORY_ &lt;&gt; #{categoryNotEquals} OR RES.CATEGORY_ is null )  
+        and ( RES.CATEGORY_ &lt;&gt; #{categoryNotEquals} OR RES.CATEGORY_ is null )
       </if>
       <if test="key != null">
         and RES.KEY_ = #{key}
@@ -134,7 +134,7 @@
         and PROCDEF.KEY_ like #{processDefinitionKeyLike}${wildcardEscapeClause}
       </if>
       <if test="latest">
-        and RES.DEPLOY_TIME_ = (select max(DEPLOY_TIME_) from ${prefix}ACT_RE_DEPLOYMENT where KEY_ = RES.KEY_ 
+        and RES.DEPLOY_TIME_ = (select max(DEPLOY_TIME_) from ${prefix}ACT_RE_DEPLOYMENT where KEY_ = RES.KEY_
              <if test="tenantId != null">
 	           and TENANT_ID_ = #{tenantId}
 	         </if>
@@ -150,16 +150,16 @@
         )
       </if>
       <if test="latestVersion">
-        and RES.VERSION_ = (select max(VERSION_) from ${prefix}ACT_RE_DEPLOYMENT where NAME_ = RES.NAME_) 
+        and RES.VERSION_ = (select max(VERSION_) from ${prefix}ACT_RE_DEPLOYMENT where NAME_ = RES.NAME_)
       </if>
-      
+
     </where>
   </sql>
-    
+
   <select id="selectDeploymentsByName" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="deploymentResultMap">
     select * from ${prefix}ACT_RE_DEPLOYMENT D where NAME_=#{parameter} order by D.DEPLOY_TIME_ desc
   </select>
-  
+
   <select id="selectDeployment" parameterType="string" resultMap="deploymentResultMap">
     select * from ${prefix}ACT_RE_DEPLOYMENT where ID_ = #{id, jdbcType=VARCHAR}
   </select>
@@ -178,7 +178,7 @@
    	${orderBy}
     ${limitAfter}
   </select>
-  
+
   <!-- mysql specific -->
   <select id="selectDeploymentCountByQueryCriteria" databaseId="mysql" parameterType="org.activiti.engine.impl.DeploymentQueryImpl" resultType="long">
     select distinct count(RES.ID_)

@@ -13,9 +13,25 @@ on:
 
 jobs:
 
-  build:
-    runs-on: ubuntu-18.04
+  pre-commit:
+    runs-on: ubuntu-20.04
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Set up python
+        uses: actions/setup-python@v2
+      - name: Run pre-commit
+        uses: pre-commit/action@v2.0.0
+
+  build:
+    runs-on: ubuntu-20.04
+    needs: pre-commit
+    steps:
+
+      - name: Cancel Previous Runs
+        uses: styfle/cancel-workflow-action@0.8.0
+        with:
+          access_token: ${{ github.token }}
 
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -51,16 +67,13 @@ jobs:
 
       - name: Install jx-release-version
         if: ${{ github.event_name == 'push' }}
-        run: |
-          curl -fsSL https://github.com/jenkins-x/jx-release-version/releases/download/v$JX_RELEASE_VERSION_VERSION/jx-release-version-linux-amd64.tar.gz \
-            | tar xz -C /usr/local/bin jx-release-version
-          echo jx-release-version $(jx-release-version --version)
-        env:
-          JX_RELEASE_VERSION_VERSION: 2.2.3
+        uses: Alfresco/alfresco-build-tools/.github/actions/setup-jx-release-version@v1.1.0
 
-      - name: Bump VERSION with jx-release-version
+      - name: Bump version with jx-release-version
         if: ${{ github.event_name == 'push' }}
-        run: echo $(jx-release-version) > VERSION
+        run: |
+          git fetch --tags -q
+          echo $(jx-release-version) > VERSION
 
       - name: Set preview version
         if: ${{ contains(github.head_ref, 'preview') }}
@@ -87,36 +100,31 @@ jobs:
       - name: Configure git user
         if: ${{ github.event_name == 'push' }}
         run: |
-          git config user.name $GITHUB_USERNAME
-          git config user.email $GITHUB_USERNAME@users.noreply.github.com
+          git config --global user.name $GITHUB_USERNAME
+          git config --global user.email $GITHUB_USERNAME@users.noreply.github.com
         env:
-          GITHUB_USERNAME: alfresco-build-user
+          GITHUB_USERNAME: ${{ secrets.BOT_GITHUB_USERNAME }}
 
       - name: Create release tag
         if: ${{ github.event_name == 'push' }}
         run: |
           git commit -am "Release $VERSION" --allow-empty
           git tag -fa v$VERSION -m "Release version $VERSION"
-          git push -f -q v$VERSION
+          git push -f -q origin v$VERSION
 
       - name: Install updatebot
         if: ${{ github.event_name == 'push' }}
-        run: |
-          curl -fsSLo /usr/bin/updatebot.jar \
-            https://repo1.maven.org/maven2/io/jenkins/updatebot/updatebot/$UPDATEBOT_VERSION/updatebot-$UPDATEBOT_VERSION.jar
-          echo "java -jar /usr/bin/updatebot.jar \$@" > /usr/bin/updatebot
-          chmod +x /usr/bin/updatebot
-          echo updatebot $(updatebot version)
-        env:
-          UPDATEBOT_VERSION: 1.1.60
+        uses: Alfresco/alfresco-build-tools/.github/actions/setup-updatebot@v1.1.0
 
       - name: Run updatebot
         if: ${{ github.event_name == 'push' }}
         run: |
+          echo -e "https://$GITHUB_USERNAME:$GITHUB_TOKEN@github.com" >>  ~/.git-credentials
           updatebot push-version --kind maven \
             org.activiti:activiti-dependencies $VERSION \
             org.activiti:activiti-api-dependencies $VERSION \
             org.activiti:activiti-core-dependencies $VERSION \
             org.activiti:activiti-core-common-dependencies $VERSION
         env:
-          UPDATEBOT_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_USERNAME: ${{ secrets.BOT_GITHUB_USERNAME }}
+          GITHUB_TOKEN: ${{ secrets.BOT_GITHUB_TOKEN }}

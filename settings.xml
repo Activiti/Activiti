@@ -13,7 +13,7 @@
       <password>${env.MAVEN_PASSWORD}</password>
     </server>
   </servers>
-  
+
    <profiles>
     <profile>
       <id>central</id>
@@ -38,5 +38,5 @@
       </properties>
     </profile>
   </profiles>
-  
+
 </settings>

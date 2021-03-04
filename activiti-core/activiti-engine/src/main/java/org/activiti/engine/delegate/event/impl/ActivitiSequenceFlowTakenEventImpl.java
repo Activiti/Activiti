@@ -108,5 +108,5 @@ public class ActivitiSequenceFlowTakenEventImpl extends ActivitiEventImpl implem
   public void setTargetActivityBehaviorClass(String targetActivityBehaviorClass) {
     this.targetActivityBehaviorClass = targetActivityBehaviorClass;
   }
-  
+
 }

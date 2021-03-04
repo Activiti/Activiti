@@ -6,10 +6,10 @@
         <timeCycle>R/PT2S</timeCycle>
       </timerEventDefinition>
     </startEvent>
-    
+
     <sequenceFlow id="flow1" sourceRef="timerstartevent1" targetRef="end"></sequenceFlow>
-  
+
     <endEvent id="end"></endEvent>
   </process>
-  
+
 </definitions>

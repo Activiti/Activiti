@@ -33,7 +33,7 @@ public interface ProcessRuntimeEvent<T extends ProcessInstance> extends RuntimeE
         PROCESS_SUSPENDED,
 
         PROCESS_RESUMED,
-        
+
         PROCESS_UPDATED
     }
 

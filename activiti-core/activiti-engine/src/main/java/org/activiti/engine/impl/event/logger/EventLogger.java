@@ -54,25 +54,25 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
  */
 public class EventLogger implements ActivitiEventListener {
-	
+
 	private static final Logger logger = LoggerFactory.getLogger(EventLogger.class);
-	
+
 	private static final String EVENT_FLUSHER_KEY = "eventFlusher";
-	
+
 	protected Clock clock;
 	protected ObjectMapper objectMapper;
-	
+
 	// Mapping of type -> handler
-	protected Map<ActivitiEventType, Class<? extends EventLoggerEventHandler>> eventHandlers 
+	protected Map<ActivitiEventType, Class<? extends EventLoggerEventHandler>> eventHandlers
 		= new HashMap<ActivitiEventType, Class<? extends EventLoggerEventHandler>>();
-	
+
 	// Listeners for new events
 	protected List<EventLoggerListener> listeners;
-	
+
 	public EventLogger() {
 		initializeDefaultHandlers();
 	}
-	
+
 	public EventLogger(Clock clock, ObjectMapper objectMapper) {
 		this();
 		this.clock = clock;
@@ -83,21 +83,21 @@ public class EventLogger implements ActivitiEventListener {
 	  addEventHandler(ActivitiEventType.TASK_CREATED, TaskCreatedEventHandler.class);
 		addEventHandler(ActivitiEventType.TASK_COMPLETED, TaskCompletedEventHandler.class);
 		addEventHandler(ActivitiEventType.TASK_ASSIGNED, TaskAssignedEventHandler.class);
-		
+
 		addEventHandler(ActivitiEventType.SEQUENCEFLOW_TAKEN, SequenceFlowTakenEventHandler.class);
-		
+
 		addEventHandler(ActivitiEventType.ACTIVITY_COMPLETED, ActivityCompletedEventHandler.class);
 		addEventHandler(ActivitiEventType.ACTIVITY_STARTED, ActivityStartedEventHandler.class);
 		addEventHandler(ActivitiEventType.ACTIVITY_SIGNALED, ActivitySignaledEventHandler.class);
 		addEventHandler(ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED, ActivityMessageEventHandler.class);
 		addEventHandler(ActivitiEventType.ACTIVITY_COMPENSATE, ActivityCompensatedEventHandler.class);
 		addEventHandler(ActivitiEventType.ACTIVITY_ERROR_RECEIVED, ActivityErrorReceivedEventHandler.class);
-		
+
 		addEventHandler(ActivitiEventType.VARIABLE_CREATED, VariableCreatedEventHandler.class);
 		addEventHandler(ActivitiEventType.VARIABLE_DELETED, VariableDeletedEventHandler.class);
 		addEventHandler(ActivitiEventType.VARIABLE_UPDATED, VariableUpdatedEventHandler.class);
   }
-	
+
 	@Override
 	public void onEvent(ActivitiEvent event) {
 		EventLoggerEventHandler eventHandler = getEventHandler(event);
@@ -106,15 +106,15 @@ public class EventLogger implements ActivitiEventListener {
 			// Events are flushed when command context is closed
 			CommandContext currentCommandContext = Context.getCommandContext();
 			EventFlusher eventFlusher = (EventFlusher) currentCommandContext.getAttribute(EVENT_FLUSHER_KEY);
-			
+
 			if (eventFlusher == null) {
-				
+
 				eventFlusher = createEventFlusher();
 				if (eventFlusher == null) {
 					eventFlusher = new DatabaseEventFlusher(); // Default
 				}
 				currentCommandContext.addAttribute(EVENT_FLUSHER_KEY, eventFlusher);
-				
+
 				currentCommandContext.addCloseListener(eventFlusher);
 				currentCommandContext
 				    .addCloseListener(new CommandContextCloseListener() {
@@ -139,14 +139,14 @@ public class EventLogger implements ActivitiEventListener {
               @Override
               public void closeFailure(CommandContext commandContext) {
               }
-					    
+
 				    });
 			}
 
 			eventFlusher.addEventHandler(eventHandler);
 		}
 	}
-	
+
 	// Subclasses can override this if defaults are not ok
 	protected EventLoggerEventHandler getEventHandler(ActivitiEvent event) {
 
@@ -171,11 +171,11 @@ public class EventLogger implements ActivitiEventListener {
 			// Default: dedicated mapper for the type
 			eventHandlerClass = eventHandlers.get(event.getType());
 		}
-		
+
 		if (eventHandlerClass != null) {
 			return instantiateEventHandler(event, eventHandlerClass);
 		}
-		
+
 		return null;
 	}
 
@@ -192,23 +192,23 @@ public class EventLogger implements ActivitiEventListener {
 		}
 		return null;
   }
-	
+
 	@Override
   public boolean isFailOnException() {
 		return false;
   }
-	
+
 	public void addEventHandler(ActivitiEventType eventType, Class<? extends EventLoggerEventHandler> eventHandlerClass) {
 		eventHandlers.put(eventType, eventHandlerClass);
 	}
-	
+
 	public void addEventLoggerListener(EventLoggerListener listener) {
 		if (listeners == null) {
 			listeners = new ArrayList<EventLoggerListener>(1);
 		}
 		listeners.add(listener);
 	}
-	
+
 	/**
 	 * Subclasses that want something else than the database flusher should override this method
 	 */
@@ -239,5 +239,5 @@ public class EventLogger implements ActivitiEventListener {
 	public void setListeners(List<EventLoggerListener> listeners) {
 		this.listeners = listeners;
 	}
-	
+
 }

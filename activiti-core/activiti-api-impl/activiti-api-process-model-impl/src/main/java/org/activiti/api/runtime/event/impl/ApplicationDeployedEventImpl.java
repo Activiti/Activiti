@@ -25,7 +25,7 @@ public class ApplicationDeployedEventImpl extends RuntimeEventImpl<Deployment, A
     public ApplicationDeployedEventImpl(Deployment entity) {
         super(entity);
     }
-    
+
     @Override
     public ApplicationEvents getEventType() {
         return ApplicationEvents.APPLICATION_DEPLOYED;

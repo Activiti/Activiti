@@ -45,7 +45,7 @@ import org.mockito.Spy;
 public class TaskRuntimeImplTest {
 
     private static final String AUTHENTICATED_USER = "user";
-    
+
     @Spy
     @InjectMocks
     private TaskRuntimeImpl taskRuntime;
@@ -126,7 +126,7 @@ public class TaskRuntimeImplTest {
         doReturn(task).when(taskConverter).fromWithCandidates(any());
 
         taskRuntime.assign(assignTaskPayload);
-        
+
         verify(taskService).unclaim(taskId);
         verify(taskService).claim(taskId, newAssignee);
     }

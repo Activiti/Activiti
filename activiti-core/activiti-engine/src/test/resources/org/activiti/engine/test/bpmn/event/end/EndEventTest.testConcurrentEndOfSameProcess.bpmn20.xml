@@ -5,15 +5,15 @@
   targetNamespace="Examples">
 
   <process id="oneTaskWithDelay">
-  
+
     <startEvent id="theStart" />
     <sequenceFlow id="flow1" sourceRef="theStart" targetRef="theTask" />
-    <userTask id="theTask" name="my task" />    
+    <userTask id="theTask" name="my task" />
     <sequenceFlow id="flow2" sourceRef="theTask" targetRef="delay" />
     <serviceTask id="delay" activiti:class="org.activiti.engine.test.bpmn.event.end.EndEventTestJavaDelegate" />
     <sequenceFlow id="flow3" sourceRef="delay" targetRef="theEnd" />
     <endEvent id="theEnd" />
-    
+
   </process>
 
 </definitions>

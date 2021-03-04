@@ -29,7 +29,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
  * tests the scoped beans
- * 
+ *
 
  */
 @RunWith(SpringJUnit4ClassRunner.class)

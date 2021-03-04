@@ -70,14 +70,14 @@ public class GetProcessInstancesPayload implements Payload {
     public void setActiveOnly(boolean activeOnly) {
         this.activeOnly = activeOnly;
     }
-    
+
     public String getParentProcessInstanceId() {
         return parentProcessInstanceId;
     }
-    
+
     public void setParentProcessInstanceId(String parentProcessInstanceId) {
         this.parentProcessInstanceId=parentProcessInstanceId;
     }
 
-    
+
 }

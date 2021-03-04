@@ -17,23 +17,23 @@
   xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
   xmlns:activiti="http://activiti.org/bpmn"
   targetNamespace="Examples">
-  
+
   <process id="expressionBeanAccess">
-  
+
     <startEvent id="theStart" />
     <sequenceFlow id="flow1" sourceRef="theStart" targetRef="accessExposedBean" />
-    
+
     <serviceTask id="accessExposedBean" activiti:expression="${execution.setVariable('exposedBeanResult', exposedBean.toString())}" />
     <sequenceFlow id="flow2" sourceRef="accessExposedBean" targetRef="wait" />
-    
+
     <receiveTask id="wait" />
     <sequenceFlow id="flow3" sourceRef="wait" targetRef="failOnNotExposedBean" />
-    
+
     <serviceTask id="failOnNotExposedBean" activiti:expression="${execution.setVariable('notExposedBeanResult', notExposedBean.toString())}" />
     <sequenceFlow id="flow4" sourceRef="failOnNotExposedBean" targetRef="end" />
-    
+
     <endEvent id="end" />
-    
+
   </process>
 
 </definitions>

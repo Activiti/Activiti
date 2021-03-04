@@ -7,7 +7,7 @@
         <activiti:mapException >com.activiti.Something1</activiti:mapException>
     </serviceTask>
     <sequenceFlow id="flow2" sourceRef="servicetaskWithAndTrueAndChildren" targetRef="endevent1"></sequenceFlow>
-    
+
     <endEvent id="endevent1" name="End"></endEvent>
   </process>
 </definitions>

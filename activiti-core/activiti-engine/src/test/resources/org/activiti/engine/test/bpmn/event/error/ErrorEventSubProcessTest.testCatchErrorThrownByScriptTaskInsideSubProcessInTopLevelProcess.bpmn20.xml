@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <definitions id="definitions"
 	xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
-	xmlns:activiti="http://activiti.org/bpmn" 
+	xmlns:activiti="http://activiti.org/bpmn"
 	targetNamespace="Examples">
-	
+
 	<process id="CatchErrorThrownByScriptTaskInsideSubProcessInTopLevelProcess">
 
 		<startEvent id="theStart" />
@@ -19,9 +19,9 @@
 	      </scriptTask>
 	    </subProcess>
 	    <sequenceFlow id="flow3" sourceRef="subprocess" targetRef="theEnd" />
-		
+
 		<endEvent id="theEnd" />
-    
+
 	    <subProcess id="eventSubProcess" triggeredByEvent="true">
 	      <startEvent id="catchError">
 	        <errorEventDefinition /> <!-- no errorCode: catch any error -->

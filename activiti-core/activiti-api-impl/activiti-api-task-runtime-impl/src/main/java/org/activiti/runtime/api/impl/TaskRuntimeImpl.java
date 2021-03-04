@@ -90,7 +90,7 @@ public class TaskRuntimeImpl implements TaskRuntime {
     public Task task(String taskId) {
         return taskConverter.fromWithCandidates(taskRuntimeHelper.getInternalTaskWithChecks(taskId));
     }
-    
+
     private Task reassignedTask(String taskId) {
         return taskConverter.fromWithCandidates(taskRuntimeHelper.getInternalTask(taskId));
     }
@@ -454,27 +454,27 @@ public class TaskRuntimeImpl implements TaskRuntime {
         }
         throw new IllegalStateException("There is no authenticated user, we need a user authenticated to find tasks");
     }
-    
+
     private void assertAssigneeIsACandidateUser(String taskId, String assignee) {
         List<String> userCandidates = userCandidates(taskId);
         if(!userCandidates.contains(assignee)){
             throw new IllegalStateException("You cannot assign a task to " + assignee + " due it is not a candidate for it");
         }
     }
-    
+
     private void reassignTask(String taskId, String assignee) {
         releaseTask(taskId);
         taskService.claim(taskId, assignee);
     }
-    
+
     private void releaseTask(String taskId) {
         assertCanReleaseTask(taskId);
         taskService.unclaim(taskId);
     }
-    
+
     private void assertCanReleaseTask(String taskId) {
         Task task = task(taskId);
-        
+
         if (task.getAssignee() == null || task.getAssignee().isEmpty()) {
             throw new IllegalStateException("You cannot release a task that is not claimed");
         }

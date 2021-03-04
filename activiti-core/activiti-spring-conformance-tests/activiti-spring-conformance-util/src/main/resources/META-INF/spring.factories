@@ -1,3 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
     org.activiti.spring.conformance.util.RuntimeTestConfiguration
-    
