@@ -55,7 +55,9 @@ public class ExtensionElementsParser implements BpmnXMLConstants {
           new PotentialStarterParser().parse(xtr, activeProcess);
         } else {
           ExtensionElement extensionElement = BpmnXMLUtil.parseExtensionElement(xtr);
-          parentElement.addExtensionElement(extensionElement);
+          if (parentElement != null) {
+              parentElement.addExtensionElement(extensionElement);
+          }
         }
 
       } else if (xtr.isEndElement()) {
