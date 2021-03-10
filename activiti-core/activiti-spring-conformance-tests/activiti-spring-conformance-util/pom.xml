@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.activiti</groupId>
     <artifactId>activiti-spring-conformance-tests</artifactId>
-    <version>7.1.318</version>
+    <version>7.1.0-M12</version>
   </parent>
   <artifactId>activiti-spring-conformance-util</artifactId>
   <name>Activiti :: Spring :: Conformance Util </name>
