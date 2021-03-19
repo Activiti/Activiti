@@ -111,7 +111,7 @@ public class ValuedDataObjectConverterTest extends AbstractConverterTest {
     assertThat(dataObj.getName()).isEqualTo("LongTest");
     assertThat(dataObj.getItemSubjectRef().getStructureRef()).isEqualTo("xsd:long");
     assertThat(dataObj.getValue()).isInstanceOf(Long.class);
-    assertThat(dataObj.getValue()).isEqualTo(new Long(-123456));
+    assertThat(dataObj.getValue()).isEqualTo((long) -123456);
     assertThat(dataObj.getExtensionElements()).hasSize(1);
     List<ExtensionElement> testValues = dataObj.getExtensionElements().get("testvalue");
     assertThat(testValues).isNotNull();
@@ -188,6 +188,6 @@ public class ValuedDataObjectConverterTest extends AbstractConverterTest {
     assertThat(dataObj.getName()).isEqualTo("LongSubTest");
     assertThat(dataObj.getItemSubjectRef().getStructureRef()).isEqualTo("xsd:long");
     assertThat(dataObj.getValue()).isInstanceOf(Long.class);
-    assertThat(dataObj.getValue()).isEqualTo(new Long(456123));
+    assertThat(dataObj.getValue()).isEqualTo(456123L);
   }
 }

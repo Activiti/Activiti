@@ -947,7 +947,7 @@ public class JSONObject {
    *           If the key is null.
    */
   public JSONObject put(String key, long value) throws JSONException {
-    put(key, new Long(value));
+    put(key, Long.valueOf(value));
     return this;
   }
 
@@ -1149,8 +1149,8 @@ public class JSONObject {
         if (s.indexOf('.') > -1 || s.indexOf('e') > -1 || s.indexOf('E') > -1) {
           return Double.valueOf(s);
         } else {
-          Long myLong = new Long(s);
-          if (myLong.longValue() == myLong.intValue()) {
+          Long myLong = Long.valueOf(s);
+          if (myLong == myLong.intValue()) {
             return myLong.intValue();
           } else {
             return myLong;

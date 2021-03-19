@@ -90,7 +90,7 @@ public class HistoricProcessInstanceTest extends PluggableActivitiTestCase {
     assertThat(historicProcessInstance.getProcessDefinitionId()).isEqualTo(processInstance.getProcessDefinitionId());
     assertThat(historicProcessInstance.getStartTime()).isEqualTo(noon);
     assertThat(historicProcessInstance.getEndTime()).isEqualTo(twentyFiveSecsAfterNoon);
-    assertThat(historicProcessInstance.getDurationInMillis()).isEqualTo(new Long(25 * 1000));
+    assertThat(historicProcessInstance.getDurationInMillis()).isEqualTo(Long.valueOf(25 * 1000));
 
     assertThat(historyService.createHistoricProcessInstanceQuery().unfinished().count()).isEqualTo(0);
     assertThat(historyService.createHistoricProcessInstanceQuery().finished().count()).isEqualTo(1);
