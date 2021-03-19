@@ -28,7 +28,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
-import static org.mockito.MockitoAnnotations.initMocks;
+import static org.mockito.MockitoAnnotations.openMocks;
 
 public class ToTimerExecutedConverterTest {
 
@@ -40,7 +40,7 @@ public class ToTimerExecutedConverterTest {
 
     @BeforeEach
     public void setUp() {
-        initMocks(this);
+        openMocks(this);
     }
 
     @Test

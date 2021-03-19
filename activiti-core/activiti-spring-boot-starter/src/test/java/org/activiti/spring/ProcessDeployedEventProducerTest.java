@@ -22,7 +22,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.MockitoAnnotations.initMocks;
+import static org.mockito.MockitoAnnotations.openMocks;
 
 import java.io.ByteArrayInputStream;
 import java.util.List;
@@ -60,7 +60,7 @@ public class ProcessDeployedEventProducerTest {
 
     @BeforeEach
     public void setUp() {
-        initMocks(this);
+        openMocks(this);
         producer = new ProcessDeployedEventProducer(repositoryService,
                                                     converter,
                                                     asList(firstListener, secondListener),

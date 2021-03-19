@@ -20,7 +20,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
-import static org.mockito.MockitoAnnotations.initMocks;
+import static org.mockito.MockitoAnnotations.openMocks;
 
 import java.util.Arrays;
 import java.util.Optional;
@@ -51,7 +51,7 @@ public class VariableUpdatedListenerDelegateTest {
 
     @BeforeEach
     public void setUp() {
-        initMocks(this);
+        openMocks(this);
         variableUpdatedListenerDelegate = new VariableUpdatedListenerDelegate(
             Arrays.asList(firstListener, secondListener), converter, variableEventFilter);
     }

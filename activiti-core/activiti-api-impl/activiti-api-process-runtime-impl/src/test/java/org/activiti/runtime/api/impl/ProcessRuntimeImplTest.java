@@ -27,7 +27,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
-import static org.mockito.MockitoAnnotations.initMocks;
+import static org.mockito.MockitoAnnotations.openMocks;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -89,7 +89,7 @@ public class ProcessRuntimeImplTest {
 
     @BeforeEach
     public void setUp() {
-        initMocks(this);
+        openMocks(this);
 
         RepositoryServiceImpl repositoryService = new RepositoryServiceImpl();
         repositoryService.setCommandExecutor(commandExecutor);

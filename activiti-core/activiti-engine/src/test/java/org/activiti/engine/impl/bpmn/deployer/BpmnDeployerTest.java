@@ -19,7 +19,7 @@ import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
-import static org.mockito.MockitoAnnotations.initMocks;
+import static org.mockito.MockitoAnnotations.openMocks;
 
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntityImpl;
 import org.junit.Before;
@@ -37,7 +37,7 @@ public class BpmnDeployerTest {
 
     @Before
     public void setUp() throws Exception {
-        initMocks(this);
+        openMocks(this);
     }
 
     @Test

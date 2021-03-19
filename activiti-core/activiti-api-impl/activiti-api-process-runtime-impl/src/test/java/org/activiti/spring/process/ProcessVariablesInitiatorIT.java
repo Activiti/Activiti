@@ -21,7 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
-import static org.mockito.MockitoAnnotations.initMocks;
+import static org.mockito.MockitoAnnotations.openMocks;
 
 import java.io.InputStream;
 import java.util.Map;
@@ -72,7 +72,7 @@ public class ProcessVariablesInitiatorIT {
 
     @BeforeEach
     public void setUp() {
-        initMocks(this);
+        openMocks(this);
     }
 
     @Test

@@ -26,7 +26,7 @@ import org.mockito.Mock;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
-import static org.mockito.MockitoAnnotations.initMocks;
+import static org.mockito.MockitoAnnotations.openMocks;
 
 public class RetrieveIntegrationContextCmdTest {
 
@@ -41,7 +41,7 @@ public class RetrieveIntegrationContextCmdTest {
 
     @Before
     public void setUp() throws Exception {
-        initMocks(this);
+        openMocks(this);
         given(commandContext.getProcessEngineConfiguration()).willReturn(processEngineConfiguration);
         given(processEngineConfiguration.getIntegrationContextManager()).willReturn(integrationContextManager);
     }

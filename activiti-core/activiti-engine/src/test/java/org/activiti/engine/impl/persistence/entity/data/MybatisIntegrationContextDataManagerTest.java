@@ -27,7 +27,7 @@ import org.mockito.Spy;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.doReturn;
-import static org.mockito.MockitoAnnotations.initMocks;
+import static org.mockito.MockitoAnnotations.openMocks;
 
 public class MybatisIntegrationContextDataManagerTest {
 
@@ -40,7 +40,7 @@ public class MybatisIntegrationContextDataManagerTest {
 
     @Before
     public void setUp() throws Exception {
-        initMocks(this);
+        openMocks(this);
         doReturn(dbSqlSession).when(manager).getDbSqlSession();
     }
 

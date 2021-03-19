@@ -19,7 +19,7 @@ import static java.util.Collections.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
-import static org.mockito.MockitoAnnotations.initMocks;
+import static org.mockito.MockitoAnnotations.openMocks;
 
 import java.util.Map;
 
@@ -57,7 +57,7 @@ public class IntegrationContextBuilderTest {
 
     @BeforeEach
     public void setUp() {
-        initMocks(this);
+        openMocks(this);
 
         ProcessEngineConfigurationImpl processEngineConfiguration = mock(ProcessEngineConfigurationImpl.class);
         Context.setProcessEngineConfiguration(processEngineConfiguration);

@@ -20,7 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
-import static org.mockito.MockitoAnnotations.initMocks;
+import static org.mockito.MockitoAnnotations.openMocks;
 
 import java.util.List;
 import org.activiti.api.process.model.events.ApplicationDeployedEvent;
@@ -59,7 +59,7 @@ public class ApplicationDeployedEventProducerTest {
 
     @BeforeEach
     public void setUp() {
-        initMocks(this);
+        openMocks(this);
         producer = new ApplicationDeployedEventProducer(repositoryService,
                 converter,
                 asList(firstListener, secondListener),

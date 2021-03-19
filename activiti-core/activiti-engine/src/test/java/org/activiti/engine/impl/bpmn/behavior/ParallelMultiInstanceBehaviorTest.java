@@ -22,7 +22,7 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
-import static org.mockito.MockitoAnnotations.initMocks;
+import static org.mockito.MockitoAnnotations.openMocks;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -55,7 +55,7 @@ public class ParallelMultiInstanceBehaviorTest {
 
     @Before
     public void setUp() {
-        initMocks(this);
+        openMocks(this);
         doReturn(commandContext).when(multiInstanceBehavior).getCommandContext();
     }
 
