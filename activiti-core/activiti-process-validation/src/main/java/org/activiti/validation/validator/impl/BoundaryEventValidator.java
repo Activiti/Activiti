@@ -73,15 +73,16 @@ public class BoundaryEventValidator extends ProcessLevelValidator {
             addError(errors, Problems.BOUNDARY_EVENT_CANCEL_ONLY_ON_TRANSACTION, process, boundaryEvent, "boundary event with cancelEventDefinition only supported on transaction subprocesses");
           } else {
             if (!cancelBoundaryEventsCounts.containsKey(attachedToFlowElement.getId())) {
-              cancelBoundaryEventsCounts.put(attachedToFlowElement.getId(), new Integer(0));
+              cancelBoundaryEventsCounts.put(attachedToFlowElement.getId(), 0);
             }
-            cancelBoundaryEventsCounts.put(attachedToFlowElement.getId(), new Integer(cancelBoundaryEventsCounts.get(attachedToFlowElement.getId()) + 1));
+            cancelBoundaryEventsCounts.put(attachedToFlowElement.getId(),
+                cancelBoundaryEventsCounts.get(attachedToFlowElement.getId()) + 1);
           }
 
         } else if (eventDefinition instanceof CompensateEventDefinition) {
 
           if (!compensateBoundaryEventsCounts.containsKey(boundaryEvent.getAttachedToRefId())) {
-            compensateBoundaryEventsCounts.put(boundaryEvent.getAttachedToRefId(), new Integer(0));
+            compensateBoundaryEventsCounts.put(boundaryEvent.getAttachedToRefId(), 0);
           }
           compensateBoundaryEventsCounts.put(boundaryEvent.getAttachedToRefId(), compensateBoundaryEventsCounts.get(boundaryEvent.getAttachedToRefId()) + 1);
 

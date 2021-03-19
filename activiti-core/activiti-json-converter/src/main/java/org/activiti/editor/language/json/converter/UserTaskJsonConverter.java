@@ -280,7 +280,7 @@ public class UserTaskJsonConverter extends BaseBpmnJsonConverter implements Form
     int intValue = 0;
     String value = getExtensionElementValue(name, userTask);
     if (value != null && NumberUtils.isNumber(value)) {
-      intValue = Integer.valueOf(value);
+      intValue = Integer.parseInt(value);
     }
     return intValue;
   }

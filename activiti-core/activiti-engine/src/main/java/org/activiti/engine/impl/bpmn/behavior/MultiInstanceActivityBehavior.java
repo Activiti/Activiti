@@ -276,7 +276,7 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
       return ((Number) value).intValue();
 
     } else if (value instanceof String) {
-      return Integer.valueOf((String) value);
+      return Integer.parseInt((String) value);
 
     } else {
       throw new ActivitiIllegalArgumentException("Could not resolve loopCardinality expression '" + loopCardinalityExpression.getExpressionText() + "': not a number nor number String");

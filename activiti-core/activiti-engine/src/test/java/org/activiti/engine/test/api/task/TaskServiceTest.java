@@ -672,7 +672,7 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
         assertThat(runtimeService.getVariable(processInstance.getId(), "b")).isNull();
 
         // verify script listener has done its job
-        assertThat(runtimeService.getVariable(processInstance.getId(), "sum")).isEqualTo(Integer.valueOf(2));
+        assertThat(runtimeService.getVariable(processInstance.getId(), "sum")).isEqualTo(2);
 
         // Fetch second task
         taskService.createTaskQuery().singleResult();
