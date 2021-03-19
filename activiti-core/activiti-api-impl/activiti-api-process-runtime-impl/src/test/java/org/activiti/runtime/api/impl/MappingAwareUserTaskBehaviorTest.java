@@ -29,7 +29,7 @@ import static org.activiti.engine.impl.bpmn.behavior.MappingExecutionContext.bui
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
-import static org.mockito.MockitoAnnotations.initMocks;
+import static org.mockito.MockitoAnnotations.openMocks;
 
 public class MappingAwareUserTaskBehaviorTest {
 
@@ -41,7 +41,7 @@ public class MappingAwareUserTaskBehaviorTest {
 
     @BeforeEach
     public void setUp() throws Exception {
-        initMocks(this);
+        openMocks(this);
     }
 
     @Test

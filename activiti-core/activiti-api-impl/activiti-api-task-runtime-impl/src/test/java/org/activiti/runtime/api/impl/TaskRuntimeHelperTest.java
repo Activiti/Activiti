@@ -25,7 +25,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.mockito.MockitoAnnotations.initMocks;
+import static org.mockito.MockitoAnnotations.openMocks;
 
 import java.util.Date;
 import java.util.List;
@@ -62,7 +62,7 @@ public class TaskRuntimeHelperTest {
 
     @BeforeEach
     public void setUp() {
-        initMocks(this);
+        openMocks(this);
         taskRuntimeHelper = spy(new TaskRuntimeHelper(taskService,
                 taskConverter,
                 securityManager,

@@ -25,7 +25,7 @@ import static java.util.Arrays.asList;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
-import static org.mockito.MockitoAnnotations.initMocks;
+import static org.mockito.MockitoAnnotations.openMocks;
 
 public class ApplicationDeployerTest {
 
@@ -42,7 +42,7 @@ public class ApplicationDeployerTest {
 
     @BeforeEach
     public void setUp() {
-        initMocks(this);
+        openMocks(this);
         deployer = new ApplicationDeployer(applicationLoader,
                                            asList(firstDeployer, secondDeployer));
     }

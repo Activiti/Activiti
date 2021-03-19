@@ -64,7 +64,7 @@ public class VariableScopeElResolverTest {
 
     @Before
     public void setUp() throws Exception {
-        initMocks(this);
+        openMocks(this);
         doReturn(Arrays.asList(firstItemResolver, secondItemResolver, thirdItemResolver)).when(
             variableScopeElResolver).getVariableScopeItemELResolvers();
     }

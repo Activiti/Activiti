@@ -29,7 +29,7 @@ import static org.activiti.runtime.api.model.impl.MockProcessDefinitionBuilder.p
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.MockitoAnnotations.initMocks;
+import static org.mockito.MockitoAnnotations.openMocks;
 
 public class APIProcessDefinitionConverterTest {
 
@@ -41,7 +41,7 @@ public class APIProcessDefinitionConverterTest {
 
     @BeforeEach
     public void setUp() {
-        initMocks(this);
+        openMocks(this);
 
         Process process = new Process();
         process.setId("processKey");

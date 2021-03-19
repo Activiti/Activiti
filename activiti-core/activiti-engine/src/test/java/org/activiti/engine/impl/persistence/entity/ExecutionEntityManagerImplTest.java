@@ -19,7 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
-import static org.mockito.MockitoAnnotations.initMocks;
+import static org.mockito.MockitoAnnotations.openMocks;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -54,7 +54,7 @@ public class ExecutionEntityManagerImplTest {
 
     @Before
     public void setUp() throws Exception {
-        initMocks(this);
+        openMocks(this);
         given(processEngineConfiguration.getClock()).willReturn(clock);
         given(processEngineConfiguration.getEventDispatcher()).willReturn(eventDispatcher);
         Context.setProcessEngineConfiguration(processEngineConfiguration);
