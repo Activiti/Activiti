@@ -719,7 +719,7 @@ public class JSONObject {
   public double optDouble(String key, double defaultValue) {
     try {
       Object o = opt(key);
-      return o instanceof Number ? ((Number) o).doubleValue() : new Double((String) o).doubleValue();
+      return o instanceof Number ? ((Number) o).doubleValue() : Double.parseDouble((String) o);
     } catch (Exception e) {
       return defaultValue;
     }
