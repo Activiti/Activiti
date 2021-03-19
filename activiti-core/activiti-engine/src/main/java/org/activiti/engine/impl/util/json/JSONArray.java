@@ -570,7 +570,7 @@ public class JSONArray {
    * @return this.
    */
   public JSONArray put(double value) throws JSONException {
-    Double d = new Double(value);
+    Double d = value;
     JSONObject.testValidity(d);
     put(d);
     return this;
