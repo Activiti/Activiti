@@ -97,7 +97,7 @@ public class ValuedDataObjectConverterTest extends AbstractConverterTest {
     assertThat(dataObj.getName()).isEqualTo("DoubleTest");
     assertThat(dataObj.getItemSubjectRef().getStructureRef()).isEqualTo("xsd:double");
     assertThat(dataObj.getValue()).isInstanceOf(Double.class);
-    assertThat(dataObj.getValue()).isEqualTo(new Double(123456789));
+    assertThat(dataObj.getValue()).isEqualTo(123456789.0);
 
     dataObj = objectMap.get("dObj5");
     assertThat(dataObj.getId()).isEqualTo("dObj5");
@@ -174,7 +174,7 @@ public class ValuedDataObjectConverterTest extends AbstractConverterTest {
     assertThat(dataObj.getName()).isEqualTo("DoubleSubTest");
     assertThat(dataObj.getItemSubjectRef().getStructureRef()).isEqualTo("xsd:double");
     assertThat(dataObj.getValue()).isInstanceOf(Double.class);
-    assertThat(dataObj.getValue()).isEqualTo(new Double(678912345));
+    assertThat(dataObj.getValue()).isEqualTo(678912345.0);
 
     dataObj = objectMap.get("dObj11");
     assertThat(dataObj.getId()).isEqualTo("dObj11");
