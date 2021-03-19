@@ -21,7 +21,7 @@ import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.MockitoAnnotations.openMocks;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -86,7 +86,7 @@ public class VariableScopeElResolverTest {
         //then
         assertThat(result).isEqualTo("myValue");
         verify(elContext).setPropertyResolved(true);
-        verifyZeroInteractions(thirdItemResolver);
+        verifyNoInteractions(thirdItemResolver);
     }
 
     @Test
@@ -104,7 +104,7 @@ public class VariableScopeElResolverTest {
 
         //then
         assertThat(result).isNull();
-        verifyZeroInteractions(elContext);
+        verifyNoInteractions(elContext);
     }
 
 
