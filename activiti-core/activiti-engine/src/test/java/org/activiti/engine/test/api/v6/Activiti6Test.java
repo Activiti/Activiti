@@ -130,10 +130,8 @@ public class Activiti6Test extends PluggableActivitiTestCase {
         // it still fits within transaction timeouts). Go
         // on, try it!
         Map<String, Object> vars = new HashMap<String, Object>();
-        vars.put("counter",
-                 Integer.valueOf(0));
-        vars.put("maxCount",
-                 maxCount);
+        vars.put("counter", 0);
+        vars.put("maxCount", maxCount);
         ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testLongServiceTaskLoop",
                                                                                    vars);
         assertThat(processInstance).isNotNull();

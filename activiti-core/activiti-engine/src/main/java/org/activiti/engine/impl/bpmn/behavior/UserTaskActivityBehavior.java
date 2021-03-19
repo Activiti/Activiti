@@ -170,7 +170,7 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
       if (priority != null) {
         if (priority instanceof String) {
           try {
-            task.setPriority(Integer.valueOf((String) priority));
+            task.setPriority(Integer.parseInt((String) priority));
           } catch (NumberFormatException e) {
             throw new ActivitiIllegalArgumentException("Priority does not resolve to a number: " + priority, e);
           }
