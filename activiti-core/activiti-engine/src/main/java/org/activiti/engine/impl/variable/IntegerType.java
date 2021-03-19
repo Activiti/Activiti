@@ -33,7 +33,7 @@ public class IntegerType implements VariableType {
 
   public Object getValue(ValueFields valueFields) {
     if (valueFields.getLongValue() != null) {
-      return new Integer(valueFields.getLongValue().intValue());
+      return valueFields.getLongValue().intValue();
     }
     return null;
   }
