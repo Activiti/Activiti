@@ -101,7 +101,7 @@ public class ValuedDataObjectConverterTest extends AbstractConverterTest {
         assertThat(dObj.getName()).isEqualTo("IntegerTest");
         assertThat(dObj.getItemSubjectRef().getStructureRef()).isEqualTo("xsd:int");
         assertThat(dObj.getValue()).isInstanceOf(Integer.class);
-        assertThat(dObj.getValue()).isEqualTo(Integer.valueOf(123));
+        assertThat(dObj.getValue()).isEqualTo(123);
       } else if ("dObj6".equals(dObj.getId())) {
         assertThat(dObj.getClass()).isEqualTo(LongDataObject.class);
         assertThat(dObj.getName()).isEqualTo("LongTest");
@@ -155,7 +155,7 @@ public class ValuedDataObjectConverterTest extends AbstractConverterTest {
         assertThat(dObj.getName()).isEqualTo("SubIntegerTest");
         assertThat(dObj.getItemSubjectRef().getStructureRef()).isEqualTo("xsd:int");
         assertThat(dObj.getValue()).isInstanceOf(Integer.class);
-        assertThat(dObj.getValue()).isEqualTo(Integer.valueOf(45));
+        assertThat(dObj.getValue()).isEqualTo(45);
       } else if ("dObj6".equals(dObj.getId())) {
         assertThat(dObj.getClass()).isEqualTo(LongDataObject.class);
         assertThat(dObj.getName()).isEqualTo("SubLongTest");

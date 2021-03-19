@@ -63,7 +63,7 @@ class IntegrationContextImplTest {
 
     private static Arguments[] testValues = {Arguments.of(BigDecimal.valueOf(1000, 2), BigDecimal.valueOf(1000, 2)),
                                              Arguments.of(Long.valueOf(100000000000L), Long.valueOf(100000000000L)),
-                                             Arguments.of(Integer.valueOf(123), Integer.valueOf(123)),
+                                             Arguments.of(123, 123),
                                              Arguments.of(String.valueOf("string"), String.valueOf("string")),
                                              Arguments.of(String.valueOf("item1,item2"), String.valueOf("item1,item2")),
                                              Arguments.of(Boolean.valueOf(true), Boolean.valueOf(true)),
