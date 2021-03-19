@@ -153,7 +153,7 @@ public class JPAEntityMappings {
     } else if (type == Double.class || type == double.class) {
       return Double.parseDouble(string);
     } else if (type == Character.class || type == char.class) {
-      return new Character(string.charAt(0));
+      return string.charAt(0);
     } else if (type == java.util.Date.class) {
       return new java.util.Date(Long.parseLong(string));
     } else if (type == java.sql.Date.class) {
