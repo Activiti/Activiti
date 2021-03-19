@@ -50,31 +50,31 @@ import java.util.Iterator;
 public class XML {
 
   /** The Character '&'. */
-  public static final Character AMP = new Character('&');
+  public static final Character AMP = '&';
 
   /** The Character '''. */
-  public static final Character APOS = new Character('\'');
+  public static final Character APOS = '\'';
 
   /** The Character '!'. */
-  public static final Character BANG = new Character('!');
+  public static final Character BANG = '!';
 
   /** The Character '='. */
-  public static final Character EQ = new Character('=');
+  public static final Character EQ = '=';
 
   /** The Character '>'. */
-  public static final Character GT = new Character('>');
+  public static final Character GT = '>';
 
 /** The Character '<'. */
-  public static final Character LT = new Character('<');
+  public static final Character LT = '<';
 
   /** The Character '?'. */
-  public static final Character QUEST = new Character('?');
+  public static final Character QUEST = '?';
 
   /** The Character '"'. */
-  public static final Character QUOT = new Character('"');
+  public static final Character QUOT = '"';
 
   /** The Character '/'. */
-  public static final Character SLASH = new Character('/');
+  public static final Character SLASH = '/';
 
   /**
    * Replace special characters with XML escapes:
