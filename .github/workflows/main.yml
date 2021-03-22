@@ -60,7 +60,7 @@ jobs:
           restore-keys: ${{ runner.os }}-m2
 
       - name: Build with Maven
-        run: mvn -B verify
+        run: mvn -B verify -T 2
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v1
