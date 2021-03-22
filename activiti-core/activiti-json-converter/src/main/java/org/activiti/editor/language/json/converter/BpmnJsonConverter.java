@@ -509,7 +509,7 @@ public class BpmnJsonConverter implements EditorJsonConstants,
         Class<? extends BaseBpmnJsonConverter> converter = convertersToJsonMap.get(flowElement.getClass());
         if (converter != null) {
             try {
-                BaseBpmnJsonConverter converterInstance = converter.newInstance();
+                BaseBpmnJsonConverter converterInstance = converter.getDeclaredConstructor().newInstance();
                 if (converterInstance instanceof FormKeyAwareConverter) {
                     ((FormKeyAwareConverter) converterInstance).setFormKeyMap(formKeyMap);
                 }
@@ -542,7 +542,7 @@ public class BpmnJsonConverter implements EditorJsonConstants,
             Class<? extends BaseBpmnJsonConverter> converter = convertersToJsonMap.get(artifact.getClass());
             if (converter != null) {
                 try {
-                    converter.newInstance().convertToJson(artifact,
+                    converter.getDeclaredConstructor().newInstance().convertToJson(artifact,
                                                           this,
                                                           model,
                                                           container,
@@ -843,7 +843,7 @@ public class BpmnJsonConverter implements EditorJsonConstants,
             String stencilId = BpmnJsonConverterUtil.getStencilId(shapeNode);
             Class<? extends BaseBpmnJsonConverter> converter = convertersToBpmnMap.get(stencilId);
             try {
-                BaseBpmnJsonConverter converterInstance = converter.newInstance();
+                BaseBpmnJsonConverter converterInstance = converter.getDeclaredConstructor().newInstance();
                 if (converterInstance instanceof DecisionTableAwareConverter) {
                     ((DecisionTableAwareConverter) converterInstance).setDecisionTableMap(decisionTableMap);
                 }
