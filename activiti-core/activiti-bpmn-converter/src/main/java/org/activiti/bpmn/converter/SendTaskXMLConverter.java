@@ -17,7 +17,6 @@ package org.activiti.bpmn.converter;
 
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
-
 import org.activiti.bpmn.converter.export.FieldExtensionExport;
 import org.activiti.bpmn.converter.util.BpmnXMLUtil;
 import org.activiti.bpmn.model.BaseElement;
@@ -31,64 +30,98 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class SendTaskXMLConverter extends BaseBpmnXMLConverter {
 
-  public Class<? extends BaseElement> getBpmnElementType() {
-    return SendTask.class;
-  }
-
-  @Override
-  protected String getXMLElementName() {
-    return ELEMENT_TASK_SEND;
-  }
-
-  @Override
-  protected BaseElement convertXMLToElement(XMLStreamReader xtr, BpmnModel model) throws Exception {
-    SendTask sendTask = new SendTask();
-    BpmnXMLUtil.addXMLLocation(sendTask, xtr);
-    sendTask.setType(xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_TYPE));
-
-    if ("##WebService".equals(xtr.getAttributeValue(null, ATTRIBUTE_TASK_IMPLEMENTATION))) {
-      sendTask.setImplementationType(ImplementationType.IMPLEMENTATION_TYPE_WEBSERVICE);
-      sendTask.setOperationRef(parseOperationRef(xtr.getAttributeValue(null, ATTRIBUTE_TASK_OPERATION_REF), model));
+    public Class<? extends BaseElement> getBpmnElementType() {
+        return SendTask.class;
     }
 
-    parseChildElements(getXMLElementName(), sendTask, model, xtr);
-
-    return sendTask;
-  }
-
-  @Override
-  protected void writeAdditionalAttributes(BaseElement element, BpmnModel model, XMLStreamWriter xtw) throws Exception {
-
-    SendTask sendTask = (SendTask) element;
-
-    if (StringUtils.isNotEmpty(sendTask.getType())) {
-      writeQualifiedAttribute(ATTRIBUTE_TYPE, sendTask.getType(), xtw);
+    @Override
+    protected String getXMLElementName() {
+        return ELEMENT_TASK_SEND;
     }
-  }
 
-  @Override
-  protected boolean writeExtensionChildElements(BaseElement element, boolean didWriteExtensionStartElement, XMLStreamWriter xtw) throws Exception {
-    SendTask sendTask = (SendTask) element;
-    didWriteExtensionStartElement = FieldExtensionExport.writeFieldExtensions(sendTask.getFieldExtensions(), didWriteExtensionStartElement, xtw);
-    return didWriteExtensionStartElement;
-  }
+    @Override
+    protected BaseElement convertXMLToElement(
+        XMLStreamReader xtr,
+        BpmnModel model
+    ) throws Exception {
+        SendTask sendTask = new SendTask();
+        BpmnXMLUtil.addXMLLocation(sendTask, xtr);
+        sendTask.setType(
+            xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_TYPE)
+        );
 
-  @Override
-  protected void writeAdditionalChildElements(BaseElement element, BpmnModel model, XMLStreamWriter xtw) throws Exception {
-  }
+        if (
+            "##WebService".equals(
+                    xtr.getAttributeValue(null, ATTRIBUTE_TASK_IMPLEMENTATION)
+                )
+        ) {
+            sendTask.setImplementationType(
+                ImplementationType.IMPLEMENTATION_TYPE_WEBSERVICE
+            );
+            sendTask.setOperationRef(
+                parseOperationRef(
+                    xtr.getAttributeValue(null, ATTRIBUTE_TASK_OPERATION_REF),
+                    model
+                )
+            );
+        }
 
-  protected String parseOperationRef(String operationRef, BpmnModel model) {
-    String result = null;
-    if (StringUtils.isNotEmpty(operationRef)) {
-      int indexOfP = operationRef.indexOf(':');
-      if (indexOfP != -1) {
-        String prefix = operationRef.substring(0, indexOfP);
-        String resolvedNamespace = model.getNamespace(prefix);
-        result = resolvedNamespace + ":" + operationRef.substring(indexOfP + 1);
-      } else {
-        result = model.getTargetNamespace() + ":" + operationRef;
-      }
+        parseChildElements(getXMLElementName(), sendTask, model, xtr);
+
+        return sendTask;
     }
-    return result;
-  }
+
+    @Override
+    protected void writeAdditionalAttributes(
+        BaseElement element,
+        BpmnModel model,
+        XMLStreamWriter xtw
+    ) throws Exception {
+        SendTask sendTask = (SendTask) element;
+
+        if (StringUtils.isNotEmpty(sendTask.getType())) {
+            writeQualifiedAttribute(ATTRIBUTE_TYPE, sendTask.getType(), xtw);
+        }
+    }
+
+    @Override
+    protected boolean writeExtensionChildElements(
+        BaseElement element,
+        boolean didWriteExtensionStartElement,
+        XMLStreamWriter xtw
+    ) throws Exception {
+        SendTask sendTask = (SendTask) element;
+        didWriteExtensionStartElement =
+            FieldExtensionExport.writeFieldExtensions(
+                sendTask.getFieldExtensions(),
+                didWriteExtensionStartElement,
+                xtw
+            );
+        return didWriteExtensionStartElement;
+    }
+
+    @Override
+    protected void writeAdditionalChildElements(
+        BaseElement element,
+        BpmnModel model,
+        XMLStreamWriter xtw
+    ) throws Exception {}
+
+    protected String parseOperationRef(String operationRef, BpmnModel model) {
+        String result = null;
+        if (StringUtils.isNotEmpty(operationRef)) {
+            int indexOfP = operationRef.indexOf(':');
+            if (indexOfP != -1) {
+                String prefix = operationRef.substring(0, indexOfP);
+                String resolvedNamespace = model.getNamespace(prefix);
+                result =
+                    resolvedNamespace +
+                    ":" +
+                    operationRef.substring(indexOfP + 1);
+            } else {
+                result = model.getTargetNamespace() + ":" + operationRef;
+            }
+        }
+        return result;
+    }
 }

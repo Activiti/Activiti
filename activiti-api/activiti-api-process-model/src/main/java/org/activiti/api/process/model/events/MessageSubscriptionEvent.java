@@ -18,9 +18,10 @@ package org.activiti.api.process.model.events;
 import org.activiti.api.model.shared.event.RuntimeEvent;
 import org.activiti.api.process.model.MessageSubscription;
 
-public interface MessageSubscriptionEvent extends RuntimeEvent<MessageSubscription, MessageSubscriptionEvent.MessageSubscriptionEvents> {
-
+public interface MessageSubscriptionEvent
+    extends
+        RuntimeEvent<MessageSubscription, MessageSubscriptionEvent.MessageSubscriptionEvents> {
     enum MessageSubscriptionEvents {
-        MESSAGE_SUBSCRIPTION_CANCELLED
+        MESSAGE_SUBSCRIPTION_CANCELLED,
     }
 }

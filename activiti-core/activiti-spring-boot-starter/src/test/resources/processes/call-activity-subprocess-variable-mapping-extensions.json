@@ -1,6 +1,6 @@
 {
-  "id":"subprocess-fb5f2386-709a-4947-9aa0-bbf31497384g-model",
-  "name":"mySubProcess123.bpmn",
+  "id": "subprocess-fb5f2386-709a-4947-9aa0-bbf31497384g-model",
+  "name": "mySubProcess123.bpmn",
   "extensions": {
     "subprocess-fb5f2386-709a-4947-9aa0-bbf31497384g": {
       "properties": {

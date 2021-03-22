@@ -16,7 +16,6 @@
 package org.activiti.api.model.shared.model;
 
 public interface VariableInstance {
-
     String getName();
 
     String getType();
@@ -28,5 +27,4 @@ public interface VariableInstance {
     boolean isTaskVariable();
 
     <T> T getValue();
-
 }

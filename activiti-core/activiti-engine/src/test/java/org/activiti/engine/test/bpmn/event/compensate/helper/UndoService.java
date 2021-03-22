@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.test.bpmn.event.compensate.helper;
 
 import org.activiti.engine.delegate.DelegateExecution;
@@ -26,16 +25,15 @@ import org.activiti.engine.delegate.JavaDelegate;
  */
 public class UndoService implements JavaDelegate {
 
-  private Expression counterName;
+    private Expression counterName;
 
-  public void execute(DelegateExecution execution) {
-    String variableName = (String) counterName.getValue(execution);
-    Object variable = execution.getVariable(variableName);
-    if (variable == null) {
-      execution.setVariable(variableName, 1);
-    } else {
-      execution.setVariable(variableName, ((Integer) variable) + 1);
+    public void execute(DelegateExecution execution) {
+        String variableName = (String) counterName.getValue(execution);
+        Object variable = execution.getVariable(variableName);
+        if (variable == null) {
+            execution.setVariable(variableName, 1);
+        } else {
+            execution.setVariable(variableName, ((Integer) variable) + 1);
+        }
     }
-  }
-
 }

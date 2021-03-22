@@ -22,6 +22,6 @@ package org.activiti.engine.impl.bpmn.data;
 
  */
 public enum ItemKind {
-
-  Information, Physical
+    Information,
+    Physical,
 }

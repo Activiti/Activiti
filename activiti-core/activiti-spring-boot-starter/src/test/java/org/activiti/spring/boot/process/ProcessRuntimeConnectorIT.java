@@ -19,7 +19,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 
 import java.util.List;
-
 import org.activiti.api.model.shared.model.VariableInstance;
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
@@ -34,12 +33,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
-@TestPropertySource(
-        locations = {"classpath:application.properties"}
-)
+@TestPropertySource(locations = { "classpath:application.properties" })
 public class ProcessRuntimeConnectorIT {
 
-    private static final String CATEGORIZE_IMAGE_CONNECTORS_PROCESS = "categorizeProcessConnectors";
+    private static final String CATEGORIZE_IMAGE_CONNECTORS_PROCESS =
+        "categorizeProcessConnectors";
 
     @Autowired
     private ProcessRuntime processRuntime;
@@ -67,41 +65,43 @@ public class ProcessRuntimeConnectorIT {
      **/
     @Test
     public void shouldConnectorMatchWithConnectorDefinition() {
-
-
-        processRuntime.start(ProcessPayloadBuilder.start()
+        processRuntime.start(
+            ProcessPayloadBuilder
+                .start()
                 .withProcessDefinitionKey(CATEGORIZE_IMAGE_CONNECTORS_PROCESS)
-                .withVariable("input_variable_name_1",
-                        "input-variable-name-1")
-                .withVariable("input_variable_name_2",
-                        "input-variable-name-2")
-                .withVariable("expectedKey",
-                        true)
-                .build());
-
+                .withVariable("input_variable_name_1", "input-variable-name-1")
+                .withVariable("input_variable_name_2", "input-variable-name-2")
+                .withVariable("expectedKey", true)
+                .build()
+        );
     }
 
     @Test
     public void shouldSupportStaticValuesForConnectorInputsEvenWhenThereIsNoConnectorDefinition() {
         //given
-        ProcessInstance processInstance = processRuntime.start(ProcessPayloadBuilder.start()
-                                                                       .withProcessDefinitionKey("processWithExtensionsButNoConnectorDef")
-                                                                       .build());
+        ProcessInstance processInstance = processRuntime.start(
+            ProcessPayloadBuilder
+                .start()
+                .withProcessDefinitionKey(
+                    "processWithExtensionsButNoConnectorDef"
+                )
+                .build()
+        );
 
         //when
-        List<VariableInstance> variables = processRuntime.variables(ProcessPayloadBuilder.variables().withProcessInstance(processInstance).build());
-
+        List<VariableInstance> variables = processRuntime.variables(
+            ProcessPayloadBuilder
+                .variables()
+                .withProcessInstance(processInstance)
+                .build()
+        );
 
         //then
         assertThat(variables)
-                .extracting(VariableInstance::getName,
-                            VariableInstance::getValue)
-                .containsOnly(
-                        tuple(
-                                "age",
-                                21), //default value incremented by one by the connector
-                        tuple("name",
-                              "Paul") //static value passed to the connector ans send back as part of integration result
-                );
+            .extracting(VariableInstance::getName, VariableInstance::getValue)
+            .containsOnly(
+                tuple("age", 21), //default value incremented by one by the connector
+                tuple("name", "Paul") //static value passed to the connector ans send back as part of integration result
+            );
     }
 }

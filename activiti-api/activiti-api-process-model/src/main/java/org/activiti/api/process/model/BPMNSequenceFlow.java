@@ -16,7 +16,6 @@
 package org.activiti.api.process.model;
 
 public interface BPMNSequenceFlow extends BPMNElement {
-
     String getSourceActivityElementId();
 
     String getSourceActivityName();
@@ -28,5 +27,4 @@ public interface BPMNSequenceFlow extends BPMNElement {
     String getTargetActivityName();
 
     String getTargetActivityType();
-
 }

@@ -18,15 +18,14 @@ package org.activiti.api.process.model.events;
 import org.activiti.api.model.shared.event.RuntimeEvent;
 import org.activiti.api.process.model.BPMNTimer;
 
-public interface BPMNTimerEvent extends RuntimeEvent<BPMNTimer, BPMNTimerEvent.TimerEvents> {
-
+public interface BPMNTimerEvent
+    extends RuntimeEvent<BPMNTimer, BPMNTimerEvent.TimerEvents> {
     enum TimerEvents {
         TIMER_SCHEDULED,
         TIMER_FIRED,
         TIMER_CANCELLED,
         TIMER_EXECUTED,
         TIMER_FAILED,
-        TIMER_RETRIES_DECREMENTED
-
+        TIMER_RETRIES_DECREMENTED,
     }
 }

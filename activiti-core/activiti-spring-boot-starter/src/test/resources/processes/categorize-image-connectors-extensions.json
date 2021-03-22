@@ -1,6 +1,6 @@
 {
-  "id":"categorizeProcessConnectorsModel",
-  "name":"myProcess234.bpmn",
+  "id": "categorizeProcessConnectorsModel",
+  "name": "myProcess234.bpmn",
   "extensions": {
     "categorizeProcessConnectors": {
       "properties": {},

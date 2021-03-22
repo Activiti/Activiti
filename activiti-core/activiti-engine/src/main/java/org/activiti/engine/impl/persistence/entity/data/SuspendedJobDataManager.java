@@ -17,7 +17,6 @@
 package org.activiti.engine.impl.persistence.entity.data;
 
 import java.util.List;
-
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.SuspendedJobQueryImpl;
 import org.activiti.engine.impl.persistence.entity.SuspendedJobEntity;
@@ -26,15 +25,23 @@ import org.activiti.engine.runtime.Job;
 /**
 
  */
-public interface SuspendedJobDataManager extends DataManager<SuspendedJobEntity> {
+public interface SuspendedJobDataManager
+    extends DataManager<SuspendedJobEntity> {
+    List<SuspendedJobEntity> findJobsByExecutionId(String executionId);
 
-  List<SuspendedJobEntity> findJobsByExecutionId(String executionId);
+    List<SuspendedJobEntity> findJobsByProcessInstanceId(
+        String processInstanceId
+    );
 
-  List<SuspendedJobEntity> findJobsByProcessInstanceId(String processInstanceId);
+    List<Job> findJobsByQueryCriteria(
+        SuspendedJobQueryImpl jobQuery,
+        Page page
+    );
 
-  List<Job> findJobsByQueryCriteria(SuspendedJobQueryImpl jobQuery, Page page);
+    long findJobCountByQueryCriteria(SuspendedJobQueryImpl jobQuery);
 
-  long findJobCountByQueryCriteria(SuspendedJobQueryImpl jobQuery);
-
-  void updateJobTenantIdForDeployment(String deploymentId, String newTenantId);
+    void updateJobTenantIdForDeployment(
+        String deploymentId,
+        String newTenantId
+    );
 }

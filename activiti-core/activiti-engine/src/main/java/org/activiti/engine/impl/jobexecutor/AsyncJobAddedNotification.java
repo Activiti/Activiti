@@ -32,41 +32,50 @@ import org.slf4j.LoggerFactory;
  */
 public class AsyncJobAddedNotification implements CommandContextCloseListener {
 
-  private static Logger log = LoggerFactory.getLogger(AsyncJobAddedNotification.class);
+    private static Logger log = LoggerFactory.getLogger(
+        AsyncJobAddedNotification.class
+    );
 
-  protected JobEntity job;
-  protected AsyncExecutor asyncExecutor;
+    protected JobEntity job;
+    protected AsyncExecutor asyncExecutor;
 
-  public AsyncJobAddedNotification(JobEntity job, AsyncExecutor asyncExecutor) {
-    this.job = job;
-    this.asyncExecutor = asyncExecutor;
-  }
+    public AsyncJobAddedNotification(
+        JobEntity job,
+        AsyncExecutor asyncExecutor
+    ) {
+        this.job = job;
+        this.asyncExecutor = asyncExecutor;
+    }
 
-  @Override
-  public void closed(CommandContext commandContext) {
-    CommandExecutor commandExecutor = commandContext.getProcessEngineConfiguration().getCommandExecutor();
-    CommandConfig commandConfig = new CommandConfig(false, TransactionPropagation.REQUIRES_NEW);
-    commandExecutor.execute(commandConfig, new Command<Void>() {
-      public Void execute(CommandContext commandContext) {
-        if (log.isTraceEnabled()) {
-          log.trace("notifying job executor of new job");
-        }
-        asyncExecutor.executeAsyncJob(job);
-        return null;
-      }
-    });
-  }
+    @Override
+    public void closed(CommandContext commandContext) {
+        CommandExecutor commandExecutor = commandContext
+            .getProcessEngineConfiguration()
+            .getCommandExecutor();
+        CommandConfig commandConfig = new CommandConfig(
+            false,
+            TransactionPropagation.REQUIRES_NEW
+        );
+        commandExecutor.execute(
+            commandConfig,
+            new Command<Void>() {
+                public Void execute(CommandContext commandContext) {
+                    if (log.isTraceEnabled()) {
+                        log.trace("notifying job executor of new job");
+                    }
+                    asyncExecutor.executeAsyncJob(job);
+                    return null;
+                }
+            }
+        );
+    }
 
-  @Override
-  public void closing(CommandContext commandContext) {
-  }
+    @Override
+    public void closing(CommandContext commandContext) {}
 
-  @Override
-  public void afterSessionsFlush(CommandContext commandContext) {
-  }
+    @Override
+    public void afterSessionsFlush(CommandContext commandContext) {}
 
-  @Override
-  public void closeFailure(CommandContext commandContext) {
-  }
-
+    @Override
+    public void closeFailure(CommandContext commandContext) {}
 }

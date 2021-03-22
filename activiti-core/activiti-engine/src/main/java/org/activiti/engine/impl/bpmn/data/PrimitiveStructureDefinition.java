@@ -23,24 +23,24 @@ package org.activiti.engine.impl.bpmn.data;
  */
 public class PrimitiveStructureDefinition implements StructureDefinition {
 
-  protected String id;
+    protected String id;
 
-  protected Class<?> primitiveClass;
+    protected Class<?> primitiveClass;
 
-  public PrimitiveStructureDefinition(String id, Class<?> primitiveClass) {
-    this.id = id;
-    this.primitiveClass = primitiveClass;
-  }
+    public PrimitiveStructureDefinition(String id, Class<?> primitiveClass) {
+        this.id = id;
+        this.primitiveClass = primitiveClass;
+    }
 
-  public String getId() {
-    return this.id;
-  }
+    public String getId() {
+        return this.id;
+    }
 
-  public Class<?> getPrimitiveClass() {
-    return primitiveClass;
-  }
+    public Class<?> getPrimitiveClass() {
+        return primitiveClass;
+    }
 
-  public StructureInstance createInstance() {
-    return new PrimitiveStructureInstance(this);
-  }
+    public StructureInstance createInstance() {
+        return new PrimitiveStructureInstance(this);
+    }
 }

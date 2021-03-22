@@ -37,14 +37,15 @@ public class TaskBaseRuntime {
     private TaskRuntime taskRuntime;
 
     public List<Task> getTasksByProcessInstanceId(String processInstanceId) {
-        List<Task> taskList = taskRuntime.tasks(
-                Pageable.of(0,
-                        50),
+        List<Task> taskList = taskRuntime
+            .tasks(
+                Pageable.of(0, 50),
                 TaskPayloadBuilder
-                        .tasks()
-                        .withProcessInstanceId(processInstanceId)
-                        .build())
-                .getContent();
+                    .tasks()
+                    .withProcessInstanceId(processInstanceId)
+                    .build()
+            )
+            .getContent();
         return taskList;
     }
 
@@ -53,7 +54,9 @@ public class TaskBaseRuntime {
     }
 
     public List<VariableInstance> getTasksVariablesByTaskId(String taskId) {
-        return taskRuntime.variables(TaskPayloadBuilder.variables().withTaskId(taskId).build());
+        return taskRuntime.variables(
+            TaskPayloadBuilder.variables().withTaskId(taskId).build()
+        );
     }
 
     public void completeTask(String taskId) {
@@ -69,10 +72,14 @@ public class TaskBaseRuntime {
     }
 
     public void completeTask(String taskId, Map<String, Object> variables) {
-        Task completeTask = taskRuntime
-                .complete(TaskPayloadBuilder.complete().withTaskId(taskId).withVariables(variables).build());
+        Task completeTask = taskRuntime.complete(
+            TaskPayloadBuilder
+                .complete()
+                .withTaskId(taskId)
+                .withVariables(variables)
+                .build()
+        );
         assertThat(completeTask).isNotNull();
         assertThat(completeTask.getStatus()).isEqualTo(TaskStatus.COMPLETED);
     }
-
 }

@@ -34,7 +34,9 @@ class ToVariableCreatedConverterTest {
 
     @Test
     void should_convertToVariableCreatedEvent() {
-        ActivitiVariableEventImpl internalEvent = new ActivitiVariableEventImpl(ActivitiEventType.VARIABLE_CREATED);
+        ActivitiVariableEventImpl internalEvent = new ActivitiVariableEventImpl(
+            ActivitiEventType.VARIABLE_CREATED
+        );
         internalEvent.setVariableName("variableName");
         internalEvent.setProcessInstanceId("processInstanceId");
         internalEvent.setTaskId("taskId");
@@ -47,15 +49,17 @@ class ToVariableCreatedConverterTest {
 
         assertThat(result).isPresent();
         VariableCreatedEvent actualEvent = result.get();
-        assertThat(actualEvent.getEventType()).isEqualTo(VariableEvents.VARIABLE_CREATED);
-        assertThat(actualEvent.getProcessInstanceId()).isEqualTo("processInstanceId");
+        assertThat(actualEvent.getEventType())
+            .isEqualTo(VariableEvents.VARIABLE_CREATED);
+        assertThat(actualEvent.getProcessInstanceId())
+            .isEqualTo("processInstanceId");
         VariableInstance actualEntity = actualEvent.getEntity();
         assertThat(actualEntity.getName()).isEqualTo("variableName");
-        assertThat(actualEntity.getProcessInstanceId()).isEqualTo("processInstanceId");
+        assertThat(actualEntity.getProcessInstanceId())
+            .isEqualTo("processInstanceId");
         assertThat(actualEntity.getTaskId()).isEqualTo("taskId");
         assertThat(actualEntity.getType()).isEqualTo("string");
         Object actualValue = actualEntity.getValue();
         assertThat(actualValue).isSameAs(value);
     }
-
 }

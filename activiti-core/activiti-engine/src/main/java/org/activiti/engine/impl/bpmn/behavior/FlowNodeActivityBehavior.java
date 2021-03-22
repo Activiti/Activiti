@@ -29,43 +29,57 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
  *
 
  */
-public abstract class FlowNodeActivityBehavior implements TriggerableActivityBehavior {
+public abstract class FlowNodeActivityBehavior
+    implements TriggerableActivityBehavior {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  protected BpmnActivityBehavior bpmnActivityBehavior = new BpmnActivityBehavior();
+    protected BpmnActivityBehavior bpmnActivityBehavior = new BpmnActivityBehavior();
 
-  /**
-   * Default behaviour: just leave the activity with no extra functionality.
-   */
-  public void execute(DelegateExecution execution) {
-    leave(execution);
-  }
+    /**
+     * Default behaviour: just leave the activity with no extra functionality.
+     */
+    public void execute(DelegateExecution execution) {
+        leave(execution);
+    }
 
-  /**
-   * Default way of leaving a BPMN 2.0 activity: evaluate the conditions on the outgoing sequence flow and take those that evaluate to true.
-   */
-  public void leave(DelegateExecution execution) {
-    bpmnActivityBehavior.performDefaultOutgoingBehavior((ExecutionEntity) execution);
-  }
+    /**
+     * Default way of leaving a BPMN 2.0 activity: evaluate the conditions on the outgoing sequence flow and take those that evaluate to true.
+     */
+    public void leave(DelegateExecution execution) {
+        bpmnActivityBehavior.performDefaultOutgoingBehavior(
+            (ExecutionEntity) execution
+        );
+    }
 
-  public void leaveIgnoreConditions(DelegateExecution execution) {
-    bpmnActivityBehavior.performIgnoreConditionsOutgoingBehavior((ExecutionEntity) execution);
-  }
+    public void leaveIgnoreConditions(DelegateExecution execution) {
+        bpmnActivityBehavior.performIgnoreConditionsOutgoingBehavior(
+            (ExecutionEntity) execution
+        );
+    }
 
-  public void trigger(DelegateExecution execution, String signalName, Object signalData) {
-    // concrete activity behaviours that do accept signals should override this method;
-    throw new ActivitiException("this activity isn't waiting for a trigger");
-  }
+    public void trigger(
+        DelegateExecution execution,
+        String signalName,
+        Object signalData
+    ) {
+        // concrete activity behaviours that do accept signals should override this method;
+        throw new ActivitiException(
+            "this activity isn't waiting for a trigger"
+        );
+    }
 
-  protected String parseActivityType(FlowNode flowNode) {
-    String elementType = flowNode.getClass().getSimpleName();
-    elementType = elementType.substring(0, 1).toLowerCase() + elementType.substring(1);
-    return elementType;
-  }
+    protected String parseActivityType(FlowNode flowNode) {
+        String elementType = flowNode.getClass().getSimpleName();
+        elementType =
+            elementType.substring(0, 1).toLowerCase() +
+            elementType.substring(1);
+        return elementType;
+    }
 
-  public void setVariablesCalculator(VariablesCalculator variablesCalculator) {
-      bpmnActivityBehavior.setVariablesCalculator(variablesCalculator);
-  }
-
+    public void setVariablesCalculator(
+        VariablesCalculator variablesCalculator
+    ) {
+        bpmnActivityBehavior.setVariablesCalculator(variablesCalculator);
+    }
 }

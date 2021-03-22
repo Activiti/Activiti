@@ -25,41 +25,40 @@ import java.util.Map;
  */
 public class ValidatorSet {
 
-  protected String name;
+    protected String name;
 
-  protected Map<Class<? extends Validator>, Validator> validators;
+    protected Map<Class<? extends Validator>, Validator> validators;
 
-  public ValidatorSet(String name) {
-    this.name = name;
-  }
-
-  public String getName() {
-    return name;
-  }
-
-  public void setName(String name) {
-    this.name = name;
-  }
-
-  public Collection<Validator> getValidators() {
-    return validators.values();
-  }
-
-  public void setValidators(Collection<? extends Validator> validators) {
-    for (Validator validator : validators) {
-      addValidator(validator);
+    public ValidatorSet(String name) {
+        this.name = name;
     }
-  }
 
-  public void removeValidator(Class<? extends Validator> validatorClass) {
-    validators.remove(validatorClass);
-  }
-
-  public void addValidator(Validator validator) {
-    if (validators == null) {
-      validators = new HashMap<Class<? extends Validator>, Validator>();
+    public String getName() {
+        return name;
     }
-    validators.put(validator.getClass(), validator);
-  }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Collection<Validator> getValidators() {
+        return validators.values();
+    }
+
+    public void setValidators(Collection<? extends Validator> validators) {
+        for (Validator validator : validators) {
+            addValidator(validator);
+        }
+    }
+
+    public void removeValidator(Class<? extends Validator> validatorClass) {
+        validators.remove(validatorClass);
+    }
+
+    public void addValidator(Validator validator) {
+        if (validators == null) {
+            validators = new HashMap<Class<? extends Validator>, Validator>();
+        }
+        validators.put(validator.getClass(), validator);
+    }
 }

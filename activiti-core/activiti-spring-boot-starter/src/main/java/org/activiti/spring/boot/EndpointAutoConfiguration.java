@@ -35,5 +35,4 @@ public class EndpointAutoConfiguration {
     public ProcessEngineEndpoint processEngineEndpoint(ProcessEngine engine) {
         return new ProcessEngineEndpoint(engine);
     }
-
 }

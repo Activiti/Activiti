@@ -21,8 +21,7 @@ public class ApplicationEntry {
 
     private FileContent fileContent;
 
-    public ApplicationEntry(String type,
-                            FileContent fileContent) {
+    public ApplicationEntry(String type, FileContent fileContent) {
         this.type = type;
         this.fileContent = fileContent;
     }
@@ -34,5 +33,4 @@ public class ApplicationEntry {
     public FileContent getFileContent() {
         return fileContent;
     }
-
 }

@@ -37,7 +37,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 public class ProcessInstanceOperationsTest {
 
-    private final String processKey = "usertaskwi-4d5c4312-e8fc-4766-a727-b55a4d3255e9";
+    private final String processKey =
+        "usertaskwi-4d5c4312-e8fc-4766-a727-b55a4d3255e9";
+
     @Autowired
     private ProcessRuntime processRuntime;
 
@@ -55,46 +57,59 @@ public class ProcessInstanceOperationsTest {
     public void shouldBeAbleToStartAndDeleteProcessInstance() {
         securityUtil.logInAs("user1");
         //when
-        ProcessInstance processInstance = processRuntime.start(ProcessPayloadBuilder
+        ProcessInstance processInstance = processRuntime.start(
+            ProcessPayloadBuilder
                 .start()
                 .withProcessDefinitionKey(processKey)
                 .withBusinessKey("my-business-key")
                 .withName("my-process-instance-name")
-                .build());
+                .build()
+        );
 
         //then
         assertThat(processInstance).isNotNull();
-        assertThat(processInstance.getStatus()).isEqualTo(ProcessInstance.ProcessInstanceStatus.RUNNING);
-        assertThat(processInstance.getBusinessKey()).isEqualTo("my-business-key");
-        assertThat(processInstance.getName()).isEqualTo("my-process-instance-name");
+        assertThat(processInstance.getStatus())
+            .isEqualTo(ProcessInstance.ProcessInstanceStatus.RUNNING);
+        assertThat(processInstance.getBusinessKey())
+            .isEqualTo("my-business-key");
+        assertThat(processInstance.getName())
+            .isEqualTo("my-process-instance-name");
 
-
-        assertThat(RuntimeTestConfiguration.collectedEvents).extracting(RuntimeEvent::getEventType).containsExactly(
+        assertThat(RuntimeTestConfiguration.collectedEvents)
+            .extracting(RuntimeEvent::getEventType)
+            .containsExactly(
                 ProcessRuntimeEvent.ProcessEvents.PROCESS_CREATED,
                 ProcessRuntimeEvent.ProcessEvents.PROCESS_STARTED,
                 BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
                 BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
                 BPMNSequenceFlowTakenEvent.SequenceFlowEvents.SEQUENCE_FLOW_TAKEN,
                 BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
-                TaskRuntimeEvent.TaskEvents.TASK_CREATED);
+                TaskRuntimeEvent.TaskEvents.TASK_CREATED
+            );
 
         clearEvents();
 
-        ProcessInstance deletedProcessInstance = processRuntime.delete(ProcessPayloadBuilder.delete(processInstance.getId()));
-        assertThat(deletedProcessInstance.getStatus()).isEqualTo(ProcessInstance.ProcessInstanceStatus.CANCELLED);
+        ProcessInstance deletedProcessInstance = processRuntime.delete(
+            ProcessPayloadBuilder.delete(processInstance.getId())
+        );
+        assertThat(deletedProcessInstance.getStatus())
+            .isEqualTo(ProcessInstance.ProcessInstanceStatus.CANCELLED);
 
-        assertThat(RuntimeTestConfiguration.collectedEvents).extracting(RuntimeEvent::getEventType).containsExactlyInAnyOrder(
+        assertThat(RuntimeTestConfiguration.collectedEvents)
+            .extracting(RuntimeEvent::getEventType)
+            .containsExactlyInAnyOrder(
                 TaskRuntimeEvent.TaskEvents.TASK_CANCELLED,
                 BPMNActivityEvent.ActivityEvents.ACTIVITY_CANCELLED,
-                ProcessRuntimeEvent.ProcessEvents.PROCESS_CANCELLED);
+                ProcessRuntimeEvent.ProcessEvents.PROCESS_CANCELLED
+            );
 
         // No Process Instance should be found
-        Throwable throwable = catchThrowable(() -> processRuntime.processInstance(deletedProcessInstance.getId()));
+        Throwable throwable = catchThrowable(
+            () -> processRuntime.processInstance(deletedProcessInstance.getId())
+        );
 
-        assertThat(throwable)
-                .isInstanceOf(NotFoundException.class);
+        assertThat(throwable).isInstanceOf(NotFoundException.class);
     }
-
 
     /*
      */
@@ -102,46 +117,62 @@ public class ProcessInstanceOperationsTest {
     public void shouldBeAbleToStartSuspendAndResumeProcessInstance() {
         securityUtil.logInAs("user1");
         //when
-        ProcessInstance processInstance = processRuntime.start(ProcessPayloadBuilder
+        ProcessInstance processInstance = processRuntime.start(
+            ProcessPayloadBuilder
                 .start()
                 .withProcessDefinitionKey(processKey)
                 .withBusinessKey("my-business-key")
                 .withName("my-process-instance-name")
-                .build());
+                .build()
+        );
 
         //then
         assertThat(processInstance).isNotNull();
-        assertThat(processInstance.getStatus()).isEqualTo(ProcessInstance.ProcessInstanceStatus.RUNNING);
-        assertThat(processInstance.getBusinessKey()).isEqualTo("my-business-key");
-        assertThat(processInstance.getName()).isEqualTo("my-process-instance-name");
+        assertThat(processInstance.getStatus())
+            .isEqualTo(ProcessInstance.ProcessInstanceStatus.RUNNING);
+        assertThat(processInstance.getBusinessKey())
+            .isEqualTo("my-business-key");
+        assertThat(processInstance.getName())
+            .isEqualTo("my-process-instance-name");
 
-
-        assertThat(RuntimeTestConfiguration.collectedEvents).extracting(RuntimeEvent::getEventType).containsExactly(
+        assertThat(RuntimeTestConfiguration.collectedEvents)
+            .extracting(RuntimeEvent::getEventType)
+            .containsExactly(
                 ProcessRuntimeEvent.ProcessEvents.PROCESS_CREATED,
                 ProcessRuntimeEvent.ProcessEvents.PROCESS_STARTED,
                 BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
                 BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
                 BPMNSequenceFlowTakenEvent.SequenceFlowEvents.SEQUENCE_FLOW_TAKEN,
                 BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
-                TaskRuntimeEvent.TaskEvents.TASK_CREATED);
+                TaskRuntimeEvent.TaskEvents.TASK_CREATED
+            );
 
         clearEvents();
 
-        ProcessInstance suspendedProcessInstance = processRuntime.suspend(ProcessPayloadBuilder.suspend(processInstance.getId()));
-        assertThat(suspendedProcessInstance.getStatus()).isEqualTo(ProcessInstance.ProcessInstanceStatus.SUSPENDED);
+        ProcessInstance suspendedProcessInstance = processRuntime.suspend(
+            ProcessPayloadBuilder.suspend(processInstance.getId())
+        );
+        assertThat(suspendedProcessInstance.getStatus())
+            .isEqualTo(ProcessInstance.ProcessInstanceStatus.SUSPENDED);
 
         assertThat(RuntimeTestConfiguration.collectedEvents)
-        .extracting(RuntimeEvent::getEventType)
-        .containsExactly(ProcessRuntimeEvent.ProcessEvents.PROCESS_SUSPENDED,
-                         TaskRuntimeEvent.TaskEvents.TASK_SUSPENDED);
+            .extracting(RuntimeEvent::getEventType)
+            .containsExactly(
+                ProcessRuntimeEvent.ProcessEvents.PROCESS_SUSPENDED,
+                TaskRuntimeEvent.TaskEvents.TASK_SUSPENDED
+            );
 
         clearEvents();
 
-        ProcessInstance resumedProcessInstance = processRuntime.resume(ProcessPayloadBuilder.resume(suspendedProcessInstance.getId()));
-        assertThat(resumedProcessInstance.getStatus()).isEqualTo(ProcessInstance.ProcessInstanceStatus.RUNNING);
+        ProcessInstance resumedProcessInstance = processRuntime.resume(
+            ProcessPayloadBuilder.resume(suspendedProcessInstance.getId())
+        );
+        assertThat(resumedProcessInstance.getStatus())
+            .isEqualTo(ProcessInstance.ProcessInstanceStatus.RUNNING);
 
-        assertThat(RuntimeTestConfiguration.collectedEvents).extracting(RuntimeEvent::getEventType).containsExactly(ProcessRuntimeEvent.ProcessEvents.PROCESS_RESUMED);
-
+        assertThat(RuntimeTestConfiguration.collectedEvents)
+            .extracting(RuntimeEvent::getEventType)
+            .containsExactly(ProcessRuntimeEvent.ProcessEvents.PROCESS_RESUMED);
     }
 
     public void clearEvents() {

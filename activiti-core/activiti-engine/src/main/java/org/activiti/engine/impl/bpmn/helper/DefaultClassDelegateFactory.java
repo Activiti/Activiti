@@ -17,18 +17,32 @@
 package org.activiti.engine.impl.bpmn.helper;
 
 import java.util.List;
-
 import org.activiti.bpmn.model.MapExceptionEntry;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.bpmn.parser.FieldDeclaration;
 
 public class DefaultClassDelegateFactory implements ClassDelegateFactory {
-  public ClassDelegate create(String id, String className, List<FieldDeclaration> fieldDeclarations,
-      Expression skipExpression, List<MapExceptionEntry> mapExceptions) {
-    return new ClassDelegate(id, className, fieldDeclarations, skipExpression, mapExceptions);
-  }
 
-  public ClassDelegate create(String className, List<FieldDeclaration> fieldDeclarations) {
-    return new ClassDelegate(className, fieldDeclarations);
-  }
+    public ClassDelegate create(
+        String id,
+        String className,
+        List<FieldDeclaration> fieldDeclarations,
+        Expression skipExpression,
+        List<MapExceptionEntry> mapExceptions
+    ) {
+        return new ClassDelegate(
+            id,
+            className,
+            fieldDeclarations,
+            skipExpression,
+            mapExceptions
+        );
+    }
+
+    public ClassDelegate create(
+        String className,
+        List<FieldDeclaration> fieldDeclarations
+    ) {
+        return new ClassDelegate(className, fieldDeclarations);
+    }
 }

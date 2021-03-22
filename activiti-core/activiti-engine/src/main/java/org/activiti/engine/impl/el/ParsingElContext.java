@@ -34,16 +34,15 @@ import javax.el.VariableMapper;
  */
 public class ParsingElContext extends ELContext {
 
-  public ELResolver getELResolver() {
-    return null;
-  }
+    public ELResolver getELResolver() {
+        return null;
+    }
 
-  public FunctionMapper getFunctionMapper() {
-    return null;
-  }
+    public FunctionMapper getFunctionMapper() {
+        return null;
+    }
 
-  public VariableMapper getVariableMapper() {
-    return null;
-  }
-
+    public VariableMapper getVariableMapper() {
+        return null;
+    }
 }

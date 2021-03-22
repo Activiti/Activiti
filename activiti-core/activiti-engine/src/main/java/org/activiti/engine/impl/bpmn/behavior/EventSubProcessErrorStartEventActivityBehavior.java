@@ -14,9 +14,11 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.bpmn.behavior;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import org.activiti.bpmn.model.EventSubProcess;
 import org.activiti.bpmn.model.StartEvent;
 import org.activiti.bpmn.model.ValuedDataObject;
@@ -24,45 +26,53 @@ import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * Implementation of the BPMN 2.0 event subprocess start event.
  *
 
  */
-public class EventSubProcessErrorStartEventActivityBehavior extends AbstractBpmnActivityBehavior {
+public class EventSubProcessErrorStartEventActivityBehavior
+    extends AbstractBpmnActivityBehavior {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  public void execute(DelegateExecution execution) {
-    StartEvent startEvent = (StartEvent) execution.getCurrentFlowElement();
-    EventSubProcess eventSubProcess = (EventSubProcess) startEvent.getSubProcess();
-    execution.setCurrentFlowElement(eventSubProcess);
-    execution.setScope(true);
+    public void execute(DelegateExecution execution) {
+        StartEvent startEvent = (StartEvent) execution.getCurrentFlowElement();
+        EventSubProcess eventSubProcess = (EventSubProcess) startEvent.getSubProcess();
+        execution.setCurrentFlowElement(eventSubProcess);
+        execution.setScope(true);
 
-    // initialize the template-defined data objects as variables
-    Map<String, Object> dataObjectVars = processDataObjects(eventSubProcess.getDataObjects());
-    if (dataObjectVars != null) {
-      execution.setVariablesLocal(dataObjectVars);
+        // initialize the template-defined data objects as variables
+        Map<String, Object> dataObjectVars = processDataObjects(
+            eventSubProcess.getDataObjects()
+        );
+        if (dataObjectVars != null) {
+            execution.setVariablesLocal(dataObjectVars);
+        }
+
+        ExecutionEntity startSubProcessExecution = Context
+            .getCommandContext()
+            .getExecutionEntityManager()
+            .createChildExecution((ExecutionEntity) execution);
+        startSubProcessExecution.setCurrentFlowElement(startEvent);
+        Context
+            .getAgenda()
+            .planTakeOutgoingSequenceFlowsOperation(
+                startSubProcessExecution,
+                true
+            );
     }
 
-    ExecutionEntity startSubProcessExecution = Context.getCommandContext()
-        .getExecutionEntityManager().createChildExecution((ExecutionEntity) execution);
-    startSubProcessExecution.setCurrentFlowElement(startEvent);
-    Context.getAgenda().planTakeOutgoingSequenceFlowsOperation(startSubProcessExecution, true);
-  }
-
-  protected Map<String, Object> processDataObjects(Collection<ValuedDataObject> dataObjects) {
-    Map<String, Object> variablesMap = new HashMap<String, Object>();
-    // convert data objects to process variables
-    if (dataObjects != null) {
-      for (ValuedDataObject dataObject : dataObjects) {
-        variablesMap.put(dataObject.getName(), dataObject.getValue());
-      }
+    protected Map<String, Object> processDataObjects(
+        Collection<ValuedDataObject> dataObjects
+    ) {
+        Map<String, Object> variablesMap = new HashMap<String, Object>();
+        // convert data objects to process variables
+        if (dataObjects != null) {
+            for (ValuedDataObject dataObject : dataObjects) {
+                variablesMap.put(dataObject.getName(), dataObject.getValue());
+            }
+        }
+        return variablesMap;
     }
-    return variablesMap;
-  }
 }

@@ -15,6 +15,8 @@
  */
 package org.activiti.spring.boot.tasks;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.activiti.api.runtime.shared.query.Page;
 import org.activiti.api.runtime.shared.query.Pageable;
 import org.activiti.api.task.model.Task;
@@ -29,8 +31,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.ContextConfiguration;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 public class TaskRuntimeTaskForOtherTest {
@@ -48,18 +48,20 @@ public class TaskRuntimeTaskForOtherTest {
     private TaskCleanUpUtil taskCleanUpUtil;
 
     @AfterEach
-    public void taskCleanUp(){
+    public void taskCleanUp() {
         taskCleanUpUtil.cleanUpWithAdmin();
     }
 
     @Test
     public void createStandaloneTaskWithNoCandidates() {
-
         securityUtil.logInAs("garth");
 
-        Task standAloneTask = taskRuntime.create(TaskPayloadBuilder.create()
+        Task standAloneTask = taskRuntime.create(
+            TaskPayloadBuilder
+                .create()
                 .withName("task with no candidates besides owner")
-                .build());
+                .build()
+        );
 
         // the owner should be able to see the created task
         Page<Task> tasks = taskRuntime.tasks(Pageable.of(0, 50));
@@ -76,5 +78,4 @@ public class TaskRuntimeTaskForOtherTest {
 
         assertThat(tasks.getContent()).hasSize(0);
     }
-
 }

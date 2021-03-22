@@ -18,7 +18,6 @@ package org.activiti.examples;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
 import org.activiti.api.model.shared.event.VariableCreatedEvent;
 import org.activiti.api.model.shared.model.VariableInstance;
 import org.activiti.api.process.model.ProcessDefinition;
@@ -61,8 +60,7 @@ public class DemoApplication implements CommandLineRunner {
     private List<ProcessCompletedEvent> processCompletedEvents = new ArrayList<>();
 
     public static void main(String[] args) {
-        SpringApplication.run(DemoApplication.class,
-                              args);
+        SpringApplication.run(DemoApplication.class, args);
     }
 
     @Override
@@ -79,66 +77,109 @@ public class DemoApplication implements CommandLineRunner {
 
     private void listCompletedProcesses() {
         logger.info(">>> Completed process Instances: ");
-        processCompletedEvents.forEach(processCompletedEvent -> logger.info("\t> Process instance : " + processCompletedEvent.getEntity()));
+        processCompletedEvents.forEach(
+            processCompletedEvent ->
+                logger.info(
+                    "\t> Process instance : " +
+                    processCompletedEvent.getEntity()
+                )
+        );
     }
 
     private void listAllCreatedVariables() {
         logger.info(">>> All created variables:");
-        variableCreatedEvents.forEach(variableCreatedEvent -> logger.info("\t> name:`" + variableCreatedEvent.getEntity().getName()
-                                                                                  + "`, value: `" + variableCreatedEvent.getEntity().getValue()
-                                                                                  + "`, processInstanceId: `" + variableCreatedEvent.getEntity().getProcessInstanceId()
-                                                                                  + "`, taskId: `" + variableCreatedEvent.getEntity().getTaskId() + "`"));
+        variableCreatedEvents.forEach(
+            variableCreatedEvent ->
+                logger.info(
+                    "\t> name:`" +
+                    variableCreatedEvent.getEntity().getName() +
+                    "`, value: `" +
+                    variableCreatedEvent.getEntity().getValue() +
+                    "`, processInstanceId: `" +
+                    variableCreatedEvent.getEntity().getProcessInstanceId() +
+                    "`, taskId: `" +
+                    variableCreatedEvent.getEntity().getTaskId() +
+                    "`"
+                )
+        );
     }
 
     private void completeAvailableTasks() {
-        Page<Task> tasks = taskRuntime.tasks(Pageable.of(0,
-                                                         20));
-        tasks.getContent().forEach(task -> {
-            logger.info(">>> Performing task -> " + task);
-            listTaskVariables(task);
-            taskRuntime.complete(TaskPayloadBuilder
-                                         .complete()
-                                         .withTaskId(task.getId())
-                                         .withVariable("rating", 5)
-                                         .build());
-        });
+        Page<Task> tasks = taskRuntime.tasks(Pageable.of(0, 20));
+        tasks
+            .getContent()
+            .forEach(
+                task -> {
+                    logger.info(">>> Performing task -> " + task);
+                    listTaskVariables(task);
+                    taskRuntime.complete(
+                        TaskPayloadBuilder
+                            .complete()
+                            .withTaskId(task.getId())
+                            .withVariable("rating", 5)
+                            .build()
+                    );
+                }
+            );
     }
 
     private void listTaskVariables(Task task) {
         logger.info(">>> Task variables:");
-        taskRuntime.variables(TaskPayloadBuilder
-                                      .variables()
-                                      .withTaskId(task.getId())
-                                      .build())
-                .forEach(variableInstance -> logger.info("\t> " + variableInstance.getName() + " -> " + variableInstance.getValue()));
+        taskRuntime
+            .variables(
+                TaskPayloadBuilder.variables().withTaskId(task.getId()).build()
+            )
+            .forEach(
+                variableInstance ->
+                    logger.info(
+                        "\t> " +
+                        variableInstance.getName() +
+                        " -> " +
+                        variableInstance.getValue()
+                    )
+            );
     }
 
     private void listProcessVariables(ProcessInstance processInstance) {
         logger.info(">>> Process variables:");
         List<VariableInstance> variables = processRuntime.variables(
-                ProcessPayloadBuilder
-                        .variables()
-                        .withProcessInstance(processInstance)
-                        .build());
-        variables.forEach(variableInstance -> logger.info("\t> " + variableInstance.getName() + " -> " + variableInstance.getValue()));
+            ProcessPayloadBuilder
+                .variables()
+                .withProcessInstance(processInstance)
+                .build()
+        );
+        variables.forEach(
+            variableInstance ->
+                logger.info(
+                    "\t> " +
+                    variableInstance.getName() +
+                    " -> " +
+                    variableInstance.getValue()
+                )
+        );
     }
 
     private ProcessInstance startProcess() {
-        ProcessInstance processInstance = processRuntime.start(ProcessPayloadBuilder
-                                                                       .start()
-                                                                       .withProcessDefinitionKey("RankMovieId")
-                                                                       .withName("myProcess")
-                                                                       .withVariable("movieToRank",
-                                                                                     "Lord of the rings")
-                                                                       .build());
+        ProcessInstance processInstance = processRuntime.start(
+            ProcessPayloadBuilder
+                .start()
+                .withProcessDefinitionKey("RankMovieId")
+                .withName("myProcess")
+                .withVariable("movieToRank", "Lord of the rings")
+                .build()
+        );
         logger.info(">>> Created Process Instance: " + processInstance);
         return processInstance;
     }
 
     private void listAvailableProcesses() {
-        Page<ProcessDefinition> processDefinitionPage = processRuntime.processDefinitions(Pageable.of(0,
-                                                                                                      10));
-        logger.info("> Available Process definitions: " + processDefinitionPage.getTotalItems());
+        Page<ProcessDefinition> processDefinitionPage = processRuntime.processDefinitions(
+            Pageable.of(0, 10)
+        );
+        logger.info(
+            "> Available Process definitions: " +
+            processDefinitionPage.getTotalItems()
+        );
         for (ProcessDefinition pd : processDefinitionPage.getContent()) {
             logger.info("\t > Process definition: " + pd);
         }
@@ -158,19 +199,23 @@ public class DemoApplication implements CommandLineRunner {
         return integrationContext -> {
             Map<String, Object> inBoundVariables = integrationContext.getInBoundVariables();
             logger.info(">>inbound: " + inBoundVariables);
-            integrationContext.addOutBoundVariable("movieDescription",
-                                                   "The Lord of the Rings is an epic high fantasy novel written by English author and scholar J. R. R. Tolkien");
+            integrationContext.addOutBoundVariable(
+                "movieDescription",
+                "The Lord of the Rings is an epic high fantasy novel written by English author and scholar J. R. R. Tolkien"
+            );
             return integrationContext;
         };
     }
 
     @Bean
     public VariableEventListener<VariableCreatedEvent> variableCreatedEventListener() {
-        return variableCreatedEvent -> variableCreatedEvents.add(variableCreatedEvent);
+        return variableCreatedEvent ->
+            variableCreatedEvents.add(variableCreatedEvent);
     }
 
     @Bean
     public ProcessRuntimeEventListener<ProcessCompletedEvent> processCompletedEventListener() {
-        return processCompletedEvent -> processCompletedEvents.add(processCompletedEvent);
+        return processCompletedEvent ->
+            processCompletedEvents.add(processCompletedEvent);
     }
 }

@@ -31,38 +31,46 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
  */
 public class ErrorThrowingEventListener extends BaseDelegateEventListener {
 
-  protected String errorCode;
+    protected String errorCode;
 
-  @Override
-  public void onEvent(ActivitiEvent event) {
-    if (isValidEvent(event)) {
+    @Override
+    public void onEvent(ActivitiEvent event) {
+        if (isValidEvent(event)) {
+            CommandContext commandContext = Context.getCommandContext();
+            ExecutionEntity execution = null;
 
-      CommandContext commandContext = Context.getCommandContext();
-      ExecutionEntity execution = null;
+            if (event.getExecutionId() != null) {
+                // Get the execution based on the event's execution ID instead
+                execution =
+                    Context
+                        .getCommandContext()
+                        .getExecutionEntityManager()
+                        .findById(event.getExecutionId());
+            }
 
-      if (event.getExecutionId() != null) {
-        // Get the execution based on the event's execution ID instead
-        execution = Context.getCommandContext().getExecutionEntityManager().findById(event.getExecutionId());
-      }
+            if (execution == null) {
+                throw new ActivitiException(
+                    "No execution context active and event is not related to an execution. No compensation event can be thrown."
+                );
+            }
 
-      if (execution == null) {
-        throw new ActivitiException("No execution context active and event is not related to an execution. No compensation event can be thrown.");
-      }
-
-      try {
-        ErrorPropagation.propagateError(errorCode, execution);
-      } catch (Exception e) {
-        throw new ActivitiException("Error while propagating error-event", e);
-      }
+            try {
+                ErrorPropagation.propagateError(errorCode, execution);
+            } catch (Exception e) {
+                throw new ActivitiException(
+                    "Error while propagating error-event",
+                    e
+                );
+            }
+        }
     }
-  }
 
-  public void setErrorCode(String errorCode) {
-    this.errorCode = errorCode;
-  }
+    public void setErrorCode(String errorCode) {
+        this.errorCode = errorCode;
+    }
 
-  @Override
-  public boolean isFailOnException() {
-    return true;
-  }
+    @Override
+    public boolean isFailOnException() {
+        return true;
+    }
 }

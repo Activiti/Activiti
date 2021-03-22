@@ -44,7 +44,9 @@ public class MultiInstanceUserTaskConverterTest extends AbstractConverterTest {
     }
 
     private void validateModel(BpmnModel model) throws Exception {
-        FlowElement flowElement = model.getMainProcess().getFlowElement("UserTask_0br0ocv");
+        FlowElement flowElement = model
+            .getMainProcess()
+            .getFlowElement("UserTask_0br0ocv");
         assertThat(flowElement).isNotNull();
         assertThat(flowElement).isInstanceOf(UserTask.class);
 
@@ -52,13 +54,16 @@ public class MultiInstanceUserTaskConverterTest extends AbstractConverterTest {
     }
 
     private void checkXml(BpmnModel model) throws Exception {
+        String xml = new String(
+            new BpmnXMLConverter().convertToXML(model),
+            "UTF-8"
+        );
 
-        String xml = new String(new BpmnXMLConverter().convertToXML(model),
-                                "UTF-8");
-
-        assertThat(xml).containsSubsequence("incoming>SequenceFlow_0c6mbti<",
-                                            "outgoing>SequenceFlow_0pj9a04<",
-                                            "<multiInstanceLoopCharacteristics");
-
+        assertThat(xml)
+            .containsSubsequence(
+                "incoming>SequenceFlow_0c6mbti<",
+                "outgoing>SequenceFlow_0pj9a04<",
+                "<multiInstanceLoopCharacteristics"
+            );
     }
 }

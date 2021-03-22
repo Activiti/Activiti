@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.test.bpmn.usertask;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
@@ -30,90 +29,140 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
-
-
 /**
 
  */
 public class DisabledDefinitionInfoCacheTest extends AbstractActivitiTestCase {
 
-  protected static ProcessEngine cachedProcessEngine;
+    protected static ProcessEngine cachedProcessEngine;
 
-  protected void initializeProcessEngine() {
-    if (cachedProcessEngine==null) {
-      ProcessEngineConfigurationImpl processEngineConfiguration = (ProcessEngineConfigurationImpl) ProcessEngineConfiguration
-          .createProcessEngineConfigurationFromResource("org/activiti/engine/test/bpmn/usertask/activiti.cfg.xml");
+    protected void initializeProcessEngine() {
+        if (cachedProcessEngine == null) {
+            ProcessEngineConfigurationImpl processEngineConfiguration = (ProcessEngineConfigurationImpl) ProcessEngineConfiguration.createProcessEngineConfigurationFromResource(
+                "org/activiti/engine/test/bpmn/usertask/activiti.cfg.xml"
+            );
 
-      cachedProcessEngine = processEngineConfiguration.buildProcessEngine();
+            cachedProcessEngine =
+                processEngineConfiguration.buildProcessEngine();
+        }
+        processEngine = cachedProcessEngine;
     }
-    processEngine = cachedProcessEngine;
-  }
 
-  @Deployment
-  public void testChangeFormKey() {
-    // first test without changing the form key
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("dynamicUserTask");
-    String processDefinitionId = processInstance.getProcessDefinitionId();
+    @Deployment
+    public void testChangeFormKey() {
+        // first test without changing the form key
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
+            "dynamicUserTask"
+        );
+        String processDefinitionId = processInstance.getProcessDefinitionId();
 
-    Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
-    assertThat(task.getFormKey()).isEqualTo("test");
-    taskService.complete(task.getId());
+        Task task = taskService
+            .createTaskQuery()
+            .processInstanceId(processInstance.getId())
+            .singleResult();
+        assertThat(task.getFormKey()).isEqualTo("test");
+        taskService.complete(task.getId());
 
-    assertProcessEnded(processInstance.getId());
+        assertProcessEnded(processInstance.getId());
 
-    // now test with changing the form key
-    ObjectNode infoNode = dynamicBpmnService.changeUserTaskFormKey("task1", "test2");
-    dynamicBpmnService.saveProcessDefinitionInfo(processDefinitionId, infoNode);
+        // now test with changing the form key
+        ObjectNode infoNode = dynamicBpmnService.changeUserTaskFormKey(
+            "task1",
+            "test2"
+        );
+        dynamicBpmnService.saveProcessDefinitionInfo(
+            processDefinitionId,
+            infoNode
+        );
 
-    processInstance = runtimeService.startProcessInstanceByKey("dynamicUserTask");
+        processInstance =
+            runtimeService.startProcessInstanceByKey("dynamicUserTask");
 
-    task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
-    assertThat(task.getFormKey()).isEqualTo("test");
-    taskService.complete(task.getId());
+        task =
+            taskService
+                .createTaskQuery()
+                .processInstanceId(processInstance.getId())
+                .singleResult();
+        assertThat(task.getFormKey()).isEqualTo("test");
+        taskService.complete(task.getId());
 
-    assertProcessEnded(processInstance.getId());
-  }
+        assertProcessEnded(processInstance.getId());
+    }
 
-  @Deployment
-  public void testChangeClassName() {
-    // first test without changing the class name
-    Map<String, Object> varMap = new HashMap<String, Object>();
-    varMap.put("count", 0);
-    varMap.put("count2", 0);
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("dynamicServiceTask", varMap);
+    @Deployment
+    public void testChangeClassName() {
+        // first test without changing the class name
+        Map<String, Object> varMap = new HashMap<String, Object>();
+        varMap.put("count", 0);
+        varMap.put("count2", 0);
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
+            "dynamicServiceTask",
+            varMap
+        );
 
-    Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
-    taskService.complete(task.getId());
+        Task task = taskService
+            .createTaskQuery()
+            .processInstanceId(processInstance.getId())
+            .singleResult();
+        taskService.complete(task.getId());
 
-    assertThat(runtimeService.getVariable(processInstance.getId(), "count")).isEqualTo(1);
-    assertThat(runtimeService.getVariable(processInstance.getId(), "count2")).isEqualTo(0);
+        assertThat(runtimeService.getVariable(processInstance.getId(), "count"))
+            .isEqualTo(1);
+        assertThat(
+            runtimeService.getVariable(processInstance.getId(), "count2")
+        )
+            .isEqualTo(0);
 
-    task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
-    taskService.complete(task.getId());
+        task =
+            taskService
+                .createTaskQuery()
+                .processInstanceId(processInstance.getId())
+                .singleResult();
+        taskService.complete(task.getId());
 
-    assertProcessEnded(processInstance.getId());
+        assertProcessEnded(processInstance.getId());
 
-    // now test with changing the class name
-    varMap = new HashMap<String, Object>();
-    varMap.put("count", 0);
-    varMap.put("count2", 0);
-    processInstance = runtimeService.startProcessInstanceByKey("dynamicServiceTask", varMap);
+        // now test with changing the class name
+        varMap = new HashMap<String, Object>();
+        varMap.put("count", 0);
+        varMap.put("count2", 0);
+        processInstance =
+            runtimeService.startProcessInstanceByKey(
+                "dynamicServiceTask",
+                varMap
+            );
 
-    String processDefinitionId = processInstance.getProcessDefinitionId();
-    ObjectNode infoNode = dynamicBpmnService.changeServiceTaskClassName("service", "org.activiti.engine.test.bpmn.servicetask.DummyServiceTask2");
-    dynamicBpmnService.saveProcessDefinitionInfo(processDefinitionId, infoNode);
+        String processDefinitionId = processInstance.getProcessDefinitionId();
+        ObjectNode infoNode = dynamicBpmnService.changeServiceTaskClassName(
+            "service",
+            "org.activiti.engine.test.bpmn.servicetask.DummyServiceTask2"
+        );
+        dynamicBpmnService.saveProcessDefinitionInfo(
+            processDefinitionId,
+            infoNode
+        );
 
-    task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
-    taskService.complete(task.getId());
+        task =
+            taskService
+                .createTaskQuery()
+                .processInstanceId(processInstance.getId())
+                .singleResult();
+        taskService.complete(task.getId());
 
-    assertThat(runtimeService.getVariable(processInstance.getId(), "count")).isEqualTo(1);
-    assertThat(runtimeService.getVariable(processInstance.getId(), "count2")).isEqualTo(0);
+        assertThat(runtimeService.getVariable(processInstance.getId(), "count"))
+            .isEqualTo(1);
+        assertThat(
+            runtimeService.getVariable(processInstance.getId(), "count2")
+        )
+            .isEqualTo(0);
 
-    task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
-    taskService.complete(task.getId());
+        task =
+            taskService
+                .createTaskQuery()
+                .processInstanceId(processInstance.getId())
+                .singleResult();
+        taskService.complete(task.getId());
 
-    assertProcessEnded(processInstance.getId());
-  }
-
+        assertProcessEnded(processInstance.getId());
+    }
 }

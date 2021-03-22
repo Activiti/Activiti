@@ -16,9 +16,7 @@
 package org.activiti.bpmn.converter.export;
 
 import java.util.List;
-
 import javax.xml.stream.XMLStreamWriter;
-
 import org.activiti.bpmn.constants.BpmnXMLConstants;
 import org.activiti.bpmn.converter.util.BpmnXMLUtil;
 import org.activiti.bpmn.model.ActivitiListener;
@@ -32,106 +30,266 @@ import org.apache.commons.lang3.StringUtils;
 
 public class ActivitiListenerExport implements BpmnXMLConstants {
 
-  public static boolean writeListeners(BaseElement element, boolean didWriteExtensionStartElement, XMLStreamWriter xtw) throws Exception {
-    if (element instanceof HasExecutionListeners) {
-      didWriteExtensionStartElement = writeListeners(ELEMENT_EXECUTION_LISTENER, ((HasExecutionListeners) element).getExecutionListeners(), didWriteExtensionStartElement, xtw);
-    }
-    // In case of a usertaks, also add task-listeners
-    if (element instanceof UserTask) {
-      didWriteExtensionStartElement = writeListeners(ELEMENT_TASK_LISTENER, ((UserTask) element).getTaskListeners(), didWriteExtensionStartElement, xtw);
-    }
-
-    // In case of a process-element, write the event-listeners
-    if (element instanceof Process) {
-      didWriteExtensionStartElement = writeEventListeners(((Process) element).getEventListeners(), didWriteExtensionStartElement, xtw);
-    }
-
-    return didWriteExtensionStartElement;
-  }
-
-  protected static boolean writeEventListeners(List<EventListener> eventListeners, boolean didWriteExtensionStartElement, XMLStreamWriter xtw) throws Exception {
-
-    if (eventListeners != null && !eventListeners.isEmpty()) {
-      for (EventListener eventListener : eventListeners) {
-        if (!didWriteExtensionStartElement) {
-          xtw.writeStartElement(ELEMENT_EXTENSIONS);
-          didWriteExtensionStartElement = true;
+    public static boolean writeListeners(
+        BaseElement element,
+        boolean didWriteExtensionStartElement,
+        XMLStreamWriter xtw
+    ) throws Exception {
+        if (element instanceof HasExecutionListeners) {
+            didWriteExtensionStartElement =
+                writeListeners(
+                    ELEMENT_EXECUTION_LISTENER,
+                    ((HasExecutionListeners) element).getExecutionListeners(),
+                    didWriteExtensionStartElement,
+                    xtw
+                );
+        }
+        // In case of a usertaks, also add task-listeners
+        if (element instanceof UserTask) {
+            didWriteExtensionStartElement =
+                writeListeners(
+                    ELEMENT_TASK_LISTENER,
+                    ((UserTask) element).getTaskListeners(),
+                    didWriteExtensionStartElement,
+                    xtw
+                );
         }
 
-        xtw.writeStartElement(ACTIVITI_EXTENSIONS_PREFIX, ELEMENT_EVENT_LISTENER, ACTIVITI_EXTENSIONS_NAMESPACE);
-        BpmnXMLUtil.writeDefaultAttribute(ATTRIBUTE_LISTENER_EVENTS, eventListener.getEvents(), xtw);
-        BpmnXMLUtil.writeDefaultAttribute(ATTRIBUTE_LISTENER_ENTITY_TYPE, eventListener.getEntityType(), xtw);
-
-        if (ImplementationType.IMPLEMENTATION_TYPE_CLASS.equals(eventListener.getImplementationType())) {
-          BpmnXMLUtil.writeDefaultAttribute(ATTRIBUTE_LISTENER_CLASS, eventListener.getImplementation(), xtw);
-
-        } else if (ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION.equals(eventListener.getImplementationType())) {
-          BpmnXMLUtil.writeDefaultAttribute(ATTRIBUTE_LISTENER_DELEGATEEXPRESSION, eventListener.getImplementation(), xtw);
-
-        } else if (ImplementationType.IMPLEMENTATION_TYPE_THROW_SIGNAL_EVENT.equals(eventListener.getImplementationType())) {
-          BpmnXMLUtil.writeDefaultAttribute(ATTRIBUTE_LISTENER_THROW_SIGNAL_EVENT_NAME, eventListener.getImplementation(), xtw);
-          BpmnXMLUtil.writeDefaultAttribute(ATTRIBUTE_LISTENER_THROW_EVENT_TYPE, ATTRIBUTE_LISTENER_THROW_EVENT_TYPE_SIGNAL, xtw);
-
-        } else if (ImplementationType.IMPLEMENTATION_TYPE_THROW_GLOBAL_SIGNAL_EVENT.equals(eventListener.getImplementationType())) {
-          BpmnXMLUtil.writeDefaultAttribute(ATTRIBUTE_LISTENER_THROW_SIGNAL_EVENT_NAME, eventListener.getImplementation(), xtw);
-          BpmnXMLUtil.writeDefaultAttribute(ATTRIBUTE_LISTENER_THROW_EVENT_TYPE, ATTRIBUTE_LISTENER_THROW_EVENT_TYPE_GLOBAL_SIGNAL, xtw);
-
-        } else if (ImplementationType.IMPLEMENTATION_TYPE_THROW_MESSAGE_EVENT.equals(eventListener.getImplementationType())) {
-          BpmnXMLUtil.writeDefaultAttribute(ATTRIBUTE_LISTENER_THROW_MESSAGE_EVENT_NAME, eventListener.getImplementation(), xtw);
-          BpmnXMLUtil.writeDefaultAttribute(ATTRIBUTE_LISTENER_THROW_EVENT_TYPE, ATTRIBUTE_LISTENER_THROW_EVENT_TYPE_MESSAGE, xtw);
-
-        } else if (ImplementationType.IMPLEMENTATION_TYPE_THROW_ERROR_EVENT.equals(eventListener.getImplementationType())) {
-          BpmnXMLUtil.writeDefaultAttribute(ATTRIBUTE_LISTENER_THROW_ERROR_EVENT_CODE, eventListener.getImplementation(), xtw);
-          BpmnXMLUtil.writeDefaultAttribute(ATTRIBUTE_LISTENER_THROW_EVENT_TYPE, ATTRIBUTE_LISTENER_THROW_EVENT_TYPE_ERROR, xtw);
+        // In case of a process-element, write the event-listeners
+        if (element instanceof Process) {
+            didWriteExtensionStartElement =
+                writeEventListeners(
+                    ((Process) element).getEventListeners(),
+                    didWriteExtensionStartElement,
+                    xtw
+                );
         }
 
-        xtw.writeEndElement();
-      }
+        return didWriteExtensionStartElement;
     }
 
-    return didWriteExtensionStartElement;
-  }
+    protected static boolean writeEventListeners(
+        List<EventListener> eventListeners,
+        boolean didWriteExtensionStartElement,
+        XMLStreamWriter xtw
+    ) throws Exception {
+        if (eventListeners != null && !eventListeners.isEmpty()) {
+            for (EventListener eventListener : eventListeners) {
+                if (!didWriteExtensionStartElement) {
+                    xtw.writeStartElement(ELEMENT_EXTENSIONS);
+                    didWriteExtensionStartElement = true;
+                }
 
-  private static boolean writeListeners(String xmlElementName, List<ActivitiListener> listenerList, boolean didWriteExtensionStartElement, XMLStreamWriter xtw) throws Exception {
-    if (listenerList != null) {
+                xtw.writeStartElement(
+                    ACTIVITI_EXTENSIONS_PREFIX,
+                    ELEMENT_EVENT_LISTENER,
+                    ACTIVITI_EXTENSIONS_NAMESPACE
+                );
+                BpmnXMLUtil.writeDefaultAttribute(
+                    ATTRIBUTE_LISTENER_EVENTS,
+                    eventListener.getEvents(),
+                    xtw
+                );
+                BpmnXMLUtil.writeDefaultAttribute(
+                    ATTRIBUTE_LISTENER_ENTITY_TYPE,
+                    eventListener.getEntityType(),
+                    xtw
+                );
 
-      for (ActivitiListener listener : listenerList) {
+                if (
+                    ImplementationType.IMPLEMENTATION_TYPE_CLASS.equals(
+                        eventListener.getImplementationType()
+                    )
+                ) {
+                    BpmnXMLUtil.writeDefaultAttribute(
+                        ATTRIBUTE_LISTENER_CLASS,
+                        eventListener.getImplementation(),
+                        xtw
+                    );
+                } else if (
+                    ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION.equals(
+                        eventListener.getImplementationType()
+                    )
+                ) {
+                    BpmnXMLUtil.writeDefaultAttribute(
+                        ATTRIBUTE_LISTENER_DELEGATEEXPRESSION,
+                        eventListener.getImplementation(),
+                        xtw
+                    );
+                } else if (
+                    ImplementationType.IMPLEMENTATION_TYPE_THROW_SIGNAL_EVENT.equals(
+                        eventListener.getImplementationType()
+                    )
+                ) {
+                    BpmnXMLUtil.writeDefaultAttribute(
+                        ATTRIBUTE_LISTENER_THROW_SIGNAL_EVENT_NAME,
+                        eventListener.getImplementation(),
+                        xtw
+                    );
+                    BpmnXMLUtil.writeDefaultAttribute(
+                        ATTRIBUTE_LISTENER_THROW_EVENT_TYPE,
+                        ATTRIBUTE_LISTENER_THROW_EVENT_TYPE_SIGNAL,
+                        xtw
+                    );
+                } else if (
+                    ImplementationType.IMPLEMENTATION_TYPE_THROW_GLOBAL_SIGNAL_EVENT.equals(
+                        eventListener.getImplementationType()
+                    )
+                ) {
+                    BpmnXMLUtil.writeDefaultAttribute(
+                        ATTRIBUTE_LISTENER_THROW_SIGNAL_EVENT_NAME,
+                        eventListener.getImplementation(),
+                        xtw
+                    );
+                    BpmnXMLUtil.writeDefaultAttribute(
+                        ATTRIBUTE_LISTENER_THROW_EVENT_TYPE,
+                        ATTRIBUTE_LISTENER_THROW_EVENT_TYPE_GLOBAL_SIGNAL,
+                        xtw
+                    );
+                } else if (
+                    ImplementationType.IMPLEMENTATION_TYPE_THROW_MESSAGE_EVENT.equals(
+                        eventListener.getImplementationType()
+                    )
+                ) {
+                    BpmnXMLUtil.writeDefaultAttribute(
+                        ATTRIBUTE_LISTENER_THROW_MESSAGE_EVENT_NAME,
+                        eventListener.getImplementation(),
+                        xtw
+                    );
+                    BpmnXMLUtil.writeDefaultAttribute(
+                        ATTRIBUTE_LISTENER_THROW_EVENT_TYPE,
+                        ATTRIBUTE_LISTENER_THROW_EVENT_TYPE_MESSAGE,
+                        xtw
+                    );
+                } else if (
+                    ImplementationType.IMPLEMENTATION_TYPE_THROW_ERROR_EVENT.equals(
+                        eventListener.getImplementationType()
+                    )
+                ) {
+                    BpmnXMLUtil.writeDefaultAttribute(
+                        ATTRIBUTE_LISTENER_THROW_ERROR_EVENT_CODE,
+                        eventListener.getImplementation(),
+                        xtw
+                    );
+                    BpmnXMLUtil.writeDefaultAttribute(
+                        ATTRIBUTE_LISTENER_THROW_EVENT_TYPE,
+                        ATTRIBUTE_LISTENER_THROW_EVENT_TYPE_ERROR,
+                        xtw
+                    );
+                }
 
-        if (StringUtils.isNotEmpty(listener.getEvent())) {
-
-          if (!didWriteExtensionStartElement) {
-            xtw.writeStartElement(ELEMENT_EXTENSIONS);
-            didWriteExtensionStartElement = true;
-          }
-
-          xtw.writeStartElement(ACTIVITI_EXTENSIONS_PREFIX, xmlElementName, ACTIVITI_EXTENSIONS_NAMESPACE);
-          BpmnXMLUtil.writeDefaultAttribute(ATTRIBUTE_LISTENER_EVENT, listener.getEvent(), xtw);
-
-          if (ImplementationType.IMPLEMENTATION_TYPE_CLASS.equals(listener.getImplementationType())) {
-            BpmnXMLUtil.writeDefaultAttribute(ATTRIBUTE_LISTENER_CLASS, listener.getImplementation(), xtw);
-          } else if (ImplementationType.IMPLEMENTATION_TYPE_EXPRESSION.equals(listener.getImplementationType())) {
-            BpmnXMLUtil.writeDefaultAttribute(ATTRIBUTE_LISTENER_EXPRESSION, listener.getImplementation(), xtw);
-          } else if (ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION.equals(listener.getImplementationType())) {
-            BpmnXMLUtil.writeDefaultAttribute(ATTRIBUTE_LISTENER_DELEGATEEXPRESSION, listener.getImplementation(), xtw);
-          }
-
-          BpmnXMLUtil.writeDefaultAttribute(ATTRIBUTE_LISTENER_ON_TRANSACTION, listener.getOnTransaction(), xtw);
-
-          if (ImplementationType.IMPLEMENTATION_TYPE_CLASS.equals(listener.getCustomPropertiesResolverImplementationType())) {
-            BpmnXMLUtil.writeDefaultAttribute(ATTRIBUTE_LISTENER_CUSTOM_PROPERTIES_RESOLVER_CLASS, listener.getCustomPropertiesResolverImplementation(), xtw);
-          } else if (ImplementationType.IMPLEMENTATION_TYPE_EXPRESSION.equals(listener.getCustomPropertiesResolverImplementationType())) {
-            BpmnXMLUtil.writeDefaultAttribute(ATTRIBUTE_LISTENER_CUSTOM_PROPERTIES_RESOLVER_EXPRESSION, listener.getCustomPropertiesResolverImplementation(), xtw);
-          } else if (ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION.equals(listener.getCustomPropertiesResolverImplementationType())) {
-            BpmnXMLUtil.writeDefaultAttribute(ATTRIBUTE_LISTENER_CUSTOM_PROPERTIES_RESOLVER_DELEGATEEXPRESSION, listener.getCustomPropertiesResolverImplementation(), xtw);
-          }
-
-          FieldExtensionExport.writeFieldExtensions(listener.getFieldExtensions(), true, xtw);
-
-          xtw.writeEndElement();
+                xtw.writeEndElement();
+            }
         }
-      }
-    }
-    return didWriteExtensionStartElement;
-  }
 
+        return didWriteExtensionStartElement;
+    }
+
+    private static boolean writeListeners(
+        String xmlElementName,
+        List<ActivitiListener> listenerList,
+        boolean didWriteExtensionStartElement,
+        XMLStreamWriter xtw
+    ) throws Exception {
+        if (listenerList != null) {
+            for (ActivitiListener listener : listenerList) {
+                if (StringUtils.isNotEmpty(listener.getEvent())) {
+                    if (!didWriteExtensionStartElement) {
+                        xtw.writeStartElement(ELEMENT_EXTENSIONS);
+                        didWriteExtensionStartElement = true;
+                    }
+
+                    xtw.writeStartElement(
+                        ACTIVITI_EXTENSIONS_PREFIX,
+                        xmlElementName,
+                        ACTIVITI_EXTENSIONS_NAMESPACE
+                    );
+                    BpmnXMLUtil.writeDefaultAttribute(
+                        ATTRIBUTE_LISTENER_EVENT,
+                        listener.getEvent(),
+                        xtw
+                    );
+
+                    if (
+                        ImplementationType.IMPLEMENTATION_TYPE_CLASS.equals(
+                            listener.getImplementationType()
+                        )
+                    ) {
+                        BpmnXMLUtil.writeDefaultAttribute(
+                            ATTRIBUTE_LISTENER_CLASS,
+                            listener.getImplementation(),
+                            xtw
+                        );
+                    } else if (
+                        ImplementationType.IMPLEMENTATION_TYPE_EXPRESSION.equals(
+                            listener.getImplementationType()
+                        )
+                    ) {
+                        BpmnXMLUtil.writeDefaultAttribute(
+                            ATTRIBUTE_LISTENER_EXPRESSION,
+                            listener.getImplementation(),
+                            xtw
+                        );
+                    } else if (
+                        ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION.equals(
+                            listener.getImplementationType()
+                        )
+                    ) {
+                        BpmnXMLUtil.writeDefaultAttribute(
+                            ATTRIBUTE_LISTENER_DELEGATEEXPRESSION,
+                            listener.getImplementation(),
+                            xtw
+                        );
+                    }
+
+                    BpmnXMLUtil.writeDefaultAttribute(
+                        ATTRIBUTE_LISTENER_ON_TRANSACTION,
+                        listener.getOnTransaction(),
+                        xtw
+                    );
+
+                    if (
+                        ImplementationType.IMPLEMENTATION_TYPE_CLASS.equals(
+                            listener.getCustomPropertiesResolverImplementationType()
+                        )
+                    ) {
+                        BpmnXMLUtil.writeDefaultAttribute(
+                            ATTRIBUTE_LISTENER_CUSTOM_PROPERTIES_RESOLVER_CLASS,
+                            listener.getCustomPropertiesResolverImplementation(),
+                            xtw
+                        );
+                    } else if (
+                        ImplementationType.IMPLEMENTATION_TYPE_EXPRESSION.equals(
+                            listener.getCustomPropertiesResolverImplementationType()
+                        )
+                    ) {
+                        BpmnXMLUtil.writeDefaultAttribute(
+                            ATTRIBUTE_LISTENER_CUSTOM_PROPERTIES_RESOLVER_EXPRESSION,
+                            listener.getCustomPropertiesResolverImplementation(),
+                            xtw
+                        );
+                    } else if (
+                        ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION.equals(
+                            listener.getCustomPropertiesResolverImplementationType()
+                        )
+                    ) {
+                        BpmnXMLUtil.writeDefaultAttribute(
+                            ATTRIBUTE_LISTENER_CUSTOM_PROPERTIES_RESOLVER_DELEGATEEXPRESSION,
+                            listener.getCustomPropertiesResolverImplementation(),
+                            xtw
+                        );
+                    }
+
+                    FieldExtensionExport.writeFieldExtensions(
+                        listener.getFieldExtensions(),
+                        true,
+                        xtw
+                    );
+
+                    xtw.writeEndElement();
+                }
+            }
+        }
+        return didWriteExtensionStartElement;
+    }
 }

@@ -18,7 +18,6 @@ package org.activiti.api.task.model.builders;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
 import org.activiti.api.task.model.payloads.CreateTaskPayload;
 
 public class CreateTaskPayloadBuilder {
@@ -68,7 +67,9 @@ public class CreateTaskPayloadBuilder {
         return this;
     }
 
-    public CreateTaskPayloadBuilder withCandidateGroups(List<String> candidateGroups) {
+    public CreateTaskPayloadBuilder withCandidateGroups(
+        List<String> candidateGroups
+    ) {
         if (candidateGroups == null) {
             candidateGroups = new ArrayList<>();
         }
@@ -81,7 +82,9 @@ public class CreateTaskPayloadBuilder {
         return this;
     }
 
-    public CreateTaskPayloadBuilder withCandidateUsers(List<String> candidateUsers) {
+    public CreateTaskPayloadBuilder withCandidateUsers(
+        List<String> candidateUsers
+    ) {
         if (candidateUsers == null) {
             candidateUsers = new ArrayList<>();
         }
@@ -95,14 +98,16 @@ public class CreateTaskPayloadBuilder {
     }
 
     public CreateTaskPayload build() {
-        return new CreateTaskPayload(name,
-                description,
-                dueDate,
-                priority,
-                assignee,
-                candidateGroups,
-                candidateUsers,
-                parentTaskId,
-                formKey);
+        return new CreateTaskPayload(
+            name,
+            description,
+            dueDate,
+            priority,
+            assignee,
+            candidateGroups,
+            candidateUsers,
+            parentTaskId,
+            formKey
+        );
     }
 }

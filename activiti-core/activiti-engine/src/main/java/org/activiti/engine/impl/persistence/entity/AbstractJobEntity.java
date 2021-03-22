@@ -17,7 +17,6 @@
 package org.activiti.engine.impl.persistence.entity;
 
 import java.util.Date;
-
 import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.impl.db.HasRevision;
 import org.activiti.engine.runtime.Job;
@@ -28,55 +27,53 @@ import org.activiti.engine.runtime.Job;
  */
 @Internal
 public interface AbstractJobEntity extends Job, Entity, HasRevision {
+    void setExecution(ExecutionEntity execution);
 
-  void setExecution(ExecutionEntity execution);
+    void setDuedate(Date duedate);
 
-  void setDuedate(Date duedate);
+    void setExecutionId(String executionId);
 
-  void setExecutionId(String executionId);
+    void setRetries(int retries);
 
-  void setRetries(int retries);
+    void setProcessInstanceId(String processInstanceId);
 
-  void setProcessInstanceId(String processInstanceId);
+    boolean isExclusive();
 
-  boolean isExclusive();
+    void setExclusive(boolean isExclusive);
 
-  void setExclusive(boolean isExclusive);
+    void setProcessDefinitionId(String processDefinitionId);
 
-  void setProcessDefinitionId(String processDefinitionId);
+    String getJobHandlerType();
 
-  String getJobHandlerType();
+    void setJobHandlerType(String jobHandlerType);
 
-  void setJobHandlerType(String jobHandlerType);
+    String getJobHandlerConfiguration();
 
-  String getJobHandlerConfiguration();
+    void setJobHandlerConfiguration(String jobHandlerConfiguration);
 
-  void setJobHandlerConfiguration(String jobHandlerConfiguration);
+    String getJobType();
 
-  String getJobType();
+    void setJobType(String jobType);
 
-  void setJobType(String jobType);
+    String getRepeat();
 
-  String getRepeat();
+    void setRepeat(String repeat);
 
-  void setRepeat(String repeat);
+    Date getEndDate();
 
-  Date getEndDate();
+    void setEndDate(Date endDate);
 
-  void setEndDate(Date endDate);
+    int getMaxIterations();
 
-  int getMaxIterations();
+    void setMaxIterations(int maxIterations);
 
-  void setMaxIterations(int maxIterations);
+    String getExceptionStacktrace();
 
-  String getExceptionStacktrace();
+    void setExceptionStacktrace(String exception);
 
-  void setExceptionStacktrace(String exception);
+    void setExceptionMessage(String exceptionMessage);
 
-  void setExceptionMessage(String exceptionMessage);
+    ByteArrayRef getExceptionByteArrayRef();
 
-  ByteArrayRef getExceptionByteArrayRef();
-
-  void setTenantId(String tenantId);
-
+    void setTenantId(String tenantId);
 }

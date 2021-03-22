@@ -16,7 +16,6 @@
 package org.activiti.api.runtime.model.impl;
 
 import java.util.Objects;
-
 import org.activiti.api.process.model.BPMNError;
 
 public class BPMNErrorImpl extends BPMNActivityImpl implements BPMNError {
@@ -24,15 +23,17 @@ public class BPMNErrorImpl extends BPMNActivityImpl implements BPMNError {
     private String errorCode;
     private String errorId;
 
-    public BPMNErrorImpl() {
-    }
+    public BPMNErrorImpl() {}
 
     public BPMNErrorImpl(String elementId) {
         this.setElementId(elementId);
     }
-    public BPMNErrorImpl(String elementId,
-                         String activityName,
-                         String activityType) {
+
+    public BPMNErrorImpl(
+        String elementId,
+        String activityName,
+        String activityType
+    ) {
         this.setElementId(elementId);
         this.setActivityName(activityName);
         this.setActivityType(activityType);
@@ -56,11 +57,13 @@ public class BPMNErrorImpl extends BPMNActivityImpl implements BPMNError {
 
     @Override
     public int hashCode() {
-        return Objects.hash(getElementId(),
-                            getActivityName(),
-                            getActivityType(),
-                            getErrorId(),
-                            getErrorCode());
+        return Objects.hash(
+            getElementId(),
+            getActivityName(),
+            getActivityType(),
+            getErrorId(),
+            getErrorCode()
+        );
     }
 
     @Override
@@ -73,27 +76,35 @@ public class BPMNErrorImpl extends BPMNActivityImpl implements BPMNError {
         }
         BPMNErrorImpl that = (BPMNErrorImpl) o;
 
-        return Objects.equals(getElementId(),
-                              that.getElementId()) &&
-               Objects.equals(getActivityName(),
-                              that.getActivityName()) &&
-               Objects.equals(getActivityType(),
-                              that.getActivityType()) &&
-               Objects.equals(getErrorCode(),
-                              that.getErrorCode()) &&
-               Objects.equals(getErrorId(),
-                              that.getErrorId());
+        return (
+            Objects.equals(getElementId(), that.getElementId()) &&
+            Objects.equals(getActivityName(), that.getActivityName()) &&
+            Objects.equals(getActivityType(), that.getActivityType()) &&
+            Objects.equals(getErrorCode(), that.getErrorCode()) &&
+            Objects.equals(getErrorId(), that.getErrorId())
+        );
     }
 
     @Override
     public String toString() {
-        return "BPMNActivityImpl{" +
-                "activityName='" + getActivityName() + '\'' +
-                ", activityType='" + getActivityType() + '\'' +
-                ", elementId='" + getElementId() + '\'' +
-                ", errorId='" + getErrorId() + '\'' +
-                ", errorCode='" + getErrorCode() + '\'' +
-                '}';
+        return (
+            "BPMNActivityImpl{" +
+            "activityName='" +
+            getActivityName() +
+            '\'' +
+            ", activityType='" +
+            getActivityType() +
+            '\'' +
+            ", elementId='" +
+            getElementId() +
+            '\'' +
+            ", errorId='" +
+            getErrorId() +
+            '\'' +
+            ", errorCode='" +
+            getErrorCode() +
+            '\'' +
+            '}'
+        );
     }
-
 }

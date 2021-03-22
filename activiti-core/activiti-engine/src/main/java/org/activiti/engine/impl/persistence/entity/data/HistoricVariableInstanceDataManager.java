@@ -18,7 +18,6 @@ package org.activiti.engine.impl.persistence.entity.data;
 
 import java.util.List;
 import java.util.Map;
-
 import org.activiti.engine.history.HistoricVariableInstance;
 import org.activiti.engine.impl.HistoricVariableInstanceQueryImpl;
 import org.activiti.engine.impl.Page;
@@ -27,20 +26,36 @@ import org.activiti.engine.impl.persistence.entity.HistoricVariableInstanceEntit
 /**
 
  */
-public interface HistoricVariableInstanceDataManager extends DataManager<HistoricVariableInstanceEntity> {
+public interface HistoricVariableInstanceDataManager
+    extends DataManager<HistoricVariableInstanceEntity> {
+    List<HistoricVariableInstanceEntity> findHistoricVariableInstancesByProcessInstanceId(
+        String processInstanceId
+    );
 
-  List<HistoricVariableInstanceEntity> findHistoricVariableInstancesByProcessInstanceId(String processInstanceId);
+    List<HistoricVariableInstanceEntity> findHistoricVariableInstancesByTaskId(
+        String taskId
+    );
 
-  List<HistoricVariableInstanceEntity> findHistoricVariableInstancesByTaskId(String taskId);
+    long findHistoricVariableInstanceCountByQueryCriteria(
+        HistoricVariableInstanceQueryImpl historicProcessVariableQuery
+    );
 
-  long findHistoricVariableInstanceCountByQueryCriteria(HistoricVariableInstanceQueryImpl historicProcessVariableQuery);
+    List<HistoricVariableInstance> findHistoricVariableInstancesByQueryCriteria(
+        HistoricVariableInstanceQueryImpl historicProcessVariableQuery,
+        Page page
+    );
 
-  List<HistoricVariableInstance> findHistoricVariableInstancesByQueryCriteria(HistoricVariableInstanceQueryImpl historicProcessVariableQuery, Page page);
+    HistoricVariableInstanceEntity findHistoricVariableInstanceByVariableInstanceId(
+        String variableInstanceId
+    );
 
-  HistoricVariableInstanceEntity findHistoricVariableInstanceByVariableInstanceId(String variableInstanceId);
+    List<HistoricVariableInstance> findHistoricVariableInstancesByNativeQuery(
+        Map<String, Object> parameterMap,
+        int firstResult,
+        int maxResults
+    );
 
-  List<HistoricVariableInstance> findHistoricVariableInstancesByNativeQuery(Map<String, Object> parameterMap, int firstResult, int maxResults);
-
-  long findHistoricVariableInstanceCountByNativeQuery(Map<String, Object> parameterMap);
-
+    long findHistoricVariableInstanceCountByNativeQuery(
+        Map<String, Object> parameterMap
+    );
 }

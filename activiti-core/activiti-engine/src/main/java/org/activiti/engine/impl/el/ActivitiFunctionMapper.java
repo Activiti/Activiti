@@ -14,11 +14,9 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.el;
 
 import java.lang.reflect.Method;
-
 import javax.el.FunctionMapper;
 
 /**
@@ -30,8 +28,7 @@ import javax.el.FunctionMapper;
  */
 public class ActivitiFunctionMapper extends FunctionMapper {
 
-  public Method resolveFunction(String prefix, String localName) {
-    return null;
-  }
-
+    public Method resolveFunction(String prefix, String localName) {
+        return null;
+    }
 }

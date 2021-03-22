@@ -20,50 +20,70 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.activiti.engine.history.HistoricActivityInstanceQuery;
 
-public class HistoricActivityInstanceEscapeClauseTest extends AbstractEscapeClauseTestCase {
+public class HistoricActivityInstanceEscapeClauseTest
+    extends AbstractEscapeClauseTestCase {
 
-  private String deploymentOneId;
+    private String deploymentOneId;
 
-  private String deploymentTwoId;
+    private String deploymentTwoId;
 
-  @Override
-  protected void setUp() throws Exception {
-    deploymentOneId = repositoryService
-      .createDeployment()
-      .tenantId("One%")
-      .addClasspathResource("org/activiti/engine/test/history/HistoricActivityInstanceTest.testHistoricActivityInstanceQuery.bpmn20.xml")
-      .deploy()
-      .getId();
+    @Override
+    protected void setUp() throws Exception {
+        deploymentOneId =
+            repositoryService
+                .createDeployment()
+                .tenantId("One%")
+                .addClasspathResource(
+                    "org/activiti/engine/test/history/HistoricActivityInstanceTest.testHistoricActivityInstanceQuery.bpmn20.xml"
+                )
+                .deploy()
+                .getId();
 
-    deploymentTwoId = repositoryService
-      .createDeployment()
-      .tenantId("Two_")
-      .addClasspathResource("org/activiti/engine/test/history/HistoricActivityInstanceTest.testHistoricActivityInstanceQuery.bpmn20.xml")
-      .deploy()
-      .getId();
+        deploymentTwoId =
+            repositoryService
+                .createDeployment()
+                .tenantId("Two_")
+                .addClasspathResource(
+                    "org/activiti/engine/test/history/HistoricActivityInstanceTest.testHistoricActivityInstanceQuery.bpmn20.xml"
+                )
+                .deploy()
+                .getId();
 
-    super.setUp();
-  }
+        super.setUp();
+    }
 
-  @Override
-  protected void tearDown() throws Exception {
-    super.tearDown();
-    repositoryService.deleteDeployment(deploymentOneId, true);
-    repositoryService.deleteDeployment(deploymentTwoId, true);
-  }
+    @Override
+    protected void tearDown() throws Exception {
+        super.tearDown();
+        repositoryService.deleteDeployment(deploymentOneId, true);
+        repositoryService.deleteDeployment(deploymentTwoId, true);
+    }
 
-  public void testQueryByTenantIdLike() {
-    runtimeService.startProcessInstanceByKeyAndTenantId("noopProcess", "One%");
-    runtimeService.startProcessInstanceByKeyAndTenantId("noopProcess", "Two_");
+    public void testQueryByTenantIdLike() {
+        runtimeService.startProcessInstanceByKeyAndTenantId(
+            "noopProcess",
+            "One%"
+        );
+        runtimeService.startProcessInstanceByKeyAndTenantId(
+            "noopProcess",
+            "Two_"
+        );
 
-    HistoricActivityInstanceQuery query = historyService.createHistoricActivityInstanceQuery().activityId("noop").activityTenantIdLike("%\\%%");
-    assertThat(query.singleResult().getTenantId()).isEqualTo("One%");
-    assertThat(query.list()).hasSize(1);
-    assertThat(query.count()).isEqualTo(1);
+        HistoricActivityInstanceQuery query = historyService
+            .createHistoricActivityInstanceQuery()
+            .activityId("noop")
+            .activityTenantIdLike("%\\%%");
+        assertThat(query.singleResult().getTenantId()).isEqualTo("One%");
+        assertThat(query.list()).hasSize(1);
+        assertThat(query.count()).isEqualTo(1);
 
-    query = historyService.createHistoricActivityInstanceQuery().activityId("noop").activityTenantIdLike("%\\_%");
-    assertThat(query.singleResult().getTenantId()).isEqualTo("Two_");
-    assertThat(query.list()).hasSize(1);
-    assertThat(query.count()).isEqualTo(1);
-  }
+        query =
+            historyService
+                .createHistoricActivityInstanceQuery()
+                .activityId("noop")
+                .activityTenantIdLike("%\\_%");
+        assertThat(query.singleResult().getTenantId()).isEqualTo("Two_");
+        assertThat(query.list()).hasSize(1);
+        assertThat(query.count()).isEqualTo(1);
+    }
 }

@@ -53,13 +53,25 @@ public class BpmnActivityBehaviorTest {
     @Test
     public void performDefaultOutgoingBehavior_should_propagateVariablesToParentAndPlanContinuation() {
         ExecutionEntity parentExecution = mock(ExecutionEntity.class);
-        Map<String, Object> variablesLocal = Collections.singletonMap("myVar", "value");
-        ExecutionEntity execution = buildExecution(parentExecution, variablesLocal);
+        Map<String, Object> variablesLocal = Collections.singletonMap(
+            "myVar",
+            "value"
+        );
+        ExecutionEntity execution = buildExecution(
+            parentExecution,
+            variablesLocal
+        );
 
-        Map<String, Object> calculatedVariables = Collections
-            .singletonMap("mappedVar", "mappedValue");
-        given(variablesCalculator.calculateOutPutVariables(
-            MappingExecutionContext.buildMappingExecutionContext(execution), variablesLocal))
+        Map<String, Object> calculatedVariables = Collections.singletonMap(
+            "mappedVar",
+            "mappedValue"
+        );
+        given(
+            variablesCalculator.calculateOutPutVariables(
+                MappingExecutionContext.buildMappingExecutionContext(execution),
+                variablesLocal
+            )
+        )
             .willReturn(calculatedVariables);
 
         //when
@@ -68,11 +80,12 @@ public class BpmnActivityBehaviorTest {
         //then
         verify(parentExecution).setVariables(calculatedVariables);
         verify(agenda).planTakeOutgoingSequenceFlowsOperation(execution, true);
-
     }
 
-    private ExecutionEntity buildExecution(ExecutionEntity parentExecution,
-        Map<String, Object> variablesLocal) {
+    private ExecutionEntity buildExecution(
+        ExecutionEntity parentExecution,
+        Map<String, Object> variablesLocal
+    ) {
         ExecutionEntity execution = mock(ExecutionEntity.class);
         given(execution.getProcessDefinitionId()).willReturn("procDefId");
         given(execution.getActivityId()).willReturn("activityId");

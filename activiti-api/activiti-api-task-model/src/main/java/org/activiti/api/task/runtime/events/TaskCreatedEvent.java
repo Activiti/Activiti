@@ -15,10 +15,7 @@
  */
 package org.activiti.api.task.runtime.events;
 
-
-import org.activiti.api.task.model.events.TaskRuntimeEvent;
 import org.activiti.api.task.model.Task;
+import org.activiti.api.task.model.events.TaskRuntimeEvent;
 
-public interface TaskCreatedEvent extends TaskRuntimeEvent<Task> {
-
-}
+public interface TaskCreatedEvent extends TaskRuntimeEvent<Task> {}

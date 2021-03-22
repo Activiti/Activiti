@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.persistence.entity;
 
 import java.io.Serializable;
@@ -24,70 +23,71 @@ import java.util.Date;
 
 
  */
-public abstract class HistoricDetailEntityImpl extends AbstractEntityNoRevision implements HistoricDetailEntity, Serializable {
+public abstract class HistoricDetailEntityImpl
+    extends AbstractEntityNoRevision
+    implements HistoricDetailEntity, Serializable {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  protected String processInstanceId;
-  protected String activityInstanceId;
-  protected String taskId;
-  protected String executionId;
-  protected Date time;
-  protected String detailType;
+    protected String processInstanceId;
+    protected String activityInstanceId;
+    protected String taskId;
+    protected String executionId;
+    protected Date time;
+    protected String detailType;
 
-  public Object getPersistentState() {
-    // details are not updatable so we always provide the same object as the state
-    return HistoricDetailEntityImpl.class;
-  }
+    public Object getPersistentState() {
+        // details are not updatable so we always provide the same object as the state
+        return HistoricDetailEntityImpl.class;
+    }
 
-  // getters and setters //////////////////////////////////////////////////////
+    // getters and setters //////////////////////////////////////////////////////
 
-  public String getProcessInstanceId() {
-    return processInstanceId;
-  }
+    public String getProcessInstanceId() {
+        return processInstanceId;
+    }
 
-  public void setProcessInstanceId(String processInstanceId) {
-    this.processInstanceId = processInstanceId;
-  }
+    public void setProcessInstanceId(String processInstanceId) {
+        this.processInstanceId = processInstanceId;
+    }
 
-  public String getActivityInstanceId() {
-    return activityInstanceId;
-  }
+    public String getActivityInstanceId() {
+        return activityInstanceId;
+    }
 
-  public void setActivityInstanceId(String activityInstanceId) {
-    this.activityInstanceId = activityInstanceId;
-  }
+    public void setActivityInstanceId(String activityInstanceId) {
+        this.activityInstanceId = activityInstanceId;
+    }
 
-  public String getTaskId() {
-    return taskId;
-  }
+    public String getTaskId() {
+        return taskId;
+    }
 
-  public void setTaskId(String taskId) {
-    this.taskId = taskId;
-  }
+    public void setTaskId(String taskId) {
+        this.taskId = taskId;
+    }
 
-  public String getExecutionId() {
-    return executionId;
-  }
+    public String getExecutionId() {
+        return executionId;
+    }
 
-  public void setExecutionId(String executionId) {
-    this.executionId = executionId;
-  }
+    public void setExecutionId(String executionId) {
+        this.executionId = executionId;
+    }
 
-  public Date getTime() {
-    return time;
-  }
+    public Date getTime() {
+        return time;
+    }
 
-  public void setTime(Date time) {
-    this.time = time;
-  }
+    public void setTime(Date time) {
+        this.time = time;
+    }
 
-  public String getDetailType() {
-    return detailType;
-  }
+    public String getDetailType() {
+        return detailType;
+    }
 
-  public void setDetailType(String detailType) {
-    this.detailType = detailType;
-  }
-
+    public void setDetailType(String detailType) {
+        this.detailType = detailType;
+    }
 }

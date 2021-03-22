@@ -15,16 +15,15 @@
  */
 package org.activiti.spring.process.model;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.MockitoAnnotations.initMocks;
+
+import java.util.HashMap;
 import org.activiti.spring.process.model.ProcessVariablesMapping.MappingType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-
-import java.util.HashMap;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.MockitoAnnotations.initMocks;
 
 public class ExtensionTest {
 
@@ -38,7 +37,8 @@ public class ExtensionTest {
 
     @Test
     public void should_bothHasMappingTypeInputsAndOutputsReturnTrue_when_thereIsMappingTypeMAP_ALL() {
-        given(processVariablesMapping.getMappingType()).willReturn(MappingType.MAP_ALL);
+        given(processVariablesMapping.getMappingType())
+            .willReturn(MappingType.MAP_ALL);
 
         Extension extension = new Extension();
         HashMap<String, ProcessVariablesMapping> mapping = new HashMap<>();
@@ -47,12 +47,12 @@ public class ExtensionTest {
 
         assertThat(extension.shouldMapAllInputs("elementId")).isTrue();
         assertThat(extension.shouldMapAllOutputs("elementId")).isTrue();
-
     }
 
     @Test
     public void should_onlyHasMappingTypeInputsReturnTrue_when_thereIsMappingTypeMAP_ALL_INPUTS() {
-        given(processVariablesMapping.getMappingType()).willReturn(MappingType.MAP_ALL_INPUTS);
+        given(processVariablesMapping.getMappingType())
+            .willReturn(MappingType.MAP_ALL_INPUTS);
 
         Extension extension = new Extension();
         HashMap<String, ProcessVariablesMapping> mapping = new HashMap<>();
@@ -61,12 +61,12 @@ public class ExtensionTest {
 
         assertThat(extension.shouldMapAllInputs("elementId")).isTrue();
         assertThat(extension.shouldMapAllOutputs("elementId")).isFalse();
-
     }
 
     @Test
     public void should_onlyHasMappingTypeOutputsReturnTrue_when_thereIsMappingTypeMAP_ALL_OUTPUTS() {
-        given(processVariablesMapping.getMappingType()).willReturn(MappingType.MAP_ALL_OUTPUTS);
+        given(processVariablesMapping.getMappingType())
+            .willReturn(MappingType.MAP_ALL_OUTPUTS);
 
         Extension extension = new Extension();
         HashMap<String, ProcessVariablesMapping> mapping = new HashMap<>();
@@ -75,7 +75,6 @@ public class ExtensionTest {
 
         assertThat(extension.shouldMapAllInputs("elementId")).isFalse();
         assertThat(extension.shouldMapAllOutputs("elementId")).isTrue();
-
     }
 
     @Test
@@ -94,5 +93,4 @@ public class ExtensionTest {
         Extension extension = new Extension();
         assertThat(extension.hasMapping("elementId")).isFalse();
     }
-
 }

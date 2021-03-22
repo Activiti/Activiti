@@ -14,14 +14,12 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.cmd;
 
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Map.Entry;
-
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.impl.interceptor.Command;
@@ -30,47 +28,57 @@ import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.persistence.entity.VariableInstance;
 import org.activiti.engine.task.Task;
 
-public class GetTaskVariableInstancesCmd implements Command<Map<String, VariableInstance>>, Serializable {
+public class GetTaskVariableInstancesCmd
+    implements Command<Map<String, VariableInstance>>, Serializable {
 
     private static final long serialVersionUID = 1L;
     protected String taskId;
     protected Collection<String> variableNames;
     protected boolean isLocal;
 
-    public GetTaskVariableInstancesCmd(String taskId, Collection<String> variableNames, boolean isLocal) {
+    public GetTaskVariableInstancesCmd(
+        String taskId,
+        Collection<String> variableNames,
+        boolean isLocal
+    ) {
         this.taskId = taskId;
         this.variableNames = variableNames;
         this.isLocal = isLocal;
     }
 
     @Override
-    public Map<String, VariableInstance> execute(CommandContext commandContext) {
+    public Map<String, VariableInstance> execute(
+        CommandContext commandContext
+    ) {
         if (taskId == null) {
             throw new ActivitiIllegalArgumentException("taskId is null");
         }
 
-        TaskEntity task = commandContext.getTaskEntityManager().findById(taskId);
+        TaskEntity task = commandContext
+            .getTaskEntityManager()
+            .findById(taskId);
 
         if (task == null) {
-            throw new ActivitiObjectNotFoundException("task " + taskId + " doesn't exist", Task.class);
+            throw new ActivitiObjectNotFoundException(
+                "task " + taskId + " doesn't exist",
+                Task.class
+            );
         }
 
         Map<String, VariableInstance> variables = null;
         if (variableNames == null) {
-
             if (isLocal) {
                 variables = task.getVariableInstancesLocal();
             } else {
                 variables = task.getVariableInstances();
             }
-
         } else {
             if (isLocal) {
-                variables = task.getVariableInstancesLocal(variableNames, false);
+                variables =
+                    task.getVariableInstancesLocal(variableNames, false);
             } else {
                 variables = task.getVariableInstances(variableNames, false);
             }
-
         }
 
         if (variables != null) {

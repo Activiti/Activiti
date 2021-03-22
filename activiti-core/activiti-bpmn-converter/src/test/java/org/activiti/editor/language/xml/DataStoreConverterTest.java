@@ -26,38 +26,38 @@ import org.junit.jupiter.api.Test;
 
 public class DataStoreConverterTest extends AbstractConverterTest {
 
-  @Test
-  public void convertXMLToModel() throws Exception {
-    BpmnModel bpmnModel = readXMLFile();
-    validateModel(bpmnModel);
-  }
+    @Test
+    public void convertXMLToModel() throws Exception {
+        BpmnModel bpmnModel = readXMLFile();
+        validateModel(bpmnModel);
+    }
 
-  @Test
-  public void convertModelToXML() throws Exception {
-    BpmnModel bpmnModel = readXMLFile();
-    BpmnModel parsedModel = exportAndReadXMLFile(bpmnModel);
-    validateModel(parsedModel);
-  }
+    @Test
+    public void convertModelToXML() throws Exception {
+        BpmnModel bpmnModel = readXMLFile();
+        BpmnModel parsedModel = exportAndReadXMLFile(bpmnModel);
+        validateModel(parsedModel);
+    }
 
-  protected String getResource() {
-    return "datastore.bpmn";
-  }
+    protected String getResource() {
+        return "datastore.bpmn";
+    }
 
-  private void validateModel(BpmnModel model) {
-    assertThat(model.getDataStores()).hasSize(1);
-    DataStore dataStore = model.getDataStore("DataStore_1");
-    assertThat(dataStore).isNotNull();
-    assertThat(dataStore.getId()).isEqualTo("DataStore_1");
-    assertThat(dataStore.getDataState()).isEqualTo("test");
-    assertThat(dataStore.getName()).isEqualTo("Test Database");
-    assertThat(dataStore.getItemSubjectRef()).isEqualTo("test");
+    private void validateModel(BpmnModel model) {
+        assertThat(model.getDataStores()).hasSize(1);
+        DataStore dataStore = model.getDataStore("DataStore_1");
+        assertThat(dataStore).isNotNull();
+        assertThat(dataStore.getId()).isEqualTo("DataStore_1");
+        assertThat(dataStore.getDataState()).isEqualTo("test");
+        assertThat(dataStore.getName()).isEqualTo("Test Database");
+        assertThat(dataStore.getItemSubjectRef()).isEqualTo("test");
 
-    FlowElement refElement = model.getFlowElement("DataStoreReference_1");
-    assertThat(refElement).isNotNull();
-    assertThat(refElement).isInstanceOf(DataStoreReference.class);
+        FlowElement refElement = model.getFlowElement("DataStoreReference_1");
+        assertThat(refElement).isNotNull();
+        assertThat(refElement).isInstanceOf(DataStoreReference.class);
 
-    assertThat(model.getPools()).hasSize(1);
-    Pool pool = model.getPools().get(0);
-    assertThat(pool.getId()).isEqualTo("pool1");
-  }
+        assertThat(model.getPools()).hasSize(1);
+        Pool pool = model.getPools().get(0);
+        assertThat(pool.getId()).isEqualTo("pool1");
+    }
 }

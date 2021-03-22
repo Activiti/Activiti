@@ -17,7 +17,6 @@ package org.activiti.examples;
 
 import java.util.List;
 import java.util.Map;
-
 import org.activiti.api.process.model.ProcessDefinition;
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
@@ -47,42 +46,42 @@ public class DemoApplication implements CommandLineRunner {
         SpringApplication.run(DemoApplication.class, args);
     }
 
-
     @PostMapping("/documents")
     public String processFile(@RequestBody String content) {
-
-        ProcessInstance processInstance = processRuntime.start(ProcessPayloadBuilder
-                                                                       .start()
-                                                                       .withProcessDefinitionKey("categorizeProcess")
-                                                                       .withVariable("fileContent",
-                                                                                     content)
-                                                                       .build());
+        ProcessInstance processInstance = processRuntime.start(
+            ProcessPayloadBuilder
+                .start()
+                .withProcessDefinitionKey("categorizeProcess")
+                .withVariable("fileContent", content)
+                .build()
+        );
         String message = ">>> Created Process Instance: " + processInstance;
         System.out.println(message);
         return message;
     }
 
     @GetMapping("/process-definitions")
-    public List<ProcessDefinition> getProcessDefinition(){
-        return processRuntime.processDefinitions(Pageable.of(0, 100)).getContent();
+    public List<ProcessDefinition> getProcessDefinition() {
+        return processRuntime
+            .processDefinitions(Pageable.of(0, 100))
+            .getContent();
     }
 
     @Override
-    public void run(String... args) {
-    }
+    public void run(String... args) {}
 
     @Bean
     public Connector processTextConnector() {
         return integrationContext -> {
             Map<String, Object> inBoundVariables = integrationContext.getInBoundVariables();
-            String contentToProcess = (String) inBoundVariables.get("fileContent");
+            String contentToProcess = (String) inBoundVariables.get(
+                "fileContent"
+            );
             // Logic Here to decide if content is approved or not
             if (contentToProcess.contains("activiti")) {
-                integrationContext.addOutBoundVariable("approved",
-                        true);
+                integrationContext.addOutBoundVariable("approved", true);
             } else {
-                integrationContext.addOutBoundVariable("approved",
-                        false);
+                integrationContext.addOutBoundVariable("approved", false);
             }
             return integrationContext;
         };
@@ -91,10 +90,11 @@ public class DemoApplication implements CommandLineRunner {
     @Bean
     public Connector tagTextConnector() {
         return integrationContext -> {
-            String contentToTag = (String) integrationContext.getInBoundVariables().get("fileContent");
+            String contentToTag = (String) integrationContext
+                .getInBoundVariables()
+                .get("fileContent");
             contentToTag += " :) ";
-            integrationContext.addOutBoundVariable("fileContent",
-                    contentToTag);
+            integrationContext.addOutBoundVariable("fileContent", contentToTag);
             System.out.println("Final Content: " + contentToTag);
             return integrationContext;
         };
@@ -103,13 +103,16 @@ public class DemoApplication implements CommandLineRunner {
     @Bean
     public Connector discardTextConnector() {
         return integrationContext -> {
-            String contentToDiscard = (String) integrationContext.getInBoundVariables().get("fileContent");
+            String contentToDiscard = (String) integrationContext
+                .getInBoundVariables()
+                .get("fileContent");
             contentToDiscard += " :( ";
-            integrationContext.addOutBoundVariable("fileContent",
-                    contentToDiscard);
+            integrationContext.addOutBoundVariable(
+                "fileContent",
+                contentToDiscard
+            );
             System.out.println("Final Content: " + contentToDiscard);
             return integrationContext;
         };
     }
-
 }

@@ -17,14 +17,12 @@ package org.activiti.image;
 
 import java.io.InputStream;
 import java.util.List;
-
 import org.activiti.bpmn.model.BpmnModel;
 
 /**
  * This interface declares methods to generate process diagram
  */
 public interface ProcessDiagramGenerator {
-
     /**
      * Generates a diagram of the given process definition, using the diagram interchange information of the process.
      * If there is no interchange information available, an ActivitiInterchangeInfoNotFoundException is thrown.
@@ -34,12 +32,14 @@ public interface ProcessDiagramGenerator {
      * @param activityFontName override the default activity font
      * @param labelFontName override the default label font
      */
-    InputStream generateDiagram(BpmnModel bpmnModel,
-                                List<String> highLightedActivities,
-                                List<String> highLightedFlows,
-                                String activityFontName,
-                                String labelFontName,
-                                String annotationFontName);
+    InputStream generateDiagram(
+        BpmnModel bpmnModel,
+        List<String> highLightedActivities,
+        List<String> highLightedFlows,
+        String activityFontName,
+        String labelFontName,
+        String annotationFontName
+    );
 
     /**
      * Generates a diagram of the given process definition, using the diagram interchange information of the process,
@@ -51,13 +51,15 @@ public interface ProcessDiagramGenerator {
      * @param labelFontName override the default label font
      * @param generateDefaultDiagram true if a default diagram should be generated if there is no graphic info available
      */
-    InputStream generateDiagram(BpmnModel bpmnModel,
-                                List<String> highLightedActivities,
-                                List<String> highLightedFlows,
-                                String activityFontName,
-                                String labelFontName,
-                                String annotationFontName,
-                                boolean generateDefaultDiagram);
+    InputStream generateDiagram(
+        BpmnModel bpmnModel,
+        List<String> highLightedActivities,
+        List<String> highLightedFlows,
+        String activityFontName,
+        String labelFontName,
+        String annotationFontName,
+        boolean generateDefaultDiagram
+    );
 
     /**
      * Generates a diagram of the given process definition, using the diagram interchange information of the process,
@@ -71,15 +73,17 @@ public interface ProcessDiagramGenerator {
      * @param generateDefaultDiagram true if a default diagram should be generated if there is no graphic info available
      * @param defaultDiagramImageFileName override the default diagram image file name
      */
-    InputStream generateDiagram(BpmnModel bpmnModel,
-                                List<String> highLightedActivities,
-                                List<String> highLightedFlows,
-                                List<String> currentActivities,
-                                String activityFontName,
-                                String labelFontName,
-                                String annotationFontName,
-                                boolean generateDefaultDiagram,
-                                String defaultDiagramImageFileName);
+    InputStream generateDiagram(
+        BpmnModel bpmnModel,
+        List<String> highLightedActivities,
+        List<String> highLightedFlows,
+        List<String> currentActivities,
+        String activityFontName,
+        String labelFontName,
+        String annotationFontName,
+        boolean generateDefaultDiagram,
+        String defaultDiagramImageFileName
+    );
 
     /**
      * Generates a diagram of the given process definition, using the diagram interchange information of the process.
@@ -88,9 +92,11 @@ public interface ProcessDiagramGenerator {
      * @param highLightedActivities activities to highlight
      * @param highLightedFlows flows to highlight
      */
-    InputStream generateDiagram(BpmnModel bpmnModel,
-                                List<String> highLightedActivities,
-                                List<String> highLightedFlows);
+    InputStream generateDiagram(
+        BpmnModel bpmnModel,
+        List<String> highLightedActivities,
+        List<String> highLightedFlows
+    );
 
     /**
      * Generates a diagram of the given process definition, using the diagram interchange information of the process.
@@ -98,18 +104,22 @@ public interface ProcessDiagramGenerator {
      * @param bpmnModel bpmn model to get diagram for
      * @param highLightedActivities activities to highlight
      */
-    InputStream generateDiagram(BpmnModel bpmnModel,
-                                List<String> highLightedActivities);
+    InputStream generateDiagram(
+        BpmnModel bpmnModel,
+        List<String> highLightedActivities
+    );
 
     /**
      * Generates a diagram of the given process definition, using the diagram interchange information of the process.
      * If there is no interchange information available, an ActivitiInterchangeInfoNotFoundException is thrown.
      * @param bpmnModel bpmn model to get diagram for
      */
-    InputStream generateDiagram(BpmnModel bpmnModel,
-                                String activityFontName,
-                                String labelFontName,
-                                String annotationFontName);
+    InputStream generateDiagram(
+        BpmnModel bpmnModel,
+        String activityFontName,
+        String labelFontName,
+        String annotationFontName
+    );
 
     String getDefaultActivityFontName();
 

@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.examples.bpmn.executionlistener;
 
 import org.activiti.engine.delegate.DelegateExecution;
@@ -27,9 +26,12 @@ import org.activiti.engine.delegate.ExecutionListener;
  */
 public class ExampleExecutionListenerOne implements ExecutionListener {
 
-  public void notify(DelegateExecution execution) {
-    execution.setVariable("variableSetInExecutionListener", "firstValue");
-    execution.setVariable("eventNameReceived", execution.getEventName());
-    execution.setVariable("businessKeyInExecution", execution.getProcessInstanceBusinessKey());
-  }
+    public void notify(DelegateExecution execution) {
+        execution.setVariable("variableSetInExecutionListener", "firstValue");
+        execution.setVariable("eventNameReceived", execution.getEventName());
+        execution.setVariable(
+            "businessKeyInExecution",
+            execution.getProcessInstanceBusinessKey()
+        );
+    }
 }

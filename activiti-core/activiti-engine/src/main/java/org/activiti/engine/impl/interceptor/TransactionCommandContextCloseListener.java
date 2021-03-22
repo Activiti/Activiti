@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.interceptor;
 
 import org.activiti.engine.impl.cfg.TransactionContext;
@@ -22,32 +21,30 @@ import org.activiti.engine.impl.cfg.TransactionContext;
 /**
 
  */
-public class TransactionCommandContextCloseListener implements CommandContextCloseListener {
+public class TransactionCommandContextCloseListener
+    implements CommandContextCloseListener {
 
-  protected TransactionContext transactionContext;
+    protected TransactionContext transactionContext;
 
-  public TransactionCommandContextCloseListener(TransactionContext transactionContext) {
-    this.transactionContext = transactionContext;
-  }
+    public TransactionCommandContextCloseListener(
+        TransactionContext transactionContext
+    ) {
+        this.transactionContext = transactionContext;
+    }
 
-  @Override
-  public void closing(CommandContext commandContext) {
+    @Override
+    public void closing(CommandContext commandContext) {}
 
-  }
+    @Override
+    public void afterSessionsFlush(CommandContext commandContext) {
+        transactionContext.commit();
+    }
 
-  @Override
-  public void afterSessionsFlush(CommandContext commandContext) {
-    transactionContext.commit();
-  }
+    @Override
+    public void closed(CommandContext commandContext) {}
 
-  @Override
-  public void closed(CommandContext commandContext) {
-
-  }
-
-  @Override
-  public void closeFailure(CommandContext commandContext) {
-    transactionContext.rollback();
-  }
-
+    @Override
+    public void closeFailure(CommandContext commandContext) {
+        transactionContext.rollback();
+    }
 }

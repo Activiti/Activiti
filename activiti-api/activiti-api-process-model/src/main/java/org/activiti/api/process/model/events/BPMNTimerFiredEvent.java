@@ -15,6 +15,4 @@
  */
 package org.activiti.api.process.model.events;
 
-public interface BPMNTimerFiredEvent extends BPMNTimerEvent {
-
-}
+public interface BPMNTimerFiredEvent extends BPMNTimerEvent {}

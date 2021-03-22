@@ -23,32 +23,30 @@ import org.activiti.engine.api.internal.Internal;
  */
 @Internal
 public interface CountingExecutionEntity {
+    boolean isCountEnabled();
+    void setCountEnabled(boolean isCountEnabled);
 
-  boolean isCountEnabled();
-  void setCountEnabled(boolean isCountEnabled);
+    void setEventSubscriptionCount(int eventSubscriptionCount);
+    int getEventSubscriptionCount();
 
-  void setEventSubscriptionCount(int eventSubscriptionCount);
-  int getEventSubscriptionCount();
+    void setTaskCount(int taskcount);
+    int getTaskCount();
 
-  void setTaskCount(int taskcount);
-  int getTaskCount();
+    void setJobCount(int jobCount);
+    int getJobCount();
 
-  void setJobCount(int jobCount);
-  int getJobCount();
+    void setTimerJobCount(int timerJobCount);
+    int getTimerJobCount();
 
-  void setTimerJobCount(int timerJobCount);
-  int getTimerJobCount();
+    void setSuspendedJobCount(int suspendedJobCount);
+    int getSuspendedJobCount();
 
-  void setSuspendedJobCount(int suspendedJobCount);
-  int getSuspendedJobCount();
+    void setDeadLetterJobCount(int deadLetterJobCount);
+    int getDeadLetterJobCount();
 
-  void setDeadLetterJobCount(int deadLetterJobCount);
-  int getDeadLetterJobCount();
+    void setVariableCount(int variableCount);
+    int getVariableCount();
 
-  void setVariableCount(int variableCount);
-  int getVariableCount();
-
-  void setIdentityLinkCount(int identityLinkCount);
-  int getIdentityLinkCount();
-
+    void setIdentityLinkCount(int identityLinkCount);
+    int getIdentityLinkCount();
 }

@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-
 package org.activiti.spring.test.junit4;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RuntimeService;
@@ -31,49 +32,48 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 /**
 
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration("classpath:org/activiti/spring/test/junit4/springTypicalUsageTest-context.xml")
+@ContextConfiguration(
+    "classpath:org/activiti/spring/test/junit4/springTypicalUsageTest-context.xml"
+)
 public class SpringJunit4Test {
 
-  @Autowired
-  private ProcessEngine processEngine;
+    @Autowired
+    private ProcessEngine processEngine;
 
-  @Autowired
-  private RuntimeService runtimeService;
+    @Autowired
+    private RuntimeService runtimeService;
 
-  @Autowired
-  private TaskService taskService;
+    @Autowired
+    private TaskService taskService;
 
-  @Autowired
-  @Rule
-  public ActivitiRule activitiSpringRule;
+    @Autowired
+    @Rule
+    public ActivitiRule activitiSpringRule;
 
-  @After
-  public void closeProcessEngine() {
-    // Required, since all the other tests seem to do a specific drop on the
-    // end
-    processEngine.close();
-  }
+    @After
+    public void closeProcessEngine() {
+        // Required, since all the other tests seem to do a specific drop on the
+        // end
+        processEngine.close();
+    }
 
-  @Test
-  @Deployment
-  public void simpleProcessTest() {
-    runtimeService.startProcessInstanceByKey("simpleProcess");
-    Task task = taskService.createTaskQuery().singleResult();
-    assertThat(task.getName()).isEqualTo("My Task");
+    @Test
+    @Deployment
+    public void simpleProcessTest() {
+        runtimeService.startProcessInstanceByKey("simpleProcess");
+        Task task = taskService.createTaskQuery().singleResult();
+        assertThat(task.getName()).isEqualTo("My Task");
 
-    // ACT-1186: ActivitiRule services not initialized when using
-    // SpringJUnit4ClassRunner together with @ContextConfiguration
-    assertThat(activitiSpringRule.getRuntimeService()).isNotNull();
+        // ACT-1186: ActivitiRule services not initialized when using
+        // SpringJUnit4ClassRunner together with @ContextConfiguration
+        assertThat(activitiSpringRule.getRuntimeService()).isNotNull();
 
-    taskService.complete(task.getId());
-    assertThat(runtimeService.createProcessInstanceQuery().count()).isEqualTo(0);
-
-  }
-
+        taskService.complete(task.getId());
+        assertThat(runtimeService.createProcessInstanceQuery().count())
+            .isEqualTo(0);
+    }
 }

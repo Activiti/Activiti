@@ -27,30 +27,36 @@ public class AwaitableProcessOperations implements ProcessOperations {
     private ProcessOperations processOperations;
     private boolean awaitEnabled;
 
-    public AwaitableProcessOperations(ProcessOperations processOperations,
-                                      boolean awaitEnabled) {
+    public AwaitableProcessOperations(
+        ProcessOperations processOperations,
+        boolean awaitEnabled
+    ) {
         this.processOperations = processOperations;
         this.awaitEnabled = awaitEnabled;
     }
 
     @Override
-    public ProcessInstanceAssertions start(StartProcessPayload startProcessPayload)  {
-
-        ProcessInstanceAssertions processInstanceAssertions = processOperations.start(startProcessPayload);
-        if (awaitEnabled){
-            processInstanceAssertions = new AwaitProcessInstanceAssertions(processInstanceAssertions);
+    public ProcessInstanceAssertions start(
+        StartProcessPayload startProcessPayload
+    ) {
+        ProcessInstanceAssertions processInstanceAssertions = processOperations.start(
+            startProcessPayload
+        );
+        if (awaitEnabled) {
+            processInstanceAssertions =
+                new AwaitProcessInstanceAssertions(processInstanceAssertions);
         }
         return processInstanceAssertions;
     }
 
     @Override
     public SignalAssertions signal(SignalPayload signalPayload) {
-        SignalAssertions signalAssertions = processOperations.signal(signalPayload);
+        SignalAssertions signalAssertions = processOperations.signal(
+            signalPayload
+        );
         if (awaitEnabled) {
             signalAssertions = new AwaitSignalAssertions(signalAssertions);
         }
         return signalAssertions;
     }
-
-
 }

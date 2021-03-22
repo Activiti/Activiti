@@ -16,15 +16,11 @@
 package org.activiti.api.task.runtime.conf;
 
 import java.util.List;
-
 import org.activiti.api.runtime.shared.events.VariableEventListener;
 import org.activiti.api.task.runtime.events.listener.TaskRuntimeEventListener;
 
-
 public interface TaskRuntimeConfiguration {
-
     List<TaskRuntimeEventListener<?>> taskRuntimeEventListeners();
 
     List<VariableEventListener<?>> variableEventListeners();
-
 }

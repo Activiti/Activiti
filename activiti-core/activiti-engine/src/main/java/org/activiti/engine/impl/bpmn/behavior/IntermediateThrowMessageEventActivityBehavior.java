@@ -21,23 +21,24 @@ import org.activiti.bpmn.model.ThrowEvent;
 import org.activiti.engine.impl.bpmn.parser.factory.MessageExecutionContext;
 import org.activiti.engine.impl.delegate.ThrowMessageDelegate;
 
-public class IntermediateThrowMessageEventActivityBehavior extends AbstractThrowMessageEventActivityBehavior {
+public class IntermediateThrowMessageEventActivityBehavior
+    extends AbstractThrowMessageEventActivityBehavior {
 
     private static final long serialVersionUID = 1L;
 
     private final ThrowEvent throwEvent;
 
-    public IntermediateThrowMessageEventActivityBehavior(ThrowEvent throwEvent,
-                                                         MessageEventDefinition messageEventDefinition,
-                                                         ThrowMessageDelegate delegate,
-                                                         MessageExecutionContext messageExecutionContext) {
+    public IntermediateThrowMessageEventActivityBehavior(
+        ThrowEvent throwEvent,
+        MessageEventDefinition messageEventDefinition,
+        ThrowMessageDelegate delegate,
+        MessageExecutionContext messageExecutionContext
+    ) {
         super(messageEventDefinition, delegate, messageExecutionContext);
-
         this.throwEvent = throwEvent;
     }
 
     public ThrowEvent getThrowEvent() {
         return throwEvent;
     }
-
 }

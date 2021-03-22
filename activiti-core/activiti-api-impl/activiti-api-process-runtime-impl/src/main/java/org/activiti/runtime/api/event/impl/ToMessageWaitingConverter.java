@@ -16,22 +16,28 @@
 package org.activiti.runtime.api.event.impl;
 
 import java.util.Optional;
-
 import org.activiti.api.process.model.events.BPMNMessageWaitingEvent;
 import org.activiti.api.runtime.event.impl.BPMNMessageWaitingEventImpl;
 import org.activiti.engine.delegate.event.ActivitiMessageEvent;
 
-public class ToMessageWaitingConverter implements EventConverter<BPMNMessageWaitingEvent, ActivitiMessageEvent> {
+public class ToMessageWaitingConverter
+    implements EventConverter<BPMNMessageWaitingEvent, ActivitiMessageEvent> {
 
     private BPMNMessageConverter bpmnMessageConverter;
 
-    public ToMessageWaitingConverter(BPMNMessageConverter bpmnMessageConverter) {
+    public ToMessageWaitingConverter(
+        BPMNMessageConverter bpmnMessageConverter
+    ) {
         this.bpmnMessageConverter = bpmnMessageConverter;
     }
 
     @Override
-    public Optional<BPMNMessageWaitingEvent> from(ActivitiMessageEvent internalEvent) {
-        BPMNMessageWaitingEventImpl event = new BPMNMessageWaitingEventImpl(bpmnMessageConverter.convertToBPMNMessage(internalEvent));
+    public Optional<BPMNMessageWaitingEvent> from(
+        ActivitiMessageEvent internalEvent
+    ) {
+        BPMNMessageWaitingEventImpl event = new BPMNMessageWaitingEventImpl(
+            bpmnMessageConverter.convertToBPMNMessage(internalEvent)
+        );
         event.setProcessInstanceId(internalEvent.getProcessInstanceId());
         event.setProcessDefinitionId(internalEvent.getProcessDefinitionId());
         return Optional.of(event);

@@ -32,42 +32,50 @@ import org.activiti.engine.impl.util.ReflectUtil;
  */
 public class DelegateActivitiEventListener extends BaseDelegateEventListener {
 
-  protected String className;
-  protected ActivitiEventListener delegateInstance;
-  protected boolean failOnException = false;
+    protected String className;
+    protected ActivitiEventListener delegateInstance;
+    protected boolean failOnException = false;
 
-  public DelegateActivitiEventListener(String className, Class<?> entityClass) {
-    this.className = className;
-    setEntityClass(entityClass);
-  }
-
-  @Override
-  public void onEvent(ActivitiEvent event) {
-    if (isValidEvent(event)) {
-      getDelegateInstance().onEvent(event);
+    public DelegateActivitiEventListener(
+        String className,
+        Class<?> entityClass
+    ) {
+        this.className = className;
+        setEntityClass(entityClass);
     }
-  }
 
-  @Override
-  public boolean isFailOnException() {
-    if (delegateInstance != null) {
-      return delegateInstance.isFailOnException();
+    @Override
+    public void onEvent(ActivitiEvent event) {
+        if (isValidEvent(event)) {
+            getDelegateInstance().onEvent(event);
+        }
     }
-    return failOnException;
-  }
 
-  protected ActivitiEventListener getDelegateInstance() {
-    if (delegateInstance == null) {
-      Object instance = ReflectUtil.instantiate(className);
-      if (instance instanceof ActivitiEventListener) {
-        delegateInstance = (ActivitiEventListener) instance;
-      } else {
-        // Force failing of the listener invocation, since the delegate
-        // cannot be created
-        failOnException = true;
-        throw new ActivitiIllegalArgumentException("Class " + className + " does not implement " + ActivitiEventListener.class.getName());
-      }
+    @Override
+    public boolean isFailOnException() {
+        if (delegateInstance != null) {
+            return delegateInstance.isFailOnException();
+        }
+        return failOnException;
     }
-    return delegateInstance;
-  }
+
+    protected ActivitiEventListener getDelegateInstance() {
+        if (delegateInstance == null) {
+            Object instance = ReflectUtil.instantiate(className);
+            if (instance instanceof ActivitiEventListener) {
+                delegateInstance = (ActivitiEventListener) instance;
+            } else {
+                // Force failing of the listener invocation, since the delegate
+                // cannot be created
+                failOnException = true;
+                throw new ActivitiIllegalArgumentException(
+                    "Class " +
+                    className +
+                    " does not implement " +
+                    ActivitiEventListener.class.getName()
+                );
+            }
+        }
+        return delegateInstance;
+    }
 }

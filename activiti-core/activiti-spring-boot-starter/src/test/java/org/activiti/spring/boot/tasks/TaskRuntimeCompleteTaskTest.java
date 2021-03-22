@@ -15,10 +15,13 @@
  */
 package org.activiti.spring.boot.tasks;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.groups.Tuple.tuple;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.activiti.api.model.shared.model.VariableInstance;
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
@@ -40,10 +43,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.assertj.core.groups.Tuple.tuple;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 public class TaskRuntimeCompleteTaskTest {
@@ -69,29 +68,30 @@ public class TaskRuntimeCompleteTaskTest {
     private LocalEventSource localEventSource;
 
     @BeforeEach
-    public void init(){
+    public void init() {
         localEventSource.clearEvents();
     }
 
     @AfterEach
-    public void taskCleanUp(){
+    public void taskCleanUp() {
         taskCleanUpUtil.cleanUpWithAdmin();
         processCleanUpUtil.cleanUpWithAdmin();
     }
 
     @Test
     public void createStandaloneTaskAndComplete() {
-
-        String loginUser="garth";
+        String loginUser = "garth";
         securityUtil.logInAs(loginUser);
 
-        Task standAloneTask = taskRuntime.create(TaskPayloadBuilder.create()
+        Task standAloneTask = taskRuntime.create(
+            TaskPayloadBuilder
+                .create()
                 .withName("simple task")
                 .withAssignee("garth")
-                .build());
+                .build()
+        );
 
-        Page<Task> tasks = taskRuntime.tasks(Pageable.of(0,
-                50));
+        Page<Task> tasks = taskRuntime.tasks(Pageable.of(0, 50));
 
         assertThat(tasks.getContent()).hasSize(1);
         Task task = tasks.getContent().get(0);
@@ -99,35 +99,37 @@ public class TaskRuntimeCompleteTaskTest {
         assertThat(task.getAssignee()).isEqualTo("garth");
         assertThat(task.getStatus()).isEqualTo(Task.TaskStatus.ASSIGNED);
 
-        Task completedTask = taskRuntime.complete(TaskPayloadBuilder.complete().withTaskId(task.getId()).build());
+        Task completedTask = taskRuntime.complete(
+            TaskPayloadBuilder.complete().withTaskId(task.getId()).build()
+        );
         //then
-        List<TaskCompletedEvent> taskCompletedEvents = localEventSource
-            .getEvents(TaskCompletedEvent.class);
+        List<TaskCompletedEvent> taskCompletedEvents = localEventSource.getEvents(
+            TaskCompletedEvent.class
+        );
         assertThat(taskCompletedEvents).hasSize(1);
         assertThat(taskCompletedEvents)
-                .extracting(TaskCompletedEvent::getEntity)
-                .extracting(Task::getCompletedBy)
-                .containsExactly(loginUser);
-        assertThat(completedTask.getStatus()).isEqualTo(Task.TaskStatus.COMPLETED);
+            .extracting(TaskCompletedEvent::getEntity)
+            .extracting(Task::getCompletedBy)
+            .containsExactly(loginUser);
+        assertThat(completedTask.getStatus())
+            .isEqualTo(Task.TaskStatus.COMPLETED);
         assertThat(completedTask.getCompletedBy()).isEqualTo(loginUser);
-
-
     }
-
 
     @Test
     public void createStandaloneTaskandCompleteWithUnAuthorizedUser() {
-
         securityUtil.logInAs("garth");
 
-        Task standAloneTask = taskRuntime.create(TaskPayloadBuilder.create()
+        Task standAloneTask = taskRuntime.create(
+            TaskPayloadBuilder
+                .create()
                 .withName("simple task")
                 .withAssignee("garth")
-                .build());
+                .build()
+        );
 
         // the owner should be able to see the created task
-        Page<Task> tasks = taskRuntime.tasks(Pageable.of(0,
-                50));
+        Page<Task> tasks = taskRuntime.tasks(Pageable.of(0, 50));
 
         assertThat(tasks.getContent()).hasSize(1);
         Task task = tasks.getContent().get(0);
@@ -141,117 +143,156 @@ public class TaskRuntimeCompleteTaskTest {
         //when
         //then
         assertThatExceptionOfType(NotFoundException.class)
-            .isThrownBy(() -> taskRuntime.complete(TaskPayloadBuilder.complete().withTaskId(task.getId()).build()));
+            .isThrownBy(
+                () ->
+                    taskRuntime.complete(
+                        TaskPayloadBuilder
+                            .complete()
+                            .withTaskId(task.getId())
+                            .build()
+                    )
+            );
     }
 
     @Test
     public void completeProcessTaskAndCheckReturnedTaskAndVariables() {
-
         securityUtil.logInAs("user");
 
-        Map<String,Object> startVariables = new HashMap<>();
-        startVariables.put("start1","start1");
-        startVariables.put("start2","start2");
+        Map<String, Object> startVariables = new HashMap<>();
+        startVariables.put("start1", "start1");
+        startVariables.put("start2", "start2");
 
         //when
-        ProcessInstance twoTaskInstance = processRuntime.start(ProcessPayloadBuilder.start()
+        ProcessInstance twoTaskInstance = processRuntime.start(
+            ProcessPayloadBuilder
+                .start()
                 .withProcessDefinitionKey(TWOTASK_PROCESS)
                 .withVariables(startVariables)
-                .build());
+                .build()
+        );
 
         //both tasks should have same variables
-        List<Task> tasks = taskRuntime.tasks(Pageable.of(0, 10),TaskPayloadBuilder.tasks().build()).getContent();
+        List<Task> tasks = taskRuntime
+            .tasks(Pageable.of(0, 10), TaskPayloadBuilder.tasks().build())
+            .getContent();
         List<VariableInstance> variables;
 
         for (Task task : tasks) {
-            variables = taskRuntime.variables(TaskPayloadBuilder.variables().withTaskId(task.getId()).build());
+            variables =
+                taskRuntime.variables(
+                    TaskPayloadBuilder
+                        .variables()
+                        .withTaskId(task.getId())
+                        .build()
+                );
             assertThat(variables)
-                       .extracting(VariableInstance::getName, VariableInstance::getValue)
-                       .containsExactly(
-                               tuple("start1", "start1"),
-                               tuple("start2", "start2"));
-
+                .extracting(
+                    VariableInstance::getName,
+                    VariableInstance::getValue
+                )
+                .containsExactly(
+                    tuple("start1", "start1"),
+                    tuple("start2", "start2")
+                );
         }
 
         Task task = tasks.get(0);
 
         //claim task
-        Task claimTask = taskRuntime.claim(TaskPayloadBuilder.claim().withTaskId(task.getId()).build());
+        Task claimTask = taskRuntime.claim(
+            TaskPayloadBuilder.claim().withTaskId(task.getId()).build()
+        );
 
         assertThat(claimTask)
-        .extracting(Task::getStatus,
-                    Task::getOwner,
-                    Task::getAssignee,
-                    Task::getName,
-                    Task::getDescription,
-                    Task::getCreatedDate,
-                    Task::getDueDate,
-                    Task::getPriority,
-                    Task::getProcessDefinitionId,
-                    Task::getProcessInstanceId,
-                    Task::getParentTaskId,
-                    Task::getFormKey,
-                    Task::getProcessDefinitionVersion)
-        .containsExactly(
-                      TaskStatus.ASSIGNED,
-                      task.getOwner(),
-                      "user",
-                      task.getName(),
-                      task.getDescription(),
-                      task.getCreatedDate(),
-                      task.getDueDate(),
-                      task.getPriority(),
-                      task.getProcessDefinitionId(),
-                      task.getProcessInstanceId(),
-                      task.getParentTaskId(),
-                      task.getFormKey(),
-                      task.getProcessDefinitionVersion());
-
-
+            .extracting(
+                Task::getStatus,
+                Task::getOwner,
+                Task::getAssignee,
+                Task::getName,
+                Task::getDescription,
+                Task::getCreatedDate,
+                Task::getDueDate,
+                Task::getPriority,
+                Task::getProcessDefinitionId,
+                Task::getProcessInstanceId,
+                Task::getParentTaskId,
+                Task::getFormKey,
+                Task::getProcessDefinitionVersion
+            )
+            .containsExactly(
+                TaskStatus.ASSIGNED,
+                task.getOwner(),
+                "user",
+                task.getName(),
+                task.getDescription(),
+                task.getCreatedDate(),
+                task.getDueDate(),
+                task.getPriority(),
+                task.getProcessDefinitionId(),
+                task.getProcessInstanceId(),
+                task.getParentTaskId(),
+                task.getFormKey(),
+                task.getProcessDefinitionVersion()
+            );
 
         //complete one task and change var
 
-        Task completeTask = taskRuntime.complete(TaskPayloadBuilder.complete().withTaskId(task.getId()).withVariable("start1","modagainstart1").build());
+        Task completeTask = taskRuntime.complete(
+            TaskPayloadBuilder
+                .complete()
+                .withTaskId(task.getId())
+                .withVariable("start1", "modagainstart1")
+                .build()
+        );
 
         assertThat(completeTask)
             .isNotNull()
-            .extracting(Task::getStatus,
-                        Task::getOwner,
-                        Task::getAssignee,
-                        Task::getName,
-                        Task::getDescription,
-                        Task::getCreatedDate,
-                        Task::getDueDate,
-                        Task::getClaimedDate,
-                        Task::getPriority,
-                        Task::getProcessDefinitionId,
-                        Task::getProcessInstanceId,
-                        Task::getParentTaskId,
-                        Task::getFormKey,
-                        Task::getProcessDefinitionVersion)
+            .extracting(
+                Task::getStatus,
+                Task::getOwner,
+                Task::getAssignee,
+                Task::getName,
+                Task::getDescription,
+                Task::getCreatedDate,
+                Task::getDueDate,
+                Task::getClaimedDate,
+                Task::getPriority,
+                Task::getProcessDefinitionId,
+                Task::getProcessInstanceId,
+                Task::getParentTaskId,
+                Task::getFormKey,
+                Task::getProcessDefinitionVersion
+            )
             .containsExactly(
-                        TaskStatus.COMPLETED,
-                        task.getOwner(),
-                        claimTask.getAssignee(),
-                        task.getName(),
-                        task.getDescription(),
-                        task.getCreatedDate(),
-                        task.getDueDate(),
-                        claimTask.getClaimedDate(),
-                        task.getPriority(),
-                        task.getProcessDefinitionId(),
-                        task.getProcessInstanceId(),
-                        task.getParentTaskId(),
-                        task.getFormKey(),
-                        task.getProcessDefinitionVersion());
+                TaskStatus.COMPLETED,
+                task.getOwner(),
+                claimTask.getAssignee(),
+                task.getName(),
+                task.getDescription(),
+                task.getCreatedDate(),
+                task.getDueDate(),
+                claimTask.getClaimedDate(),
+                task.getPriority(),
+                task.getProcessDefinitionId(),
+                task.getProcessInstanceId(),
+                task.getParentTaskId(),
+                task.getFormKey(),
+                task.getProcessDefinitionVersion()
+            );
 
         //after completion of the process variable start1 should updated
-        assertThat(processRuntime.variables(ProcessPayloadBuilder.variables().withProcessInstance(twoTaskInstance).build()))
-                .extracting(VariableInstance::getName,
-                            VariableInstance::getValue)
-                .containsExactly(
-                        tuple("start1", "modagainstart1"),
-                        tuple("start2", "start2"));
-
+        assertThat(
+            processRuntime.variables(
+                ProcessPayloadBuilder
+                    .variables()
+                    .withProcessInstance(twoTaskInstance)
+                    .build()
+            )
+        )
+            .extracting(VariableInstance::getName, VariableInstance::getValue)
+            .containsExactly(
+                tuple("start1", "modagainstart1"),
+                tuple("start2", "start2")
+            );
     }
 }

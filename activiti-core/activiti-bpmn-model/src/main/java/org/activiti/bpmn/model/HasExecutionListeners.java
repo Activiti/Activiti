@@ -21,8 +21,7 @@ import java.util.List;
  * Interface indicating an element has execution-listeners
  */
 public interface HasExecutionListeners {
+    List<ActivitiListener> getExecutionListeners();
 
-  List<ActivitiListener> getExecutionListeners();
-
-  void setExecutionListeners(List<ActivitiListener> executionListeners);
+    void setExecutionListeners(List<ActivitiListener> executionListeners);
 }

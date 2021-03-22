@@ -17,7 +17,6 @@
 package org.activiti.runtime.api.connector;
 
 import java.util.Objects;
-
 import org.activiti.api.process.model.IntegrationContext;
 import org.activiti.api.runtime.model.impl.IntegrationContextImpl;
 import org.activiti.bpmn.model.ServiceTask;
@@ -32,13 +31,19 @@ public class IntegrationContextBuilder {
 
     private ExtensionsVariablesMappingProvider inboundVariablesProvider;
 
-    public IntegrationContextBuilder(ExtensionsVariablesMappingProvider inboundVariablesProvider) {
+    public IntegrationContextBuilder(
+        ExtensionsVariablesMappingProvider inboundVariablesProvider
+    ) {
         this.inboundVariablesProvider = inboundVariablesProvider;
     }
 
-    public IntegrationContext from(IntegrationContextEntity integrationContextEntity,
-                                   DelegateExecution execution) {
-        IntegrationContextImpl integrationContext = buildFromExecution(execution);
+    public IntegrationContext from(
+        IntegrationContextEntity integrationContextEntity,
+        DelegateExecution execution
+    ) {
+        IntegrationContextImpl integrationContext = buildFromExecution(
+            execution
+        );
         integrationContext.setId(integrationContextEntity.getId());
         return integrationContext;
     }
@@ -47,46 +52,64 @@ public class IntegrationContextBuilder {
         return buildFromExecution(execution);
     }
 
-    private IntegrationContextImpl buildFromExecution(DelegateExecution execution) {
+    private IntegrationContextImpl buildFromExecution(
+        DelegateExecution execution
+    ) {
         IntegrationContextImpl integrationContext = new IntegrationContextImpl();
-        integrationContext.setProcessInstanceId(execution.getProcessInstanceId());
-        integrationContext.setProcessDefinitionId(execution.getProcessDefinitionId());
-        integrationContext.setBusinessKey(execution.getProcessInstanceBusinessKey());
+        integrationContext.setProcessInstanceId(
+            execution.getProcessInstanceId()
+        );
+        integrationContext.setProcessDefinitionId(
+            execution.getProcessDefinitionId()
+        );
+        integrationContext.setBusinessKey(
+            execution.getProcessInstanceBusinessKey()
+        );
         integrationContext.setClientId(execution.getCurrentActivityId());
         integrationContext.setExecutionId(execution.getId());
 
         if (ExecutionEntity.class.isInstance(execution)) {
-            ExecutionContext executionContext = new ExecutionContext(ExecutionEntity.class.cast(execution));
+            ExecutionContext executionContext = new ExecutionContext(
+                ExecutionEntity.class.cast(execution)
+            );
 
             ExecutionEntity processInstance = executionContext.getProcessInstance();
 
             if (processInstance != null) {
-                integrationContext.setParentProcessInstanceId(processInstance.getParentProcessInstanceId());
-                integrationContext.setAppVersion(Objects.toString(processInstance.getAppVersion(),"1"));
-
+                integrationContext.setParentProcessInstanceId(
+                    processInstance.getParentProcessInstanceId()
+                );
+                integrationContext.setAppVersion(
+                    Objects.toString(processInstance.getAppVersion(), "1")
+                );
             }
 
             // Let's try to resolve process definition attributes
             ProcessDefinition processDefinition = executionContext.getProcessDefinition();
 
             if (processDefinition != null) {
-                integrationContext.setProcessDefinitionKey(processDefinition.getKey());
-                integrationContext.setProcessDefinitionVersion(processDefinition.getVersion());
+                integrationContext.setProcessDefinitionKey(
+                    processDefinition.getKey()
+                );
+                integrationContext.setProcessDefinitionVersion(
+                    processDefinition.getVersion()
+                );
             }
-
         }
 
         ServiceTask serviceTask = (ServiceTask) execution.getCurrentFlowElement();
         if (serviceTask != null) {
-            integrationContext.setConnectorType(serviceTask.getImplementation());
+            integrationContext.setConnectorType(
+                serviceTask.getImplementation()
+            );
             integrationContext.setClientName(serviceTask.getName());
             integrationContext.setClientType(ServiceTask.class.getSimpleName());
         }
 
-
-        integrationContext.addInBoundVariables(inboundVariablesProvider.calculateInputVariables(execution));
+        integrationContext.addInBoundVariables(
+            inboundVariablesProvider.calculateInputVariables(execution)
+        );
 
         return integrationContext;
     }
-
 }

@@ -23,16 +23,17 @@ import org.activiti.api.process.runtime.events.listener.ProcessRuntimeEventListe
 import org.springframework.stereotype.Component;
 
 @Component
-public class DeployedApplicationListener implements ProcessRuntimeEventListener<ApplicationDeployedEvent> {
+public class DeployedApplicationListener
+    implements ProcessRuntimeEventListener<ApplicationDeployedEvent> {
 
     private List<Deployment> deployedApplications = new ArrayList<>();
 
     @Override
     public void onEvent(ApplicationDeployedEvent event) {
-            deployedApplications.add(event.getEntity());
+        deployedApplications.add(event.getEntity());
     }
 
     public List<Deployment> getDeployedApplication() {
-            return deployedApplications;
+        return deployedApplications;
     }
 }

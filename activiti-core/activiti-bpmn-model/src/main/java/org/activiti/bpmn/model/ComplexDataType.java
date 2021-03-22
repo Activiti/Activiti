@@ -15,6 +15,4 @@
  */
 package org.activiti.bpmn.model;
 
-public interface ComplexDataType {
-
-}
+public interface ComplexDataType {}

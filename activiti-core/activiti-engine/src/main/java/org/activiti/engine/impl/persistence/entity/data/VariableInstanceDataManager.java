@@ -19,28 +19,44 @@ package org.activiti.engine.impl.persistence.entity.data;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
-
 import org.activiti.engine.impl.persistence.entity.VariableInstanceEntity;
 
 /**
 
  */
-public interface VariableInstanceDataManager extends DataManager<VariableInstanceEntity> {
+public interface VariableInstanceDataManager
+    extends DataManager<VariableInstanceEntity> {
+    List<VariableInstanceEntity> findVariableInstancesByTaskId(String taskId);
 
-  List<VariableInstanceEntity> findVariableInstancesByTaskId(String taskId);
+    List<VariableInstanceEntity> findVariableInstancesByTaskIds(
+        Set<String> taskIds
+    );
 
-  List<VariableInstanceEntity> findVariableInstancesByTaskIds(Set<String> taskIds);
+    List<VariableInstanceEntity> findVariableInstancesByExecutionId(
+        String executionId
+    );
 
-  List<VariableInstanceEntity> findVariableInstancesByExecutionId(String executionId);
+    List<VariableInstanceEntity> findVariableInstancesByExecutionIds(
+        Set<String> executionIds
+    );
 
-  List<VariableInstanceEntity> findVariableInstancesByExecutionIds(Set<String> executionIds);
+    VariableInstanceEntity findVariableInstanceByExecutionAndName(
+        String executionId,
+        String variableName
+    );
 
-  VariableInstanceEntity findVariableInstanceByExecutionAndName(String executionId, String variableName);
+    List<VariableInstanceEntity> findVariableInstancesByExecutionAndNames(
+        String executionId,
+        Collection<String> names
+    );
 
-  List<VariableInstanceEntity> findVariableInstancesByExecutionAndNames(String executionId, Collection<String> names);
+    VariableInstanceEntity findVariableInstanceByTaskAndName(
+        String taskId,
+        String variableName
+    );
 
-  VariableInstanceEntity findVariableInstanceByTaskAndName(String taskId, String variableName);
-
-  List<VariableInstanceEntity> findVariableInstancesByTaskAndNames(String taskId, Collection<String> names);
-
+    List<VariableInstanceEntity> findVariableInstancesByTaskAndNames(
+        String taskId,
+        Collection<String> names
+    );
 }

@@ -17,13 +17,13 @@
 package org.activiti.engine.impl.util;
 
 import java.util.List;
-
 import org.activiti.engine.cfg.security.ExecutorContext;
 
 /**
 
  */
 public class ShellExecutorContext implements ExecutorContext {
+
     private Boolean waitFlag;
     private final Boolean cleanEnvBoolan;
     private final Boolean redirectErrorFlag;
@@ -32,7 +32,15 @@ public class ShellExecutorContext implements ExecutorContext {
     private final String errorCodeVariableStr;
     private List<String> argList;
 
-    public ShellExecutorContext(Boolean waitFlag, Boolean cleanEnvBoolean, Boolean redirectErrorFlag, String directoryStr, String resultVariableStr, String errorCodeVariableStr, List<String> argList) {
+    public ShellExecutorContext(
+        Boolean waitFlag,
+        Boolean cleanEnvBoolean,
+        Boolean redirectErrorFlag,
+        String directoryStr,
+        String resultVariableStr,
+        String errorCodeVariableStr,
+        List<String> argList
+    ) {
         this.waitFlag = waitFlag;
         this.cleanEnvBoolan = cleanEnvBoolean;
         this.redirectErrorFlag = redirectErrorFlag;

@@ -16,7 +16,6 @@
 package org.activiti.bpmn.converter.parser;
 
 import javax.xml.stream.XMLStreamReader;
-
 import org.activiti.bpmn.constants.BpmnXMLConstants;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.MessageFlow;
@@ -29,35 +28,46 @@ import org.slf4j.LoggerFactory;
  */
 public class MessageFlowParser implements BpmnXMLConstants {
 
-  protected static final Logger LOGGER = LoggerFactory.getLogger(MessageFlowParser.class.getName());
+    protected static final Logger LOGGER = LoggerFactory.getLogger(
+        MessageFlowParser.class.getName()
+    );
 
-  public void parse(XMLStreamReader xtr, BpmnModel model) throws Exception {
-    String id = xtr.getAttributeValue(null, ATTRIBUTE_ID);
-    if (StringUtils.isNotEmpty(id)) {
-      MessageFlow messageFlow = new MessageFlow();
-      messageFlow.setId(id);
+    public void parse(XMLStreamReader xtr, BpmnModel model) throws Exception {
+        String id = xtr.getAttributeValue(null, ATTRIBUTE_ID);
+        if (StringUtils.isNotEmpty(id)) {
+            MessageFlow messageFlow = new MessageFlow();
+            messageFlow.setId(id);
 
-      String name = xtr.getAttributeValue(null, ATTRIBUTE_NAME);
-      if (StringUtils.isNotEmpty(name)) {
-        messageFlow.setName(name);
-      }
+            String name = xtr.getAttributeValue(null, ATTRIBUTE_NAME);
+            if (StringUtils.isNotEmpty(name)) {
+                messageFlow.setName(name);
+            }
 
-      String sourceRef = xtr.getAttributeValue(null, ATTRIBUTE_FLOW_SOURCE_REF);
-      if (StringUtils.isNotEmpty(sourceRef)) {
-        messageFlow.setSourceRef(sourceRef);
-      }
+            String sourceRef = xtr.getAttributeValue(
+                null,
+                ATTRIBUTE_FLOW_SOURCE_REF
+            );
+            if (StringUtils.isNotEmpty(sourceRef)) {
+                messageFlow.setSourceRef(sourceRef);
+            }
 
-      String targetRef = xtr.getAttributeValue(null, ATTRIBUTE_FLOW_TARGET_REF);
-      if (StringUtils.isNotEmpty(targetRef)) {
-        messageFlow.setTargetRef(targetRef);
-      }
+            String targetRef = xtr.getAttributeValue(
+                null,
+                ATTRIBUTE_FLOW_TARGET_REF
+            );
+            if (StringUtils.isNotEmpty(targetRef)) {
+                messageFlow.setTargetRef(targetRef);
+            }
 
-      String messageRef = xtr.getAttributeValue(null, ATTRIBUTE_MESSAGE_REF);
-      if (StringUtils.isNotEmpty(messageRef)) {
-        messageFlow.setMessageRef(messageRef);
-      }
+            String messageRef = xtr.getAttributeValue(
+                null,
+                ATTRIBUTE_MESSAGE_REF
+            );
+            if (StringUtils.isNotEmpty(messageRef)) {
+                messageFlow.setMessageRef(messageRef);
+            }
 
-      model.addMessageFlow(messageFlow);
+            model.addMessageFlow(messageFlow);
+        }
     }
-  }
 }

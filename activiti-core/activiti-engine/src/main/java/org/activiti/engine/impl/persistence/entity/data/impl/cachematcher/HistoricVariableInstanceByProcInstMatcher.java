@@ -22,12 +22,19 @@ import org.activiti.engine.impl.persistence.entity.HistoricVariableInstanceEntit
 /**
 
  */
-public class HistoricVariableInstanceByProcInstMatcher extends CachedEntityMatcherAdapter<HistoricVariableInstanceEntity> {
+public class HistoricVariableInstanceByProcInstMatcher
+    extends CachedEntityMatcherAdapter<HistoricVariableInstanceEntity> {
 
-  @Override
-  public boolean isRetained(HistoricVariableInstanceEntity historicVariableInstanceEntity, Object parameter) {
-    return historicVariableInstanceEntity.getProcessInstanceId() != null
-        && historicVariableInstanceEntity.getProcessInstanceId().equals((String) parameter);
-  }
-
+    @Override
+    public boolean isRetained(
+        HistoricVariableInstanceEntity historicVariableInstanceEntity,
+        Object parameter
+    ) {
+        return (
+            historicVariableInstanceEntity.getProcessInstanceId() != null &&
+            historicVariableInstanceEntity
+                .getProcessInstanceId()
+                .equals((String) parameter)
+        );
+    }
 }

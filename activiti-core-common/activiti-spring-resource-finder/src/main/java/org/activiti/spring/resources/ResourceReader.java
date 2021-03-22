@@ -20,9 +20,7 @@ import java.io.InputStream;
 import java.util.function.Predicate;
 
 public interface ResourceReader<T> {
-
     Predicate<String> getResourceNameSelector();
 
     T read(InputStream inputStream) throws IOException;
-
 }

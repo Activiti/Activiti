@@ -56,7 +56,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 @Configuration
 public class RuntimeTestConfiguration {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(RuntimeTestConfiguration.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(
+        RuntimeTestConfiguration.class
+    );
 
     public static boolean processImageConnectorExecuted = false;
 
@@ -90,39 +92,39 @@ public class RuntimeTestConfiguration {
         userAuthorities.add(new SimpleGrantedAuthority("ROLE_ACTIVITI_USER"));
         userAuthorities.add(new SimpleGrantedAuthority("GROUP_activitiTeam"));
 
-        extendedInMemoryUserDetailsManager.createUser(new User("user",
-                                                               "password",
-                                                               userAuthorities));
+        extendedInMemoryUserDetailsManager.createUser(
+            new User("user", "password", userAuthorities)
+        );
 
         List<GrantedAuthority> johnAuthorities = new ArrayList<>();
         johnAuthorities.add(new SimpleGrantedAuthority("ROLE_ACTIVITI_USER"));
         johnAuthorities.add(new SimpleGrantedAuthority("GROUP_activitiTeam"));
 
-        extendedInMemoryUserDetailsManager.createUser(new User("john",
-                                                               "password",
-                                                               johnAuthorities));
+        extendedInMemoryUserDetailsManager.createUser(
+            new User("john", "password", johnAuthorities)
+        );
 
         List<GrantedAuthority> adminAuthorities = new ArrayList<>();
         adminAuthorities.add(new SimpleGrantedAuthority("ROLE_ACTIVITI_ADMIN"));
 
-        extendedInMemoryUserDetailsManager.createUser(new User("admin",
-                                                               "password",
-                                                               adminAuthorities));
+        extendedInMemoryUserDetailsManager.createUser(
+            new User("admin", "password", adminAuthorities)
+        );
 
         List<GrantedAuthority> garthAuthorities = new ArrayList<>();
         garthAuthorities.add(new SimpleGrantedAuthority("ROLE_ACTIVITI_USER"));
         garthAuthorities.add(new SimpleGrantedAuthority("GROUP_doctor"));
 
-        extendedInMemoryUserDetailsManager.createUser(new User("garth",
-                                                               "password",
-                                                               garthAuthorities));
+        extendedInMemoryUserDetailsManager.createUser(
+            new User("garth", "password", garthAuthorities)
+        );
 
         //dean has role but no group
         List<GrantedAuthority> deanAuthorities = new ArrayList<>();
         deanAuthorities.add(new SimpleGrantedAuthority("ROLE_ACTIVITI_USER"));
-        extendedInMemoryUserDetailsManager.createUser(new User("dean",
-                                                               "password",
-                                                               deanAuthorities));
+        extendedInMemoryUserDetailsManager.createUser(
+            new User("dean", "password", deanAuthorities)
+        );
 
         return extendedInMemoryUserDetailsManager;
     }
@@ -136,12 +138,17 @@ public class RuntimeTestConfiguration {
     public Connector processImageConnector() {
         return integrationContext -> {
             Map<String, Object> inBoundVariables = integrationContext.getInBoundVariables();
-            LOGGER.info("My inbound variables keys: " + inBoundVariables.keySet());
-            LOGGER.info("My inbound variables values: " + inBoundVariables.values());
-            boolean expectedValue = (Boolean) inBoundVariables.get("expectedKey");
+            LOGGER.info(
+                "My inbound variables keys: " + inBoundVariables.keySet()
+            );
+            LOGGER.info(
+                "My inbound variables values: " + inBoundVariables.values()
+            );
+            boolean expectedValue = (Boolean) inBoundVariables.get(
+                "expectedKey"
+            );
 
-            integrationContext.addOutBoundVariable("approved",
-                                                   expectedValue);
+            integrationContext.addOutBoundVariable("approved", expectedValue);
             processImageConnectorExecuted = true;
             return integrationContext;
         };
@@ -151,13 +158,21 @@ public class RuntimeTestConfiguration {
     public Connector processImageActionName() {
         return integrationContext -> {
             Map<String, Object> inBoundVariables = integrationContext.getInBoundVariables();
-            LOGGER.info("processImageActionName inbound variables keys: " + inBoundVariables.keySet());
-            LOGGER.info("processImageActionName inbound variables values: " + inBoundVariables.values());
+            LOGGER.info(
+                "processImageActionName inbound variables keys: " +
+                inBoundVariables.keySet()
+            );
+            LOGGER.info(
+                "processImageActionName inbound variables values: " +
+                inBoundVariables.values()
+            );
 
-            boolean expectedValue = (Boolean) inBoundVariables.get("expectedKey");
-            integrationContext.addOutBoundVariable("approved",
-                                                   expectedValue);
-            assertThat(((String) inBoundVariables.get("input_variable_name_1"))).isEqualTo("input-variable-name-1");
+            boolean expectedValue = (Boolean) inBoundVariables.get(
+                "expectedKey"
+            );
+            integrationContext.addOutBoundVariable("approved", expectedValue);
+            assertThat(((String) inBoundVariables.get("input_variable_name_1")))
+                .isEqualTo("input-variable-name-1");
             return integrationContext;
         };
     }
@@ -166,13 +181,21 @@ public class RuntimeTestConfiguration {
     public Connector tagImageActionName() {
         return integrationContext -> {
             Map<String, Object> inBoundVariables = integrationContext.getInBoundVariables();
-            LOGGER.info("tagImageActionName inbound variables keys: " + inBoundVariables.keySet());
-            LOGGER.info("tagImageActionName inbound variables values: " + inBoundVariables.values());
+            LOGGER.info(
+                "tagImageActionName inbound variables keys: " +
+                inBoundVariables.keySet()
+            );
+            LOGGER.info(
+                "tagImageActionName inbound variables values: " +
+                inBoundVariables.values()
+            );
 
-            boolean expectedValue = (Boolean) inBoundVariables.get("expectedKey");
-            integrationContext.addOutBoundVariable("approved",
-                                                   expectedValue);
-            assertThat(((String) inBoundVariables.get("input_variable_name_2"))).isEqualTo("input-variable-name-2");
+            boolean expectedValue = (Boolean) inBoundVariables.get(
+                "expectedKey"
+            );
+            integrationContext.addOutBoundVariable("approved", expectedValue);
+            assertThat(((String) inBoundVariables.get("input_variable_name_2")))
+                .isEqualTo("input-variable-name-2");
             return integrationContext;
         };
     }
@@ -195,12 +218,14 @@ public class RuntimeTestConfiguration {
 
     @Bean
     public TaskRuntimeEventListener<TaskCompletedEvent> taskCompletedListener() {
-        return taskCompleted -> completedTasks.add(taskCompleted.getEntity().getId());
+        return taskCompleted ->
+            completedTasks.add(taskCompleted.getEntity().getId());
     }
 
     @Bean
     public ProcessRuntimeEventListener<ProcessCancelledEvent> processCancelledListener() {
-        return processCancelled -> cancelledProcesses.add(processCancelled.getEntity().getId());
+        return processCancelled ->
+            cancelledProcesses.add(processCancelled.getEntity().getId());
     }
 
     @Bean
@@ -215,27 +240,32 @@ public class RuntimeTestConfiguration {
 
     @Bean
     public ProcessRuntimeEventListener<ProcessCompletedEvent> processCompletedListener() {
-        return processCompleted -> completedProcesses.add(processCompleted.getEntity().getId());
+        return processCompleted ->
+            completedProcesses.add(processCompleted.getEntity().getId());
     }
 
     @Bean
     public TaskRuntimeEventListener<TaskCandidateGroupAddedEvent> CandidateGroupAddedEvent() {
-        return candidateGroupAddedEvent -> taskCandidateGroupAddedEvents.add(candidateGroupAddedEvent);
+        return candidateGroupAddedEvent ->
+            taskCandidateGroupAddedEvents.add(candidateGroupAddedEvent);
     }
 
     @Bean
     public TaskRuntimeEventListener<TaskCandidateGroupRemovedEvent> CandidateGroupRemovedEvent() {
-        return candidateGroupRemovedEvent -> taskCandidateGroupRemovedEvents.add(candidateGroupRemovedEvent);
+        return candidateGroupRemovedEvent ->
+            taskCandidateGroupRemovedEvents.add(candidateGroupRemovedEvent);
     }
 
     @Bean
     public TaskRuntimeEventListener<TaskCandidateUserAddedEvent> CandidateUserAddedListener() {
-        return candidateUserAddedEvent -> taskCandidateUserAddedEvents.add(candidateUserAddedEvent);
+        return candidateUserAddedEvent ->
+            taskCandidateUserAddedEvents.add(candidateUserAddedEvent);
     }
 
     @Bean
     public TaskRuntimeEventListener<TaskCandidateUserRemovedEvent> CandidateUserRemovedListener() {
-        return candidateUserRemovedEvent -> taskCandidateUserRemovedEvents.add(candidateUserRemovedEvent);
+        return candidateUserRemovedEvent ->
+            taskCandidateUserRemovedEvents.add(candidateUserRemovedEvent);
     }
 
     @Bean(name = "Variable Mapping Connector.variableMappingActionName")
@@ -251,36 +281,43 @@ public class RuntimeTestConfiguration {
 
             Integer currentAge = (Integer) inBoundVariables.get(variableTwo);
             Integer offSet = (Integer) inBoundVariables.get(variableThree);
-            Integer integerConstantValue = (Integer) inBoundVariables.get(integerConstant);
+            Integer integerConstantValue = (Integer) inBoundVariables.get(
+                integerConstant
+            );
 
             assertThat(inBoundVariables.entrySet())
-                    .extracting(Map.Entry::getKey,
-                                Map.Entry::getValue)
-                    .containsOnly(
-                            tuple(variableOne,
-                                  "inName"),
-                            tuple(variableTwo,
-                                  20),
-                            tuple(variableThree,
-                                  5),
-                            tuple(staticValue,
-                                  "a static value"),
-                            tuple(integerConstant,
-                                  10));
+                .extracting(Map.Entry::getKey, Map.Entry::getValue)
+                .containsOnly(
+                    tuple(variableOne, "inName"),
+                    tuple(variableTwo, 20),
+                    tuple(variableThree, 5),
+                    tuple(staticValue, "a static value"),
+                    tuple(integerConstant, 10)
+                );
 
-            integrationContext.addOutBoundVariable("out_variable_name_1",
-                                                   "outName");
-            integrationContext.addOutBoundVariable("out_variable_name_2",
-                                                   currentAge + offSet + integerConstantValue);
-            integrationContext.addOutBoundVariable("out_unmapped_variable_matching_name",
-                                                   "outTest");
-            integrationContext.addOutBoundVariable("out_unmapped_variable_non_matching_name",
-                                                   "outTest");
+            integrationContext.addOutBoundVariable(
+                "out_variable_name_1",
+                "outName"
+            );
+            integrationContext.addOutBoundVariable(
+                "out_variable_name_2",
+                currentAge + offSet + integerConstantValue
+            );
+            integrationContext.addOutBoundVariable(
+                "out_unmapped_variable_matching_name",
+                "outTest"
+            );
+            integrationContext.addOutBoundVariable(
+                "out_unmapped_variable_non_matching_name",
+                "outTest"
+            );
             return integrationContext;
         };
     }
 
-    @Bean(name = "Variable Mapping Expression Connector.variableMappingExpressionActionName")
+    @Bean(
+        name = "Variable Mapping Expression Connector.variableMappingExpressionActionName"
+    )
     public Connector variableMappingExpressionActionName() {
         return integrationContext -> {
             Map<String, Object> inBoundVariables = integrationContext.getInBoundVariables();
@@ -294,7 +331,9 @@ public class RuntimeTestConfiguration {
             String integerConstant = "integer-constant";
 
             Integer currentAge = (Integer) inBoundVariables.get(variableTwo);
-            Integer integerConstantValue = (Integer) inBoundVariables.get(integerConstant);
+            Integer integerConstantValue = (Integer) inBoundVariables.get(
+                integerConstant
+            );
 
             String[] array = { "first", "John", "Doe", "last" };
             List<String> list = asList(array);
@@ -310,26 +349,46 @@ public class RuntimeTestConfiguration {
             expectedResolvedJsonTemplate.put("age", 20);
             expectedResolvedJsonTemplate.put("resident", true);
 
-            assertThat(inBoundVariables.entrySet()).extracting(Map.Entry::getKey,
-                                                               Map.Entry::getValue)
-                    .containsOnly(tuple(variableOne, dataMap),
-                                  tuple(variableTwo, 20),
-                                  tuple(variableThree, "Hello John Doe, today is your 20th birthday! It means 7305.0 days of life"),
-                                  tuple(expressionVariable, "John"),
-                                  tuple(expressionValue, "John"),
-                                  tuple(staticValue, "a static value"),
-                                  tuple(integerConstant, 10),
-                                  tuple("input-json-template", expectedResolvedJsonTemplate));
+            assertThat(inBoundVariables.entrySet())
+                .extracting(Map.Entry::getKey, Map.Entry::getValue)
+                .containsOnly(
+                    tuple(variableOne, dataMap),
+                    tuple(variableTwo, 20),
+                    tuple(
+                        variableThree,
+                        "Hello John Doe, today is your 20th birthday! It means 7305.0 days of life"
+                    ),
+                    tuple(expressionVariable, "John"),
+                    tuple(expressionValue, "John"),
+                    tuple(staticValue, "a static value"),
+                    tuple(integerConstant, 10),
+                    tuple("input-json-template", expectedResolvedJsonTemplate)
+                );
 
-            integrationContext.addOutBoundVariable("out-variable-name-1", "outName");
-            integrationContext.addOutBoundVariable("out-variable-name-2", currentAge + integerConstantValue);
-            integrationContext.addOutBoundVariable("out-unmapped-variable-matching-name", "outTest");
-            integrationContext.addOutBoundVariable("out-unmapped-variable-non-matching-name", "outTest");
+            integrationContext.addOutBoundVariable(
+                "out-variable-name-1",
+                "outName"
+            );
+            integrationContext.addOutBoundVariable(
+                "out-variable-name-2",
+                currentAge + integerConstantValue
+            );
+            integrationContext.addOutBoundVariable(
+                "out-unmapped-variable-matching-name",
+                "outTest"
+            );
+            integrationContext.addOutBoundVariable(
+                "out-unmapped-variable-non-matching-name",
+                "outTest"
+            );
 
             Map<String, Object> conferenceInfo = new HashMap<>();
             conferenceInfo.put("City", "London");
             conferenceInfo.put("numberOfAttendees", 5000);
-            integrationContext.addOutBoundVariable("conferenceInfo", conferenceInfo);
+            integrationContext.addOutBoundVariable(
+                "conferenceInfo",
+                conferenceInfo
+            );
             return integrationContext;
         };
     }
@@ -337,23 +396,32 @@ public class RuntimeTestConfiguration {
     @Bean(name = "OutputMappingExpVarConnector.outputMappingExpVarActionName")
     public Connector outputMappingVariableExpressionActionName() {
         return integrationContext -> {
-            integrationContext.addOutBoundVariable("out-variable-name-1",
-                                                   "${name}");
+            integrationContext.addOutBoundVariable(
+                "out-variable-name-1",
+                "${name}"
+            );
             return integrationContext;
         };
     }
 
-    @Bean(name = "OutputMappingExpValueConnector.outputMappingExpValueActionName")
+    @Bean(
+        name = "OutputMappingExpValueConnector.outputMappingExpValueActionName"
+    )
     public Connector outputMappingValueExpressionActionName() throws Exception {
-        JsonNode value = new ObjectMapper().readTree("{\n"
-            + "  \"city\": {\n"
-            + "    \"name\": \"London\",\n"
-            + "    \"place\": \"Tower of London\"\n"
-            + "  }\n"
-            + "}");
+        JsonNode value = new ObjectMapper()
+        .readTree(
+                "{\n" +
+                "  \"city\": {\n" +
+                "    \"name\": \"London\",\n" +
+                "    \"place\": \"Tower of London\"\n" +
+                "  }\n" +
+                "}"
+            );
         return integrationContext -> {
-            integrationContext.addOutBoundVariable("outVariable1Name",
-                "value-set-in-connector");
+            integrationContext.addOutBoundVariable(
+                "outVariable1Name",
+                "value-set-in-connector"
+            );
             integrationContext.addOutBoundVariable("sightSeeing", value);
             return integrationContext;
         };

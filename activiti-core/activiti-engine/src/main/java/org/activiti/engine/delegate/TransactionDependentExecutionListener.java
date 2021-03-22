@@ -14,22 +14,25 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.delegate;
 
-import org.activiti.bpmn.model.FlowElement;
-
 import java.util.Map;
+import org.activiti.bpmn.model.FlowElement;
 
 /**
 
  */
-public interface TransactionDependentExecutionListener extends BaseExecutionListener {
+public interface TransactionDependentExecutionListener
+    extends BaseExecutionListener {
+    String ON_TRANSACTION_BEFORE_COMMIT = "before-commit";
+    String ON_TRANSACTION_COMMITTED = "committed";
+    String ON_TRANSACTION_ROLLED_BACK = "rolled-back";
 
-  String ON_TRANSACTION_BEFORE_COMMIT = "before-commit";
-  String ON_TRANSACTION_COMMITTED = "committed";
-  String ON_TRANSACTION_ROLLED_BACK = "rolled-back";
-
-  void notify(String processInstanceId, String executionId, FlowElement flowElement,
-              Map<String, Object> executionVariables, Map<String, Object> customPropertiesMap);
+    void notify(
+        String processInstanceId,
+        String executionId,
+        FlowElement flowElement,
+        Map<String, Object> executionVariables,
+        Map<String, Object> customPropertiesMap
+    );
 }

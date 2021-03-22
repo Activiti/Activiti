@@ -44,20 +44,21 @@ public class LocalEventSource implements EventSource {
         collectedEvents.clear();
     }
 
-    public <T extends RuntimeEvent<?,?>> List<T> getEvents(Class<T> eventType) {
+    public <T extends RuntimeEvent<?, ?>> List<T> getEvents(
+        Class<T> eventType
+    ) {
         return collectedEvents
-                .stream()
-                .filter(eventType::isInstance)
-                .map(eventType::cast)
-                .collect(Collectors.toList());
+            .stream()
+            .filter(eventType::isInstance)
+            .map(eventType::cast)
+            .collect(Collectors.toList());
     }
 
     public List<RuntimeEvent<?, ?>> getEvents(Enum<?>... eventTypes) {
         return collectedEvents
-                .stream()
-                .filter(event -> asList(eventTypes).contains(event.getEventType()))
-                .collect(Collectors.toList());
-
+            .stream()
+            .filter(event -> asList(eventTypes).contains(event.getEventType()))
+            .collect(Collectors.toList());
     }
 
     public List<RuntimeEvent<?, ?>> getTaskEvents() {
@@ -79,5 +80,4 @@ public class LocalEventSource implements EventSource {
     public List<BPMNTimerCancelledEvent> getTimerCancelledEvents() {
         return getEvents(BPMNTimerCancelledEvent.class);
     }
-
 }

@@ -25,32 +25,35 @@ import org.springframework.transaction.annotation.Transactional;
  */
 public class DeployBean {
 
-  @Autowired
-  protected RepositoryService repositoryService;
+    @Autowired
+    protected RepositoryService repositoryService;
 
-  @Transactional
-  public void deployProcesses() {
-    repositoryService
-        .createDeployment()
-        .addString(
-            "process01.bpmn20.xml",
-            "<definitions xmlns='http://www.omg.org/spec/BPMN/20100524/MODEL' targetNamespace='http://activiti.org/BPMN20'>"
-                + "<process id='process01' name='Insurance Damage Report' /></definitions>").deploy();
+    @Transactional
+    public void deployProcesses() {
+        repositoryService
+            .createDeployment()
+            .addString(
+                "process01.bpmn20.xml",
+                "<definitions xmlns='http://www.omg.org/spec/BPMN/20100524/MODEL' targetNamespace='http://activiti.org/BPMN20'>" +
+                "<process id='process01' name='Insurance Damage Report' /></definitions>"
+            )
+            .deploy();
 
-    repositoryService
-        .createDeployment()
-        .addString(
-            "process01.bpmn20.xml",
-            "<definitions xmlns='http://www.omg.org/spec/BPMN/20100524/MODEL' targetNamespace='http://activiti.org/BPMN20'>"
-                + "<process id='process01' name='Insurance Damage Report' this_should='fail' /></definitions>").deploy();
-  }
+        repositoryService
+            .createDeployment()
+            .addString(
+                "process01.bpmn20.xml",
+                "<definitions xmlns='http://www.omg.org/spec/BPMN/20100524/MODEL' targetNamespace='http://activiti.org/BPMN20'>" +
+                "<process id='process01' name='Insurance Damage Report' this_should='fail' /></definitions>"
+            )
+            .deploy();
+    }
 
-  public RepositoryService getRepositoryService() {
-    return repositoryService;
-  }
+    public RepositoryService getRepositoryService() {
+        return repositoryService;
+    }
 
-  public void setRepositoryService(RepositoryService repositoryService) {
-    this.repositoryService = repositoryService;
-  }
-
+    public void setRepositoryService(RepositoryService repositoryService) {
+        this.repositoryService = repositoryService;
+    }
 }

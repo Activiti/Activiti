@@ -16,7 +16,6 @@
 package org.activiti.bpmn.converter.parser;
 
 import javax.xml.stream.XMLStreamReader;
-
 import org.activiti.bpmn.constants.BpmnXMLConstants;
 import org.activiti.bpmn.converter.util.BpmnXMLUtil;
 import org.activiti.bpmn.model.BpmnModel;
@@ -30,17 +29,25 @@ import org.slf4j.LoggerFactory;
  */
 public class ParticipantParser implements BpmnXMLConstants {
 
-  protected static final Logger LOGGER = LoggerFactory.getLogger(ParticipantParser.class.getName());
+    protected static final Logger LOGGER = LoggerFactory.getLogger(
+        ParticipantParser.class.getName()
+    );
 
-  public void parse(XMLStreamReader xtr, BpmnModel model) throws Exception {
-
-    if (StringUtils.isNotEmpty(xtr.getAttributeValue(null, ATTRIBUTE_ID))) {
-      Pool pool = new Pool();
-      pool.setId(xtr.getAttributeValue(null, ATTRIBUTE_ID));
-      pool.setName(xtr.getAttributeValue(null, ATTRIBUTE_NAME));
-      pool.setProcessRef(xtr.getAttributeValue(null, ATTRIBUTE_PROCESS_REF));
-      BpmnXMLUtil.parseChildElements(ELEMENT_PARTICIPANT, pool, xtr, model);
-      model.getPools().add(pool);
+    public void parse(XMLStreamReader xtr, BpmnModel model) throws Exception {
+        if (StringUtils.isNotEmpty(xtr.getAttributeValue(null, ATTRIBUTE_ID))) {
+            Pool pool = new Pool();
+            pool.setId(xtr.getAttributeValue(null, ATTRIBUTE_ID));
+            pool.setName(xtr.getAttributeValue(null, ATTRIBUTE_NAME));
+            pool.setProcessRef(
+                xtr.getAttributeValue(null, ATTRIBUTE_PROCESS_REF)
+            );
+            BpmnXMLUtil.parseChildElements(
+                ELEMENT_PARTICIPANT,
+                pool,
+                xtr,
+                model
+            );
+            model.getPools().add(pool);
+        }
     }
-  }
 }

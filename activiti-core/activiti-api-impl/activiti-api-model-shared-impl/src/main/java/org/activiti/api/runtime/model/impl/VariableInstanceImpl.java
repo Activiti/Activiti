@@ -25,10 +25,15 @@ public class VariableInstanceImpl<T> implements VariableInstance {
     private T value;
     private String taskId;
 
-    public VariableInstanceImpl() {
-    }
+    public VariableInstanceImpl() {}
 
-    public VariableInstanceImpl(String name, String type, T value, String processInstanceId, String taskId) {
+    public VariableInstanceImpl(
+        String name,
+        String type,
+        T value,
+        String processInstanceId,
+        String taskId
+    ) {
         this.name = name;
         this.type = type;
         this.processInstanceId = processInstanceId;
@@ -76,13 +81,24 @@ public class VariableInstanceImpl<T> implements VariableInstance {
 
     @Override
     public String toString() {
-        return "VariableInstanceImpl{" +
-                "name='" + name + '\'' +
-                ", type='" + type + '\'' +
-                ", processInstanceId='" + processInstanceId + '\'' +
-                ", taskId='" + taskId + '\'' +
-                ", value='" + value.toString() + '\'' +
-                '}';
+        return (
+            "VariableInstanceImpl{" +
+            "name='" +
+            name +
+            '\'' +
+            ", type='" +
+            type +
+            '\'' +
+            ", processInstanceId='" +
+            processInstanceId +
+            '\'' +
+            ", taskId='" +
+            taskId +
+            '\'' +
+            ", value='" +
+            value.toString() +
+            '\'' +
+            '}'
+        );
     }
-
 }

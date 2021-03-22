@@ -1,6 +1,6 @@
 {
-  "id":"processWithExtensionsButNoConnectorDef",
-  "name":"processWithExtensionsButNoConnectorDef",
+  "id": "processWithExtensionsButNoConnectorDef",
+  "name": "processWithExtensionsButNoConnectorDef",
   "extensions": {
     "processWithExtensionsButNoConnectorDef": {
       "properties": {

@@ -23,10 +23,9 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.MockitoAnnotations.initMocks;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.InputStream;
 import java.util.Map;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.activiti.api.runtime.shared.identity.UserGroupManager;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ManagementService;
@@ -66,9 +65,7 @@ public class ProcessVariablesInitiatorIT {
     private ManagementService managementService;
 
     @SpringBootApplication
-    static class Application {
-
-    }
+    static class Application {}
 
     @BeforeEach
     public void setUp() {
@@ -76,104 +73,168 @@ public class ProcessVariablesInitiatorIT {
     }
 
     @Test
-    public void calculateVariablesFromExtensionFileShouldReturnVariablesWithDefaultValues() throws Exception {
+    public void calculateVariablesFromExtensionFileShouldReturnVariablesWithDefaultValues()
+        throws Exception {
         //given
-        try (InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("processes/default-vars-extensions.json")) {
-            ProcessExtensionModel extension = objectMapper.readValue(inputStream,
-                                                                     ProcessExtensionModel.class);
+        try (
+            InputStream inputStream = Thread
+                .currentThread()
+                .getContextClassLoader()
+                .getResourceAsStream("processes/default-vars-extensions.json")
+        ) {
+            ProcessExtensionModel extension = objectMapper.readValue(
+                inputStream,
+                ProcessExtensionModel.class
+            );
 
             ProcessDefinition processDefinition = mock(ProcessDefinition.class);
-            given(processExtensionService.getExtensionsFor(processDefinition)).willReturn(extension.getExtensions("Process_DefaultVarsProcess"));
-            given(processExtensionService.hasExtensionsFor(processDefinition)).willReturn(true);
-            given(processDefinition.getKey()).willReturn("Process_DefaultVarsProcess");
+            given(processExtensionService.getExtensionsFor(processDefinition))
+                .willReturn(
+                    extension.getExtensions("Process_DefaultVarsProcess")
+                );
+            given(processExtensionService.hasExtensionsFor(processDefinition))
+                .willReturn(true);
+            given(processDefinition.getKey())
+                .willReturn("Process_DefaultVarsProcess");
 
             //when
-            Map<String, Object> variables = processVariablesInitiator.calculateVariablesFromExtensionFile(processDefinition,
-                                                                                                          null);
+            Map<String, Object> variables = processVariablesInitiator.calculateVariablesFromExtensionFile(
+                processDefinition,
+                null
+            );
 
             //then
             assertThat(variables)
-                    .containsEntry("name",
-                                   "Nobody")
-                    .containsEntry("positionInTheQueue",
-                                   10)
-                    .doesNotContainKeys("age"); // age has no default value, so it won't be created
+                .containsEntry("name", "Nobody")
+                .containsEntry("positionInTheQueue", 10)
+                .doesNotContainKeys("age"); // age has no default value, so it won't be created
         }
     }
 
     @Test
-    public void calculateVariablesFromExtensionFileShouldGivePriorityToProvidedValuesOverDefaultValues() throws Exception {
+    public void calculateVariablesFromExtensionFileShouldGivePriorityToProvidedValuesOverDefaultValues()
+        throws Exception {
         //given
-        try (InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("processes/default-vars-extensions.json")) {
-            ProcessExtensionModel extension = objectMapper.readValue(inputStream,
-                                                                     ProcessExtensionModel.class);
+        try (
+            InputStream inputStream = Thread
+                .currentThread()
+                .getContextClassLoader()
+                .getResourceAsStream("processes/default-vars-extensions.json")
+        ) {
+            ProcessExtensionModel extension = objectMapper.readValue(
+                inputStream,
+                ProcessExtensionModel.class
+            );
 
             ProcessDefinition processDefinition = mock(ProcessDefinition.class);
-            given(processExtensionService.getExtensionsFor(processDefinition)).willReturn(extension.getExtensions("Process_DefaultVarsProcess"));
-            given(processExtensionService.hasExtensionsFor(processDefinition)).willReturn(true);
-            given(processDefinition.getKey()).willReturn("Process_DefaultVarsProcess");
+            given(processExtensionService.getExtensionsFor(processDefinition))
+                .willReturn(
+                    extension.getExtensions("Process_DefaultVarsProcess")
+                );
+            given(processExtensionService.hasExtensionsFor(processDefinition))
+                .willReturn(true);
+            given(processDefinition.getKey())
+                .willReturn("Process_DefaultVarsProcess");
 
             //when
-            Map<String, Object> variables = processVariablesInitiator.calculateVariablesFromExtensionFile(processDefinition,
-                                                                                                          singletonMap("name",
-                                                                                                                                   "Peter"));
+            Map<String, Object> variables = processVariablesInitiator.calculateVariablesFromExtensionFile(
+                processDefinition,
+                singletonMap("name", "Peter")
+            );
 
             //then
             assertThat(variables)
-                    .containsEntry("name", // value for variable "name" has been provided,
-                                   "Peter") // so default value should be ignored.
-                    .containsEntry("positionInTheQueue",
-                                   10);
+                .containsEntry(
+                    "name", // value for variable "name" has been provided,
+                    "Peter"
+                ) // so default value should be ignored.
+                .containsEntry("positionInTheQueue", 10);
         }
     }
 
     @Test
-    public void calculateVariablesFromExtensionFileShouldThrowExceptionWhenMandatoryVariableIsMissing() throws Exception {
+    public void calculateVariablesFromExtensionFileShouldThrowExceptionWhenMandatoryVariableIsMissing()
+        throws Exception {
         //given
-        try (InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("processes/initial-vars-extensions.json")) {
-            ProcessExtensionModel extension = objectMapper.readValue(inputStream,
-                                                                     ProcessExtensionModel.class);
+        try (
+            InputStream inputStream = Thread
+                .currentThread()
+                .getContextClassLoader()
+                .getResourceAsStream("processes/initial-vars-extensions.json")
+        ) {
+            ProcessExtensionModel extension = objectMapper.readValue(
+                inputStream,
+                ProcessExtensionModel.class
+            );
 
             ProcessDefinition processDefinition = mock(ProcessDefinition.class);
-            given(processExtensionService.getExtensionsFor(processDefinition)).willReturn(extension.getExtensions("Process_initialVarsProcess"));
-            given(processExtensionService.hasExtensionsFor(processDefinition)).willReturn(true);
-            given(processDefinition.getKey()).willReturn("Process_initialVarsProcess");
+            given(processExtensionService.getExtensionsFor(processDefinition))
+                .willReturn(
+                    extension.getExtensions("Process_initialVarsProcess")
+                );
+            given(processExtensionService.hasExtensionsFor(processDefinition))
+                .willReturn(true);
+            given(processDefinition.getKey())
+                .willReturn("Process_initialVarsProcess");
 
             //when
-            Throwable thrownException = catchThrowable(() -> processVariablesInitiator.calculateVariablesFromExtensionFile(processDefinition,
-                                                                                                                     emptyMap())
+            Throwable thrownException = catchThrowable(
+                () ->
+                    processVariablesInitiator.calculateVariablesFromExtensionFile(
+                        processDefinition,
+                        emptyMap()
+                    )
             );
 
             //then
             assertThat(thrownException)
-                    .isInstanceOf(ActivitiException.class)
-                    .hasMessageContaining("Can't start process")
-                    .hasMessageContaining("without required variables - age");
+                .isInstanceOf(ActivitiException.class)
+                .hasMessageContaining("Can't start process")
+                .hasMessageContaining("without required variables - age");
         }
     }
 
     @Test
-    public void calculateVariablesFromExtensionFileShouldThrowExceptionWhenProvidedValueHasNotTheSameTypeAsInTheDefinition() throws Exception {
+    public void calculateVariablesFromExtensionFileShouldThrowExceptionWhenProvidedValueHasNotTheSameTypeAsInTheDefinition()
+        throws Exception {
         //given
-        try (InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("processes/initial-vars-extensions.json")) {
-            ProcessExtensionModel extension = objectMapper.readValue(inputStream,
-                                                                     ProcessExtensionModel.class);
+        try (
+            InputStream inputStream = Thread
+                .currentThread()
+                .getContextClassLoader()
+                .getResourceAsStream("processes/initial-vars-extensions.json")
+        ) {
+            ProcessExtensionModel extension = objectMapper.readValue(
+                inputStream,
+                ProcessExtensionModel.class
+            );
 
             ProcessDefinition processDefinition = mock(ProcessDefinition.class);
-            given(processExtensionService.getExtensionsFor(processDefinition)).willReturn(extension.getExtensions("Process_initialVarsProcess"));
-            given(processExtensionService.hasExtensionsFor(processDefinition)).willReturn(true);
-            given(processDefinition.getKey()).willReturn("Process_initialVarsProcess");
+            given(processExtensionService.getExtensionsFor(processDefinition))
+                .willReturn(
+                    extension.getExtensions("Process_initialVarsProcess")
+                );
+            given(processExtensionService.hasExtensionsFor(processDefinition))
+                .willReturn(true);
+            given(processDefinition.getKey())
+                .willReturn("Process_initialVarsProcess");
 
             //when
-            Throwable thrownException = catchThrowable(() -> processVariablesInitiator.calculateVariablesFromExtensionFile(processDefinition,
-                                                                                                                     singletonMap("age", "invalidNumber"))
+            Throwable thrownException = catchThrowable(
+                () ->
+                    processVariablesInitiator.calculateVariablesFromExtensionFile(
+                        processDefinition,
+                        singletonMap("age", "invalidNumber")
+                    )
             );
 
             //then
             assertThat(thrownException)
-                    .isInstanceOf(ActivitiException.class)
-                    .hasMessageContaining("Can't start process")
-                    .hasMessageContaining("as variables fail type validation - age");
+                .isInstanceOf(ActivitiException.class)
+                .hasMessageContaining("Can't start process")
+                .hasMessageContaining(
+                    "as variables fail type validation - age"
+                );
         }
     }
 }

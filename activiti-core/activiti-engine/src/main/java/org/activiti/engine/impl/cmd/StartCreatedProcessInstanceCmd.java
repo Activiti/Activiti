@@ -27,30 +27,45 @@ import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 import org.activiti.engine.impl.util.ProcessInstanceHelper;
 import org.activiti.engine.runtime.ProcessInstance;
 
-public class StartCreatedProcessInstanceCmd<T> implements Command<ProcessInstance>, Serializable {
+public class StartCreatedProcessInstanceCmd<T>
+    implements Command<ProcessInstance>, Serializable {
 
     private static final long serialVersionUID = 1L;
     private ProcessInstance internalProcessInstance;
     private Map<String, Object> variables;
 
-    public StartCreatedProcessInstanceCmd(ProcessInstance internalProcessInstance, Map<String, Object> variables){
+    public StartCreatedProcessInstanceCmd(
+        ProcessInstance internalProcessInstance,
+        Map<String, Object> variables
+    ) {
         this.internalProcessInstance = internalProcessInstance;
         this.variables = variables;
     }
 
     @Override
     public ProcessInstance execute(CommandContext commandContext) {
-        if(this.internalProcessInstance.getStartTime() != null){
-            throw new ActivitiIllegalArgumentException("Process instance " + this.internalProcessInstance.getProcessInstanceId() + " has already been started");
+        if (this.internalProcessInstance.getStartTime() != null) {
+            throw new ActivitiIllegalArgumentException(
+                "Process instance " +
+                this.internalProcessInstance.getProcessInstanceId() +
+                " has already been started"
+            );
         }
 
         ExecutionEntity processExecution = (ExecutionEntity) internalProcessInstance;
-        ProcessInstanceHelper processInstanceHelper = commandContext.getProcessEngineConfiguration().getProcessInstanceHelper();
-        Process process = ProcessDefinitionUtil.getProcess(internalProcessInstance.getProcessDefinitionId());
-        processInstanceHelper.startProcessInstance(processExecution, commandContext, variables,
-            process.getInitialFlowElement(), Collections.emptyMap());
+        ProcessInstanceHelper processInstanceHelper = commandContext
+            .getProcessEngineConfiguration()
+            .getProcessInstanceHelper();
+        Process process = ProcessDefinitionUtil.getProcess(
+            internalProcessInstance.getProcessDefinitionId()
+        );
+        processInstanceHelper.startProcessInstance(
+            processExecution,
+            commandContext,
+            variables,
+            process.getInitialFlowElement(),
+            Collections.emptyMap()
+        );
         return processExecution;
     }
-
-
 }

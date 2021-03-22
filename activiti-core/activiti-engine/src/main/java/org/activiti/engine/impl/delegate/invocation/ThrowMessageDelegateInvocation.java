@@ -26,24 +26,25 @@ import org.activiti.engine.impl.delegate.ThrowMessageDelegate;
  */
 public class ThrowMessageDelegateInvocation extends DelegateInvocation {
 
-  protected final ThrowMessageDelegate delegateInstance;
-  protected final DelegateExecution execution;
-  protected final ThrowMessage message;
+    protected final ThrowMessageDelegate delegateInstance;
+    protected final DelegateExecution execution;
+    protected final ThrowMessage message;
 
-  public ThrowMessageDelegateInvocation(ThrowMessageDelegate delegateInstance,
-                                        DelegateExecution execution,
-                                        ThrowMessage message) {
-    this.delegateInstance = delegateInstance;
-    this.execution = execution;
-    this.message = message;
-  }
+    public ThrowMessageDelegateInvocation(
+        ThrowMessageDelegate delegateInstance,
+        DelegateExecution execution,
+        ThrowMessage message
+    ) {
+        this.delegateInstance = delegateInstance;
+        this.execution = execution;
+        this.message = message;
+    }
 
-  protected void invoke() {
-    this.invocationResult = delegateInstance.send(execution, message);
-  }
+    protected void invoke() {
+        this.invocationResult = delegateInstance.send(execution, message);
+    }
 
-  public Object getTarget() {
-    return delegateInstance;
-  }
-
+    public Object getTarget() {
+        return delegateInstance;
+    }
 }

@@ -16,7 +16,6 @@
 package org.activiti.api.task.model.payloads;
 
 import java.util.UUID;
-
 import org.activiti.api.model.shared.Payload;
 
 public class CreateTaskVariablePayload implements Payload {
@@ -30,9 +29,7 @@ public class CreateTaskVariablePayload implements Payload {
         this.id = UUID.randomUUID().toString();
     }
 
-    public CreateTaskVariablePayload(String taskId,
-                                     String name,
-                                     Object value) {
+    public CreateTaskVariablePayload(String taskId, String name, Object value) {
         this();
         this.taskId = taskId;
         this.name = name;

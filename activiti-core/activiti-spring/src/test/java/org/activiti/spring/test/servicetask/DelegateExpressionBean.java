@@ -28,36 +28,46 @@ import org.slf4j.LoggerFactory;
  */
 public class DelegateExpressionBean implements JavaDelegate {
 
-  private static final Logger log = LoggerFactory.getLogger(DelegateExpressionBean.class);
-  private SentenceGenerator sentenceGenerator;
+    private static final Logger log = LoggerFactory.getLogger(
+        DelegateExpressionBean.class
+    );
+    private SentenceGenerator sentenceGenerator;
 
-  private FixedValue someField;
+    private FixedValue someField;
 
-  public void execute(DelegateExecution execution) {
-    log.info("Entering DelegateExpressionBean.execute()");
-    if (sentenceGenerator != null) {
-      execution.setVariable("myVar", sentenceGenerator.getSentence());
-    } else {
-      execution.setVariable("myVar", "SentenceGenerator is not injected by spring");
+    public void execute(DelegateExecution execution) {
+        log.info("Entering DelegateExpressionBean.execute()");
+        if (sentenceGenerator != null) {
+            execution.setVariable("myVar", sentenceGenerator.getSentence());
+        } else {
+            execution.setVariable(
+                "myVar",
+                "SentenceGenerator is not injected by spring"
+            );
+        }
+        if (someField != null) {
+            execution.setVariable(
+                "fieldInjection",
+                someField.getValue(execution)
+            );
+        } else {
+            execution.setVariable(
+                "fieldInjection",
+                "Field injection not working"
+            );
+        }
+        log.info("Leaving DelegateExpressionBean.execute()");
     }
-    if (someField != null) {
-      execution.setVariable("fieldInjection", someField.getValue(execution));
-    } else {
-      execution.setVariable("fieldInjection", "Field injection not working");
+
+    public void setSentenceGenerator(SentenceGenerator sentenceGenerator) {
+        this.sentenceGenerator = sentenceGenerator;
     }
-    log.info("Leaving DelegateExpressionBean.execute()");
-  }
 
-  public void setSentenceGenerator(SentenceGenerator sentenceGenerator) {
-    this.sentenceGenerator = sentenceGenerator;
-  }
+    public FixedValue getSomeField() {
+        return someField;
+    }
 
-  public FixedValue getSomeField() {
-    return someField;
-  }
-
-  public void setSomeField(FixedValue someField) {
-    this.someField = someField;
-  }
-
+    public void setSomeField(FixedValue someField) {
+        this.someField = someField;
+    }
 }

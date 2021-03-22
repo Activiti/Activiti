@@ -15,38 +15,46 @@
  */
 package org.activiti.runtime.api.event.impl;
 
+import static org.activiti.engine.task.IdentityLinkType.CANDIDATE;
+
+import java.util.Optional;
 import org.activiti.api.task.runtime.events.TaskCandidateGroupRemovedEvent;
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.impl.persistence.entity.IdentityLinkEntity;
 import org.activiti.engine.task.IdentityLink;
 import org.activiti.runtime.api.model.impl.APITaskCandidateGroupConverter;
 
-import java.util.Optional;
-
-import static org.activiti.engine.task.IdentityLinkType.CANDIDATE;
-
-public class ToTaskCandidateGroupRemovedConverter implements EventConverter<TaskCandidateGroupRemovedEvent, ActivitiEntityEvent> {
+public class ToTaskCandidateGroupRemovedConverter
+    implements
+        EventConverter<TaskCandidateGroupRemovedEvent, ActivitiEntityEvent> {
 
     private APITaskCandidateGroupConverter converter;
 
-    public ToTaskCandidateGroupRemovedConverter(APITaskCandidateGroupConverter converter) {
+    public ToTaskCandidateGroupRemovedConverter(
+        APITaskCandidateGroupConverter converter
+    ) {
         this.converter = converter;
     }
 
     @Override
-    public Optional<TaskCandidateGroupRemovedEvent> from(ActivitiEntityEvent internalEvent) {
+    public Optional<TaskCandidateGroupRemovedEvent> from(
+        ActivitiEntityEvent internalEvent
+    ) {
         TaskCandidateGroupRemovedEvent event = null;
         if (internalEvent.getEntity() instanceof IdentityLinkEntity) {
             IdentityLinkEntity entity = (IdentityLinkEntity) internalEvent.getEntity();
             if (isCandidateGroupEntity(entity)) {
-                event = new TaskCandidateGroupRemovedImpl(converter.from(entity));
+                event =
+                    new TaskCandidateGroupRemovedImpl(converter.from(entity));
             }
         }
         return Optional.ofNullable(event);
     }
 
     private boolean isCandidateGroupEntity(IdentityLink identityLinkEntity) {
-        return CANDIDATE.equalsIgnoreCase(identityLinkEntity.getType()) &&
-                identityLinkEntity.getGroupId() != null;
+        return (
+            CANDIDATE.equalsIgnoreCase(identityLinkEntity.getType()) &&
+            identityLinkEntity.getGroupId() != null
+        );
     }
 }

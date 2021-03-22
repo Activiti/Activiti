@@ -24,10 +24,11 @@ public class CreateProcessPayloadBuilder {
     private String name;
     private String businessKey;
 
-    public CreateProcessPayloadBuilder() {
-    }
+    public CreateProcessPayloadBuilder() {}
 
-    public CreateProcessPayloadBuilder withProcessDefinitionId(String processDefinitionId) {
+    public CreateProcessPayloadBuilder withProcessDefinitionId(
+        String processDefinitionId
+    ) {
         this.processDefinitionId = processDefinitionId;
         return this;
     }
@@ -37,7 +38,9 @@ public class CreateProcessPayloadBuilder {
         return this;
     }
 
-    public CreateProcessPayloadBuilder withProcessDefinitionKey(String processDefinitionKey) {
+    public CreateProcessPayloadBuilder withProcessDefinitionKey(
+        String processDefinitionKey
+    ) {
         this.processDefinitionKey = processDefinitionKey;
         return this;
     }
@@ -48,9 +51,11 @@ public class CreateProcessPayloadBuilder {
     }
 
     public CreateProcessInstancePayload build() {
-        return new CreateProcessInstancePayload(processDefinitionId,
+        return new CreateProcessInstancePayload(
+            processDefinitionId,
             processDefinitionKey,
             name,
-            businessKey);
+            businessKey
+        );
     }
 }

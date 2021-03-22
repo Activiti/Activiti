@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.cmd;
 
+import java.io.Serializable;
+import java.util.List;
 import org.activiti.bpmn.model.AdhocSubProcess;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
@@ -26,46 +27,60 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
 
-import java.io.Serializable;
-import java.util.List;
-
 /**
 
  */
 public class CompleteAdhocSubProcessCmd implements Command<Void>, Serializable {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  protected String executionId;
+    protected String executionId;
 
-  public CompleteAdhocSubProcessCmd(String executionId) {
-    this.executionId = executionId;
-  }
-
-  public Void execute(CommandContext commandContext) {
-    ExecutionEntityManager executionEntityManager = commandContext.getExecutionEntityManager();
-    ExecutionEntity execution = executionEntityManager.findById(executionId);
-    if (execution == null) {
-      throw new ActivitiObjectNotFoundException("No execution found for id '" + executionId + "'", ExecutionEntity.class);
+    public CompleteAdhocSubProcessCmd(String executionId) {
+        this.executionId = executionId;
     }
 
-    if (!(execution.getCurrentFlowElement() instanceof AdhocSubProcess)) {
-      throw new ActivitiException("The current flow element of the requested execution is not an ad-hoc sub process");
+    public Void execute(CommandContext commandContext) {
+        ExecutionEntityManager executionEntityManager = commandContext.getExecutionEntityManager();
+        ExecutionEntity execution = executionEntityManager.findById(
+            executionId
+        );
+        if (execution == null) {
+            throw new ActivitiObjectNotFoundException(
+                "No execution found for id '" + executionId + "'",
+                ExecutionEntity.class
+            );
+        }
+
+        if (!(execution.getCurrentFlowElement() instanceof AdhocSubProcess)) {
+            throw new ActivitiException(
+                "The current flow element of the requested execution is not an ad-hoc sub process"
+            );
+        }
+
+        List<? extends ExecutionEntity> childExecutions = execution.getExecutions();
+        if (childExecutions.size() > 0) {
+            throw new ActivitiException(
+                "Ad-hoc sub process has running child executions that need to be completed first"
+            );
+        }
+
+        ExecutionEntity outgoingFlowExecution = executionEntityManager.createChildExecution(
+            execution.getParent()
+        );
+        outgoingFlowExecution.setCurrentFlowElement(
+            execution.getCurrentFlowElement()
+        );
+
+        executionEntityManager.deleteExecutionAndRelatedData(execution, null);
+
+        Context
+            .getAgenda()
+            .planTakeOutgoingSequenceFlowsOperation(
+                outgoingFlowExecution,
+                true
+            );
+
+        return null;
     }
-
-    List<? extends ExecutionEntity> childExecutions = execution.getExecutions();
-    if (childExecutions.size() > 0) {
-      throw new ActivitiException("Ad-hoc sub process has running child executions that need to be completed first");
-    }
-
-    ExecutionEntity outgoingFlowExecution = executionEntityManager.createChildExecution(execution.getParent());
-    outgoingFlowExecution.setCurrentFlowElement(execution.getCurrentFlowElement());
-
-    executionEntityManager.deleteExecutionAndRelatedData(execution, null);
-
-    Context.getAgenda().planTakeOutgoingSequenceFlowsOperation(outgoingFlowExecution, true);
-
-    return null;
-  }
-
 }

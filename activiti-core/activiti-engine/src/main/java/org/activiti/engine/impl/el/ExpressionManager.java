@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.el;
 
 import de.odysseus.el.ExpressionFactoryImpl;
@@ -57,17 +56,14 @@ public class ExpressionManager {
     }
 
     public ExpressionManager(boolean initFactory) {
-        this(null,
-             initFactory);
+        this(null, initFactory);
     }
 
     public ExpressionManager(Map<Object, Object> beans) {
-        this(beans,
-             true);
+        this(beans, true);
     }
 
-    public ExpressionManager(Map<Object, Object> beans,
-                             boolean initFactory) {
+    public ExpressionManager(Map<Object, Object> beans, boolean initFactory) {
         // Use the ExpressionFactoryImpl in activiti build in version of juel,
         // with parametrised method expressions enabled
         if (initFactory) {
@@ -77,11 +73,12 @@ public class ExpressionManager {
     }
 
     public Expression createExpression(String expression) {
-        ValueExpression valueExpression = expressionFactory.createValueExpression(parsingElContext,
-                                                                                  expression.trim(),
-                                                                                  Object.class);
-        return new JuelExpression(valueExpression,
-                                  expression);
+        ValueExpression valueExpression = expressionFactory.createValueExpression(
+            parsingElContext,
+            expression.trim(),
+            Object.class
+        );
+        return new JuelExpression(valueExpression, expression);
     }
 
     public void setExpressionFactory(ExpressionFactory expressionFactory) {
@@ -98,7 +95,9 @@ public class ExpressionManager {
         if (elContext == null) {
             elContext = createElContext(variableScope);
             if (variableScope instanceof VariableScopeImpl) {
-                ((VariableScopeImpl) variableScope).setCachedElContext(elContext);
+                ((VariableScopeImpl) variableScope).setCachedElContext(
+                        elContext
+                    );
             }
         }
 
@@ -132,9 +131,13 @@ public class ExpressionManager {
         elResolver.add(new ListELResolver());
         elResolver.add(new MapELResolver());
         elResolver.add(new JsonNodeELResolver());
-        elResolver.add(new DynamicBeanPropertyELResolver(ItemInstance.class,
-                                                         "getFieldValue",
-                                                         "setFieldValue")); // TODO: needs verification
+        elResolver.add(
+            new DynamicBeanPropertyELResolver(
+                ItemInstance.class,
+                "getFieldValue",
+                "setFieldValue"
+            )
+        ); // TODO: needs verification
         elResolver.add(new BeanELResolver());
     }
 
@@ -148,7 +151,9 @@ public class ExpressionManager {
 
     public ELContext getElContext(Map<String, Object> availableVariables) {
         CompositeELResolver elResolver = new CompositeELResolver();
-        elResolver.add(new ReadOnlyMapELResolver(new HashMap<>(availableVariables)));
+        elResolver.add(
+            new ReadOnlyMapELResolver(new HashMap<>(availableVariables))
+        );
         addBaseResolvers(elResolver);
         return new ActivitiElContext(elResolver);
     }

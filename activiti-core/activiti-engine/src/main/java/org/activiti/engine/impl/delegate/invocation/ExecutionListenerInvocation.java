@@ -26,20 +26,22 @@ import org.activiti.engine.delegate.ExecutionListener;
  */
 public class ExecutionListenerInvocation extends DelegateInvocation {
 
-  protected final ExecutionListener executionListenerInstance;
-  protected final DelegateExecution execution;
+    protected final ExecutionListener executionListenerInstance;
+    protected final DelegateExecution execution;
 
-  public ExecutionListenerInvocation(ExecutionListener executionListenerInstance, DelegateExecution execution) {
-    this.executionListenerInstance = executionListenerInstance;
-    this.execution = execution;
-  }
+    public ExecutionListenerInvocation(
+        ExecutionListener executionListenerInstance,
+        DelegateExecution execution
+    ) {
+        this.executionListenerInstance = executionListenerInstance;
+        this.execution = execution;
+    }
 
-  protected void invoke() {
-    executionListenerInstance.notify(execution);
-  }
+    protected void invoke() {
+        executionListenerInstance.notify(execution);
+    }
 
-  public Object getTarget() {
-    return executionListenerInstance;
-  }
-
+    public Object getTarget() {
+        return executionListenerInstance;
+    }
 }

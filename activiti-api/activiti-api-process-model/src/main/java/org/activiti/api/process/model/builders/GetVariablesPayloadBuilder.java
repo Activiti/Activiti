@@ -22,12 +22,16 @@ public class GetVariablesPayloadBuilder {
 
     private String processInstanceId;
 
-    public GetVariablesPayloadBuilder withProcessInstanceId(String processInstanceId) {
+    public GetVariablesPayloadBuilder withProcessInstanceId(
+        String processInstanceId
+    ) {
         this.processInstanceId = processInstanceId;
         return this;
     }
 
-    public GetVariablesPayloadBuilder withProcessInstance(ProcessInstance processInstance) {
+    public GetVariablesPayloadBuilder withProcessInstance(
+        ProcessInstance processInstance
+    ) {
         this.processInstanceId = processInstance.getId();
         return this;
     }

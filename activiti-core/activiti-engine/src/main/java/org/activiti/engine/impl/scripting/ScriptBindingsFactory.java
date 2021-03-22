@@ -14,14 +14,11 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.scripting;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.script.Bindings;
-
 import org.activiti.engine.delegate.VariableScope;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 
@@ -31,38 +28,54 @@ import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
  */
 public class ScriptBindingsFactory {
 
-  protected ProcessEngineConfigurationImpl processEngineConfiguration;
-  protected List<ResolverFactory> resolverFactories;
+    protected ProcessEngineConfigurationImpl processEngineConfiguration;
+    protected List<ResolverFactory> resolverFactories;
 
-  public ScriptBindingsFactory(ProcessEngineConfigurationImpl processEngineConfiguration, List<ResolverFactory> resolverFactories) {
-    this.processEngineConfiguration = processEngineConfiguration;
-    this.resolverFactories = resolverFactories;
-  }
-
-  public Bindings createBindings(VariableScope variableScope) {
-    return new ScriptBindings(createResolvers(variableScope), variableScope);
-  }
-
-  public Bindings createBindings(VariableScope variableScope, boolean storeScriptVariables) {
-    return new ScriptBindings(createResolvers(variableScope), variableScope, storeScriptVariables);
-  }
-
-  protected List<Resolver> createResolvers(VariableScope variableScope) {
-    List<Resolver> scriptResolvers = new ArrayList<Resolver>();
-    for (ResolverFactory scriptResolverFactory : resolverFactories) {
-      Resolver resolver = scriptResolverFactory.createResolver(processEngineConfiguration, variableScope);
-      if (resolver != null) {
-        scriptResolvers.add(resolver);
-      }
+    public ScriptBindingsFactory(
+        ProcessEngineConfigurationImpl processEngineConfiguration,
+        List<ResolverFactory> resolverFactories
+    ) {
+        this.processEngineConfiguration = processEngineConfiguration;
+        this.resolverFactories = resolverFactories;
     }
-    return scriptResolvers;
-  }
 
-  public List<ResolverFactory> getResolverFactories() {
-    return resolverFactories;
-  }
+    public Bindings createBindings(VariableScope variableScope) {
+        return new ScriptBindings(
+            createResolvers(variableScope),
+            variableScope
+        );
+    }
 
-  public void setResolverFactories(List<ResolverFactory> resolverFactories) {
-    this.resolverFactories = resolverFactories;
-  }
+    public Bindings createBindings(
+        VariableScope variableScope,
+        boolean storeScriptVariables
+    ) {
+        return new ScriptBindings(
+            createResolvers(variableScope),
+            variableScope,
+            storeScriptVariables
+        );
+    }
+
+    protected List<Resolver> createResolvers(VariableScope variableScope) {
+        List<Resolver> scriptResolvers = new ArrayList<Resolver>();
+        for (ResolverFactory scriptResolverFactory : resolverFactories) {
+            Resolver resolver = scriptResolverFactory.createResolver(
+                processEngineConfiguration,
+                variableScope
+            );
+            if (resolver != null) {
+                scriptResolvers.add(resolver);
+            }
+        }
+        return scriptResolvers;
+    }
+
+    public List<ResolverFactory> getResolverFactories() {
+        return resolverFactories;
+    }
+
+    public void setResolverFactories(List<ResolverFactory> resolverFactories) {
+        this.resolverFactories = resolverFactories;
+    }
 }

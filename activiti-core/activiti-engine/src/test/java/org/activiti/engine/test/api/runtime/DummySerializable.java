@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.test.api.runtime;
 
 import java.io.Serializable;
@@ -26,6 +25,5 @@ import java.io.Serializable;
  */
 public class DummySerializable implements Serializable {
 
-  private static final long serialVersionUID = 1L;
-
+    private static final long serialVersionUID = 1L;
 }

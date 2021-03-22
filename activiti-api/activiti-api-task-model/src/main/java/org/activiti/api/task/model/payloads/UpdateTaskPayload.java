@@ -17,7 +17,6 @@ package org.activiti.api.task.model.payloads;
 
 import java.util.Date;
 import java.util.UUID;
-
 import org.activiti.api.model.shared.Payload;
 
 public class UpdateTaskPayload implements Payload {
@@ -36,14 +35,16 @@ public class UpdateTaskPayload implements Payload {
         this.id = UUID.randomUUID().toString();
     }
 
-    public UpdateTaskPayload(String taskId,
-                             String name,
-                             String description,
-                             Date dueDate,
-                             Integer priority,
-                             String assignee,
-                             String parentTaskId,
-                             String formKey) {
+    public UpdateTaskPayload(
+        String taskId,
+        String name,
+        String description,
+        Date dueDate,
+        Integer priority,
+        String assignee,
+        String parentTaskId,
+        String formKey
+    ) {
         this();
         this.taskId = taskId;
         this.name = name;

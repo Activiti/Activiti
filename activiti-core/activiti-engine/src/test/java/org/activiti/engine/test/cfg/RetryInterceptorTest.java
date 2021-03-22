@@ -22,7 +22,6 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
-
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiOptimisticLockingException;
 import org.activiti.engine.ProcessEngine;
@@ -40,46 +39,59 @@ import org.junit.Test;
  */
 public class RetryInterceptorTest {
 
-  protected ProcessEngine processEngine;
+    protected ProcessEngine processEngine;
 
-  protected RetryInterceptor retryInterceptor;
+    protected RetryInterceptor retryInterceptor;
 
-  @Before
-  public void setupProcessEngine() {
-    ProcessEngineConfigurationImpl processEngineConfiguration = (ProcessEngineConfigurationImpl) new StandaloneInMemProcessEngineConfiguration();
-    processEngineConfiguration.setJdbcUrl("jdbc:h2:mem:retryInterceptorTest");
-    List<CommandInterceptor> interceptors = new ArrayList<CommandInterceptor>();
-    retryInterceptor = new RetryInterceptor();
-    interceptors.add(retryInterceptor);
-    processEngineConfiguration.setCustomPreCommandInterceptors(interceptors);
-    processEngine = processEngineConfiguration.buildProcessEngine();
-  }
-
-  @After
-  public void shutdownProcessEngine() {
-    processEngine.close();
-    counter.set(0);
-  }
-
-  @Test
-  public void testRetryInterceptor() {
-
-    assertThatExceptionOfType(ActivitiException.class)
-      .isThrownBy(() -> processEngine.getManagementService().executeCommand(new CommandThrowingOptimisticLockingException()))
-      .withMessageContaining(retryInterceptor.getNumOfRetries() + " retries failed");
-
-    assertThat(counter.get()).isEqualTo(retryInterceptor.getNumOfRetries() + 1); // +1, we retry 3 times, so one extra for the regular execution
-  }
-
-  public static AtomicInteger counter = new AtomicInteger();
-
-  protected class CommandThrowingOptimisticLockingException implements Command<Void> {
-
-    public Void execute(CommandContext commandContext) {
-
-      counter.incrementAndGet();
-
-      throw new ActivitiOptimisticLockingException("");
+    @Before
+    public void setupProcessEngine() {
+        ProcessEngineConfigurationImpl processEngineConfiguration = (ProcessEngineConfigurationImpl) new StandaloneInMemProcessEngineConfiguration();
+        processEngineConfiguration.setJdbcUrl(
+            "jdbc:h2:mem:retryInterceptorTest"
+        );
+        List<CommandInterceptor> interceptors = new ArrayList<CommandInterceptor>();
+        retryInterceptor = new RetryInterceptor();
+        interceptors.add(retryInterceptor);
+        processEngineConfiguration.setCustomPreCommandInterceptors(
+            interceptors
+        );
+        processEngine = processEngineConfiguration.buildProcessEngine();
     }
-  }
+
+    @After
+    public void shutdownProcessEngine() {
+        processEngine.close();
+        counter.set(0);
+    }
+
+    @Test
+    public void testRetryInterceptor() {
+        assertThatExceptionOfType(ActivitiException.class)
+            .isThrownBy(
+                () ->
+                    processEngine
+                        .getManagementService()
+                        .executeCommand(
+                            new CommandThrowingOptimisticLockingException()
+                        )
+            )
+            .withMessageContaining(
+                retryInterceptor.getNumOfRetries() + " retries failed"
+            );
+
+        assertThat(counter.get())
+            .isEqualTo(retryInterceptor.getNumOfRetries() + 1); // +1, we retry 3 times, so one extra for the regular execution
+    }
+
+    public static AtomicInteger counter = new AtomicInteger();
+
+    protected class CommandThrowingOptimisticLockingException
+        implements Command<Void> {
+
+        public Void execute(CommandContext commandContext) {
+            counter.incrementAndGet();
+
+            throw new ActivitiOptimisticLockingException("");
+        }
+    }
 }

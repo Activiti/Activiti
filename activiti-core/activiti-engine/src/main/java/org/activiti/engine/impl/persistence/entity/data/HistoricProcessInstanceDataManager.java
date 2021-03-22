@@ -18,7 +18,6 @@ package org.activiti.engine.impl.persistence.entity.data;
 
 import java.util.List;
 import java.util.Map;
-
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.impl.HistoricProcessInstanceQueryImpl;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
@@ -27,22 +26,39 @@ import org.activiti.engine.impl.persistence.entity.HistoricProcessInstanceEntity
 /**
 
  */
-public interface HistoricProcessInstanceDataManager extends DataManager<HistoricProcessInstanceEntity> {
+public interface HistoricProcessInstanceDataManager
+    extends DataManager<HistoricProcessInstanceEntity> {
+    HistoricProcessInstanceEntity create(
+        ExecutionEntity processInstanceExecutionEntity
+    );
 
-  HistoricProcessInstanceEntity create(ExecutionEntity processInstanceExecutionEntity);
+    List<String> findHistoricProcessInstanceIdsByProcessDefinitionId(
+        String processDefinitionId
+    );
 
-  List<String> findHistoricProcessInstanceIdsByProcessDefinitionId(String processDefinitionId);
+    List<HistoricProcessInstanceEntity> findHistoricProcessInstancesBySuperProcessInstanceId(
+        String superProcessInstanceId
+    );
 
-  List<HistoricProcessInstanceEntity> findHistoricProcessInstancesBySuperProcessInstanceId(String superProcessInstanceId);
+    long findHistoricProcessInstanceCountByQueryCriteria(
+        HistoricProcessInstanceQueryImpl historicProcessInstanceQuery
+    );
 
-  long findHistoricProcessInstanceCountByQueryCriteria(HistoricProcessInstanceQueryImpl historicProcessInstanceQuery);
+    List<HistoricProcessInstance> findHistoricProcessInstancesByQueryCriteria(
+        HistoricProcessInstanceQueryImpl historicProcessInstanceQuery
+    );
 
-  List<HistoricProcessInstance> findHistoricProcessInstancesByQueryCriteria(HistoricProcessInstanceQueryImpl historicProcessInstanceQuery);
+    List<HistoricProcessInstance> findHistoricProcessInstancesAndVariablesByQueryCriteria(
+        HistoricProcessInstanceQueryImpl historicProcessInstanceQuery
+    );
 
-  List<HistoricProcessInstance> findHistoricProcessInstancesAndVariablesByQueryCriteria(HistoricProcessInstanceQueryImpl historicProcessInstanceQuery);
+    List<HistoricProcessInstance> findHistoricProcessInstancesByNativeQuery(
+        Map<String, Object> parameterMap,
+        int firstResult,
+        int maxResults
+    );
 
-  List<HistoricProcessInstance> findHistoricProcessInstancesByNativeQuery(Map<String, Object> parameterMap, int firstResult, int maxResults);
-
-  long findHistoricProcessInstanceCountByNativeQuery(Map<String, Object> parameterMap);
-
+    long findHistoricProcessInstanceCountByNativeQuery(
+        Map<String, Object> parameterMap
+    );
 }

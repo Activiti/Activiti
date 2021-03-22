@@ -50,7 +50,12 @@ public abstract class ValuedDataObject extends DataObject {
 
         ValuedDataObject otherObject = (ValuedDataObject) o;
 
-        if (!otherObject.getItemSubjectRef().getStructureRef().equals(this.itemSubjectRef.getStructureRef())) {
+        if (
+            !otherObject
+                .getItemSubjectRef()
+                .getStructureRef()
+                .equals(this.itemSubjectRef.getStructureRef())
+        ) {
             return false;
         }
         if (!otherObject.getId().equals(this.id)) {

@@ -15,13 +15,14 @@
  */
 package org.activiti.core.common.spring.security;
 
-import org.springframework.security.core.GrantedAuthority;
-
 import java.util.Collection;
 import java.util.List;
+import org.springframework.security.core.GrantedAuthority;
 
-public class SimpleGrantedAuthoritiesRolesMapper extends AbstractSimpleGrantedAuthoritiesMapper
-                                                 implements GrantedAuthoritiesRolesMapper {
+public class SimpleGrantedAuthoritiesRolesMapper
+    extends AbstractSimpleGrantedAuthoritiesMapper
+    implements GrantedAuthoritiesRolesMapper {
+
     private final String prefix;
 
     public SimpleGrantedAuthoritiesRolesMapper() {
@@ -33,7 +34,9 @@ public class SimpleGrantedAuthoritiesRolesMapper extends AbstractSimpleGrantedAu
     }
 
     @Override
-    public List<String> getRoles(Collection<? extends GrantedAuthority> authorities) {
+    public List<String> getRoles(
+        Collection<? extends GrantedAuthority> authorities
+    ) {
         return getAuthoritesFilteredByPrefix(authorities, prefix);
     }
 }

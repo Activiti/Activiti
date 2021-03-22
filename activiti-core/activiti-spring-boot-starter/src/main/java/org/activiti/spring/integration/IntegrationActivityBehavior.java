@@ -38,7 +38,11 @@ public class IntegrationActivityBehavior extends ReceiveTaskActivityBehavior {
     }
 
     @Override
-    public void trigger(DelegateExecution execution, String signalName, Object data) {
+    public void trigger(
+        DelegateExecution execution,
+        String signalName,
+        Object data
+    ) {
         gateway.signal(this, execution, signalName, data);
     }
 }

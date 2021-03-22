@@ -27,13 +27,14 @@ public class ApplicationContent {
     private Map<String, List<FileContent>> entries = new HashMap<>();
 
     public void add(ApplicationEntry entry) {
-        List<FileContent> fileContents = entries.computeIfAbsent(entry.getType(),
-                                                                 k -> new ArrayList<>());
+        List<FileContent> fileContents = entries.computeIfAbsent(
+            entry.getType(),
+            k -> new ArrayList<>()
+        );
         fileContents.add(entry.getFileContent());
     }
 
     public List<FileContent> getFileContents(String entryType) {
         return entries.getOrDefault(entryType, emptyList());
     }
-
 }

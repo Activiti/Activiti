@@ -21,7 +21,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.util.Date;
 
-public class DateFormatterProvider  {
+public class DateFormatterProvider {
 
     private String dateFormatPattern;
 
@@ -45,18 +45,24 @@ public class DateFormatterProvider  {
 
     public Date parse(String value) throws DateTimeException {
         DateTimeFormatter dateTimeFormatter = new DateTimeFormatterBuilder()
-                                                      .appendPattern(getDateFormatPattern())
-                                                      .toFormatter()
-                                                      .withZone(getZoneId());
+            .appendPattern(getDateFormatPattern())
+            .toFormatter()
+            .withZone(getZoneId());
 
         try {
-            LocalDateTime localDateTime = dateTimeFormatter.parse(value,
-                                                                  LocalDateTime::from);
+            LocalDateTime localDateTime = dateTimeFormatter.parse(
+                value,
+                LocalDateTime::from
+            );
             return Date.from(localDateTime.atZone(getZoneId()).toInstant());
         } catch (DateTimeException e) {
-            LocalDate localDate = dateTimeFormatter.parse(String.valueOf(value),
-                                                          LocalDate::from);
-            return Date.from(localDate.atStartOfDay().atZone(getZoneId()).toInstant());
+            LocalDate localDate = dateTimeFormatter.parse(
+                String.valueOf(value),
+                LocalDate::from
+            );
+            return Date.from(
+                localDate.atStartOfDay().atZone(getZoneId()).toInstant()
+            );
         }
     }
 
@@ -66,13 +72,19 @@ public class DateFormatterProvider  {
         }
 
         if (value instanceof Date) {
-            return (Date)value;
+            return (Date) value;
         }
 
         if (value instanceof Long) {
-            return new Date((long)value);
+            return new Date((long) value);
         }
 
-        throw new DateTimeException(MessageFormat.format("Error while parsing date. Type: {0}, value: {1}", value.getClass().getName(), value));
+        throw new DateTimeException(
+            MessageFormat.format(
+                "Error while parsing date. Type: {0}, value: {1}",
+                value.getClass().getName(),
+                value
+            )
+        );
     }
 }

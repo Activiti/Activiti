@@ -15,47 +15,65 @@
  */
 package org.activiti.test.matchers;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.activiti.api.model.shared.event.VariableCreatedEvent;
-import org.activiti.api.model.shared.event.VariableEvent;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
+
+import java.util.List;
+import java.util.stream.Collectors;
+import org.activiti.api.model.shared.event.VariableCreatedEvent;
+import org.activiti.api.model.shared.event.VariableEvent;
 
 public class ProcessVariableMatchers {
 
     private String variableName;
     private Object value;
 
-    private ProcessVariableMatchers(String variableName,
-                                    Object value) {
-
+    private ProcessVariableMatchers(String variableName, Object value) {
         this.variableName = variableName;
         this.value = value;
     }
 
-    public static ProcessVariableMatchers processVariable(String variableName, Object value) {
+    public static ProcessVariableMatchers processVariable(
+        String variableName,
+        Object value
+    ) {
         return new ProcessVariableMatchers(variableName, value);
     }
 
     public OperationScopeMatcher hasBeenCreated() {
         return (operationScope, events) -> {
             List<VariableCreatedEvent> variableCreatedEvents = events
-                    .stream()
-                    .filter(event -> VariableEvent.VariableEvents.VARIABLE_CREATED.equals(event.getEventType()))
-                    .map(VariableCreatedEvent.class::cast)
-                    .filter(event -> !event.getEntity().isTaskVariable())
-                    .filter(event -> event.getEntity().getProcessInstanceId().equals(operationScope.getProcessInstanceId()))
-                    .collect(Collectors.toList());
+                .stream()
+                .filter(
+                    event ->
+                        VariableEvent.VariableEvents.VARIABLE_CREATED.equals(
+                            event.getEventType()
+                        )
+                )
+                .map(VariableCreatedEvent.class::cast)
+                .filter(event -> !event.getEntity().isTaskVariable())
+                .filter(
+                    event ->
+                        event
+                            .getEntity()
+                            .getProcessInstanceId()
+                            .equals(operationScope.getProcessInstanceId())
+                )
+                .collect(Collectors.toList());
             assertThat(variableCreatedEvents)
-                    .extracting(event -> event.getEntity().getName(),
-                                event -> event.getEntity().getValue())
-                    .as("Unable to find event " + VariableEvent.VariableEvents.VARIABLE_CREATED + " for variable "
-                                + variableName + " in process instance " + operationScope.getProcessInstanceId())
-                    .contains(tuple(variableName,
-                                    value));
+                .extracting(
+                    event -> event.getEntity().getName(),
+                    event -> event.getEntity().getValue()
+                )
+                .as(
+                    "Unable to find event " +
+                    VariableEvent.VariableEvents.VARIABLE_CREATED +
+                    " for variable " +
+                    variableName +
+                    " in process instance " +
+                    operationScope.getProcessInstanceId()
+                )
+                .contains(tuple(variableName, value));
         };
     }
 }

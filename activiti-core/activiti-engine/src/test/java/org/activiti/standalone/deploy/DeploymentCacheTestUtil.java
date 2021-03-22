@@ -24,20 +24,20 @@ import java.util.Scanner;
  */
 public class DeploymentCacheTestUtil {
 
-  public static String readTemplateFile(String templateFile) {
-    InputStream inputStream = DeploymentCacheTestUtil.class.getResourceAsStream(templateFile);
-    Scanner scanner = null;
-    try {
-      scanner = new Scanner(inputStream, "UTF-8").useDelimiter("\\A");
-      if (scanner.hasNext()) {
-        return scanner.next();
-      }
-    } finally {
-      if (scanner != null) {
-        scanner.close();
-      }
+    public static String readTemplateFile(String templateFile) {
+        InputStream inputStream =
+            DeploymentCacheTestUtil.class.getResourceAsStream(templateFile);
+        Scanner scanner = null;
+        try {
+            scanner = new Scanner(inputStream, "UTF-8").useDelimiter("\\A");
+            if (scanner.hasNext()) {
+                return scanner.next();
+            }
+        } finally {
+            if (scanner != null) {
+                scanner.close();
+            }
+        }
+        return null;
     }
-    return null;
-  }
-
 }

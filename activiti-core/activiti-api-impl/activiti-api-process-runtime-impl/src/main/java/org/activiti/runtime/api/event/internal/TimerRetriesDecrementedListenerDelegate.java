@@ -15,34 +15,39 @@
  */
 package org.activiti.runtime.api.event.internal;
 
+import java.util.List;
 import org.activiti.api.process.model.events.BPMNTimerRetriesDecrementedEvent;
 import org.activiti.api.process.runtime.events.listener.BPMNElementEventListener;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventListener;
 import org.activiti.runtime.api.event.impl.ToTimerRetriesDecrementedConverter;
 
-import java.util.List;
-
-public class TimerRetriesDecrementedListenerDelegate implements ActivitiEventListener {
+public class TimerRetriesDecrementedListenerDelegate
+    implements ActivitiEventListener {
 
     private List<BPMNElementEventListener<BPMNTimerRetriesDecrementedEvent>> processRuntimeEventListeners;
 
     private ToTimerRetriesDecrementedConverter converter;
 
-    public TimerRetriesDecrementedListenerDelegate(List<BPMNElementEventListener<BPMNTimerRetriesDecrementedEvent>> processRuntimeEventListeners,
-                                                   ToTimerRetriesDecrementedConverter converter) {
+    public TimerRetriesDecrementedListenerDelegate(
+        List<BPMNElementEventListener<BPMNTimerRetriesDecrementedEvent>> processRuntimeEventListeners,
+        ToTimerRetriesDecrementedConverter converter
+    ) {
         this.processRuntimeEventListeners = processRuntimeEventListeners;
         this.converter = converter;
     }
 
     @Override
     public void onEvent(ActivitiEvent event) {
-        converter.from(event)
-                .ifPresent(convertedEvent -> {
+        converter
+            .from(event)
+            .ifPresent(
+                convertedEvent -> {
                     for (BPMNElementEventListener<BPMNTimerRetriesDecrementedEvent> listener : processRuntimeEventListeners) {
                         listener.onEvent(convertedEvent);
                     }
-                });
+                }
+            );
     }
 
     @Override

@@ -35,14 +35,18 @@ public class ActivitiSpringSecurityPoliciesAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public ProcessSecurityPoliciesManager processSecurityPoliciesManager(SecurityManager securityManager,
-                                                                         SecurityPoliciesProperties securityPoliciesProperties,
-                                                                         SecurityPoliciesRestrictionApplier<GetProcessDefinitionsPayload> processDefinitionRestrictionApplier,
-                                                                         SecurityPoliciesRestrictionApplier<GetProcessInstancesPayload> processInstanceRestrictionApplier) {
-        return new ProcessSecurityPoliciesManagerImpl(securityManager,
-                                                      securityPoliciesProperties,
-                                                      processDefinitionRestrictionApplier,
-                                                      processInstanceRestrictionApplier);
+    public ProcessSecurityPoliciesManager processSecurityPoliciesManager(
+        SecurityManager securityManager,
+        SecurityPoliciesProperties securityPoliciesProperties,
+        SecurityPoliciesRestrictionApplier<GetProcessDefinitionsPayload> processDefinitionRestrictionApplier,
+        SecurityPoliciesRestrictionApplier<GetProcessInstancesPayload> processInstanceRestrictionApplier
+    ) {
+        return new ProcessSecurityPoliciesManagerImpl(
+            securityManager,
+            securityPoliciesProperties,
+            processDefinitionRestrictionApplier,
+            processInstanceRestrictionApplier
+        );
     }
 
     @Bean
@@ -53,8 +57,7 @@ public class ActivitiSpringSecurityPoliciesAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean(name = "processDefinitionRestrictionApplier")
-    public SecurityPoliciesRestrictionApplier<GetProcessDefinitionsPayload> processDefinitionRestrictionApplier () {
+    public SecurityPoliciesRestrictionApplier<GetProcessDefinitionsPayload> processDefinitionRestrictionApplier() {
         return new SecurityPoliciesProcessDefinitionRestrictionApplier();
     }
-
 }

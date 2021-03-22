@@ -16,14 +16,14 @@
 package org.activiti.runtime.api.event.impl;
 
 import java.util.Optional;
-
 import org.activiti.api.task.model.Task;
 import org.activiti.api.task.runtime.events.TaskCancelledEvent;
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.runtime.api.model.impl.APITaskConverter;
 
-public class ToTaskCancelledConverter implements EventConverter<TaskCancelledEvent, ActivitiEntityEvent> {
+public class ToTaskCancelledConverter
+    implements EventConverter<TaskCancelledEvent, ActivitiEntityEvent> {
 
     private APITaskConverter taskConverter;
 
@@ -32,11 +32,16 @@ public class ToTaskCancelledConverter implements EventConverter<TaskCancelledEve
     }
 
     @Override
-    public Optional<TaskCancelledEvent> from(ActivitiEntityEvent internalEvent) {
+    public Optional<TaskCancelledEvent> from(
+        ActivitiEntityEvent internalEvent
+    ) {
         TaskCancelledEvent event = null;
         if (isTaskCancelled(internalEvent)) {
             TaskEntity taskEntity = (TaskEntity) internalEvent.getEntity();
-            Task task = taskConverter.from(taskEntity, Task.TaskStatus.CANCELLED);
+            Task task = taskConverter.from(
+                taskEntity,
+                Task.TaskStatus.CANCELLED
+            );
             String reason = internalEvent.getReason();
             event = new TaskCancelledImpl(task, reason);
         }
@@ -44,8 +49,10 @@ public class ToTaskCancelledConverter implements EventConverter<TaskCancelledEve
     }
 
     private boolean isTaskCancelled(ActivitiEntityEvent internalEvent) {
-        return internalEvent.getEntity() != null &&
-                internalEvent.getEntity() instanceof TaskEntity &&
-                ((TaskEntity) internalEvent.getEntity()).isCanceled();
+        return (
+            internalEvent.getEntity() != null &&
+            internalEvent.getEntity() instanceof TaskEntity &&
+            ((TaskEntity) internalEvent.getEntity()).isCanceled()
+        );
     }
 }

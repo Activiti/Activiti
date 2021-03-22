@@ -15,6 +15,8 @@
  */
 package org.activiti.spring.conformance.set4;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.activiti.api.model.shared.event.RuntimeEvent;
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
@@ -37,12 +39,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 public class BasicParallelGatewayGroupAssignmentsTest {
 
-    private final String processKey = "basicparal-41c130f7-0b06-4bbb-aee4-73667298e369";
+    private final String processKey =
+        "basicparal-41c130f7-0b06-4bbb-aee4-73667298e369";
 
     @Autowired
     private ProcessRuntime processRuntime;
@@ -61,27 +62,32 @@ public class BasicParallelGatewayGroupAssignmentsTest {
         clearEvents();
     }
 
-
     @Test
     public void shouldCheckThatParallelGatewayCreateBothTasksForGroups() {
-
         securityUtil.logInAs("user1");
 
-        ProcessInstance processInstance = processRuntime.start(ProcessPayloadBuilder
+        ProcessInstance processInstance = processRuntime.start(
+            ProcessPayloadBuilder
                 .start()
                 .withProcessDefinitionKey(processKey)
                 .withBusinessKey("my-business-key")
                 .withName("my-process-instance-name")
-                .build());
+                .build()
+        );
 
         //then
         assertThat(processInstance).isNotNull();
-        assertThat(processInstance.getStatus()).isEqualTo(ProcessInstance.ProcessInstanceStatus.RUNNING);
-        assertThat(processInstance.getBusinessKey()).isEqualTo("my-business-key");
-        assertThat(processInstance.getName()).isEqualTo("my-process-instance-name");
+        assertThat(processInstance.getStatus())
+            .isEqualTo(ProcessInstance.ProcessInstanceStatus.RUNNING);
+        assertThat(processInstance.getBusinessKey())
+            .isEqualTo("my-business-key");
+        assertThat(processInstance.getName())
+            .isEqualTo("my-process-instance-name");
 
         // I should be able to get the process instance from the Runtime because it is still running
-        ProcessInstance processInstanceById = processRuntime.processInstance(processInstance.getId());
+        ProcessInstance processInstanceById = processRuntime.processInstance(
+            processInstance.getId()
+        );
 
         assertThat(processInstanceById).isEqualTo(processInstance);
 
@@ -100,41 +106,42 @@ public class BasicParallelGatewayGroupAssignmentsTest {
 
         assertThat(task.getAssignee()).isEqualTo("user1");
 
-
         assertThat(RuntimeTestConfiguration.collectedEvents)
-                .extracting(RuntimeEvent::getEventType)
-                .containsExactly(
-                        ProcessRuntimeEvent.ProcessEvents.PROCESS_CREATED,
-                        ProcessRuntimeEvent.ProcessEvents.PROCESS_STARTED,
-                        BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
-                        BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
-                        BPMNSequenceFlowTakenEvent.SequenceFlowEvents.SEQUENCE_FLOW_TAKEN,
-                        BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
-                        TaskRuntimeEvent.TaskEvents.TASK_CREATED,
-                        TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED);
-
+            .extracting(RuntimeEvent::getEventType)
+            .containsExactly(
+                ProcessRuntimeEvent.ProcessEvents.PROCESS_CREATED,
+                ProcessRuntimeEvent.ProcessEvents.PROCESS_STARTED,
+                BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
+                BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
+                BPMNSequenceFlowTakenEvent.SequenceFlowEvents.SEQUENCE_FLOW_TAKEN,
+                BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
+                TaskRuntimeEvent.TaskEvents.TASK_CREATED,
+                TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED
+            );
 
         clearEvents();
 
-        taskRuntime.complete(TaskPayloadBuilder.complete().withTaskId(task.getId()).build());
+        taskRuntime.complete(
+            TaskPayloadBuilder.complete().withTaskId(task.getId()).build()
+        );
 
         assertThat(RuntimeTestConfiguration.collectedEvents)
-                .extracting(RuntimeEvent::getEventType)
-                .contains(
-                        TaskRuntimeEvent.TaskEvents.TASK_COMPLETED,
-                        BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
-                        BPMNSequenceFlowTakenEvent.SequenceFlowEvents.SEQUENCE_FLOW_TAKEN,
-                        BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
-                        BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
-                        BPMNSequenceFlowTakenEvent.SequenceFlowEvents.SEQUENCE_FLOW_TAKEN,
-                        BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
-                        TaskRuntimeEvent.TaskEvents.TASK_CREATED,
-                        BPMNSequenceFlowTakenEvent.SequenceFlowEvents.SEQUENCE_FLOW_TAKEN,
-                        BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
-                        TaskRuntimeEvent.TaskEvents.TASK_CREATED);
+            .extracting(RuntimeEvent::getEventType)
+            .contains(
+                TaskRuntimeEvent.TaskEvents.TASK_COMPLETED,
+                BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
+                BPMNSequenceFlowTakenEvent.SequenceFlowEvents.SEQUENCE_FLOW_TAKEN,
+                BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
+                BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
+                BPMNSequenceFlowTakenEvent.SequenceFlowEvents.SEQUENCE_FLOW_TAKEN,
+                BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
+                TaskRuntimeEvent.TaskEvents.TASK_CREATED,
+                BPMNSequenceFlowTakenEvent.SequenceFlowEvents.SEQUENCE_FLOW_TAKEN,
+                BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
+                TaskRuntimeEvent.TaskEvents.TASK_CREATED
+            );
 
         clearEvents();
-
 
         // User 1 is a candidate for a task
         securityUtil.logInAs("user1");
@@ -152,7 +159,6 @@ public class BasicParallelGatewayGroupAssignmentsTest {
         assertThat(task).isEqualTo(taskById);
 
         assertThat(task.getAssignee()).isNull();
-
 
         // User 2 is a candidate for a task
         securityUtil.logInAs("user2");
@@ -177,16 +183,18 @@ public class BasicParallelGatewayGroupAssignmentsTest {
         tasks = taskRuntime.tasks(Pageable.of(0, 50));
 
         assertThat(tasks.getTotalItems()).isEqualTo(2);
-
     }
-
 
     @AfterEach
     public void cleanup() {
         securityUtil.logInAs("admin");
-        Page<ProcessInstance> processInstancePage = processAdminRuntime.processInstances(Pageable.of(0, 50));
+        Page<ProcessInstance> processInstancePage = processAdminRuntime.processInstances(
+            Pageable.of(0, 50)
+        );
         for (ProcessInstance pi : processInstancePage.getContent()) {
-            processAdminRuntime.delete(ProcessPayloadBuilder.delete(pi.getId()));
+            processAdminRuntime.delete(
+                ProcessPayloadBuilder.delete(pi.getId())
+            );
         }
 
         clearEvents();
@@ -195,5 +203,4 @@ public class BasicParallelGatewayGroupAssignmentsTest {
     public void clearEvents() {
         RuntimeTestConfiguration.collectedEvents.clear();
     }
-
 }

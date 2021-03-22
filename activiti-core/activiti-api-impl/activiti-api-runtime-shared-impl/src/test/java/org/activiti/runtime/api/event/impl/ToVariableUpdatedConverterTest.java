@@ -48,10 +48,12 @@ class ToVariableUpdatedConverterTest {
 
         assertThat(result).isPresent();
         VariableUpdatedEvent actualEvent = result.get();
-        assertThat(actualEvent.getEventType()).isEqualTo(VariableEvents.VARIABLE_UPDATED);
+        assertThat(actualEvent.getEventType())
+            .isEqualTo(VariableEvents.VARIABLE_UPDATED);
         VariableInstance actualEntity = actualEvent.getEntity();
         assertThat(actualEntity.getName()).isEqualTo("variableName");
-        assertThat(actualEntity.getProcessInstanceId()).isEqualTo("processInstanceId");
+        assertThat(actualEntity.getProcessInstanceId())
+            .isEqualTo("processInstanceId");
         assertThat(actualEntity.getTaskId()).isEqualTo("taskId");
         assertThat(actualEntity.getType()).isEqualTo("integer");
         Object actualValue = actualEntity.getValue();

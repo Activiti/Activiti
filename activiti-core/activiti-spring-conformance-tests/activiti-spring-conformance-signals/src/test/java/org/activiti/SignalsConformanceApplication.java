@@ -24,5 +24,4 @@ public class SignalsConformanceApplication {
     public static void main(String[] args) {
         SpringApplication.run(SignalsConformanceApplication.class);
     }
-
 }

@@ -22,16 +22,16 @@ import java.time.DateTimeException;
 import java.time.Duration;
 import java.time.format.DateTimeParseException;
 import java.util.Date;
-
 import org.junit.jupiter.api.Test;
 
 public class DateFormatterProviderTest {
 
-    private DateFormatterProvider provider = new DateFormatterProvider("yyyy-MM-dd[['T']HH:mm:ss[.SSS'Z']]");
+    private DateFormatterProvider provider = new DateFormatterProvider(
+        "yyyy-MM-dd[['T']HH:mm:ss[.SSS'Z']]"
+    );
 
     @Test
     public void should_returnDate_when_stringRepresentsADate() {
-
         String dateStr = "1970-01-01";
 
         Date date = provider.toDate(dateStr);
@@ -41,10 +41,13 @@ public class DateFormatterProviderTest {
 
     @Test
     public void should_returnDate_when_stringRepresentsADateWithTimeInformation() {
-
         String dateStr = "1970-01-01T01:01:01.001Z";
         //calculate number of milliseconds after 1970-01-01T00:00:00.000Z
-        long time = Duration.ofHours(1).toMillis() + Duration.ofMinutes(1).toMillis() + Duration.ofSeconds(1).toMillis() + 1;
+        long time =
+            Duration.ofHours(1).toMillis() +
+            Duration.ofMinutes(1).toMillis() +
+            Duration.ofSeconds(1).toMillis() +
+            1;
 
         Date date = provider.toDate(dateStr);
 
@@ -53,16 +56,14 @@ public class DateFormatterProviderTest {
 
     @Test
     public void should_throwException_when_stringIsNotADate() {
-
         String dateStr = "this is not a date";
 
         assertThatExceptionOfType(DateTimeParseException.class)
-                .isThrownBy(() -> provider.parse(dateStr));
+            .isThrownBy(() -> provider.parse(dateStr));
     }
 
     @Test
     public void should_returnDate_when_longIsProvided() {
-
         long time = 1000;
 
         Date date = provider.toDate(time);
@@ -72,7 +73,6 @@ public class DateFormatterProviderTest {
 
     @Test
     public void should_returnDate_when_dateIsProvided() {
-
         Date initialDate = new Date(1000);
 
         Date date = provider.toDate(initialDate);
@@ -85,8 +85,7 @@ public class DateFormatterProviderTest {
         double value = 1.2;
 
         assertThatExceptionOfType(DateTimeException.class)
-                .isThrownBy(
-                        () -> provider.toDate(value))
-                .withMessageContaining("Error while parsing date");
+            .isThrownBy(() -> provider.toDate(value))
+            .withMessageContaining("Error while parsing date");
     }
 }

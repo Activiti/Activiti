@@ -20,7 +20,6 @@ import static org.activiti.engine.impl.bpmn.behavior.MappingExecutionContext.bui
 
 import java.io.Serializable;
 import java.util.List;
-
 import org.activiti.engine.ActivitiEngineAgenda;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.event.ActivitiEventType;
@@ -47,31 +46,57 @@ public class BpmnActivityBehavior implements Serializable {
      * More precisely: every sequence flow that has a condition which evaluates to true (or which doesn't have a condition), is selected for continuation of the process instance. If multiple sequencer
      * flow are selected, multiple, parallel paths of executions are created.
      */
-    public void performDefaultOutgoingBehavior(ExecutionEntity activityExecution) {
-        performOutgoingBehavior(activityExecution,
-                                true,
-                                false);
+    public void performDefaultOutgoingBehavior(
+        ExecutionEntity activityExecution
+    ) {
+        performOutgoingBehavior(activityExecution, true, false);
     }
 
     /**
      * dispatch job canceled event for job associated with given execution entity
      * @param activityExecution
      */
-    protected void dispatchJobCanceledEvents(ExecutionEntity activityExecution) {
+    protected void dispatchJobCanceledEvents(
+        ExecutionEntity activityExecution
+    ) {
         if (activityExecution != null) {
             List<JobEntity> jobs = activityExecution.getJobs();
             for (JobEntity job : jobs) {
-                if (Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-                    Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.JOB_CANCELED,
-                                                                                                                                      job));
+                if (
+                    Context
+                        .getProcessEngineConfiguration()
+                        .getEventDispatcher()
+                        .isEnabled()
+                ) {
+                    Context
+                        .getProcessEngineConfiguration()
+                        .getEventDispatcher()
+                        .dispatchEvent(
+                            ActivitiEventBuilder.createEntityEvent(
+                                ActivitiEventType.JOB_CANCELED,
+                                job
+                            )
+                        );
                 }
             }
 
             List<TimerJobEntity> timerJobs = activityExecution.getTimerJobs();
             for (TimerJobEntity job : timerJobs) {
-                if (Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-                    Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.JOB_CANCELED,
-                                                                                                                                      job));
+                if (
+                    Context
+                        .getProcessEngineConfiguration()
+                        .getEventDispatcher()
+                        .isEnabled()
+                ) {
+                    Context
+                        .getProcessEngineConfiguration()
+                        .getEventDispatcher()
+                        .dispatchEvent(
+                            ActivitiEventBuilder.createEntityEvent(
+                                ActivitiEventType.JOB_CANCELED,
+                                job
+                            )
+                        );
                 }
             }
         }
@@ -83,10 +108,10 @@ public class BpmnActivityBehavior implements Serializable {
      * This means that every outgoing sequence flow is selected for continuing the process instance, regardless of having a condition or not. In case of multiple outgoing sequence flow, multiple
      * parallel paths of executions will be created.
      */
-    public void performIgnoreConditionsOutgoingBehavior(ExecutionEntity activityExecution) {
-        performOutgoingBehavior(activityExecution,
-                                false,
-                                false);
+    public void performIgnoreConditionsOutgoingBehavior(
+        ExecutionEntity activityExecution
+    ) {
+        performOutgoingBehavior(activityExecution, false, false);
     }
 
     /**
@@ -95,12 +120,13 @@ public class BpmnActivityBehavior implements Serializable {
      * @param checkConditions Whether or not to check conditions before determining whether or not to take a transition.
      * @param throwExceptionIfExecutionStuck If true, an {@link ActivitiException} will be thrown in case no transition could be found to leave the activity.
      */
-    protected void performOutgoingBehavior(ExecutionEntity execution,
-                                           boolean checkConditions,
-                                           boolean throwExceptionIfExecutionStuck) {
+    protected void performOutgoingBehavior(
+        ExecutionEntity execution,
+        boolean checkConditions,
+        boolean throwExceptionIfExecutionStuck
+    ) {
         propagateVariablesToParent(execution);
-        getAgenda().planTakeOutgoingSequenceFlowsOperation(execution,
-                                                                   true);
+        getAgenda().planTakeOutgoingSequenceFlowsOperation(execution, true);
     }
 
     protected ActivitiEngineAgenda getAgenda() {
@@ -110,12 +136,18 @@ public class BpmnActivityBehavior implements Serializable {
     private void propagateVariablesToParent(ExecutionEntity execution) {
         ExecutionEntity parentExecution = execution.getParent();
         if (parentExecution != null) {
-            parentExecution.setVariables(variablesCalculator
-                .calculateOutPutVariables(buildMappingExecutionContext(execution), execution.getVariablesLocal()));
+            parentExecution.setVariables(
+                variablesCalculator.calculateOutPutVariables(
+                    buildMappingExecutionContext(execution),
+                    execution.getVariablesLocal()
+                )
+            );
         }
     }
 
-    public void setVariablesCalculator(VariablesCalculator variablesCalculator) {
+    public void setVariablesCalculator(
+        VariablesCalculator variablesCalculator
+    ) {
         this.variablesCalculator = variablesCalculator;
     }
 }

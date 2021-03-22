@@ -18,10 +18,11 @@ package org.activiti.api.runtime.event.impl;
 import org.activiti.api.model.shared.event.VariableDeletedEvent;
 import org.activiti.api.model.shared.model.VariableInstance;
 
-public class VariableDeletedEventImpl extends VariableEventImpl implements VariableDeletedEvent {
+public class VariableDeletedEventImpl
+    extends VariableEventImpl
+    implements VariableDeletedEvent {
 
-    public VariableDeletedEventImpl() {
-    }
+    public VariableDeletedEventImpl() {}
 
     public VariableDeletedEventImpl(VariableInstance entity) {
         super(entity);

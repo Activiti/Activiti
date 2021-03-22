@@ -24,12 +24,18 @@ public class ProcessInitiatorELResolver implements VariableScopeItemELResolver {
 
     @Override
     public boolean canResolve(String property, VariableScope variableScope) {
-        return INITIATOR_KEY.equals(property) && variableScope instanceof ExecutionEntity;
+        return (
+            INITIATOR_KEY.equals(property) &&
+            variableScope instanceof ExecutionEntity
+        );
     }
 
     @Override
     public Object resolve(String property, VariableScope variableScope) {
-        ExecutionEntity processInstance = ((ExecutionEntity) variableScope).getProcessInstance();
-        return processInstance != null ? processInstance.getStartUserId() : null;
+        ExecutionEntity processInstance =
+            ((ExecutionEntity) variableScope).getProcessInstance();
+        return processInstance != null
+            ? processInstance.getStartUserId()
+            : null;
     }
 }

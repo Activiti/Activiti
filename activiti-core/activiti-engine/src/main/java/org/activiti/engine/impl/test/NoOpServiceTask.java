@@ -21,7 +21,6 @@ import static java.util.Collections.synchronizedList;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
-
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.JavaDelegate;
@@ -30,28 +29,29 @@ import org.activiti.engine.delegate.JavaDelegate;
  */
 public class NoOpServiceTask implements JavaDelegate {
 
-  public static AtomicInteger CALL_COUNT = new AtomicInteger(0);
-  public static List<String> NAMES = synchronizedList(new ArrayList<String>());
+    public static AtomicInteger CALL_COUNT = new AtomicInteger(0);
+    public static List<String> NAMES = synchronizedList(
+        new ArrayList<String>()
+    );
 
-  protected Expression name;
+    protected Expression name;
 
-  @Override
-  public void execute(DelegateExecution execution) {
-    CALL_COUNT.incrementAndGet();
-    NAMES.add((String) name.getValue(execution));
-  }
+    @Override
+    public void execute(DelegateExecution execution) {
+        CALL_COUNT.incrementAndGet();
+        NAMES.add((String) name.getValue(execution));
+    }
 
-  public Expression getName() {
-    return name;
-  }
+    public Expression getName() {
+        return name;
+    }
 
-  public void setName(Expression name) {
-    this.name = name;
-  }
+    public void setName(Expression name) {
+        this.name = name;
+    }
 
-  public static void reset() {
-    CALL_COUNT.set(0);
-    NAMES.clear();
-  }
-
+    public static void reset() {
+        CALL_COUNT.set(0);
+        NAMES.clear();
+    }
 }

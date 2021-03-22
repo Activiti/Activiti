@@ -26,8 +26,9 @@ public class ResourceFinderAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public ResourceFinder resourceFinderImpl(ResourcePatternResolver resourcePatternResolver) {
+    public ResourceFinder resourceFinderImpl(
+        ResourcePatternResolver resourcePatternResolver
+    ) {
         return new ResourceFinder(resourcePatternResolver);
     }
-
 }

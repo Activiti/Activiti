@@ -20,7 +20,6 @@ import static java.util.Arrays.asList;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.ResourcePatternResolver;
 
@@ -29,8 +28,10 @@ public class ApplicationDiscovery {
     private ResourcePatternResolver resourceLoader;
     private String applicationsLocation;
 
-    public ApplicationDiscovery(ResourcePatternResolver resourceLoader,
-                                String applicationsLocation) {
+    public ApplicationDiscovery(
+        ResourcePatternResolver resourceLoader,
+        String applicationsLocation
+    ) {
         this.resourceLoader = resourceLoader;
         this.applicationsLocation = applicationsLocation;
     }
@@ -40,9 +41,17 @@ public class ApplicationDiscovery {
         Resource resource = resourceLoader.getResource(applicationsLocation);
         if (resource.exists()) {
             try {
-                resources = asList(resourceLoader.getResources(applicationsLocation + "**.zip"));
+                resources =
+                    asList(
+                        resourceLoader.getResources(
+                            applicationsLocation + "**.zip"
+                        )
+                    );
             } catch (IOException e) {
-                throw new ApplicationLoadException("Unable to load application resources", e);
+                throw new ApplicationLoadException(
+                    "Unable to load application resources",
+                    e
+                );
             }
         }
         return resources;

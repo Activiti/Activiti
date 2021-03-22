@@ -22,15 +22,13 @@ package org.activiti.engine.impl.persistence.deploy;
 
  */
 public interface DeploymentCache<T> {
+    T get(String id);
 
-  T get(String id);
+    boolean contains(String id);
 
-  boolean contains(String id);
+    void add(String id, T object);
 
-  void add(String id, T object);
+    void remove(String id);
 
-  void remove(String id);
-
-  void clear();
-
+    void clear();
 }

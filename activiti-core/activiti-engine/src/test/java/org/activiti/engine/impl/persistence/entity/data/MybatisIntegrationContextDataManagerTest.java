@@ -15,6 +15,10 @@
  */
 package org.activiti.engine.impl.persistence.entity.data;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.MockitoAnnotations.initMocks;
+
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.persistence.entity.data.integration.MybatisIntegrationContextDataManager;
 import org.activiti.engine.impl.persistence.entity.integration.IntegrationContextEntity;
@@ -24,10 +28,6 @@ import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.MockitoAnnotations.initMocks;
 
 public class MybatisIntegrationContextDataManagerTest {
 
@@ -59,7 +59,7 @@ public class MybatisIntegrationContextDataManagerTest {
         Class<? extends IntegrationContextEntity> managedEntityClass = manager.getManagedEntityClass();
 
         //then
-        assertThat(managedEntityClass).isEqualTo(IntegrationContextEntityImpl.class);
+        assertThat(managedEntityClass)
+            .isEqualTo(IntegrationContextEntityImpl.class);
     }
-
 }

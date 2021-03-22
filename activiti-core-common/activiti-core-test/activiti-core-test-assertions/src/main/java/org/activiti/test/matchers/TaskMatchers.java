@@ -15,19 +15,17 @@
  */
 package org.activiti.test.matchers;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.List;
 import java.util.stream.Collectors;
-
 import org.activiti.api.task.model.events.TaskRuntimeEvent;
 import org.activiti.api.task.runtime.events.TaskAssignedEvent;
 import org.activiti.api.task.runtime.events.TaskCompletedEvent;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 public class TaskMatchers {
 
-    private TaskMatchers() {
-    }
+    private TaskMatchers() {}
 
     public static TaskMatchers task() {
         return new TaskMatchers();
@@ -36,28 +34,48 @@ public class TaskMatchers {
     public OperationScopeMatcher hasBeenAssigned() {
         return (operationScope, events) -> {
             List<TaskAssignedEvent> taskAssignedEvents = events
-                    .stream()
-                    .filter(event -> TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED.equals(event.getEventType()))
-                    .map(TaskAssignedEvent.class::cast)
-                    .collect(Collectors.toList());
+                .stream()
+                .filter(
+                    event ->
+                        TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED.equals(
+                            event.getEventType()
+                        )
+                )
+                .map(TaskAssignedEvent.class::cast)
+                .collect(Collectors.toList());
             assertThat(taskAssignedEvents)
-                    .extracting(event -> event.getEntity().getId())
-                    .as("Unable to find event " + TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED + " for task " + operationScope.getTaskId())
-                    .contains(operationScope.getTaskId());
+                .extracting(event -> event.getEntity().getId())
+                .as(
+                    "Unable to find event " +
+                    TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED +
+                    " for task " +
+                    operationScope.getTaskId()
+                )
+                .contains(operationScope.getTaskId());
         };
     }
 
     public OperationScopeMatcher hasBeenCompleted() {
         return (operationScope, events) -> {
             List<TaskCompletedEvent> taskCompletedEvents = events
-                    .stream()
-                    .filter(event -> TaskRuntimeEvent.TaskEvents.TASK_COMPLETED.equals(event.getEventType()))
-                    .map(TaskCompletedEvent.class::cast)
-                    .collect(Collectors.toList());
+                .stream()
+                .filter(
+                    event ->
+                        TaskRuntimeEvent.TaskEvents.TASK_COMPLETED.equals(
+                            event.getEventType()
+                        )
+                )
+                .map(TaskCompletedEvent.class::cast)
+                .collect(Collectors.toList());
             assertThat(taskCompletedEvents)
-                    .extracting(event -> event.getEntity().getId())
-                    .as("Unable to find event " + TaskRuntimeEvent.TaskEvents.TASK_COMPLETED + " for task " + operationScope.getTaskId())
-                    .contains(operationScope.getTaskId());
+                .extracting(event -> event.getEntity().getId())
+                .as(
+                    "Unable to find event " +
+                    TaskRuntimeEvent.TaskEvents.TASK_COMPLETED +
+                    " for task " +
+                    operationScope.getTaskId()
+                )
+                .contains(operationScope.getTaskId());
         };
     }
 

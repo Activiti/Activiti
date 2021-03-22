@@ -25,25 +25,26 @@ import org.activiti.engine.test.Deployment;
  */
 public class JobExecutorFailRetryTest extends PluggableActivitiTestCase {
 
-  @Deployment
-  public void testFailedServiceTask() {
+    @Deployment
+    public void testFailedServiceTask() {
+        // process throws no exception. Service task passes at the first time.
+        RetryFailingDelegate.shallThrow = false; // do not throw exception in Service delegate
+        RetryFailingDelegate.resetTimeList();
+        runtimeService.startProcessInstanceByKey("failedJobRetry");
 
-    // process throws no exception. Service task passes at the first time.
-    RetryFailingDelegate.shallThrow = false; // do not throw exception in Service delegate
-    RetryFailingDelegate.resetTimeList();
-    runtimeService.startProcessInstanceByKey("failedJobRetry");
+        waitForJobExecutorToProcessAllJobs(1000, 200);
+        assertThat(RetryFailingDelegate.times).hasSize(1); // check number of calls of delegate
 
-    waitForJobExecutorToProcessAllJobs(1000, 200);
-    assertThat(RetryFailingDelegate.times).hasSize(1); // check number of calls of delegate
+        // process throws exception two times, with 6 seconds in between
+        RetryFailingDelegate.shallThrow = true; // throw exception in Service delegate
+        RetryFailingDelegate.resetTimeList();
+        runtimeService.startProcessInstanceByKey("failedJobRetry");
 
-    // process throws exception two times, with 6 seconds in between
-    RetryFailingDelegate.shallThrow = true; // throw exception in Service delegate
-    RetryFailingDelegate.resetTimeList();
-    runtimeService.startProcessInstanceByKey("failedJobRetry");
-
-    executeJobExecutorForTime(14000, 500);
-    assertThat(RetryFailingDelegate.times).hasSize(2); // check number of calls of delegate
-    long timeDiff = RetryFailingDelegate.times.get(1) - RetryFailingDelegate.times.get(0);
-    assertThat(timeDiff > 6000 && timeDiff < 12000).isTrue(); // check time difference between calls. Just roughly
-  }
+        executeJobExecutorForTime(14000, 500);
+        assertThat(RetryFailingDelegate.times).hasSize(2); // check number of calls of delegate
+        long timeDiff =
+            RetryFailingDelegate.times.get(1) -
+            RetryFailingDelegate.times.get(0);
+        assertThat(timeDiff > 6000 && timeDiff < 12000).isTrue(); // check time difference between calls. Just roughly
+    }
 }

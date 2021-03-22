@@ -14,13 +14,11 @@
  * limitations under the License.
  */
 
-
 package org.activiti.spring.process.model;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-
 import org.activiti.spring.process.model.ProcessVariablesMapping.MappingType;
 
 public class Extension {
@@ -55,21 +53,35 @@ public class Extension {
         this.constants = constants;
     }
 
-
-    public ProcessConstantsMapping getConstantForFlowElement(String flowElementUUID) {
-        ProcessConstantsMapping processConstantsMapping = constants.get(flowElementUUID);
-        return processConstantsMapping != null ? processConstantsMapping : new ProcessConstantsMapping();
+    public ProcessConstantsMapping getConstantForFlowElement(
+        String flowElementUUID
+    ) {
+        ProcessConstantsMapping processConstantsMapping = constants.get(
+            flowElementUUID
+        );
+        return processConstantsMapping != null
+            ? processConstantsMapping
+            : new ProcessConstantsMapping();
     }
 
-
-    public ProcessVariablesMapping getMappingForFlowElement(String flowElementUUID) {
-        ProcessVariablesMapping processVariablesMapping = mappings.get(flowElementUUID);
-        return processVariablesMapping != null ? processVariablesMapping : EMPTY_PROCESS_VARIABLES_MAPPING;
+    public ProcessVariablesMapping getMappingForFlowElement(
+        String flowElementUUID
+    ) {
+        ProcessVariablesMapping processVariablesMapping = mappings.get(
+            flowElementUUID
+        );
+        return processVariablesMapping != null
+            ? processVariablesMapping
+            : EMPTY_PROCESS_VARIABLES_MAPPING;
     }
 
-    public TemplateDefinition getTemplateForFlowElement(String flowElementUUID) {
+    public TemplateDefinition getTemplateForFlowElement(
+        String flowElementUUID
+    ) {
         TemplateDefinition templatesMapping = templates.get(flowElementUUID);
-        return templatesMapping != null ? templatesMapping : new TemplateDefinition();
+        return templatesMapping != null
+            ? templatesMapping
+            : new TemplateDefinition();
     }
 
     public VariableDefinition getProperty(String propertyUUID) {
@@ -80,7 +92,12 @@ public class Extension {
         if (properties != null) {
             for (Map.Entry<String, VariableDefinition> variableDefinition : properties.entrySet()) {
                 if (variableDefinition.getValue() != null) {
-                    if (Objects.equals(variableDefinition.getValue().getName(), name)) {
+                    if (
+                        Objects.equals(
+                            variableDefinition.getValue().getName(),
+                            name
+                        )
+                    ) {
                         return variableDefinition.getValue();
                     }
                 }
@@ -99,17 +116,37 @@ public class Extension {
     }
 
     public boolean shouldMapAllInputs(String elementId) {
-        ProcessVariablesMapping processVariablesMapping = mappings.get(elementId);
-        return processVariablesMapping.getMappingType() != null &&
-            (processVariablesMapping.getMappingType().equals(MappingType.MAP_ALL_INPUTS) ||
-            processVariablesMapping.getMappingType().equals(MappingType.MAP_ALL));
+        ProcessVariablesMapping processVariablesMapping = mappings.get(
+            elementId
+        );
+        return (
+            processVariablesMapping.getMappingType() != null &&
+            (
+                processVariablesMapping
+                    .getMappingType()
+                    .equals(MappingType.MAP_ALL_INPUTS) ||
+                processVariablesMapping
+                    .getMappingType()
+                    .equals(MappingType.MAP_ALL)
+            )
+        );
     }
 
     public boolean shouldMapAllOutputs(String elementId) {
-        ProcessVariablesMapping processVariablesMapping = mappings.get(elementId);
-        return processVariablesMapping.getMappingType() != null &&
-            (processVariablesMapping.getMappingType().equals(MappingType.MAP_ALL_OUTPUTS) ||
-            processVariablesMapping.getMappingType().equals(MappingType.MAP_ALL));
+        ProcessVariablesMapping processVariablesMapping = mappings.get(
+            elementId
+        );
+        return (
+            processVariablesMapping.getMappingType() != null &&
+            (
+                processVariablesMapping
+                    .getMappingType()
+                    .equals(MappingType.MAP_ALL_OUTPUTS) ||
+                processVariablesMapping
+                    .getMappingType()
+                    .equals(MappingType.MAP_ALL)
+            )
+        );
     }
 
     public Map<String, TemplateDefinition> getTemplates() {

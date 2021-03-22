@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.el;
 
 import java.util.Map;
@@ -41,29 +40,47 @@ public class JuelExpression implements Expression {
     private String expressionText;
     private ValueExpression valueExpression;
 
-    public JuelExpression(ValueExpression valueExpression, String expressionText) {
+    public JuelExpression(
+        ValueExpression valueExpression,
+        String expressionText
+    ) {
         this.valueExpression = valueExpression;
         this.expressionText = expressionText;
     }
 
     @Override
     public Object getValue(VariableScope variableScope) {
-        ELContext elContext = Context.getProcessEngineConfiguration()
-                                     .getExpressionManager()
-                                     .getElContext(variableScope);
-        return getValueFromContext(elContext, Context.getProcessEngineConfiguration().getDelegateInterceptor());
+        ELContext elContext = Context
+            .getProcessEngineConfiguration()
+            .getExpressionManager()
+            .getElContext(variableScope);
+        return getValueFromContext(
+            elContext,
+            Context.getProcessEngineConfiguration().getDelegateInterceptor()
+        );
     }
 
     @Override
     public void setValue(Object value, VariableScope variableScope) {
-        ELContext elContext = Context.getProcessEngineConfiguration()
-                                     .getExpressionManager()
-                                     .getElContext(variableScope);
+        ELContext elContext = Context
+            .getProcessEngineConfiguration()
+            .getExpressionManager()
+            .getElContext(variableScope);
         try {
-            ExpressionSetInvocation invocation = new ExpressionSetInvocation(valueExpression, elContext, value);
-            Context.getProcessEngineConfiguration().getDelegateInterceptor().handleInvocation(invocation);
+            ExpressionSetInvocation invocation = new ExpressionSetInvocation(
+                valueExpression,
+                elContext,
+                value
+            );
+            Context
+                .getProcessEngineConfiguration()
+                .getDelegateInterceptor()
+                .handleInvocation(invocation);
         } catch (Exception e) {
-            throw new ActivitiException("Error while evaluating expression: " + expressionText, e);
+            throw new ActivitiException(
+                "Error while evaluating expression: " + expressionText,
+                e
+            );
         }
     }
 
@@ -81,24 +98,43 @@ public class JuelExpression implements Expression {
     }
 
     @Override
-    public Object getValue(ExpressionManager expressionManager,
-        DelegateInterceptor delegateInterceptor, Map<String, Object> availableVariables) {
-        ELContext elContext = expressionManager.getElContext(availableVariables);
+    public Object getValue(
+        ExpressionManager expressionManager,
+        DelegateInterceptor delegateInterceptor,
+        Map<String, Object> availableVariables
+    ) {
+        ELContext elContext = expressionManager.getElContext(
+            availableVariables
+        );
         return getValueFromContext(elContext, delegateInterceptor);
     }
 
-    private Object getValueFromContext(ELContext elContext,
-        DelegateInterceptor delegateInterceptor) {
+    private Object getValueFromContext(
+        ELContext elContext,
+        DelegateInterceptor delegateInterceptor
+    ) {
         try {
-            ExpressionGetInvocation invocation = new ExpressionGetInvocation(valueExpression, elContext);
+            ExpressionGetInvocation invocation = new ExpressionGetInvocation(
+                valueExpression,
+                elContext
+            );
             delegateInterceptor.handleInvocation(invocation);
             return invocation.getInvocationResult();
         } catch (PropertyNotFoundException pnfe) {
-            throw new ActivitiException("Unknown property used in expression: " + expressionText, pnfe);
+            throw new ActivitiException(
+                "Unknown property used in expression: " + expressionText,
+                pnfe
+            );
         } catch (MethodNotFoundException mnfe) {
-            throw new ActivitiException("Unknown method used in expression: " + expressionText, mnfe);
+            throw new ActivitiException(
+                "Unknown method used in expression: " + expressionText,
+                mnfe
+            );
         } catch (Exception ele) {
-            throw new ActivitiException("Error while evaluating expression: " + expressionText, ele);
+            throw new ActivitiException(
+                "Error while evaluating expression: " + expressionText,
+                ele
+            );
         }
     }
 }

@@ -21,7 +21,6 @@ public class EndEventMatchers extends ActivityMatchers {
 
     private EndEventMatchers(String definitionKey) {
         super(definitionKey);
-
     }
 
     @Override
@@ -32,5 +31,4 @@ public class EndEventMatchers extends ActivityMatchers {
     public static EndEventMatchers endEvent(String definitionKey) {
         return new EndEventMatchers(definitionKey);
     }
-
 }

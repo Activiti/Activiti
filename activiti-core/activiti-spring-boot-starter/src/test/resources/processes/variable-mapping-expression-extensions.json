@@ -32,12 +32,7 @@
           "value": {
             "age-in-months": "${age * 12}",
             "full-name": "${name} ${surname}",
-            "list": [
-              "first",
-              "${name}",
-              "${surname}",
-              "last"
-            ],
+            "list": ["first", "${name}", "${surname}", "last"],
             "demoString": "expressionResolved"
           }
         },

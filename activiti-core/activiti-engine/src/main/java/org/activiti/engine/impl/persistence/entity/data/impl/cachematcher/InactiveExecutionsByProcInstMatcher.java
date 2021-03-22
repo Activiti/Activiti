@@ -17,23 +17,27 @@
 package org.activiti.engine.impl.persistence.entity.data.impl.cachematcher;
 
 import java.util.Map;
-
 import org.activiti.engine.impl.persistence.CachedEntityMatcherAdapter;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 
 /**
 
  */
-public class InactiveExecutionsByProcInstMatcher extends CachedEntityMatcherAdapter<ExecutionEntity> {
+public class InactiveExecutionsByProcInstMatcher
+    extends CachedEntityMatcherAdapter<ExecutionEntity> {
 
-  @Override
-  public boolean isRetained(ExecutionEntity executionEntity, Object parameter) {
-    Map<String, Object> paramMap = (Map<String, Object>) parameter;
-    String processInstanceId = (String) paramMap.get("processInstanceId");
+    @Override
+    public boolean isRetained(
+        ExecutionEntity executionEntity,
+        Object parameter
+    ) {
+        Map<String, Object> paramMap = (Map<String, Object>) parameter;
+        String processInstanceId = (String) paramMap.get("processInstanceId");
 
-    return executionEntity.getProcessInstanceId() != null
-        && executionEntity.getProcessInstanceId().equals(processInstanceId)
-        && !executionEntity.isActive();
-  }
-
+        return (
+            executionEntity.getProcessInstanceId() != null &&
+            executionEntity.getProcessInstanceId().equals(processInstanceId) &&
+            !executionEntity.isActive()
+        );
+    }
 }

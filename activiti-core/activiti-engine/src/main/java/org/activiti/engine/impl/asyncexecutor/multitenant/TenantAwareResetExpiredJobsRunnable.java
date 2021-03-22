@@ -23,26 +23,30 @@ import org.activiti.engine.impl.cfg.multitenant.TenantInfoHolder;
 /**
 
  */
-public class TenantAwareResetExpiredJobsRunnable extends ResetExpiredJobsRunnable {
+public class TenantAwareResetExpiredJobsRunnable
+    extends ResetExpiredJobsRunnable {
 
-  protected TenantInfoHolder tenantInfoHolder;
-  protected String tenantId;
+    protected TenantInfoHolder tenantInfoHolder;
+    protected String tenantId;
 
-  public TenantAwareResetExpiredJobsRunnable(final AsyncExecutor asyncExecutor, TenantInfoHolder tenantInfoHolder, String tenantId) {
-    super(asyncExecutor);
-    this.tenantInfoHolder = tenantInfoHolder;
-    this.tenantId = tenantId;
-  }
+    public TenantAwareResetExpiredJobsRunnable(
+        final AsyncExecutor asyncExecutor,
+        TenantInfoHolder tenantInfoHolder,
+        String tenantId
+    ) {
+        super(asyncExecutor);
+        this.tenantInfoHolder = tenantInfoHolder;
+        this.tenantId = tenantId;
+    }
 
-  protected ExecutorPerTenantAsyncExecutor getTenantAwareAsyncExecutor() {
-    return (ExecutorPerTenantAsyncExecutor) asyncExecutor;
-  }
+    protected ExecutorPerTenantAsyncExecutor getTenantAwareAsyncExecutor() {
+        return (ExecutorPerTenantAsyncExecutor) asyncExecutor;
+    }
 
-  @Override
-  public synchronized void run() {
-    tenantInfoHolder.setCurrentTenantId(tenantId);
-    super.run();
-    tenantInfoHolder.clearCurrentTenantId();
-  }
-
+    @Override
+    public synchronized void run() {
+        tenantInfoHolder.setCurrentTenantId(tenantId);
+        super.run();
+        tenantInfoHolder.clearCurrentTenantId();
+    }
 }

@@ -15,6 +15,9 @@
  */
 package org.activiti.spring.boot.tasks;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
+
 import org.activiti.api.runtime.shared.NotFoundException;
 import org.activiti.api.runtime.shared.query.Page;
 import org.activiti.api.runtime.shared.query.Pageable;
@@ -30,9 +33,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.ContextConfiguration;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.catchThrowable;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 public class TaskRuntimeUnAuthorizedTest {
@@ -50,23 +50,24 @@ public class TaskRuntimeUnAuthorizedTest {
     private TaskCleanUpUtil taskCleanUpUtil;
 
     @AfterEach
-    public void taskCleanUp(){
+    public void taskCleanUp() {
         taskCleanUpUtil.cleanUpWithAdmin();
     }
 
     @Test
     public void createStandaloneTaskForGroup() {
-
         securityUtil.logInAs("garth");
 
-        Task standAloneTask = taskRuntime.create(TaskPayloadBuilder.create()
+        Task standAloneTask = taskRuntime.create(
+            TaskPayloadBuilder
+                .create()
                 .withName("group task")
                 .withCandidateGroup("doctor")
-                .build());
+                .build()
+        );
 
         // the owner should be able to see the created task
-        Page<Task> tasks = taskRuntime.tasks(Pageable.of(0,
-                                                         50));
+        Page<Task> tasks = taskRuntime.tasks(Pageable.of(0, 50));
 
         assertThat(tasks.getContent()).hasSize(1);
         Task task = tasks.getContent().get(0);
@@ -78,12 +79,14 @@ public class TaskRuntimeUnAuthorizedTest {
         securityUtil.logInAs("user");
 
         //when
-        Throwable throwable = catchThrowable(() ->
-                taskRuntime.claim(TaskPayloadBuilder.claim().withTaskId(task.getId()).build()));
+        Throwable throwable = catchThrowable(
+            () ->
+                taskRuntime.claim(
+                    TaskPayloadBuilder.claim().withTaskId(task.getId()).build()
+                )
+        );
 
         //then
-        assertThat(throwable)
-                .isInstanceOf(NotFoundException.class);
+        assertThat(throwable).isInstanceOf(NotFoundException.class);
     }
-
 }

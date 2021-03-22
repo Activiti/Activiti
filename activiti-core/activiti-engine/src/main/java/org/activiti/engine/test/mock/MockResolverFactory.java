@@ -55,19 +55,22 @@ import org.activiti.engine.impl.scripting.ResolverFactory;
  *
  */
 public class MockResolverFactory implements ResolverFactory {
-  @Override
-  public Resolver createResolver(ProcessEngineConfigurationImpl processEngineConfiguration, VariableScope variableScope) {
-    return new Resolver() {
 
-      @Override
-      public Object get(Object key) {
-        return Mocks.get(key);
-      }
+    @Override
+    public Resolver createResolver(
+        ProcessEngineConfigurationImpl processEngineConfiguration,
+        VariableScope variableScope
+    ) {
+        return new Resolver() {
+            @Override
+            public Object get(Object key) {
+                return Mocks.get(key);
+            }
 
-      @Override
-      public boolean containsKey(Object key) {
-        return Mocks.get(key) != null;
-      }
-    };
-  }
+            @Override
+            public boolean containsKey(Object key) {
+                return Mocks.get(key) != null;
+            }
+        };
+    }
 }

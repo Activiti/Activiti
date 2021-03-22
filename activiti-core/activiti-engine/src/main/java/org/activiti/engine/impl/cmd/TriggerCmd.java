@@ -14,15 +14,13 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.cmd;
 
+import java.util.Map;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
-
-import java.util.Map;
 
 /**
 
@@ -30,42 +28,57 @@ import java.util.Map;
  */
 public class TriggerCmd extends NeedsActiveExecutionCmd<Object> {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  protected Map<String, Object> processVariables;
-  protected Map<String, Object> transientVariables;
+    protected Map<String, Object> processVariables;
+    protected Map<String, Object> transientVariables;
 
-  public TriggerCmd(String executionId, Map<String, Object> processVariables) {
-    super(executionId);
-    this.processVariables = processVariables;
-  }
-
-  public TriggerCmd(String executionId, Map<String, Object> processVariables, Map<String, Object> transientVariables) {
-    this(executionId, processVariables);
-    this.transientVariables = transientVariables;
-  }
-
-  protected Object execute(CommandContext commandContext, ExecutionEntity execution) {
-    if (processVariables != null) {
-      execution.setVariables(processVariables);
+    public TriggerCmd(
+        String executionId,
+        Map<String, Object> processVariables
+    ) {
+        super(executionId);
+        this.processVariables = processVariables;
     }
 
-    if (transientVariables != null) {
-      execution.setTransientVariables(transientVariables);
+    public TriggerCmd(
+        String executionId,
+        Map<String, Object> processVariables,
+        Map<String, Object> transientVariables
+    ) {
+        this(executionId, processVariables);
+        this.transientVariables = transientVariables;
     }
 
-    Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
-        ActivitiEventBuilder.createActivitiySignalledEvent(execution,
-                                                           null,
-                                                           null));
+    protected Object execute(
+        CommandContext commandContext,
+        ExecutionEntity execution
+    ) {
+        if (processVariables != null) {
+            execution.setVariables(processVariables);
+        }
 
-    Context.getAgenda().planTriggerExecutionOperation(execution);
-    return null;
-  }
+        if (transientVariables != null) {
+            execution.setTransientVariables(transientVariables);
+        }
 
-  @Override
-  protected String getSuspendedExceptionMessage() {
-    return "Cannot trigger an execution that is suspended";
-  }
+        Context
+            .getProcessEngineConfiguration()
+            .getEventDispatcher()
+            .dispatchEvent(
+                ActivitiEventBuilder.createActivitiySignalledEvent(
+                    execution,
+                    null,
+                    null
+                )
+            );
 
+        Context.getAgenda().planTriggerExecutionOperation(execution);
+        return null;
+    }
+
+    @Override
+    protected String getSuspendedExceptionMessage() {
+        return "Cannot trigger an execution that is suspended";
+    }
 }

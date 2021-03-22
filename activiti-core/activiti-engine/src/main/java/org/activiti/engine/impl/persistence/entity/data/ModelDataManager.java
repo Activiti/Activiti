@@ -18,7 +18,6 @@ package org.activiti.engine.impl.persistence.entity.data;
 
 import java.util.List;
 import java.util.Map;
-
 import org.activiti.engine.impl.ModelQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.persistence.entity.ModelEntity;
@@ -28,14 +27,15 @@ import org.activiti.engine.repository.Model;
 
  */
 public interface ModelDataManager extends DataManager<ModelEntity> {
+    List<Model> findModelsByQueryCriteria(ModelQueryImpl query, Page page);
 
-  List<Model> findModelsByQueryCriteria(ModelQueryImpl query, Page page);
+    long findModelCountByQueryCriteria(ModelQueryImpl query);
 
-  long findModelCountByQueryCriteria(ModelQueryImpl query);
+    List<Model> findModelsByNativeQuery(
+        Map<String, Object> parameterMap,
+        int firstResult,
+        int maxResults
+    );
 
-  List<Model> findModelsByNativeQuery(Map<String, Object> parameterMap, int firstResult, int maxResults);
-
-  long findModelCountByNativeQuery(Map<String, Object> parameterMap);
-
-
+    long findModelCountByNativeQuery(Map<String, Object> parameterMap);
 }

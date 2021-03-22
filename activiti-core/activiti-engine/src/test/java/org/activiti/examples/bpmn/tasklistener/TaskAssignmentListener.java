@@ -24,10 +24,11 @@ import org.activiti.engine.delegate.TaskListener;
  */
 public class TaskAssignmentListener implements TaskListener {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  public void notify(DelegateTask delegateTask) {
-    delegateTask.setDescription("TaskAssignmentListener is listening: " + delegateTask.getAssignee());
-  }
-
+    public void notify(DelegateTask delegateTask) {
+        delegateTask.setDescription(
+            "TaskAssignmentListener is listening: " + delegateTask.getAssignee()
+        );
+    }
 }

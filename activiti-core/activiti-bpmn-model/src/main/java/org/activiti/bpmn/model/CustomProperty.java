@@ -17,46 +17,51 @@ package org.activiti.bpmn.model;
 
 public class CustomProperty extends BaseElement {
 
-  protected String name;
-  protected String simpleValue;
-  protected ComplexDataType complexValue;
+    protected String name;
+    protected String simpleValue;
+    protected ComplexDataType complexValue;
 
-  public String getName() {
-    return name;
-  }
-
-  public void setName(String name) {
-    this.name = name;
-  }
-
-  public String getSimpleValue() {
-    return simpleValue;
-  }
-
-  public void setSimpleValue(String simpleValue) {
-    this.simpleValue = simpleValue;
-  }
-
-  public ComplexDataType getComplexValue() {
-    return complexValue;
-  }
-
-  public void setComplexValue(ComplexDataType complexValue) {
-    this.complexValue = complexValue;
-  }
-
-  public CustomProperty clone() {
-    CustomProperty clone = new CustomProperty();
-    clone.setValues(this);
-    return clone;
-  }
-
-  public void setValues(CustomProperty otherProperty) {
-    setName(otherProperty.getName());
-    setSimpleValue(otherProperty.getSimpleValue());
-
-    if (otherProperty.getComplexValue() != null && otherProperty.getComplexValue() instanceof DataGrid) {
-      setComplexValue(((DataGrid) otherProperty.getComplexValue()).clone());
+    public String getName() {
+        return name;
     }
-  }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getSimpleValue() {
+        return simpleValue;
+    }
+
+    public void setSimpleValue(String simpleValue) {
+        this.simpleValue = simpleValue;
+    }
+
+    public ComplexDataType getComplexValue() {
+        return complexValue;
+    }
+
+    public void setComplexValue(ComplexDataType complexValue) {
+        this.complexValue = complexValue;
+    }
+
+    public CustomProperty clone() {
+        CustomProperty clone = new CustomProperty();
+        clone.setValues(this);
+        return clone;
+    }
+
+    public void setValues(CustomProperty otherProperty) {
+        setName(otherProperty.getName());
+        setSimpleValue(otherProperty.getSimpleValue());
+
+        if (
+            otherProperty.getComplexValue() != null &&
+            otherProperty.getComplexValue() instanceof DataGrid
+        ) {
+            setComplexValue(
+                ((DataGrid) otherProperty.getComplexValue()).clone()
+            );
+        }
+    }
 }

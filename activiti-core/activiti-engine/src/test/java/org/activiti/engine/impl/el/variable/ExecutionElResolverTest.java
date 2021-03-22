@@ -33,7 +33,10 @@ public class ExecutionElResolverTest {
     @Test
     public void canResolve_should_returnTrueWhenItsExecutionEntityAndPropertyIsExecution() {
         //when
-        boolean canResolve = resolver.canResolve(EXECUTION_KEY, new ExecutionEntityImpl());
+        boolean canResolve = resolver.canResolve(
+            EXECUTION_KEY,
+            new ExecutionEntityImpl()
+        );
         //then
         assertThat(canResolve).isTrue();
     }
@@ -41,7 +44,10 @@ public class ExecutionElResolverTest {
     @Test
     public void canResolve_should_returnTrueWhenItsTaskEntityAndPropertyIsExecution() {
         //when
-        boolean canResolve = resolver.canResolve(EXECUTION_KEY, new TaskEntityImpl());
+        boolean canResolve = resolver.canResolve(
+            EXECUTION_KEY,
+            new TaskEntityImpl()
+        );
         //then
         assertThat(canResolve).isTrue();
     }
@@ -49,7 +55,10 @@ public class ExecutionElResolverTest {
     @Test
     public void canResolve_should_returnFalseWhenItsExecutionEntityAndPropertyIsNotExecution() {
         //when
-        boolean canResolve = resolver.canResolve("anyOtherProperty", new ExecutionEntityImpl());
+        boolean canResolve = resolver.canResolve(
+            "anyOtherProperty",
+            new ExecutionEntityImpl()
+        );
         //then
         assertThat(canResolve).isFalse();
     }
@@ -57,7 +66,10 @@ public class ExecutionElResolverTest {
     @Test
     public void canResolve_should_returnFalseWhenItsNotExecutionOrTaskEntityAndPropertyIsExecution() {
         //when
-        boolean canResolve = resolver.canResolve(EXECUTION_KEY, mock(VariableScope.class));
+        boolean canResolve = resolver.canResolve(
+            EXECUTION_KEY,
+            mock(VariableScope.class)
+        );
         //then
         assertThat(canResolve).isFalse();
     }

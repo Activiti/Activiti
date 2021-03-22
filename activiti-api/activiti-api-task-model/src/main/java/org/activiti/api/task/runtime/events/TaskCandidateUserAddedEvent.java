@@ -17,6 +17,4 @@ package org.activiti.api.task.runtime.events;
 
 import org.activiti.api.task.model.events.TaskCandidateUserEvent;
 
-public interface TaskCandidateUserAddedEvent extends TaskCandidateUserEvent {
-
-}
+public interface TaskCandidateUserAddedEvent extends TaskCandidateUserEvent {}

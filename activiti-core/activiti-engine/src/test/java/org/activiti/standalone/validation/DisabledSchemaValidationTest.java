@@ -34,42 +34,61 @@ import org.junit.Test;
  */
 public class DisabledSchemaValidationTest {
 
-  protected ProcessEngine processEngine;
+    protected ProcessEngine processEngine;
 
-  protected RepositoryService repositoryService;
+    protected RepositoryService repositoryService;
 
-  @Before
-  public void setup() {
-    this.processEngine = new StandaloneInMemProcessEngineConfiguration()
-      .setProcessEngineName(this.getClass().getName())
-      .setJdbcUrl("jdbc:h2:mem:activiti-process-validation;DB_CLOSE_DELAY=1000")
-      .buildProcessEngine();
-    this.repositoryService = processEngine.getRepositoryService();
-  }
-
-  @After
-  public void tearDown() {
-    for (Deployment deployment : repositoryService.createDeploymentQuery().list()) {
-      repositoryService.deleteDeployment(deployment.getId());
+    @Before
+    public void setup() {
+        this.processEngine =
+            new StandaloneInMemProcessEngineConfiguration()
+                .setProcessEngineName(this.getClass().getName())
+                .setJdbcUrl(
+                    "jdbc:h2:mem:activiti-process-validation;DB_CLOSE_DELAY=1000"
+                )
+                .buildProcessEngine();
+        this.repositoryService = processEngine.getRepositoryService();
     }
 
-    processEngine.close();
-    ProcessEngines.unregister(processEngine);
-    processEngine = null;
-    repositoryService = null;
-  }
+    @After
+    public void tearDown() {
+        for (Deployment deployment : repositoryService
+            .createDeploymentQuery()
+            .list()) {
+            repositoryService.deleteDeployment(deployment.getId());
+        }
 
-  @Test
-  public void testDisableValidation() {
+        processEngine.close();
+        ProcessEngines.unregister(processEngine);
+        processEngine = null;
+        repositoryService = null;
+    }
 
-    // Should fail
-    assertThatExceptionOfType(XMLException.class)
-      .isThrownBy(() -> repositoryService.createDeployment().addClasspathResource("org/activiti/standalone/validation/invalid_process_xsd_error.bpmn20.xml").deploy());
+    @Test
+    public void testDisableValidation() {
+        // Should fail
+        assertThatExceptionOfType(XMLException.class)
+            .isThrownBy(
+                () ->
+                    repositoryService
+                        .createDeployment()
+                        .addClasspathResource(
+                            "org/activiti/standalone/validation/invalid_process_xsd_error.bpmn20.xml"
+                        )
+                        .deploy()
+            );
 
-    // Should fail with validation errors
-    assertThatExceptionOfType(ActivitiException.class)
-      .isThrownBy(() -> repositoryService.createDeployment().addClasspathResource("org/activiti/standalone/validation/invalid_process_xsd_error.bpmn20.xml").disableSchemaValidation().deploy());
-
-  }
-
+        // Should fail with validation errors
+        assertThatExceptionOfType(ActivitiException.class)
+            .isThrownBy(
+                () ->
+                    repositoryService
+                        .createDeployment()
+                        .addClasspathResource(
+                            "org/activiti/standalone/validation/invalid_process_xsd_error.bpmn20.xml"
+                        )
+                        .disableSchemaValidation()
+                        .deploy()
+            );
+    }
 }

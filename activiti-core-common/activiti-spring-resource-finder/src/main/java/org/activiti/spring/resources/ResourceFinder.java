@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
@@ -29,7 +28,9 @@ import org.springframework.core.io.support.ResourcePatternResolver;
 
 public class ResourceFinder {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ResourceFinder.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(
+        ResourceFinder.class
+    );
 
     private ResourcePatternResolver resourceLoader;
 
@@ -37,12 +38,15 @@ public class ResourceFinder {
         this.resourceLoader = resourceLoader;
     }
 
-    public List<Resource> discoverResources(ResourceFinderDescriptor resourceFinderDescriptor) throws IOException {
+    public List<Resource> discoverResources(
+        ResourceFinderDescriptor resourceFinderDescriptor
+    ) throws IOException {
         List<Resource> resources = new ArrayList<>();
 
         if (resourceFinderDescriptor.shouldLookUpResources()) {
             for (String suffix : resourceFinderDescriptor.getLocationSuffixes()) {
-                String path = resourceFinderDescriptor.getLocationPrefix() + suffix;
+                String path =
+                    resourceFinderDescriptor.getLocationPrefix() + suffix;
                 resources.addAll(asList(resourceLoader.getResources(path)));
             }
             if (resources.isEmpty()) {
@@ -50,12 +54,17 @@ public class ResourceFinder {
             } else {
                 resourceFinderDescriptor.validate(resources);
 
-                List<String> foundResources = resources.stream().map(Resource::getFilename).collect(Collectors.toList());
-                LOGGER.info(resourceFinderDescriptor.getMsgForResourcesFound(foundResources));
+                List<String> foundResources = resources
+                    .stream()
+                    .map(Resource::getFilename)
+                    .collect(Collectors.toList());
+                LOGGER.info(
+                    resourceFinderDescriptor.getMsgForResourcesFound(
+                        foundResources
+                    )
+                );
             }
         }
         return resources;
     }
-
-
 }

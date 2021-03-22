@@ -44,7 +44,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 public class UserTaskCandidateGroupRuntimeTest {
 
-    private final String processKey = "usertaskwi-75883efa-38c6-4c17-9da4-161234523fbf";
+    private final String processKey =
+        "usertaskwi-75883efa-38c6-4c17-9da4-161234523fbf";
 
     @Autowired
     private ProcessRuntime processRuntime;
@@ -63,27 +64,32 @@ public class UserTaskCandidateGroupRuntimeTest {
         clearEvents();
     }
 
-
     @Test
     public void shouldCreateClaimAndCompleteTask() {
-
         securityUtil.logInAs("user1");
 
-        ProcessInstance processInstance = processRuntime.start(ProcessPayloadBuilder
+        ProcessInstance processInstance = processRuntime.start(
+            ProcessPayloadBuilder
                 .start()
                 .withProcessDefinitionKey(processKey)
                 .withBusinessKey("my-business-key")
                 .withName("my-process-instance-name")
-                .build());
+                .build()
+        );
 
         //then
         assertThat(processInstance).isNotNull();
-        assertThat(processInstance.getStatus()).isEqualTo(ProcessInstance.ProcessInstanceStatus.RUNNING);
-        assertThat(processInstance.getBusinessKey()).isEqualTo("my-business-key");
-        assertThat(processInstance.getName()).isEqualTo("my-process-instance-name");
+        assertThat(processInstance.getStatus())
+            .isEqualTo(ProcessInstance.ProcessInstanceStatus.RUNNING);
+        assertThat(processInstance.getBusinessKey())
+            .isEqualTo("my-business-key");
+        assertThat(processInstance.getName())
+            .isEqualTo("my-process-instance-name");
 
         // I should be able to get the process instance from the Runtime because it is still running
-        ProcessInstance processInstanceById = processRuntime.processInstance(processInstance.getId());
+        ProcessInstance processInstanceById = processRuntime.processInstance(
+            processInstance.getId()
+        );
 
         assertThat(processInstanceById).isEqualTo(processInstance);
 
@@ -98,22 +104,21 @@ public class UserTaskCandidateGroupRuntimeTest {
 
         assertThat(taskById.getStatus()).isEqualTo(Task.TaskStatus.CREATED);
 
-
         assertThat(task).isEqualTo(taskById);
 
         assertThat(task.getAssignee()).isNull();
 
-
         assertThat(RuntimeTestConfiguration.collectedEvents)
-                .extracting(RuntimeEvent::getEventType)
-                .containsExactly(
-                        ProcessRuntimeEvent.ProcessEvents.PROCESS_CREATED,
-                        ProcessRuntimeEvent.ProcessEvents.PROCESS_STARTED,
-                        BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
-                        BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
-                        BPMNSequenceFlowTakenEvent.SequenceFlowEvents.SEQUENCE_FLOW_TAKEN,
-                        BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
-                        TaskRuntimeEvent.TaskEvents.TASK_CREATED);
+            .extracting(RuntimeEvent::getEventType)
+            .containsExactly(
+                ProcessRuntimeEvent.ProcessEvents.PROCESS_CREATED,
+                ProcessRuntimeEvent.ProcessEvents.PROCESS_STARTED,
+                BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
+                BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
+                BPMNSequenceFlowTakenEvent.SequenceFlowEvents.SEQUENCE_FLOW_TAKEN,
+                BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
+                TaskRuntimeEvent.TaskEvents.TASK_CREATED
+            );
 
         clearEvents();
 
@@ -124,11 +129,11 @@ public class UserTaskCandidateGroupRuntimeTest {
 
         assertThat(tasks.getTotalItems()).isEqualTo(0);
 
-        Throwable throwable = catchThrowable(() ->  taskRuntime.task(task.getId()));
+        Throwable throwable = catchThrowable(
+            () -> taskRuntime.task(task.getId())
+        );
 
-        assertThat(throwable)
-                .isInstanceOf(NotFoundException.class);
-
+        assertThat(throwable).isInstanceOf(NotFoundException.class);
 
         // Check with user3
         securityUtil.logInAs("user3");
@@ -137,62 +142,80 @@ public class UserTaskCandidateGroupRuntimeTest {
 
         assertThat(tasks.getTotalItems()).isEqualTo(1);
 
-
         // Try to complete without claim should error
 
         securityUtil.logInAs("user1");
 
-        throwable = catchThrowable(() ->  taskRuntime.complete(TaskPayloadBuilder.complete().withTaskId(task.getId()).build()));
+        throwable =
+            catchThrowable(
+                () ->
+                    taskRuntime.complete(
+                        TaskPayloadBuilder
+                            .complete()
+                            .withTaskId(task.getId())
+                            .build()
+                    )
+            );
 
-        assertThat(throwable)
-                .isInstanceOf(IllegalStateException.class);
+        assertThat(throwable).isInstanceOf(IllegalStateException.class);
 
         // Claim should be allowed
-        Task claimedTask = taskRuntime.claim(TaskPayloadBuilder.claim().withTaskId(task.getId()).build());
+        Task claimedTask = taskRuntime.claim(
+            TaskPayloadBuilder.claim().withTaskId(task.getId()).build()
+        );
 
         assertThat(claimedTask.getStatus()).isEqualTo(Task.TaskStatus.ASSIGNED);
         assertThat(claimedTask.getAssignee()).isEqualTo("user1");
 
         assertThat(RuntimeTestConfiguration.collectedEvents)
-                .extracting(RuntimeEvent::getEventType)
-                .containsExactly(TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED,
-                                 TaskRuntimeEvent.TaskEvents.TASK_UPDATED);
+            .extracting(RuntimeEvent::getEventType)
+            .containsExactly(
+                TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED,
+                TaskRuntimeEvent.TaskEvents.TASK_UPDATED
+            );
 
         clearEvents();
 
         //complete task now should work
-        Task completedTask = taskRuntime.complete(TaskPayloadBuilder.complete().withTaskId(claimedTask.getId()).build());
+        Task completedTask = taskRuntime.complete(
+            TaskPayloadBuilder
+                .complete()
+                .withTaskId(claimedTask.getId())
+                .build()
+        );
 
-        assertThat(completedTask.getStatus()).isEqualTo(Task.TaskStatus.COMPLETED);
+        assertThat(completedTask.getStatus())
+            .isEqualTo(Task.TaskStatus.COMPLETED);
 
         assertThat(RuntimeTestConfiguration.collectedEvents)
-                .extracting(RuntimeEvent::getEventType)
-                .containsExactly(
-                        TaskRuntimeEvent.TaskEvents.TASK_COMPLETED,
-                        BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
-                        BPMNSequenceFlowTakenEvent.SequenceFlowEvents.SEQUENCE_FLOW_TAKEN,
-                        BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
-                        BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
-                        ProcessRuntimeEvent.ProcessEvents.PROCESS_COMPLETED);
-
-
+            .extracting(RuntimeEvent::getEventType)
+            .containsExactly(
+                TaskRuntimeEvent.TaskEvents.TASK_COMPLETED,
+                BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
+                BPMNSequenceFlowTakenEvent.SequenceFlowEvents.SEQUENCE_FLOW_TAKEN,
+                BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
+                BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
+                ProcessRuntimeEvent.ProcessEvents.PROCESS_COMPLETED
+            );
     }
 
     @Test
     public void shouldCreateClaimAndReleaseTask() {
-
         securityUtil.logInAs("user1");
 
-        ProcessInstance processInstance = processRuntime.start(ProcessPayloadBuilder
+        ProcessInstance processInstance = processRuntime.start(
+            ProcessPayloadBuilder
                 .start()
                 .withProcessDefinitionKey(processKey)
                 .withBusinessKey("my-business-key")
                 .withName("my-process-instance-name")
-                .build());
+                .build()
+        );
 
         //then
         assertThat(processInstance).isNotNull();
-        assertThat(processInstance.getStatus()).isEqualTo(ProcessInstance.ProcessInstanceStatus.RUNNING);
+        assertThat(processInstance.getStatus())
+            .isEqualTo(ProcessInstance.ProcessInstanceStatus.RUNNING);
 
         // I should get a task for User1
         Page<Task> tasks = taskRuntime.tasks(Pageable.of(0, 50));
@@ -206,15 +229,16 @@ public class UserTaskCandidateGroupRuntimeTest {
         assertThat(taskById.getStatus()).isEqualTo(Task.TaskStatus.CREATED);
 
         assertThat(RuntimeTestConfiguration.collectedEvents)
-                .extracting(RuntimeEvent::getEventType)
-                .containsExactly(
-                        ProcessRuntimeEvent.ProcessEvents.PROCESS_CREATED,
-                        ProcessRuntimeEvent.ProcessEvents.PROCESS_STARTED,
-                        BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
-                        BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
-                        BPMNSequenceFlowTakenEvent.SequenceFlowEvents.SEQUENCE_FLOW_TAKEN,
-                        BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
-                        TaskRuntimeEvent.TaskEvents.TASK_CREATED);
+            .extracting(RuntimeEvent::getEventType)
+            .containsExactly(
+                ProcessRuntimeEvent.ProcessEvents.PROCESS_CREATED,
+                ProcessRuntimeEvent.ProcessEvents.PROCESS_STARTED,
+                BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
+                BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
+                BPMNSequenceFlowTakenEvent.SequenceFlowEvents.SEQUENCE_FLOW_TAKEN,
+                BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
+                TaskRuntimeEvent.TaskEvents.TASK_CREATED
+            );
 
         clearEvents();
 
@@ -225,19 +249,22 @@ public class UserTaskCandidateGroupRuntimeTest {
 
         assertThat(tasks.getTotalItems()).isEqualTo(1);
 
-
         //Claim with User 1
         securityUtil.logInAs("user1");
 
-        Task claimedTask = taskRuntime.claim(TaskPayloadBuilder.claim().withTaskId(task.getId()).build());
+        Task claimedTask = taskRuntime.claim(
+            TaskPayloadBuilder.claim().withTaskId(task.getId()).build()
+        );
 
         assertThat(claimedTask.getStatus()).isEqualTo(Task.TaskStatus.ASSIGNED);
         assertThat(claimedTask.getAssignee()).isEqualTo("user1");
 
         assertThat(RuntimeTestConfiguration.collectedEvents)
-                .extracting(RuntimeEvent::getEventType)
-                .containsExactly(TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED,
-                                 TaskRuntimeEvent.TaskEvents.TASK_UPDATED);
+            .extracting(RuntimeEvent::getEventType)
+            .containsExactly(
+                TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED,
+                TaskRuntimeEvent.TaskEvents.TASK_UPDATED
+            );
         clearEvents();
 
         // Check with user3, he/she shouldn't see any task now that the task was assigned
@@ -247,19 +274,22 @@ public class UserTaskCandidateGroupRuntimeTest {
 
         assertThat(tasks.getTotalItems()).isEqualTo(0);
 
-
         //Release with User 1
         securityUtil.logInAs("user1");
 
-        Task releasedTask = taskRuntime.release(TaskPayloadBuilder.release().withTaskId(task.getId()).build());
+        Task releasedTask = taskRuntime.release(
+            TaskPayloadBuilder.release().withTaskId(task.getId()).build()
+        );
 
         assertThat(releasedTask.getStatus()).isEqualTo(Task.TaskStatus.CREATED);
         assertThat(releasedTask.getAssignee()).isNull();
 
         assertThat(RuntimeTestConfiguration.collectedEvents)
-                .extracting(RuntimeEvent::getEventType)
-                .containsExactly(TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED,
-                                 TaskRuntimeEvent.TaskEvents.TASK_UPDATED);
+            .extracting(RuntimeEvent::getEventType)
+            .containsExactly(
+                TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED,
+                TaskRuntimeEvent.TaskEvents.TASK_UPDATED
+            );
 
         clearEvents();
 
@@ -276,15 +306,18 @@ public class UserTaskCandidateGroupRuntimeTest {
         tasks = taskRuntime.tasks(Pageable.of(0, 50));
 
         assertThat(tasks.getTotalItems()).isEqualTo(1);
-
     }
 
     @AfterEach
-    public void cleanup(){
+    public void cleanup() {
         securityUtil.logInAs("admin");
-        Page<ProcessInstance> processInstancePage = processAdminRuntime.processInstances(Pageable.of(0, 50));
-        for(ProcessInstance pi : processInstancePage.getContent()){
-            processAdminRuntime.delete(ProcessPayloadBuilder.delete(pi.getId()));
+        Page<ProcessInstance> processInstancePage = processAdminRuntime.processInstances(
+            Pageable.of(0, 50)
+        );
+        for (ProcessInstance pi : processInstancePage.getContent()) {
+            processAdminRuntime.delete(
+                ProcessPayloadBuilder.delete(pi.getId())
+            );
         }
 
         clearEvents();
@@ -293,5 +326,4 @@ public class UserTaskCandidateGroupRuntimeTest {
     public void clearEvents() {
         RuntimeTestConfiguration.collectedEvents.clear();
     }
-
 }

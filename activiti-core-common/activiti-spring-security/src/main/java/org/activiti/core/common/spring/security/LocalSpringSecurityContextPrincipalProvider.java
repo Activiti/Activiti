@@ -15,21 +15,22 @@
  */
 package org.activiti.core.common.spring.security;
 
+import java.security.Principal;
+import java.util.Optional;
 import org.activiti.api.runtime.shared.security.SecurityContextPrincipalProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import java.security.Principal;
-import java.util.Optional;
-
-public class LocalSpringSecurityContextPrincipalProvider implements SecurityContextPrincipalProvider {
+public class LocalSpringSecurityContextPrincipalProvider
+    implements SecurityContextPrincipalProvider {
 
     @Override
     public Optional<Principal> getCurrentPrincipal() {
-        return Optional.ofNullable(SecurityContextHolder.getContext())
-                       .map(SecurityContext::getAuthentication)
-                       .filter(Authentication::isAuthenticated)
-                       .map(Authentication.class::cast);
+        return Optional
+            .ofNullable(SecurityContextHolder.getContext())
+            .map(SecurityContext::getAuthentication)
+            .filter(Authentication::isAuthenticated)
+            .map(Authentication.class::cast);
     }
 }

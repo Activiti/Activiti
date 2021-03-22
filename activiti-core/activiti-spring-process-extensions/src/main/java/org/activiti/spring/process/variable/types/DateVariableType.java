@@ -16,7 +16,6 @@
 package org.activiti.spring.process.variable.types;
 
 import java.util.List;
-
 import org.activiti.common.util.DateFormatterProvider;
 import org.activiti.engine.ActivitiException;
 
@@ -27,7 +26,10 @@ public class DateVariableType extends JavaObjectVariableType {
 
     private final DateFormatterProvider dateFormatterProvider;
 
-    public DateVariableType(Class clazz, DateFormatterProvider dateFormatterProvider) {
+    public DateVariableType(
+        Class clazz,
+        DateFormatterProvider dateFormatterProvider
+    ) {
         super(clazz);
         this.dateFormatterProvider = dateFormatterProvider;
     }
@@ -39,7 +41,6 @@ public class DateVariableType extends JavaObjectVariableType {
 
     @Override
     public Object parseFromValue(Object value) throws ActivitiException {
-
         try {
             return dateFormatterProvider.toDate(value);
         } catch (Exception e) {

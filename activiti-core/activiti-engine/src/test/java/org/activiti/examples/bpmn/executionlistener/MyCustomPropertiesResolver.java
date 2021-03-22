@@ -16,21 +16,22 @@
 
 package org.activiti.examples.bpmn.executionlistener;
 
-import org.activiti.engine.delegate.CustomPropertiesResolver;
-import org.activiti.engine.delegate.DelegateExecution;
-
 import java.util.HashMap;
 import java.util.Map;
+import org.activiti.engine.delegate.CustomPropertiesResolver;
+import org.activiti.engine.delegate.DelegateExecution;
 
 /**
 
  */
 public class MyCustomPropertiesResolver implements CustomPropertiesResolver {
 
-  @Override
-  public Map<String, Object> getCustomPropertiesMap(DelegateExecution execution) {
-    Map<String, Object> myMap = new HashMap<>();
-    myMap.put("customProp1", execution.getCurrentActivityId());
-    return myMap;
-  }
+    @Override
+    public Map<String, Object> getCustomPropertiesMap(
+        DelegateExecution execution
+    ) {
+        Map<String, Object> myMap = new HashMap<>();
+        myMap.put("customProp1", execution.getCurrentActivityId());
+        return myMap;
+    }
 }

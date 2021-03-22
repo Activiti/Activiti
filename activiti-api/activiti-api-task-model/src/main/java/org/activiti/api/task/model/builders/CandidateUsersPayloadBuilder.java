@@ -17,7 +17,6 @@ package org.activiti.api.task.model.builders;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.activiti.api.task.model.payloads.CandidateUsersPayload;
 
 public class CandidateUsersPayloadBuilder {
@@ -30,7 +29,9 @@ public class CandidateUsersPayloadBuilder {
         return this;
     }
 
-    public CandidateUsersPayloadBuilder withCandidateUsers(List<String> candidateUsers) {
+    public CandidateUsersPayloadBuilder withCandidateUsers(
+        List<String> candidateUsers
+    ) {
         if (candidateUsers == null) {
             candidateUsers = new ArrayList<>();
         }
@@ -38,13 +39,14 @@ public class CandidateUsersPayloadBuilder {
         return this;
     }
 
-    public CandidateUsersPayloadBuilder withCandidateUser(String candidateUser) {
+    public CandidateUsersPayloadBuilder withCandidateUser(
+        String candidateUser
+    ) {
         this.candidateUsers.add(candidateUser);
         return this;
     }
 
     public CandidateUsersPayload build() {
-        return new CandidateUsersPayload(taskId,
-                                         candidateUsers);
+        return new CandidateUsersPayload(taskId, candidateUsers);
     }
 }

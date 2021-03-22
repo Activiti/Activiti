@@ -19,7 +19,6 @@ import java.util.Collection;
 import java.util.List;
 
 public interface ModelConverter<SourceT, TargetT> {
-
     TargetT from(SourceT source);
 
     List<TargetT> from(Collection<SourceT> sources);

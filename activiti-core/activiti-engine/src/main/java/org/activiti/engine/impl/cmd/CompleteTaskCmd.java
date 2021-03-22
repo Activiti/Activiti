@@ -17,75 +17,78 @@
 package org.activiti.engine.impl.cmd;
 
 import java.util.Map;
-
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
-
 
 /**
 
  */
 public class CompleteTaskCmd extends AbstractCompleteTaskCmd {
 
-  private static final long serialVersionUID = 1L;
-  protected Map<String, Object> variables;
-  protected Map<String, Object> transientVariables;
-  protected Map<String, Object> taskVariables;
-  protected boolean localScope;
+    private static final long serialVersionUID = 1L;
+    protected Map<String, Object> variables;
+    protected Map<String, Object> transientVariables;
+    protected Map<String, Object> taskVariables;
+    protected boolean localScope;
 
-  public CompleteTaskCmd(String taskId, Map<String, Object> variables) {
-    super(taskId);
-    this.variables = variables;
-  }
-
-  public CompleteTaskCmd(String taskId, Map<String, Object> variables, boolean localScope) {
-    this(taskId, variables);
-    this.localScope = localScope;
-  }
-
-  public CompleteTaskCmd(String taskId, Map<String, Object> variables, Map<String, Object> transientVariables) {
-    this(taskId, variables);
-    this.transientVariables = transientVariables;
-  }
-
-  protected Void execute(CommandContext commandContext, TaskEntity task) {
-    if (variables != null) {
-      if (localScope) {
-        task.setVariablesLocal(variables);
-      } else if (task.getExecutionId() != null) {
-        task.setExecutionVariables(variables);
-      } else {
-        task.setVariables(variables);
-      }
+    public CompleteTaskCmd(String taskId, Map<String, Object> variables) {
+        super(taskId);
+        this.variables = variables;
     }
 
-    if (transientVariables != null) {
-      if (localScope) {
-        task.setTransientVariablesLocal(transientVariables);
-      } else {
-        task.setTransientVariables(transientVariables);
-      }
+    public CompleteTaskCmd(
+        String taskId,
+        Map<String, Object> variables,
+        boolean localScope
+    ) {
+        this(taskId, variables);
+        this.localScope = localScope;
     }
 
-    setTaskVariables(task.getVariablesLocal());
+    public CompleteTaskCmd(
+        String taskId,
+        Map<String, Object> variables,
+        Map<String, Object> transientVariables
+    ) {
+        this(taskId, variables);
+        this.transientVariables = transientVariables;
+    }
 
+    protected Void execute(CommandContext commandContext, TaskEntity task) {
+        if (variables != null) {
+            if (localScope) {
+                task.setVariablesLocal(variables);
+            } else if (task.getExecutionId() != null) {
+                task.setExecutionVariables(variables);
+            } else {
+                task.setVariables(variables);
+            }
+        }
 
-    executeTaskComplete(commandContext, task, variables, localScope);
-    return null;
-  }
+        if (transientVariables != null) {
+            if (localScope) {
+                task.setTransientVariablesLocal(transientVariables);
+            } else {
+                task.setTransientVariables(transientVariables);
+            }
+        }
 
-  @Override
-  protected String getSuspendedTaskException() {
-    return "Cannot complete a suspended task";
-  }
+        setTaskVariables(task.getVariablesLocal());
 
-  public Map<String, Object> getTaskVariables() {
-    return taskVariables;
-  }
+        executeTaskComplete(commandContext, task, variables, localScope);
+        return null;
+    }
 
-  private void setTaskVariables(Map<String, Object> taskVariables) {
-    this.taskVariables = taskVariables;
-  }
+    @Override
+    protected String getSuspendedTaskException() {
+        return "Cannot complete a suspended task";
+    }
 
+    public Map<String, Object> getTaskVariables() {
+        return taskVariables;
+    }
 
+    private void setTaskVariables(Map<String, Object> taskVariables) {
+        this.taskVariables = taskVariables;
+    }
 }

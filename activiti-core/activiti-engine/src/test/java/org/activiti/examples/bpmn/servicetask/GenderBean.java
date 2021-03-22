@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.examples.bpmn.servicetask;
 
 import java.io.Serializable;
@@ -26,9 +25,9 @@ import java.io.Serializable;
  */
 public class GenderBean implements Serializable {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  public String getGenderString(String gender) {
-    return "Your gender is: " + gender;
-  }
+    public String getGenderString(String gender) {
+        return "Your gender is: " + gender;
+    }
 }

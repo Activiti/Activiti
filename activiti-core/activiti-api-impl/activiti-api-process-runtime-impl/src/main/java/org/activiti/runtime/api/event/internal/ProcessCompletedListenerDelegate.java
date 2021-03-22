@@ -15,6 +15,7 @@
  */
 package org.activiti.runtime.api.event.internal;
 
+import java.util.List;
 import org.activiti.api.process.runtime.events.ProcessCompletedEvent;
 import org.activiti.api.process.runtime.events.listener.ProcessRuntimeEventListener;
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
@@ -22,16 +23,16 @@ import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventListener;
 import org.activiti.runtime.api.event.impl.ToProcessCompletedConverter;
 
-import java.util.List;
-
 public class ProcessCompletedListenerDelegate implements ActivitiEventListener {
 
     private List<ProcessRuntimeEventListener<ProcessCompletedEvent>> processRuntimeEventListeners;
 
     private ToProcessCompletedConverter processCompletedConverter;
 
-    public ProcessCompletedListenerDelegate(List<ProcessRuntimeEventListener<ProcessCompletedEvent>> processRuntimeEventListeners,
-                                            ToProcessCompletedConverter processCompletedConverter) {
+    public ProcessCompletedListenerDelegate(
+        List<ProcessRuntimeEventListener<ProcessCompletedEvent>> processRuntimeEventListeners,
+        ToProcessCompletedConverter processCompletedConverter
+    ) {
         this.processRuntimeEventListeners = processRuntimeEventListeners;
         this.processCompletedConverter = processCompletedConverter;
     }
@@ -39,12 +40,15 @@ public class ProcessCompletedListenerDelegate implements ActivitiEventListener {
     @Override
     public void onEvent(ActivitiEvent event) {
         if (event instanceof ActivitiEntityEvent) {
-            processCompletedConverter.from((ActivitiEntityEvent) event)
-                    .ifPresent(convertedEvent -> {
-                        for ( ProcessRuntimeEventListener<ProcessCompletedEvent> listener : processRuntimeEventListeners ) {
+            processCompletedConverter
+                .from((ActivitiEntityEvent) event)
+                .ifPresent(
+                    convertedEvent -> {
+                        for (ProcessRuntimeEventListener<ProcessCompletedEvent> listener : processRuntimeEventListeners) {
                             listener.onEvent(convertedEvent);
                         }
-                    });
+                    }
+                );
         }
     }
 

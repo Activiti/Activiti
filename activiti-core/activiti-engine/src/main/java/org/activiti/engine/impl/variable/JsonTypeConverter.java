@@ -23,45 +23,61 @@ import org.slf4j.LoggerFactory;
 
 public class JsonTypeConverter {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(JsonType.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(
+        JsonType.class
+    );
 
     private ObjectMapper objectMapper;
     private String javaClassFieldForJackson;
 
-    public JsonTypeConverter(ObjectMapper objectMapper, String javaClassFieldForJackson) {
+    public JsonTypeConverter(
+        ObjectMapper objectMapper,
+        String javaClassFieldForJackson
+    ) {
         this.objectMapper = objectMapper;
         this.javaClassFieldForJackson = javaClassFieldForJackson;
     }
 
     public Object convertToValue(JsonNode jsonValue, ValueFields valueFields) {
         Object convertedValue = jsonValue;
-        if (jsonValue != null && StringUtils.isNotBlank(javaClassFieldForJackson)) {
+        if (
+            jsonValue != null &&
+            StringUtils.isNotBlank(javaClassFieldForJackson)
+        ) {
             //can find type so long as JsonTypeInfo annotation on the class - see https://stackoverflow.com/a/28384407/9705485
             JsonNode classNode = jsonValue.get(javaClassFieldForJackson);
             try {
                 if (classNode != null) {
                     final String type = classNode.asText();
                     convertedValue = convertToType(jsonValue, type);
-                } else if (valueFields.getTextValue2() != null &&
-                    !jsonValue.getClass().getName().equals(valueFields.getTextValue2())) {
-                    convertedValue = convertToType(jsonValue, valueFields.getTextValue2());
+                } else if (
+                    valueFields.getTextValue2() != null &&
+                    !jsonValue
+                        .getClass()
+                        .getName()
+                        .equals(valueFields.getTextValue2())
+                ) {
+                    convertedValue =
+                        convertToType(jsonValue, valueFields.getTextValue2());
                 }
             } catch (ClassNotFoundException e) {
-                LOGGER
-                    .warn("Unable to obtain type for json variable object " + valueFields.getName(),
-                        e);
+                LOGGER.warn(
+                    "Unable to obtain type for json variable object " +
+                    valueFields.getName(),
+                    e
+                );
             }
         }
 
         return convertedValue;
     }
 
-    private Object convertToType(JsonNode jsonValue, String type) throws ClassNotFoundException {
+    private Object convertToType(JsonNode jsonValue, String type)
+        throws ClassNotFoundException {
         return objectMapper.convertValue(jsonValue, loadClass(type));
     }
 
     private Class<?> loadClass(String type) throws ClassNotFoundException {
         return Class.forName(type, false, this.getClass().getClassLoader());
     }
-
 }

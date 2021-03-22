@@ -16,7 +16,6 @@
 package org.activiti.bpmn.converter.parser;
 
 import javax.xml.stream.XMLStreamReader;
-
 import org.activiti.bpmn.constants.BpmnXMLConstants;
 import org.activiti.bpmn.converter.util.BpmnXMLUtil;
 import org.activiti.bpmn.model.BpmnModel;
@@ -29,28 +28,31 @@ import org.activiti.bpmn.model.UserTask;
  */
 public class ResourceParser implements BpmnXMLConstants {
 
-  public void parse(XMLStreamReader xtr, BpmnModel model) throws Exception {
-    String resourceId = xtr.getAttributeValue(null, ATTRIBUTE_ID);
-    String resourceName = xtr.getAttributeValue(null, ATTRIBUTE_NAME);
+    public void parse(XMLStreamReader xtr, BpmnModel model) throws Exception {
+        String resourceId = xtr.getAttributeValue(null, ATTRIBUTE_ID);
+        String resourceName = xtr.getAttributeValue(null, ATTRIBUTE_NAME);
 
-    Resource resource;
-    if (model.containsResourceId(resourceId)) {
-      resource = model.getResource(resourceId);
-      resource.setName(resourceName);
-      for (org.activiti.bpmn.model.Process process : model.getProcesses()) {
-        for (FlowElement fe : process.getFlowElements()) {
-          if (fe instanceof UserTask
-              && ((UserTask) fe).getCandidateGroups().contains(resourceId)) {
-            ((UserTask) fe).getCandidateGroups().remove(resourceId);
-            ((UserTask) fe).getCandidateGroups().add(resourceName);
-          }
+        Resource resource;
+        if (model.containsResourceId(resourceId)) {
+            resource = model.getResource(resourceId);
+            resource.setName(resourceName);
+            for (org.activiti.bpmn.model.Process process : model.getProcesses()) {
+                for (FlowElement fe : process.getFlowElements()) {
+                    if (
+                        fe instanceof UserTask &&
+                        ((UserTask) fe).getCandidateGroups()
+                            .contains(resourceId)
+                    ) {
+                        ((UserTask) fe).getCandidateGroups().remove(resourceId);
+                        ((UserTask) fe).getCandidateGroups().add(resourceName);
+                    }
+                }
+            }
+        } else {
+            resource = new Resource(resourceId, resourceName);
+            model.addResource(resource);
         }
-      }
-    } else {
-      resource = new Resource(resourceId, resourceName);
-      model.addResource(resource);
-    }
 
-    BpmnXMLUtil.addXMLLocation(resource, xtr);
-  }
+        BpmnXMLUtil.addXMLLocation(resource, xtr);
+    }
 }

@@ -15,13 +15,12 @@
  */
 package org.activiti.runtime.api.event.internal;
 
+import java.util.List;
 import org.activiti.api.process.model.events.BPMNTimerFailedEvent;
 import org.activiti.api.process.runtime.events.listener.BPMNElementEventListener;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventListener;
 import org.activiti.runtime.api.event.impl.ToTimerFailedConverter;
-
-import java.util.List;
 
 public class TimerFailedListenerDelegate implements ActivitiEventListener {
 
@@ -29,20 +28,25 @@ public class TimerFailedListenerDelegate implements ActivitiEventListener {
 
     private ToTimerFailedConverter converter;
 
-    public TimerFailedListenerDelegate(List<BPMNElementEventListener<BPMNTimerFailedEvent>> processRuntimeEventListeners,
-                                       ToTimerFailedConverter converter) {
+    public TimerFailedListenerDelegate(
+        List<BPMNElementEventListener<BPMNTimerFailedEvent>> processRuntimeEventListeners,
+        ToTimerFailedConverter converter
+    ) {
         this.processRuntimeEventListeners = processRuntimeEventListeners;
         this.converter = converter;
     }
 
     @Override
     public void onEvent(ActivitiEvent event) {
-        converter.from(event)
-                .ifPresent(convertedEvent -> {
+        converter
+            .from(event)
+            .ifPresent(
+                convertedEvent -> {
                     for (BPMNElementEventListener<BPMNTimerFailedEvent> listener : processRuntimeEventListeners) {
                         listener.onEvent(convertedEvent);
                     }
-                });
+                }
+            );
     }
 
     @Override

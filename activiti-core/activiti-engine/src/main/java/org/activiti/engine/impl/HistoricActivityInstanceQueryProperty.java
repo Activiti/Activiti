@@ -14,12 +14,10 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import org.activiti.engine.history.HistoricActivityInstanceQuery;
 import org.activiti.engine.query.QueryProperty;
 
@@ -30,34 +28,58 @@ import org.activiti.engine.query.QueryProperty;
  */
 public class HistoricActivityInstanceQueryProperty implements QueryProperty {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  private static final Map<String, HistoricActivityInstanceQueryProperty> properties = new HashMap<String, HistoricActivityInstanceQueryProperty>();
+    private static final Map<String, HistoricActivityInstanceQueryProperty> properties = new HashMap<String, HistoricActivityInstanceQueryProperty>();
 
-  public static final HistoricActivityInstanceQueryProperty HISTORIC_ACTIVITY_INSTANCE_ID = new HistoricActivityInstanceQueryProperty("ID_");
-  public static final HistoricActivityInstanceQueryProperty PROCESS_INSTANCE_ID = new HistoricActivityInstanceQueryProperty("PROC_INST_ID_");
-  public static final HistoricActivityInstanceQueryProperty EXECUTION_ID = new HistoricActivityInstanceQueryProperty("EXECUTION_ID_");
-  public static final HistoricActivityInstanceQueryProperty ACTIVITY_ID = new HistoricActivityInstanceQueryProperty("ACT_ID_");
-  public static final HistoricActivityInstanceQueryProperty ACTIVITY_NAME = new HistoricActivityInstanceQueryProperty("ACT_NAME_");
-  public static final HistoricActivityInstanceQueryProperty ACTIVITY_TYPE = new HistoricActivityInstanceQueryProperty("ACT_TYPE_");
-  public static final HistoricActivityInstanceQueryProperty PROCESS_DEFINITION_ID = new HistoricActivityInstanceQueryProperty("PROC_DEF_ID_");
-  public static final HistoricActivityInstanceQueryProperty START = new HistoricActivityInstanceQueryProperty("START_TIME_");
-  public static final HistoricActivityInstanceQueryProperty END = new HistoricActivityInstanceQueryProperty("END_TIME_");
-  public static final HistoricActivityInstanceQueryProperty DURATION = new HistoricActivityInstanceQueryProperty("DURATION_");
-  public static final HistoricActivityInstanceQueryProperty TENANT_ID = new HistoricActivityInstanceQueryProperty("TENANT_ID_");
+    public static final HistoricActivityInstanceQueryProperty HISTORIC_ACTIVITY_INSTANCE_ID = new HistoricActivityInstanceQueryProperty(
+        "ID_"
+    );
+    public static final HistoricActivityInstanceQueryProperty PROCESS_INSTANCE_ID = new HistoricActivityInstanceQueryProperty(
+        "PROC_INST_ID_"
+    );
+    public static final HistoricActivityInstanceQueryProperty EXECUTION_ID = new HistoricActivityInstanceQueryProperty(
+        "EXECUTION_ID_"
+    );
+    public static final HistoricActivityInstanceQueryProperty ACTIVITY_ID = new HistoricActivityInstanceQueryProperty(
+        "ACT_ID_"
+    );
+    public static final HistoricActivityInstanceQueryProperty ACTIVITY_NAME = new HistoricActivityInstanceQueryProperty(
+        "ACT_NAME_"
+    );
+    public static final HistoricActivityInstanceQueryProperty ACTIVITY_TYPE = new HistoricActivityInstanceQueryProperty(
+        "ACT_TYPE_"
+    );
+    public static final HistoricActivityInstanceQueryProperty PROCESS_DEFINITION_ID = new HistoricActivityInstanceQueryProperty(
+        "PROC_DEF_ID_"
+    );
+    public static final HistoricActivityInstanceQueryProperty START = new HistoricActivityInstanceQueryProperty(
+        "START_TIME_"
+    );
+    public static final HistoricActivityInstanceQueryProperty END = new HistoricActivityInstanceQueryProperty(
+        "END_TIME_"
+    );
+    public static final HistoricActivityInstanceQueryProperty DURATION = new HistoricActivityInstanceQueryProperty(
+        "DURATION_"
+    );
+    public static final HistoricActivityInstanceQueryProperty TENANT_ID = new HistoricActivityInstanceQueryProperty(
+        "TENANT_ID_"
+    );
 
-  private String name;
+    private String name;
 
-  public HistoricActivityInstanceQueryProperty(String name) {
-    this.name = name;
-    properties.put(name, this);
-  }
+    public HistoricActivityInstanceQueryProperty(String name) {
+        this.name = name;
+        properties.put(name, this);
+    }
 
-  public String getName() {
-    return name;
-  }
+    public String getName() {
+        return name;
+    }
 
-  public static HistoricActivityInstanceQueryProperty findByName(String propertyName) {
-    return properties.get(propertyName);
-  }
+    public static HistoricActivityInstanceQueryProperty findByName(
+        String propertyName
+    ) {
+        return properties.get(propertyName);
+    }
 }

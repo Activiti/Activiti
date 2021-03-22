@@ -14,13 +14,11 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.persistence.entity;
 
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-
 import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.repository.Deployment;
 
@@ -30,41 +28,39 @@ import org.activiti.engine.repository.Deployment;
  */
 @Internal
 public interface DeploymentEntity extends Deployment, Entity {
+    void addResource(ResourceEntity resource);
 
-  void addResource(ResourceEntity resource);
+    Map<String, ResourceEntity> getResources();
 
-  Map<String, ResourceEntity> getResources();
+    void addDeployedArtifact(Object deployedArtifact);
 
-  void addDeployedArtifact(Object deployedArtifact);
+    <T> List<T> getDeployedArtifacts(Class<T> clazz);
 
-  <T> List<T> getDeployedArtifacts(Class<T> clazz);
+    void setName(String name);
 
-  void setName(String name);
+    void setCategory(String category);
 
-  void setCategory(String category);
+    void setKey(String key);
 
-  void setKey(String key);
+    void setTenantId(String tenantId);
 
-  void setTenantId(String tenantId);
+    void setResources(Map<String, ResourceEntity> resources);
 
-  void setResources(Map<String, ResourceEntity> resources);
+    void setDeploymentTime(Date deploymentTime);
 
-  void setDeploymentTime(Date deploymentTime);
+    boolean isNew();
 
-  boolean isNew();
+    void setNew(boolean isNew);
 
-  void setNew(boolean isNew);
+    String getEngineVersion();
 
-  String getEngineVersion();
+    void setEngineVersion(String engineVersion);
 
-  void setEngineVersion(String engineVersion);
+    Integer getVersion();
 
-  Integer getVersion();
+    void setVersion(Integer version);
 
-  void setVersion(Integer version);
+    String getProjectReleaseVersion();
 
-  String getProjectReleaseVersion();
-
-  void setProjectReleaseVersion(String projectReleaseVersion);
-
+    void setProjectReleaseVersion(String projectReleaseVersion);
 }

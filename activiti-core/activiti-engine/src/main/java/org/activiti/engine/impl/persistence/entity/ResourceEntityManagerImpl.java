@@ -14,11 +14,9 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.persistence.entity;
 
 import java.util.List;
-
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.persistence.entity.data.DataManager;
 import org.activiti.engine.impl.persistence.entity.data.ResourceDataManager;
@@ -27,41 +25,55 @@ import org.activiti.engine.impl.persistence.entity.data.ResourceDataManager;
 
 
  */
-public class ResourceEntityManagerImpl extends AbstractEntityManager<ResourceEntity> implements ResourceEntityManager {
+public class ResourceEntityManagerImpl
+    extends AbstractEntityManager<ResourceEntity>
+    implements ResourceEntityManager {
 
-  protected ResourceDataManager resourceDataManager;
+    protected ResourceDataManager resourceDataManager;
 
-  public ResourceEntityManagerImpl(ProcessEngineConfigurationImpl processEngineConfiguration, ResourceDataManager resourceDataManager) {
-    super(processEngineConfiguration);
-    this.resourceDataManager = resourceDataManager;
-  }
+    public ResourceEntityManagerImpl(
+        ProcessEngineConfigurationImpl processEngineConfiguration,
+        ResourceDataManager resourceDataManager
+    ) {
+        super(processEngineConfiguration);
+        this.resourceDataManager = resourceDataManager;
+    }
 
-  @Override
-  protected DataManager<ResourceEntity> getDataManager() {
-    return resourceDataManager;
-  }
+    @Override
+    protected DataManager<ResourceEntity> getDataManager() {
+        return resourceDataManager;
+    }
 
-  @Override
-  public void deleteResourcesByDeploymentId(String deploymentId) {
-    resourceDataManager.deleteResourcesByDeploymentId(deploymentId);
-  }
+    @Override
+    public void deleteResourcesByDeploymentId(String deploymentId) {
+        resourceDataManager.deleteResourcesByDeploymentId(deploymentId);
+    }
 
-  @Override
-  public ResourceEntity findResourceByDeploymentIdAndResourceName(String deploymentId, String resourceName) {
-    return resourceDataManager.findResourceByDeploymentIdAndResourceName(deploymentId, resourceName);
-  }
+    @Override
+    public ResourceEntity findResourceByDeploymentIdAndResourceName(
+        String deploymentId,
+        String resourceName
+    ) {
+        return resourceDataManager.findResourceByDeploymentIdAndResourceName(
+            deploymentId,
+            resourceName
+        );
+    }
 
-  @Override
-  public List<ResourceEntity> findResourcesByDeploymentId(String deploymentId) {
-    return resourceDataManager.findResourcesByDeploymentId(deploymentId);
-  }
+    @Override
+    public List<ResourceEntity> findResourcesByDeploymentId(
+        String deploymentId
+    ) {
+        return resourceDataManager.findResourcesByDeploymentId(deploymentId);
+    }
 
-  public ResourceDataManager getResourceDataManager() {
-    return resourceDataManager;
-  }
+    public ResourceDataManager getResourceDataManager() {
+        return resourceDataManager;
+    }
 
-  public void setResourceDataManager(ResourceDataManager resourceDataManager) {
-    this.resourceDataManager = resourceDataManager;
-  }
-
+    public void setResourceDataManager(
+        ResourceDataManager resourceDataManager
+    ) {
+        this.resourceDataManager = resourceDataManager;
+    }
 }

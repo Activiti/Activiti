@@ -23,30 +23,32 @@ import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 /**
 
  */
-public class SubProcessParseHandler extends AbstractActivityBpmnParseHandler<SubProcess> {
+public class SubProcessParseHandler
+    extends AbstractActivityBpmnParseHandler<SubProcess> {
 
-  protected Class<? extends BaseElement> getHandledType() {
-    return SubProcess.class;
-  }
+    protected Class<? extends BaseElement> getHandledType() {
+        return SubProcess.class;
+    }
 
-  protected void executeParse(BpmnParse bpmnParse, SubProcess subProcess) {
+    protected void executeParse(BpmnParse bpmnParse, SubProcess subProcess) {
+        subProcess.setBehavior(
+            bpmnParse
+                .getActivityBehaviorFactory()
+                .createSubprocessActivityBehavior(subProcess)
+        );
 
-    subProcess.setBehavior(bpmnParse.getActivityBehaviorFactory().createSubprocessActivityBehavior(subProcess));
+        bpmnParse.processFlowElements(subProcess.getFlowElements());
+        processArtifacts(bpmnParse, subProcess.getArtifacts());
+        // no data objects for event subprocesses
+        /*
+         * if (!(subProcess instanceof EventSubProcess)) { // parse out any data objects from the template in order to set up the necessary process variables Map<String, Object> variables =
+         * processDataObjects(bpmnParse, subProcess.getDataObjects(), activity); activity.setVariables(variables); }
+         *
+         * bpmnParse.removeCurrentScope(); bpmnParse.removeCurrentSubProcess();
+         *
+         * if (subProcess.getIoSpecification() != null) { IOSpecification ioSpecification = createIOSpecification(bpmnParse, subProcess.getIoSpecification()); activity.setIoSpecification(ioSpecification);
+         * }
+         */
 
-    bpmnParse.processFlowElements(subProcess.getFlowElements());
-    processArtifacts(bpmnParse, subProcess.getArtifacts());
-
-    // no data objects for event subprocesses
-    /*
-     * if (!(subProcess instanceof EventSubProcess)) { // parse out any data objects from the template in order to set up the necessary process variables Map<String, Object> variables =
-     * processDataObjects(bpmnParse, subProcess.getDataObjects(), activity); activity.setVariables(variables); }
-     *
-     * bpmnParse.removeCurrentScope(); bpmnParse.removeCurrentSubProcess();
-     *
-     * if (subProcess.getIoSpecification() != null) { IOSpecification ioSpecification = createIOSpecification(bpmnParse, subProcess.getIoSpecification()); activity.setIoSpecification(ioSpecification);
-     * }
-     */
-
-  }
-
+    }
 }

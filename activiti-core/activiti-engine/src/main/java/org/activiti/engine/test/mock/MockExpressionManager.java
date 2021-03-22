@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.test.mock;
 
 import javax.el.ArrayELResolver;
@@ -23,23 +22,21 @@ import javax.el.CompositeELResolver;
 import javax.el.ELResolver;
 import javax.el.ListELResolver;
 import javax.el.MapELResolver;
-
 import org.activiti.engine.delegate.VariableScope;
 import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.el.VariableScopeElResolver;
 
 public class MockExpressionManager extends ExpressionManager {
 
-  @Override
-  protected ELResolver createElResolver(VariableScope variableScope) {
-    CompositeELResolver compositeElResolver = new CompositeELResolver();
-    compositeElResolver.add(new VariableScopeElResolver(variableScope));
-    compositeElResolver.add(new MockElResolver());
-    compositeElResolver.add(new ArrayELResolver());
-    compositeElResolver.add(new ListELResolver());
-    compositeElResolver.add(new MapELResolver());
-    compositeElResolver.add(new BeanELResolver());
-    return compositeElResolver;
-  }
-
+    @Override
+    protected ELResolver createElResolver(VariableScope variableScope) {
+        CompositeELResolver compositeElResolver = new CompositeELResolver();
+        compositeElResolver.add(new VariableScopeElResolver(variableScope));
+        compositeElResolver.add(new MockElResolver());
+        compositeElResolver.add(new ArrayELResolver());
+        compositeElResolver.add(new ListELResolver());
+        compositeElResolver.add(new MapELResolver());
+        compositeElResolver.add(new BeanELResolver());
+        return compositeElResolver;
+    }
 }

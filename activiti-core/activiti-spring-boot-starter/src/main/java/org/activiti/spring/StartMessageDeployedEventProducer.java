@@ -18,7 +18,6 @@ package org.activiti.spring;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import org.activiti.api.process.model.ProcessDefinition;
 import org.activiti.api.process.model.events.StartMessageDeployedEvent;
 import org.activiti.api.process.runtime.events.listener.ProcessRuntimeEventListener;
@@ -37,9 +36,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEventPublisher;
 
-public class StartMessageDeployedEventProducer extends AbstractActivitiSmartLifeCycle {
+public class StartMessageDeployedEventProducer
+    extends AbstractActivitiSmartLifeCycle {
 
-    private static Logger logger = LoggerFactory.getLogger(StartMessageDeployedEventProducer.class);
+    private static Logger logger = LoggerFactory.getLogger(
+        StartMessageDeployedEventProducer.class
+    );
 
     private RepositoryService repositoryService;
     private ManagementService managementService;
@@ -48,12 +50,14 @@ public class StartMessageDeployedEventProducer extends AbstractActivitiSmartLife
     private List<ProcessRuntimeEventListener<StartMessageDeployedEvent>> listeners;
     private ApplicationEventPublisher eventPublisher;
 
-    public StartMessageDeployedEventProducer(RepositoryService repositoryService,
-                                        ManagementService managementService,
-                                        StartMessageSubscriptionConverter subscriptionConverter,
-                                        APIProcessDefinitionConverter converter,
-                                        List<ProcessRuntimeEventListener<StartMessageDeployedEvent>> listeners,
-                                        ApplicationEventPublisher eventPublisher) {
+    public StartMessageDeployedEventProducer(
+        RepositoryService repositoryService,
+        ManagementService managementService,
+        StartMessageSubscriptionConverter subscriptionConverter,
+        APIProcessDefinitionConverter converter,
+        List<ProcessRuntimeEventListener<StartMessageDeployedEvent>> listeners,
+        ApplicationEventPublisher eventPublisher
+    ) {
         this.repositoryService = repositoryService;
         this.managementService = managementService;
         this.subscriptionConverter = subscriptionConverter;
@@ -63,27 +67,46 @@ public class StartMessageDeployedEventProducer extends AbstractActivitiSmartLife
     }
 
     public void doStart() {
-        List<ProcessDefinition> processDefinitions = converter.from(repositoryService.createProcessDefinitionQuery().list());
+        List<ProcessDefinition> processDefinitions = converter.from(
+            repositoryService.createProcessDefinitionQuery().list()
+        );
         List<StartMessageDeployedEvent> messageDeployedEvents = new ArrayList<>();
 
         for (ProcessDefinition processDefinition : processDefinitions) {
-            managementService.executeCommand(new FindStartMessageEventSubscriptions(processDefinition.getId()))
-                             .stream()
-                             .map(subscriptionConverter::convertToStartMessageSubscription)
-                             .map(messageSubscription -> StartMessageDeploymentDefinitionImpl.builder()
-                                                                                             .withMessageSubscription(messageSubscription)
-                                                                                             .withProcessDefinition(processDefinition)
-                                                                                             .build())
-                             .map(startMessageDeploymentDefinition -> StartMessageDeployedEventImpl.builder()
-                                                                                                   .withEntity(startMessageDeploymentDefinition)
-                                                                                                   .build())
-                             .forEach(messageDeployedEvents::add);
+            managementService
+                .executeCommand(
+                    new FindStartMessageEventSubscriptions(
+                        processDefinition.getId()
+                    )
+                )
+                .stream()
+                .map(subscriptionConverter::convertToStartMessageSubscription)
+                .map(
+                    messageSubscription ->
+                        StartMessageDeploymentDefinitionImpl
+                            .builder()
+                            .withMessageSubscription(messageSubscription)
+                            .withProcessDefinition(processDefinition)
+                            .build()
+                )
+                .map(
+                    startMessageDeploymentDefinition ->
+                        StartMessageDeployedEventImpl
+                            .builder()
+                            .withEntity(startMessageDeploymentDefinition)
+                            .build()
+                )
+                .forEach(messageDeployedEvents::add);
         }
 
-        managementService.executeCommand(new DispatchStartMessageDeployedEvents(messageDeployedEvents));
+        managementService.executeCommand(
+            new DispatchStartMessageDeployedEvents(messageDeployedEvents)
+        );
 
         if (!messageDeployedEvents.isEmpty()) {
-            eventPublisher.publishEvent(new StartMessageDeployedEvents(messageDeployedEvents));
+            eventPublisher.publishEvent(
+                new StartMessageDeployedEvents(messageDeployedEvents)
+            );
         }
     }
 
@@ -95,21 +118,23 @@ public class StartMessageDeployedEventProducer extends AbstractActivitiSmartLife
 
         private final List<StartMessageDeployedEvent> messageDeployedEvents;
 
-        public DispatchStartMessageDeployedEvents(List<StartMessageDeployedEvent> messageDeployedEvents) {
+        public DispatchStartMessageDeployedEvents(
+            List<StartMessageDeployedEvent> messageDeployedEvents
+        ) {
             this.messageDeployedEvents = messageDeployedEvents;
         }
 
         public Void execute(CommandContext commandContext) {
             for (ProcessRuntimeEventListener<StartMessageDeployedEvent> listener : listeners) {
-                messageDeployedEvents.stream()
-                                     .forEach(listener::onEvent);
+                messageDeployedEvents.stream().forEach(listener::onEvent);
             }
 
             return null;
         }
     }
 
-    static class FindStartMessageEventSubscriptions implements Command<List<MessageEventSubscriptionEntity>> {
+    static class FindStartMessageEventSubscriptions
+        implements Command<List<MessageEventSubscriptionEntity>> {
 
         private static final String MESSAGE = "message";
         private final String processDefinitionId;
@@ -118,15 +143,17 @@ public class StartMessageDeployedEventProducer extends AbstractActivitiSmartLife
             this.processDefinitionId = processDefinitionId;
         }
 
-        public List<MessageEventSubscriptionEntity> execute(CommandContext commandContext) {
-            return new EventSubscriptionQueryImpl(commandContext).eventType(MESSAGE)
-                                                                 .configuration(processDefinitionId)
-                                                                 .list()
-                                                                 .stream()
-                                                                 .map(MessageEventSubscriptionEntity.class::cast)
-                                                                 .filter(it -> it.getProcessInstanceId() == null)
-                                                                 .collect(Collectors.toList());
+        public List<MessageEventSubscriptionEntity> execute(
+            CommandContext commandContext
+        ) {
+            return new EventSubscriptionQueryImpl(commandContext)
+                .eventType(MESSAGE)
+                .configuration(processDefinitionId)
+                .list()
+                .stream()
+                .map(MessageEventSubscriptionEntity.class::cast)
+                .filter(it -> it.getProcessInstanceId() == null)
+                .collect(Collectors.toList());
         }
     }
-
 }

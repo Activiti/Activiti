@@ -16,7 +16,6 @@
 package org.activiti.bpmn.converter.child;
 
 import javax.xml.stream.XMLStreamReader;
-
 import org.activiti.bpmn.converter.util.BpmnXMLUtil;
 import org.activiti.bpmn.model.ActivitiListener;
 import org.activiti.bpmn.model.BaseElement;
@@ -32,60 +31,89 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class FieldExtensionParser extends BaseChildElementParser {
 
-  public String getElementName() {
-    return ELEMENT_FIELD;
-  }
+    public String getElementName() {
+        return ELEMENT_FIELD;
+    }
 
-  public boolean accepts(BaseElement element) {
-    return ((element instanceof ActivitiListener)
-            || (element instanceof ServiceTask)
-            || (element instanceof SendTask)
-            || (element instanceof MessageEventDefinition));
-  }
+    public boolean accepts(BaseElement element) {
+        return (
+            (element instanceof ActivitiListener) ||
+            (element instanceof ServiceTask) ||
+            (element instanceof SendTask) ||
+            (element instanceof MessageEventDefinition)
+        );
+    }
 
-  public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model) throws Exception {
+    public void parseChildElement(
+        XMLStreamReader xtr,
+        BaseElement parentElement,
+        BpmnModel model
+    ) throws Exception {
+        if (!accepts(parentElement)) return;
 
-    if (!accepts(parentElement))
-      return;
+        FieldExtension extension = new FieldExtension();
+        BpmnXMLUtil.addXMLLocation(extension, xtr);
+        extension.setFieldName(
+            xtr.getAttributeValue(null, ATTRIBUTE_FIELD_NAME)
+        );
 
-    FieldExtension extension = new FieldExtension();
-    BpmnXMLUtil.addXMLLocation(extension, xtr);
-    extension.setFieldName(xtr.getAttributeValue(null, ATTRIBUTE_FIELD_NAME));
-
-    if (StringUtils.isNotEmpty(xtr.getAttributeValue(null, ATTRIBUTE_FIELD_STRING))) {
-      extension.setStringValue(xtr.getAttributeValue(null, ATTRIBUTE_FIELD_STRING));
-
-    } else if (StringUtils.isNotEmpty(xtr.getAttributeValue(null, ATTRIBUTE_FIELD_EXPRESSION))) {
-      extension.setExpression(xtr.getAttributeValue(null, ATTRIBUTE_FIELD_EXPRESSION));
-
-    } else {
-      boolean readyWithFieldExtension = false;
-      try {
-        while (readyWithFieldExtension == false && xtr.hasNext()) {
-          xtr.next();
-          if (xtr.isStartElement() && ELEMENT_FIELD_STRING.equalsIgnoreCase(xtr.getLocalName())) {
-            extension.setStringValue(xtr.getElementText().trim());
-
-          } else if (xtr.isStartElement() && ATTRIBUTE_FIELD_EXPRESSION.equalsIgnoreCase(xtr.getLocalName())) {
-            extension.setExpression(xtr.getElementText().trim());
-
-          } else if (xtr.isEndElement() && getElementName().equalsIgnoreCase(xtr.getLocalName())) {
-            readyWithFieldExtension = true;
-          }
+        if (
+            StringUtils.isNotEmpty(
+                xtr.getAttributeValue(null, ATTRIBUTE_FIELD_STRING)
+            )
+        ) {
+            extension.setStringValue(
+                xtr.getAttributeValue(null, ATTRIBUTE_FIELD_STRING)
+            );
+        } else if (
+            StringUtils.isNotEmpty(
+                xtr.getAttributeValue(null, ATTRIBUTE_FIELD_EXPRESSION)
+            )
+        ) {
+            extension.setExpression(
+                xtr.getAttributeValue(null, ATTRIBUTE_FIELD_EXPRESSION)
+            );
+        } else {
+            boolean readyWithFieldExtension = false;
+            try {
+                while (readyWithFieldExtension == false && xtr.hasNext()) {
+                    xtr.next();
+                    if (
+                        xtr.isStartElement() &&
+                        ELEMENT_FIELD_STRING.equalsIgnoreCase(
+                            xtr.getLocalName()
+                        )
+                    ) {
+                        extension.setStringValue(xtr.getElementText().trim());
+                    } else if (
+                        xtr.isStartElement() &&
+                        ATTRIBUTE_FIELD_EXPRESSION.equalsIgnoreCase(
+                            xtr.getLocalName()
+                        )
+                    ) {
+                        extension.setExpression(xtr.getElementText().trim());
+                    } else if (
+                        xtr.isEndElement() &&
+                        getElementName().equalsIgnoreCase(xtr.getLocalName())
+                    ) {
+                        readyWithFieldExtension = true;
+                    }
+                }
+            } catch (Exception e) {
+                LOGGER.warn("Error parsing field extension child elements", e);
+            }
         }
-      } catch (Exception e) {
-        LOGGER.warn("Error parsing field extension child elements", e);
-      }
-    }
 
-    if (parentElement instanceof ActivitiListener) {
-      ((ActivitiListener) parentElement).getFieldExtensions().add(extension);
-    } else if (parentElement instanceof ServiceTask) {
-      ((ServiceTask) parentElement).getFieldExtensions().add(extension);
-    } else if (parentElement instanceof SendTask){
-      ((SendTask) parentElement).getFieldExtensions().add(extension);
-    } else if (parentElement instanceof MessageEventDefinition){
-      ((MessageEventDefinition) parentElement).getFieldExtensions().add(extension);
+        if (parentElement instanceof ActivitiListener) {
+            ((ActivitiListener) parentElement).getFieldExtensions()
+                .add(extension);
+        } else if (parentElement instanceof ServiceTask) {
+            ((ServiceTask) parentElement).getFieldExtensions().add(extension);
+        } else if (parentElement instanceof SendTask) {
+            ((SendTask) parentElement).getFieldExtensions().add(extension);
+        } else if (parentElement instanceof MessageEventDefinition) {
+            ((MessageEventDefinition) parentElement).getFieldExtensions()
+                .add(extension);
+        }
     }
-  }
 }

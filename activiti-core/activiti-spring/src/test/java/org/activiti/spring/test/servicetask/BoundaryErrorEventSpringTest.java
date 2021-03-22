@@ -14,13 +14,11 @@
  * limitations under the License.
  */
 
-
 package org.activiti.spring.test.servicetask;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
-
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 import org.activiti.spring.impl.test.SpringActivitiTestCase;
@@ -29,14 +27,17 @@ import org.springframework.test.context.ContextConfiguration;
 /**
  * @link https://activiti.atlassian.net/browse/ACT-1166
  */
-@ContextConfiguration("classpath:org/activiti/spring/test/servicetask/serviceraskSpringTestCatchError-context.xml")
+@ContextConfiguration(
+    "classpath:org/activiti/spring/test/servicetask/serviceraskSpringTestCatchError-context.xml"
+)
 public class BoundaryErrorEventSpringTest extends SpringActivitiTestCase {
 
     private void cleanUp() {
-        List<org.activiti.engine.repository.Deployment> deployments = repositoryService.createDeploymentQuery().list();
+        List<org.activiti.engine.repository.Deployment> deployments = repositoryService
+            .createDeploymentQuery()
+            .list();
         for (org.activiti.engine.repository.Deployment deployment : deployments) {
-            repositoryService.deleteDeployment(deployment.getId(),
-                                               true);
+            repositoryService.deleteDeployment(deployment.getId(), true);
         }
     }
 
@@ -47,7 +48,11 @@ public class BoundaryErrorEventSpringTest extends SpringActivitiTestCase {
 
     @Deployment
     public void testCatchErrorThrownByJavaDelegateOnServiceTask() {
-        String procId = runtimeService.startProcessInstanceByKey("catchErrorThrownByExpressionDelegateOnServiceTask").getId();
+        String procId = runtimeService
+            .startProcessInstanceByKey(
+                "catchErrorThrownByExpressionDelegateOnServiceTask"
+            )
+            .getId();
         assertThatErrorHasBeenCaught(procId);
     }
 

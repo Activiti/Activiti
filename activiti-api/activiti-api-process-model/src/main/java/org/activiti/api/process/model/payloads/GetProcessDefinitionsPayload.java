@@ -17,7 +17,6 @@ package org.activiti.api.process.model.payloads;
 
 import java.util.Set;
 import java.util.UUID;
-
 import org.activiti.api.model.shared.Payload;
 
 public class GetProcessDefinitionsPayload implements Payload {
@@ -30,8 +29,10 @@ public class GetProcessDefinitionsPayload implements Payload {
         this.id = UUID.randomUUID().toString();
     }
 
-    public GetProcessDefinitionsPayload(String processDefinitionId,
-                                        Set<String> processDefinitionKeys) {
+    public GetProcessDefinitionsPayload(
+        String processDefinitionId,
+        Set<String> processDefinitionKeys
+    ) {
         this();
         this.processDefinitionId = processDefinitionId;
         this.processDefinitionKeys = processDefinitionKeys;
@@ -51,7 +52,9 @@ public class GetProcessDefinitionsPayload implements Payload {
     }
 
     public boolean hasDefinitionKeys() {
-        return processDefinitionKeys != null && !processDefinitionKeys.isEmpty();
+        return (
+            processDefinitionKeys != null && !processDefinitionKeys.isEmpty()
+        );
     }
 
     public void setProcessDefinitionKeys(Set<String> processDefinitionKeys) {

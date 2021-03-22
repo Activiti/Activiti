@@ -16,9 +16,7 @@
 package org.activiti.bpmn.converter.parser;
 
 import java.util.List;
-
 import javax.xml.stream.XMLStreamReader;
-
 import org.activiti.bpmn.constants.BpmnXMLConstants;
 import org.activiti.bpmn.converter.child.ActivitiEventListenerParser;
 import org.activiti.bpmn.converter.child.ExecutionListenerParser;
@@ -34,35 +32,45 @@ import org.activiti.bpmn.model.SubProcess;
  */
 public class ExtensionElementsParser implements BpmnXMLConstants {
 
-  public void parse(XMLStreamReader xtr, List<SubProcess> activeSubProcessList, Process activeProcess, BpmnModel model) throws Exception {
-    BaseElement parentElement = null;
-    if (!activeSubProcessList.isEmpty()) {
-      parentElement = activeSubProcessList.get(activeSubProcessList.size() - 1);
-
-    } else {
-      parentElement = activeProcess;
-    }
-
-    boolean readyWithChildElements = false;
-    while (readyWithChildElements == false && xtr.hasNext()) {
-      xtr.next();
-      if (xtr.isStartElement()) {
-        if (ELEMENT_EXECUTION_LISTENER.equals(xtr.getLocalName())) {
-          new ExecutionListenerParser().parseChildElement(xtr, parentElement, model);
-        } else if (ELEMENT_EVENT_LISTENER.equals(xtr.getLocalName())) {
-          new ActivitiEventListenerParser().parseChildElement(xtr, parentElement, model);
-        } else if (ELEMENT_POTENTIAL_STARTER.equals(xtr.getLocalName())) {
-          new PotentialStarterParser().parse(xtr, activeProcess);
+    public void parse(
+        XMLStreamReader xtr,
+        List<SubProcess> activeSubProcessList,
+        Process activeProcess,
+        BpmnModel model
+    ) throws Exception {
+        BaseElement parentElement = null;
+        if (!activeSubProcessList.isEmpty()) {
+            parentElement =
+                activeSubProcessList.get(activeSubProcessList.size() - 1);
         } else {
-          ExtensionElement extensionElement = BpmnXMLUtil.parseExtensionElement(xtr);
-          parentElement.addExtensionElement(extensionElement);
+            parentElement = activeProcess;
         }
 
-      } else if (xtr.isEndElement()) {
-        if (ELEMENT_EXTENSIONS.equals(xtr.getLocalName())) {
-          readyWithChildElements = true;
+        boolean readyWithChildElements = false;
+        while (readyWithChildElements == false && xtr.hasNext()) {
+            xtr.next();
+            if (xtr.isStartElement()) {
+                if (ELEMENT_EXECUTION_LISTENER.equals(xtr.getLocalName())) {
+                    new ExecutionListenerParser()
+                    .parseChildElement(xtr, parentElement, model);
+                } else if (ELEMENT_EVENT_LISTENER.equals(xtr.getLocalName())) {
+                    new ActivitiEventListenerParser()
+                    .parseChildElement(xtr, parentElement, model);
+                } else if (
+                    ELEMENT_POTENTIAL_STARTER.equals(xtr.getLocalName())
+                ) {
+                    new PotentialStarterParser().parse(xtr, activeProcess);
+                } else {
+                    ExtensionElement extensionElement = BpmnXMLUtil.parseExtensionElement(
+                        xtr
+                    );
+                    parentElement.addExtensionElement(extensionElement);
+                }
+            } else if (xtr.isEndElement()) {
+                if (ELEMENT_EXTENSIONS.equals(xtr.getLocalName())) {
+                    readyWithChildElements = true;
+                }
+            }
         }
-      }
     }
-  }
 }

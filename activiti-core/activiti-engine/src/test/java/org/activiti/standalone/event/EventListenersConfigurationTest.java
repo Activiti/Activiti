@@ -31,23 +31,25 @@ import org.activiti.engine.test.api.event.TestActivitiEventListener;
  */
 public class EventListenersConfigurationTest extends ResourceActivitiTestCase {
 
-  public EventListenersConfigurationTest() {
-    super("org/activiti/standalone/event/activiti-eventlistener.cfg.xml");
-  }
+    public EventListenersConfigurationTest() {
+        super("org/activiti/standalone/event/activiti-eventlistener.cfg.xml");
+    }
 
-  public void testEventListenerConfiguration() {
-    // Fetch the listener to check received events
-    TestActivitiEventListener listener = (TestActivitiEventListener) processEngineConfiguration.getBeans().get("eventListener");
-    assertThat(listener).isNotNull();
+    public void testEventListenerConfiguration() {
+        // Fetch the listener to check received events
+        TestActivitiEventListener listener = (TestActivitiEventListener) processEngineConfiguration
+            .getBeans()
+            .get("eventListener");
+        assertThat(listener).isNotNull();
 
-    // Clear any events received (eg. engine initialisation)
-    listener.clearEventsReceived();
+        // Clear any events received (eg. engine initialisation)
+        listener.clearEventsReceived();
 
-    // Dispatch a custom event
-    ActivitiEvent event = new ActivitiEventImpl(ActivitiEventType.CUSTOM);
-    processEngineConfiguration.getEventDispatcher().dispatchEvent(event);
+        // Dispatch a custom event
+        ActivitiEvent event = new ActivitiEventImpl(ActivitiEventType.CUSTOM);
+        processEngineConfiguration.getEventDispatcher().dispatchEvent(event);
 
-    assertThat(listener.getEventsReceived()).hasSize(1);
-    assertThat(listener.getEventsReceived().get(0)).isEqualTo(event);
-  }
+        assertThat(listener.getEventsReceived()).hasSize(1);
+        assertThat(listener.getEventsReceived().get(0)).isEqualTo(event);
+    }
 }

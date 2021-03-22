@@ -23,8 +23,8 @@ package org.activiti.engine.impl.transformer;
  */
 public class StringToBoolean extends AbstractTransformer {
 
-  @Override
-  protected Object primTransform(Object anObject) throws Exception {
-    return Boolean.valueOf((String) anObject);
-  }
+    @Override
+    protected Object primTransform(Object anObject) throws Exception {
+        return Boolean.valueOf((String) anObject);
+    }
 }

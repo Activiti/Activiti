@@ -14,11 +14,9 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.runtime;
 
 import java.util.Date;
-
 import org.activiti.engine.ManagementService;
 import org.activiti.engine.api.internal.Internal;
 
@@ -28,74 +26,72 @@ import org.activiti.engine.api.internal.Internal;
  */
 @Internal
 public interface Job {
+    String JOB_TYPE_TIMER = "timer";
+    String JOB_TYPE_MESSAGE = "message";
 
-  String JOB_TYPE_TIMER = "timer";
-  String JOB_TYPE_MESSAGE = "message";
+    boolean DEFAULT_EXCLUSIVE = true;
+    int MAX_EXCEPTION_MESSAGE_LENGTH = 255;
 
-  boolean DEFAULT_EXCLUSIVE = true;
-  int MAX_EXCEPTION_MESSAGE_LENGTH = 255;
+    /**
+     * Returns the unique identifier for this job.
+     */
+    String getId();
 
-  /**
-   * Returns the unique identifier for this job.
-   */
-  String getId();
+    /**
+     * Returns the date on which this job is supposed to be processed.
+     */
+    Date getDuedate();
 
-  /**
-   * Returns the date on which this job is supposed to be processed.
-   */
-  Date getDuedate();
+    /**
+     * Returns the id of the process instance which execution created the job.
+     */
+    String getProcessInstanceId();
 
-  /**
-   * Returns the id of the process instance which execution created the job.
-   */
-  String getProcessInstanceId();
+    /**
+     * Returns the specific execution on which the job was created.
+     */
+    String getExecutionId();
 
-  /**
-   * Returns the specific execution on which the job was created.
-   */
-  String getExecutionId();
+    /**
+     * Returns the specific process definition on which the job was created
+     */
+    String getProcessDefinitionId();
 
-  /**
-   * Returns the specific process definition on which the job was created
-   */
-  String getProcessDefinitionId();
+    /**
+     * Returns the number of retries this job has left. Whenever the jobexecutor fails to execute the job, this value is decremented. When it hits zero, the job is supposed to be dead and not retried
+     * again (ie a manual retry is required then).
+     */
+    int getRetries();
 
-  /**
-   * Returns the number of retries this job has left. Whenever the jobexecutor fails to execute the job, this value is decremented. When it hits zero, the job is supposed to be dead and not retried
-   * again (ie a manual retry is required then).
-   */
-  int getRetries();
+    /**
+     * Returns the message of the exception that occurred, the last time the job was executed. Returns null when no exception occurred.
+     *
+     * To get the full exception stacktrace, use {@link ManagementService#getJobExceptionStacktrace(String)}
+     */
+    String getExceptionMessage();
 
-  /**
-   * Returns the message of the exception that occurred, the last time the job was executed. Returns null when no exception occurred.
-   *
-   * To get the full exception stacktrace, use {@link ManagementService#getJobExceptionStacktrace(String)}
-   */
-  String getExceptionMessage();
+    /**
+     * Get the tenant identifier for this job.
+     */
+    String getTenantId();
 
-  /**
-   * Get the tenant identifier for this job.
-   */
-  String getTenantId();
+    /**
+     * Is the job exclusive?
+     */
+    boolean isExclusive();
 
-  /**
-   * Is the job exclusive?
-   */
-  boolean isExclusive();
+    /**
+     * Get the job type for this job.
+     */
+    String getJobType();
 
-  /**
-   * Get the job type for this job.
-   */
-  String getJobType();
+    /**
+     * Get the job handler type.
+     */
+    String getJobHandlerType();
 
-  /**
-   * Get the job handler type.
-   */
-  String getJobHandlerType();
-
-  /**
-   * Get the job configuration.
-   */
-  String getJobHandlerConfiguration();
-
+    /**
+     * Get the job configuration.
+     */
+    String getJobHandlerConfiguration();
 }

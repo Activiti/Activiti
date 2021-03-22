@@ -21,7 +21,6 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiWrongDbException;
 import org.activiti.engine.ProcessEngine;
@@ -37,57 +36,82 @@ import org.apache.ibatis.session.SqlSessionFactory;
  */
 public class ProcessEngineInitializationTest extends AbstractTestCase {
 
-  public void testNoTables() {
-    assertThatExceptionOfType(Exception.class)
-      .isThrownBy(() -> ProcessEngineConfiguration
-        .createProcessEngineConfigurationFromResource("org/activiti/standalone/initialization/notables.activiti.cfg.xml")
-        .buildProcessEngine())
-      .withMessageContaining("no activiti tables in db");
-  }
-
-  public void testVersionMismatch() {
-    // first create the schema
-    ProcessEngineImpl processEngine = (ProcessEngineImpl) ProcessEngineConfiguration.createProcessEngineConfigurationFromResource("org/activiti/standalone/initialization/notables.activiti.cfg.xml")
-        .setDatabaseSchemaUpdate(ProcessEngineConfiguration.DB_SCHEMA_UPDATE_CREATE_DROP).buildProcessEngine();
-
-    // then update the version to something that is different to the library
-    // version
-    DbSqlSessionFactory dbSqlSessionFactory = (DbSqlSessionFactory) processEngine.getProcessEngineConfiguration().getSessionFactories().get(DbSqlSession.class);
-    SqlSessionFactory sqlSessionFactory = dbSqlSessionFactory.getSqlSessionFactory();
-    SqlSession sqlSession = sqlSessionFactory.openSession();
-    boolean success = false;
-    try {
-      Map<String, Object> parameters = new HashMap<String, Object>();
-      parameters.put("name", "schema.version");
-      parameters.put("value", "25.7");
-      parameters.put("revision", 1);
-      parameters.put("newRevision", 2);
-      sqlSession.update("updateProperty", parameters);
-      success = true;
-    } catch (Exception e) {
-      throw new ActivitiException("couldn't update db schema version", e);
-    } finally {
-      if (success) {
-        sqlSession.commit();
-      } else {
-        sqlSession.rollback();
-      }
-      sqlSession.close();
+    public void testNoTables() {
+        assertThatExceptionOfType(Exception.class)
+            .isThrownBy(
+                () ->
+                    ProcessEngineConfiguration
+                        .createProcessEngineConfigurationFromResource(
+                            "org/activiti/standalone/initialization/notables.activiti.cfg.xml"
+                        )
+                        .buildProcessEngine()
+            )
+            .withMessageContaining("no activiti tables in db");
     }
 
-    // now we can see what happens if when a process engine is being
-    // build with a version mismatch between library and db tables
-    assertThatExceptionOfType(ActivitiWrongDbException.class)
-      .isThrownBy(() -> ProcessEngineConfiguration
-        .createProcessEngineConfigurationFromResource("org/activiti/standalone/initialization/notables.activiti.cfg.xml")
-        .setDatabaseSchemaUpdate(ProcessEngineConfiguration.DB_SCHEMA_UPDATE_FALSE).buildProcessEngine())
-      .withMessageContaining("version mismatch")
-      .satisfies(e -> {
-        assertThat(e.getDbVersion()).isEqualTo("25.7");
-        assertThat(e.getLibraryVersion()).isEqualTo(ProcessEngine.VERSION);
-      });
+    public void testVersionMismatch() {
+        // first create the schema
+        ProcessEngineImpl processEngine = (ProcessEngineImpl) ProcessEngineConfiguration
+            .createProcessEngineConfigurationFromResource(
+                "org/activiti/standalone/initialization/notables.activiti.cfg.xml"
+            )
+            .setDatabaseSchemaUpdate(
+                ProcessEngineConfiguration.DB_SCHEMA_UPDATE_CREATE_DROP
+            )
+            .buildProcessEngine();
 
-    // closing the original process engine to drop the db tables
-    processEngine.close();
-  }
+        // then update the version to something that is different to the library
+        // version
+        DbSqlSessionFactory dbSqlSessionFactory = (DbSqlSessionFactory) processEngine
+            .getProcessEngineConfiguration()
+            .getSessionFactories()
+            .get(DbSqlSession.class);
+        SqlSessionFactory sqlSessionFactory = dbSqlSessionFactory.getSqlSessionFactory();
+        SqlSession sqlSession = sqlSessionFactory.openSession();
+        boolean success = false;
+        try {
+            Map<String, Object> parameters = new HashMap<String, Object>();
+            parameters.put("name", "schema.version");
+            parameters.put("value", "25.7");
+            parameters.put("revision", 1);
+            parameters.put("newRevision", 2);
+            sqlSession.update("updateProperty", parameters);
+            success = true;
+        } catch (Exception e) {
+            throw new ActivitiException("couldn't update db schema version", e);
+        } finally {
+            if (success) {
+                sqlSession.commit();
+            } else {
+                sqlSession.rollback();
+            }
+            sqlSession.close();
+        }
+
+        // now we can see what happens if when a process engine is being
+        // build with a version mismatch between library and db tables
+        assertThatExceptionOfType(ActivitiWrongDbException.class)
+            .isThrownBy(
+                () ->
+                    ProcessEngineConfiguration
+                        .createProcessEngineConfigurationFromResource(
+                            "org/activiti/standalone/initialization/notables.activiti.cfg.xml"
+                        )
+                        .setDatabaseSchemaUpdate(
+                            ProcessEngineConfiguration.DB_SCHEMA_UPDATE_FALSE
+                        )
+                        .buildProcessEngine()
+            )
+            .withMessageContaining("version mismatch")
+            .satisfies(
+                e -> {
+                    assertThat(e.getDbVersion()).isEqualTo("25.7");
+                    assertThat(e.getLibraryVersion())
+                        .isEqualTo(ProcessEngine.VERSION);
+                }
+            );
+
+        // closing the original process engine to drop the db tables
+        processEngine.close();
+    }
 }

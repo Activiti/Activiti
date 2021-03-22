@@ -16,7 +16,6 @@
 package org.activiti.spring.process.variable.types;
 
 import java.util.List;
-
 import org.activiti.engine.ActivitiException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,7 +25,9 @@ import org.slf4j.LoggerFactory;
  */
 public class JavaObjectVariableType extends VariableType {
 
-    private static final Logger logger = LoggerFactory.getLogger(JavaObjectVariableType.class);
+    private static final Logger logger = LoggerFactory.getLogger(
+        JavaObjectVariableType.class
+    );
 
     public Class clazz;
 
@@ -43,11 +44,10 @@ public class JavaObjectVariableType extends VariableType {
     }
 
     @Override
-    public void validate(Object var,List<ActivitiException> errors) {
-
-
-        if (!(var).getClass().isAssignableFrom(clazz)){
-            String message = var.getClass()+" is not assignable from "+clazz;
+    public void validate(Object var, List<ActivitiException> errors) {
+        if (!(var).getClass().isAssignableFrom(clazz)) {
+            String message =
+                var.getClass() + " is not assignable from " + clazz;
             errors.add(new ActivitiException(message));
             logger.error(message);
         }

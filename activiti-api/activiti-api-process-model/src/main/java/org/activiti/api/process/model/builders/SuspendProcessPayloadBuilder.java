@@ -22,12 +22,16 @@ public class SuspendProcessPayloadBuilder {
 
     private String processInstanceId;
 
-    public SuspendProcessPayloadBuilder withProcessInstanceId(String processDefinitionId) {
+    public SuspendProcessPayloadBuilder withProcessInstanceId(
+        String processDefinitionId
+    ) {
         this.processInstanceId = processDefinitionId;
         return this;
     }
 
-    public SuspendProcessPayloadBuilder withProcessInstance(ProcessInstance processInstance) {
+    public SuspendProcessPayloadBuilder withProcessInstance(
+        ProcessInstance processInstance
+    ) {
         this.processInstanceId = processInstance.getId();
         return this;
     }

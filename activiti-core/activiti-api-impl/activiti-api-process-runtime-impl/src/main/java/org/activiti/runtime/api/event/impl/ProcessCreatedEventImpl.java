@@ -20,8 +20,9 @@ import org.activiti.api.process.model.events.ProcessRuntimeEvent;
 import org.activiti.api.process.runtime.events.ProcessCreatedEvent;
 import org.activiti.api.runtime.event.impl.RuntimeEventImpl;
 
-public class ProcessCreatedEventImpl extends RuntimeEventImpl<ProcessInstance, ProcessRuntimeEvent.ProcessEvents>
-        implements ProcessCreatedEvent {
+public class ProcessCreatedEventImpl
+    extends RuntimeEventImpl<ProcessInstance, ProcessRuntimeEvent.ProcessEvents>
+    implements ProcessCreatedEvent {
 
     public ProcessCreatedEventImpl(ProcessInstance entity) {
         super(entity);

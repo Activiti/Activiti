@@ -52,30 +52,28 @@ public class SignalThrowIconType extends IconType {
     }
 
     @Override
-    public void drawIcon(int imageX,
-                         int imageY,
-                         int iconPadding,
-                         ProcessDiagramSVGGraphics2D svgGenerator) {
-        Element gTag = svgGenerator.getDOMFactory().createElementNS(null,
-                                                                    SVGGraphics2D.SVG_G_TAG);
-        gTag.setAttributeNS(null,
-                            "transform",
-                            "translate(" + (imageX - 7) + "," + (imageY - 7) + ")");
+    public void drawIcon(
+        int imageX,
+        int imageY,
+        int iconPadding,
+        ProcessDiagramSVGGraphics2D svgGenerator
+    ) {
+        Element gTag = svgGenerator
+            .getDOMFactory()
+            .createElementNS(null, SVGGraphics2D.SVG_G_TAG);
+        gTag.setAttributeNS(
+            null,
+            "transform",
+            "translate(" + (imageX - 7) + "," + (imageY - 7) + ")"
+        );
 
-        Element pathTag = svgGenerator.getDOMFactory().createElementNS(null,
-                                                                       SVGGraphics2D.SVG_PATH_TAG);
-        pathTag.setAttributeNS(null,
-                               "d",
-                               this.getDValue());
-        pathTag.setAttributeNS(null,
-                               "style",
-                               this.getStyleValue());
-        pathTag.setAttributeNS(null,
-                               "fill",
-                               this.getFillValue());
-        pathTag.setAttributeNS(null,
-                               "stroke",
-                               this.getStrokeValue());
+        Element pathTag = svgGenerator
+            .getDOMFactory()
+            .createElementNS(null, SVGGraphics2D.SVG_PATH_TAG);
+        pathTag.setAttributeNS(null, "d", this.getDValue());
+        pathTag.setAttributeNS(null, "style", this.getStyleValue());
+        pathTag.setAttributeNS(null, "fill", this.getFillValue());
+        pathTag.setAttributeNS(null, "stroke", this.getStrokeValue());
 
         gTag.appendChild(pathTag);
         svgGenerator.getExtendDOMGroupManager().addElement(gTag);

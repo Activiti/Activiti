@@ -23,34 +23,37 @@ package org.activiti.engine.impl.bpmn.data;
  */
 public class PrimitiveStructureInstance implements StructureInstance {
 
-  protected Object primitive;
+    protected Object primitive;
 
-  protected PrimitiveStructureDefinition definition;
+    protected PrimitiveStructureDefinition definition;
 
-  public PrimitiveStructureInstance(PrimitiveStructureDefinition definition) {
-    this(definition, null);
-  }
-
-  public PrimitiveStructureInstance(PrimitiveStructureDefinition definition, Object primitive) {
-    this.definition = definition;
-    this.primitive = primitive;
-  }
-
-  public Object getPrimitive() {
-    return this.primitive;
-  }
-
-  public Object[] toArray() {
-    return new Object[] { this.primitive };
-  }
-
-  public void loadFrom(Object[] array) {
-    for (int i = 0; i < array.length; i++) {
-      Object object = array[i];
-      if (this.definition.getPrimitiveClass().isInstance(object)) {
-        this.primitive = object;
-        return;
-      }
+    public PrimitiveStructureInstance(PrimitiveStructureDefinition definition) {
+        this(definition, null);
     }
-  }
+
+    public PrimitiveStructureInstance(
+        PrimitiveStructureDefinition definition,
+        Object primitive
+    ) {
+        this.definition = definition;
+        this.primitive = primitive;
+    }
+
+    public Object getPrimitive() {
+        return this.primitive;
+    }
+
+    public Object[] toArray() {
+        return new Object[] { this.primitive };
+    }
+
+    public void loadFrom(Object[] array) {
+        for (int i = 0; i < array.length; i++) {
+            Object object = array[i];
+            if (this.definition.getPrimitiveClass().isInstance(object)) {
+                this.primitive = object;
+                return;
+            }
+        }
+    }
 }

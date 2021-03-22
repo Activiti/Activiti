@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package org.activiti.api.process.model.payloads;
+
 import java.util.Date;
 import java.util.UUID;
 import org.activiti.api.model.shared.Payload;
@@ -91,7 +92,10 @@ public class TimerPayload implements Payload {
         int result = 1;
         result = prime * result + ((dueDate == null) ? 0 : dueDate.hashCode());
         result = prime * result + ((endDate == null) ? 0 : endDate.hashCode());
-        result = prime * result + ((exceptionMessage == null) ? 0 : exceptionMessage.hashCode());
+        result =
+            prime *
+            result +
+            ((exceptionMessage == null) ? 0 : exceptionMessage.hashCode());
         result = prime * result + ((id == null) ? 0 : id.hashCode());
         result = prime * result + maxIterations;
         result = prime * result + ((repeat == null) ? 0 : repeat.hashCode());
@@ -101,43 +105,29 @@ public class TimerPayload implements Payload {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
+        if (this == obj) return true;
+        if (obj == null) return false;
+        if (getClass() != obj.getClass()) return false;
         TimerPayload other = (TimerPayload) obj;
         if (dueDate == null) {
-            if (other.dueDate != null)
-                return false;
-        } else if (!dueDate.equals(other.dueDate))
-            return false;
+            if (other.dueDate != null) return false;
+        } else if (!dueDate.equals(other.dueDate)) return false;
         if (endDate == null) {
-            if (other.endDate != null)
-                return false;
-        } else if (!endDate.equals(other.endDate))
-            return false;
+            if (other.endDate != null) return false;
+        } else if (!endDate.equals(other.endDate)) return false;
         if (exceptionMessage == null) {
-            if (other.exceptionMessage != null)
-                return false;
-        } else if (!exceptionMessage.equals(other.exceptionMessage))
-            return false;
+            if (other.exceptionMessage != null) return false;
+        } else if (
+            !exceptionMessage.equals(other.exceptionMessage)
+        ) return false;
         if (id == null) {
-            if (other.id != null)
-                return false;
-        } else if (!id.equals(other.id))
-            return false;
-        if (maxIterations != other.maxIterations)
-            return false;
+            if (other.id != null) return false;
+        } else if (!id.equals(other.id)) return false;
+        if (maxIterations != other.maxIterations) return false;
         if (repeat == null) {
-            if (other.repeat != null)
-                return false;
-        } else if (!repeat.equals(other.repeat))
-            return false;
-        if (retries != other.retries)
-            return false;
+            if (other.repeat != null) return false;
+        } else if (!repeat.equals(other.repeat)) return false;
+        if (retries != other.retries) return false;
         return true;
     }
-
 }

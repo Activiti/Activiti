@@ -22,7 +22,5 @@ import org.activiti.engine.api.internal.Internal;
  */
 @Internal
 public interface BusinessCalendarManager {
-
-  BusinessCalendar getBusinessCalendar(String businessCalendarRef);
-
+    BusinessCalendar getBusinessCalendar(String businessCalendarRef);
 }

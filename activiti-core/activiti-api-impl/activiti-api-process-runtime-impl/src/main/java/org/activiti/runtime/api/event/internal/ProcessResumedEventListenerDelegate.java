@@ -15,6 +15,7 @@
  */
 package org.activiti.runtime.api.event.internal;
 
+import java.util.List;
 import org.activiti.api.process.runtime.events.ProcessResumedEvent;
 import org.activiti.api.process.runtime.events.listener.ProcessRuntimeEventListener;
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
@@ -22,16 +23,17 @@ import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventListener;
 import org.activiti.runtime.api.event.impl.ToProcessResumedConverter;
 
-import java.util.List;
-
-public class ProcessResumedEventListenerDelegate implements ActivitiEventListener {
+public class ProcessResumedEventListenerDelegate
+    implements ActivitiEventListener {
 
     private List<ProcessRuntimeEventListener<ProcessResumedEvent>> processRuntimeEventListeners;
 
     private ToProcessResumedConverter processResumedConverter;
 
-    public ProcessResumedEventListenerDelegate(List<ProcessRuntimeEventListener<ProcessResumedEvent>> listeners,
-                                               ToProcessResumedConverter processResumedConverter) {
+    public ProcessResumedEventListenerDelegate(
+        List<ProcessRuntimeEventListener<ProcessResumedEvent>> listeners,
+        ToProcessResumedConverter processResumedConverter
+    ) {
         this.processRuntimeEventListeners = listeners;
         this.processResumedConverter = processResumedConverter;
     }
@@ -39,12 +41,15 @@ public class ProcessResumedEventListenerDelegate implements ActivitiEventListene
     @Override
     public void onEvent(ActivitiEvent event) {
         if (event instanceof ActivitiEntityEvent) {
-            processResumedConverter.from((ActivitiEntityEvent) event)
-                    .ifPresent(convertedEvent -> {
-                        for ( ProcessRuntimeEventListener<ProcessResumedEvent> listener : processRuntimeEventListeners ) {
+            processResumedConverter
+                .from((ActivitiEntityEvent) event)
+                .ifPresent(
+                    convertedEvent -> {
+                        for (ProcessRuntimeEventListener<ProcessResumedEvent> listener : processRuntimeEventListeners) {
                             listener.onEvent(convertedEvent);
                         }
-                    });
+                    }
+                );
         }
     }
 

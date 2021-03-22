@@ -28,16 +28,15 @@ import org.activiti.engine.TaskService;
  */
 public class IdentityLinkType {
 
-  /* Activiti native roles */
+    /* Activiti native roles */
 
-  public static final String ASSIGNEE = "assignee";
+    public static final String ASSIGNEE = "assignee";
 
-  public static final String CANDIDATE = "candidate";
+    public static final String CANDIDATE = "candidate";
 
-  public static final String OWNER = "owner";
+    public static final String OWNER = "owner";
 
-  public static final String STARTER = "starter";
+    public static final String STARTER = "starter";
 
-  public static final String PARTICIPANT = "participant";
-
+    public static final String PARTICIPANT = "participant";
 }

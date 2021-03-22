@@ -18,7 +18,6 @@ package org.activiti.engine.impl.persistence.entity;
 
 import java.util.List;
 import java.util.Map;
-
 import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.impl.HistoricTaskInstanceQueryImpl;
@@ -27,20 +26,36 @@ import org.activiti.engine.impl.HistoricTaskInstanceQueryImpl;
 
  */
 @Internal
-public interface HistoricTaskInstanceEntityManager extends EntityManager<HistoricTaskInstanceEntity> {
+public interface HistoricTaskInstanceEntityManager
+    extends EntityManager<HistoricTaskInstanceEntity> {
+    HistoricTaskInstanceEntity create(
+        TaskEntity task,
+        ExecutionEntity execution
+    );
 
-  HistoricTaskInstanceEntity create(TaskEntity task, ExecutionEntity execution);
+    long findHistoricTaskInstanceCountByQueryCriteria(
+        HistoricTaskInstanceQueryImpl historicTaskInstanceQuery
+    );
 
-  long findHistoricTaskInstanceCountByQueryCriteria(HistoricTaskInstanceQueryImpl historicTaskInstanceQuery);
+    List<HistoricTaskInstance> findHistoricTaskInstancesByQueryCriteria(
+        HistoricTaskInstanceQueryImpl historicTaskInstanceQuery
+    );
 
-  List<HistoricTaskInstance> findHistoricTaskInstancesByQueryCriteria(HistoricTaskInstanceQueryImpl historicTaskInstanceQuery);
+    List<HistoricTaskInstance> findHistoricTaskInstancesAndVariablesByQueryCriteria(
+        HistoricTaskInstanceQueryImpl historicTaskInstanceQuery
+    );
 
-  List<HistoricTaskInstance> findHistoricTaskInstancesAndVariablesByQueryCriteria(HistoricTaskInstanceQueryImpl historicTaskInstanceQuery);
+    List<HistoricTaskInstance> findHistoricTaskInstancesByNativeQuery(
+        Map<String, Object> parameterMap,
+        int firstResult,
+        int maxResults
+    );
 
-  List<HistoricTaskInstance> findHistoricTaskInstancesByNativeQuery(Map<String, Object> parameterMap, int firstResult, int maxResults);
+    long findHistoricTaskInstanceCountByNativeQuery(
+        Map<String, Object> parameterMap
+    );
 
-  long findHistoricTaskInstanceCountByNativeQuery(Map<String, Object> parameterMap);
-
-  void deleteHistoricTaskInstancesByProcessInstanceId(String processInstanceId);
-
+    void deleteHistoricTaskInstancesByProcessInstanceId(
+        String processInstanceId
+    );
 }

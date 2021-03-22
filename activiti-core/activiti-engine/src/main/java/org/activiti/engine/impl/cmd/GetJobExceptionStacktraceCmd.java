@@ -14,11 +14,9 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.cmd;
 
 import java.io.Serializable;
-
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.impl.interceptor.Command;
@@ -30,43 +28,52 @@ import org.activiti.engine.runtime.Job;
 
 
  */
-public class GetJobExceptionStacktraceCmd implements Command<String>, Serializable {
+public class GetJobExceptionStacktraceCmd
+    implements Command<String>, Serializable {
 
-  private static final long serialVersionUID = 1L;
-  private String jobId;
-  protected JobType jobType;
+    private static final long serialVersionUID = 1L;
+    private String jobId;
+    protected JobType jobType;
 
-  public GetJobExceptionStacktraceCmd(String jobId, JobType jobType) {
-    this.jobId = jobId;
-    this.jobType = jobType;
-  }
-
-  public String execute(CommandContext commandContext) {
-    if (jobId == null) {
-      throw new ActivitiIllegalArgumentException("jobId is null");
+    public GetJobExceptionStacktraceCmd(String jobId, JobType jobType) {
+        this.jobId = jobId;
+        this.jobType = jobType;
     }
 
-    AbstractJobEntity job = null;
-    switch (jobType) {
-    case ASYNC:
-      job = commandContext.getJobEntityManager().findById(jobId);
-      break;
-    case TIMER:
-      job = commandContext.getTimerJobEntityManager().findById(jobId);
-      break;
-    case SUSPENDED:
-      job = commandContext.getSuspendedJobEntityManager().findById(jobId);
-      break;
-    case DEADLETTER:
-      job = commandContext.getDeadLetterJobEntityManager().findById(jobId);
-      break;
+    public String execute(CommandContext commandContext) {
+        if (jobId == null) {
+            throw new ActivitiIllegalArgumentException("jobId is null");
+        }
+
+        AbstractJobEntity job = null;
+        switch (jobType) {
+            case ASYNC:
+                job = commandContext.getJobEntityManager().findById(jobId);
+                break;
+            case TIMER:
+                job = commandContext.getTimerJobEntityManager().findById(jobId);
+                break;
+            case SUSPENDED:
+                job =
+                    commandContext
+                        .getSuspendedJobEntityManager()
+                        .findById(jobId);
+                break;
+            case DEADLETTER:
+                job =
+                    commandContext
+                        .getDeadLetterJobEntityManager()
+                        .findById(jobId);
+                break;
+        }
+
+        if (job == null) {
+            throw new ActivitiObjectNotFoundException(
+                "No job found with id " + jobId,
+                Job.class
+            );
+        }
+
+        return job.getExceptionStacktrace();
     }
-
-    if (job == null) {
-      throw new ActivitiObjectNotFoundException("No job found with id " + jobId, Job.class);
-    }
-
-    return job.getExceptionStacktrace();
-  }
-
 }

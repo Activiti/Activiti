@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.interceptor;
 
 import org.activiti.engine.api.internal.Internal;
@@ -27,9 +26,7 @@ import org.activiti.engine.api.internal.Internal;
  */
 @Internal
 public interface SessionFactory {
+    Class<?> getSessionType();
 
-  Class<?> getSessionType();
-
-  Session openSession(CommandContext commandContext);
-
+    Session openSession(CommandContext commandContext);
 }

@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.cfg.multitenant;
 
 import java.io.PrintWriter;
@@ -24,9 +23,7 @@ import java.sql.SQLFeatureNotSupportedException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
-
 import javax.sql.DataSource;
-
 import org.activiti.engine.ActivitiException;
 
 /**
@@ -43,78 +40,85 @@ import org.activiti.engine.ActivitiException;
 @Deprecated
 public class TenantAwareDataSource implements DataSource {
 
-  protected TenantInfoHolder tenantInfoHolder;
-  protected Map<Object, DataSource> dataSources = new HashMap<Object, DataSource>();
+    protected TenantInfoHolder tenantInfoHolder;
+    protected Map<Object, DataSource> dataSources = new HashMap<Object, DataSource>();
 
-  public TenantAwareDataSource(TenantInfoHolder tenantInfoHolder) {
-    this.tenantInfoHolder = tenantInfoHolder;
-  }
-
-  public void addDataSource(Object key, DataSource dataSource) {
-    dataSources.put(key, dataSource);
-  }
-
-  public void removeDataSource(Object key) {
-    dataSources.remove(key);
-  }
-
-  public Connection getConnection() throws SQLException {
-    return getCurrentDataSource().getConnection();
-  }
-
-  public Connection getConnection(String username, String password) throws SQLException {
-    return  getCurrentDataSource().getConnection(username, password);
-  }
-
-  protected DataSource getCurrentDataSource() {
-    String tenantId = tenantInfoHolder.getCurrentTenantId();
-    DataSource dataSource = dataSources.get(tenantId);
-    if (dataSource == null) {
-      throw new ActivitiException("Could not find a dataSource for tenant " + tenantId);
+    public TenantAwareDataSource(TenantInfoHolder tenantInfoHolder) {
+        this.tenantInfoHolder = tenantInfoHolder;
     }
-    return dataSource;
-  }
 
-  public int getLoginTimeout() throws SQLException {
-    return 0; // Default
-  }
-
-  public Logger getParentLogger() throws SQLFeatureNotSupportedException {
-    return Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
-  }
-
-  @SuppressWarnings("unchecked")
-  public <T> T unwrap(Class<T> iface) throws SQLException {
-    if (iface.isInstance(this)) {
-      return (T) this;
+    public void addDataSource(Object key, DataSource dataSource) {
+        dataSources.put(key, dataSource);
     }
-    throw new SQLException("Cannot unwrap " + getClass().getName() + " as an instance of " + iface.getName());
-  }
 
-  public boolean isWrapperFor(Class<?> iface) throws SQLException {
-    return iface.isInstance(this);
-  }
+    public void removeDataSource(Object key) {
+        dataSources.remove(key);
+    }
 
-  public Map<Object, DataSource> getDataSources() {
-    return dataSources;
-  }
+    public Connection getConnection() throws SQLException {
+        return getCurrentDataSource().getConnection();
+    }
 
-  public void setDataSources(Map<Object, DataSource> dataSources) {
-    this.dataSources = dataSources;
-  }
+    public Connection getConnection(String username, String password)
+        throws SQLException {
+        return getCurrentDataSource().getConnection(username, password);
+    }
 
-  // Unsupported //////////////////////////////////////////////////////////
+    protected DataSource getCurrentDataSource() {
+        String tenantId = tenantInfoHolder.getCurrentTenantId();
+        DataSource dataSource = dataSources.get(tenantId);
+        if (dataSource == null) {
+            throw new ActivitiException(
+                "Could not find a dataSource for tenant " + tenantId
+            );
+        }
+        return dataSource;
+    }
 
-  public PrintWriter getLogWriter() throws SQLException {
-    throw new UnsupportedOperationException();
-  }
+    public int getLoginTimeout() throws SQLException {
+        return 0; // Default
+    }
 
-  public void setLogWriter(PrintWriter out) throws SQLException {
-    throw new UnsupportedOperationException();
-  }
+    public Logger getParentLogger() throws SQLFeatureNotSupportedException {
+        return Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+    }
 
-  public void setLoginTimeout(int seconds) throws SQLException {
-    throw new UnsupportedOperationException();
-  }
+    @SuppressWarnings("unchecked")
+    public <T> T unwrap(Class<T> iface) throws SQLException {
+        if (iface.isInstance(this)) {
+            return (T) this;
+        }
+        throw new SQLException(
+            "Cannot unwrap " +
+            getClass().getName() +
+            " as an instance of " +
+            iface.getName()
+        );
+    }
 
+    public boolean isWrapperFor(Class<?> iface) throws SQLException {
+        return iface.isInstance(this);
+    }
+
+    public Map<Object, DataSource> getDataSources() {
+        return dataSources;
+    }
+
+    public void setDataSources(Map<Object, DataSource> dataSources) {
+        this.dataSources = dataSources;
+    }
+
+    // Unsupported //////////////////////////////////////////////////////////
+
+    public PrintWriter getLogWriter() throws SQLException {
+        throw new UnsupportedOperationException();
+    }
+
+    public void setLogWriter(PrintWriter out) throws SQLException {
+        throw new UnsupportedOperationException();
+    }
+
+    public void setLoginTimeout(int seconds) throws SQLException {
+        throw new UnsupportedOperationException();
+    }
 }

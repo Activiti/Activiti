@@ -17,7 +17,6 @@
 package org.activiti.engine.impl.cmd;
 
 import java.util.Date;
-
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 
@@ -26,20 +25,21 @@ import org.activiti.engine.impl.persistence.entity.TaskEntity;
  */
 public class SetTaskDueDateCmd extends NeedsActiveTaskCmd<Void> {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  protected Date dueDate;
+    protected Date dueDate;
 
-  public SetTaskDueDateCmd(String taskId, Date dueDate) {
-    super(taskId);
-    this.dueDate = dueDate;
-  }
+    public SetTaskDueDateCmd(String taskId, Date dueDate) {
+        super(taskId);
+        this.dueDate = dueDate;
+    }
 
-  protected Void execute(CommandContext commandContext, TaskEntity task) {
-    task.setDueDate(dueDate);
-    commandContext.getHistoryManager().recordTaskDueDateChange(task.getId(), task.getDueDate());
-    commandContext.getTaskEntityManager().update(task);
-    return null;
-  }
-
+    protected Void execute(CommandContext commandContext, TaskEntity task) {
+        task.setDueDate(dueDate);
+        commandContext
+            .getHistoryManager()
+            .recordTaskDueDateChange(task.getId(), task.getDueDate());
+        commandContext.getTaskEntityManager().update(task);
+        return null;
+    }
 }

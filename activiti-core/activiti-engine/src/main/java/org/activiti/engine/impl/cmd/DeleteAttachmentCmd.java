@@ -14,11 +14,9 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.cmd;
 
 import java.io.Serializable;
-
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.interceptor.Command;
@@ -32,40 +30,67 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
  */
 public class DeleteAttachmentCmd implements Command<Object>, Serializable {
 
-  private static final long serialVersionUID = 1L;
-  protected String attachmentId;
+    private static final long serialVersionUID = 1L;
+    protected String attachmentId;
 
-  public DeleteAttachmentCmd(String attachmentId) {
-    this.attachmentId = attachmentId;
-  }
-
-  public Object execute(CommandContext commandContext) {
-    AttachmentEntity attachment = commandContext.getAttachmentEntityManager().findById(attachmentId);
-
-    String processInstanceId = attachment.getProcessInstanceId();
-    String processDefinitionId = null;
-    if (attachment.getProcessInstanceId() != null) {
-      ExecutionEntity process = commandContext.getExecutionEntityManager().findById(processInstanceId);
-      if (process != null) {
-        processDefinitionId = process.getProcessDefinitionId();
-      }
+    public DeleteAttachmentCmd(String attachmentId) {
+        this.attachmentId = attachmentId;
     }
 
-    commandContext.getAttachmentEntityManager().delete(attachment, false);
+    public Object execute(CommandContext commandContext) {
+        AttachmentEntity attachment = commandContext
+            .getAttachmentEntityManager()
+            .findById(attachmentId);
 
-    if (attachment.getContentId() != null) {
-      commandContext.getByteArrayEntityManager().deleteByteArrayById(attachment.getContentId());
+        String processInstanceId = attachment.getProcessInstanceId();
+        String processDefinitionId = null;
+        if (attachment.getProcessInstanceId() != null) {
+            ExecutionEntity process = commandContext
+                .getExecutionEntityManager()
+                .findById(processInstanceId);
+            if (process != null) {
+                processDefinitionId = process.getProcessDefinitionId();
+            }
+        }
+
+        commandContext.getAttachmentEntityManager().delete(attachment, false);
+
+        if (attachment.getContentId() != null) {
+            commandContext
+                .getByteArrayEntityManager()
+                .deleteByteArrayById(attachment.getContentId());
+        }
+
+        if (attachment.getTaskId() != null) {
+            commandContext
+                .getHistoryManager()
+                .createAttachmentComment(
+                    attachment.getTaskId(),
+                    attachment.getProcessInstanceId(),
+                    attachment.getName(),
+                    false
+                );
+        }
+
+        if (
+            commandContext
+                .getProcessEngineConfiguration()
+                .getEventDispatcher()
+                .isEnabled()
+        ) {
+            commandContext
+                .getProcessEngineConfiguration()
+                .getEventDispatcher()
+                .dispatchEvent(
+                    ActivitiEventBuilder.createEntityEvent(
+                        ActivitiEventType.ENTITY_DELETED,
+                        attachment,
+                        processInstanceId,
+                        processInstanceId,
+                        processDefinitionId
+                    )
+                );
+        }
+        return null;
     }
-
-    if (attachment.getTaskId() != null) {
-      commandContext.getHistoryManager().createAttachmentComment(attachment.getTaskId(), attachment.getProcessInstanceId(), attachment.getName(), false);
-    }
-
-    if (commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-      commandContext.getProcessEngineConfiguration().getEventDispatcher()
-          .dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_DELETED, attachment, processInstanceId, processInstanceId, processDefinitionId));
-    }
-    return null;
-  }
-
 }

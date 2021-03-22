@@ -18,7 +18,6 @@ package org.activiti.api.process.model.payloads;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
-
 import org.activiti.api.model.shared.Payload;
 
 public class MessageEventPayload implements Payload {
@@ -33,10 +32,12 @@ public class MessageEventPayload implements Payload {
         this.id = UUID.randomUUID().toString();
     }
 
-    public MessageEventPayload(String name,
-                               String correlationKey,
-                               String businessKey,
-                               Map<String, Object> variables) {
+    public MessageEventPayload(
+        String name,
+        String correlationKey,
+        String businessKey,
+        Map<String, Object> variables
+    ) {
         this();
         this.name = name;
         this.businessKey = businessKey;
@@ -89,18 +90,16 @@ public class MessageEventPayload implements Payload {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
+        if (this == obj) return true;
+        if (obj == null) return false;
+        if (getClass() != obj.getClass()) return false;
         MessageEventPayload other = (MessageEventPayload) obj;
-        return Objects.equals(businessKey, other.businessKey)
-                && Objects.equals(correlationKey, other.correlationKey)
-                && Objects.equals(id, other.id)
-                && Objects.equals(name, other.name)
-                && Objects.equals(variables, other.variables);
+        return (
+            Objects.equals(businessKey, other.businessKey) &&
+            Objects.equals(correlationKey, other.correlationKey) &&
+            Objects.equals(id, other.id) &&
+            Objects.equals(name, other.name) &&
+            Objects.equals(variables, other.variables)
+        );
     }
-
 }

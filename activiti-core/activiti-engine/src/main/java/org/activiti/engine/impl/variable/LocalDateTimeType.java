@@ -45,7 +45,9 @@ public class LocalDateTimeType implements VariableType {
 
     public void setValue(Object value, ValueFields valueFields) {
         if (value != null) {
-            valueFields.setLongValue(((LocalDateTime) value).toEpochSecond(ZoneOffset.UTC));
+            valueFields.setLongValue(
+                ((LocalDateTime) value).toEpochSecond(ZoneOffset.UTC)
+            );
         } else {
             valueFields.setLongValue(null);
         }

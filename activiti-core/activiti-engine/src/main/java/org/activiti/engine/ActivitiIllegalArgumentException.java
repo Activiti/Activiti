@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine;
 
 /**
@@ -24,13 +23,13 @@ package org.activiti.engine;
  */
 public class ActivitiIllegalArgumentException extends ActivitiException {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  public ActivitiIllegalArgumentException(String message) {
-    super(message);
-  }
+    public ActivitiIllegalArgumentException(String message) {
+        super(message);
+    }
 
-  public ActivitiIllegalArgumentException(String message, Throwable cause) {
-    super(message, cause);
-  }
+    public ActivitiIllegalArgumentException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }

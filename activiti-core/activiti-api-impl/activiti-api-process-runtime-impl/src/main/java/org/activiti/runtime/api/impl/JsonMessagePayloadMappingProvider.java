@@ -17,7 +17,6 @@ package org.activiti.runtime.api.impl;
 
 import java.util.Map;
 import java.util.Optional;
-
 import org.activiti.bpmn.model.Event;
 import org.activiti.bpmn.model.MessageEventDefinition;
 import org.activiti.engine.delegate.DelegateExecution;
@@ -25,26 +24,32 @@ import org.activiti.engine.impl.bpmn.behavior.VariablesCalculator;
 import org.activiti.engine.impl.delegate.MessagePayloadMappingProvider;
 import org.activiti.engine.impl.el.ExpressionManager;
 
-public class JsonMessagePayloadMappingProvider implements MessagePayloadMappingProvider {
+public class JsonMessagePayloadMappingProvider
+    implements MessagePayloadMappingProvider {
 
     private final Event bpmnEvent;
     private final MessageEventDefinition messageEventDefinition;
     private final ExpressionManager expressionManager;
     private final VariablesCalculator variablesCalculator;
 
-    public JsonMessagePayloadMappingProvider(Event bpmnEvent,
-                                             MessageEventDefinition messageEventDefinition,
-                                             ExpressionManager expressionManager,
-                                             VariablesCalculator variablesCalculator) {
+    public JsonMessagePayloadMappingProvider(
+        Event bpmnEvent,
+        MessageEventDefinition messageEventDefinition,
+        ExpressionManager expressionManager,
+        VariablesCalculator variablesCalculator
+    ) {
         this.bpmnEvent = bpmnEvent;
         this.messageEventDefinition = messageEventDefinition;
         this.expressionManager = expressionManager;
         this.variablesCalculator = variablesCalculator;
     }
 
-    public Optional<Map<String, Object>> getMessagePayload(DelegateExecution execution) {
-        return Optional.of(variablesCalculator.calculateInputVariables(execution))
-                       .filter(payload -> !payload.isEmpty());
+    public Optional<Map<String, Object>> getMessagePayload(
+        DelegateExecution execution
+    ) {
+        return Optional
+            .of(variablesCalculator.calculateInputVariables(execution))
+            .filter(payload -> !payload.isEmpty());
     }
 
     public Event getBpmnEvent() {

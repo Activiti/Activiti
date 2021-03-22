@@ -16,7 +16,6 @@
 package org.activiti.spring.boot.process;
 
 import java.util.List;
-
 import org.activiti.api.model.shared.model.VariableInstance;
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
@@ -31,36 +30,57 @@ import org.springframework.stereotype.Component;
 @Component
 public class ProcessBaseRuntime {
 
-    public static final Pageable DEFAULT_PAGEABLE = Pageable.of(0,
-                                                                50);
+    public static final Pageable DEFAULT_PAGEABLE = Pageable.of(0, 50);
+
     @Autowired
     private ProcessRuntime processRuntime;
 
     @Autowired
     private SecurityUtil securityUtil;
 
-    public ProcessInstance startProcessWithProcessDefinitionKey(String processDefinitionKey) {
+    public ProcessInstance startProcessWithProcessDefinitionKey(
+        String processDefinitionKey
+    ) {
         securityUtil.logInAs("user");
-        return processRuntime.start(ProcessPayloadBuilder.start()
-        .withProcessDefinitionKey(processDefinitionKey)
-        .build());
+        return processRuntime.start(
+            ProcessPayloadBuilder
+                .start()
+                .withProcessDefinitionKey(processDefinitionKey)
+                .build()
+        );
     }
 
     public List<ProcessInstance> getProcessInstances() {
         return processRuntime
-                .processInstances(DEFAULT_PAGEABLE, ProcessPayloadBuilder.processInstances().build()).getContent();
+            .processInstances(
+                DEFAULT_PAGEABLE,
+                ProcessPayloadBuilder.processInstances().build()
+            )
+            .getContent();
     }
+
     public Page<ProcessInstance> getProcessInstancesPage() {
         return processRuntime.processInstances(DEFAULT_PAGEABLE);
     }
 
-    public Page<ProcessInstance> getChildrenProcessInstances(String parentProcessId) {
-        return processRuntime.processInstances(DEFAULT_PAGEABLE,
-                                               ProcessPayloadBuilder.subprocesses(parentProcessId));
+    public Page<ProcessInstance> getChildrenProcessInstances(
+        String parentProcessId
+    ) {
+        return processRuntime.processInstances(
+            DEFAULT_PAGEABLE,
+            ProcessPayloadBuilder.subprocesses(parentProcessId)
+        );
     }
 
-    public List<VariableInstance> getProcessVariablesByProcessId(String processId) {
-        return processRuntime.variables(ProcessPayloadBuilder.variables().withProcessInstanceId(processId).build());
+    public List<VariableInstance> getProcessVariablesByProcessId(
+        String processId
+    ) {
+        return processRuntime.variables(
+            ProcessPayloadBuilder
+                .variables()
+                .withProcessInstanceId(processId)
+                .build()
+        );
     }
 
     public ProcessInstance delete(String processInstanceId) {
@@ -68,22 +88,29 @@ public class ProcessBaseRuntime {
     }
 
     public ProcessInstance delete(String processInstanceId, String reason) {
-        return processRuntime.delete(new DeleteProcessPayload(processInstanceId, reason));
+        return processRuntime.delete(
+            new DeleteProcessPayload(processInstanceId, reason)
+        );
     }
 
     public void signal(String signalName) {
-        processRuntime.signal(ProcessPayloadBuilder.signal().withName(signalName).build());
+        processRuntime.signal(
+            ProcessPayloadBuilder.signal().withName(signalName).build()
+        );
     }
 
-    public List<VariableInstance> getVariables(ProcessInstance processInstance) {
-        return processRuntime.variables(ProcessPayloadBuilder
-            .variables()
-            .withProcessInstance(processInstance)
-            .build());
+    public List<VariableInstance> getVariables(
+        ProcessInstance processInstance
+    ) {
+        return processRuntime.variables(
+            ProcessPayloadBuilder
+                .variables()
+                .withProcessInstance(processInstance)
+                .build()
+        );
     }
 
     public ProcessRuntime getProcessRuntime() {
         return processRuntime;
     }
-
 }

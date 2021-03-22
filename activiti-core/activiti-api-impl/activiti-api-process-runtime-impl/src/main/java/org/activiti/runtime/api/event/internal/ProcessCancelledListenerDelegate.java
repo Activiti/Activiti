@@ -29,8 +29,10 @@ public class ProcessCancelledListenerDelegate implements ActivitiEventListener {
 
     private ToProcessCancelledConverter processCancelledConverter;
 
-    public ProcessCancelledListenerDelegate(List<ProcessRuntimeEventListener<ProcessCancelledEvent>> listeners,
-                                            ToProcessCancelledConverter processCancelledConverter) {
+    public ProcessCancelledListenerDelegate(
+        List<ProcessRuntimeEventListener<ProcessCancelledEvent>> listeners,
+        ToProcessCancelledConverter processCancelledConverter
+    ) {
         this.processRuntimeEventListeners = listeners;
         this.processCancelledConverter = processCancelledConverter;
     }
@@ -38,12 +40,15 @@ public class ProcessCancelledListenerDelegate implements ActivitiEventListener {
     @Override
     public void onEvent(ActivitiEvent event) {
         if (event instanceof ActivitiProcessCancelledEvent) {
-            processCancelledConverter.from((ActivitiProcessCancelledEvent) event)
-                    .ifPresent(convertedEvent -> {
-                        for ( ProcessRuntimeEventListener<ProcessCancelledEvent> listener : processRuntimeEventListeners ) {
+            processCancelledConverter
+                .from((ActivitiProcessCancelledEvent) event)
+                .ifPresent(
+                    convertedEvent -> {
+                        for (ProcessRuntimeEventListener<ProcessCancelledEvent> listener : processRuntimeEventListeners) {
                             listener.onEvent(convertedEvent);
                         }
-                    });
+                    }
+                );
         }
     }
 

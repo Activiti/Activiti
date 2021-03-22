@@ -14,12 +14,10 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.history;
 
 import java.util.Date;
 import java.util.Map;
-
 import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.runtime.ProcessInstance;
 
@@ -29,82 +27,81 @@ import org.activiti.engine.runtime.ProcessInstance;
  */
 @Internal
 public interface HistoricProcessInstance {
+    /**
+     * The process instance id (== as the id for the runtime {@link ProcessInstance process instance}).
+     */
+    String getId();
 
-  /**
-   * The process instance id (== as the id for the runtime {@link ProcessInstance process instance}).
-   */
-  String getId();
+    /** The user provided unique reference to this process instance. */
+    String getBusinessKey();
 
-  /** The user provided unique reference to this process instance. */
-  String getBusinessKey();
+    /** The process definition reference. */
+    String getProcessDefinitionId();
 
-  /** The process definition reference. */
-  String getProcessDefinitionId();
+    /** The name of the process definition of the process instance. */
+    String getProcessDefinitionName();
 
-  /** The name of the process definition of the process instance. */
-  String getProcessDefinitionName();
+    /** The key of the process definition of the process instance. */
+    String getProcessDefinitionKey();
 
-  /** The key of the process definition of the process instance. */
-  String getProcessDefinitionKey();
+    /** The version of the process definition of the process instance. */
+    Integer getProcessDefinitionVersion();
 
-  /** The version of the process definition of the process instance. */
-  Integer getProcessDefinitionVersion();
+    /**
+     * The deployment id of the process definition of the process instance.
+     */
+    String getDeploymentId();
 
-  /**
-   * The deployment id of the process definition of the process instance.
-   */
-  String getDeploymentId();
+    /** The time the process was started. */
+    Date getStartTime();
 
-  /** The time the process was started. */
-  Date getStartTime();
+    /** The time the process was ended. */
+    Date getEndTime();
 
-  /** The time the process was ended. */
-  Date getEndTime();
+    /**
+     * The difference between {@link #getEndTime()} and {@link #getStartTime()} .
+     */
+    Long getDurationInMillis();
 
-  /**
-   * The difference between {@link #getEndTime()} and {@link #getStartTime()} .
-   */
-  Long getDurationInMillis();
+    /**
+     * Reference to the activity in which this process instance ended. Note that a process instance can have multiple end events, in this case it might not be deterministic which activity id will be
+     * referenced here. Use a {@link HistoricActivityInstanceQuery} instead to query for end events of the process instance (use the activityTYpe attribute)
+     * */
+    String getEndActivityId();
 
-  /**
-   * Reference to the activity in which this process instance ended. Note that a process instance can have multiple end events, in this case it might not be deterministic which activity id will be
-   * referenced here. Use a {@link HistoricActivityInstanceQuery} instead to query for end events of the process instance (use the activityTYpe attribute)
-   * */
-  String getEndActivityId();
+    /**
+     * The authenticated user that started this process instance.
+     *
+     * @see IdentityService#setAuthenticatedUserId(String)
+     */
+    String getStartUserId();
 
-  /**
-   * The authenticated user that started this process instance.
-   *
-   * @see IdentityService#setAuthenticatedUserId(String)
-   */
-  String getStartUserId();
+    /** The start activity. */
+    String getStartActivityId();
 
-  /** The start activity. */
-  String getStartActivityId();
+    /** Obtains the reason for the process instance's deletion. */
+    String getDeleteReason();
 
-  /** Obtains the reason for the process instance's deletion. */
-  String getDeleteReason();
+    /**
+     * The process instance id of a potential super process instance or null if no super process instance exists
+     */
+    String getSuperProcessInstanceId();
 
-  /**
-   * The process instance id of a potential super process instance or null if no super process instance exists
-   */
-  String getSuperProcessInstanceId();
+    /**
+     * The tenant identifier for the process instance.
+     */
+    String getTenantId();
 
-  /**
-   * The tenant identifier for the process instance.
-   */
-  String getTenantId();
+    /**
+     * The name for the process instance.
+     */
+    String getName();
 
-  /**
-   * The name for the process instance.
-   */
-  String getName();
+    /**
+     * The description for the process instance.
+     */
+    String getDescription();
 
-  /**
-   * The description for the process instance.
-   */
-  String getDescription();
-
-  /** Returns the process variables if requested in the process instance query */
-  Map<String, Object> getProcessVariables();
+    /** Returns the process variables if requested in the process instance query */
+    Map<String, Object> getProcessVariables();
 }

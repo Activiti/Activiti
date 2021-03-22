@@ -17,7 +17,6 @@
 package org.activiti.engine.impl.bpmn.listener;
 
 import java.util.Map;
-
 import org.activiti.bpmn.model.FlowElement;
 
 /**
@@ -25,39 +24,43 @@ import org.activiti.bpmn.model.FlowElement;
  */
 public class TransactionDependentExecutionListenerExecutionScope {
 
-  protected final String processInstanceId;
-  protected final String executionId;
-  protected final FlowElement flowElement;
-  protected final Map<String, Object> executionVariables;
-  protected final Map<String, Object> customPropertiesMap;
+    protected final String processInstanceId;
+    protected final String executionId;
+    protected final FlowElement flowElement;
+    protected final Map<String, Object> executionVariables;
+    protected final Map<String, Object> customPropertiesMap;
 
-  public TransactionDependentExecutionListenerExecutionScope(String processInstanceId, String executionId,
-                                                             FlowElement flowElement, Map<String, Object> executionVariables,
-                                                             Map<String, Object> customPropertiesMap) {
-    this.processInstanceId = processInstanceId;
-    this.executionId = executionId;
-    this.flowElement = flowElement;
-    this.executionVariables = executionVariables;
-    this.customPropertiesMap = customPropertiesMap;
-  }
+    public TransactionDependentExecutionListenerExecutionScope(
+        String processInstanceId,
+        String executionId,
+        FlowElement flowElement,
+        Map<String, Object> executionVariables,
+        Map<String, Object> customPropertiesMap
+    ) {
+        this.processInstanceId = processInstanceId;
+        this.executionId = executionId;
+        this.flowElement = flowElement;
+        this.executionVariables = executionVariables;
+        this.customPropertiesMap = customPropertiesMap;
+    }
 
-  public String getProcessInstanceId() {
-    return processInstanceId;
-  }
+    public String getProcessInstanceId() {
+        return processInstanceId;
+    }
 
-  public String getExecutionId() {
-    return executionId;
-  }
+    public String getExecutionId() {
+        return executionId;
+    }
 
-  public FlowElement getFlowElement() {
-    return flowElement;
-  }
+    public FlowElement getFlowElement() {
+        return flowElement;
+    }
 
-  public Map<String, Object> getExecutionVariables() {
-    return executionVariables;
-  }
+    public Map<String, Object> getExecutionVariables() {
+        return executionVariables;
+    }
 
-  public Map<String, Object> getCustomPropertiesMap() {
-    return customPropertiesMap;
-  }
+    public Map<String, Object> getCustomPropertiesMap() {
+        return customPropertiesMap;
+    }
 }

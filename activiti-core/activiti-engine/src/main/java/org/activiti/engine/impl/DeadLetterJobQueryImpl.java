@@ -14,13 +14,11 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl;
 
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
-
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -32,274 +30,297 @@ import org.activiti.engine.runtime.Job;
 
 
  */
-public class DeadLetterJobQueryImpl extends AbstractQuery<DeadLetterJobQuery, Job> implements DeadLetterJobQuery, Serializable {
+public class DeadLetterJobQueryImpl
+    extends AbstractQuery<DeadLetterJobQuery, Job>
+    implements DeadLetterJobQuery, Serializable {
 
-  private static final long serialVersionUID = 1L;
-  protected String id;
-  protected String processInstanceId;
-  protected String executionId;
-  protected String processDefinitionId;
-  protected boolean executable;
-  protected boolean onlyTimers;
-  protected boolean onlyMessages;
-  protected Date duedateHigherThan;
-  protected Date duedateLowerThan;
-  protected Date duedateHigherThanOrEqual;
-  protected Date duedateLowerThanOrEqual;
-  protected boolean withException;
-  protected String exceptionMessage;
-  protected String tenantId;
-  protected String tenantIdLike;
-  protected boolean withoutTenantId;
+    private static final long serialVersionUID = 1L;
+    protected String id;
+    protected String processInstanceId;
+    protected String executionId;
+    protected String processDefinitionId;
+    protected boolean executable;
+    protected boolean onlyTimers;
+    protected boolean onlyMessages;
+    protected Date duedateHigherThan;
+    protected Date duedateLowerThan;
+    protected Date duedateHigherThanOrEqual;
+    protected Date duedateLowerThanOrEqual;
+    protected boolean withException;
+    protected String exceptionMessage;
+    protected String tenantId;
+    protected String tenantIdLike;
+    protected boolean withoutTenantId;
 
-  public DeadLetterJobQueryImpl() {
-  }
+    public DeadLetterJobQueryImpl() {}
 
-  public DeadLetterJobQueryImpl(CommandContext commandContext) {
-    super(commandContext);
-  }
-
-  public DeadLetterJobQueryImpl(CommandExecutor commandExecutor) {
-    super(commandExecutor);
-  }
-
-  public DeadLetterJobQueryImpl jobId(String jobId) {
-    if (jobId == null) {
-      throw new ActivitiIllegalArgumentException("Provided job id is null");
+    public DeadLetterJobQueryImpl(CommandContext commandContext) {
+        super(commandContext);
     }
-    this.id = jobId;
-    return this;
-  }
 
-  public DeadLetterJobQueryImpl processInstanceId(String processInstanceId) {
-    if (processInstanceId == null) {
-      throw new ActivitiIllegalArgumentException("Provided process instance id is null");
+    public DeadLetterJobQueryImpl(CommandExecutor commandExecutor) {
+        super(commandExecutor);
     }
-    this.processInstanceId = processInstanceId;
-    return this;
-  }
 
-  public DeadLetterJobQueryImpl processDefinitionId(String processDefinitionId) {
-    if (processDefinitionId == null) {
-      throw new ActivitiIllegalArgumentException("Provided process definition id is null");
+    public DeadLetterJobQueryImpl jobId(String jobId) {
+        if (jobId == null) {
+            throw new ActivitiIllegalArgumentException(
+                "Provided job id is null"
+            );
+        }
+        this.id = jobId;
+        return this;
     }
-    this.processDefinitionId = processDefinitionId;
-    return this;
-  }
 
-  public DeadLetterJobQueryImpl executionId(String executionId) {
-    if (executionId == null) {
-      throw new ActivitiIllegalArgumentException("Provided execution id is null");
+    public DeadLetterJobQueryImpl processInstanceId(String processInstanceId) {
+        if (processInstanceId == null) {
+            throw new ActivitiIllegalArgumentException(
+                "Provided process instance id is null"
+            );
+        }
+        this.processInstanceId = processInstanceId;
+        return this;
     }
-    this.executionId = executionId;
-    return this;
-  }
 
-  public DeadLetterJobQueryImpl executable() {
-    executable = true;
-    return this;
-  }
-
-  public DeadLetterJobQueryImpl timers() {
-    if (onlyMessages) {
-      throw new ActivitiIllegalArgumentException("Cannot combine onlyTimers() with onlyMessages() in the same query");
+    public DeadLetterJobQueryImpl processDefinitionId(
+        String processDefinitionId
+    ) {
+        if (processDefinitionId == null) {
+            throw new ActivitiIllegalArgumentException(
+                "Provided process definition id is null"
+            );
+        }
+        this.processDefinitionId = processDefinitionId;
+        return this;
     }
-    this.onlyTimers = true;
-    return this;
-  }
 
-  public DeadLetterJobQueryImpl messages() {
-    if (onlyTimers) {
-      throw new ActivitiIllegalArgumentException("Cannot combine onlyTimers() with onlyMessages() in the same query");
+    public DeadLetterJobQueryImpl executionId(String executionId) {
+        if (executionId == null) {
+            throw new ActivitiIllegalArgumentException(
+                "Provided execution id is null"
+            );
+        }
+        this.executionId = executionId;
+        return this;
     }
-    this.onlyMessages = true;
-    return this;
-  }
 
-  public DeadLetterJobQueryImpl duedateHigherThan(Date date) {
-    if (date == null) {
-      throw new ActivitiIllegalArgumentException("Provided date is null");
+    public DeadLetterJobQueryImpl executable() {
+        executable = true;
+        return this;
     }
-    this.duedateHigherThan = date;
-    return this;
-  }
 
-  public DeadLetterJobQueryImpl duedateLowerThan(Date date) {
-    if (date == null) {
-      throw new ActivitiIllegalArgumentException("Provided date is null");
+    public DeadLetterJobQueryImpl timers() {
+        if (onlyMessages) {
+            throw new ActivitiIllegalArgumentException(
+                "Cannot combine onlyTimers() with onlyMessages() in the same query"
+            );
+        }
+        this.onlyTimers = true;
+        return this;
     }
-    this.duedateLowerThan = date;
-    return this;
-  }
 
-  public DeadLetterJobQueryImpl duedateHigherThen(Date date) {
-    return duedateHigherThan(date);
-  }
-
-  public DeadLetterJobQueryImpl duedateHigherThenOrEquals(Date date) {
-    if (date == null) {
-      throw new ActivitiIllegalArgumentException("Provided date is null");
+    public DeadLetterJobQueryImpl messages() {
+        if (onlyTimers) {
+            throw new ActivitiIllegalArgumentException(
+                "Cannot combine onlyTimers() with onlyMessages() in the same query"
+            );
+        }
+        this.onlyMessages = true;
+        return this;
     }
-    this.duedateHigherThanOrEqual = date;
-    return this;
-  }
 
-  public DeadLetterJobQueryImpl duedateLowerThen(Date date) {
-    return duedateLowerThan(date);
-  }
-
-  public DeadLetterJobQueryImpl duedateLowerThenOrEquals(Date date) {
-    if (date == null) {
-      throw new ActivitiIllegalArgumentException("Provided date is null");
+    public DeadLetterJobQueryImpl duedateHigherThan(Date date) {
+        if (date == null) {
+            throw new ActivitiIllegalArgumentException("Provided date is null");
+        }
+        this.duedateHigherThan = date;
+        return this;
     }
-    this.duedateLowerThanOrEqual = date;
-    return this;
-  }
 
-  public DeadLetterJobQueryImpl withException() {
-    this.withException = true;
-    return this;
-  }
-
-  public DeadLetterJobQueryImpl exceptionMessage(String exceptionMessage) {
-    if (exceptionMessage == null) {
-      throw new ActivitiIllegalArgumentException("Provided exception message is null");
+    public DeadLetterJobQueryImpl duedateLowerThan(Date date) {
+        if (date == null) {
+            throw new ActivitiIllegalArgumentException("Provided date is null");
+        }
+        this.duedateLowerThan = date;
+        return this;
     }
-    this.exceptionMessage = exceptionMessage;
-    return this;
-  }
 
-  public DeadLetterJobQueryImpl jobTenantId(String tenantId) {
-    if (tenantId == null) {
-      throw new ActivitiIllegalArgumentException("job is null");
+    public DeadLetterJobQueryImpl duedateHigherThen(Date date) {
+        return duedateHigherThan(date);
     }
-    this.tenantId = tenantId;
-    return this;
-  }
 
-  public DeadLetterJobQueryImpl jobTenantIdLike(String tenantIdLike) {
-    if (tenantIdLike == null) {
-      throw new ActivitiIllegalArgumentException("job is null");
+    public DeadLetterJobQueryImpl duedateHigherThenOrEquals(Date date) {
+        if (date == null) {
+            throw new ActivitiIllegalArgumentException("Provided date is null");
+        }
+        this.duedateHigherThanOrEqual = date;
+        return this;
     }
-    this.tenantIdLike = tenantIdLike;
-    return this;
-  }
 
-  public DeadLetterJobQueryImpl jobWithoutTenantId() {
-    this.withoutTenantId = true;
-    return this;
-  }
+    public DeadLetterJobQueryImpl duedateLowerThen(Date date) {
+        return duedateLowerThan(date);
+    }
 
-  // sorting //////////////////////////////////////////
+    public DeadLetterJobQueryImpl duedateLowerThenOrEquals(Date date) {
+        if (date == null) {
+            throw new ActivitiIllegalArgumentException("Provided date is null");
+        }
+        this.duedateLowerThanOrEqual = date;
+        return this;
+    }
 
-  public DeadLetterJobQuery orderByJobDuedate() {
-    return orderBy(JobQueryProperty.DUEDATE);
-  }
+    public DeadLetterJobQueryImpl withException() {
+        this.withException = true;
+        return this;
+    }
 
-  public DeadLetterJobQuery orderByExecutionId() {
-    return orderBy(JobQueryProperty.EXECUTION_ID);
-  }
+    public DeadLetterJobQueryImpl exceptionMessage(String exceptionMessage) {
+        if (exceptionMessage == null) {
+            throw new ActivitiIllegalArgumentException(
+                "Provided exception message is null"
+            );
+        }
+        this.exceptionMessage = exceptionMessage;
+        return this;
+    }
 
-  public DeadLetterJobQuery orderByJobId() {
-    return orderBy(JobQueryProperty.JOB_ID);
-  }
+    public DeadLetterJobQueryImpl jobTenantId(String tenantId) {
+        if (tenantId == null) {
+            throw new ActivitiIllegalArgumentException("job is null");
+        }
+        this.tenantId = tenantId;
+        return this;
+    }
 
-  public DeadLetterJobQuery orderByProcessInstanceId() {
-    return orderBy(JobQueryProperty.PROCESS_INSTANCE_ID);
-  }
+    public DeadLetterJobQueryImpl jobTenantIdLike(String tenantIdLike) {
+        if (tenantIdLike == null) {
+            throw new ActivitiIllegalArgumentException("job is null");
+        }
+        this.tenantIdLike = tenantIdLike;
+        return this;
+    }
 
-  public DeadLetterJobQuery orderByJobRetries() {
-    return orderBy(JobQueryProperty.RETRIES);
-  }
+    public DeadLetterJobQueryImpl jobWithoutTenantId() {
+        this.withoutTenantId = true;
+        return this;
+    }
 
-  public DeadLetterJobQuery orderByTenantId() {
-    return orderBy(JobQueryProperty.TENANT_ID);
-  }
+    // sorting //////////////////////////////////////////
 
-  // results //////////////////////////////////////////
+    public DeadLetterJobQuery orderByJobDuedate() {
+        return orderBy(JobQueryProperty.DUEDATE);
+    }
 
-  public long executeCount(CommandContext commandContext) {
-    checkQueryOk();
-    return commandContext.getDeadLetterJobEntityManager().findJobCountByQueryCriteria(this);
-  }
+    public DeadLetterJobQuery orderByExecutionId() {
+        return orderBy(JobQueryProperty.EXECUTION_ID);
+    }
 
-  public List<Job> executeList(CommandContext commandContext, Page page) {
-    checkQueryOk();
-    return commandContext.getDeadLetterJobEntityManager().findJobsByQueryCriteria(this, page);
-  }
+    public DeadLetterJobQuery orderByJobId() {
+        return orderBy(JobQueryProperty.JOB_ID);
+    }
 
-  // getters //////////////////////////////////////////
+    public DeadLetterJobQuery orderByProcessInstanceId() {
+        return orderBy(JobQueryProperty.PROCESS_INSTANCE_ID);
+    }
 
-  public String getProcessInstanceId() {
-    return processInstanceId;
-  }
+    public DeadLetterJobQuery orderByJobRetries() {
+        return orderBy(JobQueryProperty.RETRIES);
+    }
 
-  public String getExecutionId() {
-    return executionId;
-  }
+    public DeadLetterJobQuery orderByTenantId() {
+        return orderBy(JobQueryProperty.TENANT_ID);
+    }
 
-  public boolean getExecutable() {
-    return executable;
-  }
+    // results //////////////////////////////////////////
 
-  public Date getNow() {
-    return Context.getProcessEngineConfiguration().getClock().getCurrentTime();
-  }
+    public long executeCount(CommandContext commandContext) {
+        checkQueryOk();
+        return commandContext
+            .getDeadLetterJobEntityManager()
+            .findJobCountByQueryCriteria(this);
+    }
 
-  public boolean isWithException() {
-    return withException;
-  }
+    public List<Job> executeList(CommandContext commandContext, Page page) {
+        checkQueryOk();
+        return commandContext
+            .getDeadLetterJobEntityManager()
+            .findJobsByQueryCriteria(this, page);
+    }
 
-  public String getExceptionMessage() {
-    return exceptionMessage;
-  }
+    // getters //////////////////////////////////////////
 
-  public String getTenantId() {
-    return tenantId;
-  }
+    public String getProcessInstanceId() {
+        return processInstanceId;
+    }
 
-  public String getTenantIdLike() {
-    return tenantIdLike;
-  }
+    public String getExecutionId() {
+        return executionId;
+    }
 
-  public boolean isWithoutTenantId() {
-    return withoutTenantId;
-  }
+    public boolean getExecutable() {
+        return executable;
+    }
 
-  public static long getSerialversionuid() {
-    return serialVersionUID;
-  }
+    public Date getNow() {
+        return Context
+            .getProcessEngineConfiguration()
+            .getClock()
+            .getCurrentTime();
+    }
 
-  public String getId() {
-    return id;
-  }
+    public boolean isWithException() {
+        return withException;
+    }
 
-  public String getProcessDefinitionId() {
-    return processDefinitionId;
-  }
+    public String getExceptionMessage() {
+        return exceptionMessage;
+    }
 
-  public boolean isOnlyTimers() {
-    return onlyTimers;
-  }
+    public String getTenantId() {
+        return tenantId;
+    }
 
-  public boolean isOnlyMessages() {
-    return onlyMessages;
-  }
+    public String getTenantIdLike() {
+        return tenantIdLike;
+    }
 
-  public Date getDuedateHigherThan() {
-    return duedateHigherThan;
-  }
+    public boolean isWithoutTenantId() {
+        return withoutTenantId;
+    }
 
-  public Date getDuedateLowerThan() {
-    return duedateLowerThan;
-  }
+    public static long getSerialversionuid() {
+        return serialVersionUID;
+    }
 
-  public Date getDuedateHigherThanOrEqual() {
-    return duedateHigherThanOrEqual;
-  }
+    public String getId() {
+        return id;
+    }
 
-  public Date getDuedateLowerThanOrEqual() {
-    return duedateLowerThanOrEqual;
-  }
+    public String getProcessDefinitionId() {
+        return processDefinitionId;
+    }
 
+    public boolean isOnlyTimers() {
+        return onlyTimers;
+    }
+
+    public boolean isOnlyMessages() {
+        return onlyMessages;
+    }
+
+    public Date getDuedateHigherThan() {
+        return duedateHigherThan;
+    }
+
+    public Date getDuedateLowerThan() {
+        return duedateLowerThan;
+    }
+
+    public Date getDuedateHigherThanOrEqual() {
+        return duedateHigherThanOrEqual;
+    }
+
+    public Date getDuedateLowerThanOrEqual() {
+        return duedateLowerThanOrEqual;
+    }
 }

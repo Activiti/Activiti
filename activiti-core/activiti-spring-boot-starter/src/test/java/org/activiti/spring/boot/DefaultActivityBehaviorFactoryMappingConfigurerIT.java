@@ -15,13 +15,13 @@
  */
 package org.activiti.spring.boot;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.activiti.runtime.api.impl.MappingAwareActivityBehaviorFactory;
 import org.activiti.spring.SpringProcessEngineConfiguration;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 public class DefaultActivityBehaviorFactoryMappingConfigurerIT {
@@ -30,13 +30,14 @@ public class DefaultActivityBehaviorFactoryMappingConfigurerIT {
     private SpringProcessEngineConfiguration processEngineConfiguration;
 
     @Test
-    public void processEngineConfigurationShouldHaveSetMappingAwareActivityBehaviorFactoryAsActivityBehaviorFactory(){
+    public void processEngineConfigurationShouldHaveSetMappingAwareActivityBehaviorFactoryAsActivityBehaviorFactory() {
         assertThat(processEngineConfiguration.getActivityBehaviorFactory())
-                .isInstanceOf(MappingAwareActivityBehaviorFactory.class);
-        assertThat(processEngineConfiguration.getBpmnParser().getActivityBehaviorFactory())
-                .isInstanceOf(MappingAwareActivityBehaviorFactory.class);
-
+            .isInstanceOf(MappingAwareActivityBehaviorFactory.class);
+        assertThat(
+            processEngineConfiguration
+                .getBpmnParser()
+                .getActivityBehaviorFactory()
+        )
+            .isInstanceOf(MappingAwareActivityBehaviorFactory.class);
     }
-
-
 }

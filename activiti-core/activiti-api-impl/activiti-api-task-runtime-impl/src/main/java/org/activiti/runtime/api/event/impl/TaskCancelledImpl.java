@@ -20,7 +20,9 @@ import org.activiti.api.task.model.Task;
 import org.activiti.api.task.model.events.TaskRuntimeEvent;
 import org.activiti.api.task.runtime.events.TaskCancelledEvent;
 
-public class TaskCancelledImpl extends RuntimeEventImpl<Task, TaskRuntimeEvent.TaskEvents> implements TaskCancelledEvent {
+public class TaskCancelledImpl
+    extends RuntimeEventImpl<Task, TaskRuntimeEvent.TaskEvents>
+    implements TaskCancelledEvent {
 
     private final String reason;
 
@@ -34,8 +36,7 @@ public class TaskCancelledImpl extends RuntimeEventImpl<Task, TaskRuntimeEvent.T
         return TaskRuntimeEvent.TaskEvents.TASK_CANCELLED;
     }
 
-    public String getReason(){
+    public String getReason() {
         return reason;
     }
-
 }

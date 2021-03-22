@@ -28,96 +28,98 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
  */
 public class WatchDogAgendaFactory implements ActivitiEngineAgendaFactory {
 
-  @Override
-  public ActivitiEngineAgenda createAgenda(CommandContext commandContext) {
-    return new WatchDogAgenda(new DefaultActivitiEngineAgenda(commandContext));
-  }
-
-  private static class WatchDogAgenda implements ActivitiEngineAgenda {
-
-    private static final int WATCH_DOG_LIMIT = 10;
-
-    private final ActivitiEngineAgenda agenda;
-    private int counter;
-
-    private WatchDogAgenda(ActivitiEngineAgenda agenda) {
-      this.agenda = agenda;
-    }
-
     @Override
-    public boolean isEmpty() {
-      return agenda.isEmpty();
+    public ActivitiEngineAgenda createAgenda(CommandContext commandContext) {
+        return new WatchDogAgenda(
+            new DefaultActivitiEngineAgenda(commandContext)
+        );
     }
 
-    @Override
-    public Runnable getNextOperation() {
-      if (counter<WATCH_DOG_LIMIT) {
-        counter++;
-        return agenda.getNextOperation();
-      }
-      throw new ActivitiException("WatchDog limit exceeded.");
+    private static class WatchDogAgenda implements ActivitiEngineAgenda {
+
+        private static final int WATCH_DOG_LIMIT = 10;
+
+        private final ActivitiEngineAgenda agenda;
+        private int counter;
+
+        private WatchDogAgenda(ActivitiEngineAgenda agenda) {
+            this.agenda = agenda;
+        }
+
+        @Override
+        public boolean isEmpty() {
+            return agenda.isEmpty();
+        }
+
+        @Override
+        public Runnable getNextOperation() {
+            if (counter < WATCH_DOG_LIMIT) {
+                counter++;
+                return agenda.getNextOperation();
+            }
+            throw new ActivitiException("WatchDog limit exceeded.");
+        }
+
+        @Override
+        public void planOperation(Runnable operation) {
+            agenda.planOperation(operation);
+        }
+
+        @Override
+        public void planContinueProcessOperation(ExecutionEntity execution) {
+            agenda.planContinueProcessOperation(execution);
+        }
+
+        @Override
+        public void planContinueProcessSynchronousOperation(
+            ExecutionEntity execution
+        ) {
+            agenda.planContinueProcessSynchronousOperation(execution);
+        }
+
+        @Override
+        public void planContinueProcessInCompensation(
+            ExecutionEntity execution
+        ) {
+            agenda.planContinueProcessInCompensation(execution);
+        }
+
+        @Override
+        public void planContinueMultiInstanceOperation(
+            ExecutionEntity execution
+        ) {
+            agenda.planContinueMultiInstanceOperation(execution);
+        }
+
+        @Override
+        public void planTakeOutgoingSequenceFlowsOperation(
+            ExecutionEntity execution,
+            boolean evaluateConditions
+        ) {
+            agenda.planTakeOutgoingSequenceFlowsOperation(
+                execution,
+                evaluateConditions
+            );
+        }
+
+        @Override
+        public void planEndExecutionOperation(ExecutionEntity execution) {
+            agenda.planEndExecutionOperation(execution);
+        }
+
+        @Override
+        public void planTriggerExecutionOperation(ExecutionEntity execution) {
+            agenda.planTriggerExecutionOperation(execution);
+        }
+
+        @Override
+        public void planDestroyScopeOperation(ExecutionEntity execution) {
+            agenda.planDestroyScopeOperation(execution);
+        }
+
+        @Override
+        public void planExecuteInactiveBehaviorsOperation() {
+            agenda.planExecuteInactiveBehaviorsOperation();
+        }
     }
-
-    @Override
-    public void planOperation(Runnable operation) {
-      agenda.planOperation(operation);
-    }
-
-
-    @Override
-    public void planContinueProcessOperation(ExecutionEntity execution) {
-      agenda.planContinueProcessOperation(execution);
-
-    }
-
-    @Override
-    public void planContinueProcessSynchronousOperation(ExecutionEntity execution) {
-      agenda.planContinueProcessSynchronousOperation(execution);
-
-    }
-
-    @Override
-    public void planContinueProcessInCompensation(ExecutionEntity execution) {
-      agenda.planContinueProcessInCompensation(execution);
-
-    }
-
-    @Override
-    public void planContinueMultiInstanceOperation(ExecutionEntity execution) {
-      agenda.planContinueMultiInstanceOperation(execution);
-
-    }
-
-    @Override
-    public void planTakeOutgoingSequenceFlowsOperation(ExecutionEntity execution, boolean evaluateConditions) {
-      agenda.planTakeOutgoingSequenceFlowsOperation(execution, evaluateConditions);
-
-    }
-
-    @Override
-    public void planEndExecutionOperation(ExecutionEntity execution) {
-      agenda.planEndExecutionOperation(execution);
-
-    }
-
-    @Override
-    public void planTriggerExecutionOperation(ExecutionEntity execution) {
-      agenda.planTriggerExecutionOperation(execution);
-
-    }
-
-    @Override
-    public void planDestroyScopeOperation(ExecutionEntity execution) {
-      agenda.planDestroyScopeOperation(execution);
-
-    }
-
-    @Override
-    public void planExecuteInactiveBehaviorsOperation() {
-      agenda.planExecuteInactiveBehaviorsOperation();
-
-    }
-
-  }
-
 }

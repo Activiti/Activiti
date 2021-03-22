@@ -15,6 +15,10 @@
  */
 package org.activiti.runtime.api.event.impl;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.MockitoAnnotations.initMocks;
+
 import org.activiti.api.process.model.events.BPMNSignalReceivedEvent;
 import org.activiti.api.runtime.model.impl.BPMNSignalImpl;
 import org.activiti.engine.delegate.event.ActivitiEventType;
@@ -24,10 +28,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.MockitoAnnotations.initMocks;
 
 public class ToSignalReceivedConverterTest {
 
@@ -45,22 +45,26 @@ public class ToSignalReceivedConverterTest {
     @Test
     public void fromShouldReturnConvertedEventAndSetProcessInstanceIdAndProcessDefinitionId() {
         //given
-        ActivitiSignalEventImpl internalEvent = new ActivitiSignalEventImpl(ActivitiEventType.ACTIVITY_SIGNALED);
+        ActivitiSignalEventImpl internalEvent = new ActivitiSignalEventImpl(
+            ActivitiEventType.ACTIVITY_SIGNALED
+        );
         internalEvent.setProcessDefinitionId("procDefId");
         internalEvent.setProcessInstanceId("procInstId");
 
         BPMNSignalImpl bpmnSignal = new BPMNSignalImpl();
         given(toSignalConverter.from(internalEvent)).willReturn(bpmnSignal);
 
-
         //when
-        BPMNSignalReceivedEvent bpmnSignalReceivedEvent = toSignalReceivedConverter.from(internalEvent).orElse(null);
+        BPMNSignalReceivedEvent bpmnSignalReceivedEvent = toSignalReceivedConverter
+            .from(internalEvent)
+            .orElse(null);
 
         //then
         assertThat(bpmnSignalReceivedEvent).isNotNull();
         assertThat(bpmnSignalReceivedEvent.getEntity()).isEqualTo(bpmnSignal);
-        assertThat(bpmnSignalReceivedEvent.getProcessDefinitionId()).isEqualTo("procDefId");
-        assertThat(bpmnSignalReceivedEvent.getProcessInstanceId()).isEqualTo("procInstId");
-
+        assertThat(bpmnSignalReceivedEvent.getProcessDefinitionId())
+            .isEqualTo("procDefId");
+        assertThat(bpmnSignalReceivedEvent.getProcessInstanceId())
+            .isEqualTo("procInstId");
     }
 }

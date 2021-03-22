@@ -21,7 +21,6 @@ public class ExclusiveGatewayMatchers extends ActivityMatchers {
 
     private ExclusiveGatewayMatchers(String definitionKey) {
         super(definitionKey);
-
     }
 
     @Override
@@ -29,7 +28,9 @@ public class ExclusiveGatewayMatchers extends ActivityMatchers {
         return EXCLUSIVE_GATEWAY;
     }
 
-    public static ExclusiveGatewayMatchers exclusiveGateway(String definitionKey) {
+    public static ExclusiveGatewayMatchers exclusiveGateway(
+        String definitionKey
+    ) {
         return new ExclusiveGatewayMatchers(definitionKey);
     }
 }

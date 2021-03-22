@@ -15,22 +15,21 @@
  */
 package org.activiti.application;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.List;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.springframework.core.io.Resource;
-
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.MockitoAnnotations.initMocks;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.springframework.core.io.Resource;
 
 public class ApplicationServiceTest {
 
@@ -52,12 +51,15 @@ public class ApplicationServiceTest {
     public void shouldLoadApplications() throws Exception {
         //given
         Resource applicationResource = mock(Resource.class);
-        given(applicationResource.getInputStream()).willReturn(mock(InputStream.class));
+        given(applicationResource.getInputStream())
+            .willReturn(mock(InputStream.class));
 
-        given(applicationDiscovery.discoverApplications()).willReturn(singletonList(applicationResource));
+        given(applicationDiscovery.discoverApplications())
+            .willReturn(singletonList(applicationResource));
 
         ApplicationContent applicationContent = new ApplicationContent();
-        given(applicationReader.read(applicationResource.getInputStream())).willReturn(applicationContent);
+        given(applicationReader.read(applicationResource.getInputStream()))
+            .willReturn(applicationContent);
 
         //when
         List<ApplicationContent> applicationContents = applicationService.loadApplications();
@@ -67,16 +69,20 @@ public class ApplicationServiceTest {
     }
 
     @Test
-    public void shouldThrowApplicationLoadExceptionWhenIOExceptionOccurs() throws Exception {
+    public void shouldThrowApplicationLoadExceptionWhenIOExceptionOccurs()
+        throws Exception {
         //given
         Resource applicationResource = mock(Resource.class);
         IOException ioException = new IOException();
         given(applicationResource.getInputStream()).willThrow(ioException);
 
-        given(applicationDiscovery.discoverApplications()).willReturn(singletonList(applicationResource));
+        given(applicationDiscovery.discoverApplications())
+            .willReturn(singletonList(applicationResource));
 
         //when
-        Throwable thrown = catchThrowable(() -> applicationService.loadApplications());
+        Throwable thrown = catchThrowable(
+            () -> applicationService.loadApplications()
+        );
 
         //then
         assertThat(thrown)

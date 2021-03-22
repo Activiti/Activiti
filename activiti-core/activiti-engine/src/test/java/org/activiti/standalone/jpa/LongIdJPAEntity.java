@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.standalone.jpa;
 
 import javax.persistence.Column;
@@ -27,15 +26,15 @@ import javax.persistence.Id;
 @Entity(name = "LONG_ID_ENTITY")
 public class LongIdJPAEntity {
 
-  @Id
-  @Column(name = "ID_")
-  private long longId;
+    @Id
+    @Column(name = "ID_")
+    private long longId;
 
-  public long getLongId() {
-    return longId;
-  }
+    public long getLongId() {
+        return longId;
+    }
 
-  public void setLongId(long longId) {
-    this.longId = longId;
-  }
+    public void setLongId(long longId) {
+        this.longId = longId;
+    }
 }

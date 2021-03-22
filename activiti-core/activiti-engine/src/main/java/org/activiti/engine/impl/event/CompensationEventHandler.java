@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.event;
 
+import java.util.List;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.Process;
 import org.activiti.bpmn.model.SubProcess;
@@ -31,58 +31,97 @@ import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 
-import java.util.List;
-
 /**
 
  */
 public class CompensationEventHandler implements EventHandler {
 
-  public String getEventHandlerType() {
-    return CompensateEventSubscriptionEntity.EVENT_TYPE;
-  }
-
-  public void handleEvent(EventSubscriptionEntity eventSubscription, Object payload, CommandContext commandContext) {
-
-    String configuration = eventSubscription.getConfiguration();
-    if (configuration == null) {
-      throw new ActivitiException("Compensating execution not set for compensate event subscription with id " + eventSubscription.getId());
+    public String getEventHandlerType() {
+        return CompensateEventSubscriptionEntity.EVENT_TYPE;
     }
 
-    ExecutionEntity compensatingExecution = commandContext.getExecutionEntityManager().findById(configuration);
-
-    String processDefinitionId = compensatingExecution.getProcessDefinitionId();
-    Process process = ProcessDefinitionUtil.getProcess(processDefinitionId);
-    if (process == null) {
-      throw new ActivitiException("Cannot start process instance. Process model (id = " + processDefinitionId + ") could not be found");
-    }
-
-    FlowElement flowElement = process.getFlowElement(eventSubscription.getActivityId(), true);
-
-    if (flowElement instanceof SubProcess && !((SubProcess) flowElement).isForCompensation()) {
-
-      // descend into scope:
-      compensatingExecution.setScope(true);
-      List<CompensateEventSubscriptionEntity> eventsForThisScope = commandContext.getEventSubscriptionEntityManager().findCompensateEventSubscriptionsByExecutionId(compensatingExecution.getId());
-      ScopeUtil.throwCompensationEvent(eventsForThisScope, compensatingExecution, false);
-
-    } else {
-
-      try {
-
-        if (commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-          commandContext.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
-                ActivitiEventBuilder.createActivityEvent(ActivitiEventType.ACTIVITY_COMPENSATE, flowElement.getId(), flowElement.getName(),
-                    compensatingExecution.getId(), compensatingExecution.getProcessInstanceId(), compensatingExecution.getProcessDefinitionId(), flowElement));
+    public void handleEvent(
+        EventSubscriptionEntity eventSubscription,
+        Object payload,
+        CommandContext commandContext
+    ) {
+        String configuration = eventSubscription.getConfiguration();
+        if (configuration == null) {
+            throw new ActivitiException(
+                "Compensating execution not set for compensate event subscription with id " +
+                eventSubscription.getId()
+            );
         }
-        compensatingExecution.setCurrentFlowElement(flowElement);
-        Context.getAgenda().planContinueProcessInCompensation(compensatingExecution);
 
-      } catch (Exception e) {
-        throw new ActivitiException("Error while handling compensation event " + eventSubscription, e);
-      }
+        ExecutionEntity compensatingExecution = commandContext
+            .getExecutionEntityManager()
+            .findById(configuration);
 
+        String processDefinitionId = compensatingExecution.getProcessDefinitionId();
+        Process process = ProcessDefinitionUtil.getProcess(processDefinitionId);
+        if (process == null) {
+            throw new ActivitiException(
+                "Cannot start process instance. Process model (id = " +
+                processDefinitionId +
+                ") could not be found"
+            );
+        }
+
+        FlowElement flowElement = process.getFlowElement(
+            eventSubscription.getActivityId(),
+            true
+        );
+
+        if (
+            flowElement instanceof SubProcess &&
+            !((SubProcess) flowElement).isForCompensation()
+        ) {
+            // descend into scope:
+            compensatingExecution.setScope(true);
+            List<CompensateEventSubscriptionEntity> eventsForThisScope = commandContext
+                .getEventSubscriptionEntityManager()
+                .findCompensateEventSubscriptionsByExecutionId(
+                    compensatingExecution.getId()
+                );
+            ScopeUtil.throwCompensationEvent(
+                eventsForThisScope,
+                compensatingExecution,
+                false
+            );
+        } else {
+            try {
+                if (
+                    commandContext
+                        .getProcessEngineConfiguration()
+                        .getEventDispatcher()
+                        .isEnabled()
+                ) {
+                    commandContext
+                        .getProcessEngineConfiguration()
+                        .getEventDispatcher()
+                        .dispatchEvent(
+                            ActivitiEventBuilder.createActivityEvent(
+                                ActivitiEventType.ACTIVITY_COMPENSATE,
+                                flowElement.getId(),
+                                flowElement.getName(),
+                                compensatingExecution.getId(),
+                                compensatingExecution.getProcessInstanceId(),
+                                compensatingExecution.getProcessDefinitionId(),
+                                flowElement
+                            )
+                        );
+                }
+                compensatingExecution.setCurrentFlowElement(flowElement);
+                Context
+                    .getAgenda()
+                    .planContinueProcessInCompensation(compensatingExecution);
+            } catch (Exception e) {
+                throw new ActivitiException(
+                    "Error while handling compensation event " +
+                    eventSubscription,
+                    e
+                );
+            }
+        }
     }
-  }
-
 }

@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.test.bpmn.multiinstance;
 
 import org.activiti.engine.delegate.DelegateExecution;
@@ -25,18 +24,16 @@ import org.activiti.engine.delegate.ExecutionListener;
  */
 public class ActivityStartListener implements ExecutionListener {
 
-  public void notify(DelegateExecution execution) {
-
-  	Integer loopCounter = (Integer) execution.getVariable("loopCounter");
-  	if (loopCounter != null) {
-
-	    Integer counter = (Integer) execution.getVariable("executionListenerCounter");
-	    if (counter == null) {
-	      counter = 0;
-	    }
-	    execution.setVariable("executionListenerCounter", ++counter);
-
-  	}
-  }
-
+    public void notify(DelegateExecution execution) {
+        Integer loopCounter = (Integer) execution.getVariable("loopCounter");
+        if (loopCounter != null) {
+            Integer counter = (Integer) execution.getVariable(
+                "executionListenerCounter"
+            );
+            if (counter == null) {
+                counter = 0;
+            }
+            execution.setVariable("executionListenerCounter", ++counter);
+        }
+    }
 }

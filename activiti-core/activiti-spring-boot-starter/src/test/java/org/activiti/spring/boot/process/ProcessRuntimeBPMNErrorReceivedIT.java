@@ -42,9 +42,12 @@ import org.springframework.context.annotation.Import;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 public class ProcessRuntimeBPMNErrorReceivedIT {
 
-    private static final String ERROR_BOUNDARY_EVENT_SUBPROCESS = "errorBoundaryEventSubProcess";
-    private static final String ERROR_START_EVENT_SUBPROCESS = "errorStartEventSubProcess";
-    private static final String ERROR_BOUNDARY_EVENT_CALLACTIVITY = "catchErrorOnCallActivity";
+    private static final String ERROR_BOUNDARY_EVENT_SUBPROCESS =
+        "errorBoundaryEventSubProcess";
+    private static final String ERROR_START_EVENT_SUBPROCESS =
+        "errorStartEventSubProcess";
+    private static final String ERROR_BOUNDARY_EVENT_CALLACTIVITY =
+        "catchErrorOnCallActivity";
 
     @Autowired
     private ProcessRuntime processRuntime;
@@ -67,156 +70,169 @@ public class ProcessRuntimeBPMNErrorReceivedIT {
     }
 
     @AfterEach
-    public void cleanUp(){
+    public void cleanUp() {
         processCleanUpUtil.cleanUpWithAdmin();
         listener.clear();
     }
 
     @Test
-    public void should_CatchSubProcessBoundaryErrorEvent_When_ErrorEndEvenThrown(){
-
+    public void should_CatchSubProcessBoundaryErrorEvent_When_ErrorEndEvenThrown() {
         securityUtil.logInAs("user");
 
         ProcessInstance processInstance = processRuntime.start(
-                ProcessPayloadBuilder
-                        .start()
-                        .withProcessDefinitionKey(ERROR_BOUNDARY_EVENT_SUBPROCESS)
-                        .build());
+            ProcessPayloadBuilder
+                .start()
+                .withProcessDefinitionKey(ERROR_BOUNDARY_EVENT_SUBPROCESS)
+                .build()
+        );
 
         assertThat(processInstance).isNotNull();
 
         checkProcessAndTask(processInstance.getId(), "Task");
 
         assertThat(listener.getErrorReceivedEvents())
-        .isNotEmpty()
-        .extracting(BPMNErrorReceivedEvent::getEventType,
-                    BPMNErrorReceivedEvent::getProcessDefinitionId,
-                    BPMNErrorReceivedEvent::getProcessInstanceId,
-                    event -> event.getEntity().getProcessDefinitionId(),
-                    event -> event.getEntity().getProcessInstanceId(),
-                    event -> event.getEntity().getElementId(),
-                    event -> event.getEntity().getActivityName(),
-                    event -> event.getEntity().getActivityType(),
-                    event -> event.getEntity().getErrorId(),
-                    event -> event.getEntity().getErrorCode()
-        )
-        .contains(Tuple.tuple(BPMNErrorReceivedEvent.ErrorEvents.ERROR_RECEIVED,
-                              processInstance.getProcessDefinitionId(),
-                              processInstance.getId(),
-                              processInstance.getProcessDefinitionId(),
-                              processInstance.getId(),
-                              "catchError",
-                              null,
-                              null,
-                              "errorId",
-                              "123"
-        ));
-
+            .isNotEmpty()
+            .extracting(
+                BPMNErrorReceivedEvent::getEventType,
+                BPMNErrorReceivedEvent::getProcessDefinitionId,
+                BPMNErrorReceivedEvent::getProcessInstanceId,
+                event -> event.getEntity().getProcessDefinitionId(),
+                event -> event.getEntity().getProcessInstanceId(),
+                event -> event.getEntity().getElementId(),
+                event -> event.getEntity().getActivityName(),
+                event -> event.getEntity().getActivityType(),
+                event -> event.getEntity().getErrorId(),
+                event -> event.getEntity().getErrorCode()
+            )
+            .contains(
+                Tuple.tuple(
+                    BPMNErrorReceivedEvent.ErrorEvents.ERROR_RECEIVED,
+                    processInstance.getProcessDefinitionId(),
+                    processInstance.getId(),
+                    processInstance.getProcessDefinitionId(),
+                    processInstance.getId(),
+                    "catchError",
+                    null,
+                    null,
+                    "errorId",
+                    "123"
+                )
+            );
     }
 
     @Test
-    public void should_StartSubProcess_When_ErrorEndEvenThrown(){
-
+    public void should_StartSubProcess_When_ErrorEndEvenThrown() {
         securityUtil.logInAs("user");
 
         ProcessInstance processInstance = processRuntime.start(
-                ProcessPayloadBuilder
-                        .start()
-                        .withProcessDefinitionKey(ERROR_START_EVENT_SUBPROCESS)
-                        .build());
+            ProcessPayloadBuilder
+                .start()
+                .withProcessDefinitionKey(ERROR_START_EVENT_SUBPROCESS)
+                .build()
+        );
 
         assertThat(processInstance).isNotNull();
 
         checkProcessAndTask(processInstance.getId(), "Task");
 
         assertThat(listener.getErrorReceivedEvents())
-        .isNotEmpty()
-        .extracting(BPMNErrorReceivedEvent::getEventType,
-                    BPMNErrorReceivedEvent::getProcessDefinitionId,
-                    BPMNErrorReceivedEvent::getProcessInstanceId,
-                    event -> event.getEntity().getProcessDefinitionId(),
-                    event -> event.getEntity().getProcessInstanceId(),
-                    event -> event.getEntity().getElementId(),
-                    event -> event.getEntity().getActivityName(),
-                    event -> event.getEntity().getActivityType(),
-                    event -> event.getEntity().getErrorId(),
-                    event -> event.getEntity().getErrorCode()
-        )
-        .contains(Tuple.tuple(BPMNErrorReceivedEvent.ErrorEvents.ERROR_RECEIVED,
-                              processInstance.getProcessDefinitionId(),
-                              processInstance.getId(),
-                              processInstance.getProcessDefinitionId(),
-                              processInstance.getId(),
-                              "subStart1",
-                              null,
-                              null,
-                              "errorId",
-                              "123"
-        ));
-
+            .isNotEmpty()
+            .extracting(
+                BPMNErrorReceivedEvent::getEventType,
+                BPMNErrorReceivedEvent::getProcessDefinitionId,
+                BPMNErrorReceivedEvent::getProcessInstanceId,
+                event -> event.getEntity().getProcessDefinitionId(),
+                event -> event.getEntity().getProcessInstanceId(),
+                event -> event.getEntity().getElementId(),
+                event -> event.getEntity().getActivityName(),
+                event -> event.getEntity().getActivityType(),
+                event -> event.getEntity().getErrorId(),
+                event -> event.getEntity().getErrorCode()
+            )
+            .contains(
+                Tuple.tuple(
+                    BPMNErrorReceivedEvent.ErrorEvents.ERROR_RECEIVED,
+                    processInstance.getProcessDefinitionId(),
+                    processInstance.getId(),
+                    processInstance.getProcessDefinitionId(),
+                    processInstance.getId(),
+                    "subStart1",
+                    null,
+                    null,
+                    "errorId",
+                    "123"
+                )
+            );
     }
 
     @Test
-    public void should_CatchCallActivityBoundaryErrorEvent_When_ErrorEndEvenThrown(){
-
+    public void should_CatchCallActivityBoundaryErrorEvent_When_ErrorEndEvenThrown() {
         securityUtil.logInAs("user");
 
         ProcessInstance processInstance = processRuntime.start(
-                ProcessPayloadBuilder
-                        .start()
-                        .withProcessDefinitionKey(ERROR_BOUNDARY_EVENT_CALLACTIVITY)
-                        .build());
+            ProcessPayloadBuilder
+                .start()
+                .withProcessDefinitionKey(ERROR_BOUNDARY_EVENT_CALLACTIVITY)
+                .build()
+        );
 
         assertThat(processInstance).isNotNull();
 
         checkProcessAndTask(processInstance.getId(), "Task");
 
         assertThat(listener.getErrorReceivedEvents())
-        .isNotEmpty()
-        .extracting(BPMNErrorReceivedEvent::getEventType,
-                    BPMNErrorReceivedEvent::getProcessDefinitionId,
-                    BPMNErrorReceivedEvent::getProcessInstanceId,
-                    event -> event.getEntity().getProcessDefinitionId(),
-                    event -> event.getEntity().getProcessInstanceId(),
-                    event -> event.getEntity().getElementId(),
-                    event -> event.getEntity().getActivityName(),
-                    event -> event.getEntity().getActivityType(),
-                    event -> event.getEntity().getErrorId(),
-                    event -> event.getEntity().getErrorCode()
-        )
-        .contains(Tuple.tuple(BPMNErrorReceivedEvent.ErrorEvents.ERROR_RECEIVED,
-                              processInstance.getProcessDefinitionId(),
-                              processInstance.getId(),
-                              processInstance.getProcessDefinitionId(),
-                              processInstance.getId(),
-                              "catchError",
-                              null,
-                              null,
-                              "errorId",
-                              "123"
-        ));
+            .isNotEmpty()
+            .extracting(
+                BPMNErrorReceivedEvent::getEventType,
+                BPMNErrorReceivedEvent::getProcessDefinitionId,
+                BPMNErrorReceivedEvent::getProcessInstanceId,
+                event -> event.getEntity().getProcessDefinitionId(),
+                event -> event.getEntity().getProcessInstanceId(),
+                event -> event.getEntity().getElementId(),
+                event -> event.getEntity().getActivityName(),
+                event -> event.getEntity().getActivityType(),
+                event -> event.getEntity().getErrorId(),
+                event -> event.getEntity().getErrorCode()
+            )
+            .contains(
+                Tuple.tuple(
+                    BPMNErrorReceivedEvent.ErrorEvents.ERROR_RECEIVED,
+                    processInstance.getProcessDefinitionId(),
+                    processInstance.getId(),
+                    processInstance.getProcessDefinitionId(),
+                    processInstance.getId(),
+                    "catchError",
+                    null,
+                    null,
+                    "errorId",
+                    "123"
+                )
+            );
     }
 
-    private void checkProcessAndTask(String processInstanceId, String taskName) {
-
-        ProcessInstance processInstance = processRuntime.processInstance(processInstanceId);
+    private void checkProcessAndTask(
+        String processInstanceId,
+        String taskName
+    ) {
+        ProcessInstance processInstance = processRuntime.processInstance(
+            processInstanceId
+        );
         assertThat(processInstance).isNotNull();
 
         checkTask(processInstanceId, taskName);
     }
 
     private void checkTask(String processInstanceId, String taskName) {
-
         GetTasksPayload getTasksPayload = new GetTasksPayloadBuilder()
-                                                .withProcessInstanceId(processInstanceId)
-                                                .build();
+            .withProcessInstanceId(processInstanceId)
+            .build();
 
-        Page<Task> tasks = taskRuntime.tasks(Pageable.of(0,
-                                                         50),
-                                             getTasksPayload);
+        Page<Task> tasks = taskRuntime.tasks(
+            Pageable.of(0, 50),
+            getTasksPayload
+        );
 
         assertThat(tasks.getContent()).hasSize(1);
         assertThat(tasks.getContent().get(0).getName()).isEqualTo(taskName);
     }
-
 }

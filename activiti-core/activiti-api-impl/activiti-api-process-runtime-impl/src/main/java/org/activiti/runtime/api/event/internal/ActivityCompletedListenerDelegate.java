@@ -15,6 +15,7 @@
  */
 package org.activiti.runtime.api.event.internal;
 
+import java.util.List;
 import org.activiti.api.process.model.events.BPMNActivityCompletedEvent;
 import org.activiti.api.process.runtime.events.listener.BPMNElementEventListener;
 import org.activiti.engine.delegate.event.ActivitiActivityEvent;
@@ -22,16 +23,17 @@ import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventListener;
 import org.activiti.runtime.api.event.impl.ToActivityCompletedConverter;
 
-import java.util.List;
-
-public class ActivityCompletedListenerDelegate implements ActivitiEventListener {
+public class ActivityCompletedListenerDelegate
+    implements ActivitiEventListener {
 
     private List<BPMNElementEventListener<BPMNActivityCompletedEvent>> processRuntimeEventListeners;
 
     private ToActivityCompletedConverter converter;
 
-    public ActivityCompletedListenerDelegate(List<BPMNElementEventListener<BPMNActivityCompletedEvent>> processRuntimeEventListeners,
-                                             ToActivityCompletedConverter converter) {
+    public ActivityCompletedListenerDelegate(
+        List<BPMNElementEventListener<BPMNActivityCompletedEvent>> processRuntimeEventListeners,
+        ToActivityCompletedConverter converter
+    ) {
         this.processRuntimeEventListeners = processRuntimeEventListeners;
         this.converter = converter;
     }
@@ -39,12 +41,15 @@ public class ActivityCompletedListenerDelegate implements ActivitiEventListener 
     @Override
     public void onEvent(ActivitiEvent event) {
         if (event instanceof ActivitiActivityEvent) {
-            converter.from((ActivitiActivityEvent) event)
-                    .ifPresent(convertedEvent -> {
-                        for ( BPMNElementEventListener<BPMNActivityCompletedEvent> listener : processRuntimeEventListeners ) {
+            converter
+                .from((ActivitiActivityEvent) event)
+                .ifPresent(
+                    convertedEvent -> {
+                        for (BPMNElementEventListener<BPMNActivityCompletedEvent> listener : processRuntimeEventListeners) {
                             listener.onEvent(convertedEvent);
                         }
-                    });
+                    }
+                );
         }
     }
 

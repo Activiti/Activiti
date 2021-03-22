@@ -17,7 +17,6 @@
 package org.activiti.engine.impl.bpmn.listener;
 
 import java.util.Map;
-
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.delegate.Expression;
@@ -27,33 +26,51 @@ import org.activiti.engine.impl.el.NoExecutionVariableScope;
 /**
 
  */
-public class DelegateExpressionTransactionDependentExecutionListener implements TransactionDependentExecutionListener {
+public class DelegateExpressionTransactionDependentExecutionListener
+    implements TransactionDependentExecutionListener {
 
-  protected Expression expression;
+    protected Expression expression;
 
-  public DelegateExpressionTransactionDependentExecutionListener(Expression expression) {
-    this.expression = expression;
-  }
-
-  @Override
-  public void notify(String processInstanceId, String executionId, FlowElement flowElement, Map<String, Object> executionVariables, Map<String, Object> customPropertiesMap) {
-    NoExecutionVariableScope scope = new NoExecutionVariableScope();
-
-    Object delegate = expression.getValue(scope);
-
-    if (delegate instanceof TransactionDependentExecutionListener) {
-      ((TransactionDependentExecutionListener) delegate).notify(processInstanceId, executionId, flowElement, executionVariables, customPropertiesMap);
-    } else {
-      throw new ActivitiIllegalArgumentException("Delegate expression " + expression + " did not resolve to an implementation of " + TransactionDependentExecutionListener.class);
+    public DelegateExpressionTransactionDependentExecutionListener(
+        Expression expression
+    ) {
+        this.expression = expression;
     }
 
-  }
+    @Override
+    public void notify(
+        String processInstanceId,
+        String executionId,
+        FlowElement flowElement,
+        Map<String, Object> executionVariables,
+        Map<String, Object> customPropertiesMap
+    ) {
+        NoExecutionVariableScope scope = new NoExecutionVariableScope();
 
-  /**
-   * returns the expression text for this execution listener. Comes in handy if you want to check which listeners you already have.
-   */
-  public String getExpressionText() {
-    return expression.getExpressionText();
-  }
+        Object delegate = expression.getValue(scope);
 
+        if (delegate instanceof TransactionDependentExecutionListener) {
+            ((TransactionDependentExecutionListener) delegate).notify(
+                    processInstanceId,
+                    executionId,
+                    flowElement,
+                    executionVariables,
+                    customPropertiesMap
+                );
+        } else {
+            throw new ActivitiIllegalArgumentException(
+                "Delegate expression " +
+                expression +
+                " did not resolve to an implementation of " +
+                TransactionDependentExecutionListener.class
+            );
+        }
+    }
+
+    /**
+     * returns the expression text for this execution listener. Comes in handy if you want to check which listeners you already have.
+     */
+    public String getExpressionText() {
+        return expression.getExpressionText();
+    }
 }

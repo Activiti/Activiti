@@ -27,59 +27,57 @@ import java.util.Map;
  */
 public class BpmnInterface {
 
-  protected String id;
+    protected String id;
 
-  protected String name;
+    protected String name;
 
-  protected BpmnInterfaceImplementation implementation;
+    protected BpmnInterfaceImplementation implementation;
 
-  /**
-   * Mapping of the operations of this interface. The key of the map is the id of the operation, for easy retrieval.
-   */
-  protected Map<String, Operation> operations = new HashMap<String, Operation>();
+    /**
+     * Mapping of the operations of this interface. The key of the map is the id of the operation, for easy retrieval.
+     */
+    protected Map<String, Operation> operations = new HashMap<String, Operation>();
 
-  public BpmnInterface() {
+    public BpmnInterface() {}
 
-  }
+    public BpmnInterface(String id, String name) {
+        setId(id);
+        setName(name);
+    }
 
-  public BpmnInterface(String id, String name) {
-    setId(id);
-    setName(name);
-  }
+    public String getId() {
+        return id;
+    }
 
-  public String getId() {
-    return id;
-  }
+    public void setId(String id) {
+        this.id = id;
+    }
 
-  public void setId(String id) {
-    this.id = id;
-  }
+    public String getName() {
+        return name;
+    }
 
-  public String getName() {
-    return name;
-  }
+    public void setName(String name) {
+        this.name = name;
+    }
 
-  public void setName(String name) {
-    this.name = name;
-  }
+    public void addOperation(Operation operation) {
+        operations.put(operation.getId(), operation);
+    }
 
-  public void addOperation(Operation operation) {
-    operations.put(operation.getId(), operation);
-  }
+    public Operation getOperation(String operationId) {
+        return operations.get(operationId);
+    }
 
-  public Operation getOperation(String operationId) {
-    return operations.get(operationId);
-  }
+    public Collection<Operation> getOperations() {
+        return operations.values();
+    }
 
-  public Collection<Operation> getOperations() {
-    return operations.values();
-  }
+    public BpmnInterfaceImplementation getImplementation() {
+        return implementation;
+    }
 
-  public BpmnInterfaceImplementation getImplementation() {
-    return implementation;
-  }
-
-  public void setImplementation(BpmnInterfaceImplementation implementation) {
-    this.implementation = implementation;
-  }
+    public void setImplementation(BpmnInterfaceImplementation implementation) {
+        this.implementation = implementation;
+    }
 }

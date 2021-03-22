@@ -45,16 +45,20 @@ public class Set1RuntimeTestConfiguration {
     public Connector serviceImplementationModifyData() {
         return integrationContext -> {
             connector2Executed = true;
-            integrationContext.getOutBoundVariables().put("var1", integrationContext.getInBoundVariables().get("var1") + "-modified");
+            integrationContext
+                .getOutBoundVariables()
+                .put(
+                    "var1",
+                    integrationContext.getInBoundVariables().get("var1") +
+                    "-modified"
+                );
             return integrationContext;
         };
     }
 
-
     public static IntegrationContext getResultIntegrationContext() {
         return resultIntegrationContext;
     }
-
 
     public static void reset() {
         RuntimeTestConfiguration.collectedEvents.clear();
@@ -64,14 +68,11 @@ public class Set1RuntimeTestConfiguration {
         connector2Executed = false;
     }
 
-
     public static boolean isConnector1Executed() {
         return connector1Executed;
     }
 
-
     public static boolean isConnector2Executed() {
         return connector2Executed;
     }
-
 }

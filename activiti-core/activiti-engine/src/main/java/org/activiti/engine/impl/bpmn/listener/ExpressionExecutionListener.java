@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.bpmn.listener;
 
 import org.activiti.engine.delegate.DelegateExecution;
@@ -28,21 +27,21 @@ import org.activiti.engine.delegate.Expression;
  */
 public class ExpressionExecutionListener implements ExecutionListener {
 
-  protected Expression expression;
+    protected Expression expression;
 
-  public ExpressionExecutionListener(Expression expression) {
-    this.expression = expression;
-  }
+    public ExpressionExecutionListener(Expression expression) {
+        this.expression = expression;
+    }
 
-  public void notify(DelegateExecution execution) {
-    // Return value of expression is ignored
-    expression.getValue(execution);
-  }
+    public void notify(DelegateExecution execution) {
+        // Return value of expression is ignored
+        expression.getValue(execution);
+    }
 
-  /**
-   * returns the expression text for this execution listener. Comes in handy if you want to check which listeners you already have.
-   */
-  public String getExpressionText() {
-    return expression.getExpressionText();
-  }
+    /**
+     * returns the expression text for this execution listener. Comes in handy if you want to check which listeners you already have.
+     */
+    public String getExpressionText() {
+        return expression.getExpressionText();
+    }
 }

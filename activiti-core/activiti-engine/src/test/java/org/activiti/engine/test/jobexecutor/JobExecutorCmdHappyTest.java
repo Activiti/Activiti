@@ -19,7 +19,6 @@ package org.activiti.engine.test.jobexecutor;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Date;
-
 import org.activiti.engine.impl.asyncexecutor.AcquiredTimerJobEntities;
 import org.activiti.engine.impl.asyncexecutor.AsyncExecutor;
 import org.activiti.engine.impl.cmd.AcquireTimerJobsCmd;
@@ -36,67 +35,81 @@ import org.activiti.engine.runtime.Job;
  */
 public class JobExecutorCmdHappyTest extends JobExecutorTestCase {
 
-  public void testJobCommandsWithMessage() {
-    CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutor();
+    public void testJobCommandsWithMessage() {
+        CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutor();
 
-    String jobId = commandExecutor.execute(new Command<String>() {
+        String jobId = commandExecutor.execute(
+            new Command<String>() {
+                public String execute(CommandContext commandContext) {
+                    JobEntity message = createTweetMessage("i'm coding a test");
+                    commandContext.getJobManager().scheduleAsyncJob(message);
+                    return message.getId();
+                }
+            }
+        );
 
-      public String execute(CommandContext commandContext) {
-        JobEntity message = createTweetMessage("i'm coding a test");
-        commandContext.getJobManager().scheduleAsyncJob(message);
-        return message.getId();
-      }
-    });
+        Job job = managementService.createJobQuery().singleResult();
+        assertThat(job).isNotNull();
+        assertThat(job.getId()).isEqualTo(jobId);
 
-    Job job = managementService.createJobQuery().singleResult();
-    assertThat(job).isNotNull();
-    assertThat(job.getId()).isEqualTo(jobId);
+        assertThat(tweetHandler.getMessages()).hasSize(0);
 
-    assertThat(tweetHandler.getMessages()).hasSize(0);
+        managementService.executeJob(job.getId());
 
-    managementService.executeJob(job.getId());
+        assertThat(tweetHandler.getMessages().get(0))
+            .isEqualTo("i'm coding a test");
+        assertThat(tweetHandler.getMessages()).hasSize(1);
+    }
 
-    assertThat(tweetHandler.getMessages().get(0)).isEqualTo("i'm coding a test");
-    assertThat(tweetHandler.getMessages()).hasSize(1);
-  }
+    static final long SOME_TIME = 928374923546L;
+    static final long SECOND = 1000;
 
-  static final long SOME_TIME = 928374923546L;
-  static final long SECOND = 1000;
+    public void testJobCommandsWithTimer() {
+        // clock gets automatically reset in LogTestCase.runTest
+        processEngineConfiguration
+            .getClock()
+            .setCurrentTime(new Date(SOME_TIME));
 
-  public void testJobCommandsWithTimer() {
-    // clock gets automatically reset in LogTestCase.runTest
-    processEngineConfiguration.getClock().setCurrentTime(new Date(SOME_TIME));
+        AsyncExecutor asyncExecutor = processEngineConfiguration.getAsyncExecutor();
+        CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutor();
 
-    AsyncExecutor asyncExecutor = processEngineConfiguration.getAsyncExecutor();
-    CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutor();
+        String jobId = commandExecutor.execute(
+            new Command<String>() {
+                public String execute(CommandContext commandContext) {
+                    TimerJobEntity timer = createTweetTimer(
+                        "i'm coding a test",
+                        new Date(SOME_TIME + (10 * SECOND))
+                    );
+                    commandContext.getJobManager().scheduleTimerJob(timer);
+                    return timer.getId();
+                }
+            }
+        );
 
-    String jobId = commandExecutor.execute(new Command<String>() {
+        AcquiredTimerJobEntities acquiredJobs = commandExecutor.execute(
+            new AcquireTimerJobsCmd(asyncExecutor)
+        );
+        assertThat(acquiredJobs.size()).isEqualTo(0);
 
-      public String execute(CommandContext commandContext) {
-        TimerJobEntity timer = createTweetTimer("i'm coding a test", new Date(SOME_TIME + (10 * SECOND)));
-        commandContext.getJobManager().scheduleTimerJob(timer);
-        return timer.getId();
-      }
-    });
+        processEngineConfiguration
+            .getClock()
+            .setCurrentTime(new Date(SOME_TIME + (20 * SECOND)));
 
-    AcquiredTimerJobEntities acquiredJobs = commandExecutor.execute(new AcquireTimerJobsCmd(asyncExecutor));
-    assertThat(acquiredJobs.size()).isEqualTo(0);
+        acquiredJobs =
+            commandExecutor.execute(new AcquireTimerJobsCmd(asyncExecutor));
+        assertThat(acquiredJobs.size()).isEqualTo(1);
 
-    processEngineConfiguration.getClock().setCurrentTime(new Date(SOME_TIME + (20 * SECOND)));
+        TimerJobEntity job = acquiredJobs.getJobs().iterator().next();
 
-    acquiredJobs = commandExecutor.execute(new AcquireTimerJobsCmd(asyncExecutor));
-    assertThat(acquiredJobs.size()).isEqualTo(1);
+        assertThat(job.getId()).isEqualTo(jobId);
 
-    TimerJobEntity job = acquiredJobs.getJobs().iterator().next();
+        assertThat(tweetHandler.getMessages()).hasSize(0);
 
-    assertThat(job.getId()).isEqualTo(jobId);
+        Job executableJob = managementService.moveTimerToExecutableJob(jobId);
+        commandExecutor.execute(new ExecuteAsyncJobCmd(executableJob.getId()));
 
-    assertThat(tweetHandler.getMessages()).hasSize(0);
-
-    Job executableJob = managementService.moveTimerToExecutableJob(jobId);
-    commandExecutor.execute(new ExecuteAsyncJobCmd(executableJob.getId()));
-
-    assertThat(tweetHandler.getMessages().get(0)).isEqualTo("i'm coding a test");
-    assertThat(tweetHandler.getMessages()).hasSize(1);
-  }
+        assertThat(tweetHandler.getMessages().get(0))
+            .isEqualTo("i'm coding a test");
+        assertThat(tweetHandler.getMessages()).hasSize(1);
+    }
 }

@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.test.bpmn.usertask;
 
 import org.activiti.engine.delegate.DelegateTask;
@@ -32,20 +31,21 @@ import org.activiti.engine.delegate.TaskListener;
 
 public class UserTaskTestCreateTaskListener implements TaskListener {
 
-  private static final long serialVersionUID = 1L;
-  private Expression expression;
+    private static final long serialVersionUID = 1L;
+    private Expression expression;
 
-  @Override
-  public void notify(DelegateTask delegateTask) {
+    @Override
+    public void notify(DelegateTask delegateTask) {
+        if (
+            this.expression != null &&
+            this.expression.getValue(delegateTask) != null
+        ) {
+            // get the expression variable
+            String expression =
+                this.expression.getValue(delegateTask).toString();
 
-    if (this.expression != null && this.expression.getValue(delegateTask) != null) {
-      // get the expression variable
-      String expression = this.expression.getValue(delegateTask).toString();
-
-      // this expression will be evaluated when completing the task
-      delegateTask.setVariableLocal("validationRule", expression);
+            // this expression will be evaluated when completing the task
+            delegateTask.setVariableLocal("validationRule", expression);
+        }
     }
-
-  }
-
 }

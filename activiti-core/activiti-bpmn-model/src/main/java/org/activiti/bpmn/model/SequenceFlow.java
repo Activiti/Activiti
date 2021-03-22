@@ -15,113 +15,110 @@
  */
 package org.activiti.bpmn.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 public class SequenceFlow extends FlowElement {
 
-  protected String conditionExpression;
-  protected String sourceRef;
-  protected String targetRef;
-  protected String skipExpression;
+    protected String conditionExpression;
+    protected String sourceRef;
+    protected String targetRef;
+    protected String skipExpression;
 
-  // Actual flow elements that match the source and target ref
-  // Set during process definition parsing
-  @JsonIgnore
-  protected FlowElement sourceFlowElement;
+    // Actual flow elements that match the source and target ref
+    // Set during process definition parsing
+    @JsonIgnore
+    protected FlowElement sourceFlowElement;
 
-  @JsonIgnore
-  protected FlowElement targetFlowElement;
+    @JsonIgnore
+    protected FlowElement targetFlowElement;
 
-  /**
-   * Graphical information: a list of waypoints: x1, y1, x2, y2, x3, y3, ..
-   *
-   * Added during parsing of a process definition.
-   */
-  protected List<Integer> waypoints = new ArrayList<Integer>();
+    /**
+     * Graphical information: a list of waypoints: x1, y1, x2, y2, x3, y3, ..
+     *
+     * Added during parsing of a process definition.
+     */
+    protected List<Integer> waypoints = new ArrayList<Integer>();
 
-  public SequenceFlow() {
+    public SequenceFlow() {}
 
-  }
+    public SequenceFlow(String sourceRef, String targetRef) {
+        this.sourceRef = sourceRef;
+        this.targetRef = targetRef;
+    }
 
-  public SequenceFlow(String sourceRef, String targetRef) {
-    this.sourceRef = sourceRef;
-    this.targetRef = targetRef;
-  }
+    public String getConditionExpression() {
+        return conditionExpression;
+    }
 
-  public String getConditionExpression() {
-    return conditionExpression;
-  }
+    public void setConditionExpression(String conditionExpression) {
+        this.conditionExpression = conditionExpression;
+    }
 
-  public void setConditionExpression(String conditionExpression) {
-    this.conditionExpression = conditionExpression;
-  }
+    public String getSourceRef() {
+        return sourceRef;
+    }
 
-  public String getSourceRef() {
-    return sourceRef;
-  }
+    public void setSourceRef(String sourceRef) {
+        this.sourceRef = sourceRef;
+    }
 
-  public void setSourceRef(String sourceRef) {
-    this.sourceRef = sourceRef;
-  }
+    public String getTargetRef() {
+        return targetRef;
+    }
 
-  public String getTargetRef() {
-    return targetRef;
-  }
+    public void setTargetRef(String targetRef) {
+        this.targetRef = targetRef;
+    }
 
-  public void setTargetRef(String targetRef) {
-    this.targetRef = targetRef;
-  }
+    public String getSkipExpression() {
+        return skipExpression;
+    }
 
-  public String getSkipExpression() {
-    return skipExpression;
-  }
+    public void setSkipExpression(String skipExpression) {
+        this.skipExpression = skipExpression;
+    }
 
-  public void setSkipExpression(String skipExpression) {
-    this.skipExpression = skipExpression;
-  }
+    public FlowElement getSourceFlowElement() {
+        return sourceFlowElement;
+    }
 
-  public FlowElement getSourceFlowElement() {
-    return sourceFlowElement;
-  }
+    public void setSourceFlowElement(FlowElement sourceFlowElement) {
+        this.sourceFlowElement = sourceFlowElement;
+    }
 
-  public void setSourceFlowElement(FlowElement sourceFlowElement) {
-    this.sourceFlowElement = sourceFlowElement;
-  }
+    public FlowElement getTargetFlowElement() {
+        return targetFlowElement;
+    }
 
-  public FlowElement getTargetFlowElement() {
-    return targetFlowElement;
-  }
+    public void setTargetFlowElement(FlowElement targetFlowElement) {
+        this.targetFlowElement = targetFlowElement;
+    }
 
-  public void setTargetFlowElement(FlowElement targetFlowElement) {
-    this.targetFlowElement = targetFlowElement;
-  }
+    public List<Integer> getWaypoints() {
+        return waypoints;
+    }
 
-  public List<Integer> getWaypoints() {
-    return waypoints;
-  }
+    public void setWaypoints(List<Integer> waypoints) {
+        this.waypoints = waypoints;
+    }
 
-  public void setWaypoints(List<Integer> waypoints) {
-    this.waypoints = waypoints;
-  }
+    public String toString() {
+        return sourceRef + " --> " + targetRef;
+    }
 
-  public String toString() {
-    return sourceRef + " --> " + targetRef;
-  }
+    public SequenceFlow clone() {
+        SequenceFlow clone = new SequenceFlow();
+        clone.setValues(this);
+        return clone;
+    }
 
-  public SequenceFlow clone() {
-    SequenceFlow clone = new SequenceFlow();
-    clone.setValues(this);
-    return clone;
-  }
-
-  public void setValues(SequenceFlow otherFlow) {
-    super.setValues(otherFlow);
-    setConditionExpression(otherFlow.getConditionExpression());
-    setSourceRef(otherFlow.getSourceRef());
-    setTargetRef(otherFlow.getTargetRef());
-    setSkipExpression(otherFlow.getSkipExpression());
-  }
+    public void setValues(SequenceFlow otherFlow) {
+        super.setValues(otherFlow);
+        setConditionExpression(otherFlow.getConditionExpression());
+        setSourceRef(otherFlow.getSourceRef());
+        setTargetRef(otherFlow.getTargetRef());
+        setSkipExpression(otherFlow.getSkipExpression());
+    }
 }

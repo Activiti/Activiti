@@ -24,19 +24,21 @@ import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 
 
  */
-public class TransactionParseHandler extends AbstractActivityBpmnParseHandler<Transaction> {
+public class TransactionParseHandler
+    extends AbstractActivityBpmnParseHandler<Transaction> {
 
-  public Class<? extends BaseElement> getHandledType() {
-    return Transaction.class;
-  }
+    public Class<? extends BaseElement> getHandledType() {
+        return Transaction.class;
+    }
 
-  protected void executeParse(BpmnParse bpmnParse, Transaction transaction) {
+    protected void executeParse(BpmnParse bpmnParse, Transaction transaction) {
+        transaction.setBehavior(
+            bpmnParse
+                .getActivityBehaviorFactory()
+                .createTransactionActivityBehavior(transaction)
+        );
 
-    transaction.setBehavior(bpmnParse.getActivityBehaviorFactory().createTransactionActivityBehavior(transaction));
-
-    bpmnParse.processFlowElements(transaction.getFlowElements());
-    processArtifacts(bpmnParse, transaction.getArtifacts());
-
-  }
-
+        bpmnParse.processFlowElements(transaction.getFlowElements());
+        processArtifacts(bpmnParse, transaction.getArtifacts());
+    }
 }

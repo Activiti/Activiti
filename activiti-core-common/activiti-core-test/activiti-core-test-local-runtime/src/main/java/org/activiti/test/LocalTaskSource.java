@@ -16,7 +16,6 @@
 package org.activiti.test;
 
 import java.util.List;
-
 import org.activiti.api.runtime.shared.query.Page;
 import org.activiti.api.runtime.shared.query.Pageable;
 import org.activiti.api.task.model.Task;
@@ -34,9 +33,13 @@ public class LocalTaskSource implements TaskSource {
 
     @Override
     public List<Task> getTasks(String processInstanceId) {
-        Page<Task> taskPage = taskRuntime.tasks(Pageable.of(0,
-                                                         MAX_ITEMS),
-                                             TaskPayloadBuilder.tasks().withProcessInstanceId(processInstanceId).build());
+        Page<Task> taskPage = taskRuntime.tasks(
+            Pageable.of(0, MAX_ITEMS),
+            TaskPayloadBuilder
+                .tasks()
+                .withProcessInstanceId(processInstanceId)
+                .build()
+        );
         return taskPage.getContent();
     }
 

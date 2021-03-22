@@ -14,12 +14,10 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.persistence.entity;
 
 import java.util.Date;
 import java.util.List;
-
 import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.db.HasRevision;
@@ -27,108 +25,107 @@ import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
 
 @Internal
-public interface ExecutionEntity extends DelegateExecution, Execution, ProcessInstance, Entity, HasRevision {
+public interface ExecutionEntity
+    extends DelegateExecution, Execution, ProcessInstance, Entity, HasRevision {
+    void setBusinessKey(String businessKey);
 
-  void setBusinessKey(String businessKey);
+    void setProcessDefinitionId(String processDefinitionId);
 
-  void setProcessDefinitionId(String processDefinitionId);
+    void setProcessDefinitionKey(String processDefinitionKey);
 
-  void setProcessDefinitionKey(String processDefinitionKey);
+    void setProcessDefinitionName(String processDefinitionName);
 
-  void setProcessDefinitionName(String processDefinitionName);
+    void setProcessDefinitionVersion(Integer processDefinitionVersion);
 
-  void setProcessDefinitionVersion(Integer processDefinitionVersion);
+    void setDeploymentId(String deploymentId);
 
-  void setDeploymentId(String deploymentId);
+    ExecutionEntity getProcessInstance();
 
-  ExecutionEntity getProcessInstance();
+    void setProcessInstance(ExecutionEntity processInstance);
 
-  void setProcessInstance(ExecutionEntity processInstance);
+    ExecutionEntity getParent();
 
-  ExecutionEntity getParent();
+    void setParent(ExecutionEntity parent);
 
-  void setParent(ExecutionEntity parent);
+    ExecutionEntity getSuperExecution();
 
-  ExecutionEntity getSuperExecution();
+    void setSuperExecution(ExecutionEntity superExecution);
 
-  void setSuperExecution(ExecutionEntity superExecution);
+    ExecutionEntity getSubProcessInstance();
 
-  ExecutionEntity getSubProcessInstance();
+    void setSubProcessInstance(ExecutionEntity subProcessInstance);
 
-  void setSubProcessInstance(ExecutionEntity subProcessInstance);
+    void setRootProcessInstanceId(String rootProcessInstanceId);
 
-  void setRootProcessInstanceId(String rootProcessInstanceId);
+    public void setParentProcessInstanceId(String parentProcessInstanceId);
 
-  public void setParentProcessInstanceId(String parentProcessInstanceId);
+    ExecutionEntity getRootProcessInstance();
 
-  ExecutionEntity getRootProcessInstance();
+    void setRootProcessInstance(ExecutionEntity rootProcessInstance);
 
-  void setRootProcessInstance(ExecutionEntity rootProcessInstance);
+    List<? extends ExecutionEntity> getExecutions();
 
-  List<? extends ExecutionEntity> getExecutions();
+    void addChildExecution(ExecutionEntity executionEntity);
 
-  void addChildExecution(ExecutionEntity executionEntity);
+    List<TaskEntity> getTasks();
 
-  List<TaskEntity> getTasks();
+    List<EventSubscriptionEntity> getEventSubscriptions();
 
-  List<EventSubscriptionEntity> getEventSubscriptions();
+    List<JobEntity> getJobs();
 
-  List<JobEntity> getJobs();
+    List<TimerJobEntity> getTimerJobs();
 
-  List<TimerJobEntity> getTimerJobs();
+    List<IdentityLinkEntity> getIdentityLinks();
 
-  List<IdentityLinkEntity> getIdentityLinks();
+    void setProcessInstanceId(String processInstanceId);
 
-  void setProcessInstanceId(String processInstanceId);
+    void setParentId(String parentId);
 
-  void setParentId(String parentId);
+    void setEnded(boolean isEnded);
 
-  void setEnded(boolean isEnded);
+    void setEventName(String eventName);
 
-  void setEventName(String eventName);
+    String getDeleteReason();
 
-  String getDeleteReason();
+    void setDeleteReason(String deleteReason);
 
-  void setDeleteReason(String deleteReason);
+    int getSuspensionState();
 
-  int getSuspensionState();
+    void setSuspensionState(int suspensionState);
 
-  void setSuspensionState(int suspensionState);
+    boolean isEventScope();
 
-  boolean isEventScope();
+    void setEventScope(boolean isEventScope);
 
-  void setEventScope(boolean isEventScope);
+    boolean isMultiInstanceRoot();
 
-  boolean isMultiInstanceRoot();
+    void setMultiInstanceRoot(boolean isMultiInstanceRoot);
 
-  void setMultiInstanceRoot(boolean isMultiInstanceRoot);
+    void setName(String name);
 
-  void setName(String name);
+    void setDescription(String description);
 
-  void setDescription(String description);
+    void setLocalizedName(String localizedName);
 
-  void setLocalizedName(String localizedName);
+    void setLocalizedDescription(String localizedDescription);
 
-  void setLocalizedDescription(String localizedDescription);
+    void setTenantId(String tenantId);
 
-  void setTenantId(String tenantId);
+    Date getLockTime();
 
-  Date getLockTime();
+    void setLockTime(Date lockTime);
 
-  void setLockTime(Date lockTime);
+    boolean isDeleted();
 
-  boolean isDeleted();
+    void setDeleted(boolean isDeleted);
 
-  void setDeleted(boolean isDeleted);
+    void forceUpdate();
 
-  void forceUpdate();
+    String getStartUserId();
 
-  String getStartUserId();
+    void setStartUserId(String startUserId);
 
-  void setStartUserId(String startUserId);
+    Date getStartTime();
 
-  Date getStartTime();
-
-  void setStartTime(Date startTime);
-
+    void setStartTime(Date startTime);
 }

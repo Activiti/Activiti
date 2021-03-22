@@ -19,7 +19,6 @@ package org.activiti.engine.impl.interceptor;
 import javax.transaction.Status;
 import javax.transaction.SystemException;
 import javax.transaction.TransactionManager;
-
 import org.activiti.engine.ActivitiException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,30 +30,39 @@ import org.slf4j.LoggerFactory;
  */
 public class JtaRetryInterceptor extends RetryInterceptor {
 
-  private final Logger log = LoggerFactory.getLogger(JtaRetryInterceptor.class);
+    private final Logger log = LoggerFactory.getLogger(
+        JtaRetryInterceptor.class
+    );
 
-  protected final TransactionManager transactionManager;
+    protected final TransactionManager transactionManager;
 
-  public JtaRetryInterceptor(TransactionManager transactionManager) {
-    this.transactionManager = transactionManager;
-  }
-
-  @Override
-  public <T> T execute(CommandConfig config, Command<T> command) {
-    if (calledInsideTransaction()) {
-      log.trace("Called inside transaction, skipping the retry interceptor.");
-      return next.execute(config, command);
-    } else {
-      return super.execute(config, command);
+    public JtaRetryInterceptor(TransactionManager transactionManager) {
+        this.transactionManager = transactionManager;
     }
-  }
 
-  protected boolean calledInsideTransaction() {
-    try {
-      return transactionManager.getStatus() != Status.STATUS_NO_TRANSACTION;
-    } catch (SystemException e) {
-      throw new ActivitiException("Could not determine the current status of the transaction manager: " + e.getMessage(), e);
+    @Override
+    public <T> T execute(CommandConfig config, Command<T> command) {
+        if (calledInsideTransaction()) {
+            log.trace(
+                "Called inside transaction, skipping the retry interceptor."
+            );
+            return next.execute(config, command);
+        } else {
+            return super.execute(config, command);
+        }
     }
-  }
 
+    protected boolean calledInsideTransaction() {
+        try {
+            return (
+                transactionManager.getStatus() != Status.STATUS_NO_TRANSACTION
+            );
+        } catch (SystemException e) {
+            throw new ActivitiException(
+                "Could not determine the current status of the transaction manager: " +
+                e.getMessage(),
+                e
+            );
+        }
+    }
 }

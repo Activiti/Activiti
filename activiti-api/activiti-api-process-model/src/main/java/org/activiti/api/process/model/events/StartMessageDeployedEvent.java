@@ -17,11 +17,10 @@ package org.activiti.api.process.model.events;
 
 import org.activiti.api.process.model.StartMessageDeploymentDefinition;
 
-public interface StartMessageDeployedEvent extends MessageDefinitionEvent<StartMessageDeploymentDefinition> {
-
+public interface StartMessageDeployedEvent
+    extends MessageDefinitionEvent<StartMessageDeploymentDefinition> {
     @Override
     default MessageDefinitionEvents getEventType() {
         return MessageDefinitionEvents.START_MESSAGE_DEPLOYED;
     }
-
 }

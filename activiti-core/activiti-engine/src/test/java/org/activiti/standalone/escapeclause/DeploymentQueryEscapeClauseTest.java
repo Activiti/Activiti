@@ -20,69 +20,87 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.activiti.engine.repository.DeploymentQuery;
 
-public class DeploymentQueryEscapeClauseTest extends AbstractEscapeClauseTestCase {
+public class DeploymentQueryEscapeClauseTest
+    extends AbstractEscapeClauseTestCase {
 
-  private String deploymentOneId;
+    private String deploymentOneId;
 
-  private String deploymentTwoId;
+    private String deploymentTwoId;
 
-  @Override
-  protected void setUp() throws Exception {
-    deploymentOneId = repositoryService
-      .createDeployment()
-      .tenantId("One%")
-      .name("one%")
-      .category("testCategory")
-      .addClasspathResource("org/activiti/engine/test/repository/one%.bpmn20.xml")
-      .deploy()
-      .getId();
+    @Override
+    protected void setUp() throws Exception {
+        deploymentOneId =
+            repositoryService
+                .createDeployment()
+                .tenantId("One%")
+                .name("one%")
+                .category("testCategory")
+                .addClasspathResource(
+                    "org/activiti/engine/test/repository/one%.bpmn20.xml"
+                )
+                .deploy()
+                .getId();
 
-    deploymentTwoId = repositoryService
-      .createDeployment()
-      .tenantId("Two_")
-      .name("two_")
-      .addClasspathResource("org/activiti/engine/test/repository/two_.bpmn20.xml")
-      .deploy()
-      .getId();
+        deploymentTwoId =
+            repositoryService
+                .createDeployment()
+                .tenantId("Two_")
+                .name("two_")
+                .addClasspathResource(
+                    "org/activiti/engine/test/repository/two_.bpmn20.xml"
+                )
+                .deploy()
+                .getId();
 
-    super.setUp();
-  }
+        super.setUp();
+    }
 
-  @Override
-  protected void tearDown() throws Exception {
-    super.tearDown();
-    repositoryService.deleteDeployment(deploymentOneId, true);
-    repositoryService.deleteDeployment(deploymentTwoId, true);
-  }
+    @Override
+    protected void tearDown() throws Exception {
+        super.tearDown();
+        repositoryService.deleteDeployment(deploymentOneId, true);
+        repositoryService.deleteDeployment(deploymentTwoId, true);
+    }
 
-  public void testQueryByNameLike() {
-    DeploymentQuery query = repositoryService.createDeploymentQuery().deploymentNameLike("%\\%%");
-    assertThat(query.singleResult().getName()).isEqualTo("one%");
-    assertThat(query.list()).hasSize(1);
-    assertThat(query.count()).isEqualTo(1);
+    public void testQueryByNameLike() {
+        DeploymentQuery query = repositoryService
+            .createDeploymentQuery()
+            .deploymentNameLike("%\\%%");
+        assertThat(query.singleResult().getName()).isEqualTo("one%");
+        assertThat(query.list()).hasSize(1);
+        assertThat(query.count()).isEqualTo(1);
 
-    query = repositoryService.createDeploymentQuery().deploymentNameLike("%\\_%");
-    assertThat(query.singleResult().getName()).isEqualTo("two_");
-    assertThat(query.list()).hasSize(1);
-    assertThat(query.count()).isEqualTo(1);
-  }
+        query =
+            repositoryService
+                .createDeploymentQuery()
+                .deploymentNameLike("%\\_%");
+        assertThat(query.singleResult().getName()).isEqualTo("two_");
+        assertThat(query.list()).hasSize(1);
+        assertThat(query.count()).isEqualTo(1);
+    }
 
-  public void testQueryByProcessDefinitionKeyLike() {
-    DeploymentQuery query = repositoryService.createDeploymentQuery().processDefinitionKeyLike("%\\_%");
-    assertThat(query.list()).hasSize(1);
-    assertThat(query.count()).isEqualTo(1);
-  }
+    public void testQueryByProcessDefinitionKeyLike() {
+        DeploymentQuery query = repositoryService
+            .createDeploymentQuery()
+            .processDefinitionKeyLike("%\\_%");
+        assertThat(query.list()).hasSize(1);
+        assertThat(query.count()).isEqualTo(1);
+    }
 
-  public void testQueryByTenantIdLike() {
-    DeploymentQuery query = repositoryService.createDeploymentQuery().deploymentTenantIdLike("%\\%%");
-    assertThat(query.singleResult().getTenantId()).isEqualTo("One%");
-    assertThat(query.list()).hasSize(1);
-    assertThat(query.count()).isEqualTo(1);
+    public void testQueryByTenantIdLike() {
+        DeploymentQuery query = repositoryService
+            .createDeploymentQuery()
+            .deploymentTenantIdLike("%\\%%");
+        assertThat(query.singleResult().getTenantId()).isEqualTo("One%");
+        assertThat(query.list()).hasSize(1);
+        assertThat(query.count()).isEqualTo(1);
 
-    query = repositoryService.createDeploymentQuery().deploymentTenantIdLike("%\\_%");
-    assertThat(query.singleResult().getTenantId()).isEqualTo("Two_");
-    assertThat(query.list()).hasSize(1);
-    assertThat(query.count()).isEqualTo(1);
-  }
-
+        query =
+            repositoryService
+                .createDeploymentQuery()
+                .deploymentTenantIdLike("%\\_%");
+        assertThat(query.singleResult().getTenantId()).isEqualTo("Two_");
+        assertThat(query.list()).hasSize(1);
+        assertThat(query.count()).isEqualTo(1);
+    }
 }

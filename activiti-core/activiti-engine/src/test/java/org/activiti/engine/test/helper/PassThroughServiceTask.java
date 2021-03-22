@@ -21,9 +21,6 @@ import org.activiti.engine.delegate.JavaDelegate;
 
 public class PassThroughServiceTask implements JavaDelegate {
 
-	@Override
-  public void execute(DelegateExecution execution) {
-
-  }
-
+    @Override
+    public void execute(DelegateExecution execution) {}
 }

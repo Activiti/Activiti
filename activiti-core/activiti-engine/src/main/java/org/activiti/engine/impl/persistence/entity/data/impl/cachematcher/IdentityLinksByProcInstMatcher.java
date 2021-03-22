@@ -22,11 +22,14 @@ import org.activiti.engine.impl.persistence.entity.IdentityLinkEntity;
 /**
 
  */
-public class IdentityLinksByProcInstMatcher extends CachedEntityMatcherAdapter<IdentityLinkEntity> {
+public class IdentityLinksByProcInstMatcher
+    extends CachedEntityMatcherAdapter<IdentityLinkEntity> {
 
-  @Override
-  public boolean isRetained(IdentityLinkEntity entity, Object parameter) {
-    return entity.getProcessInstanceId() != null && entity.getProcessInstanceId().equals((String) parameter);
-  }
-
+    @Override
+    public boolean isRetained(IdentityLinkEntity entity, Object parameter) {
+        return (
+            entity.getProcessInstanceId() != null &&
+            entity.getProcessInstanceId().equals((String) parameter)
+        );
+    }
 }

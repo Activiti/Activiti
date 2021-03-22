@@ -17,64 +17,64 @@ package org.activiti.bpmn.model;
 
 public class TimerEventDefinition extends EventDefinition {
 
-  protected String timeDate;
-  protected String timeDuration;
-  protected String timeCycle;
-  protected String endDate;
-  protected String calendarName;
+    protected String timeDate;
+    protected String timeDuration;
+    protected String timeCycle;
+    protected String endDate;
+    protected String calendarName;
 
-  public String getTimeDate() {
-    return timeDate;
-  }
+    public String getTimeDate() {
+        return timeDate;
+    }
 
-  public void setTimeDate(String timeDate) {
-    this.timeDate = timeDate;
-  }
+    public void setTimeDate(String timeDate) {
+        this.timeDate = timeDate;
+    }
 
-  public String getTimeDuration() {
-    return timeDuration;
-  }
+    public String getTimeDuration() {
+        return timeDuration;
+    }
 
-  public void setTimeDuration(String timeDuration) {
-    this.timeDuration = timeDuration;
-  }
+    public void setTimeDuration(String timeDuration) {
+        this.timeDuration = timeDuration;
+    }
 
-  public String getTimeCycle() {
-    return timeCycle;
-  }
+    public String getTimeCycle() {
+        return timeCycle;
+    }
 
-  public void setTimeCycle(String timeCycle) {
-    this.timeCycle = timeCycle;
-  }
+    public void setTimeCycle(String timeCycle) {
+        this.timeCycle = timeCycle;
+    }
 
-  public void setEndDate(String endDate) {
-    this.endDate = endDate;
-  }
+    public void setEndDate(String endDate) {
+        this.endDate = endDate;
+    }
 
-  public String getEndDate() {
-    return endDate;
-  }
+    public String getEndDate() {
+        return endDate;
+    }
 
-  public String getCalendarName() {
-    return calendarName;
-  }
+    public String getCalendarName() {
+        return calendarName;
+    }
 
-  public void setCalendarName(String calendarName) {
-    this.calendarName = calendarName;
-  }
+    public void setCalendarName(String calendarName) {
+        this.calendarName = calendarName;
+    }
 
-  public TimerEventDefinition clone() {
-    TimerEventDefinition clone = new TimerEventDefinition();
-    clone.setValues(this);
-    return clone;
-  }
+    public TimerEventDefinition clone() {
+        TimerEventDefinition clone = new TimerEventDefinition();
+        clone.setValues(this);
+        return clone;
+    }
 
-  public void setValues(TimerEventDefinition otherDefinition) {
-    super.setValues(otherDefinition);
-    setTimeDate(otherDefinition.getTimeDate());
-    setTimeDuration(otherDefinition.getTimeDuration());
-    setTimeCycle(otherDefinition.getTimeCycle());
-    setEndDate(otherDefinition.getEndDate());
-    setCalendarName(otherDefinition.getCalendarName());
-  }
+    public void setValues(TimerEventDefinition otherDefinition) {
+        super.setValues(otherDefinition);
+        setTimeDate(otherDefinition.getTimeDate());
+        setTimeDuration(otherDefinition.getTimeDuration());
+        setTimeCycle(otherDefinition.getTimeCycle());
+        setEndDate(otherDefinition.getEndDate());
+        setCalendarName(otherDefinition.getCalendarName());
+    }
 }

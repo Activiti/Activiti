@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.test.history;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -30,45 +29,64 @@ import org.activiti.engine.test.Deployment;
  */
 public class HistoricTaskInstanceUpdateTest extends PluggableActivitiTestCase {
 
-  @Deployment
-  public void testHistoricTaskInstanceUpdate() {
-    runtimeService.startProcessInstanceByKey("HistoricTaskInstanceTest").getId();
+    @Deployment
+    public void testHistoricTaskInstanceUpdate() {
+        runtimeService
+            .startProcessInstanceByKey("HistoricTaskInstanceTest")
+            .getId();
 
-    Task task = taskService.createTaskQuery().singleResult();
+        Task task = taskService.createTaskQuery().singleResult();
 
-    // Update and save the task's fields before it is finished
-    task.setPriority(12345);
-    task.setDescription("Updated description");
-    task.setName("Updated name");
-    task.setAssignee("gonzo");
-    taskService.saveTask(task);
+        // Update and save the task's fields before it is finished
+        task.setPriority(12345);
+        task.setDescription("Updated description");
+        task.setName("Updated name");
+        task.setAssignee("gonzo");
+        taskService.saveTask(task);
 
-    taskService.complete(task.getId());
-    assertThat(historyService.createHistoricTaskInstanceQuery().count()).isEqualTo(1);
+        taskService.complete(task.getId());
+        assertThat(historyService.createHistoricTaskInstanceQuery().count())
+            .isEqualTo(1);
 
-    HistoricTaskInstance historicTaskInstance = historyService.createHistoricTaskInstanceQuery().singleResult();
-    assertThat(historicTaskInstance.getName()).isEqualTo("Updated name");
-    assertThat(historicTaskInstance.getDescription()).isEqualTo("Updated description");
-    assertThat(historicTaskInstance.getAssignee()).isEqualTo("gonzo");
-    assertThat(historicTaskInstance.getTaskDefinitionKey()).isEqualTo("task");
+        HistoricTaskInstance historicTaskInstance = historyService
+            .createHistoricTaskInstanceQuery()
+            .singleResult();
+        assertThat(historicTaskInstance.getName()).isEqualTo("Updated name");
+        assertThat(historicTaskInstance.getDescription())
+            .isEqualTo("Updated description");
+        assertThat(historicTaskInstance.getAssignee()).isEqualTo("gonzo");
+        assertThat(historicTaskInstance.getTaskDefinitionKey())
+            .isEqualTo("task");
 
-    // Validate fix of ACT-1923: updating assignee to null should be
-    // reflected in history
-    ProcessInstance secondInstance = runtimeService.startProcessInstanceByKey("HistoricTaskInstanceTest");
+        // Validate fix of ACT-1923: updating assignee to null should be
+        // reflected in history
+        ProcessInstance secondInstance = runtimeService.startProcessInstanceByKey(
+            "HistoricTaskInstanceTest"
+        );
 
-    task = taskService.createTaskQuery().singleResult();
+        task = taskService.createTaskQuery().singleResult();
 
-    task.setDescription(null);
-    task.setName(null);
-    task.setAssignee(null);
-    taskService.saveTask(task);
+        task.setDescription(null);
+        task.setName(null);
+        task.setAssignee(null);
+        taskService.saveTask(task);
 
-    taskService.complete(task.getId());
-    assertThat(historyService.createHistoricTaskInstanceQuery().processInstanceId(secondInstance.getId()).count()).isEqualTo(1);
+        taskService.complete(task.getId());
+        assertThat(
+            historyService
+                .createHistoricTaskInstanceQuery()
+                .processInstanceId(secondInstance.getId())
+                .count()
+        )
+            .isEqualTo(1);
 
-    historicTaskInstance = historyService.createHistoricTaskInstanceQuery().processInstanceId(secondInstance.getId()).singleResult();
-    assertThat(historicTaskInstance.getName()).isNull();
-    assertThat(historicTaskInstance.getDescription()).isNull();
-    assertThat(historicTaskInstance.getAssignee()).isNull();
-  }
+        historicTaskInstance =
+            historyService
+                .createHistoricTaskInstanceQuery()
+                .processInstanceId(secondInstance.getId())
+                .singleResult();
+        assertThat(historicTaskInstance.getName()).isNull();
+        assertThat(historicTaskInstance.getDescription()).isNull();
+        assertThat(historicTaskInstance.getAssignee()).isNull();
+    }
 }

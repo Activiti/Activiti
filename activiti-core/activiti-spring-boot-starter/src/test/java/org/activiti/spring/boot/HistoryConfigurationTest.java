@@ -91,39 +91,47 @@ public class HistoryConfigurationTest {
     @Autowired
     private APIDeploymentConverter deploymentConverter;
 
-
     @AfterEach
-    public void cleanUp(){
+    public void cleanUp() {
         processCleanUpUtil.cleanUpWithAdmin();
     }
 
     @BeforeEach
     public void init() {
-        ApplicationEventPublisher eventPublisher = spy(applicationEventPublisher);
+        ApplicationEventPublisher eventPublisher = spy(
+            applicationEventPublisher
+        );
 
-        spy(new ProcessRuntimeImpl(repositoryService,
-                     processDefinitionConverter,
-                     runtimeService,
-                     securityPoliciesManager,
-                     processInstanceConverter,
-                     variableInstanceConverter,
-                     deploymentConverter,
-                     configuration,
-                     eventPublisher,
-                     processVariablesValidator));
+        spy(
+            new ProcessRuntimeImpl(
+                repositoryService,
+                processDefinitionConverter,
+                runtimeService,
+                securityPoliciesManager,
+                processInstanceConverter,
+                variableInstanceConverter,
+                deploymentConverter,
+                configuration,
+                eventPublisher,
+                processVariablesValidator
+            )
+        );
 
-        spy(new ProcessAdminRuntimeImpl(repositoryService,
-                     processDefinitionConverter,
-                     runtimeService,
-                     processInstanceConverter,
-                     eventPublisher,
-                     processVariablesValidator));
+        spy(
+            new ProcessAdminRuntimeImpl(
+                repositoryService,
+                processDefinitionConverter,
+                runtimeService,
+                processInstanceConverter,
+                eventPublisher,
+                processVariablesValidator
+            )
+        );
 
         //Reset test variables
         RuntimeTestConfiguration.processImageConnectorExecuted = false;
         RuntimeTestConfiguration.tagImageConnectorExecuted = false;
         RuntimeTestConfiguration.discardImageConnectorExecuted = false;
-
     }
 
     @Test
@@ -131,13 +139,22 @@ public class HistoryConfigurationTest {
         securityUtil.logInAs("user");
 
         //when
-        ProcessInstance categorizeProcess = processRuntime.start(ProcessPayloadBuilder.start()
+        ProcessInstance categorizeProcess = processRuntime.start(
+            ProcessPayloadBuilder
+                .start()
                 .withProcessDefinitionKey(CATEGORIZE_PROCESS)
-                .withVariable("expectedKey",
-                        true)
-                .build());
+                .withVariable("expectedKey", true)
+                .build()
+        );
 
-        assertThat(RuntimeTestConfiguration.completedProcesses).contains(categorizeProcess.getId());
-        assertThat(historyService.createHistoricProcessInstanceQuery().processInstanceId(categorizeProcess.getId()).count()).isEqualTo(1);
+        assertThat(RuntimeTestConfiguration.completedProcesses)
+            .contains(categorizeProcess.getId());
+        assertThat(
+            historyService
+                .createHistoricProcessInstanceQuery()
+                .processInstanceId(categorizeProcess.getId())
+                .count()
+        )
+            .isEqualTo(1);
     }
 }

@@ -17,20 +17,21 @@ package org.activiti.spring.process;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.activiti.spring.resources.ResourceFinderDescriptor;
 import org.springframework.core.io.Resource;
 
-public class ProcessExtensionResourceFinderDescriptor implements ResourceFinderDescriptor {
+public class ProcessExtensionResourceFinderDescriptor
+    implements ResourceFinderDescriptor {
 
     private boolean checkResources;
     private String locationPrefix;
     private List<String> locationSuffixes;
 
-    public ProcessExtensionResourceFinderDescriptor(boolean checkResources,
-                                                    String locationPrefix,
-                                                    String locationSuffix) {
-
+    public ProcessExtensionResourceFinderDescriptor(
+        boolean checkResources,
+        String locationPrefix,
+        String locationSuffix
+    ) {
         this.checkResources = checkResources;
         this.locationPrefix = locationPrefix;
         locationSuffixes = new ArrayList<>();
@@ -54,17 +55,21 @@ public class ProcessExtensionResourceFinderDescriptor implements ResourceFinderD
 
     @Override
     public String getMsgForEmptyResources() {
-        return "No process extensions were found for auto-deployment in the location '" + locationPrefix + "'";
+        return (
+            "No process extensions were found for auto-deployment in the location '" +
+            locationPrefix +
+            "'"
+        );
     }
 
     @Override
     public String getMsgForResourcesFound(List<String> processExtensionFiles) {
-        return "The following process extension files will be deployed: " + processExtensionFiles;
+        return (
+            "The following process extension files will be deployed: " +
+            processExtensionFiles
+        );
     }
 
     @Override
-    public void validate(List<Resource> resources) {
-
-    }
-
+    public void validate(List<Resource> resources) {}
 }

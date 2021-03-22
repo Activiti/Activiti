@@ -35,15 +35,16 @@ public class TaskCleanUpUtil {
 
     public void cleanUpWithAdmin() {
         securityUtil.logInAs("admin");
-        Page<Task> tasks = taskAdminRuntime.tasks(Pageable.of(0,
-                50));
+        Page<Task> tasks = taskAdminRuntime.tasks(Pageable.of(0, 50));
         for (Task task : tasks.getContent()) {
             if (task.getProcessInstanceId() == null) {
-                taskAdminRuntime.delete(TaskPayloadBuilder
-                                                .delete()
-                                                .withTaskId(task.getId())
-                                                .withReason("test clean up")
-                                                .build());
+                taskAdminRuntime.delete(
+                    TaskPayloadBuilder
+                        .delete()
+                        .withTaskId(task.getId())
+                        .withReason("test clean up")
+                        .build()
+                );
             }
         }
     }

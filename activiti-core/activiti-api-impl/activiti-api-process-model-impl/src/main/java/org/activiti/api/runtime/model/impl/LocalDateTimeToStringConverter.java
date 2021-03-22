@@ -20,7 +20,8 @@ import java.time.format.DateTimeFormatter;
 import org.springframework.core.convert.converter.Converter;
 
 @ProcessVariableTypeConverter
-public class LocalDateTimeToStringConverter implements Converter<LocalDateTime, String> {
+public class LocalDateTimeToStringConverter
+    implements Converter<LocalDateTime, String> {
 
     @Override
     public String convert(LocalDateTime source) {

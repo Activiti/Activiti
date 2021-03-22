@@ -16,10 +16,11 @@
 package org.activiti.api.runtime.model.impl;
 
 import java.util.Objects;
-
 import org.activiti.api.process.model.BPMNSequenceFlow;
 
-public class BPMNSequenceFlowImpl extends BPMNElementImpl implements BPMNSequenceFlow {
+public class BPMNSequenceFlowImpl
+    extends BPMNElementImpl
+    implements BPMNSequenceFlow {
 
     private String sourceActivityElementId;
     private String sourceActivityName;
@@ -28,12 +29,13 @@ public class BPMNSequenceFlowImpl extends BPMNElementImpl implements BPMNSequenc
     private String targetActivityName;
     private String targetActivityType;
 
-    public BPMNSequenceFlowImpl() {
-    }
+    public BPMNSequenceFlowImpl() {}
 
-    public BPMNSequenceFlowImpl(String elementId,
-                            String sourceActivityElementId,
-                            String targetActivityElementId) {
+    public BPMNSequenceFlowImpl(
+        String elementId,
+        String sourceActivityElementId,
+        String targetActivityElementId
+    ) {
         this.setElementId(elementId);
         this.sourceActivityElementId = sourceActivityElementId;
         this.targetActivityElementId = targetActivityElementId;
@@ -94,39 +96,55 @@ public class BPMNSequenceFlowImpl extends BPMNElementImpl implements BPMNSequenc
             return false;
         }
         BPMNSequenceFlowImpl that = (BPMNSequenceFlowImpl) o;
-        return Objects.equals(getElementId(),
-                              that.getElementId()) &&
-                Objects.equals(sourceActivityElementId,
-                               that.getSourceActivityElementId()) &&
-                Objects.equals(sourceActivityType,
-                               that.getSourceActivityType()) &&
-                Objects.equals(sourceActivityName,
-                               that.getSourceActivityName()) &&
-                Objects.equals(targetActivityElementId,
-                               that.getTargetActivityElementId()) &&
-                Objects.equals(targetActivityType,
-                                  that.getTargetActivityType()) &&
-                Objects.equals(targetActivityName,
-                                  that.getTargetActivityName());
+        return (
+            Objects.equals(getElementId(), that.getElementId()) &&
+            Objects.equals(
+                sourceActivityElementId,
+                that.getSourceActivityElementId()
+            ) &&
+            Objects.equals(sourceActivityType, that.getSourceActivityType()) &&
+            Objects.equals(sourceActivityName, that.getSourceActivityName()) &&
+            Objects.equals(
+                targetActivityElementId,
+                that.getTargetActivityElementId()
+            ) &&
+            Objects.equals(targetActivityType, that.getTargetActivityType()) &&
+            Objects.equals(targetActivityName, that.getTargetActivityName())
+        );
     }
 
     @Override
     public int hashCode() {
-
-        return Objects.hash(getElementId(),
-                            sourceActivityElementId,
-                            targetActivityElementId);
+        return Objects.hash(
+            getElementId(),
+            sourceActivityElementId,
+            targetActivityElementId
+        );
     }
 
     @Override
     public String toString() {
-        return "SequenceFlowImpl{" +
-                "sourceActivityElementId='" + sourceActivityElementId + '\'' +
-                ", sourceActivityName='" + sourceActivityName + '\'' +
-                ", sourceActivityType='" + sourceActivityType + '\'' +
-                ", targetActivityElementId='" + targetActivityElementId + '\'' +
-                ", targetActivityName='" + targetActivityName + '\'' +
-                ", targetActivityType='" + targetActivityType + '\'' +
-                '}';
+        return (
+            "SequenceFlowImpl{" +
+            "sourceActivityElementId='" +
+            sourceActivityElementId +
+            '\'' +
+            ", sourceActivityName='" +
+            sourceActivityName +
+            '\'' +
+            ", sourceActivityType='" +
+            sourceActivityType +
+            '\'' +
+            ", targetActivityElementId='" +
+            targetActivityElementId +
+            '\'' +
+            ", targetActivityName='" +
+            targetActivityName +
+            '\'' +
+            ", targetActivityType='" +
+            targetActivityType +
+            '\'' +
+            '}'
+        );
     }
 }

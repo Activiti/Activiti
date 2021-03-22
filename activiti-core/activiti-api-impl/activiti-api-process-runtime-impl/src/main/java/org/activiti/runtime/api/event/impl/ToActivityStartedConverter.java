@@ -15,14 +15,14 @@
  */
 package org.activiti.runtime.api.event.impl;
 
+import java.util.Optional;
 import org.activiti.api.process.model.events.BPMNActivityStartedEvent;
 import org.activiti.api.runtime.event.impl.BPMNActivityStartedEventImpl;
 import org.activiti.engine.delegate.event.ActivitiActivityEvent;
 import org.activiti.runtime.api.model.impl.ToActivityConverter;
 
-import java.util.Optional;
-
-public class ToActivityStartedConverter implements EventConverter<BPMNActivityStartedEvent, ActivitiActivityEvent> {
+public class ToActivityStartedConverter
+    implements EventConverter<BPMNActivityStartedEvent, ActivitiActivityEvent> {
 
     private ToActivityConverter toActivityConverter;
 
@@ -31,7 +31,13 @@ public class ToActivityStartedConverter implements EventConverter<BPMNActivitySt
     }
 
     @Override
-    public Optional<BPMNActivityStartedEvent> from(ActivitiActivityEvent internalEvent) {
-        return Optional.of(new BPMNActivityStartedEventImpl(toActivityConverter.from(internalEvent)));
+    public Optional<BPMNActivityStartedEvent> from(
+        ActivitiActivityEvent internalEvent
+    ) {
+        return Optional.of(
+            new BPMNActivityStartedEventImpl(
+                toActivityConverter.from(internalEvent)
+            )
+        );
     }
 }

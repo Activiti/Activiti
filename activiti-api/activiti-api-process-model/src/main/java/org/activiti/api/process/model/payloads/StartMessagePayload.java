@@ -19,7 +19,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
-
 import org.activiti.api.model.shared.Payload;
 
 public class StartMessagePayload implements Payload {
@@ -33,11 +32,12 @@ public class StartMessagePayload implements Payload {
         this.id = UUID.randomUUID().toString();
     }
 
-    public StartMessagePayload(String name,
-                          String businessKey,
-                          Map<String, Object> variables) {
+    public StartMessagePayload(
+        String name,
+        String businessKey,
+        Map<String, Object> variables
+    ) {
         this();
-
         Objects.requireNonNull(name, "name must not be null");
 
         this.name = name;
@@ -69,17 +69,16 @@ public class StartMessagePayload implements Payload {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
+        if (this == obj) return true;
+        if (obj == null) return false;
+        if (getClass() != obj.getClass()) return false;
         StartMessagePayload other = (StartMessagePayload) obj;
-        return Objects.equals(businessKey, other.businessKey)
-                && Objects.equals(id, other.id)
-                && Objects.equals(name, other.name)
-                && Objects.equals(variables, other.variables);
+        return (
+            Objects.equals(businessKey, other.businessKey) &&
+            Objects.equals(id, other.id) &&
+            Objects.equals(name, other.name) &&
+            Objects.equals(variables, other.variables)
+        );
     }
 
     @Override
@@ -96,5 +95,4 @@ public class StartMessagePayload implements Payload {
         builder.append("]");
         return builder.toString();
     }
-
 }

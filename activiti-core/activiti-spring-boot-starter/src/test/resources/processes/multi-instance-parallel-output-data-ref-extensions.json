@@ -4,8 +4,8 @@
   "extensions": {
     "miParallelUserTasksOutputCollection": {
       "mappings": {
-        "miTasks" : {
-          "inputs" : {}
+        "miTasks": {
+          "inputs": {}
         }
       }
     }

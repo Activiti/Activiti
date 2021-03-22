@@ -16,9 +16,8 @@
 
 package org.activiti.engine.repository;
 
-import org.activiti.engine.api.internal.Internal;
-
 import java.util.Date;
+import org.activiti.engine.api.internal.Internal;
 
 /**
  * Represents a model that is stored in the model repository. In addition, a model can be deployed to the Activiti Engine in a separate deployment step.
@@ -28,44 +27,43 @@ import java.util.Date;
  */
 @Internal
 public interface Model {
+    String getId();
 
-  String getId();
+    String getName();
 
-  String getName();
+    void setName(String name);
 
-  void setName(String name);
+    String getKey();
 
-  String getKey();
+    void setKey(String key);
 
-  void setKey(String key);
+    String getCategory();
 
-  String getCategory();
+    void setCategory(String category);
 
-  void setCategory(String category);
+    Date getCreateTime();
 
-  Date getCreateTime();
+    Date getLastUpdateTime();
 
-  Date getLastUpdateTime();
+    Integer getVersion();
 
-  Integer getVersion();
+    void setVersion(Integer version);
 
-  void setVersion(Integer version);
+    String getMetaInfo();
 
-  String getMetaInfo();
+    void setMetaInfo(String metaInfo);
 
-  void setMetaInfo(String metaInfo);
+    String getDeploymentId();
 
-  String getDeploymentId();
+    void setDeploymentId(String deploymentId);
 
-  void setDeploymentId(String deploymentId);
+    void setTenantId(String tenantId);
 
-  void setTenantId(String tenantId);
+    String getTenantId();
 
-  String getTenantId();
+    /** whether this model has editor source */
+    boolean hasEditorSource();
 
-  /** whether this model has editor source */
-  boolean hasEditorSource();
-
-  /** whether this model has editor source extra */
-  boolean hasEditorSourceExtra();
+    /** whether this model has editor source extra */
+    boolean hasEditorSourceExtra();
 }

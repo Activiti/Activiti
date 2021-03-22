@@ -15,28 +15,39 @@
  */
 package org.activiti.runtime.api.event.impl;
 
+import java.util.Optional;
 import org.activiti.api.process.model.events.BPMNTimerRetriesDecrementedEvent;
 import org.activiti.api.runtime.event.impl.BPMNTimerRetriesDecrementedEventImpl;
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 
-import java.util.Optional;
-
-public class ToTimerRetriesDecrementedConverter implements EventConverter<BPMNTimerRetriesDecrementedEvent, ActivitiEvent> {
+public class ToTimerRetriesDecrementedConverter
+    implements EventConverter<BPMNTimerRetriesDecrementedEvent, ActivitiEvent> {
 
     private BPMNTimerConverter bpmnTimerConverter;
 
-    public ToTimerRetriesDecrementedConverter(BPMNTimerConverter bpmnTimerConverter) {
+    public ToTimerRetriesDecrementedConverter(
+        BPMNTimerConverter bpmnTimerConverter
+    ) {
         this.bpmnTimerConverter = bpmnTimerConverter;
     }
 
     @Override
-    public Optional<BPMNTimerRetriesDecrementedEvent> from(ActivitiEvent internalEvent) {
+    public Optional<BPMNTimerRetriesDecrementedEvent> from(
+        ActivitiEvent internalEvent
+    ) {
         BPMNTimerRetriesDecrementedEventImpl event = null;
         if (bpmnTimerConverter.isTimerRelatedEvent(internalEvent)) {
-            event = new BPMNTimerRetriesDecrementedEventImpl(bpmnTimerConverter.convertToBPMNTimer((ActivitiEntityEvent) internalEvent));
+            event =
+                new BPMNTimerRetriesDecrementedEventImpl(
+                    bpmnTimerConverter.convertToBPMNTimer(
+                        (ActivitiEntityEvent) internalEvent
+                    )
+                );
             event.setProcessInstanceId(internalEvent.getProcessInstanceId());
-            event.setProcessDefinitionId(internalEvent.getProcessDefinitionId());
+            event.setProcessDefinitionId(
+                internalEvent.getProcessDefinitionId()
+            );
         }
         return Optional.ofNullable(event);
     }

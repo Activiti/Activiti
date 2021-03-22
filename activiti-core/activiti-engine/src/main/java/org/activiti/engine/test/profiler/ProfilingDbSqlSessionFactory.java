@@ -28,5 +28,4 @@ public class ProfilingDbSqlSessionFactory extends DbSqlSessionFactory {
     public Session openSession(CommandContext commandContext) {
         return new ProfilingDbSqlSession(this, commandContext.getEntityCache());
     }
-
 }

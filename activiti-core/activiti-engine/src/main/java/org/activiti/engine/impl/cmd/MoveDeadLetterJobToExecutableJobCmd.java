@@ -17,7 +17,6 @@
 package org.activiti.engine.impl.cmd;
 
 import java.io.Serializable;
-
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.JobNotFoundException;
 import org.activiti.engine.impl.interceptor.Command;
@@ -30,40 +29,48 @@ import org.slf4j.LoggerFactory;
 /**
 
  */
-public class MoveDeadLetterJobToExecutableJobCmd implements Command<JobEntity>, Serializable {
+public class MoveDeadLetterJobToExecutableJobCmd
+    implements Command<JobEntity>, Serializable {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  private static Logger log = LoggerFactory.getLogger(MoveDeadLetterJobToExecutableJobCmd.class);
+    private static Logger log = LoggerFactory.getLogger(
+        MoveDeadLetterJobToExecutableJobCmd.class
+    );
 
-  protected String jobId;
-  protected int retries;
+    protected String jobId;
+    protected int retries;
 
-  public MoveDeadLetterJobToExecutableJobCmd(String jobId, int retries) {
-    this.jobId = jobId;
-    this.retries = retries;
-  }
-
-  public JobEntity execute(CommandContext commandContext) {
-
-    if (jobId == null) {
-      throw new ActivitiIllegalArgumentException("jobId and job is null");
+    public MoveDeadLetterJobToExecutableJobCmd(String jobId, int retries) {
+        this.jobId = jobId;
+        this.retries = retries;
     }
 
-    DeadLetterJobEntity job = commandContext.getDeadLetterJobEntityManager().findById(jobId);
-    if (job == null) {
-      throw new JobNotFoundException(jobId);
+    public JobEntity execute(CommandContext commandContext) {
+        if (jobId == null) {
+            throw new ActivitiIllegalArgumentException("jobId and job is null");
+        }
+
+        DeadLetterJobEntity job = commandContext
+            .getDeadLetterJobEntityManager()
+            .findById(jobId);
+        if (job == null) {
+            throw new JobNotFoundException(jobId);
+        }
+
+        if (log.isDebugEnabled()) {
+            log.debug(
+                "Moving deadletter job to executable job table {}",
+                job.getId()
+            );
+        }
+
+        return commandContext
+            .getJobManager()
+            .moveDeadLetterJobToExecutableJob(job, retries);
     }
 
-    if (log.isDebugEnabled()) {
-      log.debug("Moving deadletter job to executable job table {}", job.getId());
+    public String getJobId() {
+        return jobId;
     }
-
-    return commandContext.getJobManager().moveDeadLetterJobToExecutableJob(job, retries);
-  }
-
-  public String getJobId() {
-    return jobId;
-  }
-
 }

@@ -22,12 +22,17 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 /**
 
  */
-public class SubProcessInstanceExecutionBySuperExecutionIdMatcher implements SingleCachedEntityMatcher<ExecutionEntity> {
+public class SubProcessInstanceExecutionBySuperExecutionIdMatcher
+    implements SingleCachedEntityMatcher<ExecutionEntity> {
 
-  @Override
-  public boolean isRetained(ExecutionEntity executionEntity, Object parameter) {
-    return executionEntity.getSuperExecutionId() != null
-        && ((String) parameter).equals(executionEntity.getSuperExecutionId());
-  }
-
+    @Override
+    public boolean isRetained(
+        ExecutionEntity executionEntity,
+        Object parameter
+    ) {
+        return (
+            executionEntity.getSuperExecutionId() != null &&
+            ((String) parameter).equals(executionEntity.getSuperExecutionId())
+        );
+    }
 }

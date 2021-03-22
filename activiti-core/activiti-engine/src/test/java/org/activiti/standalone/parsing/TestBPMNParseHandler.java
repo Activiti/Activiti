@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.standalone.parsing;
 
 import org.activiti.bpmn.model.BaseElement;
@@ -28,14 +27,19 @@ import org.activiti.engine.impl.bpmn.parser.handler.AbstractBpmnParseHandler;
  */
 public class TestBPMNParseHandler extends AbstractBpmnParseHandler<Process> {
 
-  protected Class<? extends BaseElement> getHandledType() {
-    return Process.class;
-  }
+    protected Class<? extends BaseElement> getHandledType() {
+        return Process.class;
+    }
 
-  protected void executeParse(BpmnParse bpmnParse, Process process) {
-    // Change the key of all deployed process-definitions
-    process.setId(bpmnParse.getCurrentProcessDefinition().getKey() + "-modified");
-    bpmnParse.getCurrentProcessDefinition().setKey(bpmnParse.getCurrentProcessDefinition().getKey() + "-modified");
-  }
-
+    protected void executeParse(BpmnParse bpmnParse, Process process) {
+        // Change the key of all deployed process-definitions
+        process.setId(
+            bpmnParse.getCurrentProcessDefinition().getKey() + "-modified"
+        );
+        bpmnParse
+            .getCurrentProcessDefinition()
+            .setKey(
+                bpmnParse.getCurrentProcessDefinition().getKey() + "-modified"
+            );
+    }
 }

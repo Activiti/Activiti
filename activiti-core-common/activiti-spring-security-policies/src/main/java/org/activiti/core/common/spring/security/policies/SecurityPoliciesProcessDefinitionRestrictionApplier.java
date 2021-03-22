@@ -15,23 +15,30 @@
  */
 package org.activiti.core.common.spring.security.policies;
 
+import java.util.Set;
+import java.util.UUID;
 import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
 import org.activiti.api.process.model.payloads.GetProcessDefinitionsPayload;
 
-import java.util.Set;
-import java.util.UUID;
-
-public class SecurityPoliciesProcessDefinitionRestrictionApplier implements SecurityPoliciesRestrictionApplier<GetProcessDefinitionsPayload> {
+public class SecurityPoliciesProcessDefinitionRestrictionApplier
+    implements
+        SecurityPoliciesRestrictionApplier<GetProcessDefinitionsPayload> {
 
     @Override
     public GetProcessDefinitionsPayload restrictToKeys(Set<String> keys) {
-        return ProcessPayloadBuilder.processDefinitions().withProcessDefinitionKeys(keys).build();
+        return ProcessPayloadBuilder
+            .processDefinitions()
+            .withProcessDefinitionKeys(keys)
+            .build();
     }
 
     @Override
     public GetProcessDefinitionsPayload denyAll() {
         //user should not see anything so give unsatisfiable condition
-        return ProcessPayloadBuilder.processDefinitions().withProcessDefinitionKey("missing-" + UUID.randomUUID().toString()).build();
+        return ProcessPayloadBuilder
+            .processDefinitions()
+            .withProcessDefinitionKey("missing-" + UUID.randomUUID().toString())
+            .build();
     }
 
     @Override

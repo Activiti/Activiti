@@ -15,7 +15,6 @@
  */
 package org.activiti.engine.impl.variable;
 
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -40,7 +39,11 @@ public class LocalDateType implements VariableType {
     public Object getValue(ValueFields valueFields) {
         Long longValue = valueFields.getLongValue();
         if (longValue != null) {
-            LocalDateTime localDateTime = LocalDateTime.ofEpochSecond(longValue, 0, ZoneOffset.UTC);
+            LocalDateTime localDateTime = LocalDateTime.ofEpochSecond(
+                longValue,
+                0,
+                ZoneOffset.UTC
+            );
             return localDateTime.toLocalDate();
         }
         return null;
@@ -49,7 +52,9 @@ public class LocalDateType implements VariableType {
     public void setValue(Object value, ValueFields valueFields) {
         if (value != null) {
             LocalDateTime localDateTime = ((LocalDate) value).atStartOfDay();
-            valueFields.setLongValue(localDateTime.toEpochSecond(ZoneOffset.UTC));
+            valueFields.setLongValue(
+                localDateTime.toEpochSecond(ZoneOffset.UTC)
+            );
         } else {
             valueFields.setLongValue(null);
         }

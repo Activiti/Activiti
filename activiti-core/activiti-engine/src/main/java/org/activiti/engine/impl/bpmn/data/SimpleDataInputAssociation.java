@@ -18,7 +18,6 @@ package org.activiti.engine.impl.bpmn.data;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.Expression;
 
@@ -29,25 +28,28 @@ import org.activiti.engine.delegate.Expression;
  */
 public class SimpleDataInputAssociation extends AbstractDataAssociation {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  protected List<Assignment> assignments = new ArrayList<Assignment>();
+    protected List<Assignment> assignments = new ArrayList<Assignment>();
 
-  public SimpleDataInputAssociation(Expression sourceExpression, String target) {
-    super(sourceExpression, target);
-  }
-
-  public SimpleDataInputAssociation(String source, String target) {
-    super(source, target);
-  }
-
-  public void addAssignment(Assignment assignment) {
-    this.assignments.add(assignment);
-  }
-
-  public void evaluate(DelegateExecution execution) {
-    for (Assignment assignment : this.assignments) {
-      assignment.evaluate(execution);
+    public SimpleDataInputAssociation(
+        Expression sourceExpression,
+        String target
+    ) {
+        super(sourceExpression, target);
     }
-  }
+
+    public SimpleDataInputAssociation(String source, String target) {
+        super(source, target);
+    }
+
+    public void addAssignment(Assignment assignment) {
+        this.assignments.add(assignment);
+    }
+
+    public void evaluate(DelegateExecution execution) {
+        for (Assignment assignment : this.assignments) {
+            assignment.evaluate(execution);
+        }
+    }
 }

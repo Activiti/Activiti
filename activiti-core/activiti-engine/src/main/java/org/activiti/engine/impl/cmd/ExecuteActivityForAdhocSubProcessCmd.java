@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.cmd;
 
+import java.io.Serializable;
 import org.activiti.bpmn.model.AdhocSubProcess;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.FlowNode;
@@ -28,60 +28,80 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.runtime.Execution;
 
-import java.io.Serializable;
-
 /**
 
  */
-public class ExecuteActivityForAdhocSubProcessCmd implements Command<Execution>, Serializable {
+public class ExecuteActivityForAdhocSubProcessCmd
+    implements Command<Execution>, Serializable {
 
-  private static final long serialVersionUID = 1L;
-  protected String executionId;
-  protected String activityId;
+    private static final long serialVersionUID = 1L;
+    protected String executionId;
+    protected String activityId;
 
-  public ExecuteActivityForAdhocSubProcessCmd(String executionId, String activityId) {
-    this.executionId = executionId;
-    this.activityId = activityId;
-  }
-
-  public Execution execute(CommandContext commandContext) {
-    ExecutionEntity execution = commandContext.getExecutionEntityManager().findById(executionId);
-    if (execution == null) {
-      throw new ActivitiObjectNotFoundException("No execution found for id '" + executionId + "'", ExecutionEntity.class);
+    public ExecuteActivityForAdhocSubProcessCmd(
+        String executionId,
+        String activityId
+    ) {
+        this.executionId = executionId;
+        this.activityId = activityId;
     }
 
-    if (!(execution.getCurrentFlowElement() instanceof AdhocSubProcess)) {
-      throw new ActivitiException("The current flow element of the requested execution is not an ad-hoc sub process");
-    }
-
-    FlowNode foundNode = null;
-    AdhocSubProcess adhocSubProcess = (AdhocSubProcess) execution.getCurrentFlowElement();
-
-    // if sequential ordering, only one child execution can be active
-    if (adhocSubProcess.hasSequentialOrdering()) {
-      if (execution.getExecutions().size() > 0) {
-        throw new ActivitiException("Sequential ad-hoc sub process already has an active execution");
-      }
-    }
-
-    for (FlowElement flowElement : adhocSubProcess.getFlowElements()) {
-      if (activityId.equals(flowElement.getId()) && flowElement instanceof FlowNode) {
-        FlowNode flowNode = (FlowNode) flowElement;
-        if (flowNode.getIncomingFlows().size() == 0) {
-          foundNode = flowNode;
+    public Execution execute(CommandContext commandContext) {
+        ExecutionEntity execution = commandContext
+            .getExecutionEntityManager()
+            .findById(executionId);
+        if (execution == null) {
+            throw new ActivitiObjectNotFoundException(
+                "No execution found for id '" + executionId + "'",
+                ExecutionEntity.class
+            );
         }
-      }
+
+        if (!(execution.getCurrentFlowElement() instanceof AdhocSubProcess)) {
+            throw new ActivitiException(
+                "The current flow element of the requested execution is not an ad-hoc sub process"
+            );
+        }
+
+        FlowNode foundNode = null;
+        AdhocSubProcess adhocSubProcess = (AdhocSubProcess) execution.getCurrentFlowElement();
+
+        // if sequential ordering, only one child execution can be active
+        if (adhocSubProcess.hasSequentialOrdering()) {
+            if (execution.getExecutions().size() > 0) {
+                throw new ActivitiException(
+                    "Sequential ad-hoc sub process already has an active execution"
+                );
+            }
+        }
+
+        for (FlowElement flowElement : adhocSubProcess.getFlowElements()) {
+            if (
+                activityId.equals(flowElement.getId()) &&
+                flowElement instanceof FlowNode
+            ) {
+                FlowNode flowNode = (FlowNode) flowElement;
+                if (flowNode.getIncomingFlows().size() == 0) {
+                    foundNode = flowNode;
+                }
+            }
+        }
+
+        if (foundNode == null) {
+            throw new ActivitiException(
+                "The requested activity with id " +
+                activityId +
+                " can not be enabled"
+            );
+        }
+
+        ExecutionEntity activityExecution = Context
+            .getCommandContext()
+            .getExecutionEntityManager()
+            .createChildExecution(execution);
+        activityExecution.setCurrentFlowElement(foundNode);
+        Context.getAgenda().planContinueProcessOperation(activityExecution);
+
+        return activityExecution;
     }
-
-    if (foundNode == null) {
-      throw new ActivitiException("The requested activity with id " + activityId + " can not be enabled");
-    }
-
-    ExecutionEntity activityExecution = Context.getCommandContext().getExecutionEntityManager().createChildExecution(execution);
-    activityExecution.setCurrentFlowElement(foundNode);
-    Context.getAgenda().planContinueProcessOperation(activityExecution);
-
-    return activityExecution;
-  }
-
 }

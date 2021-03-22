@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 
-
 package org.activiti.spring.process.conf;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.activiti.common.util.DateFormatterProvider;
 import org.activiti.engine.RepositoryService;
 import org.activiti.spring.process.ProcessExtensionResourceReader;
@@ -49,56 +48,88 @@ public class ProcessExtensionsAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public ProcessExtensionResourceReader processExtensionResourceReader(ObjectMapper objectMapper,
-                                                            Map<String, VariableType> variableTypeMap) {
-        return new ProcessExtensionResourceReader(objectMapper, variableTypeMap);
+    public ProcessExtensionResourceReader processExtensionResourceReader(
+        ObjectMapper objectMapper,
+        Map<String, VariableType> variableTypeMap
+    ) {
+        return new ProcessExtensionResourceReader(
+            objectMapper,
+            variableTypeMap
+        );
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public ProcessExtensionService processExtensionService(ProcessExtensionResourceReader processExtensionResourceReader,
-                                                           DeploymentResourceLoader<ProcessExtensionModel> deploymentResourceLoader) {
+    public ProcessExtensionService processExtensionService(
+        ProcessExtensionResourceReader processExtensionResourceReader,
+        DeploymentResourceLoader<ProcessExtensionModel> deploymentResourceLoader
+    ) {
         return new ProcessExtensionService(
-                deploymentResourceLoader,
-                processExtensionResourceReader);
+            deploymentResourceLoader,
+            processExtensionResourceReader
+        );
     }
 
     @Bean
-    InitializingBean initRepositoryServiceForProcessExtensionService(RepositoryService repositoryService,
-                                                                     ProcessExtensionService processExtensionService) {
-        return () -> processExtensionService.setRepositoryService(repositoryService);
+    InitializingBean initRepositoryServiceForProcessExtensionService(
+        RepositoryService repositoryService,
+        ProcessExtensionService processExtensionService
+    ) {
+        return () ->
+            processExtensionService.setRepositoryService(repositoryService);
     }
 
     @Bean
-    InitializingBean initRepositoryServiceForDeploymentResourceLoader(RepositoryService repositoryService,
-                                                                      DeploymentResourceLoader deploymentResourceLoader) {
-        return () -> deploymentResourceLoader.setRepositoryService(repositoryService);
+    InitializingBean initRepositoryServiceForDeploymentResourceLoader(
+        RepositoryService repositoryService,
+        DeploymentResourceLoader deploymentResourceLoader
+    ) {
+        return () ->
+            deploymentResourceLoader.setRepositoryService(repositoryService);
     }
 
     @Bean
     @ConditionalOnMissingBean(name = "variableTypeMap")
-    public Map<String, VariableType> variableTypeMap(ObjectMapper objectMapper,
-                                                     DateFormatterProvider dateFormatterProvider) {
+    public Map<String, VariableType> variableTypeMap(
+        ObjectMapper objectMapper,
+        DateFormatterProvider dateFormatterProvider
+    ) {
         Map<String, VariableType> variableTypeMap = new HashMap<>();
-        variableTypeMap.put("boolean", new JavaObjectVariableType(Boolean.class));
+        variableTypeMap.put(
+            "boolean",
+            new JavaObjectVariableType(Boolean.class)
+        );
         variableTypeMap.put("string", new JavaObjectVariableType(String.class));
-        variableTypeMap.put("integer", new JavaObjectVariableType(Integer.class));
+        variableTypeMap.put(
+            "integer",
+            new JavaObjectVariableType(Integer.class)
+        );
         variableTypeMap.put("json", new JsonObjectVariableType(objectMapper));
         variableTypeMap.put("file", new JsonObjectVariableType(objectMapper));
         variableTypeMap.put("folder", new JsonObjectVariableType(objectMapper));
-        variableTypeMap.put("date", new DateVariableType(Date.class, dateFormatterProvider));
-        variableTypeMap.put("datetime", new DateVariableType(Date.class, dateFormatterProvider));
+        variableTypeMap.put(
+            "date",
+            new DateVariableType(Date.class, dateFormatterProvider)
+        );
+        variableTypeMap.put(
+            "datetime",
+            new DateVariableType(Date.class, dateFormatterProvider)
+        );
         variableTypeMap.put("array", new JsonObjectVariableType(objectMapper));
         return variableTypeMap;
     }
 
     @Bean
-    public VariableValidationService variableValidationService(Map<String, VariableType> variableTypeMap) {
+    public VariableValidationService variableValidationService(
+        Map<String, VariableType> variableTypeMap
+    ) {
         return new VariableValidationService(variableTypeMap);
     }
 
     @Bean
-    public VariableParsingService variableParsingService(Map<String, VariableType> variableTypeMap) {
+    public VariableParsingService variableParsingService(
+        Map<String, VariableType> variableTypeMap
+    ) {
         return new VariableParsingService(variableTypeMap);
     }
 }

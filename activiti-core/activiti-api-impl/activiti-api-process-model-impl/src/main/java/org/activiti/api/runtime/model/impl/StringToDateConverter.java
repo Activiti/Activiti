@@ -17,7 +17,6 @@ package org.activiti.api.runtime.model.impl;
 
 import java.time.Instant;
 import java.util.Date;
-
 import org.springframework.core.convert.converter.Converter;
 
 @ProcessVariableTypeConverter

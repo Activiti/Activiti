@@ -29,9 +29,11 @@ public class VariableScopeExpressionEvaluator implements ExpressionEvaluator {
     }
 
     @Override
-    public Object evaluate(Expression expression,
+    public Object evaluate(
+        Expression expression,
         ExpressionManager expressionManager,
-        DelegateInterceptor delegateInterceptor) {
+        DelegateInterceptor delegateInterceptor
+    ) {
         return expression.getValue(variableScope);
     }
 }

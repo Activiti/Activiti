@@ -30,62 +30,67 @@ import org.activiti.engine.impl.cfg.BpmnParseFactory;
  */
 public class BpmnParser {
 
-  /**
-   * The namepace of the BPMN 2.0 diagram interchange elements.
-   */
-  public static final String BPMN_DI_NS = "http://www.omg.org/spec/BPMN/20100524/DI";
+    /**
+     * The namepace of the BPMN 2.0 diagram interchange elements.
+     */
+    public static final String BPMN_DI_NS =
+        "http://www.omg.org/spec/BPMN/20100524/DI";
 
-  /**
-   * The namespace of the BPMN 2.0 diagram common elements.
-   */
-  public static final String BPMN_DC_NS = "http://www.omg.org/spec/DD/20100524/DC";
+    /**
+     * The namespace of the BPMN 2.0 diagram common elements.
+     */
+    public static final String BPMN_DC_NS =
+        "http://www.omg.org/spec/DD/20100524/DC";
 
-  /**
-   * The namespace of the generic OMG DI elements (don't ask me why they didn't use the BPMN_DI_NS ...)
-   */
-  public static final String OMG_DI_NS = "http://www.omg.org/spec/DD/20100524/DI";
+    /**
+     * The namespace of the generic OMG DI elements (don't ask me why they didn't use the BPMN_DI_NS ...)
+     */
+    public static final String OMG_DI_NS =
+        "http://www.omg.org/spec/DD/20100524/DI";
 
-  protected ActivityBehaviorFactory activityBehaviorFactory;
-  protected ListenerFactory listenerFactory;
-  protected BpmnParseFactory bpmnParseFactory;
-  protected BpmnParseHandlers bpmnParserHandlers;
+    protected ActivityBehaviorFactory activityBehaviorFactory;
+    protected ListenerFactory listenerFactory;
+    protected BpmnParseFactory bpmnParseFactory;
+    protected BpmnParseHandlers bpmnParserHandlers;
 
-  /**
-   * Creates a new {@link BpmnParse} instance that can be used to parse only one BPMN 2.0 process definition.
-   */
-  public BpmnParse createParse() {
-    return bpmnParseFactory.createBpmnParse(this);
-  }
+    /**
+     * Creates a new {@link BpmnParse} instance that can be used to parse only one BPMN 2.0 process definition.
+     */
+    public BpmnParse createParse() {
+        return bpmnParseFactory.createBpmnParse(this);
+    }
 
-  public ActivityBehaviorFactory getActivityBehaviorFactory() {
-    return activityBehaviorFactory;
-  }
+    public ActivityBehaviorFactory getActivityBehaviorFactory() {
+        return activityBehaviorFactory;
+    }
 
-  public void setActivityBehaviorFactory(ActivityBehaviorFactory activityBehaviorFactory) {
-    this.activityBehaviorFactory = activityBehaviorFactory;
-  }
+    public void setActivityBehaviorFactory(
+        ActivityBehaviorFactory activityBehaviorFactory
+    ) {
+        this.activityBehaviorFactory = activityBehaviorFactory;
+    }
 
-  public ListenerFactory getListenerFactory() {
-    return listenerFactory;
-  }
+    public ListenerFactory getListenerFactory() {
+        return listenerFactory;
+    }
 
-  public void setListenerFactory(ListenerFactory listenerFactory) {
-    this.listenerFactory = listenerFactory;
-  }
+    public void setListenerFactory(ListenerFactory listenerFactory) {
+        this.listenerFactory = listenerFactory;
+    }
 
-  public BpmnParseFactory getBpmnParseFactory() {
-    return bpmnParseFactory;
-  }
+    public BpmnParseFactory getBpmnParseFactory() {
+        return bpmnParseFactory;
+    }
 
-  public void setBpmnParseFactory(BpmnParseFactory bpmnParseFactory) {
-    this.bpmnParseFactory = bpmnParseFactory;
-  }
+    public void setBpmnParseFactory(BpmnParseFactory bpmnParseFactory) {
+        this.bpmnParseFactory = bpmnParseFactory;
+    }
 
-  public BpmnParseHandlers getBpmnParserHandlers() {
-    return bpmnParserHandlers;
-  }
+    public BpmnParseHandlers getBpmnParserHandlers() {
+        return bpmnParserHandlers;
+    }
 
-  public void setBpmnParserHandlers(BpmnParseHandlers bpmnParserHandlers) {
-    this.bpmnParserHandlers = bpmnParserHandlers;
-  }
+    public void setBpmnParserHandlers(BpmnParseHandlers bpmnParserHandlers) {
+        this.bpmnParserHandlers = bpmnParserHandlers;
+    }
 }

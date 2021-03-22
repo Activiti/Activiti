@@ -16,7 +16,6 @@
 package org.activiti.bpmn.converter.child;
 
 import javax.xml.stream.XMLStreamReader;
-
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.TimerEventDefinition;
@@ -27,9 +26,11 @@ public class TimeDateParser extends BaseChildElementParser {
         return ATTRIBUTE_TIMER_DATE;
     }
 
-    public void parseChildElement(XMLStreamReader xtr,
-                                  BaseElement parentElement,
-                                  BpmnModel model) throws Exception {
+    public void parseChildElement(
+        XMLStreamReader xtr,
+        BaseElement parentElement,
+        BpmnModel model
+    ) throws Exception {
         if (!(parentElement instanceof TimerEventDefinition)) {
             return;
         }

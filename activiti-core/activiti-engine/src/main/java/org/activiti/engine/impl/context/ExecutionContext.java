@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.context;
 
 import org.activiti.engine.impl.persistence.entity.DeploymentEntity;
@@ -27,27 +26,32 @@ import org.activiti.engine.repository.ProcessDefinition;
  */
 public class ExecutionContext {
 
-  protected ExecutionEntity execution;
+    protected ExecutionEntity execution;
 
-  public ExecutionContext(ExecutionEntity execution) {
-    this.execution = execution;
-  }
+    public ExecutionContext(ExecutionEntity execution) {
+        this.execution = execution;
+    }
 
-  public ExecutionEntity getExecution() {
-    return execution;
-  }
+    public ExecutionEntity getExecution() {
+        return execution;
+    }
 
-  public ExecutionEntity getProcessInstance() {
-    return execution.getProcessInstance();
-  }
+    public ExecutionEntity getProcessInstance() {
+        return execution.getProcessInstance();
+    }
 
-  public ProcessDefinition getProcessDefinition() {
-    return ProcessDefinitionUtil.getProcessDefinition(execution.getProcessDefinitionId());
-  }
+    public ProcessDefinition getProcessDefinition() {
+        return ProcessDefinitionUtil.getProcessDefinition(
+            execution.getProcessDefinitionId()
+        );
+    }
 
-  public DeploymentEntity getDeployment() {
-    String deploymentId = getProcessDefinition().getDeploymentId();
-    DeploymentEntity deployment = Context.getCommandContext().getDeploymentEntityManager().findById(deploymentId);
-    return deployment;
-  }
+    public DeploymentEntity getDeployment() {
+        String deploymentId = getProcessDefinition().getDeploymentId();
+        DeploymentEntity deployment = Context
+            .getCommandContext()
+            .getDeploymentEntityManager()
+            .findById(deploymentId);
+        return deployment;
+    }
 }

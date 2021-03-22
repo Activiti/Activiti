@@ -33,67 +33,96 @@ import java.util.TreeSet;
  */
 public class DbSchemaExport {
 
-  public static void main(String[] args) throws Exception {
-    if (args == null || args.length != 1) {
-      System.err.println("Syntax: java -cp ... org.activiti.engine.impl.db.DbSchemaExport <path-to-properties-file> <path-to-export-file>");
-      return;
+    public static void main(String[] args) throws Exception {
+        if (args == null || args.length != 1) {
+            System.err.println(
+                "Syntax: java -cp ... org.activiti.engine.impl.db.DbSchemaExport <path-to-properties-file> <path-to-export-file>"
+            );
+            return;
+        }
+        File propertiesFile = new File(args[0]);
+        if (!propertiesFile.exists()) {
+            System.err.println(
+                "File '" +
+                args[0] +
+                "' doesn't exist \n" +
+                "Syntax: java -cp ... org.activiti.engine.impl.db.DbSchemaExport <path-to-properties-file> <path-to-export-file>\n"
+            );
+            return;
+        }
+        Properties properties = new Properties();
+        properties.load(new FileInputStream(propertiesFile));
+
+        String jdbcDriver = properties.getProperty("jdbc.driver");
+        String jdbcUrl = properties.getProperty("jdbc.url");
+        String jdbcUsername = properties.getProperty("jdbc.username");
+        String jdbcPassword = properties.getProperty("jdbc.password");
+
+        Class.forName(jdbcDriver);
+        Connection connection = DriverManager.getConnection(
+            jdbcUrl,
+            jdbcUsername,
+            jdbcPassword
+        );
+        try {
+            DatabaseMetaData meta = connection.getMetaData();
+
+            SortedSet<String> tableNames = new TreeSet<String>();
+            ResultSet tables = meta.getTables(null, null, null, null);
+            while (tables.next()) {
+                String tableName = tables.getString(3);
+                tableNames.add(tableName);
+            }
+
+            System.out.println("TABLES");
+            for (String tableName : tableNames) {
+                Map<String, String> columnDescriptions = new HashMap<String, String>();
+                ResultSet columns = meta.getColumns(
+                    null,
+                    null,
+                    tableName,
+                    null
+                );
+                while (columns.next()) {
+                    String columnName = columns.getString(4);
+                    String columnTypeAndSize =
+                        columns.getString(6) + " " + columns.getInt(7);
+                    columnDescriptions.put(columnName, columnTypeAndSize);
+                }
+
+                System.out.println(tableName);
+                for (String columnName : new TreeSet<String>(
+                    columnDescriptions.keySet()
+                )) {
+                    System.out.println(
+                        "  " +
+                        columnName +
+                        " " +
+                        columnDescriptions.get(columnName)
+                    );
+                }
+
+                System.out.println("INDEXES");
+                SortedSet<String> indexNames = new TreeSet<String>();
+                ResultSet indexes = meta.getIndexInfo(
+                    null,
+                    null,
+                    tableName,
+                    false,
+                    true
+                );
+                while (indexes.next()) {
+                    String indexName = indexes.getString(6);
+                    indexNames.add(indexName);
+                }
+                for (String indexName : indexNames) {
+                    System.out.println(indexName);
+                }
+                System.out.println();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            connection.close();
+        }
     }
-    File propertiesFile = new File(args[0]);
-    if (!propertiesFile.exists()) {
-      System.err.println("File '" + args[0] + "' doesn't exist \n" + "Syntax: java -cp ... org.activiti.engine.impl.db.DbSchemaExport <path-to-properties-file> <path-to-export-file>\n");
-      return;
-    }
-    Properties properties = new Properties();
-    properties.load(new FileInputStream(propertiesFile));
-
-    String jdbcDriver = properties.getProperty("jdbc.driver");
-    String jdbcUrl = properties.getProperty("jdbc.url");
-    String jdbcUsername = properties.getProperty("jdbc.username");
-    String jdbcPassword = properties.getProperty("jdbc.password");
-
-    Class.forName(jdbcDriver);
-    Connection connection = DriverManager.getConnection(jdbcUrl, jdbcUsername, jdbcPassword);
-    try {
-      DatabaseMetaData meta = connection.getMetaData();
-
-      SortedSet<String> tableNames = new TreeSet<String>();
-      ResultSet tables = meta.getTables(null, null, null, null);
-      while (tables.next()) {
-        String tableName = tables.getString(3);
-        tableNames.add(tableName);
-      }
-
-      System.out.println("TABLES");
-      for (String tableName : tableNames) {
-        Map<String, String> columnDescriptions = new HashMap<String, String>();
-        ResultSet columns = meta.getColumns(null, null, tableName, null);
-        while (columns.next()) {
-          String columnName = columns.getString(4);
-          String columnTypeAndSize = columns.getString(6) + " " + columns.getInt(7);
-          columnDescriptions.put(columnName, columnTypeAndSize);
-        }
-
-        System.out.println(tableName);
-        for (String columnName : new TreeSet<String>(columnDescriptions.keySet())) {
-          System.out.println("  " + columnName + " " + columnDescriptions.get(columnName));
-        }
-
-        System.out.println("INDEXES");
-        SortedSet<String> indexNames = new TreeSet<String>();
-        ResultSet indexes = meta.getIndexInfo(null, null, tableName, false, true);
-        while (indexes.next()) {
-          String indexName = indexes.getString(6);
-          indexNames.add(indexName);
-        }
-        for (String indexName : indexNames) {
-          System.out.println(indexName);
-        }
-        System.out.println();
-      }
-
-    } catch (Exception e) {
-      e.printStackTrace();
-      connection.close();
-    }
-  }
 }

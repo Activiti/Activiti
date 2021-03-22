@@ -25,21 +25,32 @@ import org.activiti.engine.impl.util.json.JSONObject;
 /**
 
  */
-public class TimerActivateProcessDefinitionHandler extends TimerChangeProcessDefinitionSuspensionStateJobHandler {
+public class TimerActivateProcessDefinitionHandler
+    extends TimerChangeProcessDefinitionSuspensionStateJobHandler {
 
-  public static final String TYPE = "activate-processdefinition";
+    public static final String TYPE = "activate-processdefinition";
 
-  public String getType() {
-    return TYPE;
-  }
+    public String getType() {
+        return TYPE;
+    }
 
-  public void execute(JobEntity job, String configuration, ExecutionEntity execution, CommandContext commandContext) {
-    JSONObject cfgJson = new JSONObject(configuration);
-    String processDefinitionId = job.getProcessDefinitionId();
-    boolean activateProcessInstances = getIncludeProcessInstances(cfgJson);
+    public void execute(
+        JobEntity job,
+        String configuration,
+        ExecutionEntity execution,
+        CommandContext commandContext
+    ) {
+        JSONObject cfgJson = new JSONObject(configuration);
+        String processDefinitionId = job.getProcessDefinitionId();
+        boolean activateProcessInstances = getIncludeProcessInstances(cfgJson);
 
-    ActivateProcessDefinitionCmd activateProcessDefinitionCmd = new ActivateProcessDefinitionCmd(processDefinitionId, null, activateProcessInstances, null, job.getTenantId());
-    activateProcessDefinitionCmd.execute(commandContext);
-  }
-
+        ActivateProcessDefinitionCmd activateProcessDefinitionCmd = new ActivateProcessDefinitionCmd(
+            processDefinitionId,
+            null,
+            activateProcessInstances,
+            null,
+            job.getTenantId()
+        );
+        activateProcessDefinitionCmd.execute(commandContext);
+    }
 }

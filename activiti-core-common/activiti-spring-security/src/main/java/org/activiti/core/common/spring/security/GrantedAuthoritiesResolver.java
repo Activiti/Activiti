@@ -15,13 +15,10 @@
  */
 package org.activiti.core.common.spring.security;
 
-import org.springframework.security.core.GrantedAuthority;
-
 import java.security.Principal;
 import java.util.Collection;
+import org.springframework.security.core.GrantedAuthority;
 
 public interface GrantedAuthoritiesResolver {
-
     Collection<? extends GrantedAuthority> getAuthorities(Principal principal);
-
 }

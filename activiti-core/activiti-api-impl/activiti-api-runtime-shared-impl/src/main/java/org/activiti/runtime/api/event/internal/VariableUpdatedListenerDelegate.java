@@ -35,7 +35,8 @@ public class VariableUpdatedListenerDelegate implements ActivitiEventListener {
     public VariableUpdatedListenerDelegate(
         List<VariableEventListener<VariableUpdatedEvent>> listeners,
         ToVariableUpdatedConverter converter,
-        VariableEventFilter variableEventFilter) {
+        VariableEventFilter variableEventFilter
+    ) {
         this.listeners = listeners;
         this.converter = converter;
         this.variableEventFilter = variableEventFilter;
@@ -46,14 +47,17 @@ public class VariableUpdatedListenerDelegate implements ActivitiEventListener {
         if (event instanceof ActivitiVariableUpdatedEvent) {
             ActivitiVariableUpdatedEvent internalEvent = (ActivitiVariableUpdatedEvent) event;
             if (variableEventFilter.shouldEmmitEvent(internalEvent)) {
-                converter.from(internalEvent)
-                    .ifPresent(convertedEvent -> {
-                        if (listeners != null) {
-                            for (VariableEventListener<VariableUpdatedEvent> listener : listeners) {
-                                listener.onEvent(convertedEvent);
+                converter
+                    .from(internalEvent)
+                    .ifPresent(
+                        convertedEvent -> {
+                            if (listeners != null) {
+                                for (VariableEventListener<VariableUpdatedEvent> listener : listeners) {
+                                    listener.onEvent(convertedEvent);
+                                }
                             }
                         }
-                    });
+                    );
             }
         }
     }

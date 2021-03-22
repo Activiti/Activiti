@@ -27,74 +27,72 @@ import java.util.Map;
  */
 public class TablePage {
 
-  protected String tableName;
+    protected String tableName;
 
-  /**
-   * The total number of rows in the table.
-   */
-  protected long total = -1;
+    /**
+     * The total number of rows in the table.
+     */
+    protected long total = -1;
 
-  /**
-   * Identifies the index of the first result stored in this TablePage. For example in a paginated database table, this value identifies the record number of the result on the first row.
-   */
-  protected long firstResult;
+    /**
+     * Identifies the index of the first result stored in this TablePage. For example in a paginated database table, this value identifies the record number of the result on the first row.
+     */
+    protected long firstResult;
 
-  /**
-   * The actual content of the database table, stored as a list of mappings of the form {column name, value}.
-   *
-   * This means that every map object in the list corresponds with one row in the database table.
-   */
-  protected List<Map<String, Object>> rowData;
+    /**
+     * The actual content of the database table, stored as a list of mappings of the form {column name, value}.
+     *
+     * This means that every map object in the list corresponds with one row in the database table.
+     */
+    protected List<Map<String, Object>> rowData;
 
-  public TablePage() {
+    public TablePage() {}
 
-  }
+    public String getTableName() {
+        return tableName;
+    }
 
-  public String getTableName() {
-    return tableName;
-  }
+    public void setTableName(String tableName) {
+        this.tableName = tableName;
+    }
 
-  public void setTableName(String tableName) {
-    this.tableName = tableName;
-  }
+    /**
+     * @return the start index of this page (ie the index of the first element in the page)
+     */
+    public long getFirstResult() {
+        return firstResult;
+    }
 
-  /**
-   * @return the start index of this page (ie the index of the first element in the page)
-   */
-  public long getFirstResult() {
-    return firstResult;
-  }
+    public void setFirstResult(long firstResult) {
+        this.firstResult = firstResult;
+    }
 
-  public void setFirstResult(long firstResult) {
-    this.firstResult = firstResult;
-  }
+    public void setRows(List<Map<String, Object>> rowData) {
+        this.rowData = rowData;
+    }
 
-  public void setRows(List<Map<String, Object>> rowData) {
-    this.rowData = rowData;
-  }
+    /**
+     * @return the actual table content.
+     */
+    public List<Map<String, Object>> getRows() {
+        return rowData;
+    }
 
-  /**
-   * @return the actual table content.
-   */
-  public List<Map<String, Object>> getRows() {
-    return rowData;
-  }
+    public void setTotal(long total) {
+        this.total = total;
+    }
 
-  public void setTotal(long total) {
-    this.total = total;
-  }
+    /**
+     * @return the total rowcount of the table from which this page is only a subset.
+     */
+    public long getTotal() {
+        return total;
+    }
 
-  /**
-   * @return the total rowcount of the table from which this page is only a subset.
-   */
-  public long getTotal() {
-    return total;
-  }
-
-  /**
-   * @return the actual number of rows in this page.
-   */
-  public long getSize() {
-    return rowData.size();
-  }
+    /**
+     * @return the actual number of rows in this page.
+     */
+    public long getSize() {
+        return rowData.size();
+    }
 }

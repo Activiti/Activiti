@@ -15,20 +15,18 @@
  */
 package org.activiti.test.matchers;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.List;
 import java.util.stream.Collectors;
-
 import org.activiti.api.process.model.events.BPMNSignalEvent;
 import org.activiti.api.process.model.events.BPMNSignalReceivedEvent;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class SignalMatchers {
 
     private String signalName;
 
     private SignalMatchers(String signalName) {
-
         this.signalName = signalName;
     }
 
@@ -39,15 +37,31 @@ public class SignalMatchers {
     public OperationScopeMatcher hasBeenReceived() {
         return (operationScope, events) -> {
             List<BPMNSignalReceivedEvent> flowTakenEvents = events
-                    .stream()
-                    .filter(event -> BPMNSignalEvent.SignalEvents.SIGNAL_RECEIVED.equals(event.getEventType()))
-                    .map(BPMNSignalReceivedEvent.class::cast)
-                    .filter(event -> event.getEntity().getProcessInstanceId().equals(operationScope.getProcessInstanceId()))
-                    .collect(Collectors.toList());
+                .stream()
+                .filter(
+                    event ->
+                        BPMNSignalEvent.SignalEvents.SIGNAL_RECEIVED.equals(
+                            event.getEventType()
+                        )
+                )
+                .map(BPMNSignalReceivedEvent.class::cast)
+                .filter(
+                    event ->
+                        event
+                            .getEntity()
+                            .getProcessInstanceId()
+                            .equals(operationScope.getProcessInstanceId())
+                )
+                .collect(Collectors.toList());
             assertThat(flowTakenEvents)
-                    .extracting(event -> event.getEntity().getSignalPayload().getName())
-                    .as("Unable to find event " + BPMNSignalEvent.SignalEvents.SIGNAL_RECEIVED)
-                    .contains(signalName);
+                .extracting(
+                    event -> event.getEntity().getSignalPayload().getName()
+                )
+                .as(
+                    "Unable to find event " +
+                    BPMNSignalEvent.SignalEvents.SIGNAL_RECEIVED
+                )
+                .contains(signalName);
         };
     }
 }

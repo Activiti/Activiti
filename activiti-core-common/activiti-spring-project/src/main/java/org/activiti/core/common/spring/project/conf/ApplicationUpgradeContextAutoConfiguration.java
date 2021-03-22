@@ -29,19 +29,27 @@ public class ApplicationUpgradeContextAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    @ConditionalOnMissingClass(value = "org.springframework.http.converter.json.Jackson2ObjectMapperBuilder")
+    @ConditionalOnMissingClass(
+        value = "org.springframework.http.converter.json.Jackson2ObjectMapperBuilder"
+    )
     public ObjectMapper objectMapper() {
         return new ObjectMapper();
     }
 
     @Bean
-    public ApplicationUpgradeContextService applicationUpgradeContextService(@Value("${project.manifest.file.path:classpath:/default-app.json}") String absolutePath,
-                                                                             @Value("${application.version:0}") Integer enforcedAppVersion,
-                                                                             ObjectMapper objectMapper,
-                                                                             ResourcePatternResolver resourceLoader) {
-        return new ApplicationUpgradeContextService(absolutePath,
-                                                    enforcedAppVersion,
-                                                    objectMapper,
-                                                    resourceLoader);
+    public ApplicationUpgradeContextService applicationUpgradeContextService(
+        @Value(
+            "${project.manifest.file.path:classpath:/default-app.json}"
+        ) String absolutePath,
+        @Value("${application.version:0}") Integer enforcedAppVersion,
+        ObjectMapper objectMapper,
+        ResourcePatternResolver resourceLoader
+    ) {
+        return new ApplicationUpgradeContextService(
+            absolutePath,
+            enforcedAppVersion,
+            objectMapper,
+            resourceLoader
+        );
     }
 }

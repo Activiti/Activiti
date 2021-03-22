@@ -20,7 +20,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
-
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.delegate.event.ActivitiEvent;
@@ -36,97 +35,122 @@ import org.slf4j.LoggerFactory;
  */
 public class ActivitiEventSupport {
 
-  private static final Logger LOG = LoggerFactory.getLogger(ActivitiEventSupport.class);
+    private static final Logger LOG = LoggerFactory.getLogger(
+        ActivitiEventSupport.class
+    );
 
-  protected List<ActivitiEventListener> eventListeners;
-  protected Map<ActivitiEventType, List<ActivitiEventListener>> typedListeners;
+    protected List<ActivitiEventListener> eventListeners;
+    protected Map<ActivitiEventType, List<ActivitiEventListener>> typedListeners;
 
-  public ActivitiEventSupport() {
-    eventListeners = new CopyOnWriteArrayList<ActivitiEventListener>();
-    typedListeners = new HashMap<ActivitiEventType, List<ActivitiEventListener>>();
-  }
-
-  public synchronized void addEventListener(ActivitiEventListener listenerToAdd) {
-    if (listenerToAdd == null) {
-      throw new ActivitiIllegalArgumentException("Listener cannot be null.");
-    }
-    if (!eventListeners.contains(listenerToAdd)) {
-      eventListeners.add(listenerToAdd);
-    }
-  }
-
-  public synchronized void addEventListener(ActivitiEventListener listenerToAdd, ActivitiEventType... types) {
-    if (listenerToAdd == null) {
-      throw new ActivitiIllegalArgumentException("Listener cannot be null.");
+    public ActivitiEventSupport() {
+        eventListeners = new CopyOnWriteArrayList<ActivitiEventListener>();
+        typedListeners =
+            new HashMap<ActivitiEventType, List<ActivitiEventListener>>();
     }
 
-    if (types == null || types.length == 0) {
-      addEventListener(listenerToAdd);
-
-    } else {
-      for (ActivitiEventType type : types) {
-        addTypedEventListener(listenerToAdd, type);
-      }
-    }
-  }
-
-  public void removeEventListener(ActivitiEventListener listenerToRemove) {
-    eventListeners.remove(listenerToRemove);
-
-    for (List<ActivitiEventListener> listeners : typedListeners.values()) {
-      listeners.remove(listenerToRemove);
-    }
-  }
-
-  public void dispatchEvent(ActivitiEvent event) {
-    if (event == null) {
-      throw new ActivitiIllegalArgumentException("Event cannot be null.");
+    public synchronized void addEventListener(
+        ActivitiEventListener listenerToAdd
+    ) {
+        if (listenerToAdd == null) {
+            throw new ActivitiIllegalArgumentException(
+                "Listener cannot be null."
+            );
+        }
+        if (!eventListeners.contains(listenerToAdd)) {
+            eventListeners.add(listenerToAdd);
+        }
     }
 
-    if (event.getType() == null) {
-      throw new ActivitiIllegalArgumentException("Event type cannot be null.");
+    public synchronized void addEventListener(
+        ActivitiEventListener listenerToAdd,
+        ActivitiEventType... types
+    ) {
+        if (listenerToAdd == null) {
+            throw new ActivitiIllegalArgumentException(
+                "Listener cannot be null."
+            );
+        }
+
+        if (types == null || types.length == 0) {
+            addEventListener(listenerToAdd);
+        } else {
+            for (ActivitiEventType type : types) {
+                addTypedEventListener(listenerToAdd, type);
+            }
+        }
     }
 
-    // Call global listeners
-    if (!eventListeners.isEmpty()) {
-      for (ActivitiEventListener listener : eventListeners) {
-        dispatchEvent(event, listener);
-      }
+    public void removeEventListener(ActivitiEventListener listenerToRemove) {
+        eventListeners.remove(listenerToRemove);
+
+        for (List<ActivitiEventListener> listeners : typedListeners.values()) {
+            listeners.remove(listenerToRemove);
+        }
     }
 
-    // Call typed listeners, if any
-    List<ActivitiEventListener> typed = typedListeners.get(event.getType());
-    if (typed != null && !typed.isEmpty()) {
-      for (ActivitiEventListener listener : typed) {
-        dispatchEvent(event, listener);
-      }
-    }
-  }
+    public void dispatchEvent(ActivitiEvent event) {
+        if (event == null) {
+            throw new ActivitiIllegalArgumentException("Event cannot be null.");
+        }
 
-  protected void dispatchEvent(ActivitiEvent event, ActivitiEventListener listener) {
-    try {
-      listener.onEvent(event);
-    } catch (Throwable t) {
-      if (listener.isFailOnException()) {
-        throw new ActivitiException("Exception while executing event-listener", t);
-      } else {
-        // Ignore the exception and continue notifying remaining listeners. The listener
-        // explicitly states that the exception should not bubble up
-        LOG.warn("Exception while executing event-listener, which was ignored", t);
-      }
-    }
-  }
+        if (event.getType() == null) {
+            throw new ActivitiIllegalArgumentException(
+                "Event type cannot be null."
+            );
+        }
 
-  protected synchronized void addTypedEventListener(ActivitiEventListener listener, ActivitiEventType type) {
-    List<ActivitiEventListener> listeners = typedListeners.get(type);
-    if (listeners == null) {
-      // Add an empty list of listeners for this type
-      listeners = new CopyOnWriteArrayList<ActivitiEventListener>();
-      typedListeners.put(type, listeners);
+        // Call global listeners
+        if (!eventListeners.isEmpty()) {
+            for (ActivitiEventListener listener : eventListeners) {
+                dispatchEvent(event, listener);
+            }
+        }
+
+        // Call typed listeners, if any
+        List<ActivitiEventListener> typed = typedListeners.get(event.getType());
+        if (typed != null && !typed.isEmpty()) {
+            for (ActivitiEventListener listener : typed) {
+                dispatchEvent(event, listener);
+            }
+        }
     }
 
-    if (!listeners.contains(listener)) {
-      listeners.add(listener);
+    protected void dispatchEvent(
+        ActivitiEvent event,
+        ActivitiEventListener listener
+    ) {
+        try {
+            listener.onEvent(event);
+        } catch (Throwable t) {
+            if (listener.isFailOnException()) {
+                throw new ActivitiException(
+                    "Exception while executing event-listener",
+                    t
+                );
+            } else {
+                // Ignore the exception and continue notifying remaining listeners. The listener
+                // explicitly states that the exception should not bubble up
+                LOG.warn(
+                    "Exception while executing event-listener, which was ignored",
+                    t
+                );
+            }
+        }
     }
-  }
+
+    protected synchronized void addTypedEventListener(
+        ActivitiEventListener listener,
+        ActivitiEventType type
+    ) {
+        List<ActivitiEventListener> listeners = typedListeners.get(type);
+        if (listeners == null) {
+            // Add an empty list of listeners for this type
+            listeners = new CopyOnWriteArrayList<ActivitiEventListener>();
+            typedListeners.put(type, listeners);
+        }
+
+        if (!listeners.contains(listener)) {
+            listeners.add(listener);
+        }
+    }
 }

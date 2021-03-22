@@ -19,7 +19,6 @@ import static org.activiti.spring.process.model.TemplateDefinition.TemplateType.
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.InputStream;
-
 import org.activiti.engine.RepositoryService;
 import org.activiti.spring.process.model.ProcessExtensionModel;
 import org.activiti.spring.process.model.TemplateDefinition;
@@ -38,29 +37,58 @@ public class ProcessExtensionResourceReaderIT {
     private ProcessExtensionResourceReader reader;
 
     @Test
-    public void shouldReadExtensionFromJsonFile() throws Exception{
-        try(InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("processes/initial-vars-extensions.json")) {
-            ProcessExtensionModel processExtensionModel = reader.read(inputStream);
+    public void shouldReadExtensionFromJsonFile() throws Exception {
+        try (
+            InputStream inputStream = Thread
+                .currentThread()
+                .getContextClassLoader()
+                .getResourceAsStream("processes/initial-vars-extensions.json")
+        ) {
+            ProcessExtensionModel processExtensionModel = reader.read(
+                inputStream
+            );
             assertThat(processExtensionModel).isNotNull();
-            assertThat(processExtensionModel.getId()).isEqualTo("initialVarsProcess");
-            assertThat(processExtensionModel.getExtensions("Process_initialVarsProcess").getProperties()).containsKey("d440ff7b-0ac8-4a97-b163-51a6ec49faa1");
+            assertThat(processExtensionModel.getId())
+                .isEqualTo("initialVarsProcess");
+            assertThat(
+                processExtensionModel
+                    .getExtensions("Process_initialVarsProcess")
+                    .getProperties()
+            )
+                .containsKey("d440ff7b-0ac8-4a97-b163-51a6ec49faa1");
         }
     }
 
     @Test
-    public void shouldReadTemplateExtensionFromJsonFile() throws Exception{
-        try (InputStream inputStream = Thread.currentThread()
-                                             .getContextClassLoader()
-                                             .getResourceAsStream("processes/template-mapping-extensions.json")) {
-            ProcessExtensionModel processExtensionModel = reader.read(inputStream);
+    public void shouldReadTemplateExtensionFromJsonFile() throws Exception {
+        try (
+            InputStream inputStream = Thread
+                .currentThread()
+                .getContextClassLoader()
+                .getResourceAsStream(
+                    "processes/template-mapping-extensions.json"
+                )
+        ) {
+            ProcessExtensionModel processExtensionModel = reader.read(
+                inputStream
+            );
 
             assertThat(processExtensionModel).isNotNull();
-            assertThat(processExtensionModel.getId()).isEqualTo("emailTemplateMapping");
-            assertThat(processExtensionModel.getExtensions("processDefinitionId")
-                                            .getTemplates()).hasSize(3)
-                                                            .extracting("@")
-                                                            .isEqualTo(new TemplateDefinition(FILE, "classpath:templates/email.html"));
-
+            assertThat(processExtensionModel.getId())
+                .isEqualTo("emailTemplateMapping");
+            assertThat(
+                processExtensionModel
+                    .getExtensions("processDefinitionId")
+                    .getTemplates()
+            )
+                .hasSize(3)
+                .extracting("@")
+                .isEqualTo(
+                    new TemplateDefinition(
+                        FILE,
+                        "classpath:templates/email.html"
+                    )
+                );
         }
     }
 }

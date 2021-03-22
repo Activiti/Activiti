@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.test;
 
 import org.activiti.engine.ProcessEngineConfiguration;
@@ -26,42 +25,53 @@ import org.slf4j.LoggerFactory;
 
 
  */
-public abstract class ResourceActivitiTestCase extends AbstractActivitiTestCase {
+public abstract class ResourceActivitiTestCase
+    extends AbstractActivitiTestCase {
 
-  private static final Logger logger = LoggerFactory.getLogger(ResourceActivitiTestCase.class);
+    private static final Logger logger = LoggerFactory.getLogger(
+        ResourceActivitiTestCase.class
+    );
 
-  protected String activitiConfigurationResource;
-  protected String processEngineName;
+    protected String activitiConfigurationResource;
+    protected String processEngineName;
 
-  public ResourceActivitiTestCase(String activitiConfigurationResource) {
-    this(activitiConfigurationResource, null);
-  }
-
-  public ResourceActivitiTestCase(String activitiConfigurationResource, String processEngineName) {
-    this.activitiConfigurationResource = activitiConfigurationResource;
-    this.processEngineName = processEngineName;
-  }
-
-  @Override
-  protected void closeDownProcessEngine() {
-    super.closeDownProcessEngine();
-    ProcessEngines.unregister(processEngine);
-    processEngine = null;
-  }
-
-  @Override
-  protected void initializeProcessEngine() {
-    ProcessEngineConfiguration config = ProcessEngineConfiguration.createProcessEngineConfigurationFromResource(activitiConfigurationResource);
-    if (processEngineName != null) {
-      logger.info("Initializing process engine with name '" + processEngineName + "'");
-      config.setProcessEngineName(processEngineName);
+    public ResourceActivitiTestCase(String activitiConfigurationResource) {
+        this(activitiConfigurationResource, null);
     }
-    additionalConfiguration(config);
-    processEngine = config.buildProcessEngine();
-  }
 
-  protected void additionalConfiguration(ProcessEngineConfiguration processEngineConfiguration) {
+    public ResourceActivitiTestCase(
+        String activitiConfigurationResource,
+        String processEngineName
+    ) {
+        this.activitiConfigurationResource = activitiConfigurationResource;
+        this.processEngineName = processEngineName;
+    }
 
-  }
+    @Override
+    protected void closeDownProcessEngine() {
+        super.closeDownProcessEngine();
+        ProcessEngines.unregister(processEngine);
+        processEngine = null;
+    }
 
+    @Override
+    protected void initializeProcessEngine() {
+        ProcessEngineConfiguration config = ProcessEngineConfiguration.createProcessEngineConfigurationFromResource(
+            activitiConfigurationResource
+        );
+        if (processEngineName != null) {
+            logger.info(
+                "Initializing process engine with name '" +
+                processEngineName +
+                "'"
+            );
+            config.setProcessEngineName(processEngineName);
+        }
+        additionalConfiguration(config);
+        processEngine = config.buildProcessEngine();
+    }
+
+    protected void additionalConfiguration(
+        ProcessEngineConfiguration processEngineConfiguration
+    ) {}
 }

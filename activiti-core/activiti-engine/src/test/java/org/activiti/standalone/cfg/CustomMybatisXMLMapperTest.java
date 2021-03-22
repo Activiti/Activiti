@@ -18,7 +18,6 @@ package org.activiti.standalone.cfg;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
-
 import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -31,205 +30,298 @@ import org.activiti.engine.task.Task;
  */
 public class CustomMybatisXMLMapperTest extends ResourceActivitiTestCase {
 
-  public CustomMybatisXMLMapperTest() {
-    super("org/activiti/standalone/cfg/custom-mybatis-xml-mappers-activiti.cfg.xml");
-  }
-
-  public void testSelectOneTask() {
-    // Create test data
-    for (int i = 0; i < 4; i++) {
-      createTask(i + "", null, null, 0);
+    public CustomMybatisXMLMapperTest() {
+        super(
+            "org/activiti/standalone/cfg/custom-mybatis-xml-mappers-activiti.cfg.xml"
+        );
     }
 
-    final String taskId = createTask("4", null, null, 0);
+    public void testSelectOneTask() {
+        // Create test data
+        for (int i = 0; i < 4; i++) {
+            createTask(i + "", null, null, 0);
+        }
 
-    CustomTask customTask = managementService.executeCommand(new Command<CustomTask>() {
-      @Override
-      public CustomTask execute(CommandContext commandContext) {
-        return (CustomTask) commandContext.getDbSqlSession().selectOne("selectOneCustomTask", taskId);
-      }
-    });
+        final String taskId = createTask("4", null, null, 0);
 
-    assertThat(customTask.getName()).isEqualTo("4");
+        CustomTask customTask = managementService.executeCommand(
+            new Command<CustomTask>() {
+                @Override
+                public CustomTask execute(CommandContext commandContext) {
+                    return (CustomTask) commandContext
+                        .getDbSqlSession()
+                        .selectOne("selectOneCustomTask", taskId);
+                }
+            }
+        );
 
-    // test default query as well
-    List<Task> tasks = taskService.createTaskQuery().list();
-    assertThat(tasks).hasSize(5);
+        assertThat(customTask.getName()).isEqualTo("4");
 
-    Task task = taskService.createTaskQuery().taskName("2").singleResult();
-    assertThat(task.getName()).isEqualTo("2");
+        // test default query as well
+        List<Task> tasks = taskService.createTaskQuery().list();
+        assertThat(tasks).hasSize(5);
 
-    // Cleanup
-    deleteTasks(taskService.createTaskQuery().list());
-  }
+        Task task = taskService.createTaskQuery().taskName("2").singleResult();
+        assertThat(task.getName()).isEqualTo("2");
 
-  public void testSelectTaskList() {
-    // Create test data
-    for (int i = 0; i < 5; i++) {
-      createTask(i + "", null, null, 0);
+        // Cleanup
+        deleteTasks(taskService.createTaskQuery().list());
     }
 
-    List<CustomTask> tasks = managementService.executeCommand(new Command<List<CustomTask>>() {
+    public void testSelectTaskList() {
+        // Create test data
+        for (int i = 0; i < 5; i++) {
+            createTask(i + "", null, null, 0);
+        }
 
-      @SuppressWarnings("unchecked")
-      @Override
-      public List<CustomTask> execute(CommandContext commandContext) {
-        return (List<CustomTask>) commandContext.getDbSqlSession().selectList("selectCustomTaskList");
-      }
-    });
+        List<CustomTask> tasks = managementService.executeCommand(
+            new Command<List<CustomTask>>() {
+                @SuppressWarnings("unchecked")
+                @Override
+                public List<CustomTask> execute(CommandContext commandContext) {
+                    return (List<CustomTask>) commandContext
+                        .getDbSqlSession()
+                        .selectList("selectCustomTaskList");
+                }
+            }
+        );
 
-    assertThat(tasks).hasSize(5);
+        assertThat(tasks).hasSize(5);
 
-    // Cleanup
-    deleteCustomTasks(tasks);
-  }
-
-  public void testSelectTasksByCustomQuery() {
-    // Create test data
-    for (int i = 0; i < 5; i++) {
-      createTask(i + "", null, null, 0);
-    }
-    createTask("Owned task", "kermit", null, 0);
-
-    List<CustomTask> tasks = new CustomTaskQuery(managementService).unOwned().list();
-
-    assertThat(tasks).hasSize(5);
-    assertThat(new CustomTaskQuery(managementService).unOwned().count()).isEqualTo(5);
-
-    tasks = new CustomTaskQuery(managementService).list();
-
-    // Cleanup
-    deleteCustomTasks(tasks);
-  }
-
-  public void testSelectTaskByCustomQuery() {
-    // Create test data
-    for (int i = 0; i < 5; i++) {
-      createTask(i + "", null, null, 0);
-    }
-    createTask("Owned task", "kermit", null, 0);
-
-    CustomTask task = new CustomTaskQuery(managementService).taskOwner("kermit").singleResult();
-
-    assertThat(task.getOwner()).isEqualTo("kermit");
-
-    List<CustomTask> tasks = new CustomTaskQuery(managementService).list();
-    // Cleanup
-    deleteCustomTasks(tasks);
-  }
-
-  public void testCustomQueryListPage() {
-    // Create test data
-    for (int i = 0; i < 15; i++) {
-      createTask(i + "", null, null, 0);
+        // Cleanup
+        deleteCustomTasks(tasks);
     }
 
-    List<CustomTask> tasks = new CustomTaskQuery(managementService).listPage(0, 10);
+    public void testSelectTasksByCustomQuery() {
+        // Create test data
+        for (int i = 0; i < 5; i++) {
+            createTask(i + "", null, null, 0);
+        }
+        createTask("Owned task", "kermit", null, 0);
 
-    assertThat(tasks).hasSize(10);
+        List<CustomTask> tasks = new CustomTaskQuery(managementService)
+            .unOwned()
+            .list();
 
-    tasks = new CustomTaskQuery(managementService).list();
+        assertThat(tasks).hasSize(5);
+        assertThat(new CustomTaskQuery(managementService).unOwned().count())
+            .isEqualTo(5);
 
-    // Cleanup
-    deleteCustomTasks(tasks);
-  }
+        tasks = new CustomTaskQuery(managementService).list();
 
-  public void testCustomQueryOrderBy() {
-    // Create test data
-    for (int i = 0; i < 5; i++) {
-      createTask(i + "", null, null, i * 20);
+        // Cleanup
+        deleteCustomTasks(tasks);
     }
 
-    List<CustomTask> tasks = new CustomTaskQuery(managementService).orderByTaskPriority().desc().list();
+    public void testSelectTaskByCustomQuery() {
+        // Create test data
+        for (int i = 0; i < 5; i++) {
+            createTask(i + "", null, null, 0);
+        }
+        createTask("Owned task", "kermit", null, 0);
 
-    assertThat(tasks).hasSize(5);
+        CustomTask task = new CustomTaskQuery(managementService)
+            .taskOwner("kermit")
+            .singleResult();
 
-    for (int i = 0, j = 4; i < 5; i++, j--) {
-      CustomTask task = tasks.get(i);
-      assertThat(task.getPriority()).isEqualTo(j * 20);
+        assertThat(task.getOwner()).isEqualTo("kermit");
+
+        List<CustomTask> tasks = new CustomTaskQuery(managementService).list();
+        // Cleanup
+        deleteCustomTasks(tasks);
     }
 
-    tasks = new CustomTaskQuery(managementService).orderByTaskPriority().asc().list();
+    public void testCustomQueryListPage() {
+        // Create test data
+        for (int i = 0; i < 15; i++) {
+            createTask(i + "", null, null, 0);
+        }
 
-    assertThat(tasks).hasSize(5);
+        List<CustomTask> tasks = new CustomTaskQuery(managementService)
+        .listPage(0, 10);
 
-    for (int i = 0; i < 5; i++) {
-      CustomTask task = tasks.get(i);
-      assertThat(task.getPriority()).isEqualTo(i * 20);
-    }
-    // Cleanup
-    deleteCustomTasks(tasks);
-  }
+        assertThat(tasks).hasSize(10);
 
-  public void testAttachmentQuery() {
-    String taskId = createTask("task1", null, null, 0);
+        tasks = new CustomTaskQuery(managementService).list();
 
-    Authentication.setAuthenticatedUserId("kermit");
-
-    String attachmentId = taskService.createAttachment("image/png", taskId, null, "attachment1", "", "http://activiti.org/").getId();
-    taskService.createAttachment("image/jpeg", taskId, null, "attachment2", "Attachment Description", "http://activiti.org/");
-
-    Authentication.setAuthenticatedUserId("gonzo");
-
-    taskService.createAttachment("image/png", taskId, null, "zattachment3", "Attachment Description", "http://activiti.org/");
-
-    Authentication.setAuthenticatedUserId("fozzie");
-
-    for (int i = 0; i < 15; i++) {
-      taskService.createAttachment(null, createTask(i + "", null, null, 0), null, "attachmentName" + i, "", "http://activiti.org/" + i);
+        // Cleanup
+        deleteCustomTasks(tasks);
     }
 
-    assertThat(new AttachmentQuery(managementService).attachmentId(attachmentId).singleResult().getId()).isEqualTo(attachmentId);
+    public void testCustomQueryOrderBy() {
+        // Create test data
+        for (int i = 0; i < 5; i++) {
+            createTask(i + "", null, null, i * 20);
+        }
 
-    assertThat(new AttachmentQuery(managementService).attachmentName("attachment1").singleResult().getName()).isEqualTo("attachment1");
+        List<CustomTask> tasks = new CustomTaskQuery(managementService)
+            .orderByTaskPriority()
+            .desc()
+            .list();
 
-    assertThat(new AttachmentQuery(managementService).count()).isEqualTo(18);
-    List<Attachment> attachments = new AttachmentQuery(managementService).list();
-    assertThat(attachments).hasSize(18);
+        assertThat(tasks).hasSize(5);
 
-    attachments = new AttachmentQuery(managementService).listPage(0, 10);
-    assertThat(attachments).hasSize(10);
+        for (int i = 0, j = 4; i < 5; i++, j--) {
+            CustomTask task = tasks.get(i);
+            assertThat(task.getPriority()).isEqualTo(j * 20);
+        }
 
-    assertThat(new AttachmentQuery(managementService).taskId(taskId).count()).isEqualTo(3);
-    attachments = new AttachmentQuery(managementService).taskId(taskId).list();
-    assertThat(attachments).hasSize(3);
+        tasks =
+            new CustomTaskQuery(managementService)
+                .orderByTaskPriority()
+                .asc()
+                .list();
 
-    assertThat(new AttachmentQuery(managementService).userId("kermit").count()).isEqualTo(2);
-    attachments = new AttachmentQuery(managementService).userId("kermit").list();
-    assertThat(attachments).hasSize(2);
+        assertThat(tasks).hasSize(5);
 
-    assertThat(new AttachmentQuery(managementService).attachmentType("image/jpeg").count()).isEqualTo(1);
-    attachments = new AttachmentQuery(managementService).attachmentType("image/jpeg").list();
-    assertThat(attachments).hasSize(1);
+        for (int i = 0; i < 5; i++) {
+            CustomTask task = tasks.get(i);
+            assertThat(task.getPriority()).isEqualTo(i * 20);
+        }
+        // Cleanup
+        deleteCustomTasks(tasks);
+    }
 
-    assertThat(new AttachmentQuery(managementService).orderByAttachmentName().desc().list().get(0).getName()).isEqualTo("zattachment3");
+    public void testAttachmentQuery() {
+        String taskId = createTask("task1", null, null, 0);
 
-    // Cleanup
-    deleteTasks(taskService.createTaskQuery().list());
-  }
+        Authentication.setAuthenticatedUserId("kermit");
 
-  protected String createTask(String name, String owner, String assignee, int priority) {
-    Task task = taskService.newTask();
-    task.setName(name);
-    task.setOwner(owner);
-    task.setAssignee(assignee);
-    task.setPriority(priority);
-    taskService.saveTask(task);
-    return task.getId();
-  }
+        String attachmentId = taskService
+            .createAttachment(
+                "image/png",
+                taskId,
+                null,
+                "attachment1",
+                "",
+                "http://activiti.org/"
+            )
+            .getId();
+        taskService.createAttachment(
+            "image/jpeg",
+            taskId,
+            null,
+            "attachment2",
+            "Attachment Description",
+            "http://activiti.org/"
+        );
 
-  protected void deleteTask(String taskId) {
-    taskService.deleteTask(taskId);
-    historyService.deleteHistoricTaskInstance(taskId);
-  }
+        Authentication.setAuthenticatedUserId("gonzo");
 
-  protected void deleteTasks(List<Task> tasks) {
-    for (Task task : tasks)
-      deleteTask(task.getId());
-  }
+        taskService.createAttachment(
+            "image/png",
+            taskId,
+            null,
+            "zattachment3",
+            "Attachment Description",
+            "http://activiti.org/"
+        );
 
-  protected void deleteCustomTasks(List<CustomTask> tasks) {
-    for (CustomTask task : tasks)
-      deleteTask(task.getId());
-  }
+        Authentication.setAuthenticatedUserId("fozzie");
+
+        for (int i = 0; i < 15; i++) {
+            taskService.createAttachment(
+                null,
+                createTask(i + "", null, null, 0),
+                null,
+                "attachmentName" + i,
+                "",
+                "http://activiti.org/" + i
+            );
+        }
+
+        assertThat(
+            new AttachmentQuery(managementService)
+                .attachmentId(attachmentId)
+                .singleResult()
+                .getId()
+        )
+            .isEqualTo(attachmentId);
+
+        assertThat(
+            new AttachmentQuery(managementService)
+                .attachmentName("attachment1")
+                .singleResult()
+                .getName()
+        )
+            .isEqualTo("attachment1");
+
+        assertThat(new AttachmentQuery(managementService).count())
+            .isEqualTo(18);
+        List<Attachment> attachments = new AttachmentQuery(managementService)
+            .list();
+        assertThat(attachments).hasSize(18);
+
+        attachments = new AttachmentQuery(managementService).listPage(0, 10);
+        assertThat(attachments).hasSize(10);
+
+        assertThat(
+            new AttachmentQuery(managementService).taskId(taskId).count()
+        )
+            .isEqualTo(3);
+        attachments =
+            new AttachmentQuery(managementService).taskId(taskId).list();
+        assertThat(attachments).hasSize(3);
+
+        assertThat(
+            new AttachmentQuery(managementService).userId("kermit").count()
+        )
+            .isEqualTo(2);
+        attachments =
+            new AttachmentQuery(managementService).userId("kermit").list();
+        assertThat(attachments).hasSize(2);
+
+        assertThat(
+            new AttachmentQuery(managementService)
+                .attachmentType("image/jpeg")
+                .count()
+        )
+            .isEqualTo(1);
+        attachments =
+            new AttachmentQuery(managementService)
+                .attachmentType("image/jpeg")
+                .list();
+        assertThat(attachments).hasSize(1);
+
+        assertThat(
+            new AttachmentQuery(managementService)
+                .orderByAttachmentName()
+                .desc()
+                .list()
+                .get(0)
+                .getName()
+        )
+            .isEqualTo("zattachment3");
+
+        // Cleanup
+        deleteTasks(taskService.createTaskQuery().list());
+    }
+
+    protected String createTask(
+        String name,
+        String owner,
+        String assignee,
+        int priority
+    ) {
+        Task task = taskService.newTask();
+        task.setName(name);
+        task.setOwner(owner);
+        task.setAssignee(assignee);
+        task.setPriority(priority);
+        taskService.saveTask(task);
+        return task.getId();
+    }
+
+    protected void deleteTask(String taskId) {
+        taskService.deleteTask(taskId);
+        historyService.deleteHistoricTaskInstance(taskId);
+    }
+
+    protected void deleteTasks(List<Task> tasks) {
+        for (Task task : tasks) deleteTask(task.getId());
+    }
+
+    protected void deleteCustomTasks(List<CustomTask> tasks) {
+        for (CustomTask task : tasks) deleteTask(task.getId());
+    }
 }

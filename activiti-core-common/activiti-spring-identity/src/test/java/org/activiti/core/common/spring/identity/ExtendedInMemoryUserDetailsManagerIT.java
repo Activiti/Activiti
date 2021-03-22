@@ -15,14 +15,13 @@
  */
 package org.activiti.core.common.spring.identity;
 
-import java.util.List;
+import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.List;
 import org.activiti.core.common.spring.identity.ExtendedInMemoryUserDetailsManager;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 public class ExtendedInMemoryUserDetailsManagerIT {
@@ -42,7 +41,11 @@ public class ExtendedInMemoryUserDetailsManagerIT {
         List<String> users = extendedInMemoryUserDetailsManager.getUsers();
         assertThat(users).isNotNull();
         assertThat(users.size() > 1).isTrue();
-        String adminUser = users.stream().filter(x -> x.equals("admin")).findFirst().get();
+        String adminUser = users
+            .stream()
+            .filter(x -> x.equals("admin"))
+            .findFirst()
+            .get();
         assertThat(adminUser).isNotNull();
     }
 }

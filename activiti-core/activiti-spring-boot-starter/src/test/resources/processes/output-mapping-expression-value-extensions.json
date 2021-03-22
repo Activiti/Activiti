@@ -2,7 +2,7 @@
   "id": "outputMappingExpValueModel",
   "name": "outputMappingExpValue.bpmn",
   "extensions": {
-    "outputMappingExpValue" : {
+    "outputMappingExpValue": {
       "properties": {
         "name-id": {
           "id": "name-id",

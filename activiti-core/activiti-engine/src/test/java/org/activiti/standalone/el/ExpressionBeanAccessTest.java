@@ -14,14 +14,12 @@
  * limitations under the License.
  */
 
-
 package org.activiti.standalone.el;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import javax.el.PropertyNotFoundException;
-
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.test.ResourceActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -32,22 +30,35 @@ import org.activiti.engine.test.Deployment;
  */
 public class ExpressionBeanAccessTest extends ResourceActivitiTestCase {
 
-  public ExpressionBeanAccessTest() {
-    super("org/activiti/standalone/el/activiti.cfg.xml");
-  }
+    public ExpressionBeanAccessTest() {
+        super("org/activiti/standalone/el/activiti.cfg.xml");
+    }
 
-  @Deployment
-  public void testConfigurationBeanAccess() {
-    // Exposed bean returns 'I'm exposed' when to-string is called in first
-    // service-task
-    ProcessInstance pi = runtimeService.startProcessInstanceByKey("expressionBeanAccess");
-    assertThat(runtimeService.getVariable(pi.getId(), "exposedBeanResult")).isEqualTo("I'm exposed");
+    @Deployment
+    public void testConfigurationBeanAccess() {
+        // Exposed bean returns 'I'm exposed' when to-string is called in first
+        // service-task
+        ProcessInstance pi = runtimeService.startProcessInstanceByKey(
+            "expressionBeanAccess"
+        );
+        assertThat(runtimeService.getVariable(pi.getId(), "exposedBeanResult"))
+            .isEqualTo("I'm exposed");
 
-    // After signaling, an expression tries to use a bean that is present in
-    // the configuration but is not added to the beans-list
-    assertThatExceptionOfType(ActivitiException.class)
-      .isThrownBy(() -> runtimeService.trigger(runtimeService.createExecutionQuery().processInstanceId(pi.getId()).onlyChildExecutions().singleResult().getId()))
-      .withCauseInstanceOf(RuntimeException.class)
-      .withRootCauseInstanceOf(PropertyNotFoundException.class);
-  }
+        // After signaling, an expression tries to use a bean that is present in
+        // the configuration but is not added to the beans-list
+        assertThatExceptionOfType(ActivitiException.class)
+            .isThrownBy(
+                () ->
+                    runtimeService.trigger(
+                        runtimeService
+                            .createExecutionQuery()
+                            .processInstanceId(pi.getId())
+                            .onlyChildExecutions()
+                            .singleResult()
+                            .getId()
+                    )
+            )
+            .withCauseInstanceOf(RuntimeException.class)
+            .withRootCauseInstanceOf(PropertyNotFoundException.class);
+    }
 }

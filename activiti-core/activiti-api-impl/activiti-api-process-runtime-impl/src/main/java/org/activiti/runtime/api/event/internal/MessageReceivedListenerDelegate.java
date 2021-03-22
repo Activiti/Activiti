@@ -16,7 +16,6 @@
 package org.activiti.runtime.api.event.internal;
 
 import java.util.List;
-
 import org.activiti.api.process.model.events.BPMNMessageReceivedEvent;
 import org.activiti.api.process.runtime.events.listener.BPMNElementEventListener;
 import org.activiti.engine.delegate.event.ActivitiEvent;
@@ -30,8 +29,10 @@ public class MessageReceivedListenerDelegate implements ActivitiEventListener {
 
     private ToMessageReceivedConverter converter;
 
-    public MessageReceivedListenerDelegate(List<BPMNElementEventListener<BPMNMessageReceivedEvent>> processRuntimeEventListeners,
-                                           ToMessageReceivedConverter converter) {
+    public MessageReceivedListenerDelegate(
+        List<BPMNElementEventListener<BPMNMessageReceivedEvent>> processRuntimeEventListeners,
+        ToMessageReceivedConverter converter
+    ) {
         this.processRuntimeEventListeners = processRuntimeEventListeners;
         this.converter = converter;
     }
@@ -39,12 +40,15 @@ public class MessageReceivedListenerDelegate implements ActivitiEventListener {
     @Override
     public void onEvent(ActivitiEvent event) {
         if (event instanceof ActivitiMessageEvent) {
-            converter.from((ActivitiMessageEvent) event)
-                    .ifPresent(convertedEvent -> {
+            converter
+                .from((ActivitiMessageEvent) event)
+                .ifPresent(
+                    convertedEvent -> {
                         for (BPMNElementEventListener<BPMNMessageReceivedEvent> listener : processRuntimeEventListeners) {
                             listener.onEvent(convertedEvent);
                         }
-                    });
+                    }
+                );
         }
     }
 

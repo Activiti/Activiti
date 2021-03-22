@@ -15,6 +15,8 @@
  */
 package org.activiti.runtime.api.impl;
 
+import java.util.Map;
+import java.util.Objects;
 import org.activiti.api.process.model.payloads.ReceiveMessagePayload;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.ManagementService;
@@ -25,22 +27,22 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
 import org.activiti.runtime.api.message.ReceiveMessagePayloadEventListener;
 
-import java.util.Map;
-import java.util.Objects;
-
 /**
  * Default implementation of SignalPayloadEventListener that delegates
  * Spring SignalPayload event into embedded RuntimeService.
  *
  */
-public class RuntimeReceiveMessagePayloadEventListener implements ReceiveMessagePayloadEventListener {
+public class RuntimeReceiveMessagePayloadEventListener
+    implements ReceiveMessagePayloadEventListener {
 
     private final RuntimeService runtimeService;
 
     private final ManagementService managementService;
 
-    public RuntimeReceiveMessagePayloadEventListener(RuntimeService runtimeService,
-                                                     ManagementService managementService) {
+    public RuntimeReceiveMessagePayloadEventListener(
+        RuntimeService runtimeService,
+        ManagementService managementService
+    ) {
         this.runtimeService = runtimeService;
         this.managementService = managementService;
     }
@@ -50,35 +52,52 @@ public class RuntimeReceiveMessagePayloadEventListener implements ReceiveMessage
         String messageName = messagePayload.getName();
         String correlationKey = messagePayload.getCorrelationKey();
 
-        EventSubscriptionEntity subscription = managementService.executeCommand(new FindMessageEventSubscription(messageName,
-                                                                                                                 correlationKey));
-        if (subscription != null && Objects.equals(correlationKey, subscription.getConfiguration())) {
+        EventSubscriptionEntity subscription = managementService.executeCommand(
+            new FindMessageEventSubscription(messageName, correlationKey)
+        );
+        if (
+            subscription != null &&
+            Objects.equals(correlationKey, subscription.getConfiguration())
+        ) {
             Map<String, Object> variables = messagePayload.getVariables();
             String executionId = subscription.getExecutionId();
 
-            runtimeService.messageEventReceived(messageName,
-                                                executionId,
-                                                variables);
+            runtimeService.messageEventReceived(
+                messageName,
+                executionId,
+                variables
+            );
         } else {
-            throw new ActivitiObjectNotFoundException("Message subscription name '" + messageName + "' with correlation key '" + correlationKey + "' not found.");
+            throw new ActivitiObjectNotFoundException(
+                "Message subscription name '" +
+                messageName +
+                "' with correlation key '" +
+                correlationKey +
+                "' not found."
+            );
         }
     }
 
-    static class FindMessageEventSubscription implements Command<EventSubscriptionEntity> {
+    static class FindMessageEventSubscription
+        implements Command<EventSubscriptionEntity> {
 
         private final String messageName;
         private final String correlationKey;
 
-        public FindMessageEventSubscription(String messageName, String correlationKey) {
+        public FindMessageEventSubscription(
+            String messageName,
+            String correlationKey
+        ) {
             this.messageName = messageName;
             this.correlationKey = correlationKey;
         }
 
         public EventSubscriptionEntity execute(CommandContext commandContext) {
-            return new EventSubscriptionQueryImpl(commandContext).eventType("message")
-                                                                 .eventName(messageName)
-                                                                 .configuration(correlationKey)
-                                                                 .singleResult();
+            return new EventSubscriptionQueryImpl(commandContext)
+                .eventType("message")
+                .eventName(messageName)
+                .configuration(correlationKey)
+                .singleResult();
         }
     }
 }

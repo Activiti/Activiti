@@ -22,12 +22,15 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 /**
 
  */
-public class ExecutionsByParentExecutionIdEntityMatcher extends CachedEntityMatcherAdapter<ExecutionEntity> {
+public class ExecutionsByParentExecutionIdEntityMatcher
+    extends CachedEntityMatcherAdapter<ExecutionEntity> {
 
-  @Override
-  public boolean isRetained(ExecutionEntity entity, Object parameter) {
-    // parameter = parent execution id
-    return entity.getParentId() != null && entity.getParentId().equals((String) parameter);
-  }
-
+    @Override
+    public boolean isRetained(ExecutionEntity entity, Object parameter) {
+        // parameter = parent execution id
+        return (
+            entity.getParentId() != null &&
+            entity.getParentId().equals((String) parameter)
+        );
+    }
 }

@@ -20,6 +20,7 @@ import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.assertj.core.groups.Tuple.tuple;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -67,14 +68,14 @@ import org.springframework.security.access.AccessDeniedException;
 public class ProcessRuntimeIT {
 
     private static final String CATEGORIZE_PROCESS = "categorizeProcess";
-    private static final String CATEGORIZE_HUMAN_PROCESS = "categorizeHumanProcess";
+    private static final String CATEGORIZE_HUMAN_PROCESS =
+        "categorizeHumanProcess";
     private static final String SINGLE_TASK_PROCESS = "SingleTaskProcess";
     private static final String ONE_STEP_PROCESS = "OneStepProcess";
 
     private static final String SUB_PROCESS = "subProcess";
     private static final String SUPER_PROCESS = "superProcess";
-    private static final Pageable PAGEABLE = Pageable.of(0,
-        50);
+    private static final Pageable PAGEABLE = Pageable.of(0, 50);
 
     @Autowired
     private ProcessRuntime processRuntime;
@@ -128,7 +129,7 @@ public class ProcessRuntimeIT {
     private TaskRuntime taskRuntime;
 
     @AfterEach
-    public void cleanUp(){
+    public void cleanUp() {
         processCleanUpUtil.cleanUpWithAdmin();
     }
 
@@ -137,23 +138,33 @@ public class ProcessRuntimeIT {
         securityUtil.logInAs("user");
         eventPublisher = spy(applicationEventPublisher);
 
-        processRuntimeMock = spy(new ProcessRuntimeImpl(repositoryService,
-                                                     processDefinitionConverter,
-                                                     runtimeService,
-                                                     securityPoliciesManager,
-                                                     processInstanceConverter,
-                                                     variableInstanceConverter,
-                                                     deploymentConverter,
-                                                     configuration,
-                                                     eventPublisher,
-                                                     processVariablesValidator));
+        processRuntimeMock =
+            spy(
+                new ProcessRuntimeImpl(
+                    repositoryService,
+                    processDefinitionConverter,
+                    runtimeService,
+                    securityPoliciesManager,
+                    processInstanceConverter,
+                    variableInstanceConverter,
+                    deploymentConverter,
+                    configuration,
+                    eventPublisher,
+                    processVariablesValidator
+                )
+            );
 
-        processAdminRuntimeMock = spy(new ProcessAdminRuntimeImpl(repositoryService,
-                                                     processDefinitionConverter,
-                                                     runtimeService,
-                                                     processInstanceConverter,
-                                                     eventPublisher,
-                                                     processVariablesValidator));
+        processAdminRuntimeMock =
+            spy(
+                new ProcessAdminRuntimeImpl(
+                    repositoryService,
+                    processDefinitionConverter,
+                    runtimeService,
+                    processInstanceConverter,
+                    eventPublisher,
+                    processVariablesValidator
+                )
+            );
 
         //Reset test variables
         RuntimeTestConfiguration.processImageConnectorExecuted = false;
@@ -176,177 +187,241 @@ public class ProcessRuntimeIT {
     public void shouldGetAvailableProcessDefinitionForTheGivenUser() {
         //when
         Page<ProcessDefinition> processDefinitionPage = processRuntime.processDefinitions(
-            PAGEABLE);
+            PAGEABLE
+        );
         //then
         assertThat(processDefinitionPage.getContent()).isNotNull();
         assertThat(processDefinitionPage.getContent())
-                .extracting(ProcessDefinition::getKey)
-                .contains(CATEGORIZE_PROCESS,
-                        CATEGORIZE_HUMAN_PROCESS,
-                        ONE_STEP_PROCESS);
+            .extracting(ProcessDefinition::getKey)
+            .contains(
+                CATEGORIZE_PROCESS,
+                CATEGORIZE_HUMAN_PROCESS,
+                ONE_STEP_PROCESS
+            );
     }
 
     @Test
     public void shouldGetAvailableLatestDeployments() {
+        //when
+        List<org.activiti.engine.repository.Deployment> deployments = repositoryService
+            .createDeploymentQuery()
+            .latestVersion()
+            .list();
+        //then
+        assertThat(deployments)
+            .hasSize(2)
+            .extracting("name", "version", "projectReleaseVersion")
+            .contains(
+                tuple("SpringAutoDeployment", 1, "1"),
+                tuple("ApplicationAutoDeployment", 1, null)
+            );
 
         //when
-        List<org.activiti.engine.repository.Deployment> deployments = repositoryService.createDeploymentQuery()
-                                                                                       .latestVersion()
-                                                                                       .list();
+        org.activiti.engine.repository.Deployment applicationAutoDeployment = repositoryService
+            .createDeploymentQuery()
+            .deploymentName("ApplicationAutoDeployment")
+            .latestVersion()
+            .singleResult();
         //then
-        assertThat(deployments).hasSize(2)
-                               .extracting("name", "version", "projectReleaseVersion")
-                               .contains(tuple("SpringAutoDeployment", 1, "1"),
-                                         tuple("ApplicationAutoDeployment", 1, null));
+        assertThat(applicationAutoDeployment)
+            .isNotNull()
+            .extracting("name", "version", "projectReleaseVersion")
+            .contains("ApplicationAutoDeployment", 1, null);
 
         //when
-        org.activiti.engine.repository.Deployment applicationAutoDeployment = repositoryService.createDeploymentQuery()
-                                                                                     .deploymentName("ApplicationAutoDeployment")
-                                                                                     .latestVersion()
-                                                                                     .singleResult();
+        org.activiti.engine.repository.Deployment springAutoDeployment = repositoryService
+            .createDeploymentQuery()
+            .deploymentName("SpringAutoDeployment")
+            .latestVersion()
+            .singleResult();
         //then
-        assertThat(applicationAutoDeployment).isNotNull()
-                                             .extracting("name", "version", "projectReleaseVersion")
-                                             .contains("ApplicationAutoDeployment", 1, null);
-
-        //when
-        org.activiti.engine.repository.Deployment springAutoDeployment = repositoryService.createDeploymentQuery()
-                                                                                     .deploymentName("SpringAutoDeployment")
-                                                                                     .latestVersion()
-                                                                                     .singleResult();
-        //then
-        assertThat(springAutoDeployment).isNotNull()
-                                        .extracting("name", "version", "projectReleaseVersion")
-                                        .contains("SpringAutoDeployment", 1, "1");
-
+        assertThat(springAutoDeployment)
+            .isNotNull()
+            .extracting("name", "version", "projectReleaseVersion")
+            .contains("SpringAutoDeployment", 1, "1");
     }
 
     @Test
     public void createProcessInstanceAndValidateHappyPath() {
         //when
-        ProcessInstance categorizeProcess = processRuntime.start(ProcessPayloadBuilder.start()
+        ProcessInstance categorizeProcess = processRuntime.start(
+            ProcessPayloadBuilder
+                .start()
                 .withProcessDefinitionKey(CATEGORIZE_PROCESS)
-                .withVariable("expectedKey",
-                        true)
-                .build());
+                .withVariable("expectedKey", true)
+                .build()
+        );
 
-        assertThat(RuntimeTestConfiguration.completedProcesses).contains(categorizeProcess.getId());
+        assertThat(RuntimeTestConfiguration.completedProcesses)
+            .contains(categorizeProcess.getId());
         //then
         assertThat(categorizeProcess).isNotNull();
 
-        assertThat(categorizeProcess.getStatus()).isEqualTo(ProcessInstance.ProcessInstanceStatus.COMPLETED);
-        assertThat(RuntimeTestConfiguration.processImageConnectorExecuted).isEqualTo(true);
-        assertThat(RuntimeTestConfiguration.tagImageConnectorExecuted).isEqualTo(true);
-        assertThat(RuntimeTestConfiguration.discardImageConnectorExecuted).isEqualTo(false);
+        assertThat(categorizeProcess.getStatus())
+            .isEqualTo(ProcessInstance.ProcessInstanceStatus.COMPLETED);
+        assertThat(RuntimeTestConfiguration.processImageConnectorExecuted)
+            .isEqualTo(true);
+        assertThat(RuntimeTestConfiguration.tagImageConnectorExecuted)
+            .isEqualTo(true);
+        assertThat(RuntimeTestConfiguration.discardImageConnectorExecuted)
+            .isEqualTo(false);
     }
 
     @Test
     public void should_createNewProcessInstanceWithoutRunningIt_whenCreateIsCalled() {
-        ProcessInstance categorizeProcess = processRuntime.create(ProcessPayloadBuilder.create()
-            .withProcessDefinitionKey(CATEGORIZE_PROCESS)
-            .withName("My process instance")
-            .withBusinessKey("my business key")
-            .build());
+        ProcessInstance categorizeProcess = processRuntime.create(
+            ProcessPayloadBuilder
+                .create()
+                .withProcessDefinitionKey(CATEGORIZE_PROCESS)
+                .withName("My process instance")
+                .withBusinessKey("my business key")
+                .build()
+        );
 
-        assertThat(RuntimeTestConfiguration.completedProcesses).doesNotContain(categorizeProcess.getId());
+        assertThat(RuntimeTestConfiguration.completedProcesses)
+            .doesNotContain(categorizeProcess.getId());
         assertThat(categorizeProcess).isNotNull();
 
-        assertThat(categorizeProcess.getStatus()).isEqualTo(ProcessInstance.ProcessInstanceStatus.CREATED);
-        assertThat(categorizeProcess.getName()).isEqualTo("My process instance");
-        assertThat(categorizeProcess.getBusinessKey()).isEqualTo("my business key");
+        assertThat(categorizeProcess.getStatus())
+            .isEqualTo(ProcessInstance.ProcessInstanceStatus.CREATED);
+        assertThat(categorizeProcess.getName())
+            .isEqualTo("My process instance");
+        assertThat(categorizeProcess.getBusinessKey())
+            .isEqualTo("my business key");
     }
 
     @Test
     public void should_startAnAlreadyCreatedProcess_when_startCreatedProcessIsCalled() {
         securityUtil.logInAs("garth");
 
-        ProcessInstance singleTaskProcessCreated = processRuntime
-            .create(ProcessPayloadBuilder.create()
+        ProcessInstance singleTaskProcessCreated = processRuntime.create(
+            ProcessPayloadBuilder
+                .create()
                 .withProcessDefinitionKey(SINGLE_TASK_PROCESS)
-                .build());
+                .build()
+        );
 
-        assertThat(singleTaskProcessCreated.getStatus()).isEqualTo(ProcessInstance.ProcessInstanceStatus.CREATED);
-        Page<Task> tasks = taskRuntime.tasks(PAGEABLE,
+        assertThat(singleTaskProcessCreated.getStatus())
+            .isEqualTo(ProcessInstance.ProcessInstanceStatus.CREATED);
+        Page<Task> tasks = taskRuntime.tasks(
+            PAGEABLE,
             TaskPayloadBuilder
                 .tasks()
                 .withProcessInstanceId(singleTaskProcessCreated.getId())
-                .build());
+                .build()
+        );
         assertThat(tasks.getTotalItems()).isEqualTo(0);
 
         ProcessInstance singleTaskProcessStarted = processRuntime.startCreatedProcess(
             singleTaskProcessCreated.getId(),
-                ProcessPayloadBuilder.start()
-                    .build());
+            ProcessPayloadBuilder.start().build()
+        );
 
-        tasks = taskRuntime.tasks(PAGEABLE,
-            TaskPayloadBuilder
-                .tasks()
-                .withProcessInstanceId(singleTaskProcessCreated.getId())
-                .build());
+        tasks =
+            taskRuntime.tasks(
+                PAGEABLE,
+                TaskPayloadBuilder
+                    .tasks()
+                    .withProcessInstanceId(singleTaskProcessCreated.getId())
+                    .build()
+            );
         assertThat(tasks.getTotalItems()).isEqualTo(1);
         assertThat(tasks.getContent().get(0).getName()).isEqualTo("my-task");
 
-        assertThat(RuntimeTestConfiguration.createdTasks).contains(tasks.getContent().get(0).getId());
+        assertThat(RuntimeTestConfiguration.createdTasks)
+            .contains(tasks.getContent().get(0).getId());
         assertThat(singleTaskProcessStarted).isNotNull();
-        assertThat(singleTaskProcessStarted.getStatus()).isEqualTo(ProcessInstance.ProcessInstanceStatus.RUNNING);
-        assertThat(processRuntime.processInstance(singleTaskProcessStarted.getId()).getStatus()).isEqualTo(ProcessInstance.ProcessInstanceStatus.RUNNING);
+        assertThat(singleTaskProcessStarted.getStatus())
+            .isEqualTo(ProcessInstance.ProcessInstanceStatus.RUNNING);
+        assertThat(
+            processRuntime
+                .processInstance(singleTaskProcessStarted.getId())
+                .getStatus()
+        )
+            .isEqualTo(ProcessInstance.ProcessInstanceStatus.RUNNING);
     }
 
     @Test
     public void should_throwAnError_when_ProcessInstanceIsAlreadyStartedOrCompleted() {
-        ProcessInstance categorizeProcess = processRuntime.start(ProcessPayloadBuilder.start()
-            .withProcessDefinitionKey(CATEGORIZE_HUMAN_PROCESS)
-            .withVariable("expectedKey",
-                true)
-            .withVariable("name","garth")
-            .withVariable("age",45)
-            .withBusinessKey("my business key")
-            .build());
+        ProcessInstance categorizeProcess = processRuntime.start(
+            ProcessPayloadBuilder
+                .start()
+                .withProcessDefinitionKey(CATEGORIZE_HUMAN_PROCESS)
+                .withVariable("expectedKey", true)
+                .withVariable("name", "garth")
+                .withVariable("age", 45)
+                .withBusinessKey("my business key")
+                .build()
+        );
 
-        assertThat(categorizeProcess.getStatus()).isEqualTo(ProcessInstance.ProcessInstanceStatus.RUNNING);
+        assertThat(categorizeProcess.getStatus())
+            .isEqualTo(ProcessInstance.ProcessInstanceStatus.RUNNING);
 
-        Throwable throwable = catchThrowable(() -> processRuntime.startCreatedProcess(categorizeProcess.getId(), new StartProcessPayload()));
+        Throwable throwable = catchThrowable(
+            () ->
+                processRuntime.startCreatedProcess(
+                    categorizeProcess.getId(),
+                    new StartProcessPayload()
+                )
+        );
 
         assertThat(throwable)
             .isInstanceOf(ActivitiIllegalArgumentException.class)
-            .hasMessage("Process instance "+categorizeProcess.getId()+" has already been started");
+            .hasMessage(
+                "Process instance " +
+                categorizeProcess.getId() +
+                " has already been started"
+            );
     }
 
     @Test
     public void createProcessInstanceAndValidateDiscardPath() {
         //when
-        ProcessInstance categorizeProcess = processRuntime.start(ProcessPayloadBuilder.start()
+        ProcessInstance categorizeProcess = processRuntime.start(
+            ProcessPayloadBuilder
+                .start()
                 .withProcessDefinitionKey(CATEGORIZE_PROCESS)
-                .withVariable("expectedKey",
-                        false)
-                .build());
+                .withVariable("expectedKey", false)
+                .build()
+        );
 
-        assertThat(RuntimeTestConfiguration.completedProcesses).contains(categorizeProcess.getId());
+        assertThat(RuntimeTestConfiguration.completedProcesses)
+            .contains(categorizeProcess.getId());
 
         //then
         assertThat(categorizeProcess).isNotNull();
 
-        assertThat(categorizeProcess.getStatus()).isEqualTo(ProcessInstance.ProcessInstanceStatus.COMPLETED);
-        assertThat(RuntimeTestConfiguration.processImageConnectorExecuted).isEqualTo(true);
-        assertThat(RuntimeTestConfiguration.tagImageConnectorExecuted).isEqualTo(false);
-        assertThat(RuntimeTestConfiguration.discardImageConnectorExecuted).isEqualTo(true);
+        assertThat(categorizeProcess.getStatus())
+            .isEqualTo(ProcessInstance.ProcessInstanceStatus.COMPLETED);
+        assertThat(RuntimeTestConfiguration.processImageConnectorExecuted)
+            .isEqualTo(true);
+        assertThat(RuntimeTestConfiguration.tagImageConnectorExecuted)
+            .isEqualTo(false);
+        assertThat(RuntimeTestConfiguration.discardImageConnectorExecuted)
+            .isEqualTo(true);
     }
 
     @Test
     public void shouldGetProcessDefinitionFromDefinitionKey() {
         //when
-        ProcessDefinition categorizeHumanProcess = processRuntime.processDefinition(CATEGORIZE_HUMAN_PROCESS);
+        ProcessDefinition categorizeHumanProcess = processRuntime.processDefinition(
+            CATEGORIZE_HUMAN_PROCESS
+        );
 
         //then
         assertThat(categorizeHumanProcess).isNotNull();
-        assertThat(categorizeHumanProcess.getName()).isEqualTo(CATEGORIZE_HUMAN_PROCESS);
-        assertThat(categorizeHumanProcess.getId()).contains(CATEGORIZE_HUMAN_PROCESS);
+        assertThat(categorizeHumanProcess.getName())
+            .isEqualTo(CATEGORIZE_HUMAN_PROCESS);
+        assertThat(categorizeHumanProcess.getId())
+            .contains(CATEGORIZE_HUMAN_PROCESS);
     }
 
     @Test
     public void getProcessInstances() {
         //when
-        Page<ProcessInstance> processInstancePage = processRuntime.processInstances(PAGEABLE);
+        Page<ProcessInstance> processInstancePage = processRuntime.processInstances(
+            PAGEABLE
+        );
 
         //then
         assertThat(processInstancePage).isNotNull();
@@ -354,152 +429,180 @@ public class ProcessRuntimeIT {
 
         //given
         // start a process with a business key to check filters
-        processRuntime.start(ProcessPayloadBuilder.start()
+        processRuntime.start(
+            ProcessPayloadBuilder
+                .start()
                 .withProcessDefinitionKey(CATEGORIZE_HUMAN_PROCESS)
-                .withVariable("expectedKey",
-                        true)
-                .withVariable("name","garth")
-                .withVariable("age",45)
+                .withVariable("expectedKey", true)
+                .withVariable("name", "garth")
+                .withVariable("age", 45)
                 .withBusinessKey("my business key")
-                .build());
+                .build()
+        );
 
         //when
-        processInstancePage = processRuntime.processInstances(PAGEABLE,
-                ProcessPayloadBuilder
-                        .processInstances()
-                        .build());
+        processInstancePage =
+            processRuntime.processInstances(
+                PAGEABLE,
+                ProcessPayloadBuilder.processInstances().build()
+            );
 
         assertThat(processInstancePage).isNotNull();
         assertThat(processInstancePage.getContent()).hasSize(1);
 
         // check for other key
-        processInstancePage = processRuntime.processInstances(PAGEABLE,
+        processInstancePage =
+            processRuntime.processInstances(
+                PAGEABLE,
                 ProcessPayloadBuilder
-                        .processInstances().withBusinessKey("other key")
-                        .build());
+                    .processInstances()
+                    .withBusinessKey("other key")
+                    .build()
+            );
 
         assertThat(processInstancePage).isNotNull();
         assertThat(processInstancePage.getContent()).hasSize(0);
 
-        processInstancePage = processRuntime.processInstances(PAGEABLE,
+        processInstancePage =
+            processRuntime.processInstances(
+                PAGEABLE,
                 ProcessPayloadBuilder
-                        .processInstances().withBusinessKey("my business key")
-                        .build());
+                    .processInstances()
+                    .withBusinessKey("my business key")
+                    .build()
+            );
 
         assertThat(processInstancePage).isNotNull();
         assertThat(processInstancePage.getContent()).hasSize(1);
 
-        processInstancePage = processRuntime.processInstances(PAGEABLE,
-                ProcessPayloadBuilder
-                        .processInstances()
-                        .suspended()
-                        .build());
+        processInstancePage =
+            processRuntime.processInstances(
+                PAGEABLE,
+                ProcessPayloadBuilder.processInstances().suspended().build()
+            );
 
         assertThat(processInstancePage).isNotNull();
         assertThat(processInstancePage.getContent()).hasSize(0);
 
-        processInstancePage = processRuntime.processInstances(PAGEABLE,
-                ProcessPayloadBuilder
-                        .processInstances()
-                        .active()
-                        .build());
+        processInstancePage =
+            processRuntime.processInstances(
+                PAGEABLE,
+                ProcessPayloadBuilder.processInstances().active().build()
+            );
 
         assertThat(processInstancePage).isNotNull();
         assertThat(processInstancePage.getContent()).hasSize(1);
 
-        processInstancePage = processRuntime.processInstances(PAGEABLE,
+        processInstancePage =
+            processRuntime.processInstances(
+                PAGEABLE,
                 ProcessPayloadBuilder
-                        .processInstances()
-                        .active()
-                        .suspended()
-                        .build());
+                    .processInstances()
+                    .active()
+                    .suspended()
+                    .build()
+            );
 
         assertThat(processInstancePage).isNotNull();
         assertThat(processInstancePage.getContent()).hasSize(1);
 
-        ProcessInstance processInstance = processInstancePage.getContent().get(0);
+        ProcessInstance processInstance = processInstancePage
+            .getContent()
+            .get(0);
 
-        ProcessInstance suspendedProcessInstance = processRuntime.suspend(ProcessPayloadBuilder.suspend(processInstance));
+        ProcessInstance suspendedProcessInstance = processRuntime.suspend(
+            ProcessPayloadBuilder.suspend(processInstance)
+        );
 
         assertThat(suspendedProcessInstance).isNotNull();
-        assertThat(suspendedProcessInstance.getStatus()).isEqualTo(ProcessInstance.ProcessInstanceStatus.SUSPENDED);
+        assertThat(suspendedProcessInstance.getStatus())
+            .isEqualTo(ProcessInstance.ProcessInstanceStatus.SUSPENDED);
 
-        processInstancePage = processRuntime.processInstances(PAGEABLE,
-                ProcessPayloadBuilder
-                        .processInstances()
-                        .active()
-                        .build());
+        processInstancePage =
+            processRuntime.processInstances(
+                PAGEABLE,
+                ProcessPayloadBuilder.processInstances().active().build()
+            );
 
         assertThat(processInstancePage).isNotNull();
         assertThat(processInstancePage.getContent()).hasSize(0);
 
-        processInstancePage = processRuntime.processInstances(PAGEABLE,
-                ProcessPayloadBuilder
-                        .processInstances()
-                        .suspended()
-                        .build());
+        processInstancePage =
+            processRuntime.processInstances(
+                PAGEABLE,
+                ProcessPayloadBuilder.processInstances().suspended().build()
+            );
 
         assertThat(processInstancePage).isNotNull();
         assertThat(processInstancePage.getContent()).hasSize(1);
 
         processRuntime.resume(ProcessPayloadBuilder.resume(processInstance));
 
-        processInstancePage = processRuntime.processInstances(PAGEABLE,
-                ProcessPayloadBuilder
-                        .processInstances()
-                        .suspended()
-                        .build());
+        processInstancePage =
+            processRuntime.processInstances(
+                PAGEABLE,
+                ProcessPayloadBuilder.processInstances().suspended().build()
+            );
 
         assertThat(processInstancePage).isNotNull();
         assertThat(processInstancePage.getContent()).hasSize(0);
 
-        processInstancePage = processRuntime.processInstances(PAGEABLE,
-                ProcessPayloadBuilder
-                        .processInstances()
-                        .active()
-                        .build());
+        processInstancePage =
+            processRuntime.processInstances(
+                PAGEABLE,
+                ProcessPayloadBuilder.processInstances().active().build()
+            );
 
         assertThat(processInstancePage).isNotNull();
         assertThat(processInstancePage.getContent()).hasSize(1);
 
-        ProcessInstance getSingleProcessInstance = processRuntime.processInstance(processInstance.getId());
+        ProcessInstance getSingleProcessInstance = processRuntime.processInstance(
+            processInstance.getId()
+        );
         assertThat(getSingleProcessInstance).isNotNull();
-        assertThat(getSingleProcessInstance.getStatus()).isEqualTo(ProcessInstance.ProcessInstanceStatus.RUNNING);
+        assertThat(getSingleProcessInstance.getStatus())
+            .isEqualTo(ProcessInstance.ProcessInstanceStatus.RUNNING);
 
         // I need to clean up the Process Instances that I started because @WithMockUser cannot be used in @BeforeEach method
-        ProcessInstance deletedProcessInstance = processRuntime.delete(ProcessPayloadBuilder.delete(getSingleProcessInstance));
+        ProcessInstance deletedProcessInstance = processRuntime.delete(
+            ProcessPayloadBuilder.delete(getSingleProcessInstance)
+        );
         assertThat(deletedProcessInstance).isNotNull();
 
         processInstancePage = processRuntime.processInstances(PAGEABLE);
 
         assertThat(processInstancePage).isNotNull();
         assertThat(processInstancePage.getContent()).hasSize(0);
-
     }
-
 
     @Test
     public void should_deleteProcessInstanceAndEmmitEvents() {
         //given
-        ProcessInstance categorizeProcess = processRuntime.start(ProcessPayloadBuilder.start()
+        ProcessInstance categorizeProcess = processRuntime.start(
+            ProcessPayloadBuilder
+                .start()
                 .withProcessDefinitionKey(CATEGORIZE_HUMAN_PROCESS)
-                .withVariable("expectedKey",
-                        true)
-                .withVariable("name","garth")
-                .withVariable("age",45)
+                .withVariable("expectedKey", true)
+                .withVariable("name", "garth")
+                .withVariable("age", 45)
                 .withBusinessKey("my business key")
-                .build());
+                .build()
+        );
 
         //when
-        ProcessInstance deletedProcessInstance = processRuntime.delete(ProcessPayloadBuilder.delete(categorizeProcess));
+        ProcessInstance deletedProcessInstance = processRuntime.delete(
+            ProcessPayloadBuilder.delete(categorizeProcess)
+        );
 
         //then
         assertThat(deletedProcessInstance).isNotNull();
-        assertThat(deletedProcessInstance.getStatus()).isEqualTo(ProcessInstance.ProcessInstanceStatus.CANCELLED);
-
+        assertThat(deletedProcessInstance.getStatus())
+            .isEqualTo(ProcessInstance.ProcessInstanceStatus.CANCELLED);
 
         //when
-        Page<ProcessInstance> processInstancePage = processRuntime.processInstances(PAGEABLE);
+        Page<ProcessInstance> processInstancePage = processRuntime.processInstances(
+            PAGEABLE
+        );
         assertThat(processInstancePage).isNotNull();
         assertThat(processInstancePage.getContent()).isEmpty();
     }
@@ -507,20 +610,22 @@ public class ProcessRuntimeIT {
     @Test
     public void adminFailTest() {
         //when
-        Throwable throwable = catchThrowable(() -> processAdminRuntime.processInstance("fakeId"));
+        Throwable throwable = catchThrowable(
+            () -> processAdminRuntime.processInstance("fakeId")
+        );
         //then
-        assertThat(throwable)
-                .isInstanceOf(AccessDeniedException.class);
+        assertThat(throwable).isInstanceOf(AccessDeniedException.class);
     }
 
-    @Test()
+    @Test
     public void userFailTest() {
         securityUtil.logInAs("admin");
         //when
-        Throwable throwable = catchThrowable(() -> processRuntime.processDefinitions(PAGEABLE));
+        Throwable throwable = catchThrowable(
+            () -> processRuntime.processDefinitions(PAGEABLE)
+        );
         //then
-        assertThat(throwable)
-                .isInstanceOf(AccessDeniedException.class);
+        assertThat(throwable).isInstanceOf(AccessDeniedException.class);
     }
 
     @Test
@@ -528,43 +633,53 @@ public class ProcessRuntimeIT {
         ProcessRuntimeConfiguration configuration = processRuntime.configuration();
         assertThat(configuration).isNotNull();
         Page<ProcessDefinition> processDefinitionPage = processRuntime.processDefinitions(
-            PAGEABLE);
+            PAGEABLE
+        );
         assertThat(processDefinitionPage.getContent()).isNotNull();
-        assertThat(processDefinitionPage.getContent()).extracting(ProcessDefinition::getKey)
-                .contains(CATEGORIZE_HUMAN_PROCESS);
-
+        assertThat(processDefinitionPage.getContent())
+            .extracting(ProcessDefinition::getKey)
+            .contains(CATEGORIZE_HUMAN_PROCESS);
 
         // start a process with a business key to check filters
-        ProcessInstance categorizeProcess = processRuntime.start(ProcessPayloadBuilder.start()
+        ProcessInstance categorizeProcess = processRuntime.start(
+            ProcessPayloadBuilder
+                .start()
                 .withProcessDefinitionKey(CATEGORIZE_HUMAN_PROCESS)
-                .withVariable("expectedKey",
-                        true)
+                .withVariable("expectedKey", true)
                 .withBusinessKey("my business key")
                 .withName("my process name")
-                .build());
+                .build()
+        );
 
         assertThat(categorizeProcess).isNotNull();
-        assertThat(categorizeProcess.getStatus()).isEqualTo(ProcessInstance.ProcessInstanceStatus.RUNNING);
+        assertThat(categorizeProcess.getStatus())
+            .isEqualTo(ProcessInstance.ProcessInstanceStatus.RUNNING);
         assertThat(categorizeProcess.getName()).isEqualTo("my process name");
         //assertThat(categorizeProcess.getDescription()).isNull();
-
 
         //
         //To do: currently Description is not possible to update
         //
 
-       // update a process
-        Page<ProcessInstance> processInstancePage = processRuntime.processInstances(PAGEABLE);
+        // update a process
+        Page<ProcessInstance> processInstancePage = processRuntime.processInstances(
+            PAGEABLE
+        );
 
-        ProcessInstance processInstance = processInstancePage.getContent().get(0);
+        ProcessInstance processInstance = processInstancePage
+            .getContent()
+            .get(0);
 
-        UpdateProcessPayload updateProcessPayload = ProcessPayloadBuilder.update()
-                .withProcessInstanceId(processInstance.getId())
-                .withBusinessKey(processInstance.getBusinessKey() + " UPDATED")
-                .withName(processInstance.getName() + " UPDATED")
-                .build();
+        UpdateProcessPayload updateProcessPayload = ProcessPayloadBuilder
+            .update()
+            .withProcessInstanceId(processInstance.getId())
+            .withBusinessKey(processInstance.getBusinessKey() + " UPDATED")
+            .withName(processInstance.getName() + " UPDATED")
+            .build();
 
-        ProcessInstance updatedProcessInstance = processRuntime.update(updateProcessPayload);
+        ProcessInstance updatedProcessInstance = processRuntime.update(
+            updateProcessPayload
+        );
 
         assertThat(updatedProcessInstance).isNotNull();
 
@@ -575,58 +690,69 @@ public class ProcessRuntimeIT {
 
         processInstance = processInstancePage.getContent().get(0);
 
-
-        assertThat(processInstance.getName()).isEqualTo("my process name UPDATED");
-        assertThat(processInstance.getBusinessKey()).isEqualTo("my business key UPDATED");
-
+        assertThat(processInstance.getName())
+            .isEqualTo("my process name UPDATED");
+        assertThat(processInstance.getBusinessKey())
+            .isEqualTo("my business key UPDATED");
 
         // delete a process to avoid possible problems with other tests
 
-        ProcessInstance deletedProcessInstance = processRuntime.delete(ProcessPayloadBuilder.delete(categorizeProcess));
+        ProcessInstance deletedProcessInstance = processRuntime.delete(
+            ProcessPayloadBuilder.delete(categorizeProcess)
+        );
 
         assertThat(deletedProcessInstance).isNotNull();
-        assertThat(deletedProcessInstance.getStatus()).isEqualTo(ProcessInstance.ProcessInstanceStatus.CANCELLED);
-
+        assertThat(deletedProcessInstance.getStatus())
+            .isEqualTo(ProcessInstance.ProcessInstanceStatus.CANCELLED);
     }
 
     @Test
     public void updateProcessInstanceAdmin() {
         securityUtil.logInAs("admin");
 
-        Page<ProcessDefinition> processDefinitionPage = processAdminRuntime.processDefinitions(Pageable.of(0,
-                50));
+        Page<ProcessDefinition> processDefinitionPage = processAdminRuntime.processDefinitions(
+            Pageable.of(0, 50)
+        );
         assertThat(processDefinitionPage.getContent()).isNotNull();
-        assertThat(processDefinitionPage.getContent()).extracting(ProcessDefinition::getKey)
-                .contains(CATEGORIZE_HUMAN_PROCESS);
-
+        assertThat(processDefinitionPage.getContent())
+            .extracting(ProcessDefinition::getKey)
+            .contains(CATEGORIZE_HUMAN_PROCESS);
 
         // start a process with a business key to check filters
-        ProcessInstance categorizeProcess = processAdminRuntime.start(ProcessPayloadBuilder.start()
+        ProcessInstance categorizeProcess = processAdminRuntime.start(
+            ProcessPayloadBuilder
+                .start()
                 .withProcessDefinitionKey(CATEGORIZE_HUMAN_PROCESS)
-                .withVariable("expectedKey",
-                        true)
+                .withVariable("expectedKey", true)
                 .withBusinessKey("my business key")
                 .withName("my process name")
-                .build());
+                .build()
+        );
 
         assertThat(categorizeProcess).isNotNull();
-        assertThat(categorizeProcess.getStatus()).isEqualTo(ProcessInstance.ProcessInstanceStatus.RUNNING);
+        assertThat(categorizeProcess.getStatus())
+            .isEqualTo(ProcessInstance.ProcessInstanceStatus.RUNNING);
         assertThat(categorizeProcess.getName()).isEqualTo("my process name");
-
 
         // update a process
         Page<ProcessInstance> processInstancePage = processAdminRuntime.processInstances(
-            PAGEABLE);
+            PAGEABLE
+        );
 
-        ProcessInstance processInstance = processInstancePage.getContent().get(0);
+        ProcessInstance processInstance = processInstancePage
+            .getContent()
+            .get(0);
 
-        UpdateProcessPayload updateProcessPayload = ProcessPayloadBuilder.update()
-                .withProcessInstanceId(processInstance.getId())
-                .withBusinessKey(processInstance.getBusinessKey() + " UPDATED")
-                .withName(processInstance.getName() + " UPDATED")
-                .build();
+        UpdateProcessPayload updateProcessPayload = ProcessPayloadBuilder
+            .update()
+            .withProcessInstanceId(processInstance.getId())
+            .withBusinessKey(processInstance.getBusinessKey() + " UPDATED")
+            .withName(processInstance.getName() + " UPDATED")
+            .build();
 
-        ProcessInstance updatedProcessInstance = processAdminRuntime.update(updateProcessPayload);
+        ProcessInstance updatedProcessInstance = processAdminRuntime.update(
+            updateProcessPayload
+        );
 
         assertThat(updatedProcessInstance).isNotNull();
 
@@ -637,95 +763,118 @@ public class ProcessRuntimeIT {
 
         processInstance = processInstancePage.getContent().get(0);
 
-
-        assertThat(processInstance.getName()).isEqualTo("my process name UPDATED");
-        assertThat(processInstance.getBusinessKey()).isEqualTo("my business key UPDATED");
-
+        assertThat(processInstance.getName())
+            .isEqualTo("my process name UPDATED");
+        assertThat(processInstance.getBusinessKey())
+            .isEqualTo("my business key UPDATED");
 
         // delete a process to avoid possible problems with other tests
 
-        ProcessInstance deletedProcessInstance = processAdminRuntime.delete(ProcessPayloadBuilder.delete(categorizeProcess));
+        ProcessInstance deletedProcessInstance = processAdminRuntime.delete(
+            ProcessPayloadBuilder.delete(categorizeProcess)
+        );
 
         assertThat(deletedProcessInstance).isNotNull();
-        assertThat(deletedProcessInstance.getStatus()).isEqualTo(ProcessInstance.ProcessInstanceStatus.CANCELLED);
-
+        assertThat(deletedProcessInstance.getStatus())
+            .isEqualTo(ProcessInstance.ProcessInstanceStatus.CANCELLED);
     }
 
     @Test
     public void getSubprocesses() {
         Page<ProcessInstance> processInstancePage;
-        ProcessInstance parentProcess,subProcess;
+        ProcessInstance parentProcess, subProcess;
 
         //given
         // start a process with a business key to check filters
-        parentProcess=processRuntime.start(ProcessPayloadBuilder.start()
-                .withProcessDefinitionKey(SUPER_PROCESS)
-                .withBusinessKey("my superprocess key")
-                .build());
+        parentProcess =
+            processRuntime.start(
+                ProcessPayloadBuilder
+                    .start()
+                    .withProcessDefinitionKey(SUPER_PROCESS)
+                    .withBusinessKey("my superprocess key")
+                    .build()
+            );
 
         //when
-        processInstancePage = processRuntime.processInstances(PAGEABLE,
-                ProcessPayloadBuilder
-                        .processInstances()
-                        .build());
+        processInstancePage =
+            processRuntime.processInstances(
+                PAGEABLE,
+                ProcessPayloadBuilder.processInstances().build()
+            );
 
         //Check that we have parent process and subprocess
         assertThat(processInstancePage).isNotNull();
         assertThat(processInstancePage.getContent()).hasSize(2);
 
-        assertThat( processInstancePage.getContent().get(0).getProcessDefinitionKey()).isEqualTo(SUPER_PROCESS);
-        assertThat( processInstancePage.getContent().get(1).getProcessDefinitionKey()).isEqualTo(SUB_PROCESS);
-
+        assertThat(
+            processInstancePage.getContent().get(0).getProcessDefinitionKey()
+        )
+            .isEqualTo(SUPER_PROCESS);
+        assertThat(
+            processInstancePage.getContent().get(1).getProcessDefinitionKey()
+        )
+            .isEqualTo(SUB_PROCESS);
 
         //Check that parentProcess has 1 subprocess
-        processInstancePage = processRuntime.processInstances(PAGEABLE,
-                                                                          ProcessPayloadBuilder
-                                                                                  .subprocesses(parentProcess.getId()));
-
+        processInstancePage =
+            processRuntime.processInstances(
+                PAGEABLE,
+                ProcessPayloadBuilder.subprocesses(parentProcess.getId())
+            );
 
         assertThat(processInstancePage).isNotNull();
         assertThat(processInstancePage.getContent()).hasSize(1);
 
-        subProcess=processInstancePage.getContent().get(0);
+        subProcess = processInstancePage.getContent().get(0);
 
         assertThat(subProcess.getProcessDefinitionKey()).isEqualTo(SUB_PROCESS);
         assertThat(subProcess.getParentId()).isEqualTo(parentProcess.getId());
         assertThat(subProcess.getProcessDefinitionVersion()).isEqualTo(1);
 
-
         processRuntime.delete(ProcessPayloadBuilder.delete(subProcess));
         processRuntime.delete(ProcessPayloadBuilder.delete(parentProcess));
-
     }
 
     @Test
     public void should_startProcessViaSignal() {
         // when
-        SignalPayload signalPayload = ProcessPayloadBuilder.signal()
-        .withName("The Signal")
+        SignalPayload signalPayload = ProcessPayloadBuilder
+            .signal()
+            .withName("The Signal")
             .withVariable("signalVar", "from signal")
             .build();
         processRuntimeMock.signal(signalPayload);
 
         Page<ProcessInstance> processInstancePage = processRuntimeMock.processInstances(
-            PAGEABLE);
+            PAGEABLE
+        );
 
         // then
         assertThat(processInstancePage).isNotNull();
         assertThat(processInstancePage.getContent()).hasSize(1);
-        assertThat(processInstancePage.getContent().get(0).getProcessDefinitionKey()).isEqualTo("processWithSignalStart1");
+        assertThat(
+            processInstancePage.getContent().get(0).getProcessDefinitionKey()
+        )
+            .isEqualTo("processWithSignalStart1");
 
         verify(eventPublisher).publishEvent(signalPayload);
 
         //when
         List<VariableInstance> variables = processRuntime.variables(
-            ProcessPayloadBuilder.variables()
-                .withProcessInstance(processInstancePage.getContent().get(0)).build());
+            ProcessPayloadBuilder
+                .variables()
+                .withProcessInstance(processInstancePage.getContent().get(0))
+                .build()
+        );
         assertThat(variables)
             .extracting(VariableInstance::getName, VariableInstance::getValue)
             .containsExactly(tuple("signalVar", "from signal"));
 
-        processRuntimeMock.delete(ProcessPayloadBuilder.delete(processInstancePage.getContent().get(0).getId()));
+        processRuntimeMock.delete(
+            ProcessPayloadBuilder.delete(
+                processInstancePage.getContent().get(0).getId()
+            )
+        );
     }
 
     @Test
@@ -736,33 +885,47 @@ public class ProcessRuntimeIT {
         verify(eventPublisher).publishEvent(signalPayload);
 
         Page<ProcessInstance> processInstancePage = processAdminRuntimeMock.processInstances(
-            PAGEABLE);
+            PAGEABLE
+        );
 
         // then
         assertThat(processInstancePage).isNotNull();
         assertThat(processInstancePage.getContent()).hasSize(1);
-        assertThat(processInstancePage.getContent().get(0).getProcessDefinitionKey()).isEqualTo("processWithSignalStart1");
+        assertThat(
+            processInstancePage.getContent().get(0).getProcessDefinitionKey()
+        )
+            .isEqualTo("processWithSignalStart1");
 
-        processAdminRuntimeMock.delete(ProcessPayloadBuilder.delete(processInstancePage.getContent().get(0).getId()));
+        processAdminRuntimeMock.delete(
+            ProcessPayloadBuilder.delete(
+                processInstancePage.getContent().get(0).getId()
+            )
+        );
     }
 
     @Test
-    public void should_processInstanceAlwaysHaveAppVersion(){
-        ProcessInstance processInstance = processRuntime.start(ProcessPayloadBuilder.start()
-                                                                         .withProcessDefinitionKey(SUPER_PROCESS)
-                                                                         .build());
+    public void should_processInstanceAlwaysHaveAppVersion() {
+        ProcessInstance processInstance = processRuntime.start(
+            ProcessPayloadBuilder
+                .start()
+                .withProcessDefinitionKey(SUPER_PROCESS)
+                .build()
+        );
         assertThat(processInstance.getAppVersion()).isEqualTo("1");
     }
 
     @Test
-    public void should_processDefinitionAlwaysHaveAppVersion(){
+    public void should_processDefinitionAlwaysHaveAppVersion() {
         Page<ProcessDefinition> processDefinitionPage = processRuntime.processDefinitions(
-            PAGEABLE);
+            PAGEABLE
+        );
         assertThat(processDefinitionPage.getContent()).isNotEmpty();
 
-        List<ProcessDefinition> processDefinitions = processDefinitionPage.getContent().stream()
-                .filter(c -> c.getKey().equals(SUPER_PROCESS))
-                .collect(Collectors.toList());
+        List<ProcessDefinition> processDefinitions = processDefinitionPage
+            .getContent()
+            .stream()
+            .filter(c -> c.getKey().equals(SUPER_PROCESS))
+            .collect(Collectors.toList());
         assertThat(processDefinitions).hasSize(1);
 
         ProcessDefinition result = processDefinitions.get(0);
@@ -771,7 +934,7 @@ public class ProcessRuntimeIT {
     }
 
     @Test
-    public void should_selectLatestDeployment(){
+    public void should_selectLatestDeployment() {
         Deployment deployment = processRuntime.selectLatestDeployment();
 
         assertThat(deployment.getVersion()).isEqualTo(1);
@@ -779,15 +942,20 @@ public class ProcessRuntimeIT {
         assertThat(deployment.getName()).isEqualTo("SpringAutoDeployment");
     }
 
-
     @Test
     public void should_OnlyProcessDefinitionsFromLatestVersionRetrieved() {
         Deployment deployment = processRuntime.selectLatestDeployment();
 
         Page<ProcessDefinition> processDefinitionPage = processRuntime.processDefinitions(
-            PAGEABLE);
+            PAGEABLE
+        );
 
-        assertThat(processDefinitionPage.getContent().stream().filter(c -> c.getKey().equals(SUPER_PROCESS)))
+        assertThat(
+            processDefinitionPage
+                .getContent()
+                .stream()
+                .filter(c -> c.getKey().equals(SUPER_PROCESS))
+        )
             .extracting(ProcessDefinition::getAppVersion)
             .containsOnly(deployment.getVersion().toString());
     }
@@ -797,26 +965,36 @@ public class ProcessRuntimeIT {
         //given
         BigDecimal bigDecimalValue = BigDecimal.valueOf(100000, 3);
         double doubleValue = 2.0;
-        LocalDateTime localDateTime = LocalDateTime.parse("2020-08-12T12:00:00");
+        LocalDateTime localDateTime = LocalDateTime.parse(
+            "2020-08-12T12:00:00"
+        );
         LocalDate localDate = LocalDate.parse("2020-08-10");
-        ProcessInstance processInstance = processRuntime.start(ProcessPayloadBuilder.start()
-            .withProcessDefinitionKey(CATEGORIZE_HUMAN_PROCESS)
-            .withVariable("bigDecimalVar", bigDecimalValue)
-            .withVariable("doubleVar", doubleValue)
-            .withVariable("localDateTimeVar", localDateTime)
-            .withVariable("localDateVar", localDate)
-            .build());
+        ProcessInstance processInstance = processRuntime.start(
+            ProcessPayloadBuilder
+                .start()
+                .withProcessDefinitionKey(CATEGORIZE_HUMAN_PROCESS)
+                .withVariable("bigDecimalVar", bigDecimalValue)
+                .withVariable("doubleVar", doubleValue)
+                .withVariable("localDateTimeVar", localDateTime)
+                .withVariable("localDateVar", localDate)
+                .build()
+        );
 
         //when
         List<VariableInstance> variables = processRuntime.variables(
-            ProcessPayloadBuilder.variables().withProcessInstance(processInstance).build());
+            ProcessPayloadBuilder
+                .variables()
+                .withProcessInstance(processInstance)
+                .build()
+        );
 
         //then
         assertThat(variables)
             .extracting(
                 VariableInstance::getName,
                 VariableInstance::getValue,
-                VariableInstance::getType)
+                VariableInstance::getType
+            )
             .contains(
                 tuple("bigDecimalVar", bigDecimalValue, "bigdecimal"),
                 tuple("doubleVar", doubleValue, "double"),
@@ -832,9 +1010,15 @@ public class ProcessRuntimeIT {
         securityUtil.logInAs("admin");
 
         Page<ProcessDefinition> processDefinitionPage = processAdminRuntime.processDefinitions(
-            PAGEABLE);
+            PAGEABLE
+        );
 
-        assertThat(processDefinitionPage.getContent().stream().filter(c -> c.getKey().equals(SUPER_PROCESS)))
+        assertThat(
+            processDefinitionPage
+                .getContent()
+                .stream()
+                .filter(c -> c.getKey().equals(SUPER_PROCESS))
+        )
             .extracting(ProcessDefinition::getAppVersion)
             .containsOnly(deployment.getVersion().toString());
     }

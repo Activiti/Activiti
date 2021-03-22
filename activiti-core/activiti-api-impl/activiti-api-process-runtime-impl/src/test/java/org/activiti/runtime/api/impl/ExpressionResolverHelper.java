@@ -35,51 +35,65 @@ public class ExpressionResolverHelper {
     private static ObjectMapper objectMapper = new ObjectMapper();
 
     private static void initializeExpressionResolver() {
-        ProcessEngineConfigurationImpl processEngineConfiguration = mock(ProcessEngineConfigurationImpl.class);
+        ProcessEngineConfigurationImpl processEngineConfiguration = mock(
+            ProcessEngineConfigurationImpl.class
+        );
         Context.setProcessEngineConfiguration(processEngineConfiguration);
-        given(processEngineConfiguration.getExpressionManager()).willReturn(new ExpressionManager());
-        given(processEngineConfiguration.getDelegateInterceptor()).willReturn(new DefaultDelegateInterceptor());
+        given(processEngineConfiguration.getExpressionManager())
+            .willReturn(new ExpressionManager());
+        given(processEngineConfiguration.getDelegateInterceptor())
+            .willReturn(new DefaultDelegateInterceptor());
     }
 
-    public static ExpressionResolver initContext(DelegateExecution execution,
-                                                Extension extensions) {
+    public static ExpressionResolver initContext(
+        DelegateExecution execution,
+        Extension extensions
+    ) {
         initializeExpressionResolver();
 
-        Map<String, Object> variables = convertToStringObjectMap(extensions.getProperties());
+        Map<String, Object> variables = convertToStringObjectMap(
+            extensions.getProperties()
+        );
 
         setExecutionVariables(execution, variables);
-        return new ExpressionResolver(new ExpressionManager(),
-                                      objectMapper, new DefaultDelegateInterceptor());
+        return new ExpressionResolver(
+            new ExpressionManager(),
+            objectMapper,
+            new DefaultDelegateInterceptor()
+        );
     }
 
-    public static void setExecutionVariables(DelegateExecution execution, Map<String, Object> variables) {
+    public static void setExecutionVariables(
+        DelegateExecution execution,
+        Map<String, Object> variables
+    ) {
         given(execution.getVariables()).willReturn(variables);
         given(execution.getVariablesLocal()).willReturn(variables);
         for (String key : variables.keySet()) {
             given(execution.hasVariable(key)).willReturn(true);
-            VariableInstance var = getVariableInstance(key,
-                                                       variables.get(key));
+            VariableInstance var = getVariableInstance(key, variables.get(key));
             given(execution.getVariableInstance(key)).willReturn(var);
             given(execution.getVariable(key)).willReturn(variables.get(key));
         }
     }
 
-
     private static Map<String, Object> convertToStringObjectMap(
-        Map<String, VariableDefinition> sourceMap) {
+        Map<String, VariableDefinition> sourceMap
+    ) {
         Map<String, Object> result = new HashMap<>();
-        sourceMap.forEach((key,
-                value) -> result.put(value.getName(),
-                                     value.getValue()));
+        sourceMap.forEach(
+            (key, value) -> result.put(value.getName(), value.getValue())
+        );
         return result;
     }
 
-    private static VariableInstance getVariableInstance(String key,
-                                                        Object value) {
+    private static VariableInstance getVariableInstance(
+        String key,
+        Object value
+    ) {
         VariableInstance var = new VariableInstance() {
             @Override
-            public void setRevision(int revision) {
-            }
+            public void setRevision(int revision) {}
 
             @Override
             public int getRevisionNext() {
@@ -92,20 +106,16 @@ public class ExpressionResolverHelper {
             }
 
             @Override
-            public void setUpdated(boolean updated) {
-            }
+            public void setUpdated(boolean updated) {}
 
             @Override
-            public void setInserted(boolean inserted) {
-            }
+            public void setInserted(boolean inserted) {}
 
             @Override
-            public void setId(String id) {
-            }
+            public void setId(String id) {}
 
             @Override
-            public void setDeleted(boolean deleted) {
-            }
+            public void setDeleted(boolean deleted) {}
 
             @Override
             public boolean isUpdated() {
@@ -133,28 +143,22 @@ public class ExpressionResolverHelper {
             }
 
             @Override
-            public void setTextValue2(String textValue2) {
-            }
+            public void setTextValue2(String textValue2) {}
 
             @Override
-            public void setTextValue(String textValue) {
-            }
+            public void setTextValue(String textValue) {}
 
             @Override
-            public void setLongValue(Long longValue) {
-            }
+            public void setLongValue(Long longValue) {}
 
             @Override
-            public void setDoubleValue(Double doubleValue) {
-            }
+            public void setDoubleValue(Double doubleValue) {}
 
             @Override
-            public void setCachedValue(Object cachedValue) {
-            }
+            public void setCachedValue(Object cachedValue) {}
 
             @Override
-            public void setBytes(byte[] bytes) {
-            }
+            public void setBytes(byte[] bytes) {}
 
             @Override
             public String getTextValue2() {
@@ -168,7 +172,6 @@ public class ExpressionResolverHelper {
 
             @Override
             public String getName() {
-
                 return null;
             }
 
@@ -193,28 +196,22 @@ public class ExpressionResolverHelper {
             }
 
             @Override
-            public void setValue(Object value) {
-            }
+            public void setValue(Object value) {}
 
             @Override
-            public void setTypeName(String typeName) {
-            }
+            public void setTypeName(String typeName) {}
 
             @Override
-            public void setTaskId(String taskId) {
-            }
+            public void setTaskId(String taskId) {}
 
             @Override
-            public void setProcessInstanceId(String processInstanceId) {
-            }
+            public void setProcessInstanceId(String processInstanceId) {}
 
             @Override
-            public void setName(String name) {
-            }
+            public void setName(String name) {}
 
             @Override
-            public void setExecutionId(String executionId) {
-            }
+            public void setExecutionId(String executionId) {}
 
             @Override
             public Object getValue() {

@@ -15,12 +15,13 @@
  */
 package org.activiti.api.runtime.model.impl;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.core.convert.converter.Converter;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 @ProcessVariableTypeConverter
-public class StringToObjectValueConverter implements Converter<String, ObjectValue> {
+public class StringToObjectValueConverter
+    implements Converter<String, ObjectValue> {
+
     private final ObjectMapper objectMapper;
 
     public StringToObjectValueConverter(ObjectMapper objectMapper) {

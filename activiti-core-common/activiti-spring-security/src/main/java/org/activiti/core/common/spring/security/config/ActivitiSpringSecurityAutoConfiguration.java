@@ -48,7 +48,7 @@ public class ActivitiSpringSecurityAutoConfiguration {
     @ConditionalOnMissingBean
     public GrantedAuthoritiesGroupsMapper grantedAuthoritiesGroupsMapper() {
         return new SimpleGrantedAuthoritiesGroupsMapper();
-    };
+    }
 
     @Bean
     @ConditionalOnMissingBean
@@ -70,30 +70,41 @@ public class ActivitiSpringSecurityAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public PrincipalGroupsProvider principalGroupsProvider(GrantedAuthoritiesResolver grantedAuthoritiesResolver,
-                                                           GrantedAuthoritiesGroupsMapper grantedAuthoritiesGroupsMapper) {
-        return new AuthenticationPrincipalGroupsProvider(grantedAuthoritiesResolver,
-                                                         grantedAuthoritiesGroupsMapper);
+    public PrincipalGroupsProvider principalGroupsProvider(
+        GrantedAuthoritiesResolver grantedAuthoritiesResolver,
+        GrantedAuthoritiesGroupsMapper grantedAuthoritiesGroupsMapper
+    ) {
+        return new AuthenticationPrincipalGroupsProvider(
+            grantedAuthoritiesResolver,
+            grantedAuthoritiesGroupsMapper
+        );
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public PrincipalRolesProvider principalRolessProvider(GrantedAuthoritiesResolver grantedAuthoritiesResolver,
-                                                          GrantedAuthoritiesRolesMapper grantedAuthoritiesRolesMapper) {
-        return new AuthenticationPrincipalRolesProvider(grantedAuthoritiesResolver,
-                                                        grantedAuthoritiesRolesMapper);
+    public PrincipalRolesProvider principalRolessProvider(
+        GrantedAuthoritiesResolver grantedAuthoritiesResolver,
+        GrantedAuthoritiesRolesMapper grantedAuthoritiesRolesMapper
+    ) {
+        return new AuthenticationPrincipalRolesProvider(
+            grantedAuthoritiesResolver,
+            grantedAuthoritiesRolesMapper
+        );
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public SecurityManager securityManager(SecurityContextPrincipalProvider securityContextPrincipalProvider,
-                                           PrincipalIdentityProvider principalIdentityProvider,
-                                           PrincipalGroupsProvider principalGroupsProvider,
-                                           PrincipalRolesProvider principalRolessProvider) {
-        return new LocalSpringSecurityManager(securityContextPrincipalProvider,
-                                              principalIdentityProvider,
-                                              principalGroupsProvider,
-                                              principalRolessProvider);
+    public SecurityManager securityManager(
+        SecurityContextPrincipalProvider securityContextPrincipalProvider,
+        PrincipalIdentityProvider principalIdentityProvider,
+        PrincipalGroupsProvider principalGroupsProvider,
+        PrincipalRolesProvider principalRolessProvider
+    ) {
+        return new LocalSpringSecurityManager(
+            securityContextPrincipalProvider,
+            principalIdentityProvider,
+            principalGroupsProvider,
+            principalRolessProvider
+        );
     }
-
 }

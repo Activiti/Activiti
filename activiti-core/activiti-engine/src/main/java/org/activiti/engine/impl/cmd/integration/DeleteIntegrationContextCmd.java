@@ -19,17 +19,23 @@ import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.integration.IntegrationContextEntity;
 
-public class DeleteIntegrationContextCmd implements Command<IntegrationContextEntity> {
+public class DeleteIntegrationContextCmd
+    implements Command<IntegrationContextEntity> {
 
     private IntegrationContextEntity integrationContext;
 
-    public DeleteIntegrationContextCmd(IntegrationContextEntity integrationContext) {
+    public DeleteIntegrationContextCmd(
+        IntegrationContextEntity integrationContext
+    ) {
         this.integrationContext = integrationContext;
     }
 
     @Override
     public IntegrationContextEntity execute(CommandContext commandContext) {
-        commandContext.getProcessEngineConfiguration().getIntegrationContextManager().delete(integrationContext);
+        commandContext
+            .getProcessEngineConfiguration()
+            .getIntegrationContextManager()
+            .delete(integrationContext);
         return integrationContext;
     }
 }

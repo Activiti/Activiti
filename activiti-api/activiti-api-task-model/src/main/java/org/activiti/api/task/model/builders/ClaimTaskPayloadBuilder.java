@@ -33,7 +33,6 @@ public class ClaimTaskPayloadBuilder {
     }
 
     public ClaimTaskPayload build() {
-        return new ClaimTaskPayload(taskId,
-                                    assignee);
+        return new ClaimTaskPayload(taskId, assignee);
     }
 }

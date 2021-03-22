@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-
 import org.activiti.engine.impl.test.ResourceActivitiTestCase;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
@@ -32,46 +31,51 @@ import org.activiti.engine.test.Deployment;
  */
 public class UuidGeneratorTest extends ResourceActivitiTestCase {
 
-  public UuidGeneratorTest() {
-    super("org/activiti/standalone/idgenerator/uuidgenerator.test.activiti.cfg.xml");
-  }
-
-  @Deployment
-  public void testUuidGeneratorUsage() throws Exception {
-
-    ExecutorService executorService = Executors.newFixedThreadPool(10);
-
-    // Start processes
-    for (int i = 0; i < 50; i++) {
-      executorService.execute(() -> runtimeService.startProcessInstanceByKey("simpleProcess"));
+    public UuidGeneratorTest() {
+        super(
+            "org/activiti/standalone/idgenerator/uuidgenerator.test.activiti.cfg.xml"
+        );
     }
 
-    // Complete tasks
-    executorService.execute(() -> {
-      boolean tasksFound = true;
-      while (tasksFound) {
-        List<Task> tasks = taskService.createTaskQuery().list();
-        for (Task task : tasks) {
-          taskService.complete(task.getId());
+    @Deployment
+    public void testUuidGeneratorUsage() throws Exception {
+        ExecutorService executorService = Executors.newFixedThreadPool(10);
+
+        // Start processes
+        for (int i = 0; i < 50; i++) {
+            executorService.execute(
+                () -> runtimeService.startProcessInstanceByKey("simpleProcess")
+            );
         }
 
-        tasksFound = taskService.createTaskQuery().count() > 0;
+        // Complete tasks
+        executorService.execute(
+            () -> {
+                boolean tasksFound = true;
+                while (tasksFound) {
+                    List<Task> tasks = taskService.createTaskQuery().list();
+                    for (Task task : tasks) {
+                        taskService.complete(task.getId());
+                    }
 
-        if (!tasksFound) {
-          try {
-            Thread.sleep(1500L); // just to be sure
-          } catch (InterruptedException e) {
-            e.printStackTrace();
-          }
-          tasksFound = taskService.createTaskQuery().count() > 0;
-        }
-      }
-    });
+                    tasksFound = taskService.createTaskQuery().count() > 0;
 
-    executorService.shutdown();
-    executorService.awaitTermination(1, TimeUnit.MINUTES);
+                    if (!tasksFound) {
+                        try {
+                            Thread.sleep(1500L); // just to be sure
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        tasksFound = taskService.createTaskQuery().count() > 0;
+                    }
+                }
+            }
+        );
 
-    assertThat(historyService.createHistoricProcessInstanceQuery().count()).isEqualTo(50);
-  }
+        executorService.shutdown();
+        executorService.awaitTermination(1, TimeUnit.MINUTES);
 
+        assertThat(historyService.createHistoricProcessInstanceQuery().count())
+            .isEqualTo(50);
+    }
 }

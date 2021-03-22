@@ -20,5 +20,4 @@ public class ApplicationLoadException extends RuntimeException {
     public ApplicationLoadException(String message, Throwable cause) {
         super(message, cause);
     }
-
 }

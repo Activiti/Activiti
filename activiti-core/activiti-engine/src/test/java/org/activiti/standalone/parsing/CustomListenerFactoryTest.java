@@ -19,7 +19,6 @@ package org.activiti.standalone.parsing;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.concurrent.atomic.AtomicInteger;
-
 import org.activiti.engine.impl.test.ResourceActivitiTestCase;
 import org.activiti.engine.test.Deployment;
 
@@ -28,30 +27,31 @@ import org.activiti.engine.test.Deployment;
  */
 public class CustomListenerFactoryTest extends ResourceActivitiTestCase {
 
-  public CustomListenerFactoryTest() {
-    super("org/activiti/standalone/parsing/custom.listenerfactory.activiti.cfg.xml");
-  }
-
-  // The custom activity factory will change this value
-  public static AtomicInteger COUNTER = new AtomicInteger(0);
-
-  @Override
-  protected void setUp() throws Exception {
-    super.setUp();
-    COUNTER.set(0);
-  }
-
-  @Deployment
-  public void testCustomListenerFactory() {
-    int nrOfProcessInstances = 4;
-    for (int i = 0; i < nrOfProcessInstances; i++) {
-      runtimeService.startProcessInstanceByKey("oneTaskProcess");
+    public CustomListenerFactoryTest() {
+        super(
+            "org/activiti/standalone/parsing/custom.listenerfactory.activiti.cfg.xml"
+        );
     }
 
-    assertThat(COUNTER.get()).isEqualTo(nrOfProcessInstances * 100); // Each
-                                                             // listener
-                                                             // invocation
-                                                             // will add 100
-  }
+    // The custom activity factory will change this value
+    public static AtomicInteger COUNTER = new AtomicInteger(0);
 
+    @Override
+    protected void setUp() throws Exception {
+        super.setUp();
+        COUNTER.set(0);
+    }
+
+    @Deployment
+    public void testCustomListenerFactory() {
+        int nrOfProcessInstances = 4;
+        for (int i = 0; i < nrOfProcessInstances; i++) {
+            runtimeService.startProcessInstanceByKey("oneTaskProcess");
+        }
+
+        assertThat(COUNTER.get()).isEqualTo(nrOfProcessInstances * 100); // Each
+        // listener
+        // invocation
+        // will add 100
+    }
 }

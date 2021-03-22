@@ -32,17 +32,22 @@ public class MultiInstanceParser extends BaseChildElementParser {
     private final List<ElementParser<MultiInstanceLoopCharacteristics>> multiInstanceElementParsers;
 
     public MultiInstanceParser() {
-        this(asList(new LoopCardinalityParser(),
-            new MultiInstanceDataInputParser(),
-            new MultiInstanceInputDataItemParser(),
-            new MultiInstanceCompletionConditionParser(),
-            new LoopDataOutputRefParser(),
-            new MultiInstanceOutputDataItemParser(),
-            new MultiInstanceAttributesParser()
-        ));
+        this(
+            asList(
+                new LoopCardinalityParser(),
+                new MultiInstanceDataInputParser(),
+                new MultiInstanceInputDataItemParser(),
+                new MultiInstanceCompletionConditionParser(),
+                new LoopDataOutputRefParser(),
+                new MultiInstanceOutputDataItemParser(),
+                new MultiInstanceAttributesParser()
+            )
+        );
     }
 
-    public MultiInstanceParser(List<ElementParser<MultiInstanceLoopCharacteristics>> multiInstanceElementParsers) {
+    public MultiInstanceParser(
+        List<ElementParser<MultiInstanceLoopCharacteristics>> multiInstanceElementParsers
+    ) {
         this.multiInstanceElementParsers = multiInstanceElementParsers;
     }
 
@@ -50,9 +55,11 @@ public class MultiInstanceParser extends BaseChildElementParser {
         return ELEMENT_MULTIINSTANCE;
     }
 
-    public void parseChildElement(XMLStreamReader xtr,
-                                  BaseElement parentElement,
-                                  BpmnModel model) throws Exception {
+    public void parseChildElement(
+        XMLStreamReader xtr,
+        BaseElement parentElement,
+        BpmnModel model
+    ) throws Exception {
         if (!(parentElement instanceof Activity)) {
             return;
         }
@@ -64,20 +71,28 @@ public class MultiInstanceParser extends BaseChildElementParser {
         ((Activity) parentElement).setLoopCharacteristics(multiInstanceDef);
     }
 
-    private void parseMultiInstanceProperties(XMLStreamReader xtr,
-        MultiInstanceLoopCharacteristics multiInstanceDef) {
+    private void parseMultiInstanceProperties(
+        XMLStreamReader xtr,
+        MultiInstanceLoopCharacteristics multiInstanceDef
+    ) {
         boolean readyWithMultiInstance = false;
         try {
             do {
                 ElementParser<MultiInstanceLoopCharacteristics> matchingParser = multiInstanceElementParsers
                     .stream()
-                    .filter(elementParser -> elementParser.canParseCurrentElement(xtr))
+                    .filter(
+                        elementParser ->
+                            elementParser.canParseCurrentElement(xtr)
+                    )
                     .findFirst()
                     .orElse(null);
                 if (matchingParser != null) {
                     matchingParser.setInformation(xtr, multiInstanceDef);
                 }
-                if (xtr.isEndElement() && getElementName().equalsIgnoreCase(xtr.getLocalName())) {
+                if (
+                    xtr.isEndElement() &&
+                    getElementName().equalsIgnoreCase(xtr.getLocalName())
+                ) {
                     readyWithMultiInstance = true;
                 }
                 if (xtr.hasNext()) {
@@ -85,9 +100,7 @@ public class MultiInstanceParser extends BaseChildElementParser {
                 }
             } while (!readyWithMultiInstance && xtr.hasNext());
         } catch (Exception e) {
-            LOGGER.warn("Error parsing multi instance definition",
-                        e);
+            LOGGER.warn("Error parsing multi instance definition", e);
         }
     }
-
 }

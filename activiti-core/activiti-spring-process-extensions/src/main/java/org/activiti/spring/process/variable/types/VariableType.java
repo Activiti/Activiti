@@ -16,7 +16,6 @@
 package org.activiti.spring.process.variable.types;
 
 import java.util.List;
-
 import org.activiti.engine.ActivitiException;
 
 /**
@@ -35,7 +34,7 @@ public abstract class VariableType {
         this.name = name;
     }
 
-    abstract public void validate(Object var, List<ActivitiException> errors);
+    public abstract void validate(Object var, List<ActivitiException> errors);
 
     public Object parseFromValue(Object value) throws ActivitiException {
         return value;

@@ -17,34 +17,34 @@ package org.activiti.bpmn.model;
 
 public class CompensateEventDefinition extends EventDefinition {
 
-  protected String activityRef;
-  protected boolean waitForCompletion = true;
+    protected String activityRef;
+    protected boolean waitForCompletion = true;
 
-  public String getActivityRef() {
-    return activityRef;
-  }
+    public String getActivityRef() {
+        return activityRef;
+    }
 
-  public void setActivityRef(String activityRef) {
-    this.activityRef = activityRef;
-  }
+    public void setActivityRef(String activityRef) {
+        this.activityRef = activityRef;
+    }
 
-  public boolean isWaitForCompletion() {
-    return waitForCompletion;
-  }
+    public boolean isWaitForCompletion() {
+        return waitForCompletion;
+    }
 
-  public void setWaitForCompletion(boolean waitForCompletion) {
-    this.waitForCompletion = waitForCompletion;
-  }
+    public void setWaitForCompletion(boolean waitForCompletion) {
+        this.waitForCompletion = waitForCompletion;
+    }
 
-  public CompensateEventDefinition clone() {
-    CompensateEventDefinition clone = new CompensateEventDefinition();
-    clone.setValues(this);
-    return clone;
-  }
+    public CompensateEventDefinition clone() {
+        CompensateEventDefinition clone = new CompensateEventDefinition();
+        clone.setValues(this);
+        return clone;
+    }
 
-  public void setValues(CompensateEventDefinition otherDefinition) {
-    super.setValues(otherDefinition);
-    setActivityRef(otherDefinition.getActivityRef());
-    setWaitForCompletion(otherDefinition.isWaitForCompletion());
-  }
+    public void setValues(CompensateEventDefinition otherDefinition) {
+        super.setValues(otherDefinition);
+        setActivityRef(otherDefinition.getActivityRef());
+        setWaitForCompletion(otherDefinition.isWaitForCompletion());
+    }
 }

@@ -15,30 +15,43 @@
  */
 package org.activiti.test.assertions;
 
+import static org.awaitility.Awaitility.await;
+
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.test.matchers.OperationScopeMatcher;
 import org.activiti.test.matchers.ProcessResultMatcher;
 import org.activiti.test.matchers.ProcessTaskMatcher;
 
-import static org.awaitility.Awaitility.await;
-
-public class AwaitProcessInstanceAssertions implements ProcessInstanceAssertions {
+public class AwaitProcessInstanceAssertions
+    implements ProcessInstanceAssertions {
 
     private ProcessInstanceAssertions processInstanceAssertions;
 
-    public AwaitProcessInstanceAssertions(ProcessInstanceAssertions processInstanceAssertions) {
+    public AwaitProcessInstanceAssertions(
+        ProcessInstanceAssertions processInstanceAssertions
+    ) {
         this.processInstanceAssertions = processInstanceAssertions;
     }
 
     @Override
-    public ProcessInstanceAssertions expectFields(ProcessResultMatcher... matchers) {
-        await().untilAsserted(() -> processInstanceAssertions.expectFields(matchers));
+    public ProcessInstanceAssertions expectFields(
+        ProcessResultMatcher... matchers
+    ) {
+        await()
+            .untilAsserted(
+                () -> processInstanceAssertions.expectFields(matchers)
+            );
         return this;
     }
 
     @Override
-    public ProcessInstanceAssertions expectEvents(OperationScopeMatcher... matchers) {
-        await().untilAsserted(() -> processInstanceAssertions.expectEvents(matchers));
+    public ProcessInstanceAssertions expectEvents(
+        OperationScopeMatcher... matchers
+    ) {
+        await()
+            .untilAsserted(
+                () -> processInstanceAssertions.expectEvents(matchers)
+            );
         return this;
     }
 

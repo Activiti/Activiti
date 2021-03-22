@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.standalone.initialization;
 
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -30,19 +29,24 @@ public class NoDbConnectionTest extends AbstractTestCase {
 
     public void testNoDbConnection() {
         assertThatExceptionOfType(RuntimeException.class)
-            .isThrownBy(() -> ProcessEngineConfiguration
-                .createProcessEngineConfigurationFromResource("org/activiti/standalone/initialization/nodbconnection.activiti.cfg.xml")
-                .buildProcessEngine())
+            .isThrownBy(
+                () ->
+                    ProcessEngineConfiguration
+                        .createProcessEngineConfigurationFromResource(
+                            "org/activiti/standalone/initialization/nodbconnection.activiti.cfg.xml"
+                        )
+                        .buildProcessEngine()
+            )
             .matches(this::containsSqlException);
     }
 
-  private boolean containsSqlException(Throwable e) {
-    if (e == null) {
-      return false;
+    private boolean containsSqlException(Throwable e) {
+        if (e == null) {
+            return false;
+        }
+        if (e instanceof SQLException) {
+            return true;
+        }
+        return containsSqlException(e.getCause());
     }
-    if (e instanceof SQLException) {
-      return true;
-    }
-    return containsSqlException(e.getCause());
-  }
 }

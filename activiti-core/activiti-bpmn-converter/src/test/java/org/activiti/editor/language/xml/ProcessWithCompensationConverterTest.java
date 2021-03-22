@@ -15,58 +15,68 @@
  */
 package org.activiti.editor.language.xml;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import org.activiti.bpmn.BpmnAutoLayout;
 import org.activiti.bpmn.converter.BpmnXMLConverter;
 import org.activiti.bpmn.converter.util.InputStreamProvider;
 import org.activiti.bpmn.model.BpmnModel;
 import org.junit.jupiter.api.Test;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-
-import static org.assertj.core.api.Assertions.assertThat;
-
 /**
 
  */
 public class ProcessWithCompensationConverterTest {
 
-  @Test
-  public void testConvertingAfterAutoLayout() {
+    @Test
+    public void testConvertingAfterAutoLayout() {
+        final InputStream inputStream =
+            this.getClass()
+                .getClassLoader()
+                .getResourceAsStream(
+                    "ProcessWithCompensationAssociation.bpmn20.xml"
+                );
 
-    final InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream("ProcessWithCompensationAssociation.bpmn20.xml");
+        BpmnXMLConverter bpmnXMLConverter = new BpmnXMLConverter();
 
-    BpmnXMLConverter bpmnXMLConverter = new BpmnXMLConverter();
+        BpmnModel bpmnModel1 = bpmnXMLConverter.convertToBpmnModel(
+            new InputStreamProvider() {
+                @Override
+                public InputStream getInputStream() {
+                    return inputStream;
+                }
+            },
+            false,
+            false
+        );
 
-    BpmnModel bpmnModel1 = bpmnXMLConverter.convertToBpmnModel(new InputStreamProvider() {
+        if (bpmnModel1.getLocationMap().size() == 0) {
+            BpmnAutoLayout bpmnLayout = new BpmnAutoLayout(bpmnModel1);
+            bpmnLayout.execute();
+        }
 
-      @Override
-      public InputStream getInputStream() {
-        return inputStream;
-      }
-    }, false, false);
+        byte[] xmlByte = bpmnXMLConverter.convertToXML(bpmnModel1);
+        final InputStream byteArrayInputStream = new ByteArrayInputStream(
+            xmlByte
+        );
 
-    if (bpmnModel1.getLocationMap().size() == 0) {
-      BpmnAutoLayout bpmnLayout = new BpmnAutoLayout(bpmnModel1);
-      bpmnLayout.execute();
+        BpmnModel bpmnModel2 = bpmnXMLConverter.convertToBpmnModel(
+            new InputStreamProvider() {
+                @Override
+                public InputStream getInputStream() {
+                    return byteArrayInputStream;
+                }
+            },
+            false,
+            false
+        );
+
+        assertThat(bpmnModel1.getLocationMap()).hasSize(10);
+        assertThat(bpmnModel2.getLocationMap()).hasSize(10);
+
+        assertThat(bpmnModel1.getFlowLocationMap()).hasSize(7);
+        assertThat(bpmnModel2.getFlowLocationMap()).hasSize(7);
     }
-
-    byte[] xmlByte = bpmnXMLConverter.convertToXML(bpmnModel1);
-    final InputStream byteArrayInputStream = new ByteArrayInputStream(xmlByte);
-
-    BpmnModel bpmnModel2 = bpmnXMLConverter.convertToBpmnModel(new InputStreamProvider() {
-
-      @Override
-      public InputStream getInputStream() {
-        return byteArrayInputStream;
-      }
-    }, false, false);
-
-    assertThat(bpmnModel1.getLocationMap()).hasSize(10);
-    assertThat(bpmnModel2.getLocationMap()).hasSize(10);
-
-    assertThat(bpmnModel1.getFlowLocationMap()).hasSize(7);
-    assertThat(bpmnModel2.getFlowLocationMap()).hasSize(7);
-  }
-
 }

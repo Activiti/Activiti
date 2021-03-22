@@ -20,13 +20,13 @@ import org.activiti.api.process.model.events.ProcessRuntimeEvent;
 import org.activiti.api.process.runtime.events.ProcessCancelledEvent;
 import org.activiti.api.runtime.event.impl.RuntimeEventImpl;
 
-public class ProcessCancelledImpl extends RuntimeEventImpl<ProcessInstance, ProcessRuntimeEvent.ProcessEvents>
-        implements ProcessCancelledEvent {
+public class ProcessCancelledImpl
+    extends RuntimeEventImpl<ProcessInstance, ProcessRuntimeEvent.ProcessEvents>
+    implements ProcessCancelledEvent {
 
     private String cause;
 
-    public ProcessCancelledImpl(ProcessInstance entity,
-                                String cause) {
+    public ProcessCancelledImpl(ProcessInstance entity, String cause) {
         super(entity);
         this.cause = cause;
     }

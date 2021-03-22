@@ -15,6 +15,4 @@
  */
 package org.activiti.api.process.model.events;
 
-public interface BPMNMessageReceivedEvent extends BPMNMessageEvent {
-
-}
+public interface BPMNMessageReceivedEvent extends BPMNMessageEvent {}

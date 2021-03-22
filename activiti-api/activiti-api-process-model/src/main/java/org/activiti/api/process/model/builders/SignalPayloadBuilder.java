@@ -17,7 +17,6 @@ package org.activiti.api.process.model.builders;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import org.activiti.api.process.model.payloads.SignalPayload;
 
 public class SignalPayloadBuilder {
@@ -35,18 +34,15 @@ public class SignalPayloadBuilder {
         return this;
     }
 
-    public SignalPayloadBuilder withVariable(String name,
-                                             Object value) {
+    public SignalPayloadBuilder withVariable(String name, Object value) {
         if (this.variables == null) {
             this.variables = new HashMap<>();
         }
-        this.variables.put(name,
-                           value);
+        this.variables.put(name, value);
         return this;
     }
 
     public SignalPayload build() {
-        return new SignalPayload(name,
-                                 this.variables);
+        return new SignalPayload(name, this.variables);
     }
 }

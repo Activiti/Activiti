@@ -20,7 +20,7 @@ public class Order {
     public enum Direction {
         ASC,
 
-        DESC
+        DESC,
     }
 
     private String property;
@@ -31,8 +31,7 @@ public class Order {
         this(property, Direction.ASC);
     }
 
-    private Order(String property,
-                 Direction direction) {
+    private Order(String property, Direction direction) {
         this.property = property;
         this.direction = direction;
     }
@@ -45,8 +44,7 @@ public class Order {
         return direction;
     }
 
-    public static Order by(String property,
-                     Direction direction) {
+    public static Order by(String property, Direction direction) {
         return new Order(property, direction);
     }
 }

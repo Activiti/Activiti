@@ -19,10 +19,11 @@ import org.activiti.api.process.model.BPMNMessage;
 import org.activiti.api.process.model.events.BPMNMessageEvent;
 import org.activiti.api.process.model.events.BPMNMessageReceivedEvent;
 
-public class BPMNMessageReceivedEventImpl extends RuntimeEventImpl<BPMNMessage, BPMNMessageEvent.MessageEvents> implements BPMNMessageReceivedEvent {
+public class BPMNMessageReceivedEventImpl
+    extends RuntimeEventImpl<BPMNMessage, BPMNMessageEvent.MessageEvents>
+    implements BPMNMessageReceivedEvent {
 
-    public BPMNMessageReceivedEventImpl() {
-    }
+    public BPMNMessageReceivedEventImpl() {}
 
     public BPMNMessageReceivedEventImpl(BPMNMessage entity) {
         super(entity);

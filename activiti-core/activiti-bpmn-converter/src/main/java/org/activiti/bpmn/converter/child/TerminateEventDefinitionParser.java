@@ -16,7 +16,6 @@
 package org.activiti.bpmn.converter.child;
 
 import javax.xml.stream.XMLStreamReader;
-
 import org.activiti.bpmn.converter.util.BpmnXMLUtil;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BpmnModel;
@@ -30,41 +29,62 @@ import org.activiti.bpmn.model.TerminateEventDefinition;
  */
 public class TerminateEventDefinitionParser extends BaseChildElementParser {
 
-  public String getElementName() {
-    return ELEMENT_EVENT_TERMINATEDEFINITION;
-  }
-
-  public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model) throws Exception {
-    if (!(parentElement instanceof EndEvent)) {
-      return;
+    public String getElementName() {
+        return ELEMENT_EVENT_TERMINATEDEFINITION;
     }
 
-    TerminateEventDefinition eventDefinition = new TerminateEventDefinition();
+    public void parseChildElement(
+        XMLStreamReader xtr,
+        BaseElement parentElement,
+        BpmnModel model
+    ) throws Exception {
+        if (!(parentElement instanceof EndEvent)) {
+            return;
+        }
 
-    parseTerminateAllAttribute(xtr, eventDefinition);
-    parseTerminateMultiInstanceAttribute(xtr, eventDefinition);
+        TerminateEventDefinition eventDefinition = new TerminateEventDefinition();
 
-    BpmnXMLUtil.addXMLLocation(eventDefinition, xtr);
-    BpmnXMLUtil.parseChildElements(ELEMENT_EVENT_TERMINATEDEFINITION, eventDefinition, xtr, model);
+        parseTerminateAllAttribute(xtr, eventDefinition);
+        parseTerminateMultiInstanceAttribute(xtr, eventDefinition);
 
-    ((Event) parentElement).getEventDefinitions().add(eventDefinition);
-  }
+        BpmnXMLUtil.addXMLLocation(eventDefinition, xtr);
+        BpmnXMLUtil.parseChildElements(
+            ELEMENT_EVENT_TERMINATEDEFINITION,
+            eventDefinition,
+            xtr,
+            model
+        );
 
-  protected void parseTerminateAllAttribute(XMLStreamReader xtr, TerminateEventDefinition eventDefinition) {
-    String terminateAllValue = xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_TERMINATE_ALL);
-    if (terminateAllValue != null && "true".equals(terminateAllValue)) {
-    	eventDefinition.setTerminateAll(true);
-    } else {
-    	eventDefinition.setTerminateAll(false);
+        ((Event) parentElement).getEventDefinitions().add(eventDefinition);
     }
-  }
 
-  protected void parseTerminateMultiInstanceAttribute(XMLStreamReader xtr, TerminateEventDefinition eventDefinition) {
-    String terminateMiValue = xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_TERMINATE_MULTI_INSTANCE);
-    if (terminateMiValue != null && "true".equals(terminateMiValue)) {
-      eventDefinition.setTerminateMultiInstance(true);
-    } else {
-      eventDefinition.setTerminateMultiInstance(false);
+    protected void parseTerminateAllAttribute(
+        XMLStreamReader xtr,
+        TerminateEventDefinition eventDefinition
+    ) {
+        String terminateAllValue = xtr.getAttributeValue(
+            ACTIVITI_EXTENSIONS_NAMESPACE,
+            ATTRIBUTE_TERMINATE_ALL
+        );
+        if (terminateAllValue != null && "true".equals(terminateAllValue)) {
+            eventDefinition.setTerminateAll(true);
+        } else {
+            eventDefinition.setTerminateAll(false);
+        }
     }
-  }
+
+    protected void parseTerminateMultiInstanceAttribute(
+        XMLStreamReader xtr,
+        TerminateEventDefinition eventDefinition
+    ) {
+        String terminateMiValue = xtr.getAttributeValue(
+            ACTIVITI_EXTENSIONS_NAMESPACE,
+            ATTRIBUTE_TERMINATE_MULTI_INSTANCE
+        );
+        if (terminateMiValue != null && "true".equals(terminateMiValue)) {
+            eventDefinition.setTerminateMultiInstance(true);
+        } else {
+            eventDefinition.setTerminateMultiInstance(false);
+        }
+    }
 }

@@ -17,7 +17,6 @@
 package org.activiti.engine.impl.persistence.entity.data.impl;
 
 import java.util.List;
-
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.persistence.entity.PropertyEntity;
 import org.activiti.engine.impl.persistence.entity.PropertyEntityImpl;
@@ -27,26 +26,29 @@ import org.activiti.engine.impl.persistence.entity.data.PropertyDataManager;
 /**
 
  */
-public class MybatisPropertyDataManager extends AbstractDataManager<PropertyEntity> implements PropertyDataManager {
+public class MybatisPropertyDataManager
+    extends AbstractDataManager<PropertyEntity>
+    implements PropertyDataManager {
 
-  public MybatisPropertyDataManager(ProcessEngineConfigurationImpl processEngineConfiguration) {
-    super(processEngineConfiguration);
-  }
+    public MybatisPropertyDataManager(
+        ProcessEngineConfigurationImpl processEngineConfiguration
+    ) {
+        super(processEngineConfiguration);
+    }
 
-  @Override
-  public Class<? extends PropertyEntity> getManagedEntityClass() {
-    return PropertyEntityImpl.class;
-  }
+    @Override
+    public Class<? extends PropertyEntity> getManagedEntityClass() {
+        return PropertyEntityImpl.class;
+    }
 
-  @Override
-  public PropertyEntity create() {
-    return new PropertyEntityImpl();
-  }
+    @Override
+    public PropertyEntity create() {
+        return new PropertyEntityImpl();
+    }
 
-  @Override
-  @SuppressWarnings("unchecked")
-  public List<PropertyEntity> findAll() {
-    return getDbSqlSession().selectList("selectProperties");
-  }
-
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<PropertyEntity> findAll() {
+        return getDbSqlSession().selectList("selectProperties");
+    }
 }

@@ -14,13 +14,11 @@
  * limitations under the License.
  */
 
-
 package org.activiti.spring.test.jpa;
-
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Service bean that handles loan requests.
@@ -29,20 +27,20 @@ import javax.persistence.PersistenceContext;
  */
 public class LoanRequestBean {
 
-  @PersistenceContext
-  private EntityManager entityManager;
+    @PersistenceContext
+    private EntityManager entityManager;
 
-  @Transactional
-  public LoanRequest newLoanRequest(String customerName, Long amount) {
-    LoanRequest lr = new LoanRequest();
-    lr.setCustomerName(customerName);
-    lr.setAmount(amount);
-    lr.setApproved(false);
-    entityManager.persist(lr);
-    return lr;
-  }
+    @Transactional
+    public LoanRequest newLoanRequest(String customerName, Long amount) {
+        LoanRequest lr = new LoanRequest();
+        lr.setCustomerName(customerName);
+        lr.setAmount(amount);
+        lr.setApproved(false);
+        entityManager.persist(lr);
+        return lr;
+    }
 
-  public LoanRequest getLoanRequest(Long id) {
-    return entityManager.find(LoanRequest.class, id);
-  }
+    public LoanRequest getLoanRequest(Long id) {
+        return entityManager.find(LoanRequest.class, id);
+    }
 }

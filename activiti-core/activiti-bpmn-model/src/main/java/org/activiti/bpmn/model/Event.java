@@ -20,28 +20,31 @@ import java.util.List;
 
 public abstract class Event extends FlowNode {
 
-  protected List<EventDefinition> eventDefinitions = new ArrayList<EventDefinition>();
+    protected List<EventDefinition> eventDefinitions = new ArrayList<EventDefinition>();
 
-  public List<EventDefinition> getEventDefinitions() {
-    return eventDefinitions;
-  }
-
-  public void setEventDefinitions(List<EventDefinition> eventDefinitions) {
-    this.eventDefinitions = eventDefinitions;
-  }
-
-  public void addEventDefinition(EventDefinition eventDefinition) {
-    eventDefinitions.add(eventDefinition);
-  }
-
-  public void setValues(Event otherEvent) {
-    super.setValues(otherEvent);
-
-    eventDefinitions = new ArrayList<EventDefinition>();
-    if (otherEvent.getEventDefinitions() != null && !otherEvent.getEventDefinitions().isEmpty()) {
-      for (EventDefinition eventDef : otherEvent.getEventDefinitions()) {
-        eventDefinitions.add(eventDef.clone());
-      }
+    public List<EventDefinition> getEventDefinitions() {
+        return eventDefinitions;
     }
-  }
+
+    public void setEventDefinitions(List<EventDefinition> eventDefinitions) {
+        this.eventDefinitions = eventDefinitions;
+    }
+
+    public void addEventDefinition(EventDefinition eventDefinition) {
+        eventDefinitions.add(eventDefinition);
+    }
+
+    public void setValues(Event otherEvent) {
+        super.setValues(otherEvent);
+
+        eventDefinitions = new ArrayList<EventDefinition>();
+        if (
+            otherEvent.getEventDefinitions() != null &&
+            !otherEvent.getEventDefinitions().isEmpty()
+        ) {
+            for (EventDefinition eventDef : otherEvent.getEventDefinitions()) {
+                eventDefinitions.add(eventDef.clone());
+            }
+        }
+    }
 }

@@ -16,39 +16,62 @@
 package org.activiti.runtime.api.model.impl;
 
 import java.util.Objects;
-
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.runtime.model.impl.ProcessInstanceImpl;
 
-public class APIProcessInstanceConverter extends ListConverter<org.activiti.engine.runtime.ProcessInstance, ProcessInstance>
-        implements ModelConverter<org.activiti.engine.runtime.ProcessInstance, ProcessInstance> {
+public class APIProcessInstanceConverter
+    extends ListConverter<org.activiti.engine.runtime.ProcessInstance, ProcessInstance>
+    implements
+        ModelConverter<org.activiti.engine.runtime.ProcessInstance, ProcessInstance> {
 
     @Override
-    public ProcessInstance from(org.activiti.engine.runtime.ProcessInstance internalProcessInstance) {
+    public ProcessInstance from(
+        org.activiti.engine.runtime.ProcessInstance internalProcessInstance
+    ) {
         ProcessInstanceImpl processInstance = new ProcessInstanceImpl();
         processInstance.setId(internalProcessInstance.getId());
-        processInstance.setParentId(internalProcessInstance.getParentProcessInstanceId());
+        processInstance.setParentId(
+            internalProcessInstance.getParentProcessInstanceId()
+        );
         processInstance.setName(internalProcessInstance.getName());
-        processInstance.setProcessDefinitionId(internalProcessInstance.getProcessDefinitionId());
-        processInstance.setProcessDefinitionKey(internalProcessInstance.getProcessDefinitionKey());
-        processInstance.setProcessDefinitionVersion(internalProcessInstance.getProcessDefinitionVersion());
+        processInstance.setProcessDefinitionId(
+            internalProcessInstance.getProcessDefinitionId()
+        );
+        processInstance.setProcessDefinitionKey(
+            internalProcessInstance.getProcessDefinitionKey()
+        );
+        processInstance.setProcessDefinitionVersion(
+            internalProcessInstance.getProcessDefinitionVersion()
+        );
         processInstance.setInitiator(internalProcessInstance.getStartUserId());
         processInstance.setStartDate(internalProcessInstance.getStartTime());
-        processInstance.setProcessDefinitionKey(internalProcessInstance.getProcessDefinitionKey());
-        processInstance.setBusinessKey(internalProcessInstance.getBusinessKey());
+        processInstance.setProcessDefinitionKey(
+            internalProcessInstance.getProcessDefinitionKey()
+        );
+        processInstance.setBusinessKey(
+            internalProcessInstance.getBusinessKey()
+        );
         processInstance.setStatus(calculateStatus(internalProcessInstance));
-        processInstance.setProcessDefinitionVersion(internalProcessInstance.getProcessDefinitionVersion());
-        processInstance.setAppVersion(Objects.toString(internalProcessInstance.getAppVersion(), null));
-        processInstance.setProcessDefinitionName(internalProcessInstance.getProcessDefinitionName());
+        processInstance.setProcessDefinitionVersion(
+            internalProcessInstance.getProcessDefinitionVersion()
+        );
+        processInstance.setAppVersion(
+            Objects.toString(internalProcessInstance.getAppVersion(), null)
+        );
+        processInstance.setProcessDefinitionName(
+            internalProcessInstance.getProcessDefinitionName()
+        );
         return processInstance;
     }
 
-    private ProcessInstance.ProcessInstanceStatus calculateStatus(org.activiti.engine.runtime.ProcessInstance internalProcessInstance) {
+    private ProcessInstance.ProcessInstanceStatus calculateStatus(
+        org.activiti.engine.runtime.ProcessInstance internalProcessInstance
+    ) {
         if (internalProcessInstance.isSuspended()) {
             return ProcessInstance.ProcessInstanceStatus.SUSPENDED;
         } else if (internalProcessInstance.isEnded()) {
             return ProcessInstance.ProcessInstanceStatus.COMPLETED;
-        }else if(internalProcessInstance.getStartTime() == null){
+        } else if (internalProcessInstance.getStartTime() == null) {
             return ProcessInstance.ProcessInstanceStatus.CREATED;
         }
         return ProcessInstance.ProcessInstanceStatus.RUNNING;

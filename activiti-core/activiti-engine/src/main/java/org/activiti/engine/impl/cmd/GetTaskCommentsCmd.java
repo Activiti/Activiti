@@ -14,12 +14,10 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.cmd;
 
 import java.io.Serializable;
 import java.util.List;
-
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.task.Comment;
@@ -27,16 +25,19 @@ import org.activiti.engine.task.Comment;
 /**
 
  */
-public class GetTaskCommentsCmd implements Command<List<Comment>>, Serializable {
+public class GetTaskCommentsCmd
+    implements Command<List<Comment>>, Serializable {
 
-  private static final long serialVersionUID = 1L;
-  protected String taskId;
+    private static final long serialVersionUID = 1L;
+    protected String taskId;
 
-  public GetTaskCommentsCmd(String taskId) {
-    this.taskId = taskId;
-  }
+    public GetTaskCommentsCmd(String taskId) {
+        this.taskId = taskId;
+    }
 
-  public List<Comment> execute(CommandContext commandContext) {
-    return commandContext.getCommentEntityManager().findCommentsByTaskId(taskId);
-  }
+    public List<Comment> execute(CommandContext commandContext) {
+        return commandContext
+            .getCommentEntityManager()
+            .findCommentsByTaskId(taskId);
+    }
 }

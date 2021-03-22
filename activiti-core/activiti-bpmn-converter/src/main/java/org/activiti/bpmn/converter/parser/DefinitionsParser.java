@@ -18,9 +18,7 @@ package org.activiti.bpmn.converter.parser;
 import static java.util.Arrays.asList;
 
 import java.util.List;
-
 import javax.xml.stream.XMLStreamReader;
-
 import org.activiti.bpmn.constants.BpmnXMLConstants;
 import org.activiti.bpmn.converter.util.BpmnXMLUtil;
 import org.activiti.bpmn.model.BpmnModel;
@@ -31,32 +29,44 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class DefinitionsParser implements BpmnXMLConstants {
 
-  protected static final List<ExtensionAttribute> defaultAttributes = asList(new ExtensionAttribute(TYPE_LANGUAGE_ATTRIBUTE), new ExtensionAttribute(EXPRESSION_LANGUAGE_ATTRIBUTE),
-      new ExtensionAttribute(TARGET_NAMESPACE_ATTRIBUTE));
+    protected static final List<ExtensionAttribute> defaultAttributes = asList(
+        new ExtensionAttribute(TYPE_LANGUAGE_ATTRIBUTE),
+        new ExtensionAttribute(EXPRESSION_LANGUAGE_ATTRIBUTE),
+        new ExtensionAttribute(TARGET_NAMESPACE_ATTRIBUTE)
+    );
 
-  @SuppressWarnings("unchecked")
-  public void parse(XMLStreamReader xtr, BpmnModel model) throws Exception {
-    model.setTargetNamespace(xtr.getAttributeValue(null, TARGET_NAMESPACE_ATTRIBUTE));
-    for (int i = 0; i < xtr.getNamespaceCount(); i++) {
-      String prefix = xtr.getNamespacePrefix(i);
-      if (StringUtils.isNotEmpty(prefix)) {
-        model.addNamespace(prefix, xtr.getNamespaceURI(i));
-      }
-    }
+    @SuppressWarnings("unchecked")
+    public void parse(XMLStreamReader xtr, BpmnModel model) throws Exception {
+        model.setTargetNamespace(
+            xtr.getAttributeValue(null, TARGET_NAMESPACE_ATTRIBUTE)
+        );
+        for (int i = 0; i < xtr.getNamespaceCount(); i++) {
+            String prefix = xtr.getNamespacePrefix(i);
+            if (StringUtils.isNotEmpty(prefix)) {
+                model.addNamespace(prefix, xtr.getNamespaceURI(i));
+            }
+        }
 
-    for (int i = 0; i < xtr.getAttributeCount(); i++) {
-      ExtensionAttribute extensionAttribute = new ExtensionAttribute();
-      extensionAttribute.setName(xtr.getAttributeLocalName(i));
-      extensionAttribute.setValue(xtr.getAttributeValue(i));
-      if (StringUtils.isNotEmpty(xtr.getAttributeNamespace(i))) {
-        extensionAttribute.setNamespace(xtr.getAttributeNamespace(i));
-      }
-      if (StringUtils.isNotEmpty(xtr.getAttributePrefix(i))) {
-        extensionAttribute.setNamespacePrefix(xtr.getAttributePrefix(i));
-      }
-      if (!BpmnXMLUtil.isBlacklisted(extensionAttribute, defaultAttributes)) {
-        model.addDefinitionsAttribute(extensionAttribute);
-      }
+        for (int i = 0; i < xtr.getAttributeCount(); i++) {
+            ExtensionAttribute extensionAttribute = new ExtensionAttribute();
+            extensionAttribute.setName(xtr.getAttributeLocalName(i));
+            extensionAttribute.setValue(xtr.getAttributeValue(i));
+            if (StringUtils.isNotEmpty(xtr.getAttributeNamespace(i))) {
+                extensionAttribute.setNamespace(xtr.getAttributeNamespace(i));
+            }
+            if (StringUtils.isNotEmpty(xtr.getAttributePrefix(i))) {
+                extensionAttribute.setNamespacePrefix(
+                    xtr.getAttributePrefix(i)
+                );
+            }
+            if (
+                !BpmnXMLUtil.isBlacklisted(
+                    extensionAttribute,
+                    defaultAttributes
+                )
+            ) {
+                model.addDefinitionsAttribute(extensionAttribute);
+            }
+        }
     }
-  }
 }

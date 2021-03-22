@@ -29,11 +29,13 @@ public class CommaSplitter {
         for (int i = 0; i < st.length(); i++) {
             if (!inExpression && st.charAt(i) == ',') {
                 if ((i - offset) > 1) {
-                    result.add(st.substring(offset,
-                                            i));
+                    result.add(st.substring(offset, i));
                 }
                 offset = i + 1;
-            } else if ((st.charAt(i) == '$' || st.charAt(i) == '#') && st.charAt(i + 1) == '{') {
+            } else if (
+                (st.charAt(i) == '$' || st.charAt(i) == '#') &&
+                st.charAt(i + 1) == '{'
+            ) {
                 inExpression = true;
             } else if (st.charAt(i) == '}') {
                 inExpression = false;

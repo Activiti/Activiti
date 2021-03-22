@@ -17,6 +17,8 @@ package org.activiti.spring.boot.process;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.io.File;
+import java.util.List;
 import org.activiti.api.process.model.ProcessDefinition;
 import org.activiti.spring.boot.process.listener.DeployedProcessesListener;
 import org.junit.jupiter.api.Test;
@@ -24,14 +26,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 
-import java.io.File;
-import java.util.List;
-
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 public class ProcessDeployedEventIT {
 
     private static final String CATEGORIZE_PROCESS = "categorizeProcess";
-    private static final String CATEGORIZE_HUMAN_PROCESS = "categorizeHumanProcess";
+    private static final String CATEGORIZE_HUMAN_PROCESS =
+        "categorizeHumanProcess";
     private static final String ONE_STEP_PROCESS = "OneStepProcess";
 
     @Autowired
@@ -44,13 +44,18 @@ public class ProcessDeployedEventIT {
 
         //then
         assertThat(deployedProcesses)
-                .extracting(ProcessDefinition::getKey)
-                .contains(CATEGORIZE_PROCESS,
-                          CATEGORIZE_HUMAN_PROCESS,
-                          ONE_STEP_PROCESS);
+            .extracting(ProcessDefinition::getKey)
+            .contains(
+                CATEGORIZE_PROCESS,
+                CATEGORIZE_HUMAN_PROCESS,
+                ONE_STEP_PROCESS
+            );
         assertThat(listener.getProcessModelContents().get(CATEGORIZE_PROCESS))
-                .isNotEmpty()
-                .isXmlEqualToContentOf(new File("src/test/resources/processes/categorize-image.bpmn20.xml"));
+            .isNotEmpty()
+            .isXmlEqualToContentOf(
+                new File(
+                    "src/test/resources/processes/categorize-image.bpmn20.xml"
+                )
+            );
     }
-
 }

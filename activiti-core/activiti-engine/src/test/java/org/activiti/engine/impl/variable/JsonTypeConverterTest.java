@@ -32,7 +32,10 @@ public class JsonTypeConverterTest {
     private static final String TYPE_PROPERTY_NAME = "@class";
     private static ObjectMapper objectMapper = new ObjectMapper();
 
-    private JsonTypeConverter converter = new JsonTypeConverter(objectMapper, TYPE_PROPERTY_NAME);
+    private JsonTypeConverter converter = new JsonTypeConverter(
+        objectMapper,
+        TYPE_PROPERTY_NAME
+    );
 
     @Test
     public void should_convertToList() throws Exception {
@@ -56,7 +59,8 @@ public class JsonTypeConverterTest {
     private ValueFields buildValueFields(String name, Object value) {
         ValueFields valueFields = mock(ValueFields.class);
         given(valueFields.getName()).willReturn(name);
-        given(valueFields.getTextValue2()).willReturn(value.getClass().getName());
+        given(valueFields.getTextValue2())
+            .willReturn(value.getClass().getName());
         return valueFields;
     }
 
@@ -68,7 +72,10 @@ public class JsonTypeConverterTest {
         JsonNode jsonNode = objectMapper.readTree(json);
 
         //when
-        Object convertedValue = converter.convertToValue(jsonNode, buildValueFields("person", person));
+        Object convertedValue = converter.convertToValue(
+            jsonNode,
+            buildValueFields("person", person)
+        );
 
         //then
         assertThat(convertedValue).isInstanceOf(Person.class);
@@ -82,8 +89,7 @@ public class JsonTypeConverterTest {
         private String firstName;
         private String lastName;
 
-        public Person() {
-        }
+        public Person() {}
 
         public Person(String firstName, String lastName) {
             this.firstName = firstName;
@@ -98,5 +104,4 @@ public class JsonTypeConverterTest {
             return lastName;
         }
     }
-
 }

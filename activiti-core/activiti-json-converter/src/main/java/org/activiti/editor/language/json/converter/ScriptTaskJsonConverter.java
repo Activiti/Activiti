@@ -16,48 +16,72 @@
 
 package org.activiti.editor.language.json.converter;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.util.Map;
-
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.ScriptTask;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
 
  */
 public class ScriptTaskJsonConverter extends BaseBpmnJsonConverter {
 
-  public static void fillTypes(Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap, Map<Class<? extends BaseElement>, Class<? extends BaseBpmnJsonConverter>> convertersToJsonMap) {
+    public static void fillTypes(
+        Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap,
+        Map<Class<? extends BaseElement>, Class<? extends BaseBpmnJsonConverter>> convertersToJsonMap
+    ) {
+        fillJsonTypes(convertersToBpmnMap);
+        fillBpmnTypes(convertersToJsonMap);
+    }
 
-    fillJsonTypes(convertersToBpmnMap);
-    fillBpmnTypes(convertersToJsonMap);
-  }
+    public static void fillJsonTypes(
+        Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap
+    ) {
+        convertersToBpmnMap.put(
+            STENCIL_TASK_SCRIPT,
+            ScriptTaskJsonConverter.class
+        );
+    }
 
-  public static void fillJsonTypes(Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap) {
-    convertersToBpmnMap.put(STENCIL_TASK_SCRIPT, ScriptTaskJsonConverter.class);
-  }
+    public static void fillBpmnTypes(
+        Map<Class<? extends BaseElement>, Class<? extends BaseBpmnJsonConverter>> convertersToJsonMap
+    ) {
+        convertersToJsonMap.put(
+            ScriptTask.class,
+            ScriptTaskJsonConverter.class
+        );
+    }
 
-  public static void fillBpmnTypes(Map<Class<? extends BaseElement>, Class<? extends BaseBpmnJsonConverter>> convertersToJsonMap) {
-    convertersToJsonMap.put(ScriptTask.class, ScriptTaskJsonConverter.class);
-  }
+    protected String getStencilId(BaseElement baseElement) {
+        return STENCIL_TASK_SCRIPT;
+    }
 
-  protected String getStencilId(BaseElement baseElement) {
-    return STENCIL_TASK_SCRIPT;
-  }
+    protected void convertElementToJson(
+        ObjectNode propertiesNode,
+        BaseElement baseElement
+    ) {
+        ScriptTask scriptTask = (ScriptTask) baseElement;
+        propertiesNode.put(
+            PROPERTY_SCRIPT_FORMAT,
+            scriptTask.getScriptFormat()
+        );
+        propertiesNode.put(PROPERTY_SCRIPT_TEXT, scriptTask.getScript());
+    }
 
-  protected void convertElementToJson(ObjectNode propertiesNode, BaseElement baseElement) {
-    ScriptTask scriptTask = (ScriptTask) baseElement;
-    propertiesNode.put(PROPERTY_SCRIPT_FORMAT, scriptTask.getScriptFormat());
-    propertiesNode.put(PROPERTY_SCRIPT_TEXT, scriptTask.getScript());
-  }
-
-  protected FlowElement convertJsonToElement(JsonNode elementNode, JsonNode modelNode, Map<String, JsonNode> shapeMap) {
-    ScriptTask task = new ScriptTask();
-    task.setScriptFormat(getPropertyValueAsString(PROPERTY_SCRIPT_FORMAT, elementNode));
-    task.setScript(getPropertyValueAsString(PROPERTY_SCRIPT_TEXT, elementNode));
-    return task;
-  }
+    protected FlowElement convertJsonToElement(
+        JsonNode elementNode,
+        JsonNode modelNode,
+        Map<String, JsonNode> shapeMap
+    ) {
+        ScriptTask task = new ScriptTask();
+        task.setScriptFormat(
+            getPropertyValueAsString(PROPERTY_SCRIPT_FORMAT, elementNode)
+        );
+        task.setScript(
+            getPropertyValueAsString(PROPERTY_SCRIPT_TEXT, elementNode)
+        );
+        return task;
+    }
 }

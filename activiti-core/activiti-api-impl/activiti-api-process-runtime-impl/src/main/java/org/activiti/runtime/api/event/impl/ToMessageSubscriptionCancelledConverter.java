@@ -16,29 +16,33 @@
 package org.activiti.runtime.api.event.impl;
 
 import java.util.Optional;
-
 import org.activiti.api.process.model.events.MessageSubscriptionCancelledEvent;
 import org.activiti.api.runtime.event.impl.MessageSubscriptionCancelledEventImpl;
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.impl.persistence.entity.MessageEventSubscriptionEntity;
 
-public class ToMessageSubscriptionCancelledConverter implements EventConverter<MessageSubscriptionCancelledEvent, ActivitiEntityEvent> {
+public class ToMessageSubscriptionCancelledConverter
+    implements
+        EventConverter<MessageSubscriptionCancelledEvent, ActivitiEntityEvent> {
 
     private MessageSubscriptionConverter converter;
 
-    public ToMessageSubscriptionCancelledConverter(MessageSubscriptionConverter converter) {
+    public ToMessageSubscriptionCancelledConverter(
+        MessageSubscriptionConverter converter
+    ) {
         this.converter = converter;
     }
 
     @Override
-    public Optional<MessageSubscriptionCancelledEvent> from(ActivitiEntityEvent internalEvent) {
-
-        return Optional.of(internalEvent)
-                       .map(ActivitiEntityEvent::getEntity)
-                       .filter(MessageEventSubscriptionEntity.class::isInstance)
-                       .map(MessageEventSubscriptionEntity.class::cast)
-                       .map(converter::convertToMessageSubscription)
-                       .map(MessageSubscriptionCancelledEventImpl::new);
-
+    public Optional<MessageSubscriptionCancelledEvent> from(
+        ActivitiEntityEvent internalEvent
+    ) {
+        return Optional
+            .of(internalEvent)
+            .map(ActivitiEntityEvent::getEntity)
+            .filter(MessageEventSubscriptionEntity.class::isInstance)
+            .map(MessageEventSubscriptionEntity.class::cast)
+            .map(converter::convertToMessageSubscription)
+            .map(MessageSubscriptionCancelledEventImpl::new);
     }
 }

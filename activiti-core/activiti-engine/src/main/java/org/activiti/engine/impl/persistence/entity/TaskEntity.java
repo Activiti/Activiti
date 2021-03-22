@@ -19,7 +19,6 @@ package org.activiti.engine.impl.persistence.entity;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-
 import org.activiti.bpmn.model.ActivitiListener;
 import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.delegate.DelegateTask;
@@ -30,51 +29,51 @@ import org.activiti.engine.task.Task;
 /**
  */
 @Internal
-public interface TaskEntity extends VariableScope, Task, DelegateTask, Entity, HasRevision {
+public interface TaskEntity
+    extends VariableScope, Task, DelegateTask, Entity, HasRevision {
+    ExecutionEntity getExecution();
 
-  ExecutionEntity getExecution();
+    void setExecutionId(String executionId);
 
-  void setExecutionId(String executionId);
+    void setExecution(ExecutionEntity execution);
 
-  void setExecution(ExecutionEntity execution);
+    List<IdentityLinkEntity> getIdentityLinks();
 
-  List<IdentityLinkEntity> getIdentityLinks();
+    void setExecutionVariables(Map<String, Object> parameters);
 
-  void setExecutionVariables(Map<String, Object> parameters);
+    void setCreateTime(Date createTime);
 
-  void setCreateTime(Date createTime);
+    void setProcessDefinitionId(String processDefinitionId);
 
-  void setProcessDefinitionId(String processDefinitionId);
+    void setEventName(String eventName);
 
-  void setEventName(String eventName);
+    void setCurrentActivitiListener(ActivitiListener currentActivitiListener);
 
-  void setCurrentActivitiListener(ActivitiListener currentActivitiListener);
+    ExecutionEntity getProcessInstance();
 
-  ExecutionEntity getProcessInstance();
+    void setProcessInstanceId(String processInstanceId);
 
-  void setProcessInstanceId(String processInstanceId);
+    int getSuspensionState();
 
-  int getSuspensionState();
+    void setSuspensionState(int suspensionState);
 
-  void setSuspensionState(int suspensionState);
+    void setTaskDefinitionKey(String taskDefinitionKey);
 
-  void setTaskDefinitionKey(String taskDefinitionKey);
+    Map<String, VariableInstanceEntity> getVariableInstanceEntities();
 
-  Map<String, VariableInstanceEntity> getVariableInstanceEntities();
+    void forceUpdate();
 
-  void forceUpdate();
+    boolean isDeleted();
 
-  boolean isDeleted();
+    void setDeleted(boolean isDeleted);
 
-  void setDeleted(boolean isDeleted);
+    Date getClaimTime();
 
-  Date getClaimTime();
+    void setClaimTime(Date claimTime);
 
-  void setClaimTime(Date claimTime);
+    boolean isCanceled();
 
-  boolean isCanceled();
+    void setCanceled(boolean isCanceled);
 
-  void setCanceled(boolean isCanceled);
-
-  void setBusinessKey(String businessKey);
+    void setBusinessKey(String businessKey);
 }

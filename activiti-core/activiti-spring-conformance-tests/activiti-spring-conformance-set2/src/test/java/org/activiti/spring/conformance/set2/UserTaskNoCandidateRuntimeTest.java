@@ -37,7 +37,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 public class UserTaskNoCandidateRuntimeTest {
 
-    private final String processKey = "usertaskwi-4d5c4312-e8fc-4766-a727-b55a4d3255e9";
+    private final String processKey =
+        "usertaskwi-4d5c4312-e8fc-4766-a727-b55a4d3255e9";
 
     @Autowired
     private ProcessRuntime processRuntime;
@@ -59,27 +60,32 @@ public class UserTaskNoCandidateRuntimeTest {
         RuntimeTestConfiguration.collectedEvents.clear();
     }
 
-
     @Test
     public void shouldNotSeeTaskWithoutCandidateOrAssignee() {
-
         securityUtil.logInAs("user1");
 
-        ProcessInstance processInstance = processRuntime.start(ProcessPayloadBuilder
+        ProcessInstance processInstance = processRuntime.start(
+            ProcessPayloadBuilder
                 .start()
                 .withProcessDefinitionKey(processKey)
                 .withBusinessKey("my-business-key")
                 .withName("my-process-instance-name")
-                .build());
+                .build()
+        );
 
         //then
         assertThat(processInstance).isNotNull();
-        assertThat(processInstance.getStatus()).isEqualTo(ProcessInstance.ProcessInstanceStatus.RUNNING);
-        assertThat(processInstance.getBusinessKey()).isEqualTo("my-business-key");
-        assertThat(processInstance.getName()).isEqualTo("my-process-instance-name");
+        assertThat(processInstance.getStatus())
+            .isEqualTo(ProcessInstance.ProcessInstanceStatus.RUNNING);
+        assertThat(processInstance.getBusinessKey())
+            .isEqualTo("my-business-key");
+        assertThat(processInstance.getName())
+            .isEqualTo("my-process-instance-name");
 
         // I should be able to get the process instance from the Runtime because it is still running
-        ProcessInstance processInstanceById = processRuntime.processInstance(processInstance.getId());
+        ProcessInstance processInstanceById = processRuntime.processInstance(
+            processInstance.getId()
+        );
 
         assertThat(processInstanceById).isEqualTo(processInstance);
 
@@ -101,19 +107,19 @@ public class UserTaskNoCandidateRuntimeTest {
         tasks = taskAdminRuntime.tasks(Pageable.of(0, 50));
 
         assertThat(tasks.getTotalItems()).isEqualTo(1);
-
     }
-
 
     @AfterEach
     public void cleanup() {
         securityUtil.logInAs("admin");
-        Page<ProcessInstance> processInstancePage = processAdminRuntime.processInstances(Pageable.of(0, 50));
+        Page<ProcessInstance> processInstancePage = processAdminRuntime.processInstances(
+            Pageable.of(0, 50)
+        );
         for (ProcessInstance pi : processInstancePage.getContent()) {
-            processAdminRuntime.delete(ProcessPayloadBuilder.delete(pi.getId()));
+            processAdminRuntime.delete(
+                ProcessPayloadBuilder.delete(pi.getId())
+            );
         }
         RuntimeTestConfiguration.collectedEvents.clear();
     }
-
-
 }
