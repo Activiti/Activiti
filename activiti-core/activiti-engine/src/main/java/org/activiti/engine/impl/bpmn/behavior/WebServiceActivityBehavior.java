@@ -272,7 +272,7 @@ public class WebServiceActivityBehavior extends AbstractBpmnActivityBehavior {
         Class<?> wsdlImporterClass;
         try {
           wsdlImporterClass = Class.forName("org.activiti.engine.impl.webservice.CxfWSDLImporter", true, Thread.currentThread().getContextClassLoader());
-          XMLImporter importerInstance = (XMLImporter) wsdlImporterClass.newInstance();
+          XMLImporter importerInstance = (XMLImporter) wsdlImporterClass.getDeclaredConstructor().newInstance();
           xmlImporterMap.put(theImport.getImportType(), importerInstance);
           importerInstance.importFrom(theImport, sourceSystemId);
 
