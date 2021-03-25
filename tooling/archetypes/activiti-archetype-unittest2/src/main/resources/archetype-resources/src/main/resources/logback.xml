@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <property name="normal" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] [%-5level] [%msg] [%X{user}] [%logger{10}.%M:%L]%n" />
+    <property name="std" value="%d{HH:mm:ss.SSS} [%thread] [%-5level] [%msg] [%X{user}] [%logger{10}.%M:%L]%n" />
+    <property name="mdc" value="%d{HH:mm:ss.SSS} [%thread] [%-5level] [mdcProcessDefinitionID=%X{mdcProcessDefinitionID} executionId=%X{mdcExecutionId} mdcProcessInstanceID=%X{mdcProcessInstanceID} mdcBusinessKey=%X{mdcBusinessKey}] [%msg] [%X{user}] [%logger{10}.%M:%L]%n" />
+
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${mdc}</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <encoder>
+            <pattern>${std}</pattern>
+            <charset>utf-8</charset>
+        </encoder>
+        <file>log/output.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+            <fileNamePattern>log/output.log.%i</fileNamePattern>
+        </rollingPolicy>
+        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+            <MaxFileSize>5MB</MaxFileSize>
+        </triggeringPolicy>
+    </appender>
+
+    <!-- trace < debug < info < warn < error -->
+    <root level="TRACE">
+        <appender-ref ref="CONSOLE" />
+        <appender-ref ref="FILE" />
+    </root>
+</configuration>
