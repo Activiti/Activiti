@@ -182,6 +182,26 @@
 			<scope>test</scope>
 		</dependency>
 
+		<dependency>
+			<groupId>javax.xml.bind</groupId>
+			<artifactId>jaxb-api</artifactId>
+			<version>2.3.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.sun.xml.bind</groupId>
+			<artifactId>jaxb-impl</artifactId>
+			<version>2.3.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.sun.xml.bind</groupId>
+			<artifactId>jaxb-core</artifactId>
+			<version>2.3.0</version>
+		</dependency>
+		<!--		<dependency>-->
+		<!--			<groupId>javax.activation</groupId>-->
+		<!--			<artifactId>activation</artifactId>-->
+		<!--			<version>1.1.1</version>-->
+		<!--		</dependency>-->
 	</dependencies>
 
 	<properties>
@@ -251,7 +271,7 @@
 		</plugins>
 		<pluginManagement>
 			<plugins>
-				<!--This plugin's configuration is used to store Eclipse m2e settings 
+				<!--This plugin's configuration is used to store Eclipse m2e settings
 					only. It has no influence on the Maven build itself. -->
 				<plugin>
 					<groupId>org.eclipse.m2e</groupId>
@@ -359,7 +379,7 @@
 				<plugins>
 					<plugin>
 						<artifactId>maven-antrun-plugin</artifactId>
-						<!-- only worked with this version, there might be a bug with antrun 
+						<!-- only worked with this version, there might be a bug with antrun
 							see http://jira.codehaus.org/browse/MANTRUN-109 -->
 						<version>1.4</version>
 						<executions>
@@ -411,7 +431,7 @@
 				<plugins>
 					<plugin>
 						<artifactId>maven-antrun-plugin</artifactId>
-						<!-- only worked with this version, there might be a bug with antrun 
+						<!-- only worked with this version, there might be a bug with antrun
 							see http://jira.codehaus.org/browse/MANTRUN-109 -->
 						<version>1.4</version>
 						<executions>
@@ -464,7 +484,7 @@
 				<plugins>
 					<plugin>
 						<artifactId>maven-antrun-plugin</artifactId>
-						<!-- only worked with this version, there might be a bug with antrun 
+						<!-- only worked with this version, there might be a bug with antrun
 							see http://jira.codehaus.org/browse/MANTRUN-109 -->
 						<version>1.4</version>
 						<executions>
@@ -498,7 +518,7 @@
 				<plugins>
 					<plugin>
 						<artifactId>maven-antrun-plugin</artifactId>
-						<!-- only worked with this version, there might be a bug with antrun 
+						<!-- only worked with this version, there might be a bug with antrun
 							see http://jira.codehaus.org/browse/MANTRUN-109 -->
 						<version>1.4</version>
 						<executions>
@@ -567,7 +587,7 @@
 				<plugins>
 					<plugin>
 						<artifactId>maven-antrun-plugin</artifactId>
-						<!-- only worked with this version, there might be a bug with antrun 
+						<!-- only worked with this version, there might be a bug with antrun
 							see http://jira.codehaus.org/browse/MANTRUN-109 -->
 						<version>1.4</version>
 						<executions>
@@ -683,7 +703,7 @@
 				<plugins>
 					<plugin>
 						<artifactId>maven-antrun-plugin</artifactId>
-						<!-- only worked with this version, there might be a bug with antrun 
+						<!-- only worked with this version, there might be a bug with antrun
 							see http://jira.codehaus.org/browse/MANTRUN-109 -->
 						<version>1.4</version>
 						<executions>
@@ -741,7 +761,7 @@
 			</build>
 		</profile>
 
-		<!-- Same as databasehistoryfull, but for databases that need a schema 
+		<!-- Same as databasehistoryfull, but for databases that need a schema
 			in the config -->
 		<profile>
 			<id>databasehistoryfullwithschema</id>
@@ -749,7 +769,7 @@
 				<plugins>
 					<plugin>
 						<artifactId>maven-antrun-plugin</artifactId>
-						<!-- only worked with this version, there might be a bug with antrun 
+						<!-- only worked with this version, there might be a bug with antrun
 							see http://jira.codehaus.org/browse/MANTRUN-109 -->
 						<version>1.4</version>
 						<executions>
@@ -972,7 +992,7 @@
 				</plugins>
 			</build>
 		</profile>
-		
+
 		<!--  check with optimization flags set -->
     <profile>
       <id>cfgOptimizations</id>

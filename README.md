@@ -11,3 +11,13 @@ Activiti is a light-weight workflow and Business Process Management (BPM) Platfo
 Activiti JIRA: https://activiti.atlassian.net
 
 Activiti QA: http://build.activiti.org:8080
+
+git checkout -b study6 activiti-6.0.0
+
+mvn clean test-compile
+
+mvn versions:set -DnewVersion=6.0.0-boot2
+
+mvn clean install source:jar -Dmaven.test.skip=true
+
+mvn clean tomcat7:run
