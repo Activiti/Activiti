@@ -38,7 +38,7 @@ public class ThrowCustomExceptionDelegate implements JavaDelegate {
       RuntimeException exception = null;
       try {
         Class<?> clazz = Class.forName(exceptionClassName);
-        exception = (RuntimeException) clazz.newInstance();
+        exception = (RuntimeException) clazz.getDeclaredConstructor().newInstance();
 
       } catch (Exception e) {
         throw new ActivitiException("Class not found", e);
