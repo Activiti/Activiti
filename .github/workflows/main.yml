@@ -72,7 +72,10 @@ jobs:
       - name: Bump version with jx-release-version
         if: ${{ github.event_name == 'push' }}
         run: |
-          git fetch --tags -q
+          git fetch --tags
+          jx-release-version -next-version semantic --debug
+          jx-release-version -next-version increment --debug
+          jx-release-version --debug
           echo $(jx-release-version) > VERSION
 
       - name: Set preview version
