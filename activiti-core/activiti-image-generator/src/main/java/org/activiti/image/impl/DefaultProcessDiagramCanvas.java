@@ -125,6 +125,9 @@ public class DefaultProcessDiagramCanvas {
     protected static Color HIGHLIGHT_COMPLETED_ACTIVITY_COLOR = new Color(51,
         153,
         255);
+    protected static Color HIGHLIGHT_ERRORED_ACTIVITY_COLOR = new Color(255,
+        55,
+        87);
     protected static Color LABEL_COLOR = new Color(112,
                                                    146,
                                                    190);
@@ -1417,6 +1420,18 @@ public class DefaultProcessDiagramCanvas {
         g.setStroke(originalStroke);
     }
 
+    public void drawGatewayHighLightErrored(GraphicInfo graphicInfo) {
+        Paint originalPaint = g.getPaint();
+        Stroke originalStroke = g.getStroke();
+        g.setPaint(HIGHLIGHT_ERRORED_ACTIVITY_COLOR);
+        g.setStroke(THICK_TASK_BORDER_STROKE);
+
+        drawGateway(graphicInfo);
+
+        g.setPaint(originalPaint);
+        g.setStroke(originalStroke);
+    }
+
     public void drawParallelGateway(String id,
                                     GraphicInfo graphicInfo) {
         // rhombus
@@ -1605,6 +1620,12 @@ public class DefaultProcessDiagramCanvas {
         drawHighLight(x, y, width, height, HIGHLIGHT_COMPLETED_ACTIVITY_COLOR);
     }
 
+    public void drawHighLightErrored(int x,
+        int y,
+        int width,
+        int height) {
+        drawHighLight(x, y, width, height, HIGHLIGHT_ERRORED_ACTIVITY_COLOR);
+    }
     public void drawHighLight(int x,
         int y,
         int width,
@@ -1636,6 +1657,27 @@ public class DefaultProcessDiagramCanvas {
         Stroke originalStroke = g.getStroke();
 
         g.setPaint(HIGHLIGHT_COMPLETED_ACTIVITY_COLOR);
+        g.setStroke(THICK_TASK_BORDER_STROKE);
+
+        Ellipse2D circle = new Ellipse2D.Double(x,
+            y,
+            width,
+            height);
+
+        g.draw(circle);
+
+        g.setPaint(originalPaint);
+        g.setStroke(originalStroke);
+    }
+
+    public void drawEventHighLightErrored(int x,
+        int y,
+        int width,
+        int height) {
+        Paint originalPaint = g.getPaint();
+        Stroke originalStroke = g.getStroke();
+
+        g.setPaint(HIGHLIGHT_ERRORED_ACTIVITY_COLOR);
         g.setStroke(THICK_TASK_BORDER_STROKE);
 
         Ellipse2D circle = new Ellipse2D.Double(x,

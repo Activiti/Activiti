@@ -230,6 +230,7 @@ public class ProcessDiagramGeneratorTest extends PluggableActivitiTestCase {
                                                  emptyList(),
                                                  emptyList(),
                                                  emptyList(),
+                                                 emptyList(),
                                                  activityFontName,
                                                  labelFontName,
                                                  annotationFontName,
