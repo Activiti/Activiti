@@ -1126,26 +1126,17 @@ public class DefaultProcessDiagramGenerator implements ProcessDiagramGenerator {
 
     private static void drawHighLightCurrent(DefaultProcessDiagramCanvas processDiagramCanvas,
         GraphicInfo graphicInfo) {
-        processDiagramCanvas.drawHighLightCurrent((int) graphicInfo.getX(),
-            (int) graphicInfo.getY(),
-            (int) graphicInfo.getWidth(),
-            (int) graphicInfo.getHeight());
+        processDiagramCanvas.drawHighLightCurrent(graphicInfo);
     }
 
     private static void drawTaskHighLightCompleted(DefaultProcessDiagramCanvas processDiagramCanvas,
         GraphicInfo graphicInfo) {
-        processDiagramCanvas.drawHighLightCompleted((int) graphicInfo.getX(),
-            (int) graphicInfo.getY(),
-            (int) graphicInfo.getWidth(),
-            (int) graphicInfo.getHeight());
+        processDiagramCanvas.drawHighLightCompleted(graphicInfo);
     }
 
     private static void drawEventHighLightCompleted(DefaultProcessDiagramCanvas processDiagramCanvas,
         GraphicInfo graphicInfo) {
-        processDiagramCanvas.drawEventHighLightCompleted((int) graphicInfo.getX(),
-            (int) graphicInfo.getY(),
-            (int) graphicInfo.getWidth(),
-            (int) graphicInfo.getHeight());
+        processDiagramCanvas.drawEventHighLightCompleted(graphicInfo);
     }
 
     private static void drawGatewayHighLightCompleted(DefaultProcessDiagramCanvas processDiagramCanvas,
@@ -1155,18 +1146,12 @@ public class DefaultProcessDiagramGenerator implements ProcessDiagramGenerator {
 
     private static void drawTaskHighLightErrored(DefaultProcessDiagramCanvas processDiagramCanvas,
         GraphicInfo graphicInfo) {
-        processDiagramCanvas.drawHighLightErrored((int) graphicInfo.getX(),
-            (int) graphicInfo.getY(),
-            (int) graphicInfo.getWidth(),
-            (int) graphicInfo.getHeight());
+        processDiagramCanvas.drawHighLightErrored(graphicInfo);
     }
 
     private static void drawEventHighLightErrored(DefaultProcessDiagramCanvas processDiagramCanvas,
         GraphicInfo graphicInfo) {
-        processDiagramCanvas.drawEventHighLightErrored((int) graphicInfo.getX(),
-            (int) graphicInfo.getY(),
-            (int) graphicInfo.getWidth(),
-            (int) graphicInfo.getHeight());
+        processDiagramCanvas.drawEventHighLightErrored(graphicInfo);
     }
 
     private static void drawGatewayHighLightErrored(DefaultProcessDiagramCanvas processDiagramCanvas,

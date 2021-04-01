@@ -1408,10 +1408,10 @@ public class DefaultProcessDiagramCanvas {
         g.draw(rhombus);
     }
 
-    public void drawGatewayHighLightCompleted(GraphicInfo graphicInfo) {
+    public void drawGatewayHighLight(GraphicInfo graphicInfo, Color color) {
         Paint originalPaint = g.getPaint();
         Stroke originalStroke = g.getStroke();
-        g.setPaint(HIGHLIGHT_COMPLETED_ACTIVITY_COLOR);
+        g.setPaint(color);
         g.setStroke(THICK_TASK_BORDER_STROKE);
 
         drawGateway(graphicInfo);
@@ -1420,16 +1420,12 @@ public class DefaultProcessDiagramCanvas {
         g.setStroke(originalStroke);
     }
 
+    public void drawGatewayHighLightCompleted(GraphicInfo graphicInfo) {
+        drawGatewayHighLight(graphicInfo, HIGHLIGHT_COMPLETED_ACTIVITY_COLOR);
+    }
+
     public void drawGatewayHighLightErrored(GraphicInfo graphicInfo) {
-        Paint originalPaint = g.getPaint();
-        Stroke originalStroke = g.getStroke();
-        g.setPaint(HIGHLIGHT_ERRORED_ACTIVITY_COLOR);
-        g.setStroke(THICK_TASK_BORDER_STROKE);
-
-        drawGateway(graphicInfo);
-
-        g.setPaint(originalPaint);
-        g.setStroke(originalStroke);
+        drawGatewayHighLight(graphicInfo, HIGHLIGHT_ERRORED_ACTIVITY_COLOR);
     }
 
     public void drawParallelGateway(String id,
@@ -1606,30 +1602,18 @@ public class DefaultProcessDiagramCanvas {
         g.setStroke(orginalStroke);
     }
 
-    public void drawHighLightCurrent(int x,
-        int y,
-        int width,
-        int height) {
-        drawHighLight(x,y, width, height, HIGHLIGHT_CURRENT_COLOR);
+    public void drawHighLightCurrent(GraphicInfo graphicInfo) {
+        drawHighLight(graphicInfo, HIGHLIGHT_CURRENT_COLOR);
     }
 
-    public void drawHighLightCompleted(int x,
-        int y,
-        int width,
-        int height) {
-        drawHighLight(x, y, width, height, HIGHLIGHT_COMPLETED_ACTIVITY_COLOR);
+    public void drawHighLightCompleted(GraphicInfo graphicInfo) {
+        drawHighLight(graphicInfo, HIGHLIGHT_COMPLETED_ACTIVITY_COLOR);
     }
 
-    public void drawHighLightErrored(int x,
-        int y,
-        int width,
-        int height) {
-        drawHighLight(x, y, width, height, HIGHLIGHT_ERRORED_ACTIVITY_COLOR);
+    public void drawHighLightErrored(GraphicInfo graphicInfo) {
+        drawHighLight(graphicInfo, HIGHLIGHT_ERRORED_ACTIVITY_COLOR);
     }
-    public void drawHighLight(int x,
-        int y,
-        int width,
-        int height,
+    public void drawHighLight(GraphicInfo graphicInfo,
         Color color) {
         Paint originalPaint = g.getPaint();
         Stroke originalStroke = g.getStroke();
@@ -1637,10 +1621,10 @@ public class DefaultProcessDiagramCanvas {
         g.setPaint(color);
         g.setStroke(THICK_TASK_BORDER_STROKE);
 
-        RoundRectangle2D rect = new RoundRectangle2D.Double(x,
-            y,
-            width,
-            height,
+        RoundRectangle2D rect = new RoundRectangle2D.Double((int) graphicInfo.getX(),
+            (int) graphicInfo.getY(),
+            (int) graphicInfo.getWidth(),
+            (int) graphicInfo.getHeight(),
             6,
             6);
         g.draw(rect);
@@ -1649,20 +1633,17 @@ public class DefaultProcessDiagramCanvas {
         g.setStroke(originalStroke);
     }
 
-    public void drawEventHighLightCompleted(int x,
-        int y,
-        int width,
-        int height) {
+    public void drawEventHighLight(GraphicInfo graphicInfo, Color color) {
         Paint originalPaint = g.getPaint();
         Stroke originalStroke = g.getStroke();
 
-        g.setPaint(HIGHLIGHT_COMPLETED_ACTIVITY_COLOR);
+        g.setPaint(color);
         g.setStroke(THICK_TASK_BORDER_STROKE);
 
-        Ellipse2D circle = new Ellipse2D.Double(x,
-            y,
-            width,
-            height);
+        Ellipse2D circle = new Ellipse2D.Double((int) graphicInfo.getX(),
+            (int) graphicInfo.getY(),
+            (int) graphicInfo.getWidth(),
+            (int) graphicInfo.getHeight());
 
         g.draw(circle);
 
@@ -1670,25 +1651,12 @@ public class DefaultProcessDiagramCanvas {
         g.setStroke(originalStroke);
     }
 
-    public void drawEventHighLightErrored(int x,
-        int y,
-        int width,
-        int height) {
-        Paint originalPaint = g.getPaint();
-        Stroke originalStroke = g.getStroke();
+    public void drawEventHighLightCompleted(GraphicInfo graphicInfo) {
+        drawEventHighLight(graphicInfo, HIGHLIGHT_COMPLETED_ACTIVITY_COLOR);
+    }
 
-        g.setPaint(HIGHLIGHT_ERRORED_ACTIVITY_COLOR);
-        g.setStroke(THICK_TASK_BORDER_STROKE);
-
-        Ellipse2D circle = new Ellipse2D.Double(x,
-            y,
-            width,
-            height);
-
-        g.draw(circle);
-
-        g.setPaint(originalPaint);
-        g.setStroke(originalStroke);
+    public void drawEventHighLightErrored(GraphicInfo graphicInfo) {
+        drawEventHighLight(graphicInfo, HIGHLIGHT_ERRORED_ACTIVITY_COLOR);
     }
 
     public void drawTextAnnotation(String id,
