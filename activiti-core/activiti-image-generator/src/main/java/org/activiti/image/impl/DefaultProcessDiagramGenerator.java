@@ -905,18 +905,21 @@ public class DefaultProcessDiagramGenerator implements ProcessDiagramGenerator {
             // Draw highlighted activities
 
             if (currentActivities.contains(flowNode.getId())) {
-                drawHighLightCurrent(processDiagramCanvas,
-                              bpmnModel.getGraphicInfo(flowNode.getId()));
+                processDiagramCanvas
+                    .drawHighLightCurrent(bpmnModel.getGraphicInfo(flowNode.getId()));
             }
 
             if (highLightedActivities.contains(flowNode.getId())) {
                 Class flowNodeClass = flowNode.getClass();
                 if (Event.class.isAssignableFrom(flowNodeClass)){
-                    drawEventHighLightCompleted(processDiagramCanvas, bpmnModel.getGraphicInfo(flowNode.getId()));
+                    processDiagramCanvas
+                        .drawEventHighLightCompleted(bpmnModel.getGraphicInfo(flowNode.getId()));
                 } else if (Task.class.isAssignableFrom(flowNodeClass) || CallActivity.class.isAssignableFrom(flowNodeClass) ) {
-                    drawTaskHighLightCompleted(processDiagramCanvas, bpmnModel.getGraphicInfo(flowNode.getId()));
+                    processDiagramCanvas
+                        .drawHighLightCompleted(bpmnModel.getGraphicInfo(flowNode.getId()));
                 } else if (Gateway.class.isAssignableFrom(flowNodeClass)) {
-                    drawGatewayHighLightCompleted(processDiagramCanvas, bpmnModel.getGraphicInfo(flowNode.getId()));
+                    processDiagramCanvas
+                        .drawGatewayHighLightCompleted(bpmnModel.getGraphicInfo(flowNode.getId()));
                 }
             }
 
@@ -925,11 +928,14 @@ public class DefaultProcessDiagramGenerator implements ProcessDiagramGenerator {
             if (erroredActivities.contains(flowNode.getId())) {
                 Class flowNodeClass = flowNode.getClass();
                 if (Event.class.isAssignableFrom(flowNodeClass)) {
-                    drawEventHighLightErrored(processDiagramCanvas, bpmnModel.getGraphicInfo(flowNode.getId()));
+                    processDiagramCanvas
+                        .drawEventHighLightErrored(bpmnModel.getGraphicInfo(flowNode.getId()));
                 } else if (Task.class.isAssignableFrom(flowNodeClass) || CallActivity.class.isAssignableFrom(flowNodeClass)) {
-                    drawTaskHighLightErrored(processDiagramCanvas, bpmnModel.getGraphicInfo(flowNode.getId()));
+                    processDiagramCanvas
+                        .drawHighLightErrored(bpmnModel.getGraphicInfo(flowNode.getId()));
                 } else if (Gateway.class.isAssignableFrom(flowNodeClass)) {
-                    drawGatewayHighLightErrored(processDiagramCanvas, bpmnModel.getGraphicInfo(flowNode.getId()));
+                    processDiagramCanvas
+                        .drawGatewayHighLightErrored(bpmnModel.getGraphicInfo(flowNode.getId()));
                 }
             }
         }
@@ -1122,41 +1128,6 @@ public class DefaultProcessDiagramGenerator implements ProcessDiagramGenerator {
                                  bpmnModel,
                                  artifact);
         }
-    }
-
-    private static void drawHighLightCurrent(DefaultProcessDiagramCanvas processDiagramCanvas,
-        GraphicInfo graphicInfo) {
-        processDiagramCanvas.drawHighLightCurrent(graphicInfo);
-    }
-
-    private static void drawTaskHighLightCompleted(DefaultProcessDiagramCanvas processDiagramCanvas,
-        GraphicInfo graphicInfo) {
-        processDiagramCanvas.drawHighLightCompleted(graphicInfo);
-    }
-
-    private static void drawEventHighLightCompleted(DefaultProcessDiagramCanvas processDiagramCanvas,
-        GraphicInfo graphicInfo) {
-        processDiagramCanvas.drawEventHighLightCompleted(graphicInfo);
-    }
-
-    private static void drawGatewayHighLightCompleted(DefaultProcessDiagramCanvas processDiagramCanvas,
-        GraphicInfo graphicInfo) {
-        processDiagramCanvas.drawGatewayHighLightCompleted(graphicInfo);
-    }
-
-    private static void drawTaskHighLightErrored(DefaultProcessDiagramCanvas processDiagramCanvas,
-        GraphicInfo graphicInfo) {
-        processDiagramCanvas.drawHighLightErrored(graphicInfo);
-    }
-
-    private static void drawEventHighLightErrored(DefaultProcessDiagramCanvas processDiagramCanvas,
-        GraphicInfo graphicInfo) {
-        processDiagramCanvas.drawEventHighLightErrored(graphicInfo);
-    }
-
-    private static void drawGatewayHighLightErrored(DefaultProcessDiagramCanvas processDiagramCanvas,
-        GraphicInfo graphicInfo) {
-        processDiagramCanvas.drawGatewayHighLightErrored(graphicInfo);
     }
 
     protected static DefaultProcessDiagramCanvas initProcessDiagramCanvas(BpmnModel bpmnModel,
