@@ -133,6 +133,7 @@ public class ExecutionEntityManagerImplTest {
         ProcessDefinitionEntity processDefinition = new ProcessDefinitionEntityImpl();
         processDefinition.setId("processDefinitionId");
         processDefinition.setKey("processDefinitionKey");
+        processDefinition.setName("processDefinitionName");
         processDefinition.setAppVersion(5);
 
         ExecutionEntityImpl superExecution = new ExecutionEntityImpl();
@@ -159,6 +160,7 @@ public class ExecutionEntityManagerImplTest {
         assertThat(subProcessResult.getSuperExecution()).isEqualTo(superExecution);
         assertThat(subProcessResult.getProcessDefinitionId()).isEqualTo("processDefinitionId");
         assertThat(subProcessResult.getProcessDefinitionKey()).isEqualTo("processDefinitionKey");
+        assertThat(subProcessResult.getProcessDefinitionName()).isEqualTo("processDefinitionName");
         assertThat(subProcessResult.getProcessInstanceId()).isEqualTo("subProcessInstanceId");
         assertThat(subProcessResult.getParentProcessInstanceId()).isEqualTo("superProcessInstanceId");
         assertThat(subProcessResult.isScope()).isTrue();
