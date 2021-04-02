@@ -31,10 +31,14 @@ import org.activiti.engine.impl.persistence.entity.data.ExecutionDataManager;
 import org.activiti.engine.runtime.Clock;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
+
 import static org.mockito.AdditionalAnswers.returnsFirstArg;
 
+@RunWith(MockitoJUnitRunner.class)
 public class ExecutionEntityManagerImplTest {
 
     @InjectMocks
@@ -54,7 +58,6 @@ public class ExecutionEntityManagerImplTest {
 
     @Before
     public void setUp() throws Exception {
-        initMocks(this);
         given(processEngineConfiguration.getClock()).willReturn(clock);
         given(processEngineConfiguration.getEventDispatcher()).willReturn(eventDispatcher);
         Context.setProcessEngineConfiguration(processEngineConfiguration);
@@ -134,6 +137,7 @@ public class ExecutionEntityManagerImplTest {
         processDefinition.setId("processDefinitionId");
         processDefinition.setKey("processDefinitionKey");
         processDefinition.setName("processDefinitionName");
+        processDefinition.setVersion(3);
         processDefinition.setAppVersion(5);
 
         ExecutionEntityImpl superExecution = new ExecutionEntityImpl();
@@ -142,6 +146,10 @@ public class ExecutionEntityManagerImplTest {
         superExecution.setRootProcessInstanceId("rootProcessInstanceId");
         superExecution.setTenantId("tenantId");
         superExecution.setProcessInstanceId("superProcessInstanceId");
+        ExecutionEntityImpl processInstance = new ExecutionEntityImpl();
+        processInstance.setId("superProcessInstanceId");
+        processInstance.setName("myNamedInstance");
+        superExecution.setProcessInstance(processInstance);
 
         String businessKey = "businessKey";
 
@@ -154,6 +162,7 @@ public class ExecutionEntityManagerImplTest {
         ExecutionEntity subProcessResult = executionEntityManager.createSubprocessInstance(processDefinition, superExecution, businessKey);
 
         assertThat(subProcessResult.isActive()).isTrue();
+        assertThat(subProcessResult.getName()).isEqualTo("myNamedInstance");
         assertThat(subProcessResult.getRootProcessInstanceId()).isEqualTo("rootProcessInstanceId");
         assertThat(subProcessResult.getStartTime()).isEqualTo(startTime);
         assertThat(subProcessResult.getTenantId()).isEqualTo("tenantId");
@@ -161,6 +170,7 @@ public class ExecutionEntityManagerImplTest {
         assertThat(subProcessResult.getProcessDefinitionId()).isEqualTo("processDefinitionId");
         assertThat(subProcessResult.getProcessDefinitionKey()).isEqualTo("processDefinitionKey");
         assertThat(subProcessResult.getProcessDefinitionName()).isEqualTo("processDefinitionName");
+        assertThat(subProcessResult.getProcessDefinitionVersion()).isEqualTo(3);
         assertThat(subProcessResult.getProcessInstanceId()).isEqualTo("subProcessInstanceId");
         assertThat(subProcessResult.getParentProcessInstanceId()).isEqualTo("superProcessInstanceId");
         assertThat(subProcessResult.isScope()).isTrue();
