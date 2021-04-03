@@ -18,7 +18,7 @@ package org.activiti.runtime.api.event.impl;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
-import static org.mockito.MockitoAnnotations.initMocks;
+import static org.mockito.MockitoAnnotations.openMocks;
 
 import org.activiti.api.process.model.events.BPMNMessageWaitingEvent;
 import org.activiti.api.runtime.model.impl.BPMNMessageImpl;
@@ -38,7 +38,7 @@ public class ToMessageWaitingConverterTest {
 
     @BeforeEach
     public void setUp() {
-        initMocks(this);
+        openMocks(this);
     }
 
     @Test

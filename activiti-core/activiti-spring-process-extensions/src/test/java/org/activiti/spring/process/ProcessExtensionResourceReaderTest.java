@@ -20,7 +20,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.MockitoAnnotations.initMocks;
+import static org.mockito.MockitoAnnotations.openMocks;
 
 public class ProcessExtensionResourceReaderTest {
 
@@ -29,7 +29,7 @@ public class ProcessExtensionResourceReaderTest {
 
     @BeforeEach
     public void setUp() {
-        initMocks(this);
+        openMocks(this);
     }
 
     @Test

@@ -97,21 +97,21 @@ public class ValuedDataObjectConverterTest extends AbstractConverterTest {
     assertThat(dataObj.getName()).isEqualTo("DoubleTest");
     assertThat(dataObj.getItemSubjectRef().getStructureRef()).isEqualTo("xsd:double");
     assertThat(dataObj.getValue()).isInstanceOf(Double.class);
-    assertThat(dataObj.getValue()).isEqualTo(new Double(123456789));
+    assertThat(dataObj.getValue()).isEqualTo(123456789.0);
 
     dataObj = objectMap.get("dObj5");
     assertThat(dataObj.getId()).isEqualTo("dObj5");
     assertThat(dataObj.getName()).isEqualTo("IntegerTest");
     assertThat(dataObj.getItemSubjectRef().getStructureRef()).isEqualTo("xsd:int");
     assertThat(dataObj.getValue()).isInstanceOf(Integer.class);
-    assertThat(dataObj.getValue()).isEqualTo(Integer.valueOf(123));
+    assertThat(dataObj.getValue()).isEqualTo(123);
 
     dataObj = objectMap.get("dObj6");
     assertThat(dataObj.getId()).isEqualTo("dObj6");
     assertThat(dataObj.getName()).isEqualTo("LongTest");
     assertThat(dataObj.getItemSubjectRef().getStructureRef()).isEqualTo("xsd:long");
     assertThat(dataObj.getValue()).isInstanceOf(Long.class);
-    assertThat(dataObj.getValue()).isEqualTo(new Long(-123456));
+    assertThat(dataObj.getValue()).isEqualTo((long) -123456);
     assertThat(dataObj.getExtensionElements()).hasSize(1);
     List<ExtensionElement> testValues = dataObj.getExtensionElements().get("testvalue");
     assertThat(testValues).isNotNull();
@@ -174,20 +174,20 @@ public class ValuedDataObjectConverterTest extends AbstractConverterTest {
     assertThat(dataObj.getName()).isEqualTo("DoubleSubTest");
     assertThat(dataObj.getItemSubjectRef().getStructureRef()).isEqualTo("xsd:double");
     assertThat(dataObj.getValue()).isInstanceOf(Double.class);
-    assertThat(dataObj.getValue()).isEqualTo(new Double(678912345));
+    assertThat(dataObj.getValue()).isEqualTo(678912345.0);
 
     dataObj = objectMap.get("dObj11");
     assertThat(dataObj.getId()).isEqualTo("dObj11");
     assertThat(dataObj.getName()).isEqualTo("IntegerSubTest");
     assertThat(dataObj.getItemSubjectRef().getStructureRef()).isEqualTo("xsd:int");
     assertThat(dataObj.getValue()).isInstanceOf(Integer.class);
-    assertThat(dataObj.getValue()).isEqualTo(Integer.valueOf(45));
+    assertThat(dataObj.getValue()).isEqualTo(45);
 
     dataObj = objectMap.get("dObj12");
     assertThat(dataObj.getId()).isEqualTo("dObj12");
     assertThat(dataObj.getName()).isEqualTo("LongSubTest");
     assertThat(dataObj.getItemSubjectRef().getStructureRef()).isEqualTo("xsd:long");
     assertThat(dataObj.getValue()).isInstanceOf(Long.class);
-    assertThat(dataObj.getValue()).isEqualTo(new Long(456123));
+    assertThat(dataObj.getValue()).isEqualTo(456123L);
   }
 }

@@ -31,7 +31,7 @@ import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
-import static org.mockito.MockitoAnnotations.initMocks;
+import static org.mockito.MockitoAnnotations.openMocks;
 
 public class SignalReceivedListenerDelegateTest {
 
@@ -48,7 +48,7 @@ public class SignalReceivedListenerDelegateTest {
 
     @BeforeEach
     public void setUp() {
-        initMocks(this);
+        openMocks(this);
         listenerDelegate = new SignalReceivedListenerDelegate(asList(firstListener, secondListener), converter);
     }
 

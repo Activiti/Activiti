@@ -22,7 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.MockitoAnnotations.initMocks;
+import static org.mockito.MockitoAnnotations.openMocks;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
@@ -61,7 +61,7 @@ public class ProcessVariablesPayloadValidatorTest {
 
     @BeforeEach
     public void setUp() {
-        initMocks(this);
+        openMocks(this);
 
         VariableDefinition variableDefinitionName = new VariableDefinition();
         variableDefinitionName.setName("name");

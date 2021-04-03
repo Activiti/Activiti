@@ -32,7 +32,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
-import static org.mockito.MockitoAnnotations.initMocks;
+import static org.mockito.MockitoAnnotations.openMocks;
 
 public class TimerCancelledListenerDelegateTest {
 
@@ -46,7 +46,7 @@ public class TimerCancelledListenerDelegateTest {
 
     @BeforeEach
     public void setUp() {
-        initMocks(this);
+        openMocks(this);
         listenerDelegate = new TimerCancelledListenerDelegate(singletonList(listener), converter);
     }
 

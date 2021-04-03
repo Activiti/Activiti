@@ -719,7 +719,7 @@ public class JSONObject {
   public double optDouble(String key, double defaultValue) {
     try {
       Object o = opt(key);
-      return o instanceof Number ? ((Number) o).doubleValue() : new Double((String) o).doubleValue();
+      return o instanceof Number ? ((Number) o).doubleValue() : Double.parseDouble((String) o);
     } catch (Exception e) {
       return defaultValue;
     }
@@ -931,7 +931,7 @@ public class JSONObject {
    *           If the key is null.
    */
   public JSONObject put(String key, int value) throws JSONException {
-    put(key, new Integer(value));
+    put(key, Integer.valueOf(value));
     return this;
   }
 
@@ -947,7 +947,7 @@ public class JSONObject {
    *           If the key is null.
    */
   public JSONObject put(String key, long value) throws JSONException {
-    put(key, new Long(value));
+    put(key, Long.valueOf(value));
     return this;
   }
 
@@ -1141,7 +1141,7 @@ public class JSONObject {
     if ((b >= '0' && b <= '9') || b == '.' || b == '-' || b == '+') {
       if (b == '0' && s.length() > 2 && (s.charAt(1) == 'x' || s.charAt(1) == 'X')) {
         try {
-          return new Integer(Integer.parseInt(s.substring(2), 16));
+          return Integer.parseInt(s.substring(2), 16);
         } catch (Exception ignore) {
         }
       }
@@ -1149,9 +1149,9 @@ public class JSONObject {
         if (s.indexOf('.') > -1 || s.indexOf('e') > -1 || s.indexOf('E') > -1) {
           return Double.valueOf(s);
         } else {
-          Long myLong = new Long(s);
-          if (myLong.longValue() == myLong.intValue()) {
-            return new Integer(myLong.intValue());
+          Long myLong = Long.valueOf(s);
+          if (myLong == myLong.intValue()) {
+            return myLong.intValue();
           } else {
             return myLong;
           }
