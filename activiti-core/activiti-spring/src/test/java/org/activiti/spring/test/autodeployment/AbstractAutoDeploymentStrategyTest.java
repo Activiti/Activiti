@@ -32,7 +32,7 @@ import org.springframework.core.io.Resource;
 
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.*;
-import static org.mockito.MockitoAnnotations.initMocks;
+import static org.mockito.MockitoAnnotations.openMocks;
 
 public class AbstractAutoDeploymentStrategyTest {
 
@@ -91,7 +91,7 @@ public class AbstractAutoDeploymentStrategyTest {
 
     @Before
     public void before() throws Exception {
-        initMocks(this);
+        openMocks(this);
         when(resourceMock1.getPathWithinContext()).thenReturn(resourceName1);
         when(resourceMock1.getFile()).thenReturn(fileMock1);
 

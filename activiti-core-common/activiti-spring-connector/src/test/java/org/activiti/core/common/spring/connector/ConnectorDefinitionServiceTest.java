@@ -26,7 +26,7 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
-import static org.mockito.MockitoAnnotations.initMocks;
+import static org.mockito.MockitoAnnotations.openMocks;
 
 public class ConnectorDefinitionServiceTest {
 
@@ -40,7 +40,7 @@ public class ConnectorDefinitionServiceTest {
 
     @BeforeEach
     public void setUp() {
-        initMocks(this);
+        openMocks(this);
         connectorDefinitionService = new ConnectorDefinitionService("/connectors",
                                                                        objectMapper,
                                                                        resourceLoader);
