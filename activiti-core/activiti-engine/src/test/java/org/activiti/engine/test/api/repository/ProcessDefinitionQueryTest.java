@@ -339,7 +339,8 @@ public class ProcessDefinitionQueryTest extends PluggableActivitiTestCase {
   }
 
   public void testQueryWithEmptyIdSet() {
-    repositoryService.createProcessDefinitionQuery().processDefinitionIds(new HashSet<>(0)).list();
+    List<ProcessDefinition> processDefinitionList = repositoryService.createProcessDefinitionQuery().processDefinitionIds(new HashSet<>(0)).list();
+    assertThat(processDefinitionList).isNotEmpty();
   }
 
 }
