@@ -24,11 +24,13 @@ import java.util.Map;
 import org.activiti.api.model.shared.event.RuntimeEvent;
 import org.activiti.api.model.shared.event.VariableCreatedEvent;
 import org.activiti.api.model.shared.event.VariableUpdatedEvent;
+import org.activiti.api.process.model.ProcessDefinition;
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
 import org.activiti.api.process.model.events.BPMNSequenceFlowTakenEvent;
 import org.activiti.api.process.runtime.ProcessRuntime;
 import org.activiti.api.process.runtime.events.ProcessCancelledEvent;
+import org.activiti.api.process.runtime.events.ProcessStartedEvent;
 import org.activiti.api.task.runtime.events.TaskCreatedEvent;
 import org.activiti.spring.boot.RuntimeTestConfiguration;
 import org.activiti.spring.boot.security.util.SecurityUtil;
@@ -46,6 +48,9 @@ public class ProcessRuntimeEventsIT {
 
     private static final String SINGLE_TASK_PROCESS = "SingleTaskProcess";
     private static final String LOGGED_USER = "user";
+
+    private static final String PARENT_PROCESS_CALL_ACTIVITY = "parentproc-843144bc-3797-40db-8edc-d23190b118e3";
+    private static final String SUB_PROCESS_CALL_ACTIVITY = "subprocess-fb5f2386-709a-4947-9aa0-bbf31497384f";
 
     @Autowired
     private ProcessRuntime processRuntime;
@@ -204,5 +209,48 @@ public class ProcessRuntimeEventsIT {
         assertThat(processCancelledEvent.getEntity().getBusinessKey()).isEqualTo(processInstance.getBusinessKey());
         assertThat(processCancelledEvent.getEntity().getStartDate()).isEqualTo(processInstance.getStartDate());
         assertThat(processCancelledEvent.getEntity().getInitiator()).isEqualTo(LOGGED_USER);
+    }
+
+    @Test
+    public void startProcessEvent_should_includeDefinitionMetadataForChildProcesses() {
+        //given
+        ProcessDefinition parentProcessDefinition = processRuntime.processDefinition(PARENT_PROCESS_CALL_ACTIVITY);
+        ProcessDefinition childProcessDefinition = processRuntime.processDefinition(SUB_PROCESS_CALL_ACTIVITY);
+
+        String instanceName = "myNamedInstance";
+        processRuntime.start(ProcessPayloadBuilder
+            .start()
+            .withProcessDefinitionKey(PARENT_PROCESS_CALL_ACTIVITY)
+            .withName(instanceName)
+            .build()
+        );
+
+        //when
+        List<ProcessStartedEvent> processStartedEvents = localEventSource.getEvents(ProcessStartedEvent.class);
+
+        //then
+        assertThat(processStartedEvents)
+            .extracting(
+                event -> event.getEntity().getName(),
+                event -> event.getEntity().getProcessDefinitionName(),
+                event -> event.getEntity().getProcessDefinitionVersion(),
+                event -> event.getEntity().getProcessDefinitionKey(),
+                event -> event.getEntity().getProcessDefinitionId()
+            )
+            .containsExactly(
+                tuple(
+                    instanceName,
+                    parentProcessDefinition.getName(),
+                    parentProcessDefinition.getVersion(),
+                    parentProcessDefinition.getKey(),
+                    parentProcessDefinition.getId()
+                ),
+                tuple(
+                    instanceName,
+                    childProcessDefinition.getName(),
+                    childProcessDefinition.getVersion(),
+                    childProcessDefinition.getKey(),
+                    childProcessDefinition.getId()
+                ));
     }
 }
