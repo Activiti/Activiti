@@ -21,15 +21,16 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import java.util.Optional;
 import org.activiti.spring.process.model.ProcessVariablesMapping.MappingType;
 
 public class Extension {
 
-    private final ProcessVariablesMapping EMPTY_PROCESS_VARIABLES_MAPPING = new ProcessVariablesMapping();
+    private static final ProcessVariablesMapping EMPTY_PROCESS_VARIABLES_MAPPING = new ProcessVariablesMapping();
     private Map<String, VariableDefinition> properties = new HashMap<>();
     private Map<String, ProcessVariablesMapping> mappings = new HashMap<>();
     private Map<String, ProcessConstantsMapping> constants = new HashMap<>();
-    private Map<String, TemplateDefinition> templates = new HashMap<>();
+    private TemplatesDefinition templates = new TemplatesDefinition();
 
     public Map<String, VariableDefinition> getProperties() {
         return properties;
@@ -67,9 +68,12 @@ public class Extension {
         return processVariablesMapping != null ? processVariablesMapping : EMPTY_PROCESS_VARIABLES_MAPPING;
     }
 
-    public TemplateDefinition getTemplateForFlowElement(String flowElementUUID) {
-        TemplateDefinition templatesMapping = templates.get(flowElementUUID);
-        return templatesMapping != null ? templatesMapping : new TemplateDefinition();
+    public Optional<TemplateDefinition> findAssigneeTemplateForTask(String taskUUID) {
+        return templates.findAssigneeTemplateForTask(taskUUID);
+    }
+
+    public Optional<TemplateDefinition> findCandidateTemplateForTask(String taskUUID) {
+        return templates.findCandidateTemplateForTask(taskUUID);
     }
 
     public VariableDefinition getProperty(String propertyUUID) {
@@ -94,10 +98,6 @@ public class Extension {
         return mappings.get(taskId) != null;
     }
 
-    public boolean hasTemplate(String taskId) {
-        return templates.get(taskId) != null;
-    }
-
     public boolean shouldMapAllInputs(String elementId) {
         ProcessVariablesMapping processVariablesMapping = mappings.get(elementId);
         return processVariablesMapping.getMappingType() != null &&
@@ -112,11 +112,12 @@ public class Extension {
             processVariablesMapping.getMappingType().equals(MappingType.MAP_ALL));
     }
 
-    public Map<String, TemplateDefinition> getTemplates() {
+    public TemplatesDefinition getTemplates() {
         return templates;
     }
 
-    public void setTemplates(Map<String, TemplateDefinition> templates) {
+    public void setTemplates(TemplatesDefinition templates) {
         this.templates = templates;
     }
+
 }
