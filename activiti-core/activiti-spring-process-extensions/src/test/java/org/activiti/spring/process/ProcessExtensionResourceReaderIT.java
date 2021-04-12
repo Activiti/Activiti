@@ -89,7 +89,7 @@ public class ProcessExtensionResourceReaderIT {
             );
 
             assertThat(templates.getTasks())
-                .containsOnlyKeys("myTaskId1", "myTaskId2");
+                .containsOnlyKeys("myTaskId1", "myTaskId2", "myTaskId3");
 
             assertThat(templates.getTasks().get("myTaskId1").getAssignee())
                 .isNotNull()
@@ -122,6 +122,18 @@ public class ProcessExtensionResourceReaderIT {
                 );
             assertThat(templates.getTasks().get("myTaskId2").getCandidate())
                 .isNull();
+
+            assertThat(templates.getTasks().get("myTaskId3").getAssignee())
+                .isNull();
+            assertThat(templates.getTasks().get("myTaskId3").getCandidate())
+                .isNotNull()
+                .extracting(
+                    TemplateDefinition::getType,
+                    TemplateDefinition::getValue)
+                .containsExactly(
+                    VARIABLE,
+                    "myCandidateTemplateVariable"
+                );
         }
     }
 }

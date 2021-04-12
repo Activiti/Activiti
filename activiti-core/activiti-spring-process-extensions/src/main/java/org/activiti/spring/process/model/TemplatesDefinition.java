@@ -50,7 +50,7 @@ public class TemplatesDefinition {
         if (taskTemplateDefinition == null) {
             return Optional.empty();
         }
-        return Optional.of(taskTemplateDefinition.getAssignee());
+        return Optional.ofNullable(taskTemplateDefinition.getAssignee());
     }
 
     public Optional<TemplateDefinition> findCandidateTemplateForTask(String taskUUID) {
@@ -58,7 +58,7 @@ public class TemplatesDefinition {
         if (taskTemplateDefinition == null) {
             return Optional.empty();
         }
-        return Optional.of(taskTemplateDefinition.getCandidate());
+        return Optional.ofNullable(taskTemplateDefinition.getCandidate());
     }
 
     @Override

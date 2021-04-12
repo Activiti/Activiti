@@ -19,6 +19,12 @@
               "type": "variable",
               "value": "myAssigneeTemplateVariable"
             }
+          },
+          "myTaskId3": {
+            "candidate": {
+              "type": "variable",
+              "value": "myCandidateTemplateVariable"
+            }
           }
         },
         "default": {
