@@ -3,17 +3,39 @@
   "extensions": {
     "processDefinitionId": {
       "templates": {
-        "myTaskId1": {
-          "type": "file",
-          "value": "https://github.com/leemunroe/responsive-html-email-template/blob/master/email.html"
+        "tasks": {
+          "myTaskId1": {
+            "assignee": {
+              "type": "file",
+              "value": "https://github.com/leemunroe/responsive-html-email-template/blob/master/email.html"
+            },
+            "candidate": {
+              "type": "file",
+              "value": "https://github.com/leemunroe/responsive-html-email-template/blob/master/email-inlined.html"
+            }
+          },
+          "myTaskId2": {
+            "assignee": {
+              "type": "variable",
+              "value": "myAssigneeTemplateVariable"
+            }
+          },
+          "myTaskId3": {
+            "candidate": {
+              "type": "variable",
+              "value": "myCandidateTemplateVariable"
+            }
+          }
         },
-        "myTaskId2": {
-          "type": "variable",
-          "value": "myTemplateVariable"
-        },
-        "@": {
-          "type": "file",
-          "value": "classpath:templates/email.html"
+        "default": {
+          "assignee": {
+            "type": "file",
+            "value": "classpath:templates/email.html"
+          },
+          "candidate": {
+            "type": "variable",
+            "value": "myCandidateTemplateVariable"
+          }
         }
       }
     }
