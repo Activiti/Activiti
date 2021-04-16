@@ -62,9 +62,6 @@ jobs:
       - name: Build with Maven
         run: mvn -B verify
 
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v1
-
       - name: Install jx-release-version
         if: ${{ github.event_name == 'push' }}
         uses: Alfresco/alfresco-build-tools/.github/actions/setup-jx-release-version@v1.1.0
