@@ -28,13 +28,13 @@ import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 public abstract class BaseElement implements HasExtensionAttributes {
 
     protected String id;
-    private int xmlRowNumber;
-    private int xmlColumnNumber;
-    private Map<String, List<ExtensionElement>> extensionElements = new LinkedHashMap<String, List<ExtensionElement>>();
+    protected int xmlRowNumber;
+    protected int xmlColumnNumber;
+    protected Map<String, List<ExtensionElement>> extensionElements = new LinkedHashMap<String, List<ExtensionElement>>();
     /**
      * extension attributes could be part of each element
      */
-    private Map<String, List<ExtensionAttribute>> attributes = new LinkedHashMap<String, List<ExtensionAttribute>>();
+    protected Map<String, List<ExtensionAttribute>> attributes = new LinkedHashMap<String, List<ExtensionAttribute>>();
 
     public String getId() {
         return id;
