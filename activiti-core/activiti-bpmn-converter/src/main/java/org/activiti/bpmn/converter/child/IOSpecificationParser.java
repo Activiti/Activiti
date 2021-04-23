@@ -17,6 +17,7 @@ package org.activiti.bpmn.converter.child;
 
 import javax.xml.stream.XMLStreamReader;
 
+import org.activiti.bpmn.constants.BpmnXMLConstants;
 import org.activiti.bpmn.converter.util.BpmnXMLUtil;
 import org.activiti.bpmn.model.Activity;
 import org.activiti.bpmn.model.BaseElement;
@@ -30,6 +31,7 @@ import org.apache.commons.lang3.StringUtils;
 
  */
 public class IOSpecificationParser extends BaseChildElementParser {
+
 
   public String getElementName() {
     return ELEMENT_IOSPECIFICATION;
@@ -52,6 +54,9 @@ public class IOSpecificationParser extends BaseChildElementParser {
           dataSpec.setId(xtr.getAttributeValue(null, ATTRIBUTE_ID));
           dataSpec.setName(xtr.getAttributeValue(null, ATTRIBUTE_NAME));
           dataSpec.setItemSubjectRef(parseItemSubjectRef(xtr.getAttributeValue(null, ATTRIBUTE_ITEM_SUBJECT_REF), model));
+          dataSpec.setCollection(parseIsCollection(xtr.getAttributeValue(null, ATTRIBUTE_IS_COLLECTION)));
+          //parse documentation
+          BpmnXMLUtil.parseChildElements(BpmnXMLConstants.ELEMENT_DATA_INPUT, dataSpec, xtr, model);
           ioSpecification.getDataInputs().add(dataSpec);
 
         } else if (xtr.isStartElement() && ELEMENT_DATA_OUTPUT.equalsIgnoreCase(xtr.getLocalName())) {
@@ -60,6 +65,9 @@ public class IOSpecificationParser extends BaseChildElementParser {
           dataSpec.setId(xtr.getAttributeValue(null, ATTRIBUTE_ID));
           dataSpec.setName(xtr.getAttributeValue(null, ATTRIBUTE_NAME));
           dataSpec.setItemSubjectRef(parseItemSubjectRef(xtr.getAttributeValue(null, ATTRIBUTE_ITEM_SUBJECT_REF), model));
+          dataSpec.setCollection(parseIsCollection(xtr.getAttributeValue(null, ATTRIBUTE_IS_COLLECTION)));
+          //parse documentation
+          BpmnXMLUtil.parseChildElements(BpmnXMLConstants.ELEMENT_DATA_OUTPUT, dataSpec, xtr, model);
           ioSpecification.getDataOutputs().add(dataSpec);
 
         } else if (xtr.isStartElement() && ELEMENT_DATA_INPUT_REFS.equalsIgnoreCase(xtr.getLocalName())) {
@@ -102,5 +110,9 @@ public class IOSpecificationParser extends BaseChildElementParser {
       }
     }
     return result;
+  }
+
+  protected boolean parseIsCollection(String isCollection) {
+    return "true".equals(isCollection) || "1".equals(isCollection);
   }
 }
