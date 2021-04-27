@@ -16,6 +16,7 @@
 
 package org.activiti.engine.impl.cfg;
 
+import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -29,6 +30,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -39,11 +41,12 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
 import javax.xml.namespace.QName;
-
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.activiti.api.runtime.shared.identity.UserGroupManager;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.DynamicBpmnService;
@@ -318,6 +321,7 @@ import org.activiti.engine.parse.BpmnParseHandler;
 import org.activiti.engine.runtime.Clock;
 import org.activiti.validation.ProcessValidator;
 import org.activiti.validation.ProcessValidatorFactory;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.builder.xml.XMLConfigBuilder;
 import org.apache.ibatis.builder.xml.XMLMapperBuilder;
 import org.apache.ibatis.datasource.pooled.PooledDataSource;
@@ -331,10 +335,6 @@ import org.apache.ibatis.transaction.managed.ManagedTransactionFactory;
 import org.apache.ibatis.type.JdbcType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfiguration {
@@ -879,6 +879,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     initHelpers();
     initVariableTypes();
     initBeans();
+    initWhitelist();
     initScriptingEngines();
     initClock();
     initBusinessCalendarManager();
@@ -2081,6 +2082,11 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     if (beans == null) {
       beans = new HashMap<Object, Object>();
     }
+  }
+
+  public void initWhitelist() {
+    Set<String> whitelistedCalls = readWhitelist("/org/activiti/engine/impl/juel/call-whitelist.conf");
+    expressionManager.setWhitelistedCalls(whitelistedCalls);
   }
 
   public void initEventDispatcher() {
@@ -3694,4 +3700,30 @@ public ProcessEngineConfigurationImpl setClock(Clock clock) {
     this.eventSubscriptionPayloadMappingProvider = eventSubscriptionPayloadMappingProvider;
   }
 
+  protected Set<String> readWhitelist(String whitelistFile) {
+    final Set<String> whitelist = new HashSet<>();
+    readWhitelist(whitelistFile, line -> {
+      String trimmedLine = line.trim();
+      if (StringUtils.isNoneEmpty(trimmedLine) && !trimmedLine.startsWith("#")) {
+        whitelist.add(trimmedLine);
+      }
+    });
+    return whitelist;
+  }
+
+  protected void readWhitelist(String whitelistFile, WhitelistAccpeter accepter) {
+    try (BufferedReader reader = new BufferedReader(new InputStreamReader(this.getClass().getResourceAsStream(whitelistFile)))) {
+      String line;
+      while ((line = reader.readLine())!=null) {
+        accepter.accept(line);
+      }
+    } catch (Exception e) {
+      throw new ActivitiException("Could not load '" + whitelistFile + "' file", e);
+    }
+
+  }
+
+  interface WhitelistAccpeter {
+    void accept(String line);
+  }
 }

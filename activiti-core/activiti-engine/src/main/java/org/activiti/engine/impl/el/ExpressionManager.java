@@ -20,6 +20,7 @@ package org.activiti.engine.impl.el;
 import de.odysseus.el.ExpressionFactoryImpl;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import javax.el.ArrayELResolver;
 import javax.el.BeanELResolver;
 import javax.el.CompositeELResolver;
@@ -51,29 +52,32 @@ public class ExpressionManager {
     // Default implementation (does nothing)
     protected ELContext parsingElContext = new ParsingElContext();
     protected Map<Object, Object> beans;
+    protected Set<String> whitelistedCalls;
 
     public ExpressionManager() {
         this(null);
     }
 
     public ExpressionManager(boolean initFactory) {
-        this(null,
-             initFactory);
+        this(null, null, initFactory);
     }
 
     public ExpressionManager(Map<Object, Object> beans) {
-        this(beans,
-             true);
+        this(beans, null, true);
     }
 
-    public ExpressionManager(Map<Object, Object> beans,
-                             boolean initFactory) {
+    public ExpressionManager(Map<Object, Object> beans, Set<String> whitelistedCalls) {
+        this(beans, whitelistedCalls, true);
+    }
+
+    public ExpressionManager(Map<Object, Object> beans, Set<String> whitelistedCalls, boolean initFactory) {
         // Use the ExpressionFactoryImpl in activiti build in version of juel,
         // with parametrised method expressions enabled
         if (initFactory) {
             expressionFactory = new ExpressionFactoryImpl();
         }
         this.beans = beans;
+        this.whitelistedCalls = whitelistedCalls;
     }
 
     public Expression createExpression(String expression) {
@@ -115,6 +119,7 @@ public class ExpressionManager {
         elResolver.add(new VariableScopeElResolver(variableScope));
         addBeansResolver(elResolver);
         addBaseResolvers(elResolver);
+        addWhitelistedCallsResolver(elResolver);
         return elResolver;
     }
 
@@ -124,6 +129,12 @@ public class ExpressionManager {
             // standalone activiti, not
             // in spring-context
             elResolver.add(new ReadOnlyMapELResolver(beans));
+        }
+    }
+
+    protected void addWhitelistedCallsResolver(CompositeELResolver elResolver) {
+        if (whitelistedCalls != null) {
+            elResolver.add(new WhitelistBeanELResolver(whitelistedCalls));
         }
     }
 
@@ -151,5 +162,13 @@ public class ExpressionManager {
         elResolver.add(new ReadOnlyMapELResolver(new HashMap<>(availableVariables)));
         addBaseResolvers(elResolver);
         return new ActivitiElContext(elResolver);
+    }
+
+    public Set<String> getWhitelistedCalls() {
+        return whitelistedCalls;
+    }
+
+    public void setWhitelistedCalls(Set<String> whitelistedCalls) {
+        this.whitelistedCalls = whitelistedCalls;
     }
 }
