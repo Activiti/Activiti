@@ -70,7 +70,7 @@ jobs:
         if: ${{ github.event_name == 'push' }}
         run: |
           git fetch --tags -q
-          echo $(jx-release-version) > VERSION
+          echo $(jx-release-version -next-version increment) > VERSION
 
       - name: Set preview version
         if: ${{ contains(github.head_ref, 'preview') }}
