@@ -1,0 +1,34 @@
+{
+  "id":"categorizeProcessModel",
+  "type": "PROCESS",
+  "name": "process",
+  "extensions": {
+    "categorizeProcess": {
+      "properties": {
+        "557dfb49-456b-492d-b99c-0a49ee325e77": {
+          "id": "557dfb49-456b-492d-b99c-0a49ee325e77",
+          "name": "fileContent",
+          "type": "string",
+          "required": true
+        }
+      },
+      "mappings": {
+        "Task_1ylvdew": {
+          "mappingType": "MAP_ALL",
+          "inputs": {},
+          "outputs": {}
+        },
+        "Task_0snvh02": {
+          "mappingType": "MAP_ALL",
+          "inputs": {},
+          "outputs": {}
+        },
+        "Task_1asxw87": {
+          "mappingType": "MAP_ALL",
+          "inputs": {},
+          "outputs": {}
+        }
+      }
+    }
+  }
+}
