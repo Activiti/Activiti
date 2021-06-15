@@ -45,11 +45,14 @@ import javax.script.ScriptEngineFactory;
 import javax.script.ScriptException;
 import javax.script.SimpleBindings;
 
+import org.activiti.core.el.ELResolverReflectionBlockerDecorator;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.bpmn.data.ItemInstance;
+import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.el.CustomMapperJsonNodeELResolver;
 import org.activiti.engine.impl.el.DynamicBeanPropertyELResolver;
 import org.activiti.engine.impl.el.ExpressionFactoryResolver;
-import org.activiti.engine.impl.el.JsonNodeELResolver;
+import org.activiti.core.el.JsonNodeELResolver;
 import org.activiti.engine.impl.util.ReflectUtil;
 
 import de.odysseus.el.util.SimpleResolver;
@@ -121,10 +124,10 @@ public class JuelScriptEngine extends AbstractScriptEngine implements Compilable
     compositeResolver.add(new ArrayELResolver());
     compositeResolver.add(new ListELResolver());
     compositeResolver.add(new MapELResolver());
-    compositeResolver.add(new JsonNodeELResolver());
+    compositeResolver.add(new CustomMapperJsonNodeELResolver());
     compositeResolver.add(new ResourceBundleELResolver());
     compositeResolver.add(new DynamicBeanPropertyELResolver(ItemInstance.class, "getFieldValue", "setFieldValue"));
-    compositeResolver.add(new BeanELResolver());
+    compositeResolver.add(new ELResolverReflectionBlockerDecorator(new BeanELResolver()));
     return new SimpleResolver(compositeResolver);
   }
 
