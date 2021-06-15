@@ -32,9 +32,6 @@ public class ELContextBuilder {
     private List<ELResolver> resolvers;
     private Map<String, Object> variables;
 
-    public ELContextBuilder() {
-    }
-
     public ELContextBuilder withResolvers(ELResolver... resolvers) {
         this.resolvers = List.of(resolvers);
         return this;

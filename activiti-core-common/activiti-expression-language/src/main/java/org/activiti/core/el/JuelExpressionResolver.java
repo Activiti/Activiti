@@ -15,11 +15,11 @@
  */
 package org.activiti.core.el;
 
-import static org.activiti.core.el.CommonELResolvers.arrayResolver;
-import static org.activiti.core.el.CommonELResolvers.beanResolver;
-import static org.activiti.core.el.CommonELResolvers.jsonNodeResolver;
-import static org.activiti.core.el.CommonELResolvers.listResolver;
-import static org.activiti.core.el.CommonELResolvers.mapResolver;
+import static org.activiti.core.el.CommonELResolversUtil.arrayResolver;
+import static org.activiti.core.el.CommonELResolversUtil.beanResolver;
+import static org.activiti.core.el.CommonELResolversUtil.jsonNodeResolver;
+import static org.activiti.core.el.CommonELResolversUtil.listResolver;
+import static org.activiti.core.el.CommonELResolversUtil.mapResolver;
 import java.util.Map;
 import javax.el.ELContext;
 import javax.el.ExpressionFactory;

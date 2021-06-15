@@ -25,9 +25,9 @@ import javax.el.MapELResolver;
 /**
  * Builder of {@link ELContext} instances.
  */
-public final class CommonELResolvers {
+public final class CommonELResolversUtil {
 
-    private CommonELResolvers() {
+    private CommonELResolversUtil() {
         // Not intended to be instantiated
     }
 
