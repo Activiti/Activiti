@@ -48,11 +48,9 @@ import javax.script.SimpleBindings;
 import org.activiti.core.el.ELResolverReflectionBlockerDecorator;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.bpmn.data.ItemInstance;
-import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.el.CustomMapperJsonNodeELResolver;
 import org.activiti.engine.impl.el.DynamicBeanPropertyELResolver;
 import org.activiti.engine.impl.el.ExpressionFactoryResolver;
-import org.activiti.core.el.JsonNodeELResolver;
 import org.activiti.engine.impl.util.ReflectUtil;
 
 import de.odysseus.el.util.SimpleResolver;
