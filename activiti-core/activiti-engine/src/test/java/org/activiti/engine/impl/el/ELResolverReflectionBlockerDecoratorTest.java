@@ -57,7 +57,7 @@ public class ELResolverReflectionBlockerDecoratorTest {
         assertThatExceptionOfType(ActivitiException.class)
             .as("Using Native Method: getClass in an expression")
             .isThrownBy(() -> expression.getValue(expressionManager, new DefaultDelegateInterceptor(), availableVariables))
-            .withMessage("Illegal use of Native Method in a JUEL Expression");
+            .withCauseInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
@@ -75,7 +75,7 @@ public class ELResolverReflectionBlockerDecoratorTest {
         assertThatExceptionOfType(ActivitiException.class)
             .as("Using Reflection in an expression")
             .isThrownBy(() -> expression.getValue(expressionManager, new DefaultDelegateInterceptor(), availableVariables))
-            .withMessage("Illegal use of Reflection in a JUEL Expression");
+            .withCauseInstanceOf(IllegalArgumentException.class);
     }
 
 }
