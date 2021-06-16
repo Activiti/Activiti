@@ -76,6 +76,6 @@ public class JuelResolverTest {
         assertThatExceptionOfType(PropertyNotFoundException.class)
             .as("Referencing an unknown variable")
             .isThrownBy(() -> expressionResolver.resolveExpression(expressionString, availableVariables))
-            .as("Cannot resolve identifier 'nameeee'");
+            .withMessage("Cannot resolve identifier 'nameeee'");
     }
 }
