@@ -27,11 +27,10 @@ public class JuelResolverTest {
     @Test
     public void should_returnNull_when_nullExpressionIsPassed() {
         //given
-        String expressionString = null;
         ExpressionResolver expressionResolver = new JuelExpressionResolver();
 
         //when
-        Object value = expressionResolver.resolveExpression(expressionString, Collections.emptyMap());
+        Object value = expressionResolver.resolveExpression(null, Collections.emptyMap(), Object.class);
 
         //then
         assertThat(value).isNull();
@@ -44,7 +43,7 @@ public class JuelResolverTest {
         ExpressionResolver expressionResolver = new JuelExpressionResolver();
 
         //when
-        Object value = expressionResolver.resolveExpression(expressionString, Collections.emptyMap());
+        String value = expressionResolver.resolveExpression(expressionString, Collections.emptyMap(), String.class);
 
         //then
         assertThat(value).isEqualTo(expressionString);
@@ -58,10 +57,23 @@ public class JuelResolverTest {
         ExpressionResolver expressionResolver = new JuelExpressionResolver();
 
         //when
-        Object value = expressionResolver.resolveExpression(expressionString, availableVariables);
+        String value = expressionResolver.resolveExpression(expressionString, availableVariables, String.class);
 
         //then
         assertThat(value).isEqualTo("jon doe");
+    }
+
+    @Test
+    public void should_returnBoolean_when_expressionIsAPredicate() {
+        //given
+        String expressionString = "${1 > 0}";
+        ExpressionResolver expressionResolver = new JuelExpressionResolver();
+
+        //when
+        boolean value = expressionResolver.resolveExpression(expressionString, Collections.emptyMap(), Boolean.class);
+
+        //then
+        assertThat(value).isTrue();
     }
 
     @Test
@@ -75,7 +87,7 @@ public class JuelResolverTest {
         //then
         assertThatExceptionOfType(PropertyNotFoundException.class)
             .as("Referencing an unknown variable")
-            .isThrownBy(() -> expressionResolver.resolveExpression(expressionString, availableVariables))
+            .isThrownBy(() -> expressionResolver.resolveExpression(expressionString, availableVariables, Object.class))
             .withMessage("Cannot resolve identifier 'nameeee'");
     }
 }

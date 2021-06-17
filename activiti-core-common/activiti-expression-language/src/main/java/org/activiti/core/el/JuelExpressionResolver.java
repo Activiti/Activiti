@@ -39,13 +39,13 @@ public class JuelExpressionResolver implements ExpressionResolver {
     }
 
     @Override
-    public Object resolveExpression(String expression, Map<String, Object> variables) {
+    public <T> T resolveExpression(String expression, Map<String, Object> variables, Class<T> type) {
         if(expression == null) {
             return null;
         }
         final ELContext context = buildContext(variables);
-        final ValueExpression valueExpression = expressionFactory.createValueExpression(context, expression, Object.class);
-        return valueExpression.getValue(context);
+        final ValueExpression valueExpression = expressionFactory.createValueExpression(context, expression, type);
+        return (T)valueExpression.getValue(context);
     }
 
     protected ELContext buildContext (Map<String, Object> variables) {

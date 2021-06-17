@@ -31,7 +31,7 @@ public class ELResolverReflectionBlockerDecoratorTest {
         ExpressionResolver expressionResolver = new JuelExpressionResolver();
 
         //when
-        Object value = expressionResolver.resolveExpression(expressionString, availableVariables);
+        String value = expressionResolver.resolveExpression(expressionString, availableVariables, String.class);
 
         //then
         assertThat(value).isEqualTo("jon doe");
@@ -48,7 +48,7 @@ public class ELResolverReflectionBlockerDecoratorTest {
         //then
         assertThatExceptionOfType(IllegalArgumentException.class)
             .as("Using Native Method: getClass in an expression")
-            .isThrownBy(() -> expressionResolver.resolveExpression(expressionString, availableVariables))
+            .isThrownBy(() -> expressionResolver.resolveExpression(expressionString, availableVariables, Object.class))
             .withMessage("Illegal use of Native Method in a JUEL Expression");
     }
 
@@ -63,7 +63,7 @@ public class ELResolverReflectionBlockerDecoratorTest {
         //then
         assertThatExceptionOfType(IllegalArgumentException.class)
             .as("Using Reflection in an expression")
-            .isThrownBy(() -> expressionResolver.resolveExpression(expressionString, availableVariables))
+            .isThrownBy(() -> expressionResolver.resolveExpression(expressionString, availableVariables, Object.class))
             .withMessage("Illegal use of Reflection in a JUEL Expression");
     }
 }
