@@ -13,9 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
-package org.activiti.engine.impl.el;
+package org.activiti.core.el;
 
 import java.beans.FeatureDescriptor;
 import java.util.Iterator;

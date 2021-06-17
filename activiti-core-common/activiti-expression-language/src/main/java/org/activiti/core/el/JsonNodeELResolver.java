@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.engine.impl.el;
+package org.activiti.core.el;
 
 import java.beans.FeatureDescriptor;
 import java.math.BigDecimal;
@@ -26,7 +26,7 @@ import javax.el.ELException;
 import javax.el.ELResolver;
 import javax.el.PropertyNotWritableException;
 
-import org.activiti.engine.impl.context.Context;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -40,6 +40,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 public class JsonNodeELResolver extends ELResolver {
 
 	private final boolean readOnly;
+	private final ObjectMapper defaultObjectMapper = new ObjectMapper();
 
 	/**
 	 * Creates a new read/write BeanELResolver.
@@ -230,8 +231,7 @@ public class JsonNodeELResolver extends ELResolver {
 
 			} else {
 				if (resultNode.isArray()) {
-					result = Context.getProcessEngineConfiguration().getObjectMapper().convertValue(resultNode,
-							List.class);
+					result = getObjectMapper().convertValue(resultNode, List.class);
 				} else {
 					result = resultNode;
 				}
@@ -240,6 +240,14 @@ public class JsonNodeELResolver extends ELResolver {
 		}
 		return result;
 	}
+
+    /**
+     * Returns the {@link ObjectMapper} used internally to convert {@link List}
+     * properties. Subclasses may override this method to provide a specific one
+     */
+	protected ObjectMapper getObjectMapper() {
+	    return defaultObjectMapper;
+    }
 
 	/**
 	 * If the base object is a map, returns whether a call to
@@ -360,13 +368,6 @@ public class JsonNodeELResolver extends ELResolver {
 
 	/**
 	 * Test whether the given base should be resolved by this ELResolver.
-	 *
-	 * @param base
-	 *            The bean to analyze.
-	 * @param property
-	 *            The name of the property to analyze. Will be coerced to a
-	 *            String.
-	 * @return base != null
 	 */
 	private final boolean isResolvable(Object base) {
 		return base instanceof JsonNode;

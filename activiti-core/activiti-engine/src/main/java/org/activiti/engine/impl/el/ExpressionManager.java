@@ -29,6 +29,9 @@ import javax.el.ExpressionFactory;
 import javax.el.ListELResolver;
 import javax.el.MapELResolver;
 import javax.el.ValueExpression;
+import org.activiti.core.el.ActivitiElContext;
+import org.activiti.core.el.ELResolverReflectionBlockerDecorator;
+import org.activiti.core.el.ReadOnlyMapELResolver;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.VariableScope;
 import org.activiti.engine.impl.bpmn.data.ItemInstance;
@@ -131,7 +134,7 @@ public class ExpressionManager {
         elResolver.add(new ArrayELResolver());
         elResolver.add(new ListELResolver());
         elResolver.add(new MapELResolver());
-        elResolver.add(new JsonNodeELResolver());
+        elResolver.add(new CustomMapperJsonNodeELResolver());
         elResolver.add(new DynamicBeanPropertyELResolver(ItemInstance.class,
                                                          "getFieldValue",
                                                          "setFieldValue")); // TODO: needs verification
