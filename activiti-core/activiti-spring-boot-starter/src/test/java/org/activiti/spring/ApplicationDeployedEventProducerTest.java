@@ -32,6 +32,7 @@ import org.activiti.engine.repository.DeploymentQuery;
 import org.activiti.runtime.api.model.impl.APIDeploymentConverter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Answers;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.springframework.context.ApplicationEventPublisher;
@@ -69,7 +70,7 @@ public class ApplicationDeployedEventProducerTest {
     @Test
     public void shouldPublishEventsWhenApplicationIsDeployed() {
         DeploymentQuery deploymentQuery = mock(DeploymentQuery.class);
-        given(repositoryService.createDeploymentQuery().latestVersion()).willReturn(deploymentQuery);
+        given(repositoryService.createDeploymentQuery()).willReturn(deploymentQuery);
 
         List<Deployment> internalDeployment = asList(mock(Deployment.class),
                 mock(Deployment.class));

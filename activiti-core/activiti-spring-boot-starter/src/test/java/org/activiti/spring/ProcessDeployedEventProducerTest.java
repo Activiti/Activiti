@@ -35,6 +35,7 @@ import org.activiti.engine.repository.ProcessDefinitionQuery;
 import org.activiti.runtime.api.model.impl.APIProcessDefinitionConverter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Answers;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.springframework.context.ApplicationEventPublisher;
@@ -43,7 +44,7 @@ public class ProcessDeployedEventProducerTest {
 
     private ProcessDeployedEventProducer producer;
 
-    @Mock
+    @Mock(answer = Answers.RETURNS_DEEP_STUBS)
     private RepositoryService repositoryService;
 
     @Mock
