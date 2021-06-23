@@ -71,7 +71,7 @@ public class ProcessDeployedEventProducerTest {
     public void shouldCallRegisteredListenersWhenWebApplicationTypeIsServlet() {
         //given
         ProcessDefinitionQuery definitionQuery = mock(ProcessDefinitionQuery.class);
-        given(repositoryService.createProcessDefinitionQuery()).willReturn(definitionQuery);
+        given(repositoryService.createProcessDefinitionQuery().latestVersion()).willReturn(definitionQuery);
 
         List<ProcessDefinition> internalProcessDefinitions = asList(mock(ProcessDefinition.class),
                                                                     mock(ProcessDefinition.class));
