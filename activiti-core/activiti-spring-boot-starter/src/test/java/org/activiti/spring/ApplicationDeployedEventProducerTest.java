@@ -69,7 +69,7 @@ public class ApplicationDeployedEventProducerTest {
     @Test
     public void shouldPublishEventsWhenApplicationIsDeployed() {
         DeploymentQuery deploymentQuery = mock(DeploymentQuery.class);
-        given(repositoryService.createDeploymentQuery()).willReturn(deploymentQuery);
+        given(repositoryService.createDeploymentQuery().latestVersion()).willReturn(deploymentQuery);
 
         List<Deployment> internalDeployment = asList(mock(Deployment.class),
                 mock(Deployment.class));
