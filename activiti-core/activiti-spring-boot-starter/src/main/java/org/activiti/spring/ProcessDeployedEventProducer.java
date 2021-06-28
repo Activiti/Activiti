@@ -51,7 +51,7 @@ public class ProcessDeployedEventProducer extends AbstractActivitiSmartLifeCycle
 
     @Override
     public void doStart() {
-        List<ProcessDefinition> processDefinitions = converter.from(repositoryService.createProcessDefinitionQuery().list());
+        List<ProcessDefinition> processDefinitions = converter.from(repositoryService.createProcessDefinitionQuery().latestVersion().list());
         List<ProcessDeployedEvent> processDeployedEvents = new ArrayList<>();
         for (ProcessDefinition processDefinition : processDefinitions) {
             try (InputStream inputStream = repositoryService.getProcessModel(processDefinition.getId())) {
