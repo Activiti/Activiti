@@ -19,6 +19,7 @@ package org.activiti.engine.impl.cfg;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.net.URL;
 import java.sql.Connection;
@@ -322,6 +323,7 @@ import org.apache.ibatis.builder.xml.XMLConfigBuilder;
 import org.apache.ibatis.builder.xml.XMLMapperBuilder;
 import org.apache.ibatis.datasource.pooled.PooledDataSource;
 import org.apache.ibatis.mapping.Environment;
+import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.defaults.DefaultSqlSessionFactory;
@@ -849,6 +851,8 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 
   protected PerformanceSettings performanceSettings = new PerformanceSettings();
 
+  protected Map<String, String> shortKeyToIdKeyMap = new HashMap<>();
+
 
   // buildProcessEngine
   // ///////////////////////////////////////////////////////
@@ -1229,9 +1233,10 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     configuration.setEnvironment(environment);
 
     initMybatisTypeHandlers(configuration);
+
+    configuration = parseMybatisConfiguration(parser);
     initCustomMybatisMappers(configuration);
 
-    configuration = parseMybatisConfiguration(configuration, parser);
     return configuration;
   }
 
@@ -1247,17 +1252,56 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     }
   }
 
-  public Configuration parseMybatisConfiguration(Configuration configuration, XMLConfigBuilder parser) {
-    return parseCustomMybatisXMLMappers(parser.parse());
+  public Configuration parseMybatisConfiguration(XMLConfigBuilder parser) {
+    Configuration configuration = parser.parse();
+    createShortKeyMap(configuration);
+    return parseCustomMybatisXMLMappers(configuration);
+  }
+
+  private void createShortKeyMap(Configuration configuration) {
+      Collection<? extends MappedStatement> collections = configuration.getMappedStatements();
+      List<String> problemKeyList = new ArrayList<>();
+      for (Object object : collections) {
+          if (object instanceof MappedStatement) {
+              MappedStatement mappedStatement = (MappedStatement) object;
+              String id = mappedStatement.getId();
+              String shortKey = getShortKey(id);
+              if (shortKey != null && !shortKeyToIdKeyMap.containsKey(shortKey)) {
+                  shortKeyToIdKeyMap.put(shortKey, id);
+              }
+          } else {
+              logSameShortKey(object);
+          }
+      }
+  }
+
+  private void logSameShortKey(Object object) {
+    Field field = ReflectUtil.getField("subject", object);
+    Object value = ReflectUtil.getFieldValue(field, object);
+    log.error("found duplicate key : [{}], please search and check it in xml", value);
+  }
+
+  private String getShortKey(String key) {
+      String shortKey = null;
+      if (key.contains(".")) {
+          shortKey = getShortName(key);
+      }
+      return shortKey;
+  }
+
+  private String getShortName(String key) {
+      String[] keyParts = key.split("\\.");
+      return keyParts[keyParts.length - 1];
   }
 
   public Configuration parseCustomMybatisXMLMappers(Configuration configuration) {
-    if (getCustomMybatisXMLMappers() != null)
-      // see XMLConfigBuilder.mapperElement()
-      for (String resource : getCustomMybatisXMLMappers()) {
-        XMLMapperBuilder mapperParser = new XMLMapperBuilder(getResourceAsStream(resource), configuration, resource, configuration.getSqlFragments());
-        mapperParser.parse();
-      }
+    if (getCustomMybatisXMLMappers() != null) {
+        // see XMLConfigBuilder.mapperElement()
+        for (String resource : getCustomMybatisXMLMappers()) {
+            XMLMapperBuilder mapperParser = new XMLMapperBuilder(getResourceAsStream(resource), configuration, resource, configuration.getSqlFragments());
+            mapperParser.parse();
+        }
+    }
     return configuration;
   }
 
@@ -1501,6 +1545,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     dbSqlSessionFactory.setDatabaseSchema(databaseSchema);
     dbSqlSessionFactory.setBulkInsertEnabled(isBulkInsertEnabled, databaseType);
     dbSqlSessionFactory.setMaxNrOfStatementsInBulkInsert(maxNrOfStatementsInBulkInsert);
+    dbSqlSessionFactory.setShortKeyToIdKeyMap(shortKeyToIdKeyMap);
     addSessionFactory(dbSqlSessionFactory);
   }
 
@@ -3694,4 +3739,11 @@ public ProcessEngineConfigurationImpl setClock(Clock clock) {
     this.eventSubscriptionPayloadMappingProvider = eventSubscriptionPayloadMappingProvider;
   }
 
+  public Map<String, String> getShortKeyToIdKeyMap() {
+    return shortKeyToIdKeyMap;
+  }
+
+  public void setShortKeyToIdKeyMap(Map<String, String> shortKeyToIdKeyMap) {
+    this.shortKeyToIdKeyMap = shortKeyToIdKeyMap;
+  }
 }
