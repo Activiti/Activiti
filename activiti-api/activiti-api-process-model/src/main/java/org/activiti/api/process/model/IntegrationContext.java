@@ -23,6 +23,8 @@ public interface IntegrationContext {
 
     String getProcessInstanceId();
 
+    String getRootProcessInstanceId();
+
     String getParentProcessInstanceId();
 
     String getExecutionId();
