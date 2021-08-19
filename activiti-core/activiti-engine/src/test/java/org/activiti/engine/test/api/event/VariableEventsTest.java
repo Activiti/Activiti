@@ -218,7 +218,7 @@ public class VariableEventsTest extends PluggableActivitiTestCase {
     }
 
 	@Deployment
-	public void testProcessInstanceVariableEventsOnCallActivity() throws Exception {
+    public void testProcessInstanceVariableEventsOnCallActivity() throws Exception {
         ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("callVariableProcess",
                 Collections.<String, Object>singletonMap("parentVar1", "parentVar1Value"));
         assertThat(processInstance).isNotNull();
@@ -248,7 +248,7 @@ public class VariableEventsTest extends PluggableActivitiTestCase {
         variableList.remove(event.getVariableName());
 
         assertEquals(0, variableList.size());
-	}
+    }
 
     /**
      * Test create, update and delete of task-local variables.

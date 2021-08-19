@@ -128,8 +128,8 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
     Map<String, Object> variablesFromExtensionFile = calculateInboundVariables(execution, processDefinition);
 
     variables.putAll(variablesFromExtensionFile);
-    variables = copyProcessVariables(execution,expressionManager,callActivity, variables);
-    
+    variables = copyProcessVariables(execution, expressionManager, callActivity, variables);
+
     if (!variables.isEmpty()) {
       initializeVariables(subProcessInstance, variables);
     }
@@ -146,11 +146,11 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
 
   public void completing(DelegateExecution execution, DelegateExecution subProcessInstance) throws Exception {
 
-		Map<String, Object> outboundVariables = calculateOutBoundVariables(copyOutParameters(execution, subProcessInstance),
-				subProcessInstance.getVariables());
-		if (outboundVariables != null) {
-			execution.setVariables(outboundVariables);
-		}
+      Map<String, Object> outboundVariables = calculateOutBoundVariables(
+              copyOutParameters(execution, subProcessInstance), subProcessInstance.getVariables());
+      if (outboundVariables != null) {
+          execution.setVariables(outboundVariables);
+      }
   }
 
   public void completed(DelegateExecution execution) throws Exception {
@@ -201,38 +201,40 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
                                                            Map<String, Object> subProcessVariables) {
     return new HashMap<String, Object>();
   }
-  protected Map<String, Object> copyProcessVariables(DelegateExecution execution, ExpressionManager expressionManager,
-			CallActivity callActivity, Map<String, Object> variables) {
-		for (IOParameter ioParameter : callActivity.getInParameters()) {
-			Object value = null;
-			if (StringUtils.isNotEmpty(ioParameter.getSourceExpression())) {
-				Expression expression = expressionManager.createExpression(ioParameter.getSourceExpression().trim());
-				value = expression.getValue(execution);
 
-			} else {
-				value = execution.getVariable(ioParameter.getSource());
-			}
-			variables.put(ioParameter.getTarget(), value);
-		}
-		return variables;
-	}
+  protected Map<String, Object> copyProcessVariables(DelegateExecution execution, ExpressionManager expressionManager,
+          CallActivity callActivity, Map<String, Object> variables) {
+      for (IOParameter ioParameter : callActivity.getInParameters()) {
+          Object value = null;
+          if (StringUtils.isNotEmpty(ioParameter.getSourceExpression())) {
+              Expression expression = expressionManager.createExpression(ioParameter.getSourceExpression().trim());
+              value = expression.getValue(execution);
+
+          } else {
+              value = execution.getVariable(ioParameter.getSource());
+          }
+          variables.put(ioParameter.getTarget(), value);
+      }
+      return variables;
+  }
+
   protected DelegateExecution copyOutParameters(DelegateExecution execution, DelegateExecution subProcessInstance) {
 
-	ExpressionManager expressionManager = Context.getProcessEngineConfiguration().getExpressionManager();
-	ExecutionEntity executionEntity = (ExecutionEntity) execution;
-	CallActivity callActivity = (CallActivity) executionEntity.getCurrentFlowElement();
-	for (IOParameter ioParameter : callActivity.getOutParameters()) {
-		Object value = null;
-		if (StringUtils.isNotEmpty(ioParameter.getSourceExpression())) {
-			Expression expression = expressionManager.createExpression(ioParameter.getSourceExpression().trim());
-			value = expression.getValue(subProcessInstance);
+      ExpressionManager expressionManager = Context.getProcessEngineConfiguration().getExpressionManager();
+      ExecutionEntity executionEntity = (ExecutionEntity) execution;
+      CallActivity callActivity = (CallActivity) executionEntity.getCurrentFlowElement();
+      for (IOParameter ioParameter : callActivity.getOutParameters()) {
+          Object value = null;
+          if (StringUtils.isNotEmpty(ioParameter.getSourceExpression())) {
+              Expression expression = expressionManager.createExpression(ioParameter.getSourceExpression().trim());
+              value = expression.getValue(subProcessInstance);
 
-		} else {
-			value = subProcessInstance.getVariable(ioParameter.getSource());
-		}
-		execution.setVariable(ioParameter.getTarget(), value);
-	}
-	return execution;
-}
+          } else {
+              value = subProcessInstance.getVariable(ioParameter.getSource());
+          }
+          execution.setVariable(ioParameter.getTarget(), value);
+      }
+      return execution;
+  }
 
 }

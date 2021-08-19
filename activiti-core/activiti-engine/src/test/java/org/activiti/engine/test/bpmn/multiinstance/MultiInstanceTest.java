@@ -824,41 +824,41 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
     }
 
     assertProcessEnded(procId);
-  }
-  
-  @Deployment(resources = "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.testSequentialCallActivityWithList.bpmn20.xml")
-  public void testSequentialCallActivityWithList() {
-      ArrayList<String> list = new ArrayList<String>();
-      list.add("one");
-      list.add("two");
+}
 
-      HashMap<String, Object> variables = new HashMap<String, Object>();
-      variables.put("list", list);
+@Deployment(resources = "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.testSequentialCallActivityWithList.bpmn20.xml")
+public void testSequentialCallActivityWithList() {
+    ArrayList<String> list = new ArrayList<String>();
+    list.add("one");
+    list.add("two");
 
-      String procId = runtimeService.startProcessInstanceByKey("parentProcess", variables).getId();
+    HashMap<String, Object> variables = new HashMap<String, Object>();
+    variables.put("list", list);
 
-      Task task1 = taskService.createTaskQuery().processVariableValueEquals("element", "one").singleResult();
-      Task task2 = taskService.createTaskQuery().processVariableValueEquals("element", "two").singleResult();
+    String procId = runtimeService.startProcessInstanceByKey("parentProcess", variables).getId();
 
-      assertThat(task1).isNotNull();
-      assertThat(task2).isNotNull();
+    Task task1 = taskService.createTaskQuery().processVariableValueEquals("element", "one").singleResult();
+    Task task2 = taskService.createTaskQuery().processVariableValueEquals("element", "two").singleResult();
 
-      HashMap<String, Object> subVariables = new HashMap<String, Object>();
-      subVariables.put("x", "y");
+    assertThat(task1).isNotNull();
+    assertThat(task2).isNotNull();
 
-      taskService.complete(task1.getId(), subVariables);
-      taskService.complete(task2.getId(), subVariables);
+    HashMap<String, Object> subVariables = new HashMap<String, Object>();
+    subVariables.put("x", "y");
 
-      Task task3 = taskService.createTaskQuery().processDefinitionKey("midProcess").singleResult();
-      assertThat(task3).isNotNull();
-      taskService.complete(task3.getId(), null);
+    taskService.complete(task1.getId(), subVariables);
+    taskService.complete(task2.getId(), subVariables);
 
-      Task task4 = taskService.createTaskQuery().processDefinitionKey("parentProcess").singleResult();
-      assertThat(task4).isNotNull();
-      taskService.complete(task4.getId(), null);
+    Task task3 = taskService.createTaskQuery().processDefinitionKey("midProcess").singleResult();
+    assertThat(task3).isNotNull();
+    taskService.complete(task3.getId(), null);
 
-      assertProcessEnded(procId);
-  }
+    Task task4 = taskService.createTaskQuery().processDefinitionKey("parentProcess").singleResult();
+    assertThat(task4).isNotNull();
+    taskService.complete(task4.getId(), null);
+
+    assertProcessEnded(procId);
+}
 
 
   @Deployment(resources = { "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.testSequentialCallActivityWithTimer.bpmn20.xml",
