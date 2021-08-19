@@ -13,25 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.activiti.core.el;
 
+import java.util.Map;
 
-package org.activiti.engine.impl.el;
-
-import java.lang.reflect.Method;
-
-import javax.el.FunctionMapper;
-
-/**
- * Default implementation of a {@link FunctionMapper}.
- *
- * A non-null implementation is required by the javax.el.* classes, hence the reason for this pretty useless class.
- *
-
- */
-public class ActivitiFunctionMapper extends FunctionMapper {
-
-  public Method resolveFunction(String prefix, String localName) {
-    return null;
-  }
-
+public interface ExpressionResolver {
+    <T> T resolveExpression(String expression, Map<String, Object> variables, Class<T> type);
 }

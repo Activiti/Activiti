@@ -13,30 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.engine.impl.el;
+package org.activiti.core.el;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import java.util.Collections;
 import java.util.Map;
-import org.activiti.engine.ActivitiException;
-import org.activiti.engine.delegate.Expression;
-import org.activiti.engine.impl.delegate.invocation.DefaultDelegateInterceptor;
 import org.junit.Test;
 
 public class ELResolverReflectionBlockerDecoratorTest {
-
 
     @Test
     public void should_resolveExpressionCorrectly_when_noReflectionOrNativeMethodsAreUsed() {
         //given
         Map<String, Object> availableVariables = Collections.singletonMap("name", "jon doe");
         String expressionString = "${name.toString()}";
-        ExpressionManager expressionManager = new ExpressionManager();
+        ExpressionResolver expressionResolver = new JuelExpressionResolver();
 
         //when
-        Expression expression = expressionManager.createExpression(expressionString);
-        Object value = expression.getValue(expressionManager, new DefaultDelegateInterceptor(), availableVariables);
+        String value = expressionResolver.resolveExpression(expressionString, availableVariables, String.class);
 
         //then
         assertThat(value).isEqualTo("jon doe");
@@ -48,16 +43,13 @@ public class ELResolverReflectionBlockerDecoratorTest {
         //given
         Map<String, Object> availableVariables = Collections.singletonMap("name", "jon doe");
         String expressionString = "${name.getClass().getName()}";
-        ExpressionManager expressionManager = new ExpressionManager();
-
-        //when
-        Expression expression = expressionManager.createExpression(expressionString);
+        ExpressionResolver expressionResolver = new JuelExpressionResolver();
 
         //then
-        assertThatExceptionOfType(ActivitiException.class)
+        assertThatExceptionOfType(IllegalArgumentException.class)
             .as("Using Native Method: getClass in an expression")
-            .isThrownBy(() -> expression.getValue(expressionManager, new DefaultDelegateInterceptor(), availableVariables))
-            .withCauseInstanceOf(IllegalArgumentException.class);
+            .isThrownBy(() -> expressionResolver.resolveExpression(expressionString, availableVariables, Object.class))
+            .withMessage("Illegal use of Native Method in a JUEL Expression");
     }
 
     @Test
@@ -66,16 +58,12 @@ public class ELResolverReflectionBlockerDecoratorTest {
         //given
         Map<String, Object> availableVariables = Collections.singletonMap("class", String.class);
         String expressionString = "${class.forName(\"java.lang.Runtime\").getMethods()[6].invoke()}";
-        ExpressionManager expressionManager = new ExpressionManager();
-
-        //when
-        Expression expression = expressionManager.createExpression(expressionString);
+        ExpressionResolver expressionResolver = new JuelExpressionResolver();
 
         //then
-        assertThatExceptionOfType(ActivitiException.class)
+        assertThatExceptionOfType(IllegalArgumentException.class)
             .as("Using Reflection in an expression")
-            .isThrownBy(() -> expression.getValue(expressionManager, new DefaultDelegateInterceptor(), availableVariables))
-            .withCauseInstanceOf(IllegalArgumentException.class);
+            .isThrownBy(() -> expressionResolver.resolveExpression(expressionString, availableVariables, Object.class))
+            .withMessage("Illegal use of Reflection in a JUEL Expression");
     }
-
 }

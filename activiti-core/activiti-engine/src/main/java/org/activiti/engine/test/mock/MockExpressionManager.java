@@ -24,8 +24,8 @@ import javax.el.ELResolver;
 import javax.el.ListELResolver;
 import javax.el.MapELResolver;
 
+import org.activiti.core.el.ELResolverReflectionBlockerDecorator;
 import org.activiti.engine.delegate.VariableScope;
-import org.activiti.engine.impl.el.ELResolverReflectionBlockerDecorator;
 import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.el.VariableScopeElResolver;
 

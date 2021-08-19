@@ -21,7 +21,6 @@
     <jgraphx.version>4.2.2</jgraphx.version>
     <joda-time.version>2.10.10</joda-time.version>
     <json-unit.version>2.25.0</json-unit.version>
-    <juel.version>2.2.7</juel.version>
     <mybatis.version>3.5.7</mybatis.version>
     <subethasmtp-wiser.version>1.2</subethasmtp-wiser.version>
     <xmlgraphics-commons.version>2.6</xmlgraphics-commons.version>
@@ -46,21 +45,6 @@
         <groupId>jakarta.enterprise.concurrent</groupId>
         <artifactId>jakarta.enterprise.concurrent-api</artifactId>
         <version>${jakarta-enterprise-concurrent.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>de.odysseus.juel</groupId>
-        <artifactId>juel-api</artifactId>
-        <version>${juel.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>de.odysseus.juel</groupId>
-        <artifactId>juel-impl</artifactId>
-        <version>${juel.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>de.odysseus.juel</groupId>
-        <artifactId>juel-spi</artifactId>
-        <version>${juel.version}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.commons</groupId>
