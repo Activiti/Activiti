@@ -229,22 +229,27 @@ public class VariableEventsTest extends PluggableActivitiTestCase {
         variableList.add("parentVar2");
 
         ActivitiVariableEvent event = (ActivitiVariableEvent) listener.getEventsReceived().get(0);
-        assertEquals(ActivitiEventType.VARIABLE_CREATED, event.getType());
-        assertTrue(variableList.contains(event.getVariableName()));
+        assertThat(ActivitiEventType.VARIABLE_CREATED).isEqualTo(event.getType());
+        assertThat(variableList.contains(event.getVariableName())).isTrue();
+
         event = (ActivitiVariableEvent) listener.getEventsReceived().get(1);
-        assertEquals(ActivitiEventType.VARIABLE_CREATED, event.getType());
-        assertTrue(variableList.contains(event.getVariableName()));
+        assertThat(ActivitiEventType.VARIABLE_CREATED).isEqualTo(event.getType());
+        assertThat(variableList.contains(event.getVariableName())).isTrue();
+
         event = (ActivitiVariableEvent) listener.getEventsReceived().get(2);
-        assertEquals(ActivitiEventType.VARIABLE_CREATED, event.getType());
-        assertTrue(variableList.contains(event.getVariableName()));
+        assertThat(ActivitiEventType.VARIABLE_CREATED).isEqualTo(event.getType());
+        assertThat(variableList.contains(event.getVariableName())).isTrue();
+
         event = (ActivitiVariableEvent) listener.getEventsReceived().get(3);
-        assertEquals(ActivitiEventType.VARIABLE_DELETED, event.getType());
+        assertThat(ActivitiEventType.VARIABLE_DELETED).isEqualTo(event.getType());
         variableList.remove(event.getVariableName());
+
         event = (ActivitiVariableEvent) listener.getEventsReceived().get(4);
-        assertEquals(ActivitiEventType.VARIABLE_DELETED, event.getType());
+        assertThat(ActivitiEventType.VARIABLE_DELETED).isEqualTo(event.getType());
         variableList.remove(event.getVariableName());
+
         event = (ActivitiVariableEvent) listener.getEventsReceived().get(5);
-        assertEquals(ActivitiEventType.VARIABLE_DELETED, event.getType());
+        assertThat(ActivitiEventType.VARIABLE_DELETED).isEqualTo(event.getType());
         variableList.remove(event.getVariableName());
 
         assertEquals(0, variableList.size());
