@@ -825,7 +825,7 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
 
     assertProcessEnded(procId);
   }
-  
+
   @Deployment(resources = "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.testSequentialCallActivityWithList.bpmn20.xml")
   public void testSequentialCallActivityWithList() {
       ArrayList<String> list = new ArrayList<String>();
@@ -859,7 +859,6 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
 
       assertProcessEnded(procId);
   }
-
 
   @Deployment(resources = { "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.testSequentialCallActivityWithTimer.bpmn20.xml",
       "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.externalSubProcess.bpmn20.xml" })
