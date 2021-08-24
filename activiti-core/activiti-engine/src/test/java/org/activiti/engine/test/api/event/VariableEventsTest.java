@@ -19,11 +19,14 @@ package org.activiti.engine.test.api.event;
 import static java.util.Collections.singletonMap;
 import static org.activiti.engine.impl.util.CollectionUtil.map;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.ActivitiVariableEvent;
@@ -219,43 +222,21 @@ public class VariableEventsTest extends PluggableActivitiTestCase {
 
     @Deployment
     public void testProcessInstanceVariableEventsOnCallActivity() throws Exception {
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("callVariableProcess",
-                Collections.<String, Object>singletonMap("parentVar1", "parentVar1Value"));
-        assertThat(processInstance).isNotNull();
-        assertThat(listener.getEventsReceived()).hasSize(6);
-        List<String> variableList = new ArrayList<String>();
-        variableList.add("parentVar1");
-        variableList.add("subVar1");
-        variableList.add("parentVar2");
+        runtimeService.startProcessInstanceByKey("callVariableProcess",
+                Collections.singletonMap("parentVar1", "parentVar1Value"));
 
-        ActivitiVariableEvent event = (ActivitiVariableEvent) listener.getEventsReceived().get(0);
-        assertThat(event.getType()).isEqualTo(ActivitiEventType.VARIABLE_CREATED);
-        assertThat(variableList).contains(event.getVariableName());
-
-        event = (ActivitiVariableEvent) listener.getEventsReceived().get(1);
-        assertThat(event.getType()).isEqualTo(ActivitiEventType.VARIABLE_CREATED);
-        assertThat(variableList).contains(event.getVariableName());
-
-        event = (ActivitiVariableEvent) listener.getEventsReceived().get(2);
-        assertThat(event.getType()).isEqualTo(ActivitiEventType.VARIABLE_CREATED);
-        assertThat(variableList).contains(event.getVariableName());
-
-        event = (ActivitiVariableEvent) listener.getEventsReceived().get(3);
-        assertThat(event.getType()).isEqualTo(ActivitiEventType.VARIABLE_DELETED);
-        variableList.remove(event.getVariableName());
-
-        event = (ActivitiVariableEvent) listener.getEventsReceived().get(4);
-        assertThat(event.getType()).isEqualTo(ActivitiEventType.VARIABLE_DELETED);
-        variableList.remove(event.getVariableName());
-
-        event = (ActivitiVariableEvent) listener.getEventsReceived().get(5);
-        assertThat(event.getType()).isEqualTo(ActivitiEventType.VARIABLE_DELETED);
-        variableList.remove(event.getVariableName());
-
-        assertThat(variableList.size()).isZero();
+        final List<ActivitiVariableEvent> variableEvents = listener.getEventsReceived().stream()
+                .filter(event -> event instanceof ActivitiVariableEvent).map(ActivitiVariableEvent.class::cast)
+                .collect(Collectors.toList());
+        assertThat(variableEvents).extracting(ActivitiVariableEvent::getType, ActivitiVariableEvent::getVariableName)
+                .containsExactly(tuple(ActivitiEventType.VARIABLE_CREATED, "parentVar1"),
+                        tuple(ActivitiEventType.VARIABLE_CREATED, "subVar1"),
+                        tuple(ActivitiEventType.VARIABLE_CREATED, "parentVar2"),
+                        tuple(ActivitiEventType.VARIABLE_DELETED, "subVar1"),
+                        tuple(ActivitiEventType.VARIABLE_DELETED, "parentVar2"),
+                        tuple(ActivitiEventType.VARIABLE_DELETED, "parentVar1"));
 
     }
-
     /**
      * Test create, update and delete of task-local variables.
      */
