@@ -20,9 +20,6 @@ import static java.util.Collections.singletonMap;
 import static org.activiti.engine.impl.util.CollectionUtil.map;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
-
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -223,7 +220,7 @@ public class VariableEventsTest extends PluggableActivitiTestCase {
     @Deployment
     public void testProcessInstanceVariableEventsOnCallActivity() throws Exception {
         runtimeService.startProcessInstanceByKey("callVariableProcess",
-                Collections.singletonMap("parentVar1", "parentVar1Value"));
+                singletonMap("parentVar1", "parentVar1Value"));
 
         final List<ActivitiVariableEvent> variableEvents = listener.getEventsReceived().stream()
                 .filter(event -> event instanceof ActivitiVariableEvent).map(ActivitiVariableEvent.class::cast)
