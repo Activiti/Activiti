@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.activiti</groupId>
     <artifactId>activiti-core</artifactId>
-    <version>7.1.344</version>
+    <version>7.1.0-M15</version>
   </parent>
   <artifactId>activiti-core-dependencies</artifactId>
   <packaging>pom</packaging>

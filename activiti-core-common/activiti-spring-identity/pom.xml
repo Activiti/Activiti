@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.activiti</groupId>
     <artifactId>activiti-core-common-dependencies</artifactId>
-    <version>7.1.344</version>
+    <version>7.1.0-M15</version>
     <relativePath>../activiti-core-common-dependencies</relativePath>
   </parent>
   <artifactId>activiti-spring-identity</artifactId>

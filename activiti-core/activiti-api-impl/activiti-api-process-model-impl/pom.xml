@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.activiti</groupId>
     <artifactId>activiti-api-impl</artifactId>
-    <version>7.1.344</version>
+    <version>7.1.0-M15</version>
   </parent>
   <artifactId>activiti-api-process-model-impl</artifactId>
   <name>Activiti :: API :: Process Model Implementation</name>
