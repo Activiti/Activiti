@@ -15,29 +15,33 @@
  */
 package org.activiti.core.el;
 
-import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import javax.el.FunctionMapper;
+import javax.el.ValueExpression;
+import javax.el.VariableMapper;
 
-/**
- * Default implementation of a {@link FunctionMapper}.
- * <p>
- * A non-null implementation is required by the javax.el.* classes, hence the reason for this pretty useless class.
- */
-public class ActivitiFunctionMapper extends FunctionMapper {
+public class ActivitiVariablesMapper extends VariableMapper {
 
-    Map<String, Method> map = Collections.emptyMap();
+    Map<String, ValueExpression> map = Collections.emptyMap();
 
-    public Method resolveFunction(String prefix, String localName) {
-        return map.get(prefix + ":" + localName);
+    public ActivitiVariablesMapper() {
     }
 
-    public void setFunction(String prefix, String localName, Method method) {
+    public ActivitiVariablesMapper(Map<String, ValueExpression> map) {
+        this.map = map;
+    }
+
+    @Override
+    public ValueExpression resolveVariable(String variable) {
+        return map.get(variable);
+    }
+
+    @Override
+    public ValueExpression setVariable(String variable, ValueExpression expression) {
         if (map.isEmpty()) {
-            map = new HashMap<String, Method>();
+            map = new HashMap<>();
         }
-        map.put(prefix + ":" + localName, method);
+        return map.put(variable, expression);
     }
 }
