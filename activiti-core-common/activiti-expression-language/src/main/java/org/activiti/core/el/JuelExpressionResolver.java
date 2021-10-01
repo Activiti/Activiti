@@ -58,6 +58,6 @@ public class JuelExpressionResolver implements ExpressionResolver {
                 beanResolver()
             )
             .withVariables(variables)
-            .build();
+            .buildWithDateFunctions();
     }
 }
