@@ -17,6 +17,7 @@
 
 package org.activiti.engine.impl.el;
 
+import java.util.Collections;
 import java.util.Map;
 import javax.el.ArrayELResolver;
 import javax.el.BeanELResolver;
@@ -51,8 +52,6 @@ import org.activiti.engine.impl.persistence.entity.VariableScopeImpl;
 public class ExpressionManager {
 
     protected ExpressionFactory expressionFactory;
-    // Default implementation (does nothing)
-    protected ELContext parsingElContext = new ParsingElContext();
     protected Map<Object, Object> beans;
 
     public ExpressionManager() {
@@ -80,11 +79,11 @@ public class ExpressionManager {
     }
 
     public Expression createExpression(String expression) {
-        ValueExpression valueExpression = expressionFactory.createValueExpression(parsingElContext,
-                                                                                  expression.trim(),
-                                                                                  Object.class);
+        ValueExpression valueExpression = expressionFactory.createValueExpression(getElContext(Collections.emptyMap()),
+            expression.trim(),
+            Object.class);
         return new JuelExpression(valueExpression,
-                                  expression);
+            expression);
     }
 
     public void setExpressionFactory(ExpressionFactory expressionFactory) {
