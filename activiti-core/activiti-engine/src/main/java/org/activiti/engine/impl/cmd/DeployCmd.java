@@ -33,7 +33,9 @@ import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.persistence.entity.ResourceEntity;
 import org.activiti.engine.impl.repository.DeploymentBuilderImpl;
 import org.activiti.engine.repository.Deployment;
-
+import org.activiti.engine.ActivitiException;
+import org.activiti.engine.compatibility.Activiti5CompatibilityHandler;
+import org.activiti.engine.repository.DeploymentProperties;
 /**
  */
 public class DeployCmd<T> implements Command<Deployment>, Serializable {
@@ -46,8 +48,25 @@ public class DeployCmd<T> implements Command<Deployment>, Serializable {
   }
 
   public Deployment execute(CommandContext commandContext) {
+      // Backwards compatibility with Activiti v5
+      if (commandContext.getProcessEngineConfiguration().isActiviti5CompatibilityEnabled()
+          && deploymentBuilder.getDeploymentProperties() != null
+          && deploymentBuilder.getDeploymentProperties().containsKey(DeploymentProperties.DEPLOY_AS_ACTIVITI5_PROCESS_DEFINITION)
+          && deploymentBuilder.getDeploymentProperties().get(DeploymentProperties.DEPLOY_AS_ACTIVITI5_PROCESS_DEFINITION).equals(Boolean.TRUE)) {
+
+          return deployAsActiviti5ProcessDefinition(commandContext);
+      }
     return executeDeploy(commandContext);
   }
+
+    protected Deployment deployAsActiviti5ProcessDefinition(CommandContext commandContext) {
+        Activiti5CompatibilityHandler activiti5CompatibilityHandler = commandContext.getProcessEngineConfiguration().getActiviti5CompatibilityHandler();
+        if (activiti5CompatibilityHandler == null) {
+            throw new ActivitiException("Found Activiti 5 process definition, but no compatibility handler on the classpath. "
+                + "Cannot use the deployment property " + DeploymentProperties.DEPLOY_AS_ACTIVITI5_PROCESS_DEFINITION);
+        }
+        return activiti5CompatibilityHandler.deploy(deploymentBuilder);
+    }
 
   protected Deployment executeDeploy(CommandContext commandContext) {
     DeploymentEntity deployment = deploymentBuilder.getDeployment();

@@ -29,7 +29,9 @@ import org.activiti.engine.impl.persistence.entity.JobEntity;
 import org.activiti.engine.runtime.Job;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+import org.activiti.engine.compatibility.Activiti5CompatibilityHandler;
+import org.activiti.engine.impl.util.Activiti5Util;
+import org.activiti.engine.impl.util.Activiti5Util;
 /**
 
 
@@ -48,6 +50,11 @@ public class DeleteJobCmd implements Command<Object>, Serializable {
 
   public Object execute(CommandContext commandContext) {
     JobEntity jobToDelete = getJobToDelete(commandContext);
+      if (Activiti5Util.isActiviti5ProcessDefinitionId(commandContext, jobToDelete.getProcessDefinitionId())) {
+          Activiti5CompatibilityHandler activiti5CompatibilityHandler = Activiti5Util.getActiviti5CompatibilityHandler();
+          activiti5CompatibilityHandler.deleteJob(jobToDelete.getId());
+          return null;
+      }
     sendCancelEvent(jobToDelete);
     commandContext.getJobEntityManager().delete(jobToDelete);
     return null;

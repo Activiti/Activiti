@@ -25,7 +25,8 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.VariableInstance;
 import org.activiti.engine.runtime.Execution;
-
+import org.activiti.engine.compatibility.Activiti5CompatibilityHandler;
+import org.activiti.engine.impl.util.Activiti5Util;
 public class GetExecutionVariableInstanceCmd implements Command<VariableInstance>, Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -55,10 +56,16 @@ public class GetExecutionVariableInstanceCmd implements Command<VariableInstance
         }
 
         VariableInstance variableEntity = null;
-        if (isLocal) {
-            variableEntity = execution.getVariableInstanceLocal(variableName, false);
+        if (Activiti5Util.isActiviti5ProcessDefinitionId(commandContext, execution.getProcessDefinitionId())) {
+            Activiti5CompatibilityHandler activiti5CompatibilityHandler = Activiti5Util.getActiviti5CompatibilityHandler();
+            variableEntity = activiti5CompatibilityHandler.getExecutionVariableInstance(executionId, variableName, isLocal);
+
         } else {
-            variableEntity = execution.getVariableInstance(variableName, false);
+            if (isLocal) {
+                variableEntity = execution.getVariableInstanceLocal(variableName, false);
+            } else {
+                variableEntity = execution.getVariableInstance(variableName, false);
+            }
         }
 
         if (variableEntity != null) {

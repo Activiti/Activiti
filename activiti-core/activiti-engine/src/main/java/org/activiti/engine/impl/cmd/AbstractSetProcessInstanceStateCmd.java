@@ -32,7 +32,7 @@ import org.activiti.engine.impl.persistence.entity.SuspensionState.SuspensionSta
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.persistence.entity.TimerJobEntity;
 import org.activiti.engine.runtime.Execution;
-
+import org.activiti.engine.impl.util.Activiti5Util;
 /**
 
 
@@ -59,6 +59,15 @@ public abstract class AbstractSetProcessInstanceStateCmd implements Command<Void
     if (!executionEntity.isProcessInstanceType()) {
       throw new ActivitiException("Cannot set suspension state for execution '" + processInstanceId + "': not a process instance.");
     }
+
+      if (Activiti5Util.isActiviti5ProcessDefinitionId(commandContext, executionEntity.getProcessDefinitionId())) {
+          if (getNewState() == SuspensionState.ACTIVE) {
+              commandContext.getProcessEngineConfiguration().getActiviti5CompatibilityHandler().activateProcessInstance(processInstanceId);
+          } else {
+              commandContext.getProcessEngineConfiguration().getActiviti5CompatibilityHandler().suspendProcessInstance(processInstanceId);
+          }
+          return null;
+      }
 
     SuspensionStateUtil.setSuspensionState(executionEntity, getNewState());
     commandContext.getExecutionEntityManager().update(executionEntity, false);

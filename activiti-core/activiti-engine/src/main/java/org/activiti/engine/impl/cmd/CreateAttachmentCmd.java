@@ -34,7 +34,8 @@ import org.activiti.engine.impl.util.IoUtil;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Attachment;
 import org.activiti.engine.task.Task;
-
+import org.activiti.engine.compatibility.Activiti5CompatibilityHandler;
+import org.activiti.engine.impl.util.Activiti5Util;
 /**
 
 
@@ -63,11 +64,21 @@ public class CreateAttachmentCmd implements Command<Attachment> {
   public Attachment execute(CommandContext commandContext) {
 
     if (taskId != null) {
-      verifyTaskParameters(commandContext);
+        TaskEntity task = verifyTaskParameters(commandContext);
+        if (task.getProcessDefinitionId() != null && Activiti5Util.isActiviti5ProcessDefinitionId(commandContext, task.getProcessDefinitionId())) {
+            Activiti5CompatibilityHandler activiti5CompatibilityHandler = Activiti5Util.getActiviti5CompatibilityHandler();
+            return activiti5CompatibilityHandler.createAttachment(attachmentType, taskId, processInstanceId, attachmentName, attachmentDescription, content, url);
+        }
+      //verifyTaskParameters(commandContext);
     }
 
     if (processInstanceId != null) {
-      verifyExecutionParameters(commandContext);
+        ExecutionEntity execution = verifyExecutionParameters(commandContext);
+        if (Activiti5Util.isActiviti5ProcessDefinitionId(commandContext, execution.getProcessDefinitionId())) {
+            Activiti5CompatibilityHandler activiti5CompatibilityHandler = Activiti5Util.getActiviti5CompatibilityHandler();
+            return activiti5CompatibilityHandler.createAttachment(attachmentType, taskId, processInstanceId, attachmentName, attachmentDescription, content, url);
+        }
+      //verifyExecutionParameters(commandContext);
     }
 
     AttachmentEntity attachment = commandContext.getAttachmentEntityManager().create();

@@ -28,7 +28,8 @@ import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.persistence.entity.data.DataManager;
 import org.activiti.engine.impl.persistence.entity.data.HistoricTaskInstanceDataManager;
-
+import org.activiti.engine.compatibility.Activiti5CompatibilityHandler;
+import org.activiti.engine.impl.util.Activiti5Util;
 /**
  */
 public class HistoricTaskInstanceEntityManagerImpl extends AbstractEntityManager<HistoricTaskInstanceEntity> implements HistoricTaskInstanceEntityManager {
@@ -92,6 +93,12 @@ public class HistoricTaskInstanceEntityManagerImpl extends AbstractEntityManager
       HistoricTaskInstanceEntity historicTaskInstance = findById(id);
       if (historicTaskInstance != null) {
 
+          if (historicTaskInstance.getProcessDefinitionId() != null
+              && Activiti5Util.isActiviti5ProcessDefinitionId(getCommandContext(), historicTaskInstance.getProcessDefinitionId())) {
+              Activiti5CompatibilityHandler activiti5CompatibilityHandler = Activiti5Util.getActiviti5CompatibilityHandler();
+              activiti5CompatibilityHandler.deleteHistoricTask(id);
+              return;
+          }
         List<HistoricTaskInstanceEntity> subTasks = historicTaskInstanceDataManager.findHistoricTasksByParentTaskId(historicTaskInstance.getId());
         for (HistoricTaskInstance subTask: subTasks) {
           delete(subTask.getId());

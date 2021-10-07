@@ -40,6 +40,8 @@ import org.activiti.engine.runtime.Execution;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.activiti.engine.compatibility.Activiti5CompatibilityHandler;
+import org.activiti.engine.impl.util.Activiti5Util;
 
 public class GetDataObjectsCmd implements Command<Map<String, DataObject>>, Serializable {
 
@@ -79,21 +81,27 @@ public class GetDataObjectsCmd implements Command<Map<String, DataObject>>, Seri
 
     Map<String, VariableInstance> variables = null;
 
-    if (dataObjectNames == null || dataObjectNames.isEmpty()) {
-      // Fetch all
-      if (isLocal) {
-        variables = execution.getVariableInstancesLocal();
-      } else {
-        variables = execution.getVariableInstances();
-      }
+      if (Activiti5Util.isActiviti5ProcessDefinitionId(commandContext, execution.getProcessDefinitionId())) {
+          Activiti5CompatibilityHandler activiti5CompatibilityHandler = Activiti5Util.getActiviti5CompatibilityHandler();
+          variables = activiti5CompatibilityHandler.getExecutionVariableInstances(executionId, dataObjectNames, isLocal);
 
-    } else {
-      // Fetch specific collection of variables
-      if (isLocal) {
-        variables = execution.getVariableInstancesLocal(dataObjectNames, false);
       } else {
-        variables = execution.getVariableInstances(dataObjectNames, false);
-      }
+
+          if (dataObjectNames == null || dataObjectNames.isEmpty()) {
+              // Fetch all
+              if (isLocal) {
+                  variables = execution.getVariableInstancesLocal();
+              } else {
+                  variables = execution.getVariableInstances();
+              }
+      } else {
+              // Fetch specific collection of variables
+              if (isLocal) {
+                  variables = execution.getVariableInstancesLocal(dataObjectNames, false);
+              } else {
+                  variables = execution.getVariableInstances(dataObjectNames, false);
+              }
+          }
     }
 
     Map<String,DataObject> dataObjects = null;

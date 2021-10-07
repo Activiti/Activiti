@@ -21,5 +21,5 @@ import org.activiti.engine.api.internal.Internal;
 @Internal
 public interface DeploymentProperties {
 
-
+    String DEPLOY_AS_ACTIVITI5_PROCESS_DEFINITION = "deployAsActiviti5ProcessDefinition";
 }

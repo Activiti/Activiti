@@ -29,7 +29,8 @@ import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.task.Comment;
 import org.activiti.engine.task.Event;
 import org.activiti.engine.task.Task;
-
+import org.activiti.engine.compatibility.Activiti5CompatibilityHandler;
+import org.activiti.engine.impl.util.Activiti5Util;
 /**
 
  */
@@ -88,6 +89,11 @@ public class AddCommentCmd implements Command<Comment> {
     } else if (task != null) {
       processDefinitionId = task.getProcessDefinitionId();
     }
+
+      if (processDefinitionId != null && Activiti5Util.isActiviti5ProcessDefinitionId(commandContext, processDefinitionId)) {
+          Activiti5CompatibilityHandler activiti5CompatibilityHandler = Activiti5Util.getActiviti5CompatibilityHandler();
+          return activiti5CompatibilityHandler.addComment(taskId, processInstanceId, type, message);
+      }
 
     String userId = Authentication.getAuthenticatedUserId();
     CommentEntity comment = commandContext.getCommentEntityManager().create();

@@ -25,7 +25,8 @@ import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.repository.ProcessDefinition;
-
+import org.activiti.engine.compatibility.Activiti5CompatibilityHandler;
+import org.activiti.engine.impl.util.Activiti5Util;
 /**
 
  */
@@ -62,7 +63,11 @@ public class DeleteIdentityLinkForProcessDefinitionCmd implements Command<Object
     if (processDefinition == null) {
       throw new ActivitiObjectNotFoundException("Cannot find process definition with id " + processDefinitionId, ProcessDefinition.class);
     }
-
+      if (Activiti5Util.isActiviti5ProcessDefinition(commandContext, processDefinition)) {
+          Activiti5CompatibilityHandler activiti5CompatibilityHandler = Activiti5Util.getActiviti5CompatibilityHandler();
+          activiti5CompatibilityHandler.deleteCandidateStarter(processDefinitionId, userId, groupId);
+          return null;
+      }
     commandContext.getIdentityLinkEntityManager().deleteIdentityLink(processDefinition, userId, groupId);
 
     return null;

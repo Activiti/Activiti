@@ -36,6 +36,8 @@ import org.activiti.engine.runtime.Execution;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.activiti.engine.compatibility.Activiti5CompatibilityHandler;
+import org.activiti.engine.impl.util.Activiti5Util;
 
 public class GetDataObjectCmd implements Command<DataObject>, Serializable {
 
@@ -77,10 +79,17 @@ public class GetDataObjectCmd implements Command<DataObject>, Serializable {
     DataObject dataObject = null;
 
     VariableInstance variableEntity = null;
-    if (isLocal) {
-      variableEntity = execution.getVariableInstanceLocal(dataObjectName, false);
-    } else {
-      variableEntity = execution.getVariableInstance(dataObjectName, false);
+      if (Activiti5Util.isActiviti5ProcessDefinitionId(commandContext, execution.getProcessDefinitionId())) {
+          Activiti5CompatibilityHandler activiti5CompatibilityHandler = Activiti5Util.getActiviti5CompatibilityHandler();
+          variableEntity = activiti5CompatibilityHandler.getExecutionVariableInstance(executionId, dataObjectName, isLocal);
+
+      } else {
+          if (isLocal) {
+              variableEntity = execution.getVariableInstanceLocal(dataObjectName, false);
+          } else {
+              variableEntity = execution.getVariableInstance(dataObjectName, false);
+          }
+
     }
 
     String localizedName = null;

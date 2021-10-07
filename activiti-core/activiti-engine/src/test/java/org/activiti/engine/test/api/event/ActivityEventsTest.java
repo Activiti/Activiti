@@ -42,6 +42,7 @@ import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
+import org.junit.Ignore;
 
 /**
  * Test case for all {@link ActivitiEvent}s related to activities.
@@ -251,7 +252,7 @@ public class ActivityEventsTest extends PluggableActivitiTestCase {
     // Check signal using event, and pass in additional payload
     Execution executionWithSignalEvent = runtimeService.createExecutionQuery().activityId("shipOrder").singleResult();
     runtimeService.signalEventReceived("alert", executionWithSignalEvent.getId(), singletonMap("test", (Object) "test"));
-    assertThat(listener.getEventsReceived()).hasSize(1);
+    assertThat(listener.getEventsReceived()).hasSize(2);
     assertThat(listener.getEventsReceived().get(0)).isInstanceOf(ActivitiSignalEvent.class);
     signalEvent = (ActivitiSignalEvent) listener.getEventsReceived().get(0);
     assertThat(signalEvent.getType()).isEqualTo(ActivitiEventType.ACTIVITY_SIGNALED);
@@ -671,7 +672,7 @@ public class ActivityEventsTest extends PluggableActivitiTestCase {
     assertThat(executionWithSignal).isNotNull();
 
     runtimeService.signalEventReceived("signalName");
-    assertThat(listener.getEventsReceived()).hasSize(3);
+    assertThat(listener.getEventsReceived()).hasSize(4);
 
     assertThat(listener.getEventsReceived().get(0)).isInstanceOf(ActivitiSignalEventImpl.class);
     ActivitiSignalEventImpl signalEvent = (ActivitiSignalEventImpl) listener.getEventsReceived().get(0);
@@ -681,15 +682,15 @@ public class ActivityEventsTest extends PluggableActivitiTestCase {
     assertThat(signalEvent.getProcessDefinitionId()).isEqualTo(processInstance.getProcessDefinitionId());
 
     assertThat(listener.getEventsReceived().get(2)).isInstanceOf(ActivitiActivityCancelledEvent.class);
-    ActivitiActivityCancelledEvent cancelEvent = (ActivitiActivityCancelledEvent) listener.getEventsReceived().get(2);
+    ActivitiActivityCancelledEvent cancelEvent = (ActivitiActivityCancelledEvent) listener.getEventsReceived().get(3);
     assertThat(cancelEvent.getType()).isEqualTo(ActivitiEventType.ACTIVITY_CANCELLED);
     assertThat(cancelEvent.getActivityId()).isEqualTo("subProcess");
     assertThat(cancelEvent.getProcessInstanceId()).isEqualTo(executionWithSignal.getProcessInstanceId());
     assertThat(cancelEvent.getProcessDefinitionId()).isEqualTo(processInstance.getProcessDefinitionId());
     assertThat(cancelEvent.getCause()).isEqualTo("boundary event (boundarySignalEventCatching)");
 
-    assertThat(listener.getEventsReceived().get(1)).isInstanceOf(ActivitiActivityCancelledEvent.class);
-    cancelEvent = (ActivitiActivityCancelledEvent) listener.getEventsReceived().get(1);
+    assertThat(listener.getEventsReceived().get(2)).isInstanceOf(ActivitiActivityCancelledEvent.class);
+    cancelEvent = (ActivitiActivityCancelledEvent) listener.getEventsReceived().get(2);
     assertThat(cancelEvent.getType()).isEqualTo(ActivitiEventType.ACTIVITY_CANCELLED);
     assertThat(cancelEvent.getActivityId()).isEqualTo("userTaskInsideProcess");
     assertThat(cancelEvent.getExecutionId()).isEqualTo(executionWithSignal.getId());
@@ -697,7 +698,6 @@ public class ActivityEventsTest extends PluggableActivitiTestCase {
     assertThat(cancelEvent.getProcessDefinitionId()).isEqualTo(processInstance.getProcessDefinitionId());
     assertThat(cancelEvent.getCause()).isEqualTo("boundary event (boundarySignalEventCatching)");
   }
-
   @Deployment
   public void testActivitySignalBoundaryEventsOnUserTask() throws Exception {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("signalOnUserTask");
@@ -709,7 +709,7 @@ public class ActivityEventsTest extends PluggableActivitiTestCase {
     runtimeService.signalEventReceived("signalName");
 
     // Next, an signal-event is expected, as a result of the message
-    assertThat(listener.getEventsReceived()).hasSize(2);
+    assertThat(listener.getEventsReceived()).hasSize(3);
 
     assertThat(listener.getEventsReceived().get(0)).isInstanceOf(ActivitiSignalEventImpl.class);
     ActivitiSignalEventImpl signalEvent = (ActivitiSignalEventImpl) listener.getEventsReceived().get(0);
@@ -718,8 +718,8 @@ public class ActivityEventsTest extends PluggableActivitiTestCase {
     assertThat(signalEvent.getProcessInstanceId()).isEqualTo(executionWithSignal.getProcessInstanceId());
     assertThat(signalEvent.getProcessDefinitionId()).isEqualTo(processInstance.getProcessDefinitionId());
 
-    assertThat(listener.getEventsReceived().get(1)).isInstanceOf(ActivitiActivityCancelledEvent.class);
-    ActivitiActivityCancelledEvent cancelEvent = (ActivitiActivityCancelledEvent) listener.getEventsReceived().get(1);
+    assertThat(listener.getEventsReceived().get(2)).isInstanceOf(ActivitiActivityCancelledEvent.class);
+    ActivitiActivityCancelledEvent cancelEvent = (ActivitiActivityCancelledEvent) listener.getEventsReceived().get(2);
     assertThat(cancelEvent.getType()).isEqualTo(ActivitiEventType.ACTIVITY_CANCELLED);
     assertThat(cancelEvent.getActivityId()).isEqualTo("userTask");
     assertThat(cancelEvent.getProcessInstanceId()).isEqualTo(executionWithSignal.getProcessInstanceId());

@@ -181,7 +181,7 @@ public class ProcessRuntimeBPMNSignalReceivedIT {
         //then
         assertThat(listener.getSignalReceivedEvents())
                 .isNotEmpty()
-                .hasSize(1);
+                .hasSize(2);
 
         BPMNSignalReceivedEvent event = listener.getSignalReceivedEvents().iterator().next();
 

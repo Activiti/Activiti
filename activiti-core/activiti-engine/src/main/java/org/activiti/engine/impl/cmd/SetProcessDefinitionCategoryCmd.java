@@ -26,7 +26,8 @@ import org.activiti.engine.impl.persistence.deploy.DeploymentCache;
 import org.activiti.engine.impl.persistence.deploy.ProcessDefinitionCacheEntry;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.repository.ProcessDefinition;
-
+import org.activiti.engine.compatibility.Activiti5CompatibilityHandler;
+import org.activiti.engine.impl.util.Activiti5Util;
 /**
 
  */
@@ -51,7 +52,11 @@ public class SetProcessDefinitionCategoryCmd implements Command<Void> {
     if (processDefinition == null) {
       throw new ActivitiObjectNotFoundException("No process definition found for id = '" + processDefinitionId + "'", ProcessDefinition.class);
     }
-
+      if (Activiti5Util.isActiviti5ProcessDefinition(commandContext, processDefinition)) {
+          Activiti5CompatibilityHandler activiti5CompatibilityHandler = Activiti5Util.getActiviti5CompatibilityHandler();
+          activiti5CompatibilityHandler.setProcessDefinitionCategory(processDefinitionId, category);
+          return null;
+      }
     // Update category
     processDefinition.setCategory(category);
 

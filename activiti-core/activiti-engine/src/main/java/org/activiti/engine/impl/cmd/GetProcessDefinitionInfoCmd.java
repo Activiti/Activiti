@@ -26,7 +26,8 @@ import org.activiti.engine.impl.persistence.deploy.ProcessDefinitionInfoCacheObj
 import org.activiti.engine.repository.ProcessDefinition;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-
+import org.activiti.engine.compatibility.Activiti5CompatibilityHandler;
+import org.activiti.engine.impl.util.Activiti5Util;
 
 /**
 
@@ -50,6 +51,10 @@ public class GetProcessDefinitionInfoCmd implements Command<ObjectNode>, Seriali
     DeploymentManager deploymentManager = commandContext.getProcessEngineConfiguration().getDeploymentManager();
     // make sure the process definition is in the cache
     ProcessDefinition processDefinition = deploymentManager.findDeployedProcessDefinitionById(processDefinitionId);
+      if (Activiti5Util.isActiviti5ProcessDefinition(commandContext, processDefinition)) {
+          Activiti5CompatibilityHandler activiti5CompatibilityHandler = Activiti5Util.getActiviti5CompatibilityHandler();
+          return activiti5CompatibilityHandler.getProcessDefinitionInfo(processDefinitionId);
+      }
     ProcessDefinitionInfoCacheObject definitionInfoCacheObject = deploymentManager.getProcessDefinitionInfoCache().get(processDefinitionId);
     if (definitionInfoCacheObject != null) {
       resultNode = definitionInfoCacheObject.getInfoNode();

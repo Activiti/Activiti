@@ -25,7 +25,8 @@ import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
-
+import org.activiti.engine.compatibility.Activiti5CompatibilityHandler;
+import org.activiti.engine.impl.util.Activiti5Util;
 /**
 
  */
@@ -51,7 +52,11 @@ public class DeleteHistoricProcessInstanceCmd implements Command<Object>, Serial
     if (instance.getEndTime() == null) {
       throw new ActivitiException("Process instance is still running, cannot delete historic process instance: " + processInstanceId);
     }
-
+      if (Activiti5Util.isActiviti5ProcessDefinitionId(commandContext, instance.getProcessDefinitionId())) {
+          Activiti5CompatibilityHandler activiti5CompatibilityHandler = Activiti5Util.getActiviti5CompatibilityHandler();
+          activiti5CompatibilityHandler.deleteHistoricProcessInstance(processInstanceId);
+          return null;
+      }
     commandContext.getHistoricProcessInstanceEntityManager().delete(processInstanceId);
 
     return null;

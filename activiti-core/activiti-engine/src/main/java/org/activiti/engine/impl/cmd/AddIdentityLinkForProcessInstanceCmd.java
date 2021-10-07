@@ -25,7 +25,8 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
 import org.activiti.engine.impl.persistence.entity.IdentityLinkEntityManager;
-
+import org.activiti.engine.compatibility.Activiti5CompatibilityHandler;
+import org.activiti.engine.impl.util.Activiti5Util;
 
 /**
 
@@ -75,6 +76,12 @@ public class AddIdentityLinkForProcessInstanceCmd implements Command<Void>, Seri
     if (processInstance == null) {
       throw new ActivitiObjectNotFoundException("Cannot find process instance with id " + processInstanceId, ExecutionEntity.class);
     }
+
+      if (Activiti5Util.isActiviti5ProcessDefinitionId(commandContext, processInstance.getProcessDefinitionId())) {
+          Activiti5CompatibilityHandler activiti5CompatibilityHandler = Activiti5Util.getActiviti5CompatibilityHandler();
+          activiti5CompatibilityHandler.addIdentityLinkForProcessInstance(processInstanceId, userId, groupId, type);
+          return null;
+      }
 
     IdentityLinkEntityManager identityLinkEntityManager = commandContext.getIdentityLinkEntityManager();
     identityLinkEntityManager.addIdentityLink(processInstance, userId, groupId, type);

@@ -27,7 +27,8 @@ import org.activiti.engine.impl.persistence.entity.CommentEntityManager;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.task.Comment;
 import org.activiti.engine.task.Task;
-
+import org.activiti.engine.compatibility.Activiti5CompatibilityHandler;
+import org.activiti.engine.impl.util.Activiti5Util;
 /**
 
  */
@@ -54,16 +55,45 @@ public class DeleteCommentCmd implements Command<Void>, Serializable {
         throw new ActivitiObjectNotFoundException("Comment with id '" + commentId + "' doesn't exists.", Comment.class);
       }
 
-      commentManager.delete((CommentEntity) comment);
+        if (comment.getProcessInstanceId() != null) {
+            ExecutionEntity execution = (ExecutionEntity) commandContext.getExecutionEntityManager().findById(comment.getProcessInstanceId());
+            if (execution != null && Activiti5Util.isActiviti5ProcessDefinitionId(commandContext, execution.getProcessDefinitionId())) {
+                Activiti5CompatibilityHandler activiti5CompatibilityHandler = Activiti5Util.getActiviti5CompatibilityHandler();
+                activiti5CompatibilityHandler.deleteComment(commentId, taskId, processInstanceId);
+                return null;
+            }
+
+        } else if (comment.getTaskId() != null) {
+            Task task = commandContext.getTaskEntityManager().findById(comment.getTaskId());
+            if (task != null && task.getProcessDefinitionId() != null && Activiti5Util.isActiviti5ProcessDefinitionId(commandContext, task.getProcessDefinitionId())) {
+                Activiti5CompatibilityHandler activiti5CompatibilityHandler = Activiti5Util.getActiviti5CompatibilityHandler();
+                activiti5CompatibilityHandler.deleteComment(commentId, taskId, processInstanceId);
+                return null;
+            }
+        }
+
+        commentManager.delete((CommentEntity) comment);
 
     } else {
       // Delete all comments on a task of process
       ArrayList<Comment> comments = new ArrayList<Comment>();
       if (processInstanceId != null) {
+          ExecutionEntity execution = (ExecutionEntity) commandContext.getExecutionEntityManager().findById(processInstanceId);
+          if (execution != null && Activiti5Util.isActiviti5ProcessDefinitionId(commandContext, execution.getProcessDefinitionId())) {
+              Activiti5CompatibilityHandler activiti5CompatibilityHandler = Activiti5Util.getActiviti5CompatibilityHandler();
+              activiti5CompatibilityHandler.deleteComment(commentId, taskId, processInstanceId);
+              return null;
+          }
         comments.addAll(commentManager.findCommentsByProcessInstanceId(processInstanceId));
       }
 
       if (taskId != null) {
+          Task task = commandContext.getTaskEntityManager().findById(taskId);
+          if (task != null && task.getProcessDefinitionId() != null && Activiti5Util.isActiviti5ProcessDefinitionId(commandContext, task.getProcessDefinitionId())) {
+              Activiti5CompatibilityHandler activiti5CompatibilityHandler = Activiti5Util.getActiviti5CompatibilityHandler();
+              activiti5CompatibilityHandler.deleteComment(commentId, taskId, processInstanceId);
+              return null;
+          }
         comments.addAll(commentManager.findCommentsByTaskId(taskId));
       }
 

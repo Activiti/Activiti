@@ -45,7 +45,7 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.MessageEventSubscriptionEntity;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
-
+import org.activiti.engine.compatibility.Activiti5CompatibilityHandler;
 /**
 
 
@@ -82,6 +82,13 @@ public class ProcessInstanceHelper {
                                                             String businessKey, String processInstanceName,
                                                             Map<String, Object> variables, Map<String, Object> transientVariables, boolean startProcessInstance) {
 
+        CommandContext commandContext = Context.getCommandContext(); // Todo: ideally, context should be passed here
+        if (Activiti5Util.isActiviti5ProcessDefinition(commandContext, processDefinition)) {
+            Activiti5CompatibilityHandler activiti5CompatibilityHandler = Activiti5Util.getActiviti5CompatibilityHandler();
+            return activiti5CompatibilityHandler.startProcessInstance(processDefinition.getKey(), processDefinition.getId(),
+                variables, businessKey, processDefinition.getTenantId(), processInstanceName);
+        }
+
         Process process = this.getActiveProcess(processDefinition);
 
         FlowElement initialFlowElement = this.getInitialFlowElement(process, processDefinition.getId());
@@ -107,6 +114,22 @@ public class ProcessInstanceHelper {
 
     public ProcessInstance createAndStartProcessInstanceByMessage(ProcessDefinition processDefinition, String businessKey, String messageName,
                                                                   Map<String, Object> messageVariables, Map<String, Object> transientVariables) {
+
+        CommandContext commandContext = Context.getCommandContext();
+        if (processDefinition.getEngineVersion() != null) {
+            if (Activiti5CompatibilityHandler.ACTIVITI_5_ENGINE_TAG.equals(processDefinition.getEngineVersion())) {
+                Activiti5CompatibilityHandler activiti5CompatibilityHandler = commandContext.getProcessEngineConfiguration().getActiviti5CompatibilityHandler();
+
+                if (activiti5CompatibilityHandler == null) {
+                    throw new ActivitiException("Found Activiti 5 process definition, but no compatibility handler on the classpath");
+                }
+
+                return activiti5CompatibilityHandler.startProcessInstanceByMessage(messageName, messageVariables, null, processDefinition.getTenantId());
+
+            } else {
+                throw new ActivitiException("Invalid 'engine' for process definition " + processDefinition.getId() + " : " + processDefinition.getEngineVersion());
+            }
+        }
 
         Process process = this.getActiveProcess(processDefinition);
 
@@ -149,7 +172,6 @@ public class ProcessInstanceHelper {
         dispatchStartMessageReceivedEvent(processInstance, messageName, messageVariables);
 
         // Finally start the process
-        CommandContext commandContext = Context.getCommandContext();
         startProcessInstance(processInstance, commandContext, processVariables, initialFlowElement, transientVariables);
 
         return processInstance;

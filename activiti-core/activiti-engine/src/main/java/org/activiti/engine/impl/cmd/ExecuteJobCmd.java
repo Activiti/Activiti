@@ -27,6 +27,8 @@ import org.activiti.engine.impl.jobexecutor.FailedJobListener;
 import org.activiti.engine.runtime.Job;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.activiti.engine.compatibility.Activiti5CompatibilityHandler;
+import org.activiti.engine.impl.util.Activiti5Util;
 
 /**
 
@@ -60,6 +62,11 @@ public class ExecuteJobCmd implements Command<Object>, Serializable {
       log.debug("Executing job {}", job.getId());
     }
 
+      if (job.getProcessDefinitionId() != null && Activiti5Util.isActiviti5ProcessDefinitionId(commandContext, job.getProcessDefinitionId())) {
+          Activiti5CompatibilityHandler activiti5CompatibilityHandler = Activiti5Util.getActiviti5CompatibilityHandler();
+          activiti5CompatibilityHandler.executeJob(job);
+          return null;
+      }
     commandContext.addCloseListener(new FailedJobListener(commandContext.getProcessEngineConfiguration().getCommandExecutor(), job));
 
     try {
