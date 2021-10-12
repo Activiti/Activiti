@@ -73,34 +73,34 @@ public class ProcessRuntimeBPMNSignalReceivedIT {
         //given
         securityUtil.logInAs("user");
         Page<ProcessDefinition> processDefinitionPage = processRuntime
-                .processDefinitions(Pageable.of(0,
-                                                10),
-                                    ProcessPayloadBuilder
-                                            .processDefinitions()
-                                            .withProcessDefinitionKey("processWithSignalStart1")
-                                            .build());
+            .processDefinitions(Pageable.of(0,
+                10),
+                ProcessPayloadBuilder
+                    .processDefinitions()
+                    .withProcessDefinitionKey("processWithSignalStart1")
+                    .build());
         assertThat(processDefinitionPage.getContent()).hasSize(1);
 
         //when
         SignalPayload signalPayload = new SignalPayload("The Signal",
-                                                        null);
+            null);
         processRuntime.signal(signalPayload);
 
         //then
         String processDefinitionId = processDefinitionPage.getContent().get(0).getId();
         assertThat(listener.getSignalReceivedEvents())
-                .extracting(BPMNSignalReceivedEvent::getEventType,
-                            BPMNSignalReceivedEvent::getProcessDefinitionId,
-                            event -> event.getEntity().getSignalPayload().getName(),
-                            event -> event.getEntity().getElementId(),
-                            event -> event.getEntity().getProcessDefinitionId()
-                )
-                .contains(Tuple.tuple(BPMNSignalEvent.SignalEvents.SIGNAL_RECEIVED,
-                                      processDefinitionId,
-                                      "The Signal",
-                                      "theStart",
-                                      processDefinitionId
-                ));
+            .extracting(BPMNSignalReceivedEvent::getEventType,
+                BPMNSignalReceivedEvent::getProcessDefinitionId,
+                event -> event.getEntity().getSignalPayload().getName(),
+                event -> event.getEntity().getElementId(),
+                event -> event.getEntity().getProcessDefinitionId()
+            )
+            .contains(Tuple.tuple(BPMNSignalEvent.SignalEvents.SIGNAL_RECEIVED,
+                processDefinitionId,
+                "The Signal",
+                "theStart",
+                processDefinitionId
+            ));
     }
 
     @Test
@@ -110,50 +110,50 @@ public class ProcessRuntimeBPMNSignalReceivedIT {
         securityUtil.logInAs("user");
 
         ProcessInstance boundarySignalProcInst1 = processRuntime.start(ProcessPayloadBuilder.start()
-                                                                               .withProcessDefinitionKey(PROCESS_WITH_BOUNDARY_SIGNAL)
-                                                                               .build());
+            .withProcessDefinitionKey(PROCESS_WITH_BOUNDARY_SIGNAL)
+            .build());
 
         ProcessInstance boundarySignalProcInst2 = processRuntime.start(ProcessPayloadBuilder.start()
-                                                                               .withProcessDefinitionKey(PROCESS_WITH_BOUNDARY_SIGNAL)
-                                                                               .build());
+            .withProcessDefinitionKey(PROCESS_WITH_BOUNDARY_SIGNAL)
+            .build());
 
         //when
         ProcessInstance process = processRuntime.start(ProcessPayloadBuilder.start()
-                                     .withProcessDefinitionKey("signalThrowEventProcess")
-                                     .build());
+            .withProcessDefinitionKey("signalThrowEventProcess")
+            .build());
 
         //then
         assertThat(listener.getSignalReceivedEvents())
-                .isNotEmpty()
-                .hasSize(2);
+            .isNotEmpty()
+            .hasSize(2);
 
         assertThat(listener.getSignalReceivedEvents())
-                .extracting(BPMNSignalReceivedEvent::getEventType,
-                            BPMNSignalReceivedEvent::getProcessDefinitionId,
-                            BPMNSignalReceivedEvent::getProcessInstanceId,
-                            event -> event.getEntity().getSignalPayload().getName(),
-                            event -> event.getEntity().getElementId(),
-                            event -> event.getEntity().getProcessDefinitionId(),
-                            event -> event.getEntity().getProcessInstanceId()
+            .extracting(BPMNSignalReceivedEvent::getEventType,
+                BPMNSignalReceivedEvent::getProcessDefinitionId,
+                BPMNSignalReceivedEvent::getProcessInstanceId,
+                event -> event.getEntity().getSignalPayload().getName(),
+                event -> event.getEntity().getElementId(),
+                event -> event.getEntity().getProcessDefinitionId(),
+                event -> event.getEntity().getProcessInstanceId()
+            )
+            .contains(
+                tuple(BPMNSignalEvent.SignalEvents.SIGNAL_RECEIVED,
+                    boundarySignalProcInst1.getProcessDefinitionId(),
+                    boundarySignalProcInst1.getId(),
+                    "go",
+                    "sid-6220E76D-719E-4C05-A664-BC186E50D477",
+                    boundarySignalProcInst1.getProcessDefinitionId(),
+                    boundarySignalProcInst1.getId()
+                ),
+                tuple(BPMNSignalEvent.SignalEvents.SIGNAL_RECEIVED,
+                    boundarySignalProcInst2.getProcessDefinitionId(),
+                    boundarySignalProcInst2.getId(),
+                    "go",
+                    "sid-6220E76D-719E-4C05-A664-BC186E50D477",
+                    boundarySignalProcInst2.getProcessDefinitionId(),
+                    boundarySignalProcInst2.getId()
                 )
-                .contains(
-                        tuple(BPMNSignalEvent.SignalEvents.SIGNAL_RECEIVED,
-                              boundarySignalProcInst1.getProcessDefinitionId(),
-                              boundarySignalProcInst1.getId(),
-                              "go",
-                              "sid-6220E76D-719E-4C05-A664-BC186E50D477",
-                              boundarySignalProcInst1.getProcessDefinitionId(),
-                              boundarySignalProcInst1.getId()
-                        ),
-                        tuple(BPMNSignalEvent.SignalEvents.SIGNAL_RECEIVED,
-                              boundarySignalProcInst2.getProcessDefinitionId(),
-                              boundarySignalProcInst2.getId(),
-                              "go",
-                              "sid-6220E76D-719E-4C05-A664-BC186E50D477",
-                              boundarySignalProcInst2.getProcessDefinitionId(),
-                              boundarySignalProcInst2.getId()
-                        )
-                );
+            );
 
         assertThat(process.getStatus()).isEqualTo(ProcessInstanceStatus.COMPLETED);
     }
@@ -166,22 +166,22 @@ public class ProcessRuntimeBPMNSignalReceivedIT {
 
         //when
         ProcessInstance process = processRuntime.start(ProcessPayloadBuilder.start()
-                                                               .withProcessDefinitionKey(PROCESS_WITH_BOUNDARY_SIGNAL)
-                                                               .withVariable("name",
-                                                                             "peter")
-                                                               .build());
+            .withProcessDefinitionKey(PROCESS_WITH_BOUNDARY_SIGNAL)
+            .withVariable("name",
+                "peter")
+            .build());
 
         SignalPayload signalPayload = ProcessPayloadBuilder.signal()
-                .withName("go")
-                .withVariable("signal_variable",
-                              "test")
-                .build();
+            .withName("go")
+            .withVariable("signal_variable",
+                "test")
+            .build();
         processRuntime.signal(signalPayload);
 
         //then
         assertThat(listener.getSignalReceivedEvents())
-                .isNotEmpty()
-                .hasSize(2);
+            .isNotEmpty()
+            .hasSize(1);
 
         BPMNSignalReceivedEvent event = listener.getSignalReceivedEvents().iterator().next();
 

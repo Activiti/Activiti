@@ -106,11 +106,6 @@ public class SignalEventReceivedCmd implements Command<Void> {
               activiti5CompatibilityHandler.signalEventReceived(signalEventSubscriptionEntity, payload, async);
 
           } else {
-              Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
-                  ActivitiEventBuilder.createSignalEvent(ActivitiEventType.ACTIVITY_SIGNALED, signalEventSubscriptionEntity.getActivityId(), eventName,
-                      payload, signalEventSubscriptionEntity.getExecutionId(), signalEventSubscriptionEntity.getProcessInstanceId(),
-                      signalEventSubscriptionEntity.getProcessDefinitionId()));
-
               eventSubscriptionEntityManager.eventReceived(signalEventSubscriptionEntity, payload, async);
           }
       }
