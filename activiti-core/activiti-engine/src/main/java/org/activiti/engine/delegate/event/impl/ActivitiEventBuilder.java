@@ -453,15 +453,4 @@ public class ActivitiEventBuilder {
       }
     }
   }
-    public static ActivitiSignalEvent createSignalEvent(ActivitiEventType type, String activityId, String signalName, Object signalData, String executionId, String processInstanceId,
-                                                        String processDefinitionId) {
-        ActivitiSignalEventImpl newEvent = new ActivitiSignalEventImpl(type);
-        newEvent.setActivityId(activityId);
-        newEvent.setExecutionId(executionId);
-        newEvent.setProcessDefinitionId(processDefinitionId);
-        newEvent.setProcessInstanceId(processInstanceId);
-        newEvent.setSignalName(signalName);
-        newEvent.setSignalData(signalData);
-        return newEvent;
-    }
 }
