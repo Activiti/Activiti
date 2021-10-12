@@ -51,12 +51,10 @@ public class CompleteTaskCmd extends AbstractCompleteTaskCmd {
 
   protected Void execute(CommandContext commandContext, TaskEntity task) {
       // Backwards compatibility
-      if (task.getProcessDefinitionId() != null) {
-          if (Activiti5Util.isActiviti5ProcessDefinitionId(commandContext, task.getProcessDefinitionId())) {
+      if (task.getProcessDefinitionId() != null && Activiti5Util.isActiviti5ProcessDefinitionId(commandContext, task.getProcessDefinitionId())) {
               Activiti5CompatibilityHandler activiti5CompatibilityHandler = Activiti5Util.getActiviti5CompatibilityHandler();
               activiti5CompatibilityHandler.completeTask(task, variables, localScope);
               return null;
-          }
       }
       if (variables != null) {
           if (localScope) {
