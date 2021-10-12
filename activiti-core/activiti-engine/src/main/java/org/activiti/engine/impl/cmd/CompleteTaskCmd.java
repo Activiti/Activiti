@@ -59,14 +59,14 @@ public class CompleteTaskCmd extends AbstractCompleteTaskCmd {
           }
       }
       if (variables != null) {
-      if (localScope) {
-        task.setVariablesLocal(variables);
-      } else if (task.getExecutionId() != null) {
-        task.setExecutionVariables(variables);
-      } else {
-        task.setVariables(variables);
+          if (localScope) {
+            task.setVariablesLocal(variables);
+          } else if (task.getExecutionId() != null) {
+            task.setExecutionVariables(variables);
+          } else {
+            task.setVariables(variables);
+          }
       }
-    }
 
     if (transientVariables != null) {
       if (localScope) {

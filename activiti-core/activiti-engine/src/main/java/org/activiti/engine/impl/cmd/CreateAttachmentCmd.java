@@ -69,7 +69,6 @@ public class CreateAttachmentCmd implements Command<Attachment> {
             Activiti5CompatibilityHandler activiti5CompatibilityHandler = Activiti5Util.getActiviti5CompatibilityHandler();
             return activiti5CompatibilityHandler.createAttachment(attachmentType, taskId, processInstanceId, attachmentName, attachmentDescription, content, url);
         }
-      //verifyTaskParameters(commandContext);
     }
 
     if (processInstanceId != null) {
@@ -78,7 +77,6 @@ public class CreateAttachmentCmd implements Command<Attachment> {
             Activiti5CompatibilityHandler activiti5CompatibilityHandler = Activiti5Util.getActiviti5CompatibilityHandler();
             return activiti5CompatibilityHandler.createAttachment(attachmentType, taskId, processInstanceId, attachmentName, attachmentDescription, content, url);
         }
-      //verifyExecutionParameters(commandContext);
     }
 
     AttachmentEntity attachment = commandContext.getAttachmentEntityManager().create();

@@ -31,7 +31,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.activiti.engine.compatibility.Activiti5CompatibilityHandler;
 import org.activiti.engine.impl.util.Activiti5Util;
-import org.activiti.engine.impl.util.Activiti5Util;
 /**
 
 

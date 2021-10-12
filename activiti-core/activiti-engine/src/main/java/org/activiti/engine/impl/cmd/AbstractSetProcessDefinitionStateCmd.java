@@ -40,8 +40,8 @@ import org.activiti.engine.impl.persistence.entity.SuspensionState.SuspensionSta
 import org.activiti.engine.impl.persistence.entity.TimerJobEntity;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
-import org.activiti.engine.compatibility.Activiti5CompatibilityHandler;import org.activiti.engine.compatibility.Activiti5CompatibilityHandler;
-import org.activiti.engine.impl.util.Activiti5Util;import org.activiti.engine.impl.util.Activiti5Util;
+import org.activiti.engine.compatibility.Activiti5CompatibilityHandler;
+import org.activiti.engine.impl.util.Activiti5Util;
 /**
 
 

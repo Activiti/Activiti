@@ -931,8 +931,6 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     initEventDispatcher();
     initProcessValidator();
     initDatabaseEventLogging();
-      log.info("About to call Engine5 handler");
-      log.debug("Debug :: About to call Engine5 handler");
     initActiviti5CompatibilityHandler();
     configuratorsAfterInit();
   }
@@ -3722,8 +3720,6 @@ public ProcessEngineConfigurationImpl setClock(Clock clock) {
 
     public void initActiviti5CompatibilityHandler() {
 
-        log.info("Inside Engine5 handler");
-        log.debug(" Debug :: Inside Engine5 handler");
         // If Activiti 5 compatibility is disabled, no need to do anything
         // If handler is injected, no need to do anything
         if (!isActiviti5CompatibilityEnabled || activiti5CompatibilityHandler == null) {
