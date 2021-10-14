@@ -8,9 +8,9 @@
    typeLanguage="http://www.w3.org/2001/XMLSchema"
    expressionLanguage="http://www.w3.org/1999/XPath"
    targetNamespace="http://www.activiti.org/test">
-   
-  <signal id="testSignal" name="Test signal"/> 
-  
+
+  <signal id="testSignal" name="Test signal"/>
+
   <process id="signalProces" name="Signal proces">
     <startEvent id="start" />
     <userTask id="usertask1" name="User Task" activiti:assigne="kermit" />

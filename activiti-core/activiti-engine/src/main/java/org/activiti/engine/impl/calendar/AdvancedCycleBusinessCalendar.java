@@ -33,7 +33,7 @@ import org.slf4j.LoggerFactory;
  * <p>
  * For ISO strings the time zone offset for the date/time specified is part of the string itself. DSTZONE is used to determine what the offset should be NOW, which may be different than when the
  * workflow was scheduled if it is scheduled to run across a DST event.
- * 
+ *
  * <pre>
  *   For example:
  *      R/2013-10-01T20:30:00/P1D DSTZONE:US/Eastern
@@ -43,18 +43,18 @@ import org.slf4j.LoggerFactory;
  *      0 30 20 ? * MON,TUE,WED,THU,FRI * DSTZONE:UTC
  *      0 30 20 ? * MON,TUE,WED,THU,FRI * DSTZONE:US/Arizona
  * </pre>
- * 
+ *
  * Removing the DSTZONE key will cause Activiti to use the server's time zone. This is the original behavior.
  * <p>
  * Schedule strings are versioned. Version 1 strings will use the original Activiti CycleBusinessCalendar. All new properties are ignored. Version 2 strings will use the new daylight saving time
  * logic.
- * 
+ *
  * <pre>
  *   For example:
  *      R/2013-10-01T20:30:00/P1D VER:2 DSTZONE:US/Eastern
  *      0 30 20 ? * MON,TUE,WED,THU,FRI * VER:1 DSTZONE:US/Arizona
  * </pre>
- * 
+ *
  * By default (if no VER key is included in the string), it assumes version 2. This can be changed by modifying the defaultScheduleVersion property.
  * <p>
  */

@@ -26,7 +26,7 @@ public class UpdateProcessPayload implements Payload {
     private String name;
     private String description;
     private String businessKey;
-    
+
     public UpdateProcessPayload() {
         this.id = UUID.randomUUID().toString();
     }
@@ -46,11 +46,11 @@ public class UpdateProcessPayload implements Payload {
     public String getId() {
         return id;
     }
-    
+
     public String getProcessInstanceId() {
         return processInstanceId;
     }
-  
+
     public void setProcessInstanceId(String processInstanceId) {
         this.processInstanceId = processInstanceId;
     }
@@ -58,7 +58,7 @@ public class UpdateProcessPayload implements Payload {
     public String getDescription() {
         return description;
     }
-    
+
     public void setDescription(String description) {
         this.description = description;
     }
@@ -66,15 +66,15 @@ public class UpdateProcessPayload implements Payload {
     public String getName() {
         return name;
     }
-    
+
     public void setName(String name) {
         this.name = name;
     }
-    
+
     public String getBusinessKey() {
         return businessKey;
     }
-    
+
     public void setBusinessKey(String businessKey) {
         this.businessKey = businessKey;
     }

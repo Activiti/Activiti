@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?> 
+<?xml version="1.0" encoding="UTF-8" ?>
 
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
@@ -99,10 +99,10 @@
 	<select id="selectTimerJobsToExecute" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
 	    ${limitBefore}
 		select
-		RES.* ${limitBetween} 
+		RES.* ${limitBetween}
 		from ${prefix}ACT_RU_TIMER_JOB RES
-		where DUEDATE_ &lt;= #{parameter, jdbcType=TIMESTAMP} 
-		and LOCK_OWNER_ is null 
+		where DUEDATE_ &lt;= #{parameter, jdbcType=TIMESTAMP}
+		and LOCK_OWNER_ is null
 		${limitAfter}
 	</select>
 
@@ -142,7 +142,7 @@
 		#{tenantId, jdbcType=VARCHAR}
 		)
 	</insert>
-	
+
 	<insert id="bulkInsertTimerJob" parameterType="java.util.List">
     INSERT INTO ${prefix}ACT_RU_TIMER_JOB (
     ID_,
@@ -178,7 +178,7 @@
       #{job.tenantId, jdbcType=VARCHAR})
     </foreach>
   </insert>
-  
+
   <insert id="bulkInsertTimerJob" databaseId="oracle"
     parameterType="java.util.List">
     INSERT ALL
@@ -239,7 +239,7 @@
 		where J.HANDLER_TYPE_ = #{parameter.handlerType}
 		and J.PROC_DEF_ID_ = #{parameter.processDefinitionId}
 	</select>
-	
+
 	<select id="selectTimerJobsByProcessInstanceId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
 		select *
 		from ${prefix}ACT_RU_TIMER_JOB J
@@ -296,7 +296,7 @@
 		)
 	</update>
 
-	<!-- See http://stackoverflow.com/questions/4429319/you-cant-specify-target-table-for-update-in-from-clause 
+	<!-- See http://stackoverflow.com/questions/4429319/you-cant-specify-target-table-for-update-in-from-clause
 		Tested this on MySQL 5.6: does NOT use a temporary table (so good, performance) -->
 	<update id="updateTimerJobTenantIdForDeployment" databaseId="mysql" parameterType="java.util.Map">
 		update ${prefix}ACT_RU_TIMER_JOB set
@@ -311,7 +311,7 @@
 				inner join ${prefix}ACT_RE_PROCDEF P on J.PROC_DEF_ID_ = P.ID_
 				inner join ${prefix}ACT_RE_DEPLOYMENT D on P.DEPLOYMENT_ID_ = D.ID_
 				where D.ID_ = #{deploymentId, jdbcType=VARCHAR}
-	
+
 			) AS tempTask
 		)
 	</update>

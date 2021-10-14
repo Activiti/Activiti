@@ -19,7 +19,7 @@ import java.security.Principal;
 import java.util.Optional;
 
 public interface SecurityContextPrincipalProvider {
-    
+
     Optional<Principal> getCurrentPrincipal();
-    
+
 }

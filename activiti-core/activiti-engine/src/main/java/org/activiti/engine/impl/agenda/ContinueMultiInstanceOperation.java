@@ -34,9 +34,9 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Special operation when executing an instance of a multi-instance.
- * It's similar to the {@link ContinueProcessOperation}, but simpler, as it doesn't need to 
+ * It's similar to the {@link ContinueProcessOperation}, but simpler, as it doesn't need to
  * cater for as many use cases.
- * 
+ *
 
 
  */
@@ -57,7 +57,7 @@ public class ContinueMultiInstanceOperation extends AbstractOperation {
       throw new RuntimeException("Programmatic error: no valid multi instance flow node, type: " + currentFlowElement + ". Halting.");
     }
   }
-  
+
   protected void continueThroughMultiInstanceFlowNode(FlowNode flowNode) {
     if (!flowNode.isAsynchronous()) {
       executeSynchronous(flowNode);
@@ -65,27 +65,27 @@ public class ContinueMultiInstanceOperation extends AbstractOperation {
       executeAsynchronous(flowNode);
     }
   }
-  
+
   protected void executeSynchronous(FlowNode flowNode) {
-    
+
     // Execution listener
     if (CollectionUtil.isNotEmpty(flowNode.getExecutionListeners())) {
       executeExecutionListeners(flowNode, ExecutionListener.EVENTNAME_START);
     }
-    
+
     commandContext.getHistoryManager().recordActivityStart(execution);
-    
+
     // Execute actual behavior
     ActivityBehavior activityBehavior = (ActivityBehavior) flowNode.getBehavior();
     if (activityBehavior != null) {
       logger.debug("Executing activityBehavior {} on activity '{}' with execution {}", activityBehavior.getClass(), flowNode.getId(), execution.getId());
-      
+
       if (Context.getProcessEngineConfiguration() != null && Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
         Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
             ActivitiEventBuilder.createActivityEvent(ActivitiEventType.ACTIVITY_STARTED, flowNode.getId(), flowNode.getName(), execution.getId(),
                 execution.getProcessInstanceId(), execution.getProcessDefinitionId(), flowNode));
       }
-      
+
       try {
         activityBehavior.execute(execution);
       } catch (BpmnError error) {
@@ -101,7 +101,7 @@ public class ContinueMultiInstanceOperation extends AbstractOperation {
       logger.debug("No activityBehavior on activity '{}' with execution {}", flowNode.getId(), execution.getId());
     }
   }
-  
+
   protected void executeAsynchronous(FlowNode flowNode) {
     JobEntity job = commandContext.getJobManager().createAsyncJob(execution, flowNode.isExclusive());
     commandContext.getJobManager().scheduleAsyncJob(job);

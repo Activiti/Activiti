@@ -14,11 +14,11 @@
 				<activiti:field name="arg2" stringValue="echo" />
 				<activiti:field name="arg3" stringValue="EchoTest" />
 				<activiti:field name="wait" stringValue="true" />
-				<activiti:field name="outputVariable" stringValue="resultVar"/> 
+				<activiti:field name="outputVariable" stringValue="resultVar"/>
 			</extensionElements>
 		</serviceTask>
-		
-		
+
+
 		<sequenceFlow sourceRef="shellEcho" targetRef="theTask" />
 	    <userTask id="theTask" name="keep-alive task" />
 		<sequenceFlow sourceRef="theTask" targetRef="theEnd" />

@@ -27,7 +27,7 @@ import org.apache.ibatis.type.TypeReference;
 
 /**
  * MyBatis TypeHandler for {@link ByteArrayRef}.
- * 
+ *
 
  */
 public class ByteArrayRefTypeHandler extends TypeReference<ByteArrayRef> implements TypeHandler<ByteArrayRef> {

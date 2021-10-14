@@ -6,11 +6,11 @@
 
 	<bean id="processEngineConfiguration"
 		class="org.activiti.engine.impl.cfg.StandaloneInMemProcessEngineConfiguration">
-		
+
 		<property name="jdbcUrl" value="jdbc:h2:mem:activiti-uuid-generator-test;DB_CLOSE_DELAY=1000" />
 
 		<property name="databaseSchemaUpdate" value="true" />
-		
+
 		<property name="idGenerator">
 			<bean class="org.activiti.engine.impl.persistence.StrongUuidGenerator" />
 		</property>

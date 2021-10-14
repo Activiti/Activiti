@@ -262,6 +262,7 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
       processInstanceExecution.setStartTime(Context.getProcessEngineConfiguration().getClock().getCurrentTime());
       return update(processInstanceExecution);
   }
+
   /**
    * Creates a new execution. properties processDefinition, processInstance and activity will be initialized.
    */
@@ -302,6 +303,9 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
     inheritCommonProperties(superExecutionEntity, subProcessInstance);
     subProcessInstance.setProcessDefinitionId(processDefinition.getId());
     subProcessInstance.setProcessDefinitionKey(processDefinition.getKey());
+    subProcessInstance.setProcessDefinitionName(processDefinition.getName());
+    subProcessInstance.setProcessDefinitionVersion(processDefinition.getVersion());
+    subProcessInstance.setName(superExecutionEntity.getProcessInstance().getName());
     subProcessInstance.setSuperExecution(superExecutionEntity);
     subProcessInstance.setRootProcessInstanceId(superExecutionEntity.getRootProcessInstanceId());
     subProcessInstance.setScope(true); // process instance is always a scope for all child executions

@@ -12,13 +12,13 @@
 
         <subProcess id="subProcess">
             <startEvent id="innerStart"></startEvent>
-            
+
             <sequenceFlow sourceRef="innerStart" targetRef="fork"></sequenceFlow>
             <parallelGateway id="fork"></parallelGateway>
-            
+
             <sequenceFlow sourceRef="fork" targetRef="taskOne"></sequenceFlow>
             <userTask id="taskOne" />
-            
+
             <sequenceFlow sourceRef="fork" targetRef="taskTwo"></sequenceFlow>
             <userTask id="taskTwo" activiti:candidateGroups="sales" />
 

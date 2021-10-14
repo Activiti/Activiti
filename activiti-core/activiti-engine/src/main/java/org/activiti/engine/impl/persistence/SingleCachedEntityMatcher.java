@@ -20,7 +20,7 @@ import org.activiti.engine.impl.persistence.entity.Entity;
 
 /**
  * Interface to express a condition whether or not one specific cached entity should be used in the return result of a query.
- * 
+ *
 
  */
 @Internal

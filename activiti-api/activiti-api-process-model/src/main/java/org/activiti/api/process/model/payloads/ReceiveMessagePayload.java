@@ -26,7 +26,7 @@ public class ReceiveMessagePayload implements Payload {
 
     private final String id;
     private String name;
-    private String correlationKey; 
+    private String correlationKey;
     private Map<String, Object> variables = new LinkedHashMap<>();
 
     public ReceiveMessagePayload() {
@@ -53,7 +53,7 @@ public class ReceiveMessagePayload implements Payload {
     public String getName() {
         return name;
     }
-    
+
     public String getCorrelationKey() {
         return correlationKey;
     }
@@ -61,7 +61,7 @@ public class ReceiveMessagePayload implements Payload {
     public Map<String, Object> getVariables() {
         return variables;
     }
-    
+
     @Override
     public int hashCode() {
         return Objects.hash(id, name, correlationKey, variables);
@@ -76,9 +76,9 @@ public class ReceiveMessagePayload implements Payload {
         if (getClass() != obj.getClass())
             return false;
         ReceiveMessagePayload other = (ReceiveMessagePayload) obj;
-        return Objects.equals(correlationKey, other.correlationKey) 
-                && Objects.equals(id, other.id) 
-                && Objects.equals(name, other.name) 
+        return Objects.equals(correlationKey, other.correlationKey)
+                && Objects.equals(id, other.id)
+                && Objects.equals(name, other.name)
                 && Objects.equals(variables, other.variables);
     }
 

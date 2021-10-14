@@ -16,129 +16,119 @@
 package org.activiti.bpmn.model;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.StringUtils;
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 public abstract class BaseElement implements HasExtensionAttributes {
 
-  protected String id;
-  protected int xmlRowNumber;
-  protected int xmlColumnNumber;
-  protected Map<String, List<ExtensionElement>> extensionElements = new LinkedHashMap<String, List<ExtensionElement>>();
-  /** extension attributes could be part of each element */
-  protected Map<String, List<ExtensionAttribute>> attributes = new LinkedHashMap<String, List<ExtensionAttribute>>();
+    protected String id;
+    protected int xmlRowNumber;
+    protected int xmlColumnNumber;
+    protected Map<String, List<ExtensionElement>> extensionElements = new LinkedHashMap<String, List<ExtensionElement>>();
+    /**
+     * extension attributes could be part of each element
+     */
+    protected Map<String, List<ExtensionAttribute>> attributes = new LinkedHashMap<String, List<ExtensionAttribute>>();
 
-  public String getId() {
-    return id;
-  }
-
-  public void setId(String id) {
-    this.id = id;
-  }
-
-  public int getXmlRowNumber() {
-    return xmlRowNumber;
-  }
-
-  public void setXmlRowNumber(int xmlRowNumber) {
-    this.xmlRowNumber = xmlRowNumber;
-  }
-
-  public int getXmlColumnNumber() {
-    return xmlColumnNumber;
-  }
-
-  public void setXmlColumnNumber(int xmlColumnNumber) {
-    this.xmlColumnNumber = xmlColumnNumber;
-  }
-
-  public Map<String, List<ExtensionElement>> getExtensionElements() {
-    return extensionElements;
-  }
-
-  public void addExtensionElement(ExtensionElement extensionElement) {
-    if (extensionElement != null && StringUtils.isNotEmpty(extensionElement.getName())) {
-      List<ExtensionElement> elementList = null;
-      if (!this.extensionElements.containsKey(extensionElement.getName())) {
-        elementList = new ArrayList<ExtensionElement>();
-        this.extensionElements.put(extensionElement.getName(), elementList);
-      }
-      this.extensionElements.get(extensionElement.getName()).add(extensionElement);
+    public String getId() {
+        return id;
     }
-  }
 
-  public void setExtensionElements(Map<String, List<ExtensionElement>> extensionElements) {
-    this.extensionElements = extensionElements;
-  }
-
-  @Override
-  public Map<String, List<ExtensionAttribute>> getAttributes() {
-    return attributes;
-  }
-
-  @Override
-  public String getAttributeValue(String namespace, String name) {
-    List<ExtensionAttribute> attributes = getAttributes().get(name);
-    if (attributes != null && !attributes.isEmpty()) {
-      for (ExtensionAttribute attribute : attributes) {
-        if ((namespace == null && attribute.getNamespace() == null) || namespace.equals(attribute.getNamespace()))
-          return attribute.getValue();
-      }
+    public void setId(String id) {
+        this.id = id;
     }
-    return null;
-  }
 
-  @Override
-  public void addAttribute(ExtensionAttribute attribute) {
-    if (attribute != null && StringUtils.isNotEmpty(attribute.getName())) {
-      List<ExtensionAttribute> attributeList = null;
-      if (!this.attributes.containsKey(attribute.getName())) {
-        attributeList = new ArrayList<ExtensionAttribute>();
-        this.attributes.put(attribute.getName(), attributeList);
-      }
-      this.attributes.get(attribute.getName()).add(attribute);
+    public int getXmlRowNumber() {
+        return xmlRowNumber;
     }
-  }
 
-  @Override
-  public void setAttributes(Map<String, List<ExtensionAttribute>> attributes) {
-    this.attributes = attributes;
-  }
+    public void setXmlRowNumber(int xmlRowNumber) {
+        this.xmlRowNumber = xmlRowNumber;
+    }
 
-  public void setValues(BaseElement otherElement) {
-    setId(otherElement.getId());
+    public int getXmlColumnNumber() {
+        return xmlColumnNumber;
+    }
 
-    extensionElements = new LinkedHashMap<String, List<ExtensionElement>>();
-    if (otherElement.getExtensionElements() != null && !otherElement.getExtensionElements().isEmpty()) {
-      for (String key : otherElement.getExtensionElements().keySet()) {
-        List<ExtensionElement> otherElementList = otherElement.getExtensionElements().get(key);
-        if (otherElementList != null && !otherElementList.isEmpty()) {
-          List<ExtensionElement> elementList = new ArrayList<ExtensionElement>();
-          for (ExtensionElement extensionElement : otherElementList) {
-            elementList.add(extensionElement.clone());
-          }
-          extensionElements.put(key, elementList);
+    public void setXmlColumnNumber(int xmlColumnNumber) {
+        this.xmlColumnNumber = xmlColumnNumber;
+    }
+
+    public Map<String, List<ExtensionElement>> getExtensionElements() {
+        return extensionElements;
+    }
+
+    public void addExtensionElement(ExtensionElement extensionElement) {
+        if (extensionElement != null && isNotEmpty(extensionElement.getName())) {
+            extensionElements.computeIfAbsent(extensionElement.getName(), k -> new ArrayList<>());
+            this.extensionElements.get(extensionElement.getName()).add(extensionElement);
         }
-      }
     }
 
-    attributes = new LinkedHashMap<String, List<ExtensionAttribute>>();
-    if (otherElement.getAttributes() != null && !otherElement.getAttributes().isEmpty()) {
-      for (String key : otherElement.getAttributes().keySet()) {
-        List<ExtensionAttribute> otherAttributeList = otherElement.getAttributes().get(key);
-        if (otherAttributeList != null && !otherAttributeList.isEmpty()) {
-          List<ExtensionAttribute> attributeList = new ArrayList<ExtensionAttribute>();
-          for (ExtensionAttribute extensionAttribute : otherAttributeList) {
-            attributeList.add(extensionAttribute.clone());
-          }
-          attributes.put(key, attributeList);
+    public void setExtensionElements(Map<String, List<ExtensionElement>> extensionElements) {
+        this.extensionElements = extensionElements;
+    }
+
+    @Override
+    public Map<String, List<ExtensionAttribute>> getAttributes() {
+        return attributes;
+    }
+
+    @Override
+    public String getAttributeValue(String namespace, String name) {
+
+        return Optional.ofNullable(getAttributes())
+                .map(map -> map.get(name))
+                .orElse(Collections.emptyList()).stream()
+                .filter(e -> this.isNamespaceMatching(namespace, e))
+                .findFirst().map(ExtensionAttribute::getValue).orElse(null);
+    }
+
+    private boolean isNamespaceMatching(String namespace, ExtensionAttribute attribute) {
+        return (namespace == null && attribute.getNamespace() == null)
+                || (namespace != null && namespace.equals(attribute.getNamespace()));
+    }
+
+    @Override
+    public void addAttribute(ExtensionAttribute attribute) {
+        if (attribute != null && isNotEmpty(attribute.getName())) {
+            attributes.computeIfAbsent(attribute.getName(), key -> new ArrayList<>());
+            attributes.get(attribute.getName()).add(attribute);
         }
-      }
     }
-  }
 
-  public abstract BaseElement clone();
+    @Override
+    public void setAttributes(Map<String, List<ExtensionAttribute>> attributes) {
+        this.attributes = attributes;
+    }
+
+    public void setValues(BaseElement otherElement) {
+        setId(otherElement.getId());
+
+        if (otherElement.getExtensionElements() != null && !otherElement.getExtensionElements().isEmpty()) {
+            Map<String, List<ExtensionElement>> validExtensionElements = otherElement.getExtensionElements().entrySet()
+                    .stream().filter(e -> hasElements(e.getValue()))
+                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+            extensionElements.putAll(validExtensionElements);
+        }
+
+        if (otherElement.getAttributes() != null && !otherElement.getAttributes().isEmpty()) {
+            Map<String, List<ExtensionAttribute>> validAttributes = otherElement.getAttributes().entrySet().stream()
+                    .filter(e -> hasElements(e.getValue()))
+                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+            attributes.putAll(validAttributes);
+        }
+    }
+
+    private boolean hasElements(List<?> listOfElements) {
+        return listOfElements != null && !listOfElements.isEmpty();
+    }
+
+    public abstract BaseElement clone();
 }

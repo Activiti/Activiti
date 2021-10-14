@@ -18,7 +18,7 @@ package org.activiti.api.runtime.shared.security;
 import java.util.List;
 
 public abstract class AbstractSecurityManager implements SecurityManager {
-    
+
     private static final String INVALID_AUTHENTICATED_PRINCIPAL = "Invalid authenticated principal";
 
     private final SecurityContextPrincipalProvider securityContextPrincipalProvider;
@@ -56,9 +56,9 @@ public abstract class AbstractSecurityManager implements SecurityManager {
                                                .map(principalRolesProvider::getRoles)
                                                .orElseThrow(this::securityException);
     }
-    
+
     protected SecurityException securityException() {
         return new SecurityException(INVALID_AUTHENTICATED_PRINCIPAL);
     }
-    
+
 }

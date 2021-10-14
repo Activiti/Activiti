@@ -10,7 +10,7 @@
             <timerEventDefinition>
                 <timeDate>2036-11-14T11:12:22</timeDate>
             </timerEventDefinition>
-        </startEvent>    
+        </startEvent>
 
         <sequenceFlow id="flow1" sourceRef="theStart" targetRef="receive"/>
 

@@ -24,6 +24,7 @@ import javax.el.ELResolver;
 import javax.el.ListELResolver;
 import javax.el.MapELResolver;
 
+import org.activiti.core.el.ELResolverReflectionBlockerDecorator;
 import org.activiti.engine.delegate.VariableScope;
 import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.el.VariableScopeElResolver;
@@ -38,7 +39,7 @@ public class MockExpressionManager extends ExpressionManager {
     compositeElResolver.add(new ArrayELResolver());
     compositeElResolver.add(new ListELResolver());
     compositeElResolver.add(new MapELResolver());
-    compositeElResolver.add(new BeanELResolver());
+    compositeElResolver.add(new ELResolverReflectionBlockerDecorator(new BeanELResolver()));
     return compositeElResolver;
   }
 

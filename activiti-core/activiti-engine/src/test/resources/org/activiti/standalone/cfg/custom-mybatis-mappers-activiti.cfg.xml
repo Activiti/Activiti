@@ -14,9 +14,9 @@
 
     <!-- job executor configurations -->
     <property name="asyncExecutorActivate" value="false" />
-    
+
     <property name="databaseSchemaUpdate" value="true" />
-    
+
     <!-- The custom mybatis mappers -->
     <property name="customMybatisMappers">
         <set>

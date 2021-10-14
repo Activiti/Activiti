@@ -185,6 +185,20 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
     }
 
     @Deployment(resources = {"org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml"})
+    public void testProcessInstanceStartTimeUsingRuntimeService() {
+        ProcessInstance processInstance = runtimeService.createProcessInstanceBuilder()
+            .processDefinitionKey("oneTaskProcess")
+            .create();
+        assertThat(processInstance.getStartTime()).isNull();
+
+        runtimeService.startCreatedProcessInstance(processInstance, new HashMap<>());
+        processInstance = runtimeService.createProcessInstanceQuery()
+            .processInstanceId(processInstance.getProcessInstanceId())
+            .singleResult();
+        assertThat(processInstance.getStartTime()).isNotNull();
+    }
+
+    @Deployment(resources = {"org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml"})
     public void testNonUniqueBusinessKey() {
         runtimeService.startProcessInstanceByKey("oneTaskProcess",
                                                  "123");

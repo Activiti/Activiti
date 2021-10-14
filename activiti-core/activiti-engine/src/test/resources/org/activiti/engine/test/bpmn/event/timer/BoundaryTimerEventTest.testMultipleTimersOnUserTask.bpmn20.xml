@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <definitions id="definitions"
 	xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
-	xmlns:activiti="http://activiti.org/bpmn" 
+	xmlns:activiti="http://activiti.org/bpmn"
 	targetNamespace="Examples">
 
 	<process id="multipleTimersOnUserTask">
@@ -15,7 +15,7 @@
 		<sequenceFlow id="flow2" sourceRef="firstTask" targetRef="theEnd" />
 
 		<endEvent id="theEnd" />
-		
+
 		<!-- First timer -->
 
 		<boundaryEvent id="escalationTimer1" cancelActivity="true" attachedToRef="firstTask">
@@ -29,9 +29,9 @@
 		<userTask id="secondTask" name="Second Task" />
 
 		<sequenceFlow id="flow4" sourceRef="secondTask" targetRef="escalatedEnd" />
-		
+
 		<!-- Second timer -->
-		
+
 		<boundaryEvent id="escalationTimer2" cancelActivity="true" attachedToRef="firstTask">
       <timerEventDefinition>
         <timeDuration>PT1H</timeDuration>
@@ -43,9 +43,9 @@
     <userTask id="thirdTask" name="Third Task" />
 
     <sequenceFlow id="flow6" sourceRef="thirdTask" targetRef="escalatedEnd" />
-    
+
     <!-- Third timer -->
-    
+
       <boundaryEvent id="escalationTimer3" cancelActivity="true" attachedToRef="firstTask">
       <timerEventDefinition>
         <timeDuration>PT3H</timeDuration>

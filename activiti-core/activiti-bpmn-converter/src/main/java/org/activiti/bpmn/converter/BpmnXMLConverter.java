@@ -20,6 +20,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -227,17 +229,26 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
     SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
     Schema schema = null;
     if (classloader != null) {
-      schema = factory.newSchema(classloader.getResource(BPMN_XSD));
+      schema = createSchema(factory, classloader.getResource(BPMN_XSD));
     }
 
     if (schema == null) {
-      schema = factory.newSchema(BpmnXMLConverter.class.getClassLoader().getResource(BPMN_XSD));
+      schema = createSchema(factory, BpmnXMLConverter.class.getClassLoader().getResource(BPMN_XSD));
     }
 
     if (schema == null) {
       throw new XMLException("BPMN XSD could not be found");
     }
     return schema;
+  }
+
+  protected Schema createSchema(SchemaFactory factory, URL schemaUrl) throws SAXException {
+    try {
+      return factory.newSchema(
+              new StreamSource(schemaUrl.toURI().toASCIIString()));
+    } catch (URISyntaxException e) {
+      throw new XMLException("BPMN XSD could not be found", e);
+    }
   }
 
   public BpmnModel convertToBpmnModel(InputStreamProvider inputStreamProvider, boolean validateSchema, boolean enableSafeBpmnXml) {

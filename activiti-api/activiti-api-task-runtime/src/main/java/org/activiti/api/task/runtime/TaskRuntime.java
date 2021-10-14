@@ -21,6 +21,7 @@ import org.activiti.api.model.shared.model.VariableInstance;
 import org.activiti.api.runtime.shared.query.Page;
 import org.activiti.api.runtime.shared.query.Pageable;
 import org.activiti.api.task.model.Task;
+import org.activiti.api.task.model.payloads.AssignTaskPayload;
 import org.activiti.api.task.model.payloads.CandidateGroupsPayload;
 import org.activiti.api.task.model.payloads.CandidateUsersPayload;
 import org.activiti.api.task.model.payloads.ClaimTaskPayload;
@@ -105,7 +106,7 @@ public interface TaskRuntime {
      * - This method also check that the task is assigned to the currently authenticated user
      */
     void save(SaveTaskPayload saveTaskPayload);
-    
+
     /**
      * Updates details of a task
      * - The authenticated user should be able to see the task in order to update its details
@@ -120,17 +121,24 @@ public interface TaskRuntime {
      * - this method returns a shallow Task with the necessary information to validate that the task was deleted
      */
     Task delete(DeleteTaskPayload deleteTaskPayload);
-    
+
     void createVariable(CreateTaskVariablePayload createTaskVariablePayload);
     void updateVariable(UpdateTaskVariablePayload updateTaskVariablePayload);
     List<VariableInstance> variables(GetTaskVariablesPayload getTaskVariablesPayload);
-    
+
     void addCandidateUsers(CandidateUsersPayload candidateUsersPayload);
     void deleteCandidateUsers(CandidateUsersPayload candidateUsersPayload);
-    
+
     void addCandidateGroups(CandidateGroupsPayload candidateGroupsPayload);
     void deleteCandidateGroups(CandidateGroupsPayload candidateGroupsPayload);
-    
+
     List<String> userCandidates(String taskId);
     List<String> groupCandidates(String taskId);
+
+    /**
+     * Assign a task that has been claimed before to a different user
+     * - Only the current assignee can perform the action
+     * - The new assignee should be part of the candidate users for this task
+     */
+    Task assign(AssignTaskPayload assignTaskPayload);
 }

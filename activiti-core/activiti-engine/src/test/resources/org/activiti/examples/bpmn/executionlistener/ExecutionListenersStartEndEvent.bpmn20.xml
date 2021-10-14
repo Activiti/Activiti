@@ -1,13 +1,13 @@
-<definitions 
+<definitions
   xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
   xmlns:activiti="http://activiti.org/bpmn"
   targetNamespace="Examples">
-  
+
   <signal id="alertSignal" name="alert" />
-  
+
   <process id="executionListenersProcess">
-  
-    
+
+
     <startEvent id="theStart" name="Start Event">
       <extensionElements>
         <activiti:executionListener class="org.activiti.examples.bpmn.executionlistener.RecorderExecutionListener" event="end">
@@ -16,16 +16,16 @@
       </extensionElements>
     </startEvent>
 
-    <sequenceFlow sourceRef="theStart" targetRef="noneEvent" />    
-    
+    <sequenceFlow sourceRef="theStart" targetRef="noneEvent" />
+
     <intermediateThrowEvent  id="noneEvent" name="None Event">
       <extensionElements>
         <activiti:executionListener class="org.activiti.examples.bpmn.executionlistener.RecorderExecutionListener" event="end">
           <activiti:field name="parameter" stringValue="Intermediate Catch Event Listener" />
         </activiti:executionListener>
-      </extensionElements>        
+      </extensionElements>
     </intermediateThrowEvent>
-    
+
     <sequenceFlow sourceRef="noneEvent" targetRef="signalEvent" />
 
 	<intermediateThrowEvent id="signalEvent" name="Signal Event" >
@@ -33,8 +33,8 @@
           <activiti:executionListener class="org.activiti.examples.bpmn.executionlistener.RecorderExecutionListener" event="start">
             <activiti:field name="parameter" stringValue="Intermediate Throw Event Listener" />
           </activiti:executionListener>
-        </extensionElements>        
-        <signalEventDefinition signalRef="alertSignal" />     
+        </extensionElements>
+        <signalEventDefinition signalRef="alertSignal" />
 	</intermediateThrowEvent>
 
     <sequenceFlow sourceRef="signalEvent" targetRef="theEnd" />
@@ -44,8 +44,8 @@
         <activiti:executionListener class="org.activiti.examples.bpmn.executionlistener.RecorderExecutionListener" event="start">
           <activiti:field name="parameter" stringValue="End Event Listener" />
         </activiti:executionListener>
-      </extensionElements>    
+      </extensionElements>
     </endEvent>
-    
+
   </process>
 </definitions>

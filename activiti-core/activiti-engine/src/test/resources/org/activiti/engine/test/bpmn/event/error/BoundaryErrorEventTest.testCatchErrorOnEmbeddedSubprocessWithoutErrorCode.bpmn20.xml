@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <definitions id="definitions"
 	xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
-	xmlns:activiti="http://activiti.org/bpmn" 
+	xmlns:activiti="http://activiti.org/bpmn"
 	targetNamespace="Examples">
-	
+
 	<error id="myError" />
 	<error id="myThrownError" errorCode="23" />
 
@@ -28,7 +28,7 @@
 		</boundaryEvent>
 		<sequenceFlow id="flow2" sourceRef="catchError" targetRef="taskAfterErrorCatch" />
 		<userTask id="taskAfterErrorCatch" name="task after catching the error" />
-		
+
 		<endEvent id="theEnd" />
 
 	</process>

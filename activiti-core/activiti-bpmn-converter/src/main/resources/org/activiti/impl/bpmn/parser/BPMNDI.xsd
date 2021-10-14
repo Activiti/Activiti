@@ -3,14 +3,14 @@
 
 	<xsd:import namespace="http://www.omg.org/spec/DD/20100524/DC" schemaLocation="DC.xsd" />
 	<xsd:import namespace="http://www.omg.org/spec/DD/20100524/DI" schemaLocation="DI.xsd" />
-	
+
 	<xsd:element name="BPMNDiagram" type="bpmndi:BPMNDiagram" />
 	<xsd:element name="BPMNPlane" type="bpmndi:BPMNPlane" />
 	<xsd:element name="BPMNLabelStyle" type="bpmndi:BPMNLabelStyle" />
 	<xsd:element name="BPMNShape" type="bpmndi:BPMNShape" substitutionGroup="di:DiagramElement" />
 	<xsd:element name="BPMNLabel" type="bpmndi:BPMNLabel" />
 	<xsd:element name="BPMNEdge" type="bpmndi:BPMNEdge" substitutionGroup="di:DiagramElement" />
-	
+
 	<xsd:complexType name="BPMNDiagram">
 		<xsd:complexContent>
 			<xsd:extension base="di:Diagram">
@@ -21,7 +21,7 @@
 			</xsd:extension>
 		</xsd:complexContent>
 	</xsd:complexType>
-	
+
 	<xsd:complexType name="BPMNPlane">
 		<xsd:complexContent>
 			<xsd:extension base="di:Plane">
@@ -29,7 +29,7 @@
 			</xsd:extension>
 		</xsd:complexContent>
 	</xsd:complexType>
-	
+
 	<xsd:complexType name="BPMNEdge">
 		<xsd:complexContent>
 			<xsd:extension base="di:LabeledEdge">
@@ -43,7 +43,7 @@
 			</xsd:extension>
 		</xsd:complexContent>
 	</xsd:complexType>
-	
+
 	<xsd:complexType name="BPMNShape">
 		<xsd:complexContent>
 			<xsd:extension base="di:LabeledShape">
@@ -60,7 +60,7 @@
 			</xsd:extension>
 		</xsd:complexContent>
 	</xsd:complexType>
-	
+
 	<xsd:complexType name="BPMNLabel">
 		<xsd:complexContent>
 			<xsd:extension base="di:Label">
@@ -68,7 +68,7 @@
 			</xsd:extension>
 		</xsd:complexContent>
 	</xsd:complexType>
-	
+
 	<xsd:complexType name="BPMNLabelStyle">
 		<xsd:complexContent>
 			<xsd:extension base="di:Style">
@@ -78,7 +78,7 @@
 			</xsd:extension>
 		</xsd:complexContent>
 	</xsd:complexType>
-	
+
 	<xsd:simpleType name="ParticipantBandKind">
 		<xsd:restriction base="xsd:string">
 			<xsd:enumeration value="top_initiating" />
@@ -89,7 +89,7 @@
 			<xsd:enumeration value="bottom_non_initiating" />
 		</xsd:restriction>
 	</xsd:simpleType>
-	
+
 	<xsd:simpleType name="MessageVisibleKind">
 		<xsd:restriction base="xsd:string">
 			<xsd:enumeration value="initiating" />

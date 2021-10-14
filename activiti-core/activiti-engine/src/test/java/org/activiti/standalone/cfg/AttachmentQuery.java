@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 /**
- * 
+ *
  */
 package org.activiti.standalone.cfg;
 
@@ -28,7 +28,7 @@ import org.activiti.engine.task.Attachment;
 
 /**
 
- * 
+ *
  */
 public class AttachmentQuery extends AbstractQuery<AttachmentQuery, Attachment> {
 

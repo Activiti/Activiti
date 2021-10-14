@@ -35,5 +35,5 @@ public class StartMessageSubscriptionConverter {
                                                                        .build())
                        .orElseThrow(() -> new IllegalArgumentException("messageEventSubscriptionEntity must not be null"));
     }
-    
+
 }

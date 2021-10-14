@@ -18,7 +18,7 @@
     <endEvent id="sid-ED852A9C-4DA6-4A47-88B9-835857B44E6A"/>
     <sequenceFlow id="sid-9F03602D-75DE-4E34-9438-402F7A7B200E" sourceRef="sid-50A98D4E-06A5-4481-B8A1-64DDFFEC3E2B" targetRef="sid-ED852A9C-4DA6-4A47-88B9-835857B44E6A"/>
   </process>
-  
+
   <process id="parallel_tasks" name="parallel_tasks" isExecutable="true">
     <startEvent id="startEvent1_sub"/>
     <sequenceFlow id="sid-62A7653D-4888-43DC-A137-DC4E867A26CD" sourceRef="startEvent1_sub" targetRef="sid-90FE0F4A-623F-40EC-A916-150BE2964BD6"/>
@@ -42,5 +42,5 @@
       <terminateEventDefinition/>
     </endEvent>
   </process>
-  
+
 </definitions>

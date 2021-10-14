@@ -13,25 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.activiti.api.runtime.event.impl;
 
+import org.activiti.api.process.model.Deployment;
+import org.activiti.api.process.model.events.ApplicationDeployedEvent;
+import org.activiti.api.process.model.events.ApplicationEvent;
 
-package org.activiti.engine.impl.el;
+public class ApplicationDeployedEventImpl extends RuntimeEventImpl<Deployment, ApplicationEvent.ApplicationEvents>
+        implements ApplicationDeployedEvent {
 
-import java.lang.reflect.Method;
+    public ApplicationDeployedEventImpl(Deployment entity) {
+        super(entity);
+    }
 
-import javax.el.FunctionMapper;
-
-/**
- * Default implementation of a {@link FunctionMapper}.
- *
- * A non-null implementation is required by the javax.el.* classes, hence the reason for this pretty useless class.
- *
-
- */
-public class ActivitiFunctionMapper extends FunctionMapper {
-
-  public Method resolveFunction(String prefix, String localName) {
-    return null;
-  }
-
+    @Override
+    public ApplicationEvents getEventType() {
+        return ApplicationEvents.APPLICATION_DEPLOYED;
+    }
 }

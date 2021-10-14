@@ -19,7 +19,7 @@
 <mapper namespace="org.activiti.engine.impl.persistence.entity.HistoricProcessInstanceEntityImpl">
 
   <!-- HISTORIC PROCESS INSTANCE INSERT -->
-  
+
   <insert id="insertHistoricProcessInstance" parameterType="org.activiti.engine.impl.persistence.entity.HistoricProcessInstanceEntityImpl">
       insert into ${prefix}ACT_HI_PROCINST (
         ID_,
@@ -53,7 +53,7 @@
         #{name, jdbcType=VARCHAR}
       )
   </insert>
-  
+
   <insert id="bulkInsertHistoricProcessInstance" parameterType="java.util.List">
       insert into ${prefix}ACT_HI_PROCINST (
         ID_,
@@ -70,7 +70,7 @@
         DELETE_REASON_,
         TENANT_ID_,
         NAME_
-      ) values 
+      ) values
         <foreach collection="list" item="historicProcessInstance" index="index" separator=",">
           (#{historicProcessInstance.id ,jdbcType=VARCHAR},
            #{historicProcessInstance.processInstanceId, jdbcType=VARCHAR},
@@ -88,9 +88,9 @@
            #{historicProcessInstance.name, jdbcType=VARCHAR})
          </foreach>
   </insert>
-  
+
   <insert id="bulkInsertHistoricProcessInstance" databaseId="oracle" parameterType="java.util.List">
-      INSERT ALL 
+      INSERT ALL
         <foreach collection="list" item="historicProcessInstance" index="index">
           INTO ${prefix}ACT_HI_PROCINST (
             ID_,
@@ -107,7 +107,7 @@
             DELETE_REASON_,
             TENANT_ID_,
             NAME_
-          ) VALUES 
+          ) VALUES
               (#{historicProcessInstance.id ,jdbcType=VARCHAR},
                #{historicProcessInstance.processInstanceId, jdbcType=VARCHAR},
                #{historicProcessInstance.businessKey, jdbcType=VARCHAR},
@@ -127,7 +127,7 @@
   </insert>
 
   <!-- HISTORIC PROCESS INSTANCE UPDATE -->
-  
+
   <update id="updateHistoricProcessInstance" parameterType="org.activiti.engine.impl.persistence.entity.HistoricProcessInstanceEntityImpl">
     update ${prefix}ACT_HI_PROCINST set
       PROC_DEF_ID_ = #{processDefinitionId, jdbcType=VARCHAR},
@@ -142,26 +142,26 @@
   </update>
 
   <!-- HISTORIC PROCESS INSTANCE DELETE -->
-  
+
   <delete id="deleteHistoricProcessInstance">
     delete from ${prefix}ACT_HI_PROCINST where PROC_INST_ID_ = #{processInstanceId}
   </delete>
-  
+
   <delete id="bulkDeleteHistoricProcessInstance" parameterType="java.util.Collection">
     delete from ${prefix}ACT_HI_PROCINST where
      <foreach item="procInst" collection="list" index="index" separator=" or ">
         ID_ = #{procInst.id, jdbcType=VARCHAR}
     </foreach>
   </delete>
-  
+
   <!-- HISTORIC PROCESS INSTANCE RESULT MAP -->
-  
+
   <resultMap id="historicProcessInstanceResultMap" type="org.activiti.engine.impl.persistence.entity.HistoricProcessInstanceEntityImpl">
     <id property="id" column="ID_" jdbcType="VARCHAR" />
     <result property="processInstanceId" column="PROC_INST_ID_" jdbcType="VARCHAR" />
     <result property="businessKey" column="BUSINESS_KEY_" jdbcType="VARCHAR"/>
     <result property="processDefinitionId" column="PROC_DEF_ID_" jdbcType="VARCHAR" />
-    <result property="processDefinitionName" column="PROC_DEF_NAME_" jdbcType="VARCHAR" /> 
+    <result property="processDefinitionName" column="PROC_DEF_NAME_" jdbcType="VARCHAR" />
     <result property="processDefinitionKey" column="PROC_DEF_KEY_" jdbcType="VARCHAR" />
     <result property="processDefinitionVersion" column="PROC_DEF_VERSION_" jdbcType="INTEGER" />
     <result property="deploymentId" column="DEPLOYMENT_ID_" jdbcType="VARCHAR" />
@@ -176,13 +176,13 @@
     <result property="tenantId" column="TENANT_ID_" jdbcType="VARCHAR" />
     <result property="name" column="NAME_" jdbcType="VARCHAR" />
   </resultMap>
-  
+
   <resultMap id="historicProcessInstanceAndVariablesResultMap" type="org.activiti.engine.impl.persistence.entity.HistoricProcessInstanceEntityImpl">
     <id property="id" column="ID_" jdbcType="VARCHAR" />
     <result property="processInstanceId" column="PROC_INST_ID_" jdbcType="VARCHAR" />
     <result property="businessKey" column="BUSINESS_KEY_" jdbcType="VARCHAR"/>
     <result property="processDefinitionId" column="PROC_DEF_ID_" jdbcType="VARCHAR" />
-    <result property="processDefinitionName" column="PROC_DEF_NAME_" jdbcType="VARCHAR" /> 
+    <result property="processDefinitionName" column="PROC_DEF_NAME_" jdbcType="VARCHAR" />
     <result property="processDefinitionKey" column="PROC_DEF_KEY_" jdbcType="VARCHAR" />
     <result property="processDefinitionVersion" column="PROC_DEF_VERSION_" jdbcType="INTEGER" />
     <result property="deploymentId" column="DEPLOYMENT_ID_" jdbcType="VARCHAR" />
@@ -213,23 +213,23 @@
   </resultMap>
 
   <!-- HISTORIC PROCESS INSTANCE SELECT -->
-  
+
   <select id="selectHistoricProcessInstance" resultMap="historicProcessInstanceResultMap">
     select * from ${prefix}ACT_HI_PROCINST where PROC_INST_ID_ = #{processInstanceId, jdbcType=VARCHAR}
   </select>
 
   <select id="selectHistoricProcessInstanceIdsByProcessDefinitionId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultType="string">
     select ID_
-    from ${prefix}ACT_HI_PROCINST 
+    from ${prefix}ACT_HI_PROCINST
     where PROC_DEF_ID_ = #{parameter}
   </select>
-  
+
     <select id="selectHistoricProcessInstanceIdsBySuperProcessInstanceId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="historicProcessInstanceResultMap">
     select *
-    from ${prefix}ACT_HI_PROCINST 
+    from ${prefix}ACT_HI_PROCINST
     where SUPER_PROCESS_INSTANCE_ID_ = #{parameter}
   </select>
-  
+
 
   <select id="selectHistoricProcessInstancesByQueryCriteria" parameterType="org.activiti.engine.impl.HistoricProcessInstanceQueryImpl" resultMap="historicProcessInstanceResultMap">
   	${limitBefore}
@@ -238,54 +238,54 @@
     ${orderBy}
     ${limitAfter}
   </select>
-  
+
   <select id="selectHistoricProcessInstanceCountByQueryCriteria" parameterType="org.activiti.engine.impl.HistoricProcessInstanceQueryImpl" resultType="long">
     select count(distinct RES.ID_)
     <include refid="selectHistoricProcessInstancesByQueryCriteriaSql"/>
   </select>
-  
-  <sql id="selectHistoricProcessInstancesByQueryCriteriaSql">  
+
+  <sql id="selectHistoricProcessInstancesByQueryCriteriaSql">
     from ${prefix}ACT_HI_PROCINST RES
     left outer join ${prefix}ACT_RE_PROCDEF DEF on RES.PROC_DEF_ID_ = DEF.ID_
     <include refid="commonSelectHistoricProcessInstancesByQueryCriteriaSql"/>
   </sql>
-  
+
   <select id="selectHistoricProcessInstancesWithVariablesByQueryCriteria" parameterType="org.activiti.engine.impl.HistoricProcessInstanceQueryImpl" resultMap="historicProcessInstanceAndVariablesResultMap">
-    <include refid="selectHistoricProcessInstancesWithVariablesByQueryCriteriaColumns"/> 
-    <include refid="selectHistoricProcessInstancesWithVariablesByQueryCriteriaSql"/> 
+    <include refid="selectHistoricProcessInstancesWithVariablesByQueryCriteriaColumns"/>
+    <include refid="selectHistoricProcessInstancesWithVariablesByQueryCriteriaSql"/>
     ${orderBy}
     ${limitAfter}
   </select>
-  
-  <sql id="selectHistoricProcessInstancesWithVariablesByQueryCriteriaColumns">  
+
+  <sql id="selectHistoricProcessInstancesWithVariablesByQueryCriteriaColumns">
     ${limitBefore}
    <if test="_databaseId != 'db2' and _databaseId != 'mssql'">
     select distinct RES.*, DEF.KEY_ as PROC_DEF_KEY_, DEF.NAME_ as PROC_DEF_NAME_, DEF.VERSION_ as PROC_DEF_VERSION_, DEF.DEPLOYMENT_ID_ as DEPLOYMENT_ID_,
-    VAR.ID_ as VAR_ID_, 
-    VAR.NAME_ as VAR_NAME_, 
-    VAR.VAR_TYPE_ as VAR_TYPE_, 
+    VAR.ID_ as VAR_ID_,
+    VAR.NAME_ as VAR_NAME_,
+    VAR.VAR_TYPE_ as VAR_TYPE_,
     VAR.REV_ as VAR_REV_,
-    VAR.PROC_INST_ID_ as VAR_PROC_INST_ID_, 
-    VAR.EXECUTION_ID_ as VAR_EXECUTION_ID_, 
+    VAR.PROC_INST_ID_ as VAR_PROC_INST_ID_,
+    VAR.EXECUTION_ID_ as VAR_EXECUTION_ID_,
     VAR.TASK_ID_ as VAR_TASK_ID_,
-    VAR.BYTEARRAY_ID_ as VAR_BYTEARRAY_ID_, 
-    VAR.DOUBLE_ as VAR_DOUBLE_, 
-    VAR.TEXT_ as VAR_TEXT_, 
-    VAR.TEXT2_ as VAR_TEXT2_, 
-    VAR.LAST_UPDATED_TIME_ as VAR_LAST_UPDATED_TIME_, 
+    VAR.BYTEARRAY_ID_ as VAR_BYTEARRAY_ID_,
+    VAR.DOUBLE_ as VAR_DOUBLE_,
+    VAR.TEXT_ as VAR_TEXT_,
+    VAR.TEXT2_ as VAR_TEXT2_,
+    VAR.LAST_UPDATED_TIME_ as VAR_LAST_UPDATED_TIME_,
     VAR.LONG_ as VAR_LONG_
     ${limitBetween}
    </if>
    <if test="_databaseId == 'db2' || _databaseId == 'mssql'">
     select distinct TEMPRES_ID_ as ID_,
-    TEMPRES_BUSINESS_KEY_ as BUSINESS_KEY_, 
+    TEMPRES_BUSINESS_KEY_ as BUSINESS_KEY_,
     TEMPRES_PROC_DEF_ID_ as PROC_DEF_ID_,
-    TEMPRES_START_TIME_ as START_TIME_, 
+    TEMPRES_START_TIME_ as START_TIME_,
     TEMPRES_END_TIME_ as END_TIME_,
-    TEMPRES_DURATION_ as DURATION_, 
-    TEMPRES_START_USER_ID_ as START_USER_ID_, 
+    TEMPRES_DURATION_ as DURATION_,
+    TEMPRES_START_USER_ID_ as START_USER_ID_,
     TEMPRES_START_ACT_ID_ as START_ACT_ID_,
-    TEMPRES_END_ACT_ID_ as END_ACT_ID_, 
+    TEMPRES_END_ACT_ID_ as END_ACT_ID_,
     TEMPRES_SUPER_PROCESS_INSTANCE_ID_ as SUPER_PROCESS_INSTANCE_ID_,
     TEMPRES_DELETE_REASON_ as DELETE_REASON_,
     TEMPRES_NAME_ as NAME_,
@@ -294,55 +294,55 @@
     TEMPRES_PROC_DEF_NAME_ as PROC_DEF_NAME_,
     TEMPRES_PROC_DEF_VERSION_ as PROC_DEF_VERSION_,
     TEMPRES_DEPLOYMENT_ID_ as DEPLOYMENT_ID_,
-    TEMPVAR_ID_ as VAR_ID_, 
-    TEMPVAR_NAME_ as VAR_NAME_, 
-    TEMPVAR_TYPE_ as VAR_TYPE_, 
+    TEMPVAR_ID_ as VAR_ID_,
+    TEMPVAR_NAME_ as VAR_NAME_,
+    TEMPVAR_TYPE_ as VAR_TYPE_,
     TEMPVAR_REV_ as VAR_REV_,
-    TEMPVAR_PROC_INST_ID_ as VAR_PROC_INST_ID_, 
-    TEMPVAR_EXECUTION_ID_ as VAR_EXECUTION_ID_, 
+    TEMPVAR_PROC_INST_ID_ as VAR_PROC_INST_ID_,
+    TEMPVAR_EXECUTION_ID_ as VAR_EXECUTION_ID_,
     TEMPVAR_TASK_ID_ as VAR_TASK_ID_,
-    TEMPVAR_BYTEARRAY_ID_ as VAR_BYTEARRAY_ID_, 
-    TEMPVAR_DOUBLE_ as VAR_DOUBLE_, 
-    TEMPVAR_TEXT_ as VAR_TEXT_, 
-    TEMPVAR_TEXT2_ as VAR_TEXT2_, 
-    TEMPVAR_LAST_UPDATED_TIME_ as VAR_LAST_UPDATED_TIME_, 
+    TEMPVAR_BYTEARRAY_ID_ as VAR_BYTEARRAY_ID_,
+    TEMPVAR_DOUBLE_ as VAR_DOUBLE_,
+    TEMPVAR_TEXT_ as VAR_TEXT_,
+    TEMPVAR_TEXT2_ as VAR_TEXT2_,
+    TEMPVAR_LAST_UPDATED_TIME_ as VAR_LAST_UPDATED_TIME_,
     TEMPVAR_LONG_ as VAR_LONG_
     ${limitOuterJoinBetween}
-    RES.ID_ as TEMPRES_ID_, 
+    RES.ID_ as TEMPRES_ID_,
     RES.BUSINESS_KEY_ as TEMPRES_BUSINESS_KEY_,
-    RES.PROC_DEF_ID_ as TEMPRES_PROC_DEF_ID_, 
-    RES.PROC_INST_ID_ as TEMPRES_PROC_INST_ID_, 
-    RES.START_TIME_ as TEMPRES_START_TIME_, 
+    RES.PROC_DEF_ID_ as TEMPRES_PROC_DEF_ID_,
+    RES.PROC_INST_ID_ as TEMPRES_PROC_INST_ID_,
+    RES.START_TIME_ as TEMPRES_START_TIME_,
     RES.END_TIME_ as TEMPRES_END_TIME_,
-    RES.DURATION_ as TEMPRES_DURATION_, 
+    RES.DURATION_ as TEMPRES_DURATION_,
     RES.START_USER_ID_ as TEMPRES_START_USER_ID_,
-    RES.START_ACT_ID_ as TEMPRES_START_ACT_ID_, 
+    RES.START_ACT_ID_ as TEMPRES_START_ACT_ID_,
     RES.END_ACT_ID_ as TEMPRES_END_ACT_ID_,
-    RES.SUPER_PROCESS_INSTANCE_ID_ as TEMPRES_SUPER_PROCESS_INSTANCE_ID_, 
+    RES.SUPER_PROCESS_INSTANCE_ID_ as TEMPRES_SUPER_PROCESS_INSTANCE_ID_,
     RES.DELETE_REASON_ as TEMPRES_DELETE_REASON_,
-    RES.NAME_ as TEMPRES_NAME_, 
+    RES.NAME_ as TEMPRES_NAME_,
     RES.TENANT_ID_ as TEMPRES_TENANT_ID_,
     DEF.KEY_ as TEMPRES_PROC_DEF_KEY_,
     DEF.NAME_ as TEMPRES_PROC_DEF_NAME_,
     DEF.VERSION_ as TEMPRES_PROC_DEF_VERSION_,
     DEF.DEPLOYMENT_ID_ as TEMPRES_DEPLOYMENT_ID_,
-    VAR.ID_ as TEMPVAR_ID_, 
-    VAR.NAME_ as TEMPVAR_NAME_, 
-    VAR.VAR_TYPE_ as TEMPVAR_TYPE_, 
+    VAR.ID_ as TEMPVAR_ID_,
+    VAR.NAME_ as TEMPVAR_NAME_,
+    VAR.VAR_TYPE_ as TEMPVAR_TYPE_,
     VAR.REV_ as TEMPVAR_REV_,
-    VAR.PROC_INST_ID_ as TEMPVAR_PROC_INST_ID_, 
-    VAR.EXECUTION_ID_ as TEMPVAR_EXECUTION_ID_, 
+    VAR.PROC_INST_ID_ as TEMPVAR_PROC_INST_ID_,
+    VAR.EXECUTION_ID_ as TEMPVAR_EXECUTION_ID_,
     VAR.TASK_ID_ as TEMPVAR_TASK_ID_,
-    VAR.BYTEARRAY_ID_ as TEMPVAR_BYTEARRAY_ID_, 
-    VAR.DOUBLE_ as TEMPVAR_DOUBLE_, 
-    VAR.TEXT_ as TEMPVAR_TEXT_, 
-    VAR.TEXT2_ as TEMPVAR_TEXT2_, 
-    VAR.LAST_UPDATED_TIME_ as TEMPVAR_LAST_UPDATED_TIME_, 
+    VAR.BYTEARRAY_ID_ as TEMPVAR_BYTEARRAY_ID_,
+    VAR.DOUBLE_ as TEMPVAR_DOUBLE_,
+    VAR.TEXT_ as TEMPVAR_TEXT_,
+    VAR.TEXT2_ as TEMPVAR_TEXT2_,
+    VAR.LAST_UPDATED_TIME_ as TEMPVAR_LAST_UPDATED_TIME_,
     VAR.LONG_ as TEMPVAR_LONG_
    </if>
   </sql>
-  
-  <sql id="selectHistoricProcessInstancesWithVariablesByQueryCriteriaSql">  
+
+  <sql id="selectHistoricProcessInstancesWithVariablesByQueryCriteriaSql">
     from ${prefix}ACT_HI_PROCINST RES
     left outer join ${prefix}ACT_RE_PROCDEF DEF on RES.PROC_DEF_ID_ = DEF.ID_
     <if test="includeProcessVariables">
@@ -350,7 +350,7 @@
     </if>
     <include refid="commonSelectHistoricProcessInstancesByQueryCriteriaSql"/>
   </sql>
-  
+
   <sql id="commonSelectHistoricProcessInstancesByQueryCriteriaSql">
     <foreach collection="queryVariableValues" index="index" item="queryVariableValue">
       inner join ${prefix}ACT_HI_VARINST  A${index} on RES.PROC_INST_ID_ = A${index}.PROC_INST_ID_
@@ -412,7 +412,7 @@
       </if>
       <if test="deploymentIds != null &amp;&amp; deploymentIds.size() &gt; 0">
         and DEPLOY_P.DEPLOYMENT_ID_ IN
-        <foreach item="deployment" index="index" collection="deploymentIds" 
+        <foreach item="deployment" index="index" collection="deploymentIds"
                  open="(" separator="," close=")">
           #{deployment}
         </foreach>
@@ -539,7 +539,7 @@
         </if>
       </foreach>
       <foreach item="orQueryObject" index="orIndex" collection="orQueryObjects">
-        and 
+        and
         <trim prefix="(" prefixOverrides="OR" suffix=")">
           <if test="orQueryObject.processInstanceId != null">
             RES.PROC_INST_ID_ = #{orQueryObject.processInstanceId}
@@ -580,7 +580,7 @@
           </if>
           <if test="orQueryObject.deploymentIds != null &amp;&amp; orQueryObject.deploymentIds.size() &gt; 0">
             or DEPLOY_P_OR${orIndex}.DEPLOYMENT_ID_ IN
-            <foreach item="deployment" index="index" collection="orQueryObject.deploymentIds" 
+            <foreach item="deployment" index="index" collection="orQueryObject.deploymentIds"
                      open="(" separator="," close=")">
               #{deployment}
             </foreach>
@@ -719,7 +719,7 @@
       </if>
     </where>
   </sql>
-  
+
   <sql id="executionVariableOperator">
     <choose>
       <when test="queryVariableValue.operator.equals('EQUALS')">=</when>
@@ -732,11 +732,11 @@
       <when test="queryVariableValue.operator.equals('LESS_THAN_OR_EQUAL')">&lt;=</when>
    </choose>
   </sql>
- 
+
    <select id="selectHistoricProcessInstanceByNativeQuery" parameterType="java.util.Map" resultMap="historicProcessInstanceResultMap">
    	<include refid="org.activiti.engine.db.common.selectByNativeQuery"/>
   </select>
-  
+
   <select id="selectHistoricProcessInstanceCountByNativeQuery" parameterType="java.util.Map" resultType="long">
     ${sql}
   </select>

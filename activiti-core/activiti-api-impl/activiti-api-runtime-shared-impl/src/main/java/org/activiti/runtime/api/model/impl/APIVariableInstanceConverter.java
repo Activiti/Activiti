@@ -24,11 +24,10 @@ public class APIVariableInstanceConverter
 
     @Override
     public VariableInstance from(org.activiti.engine.impl.persistence.entity.VariableInstance internalVariableInstance) {
-        VariableInstanceImpl<Object> variableInstance = new VariableInstanceImpl<>(internalVariableInstance.getName(),
+        return new VariableInstanceImpl<>(internalVariableInstance.getName(),
                 internalVariableInstance.getTypeName(),
                 internalVariableInstance.getValue(),
-                internalVariableInstance.getProcessInstanceId());
-        variableInstance.setTaskId(internalVariableInstance.getTaskId());
-        return variableInstance;
+                internalVariableInstance.getProcessInstanceId(),
+                internalVariableInstance.getTaskId());
     }
 }

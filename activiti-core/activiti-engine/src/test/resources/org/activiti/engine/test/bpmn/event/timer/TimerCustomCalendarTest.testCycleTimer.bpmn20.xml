@@ -10,7 +10,7 @@
             <timerEventDefinition activiti:businessCalendarName="custom">
                 <timeCycle>R2/PT5S</timeCycle>
             </timerEventDefinition>
-        </startEvent>    
+        </startEvent>
 
         <sequenceFlow id="flow1" sourceRef="theStart" targetRef="receive"/>
 

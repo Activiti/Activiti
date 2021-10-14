@@ -6,7 +6,7 @@
     <sequenceFlow id="flow3" sourceRef="startevent1" targetRef="subprocess1"></sequenceFlow>
     <subProcess id="subprocess1" name="Sub Process">
       <startEvent id="startevent2" name="Start"/>
-      <sequenceFlow id="flow1" sourceRef="startevent2" targetRef="usertask1"></sequenceFlow>     
+      <sequenceFlow id="flow1" sourceRef="startevent2" targetRef="usertask1"></sequenceFlow>
       <userTask id="usertask1" name="User Task"/>
       <sequenceFlow id="flow2" sourceRef="usertask1" targetRef="endevent2"></sequenceFlow>
       <endEvent id="endevent2" name="End"/>

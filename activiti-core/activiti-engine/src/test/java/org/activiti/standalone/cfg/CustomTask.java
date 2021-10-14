@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 /**
- * 
+ *
  */
 package org.activiti.standalone.cfg;
 
@@ -22,7 +22,7 @@ import java.util.Date;
 
 /**
 
- * 
+ *
  */
 public class CustomTask {
 

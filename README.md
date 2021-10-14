@@ -2,7 +2,7 @@ Activiti
 ========
 
 [![Join Us in Gitter](https://badges.gitter.im/Activiti/Activiti7.svg)](https://gitter.im/Activiti/Activiti7?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-[![Build Status](https://travis-ci.com/Activiti/Activiti.svg?branch=develop)](https://travis-ci.com/Activiti/Activiti)
+[![CI](https://github.com/Activiti/Activiti/actions/workflows/main.yml/badge.svg)](https://github.com/Activiti/Activiti/actions/workflows/main.yml)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/8035801ae94c441981f363fa99824a33)](https://www.codacy.com/gh/Activiti/Activiti?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Activiti/Activiti&amp;utm_campaign=Badge_Grade)
 [![ASL 2.0](https://img.shields.io/hexpm/l/plug.svg)](https://github.com/Activiti/Activiti/blob/develop/LICENSE.txt)
 [![CLA](https://cla-assistant.io/readme/badge/Activiti/Activiti)](https://cla-assistant.io/Activiti/Activiti)
@@ -13,9 +13,9 @@ Activiti
 Homepage: <http://activiti.org>
 
 
-Activiti is a light-weight workflow and Business Process Management (BPM) Platform targeted at business people, developers and system admins. Its core is a super-fast and rock-solid BPMN 2 process engine for Java. It's open-source and distributed under the Apache license. Activiti runs in any Java application, on a server, on a cluster or in the cloud. It integrates perfectly with Spring, it is extremely lightweight and based on simple concepts. 
+Activiti is a light-weight workflow and Business Process Management (BPM) Platform targeted at business people, developers and system admins. Its core is a super-fast and rock-solid BPMN 2 process engine for Java. It's open-source and distributed under the Apache license. Activiti runs in any Java application, on a server, on a cluster or in the cloud. It integrates perfectly with Spring, it is extremely lightweight and based on simple concepts.
 
-**__NOTE: We moved to the master branch all the content of the development branch that we were using to design and code the next major version of the project. If you want to contribute with version 6.x please look at the 6.x branch.__** 
+**__NOTE: We moved to the master branch all the content of the development branch that we were using to design and code the next major version of the project. If you want to contribute with version 6.x please look at the 6.x branch.__**
 
 If you want to read more about our Repositories structure you can read our [GitBook](https://activiti.gitbooks.io/activiti-7-developers-guide/content/).
 
@@ -41,7 +41,7 @@ Configuring IntelliJ
     * Click tree item *Code Style*, click cogwheel and select *Import scheme*, then *IntelliJ code style xml*
     * Browse where you downloaded the xml and open it. Check that GoogleStyle is the active scheme.
         * Note: IntelliJ IDEA doesn't format your code automatically. You have to press Ctrl+Alt+L keyboard combination to trigger auto formatting when coding is done.
-    * There's an `.editorconfig` what has definition for indents, file encoding, line endings. 
+    * There's an `.editorconfig` what has definition for indents, file encoding, line endings.
     * If you disable it, you need to set the file encoding and number of spaces correctly manually.
     * Eclipse code style xml: [https://google.github.io/styleguide/eclipse-java-google-style.xml]
     * Eclipse needs [editorconfig-eclipse](https://marketplace.eclipse.org/content/editorconfig-eclipse) plugin in order to support EditorConfig files.
@@ -116,7 +116,7 @@ mvn license:format
 ## Checkstyle
 
 To check if your code style respect all the rules:
- 
+
 ```bash
 mvn checkstyle:check -DskipCheckstyle=false
 ```
@@ -133,14 +133,10 @@ the site will be generated at: `target/staging/index.html`
 
 ## CI/CD
 
-Running on Travis, requires the following environment variable to be set:
-
+Running on [GitHub Actions](https://github.com/features/actions), requires the following secrets to be set:
 
 | Name | Description |
 |------|-------------|
-| MAVEN_USERNAME | Internal Maven repository username |
-| MAVEN_PASSWORD | Internal Maven repository password |
-| GITHUB_TOKEN | Github token for git service account |
-| JX_RELEASE_VERSION | Jx release version 1.0.24     |
-| UPDATEBOT_VERSION | Version of updatebot 1.1.53     |
-
+| NEXUS_USERNAME | Internal Maven repository username |
+| NEXUS_PASSWORD | Internal Maven repository password |
+| GITHUB_TOKEN | GitHub token |

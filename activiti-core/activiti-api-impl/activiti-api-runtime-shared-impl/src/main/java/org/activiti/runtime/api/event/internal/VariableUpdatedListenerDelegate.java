@@ -21,7 +21,7 @@ import org.activiti.api.model.shared.event.VariableUpdatedEvent;
 import org.activiti.api.runtime.shared.events.VariableEventListener;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventListener;
-import org.activiti.engine.delegate.event.ActivitiVariableEvent;
+import org.activiti.engine.delegate.event.ActivitiVariableUpdatedEvent;
 import org.activiti.runtime.api.event.impl.ToVariableUpdatedConverter;
 
 public class VariableUpdatedListenerDelegate implements ActivitiEventListener {
@@ -43,8 +43,8 @@ public class VariableUpdatedListenerDelegate implements ActivitiEventListener {
 
     @Override
     public void onEvent(ActivitiEvent event) {
-        if (event instanceof ActivitiVariableEvent) {
-            ActivitiVariableEvent internalEvent = (ActivitiVariableEvent) event;
+        if (event instanceof ActivitiVariableUpdatedEvent) {
+            ActivitiVariableUpdatedEvent internalEvent = (ActivitiVariableUpdatedEvent) event;
             if (variableEventFilter.shouldEmmitEvent(internalEvent)) {
                 converter.from(internalEvent)
                     .ifPresent(convertedEvent -> {

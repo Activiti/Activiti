@@ -18,7 +18,7 @@
             var BpmnError = Packages.org.activiti.engine.delegate.BpmnError;
 
             if (JvmUtil.isJDK8()) {
-            
+
               throw new BpmnError("errorOne");
 
             } else {

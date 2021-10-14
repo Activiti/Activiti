@@ -41,7 +41,7 @@ public class ConditionUtil {
     } else {
       conditionExpression = sequenceFlow.getConditionExpression();
     }
-    
+
     if (StringUtils.isNotEmpty(conditionExpression)) {
 
       Expression expression = Context.getProcessEngineConfiguration().getExpressionManager().createExpression(conditionExpression);
@@ -57,7 +57,7 @@ public class ConditionUtil {
     }
 
   }
-    
+
   protected static String getActiveValue(String originalValue, String propertyName, ObjectNode elementProperties) {
     String activeValue = originalValue;
     if (elementProperties != null) {

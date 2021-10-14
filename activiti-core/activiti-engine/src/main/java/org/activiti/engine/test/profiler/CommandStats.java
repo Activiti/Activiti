@@ -26,10 +26,10 @@ import java.util.Map;
 public class CommandStats {
 
     protected long getTotalCommandTime = 0L;
-    
+
     protected List<Long> commandExecutionTimings = new ArrayList<Long>();
     protected List<Long> databaseTimings = new ArrayList<Long>();
-    
+
     protected Map<String, Long> dbSelects = new HashMap<String, Long>();
     protected Map<String, Long> dbInserts = new HashMap<String, Long>();
     protected Map<String, Long> dbUpdates = new HashMap<String, Long>();
@@ -38,7 +38,7 @@ public class CommandStats {
     public CommandStats(List<CommandExecutionResult> executions) {
         for (CommandExecutionResult execution : executions) {
             getTotalCommandTime += execution.getTotalTimeInMs();
-            
+
             commandExecutionTimings.add(execution.getTotalTimeInMs());
             databaseTimings.add(execution.getDatabaseTimeInMs());
 

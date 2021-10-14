@@ -161,7 +161,7 @@ public interface HistoryManager {
    * Record task definition key change, if audit history is enabled.
    */
   void recordTaskDefinitionKeyChange(String taskId, String taskDefinitionKey);
-  
+
   /**
    * Record a change of the process-definition id of a task instance, if activity history is enabled.
    */

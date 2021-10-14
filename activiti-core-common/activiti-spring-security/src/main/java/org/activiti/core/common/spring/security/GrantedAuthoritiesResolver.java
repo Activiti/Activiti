@@ -21,7 +21,7 @@ import java.security.Principal;
 import java.util.Collection;
 
 public interface GrantedAuthoritiesResolver {
-    
+
     Collection<? extends GrantedAuthority> getAuthorities(Principal principal);
-    
+
 }

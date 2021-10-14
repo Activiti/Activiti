@@ -39,7 +39,7 @@ public class ActivityCompletedEventHandler extends AbstractDatabaseEventLoggerEv
     putInMapIfNotNull(data, Fields.EXECUTION_ID, activityEvent.getExecutionId());
     putInMapIfNotNull(data, Fields.ACTIVITY_TYPE, activityEvent.getActivityType());
     putInMapIfNotNull(data, Fields.BEHAVIOR_CLASS, activityEvent.getBehaviorClass());
-    
+
     return createEventLogEntry(activityEvent.getProcessDefinitionId(), activityEvent.getProcessInstanceId(), activityEvent.getExecutionId(), null, data);
   }
 

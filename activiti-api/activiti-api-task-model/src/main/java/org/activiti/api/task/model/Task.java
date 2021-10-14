@@ -62,16 +62,18 @@ public interface Task extends ApplicationElement {
     Date getCompletedDate();
 
     Long getDuration();
-    
+
     Integer getProcessDefinitionVersion();
-    
+
     String getBusinessKey();
 
     boolean isStandalone();
-    
+
     String getTaskDefinitionKey();
 
     List<String> getCandidateUsers();
 
     List<String> getCandidateGroups();
+
+    String getCompletedBy();
 }

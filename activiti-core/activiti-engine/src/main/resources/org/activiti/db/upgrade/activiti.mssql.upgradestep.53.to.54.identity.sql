@@ -1,4 +1,4 @@
-alter table ACT_ID_USER 
+alter table ACT_ID_USER
 add PICTURE_ID_ nvarchar(64);
 
 create table ACT_ID_INFO (

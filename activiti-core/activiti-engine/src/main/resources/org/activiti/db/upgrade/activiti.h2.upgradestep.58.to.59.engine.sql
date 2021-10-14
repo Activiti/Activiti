@@ -1,4 +1,4 @@
-alter table ACT_RU_EXECUTION 
+alter table ACT_RU_EXECUTION
 add SUSPENSION_STATE_ integer;
 
 alter table ACT_RE_PROCDEF
@@ -34,11 +34,11 @@ alter table ACT_RU_EVENT_SUBSCR
     add constraint ACT_FK_EVENT_EXEC
     foreign key (EXECUTION_ID_)
     references ACT_RU_EXECUTION;
-    
-    
-    
-    
-    
+
+
+
+
+
 
 alter table ACT_RU_EXECUTION
 add IS_EVENT_SCOPE_ bit;
@@ -55,7 +55,7 @@ add DELETE_REASON_ varchar(4000);
 
 
 
-alter table ACT_GE_BYTEARRAY 
+alter table ACT_GE_BYTEARRAY
 add GENERATED_ bit;
 
 update ACT_GE_BYTEARRAY set GENERATED_ = 0;

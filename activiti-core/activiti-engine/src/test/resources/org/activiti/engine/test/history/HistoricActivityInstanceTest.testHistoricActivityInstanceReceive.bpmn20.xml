@@ -6,15 +6,15 @@
   targetNamespace="Examples">
 
   <process id="receiveProcess">
-  
+
     <startEvent id="start" />
     <sequenceFlow id="flow1" sourceRef="start" targetRef="receive" />
-    
-    <receiveTask id="receive" />    
+
+    <receiveTask id="receive" />
     <sequenceFlow id="flow2" sourceRef="receive" targetRef="end" />
-    
+
     <endEvent id="end" />
-    
+
   </process>
 
 </definitions>

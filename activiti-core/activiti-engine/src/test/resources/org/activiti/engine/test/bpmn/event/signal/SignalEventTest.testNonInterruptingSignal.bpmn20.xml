@@ -15,17 +15,17 @@
     <boundaryEvent id="signal" attachedToRef="theUserTask" cancelActivity="false">
       <signalEventDefinition signalRef="alertSignal" />
     </boundaryEvent>
-    
+
     <sequenceFlow id="flow2" sourceRef="theUserTask" targetRef="theEnd" />
-    
+
     <endEvent id="theEnd" />
-    
+
     <sequenceFlow id="flow3" sourceRef="signal" targetRef="theUserTask2" />
-    
+
     <userTask id="theUserTask2" name="My Second User Task" />
-    
+
     <sequenceFlow id="flow4" sourceRef="theUserTask2" targetRef="theEnd2" />
-    
+
     <endEvent id="theEnd2" />
   </process>
 

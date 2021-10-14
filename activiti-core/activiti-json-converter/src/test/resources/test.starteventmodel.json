@@ -55,7 +55,7 @@
 	            		   },
 	            		   "initiator":"startInitiator",
 	            		   "formkeydefinition":"startFormKey",
-	            		   "executionlisteners" : {"executionListeners": [{"event": "start", "className": "org.test.TestClass", "expression": "", "delegateExpression": "", "fields": [{"name": "testField", "stringValue": "test", "expression": ""}, {"name": "testField2", "stringValue": "", "expression": "${expression}"}]}, 
+	            		   "executionlisteners" : {"executionListeners": [{"event": "start", "className": "org.test.TestClass", "expression": "", "delegateExpression": "", "fields": [{"name": "testField", "stringValue": "test", "expression": ""}, {"name": "testField2", "stringValue": "", "expression": "${expression}"}]},
             					{"event": "end", "className": "", "expression": "${someExpression}", "delegateExpression": "", "fields": "undefined"}]}
 	            	   },
 	            	   "stencil":{

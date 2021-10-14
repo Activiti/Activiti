@@ -6,17 +6,17 @@
 
   <process id="testSignalWithProcessVariables">
 
-    <startEvent id="theStart" />    
-    <sequenceFlow  sourceRef="theStart" targetRef="receiveMessage" />    
-    
-    <receiveTask id="receiveMessage" />    
+    <startEvent id="theStart" />
+    <sequenceFlow  sourceRef="theStart" targetRef="receiveMessage" />
+
+    <receiveTask id="receiveMessage" />
     <sequenceFlow sourceRef="receiveMessage" targetRef="theTask" />
-    
-    <userTask id="theTask" name="my task" />        
+
+    <userTask id="theTask" name="my task" />
     <sequenceFlow  sourceRef="theTask" targetRef="theEnd" />
-    
+
     <endEvent id="theEnd" />
-    
+
   </process>
 
 </definitions>

@@ -9,13 +9,13 @@
      	<extensionElements>
     		<activiti:in source="exceptionClass" target="exceptionClass" />
 	        <activiti:mapException xmlns:activiti="http://activiti.org/bpmn" errorCode="myErrorCode1" includeChildExceptions="true">org.activiti.engine.test.bpmn.event.error.mapError.BoundaryErrorParentException</activiti:mapException>
-	 	</extensionElements>    		
+	 	</extensionElements>
     </callActivity>
     <sequenceFlow id="flow7" sourceRef="theStart" targetRef="callactivity1"></sequenceFlow>
     <endEvent id="endevent2" name="End"></endEvent>
     <sequenceFlow id="flow8" sourceRef="callactivity1" targetRef="endevent2"></sequenceFlow>
     <boundaryEvent id="boundaryerror1" name="Error" attachedToRef="callactivity1">
- 		<errorEventDefinition errorRef="myErrorCode1" />    
+ 		<errorEventDefinition errorRef="myErrorCode1" />
  	</boundaryEvent>
     <sequenceFlow id="flow9" sourceRef="boundaryerror1" targetRef="servicetask2"></sequenceFlow>
     <sequenceFlow id="flow10" sourceRef="servicetask2" targetRef="endevent2"></sequenceFlow>

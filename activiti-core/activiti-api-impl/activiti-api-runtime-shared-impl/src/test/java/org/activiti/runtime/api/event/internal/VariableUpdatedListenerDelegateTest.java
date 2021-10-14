@@ -27,8 +27,7 @@ import java.util.Optional;
 import org.activiti.api.model.shared.event.VariableUpdatedEvent;
 import org.activiti.api.runtime.shared.events.VariableEventListener;
 import org.activiti.engine.delegate.event.ActivitiEvent;
-import org.activiti.engine.delegate.event.ActivitiEventType;
-import org.activiti.engine.delegate.event.impl.ActivitiVariableEventImpl;
+import org.activiti.engine.delegate.event.impl.ActivitiVariableUpdatedEventImpl;
 import org.activiti.runtime.api.event.impl.ToVariableUpdatedConverter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -60,12 +59,10 @@ public class VariableUpdatedListenerDelegateTest {
     @Test
     public void onEvent_should_callListenersWhenItsVariableEventAndItsNotFiltered() {
         //given
-        ActivitiVariableEventImpl internalEvent = new ActivitiVariableEventImpl(
-            ActivitiEventType.VARIABLE_UPDATED);
+        ActivitiVariableUpdatedEventImpl internalEvent = new ActivitiVariableUpdatedEventImpl();
         given(variableEventFilter.shouldEmmitEvent(internalEvent)).willReturn(true);
         VariableUpdatedEvent apiEvent = mock(VariableUpdatedEvent.class);
-        given(converter.from(internalEvent)).willReturn(Optional.of(
-            apiEvent));
+        given(converter.from(internalEvent)).willReturn(Optional.of(apiEvent));
 
         //when
         variableUpdatedListenerDelegate.onEvent(internalEvent);
@@ -91,12 +88,10 @@ public class VariableUpdatedListenerDelegateTest {
     @Test
     public void onEvent_shouldNot_callListenersWhenItsFiltered() {
         //given
-        ActivitiVariableEventImpl internalEvent = new ActivitiVariableEventImpl(
-            ActivitiEventType.VARIABLE_UPDATED);
+        ActivitiVariableUpdatedEventImpl internalEvent = new ActivitiVariableUpdatedEventImpl();
         given(variableEventFilter.shouldEmmitEvent(internalEvent)).willReturn(false);
         VariableUpdatedEvent apiEvent = mock(VariableUpdatedEvent.class);
-        given(converter.from(internalEvent)).willReturn(Optional.of(
-            apiEvent));
+        given(converter.from(internalEvent)).willReturn(Optional.of(apiEvent));
 
         //when
         variableUpdatedListenerDelegate.onEvent(internalEvent);

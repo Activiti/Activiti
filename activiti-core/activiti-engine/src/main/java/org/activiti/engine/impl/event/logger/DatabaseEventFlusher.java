@@ -30,11 +30,11 @@ public class DatabaseEventFlusher extends AbstractEventFlusher {
 
   @Override
   public void closing(CommandContext commandContext) {
-    
+
     if (commandContext.getException() != null) {
       return; // Not interested in events about exceptions
     }
-    
+
     EventLogEntryEntityManager eventLogEntryEntityManager = commandContext.getEventLogEntryEntityManager();
     for (EventLoggerEventHandler eventHandler : eventHandlers) {
       try {
@@ -46,11 +46,11 @@ public class DatabaseEventFlusher extends AbstractEventFlusher {
   }
 
   public void afterSessionsFlush(CommandContext commandContext) {
-    
+
   }
 
   public void closeFailure(CommandContext commandContext) {
-    
+
   }
 
 }

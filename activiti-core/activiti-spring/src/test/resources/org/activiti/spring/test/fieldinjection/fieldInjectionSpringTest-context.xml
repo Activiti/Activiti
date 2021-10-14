@@ -12,9 +12,9 @@
 		class="org.activiti.spring.test.fieldinjection.SingletonDelegateExpressionBean" />
 
 	<bean id="prototypeDelegateExpressionBean"
-		class="org.activiti.spring.test.fieldinjection.PrototypeDelegateExpressionBean" 
+		class="org.activiti.spring.test.fieldinjection.PrototypeDelegateExpressionBean"
 		scope="prototype" />
-		
+
 	<!-- NOTE: listeners are implemented using annotations to test both approaches -->
 
 	<bean id="dataSource"

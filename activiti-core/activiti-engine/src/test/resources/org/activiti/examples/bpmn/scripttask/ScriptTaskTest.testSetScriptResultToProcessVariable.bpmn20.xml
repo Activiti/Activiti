@@ -19,9 +19,9 @@
   xmlns:modeler="http://activiti.com/modeler"
   modeler:version="2.0"
   targetNamespace="Examples">
-  
+
   <process id="setScriptResultToProcessVariable">
-  
+
     <startEvent id="theStart" />
 
     <scriptTask id="theScriptTaskWithExistingProcessVariableName" scriptFormat="juel" activiti:resultVariable="existingProcessVariableName">
@@ -45,7 +45,7 @@
     <sequenceFlow id="flow3" sourceRef="theScriptTaskWithNewProcessVariableName" targetRef="theScriptTaskWithNoResultVariable" />
     <sequenceFlow id="flow6" sourceRef="theScriptTaskWithNoResultVariable" targetRef="theTask" />
     <sequenceFlow id="flow7" sourceRef="theTask" targetRef="theEnd" />
-    
+
   </process>
 
 </definitions>

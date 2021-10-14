@@ -6,7 +6,7 @@
 
   <process id="processOne" name="Process One">
     <documentation>the first process</documentation>
-    
+
     <startEvent id="start" name="S t a r t">
       <documentation>the start event</documentation>
     </startEvent>

@@ -18,19 +18,19 @@ package org.activiti.runtime.api.event.impl;
 import org.activiti.api.model.shared.event.VariableUpdatedEvent;
 import org.activiti.api.runtime.event.impl.VariableUpdatedEventImpl;
 import org.activiti.api.runtime.model.impl.VariableInstanceImpl;
-import org.activiti.engine.delegate.event.ActivitiVariableEvent;
+import org.activiti.engine.delegate.event.ActivitiVariableUpdatedEvent;
 
 import java.util.Optional;
 
-public class ToVariableUpdatedConverter implements EventConverter<VariableUpdatedEvent, ActivitiVariableEvent> {
+public class ToVariableUpdatedConverter implements EventConverter<VariableUpdatedEvent, ActivitiVariableUpdatedEvent> {
 
     @Override
-    public Optional<VariableUpdatedEvent> from(ActivitiVariableEvent internalEvent) {
+    public Optional<VariableUpdatedEvent> from(ActivitiVariableUpdatedEvent internalEvent) {
         VariableInstanceImpl<Object> variableInstance = new VariableInstanceImpl<>(internalEvent.getVariableName(),
                                                                                    internalEvent.getVariableType().getTypeName(),
                                                                                    internalEvent.getVariableValue(),
-                                                                                   internalEvent.getProcessInstanceId());
-        variableInstance.setTaskId(internalEvent.getTaskId());
-        return Optional.of(new VariableUpdatedEventImpl(variableInstance));
+                                                                                   internalEvent.getProcessInstanceId(),
+                                                                                   internalEvent.getTaskId());
+        return Optional.of(new VariableUpdatedEventImpl<>(variableInstance, internalEvent.getVariablePreviousValue()));
     }
 }

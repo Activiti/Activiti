@@ -1,0 +1,43 @@
+{
+  "id": "emailTemplateMapping",
+  "extensions": {
+    "processDefinitionId": {
+      "templates": {
+        "tasks": {
+          "myTaskId1": {
+            "assignee": {
+              "type": "file",
+              "value": "https://github.com/leemunroe/responsive-html-email-template/blob/master/email.html"
+            },
+            "candidate": {
+              "type": "file",
+              "value": "https://github.com/leemunroe/responsive-html-email-template/blob/master/email-inlined.html"
+            }
+          },
+          "myTaskId2": {
+            "assignee": {
+              "type": "variable",
+              "value": "myAssigneeTemplateVariable"
+            }
+          },
+          "myTaskId3": {
+            "candidate": {
+              "type": "variable",
+              "value": "myCandidateTemplateVariable"
+            }
+          }
+        },
+        "default": {
+          "assignee": {
+            "type": "file",
+            "value": "classpath:templates/email.html"
+          },
+          "candidate": {
+            "type": "variable",
+            "value": "myCandidateTemplateVariable"
+          }
+        }
+      }
+    }
+  }
+}

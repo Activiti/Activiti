@@ -19,7 +19,7 @@ import java.security.Principal;
 import java.util.Optional;
 
 public interface PrincipalIdentityProvider {
-    
+
     default String getUserId(Principal principal) {
         return Optional.of(principal)
                        .map(Principal::getName)

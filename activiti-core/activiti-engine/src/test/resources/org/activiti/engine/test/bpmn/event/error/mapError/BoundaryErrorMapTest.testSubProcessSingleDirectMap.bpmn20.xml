@@ -8,7 +8,7 @@
       <serviceTask id="servicetask1" name="Service Task" activiti:class="org.activiti.engine.test.bpmn.event.error.mapError.ThrowCustomExceptionDelegate">
 	      <extensionElements>
 	        <activiti:mapException xmlns:activiti="http://activiti.org/bpmn" errorCode="myErrorCode1" includeChildExceptions="true">org.activiti.engine.test.bpmn.event.error.mapError.BoundaryErrorParentException</activiti:mapException>
-	      </extensionElements>      
+	      </extensionElements>
       </serviceTask>
       <sequenceFlow id="flow3" sourceRef="startevent1" targetRef="servicetask1"></sequenceFlow>
       <endEvent id="endevent2" name="End"></endEvent>
@@ -18,7 +18,7 @@
     <endEvent id="endevent1" name="End"></endEvent>
     <sequenceFlow id="flow2" sourceRef="subprocess1" targetRef="endevent1"></sequenceFlow>
     <boundaryEvent id="boundaryerror1" name="Error" attachedToRef="subprocess1">
- 		<errorEventDefinition errorRef="myErrorCode1" />    
+ 		<errorEventDefinition errorRef="myErrorCode1" />
  	</boundaryEvent>
     <serviceTask id="servicetask2" name="Set Flag" activiti:class="org.activiti.engine.test.bpmn.event.error.mapError.FlagDelegate"></serviceTask>
     <sequenceFlow id="flow5" sourceRef="servicetask2" targetRef="endevent1"></sequenceFlow>

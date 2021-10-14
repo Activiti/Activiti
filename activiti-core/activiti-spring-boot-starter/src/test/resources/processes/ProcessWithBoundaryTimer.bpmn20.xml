@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<definitions 
+<definitions
   targetNamespace="Examples"
   xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -12,23 +12,23 @@
   expressionLanguage="http://www.w3.org/1999/XPath">
 
   <process id="testTimerCancelledEvent">
-  
+
     <startEvent id="theStart" />
-    
+
     <sequenceFlow sourceRef="theStart" targetRef="task" />
-      
+
     <userTask id="task" name="User Task" activiti:candidateUsers="user"></userTask>
-         
+
     <boundaryEvent attachedToRef="task" id="timer" cancelActivity="false">
     	<timerEventDefinition>
         <timeDuration>PT10H</timeDuration>
     	</timerEventDefinition>
     </boundaryEvent>
-    
+
     <sequenceFlow sourceRef="task" targetRef="theEnd" />
-        
+
     <endEvent id="theEnd" />
-    
+
   </process>
 
 </definitions>

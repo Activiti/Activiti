@@ -26,7 +26,7 @@ import java.io.Serializable;
 
 /**
  * dumb object to demonstrate holding scoped state for the duration of a business process
- * 
+ *
 
  */
 public class StatefulObject implements Serializable, InitializingBean {

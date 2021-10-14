@@ -4,9 +4,9 @@
   xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
   xmlns:activiti="http://activiti.org/bpmn"
   targetNamespace="Examples">
-  
+
   <process id="testNoScript">
-  
+
     <startEvent id="theStart" />
     <sequenceFlow id="flow1" sourceRef="theStart" targetRef="script1" />
 

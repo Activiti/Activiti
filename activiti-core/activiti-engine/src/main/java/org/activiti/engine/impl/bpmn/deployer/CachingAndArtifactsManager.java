@@ -104,4 +104,3 @@ public class CachingAndArtifactsManager {
     deploymentManager.getProcessDefinitionInfoCache().add(processDefinition.getId(), definitionCacheObject);
   }
 }
-

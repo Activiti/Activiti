@@ -43,7 +43,7 @@ public class ProcessRuntimeTestApp {
     public RuntimeService runtimeService() {
         return mock(RuntimeService.class);
     }
-    
+
     @Bean
     public ManagementService managementService() {
         return mock(ManagementService.class);

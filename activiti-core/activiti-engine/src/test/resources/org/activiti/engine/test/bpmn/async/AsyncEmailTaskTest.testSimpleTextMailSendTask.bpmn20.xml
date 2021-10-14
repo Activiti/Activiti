@@ -1,4 +1,4 @@
-<definitions 
+<definitions
   xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
   xmlns:activiti="http://activiti.org/bpmn"
   targetNamespace="Examples">
@@ -7,7 +7,7 @@
 
     <startEvent id="theStart" />
     <sequenceFlow sourceRef="theStart" targetRef="sendMail" />
-    
+
     <sendTask id="sendMail" activiti:type="mail" activiti:async="true">
       <extensionElements>
         <activiti:field name="to">
@@ -18,11 +18,11 @@
         </activiti:field>
         <activiti:field name="text">
           <activiti:string>This a text only e-mail.</activiti:string>
-        </activiti:field>      
+        </activiti:field>
       </extensionElements>
     </sendTask>
     <sequenceFlow sourceRef="sendMail" targetRef="theEnd" />
-    
+
     <endEvent id="theEnd" />
 
   </process>

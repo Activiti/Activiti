@@ -31,6 +31,7 @@ public class IntegrationContextImpl implements IntegrationContext {
     private ProcessVariablesMap<String, Object> outBoundVariables = new ProcessVariablesMap<>();
     private String processInstanceId;
     private String parentProcessInstanceId;
+    private String rootProcessInstanceId;
     private String processDefinitionId;
     private String executionId;
     private String processDefinitionKey;
@@ -53,6 +54,15 @@ public class IntegrationContextImpl implements IntegrationContext {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    @Override
+    public String getRootProcessInstanceId() {
+        return rootProcessInstanceId;
+    }
+
+    public void setRootProcessInstanceId(String rootProcessInstanceId) {
+        this.rootProcessInstanceId = rootProcessInstanceId;
     }
 
     @Override
@@ -212,7 +222,8 @@ public class IntegrationContextImpl implements IntegrationContext {
                             processDefinitionId,
                             processDefinitionKey,
                             processDefinitionVersion,
-                            processInstanceId);
+                            processInstanceId,
+                            rootProcessInstanceId);
     }
 
     @Override
@@ -241,7 +252,8 @@ public class IntegrationContextImpl implements IntegrationContext {
                Objects.equals(processDefinitionId, other.processDefinitionId) &&
                Objects.equals(processDefinitionKey, other.processDefinitionKey) &&
                Objects.equals(processDefinitionVersion, other.processDefinitionVersion) &&
-               Objects.equals(processInstanceId, other.processInstanceId);
+               Objects.equals(processInstanceId, other.processInstanceId) &&
+               Objects.equals(rootProcessInstanceId, other.rootProcessInstanceId);
     }
 
     @Override
@@ -254,6 +266,8 @@ public class IntegrationContextImpl implements IntegrationContext {
                .append(inBoundVariables != null ? toString(inBoundVariables.entrySet(), maxLen) : null)
                .append(", outBoundVariables=")
                .append(outBoundVariables != null ? toString(outBoundVariables.entrySet(), maxLen) : null)
+               .append(", rootProcessInstanceId=")
+               .append(rootProcessInstanceId)
                .append(", processInstanceId=")
                .append(processInstanceId)
                .append(", parentProcessInstanceId=")

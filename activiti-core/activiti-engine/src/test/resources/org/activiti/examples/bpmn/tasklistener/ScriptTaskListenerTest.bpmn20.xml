@@ -3,7 +3,7 @@
 
 	<process id="scriptTaskListenerProcess" name="Script Task Example">
 		<startEvent id="startevent1" name="Start"></startEvent>
-			
+
 		<userTask id="usertask1" name="All your base are belong to us">
 			<extensionElements>
 				<activiti:taskListener event="create" class="org.activiti.engine.impl.bpmn.listener.ScriptTaskListener">
@@ -21,11 +21,11 @@
 				</activiti:taskListener>
 			</extensionElements>
 		</userTask>
-		
+
 		<endEvent id="endevent1" name="End"></endEvent>
-		
+
 		<userTask id="usertask2" name="${myVar}"></userTask>
-		
+
 		<sequenceFlow id="flow10" name="" sourceRef="startevent1" targetRef="usertask1"></sequenceFlow>
 		<sequenceFlow id="flow12" name="" sourceRef="usertask1" targetRef="usertask2"></sequenceFlow>
 		<sequenceFlow id="flow13" name="" sourceRef="usertask2" targetRef="endevent1"></sequenceFlow>

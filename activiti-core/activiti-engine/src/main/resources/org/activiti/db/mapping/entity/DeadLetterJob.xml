@@ -1,6 +1,6 @@
-<?xml version="1.0" encoding="UTF-8" ?> 
+<?xml version="1.0" encoding="UTF-8" ?>
 
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="org.activiti.engine.impl.persistence.entity.DeadLetterJobEntityImpl">
 
@@ -34,7 +34,7 @@
         from ${prefix}ACT_RU_DEADLETTER_JOB J
         where J.EXECUTION_ID_ = #{parameter}
     </select>
-    
+
     <select id="selectDeadLetterJobsByProcessInstanceId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
         select *
         from ${prefix}ACT_RU_DEADLETTER_JOB J
@@ -42,14 +42,14 @@
     </select>
 
     <!-- TIMER INSERT -->
-  
+
   	<insert id="insertDeadLetterJob" parameterType="org.activiti.engine.impl.persistence.entity.DeadLetterJobEntityImpl">
     insert into ${prefix}ACT_RU_DEADLETTER_JOB (
-            ID_, 
+            ID_,
             REV_,
             TYPE_,
             EXCLUSIVE_,
-            EXECUTION_ID_, 
+            EXECUTION_ID_,
             PROCESS_INSTANCE_ID_,
             PROC_DEF_ID_,
             EXCEPTION_STACK_ID_,
@@ -82,7 +82,7 @@
             REV_,
             TYPE_,
             EXCLUSIVE_,
-            EXECUTION_ID_, 
+            EXECUTION_ID_,
             PROCESS_INSTANCE_ID_,
             PROC_DEF_ID_,
             EXCEPTION_STACK_ID_,
@@ -91,8 +91,8 @@
             REPEAT_,
             HANDLER_TYPE_,
             HANDLER_CFG_,
-            TENANT_ID_) VALUES 
-	    <foreach collection="list" item="job" index="index" separator=","> 
+            TENANT_ID_) VALUES
+	    <foreach collection="list" item="job" index="index" separator=",">
 	        (#{job.id, jdbcType=VARCHAR},
 	         #{job.revision, jdbcType=INTEGER},
 	         #{job.jobType, jdbcType=VARCHAR},
@@ -109,7 +109,7 @@
 	         #{job.tenantId, jdbcType=VARCHAR})
 	    </foreach>
   	</insert>
-  	
+
   <insert id="bulkInsertDeadLetterJob" databaseId="oracle" parameterType="java.util.List">
     INSERT ALL
     <foreach collection="list" item="job" index="index">
@@ -118,7 +118,7 @@
       REV_,
       TYPE_,
       EXCLUSIVE_,
-      EXECUTION_ID_, 
+      EXECUTION_ID_,
       PROCESS_INSTANCE_ID_,
       PROC_DEF_ID_,
       EXCEPTION_STACK_ID_,
@@ -127,7 +127,7 @@
       REPEAT_,
       HANDLER_TYPE_,
       HANDLER_CFG_,
-      TENANT_ID_) VALUES 
+      TENANT_ID_) VALUES
       (#{job.id, jdbcType=VARCHAR},
        #{job.revision, jdbcType=INTEGER},
        #{job.jobType, jdbcType=VARCHAR},

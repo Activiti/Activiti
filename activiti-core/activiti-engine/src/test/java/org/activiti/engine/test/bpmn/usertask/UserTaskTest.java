@@ -43,7 +43,7 @@ public class UserTaskTest extends PluggableActivitiTestCase {
     assertThat(task.getId()).isNotNull();
     assertThat(task.getName()).isEqualTo("my task");
     assertThat(task.getDescription()).isEqualTo("Very important");
-    assertThat(task.getPriority() > 0).isTrue();
+    assertThat(task.getPriority() == 0).isTrue();
     assertThat(task.getAssignee()).isEqualTo("kermit");
     assertThat(task.getProcessInstanceId()).isEqualTo(processInstance.getId());
     assertThat(task.getProcessDefinitionId()).isNotNull();

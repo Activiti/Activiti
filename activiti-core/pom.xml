@@ -12,19 +12,18 @@
   <packaging>pom</packaging>
   <name>Activiti :: Core :: Parent</name>
   <properties>
-    <batik.version>1.13</batik.version>
+    <batik.version>1.14</batik.version>
     <checkstyle-maven-plugin.version>3.1.0</checkstyle-maven-plugin.version>
     <commons-email.version>1.5</commons-email.version>
     <jakarta-enterprise-concurrent.version>1.1.2</jakarta-enterprise-concurrent.version>
     <java-uuid-generator.version>4.0.1</java-uuid-generator.version>
     <javaGeom.version>0.11.1</javaGeom.version>
-    <jgraphx.version>4.1.0</jgraphx.version>
-    <joda-time.version>2.10.6</joda-time.version>
-    <json-unit.version>2.18.0</json-unit.version>
-    <juel.version>2.2.7</juel.version>
-    <mybatis.version>3.5.5</mybatis.version>
+    <jgraphx.version>4.2.2</jgraphx.version>
+    <joda-time.version>2.10.10</joda-time.version>
+    <json-unit.version>2.25.0</json-unit.version>
+    <mybatis.version>3.5.7</mybatis.version>
     <subethasmtp-wiser.version>1.2</subethasmtp-wiser.version>
-    <xmlgraphics-commons.version>2.4</xmlgraphics-commons.version>
+    <xmlgraphics-commons.version>2.6</xmlgraphics-commons.version>
   </properties>
   <dependencyManagement>
     <dependencies>
@@ -46,21 +45,6 @@
         <groupId>jakarta.enterprise.concurrent</groupId>
         <artifactId>jakarta.enterprise.concurrent-api</artifactId>
         <version>${jakarta-enterprise-concurrent.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>de.odysseus.juel</groupId>
-        <artifactId>juel-api</artifactId>
-        <version>${juel.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>de.odysseus.juel</groupId>
-        <artifactId>juel-impl</artifactId>
-        <version>${juel.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>de.odysseus.juel</groupId>
-        <artifactId>juel-spi</artifactId>
-        <version>${juel.version}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.commons</groupId>

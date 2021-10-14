@@ -21,7 +21,7 @@ import java.util.Objects;
 import org.activiti.api.process.model.StartMessageSubscription;
 
 public class StartMessageSubscriptionImpl implements StartMessageSubscription {
-    
+
     private String id;
     private String eventName;
     private String processDefinitionId;
@@ -40,27 +40,27 @@ public class StartMessageSubscriptionImpl implements StartMessageSubscription {
 
     StartMessageSubscriptionImpl() {
     }
-    
+
     public String getId() {
         return id;
     }
-    
+
     public String getEventName() {
         return eventName;
     }
-    
+
     public String getProcessDefinitionId() {
         return processDefinitionId;
     }
-    
+
     public String getConfiguration() {
         return configuration;
     }
-    
+
     public String getActivityId() {
         return activityId;
     }
-    
+
     public Date getCreated() {
         return created;
     }
@@ -88,11 +88,11 @@ public class StartMessageSubscriptionImpl implements StartMessageSubscription {
             return false;
         }
         StartMessageSubscriptionImpl other = (StartMessageSubscriptionImpl) obj;
-        return Objects.equals(activityId, other.activityId) && 
-                Objects.equals(configuration, other.configuration) && 
-                Objects.equals(created, other.created) && 
-                Objects.equals(eventName, other.eventName) && 
-                Objects.equals(id, other.id) && 
+        return Objects.equals(activityId, other.activityId) &&
+                Objects.equals(configuration, other.configuration) &&
+                Objects.equals(created, other.created) &&
+                Objects.equals(eventName, other.eventName) &&
+                Objects.equals(id, other.id) &&
                 Objects.equals(processDefinitionId, other.processDefinitionId);
     }
 
@@ -122,7 +122,7 @@ public class StartMessageSubscriptionImpl implements StartMessageSubscription {
     public static Builder builder() {
         return new Builder();
     }
-    
+
     /**
      * Creates a builder to build {@link StartMessageSubscriptionImpl} and initialize it with the given object.
      * @param startMessageSubscriptionImpl to initialize the builder with

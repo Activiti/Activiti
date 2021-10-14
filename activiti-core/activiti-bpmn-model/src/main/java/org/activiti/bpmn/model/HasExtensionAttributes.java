@@ -28,7 +28,7 @@ public interface HasExtensionAttributes {
 
   /**
    * return value of the attribute from given namespace with given name.
-   * 
+   *
    * @param namespace
    * @param name
    * @return attribute value or null in case when attribute was not found

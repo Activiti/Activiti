@@ -22,15 +22,15 @@
     select count(distinct RES.ID_)
     <include refid="selectAttachmentByQueryCriteriaSql"/>
   </select>
-  
+
   <select id="selectAttachmentByQueryCriteria" parameterType="org.activiti.standalone.cfg.AttachmentQuery" resultMap="org.activiti.engine.impl.persistence.entity.AttachmentEntityImpl.attachmentResultMap">
     ${limitBefore}
     select distinct RES.* ${limitBetween}
-    <include refid="selectAttachmentByQueryCriteriaSql"/> 
+    <include refid="selectAttachmentByQueryCriteriaSql"/>
     ${orderBy}
     ${limitAfter}
   </select>
-  
+
   <sql id="selectAttachmentByQueryCriteriaSql">
   from ${prefix}ACT_HI_ATTACHMENT RES
   <where>

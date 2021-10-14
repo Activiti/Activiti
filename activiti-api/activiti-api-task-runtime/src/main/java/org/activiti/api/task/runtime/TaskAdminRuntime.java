@@ -83,7 +83,7 @@ public interface TaskAdminRuntime {
      * - This method return a shallow Task object with the basic information needed to validate that the task was completed
      */
     Task complete(CompleteTaskPayload completeTaskPayload);
-    
+
     /**
      * Updates details of a task
      */
@@ -99,14 +99,14 @@ public interface TaskAdminRuntime {
      *  - after the assign the task should be in assigned status
      */
     Task assign(AssignTaskPayload assignTaskPayload);
-    
+
     void addCandidateUsers(CandidateUsersPayload candidateUsersPayload);
     void deleteCandidateUsers(CandidateUsersPayload candidateUsersPayload);
-    
+
     void addCandidateGroups(CandidateGroupsPayload candidateGroupsPayload);
     void deleteCandidateGroups(CandidateGroupsPayload candidateGroupsPayload);
-    
+
     List<String> userCandidates(String taskId);
     List<String> groupCandidates(String taskId);
-    
+
 }

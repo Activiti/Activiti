@@ -36,7 +36,7 @@
       <td>
         Resend vacation request to manager?<br/>
         <input type="radio" name="resendRequest" value="true" checked>Yes<br/>
-        <input type="radio" name="resendRequest" value="false">No 
+        <input type="radio" name="resendRequest" value="false">No
         <input type="hidden" name="resendRequest_type" value="Boolean"/>
       </td>
     <tr>

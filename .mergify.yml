@@ -1,8 +1,8 @@
-pull_request_rules: 
+pull_request_rules:
   - name: automatic merge with strict
     conditions:
       - author=alfresco-build-user
-      - status-success=Travis CI - Pull Request
+      - status-success=build
       - label!=do-not-merge
     actions:
       merge:
@@ -13,7 +13,7 @@ pull_request_rules:
       - "#approved-reviews-by>=1"
       - "#review-requested=0"
       - "#changes-requested-reviews-by=0"
-      - status-success=Travis CI - Pull Request
+      - status-success=build
       - status-success=license/cla
       - label!=do-not-merge
     actions:

@@ -32,7 +32,7 @@ public class CreateTaskPayloadBuilder {
     private List<String> candidateUsers = new ArrayList<>();
     private String parentTaskId;
     private String formKey;
- 
+
     public CreateTaskPayloadBuilder withName(String name) {
         this.name = name;
         return this;

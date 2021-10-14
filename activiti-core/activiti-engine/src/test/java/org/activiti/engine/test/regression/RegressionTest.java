@@ -36,7 +36,7 @@ public class RegressionTest extends PluggableActivitiTestCase {
 
         runtimeService.startProcessInstanceByKey("ProcessOne");
 
-        //Quick fix for random test failure on Travis
+        //Quick fix for random test failure on CI
         Thread.sleep(2000);
 
         // Clean

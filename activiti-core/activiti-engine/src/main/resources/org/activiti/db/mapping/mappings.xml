@@ -10,7 +10,7 @@
     <typeAlias type="org.activiti.engine.impl.persistence.ByteArrayRefTypeHandler" alias="ByteArrayRefTypeHandler"/>
   </typeAliases>
   <typeHandlers>
-    <typeHandler handler="ByteArrayRefTypeHandler" 
+    <typeHandler handler="ByteArrayRefTypeHandler"
                  javaType="org.activiti.engine.impl.persistence.entity.ByteArrayRef"
                  jdbcType="VARCHAR"/>
   </typeHandlers>

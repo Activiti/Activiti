@@ -1,24 +1,24 @@
-<definitions 
+<definitions
   xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
   xmlns:activiti="http://activiti.org/bpmn"
   targetNamespace="Examples">
-  
+
   <process id="executionListenersProcess">
-    
+
     <startEvent id="theStart" name="Start Event">
       <extensionElements>
         <activiti:executionListener class="org.activiti.examples.bpmn.executionlistener.CurrentActivityExecutionListener" event="end" />
       </extensionElements>
     </startEvent>
 
-    <sequenceFlow sourceRef="theStart" targetRef="noneEvent" />    
-    
+    <sequenceFlow sourceRef="theStart" targetRef="noneEvent" />
+
     <intermediateThrowEvent id="noneEvent" name="None Event">
       <extensionElements>
         <activiti:executionListener class="org.activiti.examples.bpmn.executionlistener.CurrentActivityExecutionListener" event="start" />
       </extensionElements>
     </intermediateThrowEvent>
-    
+
     <sequenceFlow sourceRef="noneEvent" targetRef="theEnd" />
 
     <endEvent id="theEnd" name="End Event">
@@ -26,6 +26,6 @@
         <activiti:executionListener class="org.activiti.examples.bpmn.executionlistener.CurrentActivityExecutionListener" event="end" />
       </extensionElements>
     </endEvent>
-    
+
   </process>
 </definitions>

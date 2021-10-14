@@ -26,7 +26,7 @@ public interface MessageSubscription {
     String getExecutionId();
 
     String getProcessInstanceId();
-    
+
     String getBusinessKey();
 
     String getConfiguration();

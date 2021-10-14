@@ -12,7 +12,7 @@
     <serviceTask id="servicetaskWithNoMapException" name="Service Task with includeChildExceptions Set to True">
     </serviceTask>
     <sequenceFlow id="flow3" sourceRef="servicetaskWithNoMapException" targetRef="endevent1"></sequenceFlow>
-    
+
     <endEvent id="endevent1" name="End"></endEvent>
   </process>
 </definitions>

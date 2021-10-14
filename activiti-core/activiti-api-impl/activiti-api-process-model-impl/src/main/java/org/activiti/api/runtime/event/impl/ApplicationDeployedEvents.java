@@ -13,35 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.activiti.api.runtime.event.impl;
 
-package org.activiti.engine.impl.el;
+import java.util.List;
+import org.activiti.api.process.model.events.ApplicationDeployedEvent;
 
-import javax.el.ELContext;
-import javax.el.ELResolver;
-import javax.el.FunctionMapper;
-import javax.el.VariableMapper;
+public class ApplicationDeployedEvents {
 
-/**
+    private List<ApplicationDeployedEvent> applicationDeployedEvents;
 
+    public ApplicationDeployedEvents(List<ApplicationDeployedEvent> applicationDeployedEvents) {
+        this.applicationDeployedEvents = applicationDeployedEvents;
+    }
 
- */
-public class ActivitiElContext extends ELContext {
-
-  protected ELResolver elResolver;
-
-  public ActivitiElContext(ELResolver elResolver) {
-    this.elResolver = elResolver;
-  }
-
-  public ELResolver getELResolver() {
-    return elResolver;
-  }
-
-  public FunctionMapper getFunctionMapper() {
-    return new ActivitiFunctionMapper();
-  }
-
-  public VariableMapper getVariableMapper() {
-    return null;
-  }
+    public List<ApplicationDeployedEvent> getApplicationDeployedEvents() {
+        return applicationDeployedEvents;
+    }
 }

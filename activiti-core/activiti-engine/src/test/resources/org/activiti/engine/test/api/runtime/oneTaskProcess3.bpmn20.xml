@@ -5,13 +5,13 @@
   targetNamespace="org.activiti.enginge.test.api.runtime">
 
   <process id="oneTaskProcess3" name="oneTaskProcess3Name">
-  
+
     <startEvent id="theStart" />
     <sequenceFlow id="flow1" sourceRef="theStart" targetRef="theTask" />
-    <userTask id="theTask" name="my task" />    
+    <userTask id="theTask" name="my task" />
     <sequenceFlow id="flow2" sourceRef="theTask" targetRef="theEnd" />
     <endEvent id="theEnd" />
-    
+
   </process>
 
 </definitions>

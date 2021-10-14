@@ -10,11 +10,11 @@
 
     <subProcess id="eventSubProcess">
       <startEvent id="subStart" />
-      
+
       <sequenceFlow sourceRef="subStart" targetRef="service" />
-    
+
       <serviceTask id="service" activiti:class="org.activiti.engine.test.bpmn.async.FailingAsyncService" activiti:async="true" />
-      
+
       <sequenceFlow sourceRef="service" targetRef="subEnd" />
       <endEvent id="subEnd" />
     </subProcess>

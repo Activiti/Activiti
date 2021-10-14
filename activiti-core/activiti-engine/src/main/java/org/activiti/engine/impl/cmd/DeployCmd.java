@@ -54,10 +54,10 @@ public class DeployCmd<T> implements Command<Deployment>, Serializable {
 
     deployment.setDeploymentTime(commandContext.getProcessEngineConfiguration().getClock().getCurrentTime());
 
-      setProjectReleaseVersion(deployment);
-      deployment.setVersion(1);
+    setProjectReleaseVersion(deployment);
+    deployment.setVersion(1);
 
-      if (deploymentBuilder.isDuplicateFilterEnabled()) {
+    if (deploymentBuilder.isDuplicateFilterEnabled()) {
 
       List<Deployment> existingDeployments = new ArrayList<Deployment>();
       if (deployment.getTenantId() == null || ProcessEngineConfiguration.NO_TENANT_ID.equals(deployment.getTenantId())) {

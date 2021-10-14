@@ -23,5 +23,5 @@ public interface StartMessageDeployedEvent extends MessageDefinitionEvent<StartM
     default MessageDefinitionEvents getEventType() {
         return MessageDefinitionEvents.START_MESSAGE_DEPLOYED;
     }
-    
+
 }

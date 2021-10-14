@@ -48,7 +48,6 @@ import java.text.AttributedCharacterIterator;
 import java.text.AttributedString;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.activiti.bpmn.model.AssociationDirection;
 import org.activiti.bpmn.model.EventSubProcess;
 import org.activiti.bpmn.model.GraphicInfo;
@@ -120,7 +119,15 @@ public class DefaultProcessDiagramCanvas {
     protected static Color CONDITIONAL_INDICATOR_COLOR = new Color(255,
                                                                    255,
                                                                    255);
-    protected static Color HIGHLIGHT_COLOR = Color.RED;
+    protected static Color HIGHLIGHT_CURRENT_COLOR = new Color(87,
+        255,
+        174);
+    protected static Color HIGHLIGHT_COMPLETED_ACTIVITY_COLOR = new Color(51,
+        153,
+        255);
+    protected static Color HIGHLIGHT_ERRORED_ACTIVITY_COLOR = new Color(255,
+        55,
+        87);
     protected static Color LABEL_COLOR = new Color(112,
                                                    146,
                                                    190);
@@ -139,7 +146,7 @@ public class DefaultProcessDiagramCanvas {
     protected static Font ANNOTATION_FONT = null;
 
     // Strokes
-    protected static Stroke THICK_TASK_BORDER_STROKE = new BasicStroke(3.0f);
+    protected static Stroke THICK_TASK_BORDER_STROKE = new BasicStroke(4.0f);
     protected static Stroke GATEWAY_TYPE_STROKE = new BasicStroke(3.0f);
     protected static Stroke END_EVENT_STROKE = new BasicStroke(3.0f);
     protected static Stroke MULTI_INSTANCE_STROKE = new BasicStroke(1.3f);
@@ -155,7 +162,7 @@ public class DefaultProcessDiagramCanvas {
                                                                             1.0f,
                                                                             new float[]{4.0f, 3.0f},
                                                                             0.0f);
-    protected static Stroke HIGHLIGHT_FLOW_STROKE = new BasicStroke(1.3f);
+    protected static Stroke HIGHLIGHT_FLOW_STROKE = new BasicStroke(2.0f);
     protected static Stroke ANNOTATION_STROKE = new BasicStroke(2.0f);
     protected static Stroke ASSOCIATION_STROKE = new BasicStroke(2.0f,
                                                                  BasicStroke.CAP_BUTT,
@@ -262,7 +269,7 @@ public class DefaultProcessDiagramCanvas {
 
         // Create an instance of the SVG Generator.
         this.g = new ProcessDiagramSVGGraphics2D(document);
-        
+
         this.g.setSVGCanvasSize(new Dimension(this.canvasWidth, this.canvasHeight));
 
         this.g.setBackground(new Color(255,
@@ -667,7 +674,7 @@ public class DefaultProcessDiagramCanvas {
                                  boolean highLighted) {
         Paint originalPaint = g.getPaint();
         if (highLighted) {
-            g.setPaint(HIGHLIGHT_COLOR);
+            g.setPaint(HIGHLIGHT_CURRENT_COLOR);
         }
 
         Line2D.Double line = new Line2D.Double(srcX,
@@ -730,7 +737,7 @@ public class DefaultProcessDiagramCanvas {
         if ("association".equals(connectionType)) {
             g.setStroke(ASSOCIATION_STROKE);
         } else if (highLighted) {
-            g.setPaint(HIGHLIGHT_COLOR);
+            g.setPaint(HIGHLIGHT_COMPLETED_ACTIVITY_COLOR);
             g.setStroke(HIGHLIGHT_FLOW_STROKE);
         }
 
@@ -801,7 +808,7 @@ public class DefaultProcessDiagramCanvas {
                                              boolean highLighted) {
         Paint originalPaint = g.getPaint();
         if (highLighted) {
-            g.setPaint(HIGHLIGHT_COLOR);
+            g.setPaint(HIGHLIGHT_CURRENT_COLOR);
         }
 
         Line2D.Double line = new Line2D.Double(srcX,
@@ -1401,6 +1408,26 @@ public class DefaultProcessDiagramCanvas {
         g.draw(rhombus);
     }
 
+    public void drawGatewayHighLight(GraphicInfo graphicInfo, Color color) {
+        Paint originalPaint = g.getPaint();
+        Stroke originalStroke = g.getStroke();
+        g.setPaint(color);
+        g.setStroke(THICK_TASK_BORDER_STROKE);
+
+        drawGateway(graphicInfo);
+
+        g.setPaint(originalPaint);
+        g.setStroke(originalStroke);
+    }
+
+    public void drawGatewayHighLightCompleted(GraphicInfo graphicInfo) {
+        drawGatewayHighLight(graphicInfo, HIGHLIGHT_COMPLETED_ACTIVITY_COLOR);
+    }
+
+    public void drawGatewayHighLightErrored(GraphicInfo graphicInfo) {
+        drawGatewayHighLight(graphicInfo, HIGHLIGHT_ERRORED_ACTIVITY_COLOR);
+    }
+
     public void drawParallelGateway(String id,
                                     GraphicInfo graphicInfo) {
         // rhombus
@@ -1575,26 +1602,61 @@ public class DefaultProcessDiagramCanvas {
         g.setStroke(orginalStroke);
     }
 
-    public void drawHighLight(int x,
-                              int y,
-                              int width,
-                              int height) {
+    public void drawHighLightCurrent(GraphicInfo graphicInfo) {
+        drawHighLight(graphicInfo, HIGHLIGHT_CURRENT_COLOR);
+    }
+
+    public void drawHighLightCompleted(GraphicInfo graphicInfo) {
+        drawHighLight(graphicInfo, HIGHLIGHT_COMPLETED_ACTIVITY_COLOR);
+    }
+
+    public void drawHighLightErrored(GraphicInfo graphicInfo) {
+        drawHighLight(graphicInfo, HIGHLIGHT_ERRORED_ACTIVITY_COLOR);
+    }
+    public void drawHighLight(GraphicInfo graphicInfo,
+        Color color) {
         Paint originalPaint = g.getPaint();
         Stroke originalStroke = g.getStroke();
 
-        g.setPaint(HIGHLIGHT_COLOR);
+        g.setPaint(color);
         g.setStroke(THICK_TASK_BORDER_STROKE);
 
-        RoundRectangle2D rect = new RoundRectangle2D.Double(x,
-                                                            y,
-                                                            width,
-                                                            height,
-                                                            20,
-                                                            20);
+        RoundRectangle2D rect = new RoundRectangle2D.Double((int) graphicInfo.getX(),
+            (int) graphicInfo.getY(),
+            (int) graphicInfo.getWidth(),
+            (int) graphicInfo.getHeight(),
+            6,
+            6);
         g.draw(rect);
 
         g.setPaint(originalPaint);
         g.setStroke(originalStroke);
+    }
+
+    public void drawEventHighLight(GraphicInfo graphicInfo, Color color) {
+        Paint originalPaint = g.getPaint();
+        Stroke originalStroke = g.getStroke();
+
+        g.setPaint(color);
+        g.setStroke(THICK_TASK_BORDER_STROKE);
+
+        Ellipse2D circle = new Ellipse2D.Double((int) graphicInfo.getX(),
+            (int) graphicInfo.getY(),
+            (int) graphicInfo.getWidth(),
+            (int) graphicInfo.getHeight());
+
+        g.draw(circle);
+
+        g.setPaint(originalPaint);
+        g.setStroke(originalStroke);
+    }
+
+    public void drawEventHighLightCompleted(GraphicInfo graphicInfo) {
+        drawEventHighLight(graphicInfo, HIGHLIGHT_COMPLETED_ACTIVITY_COLOR);
+    }
+
+    public void drawEventHighLightErrored(GraphicInfo graphicInfo) {
+        drawEventHighLight(graphicInfo, HIGHLIGHT_ERRORED_ACTIVITY_COLOR);
     }
 
     public void drawTextAnnotation(String id,

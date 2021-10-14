@@ -125,7 +125,7 @@ public class MockTaskBuilder {
         when(task.getFormKey()).thenReturn(formKey);
         return this;
     }
-    
+
     public MockTaskBuilder withTaskDefinitionKey(String taskDefinitionKey) {
         when(task.getTaskDefinitionKey()).thenReturn(taskDefinitionKey);
         return this;

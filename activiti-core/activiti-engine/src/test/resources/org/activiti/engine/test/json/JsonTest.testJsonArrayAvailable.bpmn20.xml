@@ -5,7 +5,7 @@
   targetNamespace="Examples">
 
   <process id="testJsonAvailableProcess" name="Test JSON available process">
-  
+
     <startEvent id="theStart" />
     <sequenceFlow id="flow1" sourceRef="theStart" targetRef="userTask" />
     <userTask id="userTask" />
@@ -29,7 +29,7 @@ java.lang.System.out.println('  var2:'+jsonArr.get(1));
     <userTask id="userTaskSuccess" />
     <sequenceFlow id="flow4" sourceRef="userTaskSuccess" targetRef="theEndSuccess" />
     <endEvent id="theEndSuccess" />
-    
+
   </process>
 
 </definitions>

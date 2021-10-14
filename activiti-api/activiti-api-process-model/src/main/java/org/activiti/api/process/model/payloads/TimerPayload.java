@@ -20,10 +20,10 @@ import org.activiti.api.model.shared.Payload;
 
 public class TimerPayload implements Payload {
 
-    private String id;    
+    private String id;
     private Date dueDate;
     private Date endDate;
-    private int retries;       
+    private int retries;
     private int maxIterations;
     private String repeat;
     private String exceptionMessage;
@@ -36,11 +36,11 @@ public class TimerPayload implements Payload {
     public String getId() {
         return id;
     }
-    
+
     public Date getDuedate() {
         return dueDate;
     }
-   
+
     public void setDuedate(Date dueDate) {
         this.dueDate = dueDate;
     }
@@ -48,7 +48,7 @@ public class TimerPayload implements Payload {
     public Date getEndDate() {
         return endDate;
     }
-  
+
     public void setEndDate(Date endDate) {
         this.endDate = endDate;
     }
@@ -56,19 +56,19 @@ public class TimerPayload implements Payload {
     public int getRetries() {
         return retries;
     }
-   
+
     public void setRetries(int retries) {
         this.retries = retries;
     }
-    
+
     public int getMaxIterations() {
         return maxIterations;
     }
-   
+
     public void setMaxIterations(int maxIterations) {
         this.maxIterations = maxIterations;
     }
- 
+
     public String getRepeat() {
         return repeat;
     }
@@ -76,15 +76,15 @@ public class TimerPayload implements Payload {
     public void setRepeat(String repeat) {
         this.repeat = repeat;
     }
-    
+
     public String getExceptionMessage() {
         return exceptionMessage;
     }
- 
+
     public void setExceptionMessage(String exceptionMessage) {
         this.exceptionMessage = exceptionMessage;
     }
-    
+
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -139,5 +139,5 @@ public class TimerPayload implements Payload {
             return false;
         return true;
     }
-    
+
 }

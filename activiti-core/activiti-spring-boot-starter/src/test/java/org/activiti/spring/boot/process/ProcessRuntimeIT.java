@@ -20,7 +20,6 @@ import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.assertj.core.groups.Tuple.tuple;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -188,6 +187,41 @@ public class ProcessRuntimeIT {
     }
 
     @Test
+    public void shouldGetAvailableLatestDeployments() {
+
+        //when
+        List<org.activiti.engine.repository.Deployment> deployments = repositoryService.createDeploymentQuery()
+                                                                                       .latestVersion()
+                                                                                       .list();
+        //then
+        assertThat(deployments).hasSize(2)
+                               .extracting("name", "version", "projectReleaseVersion")
+                               .contains(tuple("SpringAutoDeployment", 1, "1"),
+                                         tuple("ApplicationAutoDeployment", 1, null));
+
+        //when
+        org.activiti.engine.repository.Deployment applicationAutoDeployment = repositoryService.createDeploymentQuery()
+                                                                                     .deploymentName("ApplicationAutoDeployment")
+                                                                                     .latestVersion()
+                                                                                     .singleResult();
+        //then
+        assertThat(applicationAutoDeployment).isNotNull()
+                                             .extracting("name", "version", "projectReleaseVersion")
+                                             .contains("ApplicationAutoDeployment", 1, null);
+
+        //when
+        org.activiti.engine.repository.Deployment springAutoDeployment = repositoryService.createDeploymentQuery()
+                                                                                     .deploymentName("SpringAutoDeployment")
+                                                                                     .latestVersion()
+                                                                                     .singleResult();
+        //then
+        assertThat(springAutoDeployment).isNotNull()
+                                        .extracting("name", "version", "projectReleaseVersion")
+                                        .contains("SpringAutoDeployment", 1, "1");
+
+    }
+
+    @Test
     public void createProcessInstanceAndValidateHappyPath() {
         //when
         ProcessInstance categorizeProcess = processRuntime.start(ProcessPayloadBuilder.start()
@@ -255,6 +289,7 @@ public class ProcessRuntimeIT {
         assertThat(RuntimeTestConfiguration.createdTasks).contains(tasks.getContent().get(0).getId());
         assertThat(singleTaskProcessStarted).isNotNull();
         assertThat(singleTaskProcessStarted.getStatus()).isEqualTo(ProcessInstance.ProcessInstanceStatus.RUNNING);
+        assertThat(processRuntime.processInstance(singleTaskProcessStarted.getId()).getStatus()).isEqualTo(ProcessInstance.ProcessInstanceStatus.RUNNING);
     }
 
     @Test
@@ -744,18 +779,18 @@ public class ProcessRuntimeIT {
         assertThat(deployment.getName()).isEqualTo("SpringAutoDeployment");
     }
 
+
     @Test
-    public void should_OnlyProcessDefinitionsFromLatestVersionRetrieved(){
+    public void should_OnlyProcessDefinitionsFromLatestVersionRetrieved() {
         Deployment deployment = processRuntime.selectLatestDeployment();
 
         Page<ProcessDefinition> processDefinitionPage = processRuntime.processDefinitions(
             PAGEABLE);
 
         assertThat(processDefinitionPage.getContent().stream().filter(c -> c.getKey().equals(SUPER_PROCESS)))
-                .extracting(ProcessDefinition::getAppVersion)
-                .containsOnly(deployment.getVersion().toString());
+            .extracting(ProcessDefinition::getAppVersion)
+            .containsOnly(deployment.getVersion().toString());
     }
-
 
     @Test
     public void should_handleBigDecimalAndDoubleAndLocalDateTimeVariables() {
@@ -787,6 +822,20 @@ public class ProcessRuntimeIT {
                 tuple("doubleVar", doubleValue, "double"),
                 tuple("localDateTimeVar", localDateTime, "localDateTime"),
                 tuple("localDateVar", localDate, "localDate")
-                );
+            );
+    }
+
+    @Test
+    public void should_processAdminOnlyProcessDefinitionsFromLatestVersionRetrieved() {
+        Deployment deployment = processRuntime.selectLatestDeployment();
+
+        securityUtil.logInAs("admin");
+
+        Page<ProcessDefinition> processDefinitionPage = processAdminRuntime.processDefinitions(
+            PAGEABLE);
+
+        assertThat(processDefinitionPage.getContent().stream().filter(c -> c.getKey().equals(SUPER_PROCESS)))
+            .extracting(ProcessDefinition::getAppVersion)
+            .containsOnly(deployment.getVersion().toString());
     }
 }

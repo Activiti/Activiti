@@ -21,14 +21,14 @@ import org.activiti.runtime.api.signal.SignalPayloadEventListener;
 import org.springframework.context.event.EventListener;
 
 /**
- * Default implementation of SignalPayloadEventListener that delegates 
- * Spring SignalPayload event into embedded RuntimeService.  
- * 
+ * Default implementation of SignalPayloadEventListener that delegates
+ * Spring SignalPayload event into embedded RuntimeService.
+ *
  */
 public class RuntimeSignalPayloadEventListener implements SignalPayloadEventListener {
-    
+
     private final RuntimeService runtimeService;
-    
+
     public RuntimeSignalPayloadEventListener(RuntimeService runtimeService) {
         this.runtimeService = runtimeService;
     }

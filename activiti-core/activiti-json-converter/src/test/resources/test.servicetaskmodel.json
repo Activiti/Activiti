@@ -65,8 +65,8 @@
             "duedatedefinition" : "",
             "exclusivedefinition" : "No",
             "executionlisteners" : {"executionListeners" : [
-            	{"event": "start", "className": "org.test.TestClass", "expression": "", "delegateExpression": "", "fields": [{"name": "testField", "stringValue": "test", "expression": ""}, {"name": "testField2", "stringValue": "", "expression": "${test}"}]}, 
-            	{"event": "end", "className": "", "expression": "${testExpression}", "delegateExpression": "", "fields": "undefined"}, 
+            	{"event": "start", "className": "org.test.TestClass", "expression": "", "delegateExpression": "", "fields": [{"name": "testField", "stringValue": "test", "expression": ""}, {"name": "testField2", "stringValue": "", "expression": "${test}"}]},
+            	{"event": "end", "className": "", "expression": "${testExpression}", "delegateExpression": "", "fields": "undefined"},
             	{"event": "start", "className": "", "expression": "", "delegateExpression": "${delegateExpression}", "fields": "undefined"}]},
             "formkeydefinition" : "",
             "formproperties" : "",

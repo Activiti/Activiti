@@ -8,7 +8,7 @@
     <bpmn2:userTask id="UserTask_0br0ocv" name="multiinstance-collection-${counter}" activiti:assignee="hruser">
       <bpmn2:incoming>SequenceFlow_0c6mbti</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_0pj9a04</bpmn2:outgoing>
-      <multiInstanceLoopCharacteristics isSequential="false" activiti:collection="${loop.count}" activiti:elementVariable="counter"></multiInstanceLoopCharacteristics>      
+      <multiInstanceLoopCharacteristics isSequential="false" activiti:collection="${loop.count}" activiti:elementVariable="counter"></multiInstanceLoopCharacteristics>
     </bpmn2:userTask>
     <bpmn2:endEvent id="EndEvent_1yduz8h">
       <bpmn2:incoming>SequenceFlow_0pj9a04</bpmn2:incoming>

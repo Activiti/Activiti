@@ -20,7 +20,7 @@ import org.activiti.api.process.model.StartMessageDeploymentDefinition;
 import org.activiti.api.process.model.events.MessageDefinitionEvent;
 import org.activiti.api.process.model.events.StartMessageDeployedEvent;
 
-public class StartMessageDeployedEventImpl extends RuntimeEventImpl<StartMessageDeploymentDefinition, MessageDefinitionEvent.MessageDefinitionEvents> 
+public class StartMessageDeployedEventImpl extends RuntimeEventImpl<StartMessageDeploymentDefinition, MessageDefinitionEvent.MessageDefinitionEvents>
                                            implements StartMessageDeployedEvent {
 
     private StartMessageDeployedEventImpl(Builder builder) {
@@ -32,9 +32,9 @@ public class StartMessageDeployedEventImpl extends RuntimeEventImpl<StartMessage
 
     public StartMessageDeployedEventImpl(StartMessageDeploymentDefinition startMessageEventSubscription) {
         super(startMessageEventSubscription);
-        
+
         ProcessDefinition processDefinition = startMessageEventSubscription.getProcessDefinition();
-        
+
         setProcessDefinitionId(processDefinition.getId());
         setProcessDefinitionKey(processDefinition.getKey());
         setProcessDefinitionVersion(processDefinition.getVersion());
@@ -43,7 +43,7 @@ public class StartMessageDeployedEventImpl extends RuntimeEventImpl<StartMessage
     public static Builder builder() {
         return new Builder();
     }
-    
+
     /**
      * Creates a builder to build {@link StartMessageDeployedEventImpl} and initialize it with the given object.
      * @param startMessageDeployedEventImpl to initialize the builder with

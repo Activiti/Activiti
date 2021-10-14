@@ -43,5 +43,6 @@
     <module>activiti-project-model</module>
     <module>activiti-spring-project</module>
     <module>activiti-common-util</module>
+    <module>activiti-expression-language</module>
   </modules>
 </project>

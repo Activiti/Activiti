@@ -53,4 +53,3 @@ public class ProcessUpdatedListenerDelegate implements ActivitiEventListener {
         return false;
     }
 }
-

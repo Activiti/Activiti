@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsd:schema elementFormDefault="qualified" attributeFormDefault="unqualified"	
+<xsd:schema elementFormDefault="qualified" attributeFormDefault="unqualified"
 	xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
 	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
 	xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
@@ -26,7 +26,7 @@
 		<xsd:attribute name="exporterVersion" type="xsd:string"/>
 		<xsd:anyAttribute namespace="##other" processContents="lax"/>
 	</xsd:complexType>
-	
+
 	<xsd:element name="import" type="tImport"/>
 	<xsd:complexType name="tImport">
 		<xsd:attribute name="namespace" type="xsd:anyURI" use="required"/>

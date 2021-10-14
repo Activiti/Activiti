@@ -13,7 +13,7 @@
 			<startEvent id="subProcessStart" />
 			<sequenceFlow sourceRef="subProcessStart" targetRef="nestedSubProcess" />
 
-			
+
 			<subProcess id="nestedSubProcess">
 
 				<startEvent id="nestedSubProcessStart" />
@@ -37,7 +37,7 @@
 					sourceRef="compensateBookHotelEvt" targetRef="undoBookHotel" />
 
 			</subProcess>
-			
+
 
 			<sequenceFlow sourceRef="nestedSubProcess" targetRef="afterNestedSubProcess" />
 			<userTask id="afterNestedSubProcess" />
@@ -48,7 +48,7 @@
 			<intermediateThrowEvent id="throwCompensate">
 				<compensateEventDefinition />
 			</intermediateThrowEvent>
-			
+
 			<sequenceFlow sourceRef="throwCompensate"
         targetRef="subProcessEnd" />
 

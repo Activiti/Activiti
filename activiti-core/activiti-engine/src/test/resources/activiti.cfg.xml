@@ -10,7 +10,7 @@
     <property name="jdbcDriver" value="org.h2.Driver" />
     <property name="jdbcUsername" value="sa" />
     <property name="jdbcPassword" value="" />
-    
+
     <!-- Database configurations -->
     <property name="databaseSchemaUpdate" value="drop-create" />
 
@@ -24,12 +24,12 @@
     <!-- job executor configurations -->
     <property name="asyncExecutor" ref="asyncExecutor" />
     <property name="asyncExecutorActivate" value="false" />
-    
+
     <property name="asyncFailedJobWaitTime" value="1" />
 
     <!-- mail server configurations -->
     <property name="mailServerPort" value="5025" />
-    
+
     <property name="mailServers">
       <map>
         <entry key="myEmailTenant">
@@ -45,12 +45,12 @@
         </entry>
       </map>
     </property>
-    
+
     <property name="history" value="full" />
-    
+
     <property name="enableProcessDefinitionInfoCache" value="true" />
   </bean>
-  
+
   <bean id="asyncExecutor" class="org.activiti.engine.impl.asyncexecutor.DefaultAsyncJobExecutor">
     <property name="defaultAsyncJobAcquireWaitTimeInMillis" value="1000" />
     <property name="defaultTimerJobAcquireWaitTimeInMillis" value="1000" />

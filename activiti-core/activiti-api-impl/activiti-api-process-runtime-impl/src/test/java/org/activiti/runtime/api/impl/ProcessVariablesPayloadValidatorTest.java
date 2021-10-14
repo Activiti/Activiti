@@ -20,13 +20,13 @@ import static org.activiti.engine.impl.util.CollectionUtil.mapOfClass;
 import static org.activiti.engine.impl.util.CollectionUtil.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.MockitoAnnotations.initMocks;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.util.Date;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
 import org.activiti.common.util.DateFormatterProvider;
 import org.activiti.engine.impl.delegate.invocation.DefaultDelegateInterceptor;
@@ -257,5 +257,20 @@ public class ProcessVariablesPayloadValidatorTest {
         assertThat(throwable)
             .isInstanceOf(IllegalStateException.class)
             .hasMessageContaining("expression");
+    }
+
+    @Test
+    public void should_success_when_valueForJavaObjectIsNull() {
+        assertDoesNotThrow(() ->
+            processVariablesValidator.checkPayloadVariables(
+                ProcessPayloadBuilder
+                    .setVariables()
+                    .withVariables(map(
+                        "name", null,
+                        "age", null,
+                        "subscribe", null
+                    ))
+                    .build(),
+                "10"));
     }
 }

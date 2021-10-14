@@ -27,7 +27,7 @@ public class GetProcessInstancesPayloadBuilder {
     private boolean suspendedOnly = false;
     private boolean activeOnly = false;
     private String parentProcessInstanceId;
-    
+
 
     public GetProcessInstancesPayloadBuilder withBusinessKey(String businessKey) {
         this.businessKey = businessKey;
@@ -61,8 +61,8 @@ public class GetProcessInstancesPayloadBuilder {
         this.parentProcessInstanceId = parentProcessInstanceId;
         return this;
     }
-    
-    
+
+
     public GetProcessInstancesPayload build() {
         GetProcessInstancesPayload getProcessInstancesPayload = new GetProcessInstancesPayload();
         getProcessInstancesPayload.setBusinessKey(businessKey);

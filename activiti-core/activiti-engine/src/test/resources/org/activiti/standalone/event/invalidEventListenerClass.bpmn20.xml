@@ -6,7 +6,7 @@
         <extensionElements>
           <activiti:eventListener class="org.activiti.engine.test.api.event.UnexistingClass" />
         </extensionElements>
-        
+
 		<startEvent id="theStart" />
 		<sequenceFlow sourceRef="theStart" targetRef="task" />
 		<userTask id="task" />

@@ -10,5 +10,5 @@
     </intermediateCatchEvent>
     <sequenceFlow id="flow1" name="" sourceRef="theStart" targetRef="timerintermediatecatchevent1"></sequenceFlow>
     <sequenceFlow id="flow2" name="" sourceRef="timerintermediatecatchevent1" targetRef="theEnd"></sequenceFlow>
-  </process> 
+  </process>
 </definitions>

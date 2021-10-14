@@ -35,6 +35,7 @@ import org.activiti.engine.repository.ProcessDefinitionQuery;
 import org.activiti.runtime.api.model.impl.APIProcessDefinitionConverter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Answers;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.springframework.context.ApplicationEventPublisher;
@@ -43,7 +44,7 @@ public class ProcessDeployedEventProducerTest {
 
     private ProcessDeployedEventProducer producer;
 
-    @Mock
+    @Mock(answer = Answers.RETURNS_DEEP_STUBS)
     private RepositoryService repositoryService;
 
     @Mock
@@ -71,7 +72,7 @@ public class ProcessDeployedEventProducerTest {
     public void shouldCallRegisteredListenersWhenWebApplicationTypeIsServlet() {
         //given
         ProcessDefinitionQuery definitionQuery = mock(ProcessDefinitionQuery.class);
-        given(repositoryService.createProcessDefinitionQuery()).willReturn(definitionQuery);
+        given(repositoryService.createProcessDefinitionQuery().latestVersion()).willReturn(definitionQuery);
 
         List<ProcessDefinition> internalProcessDefinitions = asList(mock(ProcessDefinition.class),
                                                                     mock(ProcessDefinition.class));

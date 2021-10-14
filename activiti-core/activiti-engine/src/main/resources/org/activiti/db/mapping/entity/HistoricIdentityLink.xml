@@ -17,9 +17,9 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="org.activiti.engine.impl.persistence.entity.HistoricIdentityLinkEntityImpl">
-  
+
    <!-- INSERT HISTORIC IDENTITY LINK -->
-  
+
   <insert id="insertHistoricIdentityLink" parameterType="org.activiti.engine.impl.persistence.entity.HistoricIdentityLinkEntityImpl">
     insert into ${prefix}ACT_HI_IDENTITYLINK (ID_, TYPE_, USER_ID_, GROUP_ID_, TASK_ID_, PROC_INST_ID_)
     values (#{id, jdbcType=VARCHAR},
@@ -29,10 +29,10 @@
             #{taskId, jdbcType=VARCHAR},
             #{processInstanceId, jdbcType=VARCHAR})
   </insert>
-  
+
   <insert id="bulkInsertHistoricIdentityLink" parameterType="java.util.List">
     insert into ${prefix}ACT_HI_IDENTITYLINK (ID_, TYPE_, USER_ID_, GROUP_ID_, TASK_ID_, PROC_INST_ID_)
-    values 
+    values
       <foreach collection="list" item="historicIdentityLink" index="index" separator=",">
         (#{historicIdentityLink.id, jdbcType=VARCHAR},
          #{historicIdentityLink.type, jdbcType=VARCHAR},
@@ -42,11 +42,11 @@
          #{historicIdentityLink.processInstanceId, jdbcType=VARCHAR})
       </foreach>
   </insert>
-  
+
   <insert id="bulkInsertHistoricIdentityLink" databaseId="oracle" parameterType="java.util.List">
-    INSERT ALL 
+    INSERT ALL
       <foreach collection="list" item="historicIdentityLink" index="index">
-        INTO ${prefix}ACT_HI_IDENTITYLINK (ID_, TYPE_, USER_ID_, GROUP_ID_, TASK_ID_, PROC_INST_ID_) VALUES 
+        INTO ${prefix}ACT_HI_IDENTITYLINK (ID_, TYPE_, USER_ID_, GROUP_ID_, TASK_ID_, PROC_INST_ID_) VALUES
           (#{historicIdentityLink.id, jdbcType=VARCHAR},
            #{historicIdentityLink.type, jdbcType=VARCHAR},
            #{historicIdentityLink.userId, jdbcType=VARCHAR},
@@ -56,20 +56,20 @@
       </foreach>
     SELECT * FROM dual
   </insert>
-  
+
   <!-- HISTORIC IDENTITY LINK DELETE -->
-  
+
   <delete id="deleteHistoricIdentityLink" parameterType="string">
     delete from ${prefix}ACT_HI_IDENTITYLINK where ID_ = #{id}
   </delete>
-  
+
   <delete id="bulkDeleteHistoricIdentityLink" parameterType="java.util.Collection">
-    delete from ${prefix}ACT_HI_IDENTITYLINK where  
+    delete from ${prefix}ACT_HI_IDENTITYLINK where
     <foreach item="identityLink" collection="list" index="index" separator=" or ">
         ID_ = #{identityLink.id, jdbcType=VARCHAR}
     </foreach>
   </delete>
-  
+
   <!-- HISTORIC IDENTITY LINK RESULTMAP -->
 
   <resultMap id="historicIdentityLinkResultMap" type="org.activiti.engine.impl.persistence.entity.HistoricIdentityLinkEntityImpl">
@@ -78,7 +78,7 @@
     <result property="userId" column="USER_ID_" jdbcType="VARCHAR" />
     <result property="groupId" column="GROUP_ID_" jdbcType="VARCHAR" />
     <result property="taskId" column="TASK_ID_" jdbcType="VARCHAR" />
-    <result property="processInstanceId" column="PROC_INST_ID_" jdbcType="VARCHAR" />    
+    <result property="processInstanceId" column="PROC_INST_ID_" jdbcType="VARCHAR" />
   </resultMap>
 
   <!-- HISTORIC IDENTITY LINK SELECT -->
@@ -86,22 +86,22 @@
   <select id="selectHistoricIdentityLink" parameterType="string" resultMap="historicIdentityLinkResultMap">
     select * from ${prefix}ACT_HI_IDENTITYLINK where ID_ = #{id, jdbcType=VARCHAR}
   </select>
-  
+
   <select id="selectHistoricIdentityLinksByTask" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="historicIdentityLinkResultMap">
     select * from ${prefix}ACT_HI_IDENTITYLINK where TASK_ID_ = #{parameter}
   </select>
-  
+
   <select id="selectHistoricIdentityLinksByProcessInstance" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="historicIdentityLinkResultMap">
     select * from ${prefix}ACT_HI_IDENTITYLINK where PROC_INST_ID_ = #{parameter}
   </select>
-  
+
  <select id="selectIdentityLinks" resultMap="historicIdentityLinkResultMap">
     select * from ${prefix}ACT_HI_IDENTITYLINK
   </select>
-  
+
   <select id="selectHistoricIdentityLinkByTaskUserGroupAndType" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="historicIdentityLinkResultMap">
-    select * 
-    from ${prefix}ACT_HI_IDENTITYLINK 
+    select *
+    from ${prefix}ACT_HI_IDENTITYLINK
     where TASK_ID_ = #{parameter.taskId}
       <if test="parameter.userId != null">
         and USER_ID_ = #{parameter.userId}

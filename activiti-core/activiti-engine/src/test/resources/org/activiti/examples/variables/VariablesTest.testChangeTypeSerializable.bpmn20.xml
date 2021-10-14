@@ -9,7 +9,7 @@
 	<process id="variable-type-change-test">
 
 		<startEvent id="start" />
-		
+
 		<sequenceFlow id="flow1" sourceRef="start" targetRef="changeVariableType" />
 		<serviceTask id="changeVariableType" activiti:class="org.activiti.examples.variables.ChangeVariableType"/>
 		<sequenceFlow id="flow2" sourceRef="changeVariableType" targetRef="someTask" />

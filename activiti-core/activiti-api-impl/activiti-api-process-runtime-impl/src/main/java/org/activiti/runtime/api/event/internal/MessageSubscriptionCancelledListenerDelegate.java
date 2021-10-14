@@ -52,7 +52,7 @@ public class MessageSubscriptionCancelledListenerDelegate implements ActivitiEve
     public boolean isFailOnException() {
         return false;
     }
-    
+
     protected boolean isValidEvent(ActivitiEvent event) {
         return Optional.ofNullable(event)
                        .filter(ActivitiEntityEvent.class::isInstance)

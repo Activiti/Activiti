@@ -15,7 +15,7 @@
  */
 
 
-package org.activiti.engine.impl.el;
+package org.activiti.core.el;
 
 import java.beans.FeatureDescriptor;
 import java.util.Iterator;
@@ -23,8 +23,6 @@ import java.util.Map;
 
 import javax.el.ELContext;
 import javax.el.ELResolver;
-
-import org.activiti.engine.ActivitiException;
 
 /**
  * An {@link ELResolver} that exposed object values in the map, under the name of the entry's key. The values in the map are only returned when requested property has no 'base', meaning it's a
@@ -57,7 +55,7 @@ public class ReadOnlyMapELResolver extends ELResolver {
   public void setValue(ELContext context, Object base, Object property, Object value) {
     if (base == null) {
       if (wrappedMap.containsKey(property)) {
-        throw new ActivitiException("Cannot set value of '" + property + "', it's readonly!");
+        throw new IllegalArgumentException("Cannot set value of '" + property + "', it's readonly!");
       }
     }
   }

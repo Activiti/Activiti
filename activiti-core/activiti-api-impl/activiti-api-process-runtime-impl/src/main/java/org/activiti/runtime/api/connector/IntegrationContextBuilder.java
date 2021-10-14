@@ -49,6 +49,7 @@ public class IntegrationContextBuilder {
 
     private IntegrationContextImpl buildFromExecution(DelegateExecution execution) {
         IntegrationContextImpl integrationContext = new IntegrationContextImpl();
+        integrationContext.setRootProcessInstanceId(execution.getRootProcessInstanceId());
         integrationContext.setProcessInstanceId(execution.getProcessInstanceId());
         integrationContext.setProcessDefinitionId(execution.getProcessDefinitionId());
         integrationContext.setBusinessKey(execution.getProcessInstanceBusinessKey());

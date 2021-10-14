@@ -27,12 +27,12 @@ public class StartMessageDeployedEvents extends ApplicationEvent {
     public StartMessageDeployedEvents(List<StartMessageDeployedEvent> processDeployedEvents) {
         super(processDeployedEvents);
     }
-    
-    
+
+
     @SuppressWarnings("unchecked")
     public final List<StartMessageDeployedEvent> getStartMessageDeployedEvents() {
         return (List<StartMessageDeployedEvent>) getSource();
     }
-    
+
 
 }

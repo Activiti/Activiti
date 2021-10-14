@@ -22,7 +22,7 @@ import org.activiti.api.process.model.StartMessageDeploymentDefinition;
 import org.activiti.api.process.model.StartMessageSubscription;
 
 public class StartMessageDeploymentDefinitionImpl implements StartMessageDeploymentDefinition {
-    
+
     private StartMessageSubscription messageSubscription;
 
     private ProcessDefinition processDefinition;
@@ -38,7 +38,7 @@ public class StartMessageDeploymentDefinitionImpl implements StartMessageDeploym
     public ProcessDefinition getProcessDefinition() {
         return processDefinition;
     }
-    
+
     public StartMessageSubscription getMessageSubscription() {
         return messageSubscription;
     }
@@ -60,7 +60,7 @@ public class StartMessageDeploymentDefinitionImpl implements StartMessageDeploym
             return false;
         }
         StartMessageDeploymentDefinitionImpl other = (StartMessageDeploymentDefinitionImpl) obj;
-        return Objects.equals(messageSubscription, other.messageSubscription) && 
+        return Objects.equals(messageSubscription, other.messageSubscription) &&
                Objects.equals(processDefinition, other.processDefinition);
     }
 
@@ -78,7 +78,7 @@ public class StartMessageDeploymentDefinitionImpl implements StartMessageDeploym
     public static Builder builder() {
         return new Builder();
     }
-    
+
     /**
      * Creates a builder to build {@link StartMessageDeploymentDefinitionImpl} and initialize it with the given object.
      * @param startMessageEventSubscriptionImpl to initialize the builder with

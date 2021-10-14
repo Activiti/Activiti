@@ -33,13 +33,13 @@ public class StartMessagePayload implements Payload {
         this.id = UUID.randomUUID().toString();
     }
 
-    public StartMessagePayload(String name, 
+    public StartMessagePayload(String name,
                           String businessKey,
                           Map<String, Object> variables) {
         this();
 
         Objects.requireNonNull(name, "name must not be null");
-        
+
         this.name = name;
         this.businessKey = businessKey;
         this.variables = variables;
@@ -53,7 +53,7 @@ public class StartMessagePayload implements Payload {
     public String getName() {
         return name;
     }
-    
+
     public String getBusinessKey() {
         return businessKey;
     }
@@ -61,7 +61,7 @@ public class StartMessagePayload implements Payload {
     public Map<String, Object> getVariables() {
         return variables;
     }
-    
+
     @Override
     public int hashCode() {
         return Objects.hash(id, name, businessKey, variables);
@@ -76,9 +76,9 @@ public class StartMessagePayload implements Payload {
         if (getClass() != obj.getClass())
             return false;
         StartMessagePayload other = (StartMessagePayload) obj;
-        return Objects.equals(businessKey, other.businessKey) 
-                && Objects.equals(id, other.id) 
-                && Objects.equals(name, other.name) 
+        return Objects.equals(businessKey, other.businessKey)
+                && Objects.equals(id, other.id)
+                && Objects.equals(name, other.name)
                 && Objects.equals(variables, other.variables);
     }
 

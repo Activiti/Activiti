@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <definitions id="definitions"
     xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
-    xmlns:activiti="http://activiti.org/bpmn" 
+    xmlns:activiti="http://activiti.org/bpmn"
     targetNamespace="Examples">
 
     <signal id="someSignal" name="Some Signal" />
@@ -10,9 +10,9 @@
 
         <startEvent id="start" />
         <sequenceFlow sourceRef="start" targetRef="task" />
-        
-        <userTask id="task" activiti:assignee="kermit" />           
-        <boundaryEvent id="boundary" attachedToRef="task" cancelActivity="true">       
+
+        <userTask id="task" activiti:assignee="kermit" />
+        <boundaryEvent id="boundary" attachedToRef="task" cancelActivity="true">
           <signalEventDefinition signalRef="someSignal"/>
         </boundaryEvent>
         <sequenceFlow sourceRef="boundary" targetRef="end" />
@@ -22,6 +22,6 @@
 
     </process>
 
-    
+
 
 </definitions>

@@ -20,9 +20,9 @@ import org.activiti.engine.task.Comment;
 
 /**
  * Allows to fetch the {@link ProcessInstanceHistoryLog} for a process instance.
- * 
+ *
  * Note that every includeXXX() method below will lead to an additional query.
- * 
+ *
  * This class is actually a convenience on top of the other specific queries such as {@link HistoricTaskInstanceQuery}, {@link HistoricActivityInstanceQuery}, ... It will execute separate queries for
  * each included type, order the data according to the date (ascending) and wrap the results in the {@link ProcessInstanceHistoryLog}.
  *

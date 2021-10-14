@@ -10,7 +10,7 @@
             <timerEventDefinition>
                 <timeCycle>0 0/5 * * * ?</timeCycle>
             </timerEventDefinition>
-        </startEvent>    
+        </startEvent>
 
         <sequenceFlow id="flow1" sourceRef="theStart" targetRef="beforeChange"/>
 

@@ -39,22 +39,22 @@ public class ActivitiSpringSecurityPoliciesAutoConfiguration {
                                                                          SecurityPoliciesProperties securityPoliciesProperties,
                                                                          SecurityPoliciesRestrictionApplier<GetProcessDefinitionsPayload> processDefinitionRestrictionApplier,
                                                                          SecurityPoliciesRestrictionApplier<GetProcessInstancesPayload> processInstanceRestrictionApplier) {
-        return new ProcessSecurityPoliciesManagerImpl(securityManager, 
-                                                      securityPoliciesProperties, 
-                                                      processDefinitionRestrictionApplier, 
+        return new ProcessSecurityPoliciesManagerImpl(securityManager,
+                                                      securityPoliciesProperties,
+                                                      processDefinitionRestrictionApplier,
                                                       processInstanceRestrictionApplier);
     }
-    
+
     @Bean
     @ConditionalOnMissingBean(name = "processInstanceRestrictionApplier")
     public SecurityPoliciesRestrictionApplier<GetProcessInstancesPayload> processInstanceRestrictionApplier() {
         return new SecurityPoliciesProcessInstanceRestrictionApplier();
     }
-    
+
     @Bean
     @ConditionalOnMissingBean(name = "processDefinitionRestrictionApplier")
     public SecurityPoliciesRestrictionApplier<GetProcessDefinitionsPayload> processDefinitionRestrictionApplier () {
         return new SecurityPoliciesProcessDefinitionRestrictionApplier();
     }
-    
+
 }

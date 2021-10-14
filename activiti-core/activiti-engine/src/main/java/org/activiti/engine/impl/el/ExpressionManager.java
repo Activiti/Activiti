@@ -17,8 +17,7 @@
 
 package org.activiti.engine.impl.el;
 
-import de.odysseus.el.ExpressionFactoryImpl;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.Map;
 import javax.el.ArrayELResolver;
 import javax.el.BeanELResolver;
@@ -29,6 +28,11 @@ import javax.el.ExpressionFactory;
 import javax.el.ListELResolver;
 import javax.el.MapELResolver;
 import javax.el.ValueExpression;
+import de.odysseus.el.ExpressionFactoryImpl;
+import org.activiti.core.el.ActivitiElContext;
+import org.activiti.core.el.ELContextBuilder;
+import org.activiti.core.el.ELResolverReflectionBlockerDecorator;
+import org.activiti.core.el.ReadOnlyMapELResolver;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.VariableScope;
 import org.activiti.engine.impl.bpmn.data.ItemInstance;
@@ -48,8 +52,6 @@ import org.activiti.engine.impl.persistence.entity.VariableScopeImpl;
 public class ExpressionManager {
 
     protected ExpressionFactory expressionFactory;
-    // Default implementation (does nothing)
-    protected ELContext parsingElContext = new ParsingElContext();
     protected Map<Object, Object> beans;
 
     public ExpressionManager() {
@@ -77,11 +79,11 @@ public class ExpressionManager {
     }
 
     public Expression createExpression(String expression) {
-        ValueExpression valueExpression = expressionFactory.createValueExpression(parsingElContext,
-                                                                                  expression.trim(),
-                                                                                  Object.class);
+        ValueExpression valueExpression = expressionFactory.createValueExpression(getElContext(Collections.emptyMap()),
+            expression.trim(),
+            Object.class);
         return new JuelExpression(valueExpression,
-                                  expression);
+            expression);
     }
 
     public void setExpressionFactory(ExpressionFactory expressionFactory) {
@@ -106,8 +108,7 @@ public class ExpressionManager {
     }
 
     protected ActivitiElContext createElContext(VariableScope variableScope) {
-        ELResolver elResolver = createElResolver(variableScope);
-        return new ActivitiElContext(elResolver);
+        return (ActivitiElContext) new ELContextBuilder().withResolvers(createElResolver(variableScope)).buildWithDateFunctions();
     }
 
     protected ELResolver createElResolver(VariableScope variableScope) {
@@ -131,11 +132,11 @@ public class ExpressionManager {
         elResolver.add(new ArrayELResolver());
         elResolver.add(new ListELResolver());
         elResolver.add(new MapELResolver());
-        elResolver.add(new JsonNodeELResolver());
+        elResolver.add(new CustomMapperJsonNodeELResolver());
         elResolver.add(new DynamicBeanPropertyELResolver(ItemInstance.class,
                                                          "getFieldValue",
                                                          "setFieldValue")); // TODO: needs verification
-        elResolver.add(new BeanELResolver());
+        elResolver.add(new ELResolverReflectionBlockerDecorator(new BeanELResolver()));
     }
 
     public Map<Object, Object> getBeans() {
@@ -148,8 +149,7 @@ public class ExpressionManager {
 
     public ELContext getElContext(Map<String, Object> availableVariables) {
         CompositeELResolver elResolver = new CompositeELResolver();
-        elResolver.add(new ReadOnlyMapELResolver(new HashMap<>(availableVariables)));
         addBaseResolvers(elResolver);
-        return new ActivitiElContext(elResolver);
+        return new ELContextBuilder().withResolvers(elResolver).withVariables(availableVariables).buildWithDateFunctions();
     }
 }

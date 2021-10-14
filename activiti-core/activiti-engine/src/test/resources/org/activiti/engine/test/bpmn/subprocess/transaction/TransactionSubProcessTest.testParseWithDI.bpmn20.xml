@@ -13,7 +13,7 @@
 			sourceRef="StartEvent_1" targetRef="Transaction_1" />
 		<bpmn2:transaction id="Transaction_1" name="Transaction">
 				<bpmn2:incoming>SequenceFlow_1</bpmn2:incoming>
-				<bpmn2:outgoing>SequenceFlow_8</bpmn2:outgoing>			
+				<bpmn2:outgoing>SequenceFlow_8</bpmn2:outgoing>
 				<bpmn2:userTask id="UserTask_1" name="User Task">
 					<bpmn2:incoming>SequenceFlow_3</bpmn2:incoming>
 					<bpmn2:outgoing>SequenceFlow_4</bpmn2:outgoing>
@@ -50,7 +50,7 @@
 				<bpmn2:sequenceFlow id="SequenceFlow_6" name=""
 					sourceRef="ExclusiveGateway_1" targetRef="EndEvent_2" >
 					<bpmn2:conditionExpression>${!confirmed}</bpmn2:conditionExpression>
-				</bpmn2:sequenceFlow>		
+				</bpmn2:sequenceFlow>
 		</bpmn2:transaction>
 		<bpmn2:boundaryEvent id="BoundaryEvent_2" name="Boundary event"
 			attachedToRef="Transaction_1">

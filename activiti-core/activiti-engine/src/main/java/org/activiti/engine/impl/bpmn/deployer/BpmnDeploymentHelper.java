@@ -217,4 +217,3 @@ public class BpmnDeploymentHelper  {
     this.eventSubscriptionManager = eventSubscriptionManager;
   }
 }
-

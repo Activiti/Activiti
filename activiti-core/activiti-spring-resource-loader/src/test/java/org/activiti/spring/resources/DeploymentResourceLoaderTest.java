@@ -68,7 +68,7 @@ public class DeploymentResourceLoaderTest {
         //then
         assertThat(loaded)
                 .hasSize(1)
-                .contains("a selected resource\n");
+                .contains("a selected resource"+System.getProperty("line.separator"));
 
     }
 }

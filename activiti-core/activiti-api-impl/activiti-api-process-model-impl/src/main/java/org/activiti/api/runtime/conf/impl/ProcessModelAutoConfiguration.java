@@ -111,6 +111,7 @@ public class ProcessModelAutoConfiguration {
 
     @Autowired(required = false)
     @ProcessVariableTypeConverter
+    @Lazy
     private Set<Converter<?, ?>> converters = Collections.emptySet();
 
 

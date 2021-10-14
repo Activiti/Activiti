@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<definitions 
-  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" 
+<definitions
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://schema.omg.org/spec/BPMN/2.0 BPMN20.xsd"
   xmlns:activiti="http://activiti.org/bpmn"

@@ -61,7 +61,7 @@ import java.util.List;
 public class RuntimeTestConfiguration {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RuntimeTestConfiguration.class);
-    
+
     public static List<RuntimeEvent> collectedEvents = new ArrayList<>();
 
     @Bean
@@ -119,7 +119,7 @@ public class RuntimeTestConfiguration {
 
         return extendedInMemoryUserDetailsManager;
     }
-    
+
     @Bean
     public BPMNElementEventListener<BPMNActivityStartedEvent> bpmnActivityStartedListener() {
         return bpmnActivityStartedEvent -> collectedEvents.add(bpmnActivityStartedEvent);
@@ -211,13 +211,13 @@ public class RuntimeTestConfiguration {
     public TaskEventListener<TaskAssignedEvent> taskAssignedEventListener() {
         return taskAssignedEvent -> collectedEvents.add(taskAssignedEvent);
     }
-    
+
     @Bean
     public TaskEventListener<TaskCancelledEvent> taskCancelledEventListener() {
         return taskCancelledEvent -> collectedEvents.add(taskCancelledEvent);
     }
-    
-    
+
+
     @Bean
     public BPMNElementEventListener<BPMNSignalReceivedEvent> bpmnSignalReceivedListener() {
         return bpmnSignalReceivedEvent -> collectedEvents.add(bpmnSignalReceivedEvent);

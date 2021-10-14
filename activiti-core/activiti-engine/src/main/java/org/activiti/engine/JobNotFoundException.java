@@ -19,7 +19,7 @@ import org.activiti.engine.runtime.Job;
 
 /**
  * This exception is thrown when you try to execute a job that is not found (may be due to cancelActiviti="true" for instance)..
- * 
+ *
 
  */
 public class JobNotFoundException extends ActivitiObjectNotFoundException {

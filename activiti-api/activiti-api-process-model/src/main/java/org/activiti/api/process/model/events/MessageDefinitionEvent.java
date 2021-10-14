@@ -22,7 +22,7 @@ public interface MessageDefinitionEvent<ENTITY_TYPE> extends RuntimeEvent<ENTITY
     enum MessageDefinitionEvents {
 
         START_MESSAGE_DEPLOYED
-        
+
     }
 
 }

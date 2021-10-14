@@ -519,4 +519,3 @@ public class AsyncTaskTest extends PluggableActivitiTestCase {
   }
 
 }
-

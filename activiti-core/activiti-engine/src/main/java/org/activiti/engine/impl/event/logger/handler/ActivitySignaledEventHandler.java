@@ -38,7 +38,7 @@ public class ActivitySignaledEventHandler extends AbstractDatabaseEventLoggerEve
     putInMapIfNotNull(data, Fields.PROCESS_INSTANCE_ID, signalEvent.getProcessInstanceId());
     putInMapIfNotNull(data, Fields.EXECUTION_ID, signalEvent.getExecutionId());
     putInMapIfNotNull(data, Fields.ACTIVITY_TYPE, signalEvent.getActivityType());
-    
+
     putInMapIfNotNull(data, Fields.SIGNAL_NAME, signalEvent.getSignalName());
     putInMapIfNotNull(data, Fields.SIGNAL_DATA, signalEvent.getSignalData());
 
