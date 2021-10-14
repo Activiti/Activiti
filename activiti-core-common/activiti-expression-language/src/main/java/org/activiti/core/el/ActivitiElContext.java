@@ -16,32 +16,60 @@
 
 package org.activiti.core.el;
 
+import java.lang.reflect.Method;
 import javax.el.ELContext;
 import javax.el.ELResolver;
 import javax.el.FunctionMapper;
+import javax.el.ValueExpression;
 import javax.el.VariableMapper;
 
 /**
-
-
+ *
  */
 public class ActivitiElContext extends ELContext {
 
-  protected ELResolver elResolver;
+    protected ELResolver elResolver;
+    private ActivitiFunctionMapper functions;
+    private ActivitiVariablesMapper variables;
 
-  public ActivitiElContext(ELResolver elResolver) {
-    this.elResolver = elResolver;
-  }
+    public ActivitiElContext() {
+        this(null);
+    }
 
-  public ELResolver getELResolver() {
-    return elResolver;
-  }
+    public ActivitiElContext(ELResolver elResolver) {
+        this.elResolver = elResolver;
+    }
 
-  public FunctionMapper getFunctionMapper() {
-    return new ActivitiFunctionMapper();
-  }
+    public ELResolver getELResolver() {
+        return elResolver;
+    }
 
-  public VariableMapper getVariableMapper() {
-    return null;
-  }
+    public FunctionMapper getFunctionMapper() {
+        if (functions == null) {
+            functions = new ActivitiFunctionMapper();
+        }
+        return functions;
+    }
+
+    public VariableMapper getVariableMapper() {
+        if (variables == null) {
+            variables = new ActivitiVariablesMapper();
+        }
+        return variables;
+    }
+
+    public void setFunction(String prefix, String localName, Method method) {
+        if (functions == null) {
+            functions = new ActivitiFunctionMapper();
+        }
+        functions.setFunction(prefix, localName, method);
+    }
+
+    public ValueExpression setVariable(String name, ValueExpression expression) {
+        if (variables == null) {
+            variables = new ActivitiVariablesMapper();
+        }
+        return variables.setVariable(name, expression);
+    }
+
 }
