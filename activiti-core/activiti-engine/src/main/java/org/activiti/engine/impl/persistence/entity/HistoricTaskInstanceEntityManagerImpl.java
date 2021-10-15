@@ -14,14 +14,12 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.persistence.entity;
 
 import static java.util.Collections.emptyList;
 
 import java.util.List;
 import java.util.Map;
-
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.impl.HistoricTaskInstanceQueryImpl;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
@@ -29,20 +27,23 @@ import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.persistence.entity.data.DataManager;
 import org.activiti.engine.impl.persistence.entity.data.HistoricTaskInstanceDataManager;
 
-/**
- */
-public class HistoricTaskInstanceEntityManagerImpl extends AbstractEntityManager<HistoricTaskInstanceEntity> implements HistoricTaskInstanceEntityManager {
+/** */
+public class HistoricTaskInstanceEntityManagerImpl
+    extends AbstractEntityManager<HistoricTaskInstanceEntity>
+    implements HistoricTaskInstanceEntityManager {
 
   protected HistoricTaskInstanceDataManager historicTaskInstanceDataManager;
 
-  public HistoricTaskInstanceEntityManagerImpl(ProcessEngineConfigurationImpl processEngineConfiguration, HistoricTaskInstanceDataManager historicTaskInstanceDataManager) {
+  public HistoricTaskInstanceEntityManagerImpl(
+      ProcessEngineConfigurationImpl processEngineConfiguration,
+      HistoricTaskInstanceDataManager historicTaskInstanceDataManager) {
     super(processEngineConfiguration);
     this.historicTaskInstanceDataManager = historicTaskInstanceDataManager;
   }
 
   @Override
   protected DataManager<HistoricTaskInstanceEntity> getDataManager() {
-      return historicTaskInstanceDataManager;
+    return historicTaskInstanceDataManager;
   }
 
   @Override
@@ -53,35 +54,45 @@ public class HistoricTaskInstanceEntityManagerImpl extends AbstractEntityManager
   @Override
   public void deleteHistoricTaskInstancesByProcessInstanceId(String processInstanceId) {
     if (getHistoryManager().isHistoryLevelAtLeast(HistoryLevel.AUDIT)) {
-      List<HistoricTaskInstanceEntity> taskInstances = historicTaskInstanceDataManager.findHistoricTaskInstanceByProcessInstanceId(processInstanceId);
+      List<HistoricTaskInstanceEntity> taskInstances =
+          historicTaskInstanceDataManager.findHistoricTaskInstanceByProcessInstanceId(
+              processInstanceId);
       for (HistoricTaskInstanceEntity historicTaskInstanceEntity : taskInstances) {
-        delete(historicTaskInstanceEntity.getId()); // Needs to be by id (since that method is overridden, see below !)
+        delete(
+            historicTaskInstanceEntity
+                .getId()); // Needs to be by id (since that method is overridden, see below !)
       }
     }
   }
 
   @Override
-  public long findHistoricTaskInstanceCountByQueryCriteria(HistoricTaskInstanceQueryImpl historicTaskInstanceQuery) {
+  public long findHistoricTaskInstanceCountByQueryCriteria(
+      HistoricTaskInstanceQueryImpl historicTaskInstanceQuery) {
     if (getHistoryManager().isHistoryEnabled()) {
-      return historicTaskInstanceDataManager.findHistoricTaskInstanceCountByQueryCriteria(historicTaskInstanceQuery);
+      return historicTaskInstanceDataManager.findHistoricTaskInstanceCountByQueryCriteria(
+          historicTaskInstanceQuery);
     }
     return 0;
   }
 
   @Override
   @SuppressWarnings("unchecked")
-  public List<HistoricTaskInstance> findHistoricTaskInstancesByQueryCriteria(HistoricTaskInstanceQueryImpl historicTaskInstanceQuery) {
+  public List<HistoricTaskInstance> findHistoricTaskInstancesByQueryCriteria(
+      HistoricTaskInstanceQueryImpl historicTaskInstanceQuery) {
     if (getHistoryManager().isHistoryEnabled()) {
-      return historicTaskInstanceDataManager.findHistoricTaskInstancesByQueryCriteria(historicTaskInstanceQuery);
+      return historicTaskInstanceDataManager.findHistoricTaskInstancesByQueryCriteria(
+          historicTaskInstanceQuery);
     }
     return emptyList();
   }
 
   @Override
   @SuppressWarnings("unchecked")
-  public List<HistoricTaskInstance> findHistoricTaskInstancesAndVariablesByQueryCriteria(HistoricTaskInstanceQueryImpl historicTaskInstanceQuery) {
+  public List<HistoricTaskInstance> findHistoricTaskInstancesAndVariablesByQueryCriteria(
+      HistoricTaskInstanceQueryImpl historicTaskInstanceQuery) {
     if (getHistoryManager().isHistoryEnabled()) {
-     return historicTaskInstanceDataManager.findHistoricTaskInstancesAndVariablesByQueryCriteria(historicTaskInstanceQuery);
+      return historicTaskInstanceDataManager.findHistoricTaskInstancesAndVariablesByQueryCriteria(
+          historicTaskInstanceQuery);
     }
     return emptyList();
   }
@@ -92,8 +103,10 @@ public class HistoricTaskInstanceEntityManagerImpl extends AbstractEntityManager
       HistoricTaskInstanceEntity historicTaskInstance = findById(id);
       if (historicTaskInstance != null) {
 
-        List<HistoricTaskInstanceEntity> subTasks = historicTaskInstanceDataManager.findHistoricTasksByParentTaskId(historicTaskInstance.getId());
-        for (HistoricTaskInstance subTask: subTasks) {
+        List<HistoricTaskInstanceEntity> subTasks =
+            historicTaskInstanceDataManager.findHistoricTasksByParentTaskId(
+                historicTaskInstance.getId());
+        for (HistoricTaskInstance subTask : subTasks) {
           delete(subTask.getId());
         }
 
@@ -109,8 +122,10 @@ public class HistoricTaskInstanceEntityManagerImpl extends AbstractEntityManager
   }
 
   @Override
-  public List<HistoricTaskInstance> findHistoricTaskInstancesByNativeQuery(Map<String, Object> parameterMap, int firstResult, int maxResults) {
-    return historicTaskInstanceDataManager.findHistoricTaskInstancesByNativeQuery(parameterMap, firstResult, maxResults);
+  public List<HistoricTaskInstance> findHistoricTaskInstancesByNativeQuery(
+      Map<String, Object> parameterMap, int firstResult, int maxResults) {
+    return historicTaskInstanceDataManager.findHistoricTaskInstancesByNativeQuery(
+        parameterMap, firstResult, maxResults);
   }
 
   @Override
@@ -122,8 +137,8 @@ public class HistoricTaskInstanceEntityManagerImpl extends AbstractEntityManager
     return historicTaskInstanceDataManager;
   }
 
-  public void setHistoricTaskInstanceDataManager(HistoricTaskInstanceDataManager historicTaskInstanceDataManager) {
+  public void setHistoricTaskInstanceDataManager(
+      HistoricTaskInstanceDataManager historicTaskInstanceDataManager) {
     this.historicTaskInstanceDataManager = historicTaskInstanceDataManager;
   }
-
 }

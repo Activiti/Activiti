@@ -20,9 +20,7 @@ import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.CallActivity;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 
-/**
-
- */
+/** */
 public class CallActivityParseHandler extends AbstractActivityBpmnParseHandler<CallActivity> {
 
   public Class<? extends BaseElement> getHandledType() {
@@ -30,7 +28,7 @@ public class CallActivityParseHandler extends AbstractActivityBpmnParseHandler<C
   }
 
   protected void executeParse(BpmnParse bpmnParse, CallActivity callActivity) {
-    callActivity.setBehavior(bpmnParse.getActivityBehaviorFactory().createCallActivityBehavior(callActivity));
+    callActivity.setBehavior(
+        bpmnParse.getActivityBehaviorFactory().createCallActivityBehavior(callActivity));
   }
-
 }

@@ -18,16 +18,13 @@ package org.activiti.engine.test.profiler;
 import java.sql.Connection;
 import java.util.Collection;
 import java.util.List;
-
 import org.activiti.engine.impl.db.BulkDeleteOperation;
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.db.DbSqlSessionFactory;
 import org.activiti.engine.impl.persistence.cache.EntityCache;
 import org.activiti.engine.impl.persistence.entity.Entity;
 
-/**
-
- */
+/** */
 public class ProfilingDbSqlSession extends DbSqlSession {
 
   protected CommandExecutionResult commandExecutionResult;
@@ -36,7 +33,12 @@ public class ProfilingDbSqlSession extends DbSqlSession {
     super(dbSqlSessionFactory, entityCache);
   }
 
-  public ProfilingDbSqlSession(DbSqlSessionFactory dbSqlSessionFactory, EntityCache entityCache, Connection connection, String catalog, String schema) {
+  public ProfilingDbSqlSession(
+      DbSqlSessionFactory dbSqlSessionFactory,
+      EntityCache entityCache,
+      Connection connection,
+      String catalog,
+      String schema) {
     super(dbSqlSessionFactory, entityCache, connection, catalog, schema);
   }
 
@@ -95,19 +97,23 @@ public class ProfilingDbSqlSession extends DbSqlSession {
   // SELECT LIST
 
   @Override
-  public List selectListWithRawParameter(String statement, Object parameter, int firstResult, int maxResults, boolean useCache) {
+  public List selectListWithRawParameter(
+      String statement, Object parameter, int firstResult, int maxResults, boolean useCache) {
     if (getCurrentCommandExecution() != null) {
       getCurrentCommandExecution().addDbSelect(statement);
     }
-    return super.selectListWithRawParameter(statement, parameter, firstResult, maxResults, useCache);
+    return super.selectListWithRawParameter(
+        statement, parameter, firstResult, maxResults, useCache);
   }
 
   @Override
-  public List selectListWithRawParameterWithoutFilter(String statement, Object parameter, int firstResult, int maxResults) {
+  public List selectListWithRawParameterWithoutFilter(
+      String statement, Object parameter, int firstResult, int maxResults) {
     if (getCurrentCommandExecution() != null) {
       getCurrentCommandExecution().addDbSelect(statement);
     }
-    return super.selectListWithRawParameterWithoutFilter(statement, parameter, firstResult, maxResults);
+    return super.selectListWithRawParameterWithoutFilter(
+        statement, parameter, firstResult, maxResults);
   }
 
   // INSERTS
@@ -143,7 +149,8 @@ public class ProfilingDbSqlSession extends DbSqlSession {
   // DELETES
 
   @Override
-  protected void flushDeleteEntities(Class<? extends Entity> entityClass, Collection<Entity> entitiesToDelete) {
+  protected void flushDeleteEntities(
+      Class<? extends Entity> entityClass, Collection<Entity> entitiesToDelete) {
     super.flushDeleteEntities(entityClass, entitiesToDelete);
     if (getCurrentCommandExecution() != null) {
       for (Entity entity : entitiesToDelete) {

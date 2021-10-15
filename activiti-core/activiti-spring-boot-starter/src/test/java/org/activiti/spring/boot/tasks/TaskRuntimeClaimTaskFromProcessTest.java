@@ -34,48 +34,50 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 public class TaskRuntimeClaimTaskFromProcessTest {
 
-    @Autowired
-    private TaskRuntime taskRuntime;
+  @Autowired private TaskRuntime taskRuntime;
 
-    @Autowired
-    private ProcessRuntime processRuntime;
+  @Autowired private ProcessRuntime processRuntime;
 
-    @Autowired
-    private SecurityUtil securityUtil;
+  @Autowired private SecurityUtil securityUtil;
 
-    private static final String TWOTASK_PROCESS = "twoTaskProcess";
+  private static final String TWOTASK_PROCESS = "twoTaskProcess";
 
-    @Autowired
-    private ProcessCleanUpUtil processCleanUpUtil;
+  @Autowired private ProcessCleanUpUtil processCleanUpUtil;
 
-    @AfterEach
-    public void cleanUp(){
-        processCleanUpUtil.cleanUpWithAdmin();
-    }
+  @AfterEach
+  public void cleanUp() {
+    processCleanUpUtil.cleanUpWithAdmin();
+  }
 
-    @Test
-    public void claimTaskWithoutGroup() {
+  @Test
+  public void claimTaskWithoutGroup() {
 
-        securityUtil.logInAs("user");
+    securityUtil.logInAs("user");
 
-        //when
-        ProcessInstance twoTaskInstance = processRuntime.start(ProcessPayloadBuilder.start()
-                .withProcessDefinitionKey(TWOTASK_PROCESS)
-                .build());
+    // when
+    ProcessInstance twoTaskInstance =
+        processRuntime.start(
+            ProcessPayloadBuilder.start().withProcessDefinitionKey(TWOTASK_PROCESS).build());
 
-        securityUtil.logInAs("dean");
+    securityUtil.logInAs("dean");
 
-        Task task = taskRuntime.tasks(Pageable.of(0, 10),TaskPayloadBuilder.tasks().build()).getContent().get(0);
+    Task task =
+        taskRuntime
+            .tasks(Pageable.of(0, 10), TaskPayloadBuilder.tasks().build())
+            .getContent()
+            .get(0);
 
-        taskRuntime.claim(TaskPayloadBuilder.claim().withTaskId(task.getId()).build());
+    taskRuntime.claim(TaskPayloadBuilder.claim().withTaskId(task.getId()).build());
 
-        //should still be in dean's list after claiming
-        task = taskRuntime.tasks(Pageable.of(0, 10),TaskPayloadBuilder.tasks().build()).getContent().get(0);
+    // should still be in dean's list after claiming
+    task =
+        taskRuntime
+            .tasks(Pageable.of(0, 10), TaskPayloadBuilder.tasks().build())
+            .getContent()
+            .get(0);
 
-        assertThat(task).isNotNull();
+    assertThat(task).isNotNull();
 
-        taskRuntime.complete(TaskPayloadBuilder.complete().withTaskId(task.getId()).build());
-
-    }
-
+    taskRuntime.complete(TaskPayloadBuilder.complete().withTaskId(task.getId()).build());
+  }
 }

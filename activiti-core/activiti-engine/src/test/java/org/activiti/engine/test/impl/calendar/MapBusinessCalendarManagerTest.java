@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.test.impl.calendar;
 
 import static java.util.Collections.emptyMap;
@@ -23,16 +22,13 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.util.HashMap;
 import java.util.Map;
-
+import junit.framework.TestCase;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.calendar.BusinessCalendar;
 import org.activiti.engine.impl.calendar.CycleBusinessCalendar;
 import org.activiti.engine.impl.calendar.MapBusinessCalendarManager;
 
-import junit.framework.TestCase;
-
-/**
- */
+/** */
 public class MapBusinessCalendarManagerTest extends TestCase {
 
   public void testMapConstructor() {
@@ -48,13 +44,12 @@ public class MapBusinessCalendarManagerTest extends TestCase {
     MapBusinessCalendarManager businessCalendarManager = new MapBusinessCalendarManager(emptyMap());
 
     assertThatExceptionOfType(ActivitiException.class)
-      .isThrownBy(() -> businessCalendarManager.getBusinessCalendar("INVALID"))
-      .withMessageContaining("INVALID does not exist");
+        .isThrownBy(() -> businessCalendarManager.getBusinessCalendar("INVALID"))
+        .withMessageContaining("INVALID does not exist");
   }
 
   public void testNullCalendars() {
     assertThatExceptionOfType(IllegalArgumentException.class)
-      .isThrownBy(() -> new MapBusinessCalendarManager(null));
+        .isThrownBy(() -> new MapBusinessCalendarManager(null));
   }
-
 }

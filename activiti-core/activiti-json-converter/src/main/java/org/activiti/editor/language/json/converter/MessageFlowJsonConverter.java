@@ -16,8 +16,10 @@
 
 package org.activiti.editor.language.json.converter;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.util.Map;
-
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.FlowElementsContainer;
@@ -25,26 +27,26 @@ import org.activiti.bpmn.model.GraphicInfo;
 import org.activiti.bpmn.model.MessageFlow;
 import org.apache.commons.lang3.StringUtils;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-
-/**
-
- */
+/** */
 public class MessageFlowJsonConverter extends BaseBpmnJsonConverter {
 
-  public static void fillTypes(Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap, Map<Class<? extends BaseElement>, Class<? extends BaseBpmnJsonConverter>> convertersToJsonMap) {
+  public static void fillTypes(
+      Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap,
+      Map<Class<? extends BaseElement>, Class<? extends BaseBpmnJsonConverter>>
+          convertersToJsonMap) {
 
     fillJsonTypes(convertersToBpmnMap);
     fillBpmnTypes(convertersToJsonMap);
   }
 
-  public static void fillJsonTypes(Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap) {
+  public static void fillJsonTypes(
+      Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap) {
     convertersToBpmnMap.put(STENCIL_MESSAGE_FLOW, MessageFlowJsonConverter.class);
   }
 
-  public static void fillBpmnTypes(Map<Class<? extends BaseElement>, Class<? extends BaseBpmnJsonConverter>> convertersToJsonMap) {
+  public static void fillBpmnTypes(
+      Map<Class<? extends BaseElement>, Class<? extends BaseBpmnJsonConverter>>
+          convertersToJsonMap) {
     convertersToJsonMap.put(MessageFlow.class, MessageFlowJsonConverter.class);
   }
 
@@ -54,14 +56,25 @@ public class MessageFlowJsonConverter extends BaseBpmnJsonConverter {
   }
 
   @Override
-  public void convertToJson(BaseElement baseElement, ActivityProcessor processor, BpmnModel model, FlowElementsContainer container, ArrayNode shapesArrayNode, double subProcessX, double subProcessY) {
+  public void convertToJson(
+      BaseElement baseElement,
+      ActivityProcessor processor,
+      BpmnModel model,
+      FlowElementsContainer container,
+      ArrayNode shapesArrayNode,
+      double subProcessX,
+      double subProcessY) {
 
     MessageFlow messageFlow = (MessageFlow) baseElement;
-    ObjectNode flowNode = BpmnJsonConverterUtil.createChildShape(messageFlow.getId(), STENCIL_MESSAGE_FLOW, 172, 212, 128, 212);
+    ObjectNode flowNode =
+        BpmnJsonConverterUtil.createChildShape(
+            messageFlow.getId(), STENCIL_MESSAGE_FLOW, 172, 212, 128, 212);
     ArrayNode dockersArrayNode = objectMapper.createArrayNode();
     ObjectNode dockNode = objectMapper.createObjectNode();
-    dockNode.put(EDITOR_BOUNDS_X, model.getGraphicInfo(messageFlow.getSourceRef()).getWidth() / 2.0);
-    dockNode.put(EDITOR_BOUNDS_Y, model.getGraphicInfo(messageFlow.getSourceRef()).getHeight() / 2.0);
+    dockNode.put(
+        EDITOR_BOUNDS_X, model.getGraphicInfo(messageFlow.getSourceRef()).getWidth() / 2.0);
+    dockNode.put(
+        EDITOR_BOUNDS_Y, model.getGraphicInfo(messageFlow.getSourceRef()).getHeight() / 2.0);
     dockersArrayNode.add(dockNode);
 
     if (model.getFlowLocationGraphicInfo(messageFlow.getId()).size() > 2) {
@@ -75,8 +88,10 @@ public class MessageFlowJsonConverter extends BaseBpmnJsonConverter {
     }
 
     dockNode = objectMapper.createObjectNode();
-    dockNode.put(EDITOR_BOUNDS_X, model.getGraphicInfo(messageFlow.getTargetRef()).getWidth() / 2.0);
-    dockNode.put(EDITOR_BOUNDS_Y, model.getGraphicInfo(messageFlow.getTargetRef()).getHeight() / 2.0);
+    dockNode.put(
+        EDITOR_BOUNDS_X, model.getGraphicInfo(messageFlow.getTargetRef()).getWidth() / 2.0);
+    dockNode.put(
+        EDITOR_BOUNDS_Y, model.getGraphicInfo(messageFlow.getTargetRef()).getHeight() / 2.0);
     dockersArrayNode.add(dockNode);
     flowNode.set("dockers", dockersArrayNode);
     ArrayNode outgoingArrayNode = objectMapper.createArrayNode();
@@ -100,10 +115,13 @@ public class MessageFlowJsonConverter extends BaseBpmnJsonConverter {
   }
 
   @Override
-  protected BaseElement convertJsonToElement(JsonNode elementNode, JsonNode modelNode, Map<String, JsonNode> shapeMap) {
+  protected BaseElement convertJsonToElement(
+      JsonNode elementNode, JsonNode modelNode, Map<String, JsonNode> shapeMap) {
     MessageFlow flow = new MessageFlow();
 
-    String sourceRef = BpmnJsonConverterUtil.lookForSourceRef(elementNode.get(EDITOR_SHAPE_ID).asText(), modelNode.get(EDITOR_CHILD_SHAPES));
+    String sourceRef =
+        BpmnJsonConverterUtil.lookForSourceRef(
+            elementNode.get(EDITOR_SHAPE_ID).asText(), modelNode.get(EDITOR_CHILD_SHAPES));
     if (sourceRef != null) {
       flow.setSourceRef(sourceRef);
       JsonNode targetNode = elementNode.get("target");

@@ -14,19 +14,13 @@
  * limitations under the License.
  */
 
-
 package org.activiti.standalone.jpa;
 
 import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 
-/**
- * Mapped superclass containing an
- *
-
- */
-
+/** Mapped superclass containing an */
 @MappedSuperclass
 public class MappedSuperClassPropertyAccessJPAEntity {
 
@@ -41,5 +35,4 @@ public class MappedSuperClassPropertyAccessJPAEntity {
   public void setId(Long id) {
     this.id = id;
   }
-
 }

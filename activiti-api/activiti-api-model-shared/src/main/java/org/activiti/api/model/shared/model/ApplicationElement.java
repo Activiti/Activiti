@@ -17,6 +17,5 @@ package org.activiti.api.model.shared.model;
 
 public interface ApplicationElement {
 
-    String getAppVersion();
-
+  String getAppVersion();
 }

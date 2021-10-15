@@ -20,7 +20,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
-
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.delegate.event.ActivitiEvent;
@@ -30,9 +29,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Class that allows adding and removing event listeners and dispatching events to the appropriate listeners.
- *
-
+ * Class that allows adding and removing event listeners and dispatching events to the appropriate
+ * listeners.
  */
 public class ActivitiEventSupport {
 
@@ -55,7 +53,8 @@ public class ActivitiEventSupport {
     }
   }
 
-  public synchronized void addEventListener(ActivitiEventListener listenerToAdd, ActivitiEventType... types) {
+  public synchronized void addEventListener(
+      ActivitiEventListener listenerToAdd, ActivitiEventType... types) {
     if (listenerToAdd == null) {
       throw new ActivitiIllegalArgumentException("Listener cannot be null.");
     }
@@ -117,7 +116,8 @@ public class ActivitiEventSupport {
     }
   }
 
-  protected synchronized void addTypedEventListener(ActivitiEventListener listener, ActivitiEventType type) {
+  protected synchronized void addTypedEventListener(
+      ActivitiEventListener listener, ActivitiEventType type) {
     List<ActivitiEventListener> listeners = typedListeners.get(type);
     if (listeners == null) {
       // Add an empty list of listeners for this type

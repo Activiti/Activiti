@@ -14,15 +14,14 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.test.bpmn.usertask;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.IdentityLink;
@@ -30,21 +29,20 @@ import org.activiti.engine.task.IdentityLinkType;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
-
-
-/**
-
- */
+/** */
 public class DynamicUserTaskTest extends PluggableActivitiTestCase {
 
-  @Deployment(resources={"org/activiti/engine/test/bpmn/usertask/DynamicUserTaskTest.assignment.bpmn20.xml"})
+  @Deployment(
+      resources = {
+        "org/activiti/engine/test/bpmn/usertask/DynamicUserTaskTest.assignment.bpmn20.xml"
+      })
   public void testChangeAssignee() {
     // first test without changing the form key
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("dynamicUserTask");
     String processDefinitionId = processInstance.getProcessDefinitionId();
 
-    Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+    Task task =
+        taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     assertThat(task.getAssignee()).isEqualTo("test");
     taskService.complete(task.getId());
 
@@ -63,13 +61,17 @@ public class DynamicUserTaskTest extends PluggableActivitiTestCase {
     assertProcessEnded(processInstance.getId());
   }
 
-  @Deployment(resources={"org/activiti/engine/test/bpmn/usertask/DynamicUserTaskTest.assignment.bpmn20.xml"})
+  @Deployment(
+      resources = {
+        "org/activiti/engine/test/bpmn/usertask/DynamicUserTaskTest.assignment.bpmn20.xml"
+      })
   public void testChangeOwner() {
     // first test without changing the form key
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("dynamicUserTask");
     String processDefinitionId = processInstance.getProcessDefinitionId();
 
-    Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+    Task task =
+        taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     assertThat(task.getOwner()).isEqualTo("ownerTest");
     taskService.complete(task.getId());
 
@@ -88,17 +90,23 @@ public class DynamicUserTaskTest extends PluggableActivitiTestCase {
     assertProcessEnded(processInstance.getId());
   }
 
-  @Deployment(resources={"org/activiti/engine/test/bpmn/usertask/DynamicUserTaskTest.basictask.bpmn20.xml"})
+  @Deployment(
+      resources = {
+        "org/activiti/engine/test/bpmn/usertask/DynamicUserTaskTest.basictask.bpmn20.xml"
+      })
   public void testChangeCandidateUsers() {
     // first test without changing the form key
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("dynamicUserTask");
     String processDefinitionId = processInstance.getProcessDefinitionId();
 
-    Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+    Task task =
+        taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     List<IdentityLink> taskIdentityLinks = taskService.getIdentityLinksForTask(task.getId());
     boolean candidateUserTestFound = false;
     for (IdentityLink identityLink : taskIdentityLinks) {
-      if (IdentityLinkType.CANDIDATE.equals(identityLink.getType()) && identityLink.getUserId() != null && identityLink.getGroupId() == null) {
+      if (IdentityLinkType.CANDIDATE.equals(identityLink.getType())
+          && identityLink.getUserId() != null
+          && identityLink.getGroupId() == null) {
         if ("test".equals(identityLink.getUserId())) {
           candidateUserTestFound = true;
         }
@@ -119,7 +127,9 @@ public class DynamicUserTaskTest extends PluggableActivitiTestCase {
     taskIdentityLinks = taskService.getIdentityLinksForTask(task.getId());
     candidateUserTestFound = false;
     for (IdentityLink identityLink : taskIdentityLinks) {
-      if (IdentityLinkType.CANDIDATE.equals(identityLink.getType()) && identityLink.getUserId() != null && identityLink.getGroupId() == null) {
+      if (IdentityLinkType.CANDIDATE.equals(identityLink.getType())
+          && identityLink.getUserId() != null
+          && identityLink.getGroupId() == null) {
         if ("test".equals(identityLink.getUserId())) {
           candidateUserTestFound = true;
         }
@@ -139,7 +149,9 @@ public class DynamicUserTaskTest extends PluggableActivitiTestCase {
     candidateUserTestFound = false;
     boolean candidateUserTest2Found = false;
     for (IdentityLink identityLink : taskIdentityLinks) {
-      if (IdentityLinkType.CANDIDATE.equals(identityLink.getType()) && identityLink.getUserId() != null && identityLink.getGroupId() == null) {
+      if (IdentityLinkType.CANDIDATE.equals(identityLink.getType())
+          && identityLink.getUserId() != null
+          && identityLink.getGroupId() == null) {
         if ("test".equals(identityLink.getUserId())) {
           candidateUserTestFound = true;
         } else if ("test2".equals(identityLink.getUserId())) {
@@ -154,17 +166,23 @@ public class DynamicUserTaskTest extends PluggableActivitiTestCase {
     assertProcessEnded(processInstance.getId());
   }
 
-  @Deployment(resources={"org/activiti/engine/test/bpmn/usertask/DynamicUserTaskTest.basictask.bpmn20.xml"})
+  @Deployment(
+      resources = {
+        "org/activiti/engine/test/bpmn/usertask/DynamicUserTaskTest.basictask.bpmn20.xml"
+      })
   public void testChangeCandidateGroups() {
     // first test without changing the form key
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("dynamicUserTask");
     String processDefinitionId = processInstance.getProcessDefinitionId();
 
-    Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+    Task task =
+        taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     List<IdentityLink> taskIdentityLinks = taskService.getIdentityLinksForTask(task.getId());
     boolean candidateGroupTestFound = false;
     for (IdentityLink identityLink : taskIdentityLinks) {
-      if (IdentityLinkType.CANDIDATE.equals(identityLink.getType()) && identityLink.getGroupId() != null && identityLink.getUserId() == null) {
+      if (IdentityLinkType.CANDIDATE.equals(identityLink.getType())
+          && identityLink.getGroupId() != null
+          && identityLink.getUserId() == null) {
         if ("test".equals(identityLink.getGroupId())) {
           candidateGroupTestFound = true;
         }
@@ -185,7 +203,9 @@ public class DynamicUserTaskTest extends PluggableActivitiTestCase {
     taskIdentityLinks = taskService.getIdentityLinksForTask(task.getId());
     candidateGroupTestFound = false;
     for (IdentityLink identityLink : taskIdentityLinks) {
-      if (IdentityLinkType.CANDIDATE.equals(identityLink.getType()) && identityLink.getGroupId() != null && identityLink.getUserId() == null) {
+      if (IdentityLinkType.CANDIDATE.equals(identityLink.getType())
+          && identityLink.getGroupId() != null
+          && identityLink.getUserId() == null) {
         if ("test".equals(identityLink.getGroupId())) {
           candidateGroupTestFound = true;
         }
@@ -205,7 +225,9 @@ public class DynamicUserTaskTest extends PluggableActivitiTestCase {
     candidateGroupTestFound = false;
     boolean candidateGroupTest2Found = false;
     for (IdentityLink identityLink : taskIdentityLinks) {
-      if (IdentityLinkType.CANDIDATE.equals(identityLink.getType()) && identityLink.getGroupId() != null && identityLink.getUserId() == null) {
+      if (IdentityLinkType.CANDIDATE.equals(identityLink.getType())
+          && identityLink.getGroupId() != null
+          && identityLink.getUserId() == null) {
         if ("test".equals(identityLink.getGroupId())) {
           candidateGroupTestFound = true;
         } else if ("test2".equals(identityLink.getGroupId())) {
@@ -220,22 +242,30 @@ public class DynamicUserTaskTest extends PluggableActivitiTestCase {
     assertProcessEnded(processInstance.getId());
   }
 
-  @Deployment(resources={"org/activiti/engine/test/bpmn/usertask/DynamicUserTaskTest.basictask.bpmn20.xml"})
+  @Deployment(
+      resources = {
+        "org/activiti/engine/test/bpmn/usertask/DynamicUserTaskTest.basictask.bpmn20.xml"
+      })
   public void testChangeCandidateUsersAndGroups() {
     // first test without changing the form key
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("dynamicUserTask");
     String processDefinitionId = processInstance.getProcessDefinitionId();
 
-    Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+    Task task =
+        taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     List<IdentityLink> taskIdentityLinks = taskService.getIdentityLinksForTask(task.getId());
     boolean candidateUserTestFound = false;
     boolean candidateGroupTestFound = false;
     for (IdentityLink identityLink : taskIdentityLinks) {
-      if (IdentityLinkType.CANDIDATE.equals(identityLink.getType()) && identityLink.getUserId() != null && identityLink.getGroupId() == null) {
+      if (IdentityLinkType.CANDIDATE.equals(identityLink.getType())
+          && identityLink.getUserId() != null
+          && identityLink.getGroupId() == null) {
         if ("test".equals(identityLink.getUserId())) {
           candidateUserTestFound = true;
         }
-      } else if (IdentityLinkType.CANDIDATE.equals(identityLink.getType()) && identityLink.getGroupId() != null && identityLink.getUserId() == null) {
+      } else if (IdentityLinkType.CANDIDATE.equals(identityLink.getType())
+          && identityLink.getGroupId() != null
+          && identityLink.getUserId() == null) {
         if ("test".equals(identityLink.getGroupId())) {
           candidateGroupTestFound = true;
         }
@@ -259,11 +289,15 @@ public class DynamicUserTaskTest extends PluggableActivitiTestCase {
     candidateUserTestFound = false;
     candidateGroupTestFound = false;
     for (IdentityLink identityLink : taskIdentityLinks) {
-      if (IdentityLinkType.CANDIDATE.equals(identityLink.getType()) && identityLink.getUserId() != null && identityLink.getGroupId() == null) {
+      if (IdentityLinkType.CANDIDATE.equals(identityLink.getType())
+          && identityLink.getUserId() != null
+          && identityLink.getGroupId() == null) {
         if ("test".equals(identityLink.getUserId())) {
           candidateUserTestFound = true;
         }
-      } else if (IdentityLinkType.CANDIDATE.equals(identityLink.getType()) && identityLink.getGroupId() != null && identityLink.getUserId() == null) {
+      } else if (IdentityLinkType.CANDIDATE.equals(identityLink.getType())
+          && identityLink.getGroupId() != null
+          && identityLink.getUserId() == null) {
         if ("test".equals(identityLink.getGroupId())) {
           candidateGroupTestFound = true;
         }
@@ -287,13 +321,17 @@ public class DynamicUserTaskTest extends PluggableActivitiTestCase {
     candidateGroupTestFound = false;
     boolean candidateGroupTest2Found = false;
     for (IdentityLink identityLink : taskIdentityLinks) {
-      if (IdentityLinkType.CANDIDATE.equals(identityLink.getType()) && identityLink.getUserId() != null && identityLink.getGroupId() == null) {
+      if (IdentityLinkType.CANDIDATE.equals(identityLink.getType())
+          && identityLink.getUserId() != null
+          && identityLink.getGroupId() == null) {
         if ("test".equals(identityLink.getUserId())) {
           candidateUserTestFound = true;
         } else if ("test2".equals(identityLink.getUserId())) {
           candidateUserTestFound2 = true;
         }
-      } else if (IdentityLinkType.CANDIDATE.equals(identityLink.getType()) && identityLink.getGroupId() != null && identityLink.getUserId() == null) {
+      } else if (IdentityLinkType.CANDIDATE.equals(identityLink.getType())
+          && identityLink.getGroupId() != null
+          && identityLink.getUserId() == null) {
         if ("test".equals(identityLink.getGroupId())) {
           candidateGroupTestFound = true;
         } else if ("test2".equals(identityLink.getGroupId())) {
@@ -310,13 +348,17 @@ public class DynamicUserTaskTest extends PluggableActivitiTestCase {
     assertProcessEnded(processInstance.getId());
   }
 
-  @Deployment(resources={"org/activiti/engine/test/bpmn/usertask/DynamicUserTaskTest.basictask.bpmn20.xml"})
+  @Deployment(
+      resources = {
+        "org/activiti/engine/test/bpmn/usertask/DynamicUserTaskTest.basictask.bpmn20.xml"
+      })
   public void testChangeNameAndDescription() {
     // first test without changing the form key
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("dynamicUserTask");
     String processDefinitionId = processInstance.getProcessDefinitionId();
 
-    Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+    Task task =
+        taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     assertThat(task.getName()).isNull();
     assertThat(task.getDescription()).isNull();
     taskService.complete(task.getId());
@@ -338,13 +380,17 @@ public class DynamicUserTaskTest extends PluggableActivitiTestCase {
     assertProcessEnded(processInstance.getId());
   }
 
-  @Deployment(resources={"org/activiti/engine/test/bpmn/usertask/DynamicUserTaskTest.assignment.bpmn20.xml"})
+  @Deployment(
+      resources = {
+        "org/activiti/engine/test/bpmn/usertask/DynamicUserTaskTest.assignment.bpmn20.xml"
+      })
   public void testChangePriorityAndCategory() {
     // first test without changing the form key
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("dynamicUserTask");
     String processDefinitionId = processInstance.getProcessDefinitionId();
 
-    Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+    Task task =
+        taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     assertThat(task.getPriority()).isEqualTo(0);
     assertThat(task.getCategory()).isNull();
     taskService.complete(task.getId());
@@ -372,7 +418,8 @@ public class DynamicUserTaskTest extends PluggableActivitiTestCase {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("dynamicUserTask");
     String processDefinitionId = processInstance.getProcessDefinitionId();
 
-    Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+    Task task =
+        taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     assertThat(task.getFormKey()).isEqualTo("test");
     taskService.complete(task.getId());
 
@@ -396,10 +443,12 @@ public class DynamicUserTaskTest extends PluggableActivitiTestCase {
     // first test without changing the form key
     Map<String, Object> varMap = new HashMap<String, Object>();
     varMap.put("start", "test");
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("dynamicUserTask", varMap);
+    ProcessInstance processInstance =
+        runtimeService.startProcessInstanceByKey("dynamicUserTask", varMap);
     String processDefinitionId = processInstance.getProcessDefinitionId();
 
-    Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+    Task task =
+        taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     assertThat(task.getFormKey()).isEqualTo("test");
     taskService.complete(task.getId());
 
@@ -419,5 +468,4 @@ public class DynamicUserTaskTest extends PluggableActivitiTestCase {
 
     assertProcessEnded(processInstance.getId());
   }
-
 }

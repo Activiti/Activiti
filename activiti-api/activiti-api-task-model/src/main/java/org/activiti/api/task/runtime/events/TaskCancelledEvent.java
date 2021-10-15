@@ -15,11 +15,10 @@
  */
 package org.activiti.api.task.runtime.events;
 
-import org.activiti.api.task.model.events.TaskRuntimeEvent;
 import org.activiti.api.task.model.Task;
+import org.activiti.api.task.model.events.TaskRuntimeEvent;
 
 public interface TaskCancelledEvent extends TaskRuntimeEvent<Task> {
 
-    String getReason();
-
+  String getReason();
 }

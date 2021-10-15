@@ -17,17 +17,15 @@
 package org.activiti.engine.impl.persistence.entity.data.impl.cachematcher;
 
 import java.util.Map;
-
 import org.activiti.engine.impl.persistence.CachedEntityMatcherAdapter;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
 import org.activiti.engine.impl.persistence.entity.SignalEventSubscriptionEntity;
 import org.activiti.engine.impl.persistence.entity.SuspensionState;
 import org.apache.commons.lang3.StringUtils;
 
-/**
-
- */
-public class SignalEventSubscriptionByEventNameMatcher extends CachedEntityMatcherAdapter<EventSubscriptionEntity> {
+/** */
+public class SignalEventSubscriptionByEventNameMatcher
+    extends CachedEntityMatcherAdapter<EventSubscriptionEntity> {
 
   @Override
   public boolean isRetained(EventSubscriptionEntity eventSubscriptionEntity, Object parameter) {
@@ -36,10 +34,18 @@ public class SignalEventSubscriptionByEventNameMatcher extends CachedEntityMatch
     String eventName = params.get("eventName");
     String tenantId = params.get("tenantId");
 
-    return eventSubscriptionEntity.getEventType() != null && eventSubscriptionEntity.getEventType().equals(SignalEventSubscriptionEntity.EVENT_TYPE)
-        && eventSubscriptionEntity.getEventName() != null && eventSubscriptionEntity.getEventName().equals(eventName)
-        && (eventSubscriptionEntity.getExecutionId() == null || (eventSubscriptionEntity.getExecutionId() != null && eventSubscriptionEntity.getExecution() != null && eventSubscriptionEntity.getExecution().getSuspensionState() == SuspensionState.ACTIVE.getStateCode()) )
-        && ( (params.containsKey("tenantId") && tenantId.equals(eventSubscriptionEntity.getTenantId())) || (!params.containsKey("tenantId") && StringUtils.isEmpty(eventSubscriptionEntity.getTenantId())) );
+    return eventSubscriptionEntity.getEventType() != null
+        && eventSubscriptionEntity.getEventType().equals(SignalEventSubscriptionEntity.EVENT_TYPE)
+        && eventSubscriptionEntity.getEventName() != null
+        && eventSubscriptionEntity.getEventName().equals(eventName)
+        && (eventSubscriptionEntity.getExecutionId() == null
+            || (eventSubscriptionEntity.getExecutionId() != null
+                && eventSubscriptionEntity.getExecution() != null
+                && eventSubscriptionEntity.getExecution().getSuspensionState()
+                    == SuspensionState.ACTIVE.getStateCode()))
+        && ((params.containsKey("tenantId")
+                && tenantId.equals(eventSubscriptionEntity.getTenantId()))
+            || (!params.containsKey("tenantId")
+                && StringUtils.isEmpty(eventSubscriptionEntity.getTenantId())));
   }
-
 }

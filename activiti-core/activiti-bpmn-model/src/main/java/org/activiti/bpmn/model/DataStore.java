@@ -57,5 +57,4 @@ public class DataStore extends BaseElement {
     setDataState(otherElement.getDataState());
     setItemSubjectRef(otherElement.getItemSubjectRef());
   }
-
 }

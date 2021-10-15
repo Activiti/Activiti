@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.cmd;
 
 import org.activiti.engine.ActivitiException;
@@ -30,9 +29,7 @@ import org.activiti.engine.task.Comment;
 import org.activiti.engine.task.Event;
 import org.activiti.engine.task.Task;
 
-/**
-
- */
+/** */
 public class AddCommentCmd implements Command<Comment> {
 
   protected String taskId;
@@ -74,7 +71,8 @@ public class AddCommentCmd implements Command<Comment> {
       execution = commandContext.getExecutionEntityManager().findById(processInstanceId);
 
       if (execution == null) {
-        throw new ActivitiObjectNotFoundException("execution " + processInstanceId + " doesn't exist", Execution.class);
+        throw new ActivitiObjectNotFoundException(
+            "execution " + processInstanceId + " doesn't exist", Execution.class);
       }
 
       if (execution.isSuspended()) {

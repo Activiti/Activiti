@@ -23,15 +23,13 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.activiti.engine.impl.persistence.entity.Entity;
 
-/**
-
- */
+/** */
 public class EntityCacheImpl implements EntityCache {
 
-  protected Map<Class<?>, Map<String, CachedEntity>> cachedObjects = new HashMap<Class<?>, Map<String,CachedEntity>>();
+  protected Map<Class<?>, Map<String, CachedEntity>> cachedObjects =
+      new HashMap<Class<?>, Map<String, CachedEntity>>();
 
   @Override
   public CachedEntity put(Entity entity, boolean storeState) {
@@ -118,13 +116,8 @@ public class EntityCacheImpl implements EntityCache {
   }
 
   @Override
-  public void close() {
-
-  }
+  public void close() {}
 
   @Override
-  public void flush() {
-
-  }
-
+  public void flush() {}
 }

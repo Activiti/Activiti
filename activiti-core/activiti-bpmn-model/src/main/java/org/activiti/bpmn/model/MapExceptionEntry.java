@@ -51,5 +51,4 @@ public class MapExceptionEntry {
   public void setAndChildren(boolean andChildren) {
     this.andChildren = andChildren;
   }
-
 }

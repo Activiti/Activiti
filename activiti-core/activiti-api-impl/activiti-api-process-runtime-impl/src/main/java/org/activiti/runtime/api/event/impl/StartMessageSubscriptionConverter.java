@@ -16,24 +16,26 @@
 package org.activiti.runtime.api.event.impl;
 
 import java.util.Optional;
-
 import org.activiti.api.runtime.model.impl.StartMessageSubscriptionImpl;
 import org.activiti.engine.impl.persistence.entity.MessageEventSubscriptionEntity;
 
 public class StartMessageSubscriptionConverter {
 
-    public StartMessageSubscriptionImpl convertToStartMessageSubscription(MessageEventSubscriptionEntity messageEventSubscriptionEntity) {
+  public StartMessageSubscriptionImpl convertToStartMessageSubscription(
+      MessageEventSubscriptionEntity messageEventSubscriptionEntity) {
 
-        return Optional.of(messageEventSubscriptionEntity)
-                       .map(entity -> StartMessageSubscriptionImpl.builder()
-                                                                       .withId(entity.getId())
-                                                                       .withEventName(entity.getEventName())
-                                                                       .withProcessDefinitionId(entity.getProcessDefinitionId())
-                                                                       .withConfiguration(entity.getConfiguration())
-                                                                       .withActivityId(entity.getActivityId())
-                                                                       .withCreated(entity.getCreated())
-                                                                       .build())
-                       .orElseThrow(() -> new IllegalArgumentException("messageEventSubscriptionEntity must not be null"));
-    }
-
+    return Optional.of(messageEventSubscriptionEntity)
+        .map(
+            entity ->
+                StartMessageSubscriptionImpl.builder()
+                    .withId(entity.getId())
+                    .withEventName(entity.getEventName())
+                    .withProcessDefinitionId(entity.getProcessDefinitionId())
+                    .withConfiguration(entity.getConfiguration())
+                    .withActivityId(entity.getActivityId())
+                    .withCreated(entity.getCreated())
+                    .build())
+        .orElseThrow(
+            () -> new IllegalArgumentException("messageEventSubscriptionEntity must not be null"));
+  }
 }

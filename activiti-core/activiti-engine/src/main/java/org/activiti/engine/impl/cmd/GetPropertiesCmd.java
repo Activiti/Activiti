@@ -14,21 +14,17 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.cmd;
 
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.PropertyEntity;
 
-/**
-
- */
+/** */
 public class GetPropertiesCmd implements Command<Map<String, String>>, Serializable {
 
   private static final long serialVersionUID = 1L;
@@ -43,5 +39,4 @@ public class GetPropertiesCmd implements Command<Map<String, String>>, Serializa
     }
     return properties;
   }
-
 }

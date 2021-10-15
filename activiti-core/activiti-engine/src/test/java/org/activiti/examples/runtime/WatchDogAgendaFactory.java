@@ -23,9 +23,7 @@ import org.activiti.engine.impl.agenda.DefaultActivitiEngineAgenda;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 
-/**
- * This class implements an factory for generating watchdog agenda
- */
+/** This class implements an factory for generating watchdog agenda */
 public class WatchDogAgendaFactory implements ActivitiEngineAgendaFactory {
 
   @Override
@@ -51,7 +49,7 @@ public class WatchDogAgendaFactory implements ActivitiEngineAgendaFactory {
 
     @Override
     public Runnable getNextOperation() {
-      if (counter<WATCH_DOG_LIMIT) {
+      if (counter < WATCH_DOG_LIMIT) {
         counter++;
         return agenda.getNextOperation();
       }
@@ -63,61 +61,50 @@ public class WatchDogAgendaFactory implements ActivitiEngineAgendaFactory {
       agenda.planOperation(operation);
     }
 
-
     @Override
     public void planContinueProcessOperation(ExecutionEntity execution) {
       agenda.planContinueProcessOperation(execution);
-
     }
 
     @Override
     public void planContinueProcessSynchronousOperation(ExecutionEntity execution) {
       agenda.planContinueProcessSynchronousOperation(execution);
-
     }
 
     @Override
     public void planContinueProcessInCompensation(ExecutionEntity execution) {
       agenda.planContinueProcessInCompensation(execution);
-
     }
 
     @Override
     public void planContinueMultiInstanceOperation(ExecutionEntity execution) {
       agenda.planContinueMultiInstanceOperation(execution);
-
     }
 
     @Override
-    public void planTakeOutgoingSequenceFlowsOperation(ExecutionEntity execution, boolean evaluateConditions) {
+    public void planTakeOutgoingSequenceFlowsOperation(
+        ExecutionEntity execution, boolean evaluateConditions) {
       agenda.planTakeOutgoingSequenceFlowsOperation(execution, evaluateConditions);
-
     }
 
     @Override
     public void planEndExecutionOperation(ExecutionEntity execution) {
       agenda.planEndExecutionOperation(execution);
-
     }
 
     @Override
     public void planTriggerExecutionOperation(ExecutionEntity execution) {
       agenda.planTriggerExecutionOperation(execution);
-
     }
 
     @Override
     public void planDestroyScopeOperation(ExecutionEntity execution) {
       agenda.planDestroyScopeOperation(execution);
-
     }
 
     @Override
     public void planExecuteInactiveBehaviorsOperation() {
       agenda.planExecuteInactiveBehaviorsOperation();
-
     }
-
   }
-
 }

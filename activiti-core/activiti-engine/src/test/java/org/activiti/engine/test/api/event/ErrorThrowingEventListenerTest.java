@@ -28,8 +28,8 @@ import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
 /**
- * Test case for all {@link ActivitiEventListener}s that throws an error BPMN event when an {@link ActivitiEvent} has been dispatched.
- *
+ * Test case for all {@link ActivitiEventListener}s that throws an error BPMN event when an {@link
+ * ActivitiEvent} has been dispatched.
  */
 public class ErrorThrowingEventListenerTest extends PluggableActivitiTestCase {
 
@@ -39,20 +39,32 @@ public class ErrorThrowingEventListenerTest extends PluggableActivitiTestCase {
     try {
       listener = new ErrorThrowingEventListener();
 
-      processEngineConfiguration.getEventDispatcher().addEventListener(listener, ActivitiEventType.TASK_ASSIGNED);
+      processEngineConfiguration
+          .getEventDispatcher()
+          .addEventListener(listener, ActivitiEventType.TASK_ASSIGNED);
 
       ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testError");
       assertThat(processInstance).isNotNull();
 
       // Fetch the task and assign it. Should cause error-event to be
       // dispatched
-      Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskDefinitionKey("userTask").singleResult();
+      Task task =
+          taskService
+              .createTaskQuery()
+              .processInstanceId(processInstance.getId())
+              .taskDefinitionKey("userTask")
+              .singleResult();
       assertThat(task).isNotNull();
       taskService.setAssignee(task.getId(), "kermit");
 
       // Error-handling should have been called, and "escalate" task
       // should be available instead of original one
-      task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskDefinitionKey("escalatedTask").singleResult();
+      task =
+          taskService
+              .createTaskQuery()
+              .processInstanceId(processInstance.getId())
+              .taskDefinitionKey("escalatedTask")
+              .singleResult();
       assertThat(task).isNotNull();
 
     } finally {
@@ -67,13 +79,23 @@ public class ErrorThrowingEventListenerTest extends PluggableActivitiTestCase {
 
     // Fetch the task and assign it. Should cause error-event to be
     // dispatched
-    Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskDefinitionKey("userTask").singleResult();
+    Task task =
+        taskService
+            .createTaskQuery()
+            .processInstanceId(processInstance.getId())
+            .taskDefinitionKey("userTask")
+            .singleResult();
     assertThat(task).isNotNull();
     taskService.setAssignee(task.getId(), "kermit");
 
     // Error-handling should have been called, and "escalate" task should be
     // available instead of original one
-    task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskDefinitionKey("escalatedTask").singleResult();
+    task =
+        taskService
+            .createTaskQuery()
+            .processInstanceId(processInstance.getId())
+            .taskDefinitionKey("escalatedTask")
+            .singleResult();
     assertThat(task).isNotNull();
   }
 
@@ -84,20 +106,32 @@ public class ErrorThrowingEventListenerTest extends PluggableActivitiTestCase {
       listener = new ErrorThrowingEventListener();
       listener.setErrorCode("123");
 
-      processEngineConfiguration.getEventDispatcher().addEventListener(listener, ActivitiEventType.TASK_ASSIGNED);
+      processEngineConfiguration
+          .getEventDispatcher()
+          .addEventListener(listener, ActivitiEventType.TASK_ASSIGNED);
 
       ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testError");
       assertThat(processInstance).isNotNull();
 
       // Fetch the task and assign it. Should cause error-event to be
       // dispatched
-      Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskDefinitionKey("userTask").singleResult();
+      Task task =
+          taskService
+              .createTaskQuery()
+              .processInstanceId(processInstance.getId())
+              .taskDefinitionKey("userTask")
+              .singleResult();
       assertThat(task).isNotNull();
       taskService.setAssignee(task.getId(), "kermit");
 
       // Error-handling should have been called, and "escalate" task
       // should be available instead of original one
-      task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskDefinitionKey("escalatedTask").singleResult();
+      task =
+          taskService
+              .createTaskQuery()
+              .processInstanceId(processInstance.getId())
+              .taskDefinitionKey("escalatedTask")
+              .singleResult();
       assertThat(task).isNotNull();
 
       // Try with a different error-code, resulting in a different task
@@ -109,11 +143,21 @@ public class ErrorThrowingEventListenerTest extends PluggableActivitiTestCase {
 
       // Fetch the task and assign it. Should cause error-event to be
       // dispatched
-      task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskDefinitionKey("userTask").singleResult();
+      task =
+          taskService
+              .createTaskQuery()
+              .processInstanceId(processInstance.getId())
+              .taskDefinitionKey("userTask")
+              .singleResult();
       assertThat(task).isNotNull();
       taskService.setAssignee(task.getId(), "kermit");
 
-      task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskDefinitionKey("escalatedTask2").singleResult();
+      task =
+          taskService
+              .createTaskQuery()
+              .processInstanceId(processInstance.getId())
+              .taskDefinitionKey("escalatedTask2")
+              .singleResult();
       assertThat(task).isNotNull();
     } finally {
       processEngineConfiguration.getEventDispatcher().removeEventListener(listener);
@@ -127,13 +171,23 @@ public class ErrorThrowingEventListenerTest extends PluggableActivitiTestCase {
 
     // Fetch the task and assign it. Should cause error-event to be
     // dispatched
-    Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskDefinitionKey("userTask").singleResult();
+    Task task =
+        taskService
+            .createTaskQuery()
+            .processInstanceId(processInstance.getId())
+            .taskDefinitionKey("userTask")
+            .singleResult();
     assertThat(task).isNotNull();
     taskService.setAssignee(task.getId(), "kermit");
 
     // Error-handling should have been called, and "escalate" task should be
     // available instead of original one
-    task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskDefinitionKey("escalatedTask").singleResult();
+    task =
+        taskService
+            .createTaskQuery()
+            .processInstanceId(processInstance.getId())
+            .taskDefinitionKey("escalatedTask")
+            .singleResult();
     assertThat(task).isNotNull();
   }
 }

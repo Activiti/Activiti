@@ -19,13 +19,10 @@ package org.activiti.examples.bpmn.tasklistener;
 import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.delegate.TaskListener;
 
-/**
-
- */
+/** */
 public class AssigneeAssignment implements TaskListener {
 
   public void notify(DelegateTask delegateTask) {
     delegateTask.setAssignee("kermit");
   }
-
 }

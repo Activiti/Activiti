@@ -17,15 +17,10 @@
 package org.activiti.engine.impl.persistence.entity;
 
 import java.util.Date;
-
 import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.event.EventLogEntry;
 
-/**
- * An event log entry can only be inserted (and maybe deleted).
- *
-
- */
+/** An event log entry can only be inserted (and maybe deleted). */
 @Internal
 public interface EventLogEntryEntity extends Entity, EventLogEntry {
 
@@ -58,5 +53,4 @@ public interface EventLogEntryEntity extends Entity, EventLogEntry {
   int getProcessed();
 
   void setProcessed(int isProcessed);
-
 }

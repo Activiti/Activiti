@@ -16,16 +16,9 @@
 package org.activiti.engine.impl.persistence.entity;
 
 import java.io.Serializable;
-
 import org.activiti.engine.impl.context.Context;
 
-/**
- * <p>
- * Encapsulates the logic for transparently working with {@link ByteArrayEntity} .
- * </p>
- *
-
- */
+/** Encapsulates the logic for transparently working with {@link ByteArrayEntity} . */
 public class ByteArrayRef implements Serializable {
 
   private static final long serialVersionUID = 1L;
@@ -35,8 +28,7 @@ public class ByteArrayRef implements Serializable {
   private ByteArrayEntity entity;
   protected boolean deleted;
 
-  public ByteArrayRef() {
-  }
+  public ByteArrayRef() {}
 
   // Only intended to be used by ByteArrayRefTypeHandler
   public ByteArrayRef(String id) {
@@ -64,7 +56,8 @@ public class ByteArrayRef implements Serializable {
   private void setBytes(byte[] bytes) {
     if (id == null) {
       if (bytes != null) {
-        ByteArrayEntityManager byteArrayEntityManager = Context.getCommandContext().getByteArrayEntityManager();
+        ByteArrayEntityManager byteArrayEntityManager =
+            Context.getCommandContext().getByteArrayEntityManager();
         entity = byteArrayEntityManager.create();
         entity.setName(name);
         entity.setBytes(bytes);
@@ -110,6 +103,12 @@ public class ByteArrayRef implements Serializable {
 
   @Override
   public String toString() {
-    return "ByteArrayRef[id=" + id + ", name=" + name + ", entity=" + entity + (deleted ? ", deleted]" : "]");
+    return "ByteArrayRef[id="
+        + id
+        + ", name="
+        + name
+        + ", entity="
+        + entity
+        + (deleted ? ", deleted]" : "]");
   }
 }

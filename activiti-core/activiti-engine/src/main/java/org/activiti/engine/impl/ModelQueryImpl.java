@@ -14,21 +14,16 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl;
 
 import java.util.List;
-
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.repository.Model;
 import org.activiti.engine.repository.ModelQuery;
 
-/**
-
-
- */
+/** */
 public class ModelQueryImpl extends AbstractQuery<ModelQuery, Model> implements ModelQuery {
 
   private static final long serialVersionUID = 1L;
@@ -48,8 +43,7 @@ public class ModelQueryImpl extends AbstractQuery<ModelQuery, Model> implements 
   protected String tenantIdLike;
   protected boolean withoutTenantId;
 
-  public ModelQueryImpl() {
-  }
+  public ModelQueryImpl() {}
 
   public ModelQueryImpl(CommandContext commandContext) {
     super(commandContext);
@@ -137,7 +131,8 @@ public class ModelQueryImpl extends AbstractQuery<ModelQuery, Model> implements 
 
   public ModelQuery notDeployed() {
     if (deployed) {
-      throw new ActivitiIllegalArgumentException("Invalid usage: cannot use deployed() and notDeployed() in the same query");
+      throw new ActivitiIllegalArgumentException(
+          "Invalid usage: cannot use deployed() and notDeployed() in the same query");
     }
     this.notDeployed = true;
     return this;
@@ -145,7 +140,8 @@ public class ModelQueryImpl extends AbstractQuery<ModelQuery, Model> implements 
 
   public ModelQuery deployed() {
     if (notDeployed) {
-      throw new ActivitiIllegalArgumentException("Invalid usage: cannot use deployed() and notDeployed() in the same query");
+      throw new ActivitiIllegalArgumentException(
+          "Invalid usage: cannot use deployed() and notDeployed() in the same query");
     }
     this.deployed = true;
     return this;
@@ -283,5 +279,4 @@ public class ModelQueryImpl extends AbstractQuery<ModelQuery, Model> implements 
   public boolean isWithoutTenantId() {
     return withoutTenantId;
   }
-
 }

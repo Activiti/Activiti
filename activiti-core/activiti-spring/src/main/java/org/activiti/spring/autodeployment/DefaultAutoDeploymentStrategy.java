@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.spring.autodeployment;
 
 import org.activiti.core.common.spring.project.ApplicationUpgradeContextService;
@@ -23,42 +22,43 @@ import org.activiti.engine.repository.DeploymentBuilder;
 import org.springframework.core.io.Resource;
 
 /**
- * Default implementation of {@link AutoDeploymentStrategy} that groups all {@link Resource}s into a single deployment. This implementation is equivalent to the previously used implementation.
+ * Default implementation of {@link AutoDeploymentStrategy} that groups all {@link Resource}s into a
+ * single deployment. This implementation is equivalent to the previously used implementation.
  */
 public class DefaultAutoDeploymentStrategy extends AbstractAutoDeploymentStrategy {
 
-    /**
-     * The deployment mode this strategy handles.
-     */
-    public static final String DEPLOYMENT_MODE = "default";
+  /** The deployment mode this strategy handles. */
+  public static final String DEPLOYMENT_MODE = "default";
 
-    public DefaultAutoDeploymentStrategy(ApplicationUpgradeContextService applicationUpgradeContextService) {
-        super(applicationUpgradeContextService);
+  public DefaultAutoDeploymentStrategy(
+      ApplicationUpgradeContextService applicationUpgradeContextService) {
+    super(applicationUpgradeContextService);
+  }
+
+  @Override
+  protected String getDeploymentMode() {
+    return DEPLOYMENT_MODE;
+  }
+
+  @Override
+  public void deployResources(
+      final String deploymentNameHint,
+      final Resource[] resources,
+      final RepositoryService repositoryService) {
+
+    // Create a single deployment for all resources using the name hint as
+    // the
+    // literal name
+
+    DeploymentBuilder deploymentBuilder =
+        repositoryService.createDeployment().enableDuplicateFiltering().name(deploymentNameHint);
+
+    for (final Resource resource : resources) {
+      final String resourceName = determineResourceName(resource);
+
+      deploymentBuilder.addInputStream(resourceName, resource);
     }
 
-    @Override
-    protected String getDeploymentMode() {
-        return DEPLOYMENT_MODE;
-    }
-
-    @Override
-    public void deployResources(final String deploymentNameHint,
-                                final Resource[] resources,
-                                final RepositoryService repositoryService) {
-
-        // Create a single deployment for all resources using the name hint as
-        // the
-        // literal name
-
-        DeploymentBuilder deploymentBuilder = repositoryService.createDeployment().enableDuplicateFiltering().name(deploymentNameHint);
-
-        for (final Resource resource : resources) {
-            final String resourceName = determineResourceName(resource);
-
-            deploymentBuilder.addInputStream(resourceName,
-                                             resource);
-        }
-
-        loadApplicationUpgradeContext(deploymentBuilder).deploy();
-    }
+    loadApplicationUpgradeContext(deploymentBuilder).deploy();
+  }
 }

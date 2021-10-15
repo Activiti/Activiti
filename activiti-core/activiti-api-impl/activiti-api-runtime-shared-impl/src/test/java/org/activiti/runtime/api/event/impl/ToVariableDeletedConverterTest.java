@@ -30,31 +30,31 @@ import org.junit.jupiter.api.Test;
 
 class ToVariableDeletedConverterTest {
 
-    private ToVariableDeletedConverter converter = new ToVariableDeletedConverter();
+  private ToVariableDeletedConverter converter = new ToVariableDeletedConverter();
 
-    @Test
-    void should_convertToVariableDeletedEvent() {
-        ActivitiVariableEventImpl internalEvent = new ActivitiVariableEventImpl(ActivitiEventType.VARIABLE_DELETED);
-        internalEvent.setVariableName("variableName");
-        internalEvent.setProcessInstanceId("processInstanceId");
-        internalEvent.setTaskId("taskId");
-        VariableType variableType = new BooleanType();
-        internalEvent.setVariableType(variableType);
-        Object value = mock(Object.class);
-        internalEvent.setVariableValue(value);
+  @Test
+  void should_convertToVariableDeletedEvent() {
+    ActivitiVariableEventImpl internalEvent =
+        new ActivitiVariableEventImpl(ActivitiEventType.VARIABLE_DELETED);
+    internalEvent.setVariableName("variableName");
+    internalEvent.setProcessInstanceId("processInstanceId");
+    internalEvent.setTaskId("taskId");
+    VariableType variableType = new BooleanType();
+    internalEvent.setVariableType(variableType);
+    Object value = mock(Object.class);
+    internalEvent.setVariableValue(value);
 
-        Optional<VariableDeletedEvent> result = converter.from(internalEvent);
+    Optional<VariableDeletedEvent> result = converter.from(internalEvent);
 
-        assertThat(result).isPresent();
-        VariableDeletedEvent actualEvent = result.get();
-        assertThat(actualEvent.getEventType()).isEqualTo(VariableEvents.VARIABLE_DELETED);
-        VariableInstance actualEntity = actualEvent.getEntity();
-        assertThat(actualEntity.getName()).isEqualTo("variableName");
-        assertThat(actualEntity.getProcessInstanceId()).isEqualTo("processInstanceId");
-        assertThat(actualEntity.getTaskId()).isEqualTo("taskId");
-        assertThat(actualEntity.getType()).isEqualTo("boolean");
-        Object actualValue = actualEntity.getValue();
-        assertThat(actualValue).isSameAs(value);
-
-    }
+    assertThat(result).isPresent();
+    VariableDeletedEvent actualEvent = result.get();
+    assertThat(actualEvent.getEventType()).isEqualTo(VariableEvents.VARIABLE_DELETED);
+    VariableInstance actualEntity = actualEvent.getEntity();
+    assertThat(actualEntity.getName()).isEqualTo("variableName");
+    assertThat(actualEntity.getProcessInstanceId()).isEqualTo("processInstanceId");
+    assertThat(actualEntity.getTaskId()).isEqualTo("taskId");
+    assertThat(actualEntity.getType()).isEqualTo("boolean");
+    Object actualValue = actualEntity.getValue();
+    assertThat(actualValue).isSameAs(value);
+  }
 }

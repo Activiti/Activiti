@@ -16,11 +16,7 @@
 
 package org.activiti.engine.impl.bpmn.data;
 
-/**
- * Represents a structure based on a primitive class
- *
-
- */
+/** Represents a structure based on a primitive class */
 public class PrimitiveStructureDefinition implements StructureDefinition {
 
   protected String id;

@@ -14,11 +14,9 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.cmd;
 
 import java.io.Serializable;
-
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.interceptor.Command;
@@ -27,9 +25,7 @@ import org.activiti.engine.impl.persistence.entity.AttachmentEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.task.Attachment;
 
-/**
-
- */
+/** */
 public class SaveAttachmentCmd implements Command<Object>, Serializable {
 
   private static final long serialVersionUID = 1L;
@@ -40,12 +36,14 @@ public class SaveAttachmentCmd implements Command<Object>, Serializable {
   }
 
   public Object execute(CommandContext commandContext) {
-    AttachmentEntity updateAttachment = commandContext.getAttachmentEntityManager().findById(attachment.getId());
+    AttachmentEntity updateAttachment =
+        commandContext.getAttachmentEntityManager().findById(attachment.getId());
 
     String processInstanceId = updateAttachment.getProcessInstanceId();
     String processDefinitionId = null;
     if (updateAttachment.getProcessInstanceId() != null) {
-      ExecutionEntity process = commandContext.getExecutionEntityManager().findById(processInstanceId);
+      ExecutionEntity process =
+          commandContext.getExecutionEntityManager().findById(processInstanceId);
       if (process != null) {
         processDefinitionId = process.getProcessDefinitionId();
       }
@@ -55,8 +53,16 @@ public class SaveAttachmentCmd implements Command<Object>, Serializable {
     updateAttachment.setDescription(attachment.getDescription());
 
     if (commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-      commandContext.getProcessEngineConfiguration().getEventDispatcher()
-          .dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_UPDATED, attachment, processInstanceId, processInstanceId, processDefinitionId));
+      commandContext
+          .getProcessEngineConfiguration()
+          .getEventDispatcher()
+          .dispatchEvent(
+              ActivitiEventBuilder.createEntityEvent(
+                  ActivitiEventType.ENTITY_UPDATED,
+                  attachment,
+                  processInstanceId,
+                  processInstanceId,
+                  processDefinitionId));
     }
 
     return null;

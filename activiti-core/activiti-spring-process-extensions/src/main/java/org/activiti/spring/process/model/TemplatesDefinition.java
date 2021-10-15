@@ -24,58 +24,58 @@ import java.util.Optional;
 
 public class TemplatesDefinition {
 
-    private Map<String, TaskTemplateDefinition> tasks = new HashMap<>();
+  private Map<String, TaskTemplateDefinition> tasks = new HashMap<>();
 
-    @JsonProperty("default")
-    private TaskTemplateDefinition defaultTemplate;
+  @JsonProperty("default")
+  private TaskTemplateDefinition defaultTemplate;
 
-    public Map<String, TaskTemplateDefinition> getTasks() {
-        return tasks;
+  public Map<String, TaskTemplateDefinition> getTasks() {
+    return tasks;
+  }
+
+  public void setTasks(Map<String, TaskTemplateDefinition> tasks) {
+    this.tasks = tasks;
+  }
+
+  public TaskTemplateDefinition getDefaultTemplate() {
+    return defaultTemplate;
+  }
+
+  public void setDefaultTemplate(TaskTemplateDefinition defaultTemplate) {
+    this.defaultTemplate = defaultTemplate;
+  }
+
+  public Optional<TemplateDefinition> findAssigneeTemplateForTask(String taskUUID) {
+    TaskTemplateDefinition taskTemplateDefinition = tasks.get(taskUUID);
+    if (taskTemplateDefinition == null) {
+      return Optional.empty();
     }
+    return Optional.ofNullable(taskTemplateDefinition.getAssignee());
+  }
 
-    public void setTasks(Map<String, TaskTemplateDefinition> tasks) {
-        this.tasks = tasks;
+  public Optional<TemplateDefinition> findCandidateTemplateForTask(String taskUUID) {
+    TaskTemplateDefinition taskTemplateDefinition = tasks.get(taskUUID);
+    if (taskTemplateDefinition == null) {
+      return Optional.empty();
     }
+    return Optional.ofNullable(taskTemplateDefinition.getCandidate());
+  }
 
-    public TaskTemplateDefinition getDefaultTemplate() {
-        return defaultTemplate;
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
     }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    TemplatesDefinition that = (TemplatesDefinition) o;
+    return Objects.equals(tasks, that.tasks)
+        && Objects.equals(defaultTemplate, that.defaultTemplate);
+  }
 
-    public void setDefaultTemplate(TaskTemplateDefinition defaultTemplate) {
-        this.defaultTemplate = defaultTemplate;
-    }
-
-    public Optional<TemplateDefinition> findAssigneeTemplateForTask(String taskUUID) {
-        TaskTemplateDefinition taskTemplateDefinition = tasks.get(taskUUID);
-        if (taskTemplateDefinition == null) {
-            return Optional.empty();
-        }
-        return Optional.ofNullable(taskTemplateDefinition.getAssignee());
-    }
-
-    public Optional<TemplateDefinition> findCandidateTemplateForTask(String taskUUID) {
-        TaskTemplateDefinition taskTemplateDefinition = tasks.get(taskUUID);
-        if (taskTemplateDefinition == null) {
-            return Optional.empty();
-        }
-        return Optional.ofNullable(taskTemplateDefinition.getCandidate());
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        TemplatesDefinition that = (TemplatesDefinition) o;
-        return Objects.equals(tasks, that.tasks) && Objects
-            .equals(defaultTemplate, that.defaultTemplate);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(tasks, defaultTemplate);
-    }
+  @Override
+  public int hashCode() {
+    return Objects.hash(tasks, defaultTemplate);
+  }
 }

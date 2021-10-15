@@ -17,7 +17,6 @@ package org.activiti.bpmn.converter;
 
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
-
 import org.activiti.bpmn.converter.util.BpmnXMLUtil;
 import org.activiti.bpmn.model.Association;
 import org.activiti.bpmn.model.AssociationDirection;
@@ -45,11 +44,12 @@ public class AssociationXMLConverter extends BaseBpmnXMLConverter {
     association.setId(xtr.getAttributeValue(null, ATTRIBUTE_ID));
 
     String asociationDirectionString = xtr.getAttributeValue(null, ATTRIBUTE_ASSOCIATION_DIRECTION);
-     if (StringUtils.isNotEmpty(asociationDirectionString)) {
-       AssociationDirection associationDirection = AssociationDirection.valueOf(asociationDirectionString.toUpperCase());
+    if (StringUtils.isNotEmpty(asociationDirectionString)) {
+      AssociationDirection associationDirection =
+          AssociationDirection.valueOf(asociationDirectionString.toUpperCase());
 
-       association.setAssociationDirection(associationDirection);
-     }
+      association.setAssociationDirection(associationDirection);
+    }
 
     parseChildElements(getXMLElementName(), association, model, xtr);
 
@@ -57,17 +57,18 @@ public class AssociationXMLConverter extends BaseBpmnXMLConverter {
   }
 
   @Override
-  protected void writeAdditionalAttributes(BaseElement element, BpmnModel model, XMLStreamWriter xtw) throws Exception {
+  protected void writeAdditionalAttributes(
+      BaseElement element, BpmnModel model, XMLStreamWriter xtw) throws Exception {
     Association association = (Association) element;
     writeDefaultAttribute(ATTRIBUTE_FLOW_SOURCE_REF, association.getSourceRef(), xtw);
     writeDefaultAttribute(ATTRIBUTE_FLOW_TARGET_REF, association.getTargetRef(), xtw);
     AssociationDirection associationDirection = association.getAssociationDirection();
-    if (associationDirection !=null) {
+    if (associationDirection != null) {
       writeDefaultAttribute(ATTRIBUTE_ASSOCIATION_DIRECTION, associationDirection.getValue(), xtw);
     }
   }
 
   @Override
-  protected void writeAdditionalChildElements(BaseElement element, BpmnModel model, XMLStreamWriter xtw) throws Exception {
-  }
+  protected void writeAdditionalChildElements(
+      BaseElement element, BpmnModel model, XMLStreamWriter xtw) throws Exception {}
 }

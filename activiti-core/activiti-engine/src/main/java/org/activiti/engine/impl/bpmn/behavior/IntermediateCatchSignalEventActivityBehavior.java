@@ -17,7 +17,6 @@
 package org.activiti.engine.impl.bpmn.behavior;
 
 import java.util.List;
-
 import org.activiti.bpmn.model.Signal;
 import org.activiti.bpmn.model.SignalEventDefinition;
 import org.activiti.engine.delegate.DelegateExecution;
@@ -31,14 +30,16 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.SignalEventSubscriptionEntity;
 import org.apache.commons.lang3.StringUtils;
 
-public class IntermediateCatchSignalEventActivityBehavior extends IntermediateCatchEventActivityBehavior {
+public class IntermediateCatchSignalEventActivityBehavior
+    extends IntermediateCatchEventActivityBehavior {
 
   private static final long serialVersionUID = 1L;
 
   protected SignalEventDefinition signalEventDefinition;
   protected Signal signal;
 
-  public IntermediateCatchSignalEventActivityBehavior(SignalEventDefinition signalEventDefinition, Signal signal) {
+  public IntermediateCatchSignalEventActivityBehavior(
+      SignalEventDefinition signalEventDefinition, Signal signal) {
     this.signalEventDefinition = signalEventDefinition;
     this.signal = signal;
   }
@@ -51,12 +52,17 @@ public class IntermediateCatchSignalEventActivityBehavior extends IntermediateCa
     if (StringUtils.isNotEmpty(signalEventDefinition.getSignalRef())) {
       signalName = signalEventDefinition.getSignalRef();
     } else {
-      Expression signalExpression = commandContext.getProcessEngineConfiguration().getExpressionManager()
-          .createExpression(signalEventDefinition.getSignalExpression());
+      Expression signalExpression =
+          commandContext
+              .getProcessEngineConfiguration()
+              .getExpressionManager()
+              .createExpression(signalEventDefinition.getSignalExpression());
       signalName = signalExpression.getValue(execution).toString();
     }
 
-    commandContext.getEventSubscriptionEntityManager().insertSignalEvent(signalName, signal, executionEntity);
+    commandContext
+        .getEventSubscriptionEntityManager()
+        .insertSignalEvent(signalName, signal, executionEntity);
   }
 
   @Override
@@ -68,8 +74,10 @@ public class IntermediateCatchSignalEventActivityBehavior extends IntermediateCa
   @Override
   public void eventCancelledByEventGateway(DelegateExecution execution) {
     deleteSignalEventSubscription(execution);
-    Context.getCommandContext().getExecutionEntityManager().deleteExecutionAndRelatedData((ExecutionEntity) execution,
-        DeleteReason.EVENT_BASED_GATEWAY_CANCEL);
+    Context.getCommandContext()
+        .getExecutionEntityManager()
+        .deleteExecutionAndRelatedData(
+            (ExecutionEntity) execution, DeleteReason.EVENT_BASED_GATEWAY_CANCEL);
   }
 
   protected ExecutionEntity deleteSignalEventSubscription(DelegateExecution execution) {
@@ -82,10 +90,12 @@ public class IntermediateCatchSignalEventActivityBehavior extends IntermediateCa
       eventName = signalEventDefinition.getSignalRef();
     }
 
-    EventSubscriptionEntityManager eventSubscriptionEntityManager = Context.getCommandContext().getEventSubscriptionEntityManager();
+    EventSubscriptionEntityManager eventSubscriptionEntityManager =
+        Context.getCommandContext().getEventSubscriptionEntityManager();
     List<EventSubscriptionEntity> eventSubscriptions = executionEntity.getEventSubscriptions();
     for (EventSubscriptionEntity eventSubscription : eventSubscriptions) {
-      if (eventSubscription instanceof SignalEventSubscriptionEntity && eventSubscription.getEventName().equals(eventName)) {
+      if (eventSubscription instanceof SignalEventSubscriptionEntity
+          && eventSubscription.getEventName().equals(eventName)) {
 
         eventSubscriptionEntityManager.delete(eventSubscription);
       }

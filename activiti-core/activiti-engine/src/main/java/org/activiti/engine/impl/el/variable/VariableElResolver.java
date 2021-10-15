@@ -25,32 +25,32 @@ import org.activiti.engine.impl.variable.LongJsonType;
 
 public class VariableElResolver implements VariableScopeItemELResolver {
 
-    private final ObjectMapper objectMapper;
+  private final ObjectMapper objectMapper;
 
-    public VariableElResolver(ObjectMapper objectMapper) {
-        this.objectMapper = objectMapper;
+  public VariableElResolver(ObjectMapper objectMapper) {
+    this.objectMapper = objectMapper;
+  }
+
+  @Override
+  public boolean canResolve(String property, VariableScope variableScope) {
+    return variableScope.hasVariable(property);
+  }
+
+  @Override
+  public Object resolve(String property, VariableScope variableScope) {
+    VariableInstance variableInstance = variableScope.getVariableInstance(property);
+    Object value = variableInstance.getValue();
+    if (hasJsonType(variableInstance)
+        && (value instanceof JsonNode)
+        && ((JsonNode) value).isArray()) {
+      return objectMapper.convertValue(value, List.class);
+    } else {
+      return value;
     }
+  }
 
-    @Override
-    public boolean canResolve(String property, VariableScope variableScope) {
-        return variableScope.hasVariable(property);
-    }
-
-    @Override
-    public Object resolve(String property, VariableScope variableScope) {
-        VariableInstance variableInstance = variableScope.getVariableInstance(property);
-        Object value = variableInstance.getValue();
-        if (hasJsonType(variableInstance) && (value instanceof JsonNode) &&
-            ((JsonNode) value).isArray()) {
-            return objectMapper.convertValue(value, List.class);
-        } else {
-            return value;
-        }
-    }
-
-    private boolean hasJsonType(VariableInstance variableInstance) {
-        return JsonType.JSON.equals(variableInstance.getTypeName()) ||
-            LongJsonType.LONG_JSON.equals(variableInstance.getTypeName());
-    }
-
+  private boolean hasJsonType(VariableInstance variableInstance) {
+    return JsonType.JSON.equals(variableInstance.getTypeName())
+        || LongJsonType.LONG_JSON.equals(variableInstance.getTypeName());
+  }
 }

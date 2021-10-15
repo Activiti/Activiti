@@ -17,14 +17,11 @@
 package org.activiti.engine.impl.cmd;
 
 import java.io.Serializable;
-
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 
-/**
-
- */
+/** */
 public class GetModelEditorSourceExtraCmd implements Command<byte[]>, Serializable {
 
   private static final long serialVersionUID = 1L;
@@ -43,5 +40,4 @@ public class GetModelEditorSourceExtraCmd implements Command<byte[]>, Serializab
 
     return bytes;
   }
-
 }

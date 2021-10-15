@@ -17,7 +17,6 @@
 package org.activiti.engine.impl.cmd;
 
 import java.io.Serializable;
-
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.JobNotFoundException;
@@ -28,10 +27,7 @@ import org.activiti.engine.runtime.Job;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
-
-
- */
+/** */
 public class ExecuteJobCmd implements Command<Object>, Serializable {
 
   private static final long serialVersionUID = 1L;
@@ -60,7 +56,9 @@ public class ExecuteJobCmd implements Command<Object>, Serializable {
       log.debug("Executing job {}", job.getId());
     }
 
-    commandContext.addCloseListener(new FailedJobListener(commandContext.getProcessEngineConfiguration().getCommandExecutor(), job));
+    commandContext.addCloseListener(
+        new FailedJobListener(
+            commandContext.getProcessEngineConfiguration().getCommandExecutor(), job));
 
     try {
       commandContext.getJobManager().execute(job);
@@ -75,5 +73,4 @@ public class ExecuteJobCmd implements Command<Object>, Serializable {
   public String getJobId() {
     return jobId;
   }
-
 }

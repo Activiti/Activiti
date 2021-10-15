@@ -15,22 +15,17 @@
  */
 package org.activiti.bpmn;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import com.mxgraph.layout.mxGraphLayout;
 import com.mxgraph.model.mxCell;
 import com.mxgraph.model.mxGeometry;
 import com.mxgraph.model.mxIGraphModel;
 import com.mxgraph.util.mxRectangle;
 import com.mxgraph.view.mxGraph;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
-/**
- * BPMNLayout
- *
-
- */
+/** BPMNLayout */
 public class BPMNLayout extends mxGraphLayout {
 
   // NEW
@@ -43,51 +38,36 @@ public class BPMNLayout extends mxGraphLayout {
 
   // NEW
 
-  /**
-   * Specifies the orientation of the layout. Default is true.
-   */
+  /** Specifies the orientation of the layout. Default is true. */
   protected boolean horizontal;
 
-  /**
-   * Specifies if edge directions should be inverted. Default is false.
-   */
+  /** Specifies if edge directions should be inverted. Default is false. */
   protected boolean invert;
 
-  /**
-   * If the parent should be resized to match the width/height of the tree. Default is true.
-   */
+  /** If the parent should be resized to match the width/height of the tree. Default is true. */
   protected boolean resizeParent = true;
 
   /**
-   * Specifies if the tree should be moved to the top, left corner if it is inside a top-level layer. Default is true.
+   * Specifies if the tree should be moved to the top, left corner if it is inside a top-level
+   * layer. Default is true.
    */
   protected boolean moveTree = true;
 
-  /**
-   * Specifies if all edge points of traversed edges should be removed. Default is true.
-   */
+  /** Specifies if all edge points of traversed edges should be removed. Default is true. */
   protected boolean resetEdges = true;
 
-  /**
-   * Holds the levelDistance. Default is 40.
-   */
+  /** Holds the levelDistance. Default is 40. */
   protected int levelDistance = 40;
 
-  /**
-   * Holds the nodeDistance. Default is 20.
-   */
+  /** Holds the nodeDistance. Default is 20. */
   protected int nodeDistance = 20;
 
-  /**
-   *
-   * @param graph
-   */
+  /** @param graph */
   public BPMNLayout(mxGraph graph) {
     this(graph, true);
   }
 
   /**
-   *
    * @param graph
    * @param horizontal
    */
@@ -96,7 +76,6 @@ public class BPMNLayout extends mxGraphLayout {
   }
 
   /**
-   *
    * @param graph
    * @param horizontal
    * @param invert
@@ -113,117 +92,85 @@ public class BPMNLayout extends mxGraphLayout {
   }
 
   /**
-   * Returns a boolean indicating if the given <em>mxCell</em> should be ignored as a vertex. This returns true if the cell has no connections.
+   * Returns a boolean indicating if the given <em>mxCell</em> should be ignored as a vertex. This
+   * returns true if the cell has no connections.
    *
-   * @param vertex
-   *          Object that represents the vertex to be tested.
+   * @param vertex Object that represents the vertex to be tested.
    * @return Returns true if the vertex should be ignored.
    */
   public boolean isVertexIgnored(Object vertex) {
-    return super.isVertexIgnored(vertex) || graph.isSwimlane(vertex) || graph.getModel().getGeometry(vertex).isRelative() || graph.getConnections(vertex).length == 0;
+    return super.isVertexIgnored(vertex)
+        || graph.isSwimlane(vertex)
+        || graph.getModel().getGeometry(vertex).isRelative()
+        || graph.getConnections(vertex).length == 0;
   }
 
-  /**
-   * @return the horizontal
-   */
+  /** @return the horizontal */
   public boolean isHorizontal() {
     return horizontal;
   }
 
-  /**
-   * @param horizontal
-   *          the horizontal to set
-   */
+  /** @param horizontal the horizontal to set */
   public void setHorizontal(boolean horizontal) {
     this.horizontal = horizontal;
   }
 
-  /**
-   * @return the invert
-   */
+  /** @return the invert */
   public boolean isInvert() {
     return invert;
   }
 
-  /**
-   * @param invert
-   *          the invert to set
-   */
+  /** @param invert the invert to set */
   public void setInvert(boolean invert) {
     this.invert = invert;
   }
 
-  /**
-   * @return the resizeParent
-   */
+  /** @return the resizeParent */
   public boolean isResizeParent() {
     return resizeParent;
   }
 
-  /**
-   * @param resizeParent
-   *          the resizeParent to set
-   */
+  /** @param resizeParent the resizeParent to set */
   public void setResizeParent(boolean resizeParent) {
     this.resizeParent = resizeParent;
   }
 
-  /**
-   * @return the moveTree
-   */
+  /** @return the moveTree */
   public boolean isMoveTree() {
     return moveTree;
   }
 
-  /**
-   * @param moveTree
-   *          the moveTree to set
-   */
+  /** @param moveTree the moveTree to set */
   public void setMoveTree(boolean moveTree) {
     this.moveTree = moveTree;
   }
 
-  /**
-   * @return the resetEdges
-   */
+  /** @return the resetEdges */
   public boolean isResetEdges() {
     return resetEdges;
   }
 
-  /**
-   * @param resetEdges
-   *          the resetEdges to set
-   */
+  /** @param resetEdges the resetEdges to set */
   public void setResetEdges(boolean resetEdges) {
     this.resetEdges = resetEdges;
   }
 
-  /**
-   * @return the levelDistance
-   */
+  /** @return the levelDistance */
   public int getLevelDistance() {
     return levelDistance;
   }
 
-  /**
-   * @param levelDistance
-   *          the levelDistance to set
-   */
+  /** @param levelDistance the levelDistance to set */
   public void setLevelDistance(int levelDistance) {
     this.levelDistance = levelDistance;
   }
 
-  /**
-   * @return the nodeDistance
-   */
+  /** @return the nodeDistance */
   public int getNodeDistance() {
     return nodeDistance;
   }
 
-  /**
-   * @param nodeDistance
-   *          the nodeDistance to set
-   */
+  /** @param nodeDistance the nodeDistance to set */
   public void setNodeDistance(int nodeDistance) {
     this.nodeDistance = nodeDistance;
   }
@@ -315,7 +262,8 @@ public class BPMNLayout extends mxGraphLayout {
                 }
               }
             }
-            if (model.getParent(node.cell) != graph.getCurrentRoot() && model.getParent(node.cell) != graph.getDefaultParent()) {
+            if (model.getParent(node.cell) != graph.getCurrentRoot()
+                && model.getParent(node.cell) != graph.getDefaultParent()) {
               moveNode(node, dx, dy);
             }
           }
@@ -334,9 +282,7 @@ public class BPMNLayout extends mxGraphLayout {
     return false;
   }
 
-  /**
-   * Moves the specified node and all of its children by the given amount.
-   */
+  /** Moves the specified node and all of its children by the given amount. */
   protected void moveNode(TreeNode node, double dx, double dy) {
     node.x += dx;
     node.y += dy;
@@ -351,7 +297,8 @@ public class BPMNLayout extends mxGraphLayout {
   }
 
   /**
-   * Does a depth first search starting at the specified cell. Makes sure the specified swimlane is never left by the algorithm.
+   * Does a depth first search starting at the specified cell. Makes sure the specified swimlane is
+   * never left by the algorithm.
    */
   protected TreeNode dfs(Object cell, Object parent, Set<Object> visited) {
     if (visited == null) {
@@ -361,7 +308,9 @@ public class BPMNLayout extends mxGraphLayout {
     TreeNode node = null;
 
     mxIGraphModel model = graph.getModel();
-    if (cell != null && !visited.contains(cell) && (!isVertexIgnored(cell) || isBoundaryEvent(cell))) {
+    if (cell != null
+        && !visited.contains(cell)
+        && (!isVertexIgnored(cell) || isBoundaryEvent(cell))) {
       visited.add(cell);
       node = createNode(cell);
 
@@ -397,9 +346,7 @@ public class BPMNLayout extends mxGraphLayout {
     return node;
   }
 
-  /**
-   * Starts the actual compact tree layout algorithm at the given node.
-   */
+  /** Starts the actual compact tree layout algorithm at the given node. */
   protected void layout(TreeNode node) {
     if (node != null) {
       TreeNode child = node.child;
@@ -438,7 +385,8 @@ public class BPMNLayout extends mxGraphLayout {
     return bounds;
   }
 
-  protected mxRectangle verticalLayout(TreeNode node, Object parent, double x0, double y0, mxRectangle bounds) {
+  protected mxRectangle verticalLayout(
+      TreeNode node, Object parent, double x0, double y0, mxRectangle bounds) {
     node.x += x0 + node.offsetY;
     node.y += y0 + node.offsetX;
     bounds = apply(node, bounds);
@@ -459,9 +407,7 @@ public class BPMNLayout extends mxGraphLayout {
     return bounds;
   }
 
-  /**
-	 *
-	 */
+  /** */
   protected void attachParent(TreeNode node, double height) {
     double x = nodeDistance + levelDistance;
     double y2 = (height - node.width) / 2 - nodeDistance;
@@ -478,9 +424,7 @@ public class BPMNLayout extends mxGraphLayout {
     node.contour.lowerHead = createLine(node.height, 0, createLine(x, y2, node.contour.lowerHead));
   }
 
-  /**
-	 *
-	 */
+  /** */
   protected void layoutLeaf(TreeNode node) {
     double dist = 2 * nodeDistance;
 
@@ -490,9 +434,7 @@ public class BPMNLayout extends mxGraphLayout {
     node.contour.lowerHead = createLine(node.height + dist, 0, node.contour.lowerTail);
   }
 
-  /**
-	 *
-	 */
+  /** */
   protected double join(TreeNode node) {
     double dist = 2 * nodeDistance;
 
@@ -514,9 +456,7 @@ public class BPMNLayout extends mxGraphLayout {
     return sum;
   }
 
-  /**
-	 *
-	 */
+  /** */
   protected double merge(Polygon p1, Polygon p2) {
     double x = 0;
     double y = 0;
@@ -558,9 +498,7 @@ public class BPMNLayout extends mxGraphLayout {
     return total;
   }
 
-  /**
-	 *
-	 */
+  /** */
   protected double offset(double p1, double p2, double a1, double a2, double b1, double b2) {
     double d = 0;
 
@@ -597,10 +535,9 @@ public class BPMNLayout extends mxGraphLayout {
     return 0;
   }
 
-  /**
-	 *
-	 */
-  protected Polyline bridge(Polyline line1, double x1, double y1, Polyline line2, double x2, double y2) {
+  /** */
+  protected Polyline bridge(
+      Polyline line1, double x1, double y1, Polyline line2, double x2, double y2) {
     double dx = x2 + line2.dx - x1;
     double dy = 0;
     double s = 0;
@@ -618,9 +555,7 @@ public class BPMNLayout extends mxGraphLayout {
     return r;
   }
 
-  /**
-	 *
-	 */
+  /** */
   protected TreeNode createNode(Object cell) {
     TreeNode node = new TreeNode(cell);
 
@@ -639,9 +574,7 @@ public class BPMNLayout extends mxGraphLayout {
     return node;
   }
 
-  /**
-	 *
-	 */
+  /** */
   protected mxRectangle apply(TreeNode node, mxRectangle bounds) {
     mxRectangle g = graph.getModel().getGeometry(node.cell);
 
@@ -653,90 +586,64 @@ public class BPMNLayout extends mxGraphLayout {
       if (bounds == null) {
         bounds = new mxRectangle(g.getX(), g.getY(), g.getWidth(), g.getHeight());
       } else {
-        bounds = new mxRectangle(Math.min(bounds.getX(), g.getX()), Math.min(bounds.getY(), g.getY()), Math.max(bounds.getX() + bounds.getWidth(), g.getX() + g.getWidth()), Math.max(bounds.getY()
-            + bounds.getHeight(), g.getY() + g.getHeight()));
+        bounds =
+            new mxRectangle(
+                Math.min(bounds.getX(), g.getX()),
+                Math.min(bounds.getY(), g.getY()),
+                Math.max(bounds.getX() + bounds.getWidth(), g.getX() + g.getWidth()),
+                Math.max(bounds.getY() + bounds.getHeight(), g.getY() + g.getHeight()));
       }
     }
 
     return bounds;
   }
 
-  /**
-	 *
-	 */
+  /** */
   protected Polyline createLine(double dx, double dy, Polyline next) {
     return new Polyline(dx, dy, next);
   }
 
-  /**
-	 *
-	 */
+  /** */
   protected static class TreeNode {
-    /**
-		 *
-		 */
+    /** */
     protected Object cell;
 
-    /**
-		 *
-		 */
+    /** */
     protected double x, y, width, height, offsetX, offsetY;
 
-    /**
-		 *
-		 */
+    /** */
     protected TreeNode child, next; // parent, sibling
 
-    /**
-		 *
-		 */
+    /** */
     protected Polygon contour = new Polygon();
 
-    /**
-		 *
-		 */
+    /** */
     public TreeNode(Object cell) {
       this.cell = cell;
     }
-
   }
 
-  /**
-	 *
-	 */
+  /** */
   protected static class Polygon {
 
-    /**
-		 *
-		 */
+    /** */
     protected Polyline lowerHead, lowerTail, upperHead, upperTail;
-
   }
 
-  /**
-	 *
-	 */
+  /** */
   protected static class Polyline {
 
-    /**
-		 *
-		 */
+    /** */
     protected double dx, dy;
 
-    /**
-		 *
-		 */
+    /** */
     protected Polyline next;
 
-    /**
-		 *
-		 */
+    /** */
     protected Polyline(double dx, double dy, Polyline next) {
       this.dx = dx;
       this.dy = dy;
       this.next = next;
     }
-
   }
-
 }

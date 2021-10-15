@@ -16,22 +16,20 @@
 package org.activiti.bpmn.converter.child;
 
 import javax.xml.stream.XMLStreamReader;
-
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.DataStore;
 import org.activiti.bpmn.model.DataStoreReference;
 
-/**
-
- */
+/** */
 public class DataStateParser extends BaseChildElementParser {
 
   public String getElementName() {
     return ELEMENT_DATA_STATE;
   }
 
-  public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model) throws Exception {
+  public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model)
+      throws Exception {
     if (parentElement instanceof DataStore) {
       ((DataStore) parentElement).setDataState(xtr.getElementText());
 

@@ -14,21 +14,19 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl;
 
 import org.activiti.engine.query.QueryProperty;
 
-/**
-
- */
+/** */
 public class EventSubscriptionQueryProperty implements QueryProperty {
 
   private static final long serialVersionUID = 1L;
 
   // properties used in event subscription queries:
 
-  public final static EventSubscriptionQueryProperty CREATED = new EventSubscriptionQueryProperty("RES.CREATED_");
+  public static final EventSubscriptionQueryProperty CREATED =
+      new EventSubscriptionQueryProperty("RES.CREATED_");
 
   // ///////////////////////////////////////////////
 
@@ -41,5 +39,4 @@ public class EventSubscriptionQueryProperty implements QueryProperty {
   public String getName() {
     return propertyName;
   }
-
 }

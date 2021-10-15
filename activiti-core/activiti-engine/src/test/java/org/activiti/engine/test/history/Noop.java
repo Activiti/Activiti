@@ -14,15 +14,12 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.test.history;
 
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.JavaDelegate;
 
-/**
-
- */
+/** */
 public class Noop implements JavaDelegate {
 
   @Override
@@ -30,5 +27,4 @@ public class Noop implements JavaDelegate {
     // TODO Auto-generated method stub
 
   }
-
 }

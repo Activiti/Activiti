@@ -15,18 +15,16 @@
  */
 
 package org.activiti.engine.test.cfg.multitenant;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.activiti.engine.impl.cfg.multitenant.TenantInfoHolder;
 import org.activiti.engine.impl.identity.Authentication;
 
-/**
-
- */
+/** */
 public class DummyTenantInfoHolder implements TenantInfoHolder {
 
   protected Map<String, List<String>> tenantToUserMapping = new HashMap<String, List<String>>();
@@ -62,9 +60,9 @@ public class DummyTenantInfoHolder implements TenantInfoHolder {
     return currentTenantId.get();
   }
 
- public void clearCurrentTenantId() {
-   currentTenantId.set(null);
-}
+  public void clearCurrentTenantId() {
+    currentTenantId.set(null);
+  }
 
   public void addTenant(String tenantId) {
     tenantToUserMapping.put(tenantId, new ArrayList<String>());
@@ -85,5 +83,4 @@ public class DummyTenantInfoHolder implements TenantInfoHolder {
       }
     }
   }
-
 }

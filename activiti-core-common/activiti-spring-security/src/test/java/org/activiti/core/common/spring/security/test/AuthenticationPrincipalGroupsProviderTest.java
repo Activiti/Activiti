@@ -17,6 +17,7 @@ package org.activiti.core.common.spring.security.test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.List;
 import org.activiti.core.common.spring.security.AuthenticationPrincipalGroupsProvider;
 import org.activiti.core.common.spring.security.SimpleGrantedAuthoritiesGroupsMapper;
 import org.activiti.core.common.spring.security.SimpleGrantedAuthoritiesResolver;
@@ -27,35 +28,30 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import java.util.List;
-
-
 public class AuthenticationPrincipalGroupsProviderTest {
 
-    private AuthenticationPrincipalGroupsProvider subject;
+  private AuthenticationPrincipalGroupsProvider subject;
 
-    @BeforeEach
-    public void setUp() {
-        subject = new AuthenticationPrincipalGroupsProvider(new SimpleGrantedAuthoritiesResolver(),
-                                                            new SimpleGrantedAuthoritiesGroupsMapper());
-    }
+  @BeforeEach
+  public void setUp() {
+    subject =
+        new AuthenticationPrincipalGroupsProvider(
+            new SimpleGrantedAuthoritiesResolver(), new SimpleGrantedAuthoritiesGroupsMapper());
+  }
 
-    @Test
-    public void testGetGroups() {
-        // given
-        Authentication authentication = new UsernamePasswordAuthenticationToken("username",
-                                                                                "password",
-                                                                                AuthorityUtils.createAuthorityList("ROLE_user",
-                                                                                                                   "GROUP_users"));
+  @Test
+  public void testGetGroups() {
+    // given
+    Authentication authentication =
+        new UsernamePasswordAuthenticationToken(
+            "username", "password", AuthorityUtils.createAuthorityList("ROLE_user", "GROUP_users"));
 
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+    SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        // when
-        List<String> result = subject.getGroups(authentication);
+    // when
+    List<String> result = subject.getGroups(authentication);
 
-        // then
-        assertThat(result).isNotEmpty()
-                          .containsExactly("users");
-    }
-
+    // then
+    assertThat(result).isNotEmpty().containsExactly("users");
+  }
 }

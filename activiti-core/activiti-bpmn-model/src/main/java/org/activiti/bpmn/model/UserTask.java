@@ -110,7 +110,8 @@ public class UserTask extends Task {
   public boolean isExtended() {
     return extensionId != null && !extensionId.isEmpty();
   }
-	public List<String> getCandidateUsers() {
+
+  public List<String> getCandidateUsers() {
     return candidateUsers;
   }
 
@@ -183,6 +184,7 @@ public class UserTask extends Task {
   public List<CustomProperty> getCustomProperties() {
     return customProperties;
   }
+
   public void setCustomProperties(List<CustomProperty> customProperties) {
     this.customProperties = customProperties;
   }
@@ -233,9 +235,8 @@ public class UserTask extends Task {
     }
   }
 
-    @Override
-    public void accept(ReferenceOverrider referenceOverrider) {
-        referenceOverrider.override(this);
-    }
-
+  @Override
+  public void accept(ReferenceOverrider referenceOverrider) {
+    referenceOverrider.override(this);
+  }
 }

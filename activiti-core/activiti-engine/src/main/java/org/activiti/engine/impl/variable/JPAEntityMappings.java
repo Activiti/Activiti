@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.variable;
 
 import java.lang.reflect.InvocationTargetException;
@@ -23,17 +22,13 @@ import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-
 import javax.persistence.EntityManager;
-
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.util.ReflectUtil;
 
-/**
-
- */
+/** */
 public class JPAEntityMappings {
 
   private Map<String, EntityMetaData> classMetaDatamap;
@@ -77,7 +72,8 @@ public class JPAEntityMappings {
 
     EntityMetaData metaData = getEntityMetaData(value.getClass());
     if (!metaData.isJPAEntity()) {
-      throw new ActivitiIllegalArgumentException("Object is not a JPA Entity: class='" + value.getClass() + "', " + value);
+      throw new ActivitiIllegalArgumentException(
+          "Object is not a JPA Entity: class='" + value.getClass() + "', " + value);
     }
 
     // Extract the class from the Entity instance
@@ -87,7 +83,8 @@ public class JPAEntityMappings {
   public String getJPAIdString(Object value) {
     EntityMetaData metaData = getEntityMetaData(value.getClass());
     if (!metaData.isJPAEntity()) {
-      throw new ActivitiIllegalArgumentException("Object is not a JPA Entity: class='" + value.getClass() + "', " + value);
+      throw new ActivitiIllegalArgumentException(
+          "Object is not a JPA Entity: class='" + value.getClass() + "', " + value);
     }
     Object idValue = getIdValue(value, metaData);
     return getIdString(idValue);
@@ -101,11 +98,15 @@ public class JPAEntityMappings {
         return metaData.getIdField().get(value);
       }
     } catch (IllegalArgumentException iae) {
-      throw new ActivitiException("Illegal argument exception when getting value from id method/field on JPAEntity", iae);
+      throw new ActivitiException(
+          "Illegal argument exception when getting value from id method/field on JPAEntity", iae);
     } catch (IllegalAccessException iae) {
       throw new ActivitiException("Cannot access id method/field for JPA Entity", iae);
     } catch (InvocationTargetException ite) {
-      throw new ActivitiException("Exception occurred while getting value from id field/method on JPAEntity: " + ite.getCause().getMessage(), ite.getCause());
+      throw new ActivitiException(
+          "Exception occurred while getting value from id field/method on JPAEntity: "
+              + ite.getCause().getMessage(),
+          ite.getCause());
     }
 
     // Fall trough when no method and field is set
@@ -124,11 +125,13 @@ public class JPAEntityMappings {
   }
 
   private Object findEntity(Class<?> entityClass, Object primaryKey) {
-    EntityManager em = Context.getCommandContext().getSession(EntityManagerSession.class).getEntityManager();
+    EntityManager em =
+        Context.getCommandContext().getSession(EntityManagerSession.class).getEntityManager();
 
     Object entity = em.find(entityClass, primaryKey);
     if (entity == null) {
-      throw new ActivitiException("Entity does not exist: " + entityClass.getName() + " - " + primaryKey);
+      throw new ActivitiException(
+          "Entity does not exist: " + entityClass.getName() + " - " + primaryKey);
     }
     return entity;
   }
@@ -165,13 +168,15 @@ public class JPAEntityMappings {
     } else if (type == UUID.class) {
       return UUID.fromString(string);
     } else {
-      throw new ActivitiIllegalArgumentException("Unsupported Primary key type for JPA-Entity: " + type.getName());
+      throw new ActivitiIllegalArgumentException(
+          "Unsupported Primary key type for JPA-Entity: " + type.getName());
     }
   }
 
   public String getIdString(Object value) {
     if (value == null) {
-      throw new ActivitiIllegalArgumentException("Value of primary key for JPA-Entity cannot be null");
+      throw new ActivitiIllegalArgumentException(
+          "Value of primary key for JPA-Entity cannot be null");
     }
     // Only java.sql.date and java.util.date require custom handling, the
     // other types
@@ -180,11 +185,21 @@ public class JPAEntityMappings {
       return "" + ((java.util.Date) value).getTime();
     } else if (value instanceof java.sql.Date) {
       return "" + ((java.sql.Date) value).getTime();
-    } else if (value instanceof Long || value instanceof String || value instanceof Byte || value instanceof Short || value instanceof Integer || value instanceof Float || value instanceof Double
-        || value instanceof Character || value instanceof BigDecimal || value instanceof BigInteger || value instanceof UUID) {
+    } else if (value instanceof Long
+        || value instanceof String
+        || value instanceof Byte
+        || value instanceof Short
+        || value instanceof Integer
+        || value instanceof Float
+        || value instanceof Double
+        || value instanceof Character
+        || value instanceof BigDecimal
+        || value instanceof BigInteger
+        || value instanceof UUID) {
       return value.toString();
     } else {
-      throw new ActivitiIllegalArgumentException("Unsupported Primary key type for JPA-Entity: " + value.getClass().getName());
+      throw new ActivitiIllegalArgumentException(
+          "Unsupported Primary key type for JPA-Entity: " + value.getClass().getName());
     }
   }
 }

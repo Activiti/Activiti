@@ -19,14 +19,12 @@ package org.activiti.engine.impl.persistence.entity.data.impl.cachematcher;
 import org.activiti.engine.impl.persistence.CachedEntityMatcherAdapter;
 import org.activiti.engine.impl.persistence.entity.IdentityLinkEntity;
 
-/**
-
- */
+/** */
 public class IdentityLinksByProcInstMatcher extends CachedEntityMatcherAdapter<IdentityLinkEntity> {
 
   @Override
   public boolean isRetained(IdentityLinkEntity entity, Object parameter) {
-    return entity.getProcessInstanceId() != null && entity.getProcessInstanceId().equals((String) parameter);
+    return entity.getProcessInstanceId() != null
+        && entity.getProcessInstanceId().equals((String) parameter);
   }
-
 }

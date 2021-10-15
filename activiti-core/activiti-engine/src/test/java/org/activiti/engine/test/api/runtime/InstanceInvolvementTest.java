@@ -14,13 +14,11 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.test.api.runtime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
-
 import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -28,12 +26,10 @@ import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
-/**
-
- */
+/** */
 public class InstanceInvolvementTest extends PluggableActivitiTestCase {
 
-  @Deployment(resources = { "org/activiti/engine/test/api/runtime/threeParallelTasks.bpmn20.xml" })
+  @Deployment(resources = {"org/activiti/engine/test/api/runtime/threeParallelTasks.bpmn20.xml"})
   public void testInvolvements() {
     // "user1", "user2", "user3" and "user4 should not be involved with any
     // process instance
@@ -76,7 +72,8 @@ public class InstanceInvolvementTest extends PluggableActivitiTestCase {
     // verify all identity links for this instance
     // note that since "user1" already is the starter, he is not involved as
     // a participant as well
-    List<IdentityLink> identityLinks = runtimeService.getIdentityLinksForProcessInstance(instanceId);
+    List<IdentityLink> identityLinks =
+        runtimeService.getIdentityLinksForProcessInstance(instanceId);
     assertThat(containsIdentityLink(identityLinks, "user1", "starter")).isTrue();
     assertThat(containsIdentityLink(identityLinks, "user2", "participant")).isTrue();
     assertThat(containsIdentityLink(identityLinks, "user3", "participant")).isTrue();
@@ -93,7 +90,7 @@ public class InstanceInvolvementTest extends PluggableActivitiTestCase {
     assertNoInvolvement("user4");
   }
 
-  @Deployment(resources = { "org/activiti/engine/test/api/runtime/threeParallelTasks.bpmn20.xml" })
+  @Deployment(resources = {"org/activiti/engine/test/api/runtime/threeParallelTasks.bpmn20.xml"})
   public void testInstanceRemoval() {
     String instanceId = startProcessAsUser("threeParallelTasks", "user1");
     assertInvolvement("user1", instanceId);
@@ -103,10 +100,8 @@ public class InstanceInvolvementTest extends PluggableActivitiTestCase {
     // removed
   }
 
-  /**
-   * Test for ACT-1686
-   */
-  @Deployment(resources = { "org/activiti/engine/test/api/runtime/oneTaskProcess.bpmn20.xml" })
+  /** Test for ACT-1686 */
+  @Deployment(resources = {"org/activiti/engine/test/api/runtime/oneTaskProcess.bpmn20.xml"})
   public void testUserMultipleTimesinvolvedWithProcessInstance() {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
 
@@ -114,15 +109,18 @@ public class InstanceInvolvementTest extends PluggableActivitiTestCase {
     runtimeService.addUserIdentityLink(processInstance.getId(), "kermit", "type1");
     runtimeService.addUserIdentityLink(processInstance.getId(), "kermit", "type2");
 
-    assertThat(runtimeService.createProcessInstanceQuery().involvedUser("kermit").count()).isEqualTo(1L);
+    assertThat(runtimeService.createProcessInstanceQuery().involvedUser("kermit").count())
+        .isEqualTo(1L);
   }
 
   private void assertNoInvolvement(String userId) {
-    assertThat(runtimeService.createProcessInstanceQuery().involvedUser(userId).count()).isEqualTo(0L);
+    assertThat(runtimeService.createProcessInstanceQuery().involvedUser(userId).count())
+        .isEqualTo(0L);
   }
 
   private void assertInvolvement(String userId, String instanceId) {
-    ProcessInstance involvedInstance = runtimeService.createProcessInstanceQuery().involvedUser(userId).singleResult();
+    ProcessInstance involvedInstance =
+        runtimeService.createProcessInstanceQuery().involvedUser(userId).singleResult();
     assertThat(involvedInstance.getId()).isEqualTo(instanceId);
   }
 
@@ -144,7 +142,8 @@ public class InstanceInvolvementTest extends PluggableActivitiTestCase {
     }
   }
 
-  private boolean containsIdentityLink(List<IdentityLink> identityLinks, String userId, String type) {
+  private boolean containsIdentityLink(
+      List<IdentityLink> identityLinks, String userId, String type) {
     for (IdentityLink identityLink : identityLinks) {
       if (userId.equals(identityLink.getUserId()) && type.equals(identityLink.getType())) {
         return true;
@@ -152,5 +151,4 @@ public class InstanceInvolvementTest extends PluggableActivitiTestCase {
     }
     return false;
   }
-
 }

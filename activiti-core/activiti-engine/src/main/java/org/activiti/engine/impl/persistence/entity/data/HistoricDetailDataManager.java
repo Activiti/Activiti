@@ -18,7 +18,6 @@ package org.activiti.engine.impl.persistence.entity.data;
 
 import java.util.List;
 import java.util.Map;
-
 import org.activiti.engine.history.HistoricDetail;
 import org.activiti.engine.impl.HistoricDetailQueryImpl;
 import org.activiti.engine.impl.Page;
@@ -26,7 +25,6 @@ import org.activiti.engine.impl.persistence.entity.HistoricDetailAssignmentEntit
 import org.activiti.engine.impl.persistence.entity.HistoricDetailEntity;
 import org.activiti.engine.impl.persistence.entity.HistoricDetailTransitionInstanceEntity;
 import org.activiti.engine.impl.persistence.entity.HistoricDetailVariableInstanceUpdateEntity;
-
 
 public interface HistoricDetailDataManager extends DataManager<HistoricDetailEntity> {
 
@@ -42,10 +40,11 @@ public interface HistoricDetailDataManager extends DataManager<HistoricDetailEnt
 
   long findHistoricDetailCountByQueryCriteria(HistoricDetailQueryImpl historicVariableUpdateQuery);
 
-  List<HistoricDetail> findHistoricDetailsByQueryCriteria(HistoricDetailQueryImpl historicVariableUpdateQuery, Page page);
+  List<HistoricDetail> findHistoricDetailsByQueryCriteria(
+      HistoricDetailQueryImpl historicVariableUpdateQuery, Page page);
 
-  List<HistoricDetail> findHistoricDetailsByNativeQuery(Map<String, Object> parameterMap, int firstResult, int maxResults);
+  List<HistoricDetail> findHistoricDetailsByNativeQuery(
+      Map<String, Object> parameterMap, int firstResult, int maxResults);
 
   long findHistoricDetailCountByNativeQuery(Map<String, Object> parameterMap);
-
 }

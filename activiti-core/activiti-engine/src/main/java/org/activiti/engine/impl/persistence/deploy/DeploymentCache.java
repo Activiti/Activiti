@@ -16,11 +16,7 @@
 
 package org.activiti.engine.impl.persistence.deploy;
 
-/**
- * Interface for cache implementations.
- *
-
- */
+/** Interface for cache implementations. */
 public interface DeploymentCache<T> {
 
   T get(String id);
@@ -32,5 +28,4 @@ public interface DeploymentCache<T> {
   void remove(String id);
 
   void clear();
-
 }

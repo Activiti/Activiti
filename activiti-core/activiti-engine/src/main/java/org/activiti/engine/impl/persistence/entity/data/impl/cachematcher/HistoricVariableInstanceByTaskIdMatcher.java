@@ -19,15 +19,14 @@ package org.activiti.engine.impl.persistence.entity.data.impl.cachematcher;
 import org.activiti.engine.impl.persistence.CachedEntityMatcherAdapter;
 import org.activiti.engine.impl.persistence.entity.HistoricVariableInstanceEntity;
 
-/**
-
- */
-public class HistoricVariableInstanceByTaskIdMatcher extends CachedEntityMatcherAdapter<HistoricVariableInstanceEntity> {
+/** */
+public class HistoricVariableInstanceByTaskIdMatcher
+    extends CachedEntityMatcherAdapter<HistoricVariableInstanceEntity> {
 
   @Override
-  public boolean isRetained(HistoricVariableInstanceEntity historicVariableInstanceEntity, Object parameter) {
+  public boolean isRetained(
+      HistoricVariableInstanceEntity historicVariableInstanceEntity, Object parameter) {
     return historicVariableInstanceEntity.getTaskId() != null
         && historicVariableInstanceEntity.getTaskId().equals((String) parameter);
   }
-
 }

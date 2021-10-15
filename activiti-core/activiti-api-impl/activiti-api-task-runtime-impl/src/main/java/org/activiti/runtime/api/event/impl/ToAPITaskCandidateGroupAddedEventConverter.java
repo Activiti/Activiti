@@ -15,38 +15,38 @@
  */
 package org.activiti.runtime.api.event.impl;
 
+import static org.activiti.engine.task.IdentityLinkType.CANDIDATE;
+
+import java.util.Optional;
 import org.activiti.api.task.runtime.events.TaskCandidateGroupAddedEvent;
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.impl.persistence.entity.IdentityLinkEntity;
 import org.activiti.engine.task.IdentityLink;
 import org.activiti.runtime.api.model.impl.APITaskCandidateGroupConverter;
 
-import java.util.Optional;
+public class ToAPITaskCandidateGroupAddedEventConverter
+    implements EventConverter<TaskCandidateGroupAddedEvent, ActivitiEntityEvent> {
 
-import static org.activiti.engine.task.IdentityLinkType.CANDIDATE;
+  private APITaskCandidateGroupConverter converter;
 
-public class ToAPITaskCandidateGroupAddedEventConverter implements EventConverter<TaskCandidateGroupAddedEvent, ActivitiEntityEvent> {
+  public ToAPITaskCandidateGroupAddedEventConverter(APITaskCandidateGroupConverter converter) {
+    this.converter = converter;
+  }
 
-    private APITaskCandidateGroupConverter converter;
-
-    public ToAPITaskCandidateGroupAddedEventConverter(APITaskCandidateGroupConverter converter) {
-        this.converter = converter;
+  @Override
+  public Optional<TaskCandidateGroupAddedEvent> from(ActivitiEntityEvent internalEvent) {
+    TaskCandidateGroupAddedEventImpl event = null;
+    if (internalEvent.getEntity() instanceof IdentityLinkEntity) {
+      IdentityLinkEntity entity = (IdentityLinkEntity) internalEvent.getEntity();
+      if (isCandidateGroupEntity(entity)) {
+        event = new TaskCandidateGroupAddedEventImpl(converter.from(entity));
+      }
     }
+    return Optional.ofNullable(event);
+  }
 
-    @Override
-    public Optional<TaskCandidateGroupAddedEvent> from(ActivitiEntityEvent internalEvent) {
-        TaskCandidateGroupAddedEventImpl event = null;
-        if (internalEvent.getEntity() instanceof IdentityLinkEntity) {
-            IdentityLinkEntity entity = (IdentityLinkEntity) internalEvent.getEntity();
-            if (isCandidateGroupEntity(entity)) {
-                event = new TaskCandidateGroupAddedEventImpl(converter.from(entity));
-            }
-        }
-        return Optional.ofNullable(event);
-    }
-
-    private boolean isCandidateGroupEntity(IdentityLink identityLinkEntity) {
-        return CANDIDATE.equalsIgnoreCase(identityLinkEntity.getType()) &&
-                identityLinkEntity.getGroupId() != null;
-    }
+  private boolean isCandidateGroupEntity(IdentityLink identityLinkEntity) {
+    return CANDIDATE.equalsIgnoreCase(identityLinkEntity.getType())
+        && identityLinkEntity.getGroupId() != null;
+  }
 }

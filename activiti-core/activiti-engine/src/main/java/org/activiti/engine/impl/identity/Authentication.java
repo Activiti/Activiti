@@ -14,12 +14,9 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.identity;
 
-/**
-
- */
+/** */
 public abstract class Authentication {
 
   static ThreadLocal<String> authenticatedUserIdThreadLocal = new ThreadLocal<String>();

@@ -18,18 +18,12 @@ package org.activiti.engine.impl.transformer;
 
 import java.util.List;
 
-/**
- * Applies a list of transformers to the input object
- *
-
- */
+/** Applies a list of transformers to the input object */
 public class ComposedTransformer extends AbstractTransformer {
 
   protected List<Transformer> transformers;
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   protected Object primTransform(Object anObject) throws Exception {
     Object current = anObject;

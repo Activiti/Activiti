@@ -16,21 +16,19 @@
 package org.activiti.bpmn.converter.child;
 
 import javax.xml.stream.XMLStreamReader;
-
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.SequenceFlow;
 
-/**
-
- */
+/** */
 public class ConditionExpressionParser extends BaseChildElementParser {
 
   public String getElementName() {
     return ELEMENT_FLOW_CONDITION;
   }
 
-  public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model) throws Exception {
+  public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model)
+      throws Exception {
     if (!(parentElement instanceof SequenceFlow)) {
       return;
     }

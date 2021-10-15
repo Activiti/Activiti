@@ -19,12 +19,9 @@ package org.activiti.engine.delegate.event.impl;
 import org.activiti.engine.delegate.event.ActivitiActivityCancelledEvent;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 
-/**
- * An {@link org.activiti.engine.delegate.event.ActivitiActivityCancelledEvent} implementation.
- *
-
- */
-public class ActivitiActivityCancelledEventImpl extends ActivitiActivityEventImpl implements ActivitiActivityCancelledEvent {
+/** An {@link org.activiti.engine.delegate.event.ActivitiActivityCancelledEvent} implementation. */
+public class ActivitiActivityCancelledEventImpl extends ActivitiActivityEventImpl
+    implements ActivitiActivityCancelledEvent {
 
   protected Object cause;
 
@@ -39,5 +36,4 @@ public class ActivitiActivityCancelledEventImpl extends ActivitiActivityEventImp
   public Object getCause() {
     return cause;
   }
-
 }

@@ -20,10 +20,7 @@ import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.impl.el.FixedValue;
 
-/**
-
-
- */
+/** */
 public class MyExecutionListenerBean implements ExecutionListener {
 
   private FixedValue someField;
@@ -42,5 +39,4 @@ public class MyExecutionListenerBean implements ExecutionListener {
   public void setSomeField(FixedValue someField) {
     this.someField = someField;
   }
-
 }

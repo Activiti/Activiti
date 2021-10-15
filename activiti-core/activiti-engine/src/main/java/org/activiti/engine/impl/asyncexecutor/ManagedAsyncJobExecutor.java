@@ -19,17 +19,15 @@ package org.activiti.engine.impl.asyncexecutor;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-
 import javax.enterprise.concurrent.ManagedThreadFactory;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Simple JSR-236 async job executor to allocate threads through {@link ManagedThreadFactory}. Falls back to {@link AsyncExecutor} when a thread factory was not referenced in configuration.
+ * Simple JSR-236 async job executor to allocate threads through {@link ManagedThreadFactory}. Falls
+ * back to {@link AsyncExecutor} when a thread factory was not referenced in configuration.
  *
- * In Java EE 7, all application servers should provide access to a {@link ManagedThreadFactory}.
- *
+ * <p>In Java EE 7, all application servers should provide access to a {@link ManagedThreadFactory}.
  */
 public class ManagedAsyncJobExecutor extends DefaultAsyncJobExecutor {
 
@@ -56,12 +54,22 @@ public class ManagedAsyncJobExecutor extends DefaultAsyncJobExecutor {
       }
 
       if (executorService == null) {
-        log.info("Creating executor service with corePoolSize {}, maxPoolSize {} and keepAliveTime {}", corePoolSize, maxPoolSize, keepAliveTime);
+        log.info(
+            "Creating executor service with corePoolSize {}, maxPoolSize {} and keepAliveTime {}",
+            corePoolSize,
+            maxPoolSize,
+            keepAliveTime);
 
-        ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(corePoolSize, maxPoolSize, keepAliveTime, TimeUnit.MILLISECONDS, threadPoolQueue, threadFactory);
+        ThreadPoolExecutor threadPoolExecutor =
+            new ThreadPoolExecutor(
+                corePoolSize,
+                maxPoolSize,
+                keepAliveTime,
+                TimeUnit.MILLISECONDS,
+                threadPoolQueue,
+                threadFactory);
         threadPoolExecutor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
         executorService = threadPoolExecutor;
-
       }
 
       startJobAcquisitionThread();

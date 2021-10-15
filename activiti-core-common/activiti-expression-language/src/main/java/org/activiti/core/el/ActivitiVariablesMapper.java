@@ -23,25 +23,24 @@ import javax.el.VariableMapper;
 
 public class ActivitiVariablesMapper extends VariableMapper {
 
-    Map<String, ValueExpression> map = Collections.emptyMap();
+  Map<String, ValueExpression> map = Collections.emptyMap();
 
-    public ActivitiVariablesMapper() {
-    }
+  public ActivitiVariablesMapper() {}
 
-    public ActivitiVariablesMapper(Map<String, ValueExpression> map) {
-        this.map = map;
-    }
+  public ActivitiVariablesMapper(Map<String, ValueExpression> map) {
+    this.map = map;
+  }
 
-    @Override
-    public ValueExpression resolveVariable(String variable) {
-        return map.get(variable);
-    }
+  @Override
+  public ValueExpression resolveVariable(String variable) {
+    return map.get(variable);
+  }
 
-    @Override
-    public ValueExpression setVariable(String variable, ValueExpression expression) {
-        if (map.isEmpty()) {
-            map = new HashMap<>();
-        }
-        return map.put(variable, expression);
+  @Override
+  public ValueExpression setVariable(String variable, ValueExpression expression) {
+    if (map.isEmpty()) {
+      map = new HashMap<>();
     }
+    return map.put(variable, expression);
+  }
 }

@@ -22,10 +22,7 @@ import org.activiti.engine.impl.el.FixedValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
-
-
- */
+/** */
 public class DelegateExpressionBean implements JavaDelegate {
 
   private static final Logger log = LoggerFactory.getLogger(DelegateExpressionBean.class);
@@ -59,5 +56,4 @@ public class DelegateExpressionBean implements JavaDelegate {
   public void setSomeField(FixedValue someField) {
     this.someField = someField;
   }
-
 }

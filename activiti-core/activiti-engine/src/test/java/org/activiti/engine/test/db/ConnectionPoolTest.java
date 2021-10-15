@@ -14,26 +14,24 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.test.db;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 import javax.sql.DataSource;
-
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.test.AbstractTestCase;
 import org.apache.ibatis.datasource.pooled.PooledDataSource;
 
-/**
-
- */
+/** */
 public class ConnectionPoolTest extends AbstractTestCase {
 
   public void testMyBatisConnectionPoolProperlyConfigured() {
-    ProcessEngineConfigurationImpl config = (ProcessEngineConfigurationImpl) ProcessEngineConfiguration
-        .createProcessEngineConfigurationFromResource("org/activiti/engine/test/db/connection-pool.activiti.cfg.xml");
+    ProcessEngineConfigurationImpl config =
+        (ProcessEngineConfigurationImpl)
+            ProcessEngineConfiguration.createProcessEngineConfigurationFromResource(
+                "org/activiti/engine/test/db/connection-pool.activiti.cfg.xml");
 
     config.buildProcessEngine();
 
@@ -50,7 +48,13 @@ public class ConnectionPoolTest extends AbstractTestCase {
 
     // Verify that these properties are correctly set in the MyBatis
     // datasource
-    DataSource datasource = config.getDbSqlSessionFactory().getSqlSessionFactory().getConfiguration().getEnvironment().getDataSource();
+    DataSource datasource =
+        config
+            .getDbSqlSessionFactory()
+            .getSqlSessionFactory()
+            .getConfiguration()
+            .getEnvironment()
+            .getDataSource();
     assertThat(datasource).isInstanceOf(PooledDataSource.class);
 
     PooledDataSource pooledDataSource = (PooledDataSource) datasource;
@@ -59,5 +63,4 @@ public class ConnectionPoolTest extends AbstractTestCase {
     assertThat(pooledDataSource.getPoolMaximumCheckoutTime()).isEqualTo(maxCheckoutTime);
     assertThat(pooledDataSource.getPoolTimeToWait()).isEqualTo(maxWaitTime);
   }
-
 }

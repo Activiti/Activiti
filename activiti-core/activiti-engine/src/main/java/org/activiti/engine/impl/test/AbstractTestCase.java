@@ -14,18 +14,14 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.test;
 
 import junit.framework.AssertionFailedError;
 import junit.framework.TestCase;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
-
- */
+/** */
 public abstract class AbstractTestCase extends TestCase {
 
   protected static final String EMPTY_LINE = "\n";
@@ -34,18 +30,15 @@ public abstract class AbstractTestCase extends TestCase {
 
   protected boolean isEmptyLinesEnabled = true;
 
-  /**
-   * Asserts if the provided text is part of some text.
-   */
+  /** Asserts if the provided text is part of some text. */
   public void assertTextPresent(String expected, String actual) {
     if ((actual == null) || (!actual.contains(expected))) {
-      throw new AssertionFailedError("expected presence of [" + expected + "], but was [" + actual + "]");
+      throw new AssertionFailedError(
+          "expected presence of [" + expected + "], but was [" + actual + "]");
     }
   }
 
-  /**
-   * Asserts if the provided text is part of some text, ignoring any uppercase characters
-   */
+  /** Asserts if the provided text is part of some text, ignoring any uppercase characters */
   public void assertTextPresentIgnoreCase(String expected, String actual) {
     assertTextPresent(expected.toLowerCase(), actual.toLowerCase());
   }
@@ -56,7 +49,10 @@ public abstract class AbstractTestCase extends TestCase {
       if (isEmptyLinesEnabled) {
         log.debug(EMPTY_LINE);
       }
-      log.debug("#### START {}.{} ###########################################################", this.getClass().getSimpleName(), getName());
+      log.debug(
+          "#### START {}.{} ###########################################################",
+          this.getClass().getSimpleName(),
+          getName());
     }
 
     try {
@@ -74,8 +70,10 @@ public abstract class AbstractTestCase extends TestCase {
       throw e;
 
     } finally {
-      log.debug("#### END {}.{} #############################################################", this.getClass().getSimpleName(), getName());
+      log.debug(
+          "#### END {}.{} #############################################################",
+          this.getClass().getSimpleName(),
+          getName());
     }
   }
-
 }

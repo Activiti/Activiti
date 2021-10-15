@@ -17,13 +17,10 @@
 package org.activiti.engine.test.api.v6;
 
 import java.util.concurrent.atomic.AtomicInteger;
-
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.JavaDelegate;
 
-/**
-
- */
+/** */
 public class CountingServiceTaskTestDelegate implements JavaDelegate {
 
   public static AtomicInteger CALL_COUNT = new AtomicInteger(0);
@@ -40,5 +37,4 @@ public class CountingServiceTaskTestDelegate implements JavaDelegate {
 
     CALL_COUNT.incrementAndGet();
   }
-
 }

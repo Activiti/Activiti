@@ -17,15 +17,10 @@
 package org.activiti.engine.impl.bpmn.data;
 
 import java.io.Serializable;
-
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.Expression;
 
-/**
- * A data association (Input or Output) between a source and a target
- *
-
- */
+/** A data association (Input or Output) between a source and a target */
 public abstract class AbstractDataAssociation implements Serializable {
 
   private static final long serialVersionUID = 1L;

@@ -14,18 +14,14 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.cmd;
 
 import java.io.Serializable;
-
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.task.Attachment;
 
-/**
-
- */
+/** */
 public class GetAttachmentCmd implements Command<Attachment>, Serializable {
 
   private static final long serialVersionUID = 1L;
@@ -38,5 +34,4 @@ public class GetAttachmentCmd implements Command<Attachment>, Serializable {
   public Attachment execute(CommandContext commandContext) {
     return commandContext.getAttachmentEntityManager().findById(attachmentId);
   }
-
 }

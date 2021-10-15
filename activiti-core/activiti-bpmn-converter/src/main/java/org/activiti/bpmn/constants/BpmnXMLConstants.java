@@ -91,9 +91,12 @@ public interface BpmnXMLConstants {
   public static final String ATTRIBUTE_LISTENER_THROW_MESSAGE_EVENT_NAME = "messageName";
   public static final String ATTRIBUTE_LISTENER_THROW_ERROR_EVENT_CODE = "errorCode";
   public static final String ATTRIBUTE_LISTENER_ON_TRANSACTION = "onTransaction";
-  public static final String ATTRIBUTE_LISTENER_CUSTOM_PROPERTIES_RESOLVER_CLASS = "customPropertiesResolverClass";
-  public static final String ATTRIBUTE_LISTENER_CUSTOM_PROPERTIES_RESOLVER_EXPRESSION = "customPropertiesResolverExpression";
-  public static final String ATTRIBUTE_LISTENER_CUSTOM_PROPERTIES_RESOLVER_DELEGATEEXPRESSION = "customPropertiesResolverDelegateExpression";
+  public static final String ATTRIBUTE_LISTENER_CUSTOM_PROPERTIES_RESOLVER_CLASS =
+      "customPropertiesResolverClass";
+  public static final String ATTRIBUTE_LISTENER_CUSTOM_PROPERTIES_RESOLVER_EXPRESSION =
+      "customPropertiesResolverExpression";
+  public static final String ATTRIBUTE_LISTENER_CUSTOM_PROPERTIES_RESOLVER_DELEGATEEXPRESSION =
+      "customPropertiesResolverDelegateExpression";
 
   public static final String ATTRIBUTE_LISTENER_THROW_EVENT_TYPE_SIGNAL = "signal";
   public static final String ATTRIBUTE_LISTENER_THROW_EVENT_TYPE_GLOBAL_SIGNAL = "globalSignal";
@@ -316,5 +319,4 @@ public interface BpmnXMLConstants {
 
   public static final String ELEMENT_GATEWAY_INCOMING = "incoming";
   public static final String ELEMENT_GATEWAY_OUTGOING = "outgoing";
-
 }

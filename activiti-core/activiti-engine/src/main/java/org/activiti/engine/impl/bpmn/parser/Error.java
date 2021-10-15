@@ -19,9 +19,8 @@ package org.activiti.engine.impl.bpmn.parser;
 import org.activiti.engine.delegate.BpmnError;
 
 /**
- * Represents a BPMN Error definition, whereas {@link BpmnError} represents an actual instance of an Error.
- *
-
+ * Represents a BPMN Error definition, whereas {@link BpmnError} represents an actual instance of an
+ * Error.
  */
 public class Error {
 
@@ -43,5 +42,4 @@ public class Error {
   public void setErrorCode(String errorCode) {
     this.errorCode = errorCode;
   }
-
 }

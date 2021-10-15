@@ -16,12 +16,7 @@
 
 package org.activiti.engine.impl;
 
-/**
- * holds the parameters of a page (partial result) for a query.
- *
-
-
- */
+/** holds the parameters of a page (partial result) for a query. */
 public class Page {
 
   protected int firstResult;

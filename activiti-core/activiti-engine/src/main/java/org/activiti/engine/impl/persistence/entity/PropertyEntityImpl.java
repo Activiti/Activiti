@@ -17,22 +17,17 @@
 package org.activiti.engine.impl.persistence.entity;
 
 import java.io.Serializable;
-
 import org.activiti.engine.ActivitiException;
 
-/**
-
-
- */
+/** */
 public class PropertyEntityImpl extends AbstractEntity implements PropertyEntity, Serializable {
 
   private static final long serialVersionUID = 1L;
 
   protected String name;
-  protected  String value;
+  protected String value;
 
-  public PropertyEntityImpl() {
-  }
+  public PropertyEntityImpl() {}
 
   public String getName() {
     return name;
@@ -68,5 +63,4 @@ public class PropertyEntityImpl extends AbstractEntity implements PropertyEntity
   public String toString() {
     return "PropertyEntity[name=" + name + ", value=" + value + "]";
   }
-
 }

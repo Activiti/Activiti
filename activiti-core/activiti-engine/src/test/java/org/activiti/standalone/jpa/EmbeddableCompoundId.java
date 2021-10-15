@@ -14,16 +14,12 @@
  * limitations under the License.
  */
 
-
 package org.activiti.standalone.jpa;
 
 import java.io.Serializable;
-
 import javax.persistence.Embeddable;
 
-/**
-
- */
+/** */
 @Embeddable
 public class EmbeddableCompoundId implements Serializable {
 
@@ -59,5 +55,4 @@ public class EmbeddableCompoundId implements Serializable {
   public int hashCode() {
     return (idPart1 + idPart2).hashCode();
   }
-
 }

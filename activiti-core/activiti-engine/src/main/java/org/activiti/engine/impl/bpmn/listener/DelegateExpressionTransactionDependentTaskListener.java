@@ -17,17 +17,15 @@
 package org.activiti.engine.impl.bpmn.listener;
 
 import java.util.Map;
-
 import org.activiti.bpmn.model.Task;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.TransactionDependentTaskListener;
 import org.activiti.engine.impl.el.NoExecutionVariableScope;
 
-/**
-
- */
-public class DelegateExpressionTransactionDependentTaskListener implements TransactionDependentTaskListener {
+/** */
+public class DelegateExpressionTransactionDependentTaskListener
+    implements TransactionDependentTaskListener {
 
   protected Expression expression;
 
@@ -36,24 +34,33 @@ public class DelegateExpressionTransactionDependentTaskListener implements Trans
   }
 
   @Override
-  public void notify(String processInstanceId, String executionId, Task task, Map<String, Object> executionVariables, Map<String, Object> customPropertiesMap) {
+  public void notify(
+      String processInstanceId,
+      String executionId,
+      Task task,
+      Map<String, Object> executionVariables,
+      Map<String, Object> customPropertiesMap) {
     NoExecutionVariableScope scope = new NoExecutionVariableScope();
 
     Object delegate = expression.getValue(scope);
 
     if (delegate instanceof TransactionDependentTaskListener) {
-      ((TransactionDependentTaskListener) delegate).notify(processInstanceId, executionId, task, executionVariables, customPropertiesMap);
+      ((TransactionDependentTaskListener) delegate)
+          .notify(processInstanceId, executionId, task, executionVariables, customPropertiesMap);
     } else {
-      throw new ActivitiIllegalArgumentException("Delegate expression " + expression + " did not resolve to an implementation of " + TransactionDependentTaskListener.class);
+      throw new ActivitiIllegalArgumentException(
+          "Delegate expression "
+              + expression
+              + " did not resolve to an implementation of "
+              + TransactionDependentTaskListener.class);
     }
-
   }
 
   /**
-   * returns the expression text for this task listener. Comes in handy if you want to check which listeners you already have.
+   * returns the expression text for this task listener. Comes in handy if you want to check which
+   * listeners you already have.
    */
   public String getExpressionText() {
     return expression.getExpressionText();
   }
-
 }

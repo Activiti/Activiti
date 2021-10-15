@@ -17,7 +17,6 @@ package org.activiti.bpmn.converter;
 
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
-
 import org.activiti.bpmn.converter.util.BpmnXMLUtil;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BoundaryEvent;
@@ -26,9 +25,7 @@ import org.activiti.bpmn.model.ErrorEventDefinition;
 import org.activiti.bpmn.model.EventDefinition;
 import org.apache.commons.lang3.StringUtils;
 
-/**
-
- */
+/** */
 public class BoundaryEventXMLConverter extends BaseBpmnXMLConverter {
 
   public Class<? extends BaseElement> getBpmnElementType() {
@@ -66,23 +63,29 @@ public class BoundaryEventXMLConverter extends BaseBpmnXMLConverter {
   }
 
   @Override
-  protected void writeAdditionalAttributes(BaseElement element, BpmnModel model, XMLStreamWriter xtw) throws Exception {
+  protected void writeAdditionalAttributes(
+      BaseElement element, BpmnModel model, XMLStreamWriter xtw) throws Exception {
     BoundaryEvent boundaryEvent = (BoundaryEvent) element;
     if (boundaryEvent.getAttachedToRef() != null) {
-      writeDefaultAttribute(ATTRIBUTE_BOUNDARY_ATTACHEDTOREF, boundaryEvent.getAttachedToRef().getId(), xtw);
+      writeDefaultAttribute(
+          ATTRIBUTE_BOUNDARY_ATTACHEDTOREF, boundaryEvent.getAttachedToRef().getId(), xtw);
     }
 
     if (boundaryEvent.getEventDefinitions().size() == 1) {
       EventDefinition eventDef = boundaryEvent.getEventDefinitions().get(0);
 
       if (eventDef instanceof ErrorEventDefinition == false) {
-        writeDefaultAttribute(ATTRIBUTE_BOUNDARY_CANCELACTIVITY, String.valueOf(boundaryEvent.isCancelActivity()).toLowerCase(), xtw);
+        writeDefaultAttribute(
+            ATTRIBUTE_BOUNDARY_CANCELACTIVITY,
+            String.valueOf(boundaryEvent.isCancelActivity()).toLowerCase(),
+            xtw);
       }
     }
   }
 
   @Override
-  protected void writeAdditionalChildElements(BaseElement element, BpmnModel model, XMLStreamWriter xtw) throws Exception {
+  protected void writeAdditionalChildElements(
+      BaseElement element, BpmnModel model, XMLStreamWriter xtw) throws Exception {
     BoundaryEvent boundaryEvent = (BoundaryEvent) element;
     writeEventDefinitions(boundaryEvent, boundaryEvent.getEventDefinitions(), model, xtw);
   }

@@ -17,16 +17,12 @@
 package org.activiti.engine.impl.persistence.entity.data;
 
 import java.util.List;
-
 import org.activiti.engine.impl.persistence.entity.AttachmentEntity;
 
-/**
-
- */
+/** */
 public interface AttachmentDataManager extends DataManager<AttachmentEntity> {
 
   List<AttachmentEntity> findAttachmentsByProcessInstanceId(String processInstanceId);
 
   List<AttachmentEntity> findAttachmentsByTaskId(String taskId);
-
 }

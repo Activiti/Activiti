@@ -16,7 +16,6 @@
 package org.activiti.editor.language;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThat;
 
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.EventDefinition;
@@ -64,7 +63,5 @@ public class CatchEventConverterTest extends AbstractConverterTest {
     assertThat(messageEvent).isInstanceOf(MessageEventDefinition.class);
     MessageEventDefinition med = (MessageEventDefinition) messageEvent;
     assertThat(med.getMessageRef()).isEqualTo("message_ref");
-
   }
-
 }

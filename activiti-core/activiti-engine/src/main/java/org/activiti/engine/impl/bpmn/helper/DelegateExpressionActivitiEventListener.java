@@ -24,11 +24,11 @@ import org.activiti.engine.delegate.event.ActivitiEventListener;
 import org.activiti.engine.impl.el.NoExecutionVariableScope;
 
 /**
- * An {@link ActivitiEventListener} implementation which resolves an expression to a delegate {@link ActivitiEventListener} instance and uses this for event notification. <br>
+ * An {@link ActivitiEventListener} implementation which resolves an expression to a delegate {@link
+ * ActivitiEventListener} instance and uses this for event notification. <br>
  * <br>
- * In case an entityClass was passed in the constructor, only events that are {@link ActivitiEntityEvent}'s that target an entity of the given type, are dispatched to the delegate.
- *
-
+ * In case an entityClass was passed in the constructor, only events that are {@link
+ * ActivitiEntityEvent}'s that target an entity of the given type, are dispatched to the delegate.
  */
 public class DelegateExpressionActivitiEventListener extends BaseDelegateEventListener {
 
@@ -43,7 +43,9 @@ public class DelegateExpressionActivitiEventListener extends BaseDelegateEventLi
   @Override
   public void onEvent(ActivitiEvent event) {
     if (isValidEvent(event)) {
-      Object delegate = DelegateExpressionUtil.resolveDelegateExpression(expression, new NoExecutionVariableScope());
+      Object delegate =
+          DelegateExpressionUtil.resolveDelegateExpression(
+              expression, new NoExecutionVariableScope());
       if (delegate instanceof ActivitiEventListener) {
         // Cache result of isFailOnException() from delegate-instance
         // until next event is received. This prevents us from having to resolve
@@ -57,7 +59,11 @@ public class DelegateExpressionActivitiEventListener extends BaseDelegateEventLi
         // Force failing, since the exception we're about to throw
         // cannot be ignored, because it did not originate from the listener itself
         failOnException = true;
-        throw new ActivitiIllegalArgumentException("Delegate expression " + expression + " did not resolve to an implementation of " + ActivitiEventListener.class.getName());
+        throw new ActivitiIllegalArgumentException(
+            "Delegate expression "
+                + expression
+                + " did not resolve to an implementation of "
+                + ActivitiEventListener.class.getName());
       }
     }
   }
@@ -66,5 +72,4 @@ public class DelegateExpressionActivitiEventListener extends BaseDelegateEventLi
   public boolean isFailOnException() {
     return failOnException;
   }
-
 }

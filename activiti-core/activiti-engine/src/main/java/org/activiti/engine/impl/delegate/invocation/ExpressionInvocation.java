@@ -18,11 +18,7 @@ package org.activiti.engine.impl.delegate.invocation;
 
 import javax.el.ValueExpression;
 
-/**
- * Baseclass responsible for handling invocations of Expressions
- *
-
- */
+/** Baseclass responsible for handling invocations of Expressions */
 public abstract class ExpressionInvocation extends DelegateInvocation {
 
   protected final ValueExpression valueExpression;
@@ -34,5 +30,4 @@ public abstract class ExpressionInvocation extends DelegateInvocation {
   public Object getTarget() {
     return valueExpression;
   }
-
 }

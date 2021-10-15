@@ -14,15 +14,12 @@
  * limitations under the License.
  */
 
-
 package org.activiti.standalone.jpa;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 
-/**
-
- */
+/** */
 @Entity(name = "JPA_SUBCLASS_FIELD")
 public class SubclassFieldAccessJPAEntity extends MappedSuperClassFieldAccessJPAEntity {
 
@@ -36,5 +33,4 @@ public class SubclassFieldAccessJPAEntity extends MappedSuperClassFieldAccessJPA
   public void setValue(String value) {
     this.value = value;
   }
-
 }

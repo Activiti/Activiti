@@ -17,14 +17,12 @@
 package org.activiti.engine.impl.persistence.entity.data.impl.cachematcher;
 
 import java.util.Map;
-
 import org.activiti.engine.impl.persistence.CachedEntityMatcherAdapter;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
 
-/**
-
- */
-public class EventSubscriptionsByExecutionAndTypeMatcher extends CachedEntityMatcherAdapter<EventSubscriptionEntity> {
+/** */
+public class EventSubscriptionsByExecutionAndTypeMatcher
+    extends CachedEntityMatcherAdapter<EventSubscriptionEntity> {
 
   @Override
   public boolean isRetained(EventSubscriptionEntity eventSubscriptionEntity, Object parameter) {
@@ -32,8 +30,9 @@ public class EventSubscriptionsByExecutionAndTypeMatcher extends CachedEntityMat
     String type = params.get("eventType");
     String executionId = params.get("executionId");
 
-    return eventSubscriptionEntity.getEventType() != null && eventSubscriptionEntity.getEventType().equals(type)
-        && eventSubscriptionEntity.getExecutionId() != null && eventSubscriptionEntity.getExecutionId().equals(executionId);
+    return eventSubscriptionEntity.getEventType() != null
+        && eventSubscriptionEntity.getEventType().equals(type)
+        && eventSubscriptionEntity.getExecutionId() != null
+        && eventSubscriptionEntity.getExecutionId().equals(executionId);
   }
-
 }

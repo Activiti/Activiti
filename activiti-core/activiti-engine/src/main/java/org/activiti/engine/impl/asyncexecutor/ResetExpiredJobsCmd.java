@@ -17,14 +17,11 @@
 package org.activiti.engine.impl.asyncexecutor;
 
 import java.util.Collection;
-
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.runtime.Job;
 
-/**
-
- */
+/** */
 public class ResetExpiredJobsCmd implements Command<Void> {
 
   protected Collection<String> jobIds;
@@ -35,7 +32,8 @@ public class ResetExpiredJobsCmd implements Command<Void> {
 
   @Override
   public Void execute(CommandContext commandContext) {
-    boolean messageQueueMode = commandContext.getProcessEngineConfiguration().isAsyncExecutorIsMessageQueueMode();
+    boolean messageQueueMode =
+        commandContext.getProcessEngineConfiguration().isAsyncExecutorIsMessageQueueMode();
     for (String jobId : jobIds) {
       if (!messageQueueMode) {
         Job job = commandContext.getJobEntityManager().findById(jobId);
@@ -46,5 +44,4 @@ public class ResetExpiredJobsCmd implements Command<Void> {
     }
     return null;
   }
-
 }

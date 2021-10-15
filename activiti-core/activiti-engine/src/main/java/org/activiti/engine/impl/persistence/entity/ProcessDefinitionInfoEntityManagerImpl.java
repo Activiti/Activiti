@@ -14,23 +14,21 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.persistence.entity;
 
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.persistence.entity.data.DataManager;
 import org.activiti.engine.impl.persistence.entity.data.ProcessDefinitionInfoDataManager;
 
-
-/**
-
- */
-public class ProcessDefinitionInfoEntityManagerImpl extends
-    AbstractEntityManager<ProcessDefinitionInfoEntity> implements ProcessDefinitionInfoEntityManager {
+/** */
+public class ProcessDefinitionInfoEntityManagerImpl
+    extends AbstractEntityManager<ProcessDefinitionInfoEntity>
+    implements ProcessDefinitionInfoEntityManager {
 
   protected ProcessDefinitionInfoDataManager processDefinitionInfoDataManager;
 
-  public ProcessDefinitionInfoEntityManagerImpl(ProcessEngineConfigurationImpl processEngineConfiguration,
+  public ProcessDefinitionInfoEntityManagerImpl(
+      ProcessEngineConfigurationImpl processEngineConfiguration,
       ProcessDefinitionInfoDataManager processDefinitionInfoDataManager) {
 
     super(processEngineConfiguration);
@@ -46,12 +44,14 @@ public class ProcessDefinitionInfoEntityManagerImpl extends
     insert(processDefinitionInfo);
   }
 
-  public void updateProcessDefinitionInfo(ProcessDefinitionInfoEntity updatedProcessDefinitionInfo) {
+  public void updateProcessDefinitionInfo(
+      ProcessDefinitionInfoEntity updatedProcessDefinitionInfo) {
     update(updatedProcessDefinitionInfo, true);
   }
 
   public void deleteProcessDefinitionInfo(String processDefinitionId) {
-    ProcessDefinitionInfoEntity processDefinitionInfo = findProcessDefinitionInfoByProcessDefinitionId(processDefinitionId);
+    ProcessDefinitionInfoEntity processDefinitionInfo =
+        findProcessDefinitionInfoByProcessDefinitionId(processDefinitionId);
     if (processDefinitionInfo != null) {
       delete(processDefinitionInfo);
       deleteInfoJson(processDefinitionInfo);
@@ -78,8 +78,10 @@ public class ProcessDefinitionInfoEntityManagerImpl extends
     }
   }
 
-  public ProcessDefinitionInfoEntity findProcessDefinitionInfoByProcessDefinitionId(String processDefinitionId) {
-    return processDefinitionInfoDataManager.findProcessDefinitionInfoByProcessDefinitionId(processDefinitionId);
+  public ProcessDefinitionInfoEntity findProcessDefinitionInfoByProcessDefinitionId(
+      String processDefinitionId) {
+    return processDefinitionInfoDataManager.findProcessDefinitionInfoByProcessDefinitionId(
+        processDefinitionId);
   }
 
   public byte[] findInfoJsonById(String infoJsonId) {

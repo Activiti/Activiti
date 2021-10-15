@@ -14,20 +14,15 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.persistence.entity;
 
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.activiti.engine.ProcessEngineConfiguration;
 
-/**
-
-
- */
+/** */
 public class ModelEntityImpl extends AbstractEntity implements ModelEntity, Serializable {
 
   private static final long serialVersionUID = 1L;
@@ -44,9 +39,7 @@ public class ModelEntityImpl extends AbstractEntity implements ModelEntity, Seri
   protected String editorSourceExtraValueId;
   protected String tenantId = ProcessEngineConfiguration.NO_TENANT_ID;
 
-  public ModelEntityImpl() {
-
-  }
+  public ModelEntityImpl() {}
 
   public Object getPersistentState() {
     Map<String, Object> persistentState = new HashMap<String, Object>();
@@ -160,5 +153,4 @@ public class ModelEntityImpl extends AbstractEntity implements ModelEntity, Seri
   public boolean hasEditorSourceExtra() {
     return this.editorSourceExtraValueId != null;
   }
-
 }

@@ -14,19 +14,15 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.cfg;
 
 import org.activiti.engine.impl.interceptor.CommandInterceptor;
 
-/**
-
- */
+/** */
 public class StandaloneProcessEngineConfiguration extends ProcessEngineConfigurationImpl {
 
   @Override
   public CommandInterceptor createTransactionInterceptor() {
     return null;
   }
-
 }

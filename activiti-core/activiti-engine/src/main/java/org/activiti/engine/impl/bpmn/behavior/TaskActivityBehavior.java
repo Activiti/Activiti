@@ -16,24 +16,22 @@
 
 package org.activiti.engine.impl.bpmn.behavior;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Parent class for all BPMN 2.0 task types such as ServiceTask, ScriptTask, UserTask, etc.
  *
- * When used on its own, it behaves just as a pass-through activity.
- *
-
+ * <p>When used on its own, it behaves just as a pass-through activity.
  */
 public class TaskActivityBehavior extends AbstractBpmnActivityBehavior {
 
   private static final long serialVersionUID = 1L;
 
-  protected String getActiveValue(String originalValue, String propertyName, ObjectNode taskElementProperties) {
+  protected String getActiveValue(
+      String originalValue, String propertyName, ObjectNode taskElementProperties) {
     String activeValue = originalValue;
     if (taskElementProperties != null) {
       JsonNode overrideValueNode = taskElementProperties.get(propertyName);
@@ -48,12 +46,15 @@ public class TaskActivityBehavior extends AbstractBpmnActivityBehavior {
     return activeValue;
   }
 
-  protected List<String> getActiveValueList(List<String> originalValues, String propertyName, ObjectNode taskElementProperties) {
+  protected List<String> getActiveValueList(
+      List<String> originalValues, String propertyName, ObjectNode taskElementProperties) {
     List<String> activeValues = originalValues;
     if (taskElementProperties != null) {
       JsonNode overrideValuesNode = taskElementProperties.get(propertyName);
       if (overrideValuesNode != null) {
-        if (overrideValuesNode.isNull() || !overrideValuesNode.isArray()  || overrideValuesNode.size() == 0) {
+        if (overrideValuesNode.isNull()
+            || !overrideValuesNode.isArray()
+            || overrideValuesNode.size() == 0) {
           activeValues = null;
         } else {
           activeValues = new ArrayList<String>();

@@ -18,9 +18,7 @@ package org.activiti.bpmn.converter.export;
 import static java.util.Arrays.asList;
 
 import java.util.List;
-
 import javax.xml.stream.XMLStreamWriter;
-
 import org.activiti.bpmn.constants.BpmnXMLConstants;
 import org.activiti.bpmn.converter.util.BpmnXMLUtil;
 import org.activiti.bpmn.model.ExtensionAttribute;
@@ -28,12 +26,15 @@ import org.activiti.bpmn.model.Process;
 import org.apache.commons.lang3.StringUtils;
 
 public class ProcessExport implements BpmnXMLConstants {
-  /**
-   * default attributes taken from process instance attributes
-   */
-  public static final List<ExtensionAttribute> defaultProcessAttributes = asList(new ExtensionAttribute(ATTRIBUTE_ID), new ExtensionAttribute(ATTRIBUTE_NAME), new ExtensionAttribute(
-      ATTRIBUTE_PROCESS_EXECUTABLE), new ExtensionAttribute(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_PROCESS_CANDIDATE_USERS), new ExtensionAttribute(ACTIVITI_EXTENSIONS_NAMESPACE,
-      ATTRIBUTE_PROCESS_CANDIDATE_GROUPS));
+  /** default attributes taken from process instance attributes */
+  public static final List<ExtensionAttribute> defaultProcessAttributes =
+      asList(
+          new ExtensionAttribute(ATTRIBUTE_ID),
+          new ExtensionAttribute(ATTRIBUTE_NAME),
+          new ExtensionAttribute(ATTRIBUTE_PROCESS_EXECUTABLE),
+          new ExtensionAttribute(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_PROCESS_CANDIDATE_USERS),
+          new ExtensionAttribute(
+              ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_PROCESS_CANDIDATE_GROUPS));
 
   @SuppressWarnings("unchecked")
   public static void writeProcess(Process process, XMLStreamWriter xtw) throws Exception {
@@ -48,15 +49,24 @@ public class ProcessExport implements BpmnXMLConstants {
     xtw.writeAttribute(ATTRIBUTE_PROCESS_EXECUTABLE, Boolean.toString(process.isExecutable()));
 
     if (!process.getCandidateStarterUsers().isEmpty()) {
-      xtw.writeAttribute(ACTIVITI_EXTENSIONS_PREFIX, ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_PROCESS_CANDIDATE_USERS, BpmnXMLUtil.convertToDelimitedString(process.getCandidateStarterUsers()));
+      xtw.writeAttribute(
+          ACTIVITI_EXTENSIONS_PREFIX,
+          ACTIVITI_EXTENSIONS_NAMESPACE,
+          ATTRIBUTE_PROCESS_CANDIDATE_USERS,
+          BpmnXMLUtil.convertToDelimitedString(process.getCandidateStarterUsers()));
     }
 
     if (!process.getCandidateStarterGroups().isEmpty()) {
-      xtw.writeAttribute(ACTIVITI_EXTENSIONS_PREFIX, ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_PROCESS_CANDIDATE_GROUPS, BpmnXMLUtil.convertToDelimitedString(process.getCandidateStarterGroups()));
+      xtw.writeAttribute(
+          ACTIVITI_EXTENSIONS_PREFIX,
+          ACTIVITI_EXTENSIONS_NAMESPACE,
+          ATTRIBUTE_PROCESS_CANDIDATE_GROUPS,
+          BpmnXMLUtil.convertToDelimitedString(process.getCandidateStarterGroups()));
     }
 
     // write custom attributes
-    BpmnXMLUtil.writeCustomAttributes(process.getAttributes().values(), xtw, defaultProcessAttributes);
+    BpmnXMLUtil.writeCustomAttributes(
+        process.getAttributes().values(), xtw, defaultProcessAttributes);
 
     if (StringUtils.isNotEmpty(process.getDocumentation())) {
 
@@ -65,8 +75,10 @@ public class ProcessExport implements BpmnXMLConstants {
       xtw.writeEndElement();
     }
 
-    boolean didWriteExtensionStartElement = ActivitiListenerExport.writeListeners(process, false, xtw);
-    didWriteExtensionStartElement = BpmnXMLUtil.writeExtensionElements(process, didWriteExtensionStartElement, xtw);
+    boolean didWriteExtensionStartElement =
+        ActivitiListenerExport.writeListeners(process, false, xtw);
+    didWriteExtensionStartElement =
+        BpmnXMLUtil.writeExtensionElements(process, didWriteExtensionStartElement, xtw);
 
     if (didWriteExtensionStartElement) {
       // closing extensions element

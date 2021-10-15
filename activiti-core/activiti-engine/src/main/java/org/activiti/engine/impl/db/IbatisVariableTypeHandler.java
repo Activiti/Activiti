@@ -14,14 +14,12 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.db;
 
 import java.sql.CallableStatement;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.variable.VariableType;
@@ -29,9 +27,7 @@ import org.activiti.engine.impl.variable.VariableTypes;
 import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.TypeHandler;
 
-/**
-
- */
+/** */
 public class IbatisVariableTypeHandler implements TypeHandler<VariableType> {
 
   protected VariableTypes variableTypes;
@@ -54,7 +50,8 @@ public class IbatisVariableTypeHandler implements TypeHandler<VariableType> {
     return type;
   }
 
-  public void setParameter(PreparedStatement ps, int i, VariableType parameter, JdbcType jdbcType) throws SQLException {
+  public void setParameter(PreparedStatement ps, int i, VariableType parameter, JdbcType jdbcType)
+      throws SQLException {
     String typeName = parameter.getTypeName();
     ps.setString(i, typeName);
   }

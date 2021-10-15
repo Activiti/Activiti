@@ -18,21 +18,14 @@ package org.activiti.engine.impl.transformer;
 
 import java.text.Format;
 import java.util.Date;
-
 import org.apache.commons.lang3.time.FastDateFormat;
 
-/**
- * Transforms a {@link Date} to a {@link String}
- *
-
- */
+/** Transforms a {@link Date} to a {@link String} */
 public class DateToString extends AbstractTransformer {
 
   protected Format format = FastDateFormat.getInstance("dd/MM/yyyy");
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   protected Object primTransform(Object anObject) throws Exception {
     return format.format((Date) anObject);

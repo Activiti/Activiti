@@ -16,11 +16,7 @@
 
 package org.activiti.engine.impl.bpmn.data;
 
-/**
- * Implementation of the BPMN 2.0 'itemDefinition'
- *
-
- */
+/** Implementation of the BPMN 2.0 'itemDefinition' */
 public class ItemDefinition {
 
   protected String id;

@@ -20,10 +20,7 @@ import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 
-/**
-
-
- */
+/** */
 public final class SchemaOperationsProcessEngineBuild implements Command<Object> {
 
   public Object execute(CommandContext commandContext) {

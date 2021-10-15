@@ -16,7 +16,6 @@
 package org.activiti.test.operations;
 
 import java.util.List;
-
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.model.payloads.SignalPayload;
 import org.activiti.api.process.model.payloads.StartProcessPayload;
@@ -30,31 +29,26 @@ import org.activiti.test.assertions.SignalAssertionsImpl;
 
 public class ProcessRuntimeOperations implements ProcessOperations {
 
-    private ProcessRuntime processRuntime;
-    private EventSource eventSource;
-    private List<TaskSource> taskSources;
+  private ProcessRuntime processRuntime;
+  private EventSource eventSource;
+  private List<TaskSource> taskSources;
 
-    public ProcessRuntimeOperations(ProcessRuntime processRuntime,
-                                    EventSource eventSource,
-                                    List<TaskSource> taskSources) {
-        this.processRuntime = processRuntime;
-        this.eventSource = eventSource;
-        this.taskSources = taskSources;
-    }
+  public ProcessRuntimeOperations(
+      ProcessRuntime processRuntime, EventSource eventSource, List<TaskSource> taskSources) {
+    this.processRuntime = processRuntime;
+    this.eventSource = eventSource;
+    this.taskSources = taskSources;
+  }
 
-    @Override
-    public ProcessInstanceAssertions start(StartProcessPayload startProcessPayload)  {
-        ProcessInstance processInstance = processRuntime.start(startProcessPayload);
-        return new ProcessInstanceAssertionsImpl(eventSource,
-                                                 taskSources,
-                                                 processInstance);
-    }
+  @Override
+  public ProcessInstanceAssertions start(StartProcessPayload startProcessPayload) {
+    ProcessInstance processInstance = processRuntime.start(startProcessPayload);
+    return new ProcessInstanceAssertionsImpl(eventSource, taskSources, processInstance);
+  }
 
-    @Override
-    public SignalAssertions signal(SignalPayload signalPayload) {
-        processRuntime.signal(signalPayload);
-        return new SignalAssertionsImpl(eventSource);
-    }
-
-
+  @Override
+  public SignalAssertions signal(SignalPayload signalPayload) {
+    processRuntime.signal(signalPayload);
+    return new SignalAssertionsImpl(eventSource);
+  }
 }

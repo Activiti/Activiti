@@ -25,30 +25,34 @@ import org.activiti.runtime.api.event.impl.ToProcessCancelledConverter;
 
 public class ProcessCancelledListenerDelegate implements ActivitiEventListener {
 
-    private List<ProcessRuntimeEventListener<ProcessCancelledEvent>> processRuntimeEventListeners;
+  private List<ProcessRuntimeEventListener<ProcessCancelledEvent>> processRuntimeEventListeners;
 
-    private ToProcessCancelledConverter processCancelledConverter;
+  private ToProcessCancelledConverter processCancelledConverter;
 
-    public ProcessCancelledListenerDelegate(List<ProcessRuntimeEventListener<ProcessCancelledEvent>> listeners,
-                                            ToProcessCancelledConverter processCancelledConverter) {
-        this.processRuntimeEventListeners = listeners;
-        this.processCancelledConverter = processCancelledConverter;
+  public ProcessCancelledListenerDelegate(
+      List<ProcessRuntimeEventListener<ProcessCancelledEvent>> listeners,
+      ToProcessCancelledConverter processCancelledConverter) {
+    this.processRuntimeEventListeners = listeners;
+    this.processCancelledConverter = processCancelledConverter;
+  }
+
+  @Override
+  public void onEvent(ActivitiEvent event) {
+    if (event instanceof ActivitiProcessCancelledEvent) {
+      processCancelledConverter
+          .from((ActivitiProcessCancelledEvent) event)
+          .ifPresent(
+              convertedEvent -> {
+                for (ProcessRuntimeEventListener<ProcessCancelledEvent> listener :
+                    processRuntimeEventListeners) {
+                  listener.onEvent(convertedEvent);
+                }
+              });
     }
+  }
 
-    @Override
-    public void onEvent(ActivitiEvent event) {
-        if (event instanceof ActivitiProcessCancelledEvent) {
-            processCancelledConverter.from((ActivitiProcessCancelledEvent) event)
-                    .ifPresent(convertedEvent -> {
-                        for ( ProcessRuntimeEventListener<ProcessCancelledEvent> listener : processRuntimeEventListeners ) {
-                            listener.onEvent(convertedEvent);
-                        }
-                    });
-        }
-    }
-
-    @Override
-    public boolean isFailOnException() {
-        return false;
-    }
+  @Override
+  public boolean isFailOnException() {
+    return false;
+  }
 }

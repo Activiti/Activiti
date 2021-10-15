@@ -15,11 +15,12 @@
  */
 package org.activiti.editor.language.xml;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.Pool;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class CollaborationExtensionElementsConverterTest extends AbstractConverterTest {
 

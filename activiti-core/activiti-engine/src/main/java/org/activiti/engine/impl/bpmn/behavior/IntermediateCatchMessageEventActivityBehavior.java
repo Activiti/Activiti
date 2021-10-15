@@ -16,6 +16,7 @@
 
 package org.activiti.engine.impl.bpmn.behavior;
 
+import java.util.List;
 import org.activiti.bpmn.model.MessageEventDefinition;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
@@ -28,17 +29,17 @@ import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntityManage
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.MessageEventSubscriptionEntity;
 
-import java.util.List;
-
-public class IntermediateCatchMessageEventActivityBehavior extends IntermediateCatchEventActivityBehavior {
+public class IntermediateCatchMessageEventActivityBehavior
+    extends IntermediateCatchEventActivityBehavior {
 
   private static final long serialVersionUID = 1L;
 
   protected final MessageEventDefinition messageEventDefinition;
   protected final MessageExecutionContext messageExecutionContext;
 
-  public IntermediateCatchMessageEventActivityBehavior(MessageEventDefinition messageEventDefinition,
-                                                       MessageExecutionContext messageExecutionContext) {
+  public IntermediateCatchMessageEventActivityBehavior(
+      MessageEventDefinition messageEventDefinition,
+      MessageExecutionContext messageExecutionContext) {
     this.messageEventDefinition = messageEventDefinition;
     this.messageExecutionContext = messageExecutionContext;
   }
@@ -46,13 +47,15 @@ public class IntermediateCatchMessageEventActivityBehavior extends IntermediateC
   public void execute(DelegateExecution execution) {
     CommandContext commandContext = Context.getCommandContext();
 
-    MessageEventSubscriptionEntity subscription = messageExecutionContext.createMessageEventSubscription(commandContext,
-                                                                                                         execution);
+    MessageEventSubscriptionEntity subscription =
+        messageExecutionContext.createMessageEventSubscription(commandContext, execution);
     if (commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-       commandContext.getProcessEngineConfiguration().getEventDispatcher()
-              .dispatchEvent(ActivitiEventBuilder.createMessageWaitingEvent(execution,
-                                                                            subscription.getEventName(),
-                                                                            subscription.getConfiguration()));
+      commandContext
+          .getProcessEngineConfiguration()
+          .getEventDispatcher()
+          .dispatchEvent(
+              ActivitiEventBuilder.createMessageWaitingEvent(
+                  execution, subscription.getEventName(), subscription.getConfiguration()));
     }
   }
 
@@ -65,8 +68,10 @@ public class IntermediateCatchMessageEventActivityBehavior extends IntermediateC
   @Override
   public void eventCancelledByEventGateway(DelegateExecution execution) {
     deleteMessageEventSubScription(execution);
-    Context.getCommandContext().getExecutionEntityManager().deleteExecutionAndRelatedData((ExecutionEntity) execution,
-        DeleteReason.EVENT_BASED_GATEWAY_CANCEL);
+    Context.getCommandContext()
+        .getExecutionEntityManager()
+        .deleteExecutionAndRelatedData(
+            (ExecutionEntity) execution, DeleteReason.EVENT_BASED_GATEWAY_CANCEL);
   }
 
   protected ExecutionEntity deleteMessageEventSubScription(DelegateExecution execution) {
@@ -74,10 +79,12 @@ public class IntermediateCatchMessageEventActivityBehavior extends IntermediateC
     // Should we use triggerName and triggerData, because message name expression can change?
     String messageName = messageExecutionContext.getMessageName(execution);
 
-    EventSubscriptionEntityManager eventSubscriptionEntityManager = Context.getCommandContext().getEventSubscriptionEntityManager();
+    EventSubscriptionEntityManager eventSubscriptionEntityManager =
+        Context.getCommandContext().getEventSubscriptionEntityManager();
     List<EventSubscriptionEntity> eventSubscriptions = executionEntity.getEventSubscriptions();
     for (EventSubscriptionEntity eventSubscription : eventSubscriptions) {
-      if (eventSubscription instanceof MessageEventSubscriptionEntity && eventSubscription.getEventName().equals(messageName)) {
+      if (eventSubscription instanceof MessageEventSubscriptionEntity
+          && eventSubscription.getEventName().equals(messageName)) {
         eventSubscriptionEntityManager.delete(eventSubscription);
       }
     }
@@ -91,5 +98,4 @@ public class IntermediateCatchMessageEventActivityBehavior extends IntermediateC
   public MessageExecutionContext getMessageExecutionContext() {
     return messageExecutionContext;
   }
-
 }

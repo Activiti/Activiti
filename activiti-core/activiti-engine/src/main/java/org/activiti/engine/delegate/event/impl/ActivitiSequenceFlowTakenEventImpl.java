@@ -18,10 +18,9 @@ package org.activiti.engine.delegate.event.impl;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.ActivitiSequenceFlowTakenEvent;
 
-/**
-
- */
-public class ActivitiSequenceFlowTakenEventImpl extends ActivitiEventImpl implements ActivitiSequenceFlowTakenEvent {
+/** */
+public class ActivitiSequenceFlowTakenEventImpl extends ActivitiEventImpl
+    implements ActivitiSequenceFlowTakenEvent {
 
   protected String id;
   protected String sourceActivityId;
@@ -108,5 +107,4 @@ public class ActivitiSequenceFlowTakenEventImpl extends ActivitiEventImpl implem
   public void setTargetActivityBehaviorClass(String targetActivityBehaviorClass) {
     this.targetActivityBehaviorClass = targetActivityBehaviorClass;
   }
-
 }

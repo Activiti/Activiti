@@ -18,14 +18,10 @@ package org.activiti.editor.language.xml;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
-
 import org.activiti.bpmn.converter.util.CommaSplitter;
 import org.junit.jupiter.api.Test;
 
-/**
-
- */
-
+/** */
 public class CommaSplitterTest {
 
   @Test
@@ -69,7 +65,6 @@ public class CommaSplitterTest {
     assertThat(result).hasSize(2);
     assertThat(result.get(0)).isEqualTo("first");
     assertThat(result.get(1)).isEqualTo("second");
-
   }
 
   @Test
@@ -80,7 +75,6 @@ public class CommaSplitterTest {
     assertThat(result).hasSize(2);
     assertThat(result.get(0)).isEqualTo("first");
     assertThat(result.get(1)).isEqualTo("second");
-
   }
 
   @Test

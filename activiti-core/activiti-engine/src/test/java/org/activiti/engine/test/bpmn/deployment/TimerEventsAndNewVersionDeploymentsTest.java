@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.test.bpmn.deployment;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -23,9 +22,8 @@ import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.Job;
 
 /**
- * A test specifically written to test how events (start/boundary) are handled
- * when deploying a new version of a process definition.
- *
+ * A test specifically written to test how events (start/boundary) are handled when deploying a new
+ * version of a process definition.
  */
 public class TimerEventsAndNewVersionDeploymentsTest extends PluggableActivitiTestCase {
 
@@ -62,7 +60,13 @@ public class TimerEventsAndNewVersionDeploymentsTest extends PluggableActivitiTe
     repositoryService.deleteDeployment(deploymentId4, true);
     assertTimerJobs(1);
     Job job = managementService.createTimerJobQuery().singleResult();
-    assertThat(job.getProcessDefinitionId()).isEqualTo(repositoryService.createProcessDefinitionQuery().deploymentId(deploymentId3).singleResult().getId());
+    assertThat(job.getProcessDefinitionId())
+        .isEqualTo(
+            repositoryService
+                .createProcessDefinitionQuery()
+                .deploymentId(deploymentId3)
+                .singleResult()
+                .getId());
 
     cleanup(deploymentId1, deploymentId2, deploymentId3);
   }
@@ -82,7 +86,13 @@ public class TimerEventsAndNewVersionDeploymentsTest extends PluggableActivitiTe
     repositoryService.deleteDeployment(deploymentId4, true);
     assertTimerJobs(1);
     Job job = managementService.createTimerJobQuery().singleResult();
-    assertThat(job.getProcessDefinitionId()).isEqualTo(repositoryService.createProcessDefinitionQuery().deploymentId(deploymentId1).singleResult().getId());
+    assertThat(job.getProcessDefinitionId())
+        .isEqualTo(
+            repositoryService
+                .createProcessDefinitionQuery()
+                .deploymentId(deploymentId1)
+                .singleResult()
+                .getId());
 
     cleanup(deploymentId1);
   }
@@ -100,11 +110,8 @@ public class TimerEventsAndNewVersionDeploymentsTest extends PluggableActivitiTe
   }
 
   private String deploy(String path) {
-    String deploymentId = repositoryService
-      .createDeployment()
-      .addClasspathResource(path)
-      .deploy()
-      .getId();
+    String deploymentId =
+        repositoryService.createDeployment().addClasspathResource(path).deploy().getId();
     return deploymentId;
   }
 
@@ -112,10 +119,9 @@ public class TimerEventsAndNewVersionDeploymentsTest extends PluggableActivitiTe
     assertThat(managementService.createTimerJobQuery().timers().count()).isEqualTo(count);
   }
 
-  private void cleanup(String ... deploymentIds) {
+  private void cleanup(String... deploymentIds) {
     for (String deploymentId : deploymentIds) {
       repositoryService.deleteDeployment(deploymentId, true);
     }
   }
-
 }

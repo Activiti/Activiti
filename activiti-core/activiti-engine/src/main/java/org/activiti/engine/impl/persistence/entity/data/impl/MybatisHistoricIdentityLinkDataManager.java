@@ -17,7 +17,6 @@
 package org.activiti.engine.impl.persistence.entity.data.impl;
 
 import java.util.List;
-
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.persistence.CachedEntityMatcher;
 import org.activiti.engine.impl.persistence.entity.HistoricIdentityLinkEntity;
@@ -26,14 +25,16 @@ import org.activiti.engine.impl.persistence.entity.data.AbstractDataManager;
 import org.activiti.engine.impl.persistence.entity.data.HistoricIdentityLinkDataManager;
 import org.activiti.engine.impl.persistence.entity.data.impl.cachematcher.HistoricIdentityLinksByProcInstMatcher;
 
-/**
+/** */
+public class MybatisHistoricIdentityLinkDataManager
+    extends AbstractDataManager<HistoricIdentityLinkEntity>
+    implements HistoricIdentityLinkDataManager {
 
- */
-public class MybatisHistoricIdentityLinkDataManager extends AbstractDataManager<HistoricIdentityLinkEntity> implements HistoricIdentityLinkDataManager {
+  protected CachedEntityMatcher<HistoricIdentityLinkEntity> historicIdentityLinksByProcInstMatcher =
+      new HistoricIdentityLinksByProcInstMatcher();
 
-  protected CachedEntityMatcher<HistoricIdentityLinkEntity> historicIdentityLinksByProcInstMatcher = new HistoricIdentityLinksByProcInstMatcher();
-
-  public MybatisHistoricIdentityLinkDataManager(ProcessEngineConfigurationImpl processEngineConfiguration) {
+  public MybatisHistoricIdentityLinkDataManager(
+      ProcessEngineConfigurationImpl processEngineConfiguration) {
     super(processEngineConfiguration);
   }
 
@@ -54,8 +55,12 @@ public class MybatisHistoricIdentityLinkDataManager extends AbstractDataManager<
   }
 
   @Override
-  public List<HistoricIdentityLinkEntity> findHistoricIdentityLinksByProcessInstanceId(final String processInstanceId) {
-    return getList("selectHistoricIdentityLinksByProcessInstance", processInstanceId, historicIdentityLinksByProcInstMatcher, true);
+  public List<HistoricIdentityLinkEntity> findHistoricIdentityLinksByProcessInstanceId(
+      final String processInstanceId) {
+    return getList(
+        "selectHistoricIdentityLinksByProcessInstance",
+        processInstanceId,
+        historicIdentityLinksByProcInstMatcher,
+        true);
   }
-
 }

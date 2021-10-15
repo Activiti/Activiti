@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.spring.test.transaction;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -22,7 +21,6 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.util.List;
 import javax.sql.DataSource;
-
 import org.activiti.bpmn.exceptions.XMLException;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
@@ -31,27 +29,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ContextConfiguration;
 
-/**
-
- */
-@ContextConfiguration("classpath:org/activiti/spring/test/transaction/SpringTransactionIntegrationTest-context.xml")
+/** */
+@ContextConfiguration(
+    "classpath:org/activiti/spring/test/transaction/SpringTransactionIntegrationTest-context.xml")
 public class SpringTransactionIntegrationTest extends SpringActivitiTestCase {
 
-  @Autowired
-  protected UserBean userBean;
+  @Autowired protected UserBean userBean;
 
-  @Autowired
-  protected DeployBean deployBean;
+  @Autowired protected DeployBean deployBean;
 
-  @Autowired
-  protected DataSource dataSource;
-
+  @Autowired protected DataSource dataSource;
 
   private void cleanUp() {
-    List<org.activiti.engine.repository.Deployment> deployments = repositoryService.createDeploymentQuery().list();
+    List<org.activiti.engine.repository.Deployment> deployments =
+        repositoryService.createDeploymentQuery().list();
     for (org.activiti.engine.repository.Deployment deployment : deployments) {
-      repositoryService.deleteDeployment(deployment.getId(),
-                                         true);
+      repositoryService.deleteDeployment(deployment.getId(), true);
     }
   }
 
@@ -65,7 +58,8 @@ public class SpringTransactionIntegrationTest extends SpringActivitiTestCase {
     userBean.hello();
 
     ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().singleResult();
-    assertThat(runtimeService.getVariable(processInstance.getId(), "myVar")).isEqualTo("Hello from Printer!");
+    assertThat(runtimeService.getVariable(processInstance.getId(), "myVar"))
+        .isEqualTo("Hello from Printer!");
   }
 
   @Deployment
@@ -78,29 +72,31 @@ public class SpringTransactionIntegrationTest extends SpringActivitiTestCase {
     // The hello() method will start the process. The process will wait in a
     // user task
     userBean.hello();
-    assertThat(jdbcTemplate.queryForObject("select count(*) from MY_TABLE", Long.class)).isEqualTo(Long.valueOf(0));
+    assertThat(jdbcTemplate.queryForObject("select count(*) from MY_TABLE", Long.class))
+        .isEqualTo(Long.valueOf(0));
 
     // The completeTask() method will write a record to the 'MY_TABLE' table
     // and complete the user task
     assertThatExceptionOfType(Exception.class)
-      .isThrownBy(() -> userBean.completeTask(taskService.createTaskQuery().singleResult().getId()));
+        .isThrownBy(
+            () -> userBean.completeTask(taskService.createTaskQuery().singleResult().getId()));
 
     // Since the service task after the user tasks throws an exception, both
     // the record and the process must be rolled back !
     assertThat(taskService.createTaskQuery().singleResult().getName()).isEqualTo("My Task");
-    assertThat(jdbcTemplate.queryForObject("select count(*) from MY_TABLE", Long.class)).isEqualTo(Long.valueOf(0));
+    assertThat(jdbcTemplate.queryForObject("select count(*) from MY_TABLE", Long.class))
+        .isEqualTo(Long.valueOf(0));
 
     // Cleanup
     jdbcTemplate.execute("drop table MY_TABLE if exists;");
   }
 
   public void testRollBackOnDeployment() {
-    // The second process should fail. None of the processes should be deployed, the first one should be rolled back
+    // The second process should fail. None of the processes should be deployed, the first one
+    // should be rolled back
     assertThat(repositoryService.createProcessDefinitionQuery().count()).isEqualTo(0);
-    assertThatExceptionOfType(XMLException.class)
-      .isThrownBy(() -> deployBean.deployProcesses());
+    assertThatExceptionOfType(XMLException.class).isThrownBy(() -> deployBean.deployProcesses());
 
     assertThat(repositoryService.createProcessDefinitionQuery().count()).isEqualTo(0);
   }
-
 }

@@ -77,8 +77,8 @@ public class StartEvent extends Event {
     }
   }
 
-    @Override
-    public void accept(ReferenceOverrider referenceOverrider) {
-        referenceOverrider.override(this);
-    }
+  @Override
+  public void accept(ReferenceOverrider referenceOverrider) {
+    referenceOverrider.override(this);
+  }
 }

@@ -14,12 +14,10 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.test.mock;
 
 import java.beans.FeatureDescriptor;
 import java.util.Iterator;
-
 import javax.el.ELContext;
 import javax.el.ELResolver;
 
@@ -55,7 +53,5 @@ public class MockElResolver extends ELResolver {
   }
 
   @Override
-  public void setValue(ELContext context, Object base, Object property, Object value) {
-  }
-
+  public void setValue(ELContext context, Object base, Object property, Object value) {}
 }

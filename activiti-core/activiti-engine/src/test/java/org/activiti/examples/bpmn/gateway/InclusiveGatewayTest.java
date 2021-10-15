@@ -22,17 +22,13 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
-/**
- * Example of using the exclusive gateway.
- *
- */
+/** Example of using the exclusive gateway. */
 public class InclusiveGatewayTest extends PluggableActivitiTestCase {
 
   private static final String TASK1_NAME = "Send e-mail for more information";
@@ -40,7 +36,8 @@ public class InclusiveGatewayTest extends PluggableActivitiTestCase {
   private static final String TASK3_NAME = "Call customer";
 
   /**
-   * The test process has an OR gateway where, the 'input' variable is used to select the expected outgoing sequence flow.
+   * The test process has an OR gateway where, the 'input' variable is used to select the expected
+   * outgoing sequence flow.
    */
   @Deployment
   public void testDecisionFunctionality() {
@@ -90,7 +87,6 @@ public class InclusiveGatewayTest extends PluggableActivitiTestCase {
     variables.put("input", 4);
     // Exception is expected since no outgoing sequence flow matches
     assertThatExceptionOfType(ActivitiException.class)
-      .isThrownBy(() -> runtimeService.startProcessInstanceByKey("inclusiveGateway", variables));
+        .isThrownBy(() -> runtimeService.startProcessInstanceByKey("inclusiveGateway", variables));
   }
-
 }

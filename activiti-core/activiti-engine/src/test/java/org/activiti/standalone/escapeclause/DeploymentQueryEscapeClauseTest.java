@@ -28,22 +28,24 @@ public class DeploymentQueryEscapeClauseTest extends AbstractEscapeClauseTestCas
 
   @Override
   protected void setUp() throws Exception {
-    deploymentOneId = repositoryService
-      .createDeployment()
-      .tenantId("One%")
-      .name("one%")
-      .category("testCategory")
-      .addClasspathResource("org/activiti/engine/test/repository/one%.bpmn20.xml")
-      .deploy()
-      .getId();
+    deploymentOneId =
+        repositoryService
+            .createDeployment()
+            .tenantId("One%")
+            .name("one%")
+            .category("testCategory")
+            .addClasspathResource("org/activiti/engine/test/repository/one%.bpmn20.xml")
+            .deploy()
+            .getId();
 
-    deploymentTwoId = repositoryService
-      .createDeployment()
-      .tenantId("Two_")
-      .name("two_")
-      .addClasspathResource("org/activiti/engine/test/repository/two_.bpmn20.xml")
-      .deploy()
-      .getId();
+    deploymentTwoId =
+        repositoryService
+            .createDeployment()
+            .tenantId("Two_")
+            .name("two_")
+            .addClasspathResource("org/activiti/engine/test/repository/two_.bpmn20.xml")
+            .deploy()
+            .getId();
 
     super.setUp();
   }
@@ -68,13 +70,15 @@ public class DeploymentQueryEscapeClauseTest extends AbstractEscapeClauseTestCas
   }
 
   public void testQueryByProcessDefinitionKeyLike() {
-    DeploymentQuery query = repositoryService.createDeploymentQuery().processDefinitionKeyLike("%\\_%");
+    DeploymentQuery query =
+        repositoryService.createDeploymentQuery().processDefinitionKeyLike("%\\_%");
     assertThat(query.list()).hasSize(1);
     assertThat(query.count()).isEqualTo(1);
   }
 
   public void testQueryByTenantIdLike() {
-    DeploymentQuery query = repositoryService.createDeploymentQuery().deploymentTenantIdLike("%\\%%");
+    DeploymentQuery query =
+        repositoryService.createDeploymentQuery().deploymentTenantIdLike("%\\%%");
     assertThat(query.singleResult().getTenantId()).isEqualTo("One%");
     assertThat(query.list()).hasSize(1);
     assertThat(query.count()).isEqualTo(1);
@@ -84,5 +88,4 @@ public class DeploymentQueryEscapeClauseTest extends AbstractEscapeClauseTestCas
     assertThat(query.list()).hasSize(1);
     assertThat(query.count()).isEqualTo(1);
   }
-
 }

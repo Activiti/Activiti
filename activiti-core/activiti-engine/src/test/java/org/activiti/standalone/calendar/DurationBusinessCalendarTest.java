@@ -14,22 +14,18 @@
  * limitations under the License.
  */
 
-
 package org.activiti.standalone.calendar;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
 import org.activiti.engine.impl.calendar.DurationBusinessCalendar;
 import org.activiti.engine.impl.test.AbstractTestCase;
 import org.activiti.engine.impl.util.DefaultClockImpl;
 import org.activiti.engine.runtime.Clock;
 
-/**
-
- */
+/** */
 public class DurationBusinessCalendarTest extends AbstractTestCase {
 
   public void testSimpleDuration() throws Exception {
@@ -46,5 +42,4 @@ public class DurationBusinessCalendarTest extends AbstractTestCase {
 
     assertThat(duedate).isEqualTo(expectedDuedate);
   }
-
 }

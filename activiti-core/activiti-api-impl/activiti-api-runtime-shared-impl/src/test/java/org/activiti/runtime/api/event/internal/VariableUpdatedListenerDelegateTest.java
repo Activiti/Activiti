@@ -35,70 +35,66 @@ import org.mockito.Mock;
 
 public class VariableUpdatedListenerDelegateTest {
 
-    private VariableUpdatedListenerDelegate variableUpdatedListenerDelegate;
+  private VariableUpdatedListenerDelegate variableUpdatedListenerDelegate;
 
-    @Mock
-    private VariableEventListener<VariableUpdatedEvent> firstListener;
+  @Mock private VariableEventListener<VariableUpdatedEvent> firstListener;
 
-    @Mock
-    private VariableEventListener<VariableUpdatedEvent> secondListener;
+  @Mock private VariableEventListener<VariableUpdatedEvent> secondListener;
 
-    @Mock
-    private ToVariableUpdatedConverter converter;
+  @Mock private ToVariableUpdatedConverter converter;
 
-    @Mock
-    private VariableEventFilter variableEventFilter;
+  @Mock private VariableEventFilter variableEventFilter;
 
-    @BeforeEach
-    public void setUp() {
-        initMocks(this);
-        variableUpdatedListenerDelegate = new VariableUpdatedListenerDelegate(
+  @BeforeEach
+  public void setUp() {
+    initMocks(this);
+    variableUpdatedListenerDelegate =
+        new VariableUpdatedListenerDelegate(
             Arrays.asList(firstListener, secondListener), converter, variableEventFilter);
-    }
+  }
 
-    @Test
-    public void onEvent_should_callListenersWhenItsVariableEventAndItsNotFiltered() {
-        //given
-        ActivitiVariableUpdatedEventImpl internalEvent = new ActivitiVariableUpdatedEventImpl();
-        given(variableEventFilter.shouldEmmitEvent(internalEvent)).willReturn(true);
-        VariableUpdatedEvent apiEvent = mock(VariableUpdatedEvent.class);
-        given(converter.from(internalEvent)).willReturn(Optional.of(apiEvent));
+  @Test
+  public void onEvent_should_callListenersWhenItsVariableEventAndItsNotFiltered() {
+    // given
+    ActivitiVariableUpdatedEventImpl internalEvent = new ActivitiVariableUpdatedEventImpl();
+    given(variableEventFilter.shouldEmmitEvent(internalEvent)).willReturn(true);
+    VariableUpdatedEvent apiEvent = mock(VariableUpdatedEvent.class);
+    given(converter.from(internalEvent)).willReturn(Optional.of(apiEvent));
 
-        //when
-        variableUpdatedListenerDelegate.onEvent(internalEvent);
+    // when
+    variableUpdatedListenerDelegate.onEvent(internalEvent);
 
-        //then
-        verify(firstListener).onEvent(apiEvent);
-        verify(secondListener).onEvent(apiEvent);
-    }
+    // then
+    verify(firstListener).onEvent(apiEvent);
+    verify(secondListener).onEvent(apiEvent);
+  }
 
-    @Test
-    public void onEvent_shouldNot_callListenersWhenItsNotAVariableEvent() {
-        //given
-        ActivitiEvent internalEvent = mock(ActivitiEvent.class);
+  @Test
+  public void onEvent_shouldNot_callListenersWhenItsNotAVariableEvent() {
+    // given
+    ActivitiEvent internalEvent = mock(ActivitiEvent.class);
 
-        //when
-        variableUpdatedListenerDelegate.onEvent(internalEvent);
+    // when
+    variableUpdatedListenerDelegate.onEvent(internalEvent);
 
-        //then
-        verifyNoInteractions(firstListener);
-        verifyNoInteractions(secondListener);
-    }
+    // then
+    verifyNoInteractions(firstListener);
+    verifyNoInteractions(secondListener);
+  }
 
-    @Test
-    public void onEvent_shouldNot_callListenersWhenItsFiltered() {
-        //given
-        ActivitiVariableUpdatedEventImpl internalEvent = new ActivitiVariableUpdatedEventImpl();
-        given(variableEventFilter.shouldEmmitEvent(internalEvent)).willReturn(false);
-        VariableUpdatedEvent apiEvent = mock(VariableUpdatedEvent.class);
-        given(converter.from(internalEvent)).willReturn(Optional.of(apiEvent));
+  @Test
+  public void onEvent_shouldNot_callListenersWhenItsFiltered() {
+    // given
+    ActivitiVariableUpdatedEventImpl internalEvent = new ActivitiVariableUpdatedEventImpl();
+    given(variableEventFilter.shouldEmmitEvent(internalEvent)).willReturn(false);
+    VariableUpdatedEvent apiEvent = mock(VariableUpdatedEvent.class);
+    given(converter.from(internalEvent)).willReturn(Optional.of(apiEvent));
 
-        //when
-        variableUpdatedListenerDelegate.onEvent(internalEvent);
+    // when
+    variableUpdatedListenerDelegate.onEvent(internalEvent);
 
-        //then
-        verifyNoInteractions(firstListener);
-        verifyNoInteractions(secondListener);
-    }
-
+    // then
+    verifyNoInteractions(firstListener);
+    verifyNoInteractions(secondListener);
+  }
 }

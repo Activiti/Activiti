@@ -21,7 +21,6 @@ import org.activiti.engine.impl.interceptor.DelegateInterceptor;
 /**
  * Provides context about the invocation of usercode and handles the actual invocation
  *
-
  * @see DelegateInterceptor
  */
 public abstract class DelegateInvocation {
@@ -32,8 +31,7 @@ public abstract class DelegateInvocation {
   /**
    * make the invocation proceed, performing the actual invocation of the user code.
    *
-   * @throws Exception
-   *           the exception thrown by the user code
+   * @throws Exception the exception thrown by the user code
    */
   public void proceed() {
     invoke();
@@ -48,16 +46,11 @@ public abstract class DelegateInvocation {
     return invocationResult;
   }
 
-  /**
-   * @return an array of invocation parameters (null if the invocation takes no parameters)
-   */
+  /** @return an array of invocation parameters (null if the invocation takes no parameters) */
   public Object[] getInvocationParameters() {
     return invocationParameters;
   }
 
-  /**
-   * returns the target of the current invocation, ie. JavaDelegate, ValueExpression ...
-   */
+  /** returns the target of the current invocation, ie. JavaDelegate, ValueExpression ... */
   public abstract Object getTarget();
-
 }

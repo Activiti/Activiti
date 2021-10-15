@@ -17,84 +17,66 @@
 package org.activiti.engine.impl.persistence.entity;
 
 import java.util.List;
-
-import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.impl.JobQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.asyncexecutor.AcquireTimerJobsRunnable;
 import org.activiti.engine.impl.cmd.AcquireJobsCmd;
 import org.activiti.engine.runtime.Job;
 
-/**
- * {@link EntityManager} responsible for the {@link JobEntity} class.
- *
-
- */
+/** {@link EntityManager} responsible for the {@link JobEntity} class. */
 public interface JobEntityManager extends EntityManager<JobEntity> {
 
   /**
-   * Insert the {@link JobEntity}, similar to {@link #insert(JobEntity)},
-   * but returns a boolean in case the insert did not go through.
-   * This could happen if the execution related to the {@link JobEntity} has been removed.
+   * Insert the {@link JobEntity}, similar to {@link #insert(JobEntity)}, but returns a boolean in
+   * case the insert did not go through. This could happen if the execution related to the {@link
+   * JobEntity} has been removed.
    */
   boolean insertJobEntity(JobEntity timerJobEntity);
 
   /**
    * Returns {@link JobEntity} that are eligble to be executed.
    *
-   * For example used by the default {@link AcquireJobsCmd} command used by
-   * the default {@link AcquireTimerJobsRunnable} implementation to get async jobs
-   * that can be executed.
+   * <p>For example used by the default {@link AcquireJobsCmd} command used by the default {@link
+   * AcquireTimerJobsRunnable} implementation to get async jobs that can be executed.
    */
   List<JobEntity> findJobsToExecute(Page page);
 
-  /**
-   * Returns all {@link JobEntity} instances related to on {@link ExecutionEntity}.
-   */
+  /** Returns all {@link JobEntity} instances related to on {@link ExecutionEntity}. */
   List<JobEntity> findJobsByExecutionId(String executionId);
 
-  /**
-   * Returns all {@link JobEntity} instances related to on {@link ProcessDefinitionEntity}.
-   */
+  /** Returns all {@link JobEntity} instances related to on {@link ProcessDefinitionEntity}. */
   List<JobEntity> findJobsByProcessDefinitionId(String processDefinitionId);
 
-  /**
-   * Returns all {@link JobEntity} instances related to on {@link ProcessDefinitionEntity}.
-   */
+  /** Returns all {@link JobEntity} instances related to on {@link ProcessDefinitionEntity}. */
   List<JobEntity> findJobsByTypeAndProcessDefinitionId(String jobTypeTimer, String id);
 
   /**
-   * Returns all {@link JobEntity} instances related to one process instance {@link ExecutionEntity}.
+   * Returns all {@link JobEntity} instances related to one process instance {@link
+   * ExecutionEntity}.
    */
   List<JobEntity> findJobsByProcessInstanceId(String processInstanceId);
 
   /**
-   * Returns all {@link JobEntity} instance which are expired, which means
-   * that the lock time of the {@link JobEntity} is past a certain configurable
-   * date and is deemed to be in error.
+   * Returns all {@link JobEntity} instance which are expired, which means that the lock time of the
+   * {@link JobEntity} is past a certain configurable date and is deemed to be in error.
    */
   List<JobEntity> findExpiredJobs(Page page);
 
-  /**
-   * Executes a {@link JobQueryImpl} and returns the matching {@link JobEntity} instances.
-   */
+  /** Executes a {@link JobQueryImpl} and returns the matching {@link JobEntity} instances. */
   List<Job> findJobsByQueryCriteria(JobQueryImpl jobQuery, Page page);
 
   /**
-   * Same as {@link #findJobsByQueryCriteria(JobQueryImpl, Page)}, but only returns a count
-   * and not the instances itself.
+   * Same as {@link #findJobsByQueryCriteria(JobQueryImpl, Page)}, but only returns a count and not
+   * the instances itself.
    */
   long findJobCountByQueryCriteria(JobQueryImpl jobQuery);
 
   /**
-   * Resets an expired job. These are jobs that were locked, but not completed.
-   * Resetting these will make them available for being picked up by other executors.
+   * Resets an expired job. These are jobs that were locked, but not completed. Resetting these will
+   * make them available for being picked up by other executors.
    */
   void resetExpiredJob(String jobId);
 
-  /**
-   * Changes the tenantId for all jobs related to a given {@link DeploymentEntity}.
-   */
+  /** Changes the tenantId for all jobs related to a given {@link DeploymentEntity}. */
   void updateJobTenantIdForDeployment(String deploymentId, String newTenantId);
-
 }

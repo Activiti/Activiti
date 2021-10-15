@@ -14,13 +14,11 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.cmd;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.event.MessageEventHandler;
@@ -29,10 +27,7 @@ import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntityManager;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 
-/**
-
-
- */
+/** */
 public class MessageEventReceivedCmd extends NeedsActiveExecutionCmd<Void> {
 
   private static final long serialVersionUID = 1L;
@@ -41,7 +36,8 @@ public class MessageEventReceivedCmd extends NeedsActiveExecutionCmd<Void> {
   protected final String messageName;
   protected final boolean async;
 
-  public MessageEventReceivedCmd(String messageName, String executionId, Map<String, Object> processVariables) {
+  public MessageEventReceivedCmd(
+      String messageName, String executionId, Map<String, Object> processVariables) {
     super(executionId);
     this.messageName = messageName;
 
@@ -66,12 +62,19 @@ public class MessageEventReceivedCmd extends NeedsActiveExecutionCmd<Void> {
       throw new ActivitiIllegalArgumentException("messageName cannot be null");
     }
 
-    EventSubscriptionEntityManager eventSubscriptionEntityManager = commandContext.getEventSubscriptionEntityManager();
-    List<EventSubscriptionEntity> eventSubscriptions = eventSubscriptionEntityManager.
-        findEventSubscriptionsByNameAndExecution(MessageEventHandler.EVENT_HANDLER_TYPE, messageName, executionId);
+    EventSubscriptionEntityManager eventSubscriptionEntityManager =
+        commandContext.getEventSubscriptionEntityManager();
+    List<EventSubscriptionEntity> eventSubscriptions =
+        eventSubscriptionEntityManager.findEventSubscriptionsByNameAndExecution(
+            MessageEventHandler.EVENT_HANDLER_TYPE, messageName, executionId);
 
     if (eventSubscriptions.isEmpty()) {
-      throw new ActivitiException("Execution with id '" + executionId + "' does not have a subscription to a message event with name '" + messageName + "'");
+      throw new ActivitiException(
+          "Execution with id '"
+              + executionId
+              + "' does not have a subscription to a message event with name '"
+              + messageName
+              + "'");
     }
 
     // there can be only one:
@@ -80,5 +83,4 @@ public class MessageEventReceivedCmd extends NeedsActiveExecutionCmd<Void> {
 
     return null;
   }
-
 }

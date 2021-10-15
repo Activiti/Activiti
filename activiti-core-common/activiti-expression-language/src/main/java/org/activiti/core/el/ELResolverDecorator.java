@@ -20,50 +20,48 @@ import java.util.Iterator;
 import javax.el.ELContext;
 import javax.el.ELResolver;
 
-/**
- * Generic Decorator for {@link ELResolver} implementations.
- */
+/** Generic Decorator for {@link ELResolver} implementations. */
 public abstract class ELResolverDecorator extends ELResolver {
 
-    private final ELResolver decoratedResolver;
+  private final ELResolver decoratedResolver;
 
-    public ELResolverDecorator(ELResolver resolver) {
-        this.decoratedResolver = resolver;
-    }
+  public ELResolverDecorator(ELResolver resolver) {
+    this.decoratedResolver = resolver;
+  }
 
+  @Override
+  public Object getValue(ELContext context, Object base, Object property) {
+    return decoratedResolver.getValue(context, base, property);
+  }
 
-    @Override
-    public Object getValue(ELContext context, Object base, Object property) {
-        return decoratedResolver.getValue(context, base, property);
-    }
+  @Override
+  public Class<?> getType(ELContext context, Object base, Object property) {
+    return decoratedResolver.getType(context, base, property);
+  }
 
-    @Override
-    public Class<?> getType(ELContext context, Object base, Object property) {
-        return decoratedResolver.getType(context, base, property);
-    }
+  @Override
+  public void setValue(ELContext context, Object base, Object property, Object value) {
+    decoratedResolver.setValue(context, base, property, value);
+  }
 
-    @Override
-    public void setValue(ELContext context, Object base, Object property, Object value) {
-        decoratedResolver.setValue(context, base, property, value);
-    }
+  @Override
+  public Object invoke(
+      ELContext context, Object base, Object method, Class<?>[] paramTypes, Object[] params) {
+    return decoratedResolver.invoke(context, base, method, paramTypes, params);
+  }
 
-    @Override
-    public Object invoke(ELContext context, Object base, Object method, Class<?>[] paramTypes, Object[] params) {
-        return decoratedResolver.invoke(context, base, method, paramTypes, params);
-    }
+  @Override
+  public boolean isReadOnly(ELContext context, Object base, Object property) {
+    return decoratedResolver.isReadOnly(context, base, property);
+  }
 
-    @Override
-    public boolean isReadOnly(ELContext context, Object base, Object property) {
-        return decoratedResolver.isReadOnly(context, base, property);
-    }
+  @Override
+  public Iterator<FeatureDescriptor> getFeatureDescriptors(ELContext context, Object base) {
+    return decoratedResolver.getFeatureDescriptors(context, base);
+  }
 
-    @Override
-    public Iterator<FeatureDescriptor> getFeatureDescriptors(ELContext context, Object base) {
-        return decoratedResolver.getFeatureDescriptors(context, base);
-    }
-
-    @Override
-    public Class<?> getCommonPropertyType(ELContext context, Object base) {
-        return decoratedResolver.getCommonPropertyType(context, base);
-    }
+  @Override
+  public Class<?> getCommonPropertyType(ELContext context, Object base) {
+    return decoratedResolver.getCommonPropertyType(context, base);
+  }
 }

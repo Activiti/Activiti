@@ -20,7 +20,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.JavaDelegate;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
@@ -28,23 +27,25 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
-/**
-
- */
+/** */
 public class SerializableVariableTest extends PluggableActivitiTestCase {
 
   @Deployment
   public void testUpdateSerializableInServiceTask() {
     Map<String, Object> vars = new HashMap<String, Object>();
     vars.put("myVar", new TestSerializableVariable(1));
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testUpdateSerializableInServiceTask", vars);
+    ProcessInstance processInstance =
+        runtimeService.startProcessInstanceByKey("testUpdateSerializableInServiceTask", vars);
 
-    // There is a task here, such the VariableInstanceEntityImpl is inserter first, and updated later
+    // There is a task here, such the VariableInstanceEntityImpl is inserter first, and updated
+    // later
     // (instead of being inserted/updated in the same Tx)
-    Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+    Task task =
+        taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     taskService.complete(task.getId());
 
-    TestSerializableVariable testSerializableVariable = (TestSerializableVariable) runtimeService.getVariable(processInstance.getId(), "myVar");
+    TestSerializableVariable testSerializableVariable =
+        (TestSerializableVariable) runtimeService.getVariable(processInstance.getId(), "myVar");
     assertThat(testSerializableVariable.getNumber()).isEqualTo(2);
   }
 
@@ -54,7 +55,6 @@ public class SerializableVariableTest extends PluggableActivitiTestCase {
       TestSerializableVariable var = (TestSerializableVariable) execution.getVariable("myVar");
       var.setNumber(2);
     }
-
   }
 
   public static class TestSerializableVariable implements Serializable {
@@ -73,7 +73,5 @@ public class SerializableVariableTest extends PluggableActivitiTestCase {
     public void setNumber(int number) {
       this.number = number;
     }
-
   }
-
 }

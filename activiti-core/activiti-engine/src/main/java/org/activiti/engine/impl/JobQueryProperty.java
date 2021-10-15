@@ -14,28 +14,24 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import org.activiti.engine.query.QueryProperty;
 import org.activiti.engine.runtime.JobQuery;
 
-/**
- * Contains the possible properties that can be used in a {@link JobQuery}.
- *
-
- */
+/** Contains the possible properties that can be used in a {@link JobQuery}. */
 public class JobQueryProperty implements QueryProperty {
 
   private static final long serialVersionUID = 1L;
 
-  private static final Map<String, JobQueryProperty> properties = new HashMap<String, JobQueryProperty>();
+  private static final Map<String, JobQueryProperty> properties =
+      new HashMap<String, JobQueryProperty>();
 
   public static final JobQueryProperty JOB_ID = new JobQueryProperty("ID_");
-  public static final JobQueryProperty PROCESS_INSTANCE_ID = new JobQueryProperty("RES.PROCESS_INSTANCE_ID_");
+  public static final JobQueryProperty PROCESS_INSTANCE_ID =
+      new JobQueryProperty("RES.PROCESS_INSTANCE_ID_");
   public static final JobQueryProperty EXECUTION_ID = new JobQueryProperty("RES.EXECUTION_ID_");
   public static final JobQueryProperty DUEDATE = new JobQueryProperty("RES.DUEDATE_");
   public static final JobQueryProperty RETRIES = new JobQueryProperty("RES.RETRIES_");
@@ -55,5 +51,4 @@ public class JobQueryProperty implements QueryProperty {
   public static JobQueryProperty findByName(String propertyName) {
     return properties.get(propertyName);
   }
-
 }

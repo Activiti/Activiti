@@ -20,13 +20,9 @@ import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.ActivitiProcessCancelledEvent;
 import org.activiti.engine.runtime.ProcessInstance;
 
-/**
- * An {@link org.activiti.engine.delegate.event.ActivitiCancelledEvent} implementation.
- *
-
- */
-public class ActivitiProcessCancelledEventImpl extends ActivitiEntityEventImpl implements
-    ActivitiProcessCancelledEvent {
+/** An {@link org.activiti.engine.delegate.event.ActivitiCancelledEvent} implementation. */
+public class ActivitiProcessCancelledEventImpl extends ActivitiEntityEventImpl
+    implements ActivitiProcessCancelledEvent {
 
   protected Object cause;
 
@@ -41,5 +37,4 @@ public class ActivitiProcessCancelledEventImpl extends ActivitiEntityEventImpl i
   public Object getCause() {
     return cause;
   }
-
 }

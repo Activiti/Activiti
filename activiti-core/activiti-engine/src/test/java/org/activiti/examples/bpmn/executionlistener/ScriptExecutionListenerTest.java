@@ -21,24 +21,29 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.activiti.engine.history.HistoricVariableInstance;
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
 
-/**
-
- */
+/** */
 public class ScriptExecutionListenerTest extends PluggableActivitiTestCase {
 
-  @Deployment(resources = { "org/activiti/examples/bpmn/executionlistener/ScriptExecutionListenerTest.bpmn20.xml" })
+  @Deployment(
+      resources = {
+        "org/activiti/examples/bpmn/executionlistener/ScriptExecutionListenerTest.bpmn20.xml"
+      })
   public void testScriptExecutionListener() {
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("scriptExecutionListenerProcess");
+    ProcessInstance processInstance =
+        runtimeService.startProcessInstanceByKey("scriptExecutionListenerProcess");
 
     if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
-      List<HistoricVariableInstance> historicVariables = historyService.createHistoricVariableInstanceQuery().processInstanceId(processInstance.getId()).list();
+      List<HistoricVariableInstance> historicVariables =
+          historyService
+              .createHistoricVariableInstanceQuery()
+              .processInstanceId(processInstance.getId())
+              .list();
       Map<String, Object> varMap = new HashMap<String, Object>();
       for (HistoricVariableInstance historicVariableInstance : historicVariables) {
         varMap.put(historicVariableInstance.getVariableName(), historicVariableInstance.getValue());
@@ -53,5 +58,4 @@ public class ScriptExecutionListenerTest extends PluggableActivitiTestCase {
       assertThat(varMap.get("myVar")).isEqualTo("BAR");
     }
   }
-
 }

@@ -16,12 +16,8 @@
 
 package org.activiti.engine.impl.bpmn.data;
 
-/**
- * Implementation of the BPMN 2.0 'itemKind'
- *
-
- */
+/** Implementation of the BPMN 2.0 'itemKind' */
 public enum ItemKind {
-
-  Information, Physical
+  Information,
+  Physical
 }

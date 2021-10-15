@@ -14,15 +14,13 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import org.activiti.api.runtime.shared.identity.UserGroupManager;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
@@ -37,7 +35,9 @@ import org.activiti.engine.impl.variable.VariableTypes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<HistoricTaskInstanceQuery, HistoricTaskInstance> implements HistoricTaskInstanceQuery {
+public class HistoricTaskInstanceQueryImpl
+    extends AbstractVariableQueryImpl<HistoricTaskInstanceQuery, HistoricTaskInstance>
+    implements HistoricTaskInstanceQuery {
 
   private static final long serialVersionUID = 1L;
 
@@ -112,12 +112,12 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
   protected boolean includeTaskLocalVariables = false;
   protected boolean includeProcessVariables = false;
   protected Integer taskVariablesLimit;
-  protected List<HistoricTaskInstanceQueryImpl> orQueryObjects = new ArrayList<HistoricTaskInstanceQueryImpl>();
+  protected List<HistoricTaskInstanceQueryImpl> orQueryObjects =
+      new ArrayList<HistoricTaskInstanceQueryImpl>();
   protected HistoricTaskInstanceQueryImpl currentOrQueryObject = null;
   protected boolean inOrStatement = false;
 
-  public HistoricTaskInstanceQueryImpl() {
-  }
+  public HistoricTaskInstanceQueryImpl() {}
 
   public HistoricTaskInstanceQueryImpl(CommandExecutor commandExecutor) {
     super(commandExecutor);
@@ -132,7 +132,9 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
   public long executeCount(CommandContext commandContext) {
     ensureVariablesInitialized();
     checkQueryOk();
-    return commandContext.getHistoricTaskInstanceEntityManager().findHistoricTaskInstanceCountByQueryCriteria(this);
+    return commandContext
+        .getHistoricTaskInstanceEntityManager()
+        .findHistoricTaskInstanceCountByQueryCriteria(this);
   }
 
   @Override
@@ -141,12 +143,21 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
     checkQueryOk();
     List<HistoricTaskInstance> tasks = null;
     if (includeTaskLocalVariables || includeProcessVariables) {
-      tasks = commandContext.getHistoricTaskInstanceEntityManager().findHistoricTaskInstancesAndVariablesByQueryCriteria(this);
+      tasks =
+          commandContext
+              .getHistoricTaskInstanceEntityManager()
+              .findHistoricTaskInstancesAndVariablesByQueryCriteria(this);
     } else {
-      tasks = commandContext.getHistoricTaskInstanceEntityManager().findHistoricTaskInstancesByQueryCriteria(this);
+      tasks =
+          commandContext
+              .getHistoricTaskInstanceEntityManager()
+              .findHistoricTaskInstancesByQueryCriteria(this);
     }
 
-    if (tasks != null && Context.getProcessEngineConfiguration().getPerformanceSettings().isEnableLocalization()) {
+    if (tasks != null
+        && Context.getProcessEngineConfiguration()
+            .getPerformanceSettings()
+            .isEnableLocalization()) {
       for (HistoricTaskInstance task : tasks) {
         localize(task);
       }
@@ -174,7 +185,8 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
     }
     for (String processInstanceId : processInstanceIds) {
       if (processInstanceId == null) {
-        throw new ActivitiIllegalArgumentException("None of the given process instance ids can be null");
+        throw new ActivitiIllegalArgumentException(
+            "None of the given process instance ids can be null");
       }
     }
 
@@ -186,7 +198,8 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
     return this;
   }
 
-  public HistoricTaskInstanceQueryImpl processInstanceBusinessKey(String processInstanceBusinessKey) {
+  public HistoricTaskInstanceQueryImpl processInstanceBusinessKey(
+      String processInstanceBusinessKey) {
     if (inOrStatement) {
       this.currentOrQueryObject.processInstanceBusinessKey = processInstanceBusinessKey;
     } else {
@@ -195,7 +208,8 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
     return this;
   }
 
-  public HistoricTaskInstanceQueryImpl processInstanceBusinessKeyLike(String processInstanceBusinessKeyLike) {
+  public HistoricTaskInstanceQueryImpl processInstanceBusinessKeyLike(
+      String processInstanceBusinessKeyLike) {
     if (inOrStatement) {
       this.currentOrQueryObject.processInstanceBusinessKeyLike = processInstanceBusinessKeyLike;
     } else {
@@ -204,11 +218,14 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
     return this;
   }
 
-  public HistoricTaskInstanceQuery processInstanceBusinessKeyLikeIgnoreCase(String processInstanceBusinessKeyLikeIgnoreCase) {
-  	if (inOrStatement) {
-      this.currentOrQueryObject.processInstanceBusinessKeyLikeIgnoreCase = processInstanceBusinessKeyLikeIgnoreCase.toLowerCase();
+  public HistoricTaskInstanceQuery processInstanceBusinessKeyLikeIgnoreCase(
+      String processInstanceBusinessKeyLikeIgnoreCase) {
+    if (inOrStatement) {
+      this.currentOrQueryObject.processInstanceBusinessKeyLikeIgnoreCase =
+          processInstanceBusinessKeyLikeIgnoreCase.toLowerCase();
     } else {
-      this.processInstanceBusinessKeyLikeIgnoreCase = processInstanceBusinessKeyLikeIgnoreCase.toLowerCase();
+      this.processInstanceBusinessKeyLikeIgnoreCase =
+          processInstanceBusinessKeyLikeIgnoreCase.toLowerCase();
     }
     return this;
   }
@@ -249,13 +266,15 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
     return this;
   }
 
-  public HistoricTaskInstanceQuery processDefinitionKeyLikeIgnoreCase(String processDefinitionKeyLikeIgnoreCase) {
-  	 if (inOrStatement) {
-       this.currentOrQueryObject.processDefinitionKeyLikeIgnoreCase = processDefinitionKeyLikeIgnoreCase.toLowerCase();
-     } else {
-       this.processDefinitionKeyLikeIgnoreCase = processDefinitionKeyLikeIgnoreCase.toLowerCase();
-     }
-     return this;
+  public HistoricTaskInstanceQuery processDefinitionKeyLikeIgnoreCase(
+      String processDefinitionKeyLikeIgnoreCase) {
+    if (inOrStatement) {
+      this.currentOrQueryObject.processDefinitionKeyLikeIgnoreCase =
+          processDefinitionKeyLikeIgnoreCase.toLowerCase();
+    } else {
+      this.processDefinitionKeyLikeIgnoreCase = processDefinitionKeyLikeIgnoreCase.toLowerCase();
+    }
+    return this;
   }
 
   public HistoricTaskInstanceQuery processDefinitionKeyIn(List<String> processDefinitionKeys) {
@@ -295,11 +314,12 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
     }
     for (String processCategory : processCategoryInList) {
       if (processCategory == null) {
-        throw new ActivitiIllegalArgumentException("None of the given process categories can be null");
+        throw new ActivitiIllegalArgumentException(
+            "None of the given process categories can be null");
       }
     }
 
-    if(inOrStatement) {
+    if (inOrStatement) {
       currentOrQueryObject.processCategoryInList = processCategoryInList;
     } else {
       this.processCategoryInList = processCategoryInList;
@@ -317,11 +337,12 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
     }
     for (String processCategory : processCategoryNotInList) {
       if (processCategory == null) {
-        throw new ActivitiIllegalArgumentException("None of the given process categories can be null");
+        throw new ActivitiIllegalArgumentException(
+            "None of the given process categories can be null");
       }
     }
 
-    if(inOrStatement) {
+    if (inOrStatement) {
       currentOrQueryObject.processCategoryNotInList = processCategoryNotInList;
     } else {
       this.processCategoryNotInList = processCategoryNotInList;
@@ -374,16 +395,19 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
     }
 
     if (taskName != null) {
-      throw new ActivitiIllegalArgumentException("Invalid query usage: cannot set both taskNameIn and taskName");
+      throw new ActivitiIllegalArgumentException(
+          "Invalid query usage: cannot set both taskNameIn and taskName");
     }
     if (taskNameLike != null) {
-      throw new ActivitiIllegalArgumentException("Invalid query usage: cannot set both taskNameIn and taskNameLike");
+      throw new ActivitiIllegalArgumentException(
+          "Invalid query usage: cannot set both taskNameIn and taskNameLike");
     }
     if (taskNameLikeIgnoreCase != null) {
-      throw new ActivitiIllegalArgumentException("Invalid query usage: cannot set both taskNameIn and taskNameLikeIgnoreCase");
+      throw new ActivitiIllegalArgumentException(
+          "Invalid query usage: cannot set both taskNameIn and taskNameLikeIgnoreCase");
     }
 
-    if(inOrStatement) {
+    if (inOrStatement) {
       currentOrQueryObject.taskNameList = taskNameList;
     } else {
       this.taskNameList = taskNameList;
@@ -406,13 +430,16 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
     }
 
     if (taskName != null) {
-      throw new ActivitiIllegalArgumentException("Invalid query usage: cannot set both taskNameInIgnoreCase and name");
+      throw new ActivitiIllegalArgumentException(
+          "Invalid query usage: cannot set both taskNameInIgnoreCase and name");
     }
     if (taskNameLike != null) {
-      throw new ActivitiIllegalArgumentException("Invalid query usage: cannot set both taskNameInIgnoreCase and nameLike");
+      throw new ActivitiIllegalArgumentException(
+          "Invalid query usage: cannot set both taskNameInIgnoreCase and nameLike");
     }
     if (taskNameLikeIgnoreCase != null) {
-      throw new ActivitiIllegalArgumentException("Invalid query usage: cannot set both taskNameInIgnoreCase and nameLikeIgnoreCase");
+      throw new ActivitiIllegalArgumentException(
+          "Invalid query usage: cannot set both taskNameInIgnoreCase and nameLikeIgnoreCase");
     }
 
     final int nameListSize = taskNameList.size();
@@ -439,7 +466,7 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
   }
 
   public HistoricTaskInstanceQuery taskNameLikeIgnoreCase(String taskNameLikeIgnoreCase) {
-  	if (inOrStatement) {
+    if (inOrStatement) {
       this.currentOrQueryObject.taskNameLikeIgnoreCase = taskNameLikeIgnoreCase.toLowerCase();
     } else {
       this.taskNameLikeIgnoreCase = taskNameLikeIgnoreCase.toLowerCase();
@@ -474,9 +501,11 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
     return this;
   }
 
-  public HistoricTaskInstanceQuery taskDescriptionLikeIgnoreCase(String taskDescriptionLikeIgnoreCase) {
+  public HistoricTaskInstanceQuery taskDescriptionLikeIgnoreCase(
+      String taskDescriptionLikeIgnoreCase) {
     if (inOrStatement) {
-      this.currentOrQueryObject.taskDescriptionLikeIgnoreCase = taskDescriptionLikeIgnoreCase.toLowerCase();
+      this.currentOrQueryObject.taskDescriptionLikeIgnoreCase =
+          taskDescriptionLikeIgnoreCase.toLowerCase();
     } else {
       this.taskDescriptionLikeIgnoreCase = taskDescriptionLikeIgnoreCase.toLowerCase();
     }
@@ -520,12 +549,13 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
   }
 
   public HistoricTaskInstanceQuery taskAssigneeLikeIgnoreCase(String taskAssigneeLikeIgnoreCase) {
-  	 if (inOrStatement) {
-       this.currentOrQueryObject.taskAssigneeLikeIgnoreCase = taskAssigneeLikeIgnoreCase.toLowerCase();
-     } else {
-       this.taskAssigneeLikeIgnoreCase = taskAssigneeLikeIgnoreCase.toLowerCase();
-     }
-     return this;
+    if (inOrStatement) {
+      this.currentOrQueryObject.taskAssigneeLikeIgnoreCase =
+          taskAssigneeLikeIgnoreCase.toLowerCase();
+    } else {
+      this.taskAssigneeLikeIgnoreCase = taskAssigneeLikeIgnoreCase.toLowerCase();
+    }
+    return this;
   }
 
   @Override
@@ -543,13 +573,16 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
     }
 
     if (taskAssignee != null) {
-      throw new ActivitiIllegalArgumentException("Invalid query usage: cannot set both taskAssigneeIds and taskAssignee");
+      throw new ActivitiIllegalArgumentException(
+          "Invalid query usage: cannot set both taskAssigneeIds and taskAssignee");
     }
     if (taskAssigneeLike != null) {
-      throw new ActivitiIllegalArgumentException("Invalid query usage: cannot set both taskAssigneeIds and taskAssigneeLike");
+      throw new ActivitiIllegalArgumentException(
+          "Invalid query usage: cannot set both taskAssigneeIds and taskAssigneeLike");
     }
     if (taskAssigneeLikeIgnoreCase != null) {
-      throw new ActivitiIllegalArgumentException("Invalid query usage: cannot set both taskAssigneeIds and taskAssigneeLikeIgnoreCase");
+      throw new ActivitiIllegalArgumentException(
+          "Invalid query usage: cannot set both taskAssigneeIds and taskAssigneeLikeIgnoreCase");
     }
 
     if (inOrStatement) {
@@ -558,7 +591,7 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
       this.taskAssigneeIds = assigneeIds;
     }
     return this;
-}
+  }
 
   public HistoricTaskInstanceQuery taskOwner(String taskOwner) {
     if (inOrStatement) {
@@ -579,7 +612,7 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
   }
 
   public HistoricTaskInstanceQuery taskOwnerLikeIgnoreCase(String taskOwnerLikeIgnoreCase) {
-  	if (inOrStatement) {
+    if (inOrStatement) {
       this.currentOrQueryObject.taskOwnerLikeIgnoreCase = taskOwnerLikeIgnoreCase.toLowerCase();
     } else {
       this.taskOwnerLikeIgnoreCase = taskOwnerLikeIgnoreCase.toLowerCase();
@@ -605,7 +638,8 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
     return this;
   }
 
-  public HistoricTaskInstanceQuery taskVariableValueEquals(String variableName, Object variableValue) {
+  public HistoricTaskInstanceQuery taskVariableValueEquals(
+      String variableName, Object variableValue) {
     if (inOrStatement) {
       currentOrQueryObject.variableValueEquals(variableName, variableValue);
       return this;
@@ -641,7 +675,8 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
     }
   }
 
-  public HistoricTaskInstanceQuery taskVariableValueNotEquals(String variableName, Object variableValue) {
+  public HistoricTaskInstanceQuery taskVariableValueNotEquals(
+      String variableName, Object variableValue) {
     if (inOrStatement) {
       currentOrQueryObject.variableValueNotEquals(variableName, variableValue);
       return this;
@@ -704,7 +739,8 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
     }
   }
 
-  public HistoricTaskInstanceQuery processVariableValueEquals(String variableName, Object variableValue) {
+  public HistoricTaskInstanceQuery processVariableValueEquals(
+      String variableName, Object variableValue) {
     if (inOrStatement) {
       currentOrQueryObject.variableValueEquals(variableName, variableValue, false);
       return this;
@@ -713,7 +749,8 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
     }
   }
 
-  public HistoricTaskInstanceQuery processVariableValueNotEquals(String variableName, Object variableValue) {
+  public HistoricTaskInstanceQuery processVariableValueNotEquals(
+      String variableName, Object variableValue) {
     if (inOrStatement) {
       currentOrQueryObject.variableValueNotEquals(variableName, variableValue, false);
       return this;
@@ -740,7 +777,8 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
     }
   }
 
-  public HistoricTaskInstanceQuery processVariableValueNotEqualsIgnoreCase(String name, String value) {
+  public HistoricTaskInstanceQuery processVariableValueNotEqualsIgnoreCase(
+      String name, String value) {
     if (inOrStatement) {
       currentOrQueryObject.variableValueNotEqualsIgnoreCase(name, value, false);
       return this;
@@ -758,7 +796,8 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
     }
   }
 
-  public HistoricTaskInstanceQuery processVariableValueGreaterThanOrEqual(String name, Object value) {
+  public HistoricTaskInstanceQuery processVariableValueGreaterThanOrEqual(
+      String name, Object value) {
     if (inOrStatement) {
       currentOrQueryObject.variableValueGreaterThanOrEqual(name, value, false);
       return this;
@@ -976,7 +1015,6 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
     return this;
   }
 
-
   public HistoricTaskInstanceQuery taskCandidateUser(String candidateUser) {
     if (candidateUser == null) {
       throw new ActivitiIllegalArgumentException("Candidate user is null");
@@ -990,7 +1028,8 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
     return this;
   }
 
-  public HistoricTaskInstanceQuery taskCandidateUser(String candidateUser, List<String> usersGroups) {
+  public HistoricTaskInstanceQuery taskCandidateUser(
+      String candidateUser, List<String> usersGroups) {
     if (candidateUser == null) {
       throw new ActivitiIllegalArgumentException("Candidate user is null");
     }
@@ -1011,7 +1050,8 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
     }
 
     if (candidateGroups != null) {
-      throw new ActivitiIllegalArgumentException("Invalid query usage: cannot set both candidateGroup and candidateGroupIn");
+      throw new ActivitiIllegalArgumentException(
+          "Invalid query usage: cannot set both candidateGroup and candidateGroupIn");
     }
 
     if (inOrStatement) {
@@ -1032,7 +1072,8 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
     }
 
     if (candidateGroup != null) {
-      throw new ActivitiIllegalArgumentException("Invalid query usage: cannot set both candidateGroupIn and candidateGroup");
+      throw new ActivitiIllegalArgumentException(
+          "Invalid query usage: cannot set both candidateGroupIn and candidateGroup");
     }
 
     if (inOrStatement) {
@@ -1068,10 +1109,10 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
   }
 
   public HistoricTaskInstanceQuery taskTenantId(String tenantId) {
-  	if (tenantId == null) {
-  		throw new ActivitiIllegalArgumentException("task tenant id is null");
-  	}
-  	if (inOrStatement) {
+    if (tenantId == null) {
+      throw new ActivitiIllegalArgumentException("task tenant id is null");
+    }
+    if (inOrStatement) {
       this.currentOrQueryObject.tenantId = tenantId;
     } else {
       this.tenantId = tenantId;
@@ -1080,10 +1121,10 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
   }
 
   public HistoricTaskInstanceQuery taskTenantIdLike(String tenantIdLike) {
-  	if (tenantIdLike == null) {
-  		throw new ActivitiIllegalArgumentException("task tenant id is null");
-  	}
-  	if (inOrStatement) {
+    if (tenantIdLike == null) {
+      throw new ActivitiIllegalArgumentException("task tenant id is null");
+    }
+    if (inOrStatement) {
       this.currentOrQueryObject.tenantIdLike = tenantIdLike;
     } else {
       this.tenantIdLike = tenantIdLike;
@@ -1158,14 +1199,17 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
     if (locale != null) {
       String processDefinitionId = task.getProcessDefinitionId();
       if (processDefinitionId != null) {
-        ObjectNode languageNode = Context.getLocalizationElementProperties(locale, task.getTaskDefinitionKey(), processDefinitionId, withLocalizationFallback);
+        ObjectNode languageNode =
+            Context.getLocalizationElementProperties(
+                locale, task.getTaskDefinitionKey(), processDefinitionId, withLocalizationFallback);
         if (languageNode != null) {
           JsonNode languageNameNode = languageNode.get(DynamicBpmnConstants.LOCALIZATION_NAME);
           if (languageNameNode != null && !languageNameNode.isNull()) {
             taskEntity.setLocalizedName(languageNameNode.asText());
           }
 
-          JsonNode languageDescriptionNode = languageNode.get(DynamicBpmnConstants.LOCALIZATION_DESCRIPTION);
+          JsonNode languageDescriptionNode =
+              languageNode.get(DynamicBpmnConstants.LOCALIZATION_DESCRIPTION);
           if (languageDescriptionNode != null && !languageDescriptionNode.isNull()) {
             taskEntity.setLocalizedDescription(languageDescriptionNode.asText());
           }
@@ -1252,7 +1296,8 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
   }
 
   public HistoricTaskInstanceQuery orderByDueDateNullsFirst() {
-    return orderBy(HistoricTaskInstanceQueryProperty.TASK_DUE_DATE, NullHandlingOnOrder.NULLS_FIRST);
+    return orderBy(
+        HistoricTaskInstanceQueryProperty.TASK_DUE_DATE, NullHandlingOnOrder.NULLS_FIRST);
   }
 
   public HistoricTaskInstanceQuery orderByDueDateNullsLast() {
@@ -1305,7 +1350,7 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
       candidateGroupList.add(candidateGroup);
       return candidateGroupList;
 
-    } else if(candidateGroups != null) {
+    } else if (candidateGroups != null) {
       return candidateGroups;
 
     } else if (candidateUser != null) {
@@ -1315,11 +1360,14 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
   }
 
   protected List<String> getGroupsForCandidateUser(String candidateUser) {
-    UserGroupManager userGroupManager = Context.getProcessEngineConfiguration().getUserGroupManager();
-    if(userGroupManager !=null){
+    UserGroupManager userGroupManager =
+        Context.getProcessEngineConfiguration().getUserGroupManager();
+    if (userGroupManager != null) {
       return userGroupManager.getUserGroups(candidateUser);
-    } else{
-      log.warn("No UserGroupManager set on ProcessEngineConfiguration. Tasks queried only where user is directly related, not through groups.");
+    } else {
+      log.warn(
+          "No UserGroupManager set on ProcessEngineConfiguration. Tasks queried only where user is"
+              + " directly related, not through groups.");
     }
     return null;
   }
@@ -1354,9 +1402,11 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
   public String getProcessDefinitionKeyLike() {
     return processDefinitionKeyLike;
   }
+
   public List<String> getProcessDefinitionKeys() {
     return processDefinitionKeys;
   }
+
   public String getProcessDefinitionName() {
     return processDefinitionName;
   }
@@ -1514,8 +1564,8 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
   }
 
   public List<String> getTaskAssigneeIds() {
-	    return taskAssigneeIds;
-	}
+    return taskAssigneeIds;
+  }
 
   public String getTaskAssignee() {
     return taskAssignee;
@@ -1560,34 +1610,36 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
   public String getInvolvedUser() {
     return involvedUser;
   }
+
   public List<String> getInvolvedGroups() {
     return involvedGroups;
   }
-	public String getProcessDefinitionKeyLikeIgnoreCase() {
-		return processDefinitionKeyLikeIgnoreCase;
-	}
 
-	public String getProcessInstanceBusinessKeyLikeIgnoreCase() {
-		return processInstanceBusinessKeyLikeIgnoreCase;
-	}
+  public String getProcessDefinitionKeyLikeIgnoreCase() {
+    return processDefinitionKeyLikeIgnoreCase;
+  }
 
-	public String getTaskNameLikeIgnoreCase() {
-		return taskNameLikeIgnoreCase;
-	}
+  public String getProcessInstanceBusinessKeyLikeIgnoreCase() {
+    return processInstanceBusinessKeyLikeIgnoreCase;
+  }
 
-	public String getTaskDescriptionLikeIgnoreCase() {
-		return taskDescriptionLikeIgnoreCase;
-	}
+  public String getTaskNameLikeIgnoreCase() {
+    return taskNameLikeIgnoreCase;
+  }
 
-	public String getTaskOwnerLikeIgnoreCase() {
-		return taskOwnerLikeIgnoreCase;
-	}
+  public String getTaskDescriptionLikeIgnoreCase() {
+    return taskDescriptionLikeIgnoreCase;
+  }
 
-	public String getTaskAssigneeLikeIgnoreCase() {
-		return taskAssigneeLikeIgnoreCase;
-	}
+  public String getTaskOwnerLikeIgnoreCase() {
+    return taskOwnerLikeIgnoreCase;
+  }
 
-	public String getLocale() {
+  public String getTaskAssigneeLikeIgnoreCase() {
+    return taskAssigneeLikeIgnoreCase;
+  }
+
+  public String getLocale() {
     return locale;
   }
 

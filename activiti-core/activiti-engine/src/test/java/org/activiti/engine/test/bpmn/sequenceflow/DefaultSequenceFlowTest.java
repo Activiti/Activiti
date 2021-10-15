@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.test.bpmn.sequenceflow;
 
 import static java.util.Collections.singletonMap;
@@ -24,22 +23,45 @@ import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.test.Deployment;
 import org.activiti.engine.test.bpmn.gateway.ExclusiveGatewayTest;
 
-/**
- * See {@link ExclusiveGatewayTest} for a default sequence flow test on an exclusive gateway.
- *
- */
+/** See {@link ExclusiveGatewayTest} for a default sequence flow test on an exclusive gateway. */
 public class DefaultSequenceFlowTest extends PluggableActivitiTestCase {
 
   @Deployment
   public void testDefaultSequenceFlowOnTask() {
-    String procId = runtimeService.startProcessInstanceByKey("defaultSeqFlow", singletonMap("input", 2)).getId();
-    assertThat(runtimeService.createExecutionQuery().processInstanceId(procId).activityId("task2").singleResult()).isNotNull();
+    String procId =
+        runtimeService
+            .startProcessInstanceByKey("defaultSeqFlow", singletonMap("input", 2))
+            .getId();
+    assertThat(
+            runtimeService
+                .createExecutionQuery()
+                .processInstanceId(procId)
+                .activityId("task2")
+                .singleResult())
+        .isNotNull();
 
-    procId = runtimeService.startProcessInstanceByKey("defaultSeqFlow", singletonMap("input", 3)).getId();
-    assertThat(runtimeService.createExecutionQuery().processInstanceId(procId).activityId("task3").singleResult()).isNotNull();
+    procId =
+        runtimeService
+            .startProcessInstanceByKey("defaultSeqFlow", singletonMap("input", 3))
+            .getId();
+    assertThat(
+            runtimeService
+                .createExecutionQuery()
+                .processInstanceId(procId)
+                .activityId("task3")
+                .singleResult())
+        .isNotNull();
 
-    procId = runtimeService.startProcessInstanceByKey("defaultSeqFlow", singletonMap("input", 123)).getId();
-    assertThat(runtimeService.createExecutionQuery().processInstanceId(procId).activityId("task1").singleResult()).isNotNull();
+    procId =
+        runtimeService
+            .startProcessInstanceByKey("defaultSeqFlow", singletonMap("input", 123))
+            .getId();
+    assertThat(
+            runtimeService
+                .createExecutionQuery()
+                .processInstanceId(procId)
+                .activityId("task1")
+                .singleResult())
+        .isNotNull();
   }
-
 }

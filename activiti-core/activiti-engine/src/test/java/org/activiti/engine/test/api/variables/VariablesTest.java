@@ -26,7 +26,6 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.JavaDelegate;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
@@ -37,8 +36,8 @@ import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 
 /**
- * Testing various constructs with variables. Created to test the changes done in https://jira.codehaus.org/browse/ACT-1900.
- *
+ * Testing various constructs with variables. Created to test the changes done in
+ * https://jira.codehaus.org/browse/ACT-1900.
  */
 public class VariablesTest extends PluggableActivitiTestCase {
 
@@ -48,7 +47,10 @@ public class VariablesTest extends PluggableActivitiTestCase {
   protected void setUp() throws Exception {
     super.setUp();
 
-    repositoryService.createDeployment().addClasspathResource("org/activiti/engine/test/api/variables/VariablesTest.bpmn20.xml").deploy();
+    repositoryService
+        .createDeployment()
+        .addClasspathResource("org/activiti/engine/test/api/variables/VariablesTest.bpmn20.xml")
+        .deploy();
 
     // Creating 50 vars in total
     Map<String, Object> vars = generateVariables();
@@ -110,7 +112,13 @@ public class VariablesTest extends PluggableActivitiTestCase {
     // Regular getVariables after process instance start
     Map<String, Object> vars = runtimeService.getVariables(processInstanceId);
     assertThat(vars).hasSize(70);
-    int nrOfStrings = 0, nrOfInts = 0, nrOfDates = 0, nrOfLocalDates = 0, nrOfDateTimes = 0, nrOfBooleans = 0, nrOfSerializable = 0;
+    int nrOfStrings = 0,
+        nrOfInts = 0,
+        nrOfDates = 0,
+        nrOfLocalDates = 0,
+        nrOfDateTimes = 0,
+        nrOfBooleans = 0,
+        nrOfSerializable = 0;
     for (String variableName : vars.keySet()) {
       Object variableValue = vars.get(variableName);
       if (variableValue instanceof String) {
@@ -188,7 +196,13 @@ public class VariablesTest extends PluggableActivitiTestCase {
     // Regular getVariables after process instance start
     Map<String, Object> vars = runtimeService.getVariablesLocal(processInstanceId);
     assertThat(vars).hasSize(70);
-    int nrOfStrings = 0, nrOfInts = 0, nrOfDates = 0, nrOfLocalDates = 0, nrOfDateTimes = 0, nrOfBooleans = 0, nrOfSerializable = 0;
+    int nrOfStrings = 0,
+        nrOfInts = 0,
+        nrOfDates = 0,
+        nrOfLocalDates = 0,
+        nrOfDateTimes = 0,
+        nrOfBooleans = 0,
+        nrOfSerializable = 0;
     for (String variableName : vars.keySet()) {
       Object variableValue = vars.get(variableName);
       if (variableValue instanceof String) {
@@ -334,19 +348,23 @@ public class VariablesTest extends PluggableActivitiTestCase {
     assertThat(vars.get("stringVar1")).isEqualTo("hello");
     assertThat(vars.get("stringVar2")).isEqualTo("world");
     assertThat(vars.get("myVar")).isEqualTo("test123");
-
   }
 
   public void testGetVariablesWithCollectionThroughRuntimeService() {
 
-    Map<String, Object> vars = runtimeService.getVariables(processInstanceId, asList("intVar1", "intVar3", "intVar5", "intVar9"));
+    Map<String, Object> vars =
+        runtimeService.getVariables(
+            processInstanceId, asList("intVar1", "intVar3", "intVar5", "intVar9"));
     assertThat(vars).hasSize(4);
     assertThat(vars.get("intVar1")).isEqualTo(100);
     assertThat(vars.get("intVar3")).isEqualTo(300);
     assertThat(vars.get("intVar5")).isEqualTo(500);
     assertThat(vars.get("intVar9")).isEqualTo(900);
 
-    assertThat(runtimeService.getVariablesLocal(processInstanceId, asList("intVar1", "intVar3", "intVar5", "intVar9"))).hasSize(4);
+    assertThat(
+            runtimeService.getVariablesLocal(
+                processInstanceId, asList("intVar1", "intVar3", "intVar5", "intVar9")))
+        .hasSize(4);
 
     // Trying the same after moving the process
     Task task = taskService.createTaskQuery().singleResult();
@@ -356,8 +374,10 @@ public class VariablesTest extends PluggableActivitiTestCase {
     String executionId = task.getExecutionId();
     assertThat(processInstanceId.equals(executionId)).isFalse();
 
-    assertThat(runtimeService.getVariablesLocal(executionId, asList("intVar1", "intVar3", "intVar5", "intVar9"))).hasSize(0);
-
+    assertThat(
+            runtimeService.getVariablesLocal(
+                executionId, asList("intVar1", "intVar3", "intVar5", "intVar9")))
+        .hasSize(0);
   }
 
   @org.activiti.engine.test.Deployment
@@ -367,10 +387,16 @@ public class VariablesTest extends PluggableActivitiTestCase {
 
     Map<String, Object> vars = generateVariables();
     vars.put("testVar", "hello");
-    String processInstanceId = runtimeService.startProcessInstanceByKey("variablesFetchingTestProcess", vars).getId();
+    String processInstanceId =
+        runtimeService.startProcessInstanceByKey("variablesFetchingTestProcess", vars).getId();
 
     taskService.complete(taskService.createTaskQuery().taskName("Task A").singleResult().getId());
-    taskService.complete(taskService.createTaskQuery().taskName("Task B").singleResult().getId()); // Triggers service task invocation
+    taskService.complete(
+        taskService
+            .createTaskQuery()
+            .taskName("Task B")
+            .singleResult()
+            .getId()); // Triggers service task invocation
 
     vars = runtimeService.getVariables(processInstanceId);
     assertThat(vars).hasSize(71);
@@ -384,10 +410,16 @@ public class VariablesTest extends PluggableActivitiTestCase {
 
     Map<String, Object> vars = generateVariables();
     vars.put("testVar", "hello");
-    String processInstanceId = runtimeService.startProcessInstanceByKey("variablesFetchingTestProcess", vars).getId();
+    String processInstanceId =
+        runtimeService.startProcessInstanceByKey("variablesFetchingTestProcess", vars).getId();
 
     taskService.complete(taskService.createTaskQuery().taskName("Task A").singleResult().getId());
-    taskService.complete(taskService.createTaskQuery().taskName("Task B").singleResult().getId()); // Triggers service task invocation
+    taskService.complete(
+        taskService
+            .createTaskQuery()
+            .taskName("Task B")
+            .singleResult()
+            .getId()); // Triggers service task invocation
 
     String varValue = (String) runtimeService.getVariable(processInstanceId, "testVar");
     assertThat(varValue).isEqualTo("HELLO world!");
@@ -397,13 +429,21 @@ public class VariablesTest extends PluggableActivitiTestCase {
   public void testGetVariableInDelegateMixed() {
 
     Map<String, Object> vars = generateVariables();
-    String processInstanceId = runtimeService.startProcessInstanceByKey("variablesFetchingTestProcess", vars).getId();
+    String processInstanceId =
+        runtimeService.startProcessInstanceByKey("variablesFetchingTestProcess", vars).getId();
 
     taskService.complete(taskService.createTaskQuery().taskName("Task A").singleResult().getId());
-    taskService.complete(taskService.createTaskQuery().taskName("Task B").singleResult().getId()); // Triggers service task invocation
+    taskService.complete(
+        taskService
+            .createTaskQuery()
+            .taskName("Task B")
+            .singleResult()
+            .getId()); // Triggers service task invocation
 
-    assertThat((String) runtimeService.getVariable(processInstanceId, "testVar")).isEqualTo("test 1 2 3");
-    assertThat((String) runtimeService.getVariable(processInstanceId, "testVar2")).isEqualTo("Hiya");
+    assertThat((String) runtimeService.getVariable(processInstanceId, "testVar"))
+        .isEqualTo("test 1 2 3");
+    assertThat((String) runtimeService.getVariable(processInstanceId, "testVar2"))
+        .isEqualTo("Hiya");
   }
 
   @org.activiti.engine.test.Deployment
@@ -411,10 +451,16 @@ public class VariablesTest extends PluggableActivitiTestCase {
 
     Map<String, Object> vars = generateVariables();
     vars.put("testVar", "1");
-    String processInstanceId = runtimeService.startProcessInstanceByKey("variablesFetchingTestProcess", vars).getId();
+    String processInstanceId =
+        runtimeService.startProcessInstanceByKey("variablesFetchingTestProcess", vars).getId();
 
     taskService.complete(taskService.createTaskQuery().taskName("Task A").singleResult().getId());
-    taskService.complete(taskService.createTaskQuery().taskName("Task B").singleResult().getId()); // Triggers service task invocation
+    taskService.complete(
+        taskService
+            .createTaskQuery()
+            .taskName("Task B")
+            .singleResult()
+            .getId()); // Triggers service task invocation
 
     assertThat((String) runtimeService.getVariable(processInstanceId, "testVar")).isEqualTo("1234");
   }
@@ -426,16 +472,20 @@ public class VariablesTest extends PluggableActivitiTestCase {
     vars.put("testVar1", "one");
     vars.put("testVar2", "two");
     vars.put("testVar3", "three");
-    String processInstanceId = runtimeService.startProcessInstanceByKey("variablesFetchingTestProcess", vars).getId();
+    String processInstanceId =
+        runtimeService.startProcessInstanceByKey("variablesFetchingTestProcess", vars).getId();
 
     taskService.complete(taskService.createTaskQuery().taskName("Task A").singleResult().getId());
-    taskService.complete(taskService.createTaskQuery().taskName("Task B").singleResult().getId()); // Triggers
-                                                                                                   // service
-                                                                                                   // task
-                                                                                                   // invocation
+    taskService.complete(
+        taskService.createTaskQuery().taskName("Task B").singleResult().getId()); // Triggers
+    // service
+    // task
+    // invocation
 
-    assertThat((String) runtimeService.getVariable(processInstanceId, "testVar1")).isEqualTo("one-CHANGED");
-    assertThat((String) runtimeService.getVariable(processInstanceId, "testVar2")).isEqualTo("two-CHANGED");
+    assertThat((String) runtimeService.getVariable(processInstanceId, "testVar1"))
+        .isEqualTo("one-CHANGED");
+    assertThat((String) runtimeService.getVariable(processInstanceId, "testVar2"))
+        .isEqualTo("two-CHANGED");
     assertThat(runtimeService.getVariable(processInstanceId, "testVar3")).isNull();
   }
 
@@ -444,7 +494,13 @@ public class VariablesTest extends PluggableActivitiTestCase {
     Task task = taskService.createTaskQuery().taskName("Task 1").singleResult();
     Map<String, Object> vars = taskService.getVariables(task.getId());
     assertThat(vars).hasSize(70);
-    int nrOfStrings = 0, nrOfInts = 0, nrOfDates = 0, nrOfLocalDates = 0, nrOfDateTimes = 0, nrOfBooleans = 0, nrOfSerializable = 0;
+    int nrOfStrings = 0,
+        nrOfInts = 0,
+        nrOfDates = 0,
+        nrOfLocalDates = 0,
+        nrOfDateTimes = 0,
+        nrOfBooleans = 0,
+        nrOfSerializable = 0;
     for (String variableName : vars.keySet()) {
       Object variableValue = vars.get(variableName);
       if (variableValue instanceof String) {
@@ -477,7 +533,8 @@ public class VariablesTest extends PluggableActivitiTestCase {
 
     // Get collection of variables
     assertThat(taskService.getVariables(task.getId(), asList("intVar2", "intVar5"))).hasSize(2);
-    assertThat(taskService.getVariablesLocal(task.getId(), asList("intVar2", "intVar5"))).hasSize(0);
+    assertThat(taskService.getVariablesLocal(task.getId(), asList("intVar2", "intVar5")))
+        .hasSize(0);
 
     // Get Variable
     assertThat(taskService.getVariable(task.getId(), "stringVar3")).isEqualTo("stringVarValue-3");
@@ -489,20 +546,25 @@ public class VariablesTest extends PluggableActivitiTestCase {
     assertThat(taskService.getVariables(task.getId())).hasSize(71);
     assertThat(taskService.getVariablesLocal(task.getId())).hasSize(1);
     assertThat(taskService.getVariables(task.getId(), asList("intVar2", "intVar5"))).hasSize(2);
-    assertThat(taskService.getVariablesLocal(task.getId(), asList("intVar2", "intVar5"))).hasSize(0);
-    assertThat(taskService.getVariable(task.getId(), "localTaskVar")).isEqualTo("localTaskVarValue");
-    assertThat(taskService.getVariableLocal(task.getId(), "localTaskVar")).isEqualTo("localTaskVarValue");
+    assertThat(taskService.getVariablesLocal(task.getId(), asList("intVar2", "intVar5")))
+        .hasSize(0);
+    assertThat(taskService.getVariable(task.getId(), "localTaskVar"))
+        .isEqualTo("localTaskVarValue");
+    assertThat(taskService.getVariableLocal(task.getId(), "localTaskVar"))
+        .isEqualTo("localTaskVarValue");
 
     // Override process variable
     Collection<String> varNames = new ArrayList<String>();
     varNames.add("stringVar1");
     assertThat(taskService.getVariable(task.getId(), "stringVar1")).isEqualTo("stringVarValue-1");
     assertThat(taskService.getVariable(task.getId(), "stringVar1")).isEqualTo("stringVarValue-1");
-    assertThat(taskService.getVariables(task.getId(), varNames).get("stringVar1")).isEqualTo("stringVarValue-1");
+    assertThat(taskService.getVariables(task.getId(), varNames).get("stringVar1"))
+        .isEqualTo("stringVarValue-1");
     taskService.setVariableLocal(task.getId(), "stringVar1", "Override");
     assertThat(taskService.getVariables(task.getId())).hasSize(71);
     assertThat(taskService.getVariable(task.getId(), "stringVar1")).isEqualTo("Override");
-    assertThat(taskService.getVariables(task.getId(), varNames).get("stringVar1")).isEqualTo("Override");
+    assertThat(taskService.getVariables(task.getId(), varNames).get("stringVar1"))
+        .isEqualTo("Override");
   }
 
   public void testLocalDateVariable() {
@@ -526,15 +588,27 @@ public class VariablesTest extends PluggableActivitiTestCase {
     assertThat(date1.getDayOfMonth()).isEqualTo(10);
 
     LocalDate queryDate = new LocalDate(2010, 11, 9);
-    ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().variableValueGreaterThan("localdateVar1", queryDate).singleResult();
+    ProcessInstance processInstance =
+        runtimeService
+            .createProcessInstanceQuery()
+            .variableValueGreaterThan("localdateVar1", queryDate)
+            .singleResult();
     assertThat(processInstance).isNotNull();
     assertThat(processInstance.getId()).isEqualTo(processInstanceId);
 
     queryDate = new LocalDate(2010, 11, 10);
-    processInstance = runtimeService.createProcessInstanceQuery().variableValueGreaterThan("localdateVar1", queryDate).singleResult();
+    processInstance =
+        runtimeService
+            .createProcessInstanceQuery()
+            .variableValueGreaterThan("localdateVar1", queryDate)
+            .singleResult();
     assertThat(processInstance).isNull();
 
-    processInstance = runtimeService.createProcessInstanceQuery().variableValueGreaterThanOrEqual("localdateVar1", queryDate).singleResult();
+    processInstance =
+        runtimeService
+            .createProcessInstanceQuery()
+            .variableValueGreaterThanOrEqual("localdateVar1", queryDate)
+            .singleResult();
     assertThat(processInstance).isNotNull();
     assertThat(processInstance.getId()).isEqualTo(processInstanceId);
   }
@@ -562,15 +636,27 @@ public class VariablesTest extends PluggableActivitiTestCase {
     assertThat(date1.getMinuteOfHour()).isEqualTo(15);
 
     DateTime queryDate = new DateTime(2010, 11, 10, 9, 15);
-    ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().variableValueGreaterThan("datetimeVar1", queryDate).singleResult();
+    ProcessInstance processInstance =
+        runtimeService
+            .createProcessInstanceQuery()
+            .variableValueGreaterThan("datetimeVar1", queryDate)
+            .singleResult();
     assertThat(processInstance).isNotNull();
     assertThat(processInstance.getId()).isEqualTo(processInstanceId);
 
     queryDate = new DateTime(2010, 11, 10, 10, 15);
-    processInstance = runtimeService.createProcessInstanceQuery().variableValueGreaterThan("datetimeVar1", queryDate).singleResult();
+    processInstance =
+        runtimeService
+            .createProcessInstanceQuery()
+            .variableValueGreaterThan("datetimeVar1", queryDate)
+            .singleResult();
     assertThat(processInstance).isNull();
 
-    processInstance = runtimeService.createProcessInstanceQuery().variableValueGreaterThanOrEqual("datetimeVar1", queryDate).singleResult();
+    processInstance =
+        runtimeService
+            .createProcessInstanceQuery()
+            .variableValueGreaterThanOrEqual("datetimeVar1", queryDate)
+            .singleResult();
     assertThat(processInstance).isNotNull();
     assertThat(processInstance.getId()).isEqualTo(processInstanceId);
   }
@@ -592,7 +678,6 @@ public class VariablesTest extends PluggableActivitiTestCase {
     public void setNumber(int number) {
       this.number = number;
     }
-
   }
 
   // Test delegates
@@ -611,9 +696,7 @@ public class VariablesTest extends PluggableActivitiTestCase {
   }
 
   public static class TestJavaDelegate3 implements JavaDelegate {
-    public void execute(DelegateExecution execution) {
-
-    }
+    public void execute(DelegateExecution execution) {}
   }
 
   // ////////////////////////////////////////
@@ -646,7 +729,6 @@ public class VariablesTest extends PluggableActivitiTestCase {
 
       // Setting variable through 'default' way of setting variable
       execution.setVariable("testVar", "test");
-
     }
   }
 
@@ -690,7 +772,8 @@ public class VariablesTest extends PluggableActivitiTestCase {
 
   public static class TestJavaDelegate13 implements JavaDelegate {
     public void execute(DelegateExecution execution) {
-      Map<String, Object> vars = execution.getVariables(asList("testVar1", "testVar2", "testVar3"), false);
+      Map<String, Object> vars =
+          execution.getVariables(asList("testVar1", "testVar2", "testVar3"), false);
 
       String testVar1 = (String) vars.get("testVar1");
       String testVar2 = (String) vars.get("testVar2");
@@ -717,5 +800,4 @@ public class VariablesTest extends PluggableActivitiTestCase {
       execution.removeVariable("testVar3");
     }
   }
-
 }

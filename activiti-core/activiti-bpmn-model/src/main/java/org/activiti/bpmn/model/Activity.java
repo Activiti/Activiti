@@ -37,6 +37,7 @@ public abstract class Activity extends FlowNode {
   public void setFailedJobRetryTimeCycleValue(String failedJobRetryTimeCycleValue) {
     this.failedJobRetryTimeCycleValue = failedJobRetryTimeCycleValue;
   }
+
   public boolean isForCompensation() {
     return forCompensation;
   }
@@ -96,9 +97,11 @@ public abstract class Activity extends FlowNode {
   public void setDataOutputAssociations(List<DataAssociation> dataOutputAssociations) {
     this.dataOutputAssociations = dataOutputAssociations;
   }
+
   public List<MapExceptionEntry> getMapExceptions() {
     return mapExceptions;
   }
+
   public void setMapExceptions(List<MapExceptionEntry> mapExceptions) {
     this.mapExceptions = mapExceptions;
   }
@@ -116,14 +119,16 @@ public abstract class Activity extends FlowNode {
     }
 
     dataInputAssociations = new ArrayList<DataAssociation>();
-    if (otherActivity.getDataInputAssociations() != null && !otherActivity.getDataInputAssociations().isEmpty()) {
+    if (otherActivity.getDataInputAssociations() != null
+        && !otherActivity.getDataInputAssociations().isEmpty()) {
       for (DataAssociation association : otherActivity.getDataInputAssociations()) {
         dataInputAssociations.add(association.clone());
       }
     }
 
     dataOutputAssociations = new ArrayList<DataAssociation>();
-    if (otherActivity.getDataOutputAssociations() != null && !otherActivity.getDataOutputAssociations().isEmpty()) {
+    if (otherActivity.getDataOutputAssociations() != null
+        && !otherActivity.getDataOutputAssociations().isEmpty()) {
       for (DataAssociation association : otherActivity.getDataOutputAssociations()) {
         dataOutputAssociations.add(association.clone());
       }

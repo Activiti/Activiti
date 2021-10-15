@@ -21,15 +21,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
-/**
-
- */
+/** */
 public class BoundaryErrorEventTest extends PluggableActivitiTestCase {
 
   @Override
@@ -46,7 +43,7 @@ public class BoundaryErrorEventTest extends PluggableActivitiTestCase {
     super.tearDown();
   }
 
-  @Deployment(resources = { "org/activiti/examples/bpmn/event/error/reviewSalesLead.bpmn20.xml" })
+  @Deployment(resources = {"org/activiti/examples/bpmn/event/error/reviewSalesLead.bpmn20.xml"})
   public void testReviewSalesLeadProcess() {
 
     // After starting the process, a task should be assigned to the
@@ -60,9 +57,11 @@ public class BoundaryErrorEventTest extends PluggableActivitiTestCase {
 
     // After completing the task, the review subprocess will be active
     taskService.complete(task.getId());
-    Task ratingTask = taskService.createTaskQuery().taskCandidateGroup("accountancy").singleResult();
+    Task ratingTask =
+        taskService.createTaskQuery().taskCandidateGroup("accountancy").singleResult();
     assertThat(ratingTask.getName()).isEqualTo("Review customer rating");
-    Task profitabilityTask = taskService.createTaskQuery().taskCandidateGroup("management").singleResult();
+    Task profitabilityTask =
+        taskService.createTaskQuery().taskCandidateGroup("management").singleResult();
     assertThat(profitabilityTask.getName()).isEqualTo("Review profitability");
 
     // Complete the management task by stating that not enough info was
@@ -89,5 +88,4 @@ public class BoundaryErrorEventTest extends PluggableActivitiTestCase {
     taskService.complete(reviewTasks.get(1).getId(), variables);
     assertProcessEnded(procId);
   }
-
 }

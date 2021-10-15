@@ -28,5 +28,4 @@ public class ChangeVariableType implements JavaDelegate {
     // much later on than this.
     execution.setVariable("myVar", new SomeSerializable("someValue"));
   }
-
 }

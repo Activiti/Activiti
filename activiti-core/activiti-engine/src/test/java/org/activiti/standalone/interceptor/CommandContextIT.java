@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.standalone.interceptor;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -26,19 +25,22 @@ import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 
 public class CommandContextIT extends PluggableActivitiTestCase {
 
-    public void testCommandContextGetCurrentAfterException() {
-        try {
-            processEngineConfiguration.getCommandExecutor().execute(new Command<Object>() {
+  public void testCommandContextGetCurrentAfterException() {
+    try {
+      processEngineConfiguration
+          .getCommandExecutor()
+          .execute(
+              new Command<Object>() {
                 public Object execute(CommandContext commandContext) {
-                    throw new IllegalStateException("here i come!");
+                  throw new IllegalStateException("here i come!");
                 }
-            });
+              });
 
-            fail("expected exception");
-        } catch (IllegalStateException e) {
-            // OK
-        }
-
-        assertThat(Context.getCommandContext()).isNull();
+      fail("expected exception");
+    } catch (IllegalStateException e) {
+      // OK
     }
+
+    assertThat(Context.getCommandContext()).isNull();
+  }
 }

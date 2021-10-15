@@ -17,15 +17,12 @@
 package org.activiti.engine.impl.cfg;
 
 import javax.transaction.TransactionManager;
-
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.cfg.jta.JtaTransactionContextFactory;
 import org.activiti.engine.impl.interceptor.CommandInterceptor;
 import org.activiti.engine.impl.interceptor.JtaTransactionInterceptor;
 
-/**
-
- */
+/** */
 public class JtaProcessEngineConfiguration extends ProcessEngineConfigurationImpl {
 
   protected TransactionManager transactionManager;
@@ -37,7 +34,10 @@ public class JtaProcessEngineConfiguration extends ProcessEngineConfigurationImp
   @Override
   public CommandInterceptor createTransactionInterceptor() {
     if (transactionManager == null) {
-      throw new ActivitiException("transactionManager is required property for JtaProcessEngineConfiguration, use " + StandaloneProcessEngineConfiguration.class.getName() + " otherwise");
+      throw new ActivitiException(
+          "transactionManager is required property for JtaProcessEngineConfiguration, use "
+              + StandaloneProcessEngineConfiguration.class.getName()
+              + " otherwise");
     }
 
     return new JtaTransactionInterceptor(transactionManager);

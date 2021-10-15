@@ -25,7 +25,6 @@ import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.Locale;
 import java.util.regex.Pattern;
-
 import org.activiti.engine.ActivitiClassLoadingException;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
@@ -33,8 +32,7 @@ import org.activiti.engine.impl.context.Context;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- */
+/** */
 public abstract class ReflectUtil {
 
   private static final Logger LOG = LoggerFactory.getLogger(ReflectUtil.class);
@@ -153,22 +151,19 @@ public abstract class ReflectUtil {
     }
   }
 
-  /**
-   * Returns the field of the given object or null if it doesn't exist.
-   */
+  /** Returns the field of the given object or null if it doesn't exist. */
   public static Field getField(String fieldName, Object object) {
     return getField(fieldName, object.getClass());
   }
 
-  /**
-   * Returns the field of the given class or null if it doesn't exist.
-   */
+  /** Returns the field of the given class or null if it doesn't exist. */
   public static Field getField(String fieldName, Class<?> clazz) {
     Field field = null;
     try {
       field = clazz.getDeclaredField(fieldName);
     } catch (SecurityException e) {
-      throw new ActivitiException("not allowed to access field " + field + " on class " + clazz.getCanonicalName());
+      throw new ActivitiException(
+          "not allowed to access field " + field + " on class " + clazz.getCanonicalName());
     } catch (NoSuchFieldException e) {
       // for some reason getDeclaredFields doesn't search superclasses
       // (which getFields() does ... but that gives only public fields)
@@ -191,11 +186,12 @@ public abstract class ReflectUtil {
     }
   }
 
-  /**
-   * Returns the setter-method for the given field name or null if no setter exists.
-   */
+  /** Returns the setter-method for the given field name or null if no setter exists. */
   public static Method getSetter(String fieldName, Class<?> clazz, Class<?> fieldType) {
-    String setterName = "set" + Character.toTitleCase(fieldName.charAt(0)) + fieldName.substring(1, fieldName.length());
+    String setterName =
+        "set"
+            + Character.toTitleCase(fieldName.charAt(0))
+            + fieldName.substring(1, fieldName.length());
     try {
       // Using getMethods(), getMethod(...) expects exact parameter type
       // matching and ignores inheritance-tree.
@@ -203,18 +199,22 @@ public abstract class ReflectUtil {
       for (Method method : methods) {
         if (method.getName().equals(setterName)) {
           Class<?>[] paramTypes = method.getParameterTypes();
-          if (paramTypes != null && paramTypes.length == 1 && paramTypes[0].isAssignableFrom(fieldType)) {
+          if (paramTypes != null
+              && paramTypes.length == 1
+              && paramTypes[0].isAssignableFrom(fieldType)) {
             return method;
           }
         }
       }
       return null;
     } catch (SecurityException e) {
-      throw new ActivitiException("Not allowed to access method " + setterName + " on class " + clazz.getCanonicalName());
+      throw new ActivitiException(
+          "Not allowed to access method " + setterName + " on class " + clazz.getCanonicalName());
     }
   }
 
-  private static Method findMethod(Class<? extends Object> clazz, String methodName, Object[] args) {
+  private static Method findMethod(
+      Class<? extends Object> clazz, String methodName, Object[] args) {
     for (Method method : clazz.getDeclaredMethods()) {
       // TODO add parameter matching
       if (method.getName().equals(methodName) && matches(method.getParameterTypes(), args)) {
@@ -232,18 +232,21 @@ public abstract class ReflectUtil {
     Class<?> clazz = loadClass(className);
     Constructor<?> constructor = findMatchingConstructor(clazz, args);
     if (constructor == null) {
-      throw new ActivitiException("couldn't find constructor for " + className + " with args " + asList(args));
+      throw new ActivitiException(
+          "couldn't find constructor for " + className + " with args " + asList(args));
     }
     try {
       return constructor.newInstance(args);
     } catch (Exception e) {
-      throw new ActivitiException("couldn't find constructor for " + className + " with args " + asList(args), e);
+      throw new ActivitiException(
+          "couldn't find constructor for " + className + " with args " + asList(args), e);
     }
   }
 
-  @SuppressWarnings({ "unchecked", "rawtypes" })
+  @SuppressWarnings({"unchecked", "rawtypes"})
   private static <T> Constructor<T> findMatchingConstructor(Class<T> clazz, Object[] args) {
-    for (Constructor constructor : clazz.getDeclaredConstructors()) { // cannot use <?> or <T> due to JDK 5/6 incompatibility
+    for (Constructor constructor :
+        clazz.getDeclaredConstructors()) { // cannot use <?> or <T> due to JDK 5/6 incompatibility
       if (matches(constructor.getParameterTypes(), args)) {
         return constructor;
       }
@@ -267,7 +270,8 @@ public abstract class ReflectUtil {
   }
 
   private static ClassLoader getCustomClassLoader() {
-    ProcessEngineConfigurationImpl processEngineConfiguration = Context.getProcessEngineConfiguration();
+    ProcessEngineConfigurationImpl processEngineConfiguration =
+        Context.getProcessEngineConfiguration();
     if (processEngineConfiguration != null) {
       final ClassLoader classLoader = processEngineConfiguration.getClassLoader();
       if (classLoader != null) {
@@ -277,10 +281,16 @@ public abstract class ReflectUtil {
     return null;
   }
 
-  private static Class loadClass(ClassLoader classLoader, String className) throws ClassNotFoundException {
-    ProcessEngineConfigurationImpl processEngineConfiguration = Context.getProcessEngineConfiguration();
-    boolean useClassForName = processEngineConfiguration == null || processEngineConfiguration.isUseClassForNameClassLoading();
-    return useClassForName ? Class.forName(className, true, classLoader) : classLoader.loadClass(className);
+  private static Class loadClass(ClassLoader classLoader, String className)
+      throws ClassNotFoundException {
+    ProcessEngineConfigurationImpl processEngineConfiguration =
+        Context.getProcessEngineConfiguration();
+    boolean useClassForName =
+        processEngineConfiguration == null
+            || processEngineConfiguration.isUseClassForNameClassLoading();
+    return useClassForName
+        ? Class.forName(className, true, classLoader)
+        : classLoader.loadClass(className);
   }
 
   public static boolean isGetter(Method method) {
@@ -309,7 +319,9 @@ public abstract class ReflectUtil {
       return false;
     }
 
-    return params.length == 1 && (type.equals(Void.TYPE) || (allowBuilderPattern && method.getDeclaringClass().isAssignableFrom(type)));
+    return params.length == 1
+        && (type.equals(Void.TYPE)
+            || (allowBuilderPattern && method.getDeclaringClass().isAssignableFrom(type)));
   }
 
   public static boolean isSetter(Method method) {

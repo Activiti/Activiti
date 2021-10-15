@@ -15,15 +15,6 @@
  */
 package org.activiti.application;
 
-import java.io.IOException;
-import java.util.List;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.support.ResourcePatternResolver;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -31,54 +22,61 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.MockitoAnnotations.initMocks;
 
+import java.io.IOException;
+import java.util.List;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.ResourcePatternResolver;
+
 public class ApplicationDiscoveryTest {
 
-    private ApplicationDiscovery applicationDiscovery;
+  private ApplicationDiscovery applicationDiscovery;
 
-    @Mock
-    private ResourcePatternResolver resourceLoader;
+  @Mock private ResourcePatternResolver resourceLoader;
 
-    @BeforeEach
-    public void setUp() {
-        initMocks(this);
-        applicationDiscovery = new ApplicationDiscovery(resourceLoader, "classpath:/applications/");
-    }
+  @BeforeEach
+  public void setUp() {
+    initMocks(this);
+    applicationDiscovery = new ApplicationDiscovery(resourceLoader, "classpath:/applications/");
+  }
 
-    @Test
-    public void discoverApplicationsShouldReturnResourcesFoundByResourceLoader() throws Exception {
-        //given
-        givenExistingResourceFolder();
+  @Test
+  public void discoverApplicationsShouldReturnResourcesFoundByResourceLoader() throws Exception {
+    // given
+    givenExistingResourceFolder();
 
-        Resource applicationResource = mock(Resource.class);
-        given(resourceLoader.getResources(anyString())).willReturn(new Resource[]{applicationResource});
+    Resource applicationResource = mock(Resource.class);
+    given(resourceLoader.getResources(anyString()))
+        .willReturn(new Resource[] {applicationResource});
 
-        //when
-        List<Resource> resources = applicationDiscovery.discoverApplications();
+    // when
+    List<Resource> resources = applicationDiscovery.discoverApplications();
 
-        //then
-        assertThat(resources).containsExactly(applicationResource);
-    }
+    // then
+    assertThat(resources).containsExactly(applicationResource);
+  }
 
-    @Test
-    public void discoverApplicationsShouldThrowApplicationLoadExceptionWhenIOExceptionOccurs() throws IOException {
-        //given
-        givenExistingResourceFolder();
+  @Test
+  public void discoverApplicationsShouldThrowApplicationLoadExceptionWhenIOExceptionOccurs()
+      throws IOException {
+    // given
+    givenExistingResourceFolder();
 
-        IOException ioException = new IOException();
-        given(resourceLoader.getResources(anyString())).willThrow(ioException);
+    IOException ioException = new IOException();
+    given(resourceLoader.getResources(anyString())).willThrow(ioException);
 
-        //when
-        Throwable thrown = catchThrowable(() -> applicationDiscovery.discoverApplications());
+    // when
+    Throwable thrown = catchThrowable(() -> applicationDiscovery.discoverApplications());
 
-        //then
-        assertThat(thrown)
-                .isInstanceOf(ApplicationLoadException.class)
-                .hasCause(ioException);
-    }
+    // then
+    assertThat(thrown).isInstanceOf(ApplicationLoadException.class).hasCause(ioException);
+  }
 
-    private void givenExistingResourceFolder() {
-        Resource folderResource = mock(Resource.class);
-        given(folderResource.exists()).willReturn(true);
-        given(resourceLoader.getResource(anyString())).willReturn(folderResource);
-    }
+  private void givenExistingResourceFolder() {
+    Resource folderResource = mock(Resource.class);
+    given(folderResource.exists()).willReturn(true);
+    given(resourceLoader.getResource(anyString())).willReturn(folderResource);
+  }
 }

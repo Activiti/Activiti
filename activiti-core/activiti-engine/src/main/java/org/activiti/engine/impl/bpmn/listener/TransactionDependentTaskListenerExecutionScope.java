@@ -17,12 +17,9 @@
 package org.activiti.engine.impl.bpmn.listener;
 
 import java.util.Map;
-
 import org.activiti.bpmn.model.Task;
 
-/**
-
- */
+/** */
 public class TransactionDependentTaskListenerExecutionScope {
 
   protected final String processInstanceId;
@@ -31,8 +28,12 @@ public class TransactionDependentTaskListenerExecutionScope {
   protected final Map<String, Object> executionVariables;
   protected final Map<String, Object> customPropertiesMap;
 
-  public TransactionDependentTaskListenerExecutionScope(String processInstanceId, String executionId,
-                                                       Task task, Map<String, Object> executionVariables, Map<String, Object> customPropertiesMap) {
+  public TransactionDependentTaskListenerExecutionScope(
+      String processInstanceId,
+      String executionId,
+      Task task,
+      Map<String, Object> executionVariables,
+      Map<String, Object> customPropertiesMap) {
     this.processInstanceId = processInstanceId;
     this.executionId = executionId;
     this.task = task;

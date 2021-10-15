@@ -15,10 +15,9 @@
  */
 package org.activiti.bpmn.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class ActivitiListener extends BaseElement {
 
@@ -31,7 +30,9 @@ public class ActivitiListener extends BaseElement {
   protected String customPropertiesResolverImplementation;
 
   @JsonIgnore
-  protected Object instance; // Can be used to set an instance of the listener directly. That instance will then always be reused.
+  protected Object
+      instance; // Can be used to set an instance of the listener directly. That instance will then
+  // always be reused.
 
   public String getEvent() {
     return event;
@@ -77,7 +78,8 @@ public class ActivitiListener extends BaseElement {
     return customPropertiesResolverImplementationType;
   }
 
-  public void setCustomPropertiesResolverImplementationType(String customPropertiesResolverImplementationType) {
+  public void setCustomPropertiesResolverImplementationType(
+      String customPropertiesResolverImplementationType) {
     this.customPropertiesResolverImplementationType = customPropertiesResolverImplementationType;
   }
 
@@ -85,7 +87,8 @@ public class ActivitiListener extends BaseElement {
     return customPropertiesResolverImplementation;
   }
 
-  public void setCustomPropertiesResolverImplementation(String customPropertiesResolverImplementation) {
+  public void setCustomPropertiesResolverImplementation(
+      String customPropertiesResolverImplementation) {
     this.customPropertiesResolverImplementation = customPropertiesResolverImplementation;
   }
 
@@ -109,7 +112,8 @@ public class ActivitiListener extends BaseElement {
     setImplementationType(otherListener.getImplementationType());
 
     fieldExtensions = new ArrayList<FieldExtension>();
-    if (otherListener.getFieldExtensions() != null && !otherListener.getFieldExtensions().isEmpty()) {
+    if (otherListener.getFieldExtensions() != null
+        && !otherListener.getFieldExtensions().isEmpty()) {
       for (FieldExtension extension : otherListener.getFieldExtensions()) {
         fieldExtensions.add(extension.clone());
       }

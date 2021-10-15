@@ -18,7 +18,6 @@ package org.activiti.engine.impl.bpmn.parser.factory;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.activiti.bpmn.model.FieldExtension;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.bpmn.parser.FieldDeclaration;
@@ -29,15 +28,16 @@ import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.el.FixedValue;
 import org.apache.commons.lang3.StringUtils;
 
-/**
-
- */
+/** */
 public abstract class AbstractBehaviorFactory {
 
   protected ExpressionManager expressionManager;
-  private ThrowMessageDelegateFactory throwMessageDelegateFactory = new ThrowMessageDelegateFactory() { };
-  private MessagePayloadMappingProviderFactory messagePayloadMappingProviderFactory = new BpmnMessagePayloadMappingProviderFactory();
-  private MessageExecutionContextFactory messageExecutionContextFactory = new DefaultMessageExecutionContextFactory();
+  private ThrowMessageDelegateFactory throwMessageDelegateFactory =
+      new ThrowMessageDelegateFactory() {};
+  private MessagePayloadMappingProviderFactory messagePayloadMappingProviderFactory =
+      new BpmnMessagePayloadMappingProviderFactory();
+  private MessageExecutionContextFactory messageExecutionContextFactory =
+      new DefaultMessageExecutionContextFactory();
 
   public List<FieldDeclaration> createFieldDeclarations(List<FieldExtension> fieldList) {
     List<FieldDeclaration> fieldDeclarations = new ArrayList<FieldDeclaration>();
@@ -45,9 +45,17 @@ public abstract class AbstractBehaviorFactory {
     for (FieldExtension fieldExtension : fieldList) {
       FieldDeclaration fieldDeclaration = null;
       if (StringUtils.isNotEmpty(fieldExtension.getExpression())) {
-        fieldDeclaration = new FieldDeclaration(fieldExtension.getFieldName(), Expression.class.getName(), expressionManager.createExpression(fieldExtension.getExpression()));
+        fieldDeclaration =
+            new FieldDeclaration(
+                fieldExtension.getFieldName(),
+                Expression.class.getName(),
+                expressionManager.createExpression(fieldExtension.getExpression()));
       } else {
-        fieldDeclaration = new FieldDeclaration(fieldExtension.getFieldName(), Expression.class.getName(), new FixedValue(fieldExtension.getStringValue()));
+        fieldDeclaration =
+            new FieldDeclaration(
+                fieldExtension.getFieldName(),
+                Expression.class.getName(),
+                new FixedValue(fieldExtension.getStringValue()));
       }
 
       fieldDeclarations.add(fieldDeclaration);
@@ -67,7 +75,8 @@ public abstract class AbstractBehaviorFactory {
     return throwMessageDelegateFactory;
   }
 
-  public void setThrowMessageDelegateFactory(ThrowMessageDelegateFactory throwMessageDelegateFactory) {
+  public void setThrowMessageDelegateFactory(
+      ThrowMessageDelegateFactory throwMessageDelegateFactory) {
     this.throwMessageDelegateFactory = throwMessageDelegateFactory;
   }
 
@@ -75,18 +84,17 @@ public abstract class AbstractBehaviorFactory {
     return messagePayloadMappingProviderFactory;
   }
 
-  public void setMessagePayloadMappingProviderFactory(MessagePayloadMappingProviderFactory messagePayloadMappingProviderFactory) {
+  public void setMessagePayloadMappingProviderFactory(
+      MessagePayloadMappingProviderFactory messagePayloadMappingProviderFactory) {
     this.messagePayloadMappingProviderFactory = messagePayloadMappingProviderFactory;
   }
 
-
-public MessageExecutionContextFactory getMessageExecutionContextFactory() {
+  public MessageExecutionContextFactory getMessageExecutionContextFactory() {
     return messageExecutionContextFactory;
-}
+  }
 
-
-public void setMessageExecutionContextFactory(MessageExecutionContextFactory messageExecutionContextFactory) {
+  public void setMessageExecutionContextFactory(
+      MessageExecutionContextFactory messageExecutionContextFactory) {
     this.messageExecutionContextFactory = messageExecutionContextFactory;
-}
-
+  }
 }

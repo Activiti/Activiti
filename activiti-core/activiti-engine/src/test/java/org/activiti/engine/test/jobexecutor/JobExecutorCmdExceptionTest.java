@@ -13,9 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/**
- *
- */
+/** */
 package org.activiti.engine.test.jobexecutor;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -29,8 +27,7 @@ import org.activiti.engine.impl.persistence.entity.JobEntityImpl;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.Job;
 
-/**
- */
+/** */
 public class JobExecutorCmdExceptionTest extends PluggableActivitiTestCase {
 
   protected TweetExceptionHandler tweetExceptionHandler = new TweetExceptionHandler();
@@ -38,7 +35,9 @@ public class JobExecutorCmdExceptionTest extends PluggableActivitiTestCase {
   private CommandExecutor commandExecutor;
 
   public void setUp() throws Exception {
-    processEngineConfiguration.getJobHandlers().put(tweetExceptionHandler.getType(), tweetExceptionHandler);
+    processEngineConfiguration
+        .getJobHandlers()
+        .put(tweetExceptionHandler.getType(), tweetExceptionHandler);
     this.commandExecutor = processEngineConfiguration.getCommandExecutor();
   }
 
@@ -47,30 +46,33 @@ public class JobExecutorCmdExceptionTest extends PluggableActivitiTestCase {
   }
 
   public void testJobCommandsWith2Exceptions() {
-    commandExecutor.execute(new Command<String>() {
+    commandExecutor.execute(
+        new Command<String>() {
 
-      public String execute(CommandContext commandContext) {
-        JobEntity message = createTweetExceptionMessage();
-        commandContext.getJobManager().scheduleAsyncJob(message);
-        return message.getId();
-      }
-    });
-
-    assertThatExceptionOfType(Exception.class)
-      .isThrownBy(() -> {
-        Job job = managementService.createJobQuery().singleResult();
-        assertThat(job.getRetries()).isEqualTo(3);
-        managementService.executeJob(job.getId());
-      });
+          public String execute(CommandContext commandContext) {
+            JobEntity message = createTweetExceptionMessage();
+            commandContext.getJobManager().scheduleAsyncJob(message);
+            return message.getId();
+          }
+        });
 
     assertThatExceptionOfType(Exception.class)
-      .isThrownBy(() -> {
-        Job job = managementService.createTimerJobQuery().singleResult();
-        assertThat(job.getRetries()).isEqualTo(2);
+        .isThrownBy(
+            () -> {
+              Job job = managementService.createJobQuery().singleResult();
+              assertThat(job.getRetries()).isEqualTo(3);
+              managementService.executeJob(job.getId());
+            });
 
-        managementService.moveTimerToExecutableJob(job.getId());
-        managementService.executeJob(job.getId());
-      });
+    assertThatExceptionOfType(Exception.class)
+        .isThrownBy(
+            () -> {
+              Job job = managementService.createTimerJobQuery().singleResult();
+              assertThat(job.getRetries()).isEqualTo(2);
+
+              managementService.moveTimerToExecutableJob(job.getId());
+              managementService.executeJob(job.getId());
+            });
 
     Job job = managementService.createTimerJobQuery().singleResult();
     assertThat(job.getRetries()).isEqualTo(1);
@@ -82,38 +84,41 @@ public class JobExecutorCmdExceptionTest extends PluggableActivitiTestCase {
   public void testJobCommandsWith3Exceptions() {
     tweetExceptionHandler.setExceptionsRemaining(3);
 
-    commandExecutor.execute(new Command<String>() {
+    commandExecutor.execute(
+        new Command<String>() {
 
-      public String execute(CommandContext commandContext) {
-        JobEntity message = createTweetExceptionMessage();
-        commandContext.getJobManager().scheduleAsyncJob(message);
-        return message.getId();
-      }
-    });
-
-
-    assertThatExceptionOfType(Exception.class)
-      .isThrownBy(() -> {
-        Job job = managementService.createJobQuery().singleResult();
-        assertThat(job.getRetries()).isEqualTo(3);
-        managementService.executeJob(job.getId());
-      });
+          public String execute(CommandContext commandContext) {
+            JobEntity message = createTweetExceptionMessage();
+            commandContext.getJobManager().scheduleAsyncJob(message);
+            return message.getId();
+          }
+        });
 
     assertThatExceptionOfType(Exception.class)
-      .isThrownBy(() -> {
-        Job job = managementService.createTimerJobQuery().singleResult();
-        assertThat(job.getRetries()).isEqualTo(2);
-        managementService.moveTimerToExecutableJob(job.getId());
-        managementService.executeJob(job.getId());
-      });
+        .isThrownBy(
+            () -> {
+              Job job = managementService.createJobQuery().singleResult();
+              assertThat(job.getRetries()).isEqualTo(3);
+              managementService.executeJob(job.getId());
+            });
 
     assertThatExceptionOfType(Exception.class)
-      .isThrownBy(() -> {
-        Job job = managementService.createTimerJobQuery().singleResult();
-        assertThat(job.getRetries()).isEqualTo(1);
-        managementService.moveTimerToExecutableJob(job.getId());
-        managementService.executeJob(job.getId());
-      });
+        .isThrownBy(
+            () -> {
+              Job job = managementService.createTimerJobQuery().singleResult();
+              assertThat(job.getRetries()).isEqualTo(2);
+              managementService.moveTimerToExecutableJob(job.getId());
+              managementService.executeJob(job.getId());
+            });
+
+    assertThatExceptionOfType(Exception.class)
+        .isThrownBy(
+            () -> {
+              Job job = managementService.createTimerJobQuery().singleResult();
+              assertThat(job.getRetries()).isEqualTo(1);
+              managementService.moveTimerToExecutableJob(job.getId());
+              managementService.executeJob(job.getId());
+            });
 
     Job job = managementService.createDeadLetterJobQuery().singleResult();
     assertThat(job).isNotNull();

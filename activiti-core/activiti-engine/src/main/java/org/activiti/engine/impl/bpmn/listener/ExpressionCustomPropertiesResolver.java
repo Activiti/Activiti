@@ -14,21 +14,15 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.bpmn.listener;
 
+import java.util.Map;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.delegate.CustomPropertiesResolver;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.Expression;
 
-import java.util.Map;
-
-/**
- * An {@link CustomPropertiesResolver} that evaluates a {@link Expression} when notified.
- *
-
- */
+/** An {@link CustomPropertiesResolver} that evaluates a {@link Expression} when notified. */
 public class ExpressionCustomPropertiesResolver implements CustomPropertiesResolver {
 
   protected Expression expression;
@@ -43,12 +37,16 @@ public class ExpressionCustomPropertiesResolver implements CustomPropertiesResol
     if (expressionValue instanceof Map) {
       return (Map<String, Object>) expressionValue;
     } else {
-      throw new ActivitiIllegalArgumentException("Custom properties resolver expression " + expression + " did not return a Map<String, Object>");
+      throw new ActivitiIllegalArgumentException(
+          "Custom properties resolver expression "
+              + expression
+              + " did not return a Map<String, Object>");
     }
   }
 
   /**
-   * returns the expression text for this execution listener. Comes in handy if you want to check which listeners you already have.
+   * returns the expression text for this execution listener. Comes in handy if you want to check
+   * which listeners you already have.
    */
   public String getExpressionText() {
     return expression.getExpressionText();

@@ -14,14 +14,11 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.bpmn.parser;
 
 import java.io.Serializable;
 
-/**
-
- */
+/** */
 public class CompensateEventDefinition implements Serializable {
 
   protected String activityRef;
@@ -42,5 +39,4 @@ public class CompensateEventDefinition implements Serializable {
   public void setWaitForCompletion(boolean waitForCompletion) {
     this.waitForCompletion = waitForCompletion;
   }
-
 }

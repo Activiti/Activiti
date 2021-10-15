@@ -23,11 +23,9 @@ import org.activiti.bpmn.model.Signal;
 import org.activiti.bpmn.model.SignalEventDefinition;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 
-/**
-
-
- */
-public class SignalEventDefinitionParseHandler extends AbstractBpmnParseHandler<SignalEventDefinition> {
+/** */
+public class SignalEventDefinitionParseHandler
+    extends AbstractBpmnParseHandler<SignalEventDefinition> {
 
   public Class<? extends BaseElement> getHandledType() {
     return SignalEventDefinition.class;
@@ -41,12 +39,21 @@ public class SignalEventDefinitionParseHandler extends AbstractBpmnParseHandler<
     }
 
     if (bpmnParse.getCurrentFlowElement() instanceof IntermediateCatchEvent) {
-      IntermediateCatchEvent intermediateCatchEvent = (IntermediateCatchEvent) bpmnParse.getCurrentFlowElement();
-      intermediateCatchEvent.setBehavior(bpmnParse.getActivityBehaviorFactory().createIntermediateCatchSignalEventActivityBehavior(intermediateCatchEvent, signalDefinition, signal));
+      IntermediateCatchEvent intermediateCatchEvent =
+          (IntermediateCatchEvent) bpmnParse.getCurrentFlowElement();
+      intermediateCatchEvent.setBehavior(
+          bpmnParse
+              .getActivityBehaviorFactory()
+              .createIntermediateCatchSignalEventActivityBehavior(
+                  intermediateCatchEvent, signalDefinition, signal));
 
     } else if (bpmnParse.getCurrentFlowElement() instanceof BoundaryEvent) {
       BoundaryEvent boundaryEvent = (BoundaryEvent) bpmnParse.getCurrentFlowElement();
-      boundaryEvent.setBehavior(bpmnParse.getActivityBehaviorFactory().createBoundarySignalEventActivityBehavior(boundaryEvent, signalDefinition, signal, boundaryEvent.isCancelActivity()));
+      boundaryEvent.setBehavior(
+          bpmnParse
+              .getActivityBehaviorFactory()
+              .createBoundarySignalEventActivityBehavior(
+                  boundaryEvent, signalDefinition, signal, boundaryEvent.isCancelActivity()));
     }
   }
 }

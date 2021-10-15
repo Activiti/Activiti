@@ -17,7 +17,6 @@
 package org.activiti.engine.impl.calendar;
 
 import java.util.Date;
-
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.runtime.ClockReader;
@@ -37,7 +36,7 @@ public class DueDateBusinessCalendar extends BusinessCalendarImpl {
   public Date resolveDuedate(String duedate, int maxIterations) {
     try {
       // check if due period was specified
-      if(duedate.startsWith("P")){
+      if (duedate.startsWith("P")) {
         return new DateTime(clockReader.getCurrentTime()).plus(Period.parse(duedate)).toDate();
       }
 

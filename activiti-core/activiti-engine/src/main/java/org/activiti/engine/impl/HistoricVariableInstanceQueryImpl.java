@@ -14,12 +14,10 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl;
 
 import java.util.List;
 import java.util.Set;
-
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.history.HistoricVariableInstance;
 import org.activiti.engine.history.HistoricVariableInstanceQuery;
@@ -32,11 +30,10 @@ import org.activiti.engine.impl.variable.JPAEntityListVariableType;
 import org.activiti.engine.impl.variable.JPAEntityVariableType;
 import org.activiti.engine.impl.variable.VariableTypes;
 
-/**
-
-
- */
-public class HistoricVariableInstanceQueryImpl extends AbstractQuery<HistoricVariableInstanceQuery, HistoricVariableInstance> implements HistoricVariableInstanceQuery {
+/** */
+public class HistoricVariableInstanceQueryImpl
+    extends AbstractQuery<HistoricVariableInstanceQuery, HistoricVariableInstance>
+    implements HistoricVariableInstanceQuery {
 
   private static final long serialVersionUID = 1L;
   protected String id;
@@ -52,8 +49,7 @@ public class HistoricVariableInstanceQueryImpl extends AbstractQuery<HistoricVar
   protected boolean excludeVariableInitialization;
   protected QueryVariableValue queryVariableValue;
 
-  public HistoricVariableInstanceQueryImpl() {
-  }
+  public HistoricVariableInstanceQueryImpl() {}
 
   public HistoricVariableInstanceQueryImpl(CommandContext commandContext) {
     super(commandContext);
@@ -88,8 +84,8 @@ public class HistoricVariableInstanceQueryImpl extends AbstractQuery<HistoricVar
     if (executionIds == null) {
       throw new ActivitiIllegalArgumentException("executionIds is null");
     }
-    if (executionIds.isEmpty()){
-        throw new ActivitiIllegalArgumentException("Set of executionIds is empty");
+    if (executionIds.isEmpty()) {
+      throw new ActivitiIllegalArgumentException("Set of executionIds is empty");
     }
     this.executionIds = executionIds;
     return this;
@@ -105,7 +101,8 @@ public class HistoricVariableInstanceQueryImpl extends AbstractQuery<HistoricVar
       throw new ActivitiIllegalArgumentException("taskId is null");
     }
     if (excludeTaskRelated) {
-      throw new ActivitiIllegalArgumentException("Cannot use taskId together with excludeTaskVariables");
+      throw new ActivitiIllegalArgumentException(
+          "Cannot use taskId together with excludeTaskVariables");
     }
     this.taskId = taskId;
     return this;
@@ -115,11 +112,12 @@ public class HistoricVariableInstanceQueryImpl extends AbstractQuery<HistoricVar
     if (taskIds == null) {
       throw new ActivitiIllegalArgumentException("taskIds is null");
     }
-    if (taskIds.isEmpty()){
-        throw new ActivitiIllegalArgumentException("Set of taskIds is empty");
+    if (taskIds.isEmpty()) {
+      throw new ActivitiIllegalArgumentException("Set of taskIds is empty");
     }
     if (excludeTaskRelated) {
-        throw new ActivitiIllegalArgumentException("Cannot use taskIds together with excludeTaskVariables");
+      throw new ActivitiIllegalArgumentException(
+          "Cannot use taskIds together with excludeTaskVariables");
     }
     this.taskIds = taskIds;
     return this;
@@ -128,10 +126,12 @@ public class HistoricVariableInstanceQueryImpl extends AbstractQuery<HistoricVar
   @Override
   public HistoricVariableInstanceQuery excludeTaskVariables() {
     if (taskId != null) {
-      throw new ActivitiIllegalArgumentException("Cannot use taskId together with excludeTaskVariables");
+      throw new ActivitiIllegalArgumentException(
+          "Cannot use taskId together with excludeTaskVariables");
     }
     if (taskIds != null) {
-      throw new ActivitiIllegalArgumentException("Cannot use taskIds together with excludeTaskVariables");
+      throw new ActivitiIllegalArgumentException(
+          "Cannot use taskIds together with excludeTaskVariables");
     }
     excludeTaskRelated = true;
     return this;
@@ -150,7 +150,8 @@ public class HistoricVariableInstanceQueryImpl extends AbstractQuery<HistoricVar
     return this;
   }
 
-  public HistoricVariableInstanceQuery variableValueEquals(String variableName, Object variableValue) {
+  public HistoricVariableInstanceQuery variableValueEquals(
+      String variableName, Object variableValue) {
     if (variableName == null) {
       throw new ActivitiIllegalArgumentException("variableName is null");
     }
@@ -158,11 +159,13 @@ public class HistoricVariableInstanceQueryImpl extends AbstractQuery<HistoricVar
       throw new ActivitiIllegalArgumentException("variableValue is null");
     }
     this.variableName = variableName;
-    queryVariableValue = new QueryVariableValue(variableName, variableValue, QueryOperator.EQUALS, true);
+    queryVariableValue =
+        new QueryVariableValue(variableName, variableValue, QueryOperator.EQUALS, true);
     return this;
   }
 
-  public HistoricVariableInstanceQuery variableValueNotEquals(String variableName, Object variableValue) {
+  public HistoricVariableInstanceQuery variableValueNotEquals(
+      String variableName, Object variableValue) {
     if (variableName == null) {
       throw new ActivitiIllegalArgumentException("variableName is null");
     }
@@ -170,11 +173,13 @@ public class HistoricVariableInstanceQueryImpl extends AbstractQuery<HistoricVar
       throw new ActivitiIllegalArgumentException("variableValue is null");
     }
     this.variableName = variableName;
-    queryVariableValue = new QueryVariableValue(variableName, variableValue, QueryOperator.NOT_EQUALS, true);
+    queryVariableValue =
+        new QueryVariableValue(variableName, variableValue, QueryOperator.NOT_EQUALS, true);
     return this;
   }
 
-  public HistoricVariableInstanceQuery variableValueLike(String variableName, String variableValue) {
+  public HistoricVariableInstanceQuery variableValueLike(
+      String variableName, String variableValue) {
     if (variableName == null) {
       throw new ActivitiIllegalArgumentException("variableName is null");
     }
@@ -182,11 +187,13 @@ public class HistoricVariableInstanceQueryImpl extends AbstractQuery<HistoricVar
       throw new ActivitiIllegalArgumentException("variableValue is null");
     }
     this.variableName = variableName;
-    queryVariableValue = new QueryVariableValue(variableName, variableValue, QueryOperator.LIKE, true);
+    queryVariableValue =
+        new QueryVariableValue(variableName, variableValue, QueryOperator.LIKE, true);
     return this;
   }
 
-  public HistoricVariableInstanceQuery variableValueLikeIgnoreCase(String variableName, String variableValue) {
+  public HistoricVariableInstanceQuery variableValueLikeIgnoreCase(
+      String variableName, String variableValue) {
     if (variableName == null) {
       throw new ActivitiIllegalArgumentException("variableName is null");
     }
@@ -194,7 +201,9 @@ public class HistoricVariableInstanceQueryImpl extends AbstractQuery<HistoricVar
       throw new ActivitiIllegalArgumentException("variableValue is null");
     }
     this.variableName = variableName;
-    queryVariableValue = new QueryVariableValue(variableName, variableValue.toLowerCase(), QueryOperator.LIKE_IGNORE_CASE, true);
+    queryVariableValue =
+        new QueryVariableValue(
+            variableName, variableValue.toLowerCase(), QueryOperator.LIKE_IGNORE_CASE, true);
     return this;
   }
 
@@ -216,24 +225,33 @@ public class HistoricVariableInstanceQueryImpl extends AbstractQuery<HistoricVar
   public long executeCount(CommandContext commandContext) {
     checkQueryOk();
     ensureVariablesInitialized();
-    return commandContext.getHistoricVariableInstanceEntityManager().findHistoricVariableInstanceCountByQueryCriteria(this);
+    return commandContext
+        .getHistoricVariableInstanceEntityManager()
+        .findHistoricVariableInstanceCountByQueryCriteria(this);
   }
 
   public List<HistoricVariableInstance> executeList(CommandContext commandContext, Page page) {
     checkQueryOk();
     ensureVariablesInitialized();
 
-    List<HistoricVariableInstance> historicVariableInstances = commandContext.getHistoricVariableInstanceEntityManager().findHistoricVariableInstancesByQueryCriteria(this, page);
+    List<HistoricVariableInstance> historicVariableInstances =
+        commandContext
+            .getHistoricVariableInstanceEntityManager()
+            .findHistoricVariableInstancesByQueryCriteria(this, page);
 
     if (!excludeVariableInitialization) {
       for (HistoricVariableInstance historicVariableInstance : historicVariableInstances) {
         if (historicVariableInstance instanceof HistoricVariableInstanceEntity) {
-          HistoricVariableInstanceEntity variableEntity = (HistoricVariableInstanceEntity) historicVariableInstance;
+          HistoricVariableInstanceEntity variableEntity =
+              (HistoricVariableInstanceEntity) historicVariableInstance;
           if (variableEntity != null && variableEntity.getVariableType() != null) {
             variableEntity.getValue();
 
             // make sure JPA entities are cached for later retrieval
-            if (JPAEntityVariableType.TYPE_NAME.equals(variableEntity.getVariableType().getTypeName()) || JPAEntityListVariableType.TYPE_NAME.equals(variableEntity.getVariableType().getTypeName())) {
+            if (JPAEntityVariableType.TYPE_NAME.equals(
+                    variableEntity.getVariableType().getTypeName())
+                || JPAEntityListVariableType.TYPE_NAME.equals(
+                    variableEntity.getVariableType().getTypeName())) {
               ((CacheableVariable) variableEntity.getVariableType()).setForceCacheable(true);
             }
           }
@@ -286,5 +304,4 @@ public class HistoricVariableInstanceQueryImpl extends AbstractQuery<HistoricVar
   public QueryVariableValue getQueryVariableValue() {
     return queryVariableValue;
   }
-
 }

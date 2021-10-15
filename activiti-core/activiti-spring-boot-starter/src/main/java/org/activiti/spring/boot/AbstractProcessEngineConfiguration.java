@@ -28,12 +28,13 @@ import org.activiti.spring.ProcessEngineFactoryBean;
 import org.activiti.spring.SpringProcessEngineConfiguration;
 
 /**
- * Provides sane definitions for the various beans required to be productive with Activiti in Spring.
- *
+ * Provides sane definitions for the various beans required to be productive with Activiti in
+ * Spring.
  */
 public abstract class AbstractProcessEngineConfiguration {
 
-  public ProcessEngineFactoryBean springProcessEngineBean(SpringProcessEngineConfiguration configuration) {
+  public ProcessEngineFactoryBean springProcessEngineBean(
+      SpringProcessEngineConfiguration configuration) {
     ProcessEngineFactoryBean processEngineFactoryBean = new ProcessEngineFactoryBean();
     processEngineFactoryBean.setProcessEngineConfiguration(configuration);
     return processEngineFactoryBean;
@@ -60,11 +61,10 @@ public abstract class AbstractProcessEngineConfiguration {
   }
 
   public IntegrationContextManager integrationContextManagerBean(ProcessEngine processEngine) {
-      return processEngine.getProcessEngineConfiguration().getIntegrationContextManager();
+    return processEngine.getProcessEngineConfiguration().getIntegrationContextManager();
   }
 
   public IntegrationContextService integrationContextServiceBean(ProcessEngine processEngine) {
-      return processEngine.getProcessEngineConfiguration().getIntegrationContextService();
+    return processEngine.getProcessEngineConfiguration().getIntegrationContextService();
   }
-
 }

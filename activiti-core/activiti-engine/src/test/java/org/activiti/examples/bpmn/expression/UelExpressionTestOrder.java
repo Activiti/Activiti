@@ -14,16 +14,11 @@
  * limitations under the License.
  */
 
-
 package org.activiti.examples.bpmn.expression;
 
 import java.io.Serializable;
 
-/**
- * Simple POJO, just for test purposes
- *
-
- */
+/** Simple POJO, just for test purposes */
 public class UelExpressionTestOrder implements Serializable {
 
   private static final long serialVersionUID = 1L;
@@ -45,5 +40,4 @@ public class UelExpressionTestOrder implements Serializable {
   public boolean isPremiumOrder() {
     return price >= 250;
   }
-
 }

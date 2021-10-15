@@ -16,11 +16,9 @@
 package org.activiti.test.matchers;
 
 import java.util.List;
-
 import org.activiti.test.TaskSource;
 
 public interface ProcessTaskMatcher {
 
-    void match(String processInstanceId, List<TaskSource> taskSources);
-
+  void match(String processInstanceId, List<TaskSource> taskSources);
 }

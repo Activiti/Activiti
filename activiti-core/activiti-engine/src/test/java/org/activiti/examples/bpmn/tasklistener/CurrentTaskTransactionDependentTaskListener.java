@@ -16,25 +16,36 @@
 
 package org.activiti.examples.bpmn.tasklistener;
 
-import org.activiti.bpmn.model.Task;
-import org.activiti.engine.delegate.TransactionDependentTaskListener;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import org.activiti.bpmn.model.Task;
+import org.activiti.engine.delegate.TransactionDependentTaskListener;
 
 /**
- * Simple {@link TransactionDependentTaskListener} that collects current process scope data and custom properties.
- *
-
+ * Simple {@link TransactionDependentTaskListener} that collects current process scope data and
+ * custom properties.
  */
-public class CurrentTaskTransactionDependentTaskListener implements TransactionDependentTaskListener {
+public class CurrentTaskTransactionDependentTaskListener
+    implements TransactionDependentTaskListener {
 
   protected static List<CurrentTask> currentTasks = new ArrayList<>();
 
   @Override
-  public void notify(String processInstanceId, String executionId, Task task, Map<String, Object> executionVariables, Map<String, Object> customPropertiesMap) {
-    currentTasks.add(new CurrentTask(processInstanceId, executionId, task.getId(), task.getName(), executionVariables, customPropertiesMap));
+  public void notify(
+      String processInstanceId,
+      String executionId,
+      Task task,
+      Map<String, Object> executionVariables,
+      Map<String, Object> customPropertiesMap) {
+    currentTasks.add(
+        new CurrentTask(
+            processInstanceId,
+            executionId,
+            task.getId(),
+            task.getName(),
+            executionVariables,
+            customPropertiesMap));
   }
 
   public static class CurrentTask {
@@ -45,7 +56,13 @@ public class CurrentTaskTransactionDependentTaskListener implements TransactionD
     private final Map<String, Object> executionVariables;
     private final Map<String, Object> customPropertiesMap;
 
-    public CurrentTask(String processInstanceId, String executionId, String taskId, String taskName, Map<String, Object> executionVariables, Map<String, Object> customPropertiesMap) {
+    public CurrentTask(
+        String processInstanceId,
+        String executionId,
+        String taskId,
+        String taskName,
+        Map<String, Object> executionVariables,
+        Map<String, Object> customPropertiesMap) {
       this.processInstanceId = processInstanceId;
       this.executionId = executionId;
       this.taskId = taskId;

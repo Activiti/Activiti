@@ -14,11 +14,9 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl;
 
 import java.util.List;
-
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.history.HistoricActivityInstanceQuery;
 import org.activiti.engine.history.HistoricDetailQuery;
@@ -37,13 +35,8 @@ import org.activiti.engine.impl.cmd.DeleteHistoricProcessInstanceCmd;
 import org.activiti.engine.impl.cmd.DeleteHistoricTaskInstanceCmd;
 import org.activiti.engine.impl.cmd.GetHistoricIdentityLinksForTaskCmd;
 
-/**
-
-
-
- */
+/** */
 public class HistoryServiceImpl extends ServiceImpl implements HistoryService {
-
 
   public HistoryServiceImpl(ProcessEngineConfigurationImpl processEngineConfiguration) {
     super(processEngineConfiguration);
@@ -58,7 +51,8 @@ public class HistoryServiceImpl extends ServiceImpl implements HistoryService {
   }
 
   public HistoricTaskInstanceQuery createHistoricTaskInstanceQuery() {
-    return new HistoricTaskInstanceQueryImpl(commandExecutor, processEngineConfiguration.getDatabaseType());
+    return new HistoricTaskInstanceQueryImpl(
+        commandExecutor, processEngineConfiguration.getDatabaseType());
   }
 
   public HistoricDetailQuery createHistoricDetailQuery() {
@@ -100,7 +94,8 @@ public class HistoryServiceImpl extends ServiceImpl implements HistoryService {
   }
 
   @Override
-  public List<HistoricIdentityLink> getHistoricIdentityLinksForProcessInstance(String processInstanceId) {
+  public List<HistoricIdentityLink> getHistoricIdentityLinksForProcessInstance(
+      String processInstanceId) {
     return commandExecutor.execute(new GetHistoricIdentityLinksForTaskCmd(null, processInstanceId));
   }
 
@@ -110,8 +105,8 @@ public class HistoryServiceImpl extends ServiceImpl implements HistoryService {
   }
 
   @Override
-  public ProcessInstanceHistoryLogQuery createProcessInstanceHistoryLogQuery(String processInstanceId) {
+  public ProcessInstanceHistoryLogQuery createProcessInstanceHistoryLogQuery(
+      String processInstanceId) {
     return new ProcessInstanceHistoryLogQueryImpl(commandExecutor, processInstanceId);
   }
-
 }

@@ -21,7 +21,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.JavaDelegate;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
@@ -29,9 +28,7 @@ import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
 
-/**
-
- */
+/** */
 public class StartToEndTest extends PluggableActivitiTestCase {
 
   @Deployment
@@ -41,21 +38,27 @@ public class StartToEndTest extends PluggableActivitiTestCase {
     assertThat(processInstance.isEnded()).isTrue();
   }
 
-  @Deployment(resources = { "org/activiti/engine/test/bpmn/StartToEndTest.testStartToEnd.bpmn20.xml" })
+  @Deployment(
+      resources = {"org/activiti/engine/test/bpmn/StartToEndTest.testStartToEnd.bpmn20.xml"})
   public void testStartProcessInstanceWithVariables() {
     Map<String, Object> varMap = new HashMap<String, Object>();
     varMap.put("test", "hello");
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("startToEnd", varMap);
+    ProcessInstance processInstance =
+        runtimeService.startProcessInstanceByKey("startToEnd", varMap);
     assertProcessEnded(processInstance.getId());
     Map<String, Object> returnVarMap = ((ExecutionEntity) processInstance).getVariables();
     assertThat(returnVarMap.get("test")).isEqualTo("hello");
   }
 
-  @Deployment(resources = { "org/activiti/engine/test/bpmn/StartToEndTest.testStartWithServiceTask.bpmn20.xml" })
+  @Deployment(
+      resources = {
+        "org/activiti/engine/test/bpmn/StartToEndTest.testStartWithServiceTask.bpmn20.xml"
+      })
   public void testStartProcessInstanceWithServiceTask() {
     Map<String, Object> varMap = new HashMap<String, Object>();
     varMap.put("test", "hello");
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("startToEnd", varMap);
+    ProcessInstance processInstance =
+        runtimeService.startProcessInstanceByKey("startToEnd", varMap);
     assertProcessEnded(processInstance.getId());
     Map<String, Object> returnVarMap = ((ExecutionEntity) processInstance).getVariables();
     assertThat(returnVarMap.get("test")).isEqualTo("hello");
@@ -65,11 +68,15 @@ public class StartToEndTest extends PluggableActivitiTestCase {
     assertThat(returnVarMap.get("long")).isEqualTo(10L);
   }
 
-  @Deployment(resources = { "org/activiti/engine/test/bpmn/StartToEndTest.testStartWithSerializableVariables.bpmn20.xml" })
+  @Deployment(
+      resources = {
+        "org/activiti/engine/test/bpmn/StartToEndTest.testStartWithSerializableVariables.bpmn20.xml"
+      })
   public void testStartProcessInstanceWithSerializbleVariables() {
     Map<String, Object> varMap = new HashMap<String, Object>();
     varMap.put("test", "hello");
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("startToEnd", varMap);
+    ProcessInstance processInstance =
+        runtimeService.startProcessInstanceByKey("startToEnd", varMap);
     assertProcessEnded(processInstance.getId());
     Map<String, Object> returnVarMap = ((ExecutionEntity) processInstance).getVariables();
     assertThat(returnVarMap.get("test")).isEqualTo("hello");
@@ -90,7 +97,6 @@ public class StartToEndTest extends PluggableActivitiTestCase {
       execution.setVariable("double", 25.5);
       execution.setVariable("long", 10L);
     }
-
   }
 
   public static class SerializableServiceTaskDelegate implements JavaDelegate {
@@ -100,7 +106,6 @@ public class StartToEndTest extends PluggableActivitiTestCase {
       execution.setVariable("person1", new Person("1", "John"));
       execution.setVariable("person2", new Person("2", "Paul"));
     }
-
   }
 
   public static class Person implements Serializable {
@@ -130,5 +135,4 @@ public class StartToEndTest extends PluggableActivitiTestCase {
       this.name = name;
     }
   }
-
 }

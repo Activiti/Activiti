@@ -21,14 +21,11 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
-
 import org.activiti.engine.history.HistoricData;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.ProcessInstanceHistoryLog;
 
-/**
-
- */
+/** */
 public class ProcessInstanceHistoryLogImpl implements ProcessInstanceHistoryLog {
 
   protected HistoricProcessInstance historicProcessInstance;
@@ -108,12 +105,13 @@ public class ProcessInstanceHistoryLogImpl implements ProcessInstanceHistoryLog 
   }
 
   public void orderHistoricData() {
-    Collections.sort(historicData, new Comparator<HistoricData>() {
-      @Override
-      public int compare(HistoricData data1, HistoricData data2) {
-        return data1.getTime().compareTo(data2.getTime());
-      }
-    });
+    Collections.sort(
+        historicData,
+        new Comparator<HistoricData>() {
+          @Override
+          public int compare(HistoricData data1, HistoricData data2) {
+            return data1.getTime().compareTo(data2.getTime());
+          }
+        });
   }
-
 }

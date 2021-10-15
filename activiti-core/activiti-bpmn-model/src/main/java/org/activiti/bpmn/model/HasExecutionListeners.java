@@ -17,9 +17,7 @@ package org.activiti.bpmn.model;
 
 import java.util.List;
 
-/**
- * Interface indicating an element has execution-listeners
- */
+/** Interface indicating an element has execution-listeners */
 public interface HasExecutionListeners {
 
   List<ActivitiListener> getExecutionListeners();

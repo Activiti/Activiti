@@ -18,17 +18,15 @@ package org.activiti.engine.impl.cmd;
 
 import java.io.Serializable;
 import java.util.List;
-
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.task.IdentityLink;
 
-/**
-
- */
-public class GetIdentityLinksForProcessInstanceCmd implements Command<List<IdentityLink>>, Serializable {
+/** */
+public class GetIdentityLinksForProcessInstanceCmd
+    implements Command<List<IdentityLink>>, Serializable {
 
   private static final long serialVersionUID = 1L;
 
@@ -38,15 +36,16 @@ public class GetIdentityLinksForProcessInstanceCmd implements Command<List<Ident
     this.processInstanceId = processInstanceId;
   }
 
-  @SuppressWarnings({ "unchecked", "rawtypes" })
+  @SuppressWarnings({"unchecked", "rawtypes"})
   public List<IdentityLink> execute(CommandContext commandContext) {
-    ExecutionEntity processInstance = commandContext.getExecutionEntityManager().findById(processInstanceId);
+    ExecutionEntity processInstance =
+        commandContext.getExecutionEntityManager().findById(processInstanceId);
 
     if (processInstance == null) {
-      throw new ActivitiObjectNotFoundException("Cannot find process definition with id " + processInstanceId, ExecutionEntity.class);
+      throw new ActivitiObjectNotFoundException(
+          "Cannot find process definition with id " + processInstanceId, ExecutionEntity.class);
     }
 
     return (List) processInstance.getIdentityLinks();
   }
-
 }

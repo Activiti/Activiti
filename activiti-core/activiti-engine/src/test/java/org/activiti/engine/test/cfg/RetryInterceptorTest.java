@@ -22,7 +22,6 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
-
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiOptimisticLockingException;
 import org.activiti.engine.ProcessEngine;
@@ -36,8 +35,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-/**
- */
+/** */
 public class RetryInterceptorTest {
 
   protected ProcessEngine processEngine;
@@ -46,7 +44,8 @@ public class RetryInterceptorTest {
 
   @Before
   public void setupProcessEngine() {
-    ProcessEngineConfigurationImpl processEngineConfiguration = (ProcessEngineConfigurationImpl) new StandaloneInMemProcessEngineConfiguration();
+    ProcessEngineConfigurationImpl processEngineConfiguration =
+        (ProcessEngineConfigurationImpl) new StandaloneInMemProcessEngineConfiguration();
     processEngineConfiguration.setJdbcUrl("jdbc:h2:mem:retryInterceptorTest");
     List<CommandInterceptor> interceptors = new ArrayList<CommandInterceptor>();
     retryInterceptor = new RetryInterceptor();
@@ -65,10 +64,17 @@ public class RetryInterceptorTest {
   public void testRetryInterceptor() {
 
     assertThatExceptionOfType(ActivitiException.class)
-      .isThrownBy(() -> processEngine.getManagementService().executeCommand(new CommandThrowingOptimisticLockingException()))
-      .withMessageContaining(retryInterceptor.getNumOfRetries() + " retries failed");
+        .isThrownBy(
+            () ->
+                processEngine
+                    .getManagementService()
+                    .executeCommand(new CommandThrowingOptimisticLockingException()))
+        .withMessageContaining(retryInterceptor.getNumOfRetries() + " retries failed");
 
-    assertThat(counter.get()).isEqualTo(retryInterceptor.getNumOfRetries() + 1); // +1, we retry 3 times, so one extra for the regular execution
+    assertThat(counter.get())
+        .isEqualTo(
+            retryInterceptor.getNumOfRetries()
+                + 1); // +1, we retry 3 times, so one extra for the regular execution
   }
 
   public static AtomicInteger counter = new AtomicInteger();

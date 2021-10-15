@@ -26,5 +26,4 @@ public class DefaultActivitiEngineAgendaFactory implements ActivitiEngineAgendaF
   public ActivitiEngineAgenda createAgenda(CommandContext commandContext) {
     return new DefaultActivitiEngineAgenda(commandContext);
   }
-
 }

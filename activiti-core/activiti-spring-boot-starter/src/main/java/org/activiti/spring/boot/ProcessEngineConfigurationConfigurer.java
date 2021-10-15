@@ -19,14 +19,11 @@ package org.activiti.spring.boot;
 import org.activiti.spring.SpringProcessEngineConfiguration;
 
 /**
- * Interface to be implemented by a bean that does some extra configuration of the SpringProcessEngineConfiguration.
- * If such a bean is defined, it will be called when the process engine configuration is created
- * and the default values have been set.
- *
-
+ * Interface to be implemented by a bean that does some extra configuration of the
+ * SpringProcessEngineConfiguration. If such a bean is defined, it will be called when the process
+ * engine configuration is created and the default values have been set.
  */
 public interface ProcessEngineConfigurationConfigurer {
 
-	void configure(SpringProcessEngineConfiguration processEngineConfiguration);
-
+  void configure(SpringProcessEngineConfiguration processEngineConfiguration);
 }

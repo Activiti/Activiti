@@ -14,17 +14,13 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.cmd;
 
 import java.io.Serializable;
-
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 
-/**
-
- */
+/** */
 public class AddEditorSourceExtraForModelCmd implements Command<Object>, Serializable {
 
   private static final long serialVersionUID = 1L;

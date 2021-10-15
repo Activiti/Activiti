@@ -16,9 +16,7 @@
 
 package org.activiti.engine.impl.variable;
 
-/**
-
- */
+/** */
 public class ShortType implements VariableType {
 
   private static final long serialVersionUID = 1L;
@@ -52,6 +50,7 @@ public class ShortType implements VariableType {
     if (value == null) {
       return true;
     }
-    return Short.class.isAssignableFrom(value.getClass()) || short.class.isAssignableFrom(value.getClass());
+    return Short.class.isAssignableFrom(value.getClass())
+        || short.class.isAssignableFrom(value.getClass());
   }
 }

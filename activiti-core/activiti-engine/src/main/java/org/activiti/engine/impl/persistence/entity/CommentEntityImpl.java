@@ -14,23 +14,20 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.persistence.entity;
-
-import org.activiti.engine.api.internal.Internal;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.regex.Pattern;
+import org.activiti.engine.api.internal.Internal;
 
-/**
-
- */
+/** */
 @Internal
 @Deprecated
-public class CommentEntityImpl extends AbstractEntityNoRevision implements CommentEntity, Serializable {
+public class CommentEntityImpl extends AbstractEntityNoRevision
+    implements CommentEntity, Serializable {
 
   private static final long serialVersionUID = 1L;
 
@@ -45,9 +42,7 @@ public class CommentEntityImpl extends AbstractEntityNoRevision implements Comme
   protected String message;
   protected String fullMessage;
 
-  public CommentEntityImpl() {
-
-  }
+  public CommentEntityImpl() {}
 
   public Object getPersistentState() {
     return CommentEntityImpl.class;

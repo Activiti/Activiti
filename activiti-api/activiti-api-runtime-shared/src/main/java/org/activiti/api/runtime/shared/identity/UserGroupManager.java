@@ -19,11 +19,11 @@ import java.util.List;
 
 public interface UserGroupManager {
 
-    List<String> getUserGroups(String username);
+  List<String> getUserGroups(String username);
 
-    List<String> getUserRoles(String username);
+  List<String> getUserRoles(String username);
 
-    List<String> getGroups();
+  List<String> getGroups();
 
-    List<String> getUsers();
+  List<String> getUsers();
 }

@@ -23,53 +23,50 @@ import javax.el.FunctionMapper;
 import javax.el.ValueExpression;
 import javax.el.VariableMapper;
 
-/**
- *
- */
+/** */
 public class ActivitiElContext extends ELContext {
 
-    protected ELResolver elResolver;
-    private ActivitiFunctionMapper functions;
-    private ActivitiVariablesMapper variables;
+  protected ELResolver elResolver;
+  private ActivitiFunctionMapper functions;
+  private ActivitiVariablesMapper variables;
 
-    public ActivitiElContext() {
-        this(null);
+  public ActivitiElContext() {
+    this(null);
+  }
+
+  public ActivitiElContext(ELResolver elResolver) {
+    this.elResolver = elResolver;
+  }
+
+  public ELResolver getELResolver() {
+    return elResolver;
+  }
+
+  public FunctionMapper getFunctionMapper() {
+    if (functions == null) {
+      functions = new ActivitiFunctionMapper();
     }
+    return functions;
+  }
 
-    public ActivitiElContext(ELResolver elResolver) {
-        this.elResolver = elResolver;
+  public VariableMapper getVariableMapper() {
+    if (variables == null) {
+      variables = new ActivitiVariablesMapper();
     }
+    return variables;
+  }
 
-    public ELResolver getELResolver() {
-        return elResolver;
+  public void setFunction(String prefix, String localName, Method method) {
+    if (functions == null) {
+      functions = new ActivitiFunctionMapper();
     }
+    functions.setFunction(prefix, localName, method);
+  }
 
-    public FunctionMapper getFunctionMapper() {
-        if (functions == null) {
-            functions = new ActivitiFunctionMapper();
-        }
-        return functions;
+  public ValueExpression setVariable(String name, ValueExpression expression) {
+    if (variables == null) {
+      variables = new ActivitiVariablesMapper();
     }
-
-    public VariableMapper getVariableMapper() {
-        if (variables == null) {
-            variables = new ActivitiVariablesMapper();
-        }
-        return variables;
-    }
-
-    public void setFunction(String prefix, String localName, Method method) {
-        if (functions == null) {
-            functions = new ActivitiFunctionMapper();
-        }
-        functions.setFunction(prefix, localName, method);
-    }
-
-    public ValueExpression setVariable(String name, ValueExpression expression) {
-        if (variables == null) {
-            variables = new ActivitiVariablesMapper();
-        }
-        return variables.setVariable(name, expression);
-    }
-
+    return variables.setVariable(name, expression);
+  }
 }

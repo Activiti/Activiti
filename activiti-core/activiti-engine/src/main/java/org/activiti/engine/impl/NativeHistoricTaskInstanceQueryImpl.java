@@ -18,13 +18,14 @@ package org.activiti.engine.impl;
 
 import java.util.List;
 import java.util.Map;
-
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.history.NativeHistoricTaskInstanceQuery;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 
-public class NativeHistoricTaskInstanceQueryImpl extends AbstractNativeQuery<NativeHistoricTaskInstanceQuery, HistoricTaskInstance> implements NativeHistoricTaskInstanceQuery {
+public class NativeHistoricTaskInstanceQueryImpl
+    extends AbstractNativeQuery<NativeHistoricTaskInstanceQuery, HistoricTaskInstance>
+    implements NativeHistoricTaskInstanceQuery {
 
   private static final long serialVersionUID = 1L;
 
@@ -38,12 +39,19 @@ public class NativeHistoricTaskInstanceQueryImpl extends AbstractNativeQuery<Nat
 
   // results ////////////////////////////////////////////////////////////////
 
-  public List<HistoricTaskInstance> executeList(CommandContext commandContext, Map<String, Object> parameterMap, int firstResult, int maxResults) {
-    return commandContext.getHistoricTaskInstanceEntityManager().findHistoricTaskInstancesByNativeQuery(parameterMap, firstResult, maxResults);
+  public List<HistoricTaskInstance> executeList(
+      CommandContext commandContext,
+      Map<String, Object> parameterMap,
+      int firstResult,
+      int maxResults) {
+    return commandContext
+        .getHistoricTaskInstanceEntityManager()
+        .findHistoricTaskInstancesByNativeQuery(parameterMap, firstResult, maxResults);
   }
 
   public long executeCount(CommandContext commandContext, Map<String, Object> parameterMap) {
-    return commandContext.getHistoricTaskInstanceEntityManager().findHistoricTaskInstanceCountByNativeQuery(parameterMap);
+    return commandContext
+        .getHistoricTaskInstanceEntityManager()
+        .findHistoricTaskInstanceCountByNativeQuery(parameterMap);
   }
-
 }

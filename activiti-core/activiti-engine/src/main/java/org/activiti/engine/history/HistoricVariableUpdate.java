@@ -14,15 +14,11 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.history;
 
 import org.activiti.engine.api.internal.Internal;
 
-/**
- * Update of a process variable. This is only available if history level is configured to FULL.
- *
- */
+/** Update of a process variable. This is only available if history level is configured to FULL. */
 @Internal
 public interface HistoricVariableUpdate extends HistoricDetail {
 

@@ -16,6 +16,8 @@
 
 package org.activiti.standalone.testing;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.activiti.engine.test.ActivitiRule;
 import org.activiti.engine.test.Deployment;
 import org.activiti.engine.test.mock.ActivitiMockSupport;
@@ -23,26 +25,30 @@ import org.activiti.engine.test.mock.MockServiceTask;
 import org.activiti.engine.test.mock.MockServiceTasks;
 import org.activiti.engine.test.mock.NoOpServiceTasks;
 import org.activiti.standalone.testing.helpers.ServiceTaskTestMock;
-import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Rule;
 import org.junit.Test;
 
-/**
-
- */
+/** */
 public class MockSupportWithActivitiRuleTest {
 
   @Rule
-  public ActivitiRule activitiRule = new ActivitiRule() {
+  public ActivitiRule activitiRule =
+      new ActivitiRule() {
 
-    protected void configureProcessEngine() {
-      ServiceTaskTestMock.CALL_COUNT.set(0);
+        protected void configureProcessEngine() {
+          ServiceTaskTestMock.CALL_COUNT.set(0);
 
-      activitiRule.mockSupport().mockServiceTaskWithClassDelegate("com.yourcompany.delegate", ServiceTaskTestMock.class);
-      activitiRule.mockSupport().mockServiceTaskWithClassDelegate("com.yourcompany.anotherDelegate", "org.activiti.standalone.testing.helpers.ServiceTaskTestMock");
-    }
-
-  };
+          activitiRule
+              .mockSupport()
+              .mockServiceTaskWithClassDelegate(
+                  "com.yourcompany.delegate", ServiceTaskTestMock.class);
+          activitiRule
+              .mockSupport()
+              .mockServiceTaskWithClassDelegate(
+                  "com.yourcompany.anotherDelegate",
+                  "org.activiti.standalone.testing.helpers.ServiceTaskTestMock");
+        }
+      };
 
   @Test
   @Deployment
@@ -62,7 +68,9 @@ public class MockSupportWithActivitiRuleTest {
 
   @Test
   @Deployment
-  @MockServiceTask(originalClassName = "com.yourcompany.delegate", mockedClassName = "org.activiti.standalone.testing.helpers.ServiceTaskTestMock")
+  @MockServiceTask(
+      originalClassName = "com.yourcompany.delegate",
+      mockedClassName = "org.activiti.standalone.testing.helpers.ServiceTaskTestMock")
   public void testMockedServiceTaskAnnotation() {
     assertThat(ServiceTaskTestMock.CALL_COUNT.get()).isEqualTo(0);
     activitiRule.getRuntimeService().startProcessInstanceByKey("mockSupportTest");
@@ -70,8 +78,13 @@ public class MockSupportWithActivitiRuleTest {
   }
 
   @Test
-  @Deployment(resources = { "org/activiti/standalone/testing/MockSupportWithActivitiRuleTest.testMockedServiceTaskAnnotation.bpmn20.xml" })
-  @MockServiceTask(id = "serviceTask", mockedClassName = "org.activiti.standalone.testing.helpers.ServiceTaskTestMock")
+  @Deployment(
+      resources = {
+        "org/activiti/standalone/testing/MockSupportWithActivitiRuleTest.testMockedServiceTaskAnnotation.bpmn20.xml"
+      })
+  @MockServiceTask(
+      id = "serviceTask",
+      mockedClassName = "org.activiti.standalone.testing.helpers.ServiceTaskTestMock")
   public void testMockedServiceTaskByIdAnnotation() {
     assertThat(ServiceTaskTestMock.CALL_COUNT.get()).isEqualTo(0);
     activitiRule.getRuntimeService().startProcessInstanceByKey("mockSupportTest");
@@ -80,8 +93,14 @@ public class MockSupportWithActivitiRuleTest {
 
   @Test
   @Deployment
-  @MockServiceTasks({ @MockServiceTask(originalClassName = "com.yourcompany.delegate1", mockedClassName = "org.activiti.standalone.testing.helpers.ServiceTaskTestMock"),
-      @MockServiceTask(originalClassName = "com.yourcompany.delegate2", mockedClassName = "org.activiti.standalone.testing.helpers.ServiceTaskTestMock") })
+  @MockServiceTasks({
+    @MockServiceTask(
+        originalClassName = "com.yourcompany.delegate1",
+        mockedClassName = "org.activiti.standalone.testing.helpers.ServiceTaskTestMock"),
+    @MockServiceTask(
+        originalClassName = "com.yourcompany.delegate2",
+        mockedClassName = "org.activiti.standalone.testing.helpers.ServiceTaskTestMock")
+  })
   public void testMockedServiceTasksAnnotation() {
     assertThat(ServiceTaskTestMock.CALL_COUNT.get()).isEqualTo(0);
     activitiRule.getRuntimeService().startProcessInstanceByKey("mockSupportTest");
@@ -97,13 +116,20 @@ public class MockSupportWithActivitiRuleTest {
     assertThat(activitiRule.mockSupport().getNrOfNoOpServiceTaskExecutions()).isEqualTo(5);
 
     for (int i = 1; i <= 5; i++) {
-      assertThat(activitiRule.mockSupport().getExecutedNoOpServiceTaskDelegateClassNames().get(i - 1)).isEqualTo("com.yourcompany.delegate" + i);
+      assertThat(
+              activitiRule.mockSupport().getExecutedNoOpServiceTaskDelegateClassNames().get(i - 1))
+          .isEqualTo("com.yourcompany.delegate" + i);
     }
   }
 
   @Test
-  @Deployment(resources = { "org/activiti/standalone/testing/MockSupportWithActivitiRuleTest.testNoOpServiceTasksAnnotation.bpmn20.xml" })
-  @NoOpServiceTasks(ids = { "serviceTask1", "serviceTask3", "serviceTask5" }, classNames = { "com.yourcompany.delegate2", "com.yourcompany.delegate4" })
+  @Deployment(
+      resources = {
+        "org/activiti/standalone/testing/MockSupportWithActivitiRuleTest.testNoOpServiceTasksAnnotation.bpmn20.xml"
+      })
+  @NoOpServiceTasks(
+      ids = {"serviceTask1", "serviceTask3", "serviceTask5"},
+      classNames = {"com.yourcompany.delegate2", "com.yourcompany.delegate4"})
   public void testNoOpServiceTasksWithIdsAnnotation() {
     ActivitiMockSupport mockSupport = activitiRule.getMockSupport();
     assertThat(mockSupport.getNrOfNoOpServiceTaskExecutions()).isEqualTo(0);
@@ -111,8 +137,8 @@ public class MockSupportWithActivitiRuleTest {
     assertThat(mockSupport.getNrOfNoOpServiceTaskExecutions()).isEqualTo(5);
 
     for (int i = 1; i <= 5; i++) {
-      assertThat(mockSupport.getExecutedNoOpServiceTaskDelegateClassNames().get(i - 1)).isEqualTo("com.yourcompany.delegate" + i);
+      assertThat(mockSupport.getExecutedNoOpServiceTaskDelegateClassNames().get(i - 1))
+          .isEqualTo("com.yourcompany.delegate" + i);
     }
   }
-
 }

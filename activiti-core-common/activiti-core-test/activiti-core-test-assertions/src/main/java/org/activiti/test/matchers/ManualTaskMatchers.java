@@ -17,20 +17,18 @@ package org.activiti.test.matchers;
 
 public class ManualTaskMatchers extends ActivityMatchers {
 
-    private static final String MANUAL_TASK = "manualTask";
+  private static final String MANUAL_TASK = "manualTask";
 
-    private ManualTaskMatchers(String definitionKey) {
-        super(definitionKey);
+  private ManualTaskMatchers(String definitionKey) {
+    super(definitionKey);
+  }
 
-    }
+  @Override
+  public String getActivityType() {
+    return MANUAL_TASK;
+  }
 
-    @Override
-    public String getActivityType() {
-        return MANUAL_TASK;
-    }
-
-    public static ManualTaskMatchers manualTask(String definitionKey) {
-        return new ManualTaskMatchers(definitionKey);
-    }
-
+  public static ManualTaskMatchers manualTask(String definitionKey) {
+    return new ManualTaskMatchers(definitionKey);
+  }
 }

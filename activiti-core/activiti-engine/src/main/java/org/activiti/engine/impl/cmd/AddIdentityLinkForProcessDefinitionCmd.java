@@ -17,7 +17,6 @@
 package org.activiti.engine.impl.cmd;
 
 import java.io.Serializable;
-
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.impl.interceptor.Command;
@@ -25,9 +24,7 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.repository.ProcessDefinition;
 
-/**
-
- */
+/** */
 public class AddIdentityLinkForProcessDefinitionCmd implements Command<Void>, Serializable {
 
   private static final long serialVersionUID = 1L;
@@ -38,7 +35,8 @@ public class AddIdentityLinkForProcessDefinitionCmd implements Command<Void>, Se
 
   protected String groupId;
 
-  public AddIdentityLinkForProcessDefinitionCmd(String processDefinitionId, String userId, String groupId) {
+  public AddIdentityLinkForProcessDefinitionCmd(
+      String processDefinitionId, String userId, String groupId) {
     validateParams(userId, groupId, processDefinitionId);
     this.processDefinitionId = processDefinitionId;
     this.userId = userId;
@@ -56,15 +54,18 @@ public class AddIdentityLinkForProcessDefinitionCmd implements Command<Void>, Se
   }
 
   public Void execute(CommandContext commandContext) {
-    ProcessDefinitionEntity processDefinition = commandContext.getProcessDefinitionEntityManager().findById(processDefinitionId);
+    ProcessDefinitionEntity processDefinition =
+        commandContext.getProcessDefinitionEntityManager().findById(processDefinitionId);
 
     if (processDefinition == null) {
-      throw new ActivitiObjectNotFoundException("Cannot find process definition with id " + processDefinitionId, ProcessDefinition.class);
+      throw new ActivitiObjectNotFoundException(
+          "Cannot find process definition with id " + processDefinitionId, ProcessDefinition.class);
     }
 
-    commandContext.getIdentityLinkEntityManager().addIdentityLink(processDefinition, userId, groupId);
+    commandContext
+        .getIdentityLinkEntityManager()
+        .addIdentityLink(processDefinition, userId, groupId);
 
     return null;
   }
-
 }

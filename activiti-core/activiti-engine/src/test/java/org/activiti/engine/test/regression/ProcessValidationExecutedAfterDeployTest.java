@@ -18,7 +18,6 @@ package org.activiti.engine.test.regression;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
-
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.repository.ProcessDefinition;
@@ -27,9 +26,9 @@ import org.activiti.validation.ProcessValidator;
 /**
  * From http://forums.activiti.org/content/skip-parse-validation-while-fetching- startformdata
  *
- * Test for validating that the process validator ONLY kicks in on deployment, not on reading again from database. The two tests should fail, cause the validator kicks in the second time, but not
- * originally (don't do this at home, kids. Disabling the validator on deploy is BAD).
- *
+ * <p>Test for validating that the process validator ONLY kicks in on deployment, not on reading
+ * again from database. The two tests should fail, cause the validator kicks in the second time, but
+ * not originally (don't do this at home, kids. Disabling the validator on deploy is BAD).
  */
 public class ProcessValidationExecutedAfterDeployTest extends PluggableActivitiTestCase {
 
@@ -56,7 +55,14 @@ public class ProcessValidationExecutedAfterDeployTest extends PluggableActivitiT
   private ProcessDefinition getLatestProcessDefinitionVersionByKey(String processDefinitionKey) {
     List<ProcessDefinition> definitions = null;
     try {
-      definitions = repositoryService.createProcessDefinitionQuery().processDefinitionKey(processDefinitionKey).orderByProcessDefinitionVersion().latestVersion().desc().list();
+      definitions =
+          repositoryService
+              .createProcessDefinitionQuery()
+              .processDefinitionKey(processDefinitionKey)
+              .orderByProcessDefinitionVersion()
+              .latestVersion()
+              .desc()
+              .list();
       if (definitions.isEmpty()) {
         return null;
       }
@@ -69,7 +75,11 @@ public class ProcessValidationExecutedAfterDeployTest extends PluggableActivitiT
   public void testGetLatestProcessDefinitionTextByKey() {
 
     disableValidation();
-    repositoryService.createDeployment().addClasspathResource("org/activiti/engine/test/regression/ProcessValidationExecutedAfterDeployTest.bpmn20.xml").deploy();
+    repositoryService
+        .createDeployment()
+        .addClasspathResource(
+            "org/activiti/engine/test/regression/ProcessValidationExecutedAfterDeployTest.bpmn20.xml")
+        .deploy();
     enableValidation();
     clearDeploymentCache();
 
@@ -80,9 +90,9 @@ public class ProcessValidationExecutedAfterDeployTest extends PluggableActivitiT
     } catch (ActivitiException e) {
       fail("Error occurred in fetching process model.");
     }
-    for (org.activiti.engine.repository.Deployment deployment : repositoryService.createDeploymentQuery().list()) {
+    for (org.activiti.engine.repository.Deployment deployment :
+        repositoryService.createDeploymentQuery().list()) {
       repositoryService.deleteDeployment(deployment.getId());
     }
   }
-
 }

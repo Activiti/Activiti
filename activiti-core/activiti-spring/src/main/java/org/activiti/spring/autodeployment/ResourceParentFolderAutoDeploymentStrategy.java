@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.spring.autodeployment;
 
 import java.io.IOException;
@@ -23,29 +22,27 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-
 import org.activiti.core.common.spring.project.ApplicationUpgradeContextService;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.DeploymentBuilder;
 import org.springframework.core.io.Resource;
 
 /**
- * Implementation of {@link AutoDeploymentStrategy} that performs a separate deployment for each set of {@link Resource}s that share the same parent folder. The namehint is used to prefix the names of
- * deployments. If the parent folder for a {@link Resource} cannot be determined, the resource's name is used.
- *
-
+ * Implementation of {@link AutoDeploymentStrategy} that performs a separate deployment for each set
+ * of {@link Resource}s that share the same parent folder. The namehint is used to prefix the names
+ * of deployments. If the parent folder for a {@link Resource} cannot be determined, the resource's
+ * name is used.
  */
 public class ResourceParentFolderAutoDeploymentStrategy extends AbstractAutoDeploymentStrategy {
 
-  /**
-   * The deployment mode this strategy handles.
-   */
+  /** The deployment mode this strategy handles. */
   public static final String DEPLOYMENT_MODE = "resource-parent-folder";
 
   private static final String DEPLOYMENT_NAME_PATTERN = "%s.%s";
 
-  public ResourceParentFolderAutoDeploymentStrategy(ApplicationUpgradeContextService applicationUpgradeContextService) {
-      super(applicationUpgradeContextService);
+  public ResourceParentFolderAutoDeploymentStrategy(
+      ApplicationUpgradeContextService applicationUpgradeContextService) {
+    super(applicationUpgradeContextService);
   }
 
   @Override
@@ -54,7 +51,10 @@ public class ResourceParentFolderAutoDeploymentStrategy extends AbstractAutoDepl
   }
 
   @Override
-  public void deployResources(final String deploymentNameHint, final Resource[] resources, final RepositoryService repositoryService) {
+  public void deployResources(
+      final String deploymentNameHint,
+      final Resource[] resources,
+      final RepositoryService repositoryService) {
 
     // Create a deployment for each distinct parent folder using the name
     // hint
@@ -65,18 +65,17 @@ public class ResourceParentFolderAutoDeploymentStrategy extends AbstractAutoDepl
 
       final String deploymentName = determineDeploymentName(deploymentNameHint, group.getKey());
 
-      DeploymentBuilder deploymentBuilder = repositoryService.createDeployment().enableDuplicateFiltering().name(deploymentName);
+      DeploymentBuilder deploymentBuilder =
+          repositoryService.createDeployment().enableDuplicateFiltering().name(deploymentName);
 
       for (final Resource resource : group.getValue()) {
         final String resourceName = determineResourceName(resource);
 
-        deploymentBuilder.addInputStream(resourceName,
-                                         resource);
+        deploymentBuilder.addInputStream(resourceName, resource);
       }
 
       loadApplicationUpgradeContext(deploymentBuilder).deploy();
     }
-
   }
 
   private Map<String, Set<Resource>> createMap(final Resource[] resources) {
@@ -105,7 +104,9 @@ public class ResourceParentFolderAutoDeploymentStrategy extends AbstractAutoDepl
   }
 
   private boolean resourceParentIsDirectory(final Resource resource) throws IOException {
-    return resource.getFile() != null && resource.getFile().getParentFile() != null && resource.getFile().getParentFile().isDirectory();
+    return resource.getFile() != null
+        && resource.getFile().getParentFile() != null
+        && resource.getFile().getParentFile().isDirectory();
   }
 
   private String determineDeploymentName(final String deploymentNameHint, final String groupName) {

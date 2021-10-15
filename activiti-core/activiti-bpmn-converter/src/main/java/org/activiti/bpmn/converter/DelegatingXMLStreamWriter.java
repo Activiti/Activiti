@@ -19,9 +19,7 @@ import javax.xml.namespace.NamespaceContext;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
-/**
-
- */
+/** */
 abstract class DelegatingXMLStreamWriter implements XMLStreamWriter {
 
   private final XMLStreamWriter writer;
@@ -38,7 +36,8 @@ abstract class DelegatingXMLStreamWriter implements XMLStreamWriter {
     writer.writeStartElement(namespaceURI, localName);
   }
 
-  public void writeStartElement(String prefix, String localName, String namespaceURI) throws XMLStreamException {
+  public void writeStartElement(String prefix, String localName, String namespaceURI)
+      throws XMLStreamException {
     writer.writeStartElement(prefix, localName, namespaceURI);
   }
 
@@ -46,7 +45,8 @@ abstract class DelegatingXMLStreamWriter implements XMLStreamWriter {
     writer.writeEmptyElement(namespaceURI, localName);
   }
 
-  public void writeEmptyElement(String prefix, String localName, String namespaceURI) throws XMLStreamException {
+  public void writeEmptyElement(String prefix, String localName, String namespaceURI)
+      throws XMLStreamException {
     writer.writeEmptyElement(prefix, localName, namespaceURI);
   }
 
@@ -74,11 +74,13 @@ abstract class DelegatingXMLStreamWriter implements XMLStreamWriter {
     writer.writeAttribute(localName, value);
   }
 
-  public void writeAttribute(String prefix, String namespaceURI, String localName, String value) throws XMLStreamException {
+  public void writeAttribute(String prefix, String namespaceURI, String localName, String value)
+      throws XMLStreamException {
     writer.writeAttribute(prefix, namespaceURI, localName, value);
   }
 
-  public void writeAttribute(String namespaceURI, String localName, String value) throws XMLStreamException {
+  public void writeAttribute(String namespaceURI, String localName, String value)
+      throws XMLStreamException {
     writer.writeAttribute(namespaceURI, localName, value);
   }
 

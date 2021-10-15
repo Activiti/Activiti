@@ -17,14 +17,9 @@
 package org.activiti.engine.impl.transformer;
 
 import java.util.Date;
-
 import org.apache.commons.lang3.time.FastDateFormat;
 
-/**
- * Transforms a {@link String} to a {@link Date}
- *
-
- */
+/** Transforms a {@link String} to a {@link Date} */
 public class StringToDate extends AbstractTransformer {
 
   protected FastDateFormat format = FastDateFormat.getInstance("dd/MM/yyyy");

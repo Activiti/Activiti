@@ -24,13 +24,11 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
-/**
-
- */
+/** */
 public class BoundaryTimerEventTest extends PluggableActivitiTestCase {
 
   @Deployment
-  public void testInterruptingTimerDuration() throws Exception{
+  public void testInterruptingTimerDuration() throws Exception {
 
     // Start process instance
     ProcessInstance pi = runtimeService.startProcessInstanceByKey("escalationExample");
@@ -39,7 +37,7 @@ public class BoundaryTimerEventTest extends PluggableActivitiTestCase {
     Task task = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
     assertThat(task.getName()).isEqualTo("First line support");
 
-      Thread.sleep(2000);
+    Thread.sleep(2000);
 
     // Manually execute the job
     Job timer = managementService.createTimerJobQuery().singleResult();
@@ -50,5 +48,4 @@ public class BoundaryTimerEventTest extends PluggableActivitiTestCase {
     task = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
     assertThat(task.getName()).isEqualTo("Handle escalated issue");
   }
-
 }

@@ -18,10 +18,10 @@ package org.activiti.engine.impl.persistence.entity;
 
 import java.util.List;
 import java.util.Map;
-
 import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.impl.TaskQueryImpl;
 import org.activiti.engine.task.Task;
+
 @Internal
 public interface TaskEntityManager extends EntityManager<TaskEntity> {
 
@@ -43,7 +43,8 @@ public interface TaskEntityManager extends EntityManager<TaskEntity> {
 
   long findTaskCountByQueryCriteria(TaskQueryImpl taskQuery);
 
-  List<Task> findTasksByNativeQuery(Map<String, Object> parameterMap, int firstResult, int maxResults);
+  List<Task> findTasksByNativeQuery(
+      Map<String, Object> parameterMap, int firstResult, int maxResults);
 
   long findTaskCountByNativeQuery(Map<String, Object> parameterMap);
 
@@ -55,8 +56,8 @@ public interface TaskEntityManager extends EntityManager<TaskEntity> {
 
   void deleteTask(String taskId, String deleteReason, boolean cascade, boolean cancel);
 
-  void deleteTasksByProcessInstanceId(String processInstanceId, String deleteReason, boolean cascade);
+  void deleteTasksByProcessInstanceId(
+      String processInstanceId, String deleteReason, boolean cascade);
 
   void deleteTask(TaskEntity task, String deleteReason, boolean cascade, boolean cancel);
-
 }

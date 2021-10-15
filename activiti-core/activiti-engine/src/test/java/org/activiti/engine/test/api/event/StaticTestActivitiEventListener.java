@@ -18,15 +18,10 @@ package org.activiti.engine.test.api.event;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventListener;
 
-/**
- * Event listener that keeps a static list of all events received.
- *
-
- */
+/** Event listener that keeps a static list of all events received. */
 public class StaticTestActivitiEventListener implements ActivitiEventListener {
 
   private static List<ActivitiEvent> eventsReceived = new ArrayList<ActivitiEvent>();
@@ -48,5 +43,4 @@ public class StaticTestActivitiEventListener implements ActivitiEventListener {
   public boolean isFailOnException() {
     return false;
   }
-
 }

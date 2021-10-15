@@ -14,24 +14,20 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.test.bpmn.sequenceflow;
 
 import static java.util.Collections.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
-
-/**
- */
+/** */
 public class ConditionalSequenceFlowTest extends PluggableActivitiTestCase {
 
   @Deployment
@@ -68,7 +64,8 @@ public class ConditionalSequenceFlowTest extends PluggableActivitiTestCase {
     assertThat(task.getName()).isEqualTo("task not left");
     taskService.complete(task.getId());
 
-    ObjectNode infoNode = dynamicBpmnService.changeSequenceFlowCondition("flow1", "${input == 'right'}");
+    ObjectNode infoNode =
+        dynamicBpmnService.changeSequenceFlowCondition("flow1", "${input == 'right'}");
     dynamicBpmnService.changeSequenceFlowCondition("flow2", "${input != 'right'}", infoNode);
     dynamicBpmnService.saveProcessDefinitionInfo(pi.getProcessDefinitionId(), infoNode);
 

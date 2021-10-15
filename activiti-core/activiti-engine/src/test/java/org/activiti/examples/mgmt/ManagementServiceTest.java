@@ -23,10 +23,7 @@ import org.activiti.engine.ManagementService;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.management.TableMetaData;
 
-/**
- * Test case for the various operations of the {@link ManagementService}
- *
- */
+/** Test case for the various operations of the {@link ManagementService} */
 public class ManagementServiceTest extends PluggableActivitiTestCase {
 
   public void testTableCount() {
@@ -57,8 +54,9 @@ public class ManagementServiceTest extends PluggableActivitiTestCase {
     assertThat(assigneeIndex).isGreaterThanOrEqualTo(0);
     assertThat(createTimeIndex).isGreaterThanOrEqualTo(0);
 
-    assertThat(tableMetaData.getColumnTypes().get(assigneeIndex)).isIn("VARCHAR", "NVARCHAR2", "nvarchar", "NVARCHAR");
-    assertThat(tableMetaData.getColumnTypes().get(createTimeIndex)).isIn("TIMESTAMP", "TIMESTAMP(6)", "datetime", "DATETIME");
+    assertThat(tableMetaData.getColumnTypes().get(assigneeIndex))
+        .isIn("VARCHAR", "NVARCHAR2", "nvarchar", "NVARCHAR");
+    assertThat(tableMetaData.getColumnTypes().get(createTimeIndex))
+        .isIn("TIMESTAMP", "TIMESTAMP(6)", "datetime", "DATETIME");
   }
-
 }

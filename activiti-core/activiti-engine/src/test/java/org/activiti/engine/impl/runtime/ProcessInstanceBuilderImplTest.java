@@ -29,64 +29,61 @@ import org.mockito.Mock;
 
 public class ProcessInstanceBuilderImplTest {
 
-    @InjectMocks
-    private ProcessInstanceBuilderImpl processInstanceBuilder;
+  @InjectMocks private ProcessInstanceBuilderImpl processInstanceBuilder;
 
-    @Mock
-    private RuntimeServiceImpl runtimeService;
+  @Mock private RuntimeServiceImpl runtimeService;
 
-    @Before
-    public void setUp() throws Exception {
-        initMocks(this);
-    }
+  @Before
+  public void setUp() throws Exception {
+    initMocks(this);
+  }
 
-    @Test
-    public void hasProcessDefinitionIdOrKey_shouldReturnTrue_WhenProcessDefinitionIdIsSet() {
-        //given
-        processInstanceBuilder.processDefinitionId("procDefId");
+  @Test
+  public void hasProcessDefinitionIdOrKey_shouldReturnTrue_WhenProcessDefinitionIdIsSet() {
+    // given
+    processInstanceBuilder.processDefinitionId("procDefId");
 
-        //when
-        boolean hasProcessDefinitionIdOrKey = processInstanceBuilder.hasProcessDefinitionIdOrKey();
+    // when
+    boolean hasProcessDefinitionIdOrKey = processInstanceBuilder.hasProcessDefinitionIdOrKey();
 
-        //then
-        assertThat(hasProcessDefinitionIdOrKey).isTrue();
-    }
+    // then
+    assertThat(hasProcessDefinitionIdOrKey).isTrue();
+  }
 
-    @Test
-    public void hasProcessDefinitionIdOrKey_shouldReturnTrue_WhenProcessDefinitionKeyIsSet() {
-        //given
-        processInstanceBuilder.processDefinitionKey("procDefKey");
+  @Test
+  public void hasProcessDefinitionIdOrKey_shouldReturnTrue_WhenProcessDefinitionKeyIsSet() {
+    // given
+    processInstanceBuilder.processDefinitionKey("procDefKey");
 
-        //when
-        boolean hasProcessDefinitionIdOrKey = processInstanceBuilder.hasProcessDefinitionIdOrKey();
+    // when
+    boolean hasProcessDefinitionIdOrKey = processInstanceBuilder.hasProcessDefinitionIdOrKey();
 
-        //then
-        assertThat(hasProcessDefinitionIdOrKey).isTrue();
-    }
+    // then
+    assertThat(hasProcessDefinitionIdOrKey).isTrue();
+  }
 
-    @Test
-    public void hasProcessDefinitionIdOrKey_shouldReturnFalse_WhenNoneOfProcessDefinitionIdOrKeyIsSet() {
-        //given
-        processInstanceBuilder.processDefinitionId(null);
-        processInstanceBuilder.processDefinitionKey(null);
+  @Test
+  public void
+      hasProcessDefinitionIdOrKey_shouldReturnFalse_WhenNoneOfProcessDefinitionIdOrKeyIsSet() {
+    // given
+    processInstanceBuilder.processDefinitionId(null);
+    processInstanceBuilder.processDefinitionKey(null);
 
-        //when
-        boolean hasProcessDefinitionIdOrKey = processInstanceBuilder.hasProcessDefinitionIdOrKey();
+    // when
+    boolean hasProcessDefinitionIdOrKey = processInstanceBuilder.hasProcessDefinitionIdOrKey();
 
-        //then
-        assertThat(hasProcessDefinitionIdOrKey).isFalse();
-    }
+    // then
+    assertThat(hasProcessDefinitionIdOrKey).isFalse();
+  }
 
-    @Test
-    public void create_shouldDelegateCreationToRuntimeService() {
-        //given
-        ProcessInstance processInstance = mock(
-            ProcessInstance.class);
-        given(runtimeService.createProcessInstance(processInstanceBuilder)).willReturn(processInstance);
-        //when
-        ProcessInstance createdProcess = processInstanceBuilder.create();
-        //then
-        assertThat(createdProcess).isEqualTo(processInstance);
-    }
-
+  @Test
+  public void create_shouldDelegateCreationToRuntimeService() {
+    // given
+    ProcessInstance processInstance = mock(ProcessInstance.class);
+    given(runtimeService.createProcessInstance(processInstanceBuilder)).willReturn(processInstance);
+    // when
+    ProcessInstance createdProcess = processInstanceBuilder.create();
+    // then
+    assertThat(createdProcess).isEqualTo(processInstance);
+  }
 }

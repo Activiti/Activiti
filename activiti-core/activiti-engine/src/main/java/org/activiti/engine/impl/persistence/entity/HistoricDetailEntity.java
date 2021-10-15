@@ -14,18 +14,13 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.persistence.entity;
 
 import java.util.Date;
-
 import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.history.HistoricDetail;
 
-/**
-
-
- */
+/** */
 @Internal
 public interface HistoricDetailEntity extends HistoricDetail, Entity {
 
@@ -42,5 +37,4 @@ public interface HistoricDetailEntity extends HistoricDetail, Entity {
   String getDetailType();
 
   void setDetailType(String detailType);
-
 }

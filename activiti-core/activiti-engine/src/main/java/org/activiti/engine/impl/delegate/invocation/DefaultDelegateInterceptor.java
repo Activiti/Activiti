@@ -18,15 +18,10 @@ package org.activiti.engine.impl.delegate.invocation;
 
 import org.activiti.engine.impl.interceptor.DelegateInterceptor;
 
-/**
- * Default implementation, simply proceeding the call.
- *
-
- */
+/** Default implementation, simply proceeding the call. */
 public class DefaultDelegateInterceptor implements DelegateInterceptor {
 
   public void handleInvocation(DelegateInvocation invocation) {
     invocation.proceed();
   }
-
 }

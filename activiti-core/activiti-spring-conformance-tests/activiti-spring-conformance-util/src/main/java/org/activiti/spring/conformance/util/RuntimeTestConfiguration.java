@@ -15,6 +15,8 @@
  */
 package org.activiti.spring.conformance.util;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.activiti.api.model.shared.event.RuntimeEvent;
 import org.activiti.api.model.shared.event.VariableCreatedEvent;
 import org.activiti.api.model.shared.event.VariableDeletedEvent;
@@ -54,173 +56,156 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @TestConfiguration
 public class RuntimeTestConfiguration {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(RuntimeTestConfiguration.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(RuntimeTestConfiguration.class);
 
-    public static List<RuntimeEvent> collectedEvents = new ArrayList<>();
+  public static List<RuntimeEvent> collectedEvents = new ArrayList<>();
 
-    @Bean
-    @ConditionalOnMissingBean
-    public SecurityUtil securityUtil(UserDetailsService userDetailsService,
-                                     SecurityManager securityManager) {
-        return new SecurityUtil(userDetailsService, securityManager);
-    }
+  @Bean
+  @ConditionalOnMissingBean
+  public SecurityUtil securityUtil(
+      UserDetailsService userDetailsService, SecurityManager securityManager) {
+    return new SecurityUtil(userDetailsService, securityManager);
+  }
 
-    @Bean
-    @ConditionalOnMissingBean
-    public UserDetailsService myUserDetailsService() {
-        ExtendedInMemoryUserDetailsManager extendedInMemoryUserDetailsManager = new ExtendedInMemoryUserDetailsManager();
+  @Bean
+  @ConditionalOnMissingBean
+  public UserDetailsService myUserDetailsService() {
+    ExtendedInMemoryUserDetailsManager extendedInMemoryUserDetailsManager =
+        new ExtendedInMemoryUserDetailsManager();
 
-        List<GrantedAuthority> user1 = new ArrayList<>();
-        user1.add(new SimpleGrantedAuthority("ROLE_ACTIVITI_USER"));
-        user1.add(new SimpleGrantedAuthority("GROUP_group1"));
+    List<GrantedAuthority> user1 = new ArrayList<>();
+    user1.add(new SimpleGrantedAuthority("ROLE_ACTIVITI_USER"));
+    user1.add(new SimpleGrantedAuthority("GROUP_group1"));
 
-        extendedInMemoryUserDetailsManager.createUser(new User("user1",
-                "password",
-                user1));
+    extendedInMemoryUserDetailsManager.createUser(new User("user1", "password", user1));
 
-        List<GrantedAuthority> user2 = new ArrayList<>();
-        user2.add(new SimpleGrantedAuthority("ROLE_ACTIVITI_USER"));
-        user2.add(new SimpleGrantedAuthority("GROUP_group2"));
+    List<GrantedAuthority> user2 = new ArrayList<>();
+    user2.add(new SimpleGrantedAuthority("ROLE_ACTIVITI_USER"));
+    user2.add(new SimpleGrantedAuthority("GROUP_group2"));
 
-        extendedInMemoryUserDetailsManager.createUser(new User("user2",
-                "password",
-                user2));
+    extendedInMemoryUserDetailsManager.createUser(new User("user2", "password", user2));
 
-        List<GrantedAuthority> user3 = new ArrayList<>();
-        user3.add(new SimpleGrantedAuthority("ROLE_ACTIVITI_USER"));
-        user3.add(new SimpleGrantedAuthority("GROUP_group1"));
-        user3.add(new SimpleGrantedAuthority("GROUP_group2"));
+    List<GrantedAuthority> user3 = new ArrayList<>();
+    user3.add(new SimpleGrantedAuthority("ROLE_ACTIVITI_USER"));
+    user3.add(new SimpleGrantedAuthority("GROUP_group1"));
+    user3.add(new SimpleGrantedAuthority("GROUP_group2"));
 
-        extendedInMemoryUserDetailsManager.createUser(new User("user3",
-                "password",
-                user3));
+    extendedInMemoryUserDetailsManager.createUser(new User("user3", "password", user3));
 
-        List<GrantedAuthority> user4 = new ArrayList<>();
-        user4.add(new SimpleGrantedAuthority("ROLE_ACTIVITI_USER"));
+    List<GrantedAuthority> user4 = new ArrayList<>();
+    user4.add(new SimpleGrantedAuthority("ROLE_ACTIVITI_USER"));
 
-        extendedInMemoryUserDetailsManager.createUser(new User("user4",
-                "password",
-                user4));
+    extendedInMemoryUserDetailsManager.createUser(new User("user4", "password", user4));
 
+    List<GrantedAuthority> adminAuthorities = new ArrayList<>();
+    adminAuthorities.add(new SimpleGrantedAuthority("ROLE_ACTIVITI_ADMIN"));
 
-        List<GrantedAuthority> adminAuthorities = new ArrayList<>();
-        adminAuthorities.add(new SimpleGrantedAuthority("ROLE_ACTIVITI_ADMIN"));
+    extendedInMemoryUserDetailsManager.createUser(new User("admin", "password", adminAuthorities));
 
-        extendedInMemoryUserDetailsManager.createUser(new User("admin",
-                "password",
-                adminAuthorities));
+    return extendedInMemoryUserDetailsManager;
+  }
 
+  @Bean
+  public BPMNElementEventListener<BPMNActivityStartedEvent> bpmnActivityStartedListener() {
+    return bpmnActivityStartedEvent -> collectedEvents.add(bpmnActivityStartedEvent);
+  }
 
-        return extendedInMemoryUserDetailsManager;
-    }
+  @Bean
+  public BPMNElementEventListener<BPMNActivityCompletedEvent> bpmnActivityCompletedListener() {
+    return bpmnActivityCompletedEvent -> collectedEvents.add(bpmnActivityCompletedEvent);
+  }
 
-    @Bean
-    public BPMNElementEventListener<BPMNActivityStartedEvent> bpmnActivityStartedListener() {
-        return bpmnActivityStartedEvent -> collectedEvents.add(bpmnActivityStartedEvent);
-    }
+  @Bean
+  public BPMNElementEventListener<BPMNActivityCancelledEvent> bpmnActivityCancelledListener() {
+    return bpmnActivityCancelledEvent -> collectedEvents.add(bpmnActivityCancelledEvent);
+  }
 
-    @Bean
-    public BPMNElementEventListener<BPMNActivityCompletedEvent> bpmnActivityCompletedListener() {
-        return bpmnActivityCompletedEvent -> collectedEvents.add(bpmnActivityCompletedEvent);
-    }
+  @Bean
+  public BPMNElementEventListener<BPMNSequenceFlowTakenEvent> bpmnSequenceFlowTakenListener() {
+    return bpmnSequenceFlowTakenEvent -> collectedEvents.add(bpmnSequenceFlowTakenEvent);
+  }
 
-    @Bean
-    public BPMNElementEventListener<BPMNActivityCancelledEvent> bpmnActivityCancelledListener() {
-        return bpmnActivityCancelledEvent -> collectedEvents.add(bpmnActivityCancelledEvent);
-    }
+  @Bean
+  public ProcessRuntimeEventListener<ProcessCreatedEvent> processCreatedListener() {
+    return processCreatedEvent -> collectedEvents.add(processCreatedEvent);
+  }
 
+  @Bean
+  public ProcessRuntimeEventListener<ProcessStartedEvent> processStartedListener() {
+    return processStartedEvent -> collectedEvents.add(processStartedEvent);
+  }
 
-    @Bean
-    public BPMNElementEventListener<BPMNSequenceFlowTakenEvent> bpmnSequenceFlowTakenListener() {
-        return bpmnSequenceFlowTakenEvent -> collectedEvents.add(bpmnSequenceFlowTakenEvent);
-    }
+  @Bean
+  public ProcessRuntimeEventListener<ProcessCompletedEvent> processCompletedListener() {
+    return processCompletedEvent -> collectedEvents.add(processCompletedEvent);
+  }
 
-    @Bean
-    public ProcessRuntimeEventListener<ProcessCreatedEvent> processCreatedListener() {
-        return processCreatedEvent -> collectedEvents.add(processCreatedEvent);
-    }
+  @Bean
+  public ProcessRuntimeEventListener<ProcessResumedEvent> processResumedListener() {
+    return processResumedEvent -> collectedEvents.add(processResumedEvent);
+  }
 
-    @Bean
-    public ProcessRuntimeEventListener<ProcessStartedEvent> processStartedListener() {
-        return processStartedEvent -> collectedEvents.add(processStartedEvent);
-    }
+  @Bean
+  public ProcessRuntimeEventListener<ProcessSuspendedEvent> processSuspendedListener() {
+    return processSuspendedEvent -> collectedEvents.add(processSuspendedEvent);
+  }
 
-    @Bean
-    public ProcessRuntimeEventListener<ProcessCompletedEvent> processCompletedListener() {
-        return processCompletedEvent -> collectedEvents.add(processCompletedEvent);
-    }
+  @Bean
+  public ProcessRuntimeEventListener<ProcessCancelledEvent> processCancelledListener() {
+    return processCancelledEvent -> collectedEvents.add(processCancelledEvent);
+  }
 
-    @Bean
-    public ProcessRuntimeEventListener<ProcessResumedEvent> processResumedListener() {
-        return processResumedEvent -> collectedEvents.add(processResumedEvent);
-    }
+  @Bean
+  public VariableEventListener<VariableCreatedEvent> variableCreatedEventListener() {
+    return variableCreatedEvent -> collectedEvents.add(variableCreatedEvent);
+  }
 
-    @Bean
-    public ProcessRuntimeEventListener<ProcessSuspendedEvent> processSuspendedListener() {
-        return processSuspendedEvent -> collectedEvents.add(processSuspendedEvent);
-    }
+  @Bean
+  @Primary
+  public VariableEventListener<VariableDeletedEvent> variableDeletedEventListener() {
+    return variableDeletedEvent -> collectedEvents.add(variableDeletedEvent);
+  }
 
-    @Bean
-    public ProcessRuntimeEventListener<ProcessCancelledEvent> processCancelledListener() {
-        return processCancelledEvent -> collectedEvents.add(processCancelledEvent);
-    }
+  @Bean
+  public VariableEventListener<VariableUpdatedEvent> variableUpdatedEventListener() {
+    return variableUpdatedEvent -> collectedEvents.add(variableUpdatedEvent);
+  }
 
-    @Bean
-    public VariableEventListener<VariableCreatedEvent> variableCreatedEventListener() {
-        return variableCreatedEvent -> collectedEvents.add(variableCreatedEvent);
-    }
+  @Bean
+  public TaskEventListener<TaskCreatedEvent> taskCreatedEventListener() {
+    return taskCreatedEvent -> collectedEvents.add(taskCreatedEvent);
+  }
 
-    @Bean
-    @Primary
-    public VariableEventListener<VariableDeletedEvent> variableDeletedEventListener() {
-        return variableDeletedEvent -> collectedEvents.add(variableDeletedEvent);
-    }
+  @Bean
+  public TaskEventListener<TaskUpdatedEvent> taskUpdatedEventListener() {
+    return taskUpdatedEvent -> collectedEvents.add(taskUpdatedEvent);
+  }
 
-    @Bean
-    public VariableEventListener<VariableUpdatedEvent> variableUpdatedEventListener() {
-        return variableUpdatedEvent -> collectedEvents.add(variableUpdatedEvent);
-    }
+  @Bean
+  public TaskEventListener<TaskCompletedEvent> taskCompletedEventListener() {
+    return taskCompletedEvent -> collectedEvents.add(taskCompletedEvent);
+  }
 
-    @Bean
-    public TaskEventListener<TaskCreatedEvent> taskCreatedEventListener() {
-        return taskCreatedEvent -> collectedEvents.add(taskCreatedEvent);
-    }
+  @Bean
+  public TaskEventListener<TaskSuspendedEvent> taskSuspendedEventListener() {
+    return taskSuspendedEvent -> collectedEvents.add(taskSuspendedEvent);
+  }
 
-    @Bean
-    public TaskEventListener<TaskUpdatedEvent> taskUpdatedEventListener() {
-        return taskUpdatedEvent -> collectedEvents.add(taskUpdatedEvent);
-    }
+  @Bean
+  public TaskEventListener<TaskAssignedEvent> taskAssignedEventListener() {
+    return taskAssignedEvent -> collectedEvents.add(taskAssignedEvent);
+  }
 
-    @Bean
-    public TaskEventListener<TaskCompletedEvent> taskCompletedEventListener() {
-        return taskCompletedEvent -> collectedEvents.add(taskCompletedEvent);
-    }
+  @Bean
+  public TaskEventListener<TaskCancelledEvent> taskCancelledEventListener() {
+    return taskCancelledEvent -> collectedEvents.add(taskCancelledEvent);
+  }
 
-    @Bean
-    public TaskEventListener<TaskSuspendedEvent> taskSuspendedEventListener() {
-        return taskSuspendedEvent -> collectedEvents.add(taskSuspendedEvent);
-    }
-
-    @Bean
-    public TaskEventListener<TaskAssignedEvent> taskAssignedEventListener() {
-        return taskAssignedEvent -> collectedEvents.add(taskAssignedEvent);
-    }
-
-    @Bean
-    public TaskEventListener<TaskCancelledEvent> taskCancelledEventListener() {
-        return taskCancelledEvent -> collectedEvents.add(taskCancelledEvent);
-    }
-
-
-    @Bean
-    public BPMNElementEventListener<BPMNSignalReceivedEvent> bpmnSignalReceivedListener() {
-        return bpmnSignalReceivedEvent -> collectedEvents.add(bpmnSignalReceivedEvent);
-    }
-
+  @Bean
+  public BPMNElementEventListener<BPMNSignalReceivedEvent> bpmnSignalReceivedListener() {
+    return bpmnSignalReceivedEvent -> collectedEvents.add(bpmnSignalReceivedEvent);
+  }
 }

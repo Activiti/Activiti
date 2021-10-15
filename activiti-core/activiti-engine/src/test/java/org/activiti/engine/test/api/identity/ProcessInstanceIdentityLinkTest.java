@@ -22,9 +22,7 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
-/**
-
- */
+/** */
 public class ProcessInstanceIdentityLinkTest extends PluggableActivitiTestCase {
 
   // Test specific for fix introduced by
@@ -37,7 +35,8 @@ public class ProcessInstanceIdentityLinkTest extends PluggableActivitiTestCase {
 
     // There are two tasks
 
-    Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+    Task task =
+        taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     taskService.complete(task.getId());
 
     Authentication.setAuthenticatedUserId("kermit");
@@ -46,7 +45,6 @@ public class ProcessInstanceIdentityLinkTest extends PluggableActivitiTestCase {
     Authentication.setAuthenticatedUserId(null);
 
     assertProcessEnded(processInstance.getId());
-
   }
 
   // Test specific for fix introduced by
@@ -62,5 +60,4 @@ public class ProcessInstanceIdentityLinkTest extends PluggableActivitiTestCase {
 
     Authentication.setAuthenticatedUserId(null);
   }
-
 }

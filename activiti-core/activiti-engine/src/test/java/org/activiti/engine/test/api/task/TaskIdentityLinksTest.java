@@ -14,15 +14,12 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.test.api.task;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
-
 import junit.framework.AssertionFailedError;
-
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.task.Event;
@@ -31,10 +28,7 @@ import org.activiti.engine.task.IdentityLinkType;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
-/**
-
-
- */
+/** */
 public class TaskIdentityLinksTest extends PluggableActivitiTestCase {
 
   @Deployment(resources = "org/activiti/engine/test/api/task/IdentityLinksProcess.bpmn20.xml")
@@ -190,7 +184,9 @@ public class TaskIdentityLinksTest extends PluggableActivitiTestCase {
     taskService.deleteTask(task.getId(), true);
   }
 
-  @Deployment(resources = "org/activiti/engine/test/api/task/TaskIdentityLinksTest.testDeleteCandidateUser.bpmn20.xml")
+  @Deployment(
+      resources =
+          "org/activiti/engine/test/api/task/TaskIdentityLinksTest.testDeleteCandidateUser.bpmn20.xml")
   public void testDeleteCandidateUser() {
     runtimeService.startProcessInstanceByKey("TaskIdentityLinks");
 

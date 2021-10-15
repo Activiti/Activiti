@@ -23,10 +23,7 @@ import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.Job;
 import org.activiti.engine.test.Deployment;
 
-/**
- *
-
- */
+/** */
 public class ExclusiveTaskTest extends PluggableActivitiTestCase {
 
   @Deployment
@@ -71,5 +68,4 @@ public class ExclusiveTaskTest extends PluggableActivitiTestCase {
     // all the jobs are done
     assertThat(managementService.createJobQuery().count()).isEqualTo(0);
   }
-
 }

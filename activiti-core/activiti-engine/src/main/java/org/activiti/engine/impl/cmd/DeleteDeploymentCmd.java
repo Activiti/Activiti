@@ -17,14 +17,11 @@
 package org.activiti.engine.impl.cmd;
 
 import java.io.Serializable;
-
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 
-/**
-
- */
+/** */
 public class DeleteDeploymentCmd implements Command<Void>, Serializable {
 
   private static final long serialVersionUID = 1L;
@@ -42,7 +39,10 @@ public class DeleteDeploymentCmd implements Command<Void>, Serializable {
     }
 
     // Remove process definitions from cache:
-    commandContext.getProcessEngineConfiguration().getDeploymentManager().removeDeployment(deploymentId, cascade);
+    commandContext
+        .getProcessEngineConfiguration()
+        .getDeploymentManager()
+        .removeDeployment(deploymentId, cascade);
 
     return null;
   }

@@ -17,15 +17,12 @@
 package org.activiti.engine.impl.persistence.entity.data;
 
 import java.util.List;
-
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.SuspendedJobQueryImpl;
 import org.activiti.engine.impl.persistence.entity.SuspendedJobEntity;
 import org.activiti.engine.runtime.Job;
 
-/**
-
- */
+/** */
 public interface SuspendedJobDataManager extends DataManager<SuspendedJobEntity> {
 
   List<SuspendedJobEntity> findJobsByExecutionId(String executionId);

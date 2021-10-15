@@ -16,35 +16,37 @@
 
 package org.activiti.editor.language.json.converter;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.util.List;
 import java.util.Map;
-
 import org.activiti.bpmn.model.Association;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.FlowElementsContainer;
 import org.activiti.bpmn.model.GraphicInfo;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-
-/**
-
- */
+/** */
 public class AssociationJsonConverter extends BaseBpmnJsonConverter {
 
-  public static void fillTypes(Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap, Map<Class<? extends BaseElement>, Class<? extends BaseBpmnJsonConverter>> convertersToJsonMap) {
+  public static void fillTypes(
+      Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap,
+      Map<Class<? extends BaseElement>, Class<? extends BaseBpmnJsonConverter>>
+          convertersToJsonMap) {
 
     fillJsonTypes(convertersToBpmnMap);
     fillBpmnTypes(convertersToJsonMap);
   }
 
-  public static void fillJsonTypes(Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap) {
+  public static void fillJsonTypes(
+      Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap) {
     convertersToBpmnMap.put(STENCIL_ASSOCIATION, AssociationJsonConverter.class);
   }
 
-  public static void fillBpmnTypes(Map<Class<? extends BaseElement>, Class<? extends BaseBpmnJsonConverter>> convertersToJsonMap) {
+  public static void fillBpmnTypes(
+      Map<Class<? extends BaseElement>, Class<? extends BaseBpmnJsonConverter>>
+          convertersToJsonMap) {
     convertersToJsonMap.put(Association.class, AssociationJsonConverter.class);
   }
 
@@ -54,14 +56,25 @@ public class AssociationJsonConverter extends BaseBpmnJsonConverter {
   }
 
   @Override
-  public void convertToJson(BaseElement baseElement, ActivityProcessor processor, BpmnModel model, FlowElementsContainer container, ArrayNode shapesArrayNode, double subProcessX, double subProcessY) {
+  public void convertToJson(
+      BaseElement baseElement,
+      ActivityProcessor processor,
+      BpmnModel model,
+      FlowElementsContainer container,
+      ArrayNode shapesArrayNode,
+      double subProcessX,
+      double subProcessY) {
 
     Association association = (Association) baseElement;
-    ObjectNode flowNode = BpmnJsonConverterUtil.createChildShape(association.getId(), STENCIL_ASSOCIATION, 172, 212, 128, 212);
+    ObjectNode flowNode =
+        BpmnJsonConverterUtil.createChildShape(
+            association.getId(), STENCIL_ASSOCIATION, 172, 212, 128, 212);
     ArrayNode dockersArrayNode = objectMapper.createArrayNode();
     ObjectNode dockNode = objectMapper.createObjectNode();
-    dockNode.put(EDITOR_BOUNDS_X, model.getGraphicInfo(association.getSourceRef()).getWidth() / 2.0);
-    dockNode.put(EDITOR_BOUNDS_Y, model.getGraphicInfo(association.getSourceRef()).getHeight() / 2.0);
+    dockNode.put(
+        EDITOR_BOUNDS_X, model.getGraphicInfo(association.getSourceRef()).getWidth() / 2.0);
+    dockNode.put(
+        EDITOR_BOUNDS_Y, model.getGraphicInfo(association.getSourceRef()).getHeight() / 2.0);
     dockersArrayNode.add(dockNode);
 
     List<GraphicInfo> graphicInfoList = model.getFlowLocationGraphicInfo(association.getId());
@@ -79,8 +92,12 @@ public class AssociationJsonConverter extends BaseBpmnJsonConverter {
     GraphicInfo flowGraphicInfo = graphicInfoList.get(graphicInfoList.size() - 1);
 
     double diffTopY = Math.abs(flowGraphicInfo.getY() - targetGraphicInfo.getY());
-    double diffRightX = Math.abs(flowGraphicInfo.getX() - (targetGraphicInfo.getX() + targetGraphicInfo.getWidth()));
-    double diffBottomY = Math.abs(flowGraphicInfo.getY() - (targetGraphicInfo.getY() + targetGraphicInfo.getHeight()));
+    double diffRightX =
+        Math.abs(
+            flowGraphicInfo.getX() - (targetGraphicInfo.getX() + targetGraphicInfo.getWidth()));
+    double diffBottomY =
+        Math.abs(
+            flowGraphicInfo.getY() - (targetGraphicInfo.getY() + targetGraphicInfo.getHeight()));
 
     dockNode = objectMapper.createObjectNode();
     if (diffTopY < 5) {
@@ -120,10 +137,13 @@ public class AssociationJsonConverter extends BaseBpmnJsonConverter {
   }
 
   @Override
-  protected BaseElement convertJsonToElement(JsonNode elementNode, JsonNode modelNode, Map<String, JsonNode> shapeMap) {
+  protected BaseElement convertJsonToElement(
+      JsonNode elementNode, JsonNode modelNode, Map<String, JsonNode> shapeMap) {
     Association association = new Association();
 
-    String sourceRef = BpmnJsonConverterUtil.lookForSourceRef(elementNode.get(EDITOR_SHAPE_ID).asText(), modelNode.get(EDITOR_CHILD_SHAPES));
+    String sourceRef =
+        BpmnJsonConverterUtil.lookForSourceRef(
+            elementNode.get(EDITOR_SHAPE_ID).asText(), modelNode.get(EDITOR_CHILD_SHAPES));
 
     if (sourceRef != null) {
       association.setSourceRef(sourceRef);

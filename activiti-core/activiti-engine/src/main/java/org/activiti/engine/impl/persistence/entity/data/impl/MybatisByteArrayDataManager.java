@@ -17,17 +17,15 @@
 package org.activiti.engine.impl.persistence.entity.data.impl;
 
 import java.util.List;
-
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.persistence.entity.ByteArrayEntity;
 import org.activiti.engine.impl.persistence.entity.ByteArrayEntityImpl;
 import org.activiti.engine.impl.persistence.entity.data.AbstractDataManager;
 import org.activiti.engine.impl.persistence.entity.data.ByteArrayDataManager;
 
-/**
-
- */
-public class MybatisByteArrayDataManager extends AbstractDataManager<ByteArrayEntity> implements ByteArrayDataManager {
+/** */
+public class MybatisByteArrayDataManager extends AbstractDataManager<ByteArrayEntity>
+    implements ByteArrayDataManager {
 
   public MybatisByteArrayDataManager(ProcessEngineConfigurationImpl processEngineConfiguration) {
     super(processEngineConfiguration);
@@ -51,7 +49,7 @@ public class MybatisByteArrayDataManager extends AbstractDataManager<ByteArrayEn
 
   @Override
   public void deleteByteArrayNoRevisionCheck(String byteArrayEntityId) {
-    getDbSqlSession().delete("deleteByteArrayNoRevisionCheck", byteArrayEntityId, ByteArrayEntityImpl.class);
+    getDbSqlSession()
+        .delete("deleteByteArrayNoRevisionCheck", byteArrayEntityId, ByteArrayEntityImpl.class);
   }
-
 }

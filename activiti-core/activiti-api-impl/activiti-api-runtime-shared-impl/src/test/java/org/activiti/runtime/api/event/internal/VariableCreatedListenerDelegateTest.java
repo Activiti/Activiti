@@ -16,7 +16,6 @@
 
 package org.activiti.runtime.api.event.internal;
 
-
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -37,75 +36,69 @@ import org.mockito.Mock;
 
 public class VariableCreatedListenerDelegateTest {
 
-    private VariableCreatedListenerDelegate variableCreatedListenerDelegate;
+  private VariableCreatedListenerDelegate variableCreatedListenerDelegate;
 
-    @Mock
-    private VariableEventListener<VariableCreatedEvent> firstListener;
+  @Mock private VariableEventListener<VariableCreatedEvent> firstListener;
 
-    @Mock
-    private VariableEventListener<VariableCreatedEvent> secondListener;
+  @Mock private VariableEventListener<VariableCreatedEvent> secondListener;
 
-    @Mock
-    private ToVariableCreatedConverter converter;
+  @Mock private ToVariableCreatedConverter converter;
 
-    @Mock
-    private VariableEventFilter variableEventFilter;
+  @Mock private VariableEventFilter variableEventFilter;
 
-    @BeforeEach
-    public void setUp() {
-        initMocks(this);
+  @BeforeEach
+  public void setUp() {
+    initMocks(this);
 
-        variableCreatedListenerDelegate = new VariableCreatedListenerDelegate(
+    variableCreatedListenerDelegate =
+        new VariableCreatedListenerDelegate(
             Arrays.asList(firstListener, secondListener), converter, variableEventFilter);
-    }
+  }
 
-    @Test
-    public void onEvent_should_callListenersWhenItsVariableEventAndItsNotFiltered() {
-        //given
-        ActivitiVariableEventImpl internalEvent = new ActivitiVariableEventImpl(
-            ActivitiEventType.VARIABLE_CREATED);
-        given(variableEventFilter.shouldEmmitEvent(internalEvent)).willReturn(true);
-        VariableCreatedEvent apiEvent = mock(VariableCreatedEvent.class);
-        given(converter.from(internalEvent)).willReturn(Optional.of(
-            apiEvent));
+  @Test
+  public void onEvent_should_callListenersWhenItsVariableEventAndItsNotFiltered() {
+    // given
+    ActivitiVariableEventImpl internalEvent =
+        new ActivitiVariableEventImpl(ActivitiEventType.VARIABLE_CREATED);
+    given(variableEventFilter.shouldEmmitEvent(internalEvent)).willReturn(true);
+    VariableCreatedEvent apiEvent = mock(VariableCreatedEvent.class);
+    given(converter.from(internalEvent)).willReturn(Optional.of(apiEvent));
 
-        //when
-        variableCreatedListenerDelegate.onEvent(internalEvent);
+    // when
+    variableCreatedListenerDelegate.onEvent(internalEvent);
 
-        //then
-        verify(firstListener).onEvent(apiEvent);
-        verify(secondListener).onEvent(apiEvent);
-    }
+    // then
+    verify(firstListener).onEvent(apiEvent);
+    verify(secondListener).onEvent(apiEvent);
+  }
 
-    @Test
-    public void onEvent_shouldNot_callListenersWhenItsNotAVariableEvent() {
-        //given
-        ActivitiEvent internalEvent = mock(ActivitiEvent.class);
+  @Test
+  public void onEvent_shouldNot_callListenersWhenItsNotAVariableEvent() {
+    // given
+    ActivitiEvent internalEvent = mock(ActivitiEvent.class);
 
-        //when
-        variableCreatedListenerDelegate.onEvent(internalEvent);
+    // when
+    variableCreatedListenerDelegate.onEvent(internalEvent);
 
-        //then
-        verifyNoInteractions(firstListener);
-        verifyNoInteractions(secondListener);
-    }
+    // then
+    verifyNoInteractions(firstListener);
+    verifyNoInteractions(secondListener);
+  }
 
-    @Test
-    public void onEvent_shouldNot_callListenersWhenItsFiltered() {
-        //given
-        ActivitiVariableEventImpl internalEvent = new ActivitiVariableEventImpl(
-            ActivitiEventType.VARIABLE_CREATED);
-        given(variableEventFilter.shouldEmmitEvent(internalEvent)).willReturn(false);
-        VariableCreatedEvent apiEvent = mock(VariableCreatedEvent.class);
-        given(converter.from(internalEvent)).willReturn(Optional.of(
-            apiEvent));
+  @Test
+  public void onEvent_shouldNot_callListenersWhenItsFiltered() {
+    // given
+    ActivitiVariableEventImpl internalEvent =
+        new ActivitiVariableEventImpl(ActivitiEventType.VARIABLE_CREATED);
+    given(variableEventFilter.shouldEmmitEvent(internalEvent)).willReturn(false);
+    VariableCreatedEvent apiEvent = mock(VariableCreatedEvent.class);
+    given(converter.from(internalEvent)).willReturn(Optional.of(apiEvent));
 
-        //when
-        variableCreatedListenerDelegate.onEvent(internalEvent);
+    // when
+    variableCreatedListenerDelegate.onEvent(internalEvent);
 
-        //then
-        verifyNoInteractions(firstListener);
-        verifyNoInteractions(secondListener);
-    }
-
+    // then
+    verifyNoInteractions(firstListener);
+    verifyNoInteractions(secondListener);
+  }
 }

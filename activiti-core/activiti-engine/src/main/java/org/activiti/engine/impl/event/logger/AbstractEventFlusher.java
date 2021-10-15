@@ -17,13 +17,10 @@ package org.activiti.engine.impl.event.logger;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.activiti.engine.impl.event.logger.handler.EventLoggerEventHandler;
 import org.activiti.engine.impl.interceptor.CommandContext;
 
-/**
-
- */
+/** */
 public abstract class AbstractEventFlusher implements EventFlusher {
 
   protected List<EventLoggerEventHandler> eventHandlers = new ArrayList<EventLoggerEventHandler>();
@@ -44,5 +41,4 @@ public abstract class AbstractEventFlusher implements EventFlusher {
   public void addEventHandler(EventLoggerEventHandler databaseEventLoggerEventHandler) {
     eventHandlers.add(databaseEventLoggerEventHandler);
   }
-
 }

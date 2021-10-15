@@ -21,53 +21,53 @@ import java.util.List;
 
 public class ActionDefinition {
 
-    private String id;
+  private String id;
 
-    private String name;
+  private String name;
 
-    private String description;
+  private String description;
 
-    private List<VariableDefinition> inputs;
+  private List<VariableDefinition> inputs;
 
-    private List<VariableDefinition> outputs;
+  private List<VariableDefinition> outputs;
 
-    public String getId() {
-        return id;
-    }
+  public String getId() {
+    return id;
+  }
 
-    public String getName() {
-        return name;
-    }
+  public String getName() {
+    return name;
+  }
 
-    public String getDescription() {
-        return description;
-    }
+  public String getDescription() {
+    return description;
+  }
 
-    public List<VariableDefinition> getInputs() {
-        return inputs != null ? inputs : emptyList();
-    }
+  public List<VariableDefinition> getInputs() {
+    return inputs != null ? inputs : emptyList();
+  }
 
-    public List<VariableDefinition> getOutputs() {
-        return outputs != null ? outputs : emptyList();
-    }
+  public List<VariableDefinition> getOutputs() {
+    return outputs != null ? outputs : emptyList();
+  }
 
-    public void setId(String id) {
-        this.id = id;
-    }
+  public void setId(String id) {
+    this.id = id;
+  }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+  public void setName(String name) {
+    this.name = name;
+  }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+  public void setDescription(String description) {
+    this.description = description;
+  }
 
-    public void setInputs(List<VariableDefinition> inputs) {
-        this.inputs = inputs;
-    }
+  public void setInputs(List<VariableDefinition> inputs) {
+    this.inputs = inputs;
+  }
 
-    public void setOutputs(List<VariableDefinition> outputs) {
-        this.outputs = outputs;
-    }
+  public void setOutputs(List<VariableDefinition> outputs) {
+    this.outputs = outputs;
+  }
 }

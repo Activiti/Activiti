@@ -14,18 +14,14 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.persistence.entity;
 
 import java.util.Date;
-
 import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.impl.db.HasRevision;
 import org.activiti.engine.task.Attachment;
 
-/**
-
- */
+/** */
 @Internal
 @Deprecated
 public interface AttachmentEntity extends Attachment, Entity, HasRevision {
@@ -51,5 +47,4 @@ public interface AttachmentEntity extends Attachment, Entity, HasRevision {
   Date getTime();
 
   void setTime(Date time);
-
 }

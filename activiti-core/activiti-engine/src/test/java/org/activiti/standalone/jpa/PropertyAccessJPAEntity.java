@@ -14,18 +14,13 @@
  * limitations under the License.
  */
 
-
 package org.activiti.standalone.jpa;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
-/**
- * Simple JPA entity, id is set on a property.
- *
-
- */
+/** Simple JPA entity, id is set on a property. */
 @Entity(name = "JPA_ENTITY_P")
 public class PropertyAccessJPAEntity {
 
@@ -54,5 +49,4 @@ public class PropertyAccessJPAEntity {
   public void setValue(String value) {
     this.value = value;
   }
-
 }

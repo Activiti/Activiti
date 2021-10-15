@@ -18,15 +18,12 @@ package org.activiti.engine.impl.persistence.entity;
 
 import java.util.List;
 import java.util.Map;
-
 import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.impl.ModelQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.repository.Model;
 
-/**
-
- */
+/** */
 @Internal
 public interface ModelEntityManager extends EntityManager<ModelEntity> {
 
@@ -42,7 +39,8 @@ public interface ModelEntityManager extends EntityManager<ModelEntity> {
 
   byte[] findEditorSourceExtraByModelId(String modelId);
 
-  List<Model> findModelsByNativeQuery(Map<String, Object> parameterMap, int firstResult, int maxResults);
+  List<Model> findModelsByNativeQuery(
+      Map<String, Object> parameterMap, int firstResult, int maxResults);
 
   long findModelCountByNativeQuery(Map<String, Object> parameterMap);
 
@@ -51,5 +49,4 @@ public interface ModelEntityManager extends EntityManager<ModelEntity> {
   void deleteEditorSource(ModelEntity model);
 
   void deleteEditorSourceExtra(ModelEntity model);
-
 }

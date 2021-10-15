@@ -21,7 +21,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
@@ -33,9 +32,7 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 
-/**
-
- */
+/** */
 public class BoundaryTimerEventRepeatWithEndTest extends PluggableActivitiTestCase {
 
   @Deployment
@@ -90,7 +87,10 @@ public class BoundaryTimerEventRepeatWithEndTest extends PluggableActivitiTestCa
     jobs = managementService.createTimerJobQuery().list();
     assertThat(jobs).hasSize(1);
 
-    nextTimeCal.add(Calendar.MINUTE, 5); // after another 5 minutes (20 minutes and 1 second from the baseTime) the BoundaryEndTime is reached
+    nextTimeCal.add(
+        Calendar.MINUTE,
+        5); // after another 5 minutes (20 minutes and 1 second from the baseTime) the
+    // BoundaryEndTime is reached
     nextTimeCal.add(Calendar.SECOND, 1);
     processEngineConfiguration.getClock().setCurrentTime(nextTimeCal.getTime());
 
@@ -114,9 +114,11 @@ public class BoundaryTimerEventRepeatWithEndTest extends PluggableActivitiTestCa
     assertThat(jobs).hasSize(0);
 
     if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
-      HistoricProcessInstance historicInstance = historyService.createHistoricProcessInstanceQuery()
-          .processInstanceId(processInstance.getId())
-          .singleResult();
+      HistoricProcessInstance historicInstance =
+          historyService
+              .createHistoricProcessInstanceQuery()
+              .processInstanceId(processInstance.getId())
+              .singleResult();
       assertThat(historicInstance.getEndTime()).isNotNull();
     }
 
@@ -135,5 +137,4 @@ public class BoundaryTimerEventRepeatWithEndTest extends PluggableActivitiTestCa
     tasks = taskService.createTaskQuery().list();
     assertThat(tasks).hasSize(0);
   }
-
 }

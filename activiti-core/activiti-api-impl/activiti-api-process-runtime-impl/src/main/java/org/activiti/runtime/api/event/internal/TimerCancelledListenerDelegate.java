@@ -15,38 +15,41 @@
  */
 package org.activiti.runtime.api.event.internal;
 
+import java.util.List;
 import org.activiti.api.process.model.events.BPMNTimerCancelledEvent;
 import org.activiti.api.process.runtime.events.listener.BPMNElementEventListener;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventListener;
 import org.activiti.runtime.api.event.impl.ToTimerCancelledConverter;
 
-import java.util.List;
-
 public class TimerCancelledListenerDelegate implements ActivitiEventListener {
 
-    private List<BPMNElementEventListener<BPMNTimerCancelledEvent>> processRuntimeEventListeners;
+  private List<BPMNElementEventListener<BPMNTimerCancelledEvent>> processRuntimeEventListeners;
 
-    private ToTimerCancelledConverter converter;
+  private ToTimerCancelledConverter converter;
 
-    public TimerCancelledListenerDelegate(List<BPMNElementEventListener<BPMNTimerCancelledEvent>> processRuntimeEventListeners,
-                                          ToTimerCancelledConverter converter) {
-        this.processRuntimeEventListeners = processRuntimeEventListeners;
-        this.converter = converter;
-    }
+  public TimerCancelledListenerDelegate(
+      List<BPMNElementEventListener<BPMNTimerCancelledEvent>> processRuntimeEventListeners,
+      ToTimerCancelledConverter converter) {
+    this.processRuntimeEventListeners = processRuntimeEventListeners;
+    this.converter = converter;
+  }
 
-    @Override
-    public void onEvent(ActivitiEvent event) {
-        converter.from(event)
-                .ifPresent(convertedEvent -> {
-                    for (BPMNElementEventListener<BPMNTimerCancelledEvent> listener : processRuntimeEventListeners) {
-                        listener.onEvent(convertedEvent);
-                    }
-                });
-    }
+  @Override
+  public void onEvent(ActivitiEvent event) {
+    converter
+        .from(event)
+        .ifPresent(
+            convertedEvent -> {
+              for (BPMNElementEventListener<BPMNTimerCancelledEvent> listener :
+                  processRuntimeEventListeners) {
+                listener.onEvent(convertedEvent);
+              }
+            });
+  }
 
-    @Override
-    public boolean isFailOnException() {
-        return false;
-    }
+  @Override
+  public boolean isFailOnException() {
+    return false;
+  }
 }

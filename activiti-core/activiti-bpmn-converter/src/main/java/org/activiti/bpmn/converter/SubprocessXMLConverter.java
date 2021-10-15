@@ -22,10 +22,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamWriter;
-
 import org.activiti.bpmn.converter.export.BPMNDIExport;
 import org.activiti.bpmn.converter.export.CollaborationExport;
 import org.activiti.bpmn.converter.export.DataStoreExport;
@@ -44,9 +42,7 @@ import org.activiti.bpmn.model.SubProcess;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
-
- */
+/** */
 public class SubprocessXMLConverter extends BpmnXMLConverter {
 
   protected static final Logger LOGGER = LoggerFactory.getLogger(SubprocessXMLConverter.class);
@@ -144,7 +140,8 @@ public class SubprocessXMLConverter extends BpmnXMLConverter {
         // must be an edge
         mainModel.getFlowLocationMap().put(elementId, flowLocations.get(elementId));
       } else {
-        // do not include data objects because they do not have a corresponding shape in the BPMNDI data
+        // do not include data objects because they do not have a corresponding shape in the BPMNDI
+        // data
         if (!(element instanceof DataObject) && null != locations.get(elementId)) {
           // must be a shape
           mainModel.getLocationMap().put(elementId, locations.get(elementId));
@@ -161,19 +158,22 @@ public class SubprocessXMLConverter extends BpmnXMLConverter {
     return subModels;
   }
 
-  private List<BpmnModel> parseSubModels(FlowElement subElement, Map<String, GraphicInfo> locations,
-                                         Map<String, List<GraphicInfo>> flowLocations, Map<String, GraphicInfo> labelLocations) {
+  private List<BpmnModel> parseSubModels(
+      FlowElement subElement,
+      Map<String, GraphicInfo> locations,
+      Map<String, List<GraphicInfo>> flowLocations,
+      Map<String, GraphicInfo> labelLocations) {
     List<BpmnModel> subModels = new ArrayList<BpmnModel>();
     BpmnModel subModel = new BpmnModel();
     String elementId = null;
 
     // find nested subprocess models
-    Collection<FlowElement> subFlowElements = ((SubProcess)subElement).getFlowElements();
+    Collection<FlowElement> subFlowElements = ((SubProcess) subElement).getFlowElements();
     // set main process in submodel to subprocess
     Process newMainProcess = new Process();
     newMainProcess.setId(subElement.getId());
     newMainProcess.getFlowElements().addAll(subFlowElements);
-    newMainProcess.getArtifacts().addAll(((SubProcess)subElement).getArtifacts());
+    newMainProcess.getArtifacts().addAll(((SubProcess) subElement).getArtifacts());
     subModel.addProcess(newMainProcess);
 
     for (FlowElement element : subFlowElements) {
@@ -186,7 +186,8 @@ public class SubprocessXMLConverter extends BpmnXMLConverter {
         // must be an edge
         subModel.getFlowLocationMap().put(elementId, flowLocations.get(elementId));
       } else {
-        // do not include data objects because they do not have a corresponding shape in the BPMNDI data
+        // do not include data objects because they do not have a corresponding shape in the BPMNDI
+        // data
         if (!(element instanceof DataObject) && null != locations.get(elementId)) {
           // must be a shape
           subModel.getLocationMap().put(elementId, locations.get(elementId));

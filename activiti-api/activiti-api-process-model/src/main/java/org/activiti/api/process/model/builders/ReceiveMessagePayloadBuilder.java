@@ -18,92 +18,85 @@ package org.activiti.api.process.model.builders;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
-
 import org.activiti.api.process.model.payloads.ReceiveMessagePayload;
 
 public class ReceiveMessagePayloadBuilder {
 
-    private String name;
-    private String correlationKey;
-    private Map<String, Object> variables;
+  private String name;
+  private String correlationKey;
+  private Map<String, Object> variables;
 
-    public static ReceiveMessagePayloadBuilder from(ReceiveMessagePayload messagePayload) {
-        Objects.requireNonNull(messagePayload, "messagePayload must not be null");
+  public static ReceiveMessagePayloadBuilder from(ReceiveMessagePayload messagePayload) {
+    Objects.requireNonNull(messagePayload, "messagePayload must not be null");
 
-        return new ReceiveMessagePayloadBuilder().withName(messagePayload.getName())
-                                                 .withCorrelationKey(messagePayload.getCorrelationKey())
-                                                 .withVariables(messagePayload.getVariables());
+    return new ReceiveMessagePayloadBuilder()
+        .withName(messagePayload.getName())
+        .withCorrelationKey(messagePayload.getCorrelationKey())
+        .withVariables(messagePayload.getVariables());
+  }
+
+  public static ReceiveMessagePayloadBuilder receive(String name) {
+    return new ReceiveMessagePayloadBuilder().withName(name);
+  }
+
+  public ReceiveMessagePayloadBuilder withName(String name) {
+    Objects.requireNonNull(name, "name must not be null");
+
+    this.name = name;
+
+    return this;
+  }
+
+  public ReceiveMessagePayloadBuilder withVariables(Map<String, Object> variables) {
+    this.variables = variables;
+
+    return this;
+  }
+
+  public ReceiveMessagePayloadBuilder withVariable(String name, Object value) {
+    if (this.variables == null) {
+      this.variables = new LinkedHashMap<>();
     }
+    this.variables.put(name, value);
+    return this;
+  }
 
-    public static ReceiveMessagePayloadBuilder receive(String name) {
-        return new ReceiveMessagePayloadBuilder().withName(name);
-    }
+  public ReceiveMessagePayloadBuilder withCorrelationKey(String correlationKey) {
+    this.correlationKey = correlationKey;
 
-    public ReceiveMessagePayloadBuilder withName(String name) {
-        Objects.requireNonNull(name, "name must not be null");
+    return this;
+  }
 
-        this.name = name;
+  public ReceiveMessagePayload build() {
+    return new ReceiveMessagePayload(name, correlationKey, this.variables);
+  }
 
-        return this;
-    }
+  @Override
+  public String toString() {
+    StringBuilder builder = new StringBuilder();
+    builder.append("ReceiveMessagePayloadBuilder [name=");
+    builder.append(name);
+    builder.append(", correlationKey=");
+    builder.append(correlationKey);
+    builder.append(", variables=");
+    builder.append(variables);
+    builder.append("]");
+    return builder.toString();
+  }
 
-    public ReceiveMessagePayloadBuilder withVariables(Map<String, Object> variables) {
-        this.variables = variables;
+  @Override
+  public int hashCode() {
+    return Objects.hash(correlationKey, name, variables);
+  }
 
-        return this;
-    }
-
-    public ReceiveMessagePayloadBuilder withVariable(String name,
-                                                     Object value) {
-        if (this.variables == null) {
-            this.variables = new LinkedHashMap<>();
-        }
-        this.variables.put(name,
-                           value);
-        return this;
-    }
-
-    public ReceiveMessagePayloadBuilder withCorrelationKey(String correlationKey) {
-        this.correlationKey = correlationKey;
-
-        return this;
-    }
-
-    public ReceiveMessagePayload build() {
-        return new ReceiveMessagePayload(name,
-                                         correlationKey,
-                                         this.variables);
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("ReceiveMessagePayloadBuilder [name=");
-        builder.append(name);
-        builder.append(", correlationKey=");
-        builder.append(correlationKey);
-        builder.append(", variables=");
-        builder.append(variables);
-        builder.append("]");
-        return builder.toString();
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(correlationKey, name, variables);
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        ReceiveMessagePayloadBuilder other = (ReceiveMessagePayloadBuilder) obj;
-        return Objects.equals(correlationKey, other.correlationKey)
-                && Objects.equals(name, other.name)
-                && Objects.equals(variables, other.variables);
-    }
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) return true;
+    if (obj == null) return false;
+    if (getClass() != obj.getClass()) return false;
+    ReceiveMessagePayloadBuilder other = (ReceiveMessagePayloadBuilder) obj;
+    return Objects.equals(correlationKey, other.correlationKey)
+        && Objects.equals(name, other.name)
+        && Objects.equals(variables, other.variables);
+  }
 }

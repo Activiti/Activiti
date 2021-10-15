@@ -41,5 +41,4 @@ public class IntermediateNoneEventTest extends PluggableActivitiTestCase {
     assertProcessEnded(pi.getProcessInstanceId());
     assertThat(listenerExecuted).isTrue();
   }
-
 }

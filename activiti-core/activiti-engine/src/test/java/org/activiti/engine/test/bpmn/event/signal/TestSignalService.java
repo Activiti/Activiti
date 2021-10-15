@@ -24,13 +24,11 @@ public class TestSignalService implements JavaDelegate {
   /**
    * Dummy service that uses a mock to simulate a file system.
    *
-   * Normally, a database (or file system) is checked, if a file is present or
-   * not.
+   * <p>Normally, a database (or file system) is checked, if a file is present or not.
    */
   public void execute(DelegateExecution execution) {
     // save current state into the process variable
     boolean exists = FileExistsMock.getInstance().fileExists();
     execution.setVariable("fileexists", exists);
   }
-
 }

@@ -15,30 +15,33 @@
  */
 package org.activiti.runtime.api.event.impl;
 
+import java.util.Optional;
 import org.activiti.api.process.model.events.BPMNActivityCancelledEvent;
 import org.activiti.api.runtime.event.impl.BPMNActivityCancelledEventImpl;
 import org.activiti.engine.delegate.event.ActivitiActivityEvent;
-import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.runtime.api.model.impl.ToActivityConverter;
 
-import java.util.Optional;
+public class ToActivityCancelledConverter
+    implements EventConverter<BPMNActivityCancelledEvent, ActivitiActivityEvent> {
 
-public class ToActivityCancelledConverter implements EventConverter<BPMNActivityCancelledEvent, ActivitiActivityEvent> {
+  private ToActivityConverter toActivityConverter;
 
-    private ToActivityConverter toActivityConverter;
+  public ToActivityCancelledConverter(ToActivityConverter toActivityConverter) {
+    this.toActivityConverter = toActivityConverter;
+  }
 
-    public ToActivityCancelledConverter(ToActivityConverter toActivityConverter) {
-        this.toActivityConverter = toActivityConverter;
+  @Override
+  public Optional<BPMNActivityCancelledEvent> from(ActivitiActivityEvent internalEvent) {
+    BPMNActivityCancelledEventImpl bpmnActivityCancelledEvent = null;
+
+    if (internalEvent.getActivityId() != null
+        && !internalEvent
+            .getActivityId()
+            .isEmpty()) { // we are making sure that it is a BPMN Activity
+      bpmnActivityCancelledEvent =
+          new BPMNActivityCancelledEventImpl(toActivityConverter.from(internalEvent));
     }
 
-    @Override
-    public Optional<BPMNActivityCancelledEvent> from(ActivitiActivityEvent internalEvent) {
-        BPMNActivityCancelledEventImpl bpmnActivityCancelledEvent = null;
-
-        if (internalEvent.getActivityId() != null && !internalEvent.getActivityId().isEmpty()) { // we are making sure that it is a BPMN Activity
-            bpmnActivityCancelledEvent = new BPMNActivityCancelledEventImpl(toActivityConverter.from(internalEvent));
-        }
-
-        return Optional.ofNullable(bpmnActivityCancelledEvent);
-    }
+    return Optional.ofNullable(bpmnActivityCancelledEvent);
+  }
 }

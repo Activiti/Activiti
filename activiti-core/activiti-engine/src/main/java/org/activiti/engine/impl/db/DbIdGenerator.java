@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.db;
 
 import org.activiti.engine.impl.cfg.IdGenerator;
@@ -22,9 +21,7 @@ import org.activiti.engine.impl.cmd.GetNextIdBlockCmd;
 import org.activiti.engine.impl.interceptor.CommandConfig;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 
-/**
-
- */
+/** */
 public class DbIdGenerator implements IdGenerator {
 
   protected int idBlockSize;

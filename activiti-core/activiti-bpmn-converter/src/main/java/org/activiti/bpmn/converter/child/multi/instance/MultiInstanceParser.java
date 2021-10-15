@@ -29,65 +29,64 @@ import org.activiti.bpmn.model.MultiInstanceLoopCharacteristics;
 
 public class MultiInstanceParser extends BaseChildElementParser {
 
-    private final List<ElementParser<MultiInstanceLoopCharacteristics>> multiInstanceElementParsers;
+  private final List<ElementParser<MultiInstanceLoopCharacteristics>> multiInstanceElementParsers;
 
-    public MultiInstanceParser() {
-        this(asList(new LoopCardinalityParser(),
+  public MultiInstanceParser() {
+    this(
+        asList(
+            new LoopCardinalityParser(),
             new MultiInstanceDataInputParser(),
             new MultiInstanceInputDataItemParser(),
             new MultiInstanceCompletionConditionParser(),
             new LoopDataOutputRefParser(),
             new MultiInstanceOutputDataItemParser(),
-            new MultiInstanceAttributesParser()
-        ));
-    }
+            new MultiInstanceAttributesParser()));
+  }
 
-    public MultiInstanceParser(List<ElementParser<MultiInstanceLoopCharacteristics>> multiInstanceElementParsers) {
-        this.multiInstanceElementParsers = multiInstanceElementParsers;
-    }
+  public MultiInstanceParser(
+      List<ElementParser<MultiInstanceLoopCharacteristics>> multiInstanceElementParsers) {
+    this.multiInstanceElementParsers = multiInstanceElementParsers;
+  }
 
-    public String getElementName() {
-        return ELEMENT_MULTIINSTANCE;
-    }
+  public String getElementName() {
+    return ELEMENT_MULTIINSTANCE;
+  }
 
-    public void parseChildElement(XMLStreamReader xtr,
-                                  BaseElement parentElement,
-                                  BpmnModel model) throws Exception {
-        if (!(parentElement instanceof Activity)) {
-            return;
+  public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model)
+      throws Exception {
+    if (!(parentElement instanceof Activity)) {
+      return;
+    }
+    MultiInstanceLoopCharacteristics multiInstanceDef = new MultiInstanceLoopCharacteristics();
+    BpmnXMLUtil.addXMLLocation(multiInstanceDef, xtr);
+
+    parseMultiInstanceProperties(xtr, multiInstanceDef);
+
+    ((Activity) parentElement).setLoopCharacteristics(multiInstanceDef);
+  }
+
+  private void parseMultiInstanceProperties(
+      XMLStreamReader xtr, MultiInstanceLoopCharacteristics multiInstanceDef) {
+    boolean readyWithMultiInstance = false;
+    try {
+      do {
+        ElementParser<MultiInstanceLoopCharacteristics> matchingParser =
+            multiInstanceElementParsers.stream()
+                .filter(elementParser -> elementParser.canParseCurrentElement(xtr))
+                .findFirst()
+                .orElse(null);
+        if (matchingParser != null) {
+          matchingParser.setInformation(xtr, multiInstanceDef);
         }
-        MultiInstanceLoopCharacteristics multiInstanceDef = new MultiInstanceLoopCharacteristics();
-        BpmnXMLUtil.addXMLLocation(multiInstanceDef, xtr);
-
-        parseMultiInstanceProperties(xtr, multiInstanceDef);
-
-        ((Activity) parentElement).setLoopCharacteristics(multiInstanceDef);
-    }
-
-    private void parseMultiInstanceProperties(XMLStreamReader xtr,
-        MultiInstanceLoopCharacteristics multiInstanceDef) {
-        boolean readyWithMultiInstance = false;
-        try {
-            do {
-                ElementParser<MultiInstanceLoopCharacteristics> matchingParser = multiInstanceElementParsers
-                    .stream()
-                    .filter(elementParser -> elementParser.canParseCurrentElement(xtr))
-                    .findFirst()
-                    .orElse(null);
-                if (matchingParser != null) {
-                    matchingParser.setInformation(xtr, multiInstanceDef);
-                }
-                if (xtr.isEndElement() && getElementName().equalsIgnoreCase(xtr.getLocalName())) {
-                    readyWithMultiInstance = true;
-                }
-                if (xtr.hasNext()) {
-                    xtr.next();
-                }
-            } while (!readyWithMultiInstance && xtr.hasNext());
-        } catch (Exception e) {
-            LOGGER.warn("Error parsing multi instance definition",
-                        e);
+        if (xtr.isEndElement() && getElementName().equalsIgnoreCase(xtr.getLocalName())) {
+          readyWithMultiInstance = true;
         }
+        if (xtr.hasNext()) {
+          xtr.next();
+        }
+      } while (!readyWithMultiInstance && xtr.hasNext());
+    } catch (Exception e) {
+      LOGGER.warn("Error parsing multi instance definition", e);
     }
-
+  }
 }

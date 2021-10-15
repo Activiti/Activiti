@@ -15,28 +15,29 @@
  */
 package org.activiti.bpmn.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.apache.commons.lang3.StringUtils;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class BpmnModel {
 
-  protected Map<String, List<ExtensionAttribute>> definitionsAttributes = new LinkedHashMap<String, List<ExtensionAttribute>>();
+  protected Map<String, List<ExtensionAttribute>> definitionsAttributes =
+      new LinkedHashMap<String, List<ExtensionAttribute>>();
   protected List<Process> processes = new ArrayList<Process>();
   protected Map<String, GraphicInfo> locationMap = new LinkedHashMap<String, GraphicInfo>();
   protected Map<String, GraphicInfo> labelLocationMap = new LinkedHashMap<String, GraphicInfo>();
-  protected Map<String, List<GraphicInfo>> flowLocationMap = new LinkedHashMap<String, List<GraphicInfo>>();
+  protected Map<String, List<GraphicInfo>> flowLocationMap =
+      new LinkedHashMap<String, List<GraphicInfo>>();
   protected List<Signal> signals = new ArrayList<Signal>();
   protected Map<String, MessageFlow> messageFlowMap = new LinkedHashMap<String, MessageFlow>();
   protected Map<String, Message> messageMap = new LinkedHashMap<String, Message>();
   protected Map<String, Error> errorMap = new LinkedHashMap<String, Error>();
-  protected Map<String, ItemDefinition> itemDefinitionMap = new LinkedHashMap<String, ItemDefinition>();
+  protected Map<String, ItemDefinition> itemDefinitionMap =
+      new LinkedHashMap<String, ItemDefinition>();
   protected Map<String, DataStore> dataStoreMap = new LinkedHashMap<String, DataStore>();
   protected List<Pool> pools = new ArrayList<Pool>();
   protected List<Import> imports = new ArrayList<Import>();
@@ -59,8 +60,7 @@ public class BpmnModel {
     List<ExtensionAttribute> attributes = getDefinitionsAttributes().get(name);
     if (attributes != null && !attributes.isEmpty()) {
       for (ExtensionAttribute attribute : attributes) {
-        if (namespace.equals(attribute.getNamespace()))
-          return attribute.getValue();
+        if (namespace.equals(attribute.getNamespace())) return attribute.getValue();
       }
     }
     return null;
@@ -69,7 +69,7 @@ public class BpmnModel {
   public void addDefinitionsAttribute(ExtensionAttribute attribute) {
     if (attribute != null && StringUtils.isNotEmpty(attribute.getName())) {
       List<ExtensionAttribute> attributeList = null;
-      if ( !this.definitionsAttributes.containsKey(attribute.getName())) {
+      if (!this.definitionsAttributes.containsKey(attribute.getName())) {
         attributeList = new ArrayList<ExtensionAttribute>();
         this.definitionsAttributes.put(attribute.getName(), attributeList);
       }
@@ -93,7 +93,8 @@ public class BpmnModel {
     for (Process process : processes) {
       boolean foundPool = false;
       for (Pool pool : pools) {
-        if (StringUtils.isNotEmpty(pool.getProcessRef()) && pool.getProcessRef().equalsIgnoreCase(process.getId())) {
+        if (StringUtils.isNotEmpty(pool.getProcessRef())
+            && pool.getProcessRef().equalsIgnoreCase(process.getId())) {
 
           if (poolRef != null) {
             if (pool.getId().equalsIgnoreCase(poolRef)) {
@@ -418,24 +419,22 @@ public class BpmnModel {
   }
 
   public Map<String, Error> getErrors() {
-      return errorMap;
+    return errorMap;
   }
 
   public void setErrors(Map<String, Error> errorMap) {
     this.errorMap = errorMap;
   }
 
-  public void addError(String errorRef,
-                       String errorName,
-                       String errorCode) {
+  public void addError(String errorRef, String errorName, String errorCode) {
     if (StringUtils.isNotEmpty(errorRef)) {
       errorMap.put(errorRef, new Error(errorRef, errorName, errorCode));
     }
   }
 
-    public boolean containsErrorRef(String errorRef) {
-      return errorMap.containsKey(errorRef);
-    }
+  public boolean containsErrorRef(String errorRef) {
+    return errorMap.containsKey(errorRef);
+  }
 
   public Map<String, ItemDefinition> getItemDefinitions() {
     return itemDefinitionMap;
@@ -571,8 +570,7 @@ public class BpmnModel {
   }
 
   public String getStartFormKey(String processId) {
-    FlowElement initialFlowElement = getProcessById(processId)
-            .getInitialFlowElement();
+    FlowElement initialFlowElement = getProcessById(processId).getInitialFlowElement();
     if (initialFlowElement instanceof StartEvent) {
       StartEvent startEvent = (StartEvent) initialFlowElement;
       return startEvent.getFormKey();

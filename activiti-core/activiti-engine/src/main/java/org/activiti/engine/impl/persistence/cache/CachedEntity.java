@@ -18,19 +18,15 @@ package org.activiti.engine.impl.persistence.cache;
 
 import org.activiti.engine.impl.persistence.entity.Entity;
 
-/**
-
- */
+/** */
 public class CachedEntity {
 
-  /**
-   * The actual {@link Entity} instance.
-   */
+  /** The actual {@link Entity} instance. */
   protected Entity entity;
 
   /**
-   * Represents the 'persistence state' at the moment this {@link CachedEntity} instance was created.
-   * It is used later on to determine if a {@link Entity} has been updated, by comparing
+   * Represents the 'persistence state' at the moment this {@link CachedEntity} instance was
+   * created. It is used later on to determine if a {@link Entity} has been updated, by comparing
    * the 'persistent state' at that moment with this instance here.
    */
   protected Object originalPersistentState;
@@ -59,7 +55,7 @@ public class CachedEntity {
   }
 
   public boolean hasChanged() {
-    return entity.getPersistentState() != null && !entity.getPersistentState().equals(originalPersistentState);
+    return entity.getPersistentState() != null
+        && !entity.getPersistentState().equals(originalPersistentState);
   }
-
 }

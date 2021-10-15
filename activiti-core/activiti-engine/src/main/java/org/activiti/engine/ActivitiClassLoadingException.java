@@ -16,7 +16,8 @@
 package org.activiti.engine;
 
 /**
- * Runtime exception indicating the requested class was not found or an error occurred while loading the class.
+ * Runtime exception indicating the requested class was not found or an error occurred while loading
+ * the class.
  */
 public class ActivitiClassLoadingException extends ActivitiException {
 
@@ -28,9 +29,7 @@ public class ActivitiClassLoadingException extends ActivitiException {
     this.className = className;
   }
 
-  /**
-   * Returns the name of the class this exception is related to.
-   */
+  /** Returns the name of the class this exception is related to. */
   public String getClassName() {
     return className;
   }
@@ -42,5 +41,4 @@ public class ActivitiClassLoadingException extends ActivitiException {
       return "Could not load class: " + className;
     }
   }
-
 }

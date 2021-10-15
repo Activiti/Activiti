@@ -14,22 +14,18 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.persistence.entity;
 
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
-
 import org.activiti.engine.impl.db.BulkDeleteable;
 import org.activiti.engine.impl.variable.VariableType;
 import org.apache.commons.lang3.StringUtils;
 
-/**
-
-
- */
-public class HistoricVariableInstanceEntityImpl extends AbstractEntity implements HistoricVariableInstanceEntity, BulkDeleteable, Serializable {
+/** */
+public class HistoricVariableInstanceEntityImpl extends AbstractEntity
+    implements HistoricVariableInstanceEntity, BulkDeleteable, Serializable {
 
   private static final long serialVersionUID = 1L;
 
@@ -51,9 +47,7 @@ public class HistoricVariableInstanceEntityImpl extends AbstractEntity implement
 
   protected Object cachedValue;
 
-  public HistoricVariableInstanceEntityImpl() {
-
-  }
+  public HistoricVariableInstanceEntityImpl() {}
 
   public Object getPersistentState() {
     HashMap<String, Object> persistentState = new HashMap<String, Object>();
@@ -111,7 +105,6 @@ public class HistoricVariableInstanceEntityImpl extends AbstractEntity implement
   public VariableType getVariableType() {
     return variableType;
   }
-
 
   public String getName() {
     return name;
@@ -241,5 +234,4 @@ public class HistoricVariableInstanceEntityImpl extends AbstractEntity implement
     sb.append("]");
     return sb.toString();
   }
-
 }

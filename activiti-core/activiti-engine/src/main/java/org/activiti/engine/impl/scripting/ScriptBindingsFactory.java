@@ -14,27 +14,23 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.scripting;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.script.Bindings;
-
 import org.activiti.engine.delegate.VariableScope;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 
-/**
-
-
- */
+/** */
 public class ScriptBindingsFactory {
 
   protected ProcessEngineConfigurationImpl processEngineConfiguration;
   protected List<ResolverFactory> resolverFactories;
 
-  public ScriptBindingsFactory(ProcessEngineConfigurationImpl processEngineConfiguration, List<ResolverFactory> resolverFactories) {
+  public ScriptBindingsFactory(
+      ProcessEngineConfigurationImpl processEngineConfiguration,
+      List<ResolverFactory> resolverFactories) {
     this.processEngineConfiguration = processEngineConfiguration;
     this.resolverFactories = resolverFactories;
   }
@@ -50,7 +46,8 @@ public class ScriptBindingsFactory {
   protected List<Resolver> createResolvers(VariableScope variableScope) {
     List<Resolver> scriptResolvers = new ArrayList<Resolver>();
     for (ResolverFactory scriptResolverFactory : resolverFactories) {
-      Resolver resolver = scriptResolverFactory.createResolver(processEngineConfiguration, variableScope);
+      Resolver resolver =
+          scriptResolverFactory.createResolver(processEngineConfiguration, variableScope);
       if (resolver != null) {
         scriptResolvers.add(resolver);
       }

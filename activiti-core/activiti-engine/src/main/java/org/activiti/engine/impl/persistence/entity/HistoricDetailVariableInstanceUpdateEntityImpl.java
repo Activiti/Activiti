@@ -14,17 +14,14 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.persistence.entity;
 
 import org.activiti.engine.impl.variable.VariableType;
 import org.apache.commons.lang3.StringUtils;
 
-/**
-
-
- */
-public class HistoricDetailVariableInstanceUpdateEntityImpl extends HistoricDetailEntityImpl implements HistoricDetailVariableInstanceUpdateEntity {
+/** */
+public class HistoricDetailVariableInstanceUpdateEntityImpl extends HistoricDetailEntityImpl
+    implements HistoricDetailVariableInstanceUpdateEntity {
 
   private static final long serialVersionUID = 1L;
 
@@ -185,5 +182,4 @@ public class HistoricDetailVariableInstanceUpdateEntityImpl extends HistoricDeta
     sb.append("]");
     return sb.toString();
   }
-
 }

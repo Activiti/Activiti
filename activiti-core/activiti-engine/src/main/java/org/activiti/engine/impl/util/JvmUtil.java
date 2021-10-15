@@ -15,9 +15,7 @@
  */
 package org.activiti.engine.impl.util;
 
-/**
-
- */
+/** */
 public class JvmUtil {
 
   public static String getJavaVersion() {
@@ -37,5 +35,4 @@ public class JvmUtil {
   public static boolean isAtLeastJDK7() {
     return isJDK7() || isJDK8();
   }
-
 }

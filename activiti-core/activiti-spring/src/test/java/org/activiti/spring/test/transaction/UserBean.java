@@ -14,35 +14,25 @@
  * limitations under the License.
  */
 
-
 package org.activiti.spring.test.transaction;
 
+import javax.sql.DataSource;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.sql.DataSource;
-
-/**
-
- */
+/** */
 public class UserBean {
 
-  /**
-   * injected by Spring
-   */
+  /** injected by Spring */
   private RuntimeService runtimeService;
 
-  /**
-   * injected by Spring
-   */
+  /** injected by Spring */
   private TaskService taskService;
 
-  /**
-   * injected by Spring
-   */
+  /** injected by Spring */
   private DataSource dataSource;
 
   @Transactional
@@ -83,5 +73,4 @@ public class UserBean {
   public void setDataSource(DataSource dataSource) {
     this.dataSource = dataSource;
   }
-
 }

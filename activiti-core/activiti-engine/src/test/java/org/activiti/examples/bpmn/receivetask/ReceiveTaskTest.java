@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.examples.bpmn.receivetask;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -24,18 +23,21 @@ import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
 
-/**
- */
+/** */
 public class ReceiveTaskTest extends PluggableActivitiTestCase {
 
   @Deployment
   public void testWaitStateBehavior() {
     ProcessInstance pi = runtimeService.startProcessInstanceByKey("receiveTask");
-    Execution execution = runtimeService.createExecutionQuery().processInstanceId(pi.getId()).activityId("waitState").singleResult();
+    Execution execution =
+        runtimeService
+            .createExecutionQuery()
+            .processInstanceId(pi.getId())
+            .activityId("waitState")
+            .singleResult();
     assertThat(execution).isNotNull();
 
     runtimeService.trigger(execution.getId());
     assertProcessEnded(pi.getId());
   }
-
 }

@@ -17,7 +17,6 @@ package org.activiti.spring.boot.tasks;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.activiti.api.task.model.Task;
 import org.activiti.api.task.runtime.events.TaskCancelledEvent;
 import org.activiti.api.task.runtime.events.listener.TaskRuntimeEventListener;
@@ -27,18 +26,18 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class TaskRuntimeEventListeners {
 
-    private List<Task> cancelledTasks = new ArrayList<>();
+  private List<Task> cancelledTasks = new ArrayList<>();
 
-    @Bean
-    public TaskRuntimeEventListener<TaskCancelledEvent> taskCancelledListener() {
-        return taskCancelledEvent -> cancelledTasks.add(taskCancelledEvent.getEntity());
-    }
+  @Bean
+  public TaskRuntimeEventListener<TaskCancelledEvent> taskCancelledListener() {
+    return taskCancelledEvent -> cancelledTasks.add(taskCancelledEvent.getEntity());
+  }
 
-    public List<Task> getCancelledTasks() {
-        return cancelledTasks;
-    }
+  public List<Task> getCancelledTasks() {
+    return cancelledTasks;
+  }
 
-    public void clearEvents() {
-        cancelledTasks.clear();
-    }
+  public void clearEvents() {
+    cancelledTasks.clear();
+  }
 }

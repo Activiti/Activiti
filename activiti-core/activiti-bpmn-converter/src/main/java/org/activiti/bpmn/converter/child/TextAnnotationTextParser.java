@@ -16,23 +16,20 @@
 package org.activiti.bpmn.converter.child;
 
 import javax.xml.stream.XMLStreamReader;
-
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.TextAnnotation;
 
-/**
-
- */
+/** */
 public class TextAnnotationTextParser extends BaseChildElementParser {
 
   public String getElementName() {
     return ELEMENT_TEXT_ANNOTATION_TEXT;
   }
 
-  public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model) throws Exception {
-    if (!(parentElement instanceof TextAnnotation))
-      return;
+  public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model)
+      throws Exception {
+    if (!(parentElement instanceof TextAnnotation)) return;
 
     ((TextAnnotation) parentElement).setText(xtr.getElementText());
   }

@@ -17,7 +17,6 @@ package org.activiti.engine.test.api.v6;
 
 import java.sql.SQLException;
 import java.util.List;
-
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.ManagementService;
 import org.activiti.engine.ProcessEngine;
@@ -41,10 +40,10 @@ import org.slf4j.LoggerFactory;
 /**
  * Parent class for internal Activiti tests.
  *
- * Boots up a process engine and caches it.
+ * <p>Boots up a process engine and caches it.
  *
- * When using H2 and the default schema name, it will also boot the H2 webapp (reachable with browser on http://localhost:8082/)
- *
+ * <p>When using H2 and the default schema name, it will also boot the H2 webapp (reachable with
+ * browser on http://localhost:8082/)
  */
 public class AbstractActviti6Test {
 
@@ -52,8 +51,7 @@ public class AbstractActviti6Test {
 
   public static String H2_TEST_JDBC_URL = "jdbc:h2:mem:activiti;DB_CLOSE_DELAY=1000";
 
-  @Rule
-  public ActivitiRule activitiRule = new ActivitiRule();
+  @Rule public ActivitiRule activitiRule = new ActivitiRule();
 
   protected static ProcessEngine cachedProcessEngine;
   protected ProcessEngineConfigurationImpl processEngineConfiguration;
@@ -70,13 +68,17 @@ public class AbstractActviti6Test {
 
       // Boot up H2 webapp
       if (cachedProcessEngine instanceof ProcessEngineImpl) {
-        if (((ProcessEngineImpl) cachedProcessEngine).getProcessEngineConfiguration().getJdbcUrl().equals(H2_TEST_JDBC_URL)) {
+        if (((ProcessEngineImpl) cachedProcessEngine)
+            .getProcessEngineConfiguration()
+            .getJdbcUrl()
+            .equals(H2_TEST_JDBC_URL)) {
           initializeH2WebApp(cachedProcessEngine);
         }
       }
     }
 
-    this.processEngineConfiguration = (ProcessEngineConfigurationImpl) cachedProcessEngine.getProcessEngineConfiguration();
+    this.processEngineConfiguration =
+        (ProcessEngineConfigurationImpl) cachedProcessEngine.getProcessEngineConfiguration();
     this.repositoryService = cachedProcessEngine.getRepositoryService();
     this.runtimeService = cachedProcessEngine.getRuntimeService();
     this.taskService = cachedProcessEngine.getTaskService();
@@ -93,7 +95,10 @@ public class AbstractActviti6Test {
   public void logCommandInvokerDebugInfo() {
 
     ProcessExecutionLoggerConfigurator loggerConfigurator = null;
-    List<ProcessEngineConfigurator> configurators = ((ProcessEngineImpl) cachedProcessEngine).getProcessEngineConfiguration().getConfigurators();
+    List<ProcessEngineConfigurator> configurators =
+        ((ProcessEngineImpl) cachedProcessEngine)
+            .getProcessEngineConfiguration()
+            .getConfigurators();
     if (configurators != null && configurators.size() > 0) {
       for (ProcessEngineConfigurator configurator : configurators) {
         if (configurator instanceof ProcessExecutionLoggerConfigurator) {
@@ -113,22 +118,24 @@ public class AbstractActviti6Test {
       final Server server = Server.createWebServer("-web");
 
       // Shutdown hook
-      final ProcessEngineConfiguration processEngineConfiguration = ((ProcessEngineImpl) processEngine).getProcessEngineConfiguration();
-      final ProcessEngineLifecycleListener originalLifecycleListener = processEngineConfiguration.getProcessEngineLifecycleListener();
-      processEngineConfiguration.setProcessEngineLifecycleListener(new ProcessEngineLifecycleListener() {
+      final ProcessEngineConfiguration processEngineConfiguration =
+          ((ProcessEngineImpl) processEngine).getProcessEngineConfiguration();
+      final ProcessEngineLifecycleListener originalLifecycleListener =
+          processEngineConfiguration.getProcessEngineLifecycleListener();
+      processEngineConfiguration.setProcessEngineLifecycleListener(
+          new ProcessEngineLifecycleListener() {
 
-        @Override
-        public void onProcessEngineClosed(ProcessEngine processEngine) {
-          server.stop();
-          originalLifecycleListener.onProcessEngineClosed(processEngine);
-        }
+            @Override
+            public void onProcessEngineClosed(ProcessEngine processEngine) {
+              server.stop();
+              originalLifecycleListener.onProcessEngineClosed(processEngine);
+            }
 
-        @Override
-        public void onProcessEngineBuilt(ProcessEngine processEngine) {
-          originalLifecycleListener.onProcessEngineBuilt(processEngine);
-        }
-
-      });
+            @Override
+            public void onProcessEngineBuilt(ProcessEngine processEngine) {
+              originalLifecycleListener.onProcessEngineBuilt(processEngine);
+            }
+          });
 
       // Actually start the web server
       server.start();
@@ -137,5 +144,4 @@ public class AbstractActviti6Test {
       logger.warn("Could not start H2 webapp", e);
     }
   }
-
 }

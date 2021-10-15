@@ -19,7 +19,6 @@ package org.activiti.engine.impl.cmd;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Map;
-
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.impl.interceptor.Command;
@@ -27,10 +26,7 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.runtime.Execution;
 
-/**
-
-
- */
+/** */
 public class GetExecutionVariablesCmd implements Command<Map<String, Object>>, Serializable {
 
   private static final long serialVersionUID = 1L;
@@ -38,7 +34,8 @@ public class GetExecutionVariablesCmd implements Command<Map<String, Object>>, S
   protected Collection<String> variableNames;
   protected boolean isLocal;
 
-  public GetExecutionVariablesCmd(String executionId, Collection<String> variableNames, boolean isLocal) {
+  public GetExecutionVariablesCmd(
+      String executionId, Collection<String> variableNames, boolean isLocal) {
     this.executionId = executionId;
     this.variableNames = variableNames;
     this.isLocal = isLocal;
@@ -54,7 +51,8 @@ public class GetExecutionVariablesCmd implements Command<Map<String, Object>>, S
     ExecutionEntity execution = commandContext.getExecutionEntityManager().findById(executionId);
 
     if (execution == null) {
-      throw new ActivitiObjectNotFoundException("execution " + executionId + " doesn't exist", Execution.class);
+      throw new ActivitiObjectNotFoundException(
+          "execution " + executionId + " doesn't exist", Execution.class);
     }
 
     if (variableNames == null || variableNames.isEmpty()) {
@@ -75,8 +73,6 @@ public class GetExecutionVariablesCmd implements Command<Map<String, Object>>, S
       } else {
         return execution.getVariables(variableNames, false);
       }
-
     }
-
   }
 }

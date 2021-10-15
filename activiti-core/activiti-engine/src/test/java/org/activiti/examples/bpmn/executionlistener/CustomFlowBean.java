@@ -16,7 +16,6 @@
 package org.activiti.examples.bpmn.executionlistener;
 
 import java.io.Serializable;
-
 import org.activiti.engine.delegate.DelegateExecution;
 
 public class CustomFlowBean implements Serializable {

@@ -15,16 +15,14 @@
  */
 package org.activiti.engine.impl.persistence;
 
-import org.activiti.engine.impl.cfg.IdGenerator;
-
 import com.fasterxml.uuid.EthernetAddress;
 import com.fasterxml.uuid.Generators;
 import com.fasterxml.uuid.impl.TimeBasedGenerator;
+import org.activiti.engine.impl.cfg.IdGenerator;
 
 /**
- * {@link IdGenerator} implementation based on the current time and the ethernet address of the machine it is running on.
- *
-
+ * {@link IdGenerator} implementation based on the current time and the ethernet address of the
+ * machine it is running on.
  */
 public class StrongUuidGenerator implements IdGenerator {
 
@@ -48,5 +46,4 @@ public class StrongUuidGenerator implements IdGenerator {
   public String getNextId() {
     return timeBasedGenerator.generate().toString();
   }
-
 }

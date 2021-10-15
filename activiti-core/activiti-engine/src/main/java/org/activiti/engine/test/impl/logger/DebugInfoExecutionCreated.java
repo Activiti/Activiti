@@ -19,9 +19,7 @@ package org.activiti.engine.test.impl.logger;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.slf4j.Logger;
 
-/**
-
- */
+/** */
 public class DebugInfoExecutionCreated extends AbstractDebugInfo {
 
   protected ExecutionEntity executionEntity;
@@ -29,7 +27,10 @@ public class DebugInfoExecutionCreated extends AbstractDebugInfo {
 
   public DebugInfoExecutionCreated(ExecutionEntity executionEntity) {
     this.executionEntity = executionEntity;
-    this.flowElementId = executionEntity.getCurrentFlowElement() != null ? executionEntity.getCurrentFlowElement().getId() : null;
+    this.flowElementId =
+        executionEntity.getCurrentFlowElement() != null
+            ? executionEntity.getCurrentFlowElement().getId()
+            : null;
   }
 
   @Override
@@ -43,5 +44,4 @@ public class DebugInfoExecutionCreated extends AbstractDebugInfo {
 
     logger.info(strb.toString());
   }
-
 }

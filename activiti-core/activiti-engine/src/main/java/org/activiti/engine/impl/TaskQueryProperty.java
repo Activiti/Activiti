@@ -14,27 +14,20 @@
  * limitations under the License.
  */
 
-
-
-
 package org.activiti.engine.impl;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import org.activiti.engine.query.QueryProperty;
 import org.activiti.engine.task.TaskQuery;
 
-/**
- * Contains the possible properties that can be used in a {@link TaskQuery}.
- *
-
- */
+/** Contains the possible properties that can be used in a {@link TaskQuery}. */
 public class TaskQueryProperty implements QueryProperty {
 
   private static final long serialVersionUID = 1L;
 
-  private static final Map<String, TaskQueryProperty> properties = new HashMap<String, TaskQueryProperty>();
+  private static final Map<String, TaskQueryProperty> properties =
+      new HashMap<String, TaskQueryProperty>();
 
   public static final TaskQueryProperty TASK_ID = new TaskQueryProperty("RES.ID_");
   public static final TaskQueryProperty NAME = new TaskQueryProperty("RES.NAME_");
@@ -43,12 +36,15 @@ public class TaskQueryProperty implements QueryProperty {
   public static final TaskQueryProperty ASSIGNEE = new TaskQueryProperty("RES.ASSIGNEE_");
   public static final TaskQueryProperty OWNER = new TaskQueryProperty("RES.OWNER_");
   public static final TaskQueryProperty CREATE_TIME = new TaskQueryProperty("RES.CREATE_TIME_");
-  public static final TaskQueryProperty PROCESS_INSTANCE_ID = new TaskQueryProperty("RES.PROC_INST_ID_");
+  public static final TaskQueryProperty PROCESS_INSTANCE_ID =
+      new TaskQueryProperty("RES.PROC_INST_ID_");
   public static final TaskQueryProperty EXECUTION_ID = new TaskQueryProperty("RES.EXECUTION_ID_");
-  public static final TaskQueryProperty PROCESS_DEFINITION_ID = new TaskQueryProperty("RES.PROC_DEF_ID_");
+  public static final TaskQueryProperty PROCESS_DEFINITION_ID =
+      new TaskQueryProperty("RES.PROC_DEF_ID_");
   public static final TaskQueryProperty DUE_DATE = new TaskQueryProperty("RES.DUE_DATE_");
   public static final TaskQueryProperty TENANT_ID = new TaskQueryProperty("RES.TENANT_ID_");
-  public static final TaskQueryProperty TASK_DEFINITION_KEY = new TaskQueryProperty("RES.TASK_DEF_KEY_");
+  public static final TaskQueryProperty TASK_DEFINITION_KEY =
+      new TaskQueryProperty("RES.TASK_DEF_KEY_");
 
   private String name;
 
@@ -64,5 +60,4 @@ public class TaskQueryProperty implements QueryProperty {
   public static TaskQueryProperty findByName(String propertyName) {
     return properties.get(propertyName);
   }
-
 }

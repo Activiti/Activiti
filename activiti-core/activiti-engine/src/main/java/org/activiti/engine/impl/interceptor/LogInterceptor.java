@@ -14,15 +14,12 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.interceptor;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
-
- */
+/** */
 public class LogInterceptor extends AbstractCommandInterceptor {
 
   private static Logger log = LoggerFactory.getLogger(LogInterceptor.class);
@@ -33,13 +30,17 @@ public class LogInterceptor extends AbstractCommandInterceptor {
       return next.execute(config, command);
     }
     log.debug("\n");
-    log.debug("--- starting {} --------------------------------------------------------", command.getClass().getSimpleName());
+    log.debug(
+        "--- starting {} --------------------------------------------------------",
+        command.getClass().getSimpleName());
     try {
 
       return next.execute(config, command);
 
     } finally {
-      log.debug("--- {} finished --------------------------------------------------------", command.getClass().getSimpleName());
+      log.debug(
+          "--- {} finished --------------------------------------------------------",
+          command.getClass().getSimpleName());
       log.debug("\n");
     }
   }

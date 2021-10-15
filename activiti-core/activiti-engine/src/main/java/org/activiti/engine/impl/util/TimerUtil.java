@@ -17,7 +17,6 @@ package org.activiti.engine.impl.util;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.IntermediateCatchEvent;
 import org.activiti.bpmn.model.TimerEventDefinition;
@@ -38,20 +37,24 @@ import org.activiti.engine.impl.persistence.entity.TimerJobEntity;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 
-/**
-
- */
+/** */
 public class TimerUtil {
 
   /**
    * The event definition on which the timer is based.
    *
-   * Takes in an optional execution, if missing the {@link NoExecutionVariableScope} will be used (eg Timer start event)
+   * <p>Takes in an optional execution, if missing the {@link NoExecutionVariableScope} will be used
+   * (eg Timer start event)
    */
-  public static TimerJobEntity createTimerEntityForTimerEventDefinition(TimerEventDefinition timerEventDefinition, boolean isInterruptingTimer,
-      ExecutionEntity executionEntity, String jobHandlerType, String jobHandlerConfig) {
+  public static TimerJobEntity createTimerEntityForTimerEventDefinition(
+      TimerEventDefinition timerEventDefinition,
+      boolean isInterruptingTimer,
+      ExecutionEntity executionEntity,
+      String jobHandlerType,
+      String jobHandlerConfig) {
 
-    ProcessEngineConfigurationImpl processEngineConfiguration = Context.getProcessEngineConfiguration();
+    ProcessEngineConfigurationImpl processEngineConfiguration =
+        Context.getProcessEngineConfiguration();
 
     String businessCalendarRef = null;
     Expression expression = null;
@@ -82,15 +85,22 @@ public class TimerUtil {
 
     if (StringUtils.isNotEmpty(timerEventDefinition.getCalendarName())) {
       businessCalendarRef = timerEventDefinition.getCalendarName();
-      Expression businessCalendarExpression = expressionManager.createExpression(businessCalendarRef);
+      Expression businessCalendarExpression =
+          expressionManager.createExpression(businessCalendarRef);
       businessCalendarRef = businessCalendarExpression.getValue(scopeForExpression).toString();
     }
 
     if (expression == null) {
-      throw new ActivitiException("Timer needs configuration (either timeDate, timeCycle or timeDuration is needed) (" + timerEventDefinition.getId() + ")");
+      throw new ActivitiException(
+          "Timer needs configuration (either timeDate, timeCycle or timeDuration is needed) ("
+              + timerEventDefinition.getId()
+              + ")");
     }
 
-    BusinessCalendar businessCalendar = processEngineConfiguration.getBusinessCalendarManager().getBusinessCalendar(businessCalendarRef);
+    BusinessCalendar businessCalendar =
+        processEngineConfiguration
+            .getBusinessCalendarManager()
+            .getBusinessCalendar(businessCalendarRef);
 
     String dueDateString = null;
     Date duedate = null;
@@ -103,12 +113,15 @@ public class TimerUtil {
       duedate = (Date) dueDateValue;
 
     } else if (dueDateValue instanceof DateTime) {
-      //JodaTime support
+      // JodaTime support
       duedate = ((DateTime) dueDateValue).toDate();
 
     } else if (dueDateValue != null) {
-      throw new ActivitiException("Timer '" + executionEntity.getActivityId()
-          + "' was not configured with a valid duration/time, either hand in a java.util.Date or a String in format 'yyyy-MM-dd'T'hh:mm:ss'");
+      throw new ActivitiException(
+          "Timer '"
+              + executionEntity.getActivityId()
+              + "' was not configured with a valid duration/time, either hand in a java.util.Date"
+              + " or a String in format 'yyyy-MM-dd'T'hh:mm:ss'");
     }
 
     if (duedate == null && dueDateString != null) {
@@ -171,9 +184,12 @@ public class TimerUtil {
   public static String prepareRepeat(String dueDate) {
     if (dueDate.startsWith("R") && dueDate.split("/").length == 2) {
       SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-      return dueDate.replace("/", "/" + sdf.format(Context.getProcessEngineConfiguration().getClock().getCurrentTime()) + "/");
+      return dueDate.replace(
+          "/",
+          "/"
+              + sdf.format(Context.getProcessEngineConfiguration().getClock().getCurrentTime())
+              + "/");
     }
     return dueDate;
   }
-
 }

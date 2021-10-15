@@ -16,12 +16,10 @@
 
 package org.activiti.examples.bpmn.servicetask;
 
-import org.activiti.engine.delegate.JavaDelegate;
 import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.delegate.JavaDelegate;
 
-/**
-
- */
+/** */
 public class ToUppercase implements JavaDelegate {
 
   private static final String VARIABLE_NAME = "input";
@@ -31,5 +29,4 @@ public class ToUppercase implements JavaDelegate {
     var = var.toUpperCase();
     execution.setVariable(VARIABLE_NAME, var);
   }
-
 }

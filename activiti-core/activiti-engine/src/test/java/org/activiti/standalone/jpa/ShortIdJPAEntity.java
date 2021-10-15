@@ -14,16 +14,13 @@
  * limitations under the License.
  */
 
-
 package org.activiti.standalone.jpa;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
-/**
-
- */
+/** */
 @Entity(name = "SHORT_ID_ENTITY")
 public class ShortIdJPAEntity {
 
@@ -38,5 +35,4 @@ public class ShortIdJPAEntity {
   public void setShortId(short shortId) {
     this.shortId = shortId;
   }
-
 }

@@ -14,16 +14,14 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.history;
 
+import java.util.Date;
 import org.activiti.engine.api.internal.Internal;
 
-import java.util.Date;
-
 /**
- * Represents one execution of an activity and it's stored permanent for statistics, audit and other business intelligence purposes.
- *
+ * Represents one execution of an activity and it's stored permanent for statistics, audit and other
+ * business intelligence purposes.
  */
 @Internal
 public interface HistoricActivityInstance extends HistoricData {
@@ -67,7 +65,10 @@ public interface HistoricActivityInstance extends HistoricData {
   /** Difference between {@link #getEndTime()} and {@link #getStartTime()}. */
   Long getDurationInMillis();
 
-  /** Returns the delete reason for this activity, if any was set (if completed normally, no delete reason is set) */
+  /**
+   * Returns the delete reason for this activity, if any was set (if completed normally, no delete
+   * reason is set)
+   */
   String getDeleteReason();
 
   /** Returns the tenant identifier for the historic activity */

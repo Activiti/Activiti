@@ -19,15 +19,13 @@ package org.activiti.engine.impl.persistence.entity;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.BulkDeleteable;
 
-/**
-
- */
-public class IdentityLinkEntityImpl extends AbstractEntityNoRevision implements IdentityLinkEntity, Serializable, BulkDeleteable {
+/** */
+public class IdentityLinkEntityImpl extends AbstractEntityNoRevision
+    implements IdentityLinkEntity, Serializable, BulkDeleteable {
 
   private static final long serialVersionUID = 1L;
 
@@ -41,9 +39,7 @@ public class IdentityLinkEntityImpl extends AbstractEntityNoRevision implements 
   protected ExecutionEntity processInstance;
   protected ProcessDefinitionEntity processDef;
 
-  public IdentityLinkEntityImpl() {
-
-  }
+  public IdentityLinkEntityImpl() {}
 
   public Object getPersistentState() {
     Map<String, Object> persistentState = new HashMap<String, Object>();
@@ -95,7 +91,8 @@ public class IdentityLinkEntityImpl extends AbstractEntityNoRevision implements 
 
   public void setUserId(String userId) {
     if (this.groupId != null && userId != null) {
-      throw new ActivitiException("Cannot assign a userId to a task assignment that already has a groupId");
+      throw new ActivitiException(
+          "Cannot assign a userId to a task assignment that already has a groupId");
     }
     this.userId = userId;
   }
@@ -106,7 +103,8 @@ public class IdentityLinkEntityImpl extends AbstractEntityNoRevision implements 
 
   public void setGroupId(String groupId) {
     if (this.userId != null && groupId != null) {
-      throw new ActivitiException("Cannot assign a groupId to a task assignment that already has a userId");
+      throw new ActivitiException(
+          "Cannot assign a groupId to a task assignment that already has a userId");
     }
     this.groupId = groupId;
   }
@@ -149,7 +147,8 @@ public class IdentityLinkEntityImpl extends AbstractEntityNoRevision implements 
 
   public ExecutionEntity getProcessInstance() {
     if ((processInstance == null) && (processInstanceId != null)) {
-      this.processInstance = Context.getCommandContext().getExecutionEntityManager().findById(processInstanceId);
+      this.processInstance =
+          Context.getCommandContext().getExecutionEntityManager().findById(processInstanceId);
     }
     return processInstance;
   }
@@ -161,7 +160,8 @@ public class IdentityLinkEntityImpl extends AbstractEntityNoRevision implements 
 
   public ProcessDefinitionEntity getProcessDef() {
     if ((processDef == null) && (processDefId != null)) {
-      this.processDef = Context.getCommandContext().getProcessDefinitionEntityManager().findById(processDefId);
+      this.processDef =
+          Context.getCommandContext().getProcessDefinitionEntityManager().findById(processDefId);
     }
     return processDef;
   }

@@ -23,10 +23,10 @@ import org.activiti.engine.impl.persistence.entity.MessageEventSubscriptionEntit
 
 public interface MessageExecutionContext {
 
-    String getMessageName(DelegateExecution execution);
+  String getMessageName(DelegateExecution execution);
 
-    ThrowMessage createThrowMessage(DelegateExecution execution);
+  ThrowMessage createThrowMessage(DelegateExecution execution);
 
-    MessageEventSubscriptionEntity createMessageEventSubscription(CommandContext commandContext,
-                                                                  DelegateExecution execution);
+  MessageEventSubscriptionEntity createMessageEventSubscription(
+      CommandContext commandContext, DelegateExecution execution);
 }

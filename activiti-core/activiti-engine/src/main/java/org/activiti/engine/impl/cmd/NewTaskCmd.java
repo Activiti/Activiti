@@ -18,7 +18,6 @@ package org.activiti.engine.impl.cmd;
 
 import java.io.Serializable;
 import java.util.Optional;
-
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.DeploymentEntity;
@@ -28,26 +27,27 @@ import org.activiti.engine.task.Task;
 
 public class NewTaskCmd implements Command<Task>, Serializable {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    private final String taskId;
+  private final String taskId;
 
-    public NewTaskCmd(String taskId) {
-        this.taskId = taskId;
-    }
+  public NewTaskCmd(String taskId) {
+    this.taskId = taskId;
+  }
 
-    public Task execute(CommandContext commandContext) {
-        TaskEntity task = commandContext.getTaskEntityManager().create();
-        task.setId(taskId);
-        task.setRevision(0);
-        findAppVersionFromDeployment(commandContext.getDeploymentEntityManager())
-                .ifPresent(task::setAppVersion);
-        return task;
-    }
+  public Task execute(CommandContext commandContext) {
+    TaskEntity task = commandContext.getTaskEntityManager().create();
+    task.setId(taskId);
+    task.setRevision(0);
+    findAppVersionFromDeployment(commandContext.getDeploymentEntityManager())
+        .ifPresent(task::setAppVersion);
+    return task;
+  }
 
-    private Optional<Integer> findAppVersionFromDeployment(DeploymentEntityManager deploymentEntityManager) {
-        DeploymentEntity deployment = deploymentEntityManager.findLatestDeploymentByName("SpringAutoDeployment");
-        return Optional.ofNullable(deployment)
-                .map(DeploymentEntity::getVersion);
-    }
+  private Optional<Integer> findAppVersionFromDeployment(
+      DeploymentEntityManager deploymentEntityManager) {
+    DeploymentEntity deployment =
+        deploymentEntityManager.findLatestDeploymentByName("SpringAutoDeployment");
+    return Optional.ofNullable(deployment).map(DeploymentEntity::getVersion);
+  }
 }

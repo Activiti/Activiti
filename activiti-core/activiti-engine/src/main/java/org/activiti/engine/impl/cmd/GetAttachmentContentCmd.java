@@ -14,21 +14,17 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.cmd;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.Serializable;
-
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.AttachmentEntity;
 import org.activiti.engine.impl.persistence.entity.ByteArrayEntity;
 
-/**
-
- */
+/** */
 public class GetAttachmentContentCmd implements Command<InputStream>, Serializable {
 
   private static final long serialVersionUID = 1L;
@@ -39,7 +35,8 @@ public class GetAttachmentContentCmd implements Command<InputStream>, Serializab
   }
 
   public InputStream execute(CommandContext commandContext) {
-    AttachmentEntity attachment = commandContext.getAttachmentEntityManager().findById(attachmentId);
+    AttachmentEntity attachment =
+        commandContext.getAttachmentEntityManager().findById(attachmentId);
 
     String contentId = attachment.getContentId();
     if (contentId == null) {
@@ -51,5 +48,4 @@ public class GetAttachmentContentCmd implements Command<InputStream>, Serializab
 
     return new ByteArrayInputStream(bytes);
   }
-
 }

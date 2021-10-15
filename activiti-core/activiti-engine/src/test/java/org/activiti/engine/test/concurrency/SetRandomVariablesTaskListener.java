@@ -14,19 +14,13 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.test.concurrency;
 
 import java.util.Random;
-
 import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.delegate.TaskListener;
 
-/**
- * Tasklistener that sets some random process and task-variables.
- *
-
- */
+/** Tasklistener that sets some random process and task-variables. */
 public class SetRandomVariablesTaskListener implements TaskListener {
 
   private static final long serialVersionUID = 1L;
@@ -47,16 +41,15 @@ public class SetRandomVariablesTaskListener implements TaskListener {
 
   protected Object getRandomValue() {
     switch (new Random().nextInt(4)) {
-    case 0:
-      return new Random().nextLong();
-    case 1:
-      return new Random().nextDouble();
-    case 2:
-      return "Activiti is a light-weight workflow and Business Process Management (BPM) Platform";
-    default:
-      return new Random().nextBoolean();
-      // return "Some bytearray".getBytes();
+      case 0:
+        return new Random().nextLong();
+      case 1:
+        return new Random().nextDouble();
+      case 2:
+        return "Activiti is a light-weight workflow and Business Process Management (BPM) Platform";
+      default:
+        return new Random().nextBoolean();
+        // return "Some bytearray".getBytes();
     }
   }
-
 }

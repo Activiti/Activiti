@@ -14,13 +14,11 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl;
 
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
-
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -28,11 +26,9 @@ import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.runtime.DeadLetterJobQuery;
 import org.activiti.engine.runtime.Job;
 
-/**
-
-
- */
-public class DeadLetterJobQueryImpl extends AbstractQuery<DeadLetterJobQuery, Job> implements DeadLetterJobQuery, Serializable {
+/** */
+public class DeadLetterJobQueryImpl extends AbstractQuery<DeadLetterJobQuery, Job>
+    implements DeadLetterJobQuery, Serializable {
 
   private static final long serialVersionUID = 1L;
   protected String id;
@@ -52,8 +48,7 @@ public class DeadLetterJobQueryImpl extends AbstractQuery<DeadLetterJobQuery, Jo
   protected String tenantIdLike;
   protected boolean withoutTenantId;
 
-  public DeadLetterJobQueryImpl() {
-  }
+  public DeadLetterJobQueryImpl() {}
 
   public DeadLetterJobQueryImpl(CommandContext commandContext) {
     super(commandContext);
@@ -102,7 +97,8 @@ public class DeadLetterJobQueryImpl extends AbstractQuery<DeadLetterJobQuery, Jo
 
   public DeadLetterJobQueryImpl timers() {
     if (onlyMessages) {
-      throw new ActivitiIllegalArgumentException("Cannot combine onlyTimers() with onlyMessages() in the same query");
+      throw new ActivitiIllegalArgumentException(
+          "Cannot combine onlyTimers() with onlyMessages() in the same query");
     }
     this.onlyTimers = true;
     return this;
@@ -110,7 +106,8 @@ public class DeadLetterJobQueryImpl extends AbstractQuery<DeadLetterJobQuery, Jo
 
   public DeadLetterJobQueryImpl messages() {
     if (onlyTimers) {
-      throw new ActivitiIllegalArgumentException("Cannot combine onlyTimers() with onlyMessages() in the same query");
+      throw new ActivitiIllegalArgumentException(
+          "Cannot combine onlyTimers() with onlyMessages() in the same query");
     }
     this.onlyMessages = true;
     return this;
@@ -301,5 +298,4 @@ public class DeadLetterJobQueryImpl extends AbstractQuery<DeadLetterJobQuery, Jo
   public Date getDuedateLowerThanOrEqual() {
     return duedateLowerThanOrEqual;
   }
-
 }

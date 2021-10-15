@@ -16,18 +16,14 @@
 
 package org.activiti.engine.delegate.event;
 
-/**
- * An {@link ActivitiEvent} related to an error being sent to an activity.
- *
-
- */
+/** An {@link ActivitiEvent} related to an error being sent to an activity. */
 public interface ActivitiErrorEvent extends ActivitiActivityEvent {
 
   /**
-   * @return the error-code of the error. Returns null, if no specific error-code has been specified when the error was thrown.
+   * @return the error-code of the error. Returns null, if no specific error-code has been specified
+   *     when the error was thrown.
    */
   public String getErrorCode();
 
   public String getErrorId();
-
 }

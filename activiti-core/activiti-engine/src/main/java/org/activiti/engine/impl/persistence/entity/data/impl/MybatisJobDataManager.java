@@ -20,7 +20,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.activiti.engine.impl.JobQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
@@ -32,13 +31,12 @@ import org.activiti.engine.impl.persistence.entity.data.JobDataManager;
 import org.activiti.engine.impl.persistence.entity.data.impl.cachematcher.JobsByExecutionIdMatcher;
 import org.activiti.engine.runtime.Job;
 
-/**
+/** */
+public class MybatisJobDataManager extends AbstractDataManager<JobEntity>
+    implements JobDataManager {
 
-
- */
-public class MybatisJobDataManager extends AbstractDataManager<JobEntity> implements JobDataManager {
-
-  protected CachedEntityMatcher<JobEntity> jobsByExecutionIdMatcher = new JobsByExecutionIdMatcher();
+  protected CachedEntityMatcher<JobEntity> jobsByExecutionIdMatcher =
+      new JobsByExecutionIdMatcher();
 
   public MybatisJobDataManager(ProcessEngineConfigurationImpl processEngineConfiguration) {
     super(processEngineConfiguration);
@@ -73,7 +71,8 @@ public class MybatisJobDataManager extends AbstractDataManager<JobEntity> implem
   }
 
   @Override
-  public List<JobEntity> findJobsByTypeAndProcessDefinitionId(final String jobHandlerType, final String processDefinitionId) {
+  public List<JobEntity> findJobsByTypeAndProcessDefinitionId(
+      final String jobHandlerType, final String processDefinitionId) {
     Map<String, String> params = new HashMap<String, String>(2);
     params.put("handlerType", jobHandlerType);
     params.put("processDefinitionId", processDefinitionId);
@@ -119,5 +118,4 @@ public class MybatisJobDataManager extends AbstractDataManager<JobEntity> implem
     params.put("id", jobId);
     getDbSqlSession().update("resetExpiredJob", params);
   }
-
 }

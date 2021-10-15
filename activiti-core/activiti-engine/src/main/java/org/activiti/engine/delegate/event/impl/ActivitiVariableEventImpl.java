@@ -20,11 +20,7 @@ import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.ActivitiVariableEvent;
 import org.activiti.engine.impl.variable.VariableType;
 
-/**
- * Implementation of {@link ActivitiVariableEvent}.
- *
-
- */
+/** Implementation of {@link ActivitiVariableEvent}. */
 public class ActivitiVariableEventImpl extends ActivitiEventImpl implements ActivitiVariableEvent {
 
   protected String variableName;
@@ -70,5 +66,4 @@ public class ActivitiVariableEventImpl extends ActivitiEventImpl implements Acti
   public void setTaskId(String taskId) {
     this.taskId = taskId;
   }
-
 }

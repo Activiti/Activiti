@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.cfg.multitenant;
 
 import java.io.PrintWriter;
@@ -24,19 +23,17 @@ import java.sql.SQLFeatureNotSupportedException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
-
 import javax.sql.DataSource;
-
 import org.activiti.engine.ActivitiException;
 
 /**
  * A {@link DataSource} implementation that switches the currently used datasource based on the
  * current values of the {@link TenantInfoHolder}.
  *
- * When a {@link Connection} is requested from this {@link DataSource}, the correct {@link DataSource}
- * for the current tenant will be determined and used.
+ * <p>When a {@link Connection} is requested from this {@link DataSource}, the correct {@link
+ * DataSource} for the current tenant will be determined and used.
  *
- * Heavily influenced and inspired by Spring's AbstractRoutingDataSource.
+ * <p>Heavily influenced and inspired by Spring's AbstractRoutingDataSource.
  *
  * @deprecated multi-tenant code will be removed in future version of Activiti and Activiti Cloud
  */
@@ -63,7 +60,7 @@ public class TenantAwareDataSource implements DataSource {
   }
 
   public Connection getConnection(String username, String password) throws SQLException {
-    return  getCurrentDataSource().getConnection(username, password);
+    return getCurrentDataSource().getConnection(username, password);
   }
 
   protected DataSource getCurrentDataSource() {
@@ -88,7 +85,8 @@ public class TenantAwareDataSource implements DataSource {
     if (iface.isInstance(this)) {
       return (T) this;
     }
-    throw new SQLException("Cannot unwrap " + getClass().getName() + " as an instance of " + iface.getName());
+    throw new SQLException(
+        "Cannot unwrap " + getClass().getName() + " as an instance of " + iface.getName());
   }
 
   public boolean isWrapperFor(Class<?> iface) throws SQLException {
@@ -116,5 +114,4 @@ public class TenantAwareDataSource implements DataSource {
   public void setLoginTimeout(int seconds) throws SQLException {
     throw new UnsupportedOperationException();
   }
-
 }

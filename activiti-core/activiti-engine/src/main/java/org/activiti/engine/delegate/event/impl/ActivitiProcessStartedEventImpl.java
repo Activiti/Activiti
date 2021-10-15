@@ -17,23 +17,20 @@
 package org.activiti.engine.delegate.event.impl;
 
 import java.util.Map;
-
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.ActivitiProcessStartedEvent;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 
-/**
- * An {@link org.activiti.engine.delegate.event.ActivitiCancelledEvent} implementation.
- *
-
- */
-public class ActivitiProcessStartedEventImpl extends ActivitiEntityWithVariablesEventImpl implements ActivitiProcessStartedEvent {
+/** An {@link org.activiti.engine.delegate.event.ActivitiCancelledEvent} implementation. */
+public class ActivitiProcessStartedEventImpl extends ActivitiEntityWithVariablesEventImpl
+    implements ActivitiProcessStartedEvent {
 
   protected final String nestedProcessInstanceId;
 
   protected final String nestedProcessDefinitionId;
 
-  public ActivitiProcessStartedEventImpl(final Object entity, final Map variables, final boolean localScope) {
+  public ActivitiProcessStartedEventImpl(
+      final Object entity, final Map variables, final boolean localScope) {
     super(entity, variables, localScope, ActivitiEventType.PROCESS_STARTED);
     if (entity instanceof ExecutionEntity) {
       ExecutionEntity executionEntity = (ExecutionEntity) entity;
@@ -65,5 +62,4 @@ public class ActivitiProcessStartedEventImpl extends ActivitiEntityWithVariables
   public String getNestedProcessDefinitionId() {
     return this.nestedProcessDefinitionId;
   }
-
 }

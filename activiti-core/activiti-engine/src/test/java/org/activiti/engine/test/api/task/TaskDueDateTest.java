@@ -20,15 +20,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Date;
 import java.util.List;
-
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.task.Task;
 
-/**
-
- */
+/** */
 public class TaskDueDateTest extends PluggableActivitiTestCase {
 
   @Override
@@ -41,16 +38,18 @@ public class TaskDueDateTest extends PluggableActivitiTestCase {
     super.tearDown();
   }
 
-  /**
-   * See https://activiti.atlassian.net/browse/ACT-2089
-   */
+  /** See https://activiti.atlassian.net/browse/ACT-2089 */
   public void testDueDateSortingWithNulls() {
     Date now = processEngineConfiguration.getClock().getCurrentTime();
 
     // 4 tasks with a due date
-    createTask("task0", new Date(now.getTime() + (4L * 7L * 24L * 60L * 60L * 1000L))); // 4 weeks in future
-    createTask("task1", new Date(now.getTime() + (2 * 24L * 60L * 60L * 1000L))); // 2 days in future
-    createTask("task2", new Date(now.getTime() + (7L * 24L * 60L * 60L * 1000L))); // 1 week in future
+    createTask(
+        "task0",
+        new Date(now.getTime() + (4L * 7L * 24L * 60L * 60L * 1000L))); // 4 weeks in future
+    createTask(
+        "task1", new Date(now.getTime() + (2 * 24L * 60L * 60L * 1000L))); // 2 days in future
+    createTask(
+        "task2", new Date(now.getTime() + (7L * 24L * 60L * 60L * 1000L))); // 1 week in future
     createTask("task3", new Date(now.getTime() + (24L * 60L * 60L * 1000L))); // 1 day in future
 
     // 2 tasks without a due date
@@ -109,7 +108,8 @@ public class TaskDueDateTest extends PluggableActivitiTestCase {
 
     if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
       // And now the same, but for history!
-      List<HistoricTaskInstance> historicTasks = historyService.createHistoricTaskInstanceQuery().orderByDueDateNullsLast().asc().list();
+      List<HistoricTaskInstance> historicTasks =
+          historyService.createHistoricTaskInstanceQuery().orderByDueDateNullsLast().asc().list();
 
       for (int i = 0; i < 4; i++) {
         assertThat(historicTasks.get(i).getDueDate()).isNotNull();
@@ -123,7 +123,8 @@ public class TaskDueDateTest extends PluggableActivitiTestCase {
       assertThat(historicTasks.get(5).getDueDate()).isNull();
 
       // The same, but now desc
-      historicTasks = historyService.createHistoricTaskInstanceQuery().orderByDueDateNullsLast().desc().list();
+      historicTasks =
+          historyService.createHistoricTaskInstanceQuery().orderByDueDateNullsLast().desc().list();
 
       for (int i = 0; i < 4; i++) {
         assertThat(historicTasks.get(i).getDueDate()).isNotNull();
@@ -137,7 +138,8 @@ public class TaskDueDateTest extends PluggableActivitiTestCase {
       assertThat(historicTasks.get(5).getDueDate()).isNull();
 
       // The same but now nulls first
-      historicTasks = historyService.createHistoricTaskInstanceQuery().orderByDueDateNullsFirst().asc().list();
+      historicTasks =
+          historyService.createHistoricTaskInstanceQuery().orderByDueDateNullsFirst().asc().list();
 
       assertThat(historicTasks.get(0).getDueDate()).isNull();
       assertThat(historicTasks.get(1).getDueDate()).isNull();
@@ -147,7 +149,8 @@ public class TaskDueDateTest extends PluggableActivitiTestCase {
       assertThat(historicTasks.get(5).getName()).isEqualTo("task0");
 
       // And now desc
-      historicTasks = historyService.createHistoricTaskInstanceQuery().orderByDueDateNullsFirst().desc().list();
+      historicTasks =
+          historyService.createHistoricTaskInstanceQuery().orderByDueDateNullsFirst().desc().list();
 
       assertThat(historicTasks.get(0).getDueDate()).isNull();
       assertThat(historicTasks.get(1).getDueDate()).isNull();
@@ -165,5 +168,4 @@ public class TaskDueDateTest extends PluggableActivitiTestCase {
     taskService.saveTask(task);
     return task;
   }
-
 }

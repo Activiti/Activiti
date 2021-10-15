@@ -14,16 +14,14 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.event;
 
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
 
 public interface EventSubscriptionPayloadMappingProvider {
 
-    @SuppressWarnings("unchecked")
-    default <T> T apply(Object payload, EventSubscriptionEntity eventSubscription) {
-        return (T) payload;
-    }
-
+  @SuppressWarnings("unchecked")
+  default <T> T apply(Object payload, EventSubscriptionEntity eventSubscription) {
+    return (T) payload;
+  }
 }

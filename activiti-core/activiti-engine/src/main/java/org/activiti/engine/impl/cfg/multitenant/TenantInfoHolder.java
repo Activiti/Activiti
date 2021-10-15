@@ -18,38 +18,30 @@ package org.activiti.engine.impl.cfg.multitenant;
 
 import java.util.Collection;
 
-
 /**
- * Interface to be implemented when using the {@link MultiSchemaMultiTenantProcessEngineConfiguration} and used
- * to set/get the current user and tenant identifier.
+ * Interface to be implemented when using the {@link
+ * MultiSchemaMultiTenantProcessEngineConfiguration} and used to set/get the current user and tenant
+ * identifier.
  *
- * The engine will call the {@link #getCurrentTenantId()} method when it needs to know which database to use.
+ * <p>The engine will call the {@link #getCurrentTenantId()} method when it needs to know which
+ * database to use.
  *
- * Typically used with {@link ThreadLocal}'s in the implementation.
+ * <p>Typically used with {@link ThreadLocal}'s in the implementation.
  *
  * @deprecated multi-tenant code will be removed in future version of Activiti and Activiti Cloud
  */
 @Deprecated
 public interface TenantInfoHolder {
 
-  /**
-   * Returns all known tenant identifiers.
-   */
+  /** Returns all known tenant identifiers. */
   Collection<String> getAllTenants();
 
-  /**
-   * Sets the current tenant identifier.
-   */
+  /** Sets the current tenant identifier. */
   void setCurrentTenantId(String tenantid);
 
-  /**
-   * Returns the current tenant identifier.
-   */
+  /** Returns the current tenant identifier. */
   String getCurrentTenantId();
 
-  /**
-   * Clears the current tenant identifier settings.
-   */
+  /** Clears the current tenant identifier settings. */
   void clearCurrentTenantId();
-
 }

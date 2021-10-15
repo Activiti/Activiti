@@ -15,12 +15,10 @@
  */
 package org.activiti.image.exception;
 
-/**
- * Exception thrown when the BPMN modle doesn't have graphic info inside
- */
+/** Exception thrown when the BPMN modle doesn't have graphic info inside */
 public class ActivitiInterchangeInfoNotFoundException extends ActivitiImageException {
 
-    public ActivitiInterchangeInfoNotFoundException(String message) {
-        super(message);
-    }
+  public ActivitiInterchangeInfoNotFoundException(String message) {
+    super(message);
+  }
 }

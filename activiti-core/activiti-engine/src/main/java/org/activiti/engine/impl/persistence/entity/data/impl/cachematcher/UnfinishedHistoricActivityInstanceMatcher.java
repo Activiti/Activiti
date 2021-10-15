@@ -17,14 +17,12 @@
 package org.activiti.engine.impl.persistence.entity.data.impl.cachematcher;
 
 import java.util.Map;
-
 import org.activiti.engine.impl.persistence.CachedEntityMatcherAdapter;
 import org.activiti.engine.impl.persistence.entity.HistoricActivityInstanceEntity;
 
-/**
-
- */
-public class UnfinishedHistoricActivityInstanceMatcher extends CachedEntityMatcherAdapter<HistoricActivityInstanceEntity> {
+/** */
+public class UnfinishedHistoricActivityInstanceMatcher
+    extends CachedEntityMatcherAdapter<HistoricActivityInstanceEntity> {
 
   @Override
   public boolean isRetained(HistoricActivityInstanceEntity entity, Object parameter) {
@@ -32,9 +30,10 @@ public class UnfinishedHistoricActivityInstanceMatcher extends CachedEntityMatch
     String executionId = paramMap.get("executionId");
     String activityId = paramMap.get("activityId");
 
-    return entity.getExecutionId() != null && entity.getExecutionId().equals(executionId)
-        && entity.getActivityId() != null && entity.getActivityId().equals(activityId)
+    return entity.getExecutionId() != null
+        && entity.getExecutionId().equals(executionId)
+        && entity.getActivityId() != null
+        && entity.getActivityId().equals(activityId)
         && entity.getEndTime() == null;
   }
-
 }

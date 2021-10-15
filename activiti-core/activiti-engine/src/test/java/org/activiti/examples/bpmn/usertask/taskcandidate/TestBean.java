@@ -18,10 +18,7 @@ package org.activiti.examples.bpmn.usertask.taskcandidate;
 
 import java.io.Serializable;
 
-/**
-
- */
-
+/** */
 public class TestBean implements Serializable {
 
   private static final long serialVersionUID = -8840933240517620693L;
@@ -41,5 +38,4 @@ public class TestBean implements Serializable {
   public String getTestProperty() {
     return "kermit";
   }
-
 }

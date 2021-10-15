@@ -16,7 +16,6 @@
 package org.activiti.engine.impl.cmd;
 
 import java.io.Serializable;
-
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
@@ -30,11 +29,7 @@ import org.activiti.engine.runtime.Job;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
-
-
- */
-
+/** */
 public class DeleteJobCmd implements Command<Object>, Serializable {
 
   private static final Logger log = LoggerFactory.getLogger(DeleteJobCmd.class);
@@ -55,7 +50,10 @@ public class DeleteJobCmd implements Command<Object>, Serializable {
 
   protected void sendCancelEvent(JobEntity jobToDelete) {
     if (Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-      Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.JOB_CANCELED, jobToDelete));
+      Context.getProcessEngineConfiguration()
+          .getEventDispatcher()
+          .dispatchEvent(
+              ActivitiEventBuilder.createEntityEvent(ActivitiEventType.JOB_CANCELED, jobToDelete));
     }
   }
 
@@ -76,9 +74,9 @@ public class DeleteJobCmd implements Command<Object>, Serializable {
     // This happens if the job was already acquired, but not yet executed.
     // In that case, we can't allow to delete the job.
     if (job.getLockOwner() != null) {
-      throw new ActivitiException("Cannot delete job when the job is being executed. Try again later.");
+      throw new ActivitiException(
+          "Cannot delete job when the job is being executed. Try again later.");
     }
     return job;
   }
-
 }

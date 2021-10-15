@@ -19,7 +19,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 import java.util.Map;
-
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.ExtensionAttribute;
 import org.activiti.bpmn.model.FlowElement;

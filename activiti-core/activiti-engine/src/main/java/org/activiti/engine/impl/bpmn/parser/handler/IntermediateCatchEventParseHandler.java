@@ -26,13 +26,12 @@ import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
+/** */
+public class IntermediateCatchEventParseHandler
+    extends AbstractFlowNodeBpmnParseHandler<IntermediateCatchEvent> {
 
-
- */
-public class IntermediateCatchEventParseHandler extends AbstractFlowNodeBpmnParseHandler<IntermediateCatchEvent> {
-
-  private static final Logger logger = LoggerFactory.getLogger(IntermediateCatchEventParseHandler.class);
+  private static final Logger logger =
+      LoggerFactory.getLogger(IntermediateCatchEventParseHandler.class);
 
   public Class<? extends BaseElement> getHandledType() {
     return IntermediateCatchEvent.class;
@@ -45,10 +44,15 @@ public class IntermediateCatchEventParseHandler extends AbstractFlowNodeBpmnPars
     }
 
     if (eventDefinition == null) {
-      event.setBehavior(bpmnParse.getActivityBehaviorFactory().createIntermediateCatchEventActivityBehavior(event));
+      event.setBehavior(
+          bpmnParse
+              .getActivityBehaviorFactory()
+              .createIntermediateCatchEventActivityBehavior(event));
 
     } else {
-      if (eventDefinition instanceof TimerEventDefinition || eventDefinition instanceof SignalEventDefinition || eventDefinition instanceof MessageEventDefinition) {
+      if (eventDefinition instanceof TimerEventDefinition
+          || eventDefinition instanceof SignalEventDefinition
+          || eventDefinition instanceof MessageEventDefinition) {
 
         bpmnParse.getBpmnParserHandlers().parseElement(bpmnParse, eventDefinition);
 
@@ -57,5 +61,4 @@ public class IntermediateCatchEventParseHandler extends AbstractFlowNodeBpmnPars
       }
     }
   }
-
 }

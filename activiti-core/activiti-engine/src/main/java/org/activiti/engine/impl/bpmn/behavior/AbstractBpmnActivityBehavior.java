@@ -14,13 +14,11 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.bpmn.behavior;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
 import org.activiti.bpmn.model.BoundaryEvent;
 import org.activiti.bpmn.model.CompensateEventDefinition;
 import org.activiti.bpmn.model.FlowElement;
@@ -33,9 +31,8 @@ import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 
 /**
- * Denotes an 'activity' in the sense of BPMN 2.0: a parent class for all tasks, subprocess and callActivity.
- *
-
+ * Denotes an 'activity' in the sense of BPMN 2.0: a parent class for all tasks, subprocess and
+ * callActivity.
  */
 public class AbstractBpmnActivityBehavior extends FlowNodeActivityBehavior {
 
@@ -44,12 +41,14 @@ public class AbstractBpmnActivityBehavior extends FlowNodeActivityBehavior {
   protected MultiInstanceActivityBehavior multiInstanceActivityBehavior;
 
   /**
-   * Subclasses that call leave() will first pass through this method, before the regular {@link FlowNodeActivityBehavior#leave(ActivityExecution)} is called. This way, we can check if the activity
-   * has loop characteristics, and delegate to the behavior if this is the case.
+   * Subclasses that call leave() will first pass through this method, before the regular {@link
+   * FlowNodeActivityBehavior#leave(ActivityExecution)} is called. This way, we can check if the
+   * activity has loop characteristics, and delegate to the behavior if this is the case.
    */
   public void leave(DelegateExecution execution) {
     FlowElement currentFlowElement = execution.getCurrentFlowElement();
-    Collection<BoundaryEvent> boundaryEvents = findBoundaryEventsForFlowNode(execution.getProcessDefinitionId(), currentFlowElement);
+    Collection<BoundaryEvent> boundaryEvents =
+        findBoundaryEventsForFlowNode(execution.getProcessDefinitionId(), currentFlowElement);
     if (CollectionUtil.isNotEmpty(boundaryEvents)) {
       executeCompensateBoundaryEvents(boundaryEvents, execution);
     }
@@ -60,20 +59,26 @@ public class AbstractBpmnActivityBehavior extends FlowNodeActivityBehavior {
     }
   }
 
-  protected void executeCompensateBoundaryEvents(Collection<BoundaryEvent> boundaryEvents, DelegateExecution execution) {
+  protected void executeCompensateBoundaryEvents(
+      Collection<BoundaryEvent> boundaryEvents, DelegateExecution execution) {
 
-    // The parent execution becomes a scope, and a child execution is created for each of the boundary events
+    // The parent execution becomes a scope, and a child execution is created for each of the
+    // boundary events
     for (BoundaryEvent boundaryEvent : boundaryEvents) {
 
       if (CollectionUtil.isEmpty(boundaryEvent.getEventDefinitions())) {
         continue;
       }
 
-      if (boundaryEvent.getEventDefinitions().get(0) instanceof CompensateEventDefinition == false) {
+      if (boundaryEvent.getEventDefinitions().get(0) instanceof CompensateEventDefinition
+          == false) {
         continue;
       }
 
-      ExecutionEntity childExecutionEntity = Context.getCommandContext().getExecutionEntityManager().createChildExecution((ExecutionEntity) execution);
+      ExecutionEntity childExecutionEntity =
+          Context.getCommandContext()
+              .getExecutionEntityManager()
+              .createChildExecution((ExecutionEntity) execution);
       childExecutionEntity.setParentId(execution.getId());
       childExecutionEntity.setCurrentFlowElement(boundaryEvent);
       childExecutionEntity.setScope(false);
@@ -81,17 +86,19 @@ public class AbstractBpmnActivityBehavior extends FlowNodeActivityBehavior {
       ActivityBehavior boundaryEventBehavior = ((ActivityBehavior) boundaryEvent.getBehavior());
       boundaryEventBehavior.execute(childExecutionEntity);
     }
-
   }
 
-  protected Collection<BoundaryEvent> findBoundaryEventsForFlowNode(final String processDefinitionId, final FlowElement flowElement) {
+  protected Collection<BoundaryEvent> findBoundaryEventsForFlowNode(
+      final String processDefinitionId, final FlowElement flowElement) {
     Process process = getProcessDefinition(processDefinitionId);
 
     // This could be cached or could be done at parsing time
     List<BoundaryEvent> results = new ArrayList<BoundaryEvent>(1);
-    Collection<BoundaryEvent> boundaryEvents = process.findFlowElementsOfType(BoundaryEvent.class, true);
+    Collection<BoundaryEvent> boundaryEvents =
+        process.findFlowElementsOfType(BoundaryEvent.class, true);
     for (BoundaryEvent boundaryEvent : boundaryEvents) {
-      if (boundaryEvent.getAttachedToRefId() != null && boundaryEvent.getAttachedToRefId().equals(flowElement.getId())) {
+      if (boundaryEvent.getAttachedToRefId() != null
+          && boundaryEvent.getAttachedToRefId().equals(flowElement.getId())) {
         results.add(boundaryEvent);
       }
     }
@@ -115,8 +122,8 @@ public class AbstractBpmnActivityBehavior extends FlowNodeActivityBehavior {
     return multiInstanceActivityBehavior;
   }
 
-  public void setMultiInstanceActivityBehavior(MultiInstanceActivityBehavior multiInstanceActivityBehavior) {
+  public void setMultiInstanceActivityBehavior(
+      MultiInstanceActivityBehavior multiInstanceActivityBehavior) {
     this.multiInstanceActivityBehavior = multiInstanceActivityBehavior;
   }
-
 }

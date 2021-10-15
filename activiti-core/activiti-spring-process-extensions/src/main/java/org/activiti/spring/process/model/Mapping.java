@@ -17,32 +17,29 @@ package org.activiti.spring.process.model;
 
 public class Mapping {
 
-    private SourceMappingType type;
+  private SourceMappingType type;
 
-    private Object value;
+  private Object value;
 
-    public SourceMappingType getType() {
-        return type;
-    }
+  public SourceMappingType getType() {
+    return type;
+  }
 
-    public void setType(SourceMappingType type) {
-        this.type = type;
-    }
+  public void setType(SourceMappingType type) {
+    this.type = type;
+  }
 
-    public Object getValue() {
-        return value;
-    }
+  public Object getValue() {
+    return value;
+  }
 
-    public void setValue(Object value) {
-        this.value = value;
-    }
+  public void setValue(Object value) {
+    this.value = value;
+  }
 
-    public enum SourceMappingType {
+  public enum SourceMappingType {
+    VARIABLE,
 
-        VARIABLE,
-
-        VALUE
-
-
-    }
+    VALUE
+  }
 }

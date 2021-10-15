@@ -21,9 +21,7 @@ import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.Condition;
 import org.activiti.engine.impl.context.Context;
 
-/**
-
- */
+/** */
 public class ScriptCondition implements Condition {
 
   private final String expression;
@@ -35,16 +33,21 @@ public class ScriptCondition implements Condition {
   }
 
   public boolean evaluate(String sequenceFlowId, DelegateExecution execution) {
-    ScriptingEngines scriptingEngines = Context.getProcessEngineConfiguration().getScriptingEngines();
+    ScriptingEngines scriptingEngines =
+        Context.getProcessEngineConfiguration().getScriptingEngines();
 
     Object result = scriptingEngines.evaluate(expression, language, execution);
     if (result == null) {
       throw new ActivitiException("condition script returns null: " + expression);
     }
     if (!(result instanceof Boolean)) {
-      throw new ActivitiException("condition script returns non-Boolean: " + result + " (" + result.getClass().getName() + ")");
+      throw new ActivitiException(
+          "condition script returns non-Boolean: "
+              + result
+              + " ("
+              + result.getClass().getName()
+              + ")");
     }
     return (Boolean) result;
   }
-
 }

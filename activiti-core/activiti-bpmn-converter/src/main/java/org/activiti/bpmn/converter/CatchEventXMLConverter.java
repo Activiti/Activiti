@@ -17,15 +17,12 @@ package org.activiti.bpmn.converter;
 
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
-
 import org.activiti.bpmn.converter.util.BpmnXMLUtil;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.IntermediateCatchEvent;
 
-/**
-
- */
+/** */
 public class CatchEventXMLConverter extends BaseBpmnXMLConverter {
 
   @Override
@@ -47,12 +44,12 @@ public class CatchEventXMLConverter extends BaseBpmnXMLConverter {
   }
 
   @Override
-  protected void writeAdditionalAttributes(BaseElement element, BpmnModel model, XMLStreamWriter xtw) throws Exception {
-
-  }
+  protected void writeAdditionalAttributes(
+      BaseElement element, BpmnModel model, XMLStreamWriter xtw) throws Exception {}
 
   @Override
-  protected void writeAdditionalChildElements(BaseElement element, BpmnModel model, XMLStreamWriter xtw) throws Exception {
+  protected void writeAdditionalChildElements(
+      BaseElement element, BpmnModel model, XMLStreamWriter xtw) throws Exception {
     IntermediateCatchEvent catchEvent = (IntermediateCatchEvent) element;
     writeEventDefinitions(catchEvent, catchEvent.getEventDefinitions(), model, xtw);
   }

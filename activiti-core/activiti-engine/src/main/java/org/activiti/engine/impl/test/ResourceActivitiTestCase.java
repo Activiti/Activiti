@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.test;
 
 import org.activiti.engine.ProcessEngineConfiguration;
@@ -22,10 +21,7 @@ import org.activiti.engine.ProcessEngines;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
-
-
- */
+/** */
 public abstract class ResourceActivitiTestCase extends AbstractActivitiTestCase {
 
   private static final Logger logger = LoggerFactory.getLogger(ResourceActivitiTestCase.class);
@@ -51,7 +47,9 @@ public abstract class ResourceActivitiTestCase extends AbstractActivitiTestCase 
 
   @Override
   protected void initializeProcessEngine() {
-    ProcessEngineConfiguration config = ProcessEngineConfiguration.createProcessEngineConfigurationFromResource(activitiConfigurationResource);
+    ProcessEngineConfiguration config =
+        ProcessEngineConfiguration.createProcessEngineConfigurationFromResource(
+            activitiConfigurationResource);
     if (processEngineName != null) {
       logger.info("Initializing process engine with name '" + processEngineName + "'");
       config.setProcessEngineName(processEngineName);
@@ -60,8 +58,5 @@ public abstract class ResourceActivitiTestCase extends AbstractActivitiTestCase 
     processEngine = config.buildProcessEngine();
   }
 
-  protected void additionalConfiguration(ProcessEngineConfiguration processEngineConfiguration) {
-
-  }
-
+  protected void additionalConfiguration(ProcessEngineConfiguration processEngineConfiguration) {}
 }

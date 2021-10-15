@@ -19,13 +19,10 @@ package org.activiti.standalone.parsing;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.concurrent.atomic.AtomicInteger;
-
 import org.activiti.engine.impl.test.ResourceActivitiTestCase;
 import org.activiti.engine.test.Deployment;
 
-/**
-
- */
+/** */
 public class CustomActivityBehaviorFactoryTest extends ResourceActivitiTestCase {
 
   public CustomActivityBehaviorFactoryTest() {
@@ -50,5 +47,4 @@ public class CustomActivityBehaviorFactoryTest extends ResourceActivitiTestCase 
 
     assertThat(COUNTER.get()).isEqualTo(nrOfProcessInstances);
   }
-
 }

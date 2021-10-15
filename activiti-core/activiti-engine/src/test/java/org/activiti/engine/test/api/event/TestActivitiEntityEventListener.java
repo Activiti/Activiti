@@ -18,10 +18,9 @@ package org.activiti.engine.test.api.event;
 
 import java.util.ArrayList;
 import java.util.List;
-
+import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventListener;
-import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 
 public class TestActivitiEntityEventListener implements ActivitiEventListener {
 
@@ -44,7 +43,8 @@ public class TestActivitiEntityEventListener implements ActivitiEventListener {
 
   @Override
   public void onEvent(ActivitiEvent event) {
-    if (event instanceof ActivitiEntityEvent && entityClass.isAssignableFrom(((ActivitiEntityEvent) event).getEntity().getClass())) {
+    if (event instanceof ActivitiEntityEvent
+        && entityClass.isAssignableFrom(((ActivitiEntityEvent) event).getEntity().getClass())) {
       eventsReceived.add(event);
     }
   }
@@ -53,5 +53,4 @@ public class TestActivitiEntityEventListener implements ActivitiEventListener {
   public boolean isFailOnException() {
     return true;
   }
-
 }

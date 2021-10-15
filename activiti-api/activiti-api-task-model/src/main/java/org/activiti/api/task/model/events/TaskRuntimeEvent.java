@@ -18,25 +18,22 @@ package org.activiti.api.task.model.events;
 import org.activiti.api.model.shared.event.RuntimeEvent;
 import org.activiti.api.task.model.Task;
 
+public interface TaskRuntimeEvent<T extends Task>
+    extends RuntimeEvent<T, TaskRuntimeEvent.TaskEvents> {
 
-public interface TaskRuntimeEvent<T extends Task> extends RuntimeEvent<T, TaskRuntimeEvent.TaskEvents> {
+  enum TaskEvents {
+    TASK_ASSIGNED,
 
-    enum TaskEvents {
+    TASK_COMPLETED,
 
-        TASK_ASSIGNED,
+    TASK_CREATED,
 
-        TASK_COMPLETED,
+    TASK_UPDATED,
 
-        TASK_CREATED,
+    TASK_ACTIVATED,
 
-        TASK_UPDATED,
+    TASK_SUSPENDED,
 
-        TASK_ACTIVATED,
-
-        TASK_SUSPENDED,
-
-        TASK_CANCELLED
-
-    }
-
+    TASK_CANCELLED
+  }
 }

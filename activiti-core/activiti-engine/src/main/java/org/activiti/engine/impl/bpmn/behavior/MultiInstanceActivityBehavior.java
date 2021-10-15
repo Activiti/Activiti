@@ -51,19 +51,20 @@ import org.slf4j.LoggerFactory;
 /**
  * Implementation of the multi-instance functionality as described in the BPMN 2.0 spec.
  *
- * Multi instance functionality is implemented as an {@link ActivityBehavior} that wraps the original {@link ActivityBehavior} of the activity.
+ * <p>Multi instance functionality is implemented as an {@link ActivityBehavior} that wraps the
+ * original {@link ActivityBehavior} of the activity.
  *
- * Only subclasses of {@link AbstractBpmnActivityBehavior} can have multi-instance behavior. As such, special logic is contained in the {@link AbstractBpmnActivityBehavior} to delegate to the
+ * <p>Only subclasses of {@link AbstractBpmnActivityBehavior} can have multi-instance behavior. As
+ * such, special logic is contained in the {@link AbstractBpmnActivityBehavior} to delegate to the
  * {@link MultiInstanceActivityBehavior} if needed.
- *
-
-
  */
-public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBehavior implements SubProcessActivityBehavior {
+public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBehavior
+    implements SubProcessActivityBehavior {
 
   private static final long serialVersionUID = 1L;
 
-  protected static final Logger LOGGER = LoggerFactory.getLogger(MultiInstanceActivityBehavior.class);
+  protected static final Logger LOGGER =
+      LoggerFactory.getLogger(MultiInstanceActivityBehavior.class);
 
   // Variable names for outer instance(as described in spec)
   protected static final String NUMBER_OF_INSTANCES = "nrOfInstances";
@@ -85,12 +86,12 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
   private String outputDataItem;
 
   /**
-   * @param activity
-   *          The {@link Activity} which has multi instance behaviour
-   * @param innerActivityBehavior
-   *          The original {@link ActivityBehavior} of the activity that will be wrapped inside this behavior.
+   * @param activity The {@link Activity} which has multi instance behaviour
+   * @param innerActivityBehavior The original {@link ActivityBehavior} of the activity that will be
+   *     wrapped inside this behavior.
    */
-  public MultiInstanceActivityBehavior(Activity activity, AbstractBpmnActivityBehavior innerActivityBehavior) {
+  public MultiInstanceActivityBehavior(
+      Activity activity, AbstractBpmnActivityBehavior innerActivityBehavior) {
     this.activity = activity;
     setInnerActivityBehavior(innerActivityBehavior);
   }
@@ -118,21 +119,24 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
     }
   }
 
-    private void clearLoopDataOutputRef(DelegateExecution execution) {
-        if (hasLoopDataOutputRef()) {
-          execution.setVariable(getLoopDataOutputRef(), new ArrayList<>());
-        }
+  private void clearLoopDataOutputRef(DelegateExecution execution) {
+    if (hasLoopDataOutputRef()) {
+      execution.setVariable(getLoopDataOutputRef(), new ArrayList<>());
     }
+  }
 
   protected abstract int createInstances(DelegateExecution execution);
 
-  protected void executeCompensationBoundaryEvents(FlowElement flowElement, DelegateExecution execution) {
+  protected void executeCompensationBoundaryEvents(
+      FlowElement flowElement, DelegateExecution execution) {
 
-    //Execute compensation boundary events
-    Collection<BoundaryEvent> boundaryEvents = findBoundaryEventsForFlowNode(execution.getProcessDefinitionId(), flowElement);
+    // Execute compensation boundary events
+    Collection<BoundaryEvent> boundaryEvents =
+        findBoundaryEventsForFlowNode(execution.getProcessDefinitionId(), flowElement);
     if (CollectionUtil.isNotEmpty(boundaryEvents)) {
 
-      // The parent execution becomes a scope, and a child execution is created for each of the boundary events
+      // The parent execution becomes a scope, and a child execution is created for each of the
+      // boundary events
       for (BoundaryEvent boundaryEvent : boundaryEvents) {
 
         if (CollectionUtil.isEmpty(boundaryEvent.getEventDefinitions())) {
@@ -140,8 +144,10 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
         }
 
         if (boundaryEvent.getEventDefinitions().get(0) instanceof CompensateEventDefinition) {
-          ExecutionEntity childExecutionEntity = getCommandContext().getExecutionEntityManager()
-              .createChildExecution((ExecutionEntity) execution);
+          ExecutionEntity childExecutionEntity =
+              getCommandContext()
+                  .getExecutionEntityManager()
+                  .createChildExecution((ExecutionEntity) execution);
           childExecutionEntity.setParentId(execution.getId());
           childExecutionEntity.setCurrentFlowElement(boundaryEvent);
           childExecutionEntity.setScope(false);
@@ -153,14 +159,17 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
     }
   }
 
-  protected Collection<BoundaryEvent> findBoundaryEventsForFlowNode(final String processDefinitionId, final FlowElement flowElement) {
+  protected Collection<BoundaryEvent> findBoundaryEventsForFlowNode(
+      final String processDefinitionId, final FlowElement flowElement) {
     Process process = getProcessDefinition(processDefinitionId);
 
     // This could be cached or could be done at parsing time
     List<BoundaryEvent> results = new ArrayList<BoundaryEvent>(1);
-    Collection<BoundaryEvent> boundaryEvents = process.findFlowElementsOfType(BoundaryEvent.class, true);
+    Collection<BoundaryEvent> boundaryEvents =
+        process.findFlowElementsOfType(BoundaryEvent.class, true);
     for (BoundaryEvent boundaryEvent : boundaryEvents) {
-      if (boundaryEvent.getAttachedToRefId() != null && boundaryEvent.getAttachedToRefId().equals(flowElement.getId())) {
+      if (boundaryEvent.getAttachedToRefId() != null
+          && boundaryEvent.getAttachedToRefId().equals(flowElement.getId())) {
         results.add(boundaryEvent);
       }
     }
@@ -178,13 +187,13 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
 
   // required for supporting embedded subprocesses
   public void lastExecutionEnded(DelegateExecution execution) {
-    //ScopeUtil.createEventScopeExecution((ExecutionEntity) execution);
+    // ScopeUtil.createEventScopeExecution((ExecutionEntity) execution);
     leave(execution);
   }
 
   // required for supporting external subprocesses
-  public void completing(DelegateExecution execution, DelegateExecution subProcessInstance) throws Exception {
-  }
+  public void completing(DelegateExecution execution, DelegateExecution subProcessInstance)
+      throws Exception {}
 
   // required for supporting external subprocesses
   public void completed(DelegateExecution execution) throws Exception {
@@ -199,12 +208,13 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
     if (loopCardinalityExpression != null) {
       return resolveLoopCardinality(execution);
 
-    } else if(usesCollection()) {
+    } else if (usesCollection()) {
       Collection collection = resolveAndValidateCollection(execution);
       return collection.size();
 
     } else {
-      throw new ActivitiIllegalArgumentException("Couldn't resolve collection expression nor variable reference");
+      throw new ActivitiIllegalArgumentException(
+          "Couldn't resolve collection expression nor variable reference");
     }
   }
 
@@ -232,20 +242,24 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
     Object obj = resolveCollection(execution);
     if (collectionExpression != null) {
       if (!(obj instanceof Collection)) {
-        throw new ActivitiIllegalArgumentException(collectionExpression.getExpressionText() + "' didn't resolve to a Collection");
+        throw new ActivitiIllegalArgumentException(
+            collectionExpression.getExpressionText() + "' didn't resolve to a Collection");
       }
 
     } else if (collectionVariable != null) {
       if (obj == null) {
-        throw new ActivitiIllegalArgumentException("Variable " + collectionVariable + " is not found");
+        throw new ActivitiIllegalArgumentException(
+            "Variable " + collectionVariable + " is not found");
       }
 
       if (!(obj instanceof Collection)) {
-        throw new ActivitiIllegalArgumentException("Variable " + collectionVariable + "' is not a Collection");
+        throw new ActivitiIllegalArgumentException(
+            "Variable " + collectionVariable + "' is not a Collection");
       }
 
     } else {
-      throw new ActivitiIllegalArgumentException("Couldn't resolve collection expression nor variable reference");
+      throw new ActivitiIllegalArgumentException(
+          "Couldn't resolve collection expression nor variable reference");
     }
     return (Collection) obj;
   }
@@ -279,7 +293,10 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
       return Integer.valueOf((String) value);
 
     } else {
-      throw new ActivitiIllegalArgumentException("Could not resolve loopCardinality expression '" + loopCardinalityExpression.getExpressionText() + "': not a number nor number String");
+      throw new ActivitiIllegalArgumentException(
+          "Could not resolve loopCardinality expression '"
+              + loopCardinalityExpression.getExpressionText()
+              + "': not a number nor number String");
     }
   }
 
@@ -287,7 +304,10 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
     if (completionConditionExpression != null) {
       Object value = completionConditionExpression.getValue(execution);
       if (!(value instanceof Boolean)) {
-        throw new ActivitiIllegalArgumentException("completionCondition '" + completionConditionExpression.getExpressionText() + "' does not evaluate to a boolean value");
+        throw new ActivitiIllegalArgumentException(
+            "completionCondition '"
+                + completionConditionExpression.getExpressionText()
+                + "' does not evaluate to a boolean value");
       }
 
       Boolean booleanValue = (Boolean) value;
@@ -322,25 +342,44 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
   }
 
   /**
-   * Since no transitions are followed when leaving the inner activity, it is needed to call the end listeners yourself.
+   * Since no transitions are followed when leaving the inner activity, it is needed to call the end
+   * listeners yourself.
    */
   protected void callActivityEndListeners(DelegateExecution execution) {
-    getCommandContext().getProcessEngineConfiguration().getListenerNotificationHelper()
-      .executeExecutionListeners(activity, execution, ExecutionListener.EVENTNAME_END);
+    getCommandContext()
+        .getProcessEngineConfiguration()
+        .getListenerNotificationHelper()
+        .executeExecutionListeners(activity, execution, ExecutionListener.EVENTNAME_END);
   }
 
-  protected void logLoopDetails(DelegateExecution execution, String custom, int loopCounter, int nrOfCompletedInstances, int nrOfActiveInstances, int nrOfInstances) {
+  protected void logLoopDetails(
+      DelegateExecution execution,
+      String custom,
+      int loopCounter,
+      int nrOfCompletedInstances,
+      int nrOfActiveInstances,
+      int nrOfInstances) {
     if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Multi-instance '{}' {}. Details: loopCounter={}, nrOrCompletedInstances={},nrOfActiveInstances={},nrOfInstances={}",
-          execution.getCurrentFlowElement() != null ? execution.getCurrentFlowElement().getId() : "", custom, loopCounter,
-          nrOfCompletedInstances, nrOfActiveInstances, nrOfInstances);
+      LOGGER.debug(
+          "Multi-instance '{}' {}. Details: loopCounter={},"
+              + " nrOrCompletedInstances={},nrOfActiveInstances={},nrOfInstances={}",
+          execution.getCurrentFlowElement() != null
+              ? execution.getCurrentFlowElement().getId()
+              : "",
+          custom,
+          loopCounter,
+          nrOfCompletedInstances,
+          nrOfActiveInstances,
+          nrOfInstances);
     }
   }
 
   protected DelegateExecution getMultiInstanceRootExecution(DelegateExecution executionEntity) {
     DelegateExecution multiInstanceRootExecution = null;
     DelegateExecution currentExecution = executionEntity;
-    while (currentExecution != null  && multiInstanceRootExecution == null && currentExecution.getParent() != null) {
+    while (currentExecution != null
+        && multiInstanceRootExecution == null
+        && currentExecution.getParent() != null) {
       if (currentExecution.isMultiInstanceRoot()) {
         multiInstanceRootExecution = currentExecution;
       } else {
@@ -352,15 +391,17 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
 
   protected void dispatchActivityCompletedEvent(DelegateExecution execution) {
     ExecutionEntity executionEntity = (ExecutionEntity) execution;
-    getCommandContext().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createActivityEvent(
-            ActivitiEventType.ACTIVITY_COMPLETED,
-            executionEntity.getActivityId(),
-            executionEntity.getName(),
-            executionEntity.getId(),
-            executionEntity.getProcessInstanceId(),
-            executionEntity.getProcessDefinitionId(),
-            executionEntity.getCurrentFlowElement()
-    ));
+    getCommandContext()
+        .getEventDispatcher()
+        .dispatchEvent(
+            ActivitiEventBuilder.createActivityEvent(
+                ActivitiEventType.ACTIVITY_COMPLETED,
+                executionEntity.getActivityId(),
+                executionEntity.getName(),
+                executionEntity.getId(),
+                executionEntity.getProcessInstanceId(),
+                executionEntity.getProcessDefinitionId(),
+                executionEntity.getCurrentFlowElement()));
   }
 
   // Getters and Setters
@@ -423,88 +464,90 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
     return innerActivityBehavior;
   }
 
-    public String getLoopDataOutputRef() {
-        return loopDataOutputRef;
-    }
+  public String getLoopDataOutputRef() {
+    return loopDataOutputRef;
+  }
 
-    public boolean hasLoopDataOutputRef() {
-      return loopDataOutputRef != null && !loopDataOutputRef.trim().isEmpty();
-    }
+  public boolean hasLoopDataOutputRef() {
+    return loopDataOutputRef != null && !loopDataOutputRef.trim().isEmpty();
+  }
 
-    public void setLoopDataOutputRef(String loopDataOutputRef) {
-        this.loopDataOutputRef = loopDataOutputRef;
-    }
+  public void setLoopDataOutputRef(String loopDataOutputRef) {
+    this.loopDataOutputRef = loopDataOutputRef;
+  }
 
-    public String getOutputDataItem() {
-        return outputDataItem;
-    }
+  public String getOutputDataItem() {
+    return outputDataItem;
+  }
 
-    public boolean hasOutputDataItem() {
-      return outputDataItem != null && !outputDataItem.trim().isEmpty();
-    }
+  public boolean hasOutputDataItem() {
+    return outputDataItem != null && !outputDataItem.trim().isEmpty();
+  }
 
-    public void setOutputDataItem(String outputDataItem) {
-        this.outputDataItem = outputDataItem;
-    }
+  public void setOutputDataItem(String outputDataItem) {
+    this.outputDataItem = outputDataItem;
+  }
 
-    protected void updateResultCollection(DelegateExecution childExecution,
-        DelegateExecution miRootExecution) {
-        if (miRootExecution != null && hasLoopDataOutputRef()) {
-            Object loopDataOutputReference = miRootExecution
-                .getVariableLocal(getLoopDataOutputRef());
-            List<Object> resultCollection;
-            if (loopDataOutputReference instanceof List) {
-                resultCollection = (List<Object>) loopDataOutputReference;
-            } else {
-                resultCollection = new ArrayList<>();
-            }
-            resultCollection.add(getResultElementItem(childExecution));
-            setLoopVariable(miRootExecution, getLoopDataOutputRef(), resultCollection);
-        }
+  protected void updateResultCollection(
+      DelegateExecution childExecution, DelegateExecution miRootExecution) {
+    if (miRootExecution != null && hasLoopDataOutputRef()) {
+      Object loopDataOutputReference = miRootExecution.getVariableLocal(getLoopDataOutputRef());
+      List<Object> resultCollection;
+      if (loopDataOutputReference instanceof List) {
+        resultCollection = (List<Object>) loopDataOutputReference;
+      } else {
+        resultCollection = new ArrayList<>();
+      }
+      resultCollection.add(getResultElementItem(childExecution));
+      setLoopVariable(miRootExecution, getLoopDataOutputRef(), resultCollection);
     }
+  }
 
-    protected Object getResultElementItem(DelegateExecution childExecution) {
-        CommandContext commandContext = getCommandContext();
-        if (commandContext != null && commandContext.getCommand() instanceof CompleteTaskCmd) {
-            //in the case of a User Task, the variables are directly attached to the TaskEntity
-            //and not in the child execution. CompleteTaskCmd will delete the task and all its
-            //variables, but before doing so it's keeping a cache of existing local variables that
-            //can be retrieve here and used int the result collection.
-            Map<String, Object> taskVariables = ((CompleteTaskCmd) commandContext
-                .getCommand()).getTaskVariables();
-            return getResultElementItem(taskVariables);
-        }
-        // in the case where it's not a User Task, the local variables will be available directly
-        // in the child execution
-        return getResultElementItem(childExecution.getVariablesLocal());
+  protected Object getResultElementItem(DelegateExecution childExecution) {
+    CommandContext commandContext = getCommandContext();
+    if (commandContext != null && commandContext.getCommand() instanceof CompleteTaskCmd) {
+      // in the case of a User Task, the variables are directly attached to the TaskEntity
+      // and not in the child execution. CompleteTaskCmd will delete the task and all its
+      // variables, but before doing so it's keeping a cache of existing local variables that
+      // can be retrieve here and used int the result collection.
+      Map<String, Object> taskVariables =
+          ((CompleteTaskCmd) commandContext.getCommand()).getTaskVariables();
+      return getResultElementItem(taskVariables);
     }
+    // in the case where it's not a User Task, the local variables will be available directly
+    // in the child execution
+    return getResultElementItem(childExecution.getVariablesLocal());
+  }
 
-    protected CommandContext getCommandContext() {
-        return Context.getCommandContext();
-    }
+  protected CommandContext getCommandContext() {
+    return Context.getCommandContext();
+  }
 
-    protected Object getResultElementItem(Map<String, Object> availableVariables) {
-        if (hasOutputDataItem()) {
-            return availableVariables.get(getOutputDataItem());
-        } else {
-            //exclude from the result all the built-in multi-instances variables
-            //and loopDataOutputRef itself that may exist in the context depending
-            // on the variable propagation
-            List<String> resultItemExclusions = Arrays.asList(
-                getLoopDataOutputRef(),
-                getCollectionElementIndexVariable(),
-                NUMBER_OF_INSTANCES,
-                NUMBER_OF_COMPLETED_INSTANCES,
-                NUMBER_OF_ACTIVE_INSTANCES);
-            HashMap<String, Object> resultItem = new HashMap<>(availableVariables);
-            resultItem.keySet().removeAll(resultItemExclusions);
-            return resultItem;
-        }
+  protected Object getResultElementItem(Map<String, Object> availableVariables) {
+    if (hasOutputDataItem()) {
+      return availableVariables.get(getOutputDataItem());
+    } else {
+      // exclude from the result all the built-in multi-instances variables
+      // and loopDataOutputRef itself that may exist in the context depending
+      // on the variable propagation
+      List<String> resultItemExclusions =
+          Arrays.asList(
+              getLoopDataOutputRef(),
+              getCollectionElementIndexVariable(),
+              NUMBER_OF_INSTANCES,
+              NUMBER_OF_COMPLETED_INSTANCES,
+              NUMBER_OF_ACTIVE_INSTANCES);
+      HashMap<String, Object> resultItem = new HashMap<>(availableVariables);
+      resultItem.keySet().removeAll(resultItemExclusions);
+      return resultItem;
     }
+  }
 
-    protected void propagateLoopDataOutputRefToProcessInstance(ExecutionEntity miRootExecution) {
-        if (hasLoopDataOutputRef()) {
-            miRootExecution.getProcessInstance().setVariable(getLoopDataOutputRef(), miRootExecution.getVariable(getLoopDataOutputRef()));
-        }
+  protected void propagateLoopDataOutputRefToProcessInstance(ExecutionEntity miRootExecution) {
+    if (hasLoopDataOutputRef()) {
+      miRootExecution
+          .getProcessInstance()
+          .setVariable(getLoopDataOutputRef(), miRootExecution.getVariable(getLoopDataOutputRef()));
     }
+  }
 }

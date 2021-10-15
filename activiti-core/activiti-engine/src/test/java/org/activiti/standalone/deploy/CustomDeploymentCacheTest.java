@@ -19,13 +19,10 @@ package org.activiti.standalone.deploy;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.text.MessageFormat;
-
 import org.activiti.engine.impl.test.ResourceActivitiTestCase;
 import org.activiti.engine.repository.Deployment;
 
-/**
-
- */
+/** */
 public class CustomDeploymentCacheTest extends ResourceActivitiTestCase {
 
   public CustomDeploymentCacheTest() {
@@ -33,12 +30,19 @@ public class CustomDeploymentCacheTest extends ResourceActivitiTestCase {
   }
 
   public void testCustomDeploymentCacheUsed() {
-    CustomDeploymentCache customCache = (CustomDeploymentCache) processEngineConfiguration.getProcessDefinitionCache();
+    CustomDeploymentCache customCache =
+        (CustomDeploymentCache) processEngineConfiguration.getProcessDefinitionCache();
     assertThat(customCache.getCachedProcessDefinition()).isNull();
 
-    String processDefinitionTemplate = DeploymentCacheTestUtil.readTemplateFile("/org/activiti/standalone/deploy/deploymentCacheTest.bpmn20.xml");
+    String processDefinitionTemplate =
+        DeploymentCacheTestUtil.readTemplateFile(
+            "/org/activiti/standalone/deploy/deploymentCacheTest.bpmn20.xml");
     for (int i = 1; i <= 5; i++) {
-      repositoryService.createDeployment().addString("Process " + i + ".bpmn20.xml", MessageFormat.format(processDefinitionTemplate, i)).deploy();
+      repositoryService
+          .createDeployment()
+          .addString(
+              "Process " + i + ".bpmn20.xml", MessageFormat.format(processDefinitionTemplate, i))
+          .deploy();
       assertThat(customCache.getCachedProcessDefinition()).isNotNull();
     }
 
@@ -47,5 +51,4 @@ public class CustomDeploymentCacheTest extends ResourceActivitiTestCase {
       repositoryService.deleteDeployment(deployment.getId(), true);
     }
   }
-
 }

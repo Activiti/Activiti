@@ -16,41 +16,39 @@
 package org.activiti.api.process.model;
 
 import java.util.Date;
-
 import org.activiti.api.model.shared.model.ApplicationElement;
 
 public interface ProcessInstance extends ApplicationElement {
 
-    enum ProcessInstanceStatus {
-        CREATED,
-        RUNNING,
-        SUSPENDED,
-        CANCELLED,
-        COMPLETED
-    }
+  enum ProcessInstanceStatus {
+    CREATED,
+    RUNNING,
+    SUSPENDED,
+    CANCELLED,
+    COMPLETED
+  }
 
-    String getId();
+  String getId();
 
-    String getName();
+  String getName();
 
-    Date getStartDate();
+  Date getStartDate();
 
-    Date getCompletedDate();
+  Date getCompletedDate();
 
-    String getInitiator();
+  String getInitiator();
 
-    String getBusinessKey();
+  String getBusinessKey();
 
-    ProcessInstanceStatus getStatus();
+  ProcessInstanceStatus getStatus();
 
-    String getProcessDefinitionId();
+  String getProcessDefinitionId();
 
-    String getProcessDefinitionKey();
+  String getProcessDefinitionKey();
 
-    String getParentId();
+  String getParentId();
 
-    Integer getProcessDefinitionVersion();
+  Integer getProcessDefinitionVersion();
 
-    String getProcessDefinitionName();
-
+  String getProcessDefinitionName();
 }

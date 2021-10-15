@@ -20,7 +20,6 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
@@ -29,13 +28,10 @@ import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * From http://forums.activiti.org/content/inability-completely-delete-process-instance-when
- */
+/** From http://forums.activiti.org/content/inability-completely-delete-process-instance-when */
 public class DeleteProcessInstanceTest extends PluggableActivitiTestCase {
 
   private static Logger log = LoggerFactory.getLogger(DeleteProcessInstanceTest.class);
@@ -52,16 +48,31 @@ public class DeleteProcessInstanceTest extends PluggableActivitiTestCase {
     inputParamsUser.put("taskType", "user");
 
     // Start the process instance & ensure it's started.
-    ProcessInstance instanceUser = runtimeService.startProcessInstanceByKey("DemoPartialDeletion", inputParamsUser);
+    ProcessInstance instanceUser =
+        runtimeService.startProcessInstanceByKey("DemoPartialDeletion", inputParamsUser);
     assertThat(instanceUser).isNotNull();
-    log.info("Process instance (of process model " + instanceUser.getProcessDefinitionId() + ") started with id: " + instanceUser.getId() + ".");
+    log.info(
+        "Process instance (of process model "
+            + instanceUser.getProcessDefinitionId()
+            + ") started with id: "
+            + instanceUser.getId()
+            + ".");
 
     // Assert that the process instance is active.
-    Execution executionUser = runtimeService.createExecutionQuery().processInstanceId(instanceUser.getProcessInstanceId()).onlyChildExecutions().singleResult();
+    Execution executionUser =
+        runtimeService
+            .createExecutionQuery()
+            .processInstanceId(instanceUser.getProcessInstanceId())
+            .onlyChildExecutions()
+            .singleResult();
     assertThat(executionUser.isEnded()).isFalse();
 
     // Assert that a user task is available for claiming.
-    Task taskUser = taskService.createTaskQuery().processInstanceId(instanceUser.getProcessInstanceId()).singleResult();
+    Task taskUser =
+        taskService
+            .createTaskQuery()
+            .processInstanceId(instanceUser.getProcessInstanceId())
+            .singleResult();
     assertThat(taskUser).isNotNull();
 
     // Delete the process instance.
@@ -70,10 +81,20 @@ public class DeleteProcessInstanceTest extends PluggableActivitiTestCase {
     if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
       // Retrieve the HistoricProcessInstance and assert that there is an
       // end time.
-      HistoricProcessInstance hInstanceUser = historyService.createHistoricProcessInstanceQuery().processInstanceId(instanceUser.getId()).singleResult();
+      HistoricProcessInstance hInstanceUser =
+          historyService
+              .createHistoricProcessInstanceQuery()
+              .processInstanceId(instanceUser.getId())
+              .singleResult();
       assertThat(hInstanceUser.getEndTime()).isNotNull();
-      log.info("End time for the deleted instance of \"Demo Partial Deletion\" that was started with a Task Type of \"user\": " + hInstanceUser.getEndTime() + ".");
-      log.info("Successfully deleted the instance of \"Demo Partial Deletion\" that was started with a Task Type of \"user\".");
+      log.info(
+          "End time for the deleted instance of \"Demo Partial Deletion\" that was started with a"
+              + " Task Type of \"user\": "
+              + hInstanceUser.getEndTime()
+              + ".");
+      log.info(
+          "Successfully deleted the instance of \"Demo Partial Deletion\" that was started with a"
+              + " Task Type of \"user\".");
     }
 
     // Note that the instance with a Task Type of "java" is being started.
@@ -85,36 +106,56 @@ public class DeleteProcessInstanceTest extends PluggableActivitiTestCase {
     inputParamsJava.put("taskType", "java");
 
     // Start the process instance & ensure it's started.
-    ProcessInstance instanceJava = runtimeService.startProcessInstanceByKey("DemoPartialDeletion", inputParamsJava);
+    ProcessInstance instanceJava =
+        runtimeService.startProcessInstanceByKey("DemoPartialDeletion", inputParamsJava);
     assertThat(instanceJava).isNotNull();
-    log.info("Process instance (of process model " + instanceJava.getProcessDefinitionId() + ") started with id: " + instanceJava.getId() + ".");
+    log.info(
+        "Process instance (of process model "
+            + instanceJava.getProcessDefinitionId()
+            + ") started with id: "
+            + instanceJava.getId()
+            + ".");
 
     // Assert that the process instance is active.
-    Execution executionJava = runtimeService.createExecutionQuery().processInstanceId(instanceJava.getProcessInstanceId()).onlyChildExecutions().singleResult();
+    Execution executionJava =
+        runtimeService
+            .createExecutionQuery()
+            .processInstanceId(instanceJava.getProcessInstanceId())
+            .onlyChildExecutions()
+            .singleResult();
     assertThat(executionJava.isEnded()).isFalse();
 
     // Try to execute job 3 times
-    Job jobJavaForException = managementService.createJobQuery().processInstanceId(instanceJava.getId()).singleResult();
+    Job jobJavaForException =
+        managementService.createJobQuery().processInstanceId(instanceJava.getId()).singleResult();
     assertThat(jobJavaForException).isNotNull();
 
     assertThatExceptionOfType(Exception.class)
-      .isThrownBy(() -> managementService.executeJob(jobJavaForException.getId()));
+        .isThrownBy(() -> managementService.executeJob(jobJavaForException.getId()));
 
     assertThatExceptionOfType(Exception.class)
-      .isThrownBy(() -> {
-        managementService.moveTimerToExecutableJob(jobJavaForException.getId());
-        managementService.executeJob(jobJavaForException.getId());
-      });
+        .isThrownBy(
+            () -> {
+              managementService.moveTimerToExecutableJob(jobJavaForException.getId());
+              managementService.executeJob(jobJavaForException.getId());
+            });
 
     assertThatExceptionOfType(Exception.class)
-      .isThrownBy(() -> {
-          managementService.moveTimerToExecutableJob(jobJavaForException.getId());
-          managementService.executeJob(jobJavaForException.getId());
-      });
+        .isThrownBy(
+            () -> {
+              managementService.moveTimerToExecutableJob(jobJavaForException.getId());
+              managementService.executeJob(jobJavaForException.getId());
+            });
 
     // Assert that there is a failed job.
-    assertThat(managementService.createTimerJobQuery().processInstanceId(instanceJava.getId()).count()).isEqualTo(0);
-    Job jobJava = managementService.createDeadLetterJobQuery().processInstanceId(instanceJava.getId()).singleResult();
+    assertThat(
+            managementService.createTimerJobQuery().processInstanceId(instanceJava.getId()).count())
+        .isEqualTo(0);
+    Job jobJava =
+        managementService
+            .createDeadLetterJobQuery()
+            .processInstanceId(instanceJava.getId())
+            .singleResult();
     assertThat(jobJava).isNotNull();
 
     // Delete the process instance.
@@ -123,9 +164,12 @@ public class DeleteProcessInstanceTest extends PluggableActivitiTestCase {
     if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
       // Retrieve the HistoricProcessInstance and assert that there is no
       // end time.
-      HistoricProcessInstance hInstanceJava = historyService.createHistoricProcessInstanceQuery().processInstanceId(instanceJava.getId()).singleResult();
+      HistoricProcessInstance hInstanceJava =
+          historyService
+              .createHistoricProcessInstanceQuery()
+              .processInstanceId(instanceJava.getId())
+              .singleResult();
       assertThat(hInstanceJava.getEndTime()).isNotNull();
     }
   }
-
 }

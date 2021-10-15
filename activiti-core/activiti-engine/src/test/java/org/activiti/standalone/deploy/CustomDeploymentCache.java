@@ -20,11 +20,7 @@ import org.activiti.engine.impl.persistence.deploy.DeploymentCache;
 import org.activiti.engine.impl.persistence.deploy.ProcessDefinitionCacheEntry;
 import org.activiti.engine.repository.ProcessDefinition;
 
-/**
- * Very simplistic cache implementation that only caches one process definition.
- *
-
- */
+/** Very simplistic cache implementation that only caches one process definition. */
 public class CustomDeploymentCache implements DeploymentCache<ProcessDefinitionCacheEntry> {
 
   protected String id;
@@ -70,5 +66,4 @@ public class CustomDeploymentCache implements DeploymentCache<ProcessDefinitionC
     }
     return entry.getProcessDefinition();
   }
-
 }

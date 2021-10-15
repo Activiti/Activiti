@@ -17,24 +17,24 @@
 package org.activiti.engine.impl.bpmn.helper;
 
 import java.util.List;
-
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.VariableScope;
 import org.activiti.engine.impl.bpmn.parser.FieldDeclaration;
 import org.activiti.engine.impl.cfg.DelegateExpressionFieldInjectionMode;
 import org.activiti.engine.impl.context.Context;
 
-/**
-
- */
+/** */
 public class DelegateExpressionUtil {
 
-  public static Object resolveDelegateExpression(Expression expression, VariableScope variableScope) {
+  public static Object resolveDelegateExpression(
+      Expression expression, VariableScope variableScope) {
     return resolveDelegateExpression(expression, variableScope, null);
   }
 
-  public static Object resolveDelegateExpression(Expression expression,
-      VariableScope variableScope, List<FieldDeclaration> fieldDeclarations) {
+  public static Object resolveDelegateExpression(
+      Expression expression,
+      VariableScope variableScope,
+      List<FieldDeclaration> fieldDeclarations) {
 
     // Note: we can't cache the result of the expression, because the
     // execution can change: eg. delegateExpression='${mySpringBeanFactory.randomSpringBean()}'
@@ -42,16 +42,15 @@ public class DelegateExpressionUtil {
 
     if (fieldDeclarations != null && fieldDeclarations.size() > 0) {
 
-      DelegateExpressionFieldInjectionMode injectionMode = Context.getProcessEngineConfiguration().getDelegateExpressionFieldInjectionMode();
+      DelegateExpressionFieldInjectionMode injectionMode =
+          Context.getProcessEngineConfiguration().getDelegateExpressionFieldInjectionMode();
       if (injectionMode.equals(DelegateExpressionFieldInjectionMode.COMPATIBILITY)) {
         ClassDelegate.applyFieldDeclaration(fieldDeclarations, delegate, true);
       } else if (injectionMode.equals(DelegateExpressionFieldInjectionMode.MIXED)) {
         ClassDelegate.applyFieldDeclaration(fieldDeclarations, delegate, false);
       }
-
     }
 
     return delegate;
   }
-
 }

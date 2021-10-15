@@ -17,20 +17,18 @@ package org.activiti.test.matchers;
 
 public class ThrowEventMatchers extends ActivityMatchers {
 
-    private static final String THROW_EVENT = "throwEvent";
+  private static final String THROW_EVENT = "throwEvent";
 
-    private ThrowEventMatchers(String definitionKey) {
-        super(definitionKey);
+  private ThrowEventMatchers(String definitionKey) {
+    super(definitionKey);
+  }
 
-    }
+  @Override
+  public String getActivityType() {
+    return THROW_EVENT;
+  }
 
-    @Override
-    public String getActivityType() {
-        return THROW_EVENT;
-    }
-
-    public static ThrowEventMatchers throwEvent(String definitionKey) {
-        return new ThrowEventMatchers(definitionKey);
-    }
-
+  public static ThrowEventMatchers throwEvent(String definitionKey) {
+    return new ThrowEventMatchers(definitionKey);
+  }
 }

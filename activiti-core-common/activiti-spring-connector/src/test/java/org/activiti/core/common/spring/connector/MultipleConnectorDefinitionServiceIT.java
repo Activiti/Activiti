@@ -15,6 +15,10 @@
  */
 package org.activiti.core.common.spring.connector;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.io.IOException;
+import java.util.List;
 import org.activiti.core.common.model.connector.ConnectorDefinition;
 import org.activiti.core.common.spring.connector.autoconfigure.ConnectorAutoConfiguration;
 import org.junit.jupiter.api.Test;
@@ -22,25 +26,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 
-import java.io.IOException;
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-
-@SpringBootTest(classes = ConnectorAutoConfiguration.class, webEnvironment = SpringBootTest.WebEnvironment.NONE)
+@SpringBootTest(
+    classes = ConnectorAutoConfiguration.class,
+    webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @TestPropertySource(locations = "classpath:application-multiple-test.properties")
 public class MultipleConnectorDefinitionServiceIT {
 
-    @Autowired
-    private ConnectorDefinitionService connectorDefinitionService;
+  @Autowired private ConnectorDefinitionService connectorDefinitionService;
 
-    /**
-     * Three files have json extensions, one does not.
-     **/
-    @Test
-    public void connectorDefinitions() throws IOException {
+  /** Three files have json extensions, one does not. */
+  @Test
+  public void connectorDefinitions() throws IOException {
 
-        List<ConnectorDefinition> connectorDefinitions = connectorDefinitionService.get();
-        assertThat(connectorDefinitions).hasSize(3);
-    }
+    List<ConnectorDefinition> connectorDefinitions = connectorDefinitionService.get();
+    assertThat(connectorDefinitions).hasSize(3);
+  }
 }

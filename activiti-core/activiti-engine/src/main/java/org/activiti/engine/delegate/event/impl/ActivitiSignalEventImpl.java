@@ -19,12 +19,9 @@ package org.activiti.engine.delegate.event.impl;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.ActivitiSignalEvent;
 
-/**
- * An {@link ActivitiSignalEvent} implementation.
- *
-
- */
-public class ActivitiSignalEventImpl extends ActivitiActivityEventImpl implements ActivitiSignalEvent {
+/** An {@link ActivitiSignalEvent} implementation. */
+public class ActivitiSignalEventImpl extends ActivitiActivityEventImpl
+    implements ActivitiSignalEvent {
 
   protected String signalName;
   protected Object signalData;

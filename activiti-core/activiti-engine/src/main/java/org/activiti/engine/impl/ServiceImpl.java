@@ -19,17 +19,12 @@ package org.activiti.engine.impl;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 
-/**
-
-
- */
+/** */
 public class ServiceImpl {
 
   protected ProcessEngineConfigurationImpl processEngineConfiguration;
 
-  public ServiceImpl() {
-
-  }
+  public ServiceImpl() {}
 
   public ServiceImpl(ProcessEngineConfigurationImpl processEngineConfiguration) {
     this.processEngineConfiguration = processEngineConfiguration;

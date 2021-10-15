@@ -17,16 +17,13 @@ package org.activiti.bpmn.converter;
 
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
-
 import org.activiti.bpmn.converter.util.BpmnXMLUtil;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.DataStoreReference;
 import org.apache.commons.lang3.StringUtils;
 
-/**
-
- */
+/** */
 public class DataStoreReferenceXMLConverter extends BaseBpmnXMLConverter {
 
   public Class<? extends BaseElement> getBpmnElementType() {
@@ -47,7 +44,8 @@ public class DataStoreReferenceXMLConverter extends BaseBpmnXMLConverter {
   }
 
   @Override
-  protected void writeAdditionalAttributes(BaseElement element, BpmnModel model, XMLStreamWriter xtw) throws Exception {
+  protected void writeAdditionalAttributes(
+      BaseElement element, BpmnModel model, XMLStreamWriter xtw) throws Exception {
     DataStoreReference dataStoreRef = (DataStoreReference) element;
     if (StringUtils.isNotEmpty(dataStoreRef.getDataStoreRef())) {
       xtw.writeAttribute(ATTRIBUTE_DATA_STORE_REF, dataStoreRef.getDataStoreRef());
@@ -59,7 +57,8 @@ public class DataStoreReferenceXMLConverter extends BaseBpmnXMLConverter {
   }
 
   @Override
-  protected void writeAdditionalChildElements(BaseElement element, BpmnModel model, XMLStreamWriter xtw) throws Exception {
+  protected void writeAdditionalChildElements(
+      BaseElement element, BpmnModel model, XMLStreamWriter xtw) throws Exception {
     DataStoreReference dataStoreRef = (DataStoreReference) element;
     if (StringUtils.isNotEmpty(dataStoreRef.getDataState())) {
       xtw.writeStartElement(ELEMENT_DATA_STATE);

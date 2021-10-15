@@ -17,67 +17,67 @@ package org.activiti.engine.impl.persistence.entity.integration;
 
 import java.util.Date;
 import java.util.HashMap;
-
 import org.activiti.engine.impl.persistence.entity.AbstractEntity;
 
-public class IntegrationContextEntityImpl extends AbstractEntity implements IntegrationContextEntity {
+public class IntegrationContextEntityImpl extends AbstractEntity
+    implements IntegrationContextEntity {
 
-    private String executionId;
+  private String executionId;
 
-    private Date createdDate;
+  private Date createdDate;
 
-    private String processInstanceId;
+  private String processInstanceId;
 
-    private String processDefinitionId;
+  private String processDefinitionId;
 
-    private String flowNodeId;
+  private String flowNodeId;
 
-    @Override
-    public String getExecutionId() {
-        return executionId;
-    }
+  @Override
+  public String getExecutionId() {
+    return executionId;
+  }
 
-    @Override
-    public void setExecutionId(String executionId) {
-        this.executionId = executionId;
-    }
+  @Override
+  public void setExecutionId(String executionId) {
+    this.executionId = executionId;
+  }
 
-    public String getProcessDefinitionId() {
-        return processDefinitionId;
-    }
+  public String getProcessDefinitionId() {
+    return processDefinitionId;
+  }
 
-    public void setProcessDefinitionId(String processDefinitionId) {
-        this.processDefinitionId = processDefinitionId;
-    }
+  public void setProcessDefinitionId(String processDefinitionId) {
+    this.processDefinitionId = processDefinitionId;
+  }
 
-    public String getProcessInstanceId() {
-        return processInstanceId;
-    }
+  public String getProcessInstanceId() {
+    return processInstanceId;
+  }
 
-    public void setProcessInstanceId(String processInstanceId) {
-        this.processInstanceId = processInstanceId;
-    }
+  public void setProcessInstanceId(String processInstanceId) {
+    this.processInstanceId = processInstanceId;
+  }
 
-    @Override
-    public String getFlowNodeId() {
-        return flowNodeId;
-    }
+  @Override
+  public String getFlowNodeId() {
+    return flowNodeId;
+  }
 
-    @Override
-    public void setFlowNodeId(String flowNodeId) {
-        this.flowNodeId = flowNodeId;
-    }
+  @Override
+  public void setFlowNodeId(String flowNodeId) {
+    this.flowNodeId = flowNodeId;
+  }
 
-    public Date getCreatedDate() {
-        return createdDate;
-    }
+  public Date getCreatedDate() {
+    return createdDate;
+  }
 
-    public void setCreatedDate(Date createdDate) {
-        this.createdDate = createdDate;
-    }
+  public void setCreatedDate(Date createdDate) {
+    this.createdDate = createdDate;
+  }
 
-    @Override
-    public Object getPersistentState() {
-        return new HashMap<>();
-    }
+  @Override
+  public Object getPersistentState() {
+    return new HashMap<>();
+  }
 }

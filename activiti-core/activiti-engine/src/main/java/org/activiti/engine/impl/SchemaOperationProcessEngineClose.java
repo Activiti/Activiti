@@ -19,10 +19,7 @@ package org.activiti.engine.impl;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 
-/**
-
-
- */
+/** */
 final class SchemaOperationProcessEngineClose implements Command<Object> {
 
   public Object execute(CommandContext commandContext) {

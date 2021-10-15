@@ -19,11 +19,7 @@ package org.activiti.engine.impl.delegate.invocation;
 import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.delegate.TaskListener;
 
-/**
- * Class handling invocations of {@link TaskListener TaskListeners}
- *
-
- */
+/** Class handling invocations of {@link TaskListener TaskListeners} */
 public class TaskListenerInvocation extends DelegateInvocation {
 
   protected final TaskListener executionListenerInstance;
@@ -41,5 +37,4 @@ public class TaskListenerInvocation extends DelegateInvocation {
   public Object getTarget() {
     return executionListenerInstance;
   }
-
 }

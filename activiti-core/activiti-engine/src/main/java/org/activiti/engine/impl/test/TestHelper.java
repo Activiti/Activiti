@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.test;
 
 import static java.util.Collections.singletonList;
@@ -24,9 +23,7 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import junit.framework.AssertionFailedError;
-
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessEngineConfiguration;
@@ -48,69 +45,89 @@ import org.activiti.engine.test.mock.NoOpServiceTasks;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
-
-
- */
+/** */
 public abstract class TestHelper {
 
   private static Logger log = LoggerFactory.getLogger(TestHelper.class);
 
   public static final String EMPTY_LINE = "\n";
 
-  public static final List<String> TABLENAMES_EXCLUDED_FROM_DB_CLEAN_CHECK = singletonList("ACT_GE_PROPERTY");
+  public static final List<String> TABLENAMES_EXCLUDED_FROM_DB_CLEAN_CHECK =
+      singletonList("ACT_GE_PROPERTY");
 
   static Map<String, ProcessEngine> processEngines = new HashMap<String, ProcessEngine>();
 
   // Assertion methods ///////////////////////////////////////////////////
 
   public static void assertProcessEnded(ProcessEngine processEngine, String processInstanceId) {
-    ProcessInstance processInstance = processEngine.getRuntimeService().createProcessInstanceQuery().processInstanceId(processInstanceId).singleResult();
+    ProcessInstance processInstance =
+        processEngine
+            .getRuntimeService()
+            .createProcessInstanceQuery()
+            .processInstanceId(processInstanceId)
+            .singleResult();
 
     if (processInstance != null) {
-      throw new AssertionFailedError("expected finished process instance '" + processInstanceId + "' but it was still in the db");
+      throw new AssertionFailedError(
+          "expected finished process instance '"
+              + processInstanceId
+              + "' but it was still in the db");
     }
   }
 
   // Test annotation support /////////////////////////////////////////////
 
-  public static String annotationDeploymentSetUp(ProcessEngine processEngine, Class<?> testClass, String methodName) {
+  public static String annotationDeploymentSetUp(
+      ProcessEngine processEngine, Class<?> testClass, String methodName) {
     String deploymentId = null;
     Method method = null;
     try {
       method = testClass.getMethod(methodName, (Class<?>[]) null);
     } catch (Exception e) {
-      log.warn("Could not get method by reflection. This could happen if you are using @Parameters in combination with annotations.", e);
+      log.warn(
+          "Could not get method by reflection. This could happen if you are using @Parameters in"
+              + " combination with annotations.",
+          e);
       return null;
     }
     Deployment deploymentAnnotation = method.getAnnotation(Deployment.class);
     if (deploymentAnnotation != null) {
-      log.debug("annotation @Deployment creates deployment for {}.{}", testClass.getSimpleName(), methodName);
+      log.debug(
+          "annotation @Deployment creates deployment for {}.{}",
+          testClass.getSimpleName(),
+          methodName);
       String[] resources = deploymentAnnotation.resources();
       if (resources.length == 0) {
         String name = method.getName();
         String resource = getBpmnProcessDefinitionResource(testClass, name);
-        resources = new String[] { resource };
+        resources = new String[] {resource};
       }
 
-      DeploymentBuilder deploymentBuilder = processEngine.getRepositoryService().createDeployment().name(testClass.getSimpleName() + "." + methodName);
+      DeploymentBuilder deploymentBuilder =
+          processEngine
+              .getRepositoryService()
+              .createDeployment()
+              .name(testClass.getSimpleName() + "." + methodName);
 
       for (String resource : resources) {
         deploymentBuilder.addClasspathResource(resource);
       }
 
-           if (deploymentAnnotation.tenantId() != null
-                   && deploymentAnnotation.tenantId().length() > 0) {
-                   deploymentBuilder.tenantId(deploymentAnnotation.tenantId());
-                   }
+      if (deploymentAnnotation.tenantId() != null && deploymentAnnotation.tenantId().length() > 0) {
+        deploymentBuilder.tenantId(deploymentAnnotation.tenantId());
+      }
       deploymentId = deploymentBuilder.deploy().getId();
     }
 
     return deploymentId;
   }
 
-  public static void annotationDeploymentTearDown(ProcessEngine processEngine, String deploymentId, Class<?> testClass, String methodName) {
-    log.debug("annotation @Deployment deletes deployment for {}.{}", testClass.getSimpleName(), methodName);
+  public static void annotationDeploymentTearDown(
+      ProcessEngine processEngine, String deploymentId, Class<?> testClass, String methodName) {
+    log.debug(
+        "annotation @Deployment deletes deployment for {}.{}",
+        testClass.getSimpleName(),
+        methodName);
     if (deploymentId != null) {
       try {
         processEngine.getRepositoryService().deleteDeployment(deploymentId, true);
@@ -120,14 +137,18 @@ public abstract class TestHelper {
     }
   }
 
-  public static void annotationMockSupportSetup(Class<?> testClass, String methodName, ActivitiMockSupport mockSupport) {
+  public static void annotationMockSupportSetup(
+      Class<?> testClass, String methodName, ActivitiMockSupport mockSupport) {
 
     // Get method
     Method method = null;
     try {
       method = testClass.getMethod(methodName, (Class<?>[]) null);
     } catch (Exception e) {
-      log.warn("Could not get method by reflection. This could happen if you are using @Parameters in combination with annotations.", e);
+      log.warn(
+          "Could not get method by reflection. This could happen if you are using @Parameters in"
+              + " combination with annotations.",
+          e);
       return;
     }
 
@@ -136,18 +157,22 @@ public abstract class TestHelper {
     handleNoOpServiceTasksAnnotation(mockSupport, method);
   }
 
-  protected static void handleMockServiceTaskAnnotation(ActivitiMockSupport mockSupport, Method method) {
+  protected static void handleMockServiceTaskAnnotation(
+      ActivitiMockSupport mockSupport, Method method) {
     MockServiceTask mockedServiceTask = method.getAnnotation(MockServiceTask.class);
     if (mockedServiceTask != null) {
       handleMockServiceTaskAnnotation(mockSupport, mockedServiceTask);
     }
   }
 
-  protected static void handleMockServiceTaskAnnotation(ActivitiMockSupport mockSupport, MockServiceTask mockedServiceTask) {
-    mockSupport.mockServiceTaskWithClassDelegate(mockedServiceTask.originalClassName(), mockedServiceTask.mockedClassName());
+  protected static void handleMockServiceTaskAnnotation(
+      ActivitiMockSupport mockSupport, MockServiceTask mockedServiceTask) {
+    mockSupport.mockServiceTaskWithClassDelegate(
+        mockedServiceTask.originalClassName(), mockedServiceTask.mockedClassName());
   }
 
-  protected static void handleMockServiceTasksAnnotation(ActivitiMockSupport mockSupport, Method method) {
+  protected static void handleMockServiceTasksAnnotation(
+      ActivitiMockSupport mockSupport, Method method) {
     MockServiceTasks mockedServiceTasks = method.getAnnotation(MockServiceTasks.class);
     if (mockedServiceTasks != null) {
       for (MockServiceTask mockedServiceTask : mockedServiceTasks.value()) {
@@ -156,7 +181,8 @@ public abstract class TestHelper {
     }
   }
 
-  protected static void handleNoOpServiceTasksAnnotation(ActivitiMockSupport mockSupport, Method method) {
+  protected static void handleNoOpServiceTasksAnnotation(
+      ActivitiMockSupport mockSupport, Method method) {
     NoOpServiceTasks noOpServiceTasks = method.getAnnotation(NoOpServiceTasks.class);
     if (noOpServiceTasks != null) {
 
@@ -164,7 +190,9 @@ public abstract class TestHelper {
       Class<?>[] classes = noOpServiceTasks.classes();
       String[] classNames = noOpServiceTasks.classNames();
 
-      if ((ids == null || ids.length == 0) && (classes == null || classes.length == 0) && (classNames == null || classNames.length == 0)) {
+      if ((ids == null || ids.length == 0)
+          && (classes == null || classes.length == 0)
+          && (classNames == null || classNames.length == 0)) {
         mockSupport.setAllServiceTasksNoOp();
       } else {
 
@@ -185,9 +213,7 @@ public abstract class TestHelper {
             mockSupport.addNoOpServiceTaskByClassName(className);
           }
         }
-
       }
-
     }
   }
 
@@ -196,8 +222,10 @@ public abstract class TestHelper {
   }
 
   /**
-   * get a resource location by convention based on a class (type) and a relative resource name. The return value will be the full classpath location of the type, plus a suffix built from the name
-   * parameter: <code>BpmnDeployer.BPMN_RESOURCE_SUFFIXES</code>. The first resource matching a suffix will be returned.
+   * get a resource location by convention based on a class (type) and a relative resource name. The
+   * return value will be the full classpath location of the type, plus a suffix built from the name
+   * parameter: <code>BpmnDeployer.BPMN_RESOURCE_SUFFIXES</code>. The first resource matching a
+   * suffix will be returned.
    */
   public static String getBpmnProcessDefinitionResource(Class<?> type, String name) {
     for (String suffix : ResourceNameUtil.BPMN_RESOURCE_SUFFIXES) {
@@ -209,7 +237,11 @@ public abstract class TestHelper {
         return resource;
       }
     }
-    return type.getName().replace('.', '/') + "." + name + "." + ResourceNameUtil.BPMN_RESOURCE_SUFFIXES[0];
+    return type.getName().replace('.', '/')
+        + "."
+        + name
+        + "."
+        + ResourceNameUtil.BPMN_RESOURCE_SUFFIXES[0];
   }
 
   // Engine startup and shutdown helpers
@@ -218,9 +250,16 @@ public abstract class TestHelper {
   public static ProcessEngine getProcessEngine(String configurationResource) {
     ProcessEngine processEngine = processEngines.get(configurationResource);
     if (processEngine == null) {
-      log.debug("==== BUILDING PROCESS ENGINE ========================================================================");
-      processEngine = ProcessEngineConfiguration.createProcessEngineConfigurationFromResource(configurationResource).buildProcessEngine();
-      log.debug("==== PROCESS ENGINE CREATED =========================================================================");
+      log.debug(
+          "==== BUILDING PROCESS ENGINE"
+              + " ========================================================================");
+      processEngine =
+          ProcessEngineConfiguration.createProcessEngineConfigurationFromResource(
+                  configurationResource)
+              .buildProcessEngine();
+      log.debug(
+          "==== PROCESS ENGINE CREATED"
+              + " =========================================================================");
       processEngines.put(configurationResource, processEngine);
     }
     return processEngine;
@@ -234,8 +273,9 @@ public abstract class TestHelper {
   }
 
   /**
-   * Each test is assumed to clean up all DB content it entered. After a test method executed, this method scans all tables to see if the DB is completely clean. It throws AssertionFailed in case the
-   * DB is not clean. If the DB is not clean, it is cleaned by performing a create a drop.
+   * Each test is assumed to clean up all DB content it entered. After a test method executed, this
+   * method scans all tables to see if the DB is completely clean. It throws AssertionFailed in case
+   * the DB is not clean. If the DB is not clean, it is cleaned by performing a create a drop.
    */
   public static void assertAndEnsureCleanDb(ProcessEngine processEngine) {
     log.debug("verifying that db is clean after test");
@@ -245,7 +285,12 @@ public abstract class TestHelper {
       if (!TABLENAMES_EXCLUDED_FROM_DB_CLEAN_CHECK.contains(tableName)) {
         Long count = tableCounts.get(tableName);
         if (count != 0L) {
-          outputMessage.append("  ").append(tableName).append(": ").append(count).append(" record(s) ");
+          outputMessage
+              .append("  ")
+              .append(tableName)
+              .append(": ")
+              .append(count)
+              .append(" record(s) ");
         }
       }
     }
@@ -254,14 +299,18 @@ public abstract class TestHelper {
       log.error(EMPTY_LINE);
       log.error(outputMessage.toString());
 
-      ((ProcessEngineImpl) processEngine).getProcessEngineConfiguration().getCommandExecutor().execute(new Command<Object>() {
-        public Object execute(CommandContext commandContext) {
-          DbSqlSession dbSqlSession = commandContext.getDbSqlSession();
-          dbSqlSession.dbSchemaDrop();
-          dbSqlSession.dbSchemaCreate();
-          return null;
-        }
-      });
+      ((ProcessEngineImpl) processEngine)
+          .getProcessEngineConfiguration()
+          .getCommandExecutor()
+          .execute(
+              new Command<Object>() {
+                public Object execute(CommandContext commandContext) {
+                  DbSqlSession dbSqlSession = commandContext.getDbSqlSession();
+                  dbSqlSession.dbSchemaDrop();
+                  dbSqlSession.dbSchemaCreate();
+                  return null;
+                }
+              });
 
       throw new AssertionError(outputMessage.toString());
     }
@@ -269,8 +318,8 @@ public abstract class TestHelper {
 
   // Mockup support ////////////////////////////////////////////////////////
 
-  public static TestActivityBehaviorFactory initializeTestActivityBehaviorFactory(ActivityBehaviorFactory existingActivityBehaviorFactory) {
+  public static TestActivityBehaviorFactory initializeTestActivityBehaviorFactory(
+      ActivityBehaviorFactory existingActivityBehaviorFactory) {
     return new TestActivityBehaviorFactory(existingActivityBehaviorFactory);
   }
-
 }

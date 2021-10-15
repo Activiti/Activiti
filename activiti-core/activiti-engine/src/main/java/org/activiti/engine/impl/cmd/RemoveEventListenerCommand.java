@@ -21,11 +21,7 @@ import org.activiti.engine.delegate.event.ActivitiEventListener;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 
-/**
- * Command that removes an event-listener to the Activiti engine.
- *
-
- */
+/** Command that removes an event-listener to the Activiti engine. */
 public class RemoveEventListenerCommand implements Command<Void> {
 
   protected ActivitiEventListener listener;
@@ -41,9 +37,11 @@ public class RemoveEventListenerCommand implements Command<Void> {
       throw new ActivitiIllegalArgumentException("listener is null.");
     }
 
-    commandContext.getProcessEngineConfiguration().getEventDispatcher().removeEventListener(listener);
+    commandContext
+        .getProcessEngineConfiguration()
+        .getEventDispatcher()
+        .removeEventListener(listener);
 
     return null;
   }
-
 }

@@ -21,9 +21,7 @@ import org.activiti.engine.impl.agenda.AbstractOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
-
- */
+/** */
 public class DebugCommandInvoker extends CommandInvoker {
 
   private static final Logger logger = LoggerFactory.getLogger(DebugCommandInvoker.class);
@@ -35,12 +33,13 @@ public class DebugCommandInvoker extends CommandInvoker {
 
       if (operation.getExecution() != null) {
         logger.info("Execution tree while executing operation {} :", operation.getClass());
-        logger.info("{}", System.lineSeparator() +  ExecutionTreeUtil.buildExecutionTree(operation.getExecution()));
+        logger.info(
+            "{}",
+            System.lineSeparator()
+                + ExecutionTreeUtil.buildExecutionTree(operation.getExecution()));
       }
-
     }
 
     super.executeOperation(runnable);
   }
-
 }

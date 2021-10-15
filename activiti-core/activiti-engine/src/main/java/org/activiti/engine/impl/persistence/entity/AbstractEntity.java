@@ -18,11 +18,7 @@ package org.activiti.engine.impl.persistence.entity;
 
 import org.activiti.engine.impl.db.HasRevision;
 
-/**
- * Abstract superclass for the common properties of all {@link Entity} implementations.
- *
-
- */
+/** Abstract superclass for the common properties of all {@link Entity} implementations. */
 public abstract class AbstractEntity implements Entity, HasRevision {
 
   protected String id;
@@ -77,5 +73,4 @@ public abstract class AbstractEntity implements Entity, HasRevision {
   public void setDeleted(boolean isDeleted) {
     this.isDeleted = isDeleted;
   }
-
 }

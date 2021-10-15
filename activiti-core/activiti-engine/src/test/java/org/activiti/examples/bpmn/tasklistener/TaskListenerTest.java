@@ -18,21 +18,19 @@ package org.activiti.examples.bpmn.tasklistener;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.List;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
-import java.util.List;
-
-/**
-
- */
+/** */
 public class TaskListenerTest extends PluggableActivitiTestCase {
 
-  @Deployment(resources = { "org/activiti/examples/bpmn/tasklistener/TaskListenerTest.bpmn20.xml" })
+  @Deployment(resources = {"org/activiti/examples/bpmn/tasklistener/TaskListenerTest.bpmn20.xml"})
   public void testTaskCreateListener() {
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("taskListenerProcess");
+    ProcessInstance processInstance =
+        runtimeService.startProcessInstanceByKey("taskListenerProcess");
     Task task = taskService.createTaskQuery().singleResult();
     assertThat(task.getName()).isEqualTo("Schedule meeting");
     assertThat(task.getDescription()).isEqualTo("TaskCreateListener is listening!");
@@ -49,9 +47,13 @@ public class TaskListenerTest extends PluggableActivitiTestCase {
     runtimeService.deleteProcessInstance(processInstance.getProcessInstanceId(), "");
   }
 
-  @Deployment(resources = {"org/activiti/examples/bpmn/tasklistener/TaskListenerInSubProcessTest.bpmn20.xml"})
+  @Deployment(
+      resources = {
+        "org/activiti/examples/bpmn/tasklistener/TaskListenerInSubProcessTest.bpmn20.xml"
+      })
   public void testTaskCreateListenerInSubProcess() {
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("taskListenerInSubProcess");
+    ProcessInstance processInstance =
+        runtimeService.startProcessInstanceByKey("taskListenerInSubProcess");
     Task task = taskService.createTaskQuery().singleResult();
     assertThat(task.getName()).isEqualTo("Schedule meeting");
     assertThat(task.getDescription()).isEqualTo("TaskCreateListener is listening!");
@@ -68,10 +70,10 @@ public class TaskListenerTest extends PluggableActivitiTestCase {
     runtimeService.deleteProcessInstance(processInstance.getProcessInstanceId(), "");
   }
 
-
-  @Deployment(resources = { "org/activiti/examples/bpmn/tasklistener/TaskListenerTest.bpmn20.xml" })
+  @Deployment(resources = {"org/activiti/examples/bpmn/tasklistener/TaskListenerTest.bpmn20.xml"})
   public void testTaskAssignmentListener() {
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("taskListenerProcess");
+    ProcessInstance processInstance =
+        runtimeService.startProcessInstanceByKey("taskListenerProcess");
     Task task = taskService.createTaskQuery().singleResult();
     assertThat(task.getDescription()).isEqualTo("TaskCreateListener is listening!");
 
@@ -96,12 +98,11 @@ public class TaskListenerTest extends PluggableActivitiTestCase {
     runtimeService.deleteProcessInstance(processInstance.getProcessInstanceId(), "");
   }
 
-  /**
-   * Validate fix for ACT-1627: Not throwing assignment event on every update
-   */
-  @Deployment(resources = { "org/activiti/examples/bpmn/tasklistener/TaskListenerTest.bpmn20.xml" })
+  /** Validate fix for ACT-1627: Not throwing assignment event on every update */
+  @Deployment(resources = {"org/activiti/examples/bpmn/tasklistener/TaskListenerTest.bpmn20.xml"})
   public void testTaskAssignmentListenerNotCalledWhenAssigneeNotUpdated() {
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("taskListenerProcess");
+    ProcessInstance processInstance =
+        runtimeService.startProcessInstanceByKey("taskListenerProcess");
     Task task = taskService.createTaskQuery().singleResult();
     assertThat(task.getDescription()).isEqualTo("TaskCreateListener is listening!");
 
@@ -144,33 +145,38 @@ public class TaskListenerTest extends PluggableActivitiTestCase {
     runtimeService.deleteProcessInstance(processInstance.getProcessInstanceId(), "");
   }
 
-  @Deployment(resources = { "org/activiti/examples/bpmn/tasklistener/TaskListenerTest.bpmn20.xml" })
+  @Deployment(resources = {"org/activiti/examples/bpmn/tasklistener/TaskListenerTest.bpmn20.xml"})
   public void testTaskCompleteListener() {
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("taskListenerProcess");
+    ProcessInstance processInstance =
+        runtimeService.startProcessInstanceByKey("taskListenerProcess");
     assertThat(runtimeService.getVariable(processInstance.getId(), "greeting")).isEqualTo(null);
-    assertThat(runtimeService.getVariable(processInstance.getId(), "expressionValue")).isEqualTo(null);
+    assertThat(runtimeService.getVariable(processInstance.getId(), "expressionValue"))
+        .isEqualTo(null);
 
     // Completing first task will change the description
     Task task = taskService.createTaskQuery().singleResult();
     taskService.complete(task.getId());
 
-    assertThat(runtimeService.getVariable(processInstance.getId(), "greeting")).isEqualTo("Hello from The Process");
+    assertThat(runtimeService.getVariable(processInstance.getId(), "greeting"))
+        .isEqualTo("Hello from The Process");
     assertThat(runtimeService.getVariable(processInstance.getId(), "shortName")).isEqualTo("Act");
   }
 
-  @Deployment(resources = { "org/activiti/examples/bpmn/tasklistener/TaskListenerTest.bpmn20.xml" })
+  @Deployment(resources = {"org/activiti/examples/bpmn/tasklistener/TaskListenerTest.bpmn20.xml"})
   public void testTaskListenerWithExpression() {
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("taskListenerProcess");
+    ProcessInstance processInstance =
+        runtimeService.startProcessInstanceByKey("taskListenerProcess");
     assertThat(runtimeService.getVariable(processInstance.getId(), "greeting2")).isEqualTo(null);
 
     // Completing first task will change the description
     Task task = taskService.createTaskQuery().singleResult();
     taskService.complete(task.getId());
 
-    assertThat(runtimeService.getVariable(processInstance.getId(), "greeting2")).isEqualTo("Write meeting notes");
+    assertThat(runtimeService.getVariable(processInstance.getId(), "greeting2"))
+        .isEqualTo("Write meeting notes");
   }
 
-  @Deployment(resources = { "org/activiti/examples/bpmn/tasklistener/TaskListenerTest.bpmn20.xml" })
+  @Deployment(resources = {"org/activiti/examples/bpmn/tasklistener/TaskListenerTest.bpmn20.xml"})
   public void testAllEventsTaskListener() {
     runtimeService.startProcessInstanceByKey("taskListenerProcess");
     Task task = taskService.createTaskQuery().singleResult();
@@ -180,11 +186,15 @@ public class TaskListenerTest extends PluggableActivitiTestCase {
     taskService.complete(task.getId());
 
     // Verify the all-listener has received all events
-    String eventsReceived = (String) runtimeService.getVariable(task.getProcessInstanceId(), "events");
+    String eventsReceived =
+        (String) runtimeService.getVariable(task.getProcessInstanceId(), "events");
     assertThat(eventsReceived).isEqualTo("create - assignment - complete - delete");
   }
 
-  @Deployment(resources = { "org/activiti/examples/bpmn/tasklistener/TaskListenerTest.testTaskListenersOnDelete.bpmn20.xml" })
+  @Deployment(
+      resources = {
+        "org/activiti/examples/bpmn/tasklistener/TaskListenerTest.testTaskListenersOnDelete.bpmn20.xml"
+      })
   public void testTaskListenersOnDeleteByComplete() {
     TaskDeleteListener.clear();
     runtimeService.startProcessInstanceByKey("executionListenersOnDelete");
@@ -207,16 +217,22 @@ public class TaskListenerTest extends PluggableActivitiTestCase {
     assertThat(tasks).hasSize(0);
 
     assertThat(TaskDeleteListener.getCurrentMessages()).hasSize(1);
-    assertThat(TaskDeleteListener.getCurrentMessages().get(0)).isEqualTo("Delete Task Listener executed.");
+    assertThat(TaskDeleteListener.getCurrentMessages().get(0))
+        .isEqualTo("Delete Task Listener executed.");
 
     assertThat(TaskSimpleCompleteListener.getCurrentMessages()).hasSize(1);
-    assertThat(TaskSimpleCompleteListener.getCurrentMessages().get(0)).isEqualTo("Complete Task Listener executed.");
+    assertThat(TaskSimpleCompleteListener.getCurrentMessages().get(0))
+        .isEqualTo("Complete Task Listener executed.");
   }
 
-  @Deployment(resources = { "org/activiti/examples/bpmn/tasklistener/TaskListenerTest.testTaskListenersOnDelete.bpmn20.xml" })
+  @Deployment(
+      resources = {
+        "org/activiti/examples/bpmn/tasklistener/TaskListenerTest.testTaskListenersOnDelete.bpmn20.xml"
+      })
   public void testTaskListenersOnDeleteByDeleteProcessInstance() {
     TaskDeleteListener.clear();
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("executionListenersOnDelete");
+    ProcessInstance processInstance =
+        runtimeService.startProcessInstanceByKey("executionListenersOnDelete");
 
     List<Task> tasks = taskService.createTaskQuery().list();
     assertThat(tasks).isNotNull();
@@ -236,7 +252,8 @@ public class TaskListenerTest extends PluggableActivitiTestCase {
     assertThat(tasks).hasSize(0);
 
     assertThat(TaskDeleteListener.getCurrentMessages()).hasSize(1);
-    assertThat(TaskDeleteListener.getCurrentMessages().get(0)).isEqualTo("Delete Task Listener executed.");
+    assertThat(TaskDeleteListener.getCurrentMessages().get(0))
+        .isEqualTo("Delete Task Listener executed.");
 
     assertThat(TaskSimpleCompleteListener.getCurrentMessages()).hasSize(0);
   }

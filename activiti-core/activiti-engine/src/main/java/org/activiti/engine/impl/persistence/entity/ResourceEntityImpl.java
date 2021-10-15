@@ -14,16 +14,13 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.persistence.entity;
 
 import java.io.Serializable;
 
-/**
-
-
- */
-public class ResourceEntityImpl extends AbstractEntityNoRevision implements ResourceEntity, Serializable {
+/** */
+public class ResourceEntityImpl extends AbstractEntityNoRevision
+    implements ResourceEntity, Serializable {
 
   private static final long serialVersionUID = 1L;
 
@@ -32,9 +29,7 @@ public class ResourceEntityImpl extends AbstractEntityNoRevision implements Reso
   protected String deploymentId;
   protected boolean generated;
 
-  public ResourceEntityImpl() {
-
-  }
+  public ResourceEntityImpl() {}
 
   public String getName() {
     return name;
@@ -69,7 +64,8 @@ public class ResourceEntityImpl extends AbstractEntityNoRevision implements Reso
   }
 
   /**
-   * Indicated whether or not the resource has been generated while deploying rather than being actual part of the deployment.
+   * Indicated whether or not the resource has been generated while deploying rather than being
+   * actual part of the deployment.
    */
   public boolean isGenerated() {
     return generated;

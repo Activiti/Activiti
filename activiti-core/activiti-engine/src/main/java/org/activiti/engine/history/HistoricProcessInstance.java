@@ -14,24 +14,20 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.history;
 
 import java.util.Date;
 import java.util.Map;
-
 import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.runtime.ProcessInstance;
 
-/**
- * A single execution of a whole process definition that is stored permanently.
- *
- */
+/** A single execution of a whole process definition that is stored permanently. */
 @Internal
 public interface HistoricProcessInstance {
 
   /**
-   * The process instance id (== as the id for the runtime {@link ProcessInstance process instance}).
+   * The process instance id (== as the id for the runtime {@link ProcessInstance process
+   * instance}).
    */
   String getId();
 
@@ -50,9 +46,7 @@ public interface HistoricProcessInstance {
   /** The version of the process definition of the process instance. */
   Integer getProcessDefinitionVersion();
 
-  /**
-   * The deployment id of the process definition of the process instance.
-   */
+  /** The deployment id of the process definition of the process instance. */
   String getDeploymentId();
 
   /** The time the process was started. */
@@ -61,15 +55,15 @@ public interface HistoricProcessInstance {
   /** The time the process was ended. */
   Date getEndTime();
 
-  /**
-   * The difference between {@link #getEndTime()} and {@link #getStartTime()} .
-   */
+  /** The difference between {@link #getEndTime()} and {@link #getStartTime()} . */
   Long getDurationInMillis();
 
   /**
-   * Reference to the activity in which this process instance ended. Note that a process instance can have multiple end events, in this case it might not be deterministic which activity id will be
-   * referenced here. Use a {@link HistoricActivityInstanceQuery} instead to query for end events of the process instance (use the activityTYpe attribute)
-   * */
+   * Reference to the activity in which this process instance ended. Note that a process instance
+   * can have multiple end events, in this case it might not be deterministic which activity id will
+   * be referenced here. Use a {@link HistoricActivityInstanceQuery} instead to query for end events
+   * of the process instance (use the activityTYpe attribute)
+   */
   String getEndActivityId();
 
   /**
@@ -86,23 +80,18 @@ public interface HistoricProcessInstance {
   String getDeleteReason();
 
   /**
-   * The process instance id of a potential super process instance or null if no super process instance exists
+   * The process instance id of a potential super process instance or null if no super process
+   * instance exists
    */
   String getSuperProcessInstanceId();
 
-  /**
-   * The tenant identifier for the process instance.
-   */
+  /** The tenant identifier for the process instance. */
   String getTenantId();
 
-  /**
-   * The name for the process instance.
-   */
+  /** The name for the process instance. */
   String getName();
 
-  /**
-   * The description for the process instance.
-   */
+  /** The description for the process instance. */
   String getDescription();
 
   /** Returns the process variables if requested in the process instance query */

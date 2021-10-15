@@ -17,7 +17,6 @@ package org.activiti.bpmn.converter;
 
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
-
 import org.activiti.bpmn.converter.export.FieldExtensionExport;
 import org.activiti.bpmn.converter.util.BpmnXMLUtil;
 import org.activiti.bpmn.model.BaseElement;
@@ -26,9 +25,7 @@ import org.activiti.bpmn.model.ImplementationType;
 import org.activiti.bpmn.model.SendTask;
 import org.apache.commons.lang3.StringUtils;
 
-/**
-
- */
+/** */
 public class SendTaskXMLConverter extends BaseBpmnXMLConverter {
 
   public Class<? extends BaseElement> getBpmnElementType() {
@@ -48,7 +45,8 @@ public class SendTaskXMLConverter extends BaseBpmnXMLConverter {
 
     if ("##WebService".equals(xtr.getAttributeValue(null, ATTRIBUTE_TASK_IMPLEMENTATION))) {
       sendTask.setImplementationType(ImplementationType.IMPLEMENTATION_TYPE_WEBSERVICE);
-      sendTask.setOperationRef(parseOperationRef(xtr.getAttributeValue(null, ATTRIBUTE_TASK_OPERATION_REF), model));
+      sendTask.setOperationRef(
+          parseOperationRef(xtr.getAttributeValue(null, ATTRIBUTE_TASK_OPERATION_REF), model));
     }
 
     parseChildElements(getXMLElementName(), sendTask, model, xtr);
@@ -57,7 +55,8 @@ public class SendTaskXMLConverter extends BaseBpmnXMLConverter {
   }
 
   @Override
-  protected void writeAdditionalAttributes(BaseElement element, BpmnModel model, XMLStreamWriter xtw) throws Exception {
+  protected void writeAdditionalAttributes(
+      BaseElement element, BpmnModel model, XMLStreamWriter xtw) throws Exception {
 
     SendTask sendTask = (SendTask) element;
 
@@ -67,15 +66,19 @@ public class SendTaskXMLConverter extends BaseBpmnXMLConverter {
   }
 
   @Override
-  protected boolean writeExtensionChildElements(BaseElement element, boolean didWriteExtensionStartElement, XMLStreamWriter xtw) throws Exception {
+  protected boolean writeExtensionChildElements(
+      BaseElement element, boolean didWriteExtensionStartElement, XMLStreamWriter xtw)
+      throws Exception {
     SendTask sendTask = (SendTask) element;
-    didWriteExtensionStartElement = FieldExtensionExport.writeFieldExtensions(sendTask.getFieldExtensions(), didWriteExtensionStartElement, xtw);
+    didWriteExtensionStartElement =
+        FieldExtensionExport.writeFieldExtensions(
+            sendTask.getFieldExtensions(), didWriteExtensionStartElement, xtw);
     return didWriteExtensionStartElement;
   }
 
   @Override
-  protected void writeAdditionalChildElements(BaseElement element, BpmnModel model, XMLStreamWriter xtw) throws Exception {
-  }
+  protected void writeAdditionalChildElements(
+      BaseElement element, BpmnModel model, XMLStreamWriter xtw) throws Exception {}
 
   protected String parseOperationRef(String operationRef, BpmnModel model) {
     String result = null;

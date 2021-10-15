@@ -28,12 +28,12 @@ import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
+/** */
+public class IntermediateThrowEventParseHandler
+    extends AbstractActivityBpmnParseHandler<ThrowEvent> {
 
- */
-public class IntermediateThrowEventParseHandler extends AbstractActivityBpmnParseHandler<ThrowEvent> {
-
-  private static final Logger logger = LoggerFactory.getLogger(IntermediateThrowEventParseHandler.class);
+  private static final Logger logger =
+      LoggerFactory.getLogger(IntermediateThrowEventParseHandler.class);
 
   public Class<? extends BaseElement> getHandledType() {
     return ThrowEvent.class;
@@ -48,32 +48,47 @@ public class IntermediateThrowEventParseHandler extends AbstractActivityBpmnPars
 
     if (eventDefinition instanceof SignalEventDefinition) {
       SignalEventDefinition signalEventDefinition = (SignalEventDefinition) eventDefinition;
-      intermediateEvent.setBehavior(bpmnParse.getActivityBehaviorFactory().createIntermediateThrowSignalEventActivityBehavior(intermediateEvent, signalEventDefinition,
-          bpmnParse.getBpmnModel().getSignal(signalEventDefinition.getSignalRef())));
+      intermediateEvent.setBehavior(
+          bpmnParse
+              .getActivityBehaviorFactory()
+              .createIntermediateThrowSignalEventActivityBehavior(
+                  intermediateEvent,
+                  signalEventDefinition,
+                  bpmnParse.getBpmnModel().getSignal(signalEventDefinition.getSignalRef())));
 
     } else if (eventDefinition instanceof CompensateEventDefinition) {
-      CompensateEventDefinition compensateEventDefinition = (CompensateEventDefinition) eventDefinition;
-      intermediateEvent.setBehavior(bpmnParse.getActivityBehaviorFactory().createIntermediateThrowCompensationEventActivityBehavior(intermediateEvent, compensateEventDefinition));
+      CompensateEventDefinition compensateEventDefinition =
+          (CompensateEventDefinition) eventDefinition;
+      intermediateEvent.setBehavior(
+          bpmnParse
+              .getActivityBehaviorFactory()
+              .createIntermediateThrowCompensationEventActivityBehavior(
+                  intermediateEvent, compensateEventDefinition));
 
     } else if (eventDefinition instanceof MessageEventDefinition) {
 
-        MessageEventDefinition messageEventDefinition = (MessageEventDefinition) eventDefinition;
-        Message message = bpmnParse.getBpmnModel().getMessage(messageEventDefinition.getMessageRef());
+      MessageEventDefinition messageEventDefinition = (MessageEventDefinition) eventDefinition;
+      Message message = bpmnParse.getBpmnModel().getMessage(messageEventDefinition.getMessageRef());
 
-        BpmnModel bpmnModel = bpmnParse.getBpmnModel();
-        if (bpmnModel.containsMessageId(messageEventDefinition.getMessageRef())) {
-          messageEventDefinition.setMessageRef(message.getName());
-          messageEventDefinition.setExtensionElements(message.getExtensionElements());
-        }
+      BpmnModel bpmnModel = bpmnParse.getBpmnModel();
+      if (bpmnModel.containsMessageId(messageEventDefinition.getMessageRef())) {
+        messageEventDefinition.setMessageRef(message.getName());
+        messageEventDefinition.setExtensionElements(message.getExtensionElements());
+      }
 
-        intermediateEvent.setBehavior(bpmnParse.getActivityBehaviorFactory()
-                                               .createThrowMessageEventActivityBehavior(intermediateEvent,
-                                                                                        messageEventDefinition,
-                                                                                        message));
+      intermediateEvent.setBehavior(
+          bpmnParse
+              .getActivityBehaviorFactory()
+              .createThrowMessageEventActivityBehavior(
+                  intermediateEvent, messageEventDefinition, message));
     } else if (eventDefinition == null) {
-      intermediateEvent.setBehavior(bpmnParse.getActivityBehaviorFactory().createIntermediateThrowNoneEventActivityBehavior(intermediateEvent));
+      intermediateEvent.setBehavior(
+          bpmnParse
+              .getActivityBehaviorFactory()
+              .createIntermediateThrowNoneEventActivityBehavior(intermediateEvent));
     } else {
-      logger.warn("Unsupported intermediate throw event type for throw event " + intermediateEvent.getId());
+      logger.warn(
+          "Unsupported intermediate throw event type for throw event " + intermediateEvent.getId());
     }
   }
 
@@ -86,7 +101,8 @@ public class IntermediateThrowEventParseHandler extends AbstractActivityBpmnPars
   // ScopeImpl scopeElement) {
   // if(StringUtils.isNotEmpty(eventDefinition.getActivityRef())) {
   // if(scopeElement.findActivity(eventDefinition.getActivityRef()) == null) {
-  // bpmnParse.getBpmnModel().addProblem("Invalid attribute value for 'activityRef': no activity with id '"
+  // bpmnParse.getBpmnModel().addProblem("Invalid attribute value for 'activityRef': no activity
+  // with id '"
   // + eventDefinition.getActivityRef() +
   // "' in current scope " + scopeElement.getId(), eventDefinition);
   // }

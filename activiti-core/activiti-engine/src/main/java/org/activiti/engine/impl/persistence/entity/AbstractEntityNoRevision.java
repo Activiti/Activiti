@@ -16,12 +16,7 @@
 
 package org.activiti.engine.impl.persistence.entity;
 
-
-/**
- * Abstract superclass for the common properties of all {@link Entity} implementations.
- *
-
- */
+/** Abstract superclass for the common properties of all {@link Entity} implementations. */
 public abstract class AbstractEntityNoRevision implements Entity {
 
   protected String id;
@@ -62,5 +57,4 @@ public abstract class AbstractEntityNoRevision implements Entity {
   public void setDeleted(boolean isDeleted) {
     this.isDeleted = isDeleted;
   }
-
 }

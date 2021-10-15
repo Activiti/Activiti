@@ -46,6 +46,11 @@ public class Problem {
   }
 
   public String toString() {
-    return errorMessage + (resource != null ? " | " + resource : "") + " | line " + line + " | column " + column;
+    return errorMessage
+        + (resource != null ? " | " + resource : "")
+        + " | line "
+        + line
+        + " | column "
+        + column;
   }
 }

@@ -14,32 +14,29 @@
  * limitations under the License.
  */
 
-
-
-
 package org.activiti.engine.impl;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import org.activiti.engine.query.QueryProperty;
 import org.activiti.engine.repository.DeploymentQuery;
 
-/**
- * Contains the possible properties that can be used in a {@link DeploymentQuery}.
- *
-
- */
+/** Contains the possible properties that can be used in a {@link DeploymentQuery}. */
 public class DeploymentQueryProperty implements QueryProperty {
 
   private static final long serialVersionUID = 1L;
 
-  private static final Map<String, DeploymentQueryProperty> properties = new HashMap<String, DeploymentQueryProperty>();
+  private static final Map<String, DeploymentQueryProperty> properties =
+      new HashMap<String, DeploymentQueryProperty>();
 
-  public static final DeploymentQueryProperty DEPLOYMENT_ID = new DeploymentQueryProperty("RES.ID_");
-  public static final DeploymentQueryProperty DEPLOYMENT_NAME = new DeploymentQueryProperty("RES.NAME_");
-  public static final DeploymentQueryProperty DEPLOYMENT_TENANT_ID = new DeploymentQueryProperty("RES.TENANT_ID_");
-  public static final DeploymentQueryProperty DEPLOY_TIME = new DeploymentQueryProperty("RES.DEPLOY_TIME_");
+  public static final DeploymentQueryProperty DEPLOYMENT_ID =
+      new DeploymentQueryProperty("RES.ID_");
+  public static final DeploymentQueryProperty DEPLOYMENT_NAME =
+      new DeploymentQueryProperty("RES.NAME_");
+  public static final DeploymentQueryProperty DEPLOYMENT_TENANT_ID =
+      new DeploymentQueryProperty("RES.TENANT_ID_");
+  public static final DeploymentQueryProperty DEPLOY_TIME =
+      new DeploymentQueryProperty("RES.DEPLOY_TIME_");
 
   private String name;
 
@@ -55,5 +52,4 @@ public class DeploymentQueryProperty implements QueryProperty {
   public static DeploymentQueryProperty findByName(String propertyName) {
     return properties.get(propertyName);
   }
-
 }

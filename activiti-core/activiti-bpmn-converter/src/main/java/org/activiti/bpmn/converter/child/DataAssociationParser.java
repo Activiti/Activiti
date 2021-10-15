@@ -16,7 +16,6 @@
 package org.activiti.bpmn.converter.child;
 
 import javax.xml.stream.XMLStreamReader;
-
 import org.activiti.bpmn.constants.BpmnXMLConstants;
 import org.activiti.bpmn.converter.util.BpmnXMLUtil;
 import org.activiti.bpmn.model.Assignment;
@@ -27,9 +26,11 @@ import org.slf4j.LoggerFactory;
 
 public class DataAssociationParser implements BpmnXMLConstants {
 
-  protected static final Logger LOGGER = LoggerFactory.getLogger(DataAssociationParser.class.getName());
+  protected static final Logger LOGGER =
+      LoggerFactory.getLogger(DataAssociationParser.class.getName());
 
-  public static void parseDataAssociation(DataAssociation dataAssociation, String elementName, XMLStreamReader xtr) {
+  public static void parseDataAssociation(
+      DataAssociation dataAssociation, String elementName, XMLStreamReader xtr) {
     boolean readyWithDataAssociation = false;
     Assignment assignment = null;
     try {
@@ -73,7 +74,8 @@ public class DataAssociationParser implements BpmnXMLConstants {
           }
 
         } else if (xtr.isEndElement() && ELEMENT_ASSIGNMENT.equals(xtr.getLocalName())) {
-          if (StringUtils.isNotEmpty(assignment.getFrom()) && StringUtils.isNotEmpty(assignment.getTo())) {
+          if (StringUtils.isNotEmpty(assignment.getFrom())
+              && StringUtils.isNotEmpty(assignment.getTo())) {
             dataAssociation.getAssignments().add(assignment);
           }
 

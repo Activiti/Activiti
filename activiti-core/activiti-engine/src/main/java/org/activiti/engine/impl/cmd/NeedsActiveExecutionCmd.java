@@ -17,7 +17,6 @@
 package org.activiti.engine.impl.cmd;
 
 import java.io.Serializable;
-
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
@@ -26,9 +25,7 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.runtime.Execution;
 
-/**
-
- */
+/** */
 public abstract class NeedsActiveExecutionCmd<T> implements Command<T>, Serializable {
 
   private static final long serialVersionUID = 1L;
@@ -47,7 +44,8 @@ public abstract class NeedsActiveExecutionCmd<T> implements Command<T>, Serializ
     ExecutionEntity execution = commandContext.getExecutionEntityManager().findById(executionId);
 
     if (execution == null) {
-      throw new ActivitiObjectNotFoundException("execution " + executionId + " doesn't exist", Execution.class);
+      throw new ActivitiObjectNotFoundException(
+          "execution " + executionId + " doesn't exist", Execution.class);
     }
 
     if (execution.isSuspended()) {
@@ -58,15 +56,16 @@ public abstract class NeedsActiveExecutionCmd<T> implements Command<T>, Serializ
   }
 
   /**
-   * Subclasses should implement this method. The provided {@link ExecutionEntity} is guaranteed to be active (ie. not suspended).
+   * Subclasses should implement this method. The provided {@link ExecutionEntity} is guaranteed to
+   * be active (ie. not suspended).
    */
   protected abstract T execute(CommandContext commandContext, ExecutionEntity execution);
 
   /**
-   * Subclasses can override this to provide a more detailed exception message that will be thrown when the execution is suspended.
+   * Subclasses can override this to provide a more detailed exception message that will be thrown
+   * when the execution is suspended.
    */
   protected String getSuspendedExceptionMessage() {
     return "Cannot execution operation because execution '" + executionId + "' is suspended";
   }
-
 }

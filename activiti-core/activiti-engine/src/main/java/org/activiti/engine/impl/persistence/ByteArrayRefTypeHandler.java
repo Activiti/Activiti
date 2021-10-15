@@ -19,21 +19,18 @@ import java.sql.CallableStatement;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
 import org.activiti.engine.impl.persistence.entity.ByteArrayRef;
 import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.TypeHandler;
 import org.apache.ibatis.type.TypeReference;
 
-/**
- * MyBatis TypeHandler for {@link ByteArrayRef}.
- *
-
- */
-public class ByteArrayRefTypeHandler extends TypeReference<ByteArrayRef> implements TypeHandler<ByteArrayRef> {
+/** MyBatis TypeHandler for {@link ByteArrayRef}. */
+public class ByteArrayRefTypeHandler extends TypeReference<ByteArrayRef>
+    implements TypeHandler<ByteArrayRef> {
 
   @Override
-  public void setParameter(PreparedStatement ps, int i, ByteArrayRef parameter, JdbcType jdbcType) throws SQLException {
+  public void setParameter(PreparedStatement ps, int i, ByteArrayRef parameter, JdbcType jdbcType)
+      throws SQLException {
     ps.setString(i, getValueToSet(parameter));
   }
 
@@ -62,5 +59,4 @@ public class ByteArrayRefTypeHandler extends TypeReference<ByteArrayRef> impleme
     String id = cs.getString(columnIndex);
     return new ByteArrayRef(id);
   }
-
 }

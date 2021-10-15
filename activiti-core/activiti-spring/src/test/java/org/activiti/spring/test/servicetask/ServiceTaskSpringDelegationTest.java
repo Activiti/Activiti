@@ -25,62 +25,77 @@ import org.activiti.engine.test.Deployment;
 import org.activiti.spring.impl.test.SpringActivitiTestCase;
 import org.springframework.test.context.ContextConfiguration;
 
-/**
-
- */
-@ContextConfiguration("classpath:org/activiti/spring/test/servicetask/servicetaskSpringTest-context.xml")
+/** */
+@ContextConfiguration(
+    "classpath:org/activiti/spring/test/servicetask/servicetaskSpringTest-context.xml")
 public class ServiceTaskSpringDelegationTest extends SpringActivitiTestCase {
 
-    private void cleanUp() {
-        List<org.activiti.engine.repository.Deployment> deployments = repositoryService.createDeploymentQuery().list();
-        for (org.activiti.engine.repository.Deployment deployment : deployments) {
-            repositoryService.deleteDeployment(deployment.getId(), true);
-        }
+  private void cleanUp() {
+    List<org.activiti.engine.repository.Deployment> deployments =
+        repositoryService.createDeploymentQuery().list();
+    for (org.activiti.engine.repository.Deployment deployment : deployments) {
+      repositoryService.deleteDeployment(deployment.getId(), true);
     }
+  }
 
-    @Override
-    public void tearDown() {
-        cleanUp();
-    }
+  @Override
+  public void tearDown() {
+    cleanUp();
+  }
 
-    @Deployment
-    public void testDelegateExpression() {
-        ProcessInstance procInst = runtimeService.startProcessInstanceByKey("delegateExpressionToSpringBean");
-        assertThat(runtimeService.getVariable(procInst.getId(), "myVar")).isEqualTo("Activiti BPMN 2.0 process engine");
-        assertThat(runtimeService.getVariable(procInst.getId(), "fieldInjection")).isEqualTo("fieldInjectionWorking");
-    }
+  @Deployment
+  public void testDelegateExpression() {
+    ProcessInstance procInst =
+        runtimeService.startProcessInstanceByKey("delegateExpressionToSpringBean");
+    assertThat(runtimeService.getVariable(procInst.getId(), "myVar"))
+        .isEqualTo("Activiti BPMN 2.0 process engine");
+    assertThat(runtimeService.getVariable(procInst.getId(), "fieldInjection"))
+        .isEqualTo("fieldInjectionWorking");
+  }
 
-    @Deployment
-    public void testAsyncDelegateExpression() throws Exception {
-        ProcessInstance procInst = runtimeService.startProcessInstanceByKey("delegateExpressionToSpringBean");
-        assertThat(JobTestHelper.areJobsAvailable(managementService)).isTrue();
-        waitForJobExecutorToProcessAllJobs(5000, 500);
-        Thread.sleep(1000);
-        assertThat(runtimeService.getVariable(procInst.getId(), "myVar")).isEqualTo("Activiti BPMN 2.0 process engine");
-        assertThat(runtimeService.getVariable(procInst.getId(), "fieldInjection")).isEqualTo("fieldInjectionWorking");
-    }
+  @Deployment
+  public void testAsyncDelegateExpression() throws Exception {
+    ProcessInstance procInst =
+        runtimeService.startProcessInstanceByKey("delegateExpressionToSpringBean");
+    assertThat(JobTestHelper.areJobsAvailable(managementService)).isTrue();
+    waitForJobExecutorToProcessAllJobs(5000, 500);
+    Thread.sleep(1000);
+    assertThat(runtimeService.getVariable(procInst.getId(), "myVar"))
+        .isEqualTo("Activiti BPMN 2.0 process engine");
+    assertThat(runtimeService.getVariable(procInst.getId(), "fieldInjection"))
+        .isEqualTo("fieldInjectionWorking");
+  }
 
-    @Deployment
-    public void testMethodExpressionOnSpringBean() {
-        ProcessInstance procInst = runtimeService.startProcessInstanceByKey("methodExpressionOnSpringBean");
-        assertThat(runtimeService.getVariable(procInst.getId(), "myVar")).isEqualTo("ACTIVITI BPMN 2.0 PROCESS ENGINE");
-    }
+  @Deployment
+  public void testMethodExpressionOnSpringBean() {
+    ProcessInstance procInst =
+        runtimeService.startProcessInstanceByKey("methodExpressionOnSpringBean");
+    assertThat(runtimeService.getVariable(procInst.getId(), "myVar"))
+        .isEqualTo("ACTIVITI BPMN 2.0 PROCESS ENGINE");
+  }
 
-    @Deployment
-    public void testAsyncMethodExpressionOnSpringBean() {
-        ProcessInstance procInst = runtimeService.startProcessInstanceByKey("methodExpressionOnSpringBean");
-        assertThat(JobTestHelper.areJobsAvailable(managementService)).isTrue();
-        waitForJobExecutorToProcessAllJobs(5000, 500);
-        assertThat(runtimeService.getVariable(procInst.getId(), "myVar")).isEqualTo("ACTIVITI BPMN 2.0 PROCESS ENGINE");
-    }
+  @Deployment
+  public void testAsyncMethodExpressionOnSpringBean() {
+    ProcessInstance procInst =
+        runtimeService.startProcessInstanceByKey("methodExpressionOnSpringBean");
+    assertThat(JobTestHelper.areJobsAvailable(managementService)).isTrue();
+    waitForJobExecutorToProcessAllJobs(5000, 500);
+    assertThat(runtimeService.getVariable(procInst.getId(), "myVar"))
+        .isEqualTo("ACTIVITI BPMN 2.0 PROCESS ENGINE");
+  }
 
-    @Deployment
-    public void testExecutionAndTaskListenerDelegationExpression() {
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("executionAndTaskListenerDelegation");
-        assertThat(runtimeService.getVariable(processInstance.getId(), "executionListenerVar")).isEqualTo("working");
-        assertThat(runtimeService.getVariable(processInstance.getId(), "taskListenerVar")).isEqualTo("working");
+  @Deployment
+  public void testExecutionAndTaskListenerDelegationExpression() {
+    ProcessInstance processInstance =
+        runtimeService.startProcessInstanceByKey("executionAndTaskListenerDelegation");
+    assertThat(runtimeService.getVariable(processInstance.getId(), "executionListenerVar"))
+        .isEqualTo("working");
+    assertThat(runtimeService.getVariable(processInstance.getId(), "taskListenerVar"))
+        .isEqualTo("working");
 
-        assertThat(runtimeService.getVariable(processInstance.getId(), "executionListenerField")).isEqualTo("executionListenerInjection");
-        assertThat(runtimeService.getVariable(processInstance.getId(), "taskListenerField")).isEqualTo("taskListenerInjection");
-    }
+    assertThat(runtimeService.getVariable(processInstance.getId(), "executionListenerField"))
+        .isEqualTo("executionListenerInjection");
+    assertThat(runtimeService.getVariable(processInstance.getId(), "taskListenerField"))
+        .isEqualTo("taskListenerInjection");
+  }
 }

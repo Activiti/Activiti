@@ -16,7 +16,6 @@
 package org.activiti.bpmn.converter.parser;
 
 import javax.xml.stream.XMLStreamReader;
-
 import org.activiti.bpmn.constants.BpmnXMLConstants;
 import org.activiti.bpmn.converter.util.BpmnXMLUtil;
 import org.activiti.bpmn.model.BpmnModel;
@@ -25,9 +24,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
-
- */
+/** */
 public class ParticipantParser implements BpmnXMLConstants {
 
   protected static final Logger LOGGER = LoggerFactory.getLogger(ParticipantParser.class.getName());

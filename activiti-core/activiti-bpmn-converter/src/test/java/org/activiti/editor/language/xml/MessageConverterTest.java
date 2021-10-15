@@ -54,10 +54,9 @@ public class MessageConverterTest extends AbstractConverterTest {
     assertThat(message3.getItemRef()).isEqualTo("Examples:writeReportItem3");
     assertThat(message3.getName()).isEqualTo("newWriteReport3");
     assertThat(message3.getId()).isEqualTo("writeReport3");
-
   }
 
   protected String getResource() {
-        return "message.bpmn";
+    return "message.bpmn";
   }
 }

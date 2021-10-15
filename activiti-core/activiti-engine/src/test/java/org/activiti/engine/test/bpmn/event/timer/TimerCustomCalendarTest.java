@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.test.bpmn.event.timer;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -22,7 +21,6 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.util.Date;
 import java.util.List;
-
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.calendar.BusinessCalendar;
 import org.activiti.engine.impl.test.ResourceActivitiTestCase;
@@ -31,10 +29,7 @@ import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
 
-/**
- * testing custom calendar for timer definitions
- * Created by martin.grofcik
- */
+/** testing custom calendar for timer definitions Created by martin.grofcik */
 public class TimerCustomCalendarTest extends ResourceActivitiTestCase {
 
   public TimerCustomCalendarTest() {
@@ -46,7 +41,9 @@ public class TimerCustomCalendarTest extends ResourceActivitiTestCase {
     List<Job> jobs = this.managementService.createTimerJobQuery().list();
 
     assertThat(jobs).as("One job is scheduled").hasSize(1);
-    assertThat(jobs.get(0).getDuedate()).as("Job must be scheduled by custom business calendar to Date(0)").isEqualTo(new Date(0));
+    assertThat(jobs.get(0).getDuedate())
+        .as("Job must be scheduled by custom business calendar to Date(0)")
+        .isEqualTo(new Date(0));
 
     managementService.moveTimerToExecutableJob(jobs.get(0).getId());
     managementService.executeJob(jobs.get(0).getId());
@@ -54,7 +51,9 @@ public class TimerCustomCalendarTest extends ResourceActivitiTestCase {
     jobs = this.managementService.createTimerJobQuery().list();
 
     assertThat(jobs).as("One job is scheduled (repetition is 2x)").hasSize(1);
-    assertThat(jobs.get(0).getDuedate()).as("Job must be scheduled by custom business calendar to Date(0)").isEqualTo(new Date(0));
+    assertThat(jobs.get(0).getDuedate())
+        .as("Job must be scheduled by custom business calendar to Date(0)")
+        .isEqualTo(new Date(0));
 
     managementService.moveTimerToExecutableJob(jobs.get(0).getId());
     managementService.executeJob(jobs.get(0).getId());
@@ -65,27 +64,36 @@ public class TimerCustomCalendarTest extends ResourceActivitiTestCase {
 
   @Deployment
   public void testCustomDurationTimerCalendar() {
-    ProcessInstance processInstance = this.runtimeService.startProcessInstanceByKey("testCustomDurationCalendar");
+    ProcessInstance processInstance =
+        this.runtimeService.startProcessInstanceByKey("testCustomDurationCalendar");
 
     List<Job> jobs = this.managementService.createTimerJobQuery().list();
 
     assertThat(jobs).as("One job is scheduled").hasSize(1);
-    assertThat(jobs.get(0).getDuedate()).as("Job must be scheduled by custom business calendar to Date(0)").isEqualTo(new Date(0));
+    assertThat(jobs.get(0).getDuedate())
+        .as("Job must be scheduled by custom business calendar to Date(0)")
+        .isEqualTo(new Date(0));
 
     managementService.moveTimerToExecutableJob(jobs.get(0).getId());
     managementService.executeJob(jobs.get(0).getId());
     waitForJobExecutorToProcessAllJobsAndExecutableTimerJobs(10000, 200);
 
-    Execution execution = runtimeService.createExecutionQuery().processInstanceId(processInstance.getId()).activityId("receive").singleResult();
+    Execution execution =
+        runtimeService
+            .createExecutionQuery()
+            .processInstanceId(processInstance.getId())
+            .activityId("receive")
+            .singleResult();
     runtimeService.trigger(execution.getId());
   }
 
   @Deployment
   public void testInvalidDurationTimerCalendar() {
     assertThatExceptionOfType(ActivitiException.class)
-      .as("Activiti exception expected - calendar not found")
-      .isThrownBy(() -> this.runtimeService.startProcessInstanceByKey("testCustomDurationCalendar"))
-      .withMessageContaining("INVALID does not exist");
+        .as("Activiti exception expected - calendar not found")
+        .isThrownBy(
+            () -> this.runtimeService.startProcessInstanceByKey("testCustomDurationCalendar"))
+        .withMessageContaining("INVALID does not exist");
   }
 
   @Deployment
@@ -94,7 +102,9 @@ public class TimerCustomCalendarTest extends ResourceActivitiTestCase {
 
     List<Job> jobs = this.managementService.createTimerJobQuery().list();
     assertThat(jobs).as("One job is scheduled").hasSize(1);
-    assertThat(jobs.get(0).getDuedate()).as("Job must be scheduled by custom business calendar to Date(0)").isEqualTo(new Date(0));
+    assertThat(jobs.get(0).getDuedate())
+        .as("Job must be scheduled by custom business calendar to Date(0)")
+        .isEqualTo(new Date(0));
 
     managementService.moveTimerToExecutableJob(jobs.get(0).getId());
     managementService.executeJob(jobs.get(0).getId());
@@ -114,7 +124,8 @@ public class TimerCustomCalendarTest extends ResourceActivitiTestCase {
     }
 
     @Override
-    public Boolean validateDuedate(String duedateDescription, int maxIterations, Date endDate, Date newTimer) {
+    public Boolean validateDuedate(
+        String duedateDescription, int maxIterations, Date endDate, Date newTimer) {
       return true;
     }
 
@@ -122,7 +133,5 @@ public class TimerCustomCalendarTest extends ResourceActivitiTestCase {
     public Date resolveEndDate(String endDateString) {
       return new Date(0);
     }
-
   }
-
 }

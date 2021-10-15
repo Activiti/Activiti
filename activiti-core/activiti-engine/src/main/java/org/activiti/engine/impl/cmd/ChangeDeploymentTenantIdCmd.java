@@ -18,7 +18,6 @@ package org.activiti.engine.impl.cmd;
 
 import java.io.Serializable;
 import java.util.List;
-
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.impl.ProcessDefinitionQueryImpl;
@@ -28,9 +27,7 @@ import org.activiti.engine.impl.persistence.entity.DeploymentEntity;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
 
-/**
-
- */
+/** */
 public class ChangeDeploymentTenantIdCmd implements Command<Void>, Serializable {
 
   private static final long serialVersionUID = 1L;
@@ -50,9 +47,11 @@ public class ChangeDeploymentTenantIdCmd implements Command<Void>, Serializable 
 
     // Update all entities
 
-    DeploymentEntity deployment = commandContext.getDeploymentEntityManager().findById(deploymentId);
+    DeploymentEntity deployment =
+        commandContext.getDeploymentEntityManager().findById(deploymentId);
     if (deployment == null) {
-      throw new ActivitiObjectNotFoundException("Could not find deployment with id " + deploymentId, Deployment.class);
+      throw new ActivitiObjectNotFoundException(
+          "Could not find deployment with id " + deploymentId, Deployment.class);
     }
 
     String oldTenantId = deployment.getTenantId();
@@ -60,26 +59,42 @@ public class ChangeDeploymentTenantIdCmd implements Command<Void>, Serializable 
 
     // Doing process instances, executions and tasks with direct SQL updates
     // (otherwise would not be performant)
-    commandContext.getProcessDefinitionEntityManager().updateProcessDefinitionTenantIdForDeployment(deploymentId, newTenantId);
-    commandContext.getExecutionEntityManager().updateExecutionTenantIdForDeployment(deploymentId, newTenantId);
-    commandContext.getTaskEntityManager().updateTaskTenantIdForDeployment(deploymentId, newTenantId);
+    commandContext
+        .getProcessDefinitionEntityManager()
+        .updateProcessDefinitionTenantIdForDeployment(deploymentId, newTenantId);
+    commandContext
+        .getExecutionEntityManager()
+        .updateExecutionTenantIdForDeployment(deploymentId, newTenantId);
+    commandContext
+        .getTaskEntityManager()
+        .updateTaskTenantIdForDeployment(deploymentId, newTenantId);
     commandContext.getJobEntityManager().updateJobTenantIdForDeployment(deploymentId, newTenantId);
-    commandContext.getTimerJobEntityManager().updateJobTenantIdForDeployment(deploymentId, newTenantId);
-    commandContext.getSuspendedJobEntityManager().updateJobTenantIdForDeployment(deploymentId, newTenantId);
-    commandContext.getDeadLetterJobEntityManager().updateJobTenantIdForDeployment(deploymentId, newTenantId);
-    commandContext.getEventSubscriptionEntityManager().updateEventSubscriptionTenantId(oldTenantId, newTenantId);
+    commandContext
+        .getTimerJobEntityManager()
+        .updateJobTenantIdForDeployment(deploymentId, newTenantId);
+    commandContext
+        .getSuspendedJobEntityManager()
+        .updateJobTenantIdForDeployment(deploymentId, newTenantId);
+    commandContext
+        .getDeadLetterJobEntityManager()
+        .updateJobTenantIdForDeployment(deploymentId, newTenantId);
+    commandContext
+        .getEventSubscriptionEntityManager()
+        .updateEventSubscriptionTenantId(oldTenantId, newTenantId);
 
     // Doing process definitions in memory, cause we need to clear the process definition cache
-    List<ProcessDefinition> processDefinitions = new ProcessDefinitionQueryImpl().deploymentId(deploymentId).list();
+    List<ProcessDefinition> processDefinitions =
+        new ProcessDefinitionQueryImpl().deploymentId(deploymentId).list();
     for (ProcessDefinition processDefinition : processDefinitions) {
-      commandContext.getProcessEngineConfiguration().getProcessDefinitionCache().remove(processDefinition.getId());
+      commandContext
+          .getProcessEngineConfiguration()
+          .getProcessDefinitionCache()
+          .remove(processDefinition.getId());
     }
 
     // Clear process definition cache
     commandContext.getProcessEngineConfiguration().getProcessDefinitionCache().clear();
 
     return null;
-
   }
-
 }

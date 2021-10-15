@@ -20,15 +20,14 @@ import org.activiti.engine.impl.asyncexecutor.AsyncExecutor;
 import org.activiti.engine.impl.asyncexecutor.ResetExpiredJobsRunnable;
 import org.activiti.engine.impl.cfg.multitenant.TenantInfoHolder;
 
-/**
-
- */
+/** */
 public class TenantAwareResetExpiredJobsRunnable extends ResetExpiredJobsRunnable {
 
   protected TenantInfoHolder tenantInfoHolder;
   protected String tenantId;
 
-  public TenantAwareResetExpiredJobsRunnable(final AsyncExecutor asyncExecutor, TenantInfoHolder tenantInfoHolder, String tenantId) {
+  public TenantAwareResetExpiredJobsRunnable(
+      final AsyncExecutor asyncExecutor, TenantInfoHolder tenantInfoHolder, String tenantId) {
     super(asyncExecutor);
     this.tenantInfoHolder = tenantInfoHolder;
     this.tenantId = tenantId;
@@ -44,5 +43,4 @@ public class TenantAwareResetExpiredJobsRunnable extends ResetExpiredJobsRunnabl
     super.run();
     tenantInfoHolder.clearCurrentTenantId();
   }
-
 }

@@ -15,30 +15,32 @@
  */
 package org.activiti.runtime.api.event.impl;
 
+import java.util.Optional;
 import org.activiti.api.task.runtime.events.TaskActivatedEvent;
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.runtime.api.model.impl.APITaskConverter;
 
-import java.util.Optional;
+public class ToTaskActivatedConverter
+    implements EventConverter<TaskActivatedEvent, ActivitiEntityEvent> {
 
-public class ToTaskActivatedConverter implements EventConverter<TaskActivatedEvent, ActivitiEntityEvent> {
+  private APITaskConverter taskConverter;
 
-    private APITaskConverter taskConverter;
+  public ToTaskActivatedConverter(APITaskConverter taskConverter) {
+    this.taskConverter = taskConverter;
+  }
 
-    public ToTaskActivatedConverter(APITaskConverter taskConverter) {
-        this.taskConverter = taskConverter;
+  @Override
+  public Optional<TaskActivatedEvent> from(ActivitiEntityEvent internalEvent) {
+    TaskActivatedEvent event = null;
+    if (isTaskEvent(internalEvent)) {
+      event =
+          new TaskActivatedImpl(
+              taskConverter.from((org.activiti.engine.task.Task) internalEvent.getEntity()));
     }
+    return Optional.ofNullable(event);
+  }
 
-    @Override
-    public Optional<TaskActivatedEvent> from(ActivitiEntityEvent internalEvent) {
-        TaskActivatedEvent event = null;
-        if (isTaskEvent(internalEvent)) {
-            event = new TaskActivatedImpl(taskConverter.from((org.activiti.engine.task.Task) internalEvent.getEntity()));
-        }
-        return Optional.ofNullable(event);
-    }
-
-    private boolean isTaskEvent(ActivitiEntityEvent internal) {
-        return internal.getEntity() instanceof org.activiti.engine.task.Task;
-    }
+  private boolean isTaskEvent(ActivitiEntityEvent internal) {
+    return internal.getEntity() instanceof org.activiti.engine.task.Task;
+  }
 }

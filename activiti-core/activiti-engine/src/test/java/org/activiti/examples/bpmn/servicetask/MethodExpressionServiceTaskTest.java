@@ -19,14 +19,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
 
-/**
-
- */
+/** */
 public class MethodExpressionServiceTaskTest extends PluggableActivitiTestCase {
 
   @Deployment
@@ -34,7 +31,8 @@ public class MethodExpressionServiceTaskTest extends PluggableActivitiTestCase {
     Map<String, Object> variables = new HashMap<String, Object>();
     variables.put("okReturningService", new OkReturningService());
 
-    ProcessInstance pi = runtimeService.startProcessInstanceByKey("setServiceResultToProcessVariables", variables);
+    ProcessInstance pi =
+        runtimeService.startProcessInstanceByKey("setServiceResultToProcessVariables", variables);
 
     assertThat(runtimeService.getVariable(pi.getId(), "result")).isEqualTo("ok");
   }
@@ -45,7 +43,9 @@ public class MethodExpressionServiceTaskTest extends PluggableActivitiTestCase {
     variables.put("okReturningService", new OkReturningService());
     variables.put("_ACTIVITI_SKIP_EXPRESSION_ENABLED", false);
 
-    ProcessInstance pi = runtimeService.startProcessInstanceByKey("setServiceResultToProcessVariablesWithSkipExpression", variables);
+    ProcessInstance pi =
+        runtimeService.startProcessInstanceByKey(
+            "setServiceResultToProcessVariablesWithSkipExpression", variables);
 
     assertThat(runtimeService.getVariable(pi.getId(), "result")).isEqualTo("ok");
 
@@ -54,9 +54,10 @@ public class MethodExpressionServiceTaskTest extends PluggableActivitiTestCase {
     variables2.put("_ACTIVITI_SKIP_EXPRESSION_ENABLED", true);
     variables2.put("skip", true);
 
-    ProcessInstance pi2 = runtimeService.startProcessInstanceByKey("setServiceResultToProcessVariablesWithSkipExpression", variables2);
+    ProcessInstance pi2 =
+        runtimeService.startProcessInstanceByKey(
+            "setServiceResultToProcessVariablesWithSkipExpression", variables2);
 
     assertThat(runtimeService.getVariable(pi2.getId(), "result")).isEqualTo(null);
-
   }
 }

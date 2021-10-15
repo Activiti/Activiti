@@ -25,12 +25,12 @@ import javax.el.VariableMapper;
 /**
  * Simple implementation of the {@link ELContext} used during parsings.
  *
- * Currently this implementation does nothing, but a non-null implementation of the {@link ELContext} interface is required by the {@link ExpressionFactory} when create value- and methodexpressions.
+ * <p>Currently this implementation does nothing, but a non-null implementation of the {@link
+ * ELContext} interface is required by the {@link ExpressionFactory} when create value- and
+ * methodexpressions.
  *
  * @see ExpressionManager#createExpression(String)
  * @see ExpressionManager#createMethodExpression(String)
- *
-
  */
 public class ParsingElContext extends ELContext {
 
@@ -45,5 +45,4 @@ public class ParsingElContext extends ELContext {
   public VariableMapper getVariableMapper() {
     return null;
   }
-
 }

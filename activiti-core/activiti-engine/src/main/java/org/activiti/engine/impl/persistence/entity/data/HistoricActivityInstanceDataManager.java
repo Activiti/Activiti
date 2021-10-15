@@ -18,29 +18,32 @@ package org.activiti.engine.impl.persistence.entity.data;
 
 import java.util.List;
 import java.util.Map;
-
 import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.impl.HistoricActivityInstanceQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.persistence.entity.HistoricActivityInstanceEntity;
 
-/**
+/** */
+public interface HistoricActivityInstanceDataManager
+    extends DataManager<HistoricActivityInstanceEntity> {
 
- */
-public interface HistoricActivityInstanceDataManager extends DataManager<HistoricActivityInstanceEntity> {
+  List<HistoricActivityInstanceEntity>
+      findUnfinishedHistoricActivityInstancesByExecutionAndActivityId(
+          String executionId, String activityId);
 
-  List<HistoricActivityInstanceEntity> findUnfinishedHistoricActivityInstancesByExecutionAndActivityId(String executionId, String activityId);
-
-  List<HistoricActivityInstanceEntity> findUnfinishedHistoricActivityInstancesByProcessInstanceId(String processInstanceId);
+  List<HistoricActivityInstanceEntity> findUnfinishedHistoricActivityInstancesByProcessInstanceId(
+      String processInstanceId);
 
   void deleteHistoricActivityInstancesByProcessInstanceId(String historicProcessInstanceId);
 
-  long findHistoricActivityInstanceCountByQueryCriteria(HistoricActivityInstanceQueryImpl historicActivityInstanceQuery);
+  long findHistoricActivityInstanceCountByQueryCriteria(
+      HistoricActivityInstanceQueryImpl historicActivityInstanceQuery);
 
-  List<HistoricActivityInstance> findHistoricActivityInstancesByQueryCriteria(HistoricActivityInstanceQueryImpl historicActivityInstanceQuery, Page page);
+  List<HistoricActivityInstance> findHistoricActivityInstancesByQueryCriteria(
+      HistoricActivityInstanceQueryImpl historicActivityInstanceQuery, Page page);
 
-  List<HistoricActivityInstance> findHistoricActivityInstancesByNativeQuery(Map<String, Object> parameterMap, int firstResult, int maxResults);
+  List<HistoricActivityInstance> findHistoricActivityInstancesByNativeQuery(
+      Map<String, Object> parameterMap, int firstResult, int maxResults);
 
   long findHistoricActivityInstanceCountByNativeQuery(Map<String, Object> parameterMap);
-
 }

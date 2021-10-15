@@ -19,17 +19,15 @@ package org.activiti.engine.impl.persistence.entity.data.impl;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.persistence.entity.ResourceEntity;
 import org.activiti.engine.impl.persistence.entity.ResourceEntityImpl;
 import org.activiti.engine.impl.persistence.entity.data.AbstractDataManager;
 import org.activiti.engine.impl.persistence.entity.data.ResourceDataManager;
 
-/**
-
- */
-public class MybatisResourceDataManager extends AbstractDataManager<ResourceEntity> implements ResourceDataManager {
+/** */
+public class MybatisResourceDataManager extends AbstractDataManager<ResourceEntity>
+    implements ResourceDataManager {
 
   public MybatisResourceDataManager(ProcessEngineConfigurationImpl processEngineConfiguration) {
     super(processEngineConfiguration);
@@ -47,15 +45,18 @@ public class MybatisResourceDataManager extends AbstractDataManager<ResourceEnti
 
   @Override
   public void deleteResourcesByDeploymentId(String deploymentId) {
-    getDbSqlSession().delete("deleteResourcesByDeploymentId", deploymentId, ResourceEntityImpl.class);
+    getDbSqlSession()
+        .delete("deleteResourcesByDeploymentId", deploymentId, ResourceEntityImpl.class);
   }
 
   @Override
-  public ResourceEntity findResourceByDeploymentIdAndResourceName(String deploymentId, String resourceName) {
+  public ResourceEntity findResourceByDeploymentIdAndResourceName(
+      String deploymentId, String resourceName) {
     Map<String, Object> params = new HashMap<String, Object>();
     params.put("deploymentId", deploymentId);
     params.put("resourceName", resourceName);
-    return (ResourceEntity) getDbSqlSession().selectOne("selectResourceByDeploymentIdAndResourceName", params);
+    return (ResourceEntity)
+        getDbSqlSession().selectOne("selectResourceByDeploymentIdAndResourceName", params);
   }
 
   @Override
@@ -63,5 +64,4 @@ public class MybatisResourceDataManager extends AbstractDataManager<ResourceEnti
   public List<ResourceEntity> findResourcesByDeploymentId(String deploymentId) {
     return getDbSqlSession().selectList("selectResourcesByDeploymentId", deploymentId);
   }
-
 }

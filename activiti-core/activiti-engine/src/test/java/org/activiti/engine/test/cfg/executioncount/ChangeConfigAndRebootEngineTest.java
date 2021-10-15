@@ -19,7 +19,6 @@ package org.activiti.engine.test.cfg.executioncount;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
-
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.cmd.ValidateExecutionRelatedEntityCountCfgCmd;
@@ -35,12 +34,11 @@ import org.activiti.engine.test.Deployment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
-
- */
+/** */
 public class ChangeConfigAndRebootEngineTest extends ResourceActivitiTestCase {
 
-  private static final Logger logger = LoggerFactory.getLogger(ChangeConfigAndRebootEngineTest.class);
+  private static final Logger logger =
+      LoggerFactory.getLogger(ChangeConfigAndRebootEngineTest.class);
 
   protected boolean newExecutionRelationshipCountValue;
 
@@ -54,9 +52,12 @@ public class ChangeConfigAndRebootEngineTest extends ResourceActivitiTestCase {
 
   @Override
   protected void additionalConfiguration(ProcessEngineConfiguration processEngineConfiguration) {
-    logger.info("Applying additional config: setting schema update to true and enabling execution relationship count");
+    logger.info(
+        "Applying additional config: setting schema update to true and enabling execution"
+            + " relationship count");
     processEngineConfiguration.setDatabaseSchemaUpdate("true");
-    ((ProcessEngineConfigurationImpl) processEngineConfiguration).setEnableExecutionRelationshipCounts(newExecutionRelationshipCountValue);
+    ((ProcessEngineConfigurationImpl) processEngineConfiguration)
+        .setEnableExecutionRelationshipCounts(newExecutionRelationshipCountValue);
   }
 
   protected void rebootEngine(boolean newExecutionRelationshipCountValue) {
@@ -113,18 +114,25 @@ public class ChangeConfigAndRebootEngineTest extends ResourceActivitiTestCase {
   }
 
   protected void assertConfigProperty(boolean expectedValue) {
-    PropertyEntity propertyEntity = managementService.executeCommand(new Command<PropertyEntity>() {
-      @Override
-      public PropertyEntity execute(CommandContext commandContext) {
-        return commandContext.getPropertyEntityManager().findById(
-            ValidateExecutionRelatedEntityCountCfgCmd.PROPERTY_EXECUTION_RELATED_ENTITY_COUNT);
-      }
-    });
+    PropertyEntity propertyEntity =
+        managementService.executeCommand(
+            new Command<PropertyEntity>() {
+              @Override
+              public PropertyEntity execute(CommandContext commandContext) {
+                return commandContext
+                    .getPropertyEntityManager()
+                    .findById(
+                        ValidateExecutionRelatedEntityCountCfgCmd
+                            .PROPERTY_EXECUTION_RELATED_ENTITY_COUNT);
+              }
+            });
     assertThat(Boolean.parseBoolean(propertyEntity.getValue())).isEqualTo(expectedValue);
   }
 
-  protected void assertExecutions(ProcessInstance processInstance, boolean expectedCountIsEnabledFlag) {
-    List<Execution> executions = runtimeService.createExecutionQuery().processInstanceId(processInstance.getId()).list();
+  protected void assertExecutions(
+      ProcessInstance processInstance, boolean expectedCountIsEnabledFlag) {
+    List<Execution> executions =
+        runtimeService.createExecutionQuery().processInstanceId(processInstance.getId()).list();
     assertThat(executions).hasSize(2);
     for (Execution execution : executions) {
       CountingExecutionEntity countingExecutionEntity = (CountingExecutionEntity) execution;
@@ -137,11 +145,11 @@ public class ChangeConfigAndRebootEngineTest extends ResourceActivitiTestCase {
   }
 
   protected void finishProcessInstance(ProcessInstance processInstance) {
-    Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+    Task task =
+        taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     taskService.complete(task.getId());
     task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     taskService.complete(task.getId());
     assertProcessEnded(processInstance.getId());
   }
-
 }

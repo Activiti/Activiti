@@ -13,23 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/**
- *
- */
+/** */
 package org.activiti.standalone.cfg;
 
 import java.util.List;
-
 import org.activiti.engine.ManagementService;
 import org.activiti.engine.impl.AbstractQuery;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.TaskQueryProperty;
 import org.activiti.engine.impl.interceptor.CommandContext;
 
-/**
-
- *
- */
+/** */
 public class CustomTaskQuery extends AbstractQuery<CustomTaskQuery, CustomTask> {
 
   private static final long serialVersionUID = 1L;
@@ -71,6 +65,7 @@ public class CustomTaskQuery extends AbstractQuery<CustomTaskQuery, CustomTask> 
   }
 
   public long executeCount(CommandContext commandContext) {
-    return (Long) commandContext.getDbSqlSession().selectOne("selectCustomTaskCountByQueryCriteria", this);
+    return (Long)
+        commandContext.getDbSqlSession().selectOne("selectCustomTaskCountByQueryCriteria", this);
   }
 }

@@ -17,17 +17,17 @@
 package org.activiti.engine.delegate.event.impl;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.ActivitiExceptionEvent;
-import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 
 /**
- * Base class for all {@link ActivitiEvent} implementations, represents an exception occurred, related to an entity.
- *
-
+ * Base class for all {@link ActivitiEvent} implementations, represents an exception occurred,
+ * related to an entity.
  */
-public class ActivitiEntityExceptionEventImpl extends ActivitiEventImpl implements ActivitiEntityEvent, ActivitiExceptionEvent {
+public class ActivitiEntityExceptionEventImpl extends ActivitiEventImpl
+    implements ActivitiEntityEvent, ActivitiExceptionEvent {
 
   protected Object entity;
   protected Throwable cause;

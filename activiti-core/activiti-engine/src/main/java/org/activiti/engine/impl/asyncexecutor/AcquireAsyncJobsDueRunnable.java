@@ -17,7 +17,6 @@
 package org.activiti.engine.impl.asyncexecutor;
 
 import java.util.concurrent.atomic.AtomicBoolean;
-
 import org.activiti.engine.ActivitiOptimisticLockingException;
 import org.activiti.engine.impl.cmd.AcquireJobsCmd;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
@@ -25,10 +24,7 @@ import org.activiti.engine.impl.persistence.entity.JobEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- *
-
- */
+/** */
 public class AcquireAsyncJobsDueRunnable implements Runnable {
 
   private static Logger log = LoggerFactory.getLogger(AcquireAsyncJobsDueRunnable.class);
@@ -49,12 +45,14 @@ public class AcquireAsyncJobsDueRunnable implements Runnable {
     log.info("{} starting to acquire async jobs due");
     Thread.currentThread().setName("activiti-acquire-async-jobs");
 
-    final CommandExecutor commandExecutor = asyncExecutor.getProcessEngineConfiguration().getCommandExecutor();
+    final CommandExecutor commandExecutor =
+        asyncExecutor.getProcessEngineConfiguration().getCommandExecutor();
 
     while (!isInterrupted) {
 
       try {
-        AcquiredJobEntities acquiredJobs = commandExecutor.execute(new AcquireJobsCmd(asyncExecutor));
+        AcquiredJobEntities acquiredJobs =
+            commandExecutor.execute(new AcquireJobsCmd(asyncExecutor));
 
         boolean allJobsSuccessfullyOffered = true;
         for (JobEntity job : acquiredJobs.getJobs()) {
@@ -73,17 +71,22 @@ public class AcquireAsyncJobsDueRunnable implements Runnable {
           millisToWait = 0;
         }
 
-        // If the queue was full, we wait too (even if we got enough jobs back), as not overload the queue
+        // If the queue was full, we wait too (even if we got enough jobs back), as not overload the
+        // queue
         if (millisToWait == 0 && !allJobsSuccessfullyOffered) {
           millisToWait = asyncExecutor.getDefaultQueueSizeFullWaitTimeInMillis();
         }
 
       } catch (ActivitiOptimisticLockingException optimisticLockingException) {
         if (log.isDebugEnabled()) {
-          log.debug("Optimistic locking exception during async job acquisition. If you have multiple async executors running against the same database, "
-              + "this exception means that this thread tried to acquire a due async job, which already was acquired by another async executor acquisition thread."
-              + "This is expected behavior in a clustered environment. "
-              + "You can ignore this message if you indeed have multiple async executor acquisition threads running against the same database. " + "Exception message: {}",
+          log.debug(
+              "Optimistic locking exception during async job acquisition. If you have multiple"
+                  + " async executors running against the same database, this exception means that"
+                  + " this thread tried to acquire a due async job, which already was acquired by"
+                  + " another async executor acquisition thread.This is expected behavior in a"
+                  + " clustered environment. You can ignore this message if you indeed have"
+                  + " multiple async executor acquisition threads running against the same"
+                  + " database. Exception message: {}",
               optimisticLockingException.getMessage());
         }
       } catch (Throwable e) {

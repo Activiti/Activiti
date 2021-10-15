@@ -14,16 +14,11 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.repository;
 
 import java.io.Serializable;
 
-/**
- * Stores the position of a waypoint of a diagram edge.
- *
-
- */
+/** Stores the position of a waypoint of a diagram edge. */
 public class DiagramEdgeWaypoint implements Serializable {
 
   private static final long serialVersionUID = 1L;
@@ -46,5 +41,4 @@ public class DiagramEdgeWaypoint implements Serializable {
   public void setY(Double y) {
     this.y = y;
   }
-
 }

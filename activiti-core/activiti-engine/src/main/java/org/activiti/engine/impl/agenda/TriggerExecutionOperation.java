@@ -27,10 +27,9 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 /**
  * Operation that triggers a wait state and continues the process, leaving that activity.
  *
- * The {@link ExecutionEntity} for this operations should be in a wait state (receive task for example)
- * and have a {@link FlowElement} that has a behaviour that implements the {@link TriggerableActivityBehavior}.
- *
-
+ * <p>The {@link ExecutionEntity} for this operations should be in a wait state (receive task for
+ * example) and have a {@link FlowElement} that has a behaviour that implements the {@link
+ * TriggerableActivityBehavior}.
  */
 public class TriggerExecutionOperation extends AbstractOperation {
 
@@ -43,7 +42,8 @@ public class TriggerExecutionOperation extends AbstractOperation {
     FlowElement currentFlowElement = getCurrentFlowElement(execution);
     if (currentFlowElement instanceof FlowNode) {
 
-      ActivityBehavior activityBehavior = (ActivityBehavior) ((FlowNode) currentFlowElement).getBehavior();
+      ActivityBehavior activityBehavior =
+          (ActivityBehavior) ((FlowNode) currentFlowElement).getBehavior();
       if (activityBehavior instanceof TriggerableActivityBehavior) {
 
         if (currentFlowElement instanceof BoundaryEvent) {
@@ -57,12 +57,18 @@ public class TriggerExecutionOperation extends AbstractOperation {
         }
 
       } else {
-        throw new ActivitiException("Invalid behavior: " + activityBehavior + " should implement " + TriggerableActivityBehavior.class.getName());
+        throw new ActivitiException(
+            "Invalid behavior: "
+                + activityBehavior
+                + " should implement "
+                + TriggerableActivityBehavior.class.getName());
       }
 
     } else {
-      throw new ActivitiException("Programmatic error: no current flow element found or invalid type: " + currentFlowElement + ". Halting.");
+      throw new ActivitiException(
+          "Programmatic error: no current flow element found or invalid type: "
+              + currentFlowElement
+              + ". Halting.");
     }
   }
-
 }

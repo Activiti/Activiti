@@ -16,9 +16,7 @@
 package org.activiti.bpmn.converter.export;
 
 import java.util.List;
-
 import javax.xml.stream.XMLStreamWriter;
-
 import org.activiti.bpmn.constants.BpmnXMLConstants;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.FlowElement;
@@ -48,7 +46,10 @@ public class BPMNDIExport implements BpmnXMLConstants {
 
     for (String elementId : model.getLocationMap().keySet()) {
 
-      if (model.getFlowElement(elementId) != null || model.getArtifact(elementId) != null || model.getPool(elementId) != null || model.getLane(elementId) != null) {
+      if (model.getFlowElement(elementId) != null
+          || model.getArtifact(elementId) != null
+          || model.getPool(elementId) != null
+          || model.getLane(elementId) != null) {
 
         xtw.writeStartElement(BPMNDI_PREFIX, ELEMENT_DI_SHAPE, BPMNDI_NAMESPACE);
         xtw.writeAttribute(ATTRIBUTE_DI_BPMNELEMENT, elementId);
@@ -73,7 +74,9 @@ public class BPMNDIExport implements BpmnXMLConstants {
 
     for (String elementId : model.getFlowLocationMap().keySet()) {
 
-      if (model.getFlowElement(elementId) != null || model.getArtifact(elementId) != null || model.getMessageFlow(elementId) != null) {
+      if (model.getFlowElement(elementId) != null
+          || model.getArtifact(elementId) != null
+          || model.getMessageFlow(elementId) != null) {
 
         xtw.writeStartElement(BPMNDI_PREFIX, ELEMENT_DI_EDGE, BPMNDI_NAMESPACE);
         xtw.writeAttribute(ATTRIBUTE_DI_BPMNELEMENT, elementId);

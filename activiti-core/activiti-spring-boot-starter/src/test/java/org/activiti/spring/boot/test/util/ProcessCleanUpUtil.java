@@ -27,24 +27,21 @@ import org.springframework.stereotype.Component;
 @Component
 public class ProcessCleanUpUtil {
 
-    @Autowired
-    private ProcessAdminRuntime processAdminRuntime;
+  @Autowired private ProcessAdminRuntime processAdminRuntime;
 
-    @Autowired
-    private SecurityUtil securityUtil;
+  @Autowired private SecurityUtil securityUtil;
 
-    public void cleanUpWithAdmin() {
-        securityUtil.logInAs("admin");
-        Page<ProcessInstance> processes = processAdminRuntime.processInstances(Pageable.of(0,
-                50));
-        for (ProcessInstance processInstance : processes.getContent()) {
-            if (processInstance.getParentId() == null) {
-                processAdminRuntime.delete(ProcessPayloadBuilder
-                                                   .delete()
-                                                   .withProcessInstance(processInstance)
-                                                   .withReason("test clean up")
-                                                   .build());
-            }
-        }
+  public void cleanUpWithAdmin() {
+    securityUtil.logInAs("admin");
+    Page<ProcessInstance> processes = processAdminRuntime.processInstances(Pageable.of(0, 50));
+    for (ProcessInstance processInstance : processes.getContent()) {
+      if (processInstance.getParentId() == null) {
+        processAdminRuntime.delete(
+            ProcessPayloadBuilder.delete()
+                .withProcessInstance(processInstance)
+                .withReason("test clean up")
+                .build());
+      }
     }
+  }
 }

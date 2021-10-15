@@ -31,10 +31,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
-
-
- */
+/** */
 public class EndEventParseHandler extends AbstractActivityBpmnParseHandler<EndEvent> {
 
   private static final Logger logger = LoggerFactory.getLogger(EndEventParseHandler.class);
@@ -54,9 +51,9 @@ public class EndEventParseHandler extends AbstractActivityBpmnParseHandler<EndEv
         ErrorEventDefinition errorDefinition = (ErrorEventDefinition) eventDefinition;
         if (bpmnParse.getBpmnModel().containsErrorRef(errorDefinition.getErrorRef())) {
 
-          for(Error error : bpmnParse.getBpmnModel().getErrors().values()) {
+          for (Error error : bpmnParse.getBpmnModel().getErrors().values()) {
             String errorCode = null;
-            if(error.getId().equals(errorDefinition.getErrorRef())){
+            if (error.getId().equals(errorDefinition.getErrorRef())) {
               errorCode = error.getErrorCode();
             }
             if (StringUtils.isEmpty(errorCode)) {
@@ -64,16 +61,23 @@ public class EndEventParseHandler extends AbstractActivityBpmnParseHandler<EndEv
             }
           }
         }
-        endEvent.setBehavior(bpmnParse.getActivityBehaviorFactory().createErrorEndEventActivityBehavior(endEvent, errorDefinition));
+        endEvent.setBehavior(
+            bpmnParse
+                .getActivityBehaviorFactory()
+                .createErrorEndEventActivityBehavior(endEvent, errorDefinition));
       } else if (eventDefinition instanceof TerminateEventDefinition) {
-        endEvent.setBehavior(bpmnParse.getActivityBehaviorFactory().createTerminateEndEventActivityBehavior(endEvent));
+        endEvent.setBehavior(
+            bpmnParse
+                .getActivityBehaviorFactory()
+                .createTerminateEndEventActivityBehavior(endEvent));
       } else if (eventDefinition instanceof CancelEventDefinition) {
-        endEvent.setBehavior(bpmnParse.getActivityBehaviorFactory().createCancelEndEventActivityBehavior(endEvent));
+        endEvent.setBehavior(
+            bpmnParse.getActivityBehaviorFactory().createCancelEndEventActivityBehavior(endEvent));
       } else if (eventDefinition instanceof MessageEventDefinition) {
-        MessageEventDefinition messageEventDefinition = MessageEventDefinition.class
-                                                                              .cast(eventDefinition);
-        Message message = bpmnParse.getBpmnModel()
-                                   .getMessage(messageEventDefinition.getMessageRef());
+        MessageEventDefinition messageEventDefinition =
+            MessageEventDefinition.class.cast(eventDefinition);
+        Message message =
+            bpmnParse.getBpmnModel().getMessage(messageEventDefinition.getMessageRef());
 
         BpmnModel bpmnModel = bpmnParse.getBpmnModel();
         if (bpmnModel.containsMessageId(messageEventDefinition.getMessageRef())) {
@@ -81,17 +85,19 @@ public class EndEventParseHandler extends AbstractActivityBpmnParseHandler<EndEv
           messageEventDefinition.setExtensionElements(message.getExtensionElements());
         }
 
-        endEvent.setBehavior(bpmnParse.getActivityBehaviorFactory()
-                                      .createThrowMessageEndEventActivityBehavior(endEvent,
-                                                                                  messageEventDefinition,
-                                                                                  message));
+        endEvent.setBehavior(
+            bpmnParse
+                .getActivityBehaviorFactory()
+                .createThrowMessageEndEventActivityBehavior(
+                    endEvent, messageEventDefinition, message));
       } else {
-        endEvent.setBehavior(bpmnParse.getActivityBehaviorFactory().createNoneEndEventActivityBehavior(endEvent));
+        endEvent.setBehavior(
+            bpmnParse.getActivityBehaviorFactory().createNoneEndEventActivityBehavior(endEvent));
       }
 
     } else {
-      endEvent.setBehavior(bpmnParse.getActivityBehaviorFactory().createNoneEndEventActivityBehavior(endEvent));
+      endEvent.setBehavior(
+          bpmnParse.getActivityBehaviorFactory().createNoneEndEventActivityBehavior(endEvent));
     }
   }
-
 }

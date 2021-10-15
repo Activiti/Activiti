@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.test.concurrency;
 
 import static java.util.Collections.singletonMap;
@@ -24,7 +23,6 @@ import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
@@ -34,11 +32,7 @@ import org.apache.ibatis.exceptions.PersistenceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * Test that uses a number of threads to start processes and complete tasks concurrently.
- *
-
- */
+/** Test that uses a number of threads to start processes and complete tasks concurrently. */
 public class ConcurrentEngineUsageTest extends PluggableActivitiTestCase {
 
   private static Logger log = LoggerFactory.getLogger(ConcurrentEngineUsageTest.class);
@@ -47,15 +41,23 @@ public class ConcurrentEngineUsageTest extends PluggableActivitiTestCase {
   @Deployment
   public void testConcurrentUsage() throws Exception {
 
-    if (!processEngineConfiguration.getDatabaseType().equals("h2") && !processEngineConfiguration.getDatabaseType().equals("db2")) {
+    if (!processEngineConfiguration.getDatabaseType().equals("h2")
+        && !processEngineConfiguration.getDatabaseType().equals("db2")) {
       int numberOfThreads = 5;
       int numberOfProcessesPerThread = 5;
       int totalNumberOfTasks = 2 * numberOfThreads * numberOfProcessesPerThread;
 
-      ThreadPoolExecutor executor = new ThreadPoolExecutor(10, 10, 1000, TimeUnit.MILLISECONDS, new ArrayBlockingQueue<Runnable>(numberOfThreads));
+      ThreadPoolExecutor executor =
+          new ThreadPoolExecutor(
+              10,
+              10,
+              1000,
+              TimeUnit.MILLISECONDS,
+              new ArrayBlockingQueue<Runnable>(numberOfThreads));
 
       for (int i = 0; i < numberOfThreads; i++) {
-        executor.execute(new ConcurrentProcessRunnerRunnable(numberOfProcessesPerThread, "kermit" + i));
+        executor.execute(
+            new ConcurrentProcessRunnerRunnable(numberOfProcessesPerThread, "kermit" + i));
       }
 
       // Wait for termination or timeout and check if all tasks are
@@ -65,7 +67,6 @@ public class ConcurrentEngineUsageTest extends PluggableActivitiTestCase {
       if (!isEnded) {
         log.error("Executor was not shut down after timeout, not al tasks have been executed");
         executor.shutdownNow();
-
       }
       assertThat(executor.getActiveCount()).isEqualTo(0);
 
@@ -74,8 +75,10 @@ public class ConcurrentEngineUsageTest extends PluggableActivitiTestCase {
 
       if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
         // Check if all processes and tasks are complete
-        assertThat(historyService.createHistoricProcessInstanceQuery().finished().count()).isEqualTo(numberOfProcessesPerThread * numberOfThreads);
-        assertThat(historyService.createHistoricTaskInstanceQuery().finished().count()).isEqualTo(totalNumberOfTasks);
+        assertThat(historyService.createHistoricProcessInstanceQuery().finished().count())
+            .isEqualTo(numberOfProcessesPerThread * numberOfThreads);
+        assertThat(historyService.createHistoricTaskInstanceQuery().finished().count())
+            .isEqualTo(totalNumberOfTasks);
       }
     }
   }
@@ -86,7 +89,8 @@ public class ConcurrentEngineUsageTest extends PluggableActivitiTestCase {
     boolean success = false;
     while (retries > 0 && !success) {
       try {
-        runtimeService.startProcessInstanceByKey("concurrentProcess", singletonMap("assignee", (Object) runningUser));
+        runtimeService.startProcessInstanceByKey(
+            "concurrentProcess", singletonMap("assignee", (Object) runningUser));
         success = true;
       } catch (PersistenceException pe) {
         retries = retries - 1;
@@ -157,7 +161,8 @@ public class ConcurrentEngineUsageTest extends PluggableActivitiTestCase {
           numberOfProcesses = numberOfProcesses - 1;
         } else {
           // Finish a task
-          List<Task> taskToComplete = taskService.createTaskQuery().taskAssignee(drivingUser).listPage(0, 1);
+          List<Task> taskToComplete =
+              taskService.createTaskQuery().taskAssignee(drivingUser).listPage(0, 1);
           tasksAvailable = !taskToComplete.isEmpty();
           if (tasksAvailable) {
             retryFinishTask(taskToComplete.get(0).getId());

@@ -23,8 +23,8 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class MealsConnectorConfiguration {
 
-    @Bean
-    public Connector mealsConnector() {
-        return new MealsConnector();
-    }
+  @Bean
+  public Connector mealsConnector() {
+    return new MealsConnector();
+  }
 }

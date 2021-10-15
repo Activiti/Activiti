@@ -14,16 +14,12 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.persistence.entity;
 
+import java.util.Date;
 import org.activiti.engine.api.internal.Internal;
 
-import java.util.Date;
-
-/**
-
- */
+/** */
 @Internal
 public interface HistoricScopeInstanceEntity extends Entity {
 
@@ -52,5 +48,4 @@ public interface HistoricScopeInstanceEntity extends Entity {
   String getDeleteReason();
 
   void setDeleteReason(String deleteReason);
-
 }

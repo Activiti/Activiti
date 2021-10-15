@@ -14,11 +14,9 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.persistence.entity;
 
 import java.util.List;
-
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.delegate.event.ActivitiEventType;
@@ -29,17 +27,17 @@ import org.activiti.engine.impl.persistence.entity.data.DataManager;
 import org.activiti.engine.task.Comment;
 import org.activiti.engine.task.Event;
 
-/**
-
-
- */
+/** */
 @Internal
 @Deprecated
-public class CommentEntityManagerImpl extends AbstractEntityManager<CommentEntity> implements CommentEntityManager {
+public class CommentEntityManagerImpl extends AbstractEntityManager<CommentEntity>
+    implements CommentEntityManager {
 
   protected CommentDataManager commentDataManager;
 
-  public CommentEntityManagerImpl(ProcessEngineConfigurationImpl processEngineConfiguration, CommentDataManager commentDataManager) {
+  public CommentEntityManagerImpl(
+      ProcessEngineConfigurationImpl processEngineConfiguration,
+      CommentDataManager commentDataManager) {
     super(processEngineConfiguration);
     this.commentDataManager = commentDataManager;
   }
@@ -62,15 +60,28 @@ public class CommentEntityManagerImpl extends AbstractEntityManager<CommentEntit
       String processDefinitionId = null;
       String processInstanceId = comment.getProcessInstanceId();
       if (comment.getProcessInstanceId() != null) {
-        ExecutionEntity process = getExecutionEntityManager().findById(comment.getProcessInstanceId());
+        ExecutionEntity process =
+            getExecutionEntityManager().findById(comment.getProcessInstanceId());
         if (process != null) {
           processDefinitionId = process.getProcessDefinitionId();
         }
       }
-      getEventDispatcher().dispatchEvent(
-          ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, commentEntity, processInstanceId, processInstanceId, processDefinitionId));
-      getEventDispatcher().dispatchEvent(
-          ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_INITIALIZED, commentEntity, processInstanceId, processInstanceId, processDefinitionId));
+      getEventDispatcher()
+          .dispatchEvent(
+              ActivitiEventBuilder.createEntityEvent(
+                  ActivitiEventType.ENTITY_CREATED,
+                  commentEntity,
+                  processInstanceId,
+                  processInstanceId,
+                  processDefinitionId));
+      getEventDispatcher()
+          .dispatchEvent(
+              ActivitiEventBuilder.createEntityEvent(
+                  ActivitiEventType.ENTITY_INITIALIZED,
+                  commentEntity,
+                  processInstanceId,
+                  processInstanceId,
+                  processDefinitionId));
     }
   }
 
@@ -151,13 +162,20 @@ public class CommentEntityManagerImpl extends AbstractEntityManager<CommentEntit
       String processDefinitionId = null;
       String processInstanceId = comment.getProcessInstanceId();
       if (comment.getProcessInstanceId() != null) {
-        ExecutionEntity process = getExecutionEntityManager().findById(comment.getProcessInstanceId());
+        ExecutionEntity process =
+            getExecutionEntityManager().findById(comment.getProcessInstanceId());
         if (process != null) {
           processDefinitionId = process.getProcessDefinitionId();
         }
       }
-      getEventDispatcher().dispatchEvent(
-          ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_DELETED, commentEntity, processInstanceId, processInstanceId, processDefinitionId));
+      getEventDispatcher()
+          .dispatchEvent(
+              ActivitiEventBuilder.createEntityEvent(
+                  ActivitiEventType.ENTITY_DELETED,
+                  commentEntity,
+                  processInstanceId,
+                  processInstanceId,
+                  processDefinitionId));
     }
   }
 
@@ -174,5 +192,4 @@ public class CommentEntityManagerImpl extends AbstractEntityManager<CommentEntit
   public void setCommentDataManager(CommentDataManager commentDataManager) {
     this.commentDataManager = commentDataManager;
   }
-
 }

@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.cfg.jta;
 
 import javax.transaction.RollbackException;
@@ -23,7 +22,6 @@ import javax.transaction.Synchronization;
 import javax.transaction.SystemException;
 import javax.transaction.Transaction;
 import javax.transaction.TransactionManager;
-
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.cfg.TransactionContext;
 import org.activiti.engine.impl.cfg.TransactionListener;
@@ -31,9 +29,7 @@ import org.activiti.engine.impl.cfg.TransactionState;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
 
-/**
-
- */
+/** */
 public class JtaTransactionContext implements TransactionContext {
 
   protected final TransactionManager transactionManager;
@@ -55,7 +51,8 @@ public class JtaTransactionContext implements TransactionContext {
         transaction.setRollbackOnly();
       }
     } catch (IllegalStateException e) {
-      throw new ActivitiException("Unexpected IllegalStateException while marking transaction rollback only");
+      throw new ActivitiException(
+          "Unexpected IllegalStateException while marking transaction rollback only");
     } catch (SystemException e) {
       throw new ActivitiException("SystemException while marking transaction rollback only");
     }
@@ -69,11 +66,14 @@ public class JtaTransactionContext implements TransactionContext {
     }
   }
 
-  public void addTransactionListener(TransactionState transactionState, final TransactionListener transactionListener) {
+  public void addTransactionListener(
+      TransactionState transactionState, final TransactionListener transactionListener) {
     Transaction transaction = getTransaction();
     CommandContext commandContext = Context.getCommandContext();
     try {
-      transaction.registerSynchronization(new TransactionStateSynchronization(transactionState, transactionListener, commandContext));
+      transaction.registerSynchronization(
+          new TransactionStateSynchronization(
+              transactionState, transactionListener, commandContext));
     } catch (IllegalStateException e) {
       throw new ActivitiException("IllegalStateException while registering synchronization ", e);
     } catch (RollbackException e) {
@@ -89,26 +89,30 @@ public class JtaTransactionContext implements TransactionContext {
     protected final TransactionState transactionState;
     private final CommandContext commandContext;
 
-    public TransactionStateSynchronization(TransactionState transactionState, TransactionListener transactionListener, CommandContext commandContext) {
+    public TransactionStateSynchronization(
+        TransactionState transactionState,
+        TransactionListener transactionListener,
+        CommandContext commandContext) {
       this.transactionState = transactionState;
       this.transactionListener = transactionListener;
       this.commandContext = commandContext;
     }
 
     public void beforeCompletion() {
-      if (TransactionState.COMMITTING.equals(transactionState) || TransactionState.ROLLINGBACK.equals(transactionState)) {
+      if (TransactionState.COMMITTING.equals(transactionState)
+          || TransactionState.ROLLINGBACK.equals(transactionState)) {
         transactionListener.execute(commandContext);
       }
     }
 
     public void afterCompletion(int status) {
-      if (Status.STATUS_ROLLEDBACK == status && TransactionState.ROLLED_BACK.equals(transactionState)) {
+      if (Status.STATUS_ROLLEDBACK == status
+          && TransactionState.ROLLED_BACK.equals(transactionState)) {
         transactionListener.execute(commandContext);
-      } else if (Status.STATUS_COMMITTED == status && TransactionState.COMMITTED.equals(transactionState)) {
+      } else if (Status.STATUS_COMMITTED == status
+          && TransactionState.COMMITTED.equals(transactionState)) {
         transactionListener.execute(commandContext);
       }
     }
-
   }
-
 }

@@ -16,11 +16,12 @@
 
 package org.activiti.engine.impl;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
-
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.DynamicBpmnConstants;
 import org.activiti.engine.impl.context.Context;
@@ -32,15 +33,9 @@ import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ExecutionQuery;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-
-/**
-
-
-
- */
-public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery, Execution> implements ExecutionQuery {
+/** */
+public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery, Execution>
+    implements ExecutionQuery {
 
   private static final long serialVersionUID = 1L;
   protected String processDefinitionId;
@@ -90,8 +85,7 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
   protected List<String> deploymentIds;
   protected List<ExecutionQueryImpl> orQueryObjects = new ArrayList<ExecutionQueryImpl>();
 
-  public ExecutionQueryImpl() {
-  }
+  public ExecutionQueryImpl() {}
 
   public ExecutionQueryImpl(CommandContext commandContext) {
     super(commandContext);
@@ -172,7 +166,8 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
     return this;
   }
 
-  public ExecutionQuery processInstanceBusinessKey(String processInstanceBusinessKey, boolean includeChildExecutions) {
+  public ExecutionQuery processInstanceBusinessKey(
+      String processInstanceBusinessKey, boolean includeChildExecutions) {
     if (!includeChildExecutions) {
       return processInstanceBusinessKey(processInstanceBusinessKey);
     } else {
@@ -376,20 +371,23 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
     return commandContext.getExecutionEntityManager().findExecutionCountByQueryCriteria(this);
   }
 
-  @SuppressWarnings({ "unchecked" })
+  @SuppressWarnings({"unchecked"})
   public List<Execution> executeList(CommandContext commandContext, Page page) {
     checkQueryOk();
     ensureVariablesInitialized();
-    List<?> executions = commandContext.getExecutionEntityManager().findExecutionsByQueryCriteria(this, page);
+    List<?> executions =
+        commandContext.getExecutionEntityManager().findExecutionsByQueryCriteria(this, page);
 
     if (Context.getProcessEngineConfiguration().getPerformanceSettings().isEnableLocalization()) {
       for (ExecutionEntity execution : (List<ExecutionEntity>) executions) {
         String activityId = null;
         if (execution.getId().equals(execution.getProcessInstanceId())) {
           if (execution.getProcessDefinitionId() != null) {
-            ProcessDefinition processDefinition = commandContext.getProcessEngineConfiguration()
-                .getDeploymentManager()
-                .findDeployedProcessDefinitionById(execution.getProcessDefinitionId());
+            ProcessDefinition processDefinition =
+                commandContext
+                    .getProcessEngineConfiguration()
+                    .getDeploymentManager()
+                    .findDeployedProcessDefinitionById(execution.getProcessDefinitionId());
             activityId = processDefinition.getKey();
           }
 
@@ -413,14 +411,17 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
 
     String processDefinitionId = executionEntity.getProcessDefinitionId();
     if (locale != null && processDefinitionId != null) {
-      ObjectNode languageNode = Context.getLocalizationElementProperties(locale, activityId, processDefinitionId, withLocalizationFallback);
+      ObjectNode languageNode =
+          Context.getLocalizationElementProperties(
+              locale, activityId, processDefinitionId, withLocalizationFallback);
       if (languageNode != null) {
         JsonNode languageNameNode = languageNode.get(DynamicBpmnConstants.LOCALIZATION_NAME);
         if (languageNameNode != null && !languageNameNode.isNull()) {
           executionEntity.setLocalizedName(languageNameNode.asText());
         }
 
-        JsonNode languageDescriptionNode = languageNode.get(DynamicBpmnConstants.LOCALIZATION_DESCRIPTION);
+        JsonNode languageDescriptionNode =
+            languageNode.get(DynamicBpmnConstants.LOCALIZATION_DESCRIPTION);
         if (languageDescriptionNode != null && !languageDescriptionNode.isNull()) {
           executionEntity.setLocalizedDescription(languageDescriptionNode.asText());
         }

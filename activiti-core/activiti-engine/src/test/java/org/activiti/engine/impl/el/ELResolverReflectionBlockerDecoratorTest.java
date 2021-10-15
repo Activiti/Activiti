@@ -17,6 +17,7 @@ package org.activiti.engine.impl.el;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+
 import java.util.Collections;
 import java.util.Map;
 import org.activiti.engine.ActivitiException;
@@ -26,56 +27,62 @@ import org.junit.Test;
 
 public class ELResolverReflectionBlockerDecoratorTest {
 
+  @Test
+  public void should_resolveExpressionCorrectly_when_noReflectionOrNativeMethodsAreUsed() {
+    // given
+    Map<String, Object> availableVariables = Collections.singletonMap("name", "jon doe");
+    String expressionString = "${name.toString()}";
+    ExpressionManager expressionManager = new ExpressionManager();
 
-    @Test
-    public void should_resolveExpressionCorrectly_when_noReflectionOrNativeMethodsAreUsed() {
-        //given
-        Map<String, Object> availableVariables = Collections.singletonMap("name", "jon doe");
-        String expressionString = "${name.toString()}";
-        ExpressionManager expressionManager = new ExpressionManager();
+    // when
+    Expression expression = expressionManager.createExpression(expressionString);
+    Object value =
+        expression.getValue(
+            expressionManager, new DefaultDelegateInterceptor(), availableVariables);
 
-        //when
-        Expression expression = expressionManager.createExpression(expressionString);
-        Object value = expression.getValue(expressionManager, new DefaultDelegateInterceptor(), availableVariables);
+    // then
+    assertThat(value).isEqualTo("jon doe");
+  }
 
-        //then
-        assertThat(value).isEqualTo("jon doe");
-    }
+  @Test
+  public void should_throwException_when_nativeMethodIsUsed() {
 
-    @Test
-    public void should_throwException_when_nativeMethodIsUsed() {
+    // given
+    Map<String, Object> availableVariables = Collections.singletonMap("name", "jon doe");
+    String expressionString = "${name.getClass().getName()}";
+    ExpressionManager expressionManager = new ExpressionManager();
 
-        //given
-        Map<String, Object> availableVariables = Collections.singletonMap("name", "jon doe");
-        String expressionString = "${name.getClass().getName()}";
-        ExpressionManager expressionManager = new ExpressionManager();
+    // when
+    Expression expression = expressionManager.createExpression(expressionString);
 
-        //when
-        Expression expression = expressionManager.createExpression(expressionString);
+    // then
+    assertThatExceptionOfType(ActivitiException.class)
+        .as("Using Native Method: getClass in an expression")
+        .isThrownBy(
+            () ->
+                expression.getValue(
+                    expressionManager, new DefaultDelegateInterceptor(), availableVariables))
+        .withCauseInstanceOf(IllegalArgumentException.class);
+  }
 
-        //then
-        assertThatExceptionOfType(ActivitiException.class)
-            .as("Using Native Method: getClass in an expression")
-            .isThrownBy(() -> expression.getValue(expressionManager, new DefaultDelegateInterceptor(), availableVariables))
-            .withCauseInstanceOf(IllegalArgumentException.class);
-    }
+  @Test
+  public void should_throwException_when_reflectionIsUsed() {
 
-    @Test
-    public void should_throwException_when_reflectionIsUsed() {
+    // given
+    Map<String, Object> availableVariables = Collections.singletonMap("class", String.class);
+    String expressionString = "${class.forName(\"java.lang.Runtime\").getMethods()[6].invoke()}";
+    ExpressionManager expressionManager = new ExpressionManager();
 
-        //given
-        Map<String, Object> availableVariables = Collections.singletonMap("class", String.class);
-        String expressionString = "${class.forName(\"java.lang.Runtime\").getMethods()[6].invoke()}";
-        ExpressionManager expressionManager = new ExpressionManager();
+    // when
+    Expression expression = expressionManager.createExpression(expressionString);
 
-        //when
-        Expression expression = expressionManager.createExpression(expressionString);
-
-        //then
-        assertThatExceptionOfType(ActivitiException.class)
-            .as("Using Reflection in an expression")
-            .isThrownBy(() -> expression.getValue(expressionManager, new DefaultDelegateInterceptor(), availableVariables))
-            .withCauseInstanceOf(IllegalArgumentException.class);
-    }
-
+    // then
+    assertThatExceptionOfType(ActivitiException.class)
+        .as("Using Reflection in an expression")
+        .isThrownBy(
+            () ->
+                expression.getValue(
+                    expressionManager, new DefaultDelegateInterceptor(), availableVariables))
+        .withCauseInstanceOf(IllegalArgumentException.class);
+  }
 }

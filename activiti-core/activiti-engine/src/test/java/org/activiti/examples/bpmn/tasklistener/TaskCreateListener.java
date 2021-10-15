@@ -19,9 +19,7 @@ package org.activiti.examples.bpmn.tasklistener;
 import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.delegate.TaskListener;
 
-/**
-
- */
+/** */
 public class TaskCreateListener implements TaskListener {
 
   private static final long serialVersionUID = 1L;
@@ -29,5 +27,4 @@ public class TaskCreateListener implements TaskListener {
   public void notify(DelegateTask delegateTask) {
     delegateTask.setDescription("TaskCreateListener is listening!");
   }
-
 }

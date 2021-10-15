@@ -18,10 +18,7 @@ package org.activiti.engine.impl.cmd;
 
 import org.activiti.engine.impl.persistence.entity.SuspensionState;
 
-/**
- *
-
- */
+/** */
 public class SuspendProcessInstanceCmd extends AbstractSetProcessInstanceStateCmd {
 
   public SuspendProcessInstanceCmd(String executionId) {
@@ -32,5 +29,4 @@ public class SuspendProcessInstanceCmd extends AbstractSetProcessInstanceStateCm
   protected SuspensionState getNewState() {
     return SuspensionState.SUSPENDED;
   }
-
 }

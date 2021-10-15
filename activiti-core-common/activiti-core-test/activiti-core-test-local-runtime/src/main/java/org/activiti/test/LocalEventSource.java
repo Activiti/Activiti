@@ -29,55 +29,51 @@ import org.activiti.api.task.model.events.TaskRuntimeEvent;
 
 public class LocalEventSource implements EventSource {
 
-    private List<RuntimeEvent<?, ?>> collectedEvents = new CopyOnWriteArrayList<>();
+  private List<RuntimeEvent<?, ?>> collectedEvents = new CopyOnWriteArrayList<>();
 
-    public void addCollectedEvents(RuntimeEvent<?, ?> event) {
-        this.collectedEvents.add(event);
-    }
+  public void addCollectedEvents(RuntimeEvent<?, ?> event) {
+    this.collectedEvents.add(event);
+  }
 
-    @Override
-    public List<RuntimeEvent<?, ?>> getEvents() {
-        return collectedEvents;
-    }
+  @Override
+  public List<RuntimeEvent<?, ?>> getEvents() {
+    return collectedEvents;
+  }
 
-    public void clearEvents() {
-        collectedEvents.clear();
-    }
+  public void clearEvents() {
+    collectedEvents.clear();
+  }
 
-    public <T extends RuntimeEvent<?,?>> List<T> getEvents(Class<T> eventType) {
-        return collectedEvents
-                .stream()
-                .filter(eventType::isInstance)
-                .map(eventType::cast)
-                .collect(Collectors.toList());
-    }
+  public <T extends RuntimeEvent<?, ?>> List<T> getEvents(Class<T> eventType) {
+    return collectedEvents.stream()
+        .filter(eventType::isInstance)
+        .map(eventType::cast)
+        .collect(Collectors.toList());
+  }
 
-    public List<RuntimeEvent<?, ?>> getEvents(Enum<?>... eventTypes) {
-        return collectedEvents
-                .stream()
-                .filter(event -> asList(eventTypes).contains(event.getEventType()))
-                .collect(Collectors.toList());
+  public List<RuntimeEvent<?, ?>> getEvents(Enum<?>... eventTypes) {
+    return collectedEvents.stream()
+        .filter(event -> asList(eventTypes).contains(event.getEventType()))
+        .collect(Collectors.toList());
+  }
 
-    }
+  public List<RuntimeEvent<?, ?>> getTaskEvents() {
+    return getEvents(TaskRuntimeEvent.TaskEvents.values());
+  }
 
-    public List<RuntimeEvent<?, ?>> getTaskEvents() {
-        return getEvents(TaskRuntimeEvent.TaskEvents.values());
-    }
+  public List<RuntimeEvent<?, ?>> getProcessInstanceEvents() {
+    return getEvents(ProcessRuntimeEvent.ProcessEvents.values());
+  }
 
-    public List<RuntimeEvent<?, ?>> getProcessInstanceEvents() {
-        return getEvents(ProcessRuntimeEvent.ProcessEvents.values());
-    }
+  public List<BPMNTimerFiredEvent> getTimerFiredEvents() {
+    return getEvents(BPMNTimerFiredEvent.class);
+  }
 
-    public List<BPMNTimerFiredEvent> getTimerFiredEvents() {
-        return getEvents(BPMNTimerFiredEvent.class);
-    }
+  public List<BPMNTimerScheduledEvent> getTimerScheduledEvents() {
+    return getEvents(BPMNTimerScheduledEvent.class);
+  }
 
-    public List<BPMNTimerScheduledEvent> getTimerScheduledEvents() {
-        return getEvents(BPMNTimerScheduledEvent.class);
-    }
-
-    public List<BPMNTimerCancelledEvent> getTimerCancelledEvents() {
-        return getEvents(BPMNTimerCancelledEvent.class);
-    }
-
+  public List<BPMNTimerCancelledEvent> getTimerCancelledEvents() {
+    return getEvents(BPMNTimerCancelledEvent.class);
+  }
 }

@@ -16,9 +16,10 @@
 
 package org.activiti.editor.language.json.converter;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.util.List;
 import java.util.Map;
-
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.CancelEventDefinition;
 import org.activiti.bpmn.model.EndEvent;
@@ -28,29 +29,29 @@ import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.TerminateEventDefinition;
 import org.apache.commons.lang3.StringUtils;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-
-/**
-
- */
+/** */
 public class EndEventJsonConverter extends BaseBpmnJsonConverter {
 
-  public static void fillTypes(Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap,
-      Map<Class<? extends BaseElement>, Class<? extends BaseBpmnJsonConverter>> convertersToJsonMap) {
+  public static void fillTypes(
+      Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap,
+      Map<Class<? extends BaseElement>, Class<? extends BaseBpmnJsonConverter>>
+          convertersToJsonMap) {
 
     fillJsonTypes(convertersToBpmnMap);
     fillBpmnTypes(convertersToJsonMap);
   }
 
-  public static void fillJsonTypes(Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap) {
+  public static void fillJsonTypes(
+      Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap) {
     convertersToBpmnMap.put(STENCIL_EVENT_END_NONE, EndEventJsonConverter.class);
     convertersToBpmnMap.put(STENCIL_EVENT_END_ERROR, EndEventJsonConverter.class);
     convertersToBpmnMap.put(STENCIL_EVENT_END_CANCEL, EndEventJsonConverter.class);
     convertersToBpmnMap.put(STENCIL_EVENT_END_TERMINATE, EndEventJsonConverter.class);
   }
 
-  public static void fillBpmnTypes(Map<Class<? extends BaseElement>, Class<? extends BaseBpmnJsonConverter>> convertersToJsonMap) {
+  public static void fillBpmnTypes(
+      Map<Class<? extends BaseElement>, Class<? extends BaseBpmnJsonConverter>>
+          convertersToJsonMap) {
     convertersToJsonMap.put(EndEvent.class, EndEventJsonConverter.class);
   }
 
@@ -78,7 +79,8 @@ public class EndEventJsonConverter extends BaseBpmnJsonConverter {
     addEventProperties(endEvent, propertiesNode);
   }
 
-  protected FlowElement convertJsonToElement(JsonNode elementNode, JsonNode modelNode, Map<String, JsonNode> shapeMap) {
+  protected FlowElement convertJsonToElement(
+      JsonNode elementNode, JsonNode modelNode, Map<String, JsonNode> shapeMap) {
     EndEvent endEvent = new EndEvent();
     String stencilId = BpmnJsonConverterUtil.getStencilId(elementNode);
     if (STENCIL_EVENT_END_ERROR.equals(stencilId)) {
@@ -89,12 +91,14 @@ public class EndEventJsonConverter extends BaseBpmnJsonConverter {
     } else if (STENCIL_EVENT_END_TERMINATE.equals(stencilId)) {
       TerminateEventDefinition eventDefinition = new TerminateEventDefinition();
 
-      String terminateAllStringValue = getPropertyValueAsString(PROPERTY_TERMINATE_ALL, elementNode);
+      String terminateAllStringValue =
+          getPropertyValueAsString(PROPERTY_TERMINATE_ALL, elementNode);
       if (StringUtils.isNotEmpty(terminateAllStringValue)) {
-     		eventDefinition.setTerminateAll("true".equals(terminateAllStringValue));
+        eventDefinition.setTerminateAll("true".equals(terminateAllStringValue));
       }
 
-      String terminateMiStringValue = getPropertyValueAsString(PROPERTY_TERMINATE_MULTI_INSTANCE, elementNode);
+      String terminateMiStringValue =
+          getPropertyValueAsString(PROPERTY_TERMINATE_MULTI_INSTANCE, elementNode);
       if (StringUtils.isNotEmpty(terminateMiStringValue)) {
         eventDefinition.setTerminateMultiInstance("true".equals(terminateMiStringValue));
       }

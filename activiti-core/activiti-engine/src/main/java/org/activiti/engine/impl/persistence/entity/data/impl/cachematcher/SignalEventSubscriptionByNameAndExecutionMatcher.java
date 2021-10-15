@@ -17,15 +17,13 @@
 package org.activiti.engine.impl.persistence.entity.data.impl.cachematcher;
 
 import java.util.Map;
-
 import org.activiti.engine.impl.persistence.CachedEntityMatcherAdapter;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
 import org.activiti.engine.impl.persistence.entity.SignalEventSubscriptionEntity;
 
-/**
-
- */
-public class SignalEventSubscriptionByNameAndExecutionMatcher extends CachedEntityMatcherAdapter<EventSubscriptionEntity> {
+/** */
+public class SignalEventSubscriptionByNameAndExecutionMatcher
+    extends CachedEntityMatcherAdapter<EventSubscriptionEntity> {
 
   @Override
   public boolean isRetained(EventSubscriptionEntity eventSubscriptionEntity, Object parameter) {
@@ -33,9 +31,11 @@ public class SignalEventSubscriptionByNameAndExecutionMatcher extends CachedEnti
     String executionId = params.get("executionId");
     String name = params.get("eventName");
 
-    return eventSubscriptionEntity.getEventType() != null && eventSubscriptionEntity.getEventType().equals(SignalEventSubscriptionEntity.EVENT_TYPE)
-        && eventSubscriptionEntity.getExecutionId() != null && eventSubscriptionEntity.getExecutionId().equals(executionId)
-        && eventSubscriptionEntity.getEventName() != null && eventSubscriptionEntity.getEventName().equals(name);
+    return eventSubscriptionEntity.getEventType() != null
+        && eventSubscriptionEntity.getEventType().equals(SignalEventSubscriptionEntity.EVENT_TYPE)
+        && eventSubscriptionEntity.getExecutionId() != null
+        && eventSubscriptionEntity.getExecutionId().equals(executionId)
+        && eventSubscriptionEntity.getEventName() != null
+        && eventSubscriptionEntity.getEventName().equals(name);
   }
-
 }

@@ -30,36 +30,33 @@ import org.mockito.Mock;
 
 public class ToMessageWaitingConverterTest {
 
-    @InjectMocks
-    private ToMessageWaitingConverter toMessageConverter;
+  @InjectMocks private ToMessageWaitingConverter toMessageConverter;
 
-    @Mock
-    private BPMNMessageConverter bpmnMessageConverter;
+  @Mock private BPMNMessageConverter bpmnMessageConverter;
 
-    @BeforeEach
-    public void setUp() {
-        initMocks(this);
-    }
+  @BeforeEach
+  public void setUp() {
+    initMocks(this);
+  }
 
-    @Test
-    public void fromShouldReturnConvertedEventAndSetProcessInstanceIdAndProcessDefinitionId() {
-        //given
-        ActivitiMessageEvent internalEvent = mock(ActivitiMessageEvent.class);
-        given(internalEvent.getProcessDefinitionId()).willReturn("procDefId");
-        given(internalEvent.getProcessInstanceId()).willReturn("procInstId");
+  @Test
+  public void fromShouldReturnConvertedEventAndSetProcessInstanceIdAndProcessDefinitionId() {
+    // given
+    ActivitiMessageEvent internalEvent = mock(ActivitiMessageEvent.class);
+    given(internalEvent.getProcessDefinitionId()).willReturn("procDefId");
+    given(internalEvent.getProcessInstanceId()).willReturn("procInstId");
 
-        BPMNMessageImpl bpmnMessage = new BPMNMessageImpl("myMessage");
+    BPMNMessageImpl bpmnMessage = new BPMNMessageImpl("myMessage");
 
-        given(bpmnMessageConverter.convertToBPMNMessage(internalEvent)).willReturn(bpmnMessage);
+    given(bpmnMessageConverter.convertToBPMNMessage(internalEvent)).willReturn(bpmnMessage);
 
-        //when
-        BPMNMessageWaitingEvent messageEvent = toMessageConverter.from(internalEvent).orElse(null);
+    // when
+    BPMNMessageWaitingEvent messageEvent = toMessageConverter.from(internalEvent).orElse(null);
 
-        //then
-        assertThat(messageEvent).isNotNull();
-        assertThat(messageEvent.getProcessInstanceId()).isEqualTo("procInstId");
-        assertThat(messageEvent.getProcessDefinitionId()).isEqualTo("procDefId");
-        assertThat(messageEvent.getEntity()).isEqualTo(bpmnMessage);
-    }
-
+    // then
+    assertThat(messageEvent).isNotNull();
+    assertThat(messageEvent.getProcessInstanceId()).isEqualTo("procInstId");
+    assertThat(messageEvent.getProcessDefinitionId()).isEqualTo("procDefId");
+    assertThat(messageEvent.getEntity()).isEqualTo(bpmnMessage);
+  }
 }

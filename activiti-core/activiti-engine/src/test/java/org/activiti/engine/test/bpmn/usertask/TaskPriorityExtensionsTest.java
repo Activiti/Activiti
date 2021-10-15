@@ -14,22 +14,18 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.test.bpmn.usertask;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
-/**
-
- */
+/** */
 public class TaskPriorityExtensionsTest extends PluggableActivitiTestCase {
 
   @Deployment
@@ -44,17 +40,21 @@ public class TaskPriorityExtensionsTest extends PluggableActivitiTestCase {
 
     // Start process-instance, passing priority that should be used as task
     // priority
-    final ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("taskPriorityExtension", variables);
+    final ProcessInstance processInstance =
+        runtimeService.startProcessInstanceByKey("taskPriorityExtension", variables);
 
-    final Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+    final Task task =
+        taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
 
     assertThat(task.getPriority()).isEqualTo(priority);
   }
 
   @Deployment
   public void testPriorityExtensionString() throws Exception {
-    final ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("taskPriorityExtensionString");
-    final Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+    final ProcessInstance processInstance =
+        runtimeService.startProcessInstanceByKey("taskPriorityExtensionString");
+    final Task task =
+        taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     assertThat(task.getPriority()).isEqualTo(42);
   }
 }

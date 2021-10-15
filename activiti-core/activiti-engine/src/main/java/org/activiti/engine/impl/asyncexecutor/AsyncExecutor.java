@@ -21,29 +21,22 @@ import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.persistence.entity.JobEntity;
 import org.activiti.engine.runtime.Job;
 
-/**
- *
- */
+/** */
 @Internal
 public interface AsyncExecutor {
 
-  /**
-   * Starts the Async Executor: jobs will be acquired and executed.
-   */
+  /** Starts the Async Executor: jobs will be acquired and executed. */
   void start();
 
-  /**
-   * Stops executing jobs.
-   */
+  /** Stops executing jobs. */
   void shutdown();
 
   /**
-   * Offers the provided {@link JobEntity} to this {@link AsyncExecutor} instance
-   * to execute. If the offering does not work for some reason, false
-   * will be returned (For example when the job queue is full in the {@link DefaultAsyncJobExecutor}).
+   * Offers the provided {@link JobEntity} to this {@link AsyncExecutor} instance to execute. If the
+   * offering does not work for some reason, false will be returned (For example when the job queue
+   * is full in the {@link DefaultAsyncJobExecutor}).
    */
   boolean executeAsyncJob(Job job);
-
 
   /* Getters and Setters */
 
@@ -98,5 +91,4 @@ public interface AsyncExecutor {
   int getResetExpiredJobsPageSize();
 
   void setResetExpiredJobsPageSize(int resetExpiredJobsPageSize);
-
 }

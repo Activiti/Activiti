@@ -18,8 +18,7 @@ package org.activiti.engine.impl.cfg;
 
 import org.activiti.engine.api.internal.Internal;
 
-/**
- */
+/** */
 @Internal
 public interface TransactionContext {
 
@@ -27,5 +26,6 @@ public interface TransactionContext {
 
   void rollback();
 
-  void addTransactionListener(TransactionState transactionState, TransactionListener transactionListener);
+  void addTransactionListener(
+      TransactionState transactionState, TransactionListener transactionListener);
 }

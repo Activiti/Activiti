@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.persistence;
 
 import org.activiti.engine.delegate.event.ActivitiEventDispatcher;
@@ -50,10 +49,7 @@ import org.activiti.engine.impl.persistence.entity.TimerJobEntityManager;
 import org.activiti.engine.impl.persistence.entity.VariableInstanceEntityManager;
 import org.activiti.engine.runtime.Clock;
 
-/**
-
-
- */
+/** */
 public abstract class AbstractManager {
 
   protected ProcessEngineConfigurationImpl processEngineConfiguration;

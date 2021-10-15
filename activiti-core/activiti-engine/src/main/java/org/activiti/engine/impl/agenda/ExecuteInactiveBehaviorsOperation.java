@@ -15,6 +15,8 @@
  */
 package org.activiti.engine.impl.agenda;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import org.activiti.bpmn.model.FlowNode;
 import org.activiti.bpmn.model.Process;
 import org.activiti.engine.impl.delegate.InactiveActivityBehavior;
@@ -25,20 +27,16 @@ import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.Collection;
-
 /**
  * Operation that usually gets scheduled as last operation of handling a {@link Command}.
  *
- * Executes 'background' behaviours of executions that currently are in an activity that implements
- * the {@link InactiveActivityBehavior} interface.
- *
-
+ * <p>Executes 'background' behaviours of executions that currently are in an activity that
+ * implements the {@link InactiveActivityBehavior} interface.
  */
 public class ExecuteInactiveBehaviorsOperation extends AbstractOperation {
 
-  private static final Logger logger = LoggerFactory.getLogger(ExecuteInactiveBehaviorsOperation.class);
+  private static final Logger logger =
+      LoggerFactory.getLogger(ExecuteInactiveBehaviorsOperation.class);
 
   protected Collection<ExecutionEntity> involvedExecutions;
 
@@ -71,21 +69,28 @@ public class ExecuteInactiveBehaviorsOperation extends AbstractOperation {
       }
 
       if (flowNodeIdsWithInactivatedBehavior.size() > 0) {
-        Collection<ExecutionEntity> inactiveExecutions = commandContext.getExecutionEntityManager().findInactiveExecutionsByProcessInstanceId(executionEntity.getProcessInstanceId());
+        Collection<ExecutionEntity> inactiveExecutions =
+            commandContext
+                .getExecutionEntityManager()
+                .findInactiveExecutionsByProcessInstanceId(executionEntity.getProcessInstanceId());
         for (ExecutionEntity inactiveExecution : inactiveExecutions) {
           if (!inactiveExecution.isActive()
               && flowNodeIdsWithInactivatedBehavior.contains(inactiveExecution.getActivityId())
               && !inactiveExecution.isDeleted()) {
 
-            FlowNode flowNode = (FlowNode) process.getFlowElement(inactiveExecution.getActivityId(), true);
-            InactiveActivityBehavior inactiveActivityBehavior = ((InactiveActivityBehavior) flowNode.getBehavior());
-            logger.debug("Found InactiveActivityBehavior instance of class {} that can be executed on activity '{}'", inactiveActivityBehavior.getClass(), flowNode.getId());
+            FlowNode flowNode =
+                (FlowNode) process.getFlowElement(inactiveExecution.getActivityId(), true);
+            InactiveActivityBehavior inactiveActivityBehavior =
+                ((InactiveActivityBehavior) flowNode.getBehavior());
+            logger.debug(
+                "Found InactiveActivityBehavior instance of class {} that can be executed on"
+                    + " activity '{}'",
+                inactiveActivityBehavior.getClass(),
+                flowNode.getId());
             inactiveActivityBehavior.executeInactive(inactiveExecution);
           }
         }
       }
-
     }
   }
-
 }

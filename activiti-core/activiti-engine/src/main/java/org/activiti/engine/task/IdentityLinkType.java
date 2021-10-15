@@ -19,12 +19,11 @@ package org.activiti.engine.task;
 import org.activiti.engine.TaskService;
 
 /**
- * Contains constants for all types of identity links that can be used to involve a user or group with a certain task.
+ * Contains constants for all types of identity links that can be used to involve a user or group
+ * with a certain task.
  *
  * @see TaskService#addUserIdentityLink(String, String, String)
  * @see TaskService#addGroupIdentityLink(String, String, String)
- *
-
  */
 public class IdentityLinkType {
 
@@ -39,5 +38,4 @@ public class IdentityLinkType {
   public static final String STARTER = "starter";
 
   public static final String PARTICIPANT = "participant";
-
 }

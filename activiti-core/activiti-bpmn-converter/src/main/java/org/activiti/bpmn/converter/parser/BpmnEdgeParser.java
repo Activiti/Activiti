@@ -17,18 +17,14 @@ package org.activiti.bpmn.converter.parser;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.xml.stream.XMLStreamReader;
-
 import org.activiti.bpmn.constants.BpmnXMLConstants;
 import org.activiti.bpmn.converter.util.BpmnXMLUtil;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.GraphicInfo;
 
-/**
-
- */
+/** */
 public class BpmnEdgeParser implements BpmnXMLConstants {
 
   public void parse(XMLStreamReader xtr, BpmnModel model) throws Exception {
@@ -43,10 +39,14 @@ public class BpmnEdgeParser implements BpmnXMLConstants {
           if (xtr.isStartElement() && ELEMENT_DI_BOUNDS.equalsIgnoreCase(xtr.getLocalName())) {
             GraphicInfo graphicInfo = new GraphicInfo();
             BpmnXMLUtil.addXMLLocation(graphicInfo, xtr);
-            graphicInfo.setX(Double.valueOf(xtr.getAttributeValue(null, ATTRIBUTE_DI_X)).intValue());
-            graphicInfo.setY(Double.valueOf(xtr.getAttributeValue(null, ATTRIBUTE_DI_Y)).intValue());
-            graphicInfo.setWidth(Double.valueOf(xtr.getAttributeValue(null, ATTRIBUTE_DI_WIDTH)).intValue());
-            graphicInfo.setHeight(Double.valueOf(xtr.getAttributeValue(null, ATTRIBUTE_DI_HEIGHT)).intValue());
+            graphicInfo.setX(
+                Double.valueOf(xtr.getAttributeValue(null, ATTRIBUTE_DI_X)).intValue());
+            graphicInfo.setY(
+                Double.valueOf(xtr.getAttributeValue(null, ATTRIBUTE_DI_Y)).intValue());
+            graphicInfo.setWidth(
+                Double.valueOf(xtr.getAttributeValue(null, ATTRIBUTE_DI_WIDTH)).intValue());
+            graphicInfo.setHeight(
+                Double.valueOf(xtr.getAttributeValue(null, ATTRIBUTE_DI_HEIGHT)).intValue());
             model.addLabelGraphicInfo(id, graphicInfo);
             break;
           } else if (xtr.isEndElement() && ELEMENT_DI_LABEL.equalsIgnoreCase(xtr.getLocalName())) {

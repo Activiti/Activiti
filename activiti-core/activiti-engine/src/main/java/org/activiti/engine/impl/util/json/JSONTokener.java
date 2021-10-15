@@ -21,33 +21,33 @@ import java.io.Reader;
 import java.io.StringReader;
 
 /*
- Copyright (c) 2002 JSON.org
+Copyright (c) 2002 JSON.org
 
- Permission is hereby granted, free of charge, to any person obtaining a copy
- of this software and associated documentation files (the "Software"), to deal
- in the Software without restriction, including without limitation the rights
- to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- copies of the Software, and to permit persons to whom the Software is
- furnished to do so, subject to the following conditions:
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
- The above copyright notice and this permission notice shall be included in all
- copies or substantial portions of the Software.
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
 
- The Software shall be used for Good, not Evil.
+The Software shall be used for Good, not Evil.
 
- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- SOFTWARE.
- */
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+*/
 
 /**
- * A JSONTokener takes a source string and extracts characters and tokens from it. It is used by the JSONObject and JSONArray constructors to parse JSON source strings.
+ * A JSONTokener takes a source string and extracts characters and tokens from it. It is used by the
+ * JSONObject and JSONArray constructors to parse JSON source strings.
  *
-
  * @version 2010-02-02
  */
 public class JSONTokener {
@@ -63,8 +63,7 @@ public class JSONTokener {
   /**
    * Construct a JSONTokener from a reader.
    *
-   * @param reader
-   *          A reader.
+   * @param reader A reader.
    */
   public JSONTokener(Reader reader) {
     this.reader = reader.markSupported() ? reader : new BufferedReader(reader);
@@ -79,15 +78,15 @@ public class JSONTokener {
   /**
    * Construct a JSONTokener from a string.
    *
-   * @param s
-   *          A source string.
+   * @param s A source string.
    */
   public JSONTokener(String s) {
     this(new StringReader(s));
   }
 
   /**
-   * Back up one character. This provides a sort of lookahead capability, so that you can test for a digit or letter before attempting to parse the next number or identifier.
+   * Back up one character. This provides a sort of lookahead capability, so that you can test for a
+   * digit or letter before attempting to parse the next number or identifier.
    */
   public void back() throws JSONException {
     if (usePrevious || index <= 0) {
@@ -102,8 +101,7 @@ public class JSONTokener {
   /**
    * Get the hex value of a character (base16).
    *
-   * @param c
-   *          A character between '0' and '9' or between 'A' and 'F' or between 'a' and 'f'.
+   * @param c A character between '0' and '9' or between 'A' and 'F' or between 'a' and 'f'.
    * @return An int between 0 and 15, or -1 if c was not a hex digit.
    */
   public static int dehexchar(char c) {
@@ -176,11 +174,9 @@ public class JSONTokener {
   /**
    * Consume the next character, and check that it matches a specified character.
    *
-   * @param c
-   *          The character to match.
+   * @param c The character to match.
    * @return The character.
-   * @throws JSONException
-   *           if the character does not match.
+   * @throws JSONException if the character does not match.
    */
   public char next(char c) throws JSONException {
     char n = next();
@@ -193,11 +189,10 @@ public class JSONTokener {
   /**
    * Get the next n characters.
    *
-   * @param n
-   *          The number of characters to take.
+   * @param n The number of characters to take.
    * @return A string of n characters.
-   * @throws JSONException
-   *           Substring bounds error if there are not n characters remaining in the source string.
+   * @throws JSONException Substring bounds error if there are not n characters remaining in the
+   *     source string.
    */
   public String next(int n) throws JSONException {
     if (n == 0) {
@@ -224,7 +219,7 @@ public class JSONTokener {
    * @return A character, or 0 if there are no more characters.
    */
   public char nextClean() throws JSONException {
-    for (;;) {
+    for (; ; ) {
       char c = next();
       if (c == 0 || c > ' ') {
         return c;
@@ -233,75 +228,75 @@ public class JSONTokener {
   }
 
   /**
-   * Return the characters up to the next close quote character. Backslash processing is done. The formal JSON format does not allow strings in single quotes, but an implementation is allowed to
+   * Return the characters up to the next close quote character. Backslash processing is done. The
+   * formal JSON format does not allow strings in single quotes, but an implementation is allowed to
    * accept them.
    *
-   * @param quote
-   *          The quoting character, either <code>"</code> &nbsp;<small>(double quote)</small> or <code>'</code> &nbsp;<small>(single quote)</small>.
+   * @param quote The quoting character, either <code>"</code> &nbsp;<small>(double quote)</small>
+   *     or <code>'</code> &nbsp;<small>(single quote)</small>.
    * @return A String.
-   * @throws JSONException
-   *           Unterminated string.
+   * @throws JSONException Unterminated string.
    */
   public String nextString(char quote) throws JSONException {
     char c;
     StringBuilder sb = new StringBuilder();
-    for (;;) {
+    for (; ; ) {
       c = next();
       switch (c) {
-      case 0:
-      case '\n':
-      case '\r':
-        throw syntaxError("Unterminated string");
-      case '\\':
-        c = next();
-        switch (c) {
-        case 'b':
-          sb.append('\b');
-          break;
-        case 't':
-          sb.append('\t');
-          break;
-        case 'n':
-          sb.append('\n');
-          break;
-        case 'f':
-          sb.append('\f');
-          break;
-        case 'r':
-          sb.append('\r');
-          break;
-        case 'u':
-          sb.append((char) Integer.parseInt(next(4), 16));
-          break;
-        case '"':
-        case '\'':
+        case 0:
+        case '\n':
+        case '\r':
+          throw syntaxError("Unterminated string");
         case '\\':
-        case '/':
-          sb.append(c);
+          c = next();
+          switch (c) {
+            case 'b':
+              sb.append('\b');
+              break;
+            case 't':
+              sb.append('\t');
+              break;
+            case 'n':
+              sb.append('\n');
+              break;
+            case 'f':
+              sb.append('\f');
+              break;
+            case 'r':
+              sb.append('\r');
+              break;
+            case 'u':
+              sb.append((char) Integer.parseInt(next(4), 16));
+              break;
+            case '"':
+            case '\'':
+            case '\\':
+            case '/':
+              sb.append(c);
+              break;
+            default:
+              throw syntaxError("Illegal escape.");
+          }
           break;
         default:
-          throw syntaxError("Illegal escape.");
-        }
-        break;
-      default:
-        if (c == quote) {
-          return sb.toString();
-        }
-        sb.append(c);
+          if (c == quote) {
+            return sb.toString();
+          }
+          sb.append(c);
       }
     }
   }
 
   /**
-   * Get the text up but not including the specified character or the end of line, whichever comes first.
+   * Get the text up but not including the specified character or the end of line, whichever comes
+   * first.
    *
-   * @param d
-   *          A delimiter character.
+   * @param d A delimiter character.
    * @return A string.
    */
   public String nextTo(char d) throws JSONException {
     StringBuilder sb = new StringBuilder();
-    for (;;) {
+    for (; ; ) {
       char c = next();
       if (c == d || c == 0 || c == '\n' || c == '\r') {
         if (c != 0) {
@@ -314,16 +309,16 @@ public class JSONTokener {
   }
 
   /**
-   * Get the text up but not including one of the specified delimiter characters or the end of line, whichever comes first.
+   * Get the text up but not including one of the specified delimiter characters or the end of line,
+   * whichever comes first.
    *
-   * @param delimiters
-   *          A set of delimiter characters.
+   * @param delimiters A set of delimiter characters.
    * @return A string, trimmed.
    */
   public String nextTo(String delimiters) throws JSONException {
     char c;
     StringBuilder sb = new StringBuilder();
-    for (;;) {
+    for (; ; ) {
       c = next();
       if (delimiters.indexOf(c) >= 0 || c == 0 || c == '\n' || c == '\r') {
         if (c != 0) {
@@ -336,11 +331,10 @@ public class JSONTokener {
   }
 
   /**
-   * Get the next value. The value can be a Boolean, Double, Integer, JSONArray, JSONObject, Long, or String, or the JSONObject.NULL object.
+   * Get the next value. The value can be a Boolean, Double, Integer, JSONArray, JSONObject, Long,
+   * or String, or the JSONObject.NULL object.
    *
-   * @throws JSONException
-   *           If syntax error.
-   *
+   * @throws JSONException If syntax error.
    * @return An object.
    */
   public Object nextValue() throws JSONException {
@@ -348,16 +342,16 @@ public class JSONTokener {
     String s;
 
     switch (c) {
-    case '"':
-    case '\'':
-      return nextString(c);
-    case '{':
-      back();
-      return new JSONObject(this);
-    case '[':
-    case '(':
-      back();
-      return new JSONArray(this);
+      case '"':
+      case '\'':
+        return nextString(c);
+      case '{':
+        back();
+        return new JSONObject(this);
+      case '[':
+      case '(':
+        back();
+        return new JSONArray(this);
     }
 
     /*
@@ -381,10 +375,10 @@ public class JSONTokener {
   }
 
   /**
-   * Skip characters until the next character is the requested character. If the requested character is not found, no characters are skipped.
+   * Skip characters until the next character is the requested character. If the requested character
+   * is not found, no characters are skipped.
    *
-   * @param to
-   *          A character to skip to.
+   * @param to A character to skip to.
    * @return The requested character, or zero if the requested character is not found.
    */
   public char skipTo(char to) throws JSONException {
@@ -415,8 +409,7 @@ public class JSONTokener {
   /**
    * Make a JSONException to signal a syntax error.
    *
-   * @param message
-   *          The error message.
+   * @param message The error message.
    * @return A JSONException object, suitable for throwing
    */
   public JSONException syntaxError(String message) {

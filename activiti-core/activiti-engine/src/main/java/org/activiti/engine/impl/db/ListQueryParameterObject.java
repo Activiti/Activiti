@@ -14,12 +14,9 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.db;
 
-/**
-
- */
+/** */
 public class ListQueryParameterObject {
 
   protected int maxResults = Integer.MAX_VALUE;
@@ -27,8 +24,7 @@ public class ListQueryParameterObject {
   protected Object parameter;
   protected String databaseType;
 
-  public ListQueryParameterObject() {
-  }
+  public ListQueryParameterObject() {}
 
   public ListQueryParameterObject(Object parameter, int firstResult, int maxResults) {
     this.parameter = parameter;
@@ -77,7 +73,7 @@ public class ListQueryParameterObject {
   }
 
   public String getOrderByColumns() {
-      return getOrderBy();
+    return getOrderBy();
   }
 
   public void setDatabaseType(String databaseType) {
@@ -87,5 +83,4 @@ public class ListQueryParameterObject {
   public String getDatabaseType() {
     return databaseType;
   }
-
 }

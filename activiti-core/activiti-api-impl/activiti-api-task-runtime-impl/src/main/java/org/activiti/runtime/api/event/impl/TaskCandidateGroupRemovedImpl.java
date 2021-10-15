@@ -20,18 +20,18 @@ import org.activiti.api.task.model.TaskCandidateGroup;
 import org.activiti.api.task.model.events.TaskCandidateGroupEvent;
 import org.activiti.api.task.runtime.events.TaskCandidateGroupRemovedEvent;
 
-public class TaskCandidateGroupRemovedImpl extends RuntimeEventImpl<TaskCandidateGroup, TaskCandidateGroupEvent.TaskCandidateGroupEvents>
-        implements TaskCandidateGroupRemovedEvent {
+public class TaskCandidateGroupRemovedImpl
+    extends RuntimeEventImpl<TaskCandidateGroup, TaskCandidateGroupEvent.TaskCandidateGroupEvents>
+    implements TaskCandidateGroupRemovedEvent {
 
-    public TaskCandidateGroupRemovedImpl() {
-    }
+  public TaskCandidateGroupRemovedImpl() {}
 
-    public TaskCandidateGroupRemovedImpl(TaskCandidateGroup entity) {
-        super(entity);
-    }
+  public TaskCandidateGroupRemovedImpl(TaskCandidateGroup entity) {
+    super(entity);
+  }
 
-    @Override
-    public TaskCandidateGroupEvent.TaskCandidateGroupEvents getEventType() {
-        return TaskCandidateGroupEvent.TaskCandidateGroupEvents.TASK_CANDIDATE_GROUP_REMOVED;
-    }
+  @Override
+  public TaskCandidateGroupEvent.TaskCandidateGroupEvents getEventType() {
+    return TaskCandidateGroupEvent.TaskCandidateGroupEvents.TASK_CANDIDATE_GROUP_REMOVED;
+  }
 }

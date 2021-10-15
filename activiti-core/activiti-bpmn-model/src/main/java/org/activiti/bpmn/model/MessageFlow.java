@@ -22,9 +22,7 @@ public class MessageFlow extends BaseElement {
   protected String targetRef;
   protected String messageRef;
 
-  public MessageFlow() {
-
-  }
+  public MessageFlow() {}
 
   public MessageFlow(String sourceRef, String targetRef) {
     this.sourceRef = sourceRef;

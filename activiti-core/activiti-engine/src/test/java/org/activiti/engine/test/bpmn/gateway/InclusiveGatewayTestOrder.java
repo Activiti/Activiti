@@ -14,17 +14,11 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.test.bpmn.gateway;
 
 import java.io.Serializable;
 
-/**
- * Inclusive Gateway test order was originally stolen from the ExclusiveGatewayTestOrder.
- *
-
-
- */
+/** Inclusive Gateway test order was originally stolen from the ExclusiveGatewayTestOrder. */
 public class InclusiveGatewayTestOrder implements Serializable {
 
   private static final long serialVersionUID = 1L;
@@ -54,5 +48,4 @@ public class InclusiveGatewayTestOrder implements Serializable {
   public boolean isGold() {
     return price <= 200;
   }
-
 }

@@ -14,32 +14,24 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.repository;
 
 import java.io.Serializable;
 
-/**
- * Represents a diagram node.
- *
-
- */
-abstract public class DiagramElement implements Serializable {
+/** Represents a diagram node. */
+public abstract class DiagramElement implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
   protected String id;
 
-  public DiagramElement() {
-  }
+  public DiagramElement() {}
 
   public DiagramElement(String id) {
     this.id = id;
   }
 
-  /**
-   * Id of the diagram element.
-   */
+  /** Id of the diagram element. */
   public String getId() {
     return id;
   }
@@ -56,5 +48,4 @@ abstract public class DiagramElement implements Serializable {
   public abstract boolean isNode();
 
   public abstract boolean isEdge();
-
 }

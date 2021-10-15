@@ -14,18 +14,13 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.cmd;
 
 import java.util.Map;
-
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 
-/**
-
-
- */
+/** */
 public class SetTaskVariablesCmd extends NeedsActiveTaskCmd<Object> {
 
   private static final long serialVersionUID = 1L;
@@ -33,7 +28,8 @@ public class SetTaskVariablesCmd extends NeedsActiveTaskCmd<Object> {
   protected Map<String, ? extends Object> variables;
   protected boolean isLocal;
 
-  public SetTaskVariablesCmd(String taskId, Map<String, ? extends Object> variables, boolean isLocal) {
+  public SetTaskVariablesCmd(
+      String taskId, Map<String, ? extends Object> variables, boolean isLocal) {
     super(taskId);
     this.taskId = taskId;
     this.variables = variables;
@@ -57,7 +53,8 @@ public class SetTaskVariablesCmd extends NeedsActiveTaskCmd<Object> {
     }
 
     // ACT-1887: Force an update of the task's revision to prevent
-    // simultaneous inserts of the same variable. If not, duplicate variables may occur since optimistic
+    // simultaneous inserts of the same variable. If not, duplicate variables may occur since
+    // optimistic
     // locking doesn't work on inserts
     task.forceUpdate();
     return null;
@@ -67,5 +64,4 @@ public class SetTaskVariablesCmd extends NeedsActiveTaskCmd<Object> {
   protected String getSuspendedTaskException() {
     return "Cannot add variables to a suspended task";
   }
-
 }

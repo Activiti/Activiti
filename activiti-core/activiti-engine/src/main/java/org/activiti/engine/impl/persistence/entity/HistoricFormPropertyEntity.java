@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.persistence.entity;
 
 import org.activiti.engine.api.internal.Internal;
@@ -29,5 +28,4 @@ public interface HistoricFormPropertyEntity extends HistoricDetailEntity {
   String getPropertyValue();
 
   void setPropertyValue(String propertyValue);
-
 }

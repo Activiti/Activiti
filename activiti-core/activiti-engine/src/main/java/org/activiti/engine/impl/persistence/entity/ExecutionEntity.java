@@ -14,12 +14,10 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.persistence.entity;
 
 import java.util.Date;
 import java.util.List;
-
 import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.db.HasRevision;
@@ -27,7 +25,8 @@ import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
 
 @Internal
-public interface ExecutionEntity extends DelegateExecution, Execution, ProcessInstance, Entity, HasRevision {
+public interface ExecutionEntity
+    extends DelegateExecution, Execution, ProcessInstance, Entity, HasRevision {
 
   void setBusinessKey(String businessKey);
 
@@ -130,5 +129,4 @@ public interface ExecutionEntity extends DelegateExecution, Execution, ProcessIn
   Date getStartTime();
 
   void setStartTime(Date startTime);
-
 }

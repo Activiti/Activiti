@@ -21,9 +21,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * An Interface defines a set of operations that are implemented by services external to the process.
- *
-
+ * An Interface defines a set of operations that are implemented by services external to the
+ * process.
  */
 public class BpmnInterface {
 
@@ -34,13 +33,12 @@ public class BpmnInterface {
   protected BpmnInterfaceImplementation implementation;
 
   /**
-   * Mapping of the operations of this interface. The key of the map is the id of the operation, for easy retrieval.
+   * Mapping of the operations of this interface. The key of the map is the id of the operation, for
+   * easy retrieval.
    */
   protected Map<String, Operation> operations = new HashMap<String, Operation>();
 
-  public BpmnInterface() {
-
-  }
+  public BpmnInterface() {}
 
   public BpmnInterface(String id, String name) {
     setId(id);

@@ -16,14 +16,11 @@
 package org.activiti.engine.impl.event.logger.handler;
 
 import java.util.Map;
-
 import org.activiti.engine.delegate.event.ActivitiVariableEvent;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.EventLogEntryEntity;
 
-/**
-
- */
+/** */
 public class VariableCreatedEventHandler extends VariableEventHandler {
 
   @Override
@@ -33,7 +30,11 @@ public class VariableCreatedEventHandler extends VariableEventHandler {
 
     data.put(Fields.CREATE_TIME, timeStamp);
 
-    return createEventLogEntry(variableEvent.getProcessDefinitionId(), variableEvent.getProcessInstanceId(), variableEvent.getExecutionId(), variableEvent.getTaskId(), data);
+    return createEventLogEntry(
+        variableEvent.getProcessDefinitionId(),
+        variableEvent.getProcessInstanceId(),
+        variableEvent.getExecutionId(),
+        variableEvent.getTaskId(),
+        data);
   }
-
 }

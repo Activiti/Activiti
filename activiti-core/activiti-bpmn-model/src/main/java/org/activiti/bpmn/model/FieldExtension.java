@@ -21,9 +21,7 @@ public class FieldExtension extends BaseElement {
   protected String stringValue;
   protected String expression;
 
-  public FieldExtension() {
-
-  }
+  public FieldExtension() {}
 
   public String getFieldName() {
     return fieldName;

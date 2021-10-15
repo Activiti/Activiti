@@ -19,13 +19,12 @@ package org.activiti.engine.impl.persistence.entity;
 import org.activiti.engine.delegate.VariableScope;
 
 /**
- * A dummy implementation of {@link VariableInstance}, used for storing transient variables
- * on a {@link VariableScope}, as the {@link VariableScope} works with instances of {@link VariableInstance}
- * and not with raw key/values.
+ * A dummy implementation of {@link VariableInstance}, used for storing transient variables on a
+ * {@link VariableScope}, as the {@link VariableScope} works with instances of {@link
+ * VariableInstance} and not with raw key/values.
  *
- * Nothing more than a thin wrapper around a name and value. All the other methods are not implemented.
- *
-
+ * <p>Nothing more than a thin wrapper around a name and value. All the other methods are not
+ * implemented.
  */
 public class TransientVariableInstance implements VariableInstance {
 
@@ -50,9 +49,7 @@ public class TransientVariableInstance implements VariableInstance {
   }
 
   @Override
-  public void setTextValue(String textValue) {
-
-  }
+  public void setTextValue(String textValue) {}
 
   @Override
   public String getTextValue2() {
@@ -60,9 +57,7 @@ public class TransientVariableInstance implements VariableInstance {
   }
 
   @Override
-  public void setTextValue2(String textValue2) {
-
-  }
+  public void setTextValue2(String textValue2) {}
 
   @Override
   public Long getLongValue() {
@@ -70,9 +65,7 @@ public class TransientVariableInstance implements VariableInstance {
   }
 
   @Override
-  public void setLongValue(Long longValue) {
-
-  }
+  public void setLongValue(Long longValue) {}
 
   @Override
   public Double getDoubleValue() {
@@ -80,9 +73,7 @@ public class TransientVariableInstance implements VariableInstance {
   }
 
   @Override
-  public void setDoubleValue(Double doubleValue) {
-
-  }
+  public void setDoubleValue(Double doubleValue) {}
 
   @Override
   public byte[] getBytes() {
@@ -90,9 +81,7 @@ public class TransientVariableInstance implements VariableInstance {
   }
 
   @Override
-  public void setBytes(byte[] bytes) {
-
-  }
+  public void setBytes(byte[] bytes) {}
 
   @Override
   public Object getCachedValue() {
@@ -100,9 +89,7 @@ public class TransientVariableInstance implements VariableInstance {
   }
 
   @Override
-  public void setCachedValue(Object cachedValue) {
-
-  }
+  public void setCachedValue(Object cachedValue) {}
 
   @Override
   public String getId() {
@@ -110,9 +97,7 @@ public class TransientVariableInstance implements VariableInstance {
   }
 
   @Override
-  public void setId(String id) {
-
-  }
+  public void setId(String id) {}
 
   @Override
   public boolean isInserted() {
@@ -120,9 +105,7 @@ public class TransientVariableInstance implements VariableInstance {
   }
 
   @Override
-  public void setInserted(boolean inserted) {
-
-  }
+  public void setInserted(boolean inserted) {}
 
   @Override
   public boolean isUpdated() {
@@ -130,9 +113,7 @@ public class TransientVariableInstance implements VariableInstance {
   }
 
   @Override
-  public void setUpdated(boolean updated) {
-
-  }
+  public void setUpdated(boolean updated) {}
 
   @Override
   public boolean isDeleted() {
@@ -140,9 +121,7 @@ public class TransientVariableInstance implements VariableInstance {
   }
 
   @Override
-  public void setDeleted(boolean deleted) {
-
-  }
+  public void setDeleted(boolean deleted) {}
 
   @Override
   public Object getPersistentState() {
@@ -150,9 +129,7 @@ public class TransientVariableInstance implements VariableInstance {
   }
 
   @Override
-  public void setRevision(int revision) {
-
-  }
+  public void setRevision(int revision) {}
 
   @Override
   public int getRevision() {
@@ -165,19 +142,13 @@ public class TransientVariableInstance implements VariableInstance {
   }
 
   @Override
-  public void setName(String name) {
-
-  }
+  public void setName(String name) {}
 
   @Override
-  public void setProcessInstanceId(String processInstanceId) {
-
-  }
+  public void setProcessInstanceId(String processInstanceId) {}
 
   @Override
-  public void setExecutionId(String executionId) {
-
-  }
+  public void setExecutionId(String executionId) {}
 
   @Override
   public Object getValue() {
@@ -195,9 +166,7 @@ public class TransientVariableInstance implements VariableInstance {
   }
 
   @Override
-  public void setTypeName(String typeName) {
-
-  }
+  public void setTypeName(String typeName) {}
 
   @Override
   public String getProcessInstanceId() {
@@ -210,13 +179,10 @@ public class TransientVariableInstance implements VariableInstance {
   }
 
   @Override
-  public void setTaskId(String taskId) {
-
-  }
+  public void setTaskId(String taskId) {}
 
   @Override
   public String getExecutionId() {
     return null;
   }
-
 }

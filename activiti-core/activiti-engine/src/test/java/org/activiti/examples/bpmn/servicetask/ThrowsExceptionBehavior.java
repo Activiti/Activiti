@@ -14,16 +14,13 @@
  * limitations under the License.
  */
 
-
 package org.activiti.examples.bpmn.servicetask;
 
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.DelegateHelper;
 import org.activiti.engine.impl.delegate.ActivityBehavior;
 
-/**
-
- */
+/** */
 public class ThrowsExceptionBehavior implements ActivityBehavior {
 
   public void execute(DelegateExecution execution) {
@@ -46,5 +43,4 @@ public class ThrowsExceptionBehavior implements ActivityBehavior {
       throw new RuntimeException();
     }
   }
-
 }

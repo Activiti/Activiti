@@ -17,7 +17,6 @@
 package org.activiti.engine.impl;
 
 import java.util.Map;
-
 import org.activiti.engine.DynamicBpmnService;
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.ManagementService;
@@ -35,7 +34,6 @@ import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.interceptor.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 
 public class ProcessEngineImpl implements ProcessEngine {
 
@@ -68,8 +66,11 @@ public class ProcessEngineImpl implements ProcessEngine {
     this.sessionFactories = processEngineConfiguration.getSessionFactories();
     this.transactionContextFactory = processEngineConfiguration.getTransactionContextFactory();
 
-    if (processEngineConfiguration.isUsingRelationalDatabase() && processEngineConfiguration.getDatabaseSchemaUpdate() != null) {
-      commandExecutor.execute(processEngineConfiguration.getSchemaCommandConfig(), new SchemaOperationsProcessEngineBuild());
+    if (processEngineConfiguration.isUsingRelationalDatabase()
+        && processEngineConfiguration.getDatabaseSchemaUpdate() != null) {
+      commandExecutor.execute(
+          processEngineConfiguration.getSchemaCommandConfig(),
+          new SchemaOperationsProcessEngineBuild());
     }
 
     if (name == null) {
@@ -88,7 +89,9 @@ public class ProcessEngineImpl implements ProcessEngine {
       processEngineConfiguration.getProcessEngineLifecycleListener().onProcessEngineBuilt(this);
     }
 
-    processEngineConfiguration.getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createGlobalEvent(ActivitiEventType.ENGINE_CREATED));
+    processEngineConfiguration
+        .getEventDispatcher()
+        .dispatchEvent(ActivitiEventBuilder.createGlobalEvent(ActivitiEventType.ENGINE_CREATED));
   }
 
   public void close() {
@@ -97,13 +100,17 @@ public class ProcessEngineImpl implements ProcessEngine {
       asyncExecutor.shutdown();
     }
 
-    commandExecutor.execute(processEngineConfiguration.getSchemaCommandConfig(), new SchemaOperationProcessEngineClose());
+    commandExecutor.execute(
+        processEngineConfiguration.getSchemaCommandConfig(),
+        new SchemaOperationProcessEngineClose());
 
     if (processEngineConfiguration.getProcessEngineLifecycleListener() != null) {
       processEngineConfiguration.getProcessEngineLifecycleListener().onProcessEngineClosed(this);
     }
 
-    processEngineConfiguration.getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createGlobalEvent(ActivitiEventType.ENGINE_CLOSED));
+    processEngineConfiguration
+        .getEventDispatcher()
+        .dispatchEvent(ActivitiEventBuilder.createGlobalEvent(ActivitiEventType.ENGINE_CLOSED));
   }
 
   // getters and setters
@@ -140,5 +147,4 @@ public class ProcessEngineImpl implements ProcessEngine {
   public ProcessEngineConfigurationImpl getProcessEngineConfiguration() {
     return processEngineConfiguration;
   }
-
 }

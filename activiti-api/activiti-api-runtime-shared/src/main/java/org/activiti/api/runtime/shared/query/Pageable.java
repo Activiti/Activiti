@@ -17,39 +17,33 @@ package org.activiti.api.runtime.shared.query;
 
 public class Pageable {
 
-    private int startIndex;
-    private int maxItems;
-    private Order order;
+  private int startIndex;
+  private int maxItems;
+  private Order order;
 
-    private Pageable(int startIndex,
-                    int maxItems,
-                    Order order) {
-        this.startIndex = startIndex;
-        this.maxItems = maxItems;
-        this.order = order;
-    }
+  private Pageable(int startIndex, int maxItems, Order order) {
+    this.startIndex = startIndex;
+    this.maxItems = maxItems;
+    this.order = order;
+  }
 
-    public static Pageable of(int startIndex,
-                              int maxItems){
-        return new Pageable(startIndex, maxItems, null);
-    }
+  public static Pageable of(int startIndex, int maxItems) {
+    return new Pageable(startIndex, maxItems, null);
+  }
 
-    public static Pageable of(int startIndex,
-                              int maxItems,
-                              Order order){
-        return new Pageable(startIndex, maxItems, order);
-    }
+  public static Pageable of(int startIndex, int maxItems, Order order) {
+    return new Pageable(startIndex, maxItems, order);
+  }
 
-    public int getStartIndex() {
-        return startIndex;
-    }
+  public int getStartIndex() {
+    return startIndex;
+  }
 
-    public int getMaxItems() {
-        return maxItems;
-    }
+  public int getMaxItems() {
+    return maxItems;
+  }
 
-    public Order getOrder() {
-        return order;
-    }
-
+  public Order getOrder() {
+    return order;
+  }
 }

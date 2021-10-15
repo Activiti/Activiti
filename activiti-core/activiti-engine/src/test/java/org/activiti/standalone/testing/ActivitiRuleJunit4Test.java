@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.standalone.testing;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -30,16 +29,14 @@ import org.junit.Rule;
 import org.junit.Test;
 
 /**
- * Test runners follow the this rule: - if the class extends Testcase, run as Junit 3 - otherwise use Junit 4
+ * Test runners follow the this rule: - if the class extends Testcase, run as Junit 3 - otherwise
+ * use Junit 4
  *
- * So this test can be included in the regular test suite without problems.
- *
-
+ * <p>So this test can be included in the regular test suite without problems.
  */
 public class ActivitiRuleJunit4Test {
 
-  @Rule
-  public ActivitiRule activitiRule = new ActivitiRule();
+  @Rule public ActivitiRule activitiRule = new ActivitiRule();
 
   @Test
   @Deployment
@@ -57,7 +54,8 @@ public class ActivitiRuleJunit4Test {
 
   // this is to show how JobTestHelper could be used to wait for jobs to be all processed
   @Test
-  @Deployment(resources = { "org/activiti/engine/test/bpmn/async/AsyncTaskTest.testAsyncTask.bpmn20.xml" })
+  @Deployment(
+      resources = {"org/activiti/engine/test/bpmn/async/AsyncTaskTest.testAsyncTask.bpmn20.xml"})
   public void testWaitForJobs() {
     RuntimeService runtimeService = activitiRule.getRuntimeService();
     ManagementService managementService = activitiRule.getManagementService();

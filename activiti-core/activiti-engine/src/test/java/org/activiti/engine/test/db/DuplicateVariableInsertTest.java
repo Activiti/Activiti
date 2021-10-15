@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
-
 import org.activiti.engine.ActivitiOptimisticLockingException;
 import org.activiti.engine.impl.cmd.SetExecutionVariablesCmd;
 import org.activiti.engine.impl.cmd.SetTaskVariablesCmd;
@@ -37,39 +36,49 @@ import org.activiti.engine.task.Task;
 public class DuplicateVariableInsertTest extends PluggableActivitiTestCase {
 
   /**
-   * Test for ACT-1887: Inserting the same new variable at the same time, from 2 different threads, using 2 modified commands that use a barrier for starting and a barrier for completing the command,
-   * so they each insert a new variable guaranteed.
+   * Test for ACT-1887: Inserting the same new variable at the same time, from 2 different threads,
+   * using 2 modified commands that use a barrier for starting and a barrier for completing the
+   * command, so they each insert a new variable guaranteed.
    */
   public void testDuplicateVariableInsertOnExecution() throws Exception {
     String processDefinitionId = deployOneTaskTestProcess();
-    final ProcessInstance processInstance = runtimeService.startProcessInstanceById(processDefinitionId);
+    final ProcessInstance processInstance =
+        runtimeService.startProcessInstanceById(processDefinitionId);
 
     final CyclicBarrier startBarrier = new CyclicBarrier(2);
     final CyclicBarrier endBarrier = new CyclicBarrier(2);
 
     final List<Exception> exceptions = new ArrayList<Exception>();
 
-    Thread firstInsertThread = new Thread(new Runnable() {
-      @Override
-      public void run() {
-        try {
-          managementService.executeCommand(new SetVariableWithBarriersCommand(startBarrier, endBarrier, processInstance.getId()));
-        } catch (Exception e) {
-          exceptions.add(e);
-        }
-      }
-    });
+    Thread firstInsertThread =
+        new Thread(
+            new Runnable() {
+              @Override
+              public void run() {
+                try {
+                  managementService.executeCommand(
+                      new SetVariableWithBarriersCommand(
+                          startBarrier, endBarrier, processInstance.getId()));
+                } catch (Exception e) {
+                  exceptions.add(e);
+                }
+              }
+            });
 
-    Thread secondInsertThread = new Thread(new Runnable() {
-      @Override
-      public void run() {
-        try {
-          managementService.executeCommand(new SetVariableWithBarriersCommand(startBarrier, endBarrier, processInstance.getId()));
-        } catch (Exception e) {
-          exceptions.add(e);
-        }
-      }
-    });
+    Thread secondInsertThread =
+        new Thread(
+            new Runnable() {
+              @Override
+              public void run() {
+                try {
+                  managementService.executeCommand(
+                      new SetVariableWithBarriersCommand(
+                          startBarrier, endBarrier, processInstance.getId()));
+                } catch (Exception e) {
+                  exceptions.add(e);
+                }
+              }
+            });
 
     firstInsertThread.start();
     secondInsertThread.start();
@@ -89,40 +98,51 @@ public class DuplicateVariableInsertTest extends PluggableActivitiTestCase {
   }
 
   /**
-   * Test for ACT-1887: Inserting the same new variable at the same time, from 2 different threads, using 2 modified commands that use a barrier for starting and a barrier for completing the command,
-   * so they each insert a new variable guaranteed.
+   * Test for ACT-1887: Inserting the same new variable at the same time, from 2 different threads,
+   * using 2 modified commands that use a barrier for starting and a barrier for completing the
+   * command, so they each insert a new variable guaranteed.
    */
   public void testDuplicateVariableInsertOnTask() throws Exception {
     String processDefinitionId = deployOneTaskTestProcess();
-    final ProcessInstance processInstance = runtimeService.startProcessInstanceById(processDefinitionId);
-    final Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+    final ProcessInstance processInstance =
+        runtimeService.startProcessInstanceById(processDefinitionId);
+    final Task task =
+        taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
 
     final CyclicBarrier startBarrier = new CyclicBarrier(2);
     final CyclicBarrier endBarrier = new CyclicBarrier(2);
 
     final List<Exception> exceptions = new ArrayList<Exception>();
 
-    Thread firstInsertThread = new Thread(new Runnable() {
-      @Override
-      public void run() {
-        try {
-          managementService.executeCommand(new SetTaskVariableWithBarriersCommand(startBarrier, endBarrier, task.getId()));
-        } catch (Exception e) {
-          exceptions.add(e);
-        }
-      }
-    });
+    Thread firstInsertThread =
+        new Thread(
+            new Runnable() {
+              @Override
+              public void run() {
+                try {
+                  managementService.executeCommand(
+                      new SetTaskVariableWithBarriersCommand(
+                          startBarrier, endBarrier, task.getId()));
+                } catch (Exception e) {
+                  exceptions.add(e);
+                }
+              }
+            });
 
-    Thread secondInsertThread = new Thread(new Runnable() {
-      @Override
-      public void run() {
-        try {
-          managementService.executeCommand(new SetTaskVariableWithBarriersCommand(startBarrier, endBarrier, task.getId()));
-        } catch (Exception e) {
-          exceptions.add(e);
-        }
-      }
-    });
+    Thread secondInsertThread =
+        new Thread(
+            new Runnable() {
+              @Override
+              public void run() {
+                try {
+                  managementService.executeCommand(
+                      new SetTaskVariableWithBarriersCommand(
+                          startBarrier, endBarrier, task.getId()));
+                } catch (Exception e) {
+                  exceptions.add(e);
+                }
+              }
+            });
 
     firstInsertThread.start();
     secondInsertThread.start();
@@ -143,10 +163,8 @@ public class DuplicateVariableInsertTest extends PluggableActivitiTestCase {
   }
 
   /**
-   * Command wrapping a SetExecutionVariablesCmd, waiting in to start and end on the barriers passed in.
-   *
-
-   *
+   * Command wrapping a SetExecutionVariablesCmd, waiting in to start and end on the barriers passed
+   * in.
    */
   private class SetVariableWithBarriersCommand implements Command<Void> {
 
@@ -154,7 +172,8 @@ public class DuplicateVariableInsertTest extends PluggableActivitiTestCase {
     private CyclicBarrier endBarrier;
     private String executionId;
 
-    public SetVariableWithBarriersCommand(CyclicBarrier startBarrier, CyclicBarrier endBarrier, String executionId) {
+    public SetVariableWithBarriersCommand(
+        CyclicBarrier startBarrier, CyclicBarrier endBarrier, String executionId) {
       this.startBarrier = startBarrier;
       this.endBarrier = endBarrier;
       this.executionId = executionId;
@@ -170,7 +189,8 @@ public class DuplicateVariableInsertTest extends PluggableActivitiTestCase {
         throw new RuntimeException(e);
       }
 
-      new SetExecutionVariablesCmd(executionId, singletonMap("var", "12345"), false).execute(commandContext);
+      new SetExecutionVariablesCmd(executionId, singletonMap("var", "12345"), false)
+          .execute(commandContext);
 
       try {
         endBarrier.await();
@@ -185,9 +205,6 @@ public class DuplicateVariableInsertTest extends PluggableActivitiTestCase {
 
   /**
    * Command wrapping a SetTaskVariablesCmd, waiting in to start and end on the barriers passed in.
-   *
-
-   *
    */
   private class SetTaskVariableWithBarriersCommand implements Command<Void> {
 
@@ -195,7 +212,8 @@ public class DuplicateVariableInsertTest extends PluggableActivitiTestCase {
     private CyclicBarrier endBarrier;
     private String taskId;
 
-    public SetTaskVariableWithBarriersCommand(CyclicBarrier startBarrier, CyclicBarrier endBarrier, String taskId) {
+    public SetTaskVariableWithBarriersCommand(
+        CyclicBarrier startBarrier, CyclicBarrier endBarrier, String taskId) {
       this.startBarrier = startBarrier;
       this.endBarrier = endBarrier;
       this.taskId = taskId;
@@ -223,5 +241,4 @@ public class DuplicateVariableInsertTest extends PluggableActivitiTestCase {
       return null;
     }
   }
-
 }

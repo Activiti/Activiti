@@ -17,14 +17,10 @@
 package org.activiti.engine.impl.cmd;
 
 import java.util.Map;
-
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 
-
-/**
-
- */
+/** */
 public class CompleteTaskCmd extends AbstractCompleteTaskCmd {
 
   private static final long serialVersionUID = 1L;
@@ -43,7 +39,8 @@ public class CompleteTaskCmd extends AbstractCompleteTaskCmd {
     this.localScope = localScope;
   }
 
-  public CompleteTaskCmd(String taskId, Map<String, Object> variables, Map<String, Object> transientVariables) {
+  public CompleteTaskCmd(
+      String taskId, Map<String, Object> variables, Map<String, Object> transientVariables) {
     this(taskId, variables);
     this.transientVariables = transientVariables;
   }
@@ -69,7 +66,6 @@ public class CompleteTaskCmd extends AbstractCompleteTaskCmd {
 
     setTaskVariables(task.getVariablesLocal());
 
-
     executeTaskComplete(commandContext, task, variables, localScope);
     return null;
   }
@@ -86,6 +82,4 @@ public class CompleteTaskCmd extends AbstractCompleteTaskCmd {
   private void setTaskVariables(Map<String, Object> taskVariables) {
     this.taskVariables = taskVariables;
   }
-
-
 }

@@ -17,13 +17,10 @@
 package org.activiti.editor.language.json.converter;
 
 import java.util.Map;
-
 import org.activiti.editor.language.json.model.ModelInfo;
 
-/**
-
- */
+/** */
 public interface FormKeyAwareConverter {
 
-    public void setFormKeyMap(Map<String, ModelInfo> formKeyMap);
+  public void setFormKeyMap(Map<String, ModelInfo> formKeyMap);
 }

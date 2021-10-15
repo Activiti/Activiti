@@ -16,35 +16,35 @@
 package org.activiti.engine.impl.util.json;
 
 /*
- Copyright (c) 2002 JSON.org
+Copyright (c) 2002 JSON.org
 
- Permission is hereby granted, free of charge, to any person obtaining a copy
- of this software and associated documentation files (the "Software"), to deal
- in the Software without restriction, including without limitation the rights
- to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- copies of the Software, and to permit persons to whom the Software is
- furnished to do so, subject to the following conditions:
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
- The above copyright notice and this permission notice shall be included in all
- copies or substantial portions of the Software.
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
 
- The Software shall be used for Good, not Evil.
+The Software shall be used for Good, not Evil.
 
- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- SOFTWARE.
- */
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+*/
 
 import java.util.Iterator;
 
 /**
- * This provides static methods to convert an XML text into a JSONObject, and to covert a JSONObject into an XML text.
+ * This provides static methods to convert an XML text into a JSONObject, and to covert a JSONObject
+ * into an XML text.
  *
-
  * @version 2009-12-12
  */
 public class XML {
@@ -64,7 +64,7 @@ public class XML {
   /** The Character '>'. */
   public static final Character GT = new Character('>');
 
-/** The Character '<'. */
+  /** The Character '<'. */
   public static final Character LT = new Character('<');
 
   /** The Character '?'. */
@@ -86,8 +86,7 @@ public class XML {
    * &quot; <small>(double quote)</small> is replaced by &amp;quot;
    * </pre>
    *
-   * @param string
-   *          The string to be escaped.
+   * @param string The string to be escaped.
    * @return The escaped string.
    */
   public static String escape(String string) {
@@ -95,27 +94,28 @@ public class XML {
     for (int i = 0, len = string.length(); i < len; i++) {
       char c = string.charAt(i);
       switch (c) {
-      case '&':
-        sb.append("&amp;");
-        break;
-      case '<':
-        sb.append("&lt;");
-        break;
-      case '>':
-        sb.append("&gt;");
-        break;
-      case '"':
-        sb.append("&quot;");
-        break;
-      default:
-        sb.append(c);
+        case '&':
+          sb.append("&amp;");
+          break;
+        case '<':
+          sb.append("&lt;");
+          break;
+        case '>':
+          sb.append("&gt;");
+          break;
+        case '"':
+          sb.append("&quot;");
+          break;
+        default:
+          sb.append(c);
       }
     }
     return sb.toString();
   }
 
   /**
-   * Throw an exception if the string contains whitespace. Whitespace is not allowed in tagNames and attributes.
+   * Throw an exception if the string contains whitespace. Whitespace is not allowed in tagNames and
+   * attributes.
    *
    * @param string
    * @throws JSONException
@@ -135,12 +135,9 @@ public class XML {
   /**
    * Scan the content following the named tag, attaching it to the context.
    *
-   * @param x
-   *          The XMLTokener containing the source string.
-   * @param context
-   *          The JSONObject that will include the new material.
-   * @param name
-   *          The tag name.
+   * @param x The XMLTokener containing the source string.
+   * @param context The JSONObject that will include the new material.
+   * @param name The tag name.
    * @return true if the close tag is processed.
    * @throws JSONException
    */
@@ -230,7 +227,7 @@ public class XML {
       n = (String) t;
       t = null;
       o = new JSONObject();
-      for (;;) {
+      for (; ; ) {
         if (t == null) {
           t = x.nextToken();
         }
@@ -263,7 +260,7 @@ public class XML {
           // Content, between <...> and </...>
 
         } else if (t == GT) {
-          for (;;) {
+          for (; ; ) {
             t = x.nextContent();
             if (t == null) {
               if (n != null) {
@@ -299,13 +296,15 @@ public class XML {
   }
 
   /**
-   * Convert a well-formed (but not necessarily valid) XML string into a JSONObject. Some information may be lost in this transformation because JSON is a signalData format and XML is a document
-   * format. XML uses elements, attributes, and content text, while JSON uses unordered collections of name/value pairs and arrays of values. JSON does not does not like to distinguish between
-   * elements and attributes. Sequences of similar elements are represented as JSONArrays. Content text may be placed in a "content" member. Comments, prologs, DTDs, and <code>&lt;[ [ ]]></code> are
-   * ignored.
+   * Convert a well-formed (but not necessarily valid) XML string into a JSONObject. Some
+   * information may be lost in this transformation because JSON is a signalData format and XML is a
+   * document format. XML uses elements, attributes, and content text, while JSON uses unordered
+   * collections of name/value pairs and arrays of values. JSON does not does not like to
+   * distinguish between elements and attributes. Sequences of similar elements are represented as
+   * JSONArrays. Content text may be placed in a "content" member. Comments, prologs, DTDs, and
+   * <code>&lt;[ [ ]]></code> are ignored.
    *
-   * @param string
-   *          The source string.
+   * @param string The source string.
    * @return A JSONObject containing the structured signalData from the XML string.
    * @throws JSONException
    */
@@ -321,8 +320,7 @@ public class XML {
   /**
    * Convert a JSONObject into a well-formed, element-normal XML string.
    *
-   * @param o
-   *          A JSONObject.
+   * @param o A JSONObject.
    * @return A string.
    * @throws JSONException
    */
@@ -333,10 +331,8 @@ public class XML {
   /**
    * Convert a JSONObject into a well-formed, element-normal XML string.
    *
-   * @param o
-   *          A JSONObject.
-   * @param tagName
-   *          The optional name of the enclosing tag.
+   * @param o A JSONObject.
+   * @param tagName The optional name of the enclosing tag.
    * @return A string.
    * @throws JSONException
    */
@@ -446,7 +442,11 @@ public class XML {
       return b.toString();
     } else {
       s = (o == null) ? "null" : escape(o.toString());
-      return (tagName == null) ? "\"" + s + "\"" : (s.length() == 0) ? "<" + tagName + "/>" : "<" + tagName + ">" + s + "</" + tagName + ">";
+      return (tagName == null)
+          ? "\"" + s + "\""
+          : (s.length() == 0)
+              ? "<" + tagName + "/>"
+              : "<" + tagName + ">" + s + "</" + tagName + ">";
     }
   }
 }

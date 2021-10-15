@@ -21,8 +21,7 @@ import java.util.function.Predicate;
 
 public interface ResourceReader<T> {
 
-    Predicate<String> getResourceNameSelector();
+  Predicate<String> getResourceNameSelector();
 
-    T read(InputStream inputStream) throws IOException;
-
+  T read(InputStream inputStream) throws IOException;
 }

@@ -19,9 +19,7 @@ package org.activiti.standalone.deploy;
 import java.io.InputStream;
 import java.util.Scanner;
 
-/**
-
- */
+/** */
 public class DeploymentCacheTestUtil {
 
   public static String readTemplateFile(String templateFile) {
@@ -39,5 +37,4 @@ public class DeploymentCacheTestUtil {
     }
     return null;
   }
-
 }

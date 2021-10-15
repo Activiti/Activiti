@@ -17,18 +17,15 @@
 package org.activiti.engine.impl.persistence.entity.data.impl;
 
 import java.util.List;
-
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.persistence.entity.AttachmentEntity;
 import org.activiti.engine.impl.persistence.entity.AttachmentEntityImpl;
 import org.activiti.engine.impl.persistence.entity.data.AbstractDataManager;
 import org.activiti.engine.impl.persistence.entity.data.AttachmentDataManager;
 
-
-/**
-
- */
-public class MybatisAttachmentDataManager extends AbstractDataManager<AttachmentEntity> implements AttachmentDataManager {
+/** */
+public class MybatisAttachmentDataManager extends AbstractDataManager<AttachmentEntity>
+    implements AttachmentDataManager {
 
   public MybatisAttachmentDataManager(ProcessEngineConfigurationImpl processEngineConfiguration) {
     super(processEngineConfiguration);
@@ -55,5 +52,4 @@ public class MybatisAttachmentDataManager extends AbstractDataManager<Attachment
   public List<AttachmentEntity> findAttachmentsByTaskId(String taskId) {
     return getDbSqlSession().selectList("selectAttachmentsByTaskId", taskId);
   }
-
 }

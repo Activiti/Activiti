@@ -22,7 +22,6 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import org.activiti.engine.ActivitiClassLoadingException;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
@@ -31,15 +30,22 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
-/**
- */
+/** */
 public class JavaServiceTaskTest extends PluggableActivitiTestCase {
 
   @Deployment
   public void testJavaServiceDelegation() {
-    ProcessInstance pi = runtimeService.startProcessInstanceByKey("javaServiceDelegation", singletonMap("input", "Activiti BPM Engine"));
-    Execution execution = runtimeService.createExecutionQuery().processInstanceId(pi.getId()).activityId("waitState").singleResult();
-    assertThat(runtimeService.getVariable(execution.getId(), "input")).isEqualTo("ACTIVITI BPM ENGINE");
+    ProcessInstance pi =
+        runtimeService.startProcessInstanceByKey(
+            "javaServiceDelegation", singletonMap("input", "Activiti BPM Engine"));
+    Execution execution =
+        runtimeService
+            .createExecutionQuery()
+            .processInstanceId(pi.getId())
+            .activityId("waitState")
+            .singleResult();
+    assertThat(runtimeService.getVariable(execution.getId(), "input"))
+        .isEqualTo("ACTIVITI BPM ENGINE");
   }
 
   @Deployment
@@ -48,10 +54,16 @@ public class JavaServiceTaskTest extends PluggableActivitiTestCase {
     // use the exposed setter,
     // the other is using the private field.
     ProcessInstance pi = runtimeService.startProcessInstanceByKey("fieldInjection");
-    Execution execution = runtimeService.createExecutionQuery().processInstanceId(pi.getId()).activityId("waitState").singleResult();
+    Execution execution =
+        runtimeService
+            .createExecutionQuery()
+            .processInstanceId(pi.getId())
+            .activityId("waitState")
+            .singleResult();
 
     assertThat(runtimeService.getVariable(execution.getId(), "var")).isEqualTo("HELLO WORLD");
-    assertThat(runtimeService.getVariable(execution.getId(), "setterVar")).isEqualTo("HELLO SETTER");
+    assertThat(runtimeService.getVariable(execution.getId(), "setterVar"))
+        .isEqualTo("HELLO SETTER");
   }
 
   @Deployment
@@ -62,10 +74,16 @@ public class JavaServiceTaskTest extends PluggableActivitiTestCase {
     vars.put("genderBean", new GenderBean());
 
     ProcessInstance pi = runtimeService.startProcessInstanceByKey("expressionFieldInjection", vars);
-    Execution execution = runtimeService.createExecutionQuery().processInstanceId(pi.getId()).activityId("waitState").singleResult();
+    Execution execution =
+        runtimeService
+            .createExecutionQuery()
+            .processInstanceId(pi.getId())
+            .activityId("waitState")
+            .singleResult();
 
     assertThat(runtimeService.getVariable(execution.getId(), "var2")).isEqualTo("timrek .rM olleH");
-    assertThat(runtimeService.getVariable(execution.getId(), "var1")).isEqualTo("elam :si redneg ruoY");
+    assertThat(runtimeService.getVariable(execution.getId(), "var1"))
+        .isEqualTo("elam :si redneg ruoY");
   }
 
   @Deployment
@@ -77,11 +95,19 @@ public class JavaServiceTaskTest extends PluggableActivitiTestCase {
     vars.put("_ACTIVITI_SKIP_EXPRESSION_ENABLED", true);
     vars.put("skip", false);
 
-    ProcessInstance pi = runtimeService.startProcessInstanceByKey("expressionFieldInjectionWithSkipExpression", vars);
-    Execution execution = runtimeService.createExecutionQuery().processInstanceId(pi.getId()).activityId("waitState").singleResult();
+    ProcessInstance pi =
+        runtimeService.startProcessInstanceByKey(
+            "expressionFieldInjectionWithSkipExpression", vars);
+    Execution execution =
+        runtimeService
+            .createExecutionQuery()
+            .processInstanceId(pi.getId())
+            .activityId("waitState")
+            .singleResult();
 
     assertThat(runtimeService.getVariable(execution.getId(), "var2")).isEqualTo("timrek .rM olleH");
-    assertThat(runtimeService.getVariable(execution.getId(), "var1")).isEqualTo("elam :si redneg ruoY");
+    assertThat(runtimeService.getVariable(execution.getId(), "var1"))
+        .isEqualTo("elam :si redneg ruoY");
 
     Map<String, Object> vars2 = new HashMap<String, Object>();
     vars2.put("name", "kermit");
@@ -90,8 +116,15 @@ public class JavaServiceTaskTest extends PluggableActivitiTestCase {
     vars2.put("_ACTIVITI_SKIP_EXPRESSION_ENABLED", true);
     vars2.put("skip", true);
 
-    ProcessInstance pi2 = runtimeService.startProcessInstanceByKey("expressionFieldInjectionWithSkipExpression", vars2);
-    Execution execution2 = runtimeService.createExecutionQuery().processInstanceId(pi2.getId()).activityId("waitState").singleResult();
+    ProcessInstance pi2 =
+        runtimeService.startProcessInstanceByKey(
+            "expressionFieldInjectionWithSkipExpression", vars2);
+    Execution execution2 =
+        runtimeService
+            .createExecutionQuery()
+            .processInstanceId(pi2.getId())
+            .activityId("waitState")
+            .singleResult();
 
     assertThat(execution2).isEqualTo(null);
   }
@@ -99,17 +132,21 @@ public class JavaServiceTaskTest extends PluggableActivitiTestCase {
   @Deployment
   public void testUnexistingClassDelegation() {
     assertThatExceptionOfType(ActivitiException.class)
-      .isThrownBy(() -> runtimeService.startProcessInstanceByKey("unexistingClassDelegation"))
-      .withMessageContaining("couldn't instantiate class org.activiti.BogusClass")
-      .withCauseInstanceOf(ActivitiClassLoadingException.class);
+        .isThrownBy(() -> runtimeService.startProcessInstanceByKey("unexistingClassDelegation"))
+        .withMessageContaining("couldn't instantiate class org.activiti.BogusClass")
+        .withCauseInstanceOf(ActivitiClassLoadingException.class);
   }
 
   public void testIllegalUseOfResultVariableName() {
     assertThatExceptionOfType(ActivitiException.class)
-      .isThrownBy(() -> repositoryService.createDeployment()
-        .addClasspathResource("org/activiti/examples/bpmn/servicetask/JavaServiceTaskTest.testIllegalUseOfResultVariableName.bpmn20.xml")
-        .deploy())
-      .withMessageContaining("resultVariable");
+        .isThrownBy(
+            () ->
+                repositoryService
+                    .createDeployment()
+                    .addClasspathResource(
+                        "org/activiti/examples/bpmn/servicetask/JavaServiceTaskTest.testIllegalUseOfResultVariableName.bpmn20.xml")
+                    .deploy())
+        .withMessageContaining("resultVariable");
   }
 
   @Deployment
@@ -133,13 +170,19 @@ public class JavaServiceTaskTest extends PluggableActivitiTestCase {
 
   @Deployment
   public void testGetBusinessKeyFromDelegateExecution() {
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("businessKeyProcess", "1234567890");
-    assertThat(runtimeService.createProcessInstanceQuery().processDefinitionKey("businessKeyProcess").count()).isEqualTo(1);
+    ProcessInstance processInstance =
+        runtimeService.startProcessInstanceByKey("businessKeyProcess", "1234567890");
+    assertThat(
+            runtimeService
+                .createProcessInstanceQuery()
+                .processDefinitionKey("businessKeyProcess")
+                .count())
+        .isEqualTo(1);
 
     // Check if business-key was available from the process
-    String key = (String) runtimeService.getVariable(processInstance.getId(), "businessKeySetOnExecution");
+    String key =
+        (String) runtimeService.getVariable(processInstance.getId(), "businessKeySetOnExecution");
     assertThat(key).isNotNull();
     assertThat(key).isEqualTo("1234567890");
   }
-
 }

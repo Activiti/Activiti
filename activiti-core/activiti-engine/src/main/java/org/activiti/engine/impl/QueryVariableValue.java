@@ -14,11 +14,9 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl;
 
 import java.io.Serializable;
-
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.persistence.entity.VariableInstanceEntity;
@@ -28,11 +26,7 @@ import org.activiti.engine.impl.variable.JPAEntityVariableType;
 import org.activiti.engine.impl.variable.VariableType;
 import org.activiti.engine.impl.variable.VariableTypes;
 
-/**
- * Represents a variable value used in queries.
- *
-
- */
+/** Represents a variable value used in queries. */
 public class QueryVariableValue implements Serializable {
   private static final long serialVersionUID = 1L;
   private String name;
@@ -53,14 +47,20 @@ public class QueryVariableValue implements Serializable {
     if (variableInstanceEntity == null) {
       VariableType type = types.findVariableType(value);
       if (type instanceof ByteArrayType) {
-        throw new ActivitiIllegalArgumentException("Variables of type ByteArray cannot be used to query");
+        throw new ActivitiIllegalArgumentException(
+            "Variables of type ByteArray cannot be used to query");
       } else if (type instanceof JPAEntityVariableType && operator != QueryOperator.EQUALS) {
-        throw new ActivitiIllegalArgumentException("JPA entity variables can only be used in 'variableValueEquals'");
+        throw new ActivitiIllegalArgumentException(
+            "JPA entity variables can only be used in 'variableValueEquals'");
       } else if (type instanceof JPAEntityListVariableType) {
-        throw new ActivitiIllegalArgumentException("Variables containing a list of JPA entities cannot be used to query");
+        throw new ActivitiIllegalArgumentException(
+            "Variables containing a list of JPA entities cannot be used to query");
       } else {
         // Type implementation determines which fields are set on the entity
-        variableInstanceEntity = Context.getCommandContext().getVariableInstanceEntityManager().create(name, type, value);
+        variableInstanceEntity =
+            Context.getCommandContext()
+                .getVariableInstanceEntityManager()
+                .create(name, type, value);
       }
     }
   }

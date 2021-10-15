@@ -23,25 +23,21 @@ import org.activiti.engine.impl.cfg.BpmnParseFactory;
 /**
  * Parser for BPMN 2.0 process models.
  *
- * There is only one instance of this parser in the process engine. This {@link BpmnParser} creates {@link BpmnParse} instances that can be used to actually parse the BPMN 2.0 XML process definitions.
- *
-
-
+ * <p>There is only one instance of this parser in the process engine. This {@link BpmnParser}
+ * creates {@link BpmnParse} instances that can be used to actually parse the BPMN 2.0 XML process
+ * definitions.
  */
 public class BpmnParser {
 
-  /**
-   * The namepace of the BPMN 2.0 diagram interchange elements.
-   */
+  /** The namepace of the BPMN 2.0 diagram interchange elements. */
   public static final String BPMN_DI_NS = "http://www.omg.org/spec/BPMN/20100524/DI";
 
-  /**
-   * The namespace of the BPMN 2.0 diagram common elements.
-   */
+  /** The namespace of the BPMN 2.0 diagram common elements. */
   public static final String BPMN_DC_NS = "http://www.omg.org/spec/DD/20100524/DC";
 
   /**
-   * The namespace of the generic OMG DI elements (don't ask me why they didn't use the BPMN_DI_NS ...)
+   * The namespace of the generic OMG DI elements (don't ask me why they didn't use the BPMN_DI_NS
+   * ...)
    */
   public static final String OMG_DI_NS = "http://www.omg.org/spec/DD/20100524/DI";
 
@@ -51,7 +47,8 @@ public class BpmnParser {
   protected BpmnParseHandlers bpmnParserHandlers;
 
   /**
-   * Creates a new {@link BpmnParse} instance that can be used to parse only one BPMN 2.0 process definition.
+   * Creates a new {@link BpmnParse} instance that can be used to parse only one BPMN 2.0 process
+   * definition.
    */
   public BpmnParse createParse() {
     return bpmnParseFactory.createBpmnParse(this);

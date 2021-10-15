@@ -19,7 +19,6 @@ package org.activiti.engine.test.api.runtime;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
-
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
@@ -27,24 +26,26 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Comment;
 import org.activiti.engine.test.Deployment;
 
-/**
- */
+/** */
 public class ProcessInstanceCommentTest extends PluggableActivitiTestCase {
 
   @Deployment
   public void testAddCommentToProcessInstance() {
     if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
-      ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testProcessInstanceComment");
+      ProcessInstance processInstance =
+          runtimeService.startProcessInstanceByKey("testProcessInstanceComment");
 
       taskService.addComment(null, processInstance.getId(), "Hello World");
 
       List<Comment> comments = taskService.getProcessInstanceComments(processInstance.getId());
       assertThat(comments).hasSize(1);
 
-      List<Comment> commentsByType = taskService.getProcessInstanceComments(processInstance.getId(), "comment");
+      List<Comment> commentsByType =
+          taskService.getProcessInstanceComments(processInstance.getId(), "comment");
       assertThat(commentsByType).hasSize(1);
 
-      commentsByType = taskService.getProcessInstanceComments(processInstance.getId(), "noThisType");
+      commentsByType =
+          taskService.getProcessInstanceComments(processInstance.getId(), "noThisType");
       assertThat(commentsByType).hasSize(0);
 
       // Suspend process instance
@@ -59,5 +60,4 @@ public class ProcessInstanceCommentTest extends PluggableActivitiTestCase {
       taskService.deleteComments(null, processInstance.getId());
     }
   }
-
 }

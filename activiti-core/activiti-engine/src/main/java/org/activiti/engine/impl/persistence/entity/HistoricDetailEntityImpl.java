@@ -14,17 +14,14 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.persistence.entity;
 
 import java.io.Serializable;
 import java.util.Date;
 
-/**
-
-
- */
-public abstract class HistoricDetailEntityImpl extends AbstractEntityNoRevision implements HistoricDetailEntity, Serializable {
+/** */
+public abstract class HistoricDetailEntityImpl extends AbstractEntityNoRevision
+    implements HistoricDetailEntity, Serializable {
 
   private static final long serialVersionUID = 1L;
 
@@ -89,5 +86,4 @@ public abstract class HistoricDetailEntityImpl extends AbstractEntityNoRevision 
   public void setDetailType(String detailType) {
     this.detailType = detailType;
   }
-
 }

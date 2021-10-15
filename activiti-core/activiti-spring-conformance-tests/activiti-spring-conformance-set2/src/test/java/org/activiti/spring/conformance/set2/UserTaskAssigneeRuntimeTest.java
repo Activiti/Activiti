@@ -19,7 +19,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 
 import java.util.List;
-
 import org.activiti.api.model.shared.event.RuntimeEvent;
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
@@ -48,129 +47,123 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 public class UserTaskAssigneeRuntimeTest {
 
-    private final String processKey = "usertask-6a854551-861f-4cc5-a1a1-73b8a14ccdc4";
+  private final String processKey = "usertask-6a854551-861f-4cc5-a1a1-73b8a14ccdc4";
 
-    @Autowired
-    private ProcessRuntime processRuntime;
+  @Autowired private ProcessRuntime processRuntime;
 
-    @Autowired
-    private TaskRuntime taskRuntime;
+  @Autowired private TaskRuntime taskRuntime;
 
-    @Autowired
-    private SecurityUtil securityUtil;
+  @Autowired private SecurityUtil securityUtil;
 
-    @BeforeEach
-    public void cleanUp() {
-        clearEvents();
-    }
+  @BeforeEach
+  public void cleanUp() {
+    clearEvents();
+  }
 
-    @Test
-    public void shouldGetConfiguration() {
-        securityUtil.logInAs("user1");
-        //when
-        TaskRuntimeConfiguration configuration = taskRuntime.configuration();
-        //then
-        assertThat(configuration).isNotNull();
-        //when
-        List<TaskRuntimeEventListener<?>> taskRuntimeEventListeners = configuration.taskRuntimeEventListeners();
-        List<VariableEventListener<?>> variableEventListeners = configuration.variableEventListeners();
-        List<ProcessRuntimeEventListener<?>> processRuntimeEventListeners = processRuntime.configuration().processEventListeners();
-        //then
-        assertThat(taskRuntimeEventListeners).hasSize(6);
-        assertThat(variableEventListeners).hasSize(3);
-        assertThat(processRuntimeEventListeners).hasSize(11);
+  @Test
+  public void shouldGetConfiguration() {
+    securityUtil.logInAs("user1");
+    // when
+    TaskRuntimeConfiguration configuration = taskRuntime.configuration();
+    // then
+    assertThat(configuration).isNotNull();
+    // when
+    List<TaskRuntimeEventListener<?>> taskRuntimeEventListeners =
+        configuration.taskRuntimeEventListeners();
+    List<VariableEventListener<?>> variableEventListeners = configuration.variableEventListeners();
+    List<ProcessRuntimeEventListener<?>> processRuntimeEventListeners =
+        processRuntime.configuration().processEventListeners();
+    // then
+    assertThat(taskRuntimeEventListeners).hasSize(6);
+    assertThat(variableEventListeners).hasSize(3);
+    assertThat(processRuntimeEventListeners).hasSize(11);
+  }
 
-    }
+  @Test
+  public void shouldStartAProcessCreateAndCompleteAssignedTask() {
 
+    securityUtil.logInAs("user1");
 
-    @Test
-    public void shouldStartAProcessCreateAndCompleteAssignedTask() {
-
-        securityUtil.logInAs("user1");
-
-        ProcessInstance processInstance = processRuntime.start(ProcessPayloadBuilder
-                .start()
+    ProcessInstance processInstance =
+        processRuntime.start(
+            ProcessPayloadBuilder.start()
                 .withProcessDefinitionKey(processKey)
                 .withBusinessKey("my-business-key")
                 .withName("my-process-instance-name")
                 .build());
 
-        //then
-        assertThat(processInstance).isNotNull();
-        assertThat(processInstance.getStatus()).isEqualTo(ProcessInstance.ProcessInstanceStatus.RUNNING);
-        assertThat(processInstance.getBusinessKey()).isEqualTo("my-business-key");
-        assertThat(processInstance.getName()).isEqualTo("my-process-instance-name");
+    // then
+    assertThat(processInstance).isNotNull();
+    assertThat(processInstance.getStatus())
+        .isEqualTo(ProcessInstance.ProcessInstanceStatus.RUNNING);
+    assertThat(processInstance.getBusinessKey()).isEqualTo("my-business-key");
+    assertThat(processInstance.getName()).isEqualTo("my-process-instance-name");
 
-        // I should be able to get the process instance from the Runtime because it is still running
-        ProcessInstance processInstanceById = processRuntime.processInstance(processInstance.getId());
+    // I should be able to get the process instance from the Runtime because it is still running
+    ProcessInstance processInstanceById = processRuntime.processInstance(processInstance.getId());
 
-        assertThat(processInstanceById).isEqualTo(processInstance);
+    assertThat(processInstanceById).isEqualTo(processInstance);
 
-        // I should get a task for User1
-        Page<Task> tasks = taskRuntime.tasks(Pageable.of(0, 50));
+    // I should get a task for User1
+    Page<Task> tasks = taskRuntime.tasks(Pageable.of(0, 50));
 
-        assertThat(tasks.getTotalItems()).isEqualTo(1);
+    assertThat(tasks.getTotalItems()).isEqualTo(1);
 
-        Task task = tasks.getContent().get(0);
+    Task task = tasks.getContent().get(0);
 
-        Task taskById = taskRuntime.task(task.getId());
+    Task taskById = taskRuntime.task(task.getId());
 
-        assertThat(taskById.getStatus()).isEqualTo(Task.TaskStatus.ASSIGNED);
+    assertThat(taskById.getStatus()).isEqualTo(Task.TaskStatus.ASSIGNED);
 
+    assertThat(task).isEqualTo(taskById);
 
-        assertThat(task).isEqualTo(taskById);
+    assertThat(task.getAssignee()).isEqualTo("user1");
 
-        assertThat(task.getAssignee()).isEqualTo("user1");
+    // Check with user2
+    securityUtil.logInAs("user2");
 
+    tasks = taskRuntime.tasks(Pageable.of(0, 50));
 
-        // Check with user2
-        securityUtil.logInAs("user2");
+    assertThat(tasks.getTotalItems()).isEqualTo(0);
 
-        tasks = taskRuntime.tasks(Pageable.of(0, 50));
+    Throwable throwable = catchThrowable(() -> taskRuntime.task(task.getId()));
 
-        assertThat(tasks.getTotalItems()).isEqualTo(0);
+    assertThat(throwable).isInstanceOf(NotFoundException.class);
 
-        Throwable throwable = catchThrowable(() -> taskRuntime.task(task.getId()));
+    assertThat(RuntimeTestConfiguration.collectedEvents)
+        .extracting(RuntimeEvent::getEventType)
+        .containsExactly(
+            ProcessRuntimeEvent.ProcessEvents.PROCESS_CREATED,
+            ProcessRuntimeEvent.ProcessEvents.PROCESS_STARTED,
+            BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
+            BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
+            BPMNSequenceFlowTakenEvent.SequenceFlowEvents.SEQUENCE_FLOW_TAKEN,
+            BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
+            TaskRuntimeEvent.TaskEvents.TASK_CREATED,
+            TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED);
 
-        assertThat(throwable)
-                .isInstanceOf(NotFoundException.class);
+    clearEvents();
 
-        assertThat(RuntimeTestConfiguration.collectedEvents)
-                .extracting(RuntimeEvent::getEventType)
-                .containsExactly(
-                        ProcessRuntimeEvent.ProcessEvents.PROCESS_CREATED,
-                        ProcessRuntimeEvent.ProcessEvents.PROCESS_STARTED,
-                        BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
-                        BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
-                        BPMNSequenceFlowTakenEvent.SequenceFlowEvents.SEQUENCE_FLOW_TAKEN,
-                        BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
-                        TaskRuntimeEvent.TaskEvents.TASK_CREATED,
-                        TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED);
+    // complete with user1
+    securityUtil.logInAs("user1");
 
-        clearEvents();
+    Task completedTask =
+        taskRuntime.complete(TaskPayloadBuilder.complete().withTaskId(task.getId()).build());
 
-        // complete with user1
-        securityUtil.logInAs("user1");
+    assertThat(completedTask.getStatus()).isEqualTo(Task.TaskStatus.COMPLETED);
 
-        Task completedTask = taskRuntime.complete(TaskPayloadBuilder.complete().withTaskId(task.getId()).build());
+    assertThat(RuntimeTestConfiguration.collectedEvents)
+        .extracting(RuntimeEvent::getEventType)
+        .containsExactly(
+            TaskRuntimeEvent.TaskEvents.TASK_COMPLETED,
+            BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
+            BPMNSequenceFlowTakenEvent.SequenceFlowEvents.SEQUENCE_FLOW_TAKEN,
+            BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
+            BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
+            ProcessRuntimeEvent.ProcessEvents.PROCESS_COMPLETED);
+  }
 
-        assertThat(completedTask.getStatus()).isEqualTo(Task.TaskStatus.COMPLETED);
-
-        assertThat(RuntimeTestConfiguration.collectedEvents)
-                .extracting(RuntimeEvent::getEventType)
-                .containsExactly(
-                        TaskRuntimeEvent.TaskEvents.TASK_COMPLETED,
-                        BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
-                        BPMNSequenceFlowTakenEvent.SequenceFlowEvents.SEQUENCE_FLOW_TAKEN,
-                        BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
-                        BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
-                        ProcessRuntimeEvent.ProcessEvents.PROCESS_COMPLETED);
-
-
-    }
-
-    public void clearEvents() {
-        RuntimeTestConfiguration.collectedEvents.clear();
-    }
-
+  public void clearEvents() {
+    RuntimeTestConfiguration.collectedEvents.clear();
+  }
 }

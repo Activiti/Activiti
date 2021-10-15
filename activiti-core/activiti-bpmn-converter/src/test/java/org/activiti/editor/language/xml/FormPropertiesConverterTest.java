@@ -59,7 +59,7 @@ public class FormPropertiesConverterTest extends AbstractConverterTest {
     assertThat(startFlowElement).isInstanceOf(StartEvent.class);
     StartEvent startEvent = (StartEvent) startFlowElement;
 
-    for (FormProperty formProperty :startEvent.getFormProperties()) {
+    for (FormProperty formProperty : startEvent.getFormProperties()) {
       assertThat(formProperty.isRequired()).isEqualTo(true);
     }
 
@@ -73,7 +73,7 @@ public class FormPropertiesConverterTest extends AbstractConverterTest {
     assertThat(formProperties).isNotNull();
     assertThat(formProperties).as("Invalid form properties list: ").hasSize(8);
 
-    for (FormProperty formProperty :formProperties) {
+    for (FormProperty formProperty : formProperties) {
       if (formProperty.getId().equals("new_property_1")) {
         checkFormProperty(formProperty, false, false, false);
       } else if (formProperty.getId().equals("new_property_2")) {
@@ -85,7 +85,7 @@ public class FormPropertiesConverterTest extends AbstractConverterTest {
       } else if (formProperty.getId().equals("new_property_5")) {
         checkFormProperty(formProperty, true, false, false);
 
-        List<Map<String, Object>> formValues = new ArrayList<Map<String,Object>>();
+        List<Map<String, Object>> formValues = new ArrayList<Map<String, Object>>();
         for (FormValue formValue : formProperty.getFormValues()) {
           Map<String, Object> formValueMap = new HashMap<String, Object>();
           formValueMap.put("id", formValue.getId());
@@ -102,10 +102,13 @@ public class FormPropertiesConverterTest extends AbstractConverterTest {
         checkFormProperty(formProperty, true, true, true);
       }
     }
-
   }
 
-  private void checkFormProperty(FormProperty formProperty, boolean shouldBeRequired, boolean shouldBeReadable, boolean shouldBeWritable) {
+  private void checkFormProperty(
+      FormProperty formProperty,
+      boolean shouldBeRequired,
+      boolean shouldBeReadable,
+      boolean shouldBeWritable) {
     assertThat(formProperty.isRequired()).isEqualTo(shouldBeRequired);
     assertThat(formProperty.isReadable()).isEqualTo(shouldBeReadable);
     assertThat(formProperty.isWriteable()).isEqualTo(shouldBeWritable);
@@ -128,11 +131,6 @@ public class FormPropertiesConverterTest extends AbstractConverterTest {
     formValue4.put("id", "value4");
     formValue4.put("name", "Value 4");
 
-    assertThat(formValues).containsExactly(
-        formValue1,
-        formValue2,
-        formValue3,
-        formValue4
-    );
+    assertThat(formValues).containsExactly(formValue1, formValue2, formValue3, formValue4);
   }
 }

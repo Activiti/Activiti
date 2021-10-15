@@ -24,11 +24,7 @@ import org.activiti.engine.delegate.event.impl.ActivitiEventImpl;
 import org.activiti.engine.impl.test.ResourceActivitiTestCase;
 import org.activiti.engine.test.api.event.TestActivitiEventListener;
 
-/**
- * Test to verify event-listeners, which are configured in the cfg.xml, are notified.
- *
-
- */
+/** Test to verify event-listeners, which are configured in the cfg.xml, are notified. */
 public class TypedEventListenersConfigurationTest extends ResourceActivitiTestCase {
 
   public TypedEventListenersConfigurationTest() {
@@ -37,7 +33,8 @@ public class TypedEventListenersConfigurationTest extends ResourceActivitiTestCa
 
   public void testEventListenerConfiguration() {
     // Fetch the listener to check received events
-    TestActivitiEventListener listener = (TestActivitiEventListener) processEngineConfiguration.getBeans().get("eventListener");
+    TestActivitiEventListener listener =
+        (TestActivitiEventListener) processEngineConfiguration.getBeans().get("eventListener");
     assertThat(listener).isNotNull();
 
     // Clear any events received (eg. engine initialisation)
@@ -58,8 +55,10 @@ public class TypedEventListenersConfigurationTest extends ResourceActivitiTestCa
     processEngineConfiguration.getEventDispatcher().dispatchEvent(event);
 
     assertThat(listener.getEventsReceived()).hasSize(2);
-    assertThat(listener.getEventsReceived().get(0).getType()).isEqualTo(ActivitiEventType.ENTITY_DELETED);
-    assertThat(listener.getEventsReceived().get(1).getType()).isEqualTo(ActivitiEventType.ENTITY_UPDATED);
+    assertThat(listener.getEventsReceived().get(0).getType())
+        .isEqualTo(ActivitiEventType.ENTITY_DELETED);
+    assertThat(listener.getEventsReceived().get(1).getType())
+        .isEqualTo(ActivitiEventType.ENTITY_UPDATED);
     listener.clearEventsReceived();
 
     // Dispatch an event that is NOT part of the types configured

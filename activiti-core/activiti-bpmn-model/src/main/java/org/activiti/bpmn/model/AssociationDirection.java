@@ -16,7 +16,9 @@
 package org.activiti.bpmn.model;
 
 public enum AssociationDirection {
-  NONE("None"), ONE("One"), BOTH("Both");
+  NONE("None"),
+  ONE("One"),
+  BOTH("Both");
 
   String value;
 

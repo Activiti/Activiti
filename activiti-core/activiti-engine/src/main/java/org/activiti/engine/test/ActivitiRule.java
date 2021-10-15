@@ -14,13 +14,11 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.test;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.ManagementService;
@@ -42,9 +40,7 @@ import org.junit.runners.model.Statement;
 /**
  * Convenience for ProcessEngine and services initialization in the form of a JUnit rule.
  *
- * <p>
- * Usage:
- * </p>
+ * <p>Usage:
  *
  * <pre>
  * public class YourTest {
@@ -56,23 +52,22 @@ import org.junit.runners.model.Statement;
  * }
  * </pre>
  *
- * <p>
- * The ProcessEngine and the services will be made available to the test class through the getters of the activitiRule. The processEngine will be initialized by default with the activiti.cfg.xml
- * resource on the classpath. To specify a different configuration file, pass the resource location in {@link #ActivitiRule(String) the appropriate constructor}. Process engines will be cached
- * statically. Right before the first time the setUp is called for a given configuration resource, the process engine will be constructed.
- * </p>
+ * <p>The ProcessEngine and the services will be made available to the test class through the
+ * getters of the activitiRule. The processEngine will be initialized by default with the
+ * activiti.cfg.xml resource on the classpath. To specify a different configuration file, pass the
+ * resource location in {@link #ActivitiRule(String) the appropriate constructor}. Process engines
+ * will be cached statically. Right before the first time the setUp is called for a given
+ * configuration resource, the process engine will be constructed.
  *
- * <p>
- * You can declare a deployment with the {@link Deployment} annotation. This base class will make sure that this deployment gets deployed before the setUp and
- * {@link RepositoryService#deleteDeployment(String, boolean) cascade deleted} after the tearDown.
- * </p>
+ * <p>You can declare a deployment with the {@link Deployment} annotation. This base class will make
+ * sure that this deployment gets deployed before the setUp and {@link
+ * RepositoryService#deleteDeployment(String, boolean) cascade deleted} after the tearDown.
  *
- * <p>
- * The activitiRule also lets you {@link ActivitiRule#setCurrentTime(Date) set the current time used by the process engine}. This can be handy to control the exact time that is used by the engine in
- * order to verify e.g. e.g. due dates of timers. Or start, end and duration times in the history service. In the tearDown, the internal clock will automatically be reset to use the current system
- * time rather then the time that was set during a test method.
- * </p>
- *
+ * <p>The activitiRule also lets you {@link ActivitiRule#setCurrentTime(Date) set the current time
+ * used by the process engine}. This can be handy to control the exact time that is used by the
+ * engine in order to verify e.g. e.g. due dates of timers. Or start, end and duration times in the
+ * history service. In the tearDown, the internal clock will automatically be reset to use the
+ * current system time rather then the time that was set during a test method.
  */
 public class ActivitiRule implements TestRule {
 
@@ -89,8 +84,7 @@ public class ActivitiRule implements TestRule {
 
   protected ActivitiMockSupport mockSupport;
 
-  public ActivitiRule() {
-  }
+  public ActivitiRule() {}
 
   public ActivitiRule(String configurationResource) {
     this.configurationResource = configurationResource;
@@ -100,9 +94,7 @@ public class ActivitiRule implements TestRule {
     setProcessEngine(processEngine);
   }
 
-  /**
-   * Implementation based on {@link TestWatcher}.
-   */
+  /** Implementation based on {@link TestWatcher}. */
   @Override
   public Statement apply(final Statement base, final Description description) {
     return new Statement() {
@@ -145,7 +137,8 @@ public class ActivitiRule implements TestRule {
     }
   }
 
-  private void skippedQuietly(AssumptionViolatedException e, Description description, List<Throwable> errors) {
+  private void skippedQuietly(
+      AssumptionViolatedException e, Description description, List<Throwable> errors) {
     try {
       skipped(e, description);
     } catch (Throwable t) {
@@ -169,23 +162,14 @@ public class ActivitiRule implements TestRule {
     }
   }
 
-  /**
-   * Invoked when a test succeeds
-   */
-  protected void succeeded(Description description) {
-  }
+  /** Invoked when a test succeeds */
+  protected void succeeded(Description description) {}
 
-  /**
-   * Invoked when a test fails
-   */
-  protected void failed(Throwable e, Description description) {
-  }
+  /** Invoked when a test fails */
+  protected void failed(Throwable e, Description description) {}
 
-  /**
-   * Invoked when a test is skipped due to a failed assumption.
-   */
-  protected void skipped(AssumptionViolatedException e, Description description) {
-  }
+  /** Invoked when a test is skipped due to a failed assumption. */
+  protected void skipped(AssumptionViolatedException e, Description description) {}
 
   protected void starting(Description description) {
     if (processEngine == null) {
@@ -205,15 +189,22 @@ public class ActivitiRule implements TestRule {
 
     // Allow for annotations
     try {
-      TestHelper.annotationMockSupportSetup(Class.forName(description.getClassName()), description.getMethodName(), mockSupport);
+      TestHelper.annotationMockSupportSetup(
+          Class.forName(description.getClassName()), description.getMethodName(), mockSupport);
     } catch (ClassNotFoundException e) {
-      throw new ActivitiException("Programmatic error: could not instantiate " + description.getClassName(), e);
+      throw new ActivitiException(
+          "Programmatic error: could not instantiate " + description.getClassName(), e);
     }
 
     try {
-      deploymentId = TestHelper.annotationDeploymentSetUp(processEngine, Class.forName(description.getClassName()), description.getMethodName());
+      deploymentId =
+          TestHelper.annotationDeploymentSetUp(
+              processEngine,
+              Class.forName(description.getClassName()),
+              description.getMethodName());
     } catch (ClassNotFoundException e) {
-      throw new ActivitiException("Programmatic error: could not instantiate " + description.getClassName(), e);
+      throw new ActivitiException(
+          "Programmatic error: could not instantiate " + description.getClassName(), e);
     }
   }
 
@@ -244,9 +235,14 @@ public class ActivitiRule implements TestRule {
 
     // Remove the test deployment
     try {
-      TestHelper.annotationDeploymentTearDown(processEngine, deploymentId, Class.forName(description.getClassName()), description.getMethodName());
+      TestHelper.annotationDeploymentTearDown(
+          processEngine,
+          deploymentId,
+          Class.forName(description.getClassName()),
+          description.getMethodName());
     } catch (ClassNotFoundException e) {
-      throw new ActivitiException("Programmatic error: could not instantiate " + description.getClassName(), e);
+      throw new ActivitiException(
+          "Programmatic error: could not instantiate " + description.getClassName(), e);
     }
 
     // Reset internal clock
@@ -319,7 +315,8 @@ public class ActivitiRule implements TestRule {
     this.managementService = managementService;
   }
 
-  public void setProcessEngineConfiguration(ProcessEngineConfigurationImpl processEngineConfiguration) {
+  public void setProcessEngineConfiguration(
+      ProcessEngineConfigurationImpl processEngineConfiguration) {
     this.processEngineConfiguration = processEngineConfiguration;
   }
 
@@ -330,5 +327,4 @@ public class ActivitiRule implements TestRule {
   public ActivitiMockSupport mockSupport() {
     return mockSupport;
   }
-
 }

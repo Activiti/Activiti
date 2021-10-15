@@ -14,16 +14,13 @@
  * limitations under the License.
  */
 
-
 package org.activiti.examples.bpmn.servicetask;
 
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.JavaDelegate;
 
-/**
-
- */
+/** */
 public class BackwardsCompatibleExpressionDelegate implements JavaDelegate {
 
   private Expression expression;

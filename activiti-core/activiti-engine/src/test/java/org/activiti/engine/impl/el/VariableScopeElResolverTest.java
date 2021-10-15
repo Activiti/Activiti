@@ -45,90 +45,81 @@ import org.mockito.Spy;
 
 public class VariableScopeElResolverTest {
 
-    @Spy
-    @InjectMocks
-    private VariableScopeElResolver variableScopeElResolver;
+  @Spy @InjectMocks private VariableScopeElResolver variableScopeElResolver;
 
-    @Mock
-    private VariableScope variableScope;
+  @Mock private VariableScope variableScope;
 
-    @Mock
-    private VariableScopeItemELResolver firstItemResolver;
+  @Mock private VariableScopeItemELResolver firstItemResolver;
 
-    @Mock
-    private VariableScopeItemELResolver secondItemResolver;
+  @Mock private VariableScopeItemELResolver secondItemResolver;
 
-    @Mock
-    private VariableScopeItemELResolver thirdItemResolver;
+  @Mock private VariableScopeItemELResolver thirdItemResolver;
 
+  @Before
+  public void setUp() throws Exception {
+    initMocks(this);
+    doReturn(Arrays.asList(firstItemResolver, secondItemResolver, thirdItemResolver))
+        .when(variableScopeElResolver)
+        .getVariableScopeItemELResolvers();
+  }
 
-    @Before
-    public void setUp() throws Exception {
-        initMocks(this);
-        doReturn(Arrays.asList(firstItemResolver, secondItemResolver, thirdItemResolver)).when(
-            variableScopeElResolver).getVariableScopeItemELResolvers();
-    }
+  @Test
+  public void getValue_should_returnResolvedValueAndMarkContextAsResolved() {
+    // given
+    String property = "myVar";
+    ELContext elContext = mock(ELContext.class);
 
+    given(firstItemResolver.canResolve(property, variableScope)).willReturn(false);
+    given(secondItemResolver.canResolve(property, variableScope)).willReturn(true);
+    given(secondItemResolver.resolve(property, variableScope)).willReturn("myValue");
 
-    @Test
-    public void getValue_should_returnResolvedValueAndMarkContextAsResolved() {
-        //given
-        String property = "myVar";
-        ELContext elContext = mock(ELContext.class);
+    // when
+    Object result = variableScopeElResolver.getValue(elContext, null, property);
 
-        given(firstItemResolver.canResolve(property, variableScope)).willReturn(false);
-        given(secondItemResolver.canResolve(property, variableScope)).willReturn(true);
-        given(secondItemResolver.resolve(property, variableScope)).willReturn("myValue");
+    // then
+    assertThat(result).isEqualTo("myValue");
+    verify(elContext).setPropertyResolved(true);
+    verifyNoInteractions(thirdItemResolver);
+  }
 
-        //when
-        Object result = variableScopeElResolver.getValue(elContext, null, property);
+  @Test
+  public void getValue_should_returnNullWhenNoneOfItemResolversCanResolveTheProperty() {
+    // given
+    String property = "myVar";
+    ELContext elContext = mock(ELContext.class);
 
-        //then
-        assertThat(result).isEqualTo("myValue");
-        verify(elContext).setPropertyResolved(true);
-        verifyNoInteractions(thirdItemResolver);
-    }
+    given(firstItemResolver.canResolve(property, variableScope)).willReturn(false);
+    given(secondItemResolver.canResolve(property, variableScope)).willReturn(false);
+    given(secondItemResolver.canResolve(property, variableScope)).willReturn(false);
 
-    @Test
-    public void getValue_should_returnNullWhenNoneOfItemResolversCanResolveTheProperty() {
-        //given
-        String property = "myVar";
-        ELContext elContext = mock(ELContext.class);
+    // when
+    Object result = variableScopeElResolver.getValue(elContext, null, property);
 
-        given(firstItemResolver.canResolve(property, variableScope)).willReturn(false);
-        given(secondItemResolver.canResolve(property, variableScope)).willReturn(false);
-        given(secondItemResolver.canResolve(property, variableScope)).willReturn(false);
+    // then
+    assertThat(result).isNull();
+    verifyNoInteractions(elContext);
+  }
 
-        //when
-        Object result = variableScopeElResolver.getValue(elContext, null, property);
+  @Test
+  public void getVariableScopeItemELResolvers_should_return_defaultItemResolvers() {
+    // given
+    ProcessEngineConfigurationImpl processEngineConfiguration =
+        mock(ProcessEngineConfigurationImpl.class);
+    given(processEngineConfiguration.getObjectMapper()).willReturn(new ObjectMapper());
+    Context.setProcessEngineConfiguration(processEngineConfiguration);
+    doCallRealMethod().when(variableScopeElResolver).getVariableScopeItemELResolvers();
 
-        //then
-        assertThat(result).isNull();
-        verifyNoInteractions(elContext);
-    }
-
-
-    @Test
-    public void getVariableScopeItemELResolvers_should_return_defaultItemResolvers() {
-        //given
-        ProcessEngineConfigurationImpl processEngineConfiguration = mock(ProcessEngineConfigurationImpl.class);
-        given(processEngineConfiguration.getObjectMapper()).willReturn(new ObjectMapper());
-        Context.setProcessEngineConfiguration(processEngineConfiguration);
-        doCallRealMethod().when(variableScopeElResolver).getVariableScopeItemELResolvers();
-
-        //when
-        List<VariableScopeItemELResolver> variableScopeItemELResolvers = variableScopeElResolver
-            .getVariableScopeItemELResolvers();
-        //then
-        assertThat(variableScopeItemELResolvers)
-            .extracting(itemResolver -> itemResolver.getClass().getName())
-            .containsExactly(
-                ExecutionElResolver.class.getName(),
-                TaskElResolver.class.getName(),
-                AuthenticatedUserELResolver.class.getName(),
-                ProcessInitiatorELResolver.class.getName(),
-                VariableElResolver.class.getName()
-            );
-
-    }
+    // when
+    List<VariableScopeItemELResolver> variableScopeItemELResolvers =
+        variableScopeElResolver.getVariableScopeItemELResolvers();
+    // then
+    assertThat(variableScopeItemELResolvers)
+        .extracting(itemResolver -> itemResolver.getClass().getName())
+        .containsExactly(
+            ExecutionElResolver.class.getName(),
+            TaskElResolver.class.getName(),
+            AuthenticatedUserELResolver.class.getName(),
+            ProcessInitiatorELResolver.class.getName(),
+            VariableElResolver.class.getName());
+  }
 }

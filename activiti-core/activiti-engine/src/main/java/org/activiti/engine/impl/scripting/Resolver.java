@@ -14,14 +14,11 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.scripting;
 
 import org.activiti.engine.api.internal.Internal;
 
-/**
-
- */
+/** */
 @Internal
 public interface Resolver {
 

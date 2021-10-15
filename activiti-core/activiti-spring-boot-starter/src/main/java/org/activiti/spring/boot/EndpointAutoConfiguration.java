@@ -23,17 +23,15 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * The idea behind this module is that Spring Security could
- * talk to the org.activiti.engine.IdentityService
- * as required.
+ * The idea behind this module is that Spring Security could talk to the
+ * org.activiti.engine.IdentityService as required.
  */
 @Configuration
 public class EndpointAutoConfiguration {
 
-    @Bean
-    @ConditionalOnAvailableEndpoint
-    public ProcessEngineEndpoint processEngineEndpoint(ProcessEngine engine) {
-        return new ProcessEngineEndpoint(engine);
-    }
-
+  @Bean
+  @ConditionalOnAvailableEndpoint
+  public ProcessEngineEndpoint processEngineEndpoint(ProcessEngine engine) {
+    return new ProcessEngineEndpoint(engine);
+  }
 }

@@ -14,20 +14,16 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.persistence.entity;
 
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
-
 import org.activiti.engine.impl.context.Context;
 
-/**
-
-
- */
-public abstract class EventSubscriptionEntityImpl extends AbstractEntity implements EventSubscriptionEntity, Serializable {
+/** */
+public abstract class EventSubscriptionEntityImpl extends AbstractEntity
+    implements EventSubscriptionEntity, Serializable {
 
   private static final long serialVersionUID = 1L;
 
@@ -155,19 +151,13 @@ public abstract class EventSubscriptionEntityImpl extends AbstractEntity impleme
 
   @Override
   public boolean equals(Object obj) {
-    if (this == obj)
-      return true;
-    if (obj == null)
-      return false;
-    if (getClass() != obj.getClass())
-      return false;
+    if (this == obj) return true;
+    if (obj == null) return false;
+    if (getClass() != obj.getClass()) return false;
     EventSubscriptionEntityImpl other = (EventSubscriptionEntityImpl) obj;
     if (id == null) {
-      if (other.id != null)
-        return false;
-    } else if (!id.equals(other.id))
-      return false;
+      if (other.id != null) return false;
+    } else if (!id.equals(other.id)) return false;
     return true;
   }
-
 }

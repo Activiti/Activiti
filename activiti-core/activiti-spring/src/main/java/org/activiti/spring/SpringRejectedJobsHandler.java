@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.spring;
 
 import org.activiti.engine.api.internal.Internal;
@@ -22,9 +21,8 @@ import org.activiti.engine.impl.asyncexecutor.AsyncExecutor;
 import org.activiti.engine.runtime.Job;
 
 /**
- * <p>
- * Strategy for handling jobs that were acquired but cannot be executed at this point (queue-size exceeded).
- * </p>
+ * Strategy for handling jobs that were acquired but cannot be executed at this point (queue-size
+ * exceeded).
  *
  * @deprecated we recommend against the Job Executor
  */

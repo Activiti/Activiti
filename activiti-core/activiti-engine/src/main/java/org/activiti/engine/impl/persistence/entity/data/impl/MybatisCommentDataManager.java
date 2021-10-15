@@ -19,7 +19,6 @@ package org.activiti.engine.impl.persistence.entity.data.impl;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.persistence.entity.CommentEntity;
 import org.activiti.engine.impl.persistence.entity.CommentEntityImpl;
@@ -28,10 +27,9 @@ import org.activiti.engine.impl.persistence.entity.data.CommentDataManager;
 import org.activiti.engine.task.Comment;
 import org.activiti.engine.task.Event;
 
-/**
-
- */
-public class MybatisCommentDataManager extends AbstractDataManager<CommentEntity> implements CommentDataManager {
+/** */
+public class MybatisCommentDataManager extends AbstractDataManager<CommentEntity>
+    implements CommentDataManager {
 
   public MybatisCommentDataManager(ProcessEngineConfigurationImpl processEngineConfiguration) {
     super(processEngineConfiguration);
@@ -59,7 +57,8 @@ public class MybatisCommentDataManager extends AbstractDataManager<CommentEntity
     Map<String, Object> params = new HashMap<String, Object>();
     params.put("taskId", taskId);
     params.put("type", type);
-    return getDbSqlSession().selectListWithRawParameter("selectCommentsByTaskIdAndType", params, 0, Integer.MAX_VALUE);
+    return getDbSqlSession()
+        .selectListWithRawParameter("selectCommentsByTaskIdAndType", params, 0, Integer.MAX_VALUE);
   }
 
   @Override
@@ -87,7 +86,8 @@ public class MybatisCommentDataManager extends AbstractDataManager<CommentEntity
 
   @Override
   public void deleteCommentsByProcessInstanceId(String processInstanceId) {
-    getDbSqlSession().delete("deleteCommentsByProcessInstanceId", processInstanceId, CommentEntityImpl.class);
+    getDbSqlSession()
+        .delete("deleteCommentsByProcessInstanceId", processInstanceId, CommentEntityImpl.class);
   }
 
   @Override
@@ -102,7 +102,9 @@ public class MybatisCommentDataManager extends AbstractDataManager<CommentEntity
     Map<String, Object> params = new HashMap<String, Object>();
     params.put("processInstanceId", processInstanceId);
     params.put("type", type);
-    return getDbSqlSession().selectListWithRawParameter("selectCommentsByProcessInstanceIdAndType", params, 0, Integer.MAX_VALUE);
+    return getDbSqlSession()
+        .selectListWithRawParameter(
+            "selectCommentsByProcessInstanceIdAndType", params, 0, Integer.MAX_VALUE);
   }
 
   @Override
@@ -114,5 +116,4 @@ public class MybatisCommentDataManager extends AbstractDataManager<CommentEntity
   public Event findEvent(String commentId) {
     return findById(commentId);
   }
-
 }

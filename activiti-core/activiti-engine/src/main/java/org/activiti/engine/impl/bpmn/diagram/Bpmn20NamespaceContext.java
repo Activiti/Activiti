@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.bpmn.diagram;
 
 import java.util.HashMap;
@@ -23,16 +22,13 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.xpath.XPath;
 
 /**
  * XML {@link NamespaceContext} containing the namespaces used by BPMN 2.0 XML documents.
  *
- * Can be used in {@link XPath#setNamespaceContext(NamespaceContext)}.
- *
-
+ * <p>Can be used in {@link XPath#setNamespaceContext(NamespaceContext)}.
  */
 public class Bpmn20NamespaceContext implements NamespaceContext {
 
@@ -83,5 +79,4 @@ public class Bpmn20NamespaceContext implements NamespaceContext {
     }
     return null;
   }
-
 }

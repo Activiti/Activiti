@@ -23,9 +23,8 @@ import org.activiti.engine.impl.bpmn.data.FieldBaseStructureInstance;
 import org.apache.commons.lang3.StringUtils;
 
 /**
- * An implicit data input association between a source and a target. source is a variable in the current execution context and target is a property in the message
- *
-
+ * An implicit data input association between a source and a target. source is a variable in the
+ * current execution context and target is a property in the message
  */
 public class MessageImplicitDataInputAssociation extends AbstractDataAssociation {
 
@@ -39,9 +38,11 @@ public class MessageImplicitDataInputAssociation extends AbstractDataAssociation
   public void evaluate(DelegateExecution execution) {
     if (StringUtils.isNotEmpty(this.source)) {
       Object value = execution.getVariable(this.source);
-      MessageInstance message = (MessageInstance) execution.getVariable(WebServiceActivityBehavior.CURRENT_MESSAGE);
+      MessageInstance message =
+          (MessageInstance) execution.getVariable(WebServiceActivityBehavior.CURRENT_MESSAGE);
       if (message.getStructureInstance() instanceof FieldBaseStructureInstance) {
-        FieldBaseStructureInstance structure = (FieldBaseStructureInstance) message.getStructureInstance();
+        FieldBaseStructureInstance structure =
+            (FieldBaseStructureInstance) message.getStructureInstance();
         structure.setFieldValue(this.target, value);
       }
     }

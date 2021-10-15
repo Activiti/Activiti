@@ -14,18 +14,12 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.test.api.runtime;
 
 import java.io.Serializable;
 
-/**
- * Dummy class that implements {@link Serializable}.
- *
-
- */
+/** Dummy class that implements {@link Serializable}. */
 public class DummySerializable implements Serializable {
 
   private static final long serialVersionUID = 1L;
-
 }

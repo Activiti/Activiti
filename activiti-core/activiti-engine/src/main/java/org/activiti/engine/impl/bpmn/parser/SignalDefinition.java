@@ -14,16 +14,11 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.bpmn.parser;
 
 import java.io.Serializable;
 
-/**
- * Represents a bpmn signal definition
- *
-
- */
+/** Represents a bpmn signal definition */
 public class SignalDefinition implements Serializable {
 
   private static final long serialVersionUID = 1L;
@@ -46,5 +41,4 @@ public class SignalDefinition implements Serializable {
   public void setName(String name) {
     this.name = name;
   }
-
 }

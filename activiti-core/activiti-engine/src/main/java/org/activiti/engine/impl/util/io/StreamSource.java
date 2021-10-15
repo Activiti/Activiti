@@ -17,18 +17,11 @@
 package org.activiti.engine.impl.util.io;
 
 import java.io.InputStream;
-
 import org.activiti.bpmn.converter.util.InputStreamProvider;
 
-/**
-
-
- */
+/** */
 public interface StreamSource extends InputStreamProvider {
 
-  /**
-   * Creates a <b>NEW</b> {@link InputStream} to the provided resource.
-   */
+  /** Creates a <b>NEW</b> {@link InputStream} to the provided resource. */
   InputStream getInputStream();
-
 }

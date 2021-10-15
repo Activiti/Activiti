@@ -15,57 +15,55 @@
  */
 package org.activiti.runtime.api.model.impl;
 
-import org.activiti.engine.repository.ProcessDefinition;
-
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-/**
- * Mock process definition builder.
- */
+import org.activiti.engine.repository.ProcessDefinition;
+
+/** Mock process definition builder. */
 public class MockProcessDefinitionBuilder {
 
-    private ProcessDefinition processDefinition;
+  private ProcessDefinition processDefinition;
 
-    private MockProcessDefinitionBuilder(Class<? extends ProcessDefinition> processDefinitionClass) {
-        processDefinition = mock(processDefinitionClass);
-    }
+  private MockProcessDefinitionBuilder(Class<? extends ProcessDefinition> processDefinitionClass) {
+    processDefinition = mock(processDefinitionClass);
+  }
 
-    public static MockProcessDefinitionBuilder processDefinitionBuilderBuilder() {
-        return new MockProcessDefinitionBuilder(ProcessDefinition.class);
-    }
+  public static MockProcessDefinitionBuilder processDefinitionBuilderBuilder() {
+    return new MockProcessDefinitionBuilder(ProcessDefinition.class);
+  }
 
-    public MockProcessDefinitionBuilder withId(String id) {
-        when(processDefinition.getId()).thenReturn(id);
-        return this;
-    }
+  public MockProcessDefinitionBuilder withId(String id) {
+    when(processDefinition.getId()).thenReturn(id);
+    return this;
+  }
 
-    public MockProcessDefinitionBuilder withKey(String key) {
-        when(processDefinition.getKey()).thenReturn(key);
-        return this;
-    }
+  public MockProcessDefinitionBuilder withKey(String key) {
+    when(processDefinition.getKey()).thenReturn(key);
+    return this;
+  }
 
-    public MockProcessDefinitionBuilder withName(String name) {
-        when(processDefinition.getName()).thenReturn(name);
-        return this;
-    }
+  public MockProcessDefinitionBuilder withName(String name) {
+    when(processDefinition.getName()).thenReturn(name);
+    return this;
+  }
 
-    public MockProcessDefinitionBuilder withDescription(String description) {
-        when(processDefinition.getDescription()).thenReturn(description);
-        return this;
-    }
+  public MockProcessDefinitionBuilder withDescription(String description) {
+    when(processDefinition.getDescription()).thenReturn(description);
+    return this;
+  }
 
-    public MockProcessDefinitionBuilder withVersion(int version) {
-        when(processDefinition.getVersion()).thenReturn(version);
-        return this;
-    }
+  public MockProcessDefinitionBuilder withVersion(int version) {
+    when(processDefinition.getVersion()).thenReturn(version);
+    return this;
+  }
 
-    public MockProcessDefinitionBuilder withAppVersion(Integer appVersion) {
-        when(processDefinition.getAppVersion()).thenReturn(appVersion);
-        return this;
-    }
+  public MockProcessDefinitionBuilder withAppVersion(Integer appVersion) {
+    when(processDefinition.getAppVersion()).thenReturn(appVersion);
+    return this;
+  }
 
-    public ProcessDefinition build() {
-        return processDefinition;
-    }
+  public ProcessDefinition build() {
+    return processDefinition;
+  }
 }

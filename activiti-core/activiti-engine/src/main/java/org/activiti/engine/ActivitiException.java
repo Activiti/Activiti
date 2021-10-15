@@ -16,11 +16,7 @@
 
 package org.activiti.engine;
 
-/**
- * Runtime exception that is the superclass of all Activiti exceptions.
- *
-
- */
+/** Runtime exception that is the superclass of all Activiti exceptions. */
 public class ActivitiException extends RuntimeException {
 
   private static final long serialVersionUID = 1L;

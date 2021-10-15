@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.bpmn.behavior;
 
 import org.activiti.bpmn.model.Activity;
@@ -32,12 +31,14 @@ public class SequentialMultiInstanceBehavior extends MultiInstanceActivityBehavi
 
   private static final long serialVersionUID = 1L;
 
-  public SequentialMultiInstanceBehavior(Activity activity, AbstractBpmnActivityBehavior innerActivityBehavior) {
+  public SequentialMultiInstanceBehavior(
+      Activity activity, AbstractBpmnActivityBehavior innerActivityBehavior) {
     super(activity, innerActivityBehavior);
   }
 
   /**
-   * Handles the sequential case of spawning the instances. Will only create one instance, since at most one instance can be active.
+   * Handles the sequential case of spawning the instances. Will only create one instance, since at
+   * most one instance can be active.
    */
   protected int createInstances(DelegateExecution multiInstanceExecution) {
 
@@ -45,12 +46,17 @@ public class SequentialMultiInstanceBehavior extends MultiInstanceActivityBehavi
     if (nrOfInstances == 0) {
       return nrOfInstances;
     } else if (nrOfInstances < 0) {
-      throw new ActivitiIllegalArgumentException("Invalid number of instances: must be a non-negative integer value" + ", but was " + nrOfInstances);
+      throw new ActivitiIllegalArgumentException(
+          "Invalid number of instances: must be a non-negative integer value"
+              + ", but was "
+              + nrOfInstances);
     }
 
     // Create child execution that will execute the inner behavior
-    ExecutionEntity childExecution = Context.getCommandContext().getExecutionEntityManager()
-        .createChildExecution((ExecutionEntity) multiInstanceExecution);
+    ExecutionEntity childExecution =
+        Context.getCommandContext()
+            .getExecutionEntityManager()
+            .createChildExecution((ExecutionEntity) multiInstanceExecution);
     childExecution.setCurrentFlowElement(multiInstanceExecution.getCurrentFlowElement());
     multiInstanceExecution.setMultiInstanceRoot(true);
     multiInstanceExecution.setActive(false);
@@ -67,23 +73,35 @@ public class SequentialMultiInstanceBehavior extends MultiInstanceActivityBehavi
   }
 
   /**
-   * Called when the wrapped {@link ActivityBehavior} calls the {@link AbstractBpmnActivityBehavior#leave(DelegateExecution)} method. Handles the completion of one instance, and executes the logic for
-   * the sequential behavior.
+   * Called when the wrapped {@link ActivityBehavior} calls the {@link
+   * AbstractBpmnActivityBehavior#leave(DelegateExecution)} method. Handles the completion of one
+   * instance, and executes the logic for the sequential behavior.
    */
   public void leave(DelegateExecution childExecution) {
     DelegateExecution multiInstanceRootExecution = getMultiInstanceRootExecution(childExecution);
     int nrOfInstances = getLoopVariable(multiInstanceRootExecution, NUMBER_OF_INSTANCES);
     int loopCounter = getLoopVariable(childExecution, getCollectionElementIndexVariable()) + 1;
-    int nrOfCompletedInstances = getLoopVariable(multiInstanceRootExecution, NUMBER_OF_COMPLETED_INSTANCES) + 1;
-    int nrOfActiveInstances = getLoopVariable(multiInstanceRootExecution, NUMBER_OF_ACTIVE_INSTANCES);
+    int nrOfCompletedInstances =
+        getLoopVariable(multiInstanceRootExecution, NUMBER_OF_COMPLETED_INSTANCES) + 1;
+    int nrOfActiveInstances =
+        getLoopVariable(multiInstanceRootExecution, NUMBER_OF_ACTIVE_INSTANCES);
 
-    setLoopVariable(multiInstanceRootExecution, NUMBER_OF_COMPLETED_INSTANCES, nrOfCompletedInstances);
+    setLoopVariable(
+        multiInstanceRootExecution, NUMBER_OF_COMPLETED_INSTANCES, nrOfCompletedInstances);
     setLoopVariable(childExecution, getCollectionElementIndexVariable(), loopCounter);
-    logLoopDetails(childExecution, "instance completed", loopCounter, nrOfCompletedInstances, nrOfActiveInstances, nrOfInstances);
+    logLoopDetails(
+        childExecution,
+        "instance completed",
+        loopCounter,
+        nrOfCompletedInstances,
+        nrOfActiveInstances,
+        nrOfInstances);
 
     updateResultCollection(childExecution, multiInstanceRootExecution);
 
-    Context.getCommandContext().getHistoryManager().recordActivityEnd((ExecutionEntity) childExecution, null);
+    Context.getCommandContext()
+        .getHistoryManager()
+        .recordActivityEnd((ExecutionEntity) childExecution, null);
     callActivityEndListeners(childExecution);
 
     if (loopCounter >= nrOfInstances || completionConditionSatisfied(multiInstanceRootExecution)) {
@@ -92,7 +110,9 @@ public class SequentialMultiInstanceBehavior extends MultiInstanceActivityBehavi
       multiInstanceRootExecution.setMultiInstanceRoot(false);
       multiInstanceRootExecution.setScope(false);
       multiInstanceRootExecution.setCurrentFlowElement(childExecution.getCurrentFlowElement());
-      Context.getCommandContext().getExecutionEntityManager().deleteChildExecutions((ExecutionEntity) multiInstanceRootExecution, "MI_END");
+      Context.getCommandContext()
+          .getExecutionEntityManager()
+          .deleteChildExecutions((ExecutionEntity) multiInstanceRootExecution, "MI_END");
       dispatchActivityCompletedEvent(childExecution);
       super.leave(multiInstanceRootExecution);
 
@@ -100,8 +120,11 @@ public class SequentialMultiInstanceBehavior extends MultiInstanceActivityBehavi
       try {
 
         if (childExecution.getCurrentFlowElement() instanceof SubProcess) {
-          ExecutionEntityManager executionEntityManager = Context.getCommandContext().getExecutionEntityManager();
-          ExecutionEntity executionToContinue = executionEntityManager.createChildExecution((ExecutionEntity) multiInstanceRootExecution);
+          ExecutionEntityManager executionEntityManager =
+              Context.getCommandContext().getExecutionEntityManager();
+          ExecutionEntity executionToContinue =
+              executionEntityManager.createChildExecution(
+                  (ExecutionEntity) multiInstanceRootExecution);
           executionToContinue.setCurrentFlowElement(childExecution.getCurrentFlowElement());
           executionToContinue.setScope(true);
           setLoopVariable(executionToContinue, getCollectionElementIndexVariable(), loopCounter);
@@ -115,7 +138,8 @@ public class SequentialMultiInstanceBehavior extends MultiInstanceActivityBehavi
         // Intermediate Event or Error Event Sub-Process in the process
         throw error;
       } catch (Exception e) {
-        throw new ActivitiException("Could not execute inner activity behavior of multi instance behavior", e);
+        throw new ActivitiException(
+            "Could not execute inner activity behavior of multi instance behavior", e);
       }
     }
   }

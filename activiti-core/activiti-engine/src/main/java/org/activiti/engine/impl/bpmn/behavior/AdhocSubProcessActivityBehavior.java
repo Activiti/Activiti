@@ -14,24 +14,18 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.bpmn.behavior;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.SubProcess;
 import org.activiti.bpmn.model.ValuedDataObject;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.DelegateExecution;
 
-/**
- * Implementation of the BPMN 2.0 ad-hoc subprocess.
- *
-
- */
+/** Implementation of the BPMN 2.0 ad-hoc subprocess. */
 public class AdhocSubProcessActivityBehavior extends AbstractBpmnActivityBehavior {
 
   private static final long serialVersionUID = 1L;
@@ -53,7 +47,10 @@ public class AdhocSubProcessActivityBehavior extends AbstractBpmnActivityBehavio
     if (flowElement instanceof SubProcess) {
       subProcess = (SubProcess) flowElement;
     } else {
-      throw new ActivitiException("Programmatic error: sub process behaviour can only be applied" + " to a SubProcess instance, but got an instance of " + flowElement);
+      throw new ActivitiException(
+          "Programmatic error: sub process behaviour can only be applied"
+              + " to a SubProcess instance, but got an instance of "
+              + flowElement);
     }
     return subProcess;
   }

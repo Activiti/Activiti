@@ -18,17 +18,12 @@ package org.activiti.engine.impl.webservice;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import org.activiti.engine.impl.bpmn.webservice.BpmnInterface;
 import org.activiti.engine.impl.bpmn.webservice.BpmnInterfaceImplementation;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.util.ReflectUtil;
 
-/**
- * Represents a WS implementation of a {@link BpmnInterface}
- *
-
- */
+/** Represents a WS implementation of a {@link BpmnInterface} */
 @Deprecated
 public class WSService implements BpmnInterfaceImplementation {
 
@@ -63,15 +58,15 @@ public class WSService implements BpmnInterfaceImplementation {
   SyncWebServiceClient getClient() {
     if (this.client == null) {
       // TODO refactor to use configuration
-      SyncWebServiceClientFactory factory = (SyncWebServiceClientFactory) ReflectUtil.instantiate(ProcessEngineConfigurationImpl.DEFAULT_WS_SYNC_FACTORY);
+      SyncWebServiceClientFactory factory =
+          (SyncWebServiceClientFactory)
+              ReflectUtil.instantiate(ProcessEngineConfigurationImpl.DEFAULT_WS_SYNC_FACTORY);
       this.client = factory.create(this.wsdlLocation);
     }
     return this.client;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   public String getName() {
     return this.name;
   }

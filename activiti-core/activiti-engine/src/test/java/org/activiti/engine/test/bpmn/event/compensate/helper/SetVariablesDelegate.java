@@ -14,19 +14,15 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.test.bpmn.event.compensate.helper;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.JavaDelegate;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 
-/**
-
- */
+/** */
 public class SetVariablesDelegate implements JavaDelegate {
 
   public static Map<Object, Integer> variablesMap = new HashMap<Object, Integer>();
@@ -40,5 +36,4 @@ public class SetVariablesDelegate implements JavaDelegate {
     ((ExecutionEntity) execution).getParent().setVariableLocal("variable", lastInt);
     lastInt++;
   }
-
 }

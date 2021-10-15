@@ -18,15 +18,10 @@ package org.activiti.engine.impl.bpmn.webservice;
 
 import org.activiti.engine.api.internal.Internal;
 
-/**
- * Represents an implementation of a {@link BpmnInterface}
- *
- */
+/** Represents an implementation of a {@link BpmnInterface} */
 @Internal
 public interface BpmnInterfaceImplementation {
 
-  /**
-   * @return the name of this implementation
-   */
+  /** @return the name of this implementation */
   String getName();
 }

@@ -14,20 +14,15 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.persistence.entity;
 
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-
 import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.repository.Deployment;
 
-/**
-
-
- */
+/** */
 @Internal
 public interface DeploymentEntity extends Deployment, Entity {
 
@@ -66,5 +61,4 @@ public interface DeploymentEntity extends Deployment, Entity {
   String getProjectReleaseVersion();
 
   void setProjectReleaseVersion(String projectReleaseVersion);
-
 }

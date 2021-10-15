@@ -17,14 +17,11 @@
 package org.activiti.engine.impl.cmd;
 
 import java.io.Serializable;
-
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 
-/**
-
- */
+/** */
 public class DeleteModelCmd implements Command<Void>, Serializable {
 
   private static final long serialVersionUID = 1L;
@@ -42,5 +39,4 @@ public class DeleteModelCmd implements Command<Void>, Serializable {
 
     return null;
   }
-
 }

@@ -19,22 +19,16 @@ package org.activiti.engine.impl.scripting;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.script.Bindings;
 import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineFactory;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
-
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.VariableScope;
 
-/**
-
-
-
- */
+/** */
 public class ScriptingEngines {
 
   public static final String DEFAULT_SCRIPTING_LANGUAGE = "juel";
@@ -57,14 +51,16 @@ public class ScriptingEngines {
   }
 
   public ScriptingEngines addScriptEngineFactory(ScriptEngineFactory scriptEngineFactory) {
-    scriptEngineManager.registerEngineName(scriptEngineFactory.getEngineName(), scriptEngineFactory);
+    scriptEngineManager.registerEngineName(
+        scriptEngineFactory.getEngineName(), scriptEngineFactory);
     return this;
   }
 
   public void setScriptEngineFactories(List<ScriptEngineFactory> scriptEngineFactories) {
     if (scriptEngineFactories != null) {
       for (ScriptEngineFactory scriptEngineFactory : scriptEngineFactories) {
-        scriptEngineManager.registerEngineName(scriptEngineFactory.getEngineName(), scriptEngineFactory);
+        scriptEngineManager.registerEngineName(
+            scriptEngineFactory.getEngineName(), scriptEngineFactory);
       }
     }
   }
@@ -73,7 +69,8 @@ public class ScriptingEngines {
     return evaluate(script, language, createBindings(variableScope));
   }
 
-  public Object evaluate(String script, String language, VariableScope variableScope, boolean storeScriptVariables) {
+  public Object evaluate(
+      String script, String language, VariableScope variableScope, boolean storeScriptVariables) {
     return evaluate(script, language, createBindings(variableScope, storeScriptVariables));
   }
 
@@ -106,7 +103,10 @@ public class ScriptingEngines {
           // ACT-1858: Special handling for groovy engine regarding GC
           if (GROOVY_SCRIPTING_LANGUAGE.equals(language)) {
             try {
-              scriptEngine.getContext().setAttribute("#jsr223.groovy.engine.keep.globals", "weak", ScriptContext.ENGINE_SCOPE);
+              scriptEngine
+                  .getContext()
+                  .setAttribute(
+                      "#jsr223.groovy.engine.keep.globals", "weak", ScriptContext.ENGINE_SCOPE);
             } catch (Exception ignore) {
               // ignore this, in case engine doesn't support the
               // passed attribute

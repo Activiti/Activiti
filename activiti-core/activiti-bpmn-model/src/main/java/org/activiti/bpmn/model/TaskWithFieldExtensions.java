@@ -25,8 +25,8 @@ public abstract class TaskWithFieldExtensions extends Task {
   public List<FieldExtension> getFieldExtensions() {
     return fieldExtensions;
   }
+
   public void setFieldExtensions(List<FieldExtension> fieldExtensions) {
     this.fieldExtensions = fieldExtensions;
   }
-
 }

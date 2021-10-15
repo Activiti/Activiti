@@ -14,11 +14,9 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.cmd;
 
 import java.io.Serializable;
-
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.delegate.event.ActivitiEventType;
@@ -28,9 +26,7 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.JobEntity;
 import org.activiti.engine.runtime.Job;
 
-/**
-
- */
+/** */
 public class SetJobRetriesCmd implements Command<Void>, Serializable {
 
   private static final long serialVersionUID = 1L;
@@ -40,10 +36,14 @@ public class SetJobRetriesCmd implements Command<Void>, Serializable {
 
   public SetJobRetriesCmd(String jobId, int retries) {
     if (jobId == null || jobId.length() < 1) {
-      throw new ActivitiIllegalArgumentException("The job id is mandatory, but '" + jobId + "' has been provided.");
+      throw new ActivitiIllegalArgumentException(
+          "The job id is mandatory, but '" + jobId + "' has been provided.");
     }
     if (retries < 0) {
-      throw new ActivitiIllegalArgumentException("The number of job retries must be a non-negative Integer, but '" + retries + "' has been provided.");
+      throw new ActivitiIllegalArgumentException(
+          "The number of job retries must be a non-negative Integer, but '"
+              + retries
+              + "' has been provided.");
     }
     this.jobId = jobId;
     this.retries = retries;
@@ -56,7 +56,10 @@ public class SetJobRetriesCmd implements Command<Void>, Serializable {
       job.setRetries(retries);
 
       if (commandContext.getEventDispatcher().isEnabled()) {
-        commandContext.getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_UPDATED, job));
+        commandContext
+            .getEventDispatcher()
+            .dispatchEvent(
+                ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_UPDATED, job));
       }
     } else {
       throw new ActivitiObjectNotFoundException("No job found with id '" + jobId + "'.", Job.class);

@@ -27,10 +27,7 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
 
-/**
-
-
- */
+/** */
 public class SpringTransactionInterceptor extends AbstractCommandInterceptor {
   private static final Logger LOGGER = LoggerFactory.getLogger(SpringTransactionInterceptor.class);
 
@@ -46,25 +43,28 @@ public class SpringTransactionInterceptor extends AbstractCommandInterceptor {
     TransactionTemplate transactionTemplate = new TransactionTemplate(transactionManager);
     transactionTemplate.setPropagationBehavior(getPropagation(config));
 
-    T result = transactionTemplate.execute(new TransactionCallback<T>() {
-      public T doInTransaction(TransactionStatus status) {
-        return next.execute(config, command);
-      }
-    });
+    T result =
+        transactionTemplate.execute(
+            new TransactionCallback<T>() {
+              public T doInTransaction(TransactionStatus status) {
+                return next.execute(config, command);
+              }
+            });
 
     return result;
   }
 
   private int getPropagation(CommandConfig config) {
     switch (config.getTransactionPropagation()) {
-    case NOT_SUPPORTED:
-      return TransactionTemplate.PROPAGATION_NOT_SUPPORTED;
-    case REQUIRED:
-      return TransactionTemplate.PROPAGATION_REQUIRED;
-    case REQUIRES_NEW:
-      return TransactionTemplate.PROPAGATION_REQUIRES_NEW;
-    default:
-      throw new ActivitiIllegalArgumentException("Unsupported transaction propagation: " + config.getTransactionPropagation());
+      case NOT_SUPPORTED:
+        return TransactionTemplate.PROPAGATION_NOT_SUPPORTED;
+      case REQUIRED:
+        return TransactionTemplate.PROPAGATION_REQUIRED;
+      case REQUIRES_NEW:
+        return TransactionTemplate.PROPAGATION_REQUIRES_NEW;
+      default:
+        throw new ActivitiIllegalArgumentException(
+            "Unsupported transaction propagation: " + config.getTransactionPropagation());
     }
   }
 }

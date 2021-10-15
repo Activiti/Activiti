@@ -14,15 +14,12 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.test.bpmn.servicetask;
 
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.JavaDelegate;
 
-/**
-
- */
+/** */
 public class DummyServiceTask implements JavaDelegate {
 
   public void execute(DelegateExecution execution) {
@@ -30,5 +27,4 @@ public class DummyServiceTask implements JavaDelegate {
     count = count + 1;
     execution.setVariable("count", count);
   }
-
 }

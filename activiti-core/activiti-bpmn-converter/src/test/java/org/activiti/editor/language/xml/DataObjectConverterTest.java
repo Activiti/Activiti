@@ -20,7 +20,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.StartEvent;
@@ -30,7 +29,8 @@ import org.activiti.bpmn.model.ValuedDataObject;
 import org.junit.jupiter.api.Test;
 
 /**
- * @see <a href="https://activiti.atlassian.net/browse/ACT-1847">https://activiti.atlassian.net/browse/ACT-1847</a>
+ * @see <a
+ *     href="https://activiti.atlassian.net/browse/ACT-1847">https://activiti.atlassian.net/browse/ACT-1847</a>
  */
 public class DataObjectConverterTest extends AbstractConverterTest {
 

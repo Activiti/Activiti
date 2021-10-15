@@ -16,17 +16,14 @@
 
 package org.activiti.spring.test.fieldinjection;
 
+import java.util.concurrent.atomic.AtomicInteger;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.DelegateHelper;
 import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.delegate.Expression;
 import org.springframework.stereotype.Component;
 
-import java.util.concurrent.atomic.AtomicInteger;
-
-/**
-
- */
+/** */
 @Component("testExecutionListener")
 public class TestExecutionListener implements ExecutionListener {
 
@@ -46,5 +43,4 @@ public class TestExecutionListener implements ExecutionListener {
     Expression resultVarExpression = DelegateHelper.getFieldExpression(execution, "resultVar");
     execution.setVariable(resultVarExpression.getValue(execution).toString(), result);
   }
-
 }

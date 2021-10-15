@@ -14,19 +14,14 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.cmd;
 
 import java.util.Map;
-
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.task.DelegationState;
 
-/**
-
-
- */
+/** */
 public class ResolveTaskCmd extends NeedsActiveTaskCmd<Void> {
 
   private static final long serialVersionUID = 1L;
@@ -39,7 +34,8 @@ public class ResolveTaskCmd extends NeedsActiveTaskCmd<Void> {
     this.variables = variables;
   }
 
-  public ResolveTaskCmd(String taskId, Map<String, Object> variables, Map<String, Object> transientVariables) {
+  public ResolveTaskCmd(
+      String taskId, Map<String, Object> variables, Map<String, Object> transientVariables) {
     this(taskId, variables);
     this.transientVariables = transientVariables;
   }
@@ -62,5 +58,4 @@ public class ResolveTaskCmd extends NeedsActiveTaskCmd<Void> {
   protected String getSuspendedTaskException() {
     return "Cannot resolve a suspended task";
   }
-
 }

@@ -16,9 +16,7 @@
 
 package org.activiti.engine.impl.variable;
 
-/**
-
- */
+/** */
 public class NullType implements VariableType {
 
   private static final long serialVersionUID = 1L;
@@ -39,6 +37,5 @@ public class NullType implements VariableType {
     return (value == null);
   }
 
-  public void setValue(Object value, ValueFields valueFields) {
-  }
+  public void setValue(Object value, ValueFields valueFields) {}
 }

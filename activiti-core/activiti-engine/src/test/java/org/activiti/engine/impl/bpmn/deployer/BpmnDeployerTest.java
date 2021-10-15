@@ -29,42 +29,41 @@ import org.mockito.Mock;
 
 public class BpmnDeployerTest {
 
-    @InjectMocks
-    private BpmnDeployer bpmnDeployer;
+  @InjectMocks private BpmnDeployer bpmnDeployer;
 
-    @Mock
-    private BpmnDeploymentHelper bpmnDeploymentHelper;
+  @Mock private BpmnDeploymentHelper bpmnDeploymentHelper;
 
-    @Before
-    public void setUp() throws Exception {
-        initMocks(this);
-    }
+  @Before
+  public void setUp() throws Exception {
+    initMocks(this);
+  }
 
-    @Test
-    public void makeProcessDefinitionsConsistentWithPersistedVersions_should_setAppVersion() {
-        //given
-        ParsedDeployment parsedDeployment = mock(ParsedDeployment.class);
-        ProcessDefinitionEntityImpl parsedProcessDefinition = new ProcessDefinitionEntityImpl();
+  @Test
+  public void makeProcessDefinitionsConsistentWithPersistedVersions_should_setAppVersion() {
+    // given
+    ParsedDeployment parsedDeployment = mock(ParsedDeployment.class);
+    ProcessDefinitionEntityImpl parsedProcessDefinition = new ProcessDefinitionEntityImpl();
 
-        given(parsedDeployment.getAllProcessDefinitions()).willReturn(singletonList(parsedProcessDefinition));
+    given(parsedDeployment.getAllProcessDefinitions())
+        .willReturn(singletonList(parsedProcessDefinition));
 
-        ProcessDefinitionEntityImpl persistedProcessDefinition = new ProcessDefinitionEntityImpl();
-        persistedProcessDefinition.setId("procId");
-        persistedProcessDefinition.setVersion(1);
-        persistedProcessDefinition.setAppVersion(2);
-        given(bpmnDeploymentHelper.getPersistedInstanceOfProcessDefinition(parsedProcessDefinition))
-            .willReturn(persistedProcessDefinition);
+    ProcessDefinitionEntityImpl persistedProcessDefinition = new ProcessDefinitionEntityImpl();
+    persistedProcessDefinition.setId("procId");
+    persistedProcessDefinition.setVersion(1);
+    persistedProcessDefinition.setAppVersion(2);
+    given(bpmnDeploymentHelper.getPersistedInstanceOfProcessDefinition(parsedProcessDefinition))
+        .willReturn(persistedProcessDefinition);
 
-        //when
-        bpmnDeployer.makeProcessDefinitionsConsistentWithPersistedVersions(
-            parsedDeployment);
+    // when
+    bpmnDeployer.makeProcessDefinitionsConsistentWithPersistedVersions(parsedDeployment);
 
-        //then
-        assertThat(parsedProcessDefinition.getId()).isEqualTo(persistedProcessDefinition.getId());
-        assertThat(parsedProcessDefinition.getVersion()).isEqualTo(persistedProcessDefinition.getVersion());
-        assertThat(parsedProcessDefinition.getAppVersion()).isEqualTo(persistedProcessDefinition.getAppVersion());
-        assertThat(parsedProcessDefinition.getSuspensionState()).isEqualTo(persistedProcessDefinition.getSuspensionState());
-
-    }
-
+    // then
+    assertThat(parsedProcessDefinition.getId()).isEqualTo(persistedProcessDefinition.getId());
+    assertThat(parsedProcessDefinition.getVersion())
+        .isEqualTo(persistedProcessDefinition.getVersion());
+    assertThat(parsedProcessDefinition.getAppVersion())
+        .isEqualTo(persistedProcessDefinition.getAppVersion());
+    assertThat(parsedProcessDefinition.getSuspensionState())
+        .isEqualTo(persistedProcessDefinition.getSuspensionState());
+  }
 }

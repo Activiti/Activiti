@@ -25,17 +25,14 @@ import org.activiti.engine.impl.interceptor.CommandConfig;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 
-/**
- * A {@link TransactionListener} that invokes an {@link ExecutionListener}.
- *
-
- */
+/** A {@link TransactionListener} that invokes an {@link ExecutionListener}. */
 public class ExecuteExecutionListenerTransactionListener implements TransactionListener {
 
   protected TransactionDependentExecutionListener listener;
   protected TransactionDependentExecutionListenerExecutionScope scope;
 
-  public ExecuteExecutionListenerTransactionListener(TransactionDependentExecutionListener listener,
+  public ExecuteExecutionListenerTransactionListener(
+      TransactionDependentExecutionListener listener,
       TransactionDependentExecutionListenerExecutionScope scope) {
     this.listener = listener;
     this.scope = scope;
@@ -43,15 +40,21 @@ public class ExecuteExecutionListenerTransactionListener implements TransactionL
 
   @Override
   public void execute(CommandContext commandContext) {
-    CommandExecutor commandExecutor = commandContext.getProcessEngineConfiguration().getCommandExecutor();
+    CommandExecutor commandExecutor =
+        commandContext.getProcessEngineConfiguration().getCommandExecutor();
     CommandConfig commandConfig = new CommandConfig(false, TransactionPropagation.REQUIRES_NEW);
-    commandExecutor.execute(commandConfig, new Command<Void>() {
-      public Void execute(CommandContext commandContext) {
-        listener.notify(scope.getProcessInstanceId(), scope.getExecutionId(), scope.getFlowElement(),
-            scope.getExecutionVariables(), scope.getCustomPropertiesMap());
-        return null;
-      }
-    });
+    commandExecutor.execute(
+        commandConfig,
+        new Command<Void>() {
+          public Void execute(CommandContext commandContext) {
+            listener.notify(
+                scope.getProcessInstanceId(),
+                scope.getExecutionId(),
+                scope.getFlowElement(),
+                scope.getExecutionVariables(),
+                scope.getCustomPropertiesMap());
+            return null;
+          }
+        });
   }
-
 }

@@ -19,9 +19,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Calendar;
 import java.util.List;
-
-
-
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.impl.util.DefaultClockImpl;
@@ -51,9 +48,7 @@ public class StartTimerEventRepeatCompatibilityTest extends TimerEventCompatibil
     }
   }
 
-  /**
-   * Timer repetition
-   */
+  /** Timer repetition */
   public void testCycleDateStartTimerEvent() throws Exception {
     Clock previousClock = processEngineConfiguration.getClock();
 
@@ -66,11 +61,16 @@ public class StartTimerEventRepeatCompatibilityTest extends TimerEventCompatibil
     testClock.setCurrentTime(calendar.getTime());
 
     // deploy the process
-    repositoryService.createDeployment().addClasspathResource("org/activiti/engine/test/bpmn/event/timer/StartTimerEventRepeatWithoutEndDateTest.testCycleDateStartTimerEvent.bpmn20.xml").deploy();
+    repositoryService
+        .createDeployment()
+        .addClasspathResource(
+            "org/activiti/engine/test/bpmn/event/timer/StartTimerEventRepeatWithoutEndDateTest.testCycleDateStartTimerEvent.bpmn20.xml")
+        .deploy();
     assertThat(repositoryService.createProcessDefinitionQuery().count()).isEqualTo(1);
 
     // AFTER DEPLOYMENT
-    // when the process is deployed there will be created a timerStartEvent job which will wait to be executed.
+    // when the process is deployed there will be created a timerStartEvent job which will wait to
+    // be executed.
     List<Job> jobs = managementService.createTimerJobQuery().list();
     assertThat(jobs).hasSize(1);
 
@@ -79,7 +79,10 @@ public class StartTimerEventRepeatCompatibilityTest extends TimerEventCompatibil
     dueDateCalendar.set(2025, Calendar.DECEMBER, 11, 0, 0, 0);
 
     // check the due date is inside the 2 seconds range
-    assertThat(Math.abs(dueDateCalendar.getTime().getTime() - jobs.get(0).getDuedate().getTime()) < 2000).isEqualTo(true);
+    assertThat(
+            Math.abs(dueDateCalendar.getTime().getTime() - jobs.get(0).getDuedate().getTime())
+                < 2000)
+        .isEqualTo(true);
 
     // No process instances
     List<ProcessInstance> processInstances = runtimeService.createProcessInstanceQuery().list();
@@ -115,7 +118,10 @@ public class StartTimerEventRepeatCompatibilityTest extends TimerEventCompatibil
     // (10'th repeat after 10 dec. => dueDate must have DueDate = 20 dec.)
     dueDateCalendar = Calendar.getInstance();
     dueDateCalendar.set(2025, Calendar.DECEMBER, 20, 0, 0, 0);
-    assertThat(Math.abs(dueDateCalendar.getTime().getTime() - jobs.get(0).getDuedate().getTime()) < 2000).isEqualTo(true);
+    assertThat(
+            Math.abs(dueDateCalendar.getTime().getTime() - jobs.get(0).getDuedate().getTime())
+                < 2000)
+        .isEqualTo(true);
 
     // ADVANCE THE CLOCK SO that all 10 repeats to be executed (last execution)
     moveByMinutes(60 * 24);
@@ -166,13 +172,19 @@ public class StartTimerEventRepeatCompatibilityTest extends TimerEventCompatibil
       }
     }
     assertThat(timerFiredCount).isEqualTo(10); // 10 timers fired
-    assertThat(eventCreatedCount).isEqualTo(20); // 20 job entities created, 2 per job (timer and executable job)
-    assertThat(eventDeletedCount).isEqualTo(20); // 20 jobs entities deleted, 2 per job (timer and executable job)
+    assertThat(eventCreatedCount)
+        .isEqualTo(20); // 20 job entities created, 2 per job (timer and executable job)
+    assertThat(eventDeletedCount)
+        .isEqualTo(20); // 20 jobs entities deleted, 2 per job (timer and executable job)
 
     // for each processInstance
     // let's complete the userTasks where the process is hanging in order to complete the processes.
     for (ProcessInstance processInstance : processInstances) {
-      tasks = taskService.createTaskQuery().processInstanceId(processInstance.getProcessInstanceId()).list();
+      tasks =
+          taskService
+              .createTaskQuery()
+              .processInstanceId(processInstance.getProcessInstanceId())
+              .list();
       Task task = tasks.get(0);
       assertThat(task.getName()).isEqualTo("Task A");
       assertThat(tasks).hasSize(1);
@@ -197,8 +209,7 @@ public class StartTimerEventRepeatCompatibilityTest extends TimerEventCompatibil
     listener.clearEventsReceived();
     processEngineConfiguration.setClock(previousClock);
 
-    repositoryService.deleteDeployment(repositoryService.createDeploymentQuery().singleResult().getId(), true);
-
+    repositoryService.deleteDeployment(
+        repositoryService.createDeploymentQuery().singleResult().getId(), true);
   }
-
 }

@@ -14,18 +14,14 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.persistence.entity;
 
 import java.text.MessageFormat;
-
 import org.activiti.bpmn.model.Signal;
 
-/**
-
-
- */
-public class SignalEventSubscriptionEntityImpl extends EventSubscriptionEntityImpl implements SignalEventSubscriptionEntity {
+/** */
+public class SignalEventSubscriptionEntityImpl extends EventSubscriptionEntityImpl
+    implements SignalEventSubscriptionEntity {
 
   private static final long serialVersionUID = 1L;
 
@@ -59,8 +55,8 @@ public class SignalEventSubscriptionEntityImpl extends EventSubscriptionEntityIm
     if (this.configuration == null) {
       return null;
     } else {
-      return this.configuration.substring(10, this.configuration.length() - 2); // 10 --> length of {"scope": and -2 for removing"}
+      return this.configuration.substring(
+          10, this.configuration.length() - 2); // 10 --> length of {"scope": and -2 for removing"}
     }
   }
-
 }

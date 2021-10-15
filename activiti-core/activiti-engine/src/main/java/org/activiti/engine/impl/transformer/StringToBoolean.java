@@ -16,11 +16,7 @@
 
 package org.activiti.engine.impl.transformer;
 
-/**
- * Transforms a {@link String} to a {@link Boolean}
- *
-
- */
+/** Transforms a {@link String} to a {@link Boolean} */
 public class StringToBoolean extends AbstractTransformer {
 
   @Override

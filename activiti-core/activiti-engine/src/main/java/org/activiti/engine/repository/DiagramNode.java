@@ -14,14 +14,9 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.repository;
 
-/**
- * Stores position and dimensions of a diagram node.
- *
-
- */
+/** Stores position and dimensions of a diagram node. */
 public class DiagramNode extends DiagramElement {
 
   private static final long serialVersionUID = 1L;
@@ -81,7 +76,15 @@ public class DiagramNode extends DiagramElement {
 
   @Override
   public String toString() {
-    return super.toString() + ", x=" + getX() + ", y=" + getY() + ", width=" + getWidth() + ", height=" + getHeight();
+    return super.toString()
+        + ", x="
+        + getX()
+        + ", y="
+        + getY()
+        + ", width="
+        + getWidth()
+        + ", height="
+        + getHeight();
   }
 
   @Override
@@ -93,5 +96,4 @@ public class DiagramNode extends DiagramElement {
   public boolean isEdge() {
     return false;
   }
-
 }

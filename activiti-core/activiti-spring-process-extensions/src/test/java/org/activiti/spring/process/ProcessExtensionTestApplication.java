@@ -21,8 +21,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class ProcessExtensionTestApplication {
 
-    public static void main(String[] args) {
-        SpringApplication.run(ProcessExtensionTestApplication.class);
-    }
-
+  public static void main(String[] args) {
+    SpringApplication.run(ProcessExtensionTestApplication.class);
+  }
 }

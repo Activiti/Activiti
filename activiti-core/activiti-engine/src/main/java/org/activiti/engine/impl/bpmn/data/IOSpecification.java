@@ -20,13 +20,9 @@ import static java.util.Collections.unmodifiableList;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.activiti.engine.delegate.DelegateExecution;
 
-/**
- * Implementation of the BPMN 2.0 'ioSpecification'
- *
- */
+/** Implementation of the BPMN 2.0 'ioSpecification' */
 public class IOSpecification {
 
   protected List<Data> dataInputs;

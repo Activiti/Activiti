@@ -15,10 +15,9 @@
  */
 package org.activiti.bpmn.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public abstract class FlowNode extends FlowElement {
 
@@ -28,14 +27,11 @@ public abstract class FlowNode extends FlowElement {
   protected List<SequenceFlow> incomingFlows = new ArrayList<SequenceFlow>();
   protected List<SequenceFlow> outgoingFlows = new ArrayList<SequenceFlow>();
 
-  @JsonIgnore
-  protected Object behavior;
+  @JsonIgnore protected Object behavior;
 
-  public FlowNode() {
+  public FlowNode() {}
 
-  }
-
- public boolean isAsynchronous() {
+  public boolean isAsynchronous() {
     return asynchronous;
   }
 
@@ -54,6 +50,7 @@ public abstract class FlowNode extends FlowElement {
   public boolean isNotExclusive() {
     return notExclusive;
   }
+
   public void setNotExclusive(boolean notExclusive) {
     this.notExclusive = notExclusive;
   }

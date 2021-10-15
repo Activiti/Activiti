@@ -19,9 +19,7 @@ package org.activiti.engine.impl.cmd;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 
-/**
-
- */
+/** */
 public class SetTaskPriorityCmd extends NeedsActiveTaskCmd<Void> {
 
   private static final long serialVersionUID = 1L;
@@ -39,5 +37,4 @@ public class SetTaskPriorityCmd extends NeedsActiveTaskCmd<Void> {
     commandContext.getTaskEntityManager().update(task);
     return null;
   }
-
 }

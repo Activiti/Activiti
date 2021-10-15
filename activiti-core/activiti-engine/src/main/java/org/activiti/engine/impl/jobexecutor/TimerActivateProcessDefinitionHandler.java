@@ -22,10 +22,9 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.JobEntity;
 import org.activiti.engine.impl.util.json.JSONObject;
 
-/**
-
- */
-public class TimerActivateProcessDefinitionHandler extends TimerChangeProcessDefinitionSuspensionStateJobHandler {
+/** */
+public class TimerActivateProcessDefinitionHandler
+    extends TimerChangeProcessDefinitionSuspensionStateJobHandler {
 
   public static final String TYPE = "activate-processdefinition";
 
@@ -33,13 +32,18 @@ public class TimerActivateProcessDefinitionHandler extends TimerChangeProcessDef
     return TYPE;
   }
 
-  public void execute(JobEntity job, String configuration, ExecutionEntity execution, CommandContext commandContext) {
+  public void execute(
+      JobEntity job,
+      String configuration,
+      ExecutionEntity execution,
+      CommandContext commandContext) {
     JSONObject cfgJson = new JSONObject(configuration);
     String processDefinitionId = job.getProcessDefinitionId();
     boolean activateProcessInstances = getIncludeProcessInstances(cfgJson);
 
-    ActivateProcessDefinitionCmd activateProcessDefinitionCmd = new ActivateProcessDefinitionCmd(processDefinitionId, null, activateProcessInstances, null, job.getTenantId());
+    ActivateProcessDefinitionCmd activateProcessDefinitionCmd =
+        new ActivateProcessDefinitionCmd(
+            processDefinitionId, null, activateProcessInstances, null, job.getTenantId());
     activateProcessDefinitionCmd.execute(commandContext);
   }
-
 }

@@ -15,9 +15,7 @@
  */
 package org.activiti.engine.impl.event.logger.handler;
 
-/**
-
- */
+/** */
 public interface Fields {
 
   String ACTIVITY_ID = "activityId";
@@ -71,5 +69,4 @@ public interface Fields {
   String VALUE_STRING = "stringValue";
   String VALUE_UUID = "uuidValue";
   String VARIABLE_TYPE = "variableType";
-
 }

@@ -15,30 +15,32 @@
  */
 package org.activiti.runtime.api.event.impl;
 
+import static org.activiti.runtime.api.event.impl.ActivitiEntityEventHelper.isProcessInstanceEntity;
+
+import java.util.Optional;
 import org.activiti.api.process.runtime.events.ProcessUpdatedEvent;
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.runtime.api.model.impl.APIProcessInstanceConverter;
 
-import java.util.Optional;
+public class ToProcessUpdatedConverter
+    implements EventConverter<ProcessUpdatedEvent, ActivitiEntityEvent> {
 
-import static org.activiti.runtime.api.event.impl.ActivitiEntityEventHelper.isProcessInstanceEntity;
+  private final APIProcessInstanceConverter processInstanceConverter;
 
-public class ToProcessUpdatedConverter implements EventConverter<ProcessUpdatedEvent, ActivitiEntityEvent> {
+  public ToProcessUpdatedConverter(APIProcessInstanceConverter processInstanceConverter) {
+    this.processInstanceConverter = processInstanceConverter;
+  }
 
-    private final APIProcessInstanceConverter processInstanceConverter;
-
-    public ToProcessUpdatedConverter(APIProcessInstanceConverter processInstanceConverter) {
-        this.processInstanceConverter = processInstanceConverter;
+  @Override
+  public Optional<ProcessUpdatedEvent> from(ActivitiEntityEvent internalEvent) {
+    ProcessUpdatedEvent event = null;
+    if (isProcessInstanceEntity(internalEvent.getEntity())) {
+      event =
+          new ProcessUpdatedEventImpl(
+              processInstanceConverter.from(
+                  ((ExecutionEntity) internalEvent.getEntity()).getProcessInstance()));
     }
-
-    @Override
-    public Optional<ProcessUpdatedEvent> from(ActivitiEntityEvent internalEvent) {
-        ProcessUpdatedEvent event = null;
-        if (isProcessInstanceEntity(internalEvent.getEntity())) {
-            event = new ProcessUpdatedEventImpl(processInstanceConverter.from(((ExecutionEntity)
-                    internalEvent.getEntity()).getProcessInstance()));
-        }
-        return Optional.ofNullable(event);
-    }
+    return Optional.ofNullable(event);
+  }
 }

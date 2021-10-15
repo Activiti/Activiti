@@ -14,10 +14,7 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.persistence.entity;
-
-
 
 public class HistoricFormPropertyEntityImpl extends HistoricDetailEntityImpl {
 

@@ -20,19 +20,18 @@ import org.activiti.api.task.model.TaskCandidateUser;
 import org.activiti.api.task.model.events.TaskCandidateUserEvent;
 import org.activiti.api.task.runtime.events.TaskCandidateUserRemovedEvent;
 
-public class TaskCandidateUserRemovedImpl extends RuntimeEventImpl<TaskCandidateUser, TaskCandidateUserEvent.TaskCandidateUserEvents>
-        implements TaskCandidateUserRemovedEvent {
+public class TaskCandidateUserRemovedImpl
+    extends RuntimeEventImpl<TaskCandidateUser, TaskCandidateUserEvent.TaskCandidateUserEvents>
+    implements TaskCandidateUserRemovedEvent {
 
-    public TaskCandidateUserRemovedImpl() {
-    }
+  public TaskCandidateUserRemovedImpl() {}
 
-    public TaskCandidateUserRemovedImpl(TaskCandidateUser entity) {
-        super(entity);
-    }
+  public TaskCandidateUserRemovedImpl(TaskCandidateUser entity) {
+    super(entity);
+  }
 
-    @Override
-    public TaskCandidateUserEvents getEventType() {
-        return TaskCandidateUserEvents.TASK_CANDIDATE_USER_REMOVED;
-    }
-
+  @Override
+  public TaskCandidateUserEvents getEventType() {
+    return TaskCandidateUserEvents.TASK_CANDIDATE_USER_REMOVED;
+  }
 }

@@ -19,62 +19,67 @@ import java.util.Objects;
 
 public class TemplateDefinition {
 
-    public enum TemplateType {
-        VARIABLE,
-        FILE;
-    }
-    private TemplateType type;
+  public enum TemplateType {
+    VARIABLE,
+    FILE;
+  }
 
-    private String value;
+  private TemplateType type;
 
-    TemplateDefinition() {
-    }
+  private String value;
 
-    public TemplateDefinition(TemplateType type, String value) {
-        this.type = type;
-        this.value = value;
-    }
+  TemplateDefinition() {}
 
-    public String getValue() {
-        return value;
-    }
+  public TemplateDefinition(TemplateType type, String value) {
+    this.type = type;
+    this.value = value;
+  }
 
-    public void setValue(String value) {
-        this.value = value;
-    }
+  public String getValue() {
+    return value;
+  }
 
-    public TemplateType getType() {
-        return type;
-    }
+  public void setValue(String value) {
+    this.value = value;
+  }
 
-    public void setType(TemplateType type) {
-        this.type = type;
-    }
+  public TemplateType getType() {
+    return type;
+  }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(type, value);
-    }
+  public void setType(TemplateType type) {
+    this.type = type;
+  }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        TemplateDefinition other = (TemplateDefinition) obj;
-        return type == other.type && Objects.equals(value, other.value);
-    }
+  @Override
+  public int hashCode() {
+    return Objects.hash(type, value);
+  }
 
-    @Override
-    public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("TemplateDefinition [type=").append(type).append(", value=").append(value).append("]");
-        return builder.toString();
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
     }
+    if (obj == null) {
+      return false;
+    }
+    if (getClass() != obj.getClass()) {
+      return false;
+    }
+    TemplateDefinition other = (TemplateDefinition) obj;
+    return type == other.type && Objects.equals(value, other.value);
+  }
+
+  @Override
+  public String toString() {
+    StringBuilder builder = new StringBuilder();
+    builder
+        .append("TemplateDefinition [type=")
+        .append(type)
+        .append(", value=")
+        .append(value)
+        .append("]");
+    return builder.toString();
+  }
 }

@@ -17,14 +17,11 @@
 package org.activiti.validation.validator;
 
 import java.util.List;
-
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.Process;
 import org.activiti.validation.ValidationError;
 
-/**
-
- */
+/** */
 public abstract class ProcessLevelValidator extends ValidatorImpl {
 
   @Override
@@ -34,6 +31,6 @@ public abstract class ProcessLevelValidator extends ValidatorImpl {
     }
   }
 
-  protected abstract void executeValidation(BpmnModel bpmnModel, Process process, List<ValidationError> errors);
-
+  protected abstract void executeValidation(
+      BpmnModel bpmnModel, Process process, List<ValidationError> errors);
 }

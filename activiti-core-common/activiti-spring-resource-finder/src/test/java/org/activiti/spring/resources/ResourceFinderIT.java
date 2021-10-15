@@ -15,62 +15,60 @@
  */
 package org.activiti.spring.resources;
 
-import java.util.List;
+import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.List;
 import org.activiti.spring.resources.conf.ResourceFinderAutoConfiguration;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.Resource;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-@SpringBootTest(classes = ResourceFinderAutoConfiguration.class, webEnvironment = SpringBootTest.WebEnvironment.NONE)
+@SpringBootTest(
+    classes = ResourceFinderAutoConfiguration.class,
+    webEnvironment = SpringBootTest.WebEnvironment.NONE)
 public class ResourceFinderIT {
 
-    @Autowired
-    private ResourceFinder resourceFinder;
+  @Autowired private ResourceFinder resourceFinder;
 
-    @Test
-    public void shouldReturnEmptyListWhenLocationDoesNotExist() throws Exception {
-        //given
-        DummyResourceFinderDescriptor finderDescriptor = new DummyResourceFinderDescriptor("classpath:**/not-exists/",
-                                                                                                   "**.txt");
+  @Test
+  public void shouldReturnEmptyListWhenLocationDoesNotExist() throws Exception {
+    // given
+    DummyResourceFinderDescriptor finderDescriptor =
+        new DummyResourceFinderDescriptor("classpath:**/not-exists/", "**.txt");
 
-        //when
-        List<Resource> foundResources = resourceFinder.discoverResources(finderDescriptor);
+    // when
+    List<Resource> foundResources = resourceFinder.discoverResources(finderDescriptor);
 
-        //then
-        assertThat(foundResources).isEmpty();
-    }
+    // then
+    assertThat(foundResources).isEmpty();
+  }
 
-    @Test
-    public void shouldReturnEmptyListWhenLocationExitsButNoFileMatches() throws Exception {
-        //given
-        DummyResourceFinderDescriptor finderDescriptor = new DummyResourceFinderDescriptor("classpath:/no-matching-resources",
-                                                                                                   "**.txt");
+  @Test
+  public void shouldReturnEmptyListWhenLocationExitsButNoFileMatches() throws Exception {
+    // given
+    DummyResourceFinderDescriptor finderDescriptor =
+        new DummyResourceFinderDescriptor("classpath:/no-matching-resources", "**.txt");
 
-        //when
-        List<Resource> foundResources = resourceFinder.discoverResources(finderDescriptor);
+    // when
+    List<Resource> foundResources = resourceFinder.discoverResources(finderDescriptor);
 
-        //then
-        assertThat(foundResources).isEmpty();
-    }
+    // then
+    assertThat(foundResources).isEmpty();
+  }
 
-    @Test
-    public void shouldReturnMatchingFiles() throws Exception {
-        //given
-        DummyResourceFinderDescriptor finderDescriptor = new DummyResourceFinderDescriptor("classpath:/matching-resources/",
-                                                                                           "**.json",
-                                                                                           "**.txt");
+  @Test
+  public void shouldReturnMatchingFiles() throws Exception {
+    // given
+    DummyResourceFinderDescriptor finderDescriptor =
+        new DummyResourceFinderDescriptor("classpath:/matching-resources/", "**.json", "**.txt");
 
-        //when
-        List<Resource> foundResources = resourceFinder.discoverResources(finderDescriptor);
+    // when
+    List<Resource> foundResources = resourceFinder.discoverResources(finderDescriptor);
 
-        //then
-        assertThat(foundResources)
-                .extracting(resource -> resource.getFilename())
-                .containsOnly("matching.json",
-                              "matching.txt");
-    }
+    // then
+    assertThat(foundResources)
+        .extracting(resource -> resource.getFilename())
+        .containsOnly("matching.json", "matching.txt");
+  }
 }

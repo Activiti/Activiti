@@ -20,40 +20,46 @@ import static java.util.Collections.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
-
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
-/**
-
- */
+/** */
 public class TerminateMultiInstanceEndEventTest extends PluggableActivitiTestCase {
 
   @Deployment
   public void testMultiInstanceEmbeddedSubprocess() {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("terminateMi");
 
-    Task aTask = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+    Task aTask =
+        taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     taskService.complete(aTask.getId());
 
-    List<Task> bTasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).list();
+    List<Task> bTasks =
+        taskService.createTaskQuery().processInstanceId(processInstance.getId()).list();
     assertThat(bTasks).hasSize(8);
 
-    // Complete 2 tasks by going to task C. The 3th tasks goes to the MI terminate end and shuts down the MI.
-    for (int i=0; i<2; i++) {
+    // Complete 2 tasks by going to task C. The 3th tasks goes to the MI terminate end and shuts
+    // down the MI.
+    for (int i = 0; i < 2; i++) {
       Task bTask = bTasks.get(i);
       taskService.complete(bTask.getId(), singletonMap("myVar", "toC"));
     }
 
-    bTasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskName("B").list();
+    bTasks =
+        taskService
+            .createTaskQuery()
+            .processInstanceId(processInstance.getId())
+            .taskName("B")
+            .list();
     assertThat(bTasks).hasSize(6);
 
     taskService.complete(bTasks.get(0).getId(), singletonMap("myVar", "toEnd"));
 
-    Task afterMiTask = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+    Task afterMiTask =
+        taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     assertThat(afterMiTask.getName()).isEqualTo("AfterMi");
     taskService.complete(afterMiTask.getId());
 
@@ -64,10 +70,12 @@ public class TerminateMultiInstanceEndEventTest extends PluggableActivitiTestCas
   public void testMultiInstanceEmbeddedSubprocessSequential() {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("terminateMi");
 
-    Task aTask = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+    Task aTask =
+        taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     taskService.complete(aTask.getId());
 
-    List<Task> bTasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).list();
+    List<Task> bTasks =
+        taskService.createTaskQuery().processInstanceId(processInstance.getId()).list();
     assertThat(bTasks).hasSize(1);
     taskService.complete(bTasks.get(0).getId(), singletonMap("myVar", "toC"));
 
@@ -75,11 +83,17 @@ public class TerminateMultiInstanceEndEventTest extends PluggableActivitiTestCas
     assertThat(cTasks).hasSize(1);
     taskService.complete(cTasks.get(0).getId());
 
-    bTasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskName("B").list();
+    bTasks =
+        taskService
+            .createTaskQuery()
+            .processInstanceId(processInstance.getId())
+            .taskName("B")
+            .list();
     assertThat(bTasks).hasSize(1);
     taskService.complete(bTasks.get(0).getId(), singletonMap("myVar", "toEnd"));
 
-    Task afterMiTask = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+    Task afterMiTask =
+        taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     assertThat(afterMiTask.getName()).isEqualTo("AfterMi");
     taskService.complete(afterMiTask.getId());
 
@@ -90,17 +104,25 @@ public class TerminateMultiInstanceEndEventTest extends PluggableActivitiTestCas
   public void testMultiInstanceEmbeddedSubprocess2() {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("terminateMi");
 
-    Task aTask = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+    Task aTask =
+        taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     taskService.complete(aTask.getId());
 
-    List<Task> bTasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).list();
+    List<Task> bTasks =
+        taskService.createTaskQuery().processInstanceId(processInstance.getId()).list();
     assertThat(bTasks).hasSize(5);
 
     // Complete one b task to get one C and D
     taskService.complete(bTasks.get(0).getId());
 
     // C and D should now be active
-    List<Task> tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).orderByTaskName().asc().list();
+    List<Task> tasks =
+        taskService
+            .createTaskQuery()
+            .processInstanceId(processInstance.getId())
+            .orderByTaskName()
+            .asc()
+            .list();
     assertThat(tasks).hasSize(6);
     // 0-3 are B tasks
     assertThat(tasks.get(4).getName()).isEqualTo("C");
@@ -109,7 +131,8 @@ public class TerminateMultiInstanceEndEventTest extends PluggableActivitiTestCas
     // Completing C should terminate the multi instance
     taskService.complete(tasks.get(4).getId());
 
-    Task afterMiTask = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+    Task afterMiTask =
+        taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     assertThat(afterMiTask.getName()).isEqualTo("AfterMi");
     taskService.complete(afterMiTask.getId());
 
@@ -120,17 +143,25 @@ public class TerminateMultiInstanceEndEventTest extends PluggableActivitiTestCas
   public void testMultiInstanceEmbeddedSubprocess2Sequential() {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("terminateMi");
 
-    Task aTask = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+    Task aTask =
+        taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     taskService.complete(aTask.getId());
 
-    List<Task> bTasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).list();
+    List<Task> bTasks =
+        taskService.createTaskQuery().processInstanceId(processInstance.getId()).list();
     assertThat(bTasks).hasSize(1);
 
     // Complete one b task to get one C and D
     taskService.complete(bTasks.get(0).getId());
 
     // C and D should now be active
-    List<Task> tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).orderByTaskName().asc().list();
+    List<Task> tasks =
+        taskService
+            .createTaskQuery()
+            .processInstanceId(processInstance.getId())
+            .orderByTaskName()
+            .asc()
+            .list();
     assertThat(tasks).hasSize(2);
     assertThat(tasks.get(0).getName()).isEqualTo("C");
     assertThat(tasks.get(1).getName()).isEqualTo("D");
@@ -138,21 +169,25 @@ public class TerminateMultiInstanceEndEventTest extends PluggableActivitiTestCas
     // Completing C should terminate the multi instance
     taskService.complete(tasks.get(0).getId());
 
-    Task afterMiTask = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+    Task afterMiTask =
+        taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     assertThat(afterMiTask.getName()).isEqualTo("AfterMi");
     taskService.complete(afterMiTask.getId());
 
     assertThat(runtimeService.createExecutionQuery().count()).isEqualTo(0);
   }
 
-  @Deployment(resources = {
-      "org/activiti/engine/test/bpmn/event/end/TerminateMultiInstanceEndEventTest.testTerminateMiCallactivity-parentProcess.bpmn20.xml",
-      "org/activiti/engine/test/bpmn/event/end/TerminateMultiInstanceEndEventTest.testTerminateMiCallactivity-calledProcess.bpmn20.xml"
-  })
+  @Deployment(
+      resources = {
+        "org/activiti/engine/test/bpmn/event/end/TerminateMultiInstanceEndEventTest.testTerminateMiCallactivity-parentProcess.bpmn20.xml",
+        "org/activiti/engine/test/bpmn/event/end/TerminateMultiInstanceEndEventTest.testTerminateMiCallactivity-calledProcess.bpmn20.xml"
+      })
   public void testTerminateMiCallactivity() {
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("terminateMiCallActivity");
+    ProcessInstance processInstance =
+        runtimeService.startProcessInstanceByKey("terminateMiCallActivity");
 
-    Task taskA = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+    Task taskA =
+        taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     assertThat(taskA.getName()).isEqualTo("A");
     taskService.complete(taskA.getId());
 
@@ -161,7 +196,7 @@ public class TerminateMultiInstanceEndEventTest extends PluggableActivitiTestCas
     assertThat(bTasks).hasSize(4);
 
     // Compelting 3 B tasks, giving 3 C's and D's
-    for (int i=0; i<3; i++) {
+    for (int i = 0; i < 3; i++) {
       taskService.complete(bTasks.get(i).getId());
     }
 
@@ -173,20 +208,29 @@ public class TerminateMultiInstanceEndEventTest extends PluggableActivitiTestCas
     // Completing one of the C tasks should terminate the whole multi instance
     taskService.complete(cTasks.get(0).getId());
 
-    List<Task> afterMiTasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).orderByTaskName().asc().list();
+    List<Task> afterMiTasks =
+        taskService
+            .createTaskQuery()
+            .processInstanceId(processInstance.getId())
+            .orderByTaskName()
+            .asc()
+            .list();
     assertThat(afterMiTasks).hasSize(2);
     assertThat(afterMiTasks.get(0).getName()).isEqualTo("AfterMi");
     assertThat(afterMiTasks.get(1).getName()).isEqualTo("Parallel task");
   }
 
-  @Deployment(resources = {
-      "org/activiti/engine/test/bpmn/event/end/TerminateMultiInstanceEndEventTest.testTerminateMiCallactivity-parentProcessSequential.bpmn20.xml",
-      "org/activiti/engine/test/bpmn/event/end/TerminateMultiInstanceEndEventTest.testTerminateMiCallactivity-calledProcess.bpmn20.xml"
-  })
+  @Deployment(
+      resources = {
+        "org/activiti/engine/test/bpmn/event/end/TerminateMultiInstanceEndEventTest.testTerminateMiCallactivity-parentProcessSequential.bpmn20.xml",
+        "org/activiti/engine/test/bpmn/event/end/TerminateMultiInstanceEndEventTest.testTerminateMiCallactivity-calledProcess.bpmn20.xml"
+      })
   public void testTerminateMiCallactivitySequential() {
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("terminateMiCallActivity");
+    ProcessInstance processInstance =
+        runtimeService.startProcessInstanceByKey("terminateMiCallActivity");
 
-    Task taskA = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+    Task taskA =
+        taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     assertThat(taskA.getName()).isEqualTo("A");
     taskService.complete(taskA.getId());
 
@@ -202,7 +246,13 @@ public class TerminateMultiInstanceEndEventTest extends PluggableActivitiTestCas
     // Completing one of the C tasks should terminate the whole multi instance
     taskService.complete(cTasks.get(0).getId());
 
-    List<Task> afterMiTasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).orderByTaskName().asc().list();
+    List<Task> afterMiTasks =
+        taskService
+            .createTaskQuery()
+            .processInstanceId(processInstance.getId())
+            .orderByTaskName()
+            .asc()
+            .list();
     assertThat(afterMiTasks).hasSize(2);
     assertThat(afterMiTasks.get(0).getName()).isEqualTo("AfterMi");
     assertThat(afterMiTasks.get(1).getName()).isEqualTo("Parallel task");
@@ -210,21 +260,37 @@ public class TerminateMultiInstanceEndEventTest extends PluggableActivitiTestCas
 
   @Deployment
   public void testTerminateNestedMiEmbeddedSubprocess() {
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-        "terminateNestedMiEmbeddedSubprocess", singletonMap("var", "notEnd"));
+    ProcessInstance processInstance =
+        runtimeService.startProcessInstanceByKey(
+            "terminateNestedMiEmbeddedSubprocess", singletonMap("var", "notEnd"));
 
-    List<Task> aTasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskName("A").list();
+    List<Task> aTasks =
+        taskService
+            .createTaskQuery()
+            .processInstanceId(processInstance.getId())
+            .taskName("A")
+            .list();
     assertThat(aTasks).hasSize(12);
-    List<Task> bTasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskName("B").list();
+    List<Task> bTasks =
+        taskService
+            .createTaskQuery()
+            .processInstanceId(processInstance.getId())
+            .taskName("B")
+            .list();
     assertThat(bTasks).hasSize(72);
 
     // Completing a few B's will create a subprocess with some C's
     int nrOfBTasksCompleted = 3;
-    for (int i=0; i<nrOfBTasksCompleted; i++) {
+    for (int i = 0; i < nrOfBTasksCompleted; i++) {
       taskService.complete(bTasks.get(i).getId());
     }
 
-    bTasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskName("B").list();
+    bTasks =
+        taskService
+            .createTaskQuery()
+            .processInstanceId(processInstance.getId())
+            .taskName("B")
+            .list();
     assertThat(bTasks).hasSize(72 - nrOfBTasksCompleted);
 
     // Firing the timer --> inner MI gets destroyed
@@ -233,8 +299,14 @@ public class TerminateMultiInstanceEndEventTest extends PluggableActivitiTestCas
     managementService.moveTimerToExecutableJob(timers.get(0).getId());
     managementService.executeJob(timers.get(0).getId());
 
-    // We only comnpleted 3 B's. 3 other ones should be destroyed too (as one inner multi instance are 6 instances of B)
-    bTasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskName("B").list();
+    // We only comnpleted 3 B's. 3 other ones should be destroyed too (as one inner multi instance
+    // are 6 instances of B)
+    bTasks =
+        taskService
+            .createTaskQuery()
+            .processInstanceId(processInstance.getId())
+            .taskName("B")
+            .list();
     assertThat(bTasks).hasSize(66);
 
     // One of the inner multi instances should have been killed
@@ -246,7 +318,8 @@ public class TerminateMultiInstanceEndEventTest extends PluggableActivitiTestCas
     }
 
     // Finish
-    List<Task> nextTasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).list();
+    List<Task> nextTasks =
+        taskService.createTaskQuery().processInstanceId(processInstance.getId()).list();
     while (nextTasks != null && nextTasks.size() > 0) {
       taskService.complete(nextTasks.get(0).getId());
       nextTasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).list();
@@ -255,30 +328,58 @@ public class TerminateMultiInstanceEndEventTest extends PluggableActivitiTestCas
     assertThat(runtimeService.createExecutionQuery().count()).isEqualTo(0);
   }
 
-  @Deployment(resources = "org/activiti/engine/test/bpmn/event/end/TerminateMultiInstanceEndEventTest.testTerminateNestedMiEmbeddedSubprocess.bpmn20.xml")
+  @Deployment(
+      resources =
+          "org/activiti/engine/test/bpmn/event/end/TerminateMultiInstanceEndEventTest.testTerminateNestedMiEmbeddedSubprocess.bpmn20.xml")
   public void testTerminateNestedMiEmbeddedSubprocess2() {
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-        "terminateNestedMiEmbeddedSubprocess", singletonMap("var", "toEnd"));
+    ProcessInstance processInstance =
+        runtimeService.startProcessInstanceByKey(
+            "terminateNestedMiEmbeddedSubprocess", singletonMap("var", "toEnd"));
 
-    List<Task> aTasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskName("A").list();
+    List<Task> aTasks =
+        taskService
+            .createTaskQuery()
+            .processInstanceId(processInstance.getId())
+            .taskName("A")
+            .list();
     assertThat(aTasks).hasSize(12);
-    List<Task> afterInnerMiTasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskName("AfterInnerMi").list();
+    List<Task> afterInnerMiTasks =
+        taskService
+            .createTaskQuery()
+            .processInstanceId(processInstance.getId())
+            .taskName("AfterInnerMi")
+            .list();
     assertThat(afterInnerMiTasks).hasSize(12);
-
   }
 
   @Deployment
   public void testTerminateNestedMiEmbeddedSubprocessWithOneLoopCardinality() {
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-        "terminateNestedMiEmbeddedSubprocess", singletonMap("var", "notEnd"));
+    ProcessInstance processInstance =
+        runtimeService.startProcessInstanceByKey(
+            "terminateNestedMiEmbeddedSubprocess", singletonMap("var", "notEnd"));
 
-    List<Task> aTasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskName("A").list();
+    List<Task> aTasks =
+        taskService
+            .createTaskQuery()
+            .processInstanceId(processInstance.getId())
+            .taskName("A")
+            .list();
     assertThat(aTasks).hasSize(1);
-    List<Task> bTasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskName("B").list();
+    List<Task> bTasks =
+        taskService
+            .createTaskQuery()
+            .processInstanceId(processInstance.getId())
+            .taskName("B")
+            .list();
     assertThat(bTasks).hasSize(1);
 
     taskService.complete(bTasks.get(0).getId());
-    bTasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskName("B").list();
+    bTasks =
+        taskService
+            .createTaskQuery()
+            .processInstanceId(processInstance.getId())
+            .taskName("B")
+            .list();
     assertThat(bTasks).hasSize(0);
 
     // Firing the timer --> inner MI gets destroyed
@@ -287,7 +388,12 @@ public class TerminateMultiInstanceEndEventTest extends PluggableActivitiTestCas
     managementService.moveTimerToExecutableJob(timers.get(0).getId());
     managementService.executeJob(timers.get(0).getId());
 
-    bTasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskName("B").list();
+    bTasks =
+        taskService
+            .createTaskQuery()
+            .processInstanceId(processInstance.getId())
+            .taskName("B")
+            .list();
     assertThat(bTasks).hasSize(0);
 
     // One of the inner multi instances should have been killed
@@ -299,7 +405,8 @@ public class TerminateMultiInstanceEndEventTest extends PluggableActivitiTestCas
     }
 
     // Finish
-    List<Task> nextTasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).list();
+    List<Task> nextTasks =
+        taskService.createTaskQuery().processInstanceId(processInstance.getId()).list();
     while (nextTasks != null && nextTasks.size() > 0) {
       taskService.complete(nextTasks.get(0).getId());
       nextTasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).list();
@@ -307,5 +414,4 @@ public class TerminateMultiInstanceEndEventTest extends PluggableActivitiTestCas
 
     assertThat(runtimeService.createExecutionQuery().count()).isEqualTo(0);
   }
-
 }

@@ -25,9 +25,7 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.DeploymentEntity;
 import org.activiti.engine.repository.Deployment;
 
-/**
-
- */
+/** */
 public class SetDeploymentKeyCmd implements Command<Void> {
 
   protected String deploymentId;
@@ -44,17 +42,23 @@ public class SetDeploymentKeyCmd implements Command<Void> {
       throw new ActivitiIllegalArgumentException("Deployment id is null");
     }
 
-    DeploymentEntity deployment = commandContext.getDeploymentEntityManager().findById(deploymentId);
+    DeploymentEntity deployment =
+        commandContext.getDeploymentEntityManager().findById(deploymentId);
 
     if (deployment == null) {
-      throw new ActivitiObjectNotFoundException("No deployment found for id = '" + deploymentId + "'", Deployment.class);
+      throw new ActivitiObjectNotFoundException(
+          "No deployment found for id = '" + deploymentId + "'", Deployment.class);
     }
 
     // Update category
     deployment.setKey(key);
 
     if (commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-      commandContext.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_UPDATED, deployment));
+      commandContext
+          .getProcessEngineConfiguration()
+          .getEventDispatcher()
+          .dispatchEvent(
+              ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_UPDATED, deployment));
     }
 
     return null;
@@ -75,5 +79,4 @@ public class SetDeploymentKeyCmd implements Command<Void> {
   public void setKey(String key) {
     this.key = key;
   }
-
 }

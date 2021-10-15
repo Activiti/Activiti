@@ -14,18 +14,13 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.persistence.entity;
 
 import java.util.Date;
-
 import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.impl.db.HasRevision;
 
-/**
-
-
- */
+/** */
 @Internal
 public interface EventSubscriptionEntity extends Entity, HasRevision {
 
@@ -68,5 +63,4 @@ public interface EventSubscriptionEntity extends Entity, HasRevision {
   String getTenantId();
 
   void setTenantId(String tenantId);
-
 }

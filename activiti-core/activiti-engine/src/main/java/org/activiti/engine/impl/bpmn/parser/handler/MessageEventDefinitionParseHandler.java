@@ -24,11 +24,9 @@ import org.activiti.bpmn.model.Message;
 import org.activiti.bpmn.model.MessageEventDefinition;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 
-/**
-
-
- */
-public class MessageEventDefinitionParseHandler extends AbstractBpmnParseHandler<MessageEventDefinition> {
+/** */
+public class MessageEventDefinitionParseHandler
+    extends AbstractBpmnParseHandler<MessageEventDefinition> {
 
   public Class<? extends BaseElement> getHandledType() {
     return MessageEventDefinition.class;
@@ -44,18 +42,23 @@ public class MessageEventDefinitionParseHandler extends AbstractBpmnParseHandler
     }
 
     if (bpmnParse.getCurrentFlowElement() instanceof IntermediateCatchEvent) {
-      IntermediateCatchEvent intermediateCatchEvent = (IntermediateCatchEvent) bpmnParse.getCurrentFlowElement();
-      intermediateCatchEvent.setBehavior(bpmnParse.getActivityBehaviorFactory().createIntermediateCatchMessageEventActivityBehavior(intermediateCatchEvent, messageDefinition));
+      IntermediateCatchEvent intermediateCatchEvent =
+          (IntermediateCatchEvent) bpmnParse.getCurrentFlowElement();
+      intermediateCatchEvent.setBehavior(
+          bpmnParse
+              .getActivityBehaviorFactory()
+              .createIntermediateCatchMessageEventActivityBehavior(
+                  intermediateCatchEvent, messageDefinition));
 
     } else if (bpmnParse.getCurrentFlowElement() instanceof BoundaryEvent) {
       BoundaryEvent boundaryEvent = (BoundaryEvent) bpmnParse.getCurrentFlowElement();
-      boundaryEvent.setBehavior(bpmnParse.getActivityBehaviorFactory().createBoundaryMessageEventActivityBehavior(boundaryEvent, messageDefinition, boundaryEvent.isCancelActivity()));
-    }
-
-    else {
+      boundaryEvent.setBehavior(
+          bpmnParse
+              .getActivityBehaviorFactory()
+              .createBoundaryMessageEventActivityBehavior(
+                  boundaryEvent, messageDefinition, boundaryEvent.isCancelActivity()));
+    } else {
       // What to do here?
     }
-
   }
-
 }

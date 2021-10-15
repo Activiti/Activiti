@@ -17,7 +17,6 @@
 package org.activiti.engine.impl.bpmn.behavior;
 
 import java.util.List;
-
 import org.activiti.bpmn.model.BoundaryEvent;
 import org.activiti.bpmn.model.Signal;
 import org.activiti.bpmn.model.SignalEventDefinition;
@@ -31,10 +30,7 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.SignalEventSubscriptionEntity;
 import org.apache.commons.lang3.StringUtils;
 
-/**
-
-
- */
+/** */
 public class BoundarySignalEventActivityBehavior extends BoundaryEventActivityBehavior {
 
   private static final long serialVersionUID = 1L;
@@ -42,7 +38,8 @@ public class BoundarySignalEventActivityBehavior extends BoundaryEventActivityBe
   protected SignalEventDefinition signalEventDefinition;
   protected Signal signal;
 
-  public BoundarySignalEventActivityBehavior(SignalEventDefinition signalEventDefinition, Signal signal, boolean interrupting) {
+  public BoundarySignalEventActivityBehavior(
+      SignalEventDefinition signalEventDefinition, Signal signal, boolean interrupting) {
     super(interrupting);
     this.signalEventDefinition = signalEventDefinition;
     this.signal = signal;
@@ -57,12 +54,17 @@ public class BoundarySignalEventActivityBehavior extends BoundaryEventActivityBe
     if (StringUtils.isNotEmpty(signalEventDefinition.getSignalRef())) {
       signalName = signalEventDefinition.getSignalRef();
     } else {
-      Expression signalExpression = commandContext.getProcessEngineConfiguration().getExpressionManager()
-          .createExpression(signalEventDefinition.getSignalExpression());
+      Expression signalExpression =
+          commandContext
+              .getProcessEngineConfiguration()
+              .getExpressionManager()
+              .createExpression(signalEventDefinition.getSignalExpression());
       signalName = signalExpression.getValue(execution).toString();
     }
 
-    commandContext.getEventSubscriptionEntityManager().insertSignalEvent(signalName, signal, executionEntity);
+    commandContext
+        .getEventSubscriptionEntityManager()
+        .insertSignalEvent(signalName, signal, executionEntity);
   }
 
   @Override
@@ -78,10 +80,12 @@ public class BoundarySignalEventActivityBehavior extends BoundaryEventActivityBe
         eventName = signalEventDefinition.getSignalRef();
       }
 
-      EventSubscriptionEntityManager eventSubscriptionEntityManager = Context.getCommandContext().getEventSubscriptionEntityManager();
+      EventSubscriptionEntityManager eventSubscriptionEntityManager =
+          Context.getCommandContext().getEventSubscriptionEntityManager();
       List<EventSubscriptionEntity> eventSubscriptions = executionEntity.getEventSubscriptions();
       for (EventSubscriptionEntity eventSubscription : eventSubscriptions) {
-        if (eventSubscription instanceof SignalEventSubscriptionEntity && eventSubscription.getEventName().equals(eventName)) {
+        if (eventSubscription instanceof SignalEventSubscriptionEntity
+            && eventSubscription.getEventName().equals(eventName)) {
 
           eventSubscriptionEntityManager.delete(eventSubscription);
         }

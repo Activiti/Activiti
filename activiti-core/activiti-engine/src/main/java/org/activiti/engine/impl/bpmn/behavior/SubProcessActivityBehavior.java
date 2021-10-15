@@ -14,9 +14,11 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.bpmn.behavior;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.StartEvent;
 import org.activiti.bpmn.model.SubProcess;
@@ -27,14 +29,9 @@ import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.util.CollectionUtil;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-
 /**
- * Implementation of the BPMN 2.0 subprocess (formally known as 'embedded' subprocess): a subprocess defined within another process definition.
- *
-
+ * Implementation of the BPMN 2.0 subprocess (formally known as 'embedded' subprocess): a subprocess
+ * defined within another process definition.
  */
 public class SubProcessActivityBehavior extends AbstractBpmnActivityBehavior {
 
@@ -71,8 +68,10 @@ public class SubProcessActivityBehavior extends AbstractBpmnActivityBehavior {
       executionEntity.setVariablesLocal(dataObjectVars);
     }
 
-    ExecutionEntity startSubProcessExecution = Context.getCommandContext().getExecutionEntityManager()
-        .createChildExecution(executionEntity);
+    ExecutionEntity startSubProcessExecution =
+        Context.getCommandContext()
+            .getExecutionEntityManager()
+            .createChildExecution(executionEntity);
     startSubProcessExecution.setCurrentFlowElement(startElement);
     Context.getAgenda().planContinueProcessOperation(startSubProcessExecution);
   }
@@ -83,7 +82,10 @@ public class SubProcessActivityBehavior extends AbstractBpmnActivityBehavior {
     if (flowElement instanceof SubProcess) {
       subProcess = (SubProcess) flowElement;
     } else {
-      throw new ActivitiException("Programmatic error: sub process behaviour can only be applied" + " to a SubProcess instance, but got an instance of " + flowElement);
+      throw new ActivitiException(
+          "Programmatic error: sub process behaviour can only be applied"
+              + " to a SubProcess instance, but got an instance of "
+              + flowElement);
     }
     return subProcess;
   }

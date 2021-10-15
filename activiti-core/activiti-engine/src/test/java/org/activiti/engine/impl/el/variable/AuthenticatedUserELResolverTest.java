@@ -25,40 +25,40 @@ import org.junit.Test;
 
 public class AuthenticatedUserELResolverTest {
 
-    private static final String AUTHENTICATED_USER_KEY = "authenticatedUserId";
+  private static final String AUTHENTICATED_USER_KEY = "authenticatedUserId";
 
-    private AuthenticatedUserELResolver resolver = new AuthenticatedUserELResolver();
+  private AuthenticatedUserELResolver resolver = new AuthenticatedUserELResolver();
 
-    @AfterClass
-    public static void tearDown() {
-        Authentication.setAuthenticatedUserId(null);
-    }
+  @AfterClass
+  public static void tearDown() {
+    Authentication.setAuthenticatedUserId(null);
+  }
 
-    @Test
-    public void canResolve_should_returnTrueWhenPropertyIsAuthenticatedUser() {
-        //when
-        boolean canResolve = resolver.canResolve(AUTHENTICATED_USER_KEY, mock(VariableScope.class));
-        //then
-        assertThat(canResolve).isTrue();
-    }
+  @Test
+  public void canResolve_should_returnTrueWhenPropertyIsAuthenticatedUser() {
+    // when
+    boolean canResolve = resolver.canResolve(AUTHENTICATED_USER_KEY, mock(VariableScope.class));
+    // then
+    assertThat(canResolve).isTrue();
+  }
 
-    @Test
-    public void canResolve_should_returnFalseWhenPropertyIsNotAuthenticatedUser() {
-        //when
-        boolean canResolve = resolver.canResolve("anyOtherProperty", mock(VariableScope.class));
-        //then
-        assertThat(canResolve).isFalse();
-    }
+  @Test
+  public void canResolve_should_returnFalseWhenPropertyIsNotAuthenticatedUser() {
+    // when
+    boolean canResolve = resolver.canResolve("anyOtherProperty", mock(VariableScope.class));
+    // then
+    assertThat(canResolve).isFalse();
+  }
 
-    @Test
-    public void resolve_should_returnAuthenticatedUser() {
-        //given
-        Authentication.setAuthenticatedUserId("jane");
+  @Test
+  public void resolve_should_returnAuthenticatedUser() {
+    // given
+    Authentication.setAuthenticatedUserId("jane");
 
-        //when
-        Object result = resolver.resolve(AUTHENTICATED_USER_KEY, mock(VariableScope.class));
+    // when
+    Object result = resolver.resolve(AUTHENTICATED_USER_KEY, mock(VariableScope.class));
 
-        //then
-        assertThat(result).isEqualTo("jane");
-    }
+    // then
+    assertThat(result).isEqualTo("jane");
+  }
 }

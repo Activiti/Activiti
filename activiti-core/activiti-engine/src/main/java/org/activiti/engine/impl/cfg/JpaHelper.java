@@ -14,20 +14,15 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.cfg;
-
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
-/**
-
- */
+/** */
 public class JpaHelper {
 
   public static EntityManagerFactory createEntityManagerFactory(String jpaPersistenceUnitName) {
     return Persistence.createEntityManagerFactory(jpaPersistenceUnitName);
   }
-
 }

@@ -16,7 +16,6 @@
 package org.activiti.engine.impl.cmd;
 
 import java.io.Serializable;
-
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.delegate.event.ActivitiEventType;
@@ -29,10 +28,7 @@ import org.activiti.engine.runtime.Job;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
-
- */
-
+/** */
 public class DeleteDeadLetterJobCmd implements Command<Object>, Serializable {
 
   private static final Logger log = LoggerFactory.getLogger(DeleteDeadLetterJobCmd.class);
@@ -55,7 +51,10 @@ public class DeleteDeadLetterJobCmd implements Command<Object>, Serializable {
 
   protected void sendCancelEvent(DeadLetterJobEntity jobToDelete) {
     if (Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-      Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.JOB_CANCELED, jobToDelete));
+      Context.getProcessEngineConfiguration()
+          .getEventDispatcher()
+          .dispatchEvent(
+              ActivitiEventBuilder.createEntityEvent(ActivitiEventType.JOB_CANCELED, jobToDelete));
     }
   }
 
@@ -69,10 +68,10 @@ public class DeleteDeadLetterJobCmd implements Command<Object>, Serializable {
 
     DeadLetterJobEntity job = commandContext.getDeadLetterJobEntityManager().findById(timerJobId);
     if (job == null) {
-      throw new ActivitiObjectNotFoundException("No dead letter job found with id '" + timerJobId + "'", Job.class);
+      throw new ActivitiObjectNotFoundException(
+          "No dead letter job found with id '" + timerJobId + "'", Job.class);
     }
 
     return job;
   }
-
 }

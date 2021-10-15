@@ -26,65 +26,65 @@ import org.junit.Test;
 
 public class ExecutionElResolverTest {
 
-    private static final String EXECUTION_KEY = "execution";
+  private static final String EXECUTION_KEY = "execution";
 
-    private ExecutionElResolver resolver = new ExecutionElResolver();
+  private ExecutionElResolver resolver = new ExecutionElResolver();
 
-    @Test
-    public void canResolve_should_returnTrueWhenItsExecutionEntityAndPropertyIsExecution() {
-        //when
-        boolean canResolve = resolver.canResolve(EXECUTION_KEY, new ExecutionEntityImpl());
-        //then
-        assertThat(canResolve).isTrue();
-    }
+  @Test
+  public void canResolve_should_returnTrueWhenItsExecutionEntityAndPropertyIsExecution() {
+    // when
+    boolean canResolve = resolver.canResolve(EXECUTION_KEY, new ExecutionEntityImpl());
+    // then
+    assertThat(canResolve).isTrue();
+  }
 
-    @Test
-    public void canResolve_should_returnTrueWhenItsTaskEntityAndPropertyIsExecution() {
-        //when
-        boolean canResolve = resolver.canResolve(EXECUTION_KEY, new TaskEntityImpl());
-        //then
-        assertThat(canResolve).isTrue();
-    }
+  @Test
+  public void canResolve_should_returnTrueWhenItsTaskEntityAndPropertyIsExecution() {
+    // when
+    boolean canResolve = resolver.canResolve(EXECUTION_KEY, new TaskEntityImpl());
+    // then
+    assertThat(canResolve).isTrue();
+  }
 
-    @Test
-    public void canResolve_should_returnFalseWhenItsExecutionEntityAndPropertyIsNotExecution() {
-        //when
-        boolean canResolve = resolver.canResolve("anyOtherProperty", new ExecutionEntityImpl());
-        //then
-        assertThat(canResolve).isFalse();
-    }
+  @Test
+  public void canResolve_should_returnFalseWhenItsExecutionEntityAndPropertyIsNotExecution() {
+    // when
+    boolean canResolve = resolver.canResolve("anyOtherProperty", new ExecutionEntityImpl());
+    // then
+    assertThat(canResolve).isFalse();
+  }
 
-    @Test
-    public void canResolve_should_returnFalseWhenItsNotExecutionOrTaskEntityAndPropertyIsExecution() {
-        //when
-        boolean canResolve = resolver.canResolve(EXECUTION_KEY, mock(VariableScope.class));
-        //then
-        assertThat(canResolve).isFalse();
-    }
+  @Test
+  public void canResolve_should_returnFalseWhenItsNotExecutionOrTaskEntityAndPropertyIsExecution() {
+    // when
+    boolean canResolve = resolver.canResolve(EXECUTION_KEY, mock(VariableScope.class));
+    // then
+    assertThat(canResolve).isFalse();
+  }
 
-    @Test
-    public void resolve_should_returnVariableScopeWhenItsExecutionEntity() {
-        //given
-        ExecutionEntity variableScope = new ExecutionEntityImpl();
+  @Test
+  public void resolve_should_returnVariableScopeWhenItsExecutionEntity() {
+    // given
+    ExecutionEntity variableScope = new ExecutionEntityImpl();
 
-        //when
-        Object result = resolver.resolve(EXECUTION_KEY, variableScope);
+    // when
+    Object result = resolver.resolve(EXECUTION_KEY, variableScope);
 
-        //then
-        assertThat(result).isEqualTo(variableScope);
-    }
+    // then
+    assertThat(result).isEqualTo(variableScope);
+  }
 
-    @Test
-    public void resolve_should_returnVariableScopeExecutionWhenItsTaskEntity() {
-        //given
-        ExecutionEntityImpl execution = new ExecutionEntityImpl();
-        TaskEntityImpl variableScope = new TaskEntityImpl();
-        variableScope.setExecution(execution);
+  @Test
+  public void resolve_should_returnVariableScopeExecutionWhenItsTaskEntity() {
+    // given
+    ExecutionEntityImpl execution = new ExecutionEntityImpl();
+    TaskEntityImpl variableScope = new TaskEntityImpl();
+    variableScope.setExecution(execution);
 
-        //when
-        Object result = resolver.resolve(EXECUTION_KEY, variableScope);
+    // when
+    Object result = resolver.resolve(EXECUTION_KEY, variableScope);
 
-        //then
-        assertThat(result).isEqualTo(execution);
-    }
+    // then
+    assertThat(result).isEqualTo(execution);
+  }
 }

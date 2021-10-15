@@ -19,7 +19,6 @@ package org.activiti.engine.test.mock;
 import static java.util.Collections.unmodifiableList;
 
 import java.util.List;
-
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.impl.ProcessEngineImpl;
 import org.activiti.engine.impl.bpmn.parser.factory.ActivityBehaviorFactory;
@@ -27,9 +26,7 @@ import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.test.NoOpServiceTask;
 import org.activiti.engine.test.TestActivityBehaviorFactory;
 
-/**
-
- */
+/** */
 public class ActivitiMockSupport {
 
   protected TestActivityBehaviorFactory testActivityBehaviorFactory;
@@ -39,12 +36,17 @@ public class ActivitiMockSupport {
   }
 
   public ActivitiMockSupport(ProcessEngine processEngine) {
-    ProcessEngineConfigurationImpl processEngineConfiguration = ((ProcessEngineImpl) processEngine).getProcessEngineConfiguration();
-    ActivityBehaviorFactory existingActivityBehaviorFactory = processEngineConfiguration.getActivityBehaviorFactory();
-    this.testActivityBehaviorFactory = new TestActivityBehaviorFactory(existingActivityBehaviorFactory);
+    ProcessEngineConfigurationImpl processEngineConfiguration =
+        ((ProcessEngineImpl) processEngine).getProcessEngineConfiguration();
+    ActivityBehaviorFactory existingActivityBehaviorFactory =
+        processEngineConfiguration.getActivityBehaviorFactory();
+    this.testActivityBehaviorFactory =
+        new TestActivityBehaviorFactory(existingActivityBehaviorFactory);
 
     processEngineConfiguration.setActivityBehaviorFactory(testActivityBehaviorFactory);
-    processEngineConfiguration.getBpmnParser().setActivityBehaviorFactory(testActivityBehaviorFactory);
+    processEngineConfiguration
+        .getBpmnParser()
+        .setActivityBehaviorFactory(testActivityBehaviorFactory);
   }
 
   public static boolean isMockSupportPossible(ProcessEngine processEngine) {
@@ -82,5 +84,4 @@ public class ActivitiMockSupport {
   public void reset() {
     testActivityBehaviorFactory.reset();
   }
-
 }

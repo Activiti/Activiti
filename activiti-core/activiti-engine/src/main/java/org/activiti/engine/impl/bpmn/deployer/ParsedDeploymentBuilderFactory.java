@@ -17,7 +17,6 @@
 package org.activiti.engine.impl.bpmn.deployer;
 
 import java.util.Map;
-
 import org.activiti.engine.impl.bpmn.parser.BpmnParser;
 import org.activiti.engine.impl.persistence.entity.DeploymentEntity;
 
@@ -37,9 +36,8 @@ public class ParsedDeploymentBuilderFactory {
     return getBuilderForDeploymentAndSettings(deployment, null);
   }
 
-  public ParsedDeploymentBuilder getBuilderForDeploymentAndSettings(DeploymentEntity deployment,
-      Map<String, Object> deploymentSettings) {
+  public ParsedDeploymentBuilder getBuilderForDeploymentAndSettings(
+      DeploymentEntity deployment, Map<String, Object> deploymentSettings) {
     return new ParsedDeploymentBuilder(deployment, bpmnParser, deploymentSettings);
   }
-
 }

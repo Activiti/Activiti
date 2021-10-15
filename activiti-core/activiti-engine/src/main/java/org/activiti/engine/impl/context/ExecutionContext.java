@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.context;
 
 import org.activiti.engine.impl.persistence.entity.DeploymentEntity;
@@ -22,9 +21,7 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 import org.activiti.engine.repository.ProcessDefinition;
 
-/**
-
- */
+/** */
 public class ExecutionContext {
 
   protected ExecutionEntity execution;
@@ -47,7 +44,8 @@ public class ExecutionContext {
 
   public DeploymentEntity getDeployment() {
     String deploymentId = getProcessDefinition().getDeploymentId();
-    DeploymentEntity deployment = Context.getCommandContext().getDeploymentEntityManager().findById(deploymentId);
+    DeploymentEntity deployment =
+        Context.getCommandContext().getDeploymentEntityManager().findById(deploymentId);
     return deployment;
   }
 }

@@ -23,11 +23,12 @@ import org.activiti.engine.runtime.ProcessInstance;
 /**
  * An object structure representing an executable process composed of activities and transitions.
  *
- * Business processes are often created with graphical editors that store the process definition in certain file format. These files can be added to a {@link Deployment} artifact, such as for example
- * a Business Archive (.bar) file.
+ * <p>Business processes are often created with graphical editors that store the process definition
+ * in certain file format. These files can be added to a {@link Deployment} artifact, such as for
+ * example a Business Archive (.bar) file.
  *
- * At deploy time, the engine will then parse the process definition files to an executable instance of this class, that can be used to start a {@link ProcessInstance}.
- *
+ * <p>At deploy time, the engine will then parse the process definition files to an executable
+ * instance of this class, that can be used to start a {@link ProcessInstance}.
  */
 @Internal
 public interface ProcessDefinition {
@@ -46,14 +47,15 @@ public interface ProcessDefinition {
   /** unique name for all versions this process definitions */
   String getKey();
 
-  /** description of this process **/
+  /** description of this process * */
   String getDescription();
 
   /** version of this process definition */
   int getVersion();
 
   /**
-   * name of {@link RepositoryService#getResourceAsStream(String, String) the resource} of this process definition.
+   * name of {@link RepositoryService#getResourceAsStream(String, String) the resource} of this
+   * process definition.
    */
   String getResourceName();
 
@@ -69,7 +71,8 @@ public interface ProcessDefinition {
   boolean hasStartFormKey();
 
   /**
-   * Does this process definition has a graphical notation defined (such that a diagram can be generated)?
+   * Does this process definition has a graphical notation defined (such that a diagram can be
+   * generated)?
    */
   boolean hasGraphicalNotation();
 
@@ -85,5 +88,4 @@ public interface ProcessDefinition {
   void setAppVersion(Integer appVersion);
 
   Integer getAppVersion();
-
 }

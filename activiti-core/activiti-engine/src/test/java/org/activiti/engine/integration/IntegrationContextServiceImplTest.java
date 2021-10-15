@@ -15,6 +15,13 @@
  */
 package org.activiti.engine.integration;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.MockitoAnnotations.initMocks;
+
 import org.activiti.engine.impl.cmd.integration.DeleteIntegrationContextCmd;
 import org.activiti.engine.impl.cmd.integration.RetrieveIntegrationContextsCmd;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
@@ -24,48 +31,39 @@ import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.MockitoAnnotations.initMocks;
-
 public class IntegrationContextServiceImplTest {
 
-    @InjectMocks
-    private IntegrationContextServiceImpl integrationContextService;
+  @InjectMocks private IntegrationContextServiceImpl integrationContextService;
 
-    @Mock
-    private CommandExecutor commandExecutor;
+  @Mock private CommandExecutor commandExecutor;
 
-    @Before
-    public void setUp() throws Exception {
-        initMocks(this);
-    }
+  @Before
+  public void setUp() throws Exception {
+    initMocks(this);
+  }
 
-    @Test
-    public void findByIdShouldExecuteRetrieveIntegrationContextCmd() {
-        //given
-        IntegrationContextEntity entity = mock(IntegrationContextEntity.class);
-        given(commandExecutor.execute(any(RetrieveIntegrationContextsCmd.class))).willReturn(entity);
+  @Test
+  public void findByIdShouldExecuteRetrieveIntegrationContextCmd() {
+    // given
+    IntegrationContextEntity entity = mock(IntegrationContextEntity.class);
+    given(commandExecutor.execute(any(RetrieveIntegrationContextsCmd.class))).willReturn(entity);
 
-        //when
-        IntegrationContextEntity commandResult = integrationContextService.findById("id");
+    // when
+    IntegrationContextEntity commandResult = integrationContextService.findById("id");
 
-        //then
-        assertThat(commandResult).isEqualTo(entity);
-    }
+    // then
+    assertThat(commandResult).isEqualTo(entity);
+  }
 
-    @Test
-    public void deleteIntegrationContextShouldExecuteDeleteIntegrationContextCommand() {
-        //given
-        IntegrationContextEntity entity = mock(IntegrationContextEntity.class);
+  @Test
+  public void deleteIntegrationContextShouldExecuteDeleteIntegrationContextCommand() {
+    // given
+    IntegrationContextEntity entity = mock(IntegrationContextEntity.class);
 
-        //when
-        integrationContextService.deleteIntegrationContext(entity);
+    // when
+    integrationContextService.deleteIntegrationContext(entity);
 
-        //then
-        verify(commandExecutor).execute(any(DeleteIntegrationContextCmd.class));
-    }
+    // then
+    verify(commandExecutor).execute(any(DeleteIntegrationContextCmd.class));
+  }
 }

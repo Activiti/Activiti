@@ -17,14 +17,11 @@ package org.activiti.engine.impl.event.logger.handler;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import org.activiti.engine.delegate.event.ActivitiSignalEvent;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.EventLogEntryEntity;
 
-/**
-
- */
+/** */
 public class ActivitySignaledEventHandler extends AbstractDatabaseEventLoggerEventHandler {
 
   @Override
@@ -42,7 +39,11 @@ public class ActivitySignaledEventHandler extends AbstractDatabaseEventLoggerEve
     putInMapIfNotNull(data, Fields.SIGNAL_NAME, signalEvent.getSignalName());
     putInMapIfNotNull(data, Fields.SIGNAL_DATA, signalEvent.getSignalData());
 
-    return createEventLogEntry(signalEvent.getProcessDefinitionId(), signalEvent.getProcessInstanceId(), signalEvent.getExecutionId(), null, data);
+    return createEventLogEntry(
+        signalEvent.getProcessDefinitionId(),
+        signalEvent.getProcessInstanceId(),
+        signalEvent.getExecutionId(),
+        null,
+        data);
   }
-
 }

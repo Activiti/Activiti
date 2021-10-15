@@ -16,23 +16,21 @@
 package org.activiti.bpmn.converter.child;
 
 import javax.xml.stream.XMLStreamReader;
-
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.Process;
 import org.apache.commons.lang3.StringUtils;
 
-/**
-
- */
+/** */
 public class DocumentationParser extends BaseChildElementParser {
 
   public String getElementName() {
     return "documentation";
   }
 
-  public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model) throws Exception {
+  public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model)
+      throws Exception {
     String docText = xtr.getElementText();
     if (StringUtils.isNotEmpty(docText)) {
       if (parentElement instanceof FlowElement) {

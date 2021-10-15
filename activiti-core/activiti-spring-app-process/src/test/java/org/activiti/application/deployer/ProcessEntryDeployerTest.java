@@ -15,6 +15,11 @@
  */
 package org.activiti.application.deployer;
 
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.mock;
+import static org.mockito.MockitoAnnotations.initMocks;
+
 import org.activiti.application.ApplicationContent;
 import org.activiti.application.ApplicationEntry;
 import org.activiti.application.FileContent;
@@ -27,43 +32,33 @@ import org.mockito.InOrder;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.inOrder;
-import static org.mockito.Mockito.mock;
-import static org.mockito.MockitoAnnotations.initMocks;
-
 public class ProcessEntryDeployerTest {
 
-    @InjectMocks
-    private ProcessEntryDeployer deployer;
+  @InjectMocks private ProcessEntryDeployer deployer;
 
-    @Mock
-    private RepositoryService repositoryService;
+  @Mock private RepositoryService repositoryService;
 
-    @BeforeEach
-    public void setUp() {
-        initMocks(this);
-    }
+  @BeforeEach
+  public void setUp() {
+    initMocks(this);
+  }
 
-    @Test
-    public void deployEntriesShouldDelegateDeploymentToDeployBuilder() {
-        //given
-        ApplicationContent applicationContent = new ApplicationContent();
-        FileContent fileContent = new FileContent("process",
-                                              "any".getBytes());
-        applicationContent.add(new ApplicationEntry("processes",
-                                                    fileContent));
+  @Test
+  public void deployEntriesShouldDelegateDeploymentToDeployBuilder() {
+    // given
+    ApplicationContent applicationContent = new ApplicationContent();
+    FileContent fileContent = new FileContent("process", "any".getBytes());
+    applicationContent.add(new ApplicationEntry("processes", fileContent));
 
-        DeploymentBuilder deploymentBuilder = mock(DeploymentBuilder.class,
-                                      Answers.RETURNS_SELF);
-        given(repositoryService.createDeployment()).willReturn(deploymentBuilder);
+    DeploymentBuilder deploymentBuilder = mock(DeploymentBuilder.class, Answers.RETURNS_SELF);
+    given(repositoryService.createDeployment()).willReturn(deploymentBuilder);
 
-        //when
-        deployer.deployEntries(applicationContent);
+    // when
+    deployer.deployEntries(applicationContent);
 
-        //then
-        InOrder inOrder = inOrder(deploymentBuilder);
-        inOrder.verify(deploymentBuilder).addBytes(fileContent.getName(), fileContent.getContent());
-        inOrder.verify(deploymentBuilder).deploy();
-    }
+    // then
+    InOrder inOrder = inOrder(deploymentBuilder);
+    inOrder.verify(deploymentBuilder).addBytes(fileContent.getName(), fileContent.getContent());
+    inOrder.verify(deploymentBuilder).deploy();
+  }
 }

@@ -18,27 +18,26 @@ package org.activiti.engine;
 import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 
-/**
- * This class extends {@link Agenda} with activiti specific operations
- */
+/** This class extends {@link Agenda} with activiti specific operations */
 @Internal
 public interface ActivitiEngineAgenda extends Agenda {
 
-    void planContinueProcessOperation(ExecutionEntity execution);
+  void planContinueProcessOperation(ExecutionEntity execution);
 
-    void planContinueProcessSynchronousOperation(ExecutionEntity execution);
+  void planContinueProcessSynchronousOperation(ExecutionEntity execution);
 
-    void planContinueProcessInCompensation(ExecutionEntity execution);
+  void planContinueProcessInCompensation(ExecutionEntity execution);
 
-    void planContinueMultiInstanceOperation(ExecutionEntity execution);
+  void planContinueMultiInstanceOperation(ExecutionEntity execution);
 
-    void planTakeOutgoingSequenceFlowsOperation(ExecutionEntity execution, boolean evaluateConditions);
+  void planTakeOutgoingSequenceFlowsOperation(
+      ExecutionEntity execution, boolean evaluateConditions);
 
-    void planEndExecutionOperation(ExecutionEntity execution);
+  void planEndExecutionOperation(ExecutionEntity execution);
 
-    void planTriggerExecutionOperation(ExecutionEntity execution);
+  void planTriggerExecutionOperation(ExecutionEntity execution);
 
-    void planDestroyScopeOperation(ExecutionEntity execution);
+  void planDestroyScopeOperation(ExecutionEntity execution);
 
-    void planExecuteInactiveBehaviorsOperation();
+  void planExecuteInactiveBehaviorsOperation();
 }

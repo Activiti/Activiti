@@ -18,7 +18,6 @@ package org.activiti.editor.language.xml;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
-
 import org.activiti.bpmn.model.ActivitiListener;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.FieldExtension;
@@ -68,15 +67,23 @@ public class ServiceTaskConverterTest extends AbstractConverterTest {
     List<ActivitiListener> listeners = serviceTask.getExecutionListeners();
     assertThat(listeners).hasSize(3);
     ActivitiListener listener = listeners.get(0);
-    assertThat(ImplementationType.IMPLEMENTATION_TYPE_CLASS.equals(listener.getImplementationType())).isTrue();
+    assertThat(
+            ImplementationType.IMPLEMENTATION_TYPE_CLASS.equals(listener.getImplementationType()))
+        .isTrue();
     assertThat(listener.getImplementation()).isEqualTo("org.test.TestClass");
     assertThat(listener.getEvent()).isEqualTo("start");
     listener = listeners.get(1);
-    assertThat(ImplementationType.IMPLEMENTATION_TYPE_EXPRESSION.equals(listener.getImplementationType())).isTrue();
+    assertThat(
+            ImplementationType.IMPLEMENTATION_TYPE_EXPRESSION.equals(
+                listener.getImplementationType()))
+        .isTrue();
     assertThat(listener.getImplementation()).isEqualTo("${testExpression}");
     assertThat(listener.getEvent()).isEqualTo("end");
     listener = listeners.get(2);
-    assertThat(ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION.equals(listener.getImplementationType())).isTrue();
+    assertThat(
+            ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION.equals(
+                listener.getImplementationType()))
+        .isTrue();
     assertThat(listener.getImplementation()).isEqualTo("${delegateExpression}");
     assertThat(listener.getEvent()).isEqualTo("start");
 

@@ -16,15 +16,12 @@
 
 package org.activiti.examples.bpmn.executionlistener;
 
+import java.util.HashMap;
+import java.util.Map;
 import org.activiti.engine.delegate.CustomPropertiesResolver;
 import org.activiti.engine.delegate.DelegateExecution;
 
-import java.util.HashMap;
-import java.util.Map;
-
-/**
-
- */
+/** */
 public class MyCustomPropertiesResolver implements CustomPropertiesResolver {
 
   @Override

@@ -16,12 +16,11 @@
 
 package org.activiti.engine.impl;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.activiti.api.runtime.shared.identity.UserGroupManager;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
@@ -37,12 +36,7 @@ import org.activiti.engine.task.TaskQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
-
-
-
-
- */
+/** */
 public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> implements TaskQuery {
 
   private static final long serialVersionUID = 1L;
@@ -120,8 +114,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   protected List<TaskQueryImpl> orQueryObjects = new ArrayList<TaskQueryImpl>();
   protected TaskQueryImpl currentOrQueryObject = null;
 
-  public TaskQueryImpl() {
-  }
+  public TaskQueryImpl() {}
 
   public TaskQueryImpl(CommandContext commandContext) {
     super(commandContext);
@@ -154,7 +147,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
       throw new ActivitiIllegalArgumentException("Task name is null");
     }
 
-    if(orActive) {
+    if (orActive) {
       currentOrQueryObject.name = name;
     } else {
       this.name = name;
@@ -177,16 +170,19 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
     }
 
     if (name != null) {
-      throw new ActivitiIllegalArgumentException("Invalid query usage: cannot set both taskNameIn and name");
+      throw new ActivitiIllegalArgumentException(
+          "Invalid query usage: cannot set both taskNameIn and name");
     }
     if (nameLike != null) {
-      throw new ActivitiIllegalArgumentException("Invalid query usage: cannot set both taskNameIn and nameLike");
+      throw new ActivitiIllegalArgumentException(
+          "Invalid query usage: cannot set both taskNameIn and nameLike");
     }
     if (nameLikeIgnoreCase != null) {
-      throw new ActivitiIllegalArgumentException("Invalid query usage: cannot set both taskNameIn and nameLikeIgnoreCase");
+      throw new ActivitiIllegalArgumentException(
+          "Invalid query usage: cannot set both taskNameIn and nameLikeIgnoreCase");
     }
 
-    if(orActive) {
+    if (orActive) {
       currentOrQueryObject.nameList = nameList;
     } else {
       this.nameList = nameList;
@@ -209,13 +205,16 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
     }
 
     if (name != null) {
-      throw new ActivitiIllegalArgumentException("Invalid query usage: cannot set both taskNameInIgnoreCase and name");
+      throw new ActivitiIllegalArgumentException(
+          "Invalid query usage: cannot set both taskNameInIgnoreCase and name");
     }
     if (nameLike != null) {
-      throw new ActivitiIllegalArgumentException("Invalid query usage: cannot set both taskNameInIgnoreCase and nameLike");
+      throw new ActivitiIllegalArgumentException(
+          "Invalid query usage: cannot set both taskNameInIgnoreCase and nameLike");
     }
     if (nameLikeIgnoreCase != null) {
-      throw new ActivitiIllegalArgumentException("Invalid query usage: cannot set both taskNameInIgnoreCase and nameLikeIgnoreCase");
+      throw new ActivitiIllegalArgumentException(
+          "Invalid query usage: cannot set both taskNameInIgnoreCase and nameLikeIgnoreCase");
     }
 
     final int nameListSize = nameList.size();
@@ -237,7 +236,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
       throw new ActivitiIllegalArgumentException("Task namelike is null");
     }
 
-    if(orActive) {
+    if (orActive) {
       currentOrQueryObject.nameLike = nameLike;
     } else {
       this.nameLike = nameLike;
@@ -246,16 +245,16 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   }
 
   public TaskQuery taskNameLikeIgnoreCase(String nameLikeIgnoreCase) {
-  	 if (nameLikeIgnoreCase == null) {
-       throw new ActivitiIllegalArgumentException("Task nameLikeIgnoreCase is null");
-     }
+    if (nameLikeIgnoreCase == null) {
+      throw new ActivitiIllegalArgumentException("Task nameLikeIgnoreCase is null");
+    }
 
-     if(orActive) {
-       currentOrQueryObject.nameLikeIgnoreCase = nameLikeIgnoreCase.toLowerCase();
-     } else {
-       this.nameLikeIgnoreCase = nameLikeIgnoreCase.toLowerCase();
-     }
-     return this;
+    if (orActive) {
+      currentOrQueryObject.nameLikeIgnoreCase = nameLikeIgnoreCase.toLowerCase();
+    } else {
+      this.nameLikeIgnoreCase = nameLikeIgnoreCase.toLowerCase();
+    }
+    return this;
   }
 
   public TaskQueryImpl taskDescription(String description) {
@@ -263,7 +262,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
       throw new ActivitiIllegalArgumentException("Description is null");
     }
 
-    if(orActive) {
+    if (orActive) {
       currentOrQueryObject.description = description;
     } else {
       this.description = description;
@@ -275,7 +274,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
     if (descriptionLike == null) {
       throw new ActivitiIllegalArgumentException("Task descriptionlike is null");
     }
-    if(orActive) {
+    if (orActive) {
       currentOrQueryObject.descriptionLike = descriptionLike;
     } else {
       this.descriptionLike = descriptionLike;
@@ -287,7 +286,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
     if (descriptionLikeIgnoreCase == null) {
       throw new ActivitiIllegalArgumentException("Task descriptionLikeIgnoreCase is null");
     }
-    if(orActive) {
+    if (orActive) {
       currentOrQueryObject.descriptionLikeIgnoreCase = descriptionLikeIgnoreCase.toLowerCase();
     } else {
       this.descriptionLikeIgnoreCase = descriptionLikeIgnoreCase.toLowerCase();
@@ -299,7 +298,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
     if (priority == null) {
       throw new ActivitiIllegalArgumentException("Priority is null");
     }
-    if(orActive) {
+    if (orActive) {
       currentOrQueryObject.priority = priority;
     } else {
       this.priority = priority;
@@ -311,7 +310,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
     if (minPriority == null) {
       throw new ActivitiIllegalArgumentException("Min Priority is null");
     }
-    if(orActive) {
+    if (orActive) {
       currentOrQueryObject.minPriority = minPriority;
     } else {
       this.minPriority = minPriority;
@@ -323,7 +322,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
     if (maxPriority == null) {
       throw new ActivitiIllegalArgumentException("Max Priority is null");
     }
-    if(orActive) {
+    if (orActive) {
       currentOrQueryObject.maxPriority = maxPriority;
     } else {
       this.maxPriority = maxPriority;
@@ -335,7 +334,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
     if (assignee == null) {
       throw new ActivitiIllegalArgumentException("Assignee is null");
     }
-    if(orActive) {
+    if (orActive) {
       currentOrQueryObject.assignee = assignee;
     } else {
       this.assignee = assignee;
@@ -347,7 +346,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
     if (assigneeLike == null) {
       throw new ActivitiIllegalArgumentException("AssigneeLike is null");
     }
-    if(orActive) {
+    if (orActive) {
       currentOrQueryObject.assigneeLike = assignee;
     } else {
       this.assigneeLike = assigneeLike;
@@ -356,69 +355,69 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   }
 
   public TaskQuery taskAssigneeLikeIgnoreCase(String assigneeLikeIgnoreCase) {
-  	 if (assigneeLikeIgnoreCase == null) {
-       throw new ActivitiIllegalArgumentException("assigneeLikeIgnoreCase is null");
-     }
-     if(orActive) {
-       currentOrQueryObject.assigneeLikeIgnoreCase = assigneeLikeIgnoreCase.toLowerCase();
-     } else {
-       this.assigneeLikeIgnoreCase = assigneeLikeIgnoreCase.toLowerCase();
-     }
-     return this;
+    if (assigneeLikeIgnoreCase == null) {
+      throw new ActivitiIllegalArgumentException("assigneeLikeIgnoreCase is null");
+    }
+    if (orActive) {
+      currentOrQueryObject.assigneeLikeIgnoreCase = assigneeLikeIgnoreCase.toLowerCase();
+    } else {
+      this.assigneeLikeIgnoreCase = assigneeLikeIgnoreCase.toLowerCase();
+    }
+    return this;
   }
 
-	@Override
-	public TaskQuery taskAssigneeIds(List<String> assigneeIds) {
-		if (assigneeIds == null) {
-			throw new ActivitiIllegalArgumentException("Task assignee list is null");
-		}
-		if (assigneeIds.isEmpty()) {
-			throw new ActivitiIllegalArgumentException("Task assignee list is empty");
-		}
-		for (String assignee : assigneeIds) {
-			if (assignee == null) {
-				throw new ActivitiIllegalArgumentException("None of the given task assignees can be null");
-			}
-		}
+  @Override
+  public TaskQuery taskAssigneeIds(List<String> assigneeIds) {
+    if (assigneeIds == null) {
+      throw new ActivitiIllegalArgumentException("Task assignee list is null");
+    }
+    if (assigneeIds.isEmpty()) {
+      throw new ActivitiIllegalArgumentException("Task assignee list is empty");
+    }
+    for (String assignee : assigneeIds) {
+      if (assignee == null) {
+        throw new ActivitiIllegalArgumentException("None of the given task assignees can be null");
+      }
+    }
 
-		if (assignee != null) {
-			throw new ActivitiIllegalArgumentException(
-					"Invalid query usage: cannot set both taskAssigneeIds and taskAssignee");
-		}
-		if (assigneeLike != null) {
-			throw new ActivitiIllegalArgumentException(
-					"Invalid query usage: cannot set both taskAssigneeIds and taskAssigneeLike");
-		}
-		if (assigneeLikeIgnoreCase != null) {
-			throw new ActivitiIllegalArgumentException(
-					"Invalid query usage: cannot set both taskAssigneeIds and taskAssigneeLikeIgnoreCase");
-		}
+    if (assignee != null) {
+      throw new ActivitiIllegalArgumentException(
+          "Invalid query usage: cannot set both taskAssigneeIds and taskAssignee");
+    }
+    if (assigneeLike != null) {
+      throw new ActivitiIllegalArgumentException(
+          "Invalid query usage: cannot set both taskAssigneeIds and taskAssigneeLike");
+    }
+    if (assigneeLikeIgnoreCase != null) {
+      throw new ActivitiIllegalArgumentException(
+          "Invalid query usage: cannot set both taskAssigneeIds and taskAssigneeLikeIgnoreCase");
+    }
 
-		if (orActive) {
-			currentOrQueryObject.assigneeIds = assigneeIds;
-		} else {
-			this.assigneeIds = assigneeIds;
-		}
-		return this;
-	}
+    if (orActive) {
+      currentOrQueryObject.assigneeIds = assigneeIds;
+    } else {
+      this.assigneeIds = assigneeIds;
+    }
+    return this;
+  }
 
-	public TaskQueryImpl taskOwner(String owner) {
-		if (owner == null) {
-			throw new ActivitiIllegalArgumentException("Owner is null");
-		}
-		if (orActive) {
-			currentOrQueryObject.owner = owner;
-		} else {
-			this.owner = owner;
-		}
-		return this;
-	}
+  public TaskQueryImpl taskOwner(String owner) {
+    if (owner == null) {
+      throw new ActivitiIllegalArgumentException("Owner is null");
+    }
+    if (orActive) {
+      currentOrQueryObject.owner = owner;
+    } else {
+      this.owner = owner;
+    }
+    return this;
+  }
 
   public TaskQueryImpl taskOwnerLike(String ownerLike) {
     if (ownerLike == null) {
       throw new ActivitiIllegalArgumentException("Owner is null");
     }
-    if(orActive) {
+    if (orActive) {
       currentOrQueryObject.ownerLike = ownerLike;
     } else {
       this.ownerLike = ownerLike;
@@ -430,7 +429,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
     if (ownerLikeIgnoreCase == null) {
       throw new ActivitiIllegalArgumentException("OwnerLikeIgnoreCase");
     }
-    if(orActive) {
+    if (orActive) {
       currentOrQueryObject.ownerLikeIgnoreCase = ownerLikeIgnoreCase.toLowerCase();
     } else {
       this.ownerLikeIgnoreCase = ownerLikeIgnoreCase.toLowerCase();
@@ -439,7 +438,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   }
 
   public TaskQuery taskUnassigned() {
-    if(orActive) {
+    if (orActive) {
       currentOrQueryObject.unassigned = true;
     } else {
       this.unassigned = true;
@@ -498,7 +497,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
     if (involvedUser == null) {
       throw new ActivitiIllegalArgumentException("Involved user is null");
     }
-    if(orActive) {
+    if (orActive) {
       currentOrQueryObject.involvedUser = involvedUser;
     } else {
       this.involvedUser = involvedUser;
@@ -526,7 +525,8 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
     }
 
     if (candidateGroups != null) {
-      throw new ActivitiIllegalArgumentException("Invalid query usage: cannot set both candidateGroup and candidateGroupIn");
+      throw new ActivitiIllegalArgumentException(
+          "Invalid query usage: cannot set both candidateGroup and candidateGroupIn");
     }
 
     if (orActive) {
@@ -543,10 +543,11 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
       throw new ActivitiIllegalArgumentException("Invalid query usage: cannot set candidateGroup");
     }
     if (candidateUser != null) {
-      throw new ActivitiIllegalArgumentException("Invalid query usage: cannot set both candidateGroup and candidateUser");
+      throw new ActivitiIllegalArgumentException(
+          "Invalid query usage: cannot set both candidateGroup and candidateUser");
     }
 
-    if(orActive) {
+    if (orActive) {
       currentOrQueryObject.bothCandidateAndAssigned = true;
       currentOrQueryObject.userIdForCandidateAndAssignee = userIdForCandidateAndAssignee;
     } else {
@@ -557,17 +558,18 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
     return this;
   }
 
-
   @Override
-  public TaskQuery taskCandidateOrAssigned(String userIdForCandidateAndAssignee, List<String> usersGroups) {
+  public TaskQuery taskCandidateOrAssigned(
+      String userIdForCandidateAndAssignee, List<String> usersGroups) {
     if (candidateGroup != null) {
       throw new ActivitiIllegalArgumentException("Invalid query usage: cannot set candidateGroup");
     }
     if (candidateUser != null) {
-      throw new ActivitiIllegalArgumentException("Invalid query usage: cannot set both candidateGroup and candidateUser");
+      throw new ActivitiIllegalArgumentException(
+          "Invalid query usage: cannot set both candidateGroup and candidateUser");
     }
 
-    if(orActive) {
+    if (orActive) {
       currentOrQueryObject.bothCandidateAndAssigned = true;
       currentOrQueryObject.userIdForCandidateAndAssignee = userIdForCandidateAndAssignee;
       currentOrQueryObject.candidateGroups = usersGroups;
@@ -590,7 +592,8 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
     }
 
     if (candidateGroup != null) {
-      throw new ActivitiIllegalArgumentException("Invalid query usage: cannot set both candidateGroupIn and candidateGroup");
+      throw new ActivitiIllegalArgumentException(
+          "Invalid query usage: cannot set both candidateGroupIn and candidateGroup");
     }
 
     if (orActive) {
@@ -602,22 +605,22 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   }
 
   public TaskQuery taskTenantId(String tenantId) {
-  	if (tenantId == null) {
-  		throw new ActivitiIllegalArgumentException("task tenant id is null");
-  	}
-  	 if(orActive) {
-       currentOrQueryObject.tenantId = tenantId;
-     } else {
-       this.tenantId = tenantId;
-     }
-  	return this;
+    if (tenantId == null) {
+      throw new ActivitiIllegalArgumentException("task tenant id is null");
+    }
+    if (orActive) {
+      currentOrQueryObject.tenantId = tenantId;
+    } else {
+      this.tenantId = tenantId;
+    }
+    return this;
   }
 
   public TaskQuery taskTenantIdLike(String tenantIdLike) {
-  	if (tenantIdLike == null) {
-  		throw new ActivitiIllegalArgumentException("task tenant id is null");
-  	}
-  	if(orActive) {
+    if (tenantIdLike == null) {
+      throw new ActivitiIllegalArgumentException("task tenant id is null");
+    }
+    if (orActive) {
       currentOrQueryObject.tenantIdLike = tenantIdLike;
     } else {
       this.tenantIdLike = tenantIdLike;
@@ -626,7 +629,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   }
 
   public TaskQuery taskWithoutTenantId() {
-    if(orActive) {
+    if (orActive) {
       currentOrQueryObject.withoutTenantId = true;
     } else {
       this.withoutTenantId = true;
@@ -644,7 +647,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   }
 
   public TaskQueryImpl processInstanceId(String processInstanceId) {
-    if(orActive) {
+    if (orActive) {
       currentOrQueryObject.processInstanceId = processInstanceId;
     } else {
       this.processInstanceId = processInstanceId;
@@ -662,7 +665,8 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
     }
     for (String processInstanceId : processInstanceIds) {
       if (processInstanceId == null) {
-        throw new ActivitiIllegalArgumentException("None of the given process instance ids can be null");
+        throw new ActivitiIllegalArgumentException(
+            "None of the given process instance ids can be null");
       }
     }
 
@@ -675,7 +679,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   }
 
   public TaskQueryImpl processInstanceBusinessKey(String processInstanceBusinessKey) {
-    if(orActive) {
+    if (orActive) {
       currentOrQueryObject.processInstanceBusinessKey = processInstanceBusinessKey;
     } else {
       this.processInstanceBusinessKey = processInstanceBusinessKey;
@@ -684,7 +688,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   }
 
   public TaskQueryImpl processInstanceBusinessKeyLike(String processInstanceBusinessKeyLike) {
-    if(orActive) {
+    if (orActive) {
       currentOrQueryObject.processInstanceBusinessKeyLike = processInstanceBusinessKeyLike;
     } else {
       this.processInstanceBusinessKeyLike = processInstanceBusinessKeyLike;
@@ -692,17 +696,20 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
     return this;
   }
 
-  public TaskQuery processInstanceBusinessKeyLikeIgnoreCase(String processInstanceBusinessKeyLikeIgnoreCase) {
-  	 if(orActive) {
-       currentOrQueryObject.processInstanceBusinessKeyLikeIgnoreCase = processInstanceBusinessKeyLikeIgnoreCase.toLowerCase();
-     } else {
-       this.processInstanceBusinessKeyLikeIgnoreCase = processInstanceBusinessKeyLikeIgnoreCase.toLowerCase();
-     }
-     return this;
+  public TaskQuery processInstanceBusinessKeyLikeIgnoreCase(
+      String processInstanceBusinessKeyLikeIgnoreCase) {
+    if (orActive) {
+      currentOrQueryObject.processInstanceBusinessKeyLikeIgnoreCase =
+          processInstanceBusinessKeyLikeIgnoreCase.toLowerCase();
+    } else {
+      this.processInstanceBusinessKeyLikeIgnoreCase =
+          processInstanceBusinessKeyLikeIgnoreCase.toLowerCase();
+    }
+    return this;
   }
 
   public TaskQueryImpl executionId(String executionId) {
-    if(orActive) {
+    if (orActive) {
       currentOrQueryObject.executionId = executionId;
     } else {
       this.executionId = executionId;
@@ -711,7 +718,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   }
 
   public TaskQueryImpl taskCreatedOn(Date createTime) {
-    if(orActive) {
+    if (orActive) {
       currentOrQueryObject.createTime = createTime;
     } else {
       this.createTime = createTime;
@@ -720,7 +727,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   }
 
   public TaskQuery taskCreatedBefore(Date before) {
-    if(orActive) {
+    if (orActive) {
       currentOrQueryObject.createTimeBefore = before;
     } else {
       this.createTimeBefore = before;
@@ -729,7 +736,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   }
 
   public TaskQuery taskCreatedAfter(Date after) {
-    if(orActive) {
+    if (orActive) {
       currentOrQueryObject.createTimeAfter = after;
     } else {
       this.createTimeAfter = after;
@@ -738,7 +745,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   }
 
   public TaskQuery taskCategory(String category) {
-    if(orActive) {
+    if (orActive) {
       currentOrQueryObject.category = category;
     } else {
       this.category = category;
@@ -747,7 +754,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   }
 
   public TaskQuery taskDefinitionKey(String key) {
-    if(orActive) {
+    if (orActive) {
       currentOrQueryObject.key = key;
     } else {
       this.key = key;
@@ -756,7 +763,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   }
 
   public TaskQuery taskDefinitionKeyLike(String keyLike) {
-    if(orActive) {
+    if (orActive) {
       currentOrQueryObject.keyLike = keyLike;
     } else {
       this.keyLike = keyLike;
@@ -765,7 +772,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   }
 
   public TaskQuery taskVariableValueEquals(String variableName, Object variableValue) {
-    if(orActive) {
+    if (orActive) {
       currentOrQueryObject.variableValueEquals(variableName, variableValue);
     } else {
       this.variableValueEquals(variableName, variableValue);
@@ -774,7 +781,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   }
 
   public TaskQuery taskVariableValueEquals(Object variableValue) {
-    if(orActive) {
+    if (orActive) {
       currentOrQueryObject.variableValueEquals(variableValue);
     } else {
       this.variableValueEquals(variableValue);
@@ -783,7 +790,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   }
 
   public TaskQuery taskVariableValueEqualsIgnoreCase(String name, String value) {
-    if(orActive) {
+    if (orActive) {
       currentOrQueryObject.variableValueEqualsIgnoreCase(name, value);
     } else {
       this.variableValueEqualsIgnoreCase(name, value);
@@ -792,7 +799,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   }
 
   public TaskQuery taskVariableValueNotEqualsIgnoreCase(String name, String value) {
-    if(orActive) {
+    if (orActive) {
       currentOrQueryObject.variableValueNotEqualsIgnoreCase(name, value);
     } else {
       this.variableValueNotEqualsIgnoreCase(name, value);
@@ -801,7 +808,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   }
 
   public TaskQuery taskVariableValueNotEquals(String variableName, Object variableValue) {
-    if(orActive) {
+    if (orActive) {
       currentOrQueryObject.variableValueNotEquals(variableName, variableValue);
     } else {
       this.variableValueNotEquals(variableName, variableValue);
@@ -810,7 +817,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   }
 
   public TaskQuery taskVariableValueGreaterThan(String name, Object value) {
-    if(orActive) {
+    if (orActive) {
       currentOrQueryObject.variableValueGreaterThan(name, value);
     } else {
       this.variableValueGreaterThan(name, value);
@@ -819,7 +826,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   }
 
   public TaskQuery taskVariableValueGreaterThanOrEqual(String name, Object value) {
-    if(orActive) {
+    if (orActive) {
       currentOrQueryObject.variableValueGreaterThanOrEqual(name, value);
     } else {
       this.variableValueGreaterThanOrEqual(name, value);
@@ -828,7 +835,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   }
 
   public TaskQuery taskVariableValueLessThan(String name, Object value) {
-    if(orActive) {
+    if (orActive) {
       currentOrQueryObject.variableValueLessThan(name, value);
     } else {
       this.variableValueLessThan(name, value);
@@ -837,7 +844,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   }
 
   public TaskQuery taskVariableValueLessThanOrEqual(String name, Object value) {
-    if(orActive) {
+    if (orActive) {
       currentOrQueryObject.variableValueLessThanOrEqual(name, value);
     } else {
       this.variableValueLessThanOrEqual(name, value);
@@ -846,7 +853,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   }
 
   public TaskQuery taskVariableValueLike(String name, String value) {
-    if(orActive) {
+    if (orActive) {
       currentOrQueryObject.variableValueLike(name, value);
     } else {
       this.variableValueLike(name, value);
@@ -855,7 +862,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   }
 
   public TaskQuery taskVariableValueLikeIgnoreCase(String name, String value) {
-    if(orActive) {
+    if (orActive) {
       currentOrQueryObject.variableValueLikeIgnoreCase(name, value);
     } else {
       this.variableValueLikeIgnoreCase(name, value);
@@ -864,7 +871,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   }
 
   public TaskQuery processVariableValueEquals(String variableName, Object variableValue) {
-    if(orActive) {
+    if (orActive) {
       currentOrQueryObject.variableValueEquals(variableName, variableValue, false);
     } else {
       this.variableValueEquals(variableName, variableValue, false);
@@ -873,7 +880,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   }
 
   public TaskQuery processVariableValueNotEquals(String variableName, Object variableValue) {
-    if(orActive) {
+    if (orActive) {
       currentOrQueryObject.variableValueNotEquals(variableName, variableValue, false);
     } else {
       this.variableValueNotEquals(variableName, variableValue, false);
@@ -882,7 +889,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   }
 
   public TaskQuery processVariableValueEquals(Object variableValue) {
-    if(orActive) {
+    if (orActive) {
       currentOrQueryObject.variableValueEquals(variableValue, false);
     } else {
       this.variableValueEquals(variableValue, false);
@@ -891,7 +898,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   }
 
   public TaskQuery processVariableValueEqualsIgnoreCase(String name, String value) {
-    if(orActive) {
+    if (orActive) {
       currentOrQueryObject.variableValueEqualsIgnoreCase(name, value, false);
     } else {
       this.variableValueEqualsIgnoreCase(name, value, false);
@@ -900,7 +907,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   }
 
   public TaskQuery processVariableValueNotEqualsIgnoreCase(String name, String value) {
-    if(orActive) {
+    if (orActive) {
       currentOrQueryObject.variableValueNotEqualsIgnoreCase(name, value, false);
     } else {
       this.variableValueNotEqualsIgnoreCase(name, value, false);
@@ -909,7 +916,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   }
 
   public TaskQuery processVariableValueGreaterThan(String name, Object value) {
-    if(orActive) {
+    if (orActive) {
       currentOrQueryObject.variableValueGreaterThan(name, value, false);
     } else {
       this.variableValueGreaterThan(name, value, false);
@@ -918,7 +925,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   }
 
   public TaskQuery processVariableValueGreaterThanOrEqual(String name, Object value) {
-    if(orActive) {
+    if (orActive) {
       currentOrQueryObject.variableValueGreaterThanOrEqual(name, value, false);
     } else {
       this.variableValueGreaterThanOrEqual(name, value, false);
@@ -927,7 +934,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   }
 
   public TaskQuery processVariableValueLessThan(String name, Object value) {
-    if(orActive) {
+    if (orActive) {
       currentOrQueryObject.variableValueLessThan(name, value, false);
     } else {
       this.variableValueLessThan(name, value, false);
@@ -936,7 +943,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   }
 
   public TaskQuery processVariableValueLessThanOrEqual(String name, Object value) {
-    if(orActive) {
+    if (orActive) {
       currentOrQueryObject.variableValueLessThanOrEqual(name, value, false);
     } else {
       this.variableValueLessThanOrEqual(name, value, false);
@@ -945,7 +952,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   }
 
   public TaskQuery processVariableValueLike(String name, String value) {
-    if(orActive) {
+    if (orActive) {
       currentOrQueryObject.variableValueLike(name, value, false);
     } else {
       this.variableValueLike(name, value, false);
@@ -954,7 +961,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   }
 
   public TaskQuery processVariableValueLikeIgnoreCase(String name, String value) {
-    if(orActive) {
+    if (orActive) {
       currentOrQueryObject.variableValueLikeIgnoreCase(name, value, false);
     } else {
       this.variableValueLikeIgnoreCase(name, value, false);
@@ -963,7 +970,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   }
 
   public TaskQuery processDefinitionKey(String processDefinitionKey) {
-    if(orActive) {
+    if (orActive) {
       currentOrQueryObject.processDefinitionKey = processDefinitionKey;
     } else {
       this.processDefinitionKey = processDefinitionKey;
@@ -972,7 +979,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   }
 
   public TaskQuery processDefinitionKeyLike(String processDefinitionKeyLike) {
-    if(orActive) {
+    if (orActive) {
       currentOrQueryObject.processDefinitionKeyLike = processDefinitionKeyLike;
     } else {
       this.processDefinitionKeyLike = processDefinitionKeyLike;
@@ -981,8 +988,9 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   }
 
   public TaskQuery processDefinitionKeyLikeIgnoreCase(String processDefinitionKeyLikeIgnoreCase) {
-  	if(orActive) {
-      currentOrQueryObject.processDefinitionKeyLikeIgnoreCase = processDefinitionKeyLikeIgnoreCase.toLowerCase();
+    if (orActive) {
+      currentOrQueryObject.processDefinitionKeyLikeIgnoreCase =
+          processDefinitionKeyLikeIgnoreCase.toLowerCase();
     } else {
       this.processDefinitionKeyLikeIgnoreCase = processDefinitionKeyLikeIgnoreCase.toLowerCase();
     }
@@ -999,7 +1007,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   }
 
   public TaskQuery processDefinitionId(String processDefinitionId) {
-    if(orActive) {
+    if (orActive) {
       currentOrQueryObject.processDefinitionId = processDefinitionId;
     } else {
       this.processDefinitionId = processDefinitionId;
@@ -1008,7 +1016,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   }
 
   public TaskQuery processDefinitionName(String processDefinitionName) {
-    if(orActive) {
+    if (orActive) {
       currentOrQueryObject.processDefinitionName = processDefinitionName;
     } else {
       this.processDefinitionName = processDefinitionName;
@@ -1017,7 +1025,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   }
 
   public TaskQuery processDefinitionNameLike(String processDefinitionNameLike) {
-    if(orActive) {
+    if (orActive) {
       currentOrQueryObject.processDefinitionNameLike = processDefinitionNameLike;
     } else {
       this.processDefinitionNameLike = processDefinitionNameLike;
@@ -1035,11 +1043,12 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
     }
     for (String processCategory : processCategoryInList) {
       if (processCategory == null) {
-        throw new ActivitiIllegalArgumentException("None of the given process categories can be null");
+        throw new ActivitiIllegalArgumentException(
+            "None of the given process categories can be null");
       }
     }
 
-    if(orActive) {
+    if (orActive) {
       currentOrQueryObject.processCategoryInList = processCategoryInList;
     } else {
       this.processCategoryInList = processCategoryInList;
@@ -1057,11 +1066,12 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
     }
     for (String processCategory : processCategoryNotInList) {
       if (processCategory == null) {
-        throw new ActivitiIllegalArgumentException("None of the given process categories can be null");
+        throw new ActivitiIllegalArgumentException(
+            "None of the given process categories can be null");
       }
     }
 
-    if(orActive) {
+    if (orActive) {
       currentOrQueryObject.processCategoryNotInList = processCategoryNotInList;
     } else {
       this.processCategoryNotInList = processCategoryNotInList;
@@ -1070,7 +1080,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   }
 
   public TaskQuery deploymentId(String deploymentId) {
-    if(orActive) {
+    if (orActive) {
       currentOrQueryObject.deploymentId = deploymentId;
     } else {
       this.deploymentId = deploymentId;
@@ -1079,7 +1089,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   }
 
   public TaskQuery deploymentIdIn(List<String> deploymentIds) {
-    if(orActive) {
+    if (orActive) {
       currentOrQueryObject.deploymentIds = deploymentIds;
     } else {
       this.deploymentIds = deploymentIds;
@@ -1088,7 +1098,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   }
 
   public TaskQuery dueDate(Date dueDate) {
-    if(orActive) {
+    if (orActive) {
       currentOrQueryObject.dueDate = dueDate;
       currentOrQueryObject.withoutDueDate = false;
     } else {
@@ -1104,7 +1114,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   }
 
   public TaskQuery dueBefore(Date dueBefore) {
-    if(orActive) {
+    if (orActive) {
       currentOrQueryObject.dueBefore = dueBefore;
       currentOrQueryObject.withoutDueDate = false;
     } else {
@@ -1120,7 +1130,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   }
 
   public TaskQuery dueAfter(Date dueAfter) {
-    if(orActive) {
+    if (orActive) {
       currentOrQueryObject.dueAfter = dueAfter;
       currentOrQueryObject.withoutDueDate = false;
     } else {
@@ -1135,7 +1145,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   }
 
   public TaskQuery withoutDueDate() {
-    if(orActive) {
+    if (orActive) {
       currentOrQueryObject.withoutDueDate = true;
     } else {
       this.withoutDueDate = true;
@@ -1149,7 +1159,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   }
 
   public TaskQuery excludeSubtasks() {
-    if(orActive) {
+    if (orActive) {
       currentOrQueryObject.excludeSubtasks = true;
     } else {
       this.excludeSubtasks = true;
@@ -1158,7 +1168,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   }
 
   public TaskQuery suspended() {
-    if(orActive) {
+    if (orActive) {
       currentOrQueryObject.suspensionState = SuspensionState.SUSPENDED;
     } else {
       this.suspensionState = SuspensionState.SUSPENDED;
@@ -1167,7 +1177,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   }
 
   public TaskQuery active() {
-    if(orActive) {
+    if (orActive) {
       currentOrQueryObject.suspensionState = SuspensionState.ACTIVE;
     } else {
       this.suspensionState = SuspensionState.ACTIVE;
@@ -1204,7 +1214,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
     return taskVariablesLimit;
   }
 
-  public List<String> getCandidateGroups(){
+  public List<String> getCandidateGroups() {
     if (candidateGroup != null) {
       List<String> candidateGroupList = new ArrayList<String>(1);
       candidateGroupList.add(candidateGroup);
@@ -1223,11 +1233,14 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   }
 
   protected List<String> getGroupsForCandidateUser(String candidateUser) {
-    UserGroupManager userGroupManager = Context.getProcessEngineConfiguration().getUserGroupManager();
-    if(userGroupManager !=null){
+    UserGroupManager userGroupManager =
+        Context.getProcessEngineConfiguration().getUserGroupManager();
+    if (userGroupManager != null) {
       return userGroupManager.getUserGroups(candidateUser);
-    } else{
-      log.warn("No UserGroupManager set on ProcessEngineConfiguration. Tasks queried only where user is directly related, not through groups.");
+    } else {
+      log.warn(
+          "No UserGroupManager set on ProcessEngineConfiguration. Tasks queried only where user is"
+              + " directly related, not through groups.");
     }
     return null;
   }
@@ -1248,7 +1261,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   @Override
   public TaskQuery or() {
     if (orActive) {
-        throw new ActivitiException("the query is already in an or statement");
+      throw new ActivitiException("the query is already in an or statement");
     }
 
     // Create instance of the orQuery
@@ -1361,7 +1374,10 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
       tasks = commandContext.getTaskEntityManager().findTasksByQueryCriteria(this);
     }
 
-    if (tasks != null && Context.getProcessEngineConfiguration().getPerformanceSettings().isEnableLocalization()) {
+    if (tasks != null
+        && Context.getProcessEngineConfiguration()
+            .getPerformanceSettings()
+            .isEnableLocalization()) {
       for (Task task : tasks) {
         localize(task);
       }
@@ -1383,14 +1399,17 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
     if (locale != null) {
       String processDefinitionId = task.getProcessDefinitionId();
       if (processDefinitionId != null) {
-        ObjectNode languageNode = Context.getLocalizationElementProperties(locale, task.getTaskDefinitionKey(), processDefinitionId, withLocalizationFallback);
+        ObjectNode languageNode =
+            Context.getLocalizationElementProperties(
+                locale, task.getTaskDefinitionKey(), processDefinitionId, withLocalizationFallback);
         if (languageNode != null) {
           JsonNode languageNameNode = languageNode.get(DynamicBpmnConstants.LOCALIZATION_NAME);
           if (languageNameNode != null && !languageNameNode.isNull()) {
             task.setLocalizedName(languageNameNode.asText());
           }
 
-          JsonNode languageDescriptionNode = languageNode.get(DynamicBpmnConstants.LOCALIZATION_DESCRIPTION);
+          JsonNode languageDescriptionNode =
+              languageNode.get(DynamicBpmnConstants.LOCALIZATION_DESCRIPTION);
           if (languageDescriptionNode != null && !languageDescriptionNode.isNull()) {
             task.setLocalizedDescription(languageDescriptionNode.asText());
           }
@@ -1550,8 +1569,8 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   }
 
   public List<String> getAssigneeIds() {
-	    return assigneeIds;
-	}
+    return assigneeIds;
+  }
 
   public String getInvolvedUser() {
     return involvedUser;

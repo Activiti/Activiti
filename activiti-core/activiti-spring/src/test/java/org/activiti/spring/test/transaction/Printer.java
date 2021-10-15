@@ -14,14 +14,11 @@
  * limitations under the License.
  */
 
-
 package org.activiti.spring.test.transaction;
 
 import org.activiti.engine.delegate.DelegateExecution;
 
-/**
-
- */
+/** */
 public class Printer {
 
   public void printMessage(DelegateExecution execution) {

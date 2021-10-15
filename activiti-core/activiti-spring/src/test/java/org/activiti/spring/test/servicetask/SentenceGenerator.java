@@ -16,13 +16,10 @@
 
 package org.activiti.spring.test.servicetask;
 
-/**
-
- */
+/** */
 public class SentenceGenerator {
 
   public String getSentence() {
     return "Activiti BPMN 2.0 process engine";
   }
-
 }

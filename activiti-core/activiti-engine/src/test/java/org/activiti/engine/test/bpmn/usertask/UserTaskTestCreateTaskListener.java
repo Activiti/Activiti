@@ -14,22 +14,15 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.test.bpmn.usertask;
 
 import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.TaskListener;
 
-/**
+/** */
 
- */
-
-/**
- * This is for test case UserTaskTest.testCompleteAfterParallelGateway
- *
- */
-
+/** This is for test case UserTaskTest.testCompleteAfterParallelGateway */
 public class UserTaskTestCreateTaskListener implements TaskListener {
 
   private static final long serialVersionUID = 1L;
@@ -45,7 +38,5 @@ public class UserTaskTestCreateTaskListener implements TaskListener {
       // this expression will be evaluated when completing the task
       delegateTask.setVariableLocal("validationRule", expression);
     }
-
   }
-
 }

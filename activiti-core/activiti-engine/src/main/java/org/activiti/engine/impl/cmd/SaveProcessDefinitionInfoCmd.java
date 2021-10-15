@@ -16,8 +16,9 @@
 
 package org.activiti.engine.impl.cmd;
 
+import com.fasterxml.jackson.databind.ObjectWriter;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.Serializable;
-
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.interceptor.Command;
@@ -25,13 +26,7 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionInfoEntity;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionInfoEntityManager;
 
-import com.fasterxml.jackson.databind.ObjectWriter;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-
-
-/**
-
- */
+/** */
 public class SaveProcessDefinitionInfoCmd implements Command<Void>, Serializable {
 
   private static final long serialVersionUID = 1L;
@@ -53,18 +48,26 @@ public class SaveProcessDefinitionInfoCmd implements Command<Void>, Serializable
       throw new ActivitiIllegalArgumentException("process definition info node is null");
     }
 
-    ProcessDefinitionInfoEntityManager definitionInfoEntityManager = commandContext.getProcessDefinitionInfoEntityManager();
-    ProcessDefinitionInfoEntity definitionInfoEntity = definitionInfoEntityManager.findProcessDefinitionInfoByProcessDefinitionId(processDefinitionId);
+    ProcessDefinitionInfoEntityManager definitionInfoEntityManager =
+        commandContext.getProcessDefinitionInfoEntityManager();
+    ProcessDefinitionInfoEntity definitionInfoEntity =
+        definitionInfoEntityManager.findProcessDefinitionInfoByProcessDefinitionId(
+            processDefinitionId);
     if (definitionInfoEntity == null) {
       definitionInfoEntity = definitionInfoEntityManager.create();
       definitionInfoEntity.setProcessDefinitionId(processDefinitionId);
-      commandContext.getProcessDefinitionInfoEntityManager().insertProcessDefinitionInfo(definitionInfoEntity);
+      commandContext
+          .getProcessDefinitionInfoEntityManager()
+          .insertProcessDefinitionInfo(definitionInfoEntity);
     }
 
     if (infoNode != null) {
       try {
-        ObjectWriter writer = commandContext.getProcessEngineConfiguration().getObjectMapper().writer();
-        commandContext.getProcessDefinitionInfoEntityManager().updateInfoJson(definitionInfoEntity.getId(), writer.writeValueAsBytes(infoNode));
+        ObjectWriter writer =
+            commandContext.getProcessEngineConfiguration().getObjectMapper().writer();
+        commandContext
+            .getProcessDefinitionInfoEntityManager()
+            .updateInfoJson(definitionInfoEntity.getId(), writer.writeValueAsBytes(infoNode));
       } catch (Exception e) {
         throw new ActivitiException("Unable to serialize info node " + infoNode);
       }
@@ -72,5 +75,4 @@ public class SaveProcessDefinitionInfoCmd implements Command<Void>, Serializable
 
     return null;
   }
-
 }

@@ -18,7 +18,6 @@ package org.activiti.engine.test.api.event;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventListener;
 
@@ -47,5 +46,4 @@ public class TestActivitiEventListener implements ActivitiEventListener {
   public boolean isFailOnException() {
     return false;
   }
-
 }

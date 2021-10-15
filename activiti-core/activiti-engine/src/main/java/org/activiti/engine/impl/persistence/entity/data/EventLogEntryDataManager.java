@@ -17,13 +17,10 @@
 package org.activiti.engine.impl.persistence.entity.data;
 
 import java.util.List;
-
 import org.activiti.engine.event.EventLogEntry;
 import org.activiti.engine.impl.persistence.entity.EventLogEntryEntity;
 
-/**
-
- */
+/** */
 public interface EventLogEntryDataManager extends DataManager<EventLogEntryEntity> {
 
   List<EventLogEntry> findAllEventLogEntries();
@@ -33,5 +30,4 @@ public interface EventLogEntryDataManager extends DataManager<EventLogEntryEntit
   List<EventLogEntry> findEventLogEntriesByProcessInstanceId(String processInstanceId);
 
   void deleteEventLogEntry(long logNr);
-
 }

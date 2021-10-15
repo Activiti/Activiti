@@ -16,11 +16,7 @@
 
 package org.activiti.engine.impl.transformer;
 
-/**
- * Transforms a {@link String} to a {@link Long}
- *
-
- */
+/** Transforms a {@link String} to a {@link Long} */
 public class StringToLong extends AbstractTransformer {
 
   @Override

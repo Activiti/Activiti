@@ -16,8 +16,9 @@
 
 package org.activiti.editor.language.json.converter;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.util.Map;
-
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.ErrorEventDefinition;
 import org.activiti.bpmn.model.Event;
@@ -31,24 +32,24 @@ import org.activiti.bpmn.model.TimerEventDefinition;
 import org.activiti.editor.language.json.model.ModelInfo;
 import org.apache.commons.lang3.StringUtils;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-
-/**
-
- */
-public class StartEventJsonConverter extends BaseBpmnJsonConverter implements FormAwareConverter, FormKeyAwareConverter {
+/** */
+public class StartEventJsonConverter extends BaseBpmnJsonConverter
+    implements FormAwareConverter, FormKeyAwareConverter {
 
   protected Map<String, String> formMap;
   protected Map<String, ModelInfo> formKeyMap;
 
-  public static void fillTypes(Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap, Map<Class<? extends BaseElement>, Class<? extends BaseBpmnJsonConverter>> convertersToJsonMap) {
+  public static void fillTypes(
+      Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap,
+      Map<Class<? extends BaseElement>, Class<? extends BaseBpmnJsonConverter>>
+          convertersToJsonMap) {
 
     fillJsonTypes(convertersToBpmnMap);
     fillBpmnTypes(convertersToJsonMap);
   }
 
-  public static void fillJsonTypes(Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap) {
+  public static void fillJsonTypes(
+      Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap) {
     convertersToBpmnMap.put(STENCIL_EVENT_START_NONE, StartEventJsonConverter.class);
     convertersToBpmnMap.put(STENCIL_EVENT_START_TIMER, StartEventJsonConverter.class);
     convertersToBpmnMap.put(STENCIL_EVENT_START_ERROR, StartEventJsonConverter.class);
@@ -56,7 +57,9 @@ public class StartEventJsonConverter extends BaseBpmnJsonConverter implements Fo
     convertersToBpmnMap.put(STENCIL_EVENT_START_SIGNAL, StartEventJsonConverter.class);
   }
 
-  public static void fillBpmnTypes(Map<Class<? extends BaseElement>, Class<? extends BaseBpmnJsonConverter>> convertersToJsonMap) {
+  public static void fillBpmnTypes(
+      Map<Class<? extends BaseElement>, Class<? extends BaseBpmnJsonConverter>>
+          convertersToJsonMap) {
     convertersToJsonMap.put(StartEvent.class, StartEventJsonConverter.class);
   }
 
@@ -101,9 +104,11 @@ public class StartEventJsonConverter extends BaseBpmnJsonConverter implements Fo
     addEventProperties(startEvent, propertiesNode);
   }
 
-  protected FlowElement convertJsonToElement(JsonNode elementNode, JsonNode modelNode, Map<String, JsonNode> shapeMap) {
+  protected FlowElement convertJsonToElement(
+      JsonNode elementNode, JsonNode modelNode, Map<String, JsonNode> shapeMap) {
     StartEvent startEvent = new StartEvent();
-    startEvent.setInitiator(getPropertyValueAsString(PROPERTY_NONE_STARTEVENT_INITIATOR, elementNode));
+    startEvent.setInitiator(
+        getPropertyValueAsString(PROPERTY_NONE_STARTEVENT_INITIATOR, elementNode));
     String stencilId = BpmnJsonConverterUtil.getStencilId(elementNode);
     if (STENCIL_EVENT_START_NONE.equals(stencilId)) {
       String formKey = getPropertyValueAsString(PROPERTY_FORMKEY, elementNode);

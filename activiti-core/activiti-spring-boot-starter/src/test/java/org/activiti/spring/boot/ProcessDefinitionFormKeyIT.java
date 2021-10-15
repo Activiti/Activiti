@@ -15,6 +15,8 @@
  */
 package org.activiti.spring.boot;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.activiti.api.process.model.ProcessDefinition;
 import org.activiti.api.process.runtime.ProcessRuntime;
 import org.activiti.spring.boot.security.util.SecurityUtil;
@@ -24,31 +26,26 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 public class ProcessDefinitionFormKeyIT {
 
-    private static final String SINGLE_TASK_PROCESS = "SingleTaskProcess";
+  private static final String SINGLE_TASK_PROCESS = "SingleTaskProcess";
 
-    @Autowired
-    private SecurityUtil securityUtil;
+  @Autowired private SecurityUtil securityUtil;
 
-    @Autowired
-    private ProcessRuntime processRuntime;
+  @Autowired private ProcessRuntime processRuntime;
 
-    @Autowired
-    private ProcessCleanUpUtil processCleanUpUtil;
+  @Autowired private ProcessCleanUpUtil processCleanUpUtil;
 
-    @AfterEach
-    public void cleanUp(){
-        processCleanUpUtil.cleanUpWithAdmin();
-    }
+  @AfterEach
+  public void cleanUp() {
+    processCleanUpUtil.cleanUpWithAdmin();
+  }
 
-    @Test
-    public void processDefinitionHasFormKey() {
-        securityUtil.logInAs("garth");
-        ProcessDefinition processDefinition = processRuntime.processDefinition(SINGLE_TASK_PROCESS);
-        assertThat(processDefinition.getFormKey()).isEqualTo("startForm");
-    }
+  @Test
+  public void processDefinitionHasFormKey() {
+    securityUtil.logInAs("garth");
+    ProcessDefinition processDefinition = processRuntime.processDefinition(SINGLE_TASK_PROCESS);
+    assertThat(processDefinition.getFormKey()).isEqualTo("startForm");
+  }
 }

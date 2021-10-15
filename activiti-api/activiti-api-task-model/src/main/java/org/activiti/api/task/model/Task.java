@@ -15,65 +15,64 @@
  */
 package org.activiti.api.task.model;
 
-import org.activiti.api.model.shared.model.ApplicationElement;
-
 import java.util.Date;
 import java.util.List;
+import org.activiti.api.model.shared.model.ApplicationElement;
 
 public interface Task extends ApplicationElement {
 
-    enum TaskStatus {
-        CREATED,
-        ASSIGNED,
-        SUSPENDED,
-        COMPLETED,
-        CANCELLED,
-        DELETED
-    }
+  enum TaskStatus {
+    CREATED,
+    ASSIGNED,
+    SUSPENDED,
+    COMPLETED,
+    CANCELLED,
+    DELETED
+  }
 
-    String getId();
+  String getId();
 
-    String getOwner();
+  String getOwner();
 
-    String getAssignee();
+  String getAssignee();
 
-    String getName();
+  String getName();
 
-    String getDescription();
+  String getDescription();
 
-    Date getCreatedDate();
+  Date getCreatedDate();
 
-    Date getClaimedDate();
+  Date getClaimedDate();
 
-    Date getDueDate();
+  Date getDueDate();
 
-    int getPriority();
+  int getPriority();
 
-    String getProcessDefinitionId();
+  String getProcessDefinitionId();
 
-    String getProcessInstanceId();
+  String getProcessInstanceId();
 
-    String getParentTaskId();
+  String getParentTaskId();
 
-    TaskStatus getStatus();
+  TaskStatus getStatus();
 
-    String getFormKey();
+  String getFormKey();
 
-    Date getCompletedDate();
+  Date getCompletedDate();
 
-    Long getDuration();
+  Long getDuration();
 
-    Integer getProcessDefinitionVersion();
+  Integer getProcessDefinitionVersion();
 
-    String getBusinessKey();
+  String getBusinessKey();
 
-    boolean isStandalone();
+  boolean isStandalone();
 
-    String getTaskDefinitionKey();
+  String getTaskDefinitionKey();
 
-    List<String> getCandidateUsers();
+  List<String> getCandidateUsers();
 
-    List<String> getCandidateGroups();
+  List<String> getCandidateGroups();
 
-    String getCompletedBy();
+  String getCompletedBy();
 }

@@ -23,5 +23,4 @@ public class SetLocalVariableTask implements JavaDelegate {
   public void execute(DelegateExecution execution) {
     execution.setVariableLocal("test", "test2");
   }
-
 }

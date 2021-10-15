@@ -35,8 +35,7 @@ public class Message extends BaseElement {
     this.itemRef = builder.itemRef;
   }
 
-  public Message() {
-  }
+  public Message() {}
 
   public Message(String id, String name, String itemRef) {
     this.id = id;
@@ -74,6 +73,7 @@ public class Message extends BaseElement {
 
   /**
    * Creates builder to build {@link Message}.
+   *
    * @return created builder
    */
   public static Builder builder() {
@@ -82,6 +82,7 @@ public class Message extends BaseElement {
 
   /**
    * Creates a builder to build {@link Message} and initialize it with the given object.
+   *
    * @param message to initialize the builder with
    * @return created builder
    */
@@ -89,9 +90,7 @@ public class Message extends BaseElement {
     return new Builder(message);
   }
 
-  /**
-   * Builder to build {@link Message}.
-   */
+  /** Builder to build {@link Message}. */
   public static final class Builder {
 
     private String id;
@@ -102,56 +101,55 @@ public class Message extends BaseElement {
     private String name;
     private String itemRef;
 
-    private Builder() {
-    }
+    private Builder() {}
 
     private Builder(Message message) {
-        this.id = message.id;
-        this.xmlRowNumber = message.xmlRowNumber;
-        this.xmlColumnNumber = message.xmlColumnNumber;
-        this.extensionElements = message.extensionElements;
-        this.attributes = message.attributes;
-        this.name = message.name;
-        this.itemRef = message.itemRef;
+      this.id = message.id;
+      this.xmlRowNumber = message.xmlRowNumber;
+      this.xmlColumnNumber = message.xmlColumnNumber;
+      this.extensionElements = message.extensionElements;
+      this.attributes = message.attributes;
+      this.name = message.name;
+      this.itemRef = message.itemRef;
     }
 
     public Builder id(String id) {
-        this.id = id;
-        return this;
+      this.id = id;
+      return this;
     }
 
     public Builder xmlRowNumber(int xmlRowNumber) {
-        this.xmlRowNumber = xmlRowNumber;
-        return this;
+      this.xmlRowNumber = xmlRowNumber;
+      return this;
     }
 
     public Builder xmlColumnNumber(int xmlColumnNumber) {
-        this.xmlColumnNumber = xmlColumnNumber;
-        return this;
+      this.xmlColumnNumber = xmlColumnNumber;
+      return this;
     }
 
     public Builder extensionElements(Map<String, List<ExtensionElement>> extensionElements) {
-        this.extensionElements = extensionElements;
-        return this;
+      this.extensionElements = extensionElements;
+      return this;
     }
 
     public Builder attributes(Map<String, List<ExtensionAttribute>> attributes) {
-        this.attributes = attributes;
-        return this;
+      this.attributes = attributes;
+      return this;
     }
 
     public Builder name(String name) {
-        this.name = name;
-        return this;
+      this.name = name;
+      return this;
     }
 
     public Builder itemRef(String itemRef) {
-        this.itemRef = itemRef;
-        return this;
+      this.itemRef = itemRef;
+      return this;
     }
 
     public Message build() {
-        return new Message(this);
+      return new Message(this);
     }
   }
 }

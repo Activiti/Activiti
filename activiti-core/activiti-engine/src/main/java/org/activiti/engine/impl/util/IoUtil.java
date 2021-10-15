@@ -26,14 +26,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
-
 import org.activiti.engine.ActivitiException;
 
-/**
-
-
-
- */
+/** */
 public class IoUtil {
 
   public static byte[] readInputStream(InputStream inputStream, String inputStreamName) {
@@ -88,7 +83,8 @@ public class IoUtil {
   }
 
   /**
-   * Closes the given stream. The same as calling {@link InputStream#close()}, but errors while closing are silently ignored.
+   * Closes the given stream. The same as calling {@link InputStream#close()}, but errors while
+   * closing are silently ignored.
    */
   public static void closeSilently(InputStream inputStream) {
     try {
@@ -101,7 +97,8 @@ public class IoUtil {
   }
 
   /**
-   * Closes the given stream. The same as calling {@link OutputStream#close()} , but errors while closing are silently ignored.
+   * Closes the given stream. The same as calling {@link OutputStream#close()} , but errors while
+   * closing are silently ignored.
    */
   public static void closeSilently(OutputStream outputStream) {
     try {

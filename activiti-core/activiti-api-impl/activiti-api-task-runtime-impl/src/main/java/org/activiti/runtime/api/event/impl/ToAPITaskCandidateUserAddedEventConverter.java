@@ -15,38 +15,37 @@
  */
 package org.activiti.runtime.api.event.impl;
 
+import static org.activiti.engine.task.IdentityLinkType.CANDIDATE;
+
+import java.util.Optional;
 import org.activiti.api.task.runtime.events.TaskCandidateUserAddedEvent;
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.task.IdentityLink;
 import org.activiti.runtime.api.model.impl.APITaskCandidateUserConverter;
 
-import java.util.Optional;
+public class ToAPITaskCandidateUserAddedEventConverter
+    implements EventConverter<TaskCandidateUserAddedEvent, ActivitiEntityEvent> {
 
-import static org.activiti.engine.task.IdentityLinkType.CANDIDATE;
+  private APITaskCandidateUserConverter converter;
 
-public class ToAPITaskCandidateUserAddedEventConverter implements EventConverter<TaskCandidateUserAddedEvent, ActivitiEntityEvent> {
+  public ToAPITaskCandidateUserAddedEventConverter(APITaskCandidateUserConverter converter) {
+    this.converter = converter;
+  }
 
-    private APITaskCandidateUserConverter converter;
-
-    public ToAPITaskCandidateUserAddedEventConverter(APITaskCandidateUserConverter converter) {
-        this.converter = converter;
+  @Override
+  public Optional<TaskCandidateUserAddedEvent> from(ActivitiEntityEvent internalEvent) {
+    TaskCandidateUserAddedEventImpl event = null;
+    if (internalEvent.getEntity() instanceof IdentityLink) {
+      IdentityLink entity = (IdentityLink) internalEvent.getEntity();
+      if (isCandidateUserEntity(entity)) {
+        event = new TaskCandidateUserAddedEventImpl(converter.from(entity));
+      }
     }
+    return Optional.ofNullable(event);
+  }
 
-    @Override
-    public Optional<TaskCandidateUserAddedEvent> from(ActivitiEntityEvent internalEvent) {
-        TaskCandidateUserAddedEventImpl event = null;
-        if (internalEvent.getEntity() instanceof IdentityLink) {
-            IdentityLink entity = (IdentityLink) internalEvent.getEntity();
-            if (isCandidateUserEntity(entity)) {
-                event = new TaskCandidateUserAddedEventImpl(converter.from(entity));
-            }
-        }
-        return Optional.ofNullable(event);
-    }
-
-    private boolean isCandidateUserEntity(IdentityLink identityLinkEntity) {
-        return CANDIDATE.equalsIgnoreCase(identityLinkEntity.getType()) &&
-                identityLinkEntity.getUserId() != null;
-    }
-
+  private boolean isCandidateUserEntity(IdentityLink identityLinkEntity) {
+    return CANDIDATE.equalsIgnoreCase(identityLinkEntity.getType())
+        && identityLinkEntity.getUserId() != null;
+  }
 }

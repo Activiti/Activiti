@@ -16,11 +16,7 @@
 
 package org.activiti.engine.impl.bpmn.data;
 
-/**
- * An instance of {@link PrimitiveStructureDefinition}
- *
-
- */
+/** An instance of {@link PrimitiveStructureDefinition} */
 public class PrimitiveStructureInstance implements StructureInstance {
 
   protected Object primitive;
@@ -41,7 +37,7 @@ public class PrimitiveStructureInstance implements StructureInstance {
   }
 
   public Object[] toArray() {
-    return new Object[] { this.primitive };
+    return new Object[] {this.primitive};
   }
 
   public void loadFrom(Object[] array) {

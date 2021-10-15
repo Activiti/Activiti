@@ -39,6 +39,11 @@ public class Warning {
   }
 
   public String toString() {
-    return warningMessage + (resource != null ? " | " + resource : "") + " | line " + line + " | column " + column;
+    return warningMessage
+        + (resource != null ? " | " + resource : "")
+        + " | line "
+        + line
+        + " | column "
+        + column;
   }
 }

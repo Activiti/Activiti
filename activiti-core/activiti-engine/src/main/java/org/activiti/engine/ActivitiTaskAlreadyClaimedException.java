@@ -17,9 +17,6 @@ package org.activiti.engine;
 
 /**
  * This exception is thrown when you try to claim a task that is already claimed by someone else.
- *
-
-
  */
 public class ActivitiTaskAlreadyClaimedException extends ActivitiException {
 
@@ -44,5 +41,4 @@ public class ActivitiTaskAlreadyClaimedException extends ActivitiException {
   public String getTaskAssignee() {
     return this.taskAssignee;
   }
-
 }

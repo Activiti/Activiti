@@ -20,11 +20,7 @@ import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.impl.db.HasRevision;
 import org.activiti.engine.impl.variable.ValueFields;
 
-/**
-
- *
- * Generic variable class that can be reused for Activiti 6 and 5 engine
- */
+/** Generic variable class that can be reused for Activiti 6 and 5 engine */
 @Internal
 public interface VariableInstance extends ValueFields, Entity, HasRevision {
 
@@ -49,5 +45,4 @@ public interface VariableInstance extends ValueFields, Entity, HasRevision {
   void setTaskId(String taskId);
 
   String getExecutionId();
-
 }

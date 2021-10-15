@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
-
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.DynamicBpmnConstants;
@@ -33,17 +33,10 @@ import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.persistence.entity.HistoricProcessInstanceEntity;
 import org.activiti.engine.repository.ProcessDefinition;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-
-/**
-
-
-
-
-
- */
-public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<HistoricProcessInstanceQuery, HistoricProcessInstance> implements HistoricProcessInstanceQuery {
+/** */
+public class HistoricProcessInstanceQueryImpl
+    extends AbstractVariableQueryImpl<HistoricProcessInstanceQuery, HistoricProcessInstance>
+    implements HistoricProcessInstanceQuery {
 
   private static final long serialVersionUID = 1L;
   protected String processInstanceId;
@@ -81,12 +74,12 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
   protected String nameLikeIgnoreCase;
   protected String locale;
   protected boolean withLocalizationFallback;
-  protected List<HistoricProcessInstanceQueryImpl> orQueryObjects = new ArrayList<HistoricProcessInstanceQueryImpl>();
+  protected List<HistoricProcessInstanceQueryImpl> orQueryObjects =
+      new ArrayList<HistoricProcessInstanceQueryImpl>();
   protected HistoricProcessInstanceQueryImpl currentOrQueryObject = null;
   protected boolean inOrStatement = false;
 
-  public HistoricProcessInstanceQueryImpl() {
-  }
+  public HistoricProcessInstanceQueryImpl() {}
 
   public HistoricProcessInstanceQueryImpl(CommandContext commandContext) {
     super(commandContext);
@@ -248,7 +241,8 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
     return this;
   }
 
-  public HistoricProcessInstanceQuery processDefinitionKeyNotIn(List<String> processDefinitionKeys) {
+  public HistoricProcessInstanceQuery processDefinitionKeyNotIn(
+      List<String> processDefinitionKeys) {
     if (inOrStatement) {
       this.currentOrQueryObject.processKeyNotIn = processDefinitionKeys;
     } else {
@@ -328,7 +322,8 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
     return this;
   }
 
-  public HistoricProcessInstanceQuery limitProcessInstanceVariables(Integer processInstanceVariablesLimit) {
+  public HistoricProcessInstanceQuery limitProcessInstanceVariables(
+      Integer processInstanceVariablesLimit) {
     this.processInstanceVariablesLimit = processInstanceVariablesLimit;
     return this;
   }
@@ -343,10 +338,10 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
   }
 
   public HistoricProcessInstanceQuery processInstanceTenantId(String tenantId) {
-  	if (tenantId == null) {
-  		throw new ActivitiIllegalArgumentException("process instance tenant id is null");
-  	}
-  	if (inOrStatement) {
+    if (tenantId == null) {
+      throw new ActivitiIllegalArgumentException("process instance tenant id is null");
+    }
+    if (inOrStatement) {
       this.currentOrQueryObject.tenantId = tenantId;
     } else {
       this.tenantId = tenantId;
@@ -355,10 +350,10 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
   }
 
   public HistoricProcessInstanceQuery processInstanceTenantIdLike(String tenantIdLike) {
-  	if (tenantIdLike == null) {
-  		throw new ActivitiIllegalArgumentException("process instance tenant id is null");
-  	}
-  	if (inOrStatement) {
+    if (tenantIdLike == null) {
+      throw new ActivitiIllegalArgumentException("process instance tenant id is null");
+    }
+    if (inOrStatement) {
       this.currentOrQueryObject.tenantIdLike = tenantIdLike;
     } else {
       this.tenantIdLike = tenantIdLike;
@@ -406,7 +401,8 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
   }
 
   @Override
-  public HistoricProcessInstanceQuery variableValueEquals(String variableName, Object variableValue) {
+  public HistoricProcessInstanceQuery variableValueEquals(
+      String variableName, Object variableValue) {
     if (inOrStatement) {
       currentOrQueryObject.variableValueEquals(variableName, variableValue, true);
       return this;
@@ -416,7 +412,8 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
   }
 
   @Override
-  public HistoricProcessInstanceQuery variableValueNotEquals(String variableName, Object variableValue) {
+  public HistoricProcessInstanceQuery variableValueNotEquals(
+      String variableName, Object variableValue) {
     if (inOrStatement) {
       currentOrQueryObject.variableValueNotEquals(variableName, variableValue, true);
       return this;
@@ -586,7 +583,9 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
   public long executeCount(CommandContext commandContext) {
     checkQueryOk();
     ensureVariablesInitialized();
-    return commandContext.getHistoricProcessInstanceEntityManager().findHistoricProcessInstanceCountByQueryCriteria(this);
+    return commandContext
+        .getHistoricProcessInstanceEntityManager()
+        .findHistoricProcessInstanceCountByQueryCriteria(this);
   }
 
   public List<HistoricProcessInstance> executeList(CommandContext commandContext, Page page) {
@@ -594,9 +593,15 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
     ensureVariablesInitialized();
     List<HistoricProcessInstance> results = null;
     if (includeProcessVariables) {
-      results = commandContext.getHistoricProcessInstanceEntityManager().findHistoricProcessInstancesAndVariablesByQueryCriteria(this);
+      results =
+          commandContext
+              .getHistoricProcessInstanceEntityManager()
+              .findHistoricProcessInstancesAndVariablesByQueryCriteria(this);
     } else {
-      results = commandContext.getHistoricProcessInstanceEntityManager().findHistoricProcessInstancesByQueryCriteria(this);
+      results =
+          commandContext
+              .getHistoricProcessInstanceEntityManager()
+              .findHistoricProcessInstancesByQueryCriteria(this);
     }
 
     if (Context.getProcessEngineConfiguration().getPerformanceSettings().isEnableLocalization()) {
@@ -609,14 +614,23 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
   }
 
   protected void localize(HistoricProcessInstance processInstance, CommandContext commandContext) {
-    HistoricProcessInstanceEntity processInstanceEntity = (HistoricProcessInstanceEntity) processInstance;
+    HistoricProcessInstanceEntity processInstanceEntity =
+        (HistoricProcessInstanceEntity) processInstance;
     processInstanceEntity.setLocalizedName(null);
     processInstanceEntity.setLocalizedDescription(null);
 
     if (locale != null && processInstance.getProcessDefinitionId() != null) {
-      ProcessDefinition processDefinition = commandContext.getProcessEngineConfiguration().getDeploymentManager().findDeployedProcessDefinitionById(processInstanceEntity.getProcessDefinitionId());
-      ObjectNode languageNode = Context.getLocalizationElementProperties(locale, processDefinition.getKey(),
-          processInstanceEntity.getProcessDefinitionId(), withLocalizationFallback);
+      ProcessDefinition processDefinition =
+          commandContext
+              .getProcessEngineConfiguration()
+              .getDeploymentManager()
+              .findDeployedProcessDefinitionById(processInstanceEntity.getProcessDefinitionId());
+      ObjectNode languageNode =
+          Context.getLocalizationElementProperties(
+              locale,
+              processDefinition.getKey(),
+              processInstanceEntity.getProcessDefinitionId(),
+              withLocalizationFallback);
 
       if (languageNode != null) {
         JsonNode languageNameNode = languageNode.get(DynamicBpmnConstants.LOCALIZATION_NAME);
@@ -624,7 +638,8 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
           processInstanceEntity.setLocalizedName(languageNameNode.asText());
         }
 
-        JsonNode languageDescriptionNode = languageNode.get(DynamicBpmnConstants.LOCALIZATION_DESCRIPTION);
+        JsonNode languageDescriptionNode =
+            languageNode.get(DynamicBpmnConstants.LOCALIZATION_DESCRIPTION);
         if (languageDescriptionNode != null && !languageDescriptionNode.isNull()) {
           processInstanceEntity.setLocalizedDescription(languageDescriptionNode.asText());
         }
@@ -677,9 +692,11 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
   public String getProcessDefinitionName() {
     return processDefinitionName;
   }
+
   public String getProcessDefinitionCategory() {
     return processDefinitionCategory;
   }
+
   public Integer getProcessDefinitionVersion() {
     return processDefinitionVersion;
   }

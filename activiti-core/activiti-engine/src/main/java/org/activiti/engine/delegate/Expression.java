@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.delegate;
 
 import java.io.Serializable;
@@ -24,13 +23,14 @@ import org.activiti.engine.impl.interceptor.DelegateInterceptor;
 
 public interface Expression extends Serializable {
 
-    Object getValue(VariableScope variableScope);
+  Object getValue(VariableScope variableScope);
 
-    void setValue(Object value, VariableScope variableScope);
+  void setValue(Object value, VariableScope variableScope);
 
-    String getExpressionText();
+  String getExpressionText();
 
-    Object getValue(ExpressionManager expressionManager, DelegateInterceptor delegateInterceptor,
-        Map<String, Object> availableVariables);
-
+  Object getValue(
+      ExpressionManager expressionManager,
+      DelegateInterceptor delegateInterceptor,
+      Map<String, Object> availableVariables);
 }

@@ -18,11 +18,9 @@ package org.activiti.engine.impl.persistence.entity;
 
 import java.io.Serializable;
 import java.util.Arrays;
-
 import org.apache.commons.lang3.StringUtils;
 
-/**
- */
+/** */
 public class ByteArrayEntityImpl extends AbstractEntity implements ByteArrayEntity, Serializable {
 
   private static final long serialVersionUID = 1L;
@@ -31,9 +29,7 @@ public class ByteArrayEntityImpl extends AbstractEntity implements ByteArrayEnti
   protected byte[] bytes;
   protected String deploymentId;
 
-  public ByteArrayEntityImpl() {
-
-  }
+  public ByteArrayEntityImpl() {}
 
   public byte[] getBytes() {
     return bytes;
@@ -67,7 +63,13 @@ public class ByteArrayEntityImpl extends AbstractEntity implements ByteArrayEnti
 
   @Override
   public String toString() {
-    return "ByteArrayEntity[id=" + id + ", name=" + name + ", size=" + (bytes != null ? bytes.length : 0) + "]";
+    return "ByteArrayEntity[id="
+        + id
+        + ", name="
+        + name
+        + ", size="
+        + (bytes != null ? bytes.length : 0)
+        + "]";
   }
 
   // Wrapper for a byte array, needed to do byte array comparisons
@@ -94,7 +96,5 @@ public class ByteArrayEntityImpl extends AbstractEntity implements ByteArrayEnti
     public int hashCode() {
       throw new UnsupportedOperationException();
     }
-
   }
-
 }

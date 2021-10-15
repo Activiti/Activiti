@@ -14,19 +14,16 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.persistence.entity;
 
 import java.util.List;
-
 import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.history.HistoricProcessInstance;
 
-/**
-
- */
+/** */
 @Internal
-public interface HistoricProcessInstanceEntity extends HistoricScopeInstanceEntity, HistoricProcessInstance {
+public interface HistoricProcessInstanceEntity
+    extends HistoricScopeInstanceEntity, HistoricProcessInstance {
 
   void setEndActivityId(String endActivityId);
 
@@ -67,5 +64,4 @@ public interface HistoricProcessInstanceEntity extends HistoricScopeInstanceEnti
   List<HistoricVariableInstanceEntity> getQueryVariables();
 
   void setQueryVariables(List<HistoricVariableInstanceEntity> queryVariables);
-
 }

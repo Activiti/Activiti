@@ -15,8 +15,7 @@
  */
 package org.activiti.api.task.model;
 
-public interface TaskCandidateUser extends TaskCandidate{
+public interface TaskCandidateUser extends TaskCandidate {
 
-    String getUserId();
-
+  String getUserId();
 }

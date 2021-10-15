@@ -19,12 +19,9 @@ package org.activiti.engine.impl.util.io;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-
 import org.activiti.engine.ActivitiException;
 
-/**
-
- */
+/** */
 public class StringStreamSource implements StreamSource {
 
   String string;
@@ -41,7 +38,8 @@ public class StringStreamSource implements StreamSource {
 
   public InputStream getInputStream() {
     try {
-      return new ByteArrayInputStream(byteArrayEncoding == null ? string.getBytes() : string.getBytes(byteArrayEncoding));
+      return new ByteArrayInputStream(
+          byteArrayEncoding == null ? string.getBytes() : string.getBytes(byteArrayEncoding));
     } catch (UnsupportedEncodingException e) {
       throw new ActivitiException("Unsupported enconding for string", e);
     }

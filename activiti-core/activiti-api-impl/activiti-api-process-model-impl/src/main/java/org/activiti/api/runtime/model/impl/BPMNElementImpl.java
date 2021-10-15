@@ -16,66 +16,58 @@
 package org.activiti.api.runtime.model.impl;
 
 import java.util.Objects;
-
 import org.activiti.api.process.model.BPMNElement;
 
 public class BPMNElementImpl implements BPMNElement {
 
-    private String elementId;
-    private String processInstanceId;
-    private String processDefinitionId;
+  private String elementId;
+  private String processInstanceId;
+  private String processDefinitionId;
 
-    @Override
-    public String getProcessInstanceId() {
-        return processInstanceId;
+  @Override
+  public String getProcessInstanceId() {
+    return processInstanceId;
+  }
+
+  public void setProcessInstanceId(String processInstanceId) {
+    this.processInstanceId = processInstanceId;
+  }
+
+  @Override
+  public String getProcessDefinitionId() {
+    return processDefinitionId;
+  }
+
+  public void setProcessDefinitionId(String processDefinitionId) {
+    this.processDefinitionId = processDefinitionId;
+  }
+
+  @Override
+  public String getElementId() {
+    return elementId;
+  }
+
+  public void setElementId(String elementId) {
+    this.elementId = elementId;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
     }
-
-    public void setProcessInstanceId(String processInstanceId) {
-        this.processInstanceId = processInstanceId;
+    if (o == null || getClass() != o.getClass()) {
+      return false;
     }
+    BPMNElementImpl that = (BPMNElementImpl) o;
+    return Objects.equals(processInstanceId, that.processInstanceId)
+        && Objects.equals(processDefinitionId, that.processDefinitionId)
+        && Objects.equals(elementId, that.elementId);
+  }
 
-    @Override
-    public String getProcessDefinitionId() {
-        return processDefinitionId;
-    }
+  @Override
+  public int hashCode() {
 
-    public void setProcessDefinitionId(String processDefinitionId) {
-        this.processDefinitionId = processDefinitionId;
-    }
-
-
-    @Override
-    public String getElementId() {
-        return elementId;
-    }
-
-    public void setElementId(String elementId) {
-        this.elementId = elementId;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        BPMNElementImpl that = (BPMNElementImpl) o;
-        return Objects.equals(processInstanceId,
-                               that.processInstanceId) &&
-                Objects.equals(processDefinitionId,
-                               that.processDefinitionId) &&
-                Objects.equals(elementId,
-                               that.elementId);
-    }
-
-    @Override
-    public int hashCode() {
-
-        return Objects.hash(elementId,
-                            processInstanceId,
-                            processDefinitionId);
-    }
-
+    return Objects.hash(elementId, processInstanceId, processDefinitionId);
+  }
 }

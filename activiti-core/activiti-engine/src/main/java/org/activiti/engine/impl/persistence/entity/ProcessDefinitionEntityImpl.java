@@ -21,12 +21,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.impl.bpmn.data.IOSpecification;
 import org.activiti.engine.impl.context.Context;
 
-public class ProcessDefinitionEntityImpl extends AbstractEntity implements ProcessDefinitionEntity, Serializable {
+public class ProcessDefinitionEntityImpl extends AbstractEntity
+    implements ProcessDefinitionEntity, Serializable {
 
   private static final long serialVersionUID = 1L;
 
@@ -45,11 +45,12 @@ public class ProcessDefinitionEntityImpl extends AbstractEntity implements Proce
   protected boolean hasStartFormKey;
   protected int suspensionState = SuspensionState.ACTIVE.getStateCode();
   protected boolean isIdentityLinksInitialized;
-  protected List<IdentityLinkEntity> definitionIdentityLinkEntities = new ArrayList<IdentityLinkEntity>();
+  protected List<IdentityLinkEntity> definitionIdentityLinkEntities =
+      new ArrayList<IdentityLinkEntity>();
   protected IOSpecification ioSpecification;
   protected Integer appVersion;
 
-    // Backwards compatibility
+  // Backwards compatibility
   protected String engineVersion;
 
   public Object getPersistentState() {
@@ -64,7 +65,10 @@ public class ProcessDefinitionEntityImpl extends AbstractEntity implements Proce
 
   public List<IdentityLinkEntity> getIdentityLinks() {
     if (!isIdentityLinksInitialized) {
-      definitionIdentityLinkEntities = Context.getCommandContext().getIdentityLinkEntityManager().findIdentityLinksByProcessDefinitionId(id);
+      definitionIdentityLinkEntities =
+          Context.getCommandContext()
+              .getIdentityLinkEntityManager()
+              .findIdentityLinksByProcessDefinitionId(id);
       isIdentityLinksInitialized = true;
     }
 
@@ -219,12 +223,11 @@ public class ProcessDefinitionEntityImpl extends AbstractEntity implements Proce
     return "ProcessDefinitionEntity[" + id + "]";
   }
 
-  public void setAppVersion(Integer appVersion){
-      this.appVersion = appVersion;
+  public void setAppVersion(Integer appVersion) {
+    this.appVersion = appVersion;
   }
 
-  public Integer getAppVersion(){
-      return this.appVersion;
+  public Integer getAppVersion() {
+    return this.appVersion;
   }
-
 }

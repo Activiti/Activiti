@@ -14,26 +14,34 @@
  * limitations under the License.
  */
 
-
 package org.activiti.spring.test.taskListener;
-
-import org.activiti.bpmn.model.Task;
-import org.activiti.engine.delegate.TransactionDependentTaskListener;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import org.activiti.bpmn.model.Task;
+import org.activiti.engine.delegate.TransactionDependentTaskListener;
 
-/**
-
- */
+/** */
 public class MyTransactionDependentTaskListener implements TransactionDependentTaskListener {
 
   protected List<CurrentTask> currentTasks = new ArrayList<CurrentTask>();
 
   @Override
-  public void notify(String processInstanceId, String executionId, Task task, Map<String, Object> executionVariables, Map<String, Object> customPropertiesMap) {
-    currentTasks.add(new CurrentTask(processInstanceId, executionId, task.getId(), task.getName(), executionVariables, customPropertiesMap));
+  public void notify(
+      String processInstanceId,
+      String executionId,
+      Task task,
+      Map<String, Object> executionVariables,
+      Map<String, Object> customPropertiesMap) {
+    currentTasks.add(
+        new CurrentTask(
+            processInstanceId,
+            executionId,
+            task.getId(),
+            task.getName(),
+            executionVariables,
+            customPropertiesMap));
   }
 
   public List<CurrentTask> getCurrentTasks() {
@@ -48,7 +56,13 @@ public class MyTransactionDependentTaskListener implements TransactionDependentT
     private final Map<String, Object> executionVariables;
     private final Map<String, Object> customPropertiesMap;
 
-    public CurrentTask(String processInstanceId, String executionId, String taskId, String taskName, Map<String, Object> executionVariables, Map<String, Object> customPropertiesMap) {
+    public CurrentTask(
+        String processInstanceId,
+        String executionId,
+        String taskId,
+        String taskName,
+        Map<String, Object> executionVariables,
+        Map<String, Object> customPropertiesMap) {
       this.processInstanceId = processInstanceId;
       this.executionId = executionId;
       this.taskId = taskId;

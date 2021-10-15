@@ -18,7 +18,6 @@ package org.activiti.editor.language;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
-
 import org.activiti.bpmn.model.BoundaryEvent;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.FlowElement;

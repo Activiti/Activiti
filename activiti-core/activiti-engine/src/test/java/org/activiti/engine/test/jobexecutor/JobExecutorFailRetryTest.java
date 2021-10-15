@@ -21,8 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.test.Deployment;
 
-/**
- */
+/** */
 public class JobExecutorFailRetryTest extends PluggableActivitiTestCase {
 
   @Deployment
@@ -44,6 +43,7 @@ public class JobExecutorFailRetryTest extends PluggableActivitiTestCase {
     executeJobExecutorForTime(14000, 500);
     assertThat(RetryFailingDelegate.times).hasSize(2); // check number of calls of delegate
     long timeDiff = RetryFailingDelegate.times.get(1) - RetryFailingDelegate.times.get(0);
-    assertThat(timeDiff > 6000 && timeDiff < 12000).isTrue(); // check time difference between calls. Just roughly
+    assertThat(timeDiff > 6000 && timeDiff < 12000)
+        .isTrue(); // check time difference between calls. Just roughly
   }
 }

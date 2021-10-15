@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.examples.bpmn.mail;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -31,52 +30,52 @@ import org.subethamail.wiser.WiserMessage;
 
 public class EmailServiceTaskTest extends PluggableActivitiTestCase {
 
-    /* Wiser is a fake email server for unit testing */
-    private Wiser wiser;
+  /* Wiser is a fake email server for unit testing */
+  private Wiser wiser;
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-        wiser = new Wiser();
-        wiser.setPort(5025);
-        wiser.start();
-    }
+  @Override
+  protected void setUp() throws Exception {
+    super.setUp();
+    wiser = new Wiser();
+    wiser.setPort(5025);
+    wiser.start();
+  }
 
-    @Override
-    protected void tearDown() throws Exception {
-        wiser.stop();
-        super.tearDown();
-    }
+  @Override
+  protected void tearDown() throws Exception {
+    wiser.stop();
+    super.tearDown();
+  }
 
-    @Deployment
-    public void testSendEmail() throws Exception {
+  @Deployment
+  public void testSendEmail() throws Exception {
 
-        String from = "ordershipping@activiti.org";
-        boolean male = true;
-        String recipientName = "John Doe";
-        String recipient = "johndoe@alfresco.com";
-        Date now = new Date();
-        String orderId = "123456";
+    String from = "ordershipping@activiti.org";
+    boolean male = true;
+    String recipientName = "John Doe";
+    String recipient = "johndoe@alfresco.com";
+    Date now = new Date();
+    String orderId = "123456";
 
-        Map<String, Object> vars = new HashMap<String, Object>();
-        vars.put("sender", from);
-        vars.put("recipient", recipient);
-        vars.put("recipientName", recipientName);
-        vars.put("male", male);
-        vars.put("now", now);
-        vars.put("orderId", orderId);
+    Map<String, Object> vars = new HashMap<String, Object>();
+    vars.put("sender", from);
+    vars.put("recipient", recipient);
+    vars.put("recipientName", recipientName);
+    vars.put("male", male);
+    vars.put("now", now);
+    vars.put("orderId", orderId);
 
-        runtimeService.startProcessInstanceByKey("sendMailExample", vars);
+    runtimeService.startProcessInstanceByKey("sendMailExample", vars);
 
-        List<WiserMessage> messages = wiser.getMessages();
-        assertThat(messages).hasSize(1);
+    List<WiserMessage> messages = wiser.getMessages();
+    assertThat(messages).hasSize(1);
 
-        WiserMessage message = messages.get(0);
-        MimeMessage mimeMessage = message.getMimeMessage();
+    WiserMessage message = messages.get(0);
+    MimeMessage mimeMessage = message.getMimeMessage();
 
-        assertThat(mimeMessage.getHeader("Subject", null)).isEqualTo("Your order " + orderId + " has been shipped");
-        assertThat(mimeMessage.getHeader("From", null)).isEqualTo(from);
-        assertThat(mimeMessage.getHeader("To", null)).contains(recipient);
-    }
-
+    assertThat(mimeMessage.getHeader("Subject", null))
+        .isEqualTo("Your order " + orderId + " has been shipped");
+    assertThat(mimeMessage.getHeader("From", null)).isEqualTo(from);
+    assertThat(mimeMessage.getHeader("To", null)).contains(recipient);
+  }
 }

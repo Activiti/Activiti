@@ -18,7 +18,6 @@ package org.activiti.editor.language.xml;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
-
 import org.activiti.bpmn.model.ActivitiListener;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.FlowElement;
@@ -73,9 +72,17 @@ public class UserTaskConverterTest extends AbstractConverterTest {
 
     assertThat(userTask.getCustomUserIdentityLinks()).hasSize(1);
     assertThat(userTask.getCustomGroupIdentityLinks()).hasSize(2);
-    assertThat(userTask.getCustomUserIdentityLinks().get("businessAdministrator").contains("kermit")).isTrue();
-    assertThat(userTask.getCustomGroupIdentityLinks().get("manager").contains("management")).isTrue();
-    assertThat(userTask.getCustomGroupIdentityLinks().get("businessAdministrator").contains("management")).isTrue();
+    assertThat(
+            userTask.getCustomUserIdentityLinks().get("businessAdministrator").contains("kermit"))
+        .isTrue();
+    assertThat(userTask.getCustomGroupIdentityLinks().get("manager").contains("management"))
+        .isTrue();
+    assertThat(
+            userTask
+                .getCustomGroupIdentityLinks()
+                .get("businessAdministrator")
+                .contains("management"))
+        .isTrue();
 
     List<FormProperty> formProperties = userTask.getFormProperties();
     assertThat(formProperties).hasSize(3);
@@ -102,30 +109,41 @@ public class UserTaskConverterTest extends AbstractConverterTest {
     List<ActivitiListener> listeners = userTask.getTaskListeners();
     assertThat(listeners).hasSize(3);
     ActivitiListener listener = listeners.get(0);
-    assertThat(ImplementationType.IMPLEMENTATION_TYPE_CLASS.equals(listener.getImplementationType())).isTrue();
+    assertThat(
+            ImplementationType.IMPLEMENTATION_TYPE_CLASS.equals(listener.getImplementationType()))
+        .isTrue();
     assertThat(listener.getImplementation()).isEqualTo("org.test.TestClass");
     assertThat(listener.getEvent()).isEqualTo("create");
     assertThat(listener.getOnTransaction()).isEqualTo("before-commit");
-    assertThat(listener.getCustomPropertiesResolverImplementation()).isEqualTo("org.test.TestResolverClass");
+    assertThat(listener.getCustomPropertiesResolverImplementation())
+        .isEqualTo("org.test.TestResolverClass");
     listener = listeners.get(1);
-    assertThat(ImplementationType.IMPLEMENTATION_TYPE_EXPRESSION.equals(listener.getImplementationType())).isTrue();
+    assertThat(
+            ImplementationType.IMPLEMENTATION_TYPE_EXPRESSION.equals(
+                listener.getImplementationType()))
+        .isTrue();
     assertThat(listener.getImplementation()).isEqualTo("${someExpression}");
     assertThat(listener.getEvent()).isEqualTo("assignment");
     assertThat(listener.getOnTransaction()).isEqualTo("committed");
-    assertThat(listener.getCustomPropertiesResolverImplementation()).isEqualTo("${testResolverExpression}");
+    assertThat(listener.getCustomPropertiesResolverImplementation())
+        .isEqualTo("${testResolverExpression}");
     listener = listeners.get(2);
-    assertThat(ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION.equals(listener.getImplementationType())).isTrue();
+    assertThat(
+            ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION.equals(
+                listener.getImplementationType()))
+        .isTrue();
     assertThat(listener.getImplementation()).isEqualTo("${someDelegateExpression}");
     assertThat(listener.getEvent()).isEqualTo("complete");
     assertThat(listener.getOnTransaction()).isEqualTo("rolled-back");
-    assertThat(listener.getCustomPropertiesResolverImplementation()).isEqualTo("${delegateResolverExpression}");
+    assertThat(listener.getCustomPropertiesResolverImplementation())
+        .isEqualTo("${delegateResolverExpression}");
 
     List<ActivitiListener> executionListeners = userTask.getExecutionListeners();
     assertThat(executionListeners).hasSize(1);
     ActivitiListener executionListener = executionListeners.get(0);
     assertThat(executionListener.getEvent()).isEqualTo("end");
     assertThat(executionListener.getOnTransaction()).isEqualTo("before-commit");
-    assertThat(executionListener.getCustomPropertiesResolverImplementation()).isEqualTo("org.test.TestResolverClass");
-
+    assertThat(executionListener.getCustomPropertiesResolverImplementation())
+        .isEqualTo("org.test.TestResolverClass");
   }
 }

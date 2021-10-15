@@ -18,15 +18,11 @@ package org.activiti.engine.impl.runtime;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import org.activiti.engine.impl.RuntimeServiceImpl;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.runtime.ProcessInstanceBuilder;
 
-/**
-
-
- */
+/** */
 public class ProcessInstanceBuilderImpl implements ProcessInstanceBuilder {
 
   protected RuntimeServiceImpl runtimeService;
@@ -157,5 +153,4 @@ public class ProcessInstanceBuilderImpl implements ProcessInstanceBuilder {
   public Map<String, Object> getTransientVariables() {
     return transientVariables;
   }
-
 }

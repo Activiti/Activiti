@@ -19,8 +19,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class BoundaryEvent extends Event {
 
-  @JsonIgnore
-  protected Activity attachedToRef;
+  @JsonIgnore protected Activity attachedToRef;
   protected String attachedToRefId;
   protected boolean cancelActivity = true;
 

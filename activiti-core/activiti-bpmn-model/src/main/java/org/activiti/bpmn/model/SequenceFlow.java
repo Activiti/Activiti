@@ -15,10 +15,9 @@
  */
 package org.activiti.bpmn.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class SequenceFlow extends FlowElement {
 
@@ -29,22 +28,18 @@ public class SequenceFlow extends FlowElement {
 
   // Actual flow elements that match the source and target ref
   // Set during process definition parsing
-  @JsonIgnore
-  protected FlowElement sourceFlowElement;
+  @JsonIgnore protected FlowElement sourceFlowElement;
 
-  @JsonIgnore
-  protected FlowElement targetFlowElement;
+  @JsonIgnore protected FlowElement targetFlowElement;
 
   /**
    * Graphical information: a list of waypoints: x1, y1, x2, y2, x3, y3, ..
    *
-   * Added during parsing of a process definition.
+   * <p>Added during parsing of a process definition.
    */
   protected List<Integer> waypoints = new ArrayList<Integer>();
 
-  public SequenceFlow() {
-
-  }
+  public SequenceFlow() {}
 
   public SequenceFlow(String sourceRef, String targetRef) {
     this.sourceRef = sourceRef;

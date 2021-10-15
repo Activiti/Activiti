@@ -33,107 +33,77 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 public class ProcessExtensionResourceReaderIT {
 
-    @MockBean
-    private RepositoryService repositoryService;
+  @MockBean private RepositoryService repositoryService;
 
-    @Autowired
-    private ProcessExtensionResourceReader reader;
+  @Autowired private ProcessExtensionResourceReader reader;
 
-    @Test
-    public void shouldReadExtensionFromJsonFile() throws Exception {
-        try (InputStream inputStream = Thread.currentThread().getContextClassLoader()
+  @Test
+  public void shouldReadExtensionFromJsonFile() throws Exception {
+    try (InputStream inputStream =
+        Thread.currentThread()
+            .getContextClassLoader()
             .getResourceAsStream("processes/initial-vars-extensions.json")) {
-            ProcessExtensionModel processExtensionModel = reader.read(inputStream);
-            assertThat(processExtensionModel).isNotNull();
-            assertThat(processExtensionModel.getId()).isEqualTo("initialVarsProcess");
-            assertThat(
-                processExtensionModel.getExtensions("Process_initialVarsProcess").getProperties())
-                .containsKey("d440ff7b-0ac8-4a97-b163-51a6ec49faa1");
-        }
+      ProcessExtensionModel processExtensionModel = reader.read(inputStream);
+      assertThat(processExtensionModel).isNotNull();
+      assertThat(processExtensionModel.getId()).isEqualTo("initialVarsProcess");
+      assertThat(processExtensionModel.getExtensions("Process_initialVarsProcess").getProperties())
+          .containsKey("d440ff7b-0ac8-4a97-b163-51a6ec49faa1");
     }
+  }
 
-    @Test
-    public void shouldReadTemplateExtensionFromJsonFile() throws Exception {
-        try (InputStream inputStream = Thread.currentThread()
+  @Test
+  public void shouldReadTemplateExtensionFromJsonFile() throws Exception {
+    try (InputStream inputStream =
+        Thread.currentThread()
             .getContextClassLoader()
             .getResourceAsStream("processes/template-mapping-extensions.json")) {
-            //when
-            ProcessExtensionModel processExtensionModel = reader.read(inputStream);
+      // when
+      ProcessExtensionModel processExtensionModel = reader.read(inputStream);
 
-            //then
-            assertThat(processExtensionModel).isNotNull();
-            assertThat(processExtensionModel.getId()).isEqualTo("emailTemplateMapping");
+      // then
+      assertThat(processExtensionModel).isNotNull();
+      assertThat(processExtensionModel.getId()).isEqualTo("emailTemplateMapping");
 
-            TemplatesDefinition templates = processExtensionModel
-                .getExtensions("processDefinitionId")
-                .getTemplates();
-            TaskTemplateDefinition defaultTemplate = templates.getDefaultTemplate();
-            assertThat(defaultTemplate).isNotNull();
-            assertThat(defaultTemplate.getAssignee())
-                .isNotNull()
-                .extracting(
-                    TemplateDefinition::getType,
-                    TemplateDefinition::getValue)
-                .containsExactly(
-                    FILE,
-                    "classpath:templates/email.html"
-                );
-            assertThat(defaultTemplate.getCandidate())
-                .isNotNull()
-                .extracting(
-                    TemplateDefinition::getType,
-                    TemplateDefinition::getValue
-                ).containsExactly(
-                VARIABLE,
-                "myCandidateTemplateVariable"
-            );
+      TemplatesDefinition templates =
+          processExtensionModel.getExtensions("processDefinitionId").getTemplates();
+      TaskTemplateDefinition defaultTemplate = templates.getDefaultTemplate();
+      assertThat(defaultTemplate).isNotNull();
+      assertThat(defaultTemplate.getAssignee())
+          .isNotNull()
+          .extracting(TemplateDefinition::getType, TemplateDefinition::getValue)
+          .containsExactly(FILE, "classpath:templates/email.html");
+      assertThat(defaultTemplate.getCandidate())
+          .isNotNull()
+          .extracting(TemplateDefinition::getType, TemplateDefinition::getValue)
+          .containsExactly(VARIABLE, "myCandidateTemplateVariable");
 
-            assertThat(templates.getTasks())
-                .containsOnlyKeys("myTaskId1", "myTaskId2", "myTaskId3");
+      assertThat(templates.getTasks()).containsOnlyKeys("myTaskId1", "myTaskId2", "myTaskId3");
 
-            assertThat(templates.getTasks().get("myTaskId1").getAssignee())
-                .isNotNull()
-                .extracting(
-                    TemplateDefinition::getType,
-                    TemplateDefinition::getValue)
-                .containsExactly(
-                    FILE,
-                    "https://github.com/leemunroe/responsive-html-email-template/blob/master/email.html"
-                );
+      assertThat(templates.getTasks().get("myTaskId1").getAssignee())
+          .isNotNull()
+          .extracting(TemplateDefinition::getType, TemplateDefinition::getValue)
+          .containsExactly(
+              FILE,
+              "https://github.com/leemunroe/responsive-html-email-template/blob/master/email.html");
 
-            assertThat(templates.getTasks().get("myTaskId1").getCandidate())
-                .isNotNull()
-                .extracting(
-                    TemplateDefinition::getType,
-                    TemplateDefinition::getValue)
-                .containsExactly(
-                    FILE,
-                    "https://github.com/leemunroe/responsive-html-email-template/blob/master/email-inlined.html"
-                );
+      assertThat(templates.getTasks().get("myTaskId1").getCandidate())
+          .isNotNull()
+          .extracting(TemplateDefinition::getType, TemplateDefinition::getValue)
+          .containsExactly(
+              FILE,
+              "https://github.com/leemunroe/responsive-html-email-template/blob/master/email-inlined.html");
 
-            assertThat(templates.getTasks().get("myTaskId2").getAssignee())
-                .isNotNull()
-                .extracting(
-                    TemplateDefinition::getType,
-                    TemplateDefinition::getValue)
-                .containsExactly(
-                    VARIABLE,
-                    "myAssigneeTemplateVariable"
-                );
-            assertThat(templates.getTasks().get("myTaskId2").getCandidate())
-                .isNull();
+      assertThat(templates.getTasks().get("myTaskId2").getAssignee())
+          .isNotNull()
+          .extracting(TemplateDefinition::getType, TemplateDefinition::getValue)
+          .containsExactly(VARIABLE, "myAssigneeTemplateVariable");
+      assertThat(templates.getTasks().get("myTaskId2").getCandidate()).isNull();
 
-            assertThat(templates.getTasks().get("myTaskId3").getAssignee())
-                .isNull();
-            assertThat(templates.getTasks().get("myTaskId3").getCandidate())
-                .isNotNull()
-                .extracting(
-                    TemplateDefinition::getType,
-                    TemplateDefinition::getValue)
-                .containsExactly(
-                    VARIABLE,
-                    "myCandidateTemplateVariable"
-                );
-        }
+      assertThat(templates.getTasks().get("myTaskId3").getAssignee()).isNull();
+      assertThat(templates.getTasks().get("myTaskId3").getCandidate())
+          .isNotNull()
+          .extracting(TemplateDefinition::getType, TemplateDefinition::getValue)
+          .containsExactly(VARIABLE, "myCandidateTemplateVariable");
     }
+  }
 }

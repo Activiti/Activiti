@@ -19,11 +19,7 @@ package org.activiti.engine.impl.bpmn.webservice;
 import org.activiti.engine.impl.bpmn.data.ItemDefinition;
 import org.activiti.engine.impl.bpmn.data.StructureDefinition;
 
-/**
- * Implementation of the BPMN 2.0 'message'
- *
-
- */
+/** Implementation of the BPMN 2.0 'message' */
 public class MessageDefinition {
 
   protected String id;

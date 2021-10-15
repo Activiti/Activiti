@@ -19,9 +19,7 @@ import static java.util.Collections.unmodifiableList;
 
 import java.util.LinkedList;
 import java.util.List;
-
 import javax.xml.stream.XMLStreamReader;
-
 import org.activiti.bpmn.constants.BpmnXMLConstants;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BpmnModel;
@@ -29,20 +27,24 @@ import org.activiti.bpmn.model.ExtensionAttribute;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
-
- */
+/** */
 public abstract class BaseChildElementParser implements BpmnXMLConstants {
 
   protected static final Logger LOGGER = LoggerFactory.getLogger(BaseChildElementParser.class);
 
   public abstract String getElementName();
 
-  public abstract void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model) throws Exception;
+  public abstract void parseChildElement(
+      XMLStreamReader xtr, BaseElement parentElement, BpmnModel model) throws Exception;
 
-  protected void parseChildElements(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model, BaseChildElementParser parser) throws Exception {
+  protected void parseChildElements(
+      XMLStreamReader xtr,
+      BaseElement parentElement,
+      BpmnModel model,
+      BaseChildElementParser parser)
+      throws Exception {
     boolean readyWithChildElements = false;
-    while (!readyWithChildElements  && xtr.hasNext()) {
+    while (!readyWithChildElements && xtr.hasNext()) {
       xtr.next();
       if (xtr.isStartElement()) {
         if (parser.getElementName().equals(xtr.getLocalName())) {
@@ -59,15 +61,14 @@ public abstract class BaseChildElementParser implements BpmnXMLConstants {
     return element != null;
   }
 
-  protected List<ExtensionAttribute> parseExtensionAttributes(XMLStreamReader xtr,
-                                                              BaseElement parentElement,
-                                                              BpmnModel model) {
+  protected List<ExtensionAttribute> parseExtensionAttributes(
+      XMLStreamReader xtr, BaseElement parentElement, BpmnModel model) {
     List<ExtensionAttribute> attributes = new LinkedList<>();
 
-    for(int i=0; i < xtr.getAttributeCount(); i++) {
-      if(ACTIVITI_EXTENSIONS_NAMESPACE.equals(xtr.getAttributeNamespace(i))) {
-        ExtensionAttribute attr = new ExtensionAttribute(ACTIVITI_EXTENSIONS_NAMESPACE,
-                                                         xtr.getAttributeLocalName(i));
+    for (int i = 0; i < xtr.getAttributeCount(); i++) {
+      if (ACTIVITI_EXTENSIONS_NAMESPACE.equals(xtr.getAttributeNamespace(i))) {
+        ExtensionAttribute attr =
+            new ExtensionAttribute(ACTIVITI_EXTENSIONS_NAMESPACE, xtr.getAttributeLocalName(i));
         attr.setValue(xtr.getAttributeValue(i));
         attributes.add(attr);
       }

@@ -15,6 +15,10 @@
  */
 package org.activiti.engine.impl.persistence.entity.data;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.MockitoAnnotations.initMocks;
+
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.persistence.entity.data.integration.MybatisIntegrationContextDataManager;
 import org.activiti.engine.impl.persistence.entity.integration.IntegrationContextEntity;
@@ -25,41 +29,33 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.MockitoAnnotations.initMocks;
-
 public class MybatisIntegrationContextDataManagerTest {
 
-    @Spy
-    @InjectMocks
-    private MybatisIntegrationContextDataManager manager;
+  @Spy @InjectMocks private MybatisIntegrationContextDataManager manager;
 
-    @Mock
-    private DbSqlSession dbSqlSession;
+  @Mock private DbSqlSession dbSqlSession;
 
-    @Before
-    public void setUp() throws Exception {
-        initMocks(this);
-        doReturn(dbSqlSession).when(manager).getDbSqlSession();
-    }
+  @Before
+  public void setUp() throws Exception {
+    initMocks(this);
+    doReturn(dbSqlSession).when(manager).getDbSqlSession();
+  }
 
-    @Test
-    public void createShouldReturnANewInstanceOfIntegrationContextEntityImpl() {
-        //when
-        IntegrationContextEntity entity = manager.create();
+  @Test
+  public void createShouldReturnANewInstanceOfIntegrationContextEntityImpl() {
+    // when
+    IntegrationContextEntity entity = manager.create();
 
-        //then
-        assertThat(entity).isInstanceOf(IntegrationContextEntityImpl.class);
-    }
+    // then
+    assertThat(entity).isInstanceOf(IntegrationContextEntityImpl.class);
+  }
 
-    @Test
-    public void getManagedEntityClassShouldReturnIntegrationContextEntityImpl() {
-        //when
-        Class<? extends IntegrationContextEntity> managedEntityClass = manager.getManagedEntityClass();
+  @Test
+  public void getManagedEntityClassShouldReturnIntegrationContextEntityImpl() {
+    // when
+    Class<? extends IntegrationContextEntity> managedEntityClass = manager.getManagedEntityClass();
 
-        //then
-        assertThat(managedEntityClass).isEqualTo(IntegrationContextEntityImpl.class);
-    }
-
+    // then
+    assertThat(managedEntityClass).isEqualTo(IntegrationContextEntityImpl.class);
+  }
 }

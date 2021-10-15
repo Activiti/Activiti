@@ -18,13 +18,10 @@ package org.activiti.engine.test.impl.logger;
 
 import java.sql.Date;
 import java.text.SimpleDateFormat;
-
 import org.activiti.engine.impl.agenda.AbstractOperation;
 import org.slf4j.Logger;
 
-/**
-
- */
+/** */
 public class DebugInfoOperationExecuted extends AbstractDebugInfo {
 
   protected long preExecutionTime;
@@ -65,9 +62,13 @@ public class DebugInfoOperationExecuted extends AbstractDebugInfo {
     StringBuilder strb = new StringBuilder(35);
 
     // Timing info
-    strb.append("[").append(dateFormat.format(new Date(getPreExecutionTime()))).append(" - ")
-            .append(dateFormat.format(new Date(getPostExecutionTime()))).append(" (")
-            .append(getPostExecutionTime() - getPreExecutionTime()).append("ms)]");
+    strb.append("[")
+        .append(dateFormat.format(new Date(getPreExecutionTime())))
+        .append(" - ")
+        .append(dateFormat.format(new Date(getPostExecutionTime())))
+        .append(" (")
+        .append(getPostExecutionTime() - getPreExecutionTime())
+        .append("ms)]");
 
     // Operation info
     strb.append(" ").append(getOperation().getClass().getSimpleName()).append(" ");
@@ -77,7 +78,11 @@ public class DebugInfoOperationExecuted extends AbstractDebugInfo {
       strb.append("with execution ").append(getExecutionId());
 
       if (getFlowElementId() != null) {
-        strb.append(" at flow element ").append(getFlowElementId()).append(" (").append(getFlowElementClass().getSimpleName()).append(")");
+        strb.append(" at flow element ")
+            .append(getFlowElementId())
+            .append(" (")
+            .append(getFlowElementClass().getSimpleName())
+            .append(")");
       }
     }
 
@@ -131,5 +136,4 @@ public class DebugInfoOperationExecuted extends AbstractDebugInfo {
   public void setFlowElementClass(Class<?> flowElementClass) {
     this.flowElementClass = flowElementClass;
   }
-
 }

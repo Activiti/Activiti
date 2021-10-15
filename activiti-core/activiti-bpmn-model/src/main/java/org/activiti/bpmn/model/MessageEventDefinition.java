@@ -28,6 +28,7 @@ public class MessageEventDefinition extends EventDefinition {
   public List<FieldExtension> getFieldExtensions() {
     return fieldExtensions;
   }
+
   public void setFieldExtensions(List<FieldExtension> fieldExtensions) {
     this.fieldExtensions = fieldExtensions;
   }
@@ -49,11 +50,11 @@ public class MessageEventDefinition extends EventDefinition {
   }
 
   public String getCorrelationKey() {
-      return correlationKey;
+    return correlationKey;
   }
 
   public void setCorrelationKey(String correlationKey) {
-      this.correlationKey = correlationKey;
+    this.correlationKey = correlationKey;
   }
 
   public MessageEventDefinition clone() {

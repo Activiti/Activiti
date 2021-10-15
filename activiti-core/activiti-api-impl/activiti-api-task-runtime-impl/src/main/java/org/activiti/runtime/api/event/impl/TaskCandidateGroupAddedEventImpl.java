@@ -20,18 +20,18 @@ import org.activiti.api.task.model.TaskCandidateGroup;
 import org.activiti.api.task.model.events.TaskCandidateGroupEvent;
 import org.activiti.api.task.runtime.events.TaskCandidateGroupAddedEvent;
 
-public class TaskCandidateGroupAddedEventImpl extends RuntimeEventImpl<TaskCandidateGroup, TaskCandidateGroupEvent.TaskCandidateGroupEvents>
-        implements TaskCandidateGroupAddedEvent {
+public class TaskCandidateGroupAddedEventImpl
+    extends RuntimeEventImpl<TaskCandidateGroup, TaskCandidateGroupEvent.TaskCandidateGroupEvents>
+    implements TaskCandidateGroupAddedEvent {
 
-    public TaskCandidateGroupAddedEventImpl() {
-    }
+  public TaskCandidateGroupAddedEventImpl() {}
 
-    public TaskCandidateGroupAddedEventImpl(TaskCandidateGroup entity) {
-        super(entity);
-    }
+  public TaskCandidateGroupAddedEventImpl(TaskCandidateGroup entity) {
+    super(entity);
+  }
 
-    @Override
-    public TaskCandidateGroupEvent.TaskCandidateGroupEvents getEventType() {
-        return TaskCandidateGroupEvent.TaskCandidateGroupEvents.TASK_CANDIDATE_GROUP_ADDED;
-    }
+  @Override
+  public TaskCandidateGroupEvent.TaskCandidateGroupEvents getEventType() {
+    return TaskCandidateGroupEvent.TaskCandidateGroupEvents.TASK_CANDIDATE_GROUP_ADDED;
+  }
 }

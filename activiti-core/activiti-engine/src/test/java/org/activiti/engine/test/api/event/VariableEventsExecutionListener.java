@@ -30,5 +30,4 @@ public class VariableEventsExecutionListener implements ExecutionListener {
     execution.setVariable("variable", 456);
     execution.removeVariable("variable");
   }
-
 }

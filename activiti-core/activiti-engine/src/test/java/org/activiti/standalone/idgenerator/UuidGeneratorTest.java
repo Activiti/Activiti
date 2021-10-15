@@ -22,14 +22,11 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-
 import org.activiti.engine.impl.test.ResourceActivitiTestCase;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
-/**
-
- */
+/** */
 public class UuidGeneratorTest extends ResourceActivitiTestCase {
 
   public UuidGeneratorTest() {
@@ -47,31 +44,31 @@ public class UuidGeneratorTest extends ResourceActivitiTestCase {
     }
 
     // Complete tasks
-    executorService.execute(() -> {
-      boolean tasksFound = true;
-      while (tasksFound) {
-        List<Task> tasks = taskService.createTaskQuery().list();
-        for (Task task : tasks) {
-          taskService.complete(task.getId());
-        }
+    executorService.execute(
+        () -> {
+          boolean tasksFound = true;
+          while (tasksFound) {
+            List<Task> tasks = taskService.createTaskQuery().list();
+            for (Task task : tasks) {
+              taskService.complete(task.getId());
+            }
 
-        tasksFound = taskService.createTaskQuery().count() > 0;
+            tasksFound = taskService.createTaskQuery().count() > 0;
 
-        if (!tasksFound) {
-          try {
-            Thread.sleep(1500L); // just to be sure
-          } catch (InterruptedException e) {
-            e.printStackTrace();
+            if (!tasksFound) {
+              try {
+                Thread.sleep(1500L); // just to be sure
+              } catch (InterruptedException e) {
+                e.printStackTrace();
+              }
+              tasksFound = taskService.createTaskQuery().count() > 0;
+            }
           }
-          tasksFound = taskService.createTaskQuery().count() > 0;
-        }
-      }
-    });
+        });
 
     executorService.shutdown();
     executorService.awaitTermination(1, TimeUnit.MINUTES);
 
     assertThat(historyService.createHistoricProcessInstanceQuery().count()).isEqualTo(50);
   }
-
 }

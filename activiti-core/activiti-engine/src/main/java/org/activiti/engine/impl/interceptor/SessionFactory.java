@@ -14,16 +14,13 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.interceptor;
 
 import org.activiti.engine.api.internal.Internal;
 
 /**
- * A session factory produces a {@link Session} instance that has the lifespane of one {@link Command}.
- *
-
-
+ * A session factory produces a {@link Session} instance that has the lifespane of one {@link
+ * Command}.
  */
 @Internal
 public interface SessionFactory {
@@ -31,5 +28,4 @@ public interface SessionFactory {
   Class<?> getSessionType();
 
   Session openSession(CommandContext commandContext);
-
 }

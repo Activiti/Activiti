@@ -21,7 +21,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.util.List;
-
 import org.activiti.bpmn.exceptions.XMLException;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.impl.test.TestHelper;
@@ -29,15 +28,11 @@ import org.activiti.engine.task.Task;
 import org.activiti.engine.task.TaskQuery;
 import org.activiti.engine.test.Deployment;
 
-/**
- * Testcase for the non-spec extensions to the task candidate use case.
- *
-
- */
+/** Testcase for the non-spec extensions to the task candidate use case. */
 public class TaskAssignmentExtensionsTest extends PluggableActivitiTestCase {
 
   private static final String KERMIT = "kermit";
-  private static final List<String> KERMITSGROUPS = asList("management","accountancy");
+  private static final List<String> KERMITSGROUPS = asList("management", "accountancy");
 
   private static final String GONZO = "gonzo";
   private static final List<String> GONZOSGROUPS = asList();
@@ -54,10 +49,12 @@ public class TaskAssignmentExtensionsTest extends PluggableActivitiTestCase {
   }
 
   public void testDuplicateAssigneeDeclaration() {
-    String resource = TestHelper.getBpmnProcessDefinitionResource(getClass(), "testDuplicateAssigneeDeclaration");
+    String resource =
+        TestHelper.getBpmnProcessDefinitionResource(getClass(), "testDuplicateAssigneeDeclaration");
     assertThatExceptionOfType(XMLException.class)
-      .as("Invalid BPMN 2.0 process should not parse, but it gets parsed successfully")
-      .isThrownBy(() -> repositoryService.createDeployment().addClasspathResource(resource).deploy());
+        .as("Invalid BPMN 2.0 process should not parse, but it gets parsed successfully")
+        .isThrownBy(
+            () -> repositoryService.createDeployment().addClasspathResource(resource).deploy());
   }
 
   @Deployment
@@ -71,9 +68,10 @@ public class TaskAssignmentExtensionsTest extends PluggableActivitiTestCase {
   @Deployment
   public void testCandidateUsersExtension() {
     runtimeService.startProcessInstanceByKey("candidateUsersExtension");
-    List<Task> tasks = taskService.createTaskQuery().taskCandidateUser(KERMIT,KERMITSGROUPS).list();
+    List<Task> tasks =
+        taskService.createTaskQuery().taskCandidateUser(KERMIT, KERMITSGROUPS).list();
     assertThat(tasks).hasSize(1);
-    tasks = taskService.createTaskQuery().taskCandidateUser(GONZO,GONZOSGROUPS).list();
+    tasks = taskService.createTaskQuery().taskCandidateUser(GONZO, GONZOSGROUPS).list();
     assertThat(tasks).hasSize(1);
   }
 
@@ -83,11 +81,12 @@ public class TaskAssignmentExtensionsTest extends PluggableActivitiTestCase {
 
     // Bugfix check: potentially the query could return 2 tasks since
     // kermit is a member of the two candidate groups
-    List<Task> tasks = taskService.createTaskQuery().taskCandidateUser(KERMIT,KERMITSGROUPS).list();
+    List<Task> tasks =
+        taskService.createTaskQuery().taskCandidateUser(KERMIT, KERMITSGROUPS).list();
     assertThat(tasks).hasSize(1);
     assertThat(tasks.get(0).getName()).isEqualTo("make profit");
 
-    tasks = taskService.createTaskQuery().taskCandidateUser(FOZZIE,FOZZIESGROUPS).list();
+    tasks = taskService.createTaskQuery().taskCandidateUser(FOZZIE, FOZZIESGROUPS).list();
     assertThat(tasks).hasSize(1);
     assertThat(tasks.get(0).getName()).isEqualTo("make profit");
 
@@ -103,17 +102,17 @@ public class TaskAssignmentExtensionsTest extends PluggableActivitiTestCase {
   public void testMixedCandidateUserDefinition() {
     runtimeService.startProcessInstanceByKey("mixedCandidateUser");
 
-    List<Task> tasks = taskService.createTaskQuery().taskCandidateUser(KERMIT,KERMITSGROUPS).list();
+    List<Task> tasks =
+        taskService.createTaskQuery().taskCandidateUser(KERMIT, KERMITSGROUPS).list();
     assertThat(tasks).hasSize(1);
 
-    tasks = taskService.createTaskQuery().taskCandidateUser(FOZZIE,FOZZIESGROUPS).list();
+    tasks = taskService.createTaskQuery().taskCandidateUser(FOZZIE, FOZZIESGROUPS).list();
     assertThat(tasks).hasSize(1);
 
-    tasks = taskService.createTaskQuery().taskCandidateUser(GONZO,GONZOSGROUPS).list();
+    tasks = taskService.createTaskQuery().taskCandidateUser(GONZO, GONZOSGROUPS).list();
     assertThat(tasks).hasSize(1);
 
-    tasks = taskService.createTaskQuery().taskCandidateUser("mispiggy",null).list();
+    tasks = taskService.createTaskQuery().taskCandidateUser("mispiggy", null).list();
     assertThat(tasks).hasSize(0);
   }
-
 }

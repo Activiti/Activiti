@@ -28,5 +28,4 @@ public class ImplementationType {
   public static String IMPLEMENTATION_TYPE_WEBSERVICE = "##WebService";
 
   public static String IMPLEMENTATION_TYPE_INVALID_THROW_EVENT = "invalidThrowEvent";
-
 }

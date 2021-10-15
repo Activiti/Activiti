@@ -33,12 +33,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Special operation when executing an instance of a multi-instance.
- * It's similar to the {@link ContinueProcessOperation}, but simpler, as it doesn't need to
- * cater for as many use cases.
- *
-
-
+ * Special operation when executing an instance of a multi-instance. It's similar to the {@link
+ * ContinueProcessOperation}, but simpler, as it doesn't need to cater for as many use cases.
  */
 public class ContinueMultiInstanceOperation extends AbstractOperation {
 
@@ -54,7 +50,10 @@ public class ContinueMultiInstanceOperation extends AbstractOperation {
     if (currentFlowElement instanceof FlowNode) {
       continueThroughMultiInstanceFlowNode((FlowNode) currentFlowElement);
     } else {
-      throw new RuntimeException("Programmatic error: no valid multi instance flow node, type: " + currentFlowElement + ". Halting.");
+      throw new RuntimeException(
+          "Programmatic error: no valid multi instance flow node, type: "
+              + currentFlowElement
+              + ". Halting.");
     }
   }
 
@@ -78,18 +77,32 @@ public class ContinueMultiInstanceOperation extends AbstractOperation {
     // Execute actual behavior
     ActivityBehavior activityBehavior = (ActivityBehavior) flowNode.getBehavior();
     if (activityBehavior != null) {
-      logger.debug("Executing activityBehavior {} on activity '{}' with execution {}", activityBehavior.getClass(), flowNode.getId(), execution.getId());
+      logger.debug(
+          "Executing activityBehavior {} on activity '{}' with execution {}",
+          activityBehavior.getClass(),
+          flowNode.getId(),
+          execution.getId());
 
-      if (Context.getProcessEngineConfiguration() != null && Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-        Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
-            ActivitiEventBuilder.createActivityEvent(ActivitiEventType.ACTIVITY_STARTED, flowNode.getId(), flowNode.getName(), execution.getId(),
-                execution.getProcessInstanceId(), execution.getProcessDefinitionId(), flowNode));
+      if (Context.getProcessEngineConfiguration() != null
+          && Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+        Context.getProcessEngineConfiguration()
+            .getEventDispatcher()
+            .dispatchEvent(
+                ActivitiEventBuilder.createActivityEvent(
+                    ActivitiEventType.ACTIVITY_STARTED,
+                    flowNode.getId(),
+                    flowNode.getName(),
+                    execution.getId(),
+                    execution.getProcessInstanceId(),
+                    execution.getProcessDefinitionId(),
+                    flowNode));
       }
 
       try {
         activityBehavior.execute(execution);
       } catch (BpmnError error) {
-        // re-throw business fault so that it can be caught by an Error Intermediate Event or Error Event Sub-Process in the process
+        // re-throw business fault so that it can be caught by an Error Intermediate Event or Error
+        // Event Sub-Process in the process
         ErrorPropagation.propagateError(error, execution);
       } catch (RuntimeException e) {
         if (LogMDC.isMDCEnabled()) {
@@ -98,12 +111,16 @@ public class ContinueMultiInstanceOperation extends AbstractOperation {
         throw e;
       }
     } else {
-      logger.debug("No activityBehavior on activity '{}' with execution {}", flowNode.getId(), execution.getId());
+      logger.debug(
+          "No activityBehavior on activity '{}' with execution {}",
+          flowNode.getId(),
+          execution.getId());
     }
   }
 
   protected void executeAsynchronous(FlowNode flowNode) {
-    JobEntity job = commandContext.getJobManager().createAsyncJob(execution, flowNode.isExclusive());
+    JobEntity job =
+        commandContext.getJobManager().createAsyncJob(execution, flowNode.isExclusive());
     commandContext.getJobManager().scheduleAsyncJob(job);
   }
 }

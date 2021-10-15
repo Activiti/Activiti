@@ -16,23 +16,21 @@
 package org.activiti.bpmn.converter.child;
 
 import javax.xml.stream.XMLStreamReader;
-
 import org.activiti.bpmn.converter.util.BpmnXMLUtil;
 import org.activiti.bpmn.model.Activity;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.DataAssociation;
 
-/**
-
- */
+/** */
 public class DataOutputAssociationParser extends BaseChildElementParser {
 
   public String getElementName() {
     return ELEMENT_OUTPUT_ASSOCIATION;
   }
 
-  public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model) throws Exception {
+  public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model)
+      throws Exception {
 
     if (!(parentElement instanceof Activity)) {
       return;

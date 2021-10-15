@@ -14,11 +14,9 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.cmd;
 
 import java.io.Serializable;
-
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
@@ -26,9 +24,7 @@ import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 
-/**
-
- */
+/** */
 public class DeleteHistoricProcessInstanceCmd implements Command<Object>, Serializable {
 
   private static final long serialVersionUID = 1L;
@@ -43,18 +39,22 @@ public class DeleteHistoricProcessInstanceCmd implements Command<Object>, Serial
       throw new ActivitiIllegalArgumentException("processInstanceId is null");
     }
     // Check if process instance is still running
-    HistoricProcessInstance instance = commandContext.getHistoricProcessInstanceEntityManager().findById(processInstanceId);
+    HistoricProcessInstance instance =
+        commandContext.getHistoricProcessInstanceEntityManager().findById(processInstanceId);
 
     if (instance == null) {
-      throw new ActivitiObjectNotFoundException("No historic process instance found with id: " + processInstanceId, HistoricProcessInstance.class);
+      throw new ActivitiObjectNotFoundException(
+          "No historic process instance found with id: " + processInstanceId,
+          HistoricProcessInstance.class);
     }
     if (instance.getEndTime() == null) {
-      throw new ActivitiException("Process instance is still running, cannot delete historic process instance: " + processInstanceId);
+      throw new ActivitiException(
+          "Process instance is still running, cannot delete historic process instance: "
+              + processInstanceId);
     }
 
     commandContext.getHistoricProcessInstanceEntityManager().delete(processInstanceId);
 
     return null;
   }
-
 }

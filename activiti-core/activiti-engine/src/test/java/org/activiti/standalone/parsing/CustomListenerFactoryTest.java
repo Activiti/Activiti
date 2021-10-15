@@ -19,13 +19,10 @@ package org.activiti.standalone.parsing;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.concurrent.atomic.AtomicInteger;
-
 import org.activiti.engine.impl.test.ResourceActivitiTestCase;
 import org.activiti.engine.test.Deployment;
 
-/**
-
- */
+/** */
 public class CustomListenerFactoryTest extends ResourceActivitiTestCase {
 
   public CustomListenerFactoryTest() {
@@ -49,9 +46,8 @@ public class CustomListenerFactoryTest extends ResourceActivitiTestCase {
     }
 
     assertThat(COUNTER.get()).isEqualTo(nrOfProcessInstances * 100); // Each
-                                                             // listener
-                                                             // invocation
-                                                             // will add 100
+    // listener
+    // invocation
+    // will add 100
   }
-
 }

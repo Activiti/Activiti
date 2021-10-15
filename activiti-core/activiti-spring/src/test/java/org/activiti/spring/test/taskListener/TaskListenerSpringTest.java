@@ -14,50 +14,50 @@
  * limitations under the License.
  */
 
-
 package org.activiti.spring.test.taskListener;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
-
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 import org.activiti.spring.impl.test.SpringActivitiTestCase;
 import org.springframework.test.context.ContextConfiguration;
 
-/**
-
- */
-@ContextConfiguration("classpath:org/activiti/spring/test/taskListener/TaskListenerDelegateExpressionTest-context.xml")
+/** */
+@ContextConfiguration(
+    "classpath:org/activiti/spring/test/taskListener/TaskListenerDelegateExpressionTest-context.xml")
 public class TaskListenerSpringTest extends SpringActivitiTestCase {
 
-    private void cleanUp() {
-        List<org.activiti.engine.repository.Deployment> deployments = repositoryService.createDeploymentQuery().list();
-        for (org.activiti.engine.repository.Deployment deployment : deployments) {
-            repositoryService.deleteDeployment(deployment.getId(), true);
-        }
+  private void cleanUp() {
+    List<org.activiti.engine.repository.Deployment> deployments =
+        repositoryService.createDeploymentQuery().list();
+    for (org.activiti.engine.repository.Deployment deployment : deployments) {
+      repositoryService.deleteDeployment(deployment.getId(), true);
     }
+  }
 
-    @Override
-    public void tearDown() {
-        cleanUp();
-    }
+  @Override
+  public void tearDown() {
+    cleanUp();
+  }
 
-    @Deployment
-    public void testTaskListenerDelegateExpression() {
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("taskListenerDelegateExpression");
+  @Deployment
+  public void testTaskListenerDelegateExpression() {
+    ProcessInstance processInstance =
+        runtimeService.startProcessInstanceByKey("taskListenerDelegateExpression");
 
-        // Completing first task will set variable on process instance
-        Task task = taskService.createTaskQuery().singleResult();
-        taskService.complete(task.getId());
-        assertThat(runtimeService.getVariable(processInstance.getId(), "calledInExpression")).isEqualTo("task1-complete");
+    // Completing first task will set variable on process instance
+    Task task = taskService.createTaskQuery().singleResult();
+    taskService.complete(task.getId());
+    assertThat(runtimeService.getVariable(processInstance.getId(), "calledInExpression"))
+        .isEqualTo("task1-complete");
 
-        // Completing second task will set variable on process instance
-        task = taskService.createTaskQuery().singleResult();
-        taskService.complete(task.getId());
-        assertThat(runtimeService.getVariable(processInstance.getId(), "calledThroughNotify")).isEqualTo("task2-notify");
-    }
-
+    // Completing second task will set variable on process instance
+    task = taskService.createTaskQuery().singleResult();
+    taskService.complete(task.getId());
+    assertThat(runtimeService.getVariable(processInstance.getId(), "calledThroughNotify"))
+        .isEqualTo("task2-notify");
+  }
 }

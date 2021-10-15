@@ -18,19 +18,14 @@ package org.activiti.engine.impl.cmd;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.CommentEntity;
 import org.activiti.engine.impl.persistence.entity.CommentEntityManager;
-import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.task.Comment;
-import org.activiti.engine.task.Task;
 
-/**
-
- */
+/** */
 public class DeleteCommentCmd implements Command<Void>, Serializable {
 
   private static final long serialVersionUID = 1L;
@@ -51,7 +46,8 @@ public class DeleteCommentCmd implements Command<Void>, Serializable {
       // Delete for an individual comment
       Comment comment = commentManager.findComment(commentId);
       if (comment == null) {
-        throw new ActivitiObjectNotFoundException("Comment with id '" + commentId + "' doesn't exists.", Comment.class);
+        throw new ActivitiObjectNotFoundException(
+            "Comment with id '" + commentId + "' doesn't exists.", Comment.class);
       }
 
       commentManager.delete((CommentEntity) comment);

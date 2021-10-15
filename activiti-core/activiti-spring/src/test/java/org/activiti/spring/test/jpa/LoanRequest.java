@@ -14,14 +14,11 @@
  * limitations under the License.
  */
 
-
 package org.activiti.spring.test.jpa;
 
 import javax.persistence.*;
 
-/**
-
- */
+/** */
 @Entity(name = "SPRING_TEST_ORDER")
 public class LoanRequest {
 
@@ -70,5 +67,4 @@ public class LoanRequest {
   public void setApproved(boolean approved) {
     this.approved = approved;
   }
-
 }

@@ -19,15 +19,11 @@ package org.activiti.engine.test.api.event;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import org.activiti.engine.delegate.BpmnError;
-
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.test.Deployment;
 
-/**
- * Test case for {@link ActivitiEvent} thrown when a BPMNError is not caught in the process.
- *
- */
+/** Test case for {@link ActivitiEvent} thrown when a BPMNError is not caught in the process. */
 public class UncaughtErrorEventTest extends PluggableActivitiTestCase {
 
   private TestActivitiEventListener listener;
@@ -38,8 +34,8 @@ public class UncaughtErrorEventTest extends PluggableActivitiTestCase {
   @Deployment
   public void testUncaughtError() throws Exception {
     assertThatExceptionOfType(BpmnError.class)
-      .as("Exception BPMN error excepted due to not caught exception")
-      .isThrownBy(() -> runtimeService.startProcessInstanceByKey("errorProcess"));
+        .as("Exception BPMN error excepted due to not caught exception")
+        .isThrownBy(() -> runtimeService.startProcessInstanceByKey("errorProcess"));
   }
 
   @Override

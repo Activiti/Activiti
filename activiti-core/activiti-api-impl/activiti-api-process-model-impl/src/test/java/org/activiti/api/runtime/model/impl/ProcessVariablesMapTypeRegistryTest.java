@@ -33,46 +33,45 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 class ProcessVariablesMapTypeRegistryTest {
 
-    private static Stream<Arguments> typesToClass() {
-        return Stream.of(
-            Arguments.of("byte", Byte.class),
-            Arguments.of("character", Character.class),
-            Arguments.of("short", Short.class),
-            Arguments.of("string", String.class),
-            Arguments.of("long", Long.class),
-            Arguments.of("integer", Integer.class),
-            Arguments.of("boolean", Boolean.class),
-            Arguments.of("double", Double.class),
-            Arguments.of("float", Float.class),
-            Arguments.of("date", Date.class),
-            Arguments.of("localdate", LocalDate.class),
-            Arguments.of("bigdecimal", BigDecimal.class),
-            Arguments.of("json", JsonNode.class),
-            Arguments.of("map", Map.class),
-            Arguments.of("set", Set.class),
-            Arguments.of("list", List.class)
-        );
-    }
+  private static Stream<Arguments> typesToClass() {
+    return Stream.of(
+        Arguments.of("byte", Byte.class),
+        Arguments.of("character", Character.class),
+        Arguments.of("short", Short.class),
+        Arguments.of("string", String.class),
+        Arguments.of("long", Long.class),
+        Arguments.of("integer", Integer.class),
+        Arguments.of("boolean", Boolean.class),
+        Arguments.of("double", Double.class),
+        Arguments.of("float", Float.class),
+        Arguments.of("date", Date.class),
+        Arguments.of("localdate", LocalDate.class),
+        Arguments.of("bigdecimal", BigDecimal.class),
+        Arguments.of("json", JsonNode.class),
+        Arguments.of("map", Map.class),
+        Arguments.of("set", Set.class),
+        Arguments.of("list", List.class));
+  }
 
-    @ParameterizedTest
-    @MethodSource("typesToClass")
-    public void forType_shouldReturn_relatedClass(String type, Class<?> expectedClass) {
-        //when
-        Class<?> relatedClass = ProcessVariablesMapTypeRegistry.forType(type, String.class);
+  @ParameterizedTest
+  @MethodSource("typesToClass")
+  public void forType_shouldReturn_relatedClass(String type, Class<?> expectedClass) {
+    // when
+    Class<?> relatedClass = ProcessVariablesMapTypeRegistry.forType(type, String.class);
 
-        //then
-        assertThat(relatedClass).isEqualTo(expectedClass);
-    }
+    // then
+    assertThat(relatedClass).isEqualTo(expectedClass);
+  }
 
-    @Test
-    public void forType_should_returnDefaultValue_whenTypeIsUnknown() {
-        //given
-        String type = "unknown";
+  @Test
+  public void forType_should_returnDefaultValue_whenTypeIsUnknown() {
+    // given
+    String type = "unknown";
 
-        //when
-        Class<?> relatedClass = ProcessVariablesMapTypeRegistry.forType(type, String.class);
+    // when
+    Class<?> relatedClass = ProcessVariablesMapTypeRegistry.forType(type, String.class);
 
-        //then
-        assertThat(relatedClass).isEqualTo(String.class);
-    }
+    // then
+    assertThat(relatedClass).isEqualTo(String.class);
+  }
 }

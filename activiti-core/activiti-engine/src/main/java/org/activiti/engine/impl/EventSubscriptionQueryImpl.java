@@ -14,21 +14,19 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl;
 
 import java.io.Serializable;
 import java.util.List;
-
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
 
-/**
-
- */
-public class EventSubscriptionQueryImpl extends AbstractQuery<EventSubscriptionQueryImpl, EventSubscriptionEntity> implements Serializable {
+/** */
+public class EventSubscriptionQueryImpl
+    extends AbstractQuery<EventSubscriptionQueryImpl, EventSubscriptionEntity>
+    implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
@@ -107,10 +105,9 @@ public class EventSubscriptionQueryImpl extends AbstractQuery<EventSubscriptionQ
   }
 
   public EventSubscriptionQueryImpl configuration(String configuration) {
-      this.configuration = configuration;
-      return this;
-    }
-
+    this.configuration = configuration;
+    return this;
+  }
 
   public EventSubscriptionQueryImpl orderByCreated() {
     return orderBy(EventSubscriptionQueryProperty.CREATED);
@@ -121,13 +118,17 @@ public class EventSubscriptionQueryImpl extends AbstractQuery<EventSubscriptionQ
   @Override
   public long executeCount(CommandContext commandContext) {
     checkQueryOk();
-    return commandContext.getEventSubscriptionEntityManager().findEventSubscriptionCountByQueryCriteria(this);
+    return commandContext
+        .getEventSubscriptionEntityManager()
+        .findEventSubscriptionCountByQueryCriteria(this);
   }
 
   @Override
   public List<EventSubscriptionEntity> executeList(CommandContext commandContext, Page page) {
     checkQueryOk();
-    return commandContext.getEventSubscriptionEntityManager().findEventSubscriptionsByQueryCriteria(this, page);
+    return commandContext
+        .getEventSubscriptionEntityManager()
+        .findEventSubscriptionsByQueryCriteria(this, page);
   }
 
   // getters //////////////////////////////////////////
@@ -157,8 +158,6 @@ public class EventSubscriptionQueryImpl extends AbstractQuery<EventSubscriptionQ
   }
 
   public String getConfiguration() {
-      return configuration;
-    }
-
-
+    return configuration;
+  }
 }

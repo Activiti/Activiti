@@ -18,14 +18,11 @@ package org.activiti.validation;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.validation.validator.Validator;
 import org.activiti.validation.validator.ValidatorSet;
 
-/**
-
- */
+/** */
 public class ProcessValidatorImpl implements ProcessValidator {
 
   protected List<ValidatorSet> validatorSets;
@@ -64,5 +61,4 @@ public class ProcessValidatorImpl implements ProcessValidator {
     }
     validatorSets.add(validatorSet);
   }
-
 }

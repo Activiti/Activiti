@@ -20,11 +20,7 @@ import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 
-/**
- * Base class for all {@link ActivitiEvent} implementations.
- *
-
- */
+/** Base class for all {@link ActivitiEvent} implementations. */
 public class ActivitiEventImpl implements ActivitiEvent {
 
   protected ActivitiEventType type;
@@ -33,17 +29,17 @@ public class ActivitiEventImpl implements ActivitiEvent {
   protected String processDefinitionId;
   private String reason;
 
-  /**
-   * Creates a new event implementation, not part of an execution context.
-   */
+  /** Creates a new event implementation, not part of an execution context. */
   public ActivitiEventImpl(ActivitiEventType type) {
     this(type, null, null, null);
   }
 
-  /**
-   * Creates a new event implementation, part of an execution context.
-   */
-  public ActivitiEventImpl(ActivitiEventType type, String executionId, String processInstanceId, String processDefinitionId) {
+  /** Creates a new event implementation, part of an execution context. */
+  public ActivitiEventImpl(
+      ActivitiEventType type,
+      String executionId,
+      String processInstanceId,
+      String processDefinitionId) {
     if (type == null) {
       throw new ActivitiIllegalArgumentException("type is null");
     }
@@ -90,11 +86,11 @@ public class ActivitiEventImpl implements ActivitiEvent {
     return getClass() + " - " + type;
   }
 
-    public String getReason() {
-        return reason;
-    }
+  public String getReason() {
+    return reason;
+  }
 
-    public void setReason(String reason) {
-        this.reason = reason;
-    }
+  public void setReason(String reason) {
+    this.reason = reason;
+  }
 }

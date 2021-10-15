@@ -23,12 +23,11 @@ import org.activiti.engine.delegate.event.ActivitiEventListener;
 import org.activiti.engine.impl.util.ReflectUtil;
 
 /**
- * An {@link ActivitiEventListener} implementation which uses a classname to create a delegate {@link ActivitiEventListener} instance to use for event notification. <br>
+ * An {@link ActivitiEventListener} implementation which uses a classname to create a delegate
+ * {@link ActivitiEventListener} instance to use for event notification. <br>
  * <br>
- *
- * In case an entityClass was passed in the constructor, only events that are {@link ActivitiEntityEvent}'s that target an entity of the given type, are dispatched to the delegate.
- *
-
+ * In case an entityClass was passed in the constructor, only events that are {@link
+ * ActivitiEntityEvent}'s that target an entity of the given type, are dispatched to the delegate.
  */
 public class DelegateActivitiEventListener extends BaseDelegateEventListener {
 
@@ -65,7 +64,8 @@ public class DelegateActivitiEventListener extends BaseDelegateEventListener {
         // Force failing of the listener invocation, since the delegate
         // cannot be created
         failOnException = true;
-        throw new ActivitiIllegalArgumentException("Class " + className + " does not implement " + ActivitiEventListener.class.getName());
+        throw new ActivitiIllegalArgumentException(
+            "Class " + className + " does not implement " + ActivitiEventListener.class.getName());
       }
     }
     return delegateInstance;

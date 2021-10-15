@@ -22,7 +22,6 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.activiti.engine.ActivitiOptimisticLockingException;
 import org.activiti.engine.history.HistoricVariableInstance;
 import org.activiti.engine.impl.history.HistoryLevel;
@@ -30,11 +29,8 @@ import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.task.Task;
 
-/**
-
- */
+/** */
 public class StandaloneTaskTest extends PluggableActivitiTestCase {
-
 
   public void testCreateToComplete() {
 
@@ -94,8 +90,8 @@ public class StandaloneTaskTest extends PluggableActivitiTestCase {
     // second modification on the initial instance
     task2.setDescription("second modification");
     assertThatExceptionOfType(ActivitiOptimisticLockingException.class)
-      .as("should get an exception here as the task was modified by someone else.")
-      .isThrownBy(() -> taskService.saveTask(task2));
+        .as("should get an exception here as the task was modified by someone else.")
+        .isThrownBy(() -> taskService.saveTask(task2));
 
     taskService.deleteTask(taskId, true);
   }
@@ -140,31 +136,31 @@ public class StandaloneTaskTest extends PluggableActivitiTestCase {
 
   public void testHistoricVariableOkOnUpdate() {
     if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
-  		// 1. create a task
-  		Task task = taskService.newTask();
-  		task.setName("test execution");
-  		task.setOwner("josOwner");
-  		task.setAssignee("JosAssignee");
-  		taskService.saveTask(task);
+      // 1. create a task
+      Task task = taskService.newTask();
+      task.setName("test execution");
+      task.setOwner("josOwner");
+      task.setAssignee("JosAssignee");
+      taskService.saveTask(task);
 
-  		// 2. set task variables
-  		Map<String, Object> taskVariables = new HashMap<String, Object>();
-  		taskVariables.put("finishedAmount", 0);
-  		taskService.setVariables(task.getId(), taskVariables);
+      // 2. set task variables
+      Map<String, Object> taskVariables = new HashMap<String, Object>();
+      taskVariables.put("finishedAmount", 0);
+      taskService.setVariables(task.getId(), taskVariables);
 
-  		// 3. complete this task with a new variable
-  		Map<String, Object> finishVariables = new HashMap<String, Object>();
-  		finishVariables.put("finishedAmount", 40);
-  		taskService.complete(task.getId(), finishVariables);
+      // 3. complete this task with a new variable
+      Map<String, Object> finishVariables = new HashMap<String, Object>();
+      finishVariables.put("finishedAmount", 40);
+      taskService.complete(task.getId(), finishVariables);
 
-  		// 4. get completed variable
-  		List<HistoricVariableInstance> hisVarList = historyService.createHistoricVariableInstanceQuery().taskId(task.getId()).list();
-  		assertThat(hisVarList).hasSize(1);
-  		assertThat(hisVarList.get(0).getValue()).isEqualTo(40);
+      // 4. get completed variable
+      List<HistoricVariableInstance> hisVarList =
+          historyService.createHistoricVariableInstanceQuery().taskId(task.getId()).list();
+      assertThat(hisVarList).hasSize(1);
+      assertThat(hisVarList.get(0).getValue()).isEqualTo(40);
 
-  		// Cleanup
-  		historyService.deleteHistoricTaskInstance(task.getId());
+      // Cleanup
+      historyService.deleteHistoricTaskInstance(task.getId());
     }
-	}
-
+  }
 }

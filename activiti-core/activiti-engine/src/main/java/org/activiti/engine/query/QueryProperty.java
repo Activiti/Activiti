@@ -14,17 +14,12 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.query;
 
+import java.io.Serializable;
 import org.activiti.engine.api.internal.Internal;
 
-import java.io.Serializable;
-
-/**
- * Describes a property that can be used in a Query.
- *
- */
+/** Describes a property that can be used in a Query. */
 @Internal
 public interface QueryProperty extends Serializable {
 

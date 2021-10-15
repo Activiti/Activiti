@@ -16,7 +16,6 @@
 package org.activiti.bpmn.converter.child;
 
 import javax.xml.stream.XMLStreamReader;
-
 import org.activiti.bpmn.converter.util.BpmnXMLUtil;
 import org.activiti.bpmn.model.ActivitiListener;
 import org.activiti.bpmn.model.BaseElement;
@@ -27,9 +26,7 @@ import org.activiti.bpmn.model.SendTask;
 import org.activiti.bpmn.model.ServiceTask;
 import org.apache.commons.lang3.StringUtils;
 
-/**
-
- */
+/** */
 public class FieldExtensionParser extends BaseChildElementParser {
 
   public String getElementName() {
@@ -38,15 +35,15 @@ public class FieldExtensionParser extends BaseChildElementParser {
 
   public boolean accepts(BaseElement element) {
     return ((element instanceof ActivitiListener)
-            || (element instanceof ServiceTask)
-            || (element instanceof SendTask)
-            || (element instanceof MessageEventDefinition));
+        || (element instanceof ServiceTask)
+        || (element instanceof SendTask)
+        || (element instanceof MessageEventDefinition));
   }
 
-  public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model) throws Exception {
+  public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model)
+      throws Exception {
 
-    if (!accepts(parentElement))
-      return;
+    if (!accepts(parentElement)) return;
 
     FieldExtension extension = new FieldExtension();
     BpmnXMLUtil.addXMLLocation(extension, xtr);
@@ -66,7 +63,8 @@ public class FieldExtensionParser extends BaseChildElementParser {
           if (xtr.isStartElement() && ELEMENT_FIELD_STRING.equalsIgnoreCase(xtr.getLocalName())) {
             extension.setStringValue(xtr.getElementText().trim());
 
-          } else if (xtr.isStartElement() && ATTRIBUTE_FIELD_EXPRESSION.equalsIgnoreCase(xtr.getLocalName())) {
+          } else if (xtr.isStartElement()
+              && ATTRIBUTE_FIELD_EXPRESSION.equalsIgnoreCase(xtr.getLocalName())) {
             extension.setExpression(xtr.getElementText().trim());
 
           } else if (xtr.isEndElement() && getElementName().equalsIgnoreCase(xtr.getLocalName())) {
@@ -82,9 +80,9 @@ public class FieldExtensionParser extends BaseChildElementParser {
       ((ActivitiListener) parentElement).getFieldExtensions().add(extension);
     } else if (parentElement instanceof ServiceTask) {
       ((ServiceTask) parentElement).getFieldExtensions().add(extension);
-    } else if (parentElement instanceof SendTask){
+    } else if (parentElement instanceof SendTask) {
       ((SendTask) parentElement).getFieldExtensions().add(extension);
-    } else if (parentElement instanceof MessageEventDefinition){
+    } else if (parentElement instanceof MessageEventDefinition) {
       ((MessageEventDefinition) parentElement).getFieldExtensions().add(extension);
     }
   }

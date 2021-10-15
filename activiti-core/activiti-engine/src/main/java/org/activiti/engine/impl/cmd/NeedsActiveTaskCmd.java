@@ -17,7 +17,6 @@
 package org.activiti.engine.impl.cmd;
 
 import java.io.Serializable;
-
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
@@ -27,9 +26,8 @@ import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.task.Task;
 
 /**
- * An abstract superclass for {@link Command} implementations that want to verify the provided task is always active (ie. not suspended).
- *
-
+ * An abstract superclass for {@link Command} implementations that want to verify the provided task
+ * is always active (ie. not suspended).
  */
 public abstract class NeedsActiveTaskCmd<T> implements Command<T>, Serializable {
 
@@ -61,15 +59,16 @@ public abstract class NeedsActiveTaskCmd<T> implements Command<T>, Serializable 
   }
 
   /**
-   * Subclasses must implement in this method their normal command logic. The provided task is ensured to be active.
+   * Subclasses must implement in this method their normal command logic. The provided task is
+   * ensured to be active.
    */
   protected abstract T execute(CommandContext commandContext, TaskEntity task);
 
   /**
-   * Subclasses can override this method to provide a customized exception message that will be thrown when the task is suspended.
+   * Subclasses can override this method to provide a customized exception message that will be
+   * thrown when the task is suspended.
    */
   protected String getSuspendedTaskException() {
     return "Cannot execute operation: task is suspended";
   }
-
 }

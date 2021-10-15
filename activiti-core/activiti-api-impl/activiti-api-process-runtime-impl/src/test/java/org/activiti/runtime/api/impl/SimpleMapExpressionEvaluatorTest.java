@@ -31,31 +31,29 @@ import org.mockito.Mock;
 
 public class SimpleMapExpressionEvaluatorTest {
 
-    @Mock
-    private ExpressionManager expressionManager;
+  @Mock private ExpressionManager expressionManager;
 
-    @Mock
-    private DelegateInterceptor delegateInterceptor;
+  @Mock private DelegateInterceptor delegateInterceptor;
 
-    @BeforeEach
-    public void setUp() {
-        initMocks(this);
-    }
+  @BeforeEach
+  public void setUp() {
+    initMocks(this);
+  }
 
-    @Test
-    public void evaluate_should_returnResultOfGetValueWithMap() {
-        //given
-        Map<String, Object> context = singletonMap("city", "London");
-        SimpleMapExpressionEvaluator evaluator = new SimpleMapExpressionEvaluator(
-            context);
-        Expression expression = mock(Expression.class);
+  @Test
+  public void evaluate_should_returnResultOfGetValueWithMap() {
+    // given
+    Map<String, Object> context = singletonMap("city", "London");
+    SimpleMapExpressionEvaluator evaluator = new SimpleMapExpressionEvaluator(context);
+    Expression expression = mock(Expression.class);
 
-        given(expression.getValue(expressionManager, delegateInterceptor, context)).willReturn("London");
+    given(expression.getValue(expressionManager, delegateInterceptor, context))
+        .willReturn("London");
 
-        //when
-        Object value = evaluator.evaluate(expression, expressionManager, delegateInterceptor);
+    // when
+    Object value = evaluator.evaluate(expression, expressionManager, delegateInterceptor);
 
-        //then
-        assertThat(value).isEqualTo("London");
-    }
+    // then
+    assertThat(value).isEqualTo("London");
+  }
 }

@@ -14,11 +14,9 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.cmd;
 
 import java.io.Serializable;
-
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.impl.interceptor.Command;
@@ -27,11 +25,7 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
 import org.activiti.engine.runtime.ProcessInstance;
 
-/**
- * {@link Command} that changes the business key of an existing process instance.
- *
-
- */
+/** {@link Command} that changes the business key of an existing process instance. */
 public class SetProcessInstanceBusinessKeyCmd implements Command<Void>, Serializable {
 
   private static final long serialVersionUID = 1L;
@@ -41,10 +35,14 @@ public class SetProcessInstanceBusinessKeyCmd implements Command<Void>, Serializ
 
   public SetProcessInstanceBusinessKeyCmd(String processInstanceId, String businessKey) {
     if (processInstanceId == null || processInstanceId.length() < 1) {
-      throw new ActivitiIllegalArgumentException("The process instance id is mandatory, but '" + processInstanceId + "' has been provided.");
+      throw new ActivitiIllegalArgumentException(
+          "The process instance id is mandatory, but '"
+              + processInstanceId
+              + "' has been provided.");
     }
     if (businessKey == null) {
-      throw new ActivitiIllegalArgumentException("The business key is mandatory, but 'null' has been provided.");
+      throw new ActivitiIllegalArgumentException(
+          "The business key is mandatory, but 'null' has been provided.");
     }
 
     this.processInstanceId = processInstanceId;
@@ -55,10 +53,21 @@ public class SetProcessInstanceBusinessKeyCmd implements Command<Void>, Serializ
     ExecutionEntityManager executionManager = commandContext.getExecutionEntityManager();
     ExecutionEntity processInstance = executionManager.findById(processInstanceId);
     if (processInstance == null) {
-      throw new ActivitiObjectNotFoundException("No process instance found for id = '" + processInstanceId + "'.", ProcessInstance.class);
+      throw new ActivitiObjectNotFoundException(
+          "No process instance found for id = '" + processInstanceId + "'.", ProcessInstance.class);
     } else if (!processInstance.isProcessInstanceType()) {
-      throw new ActivitiIllegalArgumentException("A process instance id is required, but the provided id " + "'" + processInstanceId + "' " + "points to a child execution of process instance " + "'"
-          + processInstance.getProcessInstanceId() + "'. " + "Please invoke the " + getClass().getSimpleName() + " with a root execution id.");
+      throw new ActivitiIllegalArgumentException(
+          "A process instance id is required, but the provided id "
+              + "'"
+              + processInstanceId
+              + "' "
+              + "points to a child execution of process instance "
+              + "'"
+              + processInstance.getProcessInstanceId()
+              + "'. "
+              + "Please invoke the "
+              + getClass().getSimpleName()
+              + " with a root execution id.");
     }
 
     executionManager.updateProcessInstanceBusinessKey(processInstance, businessKey);

@@ -17,12 +17,9 @@
 package org.activiti.engine.impl;
 
 import java.io.Serializable;
-
 import org.activiti.engine.ProcessEngineInfo;
 
-/**
-
- */
+/** */
 public class ProcessEngineInfoImpl implements Serializable, ProcessEngineInfo {
 
   private static final long serialVersionUID = 1L;

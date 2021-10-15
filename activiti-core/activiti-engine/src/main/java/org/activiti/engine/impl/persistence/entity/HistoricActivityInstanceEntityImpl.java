@@ -14,20 +14,16 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.persistence.entity;
 
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.activiti.engine.ProcessEngineConfiguration;
 
-/**
-
-
- */
-public class HistoricActivityInstanceEntityImpl extends HistoricScopeInstanceEntityImpl implements HistoricActivityInstanceEntity {
+/** */
+public class HistoricActivityInstanceEntityImpl extends HistoricScopeInstanceEntityImpl
+    implements HistoricActivityInstanceEntity {
 
   private static final long serialVersionUID = 1L;
 
@@ -40,9 +36,7 @@ public class HistoricActivityInstanceEntityImpl extends HistoricScopeInstanceEnt
   protected String calledProcessInstanceId;
   protected String tenantId = ProcessEngineConfiguration.NO_TENANT_ID;
 
-  public HistoricActivityInstanceEntityImpl() {
-
-  }
+  public HistoricActivityInstanceEntityImpl() {}
 
   public Object getPersistentState() {
     Map<String, Object> persistentState = (Map<String, Object>) new HashMap<String, Object>();
@@ -128,7 +122,12 @@ public class HistoricActivityInstanceEntityImpl extends HistoricScopeInstanceEnt
 
   @Override
   public String toString() {
-    return "HistoricActivityInstanceEntity[id=" + id + ", activityId=" + activityId + ", activityName=" + activityName + "]";
+    return "HistoricActivityInstanceEntity[id="
+        + id
+        + ", activityId="
+        + activityId
+        + ", activityName="
+        + activityName
+        + "]";
   }
-
 }

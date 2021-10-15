@@ -19,6 +19,7 @@ package org.activiti.validation.validator;
 import org.activiti.validation.validator.impl.ActivitiEventListenerValidator;
 import org.activiti.validation.validator.impl.AssociationValidator;
 import org.activiti.validation.validator.impl.BoundaryEventValidator;
+import org.activiti.validation.validator.impl.BpmnModelValidator;
 import org.activiti.validation.validator.impl.DataObjectValidator;
 import org.activiti.validation.validator.impl.DiagramInterchangeInfoValidator;
 import org.activiti.validation.validator.impl.EndEventValidator;
@@ -33,7 +34,6 @@ import org.activiti.validation.validator.impl.IntermediateCatchEventValidator;
 import org.activiti.validation.validator.impl.IntermediateThrowEventValidator;
 import org.activiti.validation.validator.impl.MessageValidator;
 import org.activiti.validation.validator.impl.OperationValidator;
-import org.activiti.validation.validator.impl.BpmnModelValidator;
 import org.activiti.validation.validator.impl.ScriptTaskValidator;
 import org.activiti.validation.validator.impl.SendTaskValidator;
 import org.activiti.validation.validator.impl.SequenceflowValidator;
@@ -43,9 +43,7 @@ import org.activiti.validation.validator.impl.StartEventValidator;
 import org.activiti.validation.validator.impl.SubprocessValidator;
 import org.activiti.validation.validator.impl.UserTaskValidator;
 
-/**
-
- */
+/** */
 public class ValidatorSetFactory {
 
   public ValidatorSet createActivitiExecutableProcessValidatorSet() {
@@ -84,5 +82,4 @@ public class ValidatorSetFactory {
 
     return validatorSet;
   }
-
 }

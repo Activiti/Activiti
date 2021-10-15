@@ -18,19 +18,14 @@ package org.activiti.engine.debug;
 
 import java.util.Iterator;
 import java.util.List;
-
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 
-/**
-
- */
+/** */
 public class ExecutionTree implements Iterable<ExecutionTreeNode> {
 
   protected ExecutionTreeNode root;
 
-  public ExecutionTree() {
-
-  }
+  public ExecutionTree() {}
 
   public ExecutionTreeNode getRoot() {
     return root;
@@ -40,9 +35,7 @@ public class ExecutionTree implements Iterable<ExecutionTreeNode> {
     this.root = root;
   }
 
-  /**
-   * Looks up the {@link ExecutionEntity} for a given id.
-   */
+  /** Looks up the {@link ExecutionEntity} for a given id. */
   public ExecutionTreeNode getTreeNode(String executionId) {
     return getTreeNode(executionId, root);
   }
@@ -87,5 +80,4 @@ public class ExecutionTree implements Iterable<ExecutionTreeNode> {
   public String toString() {
     return root != null ? root.toString() : "";
   }
-
 }

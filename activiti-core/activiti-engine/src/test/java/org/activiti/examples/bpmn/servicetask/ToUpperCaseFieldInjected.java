@@ -16,13 +16,11 @@
 
 package org.activiti.examples.bpmn.servicetask;
 
+import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.JavaDelegate;
-import org.activiti.engine.delegate.DelegateExecution;
 
-/**
-
- */
+/** */
 public class ToUpperCaseFieldInjected implements JavaDelegate {
 
   private Expression text;
@@ -30,5 +28,4 @@ public class ToUpperCaseFieldInjected implements JavaDelegate {
   public void execute(DelegateExecution execution) {
     execution.setVariable("var", ((String) text.getValue(execution)).toUpperCase());
   }
-
 }

@@ -15,37 +15,37 @@
  */
 package org.activiti.core.common.spring.security.policies;
 
-import java.util.Set;
-
-import org.activiti.api.process.model.payloads.GetProcessDefinitionsPayload;
-import org.junit.jupiter.api.Test;
-
 import static java.util.Collections.singleton;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.Set;
+import org.activiti.api.process.model.payloads.GetProcessDefinitionsPayload;
+import org.junit.jupiter.api.Test;
+
 public class SecurityPoliciesProcessDefinitionRestrictionApplierTest {
 
-    private SecurityPoliciesProcessDefinitionRestrictionApplier restrictionApplier = new SecurityPoliciesProcessDefinitionRestrictionApplier();
+  private SecurityPoliciesProcessDefinitionRestrictionApplier restrictionApplier =
+      new SecurityPoliciesProcessDefinitionRestrictionApplier();
 
-    @Test
-    public void restrictToKeysAddFilterOnGivenKeys() {
-        //given
-        Set<String> keys = singleton("procDef");
+  @Test
+  public void restrictToKeysAddFilterOnGivenKeys() {
+    // given
+    Set<String> keys = singleton("procDef");
 
-        //when
-        GetProcessDefinitionsPayload filter = restrictionApplier.restrictToKeys(keys);
+    // when
+    GetProcessDefinitionsPayload filter = restrictionApplier.restrictToKeys(keys);
 
-        //then
-        assertThat(filter.getProcessDefinitionKeys()).isEqualTo(keys);
-    }
+    // then
+    assertThat(filter.getProcessDefinitionKeys()).isEqualTo(keys);
+  }
 
-    @Test
-    public void denyAllShouldAddUnmatchableFilter() {
-        //when
-        GetProcessDefinitionsPayload filter = restrictionApplier.denyAll();
+  @Test
+  public void denyAllShouldAddUnmatchableFilter() {
+    // when
+    GetProcessDefinitionsPayload filter = restrictionApplier.denyAll();
 
-        //then
-        assertThat(filter.getProcessDefinitionKeys()).hasSize(1);
-        assertThat(filter.getProcessDefinitionKeys().iterator().next()).startsWith("missing-");
-    }
+    // then
+    assertThat(filter.getProcessDefinitionKeys()).hasSize(1);
+    assertThat(filter.getProcessDefinitionKeys().iterator().next()).startsWith("missing-");
+  }
 }

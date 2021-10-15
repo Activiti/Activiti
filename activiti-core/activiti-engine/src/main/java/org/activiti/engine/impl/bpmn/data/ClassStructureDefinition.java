@@ -16,11 +16,7 @@
 
 package org.activiti.engine.impl.bpmn.data;
 
-/**
- * Represents a structure encapsulated in a class
- *
-
- */
+/** Represents a structure encapsulated in a class */
 public class ClassStructureDefinition implements FieldBaseStructureDefinition {
 
   protected String id;

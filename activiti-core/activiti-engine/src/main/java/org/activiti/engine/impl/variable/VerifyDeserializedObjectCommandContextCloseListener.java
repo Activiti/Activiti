@@ -21,23 +21,24 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandContextCloseListener;
 
 /**
- * A {@link CommandContextCloseListener} that holds one {@link DeserializedObject} instance that
- * is added by the {@link SerializableType}.
+ * A {@link CommandContextCloseListener} that holds one {@link DeserializedObject} instance that is
+ * added by the {@link SerializableType}.
  *
- * On the {@link #closing(CommandContext)} of the {@link CommandContext}, the {@link DeserializedObject}
- * will be verified if it is dirty. If so, it will update the right entities such that changes will be flushed.
+ * <p>On the {@link #closing(CommandContext)} of the {@link CommandContext}, the {@link
+ * DeserializedObject} will be verified if it is dirty. If so, it will update the right entities
+ * such that changes will be flushed.
  *
- * It's important that this happens in the {@link #closing(CommandContext)}, as this happens before
- * the {@link CommandContext#close()} is called and when all the sessions are flushed
+ * <p>It's important that this happens in the {@link #closing(CommandContext)}, as this happens
+ * before the {@link CommandContext#close()} is called and when all the sessions are flushed
  * (including the {@link DbSqlSession} in the relational DB case (the data needs to be ready then).
- *
-
  */
-public class VerifyDeserializedObjectCommandContextCloseListener implements CommandContextCloseListener {
+public class VerifyDeserializedObjectCommandContextCloseListener
+    implements CommandContextCloseListener {
 
   protected DeserializedObject deserializedObject;
 
-  public VerifyDeserializedObjectCommandContextCloseListener(DeserializedObject deserializedObject) {
+  public VerifyDeserializedObjectCommandContextCloseListener(
+      DeserializedObject deserializedObject) {
     this.deserializedObject = deserializedObject;
   }
 
@@ -45,16 +46,9 @@ public class VerifyDeserializedObjectCommandContextCloseListener implements Comm
     deserializedObject.verifyIfBytesOfSerializedObjectChanged();
   }
 
-  public void closed(CommandContext commandContext) {
+  public void closed(CommandContext commandContext) {}
 
-  }
+  public void afterSessionsFlush(CommandContext commandContext) {}
 
-  public void afterSessionsFlush(CommandContext commandContext) {
-
-  }
-
-  public void closeFailure(CommandContext commandContext) {
-
-  }
-
+  public void closeFailure(CommandContext commandContext) {}
 }

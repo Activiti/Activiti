@@ -25,9 +25,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
-
- */
+/** */
 public class SendTaskParseHandler extends AbstractActivityBpmnParseHandler<SendTask> {
 
   private static final Logger logger = LoggerFactory.getLogger(SendTaskParseHandler.class);
@@ -41,21 +39,28 @@ public class SendTaskParseHandler extends AbstractActivityBpmnParseHandler<SendT
     if (StringUtils.isNotEmpty(sendTask.getType())) {
 
       if (sendTask.getType().equalsIgnoreCase("mail")) {
-        sendTask.setBehavior(bpmnParse.getActivityBehaviorFactory().createMailActivityBehavior(sendTask));
+        sendTask.setBehavior(
+            bpmnParse.getActivityBehaviorFactory().createMailActivityBehavior(sendTask));
       } else if (sendTask.getType().equalsIgnoreCase("mule")) {
-        sendTask.setBehavior(bpmnParse.getActivityBehaviorFactory().createMuleActivityBehavior(sendTask));
+        sendTask.setBehavior(
+            bpmnParse.getActivityBehaviorFactory().createMuleActivityBehavior(sendTask));
       } else if (sendTask.getType().equalsIgnoreCase("camel")) {
-        sendTask.setBehavior(bpmnParse.getActivityBehaviorFactory().createCamelActivityBehavior(sendTask));
+        sendTask.setBehavior(
+            bpmnParse.getActivityBehaviorFactory().createCamelActivityBehavior(sendTask));
       }
 
-    } else if (ImplementationType.IMPLEMENTATION_TYPE_WEBSERVICE.equalsIgnoreCase(sendTask.getImplementationType()) && StringUtils.isNotEmpty(sendTask.getOperationRef())) {
+    } else if (ImplementationType.IMPLEMENTATION_TYPE_WEBSERVICE.equalsIgnoreCase(
+            sendTask.getImplementationType())
+        && StringUtils.isNotEmpty(sendTask.getOperationRef())) {
 
-      WebServiceActivityBehavior webServiceActivityBehavior = bpmnParse.getActivityBehaviorFactory().createWebServiceActivityBehavior(sendTask);
+      WebServiceActivityBehavior webServiceActivityBehavior =
+          bpmnParse.getActivityBehaviorFactory().createWebServiceActivityBehavior(sendTask);
       sendTask.setBehavior(webServiceActivityBehavior);
 
     } else {
-      logger.warn("One of the attributes 'type' or 'operation' is mandatory on sendTask " + sendTask.getId());
+      logger.warn(
+          "One of the attributes 'type' or 'operation' is mandatory on sendTask "
+              + sendTask.getId());
     }
   }
-
 }

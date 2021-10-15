@@ -19,7 +19,6 @@ import java.util.Date;
 import java.util.Map;
 import java.util.TimeZone;
 import java.util.concurrent.ConcurrentHashMap;
-
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.runtime.ClockReader;
@@ -27,11 +26,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * An Activiti BusinessCalendar for cycle based schedules that takes into account a different daylight savings time zone than the one that the server is configured for.
- * <p>
- * For CRON strings DSTZONE is used as the time zone that the CRON schedule refers to. Leave it out to use the server time zone.
- * <p>
- * For ISO strings the time zone offset for the date/time specified is part of the string itself. DSTZONE is used to determine what the offset should be NOW, which may be different than when the
+ * An Activiti BusinessCalendar for cycle based schedules that takes into account a different
+ * daylight savings time zone than the one that the server is configured for.
+ *
+ * <p>For CRON strings DSTZONE is used as the time zone that the CRON schedule refers to. Leave it
+ * out to use the server time zone.
+ *
+ * <p>For ISO strings the time zone offset for the date/time specified is part of the string itself.
+ * DSTZONE is used to determine what the offset should be NOW, which may be different than when the
  * workflow was scheduled if it is scheduled to run across a DST event.
  *
  * <pre>
@@ -44,10 +46,12 @@ import org.slf4j.LoggerFactory;
  *      0 30 20 ? * MON,TUE,WED,THU,FRI * DSTZONE:US/Arizona
  * </pre>
  *
- * Removing the DSTZONE key will cause Activiti to use the server's time zone. This is the original behavior.
- * <p>
- * Schedule strings are versioned. Version 1 strings will use the original Activiti CycleBusinessCalendar. All new properties are ignored. Version 2 strings will use the new daylight saving time
- * logic.
+ * Removing the DSTZONE key will cause Activiti to use the server's time zone. This is the original
+ * behavior.
+ *
+ * <p>Schedule strings are versioned. Version 1 strings will use the original Activiti
+ * CycleBusinessCalendar. All new properties are ignored. Version 2 strings will use the new
+ * daylight saving time logic.
  *
  * <pre>
  *   For example:
@@ -55,7 +59,9 @@ import org.slf4j.LoggerFactory;
  *      0 30 20 ? * MON,TUE,WED,THU,FRI * VER:1 DSTZONE:US/Arizona
  * </pre>
  *
- * By default (if no VER key is included in the string), it assumes version 2. This can be changed by modifying the defaultScheduleVersion property.
+ * By default (if no VER key is included in the string), it assumes version 2. This can be changed
+ * by modifying the defaultScheduleVersion property.
+ *
  * <p>
  */
 @Internal
@@ -105,13 +111,23 @@ public class AdvancedCycleBusinessCalendar extends CycleBusinessCalendar {
     // Could be used in the future as a start date for a CRON job
     // String startDate = getValueFrom("START", duedateDescription);
 
-    duedateDescription = removeValueFrom("VER", removeValueFrom("START", removeValueFrom("DSTZONE", duedateDescription))).trim();
+    duedateDescription =
+        removeValueFrom(
+                "VER", removeValueFrom("START", removeValueFrom("DSTZONE", duedateDescription)))
+            .trim();
 
     try {
       logger.info("Base Due Date: " + duedateDescription);
 
-      Date date = resolvers.get(version == null ? getDefaultScheduleVersion() : Integer.valueOf(version)).resolve(duedateDescription, clockReader,
-          timeZone == null ? clockReader.getCurrentTimeZone() : TimeZone.getTimeZone(timeZone));
+      Date date =
+          resolvers
+              .get(version == null ? getDefaultScheduleVersion() : Integer.valueOf(version))
+              .resolve(
+                  duedateDescription,
+                  clockReader,
+                  timeZone == null
+                      ? clockReader.getCurrentTimeZone()
+                      : TimeZone.getTimeZone(timeZone));
 
       logger.info("Calculated Date: " + (date == null ? "Will Not Run Again" : date));
 
@@ -120,7 +136,6 @@ public class AdvancedCycleBusinessCalendar extends CycleBusinessCalendar {
     } catch (Exception e) {
       throw new ActivitiIllegalArgumentException("Cannot parse duration", e);
     }
-
   }
 
   private String getValueFrom(String field, String duedateDescription) {
@@ -148,7 +163,8 @@ public class AdvancedCycleBusinessCalendar extends CycleBusinessCalendar {
       int nextWhiteSpace = duedateDescription.indexOf(" ", fieldIndex);
 
       if (nextWhiteSpace > -1) {
-        return duedateDescription.replace(duedateDescription.substring(fieldIndex, nextWhiteSpace), "");
+        return duedateDescription.replace(
+            duedateDescription.substring(fieldIndex, nextWhiteSpace), "");
       } else {
         return duedateDescription.substring(0, fieldIndex);
       }

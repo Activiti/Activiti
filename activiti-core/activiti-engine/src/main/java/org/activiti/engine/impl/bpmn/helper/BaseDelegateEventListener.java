@@ -21,9 +21,8 @@ import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventListener;
 
 /**
- * Base implementation of a {@link ActivitiEventListener}, used when creating event-listeners that are part of a BPMN definition.
- *
-
+ * Base implementation of a {@link ActivitiEventListener}, used when creating event-listeners that
+ * are part of a BPMN definition.
  */
 public abstract class BaseDelegateEventListener implements ActivitiEventListener {
 
@@ -48,5 +47,4 @@ public abstract class BaseDelegateEventListener implements ActivitiEventListener
     }
     return valid;
   }
-
 }

@@ -19,22 +19,16 @@ package org.activiti.engine.impl.transformer;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.api.internal.Internal;
 
-/**
- * A Transformer is responsible of transforming an object into a different object
- *
-
- */
+/** A Transformer is responsible of transforming an object into a different object */
 @Internal
 public interface Transformer {
 
   /**
    * Transforms anObject into a different object
    *
-   * @param anObject
-   *          the object to be transformed
+   * @param anObject the object to be transformed
    * @return the transformed object
-   * @throws ActivitiException
-   *           if the transformation could not be applied
+   * @throws ActivitiException if the transformation could not be applied
    */
   Object transform(Object anObject);
 }

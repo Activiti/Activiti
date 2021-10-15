@@ -16,13 +16,10 @@
 
 package org.activiti.engine.impl.persistence.entity;
 
+import java.util.List;
 import org.activiti.engine.api.internal.Internal;
 
-import java.util.List;
-
-/**
-
- */
+/** */
 @Internal
 @Deprecated
 public interface AttachmentEntityManager extends EntityManager<AttachmentEntity> {
@@ -32,5 +29,4 @@ public interface AttachmentEntityManager extends EntityManager<AttachmentEntity>
   List<AttachmentEntity> findAttachmentsByTaskId(String taskId);
 
   void deleteAttachmentsByTaskId(String taskId);
-
 }

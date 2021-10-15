@@ -28,67 +28,67 @@ import org.junit.Test;
 
 public class VariableElResolverTest {
 
-    private ObjectMapper objectMapper = new ObjectMapper();
-    private VariableElResolver resolver = new VariableElResolver(objectMapper);
+  private ObjectMapper objectMapper = new ObjectMapper();
+  private VariableElResolver resolver = new VariableElResolver(objectMapper);
 
-    @Test
-    public void canResolve_should_returnTrueWhenVariableScopeHasVariableForProperty() {
-        //given
-        VariableScope variableScope = mock(VariableScope.class);
-        given(variableScope.hasVariable("myVar")).willReturn(true);
+  @Test
+  public void canResolve_should_returnTrueWhenVariableScopeHasVariableForProperty() {
+    // given
+    VariableScope variableScope = mock(VariableScope.class);
+    given(variableScope.hasVariable("myVar")).willReturn(true);
 
-        //when
-        boolean canResolve = resolver.canResolve("myVar", variableScope);
+    // when
+    boolean canResolve = resolver.canResolve("myVar", variableScope);
 
-        //then
-        assertThat(canResolve).isTrue();
-    }
+    // then
+    assertThat(canResolve).isTrue();
+  }
 
-    @Test
-    public void canResolve_should_returnFalseWhenVariableScopeDoesNotHaveVariableForProperty() {
-        //given
-        VariableScope variableScope = mock(VariableScope.class);
-        given(variableScope.hasVariable("myVar")).willReturn(false);
+  @Test
+  public void canResolve_should_returnFalseWhenVariableScopeDoesNotHaveVariableForProperty() {
+    // given
+    VariableScope variableScope = mock(VariableScope.class);
+    given(variableScope.hasVariable("myVar")).willReturn(false);
 
-        //when
-        boolean canResolve = resolver.canResolve("myVar", variableScope);
+    // when
+    boolean canResolve = resolver.canResolve("myVar", variableScope);
 
-        //then
-        assertThat(canResolve).isFalse();
-    }
+    // then
+    assertThat(canResolve).isFalse();
+  }
 
-    @Test
-    public void resolve_should_returnVariableInstanceValueWhenItsNotJsonArray() {
-        //given
-        VariableScope variableScope = buildVariableScope("myVar", "myValue", "string");
+  @Test
+  public void resolve_should_returnVariableInstanceValueWhenItsNotJsonArray() {
+    // given
+    VariableScope variableScope = buildVariableScope("myVar", "myValue", "string");
 
-        //when
-        Object result = resolver.resolve("myVar", variableScope);
+    // when
+    Object result = resolver.resolve("myVar", variableScope);
 
-        //then
-        assertThat(result).isEqualTo("myValue");
-    }
+    // then
+    assertThat(result).isEqualTo("myValue");
+  }
 
-    @Test
-    public void resolve_should_returnVariableInstanceValueConvertedToListWhenItsJsonArray() throws Exception {
-        //given
-        JsonNode jsonNode = objectMapper.readTree("[\"green\", \"blue\", \"red\"]");
-        VariableScope variableScope = buildVariableScope("colors", jsonNode, "json");
+  @Test
+  public void resolve_should_returnVariableInstanceValueConvertedToListWhenItsJsonArray()
+      throws Exception {
+    // given
+    JsonNode jsonNode = objectMapper.readTree("[\"green\", \"blue\", \"red\"]");
+    VariableScope variableScope = buildVariableScope("colors", jsonNode, "json");
 
-        //when
-        Object result = resolver.resolve("colors", variableScope);
+    // when
+    Object result = resolver.resolve("colors", variableScope);
 
-        //then
-        assertThat(result).isEqualTo(Arrays.asList("green", "blue", "red"));
-    }
+    // then
+    assertThat(result).isEqualTo(Arrays.asList("green", "blue", "red"));
+  }
 
-    private VariableScope buildVariableScope(String variableName, Object variableValue, String type) {
-        VariableScope variableScope = mock(VariableScope.class);
-        VariableInstance variableInstance = mock(VariableInstance.class);
-        given(variableInstance.getValue()).willReturn(variableValue);
-        given(variableInstance.getTypeName()).willReturn(type);
-        given(variableScope.getVariableInstance(variableName)).willReturn(variableInstance);
-        return variableScope;
-    }
-
+  private VariableScope buildVariableScope(String variableName, Object variableValue, String type) {
+    VariableScope variableScope = mock(VariableScope.class);
+    VariableInstance variableInstance = mock(VariableInstance.class);
+    given(variableInstance.getValue()).willReturn(variableValue);
+    given(variableInstance.getTypeName()).willReturn(type);
+    given(variableScope.getVariableInstance(variableName)).willReturn(variableInstance);
+    return variableScope;
+  }
 }

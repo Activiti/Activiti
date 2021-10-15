@@ -14,25 +14,22 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.persistence.entity;
 
 import java.util.List;
-
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.persistence.entity.data.ByteArrayDataManager;
 import org.activiti.engine.impl.persistence.entity.data.DataManager;
 
-
-/**
-
-
- */
-public class ByteArrayEntityManagerImpl extends AbstractEntityManager<ByteArrayEntity> implements ByteArrayEntityManager {
+/** */
+public class ByteArrayEntityManagerImpl extends AbstractEntityManager<ByteArrayEntity>
+    implements ByteArrayEntityManager {
 
   protected ByteArrayDataManager byteArrayDataManager;
 
-  public ByteArrayEntityManagerImpl(ProcessEngineConfigurationImpl processEngineConfiguration, ByteArrayDataManager byteArrayDataManager) {
+  public ByteArrayEntityManagerImpl(
+      ProcessEngineConfigurationImpl processEngineConfiguration,
+      ByteArrayDataManager byteArrayDataManager) {
     super(processEngineConfiguration);
     this.byteArrayDataManager = byteArrayDataManager;
   }
@@ -59,5 +56,4 @@ public class ByteArrayEntityManagerImpl extends AbstractEntityManager<ByteArrayE
   public void setByteArrayDataManager(ByteArrayDataManager byteArrayDataManager) {
     this.byteArrayDataManager = byteArrayDataManager;
   }
-
 }

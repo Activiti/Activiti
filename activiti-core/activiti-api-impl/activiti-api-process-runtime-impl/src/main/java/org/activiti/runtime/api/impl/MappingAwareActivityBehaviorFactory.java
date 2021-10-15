@@ -16,7 +16,6 @@
 package org.activiti.runtime.api.impl;
 
 import java.util.List;
-
 import org.activiti.bpmn.model.MapExceptionEntry;
 import org.activiti.bpmn.model.UserTask;
 import org.activiti.engine.delegate.Expression;
@@ -29,45 +28,42 @@ import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.spring.process.ProcessVariablesInitiator;
 
 /**
- * Default implementation of the {@link ActivityBehaviorFactory}. Used when no custom {@link ActivityBehaviorFactory} is injected on the {@link ProcessEngineConfigurationImpl}.
+ * Default implementation of the {@link ActivityBehaviorFactory}. Used when no custom {@link
+ * ActivityBehaviorFactory} is injected on the {@link ProcessEngineConfigurationImpl}.
  */
 public class MappingAwareActivityBehaviorFactory extends DefaultActivityBehaviorFactory {
 
-    private VariablesCalculator variablesCalculator;
+  private VariablesCalculator variablesCalculator;
 
-    private ProcessVariablesInitiator processVariablesInitiator;
+  private ProcessVariablesInitiator processVariablesInitiator;
 
-    public MappingAwareActivityBehaviorFactory(
-        VariablesCalculator variablesCalculator,
-                                               ProcessVariablesInitiator processVariablesInitiator) {
-        super();
-        this.variablesCalculator = variablesCalculator;
-        this.processVariablesInitiator = processVariablesInitiator;
+  public MappingAwareActivityBehaviorFactory(
+      VariablesCalculator variablesCalculator,
+      ProcessVariablesInitiator processVariablesInitiator) {
+    super();
+    this.variablesCalculator = variablesCalculator;
+    this.processVariablesInitiator = processVariablesInitiator;
 
-        this.setMessagePayloadMappingProviderFactory(new JsonMessagePayloadMappingProviderFactory(
-            variablesCalculator));
-    }
+    this.setMessagePayloadMappingProviderFactory(
+        new JsonMessagePayloadMappingProviderFactory(variablesCalculator));
+  }
 
-    @Override
-    public UserTaskActivityBehavior createUserTaskActivityBehavior(UserTask userTask) {
-        return new MappingAwareUserTaskBehavior(userTask,
-            variablesCalculator);
-    }
+  @Override
+  public UserTaskActivityBehavior createUserTaskActivityBehavior(UserTask userTask) {
+    return new MappingAwareUserTaskBehavior(userTask, variablesCalculator);
+  }
 
-    @Override
-    protected CallActivityBehavior createCallActivityBehavior(Expression expression, List<MapExceptionEntry> mapExceptions) {
-        return new MappingAwareCallActivityBehavior(expression,
-                                                    mapExceptions,
-            variablesCalculator,
-                                                    processVariablesInitiator);
-    }
+  @Override
+  protected CallActivityBehavior createCallActivityBehavior(
+      Expression expression, List<MapExceptionEntry> mapExceptions) {
+    return new MappingAwareCallActivityBehavior(
+        expression, mapExceptions, variablesCalculator, processVariablesInitiator);
+  }
 
-    @Override
-    protected CallActivityBehavior createCallActivityBehavior(String calledElement,
-                                                              List<MapExceptionEntry> mapExceptions) {
-        return new MappingAwareCallActivityBehavior(calledElement,
-                                                    mapExceptions,
-            variablesCalculator,
-                                                    processVariablesInitiator);
-    }
+  @Override
+  protected CallActivityBehavior createCallActivityBehavior(
+      String calledElement, List<MapExceptionEntry> mapExceptions) {
+    return new MappingAwareCallActivityBehavior(
+        calledElement, mapExceptions, variablesCalculator, processVariablesInitiator);
+  }
 }

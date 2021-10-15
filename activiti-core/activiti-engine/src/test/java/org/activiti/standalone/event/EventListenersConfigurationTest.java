@@ -24,11 +24,7 @@ import org.activiti.engine.delegate.event.impl.ActivitiEventImpl;
 import org.activiti.engine.impl.test.ResourceActivitiTestCase;
 import org.activiti.engine.test.api.event.TestActivitiEventListener;
 
-/**
- * Test to verify event-listeners, which are configured in the cfg.xml, are notified.
- *
-
- */
+/** Test to verify event-listeners, which are configured in the cfg.xml, are notified. */
 public class EventListenersConfigurationTest extends ResourceActivitiTestCase {
 
   public EventListenersConfigurationTest() {
@@ -37,7 +33,8 @@ public class EventListenersConfigurationTest extends ResourceActivitiTestCase {
 
   public void testEventListenerConfiguration() {
     // Fetch the listener to check received events
-    TestActivitiEventListener listener = (TestActivitiEventListener) processEngineConfiguration.getBeans().get("eventListener");
+    TestActivitiEventListener listener =
+        (TestActivitiEventListener) processEngineConfiguration.getBeans().get("eventListener");
     assertThat(listener).isNotNull();
 
     // Clear any events received (eg. engine initialisation)

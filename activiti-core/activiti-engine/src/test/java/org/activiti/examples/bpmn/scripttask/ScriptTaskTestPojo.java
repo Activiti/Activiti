@@ -24,5 +24,4 @@ public class ScriptTaskTestPojo implements Serializable {
   public static void foo() {
     throw new IllegalStateException();
   }
-
 }

@@ -15,6 +15,7 @@
  */
 package org.activiti.runtime.api.event.internal;
 
+import java.util.List;
 import org.activiti.api.process.model.events.BPMNSignalReceivedEvent;
 import org.activiti.api.process.runtime.events.listener.BPMNElementEventListener;
 import org.activiti.engine.delegate.event.ActivitiEvent;
@@ -22,34 +23,36 @@ import org.activiti.engine.delegate.event.ActivitiEventListener;
 import org.activiti.engine.delegate.event.ActivitiSignalEvent;
 import org.activiti.runtime.api.event.impl.ToSignalReceivedConverter;
 
-import java.util.List;
-
 public class SignalReceivedListenerDelegate implements ActivitiEventListener {
 
-    private List<BPMNElementEventListener<BPMNSignalReceivedEvent>> processRuntimeEventListeners;
+  private List<BPMNElementEventListener<BPMNSignalReceivedEvent>> processRuntimeEventListeners;
 
-    private ToSignalReceivedConverter converter;
+  private ToSignalReceivedConverter converter;
 
-    public SignalReceivedListenerDelegate(List<BPMNElementEventListener<BPMNSignalReceivedEvent>> processRuntimeEventListeners,
-                                            ToSignalReceivedConverter converter) {
-        this.processRuntimeEventListeners = processRuntimeEventListeners;
-        this.converter = converter;
+  public SignalReceivedListenerDelegate(
+      List<BPMNElementEventListener<BPMNSignalReceivedEvent>> processRuntimeEventListeners,
+      ToSignalReceivedConverter converter) {
+    this.processRuntimeEventListeners = processRuntimeEventListeners;
+    this.converter = converter;
+  }
+
+  @Override
+  public void onEvent(ActivitiEvent event) {
+    if (event instanceof ActivitiSignalEvent) {
+      converter
+          .from((ActivitiSignalEvent) event)
+          .ifPresent(
+              convertedEvent -> {
+                for (BPMNElementEventListener<BPMNSignalReceivedEvent> listener :
+                    processRuntimeEventListeners) {
+                  listener.onEvent(convertedEvent);
+                }
+              });
     }
+  }
 
-    @Override
-    public void onEvent(ActivitiEvent event) {
-        if (event instanceof ActivitiSignalEvent) {
-            converter.from((ActivitiSignalEvent) event)
-                    .ifPresent(convertedEvent -> {
-                        for (BPMNElementEventListener<BPMNSignalReceivedEvent> listener : processRuntimeEventListeners) {
-                            listener.onEvent(convertedEvent);
-                        }
-                    });
-        }
-    }
-
-    @Override
-    public boolean isFailOnException() {
-        return false;
-    }
+  @Override
+  public boolean isFailOnException() {
+    return false;
+  }
 }

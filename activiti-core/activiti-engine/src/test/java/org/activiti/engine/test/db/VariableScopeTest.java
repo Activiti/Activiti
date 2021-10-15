@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.test.db;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -23,7 +22,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.impl.interceptor.Command;
@@ -35,9 +33,7 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
-/**
-
- */
+/** */
 public class VariableScopeTest extends PluggableActivitiTestCase {
 
   @Deployment
@@ -48,13 +44,16 @@ public class VariableScopeTest extends PluggableActivitiTestCase {
     Map<String, Object> varMap = new HashMap<String, Object>();
     varMap.put("test", "test");
     ProcessInstance pi = runtimeService.startProcessInstanceByKey("simpleSubProcess", varMap);
-    Task subProcessTask = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
+    Task subProcessTask =
+        taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
     assertThat(subProcessTask.getName()).isEqualTo("Task in subprocess");
 
     // get variables for execution id user task, should return the new value
     // of variable test --> test2
-    assertThat(runtimeService.getVariable(subProcessTask.getExecutionId(), "test")).isEqualTo("test2");
-    assertThat(runtimeService.getVariables(subProcessTask.getExecutionId()).get("test")).isEqualTo("test2");
+    assertThat(runtimeService.getVariable(subProcessTask.getExecutionId(), "test"))
+        .isEqualTo("test2");
+    assertThat(runtimeService.getVariables(subProcessTask.getExecutionId()).get("test"))
+        .isEqualTo("test2");
 
     // get variables for process instance id, should return the initial
     // value of variable test --> test
@@ -65,8 +64,10 @@ public class VariableScopeTest extends PluggableActivitiTestCase {
 
     // get variables for execution id user task, should return the new value
     // of variable test --> test3
-    assertThat(runtimeService.getVariable(subProcessTask.getExecutionId(), "test")).isEqualTo("test3");
-    assertThat(runtimeService.getVariables(subProcessTask.getExecutionId()).get("test")).isEqualTo("test3");
+    assertThat(runtimeService.getVariable(subProcessTask.getExecutionId(), "test"))
+        .isEqualTo("test3");
+    assertThat(runtimeService.getVariables(subProcessTask.getExecutionId()).get("test"))
+        .isEqualTo("test3");
 
     // get variables for process instance id, should still return the
     // initial value of variable test --> test
@@ -77,8 +78,10 @@ public class VariableScopeTest extends PluggableActivitiTestCase {
 
     // get variables for execution id user task, should return the old value
     // of variable test --> test3
-    assertThat(runtimeService.getVariable(subProcessTask.getExecutionId(), "test")).isEqualTo("test3");
-    assertThat(runtimeService.getVariables(subProcessTask.getExecutionId()).get("test")).isEqualTo("test3");
+    assertThat(runtimeService.getVariable(subProcessTask.getExecutionId(), "test"))
+        .isEqualTo("test3");
+    assertThat(runtimeService.getVariables(subProcessTask.getExecutionId()).get("test"))
+        .isEqualTo("test3");
 
     // get variables for process instance id, should also return the initial
     // value of variable test --> test4
@@ -90,12 +93,7 @@ public class VariableScopeTest extends PluggableActivitiTestCase {
     taskService.complete(subProcessTask.getId());
   }
 
-  /**
-   * A testcase to produce and fix issue ACT-862.
-   *
-
-
-   */
+  /** A testcase to produce and fix issue ACT-862. */
   @Deployment
   public void testVariableNamesScope() {
 
@@ -105,15 +103,21 @@ public class VariableScopeTest extends PluggableActivitiTestCase {
     varMap.put("test", "test");
     varMap.put("helloWorld", "helloWorld");
     ProcessInstance pi = runtimeService.startProcessInstanceByKey("simpleSubProcess", varMap);
-    Task subProcessTask = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
-    runtimeService.setVariableLocal(pi.getProcessInstanceId(), "mainProcessLocalVariable", "Hello World");
+    Task subProcessTask =
+        taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
+    runtimeService.setVariableLocal(
+        pi.getProcessInstanceId(), "mainProcessLocalVariable", "Hello World");
 
     assertThat(subProcessTask.getName()).isEqualTo("Task in subprocess");
 
-    runtimeService.setVariableLocal(subProcessTask.getExecutionId(), "subProcessLocalVariable", "Hello SubProcess");
+    runtimeService.setVariableLocal(
+        subProcessTask.getExecutionId(), "subProcessLocalVariable", "Hello SubProcess");
 
     // Returns a set of local variablenames of pi
-    List<String> result = processEngineConfiguration.getCommandExecutor().execute(new GetVariableNamesCommand(pi.getProcessInstanceId(), true));
+    List<String> result =
+        processEngineConfiguration
+            .getCommandExecutor()
+            .execute(new GetVariableNamesCommand(pi.getProcessInstanceId(), true));
 
     // pi contains local the variablenames "test", "helloWorld" and
     // "mainProcessLocalVariable" but not "subProcessLocalVariable"
@@ -123,7 +127,10 @@ public class VariableScopeTest extends PluggableActivitiTestCase {
     assertThat(result.contains("subProcessLocalVariable")).isFalse();
 
     // Returns a set of global variablenames of pi
-    result = processEngineConfiguration.getCommandExecutor().execute(new GetVariableNamesCommand(pi.getProcessInstanceId(), false));
+    result =
+        processEngineConfiguration
+            .getCommandExecutor()
+            .execute(new GetVariableNamesCommand(pi.getProcessInstanceId(), false));
 
     // pi contains global the variablenames "test", "helloWorld" and
     // "mainProcessLocalVariable" but not "subProcessLocalVariable"
@@ -133,23 +140,29 @@ public class VariableScopeTest extends PluggableActivitiTestCase {
     assertThat(result.contains("subProcessLocalVariable")).isFalse();
 
     // Returns a set of local variablenames of subProcessTask execution
-    result = processEngineConfiguration.getCommandExecutor().execute(new GetVariableNamesCommand(subProcessTask.getExecutionId(), true));
+    result =
+        processEngineConfiguration
+            .getCommandExecutor()
+            .execute(new GetVariableNamesCommand(subProcessTask.getExecutionId(), true));
 
     // subProcessTask execution contains local the variablenames "test",
     // "subProcessLocalVariable" but not "helloWorld" and
     // "mainProcessLocalVariable"
     assertThat(result.contains("test")).isTrue(); // the variable "test" was set
-                                         // locally by SetLocalVariableTask
+    // locally by SetLocalVariableTask
     assertThat(result.contains("subProcessLocalVariable")).isTrue();
     assertThat(result.contains("helloWorld")).isFalse();
     assertThat(result.contains("mainProcessLocalVariable")).isFalse();
 
     // Returns a set of global variablenames of subProcessTask execution
-    result = processEngineConfiguration.getCommandExecutor().execute(new GetVariableNamesCommand(subProcessTask.getExecutionId(), false));
+    result =
+        processEngineConfiguration
+            .getCommandExecutor()
+            .execute(new GetVariableNamesCommand(subProcessTask.getExecutionId(), false));
 
     // subProcessTask execution contains global all defined variablenames
     assertThat(result.contains("test")).isTrue(); // the variable "test" was set
-                                         // locally by SetLocalVariableTask
+    // locally by SetLocalVariableTask
     assertThat(result.contains("subProcessLocalVariable")).isTrue();
     assertThat(result.contains("helloWorld")).isTrue();
     assertThat(result.contains("mainProcessLocalVariable")).isTrue();
@@ -164,14 +177,17 @@ public class VariableScopeTest extends PluggableActivitiTestCase {
     // active
     Map<String, Object> varMap = new HashMap<String, Object>();
     ProcessInstance pi = runtimeService.startProcessInstanceByKey("nestedSubProcess", varMap);
-    Task subProcessTask = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
+    Task subProcessTask =
+        taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
     assertThat(subProcessTask.getName()).isEqualTo("Task in subprocess1");
 
     // get variables for execution id user task, should return the new value
     // of
     // variable test --> test2
-    assertThat(runtimeService.getVariable(subProcessTask.getExecutionId(), "test")).isEqualTo("test2");
-    assertThat(runtimeService.getVariables(subProcessTask.getExecutionId()).get("test")).isEqualTo("test2");
+    assertThat(runtimeService.getVariable(subProcessTask.getExecutionId(), "test"))
+        .isEqualTo("test2");
+    assertThat(runtimeService.getVariables(subProcessTask.getExecutionId()).get("test"))
+        .isEqualTo("test2");
 
     // get variables for process instance id, should return the initial
     // value of
@@ -184,8 +200,10 @@ public class VariableScopeTest extends PluggableActivitiTestCase {
     // get variables for execution id user task, should return the new value
     // of
     // variable test --> test3
-    assertThat(runtimeService.getVariable(subProcessTask.getExecutionId(), "test")).isEqualTo("testX");
-    assertThat(runtimeService.getVariables(subProcessTask.getExecutionId()).get("test")).isEqualTo("testX");
+    assertThat(runtimeService.getVariable(subProcessTask.getExecutionId(), "test"))
+        .isEqualTo("testX");
+    assertThat(runtimeService.getVariables(subProcessTask.getExecutionId()).get("test"))
+        .isEqualTo("testX");
 
     // get variables for process instance id, should still return the
     // initial
@@ -198,8 +216,10 @@ public class VariableScopeTest extends PluggableActivitiTestCase {
     // get variables for execution id user task, should return the old value
     // of
     // variable test --> test3
-    assertThat(runtimeService.getVariable(subProcessTask.getExecutionId(), "test")).isEqualTo("testX");
-    assertThat(runtimeService.getVariables(subProcessTask.getExecutionId()).get("test")).isEqualTo("testX");
+    assertThat(runtimeService.getVariable(subProcessTask.getExecutionId(), "test"))
+        .isEqualTo("testX");
+    assertThat(runtimeService.getVariables(subProcessTask.getExecutionId()).get("test"))
+        .isEqualTo("testX");
 
     // get variables for process instance id, should also return the initial
     // value of variable test --> test4
@@ -217,8 +237,10 @@ public class VariableScopeTest extends PluggableActivitiTestCase {
         // get variables for execution id user task, should return the
         // old value
         // of variable test --> test3
-        assertThat(runtimeService.getVariable(subProcTask.getExecutionId(), "test")).isEqualTo("test3");
-        assertThat(runtimeService.getVariables(subProcTask.getExecutionId()).get("test")).isEqualTo("test3");
+        assertThat(runtimeService.getVariable(subProcTask.getExecutionId(), "test"))
+            .isEqualTo("test3");
+        assertThat(runtimeService.getVariables(subProcTask.getExecutionId()).get("test"))
+            .isEqualTo("test3");
 
         // get variables for process instance id, should also return the
         // initial
@@ -229,8 +251,10 @@ public class VariableScopeTest extends PluggableActivitiTestCase {
         // get variables for execution id user task, should return the
         // old value
         // of variable test --> test4
-        assertThat(runtimeService.getVariable(subProcTask.getExecutionId(), "test")).isEqualTo("test4");
-        assertThat(runtimeService.getVariables(subProcTask.getExecutionId()).get("test")).isEqualTo("test4");
+        assertThat(runtimeService.getVariable(subProcTask.getExecutionId(), "test"))
+            .isEqualTo("test4");
+        assertThat(runtimeService.getVariables(subProcTask.getExecutionId()).get("test"))
+            .isEqualTo("test4");
 
         // get variables for process instance id, should also return the
         // initial
@@ -257,12 +281,7 @@ public class VariableScopeTest extends PluggableActivitiTestCase {
     assertThat(value).isNull();
   }
 
-  /**
-   * A command to get the names of the variables
-   *
-
-
-   */
+  /** A command to get the names of the variables */
   private class GetVariableNamesCommand implements Command<List<String>> {
 
     private String executionId;
@@ -281,7 +300,8 @@ public class VariableScopeTest extends PluggableActivitiTestCase {
       ExecutionEntity execution = commandContext.getExecutionEntityManager().findById(executionId);
 
       if (execution == null) {
-        throw new ActivitiObjectNotFoundException("execution " + executionId + " doesn't exist", Execution.class);
+        throw new ActivitiObjectNotFoundException(
+            "execution " + executionId + " doesn't exist", Execution.class);
       }
 
       List<String> executionVariables;
@@ -293,6 +313,5 @@ public class VariableScopeTest extends PluggableActivitiTestCase {
 
       return executionVariables;
     }
-
   }
 }

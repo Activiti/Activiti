@@ -18,18 +18,12 @@ package org.activiti.engine.impl.el;
 
 import java.beans.FeatureDescriptor;
 import java.util.Iterator;
-
 import javax.el.ELContext;
 import javax.el.ELException;
 import javax.el.ELResolver;
-
 import org.activiti.engine.impl.util.ReflectUtil;
 
-/**
- * A {@link ELResolver} for dynamic bean properties
- *
-
- */
+/** A {@link ELResolver} for dynamic bean properties */
 public class DynamicBeanPropertyELResolver extends ELResolver {
 
   protected Class<?> subject;
@@ -40,14 +34,16 @@ public class DynamicBeanPropertyELResolver extends ELResolver {
 
   protected boolean readOnly;
 
-  public DynamicBeanPropertyELResolver(boolean readOnly, Class<?> subject, String readMethodName, String writeMethodName) {
+  public DynamicBeanPropertyELResolver(
+      boolean readOnly, Class<?> subject, String readMethodName, String writeMethodName) {
     this.readOnly = readOnly;
     this.subject = subject;
     this.readMethodName = readMethodName;
     this.writeMethodName = writeMethodName;
   }
 
-  public DynamicBeanPropertyELResolver(Class<?> subject, String readMethodName, String writeMethodName) {
+  public DynamicBeanPropertyELResolver(
+      Class<?> subject, String readMethodName, String writeMethodName) {
     this(false, subject, readMethodName, writeMethodName);
   }
 
@@ -84,7 +80,7 @@ public class DynamicBeanPropertyELResolver extends ELResolver {
     String propertyName = property.toString();
 
     try {
-      Object value = ReflectUtil.invoke(base, this.readMethodName, new Object[] { propertyName });
+      Object value = ReflectUtil.invoke(base, this.readMethodName, new Object[] {propertyName});
       context.setPropertyResolved(true);
       return value;
     } catch (Exception e) {
@@ -105,7 +101,7 @@ public class DynamicBeanPropertyELResolver extends ELResolver {
 
     String propertyName = property.toString();
     try {
-      ReflectUtil.invoke(base, this.writeMethodName, new Object[] { propertyName, value });
+      ReflectUtil.invoke(base, this.writeMethodName, new Object[] {propertyName, value});
       context.setPropertyResolved(true);
     } catch (Exception e) {
       throw new ELException(e);

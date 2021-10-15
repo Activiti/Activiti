@@ -22,7 +22,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.ExtensionElement;
 import org.activiti.bpmn.model.FlowElement;
@@ -32,9 +31,7 @@ import org.activiti.bpmn.model.UserTask;
 import org.activiti.bpmn.model.ValuedDataObject;
 import org.junit.jupiter.api.Test;
 
-/**
- * @see https://activiti.atlassian.net/browse/ACT-1847
- */
+/** @see https://activiti.atlassian.net/browse/ACT-1847 */
 public class ValuedDataObjectConverterTest extends AbstractConverterTest {
 
   @Test

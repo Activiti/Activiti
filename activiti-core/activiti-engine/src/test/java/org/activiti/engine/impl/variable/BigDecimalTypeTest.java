@@ -16,92 +16,89 @@
 
 package org.activiti.engine.impl.variable;
 
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.math.BigDecimal;
-
 import org.activiti.engine.impl.persistence.entity.VariableInstanceEntityImpl;
 import org.junit.Test;
 
 public class BigDecimalTypeTest {
 
-    private BigDecimalType bigDecimalType = new BigDecimalType();
+  private BigDecimalType bigDecimalType = new BigDecimalType();
 
-    @Test
-    public void getTypeName_should_return_bigdecimal() {
-        assertThat(bigDecimalType.getTypeName()).isEqualTo("bigdecimal");
-    }
+  @Test
+  public void getTypeName_should_return_bigdecimal() {
+    assertThat(bigDecimalType.getTypeName()).isEqualTo("bigdecimal");
+  }
 
-    @Test
-    public void isCachable_should_return_true() {
-        assertThat(bigDecimalType.isCachable()).isTrue();
-    }
+  @Test
+  public void isCachable_should_return_true() {
+    assertThat(bigDecimalType.isCachable()).isTrue();
+  }
 
-    @Test
-    public void getValue_should_convertTextValueToBigDecimal() {
-        //given
-        ValueFields valueFields = new VariableInstanceEntityImpl();
-        valueFields.setTextValue("0.1000");
+  @Test
+  public void getValue_should_convertTextValueToBigDecimal() {
+    // given
+    ValueFields valueFields = new VariableInstanceEntityImpl();
+    valueFields.setTextValue("0.1000");
 
-        //when
-        Object convertedValue = bigDecimalType.getValue(valueFields);
+    // when
+    Object convertedValue = bigDecimalType.getValue(valueFields);
 
-        //then
-        assertThat(convertedValue).isEqualTo(BigDecimal.valueOf(1000, 4));
-    }
+    // then
+    assertThat(convertedValue).isEqualTo(BigDecimal.valueOf(1000, 4));
+  }
 
-    @Test
-    public void setValue_should_setTextValueWithStringRepresentationOfBigDecimal() {
-        //given
-        ValueFields valueFields = new VariableInstanceEntityImpl();
+  @Test
+  public void setValue_should_setTextValueWithStringRepresentationOfBigDecimal() {
+    // given
+    ValueFields valueFields = new VariableInstanceEntityImpl();
 
-        //when
-        bigDecimalType.setValue(BigDecimal.valueOf(1000,4), valueFields);
+    // when
+    bigDecimalType.setValue(BigDecimal.valueOf(1000, 4), valueFields);
 
-        //then
-        assertThat(valueFields.getTextValue()).isEqualTo("0.1000");
-    }
+    // then
+    assertThat(valueFields.getTextValue()).isEqualTo("0.1000");
+  }
 
-    @Test
-    public void isAbleToStore_should_returnTrue_when_itsBigDecimal() {
-        assertThat(bigDecimalType.isAbleToStore(BigDecimal.valueOf(1))).isTrue();
-    }
+  @Test
+  public void isAbleToStore_should_returnTrue_when_itsBigDecimal() {
+    assertThat(bigDecimalType.isAbleToStore(BigDecimal.valueOf(1))).isTrue();
+  }
 
-    @Test
-    public void isAbleToStore_should_returnTrue_when_itsNull() {
-        assertThat(bigDecimalType.isAbleToStore(null)).isTrue();
-    }
+  @Test
+  public void isAbleToStore_should_returnTrue_when_itsNull() {
+    assertThat(bigDecimalType.isAbleToStore(null)).isTrue();
+  }
 
-    @Test
-    public void isAbleToStore_should_returnFalse_when_itsNotBigDecimal() {
-        assertThat(bigDecimalType.isAbleToStore("Anything that's not bigDecimal")).isFalse();
-    }
+  @Test
+  public void isAbleToStore_should_returnFalse_when_itsNotBigDecimal() {
+    assertThat(bigDecimalType.isAbleToStore("Anything that's not bigDecimal")).isFalse();
+  }
 
-    @Test
-    public void getValue_should_convertNullValue() {
-        //given
-        ValueFields valueFields = new VariableInstanceEntityImpl();
-        valueFields.setTextValue(null);
+  @Test
+  public void getValue_should_convertNullValue() {
+    // given
+    ValueFields valueFields = new VariableInstanceEntityImpl();
+    valueFields.setTextValue(null);
 
-        //when
-        Object convertedValue = bigDecimalType.getValue(valueFields);
+    // when
+    Object convertedValue = bigDecimalType.getValue(valueFields);
 
-        //then
-        assertThat(convertedValue).isNull();
-    }
+    // then
+    assertThat(convertedValue).isNull();
+  }
 
-    @Test
-    public void setValue_should_setNullValue() {
-        //given
-        ValueFields valueFields = new VariableInstanceEntityImpl();
-        valueFields.setTextValue("someValue");
+  @Test
+  public void setValue_should_setNullValue() {
+    // given
+    ValueFields valueFields = new VariableInstanceEntityImpl();
+    valueFields.setTextValue("someValue");
 
-        //when
-        bigDecimalType.setValue(null, valueFields);
+    // when
+    bigDecimalType.setValue(null, valueFields);
 
-        //then
-        assertThat(valueFields.getTextValue()).isNull();
-    }
-
+    // then
+    assertThat(valueFields.getTextValue()).isNull();
+  }
 }

@@ -14,23 +14,19 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.scripting;
 
 import org.activiti.engine.delegate.VariableScope;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 
-/**
-
-
- */
+/** */
 public class VariableScopeResolverFactory implements ResolverFactory {
 
-  public Resolver createResolver(ProcessEngineConfigurationImpl processEngineConfiguration, VariableScope variableScope) {
+  public Resolver createResolver(
+      ProcessEngineConfigurationImpl processEngineConfiguration, VariableScope variableScope) {
     if (variableScope != null) {
       return new VariableScopeResolver(processEngineConfiguration, variableScope);
     }
     return null;
   }
-
 }

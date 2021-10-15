@@ -20,7 +20,6 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-
 import org.activiti.engine.impl.ExecutionQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.ProcessInstanceQueryImpl;
@@ -28,9 +27,7 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
 
-/**
-
- */
+/** */
 public interface ExecutionDataManager extends DataManager<ExecutionEntity> {
 
   ExecutionEntity findSubProcessInstanceBySuperExecutionId(final String superExecutionId);
@@ -39,7 +36,8 @@ public interface ExecutionDataManager extends DataManager<ExecutionEntity> {
 
   List<ExecutionEntity> findChildExecutionsByProcessInstanceId(final String processInstanceId);
 
-  List<ExecutionEntity> findExecutionsByParentExecutionAndActivityIds(final String parentExecutionId, final Collection<String> activityIds);
+  List<ExecutionEntity> findExecutionsByParentExecutionAndActivityIds(
+      final String parentExecutionId, final Collection<String> activityIds);
 
   long findExecutionCountByQueryCriteria(ExecutionQueryImpl executionQuery);
 
@@ -53,17 +51,22 @@ public interface ExecutionDataManager extends DataManager<ExecutionEntity> {
 
   List<ExecutionEntity> findExecutionsByProcessInstanceId(String processInstanceId);
 
-  List<ProcessInstance> findProcessInstanceAndVariablesByQueryCriteria(ProcessInstanceQueryImpl executionQuery);
+  List<ProcessInstance> findProcessInstanceAndVariablesByQueryCriteria(
+      ProcessInstanceQueryImpl executionQuery);
 
-  Collection<ExecutionEntity> findInactiveExecutionsByProcessInstanceId(final String processInstanceId);
+  Collection<ExecutionEntity> findInactiveExecutionsByProcessInstanceId(
+      final String processInstanceId);
 
-  Collection<ExecutionEntity> findInactiveExecutionsByActivityIdAndProcessInstanceId(final String activityId, final String processInstanceId);
+  Collection<ExecutionEntity> findInactiveExecutionsByActivityIdAndProcessInstanceId(
+      final String activityId, final String processInstanceId);
 
   List<String> findProcessInstanceIdsByProcessDefinitionId(String processDefinitionId);
 
-  List<Execution> findExecutionsByNativeQuery(Map<String, Object> parameterMap, int firstResult, int maxResults);
+  List<Execution> findExecutionsByNativeQuery(
+      Map<String, Object> parameterMap, int firstResult, int maxResults);
 
-  List<ProcessInstance> findProcessInstanceByNativeQuery(Map<String, Object> parameterMap, int firstResult, int maxResults);
+  List<ProcessInstance> findProcessInstanceByNativeQuery(
+      Map<String, Object> parameterMap, int firstResult, int maxResults);
 
   long findExecutionCountByNativeQuery(Map<String, Object> parameterMap);
 
@@ -74,5 +77,4 @@ public interface ExecutionDataManager extends DataManager<ExecutionEntity> {
   void updateAllExecutionRelatedEntityCountFlags(boolean newValue);
 
   void clearProcessInstanceLockTime(String processInstanceId);
-
 }

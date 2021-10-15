@@ -17,19 +17,18 @@ package org.activiti.test.matchers;
 
 public class InclusiveGatewayMatchers extends ActivityMatchers {
 
-    private static final String INCLUSIVE_GATEWAY = "inclusiveGateway";
+  private static final String INCLUSIVE_GATEWAY = "inclusiveGateway";
 
-    private InclusiveGatewayMatchers(String definitionKey) {
-        super(definitionKey);
+  private InclusiveGatewayMatchers(String definitionKey) {
+    super(definitionKey);
+  }
 
-    }
+  @Override
+  public String getActivityType() {
+    return INCLUSIVE_GATEWAY;
+  }
 
-    @Override
-    public String getActivityType() {
-        return INCLUSIVE_GATEWAY;
-    }
-
-    public static InclusiveGatewayMatchers inclusiveGateway(String definitionKey) {
-        return new InclusiveGatewayMatchers(definitionKey);
-    }
+  public static InclusiveGatewayMatchers inclusiveGateway(String definitionKey) {
+    return new InclusiveGatewayMatchers(definitionKey);
+  }
 }

@@ -15,9 +15,7 @@
  */
 package org.activiti.bpmn.model;
 
-/**
- * Element for defining an event listener to hook in to the global event-mechanism.
- */
+/** Element for defining an event listener to hook in to the global event-mechanism. */
 public class EventListener extends BaseElement {
 
   protected String events;

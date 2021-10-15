@@ -18,14 +18,11 @@ package org.activiti.engine.impl.cmd;
 
 import java.io.Serializable;
 import java.util.List;
-
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 
-/**
-
- */
+/** */
 public class GetDeploymentResourceNamesCmd implements Command<List>, Serializable {
 
   private static final long serialVersionUID = 1L;
@@ -42,5 +39,4 @@ public class GetDeploymentResourceNamesCmd implements Command<List>, Serializabl
 
     return commandContext.getDeploymentEntityManager().getDeploymentResourceNames(deploymentId);
   }
-
 }

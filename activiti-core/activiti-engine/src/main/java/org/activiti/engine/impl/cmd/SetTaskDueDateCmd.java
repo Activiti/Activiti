@@ -17,13 +17,10 @@
 package org.activiti.engine.impl.cmd;
 
 import java.util.Date;
-
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 
-/**
-
- */
+/** */
 public class SetTaskDueDateCmd extends NeedsActiveTaskCmd<Void> {
 
   private static final long serialVersionUID = 1L;
@@ -41,5 +38,4 @@ public class SetTaskDueDateCmd extends NeedsActiveTaskCmd<Void> {
     commandContext.getTaskEntityManager().update(task);
     return null;
   }
-
 }

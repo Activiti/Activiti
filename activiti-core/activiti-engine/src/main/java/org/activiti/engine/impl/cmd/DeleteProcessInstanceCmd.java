@@ -17,7 +17,6 @@
 package org.activiti.engine.impl.cmd;
 
 import java.io.Serializable;
-
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.impl.interceptor.Command;
@@ -25,9 +24,7 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.runtime.ProcessInstance;
 
-/**
-
- */
+/** */
 public class DeleteProcessInstanceCmd implements Command<Void>, Serializable {
 
   private static final long serialVersionUID = 1L;
@@ -44,15 +41,18 @@ public class DeleteProcessInstanceCmd implements Command<Void>, Serializable {
       throw new ActivitiIllegalArgumentException("processInstanceId is null");
     }
 
-    ExecutionEntity processInstanceEntity = commandContext.getExecutionEntityManager().findById(processInstanceId);
+    ExecutionEntity processInstanceEntity =
+        commandContext.getExecutionEntityManager().findById(processInstanceId);
 
     if (processInstanceEntity == null) {
-      throw new ActivitiObjectNotFoundException("No process instance found for id '" + processInstanceId + "'", ProcessInstance.class);
+      throw new ActivitiObjectNotFoundException(
+          "No process instance found for id '" + processInstanceId + "'", ProcessInstance.class);
     }
 
-    commandContext.getExecutionEntityManager().deleteProcessInstance(processInstanceEntity.getProcessInstanceId(), deleteReason, false);
+    commandContext
+        .getExecutionEntityManager()
+        .deleteProcessInstance(processInstanceEntity.getProcessInstanceId(), deleteReason, false);
 
     return null;
   }
-
 }

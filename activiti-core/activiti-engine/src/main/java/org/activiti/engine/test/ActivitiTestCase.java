@@ -14,15 +14,11 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.test;
 
 import java.util.Date;
-
 import junit.framework.TestCase;
-
 import org.activiti.engine.*;
-
 import org.activiti.engine.impl.ProcessEngineImpl;
 import org.activiti.engine.impl.test.TestHelper;
 import org.activiti.engine.test.mock.ActivitiMockSupport;
@@ -30,28 +26,23 @@ import org.activiti.engine.test.mock.ActivitiMockSupport;
 /**
  * Convenience for ProcessEngine and services initialization in the form of a JUnit base class.
  *
- * <p>
- * Usage: <code>public class YourTest extends ActivitiTestCase</code>
- * </p>
+ * <p>Usage: <code>public class YourTest extends ActivitiTestCase</code>
  *
- * <p>
- * The ProcessEngine and the services available to subclasses through protected member fields. The processEngine will be initialized by default with the activiti.cfg.xml resource on the classpath. To
- * specify a different configuration file, override the {@link #getConfigurationResource()} method. Process engines will be cached statically. The first time the setUp is called for a given
- * configuration resource, the process engine will be constructed.
- * </p>
+ * <p>The ProcessEngine and the services available to subclasses through protected member fields.
+ * The processEngine will be initialized by default with the activiti.cfg.xml resource on the
+ * classpath. To specify a different configuration file, override the {@link
+ * #getConfigurationResource()} method. Process engines will be cached statically. The first time
+ * the setUp is called for a given configuration resource, the process engine will be constructed.
  *
- * <p>
- * You can declare a deployment with the {@link Deployment} annotation. This base class will make sure that this deployment gets deployed in the setUp and
- * {@link RepositoryService#deleteDeploymentCascade(String, boolean) cascade deleted} in the tearDown.
- * </p>
+ * <p>You can declare a deployment with the {@link Deployment} annotation. This base class will make
+ * sure that this deployment gets deployed in the setUp and {@link
+ * RepositoryService#deleteDeploymentCascade(String, boolean) cascade deleted} in the tearDown.
  *
- * <p>
- * This class also lets you {@link #setCurrentTime(Date) set the current time used by the process engine}. This can be handy to control the exact time that is used by the engine in order to verify
- * e.g. e.g. due dates of timers. Or start, end and duration times in the history service. In the tearDown, the internal clock will automatically be reset to use the current system time rather then
- * the time that was set during a test method.
- * </p>
- *
-
+ * <p>This class also lets you {@link #setCurrentTime(Date) set the current time used by the process
+ * engine}. This can be handy to control the exact time that is used by the engine in order to
+ * verify e.g. e.g. due dates of timers. Or start, end and duration times in the history service. In
+ * the tearDown, the internal clock will automatically be reset to use the current system time
+ * rather then the time that was set during a test method.
  */
 public abstract class ActivitiTestCase extends TestCase {
 
@@ -69,8 +60,7 @@ public abstract class ActivitiTestCase extends TestCase {
   private ActivitiMockSupport mockSupport;
 
   /** uses 'activiti.cfg.xml' as it's configuration resource */
-  public ActivitiTestCase() {
-  }
+  public ActivitiTestCase() {}
 
   public void assertProcessEnded(final String processInstanceId) {
     TestHelper.assertProcessEnded(processEngine, processInstanceId);
@@ -85,7 +75,6 @@ public abstract class ActivitiTestCase extends TestCase {
       initializeServices();
       initializeMockSupport();
     }
-
   }
 
   @Override
@@ -113,7 +102,8 @@ public abstract class ActivitiTestCase extends TestCase {
   }
 
   protected void initializeServices() {
-    processEngineConfiguration = ((ProcessEngineImpl) processEngine).getProcessEngineConfiguration();
+    processEngineConfiguration =
+        ((ProcessEngineImpl) processEngine).getProcessEngineConfiguration();
     repositoryService = processEngine.getRepositoryService();
     runtimeService = processEngine.getRuntimeService();
     taskService = processEngine.getTaskService();
@@ -164,5 +154,4 @@ public abstract class ActivitiTestCase extends TestCase {
   public ActivitiMockSupport mockSupport() {
     return mockSupport;
   }
-
 }

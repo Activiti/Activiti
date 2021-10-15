@@ -18,12 +18,10 @@ package org.activiti.spring.test.taskassignment;
 
 import static java.util.Arrays.asList;
 
+import java.util.List;
 import org.activiti.engine.delegate.DelegateExecution;
 
-import java.util.List;
-
-/**
- */
+/** */
 public class FakeLdapService {
 
   public String findManagerForEmployee(String employee) {
@@ -46,5 +44,4 @@ public class FakeLdapService {
 
     return asList("management", "directors");
   }
-
 }

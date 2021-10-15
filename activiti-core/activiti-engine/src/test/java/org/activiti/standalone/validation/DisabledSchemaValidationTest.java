@@ -29,9 +29,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-/**
-
- */
+/** */
 public class DisabledSchemaValidationTest {
 
   protected ProcessEngine processEngine;
@@ -40,10 +38,11 @@ public class DisabledSchemaValidationTest {
 
   @Before
   public void setup() {
-    this.processEngine = new StandaloneInMemProcessEngineConfiguration()
-      .setProcessEngineName(this.getClass().getName())
-      .setJdbcUrl("jdbc:h2:mem:activiti-process-validation;DB_CLOSE_DELAY=1000")
-      .buildProcessEngine();
+    this.processEngine =
+        new StandaloneInMemProcessEngineConfiguration()
+            .setProcessEngineName(this.getClass().getName())
+            .setJdbcUrl("jdbc:h2:mem:activiti-process-validation;DB_CLOSE_DELAY=1000")
+            .buildProcessEngine();
     this.repositoryService = processEngine.getRepositoryService();
   }
 
@@ -64,12 +63,23 @@ public class DisabledSchemaValidationTest {
 
     // Should fail
     assertThatExceptionOfType(XMLException.class)
-      .isThrownBy(() -> repositoryService.createDeployment().addClasspathResource("org/activiti/standalone/validation/invalid_process_xsd_error.bpmn20.xml").deploy());
+        .isThrownBy(
+            () ->
+                repositoryService
+                    .createDeployment()
+                    .addClasspathResource(
+                        "org/activiti/standalone/validation/invalid_process_xsd_error.bpmn20.xml")
+                    .deploy());
 
     // Should fail with validation errors
     assertThatExceptionOfType(ActivitiException.class)
-      .isThrownBy(() -> repositoryService.createDeployment().addClasspathResource("org/activiti/standalone/validation/invalid_process_xsd_error.bpmn20.xml").disableSchemaValidation().deploy());
-
+        .isThrownBy(
+            () ->
+                repositoryService
+                    .createDeployment()
+                    .addClasspathResource(
+                        "org/activiti/standalone/validation/invalid_process_xsd_error.bpmn20.xml")
+                    .disableSchemaValidation()
+                    .deploy());
   }
-
 }

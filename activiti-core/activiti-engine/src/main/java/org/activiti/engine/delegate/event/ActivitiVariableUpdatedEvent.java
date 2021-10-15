@@ -15,14 +15,9 @@
  */
 package org.activiti.engine.delegate.event;
 
-/**
- * An {@link ActivitiVariableEvent} for an update variable event.
- */
+/** An {@link ActivitiVariableEvent} for an update variable event. */
 public interface ActivitiVariableUpdatedEvent extends ActivitiVariableEvent {
 
-    /**
-     * @return the previous value of the variable.
-     */
-    Object getVariablePreviousValue();
-
+  /** @return the previous value of the variable. */
+  Object getVariablePreviousValue();
 }

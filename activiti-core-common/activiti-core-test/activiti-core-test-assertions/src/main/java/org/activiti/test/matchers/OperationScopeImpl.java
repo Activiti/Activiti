@@ -17,44 +17,42 @@ package org.activiti.test.matchers;
 
 public class OperationScopeImpl implements OperationScope {
 
-    private String processInstanceId;
+  private String processInstanceId;
 
-    private String  taskId;
+  private String taskId;
 
-    public OperationScopeImpl(String processInstanceId,
-                              String taskId) {
-        this.processInstanceId = processInstanceId;
-        this.taskId = taskId;
-    }
+  public OperationScopeImpl(String processInstanceId, String taskId) {
+    this.processInstanceId = processInstanceId;
+    this.taskId = taskId;
+  }
 
-    public static OperationScope processInstanceScope(String processInstanceId) {
-        return new OperationScopeImpl(processInstanceId, null);
-    }
+  public static OperationScope processInstanceScope(String processInstanceId) {
+    return new OperationScopeImpl(processInstanceId, null);
+  }
 
-    public static OperationScope taskScope(String taskId) {
-        return new OperationScopeImpl(null, taskId);
-    }
+  public static OperationScope taskScope(String taskId) {
+    return new OperationScopeImpl(null, taskId);
+  }
 
-    public static OperationScope scope(String processInstanceId, String taskId) {
-        return new OperationScopeImpl(processInstanceId, taskId);
-    }
+  public static OperationScope scope(String processInstanceId, String taskId) {
+    return new OperationScopeImpl(processInstanceId, taskId);
+  }
 
-    public void setProcessInstanceId(String processInstanceId) {
-        this.processInstanceId = processInstanceId;
-    }
+  public void setProcessInstanceId(String processInstanceId) {
+    this.processInstanceId = processInstanceId;
+  }
 
-    @Override
-    public String getProcessInstanceId() {
-        return processInstanceId;
-    }
+  @Override
+  public String getProcessInstanceId() {
+    return processInstanceId;
+  }
 
-    public void setTaskId(String taskId) {
-        this.taskId = taskId;
-    }
+  public void setTaskId(String taskId) {
+    this.taskId = taskId;
+  }
 
-    @Override
-    public String getTaskId() {
-        return taskId;
-    }
-
+  @Override
+  public String getTaskId() {
+    return taskId;
+  }
 }

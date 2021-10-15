@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.test.mock;
 
 import javax.el.ArrayELResolver;
@@ -23,7 +22,6 @@ import javax.el.CompositeELResolver;
 import javax.el.ELResolver;
 import javax.el.ListELResolver;
 import javax.el.MapELResolver;
-
 import org.activiti.core.el.ELResolverReflectionBlockerDecorator;
 import org.activiti.engine.delegate.VariableScope;
 import org.activiti.engine.impl.el.ExpressionManager;
@@ -42,5 +40,4 @@ public class MockExpressionManager extends ExpressionManager {
     compositeElResolver.add(new ELResolverReflectionBlockerDecorator(new BeanELResolver()));
     return compositeElResolver;
   }
-
 }

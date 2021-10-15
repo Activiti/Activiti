@@ -20,9 +20,7 @@ import org.activiti.engine.ActivitiTaskAlreadyClaimedException;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 
-/**
-
- */
+/** */
 public class ClaimTaskCmd extends NeedsActiveTaskCmd<Void> {
 
   private static final long serialVersionUID = 1L;
@@ -66,5 +64,4 @@ public class ClaimTaskCmd extends NeedsActiveTaskCmd<Void> {
   protected String getSuspendedTaskException() {
     return "Cannot claim a suspended task";
   }
-
 }

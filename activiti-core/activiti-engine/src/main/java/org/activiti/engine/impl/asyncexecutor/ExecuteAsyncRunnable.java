@@ -33,10 +33,7 @@ import org.activiti.engine.runtime.Job;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
-
-
- */
+/** */
 public class ExecuteAsyncRunnable implements Runnable {
 
   private static Logger log = LoggerFactory.getLogger(ExecuteAsyncRunnable.class);
@@ -45,7 +42,8 @@ public class ExecuteAsyncRunnable implements Runnable {
   protected Job job;
   protected ProcessEngineConfigurationImpl processEngineConfiguration;
 
-  public ExecuteAsyncRunnable(String jobId, ProcessEngineConfigurationImpl processEngineConfiguration) {
+  public ExecuteAsyncRunnable(
+      String jobId, ProcessEngineConfigurationImpl processEngineConfiguration) {
     this.jobId = jobId;
     this.processEngineConfiguration = processEngineConfiguration;
   }
@@ -59,12 +57,16 @@ public class ExecuteAsyncRunnable implements Runnable {
   public void run() {
 
     if (job == null) {
-      job = processEngineConfiguration.getCommandExecutor().execute(new Command<JobEntity>() {
-        @Override
-        public JobEntity execute(CommandContext commandContext) {
-          return commandContext.getJobEntityManager().findById(jobId);
-        }
-      });
+      job =
+          processEngineConfiguration
+              .getCommandExecutor()
+              .execute(
+                  new Command<JobEntity>() {
+                    @Override
+                    public JobEntity execute(CommandContext commandContext) {
+                      return commandContext.getJobEntityManager().findById(jobId);
+                    }
+                  });
     }
 
     boolean lockNotNeededOrSuccess = lockJobIfNeeded();
@@ -73,7 +75,6 @@ public class ExecuteAsyncRunnable implements Runnable {
       executeJob();
       unlockJobIfNeeded();
     }
-
   }
 
   protected void executeJob() {
@@ -85,10 +86,14 @@ public class ExecuteAsyncRunnable implements Runnable {
       handleFailedJob(e);
 
       if (log.isDebugEnabled()) {
-        log.debug("Optimistic locking exception during job execution. If you have multiple async executors running against the same database, "
-            + "this exception means that this thread tried to acquire an exclusive job, which already was changed by another async executor thread."
-            + "This is expected behavior in a clustered environment. " + "You can ignore this message if you indeed have multiple job executor threads running against the same database. "
-            + "Exception message: {}", e.getMessage());
+        log.debug(
+            "Optimistic locking exception during job execution. If you have multiple async"
+                + " executors running against the same database, this exception means that this"
+                + " thread tried to acquire an exclusive job, which already was changed by another"
+                + " async executor thread.This is expected behavior in a clustered environment. You"
+                + " can ignore this message if you indeed have multiple job executor threads"
+                + " running against the same database. Exception message: {}",
+            e.getMessage());
       }
 
     } catch (Throwable exception) {
@@ -108,10 +113,14 @@ public class ExecuteAsyncRunnable implements Runnable {
 
     } catch (ActivitiOptimisticLockingException optimisticLockingException) {
       if (log.isDebugEnabled()) {
-        log.debug("Optimistic locking exception while unlocking the job. If you have multiple async executors running against the same database, "
-            + "this exception means that this thread tried to acquire an exclusive job, which already was changed by another async executor thread."
-            + "This is expected behavior in a clustered environment. " + "You can ignore this message if you indeed have multiple job executor acquisition threads running against the same database. "
-            + "Exception message: {}", optimisticLockingException.getMessage());
+        log.debug(
+            "Optimistic locking exception while unlocking the job. If you have multiple async"
+                + " executors running against the same database, this exception means that this"
+                + " thread tried to acquire an exclusive job, which already was changed by another"
+                + " async executor thread.This is expected behavior in a clustered environment. You"
+                + " can ignore this message if you indeed have multiple job executor acquisition"
+                + " threads running against the same database. Exception message: {}",
+            optimisticLockingException.getMessage());
       }
 
     } catch (Throwable t) {
@@ -120,8 +129,8 @@ public class ExecuteAsyncRunnable implements Runnable {
   }
 
   /**
-   * Returns true if lock succeeded, or no lock was needed.
-   * Returns false if locking was unsuccessfull.
+   * Returns true if lock succeeded, or no lock was needed. Returns false if locking was
+   * unsuccessfull.
    */
   protected boolean lockJobIfNeeded() {
     try {
@@ -131,7 +140,10 @@ public class ExecuteAsyncRunnable implements Runnable {
 
     } catch (Throwable lockException) {
       if (log.isDebugEnabled()) {
-        log.debug("Could not lock exclusive job. Unlocking job so it can be acquired again. Catched exception: " + lockException.getMessage());
+        log.debug(
+            "Could not lock exclusive job. Unlocking job so it can be acquired again. Catched"
+                + " exception: "
+                + lockException.getMessage());
       }
 
       // Release the job again so it can be acquired later or by another node
@@ -148,41 +160,61 @@ public class ExecuteAsyncRunnable implements Runnable {
     if (commandContext != null) {
       commandContext.getJobManager().unacquire(job);
     } else {
-      processEngineConfiguration.getCommandExecutor().execute(new Command<Void>() {
-        public Void execute(CommandContext commandContext) {
-          commandContext.getJobManager().unacquire(job);
-          return null;
-        }
-      });
+      processEngineConfiguration
+          .getCommandExecutor()
+          .execute(
+              new Command<Void>() {
+                public Void execute(CommandContext commandContext) {
+                  commandContext.getJobManager().unacquire(job);
+                  return null;
+                }
+              });
     }
   }
 
   protected void handleFailedJob(final Throwable exception) {
-    processEngineConfiguration.getCommandExecutor().execute(new Command<Void>() {
+    processEngineConfiguration
+        .getCommandExecutor()
+        .execute(
+            new Command<Void>() {
 
-      @Override
-      public Void execute(CommandContext commandContext) {
-        CommandConfig commandConfig = processEngineConfiguration.getCommandExecutor().getDefaultConfig().transactionRequiresNew();
-        FailedJobCommandFactory failedJobCommandFactory = commandContext.getFailedJobCommandFactory();
-        Command<Object> cmd = failedJobCommandFactory.getCommand(job.getId(), exception);
+              @Override
+              public Void execute(CommandContext commandContext) {
+                CommandConfig commandConfig =
+                    processEngineConfiguration
+                        .getCommandExecutor()
+                        .getDefaultConfig()
+                        .transactionRequiresNew();
+                FailedJobCommandFactory failedJobCommandFactory =
+                    commandContext.getFailedJobCommandFactory();
+                Command<Object> cmd = failedJobCommandFactory.getCommand(job.getId(), exception);
 
-        log.trace("Using FailedJobCommandFactory '" + failedJobCommandFactory.getClass() + "' and command of type '" + cmd.getClass() + "'");
-        processEngineConfiguration.getCommandExecutor().execute(commandConfig, cmd);
+                log.trace(
+                    "Using FailedJobCommandFactory '"
+                        + failedJobCommandFactory.getClass()
+                        + "' and command of type '"
+                        + cmd.getClass()
+                        + "'");
+                processEngineConfiguration.getCommandExecutor().execute(commandConfig, cmd);
 
-        // Dispatch an event, indicating job execution failed in a
-        // try-catch block, to prevent the original exception to be swallowed
-        if (commandContext.getEventDispatcher().isEnabled()) {
-          try {
-            commandContext.getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityExceptionEvent(ActivitiEventType.JOB_EXECUTION_FAILURE, job, exception));
-          } catch (Throwable ignore) {
-            log.warn("Exception occurred while dispatching job failure event, ignoring.", ignore);
-          }
-        }
+                // Dispatch an event, indicating job execution failed in a
+                // try-catch block, to prevent the original exception to be swallowed
+                if (commandContext.getEventDispatcher().isEnabled()) {
+                  try {
+                    commandContext
+                        .getEventDispatcher()
+                        .dispatchEvent(
+                            ActivitiEventBuilder.createEntityExceptionEvent(
+                                ActivitiEventType.JOB_EXECUTION_FAILURE, job, exception));
+                  } catch (Throwable ignore) {
+                    log.warn(
+                        "Exception occurred while dispatching job failure event, ignoring.",
+                        ignore);
+                  }
+                }
 
-        return null;
-      }
-
-    });
+                return null;
+              }
+            });
   }
-
 }

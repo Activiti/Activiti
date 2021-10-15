@@ -19,7 +19,6 @@ package org.activiti.engine.test.api.event;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.ByteArrayInputStream;
-
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventType;
@@ -31,49 +30,61 @@ import org.activiti.engine.task.Attachment;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
-/**
- * Test case for all {@link ActivitiEvent}s related to attachments.
- *
- */
+/** Test case for all {@link ActivitiEvent}s related to attachments. */
 public class AttachmentEventsTest extends PluggableActivitiTestCase {
 
   private TestActivitiEntityEventListener listener;
 
-  /**
-   * Test create, update and delete events of attachments on a task/process.
-   */
-  @Deployment(resources = { "org/activiti/engine/test/api/runtime/oneTaskProcess.bpmn20.xml" })
+  /** Test create, update and delete events of attachments on a task/process. */
+  @Deployment(resources = {"org/activiti/engine/test/api/runtime/oneTaskProcess.bpmn20.xml"})
   public void testAttachmentEntityEvents() throws Exception {
 
     if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
       ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
 
-      Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+      Task task =
+          taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
       assertThat(task).isNotNull();
 
       // Create link-attachment
-      Attachment attachment = taskService.createAttachment("test", task.getId(), processInstance.getId(), "attachment name", "description", "http://activiti.org");
+      Attachment attachment =
+          taskService.createAttachment(
+              "test",
+              task.getId(),
+              processInstance.getId(),
+              "attachment name",
+              "description",
+              "http://activiti.org");
       assertThat(attachment.getUserId()).isNull();
       assertThat(listener.getEventsReceived()).hasSize(2);
       ActivitiEntityEvent event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
       assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_CREATED);
       assertThat(event.getProcessInstanceId()).isEqualTo(processInstance.getId());
       assertThat(event.getExecutionId()).isEqualTo(processInstance.getId());
-      assertThat(event.getProcessDefinitionId()).isEqualTo(processInstance.getProcessDefinitionId());
+      assertThat(event.getProcessDefinitionId())
+          .isEqualTo(processInstance.getProcessDefinitionId());
       Attachment attachmentFromEvent = (Attachment) event.getEntity();
       assertThat(attachmentFromEvent.getId()).isEqualTo(attachment.getId());
       event = (ActivitiEntityEvent) listener.getEventsReceived().get(1);
       assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_INITIALIZED);
       assertThat(event.getProcessInstanceId()).isEqualTo(processInstance.getId());
       assertThat(event.getExecutionId()).isEqualTo(processInstance.getId());
-      assertThat(event.getProcessDefinitionId()).isEqualTo(processInstance.getProcessDefinitionId());
+      assertThat(event.getProcessDefinitionId())
+          .isEqualTo(processInstance.getProcessDefinitionId());
       attachmentFromEvent = (Attachment) event.getEntity();
       assertThat(attachmentFromEvent.getId()).isEqualTo(attachment.getId());
       listener.clearEventsReceived();
 
       // Create binary attachment
       Authentication.setAuthenticatedUserId("testuser");
-      attachment = taskService.createAttachment("test", task.getId(), processInstance.getId(), "attachment name", "description", new ByteArrayInputStream("test".getBytes()));
+      attachment =
+          taskService.createAttachment(
+              "test",
+              task.getId(),
+              processInstance.getId(),
+              "attachment name",
+              "description",
+              new ByteArrayInputStream("test".getBytes()));
       assertThat(attachment.getUserId()).isNotNull();
       assertThat(attachment.getUserId()).isEqualTo("testuser");
       assertThat(listener.getEventsReceived()).hasSize(2);
@@ -81,7 +92,8 @@ public class AttachmentEventsTest extends PluggableActivitiTestCase {
       assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_CREATED);
       assertThat(event.getProcessInstanceId()).isEqualTo(processInstance.getId());
       assertThat(event.getExecutionId()).isEqualTo(processInstance.getId());
-      assertThat(event.getProcessDefinitionId()).isEqualTo(processInstance.getProcessDefinitionId());
+      assertThat(event.getProcessDefinitionId())
+          .isEqualTo(processInstance.getProcessDefinitionId());
       attachmentFromEvent = (Attachment) event.getEntity();
       assertThat(attachmentFromEvent.getId()).isEqualTo(attachment.getId());
 
@@ -99,7 +111,8 @@ public class AttachmentEventsTest extends PluggableActivitiTestCase {
       assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_UPDATED);
       assertThat(event.getProcessInstanceId()).isEqualTo(processInstance.getId());
       assertThat(event.getExecutionId()).isEqualTo(processInstance.getId());
-      assertThat(event.getProcessDefinitionId()).isEqualTo(processInstance.getProcessDefinitionId());
+      assertThat(event.getProcessDefinitionId())
+          .isEqualTo(processInstance.getProcessDefinitionId());
       attachmentFromEvent = (Attachment) event.getEntity();
       assertThat(attachmentFromEvent.getId()).isEqualTo(attachment.getId());
       assertThat(attachmentFromEvent.getDescription()).isEqualTo("Description");
@@ -112,15 +125,14 @@ public class AttachmentEventsTest extends PluggableActivitiTestCase {
       assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_DELETED);
       assertThat(event.getProcessInstanceId()).isEqualTo(processInstance.getId());
       assertThat(event.getExecutionId()).isEqualTo(processInstance.getId());
-      assertThat(event.getProcessDefinitionId()).isEqualTo(processInstance.getProcessDefinitionId());
+      assertThat(event.getProcessDefinitionId())
+          .isEqualTo(processInstance.getProcessDefinitionId());
       attachmentFromEvent = (Attachment) event.getEntity();
       assertThat(attachmentFromEvent.getId()).isEqualTo(attachment.getId());
     }
   }
 
-  /**
-   * Test create, update and delete events of users.
-   */
+  /** Test create, update and delete events of users. */
   public void testAttachmentEntityEventsStandaloneTask() throws Exception {
     if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
       Task task = null;
@@ -130,7 +142,14 @@ public class AttachmentEventsTest extends PluggableActivitiTestCase {
         assertThat(task).isNotNull();
 
         // Create link-attachment
-        Attachment attachment = taskService.createAttachment("test", task.getId(), null, "attachment name", "description", "http://activiti.org");
+        Attachment attachment =
+            taskService.createAttachment(
+                "test",
+                task.getId(),
+                null,
+                "attachment name",
+                "description",
+                "http://activiti.org");
         assertThat(listener.getEventsReceived()).hasSize(2);
         ActivitiEntityEvent event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
         assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_CREATED);
@@ -144,7 +163,14 @@ public class AttachmentEventsTest extends PluggableActivitiTestCase {
         listener.clearEventsReceived();
 
         // Create binary attachment
-        attachment = taskService.createAttachment("test", task.getId(), null, "attachment name", "description", new ByteArrayInputStream("test".getBytes()));
+        attachment =
+            taskService.createAttachment(
+                "test",
+                task.getId(),
+                null,
+                "attachment name",
+                "description",
+                new ByteArrayInputStream("test".getBytes()));
         assertThat(listener.getEventsReceived()).hasSize(2);
         event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
         assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_CREATED);
@@ -203,7 +229,14 @@ public class AttachmentEventsTest extends PluggableActivitiTestCase {
         assertThat(task).isNotNull();
 
         // Create link-attachment
-        Attachment attachment = taskService.createAttachment("test", task.getId(), null, "attachment name", "description", "http://activiti.org");
+        Attachment attachment =
+            taskService.createAttachment(
+                "test",
+                task.getId(),
+                null,
+                "attachment name",
+                "description",
+                "http://activiti.org");
         listener.clearEventsReceived();
 
         // Delete task and historic task

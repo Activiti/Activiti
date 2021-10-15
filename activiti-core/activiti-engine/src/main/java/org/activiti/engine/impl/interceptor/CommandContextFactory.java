@@ -18,9 +18,7 @@ package org.activiti.engine.impl.interceptor;
 
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 
-/**
-
- */
+/** */
 public class CommandContextFactory {
 
   protected ProcessEngineConfigurationImpl processEngineConfiguration;
@@ -36,7 +34,8 @@ public class CommandContextFactory {
     return processEngineConfiguration;
   }
 
-  public void setProcessEngineConfiguration(ProcessEngineConfigurationImpl processEngineConfiguration) {
+  public void setProcessEngineConfiguration(
+      ProcessEngineConfigurationImpl processEngineConfiguration) {
     this.processEngineConfiguration = processEngineConfiguration;
   }
 }

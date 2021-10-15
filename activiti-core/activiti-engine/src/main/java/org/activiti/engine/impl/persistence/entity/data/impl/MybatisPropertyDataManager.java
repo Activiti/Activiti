@@ -17,17 +17,15 @@
 package org.activiti.engine.impl.persistence.entity.data.impl;
 
 import java.util.List;
-
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.persistence.entity.PropertyEntity;
 import org.activiti.engine.impl.persistence.entity.PropertyEntityImpl;
 import org.activiti.engine.impl.persistence.entity.data.AbstractDataManager;
 import org.activiti.engine.impl.persistence.entity.data.PropertyDataManager;
 
-/**
-
- */
-public class MybatisPropertyDataManager extends AbstractDataManager<PropertyEntity> implements PropertyDataManager {
+/** */
+public class MybatisPropertyDataManager extends AbstractDataManager<PropertyEntity>
+    implements PropertyDataManager {
 
   public MybatisPropertyDataManager(ProcessEngineConfigurationImpl processEngineConfiguration) {
     super(processEngineConfiguration);
@@ -48,5 +46,4 @@ public class MybatisPropertyDataManager extends AbstractDataManager<PropertyEnti
   public List<PropertyEntity> findAll() {
     return getDbSqlSession().selectList("selectProperties");
   }
-
 }

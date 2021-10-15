@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.scripting;
 
 import static java.util.Collections.singletonList;
@@ -22,14 +21,10 @@ import static java.util.Collections.unmodifiableList;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineFactory;
 
-/**
- * Factory to create {@link JuelScriptEngine}s.
- *
- */
+/** Factory to create {@link JuelScriptEngine}s. */
 public class JuelScriptEngineFactory implements ScriptEngineFactory {
 
   private static List<String> names;
@@ -83,15 +78,15 @@ public class JuelScriptEngineFactory implements ScriptEngineFactory {
     for (int i = 0; i < length; i++) {
       char c = toDisplay.charAt(i);
       switch (c) {
-      case '"':
-        stringBuffer.append("\\\"");
-        break;
-      case '\\':
-        stringBuffer.append("\\\\");
-        break;
-      default:
-        stringBuffer.append(c);
-        break;
+        case '"':
+          stringBuffer.append("\\\"");
+          break;
+        case '\\':
+          stringBuffer.append("\\\\");
+          break;
+        default:
+          stringBuffer.append(c);
+          break;
       }
     }
     stringBuffer.append("\")");
@@ -132,5 +127,4 @@ public class JuelScriptEngineFactory implements ScriptEngineFactory {
   public ScriptEngine getScriptEngine() {
     return new JuelScriptEngine(this);
   }
-
 }

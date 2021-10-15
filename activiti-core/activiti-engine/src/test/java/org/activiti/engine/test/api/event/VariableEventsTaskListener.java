@@ -29,5 +29,4 @@ public class VariableEventsTaskListener implements TaskListener {
     delegateTask.setVariableLocal("variable", 456);
     delegateTask.removeVariableLocal("variable");
   }
-
 }

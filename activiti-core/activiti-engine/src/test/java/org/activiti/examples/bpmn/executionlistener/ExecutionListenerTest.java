@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.examples.bpmn.executionlistener;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -22,7 +21,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
@@ -30,34 +28,42 @@ import org.activiti.engine.test.Deployment;
 import org.activiti.examples.bpmn.executionlistener.CurrentActivityExecutionListener.CurrentActivity;
 import org.activiti.examples.bpmn.executionlistener.RecorderExecutionListener.RecordedEvent;
 
-/**
-
- */
+/** */
 public class ExecutionListenerTest extends PluggableActivitiTestCase {
 
-  @Deployment(resources = { "org/activiti/examples/bpmn/executionlistener/ExecutionListenersProcess.bpmn20.xml" })
+  @Deployment(
+      resources = {
+        "org/activiti/examples/bpmn/executionlistener/ExecutionListenersProcess.bpmn20.xml"
+      })
   public void testExecutionListenersOnAllPossibleElements() {
     RecorderExecutionListener.clear();
 
     // Process start executionListener will have executionListener class
     // that sets 2 variables
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("executionListenersProcess", "businessKey123");
+    ProcessInstance processInstance =
+        runtimeService.startProcessInstanceByKey("executionListenersProcess", "businessKey123");
 
-    String varSetInExecutionListener = (String) runtimeService.getVariable(processInstance.getId(), "variableSetInExecutionListener");
+    String varSetInExecutionListener =
+        (String)
+            runtimeService.getVariable(processInstance.getId(), "variableSetInExecutionListener");
     assertThat(varSetInExecutionListener).isNotNull();
     assertThat(varSetInExecutionListener).isEqualTo("firstValue");
 
     // Check if business key was available in execution listener
-    String businessKey = (String) runtimeService.getVariable(processInstance.getId(), "businessKeyInExecution");
+    String businessKey =
+        (String) runtimeService.getVariable(processInstance.getId(), "businessKeyInExecution");
     assertThat(businessKey).isNotNull();
     assertThat(businessKey).isEqualTo("businessKey123");
 
     // Transition take executionListener will set 2 variables
-    Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+    Task task =
+        taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     assertThat(task).isNotNull();
     taskService.complete(task.getId());
 
-    varSetInExecutionListener = (String) runtimeService.getVariable(processInstance.getId(), "variableSetInExecutionListener");
+    varSetInExecutionListener =
+        (String)
+            runtimeService.getVariable(processInstance.getId(), "variableSetInExecutionListener");
 
     assertThat(varSetInExecutionListener).isNotNull();
     assertThat(varSetInExecutionListener).isEqualTo("secondValue");
@@ -71,7 +77,9 @@ public class ExecutionListenerTest extends PluggableActivitiTestCase {
 
     // First usertask uses a method-expression as executionListener:
     // ${myPojo.myMethod(execution.eventName)}
-    ExampleExecutionListenerPojo pojoVariable = (ExampleExecutionListenerPojo) runtimeService.getVariable(processInstance.getId(), "myPojo");
+    ExampleExecutionListenerPojo pojoVariable =
+        (ExampleExecutionListenerPojo)
+            runtimeService.getVariable(processInstance.getId(), "myPojo");
     assertThat(pojoVariable.getReceivedEventName()).isNotNull();
     assertThat(pojoVariable.getReceivedEventName()).isEqualTo("end");
 
@@ -87,11 +95,15 @@ public class ExecutionListenerTest extends PluggableActivitiTestCase {
     assertThat(event.getParameter()).isEqualTo("End Process Listener");
   }
 
-  @Deployment(resources = { "org/activiti/examples/bpmn/executionlistener/ExecutionListenersStartEndEvent.bpmn20.xml" })
+  @Deployment(
+      resources = {
+        "org/activiti/examples/bpmn/executionlistener/ExecutionListenersStartEndEvent.bpmn20.xml"
+      })
   public void testExecutionListenersOnStartEndEvents() {
     RecorderExecutionListener.clear();
 
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("executionListenersProcess");
+    ProcessInstance processInstance =
+        runtimeService.startProcessInstanceByKey("executionListenersProcess");
     assertProcessEnded(processInstance.getId());
 
     List<RecordedEvent> recordedEvents = RecorderExecutionListener.getRecordedEvents();
@@ -116,15 +128,18 @@ public class ExecutionListenerTest extends PluggableActivitiTestCase {
     assertThat(recordedEvents.get(3).getActivityName()).isEqualTo("End Event");
     assertThat(recordedEvents.get(3).getParameter()).isEqualTo("End Event Listener");
     assertThat(recordedEvents.get(3).getEventName()).isEqualTo("start");
-
   }
 
-  @Deployment(resources = { "org/activiti/examples/bpmn/executionlistener/ExecutionListenersFieldInjectionProcess.bpmn20.xml" })
+  @Deployment(
+      resources = {
+        "org/activiti/examples/bpmn/executionlistener/ExecutionListenersFieldInjectionProcess.bpmn20.xml"
+      })
   public void testExecutionListenerFieldInjection() {
     Map<String, Object> variables = new HashMap<String, Object>();
     variables.put("myVar", "listening!");
 
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("executionListenersProcess", variables);
+    ProcessInstance processInstance =
+        runtimeService.startProcessInstanceByKey("executionListenersProcess", variables);
 
     Object varSetByListener = runtimeService.getVariable(processInstance.getId(), "var");
     assertThat(varSetByListener).isNotNull();
@@ -134,15 +149,20 @@ public class ExecutionListenerTest extends PluggableActivitiTestCase {
     assertThat(varSetByListener).isEqualTo("Yes, I am listening!");
   }
 
-  @Deployment(resources = { "org/activiti/examples/bpmn/executionlistener/ExecutionListenersCurrentActivity.bpmn20.xml" })
+  @Deployment(
+      resources = {
+        "org/activiti/examples/bpmn/executionlistener/ExecutionListenersCurrentActivity.bpmn20.xml"
+      })
   public void testExecutionListenerCurrentActivity() {
 
     CurrentActivityExecutionListener.clear();
 
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("executionListenersProcess");
+    ProcessInstance processInstance =
+        runtimeService.startProcessInstanceByKey("executionListenersProcess");
     assertProcessEnded(processInstance.getId());
 
-    List<CurrentActivity> currentActivities = CurrentActivityExecutionListener.getCurrentActivities();
+    List<CurrentActivity> currentActivities =
+        CurrentActivityExecutionListener.getCurrentActivities();
     assertThat(currentActivities).hasSize(3);
 
     assertThat(currentActivities.get(0).getActivityId()).isEqualTo("theStart");
@@ -155,11 +175,15 @@ public class ExecutionListenerTest extends PluggableActivitiTestCase {
     assertThat(currentActivities.get(2).getActivityName()).isEqualTo("End Event");
   }
 
-  @Deployment(resources = { "org/activiti/examples/bpmn/executionlistener/ExecutionListenersForSubprocessStartEndEvent.bpmn20.xml" })
+  @Deployment(
+      resources = {
+        "org/activiti/examples/bpmn/executionlistener/ExecutionListenersForSubprocessStartEndEvent.bpmn20.xml"
+      })
   public void testExecutionListenersForSubprocessStartEndEvents() {
     RecorderExecutionListener.clear();
 
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("executionListenersProcess");
+    ProcessInstance processInstance =
+        runtimeService.startProcessInstanceByKey("executionListenersProcess");
 
     List<RecordedEvent> recordedEvents = RecorderExecutionListener.getRecordedEvents();
     assertThat(recordedEvents).hasSize(1);

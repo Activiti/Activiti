@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.test.transactions;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -26,60 +25,60 @@ import org.activiti.engine.impl.delegate.ActivityBehavior;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.test.Deployment;
 
-/**
-
- */
+/** */
 public class TransactionRollbackTest extends PluggableActivitiTestCase {
 
-    public static class Buzzz implements ActivityBehavior {
+  public static class Buzzz implements ActivityBehavior {
 
-        private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-        @Override
-        public void execute(DelegateExecution execution) {
-            throw new ActivitiException("Buzzz");
-        }
+    @Override
+    public void execute(DelegateExecution execution) {
+      throw new ActivitiException("Buzzz");
     }
+  }
 
-    public static class Fizz implements ActivityBehavior {
+  public static class Fizz implements ActivityBehavior {
 
-        private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-        @Override
-        public void execute(DelegateExecution execution) {
-            throw new Error("Fizz");
-        }
+    @Override
+    public void execute(DelegateExecution execution) {
+      throw new Error("Fizz");
     }
+  }
 
-    @Deployment
-    public void testRollback() {
-        assertThatExceptionOfType(Exception.class)
-            .as("Starting the process instance should throw an exception")
-            .isThrownBy(() -> runtimeService.startProcessInstanceByKey("RollbackProcess"))
-            .withMessage("Buzzz");
+  @Deployment
+  public void testRollback() {
+    assertThatExceptionOfType(Exception.class)
+        .as("Starting the process instance should throw an exception")
+        .isThrownBy(() -> runtimeService.startProcessInstanceByKey("RollbackProcess"))
+        .withMessage("Buzzz");
 
-        assertThat(runtimeService.createExecutionQuery().count()).isEqualTo(0);
-    }
+    assertThat(runtimeService.createExecutionQuery().count()).isEqualTo(0);
+  }
 
-    @Deployment(
-        resources = {"org/activiti/engine/test/transactions/trivial.bpmn20.xml",
-            "org/activiti/engine/test/transactions/rollbackAfterSubProcess.bpmn20.xml"})
-    public void testRollbackAfterSubProcess() {
-        assertThatExceptionOfType(Exception.class)
-            .as("Starting the process instance should throw an exception")
-            .isThrownBy(() -> runtimeService.startProcessInstanceByKey("RollbackAfterSubProcess"))
-            .withMessage("Buzzz");
+  @Deployment(
+      resources = {
+        "org/activiti/engine/test/transactions/trivial.bpmn20.xml",
+        "org/activiti/engine/test/transactions/rollbackAfterSubProcess.bpmn20.xml"
+      })
+  public void testRollbackAfterSubProcess() {
+    assertThatExceptionOfType(Exception.class)
+        .as("Starting the process instance should throw an exception")
+        .isThrownBy(() -> runtimeService.startProcessInstanceByKey("RollbackAfterSubProcess"))
+        .withMessage("Buzzz");
 
-        assertThat(runtimeService.createExecutionQuery().count()).isEqualTo(0);
-    }
+    assertThat(runtimeService.createExecutionQuery().count()).isEqualTo(0);
+  }
 
-    @Deployment
-    public void testRollbackAfterError() {
-        assertThatExceptionOfType(Throwable.class)
-            .as("Starting the process instance should throw an error")
-            .isThrownBy(() -> runtimeService.startProcessInstanceByKey("RollbackProcess"))
-            .withMessage("Fizz");
+  @Deployment
+  public void testRollbackAfterError() {
+    assertThatExceptionOfType(Throwable.class)
+        .as("Starting the process instance should throw an error")
+        .isThrownBy(() -> runtimeService.startProcessInstanceByKey("RollbackProcess"))
+        .withMessage("Fizz");
 
-        assertThat(runtimeService.createExecutionQuery().count()).isEqualTo(0);
-    }
+    assertThat(runtimeService.createExecutionQuery().count()).isEqualTo(0);
+  }
 }

@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.test.bpmn.servicetask;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.activiti.engine.history.HistoricVariableInstance;
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
@@ -29,12 +28,7 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
-
-
-/**
-
- */
+/** */
 public class DynamicServiceTaskTest extends PluggableActivitiTestCase {
 
   @Deployment
@@ -43,9 +37,11 @@ public class DynamicServiceTaskTest extends PluggableActivitiTestCase {
     Map<String, Object> varMap = new HashMap<String, Object>();
     varMap.put("count", 0);
     varMap.put("count2", 0);
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("dynamicServiceTask", varMap);
+    ProcessInstance processInstance =
+        runtimeService.startProcessInstanceByKey("dynamicServiceTask", varMap);
 
-    Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+    Task task =
+        taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     taskService.complete(task.getId());
 
     assertThat(runtimeService.getVariable(processInstance.getId(), "count")).isEqualTo(1);
@@ -63,7 +59,9 @@ public class DynamicServiceTaskTest extends PluggableActivitiTestCase {
     processInstance = runtimeService.startProcessInstanceByKey("dynamicServiceTask", varMap);
 
     String processDefinitionId = processInstance.getProcessDefinitionId();
-    ObjectNode infoNode = dynamicBpmnService.changeServiceTaskClassName("service", "org.activiti.engine.test.bpmn.servicetask.DummyServiceTask2");
+    ObjectNode infoNode =
+        dynamicBpmnService.changeServiceTaskClassName(
+            "service", "org.activiti.engine.test.bpmn.servicetask.DummyServiceTask2");
     dynamicBpmnService.saveProcessDefinitionInfo(processDefinitionId, infoNode);
 
     task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
@@ -84,16 +82,20 @@ public class DynamicServiceTaskTest extends PluggableActivitiTestCase {
     DummyTestBean testBean = new DummyTestBean();
     Map<String, Object> varMap = new HashMap<String, Object>();
     varMap.put("bean", testBean);
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("dynamicServiceTask", varMap);
+    ProcessInstance processInstance =
+        runtimeService.startProcessInstanceByKey("dynamicServiceTask", varMap);
 
-    Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+    Task task =
+        taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     taskService.complete(task.getId());
 
     if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
-      HistoricVariableInstance historicVariableInstance = historyService.createHistoricVariableInstanceQuery()
-          .processInstanceId(processInstance.getId())
-          .variableName("executed")
-          .singleResult();
+      HistoricVariableInstance historicVariableInstance =
+          historyService
+              .createHistoricVariableInstanceQuery()
+              .processInstanceId(processInstance.getId())
+              .variableName("executed")
+              .singleResult();
       assertThat(historicVariableInstance).isNotNull();
       assertThat((Boolean) historicVariableInstance.getValue()).isTrue();
     }
@@ -107,17 +109,20 @@ public class DynamicServiceTaskTest extends PluggableActivitiTestCase {
     processInstance = runtimeService.startProcessInstanceByKey("dynamicServiceTask", varMap);
 
     String processDefinitionId = processInstance.getProcessDefinitionId();
-    ObjectNode infoNode = dynamicBpmnService.changeServiceTaskExpression("service", "${bean2.test(execution)}");
+    ObjectNode infoNode =
+        dynamicBpmnService.changeServiceTaskExpression("service", "${bean2.test(execution)}");
     dynamicBpmnService.saveProcessDefinitionInfo(processDefinitionId, infoNode);
 
     task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     taskService.complete(task.getId());
 
     if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
-      HistoricVariableInstance historicVariableInstance = historyService.createHistoricVariableInstanceQuery()
-          .processInstanceId(processInstance.getId())
-          .variableName("executed")
-          .singleResult();
+      HistoricVariableInstance historicVariableInstance =
+          historyService
+              .createHistoricVariableInstanceQuery()
+              .processInstanceId(processInstance.getId())
+              .variableName("executed")
+              .singleResult();
       assertThat(historicVariableInstance).isNotNull();
       assertThat((Boolean) historicVariableInstance.getValue()).isTrue();
     }
@@ -131,16 +136,20 @@ public class DynamicServiceTaskTest extends PluggableActivitiTestCase {
     DummyTestDelegateBean testBean = new DummyTestDelegateBean();
     Map<String, Object> varMap = new HashMap<String, Object>();
     varMap.put("bean", testBean);
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("dynamicServiceTask", varMap);
+    ProcessInstance processInstance =
+        runtimeService.startProcessInstanceByKey("dynamicServiceTask", varMap);
 
-    Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+    Task task =
+        taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     taskService.complete(task.getId());
 
     if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
-      HistoricVariableInstance historicVariableInstance = historyService.createHistoricVariableInstanceQuery()
-          .processInstanceId(processInstance.getId())
-          .variableName("executed")
-          .singleResult();
+      HistoricVariableInstance historicVariableInstance =
+          historyService
+              .createHistoricVariableInstanceQuery()
+              .processInstanceId(processInstance.getId())
+              .variableName("executed")
+              .singleResult();
       assertThat(historicVariableInstance).isNotNull();
       assertThat((Boolean) historicVariableInstance.getValue()).isTrue();
     }
@@ -154,17 +163,20 @@ public class DynamicServiceTaskTest extends PluggableActivitiTestCase {
     processInstance = runtimeService.startProcessInstanceByKey("dynamicServiceTask", varMap);
 
     String processDefinitionId = processInstance.getProcessDefinitionId();
-    ObjectNode infoNode = dynamicBpmnService.changeServiceTaskDelegateExpression("service", "${bean2}");
+    ObjectNode infoNode =
+        dynamicBpmnService.changeServiceTaskDelegateExpression("service", "${bean2}");
     dynamicBpmnService.saveProcessDefinitionInfo(processDefinitionId, infoNode);
 
     task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     taskService.complete(task.getId());
 
     if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
-      HistoricVariableInstance historicVariableInstance = historyService.createHistoricVariableInstanceQuery()
-          .processInstanceId(processInstance.getId())
-          .variableName("executed")
-          .singleResult();
+      HistoricVariableInstance historicVariableInstance =
+          historyService
+              .createHistoricVariableInstanceQuery()
+              .processInstanceId(processInstance.getId())
+              .variableName("executed")
+              .singleResult();
       assertThat(historicVariableInstance).isNotNull();
       assertThat((Boolean) historicVariableInstance.getValue()).isTrue();
     }

@@ -14,26 +14,22 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.variable;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.impl.interceptor.Session;
 
-/**
-
- */
+/** */
 @Internal
 public interface EntityManagerSession extends Session {
   /**
    * Get an {@link EntityManager} instance associated with this session.
    *
-   * @throws ActivitiException
-   *           when no {@link EntityManagerFactory} instance is configured for the process engine.
+   * @throws ActivitiException when no {@link EntityManagerFactory} instance is configured for the
+   *     process engine.
    */
   EntityManager getEntityManager();
 }

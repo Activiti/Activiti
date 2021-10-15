@@ -17,16 +17,13 @@ package org.activiti.engine.impl.event.logger.handler;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.delegate.event.ActivitiEntityWithVariablesEvent;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.EventLogEntryEntity;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 
-/**
-
- */
+/** */
 public class TaskCompletedEventHandler extends AbstractTaskEventHandler {
 
   @Override
@@ -41,11 +38,16 @@ public class TaskCompletedEventHandler extends AbstractTaskEventHandler {
     putInMapIfNotNull(data, Fields.DURATION, duration);
 
     if (event instanceof ActivitiEntityWithVariablesEvent) {
-      ActivitiEntityWithVariablesEvent activitiEntityWithVariablesEvent = (ActivitiEntityWithVariablesEvent) event;
-      if (activitiEntityWithVariablesEvent.getVariables() != null && !activitiEntityWithVariablesEvent.getVariables().isEmpty()) {
+      ActivitiEntityWithVariablesEvent activitiEntityWithVariablesEvent =
+          (ActivitiEntityWithVariablesEvent) event;
+      if (activitiEntityWithVariablesEvent.getVariables() != null
+          && !activitiEntityWithVariablesEvent.getVariables().isEmpty()) {
         Map<String, Object> variableMap = new HashMap<String, Object>();
         for (Object variableName : activitiEntityWithVariablesEvent.getVariables().keySet()) {
-          putInMapIfNotNull(variableMap, (String) variableName, activitiEntityWithVariablesEvent.getVariables().get(variableName));
+          putInMapIfNotNull(
+              variableMap,
+              (String) variableName,
+              activitiEntityWithVariablesEvent.getVariables().get(variableName));
         }
         if (activitiEntityWithVariablesEvent.isLocalScope()) {
           putInMapIfNotNull(data, Fields.LOCAL_VARIABLES, variableMap);
@@ -53,10 +55,13 @@ public class TaskCompletedEventHandler extends AbstractTaskEventHandler {
           putInMapIfNotNull(data, Fields.VARIABLES, variableMap);
         }
       }
-
     }
 
-    return createEventLogEntry(task.getProcessDefinitionId(), task.getProcessInstanceId(), task.getExecutionId(), task.getId(), data);
+    return createEventLogEntry(
+        task.getProcessDefinitionId(),
+        task.getProcessInstanceId(),
+        task.getExecutionId(),
+        task.getId(),
+        data);
   }
-
 }

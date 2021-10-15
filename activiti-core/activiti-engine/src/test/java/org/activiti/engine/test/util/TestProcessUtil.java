@@ -22,14 +22,13 @@ import org.activiti.bpmn.model.SequenceFlow;
 import org.activiti.bpmn.model.StartEvent;
 import org.activiti.bpmn.model.UserTask;
 
-/**
-
- */
+/** */
 public class TestProcessUtil {
 
   /**
-   * Since the 'one task process' is used everywhere the actual process content doesn't matter, instead of copying around the BPMN 2.0 xml one could use this method which gives a {@link BpmnModel}
-   * version of the same process back.
+   * Since the 'one task process' is used everywhere the actual process content doesn't matter,
+   * instead of copying around the BPMN 2.0 xml one could use this method which gives a {@link
+   * BpmnModel} version of the same process back.
    */
   public static BpmnModel createOneTaskBpmnModel() {
     BpmnModel model = new BpmnModel();
@@ -97,5 +96,4 @@ public class TestProcessUtil {
 
     return model;
   }
-
 }

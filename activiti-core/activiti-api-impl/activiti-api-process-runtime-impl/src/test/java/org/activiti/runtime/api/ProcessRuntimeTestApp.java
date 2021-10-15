@@ -30,37 +30,37 @@ import org.springframework.context.annotation.Bean;
 @SpringBootApplication
 public class ProcessRuntimeTestApp {
 
-    public static void main(String[] args) {
-        SpringApplication.run(ProcessRuntimeTestApp.class);
-    }
+  public static void main(String[] args) {
+    SpringApplication.run(ProcessRuntimeTestApp.class);
+  }
 
-    @Bean
-    public RepositoryService repositoryService() {
-        return mock(RepositoryService.class);
-    }
+  @Bean
+  public RepositoryService repositoryService() {
+    return mock(RepositoryService.class);
+  }
 
-    @Bean
-    public RuntimeService runtimeService() {
-        return mock(RuntimeService.class);
-    }
+  @Bean
+  public RuntimeService runtimeService() {
+    return mock(RuntimeService.class);
+  }
 
-    @Bean
-    public ManagementService managementService() {
-        return mock(ManagementService.class);
-    }
+  @Bean
+  public ManagementService managementService() {
+    return mock(ManagementService.class);
+  }
 
-    @Bean
-    public UserGroupManager userGroupManager() {
-        return mock(UserGroupManager.class);
-    }
+  @Bean
+  public UserGroupManager userGroupManager() {
+    return mock(UserGroupManager.class);
+  }
 
-    @Bean
-    public SecurityManager securityManager() {
-        return mock(SecurityManager.class);
-    }
+  @Bean
+  public SecurityManager securityManager() {
+    return mock(SecurityManager.class);
+  }
 
-    @Bean
-    public ProcessSecurityPoliciesManager securityPolicyManager() {
-        return mock(ProcessSecurityPoliciesManager.class);
-    }
+  @Bean
+  public ProcessSecurityPoliciesManager securityPolicyManager() {
+    return mock(ProcessSecurityPoliciesManager.class);
+  }
 }

@@ -14,18 +14,14 @@
  * limitations under the License.
  */
 
-
 package org.activiti.standalone.jpa;
 
 import java.util.Date;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
-/**
-
- */
+/** */
 @Entity(name = "DATE_ID_ENTITY")
 public class DateIdJPAEntity {
 
@@ -40,5 +36,4 @@ public class DateIdJPAEntity {
   public void setDateId(Date dateId) {
     this.dateId = dateId;
   }
-
 }

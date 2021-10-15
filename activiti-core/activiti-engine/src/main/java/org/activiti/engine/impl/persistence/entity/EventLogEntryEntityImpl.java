@@ -18,12 +18,9 @@ package org.activiti.engine.impl.persistence.entity;
 
 import java.util.Date;
 
-/**
- * An event log entry can only be inserted (and maybe deleted).
- *
-
- */
-public class EventLogEntryEntityImpl extends AbstractEntityNoRevision implements EventLogEntryEntity {
+/** An event log entry can only be inserted (and maybe deleted). */
+public class EventLogEntryEntityImpl extends AbstractEntityNoRevision
+    implements EventLogEntryEntity {
 
   protected long logNumber; // cant use id here, it would clash with entity
   protected String type;
@@ -38,8 +35,7 @@ public class EventLogEntryEntityImpl extends AbstractEntityNoRevision implements
   protected String lockTime;
   protected int isProcessed;
 
-  public EventLogEntryEntityImpl() {
-  }
+  public EventLogEntryEntityImpl() {}
 
   @Override
   public Object getPersistentState() {
@@ -146,5 +142,4 @@ public class EventLogEntryEntityImpl extends AbstractEntityNoRevision implements
   public String toString() {
     return timeStamp.toString() + " : " + type;
   }
-
 }

@@ -21,14 +21,17 @@ import org.activiti.engine.impl.persistence.entity.integration.IntegrationContex
 
 public class RetrieveIntegrationContextsCmd implements Command<IntegrationContextEntity> {
 
-    private String integrationContextId;
+  private String integrationContextId;
 
-    public RetrieveIntegrationContextsCmd(String integrationContextId) {
-        this.integrationContextId = integrationContextId;
-    }
+  public RetrieveIntegrationContextsCmd(String integrationContextId) {
+    this.integrationContextId = integrationContextId;
+  }
 
-    @Override
-    public IntegrationContextEntity execute(CommandContext commandContext) {
-        return commandContext.getProcessEngineConfiguration().getIntegrationContextManager().findById(integrationContextId);
-    }
+  @Override
+  public IntegrationContextEntity execute(CommandContext commandContext) {
+    return commandContext
+        .getProcessEngineConfiguration()
+        .getIntegrationContextManager()
+        .findById(integrationContextId);
+  }
 }

@@ -17,7 +17,6 @@
 package org.activiti.engine.impl.cmd;
 
 import java.io.Serializable;
-
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
@@ -27,10 +26,7 @@ import org.activiti.engine.runtime.Job;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
-
-
- */
+/** */
 public class ExecuteAsyncJobCmd implements Command<Object>, Serializable {
 
   private static final long serialVersionUID = 1L;
@@ -50,15 +46,19 @@ public class ExecuteAsyncJobCmd implements Command<Object>, Serializable {
     }
 
     // We need to refetch the job, as it could have been deleted by another concurrent job
-    // For exampel: an embedded subprocess with a couple of async tasks and a timer on the boundary of the subprocess
-    // when the timer fires, all executions and thus also the jobs inside of the embedded subprocess are destroyed.
-    // However, the async task jobs could already have been fetched and put in the queue.... while in reality they have been deleted.
+    // For exampel: an embedded subprocess with a couple of async tasks and a timer on the boundary
+    // of the subprocess
+    // when the timer fires, all executions and thus also the jobs inside of the embedded subprocess
+    // are destroyed.
+    // However, the async task jobs could already have been fetched and put in the queue.... while
+    // in reality they have been deleted.
     // A refetch is thus needed here to be sure that it exists for this transaction.
 
     Job job = commandContext.getJobEntityManager().findById(jobId);
     if (job == null) {
-      log.debug("Job does not exist anymore and will not be executed. It has most likely been deleted "
-          + "as part of another concurrent part of the process instance.");
+      log.debug(
+          "Job does not exist anymore and will not be executed. It has most likely been deleted "
+              + "as part of another concurrent part of the process instance.");
       return null;
     }
 
@@ -69,8 +69,10 @@ public class ExecuteAsyncJobCmd implements Command<Object>, Serializable {
     commandContext.getJobManager().execute(job);
 
     if (commandContext.getEventDispatcher().isEnabled()) {
-      commandContext.getEventDispatcher().dispatchEvent(
-          ActivitiEventBuilder.createEntityEvent(ActivitiEventType.JOB_EXECUTION_SUCCESS, job));
+      commandContext
+          .getEventDispatcher()
+          .dispatchEvent(
+              ActivitiEventBuilder.createEntityEvent(ActivitiEventType.JOB_EXECUTION_SUCCESS, job));
     }
 
     return null;

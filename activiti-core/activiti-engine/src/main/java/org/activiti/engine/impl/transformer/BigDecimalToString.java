@@ -19,18 +19,12 @@ package org.activiti.engine.impl.transformer;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 
-/**
- * Transforms a {@link BigDecimal} to a {@link String}
- *
-
- */
+/** Transforms a {@link BigDecimal} to a {@link String} */
 public class BigDecimalToString extends AbstractTransformer {
 
   protected DecimalFormat format = new DecimalFormat();
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   protected Object primTransform(Object anObject) throws Exception {
     return format.format((BigDecimal) anObject);

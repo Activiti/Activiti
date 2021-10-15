@@ -21,28 +21,33 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.management.TablePage;
 import org.activiti.engine.task.Task;
 
-/**
-
- */
+/** */
 public class TablePageQueryTest extends PluggableActivitiTestCase {
 
   public void testGetTablePage() {
     String tablePrefix = processEngineConfiguration.getDatabaseTablePrefix();
     List<String> taskIds = generateDummyTasks(20);
 
-    TablePage tablePage = managementService.createTablePageQuery().tableName(tablePrefix + "ACT_RU_TASK").listPage(0, 5);
+    TablePage tablePage =
+        managementService
+            .createTablePageQuery()
+            .tableName(tablePrefix + "ACT_RU_TASK")
+            .listPage(0, 5);
 
     assertThat(tablePage.getFirstResult()).isEqualTo(0);
     assertThat(tablePage.getSize()).isEqualTo(5);
     assertThat(tablePage.getRows()).hasSize(5);
     assertThat(tablePage.getTotal()).isEqualTo(20);
 
-    tablePage = managementService.createTablePageQuery().tableName(tablePrefix + "ACT_RU_TASK").listPage(14, 10);
+    tablePage =
+        managementService
+            .createTablePageQuery()
+            .tableName(tablePrefix + "ACT_RU_TASK")
+            .listPage(14, 10);
 
     assertThat(tablePage.getFirstResult()).isEqualTo(14);
     assertThat(tablePage.getSize()).isEqualTo(6);
@@ -57,13 +62,23 @@ public class TablePageQueryTest extends PluggableActivitiTestCase {
     List<String> taskIds = generateDummyTasks(15);
 
     // With an ascending sort
-    TablePage tablePage = managementService.createTablePageQuery().tableName(tablePrefix + "ACT_RU_TASK").orderAsc("NAME_").listPage(1, 7);
-    String[] expectedTaskNames = new String[] { "B", "C", "D", "E", "F", "G", "H" };
+    TablePage tablePage =
+        managementService
+            .createTablePageQuery()
+            .tableName(tablePrefix + "ACT_RU_TASK")
+            .orderAsc("NAME_")
+            .listPage(1, 7);
+    String[] expectedTaskNames = new String[] {"B", "C", "D", "E", "F", "G", "H"};
     verifyTaskNames(expectedTaskNames, tablePage.getRows());
 
     // With a descending sort
-    tablePage = managementService.createTablePageQuery().tableName(tablePrefix + "ACT_RU_TASK").orderDesc("NAME_").listPage(6, 8);
-    expectedTaskNames = new String[] { "I", "H", "G", "F", "E", "D", "C", "B" };
+    tablePage =
+        managementService
+            .createTablePageQuery()
+            .tableName(tablePrefix + "ACT_RU_TASK")
+            .orderDesc("NAME_")
+            .listPage(6, 8);
+    expectedTaskNames = new String[] {"I", "H", "G", "F", "E", "D", "C", "B"};
     verifyTaskNames(expectedTaskNames, tablePage.getRows());
 
     taskService.deleteTasks(taskIds, true);
@@ -94,5 +109,4 @@ public class TablePageQueryTest extends PluggableActivitiTestCase {
     }
     return taskIds;
   }
-
 }

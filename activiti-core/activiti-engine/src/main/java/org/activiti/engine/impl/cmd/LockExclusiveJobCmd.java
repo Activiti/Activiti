@@ -17,7 +17,6 @@
 package org.activiti.engine.impl.cmd;
 
 import java.io.Serializable;
-
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -26,9 +25,7 @@ import org.activiti.engine.runtime.Job;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
-
- */
+/** */
 public class LockExclusiveJobCmd implements Command<Object>, Serializable {
 
   private static final long serialVersionUID = 1L;
@@ -53,9 +50,12 @@ public class LockExclusiveJobCmd implements Command<Object>, Serializable {
 
     if (job.isExclusive()) {
       if (job.getExecutionId() != null) {
-        ExecutionEntity execution = commandContext.getExecutionEntityManager().findById(job.getExecutionId());
+        ExecutionEntity execution =
+            commandContext.getExecutionEntityManager().findById(job.getExecutionId());
         if (execution != null) {
-          commandContext.getExecutionEntityManager().updateProcessInstanceLockTime(execution.getProcessInstanceId());
+          commandContext
+              .getExecutionEntityManager()
+              .updateProcessInstanceLockTime(execution.getProcessInstanceId());
         }
       }
     }

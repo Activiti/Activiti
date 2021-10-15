@@ -16,7 +16,6 @@
 package org.activiti.bpmn.converter.child;
 
 import javax.xml.stream.XMLStreamReader;
-
 import org.activiti.bpmn.converter.util.BpmnXMLUtil;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BpmnModel;
@@ -25,28 +24,22 @@ import org.activiti.bpmn.model.Event;
 
 public class ErrorEventDefinitionParser extends BaseChildElementParser {
 
-    public String getElementName() {
-        return ELEMENT_EVENT_ERRORDEFINITION;
+  public String getElementName() {
+    return ELEMENT_EVENT_ERRORDEFINITION;
+  }
+
+  public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model)
+      throws Exception {
+    if (!(parentElement instanceof Event)) {
+      return;
     }
 
-    public void parseChildElement(XMLStreamReader xtr,
-                                  BaseElement parentElement,
-                                  BpmnModel model) throws Exception {
-        if (!(parentElement instanceof Event)) {
-            return;
-        }
+    ErrorEventDefinition eventDefinition = new ErrorEventDefinition();
+    BpmnXMLUtil.addXMLLocation(eventDefinition, xtr);
+    eventDefinition.setErrorRef(xtr.getAttributeValue(null, ATTRIBUTE_ERROR_REF));
 
-        ErrorEventDefinition eventDefinition = new ErrorEventDefinition();
-        BpmnXMLUtil.addXMLLocation(eventDefinition,
-                                   xtr);
-        eventDefinition.setErrorRef(xtr.getAttributeValue(null,
-                                                          ATTRIBUTE_ERROR_REF));
+    BpmnXMLUtil.parseChildElements(ELEMENT_EVENT_ERRORDEFINITION, eventDefinition, xtr, model);
 
-        BpmnXMLUtil.parseChildElements(ELEMENT_EVENT_ERRORDEFINITION,
-                                       eventDefinition,
-                                       xtr,
-                                       model);
-
-        ((Event) parentElement).getEventDefinitions().add(eventDefinition);
-    }
+    ((Event) parentElement).getEventDefinitions().add(eventDefinition);
+  }
 }

@@ -18,7 +18,6 @@ package org.activiti.engine.test.bpmn.event;
 
 import java.util.List;
 import java.util.Map;
-
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.ExtensionElement;
 import org.activiti.bpmn.model.Message;

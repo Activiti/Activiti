@@ -17,10 +17,8 @@ package org.activiti.api.runtime.shared.security;
 
 import java.util.Optional;
 
-/**
- * Token provider from the currently loaded security context
- */
+/** Token provider from the currently loaded security context */
 public interface SecurityContextTokenProvider {
 
-    Optional<String> getCurrentToken();
+  Optional<String> getCurrentToken();
 }

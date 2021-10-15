@@ -21,10 +21,10 @@ import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 
-
 /**
  * {@link Command} that is used by the {@link MultiSchemaMultiTenantProcessEngineConfiguration} to
  * make sure the 'databaseSchemaUpdate' setting is applied for each tenant datasource.
+ *
  * @deprecated multi-tenant code will be removed in future version of Activiti and Activiti Cloud
  */
 @Deprecated
@@ -46,12 +46,14 @@ public class ExecuteSchemaOperationCommand implements Command<Void> {
         // ignore
       }
     }
-    if (org.activiti.engine.ProcessEngineConfiguration.DB_SCHEMA_UPDATE_CREATE_DROP.equals(schemaOperation)
+    if (org.activiti.engine.ProcessEngineConfiguration.DB_SCHEMA_UPDATE_CREATE_DROP.equals(
+            schemaOperation)
         || ProcessEngineConfigurationImpl.DB_SCHEMA_UPDATE_DROP_CREATE.equals(schemaOperation)
         || ProcessEngineConfigurationImpl.DB_SCHEMA_UPDATE_CREATE.equals(schemaOperation)) {
       commandContext.getDbSqlSession().dbSchemaCreate();
 
-    } else if (org.activiti.engine.ProcessEngineConfiguration.DB_SCHEMA_UPDATE_FALSE.equals(schemaOperation)) {
+    } else if (org.activiti.engine.ProcessEngineConfiguration.DB_SCHEMA_UPDATE_FALSE.equals(
+        schemaOperation)) {
       commandContext.getDbSqlSession().dbSchemaCheckVersion();
 
     } else if (ProcessEngineConfiguration.DB_SCHEMA_UPDATE_TRUE.equals(schemaOperation)) {
@@ -60,6 +62,4 @@ public class ExecuteSchemaOperationCommand implements Command<Void> {
 
     return null;
   }
-
-
 }

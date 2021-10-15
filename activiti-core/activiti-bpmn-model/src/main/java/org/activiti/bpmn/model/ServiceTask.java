@@ -124,7 +124,8 @@ public class ServiceTask extends TaskWithFieldExtensions {
     }
 
     customProperties = new ArrayList<CustomProperty>();
-    if (otherElement.getCustomProperties() != null && !otherElement.getCustomProperties().isEmpty()) {
+    if (otherElement.getCustomProperties() != null
+        && !otherElement.getCustomProperties().isEmpty()) {
       for (CustomProperty property : otherElement.getCustomProperties()) {
         customProperties.add(property.clone());
       }

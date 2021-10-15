@@ -18,9 +18,7 @@ package org.activiti.engine.history;
 
 import org.activiti.engine.api.internal.Internal;
 
-/**
-
- */
+/** */
 @Internal
 public interface DeleteReason {
 
@@ -35,5 +33,4 @@ public interface DeleteReason {
   String EVENT_BASED_GATEWAY_CANCEL = "event based gateway cancel";
 
   String TRANSACTION_CANCELED = "transaction canceled";
-
 }

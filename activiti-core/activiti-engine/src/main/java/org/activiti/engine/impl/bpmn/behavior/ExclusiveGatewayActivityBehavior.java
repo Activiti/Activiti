@@ -17,7 +17,6 @@
 package org.activiti.engine.impl.bpmn.behavior;
 
 import java.util.Iterator;
-
 import org.activiti.bpmn.model.ExclusiveGateway;
 import org.activiti.bpmn.model.SequenceFlow;
 import org.activiti.engine.ActivitiException;
@@ -32,9 +31,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * implementation of the Exclusive Gateway/XOR gateway/exclusive data-based gateway as defined in the BPMN specification.
- *
-
+ * implementation of the Exclusive Gateway/XOR gateway/exclusive data-based gateway as defined in
+ * the BPMN specification.
  */
 public class ExclusiveGatewayActivityBehavior extends GatewayActivityBehavior {
 
@@ -43,12 +41,15 @@ public class ExclusiveGatewayActivityBehavior extends GatewayActivityBehavior {
   private static Logger log = LoggerFactory.getLogger(ExclusiveGatewayActivityBehavior.class);
 
   /**
-   * The default behaviour of BPMN, taking every outgoing sequence flow (where the condition evaluates to true), is not valid for an exclusive gateway.
+   * The default behaviour of BPMN, taking every outgoing sequence flow (where the condition
+   * evaluates to true), is not valid for an exclusive gateway.
    *
-   * Hence, this behaviour is overridden and replaced by the correct behavior: selecting the first sequence flow which condition evaluates to true (or which hasn't got a condition) and leaving the
-   * activity through that sequence flow.
+   * <p>Hence, this behaviour is overridden and replaced by the correct behavior: selecting the
+   * first sequence flow which condition evaluates to true (or which hasn't got a condition) and
+   * leaving the activity through that sequence flow.
    *
-   * If no sequence flow is selected (ie all conditions evaluate to false), then the default sequence flow is taken (if defined).
+   * <p>If no sequence flow is selected (ie all conditions evaluate to false), then the default
+   * sequence flow is taken (if defined).
    */
   @Override
   public void leave(DelegateExecution execution) {
@@ -59,10 +60,19 @@ public class ExclusiveGatewayActivityBehavior extends GatewayActivityBehavior {
 
     ExclusiveGateway exclusiveGateway = (ExclusiveGateway) execution.getCurrentFlowElement();
 
-    if (Context.getProcessEngineConfiguration() != null && Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-      Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
-          ActivitiEventBuilder.createActivityEvent(ActivitiEventType.ACTIVITY_COMPLETED, exclusiveGateway.getId(), exclusiveGateway.getName(), execution.getId(),
-              execution.getProcessInstanceId(), execution.getProcessDefinitionId(), exclusiveGateway));
+    if (Context.getProcessEngineConfiguration() != null
+        && Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+      Context.getProcessEngineConfiguration()
+          .getEventDispatcher()
+          .dispatchEvent(
+              ActivitiEventBuilder.createActivityEvent(
+                  ActivitiEventType.ACTIVITY_COMPLETED,
+                  exclusiveGateway.getId(),
+                  exclusiveGateway.getName(),
+                  execution.getId(),
+                  execution.getProcessInstanceId(),
+                  execution.getProcessDefinitionId(),
+                  exclusiveGateway));
     }
 
     SequenceFlow outgoingSequenceFlow = null;
@@ -77,13 +87,17 @@ public class ExclusiveGatewayActivityBehavior extends GatewayActivityBehavior {
       String skipExpressionString = sequenceFlow.getSkipExpression();
       if (!SkipExpressionUtil.isSkipExpressionEnabled(execution, skipExpressionString)) {
         boolean conditionEvaluatesToTrue = ConditionUtil.hasTrueCondition(sequenceFlow, execution);
-        if (conditionEvaluatesToTrue && (defaultSequenceFlowId == null || !defaultSequenceFlowId.equals(sequenceFlow.getId()))) {
+        if (conditionEvaluatesToTrue
+            && (defaultSequenceFlowId == null
+                || !defaultSequenceFlowId.equals(sequenceFlow.getId()))) {
           if (log.isDebugEnabled()) {
-            log.debug("Sequence flow '{}'selected as outgoing sequence flow.", sequenceFlow.getId());
+            log.debug(
+                "Sequence flow '{}'selected as outgoing sequence flow.", sequenceFlow.getId());
           }
           outgoingSequenceFlow = sequenceFlow;
         }
-      } else if (SkipExpressionUtil.shouldSkipFlowElement(Context.getCommandContext(), execution, skipExpressionString)) {
+      } else if (SkipExpressionUtil.shouldSkipFlowElement(
+          Context.getCommandContext(), execution, skipExpressionString)) {
         outgoingSequenceFlow = sequenceFlow;
       }
 
@@ -91,11 +105,12 @@ public class ExclusiveGatewayActivityBehavior extends GatewayActivityBehavior {
       if (defaultSequenceFlowId != null && defaultSequenceFlowId.equals(sequenceFlow.getId())) {
         defaultSequenceFlow = sequenceFlow;
       }
-
     }
 
     // We have to record the end here, or else we're already past it
-    Context.getCommandContext().getHistoryManager().recordActivityEnd((ExecutionEntity) execution, null);
+    Context.getCommandContext()
+        .getHistoryManager()
+        .recordActivityEnd((ExecutionEntity) execution, null);
 
     // Leave the gateway
     if (outgoingSequenceFlow != null) {
@@ -106,7 +121,10 @@ public class ExclusiveGatewayActivityBehavior extends GatewayActivityBehavior {
       } else {
 
         // No sequence flow could be found, not even a default one
-        throw new ActivitiException("No outgoing sequence flow of the exclusive gateway '" + exclusiveGateway.getId() + "' could be selected for continuing the process");
+        throw new ActivitiException(
+            "No outgoing sequence flow of the exclusive gateway '"
+                + exclusiveGateway.getId()
+                + "' could be selected for continuing the process");
       }
     }
 

@@ -16,16 +16,10 @@
 
 package org.activiti.engine.impl.transformer;
 
-/**
- * Transforms a {@link Integer} to a {@link String}
- *
-
- */
+/** Transforms a {@link Integer} to a {@link String} */
 public class IntegerToString extends AbstractTransformer {
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   protected Object primTransform(Object anObject) throws Exception {
     return ((Integer) anObject).toString();

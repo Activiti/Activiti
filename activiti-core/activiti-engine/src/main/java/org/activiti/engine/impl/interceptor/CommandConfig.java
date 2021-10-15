@@ -20,9 +20,7 @@ import org.activiti.engine.impl.cfg.TransactionPropagation;
 /**
  * Configuration settings for the command interceptor chain.
  *
- * Instances of this class are immutable, and thus thread- and share-safe.
- *
-
+ * <p>Instances of this class are immutable, and thus thread- and share-safe.
  */
 public class CommandConfig {
 
@@ -39,7 +37,8 @@ public class CommandConfig {
     this.propagation = TransactionPropagation.REQUIRED;
   }
 
-  public CommandConfig(boolean contextReusePossible, TransactionPropagation transactionPropagation) {
+  public CommandConfig(
+      boolean contextReusePossible, TransactionPropagation transactionPropagation) {
     this.contextReusePossible = contextReusePossible;
     this.propagation = transactionPropagation;
   }

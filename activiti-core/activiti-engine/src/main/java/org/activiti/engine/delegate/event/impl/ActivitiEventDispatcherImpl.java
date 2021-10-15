@@ -27,11 +27,7 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 import org.activiti.engine.repository.ProcessDefinition;
 
-/**
- * Class capable of dispatching events.
- *
-
- */
+/** Class capable of dispatching events. */
 public class ActivitiEventDispatcherImpl implements ActivitiEventDispatcher {
 
   protected ActivitiEventSupport eventSupport;
@@ -70,7 +66,8 @@ public class ActivitiEventDispatcherImpl implements ActivitiEventDispatcher {
       eventSupport.dispatchEvent(event);
     }
 
-    if (event.getType() == ActivitiEventType.ENTITY_DELETED && event instanceof ActivitiEntityEvent) {
+    if (event.getType() == ActivitiEventType.ENTITY_DELETED
+        && event instanceof ActivitiEntityEvent) {
       ActivitiEntityEvent entityEvent = (ActivitiEntityEvent) event;
       if (entityEvent.getEntity() instanceof ProcessDefinition) {
         // process definition deleted event doesn't need to be dispatched to event listeners
@@ -78,7 +75,8 @@ public class ActivitiEventDispatcherImpl implements ActivitiEventDispatcher {
       }
     }
 
-    // Try getting hold of the Process definition, based on the process definition key, if a context is active
+    // Try getting hold of the Process definition, based on the process definition key, if a context
+    // is active
     CommandContext commandContext = Context.getCommandContext();
     if (commandContext != null) {
       BpmnModel bpmnModel = extractBpmnModelFromEvent(event);
@@ -86,15 +84,17 @@ public class ActivitiEventDispatcherImpl implements ActivitiEventDispatcher {
         ((ActivitiEventSupport) bpmnModel.getEventSupport()).dispatchEvent(event);
       }
     }
-
   }
 
   /**
-   * In case no process-context is active, this method attempts to extract a process-definition based on the event. In case it's an event related to an entity, this can be deducted by inspecting the
-   * entity, without additional queries to the database.
+   * In case no process-context is active, this method attempts to extract a process-definition
+   * based on the event. In case it's an event related to an entity, this can be deducted by
+   * inspecting the entity, without additional queries to the database.
    *
-   * If not an entity-related event, the process-definition will be retrieved based on the processDefinitionId (if filled in). This requires an additional query to the database in case not already
-   * cached. However, queries will only occur when the definition is not yet in the cache, which is very unlikely to happen, unless evicted.
+   * <p>If not an entity-related event, the process-definition will be retrieved based on the
+   * processDefinitionId (if filled in). This requires an additional query to the database in case
+   * not already cached. However, queries will only occur when the definition is not yet in the
+   * cache, which is very unlikely to happen, unless evicted.
    *
    * @param event
    * @return
@@ -103,13 +103,17 @@ public class ActivitiEventDispatcherImpl implements ActivitiEventDispatcher {
     BpmnModel result = null;
 
     if (result == null && event.getProcessDefinitionId() != null) {
-      ProcessDefinition processDefinition = ProcessDefinitionUtil.getProcessDefinition(event.getProcessDefinitionId(), true);
+      ProcessDefinition processDefinition =
+          ProcessDefinitionUtil.getProcessDefinition(event.getProcessDefinitionId(), true);
       if (processDefinition != null) {
-        result = Context.getProcessEngineConfiguration().getDeploymentManager().resolveProcessDefinition(processDefinition).getBpmnModel();
+        result =
+            Context.getProcessEngineConfiguration()
+                .getDeploymentManager()
+                .resolveProcessDefinition(processDefinition)
+                .getBpmnModel();
       }
     }
 
     return result;
   }
-
 }

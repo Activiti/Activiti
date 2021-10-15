@@ -14,9 +14,11 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.cmd;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.impl.interceptor.Command;
@@ -26,14 +28,7 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.SignalEventSubscriptionEntity;
 import org.activiti.engine.runtime.Execution;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-/**
-
-
- */
+/** */
 public class SignalEventReceivedCmd implements Command<Void> {
 
   protected final String eventName;
@@ -42,7 +37,8 @@ public class SignalEventReceivedCmd implements Command<Void> {
   protected final boolean async;
   protected String tenantId;
 
-  public SignalEventReceivedCmd(String eventName, String executionId, Map<String, Object> processVariables, String tenantId) {
+  public SignalEventReceivedCmd(
+      String eventName, String executionId, Map<String, Object> processVariables, String tenantId) {
     this.eventName = eventName;
     this.executionId = executionId;
     if (processVariables != null) {
@@ -55,7 +51,8 @@ public class SignalEventReceivedCmd implements Command<Void> {
     this.tenantId = tenantId;
   }
 
-  public SignalEventReceivedCmd(String eventName, String executionId, boolean async, String tenantId) {
+  public SignalEventReceivedCmd(
+      String eventName, String executionId, boolean async, String tenantId) {
     this.eventName = eventName;
     this.executionId = executionId;
     this.async = async;
@@ -67,25 +64,41 @@ public class SignalEventReceivedCmd implements Command<Void> {
 
     List<SignalEventSubscriptionEntity> signalEvents = null;
 
-    EventSubscriptionEntityManager eventSubscriptionEntityManager = commandContext.getEventSubscriptionEntityManager();
+    EventSubscriptionEntityManager eventSubscriptionEntityManager =
+        commandContext.getEventSubscriptionEntityManager();
     if (executionId == null) {
-      signalEvents = eventSubscriptionEntityManager.findSignalEventSubscriptionsByEventName(eventName, tenantId);
+      signalEvents =
+          eventSubscriptionEntityManager.findSignalEventSubscriptionsByEventName(
+              eventName, tenantId);
     } else {
 
       ExecutionEntity execution = commandContext.getExecutionEntityManager().findById(executionId);
 
       if (execution == null) {
-        throw new ActivitiObjectNotFoundException("Cannot find execution with id '" + executionId + "'", Execution.class);
+        throw new ActivitiObjectNotFoundException(
+            "Cannot find execution with id '" + executionId + "'", Execution.class);
       }
 
       if (execution.isSuspended()) {
-        throw new ActivitiException("Cannot throw signal event '" + eventName + "' because execution '" + executionId + "' is suspended");
+        throw new ActivitiException(
+            "Cannot throw signal event '"
+                + eventName
+                + "' because execution '"
+                + executionId
+                + "' is suspended");
       }
 
-      signalEvents = eventSubscriptionEntityManager.findSignalEventSubscriptionsByNameAndExecution(eventName, executionId);
+      signalEvents =
+          eventSubscriptionEntityManager.findSignalEventSubscriptionsByNameAndExecution(
+              eventName, executionId);
 
       if (signalEvents.isEmpty()) {
-        throw new ActivitiException("Execution '" + executionId + "' has not subscribed to a signal event with name '" + eventName + "'.");
+        throw new ActivitiException(
+            "Execution '"
+                + executionId
+                + "' has not subscribed to a signal event with name '"
+                + eventName
+                + "'.");
       }
     }
 
@@ -99,5 +112,4 @@ public class SignalEventReceivedCmd implements Command<Void> {
 
     return null;
   }
-
 }

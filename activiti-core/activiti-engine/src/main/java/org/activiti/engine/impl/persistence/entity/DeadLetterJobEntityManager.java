@@ -17,22 +17,17 @@
 package org.activiti.engine.impl.persistence.entity;
 
 import java.util.List;
-
 import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.impl.DeadLetterJobQueryImpl;
 import org.activiti.engine.impl.JobQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.runtime.Job;
 
-/**
-
- */
+/** */
 @Internal
 public interface DeadLetterJobEntityManager extends EntityManager<DeadLetterJobEntity> {
 
-  /**
-   * Returns all {@link DeadLetterJobEntity} instances related to on {@link ExecutionEntity}.
-   */
+  /** Returns all {@link DeadLetterJobEntity} instances related to on {@link ExecutionEntity}. */
   List<DeadLetterJobEntity> findJobsByExecutionId(String id);
 
   /**
@@ -41,13 +36,11 @@ public interface DeadLetterJobEntityManager extends EntityManager<DeadLetterJobE
   List<Job> findJobsByQueryCriteria(DeadLetterJobQueryImpl jobQuery, Page page);
 
   /**
-   * Same as {@link #findJobsByQueryCriteria(DeadLetterJobQueryImpl, Page)}, but only returns a count
-   * and not the instances itself.
+   * Same as {@link #findJobsByQueryCriteria(DeadLetterJobQueryImpl, Page)}, but only returns a
+   * count and not the instances itself.
    */
   long findJobCountByQueryCriteria(DeadLetterJobQueryImpl jobQuery);
 
-  /**
-   * Changes the tenantId for all jobs related to a given {@link DeploymentEntity}.
-   */
+  /** Changes the tenantId for all jobs related to a given {@link DeploymentEntity}. */
   void updateJobTenantIdForDeployment(String deploymentId, String newTenantId);
 }

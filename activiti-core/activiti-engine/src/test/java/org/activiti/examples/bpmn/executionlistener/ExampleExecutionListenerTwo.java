@@ -14,17 +14,12 @@
  * limitations under the License.
  */
 
-
 package org.activiti.examples.bpmn.executionlistener;
 
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.ExecutionListener;
 
-/**
- * Simple {@link ExecutionListener} that sets 2 variables on the execution.
- *
-
- */
+/** Simple {@link ExecutionListener} that sets 2 variables on the execution. */
 public class ExampleExecutionListenerTwo implements ExecutionListener {
 
   public void notify(DelegateExecution execution) {

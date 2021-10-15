@@ -14,16 +14,13 @@
  * limitations under the License.
  */
 
-
 package org.activiti.standalone.jpa;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
-/**
-
- */
+/** */
 @Entity(name = "CHAR_ID_ENTITY")
 public class CharIdJPAEntity {
 
@@ -38,5 +35,4 @@ public class CharIdJPAEntity {
   public void setCharId(char charId) {
     this.charId = charId;
   }
-
 }

@@ -14,12 +14,10 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -27,19 +25,15 @@ import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.variable.VariableTypes;
 import org.activiti.engine.query.Query;
 
-/**
- * Abstract query class that adds methods to query for variable values.
- *
-
- */
-public abstract class AbstractVariableQueryImpl<T extends Query<?, ?>, U> extends AbstractQuery<T, U> {
+/** Abstract query class that adds methods to query for variable values. */
+public abstract class AbstractVariableQueryImpl<T extends Query<?, ?>, U>
+    extends AbstractQuery<T, U> {
 
   private static final long serialVersionUID = 1L;
 
   protected List<QueryVariableValue> queryVariableValues = new ArrayList<QueryVariableValue>();
 
-  public AbstractVariableQueryImpl() {
-  }
+  public AbstractVariableQueryImpl() {}
 
   public AbstractVariableQueryImpl(CommandContext commandContext) {
     super(commandContext);
@@ -81,7 +75,7 @@ public abstract class AbstractVariableQueryImpl<T extends Query<?, ?>, U> extend
 
   @SuppressWarnings("unchecked")
   protected T variableValueEqualsIgnoreCase(String name, String value, boolean localScope) {
-    if(value == null) {
+    if (value == null) {
       throw new ActivitiIllegalArgumentException("value is null");
     }
     addVariable(name, value.toLowerCase(), QueryOperator.EQUALS_IGNORE_CASE, localScope);
@@ -94,7 +88,7 @@ public abstract class AbstractVariableQueryImpl<T extends Query<?, ?>, U> extend
 
   @SuppressWarnings("unchecked")
   protected T variableValueNotEqualsIgnoreCase(String name, String value, boolean localScope) {
-    if(value == null) {
+    if (value == null) {
       throw new ActivitiIllegalArgumentException("value is null");
     }
     addVariable(name, value.toLowerCase(), QueryOperator.NOT_EQUALS_IGNORE_CASE, localScope);
@@ -171,35 +165,43 @@ public abstract class AbstractVariableQueryImpl<T extends Query<?, ?>, U> extend
     return (T) this;
   }
 
-  protected void addVariable(String name, Object value, QueryOperator operator, boolean localScope) {
-    if(name == null) {
+  protected void addVariable(
+      String name, Object value, QueryOperator operator, boolean localScope) {
+    if (name == null) {
       throw new ActivitiIllegalArgumentException("name is null");
     }
     if (value == null || isBoolean(value)) {
       // Null-values and booleans can only be used in EQUALS and
       // NOT_EQUALS
       switch (operator) {
-      case GREATER_THAN:
-        throw new ActivitiIllegalArgumentException("Booleans and null cannot be used in 'greater than' condition");
-      case LESS_THAN:
-        throw new ActivitiIllegalArgumentException("Booleans and null cannot be used in 'less than' condition");
-      case GREATER_THAN_OR_EQUAL:
-        throw new ActivitiIllegalArgumentException("Booleans and null cannot be used in 'greater than or equal' condition");
-      case LESS_THAN_OR_EQUAL:
-        throw new ActivitiIllegalArgumentException("Booleans and null cannot be used in 'less than or equal' condition");
+        case GREATER_THAN:
+          throw new ActivitiIllegalArgumentException(
+              "Booleans and null cannot be used in 'greater than' condition");
+        case LESS_THAN:
+          throw new ActivitiIllegalArgumentException(
+              "Booleans and null cannot be used in 'less than' condition");
+        case GREATER_THAN_OR_EQUAL:
+          throw new ActivitiIllegalArgumentException(
+              "Booleans and null cannot be used in 'greater than or equal' condition");
+        case LESS_THAN_OR_EQUAL:
+          throw new ActivitiIllegalArgumentException(
+              "Booleans and null cannot be used in 'less than or equal' condition");
       }
 
       if (operator == QueryOperator.EQUALS_IGNORE_CASE && !(value instanceof String)) {
-        throw new ActivitiIllegalArgumentException("Only string values can be used with 'equals ignore case' condition");
+        throw new ActivitiIllegalArgumentException(
+            "Only string values can be used with 'equals ignore case' condition");
       }
 
       if (operator == QueryOperator.NOT_EQUALS_IGNORE_CASE && !(value instanceof String)) {
-        throw new ActivitiIllegalArgumentException("Only string values can be used with 'not equals ignore case' condition");
+        throw new ActivitiIllegalArgumentException(
+            "Only string values can be used with 'not equals ignore case' condition");
       }
 
-      if((operator == QueryOperator.LIKE || operator == QueryOperator.LIKE_IGNORE_CASE) && !(value instanceof String))
-      {
-        throw new ActivitiIllegalArgumentException("Only string values can be used with 'like' condition");
+      if ((operator == QueryOperator.LIKE || operator == QueryOperator.LIKE_IGNORE_CASE)
+          && !(value instanceof String)) {
+        throw new ActivitiIllegalArgumentException(
+            "Only string values can be used with 'like' condition");
       }
     }
     queryVariableValues.add(new QueryVariableValue(name, value, operator, localScope));
@@ -209,7 +211,8 @@ public abstract class AbstractVariableQueryImpl<T extends Query<?, ?>, U> extend
     if (value == null) {
       return false;
     }
-    return Boolean.class.isAssignableFrom(value.getClass()) || boolean.class.isAssignableFrom(value.getClass());
+    return Boolean.class.isAssignableFrom(value.getClass())
+        || boolean.class.isAssignableFrom(value.getClass());
   }
 
   protected void ensureVariablesInitialized() {
@@ -227,20 +230,19 @@ public abstract class AbstractVariableQueryImpl<T extends Query<?, ?>, U> extend
 
   public boolean hasLocalQueryVariableValue() {
     for (QueryVariableValue qvv : queryVariableValues) {
-        if (qvv.isLocal()) {
-            return true;
-        }
+      if (qvv.isLocal()) {
+        return true;
+      }
     }
     return false;
   }
 
   public boolean hasNonLocalQueryVariableValue() {
     for (QueryVariableValue qvv : queryVariableValues) {
-        if (!qvv.isLocal()) {
-            return true;
-        }
+      if (!qvv.isLocal()) {
+        return true;
+      }
     }
     return false;
   }
-
 }

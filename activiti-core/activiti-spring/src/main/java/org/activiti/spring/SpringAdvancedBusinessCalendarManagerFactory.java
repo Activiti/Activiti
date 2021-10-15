@@ -20,9 +20,10 @@ import org.activiti.engine.impl.util.DefaultClockImpl;
 import org.activiti.engine.runtime.Clock;
 
 /**
- * Creates an advanced cycle business calendar manager (ACBCM). The ACBCM can handle daylight savings changes when the scheduled time zone is different than the server time zone.
- * <p>
- * Create a factory bean
+ * Creates an advanced cycle business calendar manager (ACBCM). The ACBCM can handle daylight
+ * savings changes when the scheduled time zone is different than the server time zone.
+ *
+ * <p>Create a factory bean
  *
  * <pre>
  * &lt;bean id="businessCalendarManagerFactory" class="org.activiti.spring.SpringAdvancedBusinessCalendarManagerFactory" /&gt;
@@ -40,7 +41,6 @@ import org.activiti.engine.runtime.Clock;
  *  &lt;/bean&gt;
  * </pre>
  *
-
  * @see AdvancedCycleBusinessCalendar
  */
 public class SpringAdvancedBusinessCalendarManagerFactory {
@@ -70,11 +70,14 @@ public class SpringAdvancedBusinessCalendarManagerFactory {
 
   public BusinessCalendarManager getBusinessCalendarManager() {
     MapBusinessCalendarManager mapBusinessCalendarManager = new MapBusinessCalendarManager();
-    mapBusinessCalendarManager.addBusinessCalendar(DurationBusinessCalendar.NAME, new DurationBusinessCalendar(getClock()));
-    mapBusinessCalendarManager.addBusinessCalendar(DueDateBusinessCalendar.NAME, new DueDateBusinessCalendar(getClock()));
-    mapBusinessCalendarManager.addBusinessCalendar(AdvancedCycleBusinessCalendar.NAME, new AdvancedCycleBusinessCalendar(getClock(), defaultScheduleVersion));
+    mapBusinessCalendarManager.addBusinessCalendar(
+        DurationBusinessCalendar.NAME, new DurationBusinessCalendar(getClock()));
+    mapBusinessCalendarManager.addBusinessCalendar(
+        DueDateBusinessCalendar.NAME, new DueDateBusinessCalendar(getClock()));
+    mapBusinessCalendarManager.addBusinessCalendar(
+        AdvancedCycleBusinessCalendar.NAME,
+        new AdvancedCycleBusinessCalendar(getClock(), defaultScheduleVersion));
 
     return mapBusinessCalendarManager;
   }
-
 }

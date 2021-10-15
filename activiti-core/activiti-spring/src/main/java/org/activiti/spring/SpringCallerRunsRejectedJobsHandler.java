@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.spring;
 
 import org.activiti.engine.impl.asyncexecutor.AsyncExecutor;
@@ -24,10 +23,7 @@ import org.activiti.engine.runtime.Job;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- *
-
- */
+/** */
 public class SpringCallerRunsRejectedJobsHandler implements SpringRejectedJobsHandler {
 
   private static Logger log = LoggerFactory.getLogger(SpringCallerRunsRejectedJobsHandler.class);
@@ -36,10 +32,10 @@ public class SpringCallerRunsRejectedJobsHandler implements SpringRejectedJobsHa
     try {
       // execute rejected work in caller thread (potentially blocking job
       // acquisition)
-      new ExecuteAsyncRunnable((JobEntity) job, asyncExecutor.getProcessEngineConfiguration()).run();
+      new ExecuteAsyncRunnable((JobEntity) job, asyncExecutor.getProcessEngineConfiguration())
+          .run();
     } catch (Exception e) {
       log.error("Failed to execute rejected job " + job.getId(), e);
     }
   }
-
 }

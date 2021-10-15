@@ -22,11 +22,7 @@ import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 
-/**
- * Command that adds an event-listener to the Activiti engine.
- *
-
- */
+/** Command that adds an event-listener to the Activiti engine. */
 public class AddEventListenerCommand implements Command<Void> {
 
   protected ActivitiEventListener listener;
@@ -49,12 +45,17 @@ public class AddEventListenerCommand implements Command<Void> {
     }
 
     if (types != null) {
-      commandContext.getProcessEngineConfiguration().getEventDispatcher().addEventListener(listener, types);
+      commandContext
+          .getProcessEngineConfiguration()
+          .getEventDispatcher()
+          .addEventListener(listener, types);
     } else {
-      commandContext.getProcessEngineConfiguration().getEventDispatcher().addEventListener(listener);
+      commandContext
+          .getProcessEngineConfiguration()
+          .getEventDispatcher()
+          .addEventListener(listener);
     }
 
     return null;
   }
-
 }

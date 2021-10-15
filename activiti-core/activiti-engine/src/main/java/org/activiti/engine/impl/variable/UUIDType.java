@@ -18,9 +18,7 @@ package org.activiti.engine.impl.variable;
 
 import java.util.UUID;
 
-/**
-
- */
+/** */
 public class UUIDType implements VariableType {
 
   private static final long serialVersionUID = 1L;
@@ -35,8 +33,7 @@ public class UUIDType implements VariableType {
 
   public Object getValue(ValueFields valueFields) {
     String textValue = valueFields.getTextValue();
-    if (textValue == null)
-      return null;
+    if (textValue == null) return null;
     return UUID.fromString(textValue);
   }
 

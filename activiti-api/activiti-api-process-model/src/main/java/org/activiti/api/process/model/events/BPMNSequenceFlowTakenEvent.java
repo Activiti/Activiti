@@ -15,6 +15,4 @@
  */
 package org.activiti.api.process.model.events;
 
-public interface BPMNSequenceFlowTakenEvent extends SequenceFlowEvent {
-
-}
+public interface BPMNSequenceFlowTakenEvent extends SequenceFlowEvent {}

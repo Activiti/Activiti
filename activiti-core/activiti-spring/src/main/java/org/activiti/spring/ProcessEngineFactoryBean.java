@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.spring;
 
 import org.activiti.engine.ProcessEngine;
@@ -26,14 +25,9 @@ import org.springframework.beans.factory.FactoryBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
-/**
-
-
-
-
-
- */
-public class ProcessEngineFactoryBean implements FactoryBean<ProcessEngine>, DisposableBean, ApplicationContextAware {
+/** */
+public class ProcessEngineFactoryBean
+    implements FactoryBean<ProcessEngine>, DisposableBean, ApplicationContextAware {
 
   protected ProcessEngineConfigurationImpl processEngineConfiguration;
 
@@ -64,13 +58,18 @@ public class ProcessEngineFactoryBean implements FactoryBean<ProcessEngine>, Dis
 
   protected void configureExpressionManager() {
     if (processEngineConfiguration.getExpressionManager() == null && applicationContext != null) {
-      processEngineConfiguration.setExpressionManager(new SpringExpressionManager(applicationContext, processEngineConfiguration.getBeans()));
+      processEngineConfiguration.setExpressionManager(
+          new SpringExpressionManager(applicationContext, processEngineConfiguration.getBeans()));
     }
   }
 
   protected void configureExternallyManagedTransactions() {
-    if (processEngineConfiguration instanceof SpringProcessEngineConfiguration) { // remark: any config can be injected, so we cannot have SpringConfiguration as member
-      SpringProcessEngineConfiguration engineConfiguration = (SpringProcessEngineConfiguration) processEngineConfiguration;
+    if (processEngineConfiguration
+        instanceof
+        SpringProcessEngineConfiguration) { // remark: any config can be injected, so we cannot have
+      // SpringConfiguration as member
+      SpringProcessEngineConfiguration engineConfiguration =
+          (SpringProcessEngineConfiguration) processEngineConfiguration;
       if (engineConfiguration.getTransactionManager() != null) {
         processEngineConfiguration.setTransactionsExternallyManaged(true);
       }
@@ -89,7 +88,8 @@ public class ProcessEngineFactoryBean implements FactoryBean<ProcessEngine>, Dis
     return processEngineConfiguration;
   }
 
-  public void setProcessEngineConfiguration(ProcessEngineConfigurationImpl processEngineConfiguration) {
+  public void setProcessEngineConfiguration(
+      ProcessEngineConfigurationImpl processEngineConfiguration) {
     this.processEngineConfiguration = processEngineConfiguration;
   }
 }

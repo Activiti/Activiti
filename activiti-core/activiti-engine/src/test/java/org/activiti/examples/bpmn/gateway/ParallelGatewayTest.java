@@ -14,29 +14,26 @@
  * limitations under the License.
  */
 
-
 package org.activiti.examples.bpmn.gateway;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
-
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.task.TaskQuery;
 import org.activiti.engine.test.Deployment;
 
-/**
-
- */
+/** */
 public class ParallelGatewayTest extends PluggableActivitiTestCase {
 
   @Deployment
   public void testForkJoin() {
 
     ProcessInstance pi = runtimeService.startProcessInstanceByKey("forkJoin");
-    TaskQuery query = taskService.createTaskQuery().processInstanceId(pi.getId()).orderByTaskName().asc();
+    TaskQuery query =
+        taskService.createTaskQuery().processInstanceId(pi.getId()).orderByTaskName().asc();
 
     List<Task> tasks = query.list();
     assertThat(tasks).hasSize(2);
@@ -59,7 +56,8 @@ public class ParallelGatewayTest extends PluggableActivitiTestCase {
   public void testUnbalancedForkJoin() {
 
     ProcessInstance pi = runtimeService.startProcessInstanceByKey("UnbalancedForkJoin");
-    TaskQuery query = taskService.createTaskQuery().processInstanceId(pi.getId()).orderByTaskName().asc();
+    TaskQuery query =
+        taskService.createTaskQuery().processInstanceId(pi.getId()).orderByTaskName().asc();
 
     List<Task> tasks = query.list();
     assertThat(tasks).hasSize(3);
@@ -89,5 +87,4 @@ public class ParallelGatewayTest extends PluggableActivitiTestCase {
 
     assertProcessEnded(pi.getId());
   }
-
 }

@@ -21,17 +21,19 @@ import org.activiti.spring.process.ProcessVariablesInitiator;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class ProcessExtensionsConfiguratorAutoConfiguration extends AbstractProcessEngineConfigurator {
+public class ProcessExtensionsConfiguratorAutoConfiguration
+    extends AbstractProcessEngineConfigurator {
 
-    private ProcessVariablesInitiator processVariablesInitiator;
+  private ProcessVariablesInitiator processVariablesInitiator;
 
-    public ProcessExtensionsConfiguratorAutoConfiguration(ProcessVariablesInitiator processVariablesInitiator) {
-        this.processVariablesInitiator = processVariablesInitiator;
-    }
+  public ProcessExtensionsConfiguratorAutoConfiguration(
+      ProcessVariablesInitiator processVariablesInitiator) {
+    this.processVariablesInitiator = processVariablesInitiator;
+  }
 
-    @Override
-    public void configure(ProcessEngineConfigurationImpl processEngineConfiguration) {
-        super.configure(processEngineConfiguration);
-        processEngineConfiguration.setProcessInstanceHelper(processVariablesInitiator);
-    }
+  @Override
+  public void configure(ProcessEngineConfigurationImpl processEngineConfiguration) {
+    super.configure(processEngineConfiguration);
+    processEngineConfiguration.setProcessInstanceHelper(processVariablesInitiator);
+  }
 }

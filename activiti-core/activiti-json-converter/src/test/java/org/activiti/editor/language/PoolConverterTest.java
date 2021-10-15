@@ -16,8 +16,6 @@
 package org.activiti.editor.language;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThat;
 
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.Lane;

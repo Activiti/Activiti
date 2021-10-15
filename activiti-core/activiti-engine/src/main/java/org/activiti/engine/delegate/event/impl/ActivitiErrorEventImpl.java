@@ -19,12 +19,9 @@ package org.activiti.engine.delegate.event.impl;
 import org.activiti.engine.delegate.event.ActivitiErrorEvent;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 
-/**
- * Implementation of an {@link ActivitiErrorEvent}.
- *
-
- */
-public class ActivitiErrorEventImpl extends ActivitiActivityEventImpl implements ActivitiErrorEvent {
+/** Implementation of an {@link ActivitiErrorEvent}. */
+public class ActivitiErrorEventImpl extends ActivitiActivityEventImpl
+    implements ActivitiErrorEvent {
 
   protected String errorId;
   protected String errorCode;
@@ -49,5 +46,4 @@ public class ActivitiErrorEventImpl extends ActivitiActivityEventImpl implements
   public String getErrorCode() {
     return errorCode;
   }
-
 }

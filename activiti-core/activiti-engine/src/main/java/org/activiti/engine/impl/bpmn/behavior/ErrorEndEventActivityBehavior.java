@@ -19,10 +19,7 @@ package org.activiti.engine.impl.bpmn.behavior;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.bpmn.helper.ErrorPropagation;
 
-/**
-
-
- */
+/** */
 public class ErrorEndEventActivityBehavior extends FlowNodeActivityBehavior {
 
   private static final long serialVersionUID = 1L;
@@ -45,5 +42,4 @@ public class ErrorEndEventActivityBehavior extends FlowNodeActivityBehavior {
   public void setErrorRef(String errorRef) {
     this.errorRef = errorRef;
   }
-
 }

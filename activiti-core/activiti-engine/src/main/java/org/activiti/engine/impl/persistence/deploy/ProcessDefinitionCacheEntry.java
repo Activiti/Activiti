@@ -17,14 +17,11 @@
 package org.activiti.engine.impl.persistence.deploy;
 
 import java.io.Serializable;
-
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.Process;
 import org.activiti.engine.repository.ProcessDefinition;
 
-/**
-
- */
+/** */
 public class ProcessDefinitionCacheEntry implements Serializable {
 
   private static final long serialVersionUID = 6833801933658529070L;
@@ -33,7 +30,8 @@ public class ProcessDefinitionCacheEntry implements Serializable {
   protected BpmnModel bpmnModel;
   protected Process process;
 
-  public ProcessDefinitionCacheEntry(ProcessDefinition processDefinition, BpmnModel bpmnModel, Process process) {
+  public ProcessDefinitionCacheEntry(
+      ProcessDefinition processDefinition, BpmnModel bpmnModel, Process process) {
     this.processDefinition = processDefinition;
     this.bpmnModel = bpmnModel;
     this.process = process;
@@ -62,5 +60,4 @@ public class ProcessDefinitionCacheEntry implements Serializable {
   public void setProcess(Process process) {
     this.process = process;
   }
-
 }

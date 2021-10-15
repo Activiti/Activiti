@@ -18,10 +18,7 @@ package org.activiti.engine.impl.bpmn.data;
 
 import org.activiti.engine.api.internal.Internal;
 
-/**
- * Represents a structure definition based on fields
- *
- */
+/** Represents a structure definition based on fields */
 @Internal
 public interface FieldBaseStructureDefinition extends StructureDefinition {
 
@@ -35,8 +32,7 @@ public interface FieldBaseStructureDefinition extends StructureDefinition {
   /**
    * Obtains the name of the field in the index position
    *
-   * @param index
-   *          the position of the field
+   * @param index the position of the field
    * @return the name of the field
    */
   String getFieldNameAt(int index);
@@ -44,8 +40,7 @@ public interface FieldBaseStructureDefinition extends StructureDefinition {
   /**
    * Obtains the type of the field in the index position
    *
-   * @param index
-   *          the position of the field
+   * @param index the position of the field
    * @return the type of the field
    */
   Class<?> getFieldTypeAt(int index);

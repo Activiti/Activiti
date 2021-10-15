@@ -14,16 +14,13 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.test.bpmn.event.compensate.helper;
 
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.JavaDelegate;
 
-/**
-
- */
+/** */
 public class UndoService implements JavaDelegate {
 
   private Expression counterName;
@@ -37,5 +34,4 @@ public class UndoService implements JavaDelegate {
       execution.setVariable(variableName, ((Integer) variable) + 1);
     }
   }
-
 }

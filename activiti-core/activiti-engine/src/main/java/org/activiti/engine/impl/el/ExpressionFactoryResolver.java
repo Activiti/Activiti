@@ -14,18 +14,12 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.el;
 
+import de.odysseus.el.ExpressionFactoryImpl;
 import javax.el.ExpressionFactory;
 
-import de.odysseus.el.ExpressionFactoryImpl;
-
-/**
- * Class used to get hold of a {@link ExpressionFactory}.
- *
-
- */
+/** Class used to get hold of a {@link ExpressionFactory}. */
 public abstract class ExpressionFactoryResolver {
 
   public static ExpressionFactory resolveExpressionFactory() {

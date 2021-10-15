@@ -21,11 +21,12 @@ import org.activiti.engine.task.Comment;
 /**
  * Allows to fetch the {@link ProcessInstanceHistoryLog} for a process instance.
  *
- * Note that every includeXXX() method below will lead to an additional query.
+ * <p>Note that every includeXXX() method below will lead to an additional query.
  *
- * This class is actually a convenience on top of the other specific queries such as {@link HistoricTaskInstanceQuery}, {@link HistoricActivityInstanceQuery}, ... It will execute separate queries for
- * each included type, order the data according to the date (ascending) and wrap the results in the {@link ProcessInstanceHistoryLog}.
- *
+ * <p>This class is actually a convenience on top of the other specific queries such as {@link
+ * HistoricTaskInstanceQuery}, {@link HistoricActivityInstanceQuery}, ... It will execute separate
+ * queries for each included type, order the data according to the date (ascending) and wrap the
+ * results in the {@link ProcessInstanceHistoryLog}.
  */
 @Internal
 public interface ProcessInstanceHistoryLogQuery {
@@ -36,22 +37,23 @@ public interface ProcessInstanceHistoryLogQuery {
   ProcessInstanceHistoryLogQuery includeTasks();
 
   /**
-   * The {@link ProcessInstanceHistoryLog} will contain the {@link HistoricActivityInstance} instances.
+   * The {@link ProcessInstanceHistoryLog} will contain the {@link HistoricActivityInstance}
+   * instances.
    */
   ProcessInstanceHistoryLogQuery includeActivities();
 
   /**
-   * The {@link ProcessInstanceHistoryLog} will contain the {@link HistoricVariableInstance} instances.
+   * The {@link ProcessInstanceHistoryLog} will contain the {@link HistoricVariableInstance}
+   * instances.
    */
   ProcessInstanceHistoryLogQuery includeVariables();
 
-  /**
-   * The {@link ProcessInstanceHistoryLog} will contain the {@link Comment} instances.
-   */
+  /** The {@link ProcessInstanceHistoryLog} will contain the {@link Comment} instances. */
   ProcessInstanceHistoryLogQuery includeComments();
 
   /**
-   * The {@link ProcessInstanceHistoryLog} will contain the {@link HistoricVariableUpdate} instances.
+   * The {@link ProcessInstanceHistoryLog} will contain the {@link HistoricVariableUpdate}
+   * instances.
    */
   ProcessInstanceHistoryLogQuery includeVariableUpdates();
 
@@ -62,5 +64,4 @@ public interface ProcessInstanceHistoryLogQuery {
 
   /** Executes the query. */
   ProcessInstanceHistoryLog singleResult();
-
 }

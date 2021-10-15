@@ -19,7 +19,7 @@ public class DataObject extends FlowElement {
 
   protected ItemDefinition itemSubjectRef;
 
-   public ItemDefinition getItemSubjectRef() {
+  public ItemDefinition getItemSubjectRef() {
     return itemSubjectRef;
   }
 

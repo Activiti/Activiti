@@ -14,24 +14,23 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.persistence.entity;
 
 import java.util.List;
-
 import org.activiti.engine.event.EventLogEntry;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.persistence.entity.data.DataManager;
 import org.activiti.engine.impl.persistence.entity.data.EventLogEntryDataManager;
 
-/**
-
- */
-public class EventLogEntryEntityManagerImpl extends AbstractEntityManager<EventLogEntryEntity> implements EventLogEntryEntityManager {
+/** */
+public class EventLogEntryEntityManagerImpl extends AbstractEntityManager<EventLogEntryEntity>
+    implements EventLogEntryEntityManager {
 
   protected EventLogEntryDataManager eventLogEntryDataManager;
 
-  public EventLogEntryEntityManagerImpl(ProcessEngineConfigurationImpl processEngineConfiguration, EventLogEntryDataManager eventLogEntryDataManager) {
+  public EventLogEntryEntityManagerImpl(
+      ProcessEngineConfigurationImpl processEngineConfiguration,
+      EventLogEntryDataManager eventLogEntryDataManager) {
     super(processEngineConfiguration);
     this.eventLogEntryDataManager = eventLogEntryDataManager;
   }
@@ -48,7 +47,7 @@ public class EventLogEntryEntityManagerImpl extends AbstractEntityManager<EventL
 
   @Override
   public List<EventLogEntry> findEventLogEntries(long startLogNr, long pageSize) {
-   return eventLogEntryDataManager.findEventLogEntries(startLogNr, pageSize);
+    return eventLogEntryDataManager.findEventLogEntries(startLogNr, pageSize);
   }
 
   @Override
@@ -68,5 +67,4 @@ public class EventLogEntryEntityManagerImpl extends AbstractEntityManager<EventL
   public void setEventLogEntryDataManager(EventLogEntryDataManager eventLogEntryDataManager) {
     this.eventLogEntryDataManager = eventLogEntryDataManager;
   }
-
 }

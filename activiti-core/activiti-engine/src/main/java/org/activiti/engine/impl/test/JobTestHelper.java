@@ -14,38 +14,46 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.test;
 
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.Callable;
-
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ManagementService;
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.impl.asyncexecutor.AsyncExecutor;
 import org.activiti.engine.test.ActivitiRule;
 
-/**
-
-
-
- */
+/** */
 
 // This helper class helps sharing the same code for jobExecutor test helpers,
 // between Junit3 and junit 4 test support classes
 public class JobTestHelper {
 
-  public static void waitForJobExecutorToProcessAllJobs(ActivitiRule activitiRule, long maxMillisToWait, long intervalMillis) {
-    waitForJobExecutorToProcessAllJobs(activitiRule.getProcessEngine().getProcessEngineConfiguration(), activitiRule.getManagementService(), maxMillisToWait, intervalMillis);
+  public static void waitForJobExecutorToProcessAllJobs(
+      ActivitiRule activitiRule, long maxMillisToWait, long intervalMillis) {
+    waitForJobExecutorToProcessAllJobs(
+        activitiRule.getProcessEngine().getProcessEngineConfiguration(),
+        activitiRule.getManagementService(),
+        maxMillisToWait,
+        intervalMillis);
   }
 
-  public static void waitForJobExecutorToProcessAllJobs(ProcessEngineConfiguration processEngineConfiguration, ManagementService managementService, long maxMillisToWait, long intervalMillis) {
-    waitForJobExecutorToProcessAllJobs(processEngineConfiguration, managementService, maxMillisToWait, intervalMillis, true);
+  public static void waitForJobExecutorToProcessAllJobs(
+      ProcessEngineConfiguration processEngineConfiguration,
+      ManagementService managementService,
+      long maxMillisToWait,
+      long intervalMillis) {
+    waitForJobExecutorToProcessAllJobs(
+        processEngineConfiguration, managementService, maxMillisToWait, intervalMillis, true);
   }
 
-  public static void waitForJobExecutorToProcessAllJobs(ProcessEngineConfiguration processEngineConfiguration, ManagementService managementService, long maxMillisToWait, long intervalMillis,
+  public static void waitForJobExecutorToProcessAllJobs(
+      ProcessEngineConfiguration processEngineConfiguration,
+      ManagementService managementService,
+      long maxMillisToWait,
+      long intervalMillis,
       boolean shutdownExecutorWhenFinished) {
 
     AsyncExecutor asyncExecutor = processEngineConfiguration.getAsyncExecutor();
@@ -82,11 +90,20 @@ public class JobTestHelper {
     }
   }
 
-  public static void waitForJobExecutorToProcessAllJobsAndExecutableTimerJobs(ProcessEngineConfiguration processEngineConfiguration, ManagementService managementService, long maxMillisToWait, long intervalMillis) {
-    waitForJobExecutorToProcessAllJobsAndExecutableTimerJobs(processEngineConfiguration, managementService, maxMillisToWait, intervalMillis, true);
+  public static void waitForJobExecutorToProcessAllJobsAndExecutableTimerJobs(
+      ProcessEngineConfiguration processEngineConfiguration,
+      ManagementService managementService,
+      long maxMillisToWait,
+      long intervalMillis) {
+    waitForJobExecutorToProcessAllJobsAndExecutableTimerJobs(
+        processEngineConfiguration, managementService, maxMillisToWait, intervalMillis, true);
   }
 
-  public static void waitForJobExecutorToProcessAllJobsAndExecutableTimerJobs(ProcessEngineConfiguration processEngineConfiguration, ManagementService managementService, long maxMillisToWait, long intervalMillis,
+  public static void waitForJobExecutorToProcessAllJobsAndExecutableTimerJobs(
+      ProcessEngineConfiguration processEngineConfiguration,
+      ManagementService managementService,
+      long maxMillisToWait,
+      long intervalMillis,
       boolean shutdownExecutorWhenFinished) {
 
     AsyncExecutor asyncExecutor = processEngineConfiguration.getAsyncExecutor();
@@ -125,11 +142,23 @@ public class JobTestHelper {
     }
   }
 
-  public static void waitForJobExecutorOnCondition(ActivitiRule activitiRule, long maxMillisToWait, long intervalMillis, Callable<Boolean> condition) {
-    waitForJobExecutorOnCondition(activitiRule.getProcessEngine().getProcessEngineConfiguration(), maxMillisToWait, intervalMillis, condition);
+  public static void waitForJobExecutorOnCondition(
+      ActivitiRule activitiRule,
+      long maxMillisToWait,
+      long intervalMillis,
+      Callable<Boolean> condition) {
+    waitForJobExecutorOnCondition(
+        activitiRule.getProcessEngine().getProcessEngineConfiguration(),
+        maxMillisToWait,
+        intervalMillis,
+        condition);
   }
 
-  public static void waitForJobExecutorOnCondition(ProcessEngineConfiguration processEngineConfiguration, long maxMillisToWait, long intervalMillis, Callable<Boolean> condition) {
+  public static void waitForJobExecutorOnCondition(
+      ProcessEngineConfiguration processEngineConfiguration,
+      long maxMillisToWait,
+      long intervalMillis,
+      Callable<Boolean> condition) {
     AsyncExecutor asyncExecutor = processEngineConfiguration.getAsyncExecutor();
     asyncExecutor.start();
 
@@ -160,11 +189,18 @@ public class JobTestHelper {
     }
   }
 
-  public static void executeJobExecutorForTime(ActivitiRule activitiRule, long maxMillisToWait, long intervalMillis) {
-    executeJobExecutorForTime(activitiRule.getProcessEngine().getProcessEngineConfiguration(), maxMillisToWait, intervalMillis);
+  public static void executeJobExecutorForTime(
+      ActivitiRule activitiRule, long maxMillisToWait, long intervalMillis) {
+    executeJobExecutorForTime(
+        activitiRule.getProcessEngine().getProcessEngineConfiguration(),
+        maxMillisToWait,
+        intervalMillis);
   }
 
-  public static void executeJobExecutorForTime(ProcessEngineConfiguration processEngineConfiguration, long maxMillisToWait, long intervalMillis) {
+  public static void executeJobExecutorForTime(
+      ProcessEngineConfiguration processEngineConfiguration,
+      long maxMillisToWait,
+      long intervalMillis) {
     AsyncExecutor asyncExecutor = processEngineConfiguration.getAsyncExecutor();
     asyncExecutor.start();
 
@@ -189,7 +225,6 @@ public class JobTestHelper {
 
   public static boolean areJobsAvailable(ActivitiRule activitiRule) {
     return areJobsAvailable(activitiRule.getManagementService());
-
   }
 
   public static boolean areJobsAvailable(ManagementService managementService) {

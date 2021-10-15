@@ -17,12 +17,10 @@
 package org.activiti.engine.delegate.event;
 
 /**
- * Base event listener that can be used when implementing an {@link ActivitiEventListener} to get notified when an entity is created, updated, deleted or if another entity-related event occurs.
+ * Base event listener that can be used when implementing an {@link ActivitiEventListener} to get
+ * notified when an entity is created, updated, deleted or if another entity-related event occurs.
  *
- * Override the <code>onXX(..)</code> methods to respond to entity changes accordingly.
- *
-
- *
+ * <p>Override the <code>onXX(..)</code> methods to respond to entity changes accordingly.
  */
 public class BaseEntityEventListener implements ActivitiEventListener {
 
@@ -30,7 +28,8 @@ public class BaseEntityEventListener implements ActivitiEventListener {
   protected Class<?> entityClass;
 
   /**
-   * Create a new BaseEntityEventListener, notified when an event that targets any type of entity is received. Returning true when {@link #isFailOnException()} is called.
+   * Create a new BaseEntityEventListener, notified when an event that targets any type of entity is
+   * received. Returning true when {@link #isFailOnException()} is called.
    */
   public BaseEntityEventListener() {
     this(true, null);
@@ -39,8 +38,7 @@ public class BaseEntityEventListener implements ActivitiEventListener {
   /**
    * Create a new BaseEntityEventListener.
    *
-   * @param failOnException
-   *          return value for {@link #isFailOnException()}.
+   * @param failOnException return value for {@link #isFailOnException()}.
    */
   public BaseEntityEventListener(boolean failOnException) {
     this(failOnException, null);
@@ -76,7 +74,8 @@ public class BaseEntityEventListener implements ActivitiEventListener {
   }
 
   /**
-   * @return true, if the event is an {@link ActivitiEntityEvent} and (if needed) the entityClass set in this instance, is assignable from the entity class in the event.
+   * @return true, if the event is an {@link ActivitiEntityEvent} and (if needed) the entityClass
+   *     set in this instance, is assignable from the entity class in the event.
    */
   protected boolean isValidEvent(ActivitiEvent event) {
     boolean valid = false;
@@ -90,37 +89,27 @@ public class BaseEntityEventListener implements ActivitiEventListener {
     return valid;
   }
 
-  /**
-   * Called when an entity create event is received.
-   */
+  /** Called when an entity create event is received. */
   protected void onCreate(ActivitiEvent event) {
     // Default implementation is a NO-OP
   }
 
-  /**
-   * Called when an entity initialized event is received.
-   */
+  /** Called when an entity initialized event is received. */
   protected void onInitialized(ActivitiEvent event) {
     // Default implementation is a NO-OP
   }
 
-  /**
-   * Called when an entity delete event is received.
-   */
+  /** Called when an entity delete event is received. */
   protected void onDelete(ActivitiEvent event) {
     // Default implementation is a NO-OP
   }
 
-  /**
-   * Called when an entity update event is received.
-   */
+  /** Called when an entity update event is received. */
   protected void onUpdate(ActivitiEvent event) {
     // Default implementation is a NO-OP
   }
 
-  /**
-   * Called when an event is received, which is not a create, an update or delete.
-   */
+  /** Called when an event is received, which is not a create, an update or delete. */
   protected void onEntityEvent(ActivitiEvent event) {
     // Default implementation is a NO-OP
   }

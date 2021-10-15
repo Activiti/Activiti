@@ -17,16 +17,15 @@ package org.activiti.spring.test.components.scope;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.springframework.util.StringUtils;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 class ProcessScopeTestEngine {
   private int customerId = 43;
@@ -45,7 +44,8 @@ class ProcessScopeTestEngine {
     Map<String, Object> vars = new HashMap<String, Object>();
     vars.put("customerId", customerId);
 
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("component-waiter", vars);
+    ProcessInstance processInstance =
+        runtimeService.startProcessInstanceByKey("component-waiter", vars);
 
     Map<String, Object> runtimeVars = runtimeService.getVariables(processInstance.getId());
 
@@ -54,7 +54,9 @@ class ProcessScopeTestEngine {
     assertThat(!runtimeVars.isEmpty()).isTrue();
     assertThat(StringUtils.hasText(statefulObjectVariableKey)).isTrue();
 
-    StatefulObject scopedObject = (StatefulObject) runtimeService.getVariable(processInstance.getId(), statefulObjectVariableKey);
+    StatefulObject scopedObject =
+        (StatefulObject)
+            runtimeService.getVariable(processInstance.getId(), statefulObjectVariableKey);
     assertThat(scopedObject).isNotNull();
     assertThat(StringUtils.hasText(scopedObject.getName())).isTrue();
     assertThat(scopedObject.getVisitedCount()).isEqualTo(2);
@@ -69,7 +71,9 @@ class ProcessScopeTestEngine {
     this.taskService.claim(t.getId(), "me");
     this.taskService.complete(t.getId());
 
-    scopedObject = (StatefulObject) runtimeService.getVariable(processInstance.getId(), statefulObjectVariableKey);
+    scopedObject =
+        (StatefulObject)
+            runtimeService.getVariable(processInstance.getId(), statefulObjectVariableKey);
     assertThat(scopedObject.getVisitedCount()).isEqualTo(3);
 
     assertThat(scopedObject.getCustomerId()).isEqualTo(customerId);

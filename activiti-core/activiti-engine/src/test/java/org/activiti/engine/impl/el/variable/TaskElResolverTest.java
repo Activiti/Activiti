@@ -25,44 +25,43 @@ import org.junit.Test;
 
 public class TaskElResolverTest {
 
-    private static final String TASK_KEY = "task";
+  private static final String TASK_KEY = "task";
 
-    private TaskElResolver resolver = new TaskElResolver();
+  private TaskElResolver resolver = new TaskElResolver();
 
-    @Test
-    public void canResolve_should_returnTrueWhenItsTaskEntityAndPropertyIsTask() {
-        //when
-        boolean canResolve = resolver.canResolve(TASK_KEY, new TaskEntityImpl());
-        //then
-        assertThat(canResolve).isTrue();
-    }
+  @Test
+  public void canResolve_should_returnTrueWhenItsTaskEntityAndPropertyIsTask() {
+    // when
+    boolean canResolve = resolver.canResolve(TASK_KEY, new TaskEntityImpl());
+    // then
+    assertThat(canResolve).isTrue();
+  }
 
-    @Test
-    public void canResolve_should_returnFalseWhenItsTaskEntityAndPropertyIsNotTask() {
-        //when
-        boolean canResolve = resolver.canResolve("differentFromTask", new TaskEntityImpl());
-        //then
-        assertThat(canResolve).isFalse();
-    }
+  @Test
+  public void canResolve_should_returnFalseWhenItsTaskEntityAndPropertyIsNotTask() {
+    // when
+    boolean canResolve = resolver.canResolve("differentFromTask", new TaskEntityImpl());
+    // then
+    assertThat(canResolve).isFalse();
+  }
 
-    @Test
-    public void canResolve_should_returnFalseWhenItsNotTaskEntityEntityAndPropertyIsTask() {
-        //when
-        boolean canResolve = resolver.canResolve(TASK_KEY, mock(VariableScope.class));
-        //then
-        assertThat(canResolve).isFalse();
-    }
+  @Test
+  public void canResolve_should_returnFalseWhenItsNotTaskEntityEntityAndPropertyIsTask() {
+    // when
+    boolean canResolve = resolver.canResolve(TASK_KEY, mock(VariableScope.class));
+    // then
+    assertThat(canResolve).isFalse();
+  }
 
-    @Test
-    public void resolve_should_returnVariableScope() {
-        //given
-        TaskEntity variableScope = new TaskEntityImpl();
+  @Test
+  public void resolve_should_returnVariableScope() {
+    // given
+    TaskEntity variableScope = new TaskEntityImpl();
 
-        //when
-        Object result = resolver.resolve(TASK_KEY, variableScope);
+    // when
+    Object result = resolver.resolve(TASK_KEY, variableScope);
 
-        //then
-        assertThat(result).isEqualTo(variableScope);
-    }
-
+    // then
+    assertThat(result).isEqualTo(variableScope);
+  }
 }

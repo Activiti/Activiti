@@ -14,21 +14,17 @@
  * limitations under the License.
  */
 
-
 package org.activiti.standalone.history;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.JavaDelegate;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.test.history.SerializableVariable;
 
-/**
-
- */
+/** */
 public class VariableSetter implements JavaDelegate {
 
   public void execute(DelegateExecution execution) {
@@ -62,5 +58,4 @@ public class VariableSetter implements JavaDelegate {
     execution.setVariable("gVariable", new SerializableVariable("hello hello"));
     execution.setVariable("hVariable", ";-)".getBytes());
   }
-
 }

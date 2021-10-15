@@ -16,13 +16,12 @@
 
 package org.activiti.engine.impl.interceptor;
 
-/**
-
- */
+/** */
 public abstract class AbstractCommandInterceptor implements CommandInterceptor {
 
   /**
-   * will be initialized by the {@link org.activiti.engine.ProcessEngineConfiguration ProcessEngineConfiguration}
+   * will be initialized by the {@link org.activiti.engine.ProcessEngineConfiguration
+   * ProcessEngineConfiguration}
    */
   protected CommandInterceptor next;
 

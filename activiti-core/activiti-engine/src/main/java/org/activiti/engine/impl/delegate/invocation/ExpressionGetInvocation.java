@@ -19,11 +19,7 @@ package org.activiti.engine.impl.delegate.invocation;
 import javax.el.ELContext;
 import javax.el.ValueExpression;
 
-/**
- * Class responsible for handling Expression.getValue invocations
- *
-
- */
+/** Class responsible for handling Expression.getValue invocations */
 public class ExpressionGetInvocation extends ExpressionInvocation {
 
   protected final ELContext elContext;
@@ -36,5 +32,4 @@ public class ExpressionGetInvocation extends ExpressionInvocation {
   protected void invoke() {
     invocationResult = valueExpression.getValue(elContext);
   }
-
 }

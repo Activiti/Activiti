@@ -27,5 +27,4 @@ public class TimeZoneUtil {
 
     return foreignTime;
   }
-
 }

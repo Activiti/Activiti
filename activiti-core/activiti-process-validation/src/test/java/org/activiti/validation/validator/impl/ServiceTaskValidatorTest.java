@@ -15,59 +15,53 @@
  */
 package org.activiti.validation.validator.impl;
 
-import java.util.ArrayList;
+import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.ArrayList;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.Process;
 import org.activiti.bpmn.model.ServiceTask;
 import org.activiti.validation.ValidationError;
 import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 public class ServiceTaskValidatorTest {
 
-    private ServiceTaskValidator validator = new ServiceTaskValidator();
+  private ServiceTaskValidator validator = new ServiceTaskValidator();
 
-    @Test
-    public void executeValidationShouldRiseErrorsForEmptyServiceTask() {
-        //given
-        Process process = new Process();
-        process.addFlowElement(new ServiceTask());
-        BpmnModel bpmnModel = new BpmnModel();
-        ArrayList<ValidationError> errors = new ArrayList<>();
+  @Test
+  public void executeValidationShouldRiseErrorsForEmptyServiceTask() {
+    // given
+    Process process = new Process();
+    process.addFlowElement(new ServiceTask());
+    BpmnModel bpmnModel = new BpmnModel();
+    ArrayList<ValidationError> errors = new ArrayList<>();
 
-        //when
-        validator.executeValidation(bpmnModel, process,
-                                    errors);
+    // when
+    validator.executeValidation(bpmnModel, process, errors);
 
-        //then
-        assertThat(errors).hasSize(1);
-        assertThat(errors.get(0).getProblem()).isEqualTo("activiti-servicetask-missing-implementation");
-        assertThat(errors.get(0).getDefaultDescription())
-                .isEqualTo(
-                        "One of the attributes 'implementation', 'class', 'delegateExpression', 'type', 'operation', or 'expression' is mandatory on serviceTask."
-                );
-    }
+    // then
+    assertThat(errors).hasSize(1);
+    assertThat(errors.get(0).getProblem()).isEqualTo("activiti-servicetask-missing-implementation");
+    assertThat(errors.get(0).getDefaultDescription())
+        .isEqualTo(
+            "One of the attributes 'implementation', 'class', 'delegateExpression', 'type',"
+                + " 'operation', or 'expression' is mandatory on serviceTask.");
+  }
 
-    @Test
-    public void executeValidationShouldNotRiseErrorsForServiceTasksSettingOnlyTheImplementation() {
-        //given
-        Process process = new Process();
-        ServiceTask serviceTask = new ServiceTask();
-        serviceTask.setImplementation("myImpl");
-        process.addFlowElement(serviceTask);
-        BpmnModel bpmnModel = new BpmnModel();
-        ArrayList<ValidationError> errors = new ArrayList<>();
+  @Test
+  public void executeValidationShouldNotRiseErrorsForServiceTasksSettingOnlyTheImplementation() {
+    // given
+    Process process = new Process();
+    ServiceTask serviceTask = new ServiceTask();
+    serviceTask.setImplementation("myImpl");
+    process.addFlowElement(serviceTask);
+    BpmnModel bpmnModel = new BpmnModel();
+    ArrayList<ValidationError> errors = new ArrayList<>();
 
-        //when
-        validator.executeValidation(bpmnModel, process,
-                                    errors);
+    // when
+    validator.executeValidation(bpmnModel, process, errors);
 
-        //then
-        assertThat(errors)
-                .as("No error is expected: the default behavior will be used")
-                .isEmpty();
-    }
-
+    // then
+    assertThat(errors).as("No error is expected: the default behavior will be used").isEmpty();
+  }
 }

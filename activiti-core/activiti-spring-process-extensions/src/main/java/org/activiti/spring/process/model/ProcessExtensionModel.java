@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.spring.process.model;
 
 import java.util.HashMap;
@@ -22,26 +21,26 @@ import java.util.Map;
 
 public class ProcessExtensionModel {
 
-    private String id;
-    private Map<String, Extension> extensions = new HashMap<>();
+  private String id;
+  private Map<String, Extension> extensions = new HashMap<>();
 
-    public String getId() {
-        return id;
-    }
+  public String getId() {
+    return id;
+  }
 
-    public void setId(String id) {
-        this.id = id;
-    }
+  public void setId(String id) {
+    this.id = id;
+  }
 
-    public Extension getExtensions(String processDefinitionKey) {
-        return extensions.get(processDefinitionKey);
-    }
+  public Extension getExtensions(String processDefinitionKey) {
+    return extensions.get(processDefinitionKey);
+  }
 
-    public Map<String, Extension> getAllExtensions() {
-        return extensions;
-    }
+  public Map<String, Extension> getAllExtensions() {
+    return extensions;
+  }
 
-    public void setExtensions(Map<String, Extension> extensions) {
-        this.extensions = extensions;
-    }
+  public void setExtensions(Map<String, Extension> extensions) {
+    this.extensions = extensions;
+  }
 }

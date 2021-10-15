@@ -14,14 +14,11 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.test.bpmn.gateway;
 
 import java.io.Serializable;
 
-/**
-
- */
+/** */
 public class ExclusiveGatewayTestOrder implements Serializable {
 
   private static final long serialVersionUID = 1L;
@@ -51,5 +48,4 @@ public class ExclusiveGatewayTestOrder implements Serializable {
   public boolean isGold() {
     return price >= 250;
   }
-
 }

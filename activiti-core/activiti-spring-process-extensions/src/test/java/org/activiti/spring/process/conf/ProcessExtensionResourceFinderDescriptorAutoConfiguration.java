@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.spring.process.conf;
 
 import org.activiti.spring.process.ProcessExtensionResourceFinderDescriptor;
@@ -26,13 +25,13 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class ProcessExtensionResourceFinderDescriptorAutoConfiguration {
 
-    @Bean
-    @ConditionalOnMissingBean
-    public ProcessExtensionResourceFinderDescriptor processExtensionResourceFinderDescriptor(
-            @Value("${spring.activiti.process.extensions.dir:classpath*:**/processes/}") String locationPrefix,
-            @Value("${spring.activiti.process.extensions.suffix:**-extensions.json}") String locationSuffix) {
-        return new ProcessExtensionResourceFinderDescriptor(true,
-                locationPrefix,
-                locationSuffix);
-    }
+  @Bean
+  @ConditionalOnMissingBean
+  public ProcessExtensionResourceFinderDescriptor processExtensionResourceFinderDescriptor(
+      @Value("${spring.activiti.process.extensions.dir:classpath*:**/processes/}")
+          String locationPrefix,
+      @Value("${spring.activiti.process.extensions.suffix:**-extensions.json}")
+          String locationSuffix) {
+    return new ProcessExtensionResourceFinderDescriptor(true, locationPrefix, locationSuffix);
+  }
 }

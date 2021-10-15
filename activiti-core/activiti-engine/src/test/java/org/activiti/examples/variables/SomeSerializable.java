@@ -29,5 +29,4 @@ public class SomeSerializable implements Serializable {
   public String getValue() {
     return value;
   }
-
 }

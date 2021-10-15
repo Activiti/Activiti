@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.bpmn.listener;
 
 import org.activiti.engine.delegate.DelegateExecution;
@@ -38,8 +37,11 @@ public class ScriptExecutionListener implements ExecutionListener {
 
     validateParameters();
 
-    ScriptingEngines scriptingEngines = Context.getProcessEngineConfiguration().getScriptingEngines();
-    Object result = scriptingEngines.evaluate(script.getExpressionText(), language.getExpressionText(), execution);
+    ScriptingEngines scriptingEngines =
+        Context.getProcessEngineConfiguration().getScriptingEngines();
+    Object result =
+        scriptingEngines.evaluate(
+            script.getExpressionText(), language.getExpressionText(), execution);
 
     if (resultVariable != null) {
       execution.setVariable(resultVariable.getExpressionText(), result);
@@ -48,11 +50,13 @@ public class ScriptExecutionListener implements ExecutionListener {
 
   protected void validateParameters() {
     if (script == null) {
-      throw new IllegalArgumentException("The field 'script' should be set on the ExecutionListener");
+      throw new IllegalArgumentException(
+          "The field 'script' should be set on the ExecutionListener");
     }
 
     if (language == null) {
-      throw new IllegalArgumentException("The field 'language' should be set on the ExecutionListener");
+      throw new IllegalArgumentException(
+          "The field 'language' should be set on the ExecutionListener");
     }
   }
 

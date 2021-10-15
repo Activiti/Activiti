@@ -21,19 +21,17 @@ import org.activiti.engine.impl.el.ExpressionManager;
 
 public class DefaultMessageExecutionContextFactory implements MessageExecutionContextFactory {
 
+  public DefaultMessageExecutionContextFactory() {
+    super();
+  }
 
-    public DefaultMessageExecutionContextFactory() {
-        super();
-    }
+  @Override
+  public MessageExecutionContext create(
+      MessageEventDefinition messageEventDefinition,
+      MessagePayloadMappingProvider messagePayloadMappingProvider,
+      ExpressionManager expressionManager) {
 
-    @Override
-    public MessageExecutionContext create(MessageEventDefinition messageEventDefinition,
-                                          MessagePayloadMappingProvider messagePayloadMappingProvider,
-                                          ExpressionManager expressionManager) {
-
-        return new DefaultMessageExecutionContext(messageEventDefinition,
-                                                  expressionManager,
-                                                  messagePayloadMappingProvider);
-    }
-
+    return new DefaultMessageExecutionContext(
+        messageEventDefinition, expressionManager, messagePayloadMappingProvider);
+  }
 }

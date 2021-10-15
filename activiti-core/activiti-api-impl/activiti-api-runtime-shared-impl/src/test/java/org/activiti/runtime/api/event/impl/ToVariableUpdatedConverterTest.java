@@ -29,35 +29,35 @@ import org.junit.jupiter.api.Test;
 
 class ToVariableUpdatedConverterTest {
 
-    private ToVariableUpdatedConverter converter = new ToVariableUpdatedConverter();
+  private ToVariableUpdatedConverter converter = new ToVariableUpdatedConverter();
 
-    @Test
-    void should_convertToVariableUpdatedEvent() {
-        ActivitiVariableUpdatedEventImpl internalEvent = new ActivitiVariableUpdatedEventImpl();
-        internalEvent.setVariableName("variableName");
-        internalEvent.setProcessInstanceId("processInstanceId");
-        internalEvent.setTaskId("taskId");
-        VariableType variableType = new IntegerType();
-        internalEvent.setVariableType(variableType);
-        Object value = mock(Object.class);
-        internalEvent.setVariableValue(value);
-        Object previousValue = mock(Object.class);
-        internalEvent.setVariablePreviousValue(previousValue);
+  @Test
+  void should_convertToVariableUpdatedEvent() {
+    ActivitiVariableUpdatedEventImpl internalEvent = new ActivitiVariableUpdatedEventImpl();
+    internalEvent.setVariableName("variableName");
+    internalEvent.setProcessInstanceId("processInstanceId");
+    internalEvent.setTaskId("taskId");
+    VariableType variableType = new IntegerType();
+    internalEvent.setVariableType(variableType);
+    Object value = mock(Object.class);
+    internalEvent.setVariableValue(value);
+    Object previousValue = mock(Object.class);
+    internalEvent.setVariablePreviousValue(previousValue);
 
-        Optional<VariableUpdatedEvent> result = converter.from(internalEvent);
+    Optional<VariableUpdatedEvent> result = converter.from(internalEvent);
 
-        assertThat(result).isPresent();
-        VariableUpdatedEvent actualEvent = result.get();
-        assertThat(actualEvent.getEventType()).isEqualTo(VariableEvents.VARIABLE_UPDATED);
-        VariableInstance actualEntity = actualEvent.getEntity();
-        assertThat(actualEntity.getName()).isEqualTo("variableName");
-        assertThat(actualEntity.getProcessInstanceId()).isEqualTo("processInstanceId");
-        assertThat(actualEntity.getTaskId()).isEqualTo("taskId");
-        assertThat(actualEntity.getType()).isEqualTo("integer");
-        Object actualValue = actualEntity.getValue();
-        Object actualPreviousValue = actualEvent.getPreviousValue();
-        assertThat(actualPreviousValue).isSameAs(previousValue);
-        assertThat(actualValue).isSameAs(value);
-        assertThat(previousValue).isNotSameAs(value);
-    }
+    assertThat(result).isPresent();
+    VariableUpdatedEvent actualEvent = result.get();
+    assertThat(actualEvent.getEventType()).isEqualTo(VariableEvents.VARIABLE_UPDATED);
+    VariableInstance actualEntity = actualEvent.getEntity();
+    assertThat(actualEntity.getName()).isEqualTo("variableName");
+    assertThat(actualEntity.getProcessInstanceId()).isEqualTo("processInstanceId");
+    assertThat(actualEntity.getTaskId()).isEqualTo("taskId");
+    assertThat(actualEntity.getType()).isEqualTo("integer");
+    Object actualValue = actualEntity.getValue();
+    Object actualPreviousValue = actualEvent.getPreviousValue();
+    assertThat(actualPreviousValue).isSameAs(previousValue);
+    assertThat(actualValue).isSameAs(value);
+    assertThat(previousValue).isNotSameAs(value);
+  }
 }

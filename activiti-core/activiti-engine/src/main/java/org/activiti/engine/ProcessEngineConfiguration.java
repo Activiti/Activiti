@@ -20,7 +20,6 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 import javax.sql.DataSource;
-
 import org.activiti.api.runtime.shared.identity.UserGroupManager;
 import org.activiti.engine.cfg.MailServerInfo;
 import org.activiti.engine.impl.asyncexecutor.AsyncExecutor;
@@ -35,64 +34,63 @@ import org.activiti.engine.runtime.Clock;
 /**
  * Configuration information from which a process engine can be build.
  *
- * <p>
- * Most common is to create a process engine based on the default configuration file:
+ * <p>Most common is to create a process engine based on the default configuration file:
  *
  * <pre>
  * ProcessEngine processEngine = ProcessEngineConfiguration.createProcessEngineConfigurationFromResourceDefault().buildProcessEngine();
  * </pre>
  *
- * </p>
- *
- * <p>
- * To create a process engine programmatic, without a configuration file, the first option is {@link #createStandaloneProcessEngineConfiguration()}
+ * <p>To create a process engine programmatic, without a configuration file, the first option is
+ * {@link #createStandaloneProcessEngineConfiguration()}
  *
  * <pre>
  * ProcessEngine processEngine = ProcessEngineConfiguration.createStandaloneProcessEngineConfiguration().buildProcessEngine();
  * </pre>
  *
- * This creates a new process engine with all the defaults to connect to a remote h2 database (jdbc:h2:tcp://localhost/activiti) in standalone mode. Standalone mode means that Activiti will manage the
- * transactions on the JDBC connections that it creates. One transaction per service method. For a description of how to write the configuration files, see the userguide.
- * </p>
+ * This creates a new process engine with all the defaults to connect to a remote h2 database
+ * (jdbc:h2:tcp://localhost/activiti) in standalone mode. Standalone mode means that Activiti will
+ * manage the transactions on the JDBC connections that it creates. One transaction per service
+ * method. For a description of how to write the configuration files, see the userguide.
  *
- * <p>
- * The second option is great for testing: {@link #createStandalonInMemeProcessEngineConfiguration()}
+ * <p>The second option is great for testing: {@link
+ * #createStandalonInMemeProcessEngineConfiguration()}
  *
  * <pre>
  * ProcessEngine processEngine = ProcessEngineConfiguration.createStandaloneInMemProcessEngineConfiguration().buildProcessEngine();
  * </pre>
  *
- * This creates a new process engine with all the defaults to connect to an memory h2 database (jdbc:h2:tcp://localhost/activiti) in standalone mode. The DB schema strategy default is in this case
- * <code>create-drop</code>. Standalone mode means that Activiti will manage the transactions on the JDBC connections that it creates. One transaction per service method.
- * </p>
+ * This creates a new process engine with all the defaults to connect to an memory h2 database
+ * (jdbc:h2:tcp://localhost/activiti) in standalone mode. The DB schema strategy default is in this
+ * case <code>create-drop</code>. Standalone mode means that Activiti will manage the transactions
+ * on the JDBC connections that it creates. One transaction per service method.
  *
- * <p>
- * On all forms of creating a process engine, you can first customize the configuration before calling the {@link #buildProcessEngine()} method by calling any of the setters like this:
+ * <p>On all forms of creating a process engine, you can first customize the configuration before
+ * calling the {@link #buildProcessEngine()} method by calling any of the setters like this:
  *
  * <pre>
  * ProcessEngine processEngine = ProcessEngineConfiguration.createProcessEngineConfigurationFromResourceDefault().setMailServerHost(&quot;gmail.com&quot;).setJdbcUsername(&quot;mickey&quot;).setJdbcPassword(&quot;mouse&quot;)
  *     .buildProcessEngine();
  * </pre>
  *
- * </p>
- *
  * @see ProcessEngines
-
  */
 public abstract class ProcessEngineConfiguration {
 
   /**
-   * Checks the version of the DB schema against the library when the process engine is being created and throws an exception if the versions don't match.
+   * Checks the version of the DB schema against the library when the process engine is being
+   * created and throws an exception if the versions don't match.
    */
   public static final String DB_SCHEMA_UPDATE_FALSE = "false";
 
   /**
-   * Creates the schema when the process engine is being created and drops the schema when the process engine is being closed.
+   * Creates the schema when the process engine is being created and drops the schema when the
+   * process engine is being closed.
    */
   public static final String DB_SCHEMA_UPDATE_CREATE_DROP = "create-drop";
 
   /**
-   * Upon building of the process engine, a check is performed and an update of the schema is performed if it is necessary.
+   * Upon building of the process engine, a check is performed and an update of the schema is
+   * performed if it is necessary.
    */
   public static final String DB_SCHEMA_UPDATE_TRUE = "true";
 
@@ -143,7 +141,8 @@ public abstract class ProcessEngineConfiguration {
   protected Clock clock;
   protected AsyncExecutor asyncExecutor;
   /**
-   * Define the default lock time for an async job in seconds. The lock time is used when creating an async job and when it expires the async executor assumes that the job has failed. It will be
+   * Define the default lock time for an async job in seconds. The lock time is used when creating
+   * an async job and when it expires the async executor assumes that the job has failed. It will be
    * retried again.
    */
   protected int lockTimeAsyncJobWaitTime = 60;
@@ -153,12 +152,14 @@ public abstract class ProcessEngineConfiguration {
   protected int asyncFailedJobWaitTime = 10;
 
   /**
-   * Allows configuring a database table prefix which is used for all runtime operations of the process engine. For example, if you specify a prefix named 'PRE1.', activiti will query for executions
-   * in a table named 'PRE1.ACT_RU_EXECUTION_'.
+   * Allows configuring a database table prefix which is used for all runtime operations of the
+   * process engine. For example, if you specify a prefix named 'PRE1.', activiti will query for
+   * executions in a table named 'PRE1.ACT_RU_EXECUTION_'.
    *
-   * <p />
-   * <strong>NOTE: the prefix is not respected by automatic database schema management. If you use {@link ProcessEngineConfiguration#DB_SCHEMA_UPDATE_CREATE_DROP} or
-   * {@link ProcessEngineConfiguration#DB_SCHEMA_UPDATE_TRUE}, activiti will create the database tables using the default names, regardless of the prefix configured here.</strong>
+   * <p><strong>NOTE: the prefix is not respected by automatic database schema management. If you
+   * use {@link ProcessEngineConfiguration#DB_SCHEMA_UPDATE_CREATE_DROP} or {@link
+   * ProcessEngineConfiguration#DB_SCHEMA_UPDATE_TRUE}, activiti will create the database tables
+   * using the default names, regardless of the prefix configured here.</strong>
    *
    * @since 5.9
    */
@@ -167,25 +168,26 @@ public abstract class ProcessEngineConfiguration {
   /**
    * Escape character for doing wildcard searches.
    *
-   * This will be added at then end of queries that include for example a LIKE clause.
-   * For example: SELECT * FROM table WHERE column LIKE '%\%%' ESCAPE '\';
+   * <p>This will be added at then end of queries that include for example a LIKE clause. For
+   * example: SELECT * FROM table WHERE column LIKE '%\%%' ESCAPE '\';
    */
   protected String databaseWildcardEscapeCharacter;
 
-  /**
-   * database catalog to use
-   */
+  /** database catalog to use */
   protected String databaseCatalog = "";
 
   /**
-   * In some situations you want to set the schema to use for table checks / generation if the database metadata doesn't return that correctly, see https://jira.codehaus.org/browse/ACT-1220,
+   * In some situations you want to set the schema to use for table checks / generation if the
+   * database metadata doesn't return that correctly, see https://jira.codehaus.org/browse/ACT-1220,
    * https://jira.codehaus.org/browse/ACT-1062
    */
   protected String databaseSchema;
 
   /**
-   * Set to true in case the defined databaseTablePrefix is a schema-name, instead of an actual table name prefix. This is relevant for checking if Activiti-tables exist, the databaseTablePrefix will
-   * not be used here - since the schema is taken into account already, adding a prefix for the table-check will result in wrong table-names.
+   * Set to true in case the defined databaseTablePrefix is a schema-name, instead of an actual
+   * table name prefix. This is relevant for checking if Activiti-tables exist, the
+   * databaseTablePrefix will not be used here - since the schema is taken into account already,
+   * adding a prefix for the table-check will result in wrong table-names.
    *
    * @since 5.15
    */
@@ -197,9 +199,11 @@ public abstract class ProcessEngineConfiguration {
 
   protected ClassLoader classLoader;
   /**
-   * Either use Class.forName or ClassLoader.loadClass for class loading. See http://forums.activiti.org/content/reflectutilloadclass-and-custom- classloader
+   * Either use Class.forName or ClassLoader.loadClass for class loading. See
+   * http://forums.activiti.org/content/reflectutilloadclass-and-custom- classloader
    */
   protected boolean useClassForNameClassLoading = true;
+
   protected ProcessEngineLifecycleListener processEngineLifecycleListener;
 
   protected boolean enableProcessDefinitionInfoCache = false;
@@ -208,29 +212,35 @@ public abstract class ProcessEngineConfiguration {
   protected boolean copyVariablesToLocalForTasks = false;
 
   /** use one of the static createXxxx methods instead */
-  protected ProcessEngineConfiguration() {
-  }
+  protected ProcessEngineConfiguration() {}
 
   public abstract ProcessEngine buildProcessEngine();
 
   public static ProcessEngineConfiguration createProcessEngineConfigurationFromResourceDefault() {
-    return createProcessEngineConfigurationFromResource("activiti.cfg.xml", "processEngineConfiguration");
+    return createProcessEngineConfigurationFromResource(
+        "activiti.cfg.xml", "processEngineConfiguration");
   }
 
-  public static ProcessEngineConfiguration createProcessEngineConfigurationFromResource(String resource) {
+  public static ProcessEngineConfiguration createProcessEngineConfigurationFromResource(
+      String resource) {
     return createProcessEngineConfigurationFromResource(resource, "processEngineConfiguration");
   }
 
-  public static ProcessEngineConfiguration createProcessEngineConfigurationFromResource(String resource, String beanName) {
+  public static ProcessEngineConfiguration createProcessEngineConfigurationFromResource(
+      String resource, String beanName) {
     return BeansConfigurationHelper.parseProcessEngineConfigurationFromResource(resource, beanName);
   }
 
-  public static ProcessEngineConfiguration createProcessEngineConfigurationFromInputStream(InputStream inputStream) {
-    return createProcessEngineConfigurationFromInputStream(inputStream, "processEngineConfiguration");
+  public static ProcessEngineConfiguration createProcessEngineConfigurationFromInputStream(
+      InputStream inputStream) {
+    return createProcessEngineConfigurationFromInputStream(
+        inputStream, "processEngineConfiguration");
   }
 
-  public static ProcessEngineConfiguration createProcessEngineConfigurationFromInputStream(InputStream inputStream, String beanName) {
-    return BeansConfigurationHelper.parseProcessEngineConfigurationFromInputStream(inputStream, beanName);
+  public static ProcessEngineConfiguration createProcessEngineConfigurationFromInputStream(
+      InputStream inputStream, String beanName) {
+    return BeansConfigurationHelper.parseProcessEngineConfigurationFromInputStream(
+        inputStream, beanName);
   }
 
   public static ProcessEngineConfiguration createStandaloneProcessEngineConfiguration() {
@@ -454,7 +464,8 @@ public abstract class ProcessEngineConfiguration {
     return transactionsExternallyManaged;
   }
 
-  public ProcessEngineConfiguration setTransactionsExternallyManaged(boolean transactionsExternallyManaged) {
+  public ProcessEngineConfiguration setTransactionsExternallyManaged(
+      boolean transactionsExternallyManaged) {
     this.transactionsExternallyManaged = transactionsExternallyManaged;
     return this;
   }
@@ -544,7 +555,8 @@ public abstract class ProcessEngineConfiguration {
     return jdbcDefaultTransactionIsolationLevel;
   }
 
-  public ProcessEngineConfiguration setJdbcDefaultTransactionIsolationLevel(int jdbcDefaultTransactionIsolationLevel) {
+  public ProcessEngineConfiguration setJdbcDefaultTransactionIsolationLevel(
+      int jdbcDefaultTransactionIsolationLevel) {
     this.jdbcDefaultTransactionIsolationLevel = jdbcDefaultTransactionIsolationLevel;
     return this;
   }
@@ -571,7 +583,8 @@ public abstract class ProcessEngineConfiguration {
     return useClassForNameClassLoading;
   }
 
-  public ProcessEngineConfiguration setUseClassForNameClassLoading(boolean useClassForNameClassLoading) {
+  public ProcessEngineConfiguration setUseClassForNameClassLoading(
+      boolean useClassForNameClassLoading) {
     this.useClassForNameClassLoading = useClassForNameClassLoading;
     return this;
   }
@@ -630,7 +643,8 @@ public abstract class ProcessEngineConfiguration {
     return this;
   }
 
-  public ProcessEngineConfiguration setProcessEngineLifecycleListener(ProcessEngineLifecycleListener processEngineLifecycleListener) {
+  public ProcessEngineConfiguration setProcessEngineLifecycleListener(
+      ProcessEngineLifecycleListener processEngineLifecycleListener) {
     this.processEngineLifecycleListener = processEngineLifecycleListener;
     return this;
   }
@@ -661,7 +675,8 @@ public abstract class ProcessEngineConfiguration {
     return databaseWildcardEscapeCharacter;
   }
 
-  public ProcessEngineConfiguration setDatabaseWildcardEscapeCharacter(String databaseWildcardEscapeCharacter) {
+  public ProcessEngineConfiguration setDatabaseWildcardEscapeCharacter(
+      String databaseWildcardEscapeCharacter) {
     this.databaseWildcardEscapeCharacter = databaseWildcardEscapeCharacter;
     return this;
   }
@@ -701,7 +716,6 @@ public abstract class ProcessEngineConfiguration {
     this.clock = clock;
     return this;
   }
-
 
   public AsyncExecutor getAsyncExecutor() {
     return asyncExecutor;
@@ -743,17 +757,19 @@ public abstract class ProcessEngineConfiguration {
     return enableProcessDefinitionInfoCache;
   }
 
-  public ProcessEngineConfiguration setEnableProcessDefinitionInfoCache(boolean enableProcessDefinitionInfoCache) {
+  public ProcessEngineConfiguration setEnableProcessDefinitionInfoCache(
+      boolean enableProcessDefinitionInfoCache) {
     this.enableProcessDefinitionInfoCache = enableProcessDefinitionInfoCache;
     return this;
   }
 
-  public ProcessEngineConfiguration setCopyVariablesToLocalForTasks(boolean copyVariablesToLocalForTasks) {
+  public ProcessEngineConfiguration setCopyVariablesToLocalForTasks(
+      boolean copyVariablesToLocalForTasks) {
     this.copyVariablesToLocalForTasks = copyVariablesToLocalForTasks;
     return this;
   }
 
-  public boolean isCopyVariablesToLocalForTasks(){
+  public boolean isCopyVariablesToLocalForTasks() {
     return copyVariablesToLocalForTasks;
   }
 
@@ -764,5 +780,4 @@ public abstract class ProcessEngineConfiguration {
   public ActivitiEngineAgendaFactory getEngineAgendaFactory() {
     return engineAgendaFactory;
   }
-
 }

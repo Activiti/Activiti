@@ -16,8 +16,9 @@
 
 package org.activiti.engine.impl.cmd;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.Serializable;
-
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.SubProcess;
 import org.activiti.bpmn.model.ValuedDataObject;
@@ -34,9 +35,6 @@ import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 import org.activiti.engine.runtime.DataObject;
 import org.activiti.engine.runtime.Execution;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-
 public class GetDataObjectCmd implements Command<DataObject>, Serializable {
 
   private static final long serialVersionUID = 1L;
@@ -52,7 +50,12 @@ public class GetDataObjectCmd implements Command<DataObject>, Serializable {
     this.isLocal = isLocal;
   }
 
-  public GetDataObjectCmd(String executionId, String dataObjectName, boolean isLocal, String locale, boolean withLocalizationFallback) {
+  public GetDataObjectCmd(
+      String executionId,
+      String dataObjectName,
+      boolean isLocal,
+      String locale,
+      boolean withLocalizationFallback) {
     this.executionId = executionId;
     this.dataObjectName = dataObjectName;
     this.isLocal = isLocal;
@@ -71,7 +74,8 @@ public class GetDataObjectCmd implements Command<DataObject>, Serializable {
     ExecutionEntity execution = commandContext.getExecutionEntityManager().findById(executionId);
 
     if (execution == null) {
-      throw new ActivitiObjectNotFoundException("execution " + executionId + " doesn't exist", Execution.class);
+      throw new ActivitiObjectNotFoundException(
+          "execution " + executionId + " doesn't exist", Execution.class);
     }
 
     DataObject dataObject = null;
@@ -87,12 +91,14 @@ public class GetDataObjectCmd implements Command<DataObject>, Serializable {
     String localizedDescription = null;
 
     if (variableEntity != null) {
-      ExecutionEntity executionEntity = commandContext.getExecutionEntityManager().findById(variableEntity.getExecutionId());
+      ExecutionEntity executionEntity =
+          commandContext.getExecutionEntityManager().findById(variableEntity.getExecutionId());
       while (!executionEntity.isScope()) {
         executionEntity = executionEntity.getParent();
       }
 
-      BpmnModel bpmnModel = ProcessDefinitionUtil.getBpmnModel(executionEntity.getProcessDefinitionId());
+      BpmnModel bpmnModel =
+          ProcessDefinitionUtil.getBpmnModel(executionEntity.getProcessDefinitionId());
       ValuedDataObject foundDataObject = null;
       if (executionEntity.getParentId() == null) {
         for (ValuedDataObject dataObjectDefinition : bpmnModel.getMainProcess().getDataObjects()) {
@@ -113,15 +119,20 @@ public class GetDataObjectCmd implements Command<DataObject>, Serializable {
       }
 
       if (locale != null && foundDataObject != null) {
-        ObjectNode languageNode = Context.getLocalizationElementProperties(locale, foundDataObject.getId(),
-            execution.getProcessDefinitionId(), withLocalizationFallback);
+        ObjectNode languageNode =
+            Context.getLocalizationElementProperties(
+                locale,
+                foundDataObject.getId(),
+                execution.getProcessDefinitionId(),
+                withLocalizationFallback);
 
         if (variableEntity != null && languageNode != null) {
           JsonNode nameNode = languageNode.get(DynamicBpmnConstants.LOCALIZATION_NAME);
           if (nameNode != null) {
             localizedName = nameNode.asText();
           }
-          JsonNode descriptionNode = languageNode.get(DynamicBpmnConstants.LOCALIZATION_DESCRIPTION);
+          JsonNode descriptionNode =
+              languageNode.get(DynamicBpmnConstants.LOCALIZATION_DESCRIPTION);
           if (descriptionNode != null) {
             localizedDescription = descriptionNode.asText();
           }
@@ -129,8 +140,15 @@ public class GetDataObjectCmd implements Command<DataObject>, Serializable {
       }
 
       if (foundDataObject != null) {
-        dataObject = new DataObjectImpl(variableEntity.getName(), variableEntity.getValue(), foundDataObject.getDocumentation(),
-            foundDataObject.getType(), localizedName, localizedDescription, foundDataObject.getId());
+        dataObject =
+            new DataObjectImpl(
+                variableEntity.getName(),
+                variableEntity.getValue(),
+                foundDataObject.getDocumentation(),
+                foundDataObject.getType(),
+                localizedName,
+                localizedDescription,
+                foundDataObject.getId());
       }
     }
 

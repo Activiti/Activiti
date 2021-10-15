@@ -14,21 +14,16 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.cmd;
 
 import java.io.Serializable;
-
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 
-/**
-
-
- */
+/** */
 public class DeleteIdentityLinkForProcessInstanceCmd implements Command<Object>, Serializable {
 
   private static final long serialVersionUID = 1L;
@@ -41,7 +36,8 @@ public class DeleteIdentityLinkForProcessInstanceCmd implements Command<Object>,
 
   protected String type;
 
-  public DeleteIdentityLinkForProcessInstanceCmd(String processInstanceId, String userId, String groupId, String type) {
+  public DeleteIdentityLinkForProcessInstanceCmd(
+      String processInstanceId, String userId, String groupId, String type) {
     validateParams(userId, groupId, processInstanceId, type);
     this.processInstanceId = processInstanceId;
     this.userId = userId;
@@ -49,13 +45,15 @@ public class DeleteIdentityLinkForProcessInstanceCmd implements Command<Object>,
     this.type = type;
   }
 
-  protected void validateParams(String userId, String groupId, String processInstanceId, String type) {
+  protected void validateParams(
+      String userId, String groupId, String processInstanceId, String type) {
     if (processInstanceId == null) {
       throw new ActivitiIllegalArgumentException("processInstanceId is null");
     }
 
     if (type == null) {
-      throw new ActivitiIllegalArgumentException("type is required when deleting a process identity link");
+      throw new ActivitiIllegalArgumentException(
+          "type is required when deleting a process identity link");
     }
 
     if (userId == null && groupId == null) {
@@ -64,16 +62,21 @@ public class DeleteIdentityLinkForProcessInstanceCmd implements Command<Object>,
   }
 
   public Void execute(CommandContext commandContext) {
-    ExecutionEntity processInstance = commandContext.getExecutionEntityManager().findById(processInstanceId);
+    ExecutionEntity processInstance =
+        commandContext.getExecutionEntityManager().findById(processInstanceId);
 
     if (processInstance == null) {
-      throw new ActivitiObjectNotFoundException("Cannot find process instance with id " + processInstanceId, ExecutionEntity.class);
+      throw new ActivitiObjectNotFoundException(
+          "Cannot find process instance with id " + processInstanceId, ExecutionEntity.class);
     }
 
-    commandContext.getIdentityLinkEntityManager().deleteIdentityLink(processInstance, userId, groupId, type);
-    commandContext.getHistoryManager().createProcessInstanceIdentityLinkComment(processInstanceId, userId, groupId, type, false);
+    commandContext
+        .getIdentityLinkEntityManager()
+        .deleteIdentityLink(processInstance, userId, groupId, type);
+    commandContext
+        .getHistoryManager()
+        .createProcessInstanceIdentityLinkComment(processInstanceId, userId, groupId, type, false);
 
     return null;
   }
-
 }

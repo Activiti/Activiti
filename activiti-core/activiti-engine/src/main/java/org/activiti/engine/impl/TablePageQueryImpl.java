@@ -17,17 +17,13 @@
 package org.activiti.engine.impl;
 
 import java.io.Serializable;
-
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.management.TablePage;
 import org.activiti.engine.management.TablePageQuery;
 
-/**
- *
-
- */
+/** */
 public class TablePageQueryImpl implements TablePageQuery, Command<TablePage>, Serializable {
 
   private static final long serialVersionUID = 1L;
@@ -39,8 +35,7 @@ public class TablePageQueryImpl implements TablePageQuery, Command<TablePage>, S
   protected int firstResult;
   protected int maxResults;
 
-  public TablePageQueryImpl() {
-  }
+  public TablePageQueryImpl() {}
 
   public TablePageQueryImpl(CommandExecutor commandExecutor) {
     this.commandExecutor = commandExecutor;
@@ -87,5 +82,4 @@ public class TablePageQueryImpl implements TablePageQuery, Command<TablePage>, S
   public String getOrder() {
     return order;
   }
-
 }

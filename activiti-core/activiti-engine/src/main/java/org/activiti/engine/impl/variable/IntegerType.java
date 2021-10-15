@@ -16,9 +16,7 @@
 
 package org.activiti.engine.impl.variable;
 
-/**
-
- */
+/** */
 public class IntegerType implements VariableType {
 
   private static final long serialVersionUID = 1L;
@@ -52,6 +50,7 @@ public class IntegerType implements VariableType {
     if (value == null) {
       return true;
     }
-    return Integer.class.isAssignableFrom(value.getClass()) || int.class.isAssignableFrom(value.getClass());
+    return Integer.class.isAssignableFrom(value.getClass())
+        || int.class.isAssignableFrom(value.getClass());
   }
 }

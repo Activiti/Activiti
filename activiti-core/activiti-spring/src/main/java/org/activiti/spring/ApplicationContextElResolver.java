@@ -14,22 +14,16 @@
  * limitations under the License.
  */
 
-
 package org.activiti.spring;
 
 import java.beans.FeatureDescriptor;
 import java.util.Iterator;
-
 import javax.el.ELContext;
 import javax.el.ELResolver;
-
 import org.activiti.engine.ActivitiException;
 import org.springframework.context.ApplicationContext;
 
-/**
-
-
- */
+/** */
 public class ApplicationContextElResolver extends ELResolver {
 
   protected ApplicationContext applicationContext;
@@ -60,7 +54,10 @@ public class ApplicationContextElResolver extends ELResolver {
     if (base == null) {
       String key = (String) property;
       if (applicationContext.containsBean(key)) {
-        throw new ActivitiException("Cannot set value of '" + property + "', it resolves to a bean defined in the Spring application-context.");
+        throw new ActivitiException(
+            "Cannot set value of '"
+                + property
+                + "', it resolves to a bean defined in the Spring application-context.");
       }
     }
   }

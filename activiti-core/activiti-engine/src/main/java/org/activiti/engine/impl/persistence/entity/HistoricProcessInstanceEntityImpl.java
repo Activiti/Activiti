@@ -14,23 +14,18 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.persistence.entity;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.BulkDeleteable;
 
-/**
-
-
-
- */
-public class HistoricProcessInstanceEntityImpl extends HistoricScopeInstanceEntityImpl implements HistoricProcessInstanceEntity, BulkDeleteable {
+/** */
+public class HistoricProcessInstanceEntityImpl extends HistoricScopeInstanceEntityImpl
+    implements HistoricProcessInstanceEntity, BulkDeleteable {
 
   private static final long serialVersionUID = 1L;
 
@@ -50,9 +45,7 @@ public class HistoricProcessInstanceEntityImpl extends HistoricScopeInstanceEnti
   protected String deploymentId;
   protected List<HistoricVariableInstanceEntity> queryVariables;
 
-  public HistoricProcessInstanceEntityImpl() {
-
-  }
+  public HistoricProcessInstanceEntityImpl() {}
 
   public HistoricProcessInstanceEntityImpl(ExecutionEntity processInstance) {
     id = processInstance.getId();
@@ -67,7 +60,10 @@ public class HistoricProcessInstanceEntityImpl extends HistoricScopeInstanceEnti
     startTime = processInstance.getStartTime();
     startUserId = processInstance.getStartUserId();
     startActivityId = processInstance.getActivityId();
-    superProcessInstanceId = processInstance.getSuperExecution() != null ? processInstance.getSuperExecution().getProcessInstanceId() : null;
+    superProcessInstanceId =
+        processInstance.getSuperExecution() != null
+            ? processInstance.getSuperExecution().getProcessInstanceId()
+            : null;
 
     // Inherit tenant id (if applicable)
     if (processInstance.getTenantId() != null) {

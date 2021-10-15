@@ -17,8 +17,10 @@ package org.activiti.editor.language;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.InputStream;
-
 import org.activiti.bpmn.converter.BpmnXMLConverter;
 import org.activiti.bpmn.converter.util.InputStreamProvider;
 import org.activiti.bpmn.model.BpmnModel;
@@ -26,10 +28,6 @@ import org.activiti.bpmn.model.Event;
 import org.activiti.bpmn.model.EventDefinition;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.editor.language.json.converter.BpmnJsonConverter;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public abstract class AbstractConverterTest {
 
@@ -41,13 +39,18 @@ public abstract class AbstractConverterTest {
   }
 
   protected BpmnModel readXmlFile() throws Exception {
-    final InputStream jsonStream = this.getClass().getClassLoader().getResourceAsStream(getResource());
-    return new BpmnXMLConverter().convertToBpmnModel(new InputStreamProvider() {
-      @Override
-      public InputStream getInputStream() {
-        return jsonStream;
-      }
-    }, false, false);
+    final InputStream jsonStream =
+        this.getClass().getClassLoader().getResourceAsStream(getResource());
+    return new BpmnXMLConverter()
+        .convertToBpmnModel(
+            new InputStreamProvider() {
+              @Override
+              public InputStream getInputStream() {
+                return jsonStream;
+              }
+            },
+            false,
+            false);
   }
 
   protected BpmnModel convertToJsonAndBack(BpmnModel bpmnModel) {

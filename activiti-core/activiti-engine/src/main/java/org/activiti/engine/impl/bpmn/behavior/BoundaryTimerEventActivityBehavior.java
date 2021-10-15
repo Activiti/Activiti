@@ -27,16 +27,15 @@ import org.activiti.engine.impl.jobexecutor.TriggerTimerEventJobHandler;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.TimerJobEntity;
 
-/**
-
- */
+/** */
 public class BoundaryTimerEventActivityBehavior extends BoundaryEventActivityBehavior {
 
   private static final long serialVersionUID = 1L;
 
   protected TimerEventDefinition timerEventDefinition;
 
-  public BoundaryTimerEventActivityBehavior(TimerEventDefinition timerEventDefinition, boolean interrupting) {
+  public BoundaryTimerEventActivityBehavior(
+      TimerEventDefinition timerEventDefinition, boolean interrupting) {
     super(interrupting);
     this.timerEventDefinition = timerEventDefinition;
   }
@@ -46,15 +45,25 @@ public class BoundaryTimerEventActivityBehavior extends BoundaryEventActivityBeh
 
     ExecutionEntity executionEntity = (ExecutionEntity) execution;
     if (!(execution.getCurrentFlowElement() instanceof BoundaryEvent)) {
-      throw new ActivitiException("Programmatic error: " + this.getClass() + " should not be used for anything else than a boundary event");
+      throw new ActivitiException(
+          "Programmatic error: "
+              + this.getClass()
+              + " should not be used for anything else than a boundary event");
     }
 
     JobManager jobManager = Context.getCommandContext().getJobManager();
-    TimerJobEntity timerJob = jobManager.createTimerJob(timerEventDefinition, interrupting, executionEntity, TriggerTimerEventJobHandler.TYPE,
-        TimerEventHandler.createConfiguration(execution.getCurrentActivityId(), timerEventDefinition.getEndDate(), timerEventDefinition.getCalendarName()));
+    TimerJobEntity timerJob =
+        jobManager.createTimerJob(
+            timerEventDefinition,
+            interrupting,
+            executionEntity,
+            TriggerTimerEventJobHandler.TYPE,
+            TimerEventHandler.createConfiguration(
+                execution.getCurrentActivityId(),
+                timerEventDefinition.getEndDate(),
+                timerEventDefinition.getCalendarName()));
     if (timerJob != null) {
       jobManager.scheduleTimerJob(timerJob);
     }
   }
-
 }

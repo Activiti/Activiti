@@ -15,6 +15,8 @@
  */
 package org.activiti.spring.boot.process;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
 import org.activiti.api.process.runtime.ProcessRuntime;
@@ -31,53 +33,45 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 public class ProcessRuntimeTasksIT {
 
-    private static final String SINGLE_TASK_PROCESS = "SingleTaskProcess";
+  private static final String SINGLE_TASK_PROCESS = "SingleTaskProcess";
 
-    @Autowired
-    private ProcessRuntime processRuntime;
+  @Autowired private ProcessRuntime processRuntime;
 
-    @Autowired
-    private TaskRuntime taskRuntime;
+  @Autowired private TaskRuntime taskRuntime;
 
-    @Autowired
-    private SecurityUtil securityUtil;
+  @Autowired private SecurityUtil securityUtil;
 
-    @Autowired
-    private ProcessCleanUpUtil processCleanUpUtil;
+  @Autowired private ProcessCleanUpUtil processCleanUpUtil;
 
-    @Autowired
-    private TaskCleanUpUtil taskCleanUpUtil;
+  @Autowired private TaskCleanUpUtil taskCleanUpUtil;
 
-    @AfterEach
-    public void cleanUp() {
-        processCleanUpUtil.cleanUpWithAdmin();
-        taskCleanUpUtil.cleanUpWithAdmin();
-    }
+  @AfterEach
+  public void cleanUp() {
+    processCleanUpUtil.cleanUpWithAdmin();
+    taskCleanUpUtil.cleanUpWithAdmin();
+  }
 
-    @Test
-    public void should_taskAlwaysHaveAppVersion() {
-        securityUtil.logInAs("garth");
+  @Test
+  public void should_taskAlwaysHaveAppVersion() {
+    securityUtil.logInAs("garth");
 
-        ProcessInstance processInstance = processRuntime.start(ProcessPayloadBuilder.start()
-                                                                       .withProcessDefinitionKey(SINGLE_TASK_PROCESS)
-                                                                       .build());
+    ProcessInstance processInstance =
+        processRuntime.start(
+            ProcessPayloadBuilder.start().withProcessDefinitionKey(SINGLE_TASK_PROCESS).build());
 
-        Page<Task> tasks = taskRuntime.tasks(Pageable.of(0, 50),
-                                             TaskPayloadBuilder
-                                                     .tasks()
-                                                     .withProcessInstanceId(processInstance.getId())
-                                                     .build());
+    Page<Task> tasks =
+        taskRuntime.tasks(
+            Pageable.of(0, 50),
+            TaskPayloadBuilder.tasks().withProcessInstanceId(processInstance.getId()).build());
 
-        assertThat(tasks.getContent()).hasSize(1);
+    assertThat(tasks.getContent()).hasSize(1);
 
-        Task result = tasks.getContent().get(0);
+    Task result = tasks.getContent().get(0);
 
-        assertThat(result.getName()).isEqualTo("my-task");
-        assertThat(result.getAppVersion()).isEqualTo("1");
-    }
+    assertThat(result.getName()).isEqualTo("my-task");
+    assertThat(result.getAppVersion()).isEqualTo("1");
+  }
 }

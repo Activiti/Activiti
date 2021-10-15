@@ -19,12 +19,7 @@ package org.activiti.engine.impl.persistence.entity;
 import java.util.Date;
 import java.util.Map;
 
-/**
- * Job entity.
- *
-
-
- */
+/** Job entity. */
 public class JobEntityImpl extends AbstractJobEntityImpl implements JobEntity {
 
   private static final long serialVersionUID = 1L;
@@ -68,5 +63,4 @@ public class JobEntityImpl extends AbstractJobEntityImpl implements JobEntity {
   public String toString() {
     return "JobEntity [id=" + id + "]";
   }
-
 }

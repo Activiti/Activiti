@@ -14,25 +14,23 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.persistence.entity;
 
 import java.util.List;
-
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.persistence.entity.data.DataManager;
 import org.activiti.engine.impl.persistence.entity.data.HistoricIdentityLinkDataManager;
 
-/**
-
-
- */
-public class HistoricIdentityLinkEntityManagerImpl extends AbstractEntityManager<HistoricIdentityLinkEntity> implements HistoricIdentityLinkEntityManager {
+/** */
+public class HistoricIdentityLinkEntityManagerImpl
+    extends AbstractEntityManager<HistoricIdentityLinkEntity>
+    implements HistoricIdentityLinkEntityManager {
 
   protected HistoricIdentityLinkDataManager historicIdentityLinkDataManager;
 
-
-  public HistoricIdentityLinkEntityManagerImpl(ProcessEngineConfigurationImpl processEngineConfiguration, HistoricIdentityLinkDataManager historicIdentityLinkDataManager) {
+  public HistoricIdentityLinkEntityManagerImpl(
+      ProcessEngineConfigurationImpl processEngineConfiguration,
+      HistoricIdentityLinkDataManager historicIdentityLinkDataManager) {
     super(processEngineConfiguration);
     this.historicIdentityLinkDataManager = historicIdentityLinkDataManager;
   }
@@ -48,8 +46,10 @@ public class HistoricIdentityLinkEntityManagerImpl extends AbstractEntityManager
   }
 
   @Override
-  public List<HistoricIdentityLinkEntity> findHistoricIdentityLinksByProcessInstanceId(String processInstanceId) {
-    return historicIdentityLinkDataManager.findHistoricIdentityLinksByProcessInstanceId(processInstanceId);
+  public List<HistoricIdentityLinkEntity> findHistoricIdentityLinksByProcessInstanceId(
+      String processInstanceId) {
+    return historicIdentityLinkDataManager.findHistoricIdentityLinksByProcessInstanceId(
+        processInstanceId);
   }
 
   @Override
@@ -63,21 +63,21 @@ public class HistoricIdentityLinkEntityManagerImpl extends AbstractEntityManager
   @Override
   public void deleteHistoricIdentityLinksByProcInstance(final String processInstanceId) {
 
-    List<HistoricIdentityLinkEntity> identityLinks = historicIdentityLinkDataManager
-        .findHistoricIdentityLinksByProcessInstanceId(processInstanceId);
+    List<HistoricIdentityLinkEntity> identityLinks =
+        historicIdentityLinkDataManager.findHistoricIdentityLinksByProcessInstanceId(
+            processInstanceId);
 
     for (HistoricIdentityLinkEntity identityLink : identityLinks) {
       delete(identityLink);
     }
-
   }
 
   public HistoricIdentityLinkDataManager getHistoricIdentityLinkDataManager() {
     return historicIdentityLinkDataManager;
   }
 
-  public void setHistoricIdentityLinkDataManager(HistoricIdentityLinkDataManager historicIdentityLinkDataManager) {
+  public void setHistoricIdentityLinkDataManager(
+      HistoricIdentityLinkDataManager historicIdentityLinkDataManager) {
     this.historicIdentityLinkDataManager = historicIdentityLinkDataManager;
   }
-
 }

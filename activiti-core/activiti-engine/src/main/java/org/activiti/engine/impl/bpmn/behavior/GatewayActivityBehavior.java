@@ -21,18 +21,15 @@ import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
 
-/**
- * super class for all gateway activity implementations.
- *
-
- */
+/** super class for all gateway activity implementations. */
 public abstract class GatewayActivityBehavior extends FlowNodeActivityBehavior {
 
   private static final long serialVersionUID = 1L;
 
   protected void lockFirstParentScope(DelegateExecution execution) {
 
-    ExecutionEntityManager executionEntityManager = Context.getCommandContext().getExecutionEntityManager();
+    ExecutionEntityManager executionEntityManager =
+        Context.getCommandContext().getExecutionEntityManager();
 
     boolean found = false;
     ExecutionEntity parentScopeExecution = null;
@@ -47,5 +44,4 @@ public abstract class GatewayActivityBehavior extends FlowNodeActivityBehavior {
 
     parentScopeExecution.forceUpdate();
   }
-
 }

@@ -18,10 +18,8 @@ package org.activiti.editor.language.json.converter;
 
 import java.util.Map;
 
-/**
-
- */
+/** */
 public interface DecisionTableAwareConverter {
 
-    public void setDecisionTableMap(Map<String, String> decisionTableMap);
+  public void setDecisionTableMap(Map<String, String> decisionTableMap);
 }

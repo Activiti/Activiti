@@ -18,7 +18,6 @@ package org.activiti.engine.impl.bpmn.deployer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.Process;
 import org.activiti.engine.ActivitiException;
@@ -35,27 +34,29 @@ import org.activiti.engine.impl.persistence.entity.ProcessDefinitionInfoEntity;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionInfoEntityManager;
 
 /**
- * Updates caches and artifacts for a deployment, its process definitions,
- * and its process definition infos.
+ * Updates caches and artifacts for a deployment, its process definitions, and its process
+ * definition infos.
  */
 public class CachingAndArtifactsManager {
 
   /**
    * Ensures that the process definition is cached in the appropriate places, including the
-   * deployment's collection of deployed artifacts and the deployment manager's cache, as well
-   * as caching any ProcessDefinitionInfos.
+   * deployment's collection of deployed artifacts and the deployment manager's cache, as well as
+   * caching any ProcessDefinitionInfos.
    */
   public void updateCachingAndArtifacts(ParsedDeployment parsedDeployment) {
     CommandContext commandContext = Context.getCommandContext();
-    final ProcessEngineConfigurationImpl processEngineConfiguration = Context.getProcessEngineConfiguration();
-    DeploymentCache<ProcessDefinitionCacheEntry> processDefinitionCache
-      = processEngineConfiguration.getDeploymentManager().getProcessDefinitionCache();
+    final ProcessEngineConfigurationImpl processEngineConfiguration =
+        Context.getProcessEngineConfiguration();
+    DeploymentCache<ProcessDefinitionCacheEntry> processDefinitionCache =
+        processEngineConfiguration.getDeploymentManager().getProcessDefinitionCache();
     DeploymentEntity deployment = parsedDeployment.getDeployment();
 
     for (ProcessDefinitionEntity processDefinition : parsedDeployment.getAllProcessDefinitions()) {
       BpmnModel bpmnModel = parsedDeployment.getBpmnModelForProcessDefinition(processDefinition);
       Process process = parsedDeployment.getProcessModelForProcessDefinition(processDefinition);
-      ProcessDefinitionCacheEntry cacheEntry = new ProcessDefinitionCacheEntry(processDefinition, bpmnModel, process);
+      ProcessDefinitionCacheEntry cacheEntry =
+          new ProcessDefinitionCacheEntry(processDefinition, bpmnModel, process);
       processDefinitionCache.add(processDefinition.getId(), cacheEntry);
       addDefinitionInfoToCache(processDefinition, processEngineConfiguration, commandContext);
 
@@ -64,26 +65,33 @@ public class CachingAndArtifactsManager {
     }
   }
 
-  protected void addDefinitionInfoToCache(ProcessDefinitionEntity processDefinition,
-      ProcessEngineConfigurationImpl processEngineConfiguration, CommandContext commandContext) {
+  protected void addDefinitionInfoToCache(
+      ProcessDefinitionEntity processDefinition,
+      ProcessEngineConfigurationImpl processEngineConfiguration,
+      CommandContext commandContext) {
 
     if (!processEngineConfiguration.isEnableProcessDefinitionInfoCache()) {
       return;
     }
 
     DeploymentManager deploymentManager = processEngineConfiguration.getDeploymentManager();
-    ProcessDefinitionInfoEntityManager definitionInfoEntityManager = commandContext.getProcessDefinitionInfoEntityManager();
+    ProcessDefinitionInfoEntityManager definitionInfoEntityManager =
+        commandContext.getProcessDefinitionInfoEntityManager();
     ObjectMapper objectMapper = commandContext.getProcessEngineConfiguration().getObjectMapper();
-    ProcessDefinitionInfoEntity definitionInfoEntity = definitionInfoEntityManager.findProcessDefinitionInfoByProcessDefinitionId(processDefinition.getId());
+    ProcessDefinitionInfoEntity definitionInfoEntity =
+        definitionInfoEntityManager.findProcessDefinitionInfoByProcessDefinitionId(
+            processDefinition.getId());
 
     ObjectNode infoNode = null;
     if (definitionInfoEntity != null && definitionInfoEntity.getInfoJsonId() != null) {
-      byte[] infoBytes = definitionInfoEntityManager.findInfoJsonById(definitionInfoEntity.getInfoJsonId());
+      byte[] infoBytes =
+          definitionInfoEntityManager.findInfoJsonById(definitionInfoEntity.getInfoJsonId());
       if (infoBytes != null) {
         try {
           infoNode = (ObjectNode) objectMapper.readTree(infoBytes);
         } catch (Exception e) {
-          throw new ActivitiException("Error deserializing json info for process definition " + processDefinition.getId());
+          throw new ActivitiException(
+              "Error deserializing json info for process definition " + processDefinition.getId());
         }
       }
     }
@@ -101,6 +109,8 @@ public class CachingAndArtifactsManager {
     }
     definitionCacheObject.setInfoNode(infoNode);
 
-    deploymentManager.getProcessDefinitionInfoCache().add(processDefinition.getId(), definitionCacheObject);
+    deploymentManager
+        .getProcessDefinitionInfoCache()
+        .add(processDefinition.getId(), definitionCacheObject);
   }
 }

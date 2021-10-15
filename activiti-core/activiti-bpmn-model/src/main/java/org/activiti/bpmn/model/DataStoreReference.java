@@ -57,5 +57,4 @@ public class DataStoreReference extends FlowElement {
     setItemSubjectRef(otherElement.getItemSubjectRef());
     setDataStoreRef(otherElement.getDataStoreRef());
   }
-
 }

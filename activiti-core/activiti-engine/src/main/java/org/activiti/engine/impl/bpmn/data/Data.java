@@ -16,11 +16,7 @@
 
 package org.activiti.engine.impl.bpmn.data;
 
-/**
- * Implementation of the BPMN 2.0 'dataInput' and 'dataOutput'
- *
-
- */
+/** Implementation of the BPMN 2.0 'dataInput' and 'dataOutput' */
 public class Data {
 
   protected String id;

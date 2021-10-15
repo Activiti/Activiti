@@ -15,6 +15,9 @@
  */
 package org.activiti.spring.boot;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.MockitoAnnotations.initMocks;
+
 import org.activiti.core.common.spring.project.ApplicationUpgradeContextService;
 import org.activiti.spring.SpringProcessEngineConfiguration;
 import org.activiti.spring.boot.process.validation.AsyncPropertyValidator;
@@ -26,58 +29,53 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.MockitoAnnotations.initMocks;
-
 public class ProcessEngineAutoConfigurationTest {
 
-    @InjectMocks
-    private ProcessEngineAutoConfiguration processEngineAutoConfiguration;
+  @InjectMocks private ProcessEngineAutoConfiguration processEngineAutoConfiguration;
 
-    @Mock
-    private ApplicationUpgradeContextService applicationUpgradeContextServiceMock;
+  @Mock private ApplicationUpgradeContextService applicationUpgradeContextServiceMock;
 
-    @BeforeEach
-    public void setUp() {
-        initMocks(this);
-    }
+  @BeforeEach
+  public void setUp() {
+    initMocks(this);
+  }
 
-    @Test
-    public void shouldAddAsyncPropertyValidatorWhenAsyncExecutorIsEnabled() {
-        //given
-        ActivitiProperties activitiProperties = new ActivitiProperties();
-        activitiProperties.setAsyncExecutorActivate(false);
-        SpringProcessEngineConfiguration conf = new SpringProcessEngineConfiguration(applicationUpgradeContextServiceMock);
+  @Test
+  public void shouldAddAsyncPropertyValidatorWhenAsyncExecutorIsEnabled() {
+    // given
+    ActivitiProperties activitiProperties = new ActivitiProperties();
+    activitiProperties.setAsyncExecutorActivate(false);
+    SpringProcessEngineConfiguration conf =
+        new SpringProcessEngineConfiguration(applicationUpgradeContextServiceMock);
 
-        //when
-        processEngineAutoConfiguration.addAsyncPropertyValidator(activitiProperties,
-                                                                 conf);
+    // when
+    processEngineAutoConfiguration.addAsyncPropertyValidator(activitiProperties, conf);
 
-        //then
-        ProcessValidator processValidator = conf.getProcessValidator();
-        assertThat(processValidator).isNotNull();
-        assertThat(processValidator.getValidatorSets())
-                .flatExtracting(ValidatorSet::getValidators)
-                .haveExactly(1,
-                             new Condition<>(validator -> validator instanceof AsyncPropertyValidator,
-                                             "instance of AsyncPropertyValidator"));
+    // then
+    ProcessValidator processValidator = conf.getProcessValidator();
+    assertThat(processValidator).isNotNull();
+    assertThat(processValidator.getValidatorSets())
+        .flatExtracting(ValidatorSet::getValidators)
+        .haveExactly(
+            1,
+            new Condition<>(
+                validator -> validator instanceof AsyncPropertyValidator,
+                "instance of AsyncPropertyValidator"));
+  }
 
-    }
+  @Test
+  public void shouldNotAddAsyncPropertyValidatorWhenAsyncExecutorIsDisabled() {
+    // given
+    ActivitiProperties activitiProperties = new ActivitiProperties();
+    activitiProperties.setAsyncExecutorActivate(true);
+    SpringProcessEngineConfiguration conf =
+        new SpringProcessEngineConfiguration(applicationUpgradeContextServiceMock);
 
-    @Test
-    public void shouldNotAddAsyncPropertyValidatorWhenAsyncExecutorIsDisabled() {
-        //given
-        ActivitiProperties activitiProperties = new ActivitiProperties();
-        activitiProperties.setAsyncExecutorActivate(true);
-        SpringProcessEngineConfiguration conf = new SpringProcessEngineConfiguration(applicationUpgradeContextServiceMock);
+    // when
+    processEngineAutoConfiguration.addAsyncPropertyValidator(activitiProperties, conf);
 
-        //when
-        processEngineAutoConfiguration.addAsyncPropertyValidator(activitiProperties,
-                                                                 conf);
-
-        //then
-        ProcessValidator processValidator = conf.getProcessValidator();
-        assertThat(processValidator).isNull();
-    }
-
+    // then
+    ProcessValidator processValidator = conf.getProcessValidator();
+    assertThat(processValidator).isNull();
+  }
 }

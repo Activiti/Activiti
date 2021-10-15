@@ -15,9 +15,9 @@
  */
 package org.activiti.engine.impl.event.logger.handler;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Date;
 import java.util.Map;
-
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
@@ -29,33 +29,42 @@ import org.activiti.engine.repository.ProcessDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-/**
-
- */
+/** */
 public abstract class AbstractDatabaseEventLoggerEventHandler implements EventLoggerEventHandler {
 
-  private static final Logger logger = LoggerFactory.getLogger(AbstractDatabaseEventLoggerEventHandler.class);
+  private static final Logger logger =
+      LoggerFactory.getLogger(AbstractDatabaseEventLoggerEventHandler.class);
 
   protected ActivitiEvent event;
   protected Date timeStamp;
   protected ObjectMapper objectMapper;
 
-  public AbstractDatabaseEventLoggerEventHandler() {
-  }
+  public AbstractDatabaseEventLoggerEventHandler() {}
 
   protected EventLogEntryEntity createEventLogEntry(Map<String, Object> data) {
     return createEventLogEntry(null, null, null, null, data);
   }
 
-  protected EventLogEntryEntity createEventLogEntry(String processDefinitionId, String processInstanceId, String executionId, String taskId, Map<String, Object> data) {
-    return createEventLogEntry(event.getType().name(), processDefinitionId, processInstanceId, executionId, taskId, data);
+  protected EventLogEntryEntity createEventLogEntry(
+      String processDefinitionId,
+      String processInstanceId,
+      String executionId,
+      String taskId,
+      Map<String, Object> data) {
+    return createEventLogEntry(
+        event.getType().name(), processDefinitionId, processInstanceId, executionId, taskId, data);
   }
 
-  protected EventLogEntryEntity createEventLogEntry(String type, String processDefinitionId, String processInstanceId, String executionId, String taskId, Map<String, Object> data) {
+  protected EventLogEntryEntity createEventLogEntry(
+      String type,
+      String processDefinitionId,
+      String processInstanceId,
+      String executionId,
+      String taskId,
+      Map<String, Object> data) {
 
-    EventLogEntryEntity eventLogEntry = Context.getCommandContext().getEventLogEntryEntityManager().create();
+    EventLogEntryEntity eventLogEntry =
+        Context.getCommandContext().getEventLogEntryEntityManager().create();
     eventLogEntry.setProcessDefinitionId(processDefinitionId);
     eventLogEntry.setProcessInstanceId(processInstanceId);
     eventLogEntry.setExecutionId(executionId);
@@ -73,8 +82,10 @@ public abstract class AbstractDatabaseEventLoggerEventHandler implements EventLo
 
     // Current tenant
     if (!data.containsKey(Fields.TENANT_ID) && processDefinitionId != null) {
-      ProcessDefinition processDefinition = ProcessDefinitionUtil.getProcessDefinition(processDefinitionId);
-      if (processDefinition != null && !ProcessEngineConfigurationImpl.NO_TENANT_ID.equals(processDefinition.getTenantId())) {
+      ProcessDefinition processDefinition =
+          ProcessDefinitionUtil.getProcessDefinition(processDefinitionId);
+      if (processDefinition != null
+          && !ProcessEngineConfigurationImpl.NO_TENANT_ID.equals(processDefinition.getTenantId())) {
         putInMapIfNotNull(data, Fields.TENANT_ID, processDefinition.getTenantId());
       }
     }
@@ -86,7 +97,6 @@ public abstract class AbstractDatabaseEventLoggerEventHandler implements EventLo
     }
 
     return eventLogEntry;
-
   }
 
   @Override
@@ -116,5 +126,4 @@ public abstract class AbstractDatabaseEventLoggerEventHandler implements EventLo
       map.put(key, value);
     }
   }
-
 }

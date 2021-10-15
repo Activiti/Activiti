@@ -20,71 +20,71 @@ import static org.activiti.api.runtime.model.impl.ProcessVariablesMapTypeRegistr
 import static org.activiti.api.runtime.model.impl.ProcessVariablesMapTypeRegistry.getContainerType;
 import static org.activiti.api.runtime.model.impl.ProcessVariablesMapTypeRegistry.isScalarType;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.springframework.core.convert.ConversionService;
-
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import org.springframework.core.convert.ConversionService;
 
-public class ProcessVariablesMapSerializer extends StdSerializer<ProcessVariablesMap<String, Object>> {
+public class ProcessVariablesMapSerializer
+    extends StdSerializer<ProcessVariablesMap<String, Object>> {
 
-    private static final long serialVersionUID = 1L;
-    private final ConversionService conversionService;
+  private static final long serialVersionUID = 1L;
+  private final ConversionService conversionService;
 
-    public ProcessVariablesMapSerializer(ConversionService conversionService) {
-        super(ProcessVariablesMap.class, true);
+  public ProcessVariablesMapSerializer(ConversionService conversionService) {
+    super(ProcessVariablesMap.class, true);
 
-        this.conversionService = conversionService;
+    this.conversionService = conversionService;
+  }
+
+  @Override
+  public void serialize(
+      ProcessVariablesMap<String, Object> processVariablesMap,
+      JsonGenerator gen,
+      SerializerProvider serializers)
+      throws IOException {
+
+    HashMap<String, ProcessVariableValue> map = new HashMap<>();
+    for (Map.Entry<String, Object> entry : processVariablesMap.entrySet()) {
+      String name = entry.getKey();
+      Object value = entry.getValue();
+      map.put(name, buildProcessVariableValue(value));
     }
 
-    @Override
-    public void serialize(ProcessVariablesMap<String, Object> processVariablesMap,
-        JsonGenerator gen,
-        SerializerProvider serializers) throws IOException {
+    gen.writeObject(map);
+  }
 
-        HashMap<String, ProcessVariableValue> map = new HashMap<>();
-        for (Map.Entry<String, Object> entry : processVariablesMap.entrySet()) {
-            String name = entry.getKey();
-            Object value = entry.getValue();
-            map.put(name, buildProcessVariableValue(value));
-        }
+  private ProcessVariableValue buildProcessVariableValue(Object value) {
+    ProcessVariableValue variableValue = null;
 
-        gen.writeObject(map);
+    if (value != null) {
+      Class<?> entryValueClass = value.getClass();
+      String entryType = resolveEntryType(entryValueClass, value);
+
+      if (OBJECT_TYPE_KEY.equals(entryType)) {
+        value = new ObjectValue(value);
+      }
+
+      String entryValue = conversionService.convert(value, String.class);
+
+      variableValue = new ProcessVariableValue(entryType, entryValue);
     }
 
-    private ProcessVariableValue buildProcessVariableValue(Object value) {
-        ProcessVariableValue variableValue = null;
+    return variableValue;
+  }
 
-        if (value != null) {
-            Class<?> entryValueClass = value.getClass();
-            String entryType = resolveEntryType(entryValueClass, value);
+  private String resolveEntryType(Class<?> clazz, Object value) {
+    Class<?> entryType;
 
-            if (OBJECT_TYPE_KEY.equals(entryType)) {
-                value = new ObjectValue(value);
-            }
-
-            String entryValue = conversionService.convert(value, String.class);
-
-            variableValue = new ProcessVariableValue(entryType, entryValue);
-        }
-
-        return variableValue;
+    if (isScalarType(clazz)) {
+      entryType = clazz;
+    } else {
+      entryType = getContainerType(clazz, value).orElse(ObjectValue.class);
     }
 
-    private String resolveEntryType(Class<?> clazz, Object value) {
-        Class<?> entryType;
-
-        if (isScalarType(clazz)) {
-            entryType = clazz;
-        } else {
-            entryType = getContainerType(clazz, value)
-                            .orElse(ObjectValue.class);
-        }
-
-        return forClass(entryType);
-    }
+    return forClass(entryType);
+  }
 }

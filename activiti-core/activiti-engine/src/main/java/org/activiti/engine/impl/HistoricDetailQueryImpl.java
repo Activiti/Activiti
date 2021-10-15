@@ -14,11 +14,9 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl;
 
 import java.util.List;
-
 import org.activiti.engine.history.HistoricDetail;
 import org.activiti.engine.history.HistoricDetailQuery;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -29,11 +27,9 @@ import org.activiti.engine.impl.variable.HistoricJPAEntityVariableType;
 import org.activiti.engine.impl.variable.JPAEntityListVariableType;
 import org.activiti.engine.impl.variable.JPAEntityVariableType;
 
-/**
-
-
- */
-public class HistoricDetailQueryImpl extends AbstractQuery<HistoricDetailQuery, HistoricDetail> implements HistoricDetailQuery {
+/** */
+public class HistoricDetailQueryImpl extends AbstractQuery<HistoricDetailQuery, HistoricDetail>
+    implements HistoricDetailQuery {
 
   private static final long serialVersionUID = 1L;
   protected String id;
@@ -45,8 +41,7 @@ public class HistoricDetailQueryImpl extends AbstractQuery<HistoricDetailQuery, 
   protected String type;
   protected boolean excludeTaskRelated;
 
-  public HistoricDetailQueryImpl() {
-  }
+  public HistoricDetailQueryImpl() {}
 
   public HistoricDetailQueryImpl(CommandContext commandContext) {
     super(commandContext);
@@ -103,12 +98,17 @@ public class HistoricDetailQueryImpl extends AbstractQuery<HistoricDetailQuery, 
 
   public long executeCount(CommandContext commandContext) {
     checkQueryOk();
-    return commandContext.getHistoricDetailEntityManager().findHistoricDetailCountByQueryCriteria(this);
+    return commandContext
+        .getHistoricDetailEntityManager()
+        .findHistoricDetailCountByQueryCriteria(this);
   }
 
   public List<HistoricDetail> executeList(CommandContext commandContext, Page page) {
     checkQueryOk();
-    List<HistoricDetail> historicDetails = commandContext.getHistoricDetailEntityManager().findHistoricDetailsByQueryCriteria(this, page);
+    List<HistoricDetail> historicDetails =
+        commandContext
+            .getHistoricDetailEntityManager()
+            .findHistoricDetailsByQueryCriteria(this, page);
 
     HistoricDetailVariableInstanceUpdateEntity varUpdate = null;
     if (historicDetails != null) {
@@ -208,5 +208,4 @@ public class HistoricDetailQueryImpl extends AbstractQuery<HistoricDetailQuery, 
   public String getActivityInstanceId() {
     return activityInstanceId;
   }
-
 }

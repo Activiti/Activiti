@@ -16,9 +16,7 @@
 
 package org.activiti.validation.validator;
 
-/**
-
- */
+/** */
 public interface Problems {
 
   String ALL_PROCESS_DEFINITIONS_NOT_EXECUTABLE = "activiti-process-definition-not-executable";
@@ -28,30 +26,38 @@ public interface Problems {
 
   String ASSOCIATION_INVALID_TARGET_REFERENCE = "activiti-asscociation-invalid-target-reference";
 
-  String EXECUTION_LISTENER_IMPLEMENTATION_MISSING = "activiti-execution-listener-implementation-missing";
-  String EXECUTION_LISTENER_INVALID_IMPLEMENTATION_TYPE = "activiti-execution-listener-invalid-implementation-type";
+  String EXECUTION_LISTENER_IMPLEMENTATION_MISSING =
+      "activiti-execution-listener-implementation-missing";
+  String EXECUTION_LISTENER_INVALID_IMPLEMENTATION_TYPE =
+      "activiti-execution-listener-invalid-implementation-type";
 
   String EVENT_LISTENER_IMPLEMENTATION_MISSING = "activiti-event-listener-implementation-missing";
   String EVENT_LISTENER_INVALID_IMPLEMENTATION = "activiti-event-listener-invalid-implementation";
-  String EVENT_LISTENER_INVALID_THROW_EVENT_TYPE = "activiti-event-listener-invalid-throw-event-type";
+  String EVENT_LISTENER_INVALID_THROW_EVENT_TYPE =
+      "activiti-event-listener-invalid-throw-event-type";
 
   String START_EVENT_MULTIPLE_FOUND = "activiti-start-event-multiple-found";
   String START_EVENT_INVALID_EVENT_DEFINITION = "activiti-start-event-invalid-event-definition";
 
   String SEQ_FLOW_INVALID_SRC = "activiti-seq-flow-invalid-src";
   String SEQ_FLOW_INVALID_TARGET = "activiti-seq-flow-invalid-target";
-  String SEQ_FLOW_INVALID_CONDITIONAL_EXPRESSION = "activiti-seq-flow-invalid-conditional-expression";
+  String SEQ_FLOW_INVALID_CONDITIONAL_EXPRESSION =
+      "activiti-seq-flow-invalid-conditional-expression";
 
-  String USER_TASK_LISTENER_IMPLEMENTATION_MISSING = "activiti-usertask-listener-implementation-missing";
+  String USER_TASK_LISTENER_IMPLEMENTATION_MISSING =
+      "activiti-usertask-listener-implementation-missing";
 
   String SERVICE_TASK_INVALID_TYPE = "activiti-servicetask-invalid-type";
-  String SERVICE_TASK_RESULT_VAR_NAME_WITH_DELEGATE = "activiti-servicetask-result-var-name-with-delegate";
+  String SERVICE_TASK_RESULT_VAR_NAME_WITH_DELEGATE =
+      "activiti-servicetask-result-var-name-with-delegate";
   String SERVICE_TASK_MISSING_IMPLEMENTATION = "activiti-servicetask-missing-implementation";
-  String SERVICE_TASK_WEBSERVICE_INVALID_OPERATION_REF = "activiti-servicetask-webservice-invalid-operation-ref";
+  String SERVICE_TASK_WEBSERVICE_INVALID_OPERATION_REF =
+      "activiti-servicetask-webservice-invalid-operation-ref";
 
   String SEND_TASK_INVALID_IMPLEMENTATION = "activiti-sendtask-invalid-implementation";
   String SEND_TASK_INVALID_TYPE = "activiti-sendtask-invalid-type";
-  String SEND_TASK_WEBSERVICE_INVALID_OPERATION_REF = "activiti-send-webservice-invalid-operation-ref";
+  String SEND_TASK_WEBSERVICE_INVALID_OPERATION_REF =
+      "activiti-send-webservice-invalid-operation-ref";
 
   String SCRIPT_TASK_MISSING_SCRIPT = "activiti-scripttask-missing-script";
 
@@ -64,33 +70,45 @@ public interface Problems {
   String DMN_TASK_NO_KEY = "activiti-dmntask-no-decision-table-key";
 
   String EXCLUSIVE_GATEWAY_NO_OUTGOING_SEQ_FLOW = "activiti-exclusive-gateway-no-outgoing-seq-flow";
-  String EXCLUSIVE_GATEWAY_CONDITION_NOT_ALLOWED_ON_SINGLE_SEQ_FLOW = "activiti-exclusive-gateway-condition-not-allowed-on-single-seq-flow";
-  String EXCLUSIVE_GATEWAY_CONDITION_ON_DEFAULT_SEQ_FLOW = "activiti-exclusive-gateway-condition-on-seq-flow";
-  String EXCLUSIVE_GATEWAY_SEQ_FLOW_WITHOUT_CONDITIONS = "activiti-exclusive-gateway-seq-flow-without-conditions";
+  String EXCLUSIVE_GATEWAY_CONDITION_NOT_ALLOWED_ON_SINGLE_SEQ_FLOW =
+      "activiti-exclusive-gateway-condition-not-allowed-on-single-seq-flow";
+  String EXCLUSIVE_GATEWAY_CONDITION_ON_DEFAULT_SEQ_FLOW =
+      "activiti-exclusive-gateway-condition-on-seq-flow";
+  String EXCLUSIVE_GATEWAY_SEQ_FLOW_WITHOUT_CONDITIONS =
+      "activiti-exclusive-gateway-seq-flow-without-conditions";
 
-  String EVENT_GATEWAY_ONLY_CONNECTED_TO_INTERMEDIATE_EVENTS = "activiti-event-gateway-only-connected-to-intermediate-events";
+  String EVENT_GATEWAY_ONLY_CONNECTED_TO_INTERMEDIATE_EVENTS =
+      "activiti-event-gateway-only-connected-to-intermediate-events";
 
   String BPMN_MODEL_TARGET_NAMESPACE_TOO_LONG = "activiti-bpmn-model-target-namespace-too-long";
 
   String PROCESS_DEFINITION_ID_TOO_LONG = "activiti-process-definition-id-too-long";
   String PROCESS_DEFINITION_NAME_TOO_LONG = "activiti-process-definition-name-too-long";
-  String PROCESS_DEFINITION_DOCUMENTATION_TOO_LONG = "activiti-process-definition-documentation-too-long";
+  String PROCESS_DEFINITION_DOCUMENTATION_TOO_LONG =
+      "activiti-process-definition-documentation-too-long";
 
   String FLOW_ELEMENT_ID_TOO_LONG = "activiti-flow-element-id-too-long";
 
   String SUBPROCESS_MULTIPLE_START_EVENTS = "activiti-subprocess-multiple-start-event";
 
-  String SUBPROCESS_START_EVENT_EVENT_DEFINITION_NOT_ALLOWED = "activiti-subprocess-start-event-event-definition-not-allowed";
+  String SUBPROCESS_START_EVENT_EVENT_DEFINITION_NOT_ALLOWED =
+      "activiti-subprocess-start-event-event-definition-not-allowed";
 
-  String EVENT_SUBPROCESS_INVALID_START_EVENT_DEFINITION = "activiti-event-subprocess-invalid-start-event-definition";
+  String EVENT_SUBPROCESS_INVALID_START_EVENT_DEFINITION =
+      "activiti-event-subprocess-invalid-start-event-definition";
 
   String BOUNDARY_EVENT_NO_EVENT_DEFINITION = "activiti-boundary-event-no-event-definition";
-  String BOUNDARY_EVENT_INVALID_EVENT_DEFINITION = "activiti-boundary-event-invalid-event-definition";
-  String BOUNDARY_EVENT_CANCEL_ONLY_ON_TRANSACTION = "activiti-boundary-event-cancel-only-on-transaction";
-  String BOUNDARY_EVENT_MULTIPLE_CANCEL_ON_TRANSACTION = "activiti-boundary-event-multiple-cancel-on-transaction";
+  String BOUNDARY_EVENT_INVALID_EVENT_DEFINITION =
+      "activiti-boundary-event-invalid-event-definition";
+  String BOUNDARY_EVENT_CANCEL_ONLY_ON_TRANSACTION =
+      "activiti-boundary-event-cancel-only-on-transaction";
+  String BOUNDARY_EVENT_MULTIPLE_CANCEL_ON_TRANSACTION =
+      "activiti-boundary-event-multiple-cancel-on-transaction";
 
-  String INTERMEDIATE_CATCH_EVENT_NO_EVENTDEFINITION = "activiti-intermediate-catch-event-no-eventdefinition";
-  String INTERMEDIATE_CATCH_EVENT_INVALID_EVENTDEFINITION = "activiti-intermediate-catch-event-invalid-eventdefinition";
+  String INTERMEDIATE_CATCH_EVENT_NO_EVENTDEFINITION =
+      "activiti-intermediate-catch-event-no-eventdefinition";
+  String INTERMEDIATE_CATCH_EVENT_INVALID_EVENTDEFINITION =
+      "activiti-intermediate-catch-event-invalid-eventdefinition";
 
   String ERROR_MISSING_ERROR_CODE = "activiti-error-missing-error-code";
   String EVENT_MISSING_ERROR_CODE = "activiti-event-missing-error-code";
@@ -104,7 +122,8 @@ public interface Problems {
   String MESSAGE_INVALID_ITEM_REF = "activiti-message-invalid-item-ref";
   String MESSAGE_EVENT_MISSING_MESSAGE_REF = "activiti-message-event-missing-message-ref";
   String MESSAGE_EVENT_INVALID_MESSAGE_REF = "activiti-message-event-invalid-message-ref";
-  String MESSAGE_EVENT_MULTIPLE_ON_BOUNDARY_SAME_MESSAGE_ID = "activiti-message-event-multiple-on-boundary-same-message-id";
+  String MESSAGE_EVENT_MULTIPLE_ON_BOUNDARY_SAME_MESSAGE_ID =
+      "activiti-message-event-multiple-on-boundary-same-message-id";
 
   String OPERATION_INVALID_IN_MESSAGE_REFERENCE = "activiti-operation-invalid-in-message-reference";
 
@@ -123,7 +142,8 @@ public interface Problems {
 
   String DATA_OBJECT_MISSING_NAME = "activiti-data-object-missing-name";
 
-  String END_EVENT_CANCEL_ONLY_INSIDE_TRANSACTION = "activiti-end-event-cancel-only-inside-transaction";
+  String END_EVENT_CANCEL_ONLY_INSIDE_TRANSACTION =
+      "activiti-end-event-cancel-only-inside-transaction";
 
   String DI_INVALID_REFERENCE = "activiti-di-invalid-reference";
   String DI_DOES_NOT_REFERENCE_FLOWNODE = "activiti-di-does-not-reference-flownode";
@@ -131,5 +151,5 @@ public interface Problems {
 
   String FLOW_ELEMENT_ASYNC_NOT_AVAILABLE = "activiti-flow-element-async-not-available";
   String EVENT_TIMER_ASYNC_NOT_AVAILABLE = "activiti-event-timer-async-not-available";
-  String SIGNAL_ASYNC_NOT_AVAILABLE= "activiti-signal-async-not-available";
+  String SIGNAL_ASYNC_NOT_AVAILABLE = "activiti-signal-async-not-available";
 }

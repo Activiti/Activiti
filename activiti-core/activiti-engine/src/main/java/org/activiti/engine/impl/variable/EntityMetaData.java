@@ -14,17 +14,12 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.variable;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
-/**
- * Class containing meta-data about Entity-classes.
- *
-
- */
+/** Class containing meta-data about Entity-classes. */
 public class EntityMetaData {
 
   private boolean isJPAEntity;

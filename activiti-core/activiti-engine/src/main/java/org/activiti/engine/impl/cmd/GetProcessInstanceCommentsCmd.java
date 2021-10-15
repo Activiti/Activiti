@@ -14,20 +14,16 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.cmd;
 
 import java.io.Serializable;
 import java.util.List;
-
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.task.Comment;
 import org.apache.commons.lang3.StringUtils;
 
-/**
-
- */
+/** */
 public class GetProcessInstanceCommentsCmd implements Command<List<Comment>>, Serializable {
 
   private static final long serialVersionUID = 1L;
@@ -46,10 +42,15 @@ public class GetProcessInstanceCommentsCmd implements Command<List<Comment>>, Se
   @SuppressWarnings("unchecked")
   public List<Comment> execute(CommandContext commandContext) {
     if (StringUtils.isNotBlank(type)) {
-      List<Comment> commentsByProcessInstanceId = commandContext.getCommentEntityManager().findCommentsByProcessInstanceId(processInstanceId, type);
+      List<Comment> commentsByProcessInstanceId =
+          commandContext
+              .getCommentEntityManager()
+              .findCommentsByProcessInstanceId(processInstanceId, type);
       return commentsByProcessInstanceId;
     } else {
-      return commandContext.getCommentEntityManager().findCommentsByProcessInstanceId(processInstanceId);
+      return commandContext
+          .getCommentEntityManager()
+          .findCommentsByProcessInstanceId(processInstanceId);
     }
   }
 }

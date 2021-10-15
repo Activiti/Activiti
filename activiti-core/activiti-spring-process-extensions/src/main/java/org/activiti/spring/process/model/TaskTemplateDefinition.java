@@ -20,41 +20,40 @@ import java.util.Objects;
 
 public class TaskTemplateDefinition {
 
-    private TemplateDefinition assignee;
+  private TemplateDefinition assignee;
 
-    private TemplateDefinition candidate;
+  private TemplateDefinition candidate;
 
-    public TemplateDefinition getAssignee() {
-        return assignee;
+  public TemplateDefinition getAssignee() {
+    return assignee;
+  }
+
+  public void setAssignee(TemplateDefinition assignee) {
+    this.assignee = assignee;
+  }
+
+  public TemplateDefinition getCandidate() {
+    return candidate;
+  }
+
+  public void setCandidate(TemplateDefinition candidate) {
+    this.candidate = candidate;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
     }
-
-    public void setAssignee(TemplateDefinition assignee) {
-        this.assignee = assignee;
+    if (o == null || getClass() != o.getClass()) {
+      return false;
     }
+    TaskTemplateDefinition that = (TaskTemplateDefinition) o;
+    return Objects.equals(assignee, that.assignee) && Objects.equals(candidate, that.candidate);
+  }
 
-    public TemplateDefinition getCandidate() {
-        return candidate;
-    }
-
-    public void setCandidate(TemplateDefinition candidate) {
-        this.candidate = candidate;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        TaskTemplateDefinition that = (TaskTemplateDefinition) o;
-        return Objects.equals(assignee, that.assignee) && Objects
-            .equals(candidate, that.candidate);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(assignee, candidate);
-    }
+  @Override
+  public int hashCode() {
+    return Objects.hash(assignee, candidate);
+  }
 }

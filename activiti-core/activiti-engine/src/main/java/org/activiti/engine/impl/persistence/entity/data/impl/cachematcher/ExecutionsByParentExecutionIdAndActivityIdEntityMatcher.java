@@ -18,14 +18,12 @@ package org.activiti.engine.impl.persistence.entity.data.impl.cachematcher;
 
 import java.util.Collection;
 import java.util.Map;
-
 import org.activiti.engine.impl.persistence.CachedEntityMatcherAdapter;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 
-/**
-
- */
-public class ExecutionsByParentExecutionIdAndActivityIdEntityMatcher extends CachedEntityMatcherAdapter<ExecutionEntity> {
+/** */
+public class ExecutionsByParentExecutionIdAndActivityIdEntityMatcher
+    extends CachedEntityMatcherAdapter<ExecutionEntity> {
 
   @Override
   public boolean isRetained(ExecutionEntity executionEntity, Object parameter) {
@@ -33,8 +31,9 @@ public class ExecutionsByParentExecutionIdAndActivityIdEntityMatcher extends Cac
     String parentExecutionId = (String) paramMap.get("parentExecutionId");
     Collection<String> activityIds = (Collection<String>) paramMap.get("activityIds");
 
-    return executionEntity.getParentId() != null && executionEntity.getParentId().equals(parentExecutionId)
-        && executionEntity.getActivityId() != null && activityIds.contains(executionEntity.getActivityId());
+    return executionEntity.getParentId() != null
+        && executionEntity.getParentId().equals(parentExecutionId)
+        && executionEntity.getActivityId() != null
+        && activityIds.contains(executionEntity.getActivityId());
   }
-
 }

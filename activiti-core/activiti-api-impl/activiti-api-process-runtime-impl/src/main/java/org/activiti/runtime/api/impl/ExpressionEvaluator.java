@@ -21,8 +21,8 @@ import org.activiti.engine.impl.interceptor.DelegateInterceptor;
 
 public interface ExpressionEvaluator {
 
-    Object evaluate(Expression expression,
-        ExpressionManager expressionManager,
-        DelegateInterceptor delegateInterceptor);
-
+  Object evaluate(
+      Expression expression,
+      ExpressionManager expressionManager,
+      DelegateInterceptor delegateInterceptor);
 }

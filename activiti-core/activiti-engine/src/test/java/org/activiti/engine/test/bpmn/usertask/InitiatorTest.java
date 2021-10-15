@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.test.bpmn.usertask;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -23,9 +22,7 @@ import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.test.Deployment;
 
-/**
-
- */
+/** */
 public class InitiatorTest extends PluggableActivitiTestCase {
 
   @Deployment
@@ -52,5 +49,4 @@ public class InitiatorTest extends PluggableActivitiTestCase {
 
     assertThat(taskService.createTaskQuery().taskAssignee("bono").count()).isEqualTo(1);
   }
-
 }

@@ -16,11 +16,7 @@
 
 package org.activiti.engine.impl.persistence.entity;
 
-/**
- * DeadLetterJob entity, necessary for persistence.
- *
-
- */
+/** DeadLetterJob entity, necessary for persistence. */
 public class DeadLetterJobEntityImpl extends AbstractJobEntityImpl implements DeadLetterJobEntity {
 
   private static final long serialVersionUID = 1L;

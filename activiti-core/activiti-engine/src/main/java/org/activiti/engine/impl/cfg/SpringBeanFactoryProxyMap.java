@@ -14,19 +14,15 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.cfg;
 
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
-
 import org.activiti.engine.ActivitiException;
 import org.springframework.beans.factory.BeanFactory;
 
-/**
-
- */
+/** */
 public class SpringBeanFactoryProxyMap implements Map<Object, Object> {
 
   protected BeanFactory beanFactory;

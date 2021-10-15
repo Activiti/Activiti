@@ -16,15 +16,14 @@
 
 package org.activiti.examples.bpmn.servicetask;
 
+import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.JavaDelegate;
-import org.activiti.engine.delegate.DelegateExecution;
 
 /**
- * Example JavaDelegate that uses an injected {@link Expression}s in fields 'text1' and 'text2'. While executing, 'var1' is set with the reversed result of the method invocation and 'var2' will be the
- * reversed result of the value expression.
- *
-
+ * Example JavaDelegate that uses an injected {@link Expression}s in fields 'text1' and 'text2'.
+ * While executing, 'var1' is set with the reversed result of the method invocation and 'var2' will
+ * be the reversed result of the value expression.
  */
 public class ReverseStringsFieldInjected implements JavaDelegate {
 
@@ -38,5 +37,4 @@ public class ReverseStringsFieldInjected implements JavaDelegate {
     String value2 = (String) text2.getValue(execution);
     execution.setVariable("var2", new StringBuffer(value2).reverse().toString());
   }
-
 }

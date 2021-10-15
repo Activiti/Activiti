@@ -20,10 +20,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
-
 import org.activiti.bpmn.converter.SubprocessXMLConverter;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.FlowElement;

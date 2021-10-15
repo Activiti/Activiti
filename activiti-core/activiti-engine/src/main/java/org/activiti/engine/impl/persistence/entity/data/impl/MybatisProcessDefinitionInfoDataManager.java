@@ -22,12 +22,13 @@ import org.activiti.engine.impl.persistence.entity.ProcessDefinitionInfoEntityIm
 import org.activiti.engine.impl.persistence.entity.data.AbstractDataManager;
 import org.activiti.engine.impl.persistence.entity.data.ProcessDefinitionInfoDataManager;
 
-/**
+/** */
+public class MybatisProcessDefinitionInfoDataManager
+    extends AbstractDataManager<ProcessDefinitionInfoEntity>
+    implements ProcessDefinitionInfoDataManager {
 
- */
-public class MybatisProcessDefinitionInfoDataManager extends AbstractDataManager<ProcessDefinitionInfoEntity> implements ProcessDefinitionInfoDataManager {
-
-  public MybatisProcessDefinitionInfoDataManager(ProcessEngineConfigurationImpl processEngineConfiguration) {
+  public MybatisProcessDefinitionInfoDataManager(
+      ProcessEngineConfigurationImpl processEngineConfiguration) {
     super(processEngineConfiguration);
   }
 
@@ -42,7 +43,10 @@ public class MybatisProcessDefinitionInfoDataManager extends AbstractDataManager
   }
 
   @Override
-  public ProcessDefinitionInfoEntity findProcessDefinitionInfoByProcessDefinitionId(String processDefinitionId) {
-    return (ProcessDefinitionInfoEntity) getDbSqlSession().selectOne("selectProcessDefinitionInfoByProcessDefinitionId", processDefinitionId);
+  public ProcessDefinitionInfoEntity findProcessDefinitionInfoByProcessDefinitionId(
+      String processDefinitionId) {
+    return (ProcessDefinitionInfoEntity)
+        getDbSqlSession()
+            .selectOne("selectProcessDefinitionInfoByProcessDefinitionId", processDefinitionId);
   }
 }

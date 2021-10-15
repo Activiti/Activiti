@@ -15,6 +15,7 @@
  */
 package org.activiti.runtime.api.event.internal;
 
+import java.util.List;
 import org.activiti.api.process.runtime.events.ProcessStartedEvent;
 import org.activiti.api.process.runtime.events.listener.ProcessRuntimeEventListener;
 import org.activiti.engine.delegate.event.ActivitiEvent;
@@ -22,34 +23,35 @@ import org.activiti.engine.delegate.event.ActivitiEventListener;
 import org.activiti.engine.delegate.event.ActivitiProcessStartedEvent;
 import org.activiti.runtime.api.event.impl.ToAPIProcessStartedEventConverter;
 
-import java.util.List;
-
 public class ProcessStartedListenerDelegate implements ActivitiEventListener {
 
-    private List<ProcessRuntimeEventListener<ProcessStartedEvent>> listeners;
+  private List<ProcessRuntimeEventListener<ProcessStartedEvent>> listeners;
 
-    private ToAPIProcessStartedEventConverter processInstanceStartedEventConverter;
+  private ToAPIProcessStartedEventConverter processInstanceStartedEventConverter;
 
-    public ProcessStartedListenerDelegate(List<ProcessRuntimeEventListener<ProcessStartedEvent>> listeners,
-                                          ToAPIProcessStartedEventConverter processInstanceStartedEventConverter) {
-        this.listeners = listeners;
-        this.processInstanceStartedEventConverter = processInstanceStartedEventConverter;
+  public ProcessStartedListenerDelegate(
+      List<ProcessRuntimeEventListener<ProcessStartedEvent>> listeners,
+      ToAPIProcessStartedEventConverter processInstanceStartedEventConverter) {
+    this.listeners = listeners;
+    this.processInstanceStartedEventConverter = processInstanceStartedEventConverter;
+  }
+
+  @Override
+  public void onEvent(ActivitiEvent event) {
+    if (event instanceof ActivitiProcessStartedEvent) {
+      processInstanceStartedEventConverter
+          .from((ActivitiProcessStartedEvent) event)
+          .ifPresent(
+              convertedEvent -> {
+                for (ProcessRuntimeEventListener<ProcessStartedEvent> listener : listeners) {
+                  listener.onEvent(convertedEvent);
+                }
+              });
     }
+  }
 
-    @Override
-    public void onEvent(ActivitiEvent event) {
-        if (event instanceof ActivitiProcessStartedEvent) {
-            processInstanceStartedEventConverter.from((ActivitiProcessStartedEvent) event)
-                    .ifPresent(convertedEvent -> {
-                        for ( ProcessRuntimeEventListener<ProcessStartedEvent> listener : listeners ) {
-                            listener.onEvent(convertedEvent);
-                        }
-                    });
-        }
-    }
-
-    @Override
-    public boolean isFailOnException() {
-        return false;
-    }
+  @Override
+  public boolean isFailOnException() {
+    return false;
+  }
 }

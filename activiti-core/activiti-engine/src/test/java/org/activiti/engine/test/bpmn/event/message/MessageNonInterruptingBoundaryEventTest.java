@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.test.bpmn.event.message;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -24,10 +23,7 @@ import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
-/**
- *
-
- */
+/** */
 public class MessageNonInterruptingBoundaryEventTest extends PluggableActivitiTestCase {
 
   @Deployment
@@ -39,14 +35,22 @@ public class MessageNonInterruptingBoundaryEventTest extends PluggableActivitiTe
     Task userTask = taskService.createTaskQuery().taskDefinitionKey("task").singleResult();
     assertThat(userTask).isNotNull();
 
-    Execution execution = runtimeService.createExecutionQuery().messageEventSubscriptionName("messageName").singleResult();
+    Execution execution =
+        runtimeService
+            .createExecutionQuery()
+            .messageEventSubscriptionName("messageName")
+            .singleResult();
     assertThat(execution).isNotNull();
 
     // 1. case: message received before completing the task
 
     runtimeService.messageEventReceived("messageName", execution.getId());
     // event subscription not removed
-    execution = runtimeService.createExecutionQuery().messageEventSubscriptionName("messageName").singleResult();
+    execution =
+        runtimeService
+            .createExecutionQuery()
+            .messageEventSubscriptionName("messageName")
+            .singleResult();
     assertThat(execution).isNotNull();
 
     assertThat(taskService.createTaskQuery().count()).isEqualTo(2);
@@ -60,7 +64,11 @@ public class MessageNonInterruptingBoundaryEventTest extends PluggableActivitiTe
     // send a message a second time
     runtimeService.messageEventReceived("messageName", execution.getId());
     // event subscription not removed
-    execution = runtimeService.createExecutionQuery().messageEventSubscriptionName("messageName").singleResult();
+    execution =
+        runtimeService
+            .createExecutionQuery()
+            .messageEventSubscriptionName("messageName")
+            .singleResult();
     assertThat(execution).isNotNull();
 
     assertThat(taskService.createTaskQuery().count()).isEqualTo(2);
@@ -78,7 +86,11 @@ public class MessageNonInterruptingBoundaryEventTest extends PluggableActivitiTe
     taskService.complete(userTask.getId());
 
     // event subscription removed
-    execution = runtimeService.createExecutionQuery().messageEventSubscriptionName("messageName").singleResult();
+    execution =
+        runtimeService
+            .createExecutionQuery()
+            .messageEventSubscriptionName("messageName")
+            .singleResult();
     assertThat(execution).isNull();
 
     userTask = taskService.createTaskQuery().taskDefinitionKey("taskAfterTask").singleResult();
@@ -96,7 +108,11 @@ public class MessageNonInterruptingBoundaryEventTest extends PluggableActivitiTe
     assertThat(userTask).isNotNull();
     taskService.complete(userTask.getId());
 
-    execution = runtimeService.createExecutionQuery().messageEventSubscriptionName("messageName").singleResult();
+    execution =
+        runtimeService
+            .createExecutionQuery()
+            .messageEventSubscriptionName("messageName")
+            .singleResult();
     assertThat(execution).isNull();
 
     userTask = taskService.createTaskQuery().taskDefinitionKey("taskAfterTask").singleResult();
@@ -105,5 +121,4 @@ public class MessageNonInterruptingBoundaryEventTest extends PluggableActivitiTe
     taskService.complete(userTask.getId());
     assertThat(runtimeService.createProcessInstanceQuery().count()).isEqualTo(0);
   }
-
 }

@@ -100,10 +100,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
-/**
-
-
- */
+/** */
 public class BpmnXMLConverter implements BpmnXMLConstants {
 
   protected static final Logger LOGGER = LoggerFactory.getLogger(BpmnXMLConverter.class);
@@ -111,8 +108,10 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
   protected static final String BPMN_XSD = "org/activiti/impl/bpmn/parser/BPMN20.xsd";
   protected static final String DEFAULT_ENCODING = "UTF-8";
 
-  protected static Map<String, BaseBpmnXMLConverter> convertersToBpmnMap = new HashMap<String, BaseBpmnXMLConverter>();
-  protected static Map<Class<? extends BaseElement>, BaseBpmnXMLConverter> convertersToXMLMap = new HashMap<Class<? extends BaseElement>, BaseBpmnXMLConverter>();
+  protected static Map<String, BaseBpmnXMLConverter> convertersToBpmnMap =
+      new HashMap<String, BaseBpmnXMLConverter>();
+  protected static Map<Class<? extends BaseElement>, BaseBpmnXMLConverter> convertersToXMLMap =
+      new HashMap<Class<? extends BaseElement>, BaseBpmnXMLConverter>();
 
   protected ClassLoader classloader;
   protected List<String> userTaskFormTypes;
@@ -194,7 +193,8 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
     addConverter(converter, converter.getBpmnElementType());
   }
 
-  public static void addConverter(BaseBpmnXMLConverter converter, Class<? extends BaseElement> elementType) {
+  public static void addConverter(
+      BaseBpmnXMLConverter converter, Class<? extends BaseElement> elementType) {
     convertersToBpmnMap.put(converter.getXMLElementName(), converter);
     convertersToXMLMap.put(elementType, converter);
   }
@@ -244,18 +244,23 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
 
   protected Schema createSchema(SchemaFactory factory, URL schemaUrl) throws SAXException {
     try {
-      return factory.newSchema(
-              new StreamSource(schemaUrl.toURI().toASCIIString()));
+      return factory.newSchema(new StreamSource(schemaUrl.toURI().toASCIIString()));
     } catch (URISyntaxException e) {
       throw new XMLException("BPMN XSD could not be found", e);
     }
   }
 
-  public BpmnModel convertToBpmnModel(InputStreamProvider inputStreamProvider, boolean validateSchema, boolean enableSafeBpmnXml) {
-    return convertToBpmnModel(inputStreamProvider, validateSchema, enableSafeBpmnXml, DEFAULT_ENCODING);
+  public BpmnModel convertToBpmnModel(
+      InputStreamProvider inputStreamProvider, boolean validateSchema, boolean enableSafeBpmnXml) {
+    return convertToBpmnModel(
+        inputStreamProvider, validateSchema, enableSafeBpmnXml, DEFAULT_ENCODING);
   }
 
-  public BpmnModel convertToBpmnModel(InputStreamProvider inputStreamProvider, boolean validateSchema, boolean enableSafeBpmnXml, String encoding) {
+  public BpmnModel convertToBpmnModel(
+      InputStreamProvider inputStreamProvider,
+      boolean validateSchema,
+      boolean enableSafeBpmnXml,
+      String encoding) {
     XMLInputFactory xif = XMLInputFactory.newInstance();
 
     if (xif.isPropertySupported(XMLInputFactory.IS_REPLACING_ENTITY_REFERENCES)) {
@@ -325,9 +330,10 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
           throw new XMLException("Error reading XML", e);
         }
 
-        if (xtr.isEndElement() && (ELEMENT_SUBPROCESS.equals(xtr.getLocalName()) ||
-            ELEMENT_TRANSACTION.equals(xtr.getLocalName()) ||
-            ELEMENT_ADHOC_SUBPROCESS.equals(xtr.getLocalName()))) {
+        if (xtr.isEndElement()
+            && (ELEMENT_SUBPROCESS.equals(xtr.getLocalName())
+                || ELEMENT_TRANSACTION.equals(xtr.getLocalName())
+                || ELEMENT_ADHOC_SUBPROCESS.equals(xtr.getLocalName()))) {
 
           activeSubProcessList.remove(activeSubProcessList.size() - 1);
         }
@@ -336,24 +342,25 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
           continue;
         }
 
-				if (ELEMENT_DEFINITIONS.equals(xtr.getLocalName())) {
-				  definitionsParser.parse(xtr, model);
+        if (ELEMENT_DEFINITIONS.equals(xtr.getLocalName())) {
+          definitionsParser.parse(xtr, model);
 
         } else if (ELEMENT_RESOURCE.equals(xtr.getLocalName())) {
           resourceParser.parse(xtr, model);
 
-				} else if (ELEMENT_SIGNAL.equals(xtr.getLocalName())) {
-					signalParser.parse(xtr, model);
+        } else if (ELEMENT_SIGNAL.equals(xtr.getLocalName())) {
+          signalParser.parse(xtr, model);
 
-				} else if (ELEMENT_MESSAGE.equals(xtr.getLocalName())) {
+        } else if (ELEMENT_MESSAGE.equals(xtr.getLocalName())) {
           messageParser.parse(xtr, model);
 
         } else if (ELEMENT_ERROR.equals(xtr.getLocalName())) {
 
           if (StringUtils.isNotEmpty(xtr.getAttributeValue(null, ATTRIBUTE_ID))) {
-            model.addError(xtr.getAttributeValue(null, ATTRIBUTE_ID),
-                                     xtr.getAttributeValue(null, ATTRIBUTE_NAME),
-                                     xtr.getAttributeValue(null, ATTRIBUTE_ERROR_CODE));
+            model.addError(
+                xtr.getAttributeValue(null, ATTRIBUTE_ID),
+                xtr.getAttributeValue(null, ATTRIBUTE_NAME),
+                xtr.getAttributeValue(null, ATTRIBUTE_ERROR_CODE));
           }
 
         } else if (ELEMENT_IMPORT.equals(xtr.getLocalName())) {
@@ -402,20 +409,24 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
 
         } else if (activeProcess == null && ELEMENT_TEXT_ANNOTATION.equals(xtr.getLocalName())) {
           String elementId = xtr.getAttributeValue(null, ATTRIBUTE_ID);
-          TextAnnotation textAnnotation = (TextAnnotation) new TextAnnotationXMLConverter().convertXMLToElement(xtr, model);
+          TextAnnotation textAnnotation =
+              (TextAnnotation) new TextAnnotationXMLConverter().convertXMLToElement(xtr, model);
           textAnnotation.setId(elementId);
           model.getGlobalArtifacts().add(textAnnotation);
 
         } else if (activeProcess == null && ELEMENT_ASSOCIATION.equals(xtr.getLocalName())) {
           String elementId = xtr.getAttributeValue(null, ATTRIBUTE_ID);
-          Association association = (Association) new AssociationXMLConverter().convertXMLToElement(xtr, model);
+          Association association =
+              (Association) new AssociationXMLConverter().convertXMLToElement(xtr, model);
           association.setId(elementId);
           model.getGlobalArtifacts().add(association);
 
         } else if (ELEMENT_EXTENSIONS.equals(xtr.getLocalName())) {
           extensionElementsParser.parse(xtr, activeSubProcessList, activeProcess, model);
 
-        } else if (ELEMENT_SUBPROCESS.equals(xtr.getLocalName()) || ELEMENT_TRANSACTION.equals(xtr.getLocalName()) || ELEMENT_ADHOC_SUBPROCESS.equals(xtr.getLocalName())) {
+        } else if (ELEMENT_SUBPROCESS.equals(xtr.getLocalName())
+            || ELEMENT_TRANSACTION.equals(xtr.getLocalName())
+            || ELEMENT_ADHOC_SUBPROCESS.equals(xtr.getLocalName())) {
           subProcessParser.parse(xtr, activeSubProcessList, activeProcess);
 
         } else if (ELEMENT_COMPLETION_CONDITION.equals(xtr.getLocalName())) {
@@ -435,9 +446,11 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
 
         } else {
 
-          if (!activeSubProcessList.isEmpty() && ELEMENT_MULTIINSTANCE.equalsIgnoreCase(xtr.getLocalName())) {
+          if (!activeSubProcessList.isEmpty()
+              && ELEMENT_MULTIINSTANCE.equalsIgnoreCase(xtr.getLocalName())) {
 
-            multiInstanceParser.parseChildElement(xtr, activeSubProcessList.get(activeSubProcessList.size() - 1), model);
+            multiInstanceParser.parseChildElement(
+                xtr, activeSubProcessList.get(activeSubProcessList.size() - 1), model);
 
           } else if (convertersToBpmnMap.containsKey(xtr.getLocalName())) {
             if (activeProcess != null) {
@@ -467,7 +480,8 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
     return model;
   }
 
-  protected void processFlowElements(Collection<FlowElement> flowElementList, BaseElement parentScope) {
+  protected void processFlowElements(
+      Collection<FlowElement> flowElementList, BaseElement parentScope) {
     for (FlowElement flowElement : flowElementList) {
       if (flowElement instanceof SequenceFlow) {
         SequenceFlow sequenceFlow = (SequenceFlow) flowElement;
@@ -485,7 +499,8 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
 
       } else if (flowElement instanceof BoundaryEvent) {
         BoundaryEvent boundaryEvent = (BoundaryEvent) flowElement;
-        FlowElement attachedToElement = getFlowNodeFromScope(boundaryEvent.getAttachedToRefId(), parentScope);
+        FlowElement attachedToElement =
+            getFlowNodeFromScope(boundaryEvent.getAttachedToRefId(), parentScope);
         if (attachedToElement instanceof Activity) {
           Activity attachedActivity = (Activity) attachedToElement;
           boundaryEvent.setAttachedToRef(attachedActivity);
@@ -572,7 +587,8 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
     }
   }
 
-  protected void createXML(FlowElement flowElement, BpmnModel model, XMLStreamWriter xtw) throws Exception {
+  protected void createXML(FlowElement flowElement, BpmnModel model, XMLStreamWriter xtw)
+      throws Exception {
 
     if (flowElement instanceof SubProcess) {
 
@@ -597,15 +613,20 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
 
       } else if (!(subProcess instanceof Transaction)) {
         if (subProcess.isAsynchronous()) {
-          BpmnXMLUtil.writeQualifiedAttribute(ATTRIBUTE_ACTIVITY_ASYNCHRONOUS, ATTRIBUTE_VALUE_TRUE, xtw);
+          BpmnXMLUtil.writeQualifiedAttribute(
+              ATTRIBUTE_ACTIVITY_ASYNCHRONOUS, ATTRIBUTE_VALUE_TRUE, xtw);
           if (subProcess.isNotExclusive()) {
-            BpmnXMLUtil.writeQualifiedAttribute(ATTRIBUTE_ACTIVITY_EXCLUSIVE, ATTRIBUTE_VALUE_FALSE, xtw);
+            BpmnXMLUtil.writeQualifiedAttribute(
+                ATTRIBUTE_ACTIVITY_EXCLUSIVE, ATTRIBUTE_VALUE_FALSE, xtw);
           }
         }
 
       } else if (subProcess instanceof AdhocSubProcess) {
         AdhocSubProcess adhocSubProcess = (AdhocSubProcess) subProcess;
-        BpmnXMLUtil.writeDefaultAttribute(ATTRIBUTE_CANCEL_REMAINING_INSTANCES, String.valueOf(adhocSubProcess.isCancelRemainingInstances()), xtw);
+        BpmnXMLUtil.writeDefaultAttribute(
+            ATTRIBUTE_CANCEL_REMAINING_INSTANCES,
+            String.valueOf(adhocSubProcess.isCancelRemainingInstances()),
+            xtw);
         if (StringUtils.isNotEmpty(adhocSubProcess.getOrdering())) {
           BpmnXMLUtil.writeDefaultAttribute(ATTRIBUTE_ORDERING, adhocSubProcess.getOrdering(), xtw);
         }
@@ -618,9 +639,12 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
         xtw.writeEndElement();
       }
 
-      boolean didWriteExtensionStartElement = ActivitiListenerExport.writeListeners(subProcess, false, xtw);
+      boolean didWriteExtensionStartElement =
+          ActivitiListenerExport.writeListeners(subProcess, false, xtw);
 
-      didWriteExtensionStartElement = BpmnXMLUtil.writeExtensionElements(subProcess, didWriteExtensionStartElement, model.getNamespaces(), xtw);
+      didWriteExtensionStartElement =
+          BpmnXMLUtil.writeExtensionElements(
+              subProcess, didWriteExtensionStartElement, model.getNamespaces(), xtw);
       if (didWriteExtensionStartElement) {
         // closing extensions element
         xtw.writeEndElement();
@@ -659,7 +683,8 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
     }
   }
 
-  protected void createXML(Artifact artifact, BpmnModel model, XMLStreamWriter xtw) throws Exception {
+  protected void createXML(Artifact artifact, BpmnModel model, XMLStreamWriter xtw)
+      throws Exception {
 
     BaseBpmnXMLConverter converter = convertersToXMLMap.get(artifact.getClass());
 

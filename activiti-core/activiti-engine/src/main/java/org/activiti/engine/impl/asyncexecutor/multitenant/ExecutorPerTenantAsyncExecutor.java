@@ -14,13 +14,11 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.asyncexecutor.multitenant;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-
 import org.activiti.engine.impl.asyncexecutor.AsyncExecutor;
 import org.activiti.engine.impl.asyncexecutor.DefaultAsyncJobExecutor;
 import org.activiti.engine.impl.asyncexecutor.JobManager;
@@ -31,14 +29,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * An {@link AsyncExecutor} that has one {@link AsyncExecutor} per tenant.
- * So each tenant has its own acquiring threads and it's own threadpool for executing jobs.
- *
-
+ * An {@link AsyncExecutor} that has one {@link AsyncExecutor} per tenant. So each tenant has its
+ * own acquiring threads and it's own threadpool for executing jobs.
  */
 public class ExecutorPerTenantAsyncExecutor implements TenantAwareAsyncExecutor {
 
-  private static final Logger logger = LoggerFactory.getLogger(ExecutorPerTenantAsyncExecutor.class);
+  private static final Logger logger =
+      LoggerFactory.getLogger(ExecutorPerTenantAsyncExecutor.class);
 
   protected TenantInfoHolder tenantInfoHolder;
   protected TenantAwareAsyncExecutorFactory tenantAwareAyncExecutorFactory;
@@ -53,7 +50,9 @@ public class ExecutorPerTenantAsyncExecutor implements TenantAwareAsyncExecutor 
     this(tenantInfoHolder, null);
   }
 
-  public ExecutorPerTenantAsyncExecutor(TenantInfoHolder tenantInfoHolder, TenantAwareAsyncExecutorFactory tenantAwareAyncExecutorFactory) {
+  public ExecutorPerTenantAsyncExecutor(
+      TenantInfoHolder tenantInfoHolder,
+      TenantAwareAsyncExecutorFactory tenantAwareAyncExecutorFactory) {
     this.tenantInfoHolder = tenantInfoHolder;
     this.tenantAwareAyncExecutorFactory = tenantAwareAyncExecutorFactory;
   }
@@ -76,10 +75,17 @@ public class ExecutorPerTenantAsyncExecutor implements TenantAwareAsyncExecutor 
 
     if (tenantExecutor instanceof DefaultAsyncJobExecutor) {
       DefaultAsyncJobExecutor defaultAsyncJobExecutor = (DefaultAsyncJobExecutor) tenantExecutor;
-      defaultAsyncJobExecutor.setAsyncJobsDueRunnable(new TenantAwareAcquireAsyncJobsDueRunnable(defaultAsyncJobExecutor, tenantInfoHolder, tenantId));
-      defaultAsyncJobExecutor.setTimerJobRunnable(new TenantAwareAcquireTimerJobsRunnable(defaultAsyncJobExecutor, tenantInfoHolder, tenantId));
-      defaultAsyncJobExecutor.setExecuteAsyncRunnableFactory(new TenantAwareExecuteAsyncRunnableFactory(tenantInfoHolder, tenantId));
-      defaultAsyncJobExecutor.setResetExpiredJobsRunnable(new TenantAwareResetExpiredJobsRunnable(defaultAsyncJobExecutor, tenantInfoHolder, tenantId));
+      defaultAsyncJobExecutor.setAsyncJobsDueRunnable(
+          new TenantAwareAcquireAsyncJobsDueRunnable(
+              defaultAsyncJobExecutor, tenantInfoHolder, tenantId));
+      defaultAsyncJobExecutor.setTimerJobRunnable(
+          new TenantAwareAcquireTimerJobsRunnable(
+              defaultAsyncJobExecutor, tenantInfoHolder, tenantId));
+      defaultAsyncJobExecutor.setExecuteAsyncRunnableFactory(
+          new TenantAwareExecuteAsyncRunnableFactory(tenantInfoHolder, tenantId));
+      defaultAsyncJobExecutor.setResetExpiredJobsRunnable(
+          new TenantAwareResetExpiredJobsRunnable(
+              defaultAsyncJobExecutor, tenantInfoHolder, tenantId));
     }
 
     tenantExecutors.put(tenantId, tenantExecutor);
@@ -89,11 +95,11 @@ public class ExecutorPerTenantAsyncExecutor implements TenantAwareAsyncExecutor 
     }
   }
 
-    @Override
-    public void removeTenantAsyncExecutor(String tenantId) {
-      shutdownTenantExecutor(tenantId);
-      tenantExecutors.remove(tenantId);
-    }
+  @Override
+  public void removeTenantAsyncExecutor(String tenantId) {
+    shutdownTenantExecutor(tenantId);
+    tenantExecutors.remove(tenantId);
+  }
 
   protected AsyncExecutor determineAsyncExecutor() {
     return tenantExecutors.get(tenantInfoHolder.getCurrentTenantId());
@@ -109,7 +115,8 @@ public class ExecutorPerTenantAsyncExecutor implements TenantAwareAsyncExecutor 
   }
 
   @Override
-  public void setProcessEngineConfiguration(ProcessEngineConfigurationImpl processEngineConfiguration) {
+  public void setProcessEngineConfiguration(
+      ProcessEngineConfigurationImpl processEngineConfiguration) {
     this.processEngineConfiguration = processEngineConfiguration;
     for (AsyncExecutor asyncExecutor : tenantExecutors.values()) {
       asyncExecutor.setProcessEngineConfiguration(processEngineConfiguration);
@@ -259,5 +266,4 @@ public class ExecutorPerTenantAsyncExecutor implements TenantAwareAsyncExecutor 
       asyncExecutor.setResetExpiredJobsPageSize(resetExpiredJobsPageSize);
     }
   }
-
 }

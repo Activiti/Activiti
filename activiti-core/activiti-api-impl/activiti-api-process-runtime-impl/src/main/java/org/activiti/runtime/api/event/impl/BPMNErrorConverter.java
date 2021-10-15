@@ -20,20 +20,21 @@ import org.activiti.engine.delegate.event.ActivitiErrorEvent;
 
 public class BPMNErrorConverter {
 
-    public BPMNErrorImpl convertToBPMNError(ActivitiErrorEvent internalEvent) {
+  public BPMNErrorImpl convertToBPMNError(ActivitiErrorEvent internalEvent) {
 
-        BPMNErrorImpl bpmnError = new BPMNErrorImpl(internalEvent.getActivityId(),
-                                                    internalEvent.getActivityName(),
-                                                    internalEvent.getActivityType());
+    BPMNErrorImpl bpmnError =
+        new BPMNErrorImpl(
+            internalEvent.getActivityId(),
+            internalEvent.getActivityName(),
+            internalEvent.getActivityType());
 
-        bpmnError.setProcessDefinitionId(internalEvent.getProcessDefinitionId());
-        bpmnError.setProcessInstanceId(internalEvent.getProcessInstanceId());
-        bpmnError.setExecutionId(internalEvent.getExecutionId());
+    bpmnError.setProcessDefinitionId(internalEvent.getProcessDefinitionId());
+    bpmnError.setProcessInstanceId(internalEvent.getProcessInstanceId());
+    bpmnError.setExecutionId(internalEvent.getExecutionId());
 
-        bpmnError.setErrorId(internalEvent.getErrorId());
-        bpmnError.setErrorCode(internalEvent.getErrorCode());
+    bpmnError.setErrorId(internalEvent.getErrorId());
+    bpmnError.setErrorCode(internalEvent.getErrorCode());
 
-        return bpmnError;
-    }
-
+    return bpmnError;
+  }
 }

@@ -15,12 +15,12 @@
  */
 package org.activiti.bpmn.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
-public abstract class FlowElement extends BaseElement implements HasExecutionListeners, AcceptUpdates {
+public abstract class FlowElement extends BaseElement
+    implements HasExecutionListeners, AcceptUpdates {
 
   protected String name;
   protected String documentation;
@@ -78,7 +78,8 @@ public abstract class FlowElement extends BaseElement implements HasExecutionLis
     setDocumentation(otherElement.getDocumentation());
 
     executionListeners = new ArrayList<ActivitiListener>();
-    if (otherElement.getExecutionListeners() != null && !otherElement.getExecutionListeners().isEmpty()) {
+    if (otherElement.getExecutionListeners() != null
+        && !otherElement.getExecutionListeners().isEmpty()) {
       for (ActivitiListener listener : otherElement.getExecutionListeners()) {
         executionListeners.add(listener.clone());
       }

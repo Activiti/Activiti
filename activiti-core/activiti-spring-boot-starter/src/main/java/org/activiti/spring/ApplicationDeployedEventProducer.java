@@ -28,49 +28,53 @@ import org.springframework.context.ApplicationEventPublisher;
 
 public class ApplicationDeployedEventProducer extends AbstractActivitiSmartLifeCycle {
 
-    private RepositoryService repositoryService;
-    private APIDeploymentConverter deploymentConverter;
-    private List<ProcessRuntimeEventListener<ApplicationDeployedEvent>> listeners;
-    private ApplicationEventPublisher eventPublisher;
-    private static final String APPLICATION_DEPLOYMENT_NAME= "SpringAutoDeployment";
+  private RepositoryService repositoryService;
+  private APIDeploymentConverter deploymentConverter;
+  private List<ProcessRuntimeEventListener<ApplicationDeployedEvent>> listeners;
+  private ApplicationEventPublisher eventPublisher;
+  private static final String APPLICATION_DEPLOYMENT_NAME = "SpringAutoDeployment";
 
-    public ApplicationDeployedEventProducer(RepositoryService repositoryService,
-            APIDeploymentConverter deploymentConverter,
-            List<ProcessRuntimeEventListener<ApplicationDeployedEvent>> listeners,
-            ApplicationEventPublisher eventPublisher) {
-        this.repositoryService = repositoryService;
-        this.deploymentConverter = deploymentConverter;
-        this.listeners = listeners;
-        this.eventPublisher = eventPublisher;
+  public ApplicationDeployedEventProducer(
+      RepositoryService repositoryService,
+      APIDeploymentConverter deploymentConverter,
+      List<ProcessRuntimeEventListener<ApplicationDeployedEvent>> listeners,
+      ApplicationEventPublisher eventPublisher) {
+    this.repositoryService = repositoryService;
+    this.deploymentConverter = deploymentConverter;
+    this.listeners = listeners;
+    this.eventPublisher = eventPublisher;
+  }
+
+  @Override
+  public void doStart() {
+    List<ApplicationDeployedEvent> applicationDeployedEvents = getApplicationDeployedEvents();
+    for (ProcessRuntimeEventListener<ApplicationDeployedEvent> listener : listeners) {
+      applicationDeployedEvents.forEach(listener::onEvent);
     }
-
-    @Override
-    public void doStart() {
-        List<ApplicationDeployedEvent> applicationDeployedEvents = getApplicationDeployedEvents();
-        for (ProcessRuntimeEventListener<ApplicationDeployedEvent> listener : listeners) {
-            applicationDeployedEvents.forEach(listener::onEvent);
-        }
-        if (!applicationDeployedEvents.isEmpty()) {
-            eventPublisher.publishEvent(new ApplicationDeployedEvents(applicationDeployedEvents));
-        }
+    if (!applicationDeployedEvents.isEmpty()) {
+      eventPublisher.publishEvent(new ApplicationDeployedEvents(applicationDeployedEvents));
     }
+  }
 
-    private List<ApplicationDeployedEvent> getApplicationDeployedEvents() {
-        List<Deployment> deployments = deploymentConverter.from(repositoryService
-                        .createDeploymentQuery()
-                        .deploymentName(APPLICATION_DEPLOYMENT_NAME)
-                        .list());
+  private List<ApplicationDeployedEvent> getApplicationDeployedEvents() {
+    List<Deployment> deployments =
+        deploymentConverter.from(
+            repositoryService
+                .createDeploymentQuery()
+                .deploymentName(APPLICATION_DEPLOYMENT_NAME)
+                .list());
 
-        List<ApplicationDeployedEvent> applicationDeployedEvents = new ArrayList<>();
-        for (Deployment deployment : deployments) {
-            ApplicationDeployedEventImpl applicationDeployedEvent = new ApplicationDeployedEventImpl(deployment);
-            applicationDeployedEvents.add(applicationDeployedEvent);
-        }
-        return applicationDeployedEvents;
+    List<ApplicationDeployedEvent> applicationDeployedEvents = new ArrayList<>();
+    for (Deployment deployment : deployments) {
+      ApplicationDeployedEventImpl applicationDeployedEvent =
+          new ApplicationDeployedEventImpl(deployment);
+      applicationDeployedEvents.add(applicationDeployedEvent);
     }
+    return applicationDeployedEvents;
+  }
 
-    @Override
-    public void doStop() {
-        //nothing
-    }
+  @Override
+  public void doStop() {
+    // nothing
+  }
 }

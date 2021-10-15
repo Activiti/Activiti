@@ -15,38 +15,41 @@
  */
 package org.activiti.runtime.api.event.internal;
 
+import java.util.List;
 import org.activiti.api.process.model.events.BPMNTimerFiredEvent;
 import org.activiti.api.process.runtime.events.listener.BPMNElementEventListener;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventListener;
 import org.activiti.runtime.api.event.impl.ToTimerFiredConverter;
 
-import java.util.List;
-
 public class TimerFiredListenerDelegate implements ActivitiEventListener {
 
-    private List<BPMNElementEventListener<BPMNTimerFiredEvent>> processRuntimeEventListeners;
+  private List<BPMNElementEventListener<BPMNTimerFiredEvent>> processRuntimeEventListeners;
 
-    private ToTimerFiredConverter converter;
+  private ToTimerFiredConverter converter;
 
-    public TimerFiredListenerDelegate(List<BPMNElementEventListener<BPMNTimerFiredEvent>> processRuntimeEventListeners,
-                                      ToTimerFiredConverter converter) {
-        this.processRuntimeEventListeners = processRuntimeEventListeners;
-        this.converter = converter;
-    }
+  public TimerFiredListenerDelegate(
+      List<BPMNElementEventListener<BPMNTimerFiredEvent>> processRuntimeEventListeners,
+      ToTimerFiredConverter converter) {
+    this.processRuntimeEventListeners = processRuntimeEventListeners;
+    this.converter = converter;
+  }
 
-    @Override
-    public void onEvent(ActivitiEvent event) {
-        converter.from(event)
-                .ifPresent(convertedEvent -> {
-                    for (BPMNElementEventListener<BPMNTimerFiredEvent> listener : processRuntimeEventListeners) {
-                        listener.onEvent(convertedEvent);
-                    }
-                });
-    }
+  @Override
+  public void onEvent(ActivitiEvent event) {
+    converter
+        .from(event)
+        .ifPresent(
+            convertedEvent -> {
+              for (BPMNElementEventListener<BPMNTimerFiredEvent> listener :
+                  processRuntimeEventListeners) {
+                listener.onEvent(convertedEvent);
+              }
+            });
+  }
 
-    @Override
-    public boolean isFailOnException() {
-        return false;
-    }
+  @Override
+  public boolean isFailOnException() {
+    return false;
+  }
 }

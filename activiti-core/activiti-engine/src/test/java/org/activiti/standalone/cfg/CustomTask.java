@@ -13,17 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/**
- *
- */
+/** */
 package org.activiti.standalone.cfg;
 
 import java.util.Date;
 
-/**
-
- *
- */
+/** */
 public class CustomTask {
 
   protected String id;
@@ -56,5 +51,4 @@ public class CustomTask {
   public int getPriority() {
     return priority;
   }
-
 }

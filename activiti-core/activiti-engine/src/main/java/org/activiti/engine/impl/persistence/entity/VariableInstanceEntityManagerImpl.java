@@ -14,14 +14,12 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.persistence.entity;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import org.activiti.engine.delegate.event.ActivitiEventDispatcher;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.ActivitiVariableEvent;
@@ -32,16 +30,15 @@ import org.activiti.engine.impl.persistence.entity.data.DataManager;
 import org.activiti.engine.impl.persistence.entity.data.VariableInstanceDataManager;
 import org.activiti.engine.impl.variable.VariableType;
 
-/**
-
-
-
- */
-public class VariableInstanceEntityManagerImpl extends AbstractEntityManager<VariableInstanceEntity> implements VariableInstanceEntityManager {
+/** */
+public class VariableInstanceEntityManagerImpl extends AbstractEntityManager<VariableInstanceEntity>
+    implements VariableInstanceEntityManager {
 
   protected VariableInstanceDataManager variableInstanceDataManager;
 
-  public VariableInstanceEntityManagerImpl(ProcessEngineConfigurationImpl processEngineConfiguration, VariableInstanceDataManager variableInstanceDataManager) {
+  public VariableInstanceEntityManagerImpl(
+      ProcessEngineConfigurationImpl processEngineConfiguration,
+      VariableInstanceDataManager variableInstanceDataManager) {
     super(processEngineConfiguration);
     this.variableInstanceDataManager = variableInstanceDataManager;
   }
@@ -66,7 +63,8 @@ public class VariableInstanceEntityManagerImpl extends AbstractEntityManager<Var
     super.insert(entity, fireCreateEvent);
 
     if (entity.getExecutionId() != null && isExecutionRelatedEntityCountEnabledGlobally()) {
-      CountingExecutionEntity executionEntity = (CountingExecutionEntity) getExecutionEntityManager().findById(entity.getExecutionId());
+      CountingExecutionEntity executionEntity =
+          (CountingExecutionEntity) getExecutionEntityManager().findById(entity.getExecutionId());
       if (isExecutionRelatedEntityCountEnabled(executionEntity)) {
         executionEntity.setVariableCount(executionEntity.getVariableCount() + 1);
       }
@@ -89,27 +87,33 @@ public class VariableInstanceEntityManagerImpl extends AbstractEntityManager<Var
   }
 
   @Override
-  public List<VariableInstanceEntity> findVariableInstancesByExecutionIds(Set<String> executionIds) {
+  public List<VariableInstanceEntity> findVariableInstancesByExecutionIds(
+      Set<String> executionIds) {
     return variableInstanceDataManager.findVariableInstancesByExecutionIds(executionIds);
   }
 
   @Override
-  public VariableInstanceEntity findVariableInstanceByExecutionAndName(String executionId, String variableName) {
-    return variableInstanceDataManager.findVariableInstanceByExecutionAndName(executionId, variableName);
+  public VariableInstanceEntity findVariableInstanceByExecutionAndName(
+      String executionId, String variableName) {
+    return variableInstanceDataManager.findVariableInstanceByExecutionAndName(
+        executionId, variableName);
   }
 
   @Override
-  public List<VariableInstanceEntity> findVariableInstancesByExecutionAndNames(String executionId, Collection<String> names) {
+  public List<VariableInstanceEntity> findVariableInstancesByExecutionAndNames(
+      String executionId, Collection<String> names) {
     return variableInstanceDataManager.findVariableInstancesByExecutionAndNames(executionId, names);
   }
 
   @Override
-  public VariableInstanceEntity findVariableInstanceByTaskAndName(String taskId, String variableName) {
+  public VariableInstanceEntity findVariableInstanceByTaskAndName(
+      String taskId, String variableName) {
     return variableInstanceDataManager.findVariableInstanceByTaskAndName(taskId, variableName);
   }
 
   @Override
-  public List<VariableInstanceEntity> findVariableInstancesByTaskAndNames(String taskId, Collection<String> names) {
+  public List<VariableInstanceEntity> findVariableInstancesByTaskAndNames(
+      String taskId, Collection<String> names) {
     return variableInstanceDataManager.findVariableInstancesByTaskAndNames(taskId, names);
   }
 
@@ -123,41 +127,45 @@ public class VariableInstanceEntityManagerImpl extends AbstractEntityManager<Var
     entity.setDeleted(true);
 
     if (entity.getExecutionId() != null && isExecutionRelatedEntityCountEnabledGlobally()) {
-      CountingExecutionEntity executionEntity = (CountingExecutionEntity) getExecutionEntityManager().findById(entity.getExecutionId());
+      CountingExecutionEntity executionEntity =
+          (CountingExecutionEntity) getExecutionEntityManager().findById(entity.getExecutionId());
       if (isExecutionRelatedEntityCountEnabled(executionEntity)) {
         executionEntity.setVariableCount(executionEntity.getVariableCount() - 1);
       }
     }
 
-    ActivitiEventDispatcher eventDispatcher =  getEventDispatcher();
+    ActivitiEventDispatcher eventDispatcher = getEventDispatcher();
     if (fireDeleteEvent && eventDispatcher.isEnabled()) {
-      eventDispatcher.dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_DELETED, entity));
+      eventDispatcher.dispatchEvent(
+          ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_DELETED, entity));
 
       eventDispatcher.dispatchEvent(createVariableDeleteEvent(entity));
     }
-
   }
 
-  protected ActivitiVariableEvent createVariableDeleteEvent(VariableInstanceEntity variableInstance) {
+  protected ActivitiVariableEvent createVariableDeleteEvent(
+      VariableInstanceEntity variableInstance) {
 
     String processDefinitionId = null;
     if (variableInstance.getProcessInstanceId() != null) {
-      ExecutionEntity executionEntity = getExecutionEntityManager().findById(variableInstance.getProcessInstanceId());
+      ExecutionEntity executionEntity =
+          getExecutionEntityManager().findById(variableInstance.getProcessInstanceId());
       if (executionEntity != null) {
         processDefinitionId = executionEntity.getProcessDefinitionId();
       }
     }
 
-    Object variableValue=null;
-    boolean getValue=true;
+    Object variableValue = null;
+    boolean getValue = true;
 
     if (variableInstance.getType().getTypeName().equals("jpa-entity")) {
-        getValue=false;
+      getValue = false;
     }
 
-    if (getValue) variableValue=variableInstance.getValue();
+    if (getValue) variableValue = variableInstance.getValue();
 
-    return ActivitiEventBuilder.createVariableEvent(ActivitiEventType.VARIABLE_DELETED,
+    return ActivitiEventBuilder.createVariableEvent(
+        ActivitiEventType.VARIABLE_DELETED,
         variableInstance.getName(),
         variableValue,
         variableInstance.getType(),
@@ -181,8 +189,8 @@ public class VariableInstanceEntityManagerImpl extends AbstractEntityManager<Var
     return variableInstanceDataManager;
   }
 
-  public void setVariableInstanceDataManager(VariableInstanceDataManager variableInstanceDataManager) {
+  public void setVariableInstanceDataManager(
+      VariableInstanceDataManager variableInstanceDataManager) {
     this.variableInstanceDataManager = variableInstanceDataManager;
   }
-
 }

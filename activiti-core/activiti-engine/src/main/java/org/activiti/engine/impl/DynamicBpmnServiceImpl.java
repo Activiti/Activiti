@@ -14,25 +14,20 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.activiti.engine.DynamicBpmnConstants;
 import org.activiti.engine.DynamicBpmnService;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.cmd.GetProcessDefinitionInfoCmd;
 import org.activiti.engine.impl.cmd.SaveProcessDefinitionInfoCmd;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-
-
-
-/**
-
- */
-public class DynamicBpmnServiceImpl extends ServiceImpl implements DynamicBpmnService, DynamicBpmnConstants {
+/** */
+public class DynamicBpmnServiceImpl extends ServiceImpl
+    implements DynamicBpmnService, DynamicBpmnConstants {
 
   public DynamicBpmnServiceImpl(ProcessEngineConfigurationImpl processEngineConfiguration) {
     super(processEngineConfiguration);
@@ -72,7 +67,8 @@ public class DynamicBpmnServiceImpl extends ServiceImpl implements DynamicBpmnSe
     return infoNode;
   }
 
-  public void changeServiceTaskDelegateExpression(String id, String expression, ObjectNode infoNode) {
+  public void changeServiceTaskDelegateExpression(
+      String id, String expression, ObjectNode infoNode) {
     setElementProperty(id, SERVICE_TASK_DELEGATE_EXPRESSION, expression, infoNode);
   }
 
@@ -166,13 +162,15 @@ public class DynamicBpmnServiceImpl extends ServiceImpl implements DynamicBpmnSe
     setElementProperty(id, USER_TASK_OWNER, owner, infoNode);
   }
 
-  public ObjectNode changeUserTaskCandidateUser(String id, String candidateUser, boolean overwriteOtherChangedEntries) {
+  public ObjectNode changeUserTaskCandidateUser(
+      String id, String candidateUser, boolean overwriteOtherChangedEntries) {
     ObjectNode infoNode = processEngineConfiguration.getObjectMapper().createObjectNode();
     changeUserTaskCandidateUser(id, candidateUser, overwriteOtherChangedEntries, infoNode);
     return infoNode;
   }
 
-  public void changeUserTaskCandidateUser(String id, String candidateUser, boolean overwriteOtherChangedEntries, ObjectNode infoNode) {
+  public void changeUserTaskCandidateUser(
+      String id, String candidateUser, boolean overwriteOtherChangedEntries, ObjectNode infoNode) {
     ArrayNode valuesNode = null;
     if (overwriteOtherChangedEntries) {
       valuesNode = processEngineConfiguration.getObjectMapper().createArrayNode();
@@ -190,13 +188,15 @@ public class DynamicBpmnServiceImpl extends ServiceImpl implements DynamicBpmnSe
     setElementProperty(id, USER_TASK_CANDIDATE_USERS, valuesNode, infoNode);
   }
 
-  public ObjectNode changeUserTaskCandidateGroup(String id, String candidateGroup, boolean overwriteOtherChangedEntries) {
+  public ObjectNode changeUserTaskCandidateGroup(
+      String id, String candidateGroup, boolean overwriteOtherChangedEntries) {
     ObjectNode infoNode = processEngineConfiguration.getObjectMapper().createObjectNode();
     changeUserTaskCandidateGroup(id, candidateGroup, overwriteOtherChangedEntries, infoNode);
     return infoNode;
   }
 
-  public void changeUserTaskCandidateGroup(String id, String candidateGroup, boolean overwriteOtherChangedEntries, ObjectNode infoNode) {
+  public void changeUserTaskCandidateGroup(
+      String id, String candidateGroup, boolean overwriteOtherChangedEntries, ObjectNode infoNode) {
     ArrayNode valuesNode = null;
     if (overwriteOtherChangedEntries) {
       valuesNode = processEngineConfiguration.getObjectMapper().createArrayNode();
@@ -220,7 +220,8 @@ public class DynamicBpmnServiceImpl extends ServiceImpl implements DynamicBpmnSe
     return infoNode;
   }
 
-  public void changeDmnTaskDecisionTableKey(String id, String decisionTableKey, ObjectNode infoNode) {
+  public void changeDmnTaskDecisionTableKey(
+      String id, String decisionTableKey, ObjectNode infoNode) {
     setElementProperty(id, DMN_TASK_DECISION_TABLE_KEY, decisionTableKey, infoNode);
   }
 
@@ -249,7 +250,8 @@ public class DynamicBpmnServiceImpl extends ServiceImpl implements DynamicBpmnSe
     return infoNode;
   }
 
-  public void changeLocalizationName(String language, String id, String value, ObjectNode infoNode) {
+  public void changeLocalizationName(
+      String language, String id, String value, ObjectNode infoNode) {
     setLocalizationProperty(language, id, LOCALIZATION_NAME, value, infoNode);
   }
 
@@ -259,11 +261,13 @@ public class DynamicBpmnServiceImpl extends ServiceImpl implements DynamicBpmnSe
     return infoNode;
   }
 
-  public void changeLocalizationDescription(String language, String id, String value, ObjectNode infoNode) {
+  public void changeLocalizationDescription(
+      String language, String id, String value, ObjectNode infoNode) {
     setLocalizationProperty(language, id, LOCALIZATION_DESCRIPTION, value, infoNode);
   }
 
-  public ObjectNode getLocalizationElementProperties(String language, String id, ObjectNode infoNode) {
+  public ObjectNode getLocalizationElementProperties(
+      String language, String id, ObjectNode infoNode) {
     ObjectNode propertiesNode = null;
     ObjectNode localizationNode = getLocalizationNode(infoNode);
     if (localizationNode != null) {
@@ -277,7 +281,9 @@ public class DynamicBpmnServiceImpl extends ServiceImpl implements DynamicBpmnSe
 
   protected boolean doesElementPropertyExist(String id, String propertyName, ObjectNode infoNode) {
     boolean exists = false;
-    if (infoNode.get(BPMN_NODE) != null && infoNode.get(BPMN_NODE).get(id) != null && infoNode.get(BPMN_NODE).get(id).get(propertyName) != null) {
+    if (infoNode.get(BPMN_NODE) != null
+        && infoNode.get(BPMN_NODE).get(id) != null
+        && infoNode.get(BPMN_NODE).get(id).get(propertyName) != null) {
       JsonNode propNode = infoNode.get(BPMN_NODE).get(id).get(propertyName);
       if (!propNode.isNull()) {
         exists = true;
@@ -286,7 +292,8 @@ public class DynamicBpmnServiceImpl extends ServiceImpl implements DynamicBpmnSe
     return exists;
   }
 
-  protected void setElementProperty(String id, String propertyName, String propertyValue, ObjectNode infoNode) {
+  protected void setElementProperty(
+      String id, String propertyName, String propertyValue, ObjectNode infoNode) {
     ObjectNode bpmnNode = createOrGetBpmnNode(infoNode);
     if (!bpmnNode.has(id)) {
       bpmnNode.putObject(id);
@@ -295,7 +302,8 @@ public class DynamicBpmnServiceImpl extends ServiceImpl implements DynamicBpmnSe
     ((ObjectNode) bpmnNode.get(id)).put(propertyName, propertyValue);
   }
 
-  protected void setElementProperty(String id, String propertyName, JsonNode propertyValue, ObjectNode infoNode) {
+  protected void setElementProperty(
+      String id, String propertyName, JsonNode propertyValue, ObjectNode infoNode) {
     ObjectNode bpmnNode = createOrGetBpmnNode(infoNode);
     if (!bpmnNode.has(id)) {
       bpmnNode.putObject(id);
@@ -315,7 +323,8 @@ public class DynamicBpmnServiceImpl extends ServiceImpl implements DynamicBpmnSe
     return (ObjectNode) infoNode.get(BPMN_NODE);
   }
 
-  protected void setLocalizationProperty(String language, String id, String propertyName, String propertyValue, ObjectNode infoNode) {
+  protected void setLocalizationProperty(
+      String language, String id, String propertyName, String propertyValue, ObjectNode infoNode) {
     ObjectNode localizationNode = createOrGetLocalizationNode(infoNode);
     if (!localizationNode.has(language)) {
       localizationNode.putObject(language);
@@ -339,5 +348,4 @@ public class DynamicBpmnServiceImpl extends ServiceImpl implements DynamicBpmnSe
   protected ObjectNode getLocalizationNode(ObjectNode infoNode) {
     return (ObjectNode) infoNode.get(LOCALIZATION_NODE);
   }
-
 }

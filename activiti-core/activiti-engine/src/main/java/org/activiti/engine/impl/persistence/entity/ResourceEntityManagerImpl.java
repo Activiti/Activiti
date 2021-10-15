@@ -14,24 +14,22 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.persistence.entity;
 
 import java.util.List;
-
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.persistence.entity.data.DataManager;
 import org.activiti.engine.impl.persistence.entity.data.ResourceDataManager;
 
-/**
-
-
- */
-public class ResourceEntityManagerImpl extends AbstractEntityManager<ResourceEntity> implements ResourceEntityManager {
+/** */
+public class ResourceEntityManagerImpl extends AbstractEntityManager<ResourceEntity>
+    implements ResourceEntityManager {
 
   protected ResourceDataManager resourceDataManager;
 
-  public ResourceEntityManagerImpl(ProcessEngineConfigurationImpl processEngineConfiguration, ResourceDataManager resourceDataManager) {
+  public ResourceEntityManagerImpl(
+      ProcessEngineConfigurationImpl processEngineConfiguration,
+      ResourceDataManager resourceDataManager) {
     super(processEngineConfiguration);
     this.resourceDataManager = resourceDataManager;
   }
@@ -47,8 +45,10 @@ public class ResourceEntityManagerImpl extends AbstractEntityManager<ResourceEnt
   }
 
   @Override
-  public ResourceEntity findResourceByDeploymentIdAndResourceName(String deploymentId, String resourceName) {
-    return resourceDataManager.findResourceByDeploymentIdAndResourceName(deploymentId, resourceName);
+  public ResourceEntity findResourceByDeploymentIdAndResourceName(
+      String deploymentId, String resourceName) {
+    return resourceDataManager.findResourceByDeploymentIdAndResourceName(
+        deploymentId, resourceName);
   }
 
   @Override
@@ -63,5 +63,4 @@ public class ResourceEntityManagerImpl extends AbstractEntityManager<ResourceEnt
   public void setResourceDataManager(ResourceDataManager resourceDataManager) {
     this.resourceDataManager = resourceDataManager;
   }
-
 }

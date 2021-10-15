@@ -18,15 +18,10 @@ package org.activiti.engine.impl.bpmn.data;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.Expression;
 
-/**
- * A simple data input association between a source and a target with assignments
- *
-
- */
+/** A simple data input association between a source and a target with assignments */
 public class SimpleDataInputAssociation extends AbstractDataAssociation {
 
   private static final long serialVersionUID = 1L;

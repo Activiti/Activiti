@@ -18,14 +18,11 @@ package org.activiti.engine.impl.cmd;
 
 import java.io.Serializable;
 import java.util.Collection;
-
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 
-/**
-
- */
+/** */
 public class DeleteTaskCmd implements Command<Void>, Serializable {
 
   private static final long serialVersionUID = 1L;
@@ -37,7 +34,6 @@ public class DeleteTaskCmd implements Command<Void>, Serializable {
 
   public DeleteTaskCmd(String taskId, String deleteReason, boolean cascade) {
     this(taskId, deleteReason, cascade, false);
-
   }
 
   public DeleteTaskCmd(String taskId, String deleteReason, boolean cascade, boolean cancel) {
@@ -48,10 +44,11 @@ public class DeleteTaskCmd implements Command<Void>, Serializable {
   }
 
   public DeleteTaskCmd(Collection<String> taskIds, String deleteReason, boolean cascade) {
-      this(taskIds,deleteReason,cascade,false);
+    this(taskIds, deleteReason, cascade, false);
   }
 
-  public DeleteTaskCmd(Collection<String> taskIds, String deleteReason, boolean cascade, boolean cancel) {
+  public DeleteTaskCmd(
+      Collection<String> taskIds, String deleteReason, boolean cascade, boolean cancel) {
     this.taskIds = taskIds;
     this.cascade = cascade;
     this.deleteReason = deleteReason;

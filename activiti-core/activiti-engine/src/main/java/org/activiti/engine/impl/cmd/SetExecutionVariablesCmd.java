@@ -17,14 +17,10 @@
 package org.activiti.engine.impl.cmd;
 
 import java.util.Map;
-
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 
-/**
-
-
- */
+/** */
 public class SetExecutionVariablesCmd extends NeedsActiveExecutionCmd<Object> {
 
   private static final long serialVersionUID = 1L;
@@ -32,7 +28,8 @@ public class SetExecutionVariablesCmd extends NeedsActiveExecutionCmd<Object> {
   protected Map<String, ? extends Object> variables;
   protected boolean isLocal;
 
-  public SetExecutionVariablesCmd(String executionId, Map<String, ? extends Object> variables, boolean isLocal) {
+  public SetExecutionVariablesCmd(
+      String executionId, Map<String, ? extends Object> variables, boolean isLocal) {
     super(executionId);
     this.variables = variables;
     this.isLocal = isLocal;
@@ -65,5 +62,4 @@ public class SetExecutionVariablesCmd extends NeedsActiveExecutionCmd<Object> {
   protected String getSuspendedExceptionMessage() {
     return "Cannot set variables because execution '" + executionId + "' is suspended";
   }
-
 }

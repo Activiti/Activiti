@@ -20,11 +20,7 @@ import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.VariableScope;
 
-/**
- * Implementation of the BPMN 2.0 'assignment'
- *
-
- */
+/** Implementation of the BPMN 2.0 'assignment' */
 public class Assignment {
 
   protected Expression fromExpression;

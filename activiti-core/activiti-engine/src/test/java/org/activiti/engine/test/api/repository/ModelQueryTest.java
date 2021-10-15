@@ -14,21 +14,18 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.test.api.repository;
 
-import java.util.List;
+import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.List;
 import org.activiti.engine.impl.persistence.entity.ModelEntity;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.Model;
 import org.activiti.engine.repository.ModelQuery;
-import static org.assertj.core.api.Assertions.assertThat;
 
-/**
-
- */
+/** */
 public class ModelQueryTest extends PluggableActivitiTestCase {
 
   private String modelOneId;
@@ -75,7 +72,8 @@ public class ModelQueryTest extends PluggableActivitiTestCase {
     ModelQuery query = repositoryService.createModelQuery().modelName("my model");
     Model model = query.singleResult();
     assertThat(model).isNotNull();
-    assertThat(new String(repositoryService.getModelEditorSource(model.getId()), "utf-8")).isEqualTo("bytes");
+    assertThat(new String(repositoryService.getModelEditorSource(model.getId()), "utf-8"))
+        .isEqualTo("bytes");
     assertThat(query.list()).hasSize(1);
     assertThat(query.count()).isEqualTo(1);
   }
@@ -91,7 +89,8 @@ public class ModelQueryTest extends PluggableActivitiTestCase {
     ModelQuery query = repositoryService.createModelQuery().modelNameLike("%model%");
     Model model = query.singleResult();
     assertThat(model).isNotNull();
-    assertThat(new String(repositoryService.getModelEditorSource(model.getId()), "utf-8")).isEqualTo("bytes");
+    assertThat(new String(repositoryService.getModelEditorSource(model.getId()), "utf-8"))
+        .isEqualTo("bytes");
     assertThat(query.list()).hasSize(1);
     assertThat(query.count()).isEqualTo(1);
   }
@@ -104,7 +103,8 @@ public class ModelQueryTest extends PluggableActivitiTestCase {
   }
 
   public void testQueryByKey() {
-    ModelQuery query = repositoryService.createModelQuery().modelName("my model").modelKey("someKey");
+    ModelQuery query =
+        repositoryService.createModelQuery().modelName("my model").modelKey("someKey");
     Model model = query.singleResult();
     assertThat(model).isNotNull();
     assertThat(query.list()).hasSize(1);
@@ -167,7 +167,8 @@ public class ModelQueryTest extends PluggableActivitiTestCase {
   public void testByDeploymentId() {
     Deployment deployment = repositoryService.createDeployment().addString("test", "test").deploy();
 
-    assertThat(repositoryService.createModelQuery().deploymentId(deployment.getId()).count()).isEqualTo(0);
+    assertThat(repositoryService.createModelQuery().deploymentId(deployment.getId()).count())
+        .isEqualTo(0);
     assertThat(repositoryService.createModelQuery().deployed().count()).isEqualTo(0);
     assertThat(repositoryService.createModelQuery().notDeployed().count()).isEqualTo(1);
 
@@ -175,7 +176,8 @@ public class ModelQueryTest extends PluggableActivitiTestCase {
     model.setDeploymentId(deployment.getId());
     repositoryService.saveModel(model);
 
-    assertThat(repositoryService.createModelQuery().deploymentId(deployment.getId()).count()).isEqualTo(1);
+    assertThat(repositoryService.createModelQuery().deploymentId(deployment.getId()).count())
+        .isEqualTo(1);
     assertThat(repositoryService.createModelQuery().deployed().count()).isEqualTo(1);
     assertThat(repositoryService.createModelQuery().notDeployed().count()).isEqualTo(0);
 
@@ -184,7 +186,8 @@ public class ModelQueryTest extends PluggableActivitiTestCase {
 
     // After cleanup the model should still exist
     assertThat(repositoryService.createDeploymentQuery().count()).isEqualTo(0);
-    assertThat(repositoryService.createModelQuery().deploymentId(deployment.getId()).count()).isEqualTo(0);
+    assertThat(repositoryService.createModelQuery().deploymentId(deployment.getId()).count())
+        .isEqualTo(0);
     assertThat(repositoryService.createModelQuery().notDeployed().count()).isEqualTo(1);
     assertThat(repositoryService.createModelQuery().count()).isEqualTo(1);
   }
@@ -241,7 +244,13 @@ public class ModelQueryTest extends PluggableActivitiTestCase {
     assertThat(modelOne.getName()).isEqualTo("my model");
     assertThat(modelOne.getId()).isEqualTo(modelOneId);
 
-    models = repositoryService.createModelQuery().modelNameLike("%model%").orderByModelName().asc().list();
+    models =
+        repositoryService
+            .createModelQuery()
+            .modelNameLike("%model%")
+            .orderByModelName()
+            .asc()
+            .list();
 
     assertThat(models.get(0).getName()).isEqualTo("my model");
     assertThat(models).hasSize(1);
@@ -257,11 +266,21 @@ public class ModelQueryTest extends PluggableActivitiTestCase {
 
     assertThat(repositoryService.createNativeModelQuery().sql(baseQuerySql).list()).hasSize(1);
 
-    assertThat(repositoryService.createNativeProcessDefinitionQuery().sql(baseQuerySql + " where NAME_ = #{name}").parameter("name", "my model").list()).hasSize(1);
+    assertThat(
+            repositoryService
+                .createNativeProcessDefinitionQuery()
+                .sql(baseQuerySql + " where NAME_ = #{name}")
+                .parameter("name", "my model")
+                .list())
+        .hasSize(1);
 
     // paging
-    assertThat(repositoryService.createNativeProcessDefinitionQuery().sql(baseQuerySql).listPage(0, 1)).hasSize(1);
-    assertThat(repositoryService.createNativeProcessDefinitionQuery().sql(baseQuerySql).listPage(1, 5)).hasSize(0);
+    assertThat(
+            repositoryService.createNativeProcessDefinitionQuery().sql(baseQuerySql).listPage(0, 1))
+        .hasSize(1);
+    assertThat(
+            repositoryService.createNativeProcessDefinitionQuery().sql(baseQuerySql).listPage(1, 5))
+        .hasSize(0);
   }
 
   public void testKeyAndLatest() throws Exception {
@@ -279,7 +298,8 @@ public class ModelQueryTest extends PluggableActivitiTestCase {
       model2.setVersion(2);
       repositoryService.saveModel(model2);
 
-      Model model = repositoryService.createModelQuery().modelKey("key1").latestVersion().singleResult();
+      Model model =
+          repositoryService.createModelQuery().modelKey("key1").latestVersion().singleResult();
       assertThat(model).isNotNull();
     } finally {
       try {

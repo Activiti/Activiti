@@ -23,9 +23,8 @@ import org.activiti.engine.impl.bpmn.data.AbstractDataAssociation;
 import org.activiti.engine.impl.bpmn.data.FieldBaseStructureInstance;
 
 /**
- * An implicit data output association between a source and a target. source is a property in the message and target is a variable in the current execution context
- *
-
+ * An implicit data output association between a source and a target. source is a property in the
+ * message and target is a variable in the current execution context
  */
 public class MessageImplicitDataOutputAssociation extends AbstractDataAssociation {
 
@@ -41,9 +40,11 @@ public class MessageImplicitDataOutputAssociation extends AbstractDataAssociatio
 
   @Override
   public void evaluate(DelegateExecution execution) {
-    MessageInstance message = (MessageInstance) execution.getVariable(WebServiceActivityBehavior.CURRENT_MESSAGE);
+    MessageInstance message =
+        (MessageInstance) execution.getVariable(WebServiceActivityBehavior.CURRENT_MESSAGE);
     if (message.getStructureInstance() instanceof FieldBaseStructureInstance) {
-      FieldBaseStructureInstance structure = (FieldBaseStructureInstance) message.getStructureInstance();
+      FieldBaseStructureInstance structure =
+          (FieldBaseStructureInstance) message.getStructureInstance();
       execution.setVariable(this.getTarget(), structure.getFieldValue(this.getSource()));
     }
   }

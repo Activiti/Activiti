@@ -20,7 +20,6 @@ import static java.util.Collections.emptyMap;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Date;
-
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventType;
@@ -30,23 +29,19 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
-/**
- * Test case for all {@link ActivitiEvent}s related to tasks.
- *
- */
+/** Test case for all {@link ActivitiEvent}s related to tasks. */
 public class TaskEventsTest extends PluggableActivitiTestCase {
 
   private TestActivitiEntityEventListener listener;
 
-  /**
-   * Check create, update and delete events for a task.
-   */
-  @Deployment(resources = { "org/activiti/engine/test/api/runtime/oneTaskProcess.bpmn20.xml" })
+  /** Check create, update and delete events for a task. */
+  @Deployment(resources = {"org/activiti/engine/test/api/runtime/oneTaskProcess.bpmn20.xml"})
   public void testTaskEventsInProcess() throws Exception {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
     assertThat(processInstance).isNotNull();
 
-    Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+    Task task =
+        taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     assertThat(task).isNotNull();
 
     // Check create event
@@ -118,13 +113,14 @@ public class TaskEventsTest extends PluggableActivitiTestCase {
     assertExecutionDetails(event, processInstance);
   }
 
-  @Deployment(resources = { "org/activiti/engine/test/api/runtime/oneTaskProcess.bpmn20.xml" })
+  @Deployment(resources = {"org/activiti/engine/test/api/runtime/oneTaskProcess.bpmn20.xml"})
   public void testTaskAssignmentEventInProcess() throws Exception {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
     assertThat(processInstance).isNotNull();
     listener.clearEventsReceived();
 
-    Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+    Task task =
+        taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     assertThat(task).isNotNull();
 
     // Set assignee through API
@@ -182,16 +178,15 @@ public class TaskEventsTest extends PluggableActivitiTestCase {
     listener.clearEventsReceived();
   }
 
-  /**
-   * Check events related to process instance delete and standalone task delete.
-   */
-  @Deployment(resources = { "org/activiti/engine/test/api/runtime/oneTaskProcess.bpmn20.xml" })
+  /** Check events related to process instance delete and standalone task delete. */
+  @Deployment(resources = {"org/activiti/engine/test/api/runtime/oneTaskProcess.bpmn20.xml"})
   public void testDeleteEventDoesNotDispathComplete() throws Exception {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
     assertThat(processInstance).isNotNull();
     listener.clearEventsReceived();
 
-    Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+    Task task =
+        taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     assertThat(task).isNotNull();
 
     // Delete process, should delete task as well, but not complete
@@ -240,15 +235,18 @@ public class TaskEventsTest extends PluggableActivitiTestCase {
   }
 
   /**
-   * This method checks to ensure that the task.fireEvent(TaskListener.EVENTNAME_CREATE), fires before
-   * the dispatchEvent ActivitiEventType.TASK_CREATED.  A ScriptTaskListener updates the priority and
-   * assignee before the dispatchEvent() takes place.
-     */
-  @Deployment(resources= {"org/activiti/engine/test/api/event/TaskEventsTest.testEventFiring.bpmn20.xml"})
+   * This method checks to ensure that the task.fireEvent(TaskListener.EVENTNAME_CREATE), fires
+   * before the dispatchEvent ActivitiEventType.TASK_CREATED. A ScriptTaskListener updates the
+   * priority and assignee before the dispatchEvent() takes place.
+   */
+  @Deployment(
+      resources = {"org/activiti/engine/test/api/event/TaskEventsTest.testEventFiring.bpmn20.xml"})
   public void testEventFiringOrdering() {
-    //We need to add a special listener that copies the Task values - to record its state when the event fires,
-    //otherwise the in-memory task instances is changed after the event fires.
-    TestActivitiEntityEventTaskListener tlistener = new TestActivitiEntityEventTaskListener(Task.class);
+    // We need to add a special listener that copies the Task values - to record its state when the
+    // event fires,
+    // otherwise the in-memory task instances is changed after the event fires.
+    TestActivitiEntityEventTaskListener tlistener =
+        new TestActivitiEntityEventTaskListener(Task.class);
     processEngineConfiguration.getEventDispatcher().addEventListener(tlistener);
 
     try {
@@ -277,11 +275,11 @@ public class TaskEventsTest extends PluggableActivitiTestCase {
 
       // verify script listener has done its job, on create before ActivitiEntityEvent was fired
       assertThat(taskFromEvent.getAssignee())
-        .as("The ScriptTaskListener must set this value before the dispatchEvent fires.")
-        .isEqualTo("scriptedAssignee");
+          .as("The ScriptTaskListener must set this value before the dispatchEvent fires.")
+          .isEqualTo("scriptedAssignee");
       assertThat(taskFromEvent.getPriority())
-        .as("The ScriptTaskListener must set this value before the dispatchEvent fires.")
-        .isEqualTo(877);
+          .as("The ScriptTaskListener must set this value before the dispatchEvent fires.")
+          .isEqualTo(877);
 
       // Fetch second task
       taskService.createTaskQuery().singleResult();
@@ -290,9 +288,7 @@ public class TaskEventsTest extends PluggableActivitiTestCase {
     }
   }
 
-  /**
-   * Check all events for tasks not related to a process-instance
-   */
+  /** Check all events for tasks not related to a process-instance */
   public void testStandaloneTaskEvents() throws Exception {
 
     Task task = null;

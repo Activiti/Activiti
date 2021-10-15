@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.examples.bpmn.servicetask;
 
 import org.activiti.engine.delegate.DelegateExecution;
@@ -22,8 +21,6 @@ import org.activiti.engine.delegate.JavaDelegate;
 
 /**
  * Delegate that gets the business-key from the delegate-execution and puts the value in a variable.
- *
-
  */
 public class BusinessKeyCheckJavaDelegate implements JavaDelegate {
 

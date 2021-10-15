@@ -20,7 +20,6 @@ import static java.util.Collections.emptyList;
 
 import java.util.List;
 import java.util.Map;
-
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.impl.HistoricTaskInstanceQueryImpl;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
@@ -31,12 +30,13 @@ import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.persistence.entity.data.AbstractDataManager;
 import org.activiti.engine.impl.persistence.entity.data.HistoricTaskInstanceDataManager;
 
-/**
+/** */
+public class MybatisHistoricTaskInstanceDataManager
+    extends AbstractDataManager<HistoricTaskInstanceEntity>
+    implements HistoricTaskInstanceDataManager {
 
- */
-public class MybatisHistoricTaskInstanceDataManager extends AbstractDataManager<HistoricTaskInstanceEntity> implements HistoricTaskInstanceDataManager {
-
-  public MybatisHistoricTaskInstanceDataManager(ProcessEngineConfigurationImpl processEngineConfiguration) {
+  public MybatisHistoricTaskInstanceDataManager(
+      ProcessEngineConfigurationImpl processEngineConfiguration) {
     super(processEngineConfiguration);
   }
 
@@ -63,26 +63,35 @@ public class MybatisHistoricTaskInstanceDataManager extends AbstractDataManager<
 
   @Override
   @SuppressWarnings("unchecked")
-  public List<HistoricTaskInstanceEntity> findHistoricTaskInstanceByProcessInstanceId(String processInstanceId) {
-    return getDbSqlSession().selectList("selectHistoricTaskInstancesByProcessInstanceId", processInstanceId);
+  public List<HistoricTaskInstanceEntity> findHistoricTaskInstanceByProcessInstanceId(
+      String processInstanceId) {
+    return getDbSqlSession()
+        .selectList("selectHistoricTaskInstancesByProcessInstanceId", processInstanceId);
   }
 
   @Override
-  public long findHistoricTaskInstanceCountByQueryCriteria(HistoricTaskInstanceQueryImpl historicTaskInstanceQuery) {
-    return (Long) getDbSqlSession().selectOne("selectHistoricTaskInstanceCountByQueryCriteria", historicTaskInstanceQuery);
+  public long findHistoricTaskInstanceCountByQueryCriteria(
+      HistoricTaskInstanceQueryImpl historicTaskInstanceQuery) {
+    return (Long)
+        getDbSqlSession()
+            .selectOne("selectHistoricTaskInstanceCountByQueryCriteria", historicTaskInstanceQuery);
   }
 
   @Override
   @SuppressWarnings("unchecked")
-  public List<HistoricTaskInstance> findHistoricTaskInstancesByQueryCriteria(HistoricTaskInstanceQueryImpl historicTaskInstanceQuery) {
-    return getDbSqlSession().selectList("selectHistoricTaskInstancesByQueryCriteria", historicTaskInstanceQuery);
+  public List<HistoricTaskInstance> findHistoricTaskInstancesByQueryCriteria(
+      HistoricTaskInstanceQueryImpl historicTaskInstanceQuery) {
+    return getDbSqlSession()
+        .selectList("selectHistoricTaskInstancesByQueryCriteria", historicTaskInstanceQuery);
   }
 
   @Override
-  public List<HistoricTaskInstance> findHistoricTaskInstancesAndVariablesByQueryCriteria(HistoricTaskInstanceQueryImpl historicTaskInstanceQuery) {
+  public List<HistoricTaskInstance> findHistoricTaskInstancesAndVariablesByQueryCriteria(
+      HistoricTaskInstanceQueryImpl historicTaskInstanceQuery) {
     // paging doesn't work for combining task instances and variables
     // due to an outer join, so doing it in-memory
-    if (historicTaskInstanceQuery.getFirstResult() < 0 || historicTaskInstanceQuery.getMaxResults() <= 0) {
+    if (historicTaskInstanceQuery.getFirstResult() < 0
+        || historicTaskInstanceQuery.getMaxResults() <= 0) {
       return emptyList();
     }
 
@@ -93,12 +102,18 @@ public class MybatisHistoricTaskInstanceDataManager extends AbstractDataManager<
     if (historicTaskInstanceQuery.getTaskVariablesLimit() != null) {
       historicTaskInstanceQuery.setMaxResults(historicTaskInstanceQuery.getTaskVariablesLimit());
     } else {
-      historicTaskInstanceQuery.setMaxResults(getProcessEngineConfiguration().getHistoricTaskQueryLimit());
+      historicTaskInstanceQuery.setMaxResults(
+          getProcessEngineConfiguration().getHistoricTaskQueryLimit());
     }
     historicTaskInstanceQuery.setFirstResult(0);
 
-    List<HistoricTaskInstance> instanceList = getDbSqlSession().selectListWithRawParameterWithoutFilter("selectHistoricTaskInstancesWithVariablesByQueryCriteria", historicTaskInstanceQuery,
-        historicTaskInstanceQuery.getFirstResult(), historicTaskInstanceQuery.getMaxResults());
+    List<HistoricTaskInstance> instanceList =
+        getDbSqlSession()
+            .selectListWithRawParameterWithoutFilter(
+                "selectHistoricTaskInstancesWithVariablesByQueryCriteria",
+                historicTaskInstanceQuery,
+                historicTaskInstanceQuery.getFirstResult(),
+                historicTaskInstanceQuery.getMaxResults());
 
     if (instanceList != null && !instanceList.isEmpty()) {
       if (firstResult > 0) {
@@ -119,13 +134,16 @@ public class MybatisHistoricTaskInstanceDataManager extends AbstractDataManager<
 
   @Override
   @SuppressWarnings("unchecked")
-  public List<HistoricTaskInstance> findHistoricTaskInstancesByNativeQuery(Map<String, Object> parameterMap, int firstResult, int maxResults) {
-    return getDbSqlSession().selectListWithRawParameter("selectHistoricTaskInstanceByNativeQuery", parameterMap, firstResult, maxResults);
+  public List<HistoricTaskInstance> findHistoricTaskInstancesByNativeQuery(
+      Map<String, Object> parameterMap, int firstResult, int maxResults) {
+    return getDbSqlSession()
+        .selectListWithRawParameter(
+            "selectHistoricTaskInstanceByNativeQuery", parameterMap, firstResult, maxResults);
   }
 
   @Override
   public long findHistoricTaskInstanceCountByNativeQuery(Map<String, Object> parameterMap) {
-    return (Long) getDbSqlSession().selectOne("selectHistoricTaskInstanceCountByNativeQuery", parameterMap);
+    return (Long)
+        getDbSqlSession().selectOne("selectHistoricTaskInstanceCountByNativeQuery", parameterMap);
   }
-
 }

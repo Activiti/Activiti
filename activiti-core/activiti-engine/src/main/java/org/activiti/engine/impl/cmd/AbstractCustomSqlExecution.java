@@ -15,10 +15,9 @@
  */
 package org.activiti.engine.impl.cmd;
 
-/**
-
- */
-public abstract class AbstractCustomSqlExecution<Mapper, ResultType> implements CustomSqlExecution<Mapper, ResultType> {
+/** */
+public abstract class AbstractCustomSqlExecution<Mapper, ResultType>
+    implements CustomSqlExecution<Mapper, ResultType> {
 
   protected Class<Mapper> mapperClass;
 
@@ -30,5 +29,4 @@ public abstract class AbstractCustomSqlExecution<Mapper, ResultType> implements 
   public Class<Mapper> getMapperClass() {
     return mapperClass;
   }
-
 }

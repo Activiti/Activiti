@@ -14,12 +14,10 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.persistence.entity;
 
 import java.util.List;
 import java.util.Map;
-
 import org.activiti.engine.impl.ModelQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
@@ -27,15 +25,15 @@ import org.activiti.engine.impl.persistence.entity.data.DataManager;
 import org.activiti.engine.impl.persistence.entity.data.ModelDataManager;
 import org.activiti.engine.repository.Model;
 
-/**
-
-
- */
-public class ModelEntityManagerImpl extends AbstractEntityManager<ModelEntity> implements ModelEntityManager {
+/** */
+public class ModelEntityManagerImpl extends AbstractEntityManager<ModelEntity>
+    implements ModelEntityManager {
 
   protected ModelDataManager modelDataManager;
 
-  public ModelEntityManagerImpl(ProcessEngineConfigurationImpl processEngineConfiguration, ModelDataManager modelDataManager) {
+  public ModelEntityManagerImpl(
+      ProcessEngineConfigurationImpl processEngineConfiguration,
+      ModelDataManager modelDataManager) {
     super(processEngineConfiguration);
     this.modelDataManager = modelDataManager;
   }
@@ -149,7 +147,8 @@ public class ModelEntityManagerImpl extends AbstractEntityManager<ModelEntity> i
   }
 
   @Override
-  public List<Model> findModelsByNativeQuery(Map<String, Object> parameterMap, int firstResult, int maxResults) {
+  public List<Model> findModelsByNativeQuery(
+      Map<String, Object> parameterMap, int firstResult, int maxResults) {
     return modelDataManager.findModelsByNativeQuery(parameterMap, firstResult, maxResults);
   }
 
@@ -165,5 +164,4 @@ public class ModelEntityManagerImpl extends AbstractEntityManager<ModelEntity> i
   public void setModelDataManager(ModelDataManager modelDataManager) {
     this.modelDataManager = modelDataManager;
   }
-
 }

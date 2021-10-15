@@ -20,7 +20,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.ExtensionAttribute;
@@ -32,7 +31,8 @@ import org.activiti.bpmn.model.ValuedDataObject;
 import org.junit.jupiter.api.Test;
 
 /**
- * @see <a href="https://activiti.atlassian.net/browse/ACT-1847">https://activiti.atlassian.net/browse/ACT-1847</a>
+ * @see <a
+ *     href="https://activiti.atlassian.net/browse/ACT-1847">https://activiti.atlassian.net/browse/ACT-1847</a>
  */
 public class ValuedDataObjectWithExtensionsConverterTest extends AbstractConverterTest {
 
@@ -45,10 +45,14 @@ public class ValuedDataObjectWithExtensionsConverterTest extends AbstractConvert
   protected static final String ATTRIBUTE_VALUE = "value";
 
   protected static final String ELEMENT_I18LN_LOCALIZATION = "i18ln";
-  protected static final String ATTRIBUTE_DATA_RESOURCE_BUNDLE_KEY_FOR_NAME = "resourceBundleKeyForName";
-  protected static final String ATTRIBUTE_DATA_RESOURCE_BUNDLE_KEY_FOR_DESCRIPTION = "resourceBundleKeyForDescription";
-  protected static final String ATTRIBUTE_DATA_LABELED_ENTITY_ID_FOR_NAME = "labeledEntityIdForName";
-  protected static final String ATTRIBUTE_DATA_LABELED_ENTITY_ID_FOR_DESCRIPTION = "labeledEntityIdForDescription";
+  protected static final String ATTRIBUTE_DATA_RESOURCE_BUNDLE_KEY_FOR_NAME =
+      "resourceBundleKeyForName";
+  protected static final String ATTRIBUTE_DATA_RESOURCE_BUNDLE_KEY_FOR_DESCRIPTION =
+      "resourceBundleKeyForDescription";
+  protected static final String ATTRIBUTE_DATA_LABELED_ENTITY_ID_FOR_NAME =
+      "labeledEntityIdForName";
+  protected static final String ATTRIBUTE_DATA_LABELED_ENTITY_ID_FOR_DESCRIPTION =
+      "labeledEntityIdForDescription";
 
   private Localization localization = new Localization();
 
@@ -233,14 +237,18 @@ public class ValuedDataObjectWithExtensionsConverterTest extends AbstractConvert
     Map<String, String> attributes = null;
 
     if (null != dObj) {
-      List<ExtensionElement> attributesExtension = dObj.getExtensionElements().get(ELEMENT_DATA_ATTRIBUTES);
+      List<ExtensionElement> attributesExtension =
+          dObj.getExtensionElements().get(ELEMENT_DATA_ATTRIBUTES);
 
       if (null != attributesExtension && !attributesExtension.isEmpty()) {
         attributes = new HashMap<String, String>();
-        List<ExtensionElement> attributeExtensions = attributesExtension.get(0).getChildElements().get(ELEMENT_DATA_ATTRIBUTE);
+        List<ExtensionElement> attributeExtensions =
+            attributesExtension.get(0).getChildElements().get(ELEMENT_DATA_ATTRIBUTE);
 
         for (ExtensionElement attributeExtension : attributeExtensions) {
-          attributes.put(attributeExtension.getAttributeValue(YOURCO_EXTENSIONS_NAMESPACE, ATTRIBUTE_NAME), attributeExtension.getAttributeValue(YOURCO_EXTENSIONS_NAMESPACE, ATTRIBUTE_VALUE));
+          attributes.put(
+              attributeExtension.getAttributeValue(YOURCO_EXTENSIONS_NAMESPACE, ATTRIBUTE_NAME),
+              attributeExtension.getAttributeValue(YOURCO_EXTENSIONS_NAMESPACE, ATTRIBUTE_VALUE));
         }
       }
     }
@@ -248,14 +256,26 @@ public class ValuedDataObjectWithExtensionsConverterTest extends AbstractConvert
   }
 
   protected Localization getLocalization(BaseElement dObj) {
-    List<ExtensionElement> i18lnExtension = dObj.getExtensionElements().get(ELEMENT_I18LN_LOCALIZATION);
+    List<ExtensionElement> i18lnExtension =
+        dObj.getExtensionElements().get(ELEMENT_I18LN_LOCALIZATION);
 
     if (!i18lnExtension.isEmpty()) {
-      Map<String, List<ExtensionAttribute>> extensionAttributes = i18lnExtension.get(0).getAttributes();
-      localization.setLabeledEntityIdForName(extensionAttributes.get(ATTRIBUTE_DATA_LABELED_ENTITY_ID_FOR_NAME).get(0).getValue());
-      localization.setLabeledEntityIdForDescription(extensionAttributes.get(ATTRIBUTE_DATA_LABELED_ENTITY_ID_FOR_DESCRIPTION).get(0).getValue());
-      localization.setResourceBundleKeyForName(extensionAttributes.get(ATTRIBUTE_DATA_RESOURCE_BUNDLE_KEY_FOR_NAME).get(0).getValue());
-      localization.setResourceBundleKeyForDescription(extensionAttributes.get(ATTRIBUTE_DATA_RESOURCE_BUNDLE_KEY_FOR_DESCRIPTION).get(0).getValue());
+      Map<String, List<ExtensionAttribute>> extensionAttributes =
+          i18lnExtension.get(0).getAttributes();
+      localization.setLabeledEntityIdForName(
+          extensionAttributes.get(ATTRIBUTE_DATA_LABELED_ENTITY_ID_FOR_NAME).get(0).getValue());
+      localization.setLabeledEntityIdForDescription(
+          extensionAttributes
+              .get(ATTRIBUTE_DATA_LABELED_ENTITY_ID_FOR_DESCRIPTION)
+              .get(0)
+              .getValue());
+      localization.setResourceBundleKeyForName(
+          extensionAttributes.get(ATTRIBUTE_DATA_RESOURCE_BUNDLE_KEY_FOR_NAME).get(0).getValue());
+      localization.setResourceBundleKeyForDescription(
+          extensionAttributes
+              .get(ATTRIBUTE_DATA_RESOURCE_BUNDLE_KEY_FOR_DESCRIPTION)
+              .get(0)
+              .getValue());
     }
     return localization;
   }

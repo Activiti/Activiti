@@ -20,12 +20,9 @@ import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.ActivitiMessageEvent;
 import org.activiti.engine.delegate.event.ActivitiSignalEvent;
 
-/**
- * An {@link ActivitiSignalEvent} implementation.
- *
-
- */
-public class ActivitiMessageEventImpl extends ActivitiActivityEventImpl implements ActivitiMessageEvent {
+/** An {@link ActivitiSignalEvent} implementation. */
+public class ActivitiMessageEventImpl extends ActivitiActivityEventImpl
+    implements ActivitiMessageEvent {
 
   protected String messageName;
   protected String correlationKey;
@@ -57,15 +54,14 @@ public class ActivitiMessageEventImpl extends ActivitiActivityEventImpl implemen
   }
 
   public void setMessageCorrelationKey(String correlationKey) {
-      this.correlationKey = correlationKey;
+    this.correlationKey = correlationKey;
   }
 
   public String getMessageBusinessKey() {
-      return businessKey;
+    return businessKey;
   }
 
   public void setMessageBusinessKey(String businessKey) {
-      this.businessKey = businessKey;
+    this.businessKey = businessKey;
   }
-
 }

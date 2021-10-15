@@ -19,7 +19,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
 import java.util.Random;
-
 import org.activiti.api.process.model.ProcessDefinition;
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
@@ -43,107 +42,107 @@ import org.springframework.scheduling.annotation.Scheduled;
 @EnableScheduling
 public class DemoApplication implements CommandLineRunner {
 
-    private Logger logger = LoggerFactory.getLogger(DemoApplication.class);
+  private Logger logger = LoggerFactory.getLogger(DemoApplication.class);
 
-    @Autowired
-    private ProcessRuntime processRuntime;
+  @Autowired private ProcessRuntime processRuntime;
 
-    @Autowired
-    private SecurityUtil securityUtil;
+  @Autowired private SecurityUtil securityUtil;
 
-    public static void main(String[] args) {
-        SpringApplication.run(DemoApplication.class, args);
+  public static void main(String[] args) {
+    SpringApplication.run(DemoApplication.class, args);
+  }
 
+  @Override
+  public void run(String... args) {
+    securityUtil.logInAs("system");
+
+    Page<ProcessDefinition> processDefinitionPage =
+        processRuntime.processDefinitions(Pageable.of(0, 10));
+    logger.info("> Available Process definitions: " + processDefinitionPage.getTotalItems());
+    for (ProcessDefinition pd : processDefinitionPage.getContent()) {
+      logger.info("\t > Process definition: " + pd);
     }
+  }
 
-    @Override
-    public void run(String... args) {
-        securityUtil.logInAs("system");
+  @Scheduled(initialDelay = 1000, fixedDelay = 1000)
+  public void processText() {
 
-        Page<ProcessDefinition> processDefinitionPage = processRuntime.processDefinitions(Pageable.of(0, 10));
-        logger.info("> Available Process definitions: " + processDefinitionPage.getTotalItems());
-        for (ProcessDefinition pd : processDefinitionPage.getContent()) {
-            logger.info("\t > Process definition: " + pd);
-        }
+    securityUtil.logInAs("system");
 
-    }
+    String content = pickRandomString();
 
-    @Scheduled(initialDelay = 1000, fixedDelay = 1000)
-    public void processText() {
+    SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yy HH:mm:ss");
 
-        securityUtil.logInAs("system");
+    logger.info("> Processing content: " + content + " at " + formatter.format(new Date()));
 
-        String content = pickRandomString();
-
-        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yy HH:mm:ss");
-
-        logger.info("> Processing content: " + content + " at " + formatter.format(new Date()));
-
-        ProcessInstance processInstance = processRuntime.start(ProcessPayloadBuilder
-                .start()
+    ProcessInstance processInstance =
+        processRuntime.start(
+            ProcessPayloadBuilder.start()
                 .withProcessDefinitionKey("categorizeProcess")
                 .withName("Processing Content: " + content)
                 .withVariable("content", content)
                 .build());
-        logger.info(">>> Created Process Instance: " + processInstance);
+    logger.info(">>> Created Process Instance: " + processInstance);
+  }
 
+  @Bean
+  public Connector processTextConnector() {
+    return integrationContext -> {
+      Map<String, Object> inBoundVariables = integrationContext.getInBoundVariables();
+      String contentToProcess = (String) inBoundVariables.get("content");
+      // Logic Here to decide if content is approved or not
+      if (contentToProcess.contains("activiti")) {
+        logger.info("> Approving content: " + contentToProcess);
+        integrationContext.addOutBoundVariable("approved", true);
+      } else {
+        logger.info("> Discarding content: " + contentToProcess);
+        integrationContext.addOutBoundVariable("approved", false);
+      }
+      return integrationContext;
+    };
+  }
 
-    }
+  @Bean
+  public Connector tagTextConnector() {
+    return integrationContext -> {
+      String contentToTag = (String) integrationContext.getInBoundVariables().get("content");
+      contentToTag += " :) ";
+      integrationContext.addOutBoundVariable("content", contentToTag);
+      logger.info("Final Content: " + contentToTag);
+      return integrationContext;
+    };
+  }
 
-    @Bean
-    public Connector processTextConnector() {
-        return integrationContext -> {
-            Map<String, Object> inBoundVariables = integrationContext.getInBoundVariables();
-            String contentToProcess = (String) inBoundVariables.get("content");
-            // Logic Here to decide if content is approved or not
-            if (contentToProcess.contains("activiti")) {
-                logger.info("> Approving content: " + contentToProcess);
-                integrationContext.addOutBoundVariable("approved",
-                        true);
-            } else {
-                logger.info("> Discarding content: " + contentToProcess);
-                integrationContext.addOutBoundVariable("approved",
-                        false);
-            }
-            return integrationContext;
-        };
-    }
+  @Bean
+  public Connector discardTextConnector() {
+    return integrationContext -> {
+      String contentToDiscard = (String) integrationContext.getInBoundVariables().get("content");
+      contentToDiscard += " :( ";
+      integrationContext.addOutBoundVariable("content", contentToDiscard);
+      logger.info("Final Content: " + contentToDiscard);
+      return integrationContext;
+    };
+  }
 
-    @Bean
-    public Connector tagTextConnector() {
-        return integrationContext -> {
-            String contentToTag = (String) integrationContext.getInBoundVariables().get("content");
-            contentToTag += " :) ";
-            integrationContext.addOutBoundVariable("content",
-                    contentToTag);
-            logger.info("Final Content: " + contentToTag);
-            return integrationContext;
-        };
-    }
+  @Bean
+  public ProcessRuntimeEventListener<ProcessCompletedEvent> processCompletedListener() {
+    return processCompleted ->
+        logger.info(
+            ">>> Process Completed: '"
+                + processCompleted.getEntity().getName()
+                + "' We can send a notification to the initiator: "
+                + processCompleted.getEntity().getInitiator());
+  }
 
-    @Bean
-    public Connector discardTextConnector() {
-        return integrationContext -> {
-            String contentToDiscard = (String) integrationContext.getInBoundVariables().get("content");
-            contentToDiscard += " :( ";
-            integrationContext.addOutBoundVariable("content",
-                    contentToDiscard);
-            logger.info("Final Content: " + contentToDiscard);
-            return integrationContext;
-        };
-    }
-
-    @Bean
-    public ProcessRuntimeEventListener<ProcessCompletedEvent> processCompletedListener() {
-        return processCompleted -> logger.info(">>> Process Completed: '"
-                + processCompleted.getEntity().getName() +
-                "' We can send a notification to the initiator: " + processCompleted.getEntity().getInitiator());
-    }
-
-    private String pickRandomString() {
-        String[] texts = {"hello from london", "Hi there from activiti!", "all good news over here.", "I've tweeted about activiti today.",
-                "other boring projects.", "activiti cloud - Cloud Native Java BPM"};
-        return texts[new Random().nextInt(texts.length)];
-    }
-
+  private String pickRandomString() {
+    String[] texts = {
+      "hello from london",
+      "Hi there from activiti!",
+      "all good news over here.",
+      "I've tweeted about activiti today.",
+      "other boring projects.",
+      "activiti cloud - Cloud Native Java BPM"
+    };
+    return texts[new Random().nextInt(texts.length)];
+  }
 }

@@ -16,19 +16,17 @@
 
 package org.activiti.editor.language.json.converter.util;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-
 import org.activiti.editor.constants.EditorJsonConstants;
 import org.activiti.editor.constants.StencilConstants;
 import org.activiti.editor.language.json.converter.BpmnJsonConverterUtil;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 
 public class JsonConverterUtil implements EditorJsonConstants, StencilConstants {
 
@@ -45,13 +43,15 @@ public class JsonConverterUtil implements EditorJsonConstants, StencilConstants 
     return getPropertyValueAsBoolean(name, objectNode, false);
   }
 
-  public static boolean getPropertyValueAsBoolean(String name, JsonNode objectNode, boolean defaultValue) {
+  public static boolean getPropertyValueAsBoolean(
+      String name, JsonNode objectNode, boolean defaultValue) {
     boolean result = defaultValue;
     String stringValue = getPropertyValueAsString(name, objectNode);
 
     if (PROPERTY_VALUE_YES.equalsIgnoreCase(stringValue) || "true".equalsIgnoreCase(stringValue)) {
       result = true;
-    } else if (PROPERTY_VALUE_NO.equalsIgnoreCase(stringValue) || "false".equalsIgnoreCase(stringValue)) {
+    } else if (PROPERTY_VALUE_NO.equalsIgnoreCase(stringValue)
+        || "false".equalsIgnoreCase(stringValue)) {
       result = false;
     }
 
@@ -81,21 +81,25 @@ public class JsonConverterUtil implements EditorJsonConstants, StencilConstants 
   }
 
   /**
-   * Usable for BPMN 2.0 editor json: traverses all child shapes (also nested), goes into
-   * the properties and sees if there is a matching property in the
-   * 'properties' of the childshape and returns those in a list.
+   * Usable for BPMN 2.0 editor json: traverses all child shapes (also nested), goes into the
+   * properties and sees if there is a matching property in the 'properties' of the childshape and
+   * returns those in a list.
    *
-   * Returns a map with said json nodes, with the key the name of the childshape.
+   * <p>Returns a map with said json nodes, with the key the name of the childshape.
    */
-
-  protected static List<JsonLookupResult> getBpmnProcessModelChildShapesPropertyValues(JsonNode editorJsonNode, String propertyName, List<String> allowedStencilTypes) {
+  protected static List<JsonLookupResult> getBpmnProcessModelChildShapesPropertyValues(
+      JsonNode editorJsonNode, String propertyName, List<String> allowedStencilTypes) {
     List<JsonLookupResult> result = new ArrayList<JsonLookupResult>();
-    internalGetBpmnProcessChildShapePropertyValues(editorJsonNode, propertyName, allowedStencilTypes, result);
+    internalGetBpmnProcessChildShapePropertyValues(
+        editorJsonNode, propertyName, allowedStencilTypes, result);
     return result;
   }
 
-  protected static void internalGetBpmnProcessChildShapePropertyValues(JsonNode editorJsonNode, String propertyName,
-      List<String> allowedStencilTypes, List<JsonLookupResult> result) {
+  protected static void internalGetBpmnProcessChildShapePropertyValues(
+      JsonNode editorJsonNode,
+      String propertyName,
+      List<String> allowedStencilTypes,
+      List<JsonLookupResult> result) {
 
     JsonNode childShapesNode = editorJsonNode.get("childShapes");
     if (childShapesNode != null && childShapesNode.isArray()) {
@@ -113,16 +117,19 @@ public class JsonConverterUtil implements EditorJsonConstants, StencilConstants 
           if (properties != null && properties.has(propertyName)) {
             JsonNode nameNode = properties.get("name");
             JsonNode propertyNode = properties.get(propertyName);
-            result.add(new JsonLookupResult(BpmnJsonConverterUtil.getElementId(childShapeNode),
-                    nameNode != null ? nameNode.asText() : null, propertyNode));
+            result.add(
+                new JsonLookupResult(
+                    BpmnJsonConverterUtil.getElementId(childShapeNode),
+                    nameNode != null ? nameNode.asText() : null,
+                    propertyNode));
           }
         }
 
         // Potential nested child shapes
         if (childShapeNode.has("childShapes")) {
-          internalGetBpmnProcessChildShapePropertyValues(childShapeNode, propertyName, allowedStencilTypes, result);
+          internalGetBpmnProcessChildShapePropertyValues(
+              childShapeNode, propertyName, allowedStencilTypes, result);
         }
-
       }
     }
   }
@@ -131,13 +138,16 @@ public class JsonConverterUtil implements EditorJsonConstants, StencilConstants 
     List<String> allowedStencilTypes = new ArrayList<String>();
     allowedStencilTypes.add(STENCIL_TASK_USER);
     allowedStencilTypes.add(STENCIL_EVENT_START_NONE);
-    return getBpmnProcessModelChildShapesPropertyValues(editorJsonNode, "formreference", allowedStencilTypes);
+    return getBpmnProcessModelChildShapesPropertyValues(
+        editorJsonNode, "formreference", allowedStencilTypes);
   }
 
-  public static List<JsonLookupResult> getBpmnProcessModelDecisionTableReferences(JsonNode editorJsonNode) {
+  public static List<JsonLookupResult> getBpmnProcessModelDecisionTableReferences(
+      JsonNode editorJsonNode) {
     List<String> allowedStencilTypes = new ArrayList<String>();
     allowedStencilTypes.add(STENCIL_TASK_DECISION);
-    return getBpmnProcessModelChildShapesPropertyValues(editorJsonNode, "decisiontaskdecisiontablereference", allowedStencilTypes);
+    return getBpmnProcessModelChildShapesPropertyValues(
+        editorJsonNode, "decisiontaskdecisiontablereference", allowedStencilTypes);
   }
 
   // APP MODEL
@@ -164,11 +174,13 @@ public class JsonConverterUtil implements EditorJsonConstants, StencilConstants 
   // GENERIC
 
   /**
-   * Loops through a list of {@link JsonNode} instances, and stores the given property with given type in the returned list.
+   * Loops through a list of {@link JsonNode} instances, and stores the given property with given
+   * type in the returned list.
    *
-   * In Java 8, this probably could be done a lot cooler.
+   * <p>In Java 8, this probably could be done a lot cooler.
    */
-  public static Set<Long> gatherLongPropertyFromJsonNodes(Iterable<JsonNode> jsonNodes, String propertyName) {
+  public static Set<Long> gatherLongPropertyFromJsonNodes(
+      Iterable<JsonNode> jsonNodes, String propertyName) {
     Set<Long> result = new HashSet<Long>(); // Using a Set to filter out doubles
     for (JsonNode node : jsonNodes) {
       if (node.has(propertyName)) {
@@ -181,7 +193,8 @@ public class JsonConverterUtil implements EditorJsonConstants, StencilConstants 
     return result;
   }
 
-  public static Set<String> gatherStringPropertyFromJsonNodes(Iterable<JsonNode> jsonNodes, String propertyName) {
+  public static Set<String> gatherStringPropertyFromJsonNodes(
+      Iterable<JsonNode> jsonNodes, String propertyName) {
     Set<String> result = new HashSet<String>(); // Using a Set to filter out doubles
     for (JsonNode node : jsonNodes) {
       if (node.has(propertyName)) {
@@ -243,7 +256,5 @@ public class JsonConverterUtil implements EditorJsonConstants, StencilConstants 
     public void setJsonNode(JsonNode jsonNode) {
       this.jsonNode = jsonNode;
     }
-
   }
-
 }

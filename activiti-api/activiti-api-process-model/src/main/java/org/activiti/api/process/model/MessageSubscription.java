@@ -19,22 +19,21 @@ import java.util.Date;
 
 public interface MessageSubscription {
 
-    String getId();
+  String getId();
 
-    String getEventName();
+  String getEventName();
 
-    String getExecutionId();
+  String getExecutionId();
 
-    String getProcessInstanceId();
+  String getProcessInstanceId();
 
-    String getBusinessKey();
+  String getBusinessKey();
 
-    String getConfiguration();
+  String getConfiguration();
 
-    String getActivityId();
+  String getActivityId();
 
-    Date getCreated();
+  Date getCreated();
 
-    String getProcessDefinitionId();
-
+  String getProcessDefinitionId();
 }

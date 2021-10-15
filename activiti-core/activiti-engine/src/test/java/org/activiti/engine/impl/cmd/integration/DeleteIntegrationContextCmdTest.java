@@ -15,6 +15,11 @@
  */
 package org.activiti.engine.impl.cmd.integration;
 
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.MockitoAnnotations.initMocks;
+
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.integration.IntegrationContextEntity;
@@ -23,39 +28,32 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.MockitoAnnotations.initMocks;
-
 public class DeleteIntegrationContextCmdTest {
 
-    @Mock
-    private CommandContext commandContext;
+  @Mock private CommandContext commandContext;
 
-    @Mock
-    private ProcessEngineConfigurationImpl processEngineConfiguration;
+  @Mock private ProcessEngineConfigurationImpl processEngineConfiguration;
 
-    @Mock
-    private IntegrationContextManager integrationContextManager;
+  @Mock private IntegrationContextManager integrationContextManager;
 
-    @Before
-    public void setUp() throws Exception {
-        initMocks(this);
-        given(commandContext.getProcessEngineConfiguration()).willReturn(processEngineConfiguration);
-        given(processEngineConfiguration.getIntegrationContextManager()).willReturn(integrationContextManager);
-    }
+  @Before
+  public void setUp() throws Exception {
+    initMocks(this);
+    given(commandContext.getProcessEngineConfiguration()).willReturn(processEngineConfiguration);
+    given(processEngineConfiguration.getIntegrationContextManager())
+        .willReturn(integrationContextManager);
+  }
 
-    @Test
-    public void executeShouldDeleteIntegrationContext() throws Exception {
-        //given
-        IntegrationContextEntity integrationContextEntity = mock(IntegrationContextEntity.class);
-        DeleteIntegrationContextCmd command = new DeleteIntegrationContextCmd(integrationContextEntity);
+  @Test
+  public void executeShouldDeleteIntegrationContext() throws Exception {
+    // given
+    IntegrationContextEntity integrationContextEntity = mock(IntegrationContextEntity.class);
+    DeleteIntegrationContextCmd command = new DeleteIntegrationContextCmd(integrationContextEntity);
 
-        //when
-        command.execute(commandContext);
+    // when
+    command.execute(commandContext);
 
-        //then
-        verify(integrationContextManager).delete(integrationContextEntity);
-    }
+    // then
+    verify(integrationContextManager).delete(integrationContextEntity);
+  }
 }

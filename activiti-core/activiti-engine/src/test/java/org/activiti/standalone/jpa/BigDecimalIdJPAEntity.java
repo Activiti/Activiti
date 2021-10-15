@@ -14,18 +14,14 @@
  * limitations under the License.
  */
 
-
 package org.activiti.standalone.jpa;
 
 import java.math.BigDecimal;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
-/**
-
- */
+/** */
 @Entity(name = "BIGD_ID_ENTITY")
 public class BigDecimalIdJPAEntity {
 
@@ -40,5 +36,4 @@ public class BigDecimalIdJPAEntity {
   public void setBigDecimalId(BigDecimal bigDecimalId) {
     this.bigDecimalId = bigDecimalId;
   }
-
 }

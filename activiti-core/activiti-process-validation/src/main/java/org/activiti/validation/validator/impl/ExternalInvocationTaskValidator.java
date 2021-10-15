@@ -17,7 +17,6 @@
 package org.activiti.validation.validator.impl;
 
 import java.util.List;
-
 import org.activiti.bpmn.model.FieldExtension;
 import org.activiti.bpmn.model.TaskWithFieldExtensions;
 import org.activiti.validation.ValidationError;
@@ -26,7 +25,11 @@ import org.activiti.validation.validator.ProcessLevelValidator;
 
 public abstract class ExternalInvocationTaskValidator extends ProcessLevelValidator {
 
-  protected void validateFieldDeclarationsForEmail(org.activiti.bpmn.model.Process process, TaskWithFieldExtensions task, List<FieldExtension> fieldExtensions, List<ValidationError> errors) {
+  protected void validateFieldDeclarationsForEmail(
+      org.activiti.bpmn.model.Process process,
+      TaskWithFieldExtensions task,
+      List<FieldExtension> fieldExtensions,
+      List<ValidationError> errors) {
     boolean toDefined = false;
     boolean textOrHtmlDefined = false;
 
@@ -49,14 +52,28 @@ public abstract class ExternalInvocationTaskValidator extends ProcessLevelValida
     }
 
     if (!toDefined) {
-      addError(errors, Problems.MAIL_TASK_NO_RECIPIENT, process, task, "No recipient is defined on the mail activity");
+      addError(
+          errors,
+          Problems.MAIL_TASK_NO_RECIPIENT,
+          process,
+          task,
+          "No recipient is defined on the mail activity");
     }
     if (!textOrHtmlDefined) {
-      addError(errors, Problems.MAIL_TASK_NO_CONTENT, process, task, "Text, html, textVar or htmlVar field should be provided");
+      addError(
+          errors,
+          Problems.MAIL_TASK_NO_CONTENT,
+          process,
+          task,
+          "Text, html, textVar or htmlVar field should be provided");
     }
   }
 
-  protected void validateFieldDeclarationsForShell(org.activiti.bpmn.model.Process process, TaskWithFieldExtensions task, List<FieldExtension> fieldExtensions, List<ValidationError> errors) {
+  protected void validateFieldDeclarationsForShell(
+      org.activiti.bpmn.model.Process process,
+      TaskWithFieldExtensions task,
+      List<FieldExtension> fieldExtensions,
+      List<ValidationError> errors) {
     boolean shellCommandDefined = false;
 
     for (FieldExtension fieldExtension : fieldExtensions) {
@@ -67,32 +84,55 @@ public abstract class ExternalInvocationTaskValidator extends ProcessLevelValida
         shellCommandDefined = true;
       }
 
-      if ((fieldName.equals("wait") || fieldName.equals("redirectError") || fieldName.equals("cleanEnv")) && !fieldValue.toLowerCase().equals("true") && !fieldValue.toLowerCase().equals("false")) {
-        addError(errors, Problems.SHELL_TASK_INVALID_PARAM, process, task, "Undefined parameter value for shell field");
+      if ((fieldName.equals("wait")
+              || fieldName.equals("redirectError")
+              || fieldName.equals("cleanEnv"))
+          && !fieldValue.toLowerCase().equals("true")
+          && !fieldValue.toLowerCase().equals("false")) {
+        addError(
+            errors,
+            Problems.SHELL_TASK_INVALID_PARAM,
+            process,
+            task,
+            "Undefined parameter value for shell field");
       }
-
     }
 
     if (!shellCommandDefined) {
-      addError(errors, Problems.SHELL_TASK_NO_COMMAND, process, task, "No shell command is defined on the shell activity");
+      addError(
+          errors,
+          Problems.SHELL_TASK_NO_COMMAND,
+          process,
+          task,
+          "No shell command is defined on the shell activity");
     }
   }
 
-  protected void validateFieldDeclarationsForDmn(org.activiti.bpmn.model.Process process, TaskWithFieldExtensions task, List<FieldExtension> fieldExtensions, List<ValidationError> errors) {
+  protected void validateFieldDeclarationsForDmn(
+      org.activiti.bpmn.model.Process process,
+      TaskWithFieldExtensions task,
+      List<FieldExtension> fieldExtensions,
+      List<ValidationError> errors) {
     boolean keyDefined = false;
 
     for (FieldExtension fieldExtension : fieldExtensions) {
       String fieldName = fieldExtension.getFieldName();
       String fieldValue = fieldExtension.getStringValue();
 
-      if (fieldName.equals("decisionTableReferenceKey") && fieldValue != null && fieldValue.length() > 0) {
+      if (fieldName.equals("decisionTableReferenceKey")
+          && fieldValue != null
+          && fieldValue.length() > 0) {
         keyDefined = true;
       }
     }
 
     if (!keyDefined) {
-      addError(errors, Problems.DMN_TASK_NO_KEY, process, task, "No decision table reference key is defined on the dmn activity");
+      addError(
+          errors,
+          Problems.DMN_TASK_NO_KEY,
+          process,
+          task,
+          "No decision table reference key is defined on the dmn activity");
     }
   }
-
 }

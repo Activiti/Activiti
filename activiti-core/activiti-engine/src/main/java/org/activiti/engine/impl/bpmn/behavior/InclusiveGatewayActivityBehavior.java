@@ -16,6 +16,8 @@
 
 package org.activiti.engine.impl.bpmn.behavior;
 
+import java.util.Collection;
+import java.util.Iterator;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.delegate.InactiveActivityBehavior;
@@ -26,21 +28,17 @@ import org.activiti.engine.impl.util.ExecutionGraphUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Collection;
-import java.util.Iterator;
-
 /**
- * Implementation of the Inclusive Gateway/OR gateway/inclusive data-based gateway as defined in the BPMN specification.
- *
-
-
-
+ * Implementation of the Inclusive Gateway/OR gateway/inclusive data-based gateway as defined in the
+ * BPMN specification.
  */
-public class InclusiveGatewayActivityBehavior extends GatewayActivityBehavior implements InactiveActivityBehavior {
+public class InclusiveGatewayActivityBehavior extends GatewayActivityBehavior
+    implements InactiveActivityBehavior {
 
   private static final long serialVersionUID = 1L;
 
-  private static Logger logger = LoggerFactory.getLogger(InclusiveGatewayActivityBehavior.class.getName());
+  private static Logger logger =
+      LoggerFactory.getLogger(InclusiveGatewayActivityBehavior.class.getName());
 
   @Override
   public void execute(DelegateExecution execution) {
@@ -67,18 +65,26 @@ public class InclusiveGatewayActivityBehavior extends GatewayActivityBehavior im
 
     lockFirstParentScope(execution);
 
-    Collection<ExecutionEntity> allExecutions = executionEntityManager.findChildExecutionsByProcessInstanceId(execution.getProcessInstanceId());
+    Collection<ExecutionEntity> allExecutions =
+        executionEntityManager.findChildExecutionsByProcessInstanceId(
+            execution.getProcessInstanceId());
     Iterator<ExecutionEntity> executionIterator = allExecutions.iterator();
     boolean oneExecutionCanReachGateway = false;
     while (!oneExecutionCanReachGateway && executionIterator.hasNext()) {
       ExecutionEntity executionEntity = executionIterator.next();
       if (!executionEntity.getActivityId().equals(execution.getCurrentActivityId())) {
-        boolean canReachGateway = ExecutionGraphUtil.isReachable(execution.getProcessDefinitionId(), executionEntity.getActivityId(), execution.getCurrentActivityId());
+        boolean canReachGateway =
+            ExecutionGraphUtil.isReachable(
+                execution.getProcessDefinitionId(),
+                executionEntity.getActivityId(),
+                execution.getCurrentActivityId());
         if (canReachGateway) {
           oneExecutionCanReachGateway = true;
         }
-      } else if (executionEntity.getActivityId().equals(execution.getCurrentActivityId()) && executionEntity.isActive()) {
-        // Special case: the execution has reached the inc gw, but the operation hasn't been executed yet for that execution
+      } else if (executionEntity.getActivityId().equals(execution.getCurrentActivityId())
+          && executionEntity.isActive()) {
+        // Special case: the execution has reached the inc gw, but the operation hasn't been
+        // executed yet for that execution
         oneExecutionCanReachGateway = true;
       }
     }
@@ -89,8 +95,9 @@ public class InclusiveGatewayActivityBehavior extends GatewayActivityBehavior im
       logger.debug("Inclusive gateway cannot be reached by any execution and is activated");
 
       // Kill all executions here (except the incoming)
-      Collection<ExecutionEntity> executionsInGateway = executionEntityManager
-          .findInactiveExecutionsByActivityIdAndProcessInstanceId(execution.getCurrentActivityId(), execution.getProcessInstanceId());
+      Collection<ExecutionEntity> executionsInGateway =
+          executionEntityManager.findInactiveExecutionsByActivityIdAndProcessInstanceId(
+              execution.getCurrentActivityId(), execution.getProcessInstanceId());
       for (ExecutionEntity executionEntityInGateway : executionsInGateway) {
         if (!executionEntityInGateway.getId().equals(execution.getId())) {
           commandContext.getHistoryManager().recordActivityEnd(executionEntityInGateway, null);

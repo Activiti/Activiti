@@ -14,14 +14,11 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.interceptor;
 
 import org.activiti.engine.impl.cfg.TransactionContext;
 
-/**
-
- */
+/** */
 public class TransactionCommandContextCloseListener implements CommandContextCloseListener {
 
   protected TransactionContext transactionContext;
@@ -31,9 +28,7 @@ public class TransactionCommandContextCloseListener implements CommandContextClo
   }
 
   @Override
-  public void closing(CommandContext commandContext) {
-
-  }
+  public void closing(CommandContext commandContext) {}
 
   @Override
   public void afterSessionsFlush(CommandContext commandContext) {
@@ -41,13 +36,10 @@ public class TransactionCommandContextCloseListener implements CommandContextClo
   }
 
   @Override
-  public void closed(CommandContext commandContext) {
-
-  }
+  public void closed(CommandContext commandContext) {}
 
   @Override
   public void closeFailure(CommandContext commandContext) {
     transactionContext.rollback();
   }
-
 }

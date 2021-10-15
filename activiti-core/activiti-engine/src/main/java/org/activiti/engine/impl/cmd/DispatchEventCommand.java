@@ -22,11 +22,7 @@ import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 
-/**
- * Command that dispatches an event.
- *
-
- */
+/** Command that dispatches an event. */
 public class DispatchEventCommand implements Command<Void> {
 
   protected ActivitiEvent event;
@@ -49,5 +45,4 @@ public class DispatchEventCommand implements Command<Void> {
 
     return null;
   }
-
 }

@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.scripting;
 
 import static java.util.Arrays.asList;
@@ -24,29 +23,36 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import javax.script.Bindings;
 import javax.script.SimpleScriptContext;
-
 import org.activiti.engine.delegate.VariableScope;
 
-/**
- */
+/** */
 public class ScriptBindings implements Bindings {
 
   /**
-   * The script engine implementations put some key/value pairs into the binding.
-   * This list contains those keys, such that they wouldn't be stored as process variable.
+   * The script engine implementations put some key/value pairs into the binding. This list contains
+   * those keys, such that they wouldn't be stored as process variable.
    *
-   * This list contains the keywords for JUEL, Javascript and Groovy.
+   * <p>This list contains the keywords for JUEL, Javascript and Groovy.
    */
   protected static final Set<String> UNSTORED_KEYS =
-    new HashSet<String>(asList("out", "out:print", "lang:import", "context", "elcontext", "print", "println", "nashorn.global"));
+      new HashSet<String>(
+          asList(
+              "out",
+              "out:print",
+              "lang:import",
+              "context",
+              "elcontext",
+              "print",
+              "println",
+              "nashorn.global"));
 
   protected List<Resolver> scriptResolvers;
   protected VariableScope variableScope;
   protected Bindings defaultBindings;
-  protected boolean storeScriptVariables = true; // By default everything is stored (backwards compatibility)
+  protected boolean storeScriptVariables =
+      true; // By default everything is stored (backwards compatibility)
 
   public ScriptBindings(List<Resolver> scriptResolvers, VariableScope variableScope) {
     this.scriptResolvers = scriptResolvers;
@@ -54,7 +60,8 @@ public class ScriptBindings implements Bindings {
     this.defaultBindings = new SimpleScriptContext().getBindings(SimpleScriptContext.ENGINE_SCOPE);
   }
 
-  public ScriptBindings(List<Resolver> scriptResolvers, VariableScope variableScope, boolean storeScriptVariables) {
+  public ScriptBindings(
+      List<Resolver> scriptResolvers, VariableScope variableScope, boolean storeScriptVariables) {
     this(scriptResolvers, variableScope);
     this.storeScriptVariables = storeScriptVariables;
   }
@@ -129,7 +136,6 @@ public class ScriptBindings implements Bindings {
   }
 
   public void addUnstoredKey(String unstoredKey) {
-  	UNSTORED_KEYS.add(unstoredKey);
+    UNSTORED_KEYS.add(unstoredKey);
   }
-
 }

@@ -22,9 +22,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Intercepts {@link ActivitiOptimisticLockingException} and tries to run the same command again. The number of retries and the time waited between retries is configurable.
- *
-
+ * Intercepts {@link ActivitiOptimisticLockingException} and tries to run the same command again.
+ * The number of retries and the time waited between retries is configurable.
  */
 public class RetryInterceptor extends AbstractCommandInterceptor {
 
@@ -57,7 +56,8 @@ public class RetryInterceptor extends AbstractCommandInterceptor {
       failedAttempts++;
     } while (failedAttempts <= numOfRetries);
 
-    throw new ActivitiException(numOfRetries + " retries failed with ActivitiOptimisticLockingException. Giving up.");
+    throw new ActivitiException(
+        numOfRetries + " retries failed with ActivitiOptimisticLockingException. Giving up.");
   }
 
   protected void waitBeforeRetry(long waitTime) {

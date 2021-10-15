@@ -16,16 +16,10 @@
 
 package org.activiti.engine.impl.transformer;
 
-/**
- * Transforms a {@link Long} to a {@link String}
- *
-
- */
+/** Transforms a {@link Long} to a {@link String} */
 public class LongToString extends AbstractTransformer {
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   protected Object primTransform(Object anObject) throws Exception {
     return ((Long) anObject).toString();

@@ -14,22 +14,15 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.variable;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-
 import javax.persistence.Entity;
 import javax.persistence.Id;
-
 import org.activiti.engine.ActivitiException;
 
-/**
- * Scans class and creates {@link EntityMetaData} based on it.
- *
-
- */
+/** Scans class and creates {@link EntityMetaData} based on it. */
 public class JPAEntityScanner {
 
   public EntityMetaData scanClass(Class<?> clazz) {
@@ -55,7 +48,10 @@ public class JPAEntityScanner {
           if (idMethod != null) {
             metaData.setIdMethod(idMethod);
           } else {
-            throw new ActivitiException("Cannot find field or method with annotation @Id on class '" + clazz.getName() + "', only single-valued primary keys are supported on JPA-entities");
+            throw new ActivitiException(
+                "Cannot find field or method with annotation @Id on class '"
+                    + clazz.getName()
+                    + "', only single-valued primary keys are supported on JPA-entities");
           }
         }
         break;
@@ -74,7 +70,7 @@ public class JPAEntityScanner {
     Id idAnnotation = null;
     for (Method method : methods) {
       idAnnotation = method.getAnnotation(Id.class);
-      if(idAnnotation != null && !method.isBridge()) {
+      if (idAnnotation != null && !method.isBridge()) {
         idMethod = method;
         break;
       }

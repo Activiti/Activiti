@@ -19,11 +19,7 @@ package org.activiti.engine.debug;
 import java.util.Iterator;
 import java.util.LinkedList;
 
-/**
- * Iterates over an {@link ExecutionTree} using breadth-first search
- *
-
- */
+/** Iterates over an {@link ExecutionTree} using breadth-first search */
 public class ExecutionTreeBfsIterator implements Iterator<ExecutionTreeNode> {
 
   protected ExecutionTreeNode rootNode;
@@ -88,5 +84,4 @@ public class ExecutionTreeBfsIterator implements Iterator<ExecutionTreeNode> {
     }
     flattenedListIterator.remove();
   }
-
 }

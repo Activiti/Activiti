@@ -22,11 +22,11 @@ import org.activiti.test.matchers.ProcessTaskMatcher;
 
 public interface ProcessInstanceAssertions {
 
-    ProcessInstanceAssertions expectFields(ProcessResultMatcher... processResultMatcher);
+  ProcessInstanceAssertions expectFields(ProcessResultMatcher... processResultMatcher);
 
-    ProcessInstanceAssertions expectEvents(OperationScopeMatcher... matchers);
+  ProcessInstanceAssertions expectEvents(OperationScopeMatcher... matchers);
 
-    ProcessInstanceAssertions expect(ProcessTaskMatcher... matchers);
+  ProcessInstanceAssertions expect(ProcessTaskMatcher... matchers);
 
-    ProcessInstance andReturn();
+  ProcessInstance andReturn();
 }

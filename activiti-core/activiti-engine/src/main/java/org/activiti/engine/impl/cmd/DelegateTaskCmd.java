@@ -14,17 +14,13 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.cmd;
 
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.task.DelegationState;
 
-/**
-
-
- */
+/** */
 public class DelegateTaskCmd extends NeedsActiveTaskCmd<Object> {
 
   private static final long serialVersionUID = 1L;
@@ -48,5 +44,4 @@ public class DelegateTaskCmd extends NeedsActiveTaskCmd<Object> {
   protected String getSuspendedTaskException() {
     return "Cannot delegate a suspended task";
   }
-
 }

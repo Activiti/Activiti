@@ -14,12 +14,10 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.persistence.entity;
 
 import java.util.List;
 import java.util.Map;
-
 import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.impl.HistoricActivityInstanceQueryImpl;
 import org.activiti.engine.impl.Page;
@@ -28,16 +26,16 @@ import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.persistence.entity.data.DataManager;
 import org.activiti.engine.impl.persistence.entity.data.HistoricActivityInstanceDataManager;
 
-/**
-
-
- */
-public class HistoricActivityInstanceEntityManagerImpl extends AbstractEntityManager<HistoricActivityInstanceEntity> implements HistoricActivityInstanceEntityManager {
+/** */
+public class HistoricActivityInstanceEntityManagerImpl
+    extends AbstractEntityManager<HistoricActivityInstanceEntity>
+    implements HistoricActivityInstanceEntityManager {
 
   protected HistoricActivityInstanceDataManager historicActivityInstanceDataManager;
 
-
-  public HistoricActivityInstanceEntityManagerImpl(ProcessEngineConfigurationImpl processEngineConfiguration, HistoricActivityInstanceDataManager historicActivityInstanceDataManager) {
+  public HistoricActivityInstanceEntityManagerImpl(
+      ProcessEngineConfigurationImpl processEngineConfiguration,
+      HistoricActivityInstanceDataManager historicActivityInstanceDataManager) {
     super(processEngineConfiguration);
     this.historicActivityInstanceDataManager = historicActivityInstanceDataManager;
   }
@@ -48,48 +46,61 @@ public class HistoricActivityInstanceEntityManagerImpl extends AbstractEntityMan
   }
 
   @Override
-  public List<HistoricActivityInstanceEntity> findUnfinishedHistoricActivityInstancesByExecutionAndActivityId(String executionId, String activityId) {
-    return historicActivityInstanceDataManager.findUnfinishedHistoricActivityInstancesByExecutionAndActivityId(executionId, activityId);
+  public List<HistoricActivityInstanceEntity>
+      findUnfinishedHistoricActivityInstancesByExecutionAndActivityId(
+          String executionId, String activityId) {
+    return historicActivityInstanceDataManager
+        .findUnfinishedHistoricActivityInstancesByExecutionAndActivityId(executionId, activityId);
   }
 
   @Override
-  public List<HistoricActivityInstanceEntity> findUnfinishedHistoricActivityInstancesByProcessInstanceId(String processInstanceId) {
-    return historicActivityInstanceDataManager.findUnfinishedHistoricActivityInstancesByProcessInstanceId(processInstanceId);
+  public List<HistoricActivityInstanceEntity>
+      findUnfinishedHistoricActivityInstancesByProcessInstanceId(String processInstanceId) {
+    return historicActivityInstanceDataManager
+        .findUnfinishedHistoricActivityInstancesByProcessInstanceId(processInstanceId);
   }
 
   @Override
   public void deleteHistoricActivityInstancesByProcessInstanceId(String historicProcessInstanceId) {
     if (getHistoryManager().isHistoryLevelAtLeast(HistoryLevel.ACTIVITY)) {
-      historicActivityInstanceDataManager.deleteHistoricActivityInstancesByProcessInstanceId(historicProcessInstanceId);
+      historicActivityInstanceDataManager.deleteHistoricActivityInstancesByProcessInstanceId(
+          historicProcessInstanceId);
     }
   }
 
   @Override
-  public long findHistoricActivityInstanceCountByQueryCriteria(HistoricActivityInstanceQueryImpl historicActivityInstanceQuery) {
-    return historicActivityInstanceDataManager.findHistoricActivityInstanceCountByQueryCriteria(historicActivityInstanceQuery);
+  public long findHistoricActivityInstanceCountByQueryCriteria(
+      HistoricActivityInstanceQueryImpl historicActivityInstanceQuery) {
+    return historicActivityInstanceDataManager.findHistoricActivityInstanceCountByQueryCriteria(
+        historicActivityInstanceQuery);
   }
 
   @Override
-  public List<HistoricActivityInstance> findHistoricActivityInstancesByQueryCriteria(HistoricActivityInstanceQueryImpl historicActivityInstanceQuery, Page page) {
-    return historicActivityInstanceDataManager.findHistoricActivityInstancesByQueryCriteria(historicActivityInstanceQuery, page);
+  public List<HistoricActivityInstance> findHistoricActivityInstancesByQueryCriteria(
+      HistoricActivityInstanceQueryImpl historicActivityInstanceQuery, Page page) {
+    return historicActivityInstanceDataManager.findHistoricActivityInstancesByQueryCriteria(
+        historicActivityInstanceQuery, page);
   }
 
   @Override
-  public List<HistoricActivityInstance> findHistoricActivityInstancesByNativeQuery(Map<String, Object> parameterMap, int firstResult, int maxResults) {
-    return historicActivityInstanceDataManager.findHistoricActivityInstancesByNativeQuery(parameterMap, firstResult, maxResults);
+  public List<HistoricActivityInstance> findHistoricActivityInstancesByNativeQuery(
+      Map<String, Object> parameterMap, int firstResult, int maxResults) {
+    return historicActivityInstanceDataManager.findHistoricActivityInstancesByNativeQuery(
+        parameterMap, firstResult, maxResults);
   }
 
   @Override
   public long findHistoricActivityInstanceCountByNativeQuery(Map<String, Object> parameterMap) {
-    return historicActivityInstanceDataManager.findHistoricActivityInstanceCountByNativeQuery(parameterMap);
+    return historicActivityInstanceDataManager.findHistoricActivityInstanceCountByNativeQuery(
+        parameterMap);
   }
 
   public HistoricActivityInstanceDataManager getHistoricActivityInstanceDataManager() {
     return historicActivityInstanceDataManager;
   }
 
-  public void setHistoricActivityInstanceDataManager(HistoricActivityInstanceDataManager historicActivityInstanceDataManager) {
+  public void setHistoricActivityInstanceDataManager(
+      HistoricActivityInstanceDataManager historicActivityInstanceDataManager) {
     this.historicActivityInstanceDataManager = historicActivityInstanceDataManager;
   }
-
 }

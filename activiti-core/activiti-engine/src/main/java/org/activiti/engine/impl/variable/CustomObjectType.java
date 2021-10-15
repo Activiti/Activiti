@@ -16,11 +16,7 @@
 
 package org.activiti.engine.impl.variable;
 
-/**
- * Custom object type
- *
-
- */
+/** Custom object type */
 public class CustomObjectType implements VariableType {
 
   protected String typeName;

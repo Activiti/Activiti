@@ -15,6 +15,11 @@
  */
 package org.activiti.engine.impl.bpmn.parser.handler;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.*;
+import static org.mockito.MockitoAnnotations.initMocks;
+
 import org.activiti.bpmn.model.ServiceTask;
 import org.activiti.engine.impl.bpmn.behavior.ServiceTaskDelegateExpressionActivityBehavior;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
@@ -24,40 +29,33 @@ import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.*;
-import static org.mockito.MockitoAnnotations.initMocks;
-
 public class ServiceTaskParseHandlerTest {
 
-    @InjectMocks
-    private ServiceTaskParseHandler serviceTaskParseHandler;
+  @InjectMocks private ServiceTaskParseHandler serviceTaskParseHandler;
 
-    @Mock
-    private BpmnParse bpmnParse;
+  @Mock private BpmnParse bpmnParse;
 
-    @Mock
-    private ActivityBehaviorFactory activityBehaviorFactory;
+  @Mock private ActivityBehaviorFactory activityBehaviorFactory;
 
-    @Before
-    public void setUp() throws Exception {
-        initMocks(this);
-        given(bpmnParse.getActivityBehaviorFactory()).willReturn(activityBehaviorFactory);
-    }
+  @Before
+  public void setUp() throws Exception {
+    initMocks(this);
+    given(bpmnParse.getActivityBehaviorFactory()).willReturn(activityBehaviorFactory);
+  }
 
-    @Test
-    public void executeParseShouldUseDefaultBehaviorWhenNoInformationIsProvided() throws Exception {
-        //given
-        ServiceTask serviceTask = new ServiceTask();
-        ServiceTaskDelegateExpressionActivityBehavior defaultBehavior = mock(ServiceTaskDelegateExpressionActivityBehavior.class);
-        given(activityBehaviorFactory.createDefaultServiceTaskBehavior(serviceTask)).willReturn(defaultBehavior);
+  @Test
+  public void executeParseShouldUseDefaultBehaviorWhenNoInformationIsProvided() throws Exception {
+    // given
+    ServiceTask serviceTask = new ServiceTask();
+    ServiceTaskDelegateExpressionActivityBehavior defaultBehavior =
+        mock(ServiceTaskDelegateExpressionActivityBehavior.class);
+    given(activityBehaviorFactory.createDefaultServiceTaskBehavior(serviceTask))
+        .willReturn(defaultBehavior);
 
-        //when
-        serviceTaskParseHandler.executeParse(bpmnParse,
-                                             serviceTask);
+    // when
+    serviceTaskParseHandler.executeParse(bpmnParse, serviceTask);
 
-        //then
-        assertThat(serviceTask.getBehavior()).isEqualTo(defaultBehavior);
-    }
+    // then
+    assertThat(serviceTask.getBehavior()).isEqualTo(defaultBehavior);
+  }
 }

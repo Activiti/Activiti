@@ -20,7 +20,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.ExtensionAttribute;
@@ -32,7 +31,8 @@ import org.activiti.bpmn.model.ValuedDataObject;
 import org.junit.jupiter.api.Test;
 
 /**
- * @see <a href="https://activiti.atlassian.net/browse/ACT-2055">https://activiti.atlassian.net/browse/ACT-2055</a>
+ * @see <a
+ *     href="https://activiti.atlassian.net/browse/ACT-2055">https://activiti.atlassian.net/browse/ACT-2055</a>
  */
 public class SubProcessWithExtensionsConverterTest extends AbstractConverterTest {
 
@@ -46,9 +46,11 @@ public class SubProcessWithExtensionsConverterTest extends AbstractConverterTest
 
   protected static final String ELEMENT_I18LN_LOCALIZATION = "i18ln";
   protected static final String ATTRIBUTE_RESOURCE_BUNDLE_KEY_FOR_NAME = "resourceBundleKeyForName";
-  protected static final String ATTRIBUTE_RESOURCE_BUNDLE_KEY_FOR_DESCRIPTION = "resourceBundleKeyForDescription";
+  protected static final String ATTRIBUTE_RESOURCE_BUNDLE_KEY_FOR_DESCRIPTION =
+      "resourceBundleKeyForDescription";
   protected static final String ATTRIBUTE_LABELED_ENTITY_ID_FOR_NAME = "labeledEntityIdForName";
-  protected static final String ATTRIBUTE_LABELED_ENTITY_ID_FOR_DESCRIPTION = "labeledEntityIdForDescription";
+  protected static final String ATTRIBUTE_LABELED_ENTITY_ID_FOR_DESCRIPTION =
+      "labeledEntityIdForDescription";
 
   private Localization localization = new Localization();
 
@@ -142,7 +144,8 @@ public class SubProcessWithExtensionsConverterTest extends AbstractConverterTest
     SubProcess subProcess = (SubProcess) flowElement;
     assertThat(subProcess.getLoopCharacteristics().isSequential()).isTrue();
     assertThat(subProcess.getLoopCharacteristics().getLoopCardinality()).isEqualTo("10");
-    assertThat(subProcess.getLoopCharacteristics().getCompletionCondition()).isEqualTo("${assignee == \"\"}");
+    assertThat(subProcess.getLoopCharacteristics().getCompletionCondition())
+        .isEqualTo("${assignee == \"\"}");
     assertThat(subProcess.getFlowElements()).hasSize(5);
 
     /*
@@ -186,14 +189,18 @@ public class SubProcessWithExtensionsConverterTest extends AbstractConverterTest
     Map<String, String> attributes = null;
 
     if (null != bObj) {
-      List<ExtensionElement> attributesExtension = bObj.getExtensionElements().get(ELEMENT_ATTRIBUTES);
+      List<ExtensionElement> attributesExtension =
+          bObj.getExtensionElements().get(ELEMENT_ATTRIBUTES);
 
       if (null != attributesExtension && !attributesExtension.isEmpty()) {
         attributes = new HashMap<String, String>();
-        List<ExtensionElement> attributeExtensions = attributesExtension.get(0).getChildElements().get(ELEMENT_ATTRIBUTE);
+        List<ExtensionElement> attributeExtensions =
+            attributesExtension.get(0).getChildElements().get(ELEMENT_ATTRIBUTE);
 
         for (ExtensionElement attributeExtension : attributeExtensions) {
-          attributes.put(attributeExtension.getAttributeValue(YOURCO_EXTENSIONS_NAMESPACE, ATTRIBUTE_NAME), attributeExtension.getAttributeValue(YOURCO_EXTENSIONS_NAMESPACE, ATTRIBUTE_VALUE));
+          attributes.put(
+              attributeExtension.getAttributeValue(YOURCO_EXTENSIONS_NAMESPACE, ATTRIBUTE_NAME),
+              attributeExtension.getAttributeValue(YOURCO_EXTENSIONS_NAMESPACE, ATTRIBUTE_VALUE));
         }
       }
     }
@@ -201,14 +208,20 @@ public class SubProcessWithExtensionsConverterTest extends AbstractConverterTest
   }
 
   protected Localization getLocalization(BaseElement bObj) {
-    List<ExtensionElement> i18lnExtension = bObj.getExtensionElements().get(ELEMENT_I18LN_LOCALIZATION);
+    List<ExtensionElement> i18lnExtension =
+        bObj.getExtensionElements().get(ELEMENT_I18LN_LOCALIZATION);
 
     if (!i18lnExtension.isEmpty()) {
-      Map<String, List<ExtensionAttribute>> extensionAttributes = i18lnExtension.get(0).getAttributes();
-      localization.setLabeledEntityIdForName(extensionAttributes.get(ATTRIBUTE_LABELED_ENTITY_ID_FOR_NAME).get(0).getValue());
-      localization.setLabeledEntityIdForDescription(extensionAttributes.get(ATTRIBUTE_LABELED_ENTITY_ID_FOR_DESCRIPTION).get(0).getValue());
-      localization.setResourceBundleKeyForName(extensionAttributes.get(ATTRIBUTE_RESOURCE_BUNDLE_KEY_FOR_NAME).get(0).getValue());
-      localization.setResourceBundleKeyForDescription(extensionAttributes.get(ATTRIBUTE_RESOURCE_BUNDLE_KEY_FOR_DESCRIPTION).get(0).getValue());
+      Map<String, List<ExtensionAttribute>> extensionAttributes =
+          i18lnExtension.get(0).getAttributes();
+      localization.setLabeledEntityIdForName(
+          extensionAttributes.get(ATTRIBUTE_LABELED_ENTITY_ID_FOR_NAME).get(0).getValue());
+      localization.setLabeledEntityIdForDescription(
+          extensionAttributes.get(ATTRIBUTE_LABELED_ENTITY_ID_FOR_DESCRIPTION).get(0).getValue());
+      localization.setResourceBundleKeyForName(
+          extensionAttributes.get(ATTRIBUTE_RESOURCE_BUNDLE_KEY_FOR_NAME).get(0).getValue());
+      localization.setResourceBundleKeyForDescription(
+          extensionAttributes.get(ATTRIBUTE_RESOURCE_BUNDLE_KEY_FOR_DESCRIPTION).get(0).getValue());
     }
     return localization;
   }

@@ -14,20 +14,15 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.cmd;
 
+import java.util.Map;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 
-import java.util.Map;
-
-/**
-
-
- */
+/** */
 public class TriggerCmd extends NeedsActiveExecutionCmd<Object> {
 
   private static final long serialVersionUID = 1L;
@@ -40,7 +35,10 @@ public class TriggerCmd extends NeedsActiveExecutionCmd<Object> {
     this.processVariables = processVariables;
   }
 
-  public TriggerCmd(String executionId, Map<String, Object> processVariables, Map<String, Object> transientVariables) {
+  public TriggerCmd(
+      String executionId,
+      Map<String, Object> processVariables,
+      Map<String, Object> transientVariables) {
     this(executionId, processVariables);
     this.transientVariables = transientVariables;
   }
@@ -54,10 +52,9 @@ public class TriggerCmd extends NeedsActiveExecutionCmd<Object> {
       execution.setTransientVariables(transientVariables);
     }
 
-    Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
-        ActivitiEventBuilder.createActivitiySignalledEvent(execution,
-                                                           null,
-                                                           null));
+    Context.getProcessEngineConfiguration()
+        .getEventDispatcher()
+        .dispatchEvent(ActivitiEventBuilder.createActivitiySignalledEvent(execution, null, null));
 
     Context.getAgenda().planTriggerExecutionOperation(execution);
     return null;
@@ -67,5 +64,4 @@ public class TriggerCmd extends NeedsActiveExecutionCmd<Object> {
   protected String getSuspendedExceptionMessage() {
     return "Cannot trigger an execution that is suspended";
   }
-
 }

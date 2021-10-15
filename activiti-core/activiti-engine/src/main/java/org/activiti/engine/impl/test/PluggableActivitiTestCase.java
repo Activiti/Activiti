@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.test;
 
 import org.activiti.engine.ActivitiException;
@@ -33,23 +32,24 @@ import org.slf4j.LoggerFactory;
 /**
  * Base class for the activiti test cases.
  *
- * The main reason not to use our own test support classes is that we need to run our test suite with various configurations, e.g. with and without spring, standalone or on a server etc. Those
- * requirements create some complications so we think it's best to use a separate base class. That way it is much easier for us to maintain our own codebase and at the same time provide stability on
- * the test support classes that we offer as part of our api (in org.activiti.engine.test).
- *
-
-
+ * <p>The main reason not to use our own test support classes is that we need to run our test suite
+ * with various configurations, e.g. with and without spring, standalone or on a server etc. Those
+ * requirements create some complications so we think it's best to use a separate base class. That
+ * way it is much easier for us to maintain our own codebase and at the same time provide stability
+ * on the test support classes that we offer as part of our api (in org.activiti.engine.test).
  */
 public abstract class PluggableActivitiTestCase extends AbstractActivitiTestCase {
 
-  private static Logger pluggableActivitiTestCaseLogger = LoggerFactory.getLogger(PluggableActivitiTestCase.class);
+  private static Logger pluggableActivitiTestCaseLogger =
+      LoggerFactory.getLogger(PluggableActivitiTestCase.class);
 
   protected static ProcessEngine cachedProcessEngine;
 
   protected void initializeProcessEngine() {
     if (cachedProcessEngine == null) {
 
-      pluggableActivitiTestCaseLogger.info("No cached process engine found for test. Retrieving the default engine.");
+      pluggableActivitiTestCaseLogger.info(
+          "No cached process engine found for test. Retrieving the default engine.");
       ProcessEngines.destroy(); // Just to be sure we're not getting any previously cached version
 
       cachedProcessEngine = ProcessEngines.getDefaultProcessEngine();
@@ -59,13 +59,13 @@ public abstract class PluggableActivitiTestCase extends AbstractActivitiTestCase
     }
 
     processEngine = cachedProcessEngine;
-    processEngineConfiguration = ((ProcessEngineImpl) processEngine).getProcessEngineConfiguration();
+    processEngineConfiguration =
+        ((ProcessEngineImpl) processEngine).getProcessEngineConfiguration();
 
     // Enable verbose execution tree debugging if needed
     if (this.getClass().isAnnotationPresent(EnableVerboseExecutionTreeLogging.class)) {
       swapCommandInvoker(true);
     }
-
   }
 
   @Override
@@ -88,10 +88,14 @@ public abstract class PluggableActivitiTestCase extends AbstractActivitiTestCase
 
       while (commandInterceptor != null) {
 
-        boolean matches = debug ? (commandInterceptor instanceof CommandInvoker) : (commandInterceptor instanceof DebugCommandInvoker);
+        boolean matches =
+            debug
+                ? (commandInterceptor instanceof CommandInvoker)
+                : (commandInterceptor instanceof DebugCommandInvoker);
         if (matches) {
 
-          CommandInterceptor commandInvoker = debug ? new DebugCommandInvoker() : new CommandInvoker();
+          CommandInterceptor commandInvoker =
+              debug ? new DebugCommandInvoker() : new CommandInvoker();
           if (previousCommandInterceptor != null) {
             previousCommandInterceptor.setNext(commandInvoker);
           } else {
@@ -106,9 +110,12 @@ public abstract class PluggableActivitiTestCase extends AbstractActivitiTestCase
       }
 
     } else {
-      pluggableActivitiTestCaseLogger.warn("Not using " + CommandExecutorImpl.class + ", ignoring the "
-          + EnableVerboseExecutionTreeLogging.class + " annotation");
+      pluggableActivitiTestCaseLogger.warn(
+          "Not using "
+              + CommandExecutorImpl.class
+              + ", ignoring the "
+              + EnableVerboseExecutionTreeLogging.class
+              + " annotation");
     }
   }
-
 }

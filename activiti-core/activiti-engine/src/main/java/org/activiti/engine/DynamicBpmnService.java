@@ -14,15 +14,11 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-/** Service providing access to the repository of process definitions and deployments.
- *
-
- */
+/** Service providing access to the repository of process definitions and deployments. */
 public interface DynamicBpmnService {
 
   ObjectNode getProcessDefinitionInfo(String processDefinitionId);
@@ -77,13 +73,17 @@ public interface DynamicBpmnService {
 
   void changeUserTaskOwner(String id, String owner, ObjectNode infoNode);
 
-  ObjectNode changeUserTaskCandidateUser(String id, String candidateUser, boolean overwriteOtherChangedEntries);
+  ObjectNode changeUserTaskCandidateUser(
+      String id, String candidateUser, boolean overwriteOtherChangedEntries);
 
-  void changeUserTaskCandidateUser(String id, String candidateUser, boolean overwriteOtherChangedEntries, ObjectNode infoNode);
+  void changeUserTaskCandidateUser(
+      String id, String candidateUser, boolean overwriteOtherChangedEntries, ObjectNode infoNode);
 
-  ObjectNode changeUserTaskCandidateGroup(String id, String candidateGroup, boolean overwriteOtherChangedEntries);
+  ObjectNode changeUserTaskCandidateGroup(
+      String id, String candidateGroup, boolean overwriteOtherChangedEntries);
 
-  void changeUserTaskCandidateGroup(String id, String candidateGroup, boolean overwriteOtherChangedEntries, ObjectNode infoNode);
+  void changeUserTaskCandidateGroup(
+      String id, String candidateGroup, boolean overwriteOtherChangedEntries, ObjectNode infoNode);
 
   ObjectNode changeDmnTaskDecisionTableKey(String id, String decisionTableKey);
 

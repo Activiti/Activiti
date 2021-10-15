@@ -101,5 +101,4 @@ public class CallActivity extends Activity {
       }
     }
   }
-
 }

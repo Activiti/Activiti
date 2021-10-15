@@ -14,23 +14,19 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.persistence.entity;
 
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.BulkDeleteable;
 
-/**
-
-
- */
-public class HistoricTaskInstanceEntityImpl extends HistoricScopeInstanceEntityImpl implements HistoricTaskInstanceEntity, BulkDeleteable {
+/** */
+public class HistoricTaskInstanceEntityImpl extends HistoricScopeInstanceEntityImpl
+    implements HistoricTaskInstanceEntity, BulkDeleteable {
 
   private static final long serialVersionUID = 1L;
 
@@ -52,9 +48,7 @@ public class HistoricTaskInstanceEntityImpl extends HistoricScopeInstanceEntityI
   protected List<HistoricVariableInstanceEntity> queryVariables;
   protected String businessKey;
 
-  public HistoricTaskInstanceEntityImpl() {
-
-  }
+  public HistoricTaskInstanceEntityImpl() {}
 
   public HistoricTaskInstanceEntityImpl(TaskEntity task, ExecutionEntity execution) {
     this.id = task.getId();
@@ -127,6 +121,7 @@ public class HistoricTaskInstanceEntityImpl extends HistoricScopeInstanceEntityI
       return name;
     }
   }
+
   public void setName(String name) {
     this.name = name;
   }
@@ -169,7 +164,8 @@ public class HistoricTaskInstanceEntityImpl extends HistoricScopeInstanceEntityI
 
   @Override
   public Date getCreateTime() {
-    return getStartTime(); // For backwards compatible reason implemented with createTime and startTime
+    return getStartTime(); // For backwards compatible reason implemented with createTime and
+    // startTime
   }
 
   public String getFormKey() {
@@ -290,5 +286,4 @@ public class HistoricTaskInstanceEntityImpl extends HistoricScopeInstanceEntityI
   public void setQueryVariables(List<HistoricVariableInstanceEntity> queryVariables) {
     this.queryVariables = queryVariables;
   }
-
 }

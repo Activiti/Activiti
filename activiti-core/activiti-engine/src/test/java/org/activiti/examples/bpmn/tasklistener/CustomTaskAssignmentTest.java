@@ -21,33 +21,32 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
-/**
-
-
-
- */
+/** */
 public class CustomTaskAssignmentTest extends PluggableActivitiTestCase {
-
 
   @Deployment
   public void testCandidateGroupAssignment() {
     runtimeService.startProcessInstanceByKey("customTaskAssignment");
     assertThat(taskService.createTaskQuery().taskCandidateGroup("management").count()).isEqualTo(1);
-    assertThat(taskService.createTaskQuery().taskCandidateUser("kermit", asList("management")).count()).isEqualTo(1);
-    assertThat(taskService.createTaskQuery().taskCandidateUser("fozzie",null).count()).isEqualTo(0);
+    assertThat(
+            taskService.createTaskQuery().taskCandidateUser("kermit", asList("management")).count())
+        .isEqualTo(1);
+    assertThat(taskService.createTaskQuery().taskCandidateUser("fozzie", null).count())
+        .isEqualTo(0);
   }
 
   @Deployment
   public void testCandidateUserAssignment() {
     runtimeService.startProcessInstanceByKey("customTaskAssignment");
-    assertThat(taskService.createTaskQuery().taskCandidateUser("kermit",null).count()).isEqualTo(1);
-    assertThat(taskService.createTaskQuery().taskCandidateUser("fozzie",null).count()).isEqualTo(1);
-    assertThat(taskService.createTaskQuery().taskCandidateUser("gonzo",null).count()).isEqualTo(0);
+    assertThat(taskService.createTaskQuery().taskCandidateUser("kermit", null).count())
+        .isEqualTo(1);
+    assertThat(taskService.createTaskQuery().taskCandidateUser("fozzie", null).count())
+        .isEqualTo(1);
+    assertThat(taskService.createTaskQuery().taskCandidateUser("gonzo", null).count()).isEqualTo(0);
   }
 
   @Deployment
@@ -102,5 +101,4 @@ public class CustomTaskAssignmentTest extends PluggableActivitiTestCase {
     assertThat(task).isNotNull();
     assertThat(task.getAssignee()).isNull();
   }
-
 }

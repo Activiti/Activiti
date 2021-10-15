@@ -20,7 +20,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-
 import org.activiti.engine.impl.persistence.entity.TimerJobEntity;
 import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -123,7 +122,5 @@ public class BoundaryTimerEventRepeatCompatibilityTest extends TimerEventCompati
     // no tasks
     tasks = taskService.createTaskQuery().list();
     assertThat(tasks).hasSize(0);
-
   }
-
 }

@@ -21,16 +21,13 @@ import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.JavaDelegate;
 import org.apache.commons.lang3.StringUtils;
 
-/**
-
- */
+/** */
 public class ThrowCustomExceptionDelegate implements JavaDelegate {
 
   @Override
   public void execute(DelegateExecution execution) {
     Object exceptionClassVar = execution.getVariable("exceptionClass");
-    if (exceptionClassVar == null)
-      return;
+    if (exceptionClassVar == null) return;
 
     String exceptionClassName = exceptionClassVar.toString();
 

@@ -28,8 +28,14 @@ public class DataObjectImpl implements DataObject {
 
   private String type;
 
-  public DataObjectImpl(String name, Object value, String description, String type, String localizedName,
-      String localizedDescription, String dataObjectDefinitionKey) {
+  public DataObjectImpl(
+      String name,
+      Object value,
+      String description,
+      String type,
+      String localizedName,
+      String localizedDescription,
+      String dataObjectDefinitionKey) {
 
     this.name = name;
     this.value = value;
@@ -88,11 +94,9 @@ public class DataObjectImpl implements DataObject {
     this.type = type;
   }
 
-
   public String getDataObjectDefinitionKey() {
     return dataObjectDefinitionKey;
   }
-
 
   public void setDataObjectDefinitionKey(String dataObjectDefinitionKey) {
     this.dataObjectDefinitionKey = dataObjectDefinitionKey;

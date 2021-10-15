@@ -18,6 +18,7 @@ package org.activiti.spring.test.servicetask;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.List;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -25,15 +26,15 @@ import org.activiti.engine.test.Deployment;
 import org.activiti.spring.impl.test.SpringActivitiTestCase;
 import org.springframework.test.context.ContextConfiguration;
 
-import java.util.List;
-
-/**
- */
-@ContextConfiguration("classpath:org/activiti/spring/test/servicetask/servicetaskSpringTest-context.xml")
+/** */
+@ContextConfiguration(
+    "classpath:org/activiti/spring/test/servicetask/servicetaskSpringTest-context.xml")
 public class UseActivitiServiceInServiceTaskTest extends SpringActivitiTestCase {
 
   /**
-   * This test will use the regular mechanism (delegateExecution.getProcessEngine().getRuntimeService()) to obtain the {@link RuntimeService} to start a new process.
+   * This test will use the regular mechanism
+   * (delegateExecution.getProcessEngine().getRuntimeService()) to obtain the {@link RuntimeService}
+   * to start a new process.
    */
   @Deployment
   public void testUseRuntimeServiceNotInjectedInServiceTask() {
@@ -47,7 +48,8 @@ public class UseActivitiServiceInServiceTaskTest extends SpringActivitiTestCase 
     boolean startProcessFromDelegateFound = false;
     boolean oneTaskProcessFound = false;
     for (ProcessInstance processInstance : processInstances) {
-      ProcessDefinition processDefinition = repositoryService.getProcessDefinition(processInstance.getProcessDefinitionId());
+      ProcessDefinition processDefinition =
+          repositoryService.getProcessDefinition(processInstance.getProcessDefinitionId());
       if (processDefinition.getKey().equals("startProcessFromDelegate")) {
         startProcessFromDelegateFound = true;
       } else if (processDefinition.getKey().equals("oneTaskProcess")) {
@@ -60,7 +62,8 @@ public class UseActivitiServiceInServiceTaskTest extends SpringActivitiTestCase 
   }
 
   /**
-   * This test will use the dependency injection of Spring to inject the runtime service in the Java delegate.
+   * This test will use the dependency injection of Spring to inject the runtime service in the Java
+   * delegate.
    */
   @Deployment
   public void testUseInjectedRuntimeServiceInServiceTask() {
@@ -74,7 +77,8 @@ public class UseActivitiServiceInServiceTaskTest extends SpringActivitiTestCase 
     boolean startProcessFromDelegateFound = false;
     boolean oneTaskProcessFound = false;
     for (ProcessInstance processInstance : processInstances) {
-      ProcessDefinition processDefinition = repositoryService.getProcessDefinition(processInstance.getProcessDefinitionId());
+      ProcessDefinition processDefinition =
+          repositoryService.getProcessDefinition(processInstance.getProcessDefinitionId());
       if (processDefinition.getKey().equals("startProcessFromDelegate")) {
         startProcessFromDelegateFound = true;
       } else if (processDefinition.getKey().equals("oneTaskProcess")) {
@@ -99,5 +103,4 @@ public class UseActivitiServiceInServiceTaskTest extends SpringActivitiTestCase 
     // Starting the process should cause a rollback of both processes
     assertThat(runtimeService.createProcessInstanceQuery().count()).isEqualTo(0);
   }
-
 }

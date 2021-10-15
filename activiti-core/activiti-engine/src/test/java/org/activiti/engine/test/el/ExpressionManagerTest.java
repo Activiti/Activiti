@@ -14,22 +14,18 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.test.el;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
 
-/**
-
- */
+/** */
 public class ExpressionManagerTest extends PluggableActivitiTestCase {
 
   @Override
@@ -48,7 +44,12 @@ public class ExpressionManagerTest extends PluggableActivitiTestCase {
     vars.put("aString", "abcdefgh");
     runtimeService.startProcessInstanceByKey("methodExpressionProcess", vars);
 
-    assertThat(runtimeService.createProcessInstanceQuery().processDefinitionKey("methodExpressionProcess").count()).isEqualTo(0);
+    assertThat(
+            runtimeService
+                .createProcessInstanceQuery()
+                .processDefinitionKey("methodExpressionProcess")
+                .count())
+        .isEqualTo(0);
   }
 
   @Deployment
@@ -56,7 +57,8 @@ public class ExpressionManagerTest extends PluggableActivitiTestCase {
     Map<String, Object> vars = new HashMap<String, Object>();
 
     vars.put("myVar", new ExecutionTestVariable());
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testExecutionAvailableProcess", vars);
+    ProcessInstance processInstance =
+        runtimeService.startProcessInstanceByKey("testExecutionAvailableProcess", vars);
 
     // Check of the testMethod has been called with the current execution
     String value = (String) runtimeService.getVariable(processInstance.getId(), "testVar");
@@ -69,7 +71,8 @@ public class ExpressionManagerTest extends PluggableActivitiTestCase {
     try {
       // Setup authentication
       Authentication.setAuthenticatedUserId("frederik");
-      ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testAuthenticatedUserIdAvailableProcess");
+      ProcessInstance processInstance =
+          runtimeService.startProcessInstanceByKey("testAuthenticatedUserIdAvailableProcess");
 
       // Check if the variable that has been set in service-task is the
       // authenticated user

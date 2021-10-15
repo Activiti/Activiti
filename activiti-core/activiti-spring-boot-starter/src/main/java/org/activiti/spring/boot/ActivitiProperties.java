@@ -18,9 +18,8 @@ package org.activiti.spring.boot;
 
 import static java.util.Arrays.asList;
 
-import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import java.util.List;
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.core.io.support.ResourcePatternResolver;
@@ -42,7 +41,8 @@ public class ActivitiProperties {
   private String databaseSchema;
   private boolean dbHistoryUsed = false;
   private HistoryLevel historyLevel = HistoryLevel.NONE;
-  private String processDefinitionLocationPrefix = ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX + "**/processes/";
+  private String processDefinitionLocationPrefix =
+      ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX + "**/processes/";
   private List<String> processDefinitionLocationSuffixes = asList("**.bpmn20.xml", "**.bpmn");
   private List<String> customMybatisMappers;
   private List<String> customMybatisXMLMappers;
@@ -112,21 +112,19 @@ public class ActivitiProperties {
     return processDefinitionLocationPrefix;
   }
 
-  public void setProcessDefinitionLocationPrefix(
-      String processDefinitionLocationPrefix) {
+  public void setProcessDefinitionLocationPrefix(String processDefinitionLocationPrefix) {
     this.processDefinitionLocationPrefix = processDefinitionLocationPrefix;
   }
 
   public List<String> getProcessDefinitionLocationSuffixes() {
-		return processDefinitionLocationSuffixes;
-	}
+    return processDefinitionLocationSuffixes;
+  }
 
-	public void setProcessDefinitionLocationSuffixes(
-	    List<String> processDefinitionLocationSuffixes) {
-		this.processDefinitionLocationSuffixes = processDefinitionLocationSuffixes;
-	}
+  public void setProcessDefinitionLocationSuffixes(List<String> processDefinitionLocationSuffixes) {
+    this.processDefinitionLocationSuffixes = processDefinitionLocationSuffixes;
+  }
 
-	public String getMailServerHost() {
+  public String getMailServerHost() {
     return mailServerHost;
   }
 
@@ -142,45 +140,45 @@ public class ActivitiProperties {
     this.mailServerPort = mailServerPort;
   }
 
-	public String getMailServerUserName() {
-		return mailServerUserName;
-	}
+  public String getMailServerUserName() {
+    return mailServerUserName;
+  }
 
-	public void setMailServerUserName(String mailServerUserName) {
-		this.mailServerUserName = mailServerUserName;
-	}
+  public void setMailServerUserName(String mailServerUserName) {
+    this.mailServerUserName = mailServerUserName;
+  }
 
-	public String getMailServerPassword() {
-		return mailServerPassword;
-	}
+  public String getMailServerPassword() {
+    return mailServerPassword;
+  }
 
-	public void setMailServerPassword(String mailServerPassword) {
-		this.mailServerPassword = mailServerPassword;
-	}
+  public void setMailServerPassword(String mailServerPassword) {
+    this.mailServerPassword = mailServerPassword;
+  }
 
-	public String getMailServerDefaultFrom() {
-		return mailServerDefaultFrom;
-	}
+  public String getMailServerDefaultFrom() {
+    return mailServerDefaultFrom;
+  }
 
-	public void setMailServerDefaultFrom(String mailServerDefaultFrom) {
-		this.mailServerDefaultFrom = mailServerDefaultFrom;
-	}
+  public void setMailServerDefaultFrom(String mailServerDefaultFrom) {
+    this.mailServerDefaultFrom = mailServerDefaultFrom;
+  }
 
-	public boolean isMailServerUseSsl() {
-		return mailServerUseSsl;
-	}
+  public boolean isMailServerUseSsl() {
+    return mailServerUseSsl;
+  }
 
-	public void setMailServerUseSsl(boolean mailServerUseSsl) {
-		this.mailServerUseSsl = mailServerUseSsl;
-	}
+  public void setMailServerUseSsl(boolean mailServerUseSsl) {
+    this.mailServerUseSsl = mailServerUseSsl;
+  }
 
-	public boolean isMailServerUseTls() {
-		return mailServerUseTls;
-	}
+  public boolean isMailServerUseTls() {
+    return mailServerUseTls;
+  }
 
-	public void setMailServerUseTls(boolean mailServerUseTls) {
-		this.mailServerUseTls = mailServerUseTls;
-	}
+  public void setMailServerUseTls(boolean mailServerUseTls) {
+    this.mailServerUseTls = mailServerUseTls;
+  }
 
   public List<String> getCustomMybatisMappers() {
     return customMybatisMappers;
@@ -199,42 +197,42 @@ public class ActivitiProperties {
   }
 
   public boolean isUseStrongUuids() {
-	return useStrongUuids;
+    return useStrongUuids;
   }
 
   public void setUseStrongUuids(boolean useStrongUuids) {
-	this.useStrongUuids = useStrongUuids;
+    this.useStrongUuids = useStrongUuids;
   }
 
-    public boolean isCopyVariablesToLocalForTasks() {
-        return copyVariablesToLocalForTasks;
-    }
+  public boolean isCopyVariablesToLocalForTasks() {
+    return copyVariablesToLocalForTasks;
+  }
 
-    public void setCopyVariablesToLocalForTasks(boolean copyVariablesToLocalForTasks) {
-        this.copyVariablesToLocalForTasks = copyVariablesToLocalForTasks;
-    }
+  public void setCopyVariablesToLocalForTasks(boolean copyVariablesToLocalForTasks) {
+    this.copyVariablesToLocalForTasks = copyVariablesToLocalForTasks;
+  }
 
-    public String getDeploymentMode() {
-        return deploymentMode;
-    }
+  public String getDeploymentMode() {
+    return deploymentMode;
+  }
 
-    public void setDeploymentMode(String deploymentMode) {
-        this.deploymentMode = deploymentMode;
-    }
+  public void setDeploymentMode(String deploymentMode) {
+    this.deploymentMode = deploymentMode;
+  }
 
-    public boolean isSerializePOJOsInVariablesToJson() {
-        return serializePOJOsInVariablesToJson;
-    }
+  public boolean isSerializePOJOsInVariablesToJson() {
+    return serializePOJOsInVariablesToJson;
+  }
 
-    public void setSerializePOJOsInVariablesToJson(boolean serializePOJOsInVariablesToJson) {
-        this.serializePOJOsInVariablesToJson = serializePOJOsInVariablesToJson;
-    }
+  public void setSerializePOJOsInVariablesToJson(boolean serializePOJOsInVariablesToJson) {
+    this.serializePOJOsInVariablesToJson = serializePOJOsInVariablesToJson;
+  }
 
-    public String getJavaClassFieldForJackson() {
-        return javaClassFieldForJackson;
-    }
+  public String getJavaClassFieldForJackson() {
+    return javaClassFieldForJackson;
+  }
 
-    public void setJavaClassFieldForJackson(String javaClassFieldForJackson) {
-        this.javaClassFieldForJackson = javaClassFieldForJackson;
-    }
+  public void setJavaClassFieldForJackson(String javaClassFieldForJackson) {
+    this.javaClassFieldForJackson = javaClassFieldForJackson;
+  }
 }

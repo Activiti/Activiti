@@ -18,7 +18,6 @@ package org.activiti.engine.impl.persistence.entity.data.impl;
 
 import java.util.List;
 import java.util.Map;
-
 import org.activiti.engine.impl.DeploymentQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
@@ -28,10 +27,9 @@ import org.activiti.engine.impl.persistence.entity.data.AbstractDataManager;
 import org.activiti.engine.impl.persistence.entity.data.DeploymentDataManager;
 import org.activiti.engine.repository.Deployment;
 
-/**
-
- */
-public class MybatisDeploymentDataManager extends AbstractDataManager<DeploymentEntity> implements DeploymentDataManager {
+/** */
+public class MybatisDeploymentDataManager extends AbstractDataManager<DeploymentEntity>
+    implements DeploymentDataManager {
 
   public MybatisDeploymentDataManager(ProcessEngineConfigurationImpl processEngineConfiguration) {
     super(processEngineConfiguration);
@@ -58,25 +56,32 @@ public class MybatisDeploymentDataManager extends AbstractDataManager<Deployment
 
   @Override
   public long findDeploymentCountByQueryCriteria(DeploymentQueryImpl deploymentQuery) {
-    return (Long) getDbSqlSession().selectOne("selectDeploymentCountByQueryCriteria", deploymentQuery);
+    return (Long)
+        getDbSqlSession().selectOne("selectDeploymentCountByQueryCriteria", deploymentQuery);
   }
 
   @Override
   @SuppressWarnings("unchecked")
-  public List<Deployment> findDeploymentsByQueryCriteria(DeploymentQueryImpl deploymentQuery, Page page) {
+  public List<Deployment> findDeploymentsByQueryCriteria(
+      DeploymentQueryImpl deploymentQuery, Page page) {
     final String query = "selectDeploymentsByQueryCriteria";
     return getDbSqlSession().selectList(query, deploymentQuery, page);
   }
 
   @Override
   public List<String> getDeploymentResourceNames(String deploymentId) {
-    return getDbSqlSession().getSqlSession().selectList("selectResourceNamesByDeploymentId", deploymentId);
+    return getDbSqlSession()
+        .getSqlSession()
+        .selectList("selectResourceNamesByDeploymentId", deploymentId);
   }
 
   @Override
   @SuppressWarnings("unchecked")
-  public List<Deployment> findDeploymentsByNativeQuery(Map<String, Object> parameterMap, int firstResult, int maxResults) {
-    return getDbSqlSession().selectListWithRawParameter("selectDeploymentByNativeQuery", parameterMap, firstResult, maxResults);
+  public List<Deployment> findDeploymentsByNativeQuery(
+      Map<String, Object> parameterMap, int firstResult, int maxResults) {
+    return getDbSqlSession()
+        .selectListWithRawParameter(
+            "selectDeploymentByNativeQuery", parameterMap, firstResult, maxResults);
   }
 
   @Override
@@ -85,8 +90,7 @@ public class MybatisDeploymentDataManager extends AbstractDataManager<Deployment
   }
 
   @Override
-  public Deployment selectLatestDeployment(String deploymentName){
+  public Deployment selectLatestDeployment(String deploymentName) {
     return (Deployment) getDbSqlSession().selectOne("selectLatestDeployment", deploymentName);
   }
-
 }

@@ -19,15 +19,16 @@ import org.activiti.api.process.model.Deployment;
 import org.activiti.api.process.model.events.ApplicationDeployedEvent;
 import org.activiti.api.process.model.events.ApplicationEvent;
 
-public class ApplicationDeployedEventImpl extends RuntimeEventImpl<Deployment, ApplicationEvent.ApplicationEvents>
-        implements ApplicationDeployedEvent {
+public class ApplicationDeployedEventImpl
+    extends RuntimeEventImpl<Deployment, ApplicationEvent.ApplicationEvents>
+    implements ApplicationDeployedEvent {
 
-    public ApplicationDeployedEventImpl(Deployment entity) {
-        super(entity);
-    }
+  public ApplicationDeployedEventImpl(Deployment entity) {
+    super(entity);
+  }
 
-    @Override
-    public ApplicationEvents getEventType() {
-        return ApplicationEvents.APPLICATION_DEPLOYED;
-    }
+  @Override
+  public ApplicationEvents getEventType() {
+    return ApplicationEvents.APPLICATION_DEPLOYED;
+  }
 }

@@ -17,9 +17,7 @@ package org.activiti.engine.event;
 
 import java.util.Date;
 
-/**
-
- */
+/** */
 public interface EventLogEntry {
 
   long getLogNumber();
@@ -39,5 +37,4 @@ public interface EventLogEntry {
   String getUserId();
 
   byte[] getData();
-
 }

@@ -21,13 +21,11 @@ import static java.util.Collections.synchronizedList;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
-
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.JavaDelegate;
 
-/**
- */
+/** */
 public class NoOpServiceTask implements JavaDelegate {
 
   public static AtomicInteger CALL_COUNT = new AtomicInteger(0);
@@ -53,5 +51,4 @@ public class NoOpServiceTask implements JavaDelegate {
     CALL_COUNT.set(0);
     NAMES.clear();
   }
-
 }

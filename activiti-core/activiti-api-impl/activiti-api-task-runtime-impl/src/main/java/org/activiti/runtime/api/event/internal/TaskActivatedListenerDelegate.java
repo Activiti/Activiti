@@ -15,6 +15,7 @@
  */
 package org.activiti.runtime.api.event.internal;
 
+import java.util.List;
 import org.activiti.api.task.runtime.events.TaskActivatedEvent;
 import org.activiti.api.task.runtime.events.listener.TaskRuntimeEventListener;
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
@@ -22,34 +23,35 @@ import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventListener;
 import org.activiti.runtime.api.event.impl.ToTaskActivatedConverter;
 
-import java.util.List;
-
 public class TaskActivatedListenerDelegate implements ActivitiEventListener {
 
-    private final List<TaskRuntimeEventListener<TaskActivatedEvent>> listeners;
+  private final List<TaskRuntimeEventListener<TaskActivatedEvent>> listeners;
 
-    private final ToTaskActivatedConverter taskActivatedConverter;
+  private final ToTaskActivatedConverter taskActivatedConverter;
 
-    public TaskActivatedListenerDelegate(List<TaskRuntimeEventListener<TaskActivatedEvent>> listeners,
-                                         ToTaskActivatedConverter taskActivatedConverter) {
-        this.listeners = listeners;
-        this.taskActivatedConverter = taskActivatedConverter;
+  public TaskActivatedListenerDelegate(
+      List<TaskRuntimeEventListener<TaskActivatedEvent>> listeners,
+      ToTaskActivatedConverter taskActivatedConverter) {
+    this.listeners = listeners;
+    this.taskActivatedConverter = taskActivatedConverter;
+  }
+
+  @Override
+  public void onEvent(ActivitiEvent event) {
+    if (event instanceof ActivitiEntityEvent) {
+      taskActivatedConverter
+          .from((ActivitiEntityEvent) event)
+          .ifPresent(
+              convertedEvent -> {
+                for (TaskRuntimeEventListener<TaskActivatedEvent> listener : listeners) {
+                  listener.onEvent(convertedEvent);
+                }
+              });
     }
+  }
 
-    @Override
-    public void onEvent(ActivitiEvent event) {
-        if (event instanceof ActivitiEntityEvent) {
-            taskActivatedConverter.from((ActivitiEntityEvent) event)
-                    .ifPresent(convertedEvent -> {
-                        for (TaskRuntimeEventListener<TaskActivatedEvent> listener : listeners) {
-                            listener.onEvent(convertedEvent);
-                        }
-                    });
-        }
-    }
-
-    @Override
-    public boolean isFailOnException() {
-        return false;
-    }
+  @Override
+  public boolean isFailOnException() {
+    return false;
+  }
 }

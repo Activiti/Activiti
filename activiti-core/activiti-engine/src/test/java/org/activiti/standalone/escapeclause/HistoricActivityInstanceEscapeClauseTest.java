@@ -28,19 +28,23 @@ public class HistoricActivityInstanceEscapeClauseTest extends AbstractEscapeClau
 
   @Override
   protected void setUp() throws Exception {
-    deploymentOneId = repositoryService
-      .createDeployment()
-      .tenantId("One%")
-      .addClasspathResource("org/activiti/engine/test/history/HistoricActivityInstanceTest.testHistoricActivityInstanceQuery.bpmn20.xml")
-      .deploy()
-      .getId();
+    deploymentOneId =
+        repositoryService
+            .createDeployment()
+            .tenantId("One%")
+            .addClasspathResource(
+                "org/activiti/engine/test/history/HistoricActivityInstanceTest.testHistoricActivityInstanceQuery.bpmn20.xml")
+            .deploy()
+            .getId();
 
-    deploymentTwoId = repositoryService
-      .createDeployment()
-      .tenantId("Two_")
-      .addClasspathResource("org/activiti/engine/test/history/HistoricActivityInstanceTest.testHistoricActivityInstanceQuery.bpmn20.xml")
-      .deploy()
-      .getId();
+    deploymentTwoId =
+        repositoryService
+            .createDeployment()
+            .tenantId("Two_")
+            .addClasspathResource(
+                "org/activiti/engine/test/history/HistoricActivityInstanceTest.testHistoricActivityInstanceQuery.bpmn20.xml")
+            .deploy()
+            .getId();
 
     super.setUp();
   }
@@ -56,12 +60,20 @@ public class HistoricActivityInstanceEscapeClauseTest extends AbstractEscapeClau
     runtimeService.startProcessInstanceByKeyAndTenantId("noopProcess", "One%");
     runtimeService.startProcessInstanceByKeyAndTenantId("noopProcess", "Two_");
 
-    HistoricActivityInstanceQuery query = historyService.createHistoricActivityInstanceQuery().activityId("noop").activityTenantIdLike("%\\%%");
+    HistoricActivityInstanceQuery query =
+        historyService
+            .createHistoricActivityInstanceQuery()
+            .activityId("noop")
+            .activityTenantIdLike("%\\%%");
     assertThat(query.singleResult().getTenantId()).isEqualTo("One%");
     assertThat(query.list()).hasSize(1);
     assertThat(query.count()).isEqualTo(1);
 
-    query = historyService.createHistoricActivityInstanceQuery().activityId("noop").activityTenantIdLike("%\\_%");
+    query =
+        historyService
+            .createHistoricActivityInstanceQuery()
+            .activityId("noop")
+            .activityTenantIdLike("%\\_%");
     assertThat(query.singleResult().getTenantId()).isEqualTo("Two_");
     assertThat(query.list()).hasSize(1);
     assertThat(query.count()).isEqualTo(1);

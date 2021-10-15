@@ -14,16 +14,13 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.bpmn.listener;
 
 import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.TaskListener;
 
-/**
-
- */
+/** */
 public class ExpressionTaskListener implements TaskListener {
 
   protected Expression expression;
@@ -37,10 +34,10 @@ public class ExpressionTaskListener implements TaskListener {
   }
 
   /**
-   * returns the expression text for this task listener. Comes in handy if you want to check which listeners you already have.
+   * returns the expression text for this task listener. Comes in handy if you want to check which
+   * listeners you already have.
    */
   public String getExpressionText() {
     return expression.getExpressionText();
   }
-
 }

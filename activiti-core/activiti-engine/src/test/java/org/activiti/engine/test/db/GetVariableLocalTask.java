@@ -24,6 +24,7 @@ public class GetVariableLocalTask implements JavaDelegate {
   @Override
   public void execute(DelegateExecution execution) {
     RuntimeService runtimeService = Context.getProcessEngineConfiguration().getRuntimeService();
-    runtimeService.getVariableLocal(execution.getProcessInstanceId(), "Variable-That-Does-Not-Exist");
+    runtimeService.getVariableLocal(
+        execution.getProcessInstanceId(), "Variable-That-Does-Not-Exist");
   }
 }

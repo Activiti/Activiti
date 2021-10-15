@@ -36,5 +36,4 @@ public class TestExceptionActivitiEventListener implements ActivitiEventListener
   public boolean isFailOnException() {
     return failOnException;
   }
-
 }

@@ -18,7 +18,6 @@ package org.activiti.standalone.cfg;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
-
 import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -26,9 +25,7 @@ import org.activiti.engine.impl.test.ResourceActivitiTestCase;
 import org.activiti.engine.task.Attachment;
 import org.activiti.engine.task.Task;
 
-/**
-
- */
+/** */
 public class CustomMybatisXMLMapperTest extends ResourceActivitiTestCase {
 
   public CustomMybatisXMLMapperTest() {
@@ -43,12 +40,15 @@ public class CustomMybatisXMLMapperTest extends ResourceActivitiTestCase {
 
     final String taskId = createTask("4", null, null, 0);
 
-    CustomTask customTask = managementService.executeCommand(new Command<CustomTask>() {
-      @Override
-      public CustomTask execute(CommandContext commandContext) {
-        return (CustomTask) commandContext.getDbSqlSession().selectOne("selectOneCustomTask", taskId);
-      }
-    });
+    CustomTask customTask =
+        managementService.executeCommand(
+            new Command<CustomTask>() {
+              @Override
+              public CustomTask execute(CommandContext commandContext) {
+                return (CustomTask)
+                    commandContext.getDbSqlSession().selectOne("selectOneCustomTask", taskId);
+              }
+            });
 
     assertThat(customTask.getName()).isEqualTo("4");
 
@@ -69,14 +69,17 @@ public class CustomMybatisXMLMapperTest extends ResourceActivitiTestCase {
       createTask(i + "", null, null, 0);
     }
 
-    List<CustomTask> tasks = managementService.executeCommand(new Command<List<CustomTask>>() {
+    List<CustomTask> tasks =
+        managementService.executeCommand(
+            new Command<List<CustomTask>>() {
 
-      @SuppressWarnings("unchecked")
-      @Override
-      public List<CustomTask> execute(CommandContext commandContext) {
-        return (List<CustomTask>) commandContext.getDbSqlSession().selectList("selectCustomTaskList");
-      }
-    });
+              @SuppressWarnings("unchecked")
+              @Override
+              public List<CustomTask> execute(CommandContext commandContext) {
+                return (List<CustomTask>)
+                    commandContext.getDbSqlSession().selectList("selectCustomTaskList");
+              }
+            });
 
     assertThat(tasks).hasSize(5);
 
@@ -140,7 +143,8 @@ public class CustomMybatisXMLMapperTest extends ResourceActivitiTestCase {
       createTask(i + "", null, null, i * 20);
     }
 
-    List<CustomTask> tasks = new CustomTaskQuery(managementService).orderByTaskPriority().desc().list();
+    List<CustomTask> tasks =
+        new CustomTaskQuery(managementService).orderByTaskPriority().desc().list();
 
     assertThat(tasks).hasSize(5);
 
@@ -166,22 +170,53 @@ public class CustomMybatisXMLMapperTest extends ResourceActivitiTestCase {
 
     Authentication.setAuthenticatedUserId("kermit");
 
-    String attachmentId = taskService.createAttachment("image/png", taskId, null, "attachment1", "", "http://activiti.org/").getId();
-    taskService.createAttachment("image/jpeg", taskId, null, "attachment2", "Attachment Description", "http://activiti.org/");
+    String attachmentId =
+        taskService
+            .createAttachment("image/png", taskId, null, "attachment1", "", "http://activiti.org/")
+            .getId();
+    taskService.createAttachment(
+        "image/jpeg",
+        taskId,
+        null,
+        "attachment2",
+        "Attachment Description",
+        "http://activiti.org/");
 
     Authentication.setAuthenticatedUserId("gonzo");
 
-    taskService.createAttachment("image/png", taskId, null, "zattachment3", "Attachment Description", "http://activiti.org/");
+    taskService.createAttachment(
+        "image/png",
+        taskId,
+        null,
+        "zattachment3",
+        "Attachment Description",
+        "http://activiti.org/");
 
     Authentication.setAuthenticatedUserId("fozzie");
 
     for (int i = 0; i < 15; i++) {
-      taskService.createAttachment(null, createTask(i + "", null, null, 0), null, "attachmentName" + i, "", "http://activiti.org/" + i);
+      taskService.createAttachment(
+          null,
+          createTask(i + "", null, null, 0),
+          null,
+          "attachmentName" + i,
+          "",
+          "http://activiti.org/" + i);
     }
 
-    assertThat(new AttachmentQuery(managementService).attachmentId(attachmentId).singleResult().getId()).isEqualTo(attachmentId);
+    assertThat(
+            new AttachmentQuery(managementService)
+                .attachmentId(attachmentId)
+                .singleResult()
+                .getId())
+        .isEqualTo(attachmentId);
 
-    assertThat(new AttachmentQuery(managementService).attachmentName("attachment1").singleResult().getName()).isEqualTo("attachment1");
+    assertThat(
+            new AttachmentQuery(managementService)
+                .attachmentName("attachment1")
+                .singleResult()
+                .getName())
+        .isEqualTo("attachment1");
 
     assertThat(new AttachmentQuery(managementService).count()).isEqualTo(18);
     List<Attachment> attachments = new AttachmentQuery(managementService).list();
@@ -198,11 +233,19 @@ public class CustomMybatisXMLMapperTest extends ResourceActivitiTestCase {
     attachments = new AttachmentQuery(managementService).userId("kermit").list();
     assertThat(attachments).hasSize(2);
 
-    assertThat(new AttachmentQuery(managementService).attachmentType("image/jpeg").count()).isEqualTo(1);
+    assertThat(new AttachmentQuery(managementService).attachmentType("image/jpeg").count())
+        .isEqualTo(1);
     attachments = new AttachmentQuery(managementService).attachmentType("image/jpeg").list();
     assertThat(attachments).hasSize(1);
 
-    assertThat(new AttachmentQuery(managementService).orderByAttachmentName().desc().list().get(0).getName()).isEqualTo("zattachment3");
+    assertThat(
+            new AttachmentQuery(managementService)
+                .orderByAttachmentName()
+                .desc()
+                .list()
+                .get(0)
+                .getName())
+        .isEqualTo("zattachment3");
 
     // Cleanup
     deleteTasks(taskService.createTaskQuery().list());
@@ -224,12 +267,10 @@ public class CustomMybatisXMLMapperTest extends ResourceActivitiTestCase {
   }
 
   protected void deleteTasks(List<Task> tasks) {
-    for (Task task : tasks)
-      deleteTask(task.getId());
+    for (Task task : tasks) deleteTask(task.getId());
   }
 
   protected void deleteCustomTasks(List<CustomTask> tasks) {
-    for (CustomTask task : tasks)
-      deleteTask(task.getId());
+    for (CustomTask task : tasks) deleteTask(task.getId());
   }
 }

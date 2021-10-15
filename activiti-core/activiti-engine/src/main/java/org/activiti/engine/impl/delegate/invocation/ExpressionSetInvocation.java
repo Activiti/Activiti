@@ -19,26 +19,22 @@ package org.activiti.engine.impl.delegate.invocation;
 import javax.el.ELContext;
 import javax.el.ValueExpression;
 
-/**
- * Class responsible for handling Expression.setValue() invocations.
- *
-
- */
+/** Class responsible for handling Expression.setValue() invocations. */
 public class ExpressionSetInvocation extends ExpressionInvocation {
 
   protected final Object value;
   protected ELContext elContext;
 
-  public ExpressionSetInvocation(ValueExpression valueExpression, ELContext elContext, Object value) {
+  public ExpressionSetInvocation(
+      ValueExpression valueExpression, ELContext elContext, Object value) {
     super(valueExpression);
     this.value = value;
     this.elContext = elContext;
-    this.invocationParameters = new Object[] { value };
+    this.invocationParameters = new Object[] {value};
   }
 
   @Override
   protected void invoke() {
     valueExpression.setValue(elContext, value);
   }
-
 }

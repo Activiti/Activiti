@@ -19,14 +19,12 @@ package org.activiti.engine.impl.persistence.entity;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.db.BulkDeleteable;
 
-/**
-
- */
-public class HistoricIdentityLinkEntityImpl extends AbstractEntityNoRevision implements HistoricIdentityLinkEntity, Serializable, BulkDeleteable {
+/** */
+public class HistoricIdentityLinkEntityImpl extends AbstractEntityNoRevision
+    implements HistoricIdentityLinkEntity, Serializable, BulkDeleteable {
 
   private static final long serialVersionUID = 1L;
 
@@ -36,9 +34,7 @@ public class HistoricIdentityLinkEntityImpl extends AbstractEntityNoRevision imp
   protected String taskId;
   protected String processInstanceId;
 
-  public HistoricIdentityLinkEntityImpl() {
-
-  }
+  public HistoricIdentityLinkEntityImpl() {}
 
   public Object getPersistentState() {
     Map<String, Object> persistentState = new HashMap<String, Object>();
@@ -86,7 +82,8 @@ public class HistoricIdentityLinkEntityImpl extends AbstractEntityNoRevision imp
 
   public void setUserId(String userId) {
     if (this.groupId != null && userId != null) {
-      throw new ActivitiException("Cannot assign a userId to a task assignment that already has a groupId");
+      throw new ActivitiException(
+          "Cannot assign a userId to a task assignment that already has a groupId");
     }
     this.userId = userId;
   }
@@ -97,7 +94,8 @@ public class HistoricIdentityLinkEntityImpl extends AbstractEntityNoRevision imp
 
   public void setGroupId(String groupId) {
     if (this.userId != null && groupId != null) {
-      throw new ActivitiException("Cannot assign a groupId to a task assignment that already has a userId");
+      throw new ActivitiException(
+          "Cannot assign a groupId to a task assignment that already has a userId");
     }
     this.groupId = groupId;
   }

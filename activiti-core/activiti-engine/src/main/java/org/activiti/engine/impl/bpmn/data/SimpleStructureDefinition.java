@@ -19,11 +19,7 @@ package org.activiti.engine.impl.bpmn.data;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Represents a simple in memory structure
- *
-
- */
+/** Represents a simple in memory structure */
 public class SimpleStructureDefinition implements FieldBaseStructureDefinition {
 
   protected String id;

@@ -19,7 +19,6 @@ package org.activiti.engine.impl;
 import java.sql.Connection;
 import java.util.List;
 import java.util.Map;
-
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ManagementService;
@@ -56,12 +55,7 @@ import org.activiti.engine.runtime.JobQuery;
 import org.activiti.engine.runtime.SuspendedJobQuery;
 import org.activiti.engine.runtime.TimerJobQuery;
 
-/**
-
-
-
-
- */
+/** */
 public class ManagementServiceImpl extends ServiceImpl implements ManagementService {
 
   public Map<String, Long> getTableCount() {
@@ -166,16 +160,26 @@ public class ManagementServiceImpl extends ServiceImpl implements ManagementServ
     return commandExecutor.execute(new GetPropertiesCmd());
   }
 
-  public String databaseSchemaUpgrade(final Connection connection, final String catalog, final String schema) {
+  public String databaseSchemaUpgrade(
+      final Connection connection, final String catalog, final String schema) {
     CommandConfig config = commandExecutor.getDefaultConfig().transactionNotSupported();
-    return commandExecutor.execute(config, new Command<String>() {
-      public String execute(CommandContext commandContext) {
-        DbSqlSessionFactory dbSqlSessionFactory = (DbSqlSessionFactory) commandContext.getSessionFactories().get(DbSqlSession.class);
-        DbSqlSession dbSqlSession = new DbSqlSession(dbSqlSessionFactory, commandContext.getEntityCache(), connection, catalog, schema);
-        commandContext.getSessions().put(DbSqlSession.class, dbSqlSession);
-        return dbSqlSession.dbSchemaUpdate();
-      }
-    });
+    return commandExecutor.execute(
+        config,
+        new Command<String>() {
+          public String execute(CommandContext commandContext) {
+            DbSqlSessionFactory dbSqlSessionFactory =
+                (DbSqlSessionFactory) commandContext.getSessionFactories().get(DbSqlSession.class);
+            DbSqlSession dbSqlSession =
+                new DbSqlSession(
+                    dbSqlSessionFactory,
+                    commandContext.getEntityCache(),
+                    connection,
+                    catalog,
+                    schema);
+            commandContext.getSessions().put(DbSqlSession.class, dbSqlSession);
+            return dbSqlSession.dbSchemaUpdate();
+          }
+        });
   }
 
   public <T> T executeCommand(Command<T> command) {
@@ -196,9 +200,11 @@ public class ManagementServiceImpl extends ServiceImpl implements ManagementServ
   }
 
   @Override
-  public <MapperType, ResultType> ResultType executeCustomSql(CustomSqlExecution<MapperType, ResultType> customSqlExecution) {
+  public <MapperType, ResultType> ResultType executeCustomSql(
+      CustomSqlExecution<MapperType, ResultType> customSqlExecution) {
     Class<MapperType> mapperClass = customSqlExecution.getMapperClass();
-    return commandExecutor.execute(new ExecuteCustomSqlCmd<MapperType, ResultType>(mapperClass, customSqlExecution));
+    return commandExecutor.execute(
+        new ExecuteCustomSqlCmd<MapperType, ResultType>(mapperClass, customSqlExecution));
   }
 
   @Override
@@ -215,5 +221,4 @@ public class ManagementServiceImpl extends ServiceImpl implements ManagementServ
   public void deleteEventLogEntry(long logNr) {
     commandExecutor.execute(new DeleteEventLogEntry(logNr));
   }
-
 }

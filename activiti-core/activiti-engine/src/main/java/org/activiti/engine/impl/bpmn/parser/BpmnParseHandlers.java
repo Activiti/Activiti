@@ -20,16 +20,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.DataObject;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.engine.parse.BpmnParseHandler;
 import org.slf4j.Logger;
 
-/**
-
- */
+/** */
 public class BpmnParseHandlers {
 
   private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(BpmnParseHandlers.class);
@@ -77,12 +74,14 @@ public class BpmnParseHandlers {
     List<BpmnParseHandler> handlers = parseHandlers.get(element.getClass());
 
     if (handlers == null) {
-      LOGGER.warn("Could not find matching parse handler for + " + element.getId() + " this is likely a bug.");
+      LOGGER.warn(
+          "Could not find matching parse handler for + "
+              + element.getId()
+              + " this is likely a bug.");
     } else {
       for (BpmnParseHandler handler : handlers) {
         handler.parse(bpmnParse, element);
       }
     }
   }
-
 }

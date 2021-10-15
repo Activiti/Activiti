@@ -16,7 +16,6 @@
 package org.activiti.engine.impl;
 
 import java.util.List;
-
 import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.history.HistoricData;
 import org.activiti.engine.history.HistoricVariableInstance;
@@ -32,10 +31,9 @@ import org.activiti.engine.impl.variable.CacheableVariable;
 import org.activiti.engine.impl.variable.JPAEntityListVariableType;
 import org.activiti.engine.impl.variable.JPAEntityVariableType;
 
-/**
-
- */
-public class ProcessInstanceHistoryLogQueryImpl implements ProcessInstanceHistoryLogQuery, Command<ProcessInstanceHistoryLog> {
+/** */
+public class ProcessInstanceHistoryLogQueryImpl
+    implements ProcessInstanceHistoryLogQuery, Command<ProcessInstanceHistoryLog> {
 
   protected CommandExecutor commandExecutor;
 
@@ -47,7 +45,8 @@ public class ProcessInstanceHistoryLogQueryImpl implements ProcessInstanceHistor
   protected boolean includeVariableUpdates;
   protected boolean includeFormProperties;
 
-  public ProcessInstanceHistoryLogQueryImpl(CommandExecutor commandExecutor, String processInstanceId) {
+  public ProcessInstanceHistoryLogQueryImpl(
+      CommandExecutor commandExecutor, String processInstanceId) {
     this.commandExecutor = commandExecutor;
     this.processInstanceId = processInstanceId;
   }
@@ -97,43 +96,62 @@ public class ProcessInstanceHistoryLogQueryImpl implements ProcessInstanceHistor
   public ProcessInstanceHistoryLog execute(CommandContext commandContext) {
 
     // Fetch historic process instance
-    HistoricProcessInstanceEntity historicProcessInstance = commandContext.getHistoricProcessInstanceEntityManager().findById(processInstanceId);
+    HistoricProcessInstanceEntity historicProcessInstance =
+        commandContext.getHistoricProcessInstanceEntityManager().findById(processInstanceId);
 
     if (historicProcessInstance == null) {
       return null;
     }
 
     // Create a log using this historic process instance
-    ProcessInstanceHistoryLogImpl processInstanceHistoryLog = new ProcessInstanceHistoryLogImpl(historicProcessInstance);
+    ProcessInstanceHistoryLogImpl processInstanceHistoryLog =
+        new ProcessInstanceHistoryLogImpl(historicProcessInstance);
 
     // Add events, based on query settings
 
     // Tasks
     if (includeTasks) {
-      List<? extends HistoricData> tasks = commandContext.getHistoricTaskInstanceEntityManager().findHistoricTaskInstancesByQueryCriteria(
-          new HistoricTaskInstanceQueryImpl(commandExecutor).processInstanceId(processInstanceId));
+      List<? extends HistoricData> tasks =
+          commandContext
+              .getHistoricTaskInstanceEntityManager()
+              .findHistoricTaskInstancesByQueryCriteria(
+                  new HistoricTaskInstanceQueryImpl(commandExecutor)
+                      .processInstanceId(processInstanceId));
       processInstanceHistoryLog.addHistoricData(tasks);
     }
 
     // Activities
     if (includeActivities) {
-      List<HistoricActivityInstance> activities = commandContext.getHistoricActivityInstanceEntityManager().findHistoricActivityInstancesByQueryCriteria(
-          new HistoricActivityInstanceQueryImpl(commandExecutor).processInstanceId(processInstanceId), null);
+      List<HistoricActivityInstance> activities =
+          commandContext
+              .getHistoricActivityInstanceEntityManager()
+              .findHistoricActivityInstancesByQueryCriteria(
+                  new HistoricActivityInstanceQueryImpl(commandExecutor)
+                      .processInstanceId(processInstanceId),
+                  null);
       processInstanceHistoryLog.addHistoricData(activities);
     }
 
     // Variables
     if (includeVariables) {
-      List<HistoricVariableInstance> variables = commandContext.getHistoricVariableInstanceEntityManager().findHistoricVariableInstancesByQueryCriteria(
-          new HistoricVariableInstanceQueryImpl(commandExecutor).processInstanceId(processInstanceId), null);
+      List<HistoricVariableInstance> variables =
+          commandContext
+              .getHistoricVariableInstanceEntityManager()
+              .findHistoricVariableInstancesByQueryCriteria(
+                  new HistoricVariableInstanceQueryImpl(commandExecutor)
+                      .processInstanceId(processInstanceId),
+                  null);
 
       // Make sure all variables values are fetched (similar to the HistoricVariableInstance query)
       for (HistoricVariableInstance historicVariableInstance : variables) {
         historicVariableInstance.getValue();
 
         // make sure JPA entities are cached for later retrieval
-        HistoricVariableInstanceEntity variableEntity = (HistoricVariableInstanceEntity) historicVariableInstance;
-        if (JPAEntityVariableType.TYPE_NAME.equals(variableEntity.getVariableType().getTypeName()) || JPAEntityListVariableType.TYPE_NAME.equals(variableEntity.getVariableType().getTypeName())) {
+        HistoricVariableInstanceEntity variableEntity =
+            (HistoricVariableInstanceEntity) historicVariableInstance;
+        if (JPAEntityVariableType.TYPE_NAME.equals(variableEntity.getVariableType().getTypeName())
+            || JPAEntityListVariableType.TYPE_NAME.equals(
+                variableEntity.getVariableType().getTypeName())) {
           ((CacheableVariable) variableEntity.getVariableType()).setForceCacheable(true);
         }
       }
@@ -143,14 +161,20 @@ public class ProcessInstanceHistoryLogQueryImpl implements ProcessInstanceHistor
 
     // Comment
     if (includeComments) {
-      List<? extends HistoricData> comments = commandContext.getCommentEntityManager().findCommentsByProcessInstanceId(processInstanceId);
+      List<? extends HistoricData> comments =
+          commandContext
+              .getCommentEntityManager()
+              .findCommentsByProcessInstanceId(processInstanceId);
       processInstanceHistoryLog.addHistoricData(comments);
     }
 
     // Details: variables
     if (includeVariableUpdates) {
-      List<? extends HistoricData> variableUpdates = commandContext.getHistoricDetailEntityManager().findHistoricDetailsByQueryCriteria(
-          new HistoricDetailQueryImpl(commandExecutor).variableUpdates(), null);
+      List<? extends HistoricData> variableUpdates =
+          commandContext
+              .getHistoricDetailEntityManager()
+              .findHistoricDetailsByQueryCriteria(
+                  new HistoricDetailQueryImpl(commandExecutor).variableUpdates(), null);
 
       // Make sure all variables values are fetched (similar to the HistoricVariableInstance query)
       for (HistoricData historicData : variableUpdates) {
@@ -163,8 +187,11 @@ public class ProcessInstanceHistoryLogQueryImpl implements ProcessInstanceHistor
 
     // Details: form properties
     if (includeFormProperties) {
-      List<? extends HistoricData> formProperties = commandContext.getHistoricDetailEntityManager().findHistoricDetailsByQueryCriteria(
-          new HistoricDetailQueryImpl(commandExecutor).formProperties(), null);
+      List<? extends HistoricData> formProperties =
+          commandContext
+              .getHistoricDetailEntityManager()
+              .findHistoricDetailsByQueryCriteria(
+                  new HistoricDetailQueryImpl(commandExecutor).formProperties(), null);
       processInstanceHistoryLog.addHistoricData(formProperties);
     }
 
@@ -173,5 +200,4 @@ public class ProcessInstanceHistoryLogQueryImpl implements ProcessInstanceHistor
 
     return processInstanceHistoryLog;
   }
-
 }

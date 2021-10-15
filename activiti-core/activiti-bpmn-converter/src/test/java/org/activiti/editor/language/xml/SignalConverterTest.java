@@ -18,7 +18,6 @@ package org.activiti.editor.language.xml;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Collection;
-
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.Signal;
 import org.junit.jupiter.api.Test;

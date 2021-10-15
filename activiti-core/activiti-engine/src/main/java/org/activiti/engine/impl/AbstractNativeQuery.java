@@ -20,7 +20,6 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.Command;
@@ -30,17 +29,17 @@ import org.activiti.engine.query.NativeQuery;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 
-/**
- * Abstract superclass for all native query types.
- *
-
- */
-public abstract class AbstractNativeQuery<T extends NativeQuery<?, ?>, U> implements Command<Object>, NativeQuery<T, U>, Serializable {
+/** Abstract superclass for all native query types. */
+public abstract class AbstractNativeQuery<T extends NativeQuery<?, ?>, U>
+    implements Command<Object>, NativeQuery<T, U>, Serializable {
 
   private static final long serialVersionUID = 1L;
 
   private static enum ResultType {
-    LIST, LIST_PAGE, SINGLE_RESULT, COUNT
+    LIST,
+    LIST_PAGE,
+    SINGLE_RESULT,
+    COUNT
   }
 
   protected transient CommandExecutor commandExecutor;
@@ -146,18 +145,21 @@ public abstract class AbstractNativeQuery<T extends NativeQuery<?, ?>, U> implem
     }
   }
 
-  public abstract long executeCount(CommandContext commandContext, Map<String, Object> parameterMap);
+  public abstract long executeCount(
+      CommandContext commandContext, Map<String, Object> parameterMap);
 
   /**
    * Executes the actual query to retrieve the list of results.
    *
    * @param maxResults
    * @param firstResult
-   *
-   * @param page
-   *          used if the results must be paged. If null, no paging will be applied.
+   * @param page used if the results must be paged. If null, no paging will be applied.
    */
-  public abstract List<U> executeList(CommandContext commandContext, Map<String, Object> parameterMap, int firstResult, int maxResults);
+  public abstract List<U> executeList(
+      CommandContext commandContext,
+      Map<String, Object> parameterMap,
+      int firstResult,
+      int maxResults);
 
   public U executeSingleResult(CommandContext commandContext) {
     List<U> results = executeList(commandContext, getParameterMap(), 0, Integer.MAX_VALUE);
@@ -179,5 +181,4 @@ public abstract class AbstractNativeQuery<T extends NativeQuery<?, ?>, U> implem
   public Map<String, Object> getParameters() {
     return parameters;
   }
-
 }

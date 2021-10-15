@@ -14,49 +14,47 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.el;
 
 import java.util.Map;
-
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.VariableScope;
 import org.activiti.engine.impl.interceptor.DelegateInterceptor;
 
 /**
- * Expression that always returns the same value when <code>getValue</code> is called. Setting of the value is not supported.
- *
-
+ * Expression that always returns the same value when <code>getValue</code> is called. Setting of
+ * the value is not supported.
  */
 public class FixedValue implements Expression {
 
-    private static final long serialVersionUID = 1L;
-    private Object value;
+  private static final long serialVersionUID = 1L;
+  private Object value;
 
-    public FixedValue(Object value) {
-        this.value = value;
-    }
+  public FixedValue(Object value) {
+    this.value = value;
+  }
 
-    @Override
-    public Object getValue(VariableScope variableScope) {
-        return value;
-    }
+  @Override
+  public Object getValue(VariableScope variableScope) {
+    return value;
+  }
 
-    @Override
-    public void setValue(Object value, VariableScope variableScope) {
-        throw new ActivitiException("Cannot change fixed value");
-    }
+  @Override
+  public void setValue(Object value, VariableScope variableScope) {
+    throw new ActivitiException("Cannot change fixed value");
+  }
 
-    @Override
-    public String getExpressionText() {
-        return value.toString();
-    }
+  @Override
+  public String getExpressionText() {
+    return value.toString();
+  }
 
-    @Override
-    public Object getValue(ExpressionManager expressionManager,
-        DelegateInterceptor delegateInterceptor, Map<String, Object> availableVariables) {
-        return value;
-    }
-
+  @Override
+  public Object getValue(
+      ExpressionManager expressionManager,
+      DelegateInterceptor delegateInterceptor,
+      Map<String, Object> availableVariables) {
+    return value;
+  }
 }

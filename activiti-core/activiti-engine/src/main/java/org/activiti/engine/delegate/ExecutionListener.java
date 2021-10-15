@@ -17,11 +17,8 @@
 package org.activiti.engine.delegate;
 
 /**
- * Callback interface to be notified of execution events like starting a process instance, ending an activity instance or taking a transition.
- *
-
-
-
+ * Callback interface to be notified of execution events like starting a process instance, ending an
+ * activity instance or taking a transition.
  */
 public interface ExecutionListener extends BaseExecutionListener {
 

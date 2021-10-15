@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.bpmn.listener;
 
 import org.activiti.engine.delegate.DelegateTask;
@@ -23,10 +22,7 @@ import org.activiti.engine.delegate.TaskListener;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.scripting.ScriptingEngines;
 
-/**
-
-
- */
+/** */
 public class ScriptTaskListener implements TaskListener {
 
   private static final long serialVersionUID = -8915149072830499057L;
@@ -42,8 +38,14 @@ public class ScriptTaskListener implements TaskListener {
   public void notify(DelegateTask delegateTask) {
     validateParameters();
 
-    ScriptingEngines scriptingEngines = Context.getProcessEngineConfiguration().getScriptingEngines();
-    Object result = scriptingEngines.evaluate(script.getExpressionText(), language.getExpressionText(), delegateTask, autoStoreVariables);
+    ScriptingEngines scriptingEngines =
+        Context.getProcessEngineConfiguration().getScriptingEngines();
+    Object result =
+        scriptingEngines.evaluate(
+            script.getExpressionText(),
+            language.getExpressionText(),
+            delegateTask,
+            autoStoreVariables);
 
     if (resultVariable != null) {
       delegateTask.setVariable(resultVariable.getExpressionText(), result);
@@ -75,5 +77,4 @@ public class ScriptTaskListener implements TaskListener {
   public void setAutoStoreVariables(boolean autoStoreVariables) {
     this.autoStoreVariables = autoStoreVariables;
   }
-
 }

@@ -19,7 +19,6 @@ package org.activiti.engine.impl.persistence.entity.data.impl;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.activiti.engine.event.EventLogEntry;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.persistence.entity.EventLogEntryEntity;
@@ -27,12 +26,12 @@ import org.activiti.engine.impl.persistence.entity.EventLogEntryEntityImpl;
 import org.activiti.engine.impl.persistence.entity.data.AbstractDataManager;
 import org.activiti.engine.impl.persistence.entity.data.EventLogEntryDataManager;
 
-/**
+/** */
+public class MybatisEventLogEntryDataManager extends AbstractDataManager<EventLogEntryEntity>
+    implements EventLogEntryDataManager {
 
- */
-public class MybatisEventLogEntryDataManager extends AbstractDataManager<EventLogEntryEntity> implements EventLogEntryDataManager {
-
-  public MybatisEventLogEntryDataManager(ProcessEngineConfigurationImpl processEngineConfiguration) {
+  public MybatisEventLogEntryDataManager(
+      ProcessEngineConfigurationImpl processEngineConfiguration) {
     super(processEngineConfiguration);
   }
 
@@ -75,6 +74,4 @@ public class MybatisEventLogEntryDataManager extends AbstractDataManager<EventLo
   public void deleteEventLogEntry(long logNr) {
     getDbSqlSession().getSqlSession().delete("deleteEventLogEntry", logNr);
   }
-
-
 }

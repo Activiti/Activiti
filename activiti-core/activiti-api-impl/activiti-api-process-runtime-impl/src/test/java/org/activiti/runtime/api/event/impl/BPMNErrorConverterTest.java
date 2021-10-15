@@ -25,29 +25,28 @@ import org.junit.jupiter.api.Test;
 
 public class BPMNErrorConverterTest {
 
-    private BPMNErrorConverter bpmnErrorConverter = new BPMNErrorConverter();
+  private BPMNErrorConverter bpmnErrorConverter = new BPMNErrorConverter();
 
-    @Test
-    public void convertShouldReturnBPMNError() {
+  @Test
+  public void convertShouldReturnBPMNError() {
 
-        ActivitiErrorEvent internalEvent = mock(ActivitiErrorEvent.class);
-        given(internalEvent.getErrorId()).willReturn("errorId");
-        given(internalEvent.getErrorCode()).willReturn("errorCode");
-        given(internalEvent.getActivityName()).willReturn("activityName");
-        given(internalEvent.getActivityType()).willReturn("activityType");
-        given(internalEvent.getProcessDefinitionId()).willReturn("procDefId");
-        given(internalEvent.getProcessInstanceId()).willReturn("procInstId");
+    ActivitiErrorEvent internalEvent = mock(ActivitiErrorEvent.class);
+    given(internalEvent.getErrorId()).willReturn("errorId");
+    given(internalEvent.getErrorCode()).willReturn("errorCode");
+    given(internalEvent.getActivityName()).willReturn("activityName");
+    given(internalEvent.getActivityType()).willReturn("activityType");
+    given(internalEvent.getProcessDefinitionId()).willReturn("procDefId");
+    given(internalEvent.getProcessInstanceId()).willReturn("procInstId");
 
-        BPMNErrorImpl bpmnError = bpmnErrorConverter.convertToBPMNError(internalEvent);
+    BPMNErrorImpl bpmnError = bpmnErrorConverter.convertToBPMNError(internalEvent);
 
-        //then
-        assertThat(bpmnError).isNotNull();
-        assertThat(bpmnError.getProcessInstanceId()).isEqualTo("procInstId");
-        assertThat(bpmnError.getProcessDefinitionId()).isEqualTo("procDefId");
-        assertThat(bpmnError.getErrorId()).isEqualTo("errorId");
-        assertThat(bpmnError.getErrorCode()).isEqualTo("errorCode");
-        assertThat(bpmnError.getActivityName()).isEqualTo("activityName");
-        assertThat(bpmnError.getActivityType()).isEqualTo("activityType");
-    }
-
+    // then
+    assertThat(bpmnError).isNotNull();
+    assertThat(bpmnError.getProcessInstanceId()).isEqualTo("procInstId");
+    assertThat(bpmnError.getProcessDefinitionId()).isEqualTo("procDefId");
+    assertThat(bpmnError.getErrorId()).isEqualTo("errorId");
+    assertThat(bpmnError.getErrorCode()).isEqualTo("errorCode");
+    assertThat(bpmnError.getActivityName()).isEqualTo("activityName");
+    assertThat(bpmnError.getActivityType()).isEqualTo("activityType");
+  }
 }

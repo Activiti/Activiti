@@ -19,7 +19,6 @@ package org.activiti.engine.impl.bpmn.behavior;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.DataAssociation;
 import org.activiti.bpmn.model.DataSpec;
@@ -60,13 +59,7 @@ import org.activiti.engine.impl.webservice.WSOperation;
 import org.activiti.engine.impl.webservice.WSService;
 import org.apache.commons.lang3.StringUtils;
 
-/**
- * An activity behavior that allows calling Web services
- *
-
-
-
- */
+/** An activity behavior that allows calling Web services */
 public class WebServiceActivityBehavior extends AbstractBpmnActivityBehavior {
 
   private static final long serialVersionUID = 1L;
@@ -75,14 +68,19 @@ public class WebServiceActivityBehavior extends AbstractBpmnActivityBehavior {
 
   protected Map<String, XMLImporter> xmlImporterMap = new HashMap<String, XMLImporter>();
   protected Map<String, WSOperation> wsOperationMap = new HashMap<String, WSOperation>();
-  protected Map<String, StructureDefinition> structureDefinitionMap = new HashMap<String, StructureDefinition>();
+  protected Map<String, StructureDefinition> structureDefinitionMap =
+      new HashMap<String, StructureDefinition>();
   protected Map<String, WSService> wsServiceMap = new HashMap<String, WSService>();
   protected Map<String, Operation> operationMap = new HashMap<String, Operation>();
   protected Map<String, ItemDefinition> itemDefinitionMap = new HashMap<String, ItemDefinition>();
-  protected Map<String, MessageDefinition> messageDefinitionMap = new HashMap<String, MessageDefinition>();
+  protected Map<String, MessageDefinition> messageDefinitionMap =
+      new HashMap<String, MessageDefinition>();
 
   public WebServiceActivityBehavior() {
-    itemDefinitionMap.put("http://www.w3.org/2001/XMLSchema:string", new ItemDefinition("http://www.w3.org/2001/XMLSchema:string", new ClassStructureDefinition(String.class)));
+    itemDefinitionMap.put(
+        "http://www.w3.org/2001/XMLSchema:string",
+        new ItemDefinition(
+            "http://www.w3.org/2001/XMLSchema:string", new ClassStructureDefinition(String.class)));
   }
 
   public void execute(DelegateExecution execution) {
@@ -137,8 +135,8 @@ public class WebServiceActivityBehavior extends AbstractBpmnActivityBehavior {
       fillMessage(dataInputAssociations, execution);
 
       ProcessEngineConfigurationImpl processEngineConfig = Context.getProcessEngineConfiguration();
-      MessageInstance receivedMessage = operation.sendMessage(message,
-          processEngineConfig.getWsOverridenEndpointAddresses());
+      MessageInstance receivedMessage =
+          operation.sendMessage(message, processEngineConfig.getWsOverridenEndpointAddresses());
 
       execution.setVariable(CURRENT_MESSAGE, receivedMessage);
 
@@ -146,7 +144,9 @@ public class WebServiceActivityBehavior extends AbstractBpmnActivityBehavior {
         String firstDataOutputName = ioSpecification.getDataOutputRefs().get(0);
         if (firstDataOutputName != null) {
           ItemInstance outputItem = (ItemInstance) execution.getVariable(firstDataOutputName);
-          outputItem.getStructureInstance().loadFrom(receivedMessage.getStructureInstance().toArray());
+          outputItem
+              .getStructureInstance()
+              .loadFrom(receivedMessage.getStructureInstance().toArray());
         }
       }
 
@@ -159,22 +159,23 @@ public class WebServiceActivityBehavior extends AbstractBpmnActivityBehavior {
       Throwable cause = exc;
       BpmnError error = null;
       while (cause != null) {
-         if (cause instanceof BpmnError) {
-            error = (BpmnError) cause;
-            break;
-         }
-         cause = cause.getCause();
+        if (cause instanceof BpmnError) {
+          error = (BpmnError) cause;
+          break;
+        }
+        cause = cause.getCause();
       }
 
       if (error != null) {
-         ErrorPropagation.propagateError(error, execution);
-      } else if (exc instanceof RuntimeException){
-         throw (RuntimeException) exc;
+        ErrorPropagation.propagateError(error, execution);
+      } else if (exc instanceof RuntimeException) {
+        throw (RuntimeException) exc;
       }
-   }
+    }
   }
 
-  protected void initializeIoSpecification(IOSpecification activityIoSpecification, DelegateExecution execution, BpmnModel bpmnModel) {
+  protected void initializeIoSpecification(
+      IOSpecification activityIoSpecification, DelegateExecution execution, BpmnModel bpmnModel) {
 
     for (DataSpec dataSpec : activityIoSpecification.getDataInputs()) {
       ItemDefinition itemDefinition = itemDefinitionMap.get(dataSpec.getItemSubjectRef());
@@ -200,7 +201,8 @@ public class WebServiceActivityBehavior extends AbstractBpmnActivityBehavior {
 
   protected void createItemDefinitions(BpmnModel bpmnModel) {
 
-    for (org.activiti.bpmn.model.ItemDefinition itemDefinitionElement : bpmnModel.getItemDefinitions().values()) {
+    for (org.activiti.bpmn.model.ItemDefinition itemDefinitionElement :
+        bpmnModel.getItemDefinitions().values()) {
 
       if (!itemDefinitionMap.containsKey(itemDefinitionElement.getId())) {
         StructureDefinition structure = null;
@@ -214,7 +216,8 @@ public class WebServiceActivityBehavior extends AbstractBpmnActivityBehavior {
           structure = structureDefinitionMap.get(itemDefinitionElement.getStructureRef());
         }
 
-        ItemDefinition itemDefinition = new ItemDefinition(itemDefinitionElement.getId(), structure);
+        ItemDefinition itemDefinition =
+            new ItemDefinition(itemDefinitionElement.getId(), structure);
         if (StringUtils.isNotEmpty(itemDefinitionElement.getItemKind())) {
           itemDefinition.setItemKind(ItemKind.valueOf(itemDefinitionElement.getItemKind()));
         }
@@ -242,19 +245,23 @@ public class WebServiceActivityBehavior extends AbstractBpmnActivityBehavior {
 
   protected void createOperations(BpmnModel bpmnModel) {
     for (Interface interfaceObject : bpmnModel.getInterfaces()) {
-      BpmnInterface bpmnInterface = new BpmnInterface(interfaceObject.getId(), interfaceObject.getName());
+      BpmnInterface bpmnInterface =
+          new BpmnInterface(interfaceObject.getId(), interfaceObject.getName());
       bpmnInterface.setImplementation(wsServiceMap.get(interfaceObject.getImplementationRef()));
 
       for (org.activiti.bpmn.model.Operation operationObject : interfaceObject.getOperations()) {
 
         if (!operationMap.containsKey(operationObject.getId())) {
           MessageDefinition inMessage = messageDefinitionMap.get(operationObject.getInMessageRef());
-          Operation operation = new Operation(operationObject.getId(), operationObject.getName(), bpmnInterface, inMessage);
+          Operation operation =
+              new Operation(
+                  operationObject.getId(), operationObject.getName(), bpmnInterface, inMessage);
           operation.setImplementation(wsOperationMap.get(operationObject.getImplementationRef()));
 
           if (StringUtils.isNotEmpty(operationObject.getOutMessageRef())) {
             if (messageDefinitionMap.containsKey(operationObject.getOutMessageRef())) {
-              MessageDefinition outMessage = messageDefinitionMap.get(operationObject.getOutMessageRef());
+              MessageDefinition outMessage =
+                  messageDefinitionMap.get(operationObject.getOutMessageRef());
               operation.setOutMessage(outMessage);
             }
           }
@@ -271,8 +278,13 @@ public class WebServiceActivityBehavior extends AbstractBpmnActivityBehavior {
       if (theImport.getImportType().equals("http://schemas.xmlsoap.org/wsdl/")) {
         Class<?> wsdlImporterClass;
         try {
-          wsdlImporterClass = Class.forName("org.activiti.engine.impl.webservice.CxfWSDLImporter", true, Thread.currentThread().getContextClassLoader());
-          XMLImporter importerInstance = (XMLImporter) wsdlImporterClass.getDeclaredConstructor().newInstance();
+          wsdlImporterClass =
+              Class.forName(
+                  "org.activiti.engine.impl.webservice.CxfWSDLImporter",
+                  true,
+                  Thread.currentThread().getContextClassLoader());
+          XMLImporter importerInstance =
+              (XMLImporter) wsdlImporterClass.getDeclaredConstructor().newInstance();
           xmlImporterMap.put(theImport.getImportType(), importerInstance);
           importerInstance.importFrom(theImport, sourceSystemId);
 
@@ -281,7 +293,8 @@ public class WebServiceActivityBehavior extends AbstractBpmnActivityBehavior {
           wsOperationMap.putAll(importerInstance.getOperations());
 
         } catch (Exception e) {
-          throw new ActivitiException("Could not find importer for type " + theImport.getImportType());
+          throw new ActivitiException(
+              "Could not find importer for type " + theImport.getImportType());
         }
 
       } else {
@@ -290,29 +303,38 @@ public class WebServiceActivityBehavior extends AbstractBpmnActivityBehavior {
     }
   }
 
-  protected void returnMessage(List<DataAssociation> dataOutputAssociations, DelegateExecution execution) {
+  protected void returnMessage(
+      List<DataAssociation> dataOutputAssociations, DelegateExecution execution) {
     for (DataAssociation dataAssociationElement : dataOutputAssociations) {
       AbstractDataAssociation dataAssociation = createDataOutputAssociation(dataAssociationElement);
       dataAssociation.evaluate(execution);
     }
   }
 
-  protected void fillMessage(List<DataAssociation> dataInputAssociations, DelegateExecution execution) {
+  protected void fillMessage(
+      List<DataAssociation> dataInputAssociations, DelegateExecution execution) {
     for (DataAssociation dataAssociationElement : dataInputAssociations) {
       AbstractDataAssociation dataAssociation = createDataInputAssociation(dataAssociationElement);
       dataAssociation.evaluate(execution);
     }
   }
 
-  protected AbstractDataAssociation createDataInputAssociation(DataAssociation dataAssociationElement) {
+  protected AbstractDataAssociation createDataInputAssociation(
+      DataAssociation dataAssociationElement) {
     if (dataAssociationElement.getAssignments().isEmpty()) {
-      return new MessageImplicitDataInputAssociation(dataAssociationElement.getSourceRef(), dataAssociationElement.getTargetRef());
+      return new MessageImplicitDataInputAssociation(
+          dataAssociationElement.getSourceRef(), dataAssociationElement.getTargetRef());
     } else {
-      SimpleDataInputAssociation dataAssociation = new SimpleDataInputAssociation(dataAssociationElement.getSourceRef(), dataAssociationElement.getTargetRef());
-      ExpressionManager expressionManager = Context.getProcessEngineConfiguration().getExpressionManager();
+      SimpleDataInputAssociation dataAssociation =
+          new SimpleDataInputAssociation(
+              dataAssociationElement.getSourceRef(), dataAssociationElement.getTargetRef());
+      ExpressionManager expressionManager =
+          Context.getProcessEngineConfiguration().getExpressionManager();
 
-      for (org.activiti.bpmn.model.Assignment assignmentElement : dataAssociationElement.getAssignments()) {
-        if (StringUtils.isNotEmpty(assignmentElement.getFrom()) && StringUtils.isNotEmpty(assignmentElement.getTo())) {
+      for (org.activiti.bpmn.model.Assignment assignmentElement :
+          dataAssociationElement.getAssignments()) {
+        if (StringUtils.isNotEmpty(assignmentElement.getFrom())
+            && StringUtils.isNotEmpty(assignmentElement.getTo())) {
           Expression from = expressionManager.createExpression(assignmentElement.getFrom());
           Expression to = expressionManager.createExpression(assignmentElement.getTo());
           Assignment assignment = new Assignment(from, to);
@@ -323,13 +345,19 @@ public class WebServiceActivityBehavior extends AbstractBpmnActivityBehavior {
     }
   }
 
-  protected AbstractDataAssociation createDataOutputAssociation(DataAssociation dataAssociationElement) {
+  protected AbstractDataAssociation createDataOutputAssociation(
+      DataAssociation dataAssociationElement) {
     if (StringUtils.isNotEmpty(dataAssociationElement.getSourceRef())) {
-      return new MessageImplicitDataOutputAssociation(dataAssociationElement.getTargetRef(), dataAssociationElement.getSourceRef());
+      return new MessageImplicitDataOutputAssociation(
+          dataAssociationElement.getTargetRef(), dataAssociationElement.getSourceRef());
     } else {
-      ExpressionManager expressionManager = Context.getProcessEngineConfiguration().getExpressionManager();
-      Expression transformation = expressionManager.createExpression(dataAssociationElement.getTransformation());
-      AbstractDataAssociation dataOutputAssociation = new TransformationDataOutputAssociation(null, dataAssociationElement.getTargetRef(), transformation);
+      ExpressionManager expressionManager =
+          Context.getProcessEngineConfiguration().getExpressionManager();
+      Expression transformation =
+          expressionManager.createExpression(dataAssociationElement.getTransformation());
+      AbstractDataAssociation dataOutputAssociation =
+          new TransformationDataOutputAssociation(
+              null, dataAssociationElement.getTargetRef(), transformation);
       return dataOutputAssociation;
     }
   }

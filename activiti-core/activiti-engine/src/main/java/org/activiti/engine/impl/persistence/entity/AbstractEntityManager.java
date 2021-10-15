@@ -24,10 +24,9 @@ import org.activiti.engine.impl.persistence.AbstractManager;
 import org.activiti.engine.impl.persistence.CountingExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.data.DataManager;
 
-/**
-
- */
-public abstract class AbstractEntityManager<EntityImpl extends Entity> extends AbstractManager implements EntityManager<EntityImpl> {
+/** */
+public abstract class AbstractEntityManager<EntityImpl extends Entity> extends AbstractManager
+    implements EntityManager<EntityImpl> {
 
   public AbstractEntityManager(ProcessEngineConfigurationImpl processEngineConfiguration) {
     super(processEngineConfiguration);
@@ -36,7 +35,6 @@ public abstract class AbstractEntityManager<EntityImpl extends Entity> extends A
   /*
    * CRUD operations
    */
-
 
   @Override
   public EntityImpl findById(String entityId) {
@@ -59,8 +57,10 @@ public abstract class AbstractEntityManager<EntityImpl extends Entity> extends A
 
     ActivitiEventDispatcher eventDispatcher = getEventDispatcher();
     if (fireCreateEvent && eventDispatcher.isEnabled()) {
-      eventDispatcher.dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, entity));
-      eventDispatcher.dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_INITIALIZED, entity));
+      eventDispatcher.dispatchEvent(
+          ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, entity));
+      eventDispatcher.dispatchEvent(
+          ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_INITIALIZED, entity));
     }
   }
 
@@ -74,7 +74,9 @@ public abstract class AbstractEntityManager<EntityImpl extends Entity> extends A
     EntityImpl updatedEntity = getDataManager().update(entity);
 
     if (fireUpdateEvent && getEventDispatcher().isEnabled()) {
-      getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_UPDATED, entity));
+      getEventDispatcher()
+          .dispatchEvent(
+              ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_UPDATED, entity));
     }
 
     return updatedEntity;
@@ -96,7 +98,9 @@ public abstract class AbstractEntityManager<EntityImpl extends Entity> extends A
     getDataManager().delete(entity);
 
     if (fireDeleteEvent && getEventDispatcher().isEnabled()) {
-      getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_DELETED, entity));
+      getEventDispatcher()
+          .dispatchEvent(
+              ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_DELETED, entity));
     }
   }
 
@@ -105,7 +109,9 @@ public abstract class AbstractEntityManager<EntityImpl extends Entity> extends A
   /* Execution related entity count methods */
 
   protected boolean isExecutionRelatedEntityCountEnabledGlobally() {
-    return processEngineConfiguration.getPerformanceSettings().isEnableExecutionRelationshipCounts();
+    return processEngineConfiguration
+        .getPerformanceSettings()
+        .isEnableExecutionRelationshipCounts();
   }
 
   protected boolean isExecutionRelatedEntityCountEnabled(ExecutionEntity executionEntity) {
@@ -135,6 +141,4 @@ public abstract class AbstractEntityManager<EntityImpl extends Entity> extends A
 
     return isExecutionRelatedEntityCountEnabledGlobally() && executionEntity.isCountEnabled();
   }
-
-
 }

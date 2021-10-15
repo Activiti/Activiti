@@ -17,27 +17,33 @@ package org.activiti.engine.impl;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import org.activiti.engine.query.QueryProperty;
 import org.activiti.engine.repository.ProcessDefinitionQuery;
 
-/**
- * Contains the possible properties that can be used in a {@link ProcessDefinitionQuery}.
- */
+/** Contains the possible properties that can be used in a {@link ProcessDefinitionQuery}. */
 public class ProcessDefinitionQueryProperty implements QueryProperty {
 
   private static final long serialVersionUID = 1L;
 
-  private static final Map<String, ProcessDefinitionQueryProperty> properties = new HashMap<String, ProcessDefinitionQueryProperty>();
+  private static final Map<String, ProcessDefinitionQueryProperty> properties =
+      new HashMap<String, ProcessDefinitionQueryProperty>();
 
-  public static final ProcessDefinitionQueryProperty PROCESS_DEFINITION_KEY = new ProcessDefinitionQueryProperty("RES.KEY_");
-  public static final ProcessDefinitionQueryProperty PROCESS_DEFINITION_CATEGORY = new ProcessDefinitionQueryProperty("RES.CATEGORY_");
-  public static final ProcessDefinitionQueryProperty PROCESS_DEFINITION_ID = new ProcessDefinitionQueryProperty("RES.ID_");
-  public static final ProcessDefinitionQueryProperty PROCESS_DEFINITION_VERSION = new ProcessDefinitionQueryProperty("RES.VERSION_");
-  public static final ProcessDefinitionQueryProperty PROCESS_DEFINITION_APP_VERSION = new ProcessDefinitionQueryProperty("RES.APP_VERSION_");
-  public static final ProcessDefinitionQueryProperty PROCESS_DEFINITION_NAME = new ProcessDefinitionQueryProperty("RES.NAME_");
-  public static final ProcessDefinitionQueryProperty DEPLOYMENT_ID = new ProcessDefinitionQueryProperty("RES.DEPLOYMENT_ID_");
-  public static final ProcessDefinitionQueryProperty PROCESS_DEFINITION_TENANT_ID = new ProcessDefinitionQueryProperty("RES.TENANT_ID_");
+  public static final ProcessDefinitionQueryProperty PROCESS_DEFINITION_KEY =
+      new ProcessDefinitionQueryProperty("RES.KEY_");
+  public static final ProcessDefinitionQueryProperty PROCESS_DEFINITION_CATEGORY =
+      new ProcessDefinitionQueryProperty("RES.CATEGORY_");
+  public static final ProcessDefinitionQueryProperty PROCESS_DEFINITION_ID =
+      new ProcessDefinitionQueryProperty("RES.ID_");
+  public static final ProcessDefinitionQueryProperty PROCESS_DEFINITION_VERSION =
+      new ProcessDefinitionQueryProperty("RES.VERSION_");
+  public static final ProcessDefinitionQueryProperty PROCESS_DEFINITION_APP_VERSION =
+      new ProcessDefinitionQueryProperty("RES.APP_VERSION_");
+  public static final ProcessDefinitionQueryProperty PROCESS_DEFINITION_NAME =
+      new ProcessDefinitionQueryProperty("RES.NAME_");
+  public static final ProcessDefinitionQueryProperty DEPLOYMENT_ID =
+      new ProcessDefinitionQueryProperty("RES.DEPLOYMENT_ID_");
+  public static final ProcessDefinitionQueryProperty PROCESS_DEFINITION_TENANT_ID =
+      new ProcessDefinitionQueryProperty("RES.TENANT_ID_");
 
   private String name;
 
@@ -53,5 +59,4 @@ public class ProcessDefinitionQueryProperty implements QueryProperty {
   public static ProcessDefinitionQueryProperty findByName(String propertyName) {
     return properties.get(propertyName);
   }
-
 }

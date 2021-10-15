@@ -17,8 +17,7 @@ package org.activiti.api.model.shared.model;
 
 public interface ActivitiErrorMessage {
 
-    int getCode();
+  int getCode();
 
-    String getMessage();
-
+  String getMessage();
 }

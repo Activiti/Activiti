@@ -14,16 +14,11 @@
  * limitations under the License.
  */
 
-
 package org.activiti.examples.bpmn.servicetask;
 
 import java.io.Serializable;
 
-/**
- * Simple class for testing purposes.
- *
-
- */
+/** Simple class for testing purposes. */
 public class GenderBean implements Serializable {
 
   private static final long serialVersionUID = 1L;

@@ -18,7 +18,6 @@ package org.activiti.engine.impl.persistence.entity.data.impl;
 
 import java.util.HashMap;
 import java.util.List;
-
 import org.activiti.engine.impl.DeadLetterJobQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
@@ -30,14 +29,15 @@ import org.activiti.engine.impl.persistence.entity.data.DeadLetterJobDataManager
 import org.activiti.engine.impl.persistence.entity.data.impl.cachematcher.DeadLetterJobsByExecutionIdMatcher;
 import org.activiti.engine.runtime.Job;
 
-/**
+/** */
+public class MybatisDeadLetterJobDataManager extends AbstractDataManager<DeadLetterJobEntity>
+    implements DeadLetterJobDataManager {
 
- */
-public class MybatisDeadLetterJobDataManager extends AbstractDataManager<DeadLetterJobEntity> implements DeadLetterJobDataManager {
+  protected CachedEntityMatcher<DeadLetterJobEntity> deadLetterByExecutionIdMatcher =
+      new DeadLetterJobsByExecutionIdMatcher();
 
-  protected CachedEntityMatcher<DeadLetterJobEntity> deadLetterByExecutionIdMatcher = new DeadLetterJobsByExecutionIdMatcher();
-
-  public MybatisDeadLetterJobDataManager(ProcessEngineConfigurationImpl processEngineConfiguration) {
+  public MybatisDeadLetterJobDataManager(
+      ProcessEngineConfigurationImpl processEngineConfiguration) {
     super(processEngineConfiguration);
   }
 
@@ -70,7 +70,8 @@ public class MybatisDeadLetterJobDataManager extends AbstractDataManager<DeadLet
 
   @Override
   public List<DeadLetterJobEntity> findJobsByExecutionId(String executionId) {
-    return getList("selectDeadLetterJobsByExecutionId", executionId, deadLetterByExecutionIdMatcher, true);
+    return getList(
+        "selectDeadLetterJobsByExecutionId", executionId, deadLetterByExecutionIdMatcher, true);
   }
 
   @Override
@@ -80,5 +81,4 @@ public class MybatisDeadLetterJobDataManager extends AbstractDataManager<DeadLet
     params.put("tenantId", newTenantId);
     getDbSqlSession().update("updateDeadLetterJobTenantIdForDeployment", params);
   }
-
 }

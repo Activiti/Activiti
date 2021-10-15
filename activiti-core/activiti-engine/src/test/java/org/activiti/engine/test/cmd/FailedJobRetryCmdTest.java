@@ -25,12 +25,13 @@ import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
 
-/**
-
- */
+/** */
 public class FailedJobRetryCmdTest extends PluggableActivitiTestCase {
 
-  @Deployment(resources = { "org/activiti/engine/test/cmd/FailedJobRetryCmdTest.testFailedServiceTask.bpmn20.xml" })
+  @Deployment(
+      resources = {
+        "org/activiti/engine/test/cmd/FailedJobRetryCmdTest.testFailedServiceTask.bpmn20.xml"
+      })
   public void testFailedServiceTask() {
     ProcessInstance pi = runtimeService.startProcessInstanceByKey("failedServiceTask");
     assertThat(pi).isNotNull();
@@ -44,7 +45,12 @@ public class FailedJobRetryCmdTest extends PluggableActivitiTestCase {
 
     assertThat(job.getRetries()).isEqualTo(4);
 
-    Execution execution = runtimeService.createExecutionQuery().onlyChildExecutions().processInstanceId(pi.getId()).singleResult();
+    Execution execution =
+        runtimeService
+            .createExecutionQuery()
+            .onlyChildExecutions()
+            .processInstanceId(pi.getId())
+            .singleResult();
     assertThat(execution.getActivityId()).isEqualTo("failingServiceTask");
 
     waitForExecutedJobWithRetriesLeft(3);
@@ -85,7 +91,6 @@ public class FailedJobRetryCmdTest extends PluggableActivitiTestCase {
 
     execution = refreshExecutionEntity(execution.getId());
     assertThat(execution.getActivityId()).isEqualTo("failingServiceTask");
-
   }
 
   protected void waitForExecutedJobWithRetriesLeft(final int retriesLeft) {
@@ -118,7 +123,10 @@ public class FailedJobRetryCmdTest extends PluggableActivitiTestCase {
   }
 
   protected Job fetchJob(String processInstanceId) {
-    return managementService.createTimerJobQuery().processInstanceId(processInstanceId).singleResult();
+    return managementService
+        .createTimerJobQuery()
+        .processInstanceId(processInstanceId)
+        .singleResult();
   }
 
   protected Job refreshJob(String jobId) {
@@ -126,7 +134,7 @@ public class FailedJobRetryCmdTest extends PluggableActivitiTestCase {
   }
 
   protected ExecutionEntity refreshExecutionEntity(String executionId) {
-    return (ExecutionEntity) runtimeService.createExecutionQuery().executionId(executionId).singleResult();
+    return (ExecutionEntity)
+        runtimeService.createExecutionQuery().executionId(executionId).singleResult();
   }
-
 }

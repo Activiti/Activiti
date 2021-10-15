@@ -25,21 +25,24 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
-/**
-
- */
+/** */
 public class ScriptTaskListenerTest extends PluggableActivitiTestCase {
 
-  @Deployment(resources = { "org/activiti/examples/bpmn/tasklistener/ScriptTaskListenerTest.bpmn20.xml" })
+  @Deployment(
+      resources = {"org/activiti/examples/bpmn/tasklistener/ScriptTaskListenerTest.bpmn20.xml"})
   public void testScriptTaskListener() {
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("scriptTaskListenerProcess");
+    ProcessInstance processInstance =
+        runtimeService.startProcessInstanceByKey("scriptTaskListenerProcess");
     Task task = taskService.createTaskQuery().singleResult();
-    assertThat(task.getName()).as("Name does not match").isEqualTo("All your base are belong to us");
+    assertThat(task.getName())
+        .as("Name does not match")
+        .isEqualTo("All your base are belong to us");
 
     taskService.complete(task.getId());
 
     if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
-      HistoricTaskInstance historicTask = historyService.createHistoricTaskInstanceQuery().taskId(task.getId()).singleResult();
+      HistoricTaskInstance historicTask =
+          historyService.createHistoricTaskInstanceQuery().taskId(task.getId()).singleResult();
       assertThat(historicTask.getOwner()).isEqualTo("kermit");
 
       task = taskService.createTaskQuery().singleResult();
@@ -52,5 +55,4 @@ public class ScriptTaskListenerTest extends PluggableActivitiTestCase {
     Object foo = runtimeService.getVariable(processInstance.getId(), "foo");
     assertThat(foo).as("Could not find the 'foo' variable in variable scope").isEqualTo("FOO");
   }
-
 }

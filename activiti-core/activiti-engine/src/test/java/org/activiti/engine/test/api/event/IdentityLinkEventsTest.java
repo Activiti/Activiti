@@ -28,21 +28,19 @@ import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
-/**
- * Test case for all {@link ActivitiEvent}s related to process definitions.
- *
-
- */
+/** Test case for all {@link ActivitiEvent}s related to process definitions. */
 public class IdentityLinkEventsTest extends PluggableActivitiTestCase {
 
   private TestActivitiEntityEventListener listener;
 
-  /**
-   * Check identity links on process definitions.
-   */
-  @Deployment(resources = { "org/activiti/engine/test/api/runtime/oneTaskProcess.bpmn20.xml" })
+  /** Check identity links on process definitions. */
+  @Deployment(resources = {"org/activiti/engine/test/api/runtime/oneTaskProcess.bpmn20.xml"})
   public void testProcessDefinitionIdentityLinkEvents() throws Exception {
-    ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().processDefinitionKey("oneTaskProcess").singleResult();
+    ProcessDefinition processDefinition =
+        repositoryService
+            .createProcessDefinitionQuery()
+            .processDefinitionKey("oneTaskProcess")
+            .singleResult();
 
     assertThat(processDefinition).isNotNull();
 
@@ -90,10 +88,8 @@ public class IdentityLinkEventsTest extends PluggableActivitiTestCase {
     assertThat(event.getExecutionId()).isNull();
   }
 
-  /**
-   * Check identity links on process instances.
-   */
-  @Deployment(resources = { "org/activiti/engine/test/api/runtime/oneTaskProcess.bpmn20.xml" })
+  /** Check identity links on process instances. */
+  @Deployment(resources = {"org/activiti/engine/test/api/runtime/oneTaskProcess.bpmn20.xml"})
   public void testProcessInstanceIdentityLinkEvents() throws Exception {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
 
@@ -128,14 +124,13 @@ public class IdentityLinkEventsTest extends PluggableActivitiTestCase {
     assertThat(link.getType()).isEqualTo("test");
   }
 
-  /**
-   * Check identity links on process instances.
-   */
-  @Deployment(resources = { "org/activiti/engine/test/api/runtime/oneTaskProcess.bpmn20.xml" })
+  /** Check identity links on process instances. */
+  @Deployment(resources = {"org/activiti/engine/test/api/runtime/oneTaskProcess.bpmn20.xml"})
   public void testTaskIdentityLinks() throws Exception {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
 
-    Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+    Task task =
+        taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     assertThat(task).isNotNull();
 
     // Add identity link
@@ -191,22 +186,22 @@ public class IdentityLinkEventsTest extends PluggableActivitiTestCase {
     assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_DELETED);
   }
 
-  /**
-   * Check deletion of links on process instances.
-   */
-  @Deployment(resources = { "org/activiti/engine/test/api/runtime/oneTaskProcess.bpmn20.xml" })
+  /** Check deletion of links on process instances. */
+  @Deployment(resources = {"org/activiti/engine/test/api/runtime/oneTaskProcess.bpmn20.xml"})
   public void testProcessInstanceIdentityDeleteCandidateGroupEvents() throws Exception {
 
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
 
-    Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+    Task task =
+        taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     assertThat(task).isNotNull();
 
     // Add identity link
     taskService.addCandidateUser(task.getId(), "kermit");
     taskService.addCandidateGroup(task.getId(), "sales");
 
-    // Three events are received, since the user link on the task also creates an involvement in the process. See previous test
+    // Three events are received, since the user link on the task also creates an involvement in the
+    // process. See previous test
     assertThat(listener.getEventsReceived()).hasSize(6);
 
     listener.clearEventsReceived();

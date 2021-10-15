@@ -17,11 +17,11 @@
 package org.activiti.engine;
 
 /**
- * Exception that is thrown when the Activiti engine discovers a mismatch between the database schema version and the engine version.
+ * Exception that is thrown when the Activiti engine discovers a mismatch between the database
+ * schema version and the engine version.
  *
- * The check is done when the engine is created in {@link ProcessEngineBuilder#buildProcessEngine()}.
- *
-
+ * <p>The check is done when the engine is created in {@link
+ * ProcessEngineBuilder#buildProcessEngine()}.
  */
 public class ActivitiWrongDbException extends ActivitiException {
 
@@ -36,21 +36,19 @@ public class ActivitiWrongDbException extends ActivitiException {
             + libraryVersion
             + "', db version is "
             + dbVersion
-            + " Hint: Set <property name=\"databaseSchemaUpdate\" to value=\"true\" or value=\"create-drop\" (use create-drop for testing only!) in bean processEngineConfiguration in activiti.cfg.xml for automatic schema creation");
+            + " Hint: Set <property name=\"databaseSchemaUpdate\" to value=\"true\" or"
+            + " value=\"create-drop\" (use create-drop for testing only!) in bean"
+            + " processEngineConfiguration in activiti.cfg.xml for automatic schema creation");
     this.libraryVersion = libraryVersion;
     this.dbVersion = dbVersion;
   }
 
-  /**
-   * The version of the Activiti library used.
-   */
+  /** The version of the Activiti library used. */
   public String getLibraryVersion() {
     return libraryVersion;
   }
 
-  /**
-   * The version of the Activiti library that was used to create the database schema.
-   */
+  /** The version of the Activiti library that was used to create the database schema. */
   public String getDbVersion() {
     return dbVersion;
   }

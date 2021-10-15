@@ -17,12 +17,9 @@
 package org.activiti.engine.impl.persistence.entity.data;
 
 import java.util.List;
-
 import org.activiti.engine.impl.persistence.entity.IdentityLinkEntity;
 
-/**
-
- */
+/** */
 public interface IdentityLinkDataManager extends DataManager<IdentityLinkEntity> {
 
   List<IdentityLinkEntity> findIdentityLinksByTaskId(String taskId);
@@ -31,12 +28,14 @@ public interface IdentityLinkDataManager extends DataManager<IdentityLinkEntity>
 
   List<IdentityLinkEntity> findIdentityLinksByProcessDefinitionId(String processDefinitionId);
 
-  List<IdentityLinkEntity> findIdentityLinkByTaskUserGroupAndType(String taskId, String userId, String groupId, String type);
+  List<IdentityLinkEntity> findIdentityLinkByTaskUserGroupAndType(
+      String taskId, String userId, String groupId, String type);
 
-  List<IdentityLinkEntity> findIdentityLinkByProcessInstanceUserGroupAndType(String processInstanceId, String userId, String groupId, String type);
+  List<IdentityLinkEntity> findIdentityLinkByProcessInstanceUserGroupAndType(
+      String processInstanceId, String userId, String groupId, String type);
 
-  List<IdentityLinkEntity> findIdentityLinkByProcessDefinitionUserAndGroup(String processDefinitionId, String userId, String groupId);
+  List<IdentityLinkEntity> findIdentityLinkByProcessDefinitionUserAndGroup(
+      String processDefinitionId, String userId, String groupId);
 
   void deleteIdentityLinksByProcDef(String processDefId);
-
 }

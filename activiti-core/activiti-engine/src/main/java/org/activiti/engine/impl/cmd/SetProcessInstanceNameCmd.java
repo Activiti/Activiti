@@ -17,7 +17,6 @@
 package org.activiti.engine.impl.cmd;
 
 import java.io.Serializable;
-
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
@@ -46,31 +45,40 @@ public class SetProcessInstanceNameCmd implements Command<Void>, Serializable {
       throw new ActivitiIllegalArgumentException("processInstanceId is null");
     }
 
-    ExecutionEntity execution = commandContext.getExecutionEntityManager().findById(processInstanceId);
+    ExecutionEntity execution =
+        commandContext.getExecutionEntityManager().findById(processInstanceId);
 
     if (execution == null) {
-      throw new ActivitiObjectNotFoundException("process instance " + processInstanceId + " doesn't exist", ProcessInstance.class);
+      throw new ActivitiObjectNotFoundException(
+          "process instance " + processInstanceId + " doesn't exist", ProcessInstance.class);
     }
 
     if (!execution.isProcessInstanceType()) {
-      throw new ActivitiObjectNotFoundException("process instance " + processInstanceId + " doesn't exist, the given ID references an execution, though", ProcessInstance.class);
+      throw new ActivitiObjectNotFoundException(
+          "process instance "
+              + processInstanceId
+              + " doesn't exist, the given ID references an execution, though",
+          ProcessInstance.class);
     }
 
     if (execution.isSuspended()) {
-      throw new ActivitiException("process instance " + processInstanceId + " is suspended, cannot set name");
+      throw new ActivitiException(
+          "process instance " + processInstanceId + " is suspended, cannot set name");
     }
 
     // Actually set the name
     execution.setName(name);
 
     if (commandContext.getEventDispatcher().isEnabled()) {
-        commandContext.getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_UPDATED, execution));
-      }
+      commandContext
+          .getEventDispatcher()
+          .dispatchEvent(
+              ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_UPDATED, execution));
+    }
 
     // Record the change in history
     commandContext.getHistoryManager().recordProcessInstanceNameChange(processInstanceId, name);
 
     return null;
   }
-
 }

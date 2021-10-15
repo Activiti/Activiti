@@ -21,15 +21,10 @@ import static java.util.Collections.synchronizedMap;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * Default cache: keep everything in memory, unless a limit is set.
- *
-
- */
+/** Default cache: keep everything in memory, unless a limit is set. */
 public class DefaultDeploymentCache<T> implements DeploymentCache<T> {
 
   private static final Logger logger = LoggerFactory.getLogger(DefaultDeploymentCache.class);
@@ -41,24 +36,25 @@ public class DefaultDeploymentCache<T> implements DeploymentCache<T> {
     this.cache = synchronizedMap(new HashMap<String, T>());
   }
 
-  /**
-   * Cache which has a hard limit: no more elements will be cached than the limit.
-   */
+  /** Cache which has a hard limit: no more elements will be cached than the limit. */
   public DefaultDeploymentCache(final int limit) {
-    this.cache = synchronizedMap(new LinkedHashMap<String, T>(limit + 1, 0.75f, true) { // +1 is needed, because the entry is inserted first, before it is removed
-          // 0.75 is the default (see javadocs)
-          // true will keep the 'access-order', which is needed to have a real LRU cache
-          private static final long serialVersionUID = 1L;
+    this.cache =
+        synchronizedMap(
+            new LinkedHashMap<String, T>(
+                limit + 1, 0.75f,
+                true) { // +1 is needed, because the entry is inserted first, before it is removed
+              // 0.75 is the default (see javadocs)
+              // true will keep the 'access-order', which is needed to have a real LRU cache
+              private static final long serialVersionUID = 1L;
 
-          protected boolean removeEldestEntry(Map.Entry<String, T> eldest) {
-            boolean removeEldest = size() > limit;
-            if (removeEldest && logger.isTraceEnabled()) {
-              logger.trace("Cache limit is reached, {} will be evicted", eldest.getKey());
-            }
-            return removeEldest;
-          }
-
-        });
+              protected boolean removeEldestEntry(Map.Entry<String, T> eldest) {
+                boolean removeEldest = size() > limit;
+                if (removeEldest && logger.isTraceEnabled()) {
+                  logger.trace("Cache limit is reached, {} will be evicted", eldest.getKey());
+                }
+                return removeEldest;
+              }
+            });
   }
 
   public T get(String id) {
@@ -86,5 +82,4 @@ public class DefaultDeploymentCache<T> implements DeploymentCache<T> {
   public int size() {
     return cache.size();
   }
-
 }

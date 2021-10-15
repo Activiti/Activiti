@@ -19,7 +19,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 import java.util.Map;
-
 import org.activiti.bpmn.model.ActivitiListener;
 import org.activiti.bpmn.model.BoundaryEvent;
 import org.activiti.bpmn.model.BpmnModel;
@@ -70,7 +69,8 @@ public class CustomExtensionsConverterTest extends AbstractConverterTest {
 
     List<ActivitiListener> listeners = model.getMainProcess().getExecutionListeners();
     validateExecutionListeners(listeners);
-    Map<String, List<ExtensionElement>> extensionElementMap = model.getMainProcess().getExtensionElements();
+    Map<String, List<ExtensionElement>> extensionElementMap =
+        model.getMainProcess().getExtensionElements();
     validateExtensionElements(extensionElementMap);
 
     FlowElement flowElement = model.getMainProcess().getFlowElement("servicetask");
@@ -108,27 +108,38 @@ public class CustomExtensionsConverterTest extends AbstractConverterTest {
   protected void validateExecutionListeners(List<ActivitiListener> listeners) {
     assertThat(listeners).hasSize(3);
     ActivitiListener listener = (ActivitiListener) listeners.get(0);
-    assertThat(ImplementationType.IMPLEMENTATION_TYPE_CLASS.equals(listener.getImplementationType())).isTrue();
+    assertThat(
+            ImplementationType.IMPLEMENTATION_TYPE_CLASS.equals(listener.getImplementationType()))
+        .isTrue();
     assertThat(listener.getImplementation()).isEqualTo("org.test.TestClass");
     assertThat(listener.getEvent()).isEqualTo("start");
     assertThat(listener.getOnTransaction()).isEqualTo("before-commit");
-    assertThat(listener.getCustomPropertiesResolverImplementation()).isEqualTo("org.test.TestResolverClass");
+    assertThat(listener.getCustomPropertiesResolverImplementation())
+        .isEqualTo("org.test.TestResolverClass");
     listener = (ActivitiListener) listeners.get(1);
-    assertThat(ImplementationType.IMPLEMENTATION_TYPE_EXPRESSION.equals(listener.getImplementationType())).isTrue();
+    assertThat(
+            ImplementationType.IMPLEMENTATION_TYPE_EXPRESSION.equals(
+                listener.getImplementationType()))
+        .isTrue();
     assertThat(listener.getImplementation()).isEqualTo("${testExpression}");
     assertThat(listener.getEvent()).isEqualTo("end");
     assertThat(listener.getOnTransaction()).isEqualTo("committed");
-    assertThat(listener.getCustomPropertiesResolverImplementation()).isEqualTo("${testResolverExpression}");
+    assertThat(listener.getCustomPropertiesResolverImplementation())
+        .isEqualTo("${testResolverExpression}");
     listener = (ActivitiListener) listeners.get(2);
-    assertThat(ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION.equals(listener.getImplementationType())).isTrue();
+    assertThat(
+            ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION.equals(
+                listener.getImplementationType()))
+        .isTrue();
     assertThat(listener.getImplementation()).isEqualTo("${delegateExpression}");
     assertThat(listener.getEvent()).isEqualTo("start");
     assertThat(listener.getOnTransaction()).isEqualTo("rolled-back");
-    assertThat(listener.getCustomPropertiesResolverImplementation()).isEqualTo("${delegateResolverExpression}");
-
+    assertThat(listener.getCustomPropertiesResolverImplementation())
+        .isEqualTo("${delegateResolverExpression}");
   }
 
-  protected void validateExtensionElements(Map<String, List<ExtensionElement>> extensionElementMap) {
+  protected void validateExtensionElements(
+      Map<String, List<ExtensionElement>> extensionElementMap) {
     assertThat(extensionElementMap).hasSize(1);
 
     List<ExtensionElement> extensionElements = extensionElementMap.get("test");

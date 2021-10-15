@@ -25,19 +25,16 @@ import org.activiti.engine.task.Task;
 import org.activiti.spring.impl.test.SpringActivitiTestCase;
 import org.springframework.test.context.ContextConfiguration;
 
-/**
- *
- */
+/** */
 @ContextConfiguration(locations = "JPASpringTest-context.xml")
 public class JpaTest extends SpringActivitiTestCase {
 
   public void testJpaVariableHappyPath() {
     before();
 
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("LoanRequestProcess", map(
-      "customerName", "John Doe",
-      "amount", 15000L
-    ));
+    ProcessInstance processInstance =
+        runtimeService.startProcessInstanceByKey(
+            "LoanRequestProcess", map("customerName", "John Doe", "amount", 15000L));
 
     // Variable should be present containing the loanRequest created by the spring bean
     Object value = runtimeService.getVariable(processInstance.getId(), "loanRequest");
@@ -49,12 +46,19 @@ public class JpaTest extends SpringActivitiTestCase {
     assertThat(request.isApproved()).isFalse();
 
     // We will approve the request, which will update the entity
-    Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+    Task task =
+        taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     assertThat(task).isNotNull();
     taskService.complete(task.getId(), singletonMap("approvedByManager", Boolean.TRUE));
 
-    // If approved, the processsInstance should be finished, gateway based on loanRequest.approved value
-    assertThat(runtimeService.createProcessInstanceQuery().processInstanceId(processInstance.getId()).count()).isEqualTo(0);
+    // If approved, the processsInstance should be finished, gateway based on loanRequest.approved
+    // value
+    assertThat(
+            runtimeService
+                .createProcessInstanceQuery()
+                .processInstanceId(processInstance.getId())
+                .count())
+        .isEqualTo(0);
 
     // Cleanup
     deleteDeployments();
@@ -64,10 +68,9 @@ public class JpaTest extends SpringActivitiTestCase {
 
     before();
 
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("LoanRequestProcess", map(
-      "customerName", "Jane Doe",
-      "amount", 50000
-    ));
+    ProcessInstance processInstance =
+        runtimeService.startProcessInstanceByKey(
+            "LoanRequestProcess", map("customerName", "Jane Doe", "amount", 50000));
 
     // Variable should be present containing the loanRequest created by the spring bean
     Object value = runtimeService.getVariable(processInstance.getId(), "loanRequest");
@@ -79,7 +82,8 @@ public class JpaTest extends SpringActivitiTestCase {
     assertThat(request.isApproved()).isFalse();
 
     // We will disapprove the request, which will update the entity
-    Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+    Task task =
+        taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     assertThat(task).isNotNull();
     taskService.complete(task.getId(), singletonMap("approvedByManager", Boolean.FALSE));
 
@@ -97,9 +101,8 @@ public class JpaTest extends SpringActivitiTestCase {
   }
 
   protected void before() {
-    String[] defs = { "org/activiti/spring/test/jpa/JPASpringTest.bpmn20.xml" };
-    for (String pd : defs)
-      repositoryService.createDeployment().addClasspathResource(pd).deploy();
+    String[] defs = {"org/activiti/spring/test/jpa/JPASpringTest.bpmn20.xml"};
+    for (String pd : defs) repositoryService.createDeployment().addClasspathResource(pd).deploy();
   }
 
   protected void deleteDeployments() {
@@ -138,7 +141,8 @@ public class JpaTest extends SpringActivitiTestCase {
 /**
  * .bpmn20.xml");
  *
- * SpringProcessEngineConfiguration engine = new SpringProcessEngineConfiguration(); if (resources != null && resources.length > 0) { engine.setDeploymentResources(resources); }
+ * <p>SpringProcessEngineConfiguration engine = new SpringProcessEngineConfiguration(); if
+ * (resources != null && resources.length > 0) { engine.setDeploymentResources(resources); }
  * engine.setDataSource(dataSource); engine.setTransactionManager(transactionManager);
  */
 /*

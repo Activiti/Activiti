@@ -20,9 +20,7 @@ import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.ReceiveTask;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 
-/**
-
- */
+/** */
 public class ReceiveTaskParseHandler extends AbstractActivityBpmnParseHandler<ReceiveTask> {
 
   public Class<? extends BaseElement> getHandledType() {
@@ -30,7 +28,7 @@ public class ReceiveTaskParseHandler extends AbstractActivityBpmnParseHandler<Re
   }
 
   protected void executeParse(BpmnParse bpmnParse, ReceiveTask receiveTask) {
-    receiveTask.setBehavior(bpmnParse.getActivityBehaviorFactory().createReceiveTaskActivityBehavior(receiveTask));
+    receiveTask.setBehavior(
+        bpmnParse.getActivityBehaviorFactory().createReceiveTaskActivityBehavior(receiveTask));
   }
-
 }

@@ -14,14 +14,11 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.delegate;
 
 import java.io.Serializable;
 
-/**
-
- */
+/** */
 public interface BaseTaskListener extends Serializable {
 
   String EVENTNAME_CREATE = "create";
@@ -30,8 +27,9 @@ public interface BaseTaskListener extends Serializable {
   String EVENTNAME_DELETE = "delete";
 
   /**
-   * Not an actual event, used as a marker-value for {@link BaseTaskListener}s that should be called for all events, including {@link #EVENTNAME_CREATE} , {@link #EVENTNAME_ASSIGNMENT} and
-   * {@link #EVENTNAME_COMPLETE} and {@link #EVENTNAME_DELETE}.
+   * Not an actual event, used as a marker-value for {@link BaseTaskListener}s that should be called
+   * for all events, including {@link #EVENTNAME_CREATE} , {@link #EVENTNAME_ASSIGNMENT} and {@link
+   * #EVENTNAME_COMPLETE} and {@link #EVENTNAME_DELETE}.
    */
   String EVENTNAME_ALL_EVENTS = "all";
 }

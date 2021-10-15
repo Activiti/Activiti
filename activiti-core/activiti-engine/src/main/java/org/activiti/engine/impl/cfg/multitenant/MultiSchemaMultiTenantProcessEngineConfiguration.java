@@ -18,7 +18,6 @@ package org.activiti.engine.impl.cfg.multitenant;
 
 import java.util.concurrent.ExecutorService;
 import javax.sql.DataSource;
-
 import org.activiti.api.runtime.shared.identity.UserGroupManager;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessEngineConfiguration;
@@ -35,36 +34,42 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * A {@link ProcessEngineConfiguration} that builds a multi tenant {@link ProcessEngine} where
- * each tenant has its own database schema.
+ * A {@link ProcessEngineConfiguration} that builds a multi tenant {@link ProcessEngine} where each
+ * tenant has its own database schema.
  *
- * If multitenancy is needed and no data isolation is needed: the default {@link ProcessEngineConfigurationImpl}
- * of Activiti is multitenant enabled out of the box by setting a tenant identifier on a {@link DeploymentBuilder}.
+ * <p>If multitenancy is needed and no data isolation is needed: the default {@link
+ * ProcessEngineConfigurationImpl} of Activiti is multitenant enabled out of the box by setting a
+ * tenant identifier on a {@link DeploymentBuilder}.
  *
- * This configuration has following characteristics:
+ * <p>This configuration has following characteristics:
  *
- * - It needs a {@link TenantInfoHolder} to determine which tenant is currently 'active'. Ie for which
- *   tenant a certain API call is executed.
+ * <p>- It needs a {@link TenantInfoHolder} to determine which tenant is currently 'active'. Ie for
+ * which tenant a certain API call is executed.
  *
- * - The {@link StrongUuidGenerator} is used by default. The 'regular' {@link DbIdGenerator} cannot be used with this config.
+ * <p>- The {@link StrongUuidGenerator} is used by default. The 'regular' {@link DbIdGenerator}
+ * cannot be used with this config.
  *
- * - Adding tenants (also after boot!) is done using the {@link #registerTenant(String, DataSource)} operations.
+ * <p>- Adding tenants (also after boot!) is done using the {@link #registerTenant(String,
+ * DataSource)} operations.
  *
- * - Currently, this config does not work with the 'old' {@link JobExecutor}, but only with the newer {@link AsyncExecutor}.
- *   There are two different implementations:
- *     - The {@link ExecutorPerTenantAsyncExecutor}: creates one full {@link AsyncExecutor} for each tenant.
- *     - The {@link SharedExecutorServiceAsyncExecutor}: created acquisition threads for each tenant, but the
- *       job execution is done using a process engine shared {@link ExecutorService}.
- *   The {@link AsyncExecutor} needs to be injected using the {@link #setAsyncExecutor(AsyncExecutor)} method on this class.
+ * <p>- Currently, this config does not work with the 'old' {@link JobExecutor}, but only with the
+ * newer {@link AsyncExecutor}. There are two different implementations: - The {@link
+ * ExecutorPerTenantAsyncExecutor}: creates one full {@link AsyncExecutor} for each tenant. - The
+ * {@link SharedExecutorServiceAsyncExecutor}: created acquisition threads for each tenant, but the
+ * job execution is done using a process engine shared {@link ExecutorService}. The {@link
+ * AsyncExecutor} needs to be injected using the {@link #setAsyncExecutor(AsyncExecutor)} method on
+ * this class.
  *
- * databasetype
+ * <p>databasetype
  *
- *  @deprecated multi-tenant code will be removed in future version of Activiti and Activiti Cloud
+ * @deprecated multi-tenant code will be removed in future version of Activiti and Activiti Cloud
  */
 @Deprecated
-public class MultiSchemaMultiTenantProcessEngineConfiguration extends ProcessEngineConfigurationImpl {
+public class MultiSchemaMultiTenantProcessEngineConfiguration
+    extends ProcessEngineConfigurationImpl {
 
-  private static final Logger logger = LoggerFactory.getLogger(MultiSchemaMultiTenantProcessEngineConfiguration.class);
+  private static final Logger logger =
+      LoggerFactory.getLogger(MultiSchemaMultiTenantProcessEngineConfiguration.class);
 
   protected TenantInfoHolder tenantInfoHolder;
   protected boolean booted;
@@ -73,7 +78,8 @@ public class MultiSchemaMultiTenantProcessEngineConfiguration extends ProcessEng
 
     this.tenantInfoHolder = tenantInfoHolder;
 
-    // Using the UUID generator, as otherwise the ids are pulled from a global pool of ids, backed by
+    // Using the UUID generator, as otherwise the ids are pulled from a global pool of ids, backed
+    // by
     // a database table. Which is impossible with a mult-database-schema setup.
 
     // Also: it avoids the need for having a process definition cache for each tenant
@@ -87,7 +93,7 @@ public class MultiSchemaMultiTenantProcessEngineConfiguration extends ProcessEng
    * Add a new {@link DataSource} for a tenant, identified by the provided tenantId, to the engine.
    * This can be done after the engine has booted up.
    *
-   * Note that the tenant identifier must have been added to the {@link TenantInfoHolder} *prior*
+   * <p>Note that the tenant identifier must have been added to the {@link TenantInfoHolder} *prior*
    * to calling this method.
    */
   public void registerTenant(String tenantId, DataSource dataSource) {
@@ -115,7 +121,9 @@ public class MultiSchemaMultiTenantProcessEngineConfiguration extends ProcessEng
 
     if (asyncExecutor instanceof TenantAwareAsyncExecutor) {
       for (String tenantId : tenantInfoHolder.getAllTenants()) {
-        ((TenantAwareAsyncExecutor) asyncExecutor).addTenantAsyncExecutor(tenantId, false); // false -> will be started later with all the other executors
+        ((TenantAwareAsyncExecutor) asyncExecutor)
+            .addTenantAsyncExecutor(
+                tenantId, false); // false -> will be started later with all the other executors
       }
     }
   }
@@ -155,12 +163,14 @@ public class MultiSchemaMultiTenantProcessEngineConfiguration extends ProcessEng
   protected void createTenantSchema(String tenantId) {
     logger.info("creating/validating database schema for tenant " + tenantId);
     tenantInfoHolder.setCurrentTenantId(tenantId);
-    getCommandExecutor().execute(getSchemaCommandConfig(), new ExecuteSchemaOperationCommand(databaseSchemaUpdate));
+    getCommandExecutor()
+        .execute(getSchemaCommandConfig(), new ExecuteSchemaOperationCommand(databaseSchemaUpdate));
     tenantInfoHolder.clearCurrentTenantId();
   }
 
   protected void createTenantAsyncJobExecutor(String tenantId) {
-    ((TenantAwareAsyncExecutor) asyncExecutor).addTenantAsyncExecutor(tenantId, isAsyncExecutorActivate() && booted);
+    ((TenantAwareAsyncExecutor) asyncExecutor)
+        .addTenantAsyncExecutor(tenantId, isAsyncExecutorActivate() && booted);
   }
 
   @Override
@@ -175,6 +185,6 @@ public class MultiSchemaMultiTenantProcessEngineConfiguration extends ProcessEng
 
   @Override
   public UserGroupManager getUserGroupManager() {
-    return null; //no external identity provider supplied
+    return null; // no external identity provider supplied
   }
 }

@@ -24,9 +24,7 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
-/**
-
- */
+/** */
 public class EndEventTest extends PluggableActivitiTestCase {
 
   // Test case for ACT-1259
@@ -60,7 +58,9 @@ public class EndEventTest extends PluggableActivitiTestCase {
       successCount++;
     }
 
-    assertThat(successCount).as("(Only) one thread should have been able to successfully end the process").isEqualTo(1);
+    assertThat(successCount)
+        .as("(Only) one thread should have been able to successfully end the process")
+        .isEqualTo(1);
     assertProcessEnded(processInstance.getId());
   }
 
@@ -87,5 +87,4 @@ public class EndEventTest extends PluggableActivitiTestCase {
       }
     }
   }
-
 }

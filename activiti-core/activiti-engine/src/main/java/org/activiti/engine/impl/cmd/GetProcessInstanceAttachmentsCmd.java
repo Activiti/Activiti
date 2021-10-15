@@ -14,20 +14,17 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.cmd;
 
 import java.io.Serializable;
 import java.util.List;
-
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.task.Attachment;
 
-/**
-
- */
-public class GetProcessInstanceAttachmentsCmd implements Command<List<? extends Attachment>>, Serializable {
+/** */
+public class GetProcessInstanceAttachmentsCmd
+    implements Command<List<? extends Attachment>>, Serializable {
 
   private static final long serialVersionUID = 1L;
   protected String processInstanceId;
@@ -37,6 +34,8 @@ public class GetProcessInstanceAttachmentsCmd implements Command<List<? extends 
   }
 
   public List<? extends Attachment> execute(CommandContext commandContext) {
-    return commandContext.getAttachmentEntityManager().findAttachmentsByProcessInstanceId(processInstanceId);
+    return commandContext
+        .getAttachmentEntityManager()
+        .findAttachmentsByProcessInstanceId(processInstanceId);
   }
 }

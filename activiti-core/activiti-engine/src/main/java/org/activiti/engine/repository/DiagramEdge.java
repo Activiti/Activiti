@@ -14,24 +14,18 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.repository;
 
 import java.util.List;
 
-/**
- * Stores waypoints of a diagram edge.
- *
-
- */
+/** Stores waypoints of a diagram edge. */
 public class DiagramEdge extends DiagramElement {
 
   private static final long serialVersionUID = 1L;
 
   private List<DiagramEdgeWaypoint> waypoints;
 
-  public DiagramEdge() {
-  }
+  public DiagramEdge() {}
 
   public DiagramEdge(String id, List<DiagramEdgeWaypoint> waypoints) {
     super(id);
@@ -55,5 +49,4 @@ public class DiagramEdge extends DiagramElement {
   public void setWaypoints(List<DiagramEdgeWaypoint> waypoints) {
     this.waypoints = waypoints;
   }
-
 }

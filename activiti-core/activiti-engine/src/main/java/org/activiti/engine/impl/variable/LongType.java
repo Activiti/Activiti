@@ -16,9 +16,7 @@
 
 package org.activiti.engine.impl.variable;
 
-/**
-
- */
+/** */
 public class LongType implements VariableType {
 
   private static final long serialVersionUID = 1L;
@@ -48,6 +46,7 @@ public class LongType implements VariableType {
     if (value == null) {
       return true;
     }
-    return Long.class.isAssignableFrom(value.getClass()) || long.class.isAssignableFrom(value.getClass());
+    return Long.class.isAssignableFrom(value.getClass())
+        || long.class.isAssignableFrom(value.getClass());
   }
 }

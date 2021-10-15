@@ -19,12 +19,7 @@ package org.activiti.engine.impl.persistence.entity;
 import java.util.Date;
 import java.util.Map;
 
-
-/**
- * TimerJob entity, necessary for persistence.
- *
-
- */
+/** TimerJob entity, necessary for persistence. */
 public class TimerJobEntityImpl extends AbstractJobEntityImpl implements TimerJobEntity {
 
   private static final long serialVersionUID = 1L;
@@ -63,5 +58,4 @@ public class TimerJobEntityImpl extends AbstractJobEntityImpl implements TimerJo
   public String toString() {
     return "TimerJobEntity [id=" + id + "]";
   }
-
 }

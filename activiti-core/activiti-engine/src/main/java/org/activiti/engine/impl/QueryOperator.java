@@ -14,14 +14,9 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl;
 
-/**
- * Used to indicate the operator that should be used to comparing values in a query clause.
- *
-
- */
+/** Used to indicate the operator that should be used to comparing values in a query clause. */
 public enum QueryOperator {
   EQUALS,
   NOT_EQUALS,

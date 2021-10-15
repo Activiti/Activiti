@@ -17,15 +17,12 @@
 package org.activiti.spring.test.fieldinjection;
 
 import java.util.concurrent.atomic.AtomicInteger;
-
 import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.delegate.DelegateHelper;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.JavaDelegate;
-import org.activiti.engine.delegate.DelegateHelper;
 
-/**
-
- */
+/** */
 public class PrototypeDelegateExpressionBean implements JavaDelegate {
 
   public static AtomicInteger INSTANCE_COUNT = new AtomicInteger(0);
@@ -44,7 +41,8 @@ public class PrototypeDelegateExpressionBean implements JavaDelegate {
     // just a quick check to avoid creating a specific test for it
     int nrOfFieldExtensions = DelegateHelper.getFields(execution).size();
     if (nrOfFieldExtensions != 3) {
-      throw new RuntimeException("Error: 3 field extensions expected, but was " + nrOfFieldExtensions);
+      throw new RuntimeException(
+          "Error: 3 field extensions expected, but was " + nrOfFieldExtensions);
     }
 
     Number fieldAValue = (Number) fieldA.getValue(execution);
@@ -53,5 +51,4 @@ public class PrototypeDelegateExpressionBean implements JavaDelegate {
     int result = fieldAValue.intValue() + fieldValueB.intValue();
     execution.setVariable(resultVariableName.getValue(execution).toString(), result);
   }
-
 }

@@ -14,16 +14,13 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.test.bpmn.event.timer;
 
 import org.activiti.engine.impl.test.ResourceActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
 
-/**
-
- */
+/** */
 public class BoundaryTimerEventFullHistoryTest extends ResourceActivitiTestCase {
 
   public BoundaryTimerEventFullHistoryTest() {
@@ -32,8 +29,8 @@ public class BoundaryTimerEventFullHistoryTest extends ResourceActivitiTestCase 
 
   @Deployment
   public void testSetProcessVariablesFromTaskWhenTimerOnTask() {
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("timerVariablesProcess");
+    ProcessInstance processInstance =
+        runtimeService.startProcessInstanceByKey("timerVariablesProcess");
     runtimeService.setVariable(processInstance.getId(), "myVar", 123456L);
   }
-
 }

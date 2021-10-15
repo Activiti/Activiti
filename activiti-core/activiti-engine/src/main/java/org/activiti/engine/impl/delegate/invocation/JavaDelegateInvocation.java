@@ -19,11 +19,7 @@ package org.activiti.engine.impl.delegate.invocation;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.JavaDelegate;
 
-/**
- * Class handling invocations of JavaDelegates
- *
-
- */
+/** Class handling invocations of JavaDelegates */
 public class JavaDelegateInvocation extends DelegateInvocation {
 
   protected final JavaDelegate delegateInstance;
@@ -41,5 +37,4 @@ public class JavaDelegateInvocation extends DelegateInvocation {
   public Object getTarget() {
     return delegateInstance;
   }
-
 }

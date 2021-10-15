@@ -17,7 +17,6 @@
 package org.activiti.engine.impl.cmd;
 
 import java.io.Serializable;
-
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.JobNotFoundException;
 import org.activiti.engine.impl.interceptor.Command;
@@ -27,9 +26,7 @@ import org.activiti.engine.impl.persistence.entity.DeadLetterJobEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
-
- */
+/** */
 public class MoveJobToDeadLetterJobCmd implements Command<DeadLetterJobEntity>, Serializable {
 
   private static final long serialVersionUID = 1L;
@@ -69,5 +66,4 @@ public class MoveJobToDeadLetterJobCmd implements Command<DeadLetterJobEntity>, 
   public String getJobId() {
     return jobId;
   }
-
 }

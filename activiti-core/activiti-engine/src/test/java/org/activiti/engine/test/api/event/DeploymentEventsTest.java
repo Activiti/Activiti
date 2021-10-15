@@ -18,29 +18,28 @@ package org.activiti.engine.test.api.event;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventType;
-import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.repository.Deployment;
 
-/**
- * Test case for all {@link ActivitiEvent}s related to deployments.
- *
-
- */
+/** Test case for all {@link ActivitiEvent}s related to deployments. */
 public class DeploymentEventsTest extends PluggableActivitiTestCase {
 
   private TestActivitiEntityEventListener listener;
 
-  /**
-   * Test create, update and delete events of deployment entities.
-   */
+  /** Test create, update and delete events of deployment entities. */
   public void testDeploymentEvents() throws Exception {
     Deployment deployment = null;
     try {
       listener.clearEventsReceived();
-      deployment = repositoryService.createDeployment().addClasspathResource("org/activiti/engine/test/api/runtime/oneTaskProcess.bpmn20.xml").deploy();
+      deployment =
+          repositoryService
+              .createDeployment()
+              .addClasspathResource(
+                  "org/activiti/engine/test/api/runtime/oneTaskProcess.bpmn20.xml")
+              .deploy();
       assertThat(deployment).isNotNull();
 
       // Check create-event
@@ -80,7 +79,9 @@ public class DeploymentEventsTest extends PluggableActivitiTestCase {
       listener.clearEventsReceived();
 
     } finally {
-      if (deployment != null && repositoryService.createDeploymentQuery().deploymentId(deployment.getId()).count() > 0) {
+      if (deployment != null
+          && repositoryService.createDeploymentQuery().deploymentId(deployment.getId()).count()
+              > 0) {
         repositoryService.deleteDeployment(deployment.getId(), true);
       }
     }

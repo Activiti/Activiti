@@ -14,23 +14,18 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.test.bpmn.servicetask;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.Serializable;
-
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.JavaDelegate;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.Job;
 import org.activiti.engine.test.Deployment;
 
-/**
- *
-
- */
+/** */
 public class ServiceTaskVariablesTest extends PluggableActivitiTestCase {
 
   static boolean isOkInDelegate2;
@@ -48,7 +43,6 @@ public class ServiceTaskVariablesTest extends PluggableActivitiTestCase {
       v.value = "delegate1";
       execution.setVariable("variable", v);
     }
-
   }
 
   public static class Delegate2 implements JavaDelegate {
@@ -62,7 +56,6 @@ public class ServiceTaskVariablesTest extends PluggableActivitiTestCase {
       v.value = "delegate2";
       execution.setVariable("variable", v);
     }
-
   }
 
   public static class Delegate3 implements JavaDelegate {
@@ -74,7 +67,6 @@ public class ServiceTaskVariablesTest extends PluggableActivitiTestCase {
         isOkInDelegate3 = (v.value != null && v.value.equals("delegate2"));
       }
     }
-
   }
 
   @Deployment
@@ -109,7 +101,5 @@ public class ServiceTaskVariablesTest extends PluggableActivitiTestCase {
       assertThat(isOkInDelegate2).isTrue();
       assertThat(isOkInDelegate3).isTrue();
     }
-
   }
-
 }

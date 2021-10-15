@@ -14,22 +14,18 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.interceptor;
 
 import org.activiti.engine.impl.cfg.TransactionContext;
 import org.activiti.engine.impl.cfg.TransactionContextFactory;
 import org.activiti.engine.impl.context.Context;
 
-/**
-
- */
+/** */
 public class TransactionContextInterceptor extends AbstractCommandInterceptor {
 
   protected TransactionContextFactory transactionContextFactory;
 
-  public TransactionContextInterceptor() {
-  }
+  public TransactionContextInterceptor() {}
 
   public TransactionContextInterceptor(TransactionContextFactory transactionContextFactory) {
     this.transactionContextFactory = transactionContextFactory;
@@ -44,9 +40,11 @@ public class TransactionContextInterceptor extends AbstractCommandInterceptor {
     try {
 
       if (transactionContextFactory != null && !isReused) {
-        TransactionContext transactionContext = transactionContextFactory.openTransactionContext(commandContext);
+        TransactionContext transactionContext =
+            transactionContextFactory.openTransactionContext(commandContext);
         Context.setTransactionContext(transactionContext);
-        commandContext.addCloseListener(new TransactionCommandContextCloseListener(transactionContext));
+        commandContext.addCloseListener(
+            new TransactionCommandContextCloseListener(transactionContext));
       }
 
       return next.execute(config, command);
@@ -56,7 +54,6 @@ public class TransactionContextInterceptor extends AbstractCommandInterceptor {
         Context.removeTransactionContext();
       }
     }
-
   }
 
   public TransactionContextFactory getTransactionContextFactory() {
@@ -66,5 +63,4 @@ public class TransactionContextInterceptor extends AbstractCommandInterceptor {
   public void setTransactionContextFactory(TransactionContextFactory transactionContextFactory) {
     this.transactionContextFactory = transactionContextFactory;
   }
-
 }

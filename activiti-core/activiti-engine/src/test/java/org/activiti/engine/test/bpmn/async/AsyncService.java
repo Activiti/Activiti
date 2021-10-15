@@ -19,14 +19,10 @@ package org.activiti.engine.test.bpmn.async;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.JavaDelegate;
 
-/**
- *
-
- */
+/** */
 public class AsyncService implements JavaDelegate {
 
   public void execute(DelegateExecution execution) {
     AsyncTaskTest.INVOCATION = true;
   }
-
 }

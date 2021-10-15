@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.FormProperty;
@@ -66,7 +65,7 @@ public class FormPropertiesConverterTest extends AbstractConverterTest {
     assertThat(formProperties).isNotNull();
     assertThat(formProperties).as("Invalid form properties list: ").hasSize(8);
 
-    for (FormProperty formProperty :formProperties) {
+    for (FormProperty formProperty : formProperties) {
       if (formProperty.getId().equals("new_property_1")) {
         checkFormProperty(formProperty, "v000", true, false, false);
       } else if (formProperty.getId().equals("new_property_2")) {
@@ -78,7 +77,7 @@ public class FormPropertiesConverterTest extends AbstractConverterTest {
       } else if (formProperty.getId().equals("new_property_5")) {
         checkFormProperty(formProperty, "v100", true, false, false);
 
-        List<Map<String, Object>> formValues = new ArrayList<Map<String,Object>>();
+        List<Map<String, Object>> formValues = new ArrayList<Map<String, Object>>();
         for (FormValue formValue : formProperty.getFormValues()) {
           Map<String, Object> formValueMap = new HashMap<String, Object>();
           formValueMap.put("id", formValue.getId());
@@ -108,7 +107,7 @@ public class FormPropertiesConverterTest extends AbstractConverterTest {
     assertThat(formProperties).isNotNull();
     assertThat(formProperties).as("Invalid form properties list: ").hasSize(8);
 
-    for (FormProperty formProperty :formProperties) {
+    for (FormProperty formProperty : formProperties) {
       if (formProperty.getId().equals("new_property_1")) {
         checkFormProperty(formProperty, "v000", false, false, false);
       } else if (formProperty.getId().equals("new_property_2")) {
@@ -120,7 +119,7 @@ public class FormPropertiesConverterTest extends AbstractConverterTest {
       } else if (formProperty.getId().equals("new_property_5")) {
         checkFormProperty(formProperty, "v100", true, false, false);
 
-        List<Map<String, Object>> formValues = new ArrayList<Map<String,Object>>();
+        List<Map<String, Object>> formValues = new ArrayList<Map<String, Object>>();
         for (FormValue formValue : formProperty.getFormValues()) {
           Map<String, Object> formValueMap = new HashMap<String, Object>();
           formValueMap.put("id", formValue.getId());
@@ -139,10 +138,14 @@ public class FormPropertiesConverterTest extends AbstractConverterTest {
         fail("unexpected form property id " + formProperty.getId());
       }
     }
-
   }
 
-  private void checkFormProperty(FormProperty formProperty, String name, boolean shouldBeRequired, boolean shouldBeReadable, boolean shouldBeWritable) {
+  private void checkFormProperty(
+      FormProperty formProperty,
+      String name,
+      boolean shouldBeRequired,
+      boolean shouldBeReadable,
+      boolean shouldBeWritable) {
     assertThat(formProperty.getName()).isEqualTo(name);
     assertThat(formProperty.isRequired()).isEqualTo(shouldBeRequired);
     assertThat(formProperty.isReadable()).isEqualTo(shouldBeReadable);
@@ -150,7 +153,7 @@ public class FormPropertiesConverterTest extends AbstractConverterTest {
   }
 
   private void checkFormPropertyFormValues(List<Map<String, Object>> formValues) {
-    List<Map<String, Object>> expectedFormValues = new ArrayList<Map<String,Object>>();
+    List<Map<String, Object>> expectedFormValues = new ArrayList<Map<String, Object>>();
     Map<String, Object> formValue1 = new HashMap<String, Object>();
     formValue1.put("id", "value1");
     formValue1.put("name", "Value 1");

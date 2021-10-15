@@ -20,15 +20,14 @@ import org.activiti.api.model.shared.model.VariableInstance;
 
 public class VariableDeletedEventImpl extends VariableEventImpl implements VariableDeletedEvent {
 
-    public VariableDeletedEventImpl() {
-    }
+  public VariableDeletedEventImpl() {}
 
-    public VariableDeletedEventImpl(VariableInstance entity) {
-        super(entity);
-    }
+  public VariableDeletedEventImpl(VariableInstance entity) {
+    super(entity);
+  }
 
-    @Override
-    public VariableEvents getEventType() {
-        return VariableEvents.VARIABLE_DELETED;
-    }
+  @Override
+  public VariableEvents getEventType() {
+    return VariableEvents.VARIABLE_DELETED;
+  }
 }

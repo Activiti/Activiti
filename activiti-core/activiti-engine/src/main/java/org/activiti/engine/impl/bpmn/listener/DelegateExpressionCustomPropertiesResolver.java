@@ -16,16 +16,13 @@
 
 package org.activiti.engine.impl.bpmn.listener;
 
+import java.util.Map;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.delegate.CustomPropertiesResolver;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.Expression;
 
-import java.util.Map;
-
-/**
-
- */
+/** */
 public class DelegateExpressionCustomPropertiesResolver implements CustomPropertiesResolver {
 
   protected Expression expression;
@@ -44,15 +41,19 @@ public class DelegateExpressionCustomPropertiesResolver implements CustomPropert
     if (delegate instanceof CustomPropertiesResolver) {
       return ((CustomPropertiesResolver) delegate).getCustomPropertiesMap(execution);
     } else {
-      throw new ActivitiIllegalArgumentException("Custom properties resolver delegate expression " + expression + " did not resolve to an implementation of " + CustomPropertiesResolver.class);
+      throw new ActivitiIllegalArgumentException(
+          "Custom properties resolver delegate expression "
+              + expression
+              + " did not resolve to an implementation of "
+              + CustomPropertiesResolver.class);
     }
   }
 
   /**
-   * returns the expression text for this execution listener. Comes in handy if you want to check which listeners you already have.
+   * returns the expression text for this execution listener. Comes in handy if you want to check
+   * which listeners you already have.
    */
   public String getExpressionText() {
     return expression.getExpressionText();
   }
-
 }

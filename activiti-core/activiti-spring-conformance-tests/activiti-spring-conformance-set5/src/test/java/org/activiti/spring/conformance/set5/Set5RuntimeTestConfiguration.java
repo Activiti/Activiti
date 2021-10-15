@@ -22,21 +22,17 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class Set5RuntimeTestConfiguration {
 
-    @Bean(name = "connector-a")
-    public Connector connectorA() {
-        return integrationContext -> {
+  @Bean(name = "connector-a")
+  public Connector connectorA() {
+    return integrationContext -> {
+      return integrationContext;
+    };
+  }
 
-            return integrationContext;
-        };
-    }
-
-    @Bean(name = "connector-b")
-    public Connector connectorB() {
-        return integrationContext -> {
-
-            return integrationContext;
-        };
-    }
-
-
+  @Bean(name = "connector-b")
+  public Connector connectorB() {
+    return integrationContext -> {
+      return integrationContext;
+    };
+  }
 }

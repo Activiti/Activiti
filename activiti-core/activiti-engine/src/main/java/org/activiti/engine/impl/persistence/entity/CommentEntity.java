@@ -14,19 +14,14 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.persistence.entity;
 
 import java.util.Date;
-
 import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.task.Comment;
 import org.activiti.engine.task.Event;
 
-/**
-
-
- */
+/** */
 @Internal
 @Deprecated
 public interface CommentEntity extends Comment, Event, Entity {
@@ -55,5 +50,4 @@ public interface CommentEntity extends Comment, Event, Entity {
   void setFullMessage(String fullMessage);
 
   void setAction(String action);
-
 }

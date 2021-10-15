@@ -13,23 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/**
- *
- */
+/** */
 package org.activiti.standalone.cfg;
 
 import java.util.List;
-
 import org.activiti.engine.ManagementService;
 import org.activiti.engine.impl.AbstractQuery;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.task.Attachment;
 
-/**
-
- *
- */
+/** */
 public class AttachmentQuery extends AbstractQuery<AttachmentQuery, Attachment> {
 
   private static final long serialVersionUID = 1L;
@@ -88,7 +82,8 @@ public class AttachmentQuery extends AbstractQuery<AttachmentQuery, Attachment> 
 
   @Override
   public long executeCount(CommandContext commandContext) {
-    return (Long) commandContext.getDbSqlSession().selectOne("selectAttachmentCountByQueryCriteria", this);
+    return (Long)
+        commandContext.getDbSqlSession().selectOne("selectAttachmentCountByQueryCriteria", this);
   }
 
   @SuppressWarnings("unchecked")
@@ -96,5 +91,4 @@ public class AttachmentQuery extends AbstractQuery<AttachmentQuery, Attachment> 
   public List<Attachment> executeList(CommandContext commandContext, Page page) {
     return commandContext.getDbSqlSession().selectList("selectAttachmentByQueryCriteria", this);
   }
-
 }

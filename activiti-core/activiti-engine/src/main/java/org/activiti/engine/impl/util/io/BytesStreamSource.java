@@ -19,9 +19,7 @@ package org.activiti.engine.impl.util.io;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
-/**
-
- */
+/** */
 public class BytesStreamSource implements StreamSource {
 
   protected byte[] bytes;
@@ -33,5 +31,4 @@ public class BytesStreamSource implements StreamSource {
   public InputStream getInputStream() {
     return new ByteArrayInputStream(bytes);
   }
-
 }

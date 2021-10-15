@@ -20,20 +20,21 @@ import org.activiti.engine.impl.persistence.entity.data.AbstractDataManager;
 import org.activiti.engine.impl.persistence.entity.integration.IntegrationContextEntity;
 import org.activiti.engine.impl.persistence.entity.integration.IntegrationContextEntityImpl;
 
-public class MybatisIntegrationContextDataManager extends AbstractDataManager<IntegrationContextEntity> implements IntegrationContextDataManager {
+public class MybatisIntegrationContextDataManager
+    extends AbstractDataManager<IntegrationContextEntity> implements IntegrationContextDataManager {
 
-    public MybatisIntegrationContextDataManager(ProcessEngineConfigurationImpl processEngineConfiguration) {
-        super(processEngineConfiguration);
-    }
+  public MybatisIntegrationContextDataManager(
+      ProcessEngineConfigurationImpl processEngineConfiguration) {
+    super(processEngineConfiguration);
+  }
 
-    @Override
-    public IntegrationContextEntity create() {
-        return new IntegrationContextEntityImpl();
-    }
+  @Override
+  public IntegrationContextEntity create() {
+    return new IntegrationContextEntityImpl();
+  }
 
-    @Override
-    public Class<? extends IntegrationContextEntity> getManagedEntityClass() {
-        return IntegrationContextEntityImpl.class;
-    }
-
+  @Override
+  public Class<? extends IntegrationContextEntity> getManagedEntityClass() {
+    return IntegrationContextEntityImpl.class;
+  }
 }

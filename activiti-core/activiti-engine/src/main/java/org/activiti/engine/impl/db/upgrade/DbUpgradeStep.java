@@ -14,16 +14,12 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.db.upgrade;
 
 import org.activiti.engine.impl.db.DbSqlSession;
 
-/**
-
- */
+/** */
 public interface DbUpgradeStep {
 
   void execute(DbSqlSession dbSqlSession) throws Exception;
-
 }

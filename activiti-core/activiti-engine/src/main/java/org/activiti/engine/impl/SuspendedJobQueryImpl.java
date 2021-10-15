@@ -14,13 +14,11 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl;
 
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
-
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -28,11 +26,9 @@ import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.SuspendedJobQuery;
 
-/**
-
-
- */
-public class SuspendedJobQueryImpl extends AbstractQuery<SuspendedJobQuery, Job> implements SuspendedJobQuery, Serializable {
+/** */
+public class SuspendedJobQueryImpl extends AbstractQuery<SuspendedJobQuery, Job>
+    implements SuspendedJobQuery, Serializable {
 
   private static final long serialVersionUID = 1L;
   protected String id;
@@ -54,8 +50,7 @@ public class SuspendedJobQueryImpl extends AbstractQuery<SuspendedJobQuery, Job>
   protected boolean withoutTenantId;
   protected boolean noRetriesLeft;
 
-  public SuspendedJobQueryImpl() {
-  }
+  public SuspendedJobQueryImpl() {}
 
   public SuspendedJobQueryImpl(CommandContext commandContext) {
     super(commandContext);
@@ -109,7 +104,8 @@ public class SuspendedJobQueryImpl extends AbstractQuery<SuspendedJobQuery, Job>
 
   public SuspendedJobQueryImpl timers() {
     if (onlyMessages) {
-      throw new ActivitiIllegalArgumentException("Cannot combine onlyTimers() with onlyMessages() in the same query");
+      throw new ActivitiIllegalArgumentException(
+          "Cannot combine onlyTimers() with onlyMessages() in the same query");
     }
     this.onlyTimers = true;
     return this;
@@ -117,7 +113,8 @@ public class SuspendedJobQueryImpl extends AbstractQuery<SuspendedJobQuery, Job>
 
   public SuspendedJobQueryImpl messages() {
     if (onlyTimers) {
-      throw new ActivitiIllegalArgumentException("Cannot combine onlyTimers() with onlyMessages() in the same query");
+      throw new ActivitiIllegalArgumentException(
+          "Cannot combine onlyTimers() with onlyMessages() in the same query");
     }
     this.onlyMessages = true;
     return this;
@@ -321,5 +318,4 @@ public class SuspendedJobQueryImpl extends AbstractQuery<SuspendedJobQuery, Job>
   public boolean isNoRetriesLeft() {
     return noRetriesLeft;
   }
-
 }

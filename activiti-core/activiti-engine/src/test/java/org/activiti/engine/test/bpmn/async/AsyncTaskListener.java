@@ -27,5 +27,4 @@ public class AsyncTaskListener implements TaskListener {
   public void notify(DelegateTask delegateTask) {
     delegateTask.setVariable("taskListener", "listener invoked");
   }
-
 }

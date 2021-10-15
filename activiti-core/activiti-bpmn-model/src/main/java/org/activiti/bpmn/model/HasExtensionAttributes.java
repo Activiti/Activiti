@@ -18,10 +18,7 @@ package org.activiti.bpmn.model;
 import java.util.List;
 import java.util.Map;
 
-/**
- * interface for accessing Element attributes.
- *
- */
+/** interface for accessing Element attributes. */
 public interface HasExtensionAttributes {
   /** get element's attributes */
   Map<String, List<ExtensionAttribute>> getAttributes();

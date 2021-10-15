@@ -16,7 +16,6 @@
 package org.activiti.bpmn.converter.child;
 
 import javax.xml.stream.XMLStreamReader;
-
 import org.activiti.bpmn.converter.util.BpmnXMLUtil;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BpmnModel;
@@ -24,17 +23,15 @@ import org.activiti.bpmn.model.EndEvent;
 import org.activiti.bpmn.model.Event;
 import org.activiti.bpmn.model.TerminateEventDefinition;
 
-/**
-
-
- */
+/** */
 public class TerminateEventDefinitionParser extends BaseChildElementParser {
 
   public String getElementName() {
     return ELEMENT_EVENT_TERMINATEDEFINITION;
   }
 
-  public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model) throws Exception {
+  public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model)
+      throws Exception {
     if (!(parentElement instanceof EndEvent)) {
       return;
     }
@@ -50,17 +47,21 @@ public class TerminateEventDefinitionParser extends BaseChildElementParser {
     ((Event) parentElement).getEventDefinitions().add(eventDefinition);
   }
 
-  protected void parseTerminateAllAttribute(XMLStreamReader xtr, TerminateEventDefinition eventDefinition) {
-    String terminateAllValue = xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_TERMINATE_ALL);
+  protected void parseTerminateAllAttribute(
+      XMLStreamReader xtr, TerminateEventDefinition eventDefinition) {
+    String terminateAllValue =
+        xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_TERMINATE_ALL);
     if (terminateAllValue != null && "true".equals(terminateAllValue)) {
-    	eventDefinition.setTerminateAll(true);
+      eventDefinition.setTerminateAll(true);
     } else {
-    	eventDefinition.setTerminateAll(false);
+      eventDefinition.setTerminateAll(false);
     }
   }
 
-  protected void parseTerminateMultiInstanceAttribute(XMLStreamReader xtr, TerminateEventDefinition eventDefinition) {
-    String terminateMiValue = xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_TERMINATE_MULTI_INSTANCE);
+  protected void parseTerminateMultiInstanceAttribute(
+      XMLStreamReader xtr, TerminateEventDefinition eventDefinition) {
+    String terminateMiValue =
+        xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_TERMINATE_MULTI_INSTANCE);
     if (terminateMiValue != null && "true".equals(terminateMiValue)) {
       eventDefinition.setTerminateMultiInstance(true);
     } else {

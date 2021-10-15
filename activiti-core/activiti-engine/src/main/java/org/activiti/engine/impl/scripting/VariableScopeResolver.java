@@ -19,14 +19,12 @@ package org.activiti.engine.impl.scripting;
 import static java.util.Arrays.asList;
 
 import java.util.List;
-
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.delegate.VariableScope;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
-
 
 public class VariableScopeResolver implements Resolver {
 
@@ -43,12 +41,18 @@ public class VariableScopeResolver implements Resolver {
   protected static final String historyServiceKey = "historyService";
   protected static final String formServiceKey = "formService";
 
-  protected static final List<String> KEYS = asList(
-      processEngineConfigurationKey, runtimeServiceKey, taskServiceKey,
-      repositoryServiceKey, managementServiceKey, historyServiceKey, formServiceKey);
+  protected static final List<String> KEYS =
+      asList(
+          processEngineConfigurationKey,
+          runtimeServiceKey,
+          taskServiceKey,
+          repositoryServiceKey,
+          managementServiceKey,
+          historyServiceKey,
+          formServiceKey);
 
-
-  public VariableScopeResolver(ProcessEngineConfigurationImpl processEngineConfiguration, VariableScope variableScope) {
+  public VariableScopeResolver(
+      ProcessEngineConfigurationImpl processEngineConfiguration, VariableScope variableScope) {
 
     this.processEngineConfiguration = processEngineConfiguration;
 
@@ -60,13 +64,16 @@ public class VariableScopeResolver implements Resolver {
     } else if (variableScope instanceof TaskEntity) {
       variableScopeKey = "task";
     } else {
-      throw new ActivitiException("unsupported variable scope type: " + variableScope.getClass().getName());
+      throw new ActivitiException(
+          "unsupported variable scope type: " + variableScope.getClass().getName());
     }
     this.variableScope = variableScope;
   }
 
   public boolean containsKey(Object key) {
-    return variableScopeKey.equals(key) || KEYS.contains(key)|| variableScope.hasVariable((String) key);
+    return variableScopeKey.equals(key)
+        || KEYS.contains(key)
+        || variableScope.hasVariable((String) key);
   }
 
   public Object get(Object key) {

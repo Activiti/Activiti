@@ -14,13 +14,11 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.cmd;
 
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Map;
-
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.impl.interceptor.Command;
@@ -28,10 +26,7 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.task.Task;
 
-/**
-
-
- */
+/** */
 public class GetTaskVariablesCmd implements Command<Map<String, Object>>, Serializable {
 
   private static final long serialVersionUID = 1L;
@@ -71,8 +66,6 @@ public class GetTaskVariablesCmd implements Command<Map<String, Object>>, Serial
       } else {
         return task.getVariables(variableNames, false);
       }
-
     }
-
   }
 }

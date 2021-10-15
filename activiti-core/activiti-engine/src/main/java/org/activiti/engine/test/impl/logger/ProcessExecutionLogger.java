@@ -20,35 +20,32 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.test.impl.logger.DebugInfoExecutionTree.DebugInfoExecutionTreeNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
-
- */
+/** */
 public class ProcessExecutionLogger {
 
   private static final Logger logger = LoggerFactory.getLogger(ProcessExecutionLogger.class);
 
   protected Map<String, List<DebugInfo>> debugInfoMap = new HashMap<String, List<DebugInfo>>();
 
-  // To avoid going to the db (and thus influencing process execution/tests), we store all encountered executions here,
+  // To avoid going to the db (and thus influencing process execution/tests), we store all
+  // encountered executions here,
   // to build up a tree representation with that information afterwards.
   protected Map<String, ExecutionEntity> createdExecutions = new HashMap<String, ExecutionEntity>();
   protected Map<String, ExecutionEntity> deletedExecutions = new HashMap<String, ExecutionEntity>();
 
-  public ProcessExecutionLogger() {
-
-  }
+  public ProcessExecutionLogger() {}
 
   public void addDebugInfo(AbstractDebugInfo debugInfo) {
     addDebugInfo(debugInfo, false);
   }
 
-  public synchronized void addDebugInfo(AbstractDebugInfo debugInfo, boolean generateExecutionTreeRepresentation) {
+  public synchronized void addDebugInfo(
+      AbstractDebugInfo debugInfo, boolean generateExecutionTreeRepresentation) {
 
     // Store debug info
     String threadName = Thread.currentThread().getName();
@@ -99,13 +96,20 @@ public class ProcessExecutionLogger {
     return executionTrees;
   }
 
-  protected void internalPopulateExecutionTree(DebugInfoExecutionTreeNode parentNode, Map<String, List<ExecutionEntity>> parentMapping) {
+  protected void internalPopulateExecutionTree(
+      DebugInfoExecutionTreeNode parentNode, Map<String, List<ExecutionEntity>> parentMapping) {
     if (parentMapping.containsKey(parentNode.getId())) {
       for (ExecutionEntity childExecutionEntity : parentMapping.get(parentNode.getId())) {
         DebugInfoExecutionTreeNode childNode = new DebugInfoExecutionTreeNode();
         childNode.setId(childExecutionEntity.getId());
-        childNode.setActivityId(childExecutionEntity.getCurrentFlowElement() != null ? childExecutionEntity.getCurrentFlowElement().getId() : null);
-        childNode.setActivityName(childExecutionEntity.getCurrentFlowElement() != null ? childExecutionEntity.getCurrentFlowElement().getName() : null);
+        childNode.setActivityId(
+            childExecutionEntity.getCurrentFlowElement() != null
+                ? childExecutionEntity.getCurrentFlowElement().getId()
+                : null);
+        childNode.setActivityName(
+            childExecutionEntity.getCurrentFlowElement() != null
+                ? childExecutionEntity.getCurrentFlowElement().getName()
+                : null);
         childNode.setProcessDefinitionId(childExecutionEntity.getProcessDefinitionId());
 
         childNode.setParentNode(childNode);
@@ -134,7 +138,6 @@ public class ProcessExecutionLogger {
       for (DebugInfo debugInfo : debugInfoMap.get(threadName)) {
         debugInfo.printOut(logger);
       }
-
     }
 
     logger.info("");
@@ -156,5 +159,4 @@ public class ProcessExecutionLogger {
   public void executionDeleted(ExecutionEntity executionEntity) {
     deletedExecutions.put(executionEntity.getId(), executionEntity);
   }
-
 }

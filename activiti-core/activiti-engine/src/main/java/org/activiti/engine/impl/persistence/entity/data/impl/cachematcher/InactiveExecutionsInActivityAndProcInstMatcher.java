@@ -17,14 +17,12 @@
 package org.activiti.engine.impl.persistence.entity.data.impl.cachematcher;
 
 import java.util.Map;
-
 import org.activiti.engine.impl.persistence.CachedEntityMatcherAdapter;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 
-/**
-
- */
-public class InactiveExecutionsInActivityAndProcInstMatcher extends CachedEntityMatcherAdapter<ExecutionEntity> {
+/** */
+public class InactiveExecutionsInActivityAndProcInstMatcher
+    extends CachedEntityMatcherAdapter<ExecutionEntity> {
 
   @Override
   public boolean isRetained(ExecutionEntity executionEntity, Object parameter) {
@@ -38,5 +36,4 @@ public class InactiveExecutionsInActivityAndProcInstMatcher extends CachedEntity
         && executionEntity.getActivityId() != null
         && executionEntity.getActivityId().equals(activityId);
   }
-
 }

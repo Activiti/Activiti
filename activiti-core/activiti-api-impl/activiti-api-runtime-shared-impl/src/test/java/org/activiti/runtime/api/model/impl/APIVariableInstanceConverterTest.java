@@ -24,24 +24,24 @@ import org.junit.jupiter.api.Test;
 
 class APIVariableInstanceConverterTest {
 
-    private APIVariableInstanceConverter converter = new APIVariableInstanceConverter();
+  private APIVariableInstanceConverter converter = new APIVariableInstanceConverter();
 
-    @Test
-    void should_convertToApiVariableInstance() {
-        VariableInstanceEntityImpl internalEvent = new VariableInstanceEntityImpl();
-        internalEvent.setName("name");
-        internalEvent.setType(new StringType(100));
-        internalEvent.setValue("someValue");
-        internalEvent.setProcessInstanceId("processInstanceId");
-        internalEvent.setTaskId("taskId");
+  @Test
+  void should_convertToApiVariableInstance() {
+    VariableInstanceEntityImpl internalEvent = new VariableInstanceEntityImpl();
+    internalEvent.setName("name");
+    internalEvent.setType(new StringType(100));
+    internalEvent.setValue("someValue");
+    internalEvent.setProcessInstanceId("processInstanceId");
+    internalEvent.setTaskId("taskId");
 
-        VariableInstance result = converter.from(internalEvent);
+    VariableInstance result = converter.from(internalEvent);
 
-        assertThat(result.getName()).isEqualTo("name");
-        assertThat(result.getType()).isEqualTo("string");
-        assertThat(result.getProcessInstanceId()).isEqualTo("processInstanceId");
-        assertThat(result.getTaskId()).isEqualTo("taskId");
-        String actualValue = result.getValue();
-        assertThat(actualValue).isEqualTo("someValue");
-    }
+    assertThat(result.getName()).isEqualTo("name");
+    assertThat(result.getType()).isEqualTo("string");
+    assertThat(result.getProcessInstanceId()).isEqualTo("processInstanceId");
+    assertThat(result.getTaskId()).isEqualTo("taskId");
+    String actualValue = result.getValue();
+    assertThat(actualValue).isEqualTo("someValue");
+  }
 }

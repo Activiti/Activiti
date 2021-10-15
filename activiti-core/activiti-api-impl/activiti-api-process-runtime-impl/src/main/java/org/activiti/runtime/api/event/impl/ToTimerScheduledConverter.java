@@ -15,29 +15,31 @@
  */
 package org.activiti.runtime.api.event.impl;
 
+import java.util.Optional;
 import org.activiti.api.process.model.events.BPMNTimerScheduledEvent;
 import org.activiti.api.runtime.event.impl.BPMNTimerScheduledEventImpl;
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 
-import java.util.Optional;
+public class ToTimerScheduledConverter
+    implements EventConverter<BPMNTimerScheduledEvent, ActivitiEvent> {
 
-public class ToTimerScheduledConverter implements EventConverter<BPMNTimerScheduledEvent, ActivitiEvent> {
+  private BPMNTimerConverter bpmnTimerConverter;
 
-    private BPMNTimerConverter bpmnTimerConverter;
+  public ToTimerScheduledConverter(BPMNTimerConverter bpmnTimerConverter) {
+    this.bpmnTimerConverter = bpmnTimerConverter;
+  }
 
-    public ToTimerScheduledConverter(BPMNTimerConverter bpmnTimerConverter) {
-        this.bpmnTimerConverter = bpmnTimerConverter;
+  @Override
+  public Optional<BPMNTimerScheduledEvent> from(ActivitiEvent internalEvent) {
+    BPMNTimerScheduledEventImpl event = null;
+    if (bpmnTimerConverter.isTimerRelatedEvent(internalEvent)) {
+      event =
+          new BPMNTimerScheduledEventImpl(
+              bpmnTimerConverter.convertToBPMNTimer((ActivitiEntityEvent) internalEvent));
+      event.setProcessInstanceId(internalEvent.getProcessInstanceId());
+      event.setProcessDefinitionId(internalEvent.getProcessDefinitionId());
     }
-
-    @Override
-    public Optional<BPMNTimerScheduledEvent> from(ActivitiEvent internalEvent) {
-        BPMNTimerScheduledEventImpl event = null;
-        if (bpmnTimerConverter.isTimerRelatedEvent(internalEvent)) {
-            event = new BPMNTimerScheduledEventImpl(bpmnTimerConverter.convertToBPMNTimer((ActivitiEntityEvent) internalEvent));
-            event.setProcessInstanceId(internalEvent.getProcessInstanceId());
-            event.setProcessDefinitionId(internalEvent.getProcessDefinitionId());
-        }
-        return Optional.ofNullable(event);
-    }
+    return Optional.ofNullable(event);
+  }
 }

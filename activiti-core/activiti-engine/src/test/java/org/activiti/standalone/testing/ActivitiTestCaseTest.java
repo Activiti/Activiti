@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.standalone.testing;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -23,9 +22,7 @@ import org.activiti.engine.task.Task;
 import org.activiti.engine.test.ActivitiTestCase;
 import org.activiti.engine.test.Deployment;
 
-/**
-
- */
+/** */
 public class ActivitiTestCaseTest extends ActivitiTestCase {
 
   @Deployment

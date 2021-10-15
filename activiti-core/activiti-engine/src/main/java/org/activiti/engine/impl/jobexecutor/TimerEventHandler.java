@@ -36,7 +36,8 @@ public class TimerEventHandler {
     return cfgJson.toString();
   }
 
-  public static String setActivityIdToConfiguration(String jobHandlerConfiguration, String activityId) {
+  public static String setActivityIdToConfiguration(
+      String jobHandlerConfiguration, String activityId) {
     try {
       JSONObject cfgJson = new JSONObject(jobHandlerConfiguration);
       cfgJson.put(PROPERTYNAME_TIMER_ACTIVITY_ID, activityId);
@@ -89,5 +90,4 @@ public class TimerEventHandler {
       return null;
     }
   }
-
 }

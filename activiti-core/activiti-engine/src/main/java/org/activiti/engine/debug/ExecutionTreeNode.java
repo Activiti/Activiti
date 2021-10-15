@@ -18,14 +18,11 @@ package org.activiti.engine.debug;
 
 import java.util.Iterator;
 import java.util.List;
-
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.SequenceFlow;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 
-/**
-
- */
+/** */
 public class ExecutionTreeNode implements Iterable<ExecutionTreeNode> {
 
   protected ExecutionEntity executionEntity;
@@ -93,20 +90,27 @@ public class ExecutionTreeNode implements Iterable<ExecutionTreeNode> {
   }
 
   protected void internalToString(StringBuilder strb, String prefix, boolean isTail) {
-    strb.append(prefix + (isTail ? "└── " : "├── ") + getExecutionEntity().getId() + " : "
-        + getCurrentFlowElementId()
-        + ", parent id " + getExecutionEntity().getParentId()
-        + (getExecutionEntity().isActive() ? " (active)" : " (not active)")
-        + (getExecutionEntity().isScope() ? " (scope)" : "")
-        + (getExecutionEntity().isMultiInstanceRoot() ? " (multi instance root)" : "")
-        + (getExecutionEntity().isEnded() ? " (ended)" : "")
-        + System.lineSeparator());
+    strb.append(
+        prefix
+            + (isTail ? "└── " : "├── ")
+            + getExecutionEntity().getId()
+            + " : "
+            + getCurrentFlowElementId()
+            + ", parent id "
+            + getExecutionEntity().getParentId()
+            + (getExecutionEntity().isActive() ? " (active)" : " (not active)")
+            + (getExecutionEntity().isScope() ? " (scope)" : "")
+            + (getExecutionEntity().isMultiInstanceRoot() ? " (multi instance root)" : "")
+            + (getExecutionEntity().isEnded() ? " (ended)" : "")
+            + System.lineSeparator());
     if (children != null) {
       for (int i = 0; i < children.size() - 1; i++) {
         children.get(i).internalToString(strb, prefix + (isTail ? "    " : "│   "), false);
       }
       if (children.size() > 0) {
-        children.get(children.size() - 1).internalToString(strb, prefix + (isTail ? "    " : "│   "), true);
+        children
+            .get(children.size() - 1)
+            .internalToString(strb, prefix + (isTail ? "    " : "│   "), true);
       }
     }
   }
@@ -122,5 +126,4 @@ public class ExecutionTreeNode implements Iterable<ExecutionTreeNode> {
       return "";
     }
   }
-
 }

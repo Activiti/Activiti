@@ -20,15 +20,15 @@ import org.activiti.engine.impl.persistence.entity.TaskEntity;
 
 public class TaskElResolver implements VariableScopeItemELResolver {
 
-    private static final String TASK_KEY = "task";
+  private static final String TASK_KEY = "task";
 
-    @Override
-    public boolean canResolve(String property, VariableScope variableScope) {
-        return TASK_KEY.equals(property) && variableScope instanceof TaskEntity;
-    }
+  @Override
+  public boolean canResolve(String property, VariableScope variableScope) {
+    return TASK_KEY.equals(property) && variableScope instanceof TaskEntity;
+  }
 
-    @Override
-    public Object resolve(String property, VariableScope variableScope) {
-        return variableScope;
-    }
+  @Override
+  public Object resolve(String property, VariableScope variableScope) {
+    return variableScope;
+  }
 }

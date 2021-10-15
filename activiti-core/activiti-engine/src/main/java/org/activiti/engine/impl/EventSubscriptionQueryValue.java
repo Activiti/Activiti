@@ -14,14 +14,11 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl;
 
 import java.io.Serializable;
 
-/**
-
- */
+/** */
 public class EventSubscriptionQueryValue implements Serializable {
 
   private static final long serialVersionUID = 1L;
@@ -49,5 +46,4 @@ public class EventSubscriptionQueryValue implements Serializable {
   public void setEventName(String eventName) {
     this.eventName = eventName;
   }
-
 }

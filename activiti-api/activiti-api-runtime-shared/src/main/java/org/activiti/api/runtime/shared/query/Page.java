@@ -19,8 +19,7 @@ import java.util.List;
 
 public interface Page<T> {
 
-    List<T> getContent();
+  List<T> getContent();
 
-    int getTotalItems();
-
+  int getTotalItems();
 }

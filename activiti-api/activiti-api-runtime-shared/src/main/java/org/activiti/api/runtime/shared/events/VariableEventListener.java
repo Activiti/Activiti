@@ -19,6 +19,5 @@ import org.activiti.api.model.shared.event.RuntimeEvent;
 
 public interface VariableEventListener<E extends RuntimeEvent<?, ?>> {
 
-    void onEvent(E event);
-
+  void onEvent(E event);
 }

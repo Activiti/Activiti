@@ -16,20 +16,14 @@
 
 package org.activiti.engine.task;
 
+import java.util.Date;
 import org.activiti.engine.api.internal.Internal;
 
-import java.util.Date;
-
-/**
- * Represents one task for a human user.
- *
- */
+/** Represents one task for a human user. */
 @Internal
 public interface Task extends TaskInfo {
 
-  /**
-   * Default value used for priority when a new {@link Task} is created.
-   */
+  /** Default value used for priority when a new {@link Task} is created. */
   int DEFAULT_PRIORITY = 0;
 
   /** Name or title of the task. */
@@ -47,14 +41,10 @@ public interface Task extends TaskInfo {
   /** Sets the indication of how important/urgent this task is */
   void setPriority(int priority);
 
-  /**
-   * The {@link User.getId() userId} of the person that is responsible for this task.
-   */
+  /** The {@link User.getId() userId} of the person that is responsible for this task. */
   void setOwner(String owner);
 
-  /**
-   * The {@link User.getId() userId} of the person to which this task is delegated.
-   */
+  /** The {@link User.getId() userId} of the person to which this task is delegated. */
   void setAssignee(String assignee);
 
   /** The current {@link DelegationState} for this task. */
@@ -67,7 +57,8 @@ public interface Task extends TaskInfo {
   void setDueDate(Date dueDate);
 
   /**
-   * Change the category of the task. This is an optional field and allows to 'tag' tasks as belonging to a certain category.
+   * Change the category of the task. This is an optional field and allows to 'tag' tasks as
+   * belonging to a certain category.
    */
   void setCategory(String category);
 
@@ -86,5 +77,4 @@ public interface Task extends TaskInfo {
   Integer getAppVersion();
 
   void setAppVersion(Integer appVersion);
-
 }

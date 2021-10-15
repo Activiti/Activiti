@@ -22,34 +22,35 @@ import java.util.TimeZone;
 
 public class DateResolverHelper {
 
-    private static final String ISO_8601_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX";
-    private static final String DATE_FORMAT = "yyyy-MM-dd";
-    private static final String DATE_FUNCTION_NAME = "today";
-    private static final String DATE_INVOKE_METHOD = "today";
-    private static final String DATETIME_FUNCTION_NAME = "current";
-    private static final String DATETIME_INVOKE_METHOD = "current";
+  private static final String ISO_8601_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX";
+  private static final String DATE_FORMAT = "yyyy-MM-dd";
+  private static final String DATE_FUNCTION_NAME = "today";
+  private static final String DATE_INVOKE_METHOD = "today";
+  private static final String DATETIME_FUNCTION_NAME = "current";
+  private static final String DATETIME_INVOKE_METHOD = "current";
 
-    private static final TimeZone TIME_ZONE = TimeZone.getTimeZone("UTC");
+  private static final TimeZone TIME_ZONE = TimeZone.getTimeZone("UTC");
 
-    public static final String today() {
-        return parseNow(DATE_FORMAT);
-    }
+  public static final String today() {
+    return parseNow(DATE_FORMAT);
+  }
 
-    public static final String current() {
-        return parseNow(ISO_8601_FORMAT);
-    }
+  public static final String current() {
+    return parseNow(ISO_8601_FORMAT);
+  }
 
-    private DateResolverHelper() {
-    }
+  private DateResolverHelper() {}
 
-    private static String parseNow(String format) {
-        DateFormat dateFormat = new SimpleDateFormat(format);
-        dateFormat.setTimeZone(TIME_ZONE);
-        return dateFormat.format(new Date());
-    }
+  private static String parseNow(String format) {
+    DateFormat dateFormat = new SimpleDateFormat(format);
+    dateFormat.setTimeZone(TIME_ZONE);
+    return dateFormat.format(new Date());
+  }
 
-    public static void addDateFunctions(ActivitiElContext elContext) throws NoSuchMethodException {
-        elContext.setFunction("", DATE_FUNCTION_NAME, DateResolverHelper.class.getMethod(DATE_INVOKE_METHOD));
-        elContext.setFunction("", DATETIME_FUNCTION_NAME, DateResolverHelper.class.getMethod(DATETIME_INVOKE_METHOD));
-    }
+  public static void addDateFunctions(ActivitiElContext elContext) throws NoSuchMethodException {
+    elContext.setFunction(
+        "", DATE_FUNCTION_NAME, DateResolverHelper.class.getMethod(DATE_INVOKE_METHOD));
+    elContext.setFunction(
+        "", DATETIME_FUNCTION_NAME, DateResolverHelper.class.getMethod(DATETIME_INVOKE_METHOD));
+  }
 }

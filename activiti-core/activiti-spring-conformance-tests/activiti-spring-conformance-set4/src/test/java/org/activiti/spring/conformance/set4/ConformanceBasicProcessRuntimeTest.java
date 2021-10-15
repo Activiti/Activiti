@@ -15,8 +15,9 @@
  */
 package org.activiti.spring.conformance.set4;
 
-import java.util.List;
+import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.List;
 import org.activiti.api.process.model.ProcessDefinition;
 import org.activiti.api.process.runtime.ProcessRuntime;
 import org.activiti.api.process.runtime.conf.ProcessRuntimeConfiguration;
@@ -29,70 +30,60 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 public class ConformanceBasicProcessRuntimeTest {
 
+  @Autowired private ProcessRuntime processRuntime;
 
-    @Autowired
-    private ProcessRuntime processRuntime;
+  @Autowired private SecurityUtil securityUtil;
 
-    @Autowired
-    private SecurityUtil securityUtil;
+  @Test
+  public void shouldGetConfiguration() {
+    securityUtil.logInAs("user1");
+    // when
+    ProcessRuntimeConfiguration configuration = processRuntime.configuration();
+    // then
+    assertThat(configuration).isNotNull();
+    // when
+    List<ProcessRuntimeEventListener<?>> processRuntimeEventListeners =
+        configuration.processEventListeners();
+    List<VariableEventListener<?>> variableEventListeners = configuration.variableEventListeners();
+    // then
+    assertThat(processRuntimeEventListeners).isNotEmpty();
+    assertThat(variableEventListeners).isNotEmpty();
+  }
 
-    @Test
-    public void shouldGetConfiguration() {
-        securityUtil.logInAs("user1");
-        //when
-        ProcessRuntimeConfiguration configuration = processRuntime.configuration();
-        //then
-        assertThat(configuration).isNotNull();
-        //when
-        List<ProcessRuntimeEventListener<?>> processRuntimeEventListeners = configuration.processEventListeners();
-        List<VariableEventListener<?>> variableEventListeners = configuration.variableEventListeners();
-        //then
-        assertThat(processRuntimeEventListeners).isNotEmpty();
-        assertThat(variableEventListeners).isNotEmpty();
+  @Test
+  public void shouldProcessDefinitions() {
+    securityUtil.logInAs("user1");
 
-    }
+    Page<ProcessDefinition> processDefinitionPage =
+        processRuntime.processDefinitions(Pageable.of(0, 50));
 
-    @Test
-    public void shouldProcessDefinitions() {
-        securityUtil.logInAs("user1");
+    List<ProcessDefinition> processDefinitions = processDefinitionPage.getContent();
+    assertThat(processDefinitions)
+        .extracting(ProcessDefinition::getName)
+        .contains(
+            "Basic Exclusive Gateway",
+            "Basic Exclusive Gateway Expr Error",
+            "Basic Parallel Gateway",
+            "Basic Parallel Gateway Groups");
+  }
 
-        Page<ProcessDefinition> processDefinitionPage = processRuntime.processDefinitions(Pageable.of(0, 50));
+  @Test
+  public void shouldProcessDefinitionsMetaData() {
+    securityUtil.logInAs("user1");
 
-        List<ProcessDefinition> processDefinitions = processDefinitionPage.getContent();
-        assertThat(processDefinitions).extracting(ProcessDefinition::getName).contains(
-                "Basic Exclusive Gateway",
-                "Basic Exclusive Gateway Expr Error",
-                "Basic Parallel Gateway",
-                "Basic Parallel Gateway Groups"
+    Page<ProcessDefinition> processDefinitionPage =
+        processRuntime.processDefinitions(Pageable.of(0, 50));
 
-        );
-
-    }
-
-    @Test
-    public void shouldProcessDefinitionsMetaData() {
-        securityUtil.logInAs("user1");
-
-        Page<ProcessDefinition> processDefinitionPage = processRuntime.processDefinitions(Pageable.of(0, 50));
-
-        List<ProcessDefinition> processDefinitions = processDefinitionPage.getContent();
-        assertThat(processDefinitions).extracting(ProcessDefinition::getName).contains(
-                "Basic Exclusive Gateway",
-                "Basic Exclusive Gateway Expr Error",
-                "Basic Parallel Gateway",
-                "Basic Parallel Gateway Groups"
-
-        );
-
-
-    }
-
-
-
-
+    List<ProcessDefinition> processDefinitions = processDefinitionPage.getContent();
+    assertThat(processDefinitions)
+        .extracting(ProcessDefinition::getName)
+        .contains(
+            "Basic Exclusive Gateway",
+            "Basic Exclusive Gateway Expr Error",
+            "Basic Parallel Gateway",
+            "Basic Parallel Gateway Groups");
+  }
 }

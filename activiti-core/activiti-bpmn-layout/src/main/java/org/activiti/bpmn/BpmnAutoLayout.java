@@ -17,15 +17,21 @@ package org.activiti.bpmn;
 
 import static java.util.Arrays.asList;
 
+import com.mxgraph.layout.hierarchical.mxHierarchicalLayout;
+import com.mxgraph.model.mxCell;
+import com.mxgraph.model.mxGeometry;
+import com.mxgraph.util.mxConstants;
+import com.mxgraph.util.mxPoint;
+import com.mxgraph.view.mxCellState;
+import com.mxgraph.view.mxEdgeStyle;
+import com.mxgraph.view.mxGraph;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-
 import javax.swing.SwingConstants;
-
 import org.activiti.bpmn.model.Artifact;
 import org.activiti.bpmn.model.Association;
 import org.activiti.bpmn.model.BaseElement;
@@ -42,21 +48,9 @@ import org.activiti.bpmn.model.Process;
 import org.activiti.bpmn.model.SequenceFlow;
 import org.activiti.bpmn.model.SubProcess;
 import org.activiti.bpmn.model.Task;
-
-import com.mxgraph.layout.hierarchical.mxHierarchicalLayout;
-import com.mxgraph.model.mxCell;
-import com.mxgraph.model.mxGeometry;
-import com.mxgraph.util.mxConstants;
-import com.mxgraph.util.mxPoint;
-import com.mxgraph.view.mxCellState;
-import com.mxgraph.view.mxEdgeStyle;
-import com.mxgraph.view.mxGraph;
 import org.activiti.bpmn.model.TextAnnotation;
 
-/**
- * Auto layouts a {@link BpmnModel}.
- *
- */
+/** Auto layouts a {@link BpmnModel}. */
 public class BpmnAutoLayout {
 
   private static final String STYLE_EVENT = "styleEvent";
@@ -111,7 +105,8 @@ public class BpmnAutoLayout {
     cellParent = graph.getDefaultParent();
     graph.getModel().beginUpdate();
 
- // Subprocesses are handled in a new instance of BpmnAutoLayout, hence they instantiations of new maps here.
+    // Subprocesses are handled in a new instance of BpmnAutoLayout, hence they instantiations of
+    // new maps here.
 
     handledFlowElements = new HashMap<String, FlowElement>();
     handledArtifacts = new HashMap<String, Artifact>();
@@ -119,11 +114,26 @@ public class BpmnAutoLayout {
     generatedSequenceFlowEdges = new HashMap<String, Object>();
     generatedAssociationEdges = new HashMap<String, Object>();
 
-    associations = new HashMap<String, Association>(); //Associations are gathered and processed afterwards, because we must be sure we already found source and target
-    textAnnotations = new HashMap<String, TextAnnotation>(); // Text Annotations are gathered and processed afterwards, because we must be sure we already found the parent.
+    associations =
+        new HashMap<
+            String,
+            Association>(); // Associations are gathered and processed afterwards, because we must
+    // be sure we already found source and target
+    textAnnotations =
+        new HashMap<
+            String,
+            TextAnnotation>(); // Text Annotations are gathered and processed afterwards, because we
+    // must be sure we already found the parent.
 
-    sequenceFlows = new HashMap<String, SequenceFlow>(); // Sequence flow are gathered and processed afterwards,because we mustbe sure we already found source and target
-    boundaryEvents = new ArrayList<BoundaryEvent>(); // Boundary events are gathered and processed afterwards, because we must be sure we have its parent
+    sequenceFlows =
+        new HashMap<
+            String,
+            SequenceFlow>(); // Sequence flow are gathered and processed afterwards,because we
+    // mustbe sure we already found source and target
+    boundaryEvents =
+        new ArrayList<
+            BoundaryEvent>(); // Boundary events are gathered and processed afterwards, because we
+    // must be sure we have its parent
 
     // Process all elements
     for (FlowElement flowElement : flowElementsContainer.getFlowElements()) {
@@ -219,7 +229,8 @@ public class BpmnAutoLayout {
   }
 
   protected void handleActivity(FlowElement flowElement) {
-    Object activityVertex = graph.insertVertex(cellParent, flowElement.getId(), "", 0, 0, taskWidth, taskHeight);
+    Object activityVertex =
+        graph.insertVertex(cellParent, flowElement.getId(), "", 0, 0, taskWidth, taskHeight);
     generatedVertices.put(flowElement.getId(), activityVertex);
   }
 
@@ -229,7 +240,15 @@ public class BpmnAutoLayout {
 
     double subProcessWidth = bpmnAutoLayout.getGraph().getView().getGraphBounds().getWidth();
     double subProcessHeight = bpmnAutoLayout.getGraph().getView().getGraphBounds().getHeight();
-    Object subProcessVertex = graph.insertVertex(cellParent, flowElement.getId(), "", 0, 0, subProcessWidth + 2 * subProcessMargin, subProcessHeight + 2 * subProcessMargin);
+    Object subProcessVertex =
+        graph.insertVertex(
+            cellParent,
+            flowElement.getId(),
+            "",
+            0,
+            0,
+            subProcessWidth + 2 * subProcessMargin,
+            subProcessHeight + 2 * subProcessMargin);
     generatedVertices.put(flowElement.getId(), subProcessVertex);
   }
 
@@ -248,7 +267,10 @@ public class BpmnAutoLayout {
       } else if (boundaryEvent.getAttachedToRef() != null) {
         portParent = generatedVertices.get(boundaryEvent.getAttachedToRef().getId());
       } else {
-        throw new RuntimeException("Could not generate DI: boundaryEvent '" + boundaryEvent.getId() + "' has no attachedToRef");
+        throw new RuntimeException(
+            "Could not generate DI: boundaryEvent '"
+                + boundaryEvent.getId()
+                + "' has no attachedToRef");
       }
 
       graph.addCell(boundaryPort, portParent);
@@ -289,7 +311,8 @@ public class BpmnAutoLayout {
         style = STYLE_SEQUENCEFLOW;
       }
 
-      Object sequenceFlowEdge = graph.insertEdge(cellParent, sequenceFlow.getId(), "", sourceVertex, targetVertex, style);
+      Object sequenceFlowEdge =
+          graph.insertEdge(cellParent, sequenceFlow.getId(), "", sourceVertex, targetVertex, style);
       generatedSequenceFlowEdges.put(sequenceFlow.getId(), sequenceFlowEdge);
     }
   }
@@ -325,7 +348,8 @@ public class BpmnAutoLayout {
         style = STYLE_SEQUENCEFLOW;
       }
 
-      Object associationEdge = graph.insertEdge(cellParent, association.getId(), "", sourceVertex, targetVertex, style);
+      Object associationEdge =
+          graph.insertEdge(cellParent, association.getId(), "", sourceVertex, targetVertex, style);
       generatedAssociationEdges.put(association.getId(), associationEdge);
     }
   }
@@ -341,7 +365,9 @@ public class BpmnAutoLayout {
     }
 
     // Add vertex representing event to graph
-    Object eventVertex = graph.insertVertex(cellParent, flowElement.getId(), "", 0, 0, eventSize, eventSize, STYLE_EVENT);
+    Object eventVertex =
+        graph.insertVertex(
+            cellParent, flowElement.getId(), "", 0, 0, eventSize, eventSize, STYLE_EVENT);
     generatedVertices.put(flowElement.getId(), eventVertex);
   }
 
@@ -354,7 +380,9 @@ public class BpmnAutoLayout {
     }
 
     // Create gateway node
-    Object gatewayVertex = graph.insertVertex(cellParent, flowElement.getId(), "", 0, 0, gatewaySize, gatewaySize, STYLE_GATEWAY);
+    Object gatewayVertex =
+        graph.insertVertex(
+            cellParent, flowElement.getId(), "", 0, 0, gatewaySize, gatewaySize, STYLE_GATEWAY);
     generatedVertices.put(flowElement.getId(), gatewayVertex);
   }
 
@@ -370,8 +398,13 @@ public class BpmnAutoLayout {
     for (String flowElementId : generatedVertices.keySet()) {
       Object vertex = generatedVertices.get(flowElementId);
       mxCellState cellState = graph.getView().getState(vertex);
-      GraphicInfo subProcessGraphicInfo = createDiagramInterchangeInformation(handledFlowElements.get(flowElementId), (int) cellState.getX(), (int) cellState.getY(), (int) cellState.getWidth(),
-          (int) cellState.getHeight());
+      GraphicInfo subProcessGraphicInfo =
+          createDiagramInterchangeInformation(
+              handledFlowElements.get(flowElementId),
+              (int) cellState.getX(),
+              (int) cellState.getY(),
+              (int) cellState.getWidth(),
+              (int) cellState.getHeight());
 
       // The DI for the elements of a subprocess are generated without
       // knowledge of the rest of the graph
@@ -396,16 +429,26 @@ public class BpmnAutoLayout {
       // the rhombus,
       // hence we force the starting point of the sequence flow to the
       // closest rhombus corner point.
-      FlowElement sourceElement = handledFlowElements.get(sequenceFlows.get(sequenceFlowId).getSourceRef());
-      if (sourceElement instanceof Gateway && ((Gateway) sourceElement).getOutgoingFlows().size() > 1) {
+      FlowElement sourceElement =
+          handledFlowElements.get(sequenceFlows.get(sequenceFlowId).getSourceRef());
+      if (sourceElement instanceof Gateway
+          && ((Gateway) sourceElement).getOutgoingFlows().size() > 1) {
         mxPoint startPoint = points.get(0);
         Object gatewayVertex = generatedVertices.get(sourceElement.getId());
         mxCellState gatewayState = graph.getView().getState(gatewayVertex);
 
-        mxPoint northPoint = new mxPoint(gatewayState.getX() + (gatewayState.getWidth()) / 2, gatewayState.getY());
-        mxPoint southPoint = new mxPoint(gatewayState.getX() + (gatewayState.getWidth()) / 2, gatewayState.getY() + gatewayState.getHeight());
-        mxPoint eastPoint = new mxPoint(gatewayState.getX() + gatewayState.getWidth(), gatewayState.getY() + (gatewayState.getHeight()) / 2);
-        mxPoint westPoint = new mxPoint(gatewayState.getX(), gatewayState.getY() + (gatewayState.getHeight()) / 2);
+        mxPoint northPoint =
+            new mxPoint(gatewayState.getX() + (gatewayState.getWidth()) / 2, gatewayState.getY());
+        mxPoint southPoint =
+            new mxPoint(
+                gatewayState.getX() + (gatewayState.getWidth()) / 2,
+                gatewayState.getY() + gatewayState.getHeight());
+        mxPoint eastPoint =
+            new mxPoint(
+                gatewayState.getX() + gatewayState.getWidth(),
+                gatewayState.getY() + (gatewayState.getHeight()) / 2);
+        mxPoint westPoint =
+            new mxPoint(gatewayState.getX(), gatewayState.getY() + (gatewayState.getHeight()) / 2);
 
         double closestDistance = Double.MAX_VALUE;
         mxPoint closestPoint = null;
@@ -426,10 +469,10 @@ public class BpmnAutoLayout {
           mxPoint nextPoint = points.get(1);
           nextPoint.setY(closestPoint.getY());
         }
-
       }
 
-      createDiagramInterchangeInformation(handledFlowElements.get(sequenceFlowId), optimizeEdgePoints(points));
+      createDiagramInterchangeInformation(
+          handledFlowElements.get(sequenceFlowId), optimizeEdgePoints(points));
     }
   }
 
@@ -439,13 +482,15 @@ public class BpmnAutoLayout {
       Object edge = generatedAssociationEdges.get(associationId);
       List<mxPoint> points = graph.getView().getState(edge).getAbsolutePoints();
 
-      createDiagramInterchangeInformation(handledArtifacts.get(associationId), optimizeEdgePoints(points));
-
+      createDiagramInterchangeInformation(
+          handledArtifacts.get(associationId), optimizeEdgePoints(points));
     }
   }
 
   protected double euclidianDistance(mxPoint point1, mxPoint point2) {
-    return Math.sqrt(((point2.getX() - point1.getX()) * (point2.getX() - point1.getX()) + (point2.getY() - point1.getY()) * (point2.getY() - point1.getY())));
+    return Math.sqrt(
+        ((point2.getX() - point1.getX()) * (point2.getX() - point1.getX())
+            + (point2.getY() - point1.getY()) * (point2.getY() - point1.getY())));
   }
 
   // JGraphX sometime generates points that visually are not really necessary.
@@ -464,24 +509,29 @@ public class BpmnAutoLayout {
         mxPoint previousPoint = unoptimizedPointsList.get(i - 1);
         mxPoint nextPoint = unoptimizedPointsList.get(i + 1);
 
-        if (currentPoint.getX() >= previousPoint.getX() && currentPoint.getX() <= nextPoint.getX() && currentPoint.getY() == previousPoint.getY() && currentPoint.getY() == nextPoint.getY()) {
+        if (currentPoint.getX() >= previousPoint.getX()
+            && currentPoint.getX() <= nextPoint.getX()
+            && currentPoint.getY() == previousPoint.getY()
+            && currentPoint.getY() == nextPoint.getY()) {
           keepPoint = false;
-        } else if (currentPoint.getY() >= previousPoint.getY() && currentPoint.getY() <= nextPoint.getY() && currentPoint.getX() == previousPoint.getX() && currentPoint.getX() == nextPoint.getX()) {
+        } else if (currentPoint.getY() >= previousPoint.getY()
+            && currentPoint.getY() <= nextPoint.getY()
+            && currentPoint.getX() == previousPoint.getX()
+            && currentPoint.getX() == nextPoint.getX()) {
           keepPoint = false;
         }
-
       }
 
       if (keepPoint) {
         optimizedPointsList.add(currentPoint);
       }
-
     }
 
     return optimizedPointsList;
   }
 
-  protected GraphicInfo createDiagramInterchangeInformation(FlowElement flowElement, int x, int y, int width, int height) {
+  protected GraphicInfo createDiagramInterchangeInformation(
+      FlowElement flowElement, int x, int y, int width, int height) {
     GraphicInfo graphicInfo = new GraphicInfo();
     graphicInfo.setX(x);
     graphicInfo.setY(y);
@@ -506,17 +556,20 @@ public class BpmnAutoLayout {
   }
 
   /**
-   * Since subprocesses are autolayouted independently (see {@link #handleSubProcess(FlowElement)}), the elements have x and y coordinates relative to the bounds of the subprocess (thinking the
-   * subprocess is on (0,0). This however, does not work for nested subprocesses, as they need to take in account the x and y coordinates for each of the parent subproceses.
+   * Since subprocesses are autolayouted independently (see {@link #handleSubProcess(FlowElement)}),
+   * the elements have x and y coordinates relative to the bounds of the subprocess (thinking the
+   * subprocess is on (0,0). This however, does not work for nested subprocesses, as they need to
+   * take in account the x and y coordinates for each of the parent subproceses.
    *
-   * This method is to be called after fully layouting one process, since ALL elements need to have x and y.
+   * <p>This method is to be called after fully layouting one process, since ALL elements need to
+   * have x and y.
    */
   protected void translateNestedSubprocesses(Process process) {
-       for (FlowElement flowElement : process.getFlowElements()) {
-            if (flowElement instanceof SubProcess) {
-              translateNestedSubprocessElements((SubProcess) flowElement);
-            }
-       }
+    for (FlowElement flowElement : process.getFlowElements()) {
+      if (flowElement instanceof SubProcess) {
+        translateNestedSubprocessElements((SubProcess) flowElement);
+      }
+    }
   }
 
   protected void translateNestedSubprocessElements(SubProcess subProcess) {
@@ -545,7 +598,6 @@ public class BpmnAutoLayout {
       if (flowElement instanceof SubProcess) {
         nestedSubProcesses.add((SubProcess) flowElement);
       }
-
     }
 
     // Continue for next level of nested subprocesses
@@ -617,7 +669,5 @@ public class BpmnAutoLayout {
       super(graph, orientation);
       this.traverseAncestors = false;
     }
-
   }
-
 }

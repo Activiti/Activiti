@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.persistence.entity;
 
 import org.activiti.engine.api.internal.Internal;
@@ -23,12 +22,10 @@ import org.activiti.engine.impl.db.HasRevision;
 import org.activiti.engine.impl.variable.ValueFields;
 import org.activiti.engine.impl.variable.VariableType;
 
-/**
-
-
- */
+/** */
 @Internal
-public interface HistoricDetailVariableInstanceUpdateEntity extends HistoricDetailEntity, ValueFields, HistoricVariableUpdate, Entity, HasRevision {
+public interface HistoricDetailVariableInstanceUpdateEntity
+    extends HistoricDetailEntity, ValueFields, HistoricVariableUpdate, Entity, HasRevision {
 
   void setName(String name);
 
@@ -37,5 +34,4 @@ public interface HistoricDetailVariableInstanceUpdateEntity extends HistoricDeta
   VariableType getVariableType();
 
   void setVariableType(VariableType variableType);
-
 }

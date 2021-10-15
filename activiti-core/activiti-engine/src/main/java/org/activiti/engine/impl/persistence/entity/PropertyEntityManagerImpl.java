@@ -14,24 +14,22 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.persistence.entity;
 
 import java.util.List;
-
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.persistence.entity.data.DataManager;
 import org.activiti.engine.impl.persistence.entity.data.PropertyDataManager;
 
-/**
-
-
- */
-public class PropertyEntityManagerImpl extends AbstractEntityManager<PropertyEntity> implements PropertyEntityManager {
+/** */
+public class PropertyEntityManagerImpl extends AbstractEntityManager<PropertyEntity>
+    implements PropertyEntityManager {
 
   protected PropertyDataManager propertyDataManager;
 
-  public PropertyEntityManagerImpl(ProcessEngineConfigurationImpl processEngineConfiguration, PropertyDataManager propertyDataManager) {
+  public PropertyEntityManagerImpl(
+      ProcessEngineConfigurationImpl processEngineConfiguration,
+      PropertyDataManager propertyDataManager) {
     super(processEngineConfiguration);
     this.propertyDataManager = propertyDataManager;
   }
@@ -45,5 +43,4 @@ public class PropertyEntityManagerImpl extends AbstractEntityManager<PropertyEnt
   public List<PropertyEntity> findAll() {
     return propertyDataManager.findAll();
   }
-
 }

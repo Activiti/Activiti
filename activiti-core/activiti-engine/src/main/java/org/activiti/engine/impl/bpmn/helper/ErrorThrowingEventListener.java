@@ -23,12 +23,7 @@ import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 
-/**
- * An {@link ActivitiEventListener} that throws a error event when an event is dispatched to it.
- *
-
- *
- */
+/** An {@link ActivitiEventListener} that throws a error event when an event is dispatched to it. */
 public class ErrorThrowingEventListener extends BaseDelegateEventListener {
 
   protected String errorCode;
@@ -42,11 +37,16 @@ public class ErrorThrowingEventListener extends BaseDelegateEventListener {
 
       if (event.getExecutionId() != null) {
         // Get the execution based on the event's execution ID instead
-        execution = Context.getCommandContext().getExecutionEntityManager().findById(event.getExecutionId());
+        execution =
+            Context.getCommandContext()
+                .getExecutionEntityManager()
+                .findById(event.getExecutionId());
       }
 
       if (execution == null) {
-        throw new ActivitiException("No execution context active and event is not related to an execution. No compensation event can be thrown.");
+        throw new ActivitiException(
+            "No execution context active and event is not related to an execution. No compensation"
+                + " event can be thrown.");
       }
 
       try {

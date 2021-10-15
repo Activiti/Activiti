@@ -14,12 +14,9 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.delegate;
 
-/**
-
- */
+/** */
 public interface TaskListener extends BaseTaskListener {
 
   void notify(DelegateTask delegateTask);

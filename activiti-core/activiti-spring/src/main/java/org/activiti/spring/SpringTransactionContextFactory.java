@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.spring;
 
 import org.activiti.engine.impl.cfg.TransactionContext;
@@ -22,9 +21,7 @@ import org.activiti.engine.impl.cfg.TransactionContextFactory;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.springframework.transaction.PlatformTransactionManager;
 
-/**
-
- */
+/** */
 public class SpringTransactionContextFactory implements TransactionContextFactory {
 
   protected PlatformTransactionManager transactionManager;
@@ -34,13 +31,15 @@ public class SpringTransactionContextFactory implements TransactionContextFactor
     this(transactionManager, null);
   }
 
-  public SpringTransactionContextFactory(PlatformTransactionManager transactionManager, Integer transactionSynchronizationAdapterOrder) {
+  public SpringTransactionContextFactory(
+      PlatformTransactionManager transactionManager,
+      Integer transactionSynchronizationAdapterOrder) {
     this.transactionManager = transactionManager;
     this.transactionSynchronizationAdapterOrder = transactionSynchronizationAdapterOrder;
   }
 
   public TransactionContext openTransactionContext(CommandContext commandContext) {
-    return new SpringTransactionContext(transactionManager, commandContext, transactionSynchronizationAdapterOrder);
+    return new SpringTransactionContext(
+        transactionManager, commandContext, transactionSynchronizationAdapterOrder);
   }
-
 }

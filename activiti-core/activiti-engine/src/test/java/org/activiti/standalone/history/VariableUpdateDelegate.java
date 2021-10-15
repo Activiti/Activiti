@@ -14,19 +14,15 @@
  * limitations under the License.
  */
 
-
 package org.activiti.standalone.history;
 
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.JavaDelegate;
 
-/**
-
- */
+/** */
 public class VariableUpdateDelegate implements JavaDelegate {
 
   public void execute(DelegateExecution execution) {
     execution.setVariable("zzz", 123456789L);
   }
-
 }

@@ -19,15 +19,13 @@ package org.activiti.engine.impl.interceptor;
 import javax.transaction.Status;
 import javax.transaction.SystemException;
 import javax.transaction.TransactionManager;
-
 import org.activiti.engine.ActivitiException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * We cannot perform a retry if we are called in an existing transaction. In that case, the transaction will be marked "rollback-only" after the first ActivitiOptimisticLockingException.
- *
-
+ * We cannot perform a retry if we are called in an existing transaction. In that case, the
+ * transaction will be marked "rollback-only" after the first ActivitiOptimisticLockingException.
  */
 public class JtaRetryInterceptor extends RetryInterceptor {
 
@@ -53,8 +51,9 @@ public class JtaRetryInterceptor extends RetryInterceptor {
     try {
       return transactionManager.getStatus() != Status.STATUS_NO_TRANSACTION;
     } catch (SystemException e) {
-      throw new ActivitiException("Could not determine the current status of the transaction manager: " + e.getMessage(), e);
+      throw new ActivitiException(
+          "Could not determine the current status of the transaction manager: " + e.getMessage(),
+          e);
     }
   }
-
 }

@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.bpmn.parser.BpmnParser;
 import org.activiti.engine.impl.cmd.DeploymentSettings;
@@ -39,8 +38,8 @@ public class ParsedDeploymentBuilder {
   protected BpmnParser bpmnParser;
   protected Map<String, Object> deploymentSettings;
 
-  public ParsedDeploymentBuilder(DeploymentEntity deployment,
-      BpmnParser bpmnParser, Map<String, Object> deploymentSettings) {
+  public ParsedDeploymentBuilder(
+      DeploymentEntity deployment, BpmnParser bpmnParser, Map<String, Object> deploymentSettings) {
     this.deployment = deployment;
     this.bpmnParser = bpmnParser;
     this.deploymentSettings = deploymentSettings;
@@ -48,10 +47,10 @@ public class ParsedDeploymentBuilder {
 
   public ParsedDeployment build() {
     List<ProcessDefinitionEntity> processDefinitions = new ArrayList<ProcessDefinitionEntity>();
-    Map<ProcessDefinitionEntity, BpmnParse> processDefinitionsToBpmnParseMap
-      = new LinkedHashMap<ProcessDefinitionEntity, BpmnParse>();
-    Map<ProcessDefinitionEntity, ResourceEntity> processDefinitionsToResourceMap
-      = new LinkedHashMap<ProcessDefinitionEntity, ResourceEntity>();
+    Map<ProcessDefinitionEntity, BpmnParse> processDefinitionsToBpmnParseMap =
+        new LinkedHashMap<ProcessDefinitionEntity, BpmnParse>();
+    Map<ProcessDefinitionEntity, ResourceEntity> processDefinitionsToResourceMap =
+        new LinkedHashMap<ProcessDefinitionEntity, ResourceEntity>();
 
     for (ResourceEntity resource : deployment.getResources().values()) {
       if (isBpmnResource(resource.getName())) {
@@ -65,30 +64,37 @@ public class ParsedDeploymentBuilder {
       }
     }
 
-    return new ParsedDeployment(deployment, processDefinitions,
-        processDefinitionsToBpmnParseMap, processDefinitionsToResourceMap);
+    return new ParsedDeployment(
+        deployment,
+        processDefinitions,
+        processDefinitionsToBpmnParseMap,
+        processDefinitionsToResourceMap);
   }
 
   protected BpmnParse createBpmnParseFromResource(ResourceEntity resource) {
     String resourceName = resource.getName();
     ByteArrayInputStream inputStream = new ByteArrayInputStream(resource.getBytes());
 
-    BpmnParse bpmnParse = bpmnParser.createParse()
-        .sourceInputStream(inputStream)
-        .setSourceSystemId(resourceName)
-        .deployment(deployment)
-        .name(resourceName);
+    BpmnParse bpmnParse =
+        bpmnParser
+            .createParse()
+            .sourceInputStream(inputStream)
+            .setSourceSystemId(resourceName)
+            .deployment(deployment)
+            .name(resourceName);
 
     if (deploymentSettings != null) {
 
       // Schema validation if needed
       if (deploymentSettings.containsKey(DeploymentSettings.IS_BPMN20_XSD_VALIDATION_ENABLED)) {
-        bpmnParse.setValidateSchema((Boolean) deploymentSettings.get(DeploymentSettings.IS_BPMN20_XSD_VALIDATION_ENABLED));
+        bpmnParse.setValidateSchema(
+            (Boolean) deploymentSettings.get(DeploymentSettings.IS_BPMN20_XSD_VALIDATION_ENABLED));
       }
 
       // Process validation if needed
       if (deploymentSettings.containsKey(DeploymentSettings.IS_PROCESS_VALIDATION_ENABLED)) {
-        bpmnParse.setValidateProcess((Boolean) deploymentSettings.get(DeploymentSettings.IS_PROCESS_VALIDATION_ENABLED));
+        bpmnParse.setValidateProcess(
+            (Boolean) deploymentSettings.get(DeploymentSettings.IS_PROCESS_VALIDATION_ENABLED));
       }
 
     } else {
@@ -110,5 +116,4 @@ public class ParsedDeploymentBuilder {
 
     return false;
   }
-
 }

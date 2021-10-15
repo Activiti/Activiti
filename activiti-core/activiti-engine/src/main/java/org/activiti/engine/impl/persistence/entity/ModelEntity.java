@@ -14,19 +14,14 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.persistence.entity;
 
 import java.util.Date;
-
 import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.impl.db.HasRevision;
 import org.activiti.engine.repository.Model;
 
-/**
-
-
- */
+/** */
 @Internal
 public interface ModelEntity extends Model, HasRevision, Entity {
 
@@ -41,5 +36,4 @@ public interface ModelEntity extends Model, HasRevision, Entity {
   String getEditorSourceExtraValueId();
 
   void setEditorSourceExtraValueId(String editorSourceExtraValueId);
-
 }

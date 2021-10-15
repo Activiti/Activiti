@@ -17,13 +17,10 @@ package org.activiti.bpmn.converter;
 
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamReader;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
-
- */
+/** */
 public class XMLStreamReaderUtil {
 
   protected static final Logger LOGGER = LoggerFactory.getLogger(XMLStreamReaderUtil.class);
@@ -33,12 +30,12 @@ public class XMLStreamReaderUtil {
       while (xtr.hasNext()) {
         int event = xtr.next();
         switch (event) {
-        case XMLStreamConstants.END_DOCUMENT:
-          return null;
-        case XMLStreamConstants.START_ELEMENT:
-          return xtr.getLocalName();
-        case XMLStreamConstants.END_ELEMENT:
-          return null;
+          case XMLStreamConstants.END_DOCUMENT:
+            return null;
+          case XMLStreamConstants.START_ELEMENT:
+            return xtr.getLocalName();
+          case XMLStreamConstants.END_ELEMENT:
+            return null;
         }
       }
     } catch (Exception e) {
@@ -52,12 +49,11 @@ public class XMLStreamReaderUtil {
       while (xtr.hasNext()) {
         int event = xtr.next();
         switch (event) {
-        case XMLStreamConstants.END_DOCUMENT:
-          return false;
-        case XMLStreamConstants.END_ELEMENT:
-          if (xtr.getLocalName().equals(elementName))
-            return true;
-          break;
+          case XMLStreamConstants.END_DOCUMENT:
+            return false;
+          case XMLStreamConstants.END_ELEMENT:
+            if (xtr.getLocalName().equals(elementName)) return true;
+            break;
         }
       }
     } catch (Exception e) {

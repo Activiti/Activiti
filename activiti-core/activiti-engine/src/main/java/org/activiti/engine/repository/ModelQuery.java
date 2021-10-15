@@ -14,16 +14,12 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.repository;
 
 import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.query.Query;
 
-/**
- * Allows programmatic querying of {@link Model}s.
- *
- */
+/** Allows programmatic querying of {@link Model}s. */
 @Internal
 public interface ModelQuery extends Query<ModelQuery, Model> {
 
@@ -34,7 +30,8 @@ public interface ModelQuery extends Query<ModelQuery, Model> {
   ModelQuery modelCategory(String modelCategory);
 
   /**
-   * Only select models where the category matches the given parameter. The syntax that should be used is the same as in SQL, eg. %activiti%
+   * Only select models where the category matches the given parameter. The syntax that should be
+   * used is the same as in SQL, eg. %activiti%
    */
   ModelQuery modelCategoryLike(String modelCategoryLike);
 
@@ -45,7 +42,8 @@ public interface ModelQuery extends Query<ModelQuery, Model> {
   ModelQuery modelName(String modelName);
 
   /**
-   * Only select models where the name matches the given parameter. The syntax that should be used is the same as in SQL, eg. %activiti%
+   * Only select models where the name matches the given parameter. The syntax that should be used
+   * is the same as in SQL, eg. %activiti%
    */
   ModelQuery modelNameLike(String modelNameLike);
 
@@ -58,7 +56,8 @@ public interface ModelQuery extends Query<ModelQuery, Model> {
   /**
    * Only select models which has the highest version.
    *
-   * Note: if modelKey(key) is not used in this query, all the models with the highest version for each key will be returned (similar to process definitions)
+   * <p>Note: if modelKey(key) is not used in this query, all the models with the highest version
+   * for each key will be returned (similar to process definitions)
    */
   ModelQuery latestVersion();
 
@@ -71,36 +70,27 @@ public interface ModelQuery extends Query<ModelQuery, Model> {
   /** Only select models that are not yet deployed */
   ModelQuery notDeployed();
 
-  /**
-   * Only select models that have the given tenant id.
-   */
+  /** Only select models that have the given tenant id. */
   ModelQuery modelTenantId(String tenantId);
 
-  /**
-   * Only select models with a tenant id like the given one.
-   */
+  /** Only select models with a tenant id like the given one. */
   ModelQuery modelTenantIdLike(String tenantIdLike);
 
-  /**
-   * Only select models that do not have a tenant id.
-   */
+  /** Only select models that do not have a tenant id. */
   ModelQuery modelWithoutTenantId();
 
   // ordering ////////////////////////////////////////////////////////////
 
   /**
-   * Order by the category of the models (needs to be followed by {@link #asc()} or {@link #desc()}).
+   * Order by the category of the models (needs to be followed by {@link #asc()} or {@link
+   * #desc()}).
    */
   ModelQuery orderByModelCategory();
 
-  /**
-   * Order by the id of the models (needs to be followed by {@link #asc()} or {@link #desc()}).
-   */
+  /** Order by the id of the models (needs to be followed by {@link #asc()} or {@link #desc()}). */
   ModelQuery orderByModelId();
 
-  /**
-   * Order by the key of the models (needs to be followed by {@link #asc()} or {@link #desc()}).
-   */
+  /** Order by the key of the models (needs to be followed by {@link #asc()} or {@link #desc()}). */
   ModelQuery orderByModelKey();
 
   /**
@@ -114,18 +104,17 @@ public interface ModelQuery extends Query<ModelQuery, Model> {
   ModelQuery orderByModelName();
 
   /**
-   * Order by the creation time of the models (needs to be followed by {@link #asc()} or {@link #desc()}).
+   * Order by the creation time of the models (needs to be followed by {@link #asc()} or {@link
+   * #desc()}).
    */
   ModelQuery orderByCreateTime();
 
   /**
-   * Order by the last update time of the models (needs to be followed by {@link #asc()} or {@link #desc()}).
+   * Order by the last update time of the models (needs to be followed by {@link #asc()} or {@link
+   * #desc()}).
    */
   ModelQuery orderByLastUpdateTime();
 
-  /**
-   * Order by tenant id (needs to be followed by {@link #asc()} or {@link #desc()}).
-   */
+  /** Order by tenant id (needs to be followed by {@link #asc()} or {@link #desc()}). */
   ModelQuery orderByTenantId();
-
 }

@@ -19,11 +19,7 @@ package org.activiti.engine.impl.bpmn.data;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * An instance of {@link FieldBaseStructureDefinition}
- *
-
- */
+/** An instance of {@link FieldBaseStructureDefinition} */
 public class FieldBaseStructureInstance implements StructureInstance {
 
   protected FieldBaseStructureDefinition structureDefinition;

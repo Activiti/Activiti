@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.test.bpmn.subprocess;
 
 import static java.util.Collections.singletonMap;
@@ -24,7 +23,6 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
 import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.impl.history.HistoryLevel;
@@ -35,8 +33,7 @@ import org.activiti.engine.task.Task;
 import org.activiti.engine.task.TaskQuery;
 import org.activiti.engine.test.Deployment;
 
-/**
- */
+/** */
 public class SubProcessTest extends PluggableActivitiTestCase {
 
   @Deployment
@@ -44,18 +41,22 @@ public class SubProcessTest extends PluggableActivitiTestCase {
 
     // After staring the process, the task in the subprocess should be active
     ProcessInstance pi = runtimeService.startProcessInstanceByKey("simpleSubProcess");
-    Task subProcessTask = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
+    Task subProcessTask =
+        taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
     assertThat(subProcessTask.getName()).isEqualTo("Task in subprocess");
 
     // After completing the task in the subprocess,
     // the subprocess scope is destroyed and the complete process ends
     taskService.complete(subProcessTask.getId());
-    assertThat(runtimeService.createProcessInstanceQuery().processInstanceId(pi.getId()).singleResult()).isNull();
+    assertThat(
+            runtimeService
+                .createProcessInstanceQuery()
+                .processInstanceId(pi.getId())
+                .singleResult())
+        .isNull();
   }
 
-  /**
-   * Same test case as before, but now with all automatic steps
-   */
+  /** Same test case as before, but now with all automatic steps */
   @Deployment
   public void testSimpleAutomaticSubProcess() {
     ProcessInstance pi = runtimeService.startProcessInstanceByKey("simpleSubProcessAutomatic");
@@ -70,37 +71,53 @@ public class SubProcessTest extends PluggableActivitiTestCase {
 
     // After staring the process, the task in the subprocess should be active
     ProcessInstance pi = runtimeService.startProcessInstanceByKey("simpleSubProcess");
-    Task subProcessTask = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
+    Task subProcessTask =
+        taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
     assertThat(subProcessTask.getName()).isEqualTo("Task in subprocess");
 
-    // Setting the clock forward 2 hours 1 second (timer fires in 2 hours) and fire up the job executor
-    processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + (2 * 60 * 60 * 1000) + 1000));
+    // Setting the clock forward 2 hours 1 second (timer fires in 2 hours) and fire up the job
+    // executor
+    processEngineConfiguration
+        .getClock()
+        .setCurrentTime(new Date(startTime.getTime() + (2 * 60 * 60 * 1000) + 1000));
     assertThat(managementService.createTimerJobQuery().count()).isEqualTo(1);
     waitForJobExecutorToProcessAllJobs(5000L, 500L);
 
     // The subprocess should be left, and the escalated task should be active
-    Task escalationTask = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
+    Task escalationTask =
+        taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
     assertThat(escalationTask.getName()).isEqualTo("Fix escalated problem");
 
     // Verify history for task that was killed
     if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
-      HistoricTaskInstance historicTaskInstance = historyService.createHistoricTaskInstanceQuery().taskName("Task in subprocess").singleResult();
+      HistoricTaskInstance historicTaskInstance =
+          historyService
+              .createHistoricTaskInstanceQuery()
+              .taskName("Task in subprocess")
+              .singleResult();
       assertThat(historicTaskInstance.getEndTime()).isNotNull();
 
-      HistoricActivityInstance historicActivityInstance = historyService.createHistoricActivityInstanceQuery().activityId("subProcessTask").singleResult();
+      HistoricActivityInstance historicActivityInstance =
+          historyService
+              .createHistoricActivityInstanceQuery()
+              .activityId("subProcessTask")
+              .singleResult();
       assertThat(historicActivityInstance.getEndTime()).isNotNull();
     }
   }
 
   /**
-   * A test case that has a timer attached to the subprocess, where 2 concurrent paths are defined when the timer fires.
+   * A test case that has a timer attached to the subprocess, where 2 concurrent paths are defined
+   * when the timer fires.
    */
   @Deployment
   public void IGNORE_testSimpleSubProcessWithConcurrentTimer() {
 
     // After staring the process, the task in the subprocess should be active
-    ProcessInstance pi = runtimeService.startProcessInstanceByKey("simpleSubProcessWithConcurrentTimer");
-    TaskQuery taskQuery = taskService.createTaskQuery().processInstanceId(pi.getId()).orderByTaskName().asc();
+    ProcessInstance pi =
+        runtimeService.startProcessInstanceByKey("simpleSubProcessWithConcurrentTimer");
+    TaskQuery taskQuery =
+        taskService.createTaskQuery().processInstanceId(pi.getId()).orderByTaskName().asc();
 
     Task subProcessTask = taskQuery.singleResult();
     assertThat(subProcessTask.getName()).isEqualTo("Task in subprocess");
@@ -123,24 +140,29 @@ public class SubProcessTest extends PluggableActivitiTestCase {
   }
 
   /**
-   * Test case where the simple sub process of previous test cases is nested within another subprocess.
+   * Test case where the simple sub process of previous test cases is nested within another
+   * subprocess.
    */
   @Deployment
   public void testNestedSimpleSubProcess() {
 
     // Start and delete a process with a nested subprocess when it is not yet ended
-    ProcessInstance pi = runtimeService.startProcessInstanceByKey("nestedSimpleSubProcess", singletonMap("someVar", "abc"));
+    ProcessInstance pi =
+        runtimeService.startProcessInstanceByKey(
+            "nestedSimpleSubProcess", singletonMap("someVar", "abc"));
     runtimeService.deleteProcessInstance(pi.getId(), "deleted");
 
     // After staring the process, the task in the inner subprocess must be active
     pi = runtimeService.startProcessInstanceByKey("nestedSimpleSubProcess");
-    Task subProcessTask = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
+    Task subProcessTask =
+        taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
     assertThat(subProcessTask.getName()).isEqualTo("Task in subprocess");
 
     // After completing the task in the subprocess,
     // both subprocesses are destroyed and the task after the subprocess should be active
     taskService.complete(subProcessTask.getId());
-    Task taskAfterSubProcesses = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
+    Task taskAfterSubProcesses =
+        taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
     assertThat(taskAfterSubProcesses).isNotNull();
     assertThat(taskAfterSubProcesses.getName()).isEqualTo("Task after subprocesses");
     taskService.complete(taskAfterSubProcesses.getId());
@@ -154,40 +176,48 @@ public class SubProcessTest extends PluggableActivitiTestCase {
 
     // After staring the process, the task in the subprocess should be active
     ProcessInstance pi = runtimeService.startProcessInstanceByKey("nestedSubProcessWithTimer");
-    Task subProcessTask = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
+    Task subProcessTask =
+        taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
     assertThat(subProcessTask.getName()).isEqualTo("Task in subprocess");
 
     // Setting the clock forward 1 hour 1 second (timer fires in 1 hour) and
     // fire up the job executor
-    processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + (60 * 60 * 1000) + 1000));
+    processEngineConfiguration
+        .getClock()
+        .setCurrentTime(new Date(startTime.getTime() + (60 * 60 * 1000) + 1000));
     waitForJobExecutorToProcessAllJobs(5000L, 50L);
 
     // The inner subprocess should be destroyed, and the escalated task should be active
-    Task escalationTask = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
+    Task escalationTask =
+        taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
     assertThat(escalationTask.getName()).isEqualTo("Escalated task");
 
     // Completing the escalated task, destroys the outer scope and activates
     // the task after the subprocess
     taskService.complete(escalationTask.getId());
-    Task taskAfterSubProcess = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
+    Task taskAfterSubProcess =
+        taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
     assertThat(taskAfterSubProcess.getName()).isEqualTo("Task after subprocesses");
   }
 
   /**
-   * Test case where the simple sub process of previous test cases is nested within two other sub processes
+   * Test case where the simple sub process of previous test cases is nested within two other sub
+   * processes
    */
   @Deployment
   public void testDoubleNestedSimpleSubProcess() {
     // After staring the process, the task in the inner subprocess must be active
     ProcessInstance pi = runtimeService.startProcessInstanceByKey("nestedSimpleSubProcess");
-    Task subProcessTask = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
+    Task subProcessTask =
+        taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
     assertThat(subProcessTask.getName()).isEqualTo("Task in subprocess");
 
     // After completing the task in the subprocess,
     // both subprocesses are destroyed and the task after the subprocess
     // should be active
     taskService.complete(subProcessTask.getId());
-    Task taskAfterSubProcesses = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
+    Task taskAfterSubProcesses =
+        taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
     assertThat(taskAfterSubProcesses.getName()).isEqualTo("Task after subprocesses");
   }
 
@@ -196,7 +226,8 @@ public class SubProcessTest extends PluggableActivitiTestCase {
 
     // After starting the process, the two task in the subprocess should be active
     ProcessInstance pi = runtimeService.startProcessInstanceByKey("simpleParallelSubProcess");
-    List<Task> subProcessTasks = taskService.createTaskQuery().processInstanceId(pi.getId()).orderByTaskName().asc().list();
+    List<Task> subProcessTasks =
+        taskService.createTaskQuery().processInstanceId(pi.getId()).orderByTaskName().asc().list();
 
     // Tasks are ordered by name (see query)
     Task taskA = subProcessTasks.get(0);
@@ -208,7 +239,8 @@ public class SubProcessTest extends PluggableActivitiTestCase {
     // task after the subprocess
     taskService.complete(taskA.getId());
     taskService.complete(taskB.getId());
-    Task taskAfterSubProcess = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
+    Task taskAfterSubProcess =
+        taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
     assertThat(taskAfterSubProcess.getName()).isEqualTo("Task after sub process");
   }
 
@@ -216,8 +248,15 @@ public class SubProcessTest extends PluggableActivitiTestCase {
   public void testSimpleParallelSubProcessWithTimer() {
 
     // After staring the process, the tasks in the subprocess should be active
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("simpleParallelSubProcessWithTimer");
-    List<Task> subProcessTasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).orderByTaskName().asc().list();
+    ProcessInstance processInstance =
+        runtimeService.startProcessInstanceByKey("simpleParallelSubProcessWithTimer");
+    List<Task> subProcessTasks =
+        taskService
+            .createTaskQuery()
+            .processInstanceId(processInstance.getId())
+            .orderByTaskName()
+            .asc()
+            .list();
 
     // Tasks are ordered by name (see query)
     Task taskA = subProcessTasks.get(0);
@@ -225,13 +264,18 @@ public class SubProcessTest extends PluggableActivitiTestCase {
     assertThat(taskA.getName()).isEqualTo("Task A");
     assertThat(taskB.getName()).isEqualTo("Task B");
 
-    Job job = managementService.createTimerJobQuery().processInstanceId(processInstance.getId()).singleResult();
+    Job job =
+        managementService
+            .createTimerJobQuery()
+            .processInstanceId(processInstance.getId())
+            .singleResult();
 
     managementService.moveTimerToExecutableJob(job.getId());
     managementService.executeJob(job.getId());
 
     // The inner subprocess should be destroyed, and the task after the timer  should be active
-    Task taskAfterTimer = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+    Task taskAfterTimer =
+        taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     assertThat(taskAfterTimer.getName()).isEqualTo("Task after timer");
 
     // Completing the task after the timer ends the process instance
@@ -243,7 +287,8 @@ public class SubProcessTest extends PluggableActivitiTestCase {
   @Deployment
   public void testTwoSubProcessInParallel() {
     ProcessInstance pi = runtimeService.startProcessInstanceByKey("twoSubProcessInParallel");
-    TaskQuery taskQuery = taskService.createTaskQuery().processInstanceId(pi.getId()).orderByTaskName().asc();
+    TaskQuery taskQuery =
+        taskService.createTaskQuery().processInstanceId(pi.getId()).orderByTaskName().asc();
     List<Task> tasks = taskQuery.list();
 
     // After process start, both tasks in the subprocesses should be active
@@ -274,8 +319,10 @@ public class SubProcessTest extends PluggableActivitiTestCase {
 
   @Deployment
   public void testTwoSubProcessInParallelWithinSubProcess() {
-    ProcessInstance pi = runtimeService.startProcessInstanceByKey("twoSubProcessInParallelWithinSubProcess");
-    TaskQuery taskQuery = taskService.createTaskQuery().processInstanceId(pi.getId()).orderByTaskName().asc();
+    ProcessInstance pi =
+        runtimeService.startProcessInstanceByKey("twoSubProcessInParallelWithinSubProcess");
+    TaskQuery taskQuery =
+        taskService.createTaskQuery().processInstanceId(pi.getId()).orderByTaskName().asc();
     List<Task> tasks = taskQuery.list();
 
     // After process start, both tasks in the subprocesses should be active
@@ -301,8 +348,10 @@ public class SubProcessTest extends PluggableActivitiTestCase {
 
     // Date startTime = new Date();
 
-    ProcessInstance pi = runtimeService.startProcessInstanceByKey("nestedParallelSubProcessesWithTimer");
-    TaskQuery taskQuery = taskService.createTaskQuery().processInstanceId(pi.getId()).orderByTaskName().asc();
+    ProcessInstance pi =
+        runtimeService.startProcessInstanceByKey("nestedParallelSubProcessesWithTimer");
+    TaskQuery taskQuery =
+        taskService.createTaskQuery().processInstanceId(pi.getId()).orderByTaskName().asc();
     List<Task> tasks = taskQuery.list();
 
     // After process start, both tasks in the subprocesses should be active
@@ -328,7 +377,8 @@ public class SubProcessTest extends PluggableActivitiTestCase {
   }
 
   /**
-   * @see <a href="https://activiti.atlassian.net/browse/ACT-1072">https://activiti.atlassian.net/browse/ACT-1072</a>
+   * @see <a
+   *     href="https://activiti.atlassian.net/browse/ACT-1072">https://activiti.atlassian.net/browse/ACT-1072</a>
    */
   @Deployment
   public void testNestedSimpleSubProcessWithoutEndEvent() {
@@ -336,25 +386,30 @@ public class SubProcessTest extends PluggableActivitiTestCase {
   }
 
   /**
-   * @see <a href="https://activiti.atlassian.net/browse/ACT-1072">https://activiti.atlassian.net/browse/ACT-1072</a>
+   * @see <a
+   *     href="https://activiti.atlassian.net/browse/ACT-1072">https://activiti.atlassian.net/browse/ACT-1072</a>
    */
   @Deployment
   public void testSimpleSubProcessWithoutEndEvent() {
-    ProcessInstance pi = runtimeService.startProcessInstanceByKey("testSimpleSubProcessWithoutEndEvent");
+    ProcessInstance pi =
+        runtimeService.startProcessInstanceByKey("testSimpleSubProcessWithoutEndEvent");
     assertProcessEnded(pi.getId());
   }
 
   /**
-   * @see <a href="https://activiti.atlassian.net/browse/ACT-1072">https://activiti.atlassian.net/browse/ACT-1072</a>
+   * @see <a
+   *     href="https://activiti.atlassian.net/browse/ACT-1072">https://activiti.atlassian.net/browse/ACT-1072</a>
    */
   @Deployment
   public void testNestedSubProcessesWithoutEndEvents() {
-    ProcessInstance pi = runtimeService.startProcessInstanceByKey("testNestedSubProcessesWithoutEndEvents");
+    ProcessInstance pi =
+        runtimeService.startProcessInstanceByKey("testNestedSubProcessesWithoutEndEvents");
     assertProcessEnded(pi.getId());
   }
 
   /**
-   * @see <a href="https://activiti.atlassian.net/browse/ACT-1847">https://activiti.atlassian.net/browse/ACT-1847</a>
+   * @see <a
+   *     href="https://activiti.atlassian.net/browse/ACT-1847">https://activiti.atlassian.net/browse/ACT-1847</a>
    */
   @Deployment
   public void testDataObjectScope() {
@@ -412,7 +467,8 @@ public class SubProcessTest extends PluggableActivitiTestCase {
       }
     }
 
-    // After completing the task in the subprocess, the subprocess scope is destroyed and the main process continues
+    // After completing the task in the subprocess, the subprocess scope is destroyed and the main
+    // process continues
     taskService.complete(currentTask.getId());
 
     // verify main process scoped variables
@@ -431,7 +487,8 @@ public class SubProcessTest extends PluggableActivitiTestCase {
     }
 
     currentTask = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
-    // Verify there are no local variables assigned to the current task. (subprocess variables are gone).
+    // Verify there are no local variables assigned to the current task. (subprocess variables are
+    // gone).
     variables = runtimeService.getVariablesLocal(currentTask.getExecutionId());
     assertThat(variables).hasSize(0);
 
@@ -441,6 +498,11 @@ public class SubProcessTest extends PluggableActivitiTestCase {
     assertThat(currentTask.getName()).isEqualTo("Complete Task B");
 
     taskService.complete(currentTask.getId());
-    assertThat(runtimeService.createProcessInstanceQuery().processInstanceId(pi.getId()).singleResult()).isNull();
+    assertThat(
+            runtimeService
+                .createProcessInstanceQuery()
+                .processInstanceId(pi.getId())
+                .singleResult())
+        .isNull();
   }
 }

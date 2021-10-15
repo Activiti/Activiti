@@ -20,45 +20,50 @@ import org.activiti.api.process.model.events.ProcessRuntimeEvent;
 import org.activiti.api.process.runtime.events.ProcessStartedEvent;
 import org.activiti.api.runtime.event.impl.RuntimeEventImpl;
 
-public class ProcessStartedEventImpl extends RuntimeEventImpl<ProcessInstance, ProcessRuntimeEvent.ProcessEvents>
-        implements ProcessStartedEvent {
+public class ProcessStartedEventImpl
+    extends RuntimeEventImpl<ProcessInstance, ProcessRuntimeEvent.ProcessEvents>
+    implements ProcessStartedEvent {
 
-    private String nestedProcessDefinitionId;
-    private String nestedProcessInstanceId;
+  private String nestedProcessDefinitionId;
+  private String nestedProcessInstanceId;
 
-    public ProcessStartedEventImpl(ProcessInstance entity) {
-        super(entity);
-    }
+  public ProcessStartedEventImpl(ProcessInstance entity) {
+    super(entity);
+  }
 
-    public void setNestedProcessDefinitionId(String nestedProcessDefinitionId) {
-        this.nestedProcessDefinitionId = nestedProcessDefinitionId;
-    }
+  public void setNestedProcessDefinitionId(String nestedProcessDefinitionId) {
+    this.nestedProcessDefinitionId = nestedProcessDefinitionId;
+  }
 
-    @Override
-    public String getNestedProcessDefinitionId() {
-        return nestedProcessDefinitionId;
-    }
+  @Override
+  public String getNestedProcessDefinitionId() {
+    return nestedProcessDefinitionId;
+  }
 
-    public void setNestedProcessInstanceId(String nestedProcessInstanceId) {
-        this.nestedProcessInstanceId = nestedProcessInstanceId;
-    }
+  public void setNestedProcessInstanceId(String nestedProcessInstanceId) {
+    this.nestedProcessInstanceId = nestedProcessInstanceId;
+  }
 
-    @Override
-    public String getNestedProcessInstanceId() {
-        return nestedProcessInstanceId;
-    }
+  @Override
+  public String getNestedProcessInstanceId() {
+    return nestedProcessInstanceId;
+  }
 
-    @Override
-    public ProcessEvents getEventType() {
-        return ProcessEvents.PROCESS_STARTED;
-    }
+  @Override
+  public ProcessEvents getEventType() {
+    return ProcessEvents.PROCESS_STARTED;
+  }
 
-    @Override
-    public String toString() {
-        return "ProcessStartedEventImpl{" +
-                super.toString() +
-                "nestedProcessDefinitionId='" + nestedProcessDefinitionId + '\'' +
-                ", nestedProcessInstanceId='" + nestedProcessInstanceId + '\'' +
-                '}';
-    }
+  @Override
+  public String toString() {
+    return "ProcessStartedEventImpl{"
+        + super.toString()
+        + "nestedProcessDefinitionId='"
+        + nestedProcessDefinitionId
+        + '\''
+        + ", nestedProcessInstanceId='"
+        + nestedProcessInstanceId
+        + '\''
+        + '}';
+  }
 }

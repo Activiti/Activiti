@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.cmd;
 
+import java.io.Serializable;
+import java.util.List;
 import org.activiti.bpmn.model.AdhocSubProcess;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
@@ -26,12 +27,7 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
 
-import java.io.Serializable;
-import java.util.List;
-
-/**
-
- */
+/** */
 public class CompleteAdhocSubProcessCmd implements Command<Void>, Serializable {
 
   private static final long serialVersionUID = 1L;
@@ -46,19 +42,23 @@ public class CompleteAdhocSubProcessCmd implements Command<Void>, Serializable {
     ExecutionEntityManager executionEntityManager = commandContext.getExecutionEntityManager();
     ExecutionEntity execution = executionEntityManager.findById(executionId);
     if (execution == null) {
-      throw new ActivitiObjectNotFoundException("No execution found for id '" + executionId + "'", ExecutionEntity.class);
+      throw new ActivitiObjectNotFoundException(
+          "No execution found for id '" + executionId + "'", ExecutionEntity.class);
     }
 
     if (!(execution.getCurrentFlowElement() instanceof AdhocSubProcess)) {
-      throw new ActivitiException("The current flow element of the requested execution is not an ad-hoc sub process");
+      throw new ActivitiException(
+          "The current flow element of the requested execution is not an ad-hoc sub process");
     }
 
     List<? extends ExecutionEntity> childExecutions = execution.getExecutions();
     if (childExecutions.size() > 0) {
-      throw new ActivitiException("Ad-hoc sub process has running child executions that need to be completed first");
+      throw new ActivitiException(
+          "Ad-hoc sub process has running child executions that need to be completed first");
     }
 
-    ExecutionEntity outgoingFlowExecution = executionEntityManager.createChildExecution(execution.getParent());
+    ExecutionEntity outgoingFlowExecution =
+        executionEntityManager.createChildExecution(execution.getParent());
     outgoingFlowExecution.setCurrentFlowElement(execution.getCurrentFlowElement());
 
     executionEntityManager.deleteExecutionAndRelatedData(execution, null);
@@ -67,5 +67,4 @@ public class CompleteAdhocSubProcessCmd implements Command<Void>, Serializable {
 
     return null;
   }
-
 }

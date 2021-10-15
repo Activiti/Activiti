@@ -22,8 +22,7 @@ public class ExtensionAttribute {
   protected String namespacePrefix;
   protected String namespace;
 
-  public ExtensionAttribute() {
-  }
+  public ExtensionAttribute() {}
 
   public ExtensionAttribute(String name) {
     this.name = name;
@@ -71,12 +70,9 @@ public class ExtensionAttribute {
     StringBuilder sb = new StringBuilder();
     if (namespacePrefix != null) {
       sb.append(namespacePrefix);
-      if (name != null)
-        sb.append(":").append(name);
-    } else
-      sb.append(name);
-    if (value != null)
-      sb.append("=").append(value);
+      if (name != null) sb.append(":").append(name);
+    } else sb.append(name);
+    if (value != null) sb.append("=").append(value);
     return sb.toString();
   }
 

@@ -23,11 +23,10 @@ import org.activiti.engine.impl.delegate.TriggerableActivityBehavior;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 
 /**
- * Superclass for all 'connectable' BPMN 2.0 process elements: tasks, gateways and events. This means that any subclass can be the source or target of a sequenceflow.
+ * Superclass for all 'connectable' BPMN 2.0 process elements: tasks, gateways and events. This
+ * means that any subclass can be the source or target of a sequenceflow.
  *
- * Corresponds with the notion of the 'flownode' in BPMN 2.0.
- *
-
+ * <p>Corresponds with the notion of the 'flownode' in BPMN 2.0.
  */
 public abstract class FlowNodeActivityBehavior implements TriggerableActivityBehavior {
 
@@ -35,15 +34,14 @@ public abstract class FlowNodeActivityBehavior implements TriggerableActivityBeh
 
   protected BpmnActivityBehavior bpmnActivityBehavior = new BpmnActivityBehavior();
 
-  /**
-   * Default behaviour: just leave the activity with no extra functionality.
-   */
+  /** Default behaviour: just leave the activity with no extra functionality. */
   public void execute(DelegateExecution execution) {
     leave(execution);
   }
 
   /**
-   * Default way of leaving a BPMN 2.0 activity: evaluate the conditions on the outgoing sequence flow and take those that evaluate to true.
+   * Default way of leaving a BPMN 2.0 activity: evaluate the conditions on the outgoing sequence
+   * flow and take those that evaluate to true.
    */
   public void leave(DelegateExecution execution) {
     bpmnActivityBehavior.performDefaultOutgoingBehavior((ExecutionEntity) execution);
@@ -65,7 +63,6 @@ public abstract class FlowNodeActivityBehavior implements TriggerableActivityBeh
   }
 
   public void setVariablesCalculator(VariablesCalculator variablesCalculator) {
-      bpmnActivityBehavior.setVariablesCalculator(variablesCalculator);
+    bpmnActivityBehavior.setVariablesCalculator(variablesCalculator);
   }
-
 }

@@ -21,10 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.activiti.engine.impl.test.ResourceActivitiTestCase;
 import org.activiti.engine.test.Deployment;
 
-/**
-
-
- */
+/** */
 public class CustomDefaultBpmnParseHandlerTest extends ResourceActivitiTestCase {
 
   public CustomDefaultBpmnParseHandlerTest() {
@@ -43,5 +40,4 @@ public class CustomDefaultBpmnParseHandlerTest extends ResourceActivitiTestCase 
     managementService.executeJob(managementService.createJobQuery().singleResult().getId());
     assertThat(taskService.createTaskQuery().count()).isEqualTo(1);
   }
-
 }

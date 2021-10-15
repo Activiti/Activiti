@@ -14,18 +14,13 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.bpmn.listener;
 
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.delegate.Expression;
 
-/**
- * An {@link ExecutionListener} that evaluates a {@link Expression} when notified.
- *
-
- */
+/** An {@link ExecutionListener} that evaluates a {@link Expression} when notified. */
 public class ExpressionExecutionListener implements ExecutionListener {
 
   protected Expression expression;
@@ -40,7 +35,8 @@ public class ExpressionExecutionListener implements ExecutionListener {
   }
 
   /**
-   * returns the expression text for this execution listener. Comes in handy if you want to check which listeners you already have.
+   * returns the expression text for this execution listener. Comes in handy if you want to check
+   * which listeners you already have.
    */
   public String getExpressionText() {
     return expression.getExpressionText();

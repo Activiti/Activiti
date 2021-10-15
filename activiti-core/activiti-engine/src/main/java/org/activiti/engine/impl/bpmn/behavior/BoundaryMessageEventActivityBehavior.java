@@ -16,6 +16,7 @@
 
 package org.activiti.engine.impl.bpmn.behavior;
 
+import java.util.List;
 import org.activiti.bpmn.model.BoundaryEvent;
 import org.activiti.bpmn.model.MessageEventDefinition;
 import org.activiti.engine.delegate.DelegateExecution;
@@ -28,11 +29,7 @@ import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntityManage
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.MessageEventSubscriptionEntity;
 
-import java.util.List;
-
-/**
-
- */
+/** */
 public class BoundaryMessageEventActivityBehavior extends BoundaryEventActivityBehavior {
 
   private static final long serialVersionUID = 1L;
@@ -40,8 +37,10 @@ public class BoundaryMessageEventActivityBehavior extends BoundaryEventActivityB
   private final MessageEventDefinition messageEventDefinition;
   private final MessageExecutionContext messageExecutionContext;
 
-  public BoundaryMessageEventActivityBehavior(MessageEventDefinition messageEventDefinition, boolean interrupting,
-                                              MessageExecutionContext messageExecutionContext) {
+  public BoundaryMessageEventActivityBehavior(
+      MessageEventDefinition messageEventDefinition,
+      boolean interrupting,
+      MessageExecutionContext messageExecutionContext) {
     super(interrupting);
     this.messageEventDefinition = messageEventDefinition;
     this.messageExecutionContext = messageExecutionContext;
@@ -52,14 +51,16 @@ public class BoundaryMessageEventActivityBehavior extends BoundaryEventActivityB
     CommandContext commandContext = Context.getCommandContext();
     ExecutionEntity executionEntity = (ExecutionEntity) execution;
 
-    MessageEventSubscriptionEntity messageEvent = messageExecutionContext.createMessageEventSubscription(commandContext,
-                                                                                                         executionEntity);
+    MessageEventSubscriptionEntity messageEvent =
+        messageExecutionContext.createMessageEventSubscription(commandContext, executionEntity);
     if (commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
 
-        commandContext.getProcessEngineConfiguration().getEventDispatcher()
-                .dispatchEvent(ActivitiEventBuilder.createMessageWaitingEvent(executionEntity,
-                                                                              messageEvent.getEventName(),
-                                                                              messageEvent.getConfiguration()));
+      commandContext
+          .getProcessEngineConfiguration()
+          .getEventDispatcher()
+          .dispatchEvent(
+              ActivitiEventBuilder.createMessageWaitingEvent(
+                  executionEntity, messageEvent.getEventName(), messageEvent.getConfiguration()));
     }
   }
 
@@ -71,10 +72,12 @@ public class BoundaryMessageEventActivityBehavior extends BoundaryEventActivityB
     String messageName = messageExecutionContext.getMessageName(execution);
 
     if (boundaryEvent.isCancelActivity()) {
-      EventSubscriptionEntityManager eventSubscriptionEntityManager = Context.getCommandContext().getEventSubscriptionEntityManager();
+      EventSubscriptionEntityManager eventSubscriptionEntityManager =
+          Context.getCommandContext().getEventSubscriptionEntityManager();
       List<EventSubscriptionEntity> eventSubscriptions = executionEntity.getEventSubscriptions();
       for (EventSubscriptionEntity eventSubscription : eventSubscriptions) {
-        if (eventSubscription instanceof MessageEventSubscriptionEntity && eventSubscription.getEventName().equals(messageName)) {
+        if (eventSubscription instanceof MessageEventSubscriptionEntity
+            && eventSubscription.getEventName().equals(messageName)) {
 
           eventSubscriptionEntityManager.delete(eventSubscription);
         }
@@ -91,5 +94,4 @@ public class BoundaryMessageEventActivityBehavior extends BoundaryEventActivityB
   public MessageExecutionContext getMessageExecutionContext() {
     return messageExecutionContext;
   }
-
 }

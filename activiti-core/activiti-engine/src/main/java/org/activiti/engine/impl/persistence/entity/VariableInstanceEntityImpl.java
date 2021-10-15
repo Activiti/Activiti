@@ -19,18 +19,14 @@ package org.activiti.engine.impl.persistence.entity;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.activiti.engine.impl.db.BulkDeleteable;
 import org.activiti.engine.impl.variable.ValueFields;
 import org.activiti.engine.impl.variable.VariableType;
 import org.apache.commons.lang3.StringUtils;
 
-/**
-
-
-
- */
-public class VariableInstanceEntityImpl extends AbstractEntity implements VariableInstanceEntity, ValueFields, BulkDeleteable, Serializable {
+/** */
+public class VariableInstanceEntityImpl extends AbstractEntity
+    implements VariableInstanceEntity, ValueFields, BulkDeleteable, Serializable {
 
   private static final long serialVersionUID = 1L;
 
@@ -52,9 +48,7 @@ public class VariableInstanceEntityImpl extends AbstractEntity implements Variab
   protected boolean forcedUpdate;
   protected boolean deleted;
 
-  public VariableInstanceEntityImpl() {
-
-  }
+  public VariableInstanceEntityImpl() {}
 
   public Object getPersistentState() {
     Map<String, Object> persistentState = new HashMap<String, Object>();
@@ -155,6 +149,7 @@ public class VariableInstanceEntityImpl extends AbstractEntity implements Variab
       return typeName;
     }
   }
+
   public void setTypeName(String typeName) {
     this.typeName = typeName;
   }
@@ -250,5 +245,4 @@ public class VariableInstanceEntityImpl extends AbstractEntity implements Variab
     sb.append("]");
     return sb.toString();
   }
-
 }

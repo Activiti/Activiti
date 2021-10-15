@@ -14,19 +14,15 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.persistence.entity;
-
-import org.activiti.engine.api.internal.Internal;
 
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import org.activiti.engine.api.internal.Internal;
 
-/**
-
- */
+/** */
 @Internal
 @Deprecated
 public class AttachmentEntityImpl extends AbstractEntity implements AttachmentEntity, Serializable {
@@ -44,9 +40,7 @@ public class AttachmentEntityImpl extends AbstractEntity implements AttachmentEn
   protected String userId;
   protected Date time;
 
-  public AttachmentEntityImpl() {
-
-  }
+  public AttachmentEntityImpl() {}
 
   public Object getPersistentState() {
     Map<String, Object> persistentState = new HashMap<String, Object>();
@@ -134,5 +128,4 @@ public class AttachmentEntityImpl extends AbstractEntity implements AttachmentEn
   public void setTime(Date time) {
     this.time = time;
   }
-
 }

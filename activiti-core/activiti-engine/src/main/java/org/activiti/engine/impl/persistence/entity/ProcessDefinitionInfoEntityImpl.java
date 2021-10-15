@@ -14,27 +14,22 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.persistence.entity;
 
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-
-/**
-
- */
-public class ProcessDefinitionInfoEntityImpl extends AbstractEntity implements ProcessDefinitionInfoEntity, Serializable {
+/** */
+public class ProcessDefinitionInfoEntityImpl extends AbstractEntity
+    implements ProcessDefinitionInfoEntity, Serializable {
 
   private static final long serialVersionUID = 1L;
 
   protected String processDefinitionId;
   protected String infoJsonId;
 
-  public ProcessDefinitionInfoEntityImpl() {
-
-  }
+  public ProcessDefinitionInfoEntityImpl() {}
 
   public Object getPersistentState() {
     Map<String, Object> persistentState = new HashMap<String, Object>();

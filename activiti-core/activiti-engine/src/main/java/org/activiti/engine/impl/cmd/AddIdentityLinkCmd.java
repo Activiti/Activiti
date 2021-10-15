@@ -21,9 +21,7 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.task.IdentityLinkType;
 
-/**
-
- */
+/** */
 public class AddIdentityLinkCmd extends NeedsActiveTaskCmd<Void> {
 
   private static final long serialVersionUID = 1L;
@@ -37,7 +35,8 @@ public class AddIdentityLinkCmd extends NeedsActiveTaskCmd<Void> {
 
   protected String identityType;
 
-  public AddIdentityLinkCmd(String taskId, String identityId, int identityIdType, String identityType) {
+  public AddIdentityLinkCmd(
+      String taskId, String identityId, int identityIdType, String identityType) {
     super(taskId);
     validateParams(taskId, identityId, identityIdType, identityType);
     this.taskId = taskId;
@@ -46,17 +45,21 @@ public class AddIdentityLinkCmd extends NeedsActiveTaskCmd<Void> {
     this.identityType = identityType;
   }
 
-  protected void validateParams(String taskId, String identityId, int identityIdType, String identityType) {
+  protected void validateParams(
+      String taskId, String identityId, int identityIdType, String identityType) {
     if (taskId == null) {
       throw new ActivitiIllegalArgumentException("taskId is null");
     }
 
     if (identityType == null) {
-      throw new ActivitiIllegalArgumentException("type is required when adding a new task identity link");
+      throw new ActivitiIllegalArgumentException(
+          "type is required when adding a new task identity link");
     }
 
-    if (identityId == null && (identityIdType == IDENTITY_GROUP ||
-        (!IdentityLinkType.ASSIGNEE.equals(identityType) && !IdentityLinkType.OWNER.equals(identityType)))) {
+    if (identityId == null
+        && (identityIdType == IDENTITY_GROUP
+            || (!IdentityLinkType.ASSIGNEE.equals(identityType)
+                && !IdentityLinkType.OWNER.equals(identityType)))) {
 
       throw new ActivitiIllegalArgumentException("identityId is null");
     }
@@ -85,16 +88,18 @@ public class AddIdentityLinkCmd extends NeedsActiveTaskCmd<Void> {
       // ACT-1317: Special handling when assignee is set to NULL, a
       // CommentEntity notifying of assignee-delete should be created
       forceNullUserId = true;
-
     }
 
     if (IDENTITY_USER == identityIdType) {
-      commandContext.getHistoryManager().createUserIdentityLinkComment(taskId, identityId, identityType, true, forceNullUserId);
+      commandContext
+          .getHistoryManager()
+          .createUserIdentityLinkComment(taskId, identityId, identityType, true, forceNullUserId);
     } else {
-      commandContext.getHistoryManager().createGroupIdentityLinkComment(taskId, identityId, identityType, true);
+      commandContext
+          .getHistoryManager()
+          .createGroupIdentityLinkComment(taskId, identityId, identityType, true);
     }
 
     return null;
   }
-
 }

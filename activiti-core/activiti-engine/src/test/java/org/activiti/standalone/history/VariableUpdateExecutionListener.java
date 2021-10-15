@@ -14,16 +14,13 @@
  * limitations under the License.
  */
 
-
 package org.activiti.standalone.history;
 
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.delegate.Expression;
 
-/**
-
- */
+/** */
 public class VariableUpdateExecutionListener implements ExecutionListener {
 
   private Expression varName;
@@ -32,5 +29,4 @@ public class VariableUpdateExecutionListener implements ExecutionListener {
     String variableName = (String) varName.getValue(execution);
     execution.setVariable(variableName, "Event: " + execution.getEventName());
   }
-
 }

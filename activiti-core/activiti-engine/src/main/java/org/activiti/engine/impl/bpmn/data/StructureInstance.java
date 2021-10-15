@@ -18,11 +18,7 @@ package org.activiti.engine.impl.bpmn.data;
 
 import org.activiti.engine.api.internal.Internal;
 
-/**
- * An instance of {@link StructureDefinition}
- *
-
- */
+/** An instance of {@link StructureDefinition} */
 @Internal
 public interface StructureInstance {
 
@@ -36,8 +32,7 @@ public interface StructureInstance {
   /**
    * Loads this structure from array
    *
-   * @param array
-   *          the array where this structure loads data
+   * @param array the array where this structure loads data
    */
   void loadFrom(Object[] array);
 }

@@ -24,33 +24,31 @@ import org.activiti.test.assertions.SignalAssertions;
 
 public class AwaitableProcessOperations implements ProcessOperations {
 
-    private ProcessOperations processOperations;
-    private boolean awaitEnabled;
+  private ProcessOperations processOperations;
+  private boolean awaitEnabled;
 
-    public AwaitableProcessOperations(ProcessOperations processOperations,
-                                      boolean awaitEnabled) {
-        this.processOperations = processOperations;
-        this.awaitEnabled = awaitEnabled;
+  public AwaitableProcessOperations(ProcessOperations processOperations, boolean awaitEnabled) {
+    this.processOperations = processOperations;
+    this.awaitEnabled = awaitEnabled;
+  }
+
+  @Override
+  public ProcessInstanceAssertions start(StartProcessPayload startProcessPayload) {
+
+    ProcessInstanceAssertions processInstanceAssertions =
+        processOperations.start(startProcessPayload);
+    if (awaitEnabled) {
+      processInstanceAssertions = new AwaitProcessInstanceAssertions(processInstanceAssertions);
     }
+    return processInstanceAssertions;
+  }
 
-    @Override
-    public ProcessInstanceAssertions start(StartProcessPayload startProcessPayload)  {
-
-        ProcessInstanceAssertions processInstanceAssertions = processOperations.start(startProcessPayload);
-        if (awaitEnabled){
-            processInstanceAssertions = new AwaitProcessInstanceAssertions(processInstanceAssertions);
-        }
-        return processInstanceAssertions;
+  @Override
+  public SignalAssertions signal(SignalPayload signalPayload) {
+    SignalAssertions signalAssertions = processOperations.signal(signalPayload);
+    if (awaitEnabled) {
+      signalAssertions = new AwaitSignalAssertions(signalAssertions);
     }
-
-    @Override
-    public SignalAssertions signal(SignalPayload signalPayload) {
-        SignalAssertions signalAssertions = processOperations.signal(signalPayload);
-        if (awaitEnabled) {
-            signalAssertions = new AwaitSignalAssertions(signalAssertions);
-        }
-        return signalAssertions;
-    }
-
-
+    return signalAssertions;
+  }
 }

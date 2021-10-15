@@ -19,7 +19,6 @@ package org.activiti.spring.boot;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.ManagementService;
 import org.activiti.engine.ProcessEngine;
@@ -39,11 +38,11 @@ import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import org.springframework.core.task.TaskExecutor;
 
 /**
- * Provides sane definitions for the various beans required to be productive with Activiti in Spring.
- *
+ * Provides sane definitions for the various beans required to be productive with Activiti in
+ * Spring.
  */
 public abstract class AbstractProcessEngineAutoConfiguration
-        extends AbstractProcessEngineConfiguration {
+    extends AbstractProcessEngineConfiguration {
 
   @Bean
   public SpringAsyncExecutor springAsyncExecutor(TaskExecutor applicationTaskExecutor) {
@@ -62,7 +61,8 @@ public abstract class AbstractProcessEngineAutoConfiguration
         Class customMybatisClass = Class.forName(customMybatisMapperClassName);
         mybatisMappers.add(customMybatisClass);
       } catch (ClassNotFoundException e) {
-        throw new IllegalArgumentException("Class " + customMybatisMapperClassName + " has not been found.", e);
+        throw new IllegalArgumentException(
+            "Class " + customMybatisMapperClassName + " has not been found.", e);
       }
     }
     return mybatisMappers;

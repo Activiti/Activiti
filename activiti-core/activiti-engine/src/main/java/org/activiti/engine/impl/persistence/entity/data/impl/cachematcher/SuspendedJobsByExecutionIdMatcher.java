@@ -17,18 +17,14 @@
 package org.activiti.engine.impl.persistence.entity.data.impl.cachematcher;
 
 import org.activiti.engine.impl.persistence.CachedEntityMatcherAdapter;
-import org.activiti.engine.impl.persistence.entity.DeadLetterJobEntity;
 import org.activiti.engine.impl.persistence.entity.SuspendedJobEntity;
 
-/**
-
- */
-public class SuspendedJobsByExecutionIdMatcher extends CachedEntityMatcherAdapter<SuspendedJobEntity> {
+/** */
+public class SuspendedJobsByExecutionIdMatcher
+    extends CachedEntityMatcherAdapter<SuspendedJobEntity> {
 
   @Override
   public boolean isRetained(SuspendedJobEntity jobEntity, Object param) {
     return jobEntity.getExecutionId() != null && jobEntity.getExecutionId().equals(param);
   }
-
-
 }

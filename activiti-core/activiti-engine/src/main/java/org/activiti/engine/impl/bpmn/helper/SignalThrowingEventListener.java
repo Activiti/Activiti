@@ -17,7 +17,6 @@
 package org.activiti.engine.impl.bpmn.helper;
 
 import java.util.List;
-
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventListener;
@@ -29,9 +28,6 @@ import org.activiti.engine.repository.ProcessDefinition;
 
 /**
  * An {@link ActivitiEventListener} that throws a signal event when an event is dispatched to it.
- *
-
- *
  */
 public class SignalThrowingEventListener extends BaseDelegateEventListener {
 
@@ -43,21 +39,33 @@ public class SignalThrowingEventListener extends BaseDelegateEventListener {
     if (isValidEvent(event)) {
 
       if (event.getProcessInstanceId() == null && processInstanceScope) {
-        throw new ActivitiIllegalArgumentException("Cannot throw process-instance scoped signal, since the dispatched event is not part of an ongoing process instance");
+        throw new ActivitiIllegalArgumentException(
+            "Cannot throw process-instance scoped signal, since the dispatched event is not part of"
+                + " an ongoing process instance");
       }
 
       CommandContext commandContext = Context.getCommandContext();
-      EventSubscriptionEntityManager eventSubscriptionEntityManager = commandContext.getEventSubscriptionEntityManager();
+      EventSubscriptionEntityManager eventSubscriptionEntityManager =
+          commandContext.getEventSubscriptionEntityManager();
       List<SignalEventSubscriptionEntity> subscriptionEntities = null;
       if (processInstanceScope) {
-        subscriptionEntities = eventSubscriptionEntityManager.findSignalEventSubscriptionsByProcessInstanceAndEventName(event.getProcessInstanceId(), signalName);
+        subscriptionEntities =
+            eventSubscriptionEntityManager
+                .findSignalEventSubscriptionsByProcessInstanceAndEventName(
+                    event.getProcessInstanceId(), signalName);
       } else {
         String tenantId = null;
         if (event.getProcessDefinitionId() != null) {
-          ProcessDefinition processDefinition = commandContext.getProcessEngineConfiguration().getDeploymentManager().findDeployedProcessDefinitionById(event.getProcessDefinitionId());
+          ProcessDefinition processDefinition =
+              commandContext
+                  .getProcessEngineConfiguration()
+                  .getDeploymentManager()
+                  .findDeployedProcessDefinitionById(event.getProcessDefinitionId());
           tenantId = processDefinition.getTenantId();
         }
-        subscriptionEntities = eventSubscriptionEntityManager.findSignalEventSubscriptionsByEventName(signalName, tenantId);
+        subscriptionEntities =
+            eventSubscriptionEntityManager.findSignalEventSubscriptionsByEventName(
+                signalName, tenantId);
       }
 
       for (SignalEventSubscriptionEntity signalEventSubscriptionEntity : subscriptionEntities) {

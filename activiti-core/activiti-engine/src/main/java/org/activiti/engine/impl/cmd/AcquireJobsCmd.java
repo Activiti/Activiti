@@ -19,7 +19,6 @@ package org.activiti.engine.impl.cmd;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
-
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.asyncexecutor.AcquiredJobEntities;
 import org.activiti.engine.impl.asyncexecutor.AsyncExecutor;
@@ -27,9 +26,7 @@ import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.JobEntity;
 
-/**
-
- */
+/** */
 public class AcquireJobsCmd implements Command<AcquiredJobEntities> {
 
   private final AsyncExecutor asyncExecutor;
@@ -40,7 +37,10 @@ public class AcquireJobsCmd implements Command<AcquiredJobEntities> {
 
   public AcquiredJobEntities execute(CommandContext commandContext) {
     AcquiredJobEntities acquiredJobs = new AcquiredJobEntities();
-    List<JobEntity> jobs = commandContext.getJobEntityManager().findJobsToExecute(new Page(0, asyncExecutor.getMaxAsyncJobsDuePerAcquisition()));
+    List<JobEntity> jobs =
+        commandContext
+            .getJobEntityManager()
+            .findJobsToExecute(new Page(0, asyncExecutor.getMaxAsyncJobsDuePerAcquisition()));
 
     for (JobEntity job : jobs) {
       lockJob(commandContext, job, asyncExecutor.getAsyncJobLockTimeInMillis());
@@ -52,7 +52,8 @@ public class AcquireJobsCmd implements Command<AcquiredJobEntities> {
 
   protected void lockJob(CommandContext commandContext, JobEntity job, int lockTimeInMillis) {
     GregorianCalendar gregorianCalendar = new GregorianCalendar();
-    gregorianCalendar.setTime(commandContext.getProcessEngineConfiguration().getClock().getCurrentTime());
+    gregorianCalendar.setTime(
+        commandContext.getProcessEngineConfiguration().getClock().getCurrentTime());
     gregorianCalendar.add(Calendar.MILLISECOND, lockTimeInMillis);
     job.setLockOwner(asyncExecutor.getLockOwner());
     job.setLockExpirationTime(gregorianCalendar.getTime());

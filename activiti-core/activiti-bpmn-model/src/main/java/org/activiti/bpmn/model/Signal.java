@@ -24,8 +24,7 @@ public class Signal extends BaseElement {
 
   protected String scope;
 
-  public Signal() {
-  }
+  public Signal() {}
 
   public Signal(String id, String name) {
     this.id = id;

@@ -14,12 +14,10 @@
  * limitations under the License.
  */
 
-
 package org.activiti.spring.autodeployment;
 
 import java.io.IOException;
 import java.util.List;
-
 import org.activiti.bpmn.converter.BpmnXMLConverter;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.core.common.spring.project.ApplicationUpgradeContextService;
@@ -34,127 +32,135 @@ import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.ContextResource;
 import org.springframework.core.io.Resource;
 
-/**
- * Abstract base class for implementations of {@link AutoDeploymentStrategy}.
- */
+/** Abstract base class for implementations of {@link AutoDeploymentStrategy}. */
 public abstract class AbstractAutoDeploymentStrategy implements AutoDeploymentStrategy {
 
-    protected static final Logger LOGGER = LoggerFactory.getLogger(AbstractAutoDeploymentStrategy.class);
+  protected static final Logger LOGGER =
+      LoggerFactory.getLogger(AbstractAutoDeploymentStrategy.class);
 
-    private ApplicationUpgradeContextService applicationUpgradeContextService;
+  private ApplicationUpgradeContextService applicationUpgradeContextService;
 
-    public AbstractAutoDeploymentStrategy(ApplicationUpgradeContextService applicationUpgradeContextService) {
-        this.applicationUpgradeContextService = applicationUpgradeContextService;
+  public AbstractAutoDeploymentStrategy(
+      ApplicationUpgradeContextService applicationUpgradeContextService) {
+    this.applicationUpgradeContextService = applicationUpgradeContextService;
+  }
+
+  /**
+   * Gets the deployment mode this strategy handles.
+   *
+   * @return the name of the deployment mode
+   */
+  protected abstract String getDeploymentMode();
+
+  @Override
+  public boolean handlesMode(final String mode) {
+    return StringUtils.equalsIgnoreCase(mode, getDeploymentMode());
+  }
+
+  /**
+   * Determines the name to be used for the provided resource.
+   *
+   * @param resource the resource to get the name for
+   * @return the name of the resource
+   */
+  protected String determineResourceName(final Resource resource) {
+    String resourceName;
+
+    if (resource instanceof ContextResource) {
+      resourceName = ((ContextResource) resource).getPathWithinContext();
+
+    } else if (resource instanceof ByteArrayResource) {
+      resourceName = resource.getDescription();
+
+    } else {
+      try {
+        resourceName = resource.getFile().getAbsolutePath();
+      } catch (IOException e) {
+        resourceName = resource.getFilename();
+      }
     }
+    return resourceName;
+  }
 
-    /**
-     * Gets the deployment mode this strategy handles.
-     *
-     * @return the name of the deployment mode
-     */
-    protected abstract String getDeploymentMode();
+  protected boolean validateModel(Resource resource, final RepositoryService repositoryService) {
 
-    @Override
-    public boolean handlesMode(final String mode) {
-        return StringUtils.equalsIgnoreCase(mode, getDeploymentMode());
-    }
+    String resourceName = determineResourceName(resource);
 
-    /**
-     * Determines the name to be used for the provided resource.
-     *
-     * @param resource the resource to get the name for
-     * @return the name of the resource
-     */
-    protected String determineResourceName(final Resource resource) {
-        String resourceName;
+    if (isProcessDefinitionResource(resourceName)) {
+      try {
+        BpmnXMLConverter converter = new BpmnXMLConverter();
+        BpmnModel bpmnModel =
+            converter.convertToBpmnModel(
+                new InputStreamSource(resource.getInputStream()), true, false);
+        List<ValidationError> validationErrors = repositoryService.validateProcess(bpmnModel);
+        if (validationErrors != null && !validationErrors.isEmpty()) {
+          StringBuilder warningBuilder = new StringBuilder();
+          StringBuilder errorBuilder = new StringBuilder();
 
-        if (resource instanceof ContextResource) {
-            resourceName = ((ContextResource) resource).getPathWithinContext();
-
-        } else if (resource instanceof ByteArrayResource) {
-            resourceName = resource.getDescription();
-
-        } else {
-            try {
-                resourceName = resource.getFile().getAbsolutePath();
-            } catch (IOException e) {
-                resourceName = resource.getFilename();
+          for (ValidationError error : validationErrors) {
+            if (error.isWarning()) {
+              warningBuilder.append(error.toString());
+              warningBuilder.append("\n");
+            } else {
+              errorBuilder.append(error.toString());
+              errorBuilder.append("\n");
             }
-        }
-        return resourceName;
-    }
 
-    protected boolean validateModel(Resource resource, final RepositoryService repositoryService) {
-
-        String resourceName = determineResourceName(resource);
-
-        if (isProcessDefinitionResource(resourceName)) {
-        try {
-            BpmnXMLConverter converter = new BpmnXMLConverter();
-            BpmnModel bpmnModel = converter.convertToBpmnModel(new InputStreamSource(resource.getInputStream()), true,
-                    false);
-            List<ValidationError> validationErrors = repositoryService.validateProcess(bpmnModel);
-            if ( validationErrors != null && !validationErrors.isEmpty() ) {
-                StringBuilder warningBuilder = new StringBuilder();
-                StringBuilder errorBuilder = new StringBuilder();
-
-                for (ValidationError error : validationErrors) {
-                    if ( error.isWarning() ) {
-                        warningBuilder.append(error.toString());
-                        warningBuilder.append("\n");
-                    } else {
-                        errorBuilder.append(error.toString());
-                        errorBuilder.append("\n");
-                    }
-
-                    // Write out warnings (if any)
-                    if ( warningBuilder.length() > 0 ) {
-                        LOGGER.warn("Following warnings encountered during process validation: "
-                                + warningBuilder.toString());
-                    }
-
-                    if ( errorBuilder.length() > 0 ) {
-                        LOGGER.error("Errors while parsing:\n" + errorBuilder.toString());
-                        return false;
-                    }
-                }
+            // Write out warnings (if any)
+            if (warningBuilder.length() > 0) {
+              LOGGER.warn(
+                  "Following warnings encountered during process validation: "
+                      + warningBuilder.toString());
             }
-        } catch ( Exception e ) {
-            LOGGER.error("Error parsing XML", e);
-            return false;
-        }
-        }
-        return true;
-    }
 
-    private boolean isProcessDefinitionResource(String resource) {
-        return resource.endsWith(".bpmn20.xml") || resource.endsWith(".bpmn");
-    }
-
-    protected DeploymentBuilder loadApplicationUpgradeContext(DeploymentBuilder deploymentBuilder) {
-        if(applicationUpgradeContextService != null){
-            loadProjectManifest(deploymentBuilder);
-            loadEnforcedAppVersion(deploymentBuilder);
-        }
-        return deploymentBuilder;
-    }
-
-    private void loadProjectManifest(DeploymentBuilder deploymentBuilder) {
-        if (applicationUpgradeContextService.hasProjectManifest()) {
-            try {
-                deploymentBuilder.setProjectManifest(applicationUpgradeContextService.loadProjectManifest());
-            } catch (IOException e) {
-                LOGGER.warn("Manifest of application not found. Project release version will not be set for deployment.");
+            if (errorBuilder.length() > 0) {
+              LOGGER.error("Errors while parsing:\n" + errorBuilder.toString());
+              return false;
             }
+          }
         }
+      } catch (Exception e) {
+        LOGGER.error("Error parsing XML", e);
+        return false;
+      }
     }
+    return true;
+  }
 
-    private void loadEnforcedAppVersion(DeploymentBuilder deploymentBuilder) {
-        if (applicationUpgradeContextService.hasEnforcedAppVersion()) {
-            deploymentBuilder.setEnforcedAppVersion(applicationUpgradeContextService.getEnforcedAppVersion());
-            LOGGER.warn("Enforced application version set to" + applicationUpgradeContextService.getEnforcedAppVersion().toString());
-        } else {
-            LOGGER.warn("Enforced application version not set.");
-        }
+  private boolean isProcessDefinitionResource(String resource) {
+    return resource.endsWith(".bpmn20.xml") || resource.endsWith(".bpmn");
+  }
+
+  protected DeploymentBuilder loadApplicationUpgradeContext(DeploymentBuilder deploymentBuilder) {
+    if (applicationUpgradeContextService != null) {
+      loadProjectManifest(deploymentBuilder);
+      loadEnforcedAppVersion(deploymentBuilder);
     }
+    return deploymentBuilder;
+  }
+
+  private void loadProjectManifest(DeploymentBuilder deploymentBuilder) {
+    if (applicationUpgradeContextService.hasProjectManifest()) {
+      try {
+        deploymentBuilder.setProjectManifest(
+            applicationUpgradeContextService.loadProjectManifest());
+      } catch (IOException e) {
+        LOGGER.warn(
+            "Manifest of application not found. Project release version will not be set for"
+                + " deployment.");
+      }
+    }
+  }
+
+  private void loadEnforcedAppVersion(DeploymentBuilder deploymentBuilder) {
+    if (applicationUpgradeContextService.hasEnforcedAppVersion()) {
+      deploymentBuilder.setEnforcedAppVersion(
+          applicationUpgradeContextService.getEnforcedAppVersion());
+      LOGGER.warn(
+          "Enforced application version set to"
+              + applicationUpgradeContextService.getEnforcedAppVersion().toString());
+    } else {
+      LOGGER.warn("Enforced application version not set.");
+    }
+  }
 }

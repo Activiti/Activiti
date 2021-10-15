@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.persistence.entity;
 
 import java.io.Serializable;
@@ -23,15 +22,12 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.impl.context.Context;
 
-/**
-
-
- */
-public class DeploymentEntityImpl extends AbstractEntityNoRevision implements DeploymentEntity, Serializable {
+/** */
+public class DeploymentEntityImpl extends AbstractEntityNoRevision
+    implements DeploymentEntity, Serializable {
 
   private static final long serialVersionUID = 1L;
 
@@ -45,17 +41,16 @@ public class DeploymentEntityImpl extends AbstractEntityNoRevision implements De
   protected Integer version;
   private String projectReleaseVersion;
 
-    // Backwards compatibility
+  // Backwards compatibility
   protected String engineVersion;
 
   /**
-   * Will only be used during actual deployment to pass deployed artifacts (eg process definitions). Will be null otherwise.
+   * Will only be used during actual deployment to pass deployed artifacts (eg process definitions).
+   * Will be null otherwise.
    */
   protected Map<Class<?>, List<Object>> deployedArtifacts;
 
-  public DeploymentEntityImpl() {
-
-  }
+  public DeploymentEntityImpl() {}
 
   public void addResource(ResourceEntity resource) {
     if (resources == null) {
@@ -68,7 +63,8 @@ public class DeploymentEntityImpl extends AbstractEntityNoRevision implements De
 
   public Map<String, ResourceEntity> getResources() {
     if (resources == null && id != null) {
-      List<ResourceEntity> resourcesList = Context.getCommandContext().getResourceEntityManager().findResourcesByDeploymentId(id);
+      List<ResourceEntity> resourcesList =
+          Context.getCommandContext().getResourceEntityManager().findResourcesByDeploymentId(id);
       resources = new HashMap<String, ResourceEntity>();
       for (ResourceEntity resource : resourcesList) {
         resources.put(resource.getName(), resource);
@@ -174,20 +170,20 @@ public class DeploymentEntityImpl extends AbstractEntityNoRevision implements De
     this.engineVersion = engineVersion;
   }
 
-  public Integer getVersion(){
-      return version;
+  public Integer getVersion() {
+    return version;
   }
 
-  public void setVersion(Integer version){
-      this.version = version;
+  public void setVersion(Integer version) {
+    this.version = version;
   }
 
   public String getProjectReleaseVersion() {
-      return projectReleaseVersion;
+    return projectReleaseVersion;
   }
 
   public void setProjectReleaseVersion(String projectReleaseVersion) {
-      this.projectReleaseVersion = projectReleaseVersion;
+    this.projectReleaseVersion = projectReleaseVersion;
   }
 
   // common methods //////////////////////////////////////////////////////////
@@ -196,5 +192,4 @@ public class DeploymentEntityImpl extends AbstractEntityNoRevision implements De
   public String toString() {
     return "DeploymentEntity[id=" + id + ", name=" + name + "]";
   }
-
 }

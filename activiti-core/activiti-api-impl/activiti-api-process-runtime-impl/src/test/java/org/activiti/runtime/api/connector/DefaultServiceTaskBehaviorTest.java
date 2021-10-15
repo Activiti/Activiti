@@ -15,6 +15,11 @@
  */
 package org.activiti.runtime.api.connector;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
+import static org.mockito.MockitoAnnotations.initMocks;
+
 import org.activiti.api.process.runtime.connector.Connector;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,67 +28,59 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.context.ApplicationContext;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
-import static org.mockito.MockitoAnnotations.initMocks;
-
 public class DefaultServiceTaskBehaviorTest {
 
-    @InjectMocks
-    private DefaultServiceTaskBehavior behavior;
+  @InjectMocks private DefaultServiceTaskBehavior behavior;
 
-    @Mock
-    private ApplicationContext context;
+  @Mock private ApplicationContext context;
 
-    @BeforeEach
-    public void setUp() {
-        initMocks(this);
-    }
+  @BeforeEach
+  public void setUp() {
+    initMocks(this);
+  }
 
-    @Test
-    public void hasConnectorBeanShouldReturnTrueIfABeanOfConnectorTypeIsFound() {
-        //given
-        String connectorName = "connector";
-        DelegateExecution execution = ConnectorRuntimeApiTestHelper.buildExecution(connectorName);
-        given(context.containsBean(connectorName)).willReturn(true);
-        given(context.getBean(connectorName)).willReturn(mock(Connector.class));
+  @Test
+  public void hasConnectorBeanShouldReturnTrueIfABeanOfConnectorTypeIsFound() {
+    // given
+    String connectorName = "connector";
+    DelegateExecution execution = ConnectorRuntimeApiTestHelper.buildExecution(connectorName);
+    given(context.containsBean(connectorName)).willReturn(true);
+    given(context.getBean(connectorName)).willReturn(mock(Connector.class));
 
-        //when
-        boolean hasConnectorBean = behavior.hasConnectorBean(execution);
+    // when
+    boolean hasConnectorBean = behavior.hasConnectorBean(execution);
 
-        //then
-        assertThat(hasConnectorBean).isTrue();
-    }
+    // then
+    assertThat(hasConnectorBean).isTrue();
+  }
 
-    @Test
-    public void hasConnectorBeanShouldReturnFalseIfNoBeanIsFoundWithTheGivenName() {
-        //given
-        String connectorName = "connector";
-        DelegateExecution execution = ConnectorRuntimeApiTestHelper.buildExecution(connectorName);
-        given(context.containsBean(connectorName)).willReturn(false);
+  @Test
+  public void hasConnectorBeanShouldReturnFalseIfNoBeanIsFoundWithTheGivenName() {
+    // given
+    String connectorName = "connector";
+    DelegateExecution execution = ConnectorRuntimeApiTestHelper.buildExecution(connectorName);
+    given(context.containsBean(connectorName)).willReturn(false);
 
-        //when
-        boolean hasConnectorBean = behavior.hasConnectorBean(execution);
+    // when
+    boolean hasConnectorBean = behavior.hasConnectorBean(execution);
 
-        //then
-        assertThat(hasConnectorBean).isFalse();
-    }
+    // then
+    assertThat(hasConnectorBean).isFalse();
+  }
 
-    @Test
-    public void hasConnectorBeanShouldReturnFalseIfABeanOfDifferentTypeIsFound() {
-        //given
-        String connectorName = "connector";
-        DelegateExecution execution = ConnectorRuntimeApiTestHelper.buildExecution(connectorName);
-        given(context.containsBean(connectorName)).willReturn(true);
-        DelegateExecution nonConnectorBean = mock(DelegateExecution.class);
-        given(context.getBean(connectorName)).willReturn(nonConnectorBean);
+  @Test
+  public void hasConnectorBeanShouldReturnFalseIfABeanOfDifferentTypeIsFound() {
+    // given
+    String connectorName = "connector";
+    DelegateExecution execution = ConnectorRuntimeApiTestHelper.buildExecution(connectorName);
+    given(context.containsBean(connectorName)).willReturn(true);
+    DelegateExecution nonConnectorBean = mock(DelegateExecution.class);
+    given(context.getBean(connectorName)).willReturn(nonConnectorBean);
 
-        //when
-        boolean hasConnectorBean = behavior.hasConnectorBean(execution);
+    // when
+    boolean hasConnectorBean = behavior.hasConnectorBean(execution);
 
-        //then
-        assertThat(hasConnectorBean).isFalse();
-    }
-
+    // then
+    assertThat(hasConnectorBean).isFalse();
+  }
 }

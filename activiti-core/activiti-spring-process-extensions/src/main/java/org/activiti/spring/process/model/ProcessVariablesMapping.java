@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.spring.process.model;
 
 import java.util.HashMap;
@@ -22,39 +21,41 @@ import java.util.Map;
 
 public class ProcessVariablesMapping {
 
-    private MappingType mappingType;
-    private Map<String, Mapping> inputs = new HashMap<>();
-    private Map<String, Mapping> outputs = new HashMap<>();
+  private MappingType mappingType;
+  private Map<String, Mapping> inputs = new HashMap<>();
+  private Map<String, Mapping> outputs = new HashMap<>();
 
-    public Map<String, Mapping> getInputs() {
-        return inputs;
-    }
-    public void setInputs(Map<String, Mapping> inputs) {
-        this.inputs = inputs;
-    }
+  public Map<String, Mapping> getInputs() {
+    return inputs;
+  }
 
-    public Mapping getInputMapping(String inputName) {
-        return inputs.get(inputName);
-    }
+  public void setInputs(Map<String, Mapping> inputs) {
+    this.inputs = inputs;
+  }
 
-    public Map<String, Mapping> getOutputs() {
-        return outputs;
-    }
-    public void setOutputs(Map<String, Mapping> outputs) {
-        this.outputs = outputs;
-    }
+  public Mapping getInputMapping(String inputName) {
+    return inputs.get(inputName);
+  }
 
-    public MappingType getMappingType() {
-        return mappingType;
-    }
+  public Map<String, Mapping> getOutputs() {
+    return outputs;
+  }
 
-    public void setMappingType(MappingType mappingType) {
-        this.mappingType = mappingType;
-    }
+  public void setOutputs(Map<String, Mapping> outputs) {
+    this.outputs = outputs;
+  }
 
-    public enum MappingType {
-        MAP_ALL,
-        MAP_ALL_INPUTS,
-        MAP_ALL_OUTPUTS
-    }
+  public MappingType getMappingType() {
+    return mappingType;
+  }
+
+  public void setMappingType(MappingType mappingType) {
+    this.mappingType = mappingType;
+  }
+
+  public enum MappingType {
+    MAP_ALL,
+    MAP_ALL_INPUTS,
+    MAP_ALL_OUTPUTS
+  }
 }

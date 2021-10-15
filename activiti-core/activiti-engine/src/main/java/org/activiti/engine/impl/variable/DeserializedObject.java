@@ -17,11 +17,9 @@
 package org.activiti.engine.impl.variable;
 
 import java.util.Arrays;
-
 import org.activiti.engine.impl.persistence.entity.VariableInstanceEntity;
 
-/**
- */
+/** */
 public class DeserializedObject {
 
   protected SerializableType type;
@@ -29,7 +27,11 @@ public class DeserializedObject {
   protected byte[] originalBytes;
   protected VariableInstanceEntity variableInstanceEntity;
 
-  public DeserializedObject(SerializableType type, Object deserializedObject, byte[] serializedBytes, VariableInstanceEntity variableInstanceEntity) {
+  public DeserializedObject(
+      SerializableType type,
+      Object deserializedObject,
+      byte[] serializedBytes,
+      VariableInstanceEntity variableInstanceEntity) {
     this.type = type;
     this.deserializedObject = deserializedObject;
     this.originalBytes = serializedBytes;
@@ -38,7 +40,8 @@ public class DeserializedObject {
 
   public void verifyIfBytesOfSerializedObjectChanged() {
     // this first check verifies if the variable value was not overwritten with another object
-    if (deserializedObject == variableInstanceEntity.getCachedValue() && !variableInstanceEntity.isDeleted()) {
+    if (deserializedObject == variableInstanceEntity.getCachedValue()
+        && !variableInstanceEntity.isDeleted()) {
       byte[] bytes = type.serialize(deserializedObject, variableInstanceEntity);
       if (!Arrays.equals(originalBytes, bytes)) {
 

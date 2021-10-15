@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.el;
 
 import static java.util.Collections.emptyMap;
@@ -23,21 +22,21 @@ import static java.util.Collections.emptySet;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
-
 import org.activiti.engine.delegate.VariableScope;
 import org.activiti.engine.impl.persistence.entity.VariableInstance;
 
 /**
- * Variable-scope only used to resolve variables when NO execution is active but expression-resolving is needed. This occurs eg. when start-form properties have default's defined. Even though
- * variables are not available yet, expressions should be resolved anyway.
- *
+ * Variable-scope only used to resolve variables when NO execution is active but
+ * expression-resolving is needed. This occurs eg. when start-form properties have default's
+ * defined. Even though variables are not available yet, expressions should be resolved anyway.
  */
 public class NoExecutionVariableScope implements VariableScope {
 
   private static final NoExecutionVariableScope INSTANCE = new NoExecutionVariableScope();
 
   /**
-   * Since a {@link NoExecutionVariableScope} has no state, it's safe to use the same instance to prevent too many useless instances created.
+   * Since a {@link NoExecutionVariableScope} has no state, it's safe to use the same instance to
+   * prevent too many useless instances created.
    */
   public static NoExecutionVariableScope getSharedInstance() {
     return INSTANCE;
@@ -57,7 +56,8 @@ public class NoExecutionVariableScope implements VariableScope {
   }
 
   @Override
-  public Map<String, Object> getVariables(Collection<String> variableNames, boolean fetchAllVariables) {
+  public Map<String, Object> getVariables(
+      Collection<String> variableNames, boolean fetchAllVariables) {
     return emptyMap();
   }
 
@@ -67,7 +67,8 @@ public class NoExecutionVariableScope implements VariableScope {
   }
 
   @Override
-  public Map<String, Object> getVariablesLocal(Collection<String> variableNames, boolean fetchAllVariables) {
+  public Map<String, Object> getVariablesLocal(
+      Collection<String> variableNames, boolean fetchAllVariables) {
     return emptyMap();
   }
 
@@ -110,7 +111,8 @@ public class NoExecutionVariableScope implements VariableScope {
   }
 
   @Override
-  public Map<String, VariableInstance> getVariableInstances(Collection<String> variableNames, boolean fetchAllVariables) {
+  public Map<String, VariableInstance> getVariableInstances(
+      Collection<String> variableNames, boolean fetchAllVariables) {
     return null;
   }
 
@@ -125,7 +127,8 @@ public class NoExecutionVariableScope implements VariableScope {
   }
 
   @Override
-  public Map<String, VariableInstance> getVariableInstancesLocal(Collection<String> variableNames, boolean fetchAllVariables) {
+  public Map<String, VariableInstance> getVariableInstancesLocal(
+      Collection<String> variableNames, boolean fetchAllVariables) {
     return null;
   }
 

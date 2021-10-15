@@ -19,30 +19,26 @@ import java.util.List;
 
 public interface SecurityManager {
 
-    /**
-     * Get currently authenticated user id from application security context
-     *
-     * @return currently authenticate user id or empty string if anonymous user
-     *
-     */
-    String getAuthenticatedUserId();
+  /**
+   * Get currently authenticated user id from application security context
+   *
+   * @return currently authenticate user id or empty string if anonymous user
+   */
+  String getAuthenticatedUserId();
 
-    /**
-     * Get group names for currently authenticated user from application security context
-     *
-     * @return list of group names the current user is member of
-     *
-     * @throws SecurityException if principal security context is not valid
-     */
-    List<String> getAuthenticatedUserGroups() throws SecurityException;
+  /**
+   * Get group names for currently authenticated user from application security context
+   *
+   * @return list of group names the current user is member of
+   * @throws SecurityException if principal security context is not valid
+   */
+  List<String> getAuthenticatedUserGroups() throws SecurityException;
 
-    /**
-     * Get list of role names for currently authenticated user from application security context
-     *
-     * @return list of roles names or empty collection
-     *
-     * @throws SecurityException if principal security context is not valid
-     */
-    List<String> getAuthenticatedUserRoles() throws SecurityException;
-
+  /**
+   * Get list of role names for currently authenticated user from application security context
+   *
+   * @return list of roles names or empty collection
+   * @throws SecurityException if principal security context is not valid
+   */
+  List<String> getAuthenticatedUserRoles() throws SecurityException;
 }

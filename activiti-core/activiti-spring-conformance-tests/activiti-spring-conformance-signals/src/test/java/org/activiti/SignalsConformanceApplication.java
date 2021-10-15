@@ -21,8 +21,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class SignalsConformanceApplication {
 
-    public static void main(String[] args) {
-        SpringApplication.run(SignalsConformanceApplication.class);
-    }
-
+  public static void main(String[] args) {
+    SpringApplication.run(SignalsConformanceApplication.class);
+  }
 }

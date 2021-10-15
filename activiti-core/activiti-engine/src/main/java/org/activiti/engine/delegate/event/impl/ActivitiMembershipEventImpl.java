@@ -19,12 +19,9 @@ package org.activiti.engine.delegate.event.impl;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.ActivitiMembershipEvent;
 
-/**
- * Implementation of {@link ActivitiMembershipEvent}.
- *
-
- */
-public class ActivitiMembershipEventImpl extends ActivitiEventImpl implements ActivitiMembershipEvent {
+/** Implementation of {@link ActivitiMembershipEvent}. */
+public class ActivitiMembershipEventImpl extends ActivitiEventImpl
+    implements ActivitiMembershipEvent {
 
   protected String userId;
   protected String groupId;

@@ -18,7 +18,6 @@ package org.activiti.examples.bpmn.executionlistener;
 
 import java.util.List;
 import java.util.Map;
-
 import org.activiti.bpmn.model.ActivitiListener;
 import org.activiti.bpmn.model.ExtensionElement;
 import org.activiti.bpmn.model.ImplementationType;
@@ -26,9 +25,7 @@ import org.activiti.bpmn.model.SequenceFlow;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.bpmn.parser.handler.SequenceFlowParseHandler;
 
-/**
-
- */
+/** */
 public class CustomSequenceFlowBpmnParseHandler extends SequenceFlowParseHandler {
 
   protected void executeParse(BpmnParse bpmnParse, SequenceFlow flow) {
@@ -39,9 +36,11 @@ public class CustomSequenceFlowBpmnParseHandler extends SequenceFlowParseHandler
     // Add extension element conditions
     Map<String, List<ExtensionElement>> extensionElements = flow.getExtensionElements();
     if (extensionElements.containsKey("activiti_custom_condition")) {
-      List<ExtensionElement> conditionsElements = extensionElements.get("activiti_custom_condition");
+      List<ExtensionElement> conditionsElements =
+          extensionElements.get("activiti_custom_condition");
 
-      CustomSetConditionsExecutionListener customFlowListener = new CustomSetConditionsExecutionListener();
+      CustomSetConditionsExecutionListener customFlowListener =
+          new CustomSetConditionsExecutionListener();
       customFlowListener.setFlowId(flow.getId());
       for (ExtensionElement conditionElement : conditionsElements) {
         customFlowListener.addCondition(conditionElement.getElementText());
@@ -52,8 +51,6 @@ public class CustomSequenceFlowBpmnParseHandler extends SequenceFlowParseHandler
       activitiListener.setInstance(customFlowListener);
       activitiListener.setEvent("start");
       flow.getSourceFlowElement().getExecutionListeners().add(activitiListener);
-
     }
   }
-
 }

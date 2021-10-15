@@ -19,9 +19,7 @@ package org.activiti.engine.test.impl.logger;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.slf4j.Logger;
 
-/**
-
- */
+/** */
 public class DebugInfoExecutionDeleted extends AbstractDebugInfo {
 
   protected ExecutionEntity executionEntity;
@@ -34,5 +32,4 @@ public class DebugInfoExecutionDeleted extends AbstractDebugInfo {
   public void printOut(Logger logger) {
     logger.info("Execution " + executionEntity.getId() + " deleted");
   }
-
 }

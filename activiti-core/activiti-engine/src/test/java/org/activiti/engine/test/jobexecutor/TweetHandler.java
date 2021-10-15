@@ -16,14 +16,14 @@
 
 package org.activiti.engine.test.jobexecutor;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.ArrayList;
 import java.util.List;
-
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.jobexecutor.JobHandler;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.JobEntity;
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class TweetHandler implements JobHandler {
 
@@ -33,7 +33,11 @@ public class TweetHandler implements JobHandler {
     return "tweet";
   }
 
-  public void execute(JobEntity job, String configuration, ExecutionEntity execution, CommandContext commandContext) {
+  public void execute(
+      JobEntity job,
+      String configuration,
+      ExecutionEntity execution,
+      CommandContext commandContext) {
     messages.add(configuration);
     assertThat(commandContext).isNotNull();
   }

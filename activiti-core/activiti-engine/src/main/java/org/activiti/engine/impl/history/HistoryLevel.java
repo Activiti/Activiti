@@ -14,20 +14,17 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.history;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 
-/**
- * Enum that contains all possible history-levels.
- *
-
- */
+/** Enum that contains all possible history-levels. */
 public enum HistoryLevel {
-
-  NONE("none"), ACTIVITY("activity"), AUDIT("audit"), FULL("full");
+  NONE("none"),
+  ACTIVITY("activity"),
+  AUDIT("audit"),
+  FULL("full");
 
   private String key;
 
@@ -36,11 +33,9 @@ public enum HistoryLevel {
   }
 
   /**
-   * @param key
-   *          string representation of level
+   * @param key string representation of level
    * @return {@link HistoryLevel} for the given key
-   * @throws ActivitiException
-   *           when passed in key doesn't correspond to existing level
+   * @throws ActivitiException when passed in key doesn't correspond to existing level
    */
   public static HistoryLevel getHistoryLevelForKey(String key) {
     for (HistoryLevel level : values()) {
@@ -51,15 +46,14 @@ public enum HistoryLevel {
     throw new ActivitiIllegalArgumentException("Illegal value for history-level: " + key);
   }
 
-  /**
-   * String representation of this history-level.
-   */
+  /** String representation of this history-level. */
   public String getKey() {
     return key;
   }
 
   /**
-   * Checks if the given level is the same as, or higher in order than the level this method is executed on.
+   * Checks if the given level is the same as, or higher in order than the level this method is
+   * executed on.
    */
   public boolean isAtLeast(HistoryLevel level) {
     // Comparing enums actually compares the location of values declared in

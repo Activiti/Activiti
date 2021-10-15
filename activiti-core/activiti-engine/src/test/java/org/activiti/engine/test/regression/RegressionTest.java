@@ -24,23 +24,25 @@ import org.activiti.engine.impl.test.PluggableActivitiTestCase;
  */
 public class RegressionTest extends PluggableActivitiTestCase {
 
-    // https://jira.codehaus.org/browse/ACT-1623
-    // NPE when eventbased gateway is after referenced event
-    public void testAct1623() throws Exception {
+  // https://jira.codehaus.org/browse/ACT-1623
+  // NPE when eventbased gateway is after referenced event
+  public void testAct1623() throws Exception {
 
-        // Deploy processes
-        String deploymentId = repositoryService.createDeployment()
+    // Deploy processes
+    String deploymentId =
+        repositoryService
+            .createDeployment()
             .addClasspathResource("org/activiti/engine/test/regression/act1623-processOne.bpmn")
             .addClasspathResource("org/activiti/engine/test/regression/act1623-processTwo.bpmn")
-            .deploy().getId();
+            .deploy()
+            .getId();
 
-        runtimeService.startProcessInstanceByKey("ProcessOne");
+    runtimeService.startProcessInstanceByKey("ProcessOne");
 
-        //Quick fix for random test failure on CI
-        Thread.sleep(2000);
+    // Quick fix for random test failure on CI
+    Thread.sleep(2000);
 
-        // Clean
-        repositoryService.deleteDeployment(deploymentId, true);
-    }
-
+    // Clean
+    repositoryService.deleteDeployment(deploymentId, true);
+  }
 }

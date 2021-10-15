@@ -15,6 +15,4 @@
  */
 package org.activiti.api.process.model.events;
 
-public interface BPMNActivityCompletedEvent extends BPMNActivityEvent {
-
-}
+public interface BPMNActivityCompletedEvent extends BPMNActivityEvent {}

@@ -25,13 +25,12 @@ import org.activiti.engine.test.Deployment;
 
 public class TaskBatchDeleteTest extends PluggableActivitiTestCase {
 
-  /**
-   * Validating fix for ACT-2070
-   */
+  /** Validating fix for ACT-2070 */
   @Deployment
   public void testDeleteTaskWithChildren() throws Exception {
 
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testBatchDeleteOfTask");
+    ProcessInstance processInstance =
+        runtimeService.startProcessInstanceByKey("testBatchDeleteOfTask");
     assertThat(processInstance).isNotNull();
     assertThat(processInstance.isEnded()).isFalse();
 
@@ -40,35 +39,60 @@ public class TaskBatchDeleteTest extends PluggableActivitiTestCase {
     // Task 1, Identity link pointing to task 1, Task 2
     // The task deletes shouldn't be batched in this case, keeping the
     // related entity delete order
-    Task firstTask = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskDefinitionKey("taskOne").singleResult();
+    Task firstTask =
+        taskService
+            .createTaskQuery()
+            .processInstanceId(processInstance.getId())
+            .taskDefinitionKey("taskOne")
+            .singleResult();
     assertThat(firstTask).isNotNull();
 
     taskService.complete(firstTask.getId());
 
     // Process should have ended fine
-    processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(processInstance.getId()).singleResult();
+    processInstance =
+        runtimeService
+            .createProcessInstanceQuery()
+            .processInstanceId(processInstance.getId())
+            .singleResult();
     assertThat(processInstance).isNull();
-
   }
 
   @Deployment
   public void testDeleteCancelledMultiInstanceTasks() throws Exception {
 
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testBatchDeleteOfTask");
+    ProcessInstance processInstance =
+        runtimeService.startProcessInstanceByKey("testBatchDeleteOfTask");
     assertThat(processInstance).isNotNull();
     assertThat(processInstance.isEnded()).isFalse();
 
-    Task lastTask = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskDefinitionKey("multiInstance").listPage(4, 1).get(0);
+    Task lastTask =
+        taskService
+            .createTaskQuery()
+            .processInstanceId(processInstance.getId())
+            .taskDefinitionKey("multiInstance")
+            .listPage(4, 1)
+            .get(0);
 
     taskService.addCandidateGroup(lastTask.getId(), "sales");
 
-    Task firstTask = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskDefinitionKey("multiInstance").listPage(0, 1).get(0);
+    Task firstTask =
+        taskService
+            .createTaskQuery()
+            .processInstanceId(processInstance.getId())
+            .taskDefinitionKey("multiInstance")
+            .listPage(0, 1)
+            .get(0);
     assertThat(firstTask).isNotNull();
 
     taskService.complete(firstTask.getId());
 
     // Process should have ended fine
-    processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(processInstance.getId()).singleResult();
+    processInstance =
+        runtimeService
+            .createProcessInstanceQuery()
+            .processInstanceId(processInstance.getId())
+            .singleResult();
     assertThat(processInstance).isNull();
   }
 }

@@ -14,15 +14,12 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.test.bpmn.parallel;
 
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.test.Deployment;
 
-/**
-
- */
+/** */
 public class ParallelTest extends PluggableActivitiTestCase {
 
   @Deployment

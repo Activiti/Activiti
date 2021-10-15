@@ -15,6 +15,7 @@
  */
 package org.activiti.runtime.api.event.internal;
 
+import java.util.List;
 import org.activiti.api.process.runtime.events.ProcessSuspendedEvent;
 import org.activiti.api.process.runtime.events.listener.ProcessRuntimeEventListener;
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
@@ -22,34 +23,36 @@ import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventListener;
 import org.activiti.runtime.api.event.impl.ToProcessSuspendedConverter;
 
-import java.util.List;
-
 public class ProcessSuspendedListenerDelegate implements ActivitiEventListener {
 
-    private List<ProcessRuntimeEventListener<ProcessSuspendedEvent>> processRuntimeEventListeners;
+  private List<ProcessRuntimeEventListener<ProcessSuspendedEvent>> processRuntimeEventListeners;
 
-    private ToProcessSuspendedConverter processSuspendedConverter;
+  private ToProcessSuspendedConverter processSuspendedConverter;
 
-    public ProcessSuspendedListenerDelegate(List<ProcessRuntimeEventListener<ProcessSuspendedEvent>> listeners,
-                                            ToProcessSuspendedConverter processSuspendedConverter) {
-        this.processRuntimeEventListeners = listeners;
-        this.processSuspendedConverter = processSuspendedConverter;
+  public ProcessSuspendedListenerDelegate(
+      List<ProcessRuntimeEventListener<ProcessSuspendedEvent>> listeners,
+      ToProcessSuspendedConverter processSuspendedConverter) {
+    this.processRuntimeEventListeners = listeners;
+    this.processSuspendedConverter = processSuspendedConverter;
+  }
+
+  @Override
+  public void onEvent(ActivitiEvent event) {
+    if (event instanceof ActivitiEntityEvent) {
+      processSuspendedConverter
+          .from((ActivitiEntityEvent) event)
+          .ifPresent(
+              convertedEvent -> {
+                for (ProcessRuntimeEventListener<ProcessSuspendedEvent> listener :
+                    processRuntimeEventListeners) {
+                  listener.onEvent(convertedEvent);
+                }
+              });
     }
+  }
 
-    @Override
-    public void onEvent(ActivitiEvent event) {
-        if (event instanceof ActivitiEntityEvent) {
-            processSuspendedConverter.from((ActivitiEntityEvent) event)
-                    .ifPresent(convertedEvent -> {
-                        for ( ProcessRuntimeEventListener<ProcessSuspendedEvent> listener : processRuntimeEventListeners ) {
-                            listener.onEvent(convertedEvent);
-                        }
-                    });
-        }
-    }
-
-    @Override
-    public boolean isFailOnException() {
-        return false;
-    }
+  @Override
+  public boolean isFailOnException() {
+    return false;
+  }
 }

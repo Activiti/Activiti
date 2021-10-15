@@ -14,17 +14,13 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.cmd;
 
 import java.util.List;
-
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.task.Comment;
 
-/**
-
- */
+/** */
 public class GetTaskCommentsByTypeCmd extends GetTaskCommentsCmd {
 
   private static final long serialVersionUID = 1L;
@@ -38,5 +34,4 @@ public class GetTaskCommentsByTypeCmd extends GetTaskCommentsCmd {
   public List<Comment> execute(CommandContext commandContext) {
     return commandContext.getCommentEntityManager().findCommentsByTaskIdAndType(taskId, type);
   }
-
 }

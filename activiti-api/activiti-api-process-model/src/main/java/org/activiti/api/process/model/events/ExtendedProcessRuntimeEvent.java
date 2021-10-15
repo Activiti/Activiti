@@ -17,18 +17,18 @@ package org.activiti.api.process.model.events;
 
 import org.activiti.api.process.model.ProcessInstance;
 
-public interface ExtendedProcessRuntimeEvent<T extends ProcessInstance> extends ProcessRuntimeEvent<T> {
+public interface ExtendedProcessRuntimeEvent<T extends ProcessInstance>
+    extends ProcessRuntimeEvent<T> {
 
-    /**
-     * @return the id of the process instance of the nested process that starts the current process instance, or null if
-     *         the current process instance is not started into a nested process.
-     */
-    String getNestedProcessInstanceId();
+  /**
+   * @return the id of the process instance of the nested process that starts the current process
+   *     instance, or null if the current process instance is not started into a nested process.
+   */
+  String getNestedProcessInstanceId();
 
-    /**
-     * @return the id of the process definition of the nested process that starts the current process instance, or null
-     *         if the current process instance is not started into a nested process.
-     */
-    String getNestedProcessDefinitionId();
-
+  /**
+   * @return the id of the process definition of the nested process that starts the current process
+   *     instance, or null if the current process instance is not started into a nested process.
+   */
+  String getNestedProcessDefinitionId();
 }

@@ -74,23 +74,23 @@ public class MultiInstanceLoopCharacteristics extends BaseElement {
     this.sequential = sequential;
   }
 
-    public String getLoopDataOutputRef() {
-        return loopDataOutputRef;
-    }
+  public String getLoopDataOutputRef() {
+    return loopDataOutputRef;
+  }
 
-    public void setLoopDataOutputRef(String loopDataOutputRef) {
-        this.loopDataOutputRef = loopDataOutputRef;
-    }
+  public void setLoopDataOutputRef(String loopDataOutputRef) {
+    this.loopDataOutputRef = loopDataOutputRef;
+  }
 
-    public String getOutputDataItem() {
-        return outputDataItem;
-    }
+  public String getOutputDataItem() {
+    return outputDataItem;
+  }
 
-    public void setOutputDataItem(String outputDataItem) {
-        this.outputDataItem = outputDataItem;
-    }
+  public void setOutputDataItem(String outputDataItem) {
+    this.outputDataItem = outputDataItem;
+  }
 
-    public MultiInstanceLoopCharacteristics clone() {
+  public MultiInstanceLoopCharacteristics clone() {
     MultiInstanceLoopCharacteristics clone = new MultiInstanceLoopCharacteristics();
     clone.setValues(this);
     return clone;

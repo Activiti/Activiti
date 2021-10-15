@@ -19,9 +19,7 @@ package org.activiti.engine.impl.persistence.entity;
 import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.history.HistoricIdentityLink;
 
-/**
-
- */
+/** */
 @Internal
 public interface HistoricIdentityLinkEntity extends HistoricIdentityLink, Entity {
 
@@ -38,5 +36,4 @@ public interface HistoricIdentityLinkEntity extends HistoricIdentityLink, Entity
   void setTaskId(String taskId);
 
   void setProcessInstanceId(String processInstanceId);
-
 }

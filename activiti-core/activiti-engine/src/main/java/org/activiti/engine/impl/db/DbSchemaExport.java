@@ -28,19 +28,24 @@ import java.util.Properties;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-/**
-
- */
+/** */
 public class DbSchemaExport {
 
   public static void main(String[] args) throws Exception {
     if (args == null || args.length != 1) {
-      System.err.println("Syntax: java -cp ... org.activiti.engine.impl.db.DbSchemaExport <path-to-properties-file> <path-to-export-file>");
+      System.err.println(
+          "Syntax: java -cp ... org.activiti.engine.impl.db.DbSchemaExport"
+              + " <path-to-properties-file> <path-to-export-file>");
       return;
     }
     File propertiesFile = new File(args[0]);
     if (!propertiesFile.exists()) {
-      System.err.println("File '" + args[0] + "' doesn't exist \n" + "Syntax: java -cp ... org.activiti.engine.impl.db.DbSchemaExport <path-to-properties-file> <path-to-export-file>\n");
+      System.err.println(
+          "File '"
+              + args[0]
+              + "' doesn't exist \n"
+              + "Syntax: java -cp ... org.activiti.engine.impl.db.DbSchemaExport"
+              + " <path-to-properties-file> <path-to-export-file>\n");
       return;
     }
     Properties properties = new Properties();

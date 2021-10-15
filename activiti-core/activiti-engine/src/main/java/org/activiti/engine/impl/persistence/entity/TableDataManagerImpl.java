@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.persistence.entity;
 
 import static java.util.Collections.singletonMap;
@@ -27,7 +26,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.history.HistoricDetail;
@@ -52,7 +50,6 @@ import org.apache.ibatis.session.RowBounds;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 public class TableDataManagerImpl extends AbstractManager implements TableDataManager {
 
   public TableDataManagerImpl(ProcessEngineConfigurationImpl processEngineConfiguration) {
@@ -62,7 +59,8 @@ public class TableDataManagerImpl extends AbstractManager implements TableDataMa
   private static Logger log = LoggerFactory.getLogger(TableDataManagerImpl.class);
 
   public static Map<Class<?>, String> apiTypeToTableNameMap = new HashMap<Class<?>, String>();
-  public static Map<Class<? extends Entity>, String> entityToTableNameMap = new HashMap<Class<? extends Entity>, String>();
+  public static Map<Class<? extends Entity>, String> entityToTableNameMap =
+      new HashMap<Class<? extends Entity>, String>();
 
   static {
     // runtime
@@ -75,7 +73,6 @@ public class TableDataManagerImpl extends AbstractManager implements TableDataMa
     entityToTableNameMap.put(TimerJobEntity.class, "ACT_RU_TIMER_JOB");
     entityToTableNameMap.put(SuspendedJobEntity.class, "ACT_RU_SUSPENDED_JOB");
     entityToTableNameMap.put(DeadLetterJobEntity.class, "ACT_RU_DEADLETTER_JOB");
-
 
     entityToTableNameMap.put(EventSubscriptionEntity.class, "ACT_RU_EVENT_SUBSCR");
     entityToTableNameMap.put(CompensateEventSubscriptionEntity.class, "ACT_RU_EVENT_SUBSCR");
@@ -128,7 +125,6 @@ public class TableDataManagerImpl extends AbstractManager implements TableDataMa
     apiTypeToTableNameMap.put(HistoricTaskInstance.class, "ACT_HI_TASKINST");
     apiTypeToTableNameMap.put(HistoricVariableInstance.class, "ACT_HI_VARINST");
 
-
     // TODO: Identity skipped for the moment as no SQL injection is provided
     // here
   }
@@ -161,22 +157,26 @@ public class TableDataManagerImpl extends AbstractManager implements TableDataMa
       ResultSet tables = null;
       try {
         log.debug("retrieving activiti tables from jdbc metadata");
-        String databaseTablePrefix = getDbSqlSession().getDbSqlSessionFactory().getDatabaseTablePrefix();
+        String databaseTablePrefix =
+            getDbSqlSession().getDbSqlSessionFactory().getDatabaseTablePrefix();
         String tableNameFilter = databaseTablePrefix + "ACT_%";
         if ("postgres".equals(getDbSqlSession().getDbSqlSessionFactory().getDatabaseType())) {
           tableNameFilter = databaseTablePrefix + "act_%";
         }
         if ("oracle".equals(getDbSqlSession().getDbSqlSessionFactory().getDatabaseType())) {
-          tableNameFilter = databaseTablePrefix + "ACT" + databaseMetaData.getSearchStringEscape() + "_%";
+          tableNameFilter =
+              databaseTablePrefix + "ACT" + databaseMetaData.getSearchStringEscape() + "_%";
         }
 
         String catalog = null;
-        if (getProcessEngineConfiguration().getDatabaseCatalog() != null && getProcessEngineConfiguration().getDatabaseCatalog().length() > 0) {
+        if (getProcessEngineConfiguration().getDatabaseCatalog() != null
+            && getProcessEngineConfiguration().getDatabaseCatalog().length() > 0) {
           catalog = getProcessEngineConfiguration().getDatabaseCatalog();
         }
 
         String schema = null;
-        if (getProcessEngineConfiguration().getDatabaseSchema() != null && getProcessEngineConfiguration().getDatabaseSchema().length() > 0) {
+        if (getProcessEngineConfiguration().getDatabaseSchema() != null
+            && getProcessEngineConfiguration().getDatabaseSchema().length() > 0) {
           if ("oracle".equals(getDbSqlSession().getDbSqlSessionFactory().getDatabaseType())) {
             schema = getProcessEngineConfiguration().getDatabaseSchema().toUpperCase();
           } else {
@@ -184,7 +184,9 @@ public class TableDataManagerImpl extends AbstractManager implements TableDataMa
           }
         }
 
-        tables = databaseMetaData.getTables(catalog, schema, tableNameFilter, DbSqlSession.JDBC_METADATA_TABLE_TYPES);
+        tables =
+            databaseMetaData.getTables(
+                catalog, schema, tableNameFilter, DbSqlSession.JDBC_METADATA_TABLE_TYPES);
         while (tables.next()) {
           String tableName = tables.getString("TABLE_NAME");
           tableName = tableName.toUpperCase();
@@ -195,25 +197,32 @@ public class TableDataManagerImpl extends AbstractManager implements TableDataMa
         tables.close();
       }
     } catch (Exception e) {
-      throw new ActivitiException("couldn't get activiti table names using metadata: " + e.getMessage(), e);
+      throw new ActivitiException(
+          "couldn't get activiti table names using metadata: " + e.getMessage(), e);
     }
     return tableNames;
   }
 
   protected long getTableCount(String tableName) {
     log.debug("selecting table count for {}", tableName);
-    Long count = (Long) getDbSqlSession().selectOne("selectTableCount", singletonMap("tableName", tableName));
+    Long count =
+        (Long)
+            getDbSqlSession().selectOne("selectTableCount", singletonMap("tableName", tableName));
     return count;
   }
 
   @Override
   @SuppressWarnings("unchecked")
-  public TablePage getTablePage(TablePageQueryImpl tablePageQuery, int firstResult, int maxResults) {
+  public TablePage getTablePage(
+      TablePageQueryImpl tablePageQuery, int firstResult, int maxResults) {
 
     TablePage tablePage = new TablePage();
 
     @SuppressWarnings("rawtypes")
-    List tableData = getDbSqlSession().getSqlSession().selectList("selectTableData", tablePageQuery, new RowBounds(firstResult, maxResults));
+    List tableData =
+        getDbSqlSession()
+            .getSqlSession()
+            .selectList("selectTableData", tablePageQuery, new RowBounds(firstResult, maxResults));
 
     tablePage.setTableName(tablePageQuery.getTableName());
     tablePage.setTotal(getTableCount(tablePageQuery.getTableName()));
@@ -225,7 +234,8 @@ public class TableDataManagerImpl extends AbstractManager implements TableDataMa
 
   @Override
   public String getTableName(Class<?> entityClass, boolean withPrefix) {
-    String databaseTablePrefix = getDbSqlSession().getDbSqlSessionFactory().getDatabaseTablePrefix();
+    String databaseTablePrefix =
+        getDbSqlSession().getDbSqlSessionFactory().getDatabaseTablePrefix();
     String tableName = null;
 
     if (Entity.class.isAssignableFrom(entityClass)) {
@@ -252,12 +262,14 @@ public class TableDataManagerImpl extends AbstractManager implements TableDataMa
       }
 
       String catalog = null;
-      if (getProcessEngineConfiguration().getDatabaseCatalog() != null && getProcessEngineConfiguration().getDatabaseCatalog().length() > 0) {
+      if (getProcessEngineConfiguration().getDatabaseCatalog() != null
+          && getProcessEngineConfiguration().getDatabaseCatalog().length() > 0) {
         catalog = getProcessEngineConfiguration().getDatabaseCatalog();
       }
 
       String schema = null;
-      if (getProcessEngineConfiguration().getDatabaseSchema() != null && getProcessEngineConfiguration().getDatabaseSchema().length() > 0) {
+      if (getProcessEngineConfiguration().getDatabaseSchema() != null
+          && getProcessEngineConfiguration().getDatabaseSchema().length() > 0) {
         if ("oracle".equals(getDbSqlSession().getDbSqlSessionFactory().getDatabaseType())) {
           schema = getProcessEngineConfiguration().getDatabaseSchema().toUpperCase();
         } else {
@@ -266,13 +278,15 @@ public class TableDataManagerImpl extends AbstractManager implements TableDataMa
       }
 
       ResultSet resultSet = metaData.getColumns(catalog, schema, tableName, null);
-      while(resultSet.next()) {
+      while (resultSet.next()) {
         boolean wrongSchema = false;
         if (schema != null && schema.length() > 0) {
           for (int i = 0; i < resultSet.getMetaData().getColumnCount(); i++) {
-            String columnName = resultSet.getMetaData().getColumnName(i+1);
-            if ("TABLE_SCHEM".equalsIgnoreCase(columnName) || "TABLE_SCHEMA".equalsIgnoreCase(columnName)) {
-              if (!schema.equalsIgnoreCase(resultSet.getString(resultSet.getMetaData().getColumnName(i+1)))) {
+            String columnName = resultSet.getMetaData().getColumnName(i + 1);
+            if ("TABLE_SCHEM".equalsIgnoreCase(columnName)
+                || "TABLE_SCHEMA".equalsIgnoreCase(columnName)) {
+              if (!schema.equalsIgnoreCase(
+                  resultSet.getString(resultSet.getMetaData().getColumnName(i + 1)))) {
                 wrongSchema = true;
               }
               break;
@@ -297,5 +311,4 @@ public class TableDataManagerImpl extends AbstractManager implements TableDataMa
     }
     return result;
   }
-
 }

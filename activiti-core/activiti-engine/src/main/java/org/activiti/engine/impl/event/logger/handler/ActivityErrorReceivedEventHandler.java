@@ -17,14 +17,11 @@ package org.activiti.engine.impl.event.logger.handler;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import org.activiti.engine.delegate.event.ActivitiActivityEvent;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.EventLogEntryEntity;
 
-/**
-
- */
+/** */
 public class ActivityErrorReceivedEventHandler extends AbstractDatabaseEventLoggerEventHandler {
 
   @Override
@@ -39,7 +36,11 @@ public class ActivityErrorReceivedEventHandler extends AbstractDatabaseEventLogg
     putInMapIfNotNull(data, Fields.EXECUTION_ID, activityEvent.getExecutionId());
     putInMapIfNotNull(data, Fields.ACTIVITY_TYPE, activityEvent.getActivityType());
 
-    return createEventLogEntry(activityEvent.getProcessDefinitionId(), activityEvent.getProcessInstanceId(), activityEvent.getExecutionId(), null, data);
+    return createEventLogEntry(
+        activityEvent.getProcessDefinitionId(),
+        activityEvent.getProcessInstanceId(),
+        activityEvent.getExecutionId(),
+        null,
+        data);
   }
-
 }

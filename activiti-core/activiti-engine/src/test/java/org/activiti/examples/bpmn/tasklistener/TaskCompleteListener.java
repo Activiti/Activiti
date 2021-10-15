@@ -20,9 +20,7 @@ import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.TaskListener;
 
-/**
-
- */
+/** */
 public class TaskCompleteListener implements TaskListener {
 
   private static final long serialVersionUID = 1L;
@@ -30,10 +28,13 @@ public class TaskCompleteListener implements TaskListener {
   private Expression shortName;
 
   public void notify(DelegateTask delegateTask) {
-    delegateTask.getExecution().setVariable("greeting", "Hello from " + greeter.getValue(delegateTask.getExecution()));
-    delegateTask.getExecution().setVariable("shortName", shortName.getValue(delegateTask.getExecution()));
+    delegateTask
+        .getExecution()
+        .setVariable("greeting", "Hello from " + greeter.getValue(delegateTask.getExecution()));
+    delegateTask
+        .getExecution()
+        .setVariable("shortName", shortName.getValue(delegateTask.getExecution()));
 
     delegateTask.setVariableLocal("myTaskVariable", "test");
   }
-
 }

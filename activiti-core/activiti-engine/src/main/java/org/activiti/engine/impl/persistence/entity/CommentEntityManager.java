@@ -17,14 +17,11 @@
 package org.activiti.engine.impl.persistence.entity;
 
 import java.util.List;
-
 import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.task.Comment;
 import org.activiti.engine.task.Event;
 
-/**
-
- */
+/** */
 @Internal
 @Deprecated
 public interface CommentEntityManager extends EntityManager<CommentEntity> {
@@ -50,5 +47,4 @@ public interface CommentEntityManager extends EntityManager<CommentEntity> {
   Comment findComment(String commentId);
 
   Event findEvent(String commentId);
-
 }

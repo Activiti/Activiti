@@ -19,7 +19,6 @@ package org.activiti.engine.impl.cmd;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
-
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.asyncexecutor.AcquiredTimerJobEntities;
 import org.activiti.engine.impl.asyncexecutor.AsyncExecutor;
@@ -27,9 +26,7 @@ import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.TimerJobEntity;
 
-/**
-
- */
+/** */
 public class AcquireTimerJobsCmd implements Command<AcquiredTimerJobEntities> {
 
   private final AsyncExecutor asyncExecutor;
@@ -40,8 +37,10 @@ public class AcquireTimerJobsCmd implements Command<AcquiredTimerJobEntities> {
 
   public AcquiredTimerJobEntities execute(CommandContext commandContext) {
     AcquiredTimerJobEntities acquiredJobs = new AcquiredTimerJobEntities();
-    List<TimerJobEntity> timerJobs = commandContext.getTimerJobEntityManager()
-        .findTimerJobsToExecute(new Page(0, asyncExecutor.getMaxAsyncJobsDuePerAcquisition()));
+    List<TimerJobEntity> timerJobs =
+        commandContext
+            .getTimerJobEntityManager()
+            .findTimerJobsToExecute(new Page(0, asyncExecutor.getMaxAsyncJobsDuePerAcquisition()));
 
     for (TimerJobEntity job : timerJobs) {
       lockJob(commandContext, job, asyncExecutor.getAsyncJobLockTimeInMillis());
@@ -57,7 +56,8 @@ public class AcquireTimerJobsCmd implements Command<AcquiredTimerJobEntities> {
     // try to lock, as the revision will not match.
 
     GregorianCalendar gregorianCalendar = new GregorianCalendar();
-    gregorianCalendar.setTime(commandContext.getProcessEngineConfiguration().getClock().getCurrentTime());
+    gregorianCalendar.setTime(
+        commandContext.getProcessEngineConfiguration().getClock().getCurrentTime());
     gregorianCalendar.add(Calendar.MILLISECOND, lockTimeInMillis);
     job.setLockOwner(asyncExecutor.getLockOwner());
     job.setLockExpirationTime(gregorianCalendar.getTime());

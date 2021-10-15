@@ -24,23 +24,22 @@ import org.activiti.engine.test.Deployment;
 public class ShellTaskTest extends PluggableActivitiTestCase {
 
   enum OsType {
-    LINUX, WINDOWS, MAC, SOLARIS, UNKOWN
+    LINUX,
+    WINDOWS,
+    MAC,
+    SOLARIS,
+    UNKOWN
   }
 
   OsType osType;
 
   OsType getSystemOsType() {
     String osName = System.getProperty("os.name").toLowerCase();
-    if (osName.contains("win"))
-      return OsType.WINDOWS;
-    else if (osName.contains("mac"))
-      return OsType.MAC;
-    else if ((osName.contains("nix")) || (osName.contains("nux")))
-      return OsType.LINUX;
-    else if (osName.contains("sunos"))
-      return OsType.SOLARIS;
-    else
-      return OsType.UNKOWN;
+    if (osName.contains("win")) return OsType.WINDOWS;
+    else if (osName.contains("mac")) return OsType.MAC;
+    else if ((osName.contains("nix")) || (osName.contains("nux"))) return OsType.LINUX;
+    else if (osName.contains("sunos")) return OsType.SOLARIS;
+    else return OsType.UNKOWN;
   }
 
   protected void setUp() throws Exception {

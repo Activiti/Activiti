@@ -22,7 +22,7 @@ import org.activiti.test.assertions.SignalAssertions;
 
 public interface ProcessOperations {
 
-    ProcessInstanceAssertions start(StartProcessPayload startProcessPayload);
+  ProcessInstanceAssertions start(StartProcessPayload startProcessPayload);
 
-    SignalAssertions signal(SignalPayload signalPayload);
+  SignalAssertions signal(SignalPayload signalPayload);
 }

@@ -19,11 +19,9 @@ package org.activiti.engine.impl.asyncexecutor;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.activiti.engine.impl.persistence.entity.TimerJobEntity;
 
-/**
- */
+/** */
 public class AcquiredTimerJobEntities {
 
   protected Map<String, TimerJobEntity> acquiredJobs = new HashMap<String, TimerJobEntity>();

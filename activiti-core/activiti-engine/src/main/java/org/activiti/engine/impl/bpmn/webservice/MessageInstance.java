@@ -19,11 +19,7 @@ package org.activiti.engine.impl.bpmn.webservice;
 import org.activiti.engine.impl.bpmn.data.ItemInstance;
 import org.activiti.engine.impl.bpmn.data.StructureInstance;
 
-/**
- * An instance of a {@link MessageDefinition}
- *
-
- */
+/** An instance of a {@link MessageDefinition} */
 public class MessageInstance {
 
   protected MessageDefinition message;

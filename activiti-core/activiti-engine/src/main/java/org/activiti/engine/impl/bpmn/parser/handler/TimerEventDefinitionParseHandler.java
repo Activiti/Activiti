@@ -22,10 +22,9 @@ import org.activiti.bpmn.model.IntermediateCatchEvent;
 import org.activiti.bpmn.model.TimerEventDefinition;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 
-/**
-
- */
-public class TimerEventDefinitionParseHandler extends AbstractBpmnParseHandler<TimerEventDefinition> {
+/** */
+public class TimerEventDefinitionParseHandler
+    extends AbstractBpmnParseHandler<TimerEventDefinition> {
 
   public Class<? extends BaseElement> getHandledType() {
     return TimerEventDefinition.class;
@@ -35,13 +34,22 @@ public class TimerEventDefinitionParseHandler extends AbstractBpmnParseHandler<T
 
     if (bpmnParse.getCurrentFlowElement() instanceof IntermediateCatchEvent) {
 
-      IntermediateCatchEvent intermediateCatchEvent = (IntermediateCatchEvent) bpmnParse.getCurrentFlowElement();
-      intermediateCatchEvent.setBehavior(bpmnParse.getActivityBehaviorFactory().createIntermediateCatchTimerEventActivityBehavior(intermediateCatchEvent, timerEventDefinition));
+      IntermediateCatchEvent intermediateCatchEvent =
+          (IntermediateCatchEvent) bpmnParse.getCurrentFlowElement();
+      intermediateCatchEvent.setBehavior(
+          bpmnParse
+              .getActivityBehaviorFactory()
+              .createIntermediateCatchTimerEventActivityBehavior(
+                  intermediateCatchEvent, timerEventDefinition));
 
     } else if (bpmnParse.getCurrentFlowElement() instanceof BoundaryEvent) {
 
       BoundaryEvent boundaryEvent = (BoundaryEvent) bpmnParse.getCurrentFlowElement();
-      boundaryEvent.setBehavior(bpmnParse.getActivityBehaviorFactory().createBoundaryTimerEventActivityBehavior(boundaryEvent, timerEventDefinition, boundaryEvent.isCancelActivity()));
+      boundaryEvent.setBehavior(
+          bpmnParse
+              .getActivityBehaviorFactory()
+              .createBoundaryTimerEventActivityBehavior(
+                  boundaryEvent, timerEventDefinition, boundaryEvent.isCancelActivity()));
     }
   }
 }

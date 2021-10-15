@@ -14,16 +14,11 @@
  * limitations under the License.
  */
 
-
 package org.activiti.examples.bpmn.executionlistener;
 
 import java.io.Serializable;
 
-/**
- * Simple pojo than will be used to act as an event listener.
- *
-
- */
+/** Simple pojo than will be used to act as an event listener. */
 public class ExampleExecutionListenerPojo implements Serializable {
 
   private static final long serialVersionUID = 1L;
@@ -41,5 +36,4 @@ public class ExampleExecutionListenerPojo implements Serializable {
   public void setReceivedEventName(String receivedEventName) {
     this.receivedEventName = receivedEventName;
   }
-
 }

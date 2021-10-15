@@ -17,36 +17,34 @@ package org.activiti.api.runtime.shared.query;
 
 public class Order {
 
-    public enum Direction {
-        ASC,
+  public enum Direction {
+    ASC,
 
-        DESC
-    }
+    DESC
+  }
 
-    private String property;
+  private String property;
 
-    private Direction direction;
+  private Direction direction;
 
-    public Order(String property) {
-        this(property, Direction.ASC);
-    }
+  public Order(String property) {
+    this(property, Direction.ASC);
+  }
 
-    private Order(String property,
-                 Direction direction) {
-        this.property = property;
-        this.direction = direction;
-    }
+  private Order(String property, Direction direction) {
+    this.property = property;
+    this.direction = direction;
+  }
 
-    public String getProperty() {
-        return property;
-    }
+  public String getProperty() {
+    return property;
+  }
 
-    public Direction getDirection() {
-        return direction;
-    }
+  public Direction getDirection() {
+    return direction;
+  }
 
-    public static Order by(String property,
-                     Direction direction) {
-        return new Order(property, direction);
-    }
+  public static Order by(String property, Direction direction) {
+    return new Order(property, direction);
+  }
 }

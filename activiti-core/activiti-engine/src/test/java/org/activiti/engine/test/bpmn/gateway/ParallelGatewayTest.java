@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.test.bpmn.gateway;
 
-import java.util.List;
+import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.List;
 import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
@@ -26,43 +26,47 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.task.TaskQuery;
 import org.activiti.engine.test.Deployment;
-import static org.assertj.core.api.Assertions.assertThat;
 
-/**
-
- */
+/** */
 public class ParallelGatewayTest extends PluggableActivitiTestCase {
 
   /**
-   * Case where there is a parallel gateway that splits into 3 paths of execution, that are immediately joined, without any wait states in between. In the end, no executions should be in the database.
+   * Case where there is a parallel gateway that splits into 3 paths of execution, that are
+   * immediately joined, without any wait states in between. In the end, no executions should be in
+   * the database.
    */
   @Deployment
   public void testSplitMergeNoWaitstates() {
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("forkJoinNoWaitStates");
+    ProcessInstance processInstance =
+        runtimeService.startProcessInstanceByKey("forkJoinNoWaitStates");
     assertThat(processInstance.isEnded()).isTrue();
   }
 
   @Deployment
   public void testUnstructuredConcurrencyTwoForks() {
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("unstructuredConcurrencyTwoForks");
+    ProcessInstance processInstance =
+        runtimeService.startProcessInstanceByKey("unstructuredConcurrencyTwoForks");
     assertThat(processInstance.isEnded()).isTrue();
   }
 
   @Deployment
   public void testUnstructuredConcurrencyTwoJoins() {
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("unstructuredConcurrencyTwoJoins");
+    ProcessInstance processInstance =
+        runtimeService.startProcessInstanceByKey("unstructuredConcurrencyTwoJoins");
     assertThat(processInstance.isEnded()).isTrue();
   }
 
   @Deployment
   public void testForkFollowedByOnlyEndEvents() {
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("forkFollowedByEndEvents");
+    ProcessInstance processInstance =
+        runtimeService.startProcessInstanceByKey("forkFollowedByEndEvents");
     assertThat(processInstance.isEnded()).isTrue();
   }
 
   @Deployment
   public void testNestedForksFollowedByEndEvents() {
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("nestedForksFollowedByEndEvents");
+    ProcessInstance processInstance =
+        runtimeService.startProcessInstanceByKey("nestedForksFollowedByEndEvents");
     assertThat(processInstance.isEnded()).isTrue();
   }
 
@@ -106,9 +110,7 @@ public class ParallelGatewayTest extends PluggableActivitiTestCase {
     assertThat(tasks.get(0).getName()).isEqualTo("Task C");
   }
 
-  /**
-   * https://activiti.atlassian.net/browse/ACT-1222
-   */
+  /** https://activiti.atlassian.net/browse/ACT-1222 */
   @Deployment
   public void testReceyclingExecutionWithCallActivity() {
     runtimeService.startProcessInstanceByKey("parent-process");
@@ -144,21 +146,26 @@ public class ParallelGatewayTest extends PluggableActivitiTestCase {
 
     ProcessInstance pi = runtimeService.startProcessInstanceByKey("testHistoryRecords");
 
-    List<HistoricActivityInstance> history = historyService.createHistoricActivityInstanceQuery().processInstanceId(pi.getId()).list();
+    List<HistoricActivityInstance> history =
+        historyService.createHistoricActivityInstanceQuery().processInstanceId(pi.getId()).list();
 
     for (HistoricActivityInstance h : history) {
       if (h.getActivityId().equals("parallelgateway2")) {
         assertThat(h.getEndTime()).isNotNull();
       }
     }
-
   }
 
   @Deployment
   public void testAsyncBehavior() {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("async");
     waitForJobExecutorToProcessAllJobs(5000L, 250L);
-    assertThat(runtimeService.createProcessInstanceQuery().processInstanceId(processInstance.getId()).count()).isEqualTo(0);
+    assertThat(
+            runtimeService
+                .createProcessInstanceQuery()
+                .processInstanceId(processInstance.getId())
+                .count())
+        .isEqualTo(0);
   }
 
   /*
@@ -171,7 +178,8 @@ public class ParallelGatewayTest extends PluggableActivitiTestCase {
   public void testHistoricActivityInstanceEndTimes() {
     if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
       runtimeService.startProcessInstanceByKey("nestedForkJoin");
-      List<HistoricActivityInstance> historicActivityInstances = historyService.createHistoricActivityInstanceQuery().list();
+      List<HistoricActivityInstance> historicActivityInstances =
+          historyService.createHistoricActivityInstanceQuery().list();
       assertThat(historicActivityInstances).hasSize(21);
       for (HistoricActivityInstance historicActivityInstance : historicActivityInstances) {
         assertThat(historicActivityInstance.getStartTime() != null).isTrue();
@@ -179,5 +187,4 @@ public class ParallelGatewayTest extends PluggableActivitiTestCase {
       }
     }
   }
-
 }

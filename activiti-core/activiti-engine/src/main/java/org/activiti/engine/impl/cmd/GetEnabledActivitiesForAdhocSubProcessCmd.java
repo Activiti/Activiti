@@ -14,13 +14,11 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.cmd;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.activiti.bpmn.model.AdhocSubProcess;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.FlowNode;
@@ -30,10 +28,9 @@ import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 
-/**
-
- */
-public class GetEnabledActivitiesForAdhocSubProcessCmd implements Command<List<FlowNode>>, Serializable {
+/** */
+public class GetEnabledActivitiesForAdhocSubProcessCmd
+    implements Command<List<FlowNode>>, Serializable {
 
   private static final long serialVersionUID = 1L;
   protected String executionId;
@@ -45,11 +42,13 @@ public class GetEnabledActivitiesForAdhocSubProcessCmd implements Command<List<F
   public List<FlowNode> execute(CommandContext commandContext) {
     ExecutionEntity execution = commandContext.getExecutionEntityManager().findById(executionId);
     if (execution == null) {
-      throw new ActivitiObjectNotFoundException("No execution found for id '" + executionId + "'", ExecutionEntity.class);
+      throw new ActivitiObjectNotFoundException(
+          "No execution found for id '" + executionId + "'", ExecutionEntity.class);
     }
 
     if (!(execution.getCurrentFlowElement() instanceof AdhocSubProcess)) {
-      throw new ActivitiException("The current flow element of the requested execution is not an ad-hoc sub process");
+      throw new ActivitiException(
+          "The current flow element of the requested execution is not an ad-hoc sub process");
     }
 
     List<FlowNode> enabledFlowNodes = new ArrayList<FlowNode>();
@@ -74,5 +73,4 @@ public class GetEnabledActivitiesForAdhocSubProcessCmd implements Command<List<F
 
     return enabledFlowNodes;
   }
-
 }

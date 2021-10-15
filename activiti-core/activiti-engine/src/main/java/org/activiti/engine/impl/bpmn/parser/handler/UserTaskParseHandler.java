@@ -20,9 +20,7 @@ import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.UserTask;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 
-/**
-
- */
+/** */
 public class UserTaskParseHandler extends AbstractActivityBpmnParseHandler<UserTask> {
 
   public Class<? extends BaseElement> getHandledType() {
@@ -31,7 +29,7 @@ public class UserTaskParseHandler extends AbstractActivityBpmnParseHandler<UserT
 
   @Override
   protected void executeParse(BpmnParse bpmnParse, UserTask userTask) {
-    userTask.setBehavior(bpmnParse.getActivityBehaviorFactory().createUserTaskActivityBehavior(userTask));
+    userTask.setBehavior(
+        bpmnParse.getActivityBehaviorFactory().createUserTaskActivityBehavior(userTask));
   }
-
 }

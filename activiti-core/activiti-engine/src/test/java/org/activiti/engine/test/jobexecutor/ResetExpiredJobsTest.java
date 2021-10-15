@@ -21,7 +21,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
 import org.activiti.engine.impl.asyncexecutor.FindExpiredJobsCmd;
 import org.activiti.engine.impl.asyncexecutor.ResetExpiredJobsCmd;
 import org.activiti.engine.impl.cmd.AcquireJobsCmd;
@@ -31,8 +30,7 @@ import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.JobQuery;
 import org.activiti.engine.test.Deployment;
 
-/**
- */
+/** */
 public class ResetExpiredJobsTest extends PluggableActivitiTestCase {
 
   @Deployment
@@ -50,13 +48,16 @@ public class ResetExpiredJobsTest extends PluggableActivitiTestCase {
     assertThat(managementService.createJobQuery().count()).isEqualTo(1);
 
     // Running the 'reset expired' logic should have no effect now
-    int expiredJobsPagesSize = processEngineConfiguration.getAsyncExecutorResetExpiredJobsPageSize();
-    List<JobEntity> expiredJobs = managementService.executeCommand(new FindExpiredJobsCmd(expiredJobsPagesSize));
+    int expiredJobsPagesSize =
+        processEngineConfiguration.getAsyncExecutorResetExpiredJobsPageSize();
+    List<JobEntity> expiredJobs =
+        managementService.executeCommand(new FindExpiredJobsCmd(expiredJobsPagesSize));
     assertThat(expiredJobs).hasSize(0);
     assertJobDetails(false);
 
     // Run the acquire logic. This should lock the job
-    managementService.executeCommand(new AcquireJobsCmd(processEngineConfiguration.getAsyncExecutor()));
+    managementService.executeCommand(
+        new AcquireJobsCmd(processEngineConfiguration.getAsyncExecutor()));
     assertJobDetails(true);
 
     // Running the 'reset expired' logic should have no effect, the lock time is not yet passed
@@ -65,7 +66,11 @@ public class ResetExpiredJobsTest extends PluggableActivitiTestCase {
     assertJobDetails(true);
 
     // Move clock to past the lock time
-    Date newDate = new Date(startOfTestTime.getTime() + processEngineConfiguration.getAsyncExecutor().getAsyncJobLockTimeInMillis() + 10000);
+    Date newDate =
+        new Date(
+            startOfTestTime.getTime()
+                + processEngineConfiguration.getAsyncExecutor().getAsyncJobLockTimeInMillis()
+                + 10000);
     processEngineConfiguration.getClock().setCurrentTime(newDate);
 
     // Running the reset logic should now reset the lock
@@ -81,7 +86,8 @@ public class ResetExpiredJobsTest extends PluggableActivitiTestCase {
     assertJobDetails(false);
 
     // And it can be re-acquired
-    managementService.executeCommand(new AcquireJobsCmd(processEngineConfiguration.getAsyncExecutor()));
+    managementService.executeCommand(
+        new AcquireJobsCmd(processEngineConfiguration.getAsyncExecutor()));
     assertJobDetails(true);
 
     // Start two new process instances, those jobs should not be locked
@@ -118,6 +124,4 @@ public class ResetExpiredJobsTest extends PluggableActivitiTestCase {
       assertThat(jobEntity.getLockExpirationTime()).isNull();
     }
   }
-
-
 }

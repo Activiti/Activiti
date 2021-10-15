@@ -17,7 +17,6 @@
 package org.activiti.engine.impl.bpmn.listener;
 
 import java.util.List;
-
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.ExecutionListener;
@@ -29,35 +28,46 @@ import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.delegate.invocation.ExecutionListenerInvocation;
 import org.activiti.engine.impl.delegate.invocation.JavaDelegateInvocation;
 
-/**
-
- */
+/** */
 public class DelegateExpressionExecutionListener implements ExecutionListener {
 
   protected Expression expression;
   private final List<FieldDeclaration> fieldDeclarations;
 
-  public DelegateExpressionExecutionListener(Expression expression, List<FieldDeclaration> fieldDeclarations) {
+  public DelegateExpressionExecutionListener(
+      Expression expression, List<FieldDeclaration> fieldDeclarations) {
     this.expression = expression;
     this.fieldDeclarations = fieldDeclarations;
   }
 
   public void notify(DelegateExecution execution) {
-    Object delegate = DelegateExpressionUtil.resolveDelegateExpression(expression, execution, fieldDeclarations);
+    Object delegate =
+        DelegateExpressionUtil.resolveDelegateExpression(expression, execution, fieldDeclarations);
     if (delegate instanceof ExecutionListener) {
-      Context.getProcessEngineConfiguration().getDelegateInterceptor().handleInvocation(new ExecutionListenerInvocation((ExecutionListener) delegate, execution));
+      Context.getProcessEngineConfiguration()
+          .getDelegateInterceptor()
+          .handleInvocation(
+              new ExecutionListenerInvocation((ExecutionListener) delegate, execution));
     } else if (delegate instanceof JavaDelegate) {
-      Context.getProcessEngineConfiguration().getDelegateInterceptor().handleInvocation(new JavaDelegateInvocation((JavaDelegate) delegate, execution));
+      Context.getProcessEngineConfiguration()
+          .getDelegateInterceptor()
+          .handleInvocation(new JavaDelegateInvocation((JavaDelegate) delegate, execution));
     } else {
-      throw new ActivitiIllegalArgumentException("Delegate expression " + expression + " did not resolve to an implementation of " + ExecutionListener.class + " nor " + JavaDelegate.class);
+      throw new ActivitiIllegalArgumentException(
+          "Delegate expression "
+              + expression
+              + " did not resolve to an implementation of "
+              + ExecutionListener.class
+              + " nor "
+              + JavaDelegate.class);
     }
   }
 
   /**
-   * returns the expression text for this execution listener. Comes in handy if you want to check which listeners you already have.
+   * returns the expression text for this execution listener. Comes in handy if you want to check
+   * which listeners you already have.
    */
   public String getExpressionText() {
     return expression.getExpressionText();
   }
-
 }

@@ -18,11 +18,7 @@ package org.activiti.engine.impl.transformer;
 
 import java.math.BigDecimal;
 
-/**
- * Transforms a {@link String} to a {@link BigDecimal}
- *
-
- */
+/** Transforms a {@link String} to a {@link BigDecimal} */
 public class StringToBigDecimal extends AbstractTransformer {
 
   @Override

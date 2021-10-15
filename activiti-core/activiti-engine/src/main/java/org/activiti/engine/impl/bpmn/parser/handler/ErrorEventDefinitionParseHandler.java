@@ -21,11 +21,9 @@ import org.activiti.bpmn.model.BoundaryEvent;
 import org.activiti.bpmn.model.ErrorEventDefinition;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 
-/**
-
-
- */
-public class ErrorEventDefinitionParseHandler extends AbstractBpmnParseHandler<ErrorEventDefinition> {
+/** */
+public class ErrorEventDefinitionParseHandler
+    extends AbstractBpmnParseHandler<ErrorEventDefinition> {
 
   public Class<? extends BaseElement> getHandledType() {
     return ErrorEventDefinition.class;
@@ -34,7 +32,10 @@ public class ErrorEventDefinitionParseHandler extends AbstractBpmnParseHandler<E
   protected void executeParse(BpmnParse bpmnParse, ErrorEventDefinition eventDefinition) {
     if (bpmnParse.getCurrentFlowElement() instanceof BoundaryEvent) {
       BoundaryEvent boundaryEvent = (BoundaryEvent) bpmnParse.getCurrentFlowElement();
-      boundaryEvent.setBehavior(bpmnParse.getActivityBehaviorFactory().createBoundaryEventActivityBehavior(boundaryEvent, true));
+      boundaryEvent.setBehavior(
+          bpmnParse
+              .getActivityBehaviorFactory()
+              .createBoundaryEventActivityBehavior(boundaryEvent, true));
     }
   }
 }

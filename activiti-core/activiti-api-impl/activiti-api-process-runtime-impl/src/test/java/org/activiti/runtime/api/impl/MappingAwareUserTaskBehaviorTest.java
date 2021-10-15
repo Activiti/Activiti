@@ -15,14 +15,6 @@
  */
 package org.activiti.runtime.api.impl;
 
-import java.util.Map;
-
-import org.activiti.engine.delegate.DelegateExecution;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-
 import static java.util.Collections.emptyMap;
 import static java.util.Collections.singletonMap;
 import static org.activiti.engine.impl.bpmn.behavior.MappingExecutionContext.buildMappingExecutionContext;
@@ -31,50 +23,56 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
+import java.util.Map;
+import org.activiti.engine.delegate.DelegateExecution;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+
 public class MappingAwareUserTaskBehaviorTest {
 
-    @InjectMocks
-    private MappingAwareUserTaskBehavior behavior;
+  @InjectMocks private MappingAwareUserTaskBehavior behavior;
 
-    @Mock
-    private ExtensionsVariablesMappingProvider mappingProvider;
+  @Mock private ExtensionsVariablesMappingProvider mappingProvider;
 
-    @BeforeEach
-    public void setUp() throws Exception {
-        initMocks(this);
-    }
+  @BeforeEach
+  public void setUp() throws Exception {
+    initMocks(this);
+  }
 
-    @Test
-    public void calculateInputVariablesShouldReturnValueFromMappingProvider() {
-        //given
-        DelegateExecution execution = buildExecution();
-        Map<String, Object> providerVariables = singletonMap("var", "value");
-        given(mappingProvider.calculateInputVariables(execution)).willReturn(providerVariables);
+  @Test
+  public void calculateInputVariablesShouldReturnValueFromMappingProvider() {
+    // given
+    DelegateExecution execution = buildExecution();
+    Map<String, Object> providerVariables = singletonMap("var", "value");
+    given(mappingProvider.calculateInputVariables(execution)).willReturn(providerVariables);
 
-        //when
-        Map<String, Object> inputVariables = behavior.calculateInputVariables(execution);
+    // when
+    Map<String, Object> inputVariables = behavior.calculateInputVariables(execution);
 
-        //then
-        assertThat(inputVariables).isEqualTo(providerVariables);
-    }
+    // then
+    assertThat(inputVariables).isEqualTo(providerVariables);
+  }
 
-    @Test
-    public void calculateOutBoundVariablesShouldReturnValueFromMappingProvider() {
-        //given
-        DelegateExecution execution = buildExecution();
-        Map<String, Object> availableVariables = emptyMap();
-        Map<String, Object> providerVariables = singletonMap("var", "value");
-        given(mappingProvider.calculateOutPutVariables(buildMappingExecutionContext(execution),
-                                                       availableVariables))
-                .willReturn(providerVariables);
-        //when
-        Map<String, Object> outBoundVariables = behavior.calculateOutBoundVariables(execution,
-                                                                                    availableVariables);
-        //then
-        assertThat(outBoundVariables).isEqualTo(providerVariables);
-    }
+  @Test
+  public void calculateOutBoundVariablesShouldReturnValueFromMappingProvider() {
+    // given
+    DelegateExecution execution = buildExecution();
+    Map<String, Object> availableVariables = emptyMap();
+    Map<String, Object> providerVariables = singletonMap("var", "value");
+    given(
+            mappingProvider.calculateOutPutVariables(
+                buildMappingExecutionContext(execution), availableVariables))
+        .willReturn(providerVariables);
+    // when
+    Map<String, Object> outBoundVariables =
+        behavior.calculateOutBoundVariables(execution, availableVariables);
+    // then
+    assertThat(outBoundVariables).isEqualTo(providerVariables);
+  }
 
-    private DelegateExecution buildExecution() {
-        return mock(DelegateExecution.class);
-    }
+  private DelegateExecution buildExecution() {
+    return mock(DelegateExecution.class);
+  }
 }

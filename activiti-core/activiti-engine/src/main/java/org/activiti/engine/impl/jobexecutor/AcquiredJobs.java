@@ -21,10 +21,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-/**
-
-
- */
+/** */
 public class AcquiredJobs {
 
   protected List<List<String>> acquiredJobBatches = new ArrayList<List<String>>();
@@ -46,5 +43,4 @@ public class AcquiredJobs {
   public int size() {
     return acquiredJobs.size();
   }
-
 }

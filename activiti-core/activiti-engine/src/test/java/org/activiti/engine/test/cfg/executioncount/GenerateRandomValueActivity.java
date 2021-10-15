@@ -15,11 +15,9 @@
  */
 package org.activiti.engine.test.cfg.executioncount;
 
+import java.util.Random;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.JavaDelegate;
-
-import java.util.Random;
-
 
 public class GenerateRandomValueActivity implements JavaDelegate {
 
@@ -31,5 +29,4 @@ public class GenerateRandomValueActivity implements JavaDelegate {
     Integer value = random.nextInt(10);
     execution.setVariable("var", value);
   }
-
 }

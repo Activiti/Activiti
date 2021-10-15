@@ -14,14 +14,9 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine;
 
-/**
- * An exception indicating that the object that is required or actioned on does not exist.
- *
-
- */
+/** An exception indicating that the object that is required or actioned on does not exist. */
 public class ActivitiObjectNotFoundException extends ActivitiException {
 
   private static final long serialVersionUID = 1L;
@@ -46,7 +41,8 @@ public class ActivitiObjectNotFoundException extends ActivitiException {
   }
 
   /**
-   * The class of the object that was not found. Contains the interface-class of the activiti-object that was not found.
+   * The class of the object that was not found. Contains the interface-class of the activiti-object
+   * that was not found.
    */
   public Class<?> getObjectClass() {
     return objectClass;

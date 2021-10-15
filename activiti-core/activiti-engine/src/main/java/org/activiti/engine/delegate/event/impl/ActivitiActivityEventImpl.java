@@ -19,12 +19,7 @@ package org.activiti.engine.delegate.event.impl;
 import org.activiti.engine.delegate.event.ActivitiActivityEvent;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 
-/**
- * Implementation of an {@link ActivitiActivityEvent}.
- *
-
-
- */
+/** Implementation of an {@link ActivitiActivityEvent}. */
 public class ActivitiActivityEventImpl extends ActivitiEventImpl implements ActivitiActivityEvent {
 
   protected String activityId;
@@ -69,5 +64,4 @@ public class ActivitiActivityEventImpl extends ActivitiEventImpl implements Acti
   public void setBehaviorClass(String behaviorClass) {
     this.behaviorClass = behaviorClass;
   }
-
 }

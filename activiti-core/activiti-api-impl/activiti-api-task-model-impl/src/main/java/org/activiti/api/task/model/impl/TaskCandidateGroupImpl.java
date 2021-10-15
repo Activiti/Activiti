@@ -16,43 +16,39 @@
 package org.activiti.api.task.model.impl;
 
 import java.util.Objects;
-
 import org.activiti.api.task.model.TaskCandidateGroup;
 
 public class TaskCandidateGroupImpl extends TaskCandidateImpl implements TaskCandidateGroup {
 
-    private String groupId;
+  private String groupId;
 
-    public TaskCandidateGroupImpl(){
+  public TaskCandidateGroupImpl() {}
+
+  public TaskCandidateGroupImpl(String groupId, String taskId) {
+    super(taskId);
+    this.groupId = groupId;
+  }
+
+  @Override
+  public String getGroupId() {
+    return groupId;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
     }
-
-    public TaskCandidateGroupImpl(String groupId, String taskId){
-        super(taskId);
-        this.groupId = groupId;
+    if (o == null || getClass() != o.getClass()) {
+      return false;
     }
+    TaskCandidateGroupImpl that = (TaskCandidateGroupImpl) o;
+    return Objects.equals(groupId, that.groupId);
+  }
 
+  @Override
+  public int hashCode() {
 
-    @Override
-    public String getGroupId() {
-        return groupId;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        TaskCandidateGroupImpl that = (TaskCandidateGroupImpl) o;
-        return Objects.equals(groupId,
-                              that.groupId);
-    }
-
-    @Override
-    public int hashCode() {
-
-        return Objects.hash(groupId);
-    }
+    return Objects.hash(groupId);
+  }
 }

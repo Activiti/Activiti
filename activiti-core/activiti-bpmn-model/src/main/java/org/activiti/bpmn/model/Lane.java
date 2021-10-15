@@ -15,10 +15,9 @@
  */
 package org.activiti.bpmn.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.fasterxml.jackson.annotation.JsonBackReference;
 
 public class Lane extends BaseElement {
 

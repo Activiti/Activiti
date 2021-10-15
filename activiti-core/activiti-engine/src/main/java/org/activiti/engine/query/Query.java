@@ -14,33 +14,32 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.query;
 
 import java.util.List;
-
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.api.internal.Internal;
 
-/**
- * Describes basic methods for querying.
- *
- */
+/** Describes basic methods for querying. */
 @Internal
 public interface Query<T extends Query<?, ?>, U> {
 
   /**
-   * Order the results ascending on the given property as defined in this class (needs to come after a call to one of the orderByXxxx methods).
+   * Order the results ascending on the given property as defined in this class (needs to come after
+   * a call to one of the orderByXxxx methods).
    */
   T asc();
 
   /**
-   * Order the results descending on the given property as defined in this class (needs to come after a call to one of the orderByXxxx methods).
+   * Order the results descending on the given property as defined in this class (needs to come
+   * after a call to one of the orderByXxxx methods).
    */
   T desc();
 
   /**
-   * Order the results by the given {@link QueryProperty} (needs to be followed by {@link #asc()} or {@link #desc()})
+   * Order the results by the given {@link QueryProperty} (needs to be followed by {@link #asc()} or
+   * {@link #desc()})
+   *
    * @param property the {@code QueryProperty} to be used to order the results
    * @return itself
    */
@@ -50,10 +49,10 @@ public interface Query<T extends Query<?, ?>, U> {
   long count();
 
   /**
-   * Executes the query and returns the resulting entity or null if no entity matches the query criteria.
+   * Executes the query and returns the resulting entity or null if no entity matches the query
+   * criteria.
    *
-   * @throws ActivitiException
-   *           when the query results in more than one entities.
+   * @throws ActivitiException when the query results in more than one entities.
    */
   U singleResult();
 

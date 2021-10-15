@@ -17,14 +17,11 @@
 package org.activiti.engine.delegate.event;
 
 /**
- * Indicates the {@link ActivitiEvent} also contains information about a {@link Throwable} that occurred, triggering the event.
- *
-
+ * Indicates the {@link ActivitiEvent} also contains information about a {@link Throwable} that
+ * occurred, triggering the event.
  */
 public interface ActivitiExceptionEvent {
 
-  /**
-   * @return the throwable that caused this event to be dispatched.
-   */
+  /** @return the throwable that caused this event to be dispatched. */
   Throwable getCause();
 }

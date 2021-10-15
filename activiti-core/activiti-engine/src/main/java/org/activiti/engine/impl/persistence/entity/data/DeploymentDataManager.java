@@ -18,15 +18,12 @@ package org.activiti.engine.impl.persistence.entity.data;
 
 import java.util.List;
 import java.util.Map;
-
 import org.activiti.engine.impl.DeploymentQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.persistence.entity.DeploymentEntity;
 import org.activiti.engine.repository.Deployment;
 
-/**
-
- */
+/** */
 public interface DeploymentDataManager extends DataManager<DeploymentEntity> {
 
   DeploymentEntity findLatestDeploymentByName(String deploymentName);
@@ -37,10 +34,10 @@ public interface DeploymentDataManager extends DataManager<DeploymentEntity> {
 
   List<String> getDeploymentResourceNames(String deploymentId);
 
-  List<Deployment> findDeploymentsByNativeQuery(Map<String, Object> parameterMap, int firstResult, int maxResults);
+  List<Deployment> findDeploymentsByNativeQuery(
+      Map<String, Object> parameterMap, int firstResult, int maxResults);
 
   long findDeploymentCountByNativeQuery(Map<String, Object> parameterMap);
 
   Deployment selectLatestDeployment(String deploymentName);
-
 }

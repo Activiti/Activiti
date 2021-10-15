@@ -27,9 +27,7 @@ import org.activiti.engine.impl.persistence.deploy.ProcessDefinitionCacheEntry;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.repository.ProcessDefinition;
 
-/**
-
- */
+/** */
 public class SetProcessDefinitionCategoryCmd implements Command<Void> {
 
   protected String processDefinitionId;
@@ -46,23 +44,31 @@ public class SetProcessDefinitionCategoryCmd implements Command<Void> {
       throw new ActivitiIllegalArgumentException("Process definition id is null");
     }
 
-    ProcessDefinitionEntity processDefinition = commandContext.getProcessDefinitionEntityManager().findById(processDefinitionId);
+    ProcessDefinitionEntity processDefinition =
+        commandContext.getProcessDefinitionEntityManager().findById(processDefinitionId);
 
     if (processDefinition == null) {
-      throw new ActivitiObjectNotFoundException("No process definition found for id = '" + processDefinitionId + "'", ProcessDefinition.class);
+      throw new ActivitiObjectNotFoundException(
+          "No process definition found for id = '" + processDefinitionId + "'",
+          ProcessDefinition.class);
     }
 
     // Update category
     processDefinition.setCategory(category);
 
     // Remove process definition from cache, it will be refetched later
-    DeploymentCache<ProcessDefinitionCacheEntry> processDefinitionCache = commandContext.getProcessEngineConfiguration().getProcessDefinitionCache();
+    DeploymentCache<ProcessDefinitionCacheEntry> processDefinitionCache =
+        commandContext.getProcessEngineConfiguration().getProcessDefinitionCache();
     if (processDefinitionCache != null) {
       processDefinitionCache.remove(processDefinitionId);
     }
 
     if (commandContext.getEventDispatcher().isEnabled()) {
-      commandContext.getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_UPDATED, processDefinition));
+      commandContext
+          .getEventDispatcher()
+          .dispatchEvent(
+              ActivitiEventBuilder.createEntityEvent(
+                  ActivitiEventType.ENTITY_UPDATED, processDefinition));
     }
 
     return null;
@@ -83,5 +89,4 @@ public class SetProcessDefinitionCategoryCmd implements Command<Void> {
   public void setCategory(String category) {
     this.category = category;
   }
-
 }

@@ -23,20 +23,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
-/**
-
- */
+/** */
 public class DelegateTaskTest extends PluggableActivitiTestCase {
 
   /**
-   * @see <a href="https://activiti.atlassian.net/browse/ACT-380">https://activiti.atlassian.net/browse/ACT-380</a>
+   * @see <a
+   *     href="https://activiti.atlassian.net/browse/ACT-380">https://activiti.atlassian.net/browse/ACT-380</a>
    */
   @Deployment
   public void testGetCandidates() {
@@ -46,13 +44,19 @@ public class DelegateTaskTest extends PluggableActivitiTestCase {
     assertThat(task).isNotNull();
 
     @SuppressWarnings("unchecked")
-    Set<String> candidateUsers = (Set<String>) taskService.getVariable(task.getId(), DelegateTaskTestTaskListener.VARNAME_CANDIDATE_USERS);
+    Set<String> candidateUsers =
+        (Set<String>)
+            taskService.getVariable(
+                task.getId(), DelegateTaskTestTaskListener.VARNAME_CANDIDATE_USERS);
     assertThat(candidateUsers).hasSize(2);
     assertThat(candidateUsers.contains("kermit")).isTrue();
     assertThat(candidateUsers.contains("gonzo")).isTrue();
 
     @SuppressWarnings("unchecked")
-    Set<String> candidateGroups = (Set<String>) taskService.getVariable(task.getId(), DelegateTaskTestTaskListener.VARNAME_CANDIDATE_GROUPS);
+    Set<String> candidateGroups =
+        (Set<String>)
+            taskService.getVariable(
+                task.getId(), DelegateTaskTestTaskListener.VARNAME_CANDIDATE_GROUPS);
     assertThat(candidateGroups).hasSize(2);
     assertThat(candidateGroups.contains("management")).isTrue();
     assertThat(candidateGroups.contains("accountancy")).isTrue();
@@ -64,10 +68,12 @@ public class DelegateTaskTest extends PluggableActivitiTestCase {
     // Start process instance
     Map<String, Object> variables = new HashMap<String, Object>();
     variables.put("approvers", singletonList("kermit")); // , "gonzo", "mispiggy"));
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("delegateTaskTest", variables);
+    ProcessInstance processInstance =
+        runtimeService.startProcessInstanceByKey("delegateTaskTest", variables);
 
     // Assert there are three tasks with the default category
-    List<Task> tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).list();
+    List<Task> tasks =
+        taskService.createTaskQuery().processInstanceId(processInstance.getId()).list();
     for (Task task : tasks) {
       assertThat(task.getCategory()).isEqualTo("approval");
       Map<String, Object> taskVariables = new HashMap<String, Object>();
@@ -77,10 +83,11 @@ public class DelegateTaskTest extends PluggableActivitiTestCase {
 
     // After completion, the task category should be changed in the script
     // listener working on the delegate task
-    assertThat(taskService.createTaskQuery().processInstanceId(processInstance.getId()).count()).isEqualTo(0);
-    for (HistoricTaskInstance historicTaskInstance : historyService.createHistoricTaskInstanceQuery().list()) {
+    assertThat(taskService.createTaskQuery().processInstanceId(processInstance.getId()).count())
+        .isEqualTo(0);
+    for (HistoricTaskInstance historicTaskInstance :
+        historyService.createHistoricTaskInstanceQuery().list()) {
       assertThat(historicTaskInstance.getCategory()).isEqualTo("approved");
     }
   }
-
 }

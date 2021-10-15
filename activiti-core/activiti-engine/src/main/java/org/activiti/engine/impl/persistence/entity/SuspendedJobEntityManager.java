@@ -17,27 +17,20 @@
 package org.activiti.engine.impl.persistence.entity;
 
 import java.util.List;
-
 import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.impl.JobQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.SuspendedJobQueryImpl;
 import org.activiti.engine.runtime.Job;
 
-/**
-
- */
+/** */
 @Internal
 public interface SuspendedJobEntityManager extends EntityManager<SuspendedJobEntity> {
 
-  /**
-   * Returns all {@link SuspendedJobEntity} instances related to on {@link ExecutionEntity}.
-   */
+  /** Returns all {@link SuspendedJobEntity} instances related to on {@link ExecutionEntity}. */
   List<SuspendedJobEntity> findJobsByExecutionId(String id);
 
-  /**
-   * Returns all {@link SuspendedJobEntity} instances related to on {@link ExecutionEntity}.
-   */
+  /** Returns all {@link SuspendedJobEntity} instances related to on {@link ExecutionEntity}. */
   List<SuspendedJobEntity> findJobsByProcessInstanceId(String id);
 
   /**
@@ -51,9 +44,6 @@ public interface SuspendedJobEntityManager extends EntityManager<SuspendedJobEnt
    */
   long findJobCountByQueryCriteria(SuspendedJobQueryImpl jobQuery);
 
-  /**
-   * Changes the tenantId for all jobs related to a given {@link DeploymentEntity}.
-   */
+  /** Changes the tenantId for all jobs related to a given {@link DeploymentEntity}. */
   void updateJobTenantIdForDeployment(String deploymentId, String newTenantId);
-
 }

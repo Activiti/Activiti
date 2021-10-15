@@ -24,70 +24,68 @@ import org.junit.jupiter.api.Test;
 
 public class VariableEventFilterTest {
 
-    private VariableEventFilter variableEventFilter = new VariableEventFilter();
+  private VariableEventFilter variableEventFilter = new VariableEventFilter();
 
-    @Test
-    public void should_emmitEvent_when_executionIdIsEqualsToProcessInstanceId() {
-        //given
-        ActivitiVariableEventImpl event = new ActivitiVariableEventImpl(
-            ActivitiEventType.VARIABLE_CREATED);
-        event.setExecutionId("id");
-        event.setProcessInstanceId("id");
+  @Test
+  public void should_emmitEvent_when_executionIdIsEqualsToProcessInstanceId() {
+    // given
+    ActivitiVariableEventImpl event =
+        new ActivitiVariableEventImpl(ActivitiEventType.VARIABLE_CREATED);
+    event.setExecutionId("id");
+    event.setProcessInstanceId("id");
 
-        //when
-        boolean shouldEmmitEvent = variableEventFilter.shouldEmmitEvent(
-            event);
+    // when
+    boolean shouldEmmitEvent = variableEventFilter.shouldEmmitEvent(event);
 
-        //then
-        assertThat(shouldEmmitEvent).isTrue();
-    }
+    // then
+    assertThat(shouldEmmitEvent).isTrue();
+  }
 
-    @Test
-    public void shouldNot_emmitEvent_when_executionIdIsNotEqualsToProcessInstanceIdAndTaskIdIsNotSet() {
-        //given
-        ActivitiVariableEventImpl event = new ActivitiVariableEventImpl(
-            ActivitiEventType.VARIABLE_CREATED);
-        event.setExecutionId("id");
-        event.setProcessInstanceId("anotherId");
+  @Test
+  public void
+      shouldNot_emmitEvent_when_executionIdIsNotEqualsToProcessInstanceIdAndTaskIdIsNotSet() {
+    // given
+    ActivitiVariableEventImpl event =
+        new ActivitiVariableEventImpl(ActivitiEventType.VARIABLE_CREATED);
+    event.setExecutionId("id");
+    event.setProcessInstanceId("anotherId");
 
-        //when
-        boolean shouldEmmitEvent = variableEventFilter.shouldEmmitEvent(
-            event);
+    // when
+    boolean shouldEmmitEvent = variableEventFilter.shouldEmmitEvent(event);
 
-        //then
-        assertThat(shouldEmmitEvent).isFalse();
-    }
+    // then
+    assertThat(shouldEmmitEvent).isFalse();
+  }
 
-    @Test
-    public void should_EmmitEvent_when_executionIdIsNotEqualsToProcessInstanceIdAndTaskIdIsSet() {
-        //given
-        ActivitiVariableEventImpl event = new ActivitiVariableEventImpl(
-            ActivitiEventType.VARIABLE_CREATED);
-        event.setExecutionId("id");
-        event.setProcessInstanceId("anotherId");
-        event.setTaskId("taskId");
+  @Test
+  public void should_EmmitEvent_when_executionIdIsNotEqualsToProcessInstanceIdAndTaskIdIsSet() {
+    // given
+    ActivitiVariableEventImpl event =
+        new ActivitiVariableEventImpl(ActivitiEventType.VARIABLE_CREATED);
+    event.setExecutionId("id");
+    event.setProcessInstanceId("anotherId");
+    event.setTaskId("taskId");
 
-        //when
-        boolean shouldEmmitEvent = variableEventFilter.shouldEmmitEvent(event);
+    // when
+    boolean shouldEmmitEvent = variableEventFilter.shouldEmmitEvent(event);
 
-        //then
-        assertThat(shouldEmmitEvent).isTrue();
-    }
+    // then
+    assertThat(shouldEmmitEvent).isTrue();
+  }
 
-    @Test
-    public void should_EmmitEvent_when_executionIdAndProcessInstanceIdAreNotSetAndTaskIdIsSet() {
-        //given
-        ActivitiVariableEventImpl event = new ActivitiVariableEventImpl(
-            ActivitiEventType.VARIABLE_CREATED);
-        event.setExecutionId(null);
-        event.setProcessInstanceId(null);
-        event.setTaskId("taskId");
+  @Test
+  public void should_EmmitEvent_when_executionIdAndProcessInstanceIdAreNotSetAndTaskIdIsSet() {
+    // given
+    ActivitiVariableEventImpl event =
+        new ActivitiVariableEventImpl(ActivitiEventType.VARIABLE_CREATED);
+    event.setExecutionId(null);
+    event.setProcessInstanceId(null);
+    event.setTaskId("taskId");
 
-        //when
-        boolean shouldEmmitEvent = variableEventFilter.shouldEmmitEvent(event);
+    // when
+    boolean shouldEmmitEvent = variableEventFilter.shouldEmmitEvent(event);
 
-        //then
-        assertThat(shouldEmmitEvent).isTrue();
-    }
-
+    // then
+    assertThat(shouldEmmitEvent).isTrue();
+  }
 }

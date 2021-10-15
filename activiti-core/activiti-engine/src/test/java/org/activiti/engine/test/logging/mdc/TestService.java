@@ -32,7 +32,6 @@ public class TestService implements JavaDelegate {
     TestService.businessKey = execution.getProcessInstanceBusinessKey();
 
     throw new RuntimeException("test");
-
   }
 
   public void clearProcessVariables() {
@@ -41,5 +40,4 @@ public class TestService implements JavaDelegate {
     executionId = null;
     businessKey = null;
   }
-
 }

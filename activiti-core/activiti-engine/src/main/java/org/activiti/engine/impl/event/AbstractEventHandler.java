@@ -14,11 +14,9 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.event;
 
 import java.util.Map;
-
 import org.activiti.bpmn.model.FlowNode;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.context.Context;
@@ -26,17 +24,20 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 
-/**
-
- */
+/** */
 public abstract class AbstractEventHandler implements EventHandler {
 
-  public void handleEvent(EventSubscriptionEntity eventSubscription, Object payload, CommandContext commandContext) {
+  public void handleEvent(
+      EventSubscriptionEntity eventSubscription, Object payload, CommandContext commandContext) {
     ExecutionEntity execution = eventSubscription.getExecution();
     FlowNode currentFlowElement = (FlowNode) execution.getCurrentFlowElement();
 
     if (currentFlowElement == null) {
-      throw new ActivitiException("Error while sending signal for event subscription '" + eventSubscription.getId() + "': " + "no activity associated with event subscription");
+      throw new ActivitiException(
+          "Error while sending signal for event subscription '"
+              + eventSubscription.getId()
+              + "': "
+              + "no activity associated with event subscription");
     }
 
     if (payload instanceof Map) {
@@ -47,5 +48,4 @@ public abstract class AbstractEventHandler implements EventHandler {
 
     Context.getAgenda().planTriggerExecutionOperation(execution);
   }
-
 }

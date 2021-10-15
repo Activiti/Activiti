@@ -15,11 +15,12 @@
  */
 package org.activiti.engine.impl.event.logger.handler;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-
 import org.activiti.engine.delegate.event.ActivitiVariableEvent;
 import org.activiti.engine.impl.variable.BooleanType;
 import org.activiti.engine.impl.variable.DateType;
@@ -35,12 +36,7 @@ import org.activiti.engine.impl.variable.VariableType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-/**
-
- */
+/** */
 public abstract class VariableEventHandler extends AbstractDatabaseEventLoggerEventHandler {
 
   private static final Logger logger = LoggerFactory.getLogger(VariableEventHandler.class);
@@ -138,7 +134,9 @@ public abstract class VariableEventHandler extends AbstractDatabaseEventLoggerEv
       putInMapIfNotNull(data, Fields.VALUE_STRING, value);
       putInMapIfNotNull(data, Fields.VARIABLE_TYPE, TYPE_UUID);
 
-    } else if (variableType instanceof SerializableType || (variableEvent.getVariableValue() != null && (variableEvent.getVariableValue() instanceof Object))) {
+    } else if (variableType instanceof SerializableType
+        || (variableEvent.getVariableValue() != null
+            && (variableEvent.getVariableValue() instanceof Object))) {
 
       // Last try: serialize it to json
       ObjectMapper objectMapper = new ObjectMapper();
@@ -151,10 +149,8 @@ public abstract class VariableEventHandler extends AbstractDatabaseEventLoggerEv
         // Nothing to do about it
         logger.debug("Could not serialize variable value " + variableEvent.getVariableValue());
       }
-
     }
 
     return data;
   }
-
 }

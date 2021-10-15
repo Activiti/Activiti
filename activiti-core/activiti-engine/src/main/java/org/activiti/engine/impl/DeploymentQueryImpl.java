@@ -14,23 +14,19 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl;
 
 import java.io.Serializable;
 import java.util.List;
-
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.DeploymentQuery;
 
-/**
-
-
- */
-public class DeploymentQueryImpl extends AbstractQuery<DeploymentQuery, Deployment> implements DeploymentQuery, Serializable {
+/** */
+public class DeploymentQueryImpl extends AbstractQuery<DeploymentQuery, Deployment>
+    implements DeploymentQuery, Serializable {
 
   private static final long serialVersionUID = 1L;
   protected String deploymentId;
@@ -49,8 +45,7 @@ public class DeploymentQueryImpl extends AbstractQuery<DeploymentQuery, Deployme
   protected boolean latest;
   protected boolean latestVersion;
 
-  public DeploymentQueryImpl() {
-  }
+  public DeploymentQueryImpl() {}
 
   public DeploymentQueryImpl(CommandContext commandContext) {
     super(commandContext);
@@ -163,7 +158,8 @@ public class DeploymentQueryImpl extends AbstractQuery<DeploymentQuery, Deployme
 
   public DeploymentQueryImpl latest() {
     if (key == null) {
-      throw new ActivitiIllegalArgumentException("latest can only be used together with a deployment key");
+      throw new ActivitiIllegalArgumentException(
+          "latest can only be used together with a deployment key");
     }
 
     this.latest = true;

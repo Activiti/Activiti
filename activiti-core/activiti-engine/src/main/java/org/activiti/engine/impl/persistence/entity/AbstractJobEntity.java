@@ -17,15 +17,11 @@
 package org.activiti.engine.impl.persistence.entity;
 
 import java.util.Date;
-
 import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.impl.db.HasRevision;
 import org.activiti.engine.runtime.Job;
 
-/**
-
-
- */
+/** */
 @Internal
 public interface AbstractJobEntity extends Job, Entity, HasRevision {
 
@@ -78,5 +74,4 @@ public interface AbstractJobEntity extends Job, Entity, HasRevision {
   ByteArrayRef getExceptionByteArrayRef();
 
   void setTenantId(String tenantId);
-
 }

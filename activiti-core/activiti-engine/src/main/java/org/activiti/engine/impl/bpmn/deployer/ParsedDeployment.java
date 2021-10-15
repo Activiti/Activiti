@@ -18,7 +18,6 @@ package org.activiti.engine.impl.bpmn.deployer;
 
 import java.util.List;
 import java.util.Map;
-
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.Process;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
@@ -28,11 +27,12 @@ import org.activiti.engine.impl.persistence.entity.ResourceEntity;
 
 /**
  * An intermediate representation of a DeploymentEntity which keeps track of all of the entity's
- * ProcessDefinitionEntities and resources, and BPMN parses, models, and processes associated
- * with each ProcessDefinitionEntity - all produced by parsing the deployment.
+ * ProcessDefinitionEntities and resources, and BPMN parses, models, and processes associated with
+ * each ProcessDefinitionEntity - all produced by parsing the deployment.
  *
- * The ProcessDefinitionEntities are expected to be "not fully set-up" - they may be inconsistent with the
- * DeploymentEntity and/or the persisted versions, and if the deployment is new, they will not yet be persisted.
+ * <p>The ProcessDefinitionEntities are expected to be "not fully set-up" - they may be inconsistent
+ * with the DeploymentEntity and/or the persisted versions, and if the deployment is new, they will
+ * not yet be persisted.
  */
 public class ParsedDeployment {
 
@@ -43,7 +43,8 @@ public class ParsedDeployment {
   protected Map<ProcessDefinitionEntity, ResourceEntity> mapProcessDefinitionsToResources;
 
   public ParsedDeployment(
-      DeploymentEntity entity, List<ProcessDefinitionEntity> processDefinitions,
+      DeploymentEntity entity,
+      List<ProcessDefinitionEntity> processDefinitions,
       Map<ProcessDefinitionEntity, BpmnParse> mapProcessDefinitionsToParses,
       Map<ProcessDefinitionEntity, ResourceEntity> mapProcessDefinitionsToResources) {
     this.deploymentEntity = entity;
@@ -51,7 +52,6 @@ public class ParsedDeployment {
     this.mapProcessDefinitionsToParses = mapProcessDefinitionsToParses;
     this.mapProcessDefinitionsToResources = mapProcessDefinitionsToResources;
   }
-
 
   public DeploymentEntity getDeployment() {
     return deploymentEntity;
@@ -80,5 +80,4 @@ public class ParsedDeployment {
 
     return (model == null ? null : model.getProcessById(processDefinition.getKey()));
   }
-
 }

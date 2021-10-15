@@ -16,11 +16,7 @@
 
 package org.activiti.engine.impl.bpmn.data;
 
-/**
- * An instance of {@link ItemDefinition}
- *
-
- */
+/** An instance of {@link ItemDefinition} */
 public class ItemInstance {
 
   protected ItemDefinition item;

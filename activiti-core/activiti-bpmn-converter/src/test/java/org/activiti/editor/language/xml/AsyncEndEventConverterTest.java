@@ -18,7 +18,6 @@ package org.activiti.editor.language.xml;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
-
 import org.activiti.bpmn.model.*;
 import org.junit.jupiter.api.Test;
 
@@ -54,7 +53,9 @@ public class AsyncEndEventConverterTest extends AbstractConverterTest {
     List<ActivitiListener> listeners = endEvent.getExecutionListeners();
     assertThat(listeners).hasSize(1);
     ActivitiListener listener = listeners.get(0);
-    assertThat(ImplementationType.IMPLEMENTATION_TYPE_CLASS.equals(listener.getImplementationType())).isTrue();
+    assertThat(
+            ImplementationType.IMPLEMENTATION_TYPE_CLASS.equals(listener.getImplementationType()))
+        .isTrue();
     assertThat(listener.getImplementation()).isEqualTo("org.test.TestClass");
     assertThat(listener.getEvent()).isEqualTo("start");
 

@@ -18,10 +18,7 @@ package org.activiti.engine.impl.persistence.entity;
 
 import org.activiti.engine.api.internal.Internal;
 
-/**
-
-
- */
+/** */
 @Internal
 public interface Entity {
 
@@ -42,8 +39,8 @@ public interface Entity {
   void setDeleted(boolean deleted);
 
   /**
-   * Returns a representation of the object, as would be stored in the database.
-   * Used when deciding if updates have occurred to the object or not since it was last loaded.
+   * Returns a representation of the object, as would be stored in the database. Used when deciding
+   * if updates have occurred to the object or not since it was last loaded.
    */
   Object getPersistentState();
 }

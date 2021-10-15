@@ -14,11 +14,9 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.persistence.entity;
 
 import java.util.List;
-
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.delegate.event.ActivitiEventType;
@@ -29,17 +27,17 @@ import org.activiti.engine.impl.persistence.entity.data.DataManager;
 import org.activiti.engine.task.Attachment;
 import org.activiti.engine.task.Task;
 
-/**
-
-
- */
+/** */
 @Internal
 @Deprecated
-public class AttachmentEntityManagerImpl extends AbstractEntityManager<AttachmentEntity> implements AttachmentEntityManager {
+public class AttachmentEntityManagerImpl extends AbstractEntityManager<AttachmentEntity>
+    implements AttachmentEntityManager {
 
   protected AttachmentDataManager attachmentDataManager;
 
-  public AttachmentEntityManagerImpl(ProcessEngineConfigurationImpl processEngineConfiguration, AttachmentDataManager attachmentDataManager) {
+  public AttachmentEntityManagerImpl(
+      ProcessEngineConfigurationImpl processEngineConfiguration,
+      AttachmentDataManager attachmentDataManager) {
     super(processEngineConfiguration);
     this.attachmentDataManager = attachmentDataManager;
   }
@@ -91,8 +89,14 @@ public class AttachmentEntityManagerImpl extends AbstractEntityManager<Attachmen
       attachmentDataManager.delete((AttachmentEntity) attachment);
 
       if (dispatchEvents) {
-        getEventDispatcher().dispatchEvent(
-            ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_DELETED, attachment, executionId, processInstanceId, processDefinitionId));
+        getEventDispatcher()
+            .dispatchEvent(
+                ActivitiEventBuilder.createEntityEvent(
+                    ActivitiEventType.ENTITY_DELETED,
+                    attachment,
+                    executionId,
+                    processInstanceId,
+                    processDefinitionId));
       }
     }
   }
@@ -110,5 +114,4 @@ public class AttachmentEntityManagerImpl extends AbstractEntityManager<Attachmen
   public void setAttachmentDataManager(AttachmentDataManager attachmentDataManager) {
     this.attachmentDataManager = attachmentDataManager;
   }
-
 }

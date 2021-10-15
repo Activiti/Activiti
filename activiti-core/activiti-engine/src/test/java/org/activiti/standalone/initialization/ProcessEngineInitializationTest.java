@@ -21,7 +21,6 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiWrongDbException;
 import org.activiti.engine.ProcessEngine;
@@ -33,26 +32,36 @@ import org.activiti.engine.impl.test.AbstractTestCase;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 
-/**
- */
+/** */
 public class ProcessEngineInitializationTest extends AbstractTestCase {
 
   public void testNoTables() {
     assertThatExceptionOfType(Exception.class)
-      .isThrownBy(() -> ProcessEngineConfiguration
-        .createProcessEngineConfigurationFromResource("org/activiti/standalone/initialization/notables.activiti.cfg.xml")
-        .buildProcessEngine())
-      .withMessageContaining("no activiti tables in db");
+        .isThrownBy(
+            () ->
+                ProcessEngineConfiguration.createProcessEngineConfigurationFromResource(
+                        "org/activiti/standalone/initialization/notables.activiti.cfg.xml")
+                    .buildProcessEngine())
+        .withMessageContaining("no activiti tables in db");
   }
 
   public void testVersionMismatch() {
     // first create the schema
-    ProcessEngineImpl processEngine = (ProcessEngineImpl) ProcessEngineConfiguration.createProcessEngineConfigurationFromResource("org/activiti/standalone/initialization/notables.activiti.cfg.xml")
-        .setDatabaseSchemaUpdate(ProcessEngineConfiguration.DB_SCHEMA_UPDATE_CREATE_DROP).buildProcessEngine();
+    ProcessEngineImpl processEngine =
+        (ProcessEngineImpl)
+            ProcessEngineConfiguration.createProcessEngineConfigurationFromResource(
+                    "org/activiti/standalone/initialization/notables.activiti.cfg.xml")
+                .setDatabaseSchemaUpdate(ProcessEngineConfiguration.DB_SCHEMA_UPDATE_CREATE_DROP)
+                .buildProcessEngine();
 
     // then update the version to something that is different to the library
     // version
-    DbSqlSessionFactory dbSqlSessionFactory = (DbSqlSessionFactory) processEngine.getProcessEngineConfiguration().getSessionFactories().get(DbSqlSession.class);
+    DbSqlSessionFactory dbSqlSessionFactory =
+        (DbSqlSessionFactory)
+            processEngine
+                .getProcessEngineConfiguration()
+                .getSessionFactories()
+                .get(DbSqlSession.class);
     SqlSessionFactory sqlSessionFactory = dbSqlSessionFactory.getSqlSessionFactory();
     SqlSession sqlSession = sqlSessionFactory.openSession();
     boolean success = false;
@@ -78,14 +87,18 @@ public class ProcessEngineInitializationTest extends AbstractTestCase {
     // now we can see what happens if when a process engine is being
     // build with a version mismatch between library and db tables
     assertThatExceptionOfType(ActivitiWrongDbException.class)
-      .isThrownBy(() -> ProcessEngineConfiguration
-        .createProcessEngineConfigurationFromResource("org/activiti/standalone/initialization/notables.activiti.cfg.xml")
-        .setDatabaseSchemaUpdate(ProcessEngineConfiguration.DB_SCHEMA_UPDATE_FALSE).buildProcessEngine())
-      .withMessageContaining("version mismatch")
-      .satisfies(e -> {
-        assertThat(e.getDbVersion()).isEqualTo("25.7");
-        assertThat(e.getLibraryVersion()).isEqualTo(ProcessEngine.VERSION);
-      });
+        .isThrownBy(
+            () ->
+                ProcessEngineConfiguration.createProcessEngineConfigurationFromResource(
+                        "org/activiti/standalone/initialization/notables.activiti.cfg.xml")
+                    .setDatabaseSchemaUpdate(ProcessEngineConfiguration.DB_SCHEMA_UPDATE_FALSE)
+                    .buildProcessEngine())
+        .withMessageContaining("version mismatch")
+        .satisfies(
+            e -> {
+              assertThat(e.getDbVersion()).isEqualTo("25.7");
+              assertThat(e.getLibraryVersion()).isEqualTo(ProcessEngine.VERSION);
+            });
 
     // closing the original process engine to drop the db tables
     processEngine.close();

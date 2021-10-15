@@ -20,10 +20,7 @@ import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.delegate.TaskListener;
 import org.activiti.engine.impl.el.FixedValue;
 
-/**
-
-
- */
+/** */
 public class MyTaskListenerBean implements TaskListener {
 
   private FixedValue someField;
@@ -31,7 +28,9 @@ public class MyTaskListenerBean implements TaskListener {
   public void notify(DelegateTask delegateTask) {
     delegateTask.getExecution().setVariable("taskListenerVar", "working");
     if (someField != null) {
-      delegateTask.getExecution().setVariable("taskListenerField", someField.getValue(delegateTask));
+      delegateTask
+          .getExecution()
+          .setVariable("taskListenerField", someField.getValue(delegateTask));
     }
   }
 
@@ -42,5 +41,4 @@ public class MyTaskListenerBean implements TaskListener {
   public void setSomeField(FixedValue someField) {
     this.someField = someField;
   }
-
 }

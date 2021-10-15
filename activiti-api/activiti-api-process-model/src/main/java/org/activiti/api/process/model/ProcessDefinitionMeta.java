@@ -17,8 +17,5 @@ package org.activiti.api.process.model;
 
 public interface ProcessDefinitionMeta {
 
-    String getProcessDefinitionKey();
-
-
-
+  String getProcessDefinitionKey();
 }

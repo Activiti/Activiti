@@ -21,7 +21,6 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.impl.context.Context;
@@ -30,6 +29,7 @@ import org.activiti.engine.impl.context.Context;
 public class DefaultBusinessCalendar implements BusinessCalendar {
 
   private static Map<String, Integer> units = new HashMap<String, Integer>();
+
   static {
     units.put("millis", Calendar.MILLISECOND);
     units.put("seconds", Calendar.SECOND);
@@ -65,7 +65,8 @@ public class DefaultBusinessCalendar implements BusinessCalendar {
   }
 
   @Override
-  public Boolean validateDuedate(String duedateDescription, int maxIterations, Date endDate, Date newTimer) {
+  public Boolean validateDuedate(
+      String duedateDescription, int maxIterations, Date endDate, Date newTimer) {
     return true;
   }
 

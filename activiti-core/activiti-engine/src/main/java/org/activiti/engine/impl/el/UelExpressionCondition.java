@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.el;
 
 import org.activiti.engine.ActivitiException;
@@ -22,12 +21,7 @@ import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.Condition;
 
-/**
- * {@link Condition} that resolves an UEL expression at runtime.
- *
-
-
- */
+/** {@link Condition} that resolves an UEL expression at runtime. */
 public class UelExpressionCondition implements Condition {
 
   protected Expression expression;
@@ -40,12 +34,25 @@ public class UelExpressionCondition implements Condition {
     Object result = expression.getValue(execution);
 
     if (result == null) {
-      throw new ActivitiException("condition expression returns null (sequenceFlowId: " + sequenceFlowId + " execution: " + execution + ")");
+      throw new ActivitiException(
+          "condition expression returns null (sequenceFlowId: "
+              + sequenceFlowId
+              + " execution: "
+              + execution
+              + ")");
     }
     if (!(result instanceof Boolean)) {
-      throw new ActivitiException("condition expression returns non-Boolean (sequenceFlowId: " + sequenceFlowId + " execution: " + execution + "): " + result + " (" + result.getClass().getName() + ")");
+      throw new ActivitiException(
+          "condition expression returns non-Boolean (sequenceFlowId: "
+              + sequenceFlowId
+              + " execution: "
+              + execution
+              + "): "
+              + result
+              + " ("
+              + result.getClass().getName()
+              + ")");
     }
     return (Boolean) result;
   }
-
 }

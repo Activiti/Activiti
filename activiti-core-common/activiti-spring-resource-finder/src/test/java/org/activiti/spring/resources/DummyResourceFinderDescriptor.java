@@ -19,48 +19,44 @@ import static java.util.Arrays.asList;
 
 import java.io.IOException;
 import java.util.List;
-
 import org.springframework.core.io.Resource;
 
 public class DummyResourceFinderDescriptor implements ResourceFinderDescriptor {
 
-    private List<String> suffixes;
+  private List<String> suffixes;
 
-    private String locationPrefix;
+  private String locationPrefix;
 
-    public DummyResourceFinderDescriptor(String locationPrefix,
-                                         String ... suffixes) {
-        this.suffixes = asList(suffixes);
-        this.locationPrefix = locationPrefix;
-    }
+  public DummyResourceFinderDescriptor(String locationPrefix, String... suffixes) {
+    this.suffixes = asList(suffixes);
+    this.locationPrefix = locationPrefix;
+  }
 
-    @Override
-    public List<String> getLocationSuffixes() {
-        return suffixes;
-    }
+  @Override
+  public List<String> getLocationSuffixes() {
+    return suffixes;
+  }
 
-    @Override
-    public String getLocationPrefix() {
-        return locationPrefix;
-    }
+  @Override
+  public String getLocationPrefix() {
+    return locationPrefix;
+  }
 
-    @Override
-    public boolean shouldLookUpResources() {
-        return true;
-    }
+  @Override
+  public boolean shouldLookUpResources() {
+    return true;
+  }
 
-    @Override
-    public void validate(List<Resource> resources) throws IOException {
+  @Override
+  public void validate(List<Resource> resources) throws IOException {}
 
-    }
+  @Override
+  public String getMsgForEmptyResources() {
+    return "No resources found";
+  }
 
-    @Override
-    public String getMsgForEmptyResources() {
-        return "No resources found";
-    }
-
-    @Override
-    public String getMsgForResourcesFound(List<String> foundResources) {
-        return "Found resources: " + foundResources;
-    }
+  @Override
+  public String getMsgForResourcesFound(List<String> foundResources) {
+    return "Found resources: " + foundResources;
+  }
 }

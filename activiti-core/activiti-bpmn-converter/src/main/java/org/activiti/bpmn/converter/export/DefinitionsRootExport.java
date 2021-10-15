@@ -20,9 +20,7 @@ import static java.util.Arrays.asList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
 import javax.xml.stream.XMLStreamWriter;
-
 import org.activiti.bpmn.constants.BpmnXMLConstants;
 import org.activiti.bpmn.converter.util.BpmnXMLUtil;
 import org.activiti.bpmn.model.BpmnModel;
@@ -32,13 +30,26 @@ import org.apache.commons.lang3.StringUtils;
 public class DefinitionsRootExport implements BpmnXMLConstants {
 
   /** default namespaces for definitions */
-  protected static final Set<String> defaultNamespaces = new HashSet<String>(asList(BPMN2_PREFIX, XSI_PREFIX, XSD_PREFIX, ACTIVITI_EXTENSIONS_PREFIX, BPMNDI_PREFIX, OMGDC_PREFIX, OMGDI_PREFIX));
+  protected static final Set<String> defaultNamespaces =
+      new HashSet<String>(
+          asList(
+              BPMN2_PREFIX,
+              XSI_PREFIX,
+              XSD_PREFIX,
+              ACTIVITI_EXTENSIONS_PREFIX,
+              BPMNDI_PREFIX,
+              OMGDC_PREFIX,
+              OMGDI_PREFIX));
 
-  protected static final List<ExtensionAttribute> defaultAttributes = asList(new ExtensionAttribute(TYPE_LANGUAGE_ATTRIBUTE), new ExtensionAttribute(EXPRESSION_LANGUAGE_ATTRIBUTE),
-      new ExtensionAttribute(TARGET_NAMESPACE_ATTRIBUTE));
+  protected static final List<ExtensionAttribute> defaultAttributes =
+      asList(
+          new ExtensionAttribute(TYPE_LANGUAGE_ATTRIBUTE),
+          new ExtensionAttribute(EXPRESSION_LANGUAGE_ATTRIBUTE),
+          new ExtensionAttribute(TARGET_NAMESPACE_ATTRIBUTE));
 
   @SuppressWarnings("unchecked")
-  public static void writeRootElement(BpmnModel model, XMLStreamWriter xtw, String encoding) throws Exception {
+  public static void writeRootElement(BpmnModel model, XMLStreamWriter xtw, String encoding)
+      throws Exception {
     xtw.writeStartDocument(encoding, "1.0");
 
     // start definitions root element
@@ -65,6 +76,7 @@ public class DefinitionsRootExport implements BpmnXMLConstants {
       xtw.writeAttribute(TARGET_NAMESPACE_ATTRIBUTE, PROCESS_NAMESPACE);
     }
 
-    BpmnXMLUtil.writeCustomAttributes(model.getDefinitionsAttributes().values(), xtw, model.getNamespaces(), defaultAttributes);
+    BpmnXMLUtil.writeCustomAttributes(
+        model.getDefinitionsAttributes().values(), xtw, model.getNamespaces(), defaultAttributes);
   }
 }

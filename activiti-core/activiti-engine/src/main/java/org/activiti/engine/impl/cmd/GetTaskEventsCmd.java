@@ -14,19 +14,15 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.cmd;
 
 import java.io.Serializable;
 import java.util.List;
-
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.task.Event;
 
-/**
-
- */
+/** */
 public class GetTaskEventsCmd implements Command<List<Event>>, Serializable {
 
   private static final long serialVersionUID = 1L;

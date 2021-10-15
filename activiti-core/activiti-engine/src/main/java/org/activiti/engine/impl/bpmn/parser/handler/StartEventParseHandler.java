@@ -27,10 +27,7 @@ import org.activiti.bpmn.model.StartEvent;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.util.CollectionUtil;
 
-/**
-
-
- */
+/** */
 public class StartEventParseHandler extends AbstractActivityBpmnParseHandler<StartEvent> {
 
   @Override
@@ -52,22 +49,30 @@ public class StartEventParseHandler extends AbstractActivityBpmnParseHandler<Sta
             messageDefinition.setMessageRef(message.getName());
             messageDefinition.setExtensionElements(message.getExtensionElements());
           }
-          element.setBehavior(bpmnParse.getActivityBehaviorFactory().createEventSubProcessMessageStartEventActivityBehavior(element, messageDefinition));
+          element.setBehavior(
+              bpmnParse
+                  .getActivityBehaviorFactory()
+                  .createEventSubProcessMessageStartEventActivityBehavior(
+                      element, messageDefinition));
 
         } else if (eventDefinition instanceof ErrorEventDefinition) {
-          element.setBehavior(bpmnParse.getActivityBehaviorFactory().createEventSubProcessErrorStartEventActivityBehavior(element));
+          element.setBehavior(
+              bpmnParse
+                  .getActivityBehaviorFactory()
+                  .createEventSubProcessErrorStartEventActivityBehavior(element));
         }
       }
 
     } else if (CollectionUtil.isEmpty(element.getEventDefinitions())) {
-      element.setBehavior(bpmnParse.getActivityBehaviorFactory().createNoneStartEventActivityBehavior(element));
+      element.setBehavior(
+          bpmnParse.getActivityBehaviorFactory().createNoneStartEventActivityBehavior(element));
     }
 
-    if (element.getSubProcess() == null && (CollectionUtil.isEmpty(element.getEventDefinitions()) ||
-        bpmnParse.getCurrentProcess().getInitialFlowElement() == null)) {
+    if (element.getSubProcess() == null
+        && (CollectionUtil.isEmpty(element.getEventDefinitions())
+            || bpmnParse.getCurrentProcess().getInitialFlowElement() == null)) {
 
       bpmnParse.getCurrentProcess().setInitialFlowElement(element);
     }
   }
-
 }

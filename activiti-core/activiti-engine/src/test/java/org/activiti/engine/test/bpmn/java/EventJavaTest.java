@@ -14,11 +14,9 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.test.bpmn.java;
 
 import java.io.ByteArrayInputStream;
-
 import org.activiti.bpmn.converter.BpmnXMLConverter;
 import org.activiti.bpmn.model.ActivitiListener;
 import org.activiti.bpmn.model.BpmnModel;
@@ -33,9 +31,7 @@ import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.impl.util.io.InputStreamSource;
 import org.activiti.engine.repository.Deployment;
 
-/**
-
- */
+/** */
 public class EventJavaTest extends PluggableActivitiTestCase {
 
   public void testStartEventWithExecutionListener() throws Exception {
@@ -72,7 +68,12 @@ public class EventJavaTest extends PluggableActivitiTestCase {
 
     new BpmnXMLConverter().validateModel(new InputStreamSource(new ByteArrayInputStream(xml)));
 
-    Deployment deployment = repositoryService.createDeployment().name("test").addString("test.bpmn20.xml", new String(xml)).deploy();
+    Deployment deployment =
+        repositoryService
+            .createDeployment()
+            .name("test")
+            .addString("test.bpmn20.xml", new String(xml))
+            .deploy();
     repositoryService.deleteDeployment(deployment.getId());
   }
 }

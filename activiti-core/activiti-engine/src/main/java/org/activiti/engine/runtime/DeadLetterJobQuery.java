@@ -14,24 +14,20 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.runtime;
 
 import java.util.Date;
-
 import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.query.Query;
 
-/**
- * Allows programmatic querying of {@link Job}s.
- */
+/** Allows programmatic querying of {@link Job}s. */
 @Internal
 public interface DeadLetterJobQuery extends Query<DeadLetterJobQuery, Job> {
 
   /** Only select jobs with the given id */
   DeadLetterJobQuery jobId(String jobId);
 
-  /** Only select jobs which exist for the given process instance. **/
+  /** Only select jobs which exist for the given process instance. * */
   DeadLetterJobQuery processInstanceId(String processInstanceId);
 
   /** Only select jobs which exist for the given execution */
@@ -40,19 +36,13 @@ public interface DeadLetterJobQuery extends Query<DeadLetterJobQuery, Job> {
   /** Only select jobs which exist for the given process definition id */
   DeadLetterJobQuery processDefinitionId(String processDefinitionid);
 
-  /**
-   * Only select jobs which are executable, ie. duedate is null or duedate is in the past
-   **/
+  /** Only select jobs which are executable, ie. duedate is null or duedate is in the past */
   DeadLetterJobQuery executable();
 
-  /**
-   * Only select jobs that are timers. Cannot be used together with {@link #messages()}
-   */
+  /** Only select jobs that are timers. Cannot be used together with {@link #messages()} */
   DeadLetterJobQuery timers();
 
-  /**
-   * Only select jobs that are messages. Cannot be used together with {@link #timers()}
-   */
+  /** Only select jobs that are messages. Cannot be used together with {@link #timers()} */
   DeadLetterJobQuery messages();
 
   /** Only select jobs where the duedate is lower than the given date. */
@@ -67,51 +57,32 @@ public interface DeadLetterJobQuery extends Query<DeadLetterJobQuery, Job> {
   /** Only select jobs that failed due to an exception with the given message. */
   DeadLetterJobQuery exceptionMessage(String exceptionMessage);
 
-  /**
-   * Only select jobs that have the given tenant id.
-   */
+  /** Only select jobs that have the given tenant id. */
   DeadLetterJobQuery jobTenantId(String tenantId);
 
-  /**
-   * Only select jobs with a tenant id like the given one.
-   */
+  /** Only select jobs with a tenant id like the given one. */
   DeadLetterJobQuery jobTenantIdLike(String tenantIdLike);
 
-  /**
-   * Only select jobs that do not have a tenant id.
-   */
+  /** Only select jobs that do not have a tenant id. */
   DeadLetterJobQuery jobWithoutTenantId();
 
   // sorting //////////////////////////////////////////
 
-  /**
-   * Order by job id (needs to be followed by {@link #asc()} or {@link #desc()}).
-   */
+  /** Order by job id (needs to be followed by {@link #asc()} or {@link #desc()}). */
   DeadLetterJobQuery orderByJobId();
 
-  /**
-   * Order by duedate (needs to be followed by {@link #asc()} or {@link #desc()}).
-   */
+  /** Order by duedate (needs to be followed by {@link #asc()} or {@link #desc()}). */
   DeadLetterJobQuery orderByJobDuedate();
 
-  /**
-   * Order by retries (needs to be followed by {@link #asc()} or {@link #desc()}).
-   */
+  /** Order by retries (needs to be followed by {@link #asc()} or {@link #desc()}). */
   DeadLetterJobQuery orderByJobRetries();
 
-  /**
-   * Order by process instance id (needs to be followed by {@link #asc()} or {@link #desc()}).
-   */
+  /** Order by process instance id (needs to be followed by {@link #asc()} or {@link #desc()}). */
   DeadLetterJobQuery orderByProcessInstanceId();
 
-  /**
-   * Order by execution id (needs to be followed by {@link #asc()} or {@link #desc()}).
-   */
+  /** Order by execution id (needs to be followed by {@link #asc()} or {@link #desc()}). */
   DeadLetterJobQuery orderByExecutionId();
 
-  /**
-   * Order by tenant id (needs to be followed by {@link #asc()} or {@link #desc()}).
-   */
+  /** Order by tenant id (needs to be followed by {@link #asc()} or {@link #desc()}). */
   DeadLetterJobQuery orderByTenantId();
-
 }

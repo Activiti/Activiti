@@ -14,11 +14,9 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.task;
 
 import java.util.Date;
-
 import org.activiti.engine.TaskService;
 import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.history.HistoricData;

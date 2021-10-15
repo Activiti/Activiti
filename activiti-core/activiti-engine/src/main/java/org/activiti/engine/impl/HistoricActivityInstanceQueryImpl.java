@@ -14,21 +14,19 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl;
 
 import java.util.List;
-
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.history.HistoricActivityInstanceQuery;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 
-/**
-
- */
-public class HistoricActivityInstanceQueryImpl extends AbstractQuery<HistoricActivityInstanceQuery, HistoricActivityInstance> implements HistoricActivityInstanceQuery {
+/** */
+public class HistoricActivityInstanceQueryImpl
+    extends AbstractQuery<HistoricActivityInstanceQuery, HistoricActivityInstance>
+    implements HistoricActivityInstanceQuery {
 
   private static final long serialVersionUID = 1L;
   protected String activityInstanceId;
@@ -47,8 +45,7 @@ public class HistoricActivityInstanceQueryImpl extends AbstractQuery<HistoricAct
   protected String deleteReason;
   protected String deleteReasonLike;
 
-  public HistoricActivityInstanceQueryImpl() {
-  }
+  public HistoricActivityInstanceQueryImpl() {}
 
   public HistoricActivityInstanceQueryImpl(CommandContext commandContext) {
     super(commandContext);
@@ -61,13 +58,17 @@ public class HistoricActivityInstanceQueryImpl extends AbstractQuery<HistoricAct
   @Override
   public long executeCount(CommandContext commandContext) {
     checkQueryOk();
-    return commandContext.getHistoricActivityInstanceEntityManager().findHistoricActivityInstanceCountByQueryCriteria(this);
+    return commandContext
+        .getHistoricActivityInstanceEntityManager()
+        .findHistoricActivityInstanceCountByQueryCriteria(this);
   }
 
   @Override
   public List<HistoricActivityInstance> executeList(CommandContext commandContext, Page page) {
     checkQueryOk();
-    return commandContext.getHistoricActivityInstanceEntityManager().findHistoricActivityInstancesByQueryCriteria(this, page);
+    return commandContext
+        .getHistoricActivityInstanceEntityManager()
+        .findHistoricActivityInstancesByQueryCriteria(this, page);
   }
 
   public HistoricActivityInstanceQueryImpl processInstanceId(String processInstanceId) {
@@ -273,5 +274,4 @@ public class HistoricActivityInstanceQueryImpl extends AbstractQuery<HistoricAct
   public String getDeleteReasonLike() {
     return deleteReasonLike;
   }
-
 }

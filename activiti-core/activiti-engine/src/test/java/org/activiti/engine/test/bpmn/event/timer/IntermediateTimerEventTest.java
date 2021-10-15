@@ -24,7 +24,6 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
-
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -46,12 +45,13 @@ public class IntermediateTimerEventTest extends PluggableActivitiTestCase {
     assertThat(jobQuery.count()).isEqualTo(1);
 
     // After setting the clock to time '50minutes and 5 seconds', the second timer should fire
-    processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + ((50 * 60 * 1000) + 5000)));
+    processEngineConfiguration
+        .getClock()
+        .setCurrentTime(new Date(startTime.getTime() + ((50 * 60 * 1000) + 5000)));
     waitForJobExecutorToProcessAllJobs(5000L, 25L);
 
     assertThat(jobQuery.count()).isEqualTo(0);
     assertProcessEnded(pi.getProcessInstanceId());
-
   }
 
   @Deployment
@@ -111,11 +111,15 @@ public class IntermediateTimerEventTest extends PluggableActivitiTestCase {
     variables2.put("dueDate", new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").format(new Date()));
 
     // After process start, there should be timer created
-    ProcessInstance pi1 = runtimeService.startProcessInstanceByKey("intermediateTimerEventExample", variables1);
-    ProcessInstance pi2 = runtimeService.startProcessInstanceByKey("intermediateTimerEventExample", variables2);
+    ProcessInstance pi1 =
+        runtimeService.startProcessInstanceByKey("intermediateTimerEventExample", variables1);
+    ProcessInstance pi2 =
+        runtimeService.startProcessInstanceByKey("intermediateTimerEventExample", variables2);
 
-    assertThat(managementService.createTimerJobQuery().processInstanceId(pi1.getId()).count()).isEqualTo(1);
-    assertThat(managementService.createTimerJobQuery().processInstanceId(pi2.getId()).count()).isEqualTo(1);
+    assertThat(managementService.createTimerJobQuery().processInstanceId(pi1.getId()).count())
+        .isEqualTo(1);
+    assertThat(managementService.createTimerJobQuery().processInstanceId(pi2.getId()).count())
+        .isEqualTo(1);
 
     // After setting the clock to one second in the future the timers should fire
     List<Job> jobs = managementService.createTimerJobQuery().executable().list();
@@ -125,8 +129,10 @@ public class IntermediateTimerEventTest extends PluggableActivitiTestCase {
       managementService.executeJob(job.getId());
     }
 
-    assertThat(managementService.createTimerJobQuery().processInstanceId(pi1.getId()).count()).isEqualTo(0);
-    assertThat(managementService.createTimerJobQuery().processInstanceId(pi2.getId()).count()).isEqualTo(0);
+    assertThat(managementService.createTimerJobQuery().processInstanceId(pi1.getId()).count())
+        .isEqualTo(0);
+    assertThat(managementService.createTimerJobQuery().processInstanceId(pi2.getId()).count())
+        .isEqualTo(0);
 
     assertProcessEnded(pi1.getProcessInstanceId());
     assertProcessEnded(pi2.getProcessInstanceId());
@@ -159,5 +165,4 @@ public class IntermediateTimerEventTest extends PluggableActivitiTestCase {
 
     assertProcessEnded(processInstance.getId());
   }
-
 }

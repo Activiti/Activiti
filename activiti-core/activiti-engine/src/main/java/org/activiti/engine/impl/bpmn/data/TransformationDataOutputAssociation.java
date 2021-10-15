@@ -19,18 +19,15 @@ package org.activiti.engine.impl.bpmn.data;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.Expression;
 
-/**
- * A transformation based data output association
- *
-
- */
+/** A transformation based data output association */
 public class TransformationDataOutputAssociation extends AbstractDataAssociation {
 
   private static final long serialVersionUID = 1L;
 
   protected Expression transformation;
 
-  public TransformationDataOutputAssociation(String sourceRef, String targetRef, Expression transformation) {
+  public TransformationDataOutputAssociation(
+      String sourceRef, String targetRef, Expression transformation) {
     super(sourceRef, targetRef);
     this.transformation = transformation;
   }

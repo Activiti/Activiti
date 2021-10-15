@@ -18,23 +18,25 @@ package org.activiti.engine.test.db;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.sql.Connection;
-
 import junit.framework.TestCase;
-
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.util.ReflectUtil;
 import org.apache.ibatis.datasource.pooled.PooledDataSource;
 
-/**
-
- */
+/** */
 public class DatabaseTablePrefixTest extends TestCase {
 
   public void testPerformDatabaseSchemaOperationCreate() throws Exception {
 
     // both process engines will be using this datasource.
-    PooledDataSource pooledDataSource = new PooledDataSource(ReflectUtil.getClassLoader(), "org.h2.Driver", "jdbc:h2:mem:activiti-test;DB_CLOSE_DELAY=1000", "sa", "");
+    PooledDataSource pooledDataSource =
+        new PooledDataSource(
+            ReflectUtil.getClassLoader(),
+            "org.h2.Driver",
+            "jdbc:h2:mem:activiti-test;DB_CLOSE_DELAY=1000",
+            "sa",
+            "");
 
     // create two schemas is the database
     Connection connection = pooledDataSource.getConnection();
@@ -46,14 +48,20 @@ public class DatabaseTablePrefixTest extends TestCase {
 
     // configure & build two different process engines, each having a
     // separate table prefix
-    ProcessEngineConfigurationImpl config1 = (ProcessEngineConfigurationImpl) ProcessEngineConfigurationImpl.createStandaloneInMemProcessEngineConfiguration().setDataSource(pooledDataSource)
-        .setDatabaseSchemaUpdate("NO_CHECK"); // disable auto create/drop schema
+    ProcessEngineConfigurationImpl config1 =
+        (ProcessEngineConfigurationImpl)
+            ProcessEngineConfigurationImpl.createStandaloneInMemProcessEngineConfiguration()
+                .setDataSource(pooledDataSource)
+                .setDatabaseSchemaUpdate("NO_CHECK"); // disable auto create/drop schema
     config1.setDatabaseTablePrefix("SCHEMA1.");
     config1.getPerformanceSettings().setValidateExecutionRelationshipCountConfigOnBoot(false);
     ProcessEngine engine1 = config1.buildProcessEngine();
 
-    ProcessEngineConfigurationImpl config2 = (ProcessEngineConfigurationImpl) ProcessEngineConfigurationImpl.createStandaloneInMemProcessEngineConfiguration().setDataSource(pooledDataSource)
-        .setDatabaseSchemaUpdate("NO_CHECK"); // disable auto create/drop schema
+    ProcessEngineConfigurationImpl config2 =
+        (ProcessEngineConfigurationImpl)
+            ProcessEngineConfigurationImpl.createStandaloneInMemProcessEngineConfiguration()
+                .setDataSource(pooledDataSource)
+                .setDatabaseSchemaUpdate("NO_CHECK"); // disable auto create/drop schema
     config2.setDatabaseTablePrefix("SCHEMA2.");
     config2.getPerformanceSettings().setValidateExecutionRelationshipCountConfigOnBoot(false);
     ProcessEngine engine2 = config2.buildProcessEngine();
@@ -73,7 +81,11 @@ public class DatabaseTablePrefixTest extends TestCase {
     // if I deploy a process to one engine, it is not visible to the other
     // engine:
     try {
-      engine1.getRepositoryService().createDeployment().addClasspathResource("org/activiti/engine/test/db/oneJobProcess.bpmn20.xml").deploy();
+      engine1
+          .getRepositoryService()
+          .createDeployment()
+          .addClasspathResource("org/activiti/engine/test/db/oneJobProcess.bpmn20.xml")
+          .deploy();
 
       assertThat(engine1.getRepositoryService().createDeploymentQuery().count()).isEqualTo(1);
       assertThat(engine2.getRepositoryService().createDeploymentQuery().count()).isEqualTo(0);
@@ -83,5 +95,4 @@ public class DatabaseTablePrefixTest extends TestCase {
       engine2.close();
     }
   }
-
 }

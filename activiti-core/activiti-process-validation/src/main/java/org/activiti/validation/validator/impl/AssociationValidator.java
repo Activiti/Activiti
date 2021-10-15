@@ -18,7 +18,6 @@ package org.activiti.validation.validator.impl;
 
 import java.util.Collection;
 import java.util.List;
-
 import org.activiti.bpmn.model.Artifact;
 import org.activiti.bpmn.model.Association;
 import org.activiti.bpmn.model.BpmnModel;
@@ -28,9 +27,7 @@ import org.activiti.validation.validator.Problems;
 import org.activiti.validation.validator.ValidatorImpl;
 import org.apache.commons.lang3.StringUtils;
 
-/**
-
- */
+/** */
 public class AssociationValidator extends ValidatorImpl {
 
   @Override
@@ -55,16 +52,24 @@ public class AssociationValidator extends ValidatorImpl {
         }
       }
     }
-
   }
 
   protected void validate(Process process, Association association, List<ValidationError> errors) {
     if (StringUtils.isEmpty(association.getSourceRef())) {
-      addError(errors, Problems.ASSOCIATION_INVALID_SOURCE_REFERENCE, process, association, "association element missing attribute 'sourceRef'");
+      addError(
+          errors,
+          Problems.ASSOCIATION_INVALID_SOURCE_REFERENCE,
+          process,
+          association,
+          "association element missing attribute 'sourceRef'");
     }
     if (StringUtils.isEmpty(association.getTargetRef())) {
-      addError(errors, Problems.ASSOCIATION_INVALID_TARGET_REFERENCE, process, association, "association element missing attribute 'targetRef'");
+      addError(
+          errors,
+          Problems.ASSOCIATION_INVALID_TARGET_REFERENCE,
+          process,
+          association,
+          "association element missing attribute 'targetRef'");
     }
   }
-
 }

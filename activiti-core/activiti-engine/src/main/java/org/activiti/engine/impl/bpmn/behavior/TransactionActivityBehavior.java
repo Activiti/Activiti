@@ -14,14 +14,10 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.bpmn.behavior;
 
-/**
-
- */
+/** */
 public class TransactionActivityBehavior extends SubProcessActivityBehavior {
 
   private static final long serialVersionUID = 1L;
-
 }

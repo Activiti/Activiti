@@ -19,6 +19,5 @@ import org.activiti.api.process.model.ProcessInstance;
 
 public interface ProcessResultMatcher {
 
-    void match(ProcessInstance processInstance);
-
+  void match(ProcessInstance processInstance);
 }

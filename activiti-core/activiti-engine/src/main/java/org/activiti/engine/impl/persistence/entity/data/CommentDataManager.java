@@ -17,14 +17,11 @@
 package org.activiti.engine.impl.persistence.entity.data;
 
 import java.util.List;
-
 import org.activiti.engine.impl.persistence.entity.CommentEntity;
 import org.activiti.engine.task.Comment;
 import org.activiti.engine.task.Event;
 
-/**
-
- */
+/** */
 public interface CommentDataManager extends DataManager<CommentEntity> {
 
   List<Comment> findCommentsByTaskId(String taskId);
@@ -48,5 +45,4 @@ public interface CommentDataManager extends DataManager<CommentEntity> {
   Comment findComment(String commentId);
 
   Event findEvent(String commentId);
-
 }

@@ -14,17 +14,13 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.history;
 
 import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.query.Query;
 import org.activiti.engine.runtime.Execution;
 
-/**
- * Programmatic querying for {@link HistoricDetail}s.
- *
- */
+/** Programmatic querying for {@link HistoricDetail}s. */
 @Internal
 public interface HistoricDetailQuery extends Query<HistoricDetailQuery, HistoricDetail> {
 
@@ -37,17 +33,20 @@ public interface HistoricDetailQuery extends Query<HistoricDetailQuery, Historic
   HistoricDetailQuery processInstanceId(String processInstanceId);
 
   /**
-   * Only select historic variable updates with the given execution. Note that {@link Execution} ids are not stored in the history as first class citizen, only process instances are.
+   * Only select historic variable updates with the given execution. Note that {@link Execution} ids
+   * are not stored in the history as first class citizen, only process instances are.
    */
   HistoricDetailQuery executionId(String executionId);
 
   /**
-   * Only select historic variable updates associated to the given {@link HistoricActivityInstance activity instance}.
+   * Only select historic variable updates associated to the given {@link HistoricActivityInstance
+   * activity instance}.
    */
   HistoricDetailQuery activityInstanceId(String activityInstanceId);
 
   /**
-   * Only select historic variable updates associated to the given {@link HistoricTaskInstance historic task instance}.
+   * Only select historic variable updates associated to the given {@link HistoricTaskInstance
+   * historic task instance}.
    */
   HistoricDetailQuery taskId(String taskId);
 
@@ -55,8 +54,9 @@ public interface HistoricDetailQuery extends Query<HistoricDetailQuery, Historic
   HistoricDetailQuery variableUpdates();
 
   /**
-   * Exclude all task-related {@link HistoricDetail}s, so only items which have no task-id set will be selected. When used together with {@link #taskId(String)}, this call is ignored task details are
-   * NOT excluded.
+   * Exclude all task-related {@link HistoricDetail}s, so only items which have no task-id set will
+   * be selected. When used together with {@link #taskId(String)}, this call is ignored task details
+   * are NOT excluded.
    */
   HistoricDetailQuery excludeTaskDetails();
 

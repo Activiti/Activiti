@@ -16,44 +16,40 @@
 package org.activiti.api.runtime.model.impl;
 
 import java.util.Objects;
-
 import org.activiti.api.model.shared.model.ApplicationElement;
 
 public class ApplicationElementImpl implements ApplicationElement {
 
-    private String appVersion;
+  private String appVersion;
 
-    @Override
-    public String getAppVersion() {
-        return appVersion;
-    }
+  @Override
+  public String getAppVersion() {
+    return appVersion;
+  }
 
-    public void setAppVersion(String appVersion) {
-        this.appVersion = appVersion;
-    }
+  public void setAppVersion(String appVersion) {
+    this.appVersion = appVersion;
+  }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        ApplicationElementImpl that = (ApplicationElementImpl) o;
-        return Objects.equals(appVersion,
-                              that.appVersion);
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
     }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    ApplicationElementImpl that = (ApplicationElementImpl) o;
+    return Objects.equals(appVersion, that.appVersion);
+  }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(appVersion);
-    }
+  @Override
+  public int hashCode() {
+    return Objects.hash(appVersion);
+  }
 
-    @Override
-    public String toString() {
-        return "ApplicationElementImpl{" +
-                "appVersion='" + appVersion + '\'' +
-                '}';
-    }
+  @Override
+  public String toString() {
+    return "ApplicationElementImpl{" + "appVersion='" + appVersion + '\'' + '}';
+  }
 }

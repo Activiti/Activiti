@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.test.bpmn.event.timer.compatibility;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -22,7 +21,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.runtime.Job;
@@ -66,8 +64,10 @@ public class IntermediateTimerEventRepeatCompatibilityTest extends TimerEventCom
 
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("repeatWithEnd");
 
-    runtimeService.setVariable(processInstance.getId(), "EndDateForCatch1", endDateForIntermediate1);
-    runtimeService.setVariable(processInstance.getId(), "EndDateForCatch2", endDateForIntermediate2);
+    runtimeService.setVariable(
+        processInstance.getId(), "EndDateForCatch1", endDateForIntermediate1);
+    runtimeService.setVariable(
+        processInstance.getId(), "EndDateForCatch2", endDateForIntermediate2);
 
     List<Task> tasks = taskService.createTaskQuery().list();
     assertThat(tasks).hasSize(1);
@@ -83,9 +83,16 @@ public class IntermediateTimerEventRepeatCompatibilityTest extends TimerEventCom
 
     waitForJobExecutorToProcessAllJobs(2000, 500);
     // Expected that job isn't executed because the timer is in t0
-    assertThat(managementService.createTimerJobQuery().processInstanceId(processInstance.getId()).singleResult()).isNotNull();
+    assertThat(
+            managementService
+                .createTimerJobQuery()
+                .processInstanceId(processInstance.getId())
+                .singleResult())
+        .isNotNull();
 
-    nextTimeCal.add(Calendar.HOUR, 1); // after 1 hour the event must be triggered and the flow will go to the next step
+    nextTimeCal.add(
+        Calendar.HOUR,
+        1); // after 1 hour the event must be triggered and the flow will go to the next step
     processEngineConfiguration.getClock().setCurrentTime(nextTimeCal.getTime());
 
     waitForJobExecutorToProcessAllJobs(2000, 500);
@@ -101,14 +108,20 @@ public class IntermediateTimerEventRepeatCompatibilityTest extends TimerEventCom
 
     // Test Timer Catch Intermediate Events after completing Task C
     taskService.complete(task.getId());
-    nextTimeCal.add(Calendar.HOUR, 1); // after 1H 40 minutes from process start, the timer will trigger because of the endDate
+    nextTimeCal.add(
+        Calendar.HOUR,
+        1); // after 1H 40 minutes from process start, the timer will trigger because of the endDate
     processEngineConfiguration.getClock().setCurrentTime(nextTimeCal.getTime());
 
     waitForJobExecutorToProcessAllJobs(2000, 500);
     // expect to execute because the end time is reached.
 
     if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
-      HistoricProcessInstance historicInstance = historyService.createHistoricProcessInstanceQuery().processInstanceId(processInstance.getId()).singleResult();
+      HistoricProcessInstance historicInstance =
+          historyService
+              .createHistoricProcessInstanceQuery()
+              .processInstanceId(processInstance.getId())
+              .singleResult();
       assertThat(historicInstance.getEndTime()).isNotNull();
     }
 
@@ -126,7 +139,5 @@ public class IntermediateTimerEventRepeatCompatibilityTest extends TimerEventCom
     // no tasks
     tasks = taskService.createTaskQuery().list();
     assertThat(tasks).hasSize(0);
-
   }
-
 }

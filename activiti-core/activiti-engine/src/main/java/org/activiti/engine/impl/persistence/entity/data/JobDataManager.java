@@ -17,15 +17,12 @@
 package org.activiti.engine.impl.persistence.entity.data;
 
 import java.util.List;
-
 import org.activiti.engine.impl.JobQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.persistence.entity.JobEntity;
 import org.activiti.engine.runtime.Job;
 
-/**
-
- */
+/** */
 public interface JobDataManager extends DataManager<JobEntity> {
 
   List<JobEntity> findJobsToExecute(Page page);
@@ -47,5 +44,4 @@ public interface JobDataManager extends DataManager<JobEntity> {
   void updateJobTenantIdForDeployment(String deploymentId, String newTenantId);
 
   void resetExpiredJob(String jobId);
-
 }

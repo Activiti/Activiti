@@ -40,210 +40,216 @@ import org.mockito.Spy;
 
 public class ParallelMultiInstanceBehaviorTest {
 
-    @Spy
-    @InjectMocks
-    private ParallelMultiInstanceBehavior multiInstanceBehavior;
+  @Spy @InjectMocks private ParallelMultiInstanceBehavior multiInstanceBehavior;
 
-    @Mock
-    private Activity activity;
+  @Mock private Activity activity;
 
-    @Mock
-    private AbstractBpmnActivityBehavior innerActivityBehavior;
+  @Mock private AbstractBpmnActivityBehavior innerActivityBehavior;
 
-    @Mock
-    private CommandContext commandContext;
+  @Mock private CommandContext commandContext;
 
-    @Before
-    public void setUp() {
-        initMocks(this);
-        doReturn(commandContext).when(multiInstanceBehavior).getCommandContext();
-    }
+  @Before
+  public void setUp() {
+    initMocks(this);
+    doReturn(commandContext).when(multiInstanceBehavior).getCommandContext();
+  }
 
-    @Test
-    public void hasOutputDataItem_should_returnTrue_when_outputDataItemIsSet() {
-        //given
-        multiInstanceBehavior.setOutputDataItem("outItem");
+  @Test
+  public void hasOutputDataItem_should_returnTrue_when_outputDataItemIsSet() {
+    // given
+    multiInstanceBehavior.setOutputDataItem("outItem");
 
-        //when
-        boolean hasOutputDataItem = multiInstanceBehavior.hasOutputDataItem();
+    // when
+    boolean hasOutputDataItem = multiInstanceBehavior.hasOutputDataItem();
 
-        //then
-        assertThat(hasOutputDataItem).isTrue();
-    }
+    // then
+    assertThat(hasOutputDataItem).isTrue();
+  }
 
-    @Test
-    public void hasOutputDataItem_should_returnFalse_when_outputDataItemIsNull() {
-        //given
-        multiInstanceBehavior.setOutputDataItem(null);
+  @Test
+  public void hasOutputDataItem_should_returnFalse_when_outputDataItemIsNull() {
+    // given
+    multiInstanceBehavior.setOutputDataItem(null);
 
-        //when
-        boolean hasOutputDataItem = multiInstanceBehavior.hasOutputDataItem();
+    // when
+    boolean hasOutputDataItem = multiInstanceBehavior.hasOutputDataItem();
 
-        //then
-        assertThat(hasOutputDataItem).isFalse();
-    }
+    // then
+    assertThat(hasOutputDataItem).isFalse();
+  }
 
-    @Test
-    public void hasOutputDataItem_should_returnFalse_when_outputDataItemIsEmpty() {
-        //given
-        multiInstanceBehavior.setOutputDataItem("");
+  @Test
+  public void hasOutputDataItem_should_returnFalse_when_outputDataItemIsEmpty() {
+    // given
+    multiInstanceBehavior.setOutputDataItem("");
 
-        //when
-        boolean hasOutputDataItem = multiInstanceBehavior.hasOutputDataItem();
+    // when
+    boolean hasOutputDataItem = multiInstanceBehavior.hasOutputDataItem();
 
-        //then
-        assertThat(hasOutputDataItem).isFalse();
-    }
-    @Test
-    public void hasLoopDataOutputRef_should_returnTrue_when_dataOutputRefIsSet() {
-        //given
-        multiInstanceBehavior.setLoopDataOutputRef("DataOutputRef");
+    // then
+    assertThat(hasOutputDataItem).isFalse();
+  }
 
-        //when
-        boolean hasLoopDataOutputRef = multiInstanceBehavior.hasLoopDataOutputRef();
+  @Test
+  public void hasLoopDataOutputRef_should_returnTrue_when_dataOutputRefIsSet() {
+    // given
+    multiInstanceBehavior.setLoopDataOutputRef("DataOutputRef");
 
-        //then
-        assertThat(hasLoopDataOutputRef).isTrue();
-    }
+    // when
+    boolean hasLoopDataOutputRef = multiInstanceBehavior.hasLoopDataOutputRef();
 
-    @Test
-    public void hasLoopDataOutputRef_should_returnFalse_when_dataOutputRefIsNull() {
-        //given
-        multiInstanceBehavior.setLoopDataOutputRef(null);
+    // then
+    assertThat(hasLoopDataOutputRef).isTrue();
+  }
 
-        //when
-        boolean hasLoopDataOutputRef = multiInstanceBehavior.hasLoopDataOutputRef();
+  @Test
+  public void hasLoopDataOutputRef_should_returnFalse_when_dataOutputRefIsNull() {
+    // given
+    multiInstanceBehavior.setLoopDataOutputRef(null);
 
-        //then
-        assertThat(hasLoopDataOutputRef).isFalse();
-    }
+    // when
+    boolean hasLoopDataOutputRef = multiInstanceBehavior.hasLoopDataOutputRef();
 
-    @Test
-    public void hasLoopDataOutputRef_should_returnFalse_when_dataOutputRefIsEmpty() {
-        //given
-        multiInstanceBehavior.setLoopDataOutputRef("");
+    // then
+    assertThat(hasLoopDataOutputRef).isFalse();
+  }
 
-        //when
-        boolean hasLoopDataOutputRef = multiInstanceBehavior.hasLoopDataOutputRef();
+  @Test
+  public void hasLoopDataOutputRef_should_returnFalse_when_dataOutputRefIsEmpty() {
+    // given
+    multiInstanceBehavior.setLoopDataOutputRef("");
 
-        //then
-        assertThat(hasLoopDataOutputRef).isFalse();
-    }
+    // when
+    boolean hasLoopDataOutputRef = multiInstanceBehavior.hasLoopDataOutputRef();
 
-    @Test
-    public void getResultItemElement_should_useCompleteTaskCmdVariables_when_itsUserTask() {
-        //given
-        Map<String, Object> commandVariables = Collections.singletonMap("var", "value");
-        CompleteTaskCmd cmd = mock(CompleteTaskCmd.class);
-        given(cmd.getTaskVariables()).willReturn(commandVariables);
-        doReturn(cmd).when(commandContext).getCommand();
+    // then
+    assertThat(hasLoopDataOutputRef).isFalse();
+  }
 
-        given(multiInstanceBehavior.getResultElementItem(commandVariables)).willReturn("result");
+  @Test
+  public void getResultItemElement_should_useCompleteTaskCmdVariables_when_itsUserTask() {
+    // given
+    Map<String, Object> commandVariables = Collections.singletonMap("var", "value");
+    CompleteTaskCmd cmd = mock(CompleteTaskCmd.class);
+    given(cmd.getTaskVariables()).willReturn(commandVariables);
+    doReturn(cmd).when(commandContext).getCommand();
 
-        //when
-        Object resultElementItem = multiInstanceBehavior
-            .getResultElementItem(mock(DelegateExecution.class));
+    given(multiInstanceBehavior.getResultElementItem(commandVariables)).willReturn("result");
 
-        //then
-        assertThat(resultElementItem).isEqualTo("result");
-    }
+    // when
+    Object resultElementItem =
+        multiInstanceBehavior.getResultElementItem(mock(DelegateExecution.class));
 
-    @Test
-    public void getResultItemElement_should_useExecutionVariablesLocal_when_itsNotUserTask() {
-        //given
-        Map<String, Object> variablesLocal = Collections.singletonMap("var", "value");
-        DelegateExecution childExecution = mock(DelegateExecution.class);
-        given(childExecution.getVariablesLocal()).willReturn(variablesLocal);
-        given(multiInstanceBehavior.getResultElementItem(variablesLocal)).willReturn("result");
+    // then
+    assertThat(resultElementItem).isEqualTo("result");
+  }
 
-        //when
-        Object resultElementItem = multiInstanceBehavior
-            .getResultElementItem(childExecution);
+  @Test
+  public void getResultItemElement_should_useExecutionVariablesLocal_when_itsNotUserTask() {
+    // given
+    Map<String, Object> variablesLocal = Collections.singletonMap("var", "value");
+    DelegateExecution childExecution = mock(DelegateExecution.class);
+    given(childExecution.getVariablesLocal()).willReturn(variablesLocal);
+    given(multiInstanceBehavior.getResultElementItem(variablesLocal)).willReturn("result");
 
-        //then
-        assertThat(resultElementItem).isEqualTo("result");
-    }
+    // when
+    Object resultElementItem = multiInstanceBehavior.getResultElementItem(childExecution);
 
-    @Test
-    public void getResultItemElement_should_returnOutputDataItem_when_outputDataItemIsSet() {
-        //given
-        Map<String, Object> variables = Map.of("name", "John", "city", "London");
-        multiInstanceBehavior.setOutputDataItem("city");
+    // then
+    assertThat(resultElementItem).isEqualTo("result");
+  }
 
-        //when
-        Object resultElementItem = multiInstanceBehavior.getResultElementItem(variables);
+  @Test
+  public void getResultItemElement_should_returnOutputDataItem_when_outputDataItemIsSet() {
+    // given
+    Map<String, Object> variables = Map.of("name", "John", "city", "London");
+    multiInstanceBehavior.setOutputDataItem("city");
 
-        //then
-        assertThat(resultElementItem).isEqualTo("London");
-    }
+    // when
+    Object resultElementItem = multiInstanceBehavior.getResultElementItem(variables);
 
-    @Test
-    public void getResultItemElement_should_returnAllVariablesExcludingControlVariables_when_noOutputDataItem() {
-        //given
-        multiInstanceBehavior.setOutputDataItem(null);
-        multiInstanceBehavior.setCollectionElementIndexVariable("counter");
-        Map<String, Object> variables = Map.of(
-            "name", "John",
-            "city", "London",
-            MultiInstanceActivityBehavior.NUMBER_OF_COMPLETED_INSTANCES, 3,
-            MultiInstanceActivityBehavior.NUMBER_OF_ACTIVE_INSTANCES, 2,
-            MultiInstanceActivityBehavior.NUMBER_OF_INSTANCES, 5,
-            multiInstanceBehavior.getCollectionElementIndexVariable(), 1
-            );
+    // then
+    assertThat(resultElementItem).isEqualTo("London");
+  }
 
-        //when
-        Object resultElementItem = multiInstanceBehavior.getResultElementItem(variables);
+  @Test
+  public void
+      getResultItemElement_should_returnAllVariablesExcludingControlVariables_when_noOutputDataItem() {
+    // given
+    multiInstanceBehavior.setOutputDataItem(null);
+    multiInstanceBehavior.setCollectionElementIndexVariable("counter");
+    Map<String, Object> variables =
+        Map.of(
+            "name",
+            "John",
+            "city",
+            "London",
+            MultiInstanceActivityBehavior.NUMBER_OF_COMPLETED_INSTANCES,
+            3,
+            MultiInstanceActivityBehavior.NUMBER_OF_ACTIVE_INSTANCES,
+            2,
+            MultiInstanceActivityBehavior.NUMBER_OF_INSTANCES,
+            5,
+            multiInstanceBehavior.getCollectionElementIndexVariable(),
+            1);
 
-        //then
-        assertThat(resultElementItem).isEqualTo(Map.of(
-            "name", "John",
-            "city", "London"));
-    }
+    // when
+    Object resultElementItem = multiInstanceBehavior.getResultElementItem(variables);
 
-    @Test
-    public void updateResultCollection_should_doNothing_when_noOutputDataRef() {
-        //given
-        multiInstanceBehavior.setLoopDataOutputRef(null);
-        DelegateExecution childExecution = mock(DelegateExecution.class);
-        DelegateExecution miRootExecution = mock(DelegateExecution.class);
+    // then
+    assertThat(resultElementItem)
+        .isEqualTo(
+            Map.of(
+                "name", "John",
+                "city", "London"));
+  }
 
-        //when
-        multiInstanceBehavior.updateResultCollection(childExecution, miRootExecution);
+  @Test
+  public void updateResultCollection_should_doNothing_when_noOutputDataRef() {
+    // given
+    multiInstanceBehavior.setLoopDataOutputRef(null);
+    DelegateExecution childExecution = mock(DelegateExecution.class);
+    DelegateExecution miRootExecution = mock(DelegateExecution.class);
 
-        //then
-        verifyNoInteractions(childExecution, miRootExecution);
-    }
+    // when
+    multiInstanceBehavior.updateResultCollection(childExecution, miRootExecution);
 
-    @Test
-    public void updateResultCollection_should_createNewList_when_OutputDataRefIsSetButDoesNotExistYet() {
-        //given
-        multiInstanceBehavior.setLoopDataOutputRef("miResult");
-        DelegateExecution childExecution = mock(DelegateExecution.class);
-        DelegateExecution miRootExecution = mock(DelegateExecution.class);
-        doReturn("currentItem").when(multiInstanceBehavior).getResultElementItem(childExecution);
+    // then
+    verifyNoInteractions(childExecution, miRootExecution);
+  }
 
-        //when
-        multiInstanceBehavior.updateResultCollection(childExecution, miRootExecution);
+  @Test
+  public void
+      updateResultCollection_should_createNewList_when_OutputDataRefIsSetButDoesNotExistYet() {
+    // given
+    multiInstanceBehavior.setLoopDataOutputRef("miResult");
+    DelegateExecution childExecution = mock(DelegateExecution.class);
+    DelegateExecution miRootExecution = mock(DelegateExecution.class);
+    doReturn("currentItem").when(multiInstanceBehavior).getResultElementItem(childExecution);
 
-        //then
-        verify(miRootExecution).setVariableLocal("miResult", Collections.singletonList("currentItem"));
-    }
+    // when
+    multiInstanceBehavior.updateResultCollection(childExecution, miRootExecution);
 
-    @Test
-    public void updateResultCollection_should_updateList_when_OutputDataRefIsSetAndExistsAlready() {
-        //given
-        String loopDataOutputRef = "miResult";
-        multiInstanceBehavior.setLoopDataOutputRef(loopDataOutputRef);
-        DelegateExecution childExecution = mock(DelegateExecution.class);
-        DelegateExecution miRootExecution = mock(DelegateExecution.class);
-        given(miRootExecution.getVariableLocal(loopDataOutputRef)).willReturn(new ArrayList<>(Collections.singleton("previousItem")));
-        doReturn("currentItem").when(multiInstanceBehavior).getResultElementItem(childExecution);
+    // then
+    verify(miRootExecution).setVariableLocal("miResult", Collections.singletonList("currentItem"));
+  }
 
-        //when
-        multiInstanceBehavior.updateResultCollection(childExecution, miRootExecution);
+  @Test
+  public void updateResultCollection_should_updateList_when_OutputDataRefIsSetAndExistsAlready() {
+    // given
+    String loopDataOutputRef = "miResult";
+    multiInstanceBehavior.setLoopDataOutputRef(loopDataOutputRef);
+    DelegateExecution childExecution = mock(DelegateExecution.class);
+    DelegateExecution miRootExecution = mock(DelegateExecution.class);
+    given(miRootExecution.getVariableLocal(loopDataOutputRef))
+        .willReturn(new ArrayList<>(Collections.singleton("previousItem")));
+    doReturn("currentItem").when(multiInstanceBehavior).getResultElementItem(childExecution);
 
-        //then
-        verify(miRootExecution).setVariableLocal(loopDataOutputRef, Arrays.asList("previousItem", "currentItem"));
-    }
+    // when
+    multiInstanceBehavior.updateResultCollection(childExecution, miRootExecution);
 
+    // then
+    verify(miRootExecution)
+        .setVariableLocal(loopDataOutputRef, Arrays.asList("previousItem", "currentItem"));
+  }
 }

@@ -20,10 +20,7 @@ import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.Transaction;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 
-/**
-
-
- */
+/** */
 public class TransactionParseHandler extends AbstractActivityBpmnParseHandler<Transaction> {
 
   public Class<? extends BaseElement> getHandledType() {
@@ -32,11 +29,10 @@ public class TransactionParseHandler extends AbstractActivityBpmnParseHandler<Tr
 
   protected void executeParse(BpmnParse bpmnParse, Transaction transaction) {
 
-    transaction.setBehavior(bpmnParse.getActivityBehaviorFactory().createTransactionActivityBehavior(transaction));
+    transaction.setBehavior(
+        bpmnParse.getActivityBehaviorFactory().createTransactionActivityBehavior(transaction));
 
     bpmnParse.processFlowElements(transaction.getFlowElements());
     processArtifacts(bpmnParse, transaction.getArtifacts());
-
   }
-
 }

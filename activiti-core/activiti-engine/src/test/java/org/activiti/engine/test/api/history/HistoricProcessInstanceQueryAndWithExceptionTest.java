@@ -19,7 +19,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.util.List;
-
 import org.activiti.engine.history.HistoricProcessInstanceQuery;
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
@@ -37,11 +36,14 @@ public class HistoricProcessInstanceQueryAndWithExceptionTest extends PluggableA
 
   protected void setUp() throws Exception {
     super.setUp();
-    deployment = repositoryService.createDeployment()
-          .addClasspathResource("org/activiti/engine/test/api/runtime/oneTaskProcess.bpmn20.xml")
-          .addClasspathResource("org/activiti/engine/test/api/runtime/JobErrorCheck.bpmn20.xml")
-          .addClasspathResource("org/activiti/engine/test/api/runtime/JobErrorDoubleCheck.bpmn20.xml")
-          .deploy();
+    deployment =
+        repositoryService
+            .createDeployment()
+            .addClasspathResource("org/activiti/engine/test/api/runtime/oneTaskProcess.bpmn20.xml")
+            .addClasspathResource("org/activiti/engine/test/api/runtime/JobErrorCheck.bpmn20.xml")
+            .addClasspathResource(
+                "org/activiti/engine/test/api/runtime/JobErrorDoubleCheck.bpmn20.xml")
+            .deploy();
   }
 
   protected void tearDown() throws Exception {
@@ -51,48 +53,70 @@ public class HistoricProcessInstanceQueryAndWithExceptionTest extends PluggableA
 
   public void testQueryWithException() throws InterruptedException {
     if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
-      ProcessInstance processNoException = runtimeService.startProcessInstanceByKey(PROCESS_DEFINITION_KEY_NO_EXCEPTION);
+      ProcessInstance processNoException =
+          runtimeService.startProcessInstanceByKey(PROCESS_DEFINITION_KEY_NO_EXCEPTION);
 
-      HistoricProcessInstanceQuery queryNoException = historyService.createHistoricProcessInstanceQuery();
+      HistoricProcessInstanceQuery queryNoException =
+          historyService.createHistoricProcessInstanceQuery();
       assertThat(queryNoException.count()).isEqualTo(1);
       assertThat(queryNoException.list()).hasSize(1);
       assertThat(queryNoException.list().get(0).getId()).isEqualTo(processNoException.getId());
 
-      HistoricProcessInstanceQuery queryWithException = historyService.createHistoricProcessInstanceQuery();
+      HistoricProcessInstanceQuery queryWithException =
+          historyService.createHistoricProcessInstanceQuery();
       assertThat(queryWithException.withJobException().count()).isEqualTo(0);
       assertThat(queryWithException.withJobException().list()).hasSize(0);
 
-      ProcessInstance processWithException1 = startProcessInstanceWithFailingJob(PROCESS_DEFINITION_KEY_WITH_EXCEPTION_1);
-      TimerJobQuery jobQuery1 = managementService.createTimerJobQuery().processInstanceId(processWithException1.getId());
+      ProcessInstance processWithException1 =
+          startProcessInstanceWithFailingJob(PROCESS_DEFINITION_KEY_WITH_EXCEPTION_1);
+      TimerJobQuery jobQuery1 =
+          managementService.createTimerJobQuery().processInstanceId(processWithException1.getId());
       assertThat(jobQuery1.withException().count()).isEqualTo(1);
       assertThat(jobQuery1.withException().list()).hasSize(1);
       assertThat(queryWithException.withJobException().count()).isEqualTo(1);
       assertThat(queryWithException.withJobException().list()).hasSize(1);
-      assertThat(queryWithException.withJobException().list().get(0).getId()).isEqualTo(processWithException1.getId());
+      assertThat(queryWithException.withJobException().list().get(0).getId())
+          .isEqualTo(processWithException1.getId());
 
-      ProcessInstance processWithException2 = startProcessInstanceWithFailingJob(PROCESS_DEFINITION_KEY_WITH_EXCEPTION_2);
-      TimerJobQuery jobQuery2 = managementService.createTimerJobQuery().processInstanceId(processWithException2.getId());
+      ProcessInstance processWithException2 =
+          startProcessInstanceWithFailingJob(PROCESS_DEFINITION_KEY_WITH_EXCEPTION_2);
+      TimerJobQuery jobQuery2 =
+          managementService.createTimerJobQuery().processInstanceId(processWithException2.getId());
       assertThat(jobQuery2.withException().count()).isEqualTo(2);
       assertThat(jobQuery2.withException().list()).hasSize(2);
 
       assertThat(queryWithException.withJobException().count()).isEqualTo(2);
       assertThat(queryWithException.withJobException().list()).hasSize(2);
-      assertThat(queryWithException.withJobException().processDefinitionKey(PROCESS_DEFINITION_KEY_WITH_EXCEPTION_1).list().get(0).getId()).isEqualTo(processWithException1.getId());
-      assertThat(queryWithException.withJobException().processDefinitionKey(PROCESS_DEFINITION_KEY_WITH_EXCEPTION_2).list().get(0).getId()).isEqualTo(processWithException2.getId());
+      assertThat(
+              queryWithException
+                  .withJobException()
+                  .processDefinitionKey(PROCESS_DEFINITION_KEY_WITH_EXCEPTION_1)
+                  .list()
+                  .get(0)
+                  .getId())
+          .isEqualTo(processWithException1.getId());
+      assertThat(
+              queryWithException
+                  .withJobException()
+                  .processDefinitionKey(PROCESS_DEFINITION_KEY_WITH_EXCEPTION_2)
+                  .list()
+                  .get(0)
+                  .getId())
+          .isEqualTo(processWithException2.getId());
     }
   }
 
   private ProcessInstance startProcessInstanceWithFailingJob(String processInstanceByKey) {
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(processInstanceByKey);
+    ProcessInstance processInstance =
+        runtimeService.startProcessInstanceByKey(processInstanceByKey);
 
-    List<Job> jobList = managementService.createJobQuery()
-      .processInstanceId(processInstance.getId())
-      .list();
+    List<Job> jobList =
+        managementService.createJobQuery().processInstanceId(processInstance.getId()).list();
 
-    for(Job job : jobList) {
+    for (Job job : jobList) {
       assertThatExceptionOfType(RuntimeException.class)
-        .as("RuntimeException")
-        .isThrownBy(() -> managementService.executeJob(job.getId()));
+          .as("RuntimeException")
+          .isThrownBy(() -> managementService.executeJob(job.getId()));
     }
     return processInstance;
   }

@@ -37,45 +37,43 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 public class TaskRuntimeIT {
 
-    private static final String INITIATOR = "user";
+  private static final String INITIATOR = "user";
 
-    @Autowired
-    private ProcessCleanUpUtil processCleanUpUtil;
+  @Autowired private ProcessCleanUpUtil processCleanUpUtil;
 
-    @Autowired
-    private ProcessRuntime processRuntime;
+  @Autowired private ProcessRuntime processRuntime;
 
-    @Autowired
-    private TaskRuntime taskRuntime;
+  @Autowired private TaskRuntime taskRuntime;
 
-    @Autowired
-    private SecurityUtil securityUtil;
+  @Autowired private SecurityUtil securityUtil;
 
-    @BeforeEach
-    public void setUp() {
-        securityUtil.logInAs(INITIATOR);
-    }
+  @BeforeEach
+  public void setUp() {
+    securityUtil.logInAs(INITIATOR);
+  }
 
-    @AfterEach
-    public void taskCleanUp() {
-        processCleanUpUtil.cleanUpWithAdmin();
-    }
+  @AfterEach
+  public void taskCleanUp() {
+    processCleanUpUtil.cleanUpWithAdmin();
+  }
 
-    @Test
-    public void should_beAbleToAssignTaskToInitiatorEvenWhenInitiatorIsNotSetInStartEvent() {
-        //given
-        ProcessInstance processInstance = processRuntime.start(ProcessPayloadBuilder.start()
-            .withProcessDefinitionKey("taskToInitiatorProcess")
-            .build());
+  @Test
+  public void should_beAbleToAssignTaskToInitiatorEvenWhenInitiatorIsNotSetInStartEvent() {
+    // given
+    ProcessInstance processInstance =
+        processRuntime.start(
+            ProcessPayloadBuilder.start()
+                .withProcessDefinitionKey("taskToInitiatorProcess")
+                .build());
 
-        //when
-        Page<Task> taskPage = taskRuntime.tasks(Pageable.of(0, 10),
-            TaskPayloadBuilder.tasksForProcess(processInstance).build());
+    // when
+    Page<Task> taskPage =
+        taskRuntime.tasks(
+            Pageable.of(0, 10), TaskPayloadBuilder.tasksForProcess(processInstance).build());
 
-        //then
-        assertThat(taskPage.getContent())
-            .extracting(Task::getName, Task::getAssignee)
-            .containsExactly(tuple("my-task", INITIATOR));
-
-    }
+    // then
+    assertThat(taskPage.getContent())
+        .extracting(Task::getName, Task::getAssignee)
+        .containsExactly(tuple("my-task", INITIATOR));
+  }
 }

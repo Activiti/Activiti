@@ -14,9 +14,11 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.bpmn.behavior;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import org.activiti.bpmn.model.Signal;
 import org.activiti.bpmn.model.SignalEventDefinition;
 import org.activiti.engine.delegate.DelegateExecution;
@@ -28,70 +30,68 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.SignalEventSubscriptionEntity;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
 public class IntermediateThrowSignalEventActivityBehavior extends AbstractBpmnActivityBehavior {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    protected final SignalEventDefinition signalEventDefinition;
-    protected String signalEventName;
-    protected String signalExpression;
-    protected boolean processInstanceScope;
+  protected final SignalEventDefinition signalEventDefinition;
+  protected String signalEventName;
+  protected String signalExpression;
+  protected boolean processInstanceScope;
 
-    public IntermediateThrowSignalEventActivityBehavior(SignalEventDefinition signalEventDefinition,
-                                                        Signal signal) {
-        if (signal != null) {
-            signalEventName = signal.getName();
-            if (Signal.SCOPE_PROCESS_INSTANCE.equals(signal.getScope())) {
-                this.processInstanceScope = true;
-            }
-        } else if (StringUtils.isNotEmpty(signalEventDefinition.getSignalRef())) {
-            signalEventName = signalEventDefinition.getSignalRef();
-        } else {
-            signalExpression = signalEventDefinition.getSignalExpression();
-        }
-
-        this.signalEventDefinition = signalEventDefinition;
+  public IntermediateThrowSignalEventActivityBehavior(
+      SignalEventDefinition signalEventDefinition, Signal signal) {
+    if (signal != null) {
+      signalEventName = signal.getName();
+      if (Signal.SCOPE_PROCESS_INSTANCE.equals(signal.getScope())) {
+        this.processInstanceScope = true;
+      }
+    } else if (StringUtils.isNotEmpty(signalEventDefinition.getSignalRef())) {
+      signalEventName = signalEventDefinition.getSignalRef();
+    } else {
+      signalExpression = signalEventDefinition.getSignalExpression();
     }
 
-    public void execute(DelegateExecution execution) {
+    this.signalEventDefinition = signalEventDefinition;
+  }
 
-        CommandContext commandContext = Context.getCommandContext();
+  public void execute(DelegateExecution execution) {
 
-        String eventSubscriptionName = null;
-        if (signalEventName != null) {
-            eventSubscriptionName = signalEventName;
-        } else {
-            Expression expressionObject = commandContext.getProcessEngineConfiguration().getExpressionManager().createExpression(signalExpression);
-            eventSubscriptionName = expressionObject.getValue(execution).toString();
-        }
+    CommandContext commandContext = Context.getCommandContext();
 
-        EventSubscriptionEntityManager eventSubscriptionEntityManager = commandContext.getEventSubscriptionEntityManager();
-        List<SignalEventSubscriptionEntity> subscriptionEntities = null;
-        if (processInstanceScope) {
-            subscriptionEntities = eventSubscriptionEntityManager
-                    .findSignalEventSubscriptionsByProcessInstanceAndEventName(execution.getProcessInstanceId(),
-                                                                               eventSubscriptionName);
-        } else {
-            subscriptionEntities = eventSubscriptionEntityManager
-                    .findSignalEventSubscriptionsByEventName(eventSubscriptionName,
-                                                             execution.getTenantId());
-        }
-
-        for (SignalEventSubscriptionEntity signalEventSubscriptionEntity : subscriptionEntities) {
-            Map<String, Object> signalVariables = Optional.ofNullable(execution.getVariables())
-                                                          .filter(it -> !it.isEmpty())
-                                                          .orElse(null);
-
-            eventSubscriptionEntityManager.eventReceived(signalEventSubscriptionEntity,
-                                                         signalVariables,
-                                                         signalEventDefinition.isAsync());
-        }
-
-        Context.getAgenda().planTakeOutgoingSequenceFlowsOperation((ExecutionEntity) execution,
-                                                                   true);
+    String eventSubscriptionName = null;
+    if (signalEventName != null) {
+      eventSubscriptionName = signalEventName;
+    } else {
+      Expression expressionObject =
+          commandContext
+              .getProcessEngineConfiguration()
+              .getExpressionManager()
+              .createExpression(signalExpression);
+      eventSubscriptionName = expressionObject.getValue(execution).toString();
     }
+
+    EventSubscriptionEntityManager eventSubscriptionEntityManager =
+        commandContext.getEventSubscriptionEntityManager();
+    List<SignalEventSubscriptionEntity> subscriptionEntities = null;
+    if (processInstanceScope) {
+      subscriptionEntities =
+          eventSubscriptionEntityManager.findSignalEventSubscriptionsByProcessInstanceAndEventName(
+              execution.getProcessInstanceId(), eventSubscriptionName);
+    } else {
+      subscriptionEntities =
+          eventSubscriptionEntityManager.findSignalEventSubscriptionsByEventName(
+              eventSubscriptionName, execution.getTenantId());
+    }
+
+    for (SignalEventSubscriptionEntity signalEventSubscriptionEntity : subscriptionEntities) {
+      Map<String, Object> signalVariables =
+          Optional.ofNullable(execution.getVariables()).filter(it -> !it.isEmpty()).orElse(null);
+
+      eventSubscriptionEntityManager.eventReceived(
+          signalEventSubscriptionEntity, signalVariables, signalEventDefinition.isAsync());
+    }
+
+    Context.getAgenda().planTakeOutgoingSequenceFlowsOperation((ExecutionEntity) execution, true);
+  }
 }

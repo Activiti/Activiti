@@ -23,21 +23,22 @@ import javax.el.FunctionMapper;
 
 /**
  * Default implementation of a {@link FunctionMapper}.
- * <p>
- * A non-null implementation is required by the javax.el.* classes, hence the reason for this pretty useless class.
+ *
+ * <p>A non-null implementation is required by the javax.el.* classes, hence the reason for this
+ * pretty useless class.
  */
 public class ActivitiFunctionMapper extends FunctionMapper {
 
-    Map<String, Method> map = Collections.emptyMap();
+  Map<String, Method> map = Collections.emptyMap();
 
-    public Method resolveFunction(String prefix, String localName) {
-        return map.get(prefix + ":" + localName);
-    }
+  public Method resolveFunction(String prefix, String localName) {
+    return map.get(prefix + ":" + localName);
+  }
 
-    public void setFunction(String prefix, String localName, Method method) {
-        if (map.isEmpty()) {
-            map = new HashMap<String, Method>();
-        }
-        map.put(prefix + ":" + localName, method);
+  public void setFunction(String prefix, String localName, Method method) {
+    if (map.isEmpty()) {
+      map = new HashMap<String, Method>();
     }
+    map.put(prefix + ":" + localName, method);
+  }
 }

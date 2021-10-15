@@ -20,9 +20,7 @@ import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.JavaDelegate;
 
-/**
-
- */
+/** */
 public class ToUpperCaseSetterInjected implements JavaDelegate {
 
   private Expression text;
@@ -40,5 +38,4 @@ public class ToUpperCaseSetterInjected implements JavaDelegate {
     setterInvoked = true;
     this.text = text;
   }
-
 }

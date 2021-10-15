@@ -18,7 +18,6 @@ package org.activiti.engine.impl.persistence.entity.data.impl;
 
 import java.util.List;
 import java.util.Map;
-
 import org.activiti.engine.impl.ModelQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
@@ -28,10 +27,9 @@ import org.activiti.engine.impl.persistence.entity.data.AbstractDataManager;
 import org.activiti.engine.impl.persistence.entity.data.ModelDataManager;
 import org.activiti.engine.repository.Model;
 
-/**
-
- */
-public class MybatisModelDataManager extends AbstractDataManager<ModelEntity> implements ModelDataManager {
+/** */
+public class MybatisModelDataManager extends AbstractDataManager<ModelEntity>
+    implements ModelDataManager {
 
   public MybatisModelDataManager(ProcessEngineConfigurationImpl processEngineConfiguration) {
     super(processEngineConfiguration);
@@ -60,13 +58,15 @@ public class MybatisModelDataManager extends AbstractDataManager<ModelEntity> im
 
   @Override
   @SuppressWarnings("unchecked")
-  public List<Model> findModelsByNativeQuery(Map<String, Object> parameterMap, int firstResult, int maxResults) {
-    return getDbSqlSession().selectListWithRawParameter("selectModelByNativeQuery", parameterMap, firstResult, maxResults);
+  public List<Model> findModelsByNativeQuery(
+      Map<String, Object> parameterMap, int firstResult, int maxResults) {
+    return getDbSqlSession()
+        .selectListWithRawParameter(
+            "selectModelByNativeQuery", parameterMap, firstResult, maxResults);
   }
 
   @Override
   public long findModelCountByNativeQuery(Map<String, Object> parameterMap) {
     return (Long) getDbSqlSession().selectOne("selectModelCountByNativeQuery", parameterMap);
   }
-
 }

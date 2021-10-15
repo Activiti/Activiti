@@ -21,19 +21,14 @@ import java.io.UnsupportedEncodingException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.impl.db.BulkDeleteable;
 import org.apache.commons.lang3.StringUtils;
 
-
-/**
- * Abstract job entity class.
- *
-
- */
-public abstract class AbstractJobEntityImpl extends AbstractEntity implements AbstractJobEntity, BulkDeleteable, Serializable {
+/** Abstract job entity class. */
+public abstract class AbstractJobEntityImpl extends AbstractEntity
+    implements AbstractJobEntity, BulkDeleteable, Serializable {
 
   private static final long serialVersionUID = 1L;
 
@@ -236,5 +231,4 @@ public abstract class AbstractJobEntityImpl extends AbstractEntity implements Ab
   public String toString() {
     return getClass().getName() + " [id=" + id + "]";
   }
-
 }

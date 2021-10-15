@@ -18,9 +18,7 @@ package org.activiti.spring.test.servicetask;
 
 import org.activiti.engine.delegate.DelegateExecution;
 
-/**
-
- */
+/** */
 public class SentenceToUpperCaseBean {
 
   protected SentenceGenerator sentenceGenerator;
@@ -32,5 +30,4 @@ public class SentenceToUpperCaseBean {
   public void setSentenceGenerator(SentenceGenerator sentenceGenerator) {
     this.sentenceGenerator = sentenceGenerator;
   }
-
 }

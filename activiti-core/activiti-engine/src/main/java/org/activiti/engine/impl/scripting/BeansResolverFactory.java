@@ -14,20 +14,18 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.scripting;
 
 import org.activiti.engine.delegate.VariableScope;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 
-/**
-
- */
+/** */
 public class BeansResolverFactory implements ResolverFactory, Resolver {
 
   protected ProcessEngineConfigurationImpl processEngineConfiguration;
 
-  public Resolver createResolver(ProcessEngineConfigurationImpl processEngineConfiguration, VariableScope variableScope) {
+  public Resolver createResolver(
+      ProcessEngineConfigurationImpl processEngineConfiguration, VariableScope variableScope) {
     this.processEngineConfiguration = processEngineConfiguration;
     return this;
   }

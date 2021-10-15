@@ -16,17 +16,13 @@
 package org.activiti.bpmn.converter.parser;
 
 import javax.xml.stream.XMLStreamReader;
-
 import org.activiti.bpmn.constants.BpmnXMLConstants;
 import org.activiti.bpmn.converter.util.BpmnXMLUtil;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.GraphicInfo;
 
-/**
-
-
- */
+/** */
 public class BpmnShapeParser implements BpmnXMLConstants {
 
   public void parse(XMLStreamReader xtr, BpmnModel model) throws Exception {

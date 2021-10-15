@@ -27,24 +27,21 @@ import org.springframework.stereotype.Component;
 @Component
 public class TaskCleanUpUtil {
 
-    @Autowired
-    private TaskAdminRuntime taskAdminRuntime;
+  @Autowired private TaskAdminRuntime taskAdminRuntime;
 
-    @Autowired
-    private SecurityUtil securityUtil;
+  @Autowired private SecurityUtil securityUtil;
 
-    public void cleanUpWithAdmin() {
-        securityUtil.logInAs("admin");
-        Page<Task> tasks = taskAdminRuntime.tasks(Pageable.of(0,
-                50));
-        for (Task task : tasks.getContent()) {
-            if (task.getProcessInstanceId() == null) {
-                taskAdminRuntime.delete(TaskPayloadBuilder
-                                                .delete()
-                                                .withTaskId(task.getId())
-                                                .withReason("test clean up")
-                                                .build());
-            }
-        }
+  public void cleanUpWithAdmin() {
+    securityUtil.logInAs("admin");
+    Page<Task> tasks = taskAdminRuntime.tasks(Pageable.of(0, 50));
+    for (Task task : tasks.getContent()) {
+      if (task.getProcessInstanceId() == null) {
+        taskAdminRuntime.delete(
+            TaskPayloadBuilder.delete()
+                .withTaskId(task.getId())
+                .withReason("test clean up")
+                .build());
+      }
     }
+  }
 }

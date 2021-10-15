@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.bpmn.behavior;
 
 import org.activiti.engine.delegate.DelegateExecution;
@@ -24,24 +23,24 @@ import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.delegate.ActivityBehavior;
 import org.activiti.engine.impl.delegate.invocation.JavaDelegateInvocation;
 
-/**
-
- */
-public class ServiceTaskJavaDelegateActivityBehavior extends TaskActivityBehavior implements ActivityBehavior, ExecutionListener {
+/** */
+public class ServiceTaskJavaDelegateActivityBehavior extends TaskActivityBehavior
+    implements ActivityBehavior, ExecutionListener {
 
   private static final long serialVersionUID = 1L;
 
   protected JavaDelegate javaDelegate;
 
-  protected ServiceTaskJavaDelegateActivityBehavior() {
-  }
+  protected ServiceTaskJavaDelegateActivityBehavior() {}
 
   public ServiceTaskJavaDelegateActivityBehavior(JavaDelegate javaDelegate) {
     this.javaDelegate = javaDelegate;
   }
 
   public void execute(DelegateExecution execution) {
-    Context.getProcessEngineConfiguration().getDelegateInterceptor().handleInvocation(new JavaDelegateInvocation(javaDelegate, execution));
+    Context.getProcessEngineConfiguration()
+        .getDelegateInterceptor()
+        .handleInvocation(new JavaDelegateInvocation(javaDelegate, execution));
     leave(execution);
   }
 

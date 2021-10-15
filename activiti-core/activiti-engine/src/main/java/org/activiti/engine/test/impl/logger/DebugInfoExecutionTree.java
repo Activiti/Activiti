@@ -18,12 +18,9 @@ package org.activiti.engine.test.impl.logger;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.slf4j.Logger;
 
-/**
-
- */
+/** */
 public class DebugInfoExecutionTree {
 
   protected DebugInfoExecutionTreeNode processInstance;
@@ -43,7 +40,8 @@ public class DebugInfoExecutionTree {
     protected String activityId;
     protected String activityName;
     protected DebugInfoExecutionTreeNode parentNode;
-    protected List<DebugInfoExecutionTreeNode> childNodes = new ArrayList<DebugInfoExecutionTreeNode>();
+    protected List<DebugInfoExecutionTreeNode> childNodes =
+        new ArrayList<DebugInfoExecutionTreeNode>();
 
     /* See http://stackoverflow.com/questions/4965335/how-to-print-binary-tree-diagram */
     public void print(Logger logger) {
@@ -61,7 +59,9 @@ public class DebugInfoExecutionTree {
         childNodes.get(i).print(logger, prefix + (isTail ? "    " : "│   "), false);
       }
       if (childNodes.size() > 0) {
-        childNodes.get(childNodes.size() - 1).print(logger, prefix + (isTail ? "    " : "│   "), true);
+        childNodes
+            .get(childNodes.size() - 1)
+            .print(logger, prefix + (isTail ? "    " : "│   "), true);
       }
     }
 
@@ -79,7 +79,6 @@ public class DebugInfoExecutionTree {
         if (activityName != null) {
           strb.append(" with name ").append(activityName);
         }
-
       }
 
       return strb.toString();
@@ -132,7 +131,5 @@ public class DebugInfoExecutionTree {
     public void setChildNodes(List<DebugInfoExecutionTreeNode> childNodes) {
       this.childNodes = childNodes;
     }
-
   }
-
 }

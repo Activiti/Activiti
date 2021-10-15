@@ -21,23 +21,20 @@ import org.activiti.bpmn.model.HasExecutionListeners;
 import org.activiti.bpmn.model.SequenceFlow;
 import org.apache.commons.lang3.StringUtils;
 
-/**
-
- */
+/** */
 public class ExecutionListenerParser extends ActivitiListenerParser {
 
-    public String getElementName() {
-        return ELEMENT_EXECUTION_LISTENER;
-    }
+  public String getElementName() {
+    return ELEMENT_EXECUTION_LISTENER;
+  }
 
-    public void addListenerToParent(ActivitiListener listener,
-                                    BaseElement parentElement) {
-        if (parentElement instanceof HasExecutionListeners) {
-            if (StringUtils.isEmpty(listener.getEvent()) && parentElement instanceof SequenceFlow) {
-                // No event type on a sequenceflow = 'take' implied
-                listener.setEvent("take");
-            }
-            ((HasExecutionListeners) parentElement).getExecutionListeners().add(listener);
-        }
+  public void addListenerToParent(ActivitiListener listener, BaseElement parentElement) {
+    if (parentElement instanceof HasExecutionListeners) {
+      if (StringUtils.isEmpty(listener.getEvent()) && parentElement instanceof SequenceFlow) {
+        // No event type on a sequenceflow = 'take' implied
+        listener.setEvent("take");
+      }
+      ((HasExecutionListeners) parentElement).getExecutionListeners().add(listener);
     }
+  }
 }

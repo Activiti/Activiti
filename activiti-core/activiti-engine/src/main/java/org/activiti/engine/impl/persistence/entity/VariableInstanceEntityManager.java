@@ -19,13 +19,10 @@ package org.activiti.engine.impl.persistence.entity;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
-
 import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.impl.variable.VariableType;
 
-/**
-
- */
+/** */
 @Internal
 public interface VariableInstanceEntityManager extends EntityManager<VariableInstanceEntity> {
 
@@ -39,14 +36,16 @@ public interface VariableInstanceEntityManager extends EntityManager<VariableIns
 
   List<VariableInstanceEntity> findVariableInstancesByExecutionIds(Set<String> executionIds);
 
-  VariableInstanceEntity findVariableInstanceByExecutionAndName(String executionId, String variableName);
+  VariableInstanceEntity findVariableInstanceByExecutionAndName(
+      String executionId, String variableName);
 
-  List<VariableInstanceEntity> findVariableInstancesByExecutionAndNames(String executionId, Collection<String> names);
+  List<VariableInstanceEntity> findVariableInstancesByExecutionAndNames(
+      String executionId, Collection<String> names);
 
   VariableInstanceEntity findVariableInstanceByTaskAndName(String taskId, String variableName);
 
-  List<VariableInstanceEntity> findVariableInstancesByTaskAndNames(String taskId, Collection<String> names);
+  List<VariableInstanceEntity> findVariableInstancesByTaskAndNames(
+      String taskId, Collection<String> names);
 
   void deleteVariableInstanceByTask(TaskEntity task);
-
 }

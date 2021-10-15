@@ -17,14 +17,9 @@
 package org.activiti.engine.impl.persistence.entity.data.impl.util;
 
 import java.util.List;
-
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 
-/**
- * Prints a nicely tree-looking overview of the executions.
- *
-
- */
+/** Prints a nicely tree-looking overview of the executions. */
 public class ExecutionTreeStringBuilder {
 
   protected ExecutionEntity executionEntity;
@@ -37,7 +32,8 @@ public class ExecutionTreeStringBuilder {
   @Override
   public String toString() {
     StringBuilder strb = new StringBuilder();
-    strb.append(executionEntity.getId()).append(" : ")
+    strb.append(executionEntity.getId())
+        .append(" : ")
         .append(executionEntity.getActivityId())
         .append(", parent id ")
         .append(executionEntity.getParentId())
@@ -52,10 +48,12 @@ public class ExecutionTreeStringBuilder {
     return strb.toString();
   }
 
-  protected void internalToString(ExecutionEntity execution, StringBuilder strb, String prefix, boolean isTail) {
+  protected void internalToString(
+      ExecutionEntity execution, StringBuilder strb, String prefix, boolean isTail) {
     strb.append(prefix)
         .append(isTail ? "└── " : "├── ")
-        .append(execution.getId()).append(" : ")
+        .append(execution.getId())
+        .append(" : ")
         .append("activityId=" + execution.getActivityId())
         .append(", parent id ")
         .append(execution.getParentId())
@@ -69,9 +67,9 @@ public class ExecutionTreeStringBuilder {
         internalToString(children.get(i), strb, prefix + (isTail ? "    " : "│   "), false);
       }
       if (children.size() > 0) {
-        internalToString(children.get(children.size() - 1), strb, prefix + (isTail ? "    " : "│   "), true);
+        internalToString(
+            children.get(children.size() - 1), strb, prefix + (isTail ? "    " : "│   "), true);
       }
     }
   }
-
 }

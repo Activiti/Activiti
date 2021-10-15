@@ -16,10 +16,8 @@
 package org.activiti.editor.language;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
-
 import org.activiti.bpmn.model.ActivitiListener;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.FlowElement;
@@ -64,12 +62,14 @@ public class StartEventConverterTest extends AbstractConverterTest {
     ActivitiListener executionListener = startEvent.getExecutionListeners().get(0);
     assertThat(executionListener.getEvent()).isEqualTo("start");
     assertThat(executionListener.getImplementation()).isEqualTo("org.test.TestClass");
-    assertThat(executionListener.getImplementationType()).isEqualTo(ImplementationType.IMPLEMENTATION_TYPE_CLASS);
+    assertThat(executionListener.getImplementationType())
+        .isEqualTo(ImplementationType.IMPLEMENTATION_TYPE_CLASS);
 
     executionListener = startEvent.getExecutionListeners().get(1);
     assertThat(executionListener.getEvent()).isEqualTo("end");
     assertThat(executionListener.getImplementation()).isEqualTo("${someExpression}");
-    assertThat(executionListener.getImplementationType()).isEqualTo(ImplementationType.IMPLEMENTATION_TYPE_EXPRESSION);
+    assertThat(executionListener.getImplementationType())
+        .isEqualTo(ImplementationType.IMPLEMENTATION_TYPE_EXPRESSION);
 
     List<FormProperty> formProperties = startEvent.getFormProperties();
     assertThat(formProperties).hasSize(2);
@@ -83,7 +83,5 @@ public class StartEventConverterTest extends AbstractConverterTest {
     assertThat(formProperty.getId()).isEqualTo("startFormProp2");
     assertThat(formProperty.getName()).isEqualTo("startFormProp2");
     assertThat(formProperty.getType()).isEqualTo("boolean");
-
   }
-
 }

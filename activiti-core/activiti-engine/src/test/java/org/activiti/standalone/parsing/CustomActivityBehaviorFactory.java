@@ -21,13 +21,12 @@ import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.bpmn.behavior.NoneStartEventActivityBehavior;
 import org.activiti.engine.impl.bpmn.parser.factory.DefaultActivityBehaviorFactory;
 
-/**
-
- */
+/** */
 public class CustomActivityBehaviorFactory extends DefaultActivityBehaviorFactory {
 
   @Override
-  public NoneStartEventActivityBehavior createNoneStartEventActivityBehavior(StartEvent startEvent) {
+  public NoneStartEventActivityBehavior createNoneStartEventActivityBehavior(
+      StartEvent startEvent) {
     return new NoneStartEventActivityBehavior() {
       public void execute(DelegateExecution execution) {
         super.execute(execution);
@@ -35,5 +34,4 @@ public class CustomActivityBehaviorFactory extends DefaultActivityBehaviorFactor
       }
     };
   }
-
 }

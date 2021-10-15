@@ -16,22 +16,20 @@
 
 package org.activiti.engine.impl.persistence.entity;
 
+import java.util.List;
 import org.activiti.engine.api.internal.Internal;
 
-import java.util.List;
-
-/**
-
- */
+/** */
 @Internal
-public interface HistoricIdentityLinkEntityManager extends EntityManager<HistoricIdentityLinkEntity> {
+public interface HistoricIdentityLinkEntityManager
+    extends EntityManager<HistoricIdentityLinkEntity> {
 
   List<HistoricIdentityLinkEntity> findHistoricIdentityLinksByTaskId(String taskId);
 
-  List<HistoricIdentityLinkEntity> findHistoricIdentityLinksByProcessInstanceId(String processInstanceId);
+  List<HistoricIdentityLinkEntity> findHistoricIdentityLinksByProcessInstanceId(
+      String processInstanceId);
 
   void deleteHistoricIdentityLinksByTaskId(String taskId);
 
   void deleteHistoricIdentityLinksByProcInstance(String processInstanceId);
-
 }

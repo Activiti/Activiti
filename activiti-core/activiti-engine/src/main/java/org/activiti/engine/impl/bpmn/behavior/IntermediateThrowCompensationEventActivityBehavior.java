@@ -14,12 +14,10 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.bpmn.behavior;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.activiti.bpmn.model.Activity;
 import org.activiti.bpmn.model.CompensateEventDefinition;
 import org.activiti.bpmn.model.FlowElement;
@@ -35,17 +33,15 @@ import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntityManage
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 import org.apache.commons.lang3.StringUtils;
 
-/**
-
-
- */
+/** */
 public class IntermediateThrowCompensationEventActivityBehavior extends FlowNodeActivityBehavior {
 
   private static final long serialVersionUID = 1L;
 
   protected final CompensateEventDefinition compensateEventDefinition;
 
-  public IntermediateThrowCompensationEventActivityBehavior(CompensateEventDefinition compensateEventDefinition) {
+  public IntermediateThrowCompensationEventActivityBehavior(
+      CompensateEventDefinition compensateEventDefinition) {
     this.compensateEventDefinition = compensateEventDefinition;
   }
 
@@ -64,18 +60,23 @@ public class IntermediateThrowCompensationEventActivityBehavior extends FlowNode
     final String activityRef = compensateEventDefinition.getActivityRef();
 
     CommandContext commandContext = Context.getCommandContext();
-    EventSubscriptionEntityManager eventSubscriptionEntityManager = commandContext.getEventSubscriptionEntityManager();
+    EventSubscriptionEntityManager eventSubscriptionEntityManager =
+        commandContext.getEventSubscriptionEntityManager();
 
-    List<CompensateEventSubscriptionEntity> eventSubscriptions = new ArrayList<CompensateEventSubscriptionEntity>();
+    List<CompensateEventSubscriptionEntity> eventSubscriptions =
+        new ArrayList<CompensateEventSubscriptionEntity>();
     if (StringUtils.isNotEmpty(activityRef)) {
 
       // If an activity ref is provided, only that activity is compensated
-      eventSubscriptions.addAll(eventSubscriptionEntityManager
-          .findCompensateEventSubscriptionsByProcessInstanceIdAndActivityId(execution.getProcessInstanceId(), activityRef));
+      eventSubscriptions.addAll(
+          eventSubscriptionEntityManager
+              .findCompensateEventSubscriptionsByProcessInstanceIdAndActivityId(
+                  execution.getProcessInstanceId(), activityRef));
 
     } else {
 
-      // If no activity ref is provided, it is broadcast to the current sub process / process instance
+      // If no activity ref is provided, it is broadcast to the current sub process / process
+      // instance
       Process process = ProcessDefinitionUtil.getProcess(execution.getProcessDefinitionId());
 
       FlowElementsContainer flowElementsContainer = null;
@@ -87,11 +88,12 @@ public class IntermediateThrowCompensationEventActivityBehavior extends FlowNode
 
       for (FlowElement flowElement : flowElementsContainer.getFlowElements()) {
         if (flowElement instanceof Activity) {
-          eventSubscriptions.addAll(eventSubscriptionEntityManager
-              .findCompensateEventSubscriptionsByProcessInstanceIdAndActivityId(execution.getProcessInstanceId(), flowElement.getId()));
+          eventSubscriptions.addAll(
+              eventSubscriptionEntityManager
+                  .findCompensateEventSubscriptionsByProcessInstanceIdAndActivityId(
+                      execution.getProcessInstanceId(), flowElement.getId()));
         }
       }
-
     }
 
     if (eventSubscriptions.isEmpty()) {

@@ -14,14 +14,11 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.db.upgrade;
 
 import org.activiti.engine.impl.db.DbSqlSession;
 
-/**
-
- */
+/** */
 public class DbUpgradeStep52To53InsertPropertyHistoryLevel implements DbUpgradeStep {
 
   public void execute(DbSqlSession dbSqlSession) throws Exception {
@@ -35,5 +32,4 @@ public class DbUpgradeStep52To53InsertPropertyHistoryLevel implements DbUpgradeS
     // Integer.toString(historyLevel));
     // dbSqlSession.insert(property);
   }
-
 }

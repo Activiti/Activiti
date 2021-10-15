@@ -21,8 +21,6 @@ import java.util.List;
 
 /**
  * Structure containing meta data (column names, column types, etc.) about a certain database table.
- *
-
  */
 public class TableMetaData {
 
@@ -32,9 +30,7 @@ public class TableMetaData {
 
   protected List<String> columnTypes = new ArrayList<String>();
 
-  public TableMetaData() {
-
-  }
+  public TableMetaData() {}
 
   public TableMetaData(String tableName) {
     this.tableName = tableName;
@@ -68,5 +64,4 @@ public class TableMetaData {
   public void setColumnTypes(List<String> columnTypes) {
     this.columnTypes = columnTypes;
   }
-
 }

@@ -23,14 +23,14 @@ import org.activiti.engine.impl.persistence.entity.PropertyEntityManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
-
- */
+/** */
 public class ValidateExecutionRelatedEntityCountCfgCmd implements Command<Void> {
 
-  private static final Logger logger = LoggerFactory.getLogger(ValidateExecutionRelatedEntityCountCfgCmd.class);
+  private static final Logger logger =
+      LoggerFactory.getLogger(ValidateExecutionRelatedEntityCountCfgCmd.class);
 
-  public static String PROPERTY_EXECUTION_RELATED_ENTITY_COUNT = "cfg.execution-related-entities-count";
+  public static String PROPERTY_EXECUTION_RELATED_ENTITY_COUNT =
+      "cfg.execution-related-entities-count";
 
   @Override
   public Void execute(CommandContext commandContext) {
@@ -54,8 +54,13 @@ public class ValidateExecutionRelatedEntityCountCfgCmd implements Command<Void> 
 
     PropertyEntityManager propertyEntityManager = commandContext.getPropertyEntityManager();
 
-    boolean configProperty = commandContext.getProcessEngineConfiguration().getPerformanceSettings().isEnableExecutionRelationshipCounts();
-    PropertyEntity propertyEntity = propertyEntityManager.findById(PROPERTY_EXECUTION_RELATED_ENTITY_COUNT);
+    boolean configProperty =
+        commandContext
+            .getProcessEngineConfiguration()
+            .getPerformanceSettings()
+            .isEnableExecutionRelationshipCounts();
+    PropertyEntity propertyEntity =
+        propertyEntityManager.findById(PROPERTY_EXECUTION_RELATED_ENTITY_COUNT);
 
     if (propertyEntity == null) {
 
@@ -71,10 +76,14 @@ public class ValidateExecutionRelatedEntityCountCfgCmd implements Command<Void> 
       boolean propertyValue = Boolean.valueOf(propertyEntity.getValue().toString().toLowerCase());
       if (!configProperty && propertyValue) {
         if (logger.isInfoEnabled()) {
-          logger.info("Configuration change: execution related entity counting feature was enabled before, but now disabled. "
-              + "Updating all execution entities.");
+          logger.info(
+              "Configuration change: execution related entity counting feature was enabled before,"
+                  + " but now disabled. Updating all execution entities.");
         }
-        commandContext.getProcessEngineConfiguration().getExecutionDataManager().updateAllExecutionRelatedEntityCountFlags(configProperty);
+        commandContext
+            .getProcessEngineConfiguration()
+            .getExecutionDataManager()
+            .updateAllExecutionRelatedEntityCountFlags(configProperty);
       }
 
       // Update property
@@ -82,10 +91,8 @@ public class ValidateExecutionRelatedEntityCountCfgCmd implements Command<Void> 
         propertyEntity.setValue(Boolean.toString(configProperty));
         propertyEntityManager.update(propertyEntity);
       }
-
     }
 
     return null;
   }
-
 }

@@ -18,7 +18,6 @@ package org.activiti.engine.impl.persistence.entity.data.impl;
 
 import java.util.HashMap;
 import java.util.List;
-
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.SuspendedJobQueryImpl;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
@@ -30,12 +29,12 @@ import org.activiti.engine.impl.persistence.entity.data.SuspendedJobDataManager;
 import org.activiti.engine.impl.persistence.entity.data.impl.cachematcher.SuspendedJobsByExecutionIdMatcher;
 import org.activiti.engine.runtime.Job;
 
-/**
+/** */
+public class MybatisSuspendedJobDataManager extends AbstractDataManager<SuspendedJobEntity>
+    implements SuspendedJobDataManager {
 
- */
-public class MybatisSuspendedJobDataManager extends AbstractDataManager<SuspendedJobEntity> implements SuspendedJobDataManager {
-
-  protected CachedEntityMatcher<SuspendedJobEntity> suspendedJobsByExecutionIdMatcher = new SuspendedJobsByExecutionIdMatcher();
+  protected CachedEntityMatcher<SuspendedJobEntity> suspendedJobsByExecutionIdMatcher =
+      new SuspendedJobsByExecutionIdMatcher();
 
   public MybatisSuspendedJobDataManager(ProcessEngineConfigurationImpl processEngineConfiguration) {
     super(processEngineConfiguration);
@@ -65,13 +64,15 @@ public class MybatisSuspendedJobDataManager extends AbstractDataManager<Suspende
 
   @Override
   public List<SuspendedJobEntity> findJobsByExecutionId(final String executionId) {
-    return getList("selectSuspendedJobsByExecutionId", executionId, suspendedJobsByExecutionIdMatcher, true);
+    return getList(
+        "selectSuspendedJobsByExecutionId", executionId, suspendedJobsByExecutionIdMatcher, true);
   }
 
   @Override
   @SuppressWarnings("unchecked")
   public List<SuspendedJobEntity> findJobsByProcessInstanceId(final String processInstanceId) {
-    return getDbSqlSession().selectList("selectSuspendedJobsByProcessInstanceId", processInstanceId);
+    return getDbSqlSession()
+        .selectList("selectSuspendedJobsByProcessInstanceId", processInstanceId);
   }
 
   @Override
@@ -81,5 +82,4 @@ public class MybatisSuspendedJobDataManager extends AbstractDataManager<Suspende
     params.put("tenantId", newTenantId);
     getDbSqlSession().update("updateSuspendedJobTenantIdForDeployment", params);
   }
-
 }

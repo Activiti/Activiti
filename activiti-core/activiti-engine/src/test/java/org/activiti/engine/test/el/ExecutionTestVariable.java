@@ -14,18 +14,12 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.test.el;
 
 import java.io.Serializable;
-
 import org.activiti.engine.delegate.DelegateExecution;
 
-/**
- * Class used to test passing of execution in expressions/
- *
-
- */
+/** Class used to test passing of execution in expressions/ */
 public class ExecutionTestVariable implements Serializable {
 
   private static final long serialVersionUID = 1L;
@@ -33,5 +27,4 @@ public class ExecutionTestVariable implements Serializable {
   public void testMethod(DelegateExecution delegateExecution) {
     delegateExecution.setVariable("testVar", "myValue");
   }
-
 }

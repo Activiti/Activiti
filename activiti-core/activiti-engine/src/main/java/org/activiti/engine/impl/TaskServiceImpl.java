@@ -24,7 +24,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
@@ -78,12 +77,8 @@ import org.activiti.engine.task.NativeTaskQuery;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.task.TaskQuery;
 
-/**
-
-
- */
+/** */
 public class TaskServiceImpl extends ServiceImpl implements TaskService {
-
 
   public TaskServiceImpl(ProcessEngineConfigurationImpl processEngineConfiguration) {
     super(processEngineConfiguration);
@@ -138,35 +133,48 @@ public class TaskServiceImpl extends ServiceImpl implements TaskService {
   }
 
   public void setAssignee(String taskId, String userId) {
-    commandExecutor.execute(new AddIdentityLinkCmd(taskId, userId, AddIdentityLinkCmd.IDENTITY_USER, IdentityLinkType.ASSIGNEE));
+    commandExecutor.execute(
+        new AddIdentityLinkCmd(
+            taskId, userId, AddIdentityLinkCmd.IDENTITY_USER, IdentityLinkType.ASSIGNEE));
   }
 
   public void setOwner(String taskId, String userId) {
-    commandExecutor.execute(new AddIdentityLinkCmd(taskId, userId, AddIdentityLinkCmd.IDENTITY_USER, IdentityLinkType.OWNER));
+    commandExecutor.execute(
+        new AddIdentityLinkCmd(
+            taskId, userId, AddIdentityLinkCmd.IDENTITY_USER, IdentityLinkType.OWNER));
   }
 
   public void addCandidateUser(String taskId, String userId) {
-    commandExecutor.execute(new AddIdentityLinkCmd(taskId, userId, AddIdentityLinkCmd.IDENTITY_USER, IdentityLinkType.CANDIDATE));
+    commandExecutor.execute(
+        new AddIdentityLinkCmd(
+            taskId, userId, AddIdentityLinkCmd.IDENTITY_USER, IdentityLinkType.CANDIDATE));
   }
 
   public void addCandidateGroup(String taskId, String groupId) {
-    commandExecutor.execute(new AddIdentityLinkCmd(taskId, groupId, AddIdentityLinkCmd.IDENTITY_GROUP, IdentityLinkType.CANDIDATE));
+    commandExecutor.execute(
+        new AddIdentityLinkCmd(
+            taskId, groupId, AddIdentityLinkCmd.IDENTITY_GROUP, IdentityLinkType.CANDIDATE));
   }
 
   public void addUserIdentityLink(String taskId, String userId, String identityLinkType) {
-    commandExecutor.execute(new AddIdentityLinkCmd(taskId, userId, AddIdentityLinkCmd.IDENTITY_USER, identityLinkType));
+    commandExecutor.execute(
+        new AddIdentityLinkCmd(taskId, userId, AddIdentityLinkCmd.IDENTITY_USER, identityLinkType));
   }
 
   public void addGroupIdentityLink(String taskId, String groupId, String identityLinkType) {
-    commandExecutor.execute(new AddIdentityLinkCmd(taskId, groupId, AddIdentityLinkCmd.IDENTITY_GROUP, identityLinkType));
+    commandExecutor.execute(
+        new AddIdentityLinkCmd(
+            taskId, groupId, AddIdentityLinkCmd.IDENTITY_GROUP, identityLinkType));
   }
 
   public void deleteCandidateGroup(String taskId, String groupId) {
-    commandExecutor.execute(new DeleteIdentityLinkCmd(taskId, null, groupId, IdentityLinkType.CANDIDATE));
+    commandExecutor.execute(
+        new DeleteIdentityLinkCmd(taskId, null, groupId, IdentityLinkType.CANDIDATE));
   }
 
   public void deleteCandidateUser(String taskId, String userId) {
-    commandExecutor.execute(new DeleteIdentityLinkCmd(taskId, userId, null, IdentityLinkType.CANDIDATE));
+    commandExecutor.execute(
+        new DeleteIdentityLinkCmd(taskId, userId, null, IdentityLinkType.CANDIDATE));
   }
 
   public void deleteGroupIdentityLink(String taskId, String groupId, String identityLinkType) {
@@ -198,7 +206,8 @@ public class TaskServiceImpl extends ServiceImpl implements TaskService {
   }
 
   @Override
-  public void complete(String taskId, Map<String, Object> variables, Map<String, Object> transientVariables) {
+  public void complete(
+      String taskId, Map<String, Object> variables, Map<String, Object> transientVariables) {
     commandExecutor.execute(new CompleteTaskCmd(taskId, variables, transientVariables));
   }
 
@@ -219,7 +228,8 @@ public class TaskServiceImpl extends ServiceImpl implements TaskService {
   }
 
   @Override
-  public void resolveTask(String taskId, Map<String, Object> variables, Map<String, Object> transientVariables) {
+  public void resolveTask(
+      String taskId, Map<String, Object> variables, Map<String, Object> transientVariables) {
     commandExecutor.execute(new ResolveTaskCmd(taskId, variables, transientVariables));
   }
 
@@ -373,12 +383,40 @@ public class TaskServiceImpl extends ServiceImpl implements TaskService {
     return commandExecutor.execute(new GetProcessInstanceCommentsCmd(processInstanceId, type));
   }
 
-  public Attachment createAttachment(String attachmentType, String taskId, String processInstanceId, String attachmentName, String attachmentDescription, InputStream content) {
-    return commandExecutor.execute(new CreateAttachmentCmd(attachmentType, taskId, processInstanceId, attachmentName, attachmentDescription, content, null));
+  public Attachment createAttachment(
+      String attachmentType,
+      String taskId,
+      String processInstanceId,
+      String attachmentName,
+      String attachmentDescription,
+      InputStream content) {
+    return commandExecutor.execute(
+        new CreateAttachmentCmd(
+            attachmentType,
+            taskId,
+            processInstanceId,
+            attachmentName,
+            attachmentDescription,
+            content,
+            null));
   }
 
-  public Attachment createAttachment(String attachmentType, String taskId, String processInstanceId, String attachmentName, String attachmentDescription, String url) {
-    return commandExecutor.execute(new CreateAttachmentCmd(attachmentType, taskId, processInstanceId, attachmentName, attachmentDescription, null, url));
+  public Attachment createAttachment(
+      String attachmentType,
+      String taskId,
+      String processInstanceId,
+      String attachmentName,
+      String attachmentDescription,
+      String url) {
+    return commandExecutor.execute(
+        new CreateAttachmentCmd(
+            attachmentType,
+            taskId,
+            processInstanceId,
+            attachmentName,
+            attachmentDescription,
+            null,
+            url));
   }
 
   public InputStream getAttachmentContent(String attachmentId) {
@@ -409,7 +447,8 @@ public class TaskServiceImpl extends ServiceImpl implements TaskService {
 
   @SuppressWarnings("unchecked")
   public List<Attachment> getProcessInstanceAttachments(String processInstanceId) {
-    return (List<Attachment>) commandExecutor.execute(new GetProcessInstanceAttachmentsCmd(processInstanceId));
+    return (List<Attachment>)
+        commandExecutor.execute(new GetProcessInstanceAttachmentsCmd(processInstanceId));
   }
 
   public void saveAttachment(Attachment attachment) {
@@ -436,7 +475,8 @@ public class TaskServiceImpl extends ServiceImpl implements TaskService {
   }
 
   @Override
-  public Map<String, VariableInstance> getVariableInstances(String taskId, Collection<String> variableNames) {
+  public Map<String, VariableInstance> getVariableInstances(
+      String taskId, Collection<String> variableNames) {
     return commandExecutor.execute(new GetTaskVariableInstancesCmd(taskId, variableNames, false));
   }
 
@@ -446,7 +486,8 @@ public class TaskServiceImpl extends ServiceImpl implements TaskService {
   }
 
   @Override
-  public Map<String, VariableInstance> getVariableInstancesLocal(String taskId, Collection<String> variableNames) {
+  public Map<String, VariableInstance> getVariableInstancesLocal(
+      String taskId, Collection<String> variableNames) {
     return commandExecutor.execute(new GetTaskVariableInstancesCmd(taskId, variableNames, true));
   }
 
@@ -456,8 +497,10 @@ public class TaskServiceImpl extends ServiceImpl implements TaskService {
   }
 
   @Override
-  public Map<String, DataObject> getDataObjects(String taskId, String locale, boolean withLocalizationFallback) {
-    return commandExecutor.execute(new GetTaskDataObjectsCmd(taskId, null, locale, withLocalizationFallback));
+  public Map<String, DataObject> getDataObjects(
+      String taskId, String locale, boolean withLocalizationFallback) {
+    return commandExecutor.execute(
+        new GetTaskDataObjectsCmd(taskId, null, locale, withLocalizationFallback));
   }
 
   @Override
@@ -466,8 +509,13 @@ public class TaskServiceImpl extends ServiceImpl implements TaskService {
   }
 
   @Override
-  public Map<String, DataObject> getDataObjects(String taskId, Collection<String> dataObjectNames, String locale, boolean withLocalizationFallback) {
-    return commandExecutor.execute(new GetTaskDataObjectsCmd(taskId, dataObjectNames, locale, withLocalizationFallback));
+  public Map<String, DataObject> getDataObjects(
+      String taskId,
+      Collection<String> dataObjectNames,
+      String locale,
+      boolean withLocalizationFallback) {
+    return commandExecutor.execute(
+        new GetTaskDataObjectsCmd(taskId, dataObjectNames, locale, withLocalizationFallback));
   }
 
   @Override
@@ -476,8 +524,9 @@ public class TaskServiceImpl extends ServiceImpl implements TaskService {
   }
 
   @Override
-  public DataObject getDataObject(String taskId, String dataObjectName, String locale, boolean withLocalizationFallback) {
-    return commandExecutor.execute(new GetTaskDataObjectCmd(taskId, dataObjectName, locale, withLocalizationFallback));
+  public DataObject getDataObject(
+      String taskId, String dataObjectName, String locale, boolean withLocalizationFallback) {
+    return commandExecutor.execute(
+        new GetTaskDataObjectCmd(taskId, dataObjectName, locale, withLocalizationFallback));
   }
-
 }

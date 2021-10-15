@@ -14,11 +14,9 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.interceptor;
 
 import java.lang.reflect.UndeclaredThrowableException;
-
 import javax.transaction.HeuristicMixedException;
 import javax.transaction.HeuristicRollbackException;
 import javax.transaction.InvalidTransactionException;
@@ -28,14 +26,11 @@ import javax.transaction.Status;
 import javax.transaction.SystemException;
 import javax.transaction.Transaction;
 import javax.transaction.TransactionManager;
-
 import org.activiti.engine.impl.cfg.TransactionPropagation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
-
- */
+/** */
 public class JtaTransactionInterceptor extends AbstractCommandInterceptor {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(JtaTransactionInterceptor.class);
@@ -75,7 +70,8 @@ public class JtaTransactionInterceptor extends AbstractCommandInterceptor {
         throw err;
       } catch (Exception ex) {
         doRollback(isNew, ex);
-        throw new UndeclaredThrowableException(ex, "TransactionCallback threw undeclared checked exception");
+        throw new UndeclaredThrowableException(
+            ex, "TransactionCallback threw undeclared checked exception");
       }
       if (isNew) {
         doCommit();
@@ -162,7 +158,8 @@ public class JtaTransactionInterceptor extends AbstractCommandInterceptor {
       throw e;
     } finally {
       if (rollbackEx != null && originalException != null) {
-        LOGGER.error("Error when rolling back transaction, original exception was:", originalException);
+        LOGGER.error(
+            "Error when rolling back transaction, original exception was:", originalException);
       }
     }
   }
@@ -171,8 +168,7 @@ public class JtaTransactionInterceptor extends AbstractCommandInterceptor {
 
     private static final long serialVersionUID = 1L;
 
-    private TransactionException() {
-    }
+    private TransactionException() {}
 
     private TransactionException(String s) {
       super(s);

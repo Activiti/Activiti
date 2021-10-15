@@ -23,9 +23,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
-
- */
+/** */
 public class ScriptTaskParseHandler extends AbstractActivityBpmnParseHandler<ScriptTask> {
 
   private static final Logger logger = LoggerFactory.getLogger(ScriptTaskParseHandler.class);
@@ -40,8 +38,7 @@ public class ScriptTaskParseHandler extends AbstractActivityBpmnParseHandler<Scr
       logger.warn("No script provided for scriptTask " + scriptTask.getId());
     }
 
-    scriptTask.setBehavior(bpmnParse.getActivityBehaviorFactory().createScriptTaskActivityBehavior(scriptTask));
-
+    scriptTask.setBehavior(
+        bpmnParse.getActivityBehaviorFactory().createScriptTaskActivityBehavior(scriptTask));
   }
-
 }

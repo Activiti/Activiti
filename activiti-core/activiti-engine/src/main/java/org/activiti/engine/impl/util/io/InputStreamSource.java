@@ -20,13 +20,9 @@ import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-
 import org.activiti.engine.ActivitiException;
 
-/**
-
-
- */
+/** */
 public class InputStreamSource implements StreamSource {
 
   // This class is used for bpmn parsing.
@@ -63,7 +59,8 @@ public class InputStreamSource implements StreamSource {
 
     int offset = 0;
     int numRead = 0;
-    while (offset < bytes.length && (numRead = inStream.read(bytes, offset, bytes.length - offset)) >= 0) {
+    while (offset < bytes.length
+        && (numRead = inStream.read(bytes, offset, bytes.length - offset)) >= 0) {
       offset += numRead;
     }
 
@@ -75,5 +72,4 @@ public class InputStreamSource implements StreamSource {
     inStream.close();
     return bytes;
   }
-
 }

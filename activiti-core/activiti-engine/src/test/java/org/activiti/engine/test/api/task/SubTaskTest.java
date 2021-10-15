@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.test.api.task;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -22,7 +21,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
@@ -30,10 +28,7 @@ import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 
-/**
-
-
- */
+/** */
 public class SubTaskTest extends PluggableActivitiTestCase {
 
   public void testSubTask() {
@@ -54,7 +49,13 @@ public class SubTaskTest extends PluggableActivitiTestCase {
 
     String subTaskId = subTaskOne.getId();
     assertThat(taskService.getSubTasks(subTaskId).isEmpty()).isTrue();
-    assertThat(historyService.createHistoricTaskInstanceQuery().taskParentTaskId(subTaskId).list().isEmpty()).isTrue();
+    assertThat(
+            historyService
+                .createHistoricTaskInstanceQuery()
+                .taskParentTaskId(subTaskId)
+                .list()
+                .isEmpty())
+        .isTrue();
 
     List<Task> subTasks = taskService.getSubTasks(gonzoTaskId);
     Set<String> subTaskNames = new HashSet<String>();
@@ -69,7 +70,8 @@ public class SubTaskTest extends PluggableActivitiTestCase {
 
       assertThat(subTaskNames).isEqualTo(expectedSubTaskNames);
 
-      List<HistoricTaskInstance> historicSubTasks = historyService.createHistoricTaskInstanceQuery().taskParentTaskId(gonzoTaskId).list();
+      List<HistoricTaskInstance> historicSubTasks =
+          historyService.createHistoricTaskInstanceQuery().taskParentTaskId(gonzoTaskId).list();
 
       subTaskNames = new HashSet<String>();
       for (HistoricTaskInstance historicSubTask : historicSubTasks) {
@@ -83,12 +85,15 @@ public class SubTaskTest extends PluggableActivitiTestCase {
   }
 
   public void testSubTaskDeleteOnProcessInstanceDelete() {
-    Deployment deployment = repositoryService.createDeployment()
-        .addClasspathResource("org/activiti/engine/test/api/runtime/oneTaskProcess.bpmn20.xml")
-        .deploy();
+    Deployment deployment =
+        repositoryService
+            .createDeployment()
+            .addClasspathResource("org/activiti/engine/test/api/runtime/oneTaskProcess.bpmn20.xml")
+            .deploy();
 
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
-    Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+    Task task =
+        taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     taskService.setAssignee(task.getId(), "test");
 
     Task subTask1 = taskService.newTask();
@@ -112,7 +117,8 @@ public class SubTaskTest extends PluggableActivitiTestCase {
     assertThat(tasks).hasSize(0);
 
     if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
-      List<HistoricTaskInstance> historicTasks = historyService.createHistoricTaskInstanceQuery().taskAssignee("test").list();
+      List<HistoricTaskInstance> historicTasks =
+          historyService.createHistoricTaskInstanceQuery().taskAssignee("test").list();
       assertThat(historicTasks).hasSize(3);
 
       historyService.deleteHistoricProcessInstance(processInstance.getId());
@@ -123,5 +129,4 @@ public class SubTaskTest extends PluggableActivitiTestCase {
 
     repositoryService.deleteDeployment(deployment.getId(), true);
   }
-
 }

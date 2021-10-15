@@ -27,15 +27,15 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 public class UtilAutoConfigurationTest {
 
-    @SpringBootConfiguration
-    @EnableAutoConfiguration
-    static class Configuration {};
+  @SpringBootConfiguration
+  @EnableAutoConfiguration
+  static class Configuration {}
+  ;
 
-    @Autowired
-    private DateFormatterProvider dateFormatterProvider;
+  @Autowired private DateFormatterProvider dateFormatterProvider;
 
-    @Test
-    public void contextLoad() {
-        assertThat(dateFormatterProvider).isNotNull();
-    }
+  @Test
+  public void contextLoad() {
+    assertThat(dateFormatterProvider).isNotNull();
+  }
 }

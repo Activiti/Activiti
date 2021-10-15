@@ -20,9 +20,7 @@ import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.ManualTask;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 
-/**
-
- */
+/** */
 public class ManualTaskParseHandler extends AbstractActivityBpmnParseHandler<ManualTask> {
 
   public Class<? extends BaseElement> getHandledType() {
@@ -30,6 +28,7 @@ public class ManualTaskParseHandler extends AbstractActivityBpmnParseHandler<Man
   }
 
   protected void executeParse(BpmnParse bpmnParse, ManualTask manualTask) {
-    manualTask.setBehavior(bpmnParse.getActivityBehaviorFactory().createManualTaskActivityBehavior(manualTask));
+    manualTask.setBehavior(
+        bpmnParse.getActivityBehaviorFactory().createManualTaskActivityBehavior(manualTask));
   }
 }

@@ -20,7 +20,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.util.List;
-
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.delegate.event.ActivitiEvent;
@@ -33,8 +32,8 @@ import org.activiti.engine.test.api.event.StaticTestActivitiEventListener;
 import org.activiti.engine.test.api.event.TestActivitiEventListener;
 
 /**
- * Test for event-listeners that are registered on a process-definition scope, rather than on the global engine-wide scope, declared in the BPMN XML.
- *
+ * Test for event-listeners that are registered on a process-definition scope, rather than on the
+ * global engine-wide scope, declared in the BPMN XML.
  */
 public class ProcessDefinitionScopedEventListenerDefinitionTest extends ResourceActivitiTestCase {
 
@@ -45,14 +44,17 @@ public class ProcessDefinitionScopedEventListenerDefinitionTest extends Resource
   protected TestActivitiEventListener testListenerBean;
 
   /**
-   * Test to verify listeners defined in the BPMN xml are added to the process definition and are active.
+   * Test to verify listeners defined in the BPMN xml are added to the process definition and are
+   * active.
    */
   @Deployment
   public void testProcessDefinitionListenerDefinition() throws Exception {
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testEventListeners");
+    ProcessInstance processInstance =
+        runtimeService.startProcessInstanceByKey("testEventListeners");
     assertThat(testListenerBean).isNotNull();
 
-    Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+    Task task =
+        taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     taskService.complete(task.getId());
 
     // Check if the listener (defined as bean) received events (only creation, not other events)
@@ -86,58 +88,83 @@ public class ProcessDefinitionScopedEventListenerDefinitionTest extends Resource
   }
 
   /**
-   * Test to verify listeners defined in the BPMN xml with invalid class/delegateExpression values cause an exception when process is started.
+   * Test to verify listeners defined in the BPMN xml with invalid class/delegateExpression values
+   * cause an exception when process is started.
    */
   public void testProcessDefinitionListenerDefinitionError() throws Exception {
 
     // Deploy process with expression which references an unexisting bean
-    org.activiti.engine.repository.Deployment deployment = repositoryService.createDeployment().addClasspathResource("org/activiti/standalone/event/invalidEventListenerExpression.bpmn20.xml").deploy();
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testInvalidEventExpression");
+    org.activiti.engine.repository.Deployment deployment =
+        repositoryService
+            .createDeployment()
+            .addClasspathResource(
+                "org/activiti/standalone/event/invalidEventListenerExpression.bpmn20.xml")
+            .deploy();
+    ProcessInstance processInstance =
+        runtimeService.startProcessInstanceByKey("testInvalidEventExpression");
     assertThat(processInstance).isNotNull();
     repositoryService.deleteDeployment(deployment.getId(), true);
 
     // Deploy process with listener which references an unexisting class
-    deployment = repositoryService.createDeployment().addClasspathResource("org/activiti/standalone/event/invalidEventListenerClass.bpmn20.xml").deploy();
+    deployment =
+        repositoryService
+            .createDeployment()
+            .addClasspathResource(
+                "org/activiti/standalone/event/invalidEventListenerClass.bpmn20.xml")
+            .deploy();
     processInstance = runtimeService.startProcessInstanceByKey("testInvalidEventClass");
     repositoryService.deleteDeployment(deployment.getId(), true);
   }
 
   /**
-   * Test to verify if event listeners defined in the BPMN XML which have illegal event-types cause an exception on deploy.
+   * Test to verify if event listeners defined in the BPMN XML which have illegal event-types cause
+   * an exception on deploy.
    */
   public void testProcessDefinitionListenerDefinitionIllegalType() throws Exception {
     assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
-      .isThrownBy(() -> repositoryService.createDeployment()
-        .addClasspathResource("org/activiti/standalone/event/invalidEventListenerType.bpmn20.xml")
-        .deploy())
-      .withMessageContaining("Invalid event-type: invalid");
+        .isThrownBy(
+            () ->
+                repositoryService
+                    .createDeployment()
+                    .addClasspathResource(
+                        "org/activiti/standalone/event/invalidEventListenerType.bpmn20.xml")
+                    .deploy())
+        .withMessageContaining("Invalid event-type: invalid");
   }
 
   /**
-   * Test to verify listeners defined in the BPMN xml are added to the process definition and are active, for all entity types
+   * Test to verify listeners defined in the BPMN xml are added to the process definition and are
+   * active, for all entity types
    */
   @Deployment
   public void testProcessDefinitionListenerDefinitionEntities() throws Exception {
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testEventListeners");
+    ProcessInstance processInstance =
+        runtimeService.startProcessInstanceByKey("testEventListeners");
     assertThat(processInstance).isNotNull();
-    Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+    Task task =
+        taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     assertThat(task).isNotNull();
 
     // Attachment entity
-    TestActivitiEventListener theListener = (TestActivitiEventListener) processEngineConfiguration.getBeans().get("testAttachmentEventListener");
+    TestActivitiEventListener theListener =
+        (TestActivitiEventListener)
+            processEngineConfiguration.getBeans().get("testAttachmentEventListener");
     assertThat(theListener).isNotNull();
     assertThat(theListener.getEventsReceived()).hasSize(0);
 
-    taskService.createAttachment("test", task.getId(), processInstance.getId(), "test", "test", "url");
+    taskService.createAttachment(
+        "test", task.getId(), processInstance.getId(), "test", "test", "url");
     assertThat(theListener.getEventsReceived()).hasSize(2);
-    assertThat(theListener.getEventsReceived().get(0).getType()).isEqualTo(ActivitiEventType.ENTITY_CREATED);
-    assertThat(theListener.getEventsReceived().get(1).getType()).isEqualTo(ActivitiEventType.ENTITY_INITIALIZED);
-
+    assertThat(theListener.getEventsReceived().get(0).getType())
+        .isEqualTo(ActivitiEventType.ENTITY_CREATED);
+    assertThat(theListener.getEventsReceived().get(1).getType())
+        .isEqualTo(ActivitiEventType.ENTITY_INITIALIZED);
   }
 
   @Override
   protected void setUp() throws Exception {
     super.setUp();
-    testListenerBean = (TestActivitiEventListener) processEngineConfiguration.getBeans().get("testEventListener");
+    testListenerBean =
+        (TestActivitiEventListener) processEngineConfiguration.getBeans().get("testEventListener");
   }
 }

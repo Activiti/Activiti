@@ -20,7 +20,6 @@ import static java.util.Collections.emptyList;
 
 import java.util.List;
 import java.util.Map;
-
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.impl.HistoricProcessInstanceQueryImpl;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
@@ -30,12 +29,13 @@ import org.activiti.engine.impl.persistence.entity.HistoricProcessInstanceEntity
 import org.activiti.engine.impl.persistence.entity.data.AbstractDataManager;
 import org.activiti.engine.impl.persistence.entity.data.HistoricProcessInstanceDataManager;
 
-/**
+/** */
+public class MybatisHistoricProcessInstanceDataManager
+    extends AbstractDataManager<HistoricProcessInstanceEntity>
+    implements HistoricProcessInstanceDataManager {
 
- */
-public class MybatisHistoricProcessInstanceDataManager extends AbstractDataManager<HistoricProcessInstanceEntity> implements HistoricProcessInstanceDataManager {
-
-  public MybatisHistoricProcessInstanceDataManager(ProcessEngineConfigurationImpl processEngineConfiguration) {
+  public MybatisHistoricProcessInstanceDataManager(
+      ProcessEngineConfigurationImpl processEngineConfiguration) {
     super(processEngineConfiguration);
   }
 
@@ -56,32 +56,45 @@ public class MybatisHistoricProcessInstanceDataManager extends AbstractDataManag
 
   @Override
   @SuppressWarnings("unchecked")
-  public List<String> findHistoricProcessInstanceIdsByProcessDefinitionId(String processDefinitionId) {
-    return getDbSqlSession().selectList("selectHistoricProcessInstanceIdsByProcessDefinitionId", processDefinitionId);
+  public List<String> findHistoricProcessInstanceIdsByProcessDefinitionId(
+      String processDefinitionId) {
+    return getDbSqlSession()
+        .selectList("selectHistoricProcessInstanceIdsByProcessDefinitionId", processDefinitionId);
   }
 
   @Override
   @SuppressWarnings("unchecked")
-  public List<HistoricProcessInstanceEntity> findHistoricProcessInstancesBySuperProcessInstanceId(String superProcessInstanceId) {
-    return getDbSqlSession().selectList("selectHistoricProcessInstanceIdsBySuperProcessInstanceId", superProcessInstanceId);
+  public List<HistoricProcessInstanceEntity> findHistoricProcessInstancesBySuperProcessInstanceId(
+      String superProcessInstanceId) {
+    return getDbSqlSession()
+        .selectList(
+            "selectHistoricProcessInstanceIdsBySuperProcessInstanceId", superProcessInstanceId);
   }
 
   @Override
-  public long findHistoricProcessInstanceCountByQueryCriteria(HistoricProcessInstanceQueryImpl historicProcessInstanceQuery) {
-    return (Long) getDbSqlSession().selectOne("selectHistoricProcessInstanceCountByQueryCriteria", historicProcessInstanceQuery);
+  public long findHistoricProcessInstanceCountByQueryCriteria(
+      HistoricProcessInstanceQueryImpl historicProcessInstanceQuery) {
+    return (Long)
+        getDbSqlSession()
+            .selectOne(
+                "selectHistoricProcessInstanceCountByQueryCriteria", historicProcessInstanceQuery);
   }
 
   @Override
   @SuppressWarnings("unchecked")
-  public List<HistoricProcessInstance> findHistoricProcessInstancesByQueryCriteria(HistoricProcessInstanceQueryImpl historicProcessInstanceQuery) {
-    return getDbSqlSession().selectList("selectHistoricProcessInstancesByQueryCriteria", historicProcessInstanceQuery);
+  public List<HistoricProcessInstance> findHistoricProcessInstancesByQueryCriteria(
+      HistoricProcessInstanceQueryImpl historicProcessInstanceQuery) {
+    return getDbSqlSession()
+        .selectList("selectHistoricProcessInstancesByQueryCriteria", historicProcessInstanceQuery);
   }
 
   @Override
-  public List<HistoricProcessInstance> findHistoricProcessInstancesAndVariablesByQueryCriteria(HistoricProcessInstanceQueryImpl historicProcessInstanceQuery) {
+  public List<HistoricProcessInstance> findHistoricProcessInstancesAndVariablesByQueryCriteria(
+      HistoricProcessInstanceQueryImpl historicProcessInstanceQuery) {
     // paging doesn't work for combining process instances and variables
     // due to an outer join, so doing it in-memory
-    if (historicProcessInstanceQuery.getFirstResult() < 0 || historicProcessInstanceQuery.getMaxResults() <= 0) {
+    if (historicProcessInstanceQuery.getFirstResult() < 0
+        || historicProcessInstanceQuery.getMaxResults() <= 0) {
       return emptyList();
     }
 
@@ -90,14 +103,21 @@ public class MybatisHistoricProcessInstanceDataManager extends AbstractDataManag
 
     // setting max results, limit to 20000 results for performance reasons
     if (historicProcessInstanceQuery.getProcessInstanceVariablesLimit() != null) {
-      historicProcessInstanceQuery.setMaxResults(historicProcessInstanceQuery.getProcessInstanceVariablesLimit());
+      historicProcessInstanceQuery.setMaxResults(
+          historicProcessInstanceQuery.getProcessInstanceVariablesLimit());
     } else {
-      historicProcessInstanceQuery.setMaxResults(getProcessEngineConfiguration().getHistoricProcessInstancesQueryLimit());
+      historicProcessInstanceQuery.setMaxResults(
+          getProcessEngineConfiguration().getHistoricProcessInstancesQueryLimit());
     }
     historicProcessInstanceQuery.setFirstResult(0);
 
-    List<HistoricProcessInstance> instanceList = getDbSqlSession().selectListWithRawParameterWithoutFilter("selectHistoricProcessInstancesWithVariablesByQueryCriteria", historicProcessInstanceQuery,
-        historicProcessInstanceQuery.getFirstResult(), historicProcessInstanceQuery.getMaxResults());
+    List<HistoricProcessInstance> instanceList =
+        getDbSqlSession()
+            .selectListWithRawParameterWithoutFilter(
+                "selectHistoricProcessInstancesWithVariablesByQueryCriteria",
+                historicProcessInstanceQuery,
+                historicProcessInstanceQuery.getFirstResult(),
+                historicProcessInstanceQuery.getMaxResults());
 
     if (instanceList != null && !instanceList.isEmpty()) {
       if (firstResult > 0) {
@@ -118,13 +138,17 @@ public class MybatisHistoricProcessInstanceDataManager extends AbstractDataManag
 
   @Override
   @SuppressWarnings("unchecked")
-  public List<HistoricProcessInstance> findHistoricProcessInstancesByNativeQuery(Map<String, Object> parameterMap, int firstResult, int maxResults) {
-    return getDbSqlSession().selectListWithRawParameter("selectHistoricProcessInstanceByNativeQuery", parameterMap, firstResult, maxResults);
+  public List<HistoricProcessInstance> findHistoricProcessInstancesByNativeQuery(
+      Map<String, Object> parameterMap, int firstResult, int maxResults) {
+    return getDbSqlSession()
+        .selectListWithRawParameter(
+            "selectHistoricProcessInstanceByNativeQuery", parameterMap, firstResult, maxResults);
   }
 
   @Override
   public long findHistoricProcessInstanceCountByNativeQuery(Map<String, Object> parameterMap) {
-    return (Long) getDbSqlSession().selectOne("selectHistoricProcessInstanceCountByNativeQuery", parameterMap);
+    return (Long)
+        getDbSqlSession()
+            .selectOne("selectHistoricProcessInstanceCountByNativeQuery", parameterMap);
   }
-
 }
