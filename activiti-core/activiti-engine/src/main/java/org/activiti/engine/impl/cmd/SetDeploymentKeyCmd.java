@@ -30,50 +30,66 @@ import org.activiti.engine.repository.Deployment;
  */
 public class SetDeploymentKeyCmd implements Command<Void> {
 
-  protected String deploymentId;
-  protected String key;
+    protected String deploymentId;
+    protected String key;
 
-  public SetDeploymentKeyCmd(String deploymentId, String key) {
-    this.deploymentId = deploymentId;
-    this.key = key;
-  }
-
-  public Void execute(CommandContext commandContext) {
-
-    if (deploymentId == null) {
-      throw new ActivitiIllegalArgumentException("Deployment id is null");
+    public SetDeploymentKeyCmd(String deploymentId, String key) {
+        this.deploymentId = deploymentId;
+        this.key = key;
     }
 
-    DeploymentEntity deployment = commandContext.getDeploymentEntityManager().findById(deploymentId);
+    public Void execute(CommandContext commandContext) {
+        if (deploymentId == null) {
+            throw new ActivitiIllegalArgumentException("Deployment id is null");
+        }
 
-    if (deployment == null) {
-      throw new ActivitiObjectNotFoundException("No deployment found for id = '" + deploymentId + "'", Deployment.class);
+        DeploymentEntity deployment = commandContext
+            .getDeploymentEntityManager()
+            .findById(deploymentId);
+
+        if (deployment == null) {
+            throw new ActivitiObjectNotFoundException(
+                "No deployment found for id = '" + deploymentId + "'",
+                Deployment.class
+            );
+        }
+
+        // Update category
+        deployment.setKey(key);
+
+        if (
+            commandContext
+                .getProcessEngineConfiguration()
+                .getEventDispatcher()
+                .isEnabled()
+        ) {
+            commandContext
+                .getProcessEngineConfiguration()
+                .getEventDispatcher()
+                .dispatchEvent(
+                    ActivitiEventBuilder.createEntityEvent(
+                        ActivitiEventType.ENTITY_UPDATED,
+                        deployment
+                    )
+                );
+        }
+
+        return null;
     }
 
-    // Update category
-    deployment.setKey(key);
-
-    if (commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-      commandContext.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_UPDATED, deployment));
+    public String getDeploymentId() {
+        return deploymentId;
     }
 
-    return null;
-  }
+    public void setDeploymentId(String deploymentId) {
+        this.deploymentId = deploymentId;
+    }
 
-  public String getDeploymentId() {
-    return deploymentId;
-  }
+    public String getKey() {
+        return key;
+    }
 
-  public void setDeploymentId(String deploymentId) {
-    this.deploymentId = deploymentId;
-  }
-
-  public String getKey() {
-    return key;
-  }
-
-  public void setKey(String key) {
-    this.key = key;
-  }
-
+    public void setKey(String key) {
+        this.key = key;
+    }
 }

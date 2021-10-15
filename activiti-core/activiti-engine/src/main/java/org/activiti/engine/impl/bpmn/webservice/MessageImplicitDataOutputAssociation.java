@@ -27,24 +27,38 @@ import org.activiti.engine.impl.bpmn.data.FieldBaseStructureInstance;
  *
 
  */
-public class MessageImplicitDataOutputAssociation extends AbstractDataAssociation {
+public class MessageImplicitDataOutputAssociation
+    extends AbstractDataAssociation {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  public MessageImplicitDataOutputAssociation(String targetRef, Expression sourceExpression) {
-    super(sourceExpression, targetRef);
-  }
-
-  public MessageImplicitDataOutputAssociation(String targetRef, String sourceRef) {
-    super(sourceRef, targetRef);
-  }
-
-  @Override
-  public void evaluate(DelegateExecution execution) {
-    MessageInstance message = (MessageInstance) execution.getVariable(WebServiceActivityBehavior.CURRENT_MESSAGE);
-    if (message.getStructureInstance() instanceof FieldBaseStructureInstance) {
-      FieldBaseStructureInstance structure = (FieldBaseStructureInstance) message.getStructureInstance();
-      execution.setVariable(this.getTarget(), structure.getFieldValue(this.getSource()));
+    public MessageImplicitDataOutputAssociation(
+        String targetRef,
+        Expression sourceExpression
+    ) {
+        super(sourceExpression, targetRef);
     }
-  }
+
+    public MessageImplicitDataOutputAssociation(
+        String targetRef,
+        String sourceRef
+    ) {
+        super(sourceRef, targetRef);
+    }
+
+    @Override
+    public void evaluate(DelegateExecution execution) {
+        MessageInstance message = (MessageInstance) execution.getVariable(
+            WebServiceActivityBehavior.CURRENT_MESSAGE
+        );
+        if (
+            message.getStructureInstance() instanceof FieldBaseStructureInstance
+        ) {
+            FieldBaseStructureInstance structure = (FieldBaseStructureInstance) message.getStructureInstance();
+            execution.setVariable(
+                this.getTarget(),
+                structure.getFieldValue(this.getSource())
+            );
+        }
+    }
 }

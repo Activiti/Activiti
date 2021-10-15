@@ -22,17 +22,15 @@ import org.activiti.engine.impl.persistence.entity.Entity;
 
  */
 public interface DataManager<EntityImpl extends Entity> {
+    EntityImpl create();
 
-  EntityImpl create();
+    EntityImpl findById(String entityId);
 
-  EntityImpl findById(String entityId);
+    void insert(EntityImpl entity);
 
-  void insert(EntityImpl entity);
+    EntityImpl update(EntityImpl entity);
 
-  EntityImpl update(EntityImpl entity);
+    void delete(String id);
 
-  void delete(String id);
-
-  void delete(EntityImpl entity);
-
+    void delete(EntityImpl entity);
 }

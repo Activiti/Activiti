@@ -17,7 +17,6 @@
 package org.activiti.engine.impl.persistence.deploy;
 
 import java.util.Map;
-
 import org.activiti.engine.impl.persistence.entity.DeploymentEntity;
 
 /**
@@ -25,6 +24,8 @@ import org.activiti.engine.impl.persistence.entity.DeploymentEntity;
 
  */
 public interface Deployer {
-
-  void deploy(DeploymentEntity deployment, Map<String, Object> deploymentSettings);
+    void deploy(
+        DeploymentEntity deployment,
+        Map<String, Object> deploymentSettings
+    );
 }

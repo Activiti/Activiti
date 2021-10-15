@@ -14,13 +14,11 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.task;
 
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
-
 import org.activiti.engine.TaskService;
 
 /** Exposes twitter-like feeds for tasks and process instances.
@@ -29,66 +27,64 @@ import org.activiti.engine.TaskService;
 
  */
 public interface Event extends Serializable {
+    /**
+     * A user identity link was added with following message parts: [0] userId [1] identity link type (aka role)
+     */
+    String ACTION_ADD_USER_LINK = "AddUserLink";
 
-  /**
-   * A user identity link was added with following message parts: [0] userId [1] identity link type (aka role)
-   */
-  String ACTION_ADD_USER_LINK = "AddUserLink";
+    /**
+     * A user identity link was added with following message parts: [0] userId [1] identity link type (aka role)
+     */
+    String ACTION_DELETE_USER_LINK = "DeleteUserLink";
 
-  /**
-   * A user identity link was added with following message parts: [0] userId [1] identity link type (aka role)
-   */
-  String ACTION_DELETE_USER_LINK = "DeleteUserLink";
+    /**
+     * A group identity link was added with following message parts: [0] groupId [1] identity link type (aka role)
+     */
+    String ACTION_ADD_GROUP_LINK = "AddGroupLink";
 
-  /**
-   * A group identity link was added with following message parts: [0] groupId [1] identity link type (aka role)
-   */
-  String ACTION_ADD_GROUP_LINK = "AddGroupLink";
+    /**
+     * A group identity link was added with following message parts: [0] groupId [1] identity link type (aka role)
+     */
+    String ACTION_DELETE_GROUP_LINK = "DeleteGroupLink";
 
-  /**
-   * A group identity link was added with following message parts: [0] groupId [1] identity link type (aka role)
-   */
-  String ACTION_DELETE_GROUP_LINK = "DeleteGroupLink";
+    /**
+     * An user comment was added with the short version of the comment as message.
+     */
+    String ACTION_ADD_COMMENT = "AddComment";
 
-  /**
-   * An user comment was added with the short version of the comment as message.
-   */
-  String ACTION_ADD_COMMENT = "AddComment";
+    /** An attachment was added with the attachment name as message. */
+    String ACTION_ADD_ATTACHMENT = "AddAttachment";
 
-  /** An attachment was added with the attachment name as message. */
-  String ACTION_ADD_ATTACHMENT = "AddAttachment";
+    /** An attachment was deleted with the attachment name as message. */
+    String ACTION_DELETE_ATTACHMENT = "DeleteAttachment";
 
-  /** An attachment was deleted with the attachment name as message. */
-  String ACTION_DELETE_ATTACHMENT = "DeleteAttachment";
+    /** Unique identifier for this event */
+    String getId();
 
-  /** Unique identifier for this event */
-  String getId();
+    /**
+     * Indicates the type of action and also indicates the meaning of the parts as exposed in {@link #getMessageParts()}
+     */
+    String getAction();
 
-  /**
-   * Indicates the type of action and also indicates the meaning of the parts as exposed in {@link #getMessageParts()}
-   */
-  String getAction();
+    /**
+     * The meaning of the message parts is defined by the action as you can find in {@link #getAction()}
+     */
+    List<String> getMessageParts();
 
-  /**
-   * The meaning of the message parts is defined by the action as you can find in {@link #getAction()}
-   */
-  List<String> getMessageParts();
+    /**
+     * The message that can be used in case this action only has a single message part.
+     */
+    String getMessage();
 
-  /**
-   * The message that can be used in case this action only has a single message part.
-   */
-  String getMessage();
+    /** reference to the user that made the comment */
+    String getUserId();
 
-  /** reference to the user that made the comment */
-  String getUserId();
+    /** time and date when the user made the comment */
+    Date getTime();
 
-  /** time and date when the user made the comment */
-  Date getTime();
+    /** reference to the task on which this comment was made */
+    String getTaskId();
 
-  /** reference to the task on which this comment was made */
-  String getTaskId();
-
-  /** reference to the process instance on which this comment was made */
-  String getProcessInstanceId();
-
+    /** reference to the process instance on which this comment was made */
+    String getProcessInstanceId();
 }

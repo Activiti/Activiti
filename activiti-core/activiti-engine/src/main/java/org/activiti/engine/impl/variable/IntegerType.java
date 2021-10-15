@@ -21,37 +21,40 @@ package org.activiti.engine.impl.variable;
  */
 public class IntegerType implements VariableType {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  public String getTypeName() {
-    return "integer";
-  }
-
-  public boolean isCachable() {
-    return true;
-  }
-
-  public Object getValue(ValueFields valueFields) {
-    if (valueFields.getLongValue() != null) {
-      return new Integer(valueFields.getLongValue().intValue());
+    public String getTypeName() {
+        return "integer";
     }
-    return null;
-  }
 
-  public void setValue(Object value, ValueFields valueFields) {
-    if (value != null) {
-      valueFields.setLongValue(((Integer) value).longValue());
-      valueFields.setTextValue(value.toString());
-    } else {
-      valueFields.setLongValue(null);
-      valueFields.setTextValue(null);
+    public boolean isCachable() {
+        return true;
     }
-  }
 
-  public boolean isAbleToStore(Object value) {
-    if (value == null) {
-      return true;
+    public Object getValue(ValueFields valueFields) {
+        if (valueFields.getLongValue() != null) {
+            return new Integer(valueFields.getLongValue().intValue());
+        }
+        return null;
     }
-    return Integer.class.isAssignableFrom(value.getClass()) || int.class.isAssignableFrom(value.getClass());
-  }
+
+    public void setValue(Object value, ValueFields valueFields) {
+        if (value != null) {
+            valueFields.setLongValue(((Integer) value).longValue());
+            valueFields.setTextValue(value.toString());
+        } else {
+            valueFields.setLongValue(null);
+            valueFields.setTextValue(null);
+        }
+    }
+
+    public boolean isAbleToStore(Object value) {
+        if (value == null) {
+            return true;
+        }
+        return (
+            Integer.class.isAssignableFrom(value.getClass()) ||
+            int.class.isAssignableFrom(value.getClass())
+        );
+    }
 }

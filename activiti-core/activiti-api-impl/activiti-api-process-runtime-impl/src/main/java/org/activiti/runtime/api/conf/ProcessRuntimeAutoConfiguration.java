@@ -109,13 +109,13 @@ import org.activiti.runtime.api.event.internal.TimerRetriesDecrementedListenerDe
 import org.activiti.runtime.api.event.internal.TimerScheduledListenerDelegate;
 import org.activiti.runtime.api.impl.EventSubscriptionVariablesMappingProvider;
 import org.activiti.runtime.api.impl.ExpressionResolver;
+import org.activiti.runtime.api.impl.ExtensionsVariablesMappingProvider;
 import org.activiti.runtime.api.impl.ProcessAdminRuntimeImpl;
 import org.activiti.runtime.api.impl.ProcessRuntimeImpl;
 import org.activiti.runtime.api.impl.ProcessVariablesPayloadValidator;
 import org.activiti.runtime.api.impl.RuntimeReceiveMessagePayloadEventListener;
 import org.activiti.runtime.api.impl.RuntimeSignalPayloadEventListener;
 import org.activiti.runtime.api.impl.VariableNameValidator;
-import org.activiti.runtime.api.impl.ExtensionsVariablesMappingProvider;
 import org.activiti.runtime.api.message.ReceiveMessagePayloadEventListener;
 import org.activiti.runtime.api.model.impl.APIDeploymentConverter;
 import org.activiti.runtime.api.model.impl.APIProcessDefinitionConverter;
@@ -145,7 +145,9 @@ public class ProcessRuntimeAutoConfiguration {
      */
     @Bean
     @ConditionalOnMissingBean(SignalPayloadEventListener.class)
-    public SignalPayloadEventListener signalPayloadEventListener(RuntimeService runtimeService) {
+    public SignalPayloadEventListener signalPayloadEventListener(
+        RuntimeService runtimeService
+    ) {
         return new RuntimeSignalPayloadEventListener(runtimeService);
     }
 
@@ -154,57 +156,71 @@ public class ProcessRuntimeAutoConfiguration {
      */
     @Bean
     @ConditionalOnMissingBean(ReceiveMessagePayloadEventListener.class)
-    public ReceiveMessagePayloadEventListener receiveMessagePayloadEventListener(RuntimeService runtimeService,
-                                                                                 ManagementService managementService) {
-        return new RuntimeReceiveMessagePayloadEventListener(runtimeService,
-                managementService);
+    public ReceiveMessagePayloadEventListener receiveMessagePayloadEventListener(
+        RuntimeService runtimeService,
+        ManagementService managementService
+    ) {
+        return new RuntimeReceiveMessagePayloadEventListener(
+            runtimeService,
+            managementService
+        );
     }
 
     @Bean
     @ConditionalOnMissingBean(EventSubscriptionPayloadMappingProvider.class)
     public EventSubscriptionPayloadMappingProvider eventSubscriptionPayloadMappingProvider(
-        ExtensionsVariablesMappingProvider variablesMappingProvider) {
-        return new EventSubscriptionVariablesMappingProvider(variablesMappingProvider);
+        ExtensionsVariablesMappingProvider variablesMappingProvider
+    ) {
+        return new EventSubscriptionVariablesMappingProvider(
+            variablesMappingProvider
+        );
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public ProcessRuntime processRuntime(RepositoryService repositoryService,
-                                         APIProcessDefinitionConverter processDefinitionConverter,
-                                         RuntimeService runtimeService,
-                                         ProcessSecurityPoliciesManager securityPoliciesManager,
-                                         APIProcessInstanceConverter processInstanceConverter,
-                                         APIVariableInstanceConverter variableInstanceConverter,
-                                         APIDeploymentConverter apiDeploymentConverter,
-                                         ProcessRuntimeConfiguration processRuntimeConfiguration,
-                                         ApplicationEventPublisher eventPublisher,
-                                         ProcessVariablesPayloadValidator processVariablesValidator) {
-        return new ProcessRuntimeImpl(repositoryService,
-                processDefinitionConverter,
-                runtimeService,
-                securityPoliciesManager,
-                processInstanceConverter,
-                variableInstanceConverter,
-                apiDeploymentConverter,
-                processRuntimeConfiguration,
-                eventPublisher,
-                processVariablesValidator);
+    public ProcessRuntime processRuntime(
+        RepositoryService repositoryService,
+        APIProcessDefinitionConverter processDefinitionConverter,
+        RuntimeService runtimeService,
+        ProcessSecurityPoliciesManager securityPoliciesManager,
+        APIProcessInstanceConverter processInstanceConverter,
+        APIVariableInstanceConverter variableInstanceConverter,
+        APIDeploymentConverter apiDeploymentConverter,
+        ProcessRuntimeConfiguration processRuntimeConfiguration,
+        ApplicationEventPublisher eventPublisher,
+        ProcessVariablesPayloadValidator processVariablesValidator
+    ) {
+        return new ProcessRuntimeImpl(
+            repositoryService,
+            processDefinitionConverter,
+            runtimeService,
+            securityPoliciesManager,
+            processInstanceConverter,
+            variableInstanceConverter,
+            apiDeploymentConverter,
+            processRuntimeConfiguration,
+            eventPublisher,
+            processVariablesValidator
+        );
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public ProcessAdminRuntime processAdminRuntime(RepositoryService repositoryService,
-                                                   APIProcessDefinitionConverter processDefinitionConverter,
-                                                   RuntimeService runtimeService,
-                                                   APIProcessInstanceConverter processInstanceConverter,
-                                                   ApplicationEventPublisher eventPublisher,
-                                                   ProcessVariablesPayloadValidator processVariablesValidator) {
-        return new ProcessAdminRuntimeImpl(repositoryService,
-                processDefinitionConverter,
-                runtimeService,
-                processInstanceConverter,
-                eventPublisher,
-                processVariablesValidator
+    public ProcessAdminRuntime processAdminRuntime(
+        RepositoryService repositoryService,
+        APIProcessDefinitionConverter processDefinitionConverter,
+        RuntimeService runtimeService,
+        APIProcessInstanceConverter processInstanceConverter,
+        ApplicationEventPublisher eventPublisher,
+        ProcessVariablesPayloadValidator processVariablesValidator
+    ) {
+        return new ProcessAdminRuntimeImpl(
+            repositoryService,
+            processDefinitionConverter,
+            runtimeService,
+            processInstanceConverter,
+            eventPublisher,
+            processVariablesValidator
         );
     }
 
@@ -222,34 +238,44 @@ public class ProcessRuntimeAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public APIProcessDefinitionConverter apiProcessDefinitionConverter(RepositoryService repositoryService) {
+    public APIProcessDefinitionConverter apiProcessDefinitionConverter(
+        RepositoryService repositoryService
+    ) {
         return new APIProcessDefinitionConverter(repositoryService);
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public ProcessVariablesInitiator processVariablesInitiator(ProcessExtensionService processExtensionService,
-                                                               VariableParsingService variableParsingService,
-                                                               VariableValidationService variableValidationService,
-                                                               ExtensionsVariablesMappingProvider mappingProvider) {
-        return new ProcessVariablesInitiator(processExtensionService,
-                                             variableParsingService,
-                                             variableValidationService,
-                                             mappingProvider);
+    public ProcessVariablesInitiator processVariablesInitiator(
+        ProcessExtensionService processExtensionService,
+        VariableParsingService variableParsingService,
+        VariableValidationService variableValidationService,
+        ExtensionsVariablesMappingProvider mappingProvider
+    ) {
+        return new ProcessVariablesInitiator(
+            processExtensionService,
+            variableParsingService,
+            variableValidationService,
+            mappingProvider
+        );
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public ProcessVariablesPayloadValidator processVariablesValidator(DateFormatterProvider dateFormatterProvider,
-                                                                      ProcessExtensionService processExtensionService,
-                                                                      VariableValidationService variableValidationService,
-                                                                      VariableNameValidator variableNameValidator,
-                                                                      ExpressionResolver expressionResolver) {
-        return new ProcessVariablesPayloadValidator(dateFormatterProvider,
-                processExtensionService,
-                variableValidationService,
-                variableNameValidator,
-                expressionResolver);
+    public ProcessVariablesPayloadValidator processVariablesValidator(
+        DateFormatterProvider dateFormatterProvider,
+        ProcessExtensionService processExtensionService,
+        VariableValidationService variableValidationService,
+        VariableNameValidator variableNameValidator,
+        ExpressionResolver expressionResolver
+    ) {
+        return new ProcessVariablesPayloadValidator(
+            dateFormatterProvider,
+            processExtensionService,
+            variableValidationService,
+            variableNameValidator,
+            expressionResolver
+        );
     }
 
     @Bean
@@ -260,45 +286,63 @@ public class ProcessRuntimeAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public APIDeploymentConverter apiDeploymentConverter(){
+    public APIDeploymentConverter apiDeploymentConverter() {
         return new APIDeploymentConverter();
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public ProcessRuntimeConfiguration processRuntimeConfiguration(@Autowired(required = false) List<ProcessRuntimeEventListener<?>> processRuntimeEventListeners,
-                                                                   @Autowired(required = false) List<VariableEventListener<?>> variableEventListeners) {
-        return new ProcessRuntimeConfigurationImpl(getInitializedListeners(processRuntimeEventListeners),
-                getInitializedListeners(variableEventListeners));
+    public ProcessRuntimeConfiguration processRuntimeConfiguration(
+        @Autowired(
+            required = false
+        ) List<ProcessRuntimeEventListener<?>> processRuntimeEventListeners,
+        @Autowired(
+            required = false
+        ) List<VariableEventListener<?>> variableEventListeners
+    ) {
+        return new ProcessRuntimeConfigurationImpl(
+            getInitializedListeners(processRuntimeEventListeners),
+            getInitializedListeners(variableEventListeners)
+        );
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public ToAPIProcessStartedEventConverter apiProcessStartedEventConverter(APIProcessInstanceConverter processInstanceConverter) {
+    public ToAPIProcessStartedEventConverter apiProcessStartedEventConverter(
+        APIProcessInstanceConverter processInstanceConverter
+    ) {
         return new ToAPIProcessStartedEventConverter(processInstanceConverter);
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public ToAPIProcessCreatedEventConverter apiProcessCreatedEventConverter(APIProcessInstanceConverter processInstanceConverter) {
+    public ToAPIProcessCreatedEventConverter apiProcessCreatedEventConverter(
+        APIProcessInstanceConverter processInstanceConverter
+    ) {
         return new ToAPIProcessCreatedEventConverter(processInstanceConverter);
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public ToProcessUpdatedConverter processUpdatedConverter(APIProcessInstanceConverter processInstanceConverter) {
+    public ToProcessUpdatedConverter processUpdatedConverter(
+        APIProcessInstanceConverter processInstanceConverter
+    ) {
         return new ToProcessUpdatedConverter(processInstanceConverter);
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public ToProcessResumedConverter processResumedConverter(APIProcessInstanceConverter processInstanceConverter) {
+    public ToProcessResumedConverter processResumedConverter(
+        APIProcessInstanceConverter processInstanceConverter
+    ) {
         return new ToProcessResumedConverter(processInstanceConverter);
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public ToProcessSuspendedConverter processSuspendedConverter(APIProcessInstanceConverter processInstanceConverter) {
+    public ToProcessSuspendedConverter processSuspendedConverter(
+        APIProcessInstanceConverter processInstanceConverter
+    ) {
         return new ToProcessSuspendedConverter(processInstanceConverter);
     }
 
@@ -307,81 +351,154 @@ public class ProcessRuntimeAutoConfiguration {
     }
 
     @Bean
-    @ConditionalOnMissingBean(name = "registerProcessStartedEventListenerDelegate")
-    public InitializingBean registerProcessStartedEventListenerDelegate(RuntimeService runtimeService,
-                                                                        @Autowired(required = false) List<ProcessRuntimeEventListener<ProcessStartedEvent>> listeners,
-                                                                        ToAPIProcessStartedEventConverter processStartedEventConverter) {
-        return () -> runtimeService.addEventListener(new ProcessStartedListenerDelegate(getInitializedListeners(listeners),
-                        processStartedEventConverter),
-                ActivitiEventType.PROCESS_STARTED);
+    @ConditionalOnMissingBean(
+        name = "registerProcessStartedEventListenerDelegate"
+    )
+    public InitializingBean registerProcessStartedEventListenerDelegate(
+        RuntimeService runtimeService,
+        @Autowired(
+            required = false
+        ) List<ProcessRuntimeEventListener<ProcessStartedEvent>> listeners,
+        ToAPIProcessStartedEventConverter processStartedEventConverter
+    ) {
+        return () ->
+            runtimeService.addEventListener(
+                new ProcessStartedListenerDelegate(
+                    getInitializedListeners(listeners),
+                    processStartedEventConverter
+                ),
+                ActivitiEventType.PROCESS_STARTED
+            );
     }
 
     @Bean
-    @ConditionalOnMissingBean(name = "registerProcessCreatedEventListenerDelegate")
-    public InitializingBean registerProcessCreatedEventListenerDelegate(RuntimeService runtimeService,
-                                                                        @Autowired(required = false) List<ProcessRuntimeEventListener<ProcessCreatedEvent>> eventListeners,
-                                                                        ToAPIProcessCreatedEventConverter converter) {
-        return () -> runtimeService.addEventListener(new ProcessCreatedListenerDelegate(getInitializedListeners(eventListeners),
-                        converter),
-                ActivitiEventType.ENTITY_CREATED);
+    @ConditionalOnMissingBean(
+        name = "registerProcessCreatedEventListenerDelegate"
+    )
+    public InitializingBean registerProcessCreatedEventListenerDelegate(
+        RuntimeService runtimeService,
+        @Autowired(
+            required = false
+        ) List<ProcessRuntimeEventListener<ProcessCreatedEvent>> eventListeners,
+        ToAPIProcessCreatedEventConverter converter
+    ) {
+        return () ->
+            runtimeService.addEventListener(
+                new ProcessCreatedListenerDelegate(
+                    getInitializedListeners(eventListeners),
+                    converter
+                ),
+                ActivitiEventType.ENTITY_CREATED
+            );
     }
 
     @Bean
-    @ConditionalOnMissingBean(name = "registerProcessUpdatedEventListenerDelegate")
-    public InitializingBean registerProcessUpdatedEventListenerDelegate(RuntimeService runtimeService,
-                                                                        @Autowired(required = false) List<ProcessRuntimeEventListener<ProcessUpdatedEvent>> eventListeners,
-                                                                        ToProcessUpdatedConverter converter) {
-        return () -> runtimeService.addEventListener(new ProcessUpdatedListenerDelegate(getInitializedListeners(eventListeners),
-                        converter),
-                ActivitiEventType.ENTITY_UPDATED);
+    @ConditionalOnMissingBean(
+        name = "registerProcessUpdatedEventListenerDelegate"
+    )
+    public InitializingBean registerProcessUpdatedEventListenerDelegate(
+        RuntimeService runtimeService,
+        @Autowired(
+            required = false
+        ) List<ProcessRuntimeEventListener<ProcessUpdatedEvent>> eventListeners,
+        ToProcessUpdatedConverter converter
+    ) {
+        return () ->
+            runtimeService.addEventListener(
+                new ProcessUpdatedListenerDelegate(
+                    getInitializedListeners(eventListeners),
+                    converter
+                ),
+                ActivitiEventType.ENTITY_UPDATED
+            );
     }
 
     @Bean
-    @ConditionalOnMissingBean(name = "registerProcessSuspendedEventListenerDelegate")
-    public InitializingBean registerProcessSuspendedEventListenerDelegate(RuntimeService runtimeService,
-                                                                          @Autowired(required = false) List<ProcessRuntimeEventListener<ProcessSuspendedEvent>> eventListeners,
-                                                                          ToProcessSuspendedConverter converter) {
-        return () -> runtimeService.addEventListener(new ProcessSuspendedListenerDelegate(getInitializedListeners(eventListeners),
-                        converter),
-                ActivitiEventType.ENTITY_SUSPENDED);
+    @ConditionalOnMissingBean(
+        name = "registerProcessSuspendedEventListenerDelegate"
+    )
+    public InitializingBean registerProcessSuspendedEventListenerDelegate(
+        RuntimeService runtimeService,
+        @Autowired(
+            required = false
+        ) List<ProcessRuntimeEventListener<ProcessSuspendedEvent>> eventListeners,
+        ToProcessSuspendedConverter converter
+    ) {
+        return () ->
+            runtimeService.addEventListener(
+                new ProcessSuspendedListenerDelegate(
+                    getInitializedListeners(eventListeners),
+                    converter
+                ),
+                ActivitiEventType.ENTITY_SUSPENDED
+            );
     }
 
     @Bean
-    @ConditionalOnMissingBean(name = "registerProcessResumedEventListenerDelegate")
-    public InitializingBean registerProcessResumedEventListenerDelegate(RuntimeService runtimeService,
-                                                                        @Autowired(required = false) List<ProcessRuntimeEventListener<ProcessResumedEvent>> eventListeners,
-                                                                        ToProcessResumedConverter converter) {
-        return () -> runtimeService.addEventListener(new ProcessResumedEventListenerDelegate(getInitializedListeners(eventListeners),
-                        converter),
-                ActivitiEventType.ENTITY_ACTIVATED);
+    @ConditionalOnMissingBean(
+        name = "registerProcessResumedEventListenerDelegate"
+    )
+    public InitializingBean registerProcessResumedEventListenerDelegate(
+        RuntimeService runtimeService,
+        @Autowired(
+            required = false
+        ) List<ProcessRuntimeEventListener<ProcessResumedEvent>> eventListeners,
+        ToProcessResumedConverter converter
+    ) {
+        return () ->
+            runtimeService.addEventListener(
+                new ProcessResumedEventListenerDelegate(
+                    getInitializedListeners(eventListeners),
+                    converter
+                ),
+                ActivitiEventType.ENTITY_ACTIVATED
+            );
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public ToProcessCompletedConverter processCompletedConverter(APIProcessInstanceConverter processInstanceConverter) {
+    public ToProcessCompletedConverter processCompletedConverter(
+        APIProcessInstanceConverter processInstanceConverter
+    ) {
         return new ToProcessCompletedConverter(processInstanceConverter);
     }
 
     @Bean
     @ConditionalOnMissingBean(name = "registerProcessCompletedListenerDelegate")
-    public InitializingBean registerProcessCompletedListenerDelegate(RuntimeService runtimeService,
-                                                                     @Autowired(required = false) List<ProcessRuntimeEventListener<ProcessCompletedEvent>> eventListeners,
-                                                                     ToProcessCompletedConverter converter) {
-        return () -> runtimeService.addEventListener(new ProcessCompletedListenerDelegate(getInitializedListeners(eventListeners),
-                        converter),
-                ActivitiEventType.PROCESS_COMPLETED);
+    public InitializingBean registerProcessCompletedListenerDelegate(
+        RuntimeService runtimeService,
+        @Autowired(
+            required = false
+        ) List<ProcessRuntimeEventListener<ProcessCompletedEvent>> eventListeners,
+        ToProcessCompletedConverter converter
+    ) {
+        return () ->
+            runtimeService.addEventListener(
+                new ProcessCompletedListenerDelegate(
+                    getInitializedListeners(eventListeners),
+                    converter
+                ),
+                ActivitiEventType.PROCESS_COMPLETED
+            );
     }
 
     @Bean
     @ConditionalOnMissingBean(name = "registerProcessCancelledListenerDelegate")
-    public InitializingBean registerProcessCancelledListenerDelegate(RuntimeService runtimeService,
+    public InitializingBean registerProcessCancelledListenerDelegate(
+        RuntimeService runtimeService,
         APIProcessInstanceConverter processInstanceConverter,
-        @Autowired(required = false) List<ProcessRuntimeEventListener<ProcessCancelledEvent>> eventListeners) {
-
-        return () -> runtimeService.addEventListener(
-            new ProcessCancelledListenerDelegate(getInitializedListeners(eventListeners),
-                new ToProcessCancelledConverter(processInstanceConverter)),
-            ActivitiEventType.PROCESS_CANCELLED);
+        @Autowired(
+            required = false
+        ) List<ProcessRuntimeEventListener<ProcessCancelledEvent>> eventListeners
+    ) {
+        return () ->
+            runtimeService.addEventListener(
+                new ProcessCancelledListenerDelegate(
+                    getInitializedListeners(eventListeners),
+                    new ToProcessCancelledConverter(processInstanceConverter)
+                ),
+                ActivitiEventType.PROCESS_CANCELLED
+            );
     }
 
     @Bean
@@ -415,160 +532,314 @@ public class ProcessRuntimeAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean(name = "registerActivityStartedListenerDelegate")
-    public InitializingBean registerActivityStartedListenerDelegate(RuntimeService runtimeService,
-                                                                    @Autowired(required = false) List<BPMNElementEventListener<BPMNActivityStartedEvent>> eventListeners,
-                                                                    ToActivityConverter activityConverter) {
-        return () -> runtimeService.addEventListener(new ActivityStartedListenerDelegate(getInitializedListeners(eventListeners),
-                        new ToActivityStartedConverter(activityConverter)),
-                ActivitiEventType.ACTIVITY_STARTED);
+    public InitializingBean registerActivityStartedListenerDelegate(
+        RuntimeService runtimeService,
+        @Autowired(
+            required = false
+        ) List<BPMNElementEventListener<BPMNActivityStartedEvent>> eventListeners,
+        ToActivityConverter activityConverter
+    ) {
+        return () ->
+            runtimeService.addEventListener(
+                new ActivityStartedListenerDelegate(
+                    getInitializedListeners(eventListeners),
+                    new ToActivityStartedConverter(activityConverter)
+                ),
+                ActivitiEventType.ACTIVITY_STARTED
+            );
     }
 
     @Bean
-    @ConditionalOnMissingBean(name = "registerActivityCompletedListenerDelegate")
-    public InitializingBean registerActivityCompletedListenerDelegate(RuntimeService runtimeService,
-                                                                      @Autowired(required = false) List<BPMNElementEventListener<BPMNActivityCompletedEvent>> eventListeners,
-                                                                      ToActivityConverter activityConverter) {
-        return () -> runtimeService.addEventListener(new ActivityCompletedListenerDelegate(getInitializedListeners(eventListeners),
-                        new ToActivityCompletedConverter(activityConverter)),
-                ActivitiEventType.ACTIVITY_COMPLETED);
+    @ConditionalOnMissingBean(
+        name = "registerActivityCompletedListenerDelegate"
+    )
+    public InitializingBean registerActivityCompletedListenerDelegate(
+        RuntimeService runtimeService,
+        @Autowired(
+            required = false
+        ) List<BPMNElementEventListener<BPMNActivityCompletedEvent>> eventListeners,
+        ToActivityConverter activityConverter
+    ) {
+        return () ->
+            runtimeService.addEventListener(
+                new ActivityCompletedListenerDelegate(
+                    getInitializedListeners(eventListeners),
+                    new ToActivityCompletedConverter(activityConverter)
+                ),
+                ActivitiEventType.ACTIVITY_COMPLETED
+            );
     }
 
     @Bean
-    @ConditionalOnMissingBean(name = "registerActivityCancelledListenerDelegate")
-    public InitializingBean registerActivityCancelledListenerDelegate(RuntimeService runtimeService,
-                                                                      @Autowired(required = false) List<BPMNElementEventListener<BPMNActivityCancelledEvent>> eventListeners,
-                                                                      ToActivityConverter activityConverter) {
-        return () -> runtimeService.addEventListener(new ActivityCancelledListenerDelegate(getInitializedListeners(eventListeners),
-                        new ToActivityCancelledConverter(activityConverter)),
-                ActivitiEventType.ACTIVITY_CANCELLED);
+    @ConditionalOnMissingBean(
+        name = "registerActivityCancelledListenerDelegate"
+    )
+    public InitializingBean registerActivityCancelledListenerDelegate(
+        RuntimeService runtimeService,
+        @Autowired(
+            required = false
+        ) List<BPMNElementEventListener<BPMNActivityCancelledEvent>> eventListeners,
+        ToActivityConverter activityConverter
+    ) {
+        return () ->
+            runtimeService.addEventListener(
+                new ActivityCancelledListenerDelegate(
+                    getInitializedListeners(eventListeners),
+                    new ToActivityCancelledConverter(activityConverter)
+                ),
+                ActivitiEventType.ACTIVITY_CANCELLED
+            );
     }
 
     @Bean
     @ConditionalOnMissingBean(name = "registerActivitySignaledListenerDelegate")
-    public InitializingBean registerActivitySignaledListenerDelegate(RuntimeService runtimeService,
-                                                                     @Autowired(required = false) List<BPMNElementEventListener<BPMNSignalReceivedEvent>> eventListeners,
-                                                                     ToSignalConverter signalConverter) {
-        return () -> runtimeService.addEventListener(new SignalReceivedListenerDelegate(getInitializedListeners(eventListeners),
-                        new ToSignalReceivedConverter(signalConverter)),
-                ActivitiEventType.ACTIVITY_SIGNALED);
+    public InitializingBean registerActivitySignaledListenerDelegate(
+        RuntimeService runtimeService,
+        @Autowired(
+            required = false
+        ) List<BPMNElementEventListener<BPMNSignalReceivedEvent>> eventListeners,
+        ToSignalConverter signalConverter
+    ) {
+        return () ->
+            runtimeService.addEventListener(
+                new SignalReceivedListenerDelegate(
+                    getInitializedListeners(eventListeners),
+                    new ToSignalReceivedConverter(signalConverter)
+                ),
+                ActivitiEventType.ACTIVITY_SIGNALED
+            );
     }
 
     @Bean
     @ConditionalOnMissingBean(name = "registerTimerFiredListenerDelegate")
-    public InitializingBean registerTimerFiredListenerDelegate(RuntimeService runtimeService,
-                                                               @Autowired(required = false) List<BPMNElementEventListener<BPMNTimerFiredEvent>> eventListeners,
-                                                               BPMNTimerConverter bpmnTimerConverter) {
-        return () -> runtimeService.addEventListener(new TimerFiredListenerDelegate(getInitializedListeners(eventListeners),
-                        new ToTimerFiredConverter(bpmnTimerConverter)),
-                ActivitiEventType.TIMER_FIRED);
+    public InitializingBean registerTimerFiredListenerDelegate(
+        RuntimeService runtimeService,
+        @Autowired(
+            required = false
+        ) List<BPMNElementEventListener<BPMNTimerFiredEvent>> eventListeners,
+        BPMNTimerConverter bpmnTimerConverter
+    ) {
+        return () ->
+            runtimeService.addEventListener(
+                new TimerFiredListenerDelegate(
+                    getInitializedListeners(eventListeners),
+                    new ToTimerFiredConverter(bpmnTimerConverter)
+                ),
+                ActivitiEventType.TIMER_FIRED
+            );
     }
 
     @Bean
     @ConditionalOnMissingBean(name = "registerTimerScheduledListenerDelegate")
-    public InitializingBean registerTimerScheduledListenerDelegate(RuntimeService runtimeService,
-                                                                   @Autowired(required = false) List<BPMNElementEventListener<BPMNTimerScheduledEvent>> eventListeners,
-                                                                   BPMNTimerConverter bpmnTimerConverter) {
-        return () -> runtimeService.addEventListener(new TimerScheduledListenerDelegate(getInitializedListeners(eventListeners),
-                        new ToTimerScheduledConverter(bpmnTimerConverter)),
-                ActivitiEventType.TIMER_SCHEDULED);
+    public InitializingBean registerTimerScheduledListenerDelegate(
+        RuntimeService runtimeService,
+        @Autowired(
+            required = false
+        ) List<BPMNElementEventListener<BPMNTimerScheduledEvent>> eventListeners,
+        BPMNTimerConverter bpmnTimerConverter
+    ) {
+        return () ->
+            runtimeService.addEventListener(
+                new TimerScheduledListenerDelegate(
+                    getInitializedListeners(eventListeners),
+                    new ToTimerScheduledConverter(bpmnTimerConverter)
+                ),
+                ActivitiEventType.TIMER_SCHEDULED
+            );
     }
 
     @Bean
     @ConditionalOnMissingBean(name = "registerTimerCancelledListenerDelegate")
-    public InitializingBean registerTimerCancelledListenerDelegate(RuntimeService runtimeService,
-                                                                   @Autowired(required = false) List<BPMNElementEventListener<BPMNTimerCancelledEvent>> eventListeners,
-                                                                   BPMNTimerConverter bpmnTimerConverter) {
-        return () -> runtimeService.addEventListener(new TimerCancelledListenerDelegate(getInitializedListeners(eventListeners),
-                        new ToTimerCancelledConverter(bpmnTimerConverter)),
-                ActivitiEventType.JOB_CANCELED);
+    public InitializingBean registerTimerCancelledListenerDelegate(
+        RuntimeService runtimeService,
+        @Autowired(
+            required = false
+        ) List<BPMNElementEventListener<BPMNTimerCancelledEvent>> eventListeners,
+        BPMNTimerConverter bpmnTimerConverter
+    ) {
+        return () ->
+            runtimeService.addEventListener(
+                new TimerCancelledListenerDelegate(
+                    getInitializedListeners(eventListeners),
+                    new ToTimerCancelledConverter(bpmnTimerConverter)
+                ),
+                ActivitiEventType.JOB_CANCELED
+            );
     }
 
     @Bean
     @ConditionalOnMissingBean(name = "registerTimerFailedListenerDelegate")
-    public InitializingBean registerTimerFailedListenerDelegate(RuntimeService runtimeService,
-                                                                @Autowired(required = false) List<BPMNElementEventListener<BPMNTimerFailedEvent>> eventListeners,
-                                                                BPMNTimerConverter bpmnTimerConverter) {
-        return () -> runtimeService.addEventListener(new TimerFailedListenerDelegate(getInitializedListeners(eventListeners),
-                        new ToTimerFailedConverter(bpmnTimerConverter)),
-                ActivitiEventType.JOB_EXECUTION_FAILURE);
+    public InitializingBean registerTimerFailedListenerDelegate(
+        RuntimeService runtimeService,
+        @Autowired(
+            required = false
+        ) List<BPMNElementEventListener<BPMNTimerFailedEvent>> eventListeners,
+        BPMNTimerConverter bpmnTimerConverter
+    ) {
+        return () ->
+            runtimeService.addEventListener(
+                new TimerFailedListenerDelegate(
+                    getInitializedListeners(eventListeners),
+                    new ToTimerFailedConverter(bpmnTimerConverter)
+                ),
+                ActivitiEventType.JOB_EXECUTION_FAILURE
+            );
     }
 
     @Bean
     @ConditionalOnMissingBean(name = "registerTimerExecutedListenerDelegate")
-    public InitializingBean registerTimerExecutedListenerDelegate(RuntimeService runtimeService,
-                                                                  @Autowired(required = false) List<BPMNElementEventListener<BPMNTimerExecutedEvent>> eventListeners,
-                                                                  BPMNTimerConverter bpmnTimerConverter) {
-        return () -> runtimeService.addEventListener(new TimerExecutedListenerDelegate(getInitializedListeners(eventListeners),
-                        new ToTimerExecutedConverter(bpmnTimerConverter)),
-                ActivitiEventType.JOB_EXECUTION_SUCCESS);
+    public InitializingBean registerTimerExecutedListenerDelegate(
+        RuntimeService runtimeService,
+        @Autowired(
+            required = false
+        ) List<BPMNElementEventListener<BPMNTimerExecutedEvent>> eventListeners,
+        BPMNTimerConverter bpmnTimerConverter
+    ) {
+        return () ->
+            runtimeService.addEventListener(
+                new TimerExecutedListenerDelegate(
+                    getInitializedListeners(eventListeners),
+                    new ToTimerExecutedConverter(bpmnTimerConverter)
+                ),
+                ActivitiEventType.JOB_EXECUTION_SUCCESS
+            );
     }
 
     @Bean
-    @ConditionalOnMissingBean(name = "registerTimerRetriesDecrementedListenerDelegate")
-    public InitializingBean registerTimerRetriesDecrementedListenerDelegate(RuntimeService runtimeService,
-                                                                            @Autowired(required = false) List<BPMNElementEventListener<BPMNTimerRetriesDecrementedEvent>> eventListeners,
-                                                                            BPMNTimerConverter bpmnTimerConverter) {
-        return () -> runtimeService.addEventListener(new TimerRetriesDecrementedListenerDelegate(getInitializedListeners(eventListeners),
-                        new ToTimerRetriesDecrementedConverter(bpmnTimerConverter)),
-                ActivitiEventType.JOB_RETRIES_DECREMENTED);
+    @ConditionalOnMissingBean(
+        name = "registerTimerRetriesDecrementedListenerDelegate"
+    )
+    public InitializingBean registerTimerRetriesDecrementedListenerDelegate(
+        RuntimeService runtimeService,
+        @Autowired(
+            required = false
+        ) List<BPMNElementEventListener<BPMNTimerRetriesDecrementedEvent>> eventListeners,
+        BPMNTimerConverter bpmnTimerConverter
+    ) {
+        return () ->
+            runtimeService.addEventListener(
+                new TimerRetriesDecrementedListenerDelegate(
+                    getInitializedListeners(eventListeners),
+                    new ToTimerRetriesDecrementedConverter(bpmnTimerConverter)
+                ),
+                ActivitiEventType.JOB_RETRIES_DECREMENTED
+            );
     }
 
     @Bean
     @ConditionalOnMissingBean(name = "registerMessageSentListenerDelegate")
-    public InitializingBean registerMessageSentListenerDelegate(RuntimeService runtimeService,
-                                                                @Autowired(required = false) List<BPMNElementEventListener<BPMNMessageSentEvent>> eventListeners,
-                                                                BPMNMessageConverter bpmnMessageConverter) {
-        return () -> runtimeService.addEventListener(new MessageSentListenerDelegate(getInitializedListeners(eventListeners),
-                        new ToMessageSentConverter(bpmnMessageConverter)),
-                ActivitiEventType.ACTIVITY_MESSAGE_SENT);
+    public InitializingBean registerMessageSentListenerDelegate(
+        RuntimeService runtimeService,
+        @Autowired(
+            required = false
+        ) List<BPMNElementEventListener<BPMNMessageSentEvent>> eventListeners,
+        BPMNMessageConverter bpmnMessageConverter
+    ) {
+        return () ->
+            runtimeService.addEventListener(
+                new MessageSentListenerDelegate(
+                    getInitializedListeners(eventListeners),
+                    new ToMessageSentConverter(bpmnMessageConverter)
+                ),
+                ActivitiEventType.ACTIVITY_MESSAGE_SENT
+            );
     }
 
     @Bean
     @ConditionalOnMissingBean(name = "registerMessageReceivedListenerDelegate")
-    public InitializingBean registerMessageReceivedListenerDelegate(RuntimeService runtimeService,
-                                                                    @Autowired(required = false) List<BPMNElementEventListener<BPMNMessageReceivedEvent>> eventListeners,
-                                                                    BPMNMessageConverter bpmnMessageConverter) {
-        return () -> runtimeService.addEventListener(new MessageReceivedListenerDelegate(getInitializedListeners(eventListeners),
-                        new ToMessageReceivedConverter(bpmnMessageConverter)),
-                ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED);
+    public InitializingBean registerMessageReceivedListenerDelegate(
+        RuntimeService runtimeService,
+        @Autowired(
+            required = false
+        ) List<BPMNElementEventListener<BPMNMessageReceivedEvent>> eventListeners,
+        BPMNMessageConverter bpmnMessageConverter
+    ) {
+        return () ->
+            runtimeService.addEventListener(
+                new MessageReceivedListenerDelegate(
+                    getInitializedListeners(eventListeners),
+                    new ToMessageReceivedConverter(bpmnMessageConverter)
+                ),
+                ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED
+            );
     }
 
     @Bean
     @ConditionalOnMissingBean(name = "registerMessageWaitingListenerDelegate")
-    public InitializingBean registerMessageWaitingListenerDelegate(RuntimeService runtimeService,
-                                                                   @Autowired(required = false) List<BPMNElementEventListener<BPMNMessageWaitingEvent>> eventListeners,
-                                                                   BPMNMessageConverter bpmnMessageConverter) {
-        return () -> runtimeService.addEventListener(new MessageWaitingListenerDelegate(getInitializedListeners(eventListeners),
-                        new ToMessageWaitingConverter(bpmnMessageConverter)),
-                ActivitiEventType.ACTIVITY_MESSAGE_WAITING);
+    public InitializingBean registerMessageWaitingListenerDelegate(
+        RuntimeService runtimeService,
+        @Autowired(
+            required = false
+        ) List<BPMNElementEventListener<BPMNMessageWaitingEvent>> eventListeners,
+        BPMNMessageConverter bpmnMessageConverter
+    ) {
+        return () ->
+            runtimeService.addEventListener(
+                new MessageWaitingListenerDelegate(
+                    getInitializedListeners(eventListeners),
+                    new ToMessageWaitingConverter(bpmnMessageConverter)
+                ),
+                ActivitiEventType.ACTIVITY_MESSAGE_WAITING
+            );
     }
 
     @Bean
-    @ConditionalOnMissingBean(name = "registerSequenceFlowTakenListenerDelegate")
-    public InitializingBean registerSequenceFlowTakenListenerDelegate(RuntimeService runtimeService,
-                                                                      @Autowired(required = false) List<BPMNElementEventListener<BPMNSequenceFlowTakenEvent>> eventListeners) {
-        return () -> runtimeService.addEventListener(new SequenceFlowTakenListenerDelegate(getInitializedListeners(eventListeners),
-                        new ToSequenceFlowTakenConverter()),
-                ActivitiEventType.SEQUENCEFLOW_TAKEN);
+    @ConditionalOnMissingBean(
+        name = "registerSequenceFlowTakenListenerDelegate"
+    )
+    public InitializingBean registerSequenceFlowTakenListenerDelegate(
+        RuntimeService runtimeService,
+        @Autowired(
+            required = false
+        ) List<BPMNElementEventListener<BPMNSequenceFlowTakenEvent>> eventListeners
+    ) {
+        return () ->
+            runtimeService.addEventListener(
+                new SequenceFlowTakenListenerDelegate(
+                    getInitializedListeners(eventListeners),
+                    new ToSequenceFlowTakenConverter()
+                ),
+                ActivitiEventType.SEQUENCEFLOW_TAKEN
+            );
     }
 
     @Bean
     @ConditionalOnMissingBean(name = "registerErrorReceviedListenerDelegate")
-    public InitializingBean registerErrorReceviedListenerDelegate(RuntimeService runtimeService,
-                                                                  @Autowired(required = false) List<BPMNElementEventListener<BPMNErrorReceivedEvent>> eventListeners,
-                                                                  BPMNErrorConverter bpmnErrorConverter) {
-        return () -> runtimeService.addEventListener(new ErrorReceivedListenerDelegate(getInitializedListeners(eventListeners),
-                        new ToErrorReceivedConverter(bpmnErrorConverter)),
-                ActivitiEventType.ACTIVITY_ERROR_RECEIVED);
+    public InitializingBean registerErrorReceviedListenerDelegate(
+        RuntimeService runtimeService,
+        @Autowired(
+            required = false
+        ) List<BPMNElementEventListener<BPMNErrorReceivedEvent>> eventListeners,
+        BPMNErrorConverter bpmnErrorConverter
+    ) {
+        return () ->
+            runtimeService.addEventListener(
+                new ErrorReceivedListenerDelegate(
+                    getInitializedListeners(eventListeners),
+                    new ToErrorReceivedConverter(bpmnErrorConverter)
+                ),
+                ActivitiEventType.ACTIVITY_ERROR_RECEIVED
+            );
     }
 
     @Bean
-    @ConditionalOnMissingBean(name = "registerMessageSubscriptionCancelledListenerDelegate")
-    public InitializingBean registerMessageSubscriptionCancelledListenerDelegate(RuntimeService runtimeService,
-                                                                                 @Autowired(required = false) List<ProcessRuntimeEventListener<MessageSubscriptionCancelledEvent>> eventListeners,
-                                                                                 MessageSubscriptionConverter converter) {
-        return () -> runtimeService.addEventListener(new MessageSubscriptionCancelledListenerDelegate(getInitializedListeners(eventListeners),
-                                                                                                      new ToMessageSubscriptionCancelledConverter(converter)),
-                                                     ActivitiEventType.ENTITY_DELETED);
+    @ConditionalOnMissingBean(
+        name = "registerMessageSubscriptionCancelledListenerDelegate"
+    )
+    public InitializingBean registerMessageSubscriptionCancelledListenerDelegate(
+        RuntimeService runtimeService,
+        @Autowired(
+            required = false
+        ) List<ProcessRuntimeEventListener<MessageSubscriptionCancelledEvent>> eventListeners,
+        MessageSubscriptionConverter converter
+    ) {
+        return () ->
+            runtimeService.addEventListener(
+                new MessageSubscriptionCancelledListenerDelegate(
+                    getInitializedListeners(eventListeners),
+                    new ToMessageSubscriptionCancelledConverter(converter)
+                ),
+                ActivitiEventType.ENTITY_DELETED
+            );
     }
 }

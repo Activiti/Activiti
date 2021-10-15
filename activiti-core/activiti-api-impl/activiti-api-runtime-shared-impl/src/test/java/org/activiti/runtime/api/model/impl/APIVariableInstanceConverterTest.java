@@ -39,7 +39,8 @@ class APIVariableInstanceConverterTest {
 
         assertThat(result.getName()).isEqualTo("name");
         assertThat(result.getType()).isEqualTo("string");
-        assertThat(result.getProcessInstanceId()).isEqualTo("processInstanceId");
+        assertThat(result.getProcessInstanceId())
+            .isEqualTo("processInstanceId");
         assertThat(result.getTaskId()).isEqualTo("taskId");
         String actualValue = result.getValue();
         assertThat(actualValue).isEqualTo("someValue");

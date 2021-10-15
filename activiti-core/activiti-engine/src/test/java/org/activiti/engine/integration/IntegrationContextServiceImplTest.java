@@ -15,6 +15,13 @@
  */
 package org.activiti.engine.integration;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.MockitoAnnotations.initMocks;
+
 import org.activiti.engine.impl.cmd.integration.DeleteIntegrationContextCmd;
 import org.activiti.engine.impl.cmd.integration.RetrieveIntegrationContextsCmd;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
@@ -23,13 +30,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.MockitoAnnotations.initMocks;
 
 public class IntegrationContextServiceImplTest {
 
@@ -48,10 +48,15 @@ public class IntegrationContextServiceImplTest {
     public void findByIdShouldExecuteRetrieveIntegrationContextCmd() {
         //given
         IntegrationContextEntity entity = mock(IntegrationContextEntity.class);
-        given(commandExecutor.execute(any(RetrieveIntegrationContextsCmd.class))).willReturn(entity);
+        given(
+            commandExecutor.execute(any(RetrieveIntegrationContextsCmd.class))
+        )
+            .willReturn(entity);
 
         //when
-        IntegrationContextEntity commandResult = integrationContextService.findById("id");
+        IntegrationContextEntity commandResult = integrationContextService.findById(
+            "id"
+        );
 
         //then
         assertThat(commandResult).isEqualTo(entity);

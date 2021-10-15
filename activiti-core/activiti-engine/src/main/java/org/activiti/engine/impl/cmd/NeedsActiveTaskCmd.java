@@ -17,7 +17,6 @@
 package org.activiti.engine.impl.cmd;
 
 import java.io.Serializable;
-
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
@@ -31,45 +30,52 @@ import org.activiti.engine.task.Task;
  *
 
  */
-public abstract class NeedsActiveTaskCmd<T> implements Command<T>, Serializable {
+public abstract class NeedsActiveTaskCmd<T>
+    implements Command<T>, Serializable {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  protected String taskId;
+    protected String taskId;
 
-  public NeedsActiveTaskCmd(String taskId) {
-    this.taskId = taskId;
-  }
-
-  public T execute(CommandContext commandContext) {
-
-    if (taskId == null) {
-      throw new ActivitiIllegalArgumentException("taskId is null");
+    public NeedsActiveTaskCmd(String taskId) {
+        this.taskId = taskId;
     }
 
-    TaskEntity task = commandContext.getTaskEntityManager().findById(taskId);
+    public T execute(CommandContext commandContext) {
+        if (taskId == null) {
+            throw new ActivitiIllegalArgumentException("taskId is null");
+        }
 
-    if (task == null) {
-      throw new ActivitiObjectNotFoundException("Cannot find task with id " + taskId, Task.class);
+        TaskEntity task = commandContext
+            .getTaskEntityManager()
+            .findById(taskId);
+
+        if (task == null) {
+            throw new ActivitiObjectNotFoundException(
+                "Cannot find task with id " + taskId,
+                Task.class
+            );
+        }
+
+        if (task.isSuspended()) {
+            throw new ActivitiException(getSuspendedTaskException());
+        }
+
+        return execute(commandContext, task);
     }
 
-    if (task.isSuspended()) {
-      throw new ActivitiException(getSuspendedTaskException());
+    /**
+     * Subclasses must implement in this method their normal command logic. The provided task is ensured to be active.
+     */
+    protected abstract T execute(
+        CommandContext commandContext,
+        TaskEntity task
+    );
+
+    /**
+     * Subclasses can override this method to provide a customized exception message that will be thrown when the task is suspended.
+     */
+    protected String getSuspendedTaskException() {
+        return "Cannot execute operation: task is suspended";
     }
-
-    return execute(commandContext, task);
-  }
-
-  /**
-   * Subclasses must implement in this method their normal command logic. The provided task is ensured to be active.
-   */
-  protected abstract T execute(CommandContext commandContext, TaskEntity task);
-
-  /**
-   * Subclasses can override this method to provide a customized exception message that will be thrown when the task is suspended.
-   */
-  protected String getSuspendedTaskException() {
-    return "Cannot execute operation: task is suspended";
-  }
-
 }

@@ -15,38 +15,45 @@
  */
 package org.activiti.runtime.api.event.impl;
 
+import static org.activiti.engine.task.IdentityLinkType.CANDIDATE;
+
+import java.util.Optional;
 import org.activiti.api.task.runtime.events.TaskCandidateUserRemovedEvent;
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.task.IdentityLink;
 import org.activiti.runtime.api.model.impl.APITaskCandidateUserConverter;
 
-import java.util.Optional;
-
-import static org.activiti.engine.task.IdentityLinkType.CANDIDATE;
-
-public class ToTaskCandidateUserRemovedConverter implements EventConverter<TaskCandidateUserRemovedEvent, ActivitiEntityEvent> {
+public class ToTaskCandidateUserRemovedConverter
+    implements
+        EventConverter<TaskCandidateUserRemovedEvent, ActivitiEntityEvent> {
 
     private APITaskCandidateUserConverter converter;
 
-    public ToTaskCandidateUserRemovedConverter(APITaskCandidateUserConverter converter) {
+    public ToTaskCandidateUserRemovedConverter(
+        APITaskCandidateUserConverter converter
+    ) {
         this.converter = converter;
     }
 
     @Override
-    public Optional<TaskCandidateUserRemovedEvent> from(ActivitiEntityEvent internalEvent) {
+    public Optional<TaskCandidateUserRemovedEvent> from(
+        ActivitiEntityEvent internalEvent
+    ) {
         TaskCandidateUserRemovedEvent event = null;
         if (internalEvent.getEntity() instanceof IdentityLink) {
             IdentityLink entity = (IdentityLink) internalEvent.getEntity();
             if (isCandidateUserEntity(entity)) {
-                event = new TaskCandidateUserRemovedImpl(converter.from(entity));
+                event =
+                    new TaskCandidateUserRemovedImpl(converter.from(entity));
             }
         }
         return Optional.ofNullable(event);
     }
 
     private boolean isCandidateUserEntity(IdentityLink identityLinkEntity) {
-        return CANDIDATE.equalsIgnoreCase(identityLinkEntity.getType()) &&
-                identityLinkEntity.getUserId() != null;
+        return (
+            CANDIDATE.equalsIgnoreCase(identityLinkEntity.getType()) &&
+            identityLinkEntity.getUserId() != null
+        );
     }
-
 }

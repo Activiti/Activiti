@@ -14,11 +14,9 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.persistence.entity;
 
 import java.util.List;
-
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.delegate.event.ActivitiEventType;
@@ -35,80 +33,100 @@ import org.activiti.engine.task.Task;
  */
 @Internal
 @Deprecated
-public class AttachmentEntityManagerImpl extends AbstractEntityManager<AttachmentEntity> implements AttachmentEntityManager {
+public class AttachmentEntityManagerImpl
+    extends AbstractEntityManager<AttachmentEntity>
+    implements AttachmentEntityManager {
 
-  protected AttachmentDataManager attachmentDataManager;
+    protected AttachmentDataManager attachmentDataManager;
 
-  public AttachmentEntityManagerImpl(ProcessEngineConfigurationImpl processEngineConfiguration, AttachmentDataManager attachmentDataManager) {
-    super(processEngineConfiguration);
-    this.attachmentDataManager = attachmentDataManager;
-  }
-
-  @Override
-  protected DataManager<AttachmentEntity> getDataManager() {
-    return attachmentDataManager;
-  }
-
-  @Override
-  public List<AttachmentEntity> findAttachmentsByProcessInstanceId(String processInstanceId) {
-    checkHistoryEnabled();
-    return attachmentDataManager.findAttachmentsByProcessInstanceId(processInstanceId);
-  }
-
-  @Override
-  public List<AttachmentEntity> findAttachmentsByTaskId(String taskId) {
-    checkHistoryEnabled();
-    return attachmentDataManager.findAttachmentsByTaskId(taskId);
-  }
-
-  @Override
-  public void deleteAttachmentsByTaskId(String taskId) {
-    checkHistoryEnabled();
-    List<AttachmentEntity> attachments = findAttachmentsByTaskId(taskId);
-    boolean dispatchEvents = getEventDispatcher().isEnabled();
-
-    String processInstanceId = null;
-    String processDefinitionId = null;
-    String executionId = null;
-
-    if (dispatchEvents && attachments != null && !attachments.isEmpty()) {
-      // Forced to fetch the task to get hold of the process definition
-      // for event-dispatching, if available
-      Task task = getTaskEntityManager().findById(taskId);
-      if (task != null) {
-        processDefinitionId = task.getProcessDefinitionId();
-        processInstanceId = task.getProcessInstanceId();
-        executionId = task.getExecutionId();
-      }
+    public AttachmentEntityManagerImpl(
+        ProcessEngineConfigurationImpl processEngineConfiguration,
+        AttachmentDataManager attachmentDataManager
+    ) {
+        super(processEngineConfiguration);
+        this.attachmentDataManager = attachmentDataManager;
     }
 
-    for (Attachment attachment : attachments) {
-      String contentId = attachment.getContentId();
-      if (contentId != null) {
-        getByteArrayEntityManager().deleteByteArrayById(contentId);
-      }
-
-      attachmentDataManager.delete((AttachmentEntity) attachment);
-
-      if (dispatchEvents) {
-        getEventDispatcher().dispatchEvent(
-            ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_DELETED, attachment, executionId, processInstanceId, processDefinitionId));
-      }
+    @Override
+    protected DataManager<AttachmentEntity> getDataManager() {
+        return attachmentDataManager;
     }
-  }
 
-  protected void checkHistoryEnabled() {
-    if (!getHistoryManager().isHistoryEnabled()) {
-      throw new ActivitiException("In order to use attachments, history should be enabled");
+    @Override
+    public List<AttachmentEntity> findAttachmentsByProcessInstanceId(
+        String processInstanceId
+    ) {
+        checkHistoryEnabled();
+        return attachmentDataManager.findAttachmentsByProcessInstanceId(
+            processInstanceId
+        );
     }
-  }
 
-  public AttachmentDataManager getAttachmentDataManager() {
-    return attachmentDataManager;
-  }
+    @Override
+    public List<AttachmentEntity> findAttachmentsByTaskId(String taskId) {
+        checkHistoryEnabled();
+        return attachmentDataManager.findAttachmentsByTaskId(taskId);
+    }
 
-  public void setAttachmentDataManager(AttachmentDataManager attachmentDataManager) {
-    this.attachmentDataManager = attachmentDataManager;
-  }
+    @Override
+    public void deleteAttachmentsByTaskId(String taskId) {
+        checkHistoryEnabled();
+        List<AttachmentEntity> attachments = findAttachmentsByTaskId(taskId);
+        boolean dispatchEvents = getEventDispatcher().isEnabled();
 
+        String processInstanceId = null;
+        String processDefinitionId = null;
+        String executionId = null;
+
+        if (dispatchEvents && attachments != null && !attachments.isEmpty()) {
+            // Forced to fetch the task to get hold of the process definition
+            // for event-dispatching, if available
+            Task task = getTaskEntityManager().findById(taskId);
+            if (task != null) {
+                processDefinitionId = task.getProcessDefinitionId();
+                processInstanceId = task.getProcessInstanceId();
+                executionId = task.getExecutionId();
+            }
+        }
+
+        for (Attachment attachment : attachments) {
+            String contentId = attachment.getContentId();
+            if (contentId != null) {
+                getByteArrayEntityManager().deleteByteArrayById(contentId);
+            }
+
+            attachmentDataManager.delete((AttachmentEntity) attachment);
+
+            if (dispatchEvents) {
+                getEventDispatcher()
+                    .dispatchEvent(
+                        ActivitiEventBuilder.createEntityEvent(
+                            ActivitiEventType.ENTITY_DELETED,
+                            attachment,
+                            executionId,
+                            processInstanceId,
+                            processDefinitionId
+                        )
+                    );
+            }
+        }
+    }
+
+    protected void checkHistoryEnabled() {
+        if (!getHistoryManager().isHistoryEnabled()) {
+            throw new ActivitiException(
+                "In order to use attachments, history should be enabled"
+            );
+        }
+    }
+
+    public AttachmentDataManager getAttachmentDataManager() {
+        return attachmentDataManager;
+    }
+
+    public void setAttachmentDataManager(
+        AttachmentDataManager attachmentDataManager
+    ) {
+        this.attachmentDataManager = attachmentDataManager;
+    }
 }

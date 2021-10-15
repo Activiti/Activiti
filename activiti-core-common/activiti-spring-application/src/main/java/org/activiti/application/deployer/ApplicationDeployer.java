@@ -16,7 +16,6 @@
 package org.activiti.application.deployer;
 
 import java.util.List;
-
 import org.activiti.application.ApplicationContent;
 import org.activiti.application.ApplicationService;
 
@@ -26,8 +25,10 @@ public class ApplicationDeployer {
 
     private List<ApplicationEntryDeployer> deployers;
 
-    public ApplicationDeployer(ApplicationService applicationLoader,
-                               List<ApplicationEntryDeployer> deployers) {
+    public ApplicationDeployer(
+        ApplicationService applicationLoader,
+        List<ApplicationEntryDeployer> deployers
+    ) {
         this.applicationLoader = applicationLoader;
         this.deployers = deployers;
     }
@@ -40,5 +41,4 @@ public class ApplicationDeployer {
             }
         }
     }
-
 }

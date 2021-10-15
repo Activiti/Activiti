@@ -15,9 +15,11 @@
  */
 package org.activiti.spring.boot.tasks;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.groups.Tuple.tuple;
+
 import java.util.HashMap;
 import java.util.Map;
-
 import org.activiti.api.model.shared.model.VariableInstance;
 import org.activiti.api.process.model.ProcessDefinition;
 import org.activiti.api.process.model.ProcessInstance;
@@ -37,9 +39,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.groups.Tuple.tuple;
-
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 public class TaskVariablesLocalCopiesTest {
 
@@ -54,7 +53,6 @@ public class TaskVariablesLocalCopiesTest {
     @Autowired
     private TaskAdminRuntime taskAdminRuntime;
 
-
     @Autowired
     private SecurityUtil securityUtil;
 
@@ -62,7 +60,7 @@ public class TaskVariablesLocalCopiesTest {
     private ProcessCleanUpUtil processCleanUpUtil;
 
     @AfterEach
-    public void cleanUp(){
+    public void cleanUp() {
         processCleanUpUtil.cleanUpWithAdmin();
     }
 
@@ -80,158 +78,257 @@ public class TaskVariablesLocalCopiesTest {
     public void shouldGetAvailableProcessDefinitionForTheGivenUser() {
         securityUtil.logInAs("user");
         //when
-        Page<ProcessDefinition> processDefinitionPage = processRuntime.processDefinitions(Pageable.of(0,
-                                                                                                      50));
+        Page<ProcessDefinition> processDefinitionPage = processRuntime.processDefinitions(
+            Pageable.of(0, 50)
+        );
         //then
         assertThat(processDefinitionPage.getContent()).isNotNull();
         assertThat(processDefinitionPage.getContent())
-                .extracting(ProcessDefinition::getKey)
-                .contains(TWOTASK_PROCESS);
+            .extracting(ProcessDefinition::getKey)
+            .contains(TWOTASK_PROCESS);
     }
 
     @Test
     public void should_processInstanceVariablesBeCopiedIntoTasks() {
-
         securityUtil.logInAs("user");
 
-        Map<String,Object> startVariables = new HashMap<>();
-        startVariables.put("start1","start1");
-        startVariables.put("start2","start2");
+        Map<String, Object> startVariables = new HashMap<>();
+        startVariables.put("start1", "start1");
+        startVariables.put("start2", "start2");
 
         //when
-        ProcessInstance twoTaskInstance = processRuntime.start(ProcessPayloadBuilder.start()
+        ProcessInstance twoTaskInstance = processRuntime.start(
+            ProcessPayloadBuilder
+                .start()
                 .withProcessDefinitionKey(TWOTASK_PROCESS)
                 .withVariables(startVariables)
-                .build());
+                .build()
+        );
 
-        assertThat(processRuntime.variables(ProcessPayloadBuilder.variables().withProcessInstance(twoTaskInstance).build()))
-                .extracting(VariableInstance::getName, VariableInstance::getValue)
-                .containsExactly(
-                        tuple("start1", "start1"),
-                        tuple("start2", "start2"));
-
+        assertThat(
+            processRuntime.variables(
+                ProcessPayloadBuilder
+                    .variables()
+                    .withProcessInstance(twoTaskInstance)
+                    .build()
+            )
+        )
+            .extracting(VariableInstance::getName, VariableInstance::getValue)
+            .containsExactly(
+                tuple("start1", "start1"),
+                tuple("start2", "start2")
+            );
 
         //both tasks should have the process variables
-        Task task1 = taskRuntime.tasks(Pageable.of(0, 10),TaskPayloadBuilder.tasks().build()).getContent().get(0);
-        assertThat(taskRuntime.variables(TaskPayloadBuilder.variables().withTaskId(task1.getId()).build()))
-                .extracting(VariableInstance::getName, VariableInstance::getValue)
-                .containsExactly(
-                        tuple("start1", "start1"),
-                        tuple("start2", "start2"));
+        Task task1 = taskRuntime
+            .tasks(Pageable.of(0, 10), TaskPayloadBuilder.tasks().build())
+            .getContent()
+            .get(0);
+        assertThat(
+            taskRuntime.variables(
+                TaskPayloadBuilder.variables().withTaskId(task1.getId()).build()
+            )
+        )
+            .extracting(VariableInstance::getName, VariableInstance::getValue)
+            .containsExactly(
+                tuple("start1", "start1"),
+                tuple("start2", "start2")
+            );
 
         securityUtil.logInAs("garth");
 
-        Task task2 = taskRuntime.tasks(Pageable.of(0, 10),TaskPayloadBuilder.tasks().build()).getContent().get(0);
-        assertThat(taskRuntime.variables(TaskPayloadBuilder.variables().withTaskId(task2.getId()).build()))
-                .extracting(VariableInstance::getName, VariableInstance::getValue)
-                .containsExactly(
-                        tuple("start1", "start1"),
-                        tuple("start2", "start2"));
-
+        Task task2 = taskRuntime
+            .tasks(Pageable.of(0, 10), TaskPayloadBuilder.tasks().build())
+            .getContent()
+            .get(0);
+        assertThat(
+            taskRuntime.variables(
+                TaskPayloadBuilder.variables().withTaskId(task2.getId()).build()
+            )
+        )
+            .extracting(VariableInstance::getName, VariableInstance::getValue)
+            .containsExactly(
+                tuple("start1", "start1"),
+                tuple("start2", "start2")
+            );
 
         securityUtil.logInAs("user");
-        taskRuntime.claim(TaskPayloadBuilder.claim().withTaskId(task1.getId()).build());
+        taskRuntime.claim(
+            TaskPayloadBuilder.claim().withTaskId(task1.getId()).build()
+        );
 
         //if one modifies, the other should not see the modification
-        taskRuntime.updateVariable(TaskPayloadBuilder.updateVariable().withTaskId(task1.getId()).withVariable("start1","modifiedstart1").build());
+        taskRuntime.updateVariable(
+            TaskPayloadBuilder
+                .updateVariable()
+                .withTaskId(task1.getId())
+                .withVariable("start1", "modifiedstart1")
+                .build()
+        );
 
         //the task where it was modified should reflect the modification
-        assertThat(taskRuntime.variables(TaskPayloadBuilder.variables().withTaskId(task1.getId()).build()))
-                .extracting(VariableInstance::getName, VariableInstance::getValue)
-                .containsExactly(
-                        tuple("start1", "modifiedstart1"),
-                        tuple("start2", "start2"));
+        assertThat(
+            taskRuntime.variables(
+                TaskPayloadBuilder.variables().withTaskId(task1.getId()).build()
+            )
+        )
+            .extracting(VariableInstance::getName, VariableInstance::getValue)
+            .containsExactly(
+                tuple("start1", "modifiedstart1"),
+                tuple("start2", "start2")
+            );
 
         securityUtil.logInAs("garth");
 
         //other does not see
-        assertThat(taskRuntime.variables(TaskPayloadBuilder.variables().withTaskId(task2.getId()).build()))
-                .extracting(VariableInstance::getName, VariableInstance::getValue)
-                .containsExactly(
-                        tuple("start1", "start1"),
-                        tuple("start2", "start2"));
+        assertThat(
+            taskRuntime.variables(
+                TaskPayloadBuilder.variables().withTaskId(task2.getId()).build()
+            )
+        )
+            .extracting(VariableInstance::getName, VariableInstance::getValue)
+            .containsExactly(
+                tuple("start1", "start1"),
+                tuple("start2", "start2")
+            );
 
         securityUtil.logInAs("user");
         //complete and change var again
-        taskRuntime.complete(TaskPayloadBuilder.complete().withTaskId(task1.getId()).withVariable("start1","modagainstart1").build());
+        taskRuntime.complete(
+            TaskPayloadBuilder
+                .complete()
+                .withTaskId(task1.getId())
+                .withVariable("start1", "modagainstart1")
+                .build()
+        );
 
         //after completion the process variable should be updated but only the one that was modified
-        assertThat(processRuntime.variables(ProcessPayloadBuilder.variables().withProcessInstance(twoTaskInstance).build()))
-                .extracting(VariableInstance::getName, VariableInstance::getValue)
-                .containsExactly(
-                        tuple("start1", "modagainstart1"),
-                        tuple("start2", "start2"));
+        assertThat(
+            processRuntime.variables(
+                ProcessPayloadBuilder
+                    .variables()
+                    .withProcessInstance(twoTaskInstance)
+                    .build()
+            )
+        )
+            .extracting(VariableInstance::getName, VariableInstance::getValue)
+            .containsExactly(
+                tuple("start1", "modagainstart1"),
+                tuple("start2", "start2")
+            );
 
         securityUtil.logInAs("garth");
         //and task2 should not see the change
-        assertThat(taskRuntime.variables(TaskPayloadBuilder.variables().withTaskId(task2.getId()).build()))
-                .extracting(VariableInstance::getName, VariableInstance::getValue)
-                .containsExactly(
-                        tuple("start1", "start1"),
-                        tuple("start2", "start2"));
-
+        assertThat(
+            taskRuntime.variables(
+                TaskPayloadBuilder.variables().withTaskId(task2.getId()).build()
+            )
+        )
+            .extracting(VariableInstance::getName, VariableInstance::getValue)
+            .containsExactly(
+                tuple("start1", "start1"),
+                tuple("start2", "start2")
+            );
     }
 
     @Test
     public void testAdminTaskVariables() {
-
         securityUtil.logInAs("user");
 
-        Map<String,Object> startVariables = new HashMap<>();
-        startVariables.put("start1","start1");
-        startVariables.put("start2","start2");
+        Map<String, Object> startVariables = new HashMap<>();
+        startVariables.put("start1", "start1");
+        startVariables.put("start2", "start2");
 
         //when
-        ProcessInstance twoTaskInstance = processRuntime.start(ProcessPayloadBuilder.start()
+        ProcessInstance twoTaskInstance = processRuntime.start(
+            ProcessPayloadBuilder
+                .start()
                 .withProcessDefinitionKey(TWOTASK_PROCESS)
                 .withVariables(startVariables)
-                .build());
+                .build()
+        );
 
-        assertThat(processRuntime.variables(ProcessPayloadBuilder.variables().withProcessInstance(twoTaskInstance).build()))
-                .extracting(VariableInstance::getName, VariableInstance::getValue)
-                .containsExactly(
-                        tuple("start1", "start1"),
-                        tuple("start2", "start2"));
-
+        assertThat(
+            processRuntime.variables(
+                ProcessPayloadBuilder
+                    .variables()
+                    .withProcessInstance(twoTaskInstance)
+                    .build()
+            )
+        )
+            .extracting(VariableInstance::getName, VariableInstance::getValue)
+            .containsExactly(
+                tuple("start1", "start1"),
+                tuple("start2", "start2")
+            );
 
         //both tasks should have the process variables
-        Task task1 = taskRuntime.tasks(Pageable.of(0, 10),TaskPayloadBuilder.tasks().build()).getContent().get(0);
+        Task task1 = taskRuntime
+            .tasks(Pageable.of(0, 10), TaskPayloadBuilder.tasks().build())
+            .getContent()
+            .get(0);
 
         //check that admin can get task variables
         securityUtil.logInAs("admin");
 
-        assertThat(taskAdminRuntime.variables(TaskPayloadBuilder.variables().withTaskId(task1.getId()).build()))
-                .extracting(VariableInstance::getName, VariableInstance::getValue)
-                .containsExactly(
-                        tuple("start1", "start1"),
-                        tuple("start2", "start2"));
-
+        assertThat(
+            taskAdminRuntime.variables(
+                TaskPayloadBuilder.variables().withTaskId(task1.getId()).build()
+            )
+        )
+            .extracting(VariableInstance::getName, VariableInstance::getValue)
+            .containsExactly(
+                tuple("start1", "start1"),
+                tuple("start2", "start2")
+            );
 
         //check that admin can modify task variables
-        taskAdminRuntime.updateVariable(TaskPayloadBuilder.updateVariable().withTaskId(task1.getId()).withVariable("start1","modifiedstart1").build());
+        taskAdminRuntime.updateVariable(
+            TaskPayloadBuilder
+                .updateVariable()
+                .withTaskId(task1.getId())
+                .withVariable("start1", "modifiedstart1")
+                .build()
+        );
 
         //the task where it was modified should reflect the modification
-        assertThat(taskAdminRuntime.variables(TaskPayloadBuilder.variables().withTaskId(task1.getId()).build()))
-                .extracting(VariableInstance::getName, VariableInstance::getValue)
-                .containsExactly(
-                        tuple("start1", "modifiedstart1"),
-                        tuple("start2", "start2"));
-
+        assertThat(
+            taskAdminRuntime.variables(
+                TaskPayloadBuilder.variables().withTaskId(task1.getId()).build()
+            )
+        )
+            .extracting(VariableInstance::getName, VariableInstance::getValue)
+            .containsExactly(
+                tuple("start1", "modifiedstart1"),
+                tuple("start2", "start2")
+            );
 
         securityUtil.logInAs("user");
         //complete and change var again
-        taskRuntime.claim(TaskPayloadBuilder.claim().withTaskId(task1.getId()).build());
-        taskRuntime.complete(TaskPayloadBuilder.complete().withTaskId(task1.getId()).withVariable("start1","modagainstart1").build());
+        taskRuntime.claim(
+            TaskPayloadBuilder.claim().withTaskId(task1.getId()).build()
+        );
+        taskRuntime.complete(
+            TaskPayloadBuilder
+                .complete()
+                .withTaskId(task1.getId())
+                .withVariable("start1", "modagainstart1")
+                .build()
+        );
 
         //after completion the process variable should be updated but only the one that was modified
-        assertThat(processRuntime.variables(ProcessPayloadBuilder.variables().withProcessInstance(twoTaskInstance).build()))
-                .extracting(VariableInstance::getName, VariableInstance::getValue)
-                .containsExactly(
-                        tuple("start1", "modagainstart1"),
-                        tuple("start2", "start2"));
-
-
+        assertThat(
+            processRuntime.variables(
+                ProcessPayloadBuilder
+                    .variables()
+                    .withProcessInstance(twoTaskInstance)
+                    .build()
+            )
+        )
+            .extracting(VariableInstance::getName, VariableInstance::getValue)
+            .containsExactly(
+                tuple("start1", "modagainstart1"),
+                tuple("start2", "start2")
+            );
     }
-
-
 }

@@ -27,7 +27,5 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
  */
 @Internal
 public interface InactiveActivityBehavior {
-
-  void executeInactive(ExecutionEntity executionEntity);
-
+    void executeInactive(ExecutionEntity executionEntity);
 }

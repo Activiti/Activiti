@@ -16,21 +16,20 @@
 package org.activiti.api.task.model.impl;
 
 import java.util.Objects;
-
 import org.activiti.api.task.model.TaskCandidateGroup;
 
-public class TaskCandidateGroupImpl extends TaskCandidateImpl implements TaskCandidateGroup {
+public class TaskCandidateGroupImpl
+    extends TaskCandidateImpl
+    implements TaskCandidateGroup {
 
     private String groupId;
 
-    public TaskCandidateGroupImpl(){
-    }
+    public TaskCandidateGroupImpl() {}
 
-    public TaskCandidateGroupImpl(String groupId, String taskId){
+    public TaskCandidateGroupImpl(String groupId, String taskId) {
         super(taskId);
         this.groupId = groupId;
     }
-
 
     @Override
     public String getGroupId() {
@@ -46,13 +45,11 @@ public class TaskCandidateGroupImpl extends TaskCandidateImpl implements TaskCan
             return false;
         }
         TaskCandidateGroupImpl that = (TaskCandidateGroupImpl) o;
-        return Objects.equals(groupId,
-                              that.groupId);
+        return Objects.equals(groupId, that.groupId);
     }
 
     @Override
     public int hashCode() {
-
         return Objects.hash(groupId);
     }
 }

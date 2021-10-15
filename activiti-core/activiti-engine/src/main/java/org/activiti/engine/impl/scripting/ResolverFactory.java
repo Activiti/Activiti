@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.scripting;
 
 import org.activiti.engine.api.internal.Internal;
@@ -27,7 +26,8 @@ import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
  */
 @Internal
 public interface ResolverFactory {
-
-  Resolver createResolver(ProcessEngineConfigurationImpl processEngineConfiguration, VariableScope variableScope);
-
+    Resolver createResolver(
+        ProcessEngineConfigurationImpl processEngineConfiguration,
+        VariableScope variableScope
+    );
 }

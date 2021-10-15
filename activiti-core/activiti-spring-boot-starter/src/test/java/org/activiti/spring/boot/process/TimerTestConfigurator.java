@@ -22,12 +22,16 @@ import org.springframework.stereotype.Component;
 
 @Profile(ProcessRuntimeBPMNTimerIT.PROCESS_RUNTIME_BPMN_TIMER_IT)
 @Component
-public class TimerTestConfigurator implements ProcessEngineConfigurationConfigurer {
+public class TimerTestConfigurator
+    implements ProcessEngineConfigurationConfigurer {
 
     @Override
-    public void configure(SpringProcessEngineConfiguration processEngineConfiguration) {
+    public void configure(
+        SpringProcessEngineConfiguration processEngineConfiguration
+    ) {
         //reduces the amout of time to wait before checking if a timer should be executed
-        processEngineConfiguration.setAsyncExecutorDefaultTimerJobAcquireWaitTime(100);
+        processEngineConfiguration.setAsyncExecutorDefaultTimerJobAcquireWaitTime(
+            100
+        );
     }
-
 }

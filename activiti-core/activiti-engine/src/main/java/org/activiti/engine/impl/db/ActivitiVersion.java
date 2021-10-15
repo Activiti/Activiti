@@ -30,48 +30,52 @@ import java.util.List;
  */
 public class ActivitiVersion {
 
-  protected String mainVersion;
-  protected List<String> alternativeVersionStrings;
+    protected String mainVersion;
+    protected List<String> alternativeVersionStrings;
 
-  public ActivitiVersion(String mainVersion) {
-    this.mainVersion = mainVersion;
-    this.alternativeVersionStrings = singletonList(mainVersion);
-  }
-
-  public ActivitiVersion(String mainVersion, List<String> alternativeVersionStrings) {
-    this.mainVersion = mainVersion;
-    this.alternativeVersionStrings = alternativeVersionStrings;
-  }
-
-  public String getMainVersion() {
-    return mainVersion;
-  }
-
-  public boolean matches(String version) {
-    if (version.equals(mainVersion)) {
-      return true;
-    } else if (!alternativeVersionStrings.isEmpty()) {
-      return alternativeVersionStrings.contains(version);
-    } else {
-      return false;
+    public ActivitiVersion(String mainVersion) {
+        this.mainVersion = mainVersion;
+        this.alternativeVersionStrings = singletonList(mainVersion);
     }
-  }
 
-  public boolean equals(Object obj) {
-    if (!(obj instanceof ActivitiVersion)) {
-      return false;
+    public ActivitiVersion(
+        String mainVersion,
+        List<String> alternativeVersionStrings
+    ) {
+        this.mainVersion = mainVersion;
+        this.alternativeVersionStrings = alternativeVersionStrings;
     }
-    ActivitiVersion other = (ActivitiVersion) obj;
-    boolean mainVersionEqual = mainVersion.equals(other.mainVersion);
-    if (!mainVersionEqual) {
-      return false;
-    } else {
-      if (alternativeVersionStrings != null) {
-        return alternativeVersionStrings.equals(other.alternativeVersionStrings);
-      } else {
-        return other.alternativeVersionStrings == null;
-      }
-    }
-  }
 
+    public String getMainVersion() {
+        return mainVersion;
+    }
+
+    public boolean matches(String version) {
+        if (version.equals(mainVersion)) {
+            return true;
+        } else if (!alternativeVersionStrings.isEmpty()) {
+            return alternativeVersionStrings.contains(version);
+        } else {
+            return false;
+        }
+    }
+
+    public boolean equals(Object obj) {
+        if (!(obj instanceof ActivitiVersion)) {
+            return false;
+        }
+        ActivitiVersion other = (ActivitiVersion) obj;
+        boolean mainVersionEqual = mainVersion.equals(other.mainVersion);
+        if (!mainVersionEqual) {
+            return false;
+        } else {
+            if (alternativeVersionStrings != null) {
+                return alternativeVersionStrings.equals(
+                    other.alternativeVersionStrings
+                );
+            } else {
+                return other.alternativeVersionStrings == null;
+            }
+        }
+    }
 }

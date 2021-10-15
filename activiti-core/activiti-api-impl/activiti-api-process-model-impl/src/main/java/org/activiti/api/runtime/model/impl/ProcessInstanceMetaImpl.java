@@ -16,7 +16,6 @@
 package org.activiti.api.runtime.model.impl;
 
 import java.util.List;
-
 import org.activiti.api.process.model.ProcessInstanceMeta;
 
 public class ProcessInstanceMetaImpl implements ProcessInstanceMeta {
@@ -24,8 +23,7 @@ public class ProcessInstanceMetaImpl implements ProcessInstanceMeta {
     private String processInstanceId;
     private List<String> activeActivitiesIds;
 
-    public ProcessInstanceMetaImpl() {
-    }
+    public ProcessInstanceMetaImpl() {}
 
     public ProcessInstanceMetaImpl(String processInstanceId) {
         this.processInstanceId = processInstanceId;

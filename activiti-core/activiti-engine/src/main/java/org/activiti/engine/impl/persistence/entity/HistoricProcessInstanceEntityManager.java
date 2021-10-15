@@ -18,7 +18,6 @@ package org.activiti.engine.impl.persistence.entity;
 
 import java.util.List;
 import java.util.Map;
-
 import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.impl.HistoricProcessInstanceQueryImpl;
@@ -27,20 +26,35 @@ import org.activiti.engine.impl.HistoricProcessInstanceQueryImpl;
 
  */
 @Internal
-public interface HistoricProcessInstanceEntityManager extends EntityManager<HistoricProcessInstanceEntity> {
+public interface HistoricProcessInstanceEntityManager
+    extends EntityManager<HistoricProcessInstanceEntity> {
+    HistoricProcessInstanceEntity create(
+        ExecutionEntity processInstanceExecutionEntity
+    );
 
-  HistoricProcessInstanceEntity create(ExecutionEntity processInstanceExecutionEntity);
+    long findHistoricProcessInstanceCountByQueryCriteria(
+        HistoricProcessInstanceQueryImpl historicProcessInstanceQuery
+    );
 
-  long findHistoricProcessInstanceCountByQueryCriteria(HistoricProcessInstanceQueryImpl historicProcessInstanceQuery);
+    List<HistoricProcessInstance> findHistoricProcessInstancesByQueryCriteria(
+        HistoricProcessInstanceQueryImpl historicProcessInstanceQuery
+    );
 
-  List<HistoricProcessInstance> findHistoricProcessInstancesByQueryCriteria(HistoricProcessInstanceQueryImpl historicProcessInstanceQuery);
+    List<HistoricProcessInstance> findHistoricProcessInstancesAndVariablesByQueryCriteria(
+        HistoricProcessInstanceQueryImpl historicProcessInstanceQuery
+    );
 
-  List<HistoricProcessInstance> findHistoricProcessInstancesAndVariablesByQueryCriteria(HistoricProcessInstanceQueryImpl historicProcessInstanceQuery);
+    List<HistoricProcessInstance> findHistoricProcessInstancesByNativeQuery(
+        Map<String, Object> parameterMap,
+        int firstResult,
+        int maxResults
+    );
 
-  List<HistoricProcessInstance> findHistoricProcessInstancesByNativeQuery(Map<String, Object> parameterMap, int firstResult, int maxResults);
+    long findHistoricProcessInstanceCountByNativeQuery(
+        Map<String, Object> parameterMap
+    );
 
-  long findHistoricProcessInstanceCountByNativeQuery(Map<String, Object> parameterMap);
-
-  void deleteHistoricProcessInstanceByProcessDefinitionId(String processDefinitionId);
-
+    void deleteHistoricProcessInstanceByProcessDefinitionId(
+        String processDefinitionId
+    );
 }

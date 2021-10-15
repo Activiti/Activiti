@@ -16,20 +16,20 @@
 
 package org.activiti.engine.impl.persistence.entity;
 
-import org.activiti.engine.api.internal.Internal;
-
 import java.util.List;
+import org.activiti.engine.api.internal.Internal;
 
 /**
 
  */
 @Internal
 public interface ResourceEntityManager extends EntityManager<ResourceEntity> {
+    List<ResourceEntity> findResourcesByDeploymentId(String deploymentId);
 
-  List<ResourceEntity> findResourcesByDeploymentId(String deploymentId);
+    ResourceEntity findResourceByDeploymentIdAndResourceName(
+        String deploymentId,
+        String resourceName
+    );
 
-  ResourceEntity findResourceByDeploymentIdAndResourceName(String deploymentId, String resourceName);
-
-  void deleteResourcesByDeploymentId(String deploymentId);
-
+    void deleteResourcesByDeploymentId(String deploymentId);
 }

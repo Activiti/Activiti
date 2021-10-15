@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.asyncexecutor.multitenant;
 
 import org.activiti.engine.impl.asyncexecutor.ExecuteAsyncRunnable;
@@ -29,20 +28,24 @@ import org.activiti.engine.runtime.Job;
  */
 public class TenantAwareExecuteAsyncRunnable extends ExecuteAsyncRunnable {
 
-  protected TenantInfoHolder tenantInfoHolder;
-  protected String tenantId;
+    protected TenantInfoHolder tenantInfoHolder;
+    protected String tenantId;
 
-  public TenantAwareExecuteAsyncRunnable(Job job, ProcessEngineConfigurationImpl processEngineConfiguration, TenantInfoHolder tenantInfoHolder, String tenantId) {
-    super(job, processEngineConfiguration);
-    this.tenantInfoHolder = tenantInfoHolder;
-    this.tenantId = tenantId;
-  }
+    public TenantAwareExecuteAsyncRunnable(
+        Job job,
+        ProcessEngineConfigurationImpl processEngineConfiguration,
+        TenantInfoHolder tenantInfoHolder,
+        String tenantId
+    ) {
+        super(job, processEngineConfiguration);
+        this.tenantInfoHolder = tenantInfoHolder;
+        this.tenantId = tenantId;
+    }
 
-  @Override
-  public void run() {
-    tenantInfoHolder.setCurrentTenantId(tenantId);
-    super.run();
-    tenantInfoHolder.clearCurrentTenantId();
-  }
-
+    @Override
+    public void run() {
+        tenantInfoHolder.setCurrentTenantId(tenantId);
+        super.run();
+        tenantInfoHolder.clearCurrentTenantId();
+    }
 }

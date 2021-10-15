@@ -24,30 +24,32 @@ import org.activiti.engine.delegate.event.ActivitiSignalEvent;
  *
 
  */
-public class ActivitiSignalEventImpl extends ActivitiActivityEventImpl implements ActivitiSignalEvent {
+public class ActivitiSignalEventImpl
+    extends ActivitiActivityEventImpl
+    implements ActivitiSignalEvent {
 
-  protected String signalName;
-  protected Object signalData;
+    protected String signalName;
+    protected Object signalData;
 
-  public ActivitiSignalEventImpl(ActivitiEventType type) {
-    super(type);
-  }
+    public ActivitiSignalEventImpl(ActivitiEventType type) {
+        super(type);
+    }
 
-  @Override
-  public String getSignalName() {
-    return signalName;
-  }
+    @Override
+    public String getSignalName() {
+        return signalName;
+    }
 
-  public void setSignalName(String signalName) {
-    this.signalName = signalName;
-  }
+    public void setSignalName(String signalName) {
+        this.signalName = signalName;
+    }
 
-  @Override
-  public Object getSignalData() {
-    return signalData;
-  }
+    @Override
+    public Object getSignalData() {
+        return signalData;
+    }
 
-  public void setSignalData(Object signalData) {
-    this.signalData = signalData;
-  }
+    public void setSignalData(Object signalData) {
+        this.signalData = signalData;
+    }
 }

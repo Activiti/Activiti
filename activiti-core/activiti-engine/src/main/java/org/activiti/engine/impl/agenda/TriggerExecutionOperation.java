@@ -34,35 +34,52 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
  */
 public class TriggerExecutionOperation extends AbstractOperation {
 
-  public TriggerExecutionOperation(CommandContext commandContext, ExecutionEntity execution) {
-    super(commandContext, execution);
-  }
-
-  @Override
-  public void run() {
-    FlowElement currentFlowElement = getCurrentFlowElement(execution);
-    if (currentFlowElement instanceof FlowNode) {
-
-      ActivityBehavior activityBehavior = (ActivityBehavior) ((FlowNode) currentFlowElement).getBehavior();
-      if (activityBehavior instanceof TriggerableActivityBehavior) {
-
-        if (currentFlowElement instanceof BoundaryEvent) {
-          commandContext.getHistoryManager().recordActivityStart(execution);
-        }
-
-        ((TriggerableActivityBehavior) activityBehavior).trigger(execution, null, null);
-
-        if (currentFlowElement instanceof BoundaryEvent) {
-          commandContext.getHistoryManager().recordActivityEnd(execution, null);
-        }
-
-      } else {
-        throw new ActivitiException("Invalid behavior: " + activityBehavior + " should implement " + TriggerableActivityBehavior.class.getName());
-      }
-
-    } else {
-      throw new ActivitiException("Programmatic error: no current flow element found or invalid type: " + currentFlowElement + ". Halting.");
+    public TriggerExecutionOperation(
+        CommandContext commandContext,
+        ExecutionEntity execution
+    ) {
+        super(commandContext, execution);
     }
-  }
 
+    @Override
+    public void run() {
+        FlowElement currentFlowElement = getCurrentFlowElement(execution);
+        if (currentFlowElement instanceof FlowNode) {
+            ActivityBehavior activityBehavior = (ActivityBehavior) (
+                (FlowNode) currentFlowElement
+            ).getBehavior();
+            if (activityBehavior instanceof TriggerableActivityBehavior) {
+                if (currentFlowElement instanceof BoundaryEvent) {
+                    commandContext
+                        .getHistoryManager()
+                        .recordActivityStart(execution);
+                }
+
+                ((TriggerableActivityBehavior) activityBehavior).trigger(
+                        execution,
+                        null,
+                        null
+                    );
+
+                if (currentFlowElement instanceof BoundaryEvent) {
+                    commandContext
+                        .getHistoryManager()
+                        .recordActivityEnd(execution, null);
+                }
+            } else {
+                throw new ActivitiException(
+                    "Invalid behavior: " +
+                    activityBehavior +
+                    " should implement " +
+                    TriggerableActivityBehavior.class.getName()
+                );
+            }
+        } else {
+            throw new ActivitiException(
+                "Programmatic error: no current flow element found or invalid type: " +
+                currentFlowElement +
+                ". Halting."
+            );
+        }
+    }
 }

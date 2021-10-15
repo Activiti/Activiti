@@ -21,14 +21,14 @@ import org.apache.batik.svggen.DOMTreeManager;
 
 public class ProcessDiagramDOMGroupManager extends DOMGroupManager {
 
-    public ProcessDiagramDOMGroupManager(GraphicContext gc,
-                                         DOMTreeManager domTreeManager) {
-        super(gc,
-              domTreeManager);
+    public ProcessDiagramDOMGroupManager(
+        GraphicContext gc,
+        DOMTreeManager domTreeManager
+    ) {
+        super(gc, domTreeManager);
     }
 
     public void setCurrentGroupId(String id) {
-        this.currentGroup.setAttribute("id",
-                                       id);
+        this.currentGroup.setAttribute("id", id);
     }
 }

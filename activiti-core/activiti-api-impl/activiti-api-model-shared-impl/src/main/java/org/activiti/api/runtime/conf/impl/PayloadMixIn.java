@@ -15,17 +15,12 @@
  */
 package org.activiti.api.runtime.conf.impl;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
-
 import static com.fasterxml.jackson.annotation.JsonTypeInfo.As.PROPERTY;
 import static com.fasterxml.jackson.annotation.JsonTypeInfo.Id.NAME;
 
-@JsonTypeInfo(
-        use = NAME,
-        include = PROPERTY,
-        property = "payloadType")
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class PayloadMixIn {
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
-}
+@JsonTypeInfo(use = NAME, include = PROPERTY, property = "payloadType")
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class PayloadMixIn {}

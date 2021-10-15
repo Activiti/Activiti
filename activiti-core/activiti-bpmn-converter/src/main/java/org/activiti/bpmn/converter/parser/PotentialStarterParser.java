@@ -19,9 +19,7 @@ import static java.util.Arrays.asList;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.xml.stream.XMLStreamReader;
-
 import org.activiti.bpmn.constants.BpmnXMLConstants;
 import org.activiti.bpmn.converter.XMLStreamReaderUtil;
 import org.activiti.bpmn.model.Process;
@@ -32,39 +30,62 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class PotentialStarterParser implements BpmnXMLConstants {
 
-  public void parse(XMLStreamReader xtr, Process activeProcess) throws Exception {
-    String resourceElement = XMLStreamReaderUtil.moveDown(xtr);
-    if (StringUtils.isNotEmpty(resourceElement) && "resourceAssignmentExpression".equals(resourceElement)) {
-      String expression = XMLStreamReaderUtil.moveDown(xtr);
-      if (StringUtils.isNotEmpty(expression) && "formalExpression".equals(expression)) {
-        List<String> assignmentList = new ArrayList<String>();
-        String assignmentText = xtr.getElementText();
-        if (assignmentText.contains(",")) {
-          String[] assignmentArray = assignmentText.split(",");
-          assignmentList = asList(assignmentArray);
-        } else {
-          assignmentList.add(assignmentText);
-        }
-        for (String assignmentValue : assignmentList) {
-          if (assignmentValue == null)
-            continue;
-          assignmentValue = assignmentValue.trim();
-          if (assignmentValue.length() == 0)
-            continue;
+    public void parse(XMLStreamReader xtr, Process activeProcess)
+        throws Exception {
+        String resourceElement = XMLStreamReaderUtil.moveDown(xtr);
+        if (
+            StringUtils.isNotEmpty(resourceElement) &&
+            "resourceAssignmentExpression".equals(resourceElement)
+        ) {
+            String expression = XMLStreamReaderUtil.moveDown(xtr);
+            if (
+                StringUtils.isNotEmpty(expression) &&
+                "formalExpression".equals(expression)
+            ) {
+                List<String> assignmentList = new ArrayList<String>();
+                String assignmentText = xtr.getElementText();
+                if (assignmentText.contains(",")) {
+                    String[] assignmentArray = assignmentText.split(",");
+                    assignmentList = asList(assignmentArray);
+                } else {
+                    assignmentList.add(assignmentText);
+                }
+                for (String assignmentValue : assignmentList) {
+                    if (assignmentValue == null) continue;
+                    assignmentValue = assignmentValue.trim();
+                    if (assignmentValue.length() == 0) continue;
 
-          String userPrefix = "user(";
-          String groupPrefix = "group(";
-          if (assignmentValue.startsWith(userPrefix)) {
-            assignmentValue = assignmentValue.substring(userPrefix.length(), assignmentValue.length() - 1).trim();
-            activeProcess.getCandidateStarterUsers().add(assignmentValue);
-          } else if (assignmentValue.startsWith(groupPrefix)) {
-            assignmentValue = assignmentValue.substring(groupPrefix.length(), assignmentValue.length() - 1).trim();
-            activeProcess.getCandidateStarterGroups().add(assignmentValue);
-          } else {
-            activeProcess.getCandidateStarterGroups().add(assignmentValue);
-          }
+                    String userPrefix = "user(";
+                    String groupPrefix = "group(";
+                    if (assignmentValue.startsWith(userPrefix)) {
+                        assignmentValue =
+                            assignmentValue
+                                .substring(
+                                    userPrefix.length(),
+                                    assignmentValue.length() - 1
+                                )
+                                .trim();
+                        activeProcess
+                            .getCandidateStarterUsers()
+                            .add(assignmentValue);
+                    } else if (assignmentValue.startsWith(groupPrefix)) {
+                        assignmentValue =
+                            assignmentValue
+                                .substring(
+                                    groupPrefix.length(),
+                                    assignmentValue.length() - 1
+                                )
+                                .trim();
+                        activeProcess
+                            .getCandidateStarterGroups()
+                            .add(assignmentValue);
+                    } else {
+                        activeProcess
+                            .getCandidateStarterGroups()
+                            .add(assignmentValue);
+                    }
+                }
+            }
         }
-      }
     }
-  }
 }

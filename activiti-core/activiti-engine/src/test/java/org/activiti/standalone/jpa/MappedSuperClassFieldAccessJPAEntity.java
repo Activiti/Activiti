@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.standalone.jpa;
 
 import javax.persistence.Column;
@@ -30,16 +29,15 @@ import javax.persistence.MappedSuperclass;
 @MappedSuperclass
 public class MappedSuperClassFieldAccessJPAEntity {
 
-  @Id
-  @Column(name = "ID_")
-  private Long id;
+    @Id
+    @Column(name = "ID_")
+    private Long id;
 
-  public Long getId() {
-    return id;
-  }
+    public Long getId() {
+        return id;
+    }
 
-  public void setId(Long id) {
-    this.id = id;
-  }
-
+    public void setId(Long id) {
+        this.id = id;
+    }
 }

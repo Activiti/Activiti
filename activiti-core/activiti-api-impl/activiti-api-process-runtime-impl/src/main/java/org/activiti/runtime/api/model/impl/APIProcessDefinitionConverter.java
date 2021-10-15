@@ -16,14 +16,15 @@
 package org.activiti.runtime.api.model.impl;
 
 import java.util.Objects;
-
 import org.activiti.api.process.model.ProcessDefinition;
 import org.activiti.api.runtime.model.impl.ProcessDefinitionImpl;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.engine.RepositoryService;
 
-public class APIProcessDefinitionConverter extends ListConverter<org.activiti.engine.repository.ProcessDefinition, ProcessDefinition>
-        implements ModelConverter<org.activiti.engine.repository.ProcessDefinition, ProcessDefinition> {
+public class APIProcessDefinitionConverter
+    extends ListConverter<org.activiti.engine.repository.ProcessDefinition, ProcessDefinition>
+    implements
+        ModelConverter<org.activiti.engine.repository.ProcessDefinition, ProcessDefinition> {
 
     private RepositoryService repositoryService;
 
@@ -31,16 +32,26 @@ public class APIProcessDefinitionConverter extends ListConverter<org.activiti.en
         this.repositoryService = repositoryService;
     }
 
-    public ProcessDefinition from(org.activiti.engine.repository.ProcessDefinition internalProcessDefinition) {
+    public ProcessDefinition from(
+        org.activiti.engine.repository.ProcessDefinition internalProcessDefinition
+    ) {
         ProcessDefinitionImpl processDefinition = new ProcessDefinitionImpl();
         processDefinition.setId(internalProcessDefinition.getId());
         processDefinition.setName(internalProcessDefinition.getName());
-        processDefinition.setDescription(internalProcessDefinition.getDescription());
+        processDefinition.setDescription(
+            internalProcessDefinition.getDescription()
+        );
         processDefinition.setVersion(internalProcessDefinition.getVersion());
         processDefinition.setKey(internalProcessDefinition.getKey());
-        processDefinition.setAppVersion(Objects.toString(internalProcessDefinition.getAppVersion(), null));
-        BpmnModel model = repositoryService.getBpmnModel(internalProcessDefinition.getId());
-        processDefinition.setFormKey(model.getStartFormKey(internalProcessDefinition.getKey()));
+        processDefinition.setAppVersion(
+            Objects.toString(internalProcessDefinition.getAppVersion(), null)
+        );
+        BpmnModel model = repositoryService.getBpmnModel(
+            internalProcessDefinition.getId()
+        );
+        processDefinition.setFormKey(
+            model.getStartFormKey(internalProcessDefinition.getKey())
+        );
         return processDefinition;
     }
 }

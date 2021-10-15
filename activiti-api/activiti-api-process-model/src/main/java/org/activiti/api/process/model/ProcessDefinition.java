@@ -18,7 +18,6 @@ package org.activiti.api.process.model;
 import org.activiti.api.model.shared.model.ApplicationElement;
 
 public interface ProcessDefinition extends ApplicationElement {
-
     String getId();
 
     String getName();
@@ -30,5 +29,4 @@ public interface ProcessDefinition extends ApplicationElement {
     int getVersion();
 
     String getFormKey();
-
 }

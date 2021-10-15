@@ -15,10 +15,10 @@
  */
 package org.activiti.runtime.api.model.impl;
 
-import org.activiti.engine.repository.ProcessDefinition;
-
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+
+import org.activiti.engine.repository.ProcessDefinition;
 
 /**
  * Mock process definition builder.
@@ -27,7 +27,9 @@ public class MockProcessDefinitionBuilder {
 
     private ProcessDefinition processDefinition;
 
-    private MockProcessDefinitionBuilder(Class<? extends ProcessDefinition> processDefinitionClass) {
+    private MockProcessDefinitionBuilder(
+        Class<? extends ProcessDefinition> processDefinitionClass
+    ) {
         processDefinition = mock(processDefinitionClass);
     }
 

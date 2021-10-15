@@ -16,26 +16,23 @@
 
 package org.activiti.engine.impl.persistence.entity;
 
-import org.activiti.engine.api.internal.Internal;
-
 import java.util.List;
+import org.activiti.engine.api.internal.Internal;
 
 /**
 
  */
 @Internal
 public interface ByteArrayEntityManager extends EntityManager<ByteArrayEntity> {
+    /**
+     * Returns all {@link ByteArrayEntity}.
+     */
+    List<ByteArrayEntity> findAll();
 
-  /**
-   * Returns all {@link ByteArrayEntity}.
-   */
-  List<ByteArrayEntity> findAll();
-
-  /**
-   * Deletes the {@link ByteArrayEntity} with the given id from the database.
-   * Important: this operation will NOT do any optimistic locking, to avoid loading the bytes in memory. So use this method
-   * only in conjunction with an entity that has optimistic locking!.
-   */
-  void deleteByteArrayById(String byteArrayEntityId);
-
+    /**
+     * Deletes the {@link ByteArrayEntity} with the given id from the database.
+     * Important: this operation will NOT do any optimistic locking, to avoid loading the bytes in memory. So use this method
+     * only in conjunction with an entity that has optimistic locking!.
+     */
+    void deleteByteArrayById(String byteArrayEntityId);
 }

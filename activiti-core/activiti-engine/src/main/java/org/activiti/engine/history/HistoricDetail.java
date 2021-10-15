@@ -14,12 +14,10 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.history;
 
-import org.activiti.engine.api.internal.Internal;
-
 import java.util.Date;
+import org.activiti.engine.api.internal.Internal;
 
 /**
  * Base class for all kinds of information that is related to either a {@link HistoricProcessInstance} or a {@link HistoricActivityInstance}.
@@ -27,24 +25,23 @@ import java.util.Date;
  */
 @Internal
 public interface HistoricDetail extends HistoricData {
+    /** The unique DB id for this historic detail */
+    String getId();
 
-  /** The unique DB id for this historic detail */
-  String getId();
+    /** The process instance reference. */
+    String getProcessInstanceId();
 
-  /** The process instance reference. */
-  String getProcessInstanceId();
+    /**
+     * The activity reference in case this detail is related to an activity instance.
+     */
+    String getActivityInstanceId();
 
-  /**
-   * The activity reference in case this detail is related to an activity instance.
-   */
-  String getActivityInstanceId();
+    /** The identifier for the path of execution. */
+    String getExecutionId();
 
-  /** The identifier for the path of execution. */
-  String getExecutionId();
+    /** The identifier for the task. */
+    String getTaskId();
 
-  /** The identifier for the task. */
-  String getTaskId();
-
-  /** The time when this detail occurred */
-  Date getTime();
+    /** The time when this detail occurred */
+    Date getTime();
 }

@@ -17,7 +17,6 @@ package org.activiti.api.task.model.payloads;
 
 import java.util.List;
 import java.util.UUID;
-
 import org.activiti.api.model.shared.Payload;
 
 public class GetTasksPayload implements Payload {
@@ -32,10 +31,12 @@ public class GetTasksPayload implements Payload {
         this.id = UUID.randomUUID().toString();
     }
 
-    public GetTasksPayload(String assigneeId,
-                           List<String> groups,
-                           String processInstanceId,
-                           String parentTaskId) {
+    public GetTasksPayload(
+        String assigneeId,
+        List<String> groups,
+        String processInstanceId,
+        String parentTaskId
+    ) {
         this();
         this.assigneeId = assigneeId;
         this.groups = groups;

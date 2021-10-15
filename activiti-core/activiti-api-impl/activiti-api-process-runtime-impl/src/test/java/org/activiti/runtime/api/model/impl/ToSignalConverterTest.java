@@ -15,13 +15,13 @@
  */
 package org.activiti.runtime.api.model.impl;
 
+import static java.util.Collections.singletonMap;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.activiti.api.process.model.BPMNSignal;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiSignalEventImpl;
 import org.junit.jupiter.api.Test;
-
-import static java.util.Collections.singletonMap;
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class ToSignalConverterTest {
 
@@ -30,21 +30,22 @@ public class ToSignalConverterTest {
     @Test
     public void fromShouldSetMetaInfoAndVariables() {
         //given
-        ActivitiSignalEventImpl internalEvent = new ActivitiSignalEventImpl(ActivitiEventType.ACTIVITY_SIGNALED);
+        ActivitiSignalEventImpl internalEvent = new ActivitiSignalEventImpl(
+            ActivitiEventType.ACTIVITY_SIGNALED
+        );
         internalEvent.setSignalName("go");
         internalEvent.setSignalData(singletonMap("signalVar", "value"));
         internalEvent.setProcessDefinitionId("procDefId");
         internalEvent.setProcessInstanceId("procInstId");
-
 
         //when
         BPMNSignal signal = toSignalConverter.from(internalEvent);
 
         //then
         assertThat(signal.getSignalPayload().getName()).isEqualTo("go");
-        assertThat(signal.getSignalPayload().getVariables()).containsEntry("signalVar", "value");
+        assertThat(signal.getSignalPayload().getVariables())
+            .containsEntry("signalVar", "value");
         assertThat(signal.getProcessDefinitionId()).isEqualTo("procDefId");
         assertThat(signal.getProcessInstanceId()).isEqualTo("procInstId");
-
     }
 }

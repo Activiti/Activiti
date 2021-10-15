@@ -15,6 +15,11 @@
  */
 package org.activiti.engine.impl.cmd.integration;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
+import static org.mockito.MockitoAnnotations.initMocks;
+
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.integration.IntegrationContextEntity;
@@ -22,11 +27,6 @@ import org.activiti.engine.impl.persistence.entity.integration.IntegrationContex
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
-import static org.mockito.MockitoAnnotations.initMocks;
 
 public class RetrieveIntegrationContextCmdTest {
 
@@ -42,24 +42,31 @@ public class RetrieveIntegrationContextCmdTest {
     @Before
     public void setUp() throws Exception {
         initMocks(this);
-        given(commandContext.getProcessEngineConfiguration()).willReturn(processEngineConfiguration);
-        given(processEngineConfiguration.getIntegrationContextManager()).willReturn(integrationContextManager);
+        given(commandContext.getProcessEngineConfiguration())
+            .willReturn(processEngineConfiguration);
+        given(processEngineConfiguration.getIntegrationContextManager())
+            .willReturn(integrationContextManager);
     }
 
     @Test
     public void executeShouldReturnResultOfIntegrationContextManager() {
         //given
         String id = "id";
-        RetrieveIntegrationContextsCmd command = new RetrieveIntegrationContextsCmd(id);
+        RetrieveIntegrationContextsCmd command = new RetrieveIntegrationContextsCmd(
+            id
+        );
 
-        IntegrationContextEntity contextEntity = mock(IntegrationContextEntity.class);
+        IntegrationContextEntity contextEntity = mock(
+            IntegrationContextEntity.class
+        );
         given(integrationContextManager.findById(id)).willReturn(contextEntity);
 
         //when
-        IntegrationContextEntity executeResult = command.execute(commandContext);
+        IntegrationContextEntity executeResult = command.execute(
+            commandContext
+        );
 
         //then
         assertThat(executeResult).isEqualTo(contextEntity);
     }
-
 }

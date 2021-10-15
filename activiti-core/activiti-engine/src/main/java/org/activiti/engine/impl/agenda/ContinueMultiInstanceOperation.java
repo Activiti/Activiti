@@ -42,68 +42,107 @@ import org.slf4j.LoggerFactory;
  */
 public class ContinueMultiInstanceOperation extends AbstractOperation {
 
-  private static Logger logger = LoggerFactory.getLogger(ContinueMultiInstanceOperation.class);
+    private static Logger logger = LoggerFactory.getLogger(
+        ContinueMultiInstanceOperation.class
+    );
 
-  public ContinueMultiInstanceOperation(CommandContext commandContext, ExecutionEntity execution) {
-    super(commandContext, execution);
-  }
-
-  @Override
-  public void run() {
-    FlowElement currentFlowElement = getCurrentFlowElement(execution);
-    if (currentFlowElement instanceof FlowNode) {
-      continueThroughMultiInstanceFlowNode((FlowNode) currentFlowElement);
-    } else {
-      throw new RuntimeException("Programmatic error: no valid multi instance flow node, type: " + currentFlowElement + ". Halting.");
-    }
-  }
-
-  protected void continueThroughMultiInstanceFlowNode(FlowNode flowNode) {
-    if (!flowNode.isAsynchronous()) {
-      executeSynchronous(flowNode);
-    } else {
-      executeAsynchronous(flowNode);
-    }
-  }
-
-  protected void executeSynchronous(FlowNode flowNode) {
-
-    // Execution listener
-    if (CollectionUtil.isNotEmpty(flowNode.getExecutionListeners())) {
-      executeExecutionListeners(flowNode, ExecutionListener.EVENTNAME_START);
+    public ContinueMultiInstanceOperation(
+        CommandContext commandContext,
+        ExecutionEntity execution
+    ) {
+        super(commandContext, execution);
     }
 
-    commandContext.getHistoryManager().recordActivityStart(execution);
-
-    // Execute actual behavior
-    ActivityBehavior activityBehavior = (ActivityBehavior) flowNode.getBehavior();
-    if (activityBehavior != null) {
-      logger.debug("Executing activityBehavior {} on activity '{}' with execution {}", activityBehavior.getClass(), flowNode.getId(), execution.getId());
-
-      if (Context.getProcessEngineConfiguration() != null && Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-        Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
-            ActivitiEventBuilder.createActivityEvent(ActivitiEventType.ACTIVITY_STARTED, flowNode.getId(), flowNode.getName(), execution.getId(),
-                execution.getProcessInstanceId(), execution.getProcessDefinitionId(), flowNode));
-      }
-
-      try {
-        activityBehavior.execute(execution);
-      } catch (BpmnError error) {
-        // re-throw business fault so that it can be caught by an Error Intermediate Event or Error Event Sub-Process in the process
-        ErrorPropagation.propagateError(error, execution);
-      } catch (RuntimeException e) {
-        if (LogMDC.isMDCEnabled()) {
-          LogMDC.putMDCExecution(execution);
+    @Override
+    public void run() {
+        FlowElement currentFlowElement = getCurrentFlowElement(execution);
+        if (currentFlowElement instanceof FlowNode) {
+            continueThroughMultiInstanceFlowNode((FlowNode) currentFlowElement);
+        } else {
+            throw new RuntimeException(
+                "Programmatic error: no valid multi instance flow node, type: " +
+                currentFlowElement +
+                ". Halting."
+            );
         }
-        throw e;
-      }
-    } else {
-      logger.debug("No activityBehavior on activity '{}' with execution {}", flowNode.getId(), execution.getId());
     }
-  }
 
-  protected void executeAsynchronous(FlowNode flowNode) {
-    JobEntity job = commandContext.getJobManager().createAsyncJob(execution, flowNode.isExclusive());
-    commandContext.getJobManager().scheduleAsyncJob(job);
-  }
+    protected void continueThroughMultiInstanceFlowNode(FlowNode flowNode) {
+        if (!flowNode.isAsynchronous()) {
+            executeSynchronous(flowNode);
+        } else {
+            executeAsynchronous(flowNode);
+        }
+    }
+
+    protected void executeSynchronous(FlowNode flowNode) {
+        // Execution listener
+        if (CollectionUtil.isNotEmpty(flowNode.getExecutionListeners())) {
+            executeExecutionListeners(
+                flowNode,
+                ExecutionListener.EVENTNAME_START
+            );
+        }
+
+        commandContext.getHistoryManager().recordActivityStart(execution);
+
+        // Execute actual behavior
+        ActivityBehavior activityBehavior = (ActivityBehavior) flowNode.getBehavior();
+        if (activityBehavior != null) {
+            logger.debug(
+                "Executing activityBehavior {} on activity '{}' with execution {}",
+                activityBehavior.getClass(),
+                flowNode.getId(),
+                execution.getId()
+            );
+
+            if (
+                Context.getProcessEngineConfiguration() != null &&
+                Context
+                    .getProcessEngineConfiguration()
+                    .getEventDispatcher()
+                    .isEnabled()
+            ) {
+                Context
+                    .getProcessEngineConfiguration()
+                    .getEventDispatcher()
+                    .dispatchEvent(
+                        ActivitiEventBuilder.createActivityEvent(
+                            ActivitiEventType.ACTIVITY_STARTED,
+                            flowNode.getId(),
+                            flowNode.getName(),
+                            execution.getId(),
+                            execution.getProcessInstanceId(),
+                            execution.getProcessDefinitionId(),
+                            flowNode
+                        )
+                    );
+            }
+
+            try {
+                activityBehavior.execute(execution);
+            } catch (BpmnError error) {
+                // re-throw business fault so that it can be caught by an Error Intermediate Event or Error Event Sub-Process in the process
+                ErrorPropagation.propagateError(error, execution);
+            } catch (RuntimeException e) {
+                if (LogMDC.isMDCEnabled()) {
+                    LogMDC.putMDCExecution(execution);
+                }
+                throw e;
+            }
+        } else {
+            logger.debug(
+                "No activityBehavior on activity '{}' with execution {}",
+                flowNode.getId(),
+                execution.getId()
+            );
+        }
+    }
+
+    protected void executeAsynchronous(FlowNode flowNode) {
+        JobEntity job = commandContext
+            .getJobManager()
+            .createAsyncJob(execution, flowNode.isExclusive());
+        commandContext.getJobManager().scheduleAsyncJob(job);
+    }
 }

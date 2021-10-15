@@ -20,17 +20,19 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.context.SmartLifecycle;
 
-public abstract class AbstractActivitiSmartLifeCycle implements SmartLifecycle, DisposableBean {
+public abstract class AbstractActivitiSmartLifeCycle
+    implements SmartLifecycle, DisposableBean {
 
-    private static Logger logger = LoggerFactory.getLogger(AbstractActivitiSmartLifeCycle.class);
+    private static Logger logger = LoggerFactory.getLogger(
+        AbstractActivitiSmartLifeCycle.class
+    );
 
     private Object lifeCycleMonitor = new Object();
     private boolean autoStartup = true;
     private int phase = DEFAULT_PHASE;
     private volatile boolean running = false;
 
-    public AbstractActivitiSmartLifeCycle() {
-    }
+    public AbstractActivitiSmartLifeCycle() {}
 
     public abstract void doStart();
 
@@ -118,5 +120,4 @@ public abstract class AbstractActivitiSmartLifeCycle implements SmartLifecycle, 
     public void destroy() {
         stop();
     }
-
 }

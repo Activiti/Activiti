@@ -16,10 +16,11 @@
 package org.activiti.api.runtime.model.impl;
 
 import java.util.Objects;
-
 import org.activiti.api.process.model.ProcessDefinition;
 
-public class ProcessDefinitionImpl extends ApplicationElementImpl implements ProcessDefinition {
+public class ProcessDefinitionImpl
+    extends ApplicationElementImpl
+    implements ProcessDefinition {
 
     private String id;
     private String name;
@@ -92,39 +93,51 @@ public class ProcessDefinitionImpl extends ApplicationElementImpl implements Pro
             return false;
         }
         ProcessDefinitionImpl that = (ProcessDefinitionImpl) o;
-        return version == that.version &&
-                Objects.equals(id,
-                               that.id) &&
-                Objects.equals(name,
-                               that.name) &&
-                Objects.equals(description,
-                               that.description) &&
-                Objects.equals(key,
-                               that.key) &&
-                Objects.equals(formKey,
-                               that.formKey);
+        return (
+            version == that.version &&
+            Objects.equals(id, that.id) &&
+            Objects.equals(name, that.name) &&
+            Objects.equals(description, that.description) &&
+            Objects.equals(key, that.key) &&
+            Objects.equals(formKey, that.formKey)
+        );
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(),
-                            id,
-                            name,
-                            description,
-                            version,
-                            key,
-                            formKey);
+        return Objects.hash(
+            super.hashCode(),
+            id,
+            name,
+            description,
+            version,
+            key,
+            formKey
+        );
     }
 
     @Override
     public String toString() {
-        return "ProcessDefinition{" +
-                "id='" + id + '\'' +
-                ", name='" + name + '\'' +
-                ", key='" + key + '\'' +
-                ", description='" + description + '\'' +
-                ", formKey='" + formKey + '\'' +
-                ", version=" + version +
-                '}';
+        return (
+            "ProcessDefinition{" +
+            "id='" +
+            id +
+            '\'' +
+            ", name='" +
+            name +
+            '\'' +
+            ", key='" +
+            key +
+            '\'' +
+            ", description='" +
+            description +
+            '\'' +
+            ", formKey='" +
+            formKey +
+            '\'' +
+            ", version=" +
+            version +
+            '}'
+        );
     }
 }

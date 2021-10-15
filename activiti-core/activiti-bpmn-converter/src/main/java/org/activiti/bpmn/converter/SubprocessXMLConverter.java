@@ -22,10 +22,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamWriter;
-
 import org.activiti.bpmn.converter.export.BPMNDIExport;
 import org.activiti.bpmn.converter.export.CollaborationExport;
 import org.activiti.bpmn.converter.export.DataStoreExport;
@@ -49,156 +47,215 @@ import org.slf4j.LoggerFactory;
  */
 public class SubprocessXMLConverter extends BpmnXMLConverter {
 
-  protected static final Logger LOGGER = LoggerFactory.getLogger(SubprocessXMLConverter.class);
+    protected static final Logger LOGGER = LoggerFactory.getLogger(
+        SubprocessXMLConverter.class
+    );
 
-  @Override
-  public byte[] convertToXML(BpmnModel model, String encoding) {
-    try {
+    @Override
+    public byte[] convertToXML(BpmnModel model, String encoding) {
+        try {
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
-      ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            XMLOutputFactory xof = XMLOutputFactory.newInstance();
+            OutputStreamWriter out = new OutputStreamWriter(
+                outputStream,
+                encoding
+            );
 
-      XMLOutputFactory xof = XMLOutputFactory.newInstance();
-      OutputStreamWriter out = new OutputStreamWriter(outputStream, encoding);
+            XMLStreamWriter writer = xof.createXMLStreamWriter(out);
+            XMLStreamWriter xtw = new IndentingXMLStreamWriter(writer);
 
-      XMLStreamWriter writer = xof.createXMLStreamWriter(out);
-      XMLStreamWriter xtw = new IndentingXMLStreamWriter(writer);
+            DefinitionsRootExport.writeRootElement(model, xtw, encoding);
+            CollaborationExport.writePools(model, xtw);
+            DataStoreExport.writeDataStores(model, xtw);
+            SignalAndMessageDefinitionExport.writeSignalsAndMessages(
+                model,
+                xtw
+            );
 
-      DefinitionsRootExport.writeRootElement(model, xtw, encoding);
-      CollaborationExport.writePools(model, xtw);
-      DataStoreExport.writeDataStores(model, xtw);
-      SignalAndMessageDefinitionExport.writeSignalsAndMessages(model, xtw);
+            for (Process process : model.getProcesses()) {
+                if (
+                    process.getFlowElements().isEmpty() &&
+                    process.getLanes().isEmpty()
+                ) {
+                    // empty process, ignore it
+                    continue;
+                }
 
-      for (Process process : model.getProcesses()) {
+                ProcessExport.writeProcess(process, xtw);
 
-        if (process.getFlowElements().isEmpty() && process.getLanes().isEmpty()) {
-          // empty process, ignore it
-          continue;
+                for (FlowElement flowElement : process.getFlowElements()) {
+                    createXML(flowElement, model, xtw);
+                }
+
+                for (Artifact artifact : process.getArtifacts()) {
+                    createXML(artifact, model, xtw);
+                }
+
+                // end process element
+                xtw.writeEndElement();
+            }
+
+            // refactor each subprocess into a separate Diagram
+            List<BpmnModel> subModels = parseSubModels(model);
+            for (BpmnModel tempModel : subModels) {
+                if (
+                    !tempModel.getFlowLocationMap().isEmpty() ||
+                    !tempModel.getLocationMap().isEmpty()
+                ) {
+                    BPMNDIExport.writeBPMNDI(tempModel, xtw);
+                }
+            }
+
+            // end definitions root element
+            xtw.writeEndElement();
+            xtw.writeEndDocument();
+
+            xtw.flush();
+            byte[] bytes = outputStream.toByteArray().clone();
+
+            // cleanup
+            outputStream.close();
+            xtw.close();
+
+            return bytes;
+        } catch (Exception e) {
+            LOGGER.error("Error writing BPMN XML", e);
+            throw new XMLException("Error writing BPMN XML", e);
         }
-
-        ProcessExport.writeProcess(process, xtw);
-
-        for (FlowElement flowElement : process.getFlowElements()) {
-          createXML(flowElement, model, xtw);
-        }
-
-        for (Artifact artifact : process.getArtifacts()) {
-          createXML(artifact, model, xtw);
-        }
-
-        // end process element
-        xtw.writeEndElement();
-      }
-
-      // refactor each subprocess into a separate Diagram
-      List<BpmnModel> subModels = parseSubModels(model);
-      for (BpmnModel tempModel : subModels) {
-        if (!tempModel.getFlowLocationMap().isEmpty() || !tempModel.getLocationMap().isEmpty()) {
-          BPMNDIExport.writeBPMNDI(tempModel, xtw);
-        }
-      }
-
-      // end definitions root element
-      xtw.writeEndElement();
-      xtw.writeEndDocument();
-
-      xtw.flush();
-      byte[] bytes = outputStream.toByteArray().clone();
-
-      // cleanup
-      outputStream.close();
-      xtw.close();
-
-      return bytes;
-    } catch (Exception e) {
-      LOGGER.error("Error writing BPMN XML", e);
-      throw new XMLException("Error writing BPMN XML", e);
     }
-  }
 
-  protected List<BpmnModel> parseSubModels(BpmnModel model) {
-    List<BpmnModel> subModels = new ArrayList<BpmnModel>();
+    protected List<BpmnModel> parseSubModels(BpmnModel model) {
+        List<BpmnModel> subModels = new ArrayList<BpmnModel>();
 
-    // find all subprocesses
-    Collection<FlowElement> flowElements = model.getMainProcess().getFlowElements();
-    Map<String, GraphicInfo> locations = new HashMap<String, GraphicInfo>();
-    Map<String, List<GraphicInfo>> flowLocations = new HashMap<String, List<GraphicInfo>>();
-    Map<String, GraphicInfo> labelLocations = new HashMap<String, GraphicInfo>();
+        // find all subprocesses
+        Collection<FlowElement> flowElements = model
+            .getMainProcess()
+            .getFlowElements();
+        Map<String, GraphicInfo> locations = new HashMap<String, GraphicInfo>();
+        Map<String, List<GraphicInfo>> flowLocations = new HashMap<String, List<GraphicInfo>>();
+        Map<String, GraphicInfo> labelLocations = new HashMap<String, GraphicInfo>();
 
-    locations.putAll(model.getLocationMap());
-    flowLocations.putAll(model.getFlowLocationMap());
-    labelLocations.putAll(model.getLabelLocationMap());
+        locations.putAll(model.getLocationMap());
+        flowLocations.putAll(model.getFlowLocationMap());
+        labelLocations.putAll(model.getLabelLocationMap());
 
-    // include main process as separate model
-    BpmnModel mainModel = new BpmnModel();
-    // set main process in submodel to subprocess
-    mainModel.addProcess(model.getMainProcess());
+        // include main process as separate model
+        BpmnModel mainModel = new BpmnModel();
+        // set main process in submodel to subprocess
+        mainModel.addProcess(model.getMainProcess());
 
-    String elementId = null;
-    for (FlowElement element : flowElements) {
-      elementId = element.getId();
-      if (element instanceof SubProcess) {
-        subModels.addAll(parseSubModels(element, locations, flowLocations, labelLocations));
-      }
+        String elementId = null;
+        for (FlowElement element : flowElements) {
+            elementId = element.getId();
+            if (element instanceof SubProcess) {
+                subModels.addAll(
+                    parseSubModels(
+                        element,
+                        locations,
+                        flowLocations,
+                        labelLocations
+                    )
+                );
+            }
 
-      if (element instanceof SequenceFlow && null != flowLocations.get(elementId)) {
-        // must be an edge
-        mainModel.getFlowLocationMap().put(elementId, flowLocations.get(elementId));
-      } else {
-        // do not include data objects because they do not have a corresponding shape in the BPMNDI data
-        if (!(element instanceof DataObject) && null != locations.get(elementId)) {
-          // must be a shape
-          mainModel.getLocationMap().put(elementId, locations.get(elementId));
+            if (
+                element instanceof SequenceFlow &&
+                null != flowLocations.get(elementId)
+            ) {
+                // must be an edge
+                mainModel
+                    .getFlowLocationMap()
+                    .put(elementId, flowLocations.get(elementId));
+            } else {
+                // do not include data objects because they do not have a corresponding shape in the BPMNDI data
+                if (
+                    !(element instanceof DataObject) &&
+                    null != locations.get(elementId)
+                ) {
+                    // must be a shape
+                    mainModel
+                        .getLocationMap()
+                        .put(elementId, locations.get(elementId));
+                }
+            }
+            // also check for any labels
+            if (null != labelLocations.get(elementId)) {
+                mainModel
+                    .getLabelLocationMap()
+                    .put(elementId, labelLocations.get(elementId));
+            }
         }
-      }
-      // also check for any labels
-      if (null != labelLocations.get(elementId)) {
-        mainModel.getLabelLocationMap().put(elementId, labelLocations.get(elementId));
-      }
+        // add main process model to list
+        subModels.add(mainModel);
+
+        return subModels;
     }
-    // add main process model to list
-    subModels.add(mainModel);
 
-    return subModels;
-  }
+    private List<BpmnModel> parseSubModels(
+        FlowElement subElement,
+        Map<String, GraphicInfo> locations,
+        Map<String, List<GraphicInfo>> flowLocations,
+        Map<String, GraphicInfo> labelLocations
+    ) {
+        List<BpmnModel> subModels = new ArrayList<BpmnModel>();
+        BpmnModel subModel = new BpmnModel();
+        String elementId = null;
 
-  private List<BpmnModel> parseSubModels(FlowElement subElement, Map<String, GraphicInfo> locations,
-                                         Map<String, List<GraphicInfo>> flowLocations, Map<String, GraphicInfo> labelLocations) {
-    List<BpmnModel> subModels = new ArrayList<BpmnModel>();
-    BpmnModel subModel = new BpmnModel();
-    String elementId = null;
+        // find nested subprocess models
+        Collection<FlowElement> subFlowElements =
+            ((SubProcess) subElement).getFlowElements();
+        // set main process in submodel to subprocess
+        Process newMainProcess = new Process();
+        newMainProcess.setId(subElement.getId());
+        newMainProcess.getFlowElements().addAll(subFlowElements);
+        newMainProcess
+            .getArtifacts()
+            .addAll(((SubProcess) subElement).getArtifacts());
+        subModel.addProcess(newMainProcess);
 
-    // find nested subprocess models
-    Collection<FlowElement> subFlowElements = ((SubProcess)subElement).getFlowElements();
-    // set main process in submodel to subprocess
-    Process newMainProcess = new Process();
-    newMainProcess.setId(subElement.getId());
-    newMainProcess.getFlowElements().addAll(subFlowElements);
-    newMainProcess.getArtifacts().addAll(((SubProcess)subElement).getArtifacts());
-    subModel.addProcess(newMainProcess);
+        for (FlowElement element : subFlowElements) {
+            elementId = element.getId();
+            if (element instanceof SubProcess) {
+                subModels.addAll(
+                    parseSubModels(
+                        element,
+                        locations,
+                        flowLocations,
+                        labelLocations
+                    )
+                );
+            }
 
-    for (FlowElement element : subFlowElements) {
-      elementId = element.getId();
-      if (element instanceof SubProcess) {
-        subModels.addAll(parseSubModels(element, locations, flowLocations, labelLocations));
-      }
-
-      if (element instanceof SequenceFlow && null != flowLocations.get(elementId)) {
-        // must be an edge
-        subModel.getFlowLocationMap().put(elementId, flowLocations.get(elementId));
-      } else {
-        // do not include data objects because they do not have a corresponding shape in the BPMNDI data
-        if (!(element instanceof DataObject) && null != locations.get(elementId)) {
-          // must be a shape
-          subModel.getLocationMap().put(elementId, locations.get(elementId));
+            if (
+                element instanceof SequenceFlow &&
+                null != flowLocations.get(elementId)
+            ) {
+                // must be an edge
+                subModel
+                    .getFlowLocationMap()
+                    .put(elementId, flowLocations.get(elementId));
+            } else {
+                // do not include data objects because they do not have a corresponding shape in the BPMNDI data
+                if (
+                    !(element instanceof DataObject) &&
+                    null != locations.get(elementId)
+                ) {
+                    // must be a shape
+                    subModel
+                        .getLocationMap()
+                        .put(elementId, locations.get(elementId));
+                }
+            }
+            // also check for any labels
+            if (null != labelLocations.get(elementId)) {
+                subModel
+                    .getLabelLocationMap()
+                    .put(elementId, labelLocations.get(elementId));
+            }
         }
-      }
-      // also check for any labels
-      if (null != labelLocations.get(elementId)) {
-        subModel.getLabelLocationMap().put(elementId, labelLocations.get(elementId));
-      }
-    }
-    subModels.add(subModel);
+        subModels.add(subModel);
 
-    return subModels;
-  }
+        return subModels;
+    }
 }

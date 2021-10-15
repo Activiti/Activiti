@@ -24,19 +24,24 @@ import org.activiti.engine.delegate.Expression;
  *
 
  */
-public class TransformationDataOutputAssociation extends AbstractDataAssociation {
+public class TransformationDataOutputAssociation
+    extends AbstractDataAssociation {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  protected Expression transformation;
+    protected Expression transformation;
 
-  public TransformationDataOutputAssociation(String sourceRef, String targetRef, Expression transformation) {
-    super(sourceRef, targetRef);
-    this.transformation = transformation;
-  }
+    public TransformationDataOutputAssociation(
+        String sourceRef,
+        String targetRef,
+        Expression transformation
+    ) {
+        super(sourceRef, targetRef);
+        this.transformation = transformation;
+    }
 
-  public void evaluate(DelegateExecution execution) {
-    Object value = this.transformation.getValue(execution);
-    execution.setVariable(this.getTarget(), value);
-  }
+    public void evaluate(DelegateExecution execution) {
+        Object value = this.transformation.getValue(execution);
+        execution.setVariable(this.getTarget(), value);
+    }
 }

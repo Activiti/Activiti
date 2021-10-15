@@ -17,41 +17,44 @@
 package org.activiti.spring.test.fieldinjection;
 
 import java.util.concurrent.atomic.AtomicInteger;
-
 import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.delegate.DelegateHelper;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.JavaDelegate;
-import org.activiti.engine.delegate.DelegateHelper;
 
 /**
 
  */
 public class PrototypeDelegateExpressionBean implements JavaDelegate {
 
-  public static AtomicInteger INSTANCE_COUNT = new AtomicInteger(0);
+    public static AtomicInteger INSTANCE_COUNT = new AtomicInteger(0);
 
-  private Expression fieldA;
-  private Expression fieldB;
-  private Expression resultVariableName;
+    private Expression fieldA;
+    private Expression fieldB;
+    private Expression resultVariableName;
 
-  public PrototypeDelegateExpressionBean() {
-    INSTANCE_COUNT.incrementAndGet();
-  }
-
-  @Override
-  public void execute(DelegateExecution execution) {
-
-    // just a quick check to avoid creating a specific test for it
-    int nrOfFieldExtensions = DelegateHelper.getFields(execution).size();
-    if (nrOfFieldExtensions != 3) {
-      throw new RuntimeException("Error: 3 field extensions expected, but was " + nrOfFieldExtensions);
+    public PrototypeDelegateExpressionBean() {
+        INSTANCE_COUNT.incrementAndGet();
     }
 
-    Number fieldAValue = (Number) fieldA.getValue(execution);
-    Number fieldValueB = (Number) fieldB.getValue(execution);
+    @Override
+    public void execute(DelegateExecution execution) {
+        // just a quick check to avoid creating a specific test for it
+        int nrOfFieldExtensions = DelegateHelper.getFields(execution).size();
+        if (nrOfFieldExtensions != 3) {
+            throw new RuntimeException(
+                "Error: 3 field extensions expected, but was " +
+                nrOfFieldExtensions
+            );
+        }
 
-    int result = fieldAValue.intValue() + fieldValueB.intValue();
-    execution.setVariable(resultVariableName.getValue(execution).toString(), result);
-  }
+        Number fieldAValue = (Number) fieldA.getValue(execution);
+        Number fieldValueB = (Number) fieldB.getValue(execution);
 
+        int result = fieldAValue.intValue() + fieldValueB.intValue();
+        execution.setVariable(
+            resultVariableName.getValue(execution).toString(),
+            result
+        );
+    }
 }

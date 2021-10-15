@@ -17,7 +17,6 @@
 package org.activiti.engine.impl.persistence.entity;
 
 import java.util.List;
-
 import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.impl.JobQueryImpl;
 import org.activiti.engine.impl.Page;
@@ -28,32 +27,37 @@ import org.activiti.engine.runtime.Job;
 
  */
 @Internal
-public interface SuspendedJobEntityManager extends EntityManager<SuspendedJobEntity> {
+public interface SuspendedJobEntityManager
+    extends EntityManager<SuspendedJobEntity> {
+    /**
+     * Returns all {@link SuspendedJobEntity} instances related to on {@link ExecutionEntity}.
+     */
+    List<SuspendedJobEntity> findJobsByExecutionId(String id);
 
-  /**
-   * Returns all {@link SuspendedJobEntity} instances related to on {@link ExecutionEntity}.
-   */
-  List<SuspendedJobEntity> findJobsByExecutionId(String id);
+    /**
+     * Returns all {@link SuspendedJobEntity} instances related to on {@link ExecutionEntity}.
+     */
+    List<SuspendedJobEntity> findJobsByProcessInstanceId(String id);
 
-  /**
-   * Returns all {@link SuspendedJobEntity} instances related to on {@link ExecutionEntity}.
-   */
-  List<SuspendedJobEntity> findJobsByProcessInstanceId(String id);
+    /**
+     * Executes a {@link JobQueryImpl} and returns the matching {@link SuspendedJobEntity} instances.
+     */
+    List<Job> findJobsByQueryCriteria(
+        SuspendedJobQueryImpl jobQuery,
+        Page page
+    );
 
-  /**
-   * Executes a {@link JobQueryImpl} and returns the matching {@link SuspendedJobEntity} instances.
-   */
-  List<Job> findJobsByQueryCriteria(SuspendedJobQueryImpl jobQuery, Page page);
+    /**
+     * Same as {@link #findJobsByQueryCriteria(SuspendedJobQueryImpl, Page)}, but only returns a count
+     * and not the instances itself.
+     */
+    long findJobCountByQueryCriteria(SuspendedJobQueryImpl jobQuery);
 
-  /**
-   * Same as {@link #findJobsByQueryCriteria(SuspendedJobQueryImpl, Page)}, but only returns a count
-   * and not the instances itself.
-   */
-  long findJobCountByQueryCriteria(SuspendedJobQueryImpl jobQuery);
-
-  /**
-   * Changes the tenantId for all jobs related to a given {@link DeploymentEntity}.
-   */
-  void updateJobTenantIdForDeployment(String deploymentId, String newTenantId);
-
+    /**
+     * Changes the tenantId for all jobs related to a given {@link DeploymentEntity}.
+     */
+    void updateJobTenantIdForDeployment(
+        String deploymentId,
+        String newTenantId
+    );
 }

@@ -14,19 +14,7 @@
  * limitations under the License.
  */
 
-
 package org.activiti.spring.test.autodeployment;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.zip.ZipInputStream;
-
-import org.activiti.spring.autodeployment.ResourceParentFolderAutoDeploymentStrategy;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mock;
-import org.springframework.core.io.Resource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -37,166 +25,260 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public class ResourceParentFolderAutoDeploymentStrategyTest extends AbstractAutoDeploymentStrategyTest {
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.zip.ZipInputStream;
+import org.activiti.spring.autodeployment.ResourceParentFolderAutoDeploymentStrategy;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mock;
+import org.springframework.core.io.Resource;
 
-  private ResourceParentFolderAutoDeploymentStrategy deploymentStrategy;
+public class ResourceParentFolderAutoDeploymentStrategyTest
+    extends AbstractAutoDeploymentStrategyTest {
 
-  @Mock
-  private File parentFile1Mock;
+    private ResourceParentFolderAutoDeploymentStrategy deploymentStrategy;
 
-  @Mock
-  private File parentFile2Mock;
+    @Mock
+    private File parentFile1Mock;
 
-  private final String parentFilename1 = "parentFilename1";
-  private final String parentFilename2 = "parentFilename2";
+    @Mock
+    private File parentFile2Mock;
 
-  @Before
-  public void before() throws Exception {
-    super.before();
-    deploymentStrategy = new ResourceParentFolderAutoDeploymentStrategy(applicationUpgradeContextServiceMock);
-    assertThat(deploymentStrategy).isNotNull();
+    private final String parentFilename1 = "parentFilename1";
+    private final String parentFilename2 = "parentFilename2";
 
-    when(parentFile1Mock.getName()).thenReturn(parentFilename1);
-    when(parentFile1Mock.isDirectory()).thenReturn(true);
-    when(parentFile2Mock.getName()).thenReturn(parentFilename2);
-    when(parentFile2Mock.isDirectory()).thenReturn(true);
-  }
+    @Before
+    public void before() throws Exception {
+        super.before();
+        deploymentStrategy =
+            new ResourceParentFolderAutoDeploymentStrategy(
+                applicationUpgradeContextServiceMock
+            );
+        assertThat(deploymentStrategy).isNotNull();
 
-  @Test
-  public void testHandlesMode() {
-    assertThat(deploymentStrategy.handlesMode(ResourceParentFolderAutoDeploymentStrategy.DEPLOYMENT_MODE)).isTrue();
-    assertThat(deploymentStrategy.handlesMode("other-mode")).isFalse();
-    assertThat(deploymentStrategy.handlesMode(null)).isFalse();
-  }
+        when(parentFile1Mock.getName()).thenReturn(parentFilename1);
+        when(parentFile1Mock.isDirectory()).thenReturn(true);
+        when(parentFile2Mock.getName()).thenReturn(parentFilename2);
+        when(parentFile2Mock.isDirectory()).thenReturn(true);
+    }
 
-  @Test
-  public void testDeployResources_Separate() {
-    final Resource[] resources = new Resource[] { resourceMock1, resourceMock2 };
+    @Test
+    public void testHandlesMode() {
+        assertThat(
+            deploymentStrategy.handlesMode(
+                ResourceParentFolderAutoDeploymentStrategy.DEPLOYMENT_MODE
+            )
+        )
+            .isTrue();
+        assertThat(deploymentStrategy.handlesMode("other-mode")).isFalse();
+        assertThat(deploymentStrategy.handlesMode(null)).isFalse();
+    }
 
-    when(fileMock1.getParentFile()).thenReturn(parentFile1Mock);
-    when(fileMock2.getParentFile()).thenReturn(parentFile2Mock);
+    @Test
+    public void testDeployResources_Separate() {
+        final Resource[] resources = new Resource[] {
+            resourceMock1,
+            resourceMock2,
+        };
 
-    deploymentStrategy.deployResources(deploymentNameHint, resources, repositoryServiceMock);
+        when(fileMock1.getParentFile()).thenReturn(parentFile1Mock);
+        when(fileMock2.getParentFile()).thenReturn(parentFile2Mock);
 
-    verify(repositoryServiceMock, times(2)).createDeployment();
-    verify(deploymentBuilderMock, times(2)).enableDuplicateFiltering();
-    verify(deploymentBuilderMock, times(1)).name(deploymentNameHint + "." + parentFilename1);
-    verify(deploymentBuilderMock, times(1)).name(deploymentNameHint + "." + parentFilename2);
-    verify(deploymentBuilderMock, times(1)).addInputStream(eq(resourceName1), isA(Resource.class));
-    verify(deploymentBuilderMock, times(1)).addInputStream(eq(resourceName2), isA(Resource.class));
-    verify(deploymentBuilderMock, times(2)).deploy();
-  }
+        deploymentStrategy.deployResources(
+            deploymentNameHint,
+            resources,
+            repositoryServiceMock
+        );
 
-  @Test
-  public void testDeployResources_Joined() {
-    final Resource[] resources = new Resource[] { resourceMock1, resourceMock2 };
+        verify(repositoryServiceMock, times(2)).createDeployment();
+        verify(deploymentBuilderMock, times(2)).enableDuplicateFiltering();
+        verify(deploymentBuilderMock, times(1))
+            .name(deploymentNameHint + "." + parentFilename1);
+        verify(deploymentBuilderMock, times(1))
+            .name(deploymentNameHint + "." + parentFilename2);
+        verify(deploymentBuilderMock, times(1))
+            .addInputStream(eq(resourceName1), isA(Resource.class));
+        verify(deploymentBuilderMock, times(1))
+            .addInputStream(eq(resourceName2), isA(Resource.class));
+        verify(deploymentBuilderMock, times(2)).deploy();
+    }
 
-    when(fileMock1.getParentFile()).thenReturn(parentFile1Mock);
-    when(fileMock2.getParentFile()).thenReturn(parentFile1Mock);
+    @Test
+    public void testDeployResources_Joined() {
+        final Resource[] resources = new Resource[] {
+            resourceMock1,
+            resourceMock2,
+        };
 
-    deploymentStrategy.deployResources(deploymentNameHint, resources, repositoryServiceMock);
+        when(fileMock1.getParentFile()).thenReturn(parentFile1Mock);
+        when(fileMock2.getParentFile()).thenReturn(parentFile1Mock);
 
-    verify(repositoryServiceMock, times(1)).createDeployment();
-    verify(deploymentBuilderMock, times(1)).enableDuplicateFiltering();
-    verify(deploymentBuilderMock, times(1)).name(deploymentNameHint + "." + parentFilename1);
-    verify(deploymentBuilderMock, times(1)).addInputStream(eq(resourceName1), isA(Resource.class));
-    verify(deploymentBuilderMock, times(1)).addInputStream(eq(resourceName2), isA(Resource.class));
-    verify(deploymentBuilderMock, times(1)).deploy();
-  }
+        deploymentStrategy.deployResources(
+            deploymentNameHint,
+            resources,
+            repositoryServiceMock
+        );
 
-  @Test
-  public void testDeployResources_AllInOne() {
-    final Resource[] resources = new Resource[] { resourceMock1, resourceMock2, resourceMock3, resourceMock4, resourceMock5 };
+        verify(repositoryServiceMock, times(1)).createDeployment();
+        verify(deploymentBuilderMock, times(1)).enableDuplicateFiltering();
+        verify(deploymentBuilderMock, times(1))
+            .name(deploymentNameHint + "." + parentFilename1);
+        verify(deploymentBuilderMock, times(1))
+            .addInputStream(eq(resourceName1), isA(Resource.class));
+        verify(deploymentBuilderMock, times(1))
+            .addInputStream(eq(resourceName2), isA(Resource.class));
+        verify(deploymentBuilderMock, times(1)).deploy();
+    }
 
-    when(fileMock1.getParentFile()).thenReturn(parentFile1Mock);
-    when(fileMock2.getParentFile()).thenReturn(parentFile1Mock);
-    when(fileMock3.getParentFile()).thenReturn(parentFile1Mock);
-    when(fileMock4.getParentFile()).thenReturn(parentFile1Mock);
-    when(fileMock5.getParentFile()).thenReturn(parentFile1Mock);
+    @Test
+    public void testDeployResources_AllInOne() {
+        final Resource[] resources = new Resource[] {
+            resourceMock1,
+            resourceMock2,
+            resourceMock3,
+            resourceMock4,
+            resourceMock5,
+        };
 
-    deploymentStrategy.deployResources(deploymentNameHint, resources, repositoryServiceMock);
+        when(fileMock1.getParentFile()).thenReturn(parentFile1Mock);
+        when(fileMock2.getParentFile()).thenReturn(parentFile1Mock);
+        when(fileMock3.getParentFile()).thenReturn(parentFile1Mock);
+        when(fileMock4.getParentFile()).thenReturn(parentFile1Mock);
+        when(fileMock5.getParentFile()).thenReturn(parentFile1Mock);
 
-    verify(repositoryServiceMock).createDeployment();
-    verify(deploymentBuilderMock).enableDuplicateFiltering();
-    verify(deploymentBuilderMock).name(deploymentNameHint + "." + parentFilename1);
-    verify(deploymentBuilderMock).addInputStream(eq(resourceName1), isA(Resource.class));
-    verify(deploymentBuilderMock).addInputStream(eq(resourceName2), isA(Resource.class));
-    verify(deploymentBuilderMock).addInputStream(eq(resourceName3), isA(Resource.class));
-    verify(deploymentBuilderMock).addInputStream(eq(resourceName4), isA(Resource.class));
-    verify(deploymentBuilderMock).addInputStream(eq(resourceName5), isA(Resource.class));
-    verify(deploymentBuilderMock).deploy();
-  }
+        deploymentStrategy.deployResources(
+            deploymentNameHint,
+            resources,
+            repositoryServiceMock
+        );
 
-  @Test
-  public void testDeployResources_Mixed() {
-    final Resource[] resources = new Resource[] { resourceMock1, resourceMock2, resourceMock3 };
+        verify(repositoryServiceMock).createDeployment();
+        verify(deploymentBuilderMock).enableDuplicateFiltering();
+        verify(deploymentBuilderMock)
+            .name(deploymentNameHint + "." + parentFilename1);
+        verify(deploymentBuilderMock)
+            .addInputStream(eq(resourceName1), isA(Resource.class));
+        verify(deploymentBuilderMock)
+            .addInputStream(eq(resourceName2), isA(Resource.class));
+        verify(deploymentBuilderMock)
+            .addInputStream(eq(resourceName3), isA(Resource.class));
+        verify(deploymentBuilderMock)
+            .addInputStream(eq(resourceName4), isA(Resource.class));
+        verify(deploymentBuilderMock)
+            .addInputStream(eq(resourceName5), isA(Resource.class));
+        verify(deploymentBuilderMock).deploy();
+    }
 
-    when(fileMock1.getParentFile()).thenReturn(parentFile1Mock);
-    when(fileMock2.getParentFile()).thenReturn(parentFile2Mock);
-    when(fileMock3.getParentFile()).thenReturn(parentFile1Mock);
+    @Test
+    public void testDeployResources_Mixed() {
+        final Resource[] resources = new Resource[] {
+            resourceMock1,
+            resourceMock2,
+            resourceMock3,
+        };
 
-    deploymentStrategy.deployResources(deploymentNameHint, resources, repositoryServiceMock);
+        when(fileMock1.getParentFile()).thenReturn(parentFile1Mock);
+        when(fileMock2.getParentFile()).thenReturn(parentFile2Mock);
+        when(fileMock3.getParentFile()).thenReturn(parentFile1Mock);
 
-    verify(repositoryServiceMock, times(2)).createDeployment();
-    verify(deploymentBuilderMock, times(2)).enableDuplicateFiltering();
-    verify(deploymentBuilderMock, times(1)).name(deploymentNameHint + "." + parentFilename1);
-    verify(deploymentBuilderMock, times(1)).name(deploymentNameHint + "." + parentFilename2);
-    verify(deploymentBuilderMock, times(1)).addInputStream(eq(resourceName1), isA(Resource.class));
-    verify(deploymentBuilderMock, times(1)).addInputStream(eq(resourceName2), isA(Resource.class));
-    verify(deploymentBuilderMock, times(1)).addInputStream(eq(resourceName3), isA(Resource.class));
-    verify(deploymentBuilderMock, times(2)).deploy();
-  }
+        deploymentStrategy.deployResources(
+            deploymentNameHint,
+            resources,
+            repositoryServiceMock
+        );
 
-  @Test
-  public void testDeployResources_NoParent() {
+        verify(repositoryServiceMock, times(2)).createDeployment();
+        verify(deploymentBuilderMock, times(2)).enableDuplicateFiltering();
+        verify(deploymentBuilderMock, times(1))
+            .name(deploymentNameHint + "." + parentFilename1);
+        verify(deploymentBuilderMock, times(1))
+            .name(deploymentNameHint + "." + parentFilename2);
+        verify(deploymentBuilderMock, times(1))
+            .addInputStream(eq(resourceName1), isA(Resource.class));
+        verify(deploymentBuilderMock, times(1))
+            .addInputStream(eq(resourceName2), isA(Resource.class));
+        verify(deploymentBuilderMock, times(1))
+            .addInputStream(eq(resourceName3), isA(Resource.class));
+        verify(deploymentBuilderMock, times(2)).deploy();
+    }
 
-    final Resource[] resources = new Resource[] { resourceMock1, resourceMock2, resourceMock3 };
-    deploymentStrategy.deployResources(deploymentNameHint, resources, repositoryServiceMock);
+    @Test
+    public void testDeployResources_NoParent() {
+        final Resource[] resources = new Resource[] {
+            resourceMock1,
+            resourceMock2,
+            resourceMock3,
+        };
+        deploymentStrategy.deployResources(
+            deploymentNameHint,
+            resources,
+            repositoryServiceMock
+        );
 
-    when(fileMock1.getParentFile()).thenReturn(null);
-    when(fileMock2.getParentFile()).thenReturn(parentFile2Mock);
-    when(parentFile2Mock.isDirectory()).thenReturn(false);
-    when(fileMock3.getParentFile()).thenReturn(null);
+        when(fileMock1.getParentFile()).thenReturn(null);
+        when(fileMock2.getParentFile()).thenReturn(parentFile2Mock);
+        when(parentFile2Mock.isDirectory()).thenReturn(false);
+        when(fileMock3.getParentFile()).thenReturn(null);
 
-    verify(repositoryServiceMock, times(3)).createDeployment();
-    verify(deploymentBuilderMock, times(3)).enableDuplicateFiltering();
-    verify(deploymentBuilderMock, times(1)).name(deploymentNameHint + "." + resourceName1);
-    verify(deploymentBuilderMock, times(1)).name(deploymentNameHint + "." + resourceName2);
-    verify(deploymentBuilderMock, times(1)).name(deploymentNameHint + "." + resourceName3);
-    verify(deploymentBuilderMock, times(1)).addInputStream(eq(resourceName1), isA(Resource.class));
-    verify(deploymentBuilderMock, times(1)).addInputStream(eq(resourceName2), isA(Resource.class));
-    verify(deploymentBuilderMock, times(1)).addInputStream(eq(resourceName3), isA(Resource.class));
-    verify(deploymentBuilderMock, times(3)).deploy();
-  }
+        verify(repositoryServiceMock, times(3)).createDeployment();
+        verify(deploymentBuilderMock, times(3)).enableDuplicateFiltering();
+        verify(deploymentBuilderMock, times(1))
+            .name(deploymentNameHint + "." + resourceName1);
+        verify(deploymentBuilderMock, times(1))
+            .name(deploymentNameHint + "." + resourceName2);
+        verify(deploymentBuilderMock, times(1))
+            .name(deploymentNameHint + "." + resourceName3);
+        verify(deploymentBuilderMock, times(1))
+            .addInputStream(eq(resourceName1), isA(Resource.class));
+        verify(deploymentBuilderMock, times(1))
+            .addInputStream(eq(resourceName2), isA(Resource.class));
+        verify(deploymentBuilderMock, times(1))
+            .addInputStream(eq(resourceName3), isA(Resource.class));
+        verify(deploymentBuilderMock, times(3)).deploy();
+    }
 
-  @Test
-  public void testDeployResourcesNoResources() {
-    final Resource[] resources = new Resource[] {};
-    deploymentStrategy.deployResources(deploymentNameHint, resources, repositoryServiceMock);
+    @Test
+    public void testDeployResourcesNoResources() {
+        final Resource[] resources = new Resource[] {};
+        deploymentStrategy.deployResources(
+            deploymentNameHint,
+            resources,
+            repositoryServiceMock
+        );
 
-    verify(repositoryServiceMock, never()).createDeployment();
-    verify(deploymentBuilderMock, never()).enableDuplicateFiltering();
-    verify(deploymentBuilderMock, never()).name(deploymentNameHint);
-    verify(deploymentBuilderMock, never()).addInputStream(isA(String.class), isA(InputStream.class));
-    verify(deploymentBuilderMock, never()).addInputStream(eq(resourceName2), isA(InputStream.class));
-    verify(deploymentBuilderMock, never()).addZipInputStream(isA(ZipInputStream.class));
-    verify(deploymentBuilderMock, never()).deploy();
-  }
+        verify(repositoryServiceMock, never()).createDeployment();
+        verify(deploymentBuilderMock, never()).enableDuplicateFiltering();
+        verify(deploymentBuilderMock, never()).name(deploymentNameHint);
+        verify(deploymentBuilderMock, never())
+            .addInputStream(isA(String.class), isA(InputStream.class));
+        verify(deploymentBuilderMock, never())
+            .addInputStream(eq(resourceName2), isA(InputStream.class));
+        verify(deploymentBuilderMock, never())
+            .addZipInputStream(isA(ZipInputStream.class));
+        verify(deploymentBuilderMock, never()).deploy();
+    }
 
-  @Test
-  public void testDeployResourcesIOExceptionWhenCreatingMapFallsBackToResourceName() throws Exception {
-    when(resourceMock3.getFile()).thenThrow(new IOException());
-    when(resourceMock3.getFilename()).thenReturn(resourceName3);
+    @Test
+    public void testDeployResourcesIOExceptionWhenCreatingMapFallsBackToResourceName()
+        throws Exception {
+        when(resourceMock3.getFile()).thenThrow(new IOException());
+        when(resourceMock3.getFilename()).thenReturn(resourceName3);
 
-    final Resource[] resources = new Resource[] { resourceMock3 };
-    deploymentStrategy.deployResources(deploymentNameHint, resources, repositoryServiceMock);
+        final Resource[] resources = new Resource[] { resourceMock3 };
+        deploymentStrategy.deployResources(
+            deploymentNameHint,
+            resources,
+            repositoryServiceMock
+        );
 
-    verify(repositoryServiceMock).createDeployment();
-    verify(deploymentBuilderMock).enableDuplicateFiltering();
-    verify(deploymentBuilderMock).name(deploymentNameHint + "." + resourceName3);
-    verify(deploymentBuilderMock).addInputStream(eq( resourceName3),
-                                                 any(Resource.class));
-    verify(deploymentBuilderMock).deploy();
-  }
-
+        verify(repositoryServiceMock).createDeployment();
+        verify(deploymentBuilderMock).enableDuplicateFiltering();
+        verify(deploymentBuilderMock)
+            .name(deploymentNameHint + "." + resourceName3);
+        verify(deploymentBuilderMock)
+            .addInputStream(eq(resourceName3), any(Resource.class));
+        verify(deploymentBuilderMock).deploy();
+    }
 }

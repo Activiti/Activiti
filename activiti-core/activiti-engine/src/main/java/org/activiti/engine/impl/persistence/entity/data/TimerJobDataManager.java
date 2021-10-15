@@ -17,7 +17,6 @@
 package org.activiti.engine.impl.persistence.entity.data;
 
 import java.util.List;
-
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.TimerJobQueryImpl;
 import org.activiti.engine.impl.persistence.entity.TimerJobEntity;
@@ -28,22 +27,34 @@ import org.activiti.engine.runtime.Job;
 
  */
 public interface TimerJobDataManager extends DataManager<TimerJobEntity> {
+    List<TimerJobEntity> findTimerJobsToExecute(Page page);
 
-  List<TimerJobEntity> findTimerJobsToExecute(Page page);
+    List<TimerJobEntity> findJobsByTypeAndProcessDefinitionId(
+        String jobHandlerType,
+        String processDefinitionId
+    );
 
-  List<TimerJobEntity> findJobsByTypeAndProcessDefinitionId(String jobHandlerType, String processDefinitionId);
+    List<TimerJobEntity> findJobsByTypeAndProcessDefinitionKeyNoTenantId(
+        String jobHandlerType,
+        String processDefinitionKey
+    );
 
-  List<TimerJobEntity> findJobsByTypeAndProcessDefinitionKeyNoTenantId(String jobHandlerType, String processDefinitionKey);
+    List<TimerJobEntity> findJobsByTypeAndProcessDefinitionKeyAndTenantId(
+        String jobHandlerType,
+        String processDefinitionKey,
+        String tenantId
+    );
 
-  List<TimerJobEntity> findJobsByTypeAndProcessDefinitionKeyAndTenantId(String jobHandlerType, String processDefinitionKey, String tenantId);
+    List<TimerJobEntity> findJobsByExecutionId(String executionId);
 
-  List<TimerJobEntity> findJobsByExecutionId(String executionId);
+    List<TimerJobEntity> findJobsByProcessInstanceId(String processInstanceId);
 
-  List<TimerJobEntity> findJobsByProcessInstanceId(String processInstanceId);
+    List<Job> findJobsByQueryCriteria(TimerJobQueryImpl jobQuery, Page page);
 
-  List<Job> findJobsByQueryCriteria(TimerJobQueryImpl jobQuery, Page page);
+    long findJobCountByQueryCriteria(TimerJobQueryImpl jobQuery);
 
-  long findJobCountByQueryCriteria(TimerJobQueryImpl jobQuery);
-
-  void updateJobTenantIdForDeployment(String deploymentId, String newTenantId);
+    void updateJobTenantIdForDeployment(
+        String deploymentId,
+        String newTenantId
+    );
 }

@@ -21,33 +21,36 @@ package org.activiti.engine.impl.variable;
  */
 public class LongType implements VariableType {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  public String getTypeName() {
-    return "long";
-  }
-
-  public boolean isCachable() {
-    return true;
-  }
-
-  public Object getValue(ValueFields valueFields) {
-    return valueFields.getLongValue();
-  }
-
-  public void setValue(Object value, ValueFields valueFields) {
-    valueFields.setLongValue((Long) value);
-    if (value != null) {
-      valueFields.setTextValue(value.toString());
-    } else {
-      valueFields.setTextValue(null);
+    public String getTypeName() {
+        return "long";
     }
-  }
 
-  public boolean isAbleToStore(Object value) {
-    if (value == null) {
-      return true;
+    public boolean isCachable() {
+        return true;
     }
-    return Long.class.isAssignableFrom(value.getClass()) || long.class.isAssignableFrom(value.getClass());
-  }
+
+    public Object getValue(ValueFields valueFields) {
+        return valueFields.getLongValue();
+    }
+
+    public void setValue(Object value, ValueFields valueFields) {
+        valueFields.setLongValue((Long) value);
+        if (value != null) {
+            valueFields.setTextValue(value.toString());
+        } else {
+            valueFields.setTextValue(null);
+        }
+    }
+
+    public boolean isAbleToStore(Object value) {
+        if (value == null) {
+            return true;
+        }
+        return (
+            Long.class.isAssignableFrom(value.getClass()) ||
+            long.class.isAssignableFrom(value.getClass())
+        );
+    }
 }

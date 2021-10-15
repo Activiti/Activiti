@@ -18,7 +18,5 @@ package org.activiti.test.matchers;
 import org.activiti.api.process.model.ProcessInstance;
 
 public interface ProcessResultMatcher {
-
     void match(ProcessInstance processInstance);
-
 }

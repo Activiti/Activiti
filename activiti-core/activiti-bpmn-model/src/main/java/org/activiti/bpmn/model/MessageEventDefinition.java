@@ -20,53 +20,54 @@ import java.util.List;
 
 public class MessageEventDefinition extends EventDefinition {
 
-  protected String messageRef;
-  protected String messageExpression;
-  protected String correlationKey;
-  protected List<FieldExtension> fieldExtensions = new ArrayList<FieldExtension>();
+    protected String messageRef;
+    protected String messageExpression;
+    protected String correlationKey;
+    protected List<FieldExtension> fieldExtensions = new ArrayList<FieldExtension>();
 
-  public List<FieldExtension> getFieldExtensions() {
-    return fieldExtensions;
-  }
-  public void setFieldExtensions(List<FieldExtension> fieldExtensions) {
-    this.fieldExtensions = fieldExtensions;
-  }
+    public List<FieldExtension> getFieldExtensions() {
+        return fieldExtensions;
+    }
 
-  public String getMessageRef() {
-    return messageRef;
-  }
+    public void setFieldExtensions(List<FieldExtension> fieldExtensions) {
+        this.fieldExtensions = fieldExtensions;
+    }
 
-  public void setMessageRef(String messageRef) {
-    this.messageRef = messageRef;
-  }
+    public String getMessageRef() {
+        return messageRef;
+    }
 
-  public String getMessageExpression() {
-    return messageExpression;
-  }
+    public void setMessageRef(String messageRef) {
+        this.messageRef = messageRef;
+    }
 
-  public void setMessageExpression(String messageExpression) {
-    this.messageExpression = messageExpression;
-  }
+    public String getMessageExpression() {
+        return messageExpression;
+    }
 
-  public String getCorrelationKey() {
-      return correlationKey;
-  }
+    public void setMessageExpression(String messageExpression) {
+        this.messageExpression = messageExpression;
+    }
 
-  public void setCorrelationKey(String correlationKey) {
-      this.correlationKey = correlationKey;
-  }
+    public String getCorrelationKey() {
+        return correlationKey;
+    }
 
-  public MessageEventDefinition clone() {
-    MessageEventDefinition clone = new MessageEventDefinition();
-    clone.setValues(this);
-    return clone;
-  }
+    public void setCorrelationKey(String correlationKey) {
+        this.correlationKey = correlationKey;
+    }
 
-  public void setValues(MessageEventDefinition otherDefinition) {
-    super.setValues(otherDefinition);
-    setMessageRef(otherDefinition.getMessageRef());
-    setMessageExpression(otherDefinition.getMessageExpression());
-    setFieldExtensions(otherDefinition.getFieldExtensions());
-    setCorrelationKey(otherDefinition.getCorrelationKey());
-  }
+    public MessageEventDefinition clone() {
+        MessageEventDefinition clone = new MessageEventDefinition();
+        clone.setValues(this);
+        return clone;
+    }
+
+    public void setValues(MessageEventDefinition otherDefinition) {
+        super.setValues(otherDefinition);
+        setMessageRef(otherDefinition.getMessageRef());
+        setMessageExpression(otherDefinition.getMessageExpression());
+        setFieldExtensions(otherDefinition.getFieldExtensions());
+        setCorrelationKey(otherDefinition.getCorrelationKey());
+    }
 }

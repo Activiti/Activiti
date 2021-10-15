@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.test.bpmn.multiinstance;
 
 import org.activiti.engine.delegate.DelegateTask;
@@ -25,12 +24,13 @@ import org.activiti.engine.delegate.TaskListener;
  */
 public class TaskCompletionListener implements TaskListener {
 
-  public void notify(DelegateTask delegateTask) {
-    Integer counter = (Integer) delegateTask.getVariable("taskListenerCounter");
-    if (counter == null) {
-      counter = 0;
+    public void notify(DelegateTask delegateTask) {
+        Integer counter = (Integer) delegateTask.getVariable(
+            "taskListenerCounter"
+        );
+        if (counter == null) {
+            counter = 0;
+        }
+        delegateTask.setVariable("taskListenerCounter", ++counter);
     }
-    delegateTask.setVariable("taskListenerCounter", ++counter);
-  }
-
 }

@@ -21,7 +21,6 @@ public class BPMNStartEventMatchers extends ActivityMatchers {
 
     private BPMNStartEventMatchers(String definitionKey) {
         super(definitionKey);
-
     }
 
     @Override
@@ -32,5 +31,4 @@ public class BPMNStartEventMatchers extends ActivityMatchers {
     public static BPMNStartEventMatchers startEvent(String definitionKey) {
         return new BPMNStartEventMatchers(definitionKey);
     }
-
 }

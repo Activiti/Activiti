@@ -21,37 +21,40 @@ package org.activiti.engine.impl.variable;
  */
 public class ShortType implements VariableType {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  public String getTypeName() {
-    return "short";
-  }
-
-  public boolean isCachable() {
-    return true;
-  }
-
-  public Object getValue(ValueFields valueFields) {
-    if (valueFields.getLongValue() != null) {
-      return new Short(valueFields.getLongValue().shortValue());
+    public String getTypeName() {
+        return "short";
     }
-    return null;
-  }
 
-  public void setValue(Object value, ValueFields valueFields) {
-    if (value != null) {
-      valueFields.setLongValue(((Short) value).longValue());
-      valueFields.setTextValue(value.toString());
-    } else {
-      valueFields.setLongValue(null);
-      valueFields.setTextValue(null);
+    public boolean isCachable() {
+        return true;
     }
-  }
 
-  public boolean isAbleToStore(Object value) {
-    if (value == null) {
-      return true;
+    public Object getValue(ValueFields valueFields) {
+        if (valueFields.getLongValue() != null) {
+            return new Short(valueFields.getLongValue().shortValue());
+        }
+        return null;
     }
-    return Short.class.isAssignableFrom(value.getClass()) || short.class.isAssignableFrom(value.getClass());
-  }
+
+    public void setValue(Object value, ValueFields valueFields) {
+        if (value != null) {
+            valueFields.setLongValue(((Short) value).longValue());
+            valueFields.setTextValue(value.toString());
+        } else {
+            valueFields.setLongValue(null);
+            valueFields.setTextValue(null);
+        }
+    }
+
+    public boolean isAbleToStore(Object value) {
+        if (value == null) {
+            return true;
+        }
+        return (
+            Short.class.isAssignableFrom(value.getClass()) ||
+            short.class.isAssignableFrom(value.getClass())
+        );
+    }
 }

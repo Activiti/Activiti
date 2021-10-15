@@ -19,7 +19,6 @@ package org.activiti.engine.repository;
 import java.io.InputStream;
 import java.util.Date;
 import java.util.zip.ZipInputStream;
-
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.core.common.project.model.ProjectManifest;
 import org.activiti.engine.api.internal.Internal;
@@ -37,79 +36,82 @@ import org.springframework.core.io.Resource;
  */
 @Internal
 public interface DeploymentBuilder {
+    DeploymentBuilder addInputStream(
+        String resourceName,
+        InputStream inputStream
+    );
 
-  DeploymentBuilder addInputStream(String resourceName, InputStream inputStream);
+    DeploymentBuilder addInputStream(String resourceName, Resource resource);
 
-  DeploymentBuilder addInputStream(String resourceName,
-                                   Resource resource);
+    DeploymentBuilder addClasspathResource(String resource);
 
-  DeploymentBuilder addClasspathResource(String resource);
+    DeploymentBuilder addString(String resourceName, String text);
 
-  DeploymentBuilder addString(String resourceName, String text);
+    DeploymentBuilder addBytes(String resourceName, byte[] bytes);
 
-  DeploymentBuilder addBytes(String resourceName, byte[] bytes);
+    DeploymentBuilder addZipInputStream(ZipInputStream zipInputStream);
 
-  DeploymentBuilder addZipInputStream(ZipInputStream zipInputStream);
+    DeploymentBuilder addBpmnModel(String resourceName, BpmnModel bpmnModel);
 
-  DeploymentBuilder addBpmnModel(String resourceName, BpmnModel bpmnModel);
+    DeploymentBuilder setProjectManifest(ProjectManifest projectManifest);
 
-  DeploymentBuilder setProjectManifest(ProjectManifest projectManifest);
+    DeploymentBuilder setEnforcedAppVersion(Integer enforcedAppVersion);
 
-  DeploymentBuilder setEnforcedAppVersion(Integer enforcedAppVersion);
+    /**
+     * If called, no XML schema validation against the BPMN 2.0 XSD.
+     *
+     * Not recommended in general.
+     */
+    DeploymentBuilder disableSchemaValidation();
 
-  /**
-   * If called, no XML schema validation against the BPMN 2.0 XSD.
-   *
-   * Not recommended in general.
-   */
-  DeploymentBuilder disableSchemaValidation();
+    /**
+     * If called, no validation that the process definition is executable on the engine will be done against the process definition.
+     *
+     * Not recommended in general.
+     */
+    DeploymentBuilder disableBpmnValidation();
 
-  /**
-   * If called, no validation that the process definition is executable on the engine will be done against the process definition.
-   *
-   * Not recommended in general.
-   */
-  DeploymentBuilder disableBpmnValidation();
+    /**
+     * Gives the deployment the given name.
+     */
+    DeploymentBuilder name(String name);
 
-  /**
-   * Gives the deployment the given name.
-   */
-  DeploymentBuilder name(String name);
+    /**
+     * Gives the deployment the given category.
+     */
+    DeploymentBuilder category(String category);
 
-  /**
-   * Gives the deployment the given category.
-   */
-  DeploymentBuilder category(String category);
+    /**
+     * Gives the deployment the given key.
+     */
+    DeploymentBuilder key(String key);
 
-  /**
-   * Gives the deployment the given key.
-   */
-  DeploymentBuilder key(String key);
+    /**
+     * Gives the deployment the given tenant id.
+     */
+    DeploymentBuilder tenantId(String tenantId);
 
-  /**
-   * Gives the deployment the given tenant id.
-   */
-  DeploymentBuilder tenantId(String tenantId);
+    /**
+     * If set, this deployment will be compared to any previous deployment. This means that every (non-generated) resource will be compared with the provided resources of this deployment.
+     */
+    DeploymentBuilder enableDuplicateFiltering();
 
-  /**
-   * If set, this deployment will be compared to any previous deployment. This means that every (non-generated) resource will be compared with the provided resources of this deployment.
-   */
-  DeploymentBuilder enableDuplicateFiltering();
+    /**
+     * Sets the date on which the process definitions contained in this deployment will be activated. This means that all process definitions will be deployed as usual, but they will be suspended from
+     * the start until the given activation date.
+     */
+    DeploymentBuilder activateProcessDefinitionsOn(Date date);
 
-  /**
-   * Sets the date on which the process definitions contained in this deployment will be activated. This means that all process definitions will be deployed as usual, but they will be suspended from
-   * the start until the given activation date.
-   */
-  DeploymentBuilder activateProcessDefinitionsOn(Date date);
+    /**
+     * Allows to add a property to this {@link DeploymentBuilder} that influences the deployment.
+     */
+    DeploymentBuilder deploymentProperty(
+        String propertyKey,
+        Object propertyValue
+    );
 
-  /**
-   * Allows to add a property to this {@link DeploymentBuilder} that influences the deployment.
-   */
-  DeploymentBuilder deploymentProperty(String propertyKey, Object propertyValue);
-
-  /**
-   * Deploys all provided sources to the Activiti engine.
-   */
-  Deployment deploy();
-
+    /**
+     * Deploys all provided sources to the Activiti engine.
+     */
+    Deployment deploy();
 }

@@ -22,17 +22,24 @@ import javax.xml.stream.XMLStreamReader;
 import org.activiti.bpmn.converter.child.ElementParser;
 import org.activiti.bpmn.model.MultiInstanceLoopCharacteristics;
 
-public class MultiInstanceCompletionConditionParser implements
-    ElementParser<MultiInstanceLoopCharacteristics> {
+public class MultiInstanceCompletionConditionParser
+    implements ElementParser<MultiInstanceLoopCharacteristics> {
 
     @Override
     public boolean canParseCurrentElement(XMLStreamReader reader) {
-        return reader.isStartElement() && ELEMENT_MULTIINSTANCE_CONDITION.equalsIgnoreCase(reader.getLocalName());
+        return (
+            reader.isStartElement() &&
+            ELEMENT_MULTIINSTANCE_CONDITION.equalsIgnoreCase(
+                reader.getLocalName()
+            )
+        );
     }
 
     @Override
-    public void setInformation(XMLStreamReader reader,
-        MultiInstanceLoopCharacteristics loopCharacteristics) throws XMLStreamException {
+    public void setInformation(
+        XMLStreamReader reader,
+        MultiInstanceLoopCharacteristics loopCharacteristics
+    ) throws XMLStreamException {
         loopCharacteristics.setCompletionCondition(reader.getElementText());
     }
 }

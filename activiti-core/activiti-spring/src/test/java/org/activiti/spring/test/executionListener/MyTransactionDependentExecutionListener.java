@@ -14,76 +14,93 @@
  * limitations under the License.
  */
 
-
 package org.activiti.spring.test.executionListener;
-
-import org.activiti.bpmn.model.FlowElement;
-import org.activiti.engine.delegate.TransactionDependentExecutionListener;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import org.activiti.bpmn.model.FlowElement;
+import org.activiti.engine.delegate.TransactionDependentExecutionListener;
 
 /**
 
  */
-public class MyTransactionDependentExecutionListener implements TransactionDependentExecutionListener {
+public class MyTransactionDependentExecutionListener
+    implements TransactionDependentExecutionListener {
 
-  protected List<CurrentActivity> currentActivities = new ArrayList<CurrentActivity>();
+    protected List<CurrentActivity> currentActivities = new ArrayList<CurrentActivity>();
 
-  @Override
-  public void notify(String processInstanceId, String executionId, FlowElement currentFlowElement, Map<String, Object> executionVariables, Map<String, Object> customPropertiesMap) {
-    currentActivities.add(new CurrentActivity(processInstanceId, executionId, currentFlowElement.getId(), currentFlowElement.getName(), executionVariables, customPropertiesMap));
-  }
-
-  public List<CurrentActivity> getCurrentActivities() {
-    return currentActivities;
-  }
-
-  public static class CurrentActivity {
-    private final String processInstanceId;
-    private final String executionId;
-    private final String activityId;
-    private final String activityName;
-    private final Map<String, Object> executionVariables;
-    private final Map<String, Object> customPropertiesMap;
-
-    public CurrentActivity(String processInstanceId, String executionId, String activityId, String activityName, Map<String, Object> executionVariables, Map<String, Object> customPropertiesMap) {
-      this.processInstanceId = processInstanceId;
-      this.executionId = executionId;
-      this.activityId = activityId;
-      this.activityName = activityName;
-      this.executionVariables = executionVariables;
-      this.customPropertiesMap = customPropertiesMap;
+    @Override
+    public void notify(
+        String processInstanceId,
+        String executionId,
+        FlowElement currentFlowElement,
+        Map<String, Object> executionVariables,
+        Map<String, Object> customPropertiesMap
+    ) {
+        currentActivities.add(
+            new CurrentActivity(
+                processInstanceId,
+                executionId,
+                currentFlowElement.getId(),
+                currentFlowElement.getName(),
+                executionVariables,
+                customPropertiesMap
+            )
+        );
     }
 
-    public String getProcessInstanceId() {
-      return processInstanceId;
+    public List<CurrentActivity> getCurrentActivities() {
+        return currentActivities;
     }
 
-    public String getExecutionId() {
-      return executionId;
+    public static class CurrentActivity {
+
+        private final String processInstanceId;
+        private final String executionId;
+        private final String activityId;
+        private final String activityName;
+        private final Map<String, Object> executionVariables;
+        private final Map<String, Object> customPropertiesMap;
+
+        public CurrentActivity(
+            String processInstanceId,
+            String executionId,
+            String activityId,
+            String activityName,
+            Map<String, Object> executionVariables,
+            Map<String, Object> customPropertiesMap
+        ) {
+            this.processInstanceId = processInstanceId;
+            this.executionId = executionId;
+            this.activityId = activityId;
+            this.activityName = activityName;
+            this.executionVariables = executionVariables;
+            this.customPropertiesMap = customPropertiesMap;
+        }
+
+        public String getProcessInstanceId() {
+            return processInstanceId;
+        }
+
+        public String getExecutionId() {
+            return executionId;
+        }
+
+        public String getActivityId() {
+            return activityId;
+        }
+
+        public String getActivityName() {
+            return activityName;
+        }
+
+        public Map<String, Object> getExecutionVariables() {
+            return executionVariables;
+        }
+
+        public Map<String, Object> getCustomPropertiesMap() {
+            return customPropertiesMap;
+        }
     }
-
-    public String getActivityId() {
-      return activityId;
-    }
-
-    public String getActivityName() {
-      return activityName;
-    }
-
-    public Map<String, Object> getExecutionVariables() {
-      return executionVariables;
-    }
-
-    public Map<String, Object> getCustomPropertiesMap() {
-      return customPropertiesMap;
-    }
-  }
-
-
-
-
-
 }

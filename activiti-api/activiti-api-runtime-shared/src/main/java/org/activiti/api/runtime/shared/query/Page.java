@@ -18,9 +18,7 @@ package org.activiti.api.runtime.shared.query;
 import java.util.List;
 
 public interface Page<T> {
-
     List<T> getContent();
 
     int getTotalItems();
-
 }

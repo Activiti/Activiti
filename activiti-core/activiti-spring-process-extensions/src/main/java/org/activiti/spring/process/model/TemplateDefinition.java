@@ -21,14 +21,14 @@ public class TemplateDefinition {
 
     public enum TemplateType {
         VARIABLE,
-        FILE;
+        FILE,
     }
+
     private TemplateType type;
 
     private String value;
 
-    TemplateDefinition() {
-    }
+    TemplateDefinition() {}
 
     public TemplateDefinition(TemplateType type, String value) {
         this.type = type;
@@ -74,7 +74,12 @@ public class TemplateDefinition {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append("TemplateDefinition [type=").append(type).append(", value=").append(value).append("]");
+        builder
+            .append("TemplateDefinition [type=")
+            .append(type)
+            .append(", value=")
+            .append(value)
+            .append("]");
         return builder.toString();
     }
 }

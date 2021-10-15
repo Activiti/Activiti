@@ -15,6 +15,9 @@
  */
 package org.activiti.spring.conformance.set1;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.List;
 import org.activiti.api.process.model.ProcessDefinition;
 import org.activiti.api.process.model.ProcessDefinitionMeta;
 import org.activiti.api.process.runtime.ProcessRuntime;
@@ -28,13 +31,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 public class ConformanceBasicProcessRuntimeTest {
-
 
     @Autowired
     private ProcessRuntime processRuntime;
@@ -55,39 +53,39 @@ public class ConformanceBasicProcessRuntimeTest {
         //then
         assertThat(processRuntimeEventListeners).hasSize(11);
         assertThat(variableEventListeners).hasSize(3);
-
     }
 
     @Test
     public void shouldProcessDefinitions() {
         securityUtil.logInAs("user1");
 
-        Page<ProcessDefinition> processDefinitionPage = processRuntime.processDefinitions(Pageable.of(0, 50));
-
-        List<ProcessDefinition> processDefinitions = processDefinitionPage.getContent();
-        assertThat(processDefinitions).extracting(ProcessDefinition::getName).containsOnly(
-                "ServiceTask with Implementation",
-                "ServiceTask with Implementation Modify Variable"
-
+        Page<ProcessDefinition> processDefinitionPage = processRuntime.processDefinitions(
+            Pageable.of(0, 50)
         );
 
+        List<ProcessDefinition> processDefinitions = processDefinitionPage.getContent();
+        assertThat(processDefinitions)
+            .extracting(ProcessDefinition::getName)
+            .containsOnly(
+                "ServiceTask with Implementation",
+                "ServiceTask with Implementation Modify Variable"
+            );
     }
 
     @Test
     public void shouldProcessDefinitionsMetaData() {
         securityUtil.logInAs("user1");
 
-        Page<ProcessDefinition> processDefinitionPage = processRuntime.processDefinitions(Pageable.of(0, 50));
-
-        List<ProcessDefinition> processDefinitions = processDefinitionPage.getContent();
-        assertThat(processDefinitions).extracting(ProcessDefinition::getName).containsOnly(
-                "ServiceTask with Implementation",
-                "ServiceTask with Implementation Modify Variable"
+        Page<ProcessDefinition> processDefinitionPage = processRuntime.processDefinitions(
+            Pageable.of(0, 50)
         );
 
+        List<ProcessDefinition> processDefinitions = processDefinitionPage.getContent();
+        assertThat(processDefinitions)
+            .extracting(ProcessDefinition::getName)
+            .containsOnly(
+                "ServiceTask with Implementation",
+                "ServiceTask with Implementation Modify Variable"
+            );
     }
-
-
-
-
 }

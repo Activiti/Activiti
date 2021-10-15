@@ -17,7 +17,6 @@ package org.activiti.api.task.model.builders;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.activiti.api.task.model.payloads.CandidateGroupsPayload;
 
 public class CandidateGroupsPayloadBuilder {
@@ -30,7 +29,9 @@ public class CandidateGroupsPayloadBuilder {
         return this;
     }
 
-    public CandidateGroupsPayloadBuilder withCandidateGroups(List<String> candidateGroups) {
+    public CandidateGroupsPayloadBuilder withCandidateGroups(
+        List<String> candidateGroups
+    ) {
         if (candidateGroups == null) {
             candidateGroups = new ArrayList<>();
         }
@@ -38,13 +39,14 @@ public class CandidateGroupsPayloadBuilder {
         return this;
     }
 
-    public CandidateGroupsPayloadBuilder withCandidateGroup(String candidateGroup) {
+    public CandidateGroupsPayloadBuilder withCandidateGroup(
+        String candidateGroup
+    ) {
         this.candidateGroups.add(candidateGroup);
         return this;
     }
 
     public CandidateGroupsPayload build() {
-        return new CandidateGroupsPayload(taskId,
-                                          candidateGroups);
+        return new CandidateGroupsPayload(taskId, candidateGroups);
     }
 }

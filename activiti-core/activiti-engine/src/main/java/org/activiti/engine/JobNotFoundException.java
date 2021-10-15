@@ -24,18 +24,17 @@ import org.activiti.engine.runtime.Job;
  */
 public class JobNotFoundException extends ActivitiObjectNotFoundException {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  /** the id of the job */
-  private String jobId;
+    /** the id of the job */
+    private String jobId;
 
-  public JobNotFoundException(String jobId) {
-    super("No job found with id '" + jobId + "'.", Job.class);
-    this.jobId = jobId;
-  }
+    public JobNotFoundException(String jobId) {
+        super("No job found with id '" + jobId + "'.", Job.class);
+        this.jobId = jobId;
+    }
 
-  public String getJobId() {
-    return this.jobId;
-  }
-
+    public String getJobId() {
+        return this.jobId;
+    }
 }

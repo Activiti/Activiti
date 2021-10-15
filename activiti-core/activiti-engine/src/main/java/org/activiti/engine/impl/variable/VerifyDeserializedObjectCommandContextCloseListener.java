@@ -33,28 +33,24 @@ import org.activiti.engine.impl.interceptor.CommandContextCloseListener;
  *
 
  */
-public class VerifyDeserializedObjectCommandContextCloseListener implements CommandContextCloseListener {
+public class VerifyDeserializedObjectCommandContextCloseListener
+    implements CommandContextCloseListener {
 
-  protected DeserializedObject deserializedObject;
+    protected DeserializedObject deserializedObject;
 
-  public VerifyDeserializedObjectCommandContextCloseListener(DeserializedObject deserializedObject) {
-    this.deserializedObject = deserializedObject;
-  }
+    public VerifyDeserializedObjectCommandContextCloseListener(
+        DeserializedObject deserializedObject
+    ) {
+        this.deserializedObject = deserializedObject;
+    }
 
-  public void closing(CommandContext commandContext) {
-    deserializedObject.verifyIfBytesOfSerializedObjectChanged();
-  }
+    public void closing(CommandContext commandContext) {
+        deserializedObject.verifyIfBytesOfSerializedObjectChanged();
+    }
 
-  public void closed(CommandContext commandContext) {
+    public void closed(CommandContext commandContext) {}
 
-  }
+    public void afterSessionsFlush(CommandContext commandContext) {}
 
-  public void afterSessionsFlush(CommandContext commandContext) {
-
-  }
-
-  public void closeFailure(CommandContext commandContext) {
-
-  }
-
+    public void closeFailure(CommandContext commandContext) {}
 }

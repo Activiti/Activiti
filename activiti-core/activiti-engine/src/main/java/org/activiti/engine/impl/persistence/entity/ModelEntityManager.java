@@ -18,7 +18,6 @@ package org.activiti.engine.impl.persistence.entity;
 
 import java.util.List;
 import java.util.Map;
-
 import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.impl.ModelQueryImpl;
 import org.activiti.engine.impl.Page;
@@ -29,27 +28,29 @@ import org.activiti.engine.repository.Model;
  */
 @Internal
 public interface ModelEntityManager extends EntityManager<ModelEntity> {
+    void insertEditorSourceForModel(String modelId, byte[] modelSource);
 
-  void insertEditorSourceForModel(String modelId, byte[] modelSource);
+    void insertEditorSourceExtraForModel(String modelId, byte[] modelSource);
 
-  void insertEditorSourceExtraForModel(String modelId, byte[] modelSource);
+    List<Model> findModelsByQueryCriteria(ModelQueryImpl query, Page page);
 
-  List<Model> findModelsByQueryCriteria(ModelQueryImpl query, Page page);
+    long findModelCountByQueryCriteria(ModelQueryImpl query);
 
-  long findModelCountByQueryCriteria(ModelQueryImpl query);
+    byte[] findEditorSourceByModelId(String modelId);
 
-  byte[] findEditorSourceByModelId(String modelId);
+    byte[] findEditorSourceExtraByModelId(String modelId);
 
-  byte[] findEditorSourceExtraByModelId(String modelId);
+    List<Model> findModelsByNativeQuery(
+        Map<String, Object> parameterMap,
+        int firstResult,
+        int maxResults
+    );
 
-  List<Model> findModelsByNativeQuery(Map<String, Object> parameterMap, int firstResult, int maxResults);
+    long findModelCountByNativeQuery(Map<String, Object> parameterMap);
 
-  long findModelCountByNativeQuery(Map<String, Object> parameterMap);
+    void updateModel(ModelEntity updatedModel);
 
-  void updateModel(ModelEntity updatedModel);
+    void deleteEditorSource(ModelEntity model);
 
-  void deleteEditorSource(ModelEntity model);
-
-  void deleteEditorSourceExtra(ModelEntity model);
-
+    void deleteEditorSourceExtra(ModelEntity model);
 }

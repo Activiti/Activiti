@@ -18,38 +18,52 @@ package org.activiti.engine.impl.calendar;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.api.internal.Internal;
 
 @Internal
 public class MapBusinessCalendarManager implements BusinessCalendarManager {
 
-  private final Map<String, BusinessCalendar> businessCalendars;
+    private final Map<String, BusinessCalendar> businessCalendars;
 
-  public MapBusinessCalendarManager(){
-    this.businessCalendars = new HashMap<String, BusinessCalendar>();
-  }
-
-  public MapBusinessCalendarManager(Map<String, BusinessCalendar> businessCalendars) {
-    if (businessCalendars == null) {
-      throw new IllegalArgumentException("businessCalendars can not be null");
+    public MapBusinessCalendarManager() {
+        this.businessCalendars = new HashMap<String, BusinessCalendar>();
     }
 
-    this.businessCalendars = new HashMap<String, BusinessCalendar>(businessCalendars);
-  }
+    public MapBusinessCalendarManager(
+        Map<String, BusinessCalendar> businessCalendars
+    ) {
+        if (businessCalendars == null) {
+            throw new IllegalArgumentException(
+                "businessCalendars can not be null"
+            );
+        }
 
-  public BusinessCalendar getBusinessCalendar(String businessCalendarRef) {
-    BusinessCalendar businessCalendar = businessCalendars.get(businessCalendarRef);
-    if (businessCalendar == null) {
-      throw new ActivitiException("Requested business calendar " + businessCalendarRef +
-          " does not exist. Allowed calendars are " + this.businessCalendars.keySet() + ".");
+        this.businessCalendars =
+            new HashMap<String, BusinessCalendar>(businessCalendars);
     }
-    return businessCalendar;
-  }
 
-  public BusinessCalendarManager addBusinessCalendar(String businessCalendarRef, BusinessCalendar businessCalendar) {
-    businessCalendars.put(businessCalendarRef, businessCalendar);
-    return this;
-  }
+    public BusinessCalendar getBusinessCalendar(String businessCalendarRef) {
+        BusinessCalendar businessCalendar = businessCalendars.get(
+            businessCalendarRef
+        );
+        if (businessCalendar == null) {
+            throw new ActivitiException(
+                "Requested business calendar " +
+                businessCalendarRef +
+                " does not exist. Allowed calendars are " +
+                this.businessCalendars.keySet() +
+                "."
+            );
+        }
+        return businessCalendar;
+    }
+
+    public BusinessCalendarManager addBusinessCalendar(
+        String businessCalendarRef,
+        BusinessCalendar businessCalendar
+    ) {
+        businessCalendars.put(businessCalendarRef, businessCalendar);
+        return this;
+    }
 }

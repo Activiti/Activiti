@@ -25,28 +25,28 @@ import org.activiti.engine.delegate.event.ActivitiEventListener;
  *
 
  */
-public abstract class BaseDelegateEventListener implements ActivitiEventListener {
+public abstract class BaseDelegateEventListener
+    implements ActivitiEventListener {
 
-  protected Class<?> entityClass;
+    protected Class<?> entityClass;
 
-  public void setEntityClass(Class<?> entityClass) {
-    this.entityClass = entityClass;
-  }
-
-  protected boolean isValidEvent(ActivitiEvent event) {
-    boolean valid = false;
-    if (entityClass != null) {
-      if (event instanceof ActivitiEntityEvent) {
-        Object entity = ((ActivitiEntityEvent) event).getEntity();
-        if (entity != null) {
-          valid = entityClass.isAssignableFrom(entity.getClass());
-        }
-      }
-    } else {
-      // If no class is specified, all events are valid
-      valid = true;
+    public void setEntityClass(Class<?> entityClass) {
+        this.entityClass = entityClass;
     }
-    return valid;
-  }
 
+    protected boolean isValidEvent(ActivitiEvent event) {
+        boolean valid = false;
+        if (entityClass != null) {
+            if (event instanceof ActivitiEntityEvent) {
+                Object entity = ((ActivitiEntityEvent) event).getEntity();
+                if (entity != null) {
+                    valid = entityClass.isAssignableFrom(entity.getClass());
+                }
+            }
+        } else {
+            // If no class is specified, all events are valid
+            valid = true;
+        }
+        return valid;
+    }
 }

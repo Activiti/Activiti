@@ -16,11 +16,9 @@
 package org.activiti.engine.impl.persistence.entity.integration;
 
 import java.util.Date;
-
 import org.activiti.engine.impl.persistence.entity.Entity;
 
 public interface IntegrationContextEntity extends Entity {
-
     String getExecutionId();
 
     void setExecutionId(String executionId);
@@ -40,5 +38,4 @@ public interface IntegrationContextEntity extends Entity {
     Date getCreatedDate();
 
     void setCreatedDate(Date createdDate);
-
 }

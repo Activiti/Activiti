@@ -14,11 +14,9 @@
  * limitations under the License.
  */
 
-
 package org.activiti.spring.process.model;
 
 import java.util.HashMap;
 
-public class ProcessConstantsMapping extends HashMap<String, ConstantDefinition> {
-
-}
+public class ProcessConstantsMapping
+    extends HashMap<String, ConstantDefinition> {}

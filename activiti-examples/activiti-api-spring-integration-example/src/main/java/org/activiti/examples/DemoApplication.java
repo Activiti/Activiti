@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
-
 import org.activiti.api.process.model.ProcessDefinition;
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
@@ -54,32 +53,36 @@ public class DemoApplication implements CommandLineRunner {
     private String FILE_PATTERN = "*.txt";
     private Logger logger = LoggerFactory.getLogger(DemoApplication.class);
 
-
     private final ProcessRuntime processRuntime;
 
     private final SecurityUtil securityUtil;
 
-    public DemoApplication(ProcessRuntime processRuntime,
-                           SecurityUtil securityUtil) {
+    public DemoApplication(
+        ProcessRuntime processRuntime,
+        SecurityUtil securityUtil
+    ) {
         this.processRuntime = processRuntime;
         this.securityUtil = securityUtil;
     }
 
     public static void main(String[] args) {
         SpringApplication.run(DemoApplication.class, args);
-
     }
 
     @Override
     public void run(String... args) {
         securityUtil.logInAs("system");
 
-        Page<ProcessDefinition> processDefinitionPage = processRuntime.processDefinitions(Pageable.of(0, 10));
-        logger.info("> Available Process definitions: " + processDefinitionPage.getTotalItems());
+        Page<ProcessDefinition> processDefinitionPage = processRuntime.processDefinitions(
+            Pageable.of(0, 10)
+        );
+        logger.info(
+            "> Available Process definitions: " +
+            processDefinitionPage.getTotalItems()
+        );
         for (ProcessDefinition pd : processDefinitionPage.getContent()) {
             logger.info("\t > Process definition: " + pd);
         }
-
     }
 
     @Bean
@@ -88,7 +91,10 @@ public class DemoApplication implements CommandLineRunner {
     }
 
     @Bean
-    @InboundChannelAdapter(value = "fileChannel", poller = @Poller(fixedDelay = "1000"))
+    @InboundChannelAdapter(
+        value = "fileChannel",
+        poller = @Poller(fixedDelay = "1000")
+    )
     public MessageSource<File> fileReadingMessageSource() {
         FileReadingMessageSource sourceReader = new FileReadingMessageSource();
         sourceReader.setDirectory(new File(INPUT_DIR));
@@ -107,21 +113,26 @@ public class DemoApplication implements CommandLineRunner {
 
         SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yy HH:mm:ss");
 
-        logger.info("> Processing content: " + content + " at " + formatter.format(new Date()));
+        logger.info(
+            "> Processing content: " +
+            content +
+            " at " +
+            formatter.format(new Date())
+        );
 
-        ProcessInstance processInstance = processRuntime.start(ProcessPayloadBuilder
+        ProcessInstance processInstance = processRuntime.start(
+            ProcessPayloadBuilder
                 .start()
                 .withProcessDefinitionKey("categorizeProcess")
                 .withName("Processing Content: " + content)
                 .withVariable("content", content)
-                .build());
+                .build()
+        );
         logger.info(">>> Created Process Instance: " + processInstance);
 
         logger.info(">>> Deleting processed file: " + payload.getName());
         payload.delete();
-
     }
-
 
     @Bean
     public Connector processTextConnector() {
@@ -131,12 +142,10 @@ public class DemoApplication implements CommandLineRunner {
             // Logic Here to decide if content is approved or not
             if (contentToProcess.contains("activiti")) {
                 logger.info("> Approving content: " + contentToProcess);
-                integrationContext.addOutBoundVariable("approved",
-                        true);
+                integrationContext.addOutBoundVariable("approved", true);
             } else {
                 logger.info("> Discarding content: " + contentToProcess);
-                integrationContext.addOutBoundVariable("approved",
-                        false);
+                integrationContext.addOutBoundVariable("approved", false);
             }
             return integrationContext;
         };
@@ -145,10 +154,11 @@ public class DemoApplication implements CommandLineRunner {
     @Bean
     public Connector tagTextConnector() {
         return integrationContext -> {
-            String contentToTag = (String) integrationContext.getInBoundVariables().get("content");
+            String contentToTag = (String) integrationContext
+                .getInBoundVariables()
+                .get("content");
             contentToTag += " :) ";
-            integrationContext.addOutBoundVariable("content",
-                    contentToTag);
+            integrationContext.addOutBoundVariable("content", contentToTag);
             logger.info("Final Content: " + contentToTag);
             return integrationContext;
         };
@@ -157,13 +167,13 @@ public class DemoApplication implements CommandLineRunner {
     @Bean
     public Connector discardTextConnector() {
         return integrationContext -> {
-            String contentToDiscard = (String) integrationContext.getInBoundVariables().get("content");
+            String contentToDiscard = (String) integrationContext
+                .getInBoundVariables()
+                .get("content");
             contentToDiscard += " :( ";
-            integrationContext.addOutBoundVariable("content",
-                    contentToDiscard);
+            integrationContext.addOutBoundVariable("content", contentToDiscard);
             logger.info("Final Content: " + contentToDiscard);
             return integrationContext;
         };
     }
-
 }

@@ -14,53 +14,57 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.persistence.entity;
 
 import java.text.MessageFormat;
-
 import org.activiti.bpmn.model.Signal;
 
 /**
 
 
  */
-public class SignalEventSubscriptionEntityImpl extends EventSubscriptionEntityImpl implements SignalEventSubscriptionEntity {
+public class SignalEventSubscriptionEntityImpl
+    extends EventSubscriptionEntityImpl
+    implements SignalEventSubscriptionEntity {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  // Using json here, but not worth of adding json dependency lib for this
-  private static final String CONFIGURATION_TEMPLATE = "'{'\"scope\":\"{0}\"'}'";
+    // Using json here, but not worth of adding json dependency lib for this
+    private static final String CONFIGURATION_TEMPLATE =
+        "'{'\"scope\":\"{0}\"'}'";
 
-  public SignalEventSubscriptionEntityImpl() {
-    eventType = EVENT_TYPE;
-  }
-
-  @Override
-  public void setConfiguration(String configuration) {
-    if (configuration != null && configuration.contains("{\"scope\":")) {
-      this.configuration = configuration;
-    } else {
-      this.configuration = MessageFormat.format(CONFIGURATION_TEMPLATE, configuration);
+    public SignalEventSubscriptionEntityImpl() {
+        eventType = EVENT_TYPE;
     }
-  }
 
-  public boolean isProcessInstanceScoped() {
-    String scope = extractScopeFormConfiguration();
-    return (scope != null) && (Signal.SCOPE_PROCESS_INSTANCE.equals(scope));
-  }
-
-  public boolean isGlobalScoped() {
-    String scope = extractScopeFormConfiguration();
-    return (scope == null) || (Signal.SCOPE_GLOBAL.equals(scope));
-  }
-
-  protected String extractScopeFormConfiguration() {
-    if (this.configuration == null) {
-      return null;
-    } else {
-      return this.configuration.substring(10, this.configuration.length() - 2); // 10 --> length of {"scope": and -2 for removing"}
+    @Override
+    public void setConfiguration(String configuration) {
+        if (configuration != null && configuration.contains("{\"scope\":")) {
+            this.configuration = configuration;
+        } else {
+            this.configuration =
+                MessageFormat.format(CONFIGURATION_TEMPLATE, configuration);
+        }
     }
-  }
 
+    public boolean isProcessInstanceScoped() {
+        String scope = extractScopeFormConfiguration();
+        return (scope != null) && (Signal.SCOPE_PROCESS_INSTANCE.equals(scope));
+    }
+
+    public boolean isGlobalScoped() {
+        String scope = extractScopeFormConfiguration();
+        return (scope == null) || (Signal.SCOPE_GLOBAL.equals(scope));
+    }
+
+    protected String extractScopeFormConfiguration() {
+        if (this.configuration == null) {
+            return null;
+        } else {
+            return this.configuration.substring(
+                    10,
+                    this.configuration.length() - 2
+                ); // 10 --> length of {"scope": and -2 for removing"}
+        }
+    }
 }

@@ -41,28 +41,46 @@ public class ProcessExtensionResourceReaderIT {
 
     @Test
     public void shouldReadExtensionFromJsonFile() throws Exception {
-        try (InputStream inputStream = Thread.currentThread().getContextClassLoader()
-            .getResourceAsStream("processes/initial-vars-extensions.json")) {
-            ProcessExtensionModel processExtensionModel = reader.read(inputStream);
+        try (
+            InputStream inputStream = Thread
+                .currentThread()
+                .getContextClassLoader()
+                .getResourceAsStream("processes/initial-vars-extensions.json")
+        ) {
+            ProcessExtensionModel processExtensionModel = reader.read(
+                inputStream
+            );
             assertThat(processExtensionModel).isNotNull();
-            assertThat(processExtensionModel.getId()).isEqualTo("initialVarsProcess");
+            assertThat(processExtensionModel.getId())
+                .isEqualTo("initialVarsProcess");
             assertThat(
-                processExtensionModel.getExtensions("Process_initialVarsProcess").getProperties())
+                processExtensionModel
+                    .getExtensions("Process_initialVarsProcess")
+                    .getProperties()
+            )
                 .containsKey("d440ff7b-0ac8-4a97-b163-51a6ec49faa1");
         }
     }
 
     @Test
     public void shouldReadTemplateExtensionFromJsonFile() throws Exception {
-        try (InputStream inputStream = Thread.currentThread()
-            .getContextClassLoader()
-            .getResourceAsStream("processes/template-mapping-extensions.json")) {
+        try (
+            InputStream inputStream = Thread
+                .currentThread()
+                .getContextClassLoader()
+                .getResourceAsStream(
+                    "processes/template-mapping-extensions.json"
+                )
+        ) {
             //when
-            ProcessExtensionModel processExtensionModel = reader.read(inputStream);
+            ProcessExtensionModel processExtensionModel = reader.read(
+                inputStream
+            );
 
             //then
             assertThat(processExtensionModel).isNotNull();
-            assertThat(processExtensionModel.getId()).isEqualTo("emailTemplateMapping");
+            assertThat(processExtensionModel.getId())
+                .isEqualTo("emailTemplateMapping");
 
             TemplatesDefinition templates = processExtensionModel
                 .getExtensions("processDefinitionId")
@@ -73,20 +91,16 @@ public class ProcessExtensionResourceReaderIT {
                 .isNotNull()
                 .extracting(
                     TemplateDefinition::getType,
-                    TemplateDefinition::getValue)
-                .containsExactly(
-                    FILE,
-                    "classpath:templates/email.html"
-                );
+                    TemplateDefinition::getValue
+                )
+                .containsExactly(FILE, "classpath:templates/email.html");
             assertThat(defaultTemplate.getCandidate())
                 .isNotNull()
                 .extracting(
                     TemplateDefinition::getType,
                     TemplateDefinition::getValue
-                ).containsExactly(
-                VARIABLE,
-                "myCandidateTemplateVariable"
-            );
+                )
+                .containsExactly(VARIABLE, "myCandidateTemplateVariable");
 
             assertThat(templates.getTasks())
                 .containsOnlyKeys("myTaskId1", "myTaskId2", "myTaskId3");
@@ -95,7 +109,8 @@ public class ProcessExtensionResourceReaderIT {
                 .isNotNull()
                 .extracting(
                     TemplateDefinition::getType,
-                    TemplateDefinition::getValue)
+                    TemplateDefinition::getValue
+                )
                 .containsExactly(
                     FILE,
                     "https://github.com/leemunroe/responsive-html-email-template/blob/master/email.html"
@@ -105,7 +120,8 @@ public class ProcessExtensionResourceReaderIT {
                 .isNotNull()
                 .extracting(
                     TemplateDefinition::getType,
-                    TemplateDefinition::getValue)
+                    TemplateDefinition::getValue
+                )
                 .containsExactly(
                     FILE,
                     "https://github.com/leemunroe/responsive-html-email-template/blob/master/email-inlined.html"
@@ -115,11 +131,9 @@ public class ProcessExtensionResourceReaderIT {
                 .isNotNull()
                 .extracting(
                     TemplateDefinition::getType,
-                    TemplateDefinition::getValue)
-                .containsExactly(
-                    VARIABLE,
-                    "myAssigneeTemplateVariable"
-                );
+                    TemplateDefinition::getValue
+                )
+                .containsExactly(VARIABLE, "myAssigneeTemplateVariable");
             assertThat(templates.getTasks().get("myTaskId2").getCandidate())
                 .isNull();
 
@@ -129,11 +143,9 @@ public class ProcessExtensionResourceReaderIT {
                 .isNotNull()
                 .extracting(
                     TemplateDefinition::getType,
-                    TemplateDefinition::getValue)
-                .containsExactly(
-                    VARIABLE,
-                    "myCandidateTemplateVariable"
-                );
+                    TemplateDefinition::getValue
+                )
+                .containsExactly(VARIABLE, "myCandidateTemplateVariable");
         }
     }
 }

@@ -16,7 +16,6 @@
 package org.activiti.api.runtime.model.impl;
 
 import java.util.Objects;
-
 import org.activiti.api.process.model.BPMNMessage;
 import org.activiti.api.process.model.payloads.MessageEventPayload;
 
@@ -24,8 +23,7 @@ public class BPMNMessageImpl extends BPMNElementImpl implements BPMNMessage {
 
     private MessageEventPayload messagePayload;
 
-    public BPMNMessageImpl() {
-    }
+    public BPMNMessageImpl() {}
 
     public BPMNMessageImpl(String elementId) {
         this.setElementId(elementId);
@@ -49,25 +47,34 @@ public class BPMNMessageImpl extends BPMNElementImpl implements BPMNMessage {
         }
         BPMNMessageImpl that = (BPMNMessageImpl) o;
 
-        return Objects.equals(getElementId(),
-                              that.getElementId()) &&
-               Objects.equals(messagePayload,
-                               that.getMessagePayload());
+        return (
+            Objects.equals(getElementId(), that.getElementId()) &&
+            Objects.equals(messagePayload, that.getMessagePayload())
+        );
     }
 
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = super.hashCode();
-        result = prime * result + ((messagePayload == null) ? 0 : messagePayload.hashCode());
+        result =
+            prime *
+            result +
+            ((messagePayload == null) ? 0 : messagePayload.hashCode());
         return result;
     }
 
     @Override
     public String toString() {
-        return "BPMNMessageImpl{" +
-                ", elementId='" + getElementId() + '\'' +
-                ", messagePayload='" + (messagePayload != null ? messagePayload.toString() : null) + '\'' +
-                '}';
+        return (
+            "BPMNMessageImpl{" +
+            ", elementId='" +
+            getElementId() +
+            '\'' +
+            ", messagePayload='" +
+            (messagePayload != null ? messagePayload.toString() : null) +
+            '\'' +
+            '}'
+        );
     }
 }

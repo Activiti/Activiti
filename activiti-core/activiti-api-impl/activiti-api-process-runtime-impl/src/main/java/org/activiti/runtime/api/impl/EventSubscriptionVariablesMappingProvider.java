@@ -17,32 +17,43 @@
 package org.activiti.runtime.api.impl;
 
 import java.util.Map;
-
 import org.activiti.engine.impl.bpmn.behavior.MappingExecutionContext;
 import org.activiti.engine.impl.bpmn.behavior.VariablesCalculator;
 import org.activiti.engine.impl.event.EventSubscriptionPayloadMappingProvider;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
 
-public class EventSubscriptionVariablesMappingProvider implements EventSubscriptionPayloadMappingProvider {
+public class EventSubscriptionVariablesMappingProvider
+    implements EventSubscriptionPayloadMappingProvider {
 
     private final VariablesCalculator variablesCalculator;
 
     public EventSubscriptionVariablesMappingProvider(
-        VariablesCalculator variablesCalculator) {
+        VariablesCalculator variablesCalculator
+    ) {
         this.variablesCalculator = variablesCalculator;
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public <T> T apply(Object payload, EventSubscriptionEntity eventSubscription) {
+    public <T> T apply(
+        Object payload,
+        EventSubscriptionEntity eventSubscription
+    ) {
         if (Map.class.isInstance(payload)) {
-            MappingExecutionContext context = new MappingExecutionContext(eventSubscription.getProcessDefinitionId(),
-                                                                          eventSubscription.getActivityId());
+            MappingExecutionContext context = new MappingExecutionContext(
+                eventSubscription.getProcessDefinitionId(),
+                eventSubscription.getActivityId()
+            );
 
-            return (T) variablesCalculator.calculateOutPutVariables(context, (Map<String, Object>) payload);
+            return (T) variablesCalculator.calculateOutPutVariables(
+                context,
+                (Map<String, Object>) payload
+            );
         } else {
-            return EventSubscriptionPayloadMappingProvider.super.apply(payload, eventSubscription);
+            return EventSubscriptionPayloadMappingProvider.super.apply(
+                payload,
+                eventSubscription
+            );
         }
     }
-
 }

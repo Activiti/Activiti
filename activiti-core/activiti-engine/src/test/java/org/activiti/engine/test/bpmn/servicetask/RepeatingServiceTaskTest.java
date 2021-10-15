@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.test.bpmn.servicetask;
 
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
@@ -24,12 +23,11 @@ import org.activiti.engine.impl.test.PluggableActivitiTestCase;
  */
 public class RepeatingServiceTaskTest extends PluggableActivitiTestCase {
 
-  // @Deployment
-  public void testMultipleInvocationsInSameTransation() {
-    // ProcessInstance processInstance =
-    // runtimeService.startProcessInstanceByKey("repeating",
-    // singletonMap("count", 0));
-    // assertThat(processInstance.isEnded()).isTrue();
-  }
-
+    // @Deployment
+    public void testMultipleInvocationsInSameTransation() {
+        // ProcessInstance processInstance =
+        // runtimeService.startProcessInstanceByKey("repeating",
+        // singletonMap("count", 0));
+        // assertThat(processInstance.isEnded()).isTrue();
+    }
 }

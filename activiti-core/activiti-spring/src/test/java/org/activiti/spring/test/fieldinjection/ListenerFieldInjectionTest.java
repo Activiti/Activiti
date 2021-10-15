@@ -16,13 +16,11 @@
 
 package org.activiti.spring.test.fieldinjection;
 
-
 import static java.util.Collections.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 import java.util.Map;
-
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
@@ -31,14 +29,17 @@ import org.springframework.test.context.ContextConfiguration;
 
 /**
  */
-@ContextConfiguration("classpath:org/activiti/spring/test/fieldinjection/fieldInjectionSpringTest-context.xml")
+@ContextConfiguration(
+    "classpath:org/activiti/spring/test/fieldinjection/fieldInjectionSpringTest-context.xml"
+)
 public class ListenerFieldInjectionTest extends SpringActivitiTestCase {
 
     private void cleanUp() {
-        List<org.activiti.engine.repository.Deployment> deployments = repositoryService.createDeploymentQuery().list();
+        List<org.activiti.engine.repository.Deployment> deployments = repositoryService
+            .createDeploymentQuery()
+            .list();
         for (org.activiti.engine.repository.Deployment deployment : deployments) {
-            repositoryService.deleteDeployment(deployment.getId(),
-                                               true);
+            repositoryService.deleteDeployment(deployment.getId(), true);
         }
     }
 
@@ -49,35 +50,54 @@ public class ListenerFieldInjectionTest extends SpringActivitiTestCase {
 
     @Deployment
     public void testDelegateExpressionListenerFieldInjection() {
-      ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("listenerFieldInjection", singletonMap("startValue", 42));
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
+            "listenerFieldInjection",
+            singletonMap("startValue", 42)
+        );
 
-      // Process start execution listener
-      Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
-      Map<String, Object> variables = runtimeService.getVariables(processInstance.getId());
-      assertThat(variables).hasSize(2);
-      assertThat(((Number) variables.get("processStartValue")).intValue()).isEqualTo(4200);
+        // Process start execution listener
+        Task task = taskService
+            .createTaskQuery()
+            .processInstanceId(processInstance.getId())
+            .singleResult();
+        Map<String, Object> variables = runtimeService.getVariables(
+            processInstance.getId()
+        );
+        assertThat(variables).hasSize(2);
+        assertThat(((Number) variables.get("processStartValue")).intValue())
+            .isEqualTo(4200);
 
-      // Sequence flow execution listener
-      taskService.complete(task.getId());
-      task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
-      variables = runtimeService.getVariables(processInstance.getId());
-      assertThat(variables).hasSize(3);
-      assertThat(((Number) variables.get("sequenceFlowValue")).intValue()).isEqualTo(420000);
+        // Sequence flow execution listener
+        taskService.complete(task.getId());
+        task =
+            taskService
+                .createTaskQuery()
+                .processInstanceId(processInstance.getId())
+                .singleResult();
+        variables = runtimeService.getVariables(processInstance.getId());
+        assertThat(variables).hasSize(3);
+        assertThat(((Number) variables.get("sequenceFlowValue")).intValue())
+            .isEqualTo(420000);
 
-      // task listeners
-      taskService.complete(task.getId());
-      task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
-      variables = runtimeService.getVariables(processInstance.getId());
-      assertThat(variables).hasSize(4);
-      assertThat(((Number) variables.get("taskCreateValue")).intValue()).isEqualTo(210000);
+        // task listeners
+        taskService.complete(task.getId());
+        task =
+            taskService
+                .createTaskQuery()
+                .processInstanceId(processInstance.getId())
+                .singleResult();
+        variables = runtimeService.getVariables(processInstance.getId());
+        assertThat(variables).hasSize(4);
+        assertThat(((Number) variables.get("taskCreateValue")).intValue())
+            .isEqualTo(210000);
 
-      taskService.complete(task.getId());
-      variables = runtimeService.getVariables(processInstance.getId());
-      assertThat(variables).hasSize(5);
-      assertThat(((Number) variables.get("taskCompleteValue")).intValue()).isEqualTo(105000);
+        taskService.complete(task.getId());
+        variables = runtimeService.getVariables(processInstance.getId());
+        assertThat(variables).hasSize(5);
+        assertThat(((Number) variables.get("taskCompleteValue")).intValue())
+            .isEqualTo(105000);
 
-      assertThat(TestExecutionListener.INSTANCE_COUNT.get()).isEqualTo(1);
-      assertThat(TestTaskListener.INSTANCE_COUNT.get()).isEqualTo(1);
+        assertThat(TestExecutionListener.INSTANCE_COUNT.get()).isEqualTo(1);
+        assertThat(TestTaskListener.INSTANCE_COUNT.get()).isEqualTo(1);
     }
-
 }

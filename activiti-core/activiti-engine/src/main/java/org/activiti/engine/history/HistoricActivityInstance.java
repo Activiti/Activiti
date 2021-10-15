@@ -14,12 +14,10 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.history;
 
-import org.activiti.engine.api.internal.Internal;
-
 import java.util.Date;
+import org.activiti.engine.api.internal.Internal;
 
 /**
  * Represents one execution of an activity and it's stored permanent for statistics, audit and other business intelligence purposes.
@@ -27,49 +25,48 @@ import java.util.Date;
  */
 @Internal
 public interface HistoricActivityInstance extends HistoricData {
+    /** The unique identifier of this historic activity instance. */
+    String getId();
 
-  /** The unique identifier of this historic activity instance. */
-  String getId();
+    /** The unique identifier of the activity in the process */
+    String getActivityId();
 
-  /** The unique identifier of the activity in the process */
-  String getActivityId();
+    /** The display name for the activity */
+    String getActivityName();
 
-  /** The display name for the activity */
-  String getActivityName();
+    /** The XML tag of the activity as in the process file */
+    String getActivityType();
 
-  /** The XML tag of the activity as in the process file */
-  String getActivityType();
+    /** Process definition reference */
+    String getProcessDefinitionId();
 
-  /** Process definition reference */
-  String getProcessDefinitionId();
+    /** Process instance reference */
+    String getProcessInstanceId();
 
-  /** Process instance reference */
-  String getProcessInstanceId();
+    /** Execution reference */
+    String getExecutionId();
 
-  /** Execution reference */
-  String getExecutionId();
+    /** The corresponding task in case of task activity */
+    String getTaskId();
 
-  /** The corresponding task in case of task activity */
-  String getTaskId();
+    /** The called process instance in case of call activity */
+    String getCalledProcessInstanceId();
 
-  /** The called process instance in case of call activity */
-  String getCalledProcessInstanceId();
+    /** Assignee in case of user task activity */
+    String getAssignee();
 
-  /** Assignee in case of user task activity */
-  String getAssignee();
+    /** Time when the activity instance started */
+    Date getStartTime();
 
-  /** Time when the activity instance started */
-  Date getStartTime();
+    /** Time when the activity instance ended */
+    Date getEndTime();
 
-  /** Time when the activity instance ended */
-  Date getEndTime();
+    /** Difference between {@link #getEndTime()} and {@link #getStartTime()}. */
+    Long getDurationInMillis();
 
-  /** Difference between {@link #getEndTime()} and {@link #getStartTime()}. */
-  Long getDurationInMillis();
+    /** Returns the delete reason for this activity, if any was set (if completed normally, no delete reason is set) */
+    String getDeleteReason();
 
-  /** Returns the delete reason for this activity, if any was set (if completed normally, no delete reason is set) */
-  String getDeleteReason();
-
-  /** Returns the tenant identifier for the historic activity */
-  String getTenantId();
+    /** Returns the tenant identifier for the historic activity */
+    String getTenantId();
 }

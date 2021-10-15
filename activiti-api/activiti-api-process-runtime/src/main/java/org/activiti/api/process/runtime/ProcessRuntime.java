@@ -16,7 +16,6 @@
 package org.activiti.api.process.runtime;
 
 import java.util.List;
-
 import org.activiti.api.model.shared.model.VariableInstance;
 import org.activiti.api.process.model.Deployment;
 import org.activiti.api.process.model.ProcessDefinition;
@@ -41,9 +40,7 @@ import org.activiti.api.process.runtime.conf.ProcessRuntimeConfiguration;
 import org.activiti.api.runtime.shared.query.Page;
 import org.activiti.api.runtime.shared.query.Pageable;
 
-
 public interface ProcessRuntime {
-
     /**
      * Returns the current configuration of the ProcessRuntime, this includes
      *  - process runtime events listeners
@@ -64,9 +61,10 @@ public interface ProcessRuntime {
     /**
      * Get all process definitions by pages using payload filters
      */
-    Page<ProcessDefinition> processDefinitions(Pageable pageable,
-                                               GetProcessDefinitionsPayload getProcessDefinitionsPayload);
-
+    Page<ProcessDefinition> processDefinitions(
+        Pageable pageable,
+        GetProcessDefinitionsPayload getProcessDefinitionsPayload
+    );
 
     /**
      * Start a new Process Instance based on the payload parameters
@@ -76,7 +74,10 @@ public interface ProcessRuntime {
     /**
      * Start an already created Process Instance based on the process instance id
      */
-    ProcessInstance startCreatedProcess(String processInstanceId, StartProcessPayload startProcessPayload);
+    ProcessInstance startCreatedProcess(
+        String processInstanceId,
+        StartProcessPayload startProcessPayload
+    );
 
     /**
      * Create a new Process Instance based on the payload parameters
@@ -95,8 +96,10 @@ public interface ProcessRuntime {
      * - Notice that only in-flight or suspended processes will be returned here
      * - For already completed process instance check at the query service
      */
-    Page<ProcessInstance> processInstances(Pageable pageable,
-                                           GetProcessInstancesPayload getProcessInstancesPayload);
+    Page<ProcessInstance> processInstances(
+        Pageable pageable,
+        GetProcessInstancesPayload getProcessInstancesPayload
+    );
 
     /**
      * Get Process Instance by id
@@ -108,12 +111,10 @@ public interface ProcessRuntime {
      */
     ProcessInstance suspend(SuspendProcessPayload suspendProcessPayload);
 
-
     /**
      * Resume a suspended process instance
      */
     ProcessInstance resume(ResumeProcessPayload resumeProcessPayload);
-
 
     /**
      * Delete a Process Instance
@@ -133,7 +134,9 @@ public interface ProcessRuntime {
 
     List<VariableInstance> variables(GetVariablesPayload getVariablesPayload); //I want to rename VariableInstance to Variable and it needs to be paged
 
-    void removeVariables(RemoveProcessVariablesPayload removeProcessVariablesPayload); // review if we need to return removed variables// DO WE NEED THIS?>
+    void removeVariables(
+        RemoveProcessVariablesPayload removeProcessVariablesPayload
+    ); // review if we need to return removed variables// DO WE NEED THIS?>
 
     void setVariables(SetProcessVariablesPayload setProcessVariablesPayload); // review if we need to return set variables
 

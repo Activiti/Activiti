@@ -33,34 +33,43 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration("classpath:org/activiti/spring/test/components/ScopingTests-context.xml")
+@ContextConfiguration(
+    "classpath:org/activiti/spring/test/components/ScopingTests-context.xml"
+)
 @Ignore
 // Ignored for the moment. Josh is working on this.
 public class XmlNamespaceProcessScopeTest {
 
-  private ProcessScopeTestEngine processScopeTestEngine;
+    private ProcessScopeTestEngine processScopeTestEngine;
 
-  @Autowired
-  private ProcessEngine processEngine;
+    @Autowired
+    private ProcessEngine processEngine;
 
-  @Before
-  public void before() throws Throwable {
-    this.processEngine.getRepositoryService().createDeployment().addClasspathResource("org/activiti/spring/test/components/spring-component-waiter.bpmn20.xml").deploy();
+    @Before
+    public void before() throws Throwable {
+        this.processEngine.getRepositoryService()
+            .createDeployment()
+            .addClasspathResource(
+                "org/activiti/spring/test/components/spring-component-waiter.bpmn20.xml"
+            )
+            .deploy();
 
-    processScopeTestEngine = new ProcessScopeTestEngine(this.processEngine);
-  }
-
-  @After
-  public void after() {
-    RepositoryService repositoryService = this.processEngine.getRepositoryService();
-    for (Deployment deployment : repositoryService.createDeploymentQuery().list()) {
-      repositoryService.deleteDeployment(deployment.getId(), true);
+        processScopeTestEngine = new ProcessScopeTestEngine(this.processEngine);
     }
-  }
 
-  @Test
-  public void testScopedProxyCreation() throws Throwable {
-    processScopeTestEngine.testScopedProxyCreation();
-  }
+    @After
+    public void after() {
+        RepositoryService repositoryService =
+            this.processEngine.getRepositoryService();
+        for (Deployment deployment : repositoryService
+            .createDeploymentQuery()
+            .list()) {
+            repositoryService.deleteDeployment(deployment.getId(), true);
+        }
+    }
 
+    @Test
+    public void testScopedProxyCreation() throws Throwable {
+        processScopeTestEngine.testScopedProxyCreation();
+    }
 }

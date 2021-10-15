@@ -45,6 +45,7 @@ public class ProcessRuntimeTerminatedEndEventIT {
 
     @Autowired
     private ProcessRuntime processRuntime;
+
     @Autowired
     private TaskCleanUpUtil taskCleanUpUtil;
 
@@ -73,11 +74,13 @@ public class ProcessRuntimeTerminatedEndEventIT {
     @Test
     public void should_CancelledProcessesByTerminateEndEventsHaveCancellationReasonSet() {
         //given
-        ProcessInstance processInstance = processRuntime.start(ProcessPayloadBuilder.start()
-            .withProcessDefinitionKey(PROCESS_TERMINATE_EVENT)
-            .withName("to be terminated")
-            .withBusinessKey("My business key")
-            .build()
+        ProcessInstance processInstance = processRuntime.start(
+            ProcessPayloadBuilder
+                .start()
+                .withProcessDefinitionKey(PROCESS_TERMINATE_EVENT)
+                .withName("to be terminated")
+                .withBusinessKey("My business key")
+                .build()
         );
 
         List<Task> tasks = taskBaseRuntime.getTasks(processInstance);
@@ -88,16 +91,23 @@ public class ProcessRuntimeTerminatedEndEventIT {
         taskBaseRuntime.completeTask(task2.getId());
 
         //then
-        List<Task> tasksAfterCompletion = taskBaseRuntime.getTasks(processInstance);
+        List<Task> tasksAfterCompletion = taskBaseRuntime.getTasks(
+            processInstance
+        );
         assertThat(tasksAfterCompletion).hasSize(0);
 
-        List<ProcessCancelledEvent> processCancelledEvents =
-            localEventSource.getEvents(ProcessCancelledEvent.class);
+        List<ProcessCancelledEvent> processCancelledEvents = localEventSource.getEvents(
+            ProcessCancelledEvent.class
+        );
 
         assertThat(processCancelledEvents).hasSize(1);
-        ProcessCancelledEvent processCancelledEvent = processCancelledEvents.get(0);
-        assertThat(processCancelledEvent.getCause()).contains("Terminated by end event");
-        assertThat(processCancelledEvent.getEntity().getId()).isEqualTo(processInstance.getId());
+        ProcessCancelledEvent processCancelledEvent = processCancelledEvents.get(
+            0
+        );
+        assertThat(processCancelledEvent.getCause())
+            .contains("Terminated by end event");
+        assertThat(processCancelledEvent.getEntity().getId())
+            .isEqualTo(processInstance.getId());
         assertThat(processCancelledEvent.getEntity().getProcessDefinitionId())
             .isEqualTo(processInstance.getProcessDefinitionId());
         assertThat(processCancelledEvent.getEntity().getName())
@@ -106,7 +116,7 @@ public class ProcessRuntimeTerminatedEndEventIT {
             .isEqualTo(processInstance.getBusinessKey());
         assertThat(processCancelledEvent.getEntity().getStartDate())
             .isEqualTo(processInstance.getStartDate());
-        assertThat(processCancelledEvent.getEntity().getInitiator()).isEqualTo(LOGGED_USER);
+        assertThat(processCancelledEvent.getEntity().getInitiator())
+            .isEqualTo(LOGGED_USER);
     }
-
 }

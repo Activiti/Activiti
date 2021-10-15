@@ -30,14 +30,20 @@ public class ExecutionListenerParser extends ActivitiListenerParser {
         return ELEMENT_EXECUTION_LISTENER;
     }
 
-    public void addListenerToParent(ActivitiListener listener,
-                                    BaseElement parentElement) {
+    public void addListenerToParent(
+        ActivitiListener listener,
+        BaseElement parentElement
+    ) {
         if (parentElement instanceof HasExecutionListeners) {
-            if (StringUtils.isEmpty(listener.getEvent()) && parentElement instanceof SequenceFlow) {
+            if (
+                StringUtils.isEmpty(listener.getEvent()) &&
+                parentElement instanceof SequenceFlow
+            ) {
                 // No event type on a sequenceflow = 'take' implied
                 listener.setEvent("take");
             }
-            ((HasExecutionListeners) parentElement).getExecutionListeners().add(listener);
+            ((HasExecutionListeners) parentElement).getExecutionListeners()
+                .add(listener);
         }
     }
 }

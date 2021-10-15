@@ -26,102 +26,110 @@ package org.activiti.engine.delegate.event;
  */
 public class BaseEntityEventListener implements ActivitiEventListener {
 
-  protected boolean failOnException;
-  protected Class<?> entityClass;
+    protected boolean failOnException;
+    protected Class<?> entityClass;
 
-  /**
-   * Create a new BaseEntityEventListener, notified when an event that targets any type of entity is received. Returning true when {@link #isFailOnException()} is called.
-   */
-  public BaseEntityEventListener() {
-    this(true, null);
-  }
-
-  /**
-   * Create a new BaseEntityEventListener.
-   *
-   * @param failOnException
-   *          return value for {@link #isFailOnException()}.
-   */
-  public BaseEntityEventListener(boolean failOnException) {
-    this(failOnException, null);
-  }
-
-  public BaseEntityEventListener(boolean failOnException, Class<?> entityClass) {
-    this.failOnException = failOnException;
-    this.entityClass = entityClass;
-  }
-
-  @Override
-  public final void onEvent(ActivitiEvent event) {
-    if (isValidEvent(event)) {
-      // Check if this event
-      if (event.getType() == ActivitiEventType.ENTITY_CREATED) {
-        onCreate(event);
-      } else if (event.getType() == ActivitiEventType.ENTITY_INITIALIZED) {
-        onInitialized(event);
-      } else if (event.getType() == ActivitiEventType.ENTITY_DELETED) {
-        onDelete(event);
-      } else if (event.getType() == ActivitiEventType.ENTITY_UPDATED) {
-        onUpdate(event);
-      } else {
-        // Entity-specific event
-        onEntityEvent(event);
-      }
+    /**
+     * Create a new BaseEntityEventListener, notified when an event that targets any type of entity is received. Returning true when {@link #isFailOnException()} is called.
+     */
+    public BaseEntityEventListener() {
+        this(true, null);
     }
-  }
 
-  @Override
-  public boolean isFailOnException() {
-    return failOnException;
-  }
-
-  /**
-   * @return true, if the event is an {@link ActivitiEntityEvent} and (if needed) the entityClass set in this instance, is assignable from the entity class in the event.
-   */
-  protected boolean isValidEvent(ActivitiEvent event) {
-    boolean valid = false;
-    if (event instanceof ActivitiEntityEvent) {
-      if (entityClass == null) {
-        valid = true;
-      } else {
-        valid = entityClass.isAssignableFrom(((ActivitiEntityEvent) event).getEntity().getClass());
-      }
+    /**
+     * Create a new BaseEntityEventListener.
+     *
+     * @param failOnException
+     *          return value for {@link #isFailOnException()}.
+     */
+    public BaseEntityEventListener(boolean failOnException) {
+        this(failOnException, null);
     }
-    return valid;
-  }
 
-  /**
-   * Called when an entity create event is received.
-   */
-  protected void onCreate(ActivitiEvent event) {
-    // Default implementation is a NO-OP
-  }
+    public BaseEntityEventListener(
+        boolean failOnException,
+        Class<?> entityClass
+    ) {
+        this.failOnException = failOnException;
+        this.entityClass = entityClass;
+    }
 
-  /**
-   * Called when an entity initialized event is received.
-   */
-  protected void onInitialized(ActivitiEvent event) {
-    // Default implementation is a NO-OP
-  }
+    @Override
+    public final void onEvent(ActivitiEvent event) {
+        if (isValidEvent(event)) {
+            // Check if this event
+            if (event.getType() == ActivitiEventType.ENTITY_CREATED) {
+                onCreate(event);
+            } else if (
+                event.getType() == ActivitiEventType.ENTITY_INITIALIZED
+            ) {
+                onInitialized(event);
+            } else if (event.getType() == ActivitiEventType.ENTITY_DELETED) {
+                onDelete(event);
+            } else if (event.getType() == ActivitiEventType.ENTITY_UPDATED) {
+                onUpdate(event);
+            } else {
+                // Entity-specific event
+                onEntityEvent(event);
+            }
+        }
+    }
 
-  /**
-   * Called when an entity delete event is received.
-   */
-  protected void onDelete(ActivitiEvent event) {
-    // Default implementation is a NO-OP
-  }
+    @Override
+    public boolean isFailOnException() {
+        return failOnException;
+    }
 
-  /**
-   * Called when an entity update event is received.
-   */
-  protected void onUpdate(ActivitiEvent event) {
-    // Default implementation is a NO-OP
-  }
+    /**
+     * @return true, if the event is an {@link ActivitiEntityEvent} and (if needed) the entityClass set in this instance, is assignable from the entity class in the event.
+     */
+    protected boolean isValidEvent(ActivitiEvent event) {
+        boolean valid = false;
+        if (event instanceof ActivitiEntityEvent) {
+            if (entityClass == null) {
+                valid = true;
+            } else {
+                valid =
+                    entityClass.isAssignableFrom(
+                        ((ActivitiEntityEvent) event).getEntity().getClass()
+                    );
+            }
+        }
+        return valid;
+    }
 
-  /**
-   * Called when an event is received, which is not a create, an update or delete.
-   */
-  protected void onEntityEvent(ActivitiEvent event) {
-    // Default implementation is a NO-OP
-  }
+    /**
+     * Called when an entity create event is received.
+     */
+    protected void onCreate(ActivitiEvent event) {
+        // Default implementation is a NO-OP
+    }
+
+    /**
+     * Called when an entity initialized event is received.
+     */
+    protected void onInitialized(ActivitiEvent event) {
+        // Default implementation is a NO-OP
+    }
+
+    /**
+     * Called when an entity delete event is received.
+     */
+    protected void onDelete(ActivitiEvent event) {
+        // Default implementation is a NO-OP
+    }
+
+    /**
+     * Called when an entity update event is received.
+     */
+    protected void onUpdate(ActivitiEvent event) {
+        // Default implementation is a NO-OP
+    }
+
+    /**
+     * Called when an event is received, which is not a create, an update or delete.
+     */
+    protected void onEntityEvent(ActivitiEvent event) {
+        // Default implementation is a NO-OP
+    }
 }

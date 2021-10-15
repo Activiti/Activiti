@@ -22,10 +22,9 @@ import java.io.Serializable;
  */
 public class OkReturningService implements Serializable {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  public String invoke() {
-    return "ok";
-  }
-
+    public String invoke() {
+        return "ok";
+    }
 }

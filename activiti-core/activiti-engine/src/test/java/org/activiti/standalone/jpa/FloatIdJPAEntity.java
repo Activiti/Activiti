@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.standalone.jpa;
 
 import javax.persistence.Column;
@@ -27,15 +26,15 @@ import javax.persistence.Id;
 @Entity(name = "FLOAT_ID_ENTITY")
 public class FloatIdJPAEntity {
 
-  @Id
-  @Column(name = "ID_")
-  private float floatId;
+    @Id
+    @Column(name = "ID_")
+    private float floatId;
 
-  public float getFloatId() {
-    return floatId;
-  }
+    public float getFloatId() {
+        return floatId;
+    }
 
-  public void setFloatId(float floatId) {
-    this.floatId = floatId;
-  }
+    public void setFloatId(float floatId) {
+        this.floatId = floatId;
+    }
 }

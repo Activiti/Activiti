@@ -30,18 +30,21 @@ package org.activiti.engine.task;
  */
 public class TaskInfoQueryWrapper {
 
-  protected TaskInfoQuery<? extends TaskInfoQuery<?, ?>, ? extends TaskInfo> taskInfoQuery;
+    protected TaskInfoQuery<? extends TaskInfoQuery<?, ?>, ? extends TaskInfo> taskInfoQuery;
 
-  public TaskInfoQueryWrapper(TaskInfoQuery<? extends TaskInfoQuery<?, ?>, ? extends TaskInfo> taskInfoQuery) {
-    this.taskInfoQuery = taskInfoQuery;
-  }
+    public TaskInfoQueryWrapper(
+        TaskInfoQuery<? extends TaskInfoQuery<?, ?>, ? extends TaskInfo> taskInfoQuery
+    ) {
+        this.taskInfoQuery = taskInfoQuery;
+    }
 
-  public TaskInfoQuery<? extends TaskInfoQuery<?, ?>, ? extends TaskInfo> getTaskInfoQuery() {
-    return taskInfoQuery;
-  }
+    public TaskInfoQuery<? extends TaskInfoQuery<?, ?>, ? extends TaskInfo> getTaskInfoQuery() {
+        return taskInfoQuery;
+    }
 
-  public void setTaskInfoQuery(TaskInfoQuery<? extends TaskInfoQuery<?, ?>, ? extends TaskInfo> taskInfoQuery) {
-    this.taskInfoQuery = taskInfoQuery;
-  }
-
+    public void setTaskInfoQuery(
+        TaskInfoQuery<? extends TaskInfoQuery<?, ?>, ? extends TaskInfo> taskInfoQuery
+    ) {
+        this.taskInfoQuery = taskInfoQuery;
+    }
 }

@@ -15,34 +15,36 @@
  */
 package org.activiti.core.common.spring.security;
 
-import org.activiti.api.runtime.shared.security.PrincipalGroupsProvider;
-import org.springframework.lang.NonNull;
-
 import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
+import org.activiti.api.runtime.shared.security.PrincipalGroupsProvider;
+import org.springframework.lang.NonNull;
 
-public class AuthenticationPrincipalGroupsProvider implements PrincipalGroupsProvider {
+public class AuthenticationPrincipalGroupsProvider
+    implements PrincipalGroupsProvider {
 
     private final GrantedAuthoritiesResolver grantedAuthoritiesResolver;
     private final GrantedAuthoritiesGroupsMapper grantedAuthoritiesGroupsMapper;
 
-    public AuthenticationPrincipalGroupsProvider(@NonNull GrantedAuthoritiesResolver grantedAuthoritiesResolver,
-                                                  @NonNull GrantedAuthoritiesGroupsMapper grantedAuthoritiesGroupsMapper) {
+    public AuthenticationPrincipalGroupsProvider(
+        @NonNull GrantedAuthoritiesResolver grantedAuthoritiesResolver,
+        @NonNull GrantedAuthoritiesGroupsMapper grantedAuthoritiesGroupsMapper
+    ) {
         this.grantedAuthoritiesResolver = grantedAuthoritiesResolver;
         this.grantedAuthoritiesGroupsMapper = grantedAuthoritiesGroupsMapper;
     }
 
     @Override
     public List<String> getGroups(@NonNull Principal principal) {
-        return Optional.of(principal)
-                       .map(grantedAuthoritiesResolver::getAuthorities)
-                       .map(grantedAuthoritiesGroupsMapper::getGroups)
-                       .orElseThrow(this::securityException);
+        return Optional
+            .of(principal)
+            .map(grantedAuthoritiesResolver::getAuthorities)
+            .map(grantedAuthoritiesGroupsMapper::getGroups)
+            .orElseThrow(this::securityException);
     }
 
     protected SecurityException securityException() {
         return new SecurityException("Invalid principal groups");
     }
-
 }

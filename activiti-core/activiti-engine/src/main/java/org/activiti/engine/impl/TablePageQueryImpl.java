@@ -17,7 +17,6 @@
 package org.activiti.engine.impl;
 
 import java.io.Serializable;
-
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
@@ -28,64 +27,65 @@ import org.activiti.engine.management.TablePageQuery;
  *
 
  */
-public class TablePageQueryImpl implements TablePageQuery, Command<TablePage>, Serializable {
+public class TablePageQueryImpl
+    implements TablePageQuery, Command<TablePage>, Serializable {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  transient CommandExecutor commandExecutor;
+    transient CommandExecutor commandExecutor;
 
-  protected String tableName;
-  protected String order;
-  protected int firstResult;
-  protected int maxResults;
+    protected String tableName;
+    protected String order;
+    protected int firstResult;
+    protected int maxResults;
 
-  public TablePageQueryImpl() {
-  }
+    public TablePageQueryImpl() {}
 
-  public TablePageQueryImpl(CommandExecutor commandExecutor) {
-    this.commandExecutor = commandExecutor;
-  }
-
-  public TablePageQueryImpl tableName(String tableName) {
-    this.tableName = tableName;
-    return this;
-  }
-
-  public TablePageQueryImpl orderAsc(String column) {
-    addOrder(column, AbstractQuery.SORTORDER_ASC);
-    return this;
-  }
-
-  public TablePageQueryImpl orderDesc(String column) {
-    addOrder(column, AbstractQuery.SORTORDER_DESC);
-    return this;
-  }
-
-  public String getTableName() {
-    return tableName;
-  }
-
-  protected void addOrder(String column, String sortOrder) {
-    if (order == null) {
-      order = "";
-    } else {
-      order = order + ", ";
+    public TablePageQueryImpl(CommandExecutor commandExecutor) {
+        this.commandExecutor = commandExecutor;
     }
-    order = order + column + " " + sortOrder;
-  }
 
-  public TablePage listPage(int firstResult, int maxResults) {
-    this.firstResult = firstResult;
-    this.maxResults = maxResults;
-    return commandExecutor.execute(this);
-  }
+    public TablePageQueryImpl tableName(String tableName) {
+        this.tableName = tableName;
+        return this;
+    }
 
-  public TablePage execute(CommandContext commandContext) {
-    return commandContext.getTableDataManager().getTablePage(this, firstResult, maxResults);
-  }
+    public TablePageQueryImpl orderAsc(String column) {
+        addOrder(column, AbstractQuery.SORTORDER_ASC);
+        return this;
+    }
 
-  public String getOrder() {
-    return order;
-  }
+    public TablePageQueryImpl orderDesc(String column) {
+        addOrder(column, AbstractQuery.SORTORDER_DESC);
+        return this;
+    }
 
+    public String getTableName() {
+        return tableName;
+    }
+
+    protected void addOrder(String column, String sortOrder) {
+        if (order == null) {
+            order = "";
+        } else {
+            order = order + ", ";
+        }
+        order = order + column + " " + sortOrder;
+    }
+
+    public TablePage listPage(int firstResult, int maxResults) {
+        this.firstResult = firstResult;
+        this.maxResults = maxResults;
+        return commandExecutor.execute(this);
+    }
+
+    public TablePage execute(CommandContext commandContext) {
+        return commandContext
+            .getTableDataManager()
+            .getTablePage(this, firstResult, maxResults);
+    }
+
+    public String getOrder() {
+        return order;
+    }
 }

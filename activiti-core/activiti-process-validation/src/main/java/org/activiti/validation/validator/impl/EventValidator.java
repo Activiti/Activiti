@@ -17,7 +17,6 @@
 package org.activiti.validation.validator.impl;
 
 import java.util.List;
-
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.CompensateEventDefinition;
 import org.activiti.bpmn.model.Event;
@@ -38,73 +37,183 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class EventValidator extends ProcessLevelValidator {
 
-  @Override
-  protected void executeValidation(BpmnModel bpmnModel, Process process, List<ValidationError> errors) {
-    List<Event> events = process.findFlowElementsOfType(Event.class);
-    for (Event event : events) {
-      if (event.getEventDefinitions() != null) {
-        for (EventDefinition eventDefinition : event.getEventDefinitions()) {
-
-          if (eventDefinition instanceof MessageEventDefinition) {
-            handleMessageEventDefinition(bpmnModel, process, event, eventDefinition, errors);
-          } else if (eventDefinition instanceof SignalEventDefinition) {
-            handleSignalEventDefinition(bpmnModel, process, event, eventDefinition, errors);
-          } else if (eventDefinition instanceof TimerEventDefinition) {
-            handleTimerEventDefinition(process, event, eventDefinition, errors);
-          } else if (eventDefinition instanceof CompensateEventDefinition) {
-            handleCompensationEventDefinition(bpmnModel, process, event, eventDefinition, errors);
-          }
-
+    @Override
+    protected void executeValidation(
+        BpmnModel bpmnModel,
+        Process process,
+        List<ValidationError> errors
+    ) {
+        List<Event> events = process.findFlowElementsOfType(Event.class);
+        for (Event event : events) {
+            if (event.getEventDefinitions() != null) {
+                for (EventDefinition eventDefinition : event.getEventDefinitions()) {
+                    if (eventDefinition instanceof MessageEventDefinition) {
+                        handleMessageEventDefinition(
+                            bpmnModel,
+                            process,
+                            event,
+                            eventDefinition,
+                            errors
+                        );
+                    } else if (
+                        eventDefinition instanceof SignalEventDefinition
+                    ) {
+                        handleSignalEventDefinition(
+                            bpmnModel,
+                            process,
+                            event,
+                            eventDefinition,
+                            errors
+                        );
+                    } else if (
+                        eventDefinition instanceof TimerEventDefinition
+                    ) {
+                        handleTimerEventDefinition(
+                            process,
+                            event,
+                            eventDefinition,
+                            errors
+                        );
+                    } else if (
+                        eventDefinition instanceof CompensateEventDefinition
+                    ) {
+                        handleCompensationEventDefinition(
+                            bpmnModel,
+                            process,
+                            event,
+                            eventDefinition,
+                            errors
+                        );
+                    }
+                }
+            }
         }
-      }
     }
-  }
 
-  protected void handleMessageEventDefinition(BpmnModel bpmnModel, Process process, Event event, EventDefinition eventDefinition, List<ValidationError> errors) {
-    MessageEventDefinition messageEventDefinition = (MessageEventDefinition) eventDefinition;
+    protected void handleMessageEventDefinition(
+        BpmnModel bpmnModel,
+        Process process,
+        Event event,
+        EventDefinition eventDefinition,
+        List<ValidationError> errors
+    ) {
+        MessageEventDefinition messageEventDefinition = (MessageEventDefinition) eventDefinition;
 
-    if (StringUtils.isEmpty(messageEventDefinition.getMessageRef())) {
-
-      if (StringUtils.isEmpty(messageEventDefinition.getMessageExpression())) {
-        // message ref should be filled in
-        addError(errors, Problems.MESSAGE_EVENT_MISSING_MESSAGE_REF, process, event, "attribute 'messageRef' is required");
-      }
-
-    } else if (!bpmnModel.containsMessageId(messageEventDefinition.getMessageRef())) {
-      // message ref should exist
-      addError(errors, Problems.MESSAGE_EVENT_INVALID_MESSAGE_REF, process, event, "Invalid 'messageRef': no message with that id can be found in the model");
+        if (StringUtils.isEmpty(messageEventDefinition.getMessageRef())) {
+            if (
+                StringUtils.isEmpty(
+                    messageEventDefinition.getMessageExpression()
+                )
+            ) {
+                // message ref should be filled in
+                addError(
+                    errors,
+                    Problems.MESSAGE_EVENT_MISSING_MESSAGE_REF,
+                    process,
+                    event,
+                    "attribute 'messageRef' is required"
+                );
+            }
+        } else if (
+            !bpmnModel.containsMessageId(messageEventDefinition.getMessageRef())
+        ) {
+            // message ref should exist
+            addError(
+                errors,
+                Problems.MESSAGE_EVENT_INVALID_MESSAGE_REF,
+                process,
+                event,
+                "Invalid 'messageRef': no message with that id can be found in the model"
+            );
+        }
     }
-  }
 
-  protected void handleSignalEventDefinition(BpmnModel bpmnModel, Process process, Event event, EventDefinition eventDefinition, List<ValidationError> errors) {
-    SignalEventDefinition signalEventDefinition = (SignalEventDefinition) eventDefinition;
+    protected void handleSignalEventDefinition(
+        BpmnModel bpmnModel,
+        Process process,
+        Event event,
+        EventDefinition eventDefinition,
+        List<ValidationError> errors
+    ) {
+        SignalEventDefinition signalEventDefinition = (SignalEventDefinition) eventDefinition;
 
-    if (StringUtils.isEmpty(signalEventDefinition.getSignalRef())) {
-
-      if (StringUtils.isEmpty(signalEventDefinition.getSignalExpression())) {
-        addError(errors, Problems.SIGNAL_EVENT_MISSING_SIGNAL_REF, process, event, "signalEventDefinition does not have mandatory property 'signalRef'");
-      }
-
-    } else if (!bpmnModel.containsSignalId(signalEventDefinition.getSignalRef())) {
-      addError(errors, Problems.SIGNAL_EVENT_INVALID_SIGNAL_REF, process, event, "Invalid 'signalRef': no signal with that id can be found in the model");
+        if (StringUtils.isEmpty(signalEventDefinition.getSignalRef())) {
+            if (
+                StringUtils.isEmpty(signalEventDefinition.getSignalExpression())
+            ) {
+                addError(
+                    errors,
+                    Problems.SIGNAL_EVENT_MISSING_SIGNAL_REF,
+                    process,
+                    event,
+                    "signalEventDefinition does not have mandatory property 'signalRef'"
+                );
+            }
+        } else if (
+            !bpmnModel.containsSignalId(signalEventDefinition.getSignalRef())
+        ) {
+            addError(
+                errors,
+                Problems.SIGNAL_EVENT_INVALID_SIGNAL_REF,
+                process,
+                event,
+                "Invalid 'signalRef': no signal with that id can be found in the model"
+            );
+        }
     }
-  }
 
-  protected void handleTimerEventDefinition(Process process, Event event, EventDefinition eventDefinition, List<ValidationError> errors) {
-    TimerEventDefinition timerEventDefinition = (TimerEventDefinition) eventDefinition;
-    if (StringUtils.isEmpty(timerEventDefinition.getTimeDate()) && StringUtils.isEmpty(timerEventDefinition.getTimeCycle()) && StringUtils.isEmpty(timerEventDefinition.getTimeDuration())) {
-      // neither date, cycle or duration configured
-      addError(errors, Problems.EVENT_TIMER_MISSING_CONFIGURATION, process, event, "Timer needs configuration (either timeDate, timeCycle or timeDuration is needed)");
+    protected void handleTimerEventDefinition(
+        Process process,
+        Event event,
+        EventDefinition eventDefinition,
+        List<ValidationError> errors
+    ) {
+        TimerEventDefinition timerEventDefinition = (TimerEventDefinition) eventDefinition;
+        if (
+            StringUtils.isEmpty(timerEventDefinition.getTimeDate()) &&
+            StringUtils.isEmpty(timerEventDefinition.getTimeCycle()) &&
+            StringUtils.isEmpty(timerEventDefinition.getTimeDuration())
+        ) {
+            // neither date, cycle or duration configured
+            addError(
+                errors,
+                Problems.EVENT_TIMER_MISSING_CONFIGURATION,
+                process,
+                event,
+                "Timer needs configuration (either timeDate, timeCycle or timeDuration is needed)"
+            );
+        }
     }
-  }
 
-  protected void handleCompensationEventDefinition(BpmnModel bpmnModel, Process process, Event event, EventDefinition eventDefinition, List<ValidationError> errors) {
-    CompensateEventDefinition compensateEventDefinition = (CompensateEventDefinition) eventDefinition;
+    protected void handleCompensationEventDefinition(
+        BpmnModel bpmnModel,
+        Process process,
+        Event event,
+        EventDefinition eventDefinition,
+        List<ValidationError> errors
+    ) {
+        CompensateEventDefinition compensateEventDefinition = (CompensateEventDefinition) eventDefinition;
 
-    // Check activityRef
-    if ((StringUtils.isNotEmpty(compensateEventDefinition.getActivityRef()) && process.getFlowElement(compensateEventDefinition.getActivityRef(), true) == null)) {
-      addError(errors, Problems.COMPENSATE_EVENT_INVALID_ACTIVITY_REF, process, event, "Invalid attribute value for 'activityRef': no activity with the given id");
+        // Check activityRef
+        if (
+            (
+                StringUtils.isNotEmpty(
+                    compensateEventDefinition.getActivityRef()
+                ) &&
+                process.getFlowElement(
+                    compensateEventDefinition.getActivityRef(),
+                    true
+                ) ==
+                null
+            )
+        ) {
+            addError(
+                errors,
+                Problems.COMPENSATE_EVENT_INVALID_ACTIVITY_REF,
+                process,
+                event,
+                "Invalid attribute value for 'activityRef': no activity with the given id"
+            );
+        }
     }
-  }
-
 }

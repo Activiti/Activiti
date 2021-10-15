@@ -25,14 +25,15 @@ public class GenerateVariablesDelegate implements JavaDelegate {
 
     @Override
     public void execute(DelegateExecution delegateExecution) {
-        int numberOfVariables = Integer.valueOf(numberOfVariablesString.getValue(delegateExecution).toString());
-        for (int i=0; i<numberOfVariables; i++) {
-            if (i%2 == 0) {
+        int numberOfVariables = Integer.valueOf(
+            numberOfVariablesString.getValue(delegateExecution).toString()
+        );
+        for (int i = 0; i < numberOfVariables; i++) {
+            if (i % 2 == 0) {
                 delegateExecution.setVariable("var" + i, i); // integer
             } else {
                 delegateExecution.setVariable("var" + i, i + ""); // string
             }
         }
     }
-
 }

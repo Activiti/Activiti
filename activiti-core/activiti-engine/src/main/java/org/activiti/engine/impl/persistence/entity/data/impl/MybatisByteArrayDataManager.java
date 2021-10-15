@@ -17,7 +17,6 @@
 package org.activiti.engine.impl.persistence.entity.data.impl;
 
 import java.util.List;
-
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.persistence.entity.ByteArrayEntity;
 import org.activiti.engine.impl.persistence.entity.ByteArrayEntityImpl;
@@ -27,31 +26,39 @@ import org.activiti.engine.impl.persistence.entity.data.ByteArrayDataManager;
 /**
 
  */
-public class MybatisByteArrayDataManager extends AbstractDataManager<ByteArrayEntity> implements ByteArrayDataManager {
+public class MybatisByteArrayDataManager
+    extends AbstractDataManager<ByteArrayEntity>
+    implements ByteArrayDataManager {
 
-  public MybatisByteArrayDataManager(ProcessEngineConfigurationImpl processEngineConfiguration) {
-    super(processEngineConfiguration);
-  }
+    public MybatisByteArrayDataManager(
+        ProcessEngineConfigurationImpl processEngineConfiguration
+    ) {
+        super(processEngineConfiguration);
+    }
 
-  @Override
-  public ByteArrayEntity create() {
-    return new ByteArrayEntityImpl();
-  }
+    @Override
+    public ByteArrayEntity create() {
+        return new ByteArrayEntityImpl();
+    }
 
-  @Override
-  public Class<? extends ByteArrayEntity> getManagedEntityClass() {
-    return ByteArrayEntityImpl.class;
-  }
+    @Override
+    public Class<? extends ByteArrayEntity> getManagedEntityClass() {
+        return ByteArrayEntityImpl.class;
+    }
 
-  @Override
-  @SuppressWarnings("unchecked")
-  public List<ByteArrayEntity> findAll() {
-    return getDbSqlSession().selectList("selectByteArrays");
-  }
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<ByteArrayEntity> findAll() {
+        return getDbSqlSession().selectList("selectByteArrays");
+    }
 
-  @Override
-  public void deleteByteArrayNoRevisionCheck(String byteArrayEntityId) {
-    getDbSqlSession().delete("deleteByteArrayNoRevisionCheck", byteArrayEntityId, ByteArrayEntityImpl.class);
-  }
-
+    @Override
+    public void deleteByteArrayNoRevisionCheck(String byteArrayEntityId) {
+        getDbSqlSession()
+            .delete(
+                "deleteByteArrayNoRevisionCheck",
+                byteArrayEntityId,
+                ByteArrayEntityImpl.class
+            );
+    }
 }

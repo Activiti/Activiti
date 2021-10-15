@@ -14,71 +14,93 @@
  * limitations under the License.
  */
 
-
 package org.activiti.spring.test.taskListener;
-
-import org.activiti.bpmn.model.Task;
-import org.activiti.engine.delegate.TransactionDependentTaskListener;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import org.activiti.bpmn.model.Task;
+import org.activiti.engine.delegate.TransactionDependentTaskListener;
 
 /**
 
  */
-public class MyTransactionDependentTaskListener implements TransactionDependentTaskListener {
+public class MyTransactionDependentTaskListener
+    implements TransactionDependentTaskListener {
 
-  protected List<CurrentTask> currentTasks = new ArrayList<CurrentTask>();
+    protected List<CurrentTask> currentTasks = new ArrayList<CurrentTask>();
 
-  @Override
-  public void notify(String processInstanceId, String executionId, Task task, Map<String, Object> executionVariables, Map<String, Object> customPropertiesMap) {
-    currentTasks.add(new CurrentTask(processInstanceId, executionId, task.getId(), task.getName(), executionVariables, customPropertiesMap));
-  }
-
-  public List<CurrentTask> getCurrentTasks() {
-    return currentTasks;
-  }
-
-  public static class CurrentTask {
-    private final String processInstanceId;
-    private final String executionId;
-    private final String taskId;
-    private final String taskName;
-    private final Map<String, Object> executionVariables;
-    private final Map<String, Object> customPropertiesMap;
-
-    public CurrentTask(String processInstanceId, String executionId, String taskId, String taskName, Map<String, Object> executionVariables, Map<String, Object> customPropertiesMap) {
-      this.processInstanceId = processInstanceId;
-      this.executionId = executionId;
-      this.taskId = taskId;
-      this.taskName = taskName;
-      this.executionVariables = executionVariables;
-      this.customPropertiesMap = customPropertiesMap;
+    @Override
+    public void notify(
+        String processInstanceId,
+        String executionId,
+        Task task,
+        Map<String, Object> executionVariables,
+        Map<String, Object> customPropertiesMap
+    ) {
+        currentTasks.add(
+            new CurrentTask(
+                processInstanceId,
+                executionId,
+                task.getId(),
+                task.getName(),
+                executionVariables,
+                customPropertiesMap
+            )
+        );
     }
 
-    public String getProcessInstanceId() {
-      return processInstanceId;
+    public List<CurrentTask> getCurrentTasks() {
+        return currentTasks;
     }
 
-    public String getExecutionId() {
-      return executionId;
-    }
+    public static class CurrentTask {
 
-    public String getTaskId() {
-      return taskId;
-    }
+        private final String processInstanceId;
+        private final String executionId;
+        private final String taskId;
+        private final String taskName;
+        private final Map<String, Object> executionVariables;
+        private final Map<String, Object> customPropertiesMap;
 
-    public String getTaskName() {
-      return taskName;
-    }
+        public CurrentTask(
+            String processInstanceId,
+            String executionId,
+            String taskId,
+            String taskName,
+            Map<String, Object> executionVariables,
+            Map<String, Object> customPropertiesMap
+        ) {
+            this.processInstanceId = processInstanceId;
+            this.executionId = executionId;
+            this.taskId = taskId;
+            this.taskName = taskName;
+            this.executionVariables = executionVariables;
+            this.customPropertiesMap = customPropertiesMap;
+        }
 
-    public Map<String, Object> getExecutionVariables() {
-      return executionVariables;
-    }
+        public String getProcessInstanceId() {
+            return processInstanceId;
+        }
 
-    public Map<String, Object> getCustomPropertiesMap() {
-      return customPropertiesMap;
+        public String getExecutionId() {
+            return executionId;
+        }
+
+        public String getTaskId() {
+            return taskId;
+        }
+
+        public String getTaskName() {
+            return taskName;
+        }
+
+        public Map<String, Object> getExecutionVariables() {
+            return executionVariables;
+        }
+
+        public Map<String, Object> getCustomPropertiesMap() {
+            return customPropertiesMap;
+        }
     }
-  }
 }

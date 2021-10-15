@@ -23,14 +23,16 @@ import org.activiti.engine.delegate.DelegateExecution;
  */
 public class SentenceToUpperCaseBean {
 
-  protected SentenceGenerator sentenceGenerator;
+    protected SentenceGenerator sentenceGenerator;
 
-  public void setSentence(DelegateExecution execution) {
-    execution.setVariable("myVar", sentenceGenerator.getSentence().toUpperCase());
-  }
+    public void setSentence(DelegateExecution execution) {
+        execution.setVariable(
+            "myVar",
+            sentenceGenerator.getSentence().toUpperCase()
+        );
+    }
 
-  public void setSentenceGenerator(SentenceGenerator sentenceGenerator) {
-    this.sentenceGenerator = sentenceGenerator;
-  }
-
+    public void setSentenceGenerator(SentenceGenerator sentenceGenerator) {
+        this.sentenceGenerator = sentenceGenerator;
+    }
 }

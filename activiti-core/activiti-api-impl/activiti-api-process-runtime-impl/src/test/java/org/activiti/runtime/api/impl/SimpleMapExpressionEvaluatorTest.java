@@ -47,13 +47,21 @@ public class SimpleMapExpressionEvaluatorTest {
         //given
         Map<String, Object> context = singletonMap("city", "London");
         SimpleMapExpressionEvaluator evaluator = new SimpleMapExpressionEvaluator(
-            context);
+            context
+        );
         Expression expression = mock(Expression.class);
 
-        given(expression.getValue(expressionManager, delegateInterceptor, context)).willReturn("London");
+        given(
+            expression.getValue(expressionManager, delegateInterceptor, context)
+        )
+            .willReturn("London");
 
         //when
-        Object value = evaluator.evaluate(expression, expressionManager, delegateInterceptor);
+        Object value = evaluator.evaluate(
+            expression,
+            expressionManager,
+            delegateInterceptor
+        );
 
         //then
         assertThat(value).isEqualTo("London");

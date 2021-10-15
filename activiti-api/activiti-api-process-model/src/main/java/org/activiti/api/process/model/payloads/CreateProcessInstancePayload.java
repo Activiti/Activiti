@@ -19,6 +19,7 @@ import java.util.UUID;
 import org.activiti.api.model.shared.Payload;
 
 public class CreateProcessInstancePayload implements Payload {
+
     private String id;
     private String processDefinitionId;
     private String processDefinitionKey;
@@ -29,8 +30,12 @@ public class CreateProcessInstancePayload implements Payload {
         this.id = UUID.randomUUID().toString();
     }
 
-    public CreateProcessInstancePayload(String processDefinitionId, String processDefinitionKey,
-        String name, String businessKey) {
+    public CreateProcessInstancePayload(
+        String processDefinitionId,
+        String processDefinitionKey,
+        String name,
+        String businessKey
+    ) {
         this();
         this.processDefinitionId = processDefinitionId;
         this.processDefinitionKey = processDefinitionKey;

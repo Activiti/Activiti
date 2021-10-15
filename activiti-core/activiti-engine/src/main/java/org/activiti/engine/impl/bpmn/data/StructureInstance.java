@@ -25,19 +25,18 @@ import org.activiti.engine.api.internal.Internal;
  */
 @Internal
 public interface StructureInstance {
+    /**
+     * Converts this structure instance into an array
+     *
+     * @return this structure as an array
+     */
+    Object[] toArray();
 
-  /**
-   * Converts this structure instance into an array
-   *
-   * @return this structure as an array
-   */
-  Object[] toArray();
-
-  /**
-   * Loads this structure from array
-   *
-   * @param array
-   *          the array where this structure loads data
-   */
-  void loadFrom(Object[] array);
+    /**
+     * Loads this structure from array
+     *
+     * @param array
+     *          the array where this structure loads data
+     */
+    void loadFrom(Object[] array);
 }

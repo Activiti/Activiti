@@ -44,61 +44,104 @@ import org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-@AutoConfigureBefore({JacksonAutoConfiguration.class})
+@AutoConfigureBefore({ JacksonAutoConfiguration.class })
 @Configuration
 public class TaskModelAutoConfiguration {
 
     //this bean will be automatically injected inside boot's ObjectMapper
     @Bean
     public Module customizeTaskModelObjectMapper() {
-        SimpleModule module = new SimpleModule("mapTaskRuntimeInterfaces",
-                                               Version.unknownVersion());
+        SimpleModule module = new SimpleModule(
+            "mapTaskRuntimeInterfaces",
+            Version.unknownVersion()
+        );
         SimpleAbstractTypeResolver resolver = new SimpleAbstractTypeResolver() {
             //this is a workaround for https://github.com/FasterXML/jackson-databind/issues/2019
             //once version 2.9.6 is related we can remove this @override method
             @Override
-            public JavaType resolveAbstractType(DeserializationConfig config,
-                                                BeanDescription typeDesc) {
-                return findTypeMapping(config,
-                                       typeDesc.getType());
+            public JavaType resolveAbstractType(
+                DeserializationConfig config,
+                BeanDescription typeDesc
+            ) {
+                return findTypeMapping(config, typeDesc.getType());
             }
         };
-        resolver.addMapping(Task.class,
-                            TaskImpl.class);
-        resolver.addMapping(TaskCandidateUser.class,
-                            TaskCandidateUserImpl.class);
-        resolver.addMapping(TaskCandidateGroup.class,
-                            TaskCandidateGroupImpl.class);
+        resolver.addMapping(Task.class, TaskImpl.class);
+        resolver.addMapping(
+            TaskCandidateUser.class,
+            TaskCandidateUserImpl.class
+        );
+        resolver.addMapping(
+            TaskCandidateGroup.class,
+            TaskCandidateGroupImpl.class
+        );
 
-        module.registerSubtypes(new NamedType(TaskResult.class,
-                                              TaskResult.class.getSimpleName()));
+        module.registerSubtypes(
+            new NamedType(TaskResult.class, TaskResult.class.getSimpleName())
+        );
 
-        module.registerSubtypes(new NamedType(ClaimTaskPayload.class,
-                                              ClaimTaskPayload.class.getSimpleName()));
+        module.registerSubtypes(
+            new NamedType(
+                ClaimTaskPayload.class,
+                ClaimTaskPayload.class.getSimpleName()
+            )
+        );
 
-        module.registerSubtypes(new NamedType(CompleteTaskPayload.class,
-                                              CompleteTaskPayload.class.getSimpleName()));
+        module.registerSubtypes(
+            new NamedType(
+                CompleteTaskPayload.class,
+                CompleteTaskPayload.class.getSimpleName()
+            )
+        );
 
-        module.registerSubtypes(new NamedType(SaveTaskPayload.class,
-                                              SaveTaskPayload.class.getSimpleName()));
+        module.registerSubtypes(
+            new NamedType(
+                SaveTaskPayload.class,
+                SaveTaskPayload.class.getSimpleName()
+            )
+        );
 
-        module.registerSubtypes(new NamedType(CreateTaskPayload.class,
-                                              CreateTaskPayload.class.getSimpleName()));
+        module.registerSubtypes(
+            new NamedType(
+                CreateTaskPayload.class,
+                CreateTaskPayload.class.getSimpleName()
+            )
+        );
 
-        module.registerSubtypes(new NamedType(DeleteTaskPayload.class,
-                                              DeleteTaskPayload.class.getSimpleName()));
+        module.registerSubtypes(
+            new NamedType(
+                DeleteTaskPayload.class,
+                DeleteTaskPayload.class.getSimpleName()
+            )
+        );
 
-        module.registerSubtypes(new NamedType(GetTasksPayload.class,
-                                              GetTasksPayload.class.getSimpleName()));
+        module.registerSubtypes(
+            new NamedType(
+                GetTasksPayload.class,
+                GetTasksPayload.class.getSimpleName()
+            )
+        );
 
-        module.registerSubtypes(new NamedType(GetTaskVariablesPayload.class,
-                                              GetTaskVariablesPayload.class.getSimpleName()));
+        module.registerSubtypes(
+            new NamedType(
+                GetTaskVariablesPayload.class,
+                GetTaskVariablesPayload.class.getSimpleName()
+            )
+        );
 
-        module.registerSubtypes(new NamedType(ReleaseTaskPayload.class,
-                                              ReleaseTaskPayload.class.getSimpleName()));
+        module.registerSubtypes(
+            new NamedType(
+                ReleaseTaskPayload.class,
+                ReleaseTaskPayload.class.getSimpleName()
+            )
+        );
 
-        module.registerSubtypes(new NamedType(UpdateTaskPayload.class,
-                                              UpdateTaskPayload.class.getSimpleName()));
+        module.registerSubtypes(
+            new NamedType(
+                UpdateTaskPayload.class,
+                UpdateTaskPayload.class.getSimpleName()
+            )
+        );
 
         module.setAbstractTypes(resolver);
 

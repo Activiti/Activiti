@@ -23,6 +23,5 @@ import org.activiti.engine.query.NativeQuery;
  *
  */
 @Internal
-public interface NativeDeploymentQuery extends NativeQuery<NativeDeploymentQuery, Deployment> {
-
-}
+public interface NativeDeploymentQuery
+    extends NativeQuery<NativeDeploymentQuery, Deployment> {}

@@ -17,14 +17,11 @@
 package org.activiti.engine.impl.persistence.entity.data;
 
 import java.util.List;
-
 import org.activiti.engine.impl.persistence.entity.PropertyEntity;
 
 /**
 
  */
 public interface PropertyDataManager extends DataManager<PropertyEntity> {
-
-  List<PropertyEntity> findAll();
-
+    List<PropertyEntity> findAll();
 }

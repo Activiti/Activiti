@@ -50,13 +50,22 @@ public class CommonRuntimeAutoConfiguration {
     }
 
     @Bean
-    public InitializingBean registerVariableCreatedListenerDelegate(RuntimeService runtimeService,
-        @Autowired(required = false) List<VariableEventListener<VariableCreatedEvent>> listeners,
-        VariableEventFilter variableEventFilter) {
-        return () -> runtimeService.addEventListener(
-            new VariableCreatedListenerDelegate(getInitializedListeners(listeners),
-                new ToVariableCreatedConverter(),
-                variableEventFilter), ActivitiEventType.VARIABLE_CREATED);
+    public InitializingBean registerVariableCreatedListenerDelegate(
+        RuntimeService runtimeService,
+        @Autowired(
+            required = false
+        ) List<VariableEventListener<VariableCreatedEvent>> listeners,
+        VariableEventFilter variableEventFilter
+    ) {
+        return () ->
+            runtimeService.addEventListener(
+                new VariableCreatedListenerDelegate(
+                    getInitializedListeners(listeners),
+                    new ToVariableCreatedConverter(),
+                    variableEventFilter
+                ),
+                ActivitiEventType.VARIABLE_CREATED
+            );
     }
 
     private <T> List<T> getInitializedListeners(List<T> eventListeners) {
@@ -64,18 +73,26 @@ public class CommonRuntimeAutoConfiguration {
     }
 
     @Bean
-    public InitializingBean registerVariableUpdatedListenerDelegate(RuntimeService runtimeService,
-        @Autowired(required = false) List<VariableEventListener<VariableUpdatedEvent>> listeners,
-        VariableEventFilter variableEventFilter) {
-        return () -> runtimeService.addEventListener(
-            new VariableUpdatedListenerDelegate(getInitializedListeners(listeners),
-                new ToVariableUpdatedConverter(),
-                variableEventFilter), ActivitiEventType.VARIABLE_UPDATED);
+    public InitializingBean registerVariableUpdatedListenerDelegate(
+        RuntimeService runtimeService,
+        @Autowired(
+            required = false
+        ) List<VariableEventListener<VariableUpdatedEvent>> listeners,
+        VariableEventFilter variableEventFilter
+    ) {
+        return () ->
+            runtimeService.addEventListener(
+                new VariableUpdatedListenerDelegate(
+                    getInitializedListeners(listeners),
+                    new ToVariableUpdatedConverter(),
+                    variableEventFilter
+                ),
+                ActivitiEventType.VARIABLE_UPDATED
+            );
     }
 
     @Bean
     public VariableNameValidator variableNameValidator() {
         return new VariableNameValidator();
     }
-
 }

@@ -23,14 +23,18 @@ import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 /**
 
  */
-public class EventBasedGatewayParseHandler extends AbstractActivityBpmnParseHandler<EventGateway> {
+public class EventBasedGatewayParseHandler
+    extends AbstractActivityBpmnParseHandler<EventGateway> {
 
-  public Class<? extends BaseElement> getHandledType() {
-    return EventGateway.class;
-  }
+    public Class<? extends BaseElement> getHandledType() {
+        return EventGateway.class;
+    }
 
-  protected void executeParse(BpmnParse bpmnParse, EventGateway gateway) {
-    gateway.setBehavior(bpmnParse.getActivityBehaviorFactory().createEventBasedGatewayActivityBehavior(gateway));
-  }
-
+    protected void executeParse(BpmnParse bpmnParse, EventGateway gateway) {
+        gateway.setBehavior(
+            bpmnParse
+                .getActivityBehaviorFactory()
+                .createEventBasedGatewayActivityBehavior(gateway)
+        );
+    }
 }

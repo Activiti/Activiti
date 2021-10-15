@@ -32,56 +32,75 @@ import org.activiti.engine.repository.ProcessDefinition;
  */
 public class SetProcessDefinitionCategoryCmd implements Command<Void> {
 
-  protected String processDefinitionId;
-  protected String category;
+    protected String processDefinitionId;
+    protected String category;
 
-  public SetProcessDefinitionCategoryCmd(String processDefinitionId, String category) {
-    this.processDefinitionId = processDefinitionId;
-    this.category = category;
-  }
-
-  public Void execute(CommandContext commandContext) {
-
-    if (processDefinitionId == null) {
-      throw new ActivitiIllegalArgumentException("Process definition id is null");
+    public SetProcessDefinitionCategoryCmd(
+        String processDefinitionId,
+        String category
+    ) {
+        this.processDefinitionId = processDefinitionId;
+        this.category = category;
     }
 
-    ProcessDefinitionEntity processDefinition = commandContext.getProcessDefinitionEntityManager().findById(processDefinitionId);
+    public Void execute(CommandContext commandContext) {
+        if (processDefinitionId == null) {
+            throw new ActivitiIllegalArgumentException(
+                "Process definition id is null"
+            );
+        }
 
-    if (processDefinition == null) {
-      throw new ActivitiObjectNotFoundException("No process definition found for id = '" + processDefinitionId + "'", ProcessDefinition.class);
+        ProcessDefinitionEntity processDefinition = commandContext
+            .getProcessDefinitionEntityManager()
+            .findById(processDefinitionId);
+
+        if (processDefinition == null) {
+            throw new ActivitiObjectNotFoundException(
+                "No process definition found for id = '" +
+                processDefinitionId +
+                "'",
+                ProcessDefinition.class
+            );
+        }
+
+        // Update category
+        processDefinition.setCategory(category);
+
+        // Remove process definition from cache, it will be refetched later
+        DeploymentCache<ProcessDefinitionCacheEntry> processDefinitionCache = commandContext
+            .getProcessEngineConfiguration()
+            .getProcessDefinitionCache();
+        if (processDefinitionCache != null) {
+            processDefinitionCache.remove(processDefinitionId);
+        }
+
+        if (commandContext.getEventDispatcher().isEnabled()) {
+            commandContext
+                .getEventDispatcher()
+                .dispatchEvent(
+                    ActivitiEventBuilder.createEntityEvent(
+                        ActivitiEventType.ENTITY_UPDATED,
+                        processDefinition
+                    )
+                );
+        }
+
+        return null;
     }
 
-    // Update category
-    processDefinition.setCategory(category);
-
-    // Remove process definition from cache, it will be refetched later
-    DeploymentCache<ProcessDefinitionCacheEntry> processDefinitionCache = commandContext.getProcessEngineConfiguration().getProcessDefinitionCache();
-    if (processDefinitionCache != null) {
-      processDefinitionCache.remove(processDefinitionId);
+    public String getProcessDefinitionId() {
+        return processDefinitionId;
     }
 
-    if (commandContext.getEventDispatcher().isEnabled()) {
-      commandContext.getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_UPDATED, processDefinition));
+    public void setProcessDefinitionId(String processDefinitionId) {
+        this.processDefinitionId = processDefinitionId;
     }
 
-    return null;
-  }
+    public String getCategory() {
+        return category;
+    }
 
-  public String getProcessDefinitionId() {
-    return processDefinitionId;
-  }
-
-  public void setProcessDefinitionId(String processDefinitionId) {
-    this.processDefinitionId = processDefinitionId;
-  }
-
-  public String getCategory() {
-    return category;
-  }
-
-  public void setCategory(String category) {
-    this.category = category;
-  }
-
+    public void setCategory(String category) {
+        this.category = category;
+    }
 }

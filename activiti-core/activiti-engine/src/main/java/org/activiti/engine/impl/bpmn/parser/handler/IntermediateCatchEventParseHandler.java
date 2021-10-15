@@ -30,32 +30,47 @@ import org.slf4j.LoggerFactory;
 
 
  */
-public class IntermediateCatchEventParseHandler extends AbstractFlowNodeBpmnParseHandler<IntermediateCatchEvent> {
+public class IntermediateCatchEventParseHandler
+    extends AbstractFlowNodeBpmnParseHandler<IntermediateCatchEvent> {
 
-  private static final Logger logger = LoggerFactory.getLogger(IntermediateCatchEventParseHandler.class);
+    private static final Logger logger = LoggerFactory.getLogger(
+        IntermediateCatchEventParseHandler.class
+    );
 
-  public Class<? extends BaseElement> getHandledType() {
-    return IntermediateCatchEvent.class;
-  }
-
-  protected void executeParse(BpmnParse bpmnParse, IntermediateCatchEvent event) {
-    EventDefinition eventDefinition = null;
-    if (!event.getEventDefinitions().isEmpty()) {
-      eventDefinition = event.getEventDefinitions().get(0);
+    public Class<? extends BaseElement> getHandledType() {
+        return IntermediateCatchEvent.class;
     }
 
-    if (eventDefinition == null) {
-      event.setBehavior(bpmnParse.getActivityBehaviorFactory().createIntermediateCatchEventActivityBehavior(event));
+    protected void executeParse(
+        BpmnParse bpmnParse,
+        IntermediateCatchEvent event
+    ) {
+        EventDefinition eventDefinition = null;
+        if (!event.getEventDefinitions().isEmpty()) {
+            eventDefinition = event.getEventDefinitions().get(0);
+        }
 
-    } else {
-      if (eventDefinition instanceof TimerEventDefinition || eventDefinition instanceof SignalEventDefinition || eventDefinition instanceof MessageEventDefinition) {
-
-        bpmnParse.getBpmnParserHandlers().parseElement(bpmnParse, eventDefinition);
-
-      } else {
-        logger.warn("Unsupported intermediate catch event type for event " + event.getId());
-      }
+        if (eventDefinition == null) {
+            event.setBehavior(
+                bpmnParse
+                    .getActivityBehaviorFactory()
+                    .createIntermediateCatchEventActivityBehavior(event)
+            );
+        } else {
+            if (
+                eventDefinition instanceof TimerEventDefinition ||
+                eventDefinition instanceof SignalEventDefinition ||
+                eventDefinition instanceof MessageEventDefinition
+            ) {
+                bpmnParse
+                    .getBpmnParserHandlers()
+                    .parseElement(bpmnParse, eventDefinition);
+            } else {
+                logger.warn(
+                    "Unsupported intermediate catch event type for event " +
+                    event.getId()
+                );
+            }
+        }
     }
-  }
-
 }

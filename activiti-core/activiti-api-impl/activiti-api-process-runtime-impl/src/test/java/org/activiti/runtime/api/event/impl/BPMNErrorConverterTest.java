@@ -29,7 +29,6 @@ public class BPMNErrorConverterTest {
 
     @Test
     public void convertShouldReturnBPMNError() {
-
         ActivitiErrorEvent internalEvent = mock(ActivitiErrorEvent.class);
         given(internalEvent.getErrorId()).willReturn("errorId");
         given(internalEvent.getErrorCode()).willReturn("errorCode");
@@ -38,7 +37,9 @@ public class BPMNErrorConverterTest {
         given(internalEvent.getProcessDefinitionId()).willReturn("procDefId");
         given(internalEvent.getProcessInstanceId()).willReturn("procInstId");
 
-        BPMNErrorImpl bpmnError = bpmnErrorConverter.convertToBPMNError(internalEvent);
+        BPMNErrorImpl bpmnError = bpmnErrorConverter.convertToBPMNError(
+            internalEvent
+        );
 
         //then
         assertThat(bpmnError).isNotNull();
@@ -49,5 +50,4 @@ public class BPMNErrorConverterTest {
         assertThat(bpmnError.getActivityName()).isEqualTo("activityName");
         assertThat(bpmnError.getActivityType()).isEqualTo("activityType");
     }
-
 }

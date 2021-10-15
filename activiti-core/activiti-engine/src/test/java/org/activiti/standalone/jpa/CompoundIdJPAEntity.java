@@ -14,11 +14,9 @@
  * limitations under the License.
  */
 
-
 package org.activiti.standalone.jpa;
 
 import java.io.Serializable;
-
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 
@@ -28,21 +26,21 @@ import javax.persistence.Entity;
 @Entity
 public class CompoundIdJPAEntity implements Serializable {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  @EmbeddedId
-  private EmbeddableCompoundId id;
+    @EmbeddedId
+    private EmbeddableCompoundId id;
 
-  public EmbeddableCompoundId getId() {
-    return id;
-  }
+    public EmbeddableCompoundId getId() {
+        return id;
+    }
 
-  public void setId(EmbeddableCompoundId id) {
-    this.id = id;
-  }
+    public void setId(EmbeddableCompoundId id) {
+        this.id = id;
+    }
 
-  @Override
-  public boolean equals(Object obj) {
-    return id.equals(((CompoundIdJPAEntity) obj).getId());
-  }
+    @Override
+    public boolean equals(Object obj) {
+        return id.equals(((CompoundIdJPAEntity) obj).getId());
+    }
 }

@@ -17,7 +17,6 @@
 package org.activiti.engine.impl.cmd;
 
 import java.io.Serializable;
-
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.impl.interceptor.Command;
@@ -28,43 +27,62 @@ import org.activiti.engine.repository.ProcessDefinition;
 /**
 
  */
-public class AddIdentityLinkForProcessDefinitionCmd implements Command<Void>, Serializable {
+public class AddIdentityLinkForProcessDefinitionCmd
+    implements Command<Void>, Serializable {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  protected String processDefinitionId;
+    protected String processDefinitionId;
 
-  protected String userId;
+    protected String userId;
 
-  protected String groupId;
+    protected String groupId;
 
-  public AddIdentityLinkForProcessDefinitionCmd(String processDefinitionId, String userId, String groupId) {
-    validateParams(userId, groupId, processDefinitionId);
-    this.processDefinitionId = processDefinitionId;
-    this.userId = userId;
-    this.groupId = groupId;
-  }
-
-  protected void validateParams(String userId, String groupId, String processDefinitionId) {
-    if (processDefinitionId == null) {
-      throw new ActivitiIllegalArgumentException("processDefinitionId is null");
+    public AddIdentityLinkForProcessDefinitionCmd(
+        String processDefinitionId,
+        String userId,
+        String groupId
+    ) {
+        validateParams(userId, groupId, processDefinitionId);
+        this.processDefinitionId = processDefinitionId;
+        this.userId = userId;
+        this.groupId = groupId;
     }
 
-    if (userId == null && groupId == null) {
-      throw new ActivitiIllegalArgumentException("userId and groupId cannot both be null");
+    protected void validateParams(
+        String userId,
+        String groupId,
+        String processDefinitionId
+    ) {
+        if (processDefinitionId == null) {
+            throw new ActivitiIllegalArgumentException(
+                "processDefinitionId is null"
+            );
+        }
+
+        if (userId == null && groupId == null) {
+            throw new ActivitiIllegalArgumentException(
+                "userId and groupId cannot both be null"
+            );
+        }
     }
-  }
 
-  public Void execute(CommandContext commandContext) {
-    ProcessDefinitionEntity processDefinition = commandContext.getProcessDefinitionEntityManager().findById(processDefinitionId);
+    public Void execute(CommandContext commandContext) {
+        ProcessDefinitionEntity processDefinition = commandContext
+            .getProcessDefinitionEntityManager()
+            .findById(processDefinitionId);
 
-    if (processDefinition == null) {
-      throw new ActivitiObjectNotFoundException("Cannot find process definition with id " + processDefinitionId, ProcessDefinition.class);
+        if (processDefinition == null) {
+            throw new ActivitiObjectNotFoundException(
+                "Cannot find process definition with id " + processDefinitionId,
+                ProcessDefinition.class
+            );
+        }
+
+        commandContext
+            .getIdentityLinkEntityManager()
+            .addIdentityLink(processDefinition, userId, groupId);
+
+        return null;
     }
-
-    commandContext.getIdentityLinkEntityManager().addIdentityLink(processDefinition, userId, groupId);
-
-    return null;
-  }
-
 }

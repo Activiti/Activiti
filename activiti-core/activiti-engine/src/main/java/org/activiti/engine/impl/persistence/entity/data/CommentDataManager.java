@@ -17,7 +17,6 @@
 package org.activiti.engine.impl.persistence.entity.data;
 
 import java.util.List;
-
 import org.activiti.engine.impl.persistence.entity.CommentEntity;
 import org.activiti.engine.task.Comment;
 import org.activiti.engine.task.Event;
@@ -26,27 +25,28 @@ import org.activiti.engine.task.Event;
 
  */
 public interface CommentDataManager extends DataManager<CommentEntity> {
+    List<Comment> findCommentsByTaskId(String taskId);
 
-  List<Comment> findCommentsByTaskId(String taskId);
+    List<Comment> findCommentsByTaskIdAndType(String taskId, String type);
 
-  List<Comment> findCommentsByTaskIdAndType(String taskId, String type);
+    List<Comment> findCommentsByType(String type);
 
-  List<Comment> findCommentsByType(String type);
+    List<Event> findEventsByTaskId(String taskId);
 
-  List<Event> findEventsByTaskId(String taskId);
+    List<Event> findEventsByProcessInstanceId(String processInstanceId);
 
-  List<Event> findEventsByProcessInstanceId(String processInstanceId);
+    void deleteCommentsByTaskId(String taskId);
 
-  void deleteCommentsByTaskId(String taskId);
+    void deleteCommentsByProcessInstanceId(String processInstanceId);
 
-  void deleteCommentsByProcessInstanceId(String processInstanceId);
+    List<Comment> findCommentsByProcessInstanceId(String processInstanceId);
 
-  List<Comment> findCommentsByProcessInstanceId(String processInstanceId);
+    List<Comment> findCommentsByProcessInstanceId(
+        String processInstanceId,
+        String type
+    );
 
-  List<Comment> findCommentsByProcessInstanceId(String processInstanceId, String type);
+    Comment findComment(String commentId);
 
-  Comment findComment(String commentId);
-
-  Event findEvent(String commentId);
-
+    Event findEvent(String commentId);
 }

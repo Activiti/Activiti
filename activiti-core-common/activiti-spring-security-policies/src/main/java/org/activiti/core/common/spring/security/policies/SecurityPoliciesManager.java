@@ -19,12 +19,9 @@ import java.util.Map;
 import java.util.Set;
 
 public interface SecurityPoliciesManager {
+    boolean canRead(String processDefinitionKey, String serviceName);
 
-    boolean canRead(String processDefinitionKey,
-                    String serviceName);
-
-    boolean canWrite(String processDefinitionKey,
-                     String serviceName);
+    boolean canWrite(String processDefinitionKey, String serviceName);
 
     boolean canRead(String processDefinitionKey);
 
@@ -32,6 +29,7 @@ public interface SecurityPoliciesManager {
 
     boolean arePoliciesDefined();
 
-    Map<String, Set<String>> getAllowedKeys(SecurityPolicyAccess... securityPolicyAccess);
-
+    Map<String, Set<String>> getAllowedKeys(
+        SecurityPolicyAccess... securityPolicyAccess
+    );
 }

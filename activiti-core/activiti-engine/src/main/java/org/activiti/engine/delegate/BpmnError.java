@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.delegate;
 
 import org.activiti.engine.ActivitiException;
@@ -33,31 +32,35 @@ import org.activiti.engine.impl.bpmn.parser.Error;
  */
 public class BpmnError extends ActivitiException {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  private String errorCode;
+    private String errorCode;
 
-  public BpmnError(String errorCode) {
-    super("");
-    setErrorCode(errorCode);
-  }
-
-  public BpmnError(String errorCode, String message) {
-    super(message);
-    setErrorCode(errorCode);
-  }
-
-  protected void setErrorCode(String errorCode) {
-    if (errorCode == null) {
-      throw new ActivitiIllegalArgumentException("Error Code must not be null.");
+    public BpmnError(String errorCode) {
+        super("");
+        setErrorCode(errorCode);
     }
-    if (errorCode.length() < 1) {
-      throw new ActivitiIllegalArgumentException("Error Code must not be empty.");
-    }
-    this.errorCode = errorCode;
-  }
 
-  public String getErrorCode() {
-    return errorCode;
-  }
+    public BpmnError(String errorCode, String message) {
+        super(message);
+        setErrorCode(errorCode);
+    }
+
+    protected void setErrorCode(String errorCode) {
+        if (errorCode == null) {
+            throw new ActivitiIllegalArgumentException(
+                "Error Code must not be null."
+            );
+        }
+        if (errorCode.length() < 1) {
+            throw new ActivitiIllegalArgumentException(
+                "Error Code must not be empty."
+            );
+        }
+        this.errorCode = errorCode;
+    }
+
+    public String getErrorCode() {
+        return errorCode;
+    }
 }

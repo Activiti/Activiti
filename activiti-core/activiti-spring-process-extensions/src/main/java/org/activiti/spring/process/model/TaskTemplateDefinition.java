@@ -49,8 +49,10 @@ public class TaskTemplateDefinition {
             return false;
         }
         TaskTemplateDefinition that = (TaskTemplateDefinition) o;
-        return Objects.equals(assignee, that.assignee) && Objects
-            .equals(candidate, that.candidate);
+        return (
+            Objects.equals(assignee, that.assignee) &&
+            Objects.equals(candidate, that.candidate)
+        );
     }
 
     @Override

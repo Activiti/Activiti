@@ -17,7 +17,6 @@
 package org.activiti.engine.impl.bpmn.behavior;
 
 import java.util.List;
-
 import org.activiti.bpmn.model.Signal;
 import org.activiti.bpmn.model.SignalEventDefinition;
 import org.activiti.engine.delegate.DelegateExecution;
@@ -31,65 +30,90 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.SignalEventSubscriptionEntity;
 import org.apache.commons.lang3.StringUtils;
 
-public class IntermediateCatchSignalEventActivityBehavior extends IntermediateCatchEventActivityBehavior {
+public class IntermediateCatchSignalEventActivityBehavior
+    extends IntermediateCatchEventActivityBehavior {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  protected SignalEventDefinition signalEventDefinition;
-  protected Signal signal;
+    protected SignalEventDefinition signalEventDefinition;
+    protected Signal signal;
 
-  public IntermediateCatchSignalEventActivityBehavior(SignalEventDefinition signalEventDefinition, Signal signal) {
-    this.signalEventDefinition = signalEventDefinition;
-    this.signal = signal;
-  }
-
-  public void execute(DelegateExecution execution) {
-    CommandContext commandContext = Context.getCommandContext();
-    ExecutionEntity executionEntity = (ExecutionEntity) execution;
-
-    String signalName = null;
-    if (StringUtils.isNotEmpty(signalEventDefinition.getSignalRef())) {
-      signalName = signalEventDefinition.getSignalRef();
-    } else {
-      Expression signalExpression = commandContext.getProcessEngineConfiguration().getExpressionManager()
-          .createExpression(signalEventDefinition.getSignalExpression());
-      signalName = signalExpression.getValue(execution).toString();
+    public IntermediateCatchSignalEventActivityBehavior(
+        SignalEventDefinition signalEventDefinition,
+        Signal signal
+    ) {
+        this.signalEventDefinition = signalEventDefinition;
+        this.signal = signal;
     }
 
-    commandContext.getEventSubscriptionEntityManager().insertSignalEvent(signalName, signal, executionEntity);
-  }
+    public void execute(DelegateExecution execution) {
+        CommandContext commandContext = Context.getCommandContext();
+        ExecutionEntity executionEntity = (ExecutionEntity) execution;
 
-  @Override
-  public void trigger(DelegateExecution execution, String triggerName, Object triggerData) {
-    ExecutionEntity executionEntity = deleteSignalEventSubscription(execution);
-    leaveIntermediateCatchEvent(executionEntity);
-  }
+        String signalName = null;
+        if (StringUtils.isNotEmpty(signalEventDefinition.getSignalRef())) {
+            signalName = signalEventDefinition.getSignalRef();
+        } else {
+            Expression signalExpression = commandContext
+                .getProcessEngineConfiguration()
+                .getExpressionManager()
+                .createExpression(signalEventDefinition.getSignalExpression());
+            signalName = signalExpression.getValue(execution).toString();
+        }
 
-  @Override
-  public void eventCancelledByEventGateway(DelegateExecution execution) {
-    deleteSignalEventSubscription(execution);
-    Context.getCommandContext().getExecutionEntityManager().deleteExecutionAndRelatedData((ExecutionEntity) execution,
-        DeleteReason.EVENT_BASED_GATEWAY_CANCEL);
-  }
-
-  protected ExecutionEntity deleteSignalEventSubscription(DelegateExecution execution) {
-    ExecutionEntity executionEntity = (ExecutionEntity) execution;
-
-    String eventName = null;
-    if (signal != null) {
-      eventName = signal.getName();
-    } else {
-      eventName = signalEventDefinition.getSignalRef();
+        commandContext
+            .getEventSubscriptionEntityManager()
+            .insertSignalEvent(signalName, signal, executionEntity);
     }
 
-    EventSubscriptionEntityManager eventSubscriptionEntityManager = Context.getCommandContext().getEventSubscriptionEntityManager();
-    List<EventSubscriptionEntity> eventSubscriptions = executionEntity.getEventSubscriptions();
-    for (EventSubscriptionEntity eventSubscription : eventSubscriptions) {
-      if (eventSubscription instanceof SignalEventSubscriptionEntity && eventSubscription.getEventName().equals(eventName)) {
-
-        eventSubscriptionEntityManager.delete(eventSubscription);
-      }
+    @Override
+    public void trigger(
+        DelegateExecution execution,
+        String triggerName,
+        Object triggerData
+    ) {
+        ExecutionEntity executionEntity = deleteSignalEventSubscription(
+            execution
+        );
+        leaveIntermediateCatchEvent(executionEntity);
     }
-    return executionEntity;
-  }
+
+    @Override
+    public void eventCancelledByEventGateway(DelegateExecution execution) {
+        deleteSignalEventSubscription(execution);
+        Context
+            .getCommandContext()
+            .getExecutionEntityManager()
+            .deleteExecutionAndRelatedData(
+                (ExecutionEntity) execution,
+                DeleteReason.EVENT_BASED_GATEWAY_CANCEL
+            );
+    }
+
+    protected ExecutionEntity deleteSignalEventSubscription(
+        DelegateExecution execution
+    ) {
+        ExecutionEntity executionEntity = (ExecutionEntity) execution;
+
+        String eventName = null;
+        if (signal != null) {
+            eventName = signal.getName();
+        } else {
+            eventName = signalEventDefinition.getSignalRef();
+        }
+
+        EventSubscriptionEntityManager eventSubscriptionEntityManager = Context
+            .getCommandContext()
+            .getEventSubscriptionEntityManager();
+        List<EventSubscriptionEntity> eventSubscriptions = executionEntity.getEventSubscriptions();
+        for (EventSubscriptionEntity eventSubscription : eventSubscriptions) {
+            if (
+                eventSubscription instanceof SignalEventSubscriptionEntity &&
+                eventSubscription.getEventName().equals(eventName)
+            ) {
+                eventSubscriptionEntityManager.delete(eventSubscription);
+            }
+        }
+        return executionEntity;
+    }
 }

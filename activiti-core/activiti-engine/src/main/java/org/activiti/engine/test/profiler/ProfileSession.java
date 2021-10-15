@@ -43,7 +43,9 @@ public class ProfileSession {
         return currentCommandExecution.get();
     }
 
-    public void setCurrentCommandExecution(CommandExecutionResult commandExecutionResult) {
+    public void setCurrentCommandExecution(
+        CommandExecutionResult commandExecutionResult
+    ) {
         currentCommandExecution.set(commandExecutionResult);
     }
 
@@ -51,9 +53,15 @@ public class ProfileSession {
         currentCommandExecution.set(null);
     }
 
-    public synchronized void addCommandExecution(String classFqn, CommandExecutionResult commandExecutionResult) {
+    public synchronized void addCommandExecution(
+        String classFqn,
+        CommandExecutionResult commandExecutionResult
+    ) {
         if (!commandExecutionResults.containsKey(classFqn)) {
-            commandExecutionResults.put(classFqn, new ArrayList<CommandExecutionResult>());
+            commandExecutionResults.put(
+                classFqn,
+                new ArrayList<CommandExecutionResult>()
+            );
         }
         commandExecutionResults.get(classFqn).add(commandExecutionResult);
     }
@@ -98,18 +106,21 @@ public class ProfileSession {
         return commandExecutionResults;
     }
 
-    public void setCommandExecutions(Map<String, List<CommandExecutionResult>> commandExecutionResults) {
+    public void setCommandExecutions(
+        Map<String, List<CommandExecutionResult>> commandExecutionResults
+    ) {
         this.commandExecutionResults = commandExecutionResults;
     }
 
     public Map<String, CommandStats> calculateSummaryStatistics() {
         Map<String, CommandStats> result = new HashMap<String, CommandStats>();
         for (String className : commandExecutionResults.keySet()) {
-            List<CommandExecutionResult> executions = commandExecutionResults.get(className);
+            List<CommandExecutionResult> executions = commandExecutionResults.get(
+                className
+            );
             CommandStats commandStats = new CommandStats(executions);
             result.put(className, commandStats);
         }
         return result;
     }
-
 }

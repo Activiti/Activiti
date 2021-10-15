@@ -22,15 +22,15 @@ import org.activiti.engine.impl.persistence.entity.SuspensionState;
  *
 
  */
-public class SuspendProcessInstanceCmd extends AbstractSetProcessInstanceStateCmd {
+public class SuspendProcessInstanceCmd
+    extends AbstractSetProcessInstanceStateCmd {
 
-  public SuspendProcessInstanceCmd(String executionId) {
-    super(executionId);
-  }
+    public SuspendProcessInstanceCmd(String executionId) {
+        super(executionId);
+    }
 
-  @Override
-  protected SuspensionState getNewState() {
-    return SuspensionState.SUSPENDED;
-  }
-
+    @Override
+    protected SuspensionState getNewState() {
+        return SuspensionState.SUSPENDED;
+    }
 }

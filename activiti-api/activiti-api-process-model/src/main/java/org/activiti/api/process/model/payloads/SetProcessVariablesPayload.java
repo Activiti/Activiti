@@ -18,7 +18,6 @@ package org.activiti.api.process.model.payloads;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-
 import org.activiti.api.model.shared.Payload;
 
 public class SetProcessVariablesPayload implements Payload {
@@ -31,8 +30,10 @@ public class SetProcessVariablesPayload implements Payload {
         this.id = UUID.randomUUID().toString();
     }
 
-    public SetProcessVariablesPayload(String processInstanceId,
-                                      Map<String, Object> variables) {
+    public SetProcessVariablesPayload(
+        String processInstanceId,
+        Map<String, Object> variables
+    ) {
         this();
         this.processInstanceId = processInstanceId;
         this.variables = variables;

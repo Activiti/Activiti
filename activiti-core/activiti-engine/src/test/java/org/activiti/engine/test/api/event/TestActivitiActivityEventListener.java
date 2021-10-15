@@ -18,7 +18,6 @@ package org.activiti.engine.test.api.event;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.activiti.engine.delegate.event.ActivitiActivityEvent;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventListener;
@@ -29,39 +28,46 @@ import org.activiti.engine.delegate.event.ActivitiEventType;
  *
 
  */
-public class TestActivitiActivityEventListener implements ActivitiEventListener {
+public class TestActivitiActivityEventListener
+    implements ActivitiEventListener {
 
-  private List<ActivitiEvent> eventsReceived;
-  private boolean ignoreRawActivityEvents;
+    private List<ActivitiEvent> eventsReceived;
+    private boolean ignoreRawActivityEvents;
 
-  public TestActivitiActivityEventListener(boolean ignoreRawActivityEvents) {
-    eventsReceived = new ArrayList<ActivitiEvent>();
-    this.ignoreRawActivityEvents = ignoreRawActivityEvents;
-  }
-
-  public List<ActivitiEvent> getEventsReceived() {
-    return eventsReceived;
-  }
-
-  public void clearEventsReceived() {
-    eventsReceived.clear();
-  }
-
-  @Override
-  public void onEvent(ActivitiEvent event) {
-    if (event instanceof ActivitiActivityEvent) {
-      if (!ignoreRawActivityEvents || (event.getType() != ActivitiEventType.ACTIVITY_STARTED && event.getType() != ActivitiEventType.ACTIVITY_COMPLETED)) {
-        eventsReceived.add(event);
-      }
+    public TestActivitiActivityEventListener(boolean ignoreRawActivityEvents) {
+        eventsReceived = new ArrayList<ActivitiEvent>();
+        this.ignoreRawActivityEvents = ignoreRawActivityEvents;
     }
-  }
 
-  public void setIgnoreRawActivityEvents(boolean ignoreRawActivityEvents) {
-    this.ignoreRawActivityEvents = ignoreRawActivityEvents;
-  }
+    public List<ActivitiEvent> getEventsReceived() {
+        return eventsReceived;
+    }
 
-  @Override
-  public boolean isFailOnException() {
-    return false;
-  }
+    public void clearEventsReceived() {
+        eventsReceived.clear();
+    }
+
+    @Override
+    public void onEvent(ActivitiEvent event) {
+        if (event instanceof ActivitiActivityEvent) {
+            if (
+                !ignoreRawActivityEvents ||
+                (
+                    event.getType() != ActivitiEventType.ACTIVITY_STARTED &&
+                    event.getType() != ActivitiEventType.ACTIVITY_COMPLETED
+                )
+            ) {
+                eventsReceived.add(event);
+            }
+        }
+    }
+
+    public void setIgnoreRawActivityEvents(boolean ignoreRawActivityEvents) {
+        this.ignoreRawActivityEvents = ignoreRawActivityEvents;
+    }
+
+    @Override
+    public boolean isFailOnException() {
+        return false;
+    }
 }

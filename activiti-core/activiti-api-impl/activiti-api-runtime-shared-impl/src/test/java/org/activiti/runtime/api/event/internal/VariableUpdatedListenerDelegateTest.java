@@ -52,15 +52,20 @@ public class VariableUpdatedListenerDelegateTest {
     @BeforeEach
     public void setUp() {
         initMocks(this);
-        variableUpdatedListenerDelegate = new VariableUpdatedListenerDelegate(
-            Arrays.asList(firstListener, secondListener), converter, variableEventFilter);
+        variableUpdatedListenerDelegate =
+            new VariableUpdatedListenerDelegate(
+                Arrays.asList(firstListener, secondListener),
+                converter,
+                variableEventFilter
+            );
     }
 
     @Test
     public void onEvent_should_callListenersWhenItsVariableEventAndItsNotFiltered() {
         //given
         ActivitiVariableUpdatedEventImpl internalEvent = new ActivitiVariableUpdatedEventImpl();
-        given(variableEventFilter.shouldEmmitEvent(internalEvent)).willReturn(true);
+        given(variableEventFilter.shouldEmmitEvent(internalEvent))
+            .willReturn(true);
         VariableUpdatedEvent apiEvent = mock(VariableUpdatedEvent.class);
         given(converter.from(internalEvent)).willReturn(Optional.of(apiEvent));
 
@@ -89,7 +94,8 @@ public class VariableUpdatedListenerDelegateTest {
     public void onEvent_shouldNot_callListenersWhenItsFiltered() {
         //given
         ActivitiVariableUpdatedEventImpl internalEvent = new ActivitiVariableUpdatedEventImpl();
-        given(variableEventFilter.shouldEmmitEvent(internalEvent)).willReturn(false);
+        given(variableEventFilter.shouldEmmitEvent(internalEvent))
+            .willReturn(false);
         VariableUpdatedEvent apiEvent = mock(VariableUpdatedEvent.class);
         given(converter.from(internalEvent)).willReturn(Optional.of(apiEvent));
 
@@ -100,5 +106,4 @@ public class VariableUpdatedListenerDelegateTest {
         verifyNoInteractions(firstListener);
         verifyNoInteractions(secondListener);
     }
-
 }

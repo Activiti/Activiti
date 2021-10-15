@@ -25,16 +25,15 @@ import org.activiti.engine.api.internal.Internal;
  */
 @Internal
 public interface StructureDefinition {
+    /**
+     * Obtains the id of this structure
+     *
+     * @return the id of this structure
+     */
+    String getId();
 
-  /**
-   * Obtains the id of this structure
-   *
-   * @return the id of this structure
-   */
-  String getId();
-
-  /**
-   * @return a new instance of this structure definition
-   */
-  StructureInstance createInstance();
+    /**
+     * @return a new instance of this structure definition
+     */
+    StructureInstance createInstance();
 }

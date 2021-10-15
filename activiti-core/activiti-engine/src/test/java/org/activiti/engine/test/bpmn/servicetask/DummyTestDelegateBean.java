@@ -14,19 +14,17 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.test.bpmn.servicetask;
 
 import java.io.Serializable;
-
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.JavaDelegate;
 
 public class DummyTestDelegateBean implements JavaDelegate, Serializable {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  public void execute(DelegateExecution execution) {
-    execution.setVariable("executed", true);
-  }
+    public void execute(DelegateExecution execution) {
+        execution.setVariable("executed", true);
+    }
 }

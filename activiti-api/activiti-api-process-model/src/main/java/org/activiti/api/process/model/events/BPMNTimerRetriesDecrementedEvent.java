@@ -15,6 +15,4 @@
  */
 package org.activiti.api.process.model.events;
 
-public interface BPMNTimerRetriesDecrementedEvent extends BPMNTimerEvent {
-
-}
+public interface BPMNTimerRetriesDecrementedEvent extends BPMNTimerEvent {}

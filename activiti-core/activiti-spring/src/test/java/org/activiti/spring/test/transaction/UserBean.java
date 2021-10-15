@@ -14,74 +14,72 @@
  * limitations under the License.
  */
 
-
 package org.activiti.spring.test.transaction;
 
+import javax.sql.DataSource;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.sql.DataSource;
-
 /**
 
  */
 public class UserBean {
 
-  /**
-   * injected by Spring
-   */
-  private RuntimeService runtimeService;
+    /**
+     * injected by Spring
+     */
+    private RuntimeService runtimeService;
 
-  /**
-   * injected by Spring
-   */
-  private TaskService taskService;
+    /**
+     * injected by Spring
+     */
+    private TaskService taskService;
 
-  /**
-   * injected by Spring
-   */
-  private DataSource dataSource;
+    /**
+     * injected by Spring
+     */
+    private DataSource dataSource;
 
-  @Transactional
-  public void hello() {
-    // here you can do transactional stuff in your domain model
-    // and it will be combined in the same transaction as
-    // the startProcessInstanceByKey to the Activiti RuntimeService
-    runtimeService.startProcessInstanceByKey("helloProcess");
-  }
-
-  @Transactional
-  public void completeTask(String taskId) {
-
-    // First insert a record in the MY_TABLE table
-    JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
-    int nrOfRows = jdbcTemplate.update("insert into MY_TABLE values ('test');");
-    if (nrOfRows != 1) {
-      throw new RuntimeException("Insert into MY_TABLE failed");
+    @Transactional
+    public void hello() {
+        // here you can do transactional stuff in your domain model
+        // and it will be combined in the same transaction as
+        // the startProcessInstanceByKey to the Activiti RuntimeService
+        runtimeService.startProcessInstanceByKey("helloProcess");
     }
 
-    taskService.complete(taskId);
-  }
+    @Transactional
+    public void completeTask(String taskId) {
+        // First insert a record in the MY_TABLE table
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+        int nrOfRows = jdbcTemplate.update(
+            "insert into MY_TABLE values ('test');"
+        );
+        if (nrOfRows != 1) {
+            throw new RuntimeException("Insert into MY_TABLE failed");
+        }
 
-  // getters and setters
-  // //////////////////////////////////////////////////////
+        taskService.complete(taskId);
+    }
 
-  @Required
-  public void setRuntimeService(RuntimeService runtimeService) {
-    this.runtimeService = runtimeService;
-  }
+    // getters and setters
+    // //////////////////////////////////////////////////////
 
-  @Required
-  public void setTaskService(TaskService taskService) {
-    this.taskService = taskService;
-  }
+    @Required
+    public void setRuntimeService(RuntimeService runtimeService) {
+        this.runtimeService = runtimeService;
+    }
 
-  @Required
-  public void setDataSource(DataSource dataSource) {
-    this.dataSource = dataSource;
-  }
+    @Required
+    public void setTaskService(TaskService taskService) {
+        this.taskService = taskService;
+    }
 
+    @Required
+    public void setDataSource(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
 }

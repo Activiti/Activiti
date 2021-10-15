@@ -14,11 +14,9 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.cmd;
 
 import java.io.Serializable;
-
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
@@ -26,16 +24,19 @@ import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 /**
 
  */
-public class IsProcessDefinitionSuspendedCmd implements Command<Boolean>, Serializable {
+public class IsProcessDefinitionSuspendedCmd
+    implements Command<Boolean>, Serializable {
 
-  private static final long serialVersionUID = 1L;
-  protected String processDefinitionId;
+    private static final long serialVersionUID = 1L;
+    protected String processDefinitionId;
 
-  public IsProcessDefinitionSuspendedCmd(String processDefinitionId) {
-    this.processDefinitionId = processDefinitionId;
-  }
+    public IsProcessDefinitionSuspendedCmd(String processDefinitionId) {
+        this.processDefinitionId = processDefinitionId;
+    }
 
-  public Boolean execute(CommandContext commandContext) {
-    return ProcessDefinitionUtil.isProcessDefinitionSuspended(processDefinitionId);
-  }
+    public Boolean execute(CommandContext commandContext) {
+        return ProcessDefinitionUtil.isProcessDefinitionSuspended(
+            processDefinitionId
+        );
+    }
 }

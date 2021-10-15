@@ -17,12 +17,10 @@ package org.activiti.api.process.model.events;
 
 import org.activiti.api.model.shared.event.RuntimeEvent;
 
-public interface MessageDefinitionEvent<ENTITY_TYPE> extends RuntimeEvent<ENTITY_TYPE, MessageDefinitionEvent.MessageDefinitionEvents> {
-
+public interface MessageDefinitionEvent<ENTITY_TYPE>
+    extends
+        RuntimeEvent<ENTITY_TYPE, MessageDefinitionEvent.MessageDefinitionEvents> {
     enum MessageDefinitionEvents {
-
-        START_MESSAGE_DEPLOYED
-
+        START_MESSAGE_DEPLOYED,
     }
-
 }

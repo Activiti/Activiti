@@ -17,7 +17,6 @@ package org.activiti.engine.impl;
 
 import java.util.List;
 import java.util.Set;
-
 import org.activiti.api.runtime.shared.identity.UserGroupManager;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
@@ -30,11 +29,15 @@ import org.activiti.engine.repository.ProcessDefinitionQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQuery, ProcessDefinition> implements ProcessDefinitionQuery {
+public class ProcessDefinitionQueryImpl
+    extends AbstractQuery<ProcessDefinitionQuery, ProcessDefinition>
+    implements ProcessDefinitionQuery {
 
     private static final long serialVersionUID = 1L;
 
-    private static final Logger log = LoggerFactory.getLogger(ProcessDefinitionQueryImpl.class);
+    private static final Logger log = LoggerFactory.getLogger(
+        ProcessDefinitionQueryImpl.class
+    );
 
     private String id;
     private Set<String> ids;
@@ -66,8 +69,7 @@ public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQ
     private String eventSubscriptionName;
     private String eventSubscriptionType;
 
-    public ProcessDefinitionQueryImpl() {
-    }
+    public ProcessDefinitionQueryImpl() {}
 
     public ProcessDefinitionQueryImpl(CommandContext commandContext) {
         super(commandContext);
@@ -77,18 +79,24 @@ public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQ
         super(commandExecutor);
     }
 
-    public ProcessDefinitionQueryImpl processDefinitionId(String processDefinitionId) {
+    public ProcessDefinitionQueryImpl processDefinitionId(
+        String processDefinitionId
+    ) {
         this.id = processDefinitionId;
         return this;
     }
 
     @Override
-    public ProcessDefinitionQuery processDefinitionIds(Set<String> processDefinitionIds) {
+    public ProcessDefinitionQuery processDefinitionIds(
+        Set<String> processDefinitionIds
+    ) {
         this.ids = processDefinitionIds;
         return this;
     }
 
-    public ProcessDefinitionQueryImpl processDefinitionCategory(String category) {
+    public ProcessDefinitionQueryImpl processDefinitionCategory(
+        String category
+    ) {
         if (category == null) {
             throw new ActivitiIllegalArgumentException("category is null");
         }
@@ -96,7 +104,9 @@ public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQ
         return this;
     }
 
-    public ProcessDefinitionQueryImpl processDefinitionCategoryLike(String categoryLike) {
+    public ProcessDefinitionQueryImpl processDefinitionCategoryLike(
+        String categoryLike
+    ) {
         if (categoryLike == null) {
             throw new ActivitiIllegalArgumentException("categoryLike is null");
         }
@@ -104,9 +114,13 @@ public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQ
         return this;
     }
 
-    public ProcessDefinitionQueryImpl processDefinitionCategoryNotEquals(String categoryNotEquals) {
+    public ProcessDefinitionQueryImpl processDefinitionCategoryNotEquals(
+        String categoryNotEquals
+    ) {
         if (categoryNotEquals == null) {
-            throw new ActivitiIllegalArgumentException("categoryNotEquals is null");
+            throw new ActivitiIllegalArgumentException(
+                "categoryNotEquals is null"
+            );
         }
         this.categoryNotEquals = categoryNotEquals;
         return this;
@@ -120,7 +134,9 @@ public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQ
         return this;
     }
 
-    public ProcessDefinitionQueryImpl processDefinitionNameLike(String nameLike) {
+    public ProcessDefinitionQueryImpl processDefinitionNameLike(
+        String nameLike
+    ) {
         if (nameLike == null) {
             throw new ActivitiIllegalArgumentException("nameLike is null");
         }
@@ -168,7 +184,9 @@ public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQ
         return this;
     }
 
-    public ProcessDefinitionQueryImpl processDefinitionResourceName(String resourceName) {
+    public ProcessDefinitionQueryImpl processDefinitionResourceName(
+        String resourceName
+    ) {
         if (resourceName == null) {
             throw new ActivitiIllegalArgumentException("resourceName is null");
         }
@@ -176,39 +194,53 @@ public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQ
         return this;
     }
 
-    public ProcessDefinitionQueryImpl processDefinitionResourceNameLike(String resourceNameLike) {
+    public ProcessDefinitionQueryImpl processDefinitionResourceNameLike(
+        String resourceNameLike
+    ) {
         if (resourceNameLike == null) {
-            throw new ActivitiIllegalArgumentException("resourceNameLike is null");
+            throw new ActivitiIllegalArgumentException(
+                "resourceNameLike is null"
+            );
         }
         this.resourceNameLike = resourceNameLike;
         return this;
     }
 
-    public ProcessDefinitionQueryImpl processDefinitionVersion(Integer version) {
+    public ProcessDefinitionQueryImpl processDefinitionVersion(
+        Integer version
+    ) {
         checkVersion(version);
         this.version = version;
         return this;
     }
 
-    public ProcessDefinitionQuery processDefinitionVersionGreaterThan(Integer processDefinitionVersion) {
+    public ProcessDefinitionQuery processDefinitionVersionGreaterThan(
+        Integer processDefinitionVersion
+    ) {
         checkVersion(processDefinitionVersion);
         this.versionGt = processDefinitionVersion;
         return this;
     }
 
-    public ProcessDefinitionQuery processDefinitionVersionGreaterThanOrEquals(Integer processDefinitionVersion) {
+    public ProcessDefinitionQuery processDefinitionVersionGreaterThanOrEquals(
+        Integer processDefinitionVersion
+    ) {
         checkVersion(processDefinitionVersion);
         this.versionGte = processDefinitionVersion;
         return this;
     }
 
-    public ProcessDefinitionQuery processDefinitionVersionLowerThan(Integer processDefinitionVersion) {
+    public ProcessDefinitionQuery processDefinitionVersionLowerThan(
+        Integer processDefinitionVersion
+    ) {
         checkVersion(processDefinitionVersion);
         this.versionLt = processDefinitionVersion;
         return this;
     }
 
-    public ProcessDefinitionQuery processDefinitionVersionLowerThanOrEquals(Integer processDefinitionVersion) {
+    public ProcessDefinitionQuery processDefinitionVersionLowerThanOrEquals(
+        Integer processDefinitionVersion
+    ) {
         checkVersion(processDefinitionVersion);
         this.versionLte = processDefinitionVersion;
         return this;
@@ -218,7 +250,9 @@ public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQ
         if (version == null) {
             throw new ActivitiIllegalArgumentException("version is null");
         } else if (version <= 0) {
-            throw new ActivitiIllegalArgumentException("version must be positive");
+            throw new ActivitiIllegalArgumentException(
+                "version must be positive"
+            );
         }
     }
 
@@ -239,15 +273,21 @@ public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQ
 
     public ProcessDefinitionQuery processDefinitionTenantId(String tenantId) {
         if (tenantId == null) {
-            throw new ActivitiIllegalArgumentException("processDefinition tenantId is null");
+            throw new ActivitiIllegalArgumentException(
+                "processDefinition tenantId is null"
+            );
         }
         this.tenantId = tenantId;
         return this;
     }
 
-    public ProcessDefinitionQuery processDefinitionTenantIdLike(String tenantIdLike) {
+    public ProcessDefinitionQuery processDefinitionTenantIdLike(
+        String tenantIdLike
+    ) {
         if (tenantIdLike == null) {
-            throw new ActivitiIllegalArgumentException("process definition tenantId is null");
+            throw new ActivitiIllegalArgumentException(
+                "process definition tenantId is null"
+            );
         }
         this.tenantIdLike = tenantIdLike;
         return this;
@@ -259,13 +299,13 @@ public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQ
     }
 
     public ProcessDefinitionQuery messageEventSubscription(String messageName) {
-        return eventSubscription("message",
-                                 messageName);
+        return eventSubscription("message", messageName);
     }
 
-    public ProcessDefinitionQuery messageEventSubscriptionName(String messageName) {
-        return eventSubscription("message",
-                                 messageName);
+    public ProcessDefinitionQuery messageEventSubscriptionName(
+        String messageName
+    ) {
+        return eventSubscription("message", messageName);
     }
 
     public ProcessDefinitionQuery processDefinitionStarter(String procDefId) {
@@ -273,8 +313,10 @@ public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQ
         return this;
     }
 
-    public ProcessDefinitionQuery eventSubscription(String eventType,
-                                                    String eventName) {
+    public ProcessDefinitionQuery eventSubscription(
+        String eventType,
+        String eventName
+    ) {
         if (eventName == null) {
             throw new ActivitiIllegalArgumentException("event name is null");
         }
@@ -291,11 +333,15 @@ public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQ
         // includes the groups the candidate
         // user is part of
         if (authorizationUserId != null) {
-            UserGroupManager userGroupManager = Context.getProcessEngineConfiguration().getUserGroupManager();
+            UserGroupManager userGroupManager = Context
+                .getProcessEngineConfiguration()
+                .getUserGroupManager();
             if (userGroupManager != null) {
                 return userGroupManager.getUserGroups(authorizationUserId);
             } else {
-                log.warn("No UserGroupManager set on ProcessEngineConfiguration. Tasks queried only where user is directly related, not through groups.");
+                log.warn(
+                    "No UserGroupManager set on ProcessEngineConfiguration. Tasks queried only where user is directly related, not through groups."
+                );
             }
         }
 
@@ -313,7 +359,9 @@ public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQ
     }
 
     public ProcessDefinitionQuery orderByProcessDefinitionCategory() {
-        return orderBy(ProcessDefinitionQueryProperty.PROCESS_DEFINITION_CATEGORY);
+        return orderBy(
+            ProcessDefinitionQueryProperty.PROCESS_DEFINITION_CATEGORY
+        );
     }
 
     public ProcessDefinitionQuery orderByProcessDefinitionId() {
@@ -321,11 +369,15 @@ public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQ
     }
 
     public ProcessDefinitionQuery orderByProcessDefinitionVersion() {
-        return orderBy(ProcessDefinitionQueryProperty.PROCESS_DEFINITION_VERSION);
+        return orderBy(
+            ProcessDefinitionQueryProperty.PROCESS_DEFINITION_VERSION
+        );
     }
 
     public ProcessDefinitionQuery orderByProcessDefinitionAppVersion() {
-        return orderBy(ProcessDefinitionQueryProperty.PROCESS_DEFINITION_APP_VERSION);
+        return orderBy(
+            ProcessDefinitionQueryProperty.PROCESS_DEFINITION_APP_VERSION
+        );
     }
 
     public ProcessDefinitionQuery orderByProcessDefinitionName() {
@@ -333,21 +385,28 @@ public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQ
     }
 
     public ProcessDefinitionQuery orderByTenantId() {
-        return orderBy(ProcessDefinitionQueryProperty.PROCESS_DEFINITION_TENANT_ID);
+        return orderBy(
+            ProcessDefinitionQueryProperty.PROCESS_DEFINITION_TENANT_ID
+        );
     }
 
     // results ////////////////////////////////////////////
 
     public long executeCount(CommandContext commandContext) {
         checkQueryOk();
-        return commandContext.getProcessDefinitionEntityManager().findProcessDefinitionCountByQueryCriteria(this);
+        return commandContext
+            .getProcessDefinitionEntityManager()
+            .findProcessDefinitionCountByQueryCriteria(this);
     }
 
-    public List<ProcessDefinition> executeList(CommandContext commandContext,
-                                               Page page) {
+    public List<ProcessDefinition> executeList(
+        CommandContext commandContext,
+        Page page
+    ) {
         checkQueryOk();
-        return commandContext.getProcessDefinitionEntityManager().findProcessDefinitionsByQueryCriteria(this,
-                                                                                                        page);
+        return commandContext
+            .getProcessDefinitionEntityManager()
+            .findProcessDefinitionsByQueryCriteria(this, page);
     }
 
     public void checkQueryOk() {
@@ -388,7 +447,9 @@ public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQ
         return keyLike;
     }
 
-    public Set<String> getKeys() { return keys; }
+    public Set<String> getKeys() {
+        return keys;
+    }
 
     public Integer getVersion() {
         return version;

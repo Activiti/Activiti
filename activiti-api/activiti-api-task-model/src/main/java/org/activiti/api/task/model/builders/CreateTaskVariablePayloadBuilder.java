@@ -28,16 +28,16 @@ public class CreateTaskVariablePayloadBuilder {
         return this;
     }
 
-    public CreateTaskVariablePayloadBuilder withVariable(String name,
-                                                         Object value) {
+    public CreateTaskVariablePayloadBuilder withVariable(
+        String name,
+        Object value
+    ) {
         this.name = name;
         this.value = value;
         return this;
     }
 
     public CreateTaskVariablePayload build() {
-        return new CreateTaskVariablePayload(taskId,
-                                             name,
-                                             value);
+        return new CreateTaskVariablePayload(taskId, name, value);
     }
 }

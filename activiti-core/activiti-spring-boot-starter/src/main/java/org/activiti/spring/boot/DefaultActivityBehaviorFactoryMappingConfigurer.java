@@ -16,12 +16,13 @@
 package org.activiti.spring.boot;
 
 import org.activiti.engine.impl.event.EventSubscriptionPayloadMappingProvider;
-import org.activiti.runtime.api.impl.MappingAwareActivityBehaviorFactory;
 import org.activiti.runtime.api.impl.ExtensionsVariablesMappingProvider;
+import org.activiti.runtime.api.impl.MappingAwareActivityBehaviorFactory;
 import org.activiti.spring.SpringProcessEngineConfiguration;
 import org.activiti.spring.process.ProcessVariablesInitiator;
 
-public class DefaultActivityBehaviorFactoryMappingConfigurer implements ProcessEngineConfigurationConfigurer {
+public class DefaultActivityBehaviorFactoryMappingConfigurer
+    implements ProcessEngineConfigurationConfigurer {
 
     private ExtensionsVariablesMappingProvider variablesMappingProvider;
 
@@ -29,18 +30,30 @@ public class DefaultActivityBehaviorFactoryMappingConfigurer implements ProcessE
 
     private final EventSubscriptionPayloadMappingProvider eventSubscriptionPayloadMappingProvider;
 
-    public DefaultActivityBehaviorFactoryMappingConfigurer(ExtensionsVariablesMappingProvider variablesMappingProvider,
-                                                           ProcessVariablesInitiator processVariablesInitiator,
-                                                           EventSubscriptionPayloadMappingProvider eventSubscriptionPayloadMappingProvider){
+    public DefaultActivityBehaviorFactoryMappingConfigurer(
+        ExtensionsVariablesMappingProvider variablesMappingProvider,
+        ProcessVariablesInitiator processVariablesInitiator,
+        EventSubscriptionPayloadMappingProvider eventSubscriptionPayloadMappingProvider
+    ) {
         this.variablesMappingProvider = variablesMappingProvider;
         this.processVariablesInitiator = processVariablesInitiator;
-        this.eventSubscriptionPayloadMappingProvider = eventSubscriptionPayloadMappingProvider;
+        this.eventSubscriptionPayloadMappingProvider =
+            eventSubscriptionPayloadMappingProvider;
     }
-    @Override
-    public void configure(SpringProcessEngineConfiguration processEngineConfiguration){
-        processEngineConfiguration.setEventSubscriptionPayloadMappingProvider(eventSubscriptionPayloadMappingProvider);
 
-        processEngineConfiguration.setActivityBehaviorFactory(new MappingAwareActivityBehaviorFactory(variablesMappingProvider,
-                                                                                                      processVariablesInitiator));
+    @Override
+    public void configure(
+        SpringProcessEngineConfiguration processEngineConfiguration
+    ) {
+        processEngineConfiguration.setEventSubscriptionPayloadMappingProvider(
+            eventSubscriptionPayloadMappingProvider
+        );
+
+        processEngineConfiguration.setActivityBehaviorFactory(
+            new MappingAwareActivityBehaviorFactory(
+                variablesMappingProvider,
+                processVariablesInitiator
+            )
+        );
     }
 }

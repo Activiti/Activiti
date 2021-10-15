@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.asyncexecutor;
 
 import org.activiti.engine.api.internal.Internal;
@@ -26,7 +25,8 @@ import org.activiti.engine.runtime.Job;
  */
 @Internal
 public interface ExecuteAsyncRunnableFactory {
-
-  Runnable createExecuteAsyncRunnable(Job job, ProcessEngineConfigurationImpl processEngineConfiguration);
-
+    Runnable createExecuteAsyncRunnable(
+        Job job,
+        ProcessEngineConfigurationImpl processEngineConfiguration
+    );
 }

@@ -50,16 +50,19 @@ public class ToMessageSentConverterTest {
 
         BPMNMessageImpl bpmnMessage = new BPMNMessageImpl("myMessage");
 
-        given(bpmnMessageConverter.convertToBPMNMessage(internalEvent)).willReturn(bpmnMessage);
+        given(bpmnMessageConverter.convertToBPMNMessage(internalEvent))
+            .willReturn(bpmnMessage);
 
         //when
-        BPMNMessageSentEvent messageEvent = toMessageConverter.from(internalEvent).orElse(null);
+        BPMNMessageSentEvent messageEvent = toMessageConverter
+            .from(internalEvent)
+            .orElse(null);
 
         //then
         assertThat(messageEvent).isNotNull();
         assertThat(messageEvent.getProcessInstanceId()).isEqualTo("procInstId");
-        assertThat(messageEvent.getProcessDefinitionId()).isEqualTo("procDefId");
+        assertThat(messageEvent.getProcessDefinitionId())
+            .isEqualTo("procDefId");
         assertThat(messageEvent.getEntity()).isEqualTo(bpmnMessage);
     }
-
 }

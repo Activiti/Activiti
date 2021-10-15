@@ -16,15 +16,13 @@
 package org.activiti.api.task.model.impl;
 
 import java.util.Objects;
-
 import org.activiti.api.task.model.TaskCandidate;
 
 public abstract class TaskCandidateImpl implements TaskCandidate {
 
     private String taskId;
 
-    public TaskCandidateImpl() {
-    }
+    public TaskCandidateImpl() {}
 
     public TaskCandidateImpl(String taskId) {
         this.taskId = taskId;
@@ -44,13 +42,11 @@ public abstract class TaskCandidateImpl implements TaskCandidate {
             return false;
         }
         TaskCandidateImpl that = (TaskCandidateImpl) o;
-        return Objects.equals(taskId,
-                              that.taskId);
+        return Objects.equals(taskId, that.taskId);
     }
 
     @Override
     public int hashCode() {
-
         return Objects.hash(taskId);
     }
 }

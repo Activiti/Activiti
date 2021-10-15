@@ -16,7 +16,6 @@
 package org.activiti.bpmn.converter.child;
 
 import javax.xml.stream.XMLStreamReader;
-
 import org.activiti.bpmn.converter.util.BpmnXMLUtil;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BpmnModel;
@@ -30,30 +29,50 @@ public class SignalEventDefinitionParser extends BaseChildElementParser {
         return ELEMENT_EVENT_SIGNALDEFINITION;
     }
 
-    public void parseChildElement(XMLStreamReader xtr,
-                                  BaseElement parentElement,
-                                  BpmnModel model) throws Exception {
+    public void parseChildElement(
+        XMLStreamReader xtr,
+        BaseElement parentElement,
+        BpmnModel model
+    ) throws Exception {
         if (!(parentElement instanceof Event)) {
             return;
         }
 
         SignalEventDefinition eventDefinition = new SignalEventDefinition();
-        BpmnXMLUtil.addXMLLocation(eventDefinition,
-                                   xtr);
-        eventDefinition.setSignalRef(xtr.getAttributeValue(null,
-                                                           ATTRIBUTE_SIGNAL_REF));
-        eventDefinition.setSignalExpression(xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE,
-                                                                  ATTRIBUTE_SIGNAL_EXPRESSION));
-        if (StringUtils.isNotEmpty(xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE,
-                                                         ATTRIBUTE_ACTIVITY_ASYNCHRONOUS))) {
-            eventDefinition.setAsync(Boolean.parseBoolean(xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE,
-                                                                                ATTRIBUTE_ACTIVITY_ASYNCHRONOUS)));
+        BpmnXMLUtil.addXMLLocation(eventDefinition, xtr);
+        eventDefinition.setSignalRef(
+            xtr.getAttributeValue(null, ATTRIBUTE_SIGNAL_REF)
+        );
+        eventDefinition.setSignalExpression(
+            xtr.getAttributeValue(
+                ACTIVITI_EXTENSIONS_NAMESPACE,
+                ATTRIBUTE_SIGNAL_EXPRESSION
+            )
+        );
+        if (
+            StringUtils.isNotEmpty(
+                xtr.getAttributeValue(
+                    ACTIVITI_EXTENSIONS_NAMESPACE,
+                    ATTRIBUTE_ACTIVITY_ASYNCHRONOUS
+                )
+            )
+        ) {
+            eventDefinition.setAsync(
+                Boolean.parseBoolean(
+                    xtr.getAttributeValue(
+                        ACTIVITI_EXTENSIONS_NAMESPACE,
+                        ATTRIBUTE_ACTIVITY_ASYNCHRONOUS
+                    )
+                )
+            );
         }
 
-        BpmnXMLUtil.parseChildElements(ELEMENT_EVENT_SIGNALDEFINITION,
-                                       eventDefinition,
-                                       xtr,
-                                       model);
+        BpmnXMLUtil.parseChildElements(
+            ELEMENT_EVENT_SIGNALDEFINITION,
+            eventDefinition,
+            xtr,
+            model
+        );
 
         ((Event) parentElement).getEventDefinitions().add(eventDefinition);
     }

@@ -20,11 +20,11 @@ import org.activiti.api.task.model.TaskCandidateGroup;
 import org.activiti.api.task.model.events.TaskCandidateGroupEvent;
 import org.activiti.api.task.runtime.events.TaskCandidateGroupAddedEvent;
 
-public class TaskCandidateGroupAddedEventImpl extends RuntimeEventImpl<TaskCandidateGroup, TaskCandidateGroupEvent.TaskCandidateGroupEvents>
-        implements TaskCandidateGroupAddedEvent {
+public class TaskCandidateGroupAddedEventImpl
+    extends RuntimeEventImpl<TaskCandidateGroup, TaskCandidateGroupEvent.TaskCandidateGroupEvents>
+    implements TaskCandidateGroupAddedEvent {
 
-    public TaskCandidateGroupAddedEventImpl() {
-    }
+    public TaskCandidateGroupAddedEventImpl() {}
 
     public TaskCandidateGroupAddedEventImpl(TaskCandidateGroup entity) {
         super(entity);

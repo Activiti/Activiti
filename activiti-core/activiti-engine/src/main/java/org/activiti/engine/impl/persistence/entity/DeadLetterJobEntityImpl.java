@@ -21,12 +21,14 @@ package org.activiti.engine.impl.persistence.entity;
  *
 
  */
-public class DeadLetterJobEntityImpl extends AbstractJobEntityImpl implements DeadLetterJobEntity {
+public class DeadLetterJobEntityImpl
+    extends AbstractJobEntityImpl
+    implements DeadLetterJobEntity {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  @Override
-  public String toString() {
-    return "DeadLetterJobEntity [id=" + id + "]";
-  }
+    @Override
+    public String toString() {
+        return "DeadLetterJobEntity [id=" + id + "]";
+    }
 }

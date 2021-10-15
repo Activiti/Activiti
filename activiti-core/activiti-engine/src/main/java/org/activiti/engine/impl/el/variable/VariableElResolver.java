@@ -38,10 +38,15 @@ public class VariableElResolver implements VariableScopeItemELResolver {
 
     @Override
     public Object resolve(String property, VariableScope variableScope) {
-        VariableInstance variableInstance = variableScope.getVariableInstance(property);
+        VariableInstance variableInstance = variableScope.getVariableInstance(
+            property
+        );
         Object value = variableInstance.getValue();
-        if (hasJsonType(variableInstance) && (value instanceof JsonNode) &&
-            ((JsonNode) value).isArray()) {
+        if (
+            hasJsonType(variableInstance) &&
+            (value instanceof JsonNode) &&
+            ((JsonNode) value).isArray()
+        ) {
             return objectMapper.convertValue(value, List.class);
         } else {
             return value;
@@ -49,8 +54,9 @@ public class VariableElResolver implements VariableScopeItemELResolver {
     }
 
     private boolean hasJsonType(VariableInstance variableInstance) {
-        return JsonType.JSON.equals(variableInstance.getTypeName()) ||
-            LongJsonType.LONG_JSON.equals(variableInstance.getTypeName());
+        return (
+            JsonType.JSON.equals(variableInstance.getTypeName()) ||
+            LongJsonType.LONG_JSON.equals(variableInstance.getTypeName())
+        );
     }
-
 }

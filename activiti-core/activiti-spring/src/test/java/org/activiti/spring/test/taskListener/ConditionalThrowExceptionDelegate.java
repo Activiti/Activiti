@@ -26,18 +26,23 @@ import org.activiti.engine.delegate.JavaDelegate;
  */
 public class ConditionalThrowExceptionDelegate implements JavaDelegate {
 
-  private Expression injectedVar;
+    private Expression injectedVar;
 
-  @Override
-  public void execute(DelegateExecution execution) {
-    Object throwException = execution.getVariable(execution.getCurrentActivityId());
+    @Override
+    public void execute(DelegateExecution execution) {
+        Object throwException = execution.getVariable(
+            execution.getCurrentActivityId()
+        );
 
-    if (throwException != null && (boolean) throwException) {
-      throw new ActivitiException("throwException was true");
+        if (throwException != null && (boolean) throwException) {
+            throw new ActivitiException("throwException was true");
+        }
+
+        if (injectedVar != null && injectedVar.getValue(execution) != null) {
+            execution.setVariable(
+                "injectedExecutionVariable",
+                injectedVar.getValue(execution)
+            );
+        }
     }
-
-    if (injectedVar != null && injectedVar.getValue(execution) != null) {
-      execution.setVariable("injectedExecutionVariable", injectedVar.getValue(execution));
-    }
-  }
 }

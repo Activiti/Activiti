@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.spring.autodeployment;
 
 import java.io.IOException;
@@ -23,7 +22,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-
 import org.activiti.core.common.spring.project.ApplicationUpgradeContextService;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.DeploymentBuilder;
@@ -35,80 +33,101 @@ import org.springframework.core.io.Resource;
  *
 
  */
-public class ResourceParentFolderAutoDeploymentStrategy extends AbstractAutoDeploymentStrategy {
+public class ResourceParentFolderAutoDeploymentStrategy
+    extends AbstractAutoDeploymentStrategy {
 
-  /**
-   * The deployment mode this strategy handles.
-   */
-  public static final String DEPLOYMENT_MODE = "resource-parent-folder";
+    /**
+     * The deployment mode this strategy handles.
+     */
+    public static final String DEPLOYMENT_MODE = "resource-parent-folder";
 
-  private static final String DEPLOYMENT_NAME_PATTERN = "%s.%s";
+    private static final String DEPLOYMENT_NAME_PATTERN = "%s.%s";
 
-  public ResourceParentFolderAutoDeploymentStrategy(ApplicationUpgradeContextService applicationUpgradeContextService) {
-      super(applicationUpgradeContextService);
-  }
-
-  @Override
-  protected String getDeploymentMode() {
-    return DEPLOYMENT_MODE;
-  }
-
-  @Override
-  public void deployResources(final String deploymentNameHint, final Resource[] resources, final RepositoryService repositoryService) {
-
-    // Create a deployment for each distinct parent folder using the name
-    // hint
-    // as a prefix
-    final Map<String, Set<Resource>> resourcesMap = createMap(resources);
-
-    for (final Entry<String, Set<Resource>> group : resourcesMap.entrySet()) {
-
-      final String deploymentName = determineDeploymentName(deploymentNameHint, group.getKey());
-
-      DeploymentBuilder deploymentBuilder = repositoryService.createDeployment().enableDuplicateFiltering().name(deploymentName);
-
-      for (final Resource resource : group.getValue()) {
-        final String resourceName = determineResourceName(resource);
-
-        deploymentBuilder.addInputStream(resourceName,
-                                         resource);
-      }
-
-      loadApplicationUpgradeContext(deploymentBuilder).deploy();
+    public ResourceParentFolderAutoDeploymentStrategy(
+        ApplicationUpgradeContextService applicationUpgradeContextService
+    ) {
+        super(applicationUpgradeContextService);
     }
 
-  }
-
-  private Map<String, Set<Resource>> createMap(final Resource[] resources) {
-    final Map<String, Set<Resource>> resourcesMap = new HashMap<String, Set<Resource>>();
-
-    for (final Resource resource : resources) {
-      final String parentFolderName = determineGroupName(resource);
-      if (resourcesMap.get(parentFolderName) == null) {
-        resourcesMap.put(parentFolderName, new HashSet<Resource>());
-      }
-      resourcesMap.get(parentFolderName).add(resource);
+    @Override
+    protected String getDeploymentMode() {
+        return DEPLOYMENT_MODE;
     }
-    return resourcesMap;
-  }
 
-  private String determineGroupName(final Resource resource) {
-    String result = determineResourceName(resource);
-    try {
-      if (resourceParentIsDirectory(resource)) {
-        result = resource.getFile().getParentFile().getName();
-      }
-    } catch (IOException e) {
-      // no-op, fallback to resource name
+    @Override
+    public void deployResources(
+        final String deploymentNameHint,
+        final Resource[] resources,
+        final RepositoryService repositoryService
+    ) {
+        // Create a deployment for each distinct parent folder using the name
+        // hint
+        // as a prefix
+        final Map<String, Set<Resource>> resourcesMap = createMap(resources);
+
+        for (final Entry<String, Set<Resource>> group : resourcesMap.entrySet()) {
+            final String deploymentName = determineDeploymentName(
+                deploymentNameHint,
+                group.getKey()
+            );
+
+            DeploymentBuilder deploymentBuilder = repositoryService
+                .createDeployment()
+                .enableDuplicateFiltering()
+                .name(deploymentName);
+
+            for (final Resource resource : group.getValue()) {
+                final String resourceName = determineResourceName(resource);
+
+                deploymentBuilder.addInputStream(resourceName, resource);
+            }
+
+            loadApplicationUpgradeContext(deploymentBuilder).deploy();
+        }
     }
-    return result;
-  }
 
-  private boolean resourceParentIsDirectory(final Resource resource) throws IOException {
-    return resource.getFile() != null && resource.getFile().getParentFile() != null && resource.getFile().getParentFile().isDirectory();
-  }
+    private Map<String, Set<Resource>> createMap(final Resource[] resources) {
+        final Map<String, Set<Resource>> resourcesMap = new HashMap<String, Set<Resource>>();
 
-  private String determineDeploymentName(final String deploymentNameHint, final String groupName) {
-    return String.format(DEPLOYMENT_NAME_PATTERN, deploymentNameHint, groupName);
-  }
+        for (final Resource resource : resources) {
+            final String parentFolderName = determineGroupName(resource);
+            if (resourcesMap.get(parentFolderName) == null) {
+                resourcesMap.put(parentFolderName, new HashSet<Resource>());
+            }
+            resourcesMap.get(parentFolderName).add(resource);
+        }
+        return resourcesMap;
+    }
+
+    private String determineGroupName(final Resource resource) {
+        String result = determineResourceName(resource);
+        try {
+            if (resourceParentIsDirectory(resource)) {
+                result = resource.getFile().getParentFile().getName();
+            }
+        } catch (IOException e) {
+            // no-op, fallback to resource name
+        }
+        return result;
+    }
+
+    private boolean resourceParentIsDirectory(final Resource resource)
+        throws IOException {
+        return (
+            resource.getFile() != null &&
+            resource.getFile().getParentFile() != null &&
+            resource.getFile().getParentFile().isDirectory()
+        );
+    }
+
+    private String determineDeploymentName(
+        final String deploymentNameHint,
+        final String groupName
+    ) {
+        return String.format(
+            DEPLOYMENT_NAME_PATTERN,
+            deploymentNameHint,
+            groupName
+        );
+    }
 }

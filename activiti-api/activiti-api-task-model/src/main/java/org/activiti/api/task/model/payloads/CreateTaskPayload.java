@@ -18,7 +18,6 @@ package org.activiti.api.task.model.payloads;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
-
 import org.activiti.api.model.shared.Payload;
 
 public class CreateTaskPayload implements Payload {
@@ -38,15 +37,17 @@ public class CreateTaskPayload implements Payload {
         this.id = UUID.randomUUID().toString();
     }
 
-    public CreateTaskPayload(String name,
-                             String description,
-                             Date dueDate,
-                             int priority,
-                             String assignee,
-                             List<String> candidateGroups,
-                             List<String> candidateUsers,
-                             String parentTaskId,
-                             String formKey) {
+    public CreateTaskPayload(
+        String name,
+        String description,
+        Date dueDate,
+        int priority,
+        String assignee,
+        List<String> candidateGroups,
+        List<String> candidateUsers,
+        String parentTaskId,
+        String formKey
+    ) {
         this();
         this.name = name;
         this.description = description;

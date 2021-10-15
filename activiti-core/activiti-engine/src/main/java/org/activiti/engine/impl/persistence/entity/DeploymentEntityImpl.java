@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.persistence.entity;
 
 import java.io.Serializable;
@@ -23,7 +22,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.impl.context.Context;
 
@@ -31,170 +29,172 @@ import org.activiti.engine.impl.context.Context;
 
 
  */
-public class DeploymentEntityImpl extends AbstractEntityNoRevision implements DeploymentEntity, Serializable {
+public class DeploymentEntityImpl
+    extends AbstractEntityNoRevision
+    implements DeploymentEntity, Serializable {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  protected String name;
-  protected String category;
-  protected String key;
-  protected String tenantId = ProcessEngineConfiguration.NO_TENANT_ID;
-  protected Map<String, ResourceEntity> resources;
-  protected Date deploymentTime;
-  protected boolean isNew;
-  protected Integer version;
-  private String projectReleaseVersion;
+    protected String name;
+    protected String category;
+    protected String key;
+    protected String tenantId = ProcessEngineConfiguration.NO_TENANT_ID;
+    protected Map<String, ResourceEntity> resources;
+    protected Date deploymentTime;
+    protected boolean isNew;
+    protected Integer version;
+    private String projectReleaseVersion;
 
     // Backwards compatibility
-  protected String engineVersion;
+    protected String engineVersion;
 
-  /**
-   * Will only be used during actual deployment to pass deployed artifacts (eg process definitions). Will be null otherwise.
-   */
-  protected Map<Class<?>, List<Object>> deployedArtifacts;
+    /**
+     * Will only be used during actual deployment to pass deployed artifacts (eg process definitions). Will be null otherwise.
+     */
+    protected Map<Class<?>, List<Object>> deployedArtifacts;
 
-  public DeploymentEntityImpl() {
+    public DeploymentEntityImpl() {}
 
-  }
-
-  public void addResource(ResourceEntity resource) {
-    if (resources == null) {
-      resources = new HashMap<String, ResourceEntity>();
-    }
-    resources.put(resource.getName(), resource);
-  }
-
-  // lazy loading ///////////////////////////////////////////////////////////////
-
-  public Map<String, ResourceEntity> getResources() {
-    if (resources == null && id != null) {
-      List<ResourceEntity> resourcesList = Context.getCommandContext().getResourceEntityManager().findResourcesByDeploymentId(id);
-      resources = new HashMap<String, ResourceEntity>();
-      for (ResourceEntity resource : resourcesList) {
+    public void addResource(ResourceEntity resource) {
+        if (resources == null) {
+            resources = new HashMap<String, ResourceEntity>();
+        }
         resources.put(resource.getName(), resource);
-      }
-    }
-    return resources;
-  }
-
-  public Object getPersistentState() {
-    Map<String, Object> persistentState = new HashMap<String, Object>();
-    persistentState.put("category", this.category);
-    persistentState.put("key", this.key);
-    persistentState.put("tenantId", tenantId);
-    return persistentState;
-  }
-
-  // Deployed artifacts manipulation ////////////////////////////////////////////
-
-  public void addDeployedArtifact(Object deployedArtifact) {
-    if (deployedArtifacts == null) {
-      deployedArtifacts = new HashMap<Class<?>, List<Object>>();
     }
 
-    Class<?> clazz = deployedArtifact.getClass();
-    List<Object> artifacts = deployedArtifacts.get(clazz);
-    if (artifacts == null) {
-      artifacts = new ArrayList<Object>();
-      deployedArtifacts.put(clazz, artifacts);
+    // lazy loading ///////////////////////////////////////////////////////////////
+
+    public Map<String, ResourceEntity> getResources() {
+        if (resources == null && id != null) {
+            List<ResourceEntity> resourcesList = Context
+                .getCommandContext()
+                .getResourceEntityManager()
+                .findResourcesByDeploymentId(id);
+            resources = new HashMap<String, ResourceEntity>();
+            for (ResourceEntity resource : resourcesList) {
+                resources.put(resource.getName(), resource);
+            }
+        }
+        return resources;
     }
 
-    artifacts.add(deployedArtifact);
-  }
-
-  @SuppressWarnings("unchecked")
-  public <T> List<T> getDeployedArtifacts(Class<T> clazz) {
-    for (Class<?> deployedArtifactsClass : deployedArtifacts.keySet()) {
-      if (clazz.isAssignableFrom(deployedArtifactsClass)) {
-        return (List<T>) deployedArtifacts.get(deployedArtifactsClass);
-      }
+    public Object getPersistentState() {
+        Map<String, Object> persistentState = new HashMap<String, Object>();
+        persistentState.put("category", this.category);
+        persistentState.put("key", this.key);
+        persistentState.put("tenantId", tenantId);
+        return persistentState;
     }
-    return null;
-  }
 
-  // getters and setters ////////////////////////////////////////////////////////
+    // Deployed artifacts manipulation ////////////////////////////////////////////
 
-  public String getName() {
-    return name;
-  }
+    public void addDeployedArtifact(Object deployedArtifact) {
+        if (deployedArtifacts == null) {
+            deployedArtifacts = new HashMap<Class<?>, List<Object>>();
+        }
 
-  public void setName(String name) {
-    this.name = name;
-  }
+        Class<?> clazz = deployedArtifact.getClass();
+        List<Object> artifacts = deployedArtifacts.get(clazz);
+        if (artifacts == null) {
+            artifacts = new ArrayList<Object>();
+            deployedArtifacts.put(clazz, artifacts);
+        }
 
-  public String getCategory() {
-    return category;
-  }
+        artifacts.add(deployedArtifact);
+    }
 
-  public void setCategory(String category) {
-    this.category = category;
-  }
+    @SuppressWarnings("unchecked")
+    public <T> List<T> getDeployedArtifacts(Class<T> clazz) {
+        for (Class<?> deployedArtifactsClass : deployedArtifacts.keySet()) {
+            if (clazz.isAssignableFrom(deployedArtifactsClass)) {
+                return (List<T>) deployedArtifacts.get(deployedArtifactsClass);
+            }
+        }
+        return null;
+    }
 
-  public String getKey() {
-    return key;
-  }
+    // getters and setters ////////////////////////////////////////////////////////
 
-  public void setKey(String key) {
-    this.key = key;
-  }
+    public String getName() {
+        return name;
+    }
 
-  public String getTenantId() {
-    return tenantId;
-  }
+    public void setName(String name) {
+        this.name = name;
+    }
 
-  public void setTenantId(String tenantId) {
-    this.tenantId = tenantId;
-  }
+    public String getCategory() {
+        return category;
+    }
 
-  public void setResources(Map<String, ResourceEntity> resources) {
-    this.resources = resources;
-  }
+    public void setCategory(String category) {
+        this.category = category;
+    }
 
-  public Date getDeploymentTime() {
-    return deploymentTime;
-  }
+    public String getKey() {
+        return key;
+    }
 
-  public void setDeploymentTime(Date deploymentTime) {
-    this.deploymentTime = deploymentTime;
-  }
+    public void setKey(String key) {
+        this.key = key;
+    }
 
-  public boolean isNew() {
-    return isNew;
-  }
+    public String getTenantId() {
+        return tenantId;
+    }
 
-  public void setNew(boolean isNew) {
-    this.isNew = isNew;
-  }
+    public void setTenantId(String tenantId) {
+        this.tenantId = tenantId;
+    }
 
-  public String getEngineVersion() {
-    return engineVersion;
-  }
+    public void setResources(Map<String, ResourceEntity> resources) {
+        this.resources = resources;
+    }
 
-  public void setEngineVersion(String engineVersion) {
-    this.engineVersion = engineVersion;
-  }
+    public Date getDeploymentTime() {
+        return deploymentTime;
+    }
 
-  public Integer getVersion(){
-      return version;
-  }
+    public void setDeploymentTime(Date deploymentTime) {
+        this.deploymentTime = deploymentTime;
+    }
 
-  public void setVersion(Integer version){
-      this.version = version;
-  }
+    public boolean isNew() {
+        return isNew;
+    }
 
-  public String getProjectReleaseVersion() {
-      return projectReleaseVersion;
-  }
+    public void setNew(boolean isNew) {
+        this.isNew = isNew;
+    }
 
-  public void setProjectReleaseVersion(String projectReleaseVersion) {
-      this.projectReleaseVersion = projectReleaseVersion;
-  }
+    public String getEngineVersion() {
+        return engineVersion;
+    }
 
-  // common methods //////////////////////////////////////////////////////////
+    public void setEngineVersion(String engineVersion) {
+        this.engineVersion = engineVersion;
+    }
 
-  @Override
-  public String toString() {
-    return "DeploymentEntity[id=" + id + ", name=" + name + "]";
-  }
+    public Integer getVersion() {
+        return version;
+    }
 
+    public void setVersion(Integer version) {
+        this.version = version;
+    }
+
+    public String getProjectReleaseVersion() {
+        return projectReleaseVersion;
+    }
+
+    public void setProjectReleaseVersion(String projectReleaseVersion) {
+        this.projectReleaseVersion = projectReleaseVersion;
+    }
+
+    // common methods //////////////////////////////////////////////////////////
+
+    @Override
+    public String toString() {
+        return "DeploymentEntity[id=" + id + ", name=" + name + "]";
+    }
 }

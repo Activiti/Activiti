@@ -17,7 +17,6 @@
 package org.activiti.engine.test.api.v6;
 
 import java.util.concurrent.atomic.AtomicInteger;
-
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.JavaDelegate;
 
@@ -26,19 +25,18 @@ import org.activiti.engine.delegate.JavaDelegate;
  */
 public class CountingServiceTaskTestDelegate implements JavaDelegate {
 
-  public static AtomicInteger CALL_COUNT = new AtomicInteger(0);
+    public static AtomicInteger CALL_COUNT = new AtomicInteger(0);
 
-  @Override
-  public void execute(DelegateExecution execution) {
-    Integer counter = (Integer) execution.getVariable("counter");
-    counter = counter + 1;
-    execution.setVariable("counter", counter);
+    @Override
+    public void execute(DelegateExecution execution) {
+        Integer counter = (Integer) execution.getVariable("counter");
+        counter = counter + 1;
+        execution.setVariable("counter", counter);
 
-    if (CALL_COUNT.get() % 1000 == 0) {
-      System.out.println("Call count: " + CALL_COUNT);
+        if (CALL_COUNT.get() % 1000 == 0) {
+            System.out.println("Call count: " + CALL_COUNT);
+        }
+
+        CALL_COUNT.incrementAndGet();
     }
-
-    CALL_COUNT.incrementAndGet();
-  }
-
 }

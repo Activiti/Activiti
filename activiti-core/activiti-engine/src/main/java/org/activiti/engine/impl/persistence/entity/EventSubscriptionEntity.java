@@ -14,11 +14,9 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.persistence.entity;
 
 import java.util.Date;
-
 import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.impl.db.HasRevision;
 
@@ -28,45 +26,43 @@ import org.activiti.engine.impl.db.HasRevision;
  */
 @Internal
 public interface EventSubscriptionEntity extends Entity, HasRevision {
+    String getEventType();
 
-  String getEventType();
+    void setEventType(String eventType);
 
-  void setEventType(String eventType);
+    String getEventName();
 
-  String getEventName();
+    void setEventName(String eventName);
 
-  void setEventName(String eventName);
+    String getExecutionId();
 
-  String getExecutionId();
+    void setExecutionId(String executionId);
 
-  void setExecutionId(String executionId);
+    ExecutionEntity getExecution();
 
-  ExecutionEntity getExecution();
+    void setExecution(ExecutionEntity execution);
 
-  void setExecution(ExecutionEntity execution);
+    String getProcessInstanceId();
 
-  String getProcessInstanceId();
+    void setProcessInstanceId(String processInstanceId);
 
-  void setProcessInstanceId(String processInstanceId);
+    String getConfiguration();
 
-  String getConfiguration();
+    void setConfiguration(String configuration);
 
-  void setConfiguration(String configuration);
+    String getActivityId();
 
-  String getActivityId();
+    void setActivityId(String activityId);
 
-  void setActivityId(String activityId);
+    Date getCreated();
 
-  Date getCreated();
+    void setCreated(Date created);
 
-  void setCreated(Date created);
+    String getProcessDefinitionId();
 
-  String getProcessDefinitionId();
+    void setProcessDefinitionId(String processDefinitionId);
 
-  void setProcessDefinitionId(String processDefinitionId);
+    String getTenantId();
 
-  String getTenantId();
-
-  void setTenantId(String tenantId);
-
+    void setTenantId(String tenantId);
 }

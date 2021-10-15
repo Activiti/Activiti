@@ -23,26 +23,34 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.JobEntity;
 
-
 /**
 
  */
 public class TriggerTimerEventJobHandler implements JobHandler {
 
-  public static final String TYPE = "trigger-timer";
+    public static final String TYPE = "trigger-timer";
 
-  public String getType() {
-    return TYPE;
-  }
-
-  public void execute(JobEntity job, String configuration, ExecutionEntity execution, CommandContext commandContext) {
-
-    Context.getAgenda().planTriggerExecutionOperation(execution);
-
-    if (commandContext.getEventDispatcher().isEnabled()) {
-      commandContext.getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.TIMER_FIRED, job));
+    public String getType() {
+        return TYPE;
     }
 
-  }
+    public void execute(
+        JobEntity job,
+        String configuration,
+        ExecutionEntity execution,
+        CommandContext commandContext
+    ) {
+        Context.getAgenda().planTriggerExecutionOperation(execution);
 
+        if (commandContext.getEventDispatcher().isEnabled()) {
+            commandContext
+                .getEventDispatcher()
+                .dispatchEvent(
+                    ActivitiEventBuilder.createEntityEvent(
+                        ActivitiEventType.TIMER_FIRED,
+                        job
+                    )
+                );
+        }
+    }
 }

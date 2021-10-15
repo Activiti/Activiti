@@ -23,34 +23,34 @@ import java.util.Date;
  */
 public class DateType implements VariableType {
 
-  public String getTypeName() {
-    return "date";
-  }
-
-  public boolean isCachable() {
-    return true;
-  }
-
-  public boolean isAbleToStore(Object value) {
-    if (value == null) {
-      return true;
+    public String getTypeName() {
+        return "date";
     }
-    return Date.class.isAssignableFrom(value.getClass());
-  }
 
-  public Object getValue(ValueFields valueFields) {
-    Long longValue = valueFields.getLongValue();
-    if (longValue != null) {
-      return new Date(longValue);
+    public boolean isCachable() {
+        return true;
     }
-    return null;
-  }
 
-  public void setValue(Object value, ValueFields valueFields) {
-    if (value != null) {
-      valueFields.setLongValue(((Date) value).getTime());
-    } else {
-      valueFields.setLongValue(null);
+    public boolean isAbleToStore(Object value) {
+        if (value == null) {
+            return true;
+        }
+        return Date.class.isAssignableFrom(value.getClass());
     }
-  }
+
+    public Object getValue(ValueFields valueFields) {
+        Long longValue = valueFields.getLongValue();
+        if (longValue != null) {
+            return new Date(longValue);
+        }
+        return null;
+    }
+
+    public void setValue(Object value, ValueFields valueFields) {
+        if (value != null) {
+            valueFields.setLongValue(((Date) value).getTime());
+        } else {
+            valueFields.setLongValue(null);
+        }
+    }
 }

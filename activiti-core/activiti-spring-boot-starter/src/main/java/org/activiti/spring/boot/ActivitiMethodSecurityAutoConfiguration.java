@@ -23,16 +23,20 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.method.configuration.GlobalMethodSecurityConfiguration;
 
 @Configuration
-@ConditionalOnProperty(name = "spring.activiti.security.enabled", matchIfMissing = true)
+@ConditionalOnProperty(
+    name = "spring.activiti.security.enabled",
+    matchIfMissing = true
+)
 @ConditionalOnClass(GlobalMethodSecurityConfiguration.class)
 @ConditionalOnMissingBean(annotation = EnableGlobalMethodSecurity.class)
 public class ActivitiMethodSecurityAutoConfiguration {
 
     @Configuration
-    @EnableGlobalMethodSecurity(prePostEnabled = true,
-                                securedEnabled = true,
-                                jsr250Enabled = true)
-    public static class ActivitiMethodSecurityConfiguration extends GlobalMethodSecurityConfiguration {
-
-    }
+    @EnableGlobalMethodSecurity(
+        prePostEnabled = true,
+        securedEnabled = true,
+        jsr250Enabled = true
+    )
+    public static class ActivitiMethodSecurityConfiguration
+        extends GlobalMethodSecurityConfiguration {}
 }

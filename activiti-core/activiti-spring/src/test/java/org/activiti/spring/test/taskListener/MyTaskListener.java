@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.spring.test.taskListener;
 
 import org.activiti.engine.delegate.DelegateTask;
@@ -25,12 +24,17 @@ import org.activiti.engine.delegate.TaskListener;
  */
 public class MyTaskListener implements TaskListener {
 
-  public void notify(DelegateTask delegateTask) {
-    delegateTask.setVariable("calledThroughNotify", delegateTask.getName() + "-notify");
-  }
+    public void notify(DelegateTask delegateTask) {
+        delegateTask.setVariable(
+            "calledThroughNotify",
+            delegateTask.getName() + "-notify"
+        );
+    }
 
-  public void calledInExpression(DelegateTask task, String eventName) {
-    task.setVariable("calledInExpression", task.getName() + "-" + eventName);
-  }
-
+    public void calledInExpression(DelegateTask task, String eventName) {
+        task.setVariable(
+            "calledInExpression",
+            task.getName() + "-" + eventName
+        );
+    }
 }

@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.test;
 
 import org.activiti.engine.ActivitiException;
@@ -40,75 +39,93 @@ import org.slf4j.LoggerFactory;
 
 
  */
-public abstract class PluggableActivitiTestCase extends AbstractActivitiTestCase {
+public abstract class PluggableActivitiTestCase
+    extends AbstractActivitiTestCase {
 
-  private static Logger pluggableActivitiTestCaseLogger = LoggerFactory.getLogger(PluggableActivitiTestCase.class);
+    private static Logger pluggableActivitiTestCaseLogger = LoggerFactory.getLogger(
+        PluggableActivitiTestCase.class
+    );
 
-  protected static ProcessEngine cachedProcessEngine;
+    protected static ProcessEngine cachedProcessEngine;
 
-  protected void initializeProcessEngine() {
-    if (cachedProcessEngine == null) {
+    protected void initializeProcessEngine() {
+        if (cachedProcessEngine == null) {
+            pluggableActivitiTestCaseLogger.info(
+                "No cached process engine found for test. Retrieving the default engine."
+            );
+            ProcessEngines.destroy(); // Just to be sure we're not getting any previously cached version
 
-      pluggableActivitiTestCaseLogger.info("No cached process engine found for test. Retrieving the default engine.");
-      ProcessEngines.destroy(); // Just to be sure we're not getting any previously cached version
-
-      cachedProcessEngine = ProcessEngines.getDefaultProcessEngine();
-      if (cachedProcessEngine == null) {
-        throw new ActivitiException("no default process engine available");
-      }
-    }
-
-    processEngine = cachedProcessEngine;
-    processEngineConfiguration = ((ProcessEngineImpl) processEngine).getProcessEngineConfiguration();
-
-    // Enable verbose execution tree debugging if needed
-    if (this.getClass().isAnnotationPresent(EnableVerboseExecutionTreeLogging.class)) {
-      swapCommandInvoker(true);
-    }
-
-  }
-
-  @Override
-  protected void closeDownProcessEngine() {
-    super.closeDownProcessEngine();
-
-    // Reset command invoker
-    if (this.getClass().isAnnotationPresent(EnableVerboseExecutionTreeLogging.class)) {
-      swapCommandInvoker(false);
-    }
-  }
-
-  protected void swapCommandInvoker(boolean debug) {
-    CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutor();
-    if (commandExecutor instanceof CommandExecutorImpl) {
-      CommandExecutorImpl commandExecutorImpl = (CommandExecutorImpl) commandExecutor;
-
-      CommandInterceptor previousCommandInterceptor = null;
-      CommandInterceptor commandInterceptor = commandExecutorImpl.getFirst();
-
-      while (commandInterceptor != null) {
-
-        boolean matches = debug ? (commandInterceptor instanceof CommandInvoker) : (commandInterceptor instanceof DebugCommandInvoker);
-        if (matches) {
-
-          CommandInterceptor commandInvoker = debug ? new DebugCommandInvoker() : new CommandInvoker();
-          if (previousCommandInterceptor != null) {
-            previousCommandInterceptor.setNext(commandInvoker);
-          } else {
-            commandExecutorImpl.setFirst(previousCommandInterceptor);
-          }
-          break;
-
-        } else {
-          previousCommandInterceptor = commandInterceptor;
-          commandInterceptor = commandInterceptor.getNext();
+            cachedProcessEngine = ProcessEngines.getDefaultProcessEngine();
+            if (cachedProcessEngine == null) {
+                throw new ActivitiException(
+                    "no default process engine available"
+                );
+            }
         }
-      }
 
-    } else {
-      pluggableActivitiTestCaseLogger.warn("Not using " + CommandExecutorImpl.class + ", ignoring the "
-          + EnableVerboseExecutionTreeLogging.class + " annotation");
+        processEngine = cachedProcessEngine;
+        processEngineConfiguration =
+            ((ProcessEngineImpl) processEngine).getProcessEngineConfiguration();
+
+        // Enable verbose execution tree debugging if needed
+        if (
+            this.getClass()
+                .isAnnotationPresent(EnableVerboseExecutionTreeLogging.class)
+        ) {
+            swapCommandInvoker(true);
+        }
     }
-  }
 
+    @Override
+    protected void closeDownProcessEngine() {
+        super.closeDownProcessEngine();
+
+        // Reset command invoker
+        if (
+            this.getClass()
+                .isAnnotationPresent(EnableVerboseExecutionTreeLogging.class)
+        ) {
+            swapCommandInvoker(false);
+        }
+    }
+
+    protected void swapCommandInvoker(boolean debug) {
+        CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutor();
+        if (commandExecutor instanceof CommandExecutorImpl) {
+            CommandExecutorImpl commandExecutorImpl = (CommandExecutorImpl) commandExecutor;
+
+            CommandInterceptor previousCommandInterceptor = null;
+            CommandInterceptor commandInterceptor = commandExecutorImpl.getFirst();
+
+            while (commandInterceptor != null) {
+                boolean matches = debug
+                    ? (commandInterceptor instanceof CommandInvoker)
+                    : (commandInterceptor instanceof DebugCommandInvoker);
+                if (matches) {
+                    CommandInterceptor commandInvoker = debug
+                        ? new DebugCommandInvoker()
+                        : new CommandInvoker();
+                    if (previousCommandInterceptor != null) {
+                        previousCommandInterceptor.setNext(commandInvoker);
+                    } else {
+                        commandExecutorImpl.setFirst(
+                            previousCommandInterceptor
+                        );
+                    }
+                    break;
+                } else {
+                    previousCommandInterceptor = commandInterceptor;
+                    commandInterceptor = commandInterceptor.getNext();
+                }
+            }
+        } else {
+            pluggableActivitiTestCaseLogger.warn(
+                "Not using " +
+                CommandExecutorImpl.class +
+                ", ignoring the " +
+                EnableVerboseExecutionTreeLogging.class +
+                " annotation"
+            );
+        }
+    }
 }

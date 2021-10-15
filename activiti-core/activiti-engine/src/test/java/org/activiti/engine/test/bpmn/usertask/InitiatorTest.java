@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.test.bpmn.usertask;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -28,29 +27,30 @@ import org.activiti.engine.test.Deployment;
  */
 public class InitiatorTest extends PluggableActivitiTestCase {
 
-  @Deployment
-  public void testInitiator() {
-    try {
-      Authentication.setAuthenticatedUserId("bono");
-      runtimeService.startProcessInstanceByKey("InitiatorProcess");
-    } finally {
-      Authentication.setAuthenticatedUserId(null);
+    @Deployment
+    public void testInitiator() {
+        try {
+            Authentication.setAuthenticatedUserId("bono");
+            runtimeService.startProcessInstanceByKey("InitiatorProcess");
+        } finally {
+            Authentication.setAuthenticatedUserId(null);
+        }
+
+        assertThat(taskService.createTaskQuery().taskAssignee("bono").count())
+            .isEqualTo(1);
     }
 
-    assertThat(taskService.createTaskQuery().taskAssignee("bono").count()).isEqualTo(1);
-  }
+    // See ACT-1372
+    @Deployment
+    public void testInitiatorWithWhiteSpaceInExpression() {
+        try {
+            Authentication.setAuthenticatedUserId("bono");
+            runtimeService.startProcessInstanceByKey("InitiatorProcess");
+        } finally {
+            Authentication.setAuthenticatedUserId(null);
+        }
 
-  // See ACT-1372
-  @Deployment
-  public void testInitiatorWithWhiteSpaceInExpression() {
-    try {
-      Authentication.setAuthenticatedUserId("bono");
-      runtimeService.startProcessInstanceByKey("InitiatorProcess");
-    } finally {
-      Authentication.setAuthenticatedUserId(null);
+        assertThat(taskService.createTaskQuery().taskAssignee("bono").count())
+            .isEqualTo(1);
     }
-
-    assertThat(taskService.createTaskQuery().taskAssignee("bono").count()).isEqualTo(1);
-  }
-
 }

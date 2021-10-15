@@ -19,7 +19,6 @@ package org.activiti.engine.impl.asyncexecutor;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.activiti.engine.impl.persistence.entity.JobEntity;
 
 /**
@@ -27,21 +26,21 @@ import org.activiti.engine.impl.persistence.entity.JobEntity;
  */
 public class AcquiredJobEntities {
 
-  protected Map<String, JobEntity> acquiredJobs = new HashMap<String, JobEntity>();
+    protected Map<String, JobEntity> acquiredJobs = new HashMap<String, JobEntity>();
 
-  public void addJob(JobEntity job) {
-    acquiredJobs.put(job.getId(), job);
-  }
+    public void addJob(JobEntity job) {
+        acquiredJobs.put(job.getId(), job);
+    }
 
-  public Collection<JobEntity> getJobs() {
-    return acquiredJobs.values();
-  }
+    public Collection<JobEntity> getJobs() {
+        return acquiredJobs.values();
+    }
 
-  public boolean contains(String jobId) {
-    return acquiredJobs.containsKey(jobId);
-  }
+    public boolean contains(String jobId) {
+        return acquiredJobs.containsKey(jobId);
+    }
 
-  public int size() {
-    return acquiredJobs.size();
-  }
+    public int size() {
+        return acquiredJobs.size();
+    }
 }

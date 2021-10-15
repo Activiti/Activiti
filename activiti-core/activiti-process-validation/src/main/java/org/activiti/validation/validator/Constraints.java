@@ -21,24 +21,23 @@ package org.activiti.validation.validator;
  */
 public class Constraints {
 
-  /**
-   * Max length database field ACT_RE_PROCDEF.CATEGORY
-   */
-  public static final int BPMN_MODEL_TARGET_NAMESPACE_MAX_LENGTH = 255;
+    /**
+     * Max length database field ACT_RE_PROCDEF.CATEGORY
+     */
+    public static final int BPMN_MODEL_TARGET_NAMESPACE_MAX_LENGTH = 255;
 
-  /**
-   * Max length database field ACT_RE_PROCDEF.KEY
-   */
-  public static final int PROCESS_DEFINITION_ID_MAX_LENGTH = 255;
+    /**
+     * Max length database field ACT_RE_PROCDEF.KEY
+     */
+    public static final int PROCESS_DEFINITION_ID_MAX_LENGTH = 255;
 
-  /**
-   * Max length database field ACT_RE_PROCDEF.NAME
-   */
-  public static final int PROCESS_DEFINITION_NAME_MAX_LENGTH = 255;
+    /**
+     * Max length database field ACT_RE_PROCDEF.NAME
+     */
+    public static final int PROCESS_DEFINITION_NAME_MAX_LENGTH = 255;
 
-  /**
-   * Max length of database field ACT_RE_PROCDEF.DESCRIPTION
-   */
-  public static final int PROCESS_DEFINITION_DOCUMENTATION_MAX_LENGTH = 2000;
-
+    /**
+     * Max length of database field ACT_RE_PROCDEF.DESCRIPTION
+     */
+    public static final int PROCESS_DEFINITION_DOCUMENTATION_MAX_LENGTH = 2000;
 }

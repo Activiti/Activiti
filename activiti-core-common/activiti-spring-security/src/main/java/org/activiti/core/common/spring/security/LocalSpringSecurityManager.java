@@ -27,14 +27,17 @@ import org.springframework.lang.NonNull;
  */
 public class LocalSpringSecurityManager extends AbstractSecurityManager {
 
-    public LocalSpringSecurityManager(@NonNull SecurityContextPrincipalProvider securityContextPrincipalProvider,
-                                      @NonNull PrincipalIdentityProvider principalIdentityProvider,
-                                      @NonNull PrincipalGroupsProvider principalGroupsProvider,
-                                      @NonNull PrincipalRolesProvider principalRolesProvider) {
-        super(securityContextPrincipalProvider,
-              principalIdentityProvider,
-              principalGroupsProvider,
-              principalRolesProvider);
+    public LocalSpringSecurityManager(
+        @NonNull SecurityContextPrincipalProvider securityContextPrincipalProvider,
+        @NonNull PrincipalIdentityProvider principalIdentityProvider,
+        @NonNull PrincipalGroupsProvider principalGroupsProvider,
+        @NonNull PrincipalRolesProvider principalRolesProvider
+    ) {
+        super(
+            securityContextPrincipalProvider,
+            principalIdentityProvider,
+            principalGroupsProvider,
+            principalRolesProvider
+        );
     }
-
 }

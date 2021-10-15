@@ -16,22 +16,28 @@
 package org.activiti.runtime.api.event.impl;
 
 import java.util.Optional;
-
 import org.activiti.api.process.model.events.BPMNMessageReceivedEvent;
 import org.activiti.api.runtime.event.impl.BPMNMessageReceivedEventImpl;
 import org.activiti.engine.delegate.event.ActivitiMessageEvent;
 
-public class ToMessageReceivedConverter implements EventConverter<BPMNMessageReceivedEvent, ActivitiMessageEvent> {
+public class ToMessageReceivedConverter
+    implements EventConverter<BPMNMessageReceivedEvent, ActivitiMessageEvent> {
 
     private BPMNMessageConverter bpmnMessageConverter;
 
-    public ToMessageReceivedConverter(BPMNMessageConverter bpmnMessageConverter) {
+    public ToMessageReceivedConverter(
+        BPMNMessageConverter bpmnMessageConverter
+    ) {
         this.bpmnMessageConverter = bpmnMessageConverter;
     }
 
     @Override
-    public Optional<BPMNMessageReceivedEvent> from(ActivitiMessageEvent internalEvent) {
-        BPMNMessageReceivedEventImpl event = new BPMNMessageReceivedEventImpl(bpmnMessageConverter.convertToBPMNMessage(internalEvent));
+    public Optional<BPMNMessageReceivedEvent> from(
+        ActivitiMessageEvent internalEvent
+    ) {
+        BPMNMessageReceivedEventImpl event = new BPMNMessageReceivedEventImpl(
+            bpmnMessageConverter.convertToBPMNMessage(internalEvent)
+        );
         event.setProcessInstanceId(internalEvent.getProcessInstanceId());
         event.setProcessDefinitionId(internalEvent.getProcessDefinitionId());
         return Optional.of(event);

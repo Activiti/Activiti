@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.spring.test.transaction;
 
 import org.activiti.engine.delegate.DelegateExecution;
@@ -24,7 +23,7 @@ import org.activiti.engine.delegate.DelegateExecution;
  */
 public class Printer {
 
-  public void printMessage(DelegateExecution execution) {
-    execution.setVariable("myVar", "Hello from Printer!");
-  }
+    public void printMessage(DelegateExecution execution) {
+        execution.setVariable("myVar", "Hello from Printer!");
+    }
 }

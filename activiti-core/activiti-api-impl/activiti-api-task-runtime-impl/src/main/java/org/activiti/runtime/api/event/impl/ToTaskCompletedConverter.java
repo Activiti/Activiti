@@ -15,29 +15,41 @@
  */
 package org.activiti.runtime.api.event.impl;
 
+import java.util.Optional;
 import org.activiti.api.runtime.shared.security.SecurityManager;
 import org.activiti.api.task.runtime.events.TaskCompletedEvent;
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.task.Task;
 import org.activiti.runtime.api.model.impl.APITaskConverter;
 
-import java.util.Optional;
-
-public class ToTaskCompletedConverter implements EventConverter<TaskCompletedEvent, ActivitiEntityEvent> {
+public class ToTaskCompletedConverter
+    implements EventConverter<TaskCompletedEvent, ActivitiEntityEvent> {
 
     private APITaskConverter converter;
 
     private final SecurityManager securityManager;
 
-    public ToTaskCompletedConverter(APITaskConverter converter, SecurityManager securityManager) {
+    public ToTaskCompletedConverter(
+        APITaskConverter converter,
+        SecurityManager securityManager
+    ) {
         this.converter = converter;
         this.securityManager = securityManager;
     }
 
     @Override
-    public Optional<TaskCompletedEvent> from(ActivitiEntityEvent internalEvent) {
-
+    public Optional<TaskCompletedEvent> from(
+        ActivitiEntityEvent internalEvent
+    ) {
         String completedBy = securityManager.getAuthenticatedUserId();
-        return Optional.of(new TaskCompletedImpl(converter.fromWithCompletedBy((Task) internalEvent.getEntity(), org.activiti.api.task.model.Task.TaskStatus.COMPLETED, completedBy)));
+        return Optional.of(
+            new TaskCompletedImpl(
+                converter.fromWithCompletedBy(
+                    (Task) internalEvent.getEntity(),
+                    org.activiti.api.task.model.Task.TaskStatus.COMPLETED,
+                    completedBy
+                )
+            )
+        );
     }
 }

@@ -61,14 +61,19 @@ public class VariableScopeElResolverTest {
     @Mock
     private VariableScopeItemELResolver thirdItemResolver;
 
-
     @Before
     public void setUp() throws Exception {
         initMocks(this);
-        doReturn(Arrays.asList(firstItemResolver, secondItemResolver, thirdItemResolver)).when(
-            variableScopeElResolver).getVariableScopeItemELResolvers();
+        doReturn(
+            Arrays.asList(
+                firstItemResolver,
+                secondItemResolver,
+                thirdItemResolver
+            )
+        )
+            .when(variableScopeElResolver)
+            .getVariableScopeItemELResolvers();
     }
-
 
     @Test
     public void getValue_should_returnResolvedValueAndMarkContextAsResolved() {
@@ -76,12 +81,19 @@ public class VariableScopeElResolverTest {
         String property = "myVar";
         ELContext elContext = mock(ELContext.class);
 
-        given(firstItemResolver.canResolve(property, variableScope)).willReturn(false);
-        given(secondItemResolver.canResolve(property, variableScope)).willReturn(true);
-        given(secondItemResolver.resolve(property, variableScope)).willReturn("myValue");
+        given(firstItemResolver.canResolve(property, variableScope))
+            .willReturn(false);
+        given(secondItemResolver.canResolve(property, variableScope))
+            .willReturn(true);
+        given(secondItemResolver.resolve(property, variableScope))
+            .willReturn("myValue");
 
         //when
-        Object result = variableScopeElResolver.getValue(elContext, null, property);
+        Object result = variableScopeElResolver.getValue(
+            elContext,
+            null,
+            property
+        );
 
         //then
         assertThat(result).isEqualTo("myValue");
@@ -95,30 +107,40 @@ public class VariableScopeElResolverTest {
         String property = "myVar";
         ELContext elContext = mock(ELContext.class);
 
-        given(firstItemResolver.canResolve(property, variableScope)).willReturn(false);
-        given(secondItemResolver.canResolve(property, variableScope)).willReturn(false);
-        given(secondItemResolver.canResolve(property, variableScope)).willReturn(false);
+        given(firstItemResolver.canResolve(property, variableScope))
+            .willReturn(false);
+        given(secondItemResolver.canResolve(property, variableScope))
+            .willReturn(false);
+        given(secondItemResolver.canResolve(property, variableScope))
+            .willReturn(false);
 
         //when
-        Object result = variableScopeElResolver.getValue(elContext, null, property);
+        Object result = variableScopeElResolver.getValue(
+            elContext,
+            null,
+            property
+        );
 
         //then
         assertThat(result).isNull();
         verifyNoInteractions(elContext);
     }
 
-
     @Test
     public void getVariableScopeItemELResolvers_should_return_defaultItemResolvers() {
         //given
-        ProcessEngineConfigurationImpl processEngineConfiguration = mock(ProcessEngineConfigurationImpl.class);
-        given(processEngineConfiguration.getObjectMapper()).willReturn(new ObjectMapper());
+        ProcessEngineConfigurationImpl processEngineConfiguration = mock(
+            ProcessEngineConfigurationImpl.class
+        );
+        given(processEngineConfiguration.getObjectMapper())
+            .willReturn(new ObjectMapper());
         Context.setProcessEngineConfiguration(processEngineConfiguration);
-        doCallRealMethod().when(variableScopeElResolver).getVariableScopeItemELResolvers();
+        doCallRealMethod()
+            .when(variableScopeElResolver)
+            .getVariableScopeItemELResolvers();
 
         //when
-        List<VariableScopeItemELResolver> variableScopeItemELResolvers = variableScopeElResolver
-            .getVariableScopeItemELResolvers();
+        List<VariableScopeItemELResolver> variableScopeItemELResolvers = variableScopeElResolver.getVariableScopeItemELResolvers();
         //then
         assertThat(variableScopeItemELResolvers)
             .extracting(itemResolver -> itemResolver.getClass().getName())
@@ -129,6 +151,5 @@ public class VariableScopeElResolverTest {
                 ProcessInitiatorELResolver.class.getName(),
                 VariableElResolver.class.getName()
             );
-
     }
 }

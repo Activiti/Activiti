@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.spring.process;
 
 import java.util.HashMap;
@@ -35,31 +34,46 @@ public class ProcessExtensionService {
     private static final Extension EMPTY_EXTENSIONS = new Extension();
     private Map<String, Map<String, Extension>> processExtensionModelDeploymentMap = new HashMap<>();
 
-    public ProcessExtensionService(DeploymentResourceLoader<ProcessExtensionModel> processExtensionLoader,
-                                   ProcessExtensionResourceReader processExtensionReader) {
-
+    public ProcessExtensionService(
+        DeploymentResourceLoader<ProcessExtensionModel> processExtensionLoader,
+        ProcessExtensionResourceReader processExtensionReader
+    ) {
         this.processExtensionLoader = processExtensionLoader;
         this.processExtensionReader = processExtensionReader;
     }
 
-    private Map<String, Extension> getProcessExtensionsForDeploymentId(String deploymentId) {
-        Map<String, Extension> processExtensionModelMap = processExtensionModelDeploymentMap.get(deploymentId);
+    private Map<String, Extension> getProcessExtensionsForDeploymentId(
+        String deploymentId
+    ) {
+        Map<String, Extension> processExtensionModelMap = processExtensionModelDeploymentMap.get(
+            deploymentId
+        );
         if (processExtensionModelMap != null) {
             return processExtensionModelMap;
         }
 
-        List<ProcessExtensionModel> processExtensionModels = processExtensionLoader.loadResourcesForDeployment(deploymentId,
-                processExtensionReader);
+        List<ProcessExtensionModel> processExtensionModels = processExtensionLoader.loadResourcesForDeployment(
+            deploymentId,
+            processExtensionReader
+        );
 
-        processExtensionModelMap = buildProcessDefinitionAndExtensionMap(processExtensionModels);
-        processExtensionModelDeploymentMap.put(deploymentId, processExtensionModelMap);
+        processExtensionModelMap =
+            buildProcessDefinitionAndExtensionMap(processExtensionModels);
+        processExtensionModelDeploymentMap.put(
+            deploymentId,
+            processExtensionModelMap
+        );
         return processExtensionModelMap;
     }
 
-    private Map<String, Extension> buildProcessDefinitionAndExtensionMap(List<ProcessExtensionModel> processExtensionModels) {
+    private Map<String, Extension> buildProcessDefinitionAndExtensionMap(
+        List<ProcessExtensionModel> processExtensionModels
+    ) {
         Map<String, Extension> buildProcessExtensionMap = new HashMap<>();
-        for (ProcessExtensionModel processExtensionModel:processExtensionModels ) {
-            buildProcessExtensionMap.putAll(processExtensionModel.getAllExtensions());
+        for (ProcessExtensionModel processExtensionModel : processExtensionModels) {
+            buildProcessExtensionMap.putAll(
+                processExtensionModel.getAllExtensions()
+            );
         }
 
         return buildProcessExtensionMap;
@@ -70,19 +84,27 @@ public class ProcessExtensionService {
     }
 
     public boolean hasExtensionsFor(String processDefinitionId) {
-        ProcessDefinition processDefinition = repositoryService.getProcessDefinition(processDefinitionId);
+        ProcessDefinition processDefinition = repositoryService.getProcessDefinition(
+            processDefinitionId
+        );
         return hasExtensionsFor(processDefinition);
     }
 
     public Extension getExtensionsFor(ProcessDefinition processDefinition) {
-        Map<String, Extension> processExtensionModelMap = getProcessExtensionsForDeploymentId(processDefinition.getDeploymentId());
-        Extension extension = processExtensionModelMap.get(processDefinition.getKey());
+        Map<String, Extension> processExtensionModelMap = getProcessExtensionsForDeploymentId(
+            processDefinition.getDeploymentId()
+        );
+        Extension extension = processExtensionModelMap.get(
+            processDefinition.getKey()
+        );
 
         return extension != null ? extension : EMPTY_EXTENSIONS;
     }
 
     public Extension getExtensionsForId(String processDefinitionId) {
-        ProcessDefinition processDefinition = repositoryService.getProcessDefinition(processDefinitionId);
+        ProcessDefinition processDefinition = repositoryService.getProcessDefinition(
+            processDefinitionId
+        );
 
         Extension processExtension = getExtensionsFor(processDefinition);
         return processExtension != null ? processExtension : EMPTY_EXTENSIONS;

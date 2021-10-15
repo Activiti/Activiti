@@ -26,20 +26,22 @@ import org.activiti.engine.delegate.JavaDelegate;
  */
 public class JavaDelegateInvocation extends DelegateInvocation {
 
-  protected final JavaDelegate delegateInstance;
-  protected final DelegateExecution execution;
+    protected final JavaDelegate delegateInstance;
+    protected final DelegateExecution execution;
 
-  public JavaDelegateInvocation(JavaDelegate delegateInstance, DelegateExecution execution) {
-    this.delegateInstance = delegateInstance;
-    this.execution = execution;
-  }
+    public JavaDelegateInvocation(
+        JavaDelegate delegateInstance,
+        DelegateExecution execution
+    ) {
+        this.delegateInstance = delegateInstance;
+        this.execution = execution;
+    }
 
-  protected void invoke() {
-    delegateInstance.execute((DelegateExecution) execution);
-  }
+    protected void invoke() {
+        delegateInstance.execute((DelegateExecution) execution);
+    }
 
-  public Object getTarget() {
-    return delegateInstance;
-  }
-
+    public Object getTarget() {
+        return delegateInstance;
+    }
 }

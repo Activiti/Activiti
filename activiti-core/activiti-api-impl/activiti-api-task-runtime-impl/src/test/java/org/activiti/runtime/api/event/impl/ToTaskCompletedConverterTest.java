@@ -15,6 +15,11 @@
  */
 package org.activiti.runtime.api.event.impl;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
+import static org.mockito.MockitoAnnotations.initMocks;
+
 import org.activiti.api.runtime.shared.security.SecurityManager;
 import org.activiti.api.task.runtime.events.TaskCompletedEvent;
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
@@ -24,11 +29,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
-import static org.mockito.MockitoAnnotations.initMocks;
 
 public class ToTaskCompletedConverterTest {
 
@@ -50,21 +50,31 @@ public class ToTaskCompletedConverterTest {
     public void fromShouldReturnAPIEventContainingConvertedTask() {
         //given
         Task internalTask = mock(Task.class);
-        org.activiti.api.task.model.Task apiTask = mock(org.activiti.api.task.model.Task.class);
-        String loginUser="hruser";
+        org.activiti.api.task.model.Task apiTask = mock(
+            org.activiti.api.task.model.Task.class
+        );
+        String loginUser = "hruser";
         given(securityManager.getAuthenticatedUserId()).willReturn(loginUser);
-        given(taskConverter.fromWithCompletedBy(internalTask, org.activiti.api.task.model.Task.TaskStatus.COMPLETED, loginUser)).willReturn(apiTask);
+        given(
+            taskConverter.fromWithCompletedBy(
+                internalTask,
+                org.activiti.api.task.model.Task.TaskStatus.COMPLETED,
+                loginUser
+            )
+        )
+            .willReturn(apiTask);
 
         ActivitiEntityEvent internalEvent = mock(ActivitiEntityEvent.class);
         given(internalEvent.getEntity()).willReturn(internalTask);
 
         //when
 
-        TaskCompletedEvent taskCompletedEvent = toTaskCompletedConverter.from(internalEvent).orElse(null);
+        TaskCompletedEvent taskCompletedEvent = toTaskCompletedConverter
+            .from(internalEvent)
+            .orElse(null);
 
         //then
         assertThat(taskCompletedEvent).isNotNull();
         assertThat(taskCompletedEvent.getEntity()).isEqualTo(apiTask);
     }
-
 }

@@ -17,7 +17,6 @@
 package org.activiti.engine.impl.persistence.entity.data.impl.cachematcher;
 
 import java.util.Map;
-
 import org.activiti.engine.impl.persistence.CachedEntityMatcherAdapter;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
 import org.activiti.engine.impl.persistence.entity.MessageEventSubscriptionEntity;
@@ -25,17 +24,29 @@ import org.activiti.engine.impl.persistence.entity.MessageEventSubscriptionEntit
 /**
 
  */
-public class MessageEventSubscriptionsByProcInstAndEventNameMatcher extends CachedEntityMatcherAdapter<EventSubscriptionEntity> {
+public class MessageEventSubscriptionsByProcInstAndEventNameMatcher
+    extends CachedEntityMatcherAdapter<EventSubscriptionEntity> {
 
-  @Override
-  public boolean isRetained(EventSubscriptionEntity eventSubscriptionEntity, Object param) {
-    Map<String, String> paramMap = (Map<String, String>) param;
-    String processInstanceId = paramMap.get("processInstanceId");
-    String eventName = paramMap.get("eventName");
+    @Override
+    public boolean isRetained(
+        EventSubscriptionEntity eventSubscriptionEntity,
+        Object param
+    ) {
+        Map<String, String> paramMap = (Map<String, String>) param;
+        String processInstanceId = paramMap.get("processInstanceId");
+        String eventName = paramMap.get("eventName");
 
-    return eventSubscriptionEntity.getEventType() != null && eventSubscriptionEntity.getEventType().equals(MessageEventSubscriptionEntity.EVENT_TYPE)
-        && eventSubscriptionEntity.getEventName() != null && eventSubscriptionEntity.getEventName().equals(eventName)
-        && eventSubscriptionEntity.getProcessInstanceId() != null && eventSubscriptionEntity.getProcessInstanceId().equals(processInstanceId);
-  }
-
+        return (
+            eventSubscriptionEntity.getEventType() != null &&
+            eventSubscriptionEntity
+                .getEventType()
+                .equals(MessageEventSubscriptionEntity.EVENT_TYPE) &&
+            eventSubscriptionEntity.getEventName() != null &&
+            eventSubscriptionEntity.getEventName().equals(eventName) &&
+            eventSubscriptionEntity.getProcessInstanceId() != null &&
+            eventSubscriptionEntity
+                .getProcessInstanceId()
+                .equals(processInstanceId)
+        );
+    }
 }

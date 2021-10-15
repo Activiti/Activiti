@@ -15,6 +15,12 @@
  */
 package org.activiti.runtime.api.model.impl;
 
+import static org.activiti.runtime.api.model.impl.MockProcessDefinitionBuilder.processDefinitionBuilderBuilder;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.MockitoAnnotations.initMocks;
+
 import org.activiti.api.process.model.ProcessDefinition;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.Process;
@@ -24,12 +30,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-
-import static org.activiti.runtime.api.model.impl.MockProcessDefinitionBuilder.processDefinitionBuilderBuilder;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.MockitoAnnotations.initMocks;
 
 public class APIProcessDefinitionConverterTest {
 
@@ -59,46 +59,50 @@ public class APIProcessDefinitionConverterTest {
     @Test
     public void should_convertFromProcessDefinition_when_allFieldsAreSet() {
         ProcessDefinition convertedProcessDefinition = processDefinitionConverter.from(
-                processDefinitionBuilderBuilder()
-                        .withId("anId")
-                        .withKey("processKey")
-                        .withName("Process Name")
-                        .withDescription("process description")
-                        .withVersion(3)
-                        .withAppVersion(1)
-                        .build()
+            processDefinitionBuilderBuilder()
+                .withId("anId")
+                .withKey("processKey")
+                .withName("Process Name")
+                .withDescription("process description")
+                .withVersion(3)
+                .withAppVersion(1)
+                .build()
         );
 
         assertThat(convertedProcessDefinition)
-                .isNotNull()
-                .extracting(ProcessDefinition::getId,
-                        ProcessDefinition::getKey,
-                        ProcessDefinition::getName,
-                        ProcessDefinition::getDescription,
-                        ProcessDefinition::getVersion,
-                        ProcessDefinition::getAppVersion,
-                        ProcessDefinition::getFormKey)
-                .containsExactly(
-                        "anId",
-                        "processKey",
-                        "Process Name",
-                        "process description",
-                        3,
-                        "1",
-                        "AFormKey");
+            .isNotNull()
+            .extracting(
+                ProcessDefinition::getId,
+                ProcessDefinition::getKey,
+                ProcessDefinition::getName,
+                ProcessDefinition::getDescription,
+                ProcessDefinition::getVersion,
+                ProcessDefinition::getAppVersion,
+                ProcessDefinition::getFormKey
+            )
+            .containsExactly(
+                "anId",
+                "processKey",
+                "Process Name",
+                "process description",
+                3,
+                "1",
+                "AFormKey"
+            );
     }
 
     @Test
     public void should_convertProcessDefinition_when_appVersionNull() {
         ProcessDefinition convertedProcessDefinition = processDefinitionConverter.from(
-                processDefinitionBuilderBuilder()
-                        .withKey("processKey")
-                        .withAppVersion(null)
-                        .build());
+            processDefinitionBuilderBuilder()
+                .withKey("processKey")
+                .withAppVersion(null)
+                .build()
+        );
 
         assertThat(convertedProcessDefinition)
-                .isNotNull()
-                .extracting(ProcessDefinition::getAppVersion)
-                .isNull();
+            .isNotNull()
+            .extracting(ProcessDefinition::getAppVersion)
+            .isNull();
     }
 }
