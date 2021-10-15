@@ -16,3 +16,8 @@ repos:
     rev: 0.3.0
     hooks:
       - id: check-github-workflows
+  - repo: https://github.com/macisamuele/language-formatters-pre-commit-hooks
+    rev: v2.1.0
+    hooks:
+      - id: pretty-format-java
+        args: [--autofix, --google-java-formatter-version=1.11.0]
