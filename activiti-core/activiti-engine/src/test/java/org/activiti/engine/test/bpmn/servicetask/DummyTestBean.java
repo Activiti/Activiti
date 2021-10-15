@@ -16,14 +16,15 @@
 
 package org.activiti.engine.test.bpmn.servicetask;
 
-import java.io.Serializable;
 import org.activiti.engine.delegate.DelegateExecution;
+
+import java.io.Serializable;
 
 public class DummyTestBean implements Serializable {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  public void test(DelegateExecution execution) {
-    execution.setVariable("executed", true);
-  }
+    public void test(DelegateExecution execution) {
+        execution.setVariable("executed", true);
+    }
 }

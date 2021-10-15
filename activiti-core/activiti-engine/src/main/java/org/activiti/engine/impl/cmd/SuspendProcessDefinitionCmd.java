@@ -16,47 +16,48 @@
 
 package org.activiti.engine.impl.cmd;
 
-import java.util.Date;
 import org.activiti.engine.impl.jobexecutor.TimerSuspendProcessDefinitionHandler;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.persistence.entity.SuspensionState;
 import org.activiti.engine.runtime.ProcessInstance;
 
+import java.util.Date;
+
 /** */
 public class SuspendProcessDefinitionCmd extends AbstractSetProcessDefinitionStateCmd {
 
-  public SuspendProcessDefinitionCmd(
-      ProcessDefinitionEntity processDefinitionEntity,
-      boolean includeProcessInstances,
-      Date executionDate,
-      String tenantId) {
-    super(processDefinitionEntity, includeProcessInstances, executionDate, tenantId);
-  }
+    public SuspendProcessDefinitionCmd(
+            ProcessDefinitionEntity processDefinitionEntity,
+            boolean includeProcessInstances,
+            Date executionDate,
+            String tenantId) {
+        super(processDefinitionEntity, includeProcessInstances, executionDate, tenantId);
+    }
 
-  public SuspendProcessDefinitionCmd(
-      String processDefinitionId,
-      String processDefinitionKey,
-      boolean suspendProcessInstances,
-      Date suspensionDate,
-      String tenantId) {
-    super(
-        processDefinitionId,
-        processDefinitionKey,
-        suspendProcessInstances,
-        suspensionDate,
-        tenantId);
-  }
+    public SuspendProcessDefinitionCmd(
+            String processDefinitionId,
+            String processDefinitionKey,
+            boolean suspendProcessInstances,
+            Date suspensionDate,
+            String tenantId) {
+        super(
+                processDefinitionId,
+                processDefinitionKey,
+                suspendProcessInstances,
+                suspensionDate,
+                tenantId);
+    }
 
-  protected SuspensionState getProcessDefinitionSuspensionState() {
-    return SuspensionState.SUSPENDED;
-  }
+    protected SuspensionState getProcessDefinitionSuspensionState() {
+        return SuspensionState.SUSPENDED;
+    }
 
-  protected String getDelayedExecutionJobHandlerType() {
-    return TimerSuspendProcessDefinitionHandler.TYPE;
-  }
+    protected String getDelayedExecutionJobHandlerType() {
+        return TimerSuspendProcessDefinitionHandler.TYPE;
+    }
 
-  protected AbstractSetProcessInstanceStateCmd getProcessInstanceChangeStateCmd(
-      ProcessInstance processInstance) {
-    return new SuspendProcessInstanceCmd(processInstance.getId());
-  }
+    protected AbstractSetProcessInstanceStateCmd getProcessInstanceChangeStateCmd(
+            ProcessInstance processInstance) {
+        return new SuspendProcessInstanceCmd(processInstance.getId());
+    }
 }

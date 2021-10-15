@@ -16,7 +16,6 @@
 
 package org.activiti.engine.impl.cmd;
 
-import java.io.Serializable;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -25,41 +24,45 @@ import org.activiti.engine.runtime.Job;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.Serializable;
+
 /** */
 public class UnlockExclusiveJobCmd implements Command<Object>, Serializable {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  private static Logger log = LoggerFactory.getLogger(UnlockExclusiveJobCmd.class);
+    private static Logger log = LoggerFactory.getLogger(UnlockExclusiveJobCmd.class);
 
-  protected Job job;
+    protected Job job;
 
-  public UnlockExclusiveJobCmd(Job job) {
-    this.job = job;
-  }
-
-  public Object execute(CommandContext commandContext) {
-
-    if (job == null) {
-      throw new ActivitiIllegalArgumentException("job is null");
+    public UnlockExclusiveJobCmd(Job job) {
+        this.job = job;
     }
 
-    if (log.isDebugEnabled()) {
-      log.debug("Unlocking exclusive job {}", job.getId());
-    }
+    public Object execute(CommandContext commandContext) {
 
-    if (job.isExclusive()) {
-      if (job.getProcessInstanceId() != null) {
-        ExecutionEntity execution =
-            commandContext.getExecutionEntityManager().findById(job.getProcessInstanceId());
-        if (execution != null) {
-          commandContext
-              .getExecutionEntityManager()
-              .clearProcessInstanceLockTime(execution.getId());
+        if (job == null) {
+            throw new ActivitiIllegalArgumentException("job is null");
         }
-      }
-    }
 
-    return null;
-  }
+        if (log.isDebugEnabled()) {
+            log.debug("Unlocking exclusive job {}", job.getId());
+        }
+
+        if (job.isExclusive()) {
+            if (job.getProcessInstanceId() != null) {
+                ExecutionEntity execution =
+                        commandContext
+                                .getExecutionEntityManager()
+                                .findById(job.getProcessInstanceId());
+                if (execution != null) {
+                    commandContext
+                            .getExecutionEntityManager()
+                            .clearProcessInstanceLockTime(execution.getId());
+                }
+            }
+        }
+
+        return null;
+    }
 }

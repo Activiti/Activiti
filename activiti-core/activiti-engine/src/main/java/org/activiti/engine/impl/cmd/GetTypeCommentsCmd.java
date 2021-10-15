@@ -16,23 +16,24 @@
 
 package org.activiti.engine.impl.cmd;
 
-import java.io.Serializable;
-import java.util.List;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.task.Comment;
 
+import java.io.Serializable;
+import java.util.List;
+
 /** */
 public class GetTypeCommentsCmd implements Command<List<Comment>>, Serializable {
 
-  private static final long serialVersionUID = 1L;
-  protected String type;
+    private static final long serialVersionUID = 1L;
+    protected String type;
 
-  public GetTypeCommentsCmd(String type) {
-    this.type = type;
-  }
+    public GetTypeCommentsCmd(String type) {
+        this.type = type;
+    }
 
-  public List<Comment> execute(CommandContext commandContext) {
-    return commandContext.getCommentEntityManager().findCommentsByType(type);
-  }
+    public List<Comment> execute(CommandContext commandContext) {
+        return commandContext.getCommentEntityManager().findCommentsByType(type);
+    }
 }

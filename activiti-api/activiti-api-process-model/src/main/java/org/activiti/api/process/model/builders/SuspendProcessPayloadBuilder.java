@@ -20,19 +20,19 @@ import org.activiti.api.process.model.payloads.SuspendProcessPayload;
 
 public class SuspendProcessPayloadBuilder {
 
-  private String processInstanceId;
+    private String processInstanceId;
 
-  public SuspendProcessPayloadBuilder withProcessInstanceId(String processDefinitionId) {
-    this.processInstanceId = processDefinitionId;
-    return this;
-  }
+    public SuspendProcessPayloadBuilder withProcessInstanceId(String processDefinitionId) {
+        this.processInstanceId = processDefinitionId;
+        return this;
+    }
 
-  public SuspendProcessPayloadBuilder withProcessInstance(ProcessInstance processInstance) {
-    this.processInstanceId = processInstance.getId();
-    return this;
-  }
+    public SuspendProcessPayloadBuilder withProcessInstance(ProcessInstance processInstance) {
+        this.processInstanceId = processInstance.getId();
+        return this;
+    }
 
-  public SuspendProcessPayload build() {
-    return new SuspendProcessPayload(processInstanceId);
-  }
+    public SuspendProcessPayload build() {
+        return new SuspendProcessPayload(processInstanceId);
+    }
 }

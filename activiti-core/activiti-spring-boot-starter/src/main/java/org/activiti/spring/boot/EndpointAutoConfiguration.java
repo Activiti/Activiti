@@ -29,9 +29,9 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class EndpointAutoConfiguration {
 
-  @Bean
-  @ConditionalOnAvailableEndpoint
-  public ProcessEngineEndpoint processEngineEndpoint(ProcessEngine engine) {
-    return new ProcessEngineEndpoint(engine);
-  }
+    @Bean
+    @ConditionalOnAvailableEndpoint
+    public ProcessEngineEndpoint processEngineEndpoint(ProcessEngine engine) {
+        return new ProcessEngineEndpoint(engine);
+    }
 }

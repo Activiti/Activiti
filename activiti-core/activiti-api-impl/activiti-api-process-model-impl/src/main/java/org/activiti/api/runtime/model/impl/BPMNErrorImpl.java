@@ -15,83 +15,84 @@
  */
 package org.activiti.api.runtime.model.impl;
 
-import java.util.Objects;
 import org.activiti.api.process.model.BPMNError;
+
+import java.util.Objects;
 
 public class BPMNErrorImpl extends BPMNActivityImpl implements BPMNError {
 
-  private String errorCode;
-  private String errorId;
+    private String errorCode;
+    private String errorId;
 
-  public BPMNErrorImpl() {}
+    public BPMNErrorImpl() {}
 
-  public BPMNErrorImpl(String elementId) {
-    this.setElementId(elementId);
-  }
-
-  public BPMNErrorImpl(String elementId, String activityName, String activityType) {
-    this.setElementId(elementId);
-    this.setActivityName(activityName);
-    this.setActivityType(activityType);
-  }
-
-  public String getErrorCode() {
-    return errorCode;
-  }
-
-  public void setErrorCode(String errorCode) {
-    this.errorCode = errorCode;
-  }
-
-  public String getErrorId() {
-    return errorId;
-  }
-
-  public void setErrorId(String errorId) {
-    this.errorId = errorId;
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(
-        getElementId(), getActivityName(), getActivityType(), getErrorId(), getErrorCode());
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
+    public BPMNErrorImpl(String elementId) {
+        this.setElementId(elementId);
     }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
+
+    public BPMNErrorImpl(String elementId, String activityName, String activityType) {
+        this.setElementId(elementId);
+        this.setActivityName(activityName);
+        this.setActivityType(activityType);
     }
-    BPMNErrorImpl that = (BPMNErrorImpl) o;
 
-    return Objects.equals(getElementId(), that.getElementId())
-        && Objects.equals(getActivityName(), that.getActivityName())
-        && Objects.equals(getActivityType(), that.getActivityType())
-        && Objects.equals(getErrorCode(), that.getErrorCode())
-        && Objects.equals(getErrorId(), that.getErrorId());
-  }
+    public String getErrorCode() {
+        return errorCode;
+    }
 
-  @Override
-  public String toString() {
-    return "BPMNActivityImpl{"
-        + "activityName='"
-        + getActivityName()
-        + '\''
-        + ", activityType='"
-        + getActivityType()
-        + '\''
-        + ", elementId='"
-        + getElementId()
-        + '\''
-        + ", errorId='"
-        + getErrorId()
-        + '\''
-        + ", errorCode='"
-        + getErrorCode()
-        + '\''
-        + '}';
-  }
+    public void setErrorCode(String errorCode) {
+        this.errorCode = errorCode;
+    }
+
+    public String getErrorId() {
+        return errorId;
+    }
+
+    public void setErrorId(String errorId) {
+        this.errorId = errorId;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(
+                getElementId(), getActivityName(), getActivityType(), getErrorId(), getErrorCode());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        BPMNErrorImpl that = (BPMNErrorImpl) o;
+
+        return Objects.equals(getElementId(), that.getElementId())
+                && Objects.equals(getActivityName(), that.getActivityName())
+                && Objects.equals(getActivityType(), that.getActivityType())
+                && Objects.equals(getErrorCode(), that.getErrorCode())
+                && Objects.equals(getErrorId(), that.getErrorId());
+    }
+
+    @Override
+    public String toString() {
+        return "BPMNActivityImpl{"
+                + "activityName='"
+                + getActivityName()
+                + '\''
+                + ", activityType='"
+                + getActivityType()
+                + '\''
+                + ", elementId='"
+                + getElementId()
+                + '\''
+                + ", errorId='"
+                + getErrorId()
+                + '\''
+                + ", errorCode='"
+                + getErrorCode()
+                + '\''
+                + '}';
+    }
 }

@@ -26,15 +26,15 @@ import org.springframework.context.event.EventListener;
  */
 public class RuntimeSignalPayloadEventListener implements SignalPayloadEventListener {
 
-  private final RuntimeService runtimeService;
+    private final RuntimeService runtimeService;
 
-  public RuntimeSignalPayloadEventListener(RuntimeService runtimeService) {
-    this.runtimeService = runtimeService;
-  }
+    public RuntimeSignalPayloadEventListener(RuntimeService runtimeService) {
+        this.runtimeService = runtimeService;
+    }
 
-  @Override
-  @EventListener
-  public void sendSignal(SignalPayload signalPayload) {
-    runtimeService.signalEventReceived(signalPayload.getName(), signalPayload.getVariables());
-  }
+    @Override
+    @EventListener
+    public void sendSignal(SignalPayload signalPayload) {
+        runtimeService.signalEventReceived(signalPayload.getName(), signalPayload.getVariables());
+    }
 }

@@ -22,33 +22,37 @@ import static org.activiti.bpmn.constants.BpmnXMLConstants.ATTRIBUTE_MULTIINSTAN
 import static org.activiti.bpmn.constants.BpmnXMLConstants.ATTRIBUTE_MULTIINSTANCE_VARIABLE;
 import static org.activiti.bpmn.constants.BpmnXMLConstants.ELEMENT_MULTIINSTANCE;
 
-import javax.xml.stream.XMLStreamReader;
 import org.activiti.bpmn.converter.child.ElementParser;
 import org.activiti.bpmn.model.MultiInstanceLoopCharacteristics;
 
+import javax.xml.stream.XMLStreamReader;
+
 public class MultiInstanceAttributesParser
-    implements ElementParser<MultiInstanceLoopCharacteristics> {
+        implements ElementParser<MultiInstanceLoopCharacteristics> {
 
-  @Override
-  public boolean canParseCurrentElement(XMLStreamReader reader) {
-    return reader.isStartElement() && ELEMENT_MULTIINSTANCE.equalsIgnoreCase(reader.getLocalName());
-  }
-
-  @Override
-  public void setInformation(
-      XMLStreamReader reader, MultiInstanceLoopCharacteristics loopCharacteristics) {
-    loopCharacteristics.setInputDataItem(
-        reader.getAttributeValue(
-            ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_MULTIINSTANCE_COLLECTION));
-    loopCharacteristics.setElementVariable(
-        reader.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_MULTIINSTANCE_VARIABLE));
-    loopCharacteristics.setElementIndexVariable(
-        reader.getAttributeValue(
-            ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_MULTIINSTANCE_INDEX_VARIABLE));
-
-    String isSequentialValue = reader.getAttributeValue(null, ATTRIBUTE_MULTIINSTANCE_SEQUENTIAL);
-    if (isSequentialValue != null) {
-      loopCharacteristics.setSequential(Boolean.valueOf(isSequentialValue));
+    @Override
+    public boolean canParseCurrentElement(XMLStreamReader reader) {
+        return reader.isStartElement()
+                && ELEMENT_MULTIINSTANCE.equalsIgnoreCase(reader.getLocalName());
     }
-  }
+
+    @Override
+    public void setInformation(
+            XMLStreamReader reader, MultiInstanceLoopCharacteristics loopCharacteristics) {
+        loopCharacteristics.setInputDataItem(
+                reader.getAttributeValue(
+                        ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_MULTIINSTANCE_COLLECTION));
+        loopCharacteristics.setElementVariable(
+                reader.getAttributeValue(
+                        ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_MULTIINSTANCE_VARIABLE));
+        loopCharacteristics.setElementIndexVariable(
+                reader.getAttributeValue(
+                        ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_MULTIINSTANCE_INDEX_VARIABLE));
+
+        String isSequentialValue =
+                reader.getAttributeValue(null, ATTRIBUTE_MULTIINSTANCE_SEQUENTIAL);
+        if (isSequentialValue != null) {
+            loopCharacteristics.setSequential(Boolean.valueOf(isSequentialValue));
+        }
+    }
 }

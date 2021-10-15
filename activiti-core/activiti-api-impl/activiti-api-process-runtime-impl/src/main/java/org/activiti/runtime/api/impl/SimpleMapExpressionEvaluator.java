@@ -15,24 +15,25 @@
  */
 package org.activiti.runtime.api.impl;
 
-import java.util.Map;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.interceptor.DelegateInterceptor;
 
+import java.util.Map;
+
 public class SimpleMapExpressionEvaluator implements ExpressionEvaluator {
 
-  private Map<String, Object> context;
+    private Map<String, Object> context;
 
-  public SimpleMapExpressionEvaluator(Map<String, Object> context) {
-    this.context = context;
-  }
+    public SimpleMapExpressionEvaluator(Map<String, Object> context) {
+        this.context = context;
+    }
 
-  @Override
-  public Object evaluate(
-      Expression expression,
-      ExpressionManager expressionManager,
-      DelegateInterceptor delegateInterceptor) {
-    return expression.getValue(expressionManager, delegateInterceptor, context);
-  }
+    @Override
+    public Object evaluate(
+            Expression expression,
+            ExpressionManager expressionManager,
+            DelegateInterceptor delegateInterceptor) {
+        return expression.getValue(expressionManager, delegateInterceptor, context);
+    }
 }

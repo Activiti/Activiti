@@ -16,9 +16,10 @@
 
 package org.activiti.engine.test;
 
+import org.activiti.engine.api.internal.Internal;
+
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
-import org.activiti.engine.api.internal.Internal;
 
 /** */
 @Retention(RetentionPolicy.RUNTIME)

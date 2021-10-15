@@ -20,25 +20,25 @@ import java.util.Map;
 
 public interface FlowElementsContainer {
 
-  FlowElement getFlowElement(String id);
+    FlowElement getFlowElement(String id);
 
-  Collection<FlowElement> getFlowElements();
+    Collection<FlowElement> getFlowElements();
 
-  Map<String, FlowElement> getFlowElementMap();
+    Map<String, FlowElement> getFlowElementMap();
 
-  void addFlowElement(FlowElement element);
+    void addFlowElement(FlowElement element);
 
-  void addFlowElementToMap(FlowElement element);
+    void addFlowElementToMap(FlowElement element);
 
-  void removeFlowElement(String elementId);
+    void removeFlowElement(String elementId);
 
-  void removeFlowElementFromMap(String elementId);
+    void removeFlowElementFromMap(String elementId);
 
-  Artifact getArtifact(String id);
+    Artifact getArtifact(String id);
 
-  Collection<Artifact> getArtifacts();
+    Collection<Artifact> getArtifacts();
 
-  void addArtifact(Artifact artifact);
+    void addArtifact(Artifact artifact);
 
-  void removeArtifact(String artifactId);
+    void removeArtifact(String artifactId);
 }

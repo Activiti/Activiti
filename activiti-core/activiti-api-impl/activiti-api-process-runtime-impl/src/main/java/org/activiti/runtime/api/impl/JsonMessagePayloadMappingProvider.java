@@ -15,8 +15,6 @@
  */
 package org.activiti.runtime.api.impl;
 
-import java.util.Map;
-import java.util.Optional;
 import org.activiti.bpmn.model.Event;
 import org.activiti.bpmn.model.MessageEventDefinition;
 import org.activiti.engine.delegate.DelegateExecution;
@@ -24,42 +22,45 @@ import org.activiti.engine.impl.bpmn.behavior.VariablesCalculator;
 import org.activiti.engine.impl.delegate.MessagePayloadMappingProvider;
 import org.activiti.engine.impl.el.ExpressionManager;
 
+import java.util.Map;
+import java.util.Optional;
+
 public class JsonMessagePayloadMappingProvider implements MessagePayloadMappingProvider {
 
-  private final Event bpmnEvent;
-  private final MessageEventDefinition messageEventDefinition;
-  private final ExpressionManager expressionManager;
-  private final VariablesCalculator variablesCalculator;
+    private final Event bpmnEvent;
+    private final MessageEventDefinition messageEventDefinition;
+    private final ExpressionManager expressionManager;
+    private final VariablesCalculator variablesCalculator;
 
-  public JsonMessagePayloadMappingProvider(
-      Event bpmnEvent,
-      MessageEventDefinition messageEventDefinition,
-      ExpressionManager expressionManager,
-      VariablesCalculator variablesCalculator) {
-    this.bpmnEvent = bpmnEvent;
-    this.messageEventDefinition = messageEventDefinition;
-    this.expressionManager = expressionManager;
-    this.variablesCalculator = variablesCalculator;
-  }
+    public JsonMessagePayloadMappingProvider(
+            Event bpmnEvent,
+            MessageEventDefinition messageEventDefinition,
+            ExpressionManager expressionManager,
+            VariablesCalculator variablesCalculator) {
+        this.bpmnEvent = bpmnEvent;
+        this.messageEventDefinition = messageEventDefinition;
+        this.expressionManager = expressionManager;
+        this.variablesCalculator = variablesCalculator;
+    }
 
-  public Optional<Map<String, Object>> getMessagePayload(DelegateExecution execution) {
-    return Optional.of(variablesCalculator.calculateInputVariables(execution))
-        .filter(payload -> !payload.isEmpty());
-  }
+    public Optional<Map<String, Object>> getMessagePayload(DelegateExecution execution) {
+        return Optional.of(variablesCalculator.calculateInputVariables(execution))
+                .filter(payload -> !payload.isEmpty());
+    }
 
-  public Event getBpmnEvent() {
-    return bpmnEvent;
-  }
+    public Event getBpmnEvent() {
+        return bpmnEvent;
+    }
 
-  public MessageEventDefinition getMessageEventDefinition() {
-    return messageEventDefinition;
-  }
+    public MessageEventDefinition getMessageEventDefinition() {
+        return messageEventDefinition;
+    }
 
-  public ExpressionManager getExpressionManager() {
-    return expressionManager;
-  }
+    public ExpressionManager getExpressionManager() {
+        return expressionManager;
+    }
 
-  public VariablesCalculator getVariablesCalculator() {
-    return variablesCalculator;
-  }
+    public VariablesCalculator getVariablesCalculator() {
+        return variablesCalculator;
+    }
 }

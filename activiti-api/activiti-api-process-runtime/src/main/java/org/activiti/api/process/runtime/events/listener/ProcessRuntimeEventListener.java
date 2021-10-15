@@ -19,5 +19,5 @@ import org.activiti.api.model.shared.event.RuntimeEvent;
 
 public interface ProcessRuntimeEventListener<E extends RuntimeEvent<?, ?>> {
 
-  void onEvent(E event);
+    void onEvent(E event);
 }

@@ -17,7 +17,6 @@ package org.activiti.test.assertions;
 
 import static org.activiti.test.matchers.OperationScopeImpl.scope;
 
-import java.util.List;
 import org.activiti.api.model.shared.event.RuntimeEvent;
 import org.activiti.api.task.model.Task;
 import org.activiti.test.EventSource;
@@ -26,47 +25,49 @@ import org.activiti.test.matchers.OperationScopeMatcher;
 import org.activiti.test.matchers.ProcessTaskMatcher;
 import org.activiti.test.matchers.TaskResultMatcher;
 
+import java.util.List;
+
 public class TaskAssertionsImpl implements TaskAssertions {
 
-  private Task task;
+    private Task task;
 
-  private EventSource eventSource;
+    private EventSource eventSource;
 
-  private List<TaskSource> taskSources;
+    private List<TaskSource> taskSources;
 
-  public TaskAssertionsImpl(Task task, List<TaskSource> taskSources, EventSource eventSource) {
-    this.task = task;
-    this.taskSources = taskSources;
-    this.eventSource = eventSource;
-  }
-
-  @Override
-  public TaskAssertions expectEvents(OperationScopeMatcher... matchers) {
-    List<RuntimeEvent<?, ?>> events = eventSource.getEvents();
-    for (OperationScopeMatcher matcher : matchers) {
-      matcher.match(scope(task.getProcessInstanceId(), task.getId()), events);
+    public TaskAssertionsImpl(Task task, List<TaskSource> taskSources, EventSource eventSource) {
+        this.task = task;
+        this.taskSources = taskSources;
+        this.eventSource = eventSource;
     }
-    return this;
-  }
 
-  @Override
-  public TaskAssertions expectFields(TaskResultMatcher... matchers) {
-    for (TaskResultMatcher matcher : matchers) {
-      matcher.match(task);
+    @Override
+    public TaskAssertions expectEvents(OperationScopeMatcher... matchers) {
+        List<RuntimeEvent<?, ?>> events = eventSource.getEvents();
+        for (OperationScopeMatcher matcher : matchers) {
+            matcher.match(scope(task.getProcessInstanceId(), task.getId()), events);
+        }
+        return this;
     }
-    return this;
-  }
 
-  @Override
-  public TaskAssertions expect(ProcessTaskMatcher... matchers) {
-    for (ProcessTaskMatcher matcher : matchers) {
-      matcher.match(task.getProcessInstanceId(), taskSources);
+    @Override
+    public TaskAssertions expectFields(TaskResultMatcher... matchers) {
+        for (TaskResultMatcher matcher : matchers) {
+            matcher.match(task);
+        }
+        return this;
     }
-    return this;
-  }
 
-  @Override
-  public Task andReturn() {
-    return task;
-  }
+    @Override
+    public TaskAssertions expect(ProcessTaskMatcher... matchers) {
+        for (ProcessTaskMatcher matcher : matchers) {
+            matcher.match(task.getProcessInstanceId(), taskSources);
+        }
+        return this;
+    }
+
+    @Override
+    public Task andReturn() {
+        return task;
+    }
 }

@@ -17,13 +17,13 @@ package org.activiti.bpmn.model;
 
 public class ManualTask extends Task {
 
-  public ManualTask clone() {
-    ManualTask clone = new ManualTask();
-    clone.setValues(this);
-    return clone;
-  }
+    public ManualTask clone() {
+        ManualTask clone = new ManualTask();
+        clone.setValues(this);
+        return clone;
+    }
 
-  public void setValues(ManualTask otherElement) {
-    super.setValues(otherElement);
-  }
+    public void setValues(ManualTask otherElement) {
+        super.setValues(otherElement);
+    }
 }

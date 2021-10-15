@@ -33,44 +33,44 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 public class TaskRuntimeBusinessKeyOnTaskTest {
 
-  @Autowired private TaskRuntime taskRuntime;
+    @Autowired private TaskRuntime taskRuntime;
 
-  @Autowired private ProcessRuntime processRuntime;
+    @Autowired private ProcessRuntime processRuntime;
 
-  @Autowired private SecurityUtil securityUtil;
+    @Autowired private SecurityUtil securityUtil;
 
-  private static final String TWOTASK_PROCESS = "twoTaskProcess";
+    private static final String TWOTASK_PROCESS = "twoTaskProcess";
 
-  @Autowired private ProcessCleanUpUtil processCleanUpUtil;
+    @Autowired private ProcessCleanUpUtil processCleanUpUtil;
 
-  @AfterEach
-  public void cleanUp() {
-    processCleanUpUtil.cleanUpWithAdmin();
-  }
+    @AfterEach
+    public void cleanUp() {
+        processCleanUpUtil.cleanUpWithAdmin();
+    }
 
-  @Test
-  public void should_returnBusinessKeyInTasks_when_StartNewProcessWithBusinessKey() {
+    @Test
+    public void should_returnBusinessKeyInTasks_when_StartNewProcessWithBusinessKey() {
 
-    securityUtil.logInAs("user");
+        securityUtil.logInAs("user");
 
-    // when
-    String businesskey = "businesskey";
-    processRuntime.start(
-        ProcessPayloadBuilder.start()
-            .withProcessDefinitionKey(TWOTASK_PROCESS)
-            .withBusinessKey(businesskey)
-            .build());
+        // when
+        String businesskey = "businesskey";
+        processRuntime.start(
+                ProcessPayloadBuilder.start()
+                        .withProcessDefinitionKey(TWOTASK_PROCESS)
+                        .withBusinessKey(businesskey)
+                        .build());
 
-    securityUtil.logInAs("dean");
+        securityUtil.logInAs("dean");
 
-    Task task =
-        taskRuntime
-            .tasks(Pageable.of(0, 10), TaskPayloadBuilder.tasks().build())
-            .getContent()
-            .get(0);
+        Task task =
+                taskRuntime
+                        .tasks(Pageable.of(0, 10), TaskPayloadBuilder.tasks().build())
+                        .getContent()
+                        .get(0);
 
-    assertThat(task).isNotNull();
-    assertThat(task.getBusinessKey()).isNotBlank();
-    assertThat(task.getBusinessKey()).isEqualTo(businesskey);
-  }
+        assertThat(task).isNotNull();
+        assertThat(task.getBusinessKey()).isNotBlank();
+        assertThat(task.getBusinessKey()).isEqualTo(businesskey);
+    }
 }

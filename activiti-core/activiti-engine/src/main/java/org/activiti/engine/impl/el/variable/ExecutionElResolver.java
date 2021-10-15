@@ -21,19 +21,20 @@ import org.activiti.engine.impl.persistence.entity.TaskEntity;
 
 public class ExecutionElResolver implements VariableScopeItemELResolver {
 
-  private static final String EXECUTION_KEY = "execution";
+    private static final String EXECUTION_KEY = "execution";
 
-  @Override
-  public boolean canResolve(String property, VariableScope variableScope) {
-    return EXECUTION_KEY.equals(property)
-        && (variableScope instanceof ExecutionEntity || variableScope instanceof TaskEntity);
-  }
-
-  @Override
-  public Object resolve(String property, VariableScope variableScope) {
-    if (variableScope instanceof TaskEntity) {
-      return ((TaskEntity) variableScope).getExecution();
+    @Override
+    public boolean canResolve(String property, VariableScope variableScope) {
+        return EXECUTION_KEY.equals(property)
+                && (variableScope instanceof ExecutionEntity
+                        || variableScope instanceof TaskEntity);
     }
-    return variableScope;
-  }
+
+    @Override
+    public Object resolve(String property, VariableScope variableScope) {
+        if (variableScope instanceof TaskEntity) {
+            return ((TaskEntity) variableScope).getExecution();
+        }
+        return variableScope;
+    }
 }

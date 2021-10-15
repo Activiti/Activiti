@@ -15,8 +15,6 @@
  */
 package org.activiti.runtime.api.event.internal;
 
-import java.util.List;
-import java.util.Optional;
 import org.activiti.api.process.model.events.MessageSubscriptionCancelledEvent;
 import org.activiti.api.process.runtime.events.listener.ProcessRuntimeEventListener;
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
@@ -25,44 +23,49 @@ import org.activiti.engine.delegate.event.ActivitiEventListener;
 import org.activiti.engine.impl.persistence.entity.MessageEventSubscriptionEntity;
 import org.activiti.runtime.api.event.impl.ToMessageSubscriptionCancelledConverter;
 
+import java.util.List;
+import java.util.Optional;
+
 public class MessageSubscriptionCancelledListenerDelegate implements ActivitiEventListener {
 
-  private List<ProcessRuntimeEventListener<MessageSubscriptionCancelledEvent>>
-      processRuntimeEventListeners;
+    private List<ProcessRuntimeEventListener<MessageSubscriptionCancelledEvent>>
+            processRuntimeEventListeners;
 
-  private ToMessageSubscriptionCancelledConverter converter;
+    private ToMessageSubscriptionCancelledConverter converter;
 
-  public MessageSubscriptionCancelledListenerDelegate(
-      List<ProcessRuntimeEventListener<MessageSubscriptionCancelledEvent>>
-          processRuntimeEventListeners,
-      ToMessageSubscriptionCancelledConverter converter) {
-    this.processRuntimeEventListeners = processRuntimeEventListeners;
-    this.converter = converter;
-  }
-
-  @Override
-  public void onEvent(ActivitiEvent event) {
-    if (isValidEvent(event)) {
-      converter
-          .from((ActivitiEntityEvent) event)
-          .ifPresent(
-              convertedEvent -> {
-                processRuntimeEventListeners.forEach(listener -> listener.onEvent(convertedEvent));
-              });
+    public MessageSubscriptionCancelledListenerDelegate(
+            List<ProcessRuntimeEventListener<MessageSubscriptionCancelledEvent>>
+                    processRuntimeEventListeners,
+            ToMessageSubscriptionCancelledConverter converter) {
+        this.processRuntimeEventListeners = processRuntimeEventListeners;
+        this.converter = converter;
     }
-  }
 
-  @Override
-  public boolean isFailOnException() {
-    return false;
-  }
+    @Override
+    public void onEvent(ActivitiEvent event) {
+        if (isValidEvent(event)) {
+            converter
+                    .from((ActivitiEntityEvent) event)
+                    .ifPresent(
+                            convertedEvent -> {
+                                processRuntimeEventListeners.forEach(
+                                        listener -> listener.onEvent(convertedEvent));
+                            });
+        }
+    }
 
-  protected boolean isValidEvent(ActivitiEvent event) {
-    return Optional.ofNullable(event)
-        .filter(ActivitiEntityEvent.class::isInstance)
-        .map(
-            e ->
-                ((ActivitiEntityEvent) event).getEntity() instanceof MessageEventSubscriptionEntity)
-        .orElse(false);
-  }
+    @Override
+    public boolean isFailOnException() {
+        return false;
+    }
+
+    protected boolean isValidEvent(ActivitiEvent event) {
+        return Optional.ofNullable(event)
+                .filter(ActivitiEntityEvent.class::isInstance)
+                .map(
+                        e ->
+                                ((ActivitiEntityEvent) event).getEntity()
+                                        instanceof MessageEventSubscriptionEntity)
+                .orElse(false);
+    }
 }

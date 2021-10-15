@@ -16,18 +16,19 @@
 
 package org.activiti.engine.impl.cfg;
 
-import java.util.Map;
 import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
+
+import java.util.Map;
 
 /** */
 @Internal
 public interface ServiceInvoker {
 
-  void invoke(
-      String serviceType,
-      Map<String, Object> parameters,
-      ExecutionEntity execution,
-      TaskEntity task);
+    void invoke(
+            String serviceType,
+            Map<String, Object> parameters,
+            ExecutionEntity execution,
+            TaskEntity task);
 }

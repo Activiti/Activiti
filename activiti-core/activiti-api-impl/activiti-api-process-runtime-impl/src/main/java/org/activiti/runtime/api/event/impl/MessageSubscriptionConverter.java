@@ -15,34 +15,39 @@
  */
 package org.activiti.runtime.api.event.impl;
 
-import java.util.Optional;
 import org.activiti.api.runtime.model.impl.MessageSubscriptionImpl;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.persistence.entity.MessageEventSubscriptionEntity;
 
+import java.util.Optional;
+
 public class MessageSubscriptionConverter {
 
-  public MessageSubscriptionImpl convertToMessageSubscription(
-      MessageEventSubscriptionEntity messageEventSubscriptionEntity) {
+    public MessageSubscriptionImpl convertToMessageSubscription(
+            MessageEventSubscriptionEntity messageEventSubscriptionEntity) {
 
-    return Optional.of(messageEventSubscriptionEntity)
-        .map(
-            entity ->
-                MessageSubscriptionImpl.builder()
-                    .withId(entity.getId())
-                    .withEventName(entity.getEventName())
-                    .withProcessDefinitionId(entity.getProcessDefinitionId())
-                    .withConfiguration(entity.getConfiguration())
-                    .withActivityId(entity.getActivityId())
-                    .withBusinessKey(
-                        Optional.ofNullable(entity.getExecution())
-                            .map(DelegateExecution::getProcessInstanceBusinessKey)
-                            .orElse(null))
-                    .withCreated(entity.getCreated())
-                    .withExecutionId(entity.getExecutionId())
-                    .withProcessInstanceId(entity.getProcessInstanceId())
-                    .build())
-        .orElseThrow(
-            () -> new IllegalArgumentException("messageEventSubscriptionEntity must not be null"));
-  }
+        return Optional.of(messageEventSubscriptionEntity)
+                .map(
+                        entity ->
+                                MessageSubscriptionImpl.builder()
+                                        .withId(entity.getId())
+                                        .withEventName(entity.getEventName())
+                                        .withProcessDefinitionId(entity.getProcessDefinitionId())
+                                        .withConfiguration(entity.getConfiguration())
+                                        .withActivityId(entity.getActivityId())
+                                        .withBusinessKey(
+                                                Optional.ofNullable(entity.getExecution())
+                                                        .map(
+                                                                DelegateExecution
+                                                                        ::getProcessInstanceBusinessKey)
+                                                        .orElse(null))
+                                        .withCreated(entity.getCreated())
+                                        .withExecutionId(entity.getExecutionId())
+                                        .withProcessInstanceId(entity.getProcessInstanceId())
+                                        .build())
+                .orElseThrow(
+                        () ->
+                                new IllegalArgumentException(
+                                        "messageEventSubscriptionEntity must not be null"));
+    }
 }

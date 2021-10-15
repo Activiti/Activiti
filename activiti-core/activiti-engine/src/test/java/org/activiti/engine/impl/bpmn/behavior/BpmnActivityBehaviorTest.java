@@ -22,8 +22,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-import java.util.Collections;
-import java.util.Map;
 import org.activiti.engine.ActivitiEngineAgenda;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.junit.Before;
@@ -32,48 +30,53 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 
+import java.util.Collections;
+import java.util.Map;
+
 public class BpmnActivityBehaviorTest {
 
-  @Spy @InjectMocks private BpmnActivityBehavior bpmnActivityBehavior;
+    @Spy @InjectMocks private BpmnActivityBehavior bpmnActivityBehavior;
 
-  @Mock private VariablesCalculator variablesCalculator;
+    @Mock private VariablesCalculator variablesCalculator;
 
-  @Mock private ActivitiEngineAgenda agenda;
+    @Mock private ActivitiEngineAgenda agenda;
 
-  @Before
-  public void setUp() {
-    initMocks(this);
-    doReturn(agenda).when(bpmnActivityBehavior).getAgenda();
-  }
+    @Before
+    public void setUp() {
+        initMocks(this);
+        doReturn(agenda).when(bpmnActivityBehavior).getAgenda();
+    }
 
-  @Test
-  public void
-      performDefaultOutgoingBehavior_should_propagateVariablesToParentAndPlanContinuation() {
-    ExecutionEntity parentExecution = mock(ExecutionEntity.class);
-    Map<String, Object> variablesLocal = Collections.singletonMap("myVar", "value");
-    ExecutionEntity execution = buildExecution(parentExecution, variablesLocal);
+    @Test
+    public void
+            performDefaultOutgoingBehavior_should_propagateVariablesToParentAndPlanContinuation() {
+        ExecutionEntity parentExecution = mock(ExecutionEntity.class);
+        Map<String, Object> variablesLocal = Collections.singletonMap("myVar", "value");
+        ExecutionEntity execution = buildExecution(parentExecution, variablesLocal);
 
-    Map<String, Object> calculatedVariables = Collections.singletonMap("mappedVar", "mappedValue");
-    given(
-            variablesCalculator.calculateOutPutVariables(
-                MappingExecutionContext.buildMappingExecutionContext(execution), variablesLocal))
-        .willReturn(calculatedVariables);
+        Map<String, Object> calculatedVariables =
+                Collections.singletonMap("mappedVar", "mappedValue");
+        given(
+                        variablesCalculator.calculateOutPutVariables(
+                                MappingExecutionContext.buildMappingExecutionContext(execution),
+                                variablesLocal))
+                .willReturn(calculatedVariables);
 
-    // when
-    bpmnActivityBehavior.performDefaultOutgoingBehavior(execution);
+        // when
+        bpmnActivityBehavior.performDefaultOutgoingBehavior(execution);
 
-    // then
-    verify(parentExecution).setVariables(calculatedVariables);
-    verify(agenda).planTakeOutgoingSequenceFlowsOperation(execution, true);
-  }
+        // then
+        verify(parentExecution).setVariables(calculatedVariables);
+        verify(agenda).planTakeOutgoingSequenceFlowsOperation(execution, true);
+    }
 
-  private ExecutionEntity buildExecution(
-      ExecutionEntity parentExecution, Map<String, Object> variablesLocal) {
-    ExecutionEntity execution = mock(ExecutionEntity.class);
-    given(execution.getProcessDefinitionId()).willReturn("procDefId");
-    given(execution.getActivityId()).willReturn("activityId");
-    given(execution.getParent()).willReturn(parentExecution);
-    given(execution.getVariablesLocal()).willReturn(variablesLocal);
-    return execution;
-  }
+    private ExecutionEntity buildExecution(
+            ExecutionEntity parentExecution, Map<String, Object> variablesLocal) {
+        ExecutionEntity execution = mock(ExecutionEntity.class);
+        given(execution.getProcessDefinitionId()).willReturn("procDefId");
+        given(execution.getActivityId()).willReturn("activityId");
+        given(execution.getParent()).willReturn(parentExecution);
+        given(execution.getVariablesLocal()).willReturn(variablesLocal);
+        return execution;
+    }
 }

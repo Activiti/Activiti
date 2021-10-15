@@ -19,15 +19,15 @@ import org.activiti.api.model.shared.model.ApplicationElement;
 
 public interface ProcessDefinition extends ApplicationElement {
 
-  String getId();
+    String getId();
 
-  String getName();
+    String getName();
 
-  String getKey();
+    String getKey();
 
-  String getDescription();
+    String getDescription();
 
-  int getVersion();
+    int getVersion();
 
-  String getFormKey();
+    String getFormKey();
 }

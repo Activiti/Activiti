@@ -15,10 +15,6 @@
  */
 package org.activiti.runtime.api.impl;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
 import org.activiti.api.process.model.ProcessDefinition;
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
@@ -49,263 +45,274 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 @PreAuthorize("hasRole('ACTIVITI_ADMIN')")
 public class ProcessAdminRuntimeImpl implements ProcessAdminRuntime {
 
-  private final RepositoryService repositoryService;
+    private final RepositoryService repositoryService;
 
-  private final APIProcessDefinitionConverter processDefinitionConverter;
+    private final APIProcessDefinitionConverter processDefinitionConverter;
 
-  private final RuntimeService runtimeService;
+    private final RuntimeService runtimeService;
 
-  private final APIProcessInstanceConverter processInstanceConverter;
+    private final APIProcessInstanceConverter processInstanceConverter;
 
-  private final ApplicationEventPublisher eventPublisher;
+    private final ApplicationEventPublisher eventPublisher;
 
-  private final ProcessVariablesPayloadValidator processVariablesValidator;
+    private final ProcessVariablesPayloadValidator processVariablesValidator;
 
-  public ProcessAdminRuntimeImpl(
-      RepositoryService repositoryService,
-      APIProcessDefinitionConverter processDefinitionConverter,
-      RuntimeService runtimeService,
-      APIProcessInstanceConverter processInstanceConverter,
-      ApplicationEventPublisher eventPublisher,
-      ProcessVariablesPayloadValidator processVariablesValidator) {
-    this.repositoryService = repositoryService;
-    this.processDefinitionConverter = processDefinitionConverter;
-    this.runtimeService = runtimeService;
-    this.processInstanceConverter = processInstanceConverter;
-    this.eventPublisher = eventPublisher;
-    this.processVariablesValidator = processVariablesValidator;
-  }
-
-  @Override
-  public ProcessDefinition processDefinition(String processDefinitionId) {
-    org.activiti.engine.repository.ProcessDefinition processDefinition;
-    // try searching by Key if there is no matching by Id
-    List<org.activiti.engine.repository.ProcessDefinition> list =
-        repositoryService
-            .createProcessDefinitionQuery()
-            .processDefinitionKey(processDefinitionId)
-            .deploymentIds(latestDeploymentIds())
-            .orderByProcessDefinitionVersion()
-            .asc()
-            .list();
-    if (!list.isEmpty()) {
-      processDefinition = list.get(0);
-    } else {
-      processDefinition = repositoryService.getProcessDefinition(processDefinitionId);
-    }
-    return processDefinitionConverter.from(processDefinition);
-  }
-
-  private Set<String> latestDeploymentIds() {
-    return repositoryService.createDeploymentQuery().latestVersion().list().stream()
-        .map(org.activiti.engine.repository.Deployment::getId)
-        .collect(Collectors.toSet());
-  }
-
-  @Override
-  public Page<ProcessDefinition> processDefinitions(Pageable pageable) {
-    return processDefinitions(pageable, ProcessPayloadBuilder.processDefinitions().build());
-  }
-
-  @Override
-  public Page<ProcessDefinition> processDefinitions(
-      Pageable pageable, GetProcessDefinitionsPayload getProcessDefinitionsPayload) {
-    if (getProcessDefinitionsPayload == null) {
-      throw new IllegalStateException("payload cannot be null");
-    }
-    ProcessDefinitionQuery processDefinitionQuery =
-        repositoryService.createProcessDefinitionQuery();
-    if (getProcessDefinitionsPayload.hasDefinitionKeys()) {
-      processDefinitionQuery.processDefinitionKeys(
-          getProcessDefinitionsPayload.getProcessDefinitionKeys());
-    }
-    return new PageImpl<>(
-        processDefinitionConverter.from(processDefinitionQuery.list()),
-        Math.toIntExact(processDefinitionQuery.count()));
-  }
-
-  @Override
-  public ProcessInstance start(StartProcessPayload startProcessPayload) {
-    ProcessDefinition processDefinition = null;
-    if (startProcessPayload.getProcessDefinitionId() != null) {
-      processDefinition = processDefinition(startProcessPayload.getProcessDefinitionId());
-    }
-    if (processDefinition == null && startProcessPayload.getProcessDefinitionKey() != null) {
-      processDefinition = processDefinition(startProcessPayload.getProcessDefinitionKey());
-    }
-    if (processDefinition == null) {
-      throw new IllegalStateException(
-          "At least Process Definition Id or Key needs to be provided to start a process");
+    public ProcessAdminRuntimeImpl(
+            RepositoryService repositoryService,
+            APIProcessDefinitionConverter processDefinitionConverter,
+            RuntimeService runtimeService,
+            APIProcessInstanceConverter processInstanceConverter,
+            ApplicationEventPublisher eventPublisher,
+            ProcessVariablesPayloadValidator processVariablesValidator) {
+        this.repositoryService = repositoryService;
+        this.processDefinitionConverter = processDefinitionConverter;
+        this.runtimeService = runtimeService;
+        this.processInstanceConverter = processInstanceConverter;
+        this.eventPublisher = eventPublisher;
+        this.processVariablesValidator = processVariablesValidator;
     }
 
-    processVariablesValidator.checkStartProcessPayloadVariables(
-        startProcessPayload, processDefinition.getId());
-
-    return processInstanceConverter.from(
-        runtimeService
-            .createProcessInstanceBuilder()
-            .processDefinitionId(processDefinition.getId())
-            .processDefinitionKey(processDefinition.getKey())
-            .businessKey(startProcessPayload.getBusinessKey())
-            .variables(startProcessPayload.getVariables())
-            .name(startProcessPayload.getName())
-            .start());
-  }
-
-  @Override
-  public Page<ProcessInstance> processInstances(Pageable pageable) {
-    return processInstances(pageable, null);
-  }
-
-  @Override
-  public ProcessInstance processInstance(String processInstanceId) {
-    org.activiti.engine.runtime.ProcessInstance internalProcessInstance =
-        runtimeService
-            .createProcessInstanceQuery()
-            .processInstanceId(processInstanceId)
-            .singleResult();
-    if (internalProcessInstance == null) {
-      throw new NotFoundException(
-          "Unable to find process instance for the given id:'" + processInstanceId + "'");
+    @Override
+    public ProcessDefinition processDefinition(String processDefinitionId) {
+        org.activiti.engine.repository.ProcessDefinition processDefinition;
+        // try searching by Key if there is no matching by Id
+        List<org.activiti.engine.repository.ProcessDefinition> list =
+                repositoryService
+                        .createProcessDefinitionQuery()
+                        .processDefinitionKey(processDefinitionId)
+                        .deploymentIds(latestDeploymentIds())
+                        .orderByProcessDefinitionVersion()
+                        .asc()
+                        .list();
+        if (!list.isEmpty()) {
+            processDefinition = list.get(0);
+        } else {
+            processDefinition = repositoryService.getProcessDefinition(processDefinitionId);
+        }
+        return processDefinitionConverter.from(processDefinition);
     }
-    return processInstanceConverter.from(internalProcessInstance);
-  }
 
-  @Override
-  public Page<ProcessInstance> processInstances(
-      Pageable pageable, GetProcessInstancesPayload getProcessInstancesPayload) {
-
-    org.activiti.engine.runtime.ProcessInstanceQuery internalQuery =
-        runtimeService.createProcessInstanceQuery();
-
-    if (getProcessInstancesPayload != null) {
-
-      if (getProcessInstancesPayload.getProcessDefinitionKeys() != null
-          && !getProcessInstancesPayload.getProcessDefinitionKeys().isEmpty()) {
-        internalQuery.processDefinitionKeys(getProcessInstancesPayload.getProcessDefinitionKeys());
-      }
-      if (getProcessInstancesPayload.getBusinessKey() != null
-          && !getProcessInstancesPayload.getBusinessKey().isEmpty()) {
-        internalQuery.processInstanceBusinessKey(getProcessInstancesPayload.getBusinessKey());
-      }
-
-      if (getProcessInstancesPayload.isSuspendedOnly()) {
-        internalQuery.suspended();
-      }
-
-      if (getProcessInstancesPayload.isActiveOnly()) {
-        internalQuery.active();
-      }
-      if (getProcessInstancesPayload.getParentProcessInstanceId() != null) {
-        internalQuery.superProcessInstanceId(
-            getProcessInstancesPayload.getParentProcessInstanceId());
-      }
+    private Set<String> latestDeploymentIds() {
+        return repositoryService.createDeploymentQuery().latestVersion().list().stream()
+                .map(org.activiti.engine.repository.Deployment::getId)
+                .collect(Collectors.toSet());
     }
-    return new PageImpl<>(
-        processInstanceConverter.from(
-            internalQuery.listPage(pageable.getStartIndex(), pageable.getMaxItems())),
-        Math.toIntExact(internalQuery.count()));
-  }
 
-  @Override
-  public ProcessInstance delete(DeleteProcessPayload deleteProcessPayload) {
-    ProcessInstanceImpl processInstance =
-        (ProcessInstanceImpl) processInstance(deleteProcessPayload.getProcessInstanceId());
-    runtimeService.deleteProcessInstance(
-        deleteProcessPayload.getProcessInstanceId(), deleteProcessPayload.getReason());
-    if (processInstance != null) {
-      processInstance.setStatus(ProcessInstance.ProcessInstanceStatus.CANCELLED);
-      return processInstance;
+    @Override
+    public Page<ProcessDefinition> processDefinitions(Pageable pageable) {
+        return processDefinitions(pageable, ProcessPayloadBuilder.processDefinitions().build());
     }
-    return null;
-  }
 
-  @Override
-  @Transactional
-  public void signal(SignalPayload signalPayload) {
-    processVariablesValidator.checkSignalPayloadVariables(signalPayload, null);
-
-    eventPublisher.publishEvent(signalPayload);
-  }
-
-  @Override
-  public ProcessInstance suspend(SuspendProcessPayload suspendProcessPayload) {
-    runtimeService.suspendProcessInstanceById(suspendProcessPayload.getProcessInstanceId());
-    return processInstanceConverter.from(
-        runtimeService
-            .createProcessInstanceQuery()
-            .processInstanceId(suspendProcessPayload.getProcessInstanceId())
-            .singleResult());
-  }
-
-  @Override
-  public ProcessInstance resume(ResumeProcessPayload resumeProcessPayload) {
-    runtimeService.activateProcessInstanceById(resumeProcessPayload.getProcessInstanceId());
-    return processInstanceConverter.from(
-        runtimeService
-            .createProcessInstanceQuery()
-            .processInstanceId(resumeProcessPayload.getProcessInstanceId())
-            .singleResult());
-  }
-
-  @Override
-  public ProcessInstance update(UpdateProcessPayload updateProcessPayload) {
-    if (updateProcessPayload.getBusinessKey() != null) {
-      runtimeService.updateBusinessKey(
-          updateProcessPayload.getProcessInstanceId(), updateProcessPayload.getBusinessKey());
+    @Override
+    public Page<ProcessDefinition> processDefinitions(
+            Pageable pageable, GetProcessDefinitionsPayload getProcessDefinitionsPayload) {
+        if (getProcessDefinitionsPayload == null) {
+            throw new IllegalStateException("payload cannot be null");
+        }
+        ProcessDefinitionQuery processDefinitionQuery =
+                repositoryService.createProcessDefinitionQuery();
+        if (getProcessDefinitionsPayload.hasDefinitionKeys()) {
+            processDefinitionQuery.processDefinitionKeys(
+                    getProcessDefinitionsPayload.getProcessDefinitionKeys());
+        }
+        return new PageImpl<>(
+                processDefinitionConverter.from(processDefinitionQuery.list()),
+                Math.toIntExact(processDefinitionQuery.count()));
     }
-    if (updateProcessPayload.getName() != null) {
-      runtimeService.setProcessInstanceName(
-          updateProcessPayload.getProcessInstanceId(), updateProcessPayload.getName());
+
+    @Override
+    public ProcessInstance start(StartProcessPayload startProcessPayload) {
+        ProcessDefinition processDefinition = null;
+        if (startProcessPayload.getProcessDefinitionId() != null) {
+            processDefinition = processDefinition(startProcessPayload.getProcessDefinitionId());
+        }
+        if (processDefinition == null && startProcessPayload.getProcessDefinitionKey() != null) {
+            processDefinition = processDefinition(startProcessPayload.getProcessDefinitionKey());
+        }
+        if (processDefinition == null) {
+            throw new IllegalStateException(
+                    "At least Process Definition Id or Key needs to be provided to start a"
+                            + " process");
+        }
+
+        processVariablesValidator.checkStartProcessPayloadVariables(
+                startProcessPayload, processDefinition.getId());
+
+        return processInstanceConverter.from(
+                runtimeService
+                        .createProcessInstanceBuilder()
+                        .processDefinitionId(processDefinition.getId())
+                        .processDefinitionKey(processDefinition.getKey())
+                        .businessKey(startProcessPayload.getBusinessKey())
+                        .variables(startProcessPayload.getVariables())
+                        .name(startProcessPayload.getName())
+                        .start());
     }
-    return processInstanceConverter.from(
-        runtimeService
-            .createProcessInstanceQuery()
-            .processInstanceId(updateProcessPayload.getProcessInstanceId())
-            .singleResult());
-  }
 
-  @Override
-  public void setVariables(SetProcessVariablesPayload setProcessVariablesPayload) {
-    ProcessInstanceImpl processInstance =
-        (ProcessInstanceImpl) processInstance(setProcessVariablesPayload.getProcessInstanceId());
+    @Override
+    public Page<ProcessInstance> processInstances(Pageable pageable) {
+        return processInstances(pageable, null);
+    }
 
-    processVariablesValidator.checkPayloadVariables(
-        setProcessVariablesPayload, processInstance.getProcessDefinitionId());
+    @Override
+    public ProcessInstance processInstance(String processInstanceId) {
+        org.activiti.engine.runtime.ProcessInstance internalProcessInstance =
+                runtimeService
+                        .createProcessInstanceQuery()
+                        .processInstanceId(processInstanceId)
+                        .singleResult();
+        if (internalProcessInstance == null) {
+            throw new NotFoundException(
+                    "Unable to find process instance for the given id:'" + processInstanceId + "'");
+        }
+        return processInstanceConverter.from(internalProcessInstance);
+    }
 
-    runtimeService.setVariables(
-        setProcessVariablesPayload.getProcessInstanceId(),
-        setProcessVariablesPayload.getVariables());
-  }
+    @Override
+    public Page<ProcessInstance> processInstances(
+            Pageable pageable, GetProcessInstancesPayload getProcessInstancesPayload) {
 
-  @Override
-  public void removeVariables(RemoveProcessVariablesPayload removeProcessVariablesPayload) {
-    runtimeService.removeVariables(
-        removeProcessVariablesPayload.getProcessInstanceId(),
-        removeProcessVariablesPayload.getVariableNames());
-  }
+        org.activiti.engine.runtime.ProcessInstanceQuery internalQuery =
+                runtimeService.createProcessInstanceQuery();
 
-  @Override
-  @Transactional
-  public void receive(ReceiveMessagePayload messagePayload) {
-    processVariablesValidator.checkReceiveMessagePayloadVariables(messagePayload, null);
-    eventPublisher.publishEvent(messagePayload);
-  }
+        if (getProcessInstancesPayload != null) {
 
-  @Override
-  public ProcessInstance start(StartMessagePayload messagePayload) {
-    String messageName = messagePayload.getName();
-    String businessKey = messagePayload.getBusinessKey();
-    Map<String, Object> variables = messagePayload.getVariables();
+            if (getProcessInstancesPayload.getProcessDefinitionKeys() != null
+                    && !getProcessInstancesPayload.getProcessDefinitionKeys().isEmpty()) {
+                internalQuery.processDefinitionKeys(
+                        getProcessInstancesPayload.getProcessDefinitionKeys());
+            }
+            if (getProcessInstancesPayload.getBusinessKey() != null
+                    && !getProcessInstancesPayload.getBusinessKey().isEmpty()) {
+                internalQuery.processInstanceBusinessKey(
+                        getProcessInstancesPayload.getBusinessKey());
+            }
 
-    processVariablesValidator.checkStartMessagePayloadVariables(messagePayload, null);
+            if (getProcessInstancesPayload.isSuspendedOnly()) {
+                internalQuery.suspended();
+            }
 
-    ProcessInstance processInstance =
-        processInstanceConverter.from(
-            runtimeService.startProcessInstanceByMessage(messageName, businessKey, variables));
-    return processInstance;
-  }
+            if (getProcessInstancesPayload.isActiveOnly()) {
+                internalQuery.active();
+            }
+            if (getProcessInstancesPayload.getParentProcessInstanceId() != null) {
+                internalQuery.superProcessInstanceId(
+                        getProcessInstancesPayload.getParentProcessInstanceId());
+            }
+        }
+        return new PageImpl<>(
+                processInstanceConverter.from(
+                        internalQuery.listPage(pageable.getStartIndex(), pageable.getMaxItems())),
+                Math.toIntExact(internalQuery.count()));
+    }
+
+    @Override
+    public ProcessInstance delete(DeleteProcessPayload deleteProcessPayload) {
+        ProcessInstanceImpl processInstance =
+                (ProcessInstanceImpl) processInstance(deleteProcessPayload.getProcessInstanceId());
+        runtimeService.deleteProcessInstance(
+                deleteProcessPayload.getProcessInstanceId(), deleteProcessPayload.getReason());
+        if (processInstance != null) {
+            processInstance.setStatus(ProcessInstance.ProcessInstanceStatus.CANCELLED);
+            return processInstance;
+        }
+        return null;
+    }
+
+    @Override
+    @Transactional
+    public void signal(SignalPayload signalPayload) {
+        processVariablesValidator.checkSignalPayloadVariables(signalPayload, null);
+
+        eventPublisher.publishEvent(signalPayload);
+    }
+
+    @Override
+    public ProcessInstance suspend(SuspendProcessPayload suspendProcessPayload) {
+        runtimeService.suspendProcessInstanceById(suspendProcessPayload.getProcessInstanceId());
+        return processInstanceConverter.from(
+                runtimeService
+                        .createProcessInstanceQuery()
+                        .processInstanceId(suspendProcessPayload.getProcessInstanceId())
+                        .singleResult());
+    }
+
+    @Override
+    public ProcessInstance resume(ResumeProcessPayload resumeProcessPayload) {
+        runtimeService.activateProcessInstanceById(resumeProcessPayload.getProcessInstanceId());
+        return processInstanceConverter.from(
+                runtimeService
+                        .createProcessInstanceQuery()
+                        .processInstanceId(resumeProcessPayload.getProcessInstanceId())
+                        .singleResult());
+    }
+
+    @Override
+    public ProcessInstance update(UpdateProcessPayload updateProcessPayload) {
+        if (updateProcessPayload.getBusinessKey() != null) {
+            runtimeService.updateBusinessKey(
+                    updateProcessPayload.getProcessInstanceId(),
+                    updateProcessPayload.getBusinessKey());
+        }
+        if (updateProcessPayload.getName() != null) {
+            runtimeService.setProcessInstanceName(
+                    updateProcessPayload.getProcessInstanceId(), updateProcessPayload.getName());
+        }
+        return processInstanceConverter.from(
+                runtimeService
+                        .createProcessInstanceQuery()
+                        .processInstanceId(updateProcessPayload.getProcessInstanceId())
+                        .singleResult());
+    }
+
+    @Override
+    public void setVariables(SetProcessVariablesPayload setProcessVariablesPayload) {
+        ProcessInstanceImpl processInstance =
+                (ProcessInstanceImpl)
+                        processInstance(setProcessVariablesPayload.getProcessInstanceId());
+
+        processVariablesValidator.checkPayloadVariables(
+                setProcessVariablesPayload, processInstance.getProcessDefinitionId());
+
+        runtimeService.setVariables(
+                setProcessVariablesPayload.getProcessInstanceId(),
+                setProcessVariablesPayload.getVariables());
+    }
+
+    @Override
+    public void removeVariables(RemoveProcessVariablesPayload removeProcessVariablesPayload) {
+        runtimeService.removeVariables(
+                removeProcessVariablesPayload.getProcessInstanceId(),
+                removeProcessVariablesPayload.getVariableNames());
+    }
+
+    @Override
+    @Transactional
+    public void receive(ReceiveMessagePayload messagePayload) {
+        processVariablesValidator.checkReceiveMessagePayloadVariables(messagePayload, null);
+        eventPublisher.publishEvent(messagePayload);
+    }
+
+    @Override
+    public ProcessInstance start(StartMessagePayload messagePayload) {
+        String messageName = messagePayload.getName();
+        String businessKey = messagePayload.getBusinessKey();
+        Map<String, Object> variables = messagePayload.getVariables();
+
+        processVariablesValidator.checkStartMessagePayloadVariables(messagePayload, null);
+
+        ProcessInstance processInstance =
+                processInstanceConverter.from(
+                        runtimeService.startProcessInstanceByMessage(
+                                messageName, businessKey, variables));
+        return processInstance;
+    }
 }

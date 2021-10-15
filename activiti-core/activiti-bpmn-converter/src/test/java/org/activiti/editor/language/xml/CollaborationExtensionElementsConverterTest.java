@@ -24,20 +24,20 @@ import org.junit.jupiter.api.Test;
 
 public class CollaborationExtensionElementsConverterTest extends AbstractConverterTest {
 
-  @Test
-  public void convertXMLToModel() throws Exception {
-    BpmnModel bpmnModel = readXMLFile();
-    Assertions.assertNotNull(bpmnModel);
-    assertThat(bpmnModel.getPools()).isNotEmpty();
-    Pool pool1 = bpmnModel.getPool("BP01");
-    Assertions.assertNotNull(pool1);
-    Assertions.assertEquals("Pool", pool1.getName());
-    Pool pool2 = bpmnModel.getPool("BP02");
-    Assertions.assertNotNull(pool2);
-    Assertions.assertEquals("Pool2", pool2.getName());
-  }
+    @Test
+    public void convertXMLToModel() throws Exception {
+        BpmnModel bpmnModel = readXMLFile();
+        Assertions.assertNotNull(bpmnModel);
+        assertThat(bpmnModel.getPools()).isNotEmpty();
+        Pool pool1 = bpmnModel.getPool("BP01");
+        Assertions.assertNotNull(pool1);
+        Assertions.assertEquals("Pool", pool1.getName());
+        Pool pool2 = bpmnModel.getPool("BP02");
+        Assertions.assertNotNull(pool2);
+        Assertions.assertEquals("Pool2", pool2.getName());
+    }
 
-  protected String getResource() {
-    return "collaborationExtensionElements.bpmn";
-  }
+    protected String getResource() {
+        return "collaborationExtensionElements.bpmn";
+    }
 }

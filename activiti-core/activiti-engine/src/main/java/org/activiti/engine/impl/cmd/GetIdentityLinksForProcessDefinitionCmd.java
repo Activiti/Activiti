@@ -16,8 +16,6 @@
 
 package org.activiti.engine.impl.cmd;
 
-import java.io.Serializable;
-import java.util.List;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -25,28 +23,32 @@ import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.task.IdentityLink;
 
+import java.io.Serializable;
+import java.util.List;
+
 /** */
 public class GetIdentityLinksForProcessDefinitionCmd
-    implements Command<List<IdentityLink>>, Serializable {
+        implements Command<List<IdentityLink>>, Serializable {
 
-  private static final long serialVersionUID = 1L;
-  protected String processDefinitionId;
+    private static final long serialVersionUID = 1L;
+    protected String processDefinitionId;
 
-  public GetIdentityLinksForProcessDefinitionCmd(String processDefinitionId) {
-    this.processDefinitionId = processDefinitionId;
-  }
-
-  @SuppressWarnings({"unchecked", "rawtypes"})
-  public List<IdentityLink> execute(CommandContext commandContext) {
-    ProcessDefinitionEntity processDefinition =
-        commandContext.getProcessDefinitionEntityManager().findById(processDefinitionId);
-
-    if (processDefinition == null) {
-      throw new ActivitiObjectNotFoundException(
-          "Cannot find process definition with id " + processDefinitionId, ProcessDefinition.class);
+    public GetIdentityLinksForProcessDefinitionCmd(String processDefinitionId) {
+        this.processDefinitionId = processDefinitionId;
     }
 
-    List<IdentityLink> identityLinks = (List) processDefinition.getIdentityLinks();
-    return identityLinks;
-  }
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    public List<IdentityLink> execute(CommandContext commandContext) {
+        ProcessDefinitionEntity processDefinition =
+                commandContext.getProcessDefinitionEntityManager().findById(processDefinitionId);
+
+        if (processDefinition == null) {
+            throw new ActivitiObjectNotFoundException(
+                    "Cannot find process definition with id " + processDefinitionId,
+                    ProcessDefinition.class);
+        }
+
+        List<IdentityLink> identityLinks = (List) processDefinition.getIdentityLinks();
+        return identityLinks;
+    }
 }

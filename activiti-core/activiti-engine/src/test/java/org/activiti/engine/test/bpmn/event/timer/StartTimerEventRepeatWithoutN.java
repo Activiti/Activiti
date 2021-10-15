@@ -28,48 +28,48 @@ import org.activiti.engine.test.Deployment;
 /** Test case for ACT-4066 */
 public class StartTimerEventRepeatWithoutN extends PluggableActivitiTestCase {
 
-  protected long counter = 0;
-  protected StartEventListener startEventListener;
+    protected long counter = 0;
+    protected StartEventListener startEventListener;
 
-  class StartEventListener implements ActivitiEventListener {
+    class StartEventListener implements ActivitiEventListener {
 
-    @Override
-    public void onEvent(ActivitiEvent event) {
-      if (event.getType().equals(ActivitiEventType.TIMER_FIRED)) {
-        counter++;
-      }
+        @Override
+        public void onEvent(ActivitiEvent event) {
+            if (event.getType().equals(ActivitiEventType.TIMER_FIRED)) {
+                counter++;
+            }
+        }
+
+        @Override
+        public boolean isFailOnException() {
+            return false;
+        }
     }
 
     @Override
-    public boolean isFailOnException() {
-      return false;
+    protected void setUp() throws Exception {
+        super.setUp();
+
+        startEventListener = new StartEventListener();
+        processEngineConfiguration.getEventDispatcher().addEventListener(startEventListener);
     }
-  }
 
-  @Override
-  protected void setUp() throws Exception {
-    super.setUp();
-
-    startEventListener = new StartEventListener();
-    processEngineConfiguration.getEventDispatcher().addEventListener(startEventListener);
-  }
-
-  @Override
-  protected void tearDown() throws Exception {
-    processEngineConfiguration.getEventDispatcher().removeEventListener(startEventListener);
-    super.tearDown();
-  }
-
-  @Deployment
-  public void testStartTimerEventRepeatWithoutN() {
-    counter = 0;
-
-    try {
-      waitForJobExecutorToProcessAllJobs(5500, 500);
-      fail("job is finished sooner than expected");
-    } catch (ActivitiException e) {
-      assertThat(e.getMessage().startsWith("time limit")).isTrue();
-      assertThat(counter >= 2).isTrue();
+    @Override
+    protected void tearDown() throws Exception {
+        processEngineConfiguration.getEventDispatcher().removeEventListener(startEventListener);
+        super.tearDown();
     }
-  }
+
+    @Deployment
+    public void testStartTimerEventRepeatWithoutN() {
+        counter = 0;
+
+        try {
+            waitForJobExecutorToProcessAllJobs(5500, 500);
+            fail("job is finished sooner than expected");
+        } catch (ActivitiException e) {
+            assertThat(e.getMessage().startsWith("time limit")).isTrue();
+            assertThat(counter >= 2).isTrue();
+        }
+    }
 }

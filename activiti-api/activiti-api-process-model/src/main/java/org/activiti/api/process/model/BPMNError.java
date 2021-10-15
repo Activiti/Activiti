@@ -17,7 +17,7 @@ package org.activiti.api.process.model;
 
 public interface BPMNError extends BPMNActivity {
 
-  String getErrorCode();
+    String getErrorCode();
 
-  String getErrorId();
+    String getErrorId();
 }

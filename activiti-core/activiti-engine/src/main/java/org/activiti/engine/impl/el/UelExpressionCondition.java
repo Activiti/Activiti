@@ -24,35 +24,35 @@ import org.activiti.engine.impl.Condition;
 /** {@link Condition} that resolves an UEL expression at runtime. */
 public class UelExpressionCondition implements Condition {
 
-  protected Expression expression;
+    protected Expression expression;
 
-  public UelExpressionCondition(Expression expression) {
-    this.expression = expression;
-  }
-
-  public boolean evaluate(String sequenceFlowId, DelegateExecution execution) {
-    Object result = expression.getValue(execution);
-
-    if (result == null) {
-      throw new ActivitiException(
-          "condition expression returns null (sequenceFlowId: "
-              + sequenceFlowId
-              + " execution: "
-              + execution
-              + ")");
+    public UelExpressionCondition(Expression expression) {
+        this.expression = expression;
     }
-    if (!(result instanceof Boolean)) {
-      throw new ActivitiException(
-          "condition expression returns non-Boolean (sequenceFlowId: "
-              + sequenceFlowId
-              + " execution: "
-              + execution
-              + "): "
-              + result
-              + " ("
-              + result.getClass().getName()
-              + ")");
+
+    public boolean evaluate(String sequenceFlowId, DelegateExecution execution) {
+        Object result = expression.getValue(execution);
+
+        if (result == null) {
+            throw new ActivitiException(
+                    "condition expression returns null (sequenceFlowId: "
+                            + sequenceFlowId
+                            + " execution: "
+                            + execution
+                            + ")");
+        }
+        if (!(result instanceof Boolean)) {
+            throw new ActivitiException(
+                    "condition expression returns non-Boolean (sequenceFlowId: "
+                            + sequenceFlowId
+                            + " execution: "
+                            + execution
+                            + "): "
+                            + result
+                            + " ("
+                            + result.getClass().getName()
+                            + ")");
+        }
+        return (Boolean) result;
     }
-    return (Boolean) result;
-  }
 }

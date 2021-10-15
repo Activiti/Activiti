@@ -21,19 +21,19 @@ import org.activiti.engine.delegate.event.ActivitiEventType;
 
 /** An {@link org.activiti.engine.delegate.event.ActivitiActivityCancelledEvent} implementation. */
 public class ActivitiActivityCancelledEventImpl extends ActivitiActivityEventImpl
-    implements ActivitiActivityCancelledEvent {
+        implements ActivitiActivityCancelledEvent {
 
-  protected Object cause;
+    protected Object cause;
 
-  public ActivitiActivityCancelledEventImpl() {
-    super(ActivitiEventType.ACTIVITY_CANCELLED);
-  }
+    public ActivitiActivityCancelledEventImpl() {
+        super(ActivitiEventType.ACTIVITY_CANCELLED);
+    }
 
-  public void setCause(Object cause) {
-    this.cause = cause;
-  }
+    public void setCause(Object cause) {
+        this.cause = cause;
+    }
 
-  public Object getCause() {
-    return cause;
-  }
+    public Object getCause() {
+        return cause;
+    }
 }

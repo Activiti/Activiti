@@ -16,36 +16,37 @@
 
 package org.activiti.engine.impl.persistence.entity;
 
+import org.activiti.engine.api.internal.Internal;
+import org.activiti.engine.impl.variable.VariableType;
+
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
-import org.activiti.engine.api.internal.Internal;
-import org.activiti.engine.impl.variable.VariableType;
 
 /** */
 @Internal
 public interface VariableInstanceEntityManager extends EntityManager<VariableInstanceEntity> {
 
-  VariableInstanceEntity create(String name, VariableType type, Object value);
+    VariableInstanceEntity create(String name, VariableType type, Object value);
 
-  List<VariableInstanceEntity> findVariableInstancesByTaskId(String taskId);
+    List<VariableInstanceEntity> findVariableInstancesByTaskId(String taskId);
 
-  List<VariableInstanceEntity> findVariableInstancesByTaskIds(Set<String> taskIds);
+    List<VariableInstanceEntity> findVariableInstancesByTaskIds(Set<String> taskIds);
 
-  List<VariableInstanceEntity> findVariableInstancesByExecutionId(String executionId);
+    List<VariableInstanceEntity> findVariableInstancesByExecutionId(String executionId);
 
-  List<VariableInstanceEntity> findVariableInstancesByExecutionIds(Set<String> executionIds);
+    List<VariableInstanceEntity> findVariableInstancesByExecutionIds(Set<String> executionIds);
 
-  VariableInstanceEntity findVariableInstanceByExecutionAndName(
-      String executionId, String variableName);
+    VariableInstanceEntity findVariableInstanceByExecutionAndName(
+            String executionId, String variableName);
 
-  List<VariableInstanceEntity> findVariableInstancesByExecutionAndNames(
-      String executionId, Collection<String> names);
+    List<VariableInstanceEntity> findVariableInstancesByExecutionAndNames(
+            String executionId, Collection<String> names);
 
-  VariableInstanceEntity findVariableInstanceByTaskAndName(String taskId, String variableName);
+    VariableInstanceEntity findVariableInstanceByTaskAndName(String taskId, String variableName);
 
-  List<VariableInstanceEntity> findVariableInstancesByTaskAndNames(
-      String taskId, Collection<String> names);
+    List<VariableInstanceEntity> findVariableInstancesByTaskAndNames(
+            String taskId, Collection<String> names);
 
-  void deleteVariableInstanceByTask(TaskEntity task);
+    void deleteVariableInstanceByTask(TaskEntity task);
 }

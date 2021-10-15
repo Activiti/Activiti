@@ -17,18 +17,18 @@ package org.activiti.test.matchers;
 
 public class BPMNStartEventMatchers extends ActivityMatchers {
 
-  private static final String START_EVENT = "startEvent";
+    private static final String START_EVENT = "startEvent";
 
-  private BPMNStartEventMatchers(String definitionKey) {
-    super(definitionKey);
-  }
+    private BPMNStartEventMatchers(String definitionKey) {
+        super(definitionKey);
+    }
 
-  @Override
-  public String getActivityType() {
-    return START_EVENT;
-  }
+    @Override
+    public String getActivityType() {
+        return START_EVENT;
+    }
 
-  public static BPMNStartEventMatchers startEvent(String definitionKey) {
-    return new BPMNStartEventMatchers(definitionKey);
-  }
+    public static BPMNStartEventMatchers startEvent(String definitionKey) {
+        return new BPMNStartEventMatchers(definitionKey);
+    }
 }

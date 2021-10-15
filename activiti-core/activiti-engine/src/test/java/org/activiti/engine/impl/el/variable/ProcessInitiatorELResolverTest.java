@@ -26,63 +26,63 @@ import org.junit.Test;
 
 public class ProcessInitiatorELResolverTest {
 
-  private static final String INITIATOR = "initiator";
+    private static final String INITIATOR = "initiator";
 
-  private ProcessInitiatorELResolver resolver = new ProcessInitiatorELResolver();
+    private ProcessInitiatorELResolver resolver = new ProcessInitiatorELResolver();
 
-  @Test
-  public void canResolve_should_returnTrueWhenItsExecutionEntityAndPropertyIsInitiator() {
-    // when
-    boolean canResolve = resolver.canResolve(INITIATOR, new ExecutionEntityImpl());
-    // then
-    assertThat(canResolve).isTrue();
-  }
+    @Test
+    public void canResolve_should_returnTrueWhenItsExecutionEntityAndPropertyIsInitiator() {
+        // when
+        boolean canResolve = resolver.canResolve(INITIATOR, new ExecutionEntityImpl());
+        // then
+        assertThat(canResolve).isTrue();
+    }
 
-  @Test
-  public void canResolve_should_returnFalseWhenItsExecutionEntityAndPropertyIsNotInitiator() {
-    // when
-    boolean canResolve = resolver.canResolve("anyOtherProperty", new ExecutionEntityImpl());
-    // then
-    assertThat(canResolve).isFalse();
-  }
+    @Test
+    public void canResolve_should_returnFalseWhenItsExecutionEntityAndPropertyIsNotInitiator() {
+        // when
+        boolean canResolve = resolver.canResolve("anyOtherProperty", new ExecutionEntityImpl());
+        // then
+        assertThat(canResolve).isFalse();
+    }
 
-  @Test
-  public void canResolve_should_returnFalseWhenItsNotExecutionEntityAndPropertyIsInitiator() {
-    // when
-    boolean canResolve = resolver.canResolve(INITIATOR, mock(VariableScope.class));
-    // then
-    assertThat(canResolve).isFalse();
-  }
+    @Test
+    public void canResolve_should_returnFalseWhenItsNotExecutionEntityAndPropertyIsInitiator() {
+        // when
+        boolean canResolve = resolver.canResolve(INITIATOR, mock(VariableScope.class));
+        // then
+        assertThat(canResolve).isFalse();
+    }
 
-  @Test
-  public void resolve_should_returnProcessInitiator() {
-    // given
-    ExecutionEntity processInstance = mock(ExecutionEntity.class);
-    given(processInstance.getStartUserId()).willReturn("peter");
-    ExecutionEntity variableScope = buildVariableScope(processInstance);
+    @Test
+    public void resolve_should_returnProcessInitiator() {
+        // given
+        ExecutionEntity processInstance = mock(ExecutionEntity.class);
+        given(processInstance.getStartUserId()).willReturn("peter");
+        ExecutionEntity variableScope = buildVariableScope(processInstance);
 
-    // when
-    Object result = resolver.resolve(INITIATOR, variableScope);
+        // when
+        Object result = resolver.resolve(INITIATOR, variableScope);
 
-    // then
-    assertThat(result).isEqualTo("peter");
-  }
+        // then
+        assertThat(result).isEqualTo("peter");
+    }
 
-  @Test
-  public void resolve_should_returnNullWhenVariableScopeDontHaveProcessInstance() {
-    // given
-    ExecutionEntity variableScope = buildVariableScope(null);
+    @Test
+    public void resolve_should_returnNullWhenVariableScopeDontHaveProcessInstance() {
+        // given
+        ExecutionEntity variableScope = buildVariableScope(null);
 
-    // when
-    Object result = resolver.resolve(INITIATOR, variableScope);
+        // when
+        Object result = resolver.resolve(INITIATOR, variableScope);
 
-    // then
-    assertThat(result).isNull();
-  }
+        // then
+        assertThat(result).isNull();
+    }
 
-  private ExecutionEntity buildVariableScope(ExecutionEntity processInstance) {
-    ExecutionEntity variableScope = mock(ExecutionEntity.class);
-    given(variableScope.getProcessInstance()).willReturn(processInstance);
-    return variableScope;
-  }
+    private ExecutionEntity buildVariableScope(ExecutionEntity processInstance) {
+        ExecutionEntity variableScope = mock(ExecutionEntity.class);
+        given(variableScope.getProcessInstance()).willReturn(processInstance);
+        return variableScope;
+    }
 }

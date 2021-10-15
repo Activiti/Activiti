@@ -19,14 +19,14 @@ import java.util.HashMap;
 
 public class ProcessVariablesMap<K, V> extends HashMap<K, V> implements Cloneable {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  @Override
-  public ProcessVariablesMap<K, V> clone() {
-    ProcessVariablesMap<K, V> copy = new ProcessVariablesMap<>();
+    @Override
+    public ProcessVariablesMap<K, V> clone() {
+        ProcessVariablesMap<K, V> copy = new ProcessVariablesMap<>();
 
-    copy.putAll(this);
+        copy.putAll(this);
 
-    return copy;
-  }
+        return copy;
+    }
 }

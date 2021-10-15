@@ -15,60 +15,61 @@
  */
 package org.activiti.api.runtime.model.impl;
 
-import java.util.Objects;
 import org.activiti.api.process.model.BPMNSignal;
 import org.activiti.api.process.model.payloads.SignalPayload;
 
+import java.util.Objects;
+
 public class BPMNSignalImpl extends BPMNElementImpl implements BPMNSignal {
 
-  private SignalPayload signalPayload;
+    private SignalPayload signalPayload;
 
-  public BPMNSignalImpl() {}
+    public BPMNSignalImpl() {}
 
-  public BPMNSignalImpl(String elementId) {
-    this.setElementId(elementId);
-  }
-
-  public SignalPayload getSignalPayload() {
-    return signalPayload;
-  }
-
-  public void setSignalPayload(SignalPayload signalPayload) {
-    this.signalPayload = signalPayload;
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
+    public BPMNSignalImpl(String elementId) {
+        this.setElementId(elementId);
     }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
+
+    public SignalPayload getSignalPayload() {
+        return signalPayload;
     }
-    BPMNSignalImpl that = (BPMNSignalImpl) o;
 
-    return Objects.equals(getElementId(), that.getElementId())
-        && Objects.equals(signalPayload, that.getSignalPayload());
-  }
+    public void setSignalPayload(SignalPayload signalPayload) {
+        this.signalPayload = signalPayload;
+    }
 
-  @Override
-  public int hashCode() {
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        BPMNSignalImpl that = (BPMNSignalImpl) o;
 
-    return Objects.hash(
-        getElementId(),
-        signalPayload != null ? signalPayload.getId() : null,
-        signalPayload != null ? signalPayload.getName() : null);
-  }
+        return Objects.equals(getElementId(), that.getElementId())
+                && Objects.equals(signalPayload, that.getSignalPayload());
+    }
 
-  @Override
-  public String toString() {
-    return "BPMNActivityImpl{"
-        + ", elementId='"
-        + getElementId()
-        + '\''
-        + ", signalPayload='"
-        + (signalPayload != null ? signalPayload.toString() : null)
-        + '\''
-        + '}';
-  }
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(
+                getElementId(),
+                signalPayload != null ? signalPayload.getId() : null,
+                signalPayload != null ? signalPayload.getName() : null);
+    }
+
+    @Override
+    public String toString() {
+        return "BPMNActivityImpl{"
+                + ", elementId='"
+                + getElementId()
+                + '\''
+                + ", signalPayload='"
+                + (signalPayload != null ? signalPayload.toString() : null)
+                + '\''
+                + '}';
+    }
 }

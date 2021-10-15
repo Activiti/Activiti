@@ -17,7 +17,6 @@ package org.activiti.spring.conformance.util.security;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.Collection;
 import org.activiti.api.runtime.shared.security.SecurityManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,66 +27,68 @@ import org.springframework.security.core.context.SecurityContextImpl;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
+import java.util.Collection;
+
 public class SecurityUtil {
 
-  private Logger logger = LoggerFactory.getLogger(SecurityUtil.class);
+    private Logger logger = LoggerFactory.getLogger(SecurityUtil.class);
 
-  private final UserDetailsService userDetailsService;
+    private final UserDetailsService userDetailsService;
 
-  private final SecurityManager securityManager;
+    private final SecurityManager securityManager;
 
-  public SecurityUtil(UserDetailsService userDetailsService, SecurityManager securityManager) {
-    this.userDetailsService = userDetailsService;
-    this.securityManager = securityManager;
-  }
-
-  public void logInAs(String username) {
-
-    UserDetails user = userDetailsService.loadUserByUsername(username);
-    if (user == null) {
-      throw new IllegalStateException(
-          "User " + username + " doesn't exist, please provide a valid user");
+    public SecurityUtil(UserDetailsService userDetailsService, SecurityManager securityManager) {
+        this.userDetailsService = userDetailsService;
+        this.securityManager = securityManager;
     }
-    logger.info("> Logged in as: " + username);
-    SecurityContextHolder.setContext(
-        new SecurityContextImpl(
-            new Authentication() {
-              @Override
-              public Collection<? extends GrantedAuthority> getAuthorities() {
-                return user.getAuthorities();
-              }
 
-              @Override
-              public Object getCredentials() {
-                return user.getPassword();
-              }
+    public void logInAs(String username) {
 
-              @Override
-              public Object getDetails() {
-                return user;
-              }
+        UserDetails user = userDetailsService.loadUserByUsername(username);
+        if (user == null) {
+            throw new IllegalStateException(
+                    "User " + username + " doesn't exist, please provide a valid user");
+        }
+        logger.info("> Logged in as: " + username);
+        SecurityContextHolder.setContext(
+                new SecurityContextImpl(
+                        new Authentication() {
+                            @Override
+                            public Collection<? extends GrantedAuthority> getAuthorities() {
+                                return user.getAuthorities();
+                            }
 
-              @Override
-              public Object getPrincipal() {
-                return user;
-              }
+                            @Override
+                            public Object getCredentials() {
+                                return user.getPassword();
+                            }
 
-              @Override
-              public boolean isAuthenticated() {
-                return true;
-              }
+                            @Override
+                            public Object getDetails() {
+                                return user;
+                            }
 
-              @Override
-              public void setAuthenticated(boolean isAuthenticated)
-                  throws IllegalArgumentException {}
+                            @Override
+                            public Object getPrincipal() {
+                                return user;
+                            }
 
-              @Override
-              public String getName() {
-                return user.getUsername();
-              }
-            }));
-    org.activiti.engine.impl.identity.Authentication.setAuthenticatedUserId(username);
+                            @Override
+                            public boolean isAuthenticated() {
+                                return true;
+                            }
 
-    assertThat(securityManager.getAuthenticatedUserId()).isEqualTo(username);
-  }
+                            @Override
+                            public void setAuthenticated(boolean isAuthenticated)
+                                    throws IllegalArgumentException {}
+
+                            @Override
+                            public String getName() {
+                                return user.getUsername();
+                            }
+                        }));
+        org.activiti.engine.impl.identity.Authentication.setAuthenticatedUserId(username);
+
+        assertThat(securityManager.getAuthenticatedUserId()).isEqualTo(username);
+    }
 }

@@ -16,7 +16,6 @@
 
 package org.activiti.engine.impl.cmd;
 
-import java.io.Serializable;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.impl.interceptor.Command;
@@ -25,46 +24,50 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.VariableInstance;
 import org.activiti.engine.runtime.Execution;
 
+import java.io.Serializable;
+
 public class GetExecutionVariableInstanceCmd implements Command<VariableInstance>, Serializable {
 
-  private static final long serialVersionUID = 1L;
-  protected String executionId;
-  protected String variableName;
-  protected boolean isLocal;
+    private static final long serialVersionUID = 1L;
+    protected String executionId;
+    protected String variableName;
+    protected boolean isLocal;
 
-  public GetExecutionVariableInstanceCmd(String executionId, String variableName, boolean isLocal) {
-    this.executionId = executionId;
-    this.variableName = variableName;
-    this.isLocal = isLocal;
-  }
-
-  @Override
-  public VariableInstance execute(CommandContext commandContext) {
-    if (executionId == null) {
-      throw new ActivitiIllegalArgumentException("executionId is null");
-    }
-    if (variableName == null) {
-      throw new ActivitiIllegalArgumentException("variableName is null");
+    public GetExecutionVariableInstanceCmd(
+            String executionId, String variableName, boolean isLocal) {
+        this.executionId = executionId;
+        this.variableName = variableName;
+        this.isLocal = isLocal;
     }
 
-    ExecutionEntity execution = commandContext.getExecutionEntityManager().findById(executionId);
+    @Override
+    public VariableInstance execute(CommandContext commandContext) {
+        if (executionId == null) {
+            throw new ActivitiIllegalArgumentException("executionId is null");
+        }
+        if (variableName == null) {
+            throw new ActivitiIllegalArgumentException("variableName is null");
+        }
 
-    if (execution == null) {
-      throw new ActivitiObjectNotFoundException(
-          "execution " + executionId + " doesn't exist", Execution.class);
+        ExecutionEntity execution =
+                commandContext.getExecutionEntityManager().findById(executionId);
+
+        if (execution == null) {
+            throw new ActivitiObjectNotFoundException(
+                    "execution " + executionId + " doesn't exist", Execution.class);
+        }
+
+        VariableInstance variableEntity = null;
+        if (isLocal) {
+            variableEntity = execution.getVariableInstanceLocal(variableName, false);
+        } else {
+            variableEntity = execution.getVariableInstance(variableName, false);
+        }
+
+        if (variableEntity != null) {
+            variableEntity.getValue();
+        }
+
+        return variableEntity;
     }
-
-    VariableInstance variableEntity = null;
-    if (isLocal) {
-      variableEntity = execution.getVariableInstanceLocal(variableName, false);
-    } else {
-      variableEntity = execution.getVariableInstance(variableName, false);
-    }
-
-    if (variableEntity != null) {
-      variableEntity.getValue();
-    }
-
-    return variableEntity;
-  }
 }

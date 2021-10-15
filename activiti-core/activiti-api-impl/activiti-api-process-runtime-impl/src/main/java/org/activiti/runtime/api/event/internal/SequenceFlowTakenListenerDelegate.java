@@ -15,7 +15,6 @@
  */
 package org.activiti.runtime.api.event.internal;
 
-import java.util.List;
 import org.activiti.api.process.model.events.BPMNSequenceFlowTakenEvent;
 import org.activiti.api.process.runtime.events.listener.BPMNElementEventListener;
 import org.activiti.engine.delegate.event.ActivitiEvent;
@@ -23,35 +22,38 @@ import org.activiti.engine.delegate.event.ActivitiEventListener;
 import org.activiti.engine.delegate.event.ActivitiSequenceFlowTakenEvent;
 import org.activiti.runtime.api.event.impl.ToSequenceFlowTakenConverter;
 
+import java.util.List;
+
 public class SequenceFlowTakenListenerDelegate implements ActivitiEventListener {
 
-  private List<BPMNElementEventListener<BPMNSequenceFlowTakenEvent>> listeners;
+    private List<BPMNElementEventListener<BPMNSequenceFlowTakenEvent>> listeners;
 
-  private ToSequenceFlowTakenConverter converter;
+    private ToSequenceFlowTakenConverter converter;
 
-  public SequenceFlowTakenListenerDelegate(
-      List<BPMNElementEventListener<BPMNSequenceFlowTakenEvent>> listeners,
-      ToSequenceFlowTakenConverter converter) {
-    this.listeners = listeners;
-    this.converter = converter;
-  }
-
-  @Override
-  public void onEvent(ActivitiEvent event) {
-    if (event instanceof ActivitiSequenceFlowTakenEvent) {
-      converter
-          .from((ActivitiSequenceFlowTakenEvent) event)
-          .ifPresent(
-              convertedEvent -> {
-                for (BPMNElementEventListener<BPMNSequenceFlowTakenEvent> listener : listeners) {
-                  listener.onEvent(convertedEvent);
-                }
-              });
+    public SequenceFlowTakenListenerDelegate(
+            List<BPMNElementEventListener<BPMNSequenceFlowTakenEvent>> listeners,
+            ToSequenceFlowTakenConverter converter) {
+        this.listeners = listeners;
+        this.converter = converter;
     }
-  }
 
-  @Override
-  public boolean isFailOnException() {
-    return false;
-  }
+    @Override
+    public void onEvent(ActivitiEvent event) {
+        if (event instanceof ActivitiSequenceFlowTakenEvent) {
+            converter
+                    .from((ActivitiSequenceFlowTakenEvent) event)
+                    .ifPresent(
+                            convertedEvent -> {
+                                for (BPMNElementEventListener<BPMNSequenceFlowTakenEvent> listener :
+                                        listeners) {
+                                    listener.onEvent(convertedEvent);
+                                }
+                            });
+        }
+    }
+
+    @Override
+    public boolean isFailOnException() {
+        return false;
+    }
 }

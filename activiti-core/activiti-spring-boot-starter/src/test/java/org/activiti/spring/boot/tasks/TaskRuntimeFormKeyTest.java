@@ -36,71 +36,77 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 public class TaskRuntimeFormKeyTest {
 
-  private static final String SINGLE_TASK_PROCESS = "SingleTaskProcess";
+    private static final String SINGLE_TASK_PROCESS = "SingleTaskProcess";
 
-  @Autowired private TaskRuntime taskRuntime;
-  @Autowired private ProcessRuntime processRuntime;
-  @Autowired private SecurityUtil securityUtil;
-  @Autowired private TaskCleanUpUtil taskCleanUpUtil;
+    @Autowired private TaskRuntime taskRuntime;
+    @Autowired private ProcessRuntime processRuntime;
+    @Autowired private SecurityUtil securityUtil;
+    @Autowired private TaskCleanUpUtil taskCleanUpUtil;
 
-  @AfterEach
-  public void taskCleanUp() {
-    taskCleanUpUtil.cleanUpWithAdmin();
-  }
+    @AfterEach
+    public void taskCleanUp() {
+        taskCleanUpUtil.cleanUpWithAdmin();
+    }
 
-  @Test
-  public void standaloneTaskHasFormKey() {
-    securityUtil.logInAs("garth");
-    taskRuntime.create(
-        TaskPayloadBuilder.create()
-            .withName("atask")
-            .withAssignee("garth")
-            .withFormKey("aFormKey")
-            .build());
+    @Test
+    public void standaloneTaskHasFormKey() {
+        securityUtil.logInAs("garth");
+        taskRuntime.create(
+                TaskPayloadBuilder.create()
+                        .withName("atask")
+                        .withAssignee("garth")
+                        .withFormKey("aFormKey")
+                        .build());
 
-    Page<Task> tasks = taskRuntime.tasks(Pageable.of(0, 50));
-    assertThat(tasks.getContent()).hasSize(1);
-    Task task = tasks.getContent().get(0);
+        Page<Task> tasks = taskRuntime.tasks(Pageable.of(0, 50));
+        assertThat(tasks.getContent()).hasSize(1);
+        Task task = tasks.getContent().get(0);
 
-    assertThat(task.getFormKey()).isEqualTo("aFormKey");
+        assertThat(task.getFormKey()).isEqualTo("aFormKey");
 
-    taskRuntime.complete(TaskPayloadBuilder.complete().withTaskId(task.getId()).build());
-  }
+        taskRuntime.complete(TaskPayloadBuilder.complete().withTaskId(task.getId()).build());
+    }
 
-  @Test
-  public void shouldUpdateTaskFormKey() {
-    securityUtil.logInAs("garth");
-    taskRuntime.create(TaskPayloadBuilder.create().withName("atask").withAssignee("garth").build());
+    @Test
+    public void shouldUpdateTaskFormKey() {
+        securityUtil.logInAs("garth");
+        taskRuntime.create(
+                TaskPayloadBuilder.create().withName("atask").withAssignee("garth").build());
 
-    Page<Task> tasks = taskRuntime.tasks(Pageable.of(0, 50));
-    assertThat(tasks.getContent()).hasSize(1);
-    Task task = tasks.getContent().get(0);
+        Page<Task> tasks = taskRuntime.tasks(Pageable.of(0, 50));
+        assertThat(tasks.getContent()).hasSize(1);
+        Task task = tasks.getContent().get(0);
 
-    taskRuntime.update(
-        new UpdateTaskPayloadBuilder().withTaskId(task.getId()).withFormKey("aFormKey").build());
+        taskRuntime.update(
+                new UpdateTaskPayloadBuilder()
+                        .withTaskId(task.getId())
+                        .withFormKey("aFormKey")
+                        .build());
 
-    task = taskRuntime.task(task.getId());
+        task = taskRuntime.task(task.getId());
 
-    assertThat(task.getFormKey()).isEqualTo("aFormKey");
+        assertThat(task.getFormKey()).isEqualTo("aFormKey");
 
-    taskRuntime.complete(TaskPayloadBuilder.complete().withTaskId(task.getId()).build());
-  }
+        taskRuntime.complete(TaskPayloadBuilder.complete().withTaskId(task.getId()).build());
+    }
 
-  @Test
-  public void processTaskHasFormKeyAndTaskDefinitionKey() {
-    securityUtil.logInAs("garth");
-    ProcessInstance process =
-        processRuntime.start(
-            ProcessPayloadBuilder.start().withProcessDefinitionKey(SINGLE_TASK_PROCESS).build());
+    @Test
+    public void processTaskHasFormKeyAndTaskDefinitionKey() {
+        securityUtil.logInAs("garth");
+        ProcessInstance process =
+                processRuntime.start(
+                        ProcessPayloadBuilder.start()
+                                .withProcessDefinitionKey(SINGLE_TASK_PROCESS)
+                                .build());
 
-    Page<Task> tasks = taskRuntime.tasks(Pageable.of(0, 50));
+        Page<Task> tasks = taskRuntime.tasks(Pageable.of(0, 50));
 
-    assertThat(tasks.getContent()).hasSize(1);
-    Task task = tasks.getContent().get(0);
+        assertThat(tasks.getContent()).hasSize(1);
+        Task task = tasks.getContent().get(0);
 
-    assertThat(task.getFormKey()).isEqualTo("taskForm");
-    assertThat(task.getTaskDefinitionKey()).isEqualTo("Task_03l0zc2");
+        assertThat(task.getFormKey()).isEqualTo("taskForm");
+        assertThat(task.getTaskDefinitionKey()).isEqualTo("Task_03l0zc2");
 
-    processRuntime.delete(ProcessPayloadBuilder.delete().withProcessInstance(process).build());
-  }
+        processRuntime.delete(ProcessPayloadBuilder.delete().withProcessInstance(process).build());
+    }
 }

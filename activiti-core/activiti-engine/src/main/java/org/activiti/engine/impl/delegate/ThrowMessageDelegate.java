@@ -20,5 +20,5 @@ import org.activiti.engine.delegate.DelegateExecution;
 
 public interface ThrowMessageDelegate {
 
-  boolean send(DelegateExecution execution, ThrowMessage message);
+    boolean send(DelegateExecution execution, ThrowMessage message);
 }

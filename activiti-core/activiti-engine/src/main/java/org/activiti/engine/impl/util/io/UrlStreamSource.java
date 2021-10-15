@@ -16,26 +16,27 @@
 
 package org.activiti.engine.impl.util.io;
 
+import org.activiti.engine.ActivitiIllegalArgumentException;
+
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import org.activiti.engine.ActivitiIllegalArgumentException;
 
 /** */
 public class UrlStreamSource implements StreamSource {
 
-  URL url;
+    URL url;
 
-  public UrlStreamSource(URL url) {
-    this.url = url;
-  }
-
-  public InputStream getInputStream() {
-    try {
-      return new BufferedInputStream(url.openStream());
-    } catch (IOException e) {
-      throw new ActivitiIllegalArgumentException("couldn't open url '" + url + "'", e);
+    public UrlStreamSource(URL url) {
+        this.url = url;
     }
-  }
+
+    public InputStream getInputStream() {
+        try {
+            return new BufferedInputStream(url.openStream());
+        } catch (IOException e) {
+            throw new ActivitiIllegalArgumentException("couldn't open url '" + url + "'", e);
+        }
+    }
 }

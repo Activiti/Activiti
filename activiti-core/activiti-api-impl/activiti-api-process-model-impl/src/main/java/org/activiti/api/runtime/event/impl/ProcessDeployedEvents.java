@@ -15,18 +15,19 @@
  */
 package org.activiti.api.runtime.event.impl;
 
-import java.util.List;
 import org.activiti.api.process.model.events.ProcessDeployedEvent;
+
+import java.util.List;
 
 public class ProcessDeployedEvents {
 
-  private List<ProcessDeployedEvent> processDeployedEvents;
+    private List<ProcessDeployedEvent> processDeployedEvents;
 
-  public ProcessDeployedEvents(List<ProcessDeployedEvent> processDeployedEvents) {
-    this.processDeployedEvents = processDeployedEvents;
-  }
+    public ProcessDeployedEvents(List<ProcessDeployedEvent> processDeployedEvents) {
+        this.processDeployedEvents = processDeployedEvents;
+    }
 
-  public List<ProcessDeployedEvent> getProcessDeployedEvents() {
-    return processDeployedEvents;
-  }
+    public List<ProcessDeployedEvent> getProcessDeployedEvents() {
+        return processDeployedEvents;
+    }
 }

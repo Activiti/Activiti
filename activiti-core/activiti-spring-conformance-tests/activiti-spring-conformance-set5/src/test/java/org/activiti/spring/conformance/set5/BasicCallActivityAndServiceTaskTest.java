@@ -38,85 +38,85 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 public class BasicCallActivityAndServiceTaskTest {
 
-  private final String processKey = "basiccalla-bdf1f7af-7cc7-45c7-a206-8b5c46a8198f";
+    private final String processKey = "basiccalla-bdf1f7af-7cc7-45c7-a206-8b5c46a8198f";
 
-  @Autowired private ProcessRuntime processRuntime;
+    @Autowired private ProcessRuntime processRuntime;
 
-  @Autowired private SecurityUtil securityUtil;
+    @Autowired private SecurityUtil securityUtil;
 
-  @Autowired private ProcessAdminRuntime processAdminRuntime;
+    @Autowired private ProcessAdminRuntime processAdminRuntime;
 
-  @BeforeEach
-  public void cleanUp() {
-    clearEvents();
-  }
-
-  @Test
-  public void shouldCheckCallActivityWaitingOnUserTask() {
-
-    securityUtil.logInAs("user1");
-
-    ProcessInstance processInstance =
-        processRuntime.start(
-            ProcessPayloadBuilder.start()
-                .withProcessDefinitionKey(processKey)
-                .withBusinessKey("my-business-key")
-                .withName("my-process-instance-name")
-                .build());
-
-    // then
-    assertThat(processInstance).isNotNull();
-    assertThat(processInstance.getStatus())
-        .isEqualTo(ProcessInstance.ProcessInstanceStatus.COMPLETED);
-    assertThat(processInstance.getBusinessKey()).isEqualTo("my-business-key");
-    assertThat(processInstance.getName()).isEqualTo("my-process-instance-name");
-
-    assertThat(RuntimeTestConfiguration.collectedEvents)
-        .extracting(RuntimeEvent::getEventType)
-        .containsExactly(
-            ProcessRuntimeEvent.ProcessEvents.PROCESS_CREATED,
-            ProcessRuntimeEvent.ProcessEvents.PROCESS_STARTED,
-            BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
-            BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
-            BPMNSequenceFlowTakenEvent.SequenceFlowEvents.SEQUENCE_FLOW_TAKEN,
-            BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
-            ProcessRuntimeEvent.ProcessEvents.PROCESS_CREATED,
-            ProcessRuntimeEvent.ProcessEvents.PROCESS_STARTED,
-            BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
-            BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
-            BPMNSequenceFlowTakenEvent.SequenceFlowEvents.SEQUENCE_FLOW_TAKEN,
-            BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
-            BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
-            BPMNSequenceFlowTakenEvent.SequenceFlowEvents.SEQUENCE_FLOW_TAKEN,
-            BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
-            BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
-            ProcessRuntimeEvent.ProcessEvents.PROCESS_COMPLETED,
-            BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
-            BPMNSequenceFlowTakenEvent.SequenceFlowEvents.SEQUENCE_FLOW_TAKEN,
-            BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
-            BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
-            ProcessRuntimeEvent.ProcessEvents.PROCESS_COMPLETED);
-
-    clearEvents();
-  }
-
-  @AfterEach
-  public void cleanup() {
-    securityUtil.logInAs("admin");
-    Page<ProcessInstance> processInstancePage =
-        processAdminRuntime.processInstances(Pageable.of(0, 50));
-    for (ProcessInstance pi : processInstancePage.getContent()) {
-      // We want to delete root processes instances because sub processes will be deleted
-      // automatically when the root ones are deleted
-      if (pi.getParentId() == null) {
-        processAdminRuntime.delete(ProcessPayloadBuilder.delete(pi.getId()));
-      }
+    @BeforeEach
+    public void cleanUp() {
+        clearEvents();
     }
 
-    clearEvents();
-  }
+    @Test
+    public void shouldCheckCallActivityWaitingOnUserTask() {
 
-  public void clearEvents() {
-    RuntimeTestConfiguration.collectedEvents.clear();
-  }
+        securityUtil.logInAs("user1");
+
+        ProcessInstance processInstance =
+                processRuntime.start(
+                        ProcessPayloadBuilder.start()
+                                .withProcessDefinitionKey(processKey)
+                                .withBusinessKey("my-business-key")
+                                .withName("my-process-instance-name")
+                                .build());
+
+        // then
+        assertThat(processInstance).isNotNull();
+        assertThat(processInstance.getStatus())
+                .isEqualTo(ProcessInstance.ProcessInstanceStatus.COMPLETED);
+        assertThat(processInstance.getBusinessKey()).isEqualTo("my-business-key");
+        assertThat(processInstance.getName()).isEqualTo("my-process-instance-name");
+
+        assertThat(RuntimeTestConfiguration.collectedEvents)
+                .extracting(RuntimeEvent::getEventType)
+                .containsExactly(
+                        ProcessRuntimeEvent.ProcessEvents.PROCESS_CREATED,
+                        ProcessRuntimeEvent.ProcessEvents.PROCESS_STARTED,
+                        BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
+                        BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
+                        BPMNSequenceFlowTakenEvent.SequenceFlowEvents.SEQUENCE_FLOW_TAKEN,
+                        BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
+                        ProcessRuntimeEvent.ProcessEvents.PROCESS_CREATED,
+                        ProcessRuntimeEvent.ProcessEvents.PROCESS_STARTED,
+                        BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
+                        BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
+                        BPMNSequenceFlowTakenEvent.SequenceFlowEvents.SEQUENCE_FLOW_TAKEN,
+                        BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
+                        BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
+                        BPMNSequenceFlowTakenEvent.SequenceFlowEvents.SEQUENCE_FLOW_TAKEN,
+                        BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
+                        BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
+                        ProcessRuntimeEvent.ProcessEvents.PROCESS_COMPLETED,
+                        BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
+                        BPMNSequenceFlowTakenEvent.SequenceFlowEvents.SEQUENCE_FLOW_TAKEN,
+                        BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
+                        BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
+                        ProcessRuntimeEvent.ProcessEvents.PROCESS_COMPLETED);
+
+        clearEvents();
+    }
+
+    @AfterEach
+    public void cleanup() {
+        securityUtil.logInAs("admin");
+        Page<ProcessInstance> processInstancePage =
+                processAdminRuntime.processInstances(Pageable.of(0, 50));
+        for (ProcessInstance pi : processInstancePage.getContent()) {
+            // We want to delete root processes instances because sub processes will be deleted
+            // automatically when the root ones are deleted
+            if (pi.getParentId() == null) {
+                processAdminRuntime.delete(ProcessPayloadBuilder.delete(pi.getId()));
+            }
+        }
+
+        clearEvents();
+    }
+
+    public void clearEvents() {
+        RuntimeTestConfiguration.collectedEvents.clear();
+    }
 }

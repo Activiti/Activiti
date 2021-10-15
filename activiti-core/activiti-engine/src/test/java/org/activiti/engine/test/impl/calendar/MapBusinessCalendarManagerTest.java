@@ -16,40 +16,46 @@
 
 package org.activiti.engine.test.impl.calendar;
 
-import static java.util.Collections.emptyMap;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
-import java.util.HashMap;
-import java.util.Map;
+import static java.util.Collections.emptyMap;
+
 import junit.framework.TestCase;
+
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.calendar.BusinessCalendar;
 import org.activiti.engine.impl.calendar.CycleBusinessCalendar;
 import org.activiti.engine.impl.calendar.MapBusinessCalendarManager;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /** */
 public class MapBusinessCalendarManagerTest extends TestCase {
 
-  public void testMapConstructor() {
-    Map<String, BusinessCalendar> calendars = new HashMap<String, BusinessCalendar>(1);
-    CycleBusinessCalendar calendar = new CycleBusinessCalendar(null);
-    calendars.put("someKey", calendar);
-    MapBusinessCalendarManager businessCalendarManager = new MapBusinessCalendarManager(calendars);
+    public void testMapConstructor() {
+        Map<String, BusinessCalendar> calendars = new HashMap<String, BusinessCalendar>(1);
+        CycleBusinessCalendar calendar = new CycleBusinessCalendar(null);
+        calendars.put("someKey", calendar);
+        MapBusinessCalendarManager businessCalendarManager =
+                new MapBusinessCalendarManager(calendars);
 
-    assertThat(businessCalendarManager.getBusinessCalendar("someKey").equals(calendar)).isTrue();
-  }
+        assertThat(businessCalendarManager.getBusinessCalendar("someKey").equals(calendar))
+                .isTrue();
+    }
 
-  public void testInvalidCalendarNameRequest() {
-    MapBusinessCalendarManager businessCalendarManager = new MapBusinessCalendarManager(emptyMap());
+    public void testInvalidCalendarNameRequest() {
+        MapBusinessCalendarManager businessCalendarManager =
+                new MapBusinessCalendarManager(emptyMap());
 
-    assertThatExceptionOfType(ActivitiException.class)
-        .isThrownBy(() -> businessCalendarManager.getBusinessCalendar("INVALID"))
-        .withMessageContaining("INVALID does not exist");
-  }
+        assertThatExceptionOfType(ActivitiException.class)
+                .isThrownBy(() -> businessCalendarManager.getBusinessCalendar("INVALID"))
+                .withMessageContaining("INVALID does not exist");
+    }
 
-  public void testNullCalendars() {
-    assertThatExceptionOfType(IllegalArgumentException.class)
-        .isThrownBy(() -> new MapBusinessCalendarManager(null));
-  }
+    public void testNullCalendars() {
+        assertThatExceptionOfType(IllegalArgumentException.class)
+                .isThrownBy(() -> new MapBusinessCalendarManager(null));
+    }
 }

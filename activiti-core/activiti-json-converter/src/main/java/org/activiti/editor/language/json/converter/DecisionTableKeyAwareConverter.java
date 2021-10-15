@@ -16,11 +16,12 @@
 
 package org.activiti.editor.language.json.converter;
 
-import java.util.Map;
 import org.activiti.editor.language.json.model.ModelInfo;
+
+import java.util.Map;
 
 /** */
 public interface DecisionTableKeyAwareConverter {
 
-  public void setDecisionTableKeyMap(Map<String, ModelInfo> decisionTableMap);
+    public void setDecisionTableKeyMap(Map<String, ModelInfo> decisionTableMap);
 }

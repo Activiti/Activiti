@@ -28,5 +28,5 @@ import org.activiti.engine.impl.db.IdBlock;
 @Internal
 public interface IdGenerator {
 
-  String getNextId();
+    String getNextId();
 }

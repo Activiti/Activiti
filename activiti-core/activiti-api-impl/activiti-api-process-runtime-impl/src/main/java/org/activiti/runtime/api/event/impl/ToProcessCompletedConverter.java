@@ -15,26 +15,28 @@
  */
 package org.activiti.runtime.api.event.impl;
 
-import java.util.Optional;
 import org.activiti.api.process.runtime.events.ProcessCompletedEvent;
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.runtime.api.model.impl.APIProcessInstanceConverter;
 
+import java.util.Optional;
+
 public class ToProcessCompletedConverter
-    implements EventConverter<ProcessCompletedEvent, ActivitiEntityEvent> {
+        implements EventConverter<ProcessCompletedEvent, ActivitiEntityEvent> {
 
-  private APIProcessInstanceConverter processInstanceConverter;
+    private APIProcessInstanceConverter processInstanceConverter;
 
-  public ToProcessCompletedConverter(APIProcessInstanceConverter processInstanceConverter) {
-    this.processInstanceConverter = processInstanceConverter;
-  }
+    public ToProcessCompletedConverter(APIProcessInstanceConverter processInstanceConverter) {
+        this.processInstanceConverter = processInstanceConverter;
+    }
 
-  @Override
-  public Optional<ProcessCompletedEvent> from(ActivitiEntityEvent internalEvent) {
-    return Optional.of(
-        new ProcessCompletedImpl(
-            processInstanceConverter.from(
-                ((ExecutionEntity) internalEvent.getEntity()).getProcessInstance())));
-  }
+    @Override
+    public Optional<ProcessCompletedEvent> from(ActivitiEntityEvent internalEvent) {
+        return Optional.of(
+                new ProcessCompletedImpl(
+                        processInstanceConverter.from(
+                                ((ExecutionEntity) internalEvent.getEntity())
+                                        .getProcessInstance())));
+    }
 }

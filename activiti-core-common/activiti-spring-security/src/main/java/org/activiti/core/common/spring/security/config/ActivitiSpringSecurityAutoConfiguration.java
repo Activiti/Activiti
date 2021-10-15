@@ -38,66 +38,66 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class ActivitiSpringSecurityAutoConfiguration {
 
-  @Bean
-  @ConditionalOnMissingBean
-  public GrantedAuthoritiesResolver grantedAuthoritiesResolver() {
-    return new SimpleGrantedAuthoritiesResolver();
-  }
+    @Bean
+    @ConditionalOnMissingBean
+    public GrantedAuthoritiesResolver grantedAuthoritiesResolver() {
+        return new SimpleGrantedAuthoritiesResolver();
+    }
 
-  @Bean
-  @ConditionalOnMissingBean
-  public GrantedAuthoritiesGroupsMapper grantedAuthoritiesGroupsMapper() {
-    return new SimpleGrantedAuthoritiesGroupsMapper();
-  }
-  ;
+    @Bean
+    @ConditionalOnMissingBean
+    public GrantedAuthoritiesGroupsMapper grantedAuthoritiesGroupsMapper() {
+        return new SimpleGrantedAuthoritiesGroupsMapper();
+    }
+    ;
 
-  @Bean
-  @ConditionalOnMissingBean
-  public GrantedAuthoritiesRolesMapper grantedAuthoritiesRolesMapper() {
-    return new SimpleGrantedAuthoritiesRolesMapper();
-  }
+    @Bean
+    @ConditionalOnMissingBean
+    public GrantedAuthoritiesRolesMapper grantedAuthoritiesRolesMapper() {
+        return new SimpleGrantedAuthoritiesRolesMapper();
+    }
 
-  @Bean
-  @ConditionalOnMissingBean
-  public SecurityContextPrincipalProvider securityContextPrincipalProvider() {
-    return new LocalSpringSecurityContextPrincipalProvider();
-  }
+    @Bean
+    @ConditionalOnMissingBean
+    public SecurityContextPrincipalProvider securityContextPrincipalProvider() {
+        return new LocalSpringSecurityContextPrincipalProvider();
+    }
 
-  @Bean
-  @ConditionalOnMissingBean
-  public PrincipalIdentityProvider principalIdentityProvider() {
-    return new AuthenticationPrincipalIdentityProvider();
-  }
+    @Bean
+    @ConditionalOnMissingBean
+    public PrincipalIdentityProvider principalIdentityProvider() {
+        return new AuthenticationPrincipalIdentityProvider();
+    }
 
-  @Bean
-  @ConditionalOnMissingBean
-  public PrincipalGroupsProvider principalGroupsProvider(
-      GrantedAuthoritiesResolver grantedAuthoritiesResolver,
-      GrantedAuthoritiesGroupsMapper grantedAuthoritiesGroupsMapper) {
-    return new AuthenticationPrincipalGroupsProvider(
-        grantedAuthoritiesResolver, grantedAuthoritiesGroupsMapper);
-  }
+    @Bean
+    @ConditionalOnMissingBean
+    public PrincipalGroupsProvider principalGroupsProvider(
+            GrantedAuthoritiesResolver grantedAuthoritiesResolver,
+            GrantedAuthoritiesGroupsMapper grantedAuthoritiesGroupsMapper) {
+        return new AuthenticationPrincipalGroupsProvider(
+                grantedAuthoritiesResolver, grantedAuthoritiesGroupsMapper);
+    }
 
-  @Bean
-  @ConditionalOnMissingBean
-  public PrincipalRolesProvider principalRolessProvider(
-      GrantedAuthoritiesResolver grantedAuthoritiesResolver,
-      GrantedAuthoritiesRolesMapper grantedAuthoritiesRolesMapper) {
-    return new AuthenticationPrincipalRolesProvider(
-        grantedAuthoritiesResolver, grantedAuthoritiesRolesMapper);
-  }
+    @Bean
+    @ConditionalOnMissingBean
+    public PrincipalRolesProvider principalRolessProvider(
+            GrantedAuthoritiesResolver grantedAuthoritiesResolver,
+            GrantedAuthoritiesRolesMapper grantedAuthoritiesRolesMapper) {
+        return new AuthenticationPrincipalRolesProvider(
+                grantedAuthoritiesResolver, grantedAuthoritiesRolesMapper);
+    }
 
-  @Bean
-  @ConditionalOnMissingBean
-  public SecurityManager securityManager(
-      SecurityContextPrincipalProvider securityContextPrincipalProvider,
-      PrincipalIdentityProvider principalIdentityProvider,
-      PrincipalGroupsProvider principalGroupsProvider,
-      PrincipalRolesProvider principalRolessProvider) {
-    return new LocalSpringSecurityManager(
-        securityContextPrincipalProvider,
-        principalIdentityProvider,
-        principalGroupsProvider,
-        principalRolessProvider);
-  }
+    @Bean
+    @ConditionalOnMissingBean
+    public SecurityManager securityManager(
+            SecurityContextPrincipalProvider securityContextPrincipalProvider,
+            PrincipalIdentityProvider principalIdentityProvider,
+            PrincipalGroupsProvider principalGroupsProvider,
+            PrincipalRolesProvider principalRolessProvider) {
+        return new LocalSpringSecurityManager(
+                securityContextPrincipalProvider,
+                principalIdentityProvider,
+                principalGroupsProvider,
+                principalRolessProvider);
+    }
 }

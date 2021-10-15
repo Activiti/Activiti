@@ -15,14 +15,15 @@
  */
 package org.activiti.api.runtime.model.impl;
 
-import java.util.Date;
 import org.springframework.core.convert.converter.Converter;
+
+import java.util.Date;
 
 @ProcessVariableTypeConverter
 public class DateToStringConverter implements Converter<Date, String> {
 
-  @Override
-  public String convert(Date source) {
-    return source.toInstant().toString();
-  }
+    @Override
+    public String convert(Date source) {
+        return source.toInstant().toString();
+    }
 }

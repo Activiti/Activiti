@@ -21,19 +21,19 @@ import org.activiti.engine.impl.persistence.entity.data.DataManager;
 import org.activiti.engine.impl.persistence.entity.data.integration.IntegrationContextDataManager;
 
 public class IntegrationContextManagerImpl extends AbstractEntityManager<IntegrationContextEntity>
-    implements IntegrationContextManager {
+        implements IntegrationContextManager {
 
-  private final IntegrationContextDataManager dataManager;
+    private final IntegrationContextDataManager dataManager;
 
-  public IntegrationContextManagerImpl(
-      ProcessEngineConfigurationImpl processEngineConfiguration,
-      IntegrationContextDataManager dataManager) {
-    super(processEngineConfiguration);
-    this.dataManager = dataManager;
-  }
+    public IntegrationContextManagerImpl(
+            ProcessEngineConfigurationImpl processEngineConfiguration,
+            IntegrationContextDataManager dataManager) {
+        super(processEngineConfiguration);
+        this.dataManager = dataManager;
+    }
 
-  @Override
-  protected DataManager<IntegrationContextEntity> getDataManager() {
-    return dataManager;
-  }
+    @Override
+    protected DataManager<IntegrationContextEntity> getDataManager() {
+        return dataManager;
+    }
 }

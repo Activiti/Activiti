@@ -16,25 +16,26 @@
 
 package org.activiti.engine.impl.persistence.entity;
 
-import java.util.Date;
 import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.history.HistoricDetail;
+
+import java.util.Date;
 
 /** */
 @Internal
 public interface HistoricDetailEntity extends HistoricDetail, Entity {
 
-  void setProcessInstanceId(String processInstanceId);
+    void setProcessInstanceId(String processInstanceId);
 
-  void setActivityInstanceId(String activityInstanceId);
+    void setActivityInstanceId(String activityInstanceId);
 
-  void setTaskId(String taskId);
+    void setTaskId(String taskId);
 
-  void setExecutionId(String executionId);
+    void setExecutionId(String executionId);
 
-  void setTime(Date time);
+    void setTime(Date time);
 
-  String getDetailType();
+    String getDetailType();
 
-  void setDetailType(String detailType);
+    void setDetailType(String detailType);
 }

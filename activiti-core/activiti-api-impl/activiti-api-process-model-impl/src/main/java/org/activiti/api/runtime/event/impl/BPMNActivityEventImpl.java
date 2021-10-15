@@ -19,12 +19,12 @@ import org.activiti.api.process.model.BPMNActivity;
 import org.activiti.api.process.model.events.BPMNActivityEvent;
 
 public abstract class BPMNActivityEventImpl
-    extends RuntimeEventImpl<BPMNActivity, BPMNActivityEvent.ActivityEvents>
-    implements BPMNActivityEvent {
+        extends RuntimeEventImpl<BPMNActivity, BPMNActivityEvent.ActivityEvents>
+        implements BPMNActivityEvent {
 
-  public BPMNActivityEventImpl() {}
+    public BPMNActivityEventImpl() {}
 
-  public BPMNActivityEventImpl(BPMNActivity entity) {
-    super(entity);
-  }
+    public BPMNActivityEventImpl(BPMNActivity entity) {
+        super(entity);
+    }
 }

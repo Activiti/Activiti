@@ -18,78 +18,79 @@ package org.activiti.common.util;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
+import org.junit.jupiter.api.Test;
+
 import java.time.DateTimeException;
 import java.time.Duration;
 import java.time.format.DateTimeParseException;
 import java.util.Date;
-import org.junit.jupiter.api.Test;
 
 public class DateFormatterProviderTest {
 
-  private DateFormatterProvider provider =
-      new DateFormatterProvider("yyyy-MM-dd[['T']HH:mm:ss[.SSS'Z']]");
+    private DateFormatterProvider provider =
+            new DateFormatterProvider("yyyy-MM-dd[['T']HH:mm:ss[.SSS'Z']]");
 
-  @Test
-  public void should_returnDate_when_stringRepresentsADate() {
+    @Test
+    public void should_returnDate_when_stringRepresentsADate() {
 
-    String dateStr = "1970-01-01";
+        String dateStr = "1970-01-01";
 
-    Date date = provider.toDate(dateStr);
+        Date date = provider.toDate(dateStr);
 
-    assertThat(date).hasTime(0);
-  }
+        assertThat(date).hasTime(0);
+    }
 
-  @Test
-  public void should_returnDate_when_stringRepresentsADateWithTimeInformation() {
+    @Test
+    public void should_returnDate_when_stringRepresentsADateWithTimeInformation() {
 
-    String dateStr = "1970-01-01T01:01:01.001Z";
-    // calculate number of milliseconds after 1970-01-01T00:00:00.000Z
-    long time =
-        Duration.ofHours(1).toMillis()
-            + Duration.ofMinutes(1).toMillis()
-            + Duration.ofSeconds(1).toMillis()
-            + 1;
+        String dateStr = "1970-01-01T01:01:01.001Z";
+        // calculate number of milliseconds after 1970-01-01T00:00:00.000Z
+        long time =
+                Duration.ofHours(1).toMillis()
+                        + Duration.ofMinutes(1).toMillis()
+                        + Duration.ofSeconds(1).toMillis()
+                        + 1;
 
-    Date date = provider.toDate(dateStr);
+        Date date = provider.toDate(dateStr);
 
-    assertThat(date).hasTime(time);
-  }
+        assertThat(date).hasTime(time);
+    }
 
-  @Test
-  public void should_throwException_when_stringIsNotADate() {
+    @Test
+    public void should_throwException_when_stringIsNotADate() {
 
-    String dateStr = "this is not a date";
+        String dateStr = "this is not a date";
 
-    assertThatExceptionOfType(DateTimeParseException.class)
-        .isThrownBy(() -> provider.parse(dateStr));
-  }
+        assertThatExceptionOfType(DateTimeParseException.class)
+                .isThrownBy(() -> provider.parse(dateStr));
+    }
 
-  @Test
-  public void should_returnDate_when_longIsProvided() {
+    @Test
+    public void should_returnDate_when_longIsProvided() {
 
-    long time = 1000;
+        long time = 1000;
 
-    Date date = provider.toDate(time);
+        Date date = provider.toDate(time);
 
-    assertThat(date).hasTime(time);
-  }
+        assertThat(date).hasTime(time);
+    }
 
-  @Test
-  public void should_returnDate_when_dateIsProvided() {
+    @Test
+    public void should_returnDate_when_dateIsProvided() {
 
-    Date initialDate = new Date(1000);
+        Date initialDate = new Date(1000);
 
-    Date date = provider.toDate(initialDate);
+        Date date = provider.toDate(initialDate);
 
-    assertThat(date).isEqualTo(initialDate);
-  }
+        assertThat(date).isEqualTo(initialDate);
+    }
 
-  @Test
-  public void should_throwException_when_isNotAStringADateOrALong() {
-    double value = 1.2;
+    @Test
+    public void should_throwException_when_isNotAStringADateOrALong() {
+        double value = 1.2;
 
-    assertThatExceptionOfType(DateTimeException.class)
-        .isThrownBy(() -> provider.toDate(value))
-        .withMessageContaining("Error while parsing date");
-  }
+        assertThatExceptionOfType(DateTimeException.class)
+                .isThrownBy(() -> provider.toDate(value))
+                .withMessageContaining("Error while parsing date");
+    }
 }

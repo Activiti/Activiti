@@ -25,9 +25,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 @Configuration
 public class ActivitiSpringIdentityAutoConfiguration {
 
-  @Bean
-  @ConditionalOnMissingBean
-  public UserGroupManager userGroupManager(UserDetailsService userDetailsService) {
-    return new ActivitiUserGroupManagerImpl(userDetailsService);
-  }
+    @Bean
+    @ConditionalOnMissingBean
+    public UserGroupManager userGroupManager(UserDetailsService userDetailsService) {
+        return new ActivitiUserGroupManagerImpl(userDetailsService);
+    }
 }

@@ -25,11 +25,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 public class ActivitiUserGroupManagerImplIT {
 
-  @Autowired private UserGroupManager userGroupManager;
+    @Autowired private UserGroupManager userGroupManager;
 
-  @Test
-  public void onlyAdminShouldHaveAdminRole() throws Exception {
-    assertThat(userGroupManager.getUserRoles("user")).doesNotContain("ACTIVITI_ADMIN");
-    assertThat(userGroupManager.getUserRoles("admin")).contains("ACTIVITI_ADMIN");
-  }
+    @Test
+    public void onlyAdminShouldHaveAdminRole() throws Exception {
+        assertThat(userGroupManager.getUserRoles("user")).doesNotContain("ACTIVITI_ADMIN");
+        assertThat(userGroupManager.getUserRoles("admin")).contains("ACTIVITI_ADMIN");
+    }
 }

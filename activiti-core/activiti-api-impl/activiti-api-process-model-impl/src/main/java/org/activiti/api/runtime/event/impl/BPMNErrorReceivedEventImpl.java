@@ -19,22 +19,22 @@ import org.activiti.api.process.model.BPMNError;
 import org.activiti.api.process.model.events.BPMNErrorReceivedEvent;
 
 public class BPMNErrorReceivedEventImpl
-    extends RuntimeEventImpl<BPMNError, BPMNErrorReceivedEvent.ErrorEvents>
-    implements BPMNErrorReceivedEvent {
+        extends RuntimeEventImpl<BPMNError, BPMNErrorReceivedEvent.ErrorEvents>
+        implements BPMNErrorReceivedEvent {
 
-  public BPMNErrorReceivedEventImpl() {}
+    public BPMNErrorReceivedEventImpl() {}
 
-  public BPMNErrorReceivedEventImpl(BPMNError entity) {
-    super(entity);
-  }
+    public BPMNErrorReceivedEventImpl(BPMNError entity) {
+        super(entity);
+    }
 
-  @Override
-  public ErrorEvents getEventType() {
-    return ErrorEvents.ERROR_RECEIVED;
-  }
+    @Override
+    public ErrorEvents getEventType() {
+        return ErrorEvents.ERROR_RECEIVED;
+    }
 
-  @Override
-  public String toString() {
-    return "BPMNErrorReceivedEventImpl{" + super.toString() + "}";
-  }
+    @Override
+    public String toString() {
+        return "BPMNErrorReceivedEventImpl{" + super.toString() + "}";
+    }
 }

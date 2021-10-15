@@ -23,9 +23,9 @@ import org.activiti.engine.delegate.JavaDelegate;
 /** */
 public class ToUpperCaseFieldInjected implements JavaDelegate {
 
-  private Expression text;
+    private Expression text;
 
-  public void execute(DelegateExecution execution) {
-    execution.setVariable("var", ((String) text.getValue(execution)).toUpperCase());
-  }
+    public void execute(DelegateExecution execution) {
+        execution.setVariable("var", ((String) text.getValue(execution)).toUpperCase());
+    }
 }

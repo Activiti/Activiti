@@ -35,48 +35,49 @@ import org.springframework.test.context.TestPropertySource;
 @TestPropertySource("classpath:application-with-sec-policies.properties")
 public class ProcessRuntimeSecurityPoliciesIT {
 
-  @Autowired private ProcessRuntime processRuntime;
+    @Autowired private ProcessRuntime processRuntime;
 
-  @Autowired private ProcessAdminRuntime processAdminRuntime;
+    @Autowired private ProcessAdminRuntime processAdminRuntime;
 
-  @Autowired private SecurityUtil securityUtil;
+    @Autowired private SecurityUtil securityUtil;
 
-  @Autowired private ProcessCleanUpUtil processCleanUpUtil;
+    @Autowired private ProcessCleanUpUtil processCleanUpUtil;
 
-  @AfterEach
-  public void cleanUp() {
-    processCleanUpUtil.cleanUpWithAdmin();
-  }
+    @AfterEach
+    public void cleanUp() {
+        processCleanUpUtil.cleanUpWithAdmin();
+    }
 
-  @Test
-  public void getRestrictedProcessDefs() {
+    @Test
+    public void getRestrictedProcessDefs() {
 
-    securityUtil.logInAs("user");
+        securityUtil.logInAs("user");
 
-    ProcessRuntimeConfiguration configuration =
-        processRuntime.configuration(); // @TODO: I should get the security policies defined here.
-    assertThat(configuration).isNotNull();
-    Page<ProcessDefinition> processDefinitionPage =
-        processRuntime.processDefinitions(Pageable.of(0, 50));
-    assertThat(processDefinitionPage.getContent()).isNotNull();
-    assertThat(processDefinitionPage.getContent()).hasSize(2);
-  }
+        ProcessRuntimeConfiguration configuration =
+                processRuntime
+                        .configuration(); // @TODO: I should get the security policies defined here.
+        assertThat(configuration).isNotNull();
+        Page<ProcessDefinition> processDefinitionPage =
+                processRuntime.processDefinitions(Pageable.of(0, 50));
+        assertThat(processDefinitionPage.getContent()).isNotNull();
+        assertThat(processDefinitionPage.getContent()).hasSize(2);
+    }
 
-  @Test
-  public void getAllProcessDefsForAdmin() {
+    @Test
+    public void getAllProcessDefsForAdmin() {
 
-    securityUtil.logInAs("admin");
+        securityUtil.logInAs("admin");
 
-    Page<ProcessDefinition> processDefinitionPage =
-        processAdminRuntime.processDefinitions(Pageable.of(0, 50));
-    assertThat(processDefinitionPage.getContent()).isNotNull();
-    assertThat(processDefinitionPage.getContent())
-        .extracting(ProcessDefinition::getKey)
-        .contains(
-            "categorizeProcessConnectors",
-            "categorizeHumanProcess",
-            "categorizeProcess",
-            "integrationGatewayProcess",
-            "waiter");
-  }
+        Page<ProcessDefinition> processDefinitionPage =
+                processAdminRuntime.processDefinitions(Pageable.of(0, 50));
+        assertThat(processDefinitionPage.getContent()).isNotNull();
+        assertThat(processDefinitionPage.getContent())
+                .extracting(ProcessDefinition::getKey)
+                .contains(
+                        "categorizeProcessConnectors",
+                        "categorizeHumanProcess",
+                        "categorizeProcess",
+                        "integrationGatewayProcess",
+                        "waiter");
+    }
 }

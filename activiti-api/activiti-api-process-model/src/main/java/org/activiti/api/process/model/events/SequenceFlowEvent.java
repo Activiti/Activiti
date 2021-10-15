@@ -19,9 +19,9 @@ import org.activiti.api.model.shared.event.RuntimeEvent;
 import org.activiti.api.process.model.BPMNSequenceFlow;
 
 public interface SequenceFlowEvent
-    extends RuntimeEvent<BPMNSequenceFlow, SequenceFlowEvent.SequenceFlowEvents> {
+        extends RuntimeEvent<BPMNSequenceFlow, SequenceFlowEvent.SequenceFlowEvents> {
 
-  enum SequenceFlowEvents {
-    SEQUENCE_FLOW_TAKEN
-  }
+    enum SequenceFlowEvents {
+        SEQUENCE_FLOW_TAKEN
+    }
 }

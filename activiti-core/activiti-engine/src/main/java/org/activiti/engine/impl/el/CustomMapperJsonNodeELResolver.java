@@ -16,10 +16,12 @@
 package org.activiti.engine.impl.el;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import javax.el.CompositeELResolver;
-import javax.el.ELResolver;
+
 import org.activiti.core.el.JsonNodeELResolver;
 import org.activiti.engine.impl.context.Context;
+
+import javax.el.CompositeELResolver;
+import javax.el.ELResolver;
 
 /**
  * Defines property resolution behavior on JsonNodes.
@@ -29,8 +31,8 @@ import org.activiti.engine.impl.context.Context;
  */
 public class CustomMapperJsonNodeELResolver extends JsonNodeELResolver {
 
-  @Override
-  protected ObjectMapper getObjectMapper() {
-    return Context.getProcessEngineConfiguration().getObjectMapper();
-  }
+    @Override
+    protected ObjectMapper getObjectMapper() {
+        return Context.getProcessEngineConfiguration().getObjectMapper();
+    }
 }

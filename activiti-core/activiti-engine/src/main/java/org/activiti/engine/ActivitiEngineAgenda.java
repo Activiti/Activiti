@@ -22,22 +22,22 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 @Internal
 public interface ActivitiEngineAgenda extends Agenda {
 
-  void planContinueProcessOperation(ExecutionEntity execution);
+    void planContinueProcessOperation(ExecutionEntity execution);
 
-  void planContinueProcessSynchronousOperation(ExecutionEntity execution);
+    void planContinueProcessSynchronousOperation(ExecutionEntity execution);
 
-  void planContinueProcessInCompensation(ExecutionEntity execution);
+    void planContinueProcessInCompensation(ExecutionEntity execution);
 
-  void planContinueMultiInstanceOperation(ExecutionEntity execution);
+    void planContinueMultiInstanceOperation(ExecutionEntity execution);
 
-  void planTakeOutgoingSequenceFlowsOperation(
-      ExecutionEntity execution, boolean evaluateConditions);
+    void planTakeOutgoingSequenceFlowsOperation(
+            ExecutionEntity execution, boolean evaluateConditions);
 
-  void planEndExecutionOperation(ExecutionEntity execution);
+    void planEndExecutionOperation(ExecutionEntity execution);
 
-  void planTriggerExecutionOperation(ExecutionEntity execution);
+    void planTriggerExecutionOperation(ExecutionEntity execution);
 
-  void planDestroyScopeOperation(ExecutionEntity execution);
+    void planDestroyScopeOperation(ExecutionEntity execution);
 
-  void planExecuteInactiveBehaviorsOperation();
+    void planExecuteInactiveBehaviorsOperation();
 }

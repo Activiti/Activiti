@@ -25,11 +25,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 public class ConnectorsAutoConfigurationIT {
 
-  @Autowired private DefaultServiceTaskBehavior serviceTaskBehavior;
+    @Autowired private DefaultServiceTaskBehavior serviceTaskBehavior;
 
-  @Test
-  public void shouldLoadDefaultServiceTaskBehavior() {
-    // then
-    assertThat(serviceTaskBehavior).isNotNull();
-  }
+    @Test
+    public void shouldLoadDefaultServiceTaskBehavior() {
+        // then
+        assertThat(serviceTaskBehavior).isNotNull();
+    }
 }

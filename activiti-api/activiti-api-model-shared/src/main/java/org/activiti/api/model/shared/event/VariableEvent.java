@@ -18,13 +18,13 @@ package org.activiti.api.model.shared.event;
 import org.activiti.api.model.shared.model.VariableInstance;
 
 public interface VariableEvent
-    extends RuntimeEvent<VariableInstance, VariableEvent.VariableEvents> {
+        extends RuntimeEvent<VariableInstance, VariableEvent.VariableEvents> {
 
-  enum VariableEvents {
-    VARIABLE_CREATED,
+    enum VariableEvents {
+        VARIABLE_CREATED,
 
-    VARIABLE_UPDATED,
+        VARIABLE_UPDATED,
 
-    VARIABLE_DELETED
-  }
+        VARIABLE_DELETED
+    }
 }

@@ -23,11 +23,11 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 /** */
 public final class SchemaOperationsProcessEngineBuild implements Command<Object> {
 
-  public Object execute(CommandContext commandContext) {
-    DbSqlSession dbSqlSession = commandContext.getDbSqlSession();
-    if (dbSqlSession != null) {
-      dbSqlSession.performSchemaOperationsProcessEngineBuild();
+    public Object execute(CommandContext commandContext) {
+        DbSqlSession dbSqlSession = commandContext.getDbSqlSession();
+        if (dbSqlSession != null) {
+            dbSqlSession.performSchemaOperationsProcessEngineBuild();
+        }
+        return null;
     }
-    return null;
-  }
 }

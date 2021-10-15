@@ -16,17 +16,18 @@
 
 package org.activiti.engine.impl.cmd;
 
-import java.io.Serializable;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.repository.Model;
 
+import java.io.Serializable;
+
 /** */
 public class CreateModelCmd implements Command<Model>, Serializable {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  public Model execute(CommandContext commandContext) {
-    return commandContext.getModelEntityManager().create();
-  }
+    public Model execute(CommandContext commandContext) {
+        return commandContext.getModelEntityManager().create();
+    }
 }

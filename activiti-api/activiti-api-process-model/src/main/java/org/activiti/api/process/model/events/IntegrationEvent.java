@@ -19,13 +19,13 @@ import org.activiti.api.model.shared.event.RuntimeEvent;
 import org.activiti.api.process.model.IntegrationContext;
 
 public interface IntegrationEvent
-    extends RuntimeEvent<IntegrationContext, IntegrationEvent.IntegrationEvents> {
+        extends RuntimeEvent<IntegrationContext, IntegrationEvent.IntegrationEvents> {
 
-  enum IntegrationEvents {
-    INTEGRATION_REQUESTED,
+    enum IntegrationEvents {
+        INTEGRATION_REQUESTED,
 
-    INTEGRATION_RESULT_RECEIVED,
+        INTEGRATION_RESULT_RECEIVED,
 
-    INTEGRATION_ERROR_RECEIVED
-  }
+        INTEGRATION_ERROR_RECEIVED
+    }
 }

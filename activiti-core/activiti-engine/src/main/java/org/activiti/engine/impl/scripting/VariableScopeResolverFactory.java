@@ -22,11 +22,12 @@ import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 /** */
 public class VariableScopeResolverFactory implements ResolverFactory {
 
-  public Resolver createResolver(
-      ProcessEngineConfigurationImpl processEngineConfiguration, VariableScope variableScope) {
-    if (variableScope != null) {
-      return new VariableScopeResolver(processEngineConfiguration, variableScope);
+    public Resolver createResolver(
+            ProcessEngineConfigurationImpl processEngineConfiguration,
+            VariableScope variableScope) {
+        if (variableScope != null) {
+            return new VariableScopeResolver(processEngineConfiguration, variableScope);
+        }
+        return null;
     }
-    return null;
-  }
 }

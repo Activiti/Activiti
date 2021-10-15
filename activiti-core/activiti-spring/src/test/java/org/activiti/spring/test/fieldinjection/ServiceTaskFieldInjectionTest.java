@@ -16,51 +16,53 @@
 
 package org.activiti.spring.test.fieldinjection;
 
-import static java.util.Collections.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.Map;
+import static java.util.Collections.singletonMap;
+
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 import org.activiti.spring.impl.test.SpringActivitiTestCase;
 import org.springframework.test.context.ContextConfiguration;
 
+import java.util.Map;
+
 /** */
 @ContextConfiguration(
-    "classpath:org/activiti/spring/test/fieldinjection/fieldInjectionSpringTest-context.xml")
+        "classpath:org/activiti/spring/test/fieldinjection/fieldInjectionSpringTest-context.xml")
 public class ServiceTaskFieldInjectionTest extends SpringActivitiTestCase {
 
-  @Deployment
-  public void testDelegateExpressionWithSingletonBean() {
-    runtimeService.startProcessInstanceByKey(
-        "delegateExpressionSingleton", singletonMap("input", 100));
-    Task task = taskService.createTaskQuery().singleResult();
-    Map<String, Object> variables = taskService.getVariables(task.getId());
+    @Deployment
+    public void testDelegateExpressionWithSingletonBean() {
+        runtimeService.startProcessInstanceByKey(
+                "delegateExpressionSingleton", singletonMap("input", 100));
+        Task task = taskService.createTaskQuery().singleResult();
+        Map<String, Object> variables = taskService.getVariables(task.getId());
 
-    Integer resultServiceTask1 = (Integer) variables.get("resultServiceTask1");
-    assertThat(resultServiceTask1.intValue()).isEqualTo(202);
+        Integer resultServiceTask1 = (Integer) variables.get("resultServiceTask1");
+        assertThat(resultServiceTask1.intValue()).isEqualTo(202);
 
-    Integer resultServiceTask2 = (Integer) variables.get("resultServiceTask2");
-    assertThat(resultServiceTask2.intValue()).isEqualTo(579);
+        Integer resultServiceTask2 = (Integer) variables.get("resultServiceTask2");
+        assertThat(resultServiceTask2.intValue()).isEqualTo(579);
 
-    // Verify only one instance was created
-    assertThat(SingletonDelegateExpressionBean.INSTANCE_COUNT.get()).isEqualTo(1);
-  }
+        // Verify only one instance was created
+        assertThat(SingletonDelegateExpressionBean.INSTANCE_COUNT.get()).isEqualTo(1);
+    }
 
-  @Deployment
-  public void testDelegateExpressionWithPrototypeBean() {
-    runtimeService.startProcessInstanceByKey(
-        "delegateExpressionPrototype", singletonMap("input", 100));
-    Task task = taskService.createTaskQuery().singleResult();
-    Map<String, Object> variables = taskService.getVariables(task.getId());
+    @Deployment
+    public void testDelegateExpressionWithPrototypeBean() {
+        runtimeService.startProcessInstanceByKey(
+                "delegateExpressionPrototype", singletonMap("input", 100));
+        Task task = taskService.createTaskQuery().singleResult();
+        Map<String, Object> variables = taskService.getVariables(task.getId());
 
-    Integer resultServiceTask1 = (Integer) variables.get("resultServiceTask1");
-    assertThat(resultServiceTask1.intValue()).isEqualTo(202);
+        Integer resultServiceTask1 = (Integer) variables.get("resultServiceTask1");
+        assertThat(resultServiceTask1.intValue()).isEqualTo(202);
 
-    Integer resultServiceTask2 = (Integer) variables.get("resultServiceTask2");
-    assertThat(resultServiceTask2.intValue()).isEqualTo(579);
+        Integer resultServiceTask2 = (Integer) variables.get("resultServiceTask2");
+        assertThat(resultServiceTask2.intValue()).isEqualTo(579);
 
-    // Verify TWO INSTANCES were created
-    assertThat(PrototypeDelegateExpressionBean.INSTANCE_COUNT.get()).isEqualTo(2);
-  }
+        // Verify TWO INSTANCES were created
+        assertThat(PrototypeDelegateExpressionBean.INSTANCE_COUNT.get()).isEqualTo(2);
+    }
 }

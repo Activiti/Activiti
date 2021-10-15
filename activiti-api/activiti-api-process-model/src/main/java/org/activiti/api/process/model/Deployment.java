@@ -17,11 +17,11 @@ package org.activiti.api.process.model;
 
 public interface Deployment {
 
-  String getId();
+    String getId();
 
-  String getName();
+    String getName();
 
-  Integer getVersion();
+    Integer getVersion();
 
-  String getProjectReleaseVersion();
+    String getProjectReleaseVersion();
 }

@@ -24,9 +24,9 @@ import org.springframework.core.io.support.ResourcePatternResolver;
 @Configuration
 public class ResourceFinderAutoConfiguration {
 
-  @Bean
-  @ConditionalOnMissingBean
-  public ResourceFinder resourceFinderImpl(ResourcePatternResolver resourcePatternResolver) {
-    return new ResourceFinder(resourcePatternResolver);
-  }
+    @Bean
+    @ConditionalOnMissingBean
+    public ResourceFinder resourceFinderImpl(ResourcePatternResolver resourcePatternResolver) {
+        return new ResourceFinder(resourcePatternResolver);
+    }
 }

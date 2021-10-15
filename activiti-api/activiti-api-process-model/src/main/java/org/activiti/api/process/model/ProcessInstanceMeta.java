@@ -19,7 +19,7 @@ import java.util.List;
 
 public interface ProcessInstanceMeta {
 
-  String getProcessInstanceId();
+    String getProcessInstanceId();
 
-  List<String> getActiveActivitiesIds();
+    List<String> getActiveActivitiesIds();
 }

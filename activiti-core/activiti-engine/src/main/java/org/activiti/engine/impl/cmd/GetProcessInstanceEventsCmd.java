@@ -16,25 +16,26 @@
 
 package org.activiti.engine.impl.cmd;
 
-import java.io.Serializable;
-import java.util.List;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.task.Event;
 
+import java.io.Serializable;
+import java.util.List;
+
 /** */
 public class GetProcessInstanceEventsCmd implements Command<List<Event>>, Serializable {
 
-  private static final long serialVersionUID = 1L;
-  protected String processInstanceId;
+    private static final long serialVersionUID = 1L;
+    protected String processInstanceId;
 
-  public GetProcessInstanceEventsCmd(String processInstanceId) {
-    this.processInstanceId = processInstanceId;
-  }
+    public GetProcessInstanceEventsCmd(String processInstanceId) {
+        this.processInstanceId = processInstanceId;
+    }
 
-  public List<Event> execute(CommandContext commandContext) {
-    return commandContext
-        .getCommentEntityManager()
-        .findEventsByProcessInstanceId(processInstanceId);
-  }
+    public List<Event> execute(CommandContext commandContext) {
+        return commandContext
+                .getCommentEntityManager()
+                .findEventsByProcessInstanceId(processInstanceId);
+    }
 }

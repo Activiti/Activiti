@@ -16,24 +16,26 @@
 package org.activiti.api.runtime.model.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.Set;
+
 import org.springframework.core.convert.converter.Converter;
+
+import java.util.Set;
 
 @ProcessVariableTypeConverter
 public class SetToStringConverter implements Converter<Set<Object>, String> {
-  private final ObjectMapper objectMapper;
+    private final ObjectMapper objectMapper;
 
-  public SetToStringConverter(ObjectMapper objectMapper) {
-    this.objectMapper = objectMapper;
-  }
-
-  @Override
-  public String convert(Set<Object> source) {
-
-    try {
-      return objectMapper.writeValueAsString(source);
-    } catch (Exception cause) {
-      throw new RuntimeException(cause);
+    public SetToStringConverter(ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
     }
-  }
+
+    @Override
+    public String convert(Set<Object> source) {
+
+        try {
+            return objectMapper.writeValueAsString(source);
+        } catch (Exception cause) {
+            throw new RuntimeException(cause);
+        }
+    }
 }

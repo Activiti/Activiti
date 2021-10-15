@@ -47,91 +47,91 @@ import org.springframework.test.context.TestPropertySource;
 @TestPropertySource("classpath:application-history.properties")
 public class HistoryConfigurationTest {
 
-  private static final String CATEGORIZE_PROCESS = "categorizeProcess";
+    private static final String CATEGORIZE_PROCESS = "categorizeProcess";
 
-  @Autowired private ProcessRuntime processRuntime;
+    @Autowired private ProcessRuntime processRuntime;
 
-  @Autowired private SecurityUtil securityUtil;
+    @Autowired private SecurityUtil securityUtil;
 
-  @Autowired private RepositoryService repositoryService;
+    @Autowired private RepositoryService repositoryService;
 
-  @Autowired private HistoryService historyService;
+    @Autowired private HistoryService historyService;
 
-  @Autowired private APIProcessDefinitionConverter processDefinitionConverter;
+    @Autowired private APIProcessDefinitionConverter processDefinitionConverter;
 
-  @Autowired private RuntimeService runtimeService;
+    @Autowired private RuntimeService runtimeService;
 
-  @Autowired private ProcessSecurityPoliciesManager securityPoliciesManager;
+    @Autowired private ProcessSecurityPoliciesManager securityPoliciesManager;
 
-  @Autowired private APIProcessInstanceConverter processInstanceConverter;
+    @Autowired private APIProcessInstanceConverter processInstanceConverter;
 
-  @Autowired private APIVariableInstanceConverter variableInstanceConverter;
+    @Autowired private APIVariableInstanceConverter variableInstanceConverter;
 
-  @Autowired private ProcessRuntimeConfiguration configuration;
+    @Autowired private ProcessRuntimeConfiguration configuration;
 
-  @Autowired private ApplicationEventPublisher applicationEventPublisher;
+    @Autowired private ApplicationEventPublisher applicationEventPublisher;
 
-  @Autowired ProcessVariablesPayloadValidator processVariablesValidator;
+    @Autowired ProcessVariablesPayloadValidator processVariablesValidator;
 
-  @Autowired private ProcessCleanUpUtil processCleanUpUtil;
+    @Autowired private ProcessCleanUpUtil processCleanUpUtil;
 
-  @Autowired private APIDeploymentConverter deploymentConverter;
+    @Autowired private APIDeploymentConverter deploymentConverter;
 
-  @AfterEach
-  public void cleanUp() {
-    processCleanUpUtil.cleanUpWithAdmin();
-  }
+    @AfterEach
+    public void cleanUp() {
+        processCleanUpUtil.cleanUpWithAdmin();
+    }
 
-  @BeforeEach
-  public void init() {
-    ApplicationEventPublisher eventPublisher = spy(applicationEventPublisher);
+    @BeforeEach
+    public void init() {
+        ApplicationEventPublisher eventPublisher = spy(applicationEventPublisher);
 
-    spy(
-        new ProcessRuntimeImpl(
-            repositoryService,
-            processDefinitionConverter,
-            runtimeService,
-            securityPoliciesManager,
-            processInstanceConverter,
-            variableInstanceConverter,
-            deploymentConverter,
-            configuration,
-            eventPublisher,
-            processVariablesValidator));
+        spy(
+                new ProcessRuntimeImpl(
+                        repositoryService,
+                        processDefinitionConverter,
+                        runtimeService,
+                        securityPoliciesManager,
+                        processInstanceConverter,
+                        variableInstanceConverter,
+                        deploymentConverter,
+                        configuration,
+                        eventPublisher,
+                        processVariablesValidator));
 
-    spy(
-        new ProcessAdminRuntimeImpl(
-            repositoryService,
-            processDefinitionConverter,
-            runtimeService,
-            processInstanceConverter,
-            eventPublisher,
-            processVariablesValidator));
+        spy(
+                new ProcessAdminRuntimeImpl(
+                        repositoryService,
+                        processDefinitionConverter,
+                        runtimeService,
+                        processInstanceConverter,
+                        eventPublisher,
+                        processVariablesValidator));
 
-    // Reset test variables
-    RuntimeTestConfiguration.processImageConnectorExecuted = false;
-    RuntimeTestConfiguration.tagImageConnectorExecuted = false;
-    RuntimeTestConfiguration.discardImageConnectorExecuted = false;
-  }
+        // Reset test variables
+        RuntimeTestConfiguration.processImageConnectorExecuted = false;
+        RuntimeTestConfiguration.tagImageConnectorExecuted = false;
+        RuntimeTestConfiguration.discardImageConnectorExecuted = false;
+    }
 
-  @Test
-  public void shouldRecordHistory() {
-    securityUtil.logInAs("user");
+    @Test
+    public void shouldRecordHistory() {
+        securityUtil.logInAs("user");
 
-    // when
-    ProcessInstance categorizeProcess =
-        processRuntime.start(
-            ProcessPayloadBuilder.start()
-                .withProcessDefinitionKey(CATEGORIZE_PROCESS)
-                .withVariable("expectedKey", true)
-                .build());
+        // when
+        ProcessInstance categorizeProcess =
+                processRuntime.start(
+                        ProcessPayloadBuilder.start()
+                                .withProcessDefinitionKey(CATEGORIZE_PROCESS)
+                                .withVariable("expectedKey", true)
+                                .build());
 
-    assertThat(RuntimeTestConfiguration.completedProcesses).contains(categorizeProcess.getId());
-    assertThat(
-            historyService
-                .createHistoricProcessInstanceQuery()
-                .processInstanceId(categorizeProcess.getId())
-                .count())
-        .isEqualTo(1);
-  }
+        assertThat(RuntimeTestConfiguration.completedProcesses).contains(categorizeProcess.getId());
+        assertThat(
+                        historyService
+                                .createHistoricProcessInstanceQuery()
+                                .processInstanceId(categorizeProcess.getId())
+                                .count())
+                .isEqualTo(1);
+    }
 }

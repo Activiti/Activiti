@@ -30,33 +30,34 @@ import org.mockito.Mock;
 
 public class ToErrorReceivedConverterTest {
 
-  @InjectMocks private ToErrorReceivedConverter toErrorReceivedConverter;
+    @InjectMocks private ToErrorReceivedConverter toErrorReceivedConverter;
 
-  @Mock private BPMNErrorConverter bpmnErrorConverter;
+    @Mock private BPMNErrorConverter bpmnErrorConverter;
 
-  @BeforeEach
-  public void setUp() {
-    initMocks(this);
-  }
+    @BeforeEach
+    public void setUp() {
+        initMocks(this);
+    }
 
-  @Test
-  public void fromShouldReturnConvertedEventAndSetProcessInstanceIdAndProcessDefinitionId() {
-    // given
-    ActivitiErrorEvent internalEvent = mock(ActivitiErrorEvent.class);
-    given(internalEvent.getProcessDefinitionId()).willReturn("procDefId");
-    given(internalEvent.getProcessInstanceId()).willReturn("procInstId");
+    @Test
+    public void fromShouldReturnConvertedEventAndSetProcessInstanceIdAndProcessDefinitionId() {
+        // given
+        ActivitiErrorEvent internalEvent = mock(ActivitiErrorEvent.class);
+        given(internalEvent.getProcessDefinitionId()).willReturn("procDefId");
+        given(internalEvent.getProcessInstanceId()).willReturn("procInstId");
 
-    BPMNErrorImpl bpmnError = new BPMNErrorImpl("myError");
+        BPMNErrorImpl bpmnError = new BPMNErrorImpl("myError");
 
-    given(bpmnErrorConverter.convertToBPMNError(internalEvent)).willReturn(bpmnError);
+        given(bpmnErrorConverter.convertToBPMNError(internalEvent)).willReturn(bpmnError);
 
-    // when
-    BPMNErrorReceivedEvent errorEvent = toErrorReceivedConverter.from(internalEvent).orElse(null);
+        // when
+        BPMNErrorReceivedEvent errorEvent =
+                toErrorReceivedConverter.from(internalEvent).orElse(null);
 
-    // then
-    assertThat(errorEvent).isNotNull();
-    assertThat(errorEvent.getProcessInstanceId()).isEqualTo("procInstId");
-    assertThat(errorEvent.getProcessDefinitionId()).isEqualTo("procDefId");
-    assertThat(errorEvent.getEntity()).isEqualTo(bpmnError);
-  }
+        // then
+        assertThat(errorEvent).isNotNull();
+        assertThat(errorEvent.getProcessInstanceId()).isEqualTo("procInstId");
+        assertThat(errorEvent.getProcessDefinitionId()).isEqualTo("procDefId");
+        assertThat(errorEvent.getEntity()).isEqualTo(bpmnError);
+    }
 }

@@ -23,6 +23,7 @@ import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.jsontype.NamedType;
 import com.fasterxml.jackson.databind.module.SimpleAbstractTypeResolver;
 import com.fasterxml.jackson.databind.module.SimpleModule;
+
 import org.activiti.api.model.shared.EmptyResult;
 import org.activiti.api.model.shared.Payload;
 import org.activiti.api.model.shared.Result;
@@ -33,34 +34,37 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
 @Configuration
-@PropertySource(
-    "classpath:conf/rest-jackson-configuration.properties") // load default jackson configuration
+@PropertySource("classpath:conf/rest-jackson-configuration.properties") // load default jackson
+// configuration
 public class CommonModelAutoConfiguration {
 
-  // this bean will be automatically injected inside boot's ObjectMapper
-  @Bean
-  public Module customizeCommonModelObjectMapper() {
-    SimpleModule module = new SimpleModule("mapCommonModelInterfaces", Version.unknownVersion());
-    SimpleAbstractTypeResolver resolver =
-        new SimpleAbstractTypeResolver() {
-          // this is a workaround for https://github.com/FasterXML/jackson-databind/issues/2019
-          // once version 2.9.6 is related we can remove this @override method
-          @Override
-          public JavaType resolveAbstractType(
-              DeserializationConfig config, BeanDescription typeDesc) {
-            return findTypeMapping(config, typeDesc.getType());
-          }
-        };
+    // this bean will be automatically injected inside boot's ObjectMapper
+    @Bean
+    public Module customizeCommonModelObjectMapper() {
+        SimpleModule module =
+                new SimpleModule("mapCommonModelInterfaces", Version.unknownVersion());
+        SimpleAbstractTypeResolver resolver =
+                new SimpleAbstractTypeResolver() {
+                    // this is a workaround for
+                    // https://github.com/FasterXML/jackson-databind/issues/2019
+                    // once version 2.9.6 is related we can remove this @override method
+                    @Override
+                    public JavaType resolveAbstractType(
+                            DeserializationConfig config, BeanDescription typeDesc) {
+                        return findTypeMapping(config, typeDesc.getType());
+                    }
+                };
 
-    resolver.addMapping(VariableInstance.class, VariableInstanceImpl.class);
+        resolver.addMapping(VariableInstance.class, VariableInstanceImpl.class);
 
-    module.setAbstractTypes(resolver);
+        module.setAbstractTypes(resolver);
 
-    module.setMixInAnnotation(Payload.class, PayloadMixIn.class);
-    module.setMixInAnnotation(Result.class, ResultMixIn.class);
+        module.setMixInAnnotation(Payload.class, PayloadMixIn.class);
+        module.setMixInAnnotation(Result.class, ResultMixIn.class);
 
-    module.registerSubtypes(new NamedType(EmptyResult.class, EmptyResult.class.getSimpleName()));
+        module.registerSubtypes(
+                new NamedType(EmptyResult.class, EmptyResult.class.getSimpleName()));
 
-    return module;
-  }
+        return module;
+    }
 }

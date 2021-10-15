@@ -22,11 +22,11 @@ import org.activiti.test.matchers.TaskResultMatcher;
 
 public interface TaskAssertions {
 
-  TaskAssertions expectEvents(OperationScopeMatcher... matchers);
+    TaskAssertions expectEvents(OperationScopeMatcher... matchers);
 
-  TaskAssertions expectFields(TaskResultMatcher... matchers);
+    TaskAssertions expectFields(TaskResultMatcher... matchers);
 
-  TaskAssertions expect(ProcessTaskMatcher... matchers);
+    TaskAssertions expect(ProcessTaskMatcher... matchers);
 
-  Task andReturn();
+    Task andReturn();
 }

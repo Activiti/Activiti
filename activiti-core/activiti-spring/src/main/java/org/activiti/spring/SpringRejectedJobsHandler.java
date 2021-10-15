@@ -30,5 +30,5 @@ import org.activiti.engine.runtime.Job;
 @Internal
 public interface SpringRejectedJobsHandler {
 
-  public void jobRejected(AsyncExecutor asyncExecutor, Job job);
+    public void jobRejected(AsyncExecutor asyncExecutor, Job job);
 }

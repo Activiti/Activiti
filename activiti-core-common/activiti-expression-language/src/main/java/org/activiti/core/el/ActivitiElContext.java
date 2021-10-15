@@ -17,6 +17,7 @@
 package org.activiti.core.el;
 
 import java.lang.reflect.Method;
+
 import javax.el.ELContext;
 import javax.el.ELResolver;
 import javax.el.FunctionMapper;
@@ -26,47 +27,47 @@ import javax.el.VariableMapper;
 /** */
 public class ActivitiElContext extends ELContext {
 
-  protected ELResolver elResolver;
-  private ActivitiFunctionMapper functions;
-  private ActivitiVariablesMapper variables;
+    protected ELResolver elResolver;
+    private ActivitiFunctionMapper functions;
+    private ActivitiVariablesMapper variables;
 
-  public ActivitiElContext() {
-    this(null);
-  }
-
-  public ActivitiElContext(ELResolver elResolver) {
-    this.elResolver = elResolver;
-  }
-
-  public ELResolver getELResolver() {
-    return elResolver;
-  }
-
-  public FunctionMapper getFunctionMapper() {
-    if (functions == null) {
-      functions = new ActivitiFunctionMapper();
+    public ActivitiElContext() {
+        this(null);
     }
-    return functions;
-  }
 
-  public VariableMapper getVariableMapper() {
-    if (variables == null) {
-      variables = new ActivitiVariablesMapper();
+    public ActivitiElContext(ELResolver elResolver) {
+        this.elResolver = elResolver;
     }
-    return variables;
-  }
 
-  public void setFunction(String prefix, String localName, Method method) {
-    if (functions == null) {
-      functions = new ActivitiFunctionMapper();
+    public ELResolver getELResolver() {
+        return elResolver;
     }
-    functions.setFunction(prefix, localName, method);
-  }
 
-  public ValueExpression setVariable(String name, ValueExpression expression) {
-    if (variables == null) {
-      variables = new ActivitiVariablesMapper();
+    public FunctionMapper getFunctionMapper() {
+        if (functions == null) {
+            functions = new ActivitiFunctionMapper();
+        }
+        return functions;
     }
-    return variables.setVariable(name, expression);
-  }
+
+    public VariableMapper getVariableMapper() {
+        if (variables == null) {
+            variables = new ActivitiVariablesMapper();
+        }
+        return variables;
+    }
+
+    public void setFunction(String prefix, String localName, Method method) {
+        if (functions == null) {
+            functions = new ActivitiFunctionMapper();
+        }
+        functions.setFunction(prefix, localName, method);
+    }
+
+    public ValueExpression setVariable(String name, ValueExpression expression) {
+        if (variables == null) {
+            variables = new ActivitiVariablesMapper();
+        }
+        return variables.setVariable(name, expression);
+    }
 }

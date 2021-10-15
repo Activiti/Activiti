@@ -16,6 +16,8 @@
 
 package org.activiti.engine.impl.util;
 
+import org.activiti.engine.delegate.DelegateExecution;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -26,124 +28,123 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.util.List;
 import java.util.Map;
-import org.activiti.engine.delegate.DelegateExecution;
 
 /** */
 public class ShellCommandExecutor implements CommandExecutor {
-  private Boolean waitFlag;
-  private final Boolean cleanEnvBoolean;
-  private final Boolean redirectErrorFlag;
-  private final String directoryStr;
-  private final String resultVariableStr;
-  private final String errorCodeVariableStr;
-  private final List<String> argList;
+    private Boolean waitFlag;
+    private final Boolean cleanEnvBoolean;
+    private final Boolean redirectErrorFlag;
+    private final String directoryStr;
+    private final String resultVariableStr;
+    private final String errorCodeVariableStr;
+    private final List<String> argList;
 
-  public ShellCommandExecutor(
-      Boolean waitFlag,
-      Boolean cleanEnvBoolean,
-      Boolean redirectErrorFlag,
-      String directoryStr,
-      String resultVariableStr,
-      String errorCodeVariableStr,
-      List<String> argList) {
-    this.waitFlag = waitFlag;
-    this.cleanEnvBoolean = cleanEnvBoolean;
-    this.redirectErrorFlag = redirectErrorFlag;
-    this.directoryStr = directoryStr;
-    this.resultVariableStr = resultVariableStr;
-    this.errorCodeVariableStr = errorCodeVariableStr;
-    this.argList = argList;
-  }
-
-  public ShellCommandExecutor(ShellExecutorContext context) {
-    this(
-        context.getWaitFlag(),
-        context.getCleanEnvBoolan(),
-        context.getRedirectErrorFlag(),
-        context.getDirectoryStr(),
-        context.getResultVariableStr(),
-        context.getErrorCodeVariableStr(),
-        context.getArgList());
-  }
-
-  public void executeCommand(DelegateExecution execution) throws Exception {
-    if (argList != null && argList.size() > 0) {
-      ProcessBuilder processBuilder = new ProcessBuilder(argList);
-      processBuilder.redirectErrorStream(getRedirectErrorFlag());
-      if (getCleanEnvBoolean()) {
-        Map<String, String> env = processBuilder.environment();
-        env.clear();
-      }
-      if (getDirectoryStr() != null && getDirectoryStr().length() > 0)
-        processBuilder.directory(new File(getDirectoryStr()));
-
-      Process process = processBuilder.start();
-
-      if (getWaitFlag()) {
-        int errorCode = process.waitFor();
-
-        if (getResultVariableStr() != null) {
-          String result = convertStreamToStr(process.getInputStream());
-          execution.setVariable(getResultVariableStr(), result);
-        }
-
-        if (getErrorCodeVariableStr() != null) {
-          execution.setVariable(getErrorCodeVariableStr(), Integer.toString(errorCode));
-        }
-      }
+    public ShellCommandExecutor(
+            Boolean waitFlag,
+            Boolean cleanEnvBoolean,
+            Boolean redirectErrorFlag,
+            String directoryStr,
+            String resultVariableStr,
+            String errorCodeVariableStr,
+            List<String> argList) {
+        this.waitFlag = waitFlag;
+        this.cleanEnvBoolean = cleanEnvBoolean;
+        this.redirectErrorFlag = redirectErrorFlag;
+        this.directoryStr = directoryStr;
+        this.resultVariableStr = resultVariableStr;
+        this.errorCodeVariableStr = errorCodeVariableStr;
+        this.argList = argList;
     }
-  }
 
-  private String convertStreamToStr(InputStream is) throws IOException {
-
-    if (is != null) {
-      Writer writer = new StringWriter();
-
-      char[] buffer = new char[1024];
-      try {
-        Reader reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
-        int n;
-        while ((n = reader.read(buffer)) != -1) {
-          writer.write(buffer, 0, n);
-        }
-      } finally {
-        is.close();
-      }
-      return writer.toString();
-    } else {
-      return "";
+    public ShellCommandExecutor(ShellExecutorContext context) {
+        this(
+                context.getWaitFlag(),
+                context.getCleanEnvBoolan(),
+                context.getRedirectErrorFlag(),
+                context.getDirectoryStr(),
+                context.getResultVariableStr(),
+                context.getErrorCodeVariableStr(),
+                context.getArgList());
     }
-  }
 
-  public Boolean getWaitFlag() {
-    return waitFlag;
-  }
+    public void executeCommand(DelegateExecution execution) throws Exception {
+        if (argList != null && argList.size() > 0) {
+            ProcessBuilder processBuilder = new ProcessBuilder(argList);
+            processBuilder.redirectErrorStream(getRedirectErrorFlag());
+            if (getCleanEnvBoolean()) {
+                Map<String, String> env = processBuilder.environment();
+                env.clear();
+            }
+            if (getDirectoryStr() != null && getDirectoryStr().length() > 0)
+                processBuilder.directory(new File(getDirectoryStr()));
 
-  public void setWaitFlag(Boolean waitFlag) {
-    this.waitFlag = waitFlag;
-  }
+            Process process = processBuilder.start();
 
-  public Boolean getCleanEnvBoolean() {
-    return cleanEnvBoolean;
-  }
+            if (getWaitFlag()) {
+                int errorCode = process.waitFor();
 
-  public Boolean getRedirectErrorFlag() {
-    return redirectErrorFlag;
-  }
+                if (getResultVariableStr() != null) {
+                    String result = convertStreamToStr(process.getInputStream());
+                    execution.setVariable(getResultVariableStr(), result);
+                }
 
-  public String getDirectoryStr() {
-    return directoryStr;
-  }
+                if (getErrorCodeVariableStr() != null) {
+                    execution.setVariable(getErrorCodeVariableStr(), Integer.toString(errorCode));
+                }
+            }
+        }
+    }
 
-  public String getResultVariableStr() {
-    return resultVariableStr;
-  }
+    private String convertStreamToStr(InputStream is) throws IOException {
 
-  public String getErrorCodeVariableStr() {
-    return errorCodeVariableStr;
-  }
+        if (is != null) {
+            Writer writer = new StringWriter();
 
-  public List<String> getArgList() {
-    return argList;
-  }
+            char[] buffer = new char[1024];
+            try {
+                Reader reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
+                int n;
+                while ((n = reader.read(buffer)) != -1) {
+                    writer.write(buffer, 0, n);
+                }
+            } finally {
+                is.close();
+            }
+            return writer.toString();
+        } else {
+            return "";
+        }
+    }
+
+    public Boolean getWaitFlag() {
+        return waitFlag;
+    }
+
+    public void setWaitFlag(Boolean waitFlag) {
+        this.waitFlag = waitFlag;
+    }
+
+    public Boolean getCleanEnvBoolean() {
+        return cleanEnvBoolean;
+    }
+
+    public Boolean getRedirectErrorFlag() {
+        return redirectErrorFlag;
+    }
+
+    public String getDirectoryStr() {
+        return directoryStr;
+    }
+
+    public String getResultVariableStr() {
+        return resultVariableStr;
+    }
+
+    public String getErrorCodeVariableStr() {
+        return errorCodeVariableStr;
+    }
+
+    public List<String> getArgList() {
+        return argList;
+    }
 }

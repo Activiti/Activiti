@@ -17,18 +17,18 @@ package org.activiti.test.matchers;
 
 public class IntermediateCatchEventMatchers extends ActivityMatchers {
 
-  private static final String INTERMEDIATE_CATCH_EVENT = "intermediateCatchEvent";
+    private static final String INTERMEDIATE_CATCH_EVENT = "intermediateCatchEvent";
 
-  private IntermediateCatchEventMatchers(String definitionKey) {
-    super(definitionKey);
-  }
+    private IntermediateCatchEventMatchers(String definitionKey) {
+        super(definitionKey);
+    }
 
-  @Override
-  public String getActivityType() {
-    return INTERMEDIATE_CATCH_EVENT;
-  }
+    @Override
+    public String getActivityType() {
+        return INTERMEDIATE_CATCH_EVENT;
+    }
 
-  public static IntermediateCatchEventMatchers intermediateCatchEvent(String definitionKey) {
-    return new IntermediateCatchEventMatchers(definitionKey);
-  }
+    public static IntermediateCatchEventMatchers intermediateCatchEvent(String definitionKey) {
+        return new IntermediateCatchEventMatchers(definitionKey);
+    }
 }

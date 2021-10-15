@@ -15,7 +15,6 @@
  */
 package org.activiti.runtime.api.event.internal;
 
-import static java.util.Collections.singletonList;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
@@ -23,7 +22,8 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-import java.util.Optional;
+import static java.util.Collections.singletonList;
+
 import org.activiti.api.process.model.events.BPMNTimerFailedEvent;
 import org.activiti.api.process.runtime.events.listener.BPMNElementEventListener;
 import org.activiti.api.runtime.event.impl.BPMNTimerFailedEventImpl;
@@ -33,44 +33,46 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 
+import java.util.Optional;
+
 public class TimerFailedListenerDelegateTest {
 
-  private TimerFailedListenerDelegate listenerDelegate;
+    private TimerFailedListenerDelegate listenerDelegate;
 
-  @Mock private BPMNElementEventListener<BPMNTimerFailedEvent> listener;
+    @Mock private BPMNElementEventListener<BPMNTimerFailedEvent> listener;
 
-  @Mock private ToTimerFailedConverter converter;
+    @Mock private ToTimerFailedConverter converter;
 
-  @BeforeEach
-  public void setUp() {
-    initMocks(this);
-    listenerDelegate = new TimerFailedListenerDelegate(singletonList(listener), converter);
-  }
+    @BeforeEach
+    public void setUp() {
+        initMocks(this);
+        listenerDelegate = new TimerFailedListenerDelegate(singletonList(listener), converter);
+    }
 
-  @Test
-  public void shouldCallRegisteredListenersWhenConvertedEventIsNotEmpty() {
-    // given
-    ActivitiEntityEvent internalEvent = mock(ActivitiEntityEvent.class);
-    BPMNTimerFailedEventImpl convertedEvent = new BPMNTimerFailedEventImpl();
-    given(converter.from(internalEvent)).willReturn(Optional.of(convertedEvent));
+    @Test
+    public void shouldCallRegisteredListenersWhenConvertedEventIsNotEmpty() {
+        // given
+        ActivitiEntityEvent internalEvent = mock(ActivitiEntityEvent.class);
+        BPMNTimerFailedEventImpl convertedEvent = new BPMNTimerFailedEventImpl();
+        given(converter.from(internalEvent)).willReturn(Optional.of(convertedEvent));
 
-    // when
-    listenerDelegate.onEvent(internalEvent);
+        // when
+        listenerDelegate.onEvent(internalEvent);
 
-    // then
-    verify(listener).onEvent(convertedEvent);
-  }
+        // then
+        verify(listener).onEvent(convertedEvent);
+    }
 
-  @Test
-  public void shouldDoNothingWhenConvertedEventIsEmpty() {
-    // given
-    ActivitiEntityEvent internalEvent = mock(ActivitiEntityEvent.class);
-    given(converter.from(internalEvent)).willReturn(Optional.empty());
+    @Test
+    public void shouldDoNothingWhenConvertedEventIsEmpty() {
+        // given
+        ActivitiEntityEvent internalEvent = mock(ActivitiEntityEvent.class);
+        given(converter.from(internalEvent)).willReturn(Optional.empty());
 
-    // when
-    listenerDelegate.onEvent(internalEvent);
+        // when
+        listenerDelegate.onEvent(internalEvent);
 
-    // then
-    verify(listener, never()).onEvent(any());
-  }
+        // then
+        verify(listener, never()).onEvent(any());
+    }
 }

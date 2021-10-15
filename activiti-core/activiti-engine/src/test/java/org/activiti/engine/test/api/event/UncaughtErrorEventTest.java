@@ -26,33 +26,33 @@ import org.activiti.engine.test.Deployment;
 /** Test case for {@link ActivitiEvent} thrown when a BPMNError is not caught in the process. */
 public class UncaughtErrorEventTest extends PluggableActivitiTestCase {
 
-  private TestActivitiEventListener listener;
+    private TestActivitiEventListener listener;
 
-  /**
-   * Test events related to error-events, thrown from within process-execution (eg. service-task).
-   */
-  @Deployment
-  public void testUncaughtError() throws Exception {
-    assertThatExceptionOfType(BpmnError.class)
-        .as("Exception BPMN error excepted due to not caught exception")
-        .isThrownBy(() -> runtimeService.startProcessInstanceByKey("errorProcess"));
-  }
-
-  @Override
-  protected void initializeServices() {
-    super.initializeServices();
-
-    listener = new TestActivitiEventListener();
-    processEngineConfiguration.getEventDispatcher().addEventListener(listener);
-  }
-
-  @Override
-  protected void tearDown() throws Exception {
-    super.tearDown();
-
-    if (listener != null) {
-      listener.clearEventsReceived();
-      processEngineConfiguration.getEventDispatcher().removeEventListener(listener);
+    /**
+     * Test events related to error-events, thrown from within process-execution (eg. service-task).
+     */
+    @Deployment
+    public void testUncaughtError() throws Exception {
+        assertThatExceptionOfType(BpmnError.class)
+                .as("Exception BPMN error excepted due to not caught exception")
+                .isThrownBy(() -> runtimeService.startProcessInstanceByKey("errorProcess"));
     }
-  }
+
+    @Override
+    protected void initializeServices() {
+        super.initializeServices();
+
+        listener = new TestActivitiEventListener();
+        processEngineConfiguration.getEventDispatcher().addEventListener(listener);
+    }
+
+    @Override
+    protected void tearDown() throws Exception {
+        super.tearDown();
+
+        if (listener != null) {
+            listener.clearEventsReceived();
+            processEngineConfiguration.getEventDispatcher().removeEventListener(listener);
+        }
+    }
 }

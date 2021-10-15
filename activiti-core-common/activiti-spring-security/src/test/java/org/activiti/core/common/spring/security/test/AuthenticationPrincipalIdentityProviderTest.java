@@ -26,22 +26,22 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 public class AuthenticationPrincipalIdentityProviderTest {
 
-  private AuthenticationPrincipalIdentityProvider subject =
-      new AuthenticationPrincipalIdentityProvider();
+    private AuthenticationPrincipalIdentityProvider subject =
+            new AuthenticationPrincipalIdentityProvider();
 
-  @Test
-  public void testGetUserId() {
-    // given
-    Authentication authentication =
-        new UsernamePasswordAuthenticationToken(
-            "username", "password", AuthorityUtils.createAuthorityList("ROLE_user"));
+    @Test
+    public void testGetUserId() {
+        // given
+        Authentication authentication =
+                new UsernamePasswordAuthenticationToken(
+                        "username", "password", AuthorityUtils.createAuthorityList("ROLE_user"));
 
-    SecurityContextHolder.getContext().setAuthentication(authentication);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
 
-    // when
-    String result = subject.getUserId(authentication);
+        // when
+        String result = subject.getUserId(authentication);
 
-    // then
-    assertThat(result).isNotEmpty().contains("username");
-  }
+        // then
+        assertThat(result).isNotEmpty().contains("username");
+    }
 }

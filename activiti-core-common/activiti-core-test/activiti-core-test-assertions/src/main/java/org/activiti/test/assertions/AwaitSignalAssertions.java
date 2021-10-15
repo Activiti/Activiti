@@ -22,18 +22,19 @@ import org.activiti.test.matchers.OperationScopeMatcher;
 
 public class AwaitSignalAssertions implements SignalAssertions {
 
-  private SignalAssertions signalAssertions;
+    private SignalAssertions signalAssertions;
 
-  public AwaitSignalAssertions(SignalAssertions signalAssertions) {
-    this.signalAssertions = signalAssertions;
-  }
+    public AwaitSignalAssertions(SignalAssertions signalAssertions) {
+        this.signalAssertions = signalAssertions;
+    }
 
-  @Override
-  public SignalAssertions expectEventsOnProcessInstance(
-      ProcessInstance processInstance, OperationScopeMatcher... matchers) {
-    await()
-        .untilAsserted(
-            () -> signalAssertions.expectEventsOnProcessInstance(processInstance, matchers));
-    return this;
-  }
+    @Override
+    public SignalAssertions expectEventsOnProcessInstance(
+            ProcessInstance processInstance, OperationScopeMatcher... matchers) {
+        await().untilAsserted(
+                        () ->
+                                signalAssertions.expectEventsOnProcessInstance(
+                                        processInstance, matchers));
+        return this;
+    }
 }

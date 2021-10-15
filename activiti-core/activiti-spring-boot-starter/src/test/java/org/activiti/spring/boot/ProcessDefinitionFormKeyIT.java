@@ -29,23 +29,23 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 public class ProcessDefinitionFormKeyIT {
 
-  private static final String SINGLE_TASK_PROCESS = "SingleTaskProcess";
+    private static final String SINGLE_TASK_PROCESS = "SingleTaskProcess";
 
-  @Autowired private SecurityUtil securityUtil;
+    @Autowired private SecurityUtil securityUtil;
 
-  @Autowired private ProcessRuntime processRuntime;
+    @Autowired private ProcessRuntime processRuntime;
 
-  @Autowired private ProcessCleanUpUtil processCleanUpUtil;
+    @Autowired private ProcessCleanUpUtil processCleanUpUtil;
 
-  @AfterEach
-  public void cleanUp() {
-    processCleanUpUtil.cleanUpWithAdmin();
-  }
+    @AfterEach
+    public void cleanUp() {
+        processCleanUpUtil.cleanUpWithAdmin();
+    }
 
-  @Test
-  public void processDefinitionHasFormKey() {
-    securityUtil.logInAs("garth");
-    ProcessDefinition processDefinition = processRuntime.processDefinition(SINGLE_TASK_PROCESS);
-    assertThat(processDefinition.getFormKey()).isEqualTo("startForm");
-  }
+    @Test
+    public void processDefinitionHasFormKey() {
+        securityUtil.logInAs("garth");
+        ProcessDefinition processDefinition = processRuntime.processDefinition(SINGLE_TASK_PROCESS);
+        assertThat(processDefinition.getFormKey()).isEqualTo("startForm");
+    }
 }

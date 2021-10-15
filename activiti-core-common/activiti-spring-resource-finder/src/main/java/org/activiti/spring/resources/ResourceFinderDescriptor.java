@@ -15,21 +15,22 @@
  */
 package org.activiti.spring.resources;
 
+import org.springframework.core.io.Resource;
+
 import java.io.IOException;
 import java.util.List;
-import org.springframework.core.io.Resource;
 
 public interface ResourceFinderDescriptor {
 
-  List<String> getLocationSuffixes();
+    List<String> getLocationSuffixes();
 
-  String getLocationPrefix();
+    String getLocationPrefix();
 
-  boolean shouldLookUpResources();
+    boolean shouldLookUpResources();
 
-  void validate(List<Resource> resources) throws IOException;
+    void validate(List<Resource> resources) throws IOException;
 
-  String getMsgForEmptyResources();
+    String getMsgForEmptyResources();
 
-  String getMsgForResourcesFound(List<String> foundResources);
+    String getMsgForResourcesFound(List<String> foundResources);
 }

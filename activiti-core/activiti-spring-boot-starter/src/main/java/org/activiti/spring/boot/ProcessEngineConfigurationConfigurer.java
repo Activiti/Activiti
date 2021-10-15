@@ -25,5 +25,5 @@ import org.activiti.spring.SpringProcessEngineConfiguration;
  */
 public interface ProcessEngineConfigurationConfigurer {
 
-  void configure(SpringProcessEngineConfiguration processEngineConfiguration);
+    void configure(SpringProcessEngineConfiguration processEngineConfiguration);
 }

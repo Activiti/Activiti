@@ -21,15 +21,15 @@ import org.activiti.api.model.shared.model.VariableInstance;
 
 public class VariableCreatedEventImpl extends VariableEventImpl implements VariableCreatedEvent {
 
-  public VariableCreatedEventImpl() {}
+    public VariableCreatedEventImpl() {}
 
-  public VariableCreatedEventImpl(VariableInstance entity) {
-    super(entity);
-    setProcessInstanceId(entity.getProcessInstanceId());
-  }
+    public VariableCreatedEventImpl(VariableInstance entity) {
+        super(entity);
+        setProcessInstanceId(entity.getProcessInstanceId());
+    }
 
-  @Override
-  public VariableEvent.VariableEvents getEventType() {
-    return VariableEvent.VariableEvents.VARIABLE_CREATED;
-  }
+    @Override
+    public VariableEvent.VariableEvents getEventType() {
+        return VariableEvent.VariableEvents.VARIABLE_CREATED;
+    }
 }

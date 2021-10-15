@@ -23,68 +23,72 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 
 public class SkipExpressionUtil {
 
-  public static boolean isSkipExpressionEnabled(
-      DelegateExecution execution, String skipExpression) {
-    if (skipExpression == null) {
-      return false;
+    public static boolean isSkipExpressionEnabled(
+            DelegateExecution execution, String skipExpression) {
+        if (skipExpression == null) {
+            return false;
+        }
+        return checkSkipExpressionVariable(execution);
     }
-    return checkSkipExpressionVariable(execution);
-  }
 
-  public static boolean isSkipExpressionEnabled(
-      DelegateExecution execution, Expression skipExpression) {
-    if (skipExpression == null) {
-      return false;
+    public static boolean isSkipExpressionEnabled(
+            DelegateExecution execution, Expression skipExpression) {
+        if (skipExpression == null) {
+            return false;
+        }
+        return checkSkipExpressionVariable(execution);
     }
-    return checkSkipExpressionVariable(execution);
-  }
 
-  private static boolean checkSkipExpressionVariable(DelegateExecution execution) {
-    final String skipExpressionEnabledVariable = "_ACTIVITI_SKIP_EXPRESSION_ENABLED";
-    Object isSkipExpressionEnabled = execution.getVariable(skipExpressionEnabledVariable);
+    private static boolean checkSkipExpressionVariable(DelegateExecution execution) {
+        final String skipExpressionEnabledVariable = "_ACTIVITI_SKIP_EXPRESSION_ENABLED";
+        Object isSkipExpressionEnabled = execution.getVariable(skipExpressionEnabledVariable);
 
-    if (isSkipExpressionEnabled == null) {
-      return false;
+        if (isSkipExpressionEnabled == null) {
+            return false;
 
-    } else if (isSkipExpressionEnabled instanceof Boolean) {
-      return ((Boolean) isSkipExpressionEnabled).booleanValue();
+        } else if (isSkipExpressionEnabled instanceof Boolean) {
+            return ((Boolean) isSkipExpressionEnabled).booleanValue();
 
-    } else {
-      throw new ActivitiIllegalArgumentException(
-          skipExpressionEnabledVariable
-              + " variable does not resolve to a boolean. "
-              + isSkipExpressionEnabled);
+        } else {
+            throw new ActivitiIllegalArgumentException(
+                    skipExpressionEnabledVariable
+                            + " variable does not resolve to a boolean. "
+                            + isSkipExpressionEnabled);
+        }
     }
-  }
 
-  public static boolean shouldSkipFlowElement(
-      CommandContext commandContext, DelegateExecution execution, String skipExpressionString) {
-    Expression skipExpression =
-        commandContext
-            .getProcessEngineConfiguration()
-            .getExpressionManager()
-            .createExpression(skipExpressionString);
-    Object value = skipExpression.getValue(execution);
+    public static boolean shouldSkipFlowElement(
+            CommandContext commandContext,
+            DelegateExecution execution,
+            String skipExpressionString) {
+        Expression skipExpression =
+                commandContext
+                        .getProcessEngineConfiguration()
+                        .getExpressionManager()
+                        .createExpression(skipExpressionString);
+        Object value = skipExpression.getValue(execution);
 
-    if (value instanceof Boolean) {
-      return ((Boolean) value).booleanValue();
+        if (value instanceof Boolean) {
+            return ((Boolean) value).booleanValue();
 
-    } else {
-      throw new ActivitiIllegalArgumentException(
-          "Skip expression does not resolve to a boolean: " + skipExpression.getExpressionText());
+        } else {
+            throw new ActivitiIllegalArgumentException(
+                    "Skip expression does not resolve to a boolean: "
+                            + skipExpression.getExpressionText());
+        }
     }
-  }
 
-  public static boolean shouldSkipFlowElement(
-      DelegateExecution execution, Expression skipExpression) {
-    Object value = skipExpression.getValue(execution);
+    public static boolean shouldSkipFlowElement(
+            DelegateExecution execution, Expression skipExpression) {
+        Object value = skipExpression.getValue(execution);
 
-    if (value instanceof Boolean) {
-      return ((Boolean) value).booleanValue();
+        if (value instanceof Boolean) {
+            return ((Boolean) value).booleanValue();
 
-    } else {
-      throw new ActivitiIllegalArgumentException(
-          "Skip expression does not resolve to a boolean: " + skipExpression.getExpressionText());
+        } else {
+            throw new ActivitiIllegalArgumentException(
+                    "Skip expression does not resolve to a boolean: "
+                            + skipExpression.getExpressionText());
+        }
     }
-  }
 }

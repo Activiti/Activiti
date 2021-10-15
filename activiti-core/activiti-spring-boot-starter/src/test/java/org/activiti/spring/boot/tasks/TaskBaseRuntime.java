@@ -15,11 +15,10 @@
  */
 package org.activiti.spring.boot.tasks;
 
-import static java.util.Collections.emptyMap;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.List;
-import java.util.Map;
+import static java.util.Collections.emptyMap;
+
 import org.activiti.api.model.shared.model.VariableInstance;
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.runtime.shared.query.Pageable;
@@ -30,46 +29,54 @@ import org.activiti.api.task.runtime.TaskRuntime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+import java.util.Map;
+
 @Component
 public class TaskBaseRuntime {
 
-  @Autowired private TaskRuntime taskRuntime;
+    @Autowired private TaskRuntime taskRuntime;
 
-  public List<Task> getTasksByProcessInstanceId(String processInstanceId) {
-    List<Task> taskList =
-        taskRuntime
-            .tasks(
-                Pageable.of(0, 50),
-                TaskPayloadBuilder.tasks().withProcessInstanceId(processInstanceId).build())
-            .getContent();
-    return taskList;
-  }
+    public List<Task> getTasksByProcessInstanceId(String processInstanceId) {
+        List<Task> taskList =
+                taskRuntime
+                        .tasks(
+                                Pageable.of(0, 50),
+                                TaskPayloadBuilder.tasks()
+                                        .withProcessInstanceId(processInstanceId)
+                                        .build())
+                        .getContent();
+        return taskList;
+    }
 
-  public List<Task> getTasks(ProcessInstance processInstance) {
-    return getTasksByProcessInstanceId(processInstance.getId());
-  }
+    public List<Task> getTasks(ProcessInstance processInstance) {
+        return getTasksByProcessInstanceId(processInstance.getId());
+    }
 
-  public List<VariableInstance> getTasksVariablesByTaskId(String taskId) {
-    return taskRuntime.variables(TaskPayloadBuilder.variables().withTaskId(taskId).build());
-  }
+    public List<VariableInstance> getTasksVariablesByTaskId(String taskId) {
+        return taskRuntime.variables(TaskPayloadBuilder.variables().withTaskId(taskId).build());
+    }
 
-  public void completeTask(String taskId) {
-    completeTask(taskId, emptyMap());
-  }
+    public void completeTask(String taskId) {
+        completeTask(taskId, emptyMap());
+    }
 
-  public void completeTask(Task task) {
-    this.completeTask(task.getId(), emptyMap());
-  }
+    public void completeTask(Task task) {
+        this.completeTask(task.getId(), emptyMap());
+    }
 
-  public void completeTask(Task task, Map<String, Object> variables) {
-    this.completeTask(task.getId(), variables);
-  }
+    public void completeTask(Task task, Map<String, Object> variables) {
+        this.completeTask(task.getId(), variables);
+    }
 
-  public void completeTask(String taskId, Map<String, Object> variables) {
-    Task completeTask =
-        taskRuntime.complete(
-            TaskPayloadBuilder.complete().withTaskId(taskId).withVariables(variables).build());
-    assertThat(completeTask).isNotNull();
-    assertThat(completeTask.getStatus()).isEqualTo(TaskStatus.COMPLETED);
-  }
+    public void completeTask(String taskId, Map<String, Object> variables) {
+        Task completeTask =
+                taskRuntime.complete(
+                        TaskPayloadBuilder.complete()
+                                .withTaskId(taskId)
+                                .withVariables(variables)
+                                .build());
+        assertThat(completeTask).isNotNull();
+        assertThat(completeTask.getStatus()).isEqualTo(TaskStatus.COMPLETED);
+    }
 }

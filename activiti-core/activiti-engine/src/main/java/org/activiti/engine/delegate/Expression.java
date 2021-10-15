@@ -16,21 +16,22 @@
 
 package org.activiti.engine.delegate;
 
-import java.io.Serializable;
-import java.util.Map;
 import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.interceptor.DelegateInterceptor;
 
+import java.io.Serializable;
+import java.util.Map;
+
 public interface Expression extends Serializable {
 
-  Object getValue(VariableScope variableScope);
+    Object getValue(VariableScope variableScope);
 
-  void setValue(Object value, VariableScope variableScope);
+    void setValue(Object value, VariableScope variableScope);
 
-  String getExpressionText();
+    String getExpressionText();
 
-  Object getValue(
-      ExpressionManager expressionManager,
-      DelegateInterceptor delegateInterceptor,
-      Map<String, Object> availableVariables);
+    Object getValue(
+            ExpressionManager expressionManager,
+            DelegateInterceptor delegateInterceptor,
+            Map<String, Object> availableVariables);
 }

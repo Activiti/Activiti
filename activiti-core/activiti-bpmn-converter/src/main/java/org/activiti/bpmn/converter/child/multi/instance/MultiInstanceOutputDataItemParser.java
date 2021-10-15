@@ -18,25 +18,26 @@ package org.activiti.bpmn.converter.child.multi.instance;
 import static org.activiti.bpmn.constants.BpmnXMLConstants.ATTRIBUTE_NAME;
 import static org.activiti.bpmn.constants.BpmnXMLConstants.ELEMENT_MULTI_INSTANCE_OUTPUT_DATA_ITEM;
 
-import javax.xml.stream.XMLStreamReader;
 import org.activiti.bpmn.converter.child.ElementParser;
 import org.activiti.bpmn.model.MultiInstanceLoopCharacteristics;
 
+import javax.xml.stream.XMLStreamReader;
+
 public class MultiInstanceOutputDataItemParser
-    implements ElementParser<MultiInstanceLoopCharacteristics> {
+        implements ElementParser<MultiInstanceLoopCharacteristics> {
 
-  @Override
-  public boolean canParseCurrentElement(XMLStreamReader reader) {
-    return reader.isStartElement()
-        && ELEMENT_MULTI_INSTANCE_OUTPUT_DATA_ITEM.equalsIgnoreCase(reader.getLocalName());
-  }
-
-  @Override
-  public void setInformation(
-      XMLStreamReader reader, MultiInstanceLoopCharacteristics loopCharacteristics) {
-    String attributeValue = reader.getAttributeValue(null, ATTRIBUTE_NAME);
-    if (attributeValue != null) {
-      loopCharacteristics.setOutputDataItem(attributeValue);
+    @Override
+    public boolean canParseCurrentElement(XMLStreamReader reader) {
+        return reader.isStartElement()
+                && ELEMENT_MULTI_INSTANCE_OUTPUT_DATA_ITEM.equalsIgnoreCase(reader.getLocalName());
     }
-  }
+
+    @Override
+    public void setInformation(
+            XMLStreamReader reader, MultiInstanceLoopCharacteristics loopCharacteristics) {
+        String attributeValue = reader.getAttributeValue(null, ATTRIBUTE_NAME);
+        if (attributeValue != null) {
+            loopCharacteristics.setOutputDataItem(attributeValue);
+        }
+    }
 }

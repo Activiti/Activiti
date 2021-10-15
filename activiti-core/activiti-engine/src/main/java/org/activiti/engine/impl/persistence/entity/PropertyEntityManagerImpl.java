@@ -16,31 +16,32 @@
 
 package org.activiti.engine.impl.persistence.entity;
 
-import java.util.List;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.persistence.entity.data.DataManager;
 import org.activiti.engine.impl.persistence.entity.data.PropertyDataManager;
 
+import java.util.List;
+
 /** */
 public class PropertyEntityManagerImpl extends AbstractEntityManager<PropertyEntity>
-    implements PropertyEntityManager {
+        implements PropertyEntityManager {
 
-  protected PropertyDataManager propertyDataManager;
+    protected PropertyDataManager propertyDataManager;
 
-  public PropertyEntityManagerImpl(
-      ProcessEngineConfigurationImpl processEngineConfiguration,
-      PropertyDataManager propertyDataManager) {
-    super(processEngineConfiguration);
-    this.propertyDataManager = propertyDataManager;
-  }
+    public PropertyEntityManagerImpl(
+            ProcessEngineConfigurationImpl processEngineConfiguration,
+            PropertyDataManager propertyDataManager) {
+        super(processEngineConfiguration);
+        this.propertyDataManager = propertyDataManager;
+    }
 
-  @Override
-  protected DataManager<PropertyEntity> getDataManager() {
-    return propertyDataManager;
-  }
+    @Override
+    protected DataManager<PropertyEntity> getDataManager() {
+        return propertyDataManager;
+    }
 
-  @Override
-  public List<PropertyEntity> findAll() {
-    return propertyDataManager.findAll();
-  }
+    @Override
+    public List<PropertyEntity> findAll() {
+        return propertyDataManager.findAll();
+    }
 }

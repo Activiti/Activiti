@@ -19,24 +19,24 @@ package org.activiti.engine.delegate.event;
 /** An {@link ActivitiEvent} related to an message being sent to an activity. */
 public interface ActivitiMessageEvent extends ActivitiActivityEvent {
 
-  /** @return the name of the message. */
-  public String getMessageName();
+    /** @return the name of the message. */
+    public String getMessageName();
 
-  /**
-   * @return the correlation key that was passed when sending the message. Returns null, if no
-   *     correlation key was passed.
-   */
-  public String getMessageCorrelationKey();
+    /**
+     * @return the correlation key that was passed when sending the message. Returns null, if no
+     *     correlation key was passed.
+     */
+    public String getMessageCorrelationKey();
 
-  /**
-   * @return the payload that was passed when sending the message. Returns null, if no payload was
-   *     passed.
-   */
-  public Object getMessageData();
+    /**
+     * @return the payload that was passed when sending the message. Returns null, if no payload was
+     *     passed.
+     */
+    public Object getMessageData();
 
-  /**
-   * @return the business key from process instance sending the message. Returns null, if no
-   *     business key was passed.
-   */
-  public String getMessageBusinessKey();
+    /**
+     * @return the business key from process instance sending the message. Returns null, if no
+     *     business key was passed.
+     */
+    public String getMessageBusinessKey();
 }

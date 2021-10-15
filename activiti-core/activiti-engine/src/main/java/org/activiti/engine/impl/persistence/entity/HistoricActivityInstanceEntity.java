@@ -22,21 +22,21 @@ import org.activiti.engine.history.HistoricActivityInstance;
 /** */
 @Internal
 public interface HistoricActivityInstanceEntity
-    extends HistoricActivityInstance, HistoricScopeInstanceEntity {
+        extends HistoricActivityInstance, HistoricScopeInstanceEntity {
 
-  void setActivityId(String activityId);
+    void setActivityId(String activityId);
 
-  void setActivityName(String activityName);
+    void setActivityName(String activityName);
 
-  void setActivityType(String activityType);
+    void setActivityType(String activityType);
 
-  void setExecutionId(String executionId);
+    void setExecutionId(String executionId);
 
-  void setAssignee(String assignee);
+    void setAssignee(String assignee);
 
-  void setTaskId(String taskId);
+    void setTaskId(String taskId);
 
-  void setCalledProcessInstanceId(String calledProcessInstanceId);
+    void setCalledProcessInstanceId(String calledProcessInstanceId);
 
-  void setTenantId(String tenantId);
+    void setTenantId(String tenantId);
 }

@@ -17,18 +17,18 @@ package org.activiti.test.matchers;
 
 public class ExclusiveGatewayMatchers extends ActivityMatchers {
 
-  private static final String EXCLUSIVE_GATEWAY = "exclusiveGateway";
+    private static final String EXCLUSIVE_GATEWAY = "exclusiveGateway";
 
-  private ExclusiveGatewayMatchers(String definitionKey) {
-    super(definitionKey);
-  }
+    private ExclusiveGatewayMatchers(String definitionKey) {
+        super(definitionKey);
+    }
 
-  @Override
-  public String getActivityType() {
-    return EXCLUSIVE_GATEWAY;
-  }
+    @Override
+    public String getActivityType() {
+        return EXCLUSIVE_GATEWAY;
+    }
 
-  public static ExclusiveGatewayMatchers exclusiveGateway(String definitionKey) {
-    return new ExclusiveGatewayMatchers(definitionKey);
-  }
+    public static ExclusiveGatewayMatchers exclusiveGateway(String definitionKey) {
+        return new ExclusiveGatewayMatchers(definitionKey);
+    }
 }

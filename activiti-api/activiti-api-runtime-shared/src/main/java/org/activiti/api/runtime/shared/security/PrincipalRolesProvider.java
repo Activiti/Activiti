@@ -20,5 +20,5 @@ import java.util.List;
 
 public interface PrincipalRolesProvider {
 
-  List<String> getRoles(Principal principal);
+    List<String> getRoles(Principal principal);
 }

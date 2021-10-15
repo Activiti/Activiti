@@ -16,20 +16,21 @@
 
 package org.activiti.engine.delegate;
 
-import java.util.Map;
 import org.activiti.bpmn.model.Task;
+
+import java.util.Map;
 
 /** Callback interface to be notified of transaction events. */
 public interface TransactionDependentTaskListener extends BaseTaskListener {
 
-  String ON_TRANSACTION_COMMITTING = "before-commit";
-  String ON_TRANSACTION_COMMITTED = "committed";
-  String ON_TRANSACTION_ROLLED_BACK = "rolled-back";
+    String ON_TRANSACTION_COMMITTING = "before-commit";
+    String ON_TRANSACTION_COMMITTED = "committed";
+    String ON_TRANSACTION_ROLLED_BACK = "rolled-back";
 
-  void notify(
-      String processInstanceId,
-      String executionId,
-      Task task,
-      Map<String, Object> executionVariables,
-      Map<String, Object> customPropertiesMap);
+    void notify(
+            String processInstanceId,
+            String executionId,
+            Task task,
+            Map<String, Object> executionVariables,
+            Map<String, Object> customPropertiesMap);
 }

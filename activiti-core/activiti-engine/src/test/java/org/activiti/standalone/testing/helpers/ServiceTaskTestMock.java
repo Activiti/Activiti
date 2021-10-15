@@ -16,17 +16,18 @@
 
 package org.activiti.standalone.testing.helpers;
 
-import java.util.concurrent.atomic.AtomicInteger;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.JavaDelegate;
+
+import java.util.concurrent.atomic.AtomicInteger;
 
 /** */
 public class ServiceTaskTestMock implements JavaDelegate {
 
-  public static AtomicInteger CALL_COUNT = new AtomicInteger();
+    public static AtomicInteger CALL_COUNT = new AtomicInteger();
 
-  @Override
-  public void execute(DelegateExecution execution) {
-    CALL_COUNT.incrementAndGet();
-  }
+    @Override
+    public void execute(DelegateExecution execution) {
+        CALL_COUNT.incrementAndGet();
+    }
 }

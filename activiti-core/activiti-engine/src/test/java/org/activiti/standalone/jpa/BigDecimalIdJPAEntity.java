@@ -17,6 +17,7 @@
 package org.activiti.standalone.jpa;
 
 import java.math.BigDecimal;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -25,15 +26,15 @@ import javax.persistence.Id;
 @Entity(name = "BIGD_ID_ENTITY")
 public class BigDecimalIdJPAEntity {
 
-  @Id
-  @Column(name = "ID_")
-  private BigDecimal bigDecimalId;
+    @Id
+    @Column(name = "ID_")
+    private BigDecimal bigDecimalId;
 
-  public BigDecimal getBigDecimalId() {
-    return bigDecimalId;
-  }
+    public BigDecimal getBigDecimalId() {
+        return bigDecimalId;
+    }
 
-  public void setBigDecimalId(BigDecimal bigDecimalId) {
-    this.bigDecimalId = bigDecimalId;
-  }
+    public void setBigDecimalId(BigDecimal bigDecimalId) {
+        this.bigDecimalId = bigDecimalId;
+    }
 }

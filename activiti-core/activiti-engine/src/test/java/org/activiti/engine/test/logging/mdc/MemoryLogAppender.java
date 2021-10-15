@@ -16,29 +16,30 @@
 package org.activiti.engine.test.logging.mdc;
 
 import ch.qos.logback.core.OutputStreamAppender;
+
 import java.io.ByteArrayOutputStream;
 
 /** @author Saeid Mirzaei */
 public class MemoryLogAppender<E> extends OutputStreamAppender<E> {
 
-  ByteArrayOutputStream baos;
+    ByteArrayOutputStream baos;
 
-  @Override
-  public void start() {
-    this.init();
-    super.start();
-  }
+    @Override
+    public void start() {
+        this.init();
+        super.start();
+    }
 
-  private void init() {
-    baos = new ByteArrayOutputStream();
-    this.setOutputStream(baos);
-  }
+    private void init() {
+        baos = new ByteArrayOutputStream();
+        this.setOutputStream(baos);
+    }
 
-  public String toString() {
-    return new String(baos.toByteArray());
-  }
+    public String toString() {
+        return new String(baos.toByteArray());
+    }
 
-  public void clear() {
-    this.init();
-  }
+    public void clear() {
+        this.init();
+    }
 }

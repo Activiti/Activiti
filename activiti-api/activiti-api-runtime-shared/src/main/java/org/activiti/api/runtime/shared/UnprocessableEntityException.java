@@ -17,7 +17,7 @@ package org.activiti.api.runtime.shared;
 
 public class UnprocessableEntityException extends IllegalArgumentException {
 
-  public UnprocessableEntityException(String message) {
-    super(message);
-  }
+    public UnprocessableEntityException(String message) {
+        super(message);
+    }
 }

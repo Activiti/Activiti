@@ -21,7 +21,7 @@ import org.activiti.test.assertions.TaskAssertions;
 
 public interface TaskOperations {
 
-  TaskAssertions claim(ClaimTaskPayload claimTaskPayload);
+    TaskAssertions claim(ClaimTaskPayload claimTaskPayload);
 
-  TaskAssertions complete(CompleteTaskPayload completeTaskPayload);
+    TaskAssertions complete(CompleteTaskPayload completeTaskPayload);
 }

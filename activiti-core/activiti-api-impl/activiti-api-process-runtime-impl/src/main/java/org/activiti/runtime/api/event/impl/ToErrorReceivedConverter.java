@@ -15,26 +15,28 @@
  */
 package org.activiti.runtime.api.event.impl;
 
-import java.util.Optional;
 import org.activiti.api.process.model.events.BPMNErrorReceivedEvent;
 import org.activiti.api.runtime.event.impl.BPMNErrorReceivedEventImpl;
 import org.activiti.engine.delegate.event.ActivitiErrorEvent;
 
+import java.util.Optional;
+
 public class ToErrorReceivedConverter
-    implements EventConverter<BPMNErrorReceivedEvent, ActivitiErrorEvent> {
+        implements EventConverter<BPMNErrorReceivedEvent, ActivitiErrorEvent> {
 
-  private BPMNErrorConverter bpmnErrorConverter;
+    private BPMNErrorConverter bpmnErrorConverter;
 
-  public ToErrorReceivedConverter(BPMNErrorConverter bpmnErrorConverter) {
-    this.bpmnErrorConverter = bpmnErrorConverter;
-  }
+    public ToErrorReceivedConverter(BPMNErrorConverter bpmnErrorConverter) {
+        this.bpmnErrorConverter = bpmnErrorConverter;
+    }
 
-  @Override
-  public Optional<BPMNErrorReceivedEvent> from(ActivitiErrorEvent internalEvent) {
-    BPMNErrorReceivedEventImpl event =
-        new BPMNErrorReceivedEventImpl(bpmnErrorConverter.convertToBPMNError(internalEvent));
-    event.setProcessInstanceId(internalEvent.getProcessInstanceId());
-    event.setProcessDefinitionId(internalEvent.getProcessDefinitionId());
-    return Optional.of(event);
-  }
+    @Override
+    public Optional<BPMNErrorReceivedEvent> from(ActivitiErrorEvent internalEvent) {
+        BPMNErrorReceivedEventImpl event =
+                new BPMNErrorReceivedEventImpl(
+                        bpmnErrorConverter.convertToBPMNError(internalEvent));
+        event.setProcessInstanceId(internalEvent.getProcessInstanceId());
+        event.setProcessDefinitionId(internalEvent.getProcessDefinitionId());
+        return Optional.of(event);
+    }
 }

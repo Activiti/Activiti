@@ -21,21 +21,21 @@ import org.activiti.api.process.runtime.events.ProcessCompletedEvent;
 import org.activiti.api.runtime.event.impl.RuntimeEventImpl;
 
 public class ProcessCompletedImpl
-    extends RuntimeEventImpl<ProcessInstance, ProcessRuntimeEvent.ProcessEvents>
-    implements ProcessCompletedEvent {
+        extends RuntimeEventImpl<ProcessInstance, ProcessRuntimeEvent.ProcessEvents>
+        implements ProcessCompletedEvent {
 
-  public ProcessCompletedImpl(ProcessInstance entity) {
-    super(entity);
-    setProcessInstanceId(entity.getId());
-  }
+    public ProcessCompletedImpl(ProcessInstance entity) {
+        super(entity);
+        setProcessInstanceId(entity.getId());
+    }
 
-  @Override
-  public ProcessEvents getEventType() {
-    return ProcessEvents.PROCESS_COMPLETED;
-  }
+    @Override
+    public ProcessEvents getEventType() {
+        return ProcessEvents.PROCESS_COMPLETED;
+    }
 
-  @Override
-  public String toString() {
-    return "ProcessCompletedEventImpl{" + super.toString() + '}';
-  }
+    @Override
+    public String toString() {
+        return "ProcessCompletedEventImpl{" + super.toString() + '}';
+    }
 }

@@ -20,15 +20,15 @@ import org.activiti.engine.impl.identity.Authentication;
 
 public class AuthenticatedUserELResolver implements VariableScopeItemELResolver {
 
-  private static final String AUTHENTICATED_USER_KEY = "authenticatedUserId";
+    private static final String AUTHENTICATED_USER_KEY = "authenticatedUserId";
 
-  @Override
-  public boolean canResolve(String property, VariableScope variableScope) {
-    return AUTHENTICATED_USER_KEY.equals(property);
-  }
+    @Override
+    public boolean canResolve(String property, VariableScope variableScope) {
+        return AUTHENTICATED_USER_KEY.equals(property);
+    }
 
-  @Override
-  public Object resolve(String property, VariableScope variableScope) {
-    return Authentication.getAuthenticatedUserId();
-  }
+    @Override
+    public Object resolve(String property, VariableScope variableScope) {
+        return Authentication.getAuthenticatedUserId();
+    }
 }

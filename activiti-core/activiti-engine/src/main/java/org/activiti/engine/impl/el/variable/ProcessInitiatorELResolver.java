@@ -20,16 +20,16 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 
 public class ProcessInitiatorELResolver implements VariableScopeItemELResolver {
 
-  private static final String INITIATOR_KEY = "initiator";
+    private static final String INITIATOR_KEY = "initiator";
 
-  @Override
-  public boolean canResolve(String property, VariableScope variableScope) {
-    return INITIATOR_KEY.equals(property) && variableScope instanceof ExecutionEntity;
-  }
+    @Override
+    public boolean canResolve(String property, VariableScope variableScope) {
+        return INITIATOR_KEY.equals(property) && variableScope instanceof ExecutionEntity;
+    }
 
-  @Override
-  public Object resolve(String property, VariableScope variableScope) {
-    ExecutionEntity processInstance = ((ExecutionEntity) variableScope).getProcessInstance();
-    return processInstance != null ? processInstance.getStartUserId() : null;
-  }
+    @Override
+    public Object resolve(String property, VariableScope variableScope) {
+        ExecutionEntity processInstance = ((ExecutionEntity) variableScope).getProcessInstance();
+        return processInstance != null ? processInstance.getStartUserId() : null;
+    }
 }

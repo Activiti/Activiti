@@ -33,22 +33,22 @@ import org.activiti.engine.impl.interceptor.CommandContextCloseListener;
  * (including the {@link DbSqlSession} in the relational DB case (the data needs to be ready then).
  */
 public class VerifyDeserializedObjectCommandContextCloseListener
-    implements CommandContextCloseListener {
+        implements CommandContextCloseListener {
 
-  protected DeserializedObject deserializedObject;
+    protected DeserializedObject deserializedObject;
 
-  public VerifyDeserializedObjectCommandContextCloseListener(
-      DeserializedObject deserializedObject) {
-    this.deserializedObject = deserializedObject;
-  }
+    public VerifyDeserializedObjectCommandContextCloseListener(
+            DeserializedObject deserializedObject) {
+        this.deserializedObject = deserializedObject;
+    }
 
-  public void closing(CommandContext commandContext) {
-    deserializedObject.verifyIfBytesOfSerializedObjectChanged();
-  }
+    public void closing(CommandContext commandContext) {
+        deserializedObject.verifyIfBytesOfSerializedObjectChanged();
+    }
 
-  public void closed(CommandContext commandContext) {}
+    public void closed(CommandContext commandContext) {}
 
-  public void afterSessionsFlush(CommandContext commandContext) {}
+    public void afterSessionsFlush(CommandContext commandContext) {}
 
-  public void closeFailure(CommandContext commandContext) {}
+    public void closeFailure(CommandContext commandContext) {}
 }

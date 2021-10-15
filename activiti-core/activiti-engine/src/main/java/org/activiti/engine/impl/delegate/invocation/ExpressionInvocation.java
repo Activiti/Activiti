@@ -21,13 +21,13 @@ import javax.el.ValueExpression;
 /** Baseclass responsible for handling invocations of Expressions */
 public abstract class ExpressionInvocation extends DelegateInvocation {
 
-  protected final ValueExpression valueExpression;
+    protected final ValueExpression valueExpression;
 
-  public ExpressionInvocation(ValueExpression valueExpression) {
-    this.valueExpression = valueExpression;
-  }
+    public ExpressionInvocation(ValueExpression valueExpression) {
+        this.valueExpression = valueExpression;
+    }
 
-  public Object getTarget() {
-    return valueExpression;
-  }
+    public Object getTarget() {
+        return valueExpression;
+    }
 }

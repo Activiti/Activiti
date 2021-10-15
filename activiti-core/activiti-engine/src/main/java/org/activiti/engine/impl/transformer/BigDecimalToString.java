@@ -22,11 +22,11 @@ import java.text.DecimalFormat;
 /** Transforms a {@link BigDecimal} to a {@link String} */
 public class BigDecimalToString extends AbstractTransformer {
 
-  protected DecimalFormat format = new DecimalFormat();
+    protected DecimalFormat format = new DecimalFormat();
 
-  /** {@inheritDoc} */
-  @Override
-  protected Object primTransform(Object anObject) throws Exception {
-    return format.format((BigDecimal) anObject);
-  }
+    /** {@inheritDoc} */
+    @Override
+    protected Object primTransform(Object anObject) throws Exception {
+        return format.format((BigDecimal) anObject);
+    }
 }

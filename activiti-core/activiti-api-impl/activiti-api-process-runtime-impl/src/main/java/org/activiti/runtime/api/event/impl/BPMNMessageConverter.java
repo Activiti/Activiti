@@ -15,27 +15,28 @@
  */
 package org.activiti.runtime.api.event.impl;
 
-import java.util.Map;
 import org.activiti.api.process.model.payloads.MessageEventPayload;
 import org.activiti.api.runtime.model.impl.BPMNMessageImpl;
 import org.activiti.engine.delegate.event.ActivitiMessageEvent;
 
+import java.util.Map;
+
 public class BPMNMessageConverter {
 
-  @SuppressWarnings("unchecked")
-  public BPMNMessageImpl convertToBPMNMessage(ActivitiMessageEvent internalEvent) {
+    @SuppressWarnings("unchecked")
+    public BPMNMessageImpl convertToBPMNMessage(ActivitiMessageEvent internalEvent) {
 
-    BPMNMessageImpl bpmnMessage = new BPMNMessageImpl(internalEvent.getActivityId());
-    bpmnMessage.setProcessDefinitionId(internalEvent.getProcessDefinitionId());
-    bpmnMessage.setProcessInstanceId(internalEvent.getProcessInstanceId());
+        BPMNMessageImpl bpmnMessage = new BPMNMessageImpl(internalEvent.getActivityId());
+        bpmnMessage.setProcessDefinitionId(internalEvent.getProcessDefinitionId());
+        bpmnMessage.setProcessInstanceId(internalEvent.getProcessInstanceId());
 
-    bpmnMessage.setMessagePayload(
-        new MessageEventPayload(
-            internalEvent.getMessageName(),
-            internalEvent.getMessageCorrelationKey(),
-            internalEvent.getMessageBusinessKey(),
-            (Map<String, Object>) internalEvent.getMessageData()));
+        bpmnMessage.setMessagePayload(
+                new MessageEventPayload(
+                        internalEvent.getMessageName(),
+                        internalEvent.getMessageCorrelationKey(),
+                        internalEvent.getMessageBusinessKey(),
+                        (Map<String, Object>) internalEvent.getMessageData()));
 
-    return bpmnMessage;
-  }
+        return bpmnMessage;
+    }
 }

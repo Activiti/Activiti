@@ -28,18 +28,18 @@ import org.activiti.engine.runtime.Job;
  */
 public class TenantAwareExecuteAsyncRunnableFactory implements ExecuteAsyncRunnableFactory {
 
-  protected TenantInfoHolder tenantInfoHolder;
-  protected String tenantId;
+    protected TenantInfoHolder tenantInfoHolder;
+    protected String tenantId;
 
-  public TenantAwareExecuteAsyncRunnableFactory(
-      TenantInfoHolder tenantInfoHolder, String tenantId) {
-    this.tenantInfoHolder = tenantInfoHolder;
-    this.tenantId = tenantId;
-  }
+    public TenantAwareExecuteAsyncRunnableFactory(
+            TenantInfoHolder tenantInfoHolder, String tenantId) {
+        this.tenantInfoHolder = tenantInfoHolder;
+        this.tenantId = tenantId;
+    }
 
-  public Runnable createExecuteAsyncRunnable(
-      Job job, ProcessEngineConfigurationImpl processEngineConfiguration) {
-    return new TenantAwareExecuteAsyncRunnable(
-        job, processEngineConfiguration, tenantInfoHolder, tenantId);
-  }
+    public Runnable createExecuteAsyncRunnable(
+            Job job, ProcessEngineConfigurationImpl processEngineConfiguration) {
+        return new TenantAwareExecuteAsyncRunnable(
+                job, processEngineConfiguration, tenantInfoHolder, tenantId);
+    }
 }

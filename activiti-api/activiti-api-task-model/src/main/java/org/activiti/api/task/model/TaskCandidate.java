@@ -17,5 +17,5 @@ package org.activiti.api.task.model;
 
 public interface TaskCandidate {
 
-  String getTaskId();
+    String getTaskId();
 }

@@ -17,11 +17,12 @@ package org.activiti.engine.test.regression;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.List;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.validation.ProcessValidator;
+
+import java.util.List;
 
 /**
  * From http://forums.activiti.org/content/skip-parse-validation-while-fetching- startformdata
@@ -32,67 +33,67 @@ import org.activiti.validation.ProcessValidator;
  */
 public class ProcessValidationExecutedAfterDeployTest extends PluggableActivitiTestCase {
 
-  protected ProcessValidator processValidator;
+    protected ProcessValidator processValidator;
 
-  private void disableValidation() {
-    processValidator = processEngineConfiguration.getProcessValidator();
-    processEngineConfiguration.setProcessValidator(null);
-  }
-
-  private void enableValidation() {
-    processEngineConfiguration.setProcessValidator(processValidator);
-  }
-
-  private void clearDeploymentCache() {
-    processEngineConfiguration.getProcessDefinitionCache().clear();
-  }
-
-  protected void tearDown() throws Exception {
-    enableValidation();
-    super.tearDown();
-  }
-
-  private ProcessDefinition getLatestProcessDefinitionVersionByKey(String processDefinitionKey) {
-    List<ProcessDefinition> definitions = null;
-    try {
-      definitions =
-          repositoryService
-              .createProcessDefinitionQuery()
-              .processDefinitionKey(processDefinitionKey)
-              .orderByProcessDefinitionVersion()
-              .latestVersion()
-              .desc()
-              .list();
-      if (definitions.isEmpty()) {
-        return null;
-      }
-    } catch (Exception e) {
-      fail(e.getMessage());
+    private void disableValidation() {
+        processValidator = processEngineConfiguration.getProcessValidator();
+        processEngineConfiguration.setProcessValidator(null);
     }
-    return definitions.get(0);
-  }
 
-  public void testGetLatestProcessDefinitionTextByKey() {
-
-    disableValidation();
-    repositoryService
-        .createDeployment()
-        .addClasspathResource(
-            "org/activiti/engine/test/regression/ProcessValidationExecutedAfterDeployTest.bpmn20.xml")
-        .deploy();
-    enableValidation();
-    clearDeploymentCache();
-
-    ProcessDefinition definition = getLatestProcessDefinitionVersionByKey("testProcess1");
-    assertThat(definition).as("Error occurred in fetching process model.").isNotNull();
-    try {
-      repositoryService.getProcessModel(definition.getId());
-    } catch (ActivitiException e) {
-      fail("Error occurred in fetching process model.");
+    private void enableValidation() {
+        processEngineConfiguration.setProcessValidator(processValidator);
     }
-    for (org.activiti.engine.repository.Deployment deployment :
-        repositoryService.createDeploymentQuery().list()) {
-      repositoryService.deleteDeployment(deployment.getId());
+
+    private void clearDeploymentCache() {
+        processEngineConfiguration.getProcessDefinitionCache().clear();
     }
-  }
+
+    protected void tearDown() throws Exception {
+        enableValidation();
+        super.tearDown();
+    }
+
+    private ProcessDefinition getLatestProcessDefinitionVersionByKey(String processDefinitionKey) {
+        List<ProcessDefinition> definitions = null;
+        try {
+            definitions =
+                    repositoryService
+                            .createProcessDefinitionQuery()
+                            .processDefinitionKey(processDefinitionKey)
+                            .orderByProcessDefinitionVersion()
+                            .latestVersion()
+                            .desc()
+                            .list();
+            if (definitions.isEmpty()) {
+                return null;
+            }
+        } catch (Exception e) {
+            fail(e.getMessage());
+        }
+        return definitions.get(0);
+    }
+
+    public void testGetLatestProcessDefinitionTextByKey() {
+
+        disableValidation();
+        repositoryService
+                .createDeployment()
+                .addClasspathResource(
+                        "org/activiti/engine/test/regression/ProcessValidationExecutedAfterDeployTest.bpmn20.xml")
+                .deploy();
+        enableValidation();
+        clearDeploymentCache();
+
+        ProcessDefinition definition = getLatestProcessDefinitionVersionByKey("testProcess1");
+        assertThat(definition).as("Error occurred in fetching process model.").isNotNull();
+        try {
+            repositoryService.getProcessModel(definition.getId());
+        } catch (ActivitiException e) {
+            fail("Error occurred in fetching process model.");
+        }
+        for (org.activiti.engine.repository.Deployment deployment :
+                repositoryService.createDeploymentQuery().list()) {
+            repositoryService.deleteDeployment(deployment.getId());
+        }
+    }
 }

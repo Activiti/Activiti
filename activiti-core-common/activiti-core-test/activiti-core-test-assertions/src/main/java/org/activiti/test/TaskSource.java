@@ -15,12 +15,13 @@
  */
 package org.activiti.test;
 
-import java.util.List;
 import org.activiti.api.task.model.Task;
+
+import java.util.List;
 
 public interface TaskSource {
 
-  List<Task> getTasks(String processInstanceId);
+    List<Task> getTasks(String processInstanceId);
 
-  boolean canHandle(Task.TaskStatus taskStatus);
+    boolean canHandle(Task.TaskStatus taskStatus);
 }

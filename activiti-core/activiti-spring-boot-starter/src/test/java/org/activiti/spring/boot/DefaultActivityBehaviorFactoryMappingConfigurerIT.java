@@ -26,14 +26,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 public class DefaultActivityBehaviorFactoryMappingConfigurerIT {
 
-  @Autowired private SpringProcessEngineConfiguration processEngineConfiguration;
+    @Autowired private SpringProcessEngineConfiguration processEngineConfiguration;
 
-  @Test
-  public void
-      processEngineConfigurationShouldHaveSetMappingAwareActivityBehaviorFactoryAsActivityBehaviorFactory() {
-    assertThat(processEngineConfiguration.getActivityBehaviorFactory())
-        .isInstanceOf(MappingAwareActivityBehaviorFactory.class);
-    assertThat(processEngineConfiguration.getBpmnParser().getActivityBehaviorFactory())
-        .isInstanceOf(MappingAwareActivityBehaviorFactory.class);
-  }
+    @Test
+    public void
+            processEngineConfigurationShouldHaveSetMappingAwareActivityBehaviorFactoryAsActivityBehaviorFactory() {
+        assertThat(processEngineConfiguration.getActivityBehaviorFactory())
+                .isInstanceOf(MappingAwareActivityBehaviorFactory.class);
+        assertThat(processEngineConfiguration.getBpmnParser().getActivityBehaviorFactory())
+                .isInstanceOf(MappingAwareActivityBehaviorFactory.class);
+    }
 }

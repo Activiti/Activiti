@@ -32,30 +32,30 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 public class TaskRuntimeAppVersionIT {
 
-  @Autowired private TaskRuntime taskRuntime;
+    @Autowired private TaskRuntime taskRuntime;
 
-  @Autowired private SecurityUtil securityUtil;
+    @Autowired private SecurityUtil securityUtil;
 
-  @Autowired private TaskCleanUpUtil taskCleanUpUtil;
+    @Autowired private TaskCleanUpUtil taskCleanUpUtil;
 
-  @AfterEach
-  public void taskCleanUp() {
-    taskCleanUpUtil.cleanUpWithAdmin();
-  }
+    @AfterEach
+    public void taskCleanUp() {
+        taskCleanUpUtil.cleanUpWithAdmin();
+    }
 
-  @Test
-  public void should_standaloneTaskAlwaysHaveAppVersion() {
-    securityUtil.logInAs("user");
+    @Test
+    public void should_standaloneTaskAlwaysHaveAppVersion() {
+        securityUtil.logInAs("user");
 
-    taskRuntime.create(TaskPayloadBuilder.create().withName("new task").build());
+        taskRuntime.create(TaskPayloadBuilder.create().withName("new task").build());
 
-    Page<Task> tasks = taskRuntime.tasks(Pageable.of(0, 50));
+        Page<Task> tasks = taskRuntime.tasks(Pageable.of(0, 50));
 
-    assertThat(tasks.getContent()).hasSize(1);
+        assertThat(tasks.getContent()).hasSize(1);
 
-    Task result = tasks.getContent().get(0);
+        Task result = tasks.getContent().get(0);
 
-    assertThat(result.getName()).isEqualTo("new task");
-    assertThat(result.getAppVersion()).isEqualTo("1");
-  }
+        assertThat(result.getName()).isEqualTo("new task");
+        assertThat(result.getAppVersion()).isEqualTo("1");
+    }
 }

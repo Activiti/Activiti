@@ -15,37 +15,39 @@
  */
 package org.activiti.core.common.spring.security.policies;
 
-import static java.util.Collections.singleton;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.Set;
+import static java.util.Collections.singleton;
+
 import org.activiti.api.process.model.payloads.GetProcessInstancesPayload;
 import org.junit.jupiter.api.Test;
 
+import java.util.Set;
+
 public class SecurityPoliciesProcessInstanceRestrictionApplierTest {
 
-  private SecurityPoliciesProcessInstanceRestrictionApplier restrictionApplier =
-      new SecurityPoliciesProcessInstanceRestrictionApplier();
+    private SecurityPoliciesProcessInstanceRestrictionApplier restrictionApplier =
+            new SecurityPoliciesProcessInstanceRestrictionApplier();
 
-  @Test
-  public void restrictToKeysAddFilterOnGivenKeys() {
-    // given
-    Set<String> keys = singleton("procDef");
+    @Test
+    public void restrictToKeysAddFilterOnGivenKeys() {
+        // given
+        Set<String> keys = singleton("procDef");
 
-    // when
-    GetProcessInstancesPayload filter = restrictionApplier.restrictToKeys(keys);
+        // when
+        GetProcessInstancesPayload filter = restrictionApplier.restrictToKeys(keys);
 
-    // then
-    assertThat(filter.getProcessDefinitionKeys()).isEqualTo(keys);
-  }
+        // then
+        assertThat(filter.getProcessDefinitionKeys()).isEqualTo(keys);
+    }
 
-  @Test
-  public void denyAllShouldAddUnmatchableFilter() {
-    // when
-    GetProcessInstancesPayload filter = restrictionApplier.denyAll();
+    @Test
+    public void denyAllShouldAddUnmatchableFilter() {
+        // when
+        GetProcessInstancesPayload filter = restrictionApplier.denyAll();
 
-    // then
-    assertThat(filter.getProcessDefinitionKeys()).hasSize(1);
-    assertThat(filter.getProcessDefinitionKeys().iterator().next()).startsWith("missing-");
-  }
+        // then
+        assertThat(filter.getProcessDefinitionKeys()).hasSize(1);
+        assertThat(filter.getProcessDefinitionKeys().iterator().next()).startsWith("missing-");
+    }
 }

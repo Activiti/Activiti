@@ -19,79 +19,79 @@ import org.activiti.api.model.shared.model.VariableInstance;
 
 public class VariableInstanceImpl<T> implements VariableInstance {
 
-  private String name;
-  private String type;
-  private String processInstanceId;
-  private T value;
-  private String taskId;
+    private String name;
+    private String type;
+    private String processInstanceId;
+    private T value;
+    private String taskId;
 
-  public VariableInstanceImpl() {}
+    public VariableInstanceImpl() {}
 
-  public VariableInstanceImpl(
-      String name, String type, T value, String processInstanceId, String taskId) {
-    this.name = name;
-    this.type = type;
-    this.processInstanceId = processInstanceId;
-    this.value = value;
-    this.taskId = taskId;
-  }
+    public VariableInstanceImpl(
+            String name, String type, T value, String processInstanceId, String taskId) {
+        this.name = name;
+        this.type = type;
+        this.processInstanceId = processInstanceId;
+        this.value = value;
+        this.taskId = taskId;
+    }
 
-  @Override
-  public String getName() {
-    return name;
-  }
+    @Override
+    public String getName() {
+        return name;
+    }
 
-  @Override
-  public String getType() {
-    return type;
-  }
+    @Override
+    public String getType() {
+        return type;
+    }
 
-  @Override
-  public String getProcessInstanceId() {
-    return processInstanceId;
-  }
+    @Override
+    public String getProcessInstanceId() {
+        return processInstanceId;
+    }
 
-  public void setProcessInstanceId(String processInstanceId) {
-    this.processInstanceId = processInstanceId;
-  }
+    public void setProcessInstanceId(String processInstanceId) {
+        this.processInstanceId = processInstanceId;
+    }
 
-  @Override
-  public String getTaskId() {
-    return taskId;
-  }
+    @Override
+    public String getTaskId() {
+        return taskId;
+    }
 
-  @Override
-  public boolean isTaskVariable() {
-    return taskId != null;
-  }
+    @Override
+    public boolean isTaskVariable() {
+        return taskId != null;
+    }
 
-  public void setTaskId(String taskId) {
-    this.taskId = taskId;
-  }
+    public void setTaskId(String taskId) {
+        this.taskId = taskId;
+    }
 
-  @Override
-  public T getValue() {
-    return value;
-  }
+    @Override
+    public T getValue() {
+        return value;
+    }
 
-  @Override
-  public String toString() {
-    return "VariableInstanceImpl{"
-        + "name='"
-        + name
-        + '\''
-        + ", type='"
-        + type
-        + '\''
-        + ", processInstanceId='"
-        + processInstanceId
-        + '\''
-        + ", taskId='"
-        + taskId
-        + '\''
-        + ", value='"
-        + value.toString()
-        + '\''
-        + '}';
-  }
+    @Override
+    public String toString() {
+        return "VariableInstanceImpl{"
+                + "name='"
+                + name
+                + '\''
+                + ", type='"
+                + type
+                + '\''
+                + ", processInstanceId='"
+                + processInstanceId
+                + '\''
+                + ", taskId='"
+                + taskId
+                + '\''
+                + ", value='"
+                + value.toString()
+                + '\''
+                + '}';
+    }
 }

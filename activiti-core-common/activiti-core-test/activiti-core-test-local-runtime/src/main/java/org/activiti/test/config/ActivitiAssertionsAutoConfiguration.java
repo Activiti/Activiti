@@ -15,7 +15,6 @@
  */
 package org.activiti.test.config;
 
-import java.util.List;
 import org.activiti.api.model.shared.event.VariableCreatedEvent;
 import org.activiti.api.model.shared.event.VariableDeletedEvent;
 import org.activiti.api.model.shared.event.VariableUpdatedEvent;
@@ -57,165 +56,170 @@ import org.activiti.test.operations.TaskRuntimeOperations;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.List;
+
 @Configuration
 public class ActivitiAssertionsAutoConfiguration {
 
-  private final LocalEventSource localEventProvider = new LocalEventSource();
+    private final LocalEventSource localEventProvider = new LocalEventSource();
 
-  @Bean
-  public LocalEventSource handledEvents() {
-    return localEventProvider;
-  }
+    @Bean
+    public LocalEventSource handledEvents() {
+        return localEventProvider;
+    }
 
-  @Bean
-  public TaskSource localTaskProvider(TaskRuntime taskRuntime) {
-    return new LocalTaskSource(taskRuntime);
-  }
+    @Bean
+    public TaskSource localTaskProvider(TaskRuntime taskRuntime) {
+        return new LocalTaskSource(taskRuntime);
+    }
 
-  @Bean
-  public ProcessRuntimeOperations processRuntimeOperations(
-      ProcessRuntime processRuntime, EventSource eventSource, List<TaskSource> taskSources) {
-    return new ProcessRuntimeOperations(processRuntime, eventSource, taskSources);
-  }
+    @Bean
+    public ProcessRuntimeOperations processRuntimeOperations(
+            ProcessRuntime processRuntime, EventSource eventSource, List<TaskSource> taskSources) {
+        return new ProcessRuntimeOperations(processRuntime, eventSource, taskSources);
+    }
 
-  @Bean
-  public TaskRuntimeOperations taskRuntimeOperations(
-      TaskRuntime taskRuntime, EventSource eventSource, List<TaskSource> taskSources) {
-    return new TaskRuntimeOperations(taskRuntime, eventSource, taskSources);
-  }
+    @Bean
+    public TaskRuntimeOperations taskRuntimeOperations(
+            TaskRuntime taskRuntime, EventSource eventSource, List<TaskSource> taskSources) {
+        return new TaskRuntimeOperations(taskRuntime, eventSource, taskSources);
+    }
 
-  @Bean
-  public BPMNElementEventListener<BPMNActivityStartedEvent>
-      keepInMemoryBpmnActivityStartedListener() {
-    return localEventProvider::addCollectedEvents;
-  }
+    @Bean
+    public BPMNElementEventListener<BPMNActivityStartedEvent>
+            keepInMemoryBpmnActivityStartedListener() {
+        return localEventProvider::addCollectedEvents;
+    }
 
-  @Bean
-  public BPMNElementEventListener<BPMNActivityCompletedEvent>
-      keepInMemoryBpmnActivityCompletedListener() {
-    return localEventProvider::addCollectedEvents;
-  }
+    @Bean
+    public BPMNElementEventListener<BPMNActivityCompletedEvent>
+            keepInMemoryBpmnActivityCompletedListener() {
+        return localEventProvider::addCollectedEvents;
+    }
 
-  @Bean
-  public BPMNElementEventListener<BPMNActivityCancelledEvent>
-      keepInMemoryBpmnActivityCancelledListener() {
-    return localEventProvider::addCollectedEvents;
-  }
+    @Bean
+    public BPMNElementEventListener<BPMNActivityCancelledEvent>
+            keepInMemoryBpmnActivityCancelledListener() {
+        return localEventProvider::addCollectedEvents;
+    }
 
-  @Bean
-  public BPMNElementEventListener<BPMNSequenceFlowTakenEvent>
-      keepInMemoryBpmnSequenceFlowTakenListener() {
-    return localEventProvider::addCollectedEvents;
-  }
+    @Bean
+    public BPMNElementEventListener<BPMNSequenceFlowTakenEvent>
+            keepInMemoryBpmnSequenceFlowTakenListener() {
+        return localEventProvider::addCollectedEvents;
+    }
 
-  @Bean
-  public ProcessRuntimeEventListener<ProcessCreatedEvent> keepInMemoryProcessCreatedListener() {
-    return localEventProvider::addCollectedEvents;
-  }
+    @Bean
+    public ProcessRuntimeEventListener<ProcessCreatedEvent> keepInMemoryProcessCreatedListener() {
+        return localEventProvider::addCollectedEvents;
+    }
 
-  @Bean
-  public ProcessRuntimeEventListener<ProcessStartedEvent> keepInMemoryProcessStartedListener() {
-    return localEventProvider::addCollectedEvents;
-  }
+    @Bean
+    public ProcessRuntimeEventListener<ProcessStartedEvent> keepInMemoryProcessStartedListener() {
+        return localEventProvider::addCollectedEvents;
+    }
 
-  @Bean
-  public ProcessRuntimeEventListener<ProcessCompletedEvent> keepInMemoryProcessCompletedListener() {
-    return localEventProvider::addCollectedEvents;
-  }
+    @Bean
+    public ProcessRuntimeEventListener<ProcessCompletedEvent>
+            keepInMemoryProcessCompletedListener() {
+        return localEventProvider::addCollectedEvents;
+    }
 
-  @Bean
-  public ProcessRuntimeEventListener<ProcessResumedEvent> keepInMemoryProcessResumedListener() {
-    return localEventProvider::addCollectedEvents;
-  }
+    @Bean
+    public ProcessRuntimeEventListener<ProcessResumedEvent> keepInMemoryProcessResumedListener() {
+        return localEventProvider::addCollectedEvents;
+    }
 
-  @Bean
-  public ProcessRuntimeEventListener<ProcessSuspendedEvent> keepInMemoryProcessSuspendedListener() {
-    return localEventProvider::addCollectedEvents;
-  }
+    @Bean
+    public ProcessRuntimeEventListener<ProcessSuspendedEvent>
+            keepInMemoryProcessSuspendedListener() {
+        return localEventProvider::addCollectedEvents;
+    }
 
-  @Bean
-  public ProcessRuntimeEventListener<ProcessCancelledEvent> keepInMemoryProcessCancelledListener() {
-    return localEventProvider::addCollectedEvents;
-  }
+    @Bean
+    public ProcessRuntimeEventListener<ProcessCancelledEvent>
+            keepInMemoryProcessCancelledListener() {
+        return localEventProvider::addCollectedEvents;
+    }
 
-  @Bean
-  public VariableEventListener<VariableCreatedEvent> keepInMemoryVariableCreatedEventListener() {
-    return localEventProvider::addCollectedEvents;
-  }
+    @Bean
+    public VariableEventListener<VariableCreatedEvent> keepInMemoryVariableCreatedEventListener() {
+        return localEventProvider::addCollectedEvents;
+    }
 
-  @Bean
-  public VariableEventListener<VariableDeletedEvent> keepInMemoryVariableDeletedEventListener() {
-    return localEventProvider::addCollectedEvents;
-  }
+    @Bean
+    public VariableEventListener<VariableDeletedEvent> keepInMemoryVariableDeletedEventListener() {
+        return localEventProvider::addCollectedEvents;
+    }
 
-  @Bean
-  public VariableEventListener<VariableUpdatedEvent> keepInMemoryVariableUpdatedEventListener() {
-    return localEventProvider::addCollectedEvents;
-  }
+    @Bean
+    public VariableEventListener<VariableUpdatedEvent> keepInMemoryVariableUpdatedEventListener() {
+        return localEventProvider::addCollectedEvents;
+    }
 
-  @Bean
-  public TaskEventListener<TaskCreatedEvent> keepInMemoryTaskCreatedEventListener() {
-    return localEventProvider::addCollectedEvents;
-  }
+    @Bean
+    public TaskEventListener<TaskCreatedEvent> keepInMemoryTaskCreatedEventListener() {
+        return localEventProvider::addCollectedEvents;
+    }
 
-  @Bean
-  public TaskEventListener<TaskUpdatedEvent> keepInMemoryTaskUpdatedEventListener() {
-    return localEventProvider::addCollectedEvents;
-  }
+    @Bean
+    public TaskEventListener<TaskUpdatedEvent> keepInMemoryTaskUpdatedEventListener() {
+        return localEventProvider::addCollectedEvents;
+    }
 
-  @Bean
-  public TaskEventListener<TaskCompletedEvent> keepInMemoryTaskCompletedEventListener() {
-    return localEventProvider::addCollectedEvents;
-  }
+    @Bean
+    public TaskEventListener<TaskCompletedEvent> keepInMemoryTaskCompletedEventListener() {
+        return localEventProvider::addCollectedEvents;
+    }
 
-  @Bean
-  public TaskEventListener<TaskSuspendedEvent> keepInMemoryTaskSuspendedEventListener() {
-    return localEventProvider::addCollectedEvents;
-  }
+    @Bean
+    public TaskEventListener<TaskSuspendedEvent> keepInMemoryTaskSuspendedEventListener() {
+        return localEventProvider::addCollectedEvents;
+    }
 
-  @Bean
-  public TaskEventListener<TaskAssignedEvent> keepInMemoryTaskAssignedEventListener() {
-    return localEventProvider::addCollectedEvents;
-  }
+    @Bean
+    public TaskEventListener<TaskAssignedEvent> keepInMemoryTaskAssignedEventListener() {
+        return localEventProvider::addCollectedEvents;
+    }
 
-  @Bean
-  public TaskEventListener<TaskCancelledEvent> keepInMemoryTaskCancelledEventListener() {
-    return localEventProvider::addCollectedEvents;
-  }
+    @Bean
+    public TaskEventListener<TaskCancelledEvent> keepInMemoryTaskCancelledEventListener() {
+        return localEventProvider::addCollectedEvents;
+    }
 
-  @Bean
-  public BPMNElementEventListener<BPMNSignalReceivedEvent>
-      keepInMemoryBpmnSignalReceivedListener() {
-    return localEventProvider::addCollectedEvents;
-  }
+    @Bean
+    public BPMNElementEventListener<BPMNSignalReceivedEvent>
+            keepInMemoryBpmnSignalReceivedListener() {
+        return localEventProvider::addCollectedEvents;
+    }
 
-  @Bean
-  public BPMNElementEventListener<BPMNTimerScheduledEvent> keepInMemoryTimerScheduledListener() {
-    return localEventProvider::addCollectedEvents;
-  }
+    @Bean
+    public BPMNElementEventListener<BPMNTimerScheduledEvent> keepInMemoryTimerScheduledListener() {
+        return localEventProvider::addCollectedEvents;
+    }
 
-  @Bean
-  public BPMNElementEventListener<BPMNTimerFiredEvent> keepInMemoryTimerFiredListener() {
-    return localEventProvider::addCollectedEvents;
-  }
+    @Bean
+    public BPMNElementEventListener<BPMNTimerFiredEvent> keepInMemoryTimerFiredListener() {
+        return localEventProvider::addCollectedEvents;
+    }
 
-  @Bean
-  public BPMNElementEventListener<BPMNTimerExecutedEvent> keepInMemoryTimerExecutedListener() {
-    return localEventProvider::addCollectedEvents;
-  }
+    @Bean
+    public BPMNElementEventListener<BPMNTimerExecutedEvent> keepInMemoryTimerExecutedListener() {
+        return localEventProvider::addCollectedEvents;
+    }
 
-  @Bean
-  public BPMNElementEventListener<BPMNTimerFailedEvent> keepInMemoryTimerFailedListener() {
-    return localEventProvider::addCollectedEvents;
-  }
+    @Bean
+    public BPMNElementEventListener<BPMNTimerFailedEvent> keepInMemoryTimerFailedListener() {
+        return localEventProvider::addCollectedEvents;
+    }
 
-  @Bean
-  public BPMNElementEventListener<BPMNTimerCancelledEvent> keepInMemoryTimerCancelledListener() {
-    return localEventProvider::addCollectedEvents;
-  }
+    @Bean
+    public BPMNElementEventListener<BPMNTimerCancelledEvent> keepInMemoryTimerCancelledListener() {
+        return localEventProvider::addCollectedEvents;
+    }
 
-  @Bean
-  public BPMNElementEventListener<BPMNErrorReceivedEvent> keepInMemoryErrorReceivedListener() {
-    return localEventProvider::addCollectedEvents;
-  }
+    @Bean
+    public BPMNElementEventListener<BPMNErrorReceivedEvent> keepInMemoryErrorReceivedListener() {
+        return localEventProvider::addCollectedEvents;
+    }
 }

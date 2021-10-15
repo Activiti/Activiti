@@ -24,32 +24,32 @@ import org.activiti.test.matchers.ProcessTaskMatcher;
 
 public class AwaitProcessInstanceAssertions implements ProcessInstanceAssertions {
 
-  private ProcessInstanceAssertions processInstanceAssertions;
+    private ProcessInstanceAssertions processInstanceAssertions;
 
-  public AwaitProcessInstanceAssertions(ProcessInstanceAssertions processInstanceAssertions) {
-    this.processInstanceAssertions = processInstanceAssertions;
-  }
+    public AwaitProcessInstanceAssertions(ProcessInstanceAssertions processInstanceAssertions) {
+        this.processInstanceAssertions = processInstanceAssertions;
+    }
 
-  @Override
-  public ProcessInstanceAssertions expectFields(ProcessResultMatcher... matchers) {
-    await().untilAsserted(() -> processInstanceAssertions.expectFields(matchers));
-    return this;
-  }
+    @Override
+    public ProcessInstanceAssertions expectFields(ProcessResultMatcher... matchers) {
+        await().untilAsserted(() -> processInstanceAssertions.expectFields(matchers));
+        return this;
+    }
 
-  @Override
-  public ProcessInstanceAssertions expectEvents(OperationScopeMatcher... matchers) {
-    await().untilAsserted(() -> processInstanceAssertions.expectEvents(matchers));
-    return this;
-  }
+    @Override
+    public ProcessInstanceAssertions expectEvents(OperationScopeMatcher... matchers) {
+        await().untilAsserted(() -> processInstanceAssertions.expectEvents(matchers));
+        return this;
+    }
 
-  @Override
-  public ProcessInstanceAssertions expect(ProcessTaskMatcher... matchers) {
-    await().untilAsserted(() -> processInstanceAssertions.expect(matchers));
-    return this;
-  }
+    @Override
+    public ProcessInstanceAssertions expect(ProcessTaskMatcher... matchers) {
+        await().untilAsserted(() -> processInstanceAssertions.expect(matchers));
+        return this;
+    }
 
-  @Override
-  public ProcessInstance andReturn() {
-    return processInstanceAssertions.andReturn();
-  }
+    @Override
+    public ProcessInstance andReturn() {
+        return processInstanceAssertions.andReturn();
+    }
 }

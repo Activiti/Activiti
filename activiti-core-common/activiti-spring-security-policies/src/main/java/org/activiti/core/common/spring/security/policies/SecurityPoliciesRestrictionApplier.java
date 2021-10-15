@@ -19,9 +19,9 @@ import java.util.Set;
 
 public interface SecurityPoliciesRestrictionApplier<T> {
 
-  T restrictToKeys(Set<String> keys);
+    T restrictToKeys(Set<String> keys);
 
-  T denyAll();
+    T denyAll();
 
-  T allowAll();
+    T allowAll();
 }

@@ -21,16 +21,16 @@ import org.activiti.api.task.model.events.TaskRuntimeEvent;
 import org.activiti.api.task.runtime.events.TaskSuspendedEvent;
 
 public class TaskSuspendedImpl extends RuntimeEventImpl<Task, TaskRuntimeEvent.TaskEvents>
-    implements TaskSuspendedEvent {
+        implements TaskSuspendedEvent {
 
-  public TaskSuspendedImpl() {}
+    public TaskSuspendedImpl() {}
 
-  public TaskSuspendedImpl(Task entity) {
-    super(entity);
-  }
+    public TaskSuspendedImpl(Task entity) {
+        super(entity);
+    }
 
-  @Override
-  public TaskEvents getEventType() {
-    return TaskEvents.TASK_SUSPENDED;
-  }
+    @Override
+    public TaskEvents getEventType() {
+        return TaskEvents.TASK_SUSPENDED;
+    }
 }

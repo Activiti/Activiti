@@ -20,8 +20,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.tuple;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventListener;
@@ -34,265 +32,291 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /** */
 public class MessageStartEventTest extends PluggableActivitiTestCase {
 
-  public void testDeploymentCreatesSubscriptions() {
-    String deploymentId =
-        repositoryService
-            .createDeployment()
-            .addClasspathResource(
-                "org/activiti/engine/test/bpmn/event/message/MessageStartEventTest.testSingleMessageStartEvent.bpmn20.xml")
-            .deploy()
-            .getId();
-
-    List<EventSubscriptionEntity> eventSubscriptions =
-        new EventSubscriptionQueryImpl(processEngineConfiguration.getCommandExecutor()).list();
-
-    assertThat(eventSubscriptions).hasSize(1);
-
-    repositoryService.deleteDeployment(deploymentId);
-  }
-
-  public void testSameMessageNameFails() {
-    String deploymentId =
-        repositoryService
-            .createDeployment()
-            .addClasspathResource(
-                "org/activiti/engine/test/bpmn/event/message/MessageStartEventTest.testSingleMessageStartEvent.bpmn20.xml")
-            .deploy()
-            .getId();
-    assertThatExceptionOfType(ActivitiException.class)
-        .isThrownBy(
-            () ->
+    public void testDeploymentCreatesSubscriptions() {
+        String deploymentId =
                 repositoryService
-                    .createDeployment()
-                    .addClasspathResource(
-                        "org/activiti/engine/test/bpmn/event/message/otherProcessWithNewInvoiceMessage.bpmn20.xml")
-                    .deploy())
-        .withMessageContaining(
-            "there already is a message event subscription for the message with name");
+                        .createDeployment()
+                        .addClasspathResource(
+                                "org/activiti/engine/test/bpmn/event/message/MessageStartEventTest.testSingleMessageStartEvent.bpmn20.xml")
+                        .deploy()
+                        .getId();
 
-    // clean db:
-    repositoryService.deleteDeployment(deploymentId);
-  }
+        List<EventSubscriptionEntity> eventSubscriptions =
+                new EventSubscriptionQueryImpl(processEngineConfiguration.getCommandExecutor())
+                        .list();
 
-  public void testSameMessageNameInSameProcessFails() {
-    assertThatExceptionOfType(ActivitiException.class)
-        .as(
-            "exception expected: Cannot have more than one message event subscription with name"
-                + " 'newInvoiceMessage' for scope")
-        .isThrownBy(
-            () ->
-                repositoryService
-                    .createDeployment()
-                    .addClasspathResource(
-                        "org/activiti/engine/test/bpmn/event/message/testSameMessageNameInSameProcessFails.bpmn20.xml")
-                    .deploy());
-  }
+        assertThat(eventSubscriptions).hasSize(1);
 
-  public void testUpdateProcessVersionCancelsSubscriptions() {
-    String deploymentId =
-        repositoryService
-            .createDeployment()
-            .addClasspathResource(
-                "org/activiti/engine/test/bpmn/event/message/MessageStartEventTest.testSingleMessageStartEvent.bpmn20.xml")
-            .deploy()
-            .getId();
-
-    List<EventSubscriptionEntity> eventSubscriptions =
-        new EventSubscriptionQueryImpl(processEngineConfiguration.getCommandExecutor()).list();
-    List<ProcessDefinition> processDefinitions =
-        repositoryService.createProcessDefinitionQuery().list();
-
-    assertThat(eventSubscriptions).hasSize(1);
-    assertThat(processDefinitions).hasSize(1);
-
-    String newDeploymentId =
-        repositoryService
-            .createDeployment()
-            .addClasspathResource(
-                "org/activiti/engine/test/bpmn/event/message/MessageStartEventTest.testSingleMessageStartEvent.bpmn20.xml")
-            .deploy()
-            .getId();
-
-    List<EventSubscriptionEntity> newEventSubscriptions =
-        new EventSubscriptionQueryImpl(processEngineConfiguration.getCommandExecutor()).list();
-    List<ProcessDefinition> newProcessDefinitions =
-        repositoryService.createProcessDefinitionQuery().list();
-
-    assertThat(newEventSubscriptions).hasSize(1);
-    assertThat(newProcessDefinitions).hasSize(2);
-    for (ProcessDefinition processDefinition : newProcessDefinitions) {
-      if (processDefinition.getVersion() == 1) {
-        for (EventSubscriptionEntity subscription : newEventSubscriptions) {
-          assertThat(subscription.getConfiguration().equals(processDefinition.getId())).isFalse();
-        }
-      } else {
-        for (EventSubscriptionEntity subscription : newEventSubscriptions) {
-          assertThat(subscription.getConfiguration().equals(processDefinition.getId())).isTrue();
-        }
-      }
+        repositoryService.deleteDeployment(deploymentId);
     }
-    assertThat(eventSubscriptions.equals(newEventSubscriptions)).isFalse();
 
-    repositoryService.deleteDeployment(deploymentId);
-    repositoryService.deleteDeployment(newDeploymentId);
-  }
+    public void testSameMessageNameFails() {
+        String deploymentId =
+                repositoryService
+                        .createDeployment()
+                        .addClasspathResource(
+                                "org/activiti/engine/test/bpmn/event/message/MessageStartEventTest.testSingleMessageStartEvent.bpmn20.xml")
+                        .deploy()
+                        .getId();
+        assertThatExceptionOfType(ActivitiException.class)
+                .isThrownBy(
+                        () ->
+                                repositoryService
+                                        .createDeployment()
+                                        .addClasspathResource(
+                                                "org/activiti/engine/test/bpmn/event/message/otherProcessWithNewInvoiceMessage.bpmn20.xml")
+                                        .deploy())
+                .withMessageContaining(
+                        "there already is a message event subscription for the message with name");
 
-  @Deployment
-  public void testSingleMessageStartEvent() {
+        // clean db:
+        repositoryService.deleteDeployment(deploymentId);
+    }
 
-    // using startProcessInstanceByMessage triggers the message start event
+    public void testSameMessageNameInSameProcessFails() {
+        assertThatExceptionOfType(ActivitiException.class)
+                .as(
+                        "exception expected: Cannot have more than one message event subscription"
+                                + " with name 'newInvoiceMessage' for scope")
+                .isThrownBy(
+                        () ->
+                                repositoryService
+                                        .createDeployment()
+                                        .addClasspathResource(
+                                                "org/activiti/engine/test/bpmn/event/message/testSameMessageNameInSameProcessFails.bpmn20.xml")
+                                        .deploy());
+    }
 
-    ProcessInstance processInstance =
-        runtimeService.startProcessInstanceByMessage("newInvoiceMessage");
+    public void testUpdateProcessVersionCancelsSubscriptions() {
+        String deploymentId =
+                repositoryService
+                        .createDeployment()
+                        .addClasspathResource(
+                                "org/activiti/engine/test/bpmn/event/message/MessageStartEventTest.testSingleMessageStartEvent.bpmn20.xml")
+                        .deploy()
+                        .getId();
 
-    assertThat(processInstance.isEnded()).isFalse();
+        List<EventSubscriptionEntity> eventSubscriptions =
+                new EventSubscriptionQueryImpl(processEngineConfiguration.getCommandExecutor())
+                        .list();
+        List<ProcessDefinition> processDefinitions =
+                repositoryService.createProcessDefinitionQuery().list();
 
-    Task task = taskService.createTaskQuery().singleResult();
-    assertThat(task).isNotNull();
+        assertThat(eventSubscriptions).hasSize(1);
+        assertThat(processDefinitions).hasSize(1);
 
-    taskService.complete(task.getId());
+        String newDeploymentId =
+                repositoryService
+                        .createDeployment()
+                        .addClasspathResource(
+                                "org/activiti/engine/test/bpmn/event/message/MessageStartEventTest.testSingleMessageStartEvent.bpmn20.xml")
+                        .deploy()
+                        .getId();
 
-    assertProcessEnded(processInstance.getId());
+        List<EventSubscriptionEntity> newEventSubscriptions =
+                new EventSubscriptionQueryImpl(processEngineConfiguration.getCommandExecutor())
+                        .list();
+        List<ProcessDefinition> newProcessDefinitions =
+                repositoryService.createProcessDefinitionQuery().list();
 
-    // using startProcessInstanceByKey also triggers the message event, if
-    // there is a single start event
+        assertThat(newEventSubscriptions).hasSize(1);
+        assertThat(newProcessDefinitions).hasSize(2);
+        for (ProcessDefinition processDefinition : newProcessDefinitions) {
+            if (processDefinition.getVersion() == 1) {
+                for (EventSubscriptionEntity subscription : newEventSubscriptions) {
+                    assertThat(subscription.getConfiguration().equals(processDefinition.getId()))
+                            .isFalse();
+                }
+            } else {
+                for (EventSubscriptionEntity subscription : newEventSubscriptions) {
+                    assertThat(subscription.getConfiguration().equals(processDefinition.getId()))
+                            .isTrue();
+                }
+            }
+        }
+        assertThat(eventSubscriptions.equals(newEventSubscriptions)).isFalse();
 
-    processInstance = runtimeService.startProcessInstanceByKey("singleMessageStartEvent");
+        repositoryService.deleteDeployment(deploymentId);
+        repositoryService.deleteDeployment(newDeploymentId);
+    }
 
-    assertThat(processInstance.isEnded()).isFalse();
+    @Deployment
+    public void testSingleMessageStartEvent() {
 
-    task = taskService.createTaskQuery().singleResult();
-    assertThat(task).isNotNull();
+        // using startProcessInstanceByMessage triggers the message start event
 
-    taskService.complete(task.getId());
+        ProcessInstance processInstance =
+                runtimeService.startProcessInstanceByMessage("newInvoiceMessage");
 
-    assertProcessEnded(processInstance.getId());
-  }
+        assertThat(processInstance.isEnded()).isFalse();
 
-  @Deployment
-  public void testMessageStartEventAndNoneStartEvent() {
+        Task task = taskService.createTaskQuery().singleResult();
+        assertThat(task).isNotNull();
 
-    // using startProcessInstanceByKey triggers the none start event
+        taskService.complete(task.getId());
 
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testProcess");
+        assertProcessEnded(processInstance.getId());
 
-    assertThat(processInstance.isEnded()).isFalse();
+        // using startProcessInstanceByKey also triggers the message event, if
+        // there is a single start event
 
-    Task task =
-        taskService.createTaskQuery().taskDefinitionKey("taskAfterNoneStart").singleResult();
-    assertThat(task).isNotNull();
+        processInstance = runtimeService.startProcessInstanceByKey("singleMessageStartEvent");
 
-    taskService.complete(task.getId());
+        assertThat(processInstance.isEnded()).isFalse();
 
-    assertProcessEnded(processInstance.getId());
+        task = taskService.createTaskQuery().singleResult();
+        assertThat(task).isNotNull();
 
-    // using startProcessInstanceByMessage triggers the message start event
+        taskService.complete(task.getId());
 
-    processInstance = runtimeService.startProcessInstanceByMessage("newInvoiceMessage");
+        assertProcessEnded(processInstance.getId());
+    }
 
-    assertThat(processInstance.isEnded()).isFalse();
+    @Deployment
+    public void testMessageStartEventAndNoneStartEvent() {
 
-    task = taskService.createTaskQuery().taskDefinitionKey("taskAfterMessageStart").singleResult();
-    assertThat(task).isNotNull();
+        // using startProcessInstanceByKey triggers the none start event
 
-    taskService.complete(task.getId());
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testProcess");
 
-    assertProcessEnded(processInstance.getId());
-  }
+        assertThat(processInstance.isEnded()).isFalse();
 
-  @Deployment
-  public void testMultipleMessageStartEvents() {
+        Task task =
+                taskService
+                        .createTaskQuery()
+                        .taskDefinitionKey("taskAfterNoneStart")
+                        .singleResult();
+        assertThat(task).isNotNull();
 
-    // sending newInvoiceMessage
+        taskService.complete(task.getId());
 
-    ProcessInstance processInstance =
-        runtimeService.startProcessInstanceByMessage("newInvoiceMessage");
+        assertProcessEnded(processInstance.getId());
 
-    assertThat(processInstance.isEnded()).isFalse();
+        // using startProcessInstanceByMessage triggers the message start event
 
-    Task task =
-        taskService.createTaskQuery().taskDefinitionKey("taskAfterMessageStart").singleResult();
-    assertThat(task).isNotNull();
+        processInstance = runtimeService.startProcessInstanceByMessage("newInvoiceMessage");
 
-    taskService.complete(task.getId());
+        assertThat(processInstance.isEnded()).isFalse();
 
-    assertProcessEnded(processInstance.getId());
+        task =
+                taskService
+                        .createTaskQuery()
+                        .taskDefinitionKey("taskAfterMessageStart")
+                        .singleResult();
+        assertThat(task).isNotNull();
 
-    // sending newInvoiceMessage2
+        taskService.complete(task.getId());
 
-    processInstance = runtimeService.startProcessInstanceByMessage("newInvoiceMessage2");
+        assertProcessEnded(processInstance.getId());
+    }
 
-    assertThat(processInstance.isEnded()).isFalse();
+    @Deployment
+    public void testMultipleMessageStartEvents() {
 
-    task = taskService.createTaskQuery().taskDefinitionKey("taskAfterMessageStart2").singleResult();
-    assertThat(task).isNotNull();
+        // sending newInvoiceMessage
 
-    taskService.complete(task.getId());
+        ProcessInstance processInstance =
+                runtimeService.startProcessInstanceByMessage("newInvoiceMessage");
 
-    assertProcessEnded(processInstance.getId());
+        assertThat(processInstance.isEnded()).isFalse();
 
-    // starting the process using startProcessInstanceByKey is possible, the
-    // first message start event will be the default:
-    processInstance = runtimeService.startProcessInstanceByKey("testProcess");
-    assertThat(processInstance.isEnded()).isFalse();
-    task = taskService.createTaskQuery().taskDefinitionKey("taskAfterMessageStart").singleResult();
-    assertThat(task).isNotNull();
-    taskService.complete(task.getId());
-    assertProcessEnded(processInstance.getId());
-  }
+        Task task =
+                taskService
+                        .createTaskQuery()
+                        .taskDefinitionKey("taskAfterMessageStart")
+                        .singleResult();
+        assertThat(task).isNotNull();
 
-  @Deployment(
-      resources =
-          "org/activiti/engine/test/bpmn/event/message/MessageStartEventTest.testSingleMessageStartEvent.bpmn20.xml")
-  public void testMessageStartEventDispatchActivitiMessageReceivedBeforeProcessStarted() {
+        taskService.complete(task.getId());
 
-    // given
-    List<ActivitiEvent> events = new ArrayList<>();
+        assertProcessEnded(processInstance.getId());
 
-    runtimeService.addEventListener(
-        new ActivitiEventListener() {
-          @Override
-          public void onEvent(ActivitiEvent event) {
-            events.add(event);
-          }
+        // sending newInvoiceMessage2
 
-          @Override
-          public boolean isFailOnException() {
-            return false;
-          }
-        });
+        processInstance = runtimeService.startProcessInstanceByMessage("newInvoiceMessage2");
 
-    // when
-    ProcessInstance process = runtimeService.startProcessInstanceByMessage("newInvoiceMessage");
+        assertThat(processInstance.isEnded()).isFalse();
 
-    String executionId =
-        runtimeService
-            .createExecutionQuery()
-            .processInstanceId(process.getId())
-            .onlyChildExecutions()
-            .singleResult()
-            .getId();
+        task =
+                taskService
+                        .createTaskQuery()
+                        .taskDefinitionKey("taskAfterMessageStart2")
+                        .singleResult();
+        assertThat(task).isNotNull();
 
-    // then ACTIVITY_MESSAGE_RECEIVED should be fired before PROCESS_STARTED
-    assertThat(events)
-        .filteredOn(
-            event ->
-                event.getType() == ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED
-                    || event.getType() == ActivitiEventType.PROCESS_STARTED)
-        .extracting("type", "processDefinitionId", "processInstanceId", "executionId")
-        .containsExactly(
-            tuple(
-                ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED,
-                process.getProcessDefinitionId(),
-                process.getId(),
-                executionId),
-            tuple(
-                ActivitiEventType.PROCESS_STARTED,
-                process.getProcessDefinitionId(),
-                process.getId(),
-                executionId));
-  }
+        taskService.complete(task.getId());
+
+        assertProcessEnded(processInstance.getId());
+
+        // starting the process using startProcessInstanceByKey is possible, the
+        // first message start event will be the default:
+        processInstance = runtimeService.startProcessInstanceByKey("testProcess");
+        assertThat(processInstance.isEnded()).isFalse();
+        task =
+                taskService
+                        .createTaskQuery()
+                        .taskDefinitionKey("taskAfterMessageStart")
+                        .singleResult();
+        assertThat(task).isNotNull();
+        taskService.complete(task.getId());
+        assertProcessEnded(processInstance.getId());
+    }
+
+    @Deployment(
+            resources =
+                    "org/activiti/engine/test/bpmn/event/message/MessageStartEventTest.testSingleMessageStartEvent.bpmn20.xml")
+    public void testMessageStartEventDispatchActivitiMessageReceivedBeforeProcessStarted() {
+
+        // given
+        List<ActivitiEvent> events = new ArrayList<>();
+
+        runtimeService.addEventListener(
+                new ActivitiEventListener() {
+                    @Override
+                    public void onEvent(ActivitiEvent event) {
+                        events.add(event);
+                    }
+
+                    @Override
+                    public boolean isFailOnException() {
+                        return false;
+                    }
+                });
+
+        // when
+        ProcessInstance process = runtimeService.startProcessInstanceByMessage("newInvoiceMessage");
+
+        String executionId =
+                runtimeService
+                        .createExecutionQuery()
+                        .processInstanceId(process.getId())
+                        .onlyChildExecutions()
+                        .singleResult()
+                        .getId();
+
+        // then ACTIVITY_MESSAGE_RECEIVED should be fired before PROCESS_STARTED
+        assertThat(events)
+                .filteredOn(
+                        event ->
+                                event.getType() == ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED
+                                        || event.getType() == ActivitiEventType.PROCESS_STARTED)
+                .extracting("type", "processDefinitionId", "processInstanceId", "executionId")
+                .containsExactly(
+                        tuple(
+                                ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED,
+                                process.getProcessDefinitionId(),
+                                process.getId(),
+                                executionId),
+                        tuple(
+                                ActivitiEventType.PROCESS_STARTED,
+                                process.getProcessDefinitionId(),
+                                process.getId(),
+                                executionId));
+    }
 }

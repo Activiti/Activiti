@@ -17,15 +17,15 @@ package org.activiti.api.process.model;
 
 public interface BPMNSequenceFlow extends BPMNElement {
 
-  String getSourceActivityElementId();
+    String getSourceActivityElementId();
 
-  String getSourceActivityName();
+    String getSourceActivityName();
 
-  String getSourceActivityType();
+    String getSourceActivityType();
 
-  String getTargetActivityElementId();
+    String getTargetActivityElementId();
 
-  String getTargetActivityName();
+    String getTargetActivityName();
 
-  String getTargetActivityType();
+    String getTargetActivityType();
 }

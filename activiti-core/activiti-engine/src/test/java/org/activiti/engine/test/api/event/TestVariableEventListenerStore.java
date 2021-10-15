@@ -16,9 +16,6 @@
 
 package org.activiti.engine.test.api.event;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventListener;
 import org.activiti.engine.delegate.event.ActivitiVariableEvent;
@@ -27,40 +24,44 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.EventLogEntryEntity;
 import org.activiti.engine.impl.persistence.entity.EventLogEntryEntityImpl;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
 public class TestVariableEventListenerStore implements ActivitiEventListener {
 
-  private List<ActivitiEvent> eventsReceived;
+    private List<ActivitiEvent> eventsReceived;
 
-  public TestVariableEventListenerStore() {
-    eventsReceived = new ArrayList<ActivitiEvent>();
-  }
-
-  public List<ActivitiEvent> getEventsReceived() {
-    return eventsReceived;
-  }
-
-  public void clearEventsReceived() {
-    eventsReceived.clear();
-  }
-
-  @Override
-  public void onEvent(ActivitiEvent event) {
-    if (event instanceof ActivitiVariableEvent) {
-      eventsReceived.add(event);
-      EventLogEntryEntity eventLogEntry = new EventLogEntryEntityImpl();
-      eventLogEntry.setProcessDefinitionId(event.getProcessDefinitionId());
-      eventLogEntry.setProcessInstanceId(event.getProcessInstanceId());
-      eventLogEntry.setExecutionId(event.getExecutionId());
-      eventLogEntry.setTaskId(((ActivitiVariableEvent) event).getTaskId());
-      eventLogEntry.setType(event.getType().name());
-      eventLogEntry.setTimeStamp(new Date());
-      CommandContext commandContext = Context.getCommandContext();
-      commandContext.getEventLogEntryEntityManager().insert(eventLogEntry);
+    public TestVariableEventListenerStore() {
+        eventsReceived = new ArrayList<ActivitiEvent>();
     }
-  }
 
-  @Override
-  public boolean isFailOnException() {
-    return true;
-  }
+    public List<ActivitiEvent> getEventsReceived() {
+        return eventsReceived;
+    }
+
+    public void clearEventsReceived() {
+        eventsReceived.clear();
+    }
+
+    @Override
+    public void onEvent(ActivitiEvent event) {
+        if (event instanceof ActivitiVariableEvent) {
+            eventsReceived.add(event);
+            EventLogEntryEntity eventLogEntry = new EventLogEntryEntityImpl();
+            eventLogEntry.setProcessDefinitionId(event.getProcessDefinitionId());
+            eventLogEntry.setProcessInstanceId(event.getProcessInstanceId());
+            eventLogEntry.setExecutionId(event.getExecutionId());
+            eventLogEntry.setTaskId(((ActivitiVariableEvent) event).getTaskId());
+            eventLogEntry.setType(event.getType().name());
+            eventLogEntry.setTimeStamp(new Date());
+            CommandContext commandContext = Context.getCommandContext();
+            commandContext.getEventLogEntryEntityManager().insert(eventLogEntry);
+        }
+    }
+
+    @Override
+    public boolean isFailOnException() {
+        return true;
+    }
 }

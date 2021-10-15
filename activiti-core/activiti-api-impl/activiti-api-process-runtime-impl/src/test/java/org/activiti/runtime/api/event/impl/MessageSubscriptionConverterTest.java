@@ -25,24 +25,25 @@ import org.junit.jupiter.api.Test;
 
 public class MessageSubscriptionConverterTest {
 
-  private MessageSubscriptionConverter converter = new MessageSubscriptionConverter();
+    private MessageSubscriptionConverter converter = new MessageSubscriptionConverter();
 
-  @Test
-  public void convertShouldReturnBPMNMessage() {
+    @Test
+    public void convertShouldReturnBPMNMessage() {
 
-    MessageEventSubscriptionEntity entity = mock(MessageEventSubscriptionEntity.class);
-    given(entity.getConfiguration()).willReturn("correlationKey");
-    given(entity.getEventName()).willReturn("messageName");
-    given(entity.getProcessDefinitionId()).willReturn("procDefId");
-    given(entity.getProcessInstanceId()).willReturn("procInstId");
+        MessageEventSubscriptionEntity entity = mock(MessageEventSubscriptionEntity.class);
+        given(entity.getConfiguration()).willReturn("correlationKey");
+        given(entity.getEventName()).willReturn("messageName");
+        given(entity.getProcessDefinitionId()).willReturn("procDefId");
+        given(entity.getProcessInstanceId()).willReturn("procInstId");
 
-    MessageSubscriptionImpl messageSubscription = converter.convertToMessageSubscription(entity);
+        MessageSubscriptionImpl messageSubscription =
+                converter.convertToMessageSubscription(entity);
 
-    // then
-    assertThat(messageSubscription).isNotNull();
-    assertThat(messageSubscription.getProcessInstanceId()).isEqualTo("procInstId");
-    assertThat(messageSubscription.getProcessDefinitionId()).isEqualTo("procDefId");
-    assertThat(messageSubscription.getConfiguration()).isEqualTo("correlationKey");
-    assertThat(messageSubscription.getEventName()).isEqualTo("messageName");
-  }
+        // then
+        assertThat(messageSubscription).isNotNull();
+        assertThat(messageSubscription.getProcessInstanceId()).isEqualTo("procInstId");
+        assertThat(messageSubscription.getProcessDefinitionId()).isEqualTo("procDefId");
+        assertThat(messageSubscription.getConfiguration()).isEqualTo("correlationKey");
+        assertThat(messageSubscription.getEventName()).isEqualTo("messageName");
+    }
 }

@@ -19,15 +19,15 @@ import java.util.Date;
 
 public interface StartMessageSubscription {
 
-  String getId();
+    String getId();
 
-  String getEventName();
+    String getEventName();
 
-  String getConfiguration();
+    String getConfiguration();
 
-  String getActivityId();
+    String getActivityId();
 
-  Date getCreated();
+    Date getCreated();
 
-  String getProcessDefinitionId();
+    String getProcessDefinitionId();
 }

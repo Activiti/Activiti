@@ -15,7 +15,6 @@
  */
 package org.activiti.runtime.api.event.internal;
 
-import java.util.List;
 import org.activiti.api.process.model.events.BPMNMessageWaitingEvent;
 import org.activiti.api.process.runtime.events.listener.BPMNElementEventListener;
 import org.activiti.engine.delegate.event.ActivitiEvent;
@@ -23,36 +22,38 @@ import org.activiti.engine.delegate.event.ActivitiEventListener;
 import org.activiti.engine.delegate.event.ActivitiMessageEvent;
 import org.activiti.runtime.api.event.impl.ToMessageWaitingConverter;
 
+import java.util.List;
+
 public class MessageWaitingListenerDelegate implements ActivitiEventListener {
 
-  private List<BPMNElementEventListener<BPMNMessageWaitingEvent>> processRuntimeEventListeners;
+    private List<BPMNElementEventListener<BPMNMessageWaitingEvent>> processRuntimeEventListeners;
 
-  private ToMessageWaitingConverter converter;
+    private ToMessageWaitingConverter converter;
 
-  public MessageWaitingListenerDelegate(
-      List<BPMNElementEventListener<BPMNMessageWaitingEvent>> processRuntimeEventListeners,
-      ToMessageWaitingConverter converter) {
-    this.processRuntimeEventListeners = processRuntimeEventListeners;
-    this.converter = converter;
-  }
-
-  @Override
-  public void onEvent(ActivitiEvent event) {
-    if (event instanceof ActivitiMessageEvent) {
-      converter
-          .from((ActivitiMessageEvent) event)
-          .ifPresent(
-              convertedEvent -> {
-                for (BPMNElementEventListener<BPMNMessageWaitingEvent> listener :
-                    processRuntimeEventListeners) {
-                  listener.onEvent(convertedEvent);
-                }
-              });
+    public MessageWaitingListenerDelegate(
+            List<BPMNElementEventListener<BPMNMessageWaitingEvent>> processRuntimeEventListeners,
+            ToMessageWaitingConverter converter) {
+        this.processRuntimeEventListeners = processRuntimeEventListeners;
+        this.converter = converter;
     }
-  }
 
-  @Override
-  public boolean isFailOnException() {
-    return false;
-  }
+    @Override
+    public void onEvent(ActivitiEvent event) {
+        if (event instanceof ActivitiMessageEvent) {
+            converter
+                    .from((ActivitiMessageEvent) event)
+                    .ifPresent(
+                            convertedEvent -> {
+                                for (BPMNElementEventListener<BPMNMessageWaitingEvent> listener :
+                                        processRuntimeEventListeners) {
+                                    listener.onEvent(convertedEvent);
+                                }
+                            });
+        }
+    }
+
+    @Override
+    public boolean isFailOnException() {
+        return false;
+    }
 }

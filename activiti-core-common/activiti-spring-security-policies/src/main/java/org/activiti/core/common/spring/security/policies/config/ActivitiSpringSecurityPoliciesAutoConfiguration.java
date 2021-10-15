@@ -33,33 +33,33 @@ import org.springframework.context.annotation.Configuration;
 @EnableConfigurationProperties(SecurityPoliciesProperties.class)
 public class ActivitiSpringSecurityPoliciesAutoConfiguration {
 
-  @Bean
-  @ConditionalOnMissingBean
-  public ProcessSecurityPoliciesManager processSecurityPoliciesManager(
-      SecurityManager securityManager,
-      SecurityPoliciesProperties securityPoliciesProperties,
-      SecurityPoliciesRestrictionApplier<GetProcessDefinitionsPayload>
-          processDefinitionRestrictionApplier,
-      SecurityPoliciesRestrictionApplier<GetProcessInstancesPayload>
-          processInstanceRestrictionApplier) {
-    return new ProcessSecurityPoliciesManagerImpl(
-        securityManager,
-        securityPoliciesProperties,
-        processDefinitionRestrictionApplier,
-        processInstanceRestrictionApplier);
-  }
+    @Bean
+    @ConditionalOnMissingBean
+    public ProcessSecurityPoliciesManager processSecurityPoliciesManager(
+            SecurityManager securityManager,
+            SecurityPoliciesProperties securityPoliciesProperties,
+            SecurityPoliciesRestrictionApplier<GetProcessDefinitionsPayload>
+                    processDefinitionRestrictionApplier,
+            SecurityPoliciesRestrictionApplier<GetProcessInstancesPayload>
+                    processInstanceRestrictionApplier) {
+        return new ProcessSecurityPoliciesManagerImpl(
+                securityManager,
+                securityPoliciesProperties,
+                processDefinitionRestrictionApplier,
+                processInstanceRestrictionApplier);
+    }
 
-  @Bean
-  @ConditionalOnMissingBean(name = "processInstanceRestrictionApplier")
-  public SecurityPoliciesRestrictionApplier<GetProcessInstancesPayload>
-      processInstanceRestrictionApplier() {
-    return new SecurityPoliciesProcessInstanceRestrictionApplier();
-  }
+    @Bean
+    @ConditionalOnMissingBean(name = "processInstanceRestrictionApplier")
+    public SecurityPoliciesRestrictionApplier<GetProcessInstancesPayload>
+            processInstanceRestrictionApplier() {
+        return new SecurityPoliciesProcessInstanceRestrictionApplier();
+    }
 
-  @Bean
-  @ConditionalOnMissingBean(name = "processDefinitionRestrictionApplier")
-  public SecurityPoliciesRestrictionApplier<GetProcessDefinitionsPayload>
-      processDefinitionRestrictionApplier() {
-    return new SecurityPoliciesProcessDefinitionRestrictionApplier();
-  }
+    @Bean
+    @ConditionalOnMissingBean(name = "processDefinitionRestrictionApplier")
+    public SecurityPoliciesRestrictionApplier<GetProcessDefinitionsPayload>
+            processDefinitionRestrictionApplier() {
+        return new SecurityPoliciesProcessDefinitionRestrictionApplier();
+    }
 }

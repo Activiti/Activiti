@@ -25,9 +25,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 import org.activiti.api.runtime.shared.security.SecurityManager;
 import org.activiti.api.task.model.Task;
 import org.activiti.api.task.model.builders.TaskPayloadBuilder;
@@ -42,79 +39,86 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 public class TaskRuntimeImplTest {
 
-  private static final String AUTHENTICATED_USER = "user";
+    private static final String AUTHENTICATED_USER = "user";
 
-  @Spy @InjectMocks private TaskRuntimeImpl taskRuntime;
+    @Spy @InjectMocks private TaskRuntimeImpl taskRuntime;
 
-  @Mock private TaskRuntimeHelper taskRuntimeHelper;
+    @Mock private TaskRuntimeHelper taskRuntimeHelper;
 
-  @Mock private APITaskConverter taskConverter;
+    @Mock private APITaskConverter taskConverter;
 
-  @Mock private SecurityManager securityManager;
+    @Mock private SecurityManager securityManager;
 
-  @Mock private TaskService taskService;
+    @Mock private TaskService taskService;
 
-  @BeforeEach
-  public void setUp() {
-    initMocks(this);
-    when(securityManager.getAuthenticatedUserId()).thenReturn(AUTHENTICATED_USER);
-  }
+    @BeforeEach
+    public void setUp() {
+        initMocks(this);
+        when(securityManager.getAuthenticatedUserId()).thenReturn(AUTHENTICATED_USER);
+    }
 
-  @Test
-  public void should_returnResultOfHelper_when_updateTask() {
-    // given
-    UpdateTaskPayload updateTaskPayload =
-        TaskPayloadBuilder.update().withTaskId("taskId").withDescription("new description").build();
+    @Test
+    public void should_returnResultOfHelper_when_updateTask() {
+        // given
+        UpdateTaskPayload updateTaskPayload =
+                TaskPayloadBuilder.update()
+                        .withTaskId("taskId")
+                        .withDescription("new description")
+                        .build();
 
-    TaskImpl updatedTask = new TaskImpl();
-    given(taskRuntimeHelper.applyUpdateTaskPayload(false, updateTaskPayload))
-        .willReturn(updatedTask);
+        TaskImpl updatedTask = new TaskImpl();
+        given(taskRuntimeHelper.applyUpdateTaskPayload(false, updateTaskPayload))
+                .willReturn(updatedTask);
 
-    // when
-    Task retrievedTask = taskRuntime.update(updateTaskPayload);
+        // when
+        Task retrievedTask = taskRuntime.update(updateTaskPayload);
 
-    // then
-    assertThat(retrievedTask).isEqualTo(updatedTask);
-  }
+        // then
+        assertThat(retrievedTask).isEqualTo(updatedTask);
+    }
 
-  @Test
-  public void assign_should_returnIllegalStateException_when_assigneeIsNotACandidateUser() {
-    // given
-    AssignTaskPayload assignTaskPayload =
-        TaskPayloadBuilder.assign().withTaskId("taskId").withAssignee("assignee").build();
-    List<String> userCandidates = Collections.emptyList();
-    doReturn(userCandidates).when(taskRuntime).userCandidates("taskId");
+    @Test
+    public void assign_should_returnIllegalStateException_when_assigneeIsNotACandidateUser() {
+        // given
+        AssignTaskPayload assignTaskPayload =
+                TaskPayloadBuilder.assign().withTaskId("taskId").withAssignee("assignee").build();
+        List<String> userCandidates = Collections.emptyList();
+        doReturn(userCandidates).when(taskRuntime).userCandidates("taskId");
 
-    // when
-    Throwable thrown = catchThrowable(() -> taskRuntime.assign(assignTaskPayload));
+        // when
+        Throwable thrown = catchThrowable(() -> taskRuntime.assign(assignTaskPayload));
 
-    // then
-    assertThat(thrown)
-        .isInstanceOf(IllegalStateException.class)
-        .hasMessageStartingWith(
-            "You cannot assign a task to "
-                + assignTaskPayload.getAssignee()
-                + " due it is not a candidate for it");
-  }
+        // then
+        assertThat(thrown)
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessageStartingWith(
+                        "You cannot assign a task to "
+                                + assignTaskPayload.getAssignee()
+                                + " due it is not a candidate for it");
+    }
 
-  @Test
-  public void assign_should_updateTaskAssignee_whenAssigneeIsACandidateUser() {
-    // given
-    String taskId = "taskId";
-    String newAssignee = "newAssignee";
-    AssignTaskPayload assignTaskPayload =
-        TaskPayloadBuilder.assign().withTaskId(taskId).withAssignee(newAssignee).build();
-    List<String> userCandidates = Arrays.asList(newAssignee);
-    doReturn(userCandidates).when(taskRuntime).userCandidates(taskId);
-    TaskImpl task = mock(TaskImpl.class);
-    given(task.getAssignee()).willReturn("user");
-    doReturn(task).when(taskConverter).fromWithCandidates(any());
+    @Test
+    public void assign_should_updateTaskAssignee_whenAssigneeIsACandidateUser() {
+        // given
+        String taskId = "taskId";
+        String newAssignee = "newAssignee";
+        AssignTaskPayload assignTaskPayload =
+                TaskPayloadBuilder.assign().withTaskId(taskId).withAssignee(newAssignee).build();
+        List<String> userCandidates = Arrays.asList(newAssignee);
+        doReturn(userCandidates).when(taskRuntime).userCandidates(taskId);
+        TaskImpl task = mock(TaskImpl.class);
+        given(task.getAssignee()).willReturn("user");
+        doReturn(task).when(taskConverter).fromWithCandidates(any());
 
-    taskRuntime.assign(assignTaskPayload);
+        taskRuntime.assign(assignTaskPayload);
 
-    verify(taskService).unclaim(taskId);
-    verify(taskService).claim(taskId, newAssignee);
-  }
+        verify(taskService).unclaim(taskId);
+        verify(taskService).claim(taskId, newAssignee);
+    }
 }

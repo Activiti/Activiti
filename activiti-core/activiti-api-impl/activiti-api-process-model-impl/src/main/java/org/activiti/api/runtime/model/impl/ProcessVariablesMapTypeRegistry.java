@@ -17,6 +17,7 @@
 package org.activiti.api.runtime.model.impl;
 
 import com.fasterxml.jackson.databind.JsonNode;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -31,102 +32,102 @@ import java.util.stream.Stream;
 
 public class ProcessVariablesMapTypeRegistry {
 
-  public static final String OBJECT_TYPE_KEY = "object";
-  private static Map<String, Class<?>> typeRegistry = new HashMap<>();
-  private static Map<Class<?>, String> classRegistry = new HashMap<>();
-  private static List<Class<?>> scalarTypes =
-      Arrays.asList(
-          int.class,
-          byte.class,
-          short.class,
-          boolean.class,
-          long.class,
-          double.class,
-          float.class,
-          char.class,
-          Character.class,
-          Integer.class,
-          Byte.class,
-          Short.class,
-          Boolean.class,
-          Long.class,
-          Double.class,
-          Float.class,
-          BigDecimal.class,
-          Date.class,
-          String.class,
-          LocalDateTime.class,
-          LocalDate.class);
+    public static final String OBJECT_TYPE_KEY = "object";
+    private static Map<String, Class<?>> typeRegistry = new HashMap<>();
+    private static Map<Class<?>, String> classRegistry = new HashMap<>();
+    private static List<Class<?>> scalarTypes =
+            Arrays.asList(
+                    int.class,
+                    byte.class,
+                    short.class,
+                    boolean.class,
+                    long.class,
+                    double.class,
+                    float.class,
+                    char.class,
+                    Character.class,
+                    Integer.class,
+                    Byte.class,
+                    Short.class,
+                    Boolean.class,
+                    Long.class,
+                    Double.class,
+                    Float.class,
+                    BigDecimal.class,
+                    Date.class,
+                    String.class,
+                    LocalDateTime.class,
+                    LocalDate.class);
 
-  private static Class<?>[] containerTypes = {Map.class, JsonNode.class, List.class, Set.class};
+    private static Class<?>[] containerTypes = {Map.class, JsonNode.class, List.class, Set.class};
 
-  static {
-    typeRegistry.put("byte", Byte.class);
-    typeRegistry.put("character", Character.class);
-    typeRegistry.put("short", Short.class);
-    typeRegistry.put("string", String.class);
-    typeRegistry.put("long", Long.class);
-    typeRegistry.put("integer", Integer.class);
-    typeRegistry.put("boolean", Boolean.class);
-    typeRegistry.put("double", Double.class);
-    typeRegistry.put("float", Float.class);
-    typeRegistry.put("date", Date.class);
-    typeRegistry.put("localdate", LocalDate.class);
-    typeRegistry.put("localdatetime", LocalDateTime.class);
-    typeRegistry.put("bigdecimal", BigDecimal.class);
-    typeRegistry.put("json", JsonNode.class);
-    typeRegistry.put("map", Map.class);
-    typeRegistry.put("set", Set.class);
-    typeRegistry.put("list", List.class);
-    typeRegistry.put(OBJECT_TYPE_KEY, ObjectValue.class);
+    static {
+        typeRegistry.put("byte", Byte.class);
+        typeRegistry.put("character", Character.class);
+        typeRegistry.put("short", Short.class);
+        typeRegistry.put("string", String.class);
+        typeRegistry.put("long", Long.class);
+        typeRegistry.put("integer", Integer.class);
+        typeRegistry.put("boolean", Boolean.class);
+        typeRegistry.put("double", Double.class);
+        typeRegistry.put("float", Float.class);
+        typeRegistry.put("date", Date.class);
+        typeRegistry.put("localdate", LocalDate.class);
+        typeRegistry.put("localdatetime", LocalDateTime.class);
+        typeRegistry.put("bigdecimal", BigDecimal.class);
+        typeRegistry.put("json", JsonNode.class);
+        typeRegistry.put("map", Map.class);
+        typeRegistry.put("set", Set.class);
+        typeRegistry.put("list", List.class);
+        typeRegistry.put(OBJECT_TYPE_KEY, ObjectValue.class);
 
-    classRegistry.put(Byte.class, "byte");
-    classRegistry.put(Character.class, "character");
-    classRegistry.put(Short.class, "short");
-    classRegistry.put(String.class, "string");
-    classRegistry.put(Long.class, "long");
-    classRegistry.put(Integer.class, "integer");
-    classRegistry.put(Boolean.class, "boolean");
-    classRegistry.put(Double.class, "double");
-    classRegistry.put(Float.class, "float");
-    classRegistry.put(Date.class, "date");
-    classRegistry.put(LocalDate.class, "localdate");
-    classRegistry.put(BigDecimal.class, "bigdecimal");
-    classRegistry.put(JsonNode.class, "json");
-    classRegistry.put(Map.class, "map");
-    classRegistry.put(List.class, "list");
-    classRegistry.put(Set.class, "set");
-    classRegistry.put(LocalDateTime.class, "localdatetime");
-    classRegistry.put(ObjectValue.class, OBJECT_TYPE_KEY);
-  }
+        classRegistry.put(Byte.class, "byte");
+        classRegistry.put(Character.class, "character");
+        classRegistry.put(Short.class, "short");
+        classRegistry.put(String.class, "string");
+        classRegistry.put(Long.class, "long");
+        classRegistry.put(Integer.class, "integer");
+        classRegistry.put(Boolean.class, "boolean");
+        classRegistry.put(Double.class, "double");
+        classRegistry.put(Float.class, "float");
+        classRegistry.put(Date.class, "date");
+        classRegistry.put(LocalDate.class, "localdate");
+        classRegistry.put(BigDecimal.class, "bigdecimal");
+        classRegistry.put(JsonNode.class, "json");
+        classRegistry.put(Map.class, "map");
+        classRegistry.put(List.class, "list");
+        classRegistry.put(Set.class, "set");
+        classRegistry.put(LocalDateTime.class, "localdatetime");
+        classRegistry.put(ObjectValue.class, OBJECT_TYPE_KEY);
+    }
 
-  public static Class<?> forType(String type) {
-    return forType(type, ObjectValue.class);
-  }
+    public static Class<?> forType(String type) {
+        return forType(type, ObjectValue.class);
+    }
 
-  public static Class<?> forType(String type, Class<?> defaultType) {
-    return typeRegistry.getOrDefault(type, defaultType);
-  }
+    public static Class<?> forType(String type, Class<?> defaultType) {
+        return typeRegistry.getOrDefault(type, defaultType);
+    }
 
-  public static String forClass(Class<?> clazz) {
-    return classRegistry.getOrDefault(clazz, OBJECT_TYPE_KEY);
-  }
+    public static String forClass(Class<?> clazz) {
+        return classRegistry.getOrDefault(clazz, OBJECT_TYPE_KEY);
+    }
 
-  public static boolean isScalarType(Class<?> clazz) {
-    return scalarTypes.contains(clazz);
-  }
+    public static boolean isScalarType(Class<?> clazz) {
+        return scalarTypes.contains(clazz);
+    }
 
-  public static Optional<Class<?>> getContainerType(Class<?> clazz, Object value) {
-    return Stream.of(containerTypes).filter(type -> type.isInstance(value)).findFirst();
-  }
+    public static Optional<Class<?>> getContainerType(Class<?> clazz, Object value) {
+        return Stream.of(containerTypes).filter(type -> type.isInstance(value)).findFirst();
+    }
 
-  public static boolean canConvert(Object value) {
-    Class<?> clazz = value.getClass();
+    public static boolean canConvert(Object value) {
+        Class<?> clazz = value.getClass();
 
-    return scalarTypes.contains(clazz) || getContainerType(clazz, value).isPresent();
-  }
+        return scalarTypes.contains(clazz) || getContainerType(clazz, value).isPresent();
+    }
 
-  public static boolean containsType(String type) {
-    return typeRegistry.containsKey(type);
-  }
+    public static boolean containsType(String type) {
+        return typeRegistry.containsKey(type);
+    }
 }

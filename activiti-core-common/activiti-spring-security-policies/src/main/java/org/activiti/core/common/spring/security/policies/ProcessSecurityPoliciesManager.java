@@ -20,7 +20,7 @@ import org.activiti.api.process.model.payloads.GetProcessInstancesPayload;
 
 public interface ProcessSecurityPoliciesManager extends SecurityPoliciesManager {
 
-  GetProcessDefinitionsPayload restrictProcessDefQuery(SecurityPolicyAccess securityPolicyAccess);
+    GetProcessDefinitionsPayload restrictProcessDefQuery(SecurityPolicyAccess securityPolicyAccess);
 
-  GetProcessInstancesPayload restrictProcessInstQuery(SecurityPolicyAccess securityPolicyAccess);
+    GetProcessInstancesPayload restrictProcessInstQuery(SecurityPolicyAccess securityPolicyAccess);
 }

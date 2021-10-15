@@ -16,148 +16,149 @@
 
 package org.activiti.engine.impl;
 
-import java.io.Serializable;
-import java.util.List;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
 
+import java.io.Serializable;
+import java.util.List;
+
 /** */
 public class EventSubscriptionQueryImpl
-    extends AbstractQuery<EventSubscriptionQueryImpl, EventSubscriptionEntity>
-    implements Serializable {
+        extends AbstractQuery<EventSubscriptionQueryImpl, EventSubscriptionEntity>
+        implements Serializable {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  protected String eventSubscriptionId;
-  protected String eventName;
-  protected String eventType;
-  protected String executionId;
-  protected String processInstanceId;
-  protected String activityId;
-  protected String tenantId;
-  protected String configuration;
+    protected String eventSubscriptionId;
+    protected String eventName;
+    protected String eventType;
+    protected String executionId;
+    protected String processInstanceId;
+    protected String activityId;
+    protected String tenantId;
+    protected String configuration;
 
-  public EventSubscriptionQueryImpl(CommandContext commandContext) {
-    super(commandContext);
-  }
-
-  public EventSubscriptionQueryImpl(CommandExecutor commandExecutor) {
-    super(commandExecutor);
-  }
-
-  public EventSubscriptionQueryImpl eventSubscriptionId(String eventSubscriptionId) {
-    if (eventSubscriptionId == null) {
-      throw new ActivitiIllegalArgumentException("Provided event subscription id is null");
+    public EventSubscriptionQueryImpl(CommandContext commandContext) {
+        super(commandContext);
     }
-    this.eventSubscriptionId = eventSubscriptionId;
-    return this;
-  }
 
-  public EventSubscriptionQueryImpl eventName(String eventName) {
-    if (eventName == null) {
-      throw new ActivitiIllegalArgumentException("Provided event name is null");
+    public EventSubscriptionQueryImpl(CommandExecutor commandExecutor) {
+        super(commandExecutor);
     }
-    this.eventName = eventName;
-    return this;
-  }
 
-  public EventSubscriptionQueryImpl executionId(String executionId) {
-    if (executionId == null) {
-      throw new ActivitiIllegalArgumentException("Provided execution id is null");
+    public EventSubscriptionQueryImpl eventSubscriptionId(String eventSubscriptionId) {
+        if (eventSubscriptionId == null) {
+            throw new ActivitiIllegalArgumentException("Provided event subscription id is null");
+        }
+        this.eventSubscriptionId = eventSubscriptionId;
+        return this;
     }
-    this.executionId = executionId;
-    return this;
-  }
 
-  public EventSubscriptionQueryImpl processInstanceId(String processInstanceId) {
-    if (processInstanceId == null) {
-      throw new ActivitiIllegalArgumentException("Provided process instance id is null");
+    public EventSubscriptionQueryImpl eventName(String eventName) {
+        if (eventName == null) {
+            throw new ActivitiIllegalArgumentException("Provided event name is null");
+        }
+        this.eventName = eventName;
+        return this;
     }
-    this.processInstanceId = processInstanceId;
-    return this;
-  }
 
-  public EventSubscriptionQueryImpl activityId(String activityId) {
-    if (activityId == null) {
-      throw new ActivitiIllegalArgumentException("Provided activity id is null");
+    public EventSubscriptionQueryImpl executionId(String executionId) {
+        if (executionId == null) {
+            throw new ActivitiIllegalArgumentException("Provided execution id is null");
+        }
+        this.executionId = executionId;
+        return this;
     }
-    this.activityId = activityId;
-    return this;
-  }
 
-  public EventSubscriptionQueryImpl eventType(String eventType) {
-    if (eventType == null) {
-      throw new ActivitiIllegalArgumentException("Provided event type is null");
+    public EventSubscriptionQueryImpl processInstanceId(String processInstanceId) {
+        if (processInstanceId == null) {
+            throw new ActivitiIllegalArgumentException("Provided process instance id is null");
+        }
+        this.processInstanceId = processInstanceId;
+        return this;
     }
-    this.eventType = eventType;
-    return this;
-  }
 
-  public String getTenantId() {
-    return tenantId;
-  }
+    public EventSubscriptionQueryImpl activityId(String activityId) {
+        if (activityId == null) {
+            throw new ActivitiIllegalArgumentException("Provided activity id is null");
+        }
+        this.activityId = activityId;
+        return this;
+    }
 
-  public EventSubscriptionQueryImpl tenantId(String tenantId) {
-    this.tenantId = tenantId;
-    return this;
-  }
+    public EventSubscriptionQueryImpl eventType(String eventType) {
+        if (eventType == null) {
+            throw new ActivitiIllegalArgumentException("Provided event type is null");
+        }
+        this.eventType = eventType;
+        return this;
+    }
 
-  public EventSubscriptionQueryImpl configuration(String configuration) {
-    this.configuration = configuration;
-    return this;
-  }
+    public String getTenantId() {
+        return tenantId;
+    }
 
-  public EventSubscriptionQueryImpl orderByCreated() {
-    return orderBy(EventSubscriptionQueryProperty.CREATED);
-  }
+    public EventSubscriptionQueryImpl tenantId(String tenantId) {
+        this.tenantId = tenantId;
+        return this;
+    }
 
-  // results //////////////////////////////////////////
+    public EventSubscriptionQueryImpl configuration(String configuration) {
+        this.configuration = configuration;
+        return this;
+    }
 
-  @Override
-  public long executeCount(CommandContext commandContext) {
-    checkQueryOk();
-    return commandContext
-        .getEventSubscriptionEntityManager()
-        .findEventSubscriptionCountByQueryCriteria(this);
-  }
+    public EventSubscriptionQueryImpl orderByCreated() {
+        return orderBy(EventSubscriptionQueryProperty.CREATED);
+    }
 
-  @Override
-  public List<EventSubscriptionEntity> executeList(CommandContext commandContext, Page page) {
-    checkQueryOk();
-    return commandContext
-        .getEventSubscriptionEntityManager()
-        .findEventSubscriptionsByQueryCriteria(this, page);
-  }
+    // results //////////////////////////////////////////
 
-  // getters //////////////////////////////////////////
+    @Override
+    public long executeCount(CommandContext commandContext) {
+        checkQueryOk();
+        return commandContext
+                .getEventSubscriptionEntityManager()
+                .findEventSubscriptionCountByQueryCriteria(this);
+    }
 
-  public String getEventSubscriptionId() {
-    return eventSubscriptionId;
-  }
+    @Override
+    public List<EventSubscriptionEntity> executeList(CommandContext commandContext, Page page) {
+        checkQueryOk();
+        return commandContext
+                .getEventSubscriptionEntityManager()
+                .findEventSubscriptionsByQueryCriteria(this, page);
+    }
 
-  public String getEventName() {
-    return eventName;
-  }
+    // getters //////////////////////////////////////////
 
-  public String getEventType() {
-    return eventType;
-  }
+    public String getEventSubscriptionId() {
+        return eventSubscriptionId;
+    }
 
-  public String getExecutionId() {
-    return executionId;
-  }
+    public String getEventName() {
+        return eventName;
+    }
 
-  public String getProcessInstanceId() {
-    return processInstanceId;
-  }
+    public String getEventType() {
+        return eventType;
+    }
 
-  public String getActivityId() {
-    return activityId;
-  }
+    public String getExecutionId() {
+        return executionId;
+    }
 
-  public String getConfiguration() {
-    return configuration;
-  }
+    public String getProcessInstanceId() {
+        return processInstanceId;
+    }
+
+    public String getActivityId() {
+        return activityId;
+    }
+
+    public String getConfiguration() {
+        return configuration;
+    }
 }

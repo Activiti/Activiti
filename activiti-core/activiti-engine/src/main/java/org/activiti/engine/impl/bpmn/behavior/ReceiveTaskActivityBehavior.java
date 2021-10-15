@@ -27,13 +27,13 @@ import org.activiti.engine.delegate.DelegateExecution;
  */
 public class ReceiveTaskActivityBehavior extends TaskActivityBehavior {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  public void execute(DelegateExecution execution) {
-    // Do nothing: waitstate behavior
-  }
+    public void execute(DelegateExecution execution) {
+        // Do nothing: waitstate behavior
+    }
 
-  public void trigger(DelegateExecution execution, String signalName, Object data) {
-    leave(execution);
-  }
+    public void trigger(DelegateExecution execution, String signalName, Object data) {
+        leave(execution);
+    }
 }

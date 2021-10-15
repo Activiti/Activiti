@@ -19,21 +19,21 @@ import org.activiti.api.model.shared.event.RuntimeEvent;
 import org.activiti.api.process.model.ProcessInstance;
 
 public interface ProcessRuntimeEvent<T extends ProcessInstance>
-    extends RuntimeEvent<T, ProcessRuntimeEvent.ProcessEvents> {
+        extends RuntimeEvent<T, ProcessRuntimeEvent.ProcessEvents> {
 
-  enum ProcessEvents {
-    PROCESS_CREATED,
+    enum ProcessEvents {
+        PROCESS_CREATED,
 
-    PROCESS_STARTED,
+        PROCESS_STARTED,
 
-    PROCESS_COMPLETED,
+        PROCESS_COMPLETED,
 
-    PROCESS_CANCELLED,
+        PROCESS_CANCELLED,
 
-    PROCESS_SUSPENDED,
+        PROCESS_SUSPENDED,
 
-    PROCESS_RESUMED,
+        PROCESS_RESUMED,
 
-    PROCESS_UPDATED
-  }
+        PROCESS_UPDATED
+    }
 }

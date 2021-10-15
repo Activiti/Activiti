@@ -21,9 +21,9 @@ import org.activiti.api.task.model.Task;
 
 public class TaskResult extends Result<Task> {
 
-  public TaskResult() {}
+    public TaskResult() {}
 
-  public TaskResult(Payload payload, Task entity) {
-    super(payload, entity);
-  }
+    public TaskResult(Payload payload, Task entity) {
+        super(payload, entity);
+    }
 }

@@ -21,17 +21,17 @@ import org.activiti.api.task.model.events.TaskCandidateUserEvent;
 import org.activiti.api.task.runtime.events.TaskCandidateUserAddedEvent;
 
 public class TaskCandidateUserAddedEventImpl
-    extends RuntimeEventImpl<TaskCandidateUser, TaskCandidateUserEvent.TaskCandidateUserEvents>
-    implements TaskCandidateUserAddedEvent {
+        extends RuntimeEventImpl<TaskCandidateUser, TaskCandidateUserEvent.TaskCandidateUserEvents>
+        implements TaskCandidateUserAddedEvent {
 
-  public TaskCandidateUserAddedEventImpl() {}
+    public TaskCandidateUserAddedEventImpl() {}
 
-  public TaskCandidateUserAddedEventImpl(TaskCandidateUser entity) {
-    super(entity);
-  }
+    public TaskCandidateUserAddedEventImpl(TaskCandidateUser entity) {
+        super(entity);
+    }
 
-  @Override
-  public TaskCandidateUserEvent.TaskCandidateUserEvents getEventType() {
-    return TaskCandidateUserEvent.TaskCandidateUserEvents.TASK_CANDIDATE_USER_ADDED;
-  }
+    @Override
+    public TaskCandidateUserEvent.TaskCandidateUserEvents getEventType() {
+        return TaskCandidateUserEvent.TaskCandidateUserEvents.TASK_CANDIDATE_USER_ADDED;
+    }
 }

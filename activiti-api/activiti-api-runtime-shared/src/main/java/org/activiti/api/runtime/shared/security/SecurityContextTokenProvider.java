@@ -20,5 +20,5 @@ import java.util.Optional;
 /** Token provider from the currently loaded security context */
 public interface SecurityContextTokenProvider {
 
-  Optional<String> getCurrentToken();
+    Optional<String> getCurrentToken();
 }

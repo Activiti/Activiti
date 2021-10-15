@@ -16,13 +16,15 @@
 
 package org.activiti.engine.impl.bpmn.behavior;
 
-import java.util.Map;
 import org.activiti.engine.delegate.DelegateExecution;
+
+import java.util.Map;
 
 public interface VariablesCalculator {
 
-  Map<String, Object> calculateOutPutVariables(
-      MappingExecutionContext mappingExecutionContext, Map<String, Object> availableVariables);
+    Map<String, Object> calculateOutPutVariables(
+            MappingExecutionContext mappingExecutionContext,
+            Map<String, Object> availableVariables);
 
-  Map<String, Object> calculateInputVariables(DelegateExecution execution);
+    Map<String, Object> calculateInputVariables(DelegateExecution execution);
 }

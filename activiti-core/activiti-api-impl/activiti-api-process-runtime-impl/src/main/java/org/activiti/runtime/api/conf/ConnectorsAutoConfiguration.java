@@ -17,6 +17,7 @@
 package org.activiti.runtime.api.conf;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import org.activiti.engine.impl.bpmn.parser.factory.DefaultActivityBehaviorFactory;
 import org.activiti.engine.impl.delegate.invocation.DefaultDelegateInterceptor;
 import org.activiti.engine.impl.el.ExpressionManager;
@@ -33,41 +34,42 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class ConnectorsAutoConfiguration {
 
-  @Bean
-  @ConditionalOnMissingBean
-  public ExpressionManager expressionManager() {
-    return new ExpressionManager();
-  }
+    @Bean
+    @ConditionalOnMissingBean
+    public ExpressionManager expressionManager() {
+        return new ExpressionManager();
+    }
 
-  @Bean
-  @ConditionalOnMissingBean
-  public ExpressionResolver expressionResolver(
-      ExpressionManager expressionManager, ObjectMapper objectMapper) {
-    return new ExpressionResolver(
-        expressionManager, objectMapper, new DefaultDelegateInterceptor());
-  }
+    @Bean
+    @ConditionalOnMissingBean
+    public ExpressionResolver expressionResolver(
+            ExpressionManager expressionManager, ObjectMapper objectMapper) {
+        return new ExpressionResolver(
+                expressionManager, objectMapper, new DefaultDelegateInterceptor());
+    }
 
-  @Bean
-  @ConditionalOnMissingBean
-  public IntegrationContextBuilder integrationContextBuilder(
-      ExtensionsVariablesMappingProvider variablesMappingProvider) {
-    return new IntegrationContextBuilder(variablesMappingProvider);
-  }
+    @Bean
+    @ConditionalOnMissingBean
+    public IntegrationContextBuilder integrationContextBuilder(
+            ExtensionsVariablesMappingProvider variablesMappingProvider) {
+        return new IntegrationContextBuilder(variablesMappingProvider);
+    }
 
-  @Bean(name = DefaultActivityBehaviorFactory.DEFAULT_SERVICE_TASK_BEAN_NAME)
-  @ConditionalOnMissingBean(name = DefaultActivityBehaviorFactory.DEFAULT_SERVICE_TASK_BEAN_NAME)
-  public DefaultServiceTaskBehavior defaultServiceTaskBehavior(
-      ApplicationContext applicationContext,
-      IntegrationContextBuilder integrationContextBuilder,
-      ExtensionsVariablesMappingProvider outboundVariablesProvider) {
-    return new DefaultServiceTaskBehavior(
-        applicationContext, integrationContextBuilder, outboundVariablesProvider);
-  }
+    @Bean(name = DefaultActivityBehaviorFactory.DEFAULT_SERVICE_TASK_BEAN_NAME)
+    @ConditionalOnMissingBean(name = DefaultActivityBehaviorFactory.DEFAULT_SERVICE_TASK_BEAN_NAME)
+    public DefaultServiceTaskBehavior defaultServiceTaskBehavior(
+            ApplicationContext applicationContext,
+            IntegrationContextBuilder integrationContextBuilder,
+            ExtensionsVariablesMappingProvider outboundVariablesProvider) {
+        return new DefaultServiceTaskBehavior(
+                applicationContext, integrationContextBuilder, outboundVariablesProvider);
+    }
 
-  @Bean
-  @ConditionalOnMissingBean
-  public ExtensionsVariablesMappingProvider variablesMappingProvider(
-      ProcessExtensionService processExtensionService, ExpressionResolver expressionResolver) {
-    return new ExtensionsVariablesMappingProvider(processExtensionService, expressionResolver);
-  }
+    @Bean
+    @ConditionalOnMissingBean
+    public ExtensionsVariablesMappingProvider variablesMappingProvider(
+            ProcessExtensionService processExtensionService,
+            ExpressionResolver expressionResolver) {
+        return new ExtensionsVariablesMappingProvider(processExtensionService, expressionResolver);
+    }
 }

@@ -17,20 +17,20 @@ package org.activiti.application;
 
 public class ApplicationEntry {
 
-  private String type;
+    private String type;
 
-  private FileContent fileContent;
+    private FileContent fileContent;
 
-  public ApplicationEntry(String type, FileContent fileContent) {
-    this.type = type;
-    this.fileContent = fileContent;
-  }
+    public ApplicationEntry(String type, FileContent fileContent) {
+        this.type = type;
+        this.fileContent = fileContent;
+    }
 
-  public String getType() {
-    return type;
-  }
+    public String getType() {
+        return type;
+    }
 
-  public FileContent getFileContent() {
-    return fileContent;
-  }
+    public FileContent getFileContent() {
+        return fileContent;
+    }
 }

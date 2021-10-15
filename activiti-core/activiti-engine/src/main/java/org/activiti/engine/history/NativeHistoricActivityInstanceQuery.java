@@ -21,4 +21,4 @@ import org.activiti.engine.query.NativeQuery;
 /** Allows querying of {@link HistoricActivityInstanceQuery}s via native (SQL) queries */
 @Internal
 public interface NativeHistoricActivityInstanceQuery
-    extends NativeQuery<NativeHistoricActivityInstanceQuery, HistoricActivityInstance> {}
+        extends NativeQuery<NativeHistoricActivityInstanceQuery, HistoricActivityInstance> {}

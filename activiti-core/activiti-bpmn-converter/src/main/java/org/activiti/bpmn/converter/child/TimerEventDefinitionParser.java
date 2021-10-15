@@ -15,7 +15,6 @@
  */
 package org.activiti.bpmn.converter.child;
 
-import javax.xml.stream.XMLStreamReader;
 import org.activiti.bpmn.converter.util.BpmnXMLUtil;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BpmnModel;
@@ -23,27 +22,29 @@ import org.activiti.bpmn.model.Event;
 import org.activiti.bpmn.model.TimerEventDefinition;
 import org.apache.commons.lang3.StringUtils;
 
+import javax.xml.stream.XMLStreamReader;
+
 /** */
 public class TimerEventDefinitionParser extends BaseChildElementParser {
 
-  public String getElementName() {
-    return ELEMENT_EVENT_TIMERDEFINITION;
-  }
-
-  public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model)
-      throws Exception {
-    if (!(parentElement instanceof Event)) {
-      return;
+    public String getElementName() {
+        return ELEMENT_EVENT_TIMERDEFINITION;
     }
-    TimerEventDefinition eventDefinition = new TimerEventDefinition();
-    String calendarName =
-        xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_CALENDAR_NAME);
-    if (StringUtils.isNotEmpty(calendarName)) {
-      eventDefinition.setCalendarName(calendarName);
-    }
-    BpmnXMLUtil.addXMLLocation(eventDefinition, xtr);
-    BpmnXMLUtil.parseChildElements(ELEMENT_EVENT_TIMERDEFINITION, eventDefinition, xtr, model);
 
-    ((Event) parentElement).getEventDefinitions().add(eventDefinition);
-  }
+    public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model)
+            throws Exception {
+        if (!(parentElement instanceof Event)) {
+            return;
+        }
+        TimerEventDefinition eventDefinition = new TimerEventDefinition();
+        String calendarName =
+                xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_CALENDAR_NAME);
+        if (StringUtils.isNotEmpty(calendarName)) {
+            eventDefinition.setCalendarName(calendarName);
+        }
+        BpmnXMLUtil.addXMLLocation(eventDefinition, xtr);
+        BpmnXMLUtil.parseChildElements(ELEMENT_EVENT_TIMERDEFINITION, eventDefinition, xtr, model);
+
+        ((Event) parentElement).getEventDefinitions().add(eventDefinition);
+    }
 }

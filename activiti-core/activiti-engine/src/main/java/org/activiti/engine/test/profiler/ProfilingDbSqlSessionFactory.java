@@ -22,8 +22,8 @@ import org.activiti.engine.impl.interceptor.Session;
 /** */
 public class ProfilingDbSqlSessionFactory extends DbSqlSessionFactory {
 
-  @Override
-  public Session openSession(CommandContext commandContext) {
-    return new ProfilingDbSqlSession(this, commandContext.getEntityCache());
-  }
+    @Override
+    public Session openSession(CommandContext commandContext) {
+        return new ProfilingDbSqlSession(this, commandContext.getEntityCache());
+    }
 }

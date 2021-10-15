@@ -15,52 +15,53 @@
  */
 package org.activiti.api.runtime.model.impl;
 
-import java.util.List;
 import org.activiti.api.process.model.ProcessDefinitionMeta;
+
+import java.util.List;
 
 public class ProcessDefinitionMetaImpl implements ProcessDefinitionMeta {
 
-  private String processDefinitionKey;
-  private List<String> usersIds;
-  private List<String> groupIds;
-  private List<String> connectorsIds;
+    private String processDefinitionKey;
+    private List<String> usersIds;
+    private List<String> groupIds;
+    private List<String> connectorsIds;
 
-  public ProcessDefinitionMetaImpl() {}
+    public ProcessDefinitionMetaImpl() {}
 
-  public ProcessDefinitionMetaImpl(String processDefinitionKey) {
-    this.processDefinitionKey = processDefinitionKey;
-  }
+    public ProcessDefinitionMetaImpl(String processDefinitionKey) {
+        this.processDefinitionKey = processDefinitionKey;
+    }
 
-  @Override
-  public String getProcessDefinitionKey() {
-    return processDefinitionKey;
-  }
+    @Override
+    public String getProcessDefinitionKey() {
+        return processDefinitionKey;
+    }
 
-  public void setProcessDefinitionKey(String processDefinitionKey) {
-    this.processDefinitionKey = processDefinitionKey;
-  }
+    public void setProcessDefinitionKey(String processDefinitionKey) {
+        this.processDefinitionKey = processDefinitionKey;
+    }
 
-  public List<String> getUsersIds() {
-    return usersIds;
-  }
+    public List<String> getUsersIds() {
+        return usersIds;
+    }
 
-  public void setUsersIds(List<String> usersIds) {
-    this.usersIds = usersIds;
-  }
+    public void setUsersIds(List<String> usersIds) {
+        this.usersIds = usersIds;
+    }
 
-  public List<String> getGroupIds() {
-    return groupIds;
-  }
+    public List<String> getGroupIds() {
+        return groupIds;
+    }
 
-  public void setGroupIds(List<String> groupIds) {
-    this.groupIds = groupIds;
-  }
+    public void setGroupIds(List<String> groupIds) {
+        this.groupIds = groupIds;
+    }
 
-  public List<String> getConnectorsIds() {
-    return connectorsIds;
-  }
+    public List<String> getConnectorsIds() {
+        return connectorsIds;
+    }
 
-  public void setConnectorsIds(List<String> connectorsIds) {
-    this.connectorsIds = connectorsIds;
-  }
+    public void setConnectorsIds(List<String> connectorsIds) {
+        this.connectorsIds = connectorsIds;
+    }
 }

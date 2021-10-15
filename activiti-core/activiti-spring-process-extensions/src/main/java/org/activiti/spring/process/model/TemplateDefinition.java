@@ -19,67 +19,66 @@ import java.util.Objects;
 
 public class TemplateDefinition {
 
-  public enum TemplateType {
-    VARIABLE,
-    FILE;
-  }
-
-  private TemplateType type;
-
-  private String value;
-
-  TemplateDefinition() {}
-
-  public TemplateDefinition(TemplateType type, String value) {
-    this.type = type;
-    this.value = value;
-  }
-
-  public String getValue() {
-    return value;
-  }
-
-  public void setValue(String value) {
-    this.value = value;
-  }
-
-  public TemplateType getType() {
-    return type;
-  }
-
-  public void setType(TemplateType type) {
-    this.type = type;
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(type, value);
-  }
-
-  @Override
-  public boolean equals(Object obj) {
-    if (this == obj) {
-      return true;
+    public enum TemplateType {
+        VARIABLE,
+        FILE;
     }
-    if (obj == null) {
-      return false;
-    }
-    if (getClass() != obj.getClass()) {
-      return false;
-    }
-    TemplateDefinition other = (TemplateDefinition) obj;
-    return type == other.type && Objects.equals(value, other.value);
-  }
 
-  @Override
-  public String toString() {
-    StringBuilder builder = new StringBuilder();
-    builder
-        .append("TemplateDefinition [type=")
-        .append(type)
-        .append(", value=")
-        .append(value)
-        .append("]");
-    return builder.toString();
-  }
+    private TemplateType type;
+
+    private String value;
+
+    TemplateDefinition() {}
+
+    public TemplateDefinition(TemplateType type, String value) {
+        this.type = type;
+        this.value = value;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
+    }
+
+    public TemplateType getType() {
+        return type;
+    }
+
+    public void setType(TemplateType type) {
+        this.type = type;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(type, value);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        TemplateDefinition other = (TemplateDefinition) obj;
+        return type == other.type && Objects.equals(value, other.value);
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("TemplateDefinition [type=")
+                .append(type)
+                .append(", value=")
+                .append(value)
+                .append("]");
+        return builder.toString();
+    }
 }

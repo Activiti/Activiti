@@ -47,127 +47,133 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 public class BasicInclusiveGatewayTest {
 
-  private static final String PROCESS_KEY = "basicInclusiveGateway";
+    private static final String PROCESS_KEY = "basicInclusiveGateway";
 
-  @Autowired private ProcessRuntime processRuntime;
+    @Autowired private ProcessRuntime processRuntime;
 
-  @Autowired private TaskRuntime taskRuntime;
+    @Autowired private TaskRuntime taskRuntime;
 
-  @Autowired private SecurityUtil securityUtil;
+    @Autowired private SecurityUtil securityUtil;
 
-  @Autowired private ProcessAdminRuntime processAdminRuntime;
+    @Autowired private ProcessAdminRuntime processAdminRuntime;
 
-  @Autowired private ProcessOperations processOperations;
+    @Autowired private ProcessOperations processOperations;
 
-  @Autowired private TaskOperations taskOperations;
+    @Autowired private TaskOperations taskOperations;
 
-  @Test
-  public void testProcessExecutionWithInclusiveGateway() {
-    // given
-    securityUtil.logInAs("user1");
+    @Test
+    public void testProcessExecutionWithInclusiveGateway() {
+        // given
+        securityUtil.logInAs("user1");
 
-    // given
-    ProcessInstance processInstance =
-        processOperations
-            .start(
-                ProcessPayloadBuilder.start()
-                    .withProcessDefinitionKey(PROCESS_KEY)
-                    .withBusinessKey("my-business-key")
-                    .withName("my-process-instance-name")
-                    .withVariable("input", 1)
-                    .build())
+        // given
+        ProcessInstance processInstance =
+                processOperations
+                        .start(
+                                ProcessPayloadBuilder.start()
+                                        .withProcessDefinitionKey(PROCESS_KEY)
+                                        .withBusinessKey("my-business-key")
+                                        .withName("my-process-instance-name")
+                                        .withVariable("input", 1)
+                                        .build())
 
-            // then
-            .expectFields(
-                processInstance().status(ProcessInstance.ProcessInstanceStatus.RUNNING),
-                processInstance().name("my-process-instance-name"),
-                processInstance().businessKey("my-business-key"))
-            .expect(
-                processInstance()
-                    .hasTask("Start Process", Task.TaskStatus.ASSIGNED, withAssignee("user1")))
-            .expectEvents(
-                processInstance().hasBeenStarted(),
-                startEvent("theStart").hasBeenStarted(),
-                startEvent("theStart").hasBeenCompleted(),
-                sequenceFlow("flow1").hasBeenTaken(),
-                taskWithName("Start Process").hasBeenCreated(),
-                taskWithName("Start Process").hasBeenAssigned())
-            .andReturn();
+                        // then
+                        .expectFields(
+                                processInstance()
+                                        .status(ProcessInstance.ProcessInstanceStatus.RUNNING),
+                                processInstance().name("my-process-instance-name"),
+                                processInstance().businessKey("my-business-key"))
+                        .expect(
+                                processInstance()
+                                        .hasTask(
+                                                "Start Process",
+                                                Task.TaskStatus.ASSIGNED,
+                                                withAssignee("user1")))
+                        .expectEvents(
+                                processInstance().hasBeenStarted(),
+                                startEvent("theStart").hasBeenStarted(),
+                                startEvent("theStart").hasBeenCompleted(),
+                                sequenceFlow("flow1").hasBeenTaken(),
+                                taskWithName("Start Process").hasBeenCreated(),
+                                taskWithName("Start Process").hasBeenAssigned())
+                        .andReturn();
 
-    // I should be able to get the process instance from the Runtime
-    ProcessInstance processInstanceById = processRuntime.processInstance(processInstance.getId());
-    assertThat(processInstanceById).isEqualTo(processInstance);
+        // I should be able to get the process instance from the Runtime
+        ProcessInstance processInstanceById =
+                processRuntime.processInstance(processInstance.getId());
+        assertThat(processInstanceById).isEqualTo(processInstance);
 
-    // I should get a task for User1
-    GetTasksPayload processInstanceTasksPayload =
-        TaskPayloadBuilder.tasks().withProcessInstanceId(processInstance.getId()).build();
+        // I should get a task for User1
+        GetTasksPayload processInstanceTasksPayload =
+                TaskPayloadBuilder.tasks().withProcessInstanceId(processInstance.getId()).build();
 
-    Page<Task> tasks = taskRuntime.tasks(Pageable.of(0, 50), processInstanceTasksPayload);
-    assertThat(tasks.getTotalItems()).isEqualTo(1);
-    Task task = tasks.getContent().get(0);
+        Page<Task> tasks = taskRuntime.tasks(Pageable.of(0, 50), processInstanceTasksPayload);
+        assertThat(tasks.getTotalItems()).isEqualTo(1);
+        Task task = tasks.getContent().get(0);
 
-    // given
-    taskOperations
-        .complete(TaskPayloadBuilder.complete().withTaskId(task.getId()).build())
-        // then
-        .expectEvents(
-            task().hasBeenCompleted(),
-            sequenceFlow("flow2").hasBeenTaken(),
-            inclusiveGateway("inclusiveGateway").hasBeenStarted(),
-            inclusiveGateway("inclusiveGateway").hasBeenCompleted(),
-            sequenceFlow("flow3").hasBeenTaken(),
-            taskWithName("Send e-mail").hasBeenCreated(),
-            sequenceFlow("flow4").hasBeenTaken(),
-            taskWithName("Check account").hasBeenCreated())
-        .expect(
-            processInstance().hasTask("Send e-mail", Task.TaskStatus.ASSIGNED),
-            processInstance().hasTask("Check account", Task.TaskStatus.ASSIGNED));
+        // given
+        taskOperations
+                .complete(TaskPayloadBuilder.complete().withTaskId(task.getId()).build())
+                // then
+                .expectEvents(
+                        task().hasBeenCompleted(),
+                        sequenceFlow("flow2").hasBeenTaken(),
+                        inclusiveGateway("inclusiveGateway").hasBeenStarted(),
+                        inclusiveGateway("inclusiveGateway").hasBeenCompleted(),
+                        sequenceFlow("flow3").hasBeenTaken(),
+                        taskWithName("Send e-mail").hasBeenCreated(),
+                        sequenceFlow("flow4").hasBeenTaken(),
+                        taskWithName("Check account").hasBeenCreated())
+                .expect(
+                        processInstance().hasTask("Send e-mail", Task.TaskStatus.ASSIGNED),
+                        processInstance().hasTask("Check account", Task.TaskStatus.ASSIGNED));
 
-    // then - two tasks should be available
-    tasks = taskRuntime.tasks(Pageable.of(0, 50));
-    assertThat(tasks.getTotalItems()).isEqualTo(2);
+        // then - two tasks should be available
+        tasks = taskRuntime.tasks(Pageable.of(0, 50));
+        assertThat(tasks.getTotalItems()).isEqualTo(2);
 
-    Task task1 = tasks.getContent().get(0);
-    Task task2 = tasks.getContent().get(1);
+        Task task1 = tasks.getContent().get(0);
+        Task task2 = tasks.getContent().get(1);
 
-    // given
-    taskOperations
-        .complete(TaskPayloadBuilder.complete().withTaskId(task1.getId()).build())
-        // then
-        .expectEvents(
-            task().hasBeenCompleted(), inclusiveGateway("inclusiveGatewayEnd").hasBeenStarted())
-        .expect(processInstance().hasTask(task2.getName(), task2.getStatus()));
+        // given
+        taskOperations
+                .complete(TaskPayloadBuilder.complete().withTaskId(task1.getId()).build())
+                // then
+                .expectEvents(
+                        task().hasBeenCompleted(),
+                        inclusiveGateway("inclusiveGatewayEnd").hasBeenStarted())
+                .expect(processInstance().hasTask(task2.getName(), task2.getStatus()));
 
-    // then - only second task should be available
-    tasks = taskRuntime.tasks(Pageable.of(0, 50));
-    assertThat(tasks.getTotalItems()).isEqualTo(1);
+        // then - only second task should be available
+        tasks = taskRuntime.tasks(Pageable.of(0, 50));
+        assertThat(tasks.getTotalItems()).isEqualTo(1);
 
-    assertThat(tasks.getContent())
-        .extracting(Task::getStatus, Task::getName)
-        .contains(tuple(task2.getStatus(), task2.getName()));
+        assertThat(tasks.getContent())
+                .extracting(Task::getStatus, Task::getName)
+                .contains(tuple(task2.getStatus(), task2.getName()));
 
-    // complete second task
-    taskOperations
-        .complete(TaskPayloadBuilder.complete().withTaskId(task2.getId()).build())
-        // then
-        .expectEvents(
-            task().hasBeenCompleted(),
-            inclusiveGateway("inclusiveGatewayEnd").hasBeenCompleted(),
-            endEvent("theEnd").hasBeenStarted(),
-            endEvent("theEnd").hasBeenCompleted());
+        // complete second task
+        taskOperations
+                .complete(TaskPayloadBuilder.complete().withTaskId(task2.getId()).build())
+                // then
+                .expectEvents(
+                        task().hasBeenCompleted(),
+                        inclusiveGateway("inclusiveGatewayEnd").hasBeenCompleted(),
+                        endEvent("theEnd").hasBeenStarted(),
+                        endEvent("theEnd").hasBeenCompleted());
 
-    // No tasks should be available
-    tasks = taskRuntime.tasks(Pageable.of(0, 50));
-    assertThat(tasks.getTotalItems()).isEqualTo(0);
-  }
-
-  @AfterEach
-  public void cleanup() {
-    securityUtil.logInAs("admin");
-    Page<ProcessInstance> processInstancePage =
-        processAdminRuntime.processInstances(Pageable.of(0, 50));
-    for (ProcessInstance pi : processInstancePage.getContent()) {
-      processAdminRuntime.delete(ProcessPayloadBuilder.delete(pi.getId()));
+        // No tasks should be available
+        tasks = taskRuntime.tasks(Pageable.of(0, 50));
+        assertThat(tasks.getTotalItems()).isEqualTo(0);
     }
-  }
+
+    @AfterEach
+    public void cleanup() {
+        securityUtil.logInAs("admin");
+        Page<ProcessInstance> processInstancePage =
+                processAdminRuntime.processInstances(Pageable.of(0, 50));
+        for (ProcessInstance pi : processInstancePage.getContent()) {
+            processAdminRuntime.delete(ProcessPayloadBuilder.delete(pi.getId()));
+        }
+    }
 }

@@ -24,6 +24,6 @@ import org.activiti.engine.runtime.Job;
 @Internal
 public interface ExecuteAsyncRunnableFactory {
 
-  Runnable createExecuteAsyncRunnable(
-      Job job, ProcessEngineConfigurationImpl processEngineConfiguration);
+    Runnable createExecuteAsyncRunnable(
+            Job job, ProcessEngineConfigurationImpl processEngineConfiguration);
 }

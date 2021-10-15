@@ -18,50 +18,52 @@ package org.activiti.spring.test.servicetask;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.List;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 import org.activiti.spring.impl.test.SpringActivitiTestCase;
 import org.springframework.test.context.ContextConfiguration;
 
+import java.util.List;
+
 /** @link https://activiti.atlassian.net/browse/ACT-1166 */
 @ContextConfiguration(
-    "classpath:org/activiti/spring/test/servicetask/serviceraskSpringTestCatchError-context.xml")
+        "classpath:org/activiti/spring/test/servicetask/serviceraskSpringTestCatchError-context.xml")
 public class BoundaryErrorEventSpringTest extends SpringActivitiTestCase {
 
-  private void cleanUp() {
-    List<org.activiti.engine.repository.Deployment> deployments =
-        repositoryService.createDeploymentQuery().list();
-    for (org.activiti.engine.repository.Deployment deployment : deployments) {
-      repositoryService.deleteDeployment(deployment.getId(), true);
+    private void cleanUp() {
+        List<org.activiti.engine.repository.Deployment> deployments =
+                repositoryService.createDeploymentQuery().list();
+        for (org.activiti.engine.repository.Deployment deployment : deployments) {
+            repositoryService.deleteDeployment(deployment.getId(), true);
+        }
     }
-  }
 
-  @Override
-  public void tearDown() {
-    cleanUp();
-  }
+    @Override
+    public void tearDown() {
+        cleanUp();
+    }
 
-  @Deployment
-  public void testCatchErrorThrownByJavaDelegateOnServiceTask() {
-    String procId =
-        runtimeService
-            .startProcessInstanceByKey("catchErrorThrownByExpressionDelegateOnServiceTask")
-            .getId();
-    assertThatErrorHasBeenCaught(procId);
-  }
+    @Deployment
+    public void testCatchErrorThrownByJavaDelegateOnServiceTask() {
+        String procId =
+                runtimeService
+                        .startProcessInstanceByKey(
+                                "catchErrorThrownByExpressionDelegateOnServiceTask")
+                        .getId();
+        assertThatErrorHasBeenCaught(procId);
+    }
 
-  private void assertThatErrorHasBeenCaught(String procId) {
-    // The service task will throw an error event,
-    // which is caught on the service task boundary
-    assertThat(taskService.createTaskQuery().count())
-        .as("No tasks found in task list.")
-        .isEqualTo(1);
-    Task task = taskService.createTaskQuery().singleResult();
-    assertThat(task.getName()).isEqualTo("Escalated Task");
+    private void assertThatErrorHasBeenCaught(String procId) {
+        // The service task will throw an error event,
+        // which is caught on the service task boundary
+        assertThat(taskService.createTaskQuery().count())
+                .as("No tasks found in task list.")
+                .isEqualTo(1);
+        Task task = taskService.createTaskQuery().singleResult();
+        assertThat(task.getName()).isEqualTo("Escalated Task");
 
-    // Completing the task will end the process instance
-    taskService.complete(task.getId());
-    assertProcessEnded(procId);
-  }
+        // Completing the task will end the process instance
+        taskService.complete(task.getId());
+        assertProcessEnded(procId);
+    }
 }

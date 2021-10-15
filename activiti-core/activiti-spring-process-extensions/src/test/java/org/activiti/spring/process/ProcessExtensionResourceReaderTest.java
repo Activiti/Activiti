@@ -24,26 +24,26 @@ import org.mockito.InjectMocks;
 
 public class ProcessExtensionResourceReaderTest {
 
-  @InjectMocks private ProcessExtensionResourceReader reader;
+    @InjectMocks private ProcessExtensionResourceReader reader;
 
-  @BeforeEach
-  public void setUp() {
-    initMocks(this);
-  }
+    @BeforeEach
+    public void setUp() {
+        initMocks(this);
+    }
 
-  @Test
-  public void shouldSelectFileWithSuffixHyphenExtensionsDotJson() {
-    assertThat(
-            reader
-                .getResourceNameSelector()
-                .test("any-path/to/my-extension/my-process-extensions.json"))
-        .isTrue();
-  }
+    @Test
+    public void shouldSelectFileWithSuffixHyphenExtensionsDotJson() {
+        assertThat(
+                        reader.getResourceNameSelector()
+                                .test("any-path/to/my-extension/my-process-extensions.json"))
+                .isTrue();
+    }
 
-  @Test
-  public void shouldNotSelectSelectJsonFileWithoutSuffixHyphenExtensionsDotJson() {
-    assertThat(
-            reader.getResourceNameSelector().test("any-path/to/my-extension/my-process-other.json"))
-        .isFalse();
-  }
+    @Test
+    public void shouldNotSelectSelectJsonFileWithoutSuffixHyphenExtensionsDotJson() {
+        assertThat(
+                        reader.getResourceNameSelector()
+                                .test("any-path/to/my-extension/my-process-other.json"))
+                .isFalse();
+    }
 }

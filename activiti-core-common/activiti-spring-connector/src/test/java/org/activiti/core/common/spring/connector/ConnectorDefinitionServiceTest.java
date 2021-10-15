@@ -15,13 +15,15 @@
  */
 package org.activiti.core.common.spring.connector;
 
-import static java.util.Arrays.asList;
-import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.MockitoAnnotations.initMocks;
 
+import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import org.activiti.core.common.model.connector.ConnectorDefinition;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,92 +32,100 @@ import org.springframework.core.io.support.ResourcePatternResolver;
 
 public class ConnectorDefinitionServiceTest {
 
-  private ConnectorDefinitionService connectorDefinitionService;
+    private ConnectorDefinitionService connectorDefinitionService;
 
-  @Mock private ObjectMapper objectMapper;
+    @Mock private ObjectMapper objectMapper;
 
-  @Mock private ResourcePatternResolver resourceLoader;
+    @Mock private ResourcePatternResolver resourceLoader;
 
-  @BeforeEach
-  public void setUp() {
-    initMocks(this);
-    connectorDefinitionService =
-        new ConnectorDefinitionService("/connectors", objectMapper, resourceLoader);
-  }
+    @BeforeEach
+    public void setUp() {
+        initMocks(this);
+        connectorDefinitionService =
+                new ConnectorDefinitionService("/connectors", objectMapper, resourceLoader);
+    }
 
-  @Test
-  public void validateShouldThrowExceptionWhenConnectorNameIsNull() {
-    // given
-    ConnectorDefinition connectorDefinition = new ConnectorDefinition();
-    connectorDefinition.setName(null);
+    @Test
+    public void validateShouldThrowExceptionWhenConnectorNameIsNull() {
+        // given
+        ConnectorDefinition connectorDefinition = new ConnectorDefinition();
+        connectorDefinition.setName(null);
 
-    // when
-    Throwable throwable =
-        catchThrowable(
-            () -> connectorDefinitionService.validate(singletonList(connectorDefinition)));
+        // when
+        Throwable throwable =
+                catchThrowable(
+                        () ->
+                                connectorDefinitionService.validate(
+                                        singletonList(connectorDefinition)));
 
-    // then
-    assertThat(throwable)
-        .isInstanceOf(IllegalStateException.class)
-        .hasMessage("connectorDefinition name cannot be null or empty");
-  }
+        // then
+        assertThat(throwable)
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage("connectorDefinition name cannot be null or empty");
+    }
 
-  @Test
-  public void validateShouldThrowExceptionWhenConnectorNameIsEmpty() {
-    // given
-    ConnectorDefinition connectorDefinition = new ConnectorDefinition();
-    connectorDefinition.setName("");
+    @Test
+    public void validateShouldThrowExceptionWhenConnectorNameIsEmpty() {
+        // given
+        ConnectorDefinition connectorDefinition = new ConnectorDefinition();
+        connectorDefinition.setName("");
 
-    // when
-    Throwable throwable =
-        catchThrowable(
-            () -> connectorDefinitionService.validate(singletonList(connectorDefinition)));
+        // when
+        Throwable throwable =
+                catchThrowable(
+                        () ->
+                                connectorDefinitionService.validate(
+                                        singletonList(connectorDefinition)));
 
-    // then
-    assertThat(throwable)
-        .isInstanceOf(IllegalStateException.class)
-        .hasMessage("connectorDefinition name cannot be null or empty");
-  }
+        // then
+        assertThat(throwable)
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage("connectorDefinition name cannot be null or empty");
+    }
 
-  @Test
-  public void validateShouldThrowExceptionWhenConnectorNameContainsDotCharacter() {
-    // given
-    ConnectorDefinition connectorDefinition = new ConnectorDefinition();
-    connectorDefinition.setName("connector.name");
+    @Test
+    public void validateShouldThrowExceptionWhenConnectorNameContainsDotCharacter() {
+        // given
+        ConnectorDefinition connectorDefinition = new ConnectorDefinition();
+        connectorDefinition.setName("connector.name");
 
-    // when
-    Throwable throwable =
-        catchThrowable(
-            () -> connectorDefinitionService.validate(singletonList(connectorDefinition)));
+        // when
+        Throwable throwable =
+                catchThrowable(
+                        () ->
+                                connectorDefinitionService.validate(
+                                        singletonList(connectorDefinition)));
 
-    // then
-    assertThat(throwable)
-        .isInstanceOf(IllegalStateException.class)
-        .hasMessage("connectorDefinition name cannot have '.' character");
-  }
+        // then
+        assertThat(throwable)
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage("connectorDefinition name cannot have '.' character");
+    }
 
-  @Test
-  public void validateShouldThrowExceptionWhenTwoConnectorsHaveTheSameName() {
-    // given
-    ConnectorDefinition connectorDefinition = new ConnectorDefinition();
-    connectorDefinition.setName("Conflicting name connector");
+    @Test
+    public void validateShouldThrowExceptionWhenTwoConnectorsHaveTheSameName() {
+        // given
+        ConnectorDefinition connectorDefinition = new ConnectorDefinition();
+        connectorDefinition.setName("Conflicting name connector");
 
-    ConnectorDefinition connectorDefinitionWithSameName = new ConnectorDefinition();
-    connectorDefinitionWithSameName.setName("Conflicting name connector");
+        ConnectorDefinition connectorDefinitionWithSameName = new ConnectorDefinition();
+        connectorDefinitionWithSameName.setName("Conflicting name connector");
 
-    // when
-    Throwable throwable =
-        catchThrowable(
-            () ->
-                connectorDefinitionService.validate(
-                    asList(connectorDefinition, connectorDefinitionWithSameName)));
+        // when
+        Throwable throwable =
+                catchThrowable(
+                        () ->
+                                connectorDefinitionService.validate(
+                                        asList(
+                                                connectorDefinition,
+                                                connectorDefinitionWithSameName)));
 
-    // then
-    assertThat(throwable)
-        .isInstanceOf(IllegalStateException.class)
-        .hasMessage(
-            "More than one connectorDefinition with name '"
-                + connectorDefinition.getName()
-                + "' was found. Names must be unique.");
-  }
+        // then
+        assertThat(throwable)
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage(
+                        "More than one connectorDefinition with name '"
+                                + connectorDefinition.getName()
+                                + "' was found. Names must be unique.");
+    }
 }

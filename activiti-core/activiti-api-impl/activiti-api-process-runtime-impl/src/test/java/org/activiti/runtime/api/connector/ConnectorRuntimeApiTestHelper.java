@@ -23,11 +23,11 @@ import org.activiti.engine.delegate.DelegateExecution;
 
 public class ConnectorRuntimeApiTestHelper {
 
-  public static DelegateExecution buildExecution(String connector) {
-    DelegateExecution execution = mock(DelegateExecution.class);
-    ServiceTask serviceTask = mock(ServiceTask.class);
-    given(serviceTask.getImplementation()).willReturn(connector);
-    given(execution.getCurrentFlowElement()).willReturn(serviceTask);
-    return execution;
-  }
+    public static DelegateExecution buildExecution(String connector) {
+        DelegateExecution execution = mock(DelegateExecution.class);
+        ServiceTask serviceTask = mock(ServiceTask.class);
+        given(serviceTask.getImplementation()).willReturn(connector);
+        given(execution.getCurrentFlowElement()).willReturn(serviceTask);
+        return execution;
+    }
 }

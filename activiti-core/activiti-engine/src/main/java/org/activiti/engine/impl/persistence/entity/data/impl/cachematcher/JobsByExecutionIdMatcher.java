@@ -22,9 +22,9 @@ import org.activiti.engine.impl.persistence.entity.JobEntity;
 /** */
 public class JobsByExecutionIdMatcher extends CachedEntityMatcherAdapter<JobEntity> {
 
-  @Override
-  public boolean isRetained(JobEntity jobEntity, Object parameter) {
-    return jobEntity.getExecutionId() != null
-        && jobEntity.getExecutionId().equals((String) parameter);
-  }
+    @Override
+    public boolean isRetained(JobEntity jobEntity, Object parameter) {
+        return jobEntity.getExecutionId() != null
+                && jobEntity.getExecutionId().equals((String) parameter);
+    }
 }

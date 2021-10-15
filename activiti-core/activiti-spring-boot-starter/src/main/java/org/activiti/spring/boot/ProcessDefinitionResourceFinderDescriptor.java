@@ -15,45 +15,46 @@
  */
 package org.activiti.spring.boot;
 
-import java.util.List;
 import org.activiti.spring.resources.ResourceFinderDescriptor;
 import org.springframework.core.io.Resource;
 
+import java.util.List;
+
 public class ProcessDefinitionResourceFinderDescriptor implements ResourceFinderDescriptor {
 
-  private ActivitiProperties activitiProperties;
+    private ActivitiProperties activitiProperties;
 
-  public ProcessDefinitionResourceFinderDescriptor(ActivitiProperties activitiProperties) {
-    this.activitiProperties = activitiProperties;
-  }
+    public ProcessDefinitionResourceFinderDescriptor(ActivitiProperties activitiProperties) {
+        this.activitiProperties = activitiProperties;
+    }
 
-  @Override
-  public List<String> getLocationSuffixes() {
-    return activitiProperties.getProcessDefinitionLocationSuffixes();
-  }
+    @Override
+    public List<String> getLocationSuffixes() {
+        return activitiProperties.getProcessDefinitionLocationSuffixes();
+    }
 
-  @Override
-  public String getLocationPrefix() {
-    return activitiProperties.getProcessDefinitionLocationPrefix();
-  }
+    @Override
+    public String getLocationPrefix() {
+        return activitiProperties.getProcessDefinitionLocationPrefix();
+    }
 
-  @Override
-  public boolean shouldLookUpResources() {
-    return activitiProperties.isCheckProcessDefinitions();
-  }
+    @Override
+    public boolean shouldLookUpResources() {
+        return activitiProperties.isCheckProcessDefinitions();
+    }
 
-  @Override
-  public String getMsgForEmptyResources() {
-    return "No process definitions were found for auto-deployment in the location `"
-        + getLocationPrefix()
-        + "`";
-  }
+    @Override
+    public String getMsgForEmptyResources() {
+        return "No process definitions were found for auto-deployment in the location `"
+                + getLocationPrefix()
+                + "`";
+    }
 
-  @Override
-  public String getMsgForResourcesFound(List<String> foundProcessResources) {
-    return "The following process definition files will be deployed: " + foundProcessResources;
-  }
+    @Override
+    public String getMsgForResourcesFound(List<String> foundProcessResources) {
+        return "The following process definition files will be deployed: " + foundProcessResources;
+    }
 
-  @Override
-  public void validate(List<Resource> resources) {}
+    @Override
+    public void validate(List<Resource> resources) {}
 }

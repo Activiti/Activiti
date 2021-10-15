@@ -21,4 +21,4 @@ package org.activiti.engine.delegate.event;
  * an activity.
  */
 public interface ActivitiActivityCancelledEvent
-    extends ActivitiActivityEvent, ActivitiCancelledEvent {}
+        extends ActivitiActivityEvent, ActivitiCancelledEvent {}

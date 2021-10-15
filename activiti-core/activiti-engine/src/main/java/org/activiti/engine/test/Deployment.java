@@ -16,9 +16,10 @@
 
 package org.activiti.engine.test;
 
+import org.activiti.engine.api.internal.Internal;
+
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
-import org.activiti.engine.api.internal.Internal;
 
 /**
  * Annotation for a test method to create and delete a deployment around a test method.
@@ -52,9 +53,9 @@ import org.activiti.engine.api.internal.Internal;
 @Internal
 public @interface Deployment {
 
-  /** Specify resources that make up the process definition. */
-  public String[] resources() default {};
+    /** Specify resources that make up the process definition. */
+    public String[] resources() default {};
 
-  /** Specify tenantId to deploy */
-  public String tenantId() default "";
+    /** Specify tenantId to deploy */
+    public String tenantId() default "";
 }

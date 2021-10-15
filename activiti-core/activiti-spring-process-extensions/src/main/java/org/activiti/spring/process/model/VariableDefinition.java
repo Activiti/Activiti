@@ -17,15 +17,15 @@
 package org.activiti.spring.process.model;
 
 public class VariableDefinition
-    extends org.activiti.core.common.model.connector.VariableDefinition {
+        extends org.activiti.core.common.model.connector.VariableDefinition {
 
-  private Object value;
+    private Object value;
 
-  public Object getValue() {
-    return value;
-  }
+    public Object getValue() {
+        return value;
+    }
 
-  public void setValue(Object value) {
-    this.value = value;
-  }
+    public void setValue(Object value) {
+        this.value = value;
+    }
 }

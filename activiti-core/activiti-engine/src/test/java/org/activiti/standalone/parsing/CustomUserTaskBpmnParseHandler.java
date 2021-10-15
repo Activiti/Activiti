@@ -23,11 +23,11 @@ import org.activiti.engine.impl.bpmn.parser.handler.UserTaskParseHandler;
 /** */
 public class CustomUserTaskBpmnParseHandler extends UserTaskParseHandler {
 
-  protected void executeParse(BpmnParse bpmnParse, UserTask userTask) {
+    protected void executeParse(BpmnParse bpmnParse, UserTask userTask) {
 
-    // Do the regular stuff
-    super.executeParse(bpmnParse, userTask);
+        // Do the regular stuff
+        super.executeParse(bpmnParse, userTask);
 
-    userTask.setAsynchronous(true);
-  }
+        userTask.setAsynchronous(true);
+    }
 }

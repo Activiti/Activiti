@@ -16,7 +16,6 @@
 
 package org.activiti.engine.impl.cmd;
 
-import java.io.Serializable;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.impl.interceptor.Command;
@@ -24,43 +23,46 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.runtime.Execution;
 
+import java.io.Serializable;
+
 /** */
 public class GetExecutionVariableCmd implements Command<Object>, Serializable {
 
-  private static final long serialVersionUID = 1L;
-  protected String executionId;
-  protected String variableName;
-  protected boolean isLocal;
+    private static final long serialVersionUID = 1L;
+    protected String executionId;
+    protected String variableName;
+    protected boolean isLocal;
 
-  public GetExecutionVariableCmd(String executionId, String variableName, boolean isLocal) {
-    this.executionId = executionId;
-    this.variableName = variableName;
-    this.isLocal = isLocal;
-  }
-
-  public Object execute(CommandContext commandContext) {
-    if (executionId == null) {
-      throw new ActivitiIllegalArgumentException("executionId is null");
-    }
-    if (variableName == null) {
-      throw new ActivitiIllegalArgumentException("variableName is null");
+    public GetExecutionVariableCmd(String executionId, String variableName, boolean isLocal) {
+        this.executionId = executionId;
+        this.variableName = variableName;
+        this.isLocal = isLocal;
     }
 
-    ExecutionEntity execution = commandContext.getExecutionEntityManager().findById(executionId);
+    public Object execute(CommandContext commandContext) {
+        if (executionId == null) {
+            throw new ActivitiIllegalArgumentException("executionId is null");
+        }
+        if (variableName == null) {
+            throw new ActivitiIllegalArgumentException("variableName is null");
+        }
 
-    if (execution == null) {
-      throw new ActivitiObjectNotFoundException(
-          "execution " + executionId + " doesn't exist", Execution.class);
+        ExecutionEntity execution =
+                commandContext.getExecutionEntityManager().findById(executionId);
+
+        if (execution == null) {
+            throw new ActivitiObjectNotFoundException(
+                    "execution " + executionId + " doesn't exist", Execution.class);
+        }
+
+        Object value;
+
+        if (isLocal) {
+            value = execution.getVariableLocal(variableName, false);
+        } else {
+            value = execution.getVariable(variableName, false);
+        }
+
+        return value;
     }
-
-    Object value;
-
-    if (isLocal) {
-      value = execution.getVariableLocal(variableName, false);
-    } else {
-      value = execution.getVariable(variableName, false);
-    }
-
-    return value;
-  }
 }

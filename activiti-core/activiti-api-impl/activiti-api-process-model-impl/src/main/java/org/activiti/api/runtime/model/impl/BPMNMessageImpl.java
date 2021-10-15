@@ -15,59 +15,60 @@
  */
 package org.activiti.api.runtime.model.impl;
 
-import java.util.Objects;
 import org.activiti.api.process.model.BPMNMessage;
 import org.activiti.api.process.model.payloads.MessageEventPayload;
 
+import java.util.Objects;
+
 public class BPMNMessageImpl extends BPMNElementImpl implements BPMNMessage {
 
-  private MessageEventPayload messagePayload;
+    private MessageEventPayload messagePayload;
 
-  public BPMNMessageImpl() {}
+    public BPMNMessageImpl() {}
 
-  public BPMNMessageImpl(String elementId) {
-    this.setElementId(elementId);
-  }
-
-  public MessageEventPayload getMessagePayload() {
-    return messagePayload;
-  }
-
-  public void setMessagePayload(MessageEventPayload messagePayload) {
-    this.messagePayload = messagePayload;
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
+    public BPMNMessageImpl(String elementId) {
+        this.setElementId(elementId);
     }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
+
+    public MessageEventPayload getMessagePayload() {
+        return messagePayload;
     }
-    BPMNMessageImpl that = (BPMNMessageImpl) o;
 
-    return Objects.equals(getElementId(), that.getElementId())
-        && Objects.equals(messagePayload, that.getMessagePayload());
-  }
+    public void setMessagePayload(MessageEventPayload messagePayload) {
+        this.messagePayload = messagePayload;
+    }
 
-  @Override
-  public int hashCode() {
-    final int prime = 31;
-    int result = super.hashCode();
-    result = prime * result + ((messagePayload == null) ? 0 : messagePayload.hashCode());
-    return result;
-  }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        BPMNMessageImpl that = (BPMNMessageImpl) o;
 
-  @Override
-  public String toString() {
-    return "BPMNMessageImpl{"
-        + ", elementId='"
-        + getElementId()
-        + '\''
-        + ", messagePayload='"
-        + (messagePayload != null ? messagePayload.toString() : null)
-        + '\''
-        + '}';
-  }
+        return Objects.equals(getElementId(), that.getElementId())
+                && Objects.equals(messagePayload, that.getMessagePayload());
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = super.hashCode();
+        result = prime * result + ((messagePayload == null) ? 0 : messagePayload.hashCode());
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "BPMNMessageImpl{"
+                + ", elementId='"
+                + getElementId()
+                + '\''
+                + ", messagePayload='"
+                + (messagePayload != null ? messagePayload.toString() : null)
+                + '\''
+                + '}';
+    }
 }

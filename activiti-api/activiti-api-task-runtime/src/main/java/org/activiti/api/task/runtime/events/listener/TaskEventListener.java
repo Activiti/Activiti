@@ -19,4 +19,4 @@ import org.activiti.api.model.shared.event.RuntimeEvent;
 import org.activiti.api.task.model.Task;
 
 public interface TaskEventListener<E extends RuntimeEvent<? extends Task, ?>>
-    extends TaskRuntimeEventListener<E> {}
+        extends TaskRuntimeEventListener<E> {}

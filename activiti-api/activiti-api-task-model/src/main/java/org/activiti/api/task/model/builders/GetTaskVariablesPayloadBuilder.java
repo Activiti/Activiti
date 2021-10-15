@@ -19,14 +19,14 @@ import org.activiti.api.task.model.payloads.GetTaskVariablesPayload;
 
 public class GetTaskVariablesPayloadBuilder {
 
-  private String taskId;
+    private String taskId;
 
-  public GetTaskVariablesPayloadBuilder withTaskId(String taskId) {
-    this.taskId = taskId;
-    return this;
-  }
+    public GetTaskVariablesPayloadBuilder withTaskId(String taskId) {
+        this.taskId = taskId;
+        return this;
+    }
 
-  public GetTaskVariablesPayload build() {
-    return new GetTaskVariablesPayload(taskId);
-  }
+    public GetTaskVariablesPayload build() {
+        return new GetTaskVariablesPayload(taskId);
+    }
 }

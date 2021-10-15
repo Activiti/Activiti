@@ -16,40 +16,41 @@
 
 package org.activiti.engine.impl;
 
-import java.util.HashMap;
-import java.util.Map;
 import org.activiti.engine.query.QueryProperty;
 import org.activiti.engine.runtime.ProcessInstanceQuery;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /** Contains the possible properties that can be used in a {@link ProcessInstanceQuery}. */
 public class ProcessInstanceQueryProperty implements QueryProperty {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  private static final Map<String, ProcessInstanceQueryProperty> properties =
-      new HashMap<String, ProcessInstanceQueryProperty>();
+    private static final Map<String, ProcessInstanceQueryProperty> properties =
+            new HashMap<String, ProcessInstanceQueryProperty>();
 
-  public static final ProcessInstanceQueryProperty PROCESS_INSTANCE_ID =
-      new ProcessInstanceQueryProperty("RES.ID_");
-  public static final ProcessInstanceQueryProperty PROCESS_DEFINITION_KEY =
-      new ProcessInstanceQueryProperty("ProcessDefinitionKey");
-  public static final ProcessInstanceQueryProperty PROCESS_DEFINITION_ID =
-      new ProcessInstanceQueryProperty("ProcessDefinitionId");
-  public static final ProcessInstanceQueryProperty TENANT_ID =
-      new ProcessInstanceQueryProperty("RES.TENANT_ID_");
+    public static final ProcessInstanceQueryProperty PROCESS_INSTANCE_ID =
+            new ProcessInstanceQueryProperty("RES.ID_");
+    public static final ProcessInstanceQueryProperty PROCESS_DEFINITION_KEY =
+            new ProcessInstanceQueryProperty("ProcessDefinitionKey");
+    public static final ProcessInstanceQueryProperty PROCESS_DEFINITION_ID =
+            new ProcessInstanceQueryProperty("ProcessDefinitionId");
+    public static final ProcessInstanceQueryProperty TENANT_ID =
+            new ProcessInstanceQueryProperty("RES.TENANT_ID_");
 
-  private String name;
+    private String name;
 
-  public ProcessInstanceQueryProperty(String name) {
-    this.name = name;
-    properties.put(name, this);
-  }
+    public ProcessInstanceQueryProperty(String name) {
+        this.name = name;
+        properties.put(name, this);
+    }
 
-  public String getName() {
-    return name;
-  }
+    public String getName() {
+        return name;
+    }
 
-  public static ProcessInstanceQueryProperty findByName(String propertyName) {
-    return properties.get(propertyName);
-  }
+    public static ProcessInstanceQueryProperty findByName(String propertyName) {
+        return properties.get(propertyName);
+    }
 }

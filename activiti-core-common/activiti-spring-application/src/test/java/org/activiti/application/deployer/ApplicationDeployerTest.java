@@ -15,11 +15,12 @@
  */
 package org.activiti.application.deployer;
 
-import static java.util.Arrays.asList;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
+
+import static java.util.Arrays.asList;
 
 import org.activiti.application.ApplicationContent;
 import org.activiti.application.ApplicationService;
@@ -29,34 +30,35 @@ import org.mockito.Mock;
 
 public class ApplicationDeployerTest {
 
-  private ApplicationDeployer deployer;
+    private ApplicationDeployer deployer;
 
-  @Mock private ApplicationService applicationLoader;
+    @Mock private ApplicationService applicationLoader;
 
-  @Mock private ApplicationEntryDeployer firstDeployer;
+    @Mock private ApplicationEntryDeployer firstDeployer;
 
-  @Mock private ApplicationEntryDeployer secondDeployer;
+    @Mock private ApplicationEntryDeployer secondDeployer;
 
-  @BeforeEach
-  public void setUp() {
-    initMocks(this);
-    deployer = new ApplicationDeployer(applicationLoader, asList(firstDeployer, secondDeployer));
-  }
+    @BeforeEach
+    public void setUp() {
+        initMocks(this);
+        deployer =
+                new ApplicationDeployer(applicationLoader, asList(firstDeployer, secondDeployer));
+    }
 
-  @Test
-  public void shouldDelegateDeployToEntryDeployers() {
-    // given
-    ApplicationContent firstApp = mock(ApplicationContent.class);
-    ApplicationContent secondApp = mock(ApplicationContent.class);
-    given(applicationLoader.loadApplications()).willReturn(asList(firstApp, secondApp));
+    @Test
+    public void shouldDelegateDeployToEntryDeployers() {
+        // given
+        ApplicationContent firstApp = mock(ApplicationContent.class);
+        ApplicationContent secondApp = mock(ApplicationContent.class);
+        given(applicationLoader.loadApplications()).willReturn(asList(firstApp, secondApp));
 
-    // when
-    deployer.deploy();
+        // when
+        deployer.deploy();
 
-    // then
-    verify(firstDeployer).deployEntries(firstApp);
-    verify(firstDeployer).deployEntries(secondApp);
-    verify(secondDeployer).deployEntries(firstApp);
-    verify(secondDeployer).deployEntries(secondApp);
-  }
+        // then
+        verify(firstDeployer).deployEntries(firstApp);
+        verify(firstDeployer).deployEntries(secondApp);
+        verify(secondDeployer).deployEntries(firstApp);
+        verify(secondDeployer).deployEntries(secondApp);
+    }
 }

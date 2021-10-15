@@ -15,26 +15,27 @@
  */
 package org.activiti.runtime.api.query.impl;
 
-import java.util.List;
 import org.activiti.api.runtime.shared.query.Page;
+
+import java.util.List;
 
 public class PageImpl<T> implements Page<T> {
 
-  private List<T> content;
-  private int totalItems;
+    private List<T> content;
+    private int totalItems;
 
-  public PageImpl(List<T> content, int totalItems) {
-    this.content = content;
-    this.totalItems = totalItems;
-  }
+    public PageImpl(List<T> content, int totalItems) {
+        this.content = content;
+        this.totalItems = totalItems;
+    }
 
-  @Override
-  public List<T> getContent() {
-    return content;
-  }
+    @Override
+    public List<T> getContent() {
+        return content;
+    }
 
-  @Override
-  public int getTotalItems() {
-    return totalItems;
-  }
+    @Override
+    public int getTotalItems() {
+        return totalItems;
+    }
 }

@@ -17,28 +17,30 @@ package org.activiti.api.runtime.model.impl;
 
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.Map;
+
 import org.springframework.core.convert.converter.Converter;
+
+import java.util.Map;
 
 @ProcessVariableTypeConverter
 public class StringToMapConverter implements Converter<String, Map<String, Object>> {
-  private final ObjectMapper objectMapper;
+    private final ObjectMapper objectMapper;
 
-  public StringToMapConverter(ObjectMapper objectMapper) {
-    this.objectMapper = objectMapper;
-  }
-
-  @Override
-  public Map<String, Object> convert(String source) {
-    JavaType javaType =
-        objectMapper
-            .getTypeFactory()
-            .constructParametricType(Map.class, String.class, Object.class);
-
-    try {
-      return objectMapper.readValue(source, javaType);
-    } catch (Exception cause) {
-      throw new RuntimeException(cause);
+    public StringToMapConverter(ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
     }
-  }
+
+    @Override
+    public Map<String, Object> convert(String source) {
+        JavaType javaType =
+                objectMapper
+                        .getTypeFactory()
+                        .constructParametricType(Map.class, String.class, Object.class);
+
+        try {
+            return objectMapper.readValue(source, javaType);
+        } catch (Exception cause) {
+            throw new RuntimeException(cause);
+        }
+    }
 }

@@ -16,28 +16,29 @@
 
 package org.activiti.engine.impl.cmd;
 
-import java.io.Serializable;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 
+import java.io.Serializable;
+
 /** */
 public class GetModelEditorSourceCmd implements Command<byte[]>, Serializable {
 
-  private static final long serialVersionUID = 1L;
-  protected String modelId;
+    private static final long serialVersionUID = 1L;
+    protected String modelId;
 
-  public GetModelEditorSourceCmd(String modelId) {
-    this.modelId = modelId;
-  }
-
-  public byte[] execute(CommandContext commandContext) {
-    if (modelId == null) {
-      throw new ActivitiIllegalArgumentException("modelId is null");
+    public GetModelEditorSourceCmd(String modelId) {
+        this.modelId = modelId;
     }
 
-    byte[] bytes = commandContext.getModelEntityManager().findEditorSourceByModelId(modelId);
+    public byte[] execute(CommandContext commandContext) {
+        if (modelId == null) {
+            throw new ActivitiIllegalArgumentException("modelId is null");
+        }
 
-    return bytes;
-  }
+        byte[] bytes = commandContext.getModelEntityManager().findEditorSourceByModelId(modelId);
+
+        return bytes;
+    }
 }

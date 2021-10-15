@@ -19,13 +19,13 @@ package org.activiti.engine.impl.bpmn.data;
 /** Implementation of the BPMN 2.0 'dataInputRef' and 'dataOutputRef' */
 public class DataRef {
 
-  protected String idRef;
+    protected String idRef;
 
-  public DataRef(String idRef) {
-    this.idRef = idRef;
-  }
+    public DataRef(String idRef) {
+        this.idRef = idRef;
+    }
 
-  public String getIdRef() {
-    return this.idRef;
-  }
+    public String getIdRef() {
+        return this.idRef;
+    }
 }

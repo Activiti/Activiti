@@ -25,22 +25,22 @@ import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 
 public class CommandContextIT extends PluggableActivitiTestCase {
 
-  public void testCommandContextGetCurrentAfterException() {
-    try {
-      processEngineConfiguration
-          .getCommandExecutor()
-          .execute(
-              new Command<Object>() {
-                public Object execute(CommandContext commandContext) {
-                  throw new IllegalStateException("here i come!");
-                }
-              });
+    public void testCommandContextGetCurrentAfterException() {
+        try {
+            processEngineConfiguration
+                    .getCommandExecutor()
+                    .execute(
+                            new Command<Object>() {
+                                public Object execute(CommandContext commandContext) {
+                                    throw new IllegalStateException("here i come!");
+                                }
+                            });
 
-      fail("expected exception");
-    } catch (IllegalStateException e) {
-      // OK
+            fail("expected exception");
+        } catch (IllegalStateException e) {
+            // OK
+        }
+
+        assertThat(Context.getCommandContext()).isNull();
     }
-
-    assertThat(Context.getCommandContext()).isNull();
-  }
 }

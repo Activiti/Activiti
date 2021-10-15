@@ -16,44 +16,45 @@
 
 package org.activiti.engine.impl.persistence.entity;
 
-import java.util.List;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.persistence.entity.data.ByteArrayDataManager;
 import org.activiti.engine.impl.persistence.entity.data.DataManager;
 
+import java.util.List;
+
 /** */
 public class ByteArrayEntityManagerImpl extends AbstractEntityManager<ByteArrayEntity>
-    implements ByteArrayEntityManager {
+        implements ByteArrayEntityManager {
 
-  protected ByteArrayDataManager byteArrayDataManager;
+    protected ByteArrayDataManager byteArrayDataManager;
 
-  public ByteArrayEntityManagerImpl(
-      ProcessEngineConfigurationImpl processEngineConfiguration,
-      ByteArrayDataManager byteArrayDataManager) {
-    super(processEngineConfiguration);
-    this.byteArrayDataManager = byteArrayDataManager;
-  }
+    public ByteArrayEntityManagerImpl(
+            ProcessEngineConfigurationImpl processEngineConfiguration,
+            ByteArrayDataManager byteArrayDataManager) {
+        super(processEngineConfiguration);
+        this.byteArrayDataManager = byteArrayDataManager;
+    }
 
-  @Override
-  protected DataManager<ByteArrayEntity> getDataManager() {
-    return byteArrayDataManager;
-  }
+    @Override
+    protected DataManager<ByteArrayEntity> getDataManager() {
+        return byteArrayDataManager;
+    }
 
-  @Override
-  public List<ByteArrayEntity> findAll() {
-    return byteArrayDataManager.findAll();
-  }
+    @Override
+    public List<ByteArrayEntity> findAll() {
+        return byteArrayDataManager.findAll();
+    }
 
-  @Override
-  public void deleteByteArrayById(String byteArrayEntityId) {
-    byteArrayDataManager.deleteByteArrayNoRevisionCheck(byteArrayEntityId);
-  }
+    @Override
+    public void deleteByteArrayById(String byteArrayEntityId) {
+        byteArrayDataManager.deleteByteArrayNoRevisionCheck(byteArrayEntityId);
+    }
 
-  public ByteArrayDataManager getByteArrayDataManager() {
-    return byteArrayDataManager;
-  }
+    public ByteArrayDataManager getByteArrayDataManager() {
+        return byteArrayDataManager;
+    }
 
-  public void setByteArrayDataManager(ByteArrayDataManager byteArrayDataManager) {
-    this.byteArrayDataManager = byteArrayDataManager;
-  }
+    public void setByteArrayDataManager(ByteArrayDataManager byteArrayDataManager) {
+        this.byteArrayDataManager = byteArrayDataManager;
+    }
 }

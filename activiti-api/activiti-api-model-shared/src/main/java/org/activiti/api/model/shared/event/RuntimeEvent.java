@@ -19,23 +19,23 @@ import java.io.Serializable;
 
 public interface RuntimeEvent<ENTITY_TYPE, EVENT_TYPE extends Enum<?>> extends Serializable {
 
-  String getId();
+    String getId();
 
-  ENTITY_TYPE getEntity();
+    ENTITY_TYPE getEntity();
 
-  Long getTimestamp();
+    Long getTimestamp();
 
-  EVENT_TYPE getEventType();
+    EVENT_TYPE getEventType();
 
-  String getProcessInstanceId();
+    String getProcessInstanceId();
 
-  String getParentProcessInstanceId();
+    String getParentProcessInstanceId();
 
-  String getProcessDefinitionId();
+    String getProcessDefinitionId();
 
-  String getProcessDefinitionKey();
+    String getProcessDefinitionKey();
 
-  Integer getProcessDefinitionVersion();
+    Integer getProcessDefinitionVersion();
 
-  String getBusinessKey();
+    String getBusinessKey();
 }

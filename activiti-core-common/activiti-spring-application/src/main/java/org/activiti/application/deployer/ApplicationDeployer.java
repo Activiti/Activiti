@@ -15,28 +15,29 @@
  */
 package org.activiti.application.deployer;
 
-import java.util.List;
 import org.activiti.application.ApplicationContent;
 import org.activiti.application.ApplicationService;
 
+import java.util.List;
+
 public class ApplicationDeployer {
 
-  private ApplicationService applicationLoader;
+    private ApplicationService applicationLoader;
 
-  private List<ApplicationEntryDeployer> deployers;
+    private List<ApplicationEntryDeployer> deployers;
 
-  public ApplicationDeployer(
-      ApplicationService applicationLoader, List<ApplicationEntryDeployer> deployers) {
-    this.applicationLoader = applicationLoader;
-    this.deployers = deployers;
-  }
-
-  public void deploy() {
-    List<ApplicationContent> applications = applicationLoader.loadApplications();
-    for (ApplicationContent application : applications) {
-      for (ApplicationEntryDeployer deployer : deployers) {
-        deployer.deployEntries(application);
-      }
+    public ApplicationDeployer(
+            ApplicationService applicationLoader, List<ApplicationEntryDeployer> deployers) {
+        this.applicationLoader = applicationLoader;
+        this.deployers = deployers;
     }
-  }
+
+    public void deploy() {
+        List<ApplicationContent> applications = applicationLoader.loadApplications();
+        for (ApplicationContent application : applications) {
+            for (ApplicationEntryDeployer deployer : deployers) {
+                deployer.deployEntries(application);
+            }
+        }
+    }
 }

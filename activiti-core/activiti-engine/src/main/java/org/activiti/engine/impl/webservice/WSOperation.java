@@ -16,78 +16,81 @@
 
 package org.activiti.engine.impl.webservice;
 
-import java.net.URL;
-import java.util.concurrent.ConcurrentMap;
-import javax.xml.namespace.QName;
 import org.activiti.engine.impl.bpmn.webservice.MessageDefinition;
 import org.activiti.engine.impl.bpmn.webservice.MessageInstance;
 import org.activiti.engine.impl.bpmn.webservice.Operation;
 import org.activiti.engine.impl.bpmn.webservice.OperationImplementation;
 
+import java.net.URL;
+import java.util.concurrent.ConcurrentMap;
+
+import javax.xml.namespace.QName;
+
 /** Represents a WS implementation of a {@link Operation} */
 @Deprecated
 public class WSOperation implements OperationImplementation {
 
-  protected String id;
+    protected String id;
 
-  protected String name;
+    protected String name;
 
-  protected WSService service;
+    protected WSService service;
 
-  public WSOperation(String id, String operationName, WSService service) {
-    this.id = id;
-    this.name = operationName;
-    this.service = service;
-  }
-
-  /** {@inheritDoc} */
-  public String getId() {
-    return this.id;
-  }
-
-  /** {@inheritDoc} */
-  public String getName() {
-    return this.name;
-  }
-
-  /** {@inheritDoc} */
-  public MessageInstance sendFor(
-      MessageInstance message,
-      Operation operation,
-      ConcurrentMap<QName, URL> overridenEndpointAddresses)
-      throws Exception {
-    Object[] arguments = this.getArguments(message);
-    Object[] results = this.safeSend(arguments, overridenEndpointAddresses);
-    return this.createResponseMessage(results, operation);
-  }
-
-  private Object[] getArguments(MessageInstance message) {
-    return message.getStructureInstance().toArray();
-  }
-
-  private Object[] safeSend(
-      Object[] arguments, ConcurrentMap<QName, URL> overridenEndpointAddresses) throws Exception {
-    Object[] results = null;
-
-    results = this.service.getClient().send(this.name, arguments, overridenEndpointAddresses);
-
-    if (results == null) {
-      results = new Object[] {};
+    public WSOperation(String id, String operationName, WSService service) {
+        this.id = id;
+        this.name = operationName;
+        this.service = service;
     }
-    return results;
-  }
 
-  private MessageInstance createResponseMessage(Object[] results, Operation operation) {
-    MessageInstance message = null;
-    MessageDefinition outMessage = operation.getOutMessage();
-    if (outMessage != null) {
-      message = outMessage.createInstance();
-      message.getStructureInstance().loadFrom(results);
+    /** {@inheritDoc} */
+    public String getId() {
+        return this.id;
     }
-    return message;
-  }
 
-  public WSService getService() {
-    return this.service;
-  }
+    /** {@inheritDoc} */
+    public String getName() {
+        return this.name;
+    }
+
+    /** {@inheritDoc} */
+    public MessageInstance sendFor(
+            MessageInstance message,
+            Operation operation,
+            ConcurrentMap<QName, URL> overridenEndpointAddresses)
+            throws Exception {
+        Object[] arguments = this.getArguments(message);
+        Object[] results = this.safeSend(arguments, overridenEndpointAddresses);
+        return this.createResponseMessage(results, operation);
+    }
+
+    private Object[] getArguments(MessageInstance message) {
+        return message.getStructureInstance().toArray();
+    }
+
+    private Object[] safeSend(
+            Object[] arguments, ConcurrentMap<QName, URL> overridenEndpointAddresses)
+            throws Exception {
+        Object[] results = null;
+
+        results = this.service.getClient().send(this.name, arguments, overridenEndpointAddresses);
+
+        if (results == null) {
+            results = new Object[] {};
+        }
+        return results;
+    }
+
+    private MessageInstance createResponseMessage(Object[] results, Operation operation) {
+        MessageInstance message = null;
+        MessageDefinition outMessage = operation.getOutMessage();
+        if (outMessage != null) {
+            message = outMessage.createInstance();
+            message.getStructureInstance().loadFrom(results);
+        }
+        return message;
+    }
+
+    public WSService getService() {
+        return this.service;
+    }
 }

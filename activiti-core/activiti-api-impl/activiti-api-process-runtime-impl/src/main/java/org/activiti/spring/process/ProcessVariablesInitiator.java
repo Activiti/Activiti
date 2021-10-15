@@ -17,11 +17,6 @@ package org.activiti.spring.process;
 
 import static java.util.Collections.emptyMap;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.bpmn.behavior.MappingExecutionContext;
@@ -36,141 +31,151 @@ import org.activiti.spring.process.model.VariableDefinition;
 import org.activiti.spring.process.variable.VariableParsingService;
 import org.activiti.spring.process.variable.VariableValidationService;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+
 public class ProcessVariablesInitiator extends ProcessInstanceHelper {
 
-  private ProcessExtensionService processExtensionService;
+    private ProcessExtensionService processExtensionService;
 
-  private final VariableParsingService variableParsingService;
+    private final VariableParsingService variableParsingService;
 
-  private final VariableValidationService variableValidationService;
+    private final VariableValidationService variableValidationService;
 
-  private VariablesCalculator variablesCalculator;
+    private VariablesCalculator variablesCalculator;
 
-  public ProcessVariablesInitiator(
-      ProcessExtensionService processExtensionService,
-      VariableParsingService variableParsingService,
-      VariableValidationService variableValidationService,
-      VariablesCalculator variablesCalculator) {
-    this.processExtensionService = processExtensionService;
-    this.variableParsingService = variableParsingService;
-    this.variableValidationService = variableValidationService;
-    this.variablesCalculator = variablesCalculator;
-  }
-
-  public Map<String, Object> calculateVariablesFromExtensionFile(
-      ProcessDefinition processDefinition, Map<String, Object> variables) {
-    Map<String, Object> processedVariables = new HashMap<>();
-    if (processExtensionService.hasExtensionsFor(processDefinition)) {
-      Extension processExtension = processExtensionService.getExtensionsFor(processDefinition);
-
-      Map<String, VariableDefinition> variableDefinitionMap = processExtension.getProperties();
-      processedVariables = processVariables(variables, variableDefinitionMap);
-
-      Set<String> missingRequiredVars =
-          checkRequiredVariables(processedVariables, variableDefinitionMap);
-      if (!missingRequiredVars.isEmpty()) {
-        throw new ActivitiException(
-            "Can't start process '"
-                + processDefinition.getKey()
-                + "' without required variables - "
-                + String.join(", ", missingRequiredVars));
-      }
-      Set<String> varsWithMismatchedTypes =
-          validateVariablesAgainstDefinitions(processedVariables, variableDefinitionMap);
-      if (!varsWithMismatchedTypes.isEmpty()) {
-        throw new ActivitiException(
-            "Can't start process '"
-                + processDefinition.getKey()
-                + "' as variables fail type validation - "
-                + String.join(", ", varsWithMismatchedTypes));
-      }
+    public ProcessVariablesInitiator(
+            ProcessExtensionService processExtensionService,
+            VariableParsingService variableParsingService,
+            VariableValidationService variableValidationService,
+            VariablesCalculator variablesCalculator) {
+        this.processExtensionService = processExtensionService;
+        this.variableParsingService = variableParsingService;
+        this.variableValidationService = variableValidationService;
+        this.variablesCalculator = variablesCalculator;
     }
 
-    return processedVariables;
-  }
+    public Map<String, Object> calculateVariablesFromExtensionFile(
+            ProcessDefinition processDefinition, Map<String, Object> variables) {
+        Map<String, Object> processedVariables = new HashMap<>();
+        if (processExtensionService.hasExtensionsFor(processDefinition)) {
+            Extension processExtension =
+                    processExtensionService.getExtensionsFor(processDefinition);
 
-  public Map<String, Object> calculateOutputVariables(
-      Map<String, Object> variables,
-      ProcessDefinition processDefinition,
-      FlowElement initialFlowElement) {
-    Map<String, Object> processVariables = variables;
+            Map<String, VariableDefinition> variableDefinitionMap =
+                    processExtension.getProperties();
+            processedVariables = processVariables(variables, variableDefinitionMap);
 
-    if (processExtensionService.hasExtensionsFor(processDefinition)) {
-
-      Map<String, Object> calculateOutPutVariables =
-          variablesCalculator.calculateOutPutVariables(
-              MappingExecutionContext.buildMappingExecutionContext(
-                  processDefinition.getId(), initialFlowElement.getId()),
-              variables);
-      if (!calculateOutPutVariables.isEmpty()) {
-        processVariables = calculateOutPutVariables;
-      }
-
-      processVariables = calculateVariablesFromExtensionFile(processDefinition, processVariables);
-    }
-    return processVariables;
-  }
-
-  private Map<String, Object> processVariables(
-      Map<String, Object> variables, Map<String, VariableDefinition> variableDefinitionMap) {
-    Map<String, Object> newVarsMap =
-        new HashMap<>(Optional.ofNullable(variables).orElse(emptyMap()));
-    variableDefinitionMap.forEach(
-        (k, v) -> {
-          if (!newVarsMap.containsKey(v.getName()) && v.getValue() != null) {
-            newVarsMap.put(v.getName(), createDefaultVariableValue(v));
-          }
-        });
-    return newVarsMap;
-  }
-
-  private Object createDefaultVariableValue(VariableDefinition variableDefinition) {
-    // take a default from the variable definition in the proc extensions
-    return variableParsingService.parse(variableDefinition);
-  }
-
-  private Set<String> checkRequiredVariables(
-      Map<String, Object> variables, Map<String, VariableDefinition> variableDefinitionMap) {
-    Set<String> missingRequiredVars = new HashSet<>();
-    variableDefinitionMap.forEach(
-        (k, v) -> {
-          if (!variables.containsKey(v.getName()) && v.isRequired()) {
-            missingRequiredVars.add(v.getName());
-          }
-        });
-    return missingRequiredVars;
-  }
-
-  private Set<String> validateVariablesAgainstDefinitions(
-      Map<String, Object> variables, Map<String, VariableDefinition> variableDefinitionMap) {
-    Set<String> mismatchedVars = new HashSet<>();
-    variableDefinitionMap.forEach(
-        (k, v) -> {
-          // if we have definition for this variable then validate it
-          if (variables.containsKey(v.getName())) {
-            if (!variableValidationService.validate(variables.get(v.getName()), v)) {
-              mismatchedVars.add(v.getName());
+            Set<String> missingRequiredVars =
+                    checkRequiredVariables(processedVariables, variableDefinitionMap);
+            if (!missingRequiredVars.isEmpty()) {
+                throw new ActivitiException(
+                        "Can't start process '"
+                                + processDefinition.getKey()
+                                + "' without required variables - "
+                                + String.join(", ", missingRequiredVars));
             }
-          }
-        });
-    return mismatchedVars;
-  }
+            Set<String> varsWithMismatchedTypes =
+                    validateVariablesAgainstDefinitions(processedVariables, variableDefinitionMap);
+            if (!varsWithMismatchedTypes.isEmpty()) {
+                throw new ActivitiException(
+                        "Can't start process '"
+                                + processDefinition.getKey()
+                                + "' as variables fail type validation - "
+                                + String.join(", ", varsWithMismatchedTypes));
+            }
+        }
 
-  public void startProcessInstance(
-      ExecutionEntity processInstance,
-      CommandContext commandContext,
-      Map<String, Object> variables,
-      FlowElement initialFlowElement,
-      Map<String, Object> transientVariables) {
-    ProcessDefinition processDefinition =
-        ProcessDefinitionUtil.getProcessDefinition(processInstance.getProcessDefinitionId());
-    Map<String, Object> calculatedVariables =
-        calculateOutputVariables(variables, processDefinition, initialFlowElement);
-    super.startProcessInstance(
-        processInstance,
-        commandContext,
-        calculatedVariables,
-        initialFlowElement,
-        transientVariables);
-  }
+        return processedVariables;
+    }
+
+    public Map<String, Object> calculateOutputVariables(
+            Map<String, Object> variables,
+            ProcessDefinition processDefinition,
+            FlowElement initialFlowElement) {
+        Map<String, Object> processVariables = variables;
+
+        if (processExtensionService.hasExtensionsFor(processDefinition)) {
+
+            Map<String, Object> calculateOutPutVariables =
+                    variablesCalculator.calculateOutPutVariables(
+                            MappingExecutionContext.buildMappingExecutionContext(
+                                    processDefinition.getId(), initialFlowElement.getId()),
+                            variables);
+            if (!calculateOutPutVariables.isEmpty()) {
+                processVariables = calculateOutPutVariables;
+            }
+
+            processVariables =
+                    calculateVariablesFromExtensionFile(processDefinition, processVariables);
+        }
+        return processVariables;
+    }
+
+    private Map<String, Object> processVariables(
+            Map<String, Object> variables, Map<String, VariableDefinition> variableDefinitionMap) {
+        Map<String, Object> newVarsMap =
+                new HashMap<>(Optional.ofNullable(variables).orElse(emptyMap()));
+        variableDefinitionMap.forEach(
+                (k, v) -> {
+                    if (!newVarsMap.containsKey(v.getName()) && v.getValue() != null) {
+                        newVarsMap.put(v.getName(), createDefaultVariableValue(v));
+                    }
+                });
+        return newVarsMap;
+    }
+
+    private Object createDefaultVariableValue(VariableDefinition variableDefinition) {
+        // take a default from the variable definition in the proc extensions
+        return variableParsingService.parse(variableDefinition);
+    }
+
+    private Set<String> checkRequiredVariables(
+            Map<String, Object> variables, Map<String, VariableDefinition> variableDefinitionMap) {
+        Set<String> missingRequiredVars = new HashSet<>();
+        variableDefinitionMap.forEach(
+                (k, v) -> {
+                    if (!variables.containsKey(v.getName()) && v.isRequired()) {
+                        missingRequiredVars.add(v.getName());
+                    }
+                });
+        return missingRequiredVars;
+    }
+
+    private Set<String> validateVariablesAgainstDefinitions(
+            Map<String, Object> variables, Map<String, VariableDefinition> variableDefinitionMap) {
+        Set<String> mismatchedVars = new HashSet<>();
+        variableDefinitionMap.forEach(
+                (k, v) -> {
+                    // if we have definition for this variable then validate it
+                    if (variables.containsKey(v.getName())) {
+                        if (!variableValidationService.validate(variables.get(v.getName()), v)) {
+                            mismatchedVars.add(v.getName());
+                        }
+                    }
+                });
+        return mismatchedVars;
+    }
+
+    public void startProcessInstance(
+            ExecutionEntity processInstance,
+            CommandContext commandContext,
+            Map<String, Object> variables,
+            FlowElement initialFlowElement,
+            Map<String, Object> transientVariables) {
+        ProcessDefinition processDefinition =
+                ProcessDefinitionUtil.getProcessDefinition(
+                        processInstance.getProcessDefinitionId());
+        Map<String, Object> calculatedVariables =
+                calculateOutputVariables(variables, processDefinition, initialFlowElement);
+        super.startProcessInstance(
+                processInstance,
+                commandContext,
+                calculatedVariables,
+                initialFlowElement,
+                transientVariables);
+    }
 }

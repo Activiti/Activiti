@@ -15,28 +15,29 @@
  */
 package org.activiti.engine.impl.persistence.entity.integration;
 
-import java.util.Date;
 import org.activiti.engine.impl.persistence.entity.Entity;
+
+import java.util.Date;
 
 public interface IntegrationContextEntity extends Entity {
 
-  String getExecutionId();
+    String getExecutionId();
 
-  void setExecutionId(String executionId);
+    void setExecutionId(String executionId);
 
-  String getProcessDefinitionId();
+    String getProcessDefinitionId();
 
-  void setProcessDefinitionId(String processDefinitionId);
+    void setProcessDefinitionId(String processDefinitionId);
 
-  String getProcessInstanceId();
+    String getProcessInstanceId();
 
-  void setProcessInstanceId(String processInstanceId);
+    void setProcessInstanceId(String processInstanceId);
 
-  String getFlowNodeId();
+    String getFlowNodeId();
 
-  void setFlowNodeId(String flowNodeId);
+    void setFlowNodeId(String flowNodeId);
 
-  Date getCreatedDate();
+    Date getCreatedDate();
 
-  void setCreatedDate(Date createdDate);
+    void setCreatedDate(Date createdDate);
 }

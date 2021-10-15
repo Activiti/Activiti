@@ -20,22 +20,22 @@ import org.activiti.api.model.shared.model.VariableInstance;
 
 public class VariableUpdatedEventImpl<T> extends VariableEventImpl implements VariableUpdatedEvent {
 
-  private T previousValue;
+    private T previousValue;
 
-  public VariableUpdatedEventImpl() {}
+    public VariableUpdatedEventImpl() {}
 
-  public VariableUpdatedEventImpl(VariableInstance entity, T previousValue) {
-    super(entity);
-    this.previousValue = previousValue;
-  }
+    public VariableUpdatedEventImpl(VariableInstance entity, T previousValue) {
+        super(entity);
+        this.previousValue = previousValue;
+    }
 
-  @Override
-  public VariableEvents getEventType() {
-    return VariableEvents.VARIABLE_UPDATED;
-  }
+    @Override
+    public VariableEvents getEventType() {
+        return VariableEvents.VARIABLE_UPDATED;
+    }
 
-  @Override
-  public T getPreviousValue() {
-    return previousValue;
-  }
+    @Override
+    public T getPreviousValue() {
+        return previousValue;
+    }
 }

@@ -16,20 +16,22 @@
 
 package org.activiti.engine.impl.bpmn.behavior;
 
+import org.activiti.engine.delegate.DelegateExecution;
+
 import java.util.Collections;
 import java.util.Map;
-import org.activiti.engine.delegate.DelegateExecution;
 
 public class NoneVariablesCalculator implements VariablesCalculator {
 
-  @Override
-  public Map<String, Object> calculateOutPutVariables(
-      MappingExecutionContext mappingExecutionContext, Map<String, Object> availableVariables) {
-    return Collections.emptyMap();
-  }
+    @Override
+    public Map<String, Object> calculateOutPutVariables(
+            MappingExecutionContext mappingExecutionContext,
+            Map<String, Object> availableVariables) {
+        return Collections.emptyMap();
+    }
 
-  @Override
-  public Map<String, Object> calculateInputVariables(DelegateExecution execution) {
-    return Collections.emptyMap();
-  }
+    @Override
+    public Map<String, Object> calculateInputVariables(DelegateExecution execution) {
+        return Collections.emptyMap();
+    }
 }

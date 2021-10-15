@@ -22,17 +22,17 @@ import org.activiti.engine.impl.interceptor.DelegateInterceptor;
 
 public class VariableScopeExpressionEvaluator implements ExpressionEvaluator {
 
-  private VariableScope variableScope;
+    private VariableScope variableScope;
 
-  public VariableScopeExpressionEvaluator(VariableScope variableScope) {
-    this.variableScope = variableScope;
-  }
+    public VariableScopeExpressionEvaluator(VariableScope variableScope) {
+        this.variableScope = variableScope;
+    }
 
-  @Override
-  public Object evaluate(
-      Expression expression,
-      ExpressionManager expressionManager,
-      DelegateInterceptor delegateInterceptor) {
-    return expression.getValue(variableScope);
-  }
+    @Override
+    public Object evaluate(
+            Expression expression,
+            ExpressionManager expressionManager,
+            DelegateInterceptor delegateInterceptor) {
+        return expression.getValue(variableScope);
+    }
 }

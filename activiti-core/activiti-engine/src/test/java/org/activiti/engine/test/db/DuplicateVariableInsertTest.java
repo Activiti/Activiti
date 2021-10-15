@@ -16,14 +16,10 @@
 
 package org.activiti.engine.test.db;
 
-import static java.util.Collections.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.BrokenBarrierException;
-import java.util.concurrent.CyclicBarrier;
+import static java.util.Collections.singletonMap;
+
 import org.activiti.engine.ActivitiOptimisticLockingException;
 import org.activiti.engine.impl.cmd.SetExecutionVariablesCmd;
 import org.activiti.engine.impl.cmd.SetTaskVariablesCmd;
@@ -33,212 +29,227 @@ import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.BrokenBarrierException;
+import java.util.concurrent.CyclicBarrier;
+
 public class DuplicateVariableInsertTest extends PluggableActivitiTestCase {
 
-  /**
-   * Test for ACT-1887: Inserting the same new variable at the same time, from 2 different threads,
-   * using 2 modified commands that use a barrier for starting and a barrier for completing the
-   * command, so they each insert a new variable guaranteed.
-   */
-  public void testDuplicateVariableInsertOnExecution() throws Exception {
-    String processDefinitionId = deployOneTaskTestProcess();
-    final ProcessInstance processInstance =
-        runtimeService.startProcessInstanceById(processDefinitionId);
+    /**
+     * Test for ACT-1887: Inserting the same new variable at the same time, from 2 different
+     * threads, using 2 modified commands that use a barrier for starting and a barrier for
+     * completing the command, so they each insert a new variable guaranteed.
+     */
+    public void testDuplicateVariableInsertOnExecution() throws Exception {
+        String processDefinitionId = deployOneTaskTestProcess();
+        final ProcessInstance processInstance =
+                runtimeService.startProcessInstanceById(processDefinitionId);
 
-    final CyclicBarrier startBarrier = new CyclicBarrier(2);
-    final CyclicBarrier endBarrier = new CyclicBarrier(2);
+        final CyclicBarrier startBarrier = new CyclicBarrier(2);
+        final CyclicBarrier endBarrier = new CyclicBarrier(2);
 
-    final List<Exception> exceptions = new ArrayList<Exception>();
+        final List<Exception> exceptions = new ArrayList<Exception>();
 
-    Thread firstInsertThread =
-        new Thread(
-            new Runnable() {
-              @Override
-              public void run() {
-                try {
-                  managementService.executeCommand(
-                      new SetVariableWithBarriersCommand(
-                          startBarrier, endBarrier, processInstance.getId()));
-                } catch (Exception e) {
-                  exceptions.add(e);
-                }
-              }
-            });
+        Thread firstInsertThread =
+                new Thread(
+                        new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    managementService.executeCommand(
+                                            new SetVariableWithBarriersCommand(
+                                                    startBarrier,
+                                                    endBarrier,
+                                                    processInstance.getId()));
+                                } catch (Exception e) {
+                                    exceptions.add(e);
+                                }
+                            }
+                        });
 
-    Thread secondInsertThread =
-        new Thread(
-            new Runnable() {
-              @Override
-              public void run() {
-                try {
-                  managementService.executeCommand(
-                      new SetVariableWithBarriersCommand(
-                          startBarrier, endBarrier, processInstance.getId()));
-                } catch (Exception e) {
-                  exceptions.add(e);
-                }
-              }
-            });
+        Thread secondInsertThread =
+                new Thread(
+                        new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    managementService.executeCommand(
+                                            new SetVariableWithBarriersCommand(
+                                                    startBarrier,
+                                                    endBarrier,
+                                                    processInstance.getId()));
+                                } catch (Exception e) {
+                                    exceptions.add(e);
+                                }
+                            }
+                        });
 
-    firstInsertThread.start();
-    secondInsertThread.start();
+        firstInsertThread.start();
+        secondInsertThread.start();
 
-    // Wait for threads to complete
-    firstInsertThread.join();
-    secondInsertThread.join();
+        // Wait for threads to complete
+        firstInsertThread.join();
+        secondInsertThread.join();
 
-    // One of the 2 threads should get an optimistic lock exception
-    assertThat(exceptions).hasSize(1);
+        // One of the 2 threads should get an optimistic lock exception
+        assertThat(exceptions).hasSize(1);
 
-    // One variable should be set
-    Map<String, Object> variables = runtimeService.getVariables(processInstance.getId());
-    assertThat(variables).hasSize(1);
-    assertThat(variables.get("var")).isEqualTo("12345");
-    runtimeService.deleteProcessInstance(processInstance.getId(), "ShouldNotFail");
-  }
-
-  /**
-   * Test for ACT-1887: Inserting the same new variable at the same time, from 2 different threads,
-   * using 2 modified commands that use a barrier for starting and a barrier for completing the
-   * command, so they each insert a new variable guaranteed.
-   */
-  public void testDuplicateVariableInsertOnTask() throws Exception {
-    String processDefinitionId = deployOneTaskTestProcess();
-    final ProcessInstance processInstance =
-        runtimeService.startProcessInstanceById(processDefinitionId);
-    final Task task =
-        taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
-
-    final CyclicBarrier startBarrier = new CyclicBarrier(2);
-    final CyclicBarrier endBarrier = new CyclicBarrier(2);
-
-    final List<Exception> exceptions = new ArrayList<Exception>();
-
-    Thread firstInsertThread =
-        new Thread(
-            new Runnable() {
-              @Override
-              public void run() {
-                try {
-                  managementService.executeCommand(
-                      new SetTaskVariableWithBarriersCommand(
-                          startBarrier, endBarrier, task.getId()));
-                } catch (Exception e) {
-                  exceptions.add(e);
-                }
-              }
-            });
-
-    Thread secondInsertThread =
-        new Thread(
-            new Runnable() {
-              @Override
-              public void run() {
-                try {
-                  managementService.executeCommand(
-                      new SetTaskVariableWithBarriersCommand(
-                          startBarrier, endBarrier, task.getId()));
-                } catch (Exception e) {
-                  exceptions.add(e);
-                }
-              }
-            });
-
-    firstInsertThread.start();
-    secondInsertThread.start();
-
-    // Wait for threads to complete
-    firstInsertThread.join();
-    secondInsertThread.join();
-
-    // One of the 2 threads should get an optimistic lock exception
-    assertThat(exceptions).hasSize(1);
-    assertThat(exceptions.get(0)).isInstanceOf(ActivitiOptimisticLockingException.class);
-
-    // One variable should be set
-    Map<String, Object> variables = runtimeService.getVariables(processInstance.getId());
-    assertThat(variables).hasSize(1);
-    assertThat(variables.get("var")).isEqualTo("12345");
-    runtimeService.deleteProcessInstance(processInstance.getId(), "ShouldNotFail");
-  }
-
-  /**
-   * Command wrapping a SetExecutionVariablesCmd, waiting in to start and end on the barriers passed
-   * in.
-   */
-  private class SetVariableWithBarriersCommand implements Command<Void> {
-
-    private CyclicBarrier startBarrier;
-    private CyclicBarrier endBarrier;
-    private String executionId;
-
-    public SetVariableWithBarriersCommand(
-        CyclicBarrier startBarrier, CyclicBarrier endBarrier, String executionId) {
-      this.startBarrier = startBarrier;
-      this.endBarrier = endBarrier;
-      this.executionId = executionId;
+        // One variable should be set
+        Map<String, Object> variables = runtimeService.getVariables(processInstance.getId());
+        assertThat(variables).hasSize(1);
+        assertThat(variables.get("var")).isEqualTo("12345");
+        runtimeService.deleteProcessInstance(processInstance.getId(), "ShouldNotFail");
     }
 
-    @Override
-    public Void execute(CommandContext commandContext) {
-      try {
-        startBarrier.await();
-      } catch (InterruptedException e) {
-        throw new RuntimeException(e);
-      } catch (BrokenBarrierException e) {
-        throw new RuntimeException(e);
-      }
+    /**
+     * Test for ACT-1887: Inserting the same new variable at the same time, from 2 different
+     * threads, using 2 modified commands that use a barrier for starting and a barrier for
+     * completing the command, so they each insert a new variable guaranteed.
+     */
+    public void testDuplicateVariableInsertOnTask() throws Exception {
+        String processDefinitionId = deployOneTaskTestProcess();
+        final ProcessInstance processInstance =
+                runtimeService.startProcessInstanceById(processDefinitionId);
+        final Task task =
+                taskService
+                        .createTaskQuery()
+                        .processInstanceId(processInstance.getId())
+                        .singleResult();
 
-      new SetExecutionVariablesCmd(executionId, singletonMap("var", "12345"), false)
-          .execute(commandContext);
+        final CyclicBarrier startBarrier = new CyclicBarrier(2);
+        final CyclicBarrier endBarrier = new CyclicBarrier(2);
 
-      try {
-        endBarrier.await();
-      } catch (InterruptedException e) {
-        throw new RuntimeException(e);
-      } catch (BrokenBarrierException e) {
-        throw new RuntimeException(e);
-      }
-      return null;
+        final List<Exception> exceptions = new ArrayList<Exception>();
+
+        Thread firstInsertThread =
+                new Thread(
+                        new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    managementService.executeCommand(
+                                            new SetTaskVariableWithBarriersCommand(
+                                                    startBarrier, endBarrier, task.getId()));
+                                } catch (Exception e) {
+                                    exceptions.add(e);
+                                }
+                            }
+                        });
+
+        Thread secondInsertThread =
+                new Thread(
+                        new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    managementService.executeCommand(
+                                            new SetTaskVariableWithBarriersCommand(
+                                                    startBarrier, endBarrier, task.getId()));
+                                } catch (Exception e) {
+                                    exceptions.add(e);
+                                }
+                            }
+                        });
+
+        firstInsertThread.start();
+        secondInsertThread.start();
+
+        // Wait for threads to complete
+        firstInsertThread.join();
+        secondInsertThread.join();
+
+        // One of the 2 threads should get an optimistic lock exception
+        assertThat(exceptions).hasSize(1);
+        assertThat(exceptions.get(0)).isInstanceOf(ActivitiOptimisticLockingException.class);
+
+        // One variable should be set
+        Map<String, Object> variables = runtimeService.getVariables(processInstance.getId());
+        assertThat(variables).hasSize(1);
+        assertThat(variables.get("var")).isEqualTo("12345");
+        runtimeService.deleteProcessInstance(processInstance.getId(), "ShouldNotFail");
     }
-  }
 
-  /**
-   * Command wrapping a SetTaskVariablesCmd, waiting in to start and end on the barriers passed in.
-   */
-  private class SetTaskVariableWithBarriersCommand implements Command<Void> {
+    /**
+     * Command wrapping a SetExecutionVariablesCmd, waiting in to start and end on the barriers
+     * passed in.
+     */
+    private class SetVariableWithBarriersCommand implements Command<Void> {
 
-    private CyclicBarrier startBarrier;
-    private CyclicBarrier endBarrier;
-    private String taskId;
+        private CyclicBarrier startBarrier;
+        private CyclicBarrier endBarrier;
+        private String executionId;
 
-    public SetTaskVariableWithBarriersCommand(
-        CyclicBarrier startBarrier, CyclicBarrier endBarrier, String taskId) {
-      this.startBarrier = startBarrier;
-      this.endBarrier = endBarrier;
-      this.taskId = taskId;
+        public SetVariableWithBarriersCommand(
+                CyclicBarrier startBarrier, CyclicBarrier endBarrier, String executionId) {
+            this.startBarrier = startBarrier;
+            this.endBarrier = endBarrier;
+            this.executionId = executionId;
+        }
+
+        @Override
+        public Void execute(CommandContext commandContext) {
+            try {
+                startBarrier.await();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            } catch (BrokenBarrierException e) {
+                throw new RuntimeException(e);
+            }
+
+            new SetExecutionVariablesCmd(executionId, singletonMap("var", "12345"), false)
+                    .execute(commandContext);
+
+            try {
+                endBarrier.await();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            } catch (BrokenBarrierException e) {
+                throw new RuntimeException(e);
+            }
+            return null;
+        }
     }
 
-    @Override
-    public Void execute(CommandContext commandContext) {
-      try {
-        startBarrier.await();
-      } catch (InterruptedException e) {
-        throw new RuntimeException(e);
-      } catch (BrokenBarrierException e) {
-        throw new RuntimeException(e);
-      }
+    /**
+     * Command wrapping a SetTaskVariablesCmd, waiting in to start and end on the barriers passed
+     * in.
+     */
+    private class SetTaskVariableWithBarriersCommand implements Command<Void> {
 
-      new SetTaskVariablesCmd(taskId, singletonMap("var", "12345"), false).execute(commandContext);
+        private CyclicBarrier startBarrier;
+        private CyclicBarrier endBarrier;
+        private String taskId;
 
-      try {
-        endBarrier.await();
-      } catch (InterruptedException e) {
-        throw new RuntimeException(e);
-      } catch (BrokenBarrierException e) {
-        throw new RuntimeException(e);
-      }
-      return null;
+        public SetTaskVariableWithBarriersCommand(
+                CyclicBarrier startBarrier, CyclicBarrier endBarrier, String taskId) {
+            this.startBarrier = startBarrier;
+            this.endBarrier = endBarrier;
+            this.taskId = taskId;
+        }
+
+        @Override
+        public Void execute(CommandContext commandContext) {
+            try {
+                startBarrier.await();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            } catch (BrokenBarrierException e) {
+                throw new RuntimeException(e);
+            }
+
+            new SetTaskVariablesCmd(taskId, singletonMap("var", "12345"), false)
+                    .execute(commandContext);
+
+            try {
+                endBarrier.await();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            } catch (BrokenBarrierException e) {
+                throw new RuntimeException(e);
+            }
+            return null;
+        }
     }
-  }
 }

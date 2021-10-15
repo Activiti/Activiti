@@ -18,127 +18,128 @@ package org.activiti.runtime.api.model.impl;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import java.util.Date;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.task.Task;
+
+import java.util.Date;
 
 /** Mock task builder. */
 public class MockTaskBuilder {
 
-  private Task task;
+    private Task task;
 
-  private MockTaskBuilder(Class<? extends Task> taskClass) {
-    task = mock(taskClass);
-  }
-
-  public static MockTaskBuilder taskBuilder() {
-    return new MockTaskBuilder(Task.class);
-  }
-
-  public static MockTaskBuilder taskEntityBuilder() {
-    return new MockTaskBuilder(TaskEntity.class);
-  }
-
-  public MockTaskBuilder withId(String id) {
-    when(task.getId()).thenReturn(id);
-    return this;
-  }
-
-  public MockTaskBuilder withOwner(String owner) {
-    when(task.getOwner()).thenReturn(owner);
-    return this;
-  }
-
-  public MockTaskBuilder withAssignee(String assignee) {
-    when(task.getAssignee()).thenReturn(assignee);
-    return this;
-  }
-
-  public MockTaskBuilder withName(String name) {
-    when(task.getName()).thenReturn(name);
-    return this;
-  }
-
-  public MockTaskBuilder withDescription(String description) {
-    when(task.getDescription()).thenReturn(description);
-    return this;
-  }
-
-  public MockTaskBuilder withCreatedDate(Date createdDate) {
-    when(task.getCreateTime()).thenReturn(createdDate);
-    return this;
-  }
-
-  public MockTaskBuilder withClaimedDate(Date claimedDate) {
-    when(task.getClaimTime()).thenReturn(claimedDate);
-    return this;
-  }
-
-  public MockTaskBuilder withDueDate(Date dueDate) {
-    when(task.getDueDate()).thenReturn(dueDate);
-    return this;
-  }
-
-  public MockTaskBuilder withPriority(int priority) {
-    when(task.getPriority()).thenReturn(priority);
-    return this;
-  }
-
-  public MockTaskBuilder withProcessDefinitionId(String processDefinitionId) {
-    when(task.getProcessDefinitionId()).thenReturn(processDefinitionId);
-    return this;
-  }
-
-  public MockTaskBuilder withProcessInstanceId(String processInstanceId) {
-    when(task.getProcessInstanceId()).thenReturn(processInstanceId);
-    return this;
-  }
-
-  public MockTaskBuilder withParentTaskId(String parentTaskId) {
-    when(task.getParentTaskId()).thenReturn(parentTaskId);
-    return this;
-  }
-
-  public MockTaskBuilder withSuspended(boolean suspended) {
-    when(task.isSuspended()).thenReturn(suspended);
-    return this;
-  }
-
-  public MockTaskBuilder withCancelled(boolean cancelled) {
-    if (task instanceof TaskEntity) {
-      when(((TaskEntity) task).isCanceled()).thenReturn(cancelled);
+    private MockTaskBuilder(Class<? extends Task> taskClass) {
+        task = mock(taskClass);
     }
-    return this;
-  }
 
-  public MockTaskBuilder withDeleted(boolean deleted) {
-    if (task instanceof TaskEntity) {
-      when(((TaskEntity) task).isDeleted()).thenReturn(deleted);
+    public static MockTaskBuilder taskBuilder() {
+        return new MockTaskBuilder(Task.class);
     }
-    return this;
-  }
 
-  public MockTaskBuilder withFormKey(String formKey) {
-    when(task.getFormKey()).thenReturn(formKey);
-    return this;
-  }
+    public static MockTaskBuilder taskEntityBuilder() {
+        return new MockTaskBuilder(TaskEntity.class);
+    }
 
-  public MockTaskBuilder withTaskDefinitionKey(String taskDefinitionKey) {
-    when(task.getTaskDefinitionKey()).thenReturn(taskDefinitionKey);
-    return this;
-  }
+    public MockTaskBuilder withId(String id) {
+        when(task.getId()).thenReturn(id);
+        return this;
+    }
 
-  public MockTaskBuilder withAppVersion(Integer appVersion) {
-    when(task.getAppVersion()).thenReturn(appVersion);
-    return this;
-  }
+    public MockTaskBuilder withOwner(String owner) {
+        when(task.getOwner()).thenReturn(owner);
+        return this;
+    }
 
-  public MockTaskBuilder withBusinessKey(String businessKey) {
-    when(task.getBusinessKey()).thenReturn(businessKey);
-    return this;
-  }
+    public MockTaskBuilder withAssignee(String assignee) {
+        when(task.getAssignee()).thenReturn(assignee);
+        return this;
+    }
 
-  public Task build() {
-    return task;
-  }
+    public MockTaskBuilder withName(String name) {
+        when(task.getName()).thenReturn(name);
+        return this;
+    }
+
+    public MockTaskBuilder withDescription(String description) {
+        when(task.getDescription()).thenReturn(description);
+        return this;
+    }
+
+    public MockTaskBuilder withCreatedDate(Date createdDate) {
+        when(task.getCreateTime()).thenReturn(createdDate);
+        return this;
+    }
+
+    public MockTaskBuilder withClaimedDate(Date claimedDate) {
+        when(task.getClaimTime()).thenReturn(claimedDate);
+        return this;
+    }
+
+    public MockTaskBuilder withDueDate(Date dueDate) {
+        when(task.getDueDate()).thenReturn(dueDate);
+        return this;
+    }
+
+    public MockTaskBuilder withPriority(int priority) {
+        when(task.getPriority()).thenReturn(priority);
+        return this;
+    }
+
+    public MockTaskBuilder withProcessDefinitionId(String processDefinitionId) {
+        when(task.getProcessDefinitionId()).thenReturn(processDefinitionId);
+        return this;
+    }
+
+    public MockTaskBuilder withProcessInstanceId(String processInstanceId) {
+        when(task.getProcessInstanceId()).thenReturn(processInstanceId);
+        return this;
+    }
+
+    public MockTaskBuilder withParentTaskId(String parentTaskId) {
+        when(task.getParentTaskId()).thenReturn(parentTaskId);
+        return this;
+    }
+
+    public MockTaskBuilder withSuspended(boolean suspended) {
+        when(task.isSuspended()).thenReturn(suspended);
+        return this;
+    }
+
+    public MockTaskBuilder withCancelled(boolean cancelled) {
+        if (task instanceof TaskEntity) {
+            when(((TaskEntity) task).isCanceled()).thenReturn(cancelled);
+        }
+        return this;
+    }
+
+    public MockTaskBuilder withDeleted(boolean deleted) {
+        if (task instanceof TaskEntity) {
+            when(((TaskEntity) task).isDeleted()).thenReturn(deleted);
+        }
+        return this;
+    }
+
+    public MockTaskBuilder withFormKey(String formKey) {
+        when(task.getFormKey()).thenReturn(formKey);
+        return this;
+    }
+
+    public MockTaskBuilder withTaskDefinitionKey(String taskDefinitionKey) {
+        when(task.getTaskDefinitionKey()).thenReturn(taskDefinitionKey);
+        return this;
+    }
+
+    public MockTaskBuilder withAppVersion(Integer appVersion) {
+        when(task.getAppVersion()).thenReturn(appVersion);
+        return this;
+    }
+
+    public MockTaskBuilder withBusinessKey(String businessKey) {
+        when(task.getBusinessKey()).thenReturn(businessKey);
+        return this;
+    }
+
+    public Task build() {
+        return task;
+    }
 }

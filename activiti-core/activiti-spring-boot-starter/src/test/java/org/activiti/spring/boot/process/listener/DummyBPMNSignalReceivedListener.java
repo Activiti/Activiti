@@ -15,28 +15,29 @@
  */
 package org.activiti.spring.boot.process.listener;
 
-import java.util.LinkedList;
-import java.util.List;
 import org.activiti.api.process.model.events.BPMNSignalReceivedEvent;
 import org.activiti.api.process.runtime.events.listener.BPMNElementEventListener;
 import org.springframework.stereotype.Component;
 
+import java.util.LinkedList;
+import java.util.List;
+
 @Component
 public class DummyBPMNSignalReceivedListener
-    implements BPMNElementEventListener<BPMNSignalReceivedEvent> {
+        implements BPMNElementEventListener<BPMNSignalReceivedEvent> {
 
-  private List<BPMNSignalReceivedEvent> signalReceivedEvents = new LinkedList<>();
+    private List<BPMNSignalReceivedEvent> signalReceivedEvents = new LinkedList<>();
 
-  @Override
-  public void onEvent(BPMNSignalReceivedEvent event) {
-    signalReceivedEvents.add(event);
-  }
+    @Override
+    public void onEvent(BPMNSignalReceivedEvent event) {
+        signalReceivedEvents.add(event);
+    }
 
-  public List<BPMNSignalReceivedEvent> getSignalReceivedEvents() {
-    return signalReceivedEvents;
-  }
+    public List<BPMNSignalReceivedEvent> getSignalReceivedEvents() {
+        return signalReceivedEvents;
+    }
 
-  public void clear() {
-    signalReceivedEvents.clear();
-  }
+    public void clear() {
+        signalReceivedEvents.clear();
+    }
 }

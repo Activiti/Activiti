@@ -15,30 +15,31 @@
  */
 package org.activiti.bpmn.converter.child;
 
-import javax.xml.stream.XMLStreamReader;
 import org.activiti.bpmn.converter.util.BpmnXMLUtil;
 import org.activiti.bpmn.model.Activity;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.DataAssociation;
 
+import javax.xml.stream.XMLStreamReader;
+
 /** */
 public class DataOutputAssociationParser extends BaseChildElementParser {
 
-  public String getElementName() {
-    return ELEMENT_OUTPUT_ASSOCIATION;
-  }
-
-  public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model)
-      throws Exception {
-
-    if (!(parentElement instanceof Activity)) {
-      return;
+    public String getElementName() {
+        return ELEMENT_OUTPUT_ASSOCIATION;
     }
-    DataAssociation dataAssociation = new DataAssociation();
-    BpmnXMLUtil.addXMLLocation(dataAssociation, xtr);
-    DataAssociationParser.parseDataAssociation(dataAssociation, getElementName(), xtr);
 
-    ((Activity) parentElement).getDataOutputAssociations().add(dataAssociation);
-  }
+    public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model)
+            throws Exception {
+
+        if (!(parentElement instanceof Activity)) {
+            return;
+        }
+        DataAssociation dataAssociation = new DataAssociation();
+        BpmnXMLUtil.addXMLLocation(dataAssociation, xtr);
+        DataAssociationParser.parseDataAssociation(dataAssociation, getElementName(), xtr);
+
+        ((Activity) parentElement).getDataOutputAssociations().add(dataAssociation);
+    }
 }

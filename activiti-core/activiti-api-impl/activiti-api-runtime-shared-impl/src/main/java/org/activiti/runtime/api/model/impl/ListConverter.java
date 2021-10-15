@@ -21,11 +21,11 @@ import java.util.List;
 
 public abstract class ListConverter<SourceT, TargetT> implements ModelConverter<SourceT, TargetT> {
 
-  public List<TargetT> from(Collection<SourceT> sources) {
-    List<TargetT> targetElements = new ArrayList<>();
-    for (SourceT sourceElement : sources) {
-      targetElements.add(from(sourceElement));
+    public List<TargetT> from(Collection<SourceT> sources) {
+        List<TargetT> targetElements = new ArrayList<>();
+        for (SourceT sourceElement : sources) {
+            targetElements.add(from(sourceElement));
+        }
+        return targetElements;
     }
-    return targetElements;
-  }
 }

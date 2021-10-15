@@ -15,12 +15,13 @@
  */
 package org.activiti.runtime.api.event.impl;
 
-import java.util.Optional;
 import org.activiti.api.model.shared.event.RuntimeEvent;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 
-public interface EventConverter<
-    ApiEventTypeT extends RuntimeEvent<?, ?>, InternalApiTypeT extends ActivitiEvent> {
+import java.util.Optional;
 
-  Optional<ApiEventTypeT> from(InternalApiTypeT internalEvent);
+public interface EventConverter<
+        ApiEventTypeT extends RuntimeEvent<?, ?>, InternalApiTypeT extends ActivitiEvent> {
+
+    Optional<ApiEventTypeT> from(InternalApiTypeT internalEvent);
 }

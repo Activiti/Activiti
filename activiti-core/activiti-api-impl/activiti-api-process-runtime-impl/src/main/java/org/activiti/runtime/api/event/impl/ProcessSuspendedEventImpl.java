@@ -21,15 +21,15 @@ import org.activiti.api.process.runtime.events.ProcessSuspendedEvent;
 import org.activiti.api.runtime.event.impl.RuntimeEventImpl;
 
 public class ProcessSuspendedEventImpl
-    extends RuntimeEventImpl<ProcessInstance, ProcessRuntimeEvent.ProcessEvents>
-    implements ProcessSuspendedEvent {
+        extends RuntimeEventImpl<ProcessInstance, ProcessRuntimeEvent.ProcessEvents>
+        implements ProcessSuspendedEvent {
 
-  public ProcessSuspendedEventImpl(ProcessInstance entity) {
-    super(entity);
-  }
+    public ProcessSuspendedEventImpl(ProcessInstance entity) {
+        super(entity);
+    }
 
-  @Override
-  public ProcessEvents getEventType() {
-    return ProcessEvents.PROCESS_SUSPENDED;
-  }
+    @Override
+    public ProcessEvents getEventType() {
+        return ProcessEvents.PROCESS_SUSPENDED;
+    }
 }

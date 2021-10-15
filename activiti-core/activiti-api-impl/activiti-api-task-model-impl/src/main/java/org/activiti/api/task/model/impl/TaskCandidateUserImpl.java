@@ -15,40 +15,41 @@
  */
 package org.activiti.api.task.model.impl;
 
-import java.util.Objects;
 import org.activiti.api.task.model.TaskCandidateUser;
+
+import java.util.Objects;
 
 public class TaskCandidateUserImpl extends TaskCandidateImpl implements TaskCandidateUser {
 
-  private String userId;
+    private String userId;
 
-  public TaskCandidateUserImpl() {}
+    public TaskCandidateUserImpl() {}
 
-  public TaskCandidateUserImpl(String userId, String taskId) {
-    super(taskId);
-    this.userId = userId;
-  }
-
-  @Override
-  public String getUserId() {
-    return userId;
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
+    public TaskCandidateUserImpl(String userId, String taskId) {
+        super(taskId);
+        this.userId = userId;
     }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
+
+    @Override
+    public String getUserId() {
+        return userId;
     }
-    TaskCandidateUserImpl that = (TaskCandidateUserImpl) o;
-    return Objects.equals(userId, that.userId);
-  }
 
-  @Override
-  public int hashCode() {
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        TaskCandidateUserImpl that = (TaskCandidateUserImpl) o;
+        return Objects.equals(userId, that.userId);
+    }
 
-    return Objects.hash(userId);
-  }
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(userId);
+    }
 }

@@ -15,23 +15,25 @@
  */
 package org.activiti.bpmn.converter.parser;
 
-import javax.xml.stream.XMLStreamReader;
 import org.activiti.bpmn.constants.BpmnXMLConstants;
 import org.activiti.bpmn.converter.util.BpmnXMLUtil;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.Lane;
 import org.activiti.bpmn.model.Process;
 
+import javax.xml.stream.XMLStreamReader;
+
 /** */
 public class LaneParser implements BpmnXMLConstants {
 
-  public void parse(XMLStreamReader xtr, Process activeProcess, BpmnModel model) throws Exception {
-    Lane lane = new Lane();
-    BpmnXMLUtil.addXMLLocation(lane, xtr);
-    lane.setId(xtr.getAttributeValue(null, ATTRIBUTE_ID));
-    lane.setName(xtr.getAttributeValue(null, ATTRIBUTE_NAME));
-    lane.setParentProcess(activeProcess);
-    activeProcess.getLanes().add(lane);
-    BpmnXMLUtil.parseChildElements(ELEMENT_LANE, lane, xtr, model);
-  }
+    public void parse(XMLStreamReader xtr, Process activeProcess, BpmnModel model)
+            throws Exception {
+        Lane lane = new Lane();
+        BpmnXMLUtil.addXMLLocation(lane, xtr);
+        lane.setId(xtr.getAttributeValue(null, ATTRIBUTE_ID));
+        lane.setName(xtr.getAttributeValue(null, ATTRIBUTE_NAME));
+        lane.setParentProcess(activeProcess);
+        activeProcess.getLanes().add(lane);
+        BpmnXMLUtil.parseChildElements(ELEMENT_LANE, lane, xtr, model);
+    }
 }

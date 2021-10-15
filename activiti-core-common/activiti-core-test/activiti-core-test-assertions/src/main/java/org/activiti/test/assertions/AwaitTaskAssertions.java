@@ -24,32 +24,32 @@ import org.activiti.test.matchers.TaskResultMatcher;
 
 public class AwaitTaskAssertions implements TaskAssertions {
 
-  private TaskAssertions taskAssertions;
+    private TaskAssertions taskAssertions;
 
-  public AwaitTaskAssertions(TaskAssertions taskAssertions) {
-    this.taskAssertions = taskAssertions;
-  }
+    public AwaitTaskAssertions(TaskAssertions taskAssertions) {
+        this.taskAssertions = taskAssertions;
+    }
 
-  @Override
-  public TaskAssertions expectEvents(OperationScopeMatcher... matchers) {
-    await().untilAsserted(() -> taskAssertions.expectEvents(matchers));
-    return this;
-  }
+    @Override
+    public TaskAssertions expectEvents(OperationScopeMatcher... matchers) {
+        await().untilAsserted(() -> taskAssertions.expectEvents(matchers));
+        return this;
+    }
 
-  @Override
-  public TaskAssertions expectFields(TaskResultMatcher... matchers) {
-    await().untilAsserted(() -> taskAssertions.expectFields(matchers));
-    return this;
-  }
+    @Override
+    public TaskAssertions expectFields(TaskResultMatcher... matchers) {
+        await().untilAsserted(() -> taskAssertions.expectFields(matchers));
+        return this;
+    }
 
-  @Override
-  public TaskAssertions expect(ProcessTaskMatcher... matchers) {
-    await().untilAsserted(() -> taskAssertions.expect(matchers));
-    return this;
-  }
+    @Override
+    public TaskAssertions expect(ProcessTaskMatcher... matchers) {
+        await().untilAsserted(() -> taskAssertions.expect(matchers));
+        return this;
+    }
 
-  @Override
-  public Task andReturn() {
-    return taskAssertions.andReturn();
-  }
+    @Override
+    public Task andReturn() {
+        return taskAssertions.andReturn();
+    }
 }

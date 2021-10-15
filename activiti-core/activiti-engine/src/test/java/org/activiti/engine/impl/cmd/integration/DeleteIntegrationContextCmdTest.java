@@ -30,30 +30,32 @@ import org.mockito.Mock;
 
 public class DeleteIntegrationContextCmdTest {
 
-  @Mock private CommandContext commandContext;
+    @Mock private CommandContext commandContext;
 
-  @Mock private ProcessEngineConfigurationImpl processEngineConfiguration;
+    @Mock private ProcessEngineConfigurationImpl processEngineConfiguration;
 
-  @Mock private IntegrationContextManager integrationContextManager;
+    @Mock private IntegrationContextManager integrationContextManager;
 
-  @Before
-  public void setUp() throws Exception {
-    initMocks(this);
-    given(commandContext.getProcessEngineConfiguration()).willReturn(processEngineConfiguration);
-    given(processEngineConfiguration.getIntegrationContextManager())
-        .willReturn(integrationContextManager);
-  }
+    @Before
+    public void setUp() throws Exception {
+        initMocks(this);
+        given(commandContext.getProcessEngineConfiguration())
+                .willReturn(processEngineConfiguration);
+        given(processEngineConfiguration.getIntegrationContextManager())
+                .willReturn(integrationContextManager);
+    }
 
-  @Test
-  public void executeShouldDeleteIntegrationContext() throws Exception {
-    // given
-    IntegrationContextEntity integrationContextEntity = mock(IntegrationContextEntity.class);
-    DeleteIntegrationContextCmd command = new DeleteIntegrationContextCmd(integrationContextEntity);
+    @Test
+    public void executeShouldDeleteIntegrationContext() throws Exception {
+        // given
+        IntegrationContextEntity integrationContextEntity = mock(IntegrationContextEntity.class);
+        DeleteIntegrationContextCmd command =
+                new DeleteIntegrationContextCmd(integrationContextEntity);
 
-    // when
-    command.execute(commandContext);
+        // when
+        command.execute(commandContext);
 
-    // then
-    verify(integrationContextManager).delete(integrationContextEntity);
-  }
+        // then
+        verify(integrationContextManager).delete(integrationContextEntity);
+    }
 }

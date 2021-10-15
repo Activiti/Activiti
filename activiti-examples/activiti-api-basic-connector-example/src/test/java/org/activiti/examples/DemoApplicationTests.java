@@ -26,14 +26,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 public class DemoApplicationTests {
 
-  @Autowired private ProcessRuntime processRuntime;
+    @Autowired private ProcessRuntime processRuntime;
 
-  @Autowired private SecurityUtil securityUtil;
+    @Autowired private SecurityUtil securityUtil;
 
-  @Test
-  public void contextLoads() {
-    securityUtil.logInAs("system");
-    ProcessDefinition processDefinition = processRuntime.processDefinition("RankMovieId");
-    assertThat(processDefinition).isNotNull();
-  }
+    @Test
+    public void contextLoads() {
+        securityUtil.logInAs("system");
+        ProcessDefinition processDefinition = processRuntime.processDefinition("RankMovieId");
+        assertThat(processDefinition).isNotNull();
+    }
 }

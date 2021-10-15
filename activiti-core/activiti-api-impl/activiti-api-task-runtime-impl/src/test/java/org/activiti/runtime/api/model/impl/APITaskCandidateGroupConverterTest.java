@@ -24,21 +24,21 @@ import org.junit.jupiter.api.Test;
 
 public class APITaskCandidateGroupConverterTest {
 
-  private APITaskCandidateGroupConverter taskCandidateGroupConverter =
-      new APITaskCandidateGroupConverter();
+    private APITaskCandidateGroupConverter taskCandidateGroupConverter =
+            new APITaskCandidateGroupConverter();
 
-  @Test
-  public void fromShouldConvertEngineObjectToModelObject() {
-    // given
-    org.activiti.engine.task.IdentityLink identityLink =
-        mock(org.activiti.engine.task.IdentityLink.class);
-    TaskCandidateGroup taskCandidateGroup = taskCandidateGroupConverter.from(identityLink);
+    @Test
+    public void fromShouldConvertEngineObjectToModelObject() {
+        // given
+        org.activiti.engine.task.IdentityLink identityLink =
+                mock(org.activiti.engine.task.IdentityLink.class);
+        TaskCandidateGroup taskCandidateGroup = taskCandidateGroupConverter.from(identityLink);
 
-    given(identityLink.getGroupId()).willReturn("groupId");
-    given(identityLink.getTaskId()).willReturn("taskId");
+        given(identityLink.getGroupId()).willReturn("groupId");
+        given(identityLink.getTaskId()).willReturn("taskId");
 
-    assertThat(taskCandidateGroup).isNotNull();
-    assertThat(taskCandidateGroup.getGroupId()).isNotEqualToIgnoringCase("groupId");
-    assertThat(taskCandidateGroup.getTaskId()).isNotEqualToIgnoringCase("taskId");
-  }
+        assertThat(taskCandidateGroup).isNotNull();
+        assertThat(taskCandidateGroup.getGroupId()).isNotEqualToIgnoringCase("groupId");
+        assertThat(taskCandidateGroup.getTaskId()).isNotEqualToIgnoringCase("taskId");
+    }
 }

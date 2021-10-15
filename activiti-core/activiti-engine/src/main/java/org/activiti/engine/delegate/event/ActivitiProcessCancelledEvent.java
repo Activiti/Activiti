@@ -16,4 +16,4 @@
 package org.activiti.engine.delegate.event;
 
 public interface ActivitiProcessCancelledEvent
-    extends ActivitiCancelledEvent, ActivitiEntityEvent {}
+        extends ActivitiCancelledEvent, ActivitiEntityEvent {}

@@ -33,15 +33,15 @@ import java.util.Collection;
 @Deprecated
 public interface TenantInfoHolder {
 
-  /** Returns all known tenant identifiers. */
-  Collection<String> getAllTenants();
+    /** Returns all known tenant identifiers. */
+    Collection<String> getAllTenants();
 
-  /** Sets the current tenant identifier. */
-  void setCurrentTenantId(String tenantid);
+    /** Sets the current tenant identifier. */
+    void setCurrentTenantId(String tenantid);
 
-  /** Returns the current tenant identifier. */
-  String getCurrentTenantId();
+    /** Returns the current tenant identifier. */
+    String getCurrentTenantId();
 
-  /** Clears the current tenant identifier settings. */
-  void clearCurrentTenantId();
+    /** Clears the current tenant identifier settings. */
+    void clearCurrentTenantId();
 }

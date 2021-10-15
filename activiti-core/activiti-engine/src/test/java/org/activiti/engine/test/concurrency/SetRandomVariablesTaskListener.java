@@ -16,40 +16,42 @@
 
 package org.activiti.engine.test.concurrency;
 
-import java.util.Random;
 import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.delegate.TaskListener;
+
+import java.util.Random;
 
 /** Tasklistener that sets some random process and task-variables. */
 public class SetRandomVariablesTaskListener implements TaskListener {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  @Override
-  public void notify(DelegateTask delegateTask) {
-    String varName;
-    for (int i = 0; i < 5; i++) {
-      varName = "variable-" + new Random().nextInt(10);
-      delegateTask.getExecution().setVariable(varName, getRandomValue());
+    @Override
+    public void notify(DelegateTask delegateTask) {
+        String varName;
+        for (int i = 0; i < 5; i++) {
+            varName = "variable-" + new Random().nextInt(10);
+            delegateTask.getExecution().setVariable(varName, getRandomValue());
+        }
+
+        for (int i = 0; i < 5; i++) {
+            varName = "task-variable-" + new Random().nextInt(10);
+            delegateTask.setVariableLocal(varName, getRandomValue());
+        }
     }
 
-    for (int i = 0; i < 5; i++) {
-      varName = "task-variable-" + new Random().nextInt(10);
-      delegateTask.setVariableLocal(varName, getRandomValue());
+    protected Object getRandomValue() {
+        switch (new Random().nextInt(4)) {
+            case 0:
+                return new Random().nextLong();
+            case 1:
+                return new Random().nextDouble();
+            case 2:
+                return "Activiti is a light-weight workflow and Business Process Management (BPM)"
+                        + " Platform";
+            default:
+                return new Random().nextBoolean();
+                // return "Some bytearray".getBytes();
+        }
     }
-  }
-
-  protected Object getRandomValue() {
-    switch (new Random().nextInt(4)) {
-      case 0:
-        return new Random().nextLong();
-      case 1:
-        return new Random().nextDouble();
-      case 2:
-        return "Activiti is a light-weight workflow and Business Process Management (BPM) Platform";
-      default:
-        return new Random().nextBoolean();
-        // return "Some bytearray".getBytes();
-    }
-  }
 }

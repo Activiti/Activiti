@@ -25,27 +25,27 @@ import javax.el.MapELResolver;
 /** Builder of {@link ELContext} instances. */
 public final class CommonELResolversUtil {
 
-  private CommonELResolversUtil() {
-    // Not intended to be instantiated
-  }
+    private CommonELResolversUtil() {
+        // Not intended to be instantiated
+    }
 
-  public static ELResolver arrayResolver() {
-    return new ArrayELResolver();
-  }
+    public static ELResolver arrayResolver() {
+        return new ArrayELResolver();
+    }
 
-  public static ELResolver listResolver() {
-    return new ListELResolver();
-  }
+    public static ELResolver listResolver() {
+        return new ListELResolver();
+    }
 
-  public static ELResolver mapResolver() {
-    return new MapELResolver();
-  }
+    public static ELResolver mapResolver() {
+        return new MapELResolver();
+    }
 
-  public static ELResolver jsonNodeResolver() {
-    return new JsonNodeELResolver();
-  }
+    public static ELResolver jsonNodeResolver() {
+        return new JsonNodeELResolver();
+    }
 
-  public static ELResolver beanResolver() {
-    return new ELResolverReflectionBlockerDecorator(new BeanELResolver());
-  }
+    public static ELResolver beanResolver() {
+        return new ELResolverReflectionBlockerDecorator(new BeanELResolver());
+    }
 }

@@ -15,39 +15,41 @@
  */
 package org.activiti.bpmn.converter;
 
-import javax.xml.stream.XMLStreamReader;
-import javax.xml.stream.XMLStreamWriter;
 import org.activiti.bpmn.converter.util.BpmnXMLUtil;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.InclusiveGateway;
 
+import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.XMLStreamWriter;
+
 /** */
 public class InclusiveGatewayXMLConverter extends BaseBpmnXMLConverter {
 
-  @Override
-  public Class<? extends BaseElement> getBpmnElementType() {
-    return InclusiveGateway.class;
-  }
+    @Override
+    public Class<? extends BaseElement> getBpmnElementType() {
+        return InclusiveGateway.class;
+    }
 
-  @Override
-  protected String getXMLElementName() {
-    return ELEMENT_GATEWAY_INCLUSIVE;
-  }
+    @Override
+    protected String getXMLElementName() {
+        return ELEMENT_GATEWAY_INCLUSIVE;
+    }
 
-  @Override
-  protected BaseElement convertXMLToElement(XMLStreamReader xtr, BpmnModel model) throws Exception {
-    InclusiveGateway gateway = new InclusiveGateway();
-    BpmnXMLUtil.addXMLLocation(gateway, xtr);
-    parseChildElements(getXMLElementName(), gateway, model, xtr);
-    return gateway;
-  }
+    @Override
+    protected BaseElement convertXMLToElement(XMLStreamReader xtr, BpmnModel model)
+            throws Exception {
+        InclusiveGateway gateway = new InclusiveGateway();
+        BpmnXMLUtil.addXMLLocation(gateway, xtr);
+        parseChildElements(getXMLElementName(), gateway, model, xtr);
+        return gateway;
+    }
 
-  @Override
-  protected void writeAdditionalAttributes(
-      BaseElement element, BpmnModel model, XMLStreamWriter xtw) throws Exception {}
+    @Override
+    protected void writeAdditionalAttributes(
+            BaseElement element, BpmnModel model, XMLStreamWriter xtw) throws Exception {}
 
-  @Override
-  protected void writeAdditionalChildElements(
-      BaseElement element, BpmnModel model, XMLStreamWriter xtw) throws Exception {}
+    @Override
+    protected void writeAdditionalChildElements(
+            BaseElement element, BpmnModel model, XMLStreamWriter xtw) throws Exception {}
 }

@@ -16,38 +16,39 @@
 
 package org.activiti.spring.test.taskListener;
 
-import java.util.List;
-import java.util.Map;
 import org.activiti.bpmn.model.Task;
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.history.HistoryLevel;
 
+import java.util.List;
+import java.util.Map;
+
 /** */
 public class MyTransactionalOperationTransactionDependentTaskListener
-    extends CurrentTaskTransactionDependentTaskListener {
+        extends CurrentTaskTransactionDependentTaskListener {
 
-  @Override
-  public void notify(
-      String processInstanceId,
-      String executionId,
-      Task task,
-      Map<String, Object> executionVariables,
-      Map<String, Object> customPropertiesMap) {
-    super.notify(processInstanceId, executionId, task, executionVariables, customPropertiesMap);
+    @Override
+    public void notify(
+            String processInstanceId,
+            String executionId,
+            Task task,
+            Map<String, Object> executionVariables,
+            Map<String, Object> customPropertiesMap) {
+        super.notify(processInstanceId, executionId, task, executionVariables, customPropertiesMap);
 
-    if (Context.getCommandContext()
-        .getProcessEngineConfiguration()
-        .getHistoryLevel()
-        .isAtLeast(HistoryLevel.ACTIVITY)) {
-      HistoryService historyService =
-          Context.getCommandContext().getProcessEngineConfiguration().getHistoryService();
+        if (Context.getCommandContext()
+                .getProcessEngineConfiguration()
+                .getHistoryLevel()
+                .isAtLeast(HistoryLevel.ACTIVITY)) {
+            HistoryService historyService =
+                    Context.getCommandContext().getProcessEngineConfiguration().getHistoryService();
 
-      // delete first historic instance
-      List<HistoricProcessInstance> historicProcessInstances =
-          historyService.createHistoricProcessInstanceQuery().list();
-      historyService.deleteHistoricProcessInstance(historicProcessInstances.get(0).getId());
+            // delete first historic instance
+            List<HistoricProcessInstance> historicProcessInstances =
+                    historyService.createHistoricProcessInstanceQuery().list();
+            historyService.deleteHistoricProcessInstance(historicProcessInstances.get(0).getId());
+        }
     }
-  }
 }

@@ -28,8 +28,8 @@ import org.springframework.security.config.annotation.method.configuration.Globa
 @ConditionalOnMissingBean(annotation = EnableGlobalMethodSecurity.class)
 public class ActivitiMethodSecurityAutoConfiguration {
 
-  @Configuration
-  @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true, jsr250Enabled = true)
-  public static class ActivitiMethodSecurityConfiguration
-      extends GlobalMethodSecurityConfiguration {}
+    @Configuration
+    @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true, jsr250Enabled = true)
+    public static class ActivitiMethodSecurityConfiguration
+            extends GlobalMethodSecurityConfiguration {}
 }

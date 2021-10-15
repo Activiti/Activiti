@@ -17,7 +17,7 @@ package org.activiti.application;
 
 public class ApplicationLoadException extends RuntimeException {
 
-  public ApplicationLoadException(String message, Throwable cause) {
-    super(message, cause);
-  }
+    public ApplicationLoadException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }

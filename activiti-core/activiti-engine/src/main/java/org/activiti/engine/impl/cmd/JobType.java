@@ -20,8 +20,8 @@ import org.activiti.engine.impl.persistence.entity.JobEntity;
 
 /** The various types of {@link JobEntity} subtypes, as enum. */
 public enum JobType {
-  ASYNC,
-  TIMER,
-  SUSPENDED,
-  DEADLETTER
+    ASYNC,
+    TIMER,
+    SUSPENDED,
+    DEADLETTER
 }

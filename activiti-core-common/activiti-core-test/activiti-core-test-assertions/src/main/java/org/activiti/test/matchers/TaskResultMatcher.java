@@ -19,5 +19,5 @@ import org.activiti.api.task.model.Task;
 
 public interface TaskResultMatcher {
 
-  void match(Task task);
+    void match(Task task);
 }

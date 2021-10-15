@@ -21,12 +21,12 @@ import org.activiti.engine.impl.persistence.entity.HistoricIdentityLinkEntity;
 
 /** */
 public class HistoricIdentityLinksByProcInstMatcher
-    extends CachedEntityMatcherAdapter<HistoricIdentityLinkEntity> {
+        extends CachedEntityMatcherAdapter<HistoricIdentityLinkEntity> {
 
-  @Override
-  public boolean isRetained(
-      HistoricIdentityLinkEntity historicIdentityLinkEntity, Object parameter) {
-    return historicIdentityLinkEntity.getProcessInstanceId() != null
-        && historicIdentityLinkEntity.getProcessInstanceId().equals((String) parameter);
-  }
+    @Override
+    public boolean isRetained(
+            HistoricIdentityLinkEntity historicIdentityLinkEntity, Object parameter) {
+        return historicIdentityLinkEntity.getProcessInstanceId() != null
+                && historicIdentityLinkEntity.getProcessInstanceId().equals((String) parameter);
+    }
 }

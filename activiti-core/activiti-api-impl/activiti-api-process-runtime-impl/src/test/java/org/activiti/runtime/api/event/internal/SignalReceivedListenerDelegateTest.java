@@ -15,13 +15,13 @@
  */
 package org.activiti.runtime.api.event.internal;
 
-import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-import java.util.Optional;
+import static java.util.Arrays.asList;
+
 import org.activiti.api.process.model.events.BPMNSignalReceivedEvent;
 import org.activiti.api.process.runtime.events.listener.BPMNElementEventListener;
 import org.activiti.api.runtime.event.impl.BPMNSignalReceivedEventImpl;
@@ -32,41 +32,44 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 
+import java.util.Optional;
+
 public class SignalReceivedListenerDelegateTest {
 
-  private SignalReceivedListenerDelegate listenerDelegate;
+    private SignalReceivedListenerDelegate listenerDelegate;
 
-  @Mock private BPMNElementEventListener<BPMNSignalReceivedEvent> firstListener;
+    @Mock private BPMNElementEventListener<BPMNSignalReceivedEvent> firstListener;
 
-  @Mock private BPMNElementEventListener<BPMNSignalReceivedEvent> secondListener;
+    @Mock private BPMNElementEventListener<BPMNSignalReceivedEvent> secondListener;
 
-  @Mock private ToSignalReceivedConverter converter;
+    @Mock private ToSignalReceivedConverter converter;
 
-  @BeforeEach
-  public void setUp() {
-    initMocks(this);
-    listenerDelegate =
-        new SignalReceivedListenerDelegate(asList(firstListener, secondListener), converter);
-  }
+    @BeforeEach
+    public void setUp() {
+        initMocks(this);
+        listenerDelegate =
+                new SignalReceivedListenerDelegate(
+                        asList(firstListener, secondListener), converter);
+    }
 
-  @Test
-  public void onEventShouldCallOnAvailableListenersWhenIsASignalEvent() {
-    // given
-    ActivitiSignalEventImpl internalEvent =
-        new ActivitiSignalEventImpl(ActivitiEventType.ACTIVITY_SIGNALED);
-    BPMNSignalReceivedEventImpl signalReceivedEvent = new BPMNSignalReceivedEventImpl();
-    given(converter.from(internalEvent)).willReturn(Optional.of(signalReceivedEvent));
+    @Test
+    public void onEventShouldCallOnAvailableListenersWhenIsASignalEvent() {
+        // given
+        ActivitiSignalEventImpl internalEvent =
+                new ActivitiSignalEventImpl(ActivitiEventType.ACTIVITY_SIGNALED);
+        BPMNSignalReceivedEventImpl signalReceivedEvent = new BPMNSignalReceivedEventImpl();
+        given(converter.from(internalEvent)).willReturn(Optional.of(signalReceivedEvent));
 
-    // when
-    listenerDelegate.onEvent(internalEvent);
+        // when
+        listenerDelegate.onEvent(internalEvent);
 
-    // then
-    verify(firstListener).onEvent(signalReceivedEvent);
-    verify(secondListener).onEvent(signalReceivedEvent);
-  }
+        // then
+        verify(firstListener).onEvent(signalReceivedEvent);
+        verify(secondListener).onEvent(signalReceivedEvent);
+    }
 
-  @Test
-  public void failOnExceptionShouldReturnFalse() {
-    assertThat(listenerDelegate.isFailOnException()).isFalse();
-  }
+    @Test
+    public void failOnExceptionShouldReturnFalse() {
+        assertThat(listenerDelegate.isFailOnException()).isFalse();
+    }
 }

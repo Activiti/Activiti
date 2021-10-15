@@ -15,35 +15,36 @@
  */
 package org.activiti.api.runtime.model.impl;
 
-import java.util.List;
 import org.activiti.api.process.model.ProcessInstanceMeta;
+
+import java.util.List;
 
 public class ProcessInstanceMetaImpl implements ProcessInstanceMeta {
 
-  private String processInstanceId;
-  private List<String> activeActivitiesIds;
+    private String processInstanceId;
+    private List<String> activeActivitiesIds;
 
-  public ProcessInstanceMetaImpl() {}
+    public ProcessInstanceMetaImpl() {}
 
-  public ProcessInstanceMetaImpl(String processInstanceId) {
-    this.processInstanceId = processInstanceId;
-  }
+    public ProcessInstanceMetaImpl(String processInstanceId) {
+        this.processInstanceId = processInstanceId;
+    }
 
-  @Override
-  public String getProcessInstanceId() {
-    return processInstanceId;
-  }
+    @Override
+    public String getProcessInstanceId() {
+        return processInstanceId;
+    }
 
-  public void setProcessInstanceId(String processInstanceId) {
-    this.processInstanceId = processInstanceId;
-  }
+    public void setProcessInstanceId(String processInstanceId) {
+        this.processInstanceId = processInstanceId;
+    }
 
-  @Override
-  public List<String> getActiveActivitiesIds() {
-    return activeActivitiesIds;
-  }
+    @Override
+    public List<String> getActiveActivitiesIds() {
+        return activeActivitiesIds;
+    }
 
-  public void setActiveActivitiesIds(List<String> activeActivitiesIds) {
-    this.activeActivitiesIds = activeActivitiesIds;
-  }
+    public void setActiveActivitiesIds(List<String> activeActivitiesIds) {
+        this.activeActivitiesIds = activeActivitiesIds;
+    }
 }

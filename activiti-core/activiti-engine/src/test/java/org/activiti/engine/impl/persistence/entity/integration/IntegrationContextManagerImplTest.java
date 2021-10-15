@@ -29,34 +29,34 @@ import org.mockito.Mock;
 
 public class IntegrationContextManagerImplTest {
 
-  @InjectMocks private IntegrationContextManagerImpl manager;
+    @InjectMocks private IntegrationContextManagerImpl manager;
 
-  @Mock private IntegrationContextDataManager dataManager;
+    @Mock private IntegrationContextDataManager dataManager;
 
-  @Before
-  public void setUp() throws Exception {
-    initMocks(this);
-  }
+    @Before
+    public void setUp() throws Exception {
+        initMocks(this);
+    }
 
-  @Test
-  public void getDataManagerShouldReturnIntegrationContextDataManager() {
-    // when
-    DataManager<IntegrationContextEntity> retrievedDataManager = manager.getDataManager();
+    @Test
+    public void getDataManagerShouldReturnIntegrationContextDataManager() {
+        // when
+        DataManager<IntegrationContextEntity> retrievedDataManager = manager.getDataManager();
 
-    // then
-    assertThat(retrievedDataManager).isEqualTo(dataManager);
-  }
+        // then
+        assertThat(retrievedDataManager).isEqualTo(dataManager);
+    }
 
-  @Test
-  public void findByIdShouldReturnResultFromDataManager() {
-    // given
-    IntegrationContextEntity entity = mock(IntegrationContextEntity.class);
-    given(dataManager.findById("id")).willReturn(entity);
+    @Test
+    public void findByIdShouldReturnResultFromDataManager() {
+        // given
+        IntegrationContextEntity entity = mock(IntegrationContextEntity.class);
+        given(dataManager.findById("id")).willReturn(entity);
 
-    // when
-    IntegrationContextEntity retrievedResult = manager.findById("id");
+        // when
+        IntegrationContextEntity retrievedResult = manager.findById("id");
 
-    // then
-    assertThat(retrievedResult).isEqualTo(entity);
-  }
+        // then
+        assertThat(retrievedResult).isEqualTo(entity);
+    }
 }

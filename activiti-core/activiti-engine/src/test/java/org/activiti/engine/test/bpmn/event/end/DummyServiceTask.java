@@ -21,12 +21,12 @@ import org.activiti.engine.impl.bpmn.behavior.TaskActivityBehavior;
 
 public class DummyServiceTask extends TaskActivityBehavior {
 
-  public DummyServiceTask() {
-    super();
-  }
+    public DummyServiceTask() {
+        super();
+    }
 
-  @Override
-  public void trigger(DelegateExecution execution, String signalName, Object signalData) {
-    leave(execution);
-  }
+    @Override
+    public void trigger(DelegateExecution execution, String signalName, Object signalData) {
+        leave(execution);
+    }
 }

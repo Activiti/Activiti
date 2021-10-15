@@ -20,22 +20,22 @@ import org.activiti.api.process.model.events.BPMNSequenceFlowTakenEvent;
 import org.activiti.api.process.model.events.SequenceFlowEvent;
 
 public class BPMNSequenceFlowTakenImpl
-    extends RuntimeEventImpl<BPMNSequenceFlow, SequenceFlowEvent.SequenceFlowEvents>
-    implements BPMNSequenceFlowTakenEvent {
+        extends RuntimeEventImpl<BPMNSequenceFlow, SequenceFlowEvent.SequenceFlowEvents>
+        implements BPMNSequenceFlowTakenEvent {
 
-  public BPMNSequenceFlowTakenImpl() {}
+    public BPMNSequenceFlowTakenImpl() {}
 
-  public BPMNSequenceFlowTakenImpl(BPMNSequenceFlow entity) {
-    super(entity);
-  }
+    public BPMNSequenceFlowTakenImpl(BPMNSequenceFlow entity) {
+        super(entity);
+    }
 
-  @Override
-  public SequenceFlowEvents getEventType() {
-    return SequenceFlowEvents.SEQUENCE_FLOW_TAKEN;
-  }
+    @Override
+    public SequenceFlowEvents getEventType() {
+        return SequenceFlowEvents.SEQUENCE_FLOW_TAKEN;
+    }
 
-  @Override
-  public String toString() {
-    return "BPMNSequenceFlowEventImpl{" + super.toString() + "}";
-  }
+    @Override
+    public String toString() {
+        return "BPMNSequenceFlowEventImpl{" + super.toString() + "}";
+    }
 }

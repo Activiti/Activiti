@@ -16,26 +16,27 @@
 
 package org.activiti.engine.impl.cmd;
 
-import java.io.Serializable;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.management.TableMetaData;
 
+import java.io.Serializable;
+
 /** */
 public class GetTableMetaDataCmd implements Command<TableMetaData>, Serializable {
 
-  private static final long serialVersionUID = 1L;
-  protected String tableName;
+    private static final long serialVersionUID = 1L;
+    protected String tableName;
 
-  public GetTableMetaDataCmd(String tableName) {
-    this.tableName = tableName;
-  }
-
-  public TableMetaData execute(CommandContext commandContext) {
-    if (tableName == null) {
-      throw new ActivitiIllegalArgumentException("tableName is null");
+    public GetTableMetaDataCmd(String tableName) {
+        this.tableName = tableName;
     }
-    return commandContext.getTableDataManager().getTableMetaData(tableName);
-  }
+
+    public TableMetaData execute(CommandContext commandContext) {
+        if (tableName == null) {
+            throw new ActivitiIllegalArgumentException("tableName is null");
+        }
+        return commandContext.getTableDataManager().getTableMetaData(tableName);
+    }
 }

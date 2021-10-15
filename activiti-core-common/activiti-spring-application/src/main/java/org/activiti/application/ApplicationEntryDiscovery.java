@@ -20,7 +20,7 @@ import java.util.zip.ZipEntry;
 
 public interface ApplicationEntryDiscovery {
 
-  Predicate<ZipEntry> filter(ZipEntry entry);
+    Predicate<ZipEntry> filter(ZipEntry entry);
 
-  String getEntryType();
+    String getEntryType();
 }

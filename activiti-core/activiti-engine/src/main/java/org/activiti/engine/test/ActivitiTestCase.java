@@ -16,12 +16,14 @@
 
 package org.activiti.engine.test;
 
-import java.util.Date;
 import junit.framework.TestCase;
+
 import org.activiti.engine.*;
 import org.activiti.engine.impl.ProcessEngineImpl;
 import org.activiti.engine.impl.test.TestHelper;
 import org.activiti.engine.test.mock.ActivitiMockSupport;
+
+import java.util.Date;
 
 /**
  * Convenience for ProcessEngine and services initialization in the form of a JUnit base class.
@@ -46,112 +48,112 @@ import org.activiti.engine.test.mock.ActivitiMockSupport;
  */
 public abstract class ActivitiTestCase extends TestCase {
 
-  protected String configurationResource = "activiti.cfg.xml";
-  protected String deploymentId;
+    protected String configurationResource = "activiti.cfg.xml";
+    protected String deploymentId;
 
-  protected ProcessEngineConfiguration processEngineConfiguration;
-  protected ProcessEngine processEngine;
-  protected RepositoryService repositoryService;
-  protected RuntimeService runtimeService;
-  protected TaskService taskService;
-  protected HistoryService historicDataService;
-  protected ManagementService managementService;
+    protected ProcessEngineConfiguration processEngineConfiguration;
+    protected ProcessEngine processEngine;
+    protected RepositoryService repositoryService;
+    protected RuntimeService runtimeService;
+    protected TaskService taskService;
+    protected HistoryService historicDataService;
+    protected ManagementService managementService;
 
-  private ActivitiMockSupport mockSupport;
+    private ActivitiMockSupport mockSupport;
 
-  /** uses 'activiti.cfg.xml' as it's configuration resource */
-  public ActivitiTestCase() {}
+    /** uses 'activiti.cfg.xml' as it's configuration resource */
+    public ActivitiTestCase() {}
 
-  public void assertProcessEnded(final String processInstanceId) {
-    TestHelper.assertProcessEnded(processEngine, processInstanceId);
-  }
-
-  @Override
-  protected void setUp() throws Exception {
-    super.setUp();
-
-    if (processEngine == null) {
-      initializeProcessEngine();
-      initializeServices();
-      initializeMockSupport();
-    }
-  }
-
-  @Override
-  protected void runTest() throws Throwable {
-
-    // Support for mockup annotations on test method
-    TestHelper.annotationMockSupportSetup(getClass(), getName(), mockSupport);
-
-    // The deployment of processes denoted by @Deployment should
-    // be done after the setup(). After all, the mockups must be
-    // configured in the engine before the actual deployment happens
-    deploymentId = TestHelper.annotationDeploymentSetUp(processEngine, getClass(), getName());
-
-    super.runTest();
-
-    // Remove deployment
-    TestHelper.annotationDeploymentTearDown(processEngine, deploymentId, getClass(), getName());
-
-    // Reset mocks
-    TestHelper.annotationMockSupportTeardown(mockSupport);
-  }
-
-  protected void initializeProcessEngine() {
-    processEngine = TestHelper.getProcessEngine(getConfigurationResource());
-  }
-
-  protected void initializeServices() {
-    processEngineConfiguration =
-        ((ProcessEngineImpl) processEngine).getProcessEngineConfiguration();
-    repositoryService = processEngine.getRepositoryService();
-    runtimeService = processEngine.getRuntimeService();
-    taskService = processEngine.getTaskService();
-    historicDataService = processEngine.getHistoryService();
-    managementService = processEngine.getManagementService();
-  }
-
-  protected void initializeMockSupport() {
-    if (ActivitiMockSupport.isMockSupportPossible(processEngine)) {
-      this.mockSupport = new ActivitiMockSupport(processEngine);
-    }
-  }
-
-  @Override
-  protected void tearDown() throws Exception {
-
-    // Reset any timers
-    processEngineConfiguration.getClock().reset();
-
-    // Reset any mocks
-    if (mockSupport != null) {
-      mockSupport.reset();
+    public void assertProcessEnded(final String processInstanceId) {
+        TestHelper.assertProcessEnded(processEngine, processInstanceId);
     }
 
-    super.tearDown();
-  }
+    @Override
+    protected void setUp() throws Exception {
+        super.setUp();
 
-  public static void closeProcessEngines() {
-    TestHelper.closeProcessEngines();
-  }
+        if (processEngine == null) {
+            initializeProcessEngine();
+            initializeServices();
+            initializeMockSupport();
+        }
+    }
 
-  public void setCurrentTime(Date currentTime) {
-    processEngineConfiguration.getClock().setCurrentTime(currentTime);
-  }
+    @Override
+    protected void runTest() throws Throwable {
 
-  public String getConfigurationResource() {
-    return configurationResource;
-  }
+        // Support for mockup annotations on test method
+        TestHelper.annotationMockSupportSetup(getClass(), getName(), mockSupport);
 
-  public void setConfigurationResource(String configurationResource) {
-    this.configurationResource = configurationResource;
-  }
+        // The deployment of processes denoted by @Deployment should
+        // be done after the setup(). After all, the mockups must be
+        // configured in the engine before the actual deployment happens
+        deploymentId = TestHelper.annotationDeploymentSetUp(processEngine, getClass(), getName());
 
-  public ActivitiMockSupport getMockSupport() {
-    return mockSupport;
-  }
+        super.runTest();
 
-  public ActivitiMockSupport mockSupport() {
-    return mockSupport;
-  }
+        // Remove deployment
+        TestHelper.annotationDeploymentTearDown(processEngine, deploymentId, getClass(), getName());
+
+        // Reset mocks
+        TestHelper.annotationMockSupportTeardown(mockSupport);
+    }
+
+    protected void initializeProcessEngine() {
+        processEngine = TestHelper.getProcessEngine(getConfigurationResource());
+    }
+
+    protected void initializeServices() {
+        processEngineConfiguration =
+                ((ProcessEngineImpl) processEngine).getProcessEngineConfiguration();
+        repositoryService = processEngine.getRepositoryService();
+        runtimeService = processEngine.getRuntimeService();
+        taskService = processEngine.getTaskService();
+        historicDataService = processEngine.getHistoryService();
+        managementService = processEngine.getManagementService();
+    }
+
+    protected void initializeMockSupport() {
+        if (ActivitiMockSupport.isMockSupportPossible(processEngine)) {
+            this.mockSupport = new ActivitiMockSupport(processEngine);
+        }
+    }
+
+    @Override
+    protected void tearDown() throws Exception {
+
+        // Reset any timers
+        processEngineConfiguration.getClock().reset();
+
+        // Reset any mocks
+        if (mockSupport != null) {
+            mockSupport.reset();
+        }
+
+        super.tearDown();
+    }
+
+    public static void closeProcessEngines() {
+        TestHelper.closeProcessEngines();
+    }
+
+    public void setCurrentTime(Date currentTime) {
+        processEngineConfiguration.getClock().setCurrentTime(currentTime);
+    }
+
+    public String getConfigurationResource() {
+        return configurationResource;
+    }
+
+    public void setConfigurationResource(String configurationResource) {
+        this.configurationResource = configurationResource;
+    }
+
+    public ActivitiMockSupport getMockSupport() {
+        return mockSupport;
+    }
+
+    public ActivitiMockSupport mockSupport() {
+        return mockSupport;
+    }
 }

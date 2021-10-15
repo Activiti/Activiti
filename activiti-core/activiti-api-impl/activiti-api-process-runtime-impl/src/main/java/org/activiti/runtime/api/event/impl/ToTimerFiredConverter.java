@@ -15,30 +15,32 @@
  */
 package org.activiti.runtime.api.event.impl;
 
-import java.util.Optional;
 import org.activiti.api.process.model.events.BPMNTimerFiredEvent;
 import org.activiti.api.runtime.event.impl.BPMNTimerFiredEventImpl;
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 
+import java.util.Optional;
+
 public class ToTimerFiredConverter implements EventConverter<BPMNTimerFiredEvent, ActivitiEvent> {
 
-  private BPMNTimerConverter bpmnTimerConverter;
+    private BPMNTimerConverter bpmnTimerConverter;
 
-  public ToTimerFiredConverter(BPMNTimerConverter bpmnTimerConverter) {
-    this.bpmnTimerConverter = bpmnTimerConverter;
-  }
-
-  @Override
-  public Optional<BPMNTimerFiredEvent> from(ActivitiEvent internalEvent) {
-    BPMNTimerFiredEventImpl event = null;
-    if (bpmnTimerConverter.isTimerRelatedEvent(internalEvent)) {
-      event =
-          new BPMNTimerFiredEventImpl(
-              bpmnTimerConverter.convertToBPMNTimer((ActivitiEntityEvent) internalEvent));
-      event.setProcessInstanceId(internalEvent.getProcessInstanceId());
-      event.setProcessDefinitionId(internalEvent.getProcessDefinitionId());
+    public ToTimerFiredConverter(BPMNTimerConverter bpmnTimerConverter) {
+        this.bpmnTimerConverter = bpmnTimerConverter;
     }
-    return Optional.ofNullable(event);
-  }
+
+    @Override
+    public Optional<BPMNTimerFiredEvent> from(ActivitiEvent internalEvent) {
+        BPMNTimerFiredEventImpl event = null;
+        if (bpmnTimerConverter.isTimerRelatedEvent(internalEvent)) {
+            event =
+                    new BPMNTimerFiredEventImpl(
+                            bpmnTimerConverter.convertToBPMNTimer(
+                                    (ActivitiEntityEvent) internalEvent));
+            event.setProcessInstanceId(internalEvent.getProcessInstanceId());
+            event.setProcessDefinitionId(internalEvent.getProcessDefinitionId());
+        }
+        return Optional.ofNullable(event);
+    }
 }

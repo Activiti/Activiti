@@ -18,5 +18,5 @@ package org.activiti.core.el;
 import java.util.Map;
 
 public interface ExpressionResolver {
-  <T> T resolveExpression(String expression, Map<String, Object> variables, Class<T> type);
+    <T> T resolveExpression(String expression, Map<String, Object> variables, Class<T> type);
 }

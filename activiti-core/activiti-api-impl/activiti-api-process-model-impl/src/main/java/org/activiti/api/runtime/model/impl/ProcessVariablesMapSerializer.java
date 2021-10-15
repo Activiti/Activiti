@@ -23,68 +23,70 @@ import static org.activiti.api.runtime.model.impl.ProcessVariablesMapTypeRegistr
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
+
+import org.springframework.core.convert.ConversionService;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import org.springframework.core.convert.ConversionService;
 
 public class ProcessVariablesMapSerializer
-    extends StdSerializer<ProcessVariablesMap<String, Object>> {
+        extends StdSerializer<ProcessVariablesMap<String, Object>> {
 
-  private static final long serialVersionUID = 1L;
-  private final ConversionService conversionService;
+    private static final long serialVersionUID = 1L;
+    private final ConversionService conversionService;
 
-  public ProcessVariablesMapSerializer(ConversionService conversionService) {
-    super(ProcessVariablesMap.class, true);
+    public ProcessVariablesMapSerializer(ConversionService conversionService) {
+        super(ProcessVariablesMap.class, true);
 
-    this.conversionService = conversionService;
-  }
-
-  @Override
-  public void serialize(
-      ProcessVariablesMap<String, Object> processVariablesMap,
-      JsonGenerator gen,
-      SerializerProvider serializers)
-      throws IOException {
-
-    HashMap<String, ProcessVariableValue> map = new HashMap<>();
-    for (Map.Entry<String, Object> entry : processVariablesMap.entrySet()) {
-      String name = entry.getKey();
-      Object value = entry.getValue();
-      map.put(name, buildProcessVariableValue(value));
+        this.conversionService = conversionService;
     }
 
-    gen.writeObject(map);
-  }
+    @Override
+    public void serialize(
+            ProcessVariablesMap<String, Object> processVariablesMap,
+            JsonGenerator gen,
+            SerializerProvider serializers)
+            throws IOException {
 
-  private ProcessVariableValue buildProcessVariableValue(Object value) {
-    ProcessVariableValue variableValue = null;
+        HashMap<String, ProcessVariableValue> map = new HashMap<>();
+        for (Map.Entry<String, Object> entry : processVariablesMap.entrySet()) {
+            String name = entry.getKey();
+            Object value = entry.getValue();
+            map.put(name, buildProcessVariableValue(value));
+        }
 
-    if (value != null) {
-      Class<?> entryValueClass = value.getClass();
-      String entryType = resolveEntryType(entryValueClass, value);
-
-      if (OBJECT_TYPE_KEY.equals(entryType)) {
-        value = new ObjectValue(value);
-      }
-
-      String entryValue = conversionService.convert(value, String.class);
-
-      variableValue = new ProcessVariableValue(entryType, entryValue);
+        gen.writeObject(map);
     }
 
-    return variableValue;
-  }
+    private ProcessVariableValue buildProcessVariableValue(Object value) {
+        ProcessVariableValue variableValue = null;
 
-  private String resolveEntryType(Class<?> clazz, Object value) {
-    Class<?> entryType;
+        if (value != null) {
+            Class<?> entryValueClass = value.getClass();
+            String entryType = resolveEntryType(entryValueClass, value);
 
-    if (isScalarType(clazz)) {
-      entryType = clazz;
-    } else {
-      entryType = getContainerType(clazz, value).orElse(ObjectValue.class);
+            if (OBJECT_TYPE_KEY.equals(entryType)) {
+                value = new ObjectValue(value);
+            }
+
+            String entryValue = conversionService.convert(value, String.class);
+
+            variableValue = new ProcessVariableValue(entryType, entryValue);
+        }
+
+        return variableValue;
     }
 
-    return forClass(entryType);
-  }
+    private String resolveEntryType(Class<?> clazz, Object value) {
+        Class<?> entryType;
+
+        if (isScalarType(clazz)) {
+            entryType = clazz;
+        } else {
+            entryType = getContainerType(clazz, value).orElse(ObjectValue.class);
+        }
+
+        return forClass(entryType);
+    }
 }

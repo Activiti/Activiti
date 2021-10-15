@@ -21,7 +21,6 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-import java.util.Optional;
 import org.activiti.api.task.model.events.TaskRuntimeEvent;
 import org.activiti.api.task.model.impl.TaskImpl;
 import org.activiti.api.task.runtime.events.TaskCancelledEvent;
@@ -35,64 +34,72 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
+import java.util.Optional;
+
 public class ToTaskCancelledConverterTest {
 
-  @InjectMocks private ToTaskCancelledConverter eventConverter;
+    @InjectMocks private ToTaskCancelledConverter eventConverter;
 
-  @Mock private APITaskConverter taskConverter;
+    @Mock private APITaskConverter taskConverter;
 
-  @BeforeEach
-  public void setUp() {
-    initMocks(this);
-  }
+    @BeforeEach
+    public void setUp() {
+        initMocks(this);
+    }
 
-  @Test
-  public void should_returnConvertedTask_when_entityIsACancelledTask() {
-    // given
-    Task internalTask = taskEntityBuilder().withCancelled(true).build();
-    ActivitiEntityEventImpl internalEvent =
-        new ActivitiEntityEventImpl(internalTask, ActivitiEventType.ENTITY_DELETED);
+    @Test
+    public void should_returnConvertedTask_when_entityIsACancelledTask() {
+        // given
+        Task internalTask = taskEntityBuilder().withCancelled(true).build();
+        ActivitiEntityEventImpl internalEvent =
+                new ActivitiEntityEventImpl(internalTask, ActivitiEventType.ENTITY_DELETED);
 
-    TaskImpl apiTask =
-        new TaskImpl("id", "myTask", org.activiti.api.task.model.Task.TaskStatus.CANCELLED);
-    given(taskConverter.from(internalTask, org.activiti.api.task.model.Task.TaskStatus.CANCELLED))
-        .willReturn(apiTask);
+        TaskImpl apiTask =
+                new TaskImpl("id", "myTask", org.activiti.api.task.model.Task.TaskStatus.CANCELLED);
+        given(
+                        taskConverter.from(
+                                internalTask,
+                                org.activiti.api.task.model.Task.TaskStatus.CANCELLED))
+                .willReturn(apiTask);
 
-    // when
-    TaskCancelledEvent convertedTaskCancelledEvent =
-        eventConverter.from(internalEvent).orElse(null);
+        // when
+        TaskCancelledEvent convertedTaskCancelledEvent =
+                eventConverter.from(internalEvent).orElse(null);
 
-    // then
-    assertThat(convertedTaskCancelledEvent).isNotNull();
-    assertThat(convertedTaskCancelledEvent.getEntity()).isEqualTo(apiTask);
-    assertThat(convertedTaskCancelledEvent.getEventType())
-        .isEqualTo(TaskRuntimeEvent.TaskEvents.TASK_CANCELLED);
-  }
+        // then
+        assertThat(convertedTaskCancelledEvent).isNotNull();
+        assertThat(convertedTaskCancelledEvent.getEntity()).isEqualTo(apiTask);
+        assertThat(convertedTaskCancelledEvent.getEventType())
+                .isEqualTo(TaskRuntimeEvent.TaskEvents.TASK_CANCELLED);
+    }
 
-  @Test
-  public void should_ReturnEmpty_when_entityIsANonCancelledTask() {
-    // given
-    Task internalTask = taskEntityBuilder().withCancelled(false).build();
-    ActivitiEntityEventImpl internalEvent =
-        new ActivitiEntityEventImpl(internalTask, ActivitiEventType.ENTITY_DELETED);
+    @Test
+    public void should_ReturnEmpty_when_entityIsANonCancelledTask() {
+        // given
+        Task internalTask = taskEntityBuilder().withCancelled(false).build();
+        ActivitiEntityEventImpl internalEvent =
+                new ActivitiEntityEventImpl(internalTask, ActivitiEventType.ENTITY_DELETED);
 
-    // when
-    Optional<TaskCancelledEvent> convertedTaskCancelledEvent = eventConverter.from(internalEvent);
+        // when
+        Optional<TaskCancelledEvent> convertedTaskCancelledEvent =
+                eventConverter.from(internalEvent);
 
-    // then
-    assertThat(convertedTaskCancelledEvent).isEmpty();
-  }
+        // then
+        assertThat(convertedTaskCancelledEvent).isEmpty();
+    }
 
-  @Test
-  public void should_returnEmpty_when_entityIsNotTask() {
-    // given
-    ActivitiEntityEventImpl internalEvent =
-        new ActivitiEntityEventImpl(mock(ProcessInstance.class), ActivitiEventType.ENTITY_DELETED);
+    @Test
+    public void should_returnEmpty_when_entityIsNotTask() {
+        // given
+        ActivitiEntityEventImpl internalEvent =
+                new ActivitiEntityEventImpl(
+                        mock(ProcessInstance.class), ActivitiEventType.ENTITY_DELETED);
 
-    // when
-    Optional<TaskCancelledEvent> convertedTaskCancelledEvent = eventConverter.from(internalEvent);
+        // when
+        Optional<TaskCancelledEvent> convertedTaskCancelledEvent =
+                eventConverter.from(internalEvent);
 
-    // then
-    assertThat(convertedTaskCancelledEvent).isEmpty();
-  }
+        // then
+        assertThat(convertedTaskCancelledEvent).isEmpty();
+    }
 }

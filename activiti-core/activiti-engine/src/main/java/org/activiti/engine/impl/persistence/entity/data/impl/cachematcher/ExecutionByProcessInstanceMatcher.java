@@ -22,9 +22,9 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 /** */
 public class ExecutionByProcessInstanceMatcher extends CachedEntityMatcherAdapter<ExecutionEntity> {
 
-  @Override
-  public boolean isRetained(ExecutionEntity entity, Object parameter) {
-    return entity.getProcessInstanceId() != null
-        && entity.getProcessInstanceId().equals((String) parameter);
-  }
+    @Override
+    public boolean isRetained(ExecutionEntity entity, Object parameter) {
+        return entity.getProcessInstanceId() != null
+                && entity.getProcessInstanceId().equals((String) parameter);
+    }
 }

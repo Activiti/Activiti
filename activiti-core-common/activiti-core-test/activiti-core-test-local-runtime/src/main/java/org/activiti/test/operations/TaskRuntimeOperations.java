@@ -15,7 +15,6 @@
  */
 package org.activiti.test.operations;
 
-import java.util.List;
 import org.activiti.api.task.model.Task;
 import org.activiti.api.task.model.payloads.ClaimTaskPayload;
 import org.activiti.api.task.model.payloads.CompleteTaskPayload;
@@ -25,35 +24,37 @@ import org.activiti.test.TaskSource;
 import org.activiti.test.assertions.TaskAssertions;
 import org.activiti.test.assertions.TaskAssertionsImpl;
 
+import java.util.List;
+
 public class TaskRuntimeOperations implements TaskOperations {
 
-  private TaskRuntime taskRuntime;
+    private TaskRuntime taskRuntime;
 
-  private EventSource eventSource;
+    private EventSource eventSource;
 
-  private List<TaskSource> taskSources;
+    private List<TaskSource> taskSources;
 
-  public TaskRuntimeOperations(
-      TaskRuntime taskRuntime, EventSource eventSource, List<TaskSource> taskSources) {
-    this.taskRuntime = taskRuntime;
-    this.eventSource = eventSource;
-    this.taskSources = taskSources;
-  }
+    public TaskRuntimeOperations(
+            TaskRuntime taskRuntime, EventSource eventSource, List<TaskSource> taskSources) {
+        this.taskRuntime = taskRuntime;
+        this.eventSource = eventSource;
+        this.taskSources = taskSources;
+    }
 
-  @Override
-  public TaskAssertions claim(ClaimTaskPayload claimTaskPayload) {
-    Task task = taskRuntime.claim(claimTaskPayload);
-    return buildTaskAssertions(task);
-  }
+    @Override
+    public TaskAssertions claim(ClaimTaskPayload claimTaskPayload) {
+        Task task = taskRuntime.claim(claimTaskPayload);
+        return buildTaskAssertions(task);
+    }
 
-  private TaskAssertions buildTaskAssertions(Task task) {
-    return new TaskAssertionsImpl(task, taskSources, eventSource);
-  }
+    private TaskAssertions buildTaskAssertions(Task task) {
+        return new TaskAssertionsImpl(task, taskSources, eventSource);
+    }
 
-  @Override
-  public TaskAssertions complete(CompleteTaskPayload completeTaskPayload) {
-    Task task = taskRuntime.task(completeTaskPayload.getTaskId());
-    taskRuntime.complete(completeTaskPayload);
-    return buildTaskAssertions(task);
-  }
+    @Override
+    public TaskAssertions complete(CompleteTaskPayload completeTaskPayload) {
+        Task task = taskRuntime.task(completeTaskPayload.getTaskId());
+        taskRuntime.complete(completeTaskPayload);
+        return buildTaskAssertions(task);
+    }
 }

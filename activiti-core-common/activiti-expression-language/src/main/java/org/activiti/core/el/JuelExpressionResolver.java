@@ -22,39 +22,46 @@ import static org.activiti.core.el.CommonELResolversUtil.listResolver;
 import static org.activiti.core.el.CommonELResolversUtil.mapResolver;
 
 import de.odysseus.el.ExpressionFactoryImpl;
+
 import java.util.Map;
+
 import javax.el.ELContext;
 import javax.el.ExpressionFactory;
 import javax.el.ValueExpression;
 
 public class JuelExpressionResolver implements ExpressionResolver {
 
-  private final ExpressionFactory expressionFactory;
+    private final ExpressionFactory expressionFactory;
 
-  public JuelExpressionResolver() {
-    this(new ExpressionFactoryImpl());
-  }
-
-  public JuelExpressionResolver(ExpressionFactory expressionFactory) {
-    this.expressionFactory = expressionFactory;
-  }
-
-  @Override
-  public <T> T resolveExpression(String expression, Map<String, Object> variables, Class<T> type) {
-    if (expression == null) {
-      return null;
+    public JuelExpressionResolver() {
+        this(new ExpressionFactoryImpl());
     }
-    final ELContext context = buildContext(variables);
-    final ValueExpression valueExpression =
-        expressionFactory.createValueExpression(context, expression, type);
-    return (T) valueExpression.getValue(context);
-  }
 
-  protected ELContext buildContext(Map<String, Object> variables) {
-    return new ELContextBuilder()
-        .withResolvers(
-            arrayResolver(), listResolver(), mapResolver(), jsonNodeResolver(), beanResolver())
-        .withVariables(variables)
-        .buildWithDateFunctions();
-  }
+    public JuelExpressionResolver(ExpressionFactory expressionFactory) {
+        this.expressionFactory = expressionFactory;
+    }
+
+    @Override
+    public <T> T resolveExpression(
+            String expression, Map<String, Object> variables, Class<T> type) {
+        if (expression == null) {
+            return null;
+        }
+        final ELContext context = buildContext(variables);
+        final ValueExpression valueExpression =
+                expressionFactory.createValueExpression(context, expression, type);
+        return (T) valueExpression.getValue(context);
+    }
+
+    protected ELContext buildContext(Map<String, Object> variables) {
+        return new ELContextBuilder()
+                .withResolvers(
+                        arrayResolver(),
+                        listResolver(),
+                        mapResolver(),
+                        jsonNodeResolver(),
+                        beanResolver())
+                .withVariables(variables)
+                .buildWithDateFunctions();
+    }
 }

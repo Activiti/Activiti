@@ -22,9 +22,9 @@ import java.util.Date;
 /** This interface provides full access to the clock */
 public interface Clock extends ClockReader {
 
-  void setCurrentTime(Date currentTime);
+    void setCurrentTime(Date currentTime);
 
-  void setCurrentCalendar(Calendar currentTime);
+    void setCurrentCalendar(Calendar currentTime);
 
-  void reset();
+    void reset();
 }

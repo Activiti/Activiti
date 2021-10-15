@@ -16,20 +16,21 @@
 
 package org.activiti.engine.test.mock;
 
+import org.activiti.engine.api.internal.Internal;
+
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
-import org.activiti.engine.api.internal.Internal;
 
 /** */
 @Retention(RetentionPolicy.RUNTIME)
 @Internal
 public @interface NoOpServiceTasks {
 
-  public String value() default "";
+    public String value() default "";
 
-  public String[] ids() default {};
+    public String[] ids() default {};
 
-  public Class<?>[] classes() default {};
+    public Class<?>[] classes() default {};
 
-  public String[] classNames() default {};
+    public String[] classNames() default {};
 }

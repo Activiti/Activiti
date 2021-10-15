@@ -15,30 +15,32 @@
  */
 package org.activiti.runtime.api.event.impl;
 
-import java.util.Optional;
 import org.activiti.api.process.model.events.BPMNTimerFailedEvent;
 import org.activiti.api.runtime.event.impl.BPMNTimerFailedEventImpl;
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 
+import java.util.Optional;
+
 public class ToTimerFailedConverter implements EventConverter<BPMNTimerFailedEvent, ActivitiEvent> {
 
-  private BPMNTimerConverter bpmnTimerConverter;
+    private BPMNTimerConverter bpmnTimerConverter;
 
-  public ToTimerFailedConverter(BPMNTimerConverter bpmnTimerConverter) {
-    this.bpmnTimerConverter = bpmnTimerConverter;
-  }
-
-  @Override
-  public Optional<BPMNTimerFailedEvent> from(ActivitiEvent internalEvent) {
-    BPMNTimerFailedEventImpl event = null;
-    if (bpmnTimerConverter.isTimerRelatedEvent(internalEvent)) {
-      event =
-          new BPMNTimerFailedEventImpl(
-              bpmnTimerConverter.convertToBPMNTimer((ActivitiEntityEvent) internalEvent));
-      event.setProcessInstanceId(internalEvent.getProcessInstanceId());
-      event.setProcessDefinitionId(internalEvent.getProcessDefinitionId());
+    public ToTimerFailedConverter(BPMNTimerConverter bpmnTimerConverter) {
+        this.bpmnTimerConverter = bpmnTimerConverter;
     }
-    return Optional.ofNullable(event);
-  }
+
+    @Override
+    public Optional<BPMNTimerFailedEvent> from(ActivitiEvent internalEvent) {
+        BPMNTimerFailedEventImpl event = null;
+        if (bpmnTimerConverter.isTimerRelatedEvent(internalEvent)) {
+            event =
+                    new BPMNTimerFailedEventImpl(
+                            bpmnTimerConverter.convertToBPMNTimer(
+                                    (ActivitiEntityEvent) internalEvent));
+            event.setProcessInstanceId(internalEvent.getProcessInstanceId());
+            event.setProcessDefinitionId(internalEvent.getProcessDefinitionId());
+        }
+        return Optional.ofNullable(event);
+    }
 }

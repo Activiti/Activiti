@@ -20,7 +20,7 @@ import org.activiti.api.process.model.BPMNSignal;
 
 public interface BPMNSignalEvent extends RuntimeEvent<BPMNSignal, BPMNSignalEvent.SignalEvents> {
 
-  enum SignalEvents {
-    SIGNAL_RECEIVED
-  }
+    enum SignalEvents {
+        SIGNAL_RECEIVED
+    }
 }

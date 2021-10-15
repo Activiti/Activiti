@@ -20,4 +20,4 @@ import org.activiti.bpmn.model.FlowNode;
 
 /** */
 public abstract class AbstractFlowNodeBpmnParseHandler<T extends FlowNode>
-    extends AbstractBpmnParseHandler<T> {}
+        extends AbstractBpmnParseHandler<T> {}

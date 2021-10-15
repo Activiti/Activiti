@@ -19,47 +19,47 @@ import java.util.Map;
 
 public interface IntegrationContext {
 
-  String getId();
+    String getId();
 
-  String getProcessInstanceId();
+    String getProcessInstanceId();
 
-  String getRootProcessInstanceId();
+    String getRootProcessInstanceId();
 
-  String getParentProcessInstanceId();
+    String getParentProcessInstanceId();
 
-  String getExecutionId();
+    String getExecutionId();
 
-  String getProcessDefinitionId();
+    String getProcessDefinitionId();
 
-  String getProcessDefinitionKey();
+    String getProcessDefinitionKey();
 
-  Integer getProcessDefinitionVersion();
+    Integer getProcessDefinitionVersion();
 
-  String getBusinessKey();
+    String getBusinessKey();
 
-  String getConnectorType();
+    String getConnectorType();
 
-  String getAppVersion();
+    String getAppVersion();
 
-  String getClientId();
+    String getClientId();
 
-  String getClientName();
+    String getClientName();
 
-  String getClientType();
+    String getClientType();
 
-  Map<String, Object> getInBoundVariables();
+    Map<String, Object> getInBoundVariables();
 
-  Map<String, Object> getOutBoundVariables();
+    Map<String, Object> getOutBoundVariables();
 
-  void addOutBoundVariable(String name, Object value);
+    void addOutBoundVariable(String name, Object value);
 
-  void addOutBoundVariables(Map<String, Object> variables);
+    void addOutBoundVariables(Map<String, Object> variables);
 
-  <T> T getInBoundVariable(String name);
+    <T> T getInBoundVariable(String name);
 
-  <T> T getInBoundVariable(String name, Class<T> type);
+    <T> T getInBoundVariable(String name, Class<T> type);
 
-  <T> T getOutBoundVariable(String name);
+    <T> T getOutBoundVariable(String name);
 
-  <T> T getOutBoundVariable(String name, Class<T> type);
+    <T> T getOutBoundVariable(String name, Class<T> type);
 }

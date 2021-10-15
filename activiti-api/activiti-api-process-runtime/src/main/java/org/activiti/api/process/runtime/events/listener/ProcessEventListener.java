@@ -19,4 +19,4 @@ import org.activiti.api.model.shared.event.RuntimeEvent;
 import org.activiti.api.process.model.ProcessInstance;
 
 public interface ProcessEventListener<E extends RuntimeEvent<? extends ProcessInstance, ?>>
-    extends ProcessRuntimeEventListener<E> {}
+        extends ProcessRuntimeEventListener<E> {}

@@ -16,25 +16,26 @@
 
 package org.activiti.spring.boot.tasks;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 import org.activiti.api.process.model.IntegrationContext;
 import org.activiti.api.process.runtime.connector.Connector;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+
 public class MealsConnector implements Connector {
 
-  private AtomicInteger currentMealIndex = new AtomicInteger(0);
+    private AtomicInteger currentMealIndex = new AtomicInteger(0);
 
-  private List<String> meals = Arrays.asList("pizza", "pasta");
+    private List<String> meals = Arrays.asList("pizza", "pasta");
 
-  private List<String> sizes = Arrays.asList("small", "medium");
+    private List<String> sizes = Arrays.asList("small", "medium");
 
-  @Override
-  public IntegrationContext apply(IntegrationContext integrationContext) {
-    int remainder = currentMealIndex.getAndIncrement() % meals.size();
-    integrationContext.addOutBoundVariable("meal", meals.get(remainder));
-    integrationContext.addOutBoundVariable("size", sizes.get(remainder));
-    return integrationContext;
-  }
+    @Override
+    public IntegrationContext apply(IntegrationContext integrationContext) {
+        int remainder = currentMealIndex.getAndIncrement() % meals.size();
+        integrationContext.addOutBoundVariable("meal", meals.get(remainder));
+        integrationContext.addOutBoundVariable("size", sizes.get(remainder));
+        return integrationContext;
+    }
 }

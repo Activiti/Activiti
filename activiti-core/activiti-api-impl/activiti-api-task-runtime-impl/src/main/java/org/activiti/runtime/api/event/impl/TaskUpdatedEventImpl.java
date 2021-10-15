@@ -21,14 +21,14 @@ import org.activiti.api.task.model.events.TaskRuntimeEvent;
 import org.activiti.api.task.runtime.events.TaskUpdatedEvent;
 
 public class TaskUpdatedEventImpl extends RuntimeEventImpl<Task, TaskRuntimeEvent.TaskEvents>
-    implements TaskUpdatedEvent {
+        implements TaskUpdatedEvent {
 
-  public TaskUpdatedEventImpl(Task entity) {
-    super(entity);
-  }
+    public TaskUpdatedEventImpl(Task entity) {
+        super(entity);
+    }
 
-  @Override
-  public TaskRuntimeEvent.TaskEvents getEventType() {
-    return TaskRuntimeEvent.TaskEvents.TASK_UPDATED;
-  }
+    @Override
+    public TaskRuntimeEvent.TaskEvents getEventType() {
+        return TaskRuntimeEvent.TaskEvents.TASK_UPDATED;
+    }
 }

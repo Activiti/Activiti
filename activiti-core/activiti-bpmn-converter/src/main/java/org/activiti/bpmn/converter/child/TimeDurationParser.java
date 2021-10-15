@@ -15,23 +15,24 @@
  */
 package org.activiti.bpmn.converter.child;
 
-import javax.xml.stream.XMLStreamReader;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.TimerEventDefinition;
 
+import javax.xml.stream.XMLStreamReader;
+
 /** */
 public class TimeDurationParser extends BaseChildElementParser {
 
-  public String getElementName() {
-    return ATTRIBUTE_TIMER_DURATION;
-  }
+    public String getElementName() {
+        return ATTRIBUTE_TIMER_DURATION;
+    }
 
-  public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model)
-      throws Exception {
-    if (!(parentElement instanceof TimerEventDefinition)) return;
+    public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model)
+            throws Exception {
+        if (!(parentElement instanceof TimerEventDefinition)) return;
 
-    TimerEventDefinition eventDefinition = (TimerEventDefinition) parentElement;
-    eventDefinition.setTimeDuration(xtr.getElementText());
-  }
+        TimerEventDefinition eventDefinition = (TimerEventDefinition) parentElement;
+        eventDefinition.setTimeDuration(xtr.getElementText());
+    }
 }

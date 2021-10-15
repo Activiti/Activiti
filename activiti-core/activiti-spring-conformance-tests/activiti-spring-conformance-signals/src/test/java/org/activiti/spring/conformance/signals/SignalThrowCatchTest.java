@@ -46,293 +46,303 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 public class SignalThrowCatchTest {
 
-  @Autowired private ProcessRuntime processRuntime;
+    @Autowired private ProcessRuntime processRuntime;
 
-  @Autowired private ProcessAdminRuntime processAdminRuntime;
+    @Autowired private ProcessAdminRuntime processAdminRuntime;
 
-  @Autowired private SecurityUtil securityUtil;
+    @Autowired private SecurityUtil securityUtil;
 
-  @BeforeEach
-  public void cleanUp() {
-    clearEvents();
-  }
-
-  @AfterEach
-  public void cleanup() {
-    securityUtil.logInAs("admin");
-    Page<ProcessInstance> processInstancePage =
-        processAdminRuntime.processInstances(Pageable.of(0, 50));
-    for (ProcessInstance pi : processInstancePage.getContent()) {
-      processAdminRuntime.delete(ProcessPayloadBuilder.delete(pi.getId()));
+    @BeforeEach
+    public void cleanUp() {
+        clearEvents();
     }
-    clearEvents();
-  }
 
-  @Test
-  public void testProcessWithThrowSignal() {
-    securityUtil.logInAs("user1");
+    @AfterEach
+    public void cleanup() {
+        securityUtil.logInAs("admin");
+        Page<ProcessInstance> processInstancePage =
+                processAdminRuntime.processInstances(Pageable.of(0, 50));
+        for (ProcessInstance pi : processInstancePage.getContent()) {
+            processAdminRuntime.delete(ProcessPayloadBuilder.delete(pi.getId()));
+        }
+        clearEvents();
+    }
 
-    ProcessInstance processInstance = startThrowSignalProcess();
+    @Test
+    public void testProcessWithThrowSignal() {
+        securityUtil.logInAs("user1");
 
-    assertThat(RuntimeTestConfiguration.collectedEvents)
-        .extracting(RuntimeEvent::getEventType)
-        .containsExactly(
-            ProcessRuntimeEvent.ProcessEvents.PROCESS_CREATED,
-            ProcessRuntimeEvent.ProcessEvents.PROCESS_STARTED,
-            BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
-            BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
-            BPMNSequenceFlowTakenEvent.SequenceFlowEvents.SEQUENCE_FLOW_TAKEN,
-            BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
-            BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
-            BPMNSequenceFlowTakenEvent.SequenceFlowEvents.SEQUENCE_FLOW_TAKEN,
-            BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
-            BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
-            ProcessRuntimeEvent.ProcessEvents.PROCESS_COMPLETED);
+        ProcessInstance processInstance = startThrowSignalProcess();
 
-    assertThat(RuntimeTestConfiguration.collectedEvents)
-        .filteredOn(
-            event -> event.getEventType().equals(BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED))
-        .filteredOn(
-            event -> ((BPMNActivity) event.getEntity()).getActivityType().equals("throwEvent"))
-        .extracting(
-            event -> ((BPMNActivity) event.getEntity()).getActivityType(),
-            event -> ((BPMNActivity) event.getEntity()).getProcessInstanceId())
-        .contains(tuple("throwEvent", processInstance.getId()));
-  }
+        assertThat(RuntimeTestConfiguration.collectedEvents)
+                .extracting(RuntimeEvent::getEventType)
+                .containsExactly(
+                        ProcessRuntimeEvent.ProcessEvents.PROCESS_CREATED,
+                        ProcessRuntimeEvent.ProcessEvents.PROCESS_STARTED,
+                        BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
+                        BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
+                        BPMNSequenceFlowTakenEvent.SequenceFlowEvents.SEQUENCE_FLOW_TAKEN,
+                        BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
+                        BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
+                        BPMNSequenceFlowTakenEvent.SequenceFlowEvents.SEQUENCE_FLOW_TAKEN,
+                        BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
+                        BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
+                        ProcessRuntimeEvent.ProcessEvents.PROCESS_COMPLETED);
 
-  @Test
-  public void testProcessWithIntermediateCatchEventSignal() {
-    securityUtil.logInAs("user1");
+        assertThat(RuntimeTestConfiguration.collectedEvents)
+                .filteredOn(
+                        event ->
+                                event.getEventType()
+                                        .equals(BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED))
+                .filteredOn(
+                        event ->
+                                ((BPMNActivity) event.getEntity())
+                                        .getActivityType()
+                                        .equals("throwEvent"))
+                .extracting(
+                        event -> ((BPMNActivity) event.getEntity()).getActivityType(),
+                        event -> ((BPMNActivity) event.getEntity()).getProcessInstanceId())
+                .contains(tuple("throwEvent", processInstance.getId()));
+    }
 
-    ProcessInstance processInstance = startIntermediateCatchEventSignalProcess();
+    @Test
+    public void testProcessWithIntermediateCatchEventSignal() {
+        securityUtil.logInAs("user1");
 
-    assertThat(RuntimeTestConfiguration.collectedEvents)
-        .extracting(RuntimeEvent::getEventType)
-        .containsExactly(
-            ProcessRuntimeEvent.ProcessEvents.PROCESS_CREATED,
-            ProcessRuntimeEvent.ProcessEvents.PROCESS_STARTED,
-            BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
-            BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
-            BPMNSequenceFlowTakenEvent.SequenceFlowEvents.SEQUENCE_FLOW_TAKEN,
-            BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED);
-    BPMNActivityImpl signalCatchEvent =
-        (BPMNActivityImpl) RuntimeTestConfiguration.collectedEvents.get(5).getEntity();
-    assertThat(signalCatchEvent.getActivityType()).isEqualTo("intermediateCatchEvent");
+        ProcessInstance processInstance = startIntermediateCatchEventSignalProcess();
 
-    clearEvents();
-    SignalPayload signalPayload =
-        ProcessPayloadBuilder.signal()
-            .withName("Test")
-            .withVariable("signal_variable", "test")
-            .build();
-    processRuntime.signal(signalPayload);
+        assertThat(RuntimeTestConfiguration.collectedEvents)
+                .extracting(RuntimeEvent::getEventType)
+                .containsExactly(
+                        ProcessRuntimeEvent.ProcessEvents.PROCESS_CREATED,
+                        ProcessRuntimeEvent.ProcessEvents.PROCESS_STARTED,
+                        BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
+                        BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
+                        BPMNSequenceFlowTakenEvent.SequenceFlowEvents.SEQUENCE_FLOW_TAKEN,
+                        BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED);
+        BPMNActivityImpl signalCatchEvent =
+                (BPMNActivityImpl) RuntimeTestConfiguration.collectedEvents.get(5).getEntity();
+        assertThat(signalCatchEvent.getActivityType()).isEqualTo("intermediateCatchEvent");
 
-    assertThat(RuntimeTestConfiguration.collectedEvents)
-        .extracting(RuntimeEvent::getEventType)
-        .containsExactly(
-            BPMNSignalEvent.SignalEvents.SIGNAL_RECEIVED,
-            VariableEvent.VariableEvents.VARIABLE_CREATED,
-            BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
-            BPMNSequenceFlowTakenEvent.SequenceFlowEvents.SEQUENCE_FLOW_TAKEN,
-            BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
-            BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
-            ProcessRuntimeEvent.ProcessEvents.PROCESS_COMPLETED);
+        clearEvents();
+        SignalPayload signalPayload =
+                ProcessPayloadBuilder.signal()
+                        .withName("Test")
+                        .withVariable("signal_variable", "test")
+                        .build();
+        processRuntime.signal(signalPayload);
 
-    BPMNSignalReceivedEvent event =
-        (BPMNSignalReceivedEvent) RuntimeTestConfiguration.collectedEvents.get(0);
+        assertThat(RuntimeTestConfiguration.collectedEvents)
+                .extracting(RuntimeEvent::getEventType)
+                .containsExactly(
+                        BPMNSignalEvent.SignalEvents.SIGNAL_RECEIVED,
+                        VariableEvent.VariableEvents.VARIABLE_CREATED,
+                        BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
+                        BPMNSequenceFlowTakenEvent.SequenceFlowEvents.SEQUENCE_FLOW_TAKEN,
+                        BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
+                        BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
+                        ProcessRuntimeEvent.ProcessEvents.PROCESS_COMPLETED);
 
-    assertThat(event.getEntity()).isNotNull();
-    assertThat(event.getProcessInstanceId()).isEqualTo(processInstance.getId());
-    assertThat(event.getEntity().getSignalPayload()).isNotNull();
-    assertThat(event.getEntity().getSignalPayload().getName()).isEqualTo(signalPayload.getName());
-    assertThat(event.getEntity().getSignalPayload().getVariables())
-        .hasSize(signalPayload.getVariables().size());
-    assertThat(event.getEntity().getSignalPayload().getVariables().get("signal_variable"))
-        .isEqualTo("test");
-  }
+        BPMNSignalReceivedEvent event =
+                (BPMNSignalReceivedEvent) RuntimeTestConfiguration.collectedEvents.get(0);
 
-  @Test
-  public void testProcessesWithThrowCatchSignal() {
-    securityUtil.logInAs("user1");
+        assertThat(event.getEntity()).isNotNull();
+        assertThat(event.getProcessInstanceId()).isEqualTo(processInstance.getId());
+        assertThat(event.getEntity().getSignalPayload()).isNotNull();
+        assertThat(event.getEntity().getSignalPayload().getName())
+                .isEqualTo(signalPayload.getName());
+        assertThat(event.getEntity().getSignalPayload().getVariables())
+                .hasSize(signalPayload.getVariables().size());
+        assertThat(event.getEntity().getSignalPayload().getVariables().get("signal_variable"))
+                .isEqualTo("test");
+    }
 
-    ProcessInstance processInstanceCatch = startIntermediateCatchEventSignalProcess();
+    @Test
+    public void testProcessesWithThrowCatchSignal() {
+        securityUtil.logInAs("user1");
 
-    assertThat(RuntimeTestConfiguration.collectedEvents)
-        .extracting(RuntimeEvent::getEventType)
-        .contains(
-            ProcessRuntimeEvent.ProcessEvents.PROCESS_CREATED,
-            ProcessRuntimeEvent.ProcessEvents.PROCESS_STARTED,
-            BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
-            BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
-            BPMNSequenceFlowTakenEvent.SequenceFlowEvents.SEQUENCE_FLOW_TAKEN,
-            BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED);
-    BPMNActivityImpl signalCatchEvent =
-        (BPMNActivityImpl) RuntimeTestConfiguration.collectedEvents.get(5).getEntity();
-    assertThat(signalCatchEvent.getActivityType()).isEqualTo("intermediateCatchEvent");
+        ProcessInstance processInstanceCatch = startIntermediateCatchEventSignalProcess();
 
-    clearEvents();
+        assertThat(RuntimeTestConfiguration.collectedEvents)
+                .extracting(RuntimeEvent::getEventType)
+                .contains(
+                        ProcessRuntimeEvent.ProcessEvents.PROCESS_CREATED,
+                        ProcessRuntimeEvent.ProcessEvents.PROCESS_STARTED,
+                        BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
+                        BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
+                        BPMNSequenceFlowTakenEvent.SequenceFlowEvents.SEQUENCE_FLOW_TAKEN,
+                        BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED);
+        BPMNActivityImpl signalCatchEvent =
+                (BPMNActivityImpl) RuntimeTestConfiguration.collectedEvents.get(5).getEntity();
+        assertThat(signalCatchEvent.getActivityType()).isEqualTo("intermediateCatchEvent");
 
-    startThrowSignalProcess();
+        clearEvents();
 
-    assertThat(RuntimeTestConfiguration.collectedEvents)
-        .extracting(RuntimeEvent::getEventType)
-        .contains(
-            ProcessRuntimeEvent.ProcessEvents.PROCESS_CREATED,
-            ProcessRuntimeEvent.ProcessEvents.PROCESS_STARTED,
-            BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
-            BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
-            BPMNSequenceFlowTakenEvent.SequenceFlowEvents.SEQUENCE_FLOW_TAKEN,
-            BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
-            BPMNSignalEvent.SignalEvents.SIGNAL_RECEIVED,
-            BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
-            BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
-            BPMNSequenceFlowTakenEvent.SequenceFlowEvents.SEQUENCE_FLOW_TAKEN,
-            BPMNSequenceFlowTakenEvent.SequenceFlowEvents.SEQUENCE_FLOW_TAKEN,
-            BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
-            BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
-            BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
-            BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
-            ProcessRuntimeEvent.ProcessEvents.PROCESS_COMPLETED,
-            ProcessRuntimeEvent.ProcessEvents.PROCESS_COMPLETED);
+        startThrowSignalProcess();
 
-    assertThat(RuntimeTestConfiguration.collectedEvents)
-        .filteredOn(
-            event ->
-                BPMNSignalEvent.SignalEvents.SIGNAL_RECEIVED
-                    .name()
-                    .equals(event.getEventType().name()))
-        .extracting(RuntimeEvent::getEventType, RuntimeEvent::getProcessInstanceId)
-        .contains(
-            tuple(BPMNSignalEvent.SignalEvents.SIGNAL_RECEIVED, processInstanceCatch.getId()));
-  }
+        assertThat(RuntimeTestConfiguration.collectedEvents)
+                .extracting(RuntimeEvent::getEventType)
+                .contains(
+                        ProcessRuntimeEvent.ProcessEvents.PROCESS_CREATED,
+                        ProcessRuntimeEvent.ProcessEvents.PROCESS_STARTED,
+                        BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
+                        BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
+                        BPMNSequenceFlowTakenEvent.SequenceFlowEvents.SEQUENCE_FLOW_TAKEN,
+                        BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
+                        BPMNSignalEvent.SignalEvents.SIGNAL_RECEIVED,
+                        BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
+                        BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
+                        BPMNSequenceFlowTakenEvent.SequenceFlowEvents.SEQUENCE_FLOW_TAKEN,
+                        BPMNSequenceFlowTakenEvent.SequenceFlowEvents.SEQUENCE_FLOW_TAKEN,
+                        BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
+                        BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
+                        BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
+                        BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
+                        ProcessRuntimeEvent.ProcessEvents.PROCESS_COMPLETED,
+                        ProcessRuntimeEvent.ProcessEvents.PROCESS_COMPLETED);
 
-  @Test
-  public void testProcessWithBoundaryEventSignal() {
-    securityUtil.logInAs("user1");
+        assertThat(RuntimeTestConfiguration.collectedEvents)
+                .filteredOn(
+                        event ->
+                                BPMNSignalEvent.SignalEvents.SIGNAL_RECEIVED
+                                        .name()
+                                        .equals(event.getEventType().name()))
+                .extracting(RuntimeEvent::getEventType, RuntimeEvent::getProcessInstanceId)
+                .contains(
+                        tuple(
+                                BPMNSignalEvent.SignalEvents.SIGNAL_RECEIVED,
+                                processInstanceCatch.getId()));
+    }
 
-    ProcessInstance processInstance = startBoundaryEventSignalProcess();
+    @Test
+    public void testProcessWithBoundaryEventSignal() {
+        securityUtil.logInAs("user1");
 
-    assertThat(RuntimeTestConfiguration.collectedEvents)
-        .extracting(RuntimeEvent::getEventType)
-        .containsExactly(
-            ProcessRuntimeEvent.ProcessEvents.PROCESS_CREATED,
-            ProcessRuntimeEvent.ProcessEvents.PROCESS_STARTED,
-            BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
-            BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
-            BPMNSequenceFlowTakenEvent.SequenceFlowEvents.SEQUENCE_FLOW_TAKEN,
-            BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
-            TaskRuntimeEvent.TaskEvents.TASK_CREATED);
+        ProcessInstance processInstance = startBoundaryEventSignalProcess();
 
-    BPMNActivityImpl signalCatchEvent =
-        (BPMNActivityImpl) RuntimeTestConfiguration.collectedEvents.get(5).getEntity();
-    assertThat(signalCatchEvent.getActivityType()).isEqualTo("userTask");
-    assertThat(signalCatchEvent.getActivityName()).isEqualTo("Boundary container");
+        assertThat(RuntimeTestConfiguration.collectedEvents)
+                .extracting(RuntimeEvent::getEventType)
+                .containsExactly(
+                        ProcessRuntimeEvent.ProcessEvents.PROCESS_CREATED,
+                        ProcessRuntimeEvent.ProcessEvents.PROCESS_STARTED,
+                        BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
+                        BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
+                        BPMNSequenceFlowTakenEvent.SequenceFlowEvents.SEQUENCE_FLOW_TAKEN,
+                        BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
+                        TaskRuntimeEvent.TaskEvents.TASK_CREATED);
 
-    clearEvents();
+        BPMNActivityImpl signalCatchEvent =
+                (BPMNActivityImpl) RuntimeTestConfiguration.collectedEvents.get(5).getEntity();
+        assertThat(signalCatchEvent.getActivityType()).isEqualTo("userTask");
+        assertThat(signalCatchEvent.getActivityName()).isEqualTo("Boundary container");
 
-    SignalPayload signalPayload =
-        ProcessPayloadBuilder.signal()
-            .withName("Test")
-            .withVariable("signal_variable", "test")
-            .build();
-    processRuntime.signal(signalPayload);
+        clearEvents();
 
-    assertThat(RuntimeTestConfiguration.collectedEvents)
-        .extracting(RuntimeEvent::getEventType)
-        .containsExactlyInAnyOrder(
-            BPMNSignalEvent.SignalEvents.SIGNAL_RECEIVED,
-            VariableEvent.VariableEvents.VARIABLE_CREATED,
-            TaskRuntimeEvent.TaskEvents.TASK_CANCELLED,
-            BPMNActivityEvent.ActivityEvents.ACTIVITY_CANCELLED,
-            BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
-            BPMNSequenceFlowTakenEvent.SequenceFlowEvents.SEQUENCE_FLOW_TAKEN,
-            BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
-            VariableEvent.VariableEvents.VARIABLE_CREATED,
-            TaskRuntimeEvent.TaskEvents.TASK_CREATED);
+        SignalPayload signalPayload =
+                ProcessPayloadBuilder.signal()
+                        .withName("Test")
+                        .withVariable("signal_variable", "test")
+                        .build();
+        processRuntime.signal(signalPayload);
 
-    BPMNSignalReceivedEvent event =
-        (BPMNSignalReceivedEvent) RuntimeTestConfiguration.collectedEvents.get(0);
+        assertThat(RuntimeTestConfiguration.collectedEvents)
+                .extracting(RuntimeEvent::getEventType)
+                .containsExactlyInAnyOrder(
+                        BPMNSignalEvent.SignalEvents.SIGNAL_RECEIVED,
+                        VariableEvent.VariableEvents.VARIABLE_CREATED,
+                        TaskRuntimeEvent.TaskEvents.TASK_CANCELLED,
+                        BPMNActivityEvent.ActivityEvents.ACTIVITY_CANCELLED,
+                        BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
+                        BPMNSequenceFlowTakenEvent.SequenceFlowEvents.SEQUENCE_FLOW_TAKEN,
+                        BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
+                        VariableEvent.VariableEvents.VARIABLE_CREATED,
+                        TaskRuntimeEvent.TaskEvents.TASK_CREATED);
 
-    assertThat(event.getEntity()).isNotNull();
-    assertThat(event.getProcessInstanceId()).isEqualTo(processInstance.getId());
-    assertThat(event.getEntity().getSignalPayload()).isNotNull();
-    assertThat(event.getEntity().getSignalPayload().getName()).isEqualTo(signalPayload.getName());
-    assertThat(event.getEntity().getSignalPayload().getVariables())
-        .hasSize(signalPayload.getVariables().size());
-    assertThat(event.getEntity().getSignalPayload().getVariables().get("signal_variable"))
-        .isEqualTo("test");
+        BPMNSignalReceivedEvent event =
+                (BPMNSignalReceivedEvent) RuntimeTestConfiguration.collectedEvents.get(0);
 
-    clearEvents();
-  }
+        assertThat(event.getEntity()).isNotNull();
+        assertThat(event.getProcessInstanceId()).isEqualTo(processInstance.getId());
+        assertThat(event.getEntity().getSignalPayload()).isNotNull();
+        assertThat(event.getEntity().getSignalPayload().getName())
+                .isEqualTo(signalPayload.getName());
+        assertThat(event.getEntity().getSignalPayload().getVariables())
+                .hasSize(signalPayload.getVariables().size());
+        assertThat(event.getEntity().getSignalPayload().getVariables().get("signal_variable"))
+                .isEqualTo("test");
 
-  @Test
-  public void testProcessStartedBySignal() {
-    securityUtil.logInAs("user1");
+        clearEvents();
+    }
 
-    SignalPayload signalPayload =
-        ProcessPayloadBuilder.signal()
-            .withName("SignalStart")
-            .withVariable("signal_variable", "test")
-            .build();
-    processRuntime.signal(signalPayload);
+    @Test
+    public void testProcessStartedBySignal() {
+        securityUtil.logInAs("user1");
 
-    assertThat(RuntimeTestConfiguration.collectedEvents)
-        .extracting(RuntimeEvent::getEventType)
-        .containsExactly(
-            ProcessRuntimeEvent.ProcessEvents.PROCESS_CREATED,
-            BPMNSignalEvent.SignalEvents.SIGNAL_RECEIVED,
-            VariableEvent.VariableEvents.VARIABLE_CREATED,
-            ProcessRuntimeEvent.ProcessEvents.PROCESS_STARTED,
-            BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
-            BPMNSequenceFlowTakenEvent.SequenceFlowEvents.SEQUENCE_FLOW_TAKEN,
-            BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
-            BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
-            ProcessRuntimeEvent.ProcessEvents.PROCESS_COMPLETED);
+        SignalPayload signalPayload =
+                ProcessPayloadBuilder.signal()
+                        .withName("SignalStart")
+                        .withVariable("signal_variable", "test")
+                        .build();
+        processRuntime.signal(signalPayload);
 
-    BPMNSignalReceivedEvent event =
-        (BPMNSignalReceivedEvent) RuntimeTestConfiguration.collectedEvents.get(1);
+        assertThat(RuntimeTestConfiguration.collectedEvents)
+                .extracting(RuntimeEvent::getEventType)
+                .containsExactly(
+                        ProcessRuntimeEvent.ProcessEvents.PROCESS_CREATED,
+                        BPMNSignalEvent.SignalEvents.SIGNAL_RECEIVED,
+                        VariableEvent.VariableEvents.VARIABLE_CREATED,
+                        ProcessRuntimeEvent.ProcessEvents.PROCESS_STARTED,
+                        BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
+                        BPMNSequenceFlowTakenEvent.SequenceFlowEvents.SEQUENCE_FLOW_TAKEN,
+                        BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
+                        BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
+                        ProcessRuntimeEvent.ProcessEvents.PROCESS_COMPLETED);
 
-    assertThat(event.getEntity()).isNotNull();
-    assertThat(event.getEntity().getSignalPayload()).isNotNull();
-    assertThat(event.getEntity().getSignalPayload().getName()).isEqualTo(signalPayload.getName());
-    assertThat(event.getEntity().getSignalPayload().getVariables())
-        .hasSize(signalPayload.getVariables().size());
-    assertThat(event.getEntity().getSignalPayload().getVariables().get("signal_variable"))
-        .isEqualTo("test");
+        BPMNSignalReceivedEvent event =
+                (BPMNSignalReceivedEvent) RuntimeTestConfiguration.collectedEvents.get(1);
 
-    clearEvents();
-  }
+        assertThat(event.getEntity()).isNotNull();
+        assertThat(event.getEntity().getSignalPayload()).isNotNull();
+        assertThat(event.getEntity().getSignalPayload().getName())
+                .isEqualTo(signalPayload.getName());
+        assertThat(event.getEntity().getSignalPayload().getVariables())
+                .hasSize(signalPayload.getVariables().size());
+        assertThat(event.getEntity().getSignalPayload().getVariables().get("signal_variable"))
+                .isEqualTo("test");
 
-  private ProcessInstance startThrowSignalProcess() {
+        clearEvents();
+    }
 
-    return processRuntime.start(
-        ProcessPayloadBuilder.start()
-            .withProcessDefinitionKey("broadcastSignalEventProcess")
-            .withBusinessKey("broadcast-signal-business-key")
-            .withName("broadcast-signal-instance-name")
-            .build());
-  }
+    private ProcessInstance startThrowSignalProcess() {
 
-  private ProcessInstance startIntermediateCatchEventSignalProcess() {
+        return processRuntime.start(
+                ProcessPayloadBuilder.start()
+                        .withProcessDefinitionKey("broadcastSignalEventProcess")
+                        .withBusinessKey("broadcast-signal-business-key")
+                        .withName("broadcast-signal-instance-name")
+                        .build());
+    }
 
-    return processRuntime.start(
-        ProcessPayloadBuilder.start()
-            .withProcessDefinitionKey("broadcastSignalCatchEventProcess")
-            .withBusinessKey("catch-business-key")
-            .withName("catch-signal-instance-name")
-            .build());
-  }
+    private ProcessInstance startIntermediateCatchEventSignalProcess() {
 
-  private ProcessInstance startBoundaryEventSignalProcess() {
-    return processRuntime.start(
-        ProcessPayloadBuilder.start()
-            .withProcessDefinitionKey("ProcessWithBoundarySignal")
-            .withBusinessKey("boundary-business-key")
-            .withName("boundary-signal-instance-name")
-            .build());
-  }
+        return processRuntime.start(
+                ProcessPayloadBuilder.start()
+                        .withProcessDefinitionKey("broadcastSignalCatchEventProcess")
+                        .withBusinessKey("catch-business-key")
+                        .withName("catch-signal-instance-name")
+                        .build());
+    }
 
-  public void clearEvents() {
-    RuntimeTestConfiguration.collectedEvents.clear();
-  }
+    private ProcessInstance startBoundaryEventSignalProcess() {
+        return processRuntime.start(
+                ProcessPayloadBuilder.start()
+                        .withProcessDefinitionKey("ProcessWithBoundarySignal")
+                        .withBusinessKey("boundary-business-key")
+                        .withName("boundary-signal-instance-name")
+                        .build());
+    }
+
+    public void clearEvents() {
+        RuntimeTestConfiguration.collectedEvents.clear();
+    }
 }

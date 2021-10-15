@@ -20,8 +20,8 @@ package org.activiti.engine.delegate.event;
  * when activiti object is cancelled.
  */
 public interface ActivitiCancelledEvent extends ActivitiEvent {
-  /**
-   * @return the cause of the cancel event. Returns null, if no specific cause has been specified.
-   */
-  public Object getCause();
+    /**
+     * @return the cause of the cancel event. Returns null, if no specific cause has been specified.
+     */
+    public Object getCause();
 }

@@ -17,15 +17,15 @@ package org.activiti.api.model.shared.model;
 
 public interface VariableInstance {
 
-  String getName();
+    String getName();
 
-  String getType();
+    String getType();
 
-  String getProcessInstanceId();
+    String getProcessInstanceId();
 
-  String getTaskId();
+    String getTaskId();
 
-  boolean isTaskVariable();
+    boolean isTaskVariable();
 
-  <T> T getValue();
+    <T> T getValue();
 }

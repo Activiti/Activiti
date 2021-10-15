@@ -17,28 +17,29 @@ package org.activiti.test.assertions;
 
 import static org.activiti.test.matchers.OperationScopeImpl.processInstanceScope;
 
-import java.util.List;
 import org.activiti.api.model.shared.event.RuntimeEvent;
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.test.EventSource;
 import org.activiti.test.matchers.OperationScopeMatcher;
 
+import java.util.List;
+
 public class SignalAssertionsImpl implements SignalAssertions {
 
-  private EventSource eventSource;
+    private EventSource eventSource;
 
-  public SignalAssertionsImpl(EventSource eventSource) {
+    public SignalAssertionsImpl(EventSource eventSource) {
 
-    this.eventSource = eventSource;
-  }
-
-  @Override
-  public SignalAssertions expectEventsOnProcessInstance(
-      ProcessInstance processInstance, OperationScopeMatcher... matchers) {
-    List<RuntimeEvent<?, ?>> events = eventSource.getEvents();
-    for (OperationScopeMatcher matcher : matchers) {
-      matcher.match(processInstanceScope(processInstance.getId()), events);
+        this.eventSource = eventSource;
     }
-    return this;
-  }
+
+    @Override
+    public SignalAssertions expectEventsOnProcessInstance(
+            ProcessInstance processInstance, OperationScopeMatcher... matchers) {
+        List<RuntimeEvent<?, ?>> events = eventSource.getEvents();
+        for (OperationScopeMatcher matcher : matchers) {
+            matcher.match(processInstanceScope(processInstance.getId()), events);
+        }
+        return this;
+    }
 }

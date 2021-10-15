@@ -17,7 +17,7 @@ package org.activiti.api.process.model.events;
 
 public interface MessageSubscriptionCancelledEvent extends MessageSubscriptionEvent {
 
-  default MessageSubscriptionEvents getEventType() {
-    return MessageSubscriptionEvent.MessageSubscriptionEvents.MESSAGE_SUBSCRIPTION_CANCELLED;
-  }
+    default MessageSubscriptionEvents getEventType() {
+        return MessageSubscriptionEvent.MessageSubscriptionEvents.MESSAGE_SUBSCRIPTION_CANCELLED;
+    }
 }

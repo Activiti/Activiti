@@ -15,24 +15,25 @@
  */
 package org.activiti.runtime.api.event.impl;
 
-import java.util.Optional;
 import org.activiti.api.model.shared.event.VariableCreatedEvent;
 import org.activiti.api.runtime.event.impl.VariableCreatedEventImpl;
 import org.activiti.api.runtime.model.impl.VariableInstanceImpl;
 import org.activiti.engine.delegate.event.ActivitiVariableEvent;
 
-public class ToVariableCreatedConverter
-    implements EventConverter<VariableCreatedEvent, ActivitiVariableEvent> {
+import java.util.Optional;
 
-  @Override
-  public Optional<VariableCreatedEvent> from(ActivitiVariableEvent internalEvent) {
-    VariableInstanceImpl<Object> variableInstance =
-        new VariableInstanceImpl<>(
-            internalEvent.getVariableName(),
-            internalEvent.getVariableType().getTypeName(),
-            internalEvent.getVariableValue(),
-            internalEvent.getProcessInstanceId(),
-            internalEvent.getTaskId());
-    return Optional.of(new VariableCreatedEventImpl(variableInstance));
-  }
+public class ToVariableCreatedConverter
+        implements EventConverter<VariableCreatedEvent, ActivitiVariableEvent> {
+
+    @Override
+    public Optional<VariableCreatedEvent> from(ActivitiVariableEvent internalEvent) {
+        VariableInstanceImpl<Object> variableInstance =
+                new VariableInstanceImpl<>(
+                        internalEvent.getVariableName(),
+                        internalEvent.getVariableType().getTypeName(),
+                        internalEvent.getVariableValue(),
+                        internalEvent.getProcessInstanceId(),
+                        internalEvent.getTaskId());
+        return Optional.of(new VariableCreatedEventImpl(variableInstance));
+    }
 }

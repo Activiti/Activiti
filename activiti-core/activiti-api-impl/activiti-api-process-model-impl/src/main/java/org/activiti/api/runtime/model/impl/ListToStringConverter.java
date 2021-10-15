@@ -16,24 +16,26 @@
 package org.activiti.api.runtime.model.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.List;
+
 import org.springframework.core.convert.converter.Converter;
+
+import java.util.List;
 
 @ProcessVariableTypeConverter
 public class ListToStringConverter implements Converter<List<Object>, String> {
-  private final ObjectMapper objectMapper;
+    private final ObjectMapper objectMapper;
 
-  public ListToStringConverter(ObjectMapper objectMapper) {
-    this.objectMapper = objectMapper;
-  }
-
-  @Override
-  public String convert(List<Object> source) {
-
-    try {
-      return objectMapper.writeValueAsString(source);
-    } catch (Exception cause) {
-      throw new RuntimeException(cause);
+    public ListToStringConverter(ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
     }
-  }
+
+    @Override
+    public String convert(List<Object> source) {
+
+        try {
+            return objectMapper.writeValueAsString(source);
+        } catch (Exception cause) {
+            throw new RuntimeException(cause);
+        }
+    }
 }

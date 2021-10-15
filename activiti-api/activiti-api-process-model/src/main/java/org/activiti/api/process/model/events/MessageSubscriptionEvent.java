@@ -19,9 +19,10 @@ import org.activiti.api.model.shared.event.RuntimeEvent;
 import org.activiti.api.process.model.MessageSubscription;
 
 public interface MessageSubscriptionEvent
-    extends RuntimeEvent<MessageSubscription, MessageSubscriptionEvent.MessageSubscriptionEvents> {
+        extends RuntimeEvent<
+                MessageSubscription, MessageSubscriptionEvent.MessageSubscriptionEvents> {
 
-  enum MessageSubscriptionEvents {
-    MESSAGE_SUBSCRIPTION_CANCELLED
-  }
+    enum MessageSubscriptionEvents {
+        MESSAGE_SUBSCRIPTION_CANCELLED
+    }
 }

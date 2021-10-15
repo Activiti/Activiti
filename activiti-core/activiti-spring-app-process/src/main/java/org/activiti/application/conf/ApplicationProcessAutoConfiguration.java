@@ -26,13 +26,13 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class ApplicationProcessAutoConfiguration {
 
-  @Bean
-  public ApplicationEntryDiscovery processEntryDiscovery() {
-    return new ProcessEntryDiscovery();
-  }
+    @Bean
+    public ApplicationEntryDiscovery processEntryDiscovery() {
+        return new ProcessEntryDiscovery();
+    }
 
-  @Bean
-  public ApplicationEntryDeployer processEntryDeployer(RepositoryService repositoryService) {
-    return new ProcessEntryDeployer(repositoryService);
-  }
+    @Bean
+    public ApplicationEntryDeployer processEntryDeployer(RepositoryService repositoryService) {
+        return new ProcessEntryDeployer(repositoryService);
+    }
 }

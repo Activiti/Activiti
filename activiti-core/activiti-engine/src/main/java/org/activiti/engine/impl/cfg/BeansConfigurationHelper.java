@@ -16,7 +16,6 @@
 
 package org.activiti.engine.impl.cfg;
 
-import java.io.InputStream;
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
@@ -24,30 +23,32 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 
+import java.io.InputStream;
+
 /** */
 public class BeansConfigurationHelper {
 
-  public static ProcessEngineConfiguration parseProcessEngineConfiguration(
-      Resource springResource, String beanName) {
-    DefaultListableBeanFactory beanFactory = new DefaultListableBeanFactory();
-    XmlBeanDefinitionReader xmlBeanDefinitionReader = new XmlBeanDefinitionReader(beanFactory);
-    xmlBeanDefinitionReader.setValidationMode(XmlBeanDefinitionReader.VALIDATION_XSD);
-    xmlBeanDefinitionReader.loadBeanDefinitions(springResource);
-    ProcessEngineConfigurationImpl processEngineConfiguration =
-        (ProcessEngineConfigurationImpl) beanFactory.getBean(beanName);
-    processEngineConfiguration.setBeans(new SpringBeanFactoryProxyMap(beanFactory));
-    return processEngineConfiguration;
-  }
+    public static ProcessEngineConfiguration parseProcessEngineConfiguration(
+            Resource springResource, String beanName) {
+        DefaultListableBeanFactory beanFactory = new DefaultListableBeanFactory();
+        XmlBeanDefinitionReader xmlBeanDefinitionReader = new XmlBeanDefinitionReader(beanFactory);
+        xmlBeanDefinitionReader.setValidationMode(XmlBeanDefinitionReader.VALIDATION_XSD);
+        xmlBeanDefinitionReader.loadBeanDefinitions(springResource);
+        ProcessEngineConfigurationImpl processEngineConfiguration =
+                (ProcessEngineConfigurationImpl) beanFactory.getBean(beanName);
+        processEngineConfiguration.setBeans(new SpringBeanFactoryProxyMap(beanFactory));
+        return processEngineConfiguration;
+    }
 
-  public static ProcessEngineConfiguration parseProcessEngineConfigurationFromInputStream(
-      InputStream inputStream, String beanName) {
-    Resource springResource = new InputStreamResource(inputStream);
-    return parseProcessEngineConfiguration(springResource, beanName);
-  }
+    public static ProcessEngineConfiguration parseProcessEngineConfigurationFromInputStream(
+            InputStream inputStream, String beanName) {
+        Resource springResource = new InputStreamResource(inputStream);
+        return parseProcessEngineConfiguration(springResource, beanName);
+    }
 
-  public static ProcessEngineConfiguration parseProcessEngineConfigurationFromResource(
-      String resource, String beanName) {
-    Resource springResource = new ClassPathResource(resource);
-    return parseProcessEngineConfiguration(springResource, beanName);
-  }
+    public static ProcessEngineConfiguration parseProcessEngineConfigurationFromResource(
+            String resource, String beanName) {
+        Resource springResource = new ClassPathResource(resource);
+        return parseProcessEngineConfiguration(springResource, beanName);
+    }
 }

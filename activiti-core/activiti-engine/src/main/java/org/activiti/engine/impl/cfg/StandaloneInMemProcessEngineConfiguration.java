@@ -18,10 +18,10 @@ package org.activiti.engine.impl.cfg;
 
 /** */
 public class StandaloneInMemProcessEngineConfiguration
-    extends StandaloneProcessEngineConfiguration {
+        extends StandaloneProcessEngineConfiguration {
 
-  public StandaloneInMemProcessEngineConfiguration() {
-    this.databaseSchemaUpdate = DB_SCHEMA_UPDATE_CREATE_DROP;
-    this.jdbcUrl = "jdbc:h2:mem:activiti";
-  }
+    public StandaloneInMemProcessEngineConfiguration() {
+        this.databaseSchemaUpdate = DB_SCHEMA_UPDATE_CREATE_DROP;
+        this.jdbcUrl = "jdbc:h2:mem:activiti";
+    }
 }

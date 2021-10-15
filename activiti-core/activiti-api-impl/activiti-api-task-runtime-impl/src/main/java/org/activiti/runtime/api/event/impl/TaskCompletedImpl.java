@@ -21,14 +21,14 @@ import org.activiti.api.task.model.events.TaskRuntimeEvent;
 import org.activiti.api.task.runtime.events.TaskCompletedEvent;
 
 public class TaskCompletedImpl extends RuntimeEventImpl<Task, TaskRuntimeEvent.TaskEvents>
-    implements TaskCompletedEvent {
+        implements TaskCompletedEvent {
 
-  public TaskCompletedImpl(Task entity) {
-    super(entity);
-  }
+    public TaskCompletedImpl(Task entity) {
+        super(entity);
+    }
 
-  @Override
-  public TaskRuntimeEvent.TaskEvents getEventType() {
-    return TaskRuntimeEvent.TaskEvents.TASK_COMPLETED;
-  }
+    @Override
+    public TaskRuntimeEvent.TaskEvents getEventType() {
+        return TaskRuntimeEvent.TaskEvents.TASK_COMPLETED;
+    }
 }

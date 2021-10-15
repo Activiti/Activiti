@@ -15,28 +15,31 @@
  */
 package org.activiti.runtime.api.event.impl;
 
-import java.util.Optional;
 import org.activiti.api.process.runtime.events.ProcessStartedEvent;
 import org.activiti.engine.delegate.event.ActivitiProcessStartedEvent;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.runtime.api.model.impl.APIProcessInstanceConverter;
 
+import java.util.Optional;
+
 public class ToAPIProcessStartedEventConverter
-    implements EventConverter<ProcessStartedEvent, ActivitiProcessStartedEvent> {
+        implements EventConverter<ProcessStartedEvent, ActivitiProcessStartedEvent> {
 
-  private final APIProcessInstanceConverter processInstanceConverter;
+    private final APIProcessInstanceConverter processInstanceConverter;
 
-  public ToAPIProcessStartedEventConverter(APIProcessInstanceConverter processInstanceConverter) {
-    this.processInstanceConverter = processInstanceConverter;
-  }
+    public ToAPIProcessStartedEventConverter(APIProcessInstanceConverter processInstanceConverter) {
+        this.processInstanceConverter = processInstanceConverter;
+    }
 
-  @Override
-  public Optional<ProcessStartedEvent> from(ActivitiProcessStartedEvent internalEvent) {
-    ExecutionEntity entity = (ExecutionEntity) internalEvent.getEntity();
-    ProcessStartedEventImpl processStartedEvent =
-        new ProcessStartedEventImpl(processInstanceConverter.from(entity.getProcessInstance()));
-    processStartedEvent.setNestedProcessDefinitionId(internalEvent.getNestedProcessDefinitionId());
-    processStartedEvent.setNestedProcessInstanceId(internalEvent.getNestedProcessInstanceId());
-    return Optional.of(processStartedEvent);
-  }
+    @Override
+    public Optional<ProcessStartedEvent> from(ActivitiProcessStartedEvent internalEvent) {
+        ExecutionEntity entity = (ExecutionEntity) internalEvent.getEntity();
+        ProcessStartedEventImpl processStartedEvent =
+                new ProcessStartedEventImpl(
+                        processInstanceConverter.from(entity.getProcessInstance()));
+        processStartedEvent.setNestedProcessDefinitionId(
+                internalEvent.getNestedProcessDefinitionId());
+        processStartedEvent.setNestedProcessInstanceId(internalEvent.getNestedProcessInstanceId());
+        return Optional.of(processStartedEvent);
+    }
 }

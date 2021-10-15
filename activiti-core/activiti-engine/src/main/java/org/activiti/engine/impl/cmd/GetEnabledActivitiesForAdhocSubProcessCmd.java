@@ -16,9 +16,6 @@
 
 package org.activiti.engine.impl.cmd;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 import org.activiti.bpmn.model.AdhocSubProcess;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.FlowNode;
@@ -28,49 +25,55 @@ import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
 /** */
 public class GetEnabledActivitiesForAdhocSubProcessCmd
-    implements Command<List<FlowNode>>, Serializable {
+        implements Command<List<FlowNode>>, Serializable {
 
-  private static final long serialVersionUID = 1L;
-  protected String executionId;
+    private static final long serialVersionUID = 1L;
+    protected String executionId;
 
-  public GetEnabledActivitiesForAdhocSubProcessCmd(String executionId) {
-    this.executionId = executionId;
-  }
-
-  public List<FlowNode> execute(CommandContext commandContext) {
-    ExecutionEntity execution = commandContext.getExecutionEntityManager().findById(executionId);
-    if (execution == null) {
-      throw new ActivitiObjectNotFoundException(
-          "No execution found for id '" + executionId + "'", ExecutionEntity.class);
+    public GetEnabledActivitiesForAdhocSubProcessCmd(String executionId) {
+        this.executionId = executionId;
     }
 
-    if (!(execution.getCurrentFlowElement() instanceof AdhocSubProcess)) {
-      throw new ActivitiException(
-          "The current flow element of the requested execution is not an ad-hoc sub process");
-    }
-
-    List<FlowNode> enabledFlowNodes = new ArrayList<FlowNode>();
-
-    AdhocSubProcess adhocSubProcess = (AdhocSubProcess) execution.getCurrentFlowElement();
-
-    // if sequential ordering, only one child execution can be active, so no enabled activities
-    if (adhocSubProcess.hasSequentialOrdering()) {
-      if (execution.getExecutions().size() > 0) {
-        return enabledFlowNodes;
-      }
-    }
-
-    for (FlowElement flowElement : adhocSubProcess.getFlowElements()) {
-      if (flowElement instanceof FlowNode) {
-        FlowNode flowNode = (FlowNode) flowElement;
-        if (flowNode.getIncomingFlows().size() == 0) {
-          enabledFlowNodes.add(flowNode);
+    public List<FlowNode> execute(CommandContext commandContext) {
+        ExecutionEntity execution =
+                commandContext.getExecutionEntityManager().findById(executionId);
+        if (execution == null) {
+            throw new ActivitiObjectNotFoundException(
+                    "No execution found for id '" + executionId + "'", ExecutionEntity.class);
         }
-      }
-    }
 
-    return enabledFlowNodes;
-  }
+        if (!(execution.getCurrentFlowElement() instanceof AdhocSubProcess)) {
+            throw new ActivitiException(
+                    "The current flow element of the requested execution is not an ad-hoc sub"
+                            + " process");
+        }
+
+        List<FlowNode> enabledFlowNodes = new ArrayList<FlowNode>();
+
+        AdhocSubProcess adhocSubProcess = (AdhocSubProcess) execution.getCurrentFlowElement();
+
+        // if sequential ordering, only one child execution can be active, so no enabled activities
+        if (adhocSubProcess.hasSequentialOrdering()) {
+            if (execution.getExecutions().size() > 0) {
+                return enabledFlowNodes;
+            }
+        }
+
+        for (FlowElement flowElement : adhocSubProcess.getFlowElements()) {
+            if (flowElement instanceof FlowNode) {
+                FlowNode flowNode = (FlowNode) flowElement;
+                if (flowNode.getIncomingFlows().size() == 0) {
+                    enabledFlowNodes.add(flowNode);
+                }
+            }
+        }
+
+        return enabledFlowNodes;
+    }
 }

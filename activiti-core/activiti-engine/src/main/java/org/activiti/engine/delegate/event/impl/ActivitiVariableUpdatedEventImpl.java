@@ -20,20 +20,20 @@ import static org.activiti.engine.delegate.event.ActivitiEventType.VARIABLE_UPDA
 import org.activiti.engine.delegate.event.ActivitiVariableUpdatedEvent;
 
 public class ActivitiVariableUpdatedEventImpl extends ActivitiVariableEventImpl
-    implements ActivitiVariableUpdatedEvent {
+        implements ActivitiVariableUpdatedEvent {
 
-  private Object variablePreviousValue;
+    private Object variablePreviousValue;
 
-  public ActivitiVariableUpdatedEventImpl() {
-    super(VARIABLE_UPDATED);
-  }
+    public ActivitiVariableUpdatedEventImpl() {
+        super(VARIABLE_UPDATED);
+    }
 
-  @Override
-  public Object getVariablePreviousValue() {
-    return variablePreviousValue;
-  }
+    @Override
+    public Object getVariablePreviousValue() {
+        return variablePreviousValue;
+    }
 
-  public void setVariablePreviousValue(Object variablePreviousValue) {
-    this.variablePreviousValue = variablePreviousValue;
-  }
+    public void setVariablePreviousValue(Object variablePreviousValue) {
+        this.variablePreviousValue = variablePreviousValue;
+    }
 }

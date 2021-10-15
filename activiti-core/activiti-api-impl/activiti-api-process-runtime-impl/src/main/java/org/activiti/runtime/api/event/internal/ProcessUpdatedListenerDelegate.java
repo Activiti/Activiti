@@ -15,7 +15,6 @@
  */
 package org.activiti.runtime.api.event.internal;
 
-import java.util.List;
 import org.activiti.api.process.runtime.events.ProcessUpdatedEvent;
 import org.activiti.api.process.runtime.events.listener.ProcessRuntimeEventListener;
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
@@ -23,36 +22,38 @@ import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventListener;
 import org.activiti.runtime.api.event.impl.ToProcessUpdatedConverter;
 
+import java.util.List;
+
 public class ProcessUpdatedListenerDelegate implements ActivitiEventListener {
 
-  private List<ProcessRuntimeEventListener<ProcessUpdatedEvent>> processRuntimeEventListeners;
+    private List<ProcessRuntimeEventListener<ProcessUpdatedEvent>> processRuntimeEventListeners;
 
-  private ToProcessUpdatedConverter processUpdatedConverter;
+    private ToProcessUpdatedConverter processUpdatedConverter;
 
-  public ProcessUpdatedListenerDelegate(
-      List<ProcessRuntimeEventListener<ProcessUpdatedEvent>> listeners,
-      ToProcessUpdatedConverter processUpdatedConverter) {
-    this.processRuntimeEventListeners = listeners;
-    this.processUpdatedConverter = processUpdatedConverter;
-  }
-
-  @Override
-  public void onEvent(ActivitiEvent event) {
-    if (event instanceof ActivitiEntityEvent) {
-      processUpdatedConverter
-          .from((ActivitiEntityEvent) event)
-          .ifPresent(
-              convertedEvent -> {
-                for (ProcessRuntimeEventListener<ProcessUpdatedEvent> listener :
-                    processRuntimeEventListeners) {
-                  listener.onEvent(convertedEvent);
-                }
-              });
+    public ProcessUpdatedListenerDelegate(
+            List<ProcessRuntimeEventListener<ProcessUpdatedEvent>> listeners,
+            ToProcessUpdatedConverter processUpdatedConverter) {
+        this.processRuntimeEventListeners = listeners;
+        this.processUpdatedConverter = processUpdatedConverter;
     }
-  }
 
-  @Override
-  public boolean isFailOnException() {
-    return false;
-  }
+    @Override
+    public void onEvent(ActivitiEvent event) {
+        if (event instanceof ActivitiEntityEvent) {
+            processUpdatedConverter
+                    .from((ActivitiEntityEvent) event)
+                    .ifPresent(
+                            convertedEvent -> {
+                                for (ProcessRuntimeEventListener<ProcessUpdatedEvent> listener :
+                                        processRuntimeEventListeners) {
+                                    listener.onEvent(convertedEvent);
+                                }
+                            });
+        }
+    }
+
+    @Override
+    public boolean isFailOnException() {
+        return false;
+    }
 }

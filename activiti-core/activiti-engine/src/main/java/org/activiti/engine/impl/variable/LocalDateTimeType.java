@@ -20,34 +20,34 @@ import java.time.ZoneOffset;
 
 public class LocalDateTimeType implements VariableType {
 
-  public String getTypeName() {
-    return "localDateTime";
-  }
-
-  public boolean isCachable() {
-    return true;
-  }
-
-  public boolean isAbleToStore(Object value) {
-    if (value == null) {
-      return true;
+    public String getTypeName() {
+        return "localDateTime";
     }
-    return LocalDateTime.class.isAssignableFrom(value.getClass());
-  }
 
-  public Object getValue(ValueFields valueFields) {
-    Long longValue = valueFields.getLongValue();
-    if (longValue != null) {
-      return LocalDateTime.ofEpochSecond(longValue, 0, ZoneOffset.UTC);
+    public boolean isCachable() {
+        return true;
     }
-    return null;
-  }
 
-  public void setValue(Object value, ValueFields valueFields) {
-    if (value != null) {
-      valueFields.setLongValue(((LocalDateTime) value).toEpochSecond(ZoneOffset.UTC));
-    } else {
-      valueFields.setLongValue(null);
+    public boolean isAbleToStore(Object value) {
+        if (value == null) {
+            return true;
+        }
+        return LocalDateTime.class.isAssignableFrom(value.getClass());
     }
-  }
+
+    public Object getValue(ValueFields valueFields) {
+        Long longValue = valueFields.getLongValue();
+        if (longValue != null) {
+            return LocalDateTime.ofEpochSecond(longValue, 0, ZoneOffset.UTC);
+        }
+        return null;
+    }
+
+    public void setValue(Object value, ValueFields valueFields) {
+        if (value != null) {
+            valueFields.setLongValue(((LocalDateTime) value).toEpochSecond(ZoneOffset.UTC));
+        } else {
+            valueFields.setLongValue(null);
+        }
+    }
 }

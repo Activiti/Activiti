@@ -24,8 +24,10 @@ import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
 @Internal
 public interface EventHandler {
 
-  public String getEventHandlerType();
+    public String getEventHandlerType();
 
-  public void handleEvent(
-      EventSubscriptionEntity eventSubscription, Object payload, CommandContext commandContext);
+    public void handleEvent(
+            EventSubscriptionEntity eventSubscription,
+            Object payload,
+            CommandContext commandContext);
 }

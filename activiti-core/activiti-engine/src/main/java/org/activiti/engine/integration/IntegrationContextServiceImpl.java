@@ -22,19 +22,19 @@ import org.activiti.engine.impl.persistence.entity.integration.IntegrationContex
 
 public class IntegrationContextServiceImpl implements IntegrationContextService {
 
-  private CommandExecutor commandExecutor;
+    private CommandExecutor commandExecutor;
 
-  public IntegrationContextServiceImpl(CommandExecutor commandExecutor) {
-    this.commandExecutor = commandExecutor;
-  }
+    public IntegrationContextServiceImpl(CommandExecutor commandExecutor) {
+        this.commandExecutor = commandExecutor;
+    }
 
-  @Override
-  public IntegrationContextEntity findById(String id) {
-    return commandExecutor.execute(new RetrieveIntegrationContextsCmd(id));
-  }
+    @Override
+    public IntegrationContextEntity findById(String id) {
+        return commandExecutor.execute(new RetrieveIntegrationContextsCmd(id));
+    }
 
-  @Override
-  public void deleteIntegrationContext(IntegrationContextEntity integrationContextEntity) {
-    commandExecutor.execute(new DeleteIntegrationContextCmd(integrationContextEntity));
-  }
+    @Override
+    public void deleteIntegrationContext(IntegrationContextEntity integrationContextEntity) {
+        commandExecutor.execute(new DeleteIntegrationContextCmd(integrationContextEntity));
+    }
 }

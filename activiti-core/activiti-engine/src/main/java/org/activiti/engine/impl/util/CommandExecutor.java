@@ -22,5 +22,5 @@ import org.activiti.engine.delegate.DelegateExecution;
 /** */
 @Internal
 public interface CommandExecutor {
-  void executeCommand(DelegateExecution execution) throws Exception;
+    void executeCommand(DelegateExecution execution) throws Exception;
 }

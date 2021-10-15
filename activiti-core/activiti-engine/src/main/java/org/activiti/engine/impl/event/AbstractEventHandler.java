@@ -16,7 +16,6 @@
 
 package org.activiti.engine.impl.event;
 
-import java.util.Map;
 import org.activiti.bpmn.model.FlowNode;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.context.Context;
@@ -24,28 +23,32 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 
+import java.util.Map;
+
 /** */
 public abstract class AbstractEventHandler implements EventHandler {
 
-  public void handleEvent(
-      EventSubscriptionEntity eventSubscription, Object payload, CommandContext commandContext) {
-    ExecutionEntity execution = eventSubscription.getExecution();
-    FlowNode currentFlowElement = (FlowNode) execution.getCurrentFlowElement();
+    public void handleEvent(
+            EventSubscriptionEntity eventSubscription,
+            Object payload,
+            CommandContext commandContext) {
+        ExecutionEntity execution = eventSubscription.getExecution();
+        FlowNode currentFlowElement = (FlowNode) execution.getCurrentFlowElement();
 
-    if (currentFlowElement == null) {
-      throw new ActivitiException(
-          "Error while sending signal for event subscription '"
-              + eventSubscription.getId()
-              + "': "
-              + "no activity associated with event subscription");
+        if (currentFlowElement == null) {
+            throw new ActivitiException(
+                    "Error while sending signal for event subscription '"
+                            + eventSubscription.getId()
+                            + "': "
+                            + "no activity associated with event subscription");
+        }
+
+        if (payload instanceof Map) {
+            @SuppressWarnings("unchecked")
+            Map<String, Object> processVariables = (Map<String, Object>) payload;
+            execution.setVariables(processVariables);
+        }
+
+        Context.getAgenda().planTriggerExecutionOperation(execution);
     }
-
-    if (payload instanceof Map) {
-      @SuppressWarnings("unchecked")
-      Map<String, Object> processVariables = (Map<String, Object>) payload;
-      execution.setVariables(processVariables);
-    }
-
-    Context.getAgenda().planTriggerExecutionOperation(execution);
-  }
 }

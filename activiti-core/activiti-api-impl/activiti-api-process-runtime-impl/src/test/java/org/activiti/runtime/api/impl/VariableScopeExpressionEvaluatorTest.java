@@ -30,29 +30,29 @@ import org.mockito.Mock;
 
 public class VariableScopeExpressionEvaluatorTest {
 
-  @Mock private ExpressionManager expressionManager;
+    @Mock private ExpressionManager expressionManager;
 
-  @Mock private DelegateInterceptor delegateInterceptor;
+    @Mock private DelegateInterceptor delegateInterceptor;
 
-  @BeforeEach
-  public void setUp() {
-    initMocks(this);
-  }
+    @BeforeEach
+    public void setUp() {
+        initMocks(this);
+    }
 
-  @Test
-  public void evaluate_should_returnResultOfGetValueWithVariableScope() {
-    // given
-    VariableScope variableScope = mock(VariableScope.class);
-    VariableScopeExpressionEvaluator evaluator =
-        new VariableScopeExpressionEvaluator(variableScope);
+    @Test
+    public void evaluate_should_returnResultOfGetValueWithVariableScope() {
+        // given
+        VariableScope variableScope = mock(VariableScope.class);
+        VariableScopeExpressionEvaluator evaluator =
+                new VariableScopeExpressionEvaluator(variableScope);
 
-    Expression expression = mock(Expression.class);
-    given(expression.getValue(variableScope)).willReturn("London");
+        Expression expression = mock(Expression.class);
+        given(expression.getValue(variableScope)).willReturn("London");
 
-    // when
-    Object value = evaluator.evaluate(expression, expressionManager, delegateInterceptor);
+        // when
+        Object value = evaluator.evaluate(expression, expressionManager, delegateInterceptor);
 
-    // then
-    assertThat(value).isEqualTo("London");
-  }
+        // then
+        assertThat(value).isEqualTo("London");
+    }
 }

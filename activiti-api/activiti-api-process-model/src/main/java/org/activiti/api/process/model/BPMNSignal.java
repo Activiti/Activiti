@@ -19,5 +19,5 @@ import org.activiti.api.process.model.payloads.SignalPayload;
 
 public interface BPMNSignal extends BPMNElement {
 
-  SignalPayload getSignalPayload();
+    SignalPayload getSignalPayload();
 }
