@@ -73,13 +73,17 @@ public abstract class AbstractSetProcessDefinitionStateCmd implements Command<Vo
 
     List<ProcessDefinitionEntity> processDefinitions = findProcessDefinition(commandContext);
 
-    if (executionDate != null) { // Process definition state change is delayed
-      createTimerForDelayedExecution(commandContext, processDefinitions);
-    } else { // Process definition state is changed now
-      changeProcessDefinitionState(commandContext, processDefinitions);
-    }
+    executeInternal(commandContext,processDefinitions);
 
     return null;
+  }
+
+  public void executeInternal(CommandContext commandContext,List<ProcessDefinitionEntity> processDefinitions){
+      if (executionDate != null) { // Process definition state change is delayed
+          createTimerForDelayedExecution(commandContext, processDefinitions);
+      } else { // Process definition state is changed now
+          changeProcessDefinitionState(commandContext, processDefinitions);
+      }
   }
 
   protected List<ProcessDefinitionEntity> findProcessDefinition(CommandContext commandContext) {
@@ -129,8 +133,13 @@ public abstract class AbstractSetProcessDefinitionStateCmd implements Command<Vo
     return processDefinitionEntities;
   }
 
-  protected void createTimerForDelayedExecution(CommandContext commandContext, List<ProcessDefinitionEntity> processDefinitions) {
+  public void createTimerForDelayedExecution(CommandContext commandContext, List<ProcessDefinitionEntity> processDefinitions) {
     for (ProcessDefinitionEntity processDefinition : processDefinitions) {
+        createTimerForDelayedExecutionInternal(commandContext,processDefinition);
+    }
+  }
+
+  public void createTimerForDelayedExecutionInternal(CommandContext commandContext, ProcessDefinitionEntity processDefinition) {
 
       TimerJobEntity timer = commandContext.getTimerJobEntityManager().create();
       timer.setJobType(JobEntity.JOB_TYPE_TIMER);
@@ -138,18 +147,22 @@ public abstract class AbstractSetProcessDefinitionStateCmd implements Command<Vo
 
       // Inherit tenant identifier (if applicable)
       if (processDefinition.getTenantId() != null) {
-        timer.setTenantId(processDefinition.getTenantId());
+          timer.setTenantId(processDefinition.getTenantId());
       }
 
       timer.setDuedate(executionDate);
       timer.setJobHandlerType(getDelayedExecutionJobHandlerType());
       timer.setJobHandlerConfiguration(TimerChangeProcessDefinitionSuspensionStateJobHandler.createJobHandlerConfiguration(includeProcessInstances));
       commandContext.getJobManager().scheduleTimerJob(timer);
+  }
+
+  public void changeProcessDefinitionState(CommandContext commandContext, List<ProcessDefinitionEntity> processDefinitions) {
+    for (ProcessDefinitionEntity processDefinition : processDefinitions) {
+        changeProcessDefinitionStateInternal(commandContext,processDefinition);
     }
   }
 
-  protected void changeProcessDefinitionState(CommandContext commandContext, List<ProcessDefinitionEntity> processDefinitions) {
-    for (ProcessDefinitionEntity processDefinition : processDefinitions) {
+  public void changeProcessDefinitionStateInternal(CommandContext commandContext, ProcessDefinitionEntity processDefinition) {
 
       SuspensionStateUtil.setSuspensionState(processDefinition, getProcessDefinitionSuspensionState());
 
@@ -159,24 +172,24 @@ public abstract class AbstractSetProcessDefinitionStateCmd implements Command<Vo
       // Suspend process instances (if needed)
       if (includeProcessInstances) {
 
-        int currentStartIndex = 0;
-        List<ProcessInstance> processInstances = fetchProcessInstancesPage(commandContext, processDefinition, currentStartIndex);
-        while (!processInstances.isEmpty()) {
+          int currentStartIndex = 0;
+          List<ProcessInstance> processInstances = fetchProcessInstancesPage(commandContext, processDefinition, currentStartIndex);
+          while (!processInstances.isEmpty()) {
 
-          for (ProcessInstance processInstance : processInstances) {
-            AbstractSetProcessInstanceStateCmd processInstanceCmd = getProcessInstanceChangeStateCmd(processInstance);
-            processInstanceCmd.execute(commandContext);
+              for (ProcessInstance processInstance : processInstances) {
+                  AbstractSetProcessInstanceStateCmd processInstanceCmd = getProcessInstanceChangeStateCmd(processInstance);
+                  processInstanceCmd.execute(commandContext);
+              }
+
+              // Fetch new batch of process instances
+              currentStartIndex += processInstances.size();
+              processInstances = fetchProcessInstancesPage(commandContext, processDefinition, currentStartIndex);
           }
-
-          // Fetch new batch of process instances
-          currentStartIndex += processInstances.size();
-          processInstances = fetchProcessInstancesPage(commandContext, processDefinition, currentStartIndex);
-        }
       }
-    }
   }
 
-  protected List<ProcessInstance> fetchProcessInstancesPage(CommandContext commandContext, ProcessDefinition processDefinition, int currentPageStartIndex) {
+
+        protected List<ProcessInstance> fetchProcessInstancesPage(CommandContext commandContext, ProcessDefinition processDefinition, int currentPageStartIndex) {
 
     if (SuspensionState.ACTIVE.equals(getProcessDefinitionSuspensionState())) {
       return new ProcessInstanceQueryImpl(commandContext).processDefinitionId(processDefinition.getId()).suspended()

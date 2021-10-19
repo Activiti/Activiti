@@ -50,14 +50,17 @@ public class SetDeploymentKeyCmd implements Command<Void> {
       throw new ActivitiObjectNotFoundException("No deployment found for id = '" + deploymentId + "'", Deployment.class);
     }
 
-    // Update category
-    deployment.setKey(key);
+    return executeInternal(commandContext,deployment);
+  }
 
-    if (commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-      commandContext.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_UPDATED, deployment));
-    }
+  public Void executeInternal(CommandContext commandContext,DeploymentEntity deployment){
+      // Update category
+      deployment.setKey(key);
 
-    return null;
+      if (commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+          commandContext.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_UPDATED, deployment));
+      }
+      return null;
   }
 
   public String getDeploymentId() {

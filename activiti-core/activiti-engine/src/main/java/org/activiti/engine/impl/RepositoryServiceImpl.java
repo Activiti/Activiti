@@ -23,32 +23,7 @@ import java.util.List;
 
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.engine.RepositoryService;
-import org.activiti.engine.impl.cmd.ActivateProcessDefinitionCmd;
-import org.activiti.engine.impl.cmd.AddEditorSourceExtraForModelCmd;
-import org.activiti.engine.impl.cmd.AddEditorSourceForModelCmd;
-import org.activiti.engine.impl.cmd.AddIdentityLinkForProcessDefinitionCmd;
-import org.activiti.engine.impl.cmd.ChangeDeploymentTenantIdCmd;
-import org.activiti.engine.impl.cmd.CreateModelCmd;
-import org.activiti.engine.impl.cmd.DeleteDeploymentCmd;
-import org.activiti.engine.impl.cmd.DeleteIdentityLinkForProcessDefinitionCmd;
-import org.activiti.engine.impl.cmd.DeleteModelCmd;
-import org.activiti.engine.impl.cmd.DeployCmd;
-import org.activiti.engine.impl.cmd.GetBpmnModelCmd;
-import org.activiti.engine.impl.cmd.GetDeploymentProcessDefinitionCmd;
-import org.activiti.engine.impl.cmd.GetDeploymentProcessModelCmd;
-import org.activiti.engine.impl.cmd.GetDeploymentResourceCmd;
-import org.activiti.engine.impl.cmd.GetDeploymentResourceNamesCmd;
-import org.activiti.engine.impl.cmd.GetIdentityLinksForProcessDefinitionCmd;
-import org.activiti.engine.impl.cmd.GetModelCmd;
-import org.activiti.engine.impl.cmd.GetModelEditorSourceCmd;
-import org.activiti.engine.impl.cmd.GetModelEditorSourceExtraCmd;
-import org.activiti.engine.impl.cmd.IsProcessDefinitionSuspendedCmd;
-import org.activiti.engine.impl.cmd.SaveModelCmd;
-import org.activiti.engine.impl.cmd.SetDeploymentCategoryCmd;
-import org.activiti.engine.impl.cmd.SetDeploymentKeyCmd;
-import org.activiti.engine.impl.cmd.SetProcessDefinitionCategoryCmd;
-import org.activiti.engine.impl.cmd.SuspendProcessDefinitionCmd;
-import org.activiti.engine.impl.cmd.ValidateBpmnModelCmd;
+import org.activiti.engine.impl.cmd.*;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ModelEntity;
@@ -275,4 +250,7 @@ public class RepositoryServiceImpl extends ServiceImpl implements RepositoryServ
     return commandExecutor.execute(new ValidateBpmnModelCmd(bpmnModel));
   }
 
+  public Boolean isActiviti5ProcessDefinition(String processDefinitionId) {
+        return commandExecutor.execute(new IsActiviti5ProcessDefinitionCmd(processDefinitionId));
+  }
 }

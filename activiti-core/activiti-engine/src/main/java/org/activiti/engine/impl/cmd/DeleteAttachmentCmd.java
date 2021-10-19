@@ -50,22 +50,25 @@ public class DeleteAttachmentCmd implements Command<Object>, Serializable {
         processDefinitionId = process.getProcessDefinitionId();
       }
     }
+    return executeInternal(commandContext,attachment,processInstanceId,processDefinitionId);
+  }
 
-    commandContext.getAttachmentEntityManager().delete(attachment, false);
+  public Object executeInternal(CommandContext commandContext,AttachmentEntity attachment,String processInstanceId,String processDefinitionId){
+      commandContext.getAttachmentEntityManager().delete(attachment, false);
 
-    if (attachment.getContentId() != null) {
-      commandContext.getByteArrayEntityManager().deleteByteArrayById(attachment.getContentId());
-    }
+      if (attachment.getContentId() != null) {
+          commandContext.getByteArrayEntityManager().deleteByteArrayById(attachment.getContentId());
+      }
 
-    if (attachment.getTaskId() != null) {
-      commandContext.getHistoryManager().createAttachmentComment(attachment.getTaskId(), attachment.getProcessInstanceId(), attachment.getName(), false);
-    }
+      if (attachment.getTaskId() != null) {
+          commandContext.getHistoryManager().createAttachmentComment(attachment.getTaskId(), attachment.getProcessInstanceId(), attachment.getName(), false);
+      }
 
-    if (commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-      commandContext.getProcessEngineConfiguration().getEventDispatcher()
-          .dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_DELETED, attachment, processInstanceId, processInstanceId, processDefinitionId));
-    }
-    return null;
+      if (commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+          commandContext.getProcessEngineConfiguration().getEventDispatcher()
+              .dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_DELETED, attachment, processInstanceId, processInstanceId, processDefinitionId));
+      }
+      return null;
   }
 
 }

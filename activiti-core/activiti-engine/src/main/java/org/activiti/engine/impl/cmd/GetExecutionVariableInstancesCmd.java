@@ -56,6 +56,20 @@ public class GetExecutionVariableInstancesCmd implements Command<Map<String, Var
             throw new ActivitiObjectNotFoundException("execution " + executionId + " doesn't exist", Execution.class);
         }
 
+        Map<String, VariableInstance> variables = getVariable(execution);
+
+        if (variables != null) {
+            for (Entry<String, VariableInstance> entry : variables.entrySet()) {
+                if (entry.getValue() != null) {
+                    entry.getValue().getValue();
+                }
+            }
+        }
+
+        return variables;
+    }
+
+    public  Map<String, VariableInstance> getVariable(ExecutionEntity execution){
         Map<String, VariableInstance> variables = null;
 
         if (variableNames == null || variableNames.isEmpty()) {
@@ -74,15 +88,6 @@ public class GetExecutionVariableInstancesCmd implements Command<Map<String, Var
                 variables = execution.getVariableInstances(variableNames, false);
             }
         }
-
-        if (variables != null) {
-            for (Entry<String, VariableInstance> entry : variables.entrySet()) {
-                if (entry.getValue() != null) {
-                    entry.getValue().getValue();
-                }
-            }
-        }
-
-        return variables;
+      return variables;
     }
 }

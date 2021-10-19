@@ -121,17 +121,22 @@ public class DeploymentManager {
     ProcessDefinitionCacheEntry cachedProcessDefinition = processDefinitionCache.get(processDefinitionId);
 
     if (cachedProcessDefinition == null) {
-      CommandContext commandContext = Context.getCommandContext();
-      DeploymentEntity deployment = deploymentEntityManager.findById(deploymentId);
-      deployment.setNew(false);
-      deploy(deployment, null);
-      cachedProcessDefinition = processDefinitionCache.get(processDefinitionId);
-
-      if (cachedProcessDefinition == null) {
-        throw new ActivitiException("deployment '" + deploymentId + "' didn't put process definition '" + processDefinitionId + "' in the cache");
-      }
+      cachedProcessDefinition = resolveProcessDefinitionInternal(deploymentId,processDefinitionId);
     }
     return cachedProcessDefinition;
+  }
+
+  public ProcessDefinitionCacheEntry resolveProcessDefinitionInternal(String deploymentId, String processDefinitionId){
+        CommandContext commandContext = Context.getCommandContext();
+        DeploymentEntity deployment = deploymentEntityManager.findById(deploymentId);
+        deployment.setNew(false);
+        deploy(deployment, null);
+        ProcessDefinitionCacheEntry cachedProcessDefinition = processDefinitionCache.get(processDefinitionId);
+
+        if (cachedProcessDefinition == null) {
+            throw new ActivitiException("deployment '" + deploymentId + "' didn't put process definition '" + processDefinitionId + "' in the cache");
+        }
+        return cachedProcessDefinition;
   }
 
   public void removeDeployment(String deploymentId, boolean cascade) {
@@ -140,30 +145,33 @@ public class DeploymentManager {
     if (deployment == null) {
       throw new ActivitiObjectNotFoundException("Could not find a deployment with id '" + deploymentId + "'.", DeploymentEntity.class);
     }
+    removeDeploymentInternal(deploymentId,cascade,deployment);
+  }
 
-    // Remove any process definition from the cache
-    List<ProcessDefinition> processDefinitions = new ProcessDefinitionQueryImpl().deploymentId(deploymentId).list();
-    ActivitiEventDispatcher eventDispatcher = Context.getProcessEngineConfiguration().getEventDispatcher();
+  public void removeDeploymentInternal(String deploymentId, boolean cascade,DeploymentEntity deployment){
+      // Remove any process definition from the cache
+      List<ProcessDefinition> processDefinitions = new ProcessDefinitionQueryImpl().deploymentId(deploymentId).list();
+      ActivitiEventDispatcher eventDispatcher = Context.getProcessEngineConfiguration().getEventDispatcher();
 
-    for (ProcessDefinition processDefinition : processDefinitions) {
+      for (ProcessDefinition processDefinition : processDefinitions) {
 
-      // Since all process definitions are deleted by a single query, we should dispatch the events in this loop
-      if (eventDispatcher.isEnabled()) {
-        eventDispatcher.dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_DELETED, processDefinition));
+          // Since all process definitions are deleted by a single query, we should dispatch the events in this loop
+          if (eventDispatcher.isEnabled()) {
+              eventDispatcher.dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_DELETED, processDefinition));
+          }
       }
-    }
 
-    // Delete data
-    deploymentEntityManager.deleteDeployment(deploymentId, cascade);
+      // Delete data
+      deploymentEntityManager.deleteDeployment(deploymentId, cascade);
 
-    // Since we use a delete by query, delete-events are not automatically dispatched
-    if (eventDispatcher.isEnabled()) {
-      eventDispatcher.dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_DELETED, deployment));
-    }
+      // Since we use a delete by query, delete-events are not automatically dispatched
+      if (eventDispatcher.isEnabled()) {
+          eventDispatcher.dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_DELETED, deployment));
+      }
 
-    for (ProcessDefinition processDefinition : processDefinitions) {
-      processDefinitionCache.remove(processDefinition.getId());
-    }
+      for (ProcessDefinition processDefinition : processDefinitions) {
+          processDefinitionCache.remove(processDefinition.getId());
+      }
   }
 
   // getters and setters

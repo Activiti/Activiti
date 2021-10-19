@@ -60,6 +60,7 @@ public class GetDataObjectCmd implements Command<DataObject>, Serializable {
     this.withLocalizationFallback = withLocalizationFallback;
   }
 
+
   public DataObject execute(CommandContext commandContext) {
     if (executionId == null) {
       throw new ActivitiIllegalArgumentException("executionId is null");
@@ -76,12 +77,7 @@ public class GetDataObjectCmd implements Command<DataObject>, Serializable {
 
     DataObject dataObject = null;
 
-    VariableInstance variableEntity = null;
-    if (isLocal) {
-      variableEntity = execution.getVariableInstanceLocal(dataObjectName, false);
-    } else {
-      variableEntity = execution.getVariableInstance(dataObjectName, false);
-    }
+    VariableInstance variableEntity = getVariable(execution);
 
     String localizedName = null;
     String localizedDescription = null;
@@ -135,5 +131,15 @@ public class GetDataObjectCmd implements Command<DataObject>, Serializable {
     }
 
     return dataObject;
+  }
+
+  public VariableInstance getVariable(ExecutionEntity execution){
+        VariableInstance variableEntity = null;
+        if (isLocal) {
+            variableEntity = execution.getVariableInstanceLocal(dataObjectName, false);
+        } else {
+            variableEntity = execution.getVariableInstance(dataObjectName, false);
+        }
+        return variableEntity;
   }
 }

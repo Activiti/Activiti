@@ -50,15 +50,18 @@ public class SaveAttachmentCmd implements Command<Object>, Serializable {
         processDefinitionId = process.getProcessDefinitionId();
       }
     }
+   return executeInternal(commandContext,updateAttachment,processInstanceId,processDefinitionId);
+  }
 
-    updateAttachment.setName(attachment.getName());
-    updateAttachment.setDescription(attachment.getDescription());
+  public Void executeInternal(CommandContext commandContext, AttachmentEntity updateAttachment,String processInstanceId,String processDefinitionId){
+      updateAttachment.setName(attachment.getName());
+      updateAttachment.setDescription(attachment.getDescription());
 
-    if (commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-      commandContext.getProcessEngineConfiguration().getEventDispatcher()
-          .dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_UPDATED, attachment, processInstanceId, processInstanceId, processDefinitionId));
-    }
+      if (commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+          commandContext.getProcessEngineConfiguration().getEventDispatcher()
+              .dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_UPDATED, attachment, processInstanceId, processInstanceId, processDefinitionId));
+      }
 
-    return null;
+      return null;
   }
 }

@@ -77,24 +77,7 @@ public class GetDataObjectsCmd implements Command<Map<String, DataObject>>, Seri
       throw new ActivitiObjectNotFoundException("execution " + executionId + " doesn't exist", Execution.class);
     }
 
-    Map<String, VariableInstance> variables = null;
-
-    if (dataObjectNames == null || dataObjectNames.isEmpty()) {
-      // Fetch all
-      if (isLocal) {
-        variables = execution.getVariableInstancesLocal();
-      } else {
-        variables = execution.getVariableInstances();
-      }
-
-    } else {
-      // Fetch specific collection of variables
-      if (isLocal) {
-        variables = execution.getVariableInstancesLocal(dataObjectNames, false);
-      } else {
-        variables = execution.getVariableInstances(dataObjectNames, false);
-      }
-    }
+    Map<String, VariableInstance> variables = getVariables(execution);
 
     Map<String,DataObject> dataObjects = null;
     if (variables != null) {
@@ -156,4 +139,28 @@ public class GetDataObjectsCmd implements Command<Map<String, DataObject>>, Seri
 
     return dataObjects;
   }
+
+  public Map<String, VariableInstance> getVariables(ExecutionEntity execution){
+
+        Map<String, VariableInstance> variables = null;
+
+        if (dataObjectNames == null || dataObjectNames.isEmpty()) {
+            // Fetch all
+            if (isLocal) {
+                variables = execution.getVariableInstancesLocal();
+            } else {
+                variables = execution.getVariableInstances();
+            }
+
+        } else {
+            // Fetch specific collection of variables
+            if (isLocal) {
+                variables = execution.getVariableInstancesLocal(dataObjectNames, false);
+            } else {
+                variables = execution.getVariableInstances(dataObjectNames, false);
+            }
+        }
+        return variables;
+  }
+
 }

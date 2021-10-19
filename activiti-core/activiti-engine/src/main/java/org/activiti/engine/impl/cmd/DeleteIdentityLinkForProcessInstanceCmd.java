@@ -70,10 +70,11 @@ public class DeleteIdentityLinkForProcessInstanceCmd implements Command<Object>,
       throw new ActivitiObjectNotFoundException("Cannot find process instance with id " + processInstanceId, ExecutionEntity.class);
     }
 
-    commandContext.getIdentityLinkEntityManager().deleteIdentityLink(processInstance, userId, groupId, type);
-    commandContext.getHistoryManager().createProcessInstanceIdentityLinkComment(processInstanceId, userId, groupId, type, false);
-
-    return null;
+    return executeInternal(commandContext,processInstance);
   }
-
+  public Void executeInternal(CommandContext commandContext,ExecutionEntity processInstance) {
+      commandContext.getIdentityLinkEntityManager().deleteIdentityLink(processInstance, userId, groupId, type);
+      commandContext.getHistoryManager().createProcessInstanceIdentityLinkComment(processInstanceId, userId, groupId, type, false);
+      return null;
+  }
 }

@@ -70,48 +70,52 @@ public class CreateAttachmentCmd implements Command<Attachment> {
       verifyExecutionParameters(commandContext);
     }
 
-    AttachmentEntity attachment = commandContext.getAttachmentEntityManager().create();
-    attachment.setName(attachmentName);
-    attachment.setProcessInstanceId(processInstanceId);
-    attachment.setTaskId(taskId);
-    attachment.setDescription(attachmentDescription);
-    attachment.setType(attachmentType);
-    attachment.setUrl(url);
-    attachment.setUserId(Authentication.getAuthenticatedUserId());
-    attachment.setTime(commandContext.getProcessEngineConfiguration().getClock().getCurrentTime());
+    return executeInternal(commandContext);
+  }
 
-    commandContext.getAttachmentEntityManager().insert(attachment, false);
+  public Attachment executeInternal(CommandContext commandContext) {
+      AttachmentEntity attachment = commandContext.getAttachmentEntityManager().create();
+      attachment.setName(attachmentName);
+      attachment.setProcessInstanceId(processInstanceId);
+      attachment.setTaskId(taskId);
+      attachment.setDescription(attachmentDescription);
+      attachment.setType(attachmentType);
+      attachment.setUrl(url);
+      attachment.setUserId(Authentication.getAuthenticatedUserId());
+      attachment.setTime(commandContext.getProcessEngineConfiguration().getClock().getCurrentTime());
 
-    if (content != null) {
-      byte[] bytes = IoUtil.readInputStream(content, attachmentName);
-      ByteArrayEntity byteArray = commandContext.getByteArrayEntityManager().create();
-      byteArray.setBytes(bytes);
-      commandContext.getByteArrayEntityManager().insert(byteArray);
-      attachment.setContentId(byteArray.getId());
-      attachment.setContent(byteArray);
-    }
+      commandContext.getAttachmentEntityManager().insert(attachment, false);
 
-    commandContext.getHistoryManager().createAttachmentComment(taskId, processInstanceId, attachmentName, true);
-
-    if (commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-      // Forced to fetch the process-instance to associate the right
-      // process definition
-      String processDefinitionId = null;
-      if (attachment.getProcessInstanceId() != null) {
-        ExecutionEntity process = commandContext.getExecutionEntityManager().findById(processInstanceId);
-        if (process != null) {
-          processDefinitionId = process.getProcessDefinitionId();
-        }
+      if (content != null) {
+          byte[] bytes = IoUtil.readInputStream(content, attachmentName);
+          ByteArrayEntity byteArray = commandContext.getByteArrayEntityManager().create();
+          byteArray.setBytes(bytes);
+          commandContext.getByteArrayEntityManager().insert(byteArray);
+          attachment.setContentId(byteArray.getId());
+          attachment.setContent(byteArray);
       }
 
-      commandContext.getProcessEngineConfiguration().getEventDispatcher()
-          .dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, attachment, processInstanceId, processInstanceId, processDefinitionId));
-      commandContext.getProcessEngineConfiguration().getEventDispatcher()
-          .dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_INITIALIZED, attachment, processInstanceId, processInstanceId, processDefinitionId));
-    }
+      commandContext.getHistoryManager().createAttachmentComment(taskId, processInstanceId, attachmentName, true);
 
-    return attachment;
+      if (commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+          // Forced to fetch the process-instance to associate the right
+          // process definition
+          String processDefinitionId = null;
+          if (attachment.getProcessInstanceId() != null) {
+              ExecutionEntity process = commandContext.getExecutionEntityManager().findById(processInstanceId);
+              if (process != null) {
+                  processDefinitionId = process.getProcessDefinitionId();
+              }
+          }
+
+          commandContext.getProcessEngineConfiguration().getEventDispatcher()
+              .dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, attachment, processInstanceId, processInstanceId, processDefinitionId));
+          commandContext.getProcessEngineConfiguration().getEventDispatcher()
+              .dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_INITIALIZED, attachment, processInstanceId, processInstanceId, processDefinitionId));
+      }
+      return attachment;
   }
+
 
   protected TaskEntity verifyTaskParameters(CommandContext commandContext) {
     TaskEntity task = commandContext.getTaskEntityManager().findById(taskId);

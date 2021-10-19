@@ -13,12 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.activiti.engine.compatibility;
 
-package org.activiti.engine.repository;
+/**
 
-import org.activiti.engine.api.internal.Internal;
+ */
+public interface Activiti5CompatibilityHandlerFactory {
 
-@Internal
-public interface DeploymentProperties {
-    String DEPLOY_AS_ACTIVITI5_PROCESS_DEFINITION = "deployAsActiviti5ProcessDefinition";
+    Activiti5CompatibilityHandler createActiviti5CompatibilityHandler();
+
 }

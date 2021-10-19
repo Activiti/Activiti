@@ -89,26 +89,31 @@ public class AddCommentCmd implements Command<Comment> {
       processDefinitionId = task.getProcessDefinitionId();
     }
 
-    String userId = Authentication.getAuthenticatedUserId();
-    CommentEntity comment = commandContext.getCommentEntityManager().create();
-    comment.setUserId(userId);
-    comment.setType((type == null) ? CommentEntity.TYPE_COMMENT : type);
-    comment.setTime(commandContext.getProcessEngineConfiguration().getClock().getCurrentTime());
-    comment.setTaskId(taskId);
-    comment.setProcessInstanceId(processInstanceId);
-    comment.setAction(Event.ACTION_ADD_COMMENT);
+    return executeInternal(commandContext);
+  }
 
-    String eventMessage = message.replaceAll("\\s+", " ");
-    if (eventMessage.length() > 163) {
-      eventMessage = eventMessage.substring(0, 160) + "...";
-    }
-    comment.setMessage(eventMessage);
+  public Comment executeInternal(CommandContext commandContext){
 
-    comment.setFullMessage(message);
+      String userId = Authentication.getAuthenticatedUserId();
+      CommentEntity comment = commandContext.getCommentEntityManager().create();
+      comment.setUserId(userId);
+      comment.setType((type == null) ? CommentEntity.TYPE_COMMENT : type);
+      comment.setTime(commandContext.getProcessEngineConfiguration().getClock().getCurrentTime());
+      comment.setTaskId(taskId);
+      comment.setProcessInstanceId(processInstanceId);
+      comment.setAction(Event.ACTION_ADD_COMMENT);
 
-    commandContext.getCommentEntityManager().insert(comment);
+      String eventMessage = message.replaceAll("\\s+", " ");
+      if (eventMessage.length() > 163) {
+          eventMessage = eventMessage.substring(0, 160) + "...";
+      }
+      comment.setMessage(eventMessage);
 
-    return comment;
+      comment.setFullMessage(message);
+
+      commandContext.getCommentEntityManager().insert(comment);
+
+      return comment;
   }
 
   protected String getSuspendedTaskException() {

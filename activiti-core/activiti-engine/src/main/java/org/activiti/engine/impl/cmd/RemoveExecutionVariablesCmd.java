@@ -37,7 +37,7 @@ public class RemoveExecutionVariablesCmd extends NeedsActiveExecutionCmd<Void> {
     this.isLocal = isLocal;
   }
 
-  protected Void execute(CommandContext commandContext, ExecutionEntity execution) {
+  public Void execute(CommandContext commandContext, ExecutionEntity execution) {
     if (isLocal) {
       execution.removeVariablesLocal(variableNames);
     } else {

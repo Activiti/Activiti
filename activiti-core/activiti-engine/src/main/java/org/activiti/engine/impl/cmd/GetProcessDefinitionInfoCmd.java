@@ -46,16 +46,20 @@ public class GetProcessDefinitionInfoCmd implements Command<ObjectNode>, Seriali
       throw new ActivitiIllegalArgumentException("process definition id is null");
     }
 
-    ObjectNode resultNode = null;
     DeploymentManager deploymentManager = commandContext.getProcessEngineConfiguration().getDeploymentManager();
     // make sure the process definition is in the cache
     ProcessDefinition processDefinition = deploymentManager.findDeployedProcessDefinitionById(processDefinitionId);
-    ProcessDefinitionInfoCacheObject definitionInfoCacheObject = deploymentManager.getProcessDefinitionInfoCache().get(processDefinitionId);
-    if (definitionInfoCacheObject != null) {
-      resultNode = definitionInfoCacheObject.getInfoNode();
-    }
 
-    return resultNode;
+    return executeInternal(deploymentManager);
+  }
+
+  public ObjectNode executeInternal(DeploymentManager deploymentManager){
+      ObjectNode resultNode = null;
+      ProcessDefinitionInfoCacheObject definitionInfoCacheObject = deploymentManager.getProcessDefinitionInfoCache().get(processDefinitionId);
+      if (definitionInfoCacheObject != null) {
+          resultNode = definitionInfoCacheObject.getInfoNode();
+      }
+      return resultNode;
   }
 
 }

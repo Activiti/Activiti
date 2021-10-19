@@ -91,21 +91,25 @@ public class HistoricTaskInstanceEntityManagerImpl extends AbstractEntityManager
     if (getHistoryManager().isHistoryEnabled()) {
       HistoricTaskInstanceEntity historicTaskInstance = findById(id);
       if (historicTaskInstance != null) {
-
-        List<HistoricTaskInstanceEntity> subTasks = historicTaskInstanceDataManager.findHistoricTasksByParentTaskId(historicTaskInstance.getId());
-        for (HistoricTaskInstance subTask: subTasks) {
-          delete(subTask.getId());
-        }
-
-        getHistoricDetailEntityManager().deleteHistoricDetailsByTaskId(id);
-        getHistoricVariableInstanceEntityManager().deleteHistoricVariableInstancesByTaskId(id);
-        getCommentEntityManager().deleteCommentsByTaskId(id);
-        getAttachmentEntityManager().deleteAttachmentsByTaskId(id);
-        getHistoricIdentityLinkEntityManager().deleteHistoricIdentityLinksByTaskId(id);
-
-        delete(historicTaskInstance);
+          deleteInternal(id,historicTaskInstance);
       }
     }
+  }
+
+  public void deleteInternal(String id,HistoricTaskInstanceEntity historicTaskInstance){
+
+      List<HistoricTaskInstanceEntity> subTasks = historicTaskInstanceDataManager.findHistoricTasksByParentTaskId(historicTaskInstance.getId());
+      for (HistoricTaskInstance subTask: subTasks) {
+          delete(subTask.getId());
+      }
+
+      getHistoricDetailEntityManager().deleteHistoricDetailsByTaskId(id);
+      getHistoricVariableInstanceEntityManager().deleteHistoricVariableInstancesByTaskId(id);
+      getCommentEntityManager().deleteCommentsByTaskId(id);
+      getAttachmentEntityManager().deleteAttachmentsByTaskId(id);
+      getHistoricIdentityLinkEntityManager().deleteHistoricIdentityLinksByTaskId(id);
+
+      delete(historicTaskInstance);
   }
 
   @Override

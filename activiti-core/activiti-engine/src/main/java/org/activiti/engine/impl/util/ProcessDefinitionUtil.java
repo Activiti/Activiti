@@ -55,19 +55,28 @@ public class ProcessDefinitionUtil {
   }
 
   public static Process getProcess(String processDefinitionId) {
-    DeploymentManager deploymentManager = Context.getProcessEngineConfiguration().getDeploymentManager();
+      if (Context.getProcessEngineConfiguration() == null) {
+          return Activiti5Util.getActiviti5CompatibilityHandler().getProcessDefinitionProcessObject(processDefinitionId);
 
-    // This will check the cache in the findDeployedProcessDefinitionById and resolveProcessDefinition method
-    ProcessDefinition processDefinitionEntity = deploymentManager.findDeployedProcessDefinitionById(processDefinitionId);
-    return deploymentManager.resolveProcessDefinition(processDefinitionEntity).getProcess();
+      } else {
+          DeploymentManager deploymentManager = Context.getProcessEngineConfiguration().getDeploymentManager();
+
+          // This will check the cache in the findDeployedProcessDefinitionById and resolveProcessDefinition method
+          ProcessDefinition processDefinitionEntity = deploymentManager.findDeployedProcessDefinitionById(processDefinitionId);
+          return deploymentManager.resolveProcessDefinition(processDefinitionEntity).getProcess();
+      }
   }
 
   public static BpmnModel getBpmnModel(String processDefinitionId) {
-    DeploymentManager deploymentManager = Context.getProcessEngineConfiguration().getDeploymentManager();
+      if (Context.getProcessEngineConfiguration() == null) {
+          return Activiti5Util.getActiviti5CompatibilityHandler().getProcessDefinitionBpmnModel(processDefinitionId);
+      } else {
+          DeploymentManager deploymentManager = Context.getProcessEngineConfiguration().getDeploymentManager();
 
-    // This will check the cache in the findDeployedProcessDefinitionById and resolveProcessDefinition method
-    ProcessDefinition processDefinitionEntity = deploymentManager.findDeployedProcessDefinitionById(processDefinitionId);
-    return deploymentManager.resolveProcessDefinition(processDefinitionEntity).getBpmnModel();
+          // This will check the cache in the findDeployedProcessDefinitionById and resolveProcessDefinition method
+          ProcessDefinition processDefinitionEntity = deploymentManager.findDeployedProcessDefinitionById(processDefinitionId);
+          return deploymentManager.resolveProcessDefinition(processDefinitionEntity).getBpmnModel();
+      }
   }
 
   public static BpmnModel getBpmnModelFromCache(String processDefinitionId) {

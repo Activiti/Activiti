@@ -34,7 +34,7 @@ public class ClaimTaskCmd extends NeedsActiveTaskCmd<Void> {
     this.userId = userId;
   }
 
-  protected Void execute(CommandContext commandContext, TaskEntity task) {
+  public Void execute(CommandContext commandContext, TaskEntity task) {
     if (userId != null) {
       task.setClaimTime(commandContext.getProcessEngineConfiguration().getClock().getCurrentTime());
 
