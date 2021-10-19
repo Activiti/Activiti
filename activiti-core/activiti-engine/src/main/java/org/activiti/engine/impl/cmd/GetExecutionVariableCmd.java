@@ -55,10 +55,10 @@ public class GetExecutionVariableCmd implements Command<Object>, Serializable {
     if (execution == null) {
       throw new ActivitiObjectNotFoundException("execution " + executionId + " doesn't exist", Execution.class);
     }
-    return executeInternal(execution);
+    return executeInternal(execution,commandContext);
   }
 
-  public Object executeInternal(ExecutionEntity execution){
+  public Object executeInternal(ExecutionEntity execution,CommandContext commandContext){
 
       Object value;
 

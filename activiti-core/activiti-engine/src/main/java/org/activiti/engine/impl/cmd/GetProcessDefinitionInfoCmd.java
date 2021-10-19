@@ -50,10 +50,10 @@ public class GetProcessDefinitionInfoCmd implements Command<ObjectNode>, Seriali
     // make sure the process definition is in the cache
     ProcessDefinition processDefinition = deploymentManager.findDeployedProcessDefinitionById(processDefinitionId);
 
-    return executeInternal(deploymentManager);
+    return executeInternal(deploymentManager,commandContext,processDefinition);
   }
 
-  public ObjectNode executeInternal(DeploymentManager deploymentManager){
+  public ObjectNode executeInternal(DeploymentManager deploymentManager,CommandContext commandContext,ProcessDefinition processDefinition){
       ObjectNode resultNode = null;
       ProcessDefinitionInfoCacheObject definitionInfoCacheObject = deploymentManager.getProcessDefinitionInfoCache().get(processDefinitionId);
       if (definitionInfoCacheObject != null) {

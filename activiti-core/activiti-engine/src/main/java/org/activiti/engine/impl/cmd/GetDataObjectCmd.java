@@ -77,7 +77,7 @@ public class GetDataObjectCmd implements Command<DataObject>, Serializable {
 
     DataObject dataObject = null;
 
-    VariableInstance variableEntity = getVariable(execution);
+    VariableInstance variableEntity = getVariable(execution,commandContext);
 
     String localizedName = null;
     String localizedDescription = null;
@@ -133,7 +133,7 @@ public class GetDataObjectCmd implements Command<DataObject>, Serializable {
     return dataObject;
   }
 
-  public VariableInstance getVariable(ExecutionEntity execution){
+  public VariableInstance getVariable(ExecutionEntity execution,CommandContext commandContext){
         VariableInstance variableEntity = null;
         if (isLocal) {
             variableEntity = execution.getVariableInstanceLocal(dataObjectName, false);

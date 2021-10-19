@@ -57,10 +57,10 @@ public class GetExecutionVariablesCmd implements Command<Map<String, Object>>, S
       throw new ActivitiObjectNotFoundException("execution " + executionId + " doesn't exist", Execution.class);
     }
 
-    return getVariable(execution);
+    return getVariable(execution,commandContext);
   }
 
-  public Map<String, Object>  getVariable(ExecutionEntity execution){
+  public Map<String, Object>  getVariable(ExecutionEntity execution,CommandContext commandContext){
         if (variableNames == null || variableNames.isEmpty()) {
 
             // Fetch all

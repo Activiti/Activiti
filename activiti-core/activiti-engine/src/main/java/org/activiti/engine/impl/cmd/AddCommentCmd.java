@@ -89,10 +89,10 @@ public class AddCommentCmd implements Command<Comment> {
       processDefinitionId = task.getProcessDefinitionId();
     }
 
-    return executeInternal(commandContext);
+    return executeInternal(commandContext,processDefinitionId);
   }
 
-  public Comment executeInternal(CommandContext commandContext){
+  public Comment executeInternal(CommandContext commandContext,String processDefinitionId){
 
       String userId = Authentication.getAuthenticatedUserId();
       CommentEntity comment = commandContext.getCommentEntityManager().create();

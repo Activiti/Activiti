@@ -54,7 +54,7 @@ public class GetExecutionVariableInstanceCmd implements Command<VariableInstance
             throw new ActivitiObjectNotFoundException("execution " + executionId + " doesn't exist", Execution.class);
         }
 
-        VariableInstance variableEntity = getVariable(execution);
+        VariableInstance variableEntity = getVariable(execution,commandContext);
 
         if (variableEntity != null) {
             variableEntity.getValue();
@@ -63,7 +63,7 @@ public class GetExecutionVariableInstanceCmd implements Command<VariableInstance
         return variableEntity;
     }
 
-    public VariableInstance getVariable(ExecutionEntity execution){
+    public VariableInstance getVariable(ExecutionEntity execution,CommandContext commandContext){
         VariableInstance variableEntity = null;
         if (isLocal) {
             variableEntity = execution.getVariableInstanceLocal(variableName, false);

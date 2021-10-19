@@ -77,7 +77,7 @@ public class GetDataObjectsCmd implements Command<Map<String, DataObject>>, Seri
       throw new ActivitiObjectNotFoundException("execution " + executionId + " doesn't exist", Execution.class);
     }
 
-    Map<String, VariableInstance> variables = getVariables(execution);
+    Map<String, VariableInstance> variables = getVariables(execution,commandContext);
 
     Map<String,DataObject> dataObjects = null;
     if (variables != null) {
@@ -140,7 +140,7 @@ public class GetDataObjectsCmd implements Command<Map<String, DataObject>>, Seri
     return dataObjects;
   }
 
-  public Map<String, VariableInstance> getVariables(ExecutionEntity execution){
+  public Map<String, VariableInstance> getVariables(ExecutionEntity execution,CommandContext commandContext){
 
         Map<String, VariableInstance> variables = null;
 

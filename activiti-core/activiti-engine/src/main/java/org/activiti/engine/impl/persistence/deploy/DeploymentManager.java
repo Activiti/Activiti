@@ -121,13 +121,13 @@ public class DeploymentManager {
     ProcessDefinitionCacheEntry cachedProcessDefinition = processDefinitionCache.get(processDefinitionId);
 
     if (cachedProcessDefinition == null) {
-      cachedProcessDefinition = resolveProcessDefinitionInternal(deploymentId,processDefinitionId);
+        CommandContext commandContext = Context.getCommandContext();
+      cachedProcessDefinition = resolveProcessDefinitionInternal(commandContext,processDefinition,deploymentId,processDefinitionId);
     }
     return cachedProcessDefinition;
   }
 
-  public ProcessDefinitionCacheEntry resolveProcessDefinitionInternal(String deploymentId, String processDefinitionId){
-        CommandContext commandContext = Context.getCommandContext();
+  public ProcessDefinitionCacheEntry resolveProcessDefinitionInternal(CommandContext commandContext,ProcessDefinition processDefinition,String deploymentId, String processDefinitionId){
         DeploymentEntity deployment = deploymentEntityManager.findById(deploymentId);
         deployment.setNew(false);
         deploy(deployment, null);

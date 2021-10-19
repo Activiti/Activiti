@@ -78,12 +78,13 @@ public abstract class AbstractSetProcessDefinitionStateCmd implements Command<Vo
     return null;
   }
 
-  public void executeInternal(CommandContext commandContext,List<ProcessDefinitionEntity> processDefinitions){
+  public Void executeInternal(CommandContext commandContext,List<ProcessDefinitionEntity> processDefinitions){
       if (executionDate != null) { // Process definition state change is delayed
           createTimerForDelayedExecution(commandContext, processDefinitions);
       } else { // Process definition state is changed now
           changeProcessDefinitionState(commandContext, processDefinitions);
       }
+      return null;
   }
 
   protected List<ProcessDefinitionEntity> findProcessDefinition(CommandContext commandContext) {
