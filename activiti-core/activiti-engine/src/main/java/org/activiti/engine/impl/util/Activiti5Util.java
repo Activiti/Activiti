@@ -99,9 +99,9 @@ public class Activiti5Util {
     }
 
     public static Activiti5CompatibilityHandler getActiviti5CompatibilityHandler() {
-        Activiti5CompatibilityHandler activiti5CompatibilityHandler = Context.getActiviti5CompatibilityHandler();
+        Activiti5CompatibilityHandler activiti5CompatibilityHandler = (Activiti5CompatibilityHandler) Context.getOldActivitiCompatibilityHandler();
         if (activiti5CompatibilityHandler == null) {
-            activiti5CompatibilityHandler = Context.getFallbackActiviti5CompatibilityHandler();
+            activiti5CompatibilityHandler = (Activiti5CompatibilityHandler)Context.getFallbackOldActivitiCompatibilityHandler();
         }
 
         if (activiti5CompatibilityHandler == null) {

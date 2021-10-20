@@ -18,6 +18,7 @@ package org.activiti.engine.compatibility;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.MapExceptionEntry;
+import org.activiti.engine.OldActivitiCompatibilityHandler;
 import org.activiti.engine.delegate.BpmnError;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.event.ActivitiEvent;
@@ -40,7 +41,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-public interface Activiti5CompatibilityHandler {
+public interface Activiti5CompatibilityHandler extends OldActivitiCompatibilityHandler {
 
     public static final String ACTIVITI_5_ENGINE_TAG = "activiti-5";
 

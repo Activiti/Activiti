@@ -20,6 +20,7 @@ package org.activiti.engine.impl.context;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import org.activiti.engine.ActivitiEngineAgenda;
+import org.activiti.engine.OldActivitiCompatibilityHandler;
 import org.activiti.engine.compatibility.Activiti5CompatibilityHandler;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.cfg.TransactionContext;
@@ -39,9 +40,9 @@ public class Context {
   protected static ThreadLocal<Stack<ProcessEngineConfigurationImpl>> processEngineConfigurationStackThreadLocal = new ThreadLocal<Stack<ProcessEngineConfigurationImpl>>();
   protected static ThreadLocal<Stack<TransactionContext>> transactionContextThreadLocal = new ThreadLocal<Stack<TransactionContext>>();
   protected static ThreadLocal<Map<String, ObjectNode>> bpmnOverrideContextThreadLocal = new ThreadLocal<Map<String, ObjectNode>>();
-  protected static ThreadLocal<Activiti5CompatibilityHandler> activiti5CompatibilityHandlerThreadLocal = new ThreadLocal<Activiti5CompatibilityHandler>();
+  protected static ThreadLocal<OldActivitiCompatibilityHandler> oldActivitiCompatibilityHandlerThreadLocal = new ThreadLocal<OldActivitiCompatibilityHandler>();
   // Fallback handler is only set by the v5 CommandContextInterceptor
-  protected static ThreadLocal<Activiti5CompatibilityHandler> fallbackActiviti5CompatibilityHandlerThreadLocal = new ThreadLocal<Activiti5CompatibilityHandler>();
+  protected static ThreadLocal<OldActivitiCompatibilityHandler> fallbackOldActivitiCompatibilityHandlerThreadLocal = new ThreadLocal<OldActivitiCompatibilityHandler>();
 
   protected static ResourceBundle.Control resourceBundleControl = new ResourceBundleControl();
 
@@ -180,27 +181,28 @@ public class Context {
     }
   }
 
-  public static Activiti5CompatibilityHandler getActiviti5CompatibilityHandler() {
-        return activiti5CompatibilityHandlerThreadLocal.get();
+  public static OldActivitiCompatibilityHandler getOldActivitiCompatibilityHandler() {
+        return oldActivitiCompatibilityHandlerThreadLocal.get();
   }
 
-  public static void setActiviti5CompatibilityHandler(Activiti5CompatibilityHandler activiti5CompatibilityHandler) {
-        activiti5CompatibilityHandlerThreadLocal.set(activiti5CompatibilityHandler);
+  public static void setOldActivitiCompatibilityHandler(OldActivitiCompatibilityHandler oldActivitiCompatibilityHandler) {
+        oldActivitiCompatibilityHandlerThreadLocal.set(oldActivitiCompatibilityHandler);
   }
 
-  public static void removeActiviti5CompatibilityHandler() {
-        activiti5CompatibilityHandlerThreadLocal.remove();
+  public static void removeOldActivitiCompatibilityHandler() {
+        oldActivitiCompatibilityHandlerThreadLocal.remove();
   }
 
-  public static Activiti5CompatibilityHandler getFallbackActiviti5CompatibilityHandler() {
-        return fallbackActiviti5CompatibilityHandlerThreadLocal.get();
+  public static OldActivitiCompatibilityHandler getFallbackOldActivitiCompatibilityHandler() {
+        return fallbackOldActivitiCompatibilityHandlerThreadLocal.get();
   }
 
-  public static void setFallbackActiviti5CompatibilityHandler(Activiti5CompatibilityHandler activiti5CompatibilityHandler) {
-        fallbackActiviti5CompatibilityHandlerThreadLocal.set(activiti5CompatibilityHandler);
+
+  public static void setFallbackOldActivitiCompatibilityHandler(OldActivitiCompatibilityHandler oldActivitiCompatibilityHandler) {
+        fallbackOldActivitiCompatibilityHandlerThreadLocal.set(oldActivitiCompatibilityHandler);
   }
 
-  public static void removeFallbackActiviti5CompatibilityHandler() {
-        fallbackActiviti5CompatibilityHandlerThreadLocal.remove();
+  public static void removeFallbackOldActivitiCompatibilityHandler() {
+        fallbackOldActivitiCompatibilityHandlerThreadLocal.remove();
   }
 }
