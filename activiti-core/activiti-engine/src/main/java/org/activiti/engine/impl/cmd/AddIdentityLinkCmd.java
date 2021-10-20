@@ -66,7 +66,7 @@ public class AddIdentityLinkCmd extends NeedsActiveTaskCmd<Void> {
     }
   }
 
-  public Void execute(CommandContext commandContext, TaskEntity task) {
+  protected Void execute(CommandContext commandContext, TaskEntity task) {
 
     boolean assignedToNoOne = false;
     if (IdentityLinkType.ASSIGNEE.equals(identityType)) {
