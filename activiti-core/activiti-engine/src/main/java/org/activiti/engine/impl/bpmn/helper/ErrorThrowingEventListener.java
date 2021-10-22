@@ -17,13 +17,10 @@
 package org.activiti.engine.impl.bpmn.helper;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.compatibility.Activiti5CompatibilityHandler;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventListener;
 import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
-import org.activiti.engine.impl.util.Activiti5Util;
 
 /**
  * An {@link ActivitiEventListener} that throws a error event when an event is dispatched to it.

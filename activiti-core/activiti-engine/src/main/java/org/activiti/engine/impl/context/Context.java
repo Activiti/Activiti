@@ -21,7 +21,6 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import org.activiti.engine.ActivitiEngineAgenda;
 import org.activiti.engine.OldActivitiCompatibilityHandler;
-import org.activiti.engine.compatibility.Activiti5CompatibilityHandler;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.cfg.TransactionContext;
 import org.activiti.engine.impl.interceptor.CommandContext;

@@ -17,7 +17,6 @@
 package org.activiti.engine.impl.cmd;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.compatibility.Activiti5CompatibilityHandler;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.repository.ProcessDefinition;
@@ -27,33 +26,16 @@ import java.io.Serializable;
 /**
 
  */
-public class IsActiviti5ProcessDefinitionCmd implements Command<Boolean>, Serializable {
+public class IsOldActivitiProcessDefinitionCmd implements Command<Boolean>, Serializable {
 
     private static final long serialVersionUID = 1L;
     protected String processDefinitionId;
 
-    public IsActiviti5ProcessDefinitionCmd(String processDefinitionId) {
+    public IsOldActivitiProcessDefinitionCmd(String processDefinitionId) {
         this.processDefinitionId = processDefinitionId;
     }
 
     public Boolean execute(CommandContext commandContext) {
-        if (!commandContext.getProcessEngineConfiguration().isActiviti5CompatibilityEnabled()) {
-            return false;
-        }
-
-        ProcessDefinition processDefinition = commandContext.getProcessEngineConfiguration()
-            .getDeploymentManager()
-            .findDeployedProcessDefinitionById(processDefinitionId);
-
-        if (processDefinition.getEngineVersion() != null) {
-            if (Activiti5CompatibilityHandler.ACTIVITI_5_ENGINE_TAG.equals(processDefinition.getEngineVersion())) {
-                if (commandContext.getProcessEngineConfiguration().isActiviti5CompatibilityEnabled()) {
-                    return true;
-                }
-            } else {
-                throw new ActivitiException("Invalid 'engine' for process definition " + processDefinition.getId() + " : " + processDefinition.getEngineVersion());
-            }
-        }
         return false;
     }
 }

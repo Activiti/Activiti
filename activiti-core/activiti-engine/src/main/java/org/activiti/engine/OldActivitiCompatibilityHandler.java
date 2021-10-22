@@ -15,5 +15,12 @@
  */
 package org.activiti.engine;
 
+import org.activiti.bpmn.model.BpmnModel;
+
 public interface OldActivitiCompatibilityHandler {
+
+    org.activiti.bpmn.model.Process getProcessDefinitionProcessObject(String processDefinitionId);
+
+    BpmnModel getProcessDefinitionBpmnModel(String processDefinitionId);
+
 }

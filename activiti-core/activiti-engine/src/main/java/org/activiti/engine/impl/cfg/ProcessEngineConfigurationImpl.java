@@ -57,7 +57,6 @@ import org.activiti.engine.TaskService;
 import org.activiti.engine.cfg.ProcessEngineConfigurator;
 import org.activiti.engine.compatibility.Activiti5CompatibilityHandler;
 import org.activiti.engine.compatibility.Activiti5CompatibilityHandlerFactory;
-import org.activiti.engine.compatibility.DefaultActiviti5CompatibilityHandlerFactory;
 import org.activiti.engine.delegate.event.ActivitiEventDispatcher;
 import org.activiti.engine.delegate.event.ActivitiEventListener;
 import org.activiti.engine.delegate.event.ActivitiEventType;
@@ -852,6 +851,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 
   protected PerformanceSettings performanceSettings = new PerformanceSettings();
 
+
     // Backwards compatibility //////////////////////////////////////////////////////////////
 
     protected boolean isActiviti5CompatibilityEnabled; // Default activiti 5 backwards compatibility is disabled!
@@ -932,7 +932,6 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     initEventDispatcher();
     initProcessValidator();
     initDatabaseEventLogging();
-    initActiviti5CompatibilityHandler();
     configuratorsAfterInit();
   }
 
@@ -3505,20 +3504,12 @@ public ProcessEngineConfigurationImpl getProcessEngineConfiguration() {
     } else {
       this.clock.setCurrentCalendar(clock.getCurrentCalendar());
     }
-
-    if (isActiviti5CompatibilityEnabled && activiti5CompatibilityHandler != null) {
-          getActiviti5CompatibilityHandler().setClock(clock);
-    }
-
     return this;
   }
 
   public void resetClock() {
     if (this.clock != null) {
       clock.reset();
-      if (isActiviti5CompatibilityEnabled && activiti5CompatibilityHandler != null) {
-            getActiviti5CompatibilityHandler().resetClock();
-      }
     }
   }
 
@@ -3718,27 +3709,6 @@ public ProcessEngineConfigurationImpl getProcessEngineConfiguration() {
   public void setEventSubscriptionPayloadMappingProvider(EventSubscriptionPayloadMappingProvider eventSubscriptionPayloadMappingProvider) {
     this.eventSubscriptionPayloadMappingProvider = eventSubscriptionPayloadMappingProvider;
   }
-
-    public void initActiviti5CompatibilityHandler() {
-
-        // If Activiti 5 compatibility is disabled, no need to do anything
-        // If handler is injected, no need to do anything
-        if (!isActiviti5CompatibilityEnabled || activiti5CompatibilityHandler == null) {
-
-            // Create default factory if nothing set
-            if (activiti5CompatibilityHandlerFactory == null) {
-                activiti5CompatibilityHandlerFactory = new DefaultActiviti5CompatibilityHandlerFactory();
-            }
-
-            // Create handler instance
-            activiti5CompatibilityHandler = activiti5CompatibilityHandlerFactory.createActiviti5CompatibilityHandler();
-
-            if (activiti5CompatibilityHandler != null) {
-                log.info("Found compatibility handler instance : " + activiti5CompatibilityHandler.getClass());
-            }
-        }
-
-    }
 
     // Activiti 5
 
