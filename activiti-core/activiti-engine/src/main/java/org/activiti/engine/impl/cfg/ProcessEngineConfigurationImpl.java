@@ -47,7 +47,6 @@ import javax.xml.namespace.QName;
 import org.activiti.api.runtime.shared.identity.UserGroupManager;
 import org.activiti.engine.*;
 import org.activiti.engine.cfg.ProcessEngineConfigurator;
-import org.activiti.engine.compatibility.Activiti5CompatibilityHandlerFactory;
 import org.activiti.engine.delegate.event.ActivitiEventDispatcher;
 import org.activiti.engine.delegate.event.ActivitiEventListener;
 import org.activiti.engine.delegate.event.ActivitiEventType;
@@ -846,7 +845,6 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     // Backwards compatibility //////////////////////////////////////////////////////////////
 
     protected boolean isOldActivitiCompatibilityEnabled; // Default activiti 5 backwards compatibility is disabled!
-    protected Activiti5CompatibilityHandlerFactory activiti5CompatibilityHandlerFactory;
     protected OldActivitiCompatibilityHandler oldActivitiCompatibilityHandler;
 
     // Can't have a dependency on the activiti5-engine module
