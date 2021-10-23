@@ -44,8 +44,6 @@ public interface Activiti5CompatibilityHandler extends OldActivitiCompatibilityH
 
     public static final String ACTIVITI_5_ENGINE_TAG = "activiti-5";
 
-    ProcessDefinition getProcessDefinition(String processDefinitionId);
-
     ProcessDefinition getProcessDefinitionByKey(String processDefinitionKey);
 
     ObjectNode getProcessDefinitionInfo(String processDefinitionId);
@@ -64,45 +62,17 @@ public interface Activiti5CompatibilityHandler extends OldActivitiCompatibilityH
 
     void setProcessDefinitionCategory(String processDefinitionId, String category);
 
-    Deployment deploy(DeploymentBuilderImpl deploymentBuilder);
-
-    void setDeploymentCategory(String deploymentId, String category);
-
-    void changeDeploymentTenantId(String deploymentId, String newTenantId);
-
-    void deleteDeployment(String deploymentId, boolean cascade);
-
-    ProcessInstance startProcessInstance(String processDefinitionKey, String processDefinitionId, Map<String, Object> variables, String businessKey, String tenantId, String processInstanceName);
-
-    ProcessInstance startProcessInstanceByMessage(String messageName, Map<String, Object> variables, String businessKey, String tenantId);
-
     Object getExecutionVariable(String executionId, String variableName, boolean isLocal);
 
     VariableInstance getExecutionVariableInstance(String executionId, String variableName, boolean isLocal);
 
-    Map<String, Object> getExecutionVariables(String executionId, Collection<String> variableNames, boolean isLocal);
-
     Map<String, VariableInstance> getExecutionVariableInstances(String executionId, Collection<String> variableNames, boolean isLocal);
 
-    void setExecutionVariables(String executionId, Map<String, ? extends Object> variables, boolean isLocal);
-
     void removeExecutionVariables(String executionId, Collection<String> variableNames, boolean isLocal);
-
-    void updateBusinessKey(String processInstanceId, String businessKey);
-
-    void suspendProcessInstance(String processInstanceId);
-
-    void activateProcessInstance(String processInstanceId);
 
     void addIdentityLinkForProcessInstance(String processInstanceId, String userId, String groupId, String identityLinkType);
 
     void deleteIdentityLinkForProcessInstance(String processInstanceId, String userId, String groupId, String identityLinkType);
-
-    void deleteProcessInstance(String processInstanceId, String deleteReason);
-
-    void deleteHistoricProcessInstance(String processInstanceId);
-
-    void completeTask(TaskEntity taskEntity, Map<String, Object> variables, boolean localScope);
 
     void claimTask(String taskId, String userId);
 
@@ -114,11 +84,7 @@ public interface Activiti5CompatibilityHandler extends OldActivitiCompatibilityH
 
     void setTaskPriority(String taskId, int priority);
 
-    void deleteTask(String taskId, String deleteReason, boolean cascade);
-
     void deleteHistoricTask(String taskId);
-
-    void saveTask(TaskEntity task);
 
     void addIdentityLink(String taskId, String identityId, int identityIdType, String identityType);
 
@@ -126,25 +92,9 @@ public interface Activiti5CompatibilityHandler extends OldActivitiCompatibilityH
 
     Comment addComment(String taskId, String processInstanceId, String type, String message);
 
-    void deleteComment(String commentId, String taskId, String processInstanceId);
-
-    Attachment createAttachment(String attachmentType, String taskId, String processInstanceId, String attachmentName, String attachmentDescription, InputStream content, String url);
-
     void saveAttachment(Attachment attachment);
 
     void deleteAttachment(String attachmentId);
-
-    void trigger(String executionId, Map<String, Object> processVariables);
-
-    void messageEventReceived(String messageName, String executionId, Map<String, Object> processVariables, boolean async);
-
-    void signalEventReceived(String signalName, String executionId, Map<String, Object> processVariables, boolean async, String tenantId);
-
-    void signalEventReceived(SignalEventSubscriptionEntity signalEventSubscriptionEntity, Object payload, boolean async);
-
-    void executeJob(Job job);
-
-    void executeJobWithLockAndRetry(Job job);
 
     void handleFailedJob(Job job, Throwable exception);
 
@@ -152,19 +102,11 @@ public interface Activiti5CompatibilityHandler extends OldActivitiCompatibilityH
 
     void leaveExecution(DelegateExecution execution);
 
-    void propagateError(BpmnError bpmnError, DelegateExecution execution);
-
     boolean mapException(Exception camelException, DelegateExecution execution, List<MapExceptionEntry> mapExceptions);
-
-    Map<String, Object> getVariables(ProcessInstance processInstance);
 
     Object getScriptingEngineValue(String payloadExpressionValue, String languageValue, DelegateExecution execution);
 
     void throwErrorEvent(ActivitiEvent event);
-
-    void setClock(Clock clock);
-
-    void resetClock();
 
     Object getRawProcessEngine();
 

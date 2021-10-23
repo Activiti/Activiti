@@ -432,9 +432,4 @@ public interface RepositoryService {
    */
   List<ValidationError> validateProcess(BpmnModel bpmnModel);
 
-  /**
-  * Checks if the process definition should be executed by the Activiti 5 engine.
-  */
-  Boolean isOldActivitiProcessDefinition(String processDefinitionId);
-
 }

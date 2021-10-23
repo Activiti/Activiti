@@ -45,17 +45,8 @@ import javax.sql.DataSource;
 import javax.xml.namespace.QName;
 
 import org.activiti.api.runtime.shared.identity.UserGroupManager;
-import org.activiti.engine.ActivitiException;
-import org.activiti.engine.DynamicBpmnService;
-import org.activiti.engine.HistoryService;
-import org.activiti.engine.ManagementService;
-import org.activiti.engine.ProcessEngine;
-import org.activiti.engine.ProcessEngineConfiguration;
-import org.activiti.engine.RepositoryService;
-import org.activiti.engine.RuntimeService;
-import org.activiti.engine.TaskService;
+import org.activiti.engine.*;
 import org.activiti.engine.cfg.ProcessEngineConfigurator;
-import org.activiti.engine.compatibility.Activiti5CompatibilityHandler;
 import org.activiti.engine.compatibility.Activiti5CompatibilityHandlerFactory;
 import org.activiti.engine.delegate.event.ActivitiEventDispatcher;
 import org.activiti.engine.delegate.event.ActivitiEventListener;
@@ -854,18 +845,18 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 
     // Backwards compatibility //////////////////////////////////////////////////////////////
 
-    protected boolean isActiviti5CompatibilityEnabled; // Default activiti 5 backwards compatibility is disabled!
+    protected boolean isOldActivitiCompatibilityEnabled; // Default activiti 5 backwards compatibility is disabled!
     protected Activiti5CompatibilityHandlerFactory activiti5CompatibilityHandlerFactory;
-    protected Activiti5CompatibilityHandler activiti5CompatibilityHandler;
+    protected OldActivitiCompatibilityHandler oldActivitiCompatibilityHandler;
 
     // Can't have a dependency on the activiti5-engine module
-    protected Object activiti5ActivityBehaviorFactory;
-    protected Object activiti5ListenerFactory;
-    protected List<Object> activiti5PreBpmnParseHandlers;
-    protected List<Object> activiti5PostBpmnParseHandlers;
-    protected List<Object> activiti5CustomDefaultBpmnParseHandlers;
-    protected Set<Class<?>> activiti5CustomMybatisMappers;
-    protected Set<String> activiti5CustomMybatisXMLMappers;
+    protected Object oldActivitiActivityBehaviorFactory;
+    protected Object oldActivitiListenerFactory;
+    protected List<Object> oldActivitiPreBpmnParseHandlers;
+    protected List<Object> oldActivitiPostBpmnParseHandlers;
+    protected List<Object> oldActivitiCustomDefaultBpmnParseHandlers;
+    protected Set<Class<?>> oldActivitiCustomMybatisMappers;
+    protected Set<String> oldActivitiCustomMybatisXMLMappers;
 
   // buildProcessEngine
   // ///////////////////////////////////////////////////////
@@ -3712,93 +3703,84 @@ public ProcessEngineConfigurationImpl getProcessEngineConfiguration() {
 
     // Activiti 5
 
-    public boolean isActiviti5CompatibilityEnabled() {
-        return isActiviti5CompatibilityEnabled;
+    public boolean isOldActivitiCompatibilityEnabled() {
+        return isOldActivitiCompatibilityEnabled;
     }
 
-    public ProcessEngineConfigurationImpl setActiviti5CompatibilityEnabled(boolean isActiviti5CompatibilityEnabled) {
-        this.isActiviti5CompatibilityEnabled = isActiviti5CompatibilityEnabled;
+    public ProcessEngineConfigurationImpl setOldActivitiCompatibilityEnabled(boolean isOldActivitiCompatibilityEnabled) {
+        this.isOldActivitiCompatibilityEnabled = isOldActivitiCompatibilityEnabled;
         return this;
     }
 
-    public Activiti5CompatibilityHandlerFactory getActiviti5CompatibilityHandlerFactory() {
-        return activiti5CompatibilityHandlerFactory;
+    public OldActivitiCompatibilityHandler getOldActivitiCompatibilityHandler() {
+        return oldActivitiCompatibilityHandler;
     }
 
-    public ProcessEngineConfigurationImpl setActiviti5CompatibilityHandlerFactory(Activiti5CompatibilityHandlerFactory activiti5CompatibilityHandlerFactory) {
-        this.activiti5CompatibilityHandlerFactory = activiti5CompatibilityHandlerFactory;
+    public ProcessEngineConfigurationImpl setOldActivitiCompatibilityHandler(OldActivitiCompatibilityHandler oldActivitiCompatibilityHandler) {
+        this.oldActivitiCompatibilityHandler = oldActivitiCompatibilityHandler;
         return this;
     }
 
-    public Activiti5CompatibilityHandler getActiviti5CompatibilityHandler() {
-        return activiti5CompatibilityHandler;
+    public Object getOldActivitiActivityBehaviorFactory() {
+        return oldActivitiActivityBehaviorFactory;
     }
 
-    public ProcessEngineConfigurationImpl setActiviti5CompatibilityHandler(Activiti5CompatibilityHandler activiti5CompatibilityHandler) {
-        this.activiti5CompatibilityHandler = activiti5CompatibilityHandler;
+    public ProcessEngineConfigurationImpl setOldActivitiActivityBehaviorFactory(Object oldActivitiActivityBehaviorFactory) {
+        this.oldActivitiActivityBehaviorFactory = oldActivitiActivityBehaviorFactory;
         return this;
     }
 
-    public Object getActiviti5ActivityBehaviorFactory() {
-        return activiti5ActivityBehaviorFactory;
+    public Object getOldActivitiListenerFactory() {
+        return oldActivitiListenerFactory;
     }
 
-    public ProcessEngineConfigurationImpl setActiviti5ActivityBehaviorFactory(Object activiti5ActivityBehaviorFactory) {
-        this.activiti5ActivityBehaviorFactory = activiti5ActivityBehaviorFactory;
+    public ProcessEngineConfigurationImpl setOldActivitiistenerFactory(Object oldActivitiListenerFactory) {
+        this.oldActivitiListenerFactory = oldActivitiListenerFactory;
         return this;
     }
 
-    public Object getActiviti5ListenerFactory() {
-        return activiti5ListenerFactory;
+    public List<Object> getOldActivitiPreBpmnParseHandlers() {
+        return oldActivitiPreBpmnParseHandlers;
     }
 
-    public ProcessEngineConfigurationImpl setActiviti5ListenerFactory(Object activiti5ListenerFactory) {
-        this.activiti5ListenerFactory = activiti5ListenerFactory;
+    public ProcessEngineConfigurationImpl setOldActivitiPreBpmnParseHandlers(List<Object> oldActivitiPreBpmnParseHandlers) {
+        this.oldActivitiPreBpmnParseHandlers = oldActivitiPreBpmnParseHandlers;
         return this;
     }
 
-    public List<Object> getActiviti5PreBpmnParseHandlers() {
-        return activiti5PreBpmnParseHandlers;
+    public List<Object> getOldActivitiPostBpmnParseHandlers() {
+        return oldActivitiPostBpmnParseHandlers;
     }
 
-    public ProcessEngineConfigurationImpl setActiviti5PreBpmnParseHandlers(List<Object> activiti5PreBpmnParseHandlers) {
-        this.activiti5PreBpmnParseHandlers = activiti5PreBpmnParseHandlers;
+    public ProcessEngineConfigurationImpl setOldActivitiPostBpmnParseHandlers(List<Object> oldActivitiPostBpmnParseHandlers) {
+        this.oldActivitiPostBpmnParseHandlers = oldActivitiPostBpmnParseHandlers;
         return this;
     }
 
-    public List<Object> getActiviti5PostBpmnParseHandlers() {
-        return activiti5PostBpmnParseHandlers;
+    public List<Object> getOldActivitiCustomDefaultBpmnParseHandlers() {
+        return oldActivitiCustomDefaultBpmnParseHandlers;
     }
 
-    public ProcessEngineConfigurationImpl setActiviti5PostBpmnParseHandlers(List<Object> activiti5PostBpmnParseHandlers) {
-        this.activiti5PostBpmnParseHandlers = activiti5PostBpmnParseHandlers;
+    public ProcessEngineConfigurationImpl setOldActivitiCustomDefaultBpmnParseHandlers(List<Object> oldActivitiCustomDefaultBpmnParseHandlers) {
+        this.oldActivitiCustomDefaultBpmnParseHandlers = oldActivitiCustomDefaultBpmnParseHandlers;
         return this;
     }
 
-    public List<Object> getActiviti5CustomDefaultBpmnParseHandlers() {
-        return activiti5CustomDefaultBpmnParseHandlers;
+    public Set<Class<?>> getOldActivitiCustomMybatisMappers() {
+        return oldActivitiCustomMybatisMappers;
     }
 
-    public ProcessEngineConfigurationImpl setActiviti5CustomDefaultBpmnParseHandlers(List<Object> activiti5CustomDefaultBpmnParseHandlers) {
-        this.activiti5CustomDefaultBpmnParseHandlers = activiti5CustomDefaultBpmnParseHandlers;
+    public ProcessEngineConfigurationImpl setOldActivitiCustomMybatisMappers(Set<Class<?>> oldActivitiCustomMybatisMappers) {
+        this.oldActivitiCustomMybatisMappers = oldActivitiCustomMybatisMappers;
         return this;
     }
 
-    public Set<Class<?>> getActiviti5CustomMybatisMappers() {
-        return activiti5CustomMybatisMappers;
+    public Set<String> getOldActivitiCustomMybatisXMLMappers() {
+        return oldActivitiCustomMybatisXMLMappers;
     }
 
-    public ProcessEngineConfigurationImpl setActiviti5CustomMybatisMappers(Set<Class<?>> activiti5CustomMybatisMappers) {
-        this.activiti5CustomMybatisMappers = activiti5CustomMybatisMappers;
-        return this;
-    }
-
-    public Set<String> getActiviti5CustomMybatisXMLMappers() {
-        return activiti5CustomMybatisXMLMappers;
-    }
-
-    public ProcessEngineConfigurationImpl setActiviti5CustomMybatisXMLMappers(Set<String> activiti5CustomMybatisXMLMappers) {
-        this.activiti5CustomMybatisXMLMappers = activiti5CustomMybatisXMLMappers;
+    public ProcessEngineConfigurationImpl setOldActivitiCustomMybatisXMLMappers(Set<String> oldActivitiCustomMybatisXMLMappers) {
+        this.oldActivitiCustomMybatisXMLMappers = oldActivitiCustomMybatisXMLMappers;
         return this;
     }
 }

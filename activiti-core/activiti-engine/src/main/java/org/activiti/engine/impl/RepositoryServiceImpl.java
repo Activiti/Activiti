@@ -250,7 +250,4 @@ public class RepositoryServiceImpl extends ServiceImpl implements RepositoryServ
     return commandExecutor.execute(new ValidateBpmnModelCmd(bpmnModel));
   }
 
-  public Boolean isOldActivitiProcessDefinition(String processDefinitionId) {
-        return commandExecutor.execute(new IsOldActivitiProcessDefinitionCmd(processDefinitionId));
-  }
 }
