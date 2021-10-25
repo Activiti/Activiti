@@ -49,11 +49,8 @@ public class SaveTaskCmd implements Command<Task>, Serializable {
     if (task == null) {
       throw new ActivitiIllegalArgumentException("task is null");
     }
-    return executeInternal(commandContext);
-  }
 
-  public Task executeInternal(CommandContext commandContext){
-      if (task.getRevision() == 0) {
+    if (task.getRevision() == 0) {
           commandContext.getTaskEntityManager().insert(task, null);
 
           if (commandContext.getEventDispatcher().isEnabled()) {
@@ -141,6 +138,8 @@ public class SaveTaskCmd implements Command<Task>, Serializable {
           return commandContext.getTaskEntityManager().update(task);
 
       }
+
+
       return null;
   }
 
