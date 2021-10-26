@@ -19,8 +19,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
-import static org.hamcrest.text.MatchesPattern.matchesPattern;
 import java.util.Collections;
+import java.util.Date;
 import java.util.Map;
 import javax.el.PropertyNotFoundException;
 import org.hamcrest.MatcherAssert;
@@ -96,33 +96,16 @@ public class JuelResolverTest {
     }
 
     @Test
-    public void should_returnDate_when_expressionIsTodayFunction() {
+    public void should_returnDate_when_expressionIsNowFunction() {
         //given
-        String expressionString = "${today()}";
+        String expressionString = "${now()}";
         ExpressionResolver expressionResolver = new JuelExpressionResolver();
 
         //when
-        String value = expressionResolver.resolveExpression(expressionString, Collections.emptyMap(), String.class);
+        Date value = expressionResolver.resolveExpression(expressionString, Collections.emptyMap(), Date.class);
 
         //then
         MatcherAssert.assertThat(value, is(notNullValue()));
-        MatcherAssert.assertThat(value, matchesPattern("([0-9]{4})\\-([0-9]{2})\\-([0-9]{2})"));
-    }
-
-    @Test
-    public void should_returnDate_when_expressionIsCurrentFunction() {
-        //given
-        String expressionString = "${current()}";
-        ExpressionResolver expressionResolver = new JuelExpressionResolver();
-
-        //when
-        String value = expressionResolver.resolveExpression(expressionString, Collections.emptyMap(), String.class);
-
-        //then
-        MatcherAssert.assertThat(value, is(notNullValue()));
-        MatcherAssert.assertThat(value, matchesPattern(
-            "^(?:[1-9]\\d{3}-(?:(?:0[1-9]|1[0-2])-(?:0[1-9]|1\\d|2[0-8])|(?:0[13-9]|1[0-2])-"
-                + "(?:29|30)|(?:0[13578]|1[02])-31)|(?:[1-9]\\d(?:0[48]|[2468][048]|[13579][26])|"
-                + "(?:[2468][048]|[13579][26])00)-02-29)T(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d{1,9})?(?:Z|[+-][01]\\d:[0-5]\\d)$"));
+        assertThat(value.getClass().getName()).isEqualTo(Date.class.getName());
     }
 }

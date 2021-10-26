@@ -15,9 +15,11 @@
  */
 package org.activiti.spring.process.variable.types;
 
+import java.util.Collections;
 import java.util.List;
-
+import javax.el.ELException;
 import org.activiti.common.util.DateFormatterProvider;
+import org.activiti.core.el.JuelExpressionResolver;
 import org.activiti.engine.ActivitiException;
 
 /**
@@ -26,10 +28,12 @@ import org.activiti.engine.ActivitiException;
 public class DateVariableType extends JavaObjectVariableType {
 
     private final DateFormatterProvider dateFormatterProvider;
+    private final JuelExpressionResolver expressionResolver;
 
-    public DateVariableType(Class clazz, DateFormatterProvider dateFormatterProvider) {
+    public DateVariableType(Class clazz, DateFormatterProvider dateFormatterProvider, JuelExpressionResolver expressionResolver) {
         super(clazz);
         this.dateFormatterProvider = dateFormatterProvider;
+        this.expressionResolver = expressionResolver;
     }
 
     @Override
@@ -41,7 +45,10 @@ public class DateVariableType extends JavaObjectVariableType {
     public Object parseFromValue(Object value) throws ActivitiException {
 
         try {
+            value = expressionResolver.resolveExpression((String) value, Collections.emptyMap(), Object.class);
             return dateFormatterProvider.toDate(value);
+        } catch (ELException e) {
+            throw new ActivitiException("Error parsing expression " + value, e);
         } catch (Exception e) {
             throw new ActivitiException("Error parsing date value " + value, e);
         }

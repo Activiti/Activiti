@@ -29,6 +29,7 @@ import java.util.Date;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
 import org.activiti.common.util.DateFormatterProvider;
+import org.activiti.core.el.JuelExpressionResolver;
 import org.activiti.engine.impl.delegate.invocation.DefaultDelegateInterceptor;
 import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.spring.process.ProcessExtensionService;
@@ -49,6 +50,8 @@ public class ProcessVariablesPayloadValidatorTest {
     private ProcessExtensionService processExtensionService;
 
     private DateFormatterProvider dateFormatterProvider = new DateFormatterProvider("yyyy-MM-dd[['T']HH:mm:ss[.SSS'Z']]");
+    private JuelExpressionResolver juelExpressionResolver = new JuelExpressionResolver();
+
     private ObjectMapper objectMapper = new ObjectMapper();
     private VariableNameValidator variableNameValidator = new VariableNameValidator();
 
@@ -89,8 +92,8 @@ public class ProcessVariablesPayloadValidatorTest {
             "integer", new JavaObjectVariableType(Integer.class),
             "json", new JsonObjectVariableType(objectMapper),
             "file", new JsonObjectVariableType(objectMapper),
-            "date", new DateVariableType(Date.class, dateFormatterProvider),
-            "datetime", new DateVariableType(Date.class, dateFormatterProvider)));
+            "date", new DateVariableType(Date.class, dateFormatterProvider, juelExpressionResolver),
+            "datetime", new DateVariableType(Date.class, dateFormatterProvider, juelExpressionResolver)));
 
         processVariablesValidator = new ProcessVariablesPayloadValidator(dateFormatterProvider,
                                                                          processExtensionService,

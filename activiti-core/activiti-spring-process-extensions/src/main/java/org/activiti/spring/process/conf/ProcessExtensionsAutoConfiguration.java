@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.activiti.common.util.DateFormatterProvider;
+import org.activiti.core.el.JuelExpressionResolver;
 import org.activiti.engine.RepositoryService;
 import org.activiti.spring.process.ProcessExtensionResourceReader;
 import org.activiti.spring.process.ProcessExtensionService;
@@ -78,7 +79,7 @@ public class ProcessExtensionsAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean(name = "variableTypeMap")
     public Map<String, VariableType> variableTypeMap(ObjectMapper objectMapper,
-                                                     DateFormatterProvider dateFormatterProvider) {
+        DateFormatterProvider dateFormatterProvider, JuelExpressionResolver juelExpressionResolver) {
         Map<String, VariableType> variableTypeMap = new HashMap<>();
         variableTypeMap.put("boolean", new JavaObjectVariableType(Boolean.class));
         variableTypeMap.put("string", new JavaObjectVariableType(String.class));
@@ -86,8 +87,8 @@ public class ProcessExtensionsAutoConfiguration {
         variableTypeMap.put("json", new JsonObjectVariableType(objectMapper));
         variableTypeMap.put("file", new JsonObjectVariableType(objectMapper));
         variableTypeMap.put("folder", new JsonObjectVariableType(objectMapper));
-        variableTypeMap.put("date", new DateVariableType(Date.class, dateFormatterProvider));
-        variableTypeMap.put("datetime", new DateVariableType(Date.class, dateFormatterProvider));
+        variableTypeMap.put("date", new DateVariableType(Date.class, dateFormatterProvider, juelExpressionResolver));
+        variableTypeMap.put("datetime", new DateVariableType(Date.class, dateFormatterProvider, juelExpressionResolver));
         variableTypeMap.put("array", new JsonObjectVariableType(objectMapper));
         return variableTypeMap;
     }
@@ -100,5 +101,10 @@ public class ProcessExtensionsAutoConfiguration {
     @Bean
     public VariableParsingService variableParsingService(Map<String, VariableType> variableTypeMap) {
         return new VariableParsingService(variableTypeMap);
+    }
+
+    @Bean
+    public JuelExpressionResolver juelExpressionResolver() {
+        return new JuelExpressionResolver();
     }
 }
