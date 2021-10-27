@@ -16,15 +16,16 @@
 package org.activiti.spring.process.variable.types;
 
 import java.util.List;
-
+import java.util.Objects;
+import java.util.regex.Pattern;
 import org.activiti.engine.ActivitiException;
 
 /**
- * Base variable type for types as defined in extension json files.
- * Used to validate variables against definition.
+ * Base variable type for types as defined in extension json files. Used to validate variables against definition.
  */
 public abstract class VariableType {
 
+    private static final Pattern EXPRESSION_PATTERN = Pattern.compile("^\\$\\{(.|\\n)*[\\}]$");
     private String name;
 
     public String getName() {
@@ -39,5 +40,9 @@ public abstract class VariableType {
 
     public Object parseFromValue(Object value) throws ActivitiException {
         return value;
+    }
+
+    protected boolean isExpression(Object var) {
+        return Objects.nonNull(var) && var.getClass().isAssignableFrom(String.class) && EXPRESSION_PATTERN.matcher((CharSequence) var).matches();
     }
 }
