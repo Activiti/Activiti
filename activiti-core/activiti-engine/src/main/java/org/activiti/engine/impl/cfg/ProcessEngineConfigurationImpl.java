@@ -841,20 +841,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 
   protected PerformanceSettings performanceSettings = new PerformanceSettings();
 
-
-    // Backwards compatibility //////////////////////////////////////////////////////////////
-
-    protected boolean isOldActivitiCompatibilityEnabled; // Default activiti 5 backwards compatibility is disabled!
-    protected ProcessDefinitionHelper processDefinitionHelper;
-
-    // Can't have a dependency on the activiti5-engine module
-    protected Object oldActivitiActivityBehaviorFactory;
-    protected Object oldActivitiListenerFactory;
-    protected List<Object> oldActivitiPreBpmnParseHandlers;
-    protected List<Object> oldActivitiPostBpmnParseHandlers;
-    protected List<Object> oldActivitiCustomDefaultBpmnParseHandlers;
-    protected Set<Class<?>> oldActivitiCustomMybatisMappers;
-    protected Set<String> oldActivitiCustomMybatisXMLMappers;
+  protected ProcessDefinitionHelper processDefinitionHelper;
 
   // buildProcessEngine
   // ///////////////////////////////////////////////////////
