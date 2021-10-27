@@ -19,7 +19,7 @@ package org.activiti.engine.impl.util;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.Process;
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.OldActivitiCompatibilityHandler;
+import org.activiti.engine.ProcessDefinitionHelper;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.persistence.deploy.DeploymentManager;
@@ -55,21 +55,18 @@ public class ProcessDefinitionUtil {
     }
   }
 
-  public static OldActivitiCompatibilityHandler getOldActivitiCompatibilityHandler() {
-      OldActivitiCompatibilityHandler oldActivitiCompatibilityHandler = Context.getOldActivitiCompatibilityHandler();
-        if (oldActivitiCompatibilityHandler == null) {
-            oldActivitiCompatibilityHandler = Context.getFallbackOldActivitiCompatibilityHandler();
-        }
+  public static ProcessDefinitionHelper getProcessDefinitionHelper() {
+      ProcessDefinitionHelper processDefinitionHelper = Context.getProcessDefinitionHelper();
 
-        if (oldActivitiCompatibilityHandler == null) {
+        if (processDefinitionHelper == null) {
             throw new ActivitiException("Found Old Activiti process definition, but no compatibility handler on the classpath");
         }
-        return oldActivitiCompatibilityHandler;
+        return processDefinitionHelper;
   }
 
   public static Process getProcess(String processDefinitionId) {
       if (Context.getProcessEngineConfiguration() == null) {
-          return getOldActivitiCompatibilityHandler().getProcessDefinitionProcessObject(processDefinitionId);
+          return getProcessDefinitionHelper().getProcessDefinitionProcessObject(processDefinitionId);
 
       } else {
           DeploymentManager deploymentManager = Context.getProcessEngineConfiguration().getDeploymentManager();
@@ -82,7 +79,7 @@ public class ProcessDefinitionUtil {
 
   public static BpmnModel getBpmnModel(String processDefinitionId) {
       if (Context.getProcessEngineConfiguration() == null) {
-          return getOldActivitiCompatibilityHandler().getProcessDefinitionBpmnModel(processDefinitionId);
+          return getProcessDefinitionHelper().getProcessDefinitionBpmnModel(processDefinitionId);
       } else {
           DeploymentManager deploymentManager = Context.getProcessEngineConfiguration().getDeploymentManager();
 

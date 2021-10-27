@@ -845,7 +845,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     // Backwards compatibility //////////////////////////////////////////////////////////////
 
     protected boolean isOldActivitiCompatibilityEnabled; // Default activiti 5 backwards compatibility is disabled!
-    protected OldActivitiCompatibilityHandler oldActivitiCompatibilityHandler;
+    protected ProcessDefinitionHelper processDefinitionHelper;
 
     // Can't have a dependency on the activiti5-engine module
     protected Object oldActivitiActivityBehaviorFactory;
@@ -3699,86 +3699,12 @@ public ProcessEngineConfigurationImpl getProcessEngineConfiguration() {
     this.eventSubscriptionPayloadMappingProvider = eventSubscriptionPayloadMappingProvider;
   }
 
-    // Activiti 5
-
-    public boolean isOldActivitiCompatibilityEnabled() {
-        return isOldActivitiCompatibilityEnabled;
+    public ProcessDefinitionHelper getProcessDefinitionHelper() {
+        return processDefinitionHelper;
     }
 
-    public ProcessEngineConfigurationImpl setOldActivitiCompatibilityEnabled(boolean isOldActivitiCompatibilityEnabled) {
-        this.isOldActivitiCompatibilityEnabled = isOldActivitiCompatibilityEnabled;
-        return this;
-    }
-
-    public OldActivitiCompatibilityHandler getOldActivitiCompatibilityHandler() {
-        return oldActivitiCompatibilityHandler;
-    }
-
-    public ProcessEngineConfigurationImpl setOldActivitiCompatibilityHandler(OldActivitiCompatibilityHandler oldActivitiCompatibilityHandler) {
-        this.oldActivitiCompatibilityHandler = oldActivitiCompatibilityHandler;
-        return this;
-    }
-
-    public Object getOldActivitiActivityBehaviorFactory() {
-        return oldActivitiActivityBehaviorFactory;
-    }
-
-    public ProcessEngineConfigurationImpl setOldActivitiActivityBehaviorFactory(Object oldActivitiActivityBehaviorFactory) {
-        this.oldActivitiActivityBehaviorFactory = oldActivitiActivityBehaviorFactory;
-        return this;
-    }
-
-    public Object getOldActivitiListenerFactory() {
-        return oldActivitiListenerFactory;
-    }
-
-    public ProcessEngineConfigurationImpl setOldActivitiistenerFactory(Object oldActivitiListenerFactory) {
-        this.oldActivitiListenerFactory = oldActivitiListenerFactory;
-        return this;
-    }
-
-    public List<Object> getOldActivitiPreBpmnParseHandlers() {
-        return oldActivitiPreBpmnParseHandlers;
-    }
-
-    public ProcessEngineConfigurationImpl setOldActivitiPreBpmnParseHandlers(List<Object> oldActivitiPreBpmnParseHandlers) {
-        this.oldActivitiPreBpmnParseHandlers = oldActivitiPreBpmnParseHandlers;
-        return this;
-    }
-
-    public List<Object> getOldActivitiPostBpmnParseHandlers() {
-        return oldActivitiPostBpmnParseHandlers;
-    }
-
-    public ProcessEngineConfigurationImpl setOldActivitiPostBpmnParseHandlers(List<Object> oldActivitiPostBpmnParseHandlers) {
-        this.oldActivitiPostBpmnParseHandlers = oldActivitiPostBpmnParseHandlers;
-        return this;
-    }
-
-    public List<Object> getOldActivitiCustomDefaultBpmnParseHandlers() {
-        return oldActivitiCustomDefaultBpmnParseHandlers;
-    }
-
-    public ProcessEngineConfigurationImpl setOldActivitiCustomDefaultBpmnParseHandlers(List<Object> oldActivitiCustomDefaultBpmnParseHandlers) {
-        this.oldActivitiCustomDefaultBpmnParseHandlers = oldActivitiCustomDefaultBpmnParseHandlers;
-        return this;
-    }
-
-    public Set<Class<?>> getOldActivitiCustomMybatisMappers() {
-        return oldActivitiCustomMybatisMappers;
-    }
-
-    public ProcessEngineConfigurationImpl setOldActivitiCustomMybatisMappers(Set<Class<?>> oldActivitiCustomMybatisMappers) {
-        this.oldActivitiCustomMybatisMappers = oldActivitiCustomMybatisMappers;
-        return this;
-    }
-
-    public Set<String> getOldActivitiCustomMybatisXMLMappers() {
-        return oldActivitiCustomMybatisXMLMappers;
-    }
-
-    public ProcessEngineConfigurationImpl setOldActivitiCustomMybatisXMLMappers(Set<String> oldActivitiCustomMybatisXMLMappers) {
-        this.oldActivitiCustomMybatisXMLMappers = oldActivitiCustomMybatisXMLMappers;
+    public ProcessEngineConfigurationImpl setProcessDefinitionHelper(ProcessDefinitionHelper processDefinitionHelper) {
+        this.processDefinitionHelper = processDefinitionHelper;
         return this;
     }
 }

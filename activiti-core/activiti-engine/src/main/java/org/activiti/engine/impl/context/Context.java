@@ -20,7 +20,7 @@ package org.activiti.engine.impl.context;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import org.activiti.engine.ActivitiEngineAgenda;
-import org.activiti.engine.OldActivitiCompatibilityHandler;
+import org.activiti.engine.ProcessDefinitionHelper;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.cfg.TransactionContext;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -39,9 +39,9 @@ public class Context {
   protected static ThreadLocal<Stack<ProcessEngineConfigurationImpl>> processEngineConfigurationStackThreadLocal = new ThreadLocal<Stack<ProcessEngineConfigurationImpl>>();
   protected static ThreadLocal<Stack<TransactionContext>> transactionContextThreadLocal = new ThreadLocal<Stack<TransactionContext>>();
   protected static ThreadLocal<Map<String, ObjectNode>> bpmnOverrideContextThreadLocal = new ThreadLocal<Map<String, ObjectNode>>();
-  protected static ThreadLocal<OldActivitiCompatibilityHandler> oldActivitiCompatibilityHandlerThreadLocal = new ThreadLocal<OldActivitiCompatibilityHandler>();
+  protected static ThreadLocal<ProcessDefinitionHelper> processDefinitionHelperThreadLocal = new ThreadLocal<ProcessDefinitionHelper>();
   // Fallback handler is only set by the v5 CommandContextInterceptor
-  protected static ThreadLocal<OldActivitiCompatibilityHandler> fallbackOldActivitiCompatibilityHandlerThreadLocal = new ThreadLocal<OldActivitiCompatibilityHandler>();
+  //protected static ThreadLocal<ProcessDefinitionHelper> fallbackOldActivitiCompatibilityHandlerThreadLocal = new ThreadLocal<ProcessDefinitionHelper>();
 
   protected static ResourceBundle.Control resourceBundleControl = new ResourceBundleControl();
 
@@ -180,28 +180,16 @@ public class Context {
     }
   }
 
-  public static OldActivitiCompatibilityHandler getOldActivitiCompatibilityHandler() {
-        return oldActivitiCompatibilityHandlerThreadLocal.get();
+  public static ProcessDefinitionHelper getProcessDefinitionHelper() {
+        return processDefinitionHelperThreadLocal.get();
   }
 
-  public static void setOldActivitiCompatibilityHandler(OldActivitiCompatibilityHandler oldActivitiCompatibilityHandler) {
-        oldActivitiCompatibilityHandlerThreadLocal.set(oldActivitiCompatibilityHandler);
+  public static void setProcessDefinitionHelper(ProcessDefinitionHelper processDefinitionHelper) {
+      processDefinitionHelperThreadLocal.set(processDefinitionHelper);
   }
 
-  public static void removeOldActivitiCompatibilityHandler() {
-        oldActivitiCompatibilityHandlerThreadLocal.remove();
+  public static void removeProcessDefinitionHelper() {
+      processDefinitionHelperThreadLocal.remove();
   }
 
-  public static OldActivitiCompatibilityHandler getFallbackOldActivitiCompatibilityHandler() {
-        return fallbackOldActivitiCompatibilityHandlerThreadLocal.get();
-  }
-
-
-  public static void setFallbackOldActivitiCompatibilityHandler(OldActivitiCompatibilityHandler oldActivitiCompatibilityHandler) {
-        fallbackOldActivitiCompatibilityHandlerThreadLocal.set(oldActivitiCompatibilityHandler);
-  }
-
-  public static void removeFallbackOldActivitiCompatibilityHandler() {
-        fallbackOldActivitiCompatibilityHandlerThreadLocal.remove();
-  }
 }
