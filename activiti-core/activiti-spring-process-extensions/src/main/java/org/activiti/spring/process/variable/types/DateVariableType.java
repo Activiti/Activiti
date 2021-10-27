@@ -16,7 +16,6 @@
 package org.activiti.spring.process.variable.types;
 
 import java.util.List;
-
 import org.activiti.common.util.DateFormatterProvider;
 import org.activiti.engine.ActivitiException;
 
@@ -41,6 +40,9 @@ public class DateVariableType extends JavaObjectVariableType {
     public Object parseFromValue(Object value) throws ActivitiException {
 
         try {
+            if (isExpression(value)) {
+                return value;
+            }
             return dateFormatterProvider.toDate(value);
         } catch (Exception e) {
             throw new ActivitiException("Error parsing date value " + value, e);

@@ -42,9 +42,9 @@ public class JavaObjectVariableType extends VariableType {
     }
 
     @Override
-    public void validate(Object var,List<ActivitiException> errors) {
+    public void validate(Object var, List<ActivitiException> errors) {
 
-        if (var != null && !(var).getClass().isAssignableFrom(clazz)) {
+        if (var != null && !(var).getClass().isAssignableFrom(clazz) && !isExpression(var)) {
             String message = var.getClass() + " is not assignable from " + clazz;
             errors.add(new ActivitiException(message));
             logger.error(message);
