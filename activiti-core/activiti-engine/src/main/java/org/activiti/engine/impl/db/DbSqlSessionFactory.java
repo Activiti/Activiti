@@ -71,6 +71,8 @@ public class DbSqlSessionFactory implements SessionFactory {
   protected boolean isDbHistoryUsed = true;
   protected int maxNrOfStatementsInBulkInsert = 100;
 
+  protected Map<String, String> shortKeyToIdKeyMap = new HashMap<>();
+
   public Class<?> getSessionType() {
     return DbSqlSession.class;
   }
@@ -156,6 +158,10 @@ public class DbSqlSessionFactory implements SessionFactory {
 
   public String mapStatement(String statement) {
     if (statementMappings == null) {
+      String mapperId = shortKeyToIdKeyMap.get(statement);
+      if (mapperId != null) {
+          return mapperId;
+      }
       return statement;
     }
     String mappedStatement = statementMappings.get(statement);
@@ -323,4 +329,11 @@ public class DbSqlSessionFactory implements SessionFactory {
     this.maxNrOfStatementsInBulkInsert = maxNrOfStatementsInBulkInsert;
   }
 
+  public Map<String, String> getShortKeyToIdKeyMap() {
+    return shortKeyToIdKeyMap;
+  }
+
+  public void setShortKeyToIdKeyMap(Map<String, String> shortKeyToIdKeyMap) {
+    this.shortKeyToIdKeyMap = shortKeyToIdKeyMap;
+  }
 }

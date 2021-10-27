@@ -184,10 +184,17 @@ public abstract class ReflectUtil {
     try {
       field.setAccessible(true);
       field.set(object, value);
-    } catch (IllegalArgumentException e) {
+    } catch (IllegalArgumentException | IllegalAccessException e) {
       throw new ActivitiException("Could not set field " + field.toString(), e);
-    } catch (IllegalAccessException e) {
-      throw new ActivitiException("Could not set field " + field.toString(), e);
+    }
+  }
+
+  public static Object getFieldValue(Field field, Object object) {
+    try {
+      field.setAccessible(true);
+      return field.get(object);
+    } catch (IllegalArgumentException | IllegalAccessException e) {
+      throw new ActivitiException("Could not get field " + field.toString() + " value", e);
     }
   }
 
