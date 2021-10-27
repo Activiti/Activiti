@@ -16,21 +16,6 @@
 package org.activiti.engine;
 
 import org.activiti.bpmn.model.BpmnModel;
-import org.activiti.engine.delegate.BpmnError;
-import org.activiti.engine.delegate.DelegateExecution;
-import org.activiti.engine.impl.persistence.entity.SignalEventSubscriptionEntity;
-import org.activiti.engine.impl.persistence.entity.TaskEntity;
-import org.activiti.engine.impl.repository.DeploymentBuilderImpl;
-import org.activiti.engine.repository.Deployment;
-import org.activiti.engine.repository.ProcessDefinition;
-import org.activiti.engine.runtime.Clock;
-import org.activiti.engine.runtime.Job;
-import org.activiti.engine.runtime.ProcessInstance;
-import org.activiti.engine.task.Attachment;
-
-import java.io.InputStream;
-import java.util.Collection;
-import java.util.Map;
 
 public interface ProcessDefinitionHelper {
 
