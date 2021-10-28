@@ -40,8 +40,6 @@ public class Context {
   protected static ThreadLocal<Stack<TransactionContext>> transactionContextThreadLocal = new ThreadLocal<Stack<TransactionContext>>();
   protected static ThreadLocal<Map<String, ObjectNode>> bpmnOverrideContextThreadLocal = new ThreadLocal<Map<String, ObjectNode>>();
   protected static ThreadLocal<ProcessDefinitionHelper> processDefinitionHelperThreadLocal = new ThreadLocal<ProcessDefinitionHelper>();
-  // Fallback handler is only set by the v5 CommandContextInterceptor
-  //protected static ThreadLocal<ProcessDefinitionHelper> fallbackOldActivitiCompatibilityHandlerThreadLocal = new ThreadLocal<ProcessDefinitionHelper>();
 
   protected static ResourceBundle.Control resourceBundleControl = new ResourceBundleControl();
 

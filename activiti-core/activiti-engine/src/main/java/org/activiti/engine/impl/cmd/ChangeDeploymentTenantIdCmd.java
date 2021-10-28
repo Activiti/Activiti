@@ -59,7 +59,7 @@ public class ChangeDeploymentTenantIdCmd implements Command<Void>, Serializable 
     return null;
   }
 
-  public Void executeInternal(CommandContext commandContext,DeploymentEntity deployment) {
+  protected void executeInternal(CommandContext commandContext,DeploymentEntity deployment) {
       String oldTenantId = deployment.getTenantId();
       deployment.setTenantId(newTenantId);
 
@@ -83,7 +83,6 @@ public class ChangeDeploymentTenantIdCmd implements Command<Void>, Serializable 
       // Clear process definition cache
       commandContext.getProcessEngineConfiguration().getProcessDefinitionCache().clear();
 
-      return null;
   }
 
 }

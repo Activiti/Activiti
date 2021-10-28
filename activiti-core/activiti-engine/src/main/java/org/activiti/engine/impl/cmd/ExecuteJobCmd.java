@@ -60,10 +60,11 @@ public class ExecuteJobCmd implements Command<Object>, Serializable {
       log.debug("Executing job {}", job.getId());
     }
 
-    return executeInternal(commandContext,job);
+    executeInternal(commandContext,job);
+    return null;
   }
 
-  public Object executeInternal(CommandContext commandContext,Job job) {
+  protected void executeInternal(CommandContext commandContext,Job job) {
       commandContext.addCloseListener(new FailedJobListener(commandContext.getProcessEngineConfiguration().getCommandExecutor(), job));
 
       try {
@@ -72,7 +73,6 @@ public class ExecuteJobCmd implements Command<Object>, Serializable {
           // Finally, Throw the exception to indicate the ExecuteJobCmd failed
           throw new ActivitiException("Job " + jobId + " failed", exception);
       }
-      return null;
   }
 
   public String getJobId() {

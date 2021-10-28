@@ -52,11 +52,11 @@ public class DeleteHistoricProcessInstanceCmd implements Command<Object>, Serial
       throw new ActivitiException("Process instance is still running, cannot delete historic process instance: " + processInstanceId);
     }
 
-    return executeInternal(commandContext,instance);
+    executeInternal(commandContext,instance);
+    return null;
   }
 
-  public Object executeInternal(CommandContext commandContext,HistoricProcessInstance instance){
+  protected void executeInternal(CommandContext commandContext,HistoricProcessInstance instance){
       commandContext.getHistoricProcessInstanceEntityManager().delete(processInstanceId);
-      return null;
   }
 }

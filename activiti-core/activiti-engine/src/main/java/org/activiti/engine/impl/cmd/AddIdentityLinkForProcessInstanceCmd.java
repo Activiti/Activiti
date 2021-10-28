@@ -79,11 +79,10 @@ public class AddIdentityLinkForProcessInstanceCmd implements Command<Void>, Seri
     return null;
   }
 
-  public Void executeInternal(CommandContext commandContext,ExecutionEntity processInstance) {
+  public void executeInternal(CommandContext commandContext,ExecutionEntity processInstance) {
       IdentityLinkEntityManager identityLinkEntityManager = commandContext.getIdentityLinkEntityManager();
       identityLinkEntityManager.addIdentityLink(processInstance, userId, groupId, type);
       commandContext.getHistoryManager().createProcessInstanceIdentityLinkComment(processInstanceId, userId, groupId, type, true);
-    return null;
   }
 
 }

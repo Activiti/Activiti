@@ -127,7 +127,7 @@ public class DeploymentManager {
     return cachedProcessDefinition;
   }
 
-  public ProcessDefinitionCacheEntry resolveProcessDefinitionInternal(CommandContext commandContext,ProcessDefinition processDefinition,String deploymentId, String processDefinitionId){
+  protected ProcessDefinitionCacheEntry resolveProcessDefinitionInternal(CommandContext commandContext,ProcessDefinition processDefinition,String deploymentId, String processDefinitionId){
         DeploymentEntity deployment = deploymentEntityManager.findById(deploymentId);
         deployment.setNew(false);
         deploy(deployment, null);
@@ -148,7 +148,7 @@ public class DeploymentManager {
     removeDeploymentInternal(deploymentId,cascade,deployment);
   }
 
-  public void removeDeploymentInternal(String deploymentId, boolean cascade,DeploymentEntity deployment){
+  protected void removeDeploymentInternal(String deploymentId, boolean cascade,DeploymentEntity deployment){
       // Remove any process definition from the cache
       List<ProcessDefinition> processDefinitions = new ProcessDefinitionQueryImpl().deploymentId(deploymentId).list();
       ActivitiEventDispatcher eventDispatcher = Context.getProcessEngineConfiguration().getEventDispatcher();

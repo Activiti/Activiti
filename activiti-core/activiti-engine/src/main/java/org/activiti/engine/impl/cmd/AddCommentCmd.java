@@ -92,7 +92,7 @@ public class AddCommentCmd implements Command<Comment> {
     return executeInternal(commandContext,processDefinitionId);
   }
 
-  public Comment executeInternal(CommandContext commandContext,String processDefinitionId){
+  protected Comment executeInternal(CommandContext commandContext,String processDefinitionId){
 
       String userId = Authentication.getAuthenticatedUserId();
       CommentEntity comment = commandContext.getCommentEntityManager().create();

@@ -78,13 +78,12 @@ public abstract class AbstractSetProcessDefinitionStateCmd implements Command<Vo
     return null;
   }
 
-  public Void executeInternal(CommandContext commandContext,List<ProcessDefinitionEntity> processDefinitions){
+  protected void executeInternal(CommandContext commandContext,List<ProcessDefinitionEntity> processDefinitions){
       if (executionDate != null) { // Process definition state change is delayed
           createTimerForDelayedExecution(commandContext, processDefinitions);
       } else { // Process definition state is changed now
           changeProcessDefinitionState(commandContext, processDefinitions);
       }
-      return null;
   }
 
   protected List<ProcessDefinitionEntity> findProcessDefinition(CommandContext commandContext) {
@@ -134,13 +133,13 @@ public abstract class AbstractSetProcessDefinitionStateCmd implements Command<Vo
     return processDefinitionEntities;
   }
 
-  public void createTimerForDelayedExecution(CommandContext commandContext, List<ProcessDefinitionEntity> processDefinitions) {
+  protected void createTimerForDelayedExecution(CommandContext commandContext, List<ProcessDefinitionEntity> processDefinitions) {
     for (ProcessDefinitionEntity processDefinition : processDefinitions) {
         createTimerForDelayedExecutionInternal(commandContext,processDefinition);
     }
   }
 
-  public void createTimerForDelayedExecutionInternal(CommandContext commandContext, ProcessDefinitionEntity processDefinition) {
+  protected void createTimerForDelayedExecutionInternal(CommandContext commandContext, ProcessDefinitionEntity processDefinition) {
 
       TimerJobEntity timer = commandContext.getTimerJobEntityManager().create();
       timer.setJobType(JobEntity.JOB_TYPE_TIMER);
@@ -157,7 +156,7 @@ public abstract class AbstractSetProcessDefinitionStateCmd implements Command<Vo
       commandContext.getJobManager().scheduleTimerJob(timer);
   }
 
-  public void changeProcessDefinitionState(CommandContext commandContext, List<ProcessDefinitionEntity> processDefinitions) {
+  protected void changeProcessDefinitionState(CommandContext commandContext, List<ProcessDefinitionEntity> processDefinitions) {
     for (ProcessDefinitionEntity processDefinition : processDefinitions) {
         changeProcessDefinitionStateInternal(commandContext,processDefinition);
     }

@@ -133,7 +133,7 @@ public class GetDataObjectCmd implements Command<DataObject>, Serializable {
     return dataObject;
   }
 
-  public VariableInstance getVariable(ExecutionEntity execution,CommandContext commandContext){
+  protected VariableInstance getVariable(ExecutionEntity execution,CommandContext commandContext){
         VariableInstance variableEntity = null;
         if (isLocal) {
             variableEntity = execution.getVariableInstanceLocal(dataObjectName, false);

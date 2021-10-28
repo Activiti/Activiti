@@ -39,7 +39,7 @@ public class ErrorThrowingEventListener extends BaseDelegateEventListener {
     }
   }
 
-  public void onEventInternal(ActivitiEvent event){
+  protected void onEventInternal(ActivitiEvent event){
       ExecutionEntity execution = null;
 
       if (event.getExecutionId() != null) {

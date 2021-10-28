@@ -69,7 +69,7 @@ public class GetExecutionVariableInstancesCmd implements Command<Map<String, Var
         return variables;
     }
 
-    public  Map<String, VariableInstance> getVariable(ExecutionEntity execution,CommandContext commandContext){
+    protected Map<String, VariableInstance> getVariable(ExecutionEntity execution,CommandContext commandContext){
         Map<String, VariableInstance> variables = null;
 
         if (variableNames == null || variableNames.isEmpty()) {

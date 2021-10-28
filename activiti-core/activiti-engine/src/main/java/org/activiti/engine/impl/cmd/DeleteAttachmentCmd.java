@@ -50,10 +50,12 @@ public class DeleteAttachmentCmd implements Command<Object>, Serializable {
         processDefinitionId = process.getProcessDefinitionId();
       }
     }
-    return executeInternal(commandContext,attachment,processInstanceId,processDefinitionId);
+    executeInternal(commandContext,attachment,processInstanceId,processDefinitionId);
+
+    return null;
   }
 
-  public Object executeInternal(CommandContext commandContext,AttachmentEntity attachment,String processInstanceId,String processDefinitionId){
+  protected void executeInternal(CommandContext commandContext,AttachmentEntity attachment,String processInstanceId,String processDefinitionId){
       commandContext.getAttachmentEntityManager().delete(attachment, false);
 
       if (attachment.getContentId() != null) {
@@ -68,7 +70,6 @@ public class DeleteAttachmentCmd implements Command<Object>, Serializable {
           commandContext.getProcessEngineConfiguration().getEventDispatcher()
               .dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_DELETED, attachment, processInstanceId, processInstanceId, processDefinitionId));
       }
-      return null;
   }
 
 }

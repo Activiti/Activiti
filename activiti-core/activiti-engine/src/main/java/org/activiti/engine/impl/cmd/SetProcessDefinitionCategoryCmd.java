@@ -52,10 +52,11 @@ public class SetProcessDefinitionCategoryCmd implements Command<Void> {
       throw new ActivitiObjectNotFoundException("No process definition found for id = '" + processDefinitionId + "'", ProcessDefinition.class);
     }
 
-    return executeInternal(commandContext,processDefinition);
+    executeInternal(commandContext,processDefinition);
+    return null;
   }
 
-  public Void executeInternal(CommandContext commandContext,ProcessDefinitionEntity processDefinition){
+  protected void executeInternal(CommandContext commandContext,ProcessDefinitionEntity processDefinition){
       // Update category
       processDefinition.setCategory(category);
 
@@ -69,7 +70,6 @@ public class SetProcessDefinitionCategoryCmd implements Command<Void> {
           commandContext.getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_UPDATED, processDefinition));
       }
 
-      return null;
   }
 
   public String getProcessDefinitionId() {

@@ -65,10 +65,12 @@ public class MessageEventReceivedCmd extends NeedsActiveExecutionCmd<Void> {
     if (messageName == null) {
       throw new ActivitiIllegalArgumentException("messageName cannot be null");
     }
-    return executeInternal(commandContext,execution);
+
+    executeInternal(commandContext,execution);
+    return null;
   }
 
-  public Void executeInternal(CommandContext commandContext,ExecutionEntity execution){
+  protected void executeInternal(CommandContext commandContext,ExecutionEntity execution){
       EventSubscriptionEntityManager eventSubscriptionEntityManager = commandContext.getEventSubscriptionEntityManager();
       List<EventSubscriptionEntity> eventSubscriptions = eventSubscriptionEntityManager.
           findEventSubscriptionsByNameAndExecution(MessageEventHandler.EVENT_HANDLER_TYPE, messageName, executionId);
@@ -81,7 +83,6 @@ public class MessageEventReceivedCmd extends NeedsActiveExecutionCmd<Void> {
       EventSubscriptionEntity eventSubscriptionEntity = eventSubscriptions.get(0);
       eventSubscriptionEntityManager.eventReceived(eventSubscriptionEntity, payload, async);
 
-      return null;
   }
 
 }

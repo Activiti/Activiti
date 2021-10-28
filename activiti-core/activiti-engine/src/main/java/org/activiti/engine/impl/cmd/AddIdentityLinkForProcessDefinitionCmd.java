@@ -67,8 +67,7 @@ public class AddIdentityLinkForProcessDefinitionCmd implements Command<Void>, Se
     return null;
   }
 
-  public Void executeInternal(CommandContext commandContext,ProcessDefinitionEntity processDefinition) {
+  protected void executeInternal(CommandContext commandContext,ProcessDefinitionEntity processDefinition) {
       commandContext.getIdentityLinkEntityManager().addIdentityLink(processDefinition, userId, groupId);
-      return null;
   }
 }

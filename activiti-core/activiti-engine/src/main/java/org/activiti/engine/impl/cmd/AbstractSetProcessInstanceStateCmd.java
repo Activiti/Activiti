@@ -65,27 +65,16 @@ public abstract class AbstractSetProcessInstanceStateCmd implements Command<Void
     return null;
   }
 
-  public Void executeInternal(CommandContext commandContext,ExecutionEntity executionEntity){
+  protected void executeInternal(CommandContext commandContext,ExecutionEntity executionEntity){
       SuspensionStateUtil.setSuspensionState(executionEntity, getNewState());
       commandContext.getExecutionEntityManager().update(executionEntity, false);
 
-      // All child executions are suspended
-      Collection<ExecutionEntity> childExecutions = commandContext.getExecutionEntityManager().findChildExecutionsByProcessInstanceId(processInstanceId);
-      for (ExecutionEntity childExecution : childExecutions) {
-          if (!childExecution.getId().equals(processInstanceId)) {
-              SuspensionStateUtil.setSuspensionState(childExecution, getNewState());
-              commandContext.getExecutionEntityManager().update(childExecution, false);
-          }
-      }
+      updateChildrenSuspensionState(commandContext);
+      updateTaskSuspensionState(commandContext);
+      suspendAllJobs(commandContext);
+  }
 
-      // All tasks are suspended
-      List<TaskEntity> tasks = commandContext.getTaskEntityManager().findTasksByProcessInstanceId(processInstanceId);
-      for (TaskEntity taskEntity : tasks) {
-          SuspensionStateUtil.setSuspensionState(taskEntity, getNewState());
-          commandContext.getTaskEntityManager().update(taskEntity, false);
-      }
-
-      // All jobs are suspended
+  protected void suspendAllJobs(CommandContext commandContext){
       if (getNewState() == SuspensionState.ACTIVE) {
           List<SuspendedJobEntity> suspendedJobs = commandContext.getSuspendedJobEntityManager().findJobsByProcessInstanceId(processInstanceId);
           for (SuspendedJobEntity suspendedJob : suspendedJobs) {
@@ -103,7 +92,23 @@ public abstract class AbstractSetProcessInstanceStateCmd implements Command<Void
               commandContext.getJobManager().moveJobToSuspendedJob(job);
           }
       }
-      return null;
+  }
+  protected void updateChildrenSuspensionState(CommandContext commandContext){
+      Collection<ExecutionEntity> childExecutions = commandContext.getExecutionEntityManager().findChildExecutionsByProcessInstanceId(processInstanceId);
+      for (ExecutionEntity childExecution : childExecutions) {
+          if (!childExecution.getId().equals(processInstanceId)) {
+              SuspensionStateUtil.setSuspensionState(childExecution, getNewState());
+              commandContext.getExecutionEntityManager().update(childExecution, false);
+          }
+      }
+  }
+
+  protected void updateTaskSuspensionState(CommandContext commandContext){
+      List<TaskEntity> tasks = commandContext.getTaskEntityManager().findTasksByProcessInstanceId(processInstanceId);
+      for (TaskEntity taskEntity : tasks) {
+          SuspensionStateUtil.setSuspensionState(taskEntity, getNewState());
+          commandContext.getTaskEntityManager().update(taskEntity, false);
+      }
   }
 
   protected abstract SuspensionState getNewState();

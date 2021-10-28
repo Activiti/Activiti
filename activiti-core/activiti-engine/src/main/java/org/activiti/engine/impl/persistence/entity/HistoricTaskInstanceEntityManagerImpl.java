@@ -96,7 +96,7 @@ public class HistoricTaskInstanceEntityManagerImpl extends AbstractEntityManager
     }
   }
 
-  public void deleteInternal(String id,HistoricTaskInstanceEntity historicTaskInstance){
+  protected void deleteInternal(String id,HistoricTaskInstanceEntity historicTaskInstance){
 
       List<HistoricTaskInstanceEntity> subTasks = historicTaskInstanceDataManager.findHistoricTasksByParentTaskId(historicTaskInstance.getId());
       for (HistoricTaskInstance subTask: subTasks) {

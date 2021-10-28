@@ -58,7 +58,7 @@ public class GetExecutionVariableCmd implements Command<Object>, Serializable {
     return executeInternal(execution,commandContext);
   }
 
-  public Object executeInternal(ExecutionEntity execution,CommandContext commandContext){
+  protected Object executeInternal(ExecutionEntity execution,CommandContext commandContext){
 
       Object value;
 

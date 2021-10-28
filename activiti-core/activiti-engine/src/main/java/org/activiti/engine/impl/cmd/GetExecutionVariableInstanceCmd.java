@@ -63,7 +63,7 @@ public class GetExecutionVariableInstanceCmd implements Command<VariableInstance
         return variableEntity;
     }
 
-    public VariableInstance getVariable(ExecutionEntity execution,CommandContext commandContext){
+    protected VariableInstance getVariable(ExecutionEntity execution,CommandContext commandContext){
         VariableInstance variableEntity = null;
         if (isLocal) {
             variableEntity = execution.getVariableInstanceLocal(variableName, false);

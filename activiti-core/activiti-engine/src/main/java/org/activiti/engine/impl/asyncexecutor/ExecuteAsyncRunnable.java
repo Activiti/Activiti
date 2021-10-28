@@ -69,7 +69,7 @@ public class ExecuteAsyncRunnable implements Runnable {
     runInternal();
   }
 
-  public void runInternal(){
+  protected void runInternal(){
       boolean lockNotNeededOrSuccess = lockJobIfNeeded();
 
       if (lockNotNeededOrSuccess) {
