@@ -162,7 +162,7 @@ public abstract class AbstractSetProcessDefinitionStateCmd implements Command<Vo
     }
   }
 
-  public void changeProcessDefinitionStateInternal(CommandContext commandContext, ProcessDefinitionEntity processDefinition) {
+  protected void changeProcessDefinitionStateInternal(CommandContext commandContext, ProcessDefinitionEntity processDefinition) {
 
       SuspensionStateUtil.setSuspensionState(processDefinition, getProcessDefinitionSuspensionState());
 

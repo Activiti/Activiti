@@ -73,7 +73,7 @@ public class CreateAttachmentCmd implements Command<Attachment> {
     return executeInternal(commandContext);
   }
 
-  public Attachment executeInternal(CommandContext commandContext) {
+  protected Attachment executeInternal(CommandContext commandContext) {
       AttachmentEntity attachment = commandContext.getAttachmentEntityManager().create();
       attachment.setName(attachmentName);
       attachment.setProcessInstanceId(processInstanceId);
