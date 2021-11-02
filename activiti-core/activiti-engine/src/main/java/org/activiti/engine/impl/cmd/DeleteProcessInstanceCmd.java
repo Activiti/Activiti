@@ -50,9 +50,11 @@ public class DeleteProcessInstanceCmd implements Command<Void>, Serializable {
       throw new ActivitiObjectNotFoundException("No process instance found for id '" + processInstanceId + "'", ProcessInstance.class);
     }
 
-    commandContext.getExecutionEntityManager().deleteProcessInstance(processInstanceEntity.getProcessInstanceId(), deleteReason, false);
-
+    executeInternal(commandContext,processInstanceEntity);
     return null;
   }
 
+  protected void executeInternal(CommandContext commandContext,ExecutionEntity processInstanceEntity) {
+      commandContext.getExecutionEntityManager().deleteProcessInstance(processInstanceEntity.getProcessInstanceId(), deleteReason, false);
+  }
 }

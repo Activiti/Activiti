@@ -20,7 +20,6 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventListener;
 import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 
 /**
@@ -36,25 +35,27 @@ public class ErrorThrowingEventListener extends BaseDelegateEventListener {
   @Override
   public void onEvent(ActivitiEvent event) {
     if (isValidEvent(event)) {
+      onEventInternal(event);
+    }
+  }
 
-      CommandContext commandContext = Context.getCommandContext();
+  protected void onEventInternal(ActivitiEvent event){
       ExecutionEntity execution = null;
 
       if (event.getExecutionId() != null) {
-        // Get the execution based on the event's execution ID instead
-        execution = Context.getCommandContext().getExecutionEntityManager().findById(event.getExecutionId());
+          // Get the execution based on the event's execution ID instead
+          execution = Context.getCommandContext().getExecutionEntityManager().findById(event.getExecutionId());
       }
 
       if (execution == null) {
-        throw new ActivitiException("No execution context active and event is not related to an execution. No compensation event can be thrown.");
+          throw new ActivitiException("No execution context active and event is not related to an execution. No compensation event can be thrown.");
       }
 
       try {
-        ErrorPropagation.propagateError(errorCode, execution);
+          ErrorPropagation.propagateError(errorCode, execution);
       } catch (Exception e) {
-        throw new ActivitiException("Error while propagating error-event", e);
+          throw new ActivitiException("Error while propagating error-event", e);
       }
-    }
   }
 
   public void setErrorCode(String errorCode) {

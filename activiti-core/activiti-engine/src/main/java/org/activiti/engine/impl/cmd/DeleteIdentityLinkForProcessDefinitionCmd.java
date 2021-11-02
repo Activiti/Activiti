@@ -62,10 +62,11 @@ public class DeleteIdentityLinkForProcessDefinitionCmd implements Command<Object
     if (processDefinition == null) {
       throw new ActivitiObjectNotFoundException("Cannot find process definition with id " + processDefinitionId, ProcessDefinition.class);
     }
-
-    commandContext.getIdentityLinkEntityManager().deleteIdentityLink(processDefinition, userId, groupId);
-
+    executeInternal(commandContext,processDefinition);
     return null;
   }
 
+  protected void executeInternal(CommandContext commandContext,ProcessDefinitionEntity processDefinition) {
+      commandContext.getIdentityLinkEntityManager().deleteIdentityLink(processDefinition, userId, groupId);
+  }
 }

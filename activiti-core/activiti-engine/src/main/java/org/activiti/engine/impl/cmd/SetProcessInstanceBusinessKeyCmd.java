@@ -61,8 +61,11 @@ public class SetProcessInstanceBusinessKeyCmd implements Command<Void>, Serializ
           + processInstance.getProcessInstanceId() + "'. " + "Please invoke the " + getClass().getSimpleName() + " with a root execution id.");
     }
 
-    executionManager.updateProcessInstanceBusinessKey(processInstance, businessKey);
-
+    executeInternal(commandContext,executionManager,processInstance);
     return null;
+  }
+
+  protected void executeInternal(CommandContext commandContext,ExecutionEntityManager executionManager,ExecutionEntity processInstance){
+      executionManager.updateProcessInstanceBusinessKey(processInstance, businessKey);
   }
 }

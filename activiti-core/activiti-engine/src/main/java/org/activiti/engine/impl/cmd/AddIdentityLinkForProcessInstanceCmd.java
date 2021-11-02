@@ -75,13 +75,14 @@ public class AddIdentityLinkForProcessInstanceCmd implements Command<Void>, Seri
     if (processInstance == null) {
       throw new ActivitiObjectNotFoundException("Cannot find process instance with id " + processInstanceId, ExecutionEntity.class);
     }
-
-    IdentityLinkEntityManager identityLinkEntityManager = commandContext.getIdentityLinkEntityManager();
-    identityLinkEntityManager.addIdentityLink(processInstance, userId, groupId, type);
-    commandContext.getHistoryManager().createProcessInstanceIdentityLinkComment(processInstanceId, userId, groupId, type, true);
-
+    executeInternal(commandContext,processInstance);
     return null;
+  }
 
+  protected void executeInternal(CommandContext commandContext,ExecutionEntity processInstance) {
+      IdentityLinkEntityManager identityLinkEntityManager = commandContext.getIdentityLinkEntityManager();
+      identityLinkEntityManager.addIdentityLink(processInstance, userId, groupId, type);
+      commandContext.getHistoryManager().createProcessInstanceIdentityLinkComment(processInstanceId, userId, groupId, type, true);
   }
 
 }

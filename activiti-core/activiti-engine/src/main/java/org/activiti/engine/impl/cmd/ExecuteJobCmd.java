@@ -60,16 +60,19 @@ public class ExecuteJobCmd implements Command<Object>, Serializable {
       log.debug("Executing job {}", job.getId());
     }
 
-    commandContext.addCloseListener(new FailedJobListener(commandContext.getProcessEngineConfiguration().getCommandExecutor(), job));
-
-    try {
-      commandContext.getJobManager().execute(job);
-    } catch (Throwable exception) {
-      // Finally, Throw the exception to indicate the ExecuteJobCmd failed
-      throw new ActivitiException("Job " + jobId + " failed", exception);
-    }
-
+    executeInternal(commandContext,job);
     return null;
+  }
+
+  protected void executeInternal(CommandContext commandContext,Job job) {
+      commandContext.addCloseListener(new FailedJobListener(commandContext.getProcessEngineConfiguration().getCommandExecutor(), job));
+
+      try {
+          commandContext.getJobManager().execute(job);
+      } catch (Throwable exception) {
+          // Finally, Throw the exception to indicate the ExecuteJobCmd failed
+          throw new ActivitiException("Job " + jobId + " failed", exception);
+      }
   }
 
   public String getJobId() {

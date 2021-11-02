@@ -50,14 +50,17 @@ public class SetDeploymentCategoryCmd implements Command<Void> {
       throw new ActivitiObjectNotFoundException("No deployment found for id = '" + deploymentId + "'", Deployment.class);
     }
 
-    // Update category
-    deployment.setCategory(category);
-
-    if (commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-      commandContext.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_UPDATED, deployment));
-    }
-
+    executeInternal(commandContext,deployment);
     return null;
+  }
+
+  protected void executeInternal(CommandContext commandContext,DeploymentEntity deployment){
+      // Update category
+      deployment.setCategory(category);
+
+      if (commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+          commandContext.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_UPDATED, deployment));
+      }
   }
 
   public String getDeploymentId() {

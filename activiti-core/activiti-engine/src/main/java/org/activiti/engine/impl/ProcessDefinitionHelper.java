@@ -13,11 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.activiti.engine.impl;
 
-package org.activiti.engine.repository;
+import org.activiti.bpmn.model.BpmnModel;
 
-import org.activiti.engine.api.internal.Internal;
+public interface ProcessDefinitionHelper {
 
-@Internal
-public interface DeploymentProperties {
+    org.activiti.bpmn.model.Process getProcessDefinitionProcessObject(String processDefinitionId);
+
+    BpmnModel getProcessDefinitionBpmnModel(String processDefinitionId);
+
 }

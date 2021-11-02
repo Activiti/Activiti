@@ -66,19 +66,23 @@ public class MessageEventReceivedCmd extends NeedsActiveExecutionCmd<Void> {
       throw new ActivitiIllegalArgumentException("messageName cannot be null");
     }
 
-    EventSubscriptionEntityManager eventSubscriptionEntityManager = commandContext.getEventSubscriptionEntityManager();
-    List<EventSubscriptionEntity> eventSubscriptions = eventSubscriptionEntityManager.
-        findEventSubscriptionsByNameAndExecution(MessageEventHandler.EVENT_HANDLER_TYPE, messageName, executionId);
-
-    if (eventSubscriptions.isEmpty()) {
-      throw new ActivitiException("Execution with id '" + executionId + "' does not have a subscription to a message event with name '" + messageName + "'");
-    }
-
-    // there can be only one:
-    EventSubscriptionEntity eventSubscriptionEntity = eventSubscriptions.get(0);
-    eventSubscriptionEntityManager.eventReceived(eventSubscriptionEntity, payload, async);
-
+    executeInternal(commandContext,execution);
     return null;
+  }
+
+  protected void executeInternal(CommandContext commandContext,ExecutionEntity execution){
+      EventSubscriptionEntityManager eventSubscriptionEntityManager = commandContext.getEventSubscriptionEntityManager();
+      List<EventSubscriptionEntity> eventSubscriptions = eventSubscriptionEntityManager.
+          findEventSubscriptionsByNameAndExecution(MessageEventHandler.EVENT_HANDLER_TYPE, messageName, executionId);
+
+      if (eventSubscriptions.isEmpty()) {
+          throw new ActivitiException("Execution with id '" + executionId + "' does not have a subscription to a message event with name '" + messageName + "'");
+      }
+
+      // there can be only one:
+      EventSubscriptionEntity eventSubscriptionEntity = eventSubscriptions.get(0);
+      eventSubscriptionEntityManager.eventReceived(eventSubscriptionEntity, payload, async);
+
   }
 
 }

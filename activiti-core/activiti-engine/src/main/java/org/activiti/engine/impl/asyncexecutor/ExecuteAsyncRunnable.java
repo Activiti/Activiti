@@ -66,14 +66,16 @@ public class ExecuteAsyncRunnable implements Runnable {
         }
       });
     }
+    runInternal();
+  }
 
-    boolean lockNotNeededOrSuccess = lockJobIfNeeded();
+  protected void runInternal(){
+      boolean lockNotNeededOrSuccess = lockJobIfNeeded();
 
-    if (lockNotNeededOrSuccess) {
-      executeJob();
-      unlockJobIfNeeded();
-    }
-
+      if (lockNotNeededOrSuccess) {
+          executeJob();
+          unlockJobIfNeeded();
+      }
   }
 
   protected void executeJob() {
@@ -162,6 +164,7 @@ public class ExecuteAsyncRunnable implements Runnable {
 
       @Override
       public Void execute(CommandContext commandContext) {
+
         CommandConfig commandConfig = processEngineConfiguration.getCommandExecutor().getDefaultConfig().transactionRequiresNew();
         FailedJobCommandFactory failedJobCommandFactory = commandContext.getFailedJobCommandFactory();
         Command<Object> cmd = failedJobCommandFactory.getCommand(job.getId(), exception);

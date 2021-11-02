@@ -62,6 +62,7 @@ import org.activiti.engine.delegate.event.impl.ActivitiEventDispatcherImpl;
 import org.activiti.engine.impl.DynamicBpmnServiceImpl;
 import org.activiti.engine.impl.HistoryServiceImpl;
 import org.activiti.engine.impl.ManagementServiceImpl;
+import org.activiti.engine.impl.ProcessDefinitionHelper;
 import org.activiti.engine.impl.ProcessEngineImpl;
 import org.activiti.engine.impl.RepositoryServiceImpl;
 import org.activiti.engine.impl.RuntimeServiceImpl;
@@ -849,6 +850,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 
   protected PerformanceSettings performanceSettings = new PerformanceSettings();
 
+  protected ProcessDefinitionHelper processDefinitionHelper;
 
   // buildProcessEngine
   // ///////////////////////////////////////////////////////
@@ -3481,13 +3483,12 @@ public ProcessEngineConfigurationImpl getProcessEngineConfiguration() {
   }
 
   @Override
-public ProcessEngineConfigurationImpl setClock(Clock clock) {
+  public ProcessEngineConfigurationImpl setClock(Clock clock) {
     if (this.clock == null) {
       this.clock = clock;
     } else {
       this.clock.setCurrentCalendar(clock.getCurrentCalendar());
     }
-
     return this;
   }
 
@@ -3694,4 +3695,12 @@ public ProcessEngineConfigurationImpl setClock(Clock clock) {
     this.eventSubscriptionPayloadMappingProvider = eventSubscriptionPayloadMappingProvider;
   }
 
+    public ProcessDefinitionHelper getProcessDefinitionHelper() {
+        return processDefinitionHelper;
+    }
+
+    public ProcessEngineConfigurationImpl setProcessDefinitionHelper(ProcessDefinitionHelper processDefinitionHelper) {
+        this.processDefinitionHelper = processDefinitionHelper;
+        return this;
+    }
 }
