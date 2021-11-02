@@ -20,7 +20,7 @@ package org.activiti.engine.impl.context;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import org.activiti.engine.ActivitiEngineAgenda;
-import org.activiti.engine.ProcessDefinitionHelper;
+import org.activiti.engine.impl.ProcessDefinitionHelper;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.cfg.TransactionContext;
 import org.activiti.engine.impl.interceptor.CommandContext;

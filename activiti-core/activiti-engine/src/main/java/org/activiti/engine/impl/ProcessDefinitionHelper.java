@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.engine;
+package org.activiti.engine.impl;
 
 import org.activiti.bpmn.model.BpmnModel;
 

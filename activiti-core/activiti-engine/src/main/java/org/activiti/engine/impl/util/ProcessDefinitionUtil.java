@@ -19,7 +19,7 @@ package org.activiti.engine.impl.util;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.Process;
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.ProcessDefinitionHelper;
+import org.activiti.engine.impl.ProcessDefinitionHelper;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.persistence.deploy.DeploymentManager;
@@ -59,7 +59,7 @@ public class ProcessDefinitionUtil {
       ProcessDefinitionHelper processDefinitionHelper = Context.getProcessDefinitionHelper();
 
         if (processDefinitionHelper == null) {
-            throw new ActivitiException("Found Old Activiti process definition, but no compatibility handler on the classpath");
+            throw new ActivitiException("ProcessDefinitionHelper is not set for the current context.");
         }
         return processDefinitionHelper;
   }
