@@ -43,7 +43,7 @@ import java.util.Objects;
  *  Using rules:
  *  (1) If the process involves gateways,Nodes outside the gateway cannot jump to nodes inside the gateway.
  *  (2) If the process involves gateways,Nodes in the same execution instance within the gateway can jump to each other.
- *  (2) If the process involves gateways,Nodes outside the gateway can jump to each other.
+ *  (3) If the process involves gateways,Nodes outside the gateway can jump to each other.
  *  In other cases, the process does not end properly.
  *
  * @author Zhu Dunfeng
