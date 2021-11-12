@@ -15,11 +15,9 @@
  */
 package org.activiti.engine.impl.cmd;
 
-import org.activiti.bpmn.model.Activity;
-import org.activiti.bpmn.model.BpmnModel;
-import org.activiti.bpmn.model.FlowElement;
-import org.activiti.bpmn.model.MultiInstanceLoopCharacteristics;
+import org.activiti.bpmn.model.*;
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ManagementService;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.history.HistoryManager;
@@ -90,7 +88,7 @@ public class JumpCurrNodeToTargetNodeCmd implements Command<Execution>, Serializ
         ExecutionEntity execution = currTaskEntity.getExecution();
         //processInstanceId
         String parentExecutionId = execution.getProcessInstanceId();
-
+        ExecutionEntity parentExecutionEntity = executionEntityManager.findById(processInstanceId);
 
         BpmnModel bpmnModel = repositoryService.getBpmnModel(execution.getProcessDefinitionId());
 
@@ -98,29 +96,28 @@ public class JumpCurrNodeToTargetNodeCmd implements Command<Execution>, Serializ
         FlowElement currFlowElement = bpmnModel.getFlowElement(nodeId);
         Activity currActivityElement = (Activity) currFlowElement;
         MultiInstanceLoopCharacteristics currMultiInstanceLoopCharacteristics = currActivityElement.getLoopCharacteristics();
-
+        SubProcess currSubProcess = currActivityElement.getSubProcess();
 
         //The target node info.
         FlowElement targetFlowElement = bpmnModel.getFlowElement(targetNodeId);
         Activity miActivityElement = (Activity) targetFlowElement;
-        MultiInstanceLoopCharacteristics multiInstanceLoopCharacteristics = miActivityElement.getLoopCharacteristics();
+        MultiInstanceLoopCharacteristics targetMultiInstanceLoopCharacteristics = miActivityElement.getLoopCharacteristics();
+        SubProcess targetSubProcess = miActivityElement.getSubProcess();
 
         //Determine whether the target node is multi-instance,
         // if target node is multi-instance,
-        // It will advance according to the strength of its miExecution.
-        ExecutionEntity childExecution = null;
-        if (Objects.nonNull(multiInstanceLoopCharacteristics)) {
+        // It will proceed according to its miExecution.
+        if (Objects.nonNull(targetMultiInstanceLoopCharacteristics)) {
             ExecutionEntity miExecution = searchForMultiInstanceActivity(activityId, parentExecutionId,
                 executionEntityManager);
 
             //If the current node is not multi-instance and the jump node is multi-instance.
             //We need to create a child root execution instance for the target node.
             if (miExecution == null) {
-                ExecutionEntity parentExecutionEntity = executionEntityManager.findById(processInstanceId);
                 miExecution = executionEntityManager.createChildExecution(parentExecutionEntity);
                 executionEntityManager.deleteExecutionAndRelatedData(execution, "");
             }
-            childExecution = miExecution;
+            ExecutionEntity childExecution = miExecution;
 
             LOGGER.info(currFlowElement.getName() + "-Jump to-" + targetFlowElement.getName());
             historyManager.recordActivityEnd(execution, "Jump to-" + targetFlowElement.getName());
@@ -133,10 +130,11 @@ public class JumpCurrNodeToTargetNodeCmd implements Command<Execution>, Serializ
             miExecution.setScope(false);
             childExecution.setCurrentFlowElement(miActivityElement);
             commandContext.getAgenda().planContinueMultiInstanceOperation(childExecution);
+            return childExecution;
         } else {
             //Determine whether the current node is multi-instance,
             // if current node is multi-instance,
-            // It will advance according to the strength of its miExecution.
+            // It will proceed according to its miExecution.
             if (Objects.nonNull(currMultiInstanceLoopCharacteristics)) {
                 ExecutionEntity currMiExecution = searchForMultiInstanceActivity(activityId, parentExecutionId,
                     executionEntityManager);
@@ -147,6 +145,26 @@ public class JumpCurrNodeToTargetNodeCmd implements Command<Execution>, Serializ
             execution.setCurrentFlowElement(targetFlowElement);
             execution.setActive(true);
             execution.setScope(false);
+            //If the current node is a normal node of the subProcess, the target node is a normal node.
+            if (currSubProcess != null && targetSubProcess == null) {
+                ExecutionEntity currSubProcessExecution = execution.getParent();
+                executionEntityManager.deleteChildExecutions(currSubProcessExecution, "");
+                currSubProcessExecution.setCurrentFlowElement(targetFlowElement);
+                execution = currSubProcessExecution;
+            }
+
+            //If the current node is a normal node, the target is a normal node in the subProcess.
+            if (currSubProcess == null && targetSubProcess != null) {
+                ExecutionEntity childExecution = executionEntityManager.createChildExecution(execution);
+                FlowElement flowElement = targetSubProcess.getFlowElement(targetNodeId);
+                UserTask userTask = ((UserTask) flowElement);
+                userTask.setExtensionId(childExecution.getId());
+                userTask.setParentContainer(targetSubProcess);
+                childExecution.setCurrentFlowElement(userTask);
+                execution.setCurrentFlowElement(targetSubProcess);
+                childExecution.setParent(execution);
+                execution = childExecution;
+            }
 
             LOGGER.info(currFlowElement.getName() + "-Jump to-" + targetFlowElement.getName());
             historyManager.recordActivityEnd(execution, "Jump to-" + targetFlowElement.getName());
@@ -156,21 +174,21 @@ public class JumpCurrNodeToTargetNodeCmd implements Command<Execution>, Serializ
             }
 
             commandContext.getAgenda().planContinueProcessOperation(execution);
-            childExecution = execution;
-        }
 
-        return childExecution;
+            return execution;
+        }
     }
+
 
     protected ExecutionEntity searchForMultiInstanceActivity(String activityId, String parentExecutionId,
                                                              ExecutionEntityManager executionEntityManager) {
-        // Find all child instances of the current parent execution instance.
+        // Find all child instances of the current parent execution instance
         List<ExecutionEntity> childExecutions = executionEntityManager
             .findChildExecutionsByParentExecutionId(parentExecutionId);
 
         ExecutionEntity miExecution = null;
         for (ExecutionEntity childExecution : childExecutions) {
-            // Get the miExecution of the child execution instance based on the current active ID.
+            // Gets the miExecution of the child execution instance based on the current active ID
             if (activityId.equals(childExecution.getActivityId()) && childExecution.isMultiInstanceRoot()) {
                 if (miExecution != null) {
                     throw new ActivitiException(
@@ -178,7 +196,7 @@ public class JumpCurrNodeToTargetNodeCmd implements Command<Execution>, Serializ
                 }
                 miExecution = childExecution;
             }
-            // Recursive search.
+            // Recursive search
             ExecutionEntity childMiExecution = searchForMultiInstanceActivity(activityId, childExecution.getId(),
                 executionEntityManager);
             if (childMiExecution != null) {
