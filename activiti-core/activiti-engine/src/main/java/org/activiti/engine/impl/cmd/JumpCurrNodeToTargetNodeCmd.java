@@ -88,7 +88,6 @@ public class JumpCurrNodeToTargetNodeCmd implements Command<Execution>, Serializ
         ExecutionEntity execution = currTaskEntity.getExecution();
         //processInstanceId
         String parentExecutionId = execution.getProcessInstanceId();
-        ExecutionEntity parentExecutionEntity = executionEntityManager.findById(processInstanceId);
 
         BpmnModel bpmnModel = repositoryService.getBpmnModel(execution.getProcessDefinitionId());
 
@@ -112,12 +111,12 @@ public class JumpCurrNodeToTargetNodeCmd implements Command<Execution>, Serializ
                 executionEntityManager);
 
             //If the current node is not multi-instance and the jump node is multi-instance.
-            //We need to create a child root execution instance for the target node.
+            //We need to make the current task execution instance the child root execution instance of the target node task.
             if (miExecution == null) {
-                miExecution = executionEntityManager.createChildExecution(parentExecutionEntity);
-                executionEntityManager.deleteExecutionAndRelatedData(execution, "");
+                miExecution = execution;
+            }else {
+                executionEntityManager.deleteChildExecutions(miExecution, "");
             }
-            ExecutionEntity childExecution = miExecution;
 
             LOGGER.info(currFlowElement.getName() + "-Jump to-" + targetFlowElement.getName());
             historyManager.recordActivityEnd(execution, "Jump to-" + targetFlowElement.getName());
@@ -128,9 +127,9 @@ public class JumpCurrNodeToTargetNodeCmd implements Command<Execution>, Serializ
 
             miExecution.setActive(true);
             miExecution.setScope(false);
-            childExecution.setCurrentFlowElement(miActivityElement);
-            commandContext.getAgenda().planContinueMultiInstanceOperation(childExecution);
-            return childExecution;
+            miExecution.setCurrentFlowElement(miActivityElement);
+            commandContext.getAgenda().planContinueMultiInstanceOperation(miExecution);
+            return miExecution;
         } else {
             //Determine whether the current node is multi-instance,
             // if current node is multi-instance,
