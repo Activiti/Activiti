@@ -56,6 +56,10 @@ public class ServiceTaskDelegateExpressionActivityBehavior extends TaskActivityB
 
   @Override
   public void trigger(DelegateExecution execution, String signalName, Object signalData) {
+    if (isDebugStatus(execution)) {
+      doExecute(execution);
+    }
+    
     Object delegate = DelegateExpressionUtil.resolveDelegateExpression(expression, execution, fieldDeclarations);
     if (delegate instanceof TriggerableActivityBehavior) {
       ((TriggerableActivityBehavior) delegate).trigger(execution, signalName, signalData);
@@ -63,7 +67,12 @@ public class ServiceTaskDelegateExpressionActivityBehavior extends TaskActivityB
   }
 
   public void execute(DelegateExecution execution) {
+    if (!isDebugStatus(execution)) {
+      doExecute(execution);
+    }
+  }
 
+  public void doExecute(DelegateExecution execution) {
     try {
       boolean isSkipExpressionEnabled = SkipExpressionUtil.isSkipExpressionEnabled(execution, skipExpression);
       if (!isSkipExpressionEnabled || (isSkipExpressionEnabled && !SkipExpressionUtil.shouldSkipFlowElement(execution, skipExpression))) {
@@ -118,4 +127,14 @@ public class ServiceTaskDelegateExpressionActivityBehavior extends TaskActivityB
     }
   }
 
+}
+
+private boolean isDebugStatus(DelegateExecution execution) {
+  if (execution.hasVariable(DynamicBpmnConstants.PROCESS_DEBUG_STATUS)) {
+    String debugStatus = (String)execution.getVariable(DynamicBpmnConstants.PROCESS_DEBUG_STATUS);
+    if (StringUtils.equals(debugStatus, DynamicBpmnConstants.PROCESS_DEBUG)) {
+      return true;
+    }
+  }
+  return false;
 }
