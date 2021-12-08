@@ -43,4 +43,6 @@ public interface DynamicBpmnConstants {
   String LOCALIZATION_LANGUAGE = "language";
   String LOCALIZATION_NAME = "name";
   String LOCALIZATION_DESCRIPTION = "description";
+  String PROCESS_DEBUG_STATUS = "debugStatus";
+  String PROCESS_DEBUG = "debug";
 }
