@@ -77,7 +77,7 @@ public class EventSubscriptionManager {
     protected void addMessageEventSubscriptions(ProcessDefinitionEntity processDefinition,
                                                 Process process,
                                                 BpmnModel bpmnModel) {
-        if (CollectionUtil.isNotEmpty(process.getFlowElements())) {
+        if (process != null && CollectionUtil.isNotEmpty(process.getFlowElements())) {
             for (FlowElement element : process.getFlowElements()) {
                 if (element instanceof StartEvent) {
                     StartEvent startEvent = (StartEvent) element;
@@ -138,7 +138,7 @@ public class EventSubscriptionManager {
                                                ProcessDefinitionEntity processDefinition,
                                                Process process,
                                                BpmnModel bpmnModel) {
-        if (CollectionUtil.isNotEmpty(process.getFlowElements())) {
+        if (process != null && CollectionUtil.isNotEmpty(process.getFlowElements())) {
             for (FlowElement element : process.getFlowElements()) {
                 if (element instanceof StartEvent) {
                     StartEvent startEvent = (StartEvent) element;
