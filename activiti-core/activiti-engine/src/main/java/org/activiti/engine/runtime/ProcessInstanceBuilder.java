@@ -28,8 +28,6 @@ import org.activiti.engine.api.internal.Internal;
  * An instance can be obtained through {@link org.activiti.engine.RuntimeService#createProcessInstanceBuilder()}.
  *
  * processDefinitionId or processDefinitionKey should be set before calling {@link #start()} to start a process instance.
- *
- *
  */
 @Internal
 public interface ProcessInstanceBuilder {

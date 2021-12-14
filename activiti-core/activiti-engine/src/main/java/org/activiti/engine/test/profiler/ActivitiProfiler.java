@@ -31,7 +31,7 @@ public class ActivitiProfiler implements ProcessEngineConfigurator {
     protected static ActivitiProfiler INSTANCE = new ActivitiProfiler();
 
     protected ProfileSession currentProfileSession;
-    protected List<ProfileSession> profileSessions = new ArrayList<ProfileSession>();
+    protected List<ProfileSession> profileSessions = new ArrayList<>();
 
     public static ActivitiProfiler getInstance() {
         return INSTANCE;

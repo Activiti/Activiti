@@ -20,6 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -238,8 +239,11 @@ public class ProcessRuntimeImplTest {
 
         doReturn(processDefinition)
             .when(processRuntime)
-                .getProcessDefinitionAndCheckUserHasRights(createPayload.getProcessDefinitionId(),
+                .getProcessDefinition(createPayload.getProcessDefinitionId(),
                     createPayload.getProcessDefinitionKey());
+
+
+        doNothing().when(processRuntime).checkUserCanWrite(any());
 
         ProcessInstanceBuilder processInstanceBuilder = mock(ProcessInstanceBuilder.class, Answers.RETURNS_SELF);
         given(runtimeService.createProcessInstanceBuilder()).willReturn(processInstanceBuilder);

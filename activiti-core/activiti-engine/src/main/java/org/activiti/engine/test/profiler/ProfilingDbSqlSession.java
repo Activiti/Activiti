@@ -25,9 +25,6 @@ import org.activiti.engine.impl.db.DbSqlSessionFactory;
 import org.activiti.engine.impl.persistence.cache.EntityCache;
 import org.activiti.engine.impl.persistence.entity.Entity;
 
-/**
-
- */
 public class ProfilingDbSqlSession extends DbSqlSession {
 
   protected CommandExecutionResult commandExecutionResult;
@@ -39,15 +36,6 @@ public class ProfilingDbSqlSession extends DbSqlSession {
   public ProfilingDbSqlSession(DbSqlSessionFactory dbSqlSessionFactory, EntityCache entityCache, Connection connection, String catalog, String schema) {
     super(dbSqlSessionFactory, entityCache, connection, catalog, schema);
   }
-
-  // public ProfilingDbSqlSession(DbSqlSessionFactory dbSqlSessionFactory) {
-  // super(dbSqlSessionFactory);
-  // }
-  //
-  // public ProfilingDbSqlSession(DbSqlSessionFactory dbSqlSessionFactory,
-  // Connection connection, String catalog, String schema) {
-  // super(dbSqlSessionFactory, connection, catalog, schema);
-  // }
 
   @Override
   public void flush() {

@@ -19,9 +19,6 @@ import org.activiti.engine.impl.db.DbSqlSessionFactory;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.Session;
 
-/**
-
- */
 public class ProfilingDbSqlSessionFactory extends DbSqlSessionFactory {
 
     @Override
