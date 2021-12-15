@@ -31,6 +31,7 @@ public class APIProcessDefinitionConverter extends ListConverter<org.activiti.en
         this.repositoryService = repositoryService;
     }
 
+    @Override
     public ProcessDefinition from(org.activiti.engine.repository.ProcessDefinition internalProcessDefinition) {
         ProcessDefinitionImpl processDefinition = new ProcessDefinitionImpl();
         processDefinition.setId(internalProcessDefinition.getId());
@@ -39,6 +40,7 @@ public class APIProcessDefinitionConverter extends ListConverter<org.activiti.en
         processDefinition.setVersion(internalProcessDefinition.getVersion());
         processDefinition.setKey(internalProcessDefinition.getKey());
         processDefinition.setAppVersion(Objects.toString(internalProcessDefinition.getAppVersion(), null));
+        processDefinition.setCategory(internalProcessDefinition.getCategory());
         BpmnModel model = repositoryService.getBpmnModel(internalProcessDefinition.getId());
         processDefinition.setFormKey(model.getStartFormKey(internalProcessDefinition.getKey()));
         return processDefinition;

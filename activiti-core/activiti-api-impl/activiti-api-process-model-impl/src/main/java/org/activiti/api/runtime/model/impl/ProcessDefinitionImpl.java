@@ -27,6 +27,7 @@ public class ProcessDefinitionImpl extends ApplicationElementImpl implements Pro
     private int version;
     private String key;
     private String formKey;
+    private String category;
 
     @Override
     public String getId() {
@@ -64,6 +65,7 @@ public class ProcessDefinitionImpl extends ApplicationElementImpl implements Pro
         this.description = description;
     }
 
+    @Override
     public int getVersion() {
         return version;
     }
@@ -72,12 +74,22 @@ public class ProcessDefinitionImpl extends ApplicationElementImpl implements Pro
         this.version = version;
     }
 
+    @Override
     public String getFormKey() {
         return formKey;
     }
 
     public void setFormKey(String formKey) {
         this.formKey = formKey;
+    }
+
+    @Override
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
     }
 
     @Override

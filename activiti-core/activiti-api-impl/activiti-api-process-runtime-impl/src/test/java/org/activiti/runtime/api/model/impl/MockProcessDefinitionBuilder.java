@@ -60,6 +60,11 @@ public class MockProcessDefinitionBuilder {
         return this;
     }
 
+    public MockProcessDefinitionBuilder withCategory(String category) {
+        when(processDefinition.getCategory()).thenReturn(category);
+        return this;
+    }
+
     public MockProcessDefinitionBuilder withAppVersion(Integer appVersion) {
         when(processDefinition.getAppVersion()).thenReturn(appVersion);
         return this;
