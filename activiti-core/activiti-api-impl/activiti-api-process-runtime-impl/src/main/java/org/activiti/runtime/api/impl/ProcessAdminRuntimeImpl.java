@@ -83,7 +83,9 @@ public class ProcessAdminRuntimeImpl implements ProcessAdminRuntime {
 
     @Override
     public ProcessDefinition processDefinition(String processDefinitionId) {
+
         org.activiti.engine.repository.ProcessDefinition processDefinition;
+
         // try searching by Key if there is no matching by Id
         List<org.activiti.engine.repository.ProcessDefinition> list = repositoryService
             .createProcessDefinitionQuery()
@@ -92,6 +94,7 @@ public class ProcessAdminRuntimeImpl implements ProcessAdminRuntime {
             .orderByProcessDefinitionVersion()
             .asc()
             .list();
+
         if (!list.isEmpty()) {
             processDefinition = list.get(0);
         } else {

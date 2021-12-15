@@ -246,13 +246,10 @@ public class ProcessRuntimeImplTest {
 
         doNothing().when(processRuntime).checkUserCanWrite(any());
 
-        ProcessInstanceBuilder processInstanceBuilder = mock(ProcessInstanceBuilder.class,
-          Answers.RETURNS_SELF);
-
         org.activiti.engine.runtime.ProcessInstance internalProcessInstance = mock(
             org.activiti.engine.runtime.ProcessInstance.class);
-        given(newProcessInstanceBuilder()).willReturn(processInstanceBuilder);
-        given(runtimeService.createProcessInstance(processInstanceBuilder)).willReturn(internalProcessInstance);
+
+        given(runtimeService.createProcessInstance(any())).willReturn(internalProcessInstance);
 
         ProcessInstanceImpl apiProcessInstance = new ProcessInstanceImpl();
         given(processInstanceConverter.from(internalProcessInstance)).willReturn(apiProcessInstance);
@@ -262,9 +259,6 @@ public class ProcessRuntimeImplTest {
 
         //then
         assertThat(createdProcessInstance).isEqualTo(apiProcessInstance);
-        verify(processInstanceBuilder).processDefinitionId(processDefinition.getId());
-        verify(processInstanceBuilder).processDefinitionKey(processDefinition.getKey());
-        verify(processInstanceBuilder).name(createPayload.getName());
     }
 
     @Test

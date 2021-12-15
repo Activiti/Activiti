@@ -20,9 +20,6 @@ import org.activiti.engine.api.internal.Internal;
 
 import java.util.List;
 
-/**
-
- */
 @Internal
 @Deprecated
 public interface AttachmentEntityManager extends EntityManager<AttachmentEntity> {

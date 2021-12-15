@@ -257,7 +257,7 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
 
     @Override
     public ProcessInstance start(StartProcessPayload startProcessPayload) {
-      ProcessInstanceBuilder processInstanceBuilder =        createProcessInstanceBuilder(startProcessPayload);
+      ProcessInstanceBuilder processInstanceBuilder = createProcessInstanceBuilder(startProcessPayload);
       return processInstanceConverter.from(runtimeService.startProcessInstance(processInstanceBuilder));
     }
 
