@@ -18,14 +18,10 @@ package org.activiti.engine.runtime;
 
 import java.util.Map;
 
-import org.activiti.engine.ActivitiIllegalArgumentException;
-import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.api.internal.Internal;
 
 /**
- * Helper for starting new ProcessInstance.
- *
- * An instance can be obtained through {@link org.activiti.engine.RuntimeService#createProcessInstanceBuilder()}.
+ * Builder to create a new ProcessInstance.
  *
  * processDefinitionId or processDefinitionKey should always be set.
  */
