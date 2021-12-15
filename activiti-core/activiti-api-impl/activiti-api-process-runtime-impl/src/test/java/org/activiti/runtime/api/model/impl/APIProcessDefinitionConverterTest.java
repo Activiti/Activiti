@@ -66,6 +66,7 @@ public class APIProcessDefinitionConverterTest {
                         .withDescription("process description")
                         .withVersion(3)
                         .withAppVersion(1)
+                        .withCategory("test category")
                         .build()
         );
 
@@ -77,7 +78,8 @@ public class APIProcessDefinitionConverterTest {
                         ProcessDefinition::getDescription,
                         ProcessDefinition::getVersion,
                         ProcessDefinition::getAppVersion,
-                        ProcessDefinition::getFormKey)
+                        ProcessDefinition::getFormKey,
+                        ProcessDefinition::getCategory)
                 .containsExactly(
                         "anId",
                         "processKey",
@@ -85,7 +87,8 @@ public class APIProcessDefinitionConverterTest {
                         "process description",
                         3,
                         "1",
-                        "AFormKey");
+                        "AFormKey",
+                        "test category");
     }
 
     @Test

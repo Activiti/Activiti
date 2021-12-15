@@ -31,4 +31,6 @@ public interface ProcessDefinition extends ApplicationElement {
 
     String getFormKey();
 
+    String getCategory();
+
 }
