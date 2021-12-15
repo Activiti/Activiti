@@ -17,6 +17,7 @@ package org.activiti.runtime.api.impl;
 
 import static java.util.Collections.singletonList;
 import static org.activiti.api.process.model.builders.ProcessPayloadBuilder.newProcessPayloadBuilder;
+import static org.activiti.engine.impl.runtime.ProcessInstanceBuilder.newProcessInstanceBuilder;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.ArgumentMatchers.any;
@@ -250,7 +251,7 @@ public class ProcessRuntimeImplTest {
 
         org.activiti.engine.runtime.ProcessInstance internalProcessInstance = mock(
             org.activiti.engine.runtime.ProcessInstance.class);
-        given(runtimeService.createProcessInstanceBuilder()).willReturn(processInstanceBuilder);
+        given(newProcessInstanceBuilder()).willReturn(processInstanceBuilder);
         given(runtimeService.createProcessInstance(processInstanceBuilder)).willReturn(internalProcessInstance);
 
         ProcessInstanceImpl apiProcessInstance = new ProcessInstanceImpl();

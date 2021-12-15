@@ -16,6 +16,7 @@
 
 package org.activiti.engine.test.bpmn.event.message;
 
+import static org.activiti.engine.impl.runtime.ProcessInstanceBuilder.newProcessInstanceBuilder;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.LinkedList;
@@ -205,7 +206,7 @@ public class MessageThrowEventTest extends ResourceActivitiTestCase {
 
     @Deployment
     public void testIntermediateThrowMessageEventExpression() {
-      ProcessInstanceBuilder pib = runtimeService.createProcessInstanceBuilder()
+      ProcessInstanceBuilder pib = newProcessInstanceBuilder()
                                          .processDefinitionKey("testIntermediateThrowMessageEventExpression")
                                          .businessKey("foo");
       ProcessInstance pi = runtimeService.startProcessInstance(pib);
@@ -232,7 +233,7 @@ public class MessageThrowEventTest extends ResourceActivitiTestCase {
 
     @Deployment
     public void testThrowMessageEndEventExpression() {
-      ProcessInstanceBuilder pib = runtimeService.createProcessInstanceBuilder()
+      ProcessInstanceBuilder pib = newProcessInstanceBuilder()
                                          .processDefinitionKey("testThrowMessageEndEventExpression")
                                          .businessKey("bar");
       ProcessInstance pi = runtimeService.startProcessInstance(pib);
@@ -261,7 +262,7 @@ public class MessageThrowEventTest extends ResourceActivitiTestCase {
 
     @Deployment
     public void testIntermediateThrowMessageEventFieldExtensions() throws Exception {
-      ProcessInstanceBuilder pib = runtimeService.createProcessInstanceBuilder()
+      ProcessInstanceBuilder pib = newProcessInstanceBuilder()
                                          .processDefinitionKey("process")
                                          .variable("foo", "bar")
                                          .businessKey("customerId");
@@ -292,7 +293,7 @@ public class MessageThrowEventTest extends ResourceActivitiTestCase {
 
     @Deployment
     public void testIntermediateThrowMessageEventDelegateExpression() throws Exception {
-      ProcessInstanceBuilder pib = runtimeService.createProcessInstanceBuilder()
+      ProcessInstanceBuilder pib = newProcessInstanceBuilder()
                                          .processDefinitionKey("process")
                                          .variable("foo", "bar")
                                          .businessKey("customerId");
@@ -327,7 +328,7 @@ public class MessageThrowEventTest extends ResourceActivitiTestCase {
 
     @Deployment
     public void testIntermediateThrowMessageEventCorrelationKeyExpression() {
-      ProcessInstanceBuilder pib = runtimeService.createProcessInstanceBuilder()
+      ProcessInstanceBuilder pib = newProcessInstanceBuilder()
                                          .variable("foo", "bar")
                                          .processDefinitionKey("process");
       ProcessInstance pi = runtimeService.startProcessInstance(pib);
@@ -358,7 +359,7 @@ public class MessageThrowEventTest extends ResourceActivitiTestCase {
 
     @Deployment
     public void testThrowMessageEndEventCorrelationKeyExpression() throws Exception {
-      ProcessInstanceBuilder pib = runtimeService.createProcessInstanceBuilder()
+      ProcessInstanceBuilder pib = newProcessInstanceBuilder()
                                          .variable("foo", "bar")
                                          .processDefinitionKey("process");
       ProcessInstance pi = runtimeService.startProcessInstance(pib);

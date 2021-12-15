@@ -45,12 +45,6 @@ import org.activiti.engine.task.IdentityLinkType;
 public interface RuntimeService {
 
   /**
-   * Create a {@link ProcessInstanceBuilder}, that allows to set various options for starting a process instance,
-   * as an alternative to the various startProcessInstanceByXX methods.
-   */
-  ProcessInstanceBuilder createProcessInstanceBuilder();
-
-  /**
    * Starts a process instance previously created.
    *
    * @param createdProcessInstance

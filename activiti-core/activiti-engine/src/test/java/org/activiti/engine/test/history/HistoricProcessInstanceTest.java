@@ -19,6 +19,7 @@ package org.activiti.engine.test.history;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
+import static org.activiti.engine.impl.runtime.ProcessInstanceBuilder.newProcessInstanceBuilder;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
@@ -443,7 +444,7 @@ public class HistoricProcessInstanceTest extends PluggableActivitiTestCase {
   @Deployment(resources = { "org/activiti/engine/test/history/oneTaskProcess.bpmn20.xml" })
   public void testHistoricProcessInstanceName() {
     String piName = "Customized Process Instance Name";
-    ProcessInstanceBuilder builder = runtimeService.createProcessInstanceBuilder();
+    ProcessInstanceBuilder builder = newProcessInstanceBuilder();
     builder.processDefinitionKey("oneTaskProcess");
     builder.name(piName);
     ProcessInstance processInstance1 = runtimeService.startProcessInstance(builder);

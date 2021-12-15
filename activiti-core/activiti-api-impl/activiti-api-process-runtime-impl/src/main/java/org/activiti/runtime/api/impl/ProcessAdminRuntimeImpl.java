@@ -15,6 +15,8 @@
  */
 package org.activiti.runtime.api.impl;
 
+import static org.activiti.engine.impl.runtime.ProcessInstanceBuilder.newProcessInstanceBuilder;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -146,8 +148,7 @@ public class ProcessAdminRuntimeImpl implements ProcessAdminRuntime {
 
         processVariablesValidator.checkStartProcessPayloadVariables(startProcessPayload, processDefinition.getId());
 
-        ProcessInstanceBuilder processInstanceBuilder = runtimeService
-            .createProcessInstanceBuilder()
+        ProcessInstanceBuilder processInstanceBuilder = newProcessInstanceBuilder()
             .processDefinitionId(processDefinition.getId())
             .processDefinitionKey(processDefinition.getKey())
             .businessKey(startProcessPayload.getBusinessKey())

@@ -15,6 +15,8 @@
  */
 package org.activiti.runtime.api.impl;
 
+import static org.activiti.engine.impl.runtime.ProcessInstanceBuilder.newProcessInstanceBuilder;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -291,8 +293,7 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
 
         processVariablesValidator.checkStartProcessPayloadVariables(startProcessPayload, processDefinition.getId());
 
-        return runtimeService
-            .createProcessInstanceBuilder()
+        return newProcessInstanceBuilder()
             .processDefinitionId(processDefinition.getId())
             .processDefinitionKey(processDefinition.getKey())
             .businessKey(startProcessPayload.getBusinessKey())
@@ -306,8 +307,7 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
 
         checkUserCanWrite(processDefinition.getKey());
 
-      return runtimeService
-          .createProcessInstanceBuilder()
+      return newProcessInstanceBuilder()
           .processDefinitionId(processDefinition.getId())
           .processDefinitionKey(processDefinition.getKey())
           .businessKey(createProcessPayload.getBusinessKey())
