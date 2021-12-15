@@ -27,10 +27,10 @@ import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
-public class ProcessInstanceBuilderImplTest {
+public class ProcessInstanceBuilderTest {
 
     @InjectMocks
-    private ProcessInstanceBuilderImpl processInstanceBuilder;
+    private ProcessInstanceBuilder processInstanceBuilder;
 
     @Mock
     private RuntimeServiceImpl runtimeService;

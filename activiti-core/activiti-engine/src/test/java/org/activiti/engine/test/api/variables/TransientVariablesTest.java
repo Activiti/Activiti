@@ -31,10 +31,10 @@ import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.JavaDelegate;
 import org.activiti.engine.delegate.TaskListener;
+import org.activiti.engine.impl.runtime.ProcessInstanceBuilder;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
-import org.activiti.engine.runtime.ProcessInstanceBuilder;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 

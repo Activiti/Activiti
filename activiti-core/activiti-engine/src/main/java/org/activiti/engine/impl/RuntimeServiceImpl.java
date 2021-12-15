@@ -63,14 +63,13 @@ import org.activiti.engine.impl.cmd.TriggerCmd;
 import org.activiti.engine.impl.cmd.GetProcessInstanceEventsCmd;
 import org.activiti.engine.impl.cmd.AddIdentityLinkForProcessInstanceCmd;
 import org.activiti.engine.impl.persistence.entity.VariableInstance;
-import org.activiti.engine.impl.runtime.ProcessInstanceBuilderImpl;
+import org.activiti.engine.impl.runtime.ProcessInstanceBuilder;
 import org.activiti.engine.runtime.DataObject;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ExecutionQuery;
 import org.activiti.engine.runtime.NativeExecutionQuery;
 import org.activiti.engine.runtime.NativeProcessInstanceQuery;
 import org.activiti.engine.runtime.ProcessInstance;
-import org.activiti.engine.runtime.ProcessInstanceBuilder;
 import org.activiti.engine.runtime.ProcessInstanceQuery;
 import org.activiti.engine.task.Event;
 import org.activiti.engine.task.IdentityLink;
@@ -522,7 +521,7 @@ public class RuntimeServiceImpl extends ServiceImpl implements RuntimeService {
 
     @Override
     public ProcessInstanceBuilder createProcessInstanceBuilder() {
-        return new ProcessInstanceBuilderImpl();
+        return new ProcessInstanceBuilder();
     }
 
     @Override

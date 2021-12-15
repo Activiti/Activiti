@@ -34,9 +34,9 @@ import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.history.HistoricIdentityLink;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.impl.history.HistoryLevel;
+import org.activiti.engine.impl.runtime.ProcessInstanceBuilder;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
-import org.activiti.engine.runtime.ProcessInstanceBuilder;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 

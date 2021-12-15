@@ -20,7 +20,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.activiti.engine.api.internal.Internal;
-import org.activiti.engine.runtime.ProcessInstanceBuilder;
 
 /**
  * Builder to create a new ProcessInstance.
@@ -28,7 +27,7 @@ import org.activiti.engine.runtime.ProcessInstanceBuilder;
  * processDefinitionId or processDefinitionKey should always be set.
  */
 @Internal
-public class ProcessInstanceBuilderImpl implements ProcessInstanceBuilder {
+public class ProcessInstanceBuilder {
 
   protected String processDefinitionId;
   protected String processDefinitionKey;
@@ -40,7 +39,7 @@ public class ProcessInstanceBuilderImpl implements ProcessInstanceBuilder {
   protected Map<String, Object> transientVariables;
 
   public static ProcessInstanceBuilder newProcessInstanceBuilder() {
-    return new ProcessInstanceBuilderImpl();
+    return new ProcessInstanceBuilder();
   }
 
   /**

@@ -15,20 +15,16 @@
  */
 package org.activiti.engine.impl.cmd;
 
-import org.activiti.engine.ActivitiIllegalArgumentException;
-import org.activiti.engine.ActivitiObjectNotFoundException;
-import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.deploy.DeploymentManager;
-import org.activiti.engine.impl.runtime.ProcessInstanceBuilderImpl;
+import org.activiti.engine.impl.runtime.ProcessInstanceBuilder;
 import org.activiti.engine.impl.util.ProcessDefinitionRetriever;
 import org.activiti.engine.impl.util.ProcessInstanceHelper;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
 
 import java.util.Map;
-import org.activiti.engine.runtime.ProcessInstanceBuilder;
 
 public class CreateProcessInstanceCmd implements Command<ProcessInstance> {
 

@@ -26,11 +26,10 @@ import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.deploy.DeploymentManager;
 import org.activiti.engine.impl.persistence.entity.MessageEventSubscriptionEntity;
-import org.activiti.engine.impl.runtime.ProcessInstanceBuilderImpl;
+import org.activiti.engine.impl.runtime.ProcessInstanceBuilder;
 import org.activiti.engine.impl.util.ProcessInstanceHelper;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
-import org.activiti.engine.runtime.ProcessInstanceBuilder;
 
 /**
 
