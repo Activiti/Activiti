@@ -68,7 +68,7 @@ public class TimerManager {
   protected List<TimerJobEntity> getTimerDeclarations(ProcessDefinitionEntity processDefinition, Process process) {
     JobManager jobManager = Context.getCommandContext().getJobManager();
     List<TimerJobEntity> timers = new ArrayList<TimerJobEntity>();
-    if (CollectionUtil.isNotEmpty(process.getFlowElements())) {
+    if (process != null && CollectionUtil.isNotEmpty(process.getFlowElements())) {
       for (FlowElement element : process.getFlowElements()) {
         if (element instanceof StartEvent) {
           StartEvent startEvent = (StartEvent) element;

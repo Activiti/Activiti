@@ -175,8 +175,10 @@ public class BpmnDeploymentHelper  {
   public void addAuthorizationsForNewProcessDefinition(Process process, ProcessDefinitionEntity processDefinition) {
     CommandContext commandContext = Context.getCommandContext();
 
-    addAuthorizationsFromIterator(commandContext, process.getCandidateStarterUsers(), processDefinition, ExpressionType.USER);
-    addAuthorizationsFromIterator(commandContext, process.getCandidateStarterGroups(), processDefinition, ExpressionType.GROUP);
+    if (process != null) {
+        addAuthorizationsFromIterator(commandContext, process.getCandidateStarterUsers(), processDefinition, ExpressionType.USER);
+        addAuthorizationsFromIterator(commandContext, process.getCandidateStarterGroups(), processDefinition, ExpressionType.GROUP);
+    }
   }
 
   protected void addAuthorizationsFromIterator(CommandContext commandContext, List<String> expressions,
