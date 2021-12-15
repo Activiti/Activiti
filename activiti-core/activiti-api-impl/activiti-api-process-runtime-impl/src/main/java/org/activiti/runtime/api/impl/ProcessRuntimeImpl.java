@@ -255,7 +255,8 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
 
     @Override
     public ProcessInstance start(StartProcessPayload startProcessPayload) {
-        return processInstanceConverter.from(this.createProcessInstanceBuilder(startProcessPayload).start());
+      ProcessInstanceBuilder processInstanceBuilder =        createProcessInstanceBuilder(startProcessPayload);
+      return processInstanceConverter.from(runtimeService.startProcessInstance(processInstanceBuilder));
     }
 
     @Override
@@ -277,7 +278,8 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
 
     @Override
     public ProcessInstance create(CreateProcessInstancePayload startProcessPayload) {
-        return processInstanceConverter.from(createProcessInstanceBuilder(startProcessPayload).create());
+        ProcessInstanceBuilder pib = createProcessInstanceBuilder(startProcessPayload);
+        return processInstanceConverter.from(runtimeService.startProcessInstance(pib));
     }
 
     private ProcessInstanceBuilder createProcessInstanceBuilder(StartProcessPayload startProcessPayload) {

@@ -27,7 +27,7 @@ import org.activiti.engine.api.internal.Internal;
  *
  * An instance can be obtained through {@link org.activiti.engine.RuntimeService#createProcessInstanceBuilder()}.
  *
- * processDefinitionId or processDefinitionKey should be set before calling {@link #start()} to start a process instance.
+ * processDefinitionId or processDefinitionKey should always be set.
  */
 @Internal
 public interface ProcessInstanceBuilder {
@@ -83,24 +83,35 @@ public interface ProcessInstanceBuilder {
    */
   ProcessInstanceBuilder transientVariable(String variableName, Object value);
 
-  /**
-   * Start the process instance
-   *
-   * @throws ActivitiIllegalArgumentException
-   *           if processDefinitionKey and processDefinitionId are null
-   * @throws ActivitiObjectNotFoundException
-   *           when no process definition is deployed with the given processDefinitionKey or processDefinitionId
-   * **/
-  ProcessInstance start();
+  boolean hasProcessDefinitionIdOrKey();
 
-  /**
-   * Create the process instance
-   *
-   * @throws ActivitiIllegalArgumentException
-   *           if processDefinitionKey and processDefinitionId are null
-   * @throws ActivitiObjectNotFoundException
-   *           when no process definition is deployed with the given processDefinitionKey or processDefinitionId
-   * **/
-  ProcessInstance create();
+  String getProcessDefinitionId();
+  String getProcessDefinitionKey();
+  String getMessageName();
+  String getProcessInstanceName();
+  String getBusinessKey();
+  String getTenantId();
+  Map<String, Object> getVariables();
+  Map<String, Object> getTransientVariables();
+
+//  /**
+//   * Start the process instance
+//   *
+//   * @throws ActivitiIllegalArgumentException
+//   *           if processDefinitionKey and processDefinitionId are null
+//   * @throws ActivitiObjectNotFoundException
+//   *           when no process definition is deployed with the given processDefinitionKey or processDefinitionId
+//   * **/
+//  ProcessInstance start();
+//
+//  /**
+//   * Create the process instance
+//   *
+//   * @throws ActivitiIllegalArgumentException
+//   *           if processDefinitionKey and processDefinitionId are null
+//   * @throws ActivitiObjectNotFoundException
+//   *           when no process definition is deployed with the given processDefinitionKey or processDefinitionId
+//   * **/
+//  ProcessInstance create();
 
 }

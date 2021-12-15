@@ -42,6 +42,7 @@ import org.activiti.api.runtime.shared.query.Pageable;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.repository.ProcessDefinitionQuery;
+import org.activiti.engine.runtime.ProcessInstanceBuilder;
 import org.activiti.runtime.api.model.impl.APIProcessDefinitionConverter;
 import org.activiti.runtime.api.model.impl.APIProcessInstanceConverter;
 import org.activiti.runtime.api.query.impl.PageImpl;
@@ -130,26 +131,29 @@ public class ProcessAdminRuntimeImpl implements ProcessAdminRuntime {
     @Override
     public ProcessInstance start(StartProcessPayload startProcessPayload) {
         ProcessDefinition processDefinition = null;
+
         if (startProcessPayload.getProcessDefinitionId() != null) {
             processDefinition = processDefinition(startProcessPayload.getProcessDefinitionId());
         }
+
         if (processDefinition == null && startProcessPayload.getProcessDefinitionKey() != null) {
             processDefinition = processDefinition(startProcessPayload.getProcessDefinitionKey());
         }
+
         if (processDefinition == null) {
             throw new IllegalStateException("At least Process Definition Id or Key needs to be provided to start a process");
         }
 
         processVariablesValidator.checkStartProcessPayloadVariables(startProcessPayload, processDefinition.getId());
 
-        return processInstanceConverter.from(runtimeService
-                .createProcessInstanceBuilder()
-                .processDefinitionId(processDefinition.getId())
-                .processDefinitionKey(processDefinition.getKey())
-                .businessKey(startProcessPayload.getBusinessKey())
-                .variables(startProcessPayload.getVariables())
-                .name(startProcessPayload.getName())
-                .start());
+        ProcessInstanceBuilder processInstanceBuilder = runtimeService
+            .createProcessInstanceBuilder()
+            .processDefinitionId(processDefinition.getId())
+            .processDefinitionKey(processDefinition.getKey())
+            .businessKey(startProcessPayload.getBusinessKey())
+            .variables(startProcessPayload.getVariables())
+            .name(startProcessPayload.getName());
+        return processInstanceConverter.from(runtimeService.startProcessInstance(processInstanceBuilder));
     }
 
     @Override

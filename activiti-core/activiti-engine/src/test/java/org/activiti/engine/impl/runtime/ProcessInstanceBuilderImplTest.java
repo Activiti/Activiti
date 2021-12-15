@@ -84,7 +84,7 @@ public class ProcessInstanceBuilderImplTest {
             ProcessInstance.class);
         given(runtimeService.createProcessInstance(processInstanceBuilder)).willReturn(processInstance);
         //when
-        ProcessInstance createdProcess = processInstanceBuilder.create();
+        ProcessInstance createdProcess = runtimeService.createProcessInstance(processInstanceBuilder);
         //then
         assertThat(createdProcess).isEqualTo(processInstance);
     }

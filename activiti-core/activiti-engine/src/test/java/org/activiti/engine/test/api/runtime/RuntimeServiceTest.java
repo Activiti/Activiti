@@ -142,7 +142,8 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
         ProcessInstanceBuilder processInstanceBuilder = runtimeService.createProcessInstanceBuilder();
 
         // by key
-        ProcessInstance processInstance = processInstanceBuilder.processDefinitionKey("oneTaskProcess").businessKey("123").start();
+        ProcessInstanceBuilder processInstanceBuilder1 = processInstanceBuilder.processDefinitionKey("oneTaskProcess").businessKey("123");
+        ProcessInstance processInstance = runtimeService.startProcessInstance(processInstanceBuilder1);
         assertThat(processInstance).isNotNull();
         assertThat(processInstance.getBusinessKey()).isEqualTo("123");
         assertThat(runtimeService.createProcessInstanceQuery().processDefinitionKey("oneTaskProcess").count()).isEqualTo(1);
@@ -150,8 +151,12 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
         processInstanceBuilder = runtimeService.createProcessInstanceBuilder();
 
         // by key, with processInstance name with variables
-        processInstance = processInstanceBuilder.processDefinitionKey("oneTaskProcess").businessKey("456").variable("var",
-                                                                                                                    "value").name("processName1").start();
+        processInstanceBuilder1 = processInstanceBuilder.processDefinitionKey("oneTaskProcess")
+          .businessKey("456")
+          .variable("var", "value")
+          .name("processName1");
+        processInstance = runtimeService.startProcessInstance(processInstanceBuilder1);
+
         assertThat(processInstance).isNotNull();
         assertThat(runtimeService.createProcessInstanceQuery().processDefinitionKey("oneTaskProcess").count()).isEqualTo(2);
         assertThat(processInstance.getName()).isEqualTo("processName1");
@@ -161,15 +166,17 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
         processInstanceBuilder = runtimeService.createProcessInstanceBuilder();
 
         // by id
-        processInstance = processInstanceBuilder.processDefinitionId(processDefinition.getId()).businessKey("789").start();
+        processInstance = runtimeService.startProcessInstance(processInstanceBuilder.processDefinitionId(processDefinition.getId()).businessKey("789"));
+
         assertThat(processInstance).isNotNull();
         assertThat(runtimeService.createProcessInstanceQuery().processDefinitionKey("oneTaskProcess").count()).isEqualTo(3);
         assertThat(processInstance.getBusinessKey()).isEqualTo("789");
 
         processInstanceBuilder = runtimeService.createProcessInstanceBuilder();
+
         // by id with variables
-        processInstance = processInstanceBuilder.processDefinitionId(processDefinition.getId()).businessKey("101123").variable("var",
-                                                                                                                               "value2").start();
+        processInstance = runtimeService.startProcessInstance(processInstanceBuilder.processDefinitionId(processDefinition.getId()).businessKey("101123").variable("var",
+                                                                                                                               "value2"));
         assertThat(processInstance).isNotNull();
         assertThat(runtimeService.createProcessInstanceQuery().processDefinitionKey("oneTaskProcess").count()).isEqualTo(4);
         assertThat(runtimeService.getVariable(processInstance.getId(), "var")).isEqualTo("value2");
@@ -177,7 +184,7 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
 
         processInstanceBuilder = runtimeService.createProcessInstanceBuilder();
         // by id and processInstance name
-        processInstance = processInstanceBuilder.processDefinitionId(processDefinition.getId()).businessKey("101124").name("processName2").start();
+        processInstance = runtimeService.startProcessInstance(processInstanceBuilder.processDefinitionId(processDefinition.getId()).businessKey("101124").name("processName2"));
         assertThat(processInstance).isNotNull();
         assertThat(runtimeService.createProcessInstanceQuery().processDefinitionKey("oneTaskProcess").count()).isEqualTo(5);
         assertThat(processInstance.getName()).isEqualTo("processName2");
@@ -186,9 +193,8 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
 
     @Deployment(resources = {"org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml"})
     public void testProcessInstanceStartTimeUsingRuntimeService() {
-        ProcessInstance processInstance = runtimeService.createProcessInstanceBuilder()
-            .processDefinitionKey("oneTaskProcess")
-            .create();
+        ProcessInstance processInstance = runtimeService.createProcessInstance(runtimeService.createProcessInstanceBuilder()
+            .processDefinitionKey("oneTaskProcess"));
         assertThat(processInstance.getStartTime()).isNull();
 
         runtimeService.startCreatedProcessInstance(processInstance, new HashMap<>());

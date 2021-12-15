@@ -41,7 +41,9 @@ import org.activiti.engine.impl.delegate.ThrowMessageDelegateFactory;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
 import org.activiti.engine.impl.test.ResourceActivitiTestCase;
+import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.runtime.ProcessInstanceBuilder;
 import org.activiti.engine.test.Deployment;
 import org.junit.After;
 import org.junit.Before;
@@ -299,10 +301,10 @@ public class MessageThrowCatchEventTest extends ResourceActivitiTestCase {
         assertThat(messageExecutionRegistry).containsExactly(entry(new SubscriptionKey(TEST_MESSAGE, Optional.empty()),
                                                                   Optional.empty()));
         // when
-        ProcessInstance throwMsg = runtimeService.createProcessInstanceBuilder()
+        ProcessInstanceBuilder throwMsg = runtimeService.createProcessInstanceBuilder()
                                                  .businessKey("foobar")
-                                                 .processDefinitionKey(THROW_MESSAGE)
-                                                 .start();
+                                                 .processDefinitionKey(THROW_MESSAGE);
+        ProcessInstance throwMsgPi = runtimeService.startProcessInstance(throwMsg);
 
         // then
         assertThat(countDownLatch.await(1, TimeUnit.SECONDS)).isTrue();
@@ -315,7 +317,7 @@ public class MessageThrowCatchEventTest extends ResourceActivitiTestCase {
         assertThat(startMsg.getBusinessKey()).isEqualTo("foobar");
         assertThat(startMsg.getProcessVariables()).containsEntry("foo", "bar");
 
-        assertProcessEnded(throwMsg.getId());
+        assertProcessEnded(throwMsgPi.getId());
         assertProcessEnded(startMsg.getId());
 
         assertThat(receivedEvents).hasSize(2)
@@ -337,10 +339,10 @@ public class MessageThrowCatchEventTest extends ResourceActivitiTestCase {
         runtimeService.addEventListener(new CountDownMessageListener(countDownLatch),
                                         ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED);
         // when
-        ProcessInstance throwMsg = runtimeService.createProcessInstanceBuilder()
+        ProcessInstanceBuilder throwMsgBuilder = runtimeService.createProcessInstanceBuilder()
                                                  .businessKey("foobar")
-                                                 .processDefinitionKey(END_MESSAGE)
-                                                 .start();
+                                                 .processDefinitionKey(END_MESSAGE);
+        ProcessInstance throwMsg = runtimeService.startProcessInstance(throwMsgBuilder);
 
         // then
         assertThat(countDownLatch.await(1, TimeUnit.SECONDS)).isTrue();
@@ -372,13 +374,14 @@ public class MessageThrowCatchEventTest extends ResourceActivitiTestCase {
         runtimeService.addEventListener(new CountDownMessageListener(countDownLatch),
                                         ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED);
         // when
-        ProcessInstance throwMessage = runtimeService.createProcessInstanceBuilder()
-                                                     .processDefinitionKey(THROW_MESSAGE2)
-                                                     .start();
+        ProcessInstanceBuilder throwMessageBuilder = runtimeService.createProcessInstanceBuilder()
+                                                     .processDefinitionKey(THROW_MESSAGE2);
+        ProcessInstance throwMessage = runtimeService.startProcessInstance(throwMessageBuilder);
 
-        ProcessInstance catchMessage = runtimeService.createProcessInstanceBuilder()
-                                                     .processDefinitionKey(CATCH_MESSAGE)
-                                                     .start();
+        ProcessInstanceBuilder catchMessageBuilder = runtimeService.createProcessInstanceBuilder()
+                                                     .processDefinitionKey(CATCH_MESSAGE);
+        ProcessInstance catchMessage = runtimeService.startProcessInstance(catchMessageBuilder);
+
         // then
         assertThat(countDownLatch.await(1, TimeUnit.SECONDS)).isTrue();
 
@@ -402,15 +405,16 @@ public class MessageThrowCatchEventTest extends ResourceActivitiTestCase {
         runtimeService.addEventListener(new CountDownMessageListener(countDownLatch),
                                         ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED);
         // when
-        ProcessInstance throwMessage = runtimeService.createProcessInstanceBuilder()
+        ProcessInstanceBuilder throwMessageBuilder = runtimeService.createProcessInstanceBuilder()
                                                      .processDefinitionKey(THROW_MESSAGE2)
-                                                     .variable("correlationId", 1)
-                                                     .start();
+                                                     .variable("correlationId", 1);
+        ProcessInstance throwMessage = runtimeService.startProcessInstance(throwMessageBuilder);
 
-        ProcessInstance catchMessage = runtimeService.createProcessInstanceBuilder()
+        ProcessInstanceBuilder catchMessageBuilder = runtimeService.createProcessInstanceBuilder()
                                                      .processDefinitionKey(CATCH_MESSAGE)
-                                                     .variable("correlationId", 1)
-                                                     .start();
+                                                     .variable("correlationId", 1);
+        ProcessInstance catchMessage = runtimeService.startProcessInstance(catchMessageBuilder);
+
         // then
         assertThat(countDownLatch.await(1, TimeUnit.SECONDS)).isTrue();
 
@@ -434,15 +438,16 @@ public class MessageThrowCatchEventTest extends ResourceActivitiTestCase {
         runtimeService.addEventListener(new CountDownMessageListener(countDownLatch),
                                         ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED);
         // when
-        ProcessInstance throwMessage = runtimeService.createProcessInstanceBuilder()
+        ProcessInstanceBuilder throwMessageBuilder = runtimeService.createProcessInstanceBuilder()
                                                      .processDefinitionKey(THROW_MESSAGE2)
-                                                     .variable("correlationId", 1)
-                                                     .start();
+                                                     .variable("correlationId", 1);
+        ProcessInstance throwMessage = runtimeService.startProcessInstance(throwMessageBuilder);
 
-        ProcessInstance catchMessage = runtimeService.createProcessInstanceBuilder()
+        ProcessInstanceBuilder catchMessageBuilder = runtimeService.createProcessInstanceBuilder()
                                                      .processDefinitionKey(CATCH_MESSAGE)
-                                                     .variable("correlationId", 2)
-                                                     .start();
+                                                     .variable("correlationId", 2);
+        ProcessInstance catchMessage = runtimeService.startProcessInstance(catchMessageBuilder);
+
         // then
         assertThat(countDownLatch.await(1, TimeUnit.SECONDS)).isFalse();
 
@@ -469,10 +474,11 @@ public class MessageThrowCatchEventTest extends ResourceActivitiTestCase {
         runtimeService.addEventListener(new CountDownMessageListener(countDownLatch),
                                         ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED);
         // when
-        ProcessInstance throwMessage = runtimeService.createProcessInstanceBuilder()
+        ProcessInstanceBuilder throwMessageBuilder = runtimeService.createProcessInstanceBuilder()
                                                      .processDefinitionKey(THROW_MESSAGE2)
-                                                     .businessKey("businessKey")
-                                                     .start();
+                                                     .businessKey("businessKey");
+        ProcessInstance throwMessage = runtimeService.startProcessInstance(throwMessageBuilder);
+
         // then
         assertThat(countDownLatch.await(1, TimeUnit.SECONDS)).isTrue();
 
@@ -500,10 +506,11 @@ public class MessageThrowCatchEventTest extends ResourceActivitiTestCase {
         runtimeService.addEventListener(new CountDownMessageListener(countDownLatch),
                                         ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED);
         // when
-        ProcessInstance throwMessage = runtimeService.createProcessInstanceBuilder()
+        ProcessInstanceBuilder throwMessageBuilder = runtimeService.createProcessInstanceBuilder()
                                                      .processDefinitionKey(THROW_MESSAGE2)
-                                                     .businessKey("businessKey")
-                                                     .start();
+                                                     .businessKey("businessKey");
+        ProcessInstance throwMessage = runtimeService.startProcessInstance(throwMessageBuilder);
+
         // then
         assertThat(countDownLatch.await(1, TimeUnit.SECONDS)).isTrue();
 
@@ -531,13 +538,14 @@ public class MessageThrowCatchEventTest extends ResourceActivitiTestCase {
         runtimeService.addEventListener(new CountDownMessageListener(countDownLatch),
                                         ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED);
         // when
-        ProcessInstance throwMessage = runtimeService.createProcessInstanceBuilder()
-                                                     .processDefinitionKey(THROW_MESSAGE2)
-                                                     .start();
+        ProcessInstanceBuilder throwMessageBuilder = runtimeService.createProcessInstanceBuilder()
+                                                     .processDefinitionKey(THROW_MESSAGE2);
+        ProcessInstance throwMessage = runtimeService.startProcessInstance(throwMessageBuilder);
 
-        ProcessInstance catchMessage = runtimeService.createProcessInstanceBuilder()
-                                                     .processDefinitionKey(CATCH_MESSAGE)
-                                                     .start();
+        ProcessInstanceBuilder catchMessageBuilder = runtimeService.createProcessInstanceBuilder()
+                                                     .processDefinitionKey(CATCH_MESSAGE);
+        ProcessInstance catchMessage = runtimeService.startProcessInstance(catchMessageBuilder);
+
         // then
         assertThat(countDownLatch.await(1, TimeUnit.SECONDS)).isTrue();
 
@@ -562,15 +570,16 @@ public class MessageThrowCatchEventTest extends ResourceActivitiTestCase {
                                         ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED);
         // when
         // when
-        ProcessInstance throwMessage = runtimeService.createProcessInstanceBuilder()
+        ProcessInstanceBuilder throwMessageBuilder = runtimeService.createProcessInstanceBuilder()
                                                      .processDefinitionKey(THROW_MESSAGE2)
-                                                     .variable("correlationId", 1)
-                                                     .start();
+                                                     .variable("correlationId", 1);
+        ProcessInstance throwMessage = runtimeService.startProcessInstance(throwMessageBuilder);
 
-        ProcessInstance catchMessage = runtimeService.createProcessInstanceBuilder()
+        ProcessInstanceBuilder catchMessageBuilder = runtimeService.createProcessInstanceBuilder()
                                                      .processDefinitionKey(CATCH_MESSAGE)
-                                                     .variable("correlationId", 2)
-                                                     .start();
+                                                     .variable("correlationId", 2);
+        ProcessInstance catchMessage = runtimeService.startProcessInstance(catchMessageBuilder);
+
         // then
         assertThat(countDownLatch.await(1, TimeUnit.SECONDS)).isFalse();
 
@@ -597,15 +606,16 @@ public class MessageThrowCatchEventTest extends ResourceActivitiTestCase {
         runtimeService.addEventListener(new CountDownMessageListener(countDownLatch),
                                         ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED);
         // when
-        ProcessInstance throwMessage = runtimeService.createProcessInstanceBuilder()
+        ProcessInstanceBuilder throwMessageBuilder = runtimeService.createProcessInstanceBuilder()
                                                      .processDefinitionKey(THROW_MESSAGE2)
-                                                     .variable("correlationId", 1)
-                                                     .start();
+                                                     .variable("correlationId", 1);
+        ProcessInstance throwMessage = runtimeService.startProcessInstance(throwMessageBuilder);
 
-        ProcessInstance catchMessage = runtimeService.createProcessInstanceBuilder()
+        ProcessInstanceBuilder catchMessageBuilder = runtimeService.createProcessInstanceBuilder()
                                                      .processDefinitionKey(CATCH_MESSAGE)
-                                                     .variable("correlationId", 1)
-                                                     .start();
+                                                     .variable("correlationId", 1);
+        ProcessInstance catchMessage = runtimeService.startProcessInstance(catchMessageBuilder);
+
         // then
         assertThat(countDownLatch.await(1, TimeUnit.SECONDS)).isTrue();
 
@@ -630,13 +640,14 @@ public class MessageThrowCatchEventTest extends ResourceActivitiTestCase {
         runtimeService.addEventListener(new CountDownMessageListener(countDownLatch),
                                         ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED);
         // when
-        ProcessInstance throwMessage = runtimeService.createProcessInstanceBuilder()
-                                                     .processDefinitionKey(THROW_MESSAGE2)
-                                                     .start();
+        ProcessInstanceBuilder throwMessageBuilder = runtimeService.createProcessInstanceBuilder()
+                                                     .processDefinitionKey(THROW_MESSAGE2);
+        ProcessInstance throwMessage = runtimeService.startProcessInstance(throwMessageBuilder);
 
-        ProcessInstance catchMessage = runtimeService.createProcessInstanceBuilder()
-                                                     .processDefinitionKey(CATCH_MESSAGE)
-                                                     .start();
+        ProcessInstanceBuilder catchMessageBuilder = runtimeService.createProcessInstanceBuilder()
+                                                     .processDefinitionKey(CATCH_MESSAGE);
+        ProcessInstance catchMessage = runtimeService.startProcessInstance(catchMessageBuilder);
+
         // then
         assertThat(countDownLatch.await(1, TimeUnit.SECONDS)).isTrue();
 
@@ -660,15 +671,16 @@ public class MessageThrowCatchEventTest extends ResourceActivitiTestCase {
         runtimeService.addEventListener(new CountDownMessageListener(countDownLatch),
                                         ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED);
         // when
-        ProcessInstance throwMessage = runtimeService.createProcessInstanceBuilder()
+        ProcessInstanceBuilder throwMessageBuilder = runtimeService.createProcessInstanceBuilder()
                                                      .processDefinitionKey(THROW_MESSAGE2)
-                                                     .variable("correlationId", 1)
-                                                     .start();
+                                                     .variable("correlationId", 1);
+        ProcessInstance throwMessage = runtimeService.startProcessInstance(throwMessageBuilder);
 
-        ProcessInstance catchMessage = runtimeService.createProcessInstanceBuilder()
+        ProcessInstanceBuilder catchMessageBuilder = runtimeService.createProcessInstanceBuilder()
                                                      .processDefinitionKey(CATCH_MESSAGE)
-                                                     .variable("correlationId", 1)
-                                                     .start();
+                                                     .variable("correlationId", 1);
+        ProcessInstance catchMessage = runtimeService.startProcessInstance(catchMessageBuilder);
+
         // then
         assertThat(countDownLatch.await(1, TimeUnit.SECONDS)).isTrue();
 
@@ -692,13 +704,14 @@ public class MessageThrowCatchEventTest extends ResourceActivitiTestCase {
         runtimeService.addEventListener(new CountDownMessageListener(countDownLatch),
                                         ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED);
         // when
-        ProcessInstance throwMessage = runtimeService.createProcessInstanceBuilder()
-                                                     .processDefinitionKey(THROW_MESSAGE2)
-                                                     .start();
+        ProcessInstanceBuilder throwMessageBuilder = runtimeService.createProcessInstanceBuilder()
+                                                     .processDefinitionKey(THROW_MESSAGE2);
+        ProcessInstance throwMessage = runtimeService.startProcessInstance(throwMessageBuilder);
 
-        ProcessInstance catchMessage = runtimeService.createProcessInstanceBuilder()
-                                                     .processDefinitionKey(CATCH_MESSAGE)
-                                                     .start();
+        ProcessInstanceBuilder catchMessageBuilder = runtimeService.createProcessInstanceBuilder()
+                                                     .processDefinitionKey(CATCH_MESSAGE);
+        ProcessInstance catchMessage = runtimeService.startProcessInstance(catchMessageBuilder);
+
         // then
         assertThat(countDownLatch.await(1, TimeUnit.SECONDS)).isTrue();
 
@@ -722,15 +735,16 @@ public class MessageThrowCatchEventTest extends ResourceActivitiTestCase {
         runtimeService.addEventListener(new CountDownMessageListener(countDownLatch),
                                         ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED);
         // when
-        ProcessInstance throwMessage = runtimeService.createProcessInstanceBuilder()
+        ProcessInstanceBuilder throwMessageBuilder = runtimeService.createProcessInstanceBuilder()
                                                      .processDefinitionKey(THROW_MESSAGE2)
-                                                     .variable("correlationId", 1)
-                                                     .start();
+                                                     .variable("correlationId", 1);
+        ProcessInstance throwMessage = runtimeService.startProcessInstance(throwMessageBuilder);
 
-        ProcessInstance catchMessage = runtimeService.createProcessInstanceBuilder()
+        ProcessInstanceBuilder catchMessageBuilder = runtimeService.createProcessInstanceBuilder()
                                                      .processDefinitionKey(CATCH_MESSAGE)
-                                                     .variable("correlationId", 1)
-                                                     .start();
+                                                     .variable("correlationId", 1);
+        ProcessInstance catchMessage = runtimeService.startProcessInstance(catchMessageBuilder);
+
         // then
         assertThat(countDownLatch.await(1, TimeUnit.SECONDS)).isTrue();
 
@@ -754,19 +768,20 @@ public class MessageThrowCatchEventTest extends ResourceActivitiTestCase {
         runtimeService.addEventListener(new CountDownMessageListener(countDownLatch),
                                         ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED);
         // when
-        ProcessInstance throwMessage = runtimeService.createProcessInstanceBuilder()
+        ProcessInstanceBuilder throwMessageBuilder = runtimeService.createProcessInstanceBuilder()
                                                      .processDefinitionKey(THROW_MESSAGE2)
                                                      .businessKey("bk1")
                                                      .variable("invoiceId", 1)
-                                                     .variable("correlationId", 1)
-                                                     .start();
+                                                     .variable("correlationId", 1);
+        ProcessInstance throwMessage = runtimeService.startProcessInstance(throwMessageBuilder);
 
-        ProcessInstance catchMessage = runtimeService.createProcessInstanceBuilder()
+        ProcessInstanceBuilder catchMessageBuilder = runtimeService.createProcessInstanceBuilder()
                                                      .processDefinitionKey(CATCH_MESSAGE)
                                                      .variable("invoiceId", 1)
                                                      .businessKey("bk2")
-                                                     .variable("correlationId", 1)
-                                                     .start();
+                                                     .variable("correlationId", 1);
+        ProcessInstance catchMessage = runtimeService.startProcessInstance(catchMessageBuilder);
+
         // then
         assertThat(countDownLatch.await(1, TimeUnit.SECONDS)).isTrue();
 
@@ -791,15 +806,16 @@ public class MessageThrowCatchEventTest extends ResourceActivitiTestCase {
         runtimeService.addEventListener(new CountDownMessageListener(countDownLatch),
                                         ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED);
         // when
-        ProcessInstance throwMessage = runtimeService.createProcessInstanceBuilder()
+        ProcessInstanceBuilder throwMessageBuilder = runtimeService.createProcessInstanceBuilder()
                                                      .processDefinitionKey(THROW_MESSAGE2)
-                                                     .variable("correlationId", 1)
-                                                     .start();
+                                                     .variable("correlationId", 1);
+        ProcessInstance throwMessage = runtimeService.startProcessInstance(throwMessageBuilder);
 
-        ProcessInstance catchMessage = runtimeService.createProcessInstanceBuilder()
+        ProcessInstanceBuilder catchMessageBuilder = runtimeService.createProcessInstanceBuilder()
                                                      .processDefinitionKey(CATCH_MESSAGE)
-                                                     .variable("correlationId", 2)
-                                                     .start();
+                                                     .variable("correlationId", 2);
+        ProcessInstance catchMessage = runtimeService.startProcessInstance(catchMessageBuilder);
+
         // then
         assertThat(countDownLatch.await(1, TimeUnit.SECONDS)).isFalse();
 
@@ -829,19 +845,19 @@ public class MessageThrowCatchEventTest extends ResourceActivitiTestCase {
         runtimeService.addEventListener(new CountDownMessageListener(countDownLatch),
                                         ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED);
         // when
-        ProcessInstance throwMsg = runtimeService.createProcessInstanceBuilder()
+        ProcessInstanceBuilder throwMsgBuilder = runtimeService.createProcessInstanceBuilder()
                                                  .processDefinitionKey(THROW_MESSAGE)
                                                  .businessKey("businessKey1")
                                                  .variable("customerId", "2")
-                                                 .variable("invoiceId", "1")
-                                                 .start();
+                                                 .variable("invoiceId", "1");
+        ProcessInstance throwMsg = runtimeService.startProcessInstance(throwMsgBuilder);
 
-        ProcessInstance catchMsg = runtimeService.createProcessInstanceBuilder()
+        ProcessInstanceBuilder catchMsgBuilder = runtimeService.createProcessInstanceBuilder()
                                                  .processDefinitionKey(CATCH_MESSAGE)
                                                  .businessKey("businessKey2")
                                                  .variable("customerId", "2")
-                                                 .variable("invoiceId", "1")
-                                                 .start();
+                                                 .variable("invoiceId", "1");
+        ProcessInstance catchMsg = runtimeService.startProcessInstance(catchMsgBuilder);
 
         // then
         assertThat(countDownLatch.await(1, TimeUnit.SECONDS)).isTrue();
@@ -873,12 +889,13 @@ public class MessageThrowCatchEventTest extends ResourceActivitiTestCase {
     public void testMessageEventSubscriptionQueryWithCorrelationKey() {
 
         // given
-        runtimeService.createProcessInstanceBuilder()
+        ProcessInstanceBuilder pib = runtimeService.createProcessInstanceBuilder()
                       .processDefinitionKey(CATCH_MESSAGE)
                       .businessKey("businessKey2")
                       .variable("customerId", "2")
-                      .variable("invoiceId", "1")
-                      .start();
+                      .variable("invoiceId", "1");
+        runtimeService.startProcessInstance(pib);
+
         // when
         EventSubscriptionEntity subscription = newEventSubscriptionQuery().eventType("message")
                                                                           .eventName("newInvoice-1")
@@ -898,20 +915,22 @@ public class MessageThrowCatchEventTest extends ResourceActivitiTestCase {
     public void testMessageEventSubscriptionWithSameCorrelationKeyFails() {
 
         // given
-        runtimeService.createProcessInstanceBuilder()
+        ProcessInstanceBuilder pib = runtimeService.createProcessInstanceBuilder()
                       .processDefinitionKey(CATCH_MESSAGE)
                       .businessKey("businessKey2")
                       .variable("customerId", "2")
-                      .variable("invoiceId", "1")
-                      .start();
+                      .variable("invoiceId", "1");
+        runtimeService.startProcessInstance(pib);
 
         // when
-        Throwable exception = catchThrowable(() -> runtimeService.createProcessInstanceBuilder()
-                                                                 .processDefinitionKey(CATCH_MESSAGE)
-                                                                 .businessKey("businessKey2")
-                                                                 .variable("customerId", "2")
-                                                                 .variable("invoiceId", "1")
-                                                                 .start());
+        Throwable exception = catchThrowable(() -> {
+          runtimeService.createProcessInstanceBuilder()
+            .processDefinitionKey(CATCH_MESSAGE)
+            .businessKey("businessKey2")
+            .variable("customerId", "2")
+            .variable("invoiceId", "1");
+          runtimeService.startProcessInstance(pib);
+        });
 
         // then
         assertThat(exception).isInstanceOf(ActivitiIllegalArgumentException.class);

@@ -20,7 +20,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import org.activiti.api.runtime.shared.NotFoundException;
 import org.activiti.bpmn.model.FlowNode;
 import org.activiti.engine.api.internal.Internal;
@@ -30,6 +29,7 @@ import org.activiti.engine.delegate.event.ActivitiEventDispatcher;
 import org.activiti.engine.delegate.event.ActivitiEventListener;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.impl.persistence.entity.VariableInstance;
+import org.activiti.engine.impl.runtime.ProcessInstanceBuilderImpl;
 import org.activiti.engine.runtime.DataObject;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ExecutionQuery;
@@ -856,7 +856,7 @@ public interface RuntimeService {
    *
    * @param executionId
    *          id of execution, cannot be null.
-   * @param dataObjectNames
+   * @param dataObjects
    *          the collection of DataObject names that should be retrieved.
    * @return the DataObjects or an empty map if no DataObjects are found.
    * @throws ActivitiObjectNotFoundException
@@ -887,7 +887,7 @@ public interface RuntimeService {
    *
    * @param executionId
    *          id of execution, cannot be null.
-   * @param dataObjectName
+   * @param dataObject
    *          name of DataObject, cannot be null.
    * @return the DataObject or null if the variable is undefined.
    * @throws ActivitiObjectNotFoundException
@@ -1236,5 +1236,21 @@ public interface RuntimeService {
 
   /** The all events related to the given Process Instance. */
   List<Event> getProcessInstanceEvents(String processInstanceId);
+
+  /**
+   * Starts a process using a process instance builder
+   *
+   * @param processInstanceBuilder the builder to use to start the process
+   * @return the instance of the process started
+   */
+  ProcessInstance startProcessInstance(ProcessInstanceBuilder processInstanceBuilder);
+
+  /**
+   * Creates a process using a process instance builder
+   *
+   * @param processInstanceBuilder the builder to use to create the process
+   * @return the instance of the process created
+   */
+  ProcessInstance createProcessInstance(ProcessInstanceBuilder processInstanceBuilder);
 
 }

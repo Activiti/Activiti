@@ -28,6 +28,7 @@ import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
 
 import java.util.Map;
+import org.activiti.engine.runtime.ProcessInstanceBuilder;
 
 public class CreateProcessInstanceCmd implements Command<ProcessInstance> {
 
@@ -53,7 +54,7 @@ public class CreateProcessInstanceCmd implements Command<ProcessInstance> {
         this.tenantId = tenantId;
     }
 
-    public CreateProcessInstanceCmd(ProcessInstanceBuilderImpl processInstanceBuilder) {
+    public CreateProcessInstanceCmd(ProcessInstanceBuilder processInstanceBuilder) {
         this(processInstanceBuilder.getProcessDefinitionKey(),
             processInstanceBuilder.getProcessDefinitionId(),
             processInstanceBuilder.getBusinessKey(),

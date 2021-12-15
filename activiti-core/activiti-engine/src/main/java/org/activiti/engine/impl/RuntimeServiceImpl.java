@@ -522,7 +522,7 @@ public class RuntimeServiceImpl extends ServiceImpl implements RuntimeService {
 
     @Override
     public ProcessInstanceBuilder createProcessInstanceBuilder() {
-        return new ProcessInstanceBuilderImpl(this);
+        return new ProcessInstanceBuilderImpl();
     }
 
     @Override
@@ -530,7 +530,8 @@ public class RuntimeServiceImpl extends ServiceImpl implements RuntimeService {
         return commandExecutor.execute(new StartCreatedProcessInstanceCmd<>(createdProcessInstance, variables));
     }
 
-    public ProcessInstance startProcessInstance(ProcessInstanceBuilderImpl processInstanceBuilder) {
+    @Override
+    public ProcessInstance startProcessInstance(ProcessInstanceBuilder processInstanceBuilder) {
         if (processInstanceBuilder.hasProcessDefinitionIdOrKey()) {
             return commandExecutor.execute(new StartProcessInstanceCmd<ProcessInstance>(processInstanceBuilder));
         } else if (processInstanceBuilder.getMessageName() != null) {
@@ -540,7 +541,8 @@ public class RuntimeServiceImpl extends ServiceImpl implements RuntimeService {
         }
     }
 
-    public ProcessInstance createProcessInstance(ProcessInstanceBuilderImpl processInstanceBuilder) {
+    @Override
+    public ProcessInstance createProcessInstance(ProcessInstanceBuilder processInstanceBuilder) {
         if (processInstanceBuilder.hasProcessDefinitionIdOrKey()) {
             return commandExecutor.execute(new CreateProcessInstanceCmd(processInstanceBuilder));
         } else {

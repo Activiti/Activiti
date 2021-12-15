@@ -30,6 +30,7 @@ import org.activiti.engine.impl.runtime.ProcessInstanceBuilderImpl;
 import org.activiti.engine.impl.util.ProcessInstanceHelper;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.runtime.ProcessInstanceBuilder;
 
 /**
 
@@ -50,7 +51,7 @@ public class StartProcessInstanceByMessageCmd implements Command<ProcessInstance
     this.tenantId = tenantId;
   }
 
-  public StartProcessInstanceByMessageCmd(ProcessInstanceBuilderImpl processInstanceBuilder) {
+  public StartProcessInstanceByMessageCmd(ProcessInstanceBuilder processInstanceBuilder) {
     this.messageName = processInstanceBuilder.getMessageName();
     this.businessKey = processInstanceBuilder.getBusinessKey();
     this.processVariables = processInstanceBuilder.getVariables();

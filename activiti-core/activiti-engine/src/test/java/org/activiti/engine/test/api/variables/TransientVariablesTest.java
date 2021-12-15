@@ -34,6 +34,7 @@ import org.activiti.engine.delegate.TaskListener;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.runtime.ProcessInstanceBuilder;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
@@ -173,26 +174,29 @@ public class TransientVariablesTest extends PluggableActivitiTestCase {
 
   @Deployment
   public void testStartProcessInstanceByKey() {
-    ProcessInstance processInstance = runtimeService.createProcessInstanceBuilder()
-        .processDefinitionKey("transientVarsTest")
-        .transientVariable("variable", "gotoA")
-        .start();
+    ProcessInstanceBuilder processInstanceBuilder = runtimeService.createProcessInstanceBuilder()
+      .processDefinitionKey("transientVarsTest")
+      .transientVariable("variable", "gotoA");
+    ProcessInstance processInstance = runtimeService.startProcessInstance(processInstanceBuilder);
+
     Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     assertThat(task.getName()).isEqualTo("A");
     assertThat(runtimeService.getVariables(processInstance.getId())).hasSize(0);
 
-    processInstance =runtimeService.createProcessInstanceBuilder()
+    processInstanceBuilder = runtimeService.createProcessInstanceBuilder()
         .processDefinitionKey("transientVarsTest")
-        .transientVariable("variable", "gotoB")
-        .start();
+        .transientVariable("variable", "gotoB");
+    processInstance = runtimeService.startProcessInstance(processInstanceBuilder);
+
     task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     assertThat(task.getName()).isEqualTo("B");
     assertThat(runtimeService.getVariables(processInstance.getId())).hasSize(0);
 
-    processInstance = runtimeService.createProcessInstanceBuilder()
+    processInstanceBuilder = runtimeService.createProcessInstanceBuilder()
         .processDefinitionKey("transientVarsTest")
-        .transientVariable("variable", "somethingElse")
-        .start();
+        .transientVariable("variable", "somethingElse");
+    processInstance = runtimeService.startProcessInstance(processInstanceBuilder);
+
     task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     assertThat(task.getName()).isEqualTo("Default");
     assertThat(runtimeService.getVariables(processInstance.getId())).hasSize(0);
@@ -203,26 +207,29 @@ public class TransientVariablesTest extends PluggableActivitiTestCase {
 
     String processDefinitionId = repositoryService.createProcessDefinitionQuery().singleResult().getId();
 
-    ProcessInstance processInstance = runtimeService.createProcessInstanceBuilder()
+    ProcessInstanceBuilder processInstanceBuilder = runtimeService.createProcessInstanceBuilder()
         .processDefinitionId(processDefinitionId)
-        .transientVariable("variable", "gotoA")
-        .start();
+        .transientVariable("variable", "gotoA");
+    ProcessInstance processInstance = runtimeService.startProcessInstance(processInstanceBuilder);
+
     Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     assertThat(task.getName()).isEqualTo("A");
     assertThat(runtimeService.getVariables(processInstance.getId())).hasSize(0);
 
-    processInstance =runtimeService.createProcessInstanceBuilder()
+    processInstanceBuilder = runtimeService.createProcessInstanceBuilder()
         .processDefinitionId(processDefinitionId)
-        .transientVariable("variable", "gotoB")
-        .start();
+        .transientVariable("variable", "gotoB");
+    processInstance = runtimeService.startProcessInstance(processInstanceBuilder);
+
     task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     assertThat(task.getName()).isEqualTo("B");
     assertThat(runtimeService.getVariables(processInstance.getId())).hasSize(0);
 
-    processInstance = runtimeService.createProcessInstanceBuilder()
+    processInstanceBuilder = runtimeService.createProcessInstanceBuilder()
         .processDefinitionId(processDefinitionId)
-        .transientVariable("variable", "somethingElse")
-        .start();
+        .transientVariable("variable", "somethingElse");
+    processInstance = runtimeService.startProcessInstance(processInstanceBuilder);
+
     task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     assertThat(task.getName()).isEqualTo("Default");
     assertThat(runtimeService.getVariables(processInstance.getId())).hasSize(0);
@@ -231,35 +238,35 @@ public class TransientVariablesTest extends PluggableActivitiTestCase {
   @Deployment
   public void testStartProcessInstanceByMessage() {
 
-    ProcessInstance processInstance = runtimeService.createProcessInstanceBuilder()
+    ProcessInstanceBuilder processInstanceBuilder = runtimeService.createProcessInstanceBuilder()
         .messageName("myMessage")
-        .transientVariable("variable", "gotoA")
-        .start();
+        .transientVariable("variable", "gotoA");
+    ProcessInstance processInstance = runtimeService.startProcessInstance(processInstanceBuilder);
+
     Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     assertThat(task.getName()).isEqualTo("A");
     assertThat(runtimeService.getVariables(processInstance.getId())).hasSize(0);
 
-    processInstance =runtimeService.createProcessInstanceBuilder()
+    processInstanceBuilder = runtimeService.createProcessInstanceBuilder()
         .messageName("myMessage")
-        .transientVariable("variable", "gotoB")
-        .start();
+        .transientVariable("variable", "gotoB");
+    processInstance = runtimeService.startProcessInstance(processInstanceBuilder);
+
     task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     assertThat(task.getName()).isEqualTo("B");
     assertThat(runtimeService.getVariables(processInstance.getId())).hasSize(0);
 
-    processInstance = runtimeService.createProcessInstanceBuilder()
+    processInstanceBuilder = runtimeService.createProcessInstanceBuilder()
         .messageName("myMessage")
-        .transientVariable("variable", "somethingElse")
-        .start();
+        .transientVariable("variable", "somethingElse");
+    processInstance = runtimeService.startProcessInstance(processInstanceBuilder);
+
     task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     assertThat(task.getName()).isEqualTo("Default");
     assertThat(runtimeService.getVariables(processInstance.getId())).hasSize(0);
   }
 
-
-
   /* Service task class for previous tests */
-
 
   /**
    * Mimics a service task that fetches data from a server and stored the whole thing

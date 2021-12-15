@@ -249,7 +249,7 @@ public class ProcessRuntimeImplTest {
         given(runtimeService.createProcessInstanceBuilder()).willReturn(processInstanceBuilder);
         org.activiti.engine.runtime.ProcessInstance internalProcessInstance = mock(
             org.activiti.engine.runtime.ProcessInstance.class);
-        given(processInstanceBuilder.create()).willReturn(internalProcessInstance);
+        given(runtimeService.createProcessInstance(processInstanceBuilder)).willReturn(internalProcessInstance);
 
         ProcessInstanceImpl apiProcessInstance = new ProcessInstanceImpl();
         given(processInstanceConverter.from(internalProcessInstance)).willReturn(apiProcessInstance);

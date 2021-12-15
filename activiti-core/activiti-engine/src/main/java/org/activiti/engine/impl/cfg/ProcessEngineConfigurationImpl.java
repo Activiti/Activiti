@@ -2081,7 +2081,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 
   public void initBeans() {
     if (beans == null) {
-      beans = new HashMap<Object, Object>();
+      beans = new HashMap<>();
     }
   }
 

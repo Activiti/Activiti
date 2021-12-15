@@ -19,18 +19,9 @@ package org.activiti.engine.impl.runtime;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.activiti.engine.impl.RuntimeServiceImpl;
-import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.runtime.ProcessInstanceBuilder;
 
-/**
-
-
- */
 public class ProcessInstanceBuilderImpl implements ProcessInstanceBuilder {
-
-  protected RuntimeServiceImpl runtimeService;
-
   protected String processDefinitionId;
   protected String processDefinitionKey;
   protected String messageName;
@@ -39,10 +30,6 @@ public class ProcessInstanceBuilderImpl implements ProcessInstanceBuilder {
   protected String tenantId;
   protected Map<String, Object> variables;
   protected Map<String, Object> transientVariables;
-
-  public ProcessInstanceBuilderImpl(RuntimeServiceImpl runtimeService) {
-    this.runtimeService = runtimeService;
-  }
 
   public ProcessInstanceBuilder processDefinitionId(String processDefinitionId) {
     this.processDefinitionId = processDefinitionId;
@@ -76,7 +63,7 @@ public class ProcessInstanceBuilderImpl implements ProcessInstanceBuilder {
 
   public ProcessInstanceBuilder variables(Map<String, Object> variables) {
     if (this.variables == null) {
-      this.variables = new HashMap<String, Object>();
+      this.variables = new HashMap<>();
     }
     if (variables != null) {
       for (String variableName : variables.keySet()) {
@@ -88,7 +75,7 @@ public class ProcessInstanceBuilderImpl implements ProcessInstanceBuilder {
 
   public ProcessInstanceBuilder variable(String variableName, Object value) {
     if (this.variables == null) {
-      this.variables = new HashMap<String, Object>();
+      this.variables = new HashMap<>();
     }
     this.variables.put(variableName, value);
     return this;
@@ -96,7 +83,7 @@ public class ProcessInstanceBuilderImpl implements ProcessInstanceBuilder {
 
   public ProcessInstanceBuilder transientVariables(Map<String, Object> transientVariables) {
     if (this.transientVariables == null) {
-      this.transientVariables = new HashMap<String, Object>();
+      this.transientVariables = new HashMap<>();
     }
     if (transientVariables != null) {
       for (String variableName : transientVariables.keySet()) {
@@ -108,22 +95,15 @@ public class ProcessInstanceBuilderImpl implements ProcessInstanceBuilder {
 
   public ProcessInstanceBuilder transientVariable(String variableName, Object value) {
     if (this.transientVariables == null) {
-      this.transientVariables = new HashMap<String, Object>();
+      this.transientVariables = new HashMap<>();
     }
     this.transientVariables.put(variableName, value);
     return this;
   }
 
+  @Override
   public boolean hasProcessDefinitionIdOrKey() {
     return this.getProcessDefinitionId() != null || this.getProcessDefinitionKey() != null;
-  }
-
-  public ProcessInstance start() {
-    return runtimeService.startProcessInstance(this);
-  }
-
-  public ProcessInstance create() {
-    return runtimeService.createProcessInstance(this);
   }
 
   public String getProcessDefinitionId() {
