@@ -38,7 +38,7 @@ import org.activiti.engine.runtime.ProcessInstanceBuilder;
 
 
  */
-public class StartProcessInstanceCmd<T> implements Command<ProcessInstance>, Serializable {
+public class StartProcessInstanceCmd implements Command<ProcessInstance>, Serializable {
 
   private static final long serialVersionUID = 1L;
   protected String processDefinitionKey;
@@ -79,8 +79,7 @@ public class StartProcessInstanceCmd<T> implements Command<ProcessInstance>, Ser
       ProcessDefinition processDefinition = processRetriever.getProcessDefinition(this.processDefinitionId, this.processDefinitionKey);
 
       processInstanceHelper = commandContext.getProcessEngineConfiguration().getProcessInstanceHelper();
-      ProcessInstance processInstance = createAndStartProcessInstance(processDefinition, businessKey, processInstanceName, variables, transientVariables);
-      return processInstance;
+    return createAndStartProcessInstance(processDefinition, businessKey, processInstanceName, variables, transientVariables);
   }
 
   protected ProcessInstance createAndStartProcessInstance(ProcessDefinition processDefinition, String businessKey, String processInstanceName,

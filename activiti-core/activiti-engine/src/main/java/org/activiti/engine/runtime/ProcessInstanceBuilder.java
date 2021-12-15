@@ -94,24 +94,4 @@ public interface ProcessInstanceBuilder {
   Map<String, Object> getVariables();
   Map<String, Object> getTransientVariables();
 
-//  /**
-//   * Start the process instance
-//   *
-//   * @throws ActivitiIllegalArgumentException
-//   *           if processDefinitionKey and processDefinitionId are null
-//   * @throws ActivitiObjectNotFoundException
-//   *           when no process definition is deployed with the given processDefinitionKey or processDefinitionId
-//   * **/
-//  ProcessInstance start();
-//
-//  /**
-//   * Create the process instance
-//   *
-//   * @throws ActivitiIllegalArgumentException
-//   *           if processDefinitionKey and processDefinitionId are null
-//   * @throws ActivitiObjectNotFoundException
-//   *           when no process definition is deployed with the given processDefinitionKey or processDefinitionId
-//   * **/
-//  ProcessInstance create();
-
 }

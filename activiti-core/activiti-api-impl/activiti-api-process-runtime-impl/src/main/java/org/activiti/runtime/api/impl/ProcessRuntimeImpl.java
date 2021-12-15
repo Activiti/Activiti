@@ -278,8 +278,8 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
 
     @Override
     public ProcessInstance create(CreateProcessInstancePayload startProcessPayload) {
-        ProcessInstanceBuilder pib = createProcessInstanceBuilder(startProcessPayload);
-        return processInstanceConverter.from(runtimeService.startProcessInstance(pib));
+      return processInstanceConverter.from(
+        runtimeService.createProcessInstance(createProcessInstanceBuilder(startProcessPayload)));
     }
 
     private ProcessInstanceBuilder createProcessInstanceBuilder(StartProcessPayload startProcessPayload) {
@@ -306,12 +306,12 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
 
         checkUserCanWrite(processDefinition.getKey());
 
-        return runtimeService
-            .createProcessInstanceBuilder()
-            .processDefinitionId(processDefinition.getId())
-            .processDefinitionKey(processDefinition.getKey())
-            .businessKey(createProcessPayload.getBusinessKey())
-            .name(createProcessPayload.getName());
+      return runtimeService
+          .createProcessInstanceBuilder()
+          .processDefinitionId(processDefinition.getId())
+          .processDefinitionKey(processDefinition.getKey())
+          .businessKey(createProcessPayload.getBusinessKey())
+          .name(createProcessPayload.getName());
     }
 
     @Override

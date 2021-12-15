@@ -16,6 +16,7 @@
 package org.activiti.runtime.api.impl;
 
 import static java.util.Collections.singletonList;
+import static org.activiti.api.process.model.builders.ProcessPayloadBuilder.newProcessPayloadBuilder;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.ArgumentMatchers.any;
@@ -52,6 +53,7 @@ import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.persistence.entity.DeploymentEntityImpl;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntityImpl;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntityImpl;
+import org.activiti.engine.impl.runtime.ProcessInstanceBuilderImpl;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstanceBuilder;
 import org.activiti.engine.runtime.ProcessInstanceQuery;
@@ -181,7 +183,7 @@ public class ProcessRuntimeImplTest {
 
         given(deploymentConverter.from(latestDeploymentEntity)).willReturn(latestDeployment);
         given(commandExecutor.execute(any()))
-            .willReturn(Arrays.asList(latestDeploymentEntity))
+            .willReturn(List.of(latestDeploymentEntity))
             .willReturn(findProcessDefinitionResult)
             .willReturn(latestDeploymentEntity)
             .willReturn(latestDeployment);
@@ -210,7 +212,7 @@ public class ProcessRuntimeImplTest {
 
         given(deploymentConverter.from(latestDeploymentEntity)).willReturn(deployment);
         given(commandExecutor.execute(any()))
-            .willReturn(Arrays.asList(latestDeploymentEntity))
+            .willReturn(List.of(latestDeploymentEntity))
             .willReturn(findProcessDefinitionResult)
             .willReturn(latestDeploymentEntity);
 
@@ -226,13 +228,12 @@ public class ProcessRuntimeImplTest {
     @Test
     public void should_createAProcessInstance_whenCreateIsCalled() {
         //given
-        String processDefinitionId = "processDefinitionId";
-        ProcessDefinitionImpl processDefinition = new ProcessDefinitionImpl();
-        processDefinition.setId(processDefinitionId);
+      ProcessDefinitionImpl processDefinition = new ProcessDefinitionImpl();
+        processDefinition.setId("myProcessDefinitionId");
         processDefinition.setKey("key");
 
-        CreateProcessInstancePayload createPayload = ProcessPayloadBuilder.create()
-        .withProcessDefinitionId(processDefinitionId)
+        CreateProcessInstancePayload createPayload = newProcessPayloadBuilder()
+        .withProcessDefinitionId("myProcessDefinitionId")
             .withProcessDefinitionKey("key")
             .withName("test-create")
             .build();
@@ -245,10 +246,12 @@ public class ProcessRuntimeImplTest {
 
         doNothing().when(processRuntime).checkUserCanWrite(any());
 
-        ProcessInstanceBuilder processInstanceBuilder = mock(ProcessInstanceBuilder.class, Answers.RETURNS_SELF);
-        given(runtimeService.createProcessInstanceBuilder()).willReturn(processInstanceBuilder);
+        ProcessInstanceBuilder processInstanceBuilder = mock(ProcessInstanceBuilder.class,
+          Answers.RETURNS_SELF);
+
         org.activiti.engine.runtime.ProcessInstance internalProcessInstance = mock(
             org.activiti.engine.runtime.ProcessInstance.class);
+        given(runtimeService.createProcessInstanceBuilder()).willReturn(processInstanceBuilder);
         given(runtimeService.createProcessInstance(processInstanceBuilder)).willReturn(internalProcessInstance);
 
         ProcessInstanceImpl apiProcessInstance = new ProcessInstanceImpl();
