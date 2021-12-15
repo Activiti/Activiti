@@ -21,6 +21,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import javax.el.ELException;
 import javax.el.PropertyNotFoundException;
@@ -120,5 +121,18 @@ public class JuelResolverTest {
             .as("Referencing an unknown function")
             .isThrownBy(() -> expressionResolver.resolveExpression(expressionString, Collections.emptyMap(), Date.class))
             .withMessage("Could not resolve function 'current'");
+    }
+
+    @Test
+    public void should_returnList_when_expressionIsListFunction() {
+        //given
+        String expressionString = "${list(1,'item',3)}";
+        ExpressionResolver expressionResolver = new JuelExpressionResolver();
+
+        //when
+        List result = expressionResolver.resolveExpression(expressionString, Collections.emptyMap(), List.class);
+
+        //then
+        assertThat(result).contains(1l, "item", 3l);
     }
 }

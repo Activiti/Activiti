@@ -108,7 +108,7 @@ public class ExpressionManager {
     }
 
     protected ActivitiElContext createElContext(VariableScope variableScope) {
-        return (ActivitiElContext) new ELContextBuilder().withResolvers(createElResolver(variableScope)).buildWithDateFunctions();
+        return (ActivitiElContext) new ELContextBuilder().withResolvers(createElResolver(variableScope)).buildWithCustomFunctions();
     }
 
     protected ELResolver createElResolver(VariableScope variableScope) {
@@ -150,6 +150,6 @@ public class ExpressionManager {
     public ELContext getElContext(Map<String, Object> availableVariables) {
         CompositeELResolver elResolver = new CompositeELResolver();
         addBaseResolvers(elResolver);
-        return new ELContextBuilder().withResolvers(elResolver).withVariables(availableVariables).buildWithDateFunctions();
+        return new ELContextBuilder().withResolvers(elResolver).withVariables(availableVariables).buildWithCustomFunctions();
     }
 }

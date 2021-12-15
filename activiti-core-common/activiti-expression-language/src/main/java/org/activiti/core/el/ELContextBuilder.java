@@ -16,6 +16,7 @@
 package org.activiti.core.el;
 
 import static org.activiti.core.el.DateResolverHelper.addDateFunctions;
+import static org.activiti.core.el.ListResolverHelper.addListFunctions;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -54,13 +55,14 @@ public class ELContextBuilder {
         return new ActivitiElContext(elResolver);
     }
 
-    public ELContext buildWithDateFunctions() {
+    public ELContext buildWithCustomFunctions() {
         CompositeELResolver elResolver = createCompositeResolver();
         ActivitiElContext elContext = new ActivitiElContext(elResolver);
         try {
             addDateFunctions(elContext);
+            addListFunctions(elContext);
         } catch (NoSuchMethodException e) {
-            logger.error("Error setting up EL date functions", e);
+            logger.error("Error setting up EL custom functions", e);
         }
         return elContext;
     }
