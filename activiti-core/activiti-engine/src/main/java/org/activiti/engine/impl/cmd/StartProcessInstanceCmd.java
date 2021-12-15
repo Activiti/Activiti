@@ -18,6 +18,7 @@ package org.activiti.engine.impl.cmd;
 import java.io.Serializable;
 import java.util.Map;
 
+import org.activiti.engine.impl.ProcessInstanceServiceImpl;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.deploy.DeploymentManager;
@@ -31,12 +32,19 @@ public class StartProcessInstanceCmd implements Command<ProcessInstance>, Serial
 
   private static final long serialVersionUID = 1L;
     private final ProcessInstanceBuilder processInstanceBuilder;
+    private final ProcessInstanceServiceImpl processInstanceService;
     protected ProcessInstanceHelper processInstanceHelper;
 
     public StartProcessInstanceCmd(ProcessInstanceBuilder processInstanceBuilder) {
-        this.processInstanceBuilder = processInstanceBuilder;
+        this(processInstanceBuilder, new ProcessInstanceServiceImpl());
     }
-  public ProcessInstance execute(CommandContext commandContext) {
+
+    public StartProcessInstanceCmd(ProcessInstanceBuilder processInstanceBuilder, ProcessInstanceServiceImpl processInstanceService) {
+        this.processInstanceBuilder = processInstanceBuilder;
+        this.processInstanceService = processInstanceService;
+    }
+
+    public ProcessInstance execute(CommandContext commandContext) {
       DeploymentManager deploymentCache = commandContext.getProcessEngineConfiguration().getDeploymentManager();
 
       ProcessDefinitionRetriever processRetriever = new ProcessDefinitionRetriever(processInstanceBuilder.getTenantId(), deploymentCache);
@@ -51,9 +59,15 @@ public class StartProcessInstanceCmd implements Command<ProcessInstance>, Serial
         processInstanceBuilder.getTransientVariables());
   }
 
-  protected ProcessInstance createAndStartProcessInstance(ProcessDefinition processDefinition, String businessKey, String processInstanceName,
-      Map<String,Object> variables, Map<String, Object> transientVariables) {
-    return processInstanceHelper.createAndStartProcessInstance(processDefinition, businessKey, processInstanceName, variables, transientVariables);
+  protected ProcessInstance createAndStartProcessInstance(
+      ProcessDefinition processDefinition,
+      String businessKey,
+      String processInstanceName,
+      Map<String,Object> variables,
+      Map<String, Object> transientVariables) {
+
+    return processInstanceService.createAndStartProcessInstance(
+        processDefinition, businessKey, processInstanceName, variables, transientVariables);
   }
 
 }
