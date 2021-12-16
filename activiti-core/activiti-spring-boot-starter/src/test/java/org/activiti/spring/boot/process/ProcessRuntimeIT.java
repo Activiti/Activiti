@@ -187,6 +187,28 @@ public class ProcessRuntimeIT {
     }
 
     @Test
+    public void should_allProcessDefinitionsHaveCategoriesSet_when_fetchingProcessDefinitions() {
+        //when
+        List<ProcessDefinition> processDefinitionList = processRuntime.processDefinitions(PAGEABLE)
+            .getContent();
+
+        //then
+        assertThat(processDefinitionList)
+            .extracting(ProcessDefinition::getCategory)
+            .isNotNull();
+
+        Long processDefinitionQuantity = processDefinitionList
+            .stream()
+            .count();
+        Long processDefinitionNonDistinctCategoryQuantity = processDefinitionList
+            .stream()
+            .map(ProcessDefinition::getCategory)
+            .count();
+        assertThat(processDefinitionQuantity).isEqualTo(processDefinitionNonDistinctCategoryQuantity);
+
+    }
+
+    @Test
     public void shouldGetAvailableLatestDeployments() {
 
         //when
