@@ -193,10 +193,6 @@ public class ProcessRuntimeIT {
             .getContent();
 
         //then
-        assertThat(processDefinitionList)
-            .extracting(ProcessDefinition::getCategory)
-            .isNotNull();
-
         Long processDefinitionQuantity = processDefinitionList
             .stream()
             .count();
