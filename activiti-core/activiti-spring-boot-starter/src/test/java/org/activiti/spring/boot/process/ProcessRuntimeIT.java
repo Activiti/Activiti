@@ -193,12 +193,13 @@ public class ProcessRuntimeIT {
         List<ProcessDefinition> processDefinitionList = processRuntime.processDefinitions(PAGEABLE)
             .getContent();
 
+        //then
         List<ProcessDefinition> singleDefinition = processDefinitionList
             .stream()
             .filter(processDefinition -> processDefinition.getKey().equals(CATEGORIZE_HUMAN_PROCESS))
             .collect(Collectors.toList());
+        assertThat(singleDefinition.get(0).getCategory()).isEqualTo(CATEGORIZE_HUMAN_PROCESS_CATEGORY);
 
-        //then
         Long processDefinitionQuantity = processDefinitionList
             .stream()
             .count();
@@ -206,10 +207,8 @@ public class ProcessRuntimeIT {
             .stream()
             .map(ProcessDefinition::getCategory)
             .count();
-
         assertThat(processDefinitionQuantity).isEqualTo(processDefinitionNonDistinctCategoryQuantity);
 
-        assertThat(singleDefinition.get(0).getCategory()).isEqualTo(CATEGORIZE_HUMAN_PROCESS_CATEGORY);
 
     }
 
