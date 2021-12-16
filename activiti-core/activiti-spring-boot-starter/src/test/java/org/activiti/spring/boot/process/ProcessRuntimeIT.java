@@ -75,6 +75,7 @@ public class ProcessRuntimeIT {
     private static final String SUPER_PROCESS = "superProcess";
     private static final Pageable PAGEABLE = Pageable.of(0,
         50);
+    public static final String CATEGORIZE_HUMAN_PROCESS_CATEGORY = "test-category";
 
     @Autowired
     private ProcessRuntime processRuntime;
@@ -192,6 +193,11 @@ public class ProcessRuntimeIT {
         List<ProcessDefinition> processDefinitionList = processRuntime.processDefinitions(PAGEABLE)
             .getContent();
 
+        List<ProcessDefinition> singleDefinition = processDefinitionList
+            .stream()
+            .filter(processDefinition -> processDefinition.getKey().equals(CATEGORIZE_HUMAN_PROCESS))
+            .collect(Collectors.toList());
+
         //then
         Long processDefinitionQuantity = processDefinitionList
             .stream()
@@ -200,7 +206,10 @@ public class ProcessRuntimeIT {
             .stream()
             .map(ProcessDefinition::getCategory)
             .count();
+
         assertThat(processDefinitionQuantity).isEqualTo(processDefinitionNonDistinctCategoryQuantity);
+
+        assertThat(singleDefinition.get(0).getCategory()).isEqualTo(CATEGORIZE_HUMAN_PROCESS_CATEGORY);
 
     }
 
