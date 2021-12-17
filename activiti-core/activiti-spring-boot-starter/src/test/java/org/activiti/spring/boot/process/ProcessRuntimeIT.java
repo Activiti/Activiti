@@ -24,6 +24,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import org.activiti.api.model.shared.model.VariableInstance;
 import org.activiti.api.process.model.Deployment;
@@ -194,21 +195,10 @@ public class ProcessRuntimeIT {
             .getContent();
 
         //then
-        List<ProcessDefinition> singleDefinition = processDefinitionList
-            .stream()
-            .filter(processDefinition -> processDefinition.getKey().equals(CATEGORIZE_HUMAN_PROCESS))
-            .collect(Collectors.toList());
-        assertThat(singleDefinition.get(0).getCategory()).isEqualTo(CATEGORIZE_HUMAN_PROCESS_CATEGORY);
-
-        Long processDefinitionQuantity = processDefinitionList
-            .stream()
-            .count();
-        Long processDefinitionNonDistinctCategoryQuantity = processDefinitionList
-            .stream()
-            .map(ProcessDefinition::getCategory)
-            .count();
-        assertThat(processDefinitionQuantity).isEqualTo(processDefinitionNonDistinctCategoryQuantity);
-
+        assertThat(processDefinitionList)
+            .extracting(ProcessDefinition::getCategory)
+            .contains(CATEGORIZE_HUMAN_PROCESS_CATEGORY)
+            .allMatch(Objects::nonNull);
 
     }
 
