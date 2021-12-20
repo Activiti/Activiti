@@ -162,6 +162,14 @@ public class RuntimeTestConfiguration {
         };
     }
 
+    @Bean(name = "value-processor.process")
+    public Connector valueProcessorConnector() {
+        return integrationContext -> {
+            integrationContext.addOutBoundVariable("providedValue",integrationContext.getInBoundVariable("input"));
+            return integrationContext;
+        };
+    }
+
     @Bean(name = "Tag Image Connector.tagImageActionName")
     public Connector tagImageActionName() {
         return integrationContext -> {

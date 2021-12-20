@@ -52,9 +52,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
-
- */
 public class UserTaskActivityBehavior extends TaskActivityBehavior {
 
   private static final long serialVersionUID = 1L;
@@ -255,7 +252,7 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
   protected Map<String, Object> calculateOutBoundVariables(DelegateExecution execution,
                                                            Map<String, Object> taskVariables) {
     CommandContext commandContext = Context.getCommandContext();
-      if(commandContext.getProcessEngineConfiguration().isCopyVariablesToLocalForTasks()){
+      if (commandContext.getProcessEngineConfiguration().isCopyVariablesToLocalForTasks()) {
           return taskVariables;
       }
       return emptyMap();
@@ -294,6 +291,7 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
       Map<String, Object> outboundVariables = calculateOutBoundVariables(execution,
                                                                          taskVariables);
       processInstanceEntity.setVariables(outboundVariables);
+      execution.setVariablesLocal(outboundVariables);
     }
   }
 
