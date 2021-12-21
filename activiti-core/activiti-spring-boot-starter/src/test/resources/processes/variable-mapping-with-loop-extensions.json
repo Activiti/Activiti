@@ -1,0 +1,50 @@
+{
+  "id": "process-fdee92a0-5a2b-48be-8696-245eff49aa07",
+  "type": "PROCESS",
+  "name": "variable-mapping-with-loop",
+  "extensions": {
+    "Process_N4qkN051N": {
+      "constants": {},
+      "mappings": {
+        "Task_0od1320": {
+          "outputs": {
+            "providedValue": {
+              "type": "variable",
+              "value": "providedValue"
+            }
+          },
+          "inputs": {
+            "input": {
+              "type": "variable",
+              "value": "providedValue"
+            }
+          }
+        },
+        "Task_125yjke": {
+          "outputs": {
+            "providedValue": {
+              "type": "variable",
+              "value": "formInput"
+            }
+          }
+        }
+      },
+      "properties": {
+        "e974d84d-aa76-4acb-903d-97582fe89861": {
+          "id": "e974d84d-aa76-4acb-903d-97582fe89861",
+          "name": "providedValue",
+          "type": "string",
+          "value": "",
+          "required": false
+        }
+      },
+      "assignments": {
+        "Task_125yjke": {
+          "type": "identity",
+          "assignment": "assignee",
+          "id": "Task_125yjke"
+        }
+      }
+    }
+  }
+}
