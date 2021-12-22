@@ -21,6 +21,7 @@ import org.activiti.bpmn.model.MessageEventDefinition;
 import org.activiti.bpmn.model.Process;
 import org.activiti.bpmn.model.SignalEventDefinition;
 import org.activiti.bpmn.model.StartEvent;
+import org.activiti.bpmn.model.TimerEventDefinition;
 import org.activiti.validation.ValidationError;
 import org.activiti.validation.validator.Problems;
 import org.activiti.validation.validator.ProcessLevelValidator;
@@ -39,8 +40,8 @@ public class EventSubprocessValidator extends ProcessLevelValidator {
       for (StartEvent startEvent : startEvents) {
         if (startEvent.getEventDefinitions() != null && !startEvent.getEventDefinitions().isEmpty()) {
           EventDefinition eventDefinition = startEvent.getEventDefinitions().get(0);
-          if (!(eventDefinition instanceof org.activiti.bpmn.model.ErrorEventDefinition) && !(eventDefinition instanceof MessageEventDefinition) && !(eventDefinition instanceof SignalEventDefinition)) {
-            addError(errors, Problems.EVENT_SUBPROCESS_INVALID_START_EVENT_DEFINITION, process, eventSubprocess, "start event of event subprocess must be of type 'error', 'message' or 'signal'");
+          if (!(eventDefinition instanceof org.activiti.bpmn.model.ErrorEventDefinition) && !(eventDefinition instanceof MessageEventDefinition) && !(eventDefinition instanceof SignalEventDefinition) && !(eventDefinition instanceof TimerEventDefinition)) {
+            addError(errors, Problems.EVENT_SUBPROCESS_INVALID_START_EVENT_DEFINITION, process, eventSubprocess, "start event of event subprocess must be of type 'error', 'message', 'signal' or 'timer'");
           }
         }
       }
