@@ -16,4 +16,4 @@ pull_request_rules:
     actions:
       queue:
         method: squash
-        strict: default
+        name: default
