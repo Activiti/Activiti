@@ -1,14 +1,11 @@
-pull_request_rules:
-  - name: automatic merge with strict
+queue_rules:
+  - name: default
     conditions:
-      - author=alfresco-build-user
       - status-success=build
       - label!=do-not-merge
-    actions:
-      merge:
-        method: merge
-        strict: true
-  - name: automatic merge when CI passes and 1 approving reviews and label ready-to-merge
+
+pull_request_rules:
+  - name: queue when all (and at least one) requested reviews approved
     conditions:
       - "#approved-reviews-by>=1"
       - "#review-requested=0"
@@ -17,6 +14,6 @@ pull_request_rules:
       - status-success=license/cla
       - label!=do-not-merge
     actions:
-      merge:
+      queue:
         method: squash
-        strict: true
+        strict: default
