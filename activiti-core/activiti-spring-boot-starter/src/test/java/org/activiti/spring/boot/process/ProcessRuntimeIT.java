@@ -24,6 +24,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import org.activiti.api.model.shared.model.VariableInstance;
 import org.activiti.api.process.model.Deployment;
@@ -75,6 +76,7 @@ public class ProcessRuntimeIT {
     private static final String SUPER_PROCESS = "superProcess";
     private static final Pageable PAGEABLE = Pageable.of(0,
         50);
+    public static final String CATEGORIZE_HUMAN_PROCESS_CATEGORY = "test-category";
 
     @Autowired
     private ProcessRuntime processRuntime;
@@ -184,6 +186,20 @@ public class ProcessRuntimeIT {
                 .contains(CATEGORIZE_PROCESS,
                         CATEGORIZE_HUMAN_PROCESS,
                         ONE_STEP_PROCESS);
+    }
+
+    @Test
+    public void should_allProcessDefinitionsHaveCategoriesSet_when_fetchingProcessDefinitions() {
+        //when
+        List<ProcessDefinition> processDefinitionList = processRuntime.processDefinitions(PAGEABLE)
+            .getContent();
+
+        //then
+        assertThat(processDefinitionList)
+            .extracting(ProcessDefinition::getCategory)
+            .contains(CATEGORIZE_HUMAN_PROCESS_CATEGORY)
+            .allMatch(Objects::nonNull);
+
     }
 
     @Test
