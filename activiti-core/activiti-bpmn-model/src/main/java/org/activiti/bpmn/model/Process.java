@@ -29,15 +29,15 @@ public class Process extends BaseElement implements FlowElementsContainer, HasEx
   protected boolean executable = true;
   protected String documentation;
   protected IOSpecification ioSpecification;
-  protected List<ActivitiListener> executionListeners = new ArrayList<ActivitiListener>();
-  protected List<Lane> lanes = new ArrayList<Lane>();
-  protected List<FlowElement> flowElementList = new ArrayList<FlowElement>();
-  protected List<ValuedDataObject> dataObjects = new ArrayList<ValuedDataObject>();
-  protected List<Artifact> artifactList = new ArrayList<Artifact>();
-  protected List<String> candidateStarterUsers = new ArrayList<String>();
-  protected List<String> candidateStarterGroups = new ArrayList<String>();
-  protected List<EventListener> eventListeners = new ArrayList<EventListener>();
-  protected Map<String, FlowElement> flowElementMap = new LinkedHashMap<String, FlowElement>();
+  protected List<ActivitiListener> executionListeners = new ArrayList<>();
+  protected List<Lane> lanes = new ArrayList<>();
+  protected List<FlowElement> flowElementList = new ArrayList<>();
+  protected List<ValuedDataObject> dataObjects = new ArrayList<>();
+  protected List<Artifact> artifactList = new ArrayList<>();
+  protected List<String> candidateStarterUsers = new ArrayList<>();
+  protected List<String> candidateStarterGroups = new ArrayList<>();
+  protected List<EventListener> eventListeners = new ArrayList<>();
+  protected Map<String, FlowElement> flowElementMap = new LinkedHashMap<>();
 
   // Added during process definition parsing
   protected FlowElement initialFlowElement;

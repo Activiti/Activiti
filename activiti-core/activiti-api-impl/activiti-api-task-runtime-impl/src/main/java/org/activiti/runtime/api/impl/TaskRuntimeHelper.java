@@ -182,24 +182,31 @@ public class TaskRuntimeHelper {
     public org.activiti.engine.task.Task getInternalTaskWithChecks(String taskId) {
         String authenticatedUserId = getAuthenticatedUser();
 
-        if (authenticatedUserId != null && !authenticatedUserId.isEmpty() && securityManager != null) {
-
-            List<String> userRoles = securityManager.getAuthenticatedUserRoles();
-            List<String> userGroups = securityManager.getAuthenticatedUserGroups();
-            org.activiti.engine.task.Task task = taskService.createTaskQuery()
-                                                         .or()
-                                                         .taskCandidateOrAssigned(authenticatedUserId, userGroups)
-                                                         .taskOwner(authenticatedUserId)
-                                                         .endOr()
-                                                         .taskId(taskId)
-                                                         .singleResult();
-            if (task == null) {
-                throw new NotFoundException("Unable to find task for the given id: " + taskId + " for user: " + authenticatedUserId + " (with groups: " + userGroups + " & with roles: " + userRoles + ")");
-            }
-
-            return task;
+        if (authenticatedUserId == null || authenticatedUserId.isEmpty()
+            || securityManager == null) {
+            throw new IllegalStateException(
+                "There is no authenticated user, we need a user authenticated to find tasks");
         }
-        throw new IllegalStateException("There is no authenticated user, we need a user authenticated to find tasks");
+
+        List<String> userRoles = securityManager.getAuthenticatedUserRoles();
+        List<String> userGroups = securityManager.getAuthenticatedUserGroups();
+
+        org.activiti.engine.task.Task task = taskService.createTaskQuery()
+            .or()
+            .taskCandidateOrAssigned(authenticatedUserId, userGroups)
+            .taskOwner(authenticatedUserId)
+            .endOr()
+            .taskId(taskId)
+            .singleResult();
+
+        if (task == null) {
+            throw new NotFoundException(
+                "Unable to find task for the given id: " + taskId + " for user: "
+                    + authenticatedUserId + " (with groups: " + userGroups + " & with roles: "
+                    + userRoles + ")");
+        }
+
+        return task;
     }
 
     public void assertHasAccessToTask(String taskId) {

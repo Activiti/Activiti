@@ -2086,8 +2086,8 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   }
 
   public void initEventDispatcher() {
-    if (this.eventDispatcher == null) {
-      this.eventDispatcher = new ActivitiEventDispatcherImpl();
+    if (eventDispatcher == null) {
+      eventDispatcher = new ActivitiEventDispatcherImpl();
     }
 
     this.eventDispatcher.setEnabled(enableEventDispatcher);
