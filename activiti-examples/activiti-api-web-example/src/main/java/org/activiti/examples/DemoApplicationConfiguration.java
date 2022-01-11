@@ -43,14 +43,19 @@ public class DemoApplicationConfiguration extends WebSecurityConfigurerAdapter {
 
     private Logger logger = LoggerFactory.getLogger(DemoApplicationConfiguration.class);
 
-    @Override
     @Autowired
-    public void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(myUserDetailsService());
+    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(userDetailsService());
     }
 
-    @Bean
-    public UserDetailsService myUserDetailsService() {
+	@Bean
+    @Override
+	public UserDetailsService userDetailsServiceBean() throws Exception {
+        return super.userDetailsServiceBean();
+    }
+
+    @Override
+    public UserDetailsService userDetailsService() {
 
         InMemoryUserDetailsManager inMemoryUserDetailsManager = new InMemoryUserDetailsManager();
 
@@ -83,12 +88,10 @@ public class DemoApplicationConfiguration extends WebSecurityConfigurerAdapter {
                 .authenticated()
                 .and()
                 .httpBasic();
-
-
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder() {
+    public static PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 }
