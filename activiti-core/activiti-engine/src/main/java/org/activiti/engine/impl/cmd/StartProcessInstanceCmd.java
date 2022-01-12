@@ -17,8 +17,6 @@ package org.activiti.engine.impl.cmd;
 
 import java.io.Serializable;
 import java.util.Map;
-
-import org.activiti.engine.impl.ProcessInstanceServiceImpl;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.deploy.DeploymentManager;
@@ -30,44 +28,46 @@ import org.activiti.engine.runtime.ProcessInstance;
 
 public class StartProcessInstanceCmd implements Command<ProcessInstance>, Serializable {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
+
     private final ProcessInstanceBuilder processInstanceBuilder;
-    private final ProcessInstanceServiceImpl processInstanceService;
     protected ProcessInstanceHelper processInstanceHelper;
 
     public StartProcessInstanceCmd(ProcessInstanceBuilder processInstanceBuilder) {
-        this(processInstanceBuilder, new ProcessInstanceServiceImpl());
-    }
-
-    public StartProcessInstanceCmd(ProcessInstanceBuilder processInstanceBuilder, ProcessInstanceServiceImpl processInstanceService) {
         this.processInstanceBuilder = processInstanceBuilder;
-        this.processInstanceService = processInstanceService;
     }
 
     public ProcessInstance execute(CommandContext commandContext) {
-      DeploymentManager deploymentCache = commandContext.getProcessEngineConfiguration().getDeploymentManager();
+        DeploymentManager deploymentCache = commandContext.getProcessEngineConfiguration()
+            .getDeploymentManager();
 
-      ProcessDefinitionRetriever processRetriever = new ProcessDefinitionRetriever(processInstanceBuilder.getTenantId(), deploymentCache);
-      ProcessDefinition processDefinition = processRetriever.getProcessDefinition(processInstanceBuilder.getProcessDefinitionId(), processInstanceBuilder.getProcessDefinitionKey());
+        ProcessDefinitionRetriever processRetriever = new ProcessDefinitionRetriever(
+            processInstanceBuilder.getTenantId(), deploymentCache);
 
-      processInstanceHelper = commandContext.getProcessEngineConfiguration().getProcessInstanceHelper();
-    return createAndStartProcessInstance(
-        processDefinition,
-        processInstanceBuilder.getBusinessKey(),
-        processInstanceBuilder.getProcessInstanceName(),
-        processInstanceBuilder.getVariables(),
-        processInstanceBuilder.getTransientVariables());
-  }
+        ProcessDefinition processDefinition = processRetriever.getProcessDefinition(
+            processInstanceBuilder.getProcessDefinitionId(),
+            processInstanceBuilder.getProcessDefinitionKey());
 
-  protected ProcessInstance createAndStartProcessInstance(
-      ProcessDefinition processDefinition,
-      String businessKey,
-      String processInstanceName,
-      Map<String,Object> variables,
-      Map<String, Object> transientVariables) {
+        processInstanceHelper =
+            commandContext.getProcessEngineConfiguration().getProcessInstanceHelper();
 
-    return processInstanceService.createAndStartProcessInstance(
-        processDefinition, businessKey, processInstanceName, variables, transientVariables);
-  }
+        return createAndStartProcessInstance(
+            processDefinition,
+            processInstanceBuilder.getBusinessKey(),
+            processInstanceBuilder.getProcessInstanceName(),
+            processInstanceBuilder.getVariables(),
+            processInstanceBuilder.getTransientVariables());
+    }
+
+    protected ProcessInstance createAndStartProcessInstance(
+        ProcessDefinition processDefinition,
+        String businessKey,
+        String processInstanceName,
+        Map<String, Object> variables,
+        Map<String, Object> transientVariables) {
+
+        return processInstanceHelper.createAndStartProcessInstance(
+            processDefinition, businessKey, processInstanceName, variables, transientVariables);
+    }
 
 }
