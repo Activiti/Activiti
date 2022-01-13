@@ -21,7 +21,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.activiti.bpmn.model.CallActivity;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.IOParameter;
@@ -51,32 +50,39 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class CallActivityBehavior extends AbstractBpmnActivityBehavior implements SubProcessActivityBehavior {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  protected String processDefinitonKey;
-  protected Expression processDefinitionExpression;
-  protected List<MapExceptionEntry> mapExceptions;
+    protected String processDefinitionKey;
+    protected Expression processDefinitionExpression;
+    protected List<MapExceptionEntry> mapExceptions;
+    private final VariablesPropagator variablesPropagator;
 
-  public CallActivityBehavior(String processDefinitionKey, List<MapExceptionEntry> mapExceptions) {
-    this.processDefinitonKey = processDefinitionKey;
-    this.mapExceptions = mapExceptions;
-  }
+    public CallActivityBehavior(String processDefinitionKey, List<MapExceptionEntry> mapExceptions) {
+        this(processDefinitionKey, mapExceptions, new VariablesPropagator(new NoneVariablesCalculator()));
+    }
+
+    public CallActivityBehavior(String processDefinitionKey, List<MapExceptionEntry> mapExceptions,
+        VariablesPropagator variablesPropagator) {
+        this.processDefinitionKey = processDefinitionKey;
+        this.mapExceptions = mapExceptions;
+        this.variablesPropagator = variablesPropagator;
+    }
 
   public CallActivityBehavior(Expression processDefinitionExpression, List<MapExceptionEntry> mapExceptions) {
+    this(processDefinitionExpression, mapExceptions, new VariablesPropagator(new NoneVariablesCalculator()));
+  }
+
+  public CallActivityBehavior(Expression processDefinitionExpression, List<MapExceptionEntry> mapExceptions,
+      VariablesPropagator variablesPropagator) {
     this.processDefinitionExpression = processDefinitionExpression;
     this.mapExceptions = mapExceptions;
+    this.variablesPropagator = variablesPropagator;
   }
 
   public void execute(DelegateExecution execution) {
 
-    String finalProcessDefinitonKey = null;
-    if (processDefinitionExpression != null) {
-      finalProcessDefinitonKey = (String) processDefinitionExpression.getValue(execution);
-    } else {
-      finalProcessDefinitonKey = processDefinitonKey;
-    }
-
-    ProcessDefinition processDefinition = findProcessDefinition(finalProcessDefinitonKey, execution.getTenantId());
+      String finalProcessDefinitionKey = resolveProcessDefinitionKey(execution);
+      ProcessDefinition processDefinition = findProcessDefinition(finalProcessDefinitionKey, execution.getTenantId());
 
     // Get model from cache
     Process subProcess = ProcessDefinitionUtil.getProcess(processDefinition.getId());
@@ -144,13 +150,19 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
       .dispatchEvent(ActivitiEventBuilder.createProcessStartedEvent(subProcessInitialExecution, variables, false));
 }
 
-public void completing(DelegateExecution execution, DelegateExecution subProcessInstance) throws Exception {
-
-    Map<String, Object> outboundVariables = calculateOutBoundVariables(copyOutParameters(execution, subProcessInstance),
-            subProcessInstance.getVariables());
-    if (outboundVariables != null) {
-        execution.setVariables(outboundVariables);
+    private String resolveProcessDefinitionKey(DelegateExecution execution) {
+        String finalProcessDefinitionKey;
+        if (processDefinitionExpression != null) {
+          finalProcessDefinitionKey = (String) processDefinitionExpression.getValue(execution);
+        } else {
+          finalProcessDefinitionKey = processDefinitionKey;
+        }
+        return finalProcessDefinitionKey;
     }
+
+    public void completing(DelegateExecution execution, DelegateExecution subProcessInstance) throws Exception {
+    copyOutParameters(execution, subProcessInstance);
+    variablesPropagator.propagate(execution, subProcessInstance.getVariables());
 }
 
   public void completed(DelegateExecution execution) throws Exception {
@@ -184,23 +196,10 @@ public void completing(DelegateExecution execution, DelegateExecution subProcess
     subProcessInstance.setVariables(variables);
   }
 
-  public void setProcessDefinitonKey(String processDefinitonKey) {
-    this.processDefinitonKey = processDefinitonKey;
-  }
-
-  public String getProcessDefinitonKey() {
-    return processDefinitonKey;
-  }
-
   protected Map<String, Object> calculateInboundVariables(DelegateExecution execution,
                                                           ProcessDefinition processDefinition) {
     return new HashMap<String, Object>();
   }
-
-  protected Map<String, Object> calculateOutBoundVariables(DelegateExecution execution,
-                                                           Map<String, Object> subProcessVariables) {
-    return new HashMap<String, Object>();
-}
 
 protected Map<String, Object> copyProcessVariables(DelegateExecution execution, ExpressionManager expressionManager,
         CallActivity callActivity, Map<String, Object> variables) {

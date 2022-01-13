@@ -17,24 +17,20 @@ package org.activiti.spring.boot;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
-import static org.codehaus.groovy.runtime.InvokerHelper.asList;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.activiti.api.model.shared.event.VariableCreatedEvent;
-import org.activiti.api.process.model.events.BPMNSequenceFlowTakenEvent;
 import org.activiti.api.process.runtime.connector.Connector;
 import org.activiti.api.process.runtime.events.ProcessCancelledEvent;
 import org.activiti.api.process.runtime.events.ProcessCompletedEvent;
-import org.activiti.api.process.runtime.events.listener.BPMNElementEventListener;
 import org.activiti.api.process.runtime.events.listener.ProcessRuntimeEventListener;
-import org.activiti.api.runtime.shared.events.VariableEventListener;
 import org.activiti.api.task.runtime.events.TaskCandidateGroupAddedEvent;
 import org.activiti.api.task.runtime.events.TaskCandidateGroupRemovedEvent;
 import org.activiti.api.task.runtime.events.TaskCandidateUserAddedEvent;
@@ -305,7 +301,7 @@ public class RuntimeTestConfiguration {
             Integer integerConstantValue = (Integer) inBoundVariables.get(integerConstant);
 
             String[] array = { "first", "John", "Doe", "last" };
-            List<String> list = asList(array);
+            List<String> list = Arrays.asList(array);
 
             Map<String, Object> dataMap = new HashMap<>();
             dataMap.put("age-in-months", 240L);
@@ -363,6 +359,14 @@ public class RuntimeTestConfiguration {
             integrationContext.addOutBoundVariable("outVariable1Name",
                 "value-set-in-connector");
             integrationContext.addOutBoundVariable("sightSeeing", value);
+            return integrationContext;
+        };
+    }
+
+    @Bean(name = "output-connector.output")
+    public Connector outputConnector() {
+        return integrationContext -> {
+            integrationContext.addOutBoundVariable("outString", "From output connector");
             return integrationContext;
         };
     }

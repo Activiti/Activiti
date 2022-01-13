@@ -25,8 +25,7 @@ import org.junit.jupiter.api.Test;
 
 public class MappingAwareActivityBehaviorFactoryTest {
 
-    private MappingAwareActivityBehaviorFactory factory = new MappingAwareActivityBehaviorFactory(null,
-                                                                                                  null);
+    private MappingAwareActivityBehaviorFactory factory = new MappingAwareActivityBehaviorFactory(null, null, null);
 
     @Test
     public void createUserTaskActivityBehaviorShouldReturnMappingAwareUserTaskBehavior() {

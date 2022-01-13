@@ -22,7 +22,7 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
-import static org.mockito.MockitoAnnotations.initMocks;
+import static org.mockito.MockitoAnnotations.openMocks;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,6 +32,7 @@ import org.activiti.bpmn.model.Activity;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.cmd.CompleteTaskCmd;
 import org.activiti.engine.impl.interceptor.CommandContext;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -53,10 +54,17 @@ public class ParallelMultiInstanceBehaviorTest {
     @Mock
     private CommandContext commandContext;
 
+    private AutoCloseable autoCloseable;
+
     @Before
     public void setUp() {
-        initMocks(this);
+        autoCloseable = openMocks(this);
         doReturn(commandContext).when(multiInstanceBehavior).getCommandContext();
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        autoCloseable.close();
     }
 
     @Test
@@ -131,25 +139,7 @@ public class ParallelMultiInstanceBehaviorTest {
     }
 
     @Test
-    public void getResultItemElement_should_useCompleteTaskCmdVariables_when_itsUserTask() {
-        //given
-        Map<String, Object> commandVariables = Collections.singletonMap("var", "value");
-        CompleteTaskCmd cmd = mock(CompleteTaskCmd.class);
-        given(cmd.getTaskVariables()).willReturn(commandVariables);
-        doReturn(cmd).when(commandContext).getCommand();
-
-        given(multiInstanceBehavior.getResultElementItem(commandVariables)).willReturn("result");
-
-        //when
-        Object resultElementItem = multiInstanceBehavior
-            .getResultElementItem(mock(DelegateExecution.class));
-
-        //then
-        assertThat(resultElementItem).isEqualTo("result");
-    }
-
-    @Test
-    public void getResultItemElement_should_useExecutionVariablesLocal_when_itsNotUserTask() {
+    public void getResultItemElement_should_useExecutionVariablesLocal() {
         //given
         Map<String, Object> variablesLocal = Collections.singletonMap("var", "value");
         DelegateExecution childExecution = mock(DelegateExecution.class);

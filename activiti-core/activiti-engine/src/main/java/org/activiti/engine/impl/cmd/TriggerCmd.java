@@ -14,26 +14,23 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.cmd;
 
+import java.util.Map;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
+import org.activiti.engine.impl.bpmn.behavior.VariablesPropagator;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 
-import java.util.Map;
-
-/**
-
-
- */
 public class TriggerCmd extends NeedsActiveExecutionCmd<Object> {
 
   private static final long serialVersionUID = 1L;
 
   protected Map<String, Object> processVariables;
   protected Map<String, Object> transientVariables;
+  private Map<String, Object> availableVariables;
+  private VariablesPropagator variablesPropagator;
 
   public TriggerCmd(String executionId, Map<String, Object> processVariables) {
     super(executionId);
@@ -45,23 +42,31 @@ public class TriggerCmd extends NeedsActiveExecutionCmd<Object> {
     this.transientVariables = transientVariables;
   }
 
-  protected Object execute(CommandContext commandContext, ExecutionEntity execution) {
-    if (processVariables != null) {
-      execution.setVariables(processVariables);
+    public TriggerCmd(String executionId, Map<String, Object> availableVariables, VariablesPropagator variablesPropagator) {
+        super(executionId);
+        this.availableVariables = availableVariables;
+        this.variablesPropagator = variablesPropagator;
     }
 
-    if (transientVariables != null) {
-      execution.setTransientVariables(transientVariables);
+    protected Object execute(CommandContext commandContext, ExecutionEntity execution) {
+        if (processVariables != null) {
+            execution.setVariables(processVariables);
+        }
+
+        if (transientVariables != null) {
+            execution.setTransientVariables(transientVariables);
+        }
+
+        if (variablesPropagator != null ) {
+            variablesPropagator.propagate(execution, availableVariables);
+        }
+
+        Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
+            ActivitiEventBuilder.createActivitiySignalledEvent(execution, null, null));
+
+        Context.getAgenda().planTriggerExecutionOperation(execution);
+        return null;
     }
-
-    Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
-        ActivitiEventBuilder.createActivitiySignalledEvent(execution,
-                                                           null,
-                                                           null));
-
-    Context.getAgenda().planTriggerExecutionOperation(execution);
-    return null;
-  }
 
   @Override
   protected String getSuspendedExceptionMessage() {

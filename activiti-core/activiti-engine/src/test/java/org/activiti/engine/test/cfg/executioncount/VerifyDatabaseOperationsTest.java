@@ -252,8 +252,7 @@ public class VerifyDatabaseOperationsTest extends PluggableActivitiTestCase {
         "selectIdentityLinksByTask", 1L,
         "selectVariablesByTaskId", 1L,
         "selectExecutionsWithSameRootProcessInstanceId", 1L,
-        "selectTasksByExecutionId", 1L,
-        "selectVariablesByExecutionId", 1L
+        "selectTasksByExecutionId", 1L
         );
     assertDatabaseInserts("CompleteTaskCmd",
         "HistoricActivityInstanceEntityImpl", 1L);
@@ -288,9 +287,7 @@ public class VerifyDatabaseOperationsTest extends PluggableActivitiTestCase {
 
   protected void assertDatabaseSelects(String commandClass, Object ... expectedSelects) {
     CommandStats stats = getStats(commandClass);
-    if (expectedSelects.length / 2 != stats.getDbSelects().size()) {
-      fail("Unexpected number of database selects : " + stats.getDbSelects().size());
-    }
+    assertThat(stats.getDbSelects()).hasSize(expectedSelects.length / 2);
 
     for (int i=0; i<expectedSelects.length; i+=2) {
       String dbSelect = (String) expectedSelects[i];

@@ -17,6 +17,8 @@
 package org.activiti.runtime.api.conf;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.activiti.engine.impl.bpmn.behavior.VariablesCalculator;
+import org.activiti.engine.impl.bpmn.behavior.VariablesPropagator;
 import org.activiti.engine.impl.bpmn.parser.factory.DefaultActivityBehaviorFactory;
 import org.activiti.engine.impl.delegate.invocation.DefaultDelegateInterceptor;
 import org.activiti.engine.impl.el.ExpressionManager;
@@ -54,19 +56,23 @@ public class ConnectorsAutoConfiguration {
 
     @Bean(name = DefaultActivityBehaviorFactory.DEFAULT_SERVICE_TASK_BEAN_NAME)
     @ConditionalOnMissingBean(name = DefaultActivityBehaviorFactory.DEFAULT_SERVICE_TASK_BEAN_NAME)
-    public DefaultServiceTaskBehavior defaultServiceTaskBehavior(ApplicationContext applicationContext,
-                                                                 IntegrationContextBuilder integrationContextBuilder,
-                                                                 ExtensionsVariablesMappingProvider outboundVariablesProvider) {
-        return new DefaultServiceTaskBehavior(applicationContext,
-                                              integrationContextBuilder,
-                                              outboundVariablesProvider);
+    public DefaultServiceTaskBehavior defaultServiceTaskBehavior(
+        ApplicationContext applicationContext,
+        IntegrationContextBuilder integrationContextBuilder,
+        VariablesPropagator variablesPropagator) {
+        return new DefaultServiceTaskBehavior(applicationContext, integrationContextBuilder, variablesPropagator);
     }
 
     @Bean
     @ConditionalOnMissingBean
     public ExtensionsVariablesMappingProvider variablesMappingProvider(ProcessExtensionService processExtensionService,
                                                              ExpressionResolver expressionResolver) {
-        return new ExtensionsVariablesMappingProvider(processExtensionService,
-                                            expressionResolver);
+        return new ExtensionsVariablesMappingProvider(processExtensionService, expressionResolver);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public VariablesPropagator variablesPropagator(VariablesCalculator variablesCalculator) {
+        return new VariablesPropagator(variablesCalculator);
     }
 }
