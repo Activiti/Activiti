@@ -77,6 +77,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 
 @Configuration
 @AutoConfigureAfter(CommonRuntimeAutoConfiguration.class)
@@ -141,8 +142,8 @@ public class TaskRuntimeAutoConfiguration {
     }
 
     @Bean
-    public TaskRuntimeConfiguration taskRuntimeConfiguration(@Autowired(required = false) List<TaskRuntimeEventListener<?>> taskRuntimeEventListeners,
-                                                             @Autowired(required = false) List<VariableEventListener<?>> variableEventListeners) {
+    public TaskRuntimeConfiguration taskRuntimeConfiguration(@Autowired(required = false) @Lazy List<TaskRuntimeEventListener<?>> taskRuntimeEventListeners,
+                                                             @Autowired(required = false) @Lazy List<VariableEventListener<?>> variableEventListeners) {
         return new TaskRuntimeConfigurationImpl(getInitializedTaskRuntimeEventListeners(taskRuntimeEventListeners),
                                                 getInitializedTaskRuntimeEventListeners(variableEventListeners));
     }

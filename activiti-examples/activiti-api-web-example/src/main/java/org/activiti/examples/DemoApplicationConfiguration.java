@@ -31,6 +31,8 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.DelegatingPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 
@@ -43,29 +45,36 @@ public class DemoApplicationConfiguration extends WebSecurityConfigurerAdapter {
 
     private Logger logger = LoggerFactory.getLogger(DemoApplicationConfiguration.class);
 
-    @Override
     @Autowired
-    public void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(myUserDetailsService());
+    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(userDetailsService());
     }
 
-    @Bean
-    public UserDetailsService myUserDetailsService() {
+	@Bean
+    @Override
+	public UserDetailsService userDetailsServiceBean() throws Exception {
+        return super.userDetailsServiceBean();
+    }
+
+    @Override
+    public UserDetailsService userDetailsService() {
 
         InMemoryUserDetailsManager inMemoryUserDetailsManager = new InMemoryUserDetailsManager();
 
         String[][] usersGroupsAndRoles = {
-                {"bob", "password", "ROLE_ACTIVITI_USER", "GROUP_activitiTeam"},
-                {"john", "password", "ROLE_ACTIVITI_USER", "GROUP_activitiTeam"},
-                {"hannah", "password", "ROLE_ACTIVITI_USER", "GROUP_activitiTeam"},
-                {"other", "password", "ROLE_ACTIVITI_USER", "GROUP_otherTeam"},
-                {"admin", "password", "ROLE_ACTIVITI_ADMIN"},
+                {"bob", "{bcrypt}password", "ROLE_ACTIVITI_USER", "GROUP_activitiTeam"},
+                {"john", "{bcrypt}password", "ROLE_ACTIVITI_USER", "GROUP_activitiTeam"},
+                {"hannah", "{bcrypt}password", "ROLE_ACTIVITI_USER", "GROUP_activitiTeam"},
+                {"other", "{bcrypt}password", "ROLE_ACTIVITI_USER", "GROUP_otherTeam"},
+                {"admin", "{bcrypt}password", "ROLE_ACTIVITI_ADMIN"},
         };
+
+        PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
 
         for (String[] user : usersGroupsAndRoles) {
             List<String> authoritiesStrings = asList(Arrays.copyOfRange(user, 2, user.length));
             logger.info("> Registering new user: " + user[0] + " with the following Authorities[" + authoritiesStrings + "]");
-            inMemoryUserDetailsManager.createUser(new User(user[0], passwordEncoder().encode(user[1]),
+            inMemoryUserDetailsManager.createUser(new User(user[0], passwordEncoder.encode(user[1]),
                     authoritiesStrings.stream().map(s -> new SimpleGrantedAuthority(s)).collect(Collectors.toList())));
         }
 
@@ -83,12 +92,6 @@ public class DemoApplicationConfiguration extends WebSecurityConfigurerAdapter {
                 .authenticated()
                 .and()
                 .httpBasic();
-
-
     }
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
 }
