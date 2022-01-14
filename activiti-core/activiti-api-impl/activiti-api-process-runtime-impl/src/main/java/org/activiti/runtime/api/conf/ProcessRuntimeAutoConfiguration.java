@@ -135,6 +135,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 
 @Configuration
 @AutoConfigureAfter(CommonRuntimeAutoConfiguration.class)
@@ -266,8 +267,8 @@ public class ProcessRuntimeAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public ProcessRuntimeConfiguration processRuntimeConfiguration(@Autowired(required = false) List<ProcessRuntimeEventListener<?>> processRuntimeEventListeners,
-                                                                   @Autowired(required = false) List<VariableEventListener<?>> variableEventListeners) {
+    public ProcessRuntimeConfiguration processRuntimeConfiguration(@Autowired(required = false) @Lazy List<ProcessRuntimeEventListener<?>> processRuntimeEventListeners,
+                                                                   @Autowired(required = false) @Lazy List<VariableEventListener<?>> variableEventListeners) {
         return new ProcessRuntimeConfigurationImpl(getInitializedListeners(processRuntimeEventListeners),
                 getInitializedListeners(variableEventListeners));
     }

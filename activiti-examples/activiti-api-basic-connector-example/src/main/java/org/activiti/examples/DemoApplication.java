@@ -36,45 +36,49 @@ import org.activiti.api.task.model.builders.TaskPayloadBuilder;
 import org.activiti.api.task.runtime.TaskRuntime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication
-public class DemoApplication implements CommandLineRunner {
+public class DemoApplication {
 
     private Logger logger = LoggerFactory.getLogger(DemoApplication.class);
 
-    @Autowired
-    private ProcessRuntime processRuntime;
+    private final ProcessRuntime processRuntime;
 
-    @Autowired
-    private TaskRuntime taskRuntime;
+    private final TaskRuntime taskRuntime;
 
-    @Autowired
-    private SecurityUtil securityUtil;
+    private final SecurityUtil securityUtil;
 
     private List<VariableCreatedEvent> variableCreatedEvents = new ArrayList<>();
 
     private List<ProcessCompletedEvent> processCompletedEvents = new ArrayList<>();
+
+    public DemoApplication(ProcessRuntime processRuntime, TaskRuntime taskRuntime, SecurityUtil securityUtil) {
+        this.processRuntime = processRuntime;
+        this.taskRuntime = taskRuntime;
+        this.securityUtil = securityUtil;
+    }
 
     public static void main(String[] args) {
         SpringApplication.run(DemoApplication.class,
                               args);
     }
 
-    @Override
-    public void run(String... args) {
-        securityUtil.logInAs("reviewer");
+    @Bean
+    public CommandLineRunner commandLineRunner(){
+        return args -> {
+            securityUtil.logInAs("reviewer");
 
-        listAvailableProcesses();
-        ProcessInstance processInstance = startProcess();
-        listProcessVariables(processInstance);
-        completeAvailableTasks();
-        listAllCreatedVariables();
-        listCompletedProcesses();
+            listAvailableProcesses();
+            ProcessInstance processInstance = startProcess();
+            listProcessVariables(processInstance);
+            completeAvailableTasks();
+            listAllCreatedVariables();
+            listCompletedProcesses();
+        };
     }
 
     private void listCompletedProcesses() {

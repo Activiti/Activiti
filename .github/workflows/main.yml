@@ -75,8 +75,8 @@ jobs:
       - name: Set preview version
         if: ${{ contains(github.head_ref, 'preview') }}
         run: |
-          BRANCH_NAME=${GITHUB_HEAD_REF#refs/heads/}
-          echo 0.0.1-${BRANCH_NAME/\//-}-${GITHUB_RUN_NUMBER}-SNAPSHOT > VERSION
+          GITHUB_PR_NUMBER=PR-${{ github.event.pull_request.number }}
+          echo 0.0.1-${GITHUB_PR_NUMBER}-${GITHUB_RUN_NUMBER}-SNAPSHOT > VERSION
 
       - name: Set VERSION env variable
         if: ${{ github.event_name == 'push' || contains(github.head_ref, 'preview') }}
