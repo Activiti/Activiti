@@ -21,20 +21,20 @@ import org.activiti.api.process.runtime.connector.Connector;
 import org.activiti.bpmn.model.ServiceTask;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.bpmn.behavior.AbstractBpmnActivityBehavior;
-import org.activiti.engine.impl.bpmn.behavior.VariablesCalculator;
+import org.activiti.engine.impl.bpmn.behavior.VariablesPropagator;
 import org.springframework.context.ApplicationContext;
 
 public class DefaultServiceTaskBehavior extends AbstractBpmnActivityBehavior {
 
     private final ApplicationContext applicationContext;
     private final IntegrationContextBuilder integrationContextBuilder;
+    private final VariablesPropagator variablesPropagator;
 
     public DefaultServiceTaskBehavior(ApplicationContext applicationContext,
-                                      IntegrationContextBuilder integrationContextBuilder,
-                                      VariablesCalculator variablesCalculator) {
+        IntegrationContextBuilder integrationContextBuilder, VariablesPropagator variablesPropagator) {
         this.applicationContext = applicationContext;
         this.integrationContextBuilder = integrationContextBuilder;
-        setVariablesCalculator(variablesCalculator);
+        this.variablesPropagator = variablesPropagator;
     }
 
     /**
@@ -46,8 +46,7 @@ public class DefaultServiceTaskBehavior extends AbstractBpmnActivityBehavior {
         Connector connector = getConnector(getImplementation(execution));
         IntegrationContext integrationContext = connector.apply(integrationContextBuilder.from(execution));
 
-        execution.setVariablesLocal(integrationContext.getOutBoundVariables());
-
+        variablesPropagator.propagate(execution, integrationContext.getOutBoundVariables());
         leave(execution);
     }
 

@@ -1,0 +1,21 @@
+{
+  "id": "process-3eff21e6-ef03-440d-9338-c4b19007ad1b",
+  "type": "PROCESS",
+  "name": "child-process",
+  "extensions": {
+    "Process_s-c8TBJ3O": {
+      "constants": {},
+      "mappings": {},
+      "properties": {
+        "3eca36cd-8525-4229-a8fa-e768c4ad4590": {
+          "id": "3eca36cd-8525-4229-a8fa-e768c4ad4590",
+          "name": "childVar",
+          "type": "string",
+          "required": false,
+          "value": "From child"
+        }
+      },
+      "assignments": {}
+    }
+  }
+}

@@ -1,0 +1,66 @@
+{
+  "id": "process-f3d3dec6-8d57-43dc-b714-a3f0c1a93ff4",
+  "type": "PROCESS",
+  "name": "task-callactivity-task",
+  "extensions": {
+    "Process_1wyjgrj": {
+      "constants": {},
+      "mappings": {
+        "Task_0euo580": {
+          "inputs": {
+            "inputText": {
+              "type": "variable",
+              "value": "stringVar"
+            }
+          },
+          "outputs": {
+            "stringVar": {
+              "type": "variable",
+              "value": "inputText"
+            }
+          }
+        },
+        "Task_1mqrjx3": {
+          "inputs": {
+            "outputText": {
+              "type": "variable",
+              "value": "stringVar"
+            }
+          }
+        },
+        "Task_0grnqqm": {
+          "outputs": {
+            "stringVar": {
+              "type": "variable",
+              "value": "childVar"
+            }
+          }
+        }
+      },
+      "properties": {
+        "db8a7cd4-3e63-4718-b204-4b71a5c63bdb": {
+          "id": "db8a7cd4-3e63-4718-b204-4b71a5c63bdb",
+          "name": "stringVar",
+          "type": "string",
+          "required": false
+        }
+      },
+      "assignments": {
+        "Task_0euo580": {
+          "type": "identity",
+          "assignment": "assignee",
+          "id": "Task_0euo580"
+        },
+        "Task_1mqrjx3": {
+          "type": "identity",
+          "assignment": "assignee",
+          "id": "Task_1mqrjx3"
+        }
+      },
+      "templates": {
+        "tasks": {},
+        "default": {}
+      }
+    }
+  }
+}

@@ -15,22 +15,20 @@
  */
 package org.activiti.runtime.api.impl;
 
-import java.util.Map;
-
-import org.activiti.engine.delegate.DelegateExecution;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-
-import static java.util.Collections.emptyMap;
 import static java.util.Collections.singletonMap;
-import static org.activiti.engine.impl.bpmn.behavior.MappingExecutionContext.buildMappingExecutionContext;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.*;
-import static org.mockito.MockitoAnnotations.initMocks;
+import static org.mockito.Mockito.mock;
 
+import java.util.Map;
+import org.activiti.engine.delegate.DelegateExecution;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+@ExtendWith(MockitoExtension.class)
 public class MappingAwareUserTaskBehaviorTest {
 
     @InjectMocks
@@ -38,11 +36,6 @@ public class MappingAwareUserTaskBehaviorTest {
 
     @Mock
     private ExtensionsVariablesMappingProvider mappingProvider;
-
-    @BeforeEach
-    public void setUp() throws Exception {
-        initMocks(this);
-    }
 
     @Test
     public void calculateInputVariablesShouldReturnValueFromMappingProvider() {
@@ -56,22 +49,6 @@ public class MappingAwareUserTaskBehaviorTest {
 
         //then
         assertThat(inputVariables).isEqualTo(providerVariables);
-    }
-
-    @Test
-    public void calculateOutBoundVariablesShouldReturnValueFromMappingProvider() {
-        //given
-        DelegateExecution execution = buildExecution();
-        Map<String, Object> availableVariables = emptyMap();
-        Map<String, Object> providerVariables = singletonMap("var", "value");
-        given(mappingProvider.calculateOutPutVariables(buildMappingExecutionContext(execution),
-                                                       availableVariables))
-                .willReturn(providerVariables);
-        //when
-        Map<String, Object> outBoundVariables = behavior.calculateOutBoundVariables(execution,
-                                                                                    availableVariables);
-        //then
-        assertThat(outBoundVariables).isEqualTo(providerVariables);
     }
 
     private DelegateExecution buildExecution() {

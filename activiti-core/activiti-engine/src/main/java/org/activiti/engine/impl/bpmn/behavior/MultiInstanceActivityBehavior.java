@@ -464,18 +464,6 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
     }
 
     protected Object getResultElementItem(DelegateExecution childExecution) {
-        CommandContext commandContext = getCommandContext();
-        if (commandContext != null && commandContext.getCommand() instanceof CompleteTaskCmd) {
-            //in the case of a User Task, the variables are directly attached to the TaskEntity
-            //and not in the child execution. CompleteTaskCmd will delete the task and all its
-            //variables, but before doing so it's keeping a cache of existing local variables that
-            //can be retrieve here and used int the result collection.
-            Map<String, Object> taskVariables = ((CompleteTaskCmd) commandContext
-                .getCommand()).getTaskVariables();
-            return getResultElementItem(taskVariables);
-        }
-        // in the case where it's not a User Task, the local variables will be available directly
-        // in the child execution
         return getResultElementItem(childExecution.getVariablesLocal());
     }
 
@@ -497,7 +485,7 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
                 NUMBER_OF_COMPLETED_INSTANCES,
                 NUMBER_OF_ACTIVE_INSTANCES);
             HashMap<String, Object> resultItem = new HashMap<>(availableVariables);
-            resultItem.keySet().removeAll(resultItemExclusions);
+            resultItemExclusions.forEach(resultItem.keySet()::remove);
             return resultItem;
         }
     }

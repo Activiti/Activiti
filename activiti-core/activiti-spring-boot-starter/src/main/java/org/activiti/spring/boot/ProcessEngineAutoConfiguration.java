@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.spring.boot;
 
 import static java.util.Collections.emptyList;
@@ -36,6 +35,7 @@ import org.activiti.core.common.spring.project.ApplicationUpgradeContextService;
 import org.activiti.engine.ManagementService;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.cfg.ProcessEngineConfigurator;
+import org.activiti.engine.impl.bpmn.behavior.VariablesPropagator;
 import org.activiti.engine.impl.event.EventSubscriptionPayloadMappingProvider;
 import org.activiti.engine.impl.persistence.StrongUuidGenerator;
 import org.activiti.runtime.api.event.impl.StartMessageSubscriptionConverter;
@@ -234,12 +234,10 @@ public class ProcessEngineAutoConfiguration extends AbstractProcessEngineAutoCon
     @Bean(name = BEHAVIOR_FACTORY_MAPPING_CONFIGURER)
     @ConditionalOnMissingBean(name = BEHAVIOR_FACTORY_MAPPING_CONFIGURER)
     public DefaultActivityBehaviorFactoryMappingConfigurer defaultActivityBehaviorFactoryMappingConfigurer(
-        ExtensionsVariablesMappingProvider variablesMappingProvider,
-                                                                                                           ProcessVariablesInitiator processVariablesInitiator,
-                                                                                                           EventSubscriptionPayloadMappingProvider eventSubscriptionPayloadMappingProvider) {
-        return new DefaultActivityBehaviorFactoryMappingConfigurer(variablesMappingProvider,
-                processVariablesInitiator,
-                eventSubscriptionPayloadMappingProvider);
+        ExtensionsVariablesMappingProvider variablesMappingProvider, ProcessVariablesInitiator processVariablesInitiator,
+        EventSubscriptionPayloadMappingProvider eventSubscriptionPayloadMappingProvider, VariablesPropagator variablesPropagator) {
+        return new DefaultActivityBehaviorFactoryMappingConfigurer(variablesMappingProvider, processVariablesInitiator,
+                eventSubscriptionPayloadMappingProvider, variablesPropagator);
     }
 
     @Bean

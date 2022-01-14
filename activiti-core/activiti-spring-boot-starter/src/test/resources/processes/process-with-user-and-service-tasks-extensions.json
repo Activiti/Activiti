@@ -1,0 +1,56 @@
+{
+  "id": "process-4874fe00-846f-40cc-8ef9-322f1be53231",
+  "type": "PROCESS",
+  "name": "process-with-user-and-service-tasks",
+  "extensions": {
+    "Process_at2zjUes": {
+      "mappings": {
+        "Task_0ym2hxo": {
+          "inputs": {
+            "inputText": {
+              "type": "variable",
+              "value": "stringVar"
+            }
+          },
+          "outputs": {
+            "stringVar": {
+              "type": "variable",
+              "value": "inputText"
+            }
+          }
+        },
+        "ServiceTask_1x2ts02": {
+          "inputs": {
+            "inputString": {
+              "type": "variable",
+              "value": "stringVar"
+            }
+          },
+          "outputs": {
+            "stringVar": {
+              "type": "variable",
+              "value": "outString"
+            }
+          }
+        },
+        "Task_04shfc3": {
+          "inputs": {
+            "outputText": {
+              "type": "variable",
+              "value": "stringVar"
+            }
+          }
+        }
+      },
+      "properties": {
+        "fff89f4b-7ef9-4c7b-b8fc-dd1f654359c2": {
+          "id": "fff89f4b-7ef9-4c7b-b8fc-dd1f654359c2",
+          "name": "stringVar",
+          "type": "string",
+          "value": "default",
+          "required": false
+        }
+      }
+    }
+  }
+}

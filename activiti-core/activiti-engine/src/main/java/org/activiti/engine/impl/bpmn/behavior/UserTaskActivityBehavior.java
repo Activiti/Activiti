@@ -59,9 +59,15 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
   private static final Logger LOGGER = LoggerFactory.getLogger(UserTaskActivityBehavior.class);
 
   protected UserTask userTask;
+  private VariablesPropagator variablesPropagator;
 
   public UserTaskActivityBehavior(UserTask userTask) {
-    this.userTask = userTask;
+      this(userTask, new VariablesPropagator(new CopyVariablesCalculator()));
+  }
+
+  public UserTaskActivityBehavior(UserTask userTask, VariablesPropagator variablesPropagator) {
+      this.userTask = userTask;
+      this.variablesPropagator = variablesPropagator;
   }
 
   public void execute(DelegateExecution execution) {
@@ -249,15 +255,6 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
         }
   }
 
-  protected Map<String, Object> calculateOutBoundVariables(DelegateExecution execution,
-                                                           Map<String, Object> taskVariables) {
-    CommandContext commandContext = Context.getCommandContext();
-      if (commandContext.getProcessEngineConfiguration().isCopyVariablesToLocalForTasks()) {
-          return taskVariables;
-      }
-      return emptyMap();
-  }
-
   public void trigger(DelegateExecution execution, String signalName, Object signalData) {
     CommandContext commandContext = Context.getCommandContext();
 
@@ -277,22 +274,12 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
 
   private void propagateVariablesToProcess(DelegateExecution execution,
                                            CommandContext commandContext) {
-    String processInstanceId = execution.getProcessInstanceId();
-    ExecutionEntity processInstanceEntity = processInstanceId != null ?
-            commandContext.getExecutionEntityManager().findById(processInstanceId) :
-            null;
-
-    if (processInstanceEntity != null) {
       Map<String, Object> taskVariables = new HashMap<>();
 
       if (commandContext.getCommand() instanceof CompleteTaskCmd) {
         taskVariables = ((CompleteTaskCmd) commandContext.getCommand()).getTaskVariables();
       }
-      Map<String, Object> outboundVariables = calculateOutBoundVariables(execution,
-                                                                         taskVariables);
-      processInstanceEntity.setVariables(outboundVariables);
-      execution.setVariablesLocal(outboundVariables);
-    }
+      variablesPropagator.propagate(execution, taskVariables);
   }
 
   @SuppressWarnings({ "unchecked", "rawtypes" })
