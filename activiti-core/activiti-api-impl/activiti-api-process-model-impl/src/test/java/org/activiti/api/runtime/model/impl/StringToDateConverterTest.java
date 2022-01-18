@@ -18,19 +18,17 @@ package org.activiti.api.runtime.model.impl;
 
 import org.junit.jupiter.api.Test;
 
-import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.Date;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 class StringToDateConverterTest {
 
     private StringToDateConverter subject = new StringToDateConverter();
 
     @Test
-    void convertISODateTime() {
+    void convertISODateTimeUTC() {
         //given
         String source = "2022-01-17T00:00:00.000Z";
 
