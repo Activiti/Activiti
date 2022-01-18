@@ -369,6 +369,34 @@ public abstract class AbstractActivitiTestCase extends AbstractTestCase {
     return model;
   }
 
+  public BpmnModel createOneTaskAndStartEventWithFormKeyProcess() {
+    BpmnModel model = new BpmnModel();
+    org.activiti.bpmn.model.Process process = new org.activiti.bpmn.model.Process();
+    model.addProcess(process);
+    process.setId("testProcess");
+    process.setName("Test process");
+
+    StartEvent startEvent = new StartEvent();
+    startEvent.setId("start");
+    startEvent.setFormKey("testFormKey");
+    process.addFlowElement(startEvent);
+
+    UserTask userTask = new UserTask();
+    userTask.setName("The Task");
+    userTask.setId("theTask");
+    userTask.setAssignee("kermit");
+    process.addFlowElement(userTask);
+
+    EndEvent endEvent = new EndEvent();
+    endEvent.setId("theEnd");
+    process.addFlowElement(endEvent);
+
+    process.addFlowElement(new SequenceFlow("start", "theTask"));
+    process.addFlowElement(new SequenceFlow("theTask", "theEnd"));
+
+    return model;
+  }
+
   /**
    * Creates and deploys the one task process. See {@link #createOneTaskTestProcess()}.
    *

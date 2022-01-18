@@ -25,7 +25,9 @@ import org.activiti.bpmn.model.Message;
 import org.activiti.bpmn.model.MessageEventDefinition;
 import org.activiti.bpmn.model.StartEvent;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
+import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.util.CollectionUtil;
+import org.apache.commons.lang3.StringUtils;
 
 /**
 
@@ -68,6 +70,14 @@ public class StartEventParseHandler extends AbstractActivityBpmnParseHandler<Sta
 
       bpmnParse.getCurrentProcess().setInitialFlowElement(element);
     }
+
+      checkStartFormKey(bpmnParse.getCurrentProcessDefinition(), element);
   }
+
+    private void checkStartFormKey(ProcessDefinitionEntity processDefinition, StartEvent startEvent) {
+        if (StringUtils.isNotEmpty(startEvent.getFormKey())) {
+            processDefinition.setStartFormKey(true);
+        }
+    }
 
 }

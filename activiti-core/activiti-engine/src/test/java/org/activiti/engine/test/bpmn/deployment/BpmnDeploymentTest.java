@@ -248,4 +248,15 @@ public class BpmnDeploymentTest extends PluggableActivitiTestCase {
     }
   }
 
+  public void testProcessDefinitionShouldHasStartFormKey() {
+      BpmnModel bpmnModel = createOneTaskAndStartEventWithFormKeyProcess();
+
+      org.activiti.engine.repository.Deployment deployment = repositoryService.createDeployment().addBpmnModel("test.bpmn20.xml", bpmnModel).deploy();
+      ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().deploymentId(deployment.getId()).singleResult();
+
+      assertThat(processDefinition.hasStartFormKey()).isTrue();
+
+      repositoryService.deleteDeployment(deployment.getId());
+  }
+
 }
