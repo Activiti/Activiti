@@ -15,16 +15,29 @@
  */
 package org.activiti.api.runtime.model.impl;
 
-import java.time.Instant;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.TimeZone;
 
 import org.springframework.core.convert.converter.Converter;
 
 @ProcessVariableTypeConverter
 public class StringToDateConverter implements Converter<String, Date> {
 
+    private static SimpleDateFormat ISO_DATE_TIME = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+
+    static {
+      ISO_DATE_TIME.setTimeZone(TimeZone.getTimeZone("UTC"));
+    }
+
     @Override
     public Date convert(String source) {
-        return Date.from(Instant.parse(source));
+        try {
+            return ISO_DATE_TIME.parse(source);
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
