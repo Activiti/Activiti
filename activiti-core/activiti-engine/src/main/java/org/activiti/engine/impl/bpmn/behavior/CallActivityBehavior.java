@@ -170,6 +170,14 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
     leave(execution);
   }
 
+  public void setProcessDefinitionKey(String processDefinitionKey) {
+    this.processDefinitionKey = processDefinitionKey;
+  }
+  
+  public String getProcessDefinitionKey() {
+    return processDefinitionKey;
+  }
+
   // Allow subclass to determine which version of a process to start.
   protected ProcessDefinition findProcessDefinition(String processDefinitionKey, String tenantId) {
     if (tenantId == null || ProcessEngineConfiguration.NO_TENANT_ID.equals(tenantId)) {
