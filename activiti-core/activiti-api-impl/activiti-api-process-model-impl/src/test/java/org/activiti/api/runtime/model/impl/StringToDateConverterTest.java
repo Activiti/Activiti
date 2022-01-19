@@ -40,6 +40,18 @@ class StringToDateConverterTest {
     }
 
     @Test
+    void convertISODateTimeUTC2() {
+        //given
+        String source = "2022-01-17T00:00:00Z";
+
+        //when
+        Date result = subject.convert(source);
+
+        //then
+        assertThat(result).isEqualTo(Instant.parse(source));
+    }
+
+    @Test
     void convertISODateTimeOffset() {
         //given
         String source = "2022-01-17T00:00:00.000-00:00";
@@ -51,4 +63,15 @@ class StringToDateConverterTest {
         assertThat(result).isEqualTo(Date.from(Instant.parse("2022-01-17T00:00:00.000Z")));
     }
 
+    @Test
+    void convertISODateTimeOffset2() {
+        //given
+        String source = "2022-01-17T00:00:00-00:00";
+
+        //when
+        Date result = subject.convert(source);
+
+        //then
+        assertThat(result).isEqualTo(Date.from(Instant.parse("2022-01-17T00:00:00Z")));
+    }
 }
