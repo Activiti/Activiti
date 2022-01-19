@@ -173,7 +173,7 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
   public void setProcessDefinitionKey(String processDefinitionKey) {
     this.processDefinitionKey = processDefinitionKey;
   }
-  
+
   public String getProcessDefinitionKey() {
     return processDefinitionKey;
   }
