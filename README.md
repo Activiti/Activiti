@@ -1,4 +1,4 @@
-Activiti
+Activiti - Miguel's test with Bazel as build tool
 ========
 
 [![Join Us in Gitter](https://badges.gitter.im/Activiti/Activiti7.svg)](https://gitter.im/Activiti/Activiti7?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
