@@ -23,6 +23,8 @@ public class TemplateDefinition {
         VARIABLE,
         FILE;
     }
+    private String subject;
+
     private TemplateType type;
 
     private String value;
@@ -33,6 +35,14 @@ public class TemplateDefinition {
     public TemplateDefinition(TemplateType type, String value) {
         this.type = type;
         this.value = value;
+    }
+
+    public String getSubject() {
+        return subject;
+    }
+
+    public void setSubject(String subject) {
+        this.subject = subject;
     }
 
     public String getValue() {
