@@ -20,8 +20,6 @@ import java.util.Objects;
 
 public class TaskTemplateDefinition {
 
-    private String from;
-
     private TemplateDefinition assignee;
 
     private TemplateDefinition candidate;
@@ -42,28 +40,19 @@ public class TaskTemplateDefinition {
         this.candidate = candidate;
     }
 
-    public String getFrom() {
-        return from;
-    }
-
-    public void setFrom(String from) {
-        this.from = from;
-    }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         TaskTemplateDefinition that = (TaskTemplateDefinition) o;
-        return Objects.equals(from, that.from) &&
-            Objects.equals(assignee, that.assignee) &&
+        return Objects.equals(assignee, that.assignee) &&
             Objects.equals(candidate, that.candidate);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(from,
-                            assignee,
+        return Objects.hash(assignee,
                             candidate);
     }
 

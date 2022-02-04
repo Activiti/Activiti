@@ -23,6 +23,9 @@ public class TemplateDefinition {
         VARIABLE,
         FILE;
     }
+
+    private String from;
+
     private String subject;
 
     private TemplateType type;
@@ -35,6 +38,14 @@ public class TemplateDefinition {
     public TemplateDefinition(TemplateType type, String value) {
         this.type = type;
         this.value = value;
+    }
+
+    public String getFrom() {
+        return from;
+    }
+
+    public void setFrom(String from) {
+        this.from = from;
     }
 
     public String getSubject() {
@@ -62,29 +73,31 @@ public class TemplateDefinition {
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(type, value);
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TemplateDefinition that = (TemplateDefinition) o;
+        return Objects.equals(from, that.from) &&
+            Objects.equals(subject, that.subject) &&
+            type == that.type &&
+            Objects.equals(value, that.value);
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        TemplateDefinition other = (TemplateDefinition) obj;
-        return type == other.type && Objects.equals(value, other.value);
+    public int hashCode() {
+        return Objects.hash(from,
+                            subject,
+                            type,
+                            value);
     }
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("TemplateDefinition [type=").append(type).append(", value=").append(value).append("]");
-        return builder.toString();
+        return "TemplateDefinition{" +
+            "from='" + from + '\'' +
+            ", subject='" + subject + '\'' +
+            ", type=" + type +
+            ", value='" + value + '\'' +
+            '}';
     }
 }

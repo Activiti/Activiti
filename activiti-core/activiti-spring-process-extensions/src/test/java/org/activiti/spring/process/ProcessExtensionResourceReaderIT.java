@@ -75,23 +75,28 @@ public class ProcessExtensionResourceReaderIT {
                 .isNotNull()
                 .extracting(
                     TemplateDefinition::getType,
-                    TemplateDefinition::getValue)
+                    TemplateDefinition::getValue,
+                    TemplateDefinition::getFrom,
+                    TemplateDefinition::getSubject)
                 .containsExactly(
                     FILE,
-                    "classpath:templates/email.html"
+                    "classpath:templates/email.html",
+                    FROM,
+                    "Default assignee subject"
                 );
             assertThat(defaultTemplate.getCandidate())
                 .isNotNull()
                 .extracting(
                     TemplateDefinition::getType,
-                    TemplateDefinition::getValue
+                    TemplateDefinition::getValue,
+                    TemplateDefinition::getFrom,
+                    TemplateDefinition::getSubject
                 ).containsExactly(
                 VARIABLE,
-                "myCandidateTemplateVariable"
+                "myCandidateTemplateVariable",
+                FROM,
+                "Default candidate subject"
             );
-            assertThat(defaultTemplate.getFrom()).isEqualTo(FROM);
-            assertThat(defaultTemplate.getAssignee().getSubject()).isEqualTo("Default assignee subject");
-            assertThat(defaultTemplate.getCandidate().getSubject()).isEqualTo("Default candidate subject");
 
             assertThat(templates.getTasks())
                 .containsOnlyKeys("myTaskId1", "myTaskId2", "myTaskId3");
@@ -100,20 +105,28 @@ public class ProcessExtensionResourceReaderIT {
                 .isNotNull()
                 .extracting(
                     TemplateDefinition::getType,
-                    TemplateDefinition::getValue)
+                    TemplateDefinition::getValue,
+                    TemplateDefinition::getFrom,
+                    TemplateDefinition::getSubject)
                 .containsExactly(
                     FILE,
-                    "https://github.com/leemunroe/responsive-html-email-template/blob/master/email.html"
+                    "https://github.com/leemunroe/responsive-html-email-template/blob/master/email.html",
+                    null,
+                    null
                 );
 
             assertThat(templates.getTasks().get("myTaskId1").getCandidate())
                 .isNotNull()
                 .extracting(
                     TemplateDefinition::getType,
-                    TemplateDefinition::getValue)
+                    TemplateDefinition::getValue,
+                    TemplateDefinition::getFrom,
+                    TemplateDefinition::getSubject)
                 .containsExactly(
                     FILE,
-                    "https://github.com/leemunroe/responsive-html-email-template/blob/master/email-inlined.html"
+                    "https://github.com/leemunroe/responsive-html-email-template/blob/master/email-inlined.html",
+                    null,
+                    null
                 );
 
             assertThat(templates.getTasks().get("myTaskId2").getAssignee())
@@ -127,7 +140,9 @@ public class ProcessExtensionResourceReaderIT {
                 );
             assertThat(templates.getTasks().get("myTaskId2").getCandidate())
                 .isNull();
-            assertThat(defaultTemplate.getFrom()).isEqualTo(FROM);
+            assertThat(templates.getTasks()
+                                .get("myTaskId2")
+                                .getAssignee().getFrom()).isEqualTo(FROM);
             assertThat(templates.getTasks()
                                 .get("myTaskId2")
                                 .getAssignee()
@@ -139,15 +154,15 @@ public class ProcessExtensionResourceReaderIT {
                 .isNotNull()
                 .extracting(
                     TemplateDefinition::getType,
-                    TemplateDefinition::getValue)
+                    TemplateDefinition::getValue,
+                    TemplateDefinition::getFrom,
+                    TemplateDefinition::getSubject)
                 .containsExactly(
                     VARIABLE,
-                    "myCandidateTemplateVariable"
+                    "myCandidateTemplateVariable",
+                    FROM,
+                    "myTaskId3 candidate subject"
                 );
-            assertThat(templates.getTasks()
-                                .get("myTaskId3")
-                                .getCandidate()
-                                .getSubject()).isEqualTo("myTaskId3 candidate subject");
         }
     }
 }
