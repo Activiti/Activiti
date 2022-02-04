@@ -5,6 +5,8 @@
       "templates": {
         "tasks": {
           "myTaskId1": {
+            "from": "no-reply@activiti.org",
+            "subject": "myTaskId1 Subject",
             "assignee": {
               "type": "file",
               "value": "https://github.com/leemunroe/responsive-html-email-template/blob/master/email.html"
@@ -15,12 +17,16 @@
             }
           },
           "myTaskId2": {
+            "from": "no-reply@activiti.org",
+            "subject": "myTaskId2 Subject",
             "assignee": {
               "type": "variable",
               "value": "myAssigneeTemplateVariable"
             }
           },
           "myTaskId3": {
+            "from": "no-reply@activiti.org",
+            "subject": "myTaskId3 Subject",
             "candidate": {
               "type": "variable",
               "value": "myCandidateTemplateVariable"
@@ -28,6 +34,8 @@
           }
         },
         "default": {
+          "from": "no-reply@activiti.org",
+          "subject": "Default Subject",
           "assignee": {
             "type": "file",
             "value": "classpath:templates/email.html"

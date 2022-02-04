@@ -33,6 +33,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 public class ProcessExtensionResourceReaderIT {
 
+    private static String FROM = "no-reply@activiti.org";
+
     @MockBean
     private RepositoryService repositoryService;
 
@@ -87,6 +89,10 @@ public class ProcessExtensionResourceReaderIT {
                 VARIABLE,
                 "myCandidateTemplateVariable"
             );
+            assertThat(defaultTemplate).extracting(TaskTemplateDefinition::getFrom,
+                                                   TaskTemplateDefinition::getSubject)
+                                           .containsExactly(FROM,
+                                                            "Default Subject");
 
             assertThat(templates.getTasks())
                 .containsOnlyKeys("myTaskId1", "myTaskId2", "myTaskId3");
@@ -110,6 +116,11 @@ public class ProcessExtensionResourceReaderIT {
                     FILE,
                     "https://github.com/leemunroe/responsive-html-email-template/blob/master/email-inlined.html"
                 );
+            assertThat(templates.getTasks()
+                                .get("myTaskId1")).extracting(TaskTemplateDefinition::getFrom,
+                                                              TaskTemplateDefinition::getSubject)
+                                                  .containsExactly(FROM,
+                                                                   "myTaskId1 Subject");
 
             assertThat(templates.getTasks().get("myTaskId2").getAssignee())
                 .isNotNull()
@@ -122,6 +133,11 @@ public class ProcessExtensionResourceReaderIT {
                 );
             assertThat(templates.getTasks().get("myTaskId2").getCandidate())
                 .isNull();
+            assertThat(templates.getTasks()
+                                .get("myTaskId2")).extracting(TaskTemplateDefinition::getFrom,
+                                                              TaskTemplateDefinition::getSubject)
+                                                  .containsExactly(FROM,
+                                                                   "myTaskId2 Subject");
 
             assertThat(templates.getTasks().get("myTaskId3").getAssignee())
                 .isNull();
@@ -134,6 +150,11 @@ public class ProcessExtensionResourceReaderIT {
                     VARIABLE,
                     "myCandidateTemplateVariable"
                 );
+            assertThat(templates.getTasks()
+                                .get("myTaskId3")).extracting(TaskTemplateDefinition::getFrom,
+                                                              TaskTemplateDefinition::getSubject)
+                                                  .containsExactly(FROM,
+                                                                   "myTaskId3 Subject");
         }
     }
 }
