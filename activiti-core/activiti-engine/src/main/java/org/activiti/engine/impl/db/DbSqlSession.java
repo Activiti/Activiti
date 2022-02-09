@@ -880,11 +880,16 @@ public class DbSqlSession implements Session {
             for (Class<? extends Entity> entityClass : deletedObjects.keySet()) {
                 flushDeleteEntities(entityClass,
                                     deletedObjects.get(entityClass).values());
+            }
+        }
+        if (bulkDeleteOperations.size() > 0) {
+            for (Class<? extends Entity> entityClass : bulkDeleteOperations.keySet())  {
                 flushBulkDeletes(entityClass);
             }
         }
 
         deletedObjects.clear();
+        bulkDeleteOperations.clear();
     }
 
     protected void flushBulkDeletes(Class<? extends Entity> entityClass) {
@@ -893,6 +898,7 @@ public class DbSqlSession implements Session {
             for (BulkDeleteOperation bulkDeleteOperation : bulkDeleteOperations.get(entityClass)) {
                 bulkDeleteOperation.execute(sqlSession);
             }
+            bulkDeleteOperations.remove(entityClass);
         }
     }
 
