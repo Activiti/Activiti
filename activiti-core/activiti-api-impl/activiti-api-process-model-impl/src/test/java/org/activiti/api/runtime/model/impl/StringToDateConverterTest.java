@@ -17,38 +17,39 @@
 package org.activiti.api.runtime.model.impl;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import java.time.Instant;
 import java.util.Date;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 class StringToDateConverterTest {
 
-    private StringToDateConverter subject = new StringToDateConverter();
+    private static Instant example = Instant.parse("2022-01-17T00:00:00Z");
 
-    @Test
-    void convertISODateTimeUTC() {
-        //given
-        String source = "2022-01-17T00:00:00.000Z";
-
-        //when
-        Date result = subject.convert(source);
-
-        //then
-        assertThat(result).isEqualTo(Instant.parse(source));
+    private static Stream<Arguments> arguments() {
+        return Stream.of(
+            Arguments.of("2022-01-17T00:00:00.000Z", example),
+            Arguments.of("2022-01-17T00:00:00Z", example),
+            Arguments.of("2022-01-17T00:00:00.000-00:00", example),
+            Arguments.of("2022-01-17T00:00:00-00:00", example)
+        );
     }
 
-    @Test
-    void convertISODateTimeOffset() {
-        //given
-        String source = "2022-01-17T00:00:00.000-00:00";
+    private StringToDateConverter subject = new StringToDateConverter();
 
+    @ParameterizedTest
+    @MethodSource("arguments")
+    public void convert(String source, Instant expected) {
         //when
         Date result = subject.convert(source);
 
         //then
-        assertThat(result).isEqualTo(Date.from(Instant.parse("2022-01-17T00:00:00.000Z")));
+        assertThat(result.toInstant()).isEqualTo(expected);
     }
 
 }
