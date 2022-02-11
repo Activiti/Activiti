@@ -9,10 +9,19 @@ repos:
       - id: check-merge-conflict
       - id: fix-byte-order-marker
       - id: mixed-line-ending
-        args: ['--fix=lf']
+        args: [ '--fix=lf' ]
       - id: end-of-file-fixer
       - id: trailing-whitespace
   - repo: https://github.com/sirosen/check-jsonschema
     rev: 0.3.0
     hooks:
       - id: check-github-workflows
+  - repo: https://github.com/Lucas-C/pre-commit-hooks
+    rev: v1.1.10
+    hooks:
+      - id: insert-license
+        types: [ java ]
+        exclude: CronExpression.java
+        args:
+          - --comment-style
+          - '/*| *| */'
