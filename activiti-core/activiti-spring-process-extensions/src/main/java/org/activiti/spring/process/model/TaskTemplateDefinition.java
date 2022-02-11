@@ -40,21 +40,20 @@ public class TaskTemplateDefinition {
         this.candidate = candidate;
     }
 
+
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
         TaskTemplateDefinition that = (TaskTemplateDefinition) o;
-        return Objects.equals(assignee, that.assignee) && Objects
-            .equals(candidate, that.candidate);
+        return Objects.equals(assignee, that.assignee) &&
+            Objects.equals(candidate, that.candidate);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(assignee, candidate);
+        return Objects.hash(assignee,
+                            candidate);
     }
+
 }

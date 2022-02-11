@@ -16,12 +16,16 @@
           },
           "myTaskId2": {
             "assignee": {
+              "from": "no-reply@activiti.org",
+              "subject": "myTaskId2 assignee subject",
               "type": "variable",
               "value": "myAssigneeTemplateVariable"
             }
           },
           "myTaskId3": {
             "candidate": {
+              "from": "no-reply@activiti.org",
+              "subject": "myTaskId3 candidate subject",
               "type": "variable",
               "value": "myCandidateTemplateVariable"
             }
@@ -29,10 +33,14 @@
         },
         "default": {
           "assignee": {
+            "from": "no-reply@activiti.org",
+            "subject": "Default assignee subject",
             "type": "file",
             "value": "classpath:templates/email.html"
           },
           "candidate": {
+            "from": "no-reply@activiti.org",
+            "subject": "Default candidate subject",
             "type": "variable",
             "value": "myCandidateTemplateVariable"
           }
