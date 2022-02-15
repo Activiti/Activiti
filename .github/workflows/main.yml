@@ -43,7 +43,7 @@ jobs:
         uses: Alfresco/alfresco-build-tools/.github/actions/calculate-next-internal-version@aee-7390-pysemver
 
       - name: Display next release version
-        run: echo Next release version ${{steps.next-release.outputs.next-release}}
+        run: echo Next release version ${{steps.next-release.outputs.next-prerelease}}
 
       - name: Setup Java JDK 11
         uses: actions/setup-java@v1
