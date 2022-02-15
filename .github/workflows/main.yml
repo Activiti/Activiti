@@ -40,7 +40,7 @@ jobs:
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-pysemver@aee-7390-pysemver
       - id: next-release
         name: Calculate next internal release
-        uses: Alfresco/alfresco-build-tools/.github/actions/calculate-next-internal-version@aee-7390-pysemver\
+        uses: Alfresco/alfresco-build-tools/.github/actions/calculate-next-internal-version@aee-7390-pysemver
 
       - name: Display next release version
         run: echo Next release version ${{steps.next-release.outputs.next-release}}
