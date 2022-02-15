@@ -27,6 +27,8 @@ jobs:
     runs-on: ubuntu-20.04
     needs: pre-commit
     steps:
+      - name: Calculate next internal release
+        uses: Alfresco/alfresco-build-tools/.github/actions/calculate-next-internal-version@aee-7390-pysemver
 
       - name: Cancel Previous Runs
         uses: styfle/cancel-workflow-action@0.8.0
