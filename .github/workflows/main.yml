@@ -60,8 +60,11 @@ jobs:
           restore-keys: ${{ runner.os }}-m2
 
       - uses: actions/setup-python@v2
+        if: ${{ github.event_name == 'push' }}
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-pysemver@v1.2.0
+        if: ${{ github.event_name == 'push' }}
       - id: next-release
+        if: ${{ github.event_name == 'push' }}
         name: Calculate next internal release
         uses: Alfresco/alfresco-build-tools/.github/actions/calculate-next-internal-version@v1.2.0
 
