@@ -71,15 +71,10 @@ jobs:
       - name: Build with Maven
         run: mvn -B verify
 
-      - name: Install jx-release-version
-        if: ${{ github.event_name == 'push' }}
-        uses: Alfresco/alfresco-build-tools/.github/actions/setup-jx-release-version@v1.1.0
-
-      - name: Bump version with jx-release-version
+      - name: Update VERSION file
         if: ${{ github.event_name == 'push' }}
         run: |
-          git fetch --tags -q
-          echo $(jx-release-version -previous-version=from-tag:7.1 -next-version increment) > VERSION
+          echo ${{steps.next-release.outputs.next-prerelease}} > VERSION
 
       - name: Set preview version
         if: ${{ contains(github.head_ref, 'preview') }}
