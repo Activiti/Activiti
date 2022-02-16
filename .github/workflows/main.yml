@@ -42,9 +42,6 @@ jobs:
         name: Calculate next internal release
         uses: Alfresco/alfresco-build-tools/.github/actions/calculate-next-internal-version@v1.2.0
 
-      - name: Display next release version
-        run: echo Next release version ${{steps.next-release.outputs.next-prerelease}}
-
       - name: Setup Java JDK 11
         uses: actions/setup-java@v1
         with:
