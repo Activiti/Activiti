@@ -90,14 +90,6 @@ jobs:
       - name: Build with Maven
         run: mvn -B verify
 
-      - name: Deploy with Maven
-        if: ${{ github.event_name == 'push' || contains(github.head_ref, 'preview') }}
-        run: |
-          mvn -B -s settings.xml deploy -DskipTests
-        env:
-          MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
-          MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
-
       - name: Configure git user
         if: ${{ github.event_name == 'push' }}
         run: |
@@ -112,6 +104,14 @@ jobs:
           git commit -am "Release $VERSION" --allow-empty
           git tag -fa $VERSION -m "Release version $VERSION"
           git push -f -q origin $VERSION
+
+      - name: Deploy with Maven
+        if: ${{ github.event_name == 'push' || contains(github.head_ref, 'preview') }}
+        run: |
+          mvn -B -s settings.xml deploy -DskipTests
+        env:
+          MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
 
       - name: Install updatebot
         if: ${{ github.event_name == 'push' }}
