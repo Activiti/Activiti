@@ -68,9 +68,6 @@ jobs:
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
 
-      - name: Build with Maven
-        run: mvn -B verify
-
       - name: Update VERSION file
         if: ${{ github.event_name == 'push' }}
         run: |
@@ -89,10 +86,16 @@ jobs:
           echo set VERSION=$VERSION
           echo "VERSION=$VERSION" >> $GITHUB_ENV
 
+      - name: Update pom files to the new version
+        if: ${{ github.event_name == 'push' || contains(github.head_ref, 'preview') }}
+        run: mvn -B versions:set -DnewVersion=$VERSION -DprocessAllModules=true -DgenerateBackupPoms=false
+
+      - name: Build with Maven
+        run: mvn -B verify
+
       - name: Deploy with Maven
         if: ${{ github.event_name == 'push' || contains(github.head_ref, 'preview') }}
         run: |
-          mvn -B versions:set -DnewVersion=$VERSION -DprocessAllModules=true -DgenerateBackupPoms=false
           mvn -B -s settings.xml deploy -DskipTests
         env:
           MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
