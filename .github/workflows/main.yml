@@ -59,18 +59,19 @@ jobs:
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
 
-      - name: Build with Maven
-        run: mvn -B verify
-
-      - name: Install jx-release-version
+      - uses: actions/setup-python@v2
         if: ${{ github.event_name == 'push' }}
-        uses: Alfresco/alfresco-build-tools/.github/actions/setup-jx-release-version@v1.1.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-pysemver@v1.2.0
+        if: ${{ github.event_name == 'push' }}
+      - id: next-release
+        if: ${{ github.event_name == 'push' }}
+        name: Calculate next internal release
+        uses: Alfresco/alfresco-build-tools/.github/actions/calculate-next-internal-version@v1.2.0
 
-      - name: Bump version with jx-release-version
+      - name: Update VERSION file
         if: ${{ github.event_name == 'push' }}
         run: |
-          git fetch --tags -q
-          echo $(jx-release-version -previous-version=from-tag:7.1 -next-version increment) > VERSION
+          echo ${{steps.next-release.outputs.next-prerelease}} > VERSION
 
       - name: Set preview version
         if: ${{ contains(github.head_ref, 'preview') }}
@@ -85,14 +86,12 @@ jobs:
           echo set VERSION=$VERSION
           echo "VERSION=$VERSION" >> $GITHUB_ENV
 
-      - name: Deploy with Maven
+      - name: Update pom files to the new version
         if: ${{ github.event_name == 'push' || contains(github.head_ref, 'preview') }}
-        run: |
-          mvn -B versions:set -DnewVersion=$VERSION -DprocessAllModules=true -DgenerateBackupPoms=false
-          mvn -B -s settings.xml deploy -DskipTests
-        env:
-          MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
-          MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
+        run: mvn -B versions:set -DnewVersion=$VERSION -DprocessAllModules=true -DgenerateBackupPoms=false
+
+      - name: Build with Maven
+        run: mvn -B verify
 
       - name: Configure git user
         if: ${{ github.event_name == 'push' }}
@@ -106,12 +105,20 @@ jobs:
         if: ${{ github.event_name == 'push' }}
         run: |
           git commit -am "Release $VERSION" --allow-empty
-          git tag -fa v$VERSION -m "Release version $VERSION"
-          git push -f -q origin v$VERSION
+          git tag -fa $VERSION -m "Release version $VERSION"
+          git push -f -q origin $VERSION
+
+      - name: Deploy with Maven
+        if: ${{ github.event_name == 'push' || contains(github.head_ref, 'preview') }}
+        run: |
+          mvn -B -s settings.xml deploy -DskipTests
+        env:
+          MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
 
       - name: Install updatebot
         if: ${{ github.event_name == 'push' }}
-        uses: Alfresco/alfresco-build-tools/.github/actions/setup-updatebot@v1.1.0
+        uses: Alfresco/alfresco-build-tools/.github/actions/setup-updatebot@v1.2.0
 
       - name: Run updatebot
         if: ${{ github.event_name == 'push' }}
