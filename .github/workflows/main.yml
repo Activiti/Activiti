@@ -113,8 +113,8 @@ jobs:
         if: ${{ github.event_name == 'push' }}
         run: |
           git commit -am "Release $VERSION" --allow-empty
-          git tag -fa v$VERSION -m "Release version $VERSION"
-          git push -f -q origin v$VERSION
+          git tag -fa $VERSION -m "Release version $VERSION"
+          git push -f -q origin $VERSION
 
       - name: Install updatebot
         if: ${{ github.event_name == 'push' }}
