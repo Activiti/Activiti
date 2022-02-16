@@ -37,10 +37,10 @@ jobs:
         uses: actions/checkout@v2
 
       - uses: actions/setup-python@v2
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-pysemver@aee-7390-pysemver
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-pysemver@v1.2.0
       - id: next-release
         name: Calculate next internal release
-        uses: Alfresco/alfresco-build-tools/.github/actions/calculate-next-internal-version@aee-7390-pysemver
+        uses: Alfresco/alfresco-build-tools/.github/actions/calculate-next-internal-version@v1.2.0
 
       - name: Display next release version
         run: echo Next release version ${{steps.next-release.outputs.next-prerelease}}
@@ -118,7 +118,7 @@ jobs:
 
       - name: Install updatebot
         if: ${{ github.event_name == 'push' }}
-        uses: Alfresco/alfresco-build-tools/.github/actions/setup-updatebot@v1.1.0
+        uses: Alfresco/alfresco-build-tools/.github/actions/setup-updatebot@v1.2.0
 
       - name: Run updatebot
         if: ${{ github.event_name == 'push' }}
