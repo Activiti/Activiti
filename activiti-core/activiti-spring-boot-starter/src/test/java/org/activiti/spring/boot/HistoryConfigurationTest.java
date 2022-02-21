@@ -121,6 +121,7 @@ public class HistoryConfigurationTest {
                      processDefinitionConverter,
                      runtimeService,
                      processInstanceConverter,
+                     variableInstanceConverter,
                      eventPublisher,
                      processVariablesValidator));
 

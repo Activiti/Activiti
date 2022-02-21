@@ -202,11 +202,13 @@ public class ProcessRuntimeAutoConfiguration {
                                                    RuntimeService runtimeService,
                                                    APIProcessInstanceConverter processInstanceConverter,
                                                    ApplicationEventPublisher eventPublisher,
-                                                   ProcessVariablesPayloadValidator processVariablesValidator) {
+                                                   ProcessVariablesPayloadValidator processVariablesValidator,
+                                                   APIVariableInstanceConverter variableInstanceConverter) {
         return new ProcessAdminRuntimeImpl(repositoryService,
                 processDefinitionConverter,
                 runtimeService,
                 processInstanceConverter,
+                variableInstanceConverter,
                 eventPublisher,
                 processVariablesValidator
         );

@@ -159,6 +159,7 @@ public class ProcessRuntimeIT {
                                                      processDefinitionConverter,
                                                      runtimeService,
                                                      processInstanceConverter,
+                                                     variableInstanceConverter,
                                                      eventPublisher,
                                                      processVariablesValidator));
 
