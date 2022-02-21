@@ -22,6 +22,7 @@ import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
 import org.activiti.api.process.runtime.ProcessRuntime;
 import org.activiti.api.process.runtime.conf.ProcessRuntimeConfiguration;
+import org.activiti.api.runtime.shared.security.SecurityManager;
 import org.activiti.core.common.spring.security.policies.ProcessSecurityPoliciesManager;
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.RepositoryService;
@@ -91,6 +92,9 @@ public class HistoryConfigurationTest {
     @Autowired
     private APIDeploymentConverter deploymentConverter;
 
+    @Autowired
+    private SecurityManager securityManager;
+
 
     @AfterEach
     public void cleanUp(){
@@ -110,7 +114,8 @@ public class HistoryConfigurationTest {
                      deploymentConverter,
                      configuration,
                      eventPublisher,
-                     processVariablesValidator));
+                     processVariablesValidator,
+                     securityManager));
 
         spy(new ProcessAdminRuntimeImpl(repositoryService,
                      processDefinitionConverter,

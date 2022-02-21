@@ -47,6 +47,7 @@ import org.activiti.api.process.runtime.events.ProcessSuspendedEvent;
 import org.activiti.api.process.runtime.events.ProcessUpdatedEvent;
 import org.activiti.api.process.runtime.events.listener.BPMNElementEventListener;
 import org.activiti.api.process.runtime.events.listener.ProcessRuntimeEventListener;
+import org.activiti.api.runtime.shared.security.SecurityManager;
 import org.activiti.api.runtime.shared.events.VariableEventListener;
 import org.activiti.common.util.DateFormatterProvider;
 import org.activiti.core.common.spring.security.policies.ProcessSecurityPoliciesManager;
@@ -179,7 +180,8 @@ public class ProcessRuntimeAutoConfiguration {
                                          APIDeploymentConverter apiDeploymentConverter,
                                          ProcessRuntimeConfiguration processRuntimeConfiguration,
                                          ApplicationEventPublisher eventPublisher,
-                                         ProcessVariablesPayloadValidator processVariablesValidator) {
+                                         ProcessVariablesPayloadValidator processVariablesValidator,
+                                         SecurityManager securityManager) {
         return new ProcessRuntimeImpl(repositoryService,
                 processDefinitionConverter,
                 runtimeService,
@@ -189,7 +191,8 @@ public class ProcessRuntimeAutoConfiguration {
                 apiDeploymentConverter,
                 processRuntimeConfiguration,
                 eventPublisher,
-                processVariablesValidator);
+                processVariablesValidator,
+                securityManager);
     }
 
     @Bean
