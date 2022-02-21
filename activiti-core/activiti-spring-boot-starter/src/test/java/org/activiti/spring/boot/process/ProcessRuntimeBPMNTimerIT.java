@@ -245,7 +245,7 @@ public class ProcessRuntimeBPMNTimerIT {
                 );
     }
 
-    @Test
+    //@Test
     public void shouldExecuteProcessWithTimerStartExtension() {
 
         securityUtil.logInAs("user");
