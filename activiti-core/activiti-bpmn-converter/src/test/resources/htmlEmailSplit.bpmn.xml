@@ -1,0 +1,121 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<bpmn2:definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/processdef" xmlns:modeler="http://activiti.com/modeler" modeler:version="1.0en" modeler:exportDateTime="20220221092500586" modeler:modelId="209" modeler:modelVersion="2" modeler:modelLastUpdated="1645415475394">
+  <bpmn2:process id="EmailSplitNew" name="EmailSplitNew" isExecutable="true">
+    <extensionElements>
+      <modeler:deleteallvariables xmlns:modeler="http://activiti.com/modeler" modeler:deleteallvariables="false"/>
+    </extensionElements>
+    <bpmn2:startEvent id="startEvent1">
+      <extensionElements>
+        <modeler:editor-resource-id><![CDATA[startEvent1]]></modeler:editor-resource-id>
+      </extensionElements>
+      <bpmn2:outgoing>sid-A7C95671-7A26-46B2-AB21-3F891643A46C</bpmn2:outgoing>
+    </bpmn2:startEvent>
+    <bpmn2:userTask id="userTask" activiti:assignee="$INITIATOR">
+      <extensionElements>
+        <modeler:allow-send-email><![CDATA[true]]></modeler:allow-send-email>
+        <modeler:email-template email-template-type="custom" email-template-subject="CutoffNotifictaion"><![CDATA[<html>
+<body style="background-color: #ffffff; padding: 0; margin: 0;">
+<table width="100%" height="400" cellpadding="0" cellspacing="0" style="margin:0; padding:0">
+<tr height="20"><td colspan="3"></td></tr>
+<tr>
+<td width="10%"></td>
+<td width="80%" valign="top" >
+<table width="100%" cellpadding="0" cellspacing="0">
+<tr style="color:#ffffff; background-color: #000000;" height="15"><td colspan="3"></td></tr>
+<tr style="color:#ffffff; background-color: #000000;">
+<td width="15"></td>
+<td valign="center"style="font-size: 16px;font-family: 'Open Sans', Helvetica, sans-serif; font-weight: bold; ">Tem uma nova tarefa no Flow</td>
+<td width="15"></td>
+</tr>
+<tr style="color:#ffffff; background-color: #000000;" height="15"><td colspan="3"></td></tr>
+<tr height="1" style="background-color: #e8edf1;"><td colspan="3"></td></tr>
+<tr colspan="3" height="25"><td></td></tr>
+<tr>
+<td width="15"></td>
+<td valign="top" style="font-size: 14px;font-family: 'Open Sans', Helvetica, sans-serif;">
+<p>Processo: NAC - Declarações - Preencher declaração</p>
+<p>ID da instância do processo: ${currentProcessInstanceId}</p>
+<p>Tipo de declaração: ${tipo_declaracao_LABEL}</p>
+<p>Ref.: ${referencia_concurso}</p>
+<p>Papel no concurso: ${papel}</p>
+<p>Tem uma nova tarefa no Flow para, como ${papel}, descarregar a declaração do tipo ${tipo_declaracao_LABEL} para o ${referencia_concurso}, validar e/ou corrigir os campos pré preenchidos e submeter o documento assinado.</p>
+</td>
+<td width="15"></td>
+</tr>
+<tr height="30"><td colspan="3"></td></tr>
+<tr>
+<td width="15"></td>
+<td valign="top">
+<table style="background-color: #ffffff;" width="100%" cellpadding="0" cellspacing="0">
+<tr>
+<td valign="middle" style="font-size: 15px;font-family: 'Open Sans', Helvetica, sans-serif; text-align: left; font-weight: bold; color: #ffffff;">
+<a href="${taskDirectUrl}" title="Open the task" style="text-decoration: none; text-align: center;color: #ffffff; display: inline-block; width: 300px; padding: 10px 0px;background-color: #92d400; border-radius: 3px; -moz-border-radius: 3px; -webkit-border-radius: 3px;">Clique aqui para assinar e submeter declaração</a>
+</td>
+</tr>
+</table>
+</td>
+<td width="15"></td>
+</tr>
+<tr height="15"><td colspan="3"></td></tr>
+<tr height="1" style="background-color: #e8edf1;"><td colspan="3"></td></tr>
+<tr height="15"><td colspan="3"></td></tr>
+<tr>
+<td width="15"></td>
+<td style="font-size: 11px;font-family: 'Open Sans', Helvetica, sans-serif; color:#666666;">
+Este email foi enviado pelo <a href="${homeUrl}" style="color: #666666;">Flow</a>. Por favor, não responda a este email.
+</td>
+<td width="15"></td>
+</tr>
+<tr height="25"><td colspan="3"></td></tr>
+</table>
+</td>
+<td width="10%"></td>
+</tr>
+</table>
+</body>
+</html>]]></modeler:email-template>
+        <modeler:activiti-idm-initiator><![CDATA[true]]></modeler:activiti-idm-initiator>
+        <modeler:editor-resource-id><![CDATA[sid-2C92AF10-8737-4997-9DA1-3A9A89DA98F9]]></modeler:editor-resource-id>
+      </extensionElements>
+      <bpmn2:incoming>sid-A7C95671-7A26-46B2-AB21-3F891643A46C</bpmn2:incoming>
+      <bpmn2:outgoing>sid-B3CCF258-B629-434B-844A-1C9B1F52F951</bpmn2:outgoing>
+    </bpmn2:userTask>
+    <bpmn2:sequenceFlow id="sid-A7C95671-7A26-46B2-AB21-3F891643A46C" sourceRef="startEvent1" targetRef="sid-2C92AF10-8737-4997-9DA1-3A9A89DA98F9">
+      <extensionElements>
+        <modeler:editor-resource-id><![CDATA[sid-A7C95671-7A26-46B2-AB21-3F891643A46C]]></modeler:editor-resource-id>
+      </extensionElements>
+    </bpmn2:sequenceFlow>
+    <bpmn2:endEvent id="sid-A0CED87B-EF31-4B97-BA16-EAA7777A83E5">
+      <extensionElements>
+        <modeler:editor-resource-id><![CDATA[sid-A0CED87B-EF31-4B97-BA16-EAA7777A83E5]]></modeler:editor-resource-id>
+      </extensionElements>
+      <bpmn2:incoming>sid-B3CCF258-B629-434B-844A-1C9B1F52F951</bpmn2:incoming>
+    </bpmn2:endEvent>
+    <bpmn2:sequenceFlow id="sid-B3CCF258-B629-434B-844A-1C9B1F52F951" sourceRef="sid-2C92AF10-8737-4997-9DA1-3A9A89DA98F9" targetRef="sid-A0CED87B-EF31-4B97-BA16-EAA7777A83E5">
+      <extensionElements>
+        <modeler:editor-resource-id><![CDATA[sid-B3CCF258-B629-434B-844A-1C9B1F52F951]]></modeler:editor-resource-id>
+      </extensionElements>
+    </bpmn2:sequenceFlow>
+  </bpmn2:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_EmailSplitNew">
+    <bpmndi:BPMNPlane bpmnElement="EmailSplitNew" id="BPMNPlane_EmailSplitNew">
+      <bpmndi:BPMNShape bpmnElement="startEvent1" id="BPMNShape_startEvent1">
+        <omgdc:Bounds height="30.0" width="30.0" x="100.0" y="163.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sid-2C92AF10-8737-4997-9DA1-3A9A89DA98F9" id="BPMNShape_sid-2C92AF10-8737-4997-9DA1-3A9A89DA98F9">
+        <omgdc:Bounds height="80.0" width="100.0" x="175.0" y="138.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sid-A0CED87B-EF31-4B97-BA16-EAA7777A83E5" id="BPMNShape_sid-A0CED87B-EF31-4B97-BA16-EAA7777A83E5">
+        <omgdc:Bounds height="28.0" width="28.0" x="320.0" y="164.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="sid-A7C95671-7A26-46B2-AB21-3F891643A46C" id="BPMNEdge_sid-A7C95671-7A26-46B2-AB21-3F891643A46C">
+        <omgdi:waypoint x="130.0" y="178.0"/>
+        <omgdi:waypoint x="175.0" y="178.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-B3CCF258-B629-434B-844A-1C9B1F52F951" id="BPMNEdge_sid-B3CCF258-B629-434B-844A-1C9B1F52F951">
+        <omgdi:waypoint x="275.0" y="178.0"/>
+        <omgdi:waypoint x="320.0" y="178.0"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn2:definitions>

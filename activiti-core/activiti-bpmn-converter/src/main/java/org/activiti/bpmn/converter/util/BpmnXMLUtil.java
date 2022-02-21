@@ -155,10 +155,11 @@ public class BpmnXMLUtil implements BpmnXMLConstants {
       xtr.next();
       if (xtr.isCharacters() || XMLStreamReader.CDATA == xtr.getEventType()) {
           if (StringUtils.isNotEmpty(xtr.getText().trim())) {
-              if(StringUtils.isBlank(extensionElement.getElementText()))
+              if (StringUtils.isBlank(extensionElement.getElementText())) {
                   extensionElement.setElementText(xtr.getText().trim());
-              else
+              } else {
                   extensionElement.setElementText(extensionElement.getElementText().concat(xtr.getText().trim()));
+              }
           }
       } else if (xtr.isStartElement()) {
         ExtensionElement childExtensionElement = parseExtensionElement(xtr);
