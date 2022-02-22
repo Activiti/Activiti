@@ -74,6 +74,11 @@ public interface ProcessRuntime {
     ProcessInstance start(StartProcessPayload startProcessPayload);
 
     /**
+     * Start a new Process Instance based on the payload parameters
+     */
+    ProcessInstance start(StartProcessPayload startProcessPayload,String tenantId);
+
+    /**
      * Start an already created Process Instance based on the process instance id
      */
     ProcessInstance startCreatedProcess(String processInstanceId, StartProcessPayload startProcessPayload);
@@ -82,6 +87,11 @@ public interface ProcessRuntime {
      * Create a new Process Instance based on the payload parameters
      */
     ProcessInstance create(CreateProcessInstancePayload startProcessPayload);
+
+    /**
+     * Create a new Process Instance based on the payload parameters
+     */
+    ProcessInstance create(CreateProcessInstancePayload startProcessPayload,String tenantId);
 
     /**
      * Get all process instances by pages

@@ -256,9 +256,12 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
 
     @Override
     public ProcessInstance start(StartProcessPayload startProcessPayload) {
+        return processInstanceConverter.from(this.createProcessInstanceBuilder(startProcessPayload,null).start());
+    }
 
-
-        return processInstanceConverter.from(this.createProcessInstanceBuilder(startProcessPayload).start());
+    @Override
+    public ProcessInstance start(StartProcessPayload startProcessPayload, String tenantId) {
+        return processInstanceConverter.from(this.createProcessInstanceBuilder(startProcessPayload,tenantId).start());
     }
 
     @Override
@@ -280,34 +283,45 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
 
     @Override
     public ProcessInstance create(CreateProcessInstancePayload startProcessPayload) {
-        return processInstanceConverter.from(createProcessInstanceBuilder(startProcessPayload).create());
+        return processInstanceConverter.from(createProcessInstanceBuilder(startProcessPayload,null).create());
     }
 
-    private ProcessInstanceBuilder createProcessInstanceBuilder(StartProcessPayload startProcessPayload) {
+    @Override
+    public ProcessInstance create(CreateProcessInstancePayload startProcessPayload,String tenantId) {
+        return processInstanceConverter.from(createProcessInstanceBuilder(startProcessPayload,tenantId).create());
+    }
+
+    private ProcessInstanceBuilder createProcessInstanceBuilder(StartProcessPayload startProcessPayload,String tenantId) {
         ProcessDefinition processDefinition = getProcessDefinitionAndCheckUserHasRights(startProcessPayload.getProcessDefinitionId(),
             startProcessPayload.getProcessDefinitionKey());
 
         processVariablesValidator.checkStartProcessPayloadVariables(startProcessPayload, processDefinition.getId());
-
-        return runtimeService
+        ProcessInstanceBuilder processInstanceBuilder = runtimeService
             .createProcessInstanceBuilder()
             .processDefinitionId(processDefinition.getId())
             .processDefinitionKey(processDefinition.getKey())
             .businessKey(startProcessPayload.getBusinessKey())
             .variables(startProcessPayload.getVariables())
             .name(startProcessPayload.getName());
+        if(tenantId != null){
+            processInstanceBuilder.tenantId(tenantId);
+        }
+        return processInstanceBuilder;
     }
 
-    private ProcessInstanceBuilder createProcessInstanceBuilder(CreateProcessInstancePayload createProcessPayload) {
+    private ProcessInstanceBuilder createProcessInstanceBuilder(CreateProcessInstancePayload createProcessPayload,String tenantId) {
         ProcessDefinition processDefinition = getProcessDefinitionAndCheckUserHasRights(createProcessPayload.getProcessDefinitionId(),
             createProcessPayload.getProcessDefinitionKey());
-
-        return runtimeService
+        ProcessInstanceBuilder processInstanceBuilder = runtimeService
             .createProcessInstanceBuilder()
             .processDefinitionId(processDefinition.getId())
             .processDefinitionKey(processDefinition.getKey())
             .businessKey(createProcessPayload.getBusinessKey())
             .name(createProcessPayload.getName());
+        if(tenantId != null){
+            processInstanceBuilder.tenantId(tenantId);
+        }
+        return processInstanceBuilder;
     }
 
     @Override
