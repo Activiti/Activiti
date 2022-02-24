@@ -31,10 +31,15 @@ public class ProcessPayloadBuilder {
     }
 
     public static CreateProcessPayloadBuilder create() {
-        return new CreateProcessPayloadBuilder();
+      return new CreateProcessPayloadBuilder();
     }
 
-    public static StartProcessPayloadBuilder start(StartProcessPayload from) {
+    public static CreateProcessPayloadBuilder newProcessPayloadBuilder() {
+      return new CreateProcessPayloadBuilder();
+    }
+
+
+  public static StartProcessPayloadBuilder start(StartProcessPayload from) {
         return new StartProcessPayloadBuilder().withBusinessKey(from.getBusinessKey())
                                                .withName(from.getName())
                                                .withProcessDefinitionId(from.getProcessDefinitionId())

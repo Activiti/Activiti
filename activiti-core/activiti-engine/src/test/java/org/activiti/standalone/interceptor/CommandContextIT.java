@@ -25,7 +25,6 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 
 public class CommandContextIT extends PluggableActivitiTestCase {
-
     public void testCommandContextGetCurrentAfterException() {
         try {
             processEngineConfiguration.getCommandExecutor().execute(new Command<Object>() {
@@ -41,4 +40,5 @@ public class CommandContextIT extends PluggableActivitiTestCase {
 
         assertThat(Context.getCommandContext()).isNull();
     }
+
 }

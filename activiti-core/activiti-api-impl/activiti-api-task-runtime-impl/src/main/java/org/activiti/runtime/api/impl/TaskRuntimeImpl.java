@@ -144,7 +144,9 @@ public class TaskRuntimeImpl implements TaskRuntime {
         //@TODO: not the most efficient way to return the just completed task, improve
         //      we might need to create an empty shell with the task ID and Status only
         Task task;
+
         String authenticatedUserId = securityManager.getAuthenticatedUserId();
+
         try {
             task = task(completeTaskPayload.getTaskId());
         } catch (IllegalStateException ex) {
@@ -173,12 +175,14 @@ public class TaskRuntimeImpl implements TaskRuntime {
     @Override
     public Task claim(ClaimTaskPayload claimTaskPayload) {
         // Validate that the task is visible by the currently authorized user
+
         Task task;
         try {
             task = task(claimTaskPayload.getTaskId());
         } catch (IllegalStateException ex) {
             throw new IllegalStateException("The authenticated user cannot claim task" + claimTaskPayload.getTaskId() + " due it is not a candidate for it");
         }
+
         // validate the task doesn't have an assignee
         if (task.getAssignee() != null && !task.getAssignee().isEmpty()) {
             throw new IllegalStateException("The task was already claimed, the assignee of this task needs to release it first for you to claim it");

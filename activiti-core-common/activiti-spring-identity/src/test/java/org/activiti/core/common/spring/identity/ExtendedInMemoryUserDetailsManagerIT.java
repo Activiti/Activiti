@@ -17,7 +17,6 @@ package org.activiti.core.common.spring.identity;
 
 import java.util.List;
 
-import org.activiti.core.common.spring.identity.ExtendedInMemoryUserDetailsManager;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -34,7 +33,7 @@ public class ExtendedInMemoryUserDetailsManagerIT {
     public void checkGroupAuthorities() {
         List<String> groups = extendedInMemoryUserDetailsManager.getGroups();
         assertThat(groups).isNotNull();
-        groups.stream().forEach(x -> assertThat(x).contains("GROUP"));
+        groups.forEach(x -> assertThat(x).contains("GROUP"));
     }
 
     @Test

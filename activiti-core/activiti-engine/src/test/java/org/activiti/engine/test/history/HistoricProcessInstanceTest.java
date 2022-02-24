@@ -19,6 +19,7 @@ package org.activiti.engine.test.history;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
+import static org.activiti.engine.impl.runtime.ProcessInstanceBuilder.newProcessInstanceBuilder;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
@@ -34,9 +35,9 @@ import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.history.HistoricIdentityLink;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.impl.history.HistoryLevel;
+import org.activiti.engine.impl.runtime.ProcessInstanceBuilder;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
-import org.activiti.engine.runtime.ProcessInstanceBuilder;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
@@ -443,10 +444,10 @@ public class HistoricProcessInstanceTest extends PluggableActivitiTestCase {
   @Deployment(resources = { "org/activiti/engine/test/history/oneTaskProcess.bpmn20.xml" })
   public void testHistoricProcessInstanceName() {
     String piName = "Customized Process Instance Name";
-    ProcessInstanceBuilder builder = runtimeService.createProcessInstanceBuilder();
+    ProcessInstanceBuilder builder = newProcessInstanceBuilder();
     builder.processDefinitionKey("oneTaskProcess");
     builder.name(piName);
-    ProcessInstance processInstance1 = builder.start();
+    ProcessInstance processInstance1 = runtimeService.startProcessInstance(builder);
 
     HistoricProcessInstance historicProcessInstance = historyService.createHistoricProcessInstanceQuery().processInstanceId(processInstance1.getProcessInstanceId()).singleResult();
     assertThat(historicProcessInstance.getName()).isEqualTo(piName);

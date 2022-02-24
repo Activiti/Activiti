@@ -16,6 +16,8 @@
 
 package org.activiti.engine.impl;
 
+import static org.activiti.engine.impl.runtime.ProcessInstanceBuilder.newProcessInstanceBuilder;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -63,14 +65,13 @@ import org.activiti.engine.impl.cmd.TriggerCmd;
 import org.activiti.engine.impl.cmd.GetProcessInstanceEventsCmd;
 import org.activiti.engine.impl.cmd.AddIdentityLinkForProcessInstanceCmd;
 import org.activiti.engine.impl.persistence.entity.VariableInstance;
-import org.activiti.engine.impl.runtime.ProcessInstanceBuilderImpl;
+import org.activiti.engine.impl.runtime.ProcessInstanceBuilder;
 import org.activiti.engine.runtime.DataObject;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ExecutionQuery;
 import org.activiti.engine.runtime.NativeExecutionQuery;
 import org.activiti.engine.runtime.NativeProcessInstanceQuery;
 import org.activiti.engine.runtime.ProcessInstance;
-import org.activiti.engine.runtime.ProcessInstanceBuilder;
 import org.activiti.engine.runtime.ProcessInstanceQuery;
 import org.activiti.engine.task.Event;
 import org.activiti.engine.task.IdentityLink;
@@ -79,52 +80,121 @@ import org.activiti.engine.task.IdentityLinkType;
 
 public class RuntimeServiceImpl extends ServiceImpl implements RuntimeService {
 
+    @Override
+    public ProcessInstance startProcessInstance(ProcessInstanceBuilder processInstanceBuilder) {
+        if (processInstanceBuilder.hasProcessDefinitionIdOrKey()) {
+            return commandExecutor.execute(new StartProcessInstanceCmd(processInstanceBuilder));
+        } else if (processInstanceBuilder.getMessageName() != null) {
+            return commandExecutor.execute(new StartProcessInstanceByMessageCmd(processInstanceBuilder));
+        } else {
+            throw new ActivitiIllegalArgumentException("No processDefinitionId, processDefinitionKey nor messageName provided");
+        }
+    }
+
+    @Override
+    public ProcessInstance createProcessInstance(ProcessInstanceBuilder processInstanceBuilder) {
+        if (!processInstanceBuilder.hasProcessDefinitionIdOrKey()) {
+            throw new ActivitiIllegalArgumentException("No processDefinitionId, processDefinitionKey nor messageName provided");
+        }
+
+        return commandExecutor.execute(new CreateProcessInstanceCmd(processInstanceBuilder));
+    }
+
     public ProcessInstance startProcessInstanceByKey(String processDefinitionKey) {
-        return commandExecutor.execute(new StartProcessInstanceCmd<ProcessInstance>(processDefinitionKey, null, null, null));
+        return startProcessInstance(newProcessInstanceBuilder().processDefinitionKey(processDefinitionKey));
     }
 
     public ProcessInstance startProcessInstanceByKey(String processDefinitionKey, String businessKey) {
-        return commandExecutor.execute(new StartProcessInstanceCmd<ProcessInstance>(processDefinitionKey, null, businessKey, null));
+        ProcessInstanceBuilder pib = newProcessInstanceBuilder()
+            .processDefinitionKey(processDefinitionKey)
+            .businessKey(businessKey);
+
+        return startProcessInstance(pib);
     }
 
     public ProcessInstance startProcessInstanceByKey(String processDefinitionKey, Map<String, Object> variables) {
-        return commandExecutor.execute(new StartProcessInstanceCmd<ProcessInstance>(processDefinitionKey, null, null, variables));
+        ProcessInstanceBuilder pib = newProcessInstanceBuilder()
+            .processDefinitionKey(processDefinitionKey)
+            .variables(variables);
+
+        return startProcessInstance(pib);
     }
 
     public ProcessInstance startProcessInstanceByKey(String processDefinitionKey, String businessKey, Map<String, Object> variables) {
-        return commandExecutor.execute(new StartProcessInstanceCmd<ProcessInstance>(processDefinitionKey, null, businessKey, variables));
+        ProcessInstanceBuilder pib = newProcessInstanceBuilder()
+            .processDefinitionKey(processDefinitionKey)
+            .businessKey(businessKey)
+            .variables(variables);
+
+        return startProcessInstance(pib);
     }
 
     public ProcessInstance startProcessInstanceByKeyAndTenantId(String processDefinitionKey, String tenantId) {
-        return commandExecutor.execute(new StartProcessInstanceCmd<ProcessInstance>(processDefinitionKey, null, null, null, tenantId));
+        ProcessInstanceBuilder pib = newProcessInstanceBuilder()
+            .processDefinitionKey(processDefinitionKey)
+            .tenantId(tenantId);
+
+        return startProcessInstance(pib);
     }
 
     public ProcessInstance startProcessInstanceByKeyAndTenantId(String processDefinitionKey, String businessKey, String tenantId) {
-        return commandExecutor.execute(new StartProcessInstanceCmd<ProcessInstance>(processDefinitionKey, null, businessKey, null, tenantId));
+        ProcessInstanceBuilder pib = newProcessInstanceBuilder()
+            .processDefinitionKey(processDefinitionKey)
+            .businessKey(businessKey)
+            .tenantId(tenantId);
+
+        return startProcessInstance(pib);
     }
 
     public ProcessInstance startProcessInstanceByKeyAndTenantId(String processDefinitionKey, Map<String, Object> variables, String tenantId) {
-        return commandExecutor.execute(new StartProcessInstanceCmd<ProcessInstance>(processDefinitionKey, null, null, variables, tenantId));
+        ProcessInstanceBuilder pib = newProcessInstanceBuilder()
+            .processDefinitionKey(processDefinitionKey)
+            .variables(variables)
+            .tenantId(tenantId);
+
+        return startProcessInstance(pib);
     }
 
     public ProcessInstance startProcessInstanceByKeyAndTenantId(String processDefinitionKey, String businessKey, Map<String, Object> variables, String tenantId) {
-        return commandExecutor.execute(new StartProcessInstanceCmd<ProcessInstance>(processDefinitionKey, null, businessKey, variables, tenantId));
+        ProcessInstanceBuilder pib = newProcessInstanceBuilder()
+            .processDefinitionKey(processDefinitionKey)
+            .businessKey(businessKey)
+            .variables(variables)
+            .tenantId(tenantId);
+
+        return startProcessInstance(pib);
     }
 
     public ProcessInstance startProcessInstanceById(String processDefinitionId) {
-        return commandExecutor.execute(new StartProcessInstanceCmd<ProcessInstance>(null, processDefinitionId, null, null));
+        ProcessInstanceBuilder pib = newProcessInstanceBuilder()
+            .processDefinitionId(processDefinitionId);
+
+        return startProcessInstance(pib);
     }
 
     public ProcessInstance startProcessInstanceById(String processDefinitionId, String businessKey) {
-        return commandExecutor.execute(new StartProcessInstanceCmd<ProcessInstance>(null, processDefinitionId, businessKey, null));
+        ProcessInstanceBuilder pib = newProcessInstanceBuilder()
+            .processDefinitionId(processDefinitionId)
+            .businessKey(businessKey);
+
+        return startProcessInstance(pib);
     }
 
     public ProcessInstance startProcessInstanceById(String processDefinitionId, Map<String, Object> variables) {
-        return commandExecutor.execute(new StartProcessInstanceCmd<ProcessInstance>(null, processDefinitionId, null, variables));
+        ProcessInstanceBuilder pib = newProcessInstanceBuilder()
+            .processDefinitionId(processDefinitionId)
+            .variables(variables);
+
+        return startProcessInstance(pib);
     }
 
     public ProcessInstance startProcessInstanceById(String processDefinitionId, String businessKey, Map<String, Object> variables) {
-        return commandExecutor.execute(new StartProcessInstanceCmd<ProcessInstance>(null, processDefinitionId, businessKey, variables));
+        ProcessInstanceBuilder pib = newProcessInstanceBuilder()
+            .processDefinitionId(processDefinitionId)
+            .businessKey(businessKey)
+            .variables(variables);
+
+        return startProcessInstance(pib);
     }
 
     public void deleteProcessInstance(String processInstanceId, String deleteReason) {
@@ -521,30 +591,8 @@ public class RuntimeServiceImpl extends ServiceImpl implements RuntimeService {
     }
 
     @Override
-    public ProcessInstanceBuilder createProcessInstanceBuilder() {
-        return new ProcessInstanceBuilderImpl(this);
-    }
-
-    @Override
     public ProcessInstance startCreatedProcessInstance(ProcessInstance createdProcessInstance, Map<String, Object> variables) {
         return commandExecutor.execute(new StartCreatedProcessInstanceCmd<>(createdProcessInstance, variables));
     }
 
-    public ProcessInstance startProcessInstance(ProcessInstanceBuilderImpl processInstanceBuilder) {
-        if (processInstanceBuilder.hasProcessDefinitionIdOrKey()) {
-            return commandExecutor.execute(new StartProcessInstanceCmd<ProcessInstance>(processInstanceBuilder));
-        } else if (processInstanceBuilder.getMessageName() != null) {
-            return commandExecutor.execute(new StartProcessInstanceByMessageCmd(processInstanceBuilder));
-        } else {
-            throw new ActivitiIllegalArgumentException("No processDefinitionId, processDefinitionKey nor messageName provided");
-        }
-    }
-
-    public ProcessInstance createProcessInstance(ProcessInstanceBuilderImpl processInstanceBuilder) {
-        if (processInstanceBuilder.hasProcessDefinitionIdOrKey()) {
-            return commandExecutor.execute(new CreateProcessInstanceCmd(processInstanceBuilder));
-        } else {
-            throw new ActivitiIllegalArgumentException("No processDefinitionId, processDefinitionKey nor messageName provided");
-        }
-    }
 }

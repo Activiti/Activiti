@@ -16,6 +16,8 @@
 
 package org.activiti.engine.impl.jobexecutor;
 
+import static org.activiti.engine.impl.runtime.ProcessInstanceBuilder.newProcessInstanceBuilder;
+
 import java.util.HashMap;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.engine.ActivitiException;
@@ -26,6 +28,7 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.JobEntity;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
+import org.activiti.engine.impl.runtime.ProcessInstanceBuilder;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 import org.activiti.engine.impl.util.ProcessInstanceHelper;
 import org.slf4j.Logger;
@@ -67,7 +70,9 @@ public class TimerStartEventJobHandler extends TimerEventHandler implements JobH
           ProcessInstanceHelper processInstanceHelper = commandContext.getProcessEngineConfiguration().getProcessInstanceHelper();
           processInstanceHelper.createAndStartProcessInstanceWithInitialFlowElement(processDefinitionEntity, null, null, flowElement, process, new HashMap<>(), null, true);
         } else {
-          new StartProcessInstanceCmd(processDefinitionEntity.getKey(), null, null, null, job.getTenantId()).execute(commandContext);
+          ProcessInstanceBuilder processInstanceBuilder = newProcessInstanceBuilder().processDefinitionKey(processDefinitionEntity.getKey()).tenantId(job.getTenantId());
+
+          new StartProcessInstanceCmd(processInstanceBuilder).execute(commandContext);
         }
 
       } else {

@@ -15,6 +15,8 @@
  */
 package org.activiti.runtime.api.impl;
 
+import static org.activiti.engine.impl.runtime.ProcessInstanceBuilder.newProcessInstanceBuilder;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -41,6 +43,7 @@ import org.activiti.api.runtime.shared.query.Page;
 import org.activiti.api.runtime.shared.query.Pageable;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
+import org.activiti.engine.impl.runtime.ProcessInstanceBuilder;
 import org.activiti.engine.repository.ProcessDefinitionQuery;
 import org.activiti.runtime.api.model.impl.APIProcessDefinitionConverter;
 import org.activiti.runtime.api.model.impl.APIProcessInstanceConverter;
@@ -80,7 +83,9 @@ public class ProcessAdminRuntimeImpl implements ProcessAdminRuntime {
 
     @Override
     public ProcessDefinition processDefinition(String processDefinitionId) {
+
         org.activiti.engine.repository.ProcessDefinition processDefinition;
+
         // try searching by Key if there is no matching by Id
         List<org.activiti.engine.repository.ProcessDefinition> list = repositoryService
             .createProcessDefinitionQuery()
@@ -89,6 +94,7 @@ public class ProcessAdminRuntimeImpl implements ProcessAdminRuntime {
             .orderByProcessDefinitionVersion()
             .asc()
             .list();
+
         if (!list.isEmpty()) {
             processDefinition = list.get(0);
         } else {
@@ -130,26 +136,28 @@ public class ProcessAdminRuntimeImpl implements ProcessAdminRuntime {
     @Override
     public ProcessInstance start(StartProcessPayload startProcessPayload) {
         ProcessDefinition processDefinition = null;
+
         if (startProcessPayload.getProcessDefinitionId() != null) {
             processDefinition = processDefinition(startProcessPayload.getProcessDefinitionId());
         }
+
         if (processDefinition == null && startProcessPayload.getProcessDefinitionKey() != null) {
             processDefinition = processDefinition(startProcessPayload.getProcessDefinitionKey());
         }
+
         if (processDefinition == null) {
             throw new IllegalStateException("At least Process Definition Id or Key needs to be provided to start a process");
         }
 
         processVariablesValidator.checkStartProcessPayloadVariables(startProcessPayload, processDefinition.getId());
 
-        return processInstanceConverter.from(runtimeService
-                .createProcessInstanceBuilder()
-                .processDefinitionId(processDefinition.getId())
-                .processDefinitionKey(processDefinition.getKey())
-                .businessKey(startProcessPayload.getBusinessKey())
-                .variables(startProcessPayload.getVariables())
-                .name(startProcessPayload.getName())
-                .start());
+        ProcessInstanceBuilder processInstanceBuilder = newProcessInstanceBuilder()
+            .processDefinitionId(processDefinition.getId())
+            .processDefinitionKey(processDefinition.getKey())
+            .businessKey(startProcessPayload.getBusinessKey())
+            .variables(startProcessPayload.getVariables())
+            .name(startProcessPayload.getName());
+        return processInstanceConverter.from(runtimeService.startProcessInstance(processInstanceBuilder));
     }
 
     @Override

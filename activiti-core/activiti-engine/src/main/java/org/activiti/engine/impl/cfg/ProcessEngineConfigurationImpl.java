@@ -340,7 +340,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfiguration {
 
-  private static Logger log = LoggerFactory.getLogger(ProcessEngineConfigurationImpl.class);
+  private static final Logger log = LoggerFactory.getLogger(ProcessEngineConfigurationImpl.class);
 
   public static final String DB_SCHEMA_UPDATE_CREATE = "create";
   public static final String DB_SCHEMA_UPDATE_DROP_CREATE = "drop-create";
@@ -2081,13 +2081,13 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 
   public void initBeans() {
     if (beans == null) {
-      beans = new HashMap<Object, Object>();
+      beans = new HashMap<>();
     }
   }
 
   public void initEventDispatcher() {
-    if (this.eventDispatcher == null) {
-      this.eventDispatcher = new ActivitiEventDispatcherImpl();
+    if (eventDispatcher == null) {
+      eventDispatcher = new ActivitiEventDispatcherImpl();
     }
 
     this.eventDispatcher.setEnabled(enableEventDispatcher);

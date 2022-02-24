@@ -50,7 +50,6 @@ import org.activiti.engine.impl.cmd.SetProcessDefinitionCategoryCmd;
 import org.activiti.engine.impl.cmd.SuspendProcessDefinitionCmd;
 import org.activiti.engine.impl.cmd.ValidateBpmnModelCmd;
 import org.activiti.engine.impl.interceptor.Command;
-import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ModelEntity;
 import org.activiti.engine.impl.repository.DeploymentBuilderImpl;
 import org.activiti.engine.repository.Deployment;
@@ -74,12 +73,8 @@ import org.activiti.validation.ValidationError;
 public class RepositoryServiceImpl extends ServiceImpl implements RepositoryService {
 
   public DeploymentBuilder createDeployment() {
-    return commandExecutor.execute(new Command<DeploymentBuilder>() {
-      @Override
-      public DeploymentBuilder execute(CommandContext commandContext) {
-        return new DeploymentBuilderImpl(RepositoryServiceImpl.this);
-      }
-    });
+    return commandExecutor.execute(
+      (Command<DeploymentBuilder>) commandContext -> new DeploymentBuilderImpl(RepositoryServiceImpl.this));
   }
 
   public Deployment deploy(DeploymentBuilderImpl deploymentBuilder) {

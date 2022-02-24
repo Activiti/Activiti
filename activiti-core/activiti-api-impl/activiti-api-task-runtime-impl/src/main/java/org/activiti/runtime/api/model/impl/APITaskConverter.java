@@ -45,8 +45,7 @@ public class APITaskConverter extends ListConverter<org.activiti.engine.task.Tas
     }
 
     public Task fromWithCandidates(org.activiti.engine.task.Task internalTask) {
-        TaskImpl task = buildFromInternalTask(internalTask,
-                                        calculateStatus(internalTask));
+        TaskImpl task = buildFromInternalTask(internalTask, calculateStatus(internalTask));
         extractCandidateUsersAndGroups(internalTask, task);
         return task;
     }

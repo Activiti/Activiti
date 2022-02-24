@@ -33,15 +33,9 @@ import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.DeploymentEntity;
 import org.activiti.engine.impl.persistence.entity.DeploymentEntityManager;
-import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntityManager;
 import org.activiti.engine.repository.ProcessDefinition;
 
-/**
-
-
-
- */
 public class DeploymentManager {
 
   protected DeploymentCache<ProcessDefinitionCacheEntry> processDefinitionCache;
@@ -74,10 +68,9 @@ public class DeploymentManager {
 
     if (processDefinition == null) {
       processDefinition = processDefinitionEntityManager.findById(processDefinitionId);
-      if (processDefinition == null) {
-        throw new ActivitiObjectNotFoundException("no deployed process definition found with id '" + processDefinitionId + "'", ProcessDefinition.class);
-      }
-      processDefinition = resolveProcessDefinition(processDefinition).getProcessDefinition();
+        throwExceptionIfDefinitionNotFound(processDefinition,
+            "no deployed process definition found with id '" + processDefinitionId + "'");
+        processDefinition = resolveProcessDefinition(processDefinition).getProcessDefinition();
     }
     return processDefinition;
   }
@@ -85,33 +78,48 @@ public class DeploymentManager {
   public ProcessDefinition findDeployedLatestProcessDefinitionByKey(String processDefinitionKey) {
     ProcessDefinition processDefinition = processDefinitionEntityManager.findLatestProcessDefinitionByKey(processDefinitionKey);
 
-    if (processDefinition == null) {
-      throw new ActivitiObjectNotFoundException("no processes deployed with key '" + processDefinitionKey + "'", ProcessDefinition.class);
-    }
-    processDefinition = resolveProcessDefinition(processDefinition).getProcessDefinition();
+      throwExceptionIfDefinitionNotFound(processDefinition,
+          "no processes deployed with key '" + processDefinitionKey + "'");
+
+      processDefinition = resolveProcessDefinition(processDefinition).getProcessDefinition();
     return processDefinition;
   }
 
   public ProcessDefinition findDeployedLatestProcessDefinitionByKeyAndTenantId(String processDefinitionKey, String tenantId) {
     ProcessDefinition processDefinition = processDefinitionEntityManager.findLatestProcessDefinitionByKeyAndTenantId(processDefinitionKey, tenantId);
-    if (processDefinition == null) {
-      throw new ActivitiObjectNotFoundException("no processes deployed with key '" + processDefinitionKey + "' for tenant identifier '" + tenantId + "'", ProcessDefinition.class);
-    }
-    processDefinition = resolveProcessDefinition(processDefinition).getProcessDefinition();
+      throwExceptionIfDefinitionNotFound(processDefinition,
+          "no processes deployed with key '" + processDefinitionKey + "' for tenant identifier '" + tenantId + "'");
+      processDefinition = resolveProcessDefinition(processDefinition).getProcessDefinition();
     return processDefinition;
   }
 
+    /**
+     *
+     * @param processDefinitionKey
+     * @param processDefinitionVersion
+     * @param tenantId
+     * @return
+     */
   public ProcessDefinition findDeployedProcessDefinitionByKeyAndVersionAndTenantId(String processDefinitionKey, Integer processDefinitionVersion, String tenantId) {
-    ProcessDefinition processDefinition = (ProcessDefinitionEntity) processDefinitionEntityManager
+    ProcessDefinition processDefinition = processDefinitionEntityManager
         .findProcessDefinitionByKeyAndVersionAndTenantId(processDefinitionKey, processDefinitionVersion, tenantId);
-    if (processDefinition == null) {
-      throw new ActivitiObjectNotFoundException("no processes deployed with key = '" + processDefinitionKey + "' and version = '" + processDefinitionVersion + "'", ProcessDefinition.class);
-    }
-    processDefinition = resolveProcessDefinition(processDefinition).getProcessDefinition();
-    return processDefinition;
+
+      throwExceptionIfDefinitionNotFound(
+          processDefinition,
+          "no processes deployed with key = '" + processDefinitionKey + "' and version = '" + processDefinitionVersion + "'");
+
+      return resolveProcessDefinition(processDefinition).getProcessDefinition();
   }
 
-  /**
+    private void throwExceptionIfDefinitionNotFound(
+        ProcessDefinition processDefinition, String message) {
+
+        if (processDefinition == null) {
+          throw new ActivitiObjectNotFoundException(message, ProcessDefinition.class);
+        }
+    }
+
+    /**
    * Resolving the process definition will fetch the BPMN 2.0, parse it and store the {@link BpmnModel} in memory.
    */
   public ProcessDefinitionCacheEntry resolveProcessDefinition(ProcessDefinition processDefinition) {

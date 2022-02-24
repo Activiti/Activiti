@@ -58,7 +58,7 @@ public class ProcessInstanceHelper {
         return createAndStartProcessInstance(processDefinition, businessKey, processInstanceName, variables, transientVariables, true);
     }
 
-    public Process getActiveProcess(ProcessDefinition processDefinition) {
+    private Process getActiveProcess(ProcessDefinition processDefinition) {
         if (ProcessDefinitionUtil.isProcessDefinitionSuspended(processDefinition.getId())) {
             throw new ActivitiException("Cannot start process instance. Process definition " + processDefinition.getName() + " (id = " + processDefinition.getId() + ") is suspended");
         }
@@ -274,7 +274,7 @@ public class ProcessInstanceHelper {
     }
 
     protected Map<String, Object> processDataObjects(Collection<ValuedDataObject> dataObjects) {
-        Map<String, Object> variablesMap = new HashMap<String, Object>();
+        Map<String, Object> variablesMap = new HashMap<>();
         // convert data objects to process variables
         if (dataObjects != null) {
             for (ValuedDataObject dataObject : dataObjects) {
