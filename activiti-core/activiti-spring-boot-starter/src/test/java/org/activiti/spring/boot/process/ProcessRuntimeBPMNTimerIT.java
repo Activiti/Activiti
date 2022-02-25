@@ -247,13 +247,12 @@ public class ProcessRuntimeBPMNTimerIT {
 
     @Test
     public void shouldExecuteProcessWithTimerStartExtension() {
-
-        securityUtil.logInAs("user");
+        securityUtil.logInAs("admin");
 
         Date startTime = new Date();
 
         //when
-        Page<ProcessInstance> processInstances = processBaseRuntime.getProcessInstancesPage();
+        Page<ProcessInstance> processInstances = processBaseRuntime.getProcessInstancesPageAsAdmin();
 
         //then
         assertThat(processInstances).isNotNull();
@@ -266,9 +265,10 @@ public class ProcessRuntimeBPMNTimerIT {
         //then
         await().untilAsserted(() -> {
 
-            securityUtil.logInAs("user");
+            securityUtil.logInAs("admin");
 
-            Page<ProcessInstance> processInstancePage = processBaseRuntime.getProcessInstancesPage();
+            Page<ProcessInstance> processInstancePage = processBaseRuntime.getProcessInstancesPageAsAdmin();
+
             //then
             assertThat(processInstancePage).isNotNull();
             assertThat(processInstancePage.getContent()).isNotEmpty();
@@ -276,7 +276,7 @@ public class ProcessRuntimeBPMNTimerIT {
             ProcessInstance processInstance = processInstancePage.getContent().get(0);
             assertThat(processInstance.getProcessDefinitionKey()).isEqualTo(VARIABLE_MAPPING_PROCESS_START_TIME);
 
-            List<VariableInstance> variables = processBaseRuntime.getProcessVariablesByProcessId(processInstance.getId());
+            List<VariableInstance> variables = processBaseRuntime.getProcessVariablesByProcessIdAsAdmin(processInstance.getId());
 
             assertThat(variables).extracting(VariableInstance::getName,
                     VariableInstance::getValue)
