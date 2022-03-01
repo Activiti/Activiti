@@ -43,6 +43,7 @@ import org.activiti.api.runtime.model.impl.ProcessDefinitionImpl;
 import org.activiti.api.runtime.model.impl.ProcessInstanceImpl;
 import org.activiti.api.runtime.shared.NotFoundException;
 import org.activiti.api.runtime.shared.UnprocessableEntityException;
+import org.activiti.api.runtime.shared.security.SecurityManager;
 import org.activiti.core.common.spring.security.policies.ProcessSecurityPoliciesManager;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.RuntimeService;
@@ -63,6 +64,8 @@ import org.mockito.Answers;
 import org.mockito.Mock;
 
 public class ProcessRuntimeImplTest {
+
+    private static final String AUTHENTICATED_USER = "user";
 
     private ProcessRuntimeImpl processRuntime;
 
@@ -87,9 +90,14 @@ public class ProcessRuntimeImplTest {
     @Mock
     private APIProcessDefinitionConverter processDefinitionConverter;
 
+    @Mock
+    private SecurityManager securityManager;
+
     @BeforeEach
     public void setUp() {
         initMocks(this);
+
+        when(securityManager.getAuthenticatedUserId()).thenReturn(AUTHENTICATED_USER);
 
         RepositoryServiceImpl repositoryService = new RepositoryServiceImpl();
         repositoryService.setCommandExecutor(commandExecutor);
@@ -103,7 +111,8 @@ public class ProcessRuntimeImplTest {
                 deploymentConverter,
                 null,
                 null,
-                processVariableValidator));
+                processVariableValidator,
+                securityManager));
 
     }
 

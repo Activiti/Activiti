@@ -21,6 +21,7 @@ import org.activiti.api.model.shared.model.VariableInstance;
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
 import org.activiti.api.process.model.payloads.DeleteProcessPayload;
+import org.activiti.api.process.runtime.ProcessAdminRuntime;
 import org.activiti.api.process.runtime.ProcessRuntime;
 import org.activiti.api.runtime.shared.query.Page;
 import org.activiti.api.runtime.shared.query.Pageable;
@@ -37,6 +38,9 @@ public class ProcessBaseRuntime {
     private ProcessRuntime processRuntime;
 
     @Autowired
+    private ProcessAdminRuntime processAdminRuntime;
+
+    @Autowired
     private SecurityUtil securityUtil;
 
     public ProcessInstance startProcessWithProcessDefinitionKey(String processDefinitionKey) {
@@ -50,8 +54,18 @@ public class ProcessBaseRuntime {
         return processRuntime
                 .processInstances(DEFAULT_PAGEABLE, ProcessPayloadBuilder.processInstances().build()).getContent();
     }
+
+    public List<ProcessInstance> getProcessInstancesAsAdmin() {
+        return processAdminRuntime
+            .processInstances(DEFAULT_PAGEABLE, ProcessPayloadBuilder.processInstances().build()).getContent();
+    }
+
     public Page<ProcessInstance> getProcessInstancesPage() {
         return processRuntime.processInstances(DEFAULT_PAGEABLE);
+    }
+
+    public Page<ProcessInstance> getProcessInstancesPageAsAdmin() {
+        return processAdminRuntime.processInstances(DEFAULT_PAGEABLE);
     }
 
     public Page<ProcessInstance> getChildrenProcessInstances(String parentProcessId) {
@@ -61,6 +75,10 @@ public class ProcessBaseRuntime {
 
     public List<VariableInstance> getProcessVariablesByProcessId(String processId) {
         return processRuntime.variables(ProcessPayloadBuilder.variables().withProcessInstanceId(processId).build());
+    }
+
+    public List<VariableInstance> getProcessVariablesByProcessIdAsAdmin(String processId) {
+        return processAdminRuntime.variables(ProcessPayloadBuilder.variables().withProcessInstanceId(processId).build());
     }
 
     public ProcessInstance delete(String processInstanceId) {

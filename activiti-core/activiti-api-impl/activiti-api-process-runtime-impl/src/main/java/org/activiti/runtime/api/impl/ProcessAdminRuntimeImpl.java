@@ -19,12 +19,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import org.activiti.api.model.shared.model.VariableInstance;
 import org.activiti.api.process.model.ProcessDefinition;
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
 import org.activiti.api.process.model.payloads.DeleteProcessPayload;
 import org.activiti.api.process.model.payloads.GetProcessDefinitionsPayload;
 import org.activiti.api.process.model.payloads.GetProcessInstancesPayload;
+import org.activiti.api.process.model.payloads.GetVariablesPayload;
 import org.activiti.api.process.model.payloads.ReceiveMessagePayload;
 import org.activiti.api.process.model.payloads.RemoveProcessVariablesPayload;
 import org.activiti.api.process.model.payloads.ResumeProcessPayload;
@@ -44,6 +47,7 @@ import org.activiti.engine.RuntimeService;
 import org.activiti.engine.repository.ProcessDefinitionQuery;
 import org.activiti.runtime.api.model.impl.APIProcessDefinitionConverter;
 import org.activiti.runtime.api.model.impl.APIProcessInstanceConverter;
+import org.activiti.runtime.api.model.impl.APIVariableInstanceConverter;
 import org.activiti.runtime.api.query.impl.PageImpl;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -60,6 +64,8 @@ public class ProcessAdminRuntimeImpl implements ProcessAdminRuntime {
 
     private final APIProcessInstanceConverter processInstanceConverter;
 
+    private final APIVariableInstanceConverter variableInstanceConverter;
+
     private final ApplicationEventPublisher eventPublisher;
 
     private final ProcessVariablesPayloadValidator processVariablesValidator;
@@ -68,12 +74,14 @@ public class ProcessAdminRuntimeImpl implements ProcessAdminRuntime {
                                    APIProcessDefinitionConverter processDefinitionConverter,
                                    RuntimeService runtimeService,
                                    APIProcessInstanceConverter processInstanceConverter,
+                                   APIVariableInstanceConverter variableInstanceConverter,
                                    ApplicationEventPublisher eventPublisher,
                                    ProcessVariablesPayloadValidator processVariablesValidator) {
         this.repositoryService = repositoryService;
         this.processDefinitionConverter = processDefinitionConverter;
         this.runtimeService = runtimeService;
         this.processInstanceConverter = processInstanceConverter;
+        this.variableInstanceConverter = variableInstanceConverter;
         this.eventPublisher = eventPublisher;
         this.processVariablesValidator = processVariablesValidator;
     }
@@ -259,6 +267,16 @@ public class ProcessAdminRuntimeImpl implements ProcessAdminRuntime {
         runtimeService.setVariables(setProcessVariablesPayload.getProcessInstanceId(),
                 setProcessVariablesPayload.getVariables());
 
+    }
+
+    @Override
+    public List<VariableInstance> variables(GetVariablesPayload getVariablesPayload) {
+        processInstance(getVariablesPayload.getProcessInstanceId());
+
+        Map<String, org.activiti.engine.impl.persistence.entity.VariableInstance> variables;
+        variables = runtimeService.getVariableInstances(getVariablesPayload.getProcessInstanceId());
+
+        return variableInstanceConverter.from(variables.values());
     }
 
     @Override
