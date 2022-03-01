@@ -934,7 +934,7 @@ public class ProcessRuntimeIT {
     }
 
     @Test
-    public void should_ForbidCancelingProcessInstanceUsingNonInitiatorUser() {
+    public void should_ForbidCancelingProcessInstanceUsingTaskInvolvedUser() {
         //given
         ProcessInstance processInstance = processRuntime.start(ProcessPayloadBuilder.start()
             .withProcessDefinitionKey(SINGLE_TASK_PROCESS)
