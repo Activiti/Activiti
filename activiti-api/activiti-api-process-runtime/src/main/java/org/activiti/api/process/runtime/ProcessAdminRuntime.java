@@ -16,11 +16,13 @@
 package org.activiti.api.process.runtime;
 
 
+import org.activiti.api.model.shared.model.VariableInstance;
 import org.activiti.api.process.model.ProcessDefinition;
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.model.payloads.DeleteProcessPayload;
 import org.activiti.api.process.model.payloads.GetProcessDefinitionsPayload;
 import org.activiti.api.process.model.payloads.GetProcessInstancesPayload;
+import org.activiti.api.process.model.payloads.GetVariablesPayload;
 import org.activiti.api.process.model.payloads.ReceiveMessagePayload;
 import org.activiti.api.process.model.payloads.RemoveProcessVariablesPayload;
 import org.activiti.api.process.model.payloads.ResumeProcessPayload;
@@ -32,6 +34,8 @@ import org.activiti.api.process.model.payloads.SuspendProcessPayload;
 import org.activiti.api.process.model.payloads.UpdateProcessPayload;
 import org.activiti.api.runtime.shared.query.Page;
 import org.activiti.api.runtime.shared.query.Pageable;
+
+import java.util.List;
 
 public interface ProcessAdminRuntime {
 
@@ -109,6 +113,8 @@ public interface ProcessAdminRuntime {
     void setVariables(SetProcessVariablesPayload setProcessVariablesPayload);
 
     void removeVariables(RemoveProcessVariablesPayload removeProcessVariablesPayload);
+
+    List<VariableInstance> variables(GetVariablesPayload getVariablesPayload);
 
     void receive(ReceiveMessagePayload messagePayload);
 
