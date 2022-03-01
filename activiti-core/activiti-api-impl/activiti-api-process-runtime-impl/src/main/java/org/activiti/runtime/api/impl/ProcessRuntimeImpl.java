@@ -21,6 +21,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.activiti.api.runtime.shared.security.SecurityManager;
 import org.activiti.api.model.shared.model.VariableInstance;
 import org.activiti.api.process.model.Deployment;
 import org.activiti.api.process.model.ProcessDefinition;
@@ -91,6 +92,8 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
 
     private final ProcessVariablesPayloadValidator processVariablesValidator;
 
+    private final SecurityManager securityManager;
+
     public ProcessRuntimeImpl(RepositoryService repositoryService,
                               APIProcessDefinitionConverter processDefinitionConverter,
                               RuntimeService runtimeService,
@@ -100,7 +103,8 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
                               APIDeploymentConverter deploymentConverter,
                               ProcessRuntimeConfiguration configuration,
                               ApplicationEventPublisher eventPublisher,
-                              ProcessVariablesPayloadValidator processVariablesValidator) {
+                              ProcessVariablesPayloadValidator processVariablesValidator,
+                              SecurityManager securityManager) {
         this.repositoryService = repositoryService;
         this.processDefinitionConverter = processDefinitionConverter;
         this.runtimeService = runtimeService;
@@ -111,6 +115,7 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
         this.configuration = configuration;
         this.eventPublisher = eventPublisher;
         this.processVariablesValidator = processVariablesValidator;
+        this.securityManager = securityManager;
     }
 
     @Override
@@ -220,6 +225,9 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
         GetProcessInstancesPayload securityKeysInPayload = securityPoliciesManager.restrictProcessInstQuery(SecurityPolicyAccess.READ);
 
         org.activiti.engine.runtime.ProcessInstanceQuery internalQuery = runtimeService.createProcessInstanceQuery();
+
+        String currentUserId = securityManager.getAuthenticatedUserId();
+        internalQuery.startedBy(currentUserId);
 
         if (!securityKeysInPayload.getProcessDefinitionKeys().isEmpty()) {
             getProcessInstancesPayload.setProcessDefinitionKeys(securityKeysInPayload.getProcessDefinitionKeys());

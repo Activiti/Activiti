@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import org.activiti.api.model.shared.model.VariableInstance;
+import org.activiti.api.runtime.shared.security.SecurityManager;
 import org.activiti.api.process.model.Deployment;
 import org.activiti.api.process.model.ProcessDefinition;
 import org.activiti.api.process.model.ProcessInstance;
@@ -129,6 +130,9 @@ public class ProcessRuntimeIT {
     @Autowired
     private TaskRuntime taskRuntime;
 
+    @Autowired
+    private SecurityManager securityManager;
+
     @AfterEach
     public void cleanUp(){
         processCleanUpUtil.cleanUpWithAdmin();
@@ -148,12 +152,14 @@ public class ProcessRuntimeIT {
                                                      deploymentConverter,
                                                      configuration,
                                                      eventPublisher,
-                                                     processVariablesValidator));
+                                                     processVariablesValidator,
+                                                     securityManager));
 
         processAdminRuntimeMock = spy(new ProcessAdminRuntimeImpl(repositoryService,
                                                      processDefinitionConverter,
                                                      runtimeService,
                                                      processInstanceConverter,
+                                                     variableInstanceConverter,
                                                      eventPublisher,
                                                      processVariablesValidator));
 
@@ -161,8 +167,6 @@ public class ProcessRuntimeIT {
         RuntimeTestConfiguration.processImageConnectorExecuted = false;
         RuntimeTestConfiguration.tagImageConnectorExecuted = false;
         RuntimeTestConfiguration.discardImageConnectorExecuted = false;
-
-        securityUtil.logInAs("user");
     }
 
     @Test
@@ -853,5 +857,41 @@ public class ProcessRuntimeIT {
         assertThat(processDefinitionPage.getContent().stream().filter(c -> c.getKey().equals(SUPER_PROCESS)))
             .extracting(ProcessDefinition::getAppVersion)
             .containsOnly(deployment.getVersion().toString());
+    }
+
+    @Test
+    public void should_returnProcessesToInitiator() {
+        //given
+        processRuntime.start(ProcessPayloadBuilder.start()
+            .withProcessDefinitionKey(CATEGORIZE_HUMAN_PROCESS)
+            .build());
+
+        //when
+        Page<ProcessInstance>  processInstancePage = processRuntime.processInstances(PAGEABLE,
+            ProcessPayloadBuilder
+                .processInstances()
+                .build());
+
+        assertThat(processInstancePage).isNotNull();
+        assertThat(processInstancePage.getContent()).hasSize(1);
+    }
+
+    @Test
+    public void should_not_returnProcessesToNonInitiatorUser() {
+        //given
+        processRuntime.start(ProcessPayloadBuilder.start()
+            .withProcessDefinitionKey(CATEGORIZE_HUMAN_PROCESS)
+            .build());
+
+        securityUtil.logInAs("garth");
+
+        //when
+        Page<ProcessInstance> processInstancePage = processRuntime.processInstances(PAGEABLE,
+            ProcessPayloadBuilder
+                .processInstances()
+                .build());
+
+        assertThat(processInstancePage).isNotNull();
+        assertThat(processInstancePage.getContent()).isEmpty();
     }
 }
