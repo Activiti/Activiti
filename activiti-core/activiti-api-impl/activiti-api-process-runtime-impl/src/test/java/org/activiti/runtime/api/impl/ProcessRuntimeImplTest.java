@@ -47,6 +47,7 @@ import org.activiti.api.runtime.shared.security.SecurityManager;
 import org.activiti.core.common.spring.security.policies.ProcessSecurityPoliciesManager;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.RuntimeService;
+import org.activiti.engine.TaskService;
 import org.activiti.engine.impl.RepositoryServiceImpl;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.persistence.entity.DeploymentEntityImpl;
@@ -79,6 +80,9 @@ public class ProcessRuntimeImplTest {
     private RuntimeService runtimeService;
 
     @Mock
+    private TaskService taskService;
+
+    @Mock
     private APIProcessInstanceConverter processInstanceConverter;
 
     @Mock
@@ -105,6 +109,7 @@ public class ProcessRuntimeImplTest {
         processRuntime = spy(new ProcessRuntimeImpl(repositoryService,
                 processDefinitionConverter,
                 runtimeService,
+                taskService,
                 securityPoliciesManager,
                 processInstanceConverter,
                 null,
@@ -119,13 +124,15 @@ public class ProcessRuntimeImplTest {
     @Test
     public void updateShouldBeAbleToUpdateNameBusinessKey() {
         //given
-        ProcessInstanceImpl process = new ProcessInstanceImpl();
-        process.setId("processId");
-        process.setProcessDefinitionKey("processDefinitionKey");
+        ExecutionEntityImpl internalProcessInstance = new ExecutionEntityImpl();
+        internalProcessInstance.setId("processId");
+        internalProcessInstance.setProcessDefinitionKey("processDefinitionKey");
+        internalProcessInstance.setStartUserId("testuser");
 
-        doReturn(process).when(processRuntime).processInstance("processId");
+        doReturn(internalProcessInstance).when(processRuntime).internalProcessInstance("processId");
 
         doReturn(true).when(securityPoliciesManager).canWrite("processDefinitionKey");
+        doReturn("testuser").when(securityManager).getAuthenticatedUserId();
 
         ProcessInstanceQuery processQuery = mock(ProcessInstanceQuery.class);
         doReturn(processQuery).when(processQuery).processInstanceId("processId");
@@ -134,6 +141,7 @@ public class ProcessRuntimeImplTest {
         org.activiti.engine.runtime.ProcessInstance internalProcess = mock(org.activiti.engine.runtime.ProcessInstance.class);
 
         doReturn(internalProcess).when(processQuery).singleResult();
+
 
         UpdateProcessPayload updateProcessPayload = ProcessPayloadBuilder.update()
                 .withProcessInstanceId("processId")
@@ -276,7 +284,8 @@ public class ProcessRuntimeImplTest {
         ProcessInstanceQuery processQuery = mock(ProcessInstanceQuery.class);
         doReturn(processQuery).when(processQuery).processInstanceId(processInstanceId);
         doReturn(processQuery).when(runtimeService).createProcessInstanceQuery();
-        org.activiti.engine.runtime.ProcessInstance internalProcess = new ExecutionEntityImpl();
+        ExecutionEntityImpl internalProcess = new ExecutionEntityImpl();
+        internalProcess.setStartUserId("testuser");
         internalProcess.setAppVersion(1);
         doReturn(internalProcess).when(processQuery).singleResult();
         when(runtimeService.startCreatedProcessInstance(internalProcess, new HashMap<>())).thenReturn(internalProcess);
@@ -284,7 +293,8 @@ public class ProcessRuntimeImplTest {
         apiProcessInstance.setBusinessKey("business-result");
         apiProcessInstance.setId("999-999");
         given(processInstanceConverter.from(internalProcess)).willReturn(apiProcessInstance);
-        given(securityPoliciesManager.canRead(any())).willReturn(true);
+        given(securityPoliciesManager.canWrite(any())).willReturn(true);
+        doReturn("testuser").when(securityManager).getAuthenticatedUserId();
 
         //when
         StartProcessPayload payload = new StartProcessPayload();

@@ -16,6 +16,7 @@
 package org.activiti.spring.boot.process;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.assertj.core.groups.Tuple.tuple;
 import static org.mockito.Mockito.spy;
@@ -43,10 +44,12 @@ import org.activiti.api.runtime.shared.query.Pageable;
 import org.activiti.api.task.model.Task;
 import org.activiti.api.task.model.builders.TaskPayloadBuilder;
 import org.activiti.api.task.runtime.TaskRuntime;
+import org.activiti.core.common.spring.security.policies.ActivitiForbiddenException;
 import org.activiti.core.common.spring.security.policies.ProcessSecurityPoliciesManager;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
+import org.activiti.engine.TaskService;
 import org.activiti.runtime.api.impl.ProcessAdminRuntimeImpl;
 import org.activiti.runtime.api.impl.ProcessRuntimeImpl;
 import org.activiti.runtime.api.impl.ProcessVariablesPayloadValidator;
@@ -75,6 +78,7 @@ public class ProcessRuntimeIT {
 
     private static final String SUB_PROCESS = "subProcess";
     private static final String SUPER_PROCESS = "superProcess";
+    private static final String TWO_TASKS_PROCESS = "twoTaskProcess";
     private static final Pageable PAGEABLE = Pageable.of(0,
         50);
     public static final String CATEGORIZE_HUMAN_PROCESS_CATEGORY = "test-category";
@@ -96,6 +100,9 @@ public class ProcessRuntimeIT {
 
     @Autowired
     private RuntimeService runtimeService;
+
+    @Autowired
+    private TaskService taskService;
 
     @Autowired
     private ProcessSecurityPoliciesManager securityPoliciesManager;
@@ -146,6 +153,7 @@ public class ProcessRuntimeIT {
         processRuntimeMock = spy(new ProcessRuntimeImpl(repositoryService,
                                                      processDefinitionConverter,
                                                      runtimeService,
+                                                     taskService,
                                                      securityPoliciesManager,
                                                      processInstanceConverter,
                                                      variableInstanceConverter,
@@ -877,7 +885,7 @@ public class ProcessRuntimeIT {
     }
 
     @Test
-    public void should_not_returnProcessesToNonInitiatorUser() {
+    public void should_not_returnProcessesToNonInitiatorAndNotTaskInvolvedUser() {
         //given
         processRuntime.start(ProcessPayloadBuilder.start()
             .withProcessDefinitionKey(CATEGORIZE_HUMAN_PROCESS)
@@ -893,5 +901,61 @@ public class ProcessRuntimeIT {
 
         assertThat(processInstancePage).isNotNull();
         assertThat(processInstancePage.getContent()).isEmpty();
+    }
+
+    @Test
+    public void should_returnProcessToTaskAssignee() {
+        //given
+        ProcessInstance processInstance = processRuntime.start(ProcessPayloadBuilder.start()
+            .withProcessDefinitionKey(SINGLE_TASK_PROCESS)
+            .build());
+
+        securityUtil.logInAs("garth");
+
+        //when
+        processInstance = processRuntime.processInstance(processInstance.getId());
+
+        assertThat(processInstance.getInitiator()).isEqualTo("user");
+    }
+
+    @Test
+    public void should_returnProcessToTaskCandidate() {
+        //given
+        ProcessInstance processInstance = processRuntime.start(ProcessPayloadBuilder.start()
+            .withProcessDefinitionKey(TWO_TASKS_PROCESS)
+            .build());
+
+        securityUtil.logInAs("garth");
+
+        //when
+        processInstance = processRuntime.processInstance(processInstance.getId());
+
+        assertThat(processInstance.getInitiator()).isEqualTo("user");
+    }
+
+    @Test
+    public void should_ForbidCancelingProcessInstanceUsingTaskInvolvedUser() {
+        //given
+        ProcessInstance processInstance = processRuntime.start(ProcessPayloadBuilder.start()
+            .withProcessDefinitionKey(SINGLE_TASK_PROCESS)
+            .build());
+
+        securityUtil.logInAs("garth");
+
+        assertThatThrownBy(() -> { processRuntime.delete(ProcessPayloadBuilder.delete(processInstance)); })
+            .isInstanceOf(ActivitiForbiddenException.class);
+    }
+
+    @Test
+    public void should_CancelProcessInstanceUsingInitiatorUser() {
+        //given
+        ProcessInstance processInstance = processRuntime.start(ProcessPayloadBuilder.start()
+            .withProcessDefinitionKey(SINGLE_TASK_PROCESS)
+            .build());
+
+        ProcessInstance deletedProcessInstance = processRuntime.delete(ProcessPayloadBuilder.delete(processInstance));
+
+        assertThat(deletedProcessInstance).isNotNull();
+        assertThat(deletedProcessInstance.getStatus()).isEqualTo(ProcessInstance.ProcessInstanceStatus.CANCELLED);
     }
 }
