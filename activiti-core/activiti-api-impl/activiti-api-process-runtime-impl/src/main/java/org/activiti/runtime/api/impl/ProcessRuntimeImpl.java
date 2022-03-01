@@ -58,8 +58,10 @@ import org.activiti.core.common.spring.security.policies.SecurityPolicyAccess;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
+import org.activiti.engine.TaskService;
 import org.activiti.engine.repository.ProcessDefinitionQuery;
 import org.activiti.engine.runtime.ProcessInstanceBuilder;
+import org.activiti.engine.task.TaskQuery;
 import org.activiti.runtime.api.model.impl.APIDeploymentConverter;
 import org.activiti.runtime.api.model.impl.APIProcessDefinitionConverter;
 import org.activiti.runtime.api.model.impl.APIProcessInstanceConverter;
@@ -77,6 +79,8 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
     private final APIProcessDefinitionConverter processDefinitionConverter;
 
     private final RuntimeService runtimeService;
+
+    private final TaskService taskService;
 
     private final APIProcessInstanceConverter processInstanceConverter;
 
@@ -97,6 +101,7 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
     public ProcessRuntimeImpl(RepositoryService repositoryService,
                               APIProcessDefinitionConverter processDefinitionConverter,
                               RuntimeService runtimeService,
+                              TaskService taskService,
                               ProcessSecurityPoliciesManager securityPoliciesManager,
                               APIProcessInstanceConverter processInstanceConverter,
                               APIVariableInstanceConverter variableInstanceConverter,
@@ -108,6 +113,7 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
         this.repositoryService = repositoryService;
         this.processDefinitionConverter = processDefinitionConverter;
         this.runtimeService = runtimeService;
+        this.taskService = taskService;
         this.securityPoliciesManager = securityPoliciesManager;
         this.processInstanceConverter = processInstanceConverter;
         this.variableInstanceConverter = variableInstanceConverter;
@@ -196,15 +202,9 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
 
     @Override
     public ProcessInstance processInstance(String processInstanceId) {
-        org.activiti.engine.runtime.ProcessInstance internalProcessInstance = runtimeService
-                .createProcessInstanceQuery()
-                .processInstanceId(processInstanceId)
-                .singleResult();
-        if (internalProcessInstance == null) {
-            throw new NotFoundException("Unable to find process instance for the given id:'" + processInstanceId + "'");
-        }
+        org.activiti.engine.runtime.ProcessInstance internalProcessInstance = internalProcessInstance(processInstanceId);
 
-        if (!securityPoliciesManager.canRead(internalProcessInstance.getProcessDefinitionKey())) {
+        if (!canReadProcessInstance(internalProcessInstance)) {
             throw new ActivitiObjectNotFoundException("You cannot read the process instance with Id:'" + processInstanceId + "' due to security policies violation");
         }
         return processInstanceConverter.from(internalProcessInstance);
@@ -264,31 +264,27 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
 
     @Override
     public ProcessInstance start(StartProcessPayload startProcessPayload) {
-
-
         return processInstanceConverter.from(this.createProcessInstanceBuilder(startProcessPayload).start());
     }
 
     @Override
     public ProcessInstance startCreatedProcess(String processInstanceId, StartProcessPayload startProcessPayload) {
-        org.activiti.engine.runtime.ProcessInstance internalProcessInstance = runtimeService
-                                                                                .createProcessInstanceQuery()
-                                                                                .processInstanceId(processInstanceId)
-                                                                                .singleResult();
+        org.activiti.engine.runtime.ProcessInstance internalProcessInstance = internalProcessInstance(processInstanceId);
+
         if (internalProcessInstance == null) {
             throw new NotFoundException("Unable to find process instance for the given id:'" + processInstanceId + "'");
         }
 
-        if (!securityPoliciesManager.canRead(internalProcessInstance.getProcessDefinitionKey())) {
-            throw new ActivitiObjectNotFoundException("You cannot read the process instance with Id:'" + processInstanceId + "' due to security policies violation");
+        if (!canWriteProcessInstance(internalProcessInstance)) {
+            throw new ActivitiObjectNotFoundException("You cannot start the process instance with Id:'" + processInstanceId + "' due to security policies violation");
         }
        processVariablesValidator.checkStartProcessPayloadVariables(startProcessPayload, internalProcessInstance.getProcessDefinitionId());
        return processInstanceConverter.from(runtimeService.startCreatedProcessInstance(internalProcessInstance, startProcessPayload.getVariables()));
     }
 
     @Override
-    public ProcessInstance create(CreateProcessInstancePayload startProcessPayload) {
-        return processInstanceConverter.from(createProcessInstanceBuilder(startProcessPayload).create());
+    public ProcessInstance create(CreateProcessInstancePayload createProcessInstancePayload) {
+        return processInstanceConverter.from(createProcessInstanceBuilder(createProcessInstancePayload).create());
     }
 
     private ProcessInstanceBuilder createProcessInstanceBuilder(StartProcessPayload startProcessPayload) {
@@ -320,9 +316,9 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
 
     @Override
     public ProcessInstance suspend(SuspendProcessPayload suspendProcessPayload) {
-        ProcessInstance processInstance = processInstance(suspendProcessPayload.getProcessInstanceId());
+        org.activiti.engine.runtime.ProcessInstance internalProcessInstance = internalProcessInstance(suspendProcessPayload.getProcessInstanceId());
 
-        checkUserCanWrite(processInstance.getProcessDefinitionKey());
+        checkUserCanWritePermissionOnProcessInstance(internalProcessInstance);
 
         runtimeService.suspendProcessInstanceById(suspendProcessPayload.getProcessInstanceId());
         return processInstanceConverter.from(runtimeService.createProcessInstanceQuery().processInstanceId(suspendProcessPayload.getProcessInstanceId()).singleResult());
@@ -330,9 +326,9 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
 
     @Override
     public ProcessInstance resume(ResumeProcessPayload resumeProcessPayload) {
-        ProcessInstance processInstance = processInstance(resumeProcessPayload.getProcessInstanceId());
+        org.activiti.engine.runtime.ProcessInstance internalProcessInstance = internalProcessInstance(resumeProcessPayload.getProcessInstanceId());
 
-        checkUserCanWrite(processInstance.getProcessDefinitionKey());
+        checkUserCanWritePermissionOnProcessInstance(internalProcessInstance);
 
         runtimeService.activateProcessInstanceById(resumeProcessPayload.getProcessInstanceId());
         return processInstanceConverter.from(runtimeService.createProcessInstanceQuery()
@@ -341,12 +337,14 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
 
     @Override
     public ProcessInstance delete(DeleteProcessPayload deleteProcessPayload) {
-        ProcessInstanceImpl processInstance = (ProcessInstanceImpl) processInstance(deleteProcessPayload.getProcessInstanceId());
+        org.activiti.engine.runtime.ProcessInstance internalProcessInstance = internalProcessInstance(deleteProcessPayload.getProcessInstanceId());
 
-        checkUserCanWrite(processInstance.getProcessDefinitionKey());
+        checkUserCanWritePermissionOnProcessInstance(internalProcessInstance);
 
         runtimeService.deleteProcessInstance(deleteProcessPayload.getProcessInstanceId(),
                 deleteProcessPayload.getReason());
+
+        ProcessInstanceImpl processInstance = (ProcessInstanceImpl) processInstanceConverter.from(internalProcessInstance);
         processInstance.setStatus(ProcessInstance.ProcessInstanceStatus.CANCELLED);
         return processInstance;
     }
@@ -364,9 +362,9 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
 
     @Override
     public void removeVariables(RemoveProcessVariablesPayload removeProcessVariablesPayload) {
-        ProcessInstanceImpl processInstance = (ProcessInstanceImpl) processInstance(removeProcessVariablesPayload.getProcessInstanceId());
+        org.activiti.engine.runtime.ProcessInstance internalProcessInstance = internalProcessInstance(removeProcessVariablesPayload.getProcessInstanceId());
 
-        checkUserCanWrite(processInstance.getProcessDefinitionKey());
+        checkUserCanWritePermissionOnProcessInstance(internalProcessInstance);
 
         runtimeService.removeVariables(removeProcessVariablesPayload.getProcessInstanceId(),
                 removeProcessVariablesPayload.getVariableNames());
@@ -375,12 +373,12 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
 
     @Override
     public void setVariables(SetProcessVariablesPayload setProcessVariablesPayload) {
-        ProcessInstanceImpl processInstance = (ProcessInstanceImpl) processInstance(setProcessVariablesPayload.getProcessInstanceId());
+        org.activiti.engine.runtime.ProcessInstance internalProcessInstance = internalProcessInstance(setProcessVariablesPayload.getProcessInstanceId());
 
-        checkUserCanWrite(processInstance.getProcessDefinitionKey());
+        checkUserCanWritePermissionOnProcessInstance(internalProcessInstance);
 
         processVariablesValidator.checkPayloadVariables(setProcessVariablesPayload,
-                processInstance.getProcessDefinitionId());
+            internalProcessInstance.getProcessDefinitionId());
 
         runtimeService.setVariables(setProcessVariablesPayload.getProcessInstanceId(),
                 setProcessVariablesPayload.getVariables());
@@ -416,9 +414,9 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
 
     @Override
     public ProcessInstance update(UpdateProcessPayload updateProcessPayload) {
-        ProcessInstance processInstance = processInstance(updateProcessPayload.getProcessInstanceId());
+        org.activiti.engine.runtime.ProcessInstance internalProcessInstance = internalProcessInstance(updateProcessPayload.getProcessInstanceId());
 
-        checkUserCanWrite(processInstance.getProcessDefinitionKey());
+        checkUserCanWritePermissionOnProcessInstance(internalProcessInstance);
 
         if (updateProcessPayload.getBusinessKey() != null) {
             runtimeService.updateBusinessKey(updateProcessPayload.getProcessInstanceId(), updateProcessPayload.getBusinessKey());
@@ -458,10 +456,17 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
         return processInstance;
     }
 
-    private void checkUserCanWrite(String processDefinitionKey) {
+    private void checkUserCanWritePermissionOnProcessDefinition(String processDefinitionKey) {
 
         if (!securityPoliciesManager.canWrite(processDefinitionKey)) {
             throw new ActivitiForbiddenException("Operation not permitted for " + processDefinitionKey + " due security policy violation");
+        }
+    }
+
+    private void checkUserCanWritePermissionOnProcessInstance(org.activiti.engine.runtime.ProcessInstance processInstance) {
+
+        if (!canWriteProcessInstance(processInstance)) {
+            throw new ActivitiForbiddenException("Operation not permitted for on process instance " + processInstance.getProcessInstanceId() + " due security policy violation");
         }
     }
 
@@ -475,7 +480,7 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
             throw new IllegalStateException("At least Process Definition Id or Key needs to be provided to start a process");
         }
 
-        checkUserCanWrite(processDefinition.getKey());
+        checkUserCanWritePermissionOnProcessDefinition(processDefinition.getKey());
 
         return processDefinition;
     }
@@ -489,6 +494,41 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
                     .latestVersion()
                     .singleResult()
         );
+    }
+
+    public org.activiti.engine.runtime.ProcessInstance internalProcessInstance(String processInstanceId) {
+        org.activiti.engine.runtime.ProcessInstance internalProcessInstance = runtimeService
+            .createProcessInstanceQuery()
+            .processInstanceId(processInstanceId)
+            .singleResult();
+
+        if (internalProcessInstance == null) {
+            throw new NotFoundException("Unable to find process instance for the given id:'" + processInstanceId + "'");
+        }
+        return internalProcessInstance;
+    }
+
+    private boolean canReadProcessInstance(org.activiti.engine.runtime.ProcessInstance processInstance) {
+        return securityPoliciesManager.canRead(processInstance.getProcessDefinitionKey()) &&
+            (securityManager.getAuthenticatedUserId().equals(processInstance.getStartUserId()) ||
+                isATaskAssigneeOrACandidate(processInstance.getProcessInstanceId()));
+    }
+
+    private boolean canWriteProcessInstance(org.activiti.engine.runtime.ProcessInstance processInstance) {
+        return securityPoliciesManager.canWrite(processInstance.getProcessDefinitionKey()) &&
+            securityManager.getAuthenticatedUserId().equals(processInstance.getStartUserId());
+    }
+
+    private boolean isATaskAssigneeOrACandidate(String processInstanceId) {
+        String authenticatedUserId = securityManager.getAuthenticatedUserId();
+        TaskQuery taskQuery = taskService.createTaskQuery().processInstanceId(processInstanceId);
+        taskQuery.or()
+            .taskCandidateOrAssigned(securityManager.getAuthenticatedUserId(),
+                securityManager.getAuthenticatedUserGroups())
+            .taskOwner(authenticatedUserId)
+            .endOr();
+
+        return taskQuery.count() > 0;
     }
 
 }

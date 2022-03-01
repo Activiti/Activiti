@@ -28,10 +28,7 @@ import java.util.Map;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.activiti.api.runtime.shared.identity.UserGroupManager;
-import org.activiti.engine.ActivitiException;
-import org.activiti.engine.ManagementService;
-import org.activiti.engine.RepositoryService;
-import org.activiti.engine.RuntimeService;
+import org.activiti.engine.*;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.spring.process.model.ProcessExtensionModel;
 import org.junit.jupiter.api.BeforeEach;
@@ -61,6 +58,9 @@ public class ProcessVariablesInitiatorIT {
 
     @MockBean
     private RuntimeService runtimeService;
+
+    @MockBean
+    private TaskService taskService;
 
     @MockBean
     private ManagementService managementService;
