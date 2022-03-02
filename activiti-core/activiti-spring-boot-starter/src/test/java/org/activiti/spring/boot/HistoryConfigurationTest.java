@@ -27,6 +27,7 @@ import org.activiti.core.common.spring.security.policies.ProcessSecurityPolicies
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
+import org.activiti.engine.TaskService;
 import org.activiti.runtime.api.impl.ProcessAdminRuntimeImpl;
 import org.activiti.runtime.api.impl.ProcessRuntimeImpl;
 import org.activiti.runtime.api.impl.ProcessVariablesPayloadValidator;
@@ -69,6 +70,9 @@ public class HistoryConfigurationTest {
     private RuntimeService runtimeService;
 
     @Autowired
+    private TaskService taskService;
+
+    @Autowired
     private ProcessSecurityPoliciesManager securityPoliciesManager;
 
     @Autowired
@@ -108,6 +112,7 @@ public class HistoryConfigurationTest {
         spy(new ProcessRuntimeImpl(repositoryService,
                      processDefinitionConverter,
                      runtimeService,
+                     taskService,
                      securityPoliciesManager,
                      processInstanceConverter,
                      variableInstanceConverter,

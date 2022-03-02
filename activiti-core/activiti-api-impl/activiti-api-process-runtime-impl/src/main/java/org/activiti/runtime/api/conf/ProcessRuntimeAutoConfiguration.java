@@ -54,6 +54,7 @@ import org.activiti.core.common.spring.security.policies.ProcessSecurityPolicies
 import org.activiti.engine.ManagementService;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
+import org.activiti.engine.TaskService;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.impl.event.EventSubscriptionPayloadMappingProvider;
 import org.activiti.runtime.api.conf.impl.ProcessRuntimeConfigurationImpl;
@@ -174,6 +175,7 @@ public class ProcessRuntimeAutoConfiguration {
     public ProcessRuntime processRuntime(RepositoryService repositoryService,
                                          APIProcessDefinitionConverter processDefinitionConverter,
                                          RuntimeService runtimeService,
+                                         TaskService taskService,
                                          ProcessSecurityPoliciesManager securityPoliciesManager,
                                          APIProcessInstanceConverter processInstanceConverter,
                                          APIVariableInstanceConverter variableInstanceConverter,
@@ -185,6 +187,7 @@ public class ProcessRuntimeAutoConfiguration {
         return new ProcessRuntimeImpl(repositoryService,
                 processDefinitionConverter,
                 runtimeService,
+                taskService,
                 securityPoliciesManager,
                 processInstanceConverter,
                 variableInstanceConverter,
