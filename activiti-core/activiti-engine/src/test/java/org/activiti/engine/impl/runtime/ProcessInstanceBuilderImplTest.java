@@ -18,15 +18,16 @@ package org.activiti.engine.impl.runtime;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
-import static org.mockito.MockitoAnnotations.initMocks;
 
 import org.activiti.engine.impl.RuntimeServiceImpl;
 import org.activiti.engine.runtime.ProcessInstance;
-import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 
+@RunWith(MockitoJUnitRunner.class)
 public class ProcessInstanceBuilderImplTest {
 
     @InjectMocks
@@ -34,11 +35,6 @@ public class ProcessInstanceBuilderImplTest {
 
     @Mock
     private RuntimeServiceImpl runtimeService;
-
-    @Before
-    public void setUp() throws Exception {
-        initMocks(this);
-    }
 
     @Test
     public void hasProcessDefinitionIdOrKey_shouldReturnTrue_WhenProcessDefinitionIdIsSet() {

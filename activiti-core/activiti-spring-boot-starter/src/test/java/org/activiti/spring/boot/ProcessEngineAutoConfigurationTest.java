@@ -21,14 +21,15 @@ import org.activiti.spring.boot.process.validation.AsyncPropertyValidator;
 import org.activiti.validation.ProcessValidator;
 import org.activiti.validation.validator.ValidatorSet;
 import org.assertj.core.api.Condition;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.MockitoAnnotations.initMocks;
 
+@ExtendWith(MockitoExtension.class)
 public class ProcessEngineAutoConfigurationTest {
 
     @InjectMocks
@@ -36,11 +37,6 @@ public class ProcessEngineAutoConfigurationTest {
 
     @Mock
     private ApplicationUpgradeContextService applicationUpgradeContextServiceMock;
-
-    @BeforeEach
-    public void setUp() {
-        initMocks(this);
-    }
 
     @Test
     public void shouldAddAsyncPropertyValidatorWhenAsyncExecutorIsEnabled() {

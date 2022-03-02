@@ -19,14 +19,15 @@ import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
-import static org.mockito.MockitoAnnotations.initMocks;
 
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntityImpl;
-import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 
+@RunWith(MockitoJUnitRunner.class)
 public class BpmnDeployerTest {
 
     @InjectMocks
@@ -34,11 +35,6 @@ public class BpmnDeployerTest {
 
     @Mock
     private BpmnDeploymentHelper bpmnDeploymentHelper;
-
-    @Before
-    public void setUp() throws Exception {
-        initMocks(this);
-    }
 
     @Test
     public void makeProcessDefinitionsConsistentWithPersistedVersions_should_setAppVersion() {

@@ -20,18 +20,19 @@ import org.activiti.application.ApplicationEntry;
 import org.activiti.application.FileContent;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.DeploymentBuilder;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Answers;
 import org.mockito.InOrder;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
-import static org.mockito.MockitoAnnotations.initMocks;
 
+@ExtendWith(MockitoExtension.class)
 public class ProcessEntryDeployerTest {
 
     @InjectMocks
@@ -39,11 +40,6 @@ public class ProcessEntryDeployerTest {
 
     @Mock
     private RepositoryService repositoryService;
-
-    @BeforeEach
-    public void setUp() {
-        initMocks(this);
-    }
 
     @Test
     public void deployEntriesShouldDelegateDeploymentToDeployBuilder() {
@@ -66,4 +62,5 @@ public class ProcessEntryDeployerTest {
         inOrder.verify(deploymentBuilder).addBytes(fileContent.getName(), fileContent.getContent());
         inOrder.verify(deploymentBuilder).deploy();
     }
+
 }

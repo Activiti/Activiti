@@ -20,8 +20,10 @@ import org.activiti.api.runtime.model.impl.BPMNTimerImpl;
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
@@ -30,6 +32,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.MockitoAnnotations.initMocks;
 
+@ExtendWith(MockitoExtension.class)
 public class ToTimerScheduledConverterTest {
 
     @InjectMocks
@@ -37,11 +40,6 @@ public class ToTimerScheduledConverterTest {
 
     @Mock
     private BPMNTimerConverter bpmnTimerConverter;
-
-    @BeforeEach
-    public void setUp() {
-        initMocks(this);
-    }
 
     @Test
     public void shouldReturnConvertedEventsWhenInternalEvenIsRelatedToTimers() {
@@ -67,12 +65,14 @@ public class ToTimerScheduledConverterTest {
     @Test
     public void shouldReturnEmptyOptionalWhenInternalEventIsNotRelatedToTimers() {
         //given
-        given(bpmnTimerConverter.isTimerRelatedEvent(mock(ActivitiEntityEvent.class))).willReturn(false);
+        ActivitiEntityEvent mockActivitiEntityEvent = mock(ActivitiEntityEvent.class);
+        given(bpmnTimerConverter.isTimerRelatedEvent(mockActivitiEntityEvent)).willReturn(false);
 
         //when
-        Optional<BPMNTimerScheduledEvent> optional = toTimerConverter.from(mock(ActivitiEntityEvent.class));
+        Optional<BPMNTimerScheduledEvent> optional = toTimerConverter.from(mockActivitiEntityEvent);
 
         //then
         assertThat(optional).isEmpty();
     }
+
 }

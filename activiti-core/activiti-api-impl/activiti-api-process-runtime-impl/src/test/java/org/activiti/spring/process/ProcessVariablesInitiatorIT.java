@@ -21,7 +21,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
-import static org.mockito.MockitoAnnotations.initMocks;
 
 import java.io.InputStream;
 import java.util.Map;
@@ -31,7 +30,6 @@ import org.activiti.api.runtime.shared.identity.UserGroupManager;
 import org.activiti.engine.*;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.spring.process.model.ProcessExtensionModel;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -68,11 +66,6 @@ public class ProcessVariablesInitiatorIT {
     @SpringBootApplication
     static class Application {
 
-    }
-
-    @BeforeEach
-    public void setUp() {
-        initMocks(this);
     }
 
     @Test

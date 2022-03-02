@@ -21,13 +21,15 @@ import org.activiti.engine.impl.persistence.entity.integration.IntegrationContex
 import org.activiti.engine.impl.persistence.entity.integration.IntegrationContextManager;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
-import static org.mockito.MockitoAnnotations.initMocks;
 
+@RunWith(MockitoJUnitRunner.class)
 public class DeleteIntegrationContextCmdTest {
 
     @Mock
@@ -41,7 +43,6 @@ public class DeleteIntegrationContextCmdTest {
 
     @Before
     public void setUp() throws Exception {
-        initMocks(this);
         given(commandContext.getProcessEngineConfiguration()).willReturn(processEngineConfiguration);
         given(processEngineConfiguration.getIntegrationContextManager()).willReturn(integrationContextManager);
     }

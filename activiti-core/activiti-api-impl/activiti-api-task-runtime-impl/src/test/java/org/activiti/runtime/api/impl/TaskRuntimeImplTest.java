@@ -26,8 +26,8 @@ import org.activiti.api.task.model.payloads.AssignTaskPayload;
 import org.activiti.api.task.model.payloads.UpdateTaskPayload;
 import org.activiti.engine.TaskService;
 import org.activiti.runtime.api.model.impl.APITaskConverter;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
@@ -39,9 +39,10 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.mockito.MockitoAnnotations.initMocks;
 import org.mockito.Spy;
+import org.mockito.junit.jupiter.MockitoExtension;
 
+@ExtendWith(MockitoExtension.class)
 public class TaskRuntimeImplTest {
 
     private static final String AUTHENTICATED_USER = "user";
@@ -61,12 +62,6 @@ public class TaskRuntimeImplTest {
 
     @Mock
     private TaskService taskService;
-
-    @BeforeEach
-    public void setUp() {
-        initMocks(this);
-        when(securityManager.getAuthenticatedUserId()).thenReturn(AUTHENTICATED_USER);
-    }
 
     @Test
     public void should_returnResultOfHelper_when_updateTask() {
@@ -112,6 +107,8 @@ public class TaskRuntimeImplTest {
     @Test
     public void assign_should_updateTaskAssignee_whenAssigneeIsACandidateUser() {
         //given
+        when(securityManager.getAuthenticatedUserId()).thenReturn(AUTHENTICATED_USER);
+
         String taskId = "taskId";
         String newAssignee = "newAssignee";
         AssignTaskPayload assignTaskPayload = TaskPayloadBuilder
@@ -130,4 +127,5 @@ public class TaskRuntimeImplTest {
         verify(taskService).unclaim(taskId);
         verify(taskService).claim(taskId, newAssignee);
     }
+
 }

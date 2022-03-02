@@ -110,4 +110,5 @@ public class DefaultAutoDeploymentStrategyTest extends AbstractAutoDeploymentStr
                                            resources,
                                            repositoryServiceMock);
     }
+
 }

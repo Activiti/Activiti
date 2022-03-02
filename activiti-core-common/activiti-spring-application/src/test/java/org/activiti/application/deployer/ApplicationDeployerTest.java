@@ -19,14 +19,16 @@ import org.activiti.application.ApplicationContent;
 import org.activiti.application.ApplicationService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static java.util.Arrays.asList;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
-import static org.mockito.MockitoAnnotations.initMocks;
 
+@ExtendWith(MockitoExtension.class)
 public class ApplicationDeployerTest {
 
     private ApplicationDeployer deployer;
@@ -42,7 +44,6 @@ public class ApplicationDeployerTest {
 
     @BeforeEach
     public void setUp() {
-        initMocks(this);
         deployer = new ApplicationDeployer(applicationLoader,
                                            asList(firstDeployer, secondDeployer));
     }

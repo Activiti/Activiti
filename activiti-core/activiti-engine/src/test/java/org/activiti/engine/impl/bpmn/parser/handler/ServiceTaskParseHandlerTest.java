@@ -21,14 +21,16 @@ import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.bpmn.parser.factory.ActivityBehaviorFactory;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
-import static org.mockito.MockitoAnnotations.initMocks;
 
+@RunWith(MockitoJUnitRunner.class)
 public class ServiceTaskParseHandlerTest {
 
     @InjectMocks
@@ -42,7 +44,6 @@ public class ServiceTaskParseHandlerTest {
 
     @Before
     public void setUp() throws Exception {
-        initMocks(this);
         given(bpmnParse.getActivityBehaviorFactory()).willReturn(activityBehaviorFactory);
     }
 

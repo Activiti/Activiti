@@ -20,7 +20,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
-import static org.mockito.MockitoAnnotations.initMocks;
 
 import java.util.List;
 import org.activiti.api.process.model.events.ApplicationDeployedEvent;
@@ -32,10 +31,13 @@ import org.activiti.engine.repository.DeploymentQuery;
 import org.activiti.runtime.api.model.impl.APIDeploymentConverter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.ApplicationEventPublisher;
 
+@ExtendWith(MockitoExtension.class)
 public class ApplicationDeployedEventProducerTest {
 
     private ApplicationDeployedEventProducer producer;
@@ -59,7 +61,6 @@ public class ApplicationDeployedEventProducerTest {
 
     @BeforeEach
     public void setUp() {
-        initMocks(this);
         producer = new ApplicationDeployedEventProducer(repositoryService,
                 converter,
                 asList(firstListener, secondListener),
@@ -78,7 +79,7 @@ public class ApplicationDeployedEventProducerTest {
         given(deploymentQuery.list()).willReturn(internalDeployment);
 
         List<org.activiti.api.process.model.Deployment> apiDeployments= asList(
-                buildAPIDeployment("id1", "SpringAutoDeployment"));
+                mock(org.activiti.api.process.model.Deployment.class));
         given(converter.from(internalDeployment)).willReturn(apiDeployments);
 
         producer.start();
@@ -95,13 +96,6 @@ public class ApplicationDeployedEventProducerTest {
 
         ArgumentCaptor<ApplicationDeployedEvents> captorPublisher = ArgumentCaptor.forClass(ApplicationDeployedEvents.class);
         verify(eventPublisher).publishEvent(captorPublisher.capture());
-    }
-
-    private org.activiti.api.process.model.Deployment buildAPIDeployment(String deploymentId, String deploymentName) {
-        org.activiti.api.process.model.Deployment deployment = mock(org.activiti.api.process.model.Deployment.class);
-        given(deployment.getId()).willReturn(deploymentId);
-        given(deployment.getName()).willReturn(deploymentName);
-        return deployment;
     }
 
 }

@@ -25,7 +25,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.mockito.MockitoAnnotations.initMocks;
 
 import java.util.Date;
 import java.util.List;
@@ -40,8 +39,11 @@ import org.activiti.engine.task.TaskQuery;
 import org.activiti.runtime.api.model.impl.APITaskConverter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
+@ExtendWith(MockitoExtension.class)
 public class TaskRuntimeHelperTest {
 
     private static final String AUTHENTICATED_USER = "user";
@@ -62,7 +64,6 @@ public class TaskRuntimeHelperTest {
 
     @BeforeEach
     public void setUp() {
-        initMocks(this);
         taskRuntimeHelper = spy(new TaskRuntimeHelper(taskService,
                 taskConverter,
                 securityManager,
@@ -109,12 +110,6 @@ public class TaskRuntimeHelperTest {
     @Test
     public void applyUpdateTaskPayloadShouldThrowExceptionWhenAssigneeIsNotSetAndIsNotAdmin() {
         //given
-        TaskQuery taskQuery = mock(TaskQuery.class);
-        given(taskService.createTaskQuery()).willReturn(taskQuery);
-        given(taskQuery.taskCandidateOrAssigned(any(),
-                any())).willReturn(taskQuery);
-        given(taskQuery.taskId("taskId")).willReturn(taskQuery);
-
         Task internalTask = mock(Task.class);
         doReturn(internalTask).when(taskRuntimeHelper).getInternalTaskWithChecks("taskId");
 
@@ -143,15 +138,6 @@ public class TaskRuntimeHelperTest {
 
         doReturn(internalTask).when(taskRuntimeHelper).getInternalTaskWithChecks("taskId");
         doReturn(internalTask).when(taskRuntimeHelper).getInternalTask("taskId");
-
-        TaskQuery taskQuery = mock(TaskQuery.class);
-        given(taskQuery.taskId("taskId")).willReturn(taskQuery);
-        given(taskService.createTaskQuery()).willReturn(taskQuery);
-
-        TaskRuntimeHelper taskUpdater = mock(TaskRuntimeHelper.class);
-
-        given(taskQuery.singleResult()).willReturn(internalTask);
-        when(taskUpdater.getInternalTaskWithChecks(any())).thenReturn(internalTask);
 
         when(taskConverter.from(any(Task.class))).thenReturn(task);
 

@@ -20,7 +20,6 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
-import static org.mockito.MockitoAnnotations.initMocks;
 
 import java.util.Arrays;
 import java.util.Optional;
@@ -31,8 +30,11 @@ import org.activiti.engine.delegate.event.impl.ActivitiVariableUpdatedEventImpl;
 import org.activiti.runtime.api.event.impl.ToVariableUpdatedConverter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
+@ExtendWith(MockitoExtension.class)
 public class VariableUpdatedListenerDelegateTest {
 
     private VariableUpdatedListenerDelegate variableUpdatedListenerDelegate;
@@ -51,7 +53,6 @@ public class VariableUpdatedListenerDelegateTest {
 
     @BeforeEach
     public void setUp() {
-        initMocks(this);
         variableUpdatedListenerDelegate = new VariableUpdatedListenerDelegate(
             Arrays.asList(firstListener, secondListener), converter, variableEventFilter);
     }
@@ -90,8 +91,6 @@ public class VariableUpdatedListenerDelegateTest {
         //given
         ActivitiVariableUpdatedEventImpl internalEvent = new ActivitiVariableUpdatedEventImpl();
         given(variableEventFilter.shouldEmmitEvent(internalEvent)).willReturn(false);
-        VariableUpdatedEvent apiEvent = mock(VariableUpdatedEvent.class);
-        given(converter.from(internalEvent)).willReturn(Optional.of(apiEvent));
 
         //when
         variableUpdatedListenerDelegate.onEvent(internalEvent);

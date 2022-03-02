@@ -22,7 +22,9 @@ import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.runtime.api.event.impl.ToTimerFailedConverter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
@@ -32,8 +34,8 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
-import static org.mockito.MockitoAnnotations.initMocks;
 
+@ExtendWith(MockitoExtension.class)
 public class TimerFailedListenerDelegateTest {
 
     private TimerFailedListenerDelegate listenerDelegate;
@@ -46,7 +48,6 @@ public class TimerFailedListenerDelegateTest {
 
     @BeforeEach
     public void setUp() {
-        initMocks(this);
         listenerDelegate = new TimerFailedListenerDelegate(singletonList(listener), converter);
     }
 

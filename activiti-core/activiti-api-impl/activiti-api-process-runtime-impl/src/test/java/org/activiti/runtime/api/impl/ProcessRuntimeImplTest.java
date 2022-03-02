@@ -27,7 +27,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
-import static org.mockito.MockitoAnnotations.initMocks;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -61,12 +60,13 @@ import org.activiti.runtime.api.model.impl.APIProcessDefinitionConverter;
 import org.activiti.runtime.api.model.impl.APIProcessInstanceConverter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Answers;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
+@ExtendWith(MockitoExtension.class)
 public class ProcessRuntimeImplTest {
-
-    private static final String AUTHENTICATED_USER = "user";
 
     private ProcessRuntimeImpl processRuntime;
 
@@ -99,10 +99,6 @@ public class ProcessRuntimeImplTest {
 
     @BeforeEach
     public void setUp() {
-        initMocks(this);
-
-        when(securityManager.getAuthenticatedUserId()).thenReturn(AUTHENTICATED_USER);
-
         RepositoryServiceImpl repositoryService = new RepositoryServiceImpl();
         repositoryService.setCommandExecutor(commandExecutor);
 

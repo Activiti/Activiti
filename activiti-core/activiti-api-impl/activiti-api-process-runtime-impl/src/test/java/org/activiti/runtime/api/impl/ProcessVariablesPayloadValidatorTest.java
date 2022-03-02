@@ -23,7 +23,6 @@ import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.MockitoAnnotations.initMocks;
 import java.io.IOException;
 import java.util.Date;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -41,8 +40,11 @@ import org.activiti.spring.process.variable.types.JsonObjectVariableType;
 import org.activiti.spring.process.variable.types.VariableType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
+@ExtendWith(MockitoExtension.class)
 public class ProcessVariablesPayloadValidatorTest {
 
     @Mock
@@ -61,8 +63,6 @@ public class ProcessVariablesPayloadValidatorTest {
 
     @BeforeEach
     public void setUp() {
-        initMocks(this);
-
         VariableDefinition variableDefinitionName = new VariableDefinition();
         variableDefinitionName.setName("name");
         variableDefinitionName.setType("string");
