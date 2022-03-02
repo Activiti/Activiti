@@ -23,6 +23,7 @@ import org.activiti.core.common.spring.security.policies.ProcessSecurityPolicies
 import org.activiti.engine.ManagementService;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
+import org.activiti.engine.TaskService;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -42,6 +43,11 @@ public class ProcessRuntimeTestApp {
     @Bean
     public RuntimeService runtimeService() {
         return mock(RuntimeService.class);
+    }
+
+    @Bean
+    public TaskService taskService() {
+        return mock(TaskService.class);
     }
 
     @Bean
