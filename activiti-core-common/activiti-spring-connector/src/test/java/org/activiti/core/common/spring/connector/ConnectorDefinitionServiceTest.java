@@ -19,15 +19,17 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.activiti.core.common.model.connector.ConnectorDefinition;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.core.io.support.ResourcePatternResolver;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
-import static org.mockito.MockitoAnnotations.initMocks;
 
+@ExtendWith(MockitoExtension.class)
 public class ConnectorDefinitionServiceTest {
 
     private ConnectorDefinitionService connectorDefinitionService;
@@ -40,7 +42,6 @@ public class ConnectorDefinitionServiceTest {
 
     @BeforeEach
     public void setUp() {
-        initMocks(this);
         connectorDefinitionService = new ConnectorDefinitionService("/connectors",
                                                                        objectMapper,
                                                                        resourceLoader);

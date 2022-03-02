@@ -22,7 +22,6 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.MockitoAnnotations.initMocks;
 
 import java.io.ByteArrayInputStream;
 import java.util.List;
@@ -35,11 +34,14 @@ import org.activiti.engine.repository.ProcessDefinitionQuery;
 import org.activiti.runtime.api.model.impl.APIProcessDefinitionConverter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Answers;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.ApplicationEventPublisher;
 
+@ExtendWith(MockitoExtension.class)
 public class ProcessDeployedEventProducerTest {
 
     private ProcessDeployedEventProducer producer;
@@ -61,7 +63,6 @@ public class ProcessDeployedEventProducerTest {
 
     @BeforeEach
     public void setUp() {
-        initMocks(this);
         producer = new ProcessDeployedEventProducer(repositoryService,
                                                     converter,
                                                     asList(firstListener, secondListener),
