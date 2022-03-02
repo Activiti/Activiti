@@ -1,6 +1,6 @@
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v3.4.0
+    rev: v4.1.0
     hooks:
       - id: check-json
       - id: check-yaml
@@ -13,6 +13,11 @@ repos:
       - id: end-of-file-fixer
       - id: trailing-whitespace
   - repo: https://github.com/sirosen/check-jsonschema
-    rev: 0.3.0
+    rev: 0.14.0
     hooks:
       - id: check-github-workflows
+      - id: check-jsonschema
+        alias: check-dependabot
+        name: "Validate Dependabot Config"
+        files: '.github/dependabot\.yml$'
+        args: ["--schemafile", "https://json.schemastore.org/dependabot-2.0.json"]
