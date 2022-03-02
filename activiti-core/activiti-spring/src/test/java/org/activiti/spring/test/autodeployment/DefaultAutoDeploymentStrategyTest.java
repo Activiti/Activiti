@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.spring.test.autodeployment;
 
 import static org.assertj.core.api.Assertions.assertThat;

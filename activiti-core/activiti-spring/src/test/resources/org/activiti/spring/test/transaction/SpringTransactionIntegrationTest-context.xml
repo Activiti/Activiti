@@ -37,9 +37,9 @@
     <tx:annotation-driven transaction-manager="transactionManager"/>
 
     <bean id="userBean" class="org.activiti.spring.test.transaction.UserBean">
-        <property name="runtimeService" ref="runtimeService"/>
-        <property name="taskService" ref="taskService"/>
-        <property name="dataSource" ref="dataSource"/>
+        <constructor-arg name="runtimeService" ref="runtimeService"/>
+        <constructor-arg name="taskService" ref="taskService"/>
+        <constructor-arg name="dataSource" ref="dataSource"/>
     </bean>
 
     <bean id="deployBean" class="org.activiti.spring.test.transaction.DeployBean">

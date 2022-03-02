@@ -25,16 +25,18 @@ import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.DeploymentBuilder;
 import org.junit.Before;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.ContextResource;
 import org.springframework.core.io.Resource;
 
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.*;
-import static org.mockito.MockitoAnnotations.initMocks;
 
-public class AbstractAutoDeploymentStrategyTest {
+@RunWith(MockitoJUnitRunner.class)
+public abstract class AbstractAutoDeploymentStrategyTest {
 
     @Mock
     protected RepositoryService repositoryServiceMock;
@@ -73,9 +75,6 @@ public class AbstractAutoDeploymentStrategyTest {
     protected File fileMock5;
 
     @Mock
-    private InputStream inputStreamMock;
-
-    @Mock
     private Deployment deploymentMock;
 
     @Mock
@@ -91,12 +90,8 @@ public class AbstractAutoDeploymentStrategyTest {
 
     @Before
     public void before() throws Exception {
-        initMocks(this);
         when(resourceMock1.getPathWithinContext()).thenReturn(resourceName1);
-        when(resourceMock1.getFile()).thenReturn(fileMock1);
-
         when(resourceMock2.getDescription()).thenReturn(resourceName2);
-        when(resourceMock2.getFile()).thenReturn(fileMock2);
 
         when(resourceMock3.getFile()).thenReturn(fileMock3);
         when(fileMock3.getAbsolutePath()).thenReturn(resourceName3);
@@ -107,16 +102,11 @@ public class AbstractAutoDeploymentStrategyTest {
         when(resourceMock5.getFile()).thenReturn(fileMock5);
         when(fileMock5.getAbsolutePath()).thenReturn(resourceName5);
 
-        when(resourceMock1.getInputStream()).thenReturn(inputStreamMock);
-        when(resourceMock2.getInputStream()).thenReturn(inputStreamMock);
-        when(resourceMock3.getInputStream()).thenReturn(inputStreamMock);
-        when(resourceMock4.getInputStream()).thenReturn(inputStreamMock);
-        when(resourceMock5.getInputStream()).thenReturn(inputStreamMock);
-
         when(repositoryServiceMock.createDeployment()).thenReturn(deploymentBuilderMock);
         when(deploymentBuilderMock.enableDuplicateFiltering()).thenReturn(deploymentBuilderMock);
         when(deploymentBuilderMock.name(isA(String.class))).thenReturn(deploymentBuilderMock);
 
         when(deploymentBuilderMock.deploy()).thenReturn(deploymentMock);
     }
+
 }
