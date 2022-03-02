@@ -22,20 +22,23 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Arrays;
 import java.util.List;
 import javax.el.ELContext;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.activiti.engine.delegate.VariableScope;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.el.variable.AssigneeUserELResolver;
 import org.activiti.engine.impl.el.variable.AuthenticatedUserELResolver;
 import org.activiti.engine.impl.el.variable.ExecutionElResolver;
 import org.activiti.engine.impl.el.variable.ProcessInitiatorELResolver;
 import org.activiti.engine.impl.el.variable.TaskElResolver;
 import org.activiti.engine.impl.el.variable.VariableElResolver;
 import org.activiti.engine.impl.el.variable.VariableScopeItemELResolver;
+import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.persistence.entity.TaskEntityImpl;
+import org.activiti.engine.impl.persistence.entity.VariableInstanceEntityManager;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -128,8 +131,29 @@ public class VariableScopeElResolverTest {
                 TaskElResolver.class.getName(),
                 AuthenticatedUserELResolver.class.getName(),
                 ProcessInitiatorELResolver.class.getName(),
-                VariableElResolver.class.getName()
+                VariableElResolver.class.getName(),
+                AssigneeUserELResolver.class.getName()
             );
 
+    }
+
+    @Test
+    public void should_resolveExpressionCorrectly_when_AssigneeIsUsed() {
+        //given
+        ProcessEngineConfigurationImpl processEngineConfiguration = mock(ProcessEngineConfigurationImpl.class);
+        given(processEngineConfiguration.getObjectMapper()).willReturn(new ObjectMapper());
+        Context.setProcessEngineConfiguration(processEngineConfiguration);
+        CommandContext commandContext = mock(CommandContext.class);
+        given(commandContext.getVariableInstanceEntityManager()).willReturn(mock(VariableInstanceEntityManager.class));
+        Context.setCommandContext(commandContext);
+        TaskEntityImpl variableScope = new TaskEntityImpl();
+        variableScope.setAssignee("user");
+        VariableScopeElResolver resolver = new VariableScopeElResolver(variableScope);
+
+        //when
+        Object result = resolver.getValue(mock(ELContext.class), null, "assignee");
+
+        //then
+        assertThat(result).isEqualTo("user");
     }
 }
