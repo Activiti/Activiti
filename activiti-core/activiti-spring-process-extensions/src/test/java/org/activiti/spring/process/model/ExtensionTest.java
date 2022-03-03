@@ -20,6 +20,8 @@ import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.InputStream;
 import java.util.Optional;
+
+import com.fasterxml.jackson.databind.json.JsonMapper;
 import org.activiti.spring.process.model.ProcessVariablesMapping.MappingType;
 import org.activiti.spring.process.model.TemplateDefinition.TemplateType;
 import org.junit.jupiter.api.Test;
@@ -38,12 +40,10 @@ public class ExtensionTest {
     @Mock
     private ProcessVariablesMapping processVariablesMapping;
 
-    private final static ObjectMapper MAPPER = new ObjectMapper();
-
-    static {
-        MAPPER.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-        MAPPER.enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS);
-    }
+    private final static ObjectMapper MAPPER = JsonMapper.builder()
+        .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+        .enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS)
+        .build();
 
     @Test
     public void should_bothHasMappingTypeInputsAndOutputsReturnTrue_when_thereIsMappingTypeMAP_ALL() {

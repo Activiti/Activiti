@@ -97,7 +97,7 @@ public class ValuedDataObjectConverterTest extends AbstractConverterTest {
     assertThat(dataObj.getName()).isEqualTo("DoubleTest");
     assertThat(dataObj.getItemSubjectRef().getStructureRef()).isEqualTo("xsd:double");
     assertThat(dataObj.getValue()).isInstanceOf(Double.class);
-    assertThat(dataObj.getValue()).isEqualTo(new Double(123456789));
+    assertThat(dataObj.getValue()).isEqualTo(Double.valueOf(123456789));
 
     dataObj = objectMap.get("dObj5");
     assertThat(dataObj.getId()).isEqualTo("dObj5");
@@ -111,7 +111,7 @@ public class ValuedDataObjectConverterTest extends AbstractConverterTest {
     assertThat(dataObj.getName()).isEqualTo("LongTest");
     assertThat(dataObj.getItemSubjectRef().getStructureRef()).isEqualTo("xsd:long");
     assertThat(dataObj.getValue()).isInstanceOf(Long.class);
-    assertThat(dataObj.getValue()).isEqualTo(new Long(-123456));
+    assertThat(dataObj.getValue()).isEqualTo(Long.valueOf(-123456));
     assertThat(dataObj.getExtensionElements()).hasSize(1);
     List<ExtensionElement> testValues = dataObj.getExtensionElements().get("testvalue");
     assertThat(testValues).isNotNull();
@@ -174,7 +174,7 @@ public class ValuedDataObjectConverterTest extends AbstractConverterTest {
     assertThat(dataObj.getName()).isEqualTo("DoubleSubTest");
     assertThat(dataObj.getItemSubjectRef().getStructureRef()).isEqualTo("xsd:double");
     assertThat(dataObj.getValue()).isInstanceOf(Double.class);
-    assertThat(dataObj.getValue()).isEqualTo(new Double(678912345));
+    assertThat(dataObj.getValue()).isEqualTo(Double.valueOf(678912345));
 
     dataObj = objectMap.get("dObj11");
     assertThat(dataObj.getId()).isEqualTo("dObj11");
@@ -188,6 +188,6 @@ public class ValuedDataObjectConverterTest extends AbstractConverterTest {
     assertThat(dataObj.getName()).isEqualTo("LongSubTest");
     assertThat(dataObj.getItemSubjectRef().getStructureRef()).isEqualTo("xsd:long");
     assertThat(dataObj.getValue()).isInstanceOf(Long.class);
-    assertThat(dataObj.getValue()).isEqualTo(new Long(456123));
+    assertThat(dataObj.getValue()).isEqualTo(Long.valueOf(456123));
   }
 }
