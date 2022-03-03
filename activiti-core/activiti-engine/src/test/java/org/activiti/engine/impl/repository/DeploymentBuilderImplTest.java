@@ -19,12 +19,13 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.activiti.engine.ActivitiException;
-import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Answers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.core.io.Resource;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -34,8 +35,8 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
-import static org.mockito.MockitoAnnotations.initMocks;
 
+@RunWith(MockitoJUnitRunner.class)
 public class DeploymentBuilderImplTest {
 
     @Spy
@@ -44,11 +45,6 @@ public class DeploymentBuilderImplTest {
 
     @Mock(answer = Answers.RETURNS_MOCKS)
     private Resource resource;
-
-    @Before
-    public void setUp() throws Exception {
-        initMocks(this);
-    }
 
     @Test
     public void addInputStreamShouldAddZipInputStreamWhenItsAZipLike() {

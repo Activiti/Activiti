@@ -16,12 +16,10 @@
 
 package org.activiti.runtime.api.event.internal;
 
-
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
-import static org.mockito.MockitoAnnotations.initMocks;
 
 import java.util.Arrays;
 import java.util.Optional;
@@ -33,8 +31,11 @@ import org.activiti.engine.delegate.event.impl.ActivitiVariableEventImpl;
 import org.activiti.runtime.api.event.impl.ToVariableCreatedConverter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
+@ExtendWith(MockitoExtension.class)
 public class VariableCreatedListenerDelegateTest {
 
     private VariableCreatedListenerDelegate variableCreatedListenerDelegate;
@@ -53,8 +54,6 @@ public class VariableCreatedListenerDelegateTest {
 
     @BeforeEach
     public void setUp() {
-        initMocks(this);
-
         variableCreatedListenerDelegate = new VariableCreatedListenerDelegate(
             Arrays.asList(firstListener, secondListener), converter, variableEventFilter);
     }
@@ -96,9 +95,6 @@ public class VariableCreatedListenerDelegateTest {
         ActivitiVariableEventImpl internalEvent = new ActivitiVariableEventImpl(
             ActivitiEventType.VARIABLE_CREATED);
         given(variableEventFilter.shouldEmmitEvent(internalEvent)).willReturn(false);
-        VariableCreatedEvent apiEvent = mock(VariableCreatedEvent.class);
-        given(converter.from(internalEvent)).willReturn(Optional.of(
-            apiEvent));
 
         //when
         variableCreatedListenerDelegate.onEvent(internalEvent);

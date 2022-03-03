@@ -36,7 +36,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.mock.jndi.SimpleNamingContextBuilder;
 import org.springframework.test.context.ContextConfiguration;
 
-@ContextConfiguration("classpath:org/activiti/spring/test/email/jndiEmailConfiguaration-context.xml")
+@ContextConfiguration("classpath:org/activiti/spring/test/email/jndiEmailConfiguration-context.xml")
 public class JndiEmailTest extends SpringActivitiTestCase {
 
     private static Logger logger = LoggerFactory.getLogger(JndiEmailTest.class);
@@ -85,4 +85,5 @@ public class JndiEmailTest extends SpringActivitiTestCase {
         ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("EmailJndiProcess", emptyMap());
         assertThat(runtimeService.createProcessInstanceQuery().processInstanceId(processInstance.getId()).count()).isEqualTo(0);
     }
+
 }

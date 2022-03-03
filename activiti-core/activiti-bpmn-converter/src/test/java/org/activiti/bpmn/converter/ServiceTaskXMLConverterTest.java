@@ -22,18 +22,19 @@ import org.activiti.bpmn.constants.BpmnXMLConstants;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.ServiceTask;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Answers;
 import org.mockito.Mock;
 import org.mockito.Spy;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.activiti.bpmn.constants.BpmnXMLConstants.ATTRIBUTE_TASK_IMPLEMENTATION;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
-import static org.mockito.MockitoAnnotations.initMocks;
 
+@ExtendWith(MockitoExtension.class)
 public class ServiceTaskXMLConverterTest {
 
     private ServiceTaskXMLConverter converter = new ServiceTaskXMLConverter();
@@ -50,16 +51,11 @@ public class ServiceTaskXMLConverterTest {
     @Mock
     private ServiceTask serviceTask;
 
-    @BeforeEach
-    public void setUp() throws Exception {
-        initMocks(this);
-    }
-
     @Test
     public void convertXMLToElementShouldSetTheImplementationFromXMLImplementationAttribute() throws Exception {
         //given
-        given(reader.getAttributeValue(null,
-                                       BpmnXMLConstants.ATTRIBUTE_TASK_IMPLEMENTATION)).willReturn("myConnector");
+        given(reader.getAttributeValue(BpmnXMLConstants.ACTIVITI_EXTENSIONS_NAMESPACE,
+                                       BpmnXMLConstants.ATTRIBUTE_TASK_SERVICE_CLASS)).willReturn("myConnector");
 
         //when
         BaseElement element = converter.convertXMLToElement(reader,

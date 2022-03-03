@@ -23,7 +23,9 @@ import org.activiti.engine.delegate.event.impl.ActivitiSignalEventImpl;
 import org.activiti.runtime.api.event.impl.ToSignalReceivedConverter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
@@ -31,8 +33,8 @@ import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
-import static org.mockito.MockitoAnnotations.initMocks;
 
+@ExtendWith(MockitoExtension.class)
 public class SignalReceivedListenerDelegateTest {
 
     private SignalReceivedListenerDelegate listenerDelegate;
@@ -48,7 +50,6 @@ public class SignalReceivedListenerDelegateTest {
 
     @BeforeEach
     public void setUp() {
-        initMocks(this);
         listenerDelegate = new SignalReceivedListenerDelegate(asList(firstListener, secondListener), converter);
     }
 

@@ -22,15 +22,17 @@ import org.activiti.bpmn.model.StartEvent;
 import org.activiti.engine.RepositoryService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.activiti.runtime.api.model.impl.MockProcessDefinitionBuilder.processDefinitionBuilderBuilder;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.MockitoAnnotations.initMocks;
 
+@ExtendWith(MockitoExtension.class)
 public class APIProcessDefinitionConverterTest {
 
     @InjectMocks
@@ -41,8 +43,6 @@ public class APIProcessDefinitionConverterTest {
 
     @BeforeEach
     public void setUp() {
-        initMocks(this);
-
         Process process = new Process();
         process.setId("processKey");
 

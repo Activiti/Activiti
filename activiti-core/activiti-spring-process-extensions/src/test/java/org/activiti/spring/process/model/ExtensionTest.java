@@ -22,16 +22,17 @@ import java.io.InputStream;
 import java.util.Optional;
 import org.activiti.spring.process.model.ProcessVariablesMapping.MappingType;
 import org.activiti.spring.process.model.TemplateDefinition.TemplateType;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.HashMap;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.MockitoAnnotations.initMocks;
 
+@ExtendWith(MockitoExtension.class)
 public class ExtensionTest {
 
     @Mock
@@ -42,12 +43,6 @@ public class ExtensionTest {
     static {
         MAPPER.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
         MAPPER.enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS);
-
-    }
-
-    @BeforeEach
-    public void setUp() {
-        initMocks(this);
     }
 
     @Test

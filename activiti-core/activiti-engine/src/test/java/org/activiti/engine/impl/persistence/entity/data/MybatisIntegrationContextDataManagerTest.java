@@ -15,34 +15,21 @@
  */
 package org.activiti.engine.impl.persistence.entity.data;
 
-import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.persistence.entity.data.integration.MybatisIntegrationContextDataManager;
 import org.activiti.engine.impl.persistence.entity.integration.IntegrationContextEntity;
 import org.activiti.engine.impl.persistence.entity.integration.IntegrationContextEntityImpl;
-import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Spy;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.MockitoAnnotations.initMocks;
 
+@RunWith(MockitoJUnitRunner.class)
 public class MybatisIntegrationContextDataManagerTest {
 
-    @Spy
     @InjectMocks
     private MybatisIntegrationContextDataManager manager;
-
-    @Mock
-    private DbSqlSession dbSqlSession;
-
-    @Before
-    public void setUp() throws Exception {
-        initMocks(this);
-        doReturn(dbSqlSession).when(manager).getDbSqlSession();
-    }
 
     @Test
     public void createShouldReturnANewInstanceOfIntegrationContextEntityImpl() {
