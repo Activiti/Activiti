@@ -15,6 +15,7 @@
     <batik.version>1.14</batik.version>
     <checkstyle-maven-plugin.version>3.1.0</checkstyle-maven-plugin.version>
     <commons-email.version>1.5</commons-email.version>
+    <commons-io.version>2.11.0</commons-io.version>
     <jakarta-enterprise-concurrent.version>1.1.2</jakarta-enterprise-concurrent.version>
     <java-uuid-generator.version>4.0.1</java-uuid-generator.version>
     <javaGeom.version>0.11.1</javaGeom.version>
@@ -50,6 +51,11 @@
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-email</artifactId>
         <version>${commons-email.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>commons-io</groupId>
+        <artifactId>commons-io</artifactId>
+        <version>${commons-io.version}</version>
       </dependency>
       <dependency>
         <groupId>org.mybatis</groupId>
