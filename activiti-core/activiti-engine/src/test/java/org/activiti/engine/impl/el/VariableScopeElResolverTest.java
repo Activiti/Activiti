@@ -36,9 +36,6 @@ import org.activiti.engine.impl.el.variable.ProcessInitiatorELResolver;
 import org.activiti.engine.impl.el.variable.TaskElResolver;
 import org.activiti.engine.impl.el.variable.VariableElResolver;
 import org.activiti.engine.impl.el.variable.VariableScopeItemELResolver;
-import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.persistence.entity.TaskEntityImpl;
-import org.activiti.engine.impl.persistence.entity.VariableInstanceEntityManager;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -135,25 +132,5 @@ public class VariableScopeElResolverTest {
                 AssigneeUserELResolver.class.getName()
             );
 
-    }
-
-    @Test
-    public void should_resolveExpressionCorrectly_when_AssigneeIsUsed() {
-        //given
-        ProcessEngineConfigurationImpl processEngineConfiguration = mock(ProcessEngineConfigurationImpl.class);
-        given(processEngineConfiguration.getObjectMapper()).willReturn(new ObjectMapper());
-        Context.setProcessEngineConfiguration(processEngineConfiguration);
-        CommandContext commandContext = mock(CommandContext.class);
-        given(commandContext.getVariableInstanceEntityManager()).willReturn(mock(VariableInstanceEntityManager.class));
-        Context.setCommandContext(commandContext);
-        TaskEntityImpl variableScope = new TaskEntityImpl();
-        variableScope.setAssignee("user");
-        VariableScopeElResolver resolver = new VariableScopeElResolver(variableScope);
-
-        //when
-        Object result = resolver.getValue(mock(ELContext.class), null, "assignee");
-
-        //then
-        assertThat(result).isEqualTo("user");
     }
 }
