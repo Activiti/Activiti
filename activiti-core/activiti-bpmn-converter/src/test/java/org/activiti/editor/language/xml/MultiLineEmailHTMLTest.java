@@ -30,7 +30,6 @@ public class MultiLineEmailHTMLTest extends AbstractConverterTest{
     public void convertXMLToModel() throws Exception {
         BpmnModel bpmnModel = readXMLFile();
         validateModel(bpmnModel);
-
     }
 
     private void validateModel(BpmnModel model) {
