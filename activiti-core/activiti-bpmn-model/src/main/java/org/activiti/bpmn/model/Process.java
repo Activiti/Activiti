@@ -23,7 +23,7 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 
-public class Process extends BaseElement implements FlowElementsContainer, HasExecutionListeners {
+public class Process extends BaseElement implements FlowElementsContainer, HasExecutionListeners, AcceptUpdates {
 
   protected String name;
   protected boolean executable = true;
@@ -429,6 +429,11 @@ public class Process extends BaseElement implements FlowElementsContainer, HasEx
 
   public void setInitialFlowElement(FlowElement initialFlowElement) {
     this.initialFlowElement = initialFlowElement;
+  }
+
+  @Override
+  public void accept(ReferenceOverrider referenceOverrider) {
+    getFlowElements().forEach(flowElement -> flowElement.accept(referenceOverrider));
   }
 
 }
