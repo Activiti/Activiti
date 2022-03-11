@@ -178,4 +178,10 @@ public class SubProcess extends Activity implements FlowElementsContainer {
   public void setDataObjects(List<ValuedDataObject> dataObjects) {
     this.dataObjects = dataObjects;
   }
+
+  @Override
+  public void accept(ReferenceOverrider referenceOverrider) {
+    getFlowElements().forEach(flowElement -> flowElement.accept(referenceOverrider));
+  }
+
 }
