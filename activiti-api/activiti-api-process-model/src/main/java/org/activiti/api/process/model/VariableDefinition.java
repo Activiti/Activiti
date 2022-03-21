@@ -15,25 +15,20 @@
  */
 package org.activiti.api.process.model;
 
-import org.activiti.api.model.shared.model.ApplicationElement;
-
-import java.util.List;
-
-public interface ProcessDefinition extends ApplicationElement {
+public interface VariableDefinition {
 
     String getId();
 
     String getName();
 
-    String getKey();
-
     String getDescription();
 
-    int getVersion();
+    String getType();
 
-    String getFormKey();
+    boolean isRequired();
 
-    String getCategory();
+    Boolean getDisplay();
 
-    List<VariableDefinition> getVariableDefinitions();
+    String getDisplayName();
+
 }

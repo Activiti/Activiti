@@ -15,38 +15,27 @@
  */
 package org.activiti.runtime.api.impl;
 
-import static java.util.Collections.singletonList;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.catchThrowable;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.verifyNoInteractions;
-import static org.mockito.Mockito.when;
-
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-
 import org.activiti.api.process.model.ProcessInstance;
+import org.activiti.api.process.model.VariableDefinition;
 import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
 import org.activiti.api.process.model.payloads.CreateProcessInstancePayload;
+import org.activiti.api.process.model.payloads.GetProcessDefinitionsPayload;
 import org.activiti.api.process.model.payloads.StartProcessPayload;
 import org.activiti.api.process.model.payloads.UpdateProcessPayload;
 import org.activiti.api.runtime.model.impl.DeploymentImpl;
 import org.activiti.api.runtime.model.impl.ProcessDefinitionImpl;
 import org.activiti.api.runtime.model.impl.ProcessInstanceImpl;
+import org.activiti.api.runtime.model.impl.VariableDefinitionImpl;
 import org.activiti.api.runtime.shared.NotFoundException;
 import org.activiti.api.runtime.shared.UnprocessableEntityException;
+import org.activiti.api.runtime.shared.query.Pageable;
 import org.activiti.api.runtime.shared.security.SecurityManager;
 import org.activiti.core.common.spring.security.policies.ProcessSecurityPoliciesManager;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
+import org.activiti.engine.impl.DeploymentQueryImpl;
+import org.activiti.engine.impl.ProcessDefinitionQueryImpl;
 import org.activiti.engine.impl.RepositoryServiceImpl;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.persistence.entity.DeploymentEntityImpl;
@@ -55,15 +44,41 @@ import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntityImpl;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstanceBuilder;
 import org.activiti.engine.runtime.ProcessInstanceQuery;
+import org.activiti.runtime.api.model.decorator.ProcessDefinitionDecorator;
 import org.activiti.runtime.api.model.impl.APIDeploymentConverter;
 import org.activiti.runtime.api.model.impl.APIProcessDefinitionConverter;
 import org.activiti.runtime.api.model.impl.APIProcessInstanceConverter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Answers;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Stream;
+
+import static java.util.Collections.singletonList;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class ProcessRuntimeImplTest {
@@ -97,23 +112,27 @@ public class ProcessRuntimeImplTest {
     @Mock
     private SecurityManager securityManager;
 
+    @Mock
+    private ProcessDefinitionDecorator processDefinitionDecorator;
+
     @BeforeEach
     public void setUp() {
         RepositoryServiceImpl repositoryService = new RepositoryServiceImpl();
         repositoryService.setCommandExecutor(commandExecutor);
 
         processRuntime = spy(new ProcessRuntimeImpl(repositoryService,
-                processDefinitionConverter,
-                runtimeService,
-                taskService,
-                securityPoliciesManager,
-                processInstanceConverter,
-                null,
-                deploymentConverter,
-                null,
-                null,
-                processVariableValidator,
-                securityManager));
+            processDefinitionConverter,
+            runtimeService,
+            taskService,
+            securityPoliciesManager,
+            processInstanceConverter,
+            null,
+            deploymentConverter,
+            null,
+            null,
+            processVariableValidator,
+            securityManager,
+            List.of(processDefinitionDecorator)));
 
     }
 
@@ -318,4 +337,60 @@ public class ProcessRuntimeImplTest {
             .hasMessage("Unable to find process instance for the given id:'process-instance-id'");
     }
 
+    @Test
+    void should_getProcessDefinitionsWithVariables_whenIncludeVariablesParameterPresent() {
+        GetProcessDefinitionsPayload processDefinitionsPayload = mock(GetProcessDefinitionsPayload.class);
+        when(processDefinitionsPayload.getProcessDefinitionKeys()).thenReturn(Set.of());
+        when(securityPoliciesManager.restrictProcessDefQuery(any())).thenReturn(processDefinitionsPayload);
+        when(commandExecutor.execute(any(DeploymentQueryImpl.class))).thenReturn(List.of());
+        ProcessDefinitionEntityImpl processDefinitionEntity = new ProcessDefinitionEntityImpl();
+        when(commandExecutor.execute(any(ProcessDefinitionQueryImpl.class)))
+            .thenReturn(List.of(processDefinitionEntity))
+            .thenReturn(1L);
+        ProcessDefinitionImpl processDefinition = new ProcessDefinitionImpl();
+        when(processDefinitionConverter.from(any(List.class))).thenReturn(List.of(processDefinition));
+
+        VariableDefinitionImpl variableDefinition = new VariableDefinitionImpl();
+        when(processDefinitionDecorator.applies("variables")).thenReturn(true);
+        when(processDefinitionDecorator.decorate(processDefinition)).thenAnswer(call-> {
+            processDefinition.setVariableDefinitions(List.of(variableDefinition));
+            return processDefinition;
+        });
+
+        List<org.activiti.api.process.model.ProcessDefinition> processDefinitions =
+            processRuntime.processDefinitions(Pageable.of(0, 50), List.of("variables")).getContent();
+
+        assertThat(processDefinitions).hasSize(1);
+        List<VariableDefinition> variableDefinitions = processDefinitions.get(0).getVariableDefinitions();
+        assertThat(variableDefinitions).hasSize(1);
+        assertThat(variableDefinitions.get(0)).isEqualTo(variableDefinition);
+        Mockito.verify(processDefinitionDecorator).decorate(processDefinition);
+    }
+
+    @ParameterizedTest
+    @MethodSource("emptyIncludeVariables")
+    void should_getProcessDefinitionsWithVariables_whenIncludeVariablesParameterNotPresent(List<String> include) {
+        GetProcessDefinitionsPayload processDefinitionsPayload = mock(GetProcessDefinitionsPayload.class);
+        when(processDefinitionsPayload.getProcessDefinitionKeys()).thenReturn(Set.of());
+        when(securityPoliciesManager.restrictProcessDefQuery(any())).thenReturn(processDefinitionsPayload);
+        when(commandExecutor.execute(any(DeploymentQueryImpl.class))).thenReturn(List.of());
+        ProcessDefinitionEntityImpl processDefinitionEntity = new ProcessDefinitionEntityImpl();
+        when(commandExecutor.execute(any(ProcessDefinitionQueryImpl.class)))
+            .thenReturn(List.of(processDefinitionEntity))
+            .thenReturn(1L);
+        ProcessDefinitionImpl processDefinition = new ProcessDefinitionImpl();
+        when(processDefinitionConverter.from(any(List.class))).thenReturn(List.of(processDefinition));
+
+        lenient().when(processDefinitionDecorator.applies("variables")).thenReturn(true);
+
+        List<org.activiti.api.process.model.ProcessDefinition> processDefinitions =
+            processRuntime.processDefinitions(Pageable.of(0, 50), include).getContent();
+
+        assertThat(processDefinitions).hasSize(1);
+        Mockito.verify(processDefinitionDecorator, never()).decorate(any());
+    }
+
+    private static Stream<Arguments> emptyIncludeVariables() {
+        return Stream.of(Arguments.of(List.of()), Arguments.of(List.of("")), Arguments.of(List.of("other")));
+    }
 }

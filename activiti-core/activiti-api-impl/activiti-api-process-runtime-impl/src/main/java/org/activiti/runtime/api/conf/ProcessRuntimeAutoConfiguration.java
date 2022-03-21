@@ -119,6 +119,8 @@ import org.activiti.runtime.api.impl.RuntimeSignalPayloadEventListener;
 import org.activiti.runtime.api.impl.VariableNameValidator;
 import org.activiti.runtime.api.impl.ExtensionsVariablesMappingProvider;
 import org.activiti.runtime.api.message.ReceiveMessagePayloadEventListener;
+import org.activiti.runtime.api.model.decorator.ProcessDefinitionDecorator;
+import org.activiti.runtime.api.model.decorator.ProcessDefinitionVariablesDecorator;
 import org.activiti.runtime.api.model.impl.APIDeploymentConverter;
 import org.activiti.runtime.api.model.impl.APIProcessDefinitionConverter;
 import org.activiti.runtime.api.model.impl.APIProcessInstanceConverter;
@@ -183,7 +185,8 @@ public class ProcessRuntimeAutoConfiguration {
                                          ProcessRuntimeConfiguration processRuntimeConfiguration,
                                          ApplicationEventPublisher eventPublisher,
                                          ProcessVariablesPayloadValidator processVariablesValidator,
-                                         SecurityManager securityManager) {
+                                         SecurityManager securityManager,
+                                         List<ProcessDefinitionDecorator> processDefinitionDecorators) {
         return new ProcessRuntimeImpl(repositoryService,
                 processDefinitionConverter,
                 runtimeService,
@@ -195,7 +198,8 @@ public class ProcessRuntimeAutoConfiguration {
                 processRuntimeConfiguration,
                 eventPublisher,
                 processVariablesValidator,
-                securityManager);
+                securityManager,
+                processDefinitionDecorators);
     }
 
     @Bean
@@ -580,4 +584,11 @@ public class ProcessRuntimeAutoConfiguration {
                                                                                                       new ToMessageSubscriptionCancelledConverter(converter)),
                                                      ActivitiEventType.ENTITY_DELETED);
     }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public ProcessDefinitionVariablesDecorator processDefinitionVariablesDecorator(ProcessExtensionService processExtensionService) {
+        return new ProcessDefinitionVariablesDecorator(processExtensionService);
+    }
+
 }

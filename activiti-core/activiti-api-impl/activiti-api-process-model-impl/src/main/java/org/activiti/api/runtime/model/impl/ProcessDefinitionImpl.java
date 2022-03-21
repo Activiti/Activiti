@@ -15,9 +15,12 @@
  */
 package org.activiti.api.runtime.model.impl;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import org.activiti.api.process.model.ProcessDefinition;
+import org.activiti.api.process.model.VariableDefinition;
 
 public class ProcessDefinitionImpl extends ApplicationElementImpl implements ProcessDefinition {
 
@@ -28,6 +31,7 @@ public class ProcessDefinitionImpl extends ApplicationElementImpl implements Pro
     private String key;
     private String formKey;
     private String category;
+    private List<VariableDefinition> variableDefinitions = new ArrayList<>();
 
     @Override
     public String getId() {
@@ -93,6 +97,15 @@ public class ProcessDefinitionImpl extends ApplicationElementImpl implements Pro
     }
 
     @Override
+    public List<VariableDefinition> getVariableDefinitions() {
+        return variableDefinitions;
+    }
+
+    public void setVariableDefinitions(List<VariableDefinition> variableDefinitions) {
+        this.variableDefinitions = variableDefinitions;
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -114,7 +127,9 @@ public class ProcessDefinitionImpl extends ApplicationElementImpl implements Pro
                 Objects.equals(key,
                                that.key) &&
                 Objects.equals(formKey,
-                               that.formKey);
+                               that.formKey) &&
+                Objects.equals(variableDefinitions,
+                               that.variableDefinitions);
     }
 
     @Override
@@ -125,7 +140,8 @@ public class ProcessDefinitionImpl extends ApplicationElementImpl implements Pro
                             description,
                             version,
                             key,
-                            formKey);
+                            formKey,
+                            variableDefinitions);
     }
 
     @Override
@@ -137,6 +153,7 @@ public class ProcessDefinitionImpl extends ApplicationElementImpl implements Pro
                 ", description='" + description + '\'' +
                 ", formKey='" + formKey + '\'' +
                 ", version=" + version +
+                ", variableDefinitions=" + variableDefinitions +
                 '}';
     }
 }
