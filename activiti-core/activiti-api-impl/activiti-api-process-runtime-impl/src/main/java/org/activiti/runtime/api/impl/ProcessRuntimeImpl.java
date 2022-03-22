@@ -15,6 +15,7 @@
  */
 package org.activiti.runtime.api.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -219,10 +220,11 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
     }
 
     private List<ProcessDefinition> decorate(List<ProcessDefinition> processDefinitions, List<String> include) {
+        List<ProcessDefinition> decoratedProcessDefinitions = new ArrayList<>(processDefinitions);
         for (String param : include) {
-            processDefinitions = decorate(processDefinitions, param);
+            decoratedProcessDefinitions = decorate(decoratedProcessDefinitions, param);
         }
-        return processDefinitions;
+        return decoratedProcessDefinitions;
     }
 
     private List<ProcessDefinition> decorate(List<ProcessDefinition> processDefinitions, String includeParam) {

@@ -97,7 +97,13 @@ public class VariableDefinitionImpl implements VariableDefinition {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         VariableDefinitionImpl that = (VariableDefinitionImpl) o;
-        return required == that.required && display == that.display && Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(description, that.description) && Objects.equals(type, that.type) && Objects.equals(displayName, that.displayName);
+        return required == that.required &&
+            Objects.equals(display, that.display) &&
+            Objects.equals(id, that.id) &&
+            Objects.equals(name, that.name) &&
+            Objects.equals(description, that.description) &&
+            Objects.equals(type, that.type) &&
+            Objects.equals(displayName, that.displayName);
     }
 
     @Override

@@ -56,7 +56,6 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Answers;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
@@ -364,7 +363,7 @@ public class ProcessRuntimeImplTest {
         List<VariableDefinition> variableDefinitions = processDefinitions.get(0).getVariableDefinitions();
         assertThat(variableDefinitions).hasSize(1);
         assertThat(variableDefinitions.get(0)).isEqualTo(variableDefinition);
-        Mockito.verify(processDefinitionDecorator).decorate(processDefinition);
+        verify(processDefinitionDecorator).decorate(processDefinition);
     }
 
     @ParameterizedTest
@@ -387,7 +386,7 @@ public class ProcessRuntimeImplTest {
             processRuntime.processDefinitions(Pageable.of(0, 50), include).getContent();
 
         assertThat(processDefinitions).hasSize(1);
-        Mockito.verify(processDefinitionDecorator, never()).decorate(any());
+        verify(processDefinitionDecorator, never()).decorate(any());
     }
 
     private static Stream<Arguments> emptyIncludeVariables() {
