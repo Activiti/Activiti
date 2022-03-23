@@ -26,6 +26,7 @@ import org.activiti.bpmn.model.CancelEventDefinition;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.FlowNode;
 import org.activiti.bpmn.model.Gateway;
+import org.activiti.bpmn.model.IntermediateCatchEvent;
 import org.activiti.bpmn.model.SequenceFlow;
 import org.activiti.bpmn.model.SubProcess;
 import org.activiti.engine.ActivitiException;
@@ -303,6 +304,13 @@ public class TakeOutgoingSequenceFlowsOperation extends AbstractOperation {
     }
 
     protected void cleanupExecutions(FlowElement currentFlowElement) {
+        // modified by vrm
+        // * if execution has scope=true, ".planDestroyScopeOperation()" is called, destroying the execution
+        if( currentFlowElement instanceof IntermediateCatchEvent ) {
+            execution.setScope(false);
+        }
+        // modified by vrm
+
         if (execution.getParentId() != null && execution.isScope()) {
 
             // If the execution is a scope (and not a process instance), the scope must first be

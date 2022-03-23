@@ -18,7 +18,10 @@ package org.activiti.engine.impl.agenda;
 import org.activiti.bpmn.model.BoundaryEvent;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.FlowNode;
+import org.activiti.bpmn.model.IntermediateCatchEvent;
+import org.activiti.bpmn.model.TimerEventDefinition;
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.impl.bpmn.behavior.IntermediateCatchTimerEventActivityBehavior;
 import org.activiti.engine.impl.delegate.ActivityBehavior;
 import org.activiti.engine.impl.delegate.TriggerableActivityBehavior;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -44,6 +47,15 @@ public class TriggerExecutionOperation extends AbstractOperation {
     if (currentFlowElement instanceof FlowNode) {
 
       ActivityBehavior activityBehavior = (ActivityBehavior) ((FlowNode) currentFlowElement).getBehavior();
+        // modified by vrm - IntermediateCatchEvent doesn't have behaviour setup
+        if( activityBehavior==null ) {
+            if( currentFlowElement instanceof IntermediateCatchEvent ) {
+                IntermediateCatchEvent intermediateCatchEvent = (IntermediateCatchEvent) currentFlowElement;
+                activityBehavior = new IntermediateCatchTimerEventActivityBehavior((TimerEventDefinition) intermediateCatchEvent.getEventDefinitions().get(0));
+            }
+        }
+        // modified by vrm
+
       if (activityBehavior instanceof TriggerableActivityBehavior) {
 
         if (currentFlowElement instanceof BoundaryEvent) {

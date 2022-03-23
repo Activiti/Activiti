@@ -26,11 +26,13 @@ import org.activiti.bpmn.model.FlowNode;
 import org.activiti.bpmn.model.Process;
 import org.activiti.bpmn.model.SequenceFlow;
 import org.activiti.bpmn.model.SubProcess;
+import org.activiti.bpmn.model.UserTask;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.bpmn.behavior.MultiInstanceActivityBehavior;
+import org.activiti.engine.impl.bpmn.behavior.UserTaskActivityBehavior;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.delegate.ActivityBehavior;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -155,6 +157,12 @@ public class ContinueProcessOperation extends AbstractOperation {
 
         // Execute actual behavior
         ActivityBehavior activityBehavior = (ActivityBehavior) flowNode.getBehavior();
+
+        // modified by vrm - UserTask doesn't have behaviour setup
+        if( activityBehavior==null && flowNode instanceof UserTask ) {
+            activityBehavior = new UserTaskActivityBehavior((UserTask)flowNode);
+        }
+        // modified by vrm
 
         if (activityBehavior != null) {
             executeActivityBehavior(activityBehavior,
