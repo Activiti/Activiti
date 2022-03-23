@@ -80,25 +80,55 @@ public class SharedExecutorServiceAsyncExecutor extends DefaultAsyncJobExecutor 
     return timerJobAcquisitionRunnables.keySet();
   }
 
-  public void addTenantAsyncExecutor(String tenantId, boolean startExecutor) {
+    public void addTenantAsyncExecutor(String tenantId, boolean startExecutor)
+    {
+        // modified by vrm - found that this method was being called twice per tenant
+        // TODO: check if that claim continues to be true
+        boolean createTimerJobs = false;
+        boolean createAsyncJobsDue = false;
+        boolean createResetExpiredJobs = false;
 
-    TenantAwareAcquireTimerJobsRunnable timerRunnable = new TenantAwareAcquireTimerJobsRunnable(this, tenantInfoHolder, tenantId);
-    timerJobAcquisitionRunnables.put(tenantId, timerRunnable);
-    timerJobAcquisitionThreads.put(tenantId, new Thread(timerRunnable));
+        createTimerJobs = timerJobAcquisitionRunnables.get(tenantId) == null;
+        if (createTimerJobs)
+        {
 
-    TenantAwareAcquireAsyncJobsDueRunnable asyncJobsRunnable = new TenantAwareAcquireAsyncJobsDueRunnable(this, tenantInfoHolder, tenantId);
-    asyncJobAcquisitionRunnables.put(tenantId, asyncJobsRunnable);
-    asyncJobAcquisitionThreads.put(tenantId, new Thread(asyncJobsRunnable));
+            TenantAwareAcquireTimerJobsRunnable timerRunnable = new TenantAwareAcquireTimerJobsRunnable(this, tenantInfoHolder, tenantId);
+            timerJobAcquisitionRunnables.put(tenantId, timerRunnable);
+            timerJobAcquisitionThreads.put(tenantId, new Thread(timerRunnable));
+        }
 
-    TenantAwareResetExpiredJobsRunnable resetExpiredJobsRunnable = new TenantAwareResetExpiredJobsRunnable(this, tenantInfoHolder, tenantId);
-    resetExpiredJobsRunnables.put(tenantId, resetExpiredJobsRunnable);
-    resetExpiredJobsThreads.put(tenantId, new Thread(resetExpiredJobsRunnable));
+        createAsyncJobsDue = asyncJobAcquisitionRunnables.get(tenantId) == null;
+        if (createAsyncJobsDue)
+        {
+            TenantAwareAcquireAsyncJobsDueRunnable asyncJobsRunnable = new TenantAwareAcquireAsyncJobsDueRunnable(this, tenantInfoHolder, tenantId);
+            asyncJobAcquisitionRunnables.put(tenantId, asyncJobsRunnable);
+            asyncJobAcquisitionThreads.put(tenantId, new Thread(asyncJobsRunnable));
+        }
 
-    if (startExecutor) {
-      startTimerJobAcquisitionForTenant(tenantId);
-      startAsyncJobAcquisitionForTenant(tenantId);
-      startResetExpiredJobsForTenant(tenantId);
-    }
+        createResetExpiredJobs = resetExpiredJobsRunnables.get(tenantId) == null;
+        if (createResetExpiredJobs)
+        {
+            TenantAwareResetExpiredJobsRunnable resetExpiredJobsRunnable = new TenantAwareResetExpiredJobsRunnable(this, tenantInfoHolder, tenantId);
+            resetExpiredJobsRunnables.put(tenantId, resetExpiredJobsRunnable);
+            resetExpiredJobsThreads.put(tenantId, new Thread(resetExpiredJobsRunnable));
+        }
+
+        if (startExecutor)
+        {
+            if (createTimerJobs)
+            {
+                startTimerJobAcquisitionForTenant(tenantId);
+            }
+            if (createAsyncJobsDue)
+            {
+                startAsyncJobAcquisitionForTenant(tenantId);
+            }
+            if (createResetExpiredJobs)
+            {
+                startResetExpiredJobsForTenant(tenantId);
+            }
+        }
+        // modified by vrm
   }
 
   @Override
@@ -113,6 +143,11 @@ public class SharedExecutorServiceAsyncExecutor extends DefaultAsyncJobExecutor 
       startAsyncJobAcquisitionForTenant(tenantId);
       startResetExpiredJobsForTenant(tenantId);
     }
+    // modified by vrm - seems there weren't any threads to execute async jobs
+    // TODO: check if this is really needed
+    initAsyncJobExecutionThreadPool();
+    isActive=true;
+    // modified by vrm
   }
 
   protected  void startTimerJobAcquisitionForTenant(String tenantId) {
@@ -158,4 +193,12 @@ public class SharedExecutorServiceAsyncExecutor extends DefaultAsyncJobExecutor 
     }
   }
 
+/*
+    @Override public boolean executeAsyncJob(Job job)
+    {
+        final Runnable executeAsyncRunnable = executeAsyncRunnableFactory.createExecuteAsyncRunnable(job, processEngineConfiguration);
+        executeAsyncRunnable.run();
+        return true;
+    }
+    */
 }
