@@ -189,6 +189,10 @@ WHERE (HANDLER_TYPE_ = 'activate-processdefinition'
 and LOCK_EXP_TIME_ is null;
 
 
+-- modified by vrm
+update ACT_RU_TIMER_JOB set HANDLER_TYPE_='trigger-timer' WHERE HANDLER_TYPE_='timer-intermediate-transition' and LOCK_EXP_TIME_ is null;
+-- modified by vrm
+
 alter table ACT_RU_EXECUTION add column START_TIME_ timestamp;
 alter table ACT_RU_EXECUTION add column START_USER_ID_ varchar(255);
 alter table ACT_RU_TASK add column CLAIM_TIME_ timestamp;
