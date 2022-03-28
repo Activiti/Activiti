@@ -1836,4 +1836,21 @@ public class ProcessInstanceQueryTest extends PluggableActivitiTestCase {
 
     assertThat(processInstances).hasSize(1);
   }
+
+  @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
+  public void testOrQueryByStartedBy() throws Exception {
+    final String authenticatedUser = "user1";
+    Authentication.setAuthenticatedUserId(authenticatedUser);
+    ProcessInstance expectedProcessInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
+
+    ProcessInstance actualProcessInstance = runtimeService.createProcessInstanceQuery()
+        .or()
+        .startedBy(authenticatedUser)
+        .processDefinitionKey("notTheProcessDefinitionKey")
+        .endOr()
+        .singleResult();
+
+    assertThat(actualProcessInstance.getProcessInstanceId())
+        .isEqualTo(expectedProcessInstance.getProcessInstanceId());
+    }
 }

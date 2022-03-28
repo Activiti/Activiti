@@ -981,4 +981,40 @@ public class ProcessRuntimeIT {
         assertThat(deletedProcessInstance).isNotNull();
         assertThat(deletedProcessInstance.getStatus()).isEqualTo(ProcessInstance.ProcessInstanceStatus.CANCELLED);
     }
+
+    @Test
+    public void should_returnProcessesToTaskCandidates() {
+        //given
+        ProcessInstance processInstance = processRuntime.start(ProcessPayloadBuilder.start()
+            .withProcessDefinitionKey(TWO_TASKS_PROCESS)
+            .build());
+
+        securityUtil.logInAs("garth");
+
+        //when
+        Page<ProcessInstance> processInstancePage = processRuntime.processInstances(PAGEABLE);
+
+        //then
+        assertThat(processInstancePage).isNotNull();
+        assertThat(processInstancePage.getContent()).hasSize(1);
+        assertThat(processInstancePage.getContent().get(0).getId()).isEqualTo(processInstance.getId());
+    }
+
+    @Test
+    public void should_returnProcessesToTaskAssignees() {
+        //given
+        ProcessInstance processInstance = processRuntime.start(ProcessPayloadBuilder.start()
+            .withProcessDefinitionKey(SINGLE_TASK_PROCESS)
+            .build());
+
+        securityUtil.logInAs("garth");
+
+        //when
+        Page<ProcessInstance> processInstancePage = processRuntime.processInstances(PAGEABLE);
+
+        //then
+        assertThat(processInstancePage).isNotNull();
+        assertThat(processInstancePage.getContent()).hasSize(1);
+        assertThat(processInstancePage.getContent().get(0).getId()).isEqualTo(processInstance.getId());
+    }
 }
