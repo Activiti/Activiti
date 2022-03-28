@@ -31,6 +31,7 @@ import org.activiti.engine.TaskService;
 import org.activiti.runtime.api.impl.ProcessAdminRuntimeImpl;
 import org.activiti.runtime.api.impl.ProcessRuntimeImpl;
 import org.activiti.runtime.api.impl.ProcessVariablesPayloadValidator;
+import org.activiti.runtime.api.model.decorator.ProcessDefinitionDecorator;
 import org.activiti.runtime.api.model.impl.APIDeploymentConverter;
 import org.activiti.runtime.api.model.impl.APIProcessDefinitionConverter;
 import org.activiti.runtime.api.model.impl.APIProcessInstanceConverter;
@@ -44,6 +45,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.test.context.TestPropertySource;
+
+import java.util.List;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @TestPropertySource("classpath:application-history.properties")
@@ -99,6 +102,8 @@ public class HistoryConfigurationTest {
     @Autowired
     private SecurityManager securityManager;
 
+    @Autowired
+    private List<ProcessDefinitionDecorator> processDefinitionDecorators;
 
     @AfterEach
     public void cleanUp(){
@@ -120,7 +125,8 @@ public class HistoryConfigurationTest {
                      configuration,
                      eventPublisher,
                      processVariablesValidator,
-                     securityManager));
+                     securityManager,
+                     processDefinitionDecorators));
 
         spy(new ProcessAdminRuntimeImpl(repositoryService,
                      processDefinitionConverter,

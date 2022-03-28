@@ -15,6 +15,7 @@
  */
 package org.activiti.runtime.api.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -62,6 +63,7 @@ import org.activiti.engine.TaskService;
 import org.activiti.engine.repository.ProcessDefinitionQuery;
 import org.activiti.engine.runtime.ProcessInstanceBuilder;
 import org.activiti.engine.task.TaskQuery;
+import org.activiti.runtime.api.model.decorator.ProcessDefinitionDecorator;
 import org.activiti.runtime.api.model.impl.APIDeploymentConverter;
 import org.activiti.runtime.api.model.impl.APIProcessDefinitionConverter;
 import org.activiti.runtime.api.model.impl.APIProcessInstanceConverter;
@@ -98,6 +100,8 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
 
     private final SecurityManager securityManager;
 
+    private final List<ProcessDefinitionDecorator> processDefinitionDecorators;
+
     public ProcessRuntimeImpl(RepositoryService repositoryService,
                               APIProcessDefinitionConverter processDefinitionConverter,
                               RuntimeService runtimeService,
@@ -109,7 +113,8 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
                               ProcessRuntimeConfiguration configuration,
                               ApplicationEventPublisher eventPublisher,
                               ProcessVariablesPayloadValidator processVariablesValidator,
-                              SecurityManager securityManager) {
+                              SecurityManager securityManager,
+                              List<ProcessDefinitionDecorator> processDefinitionDecorators) {
         this.repositoryService = repositoryService;
         this.processDefinitionConverter = processDefinitionConverter;
         this.runtimeService = runtimeService;
@@ -122,6 +127,7 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
         this.eventPublisher = eventPublisher;
         this.processVariablesValidator = processVariablesValidator;
         this.securityManager = securityManager;
+        this.processDefinitionDecorators = processDefinitionDecorators;
     }
 
     @Override
@@ -170,13 +176,24 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
 
     @Override
     public Page<ProcessDefinition> processDefinitions(Pageable pageable) {
-        return processDefinitions(pageable,
-                ProcessPayloadBuilder.processDefinitions().build());
+        return processDefinitions(pageable, ProcessPayloadBuilder.processDefinitions().build(), List.of());
+    }
+
+    @Override
+    public Page<ProcessDefinition> processDefinitions(Pageable pageable, List<String> include) {
+        return processDefinitions(pageable, ProcessPayloadBuilder.processDefinitions().build(), include);
     }
 
     @Override
     public Page<ProcessDefinition> processDefinitions(Pageable pageable,
                                                       GetProcessDefinitionsPayload getProcessDefinitionsPayload) {
+        return processDefinitions(pageable, getProcessDefinitionsPayload, List.of());
+    }
+
+    @Override
+    public Page<ProcessDefinition> processDefinitions(Pageable pageable,
+                                                      GetProcessDefinitionsPayload getProcessDefinitionsPayload,
+                                                      List<String> include) {
         if (getProcessDefinitionsPayload == null) {
             throw new IllegalStateException("payload cannot be null");
         }
@@ -196,8 +213,26 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
             processDefinitionQuery.processDefinitionKeys(getProcessDefinitionsPayload.getProcessDefinitionKeys());
         }
 
-        return new PageImpl<>(processDefinitionConverter.from(processDefinitionQuery.list()),
+        List<ProcessDefinition> processDefinitions = processDefinitionConverter.from(processDefinitionQuery.list());
+        List<ProcessDefinition> decoratedProcessDefinitions = decorate(processDefinitions, include);
+        return new PageImpl<>(decoratedProcessDefinitions,
                               Math.toIntExact(processDefinitionQuery.count()));
+    }
+
+    private List<ProcessDefinition> decorate(List<ProcessDefinition> processDefinitions, List<String> include) {
+        List<ProcessDefinition> decoratedProcessDefinitions = new ArrayList<>(processDefinitions);
+        for (String param : include) {
+            decoratedProcessDefinitions = decorate(decoratedProcessDefinitions, param);
+        }
+        return decoratedProcessDefinitions;
+    }
+
+    private List<ProcessDefinition> decorate(List<ProcessDefinition> processDefinitions, String includeParam) {
+        return processDefinitionDecorators.stream()
+            .filter(decorator -> decorator.applies(includeParam))
+            .findFirst()
+            .map(decorator -> processDefinitions.stream().map(decorator::decorate).collect(Collectors.toList()))
+            .orElse(processDefinitions);
     }
 
     @Override

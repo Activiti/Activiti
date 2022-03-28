@@ -26,8 +26,10 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import org.activiti.api.model.shared.model.VariableInstance;
+import org.activiti.api.process.model.VariableDefinition;
 import org.activiti.api.runtime.shared.security.SecurityManager;
 import org.activiti.api.process.model.Deployment;
 import org.activiti.api.process.model.ProcessDefinition;
@@ -53,6 +55,7 @@ import org.activiti.engine.TaskService;
 import org.activiti.runtime.api.impl.ProcessAdminRuntimeImpl;
 import org.activiti.runtime.api.impl.ProcessRuntimeImpl;
 import org.activiti.runtime.api.impl.ProcessVariablesPayloadValidator;
+import org.activiti.runtime.api.model.decorator.ProcessDefinitionDecorator;
 import org.activiti.runtime.api.model.impl.APIDeploymentConverter;
 import org.activiti.runtime.api.model.impl.APIProcessDefinitionConverter;
 import org.activiti.runtime.api.model.impl.APIProcessInstanceConverter;
@@ -140,6 +143,9 @@ public class ProcessRuntimeIT {
     @Autowired
     private SecurityManager securityManager;
 
+    @Autowired
+    private List<ProcessDefinitionDecorator> processDefinitionDecorators;
+
     @AfterEach
     public void cleanUp(){
         processCleanUpUtil.cleanUpWithAdmin();
@@ -161,7 +167,8 @@ public class ProcessRuntimeIT {
                                                      configuration,
                                                      eventPublisher,
                                                      processVariablesValidator,
-                                                     securityManager));
+                                                     securityManager,
+                                                     processDefinitionDecorators));
 
         processAdminRuntimeMock = spy(new ProcessAdminRuntimeImpl(repositoryService,
                                                      processDefinitionConverter,
@@ -212,6 +219,22 @@ public class ProcessRuntimeIT {
             .contains(CATEGORIZE_HUMAN_PROCESS_CATEGORY)
             .allMatch(Objects::nonNull);
 
+    }
+
+    @Test
+    public void should_allProcessDefinitionsHaveVariables_when_fetchingProcessDefinitionsWithVariables() {
+        //when
+        List<ProcessDefinition> processDefinitionList = processRuntime.processDefinitions(PAGEABLE, List.of("variables"))
+            .getContent();
+
+        //then
+        Optional<ProcessDefinition> displayedVarsDefinition = processDefinitionList.stream()
+            .filter(processDefinition -> "Process_displayedVarsProcess".equals(processDefinition.getKey()))
+            .findFirst();
+        assertThat(displayedVarsDefinition).isPresent();
+        List<VariableDefinition> variableDefinitions = displayedVarsDefinition.get().getVariableDefinitions();
+        assertThat(variableDefinitions).hasSize(4);
+        assertThat(variableDefinitions).allMatch(VariableDefinition::getDisplay);
     }
 
     @Test

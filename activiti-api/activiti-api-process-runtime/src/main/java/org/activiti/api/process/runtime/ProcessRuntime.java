@@ -62,10 +62,22 @@ public interface ProcessRuntime {
     Page<ProcessDefinition> processDefinitions(Pageable pageable);
 
     /**
+     * Get all process definitions by pages with include parameter
+     */
+    Page<ProcessDefinition> processDefinitions(Pageable pageable, List<String> include);
+
+    /**
      * Get all process definitions by pages using payload filters
      */
     Page<ProcessDefinition> processDefinitions(Pageable pageable,
                                                GetProcessDefinitionsPayload getProcessDefinitionsPayload);
+
+    /**
+     * Get all process definitions by pages using payload filters and include parameter
+     */
+    Page<ProcessDefinition> processDefinitions(Pageable pageable,
+                                               GetProcessDefinitionsPayload getProcessDefinitionsPayload,
+                                               List<String> include);
 
 
     /**

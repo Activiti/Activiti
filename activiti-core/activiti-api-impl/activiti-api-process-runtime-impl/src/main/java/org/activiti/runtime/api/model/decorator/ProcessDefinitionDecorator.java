@@ -13,27 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.api.process.model;
+package org.activiti.runtime.api.model.decorator;
 
-import org.activiti.api.model.shared.model.ApplicationElement;
+import org.activiti.api.process.model.ProcessDefinition;
+import org.apache.commons.lang3.StringUtils;
 
-import java.util.List;
+public interface ProcessDefinitionDecorator {
 
-public interface ProcessDefinition extends ApplicationElement {
+    String getHandledValue();
 
-    String getId();
+    ProcessDefinition decorate(ProcessDefinition processDefinition);
 
-    String getName();
+    default boolean applies(String include){
+        return StringUtils.equalsIgnoreCase(getHandledValue(), include);
+    }
 
-    String getKey();
-
-    String getDescription();
-
-    int getVersion();
-
-    String getFormKey();
-
-    String getCategory();
-
-    List<VariableDefinition> getVariableDefinitions();
 }
