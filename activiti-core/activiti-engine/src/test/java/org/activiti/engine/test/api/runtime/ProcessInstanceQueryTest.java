@@ -1850,6 +1850,7 @@ public class ProcessInstanceQueryTest extends PluggableActivitiTestCase {
         .endOr()
         .singleResult();
 
+    assertThat(actualProcessInstance).isNotNull();
     assertThat(actualProcessInstance.getProcessInstanceId())
         .isEqualTo(expectedProcessInstance.getProcessInstanceId());
     }
