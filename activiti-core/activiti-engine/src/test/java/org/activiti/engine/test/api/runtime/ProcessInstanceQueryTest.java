@@ -1843,6 +1843,9 @@ public class ProcessInstanceQueryTest extends PluggableActivitiTestCase {
     Authentication.setAuthenticatedUserId(authenticatedUser);
     ProcessInstance expectedProcessInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
 
+    Authentication.setAuthenticatedUserId("user2");
+    runtimeService.startProcessInstanceByKey("oneTaskProcess");
+
     ProcessInstance actualProcessInstance = runtimeService.createProcessInstanceQuery()
         .or()
         .startedBy(authenticatedUser)
