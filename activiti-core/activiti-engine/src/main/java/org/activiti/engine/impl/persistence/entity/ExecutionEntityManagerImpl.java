@@ -309,12 +309,17 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
     subProcessInstance.setSuperExecution(superExecutionEntity);
     subProcessInstance.setRootProcessInstanceId(superExecutionEntity.getRootProcessInstanceId());
     subProcessInstance.setScope(true); // process instance is always a scope for all child executions
-    subProcessInstance.setStartUserId(Authentication.getAuthenticatedUserId());
     subProcessInstance.setBusinessKey(businessKey);
     subProcessInstance.setAppVersion(processDefinition.getAppVersion());
+    String authenticatedUserId = Authentication.getAuthenticatedUserId();
+    subProcessInstance.setStartUserId(authenticatedUserId);
 
     // Store in database
     insert(subProcessInstance, false);
+
+    if (authenticatedUserId != null) {
+      getIdentityLinkEntityManager().addIdentityLink(subProcessInstance, authenticatedUserId, null, IdentityLinkType.STARTER);
+    }
 
     if (logger.isDebugEnabled()) {
       logger.debug("Child execution {} created with super execution {}", subProcessInstance, superExecutionEntity.getId());
