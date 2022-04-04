@@ -262,7 +262,7 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
         org.activiti.engine.runtime.ProcessInstanceQuery internalQuery = runtimeService.createProcessInstanceQuery();
 
         String currentUserId = securityManager.getAuthenticatedUserId();
-        internalQuery.startedBy(currentUserId);
+        internalQuery.involvedUser(currentUserId);
 
         if (!securityKeysInPayload.getProcessDefinitionKeys().isEmpty()) {
             getProcessInstancesPayload.setProcessDefinitionKeys(securityKeysInPayload.getProcessDefinitionKeys());
