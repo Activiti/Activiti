@@ -17,7 +17,7 @@ package org.activiti.runtime.api.model.decorator;
 
 import org.activiti.api.process.model.ProcessDefinition;
 import org.activiti.api.runtime.model.impl.VariableDefinitionImpl;
-import org.activiti.spring.process.ProcessExtensionService;
+import org.activiti.spring.process.CachingProcessExtensionService;
 import org.activiti.spring.process.model.VariableDefinition;
 
 import java.util.Map;
@@ -27,9 +27,9 @@ public class ProcessDefinitionVariablesDecorator implements ProcessDefinitionDec
 
     private static final String HANDLED_VALUE = "variables";
 
-    private final ProcessExtensionService processExtensionService;
+    private final CachingProcessExtensionService processExtensionService;
 
-    public ProcessDefinitionVariablesDecorator(ProcessExtensionService processExtensionService) {
+    public ProcessDefinitionVariablesDecorator(CachingProcessExtensionService processExtensionService) {
         this.processExtensionService = processExtensionService;
     }
 

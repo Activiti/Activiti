@@ -128,6 +128,7 @@ import org.activiti.runtime.api.model.impl.APIVariableInstanceConverter;
 import org.activiti.runtime.api.model.impl.ToActivityConverter;
 import org.activiti.runtime.api.model.impl.ToSignalConverter;
 import org.activiti.runtime.api.signal.SignalPayloadEventListener;
+import org.activiti.spring.process.CachingProcessExtensionService;
 import org.activiti.spring.process.ProcessExtensionService;
 import org.activiti.spring.process.ProcessVariablesInitiator;
 import org.activiti.spring.process.variable.VariableParsingService;
@@ -587,8 +588,8 @@ public class ProcessRuntimeAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public ProcessDefinitionVariablesDecorator processDefinitionVariablesDecorator(ProcessExtensionService processExtensionService) {
-        return new ProcessDefinitionVariablesDecorator(processExtensionService);
+    public ProcessDefinitionVariablesDecorator processDefinitionVariablesDecorator(CachingProcessExtensionService cachingProcessExtensionService) {
+        return new ProcessDefinitionVariablesDecorator(cachingProcessExtensionService);
     }
 
 }

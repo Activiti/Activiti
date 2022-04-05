@@ -17,7 +17,7 @@ package org.activiti.runtime.api.model.decorator;
 
 import org.activiti.api.process.model.ProcessDefinition;
 import org.activiti.api.runtime.model.impl.ProcessDefinitionImpl;
-import org.activiti.spring.process.ProcessExtensionService;
+import org.activiti.spring.process.CachingProcessExtensionService;
 import org.activiti.spring.process.model.Extension;
 import org.activiti.spring.process.model.VariableDefinition;
 import org.junit.jupiter.api.Test;
@@ -40,7 +40,7 @@ class ProcessDefinitionVariablesDecoratorTest {
     private ProcessDefinitionVariablesDecorator processDefinitionVariablesDecorator;
 
     @Mock
-    private ProcessExtensionService processExtensionService;
+    private CachingProcessExtensionService processExtensionService;
 
     @ParameterizedTest
     @CsvSource({"variables, true", "VARIABLES, true", "else, false"})
