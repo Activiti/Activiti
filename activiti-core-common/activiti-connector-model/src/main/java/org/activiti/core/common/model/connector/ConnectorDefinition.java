@@ -17,6 +17,7 @@ package org.activiti.core.common.model.connector;
 
 import java.util.Map;
 
+//不清楚干啥
 public class ConnectorDefinition {
 
     private String id;
