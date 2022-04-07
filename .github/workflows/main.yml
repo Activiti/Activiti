@@ -1,18 +1,14 @@
 name: CI
-
 # Controls when the action will run.
 on:
   # Triggers the workflow on push or pull request events but only for the default branch
   push:
-    branches: [ develop ]
+    branches: [7.2.x]
   pull_request:
-    branches: [ develop ]
-
+    branches: [7.2.x]
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
-
 jobs:
-
   pre-commit:
     runs-on: ubuntu-20.04
     steps:
@@ -22,25 +18,20 @@ jobs:
         uses: actions/setup-python@v2
       - name: Run pre-commit
         uses: pre-commit/action@v2.0.0
-
   build:
     runs-on: ubuntu-20.04
     needs: pre-commit
     steps:
-
       - name: Cancel Previous Runs
         uses: styfle/cancel-workflow-action@0.8.0
         with:
           access_token: ${{ github.token }}
-
       - name: Checkout repository
         uses: actions/checkout@v2
-
       - name: Setup Java JDK 11
         uses: actions/setup-java@v1
         with:
           java-version: 11
-
       # step required for https://github.com/nektos/act/issues/161 to run locally with https://github.com/nektos/act
       - name: Download Maven
         if: ${{ env.ACT }}
@@ -51,14 +42,12 @@ jobs:
           ln -s /usr/share/apache-maven-$MAVEN_VERSION/bin/mvn /usr/bin/mvn
         env:
           MAVEN_VERSION: 3.6.3
-
       - name: Cache Maven packages
         uses: actions/cache@v2
         with:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
-
       - uses: actions/setup-python@v2
         if: ${{ github.event_name == 'push' }}
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-pysemver@v1.2.1
@@ -68,33 +57,27 @@ jobs:
         name: Calculate next internal release
         uses: Alfresco/alfresco-build-tools/.github/actions/calculate-next-internal-version@v1.2.1
         with:
-          next-version: 7.2.0
-
+          next-version: 7.2.1
       - name: Update VERSION file
         if: ${{ github.event_name == 'push' }}
         run: |
           echo ${{steps.next-release.outputs.next-prerelease}} > VERSION
-
       - name: Set preview version
         if: ${{ contains(github.head_ref, 'preview') }}
         run: |
           GITHUB_PR_NUMBER=PR-${{ github.event.pull_request.number }}
           echo 0.0.1-${GITHUB_PR_NUMBER}-${GITHUB_RUN_NUMBER}-SNAPSHOT > VERSION
-
       - name: Set VERSION env variable
         if: ${{ github.event_name == 'push' || contains(github.head_ref, 'preview') }}
         run: |
           VERSION=$(cat VERSION)
           echo set VERSION=$VERSION
           echo "VERSION=$VERSION" >> $GITHUB_ENV
-
       - name: Update pom files to the new version
         if: ${{ github.event_name == 'push' || contains(github.head_ref, 'preview') }}
         run: mvn -B versions:set -DnewVersion=$VERSION -DprocessAllModules=true -DgenerateBackupPoms=false
-
       - name: Build with Maven
         run: mvn -B verify
-
       - name: Configure git user
         if: ${{ github.event_name == 'push' }}
         run: |
@@ -102,14 +85,12 @@ jobs:
           git config --global user.email $GITHUB_USERNAME@users.noreply.github.com
         env:
           GITHUB_USERNAME: ${{ secrets.BOT_GITHUB_USERNAME }}
-
       - name: Create release tag
         if: ${{ github.event_name == 'push' }}
         run: |
           git commit -am "Release $VERSION" --allow-empty
           git tag -fa $VERSION -m "Release version $VERSION"
           git push -f -q origin $VERSION
-
       - name: Deploy with Maven
         if: ${{ github.event_name == 'push' || contains(github.head_ref, 'preview') }}
         run: |
@@ -117,11 +98,9 @@ jobs:
         env:
           MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
-
       - name: Install updatebot
         if: ${{ github.event_name == 'push' }}
         uses: Alfresco/alfresco-build-tools/.github/actions/setup-updatebot@v1.2.1
-
       - name: Run updatebot
         if: ${{ github.event_name == 'push' }}
         run: |
