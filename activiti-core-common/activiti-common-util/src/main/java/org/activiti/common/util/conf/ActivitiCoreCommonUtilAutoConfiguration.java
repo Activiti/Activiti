@@ -21,9 +21,10 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+
 @Configuration
 public class ActivitiCoreCommonUtilAutoConfiguration {
-
+    //日期格式转换
     @Bean
     @ConditionalOnMissingBean
     public DateFormatterProvider dateFormatterProvider(@Value("${spring.activiti.date-format-pattern:yyyy-MM-dd[['T']HH:mm:ss[.SSS'Z']]}")

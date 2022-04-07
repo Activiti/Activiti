@@ -22,7 +22,7 @@ import java.time.format.DateTimeFormatterBuilder;
 import java.util.Date;
 
 public class DateFormatterProvider  {
-
+    //时间正则表达式
     private String dateFormatPattern;
 
     private ZoneId zoneId = ZoneOffset.UTC;
@@ -43,6 +43,7 @@ public class DateFormatterProvider  {
         this.dateFormatPattern = dateFormatPattern;
     }
 
+    //关于日期
     public Date parse(String value) throws DateTimeException {
         DateTimeFormatter dateTimeFormatter = new DateTimeFormatterBuilder()
                                                       .appendPattern(getDateFormatPattern())
@@ -60,6 +61,7 @@ public class DateFormatterProvider  {
         }
     }
 
+    //日期转换函数
     public Date toDate(Object value) {
         if (value instanceof String) {
             return parse((String) value);
