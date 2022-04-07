@@ -13,19 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.runtime.api.model.decorator;
 
-import org.activiti.api.process.model.ProcessDefinition;
-import org.apache.commons.lang3.StringUtils;
+package org.activiti.spring.process;
 
-public interface ProcessDefinitionDecorator {
+import org.activiti.spring.process.model.Extension;
+import org.springframework.cache.annotation.Cacheable;
 
-    String getHandledValue();
+public class CachingProcessExtensionService {
 
-    ProcessDefinition decorate(ProcessDefinition processDefinition);
+    private final ProcessExtensionService processExtensionService;
 
-    default boolean applies(String include){
-        return StringUtils.equalsIgnoreCase(getHandledValue(), include);
+    public CachingProcessExtensionService(ProcessExtensionService processExtensionService) {
+        this.processExtensionService = processExtensionService;
     }
 
+    @Cacheable("extensionsById")
+    public Extension getExtensionsForId(String processDefinitionId) {
+        return processExtensionService.getExtensionsForId(processDefinitionId);
+    }
 }

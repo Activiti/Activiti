@@ -23,6 +23,7 @@ import java.util.Map;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.activiti.common.util.DateFormatterProvider;
 import org.activiti.engine.RepositoryService;
+import org.activiti.spring.process.CachingProcessExtensionService;
 import org.activiti.spring.process.ProcessExtensionResourceReader;
 import org.activiti.spring.process.ProcessExtensionService;
 import org.activiti.spring.process.model.ProcessExtensionModel;
@@ -35,10 +36,12 @@ import org.activiti.spring.process.variable.types.VariableType;
 import org.activiti.spring.resources.DeploymentResourceLoader;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
+@EnableCaching
 public class ProcessExtensionsAutoConfiguration {
 
     @Bean
@@ -100,5 +103,11 @@ public class ProcessExtensionsAutoConfiguration {
     @Bean
     public VariableParsingService variableParsingService(Map<String, VariableType> variableTypeMap) {
         return new VariableParsingService(variableTypeMap);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public CachingProcessExtensionService cachingProcessExtensionService(ProcessExtensionService processExtensionService) {
+        return new CachingProcessExtensionService(processExtensionService);
     }
 }

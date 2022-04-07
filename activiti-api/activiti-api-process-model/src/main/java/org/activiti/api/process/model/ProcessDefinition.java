@@ -17,8 +17,6 @@ package org.activiti.api.process.model;
 
 import org.activiti.api.model.shared.model.ApplicationElement;
 
-import java.util.List;
-
 public interface ProcessDefinition extends ApplicationElement {
 
     String getId();
@@ -34,6 +32,4 @@ public interface ProcessDefinition extends ApplicationElement {
     String getFormKey();
 
     String getCategory();
-
-    List<VariableDefinition> getVariableDefinitions();
 }
