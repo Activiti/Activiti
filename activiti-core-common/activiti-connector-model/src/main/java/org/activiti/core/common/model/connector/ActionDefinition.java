@@ -19,6 +19,7 @@ import static java.util.Collections.emptyList;
 
 import java.util.List;
 
+//不清楚干啥
 public class ActionDefinition {
 
     private String id;

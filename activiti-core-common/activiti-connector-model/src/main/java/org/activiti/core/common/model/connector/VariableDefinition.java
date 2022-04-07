@@ -15,6 +15,7 @@
  */
 package org.activiti.core.common.model.connector;
 
+//不清楚干啥
 public class VariableDefinition {
 
     private String id;
@@ -30,7 +31,7 @@ public class VariableDefinition {
     private Boolean display;
 
     private String displayName;
-
+//=====================================================
     public String getId() {
         return id;
     }
