@@ -15,9 +15,6 @@
  */
 package org.activiti.spring.boot;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.spy;
-
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
 import org.activiti.api.process.runtime.ProcessRuntime;
@@ -31,7 +28,6 @@ import org.activiti.engine.TaskService;
 import org.activiti.runtime.api.impl.ProcessAdminRuntimeImpl;
 import org.activiti.runtime.api.impl.ProcessRuntimeImpl;
 import org.activiti.runtime.api.impl.ProcessVariablesPayloadValidator;
-import org.activiti.runtime.api.model.decorator.ProcessDefinitionDecorator;
 import org.activiti.runtime.api.model.impl.APIDeploymentConverter;
 import org.activiti.runtime.api.model.impl.APIProcessDefinitionConverter;
 import org.activiti.runtime.api.model.impl.APIProcessInstanceConverter;
@@ -46,7 +42,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.test.context.TestPropertySource;
 
-import java.util.List;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.spy;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @TestPropertySource("classpath:application-history.properties")
@@ -102,9 +99,6 @@ public class HistoryConfigurationTest {
     @Autowired
     private SecurityManager securityManager;
 
-    @Autowired
-    private List<ProcessDefinitionDecorator> processDefinitionDecorators;
-
     @AfterEach
     public void cleanUp(){
         processCleanUpUtil.cleanUpWithAdmin();
@@ -125,8 +119,7 @@ public class HistoryConfigurationTest {
                      configuration,
                      eventPublisher,
                      processVariablesValidator,
-                     securityManager,
-                     processDefinitionDecorators));
+                     securityManager));
 
         spy(new ProcessAdminRuntimeImpl(repositoryService,
                      processDefinitionConverter,
