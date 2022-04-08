@@ -16,9 +16,6 @@
 
 package org.activiti.runtime.api.conf;
 
-import static java.util.Collections.emptyList;
-
-import java.util.List;
 import org.activiti.api.process.model.events.BPMNActivityCancelledEvent;
 import org.activiti.api.process.model.events.BPMNActivityCompletedEvent;
 import org.activiti.api.process.model.events.BPMNActivityStartedEvent;
@@ -47,8 +44,8 @@ import org.activiti.api.process.runtime.events.ProcessSuspendedEvent;
 import org.activiti.api.process.runtime.events.ProcessUpdatedEvent;
 import org.activiti.api.process.runtime.events.listener.BPMNElementEventListener;
 import org.activiti.api.process.runtime.events.listener.ProcessRuntimeEventListener;
-import org.activiti.api.runtime.shared.security.SecurityManager;
 import org.activiti.api.runtime.shared.events.VariableEventListener;
+import org.activiti.api.runtime.shared.security.SecurityManager;
 import org.activiti.common.util.DateFormatterProvider;
 import org.activiti.core.common.spring.security.policies.ProcessSecurityPoliciesManager;
 import org.activiti.engine.ManagementService;
@@ -111,16 +108,14 @@ import org.activiti.runtime.api.event.internal.TimerRetriesDecrementedListenerDe
 import org.activiti.runtime.api.event.internal.TimerScheduledListenerDelegate;
 import org.activiti.runtime.api.impl.EventSubscriptionVariablesMappingProvider;
 import org.activiti.runtime.api.impl.ExpressionResolver;
+import org.activiti.runtime.api.impl.ExtensionsVariablesMappingProvider;
 import org.activiti.runtime.api.impl.ProcessAdminRuntimeImpl;
 import org.activiti.runtime.api.impl.ProcessRuntimeImpl;
 import org.activiti.runtime.api.impl.ProcessVariablesPayloadValidator;
 import org.activiti.runtime.api.impl.RuntimeReceiveMessagePayloadEventListener;
 import org.activiti.runtime.api.impl.RuntimeSignalPayloadEventListener;
 import org.activiti.runtime.api.impl.VariableNameValidator;
-import org.activiti.runtime.api.impl.ExtensionsVariablesMappingProvider;
 import org.activiti.runtime.api.message.ReceiveMessagePayloadEventListener;
-import org.activiti.runtime.api.model.decorator.ProcessDefinitionDecorator;
-import org.activiti.runtime.api.model.decorator.ProcessDefinitionVariablesDecorator;
 import org.activiti.runtime.api.model.impl.APIDeploymentConverter;
 import org.activiti.runtime.api.model.impl.APIProcessDefinitionConverter;
 import org.activiti.runtime.api.model.impl.APIProcessInstanceConverter;
@@ -140,6 +135,10 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
+
+import java.util.List;
+
+import static java.util.Collections.emptyList;
 
 @Configuration
 @AutoConfigureAfter(CommonRuntimeAutoConfiguration.class)
@@ -185,8 +184,7 @@ public class ProcessRuntimeAutoConfiguration {
                                          ProcessRuntimeConfiguration processRuntimeConfiguration,
                                          ApplicationEventPublisher eventPublisher,
                                          ProcessVariablesPayloadValidator processVariablesValidator,
-                                         SecurityManager securityManager,
-                                         List<ProcessDefinitionDecorator> processDefinitionDecorators) {
+                                         SecurityManager securityManager) {
         return new ProcessRuntimeImpl(repositoryService,
                 processDefinitionConverter,
                 runtimeService,
@@ -198,8 +196,7 @@ public class ProcessRuntimeAutoConfiguration {
                 processRuntimeConfiguration,
                 eventPublisher,
                 processVariablesValidator,
-                securityManager,
-                processDefinitionDecorators);
+                securityManager);
     }
 
     @Bean
@@ -583,12 +580,6 @@ public class ProcessRuntimeAutoConfiguration {
         return () -> runtimeService.addEventListener(new MessageSubscriptionCancelledListenerDelegate(getInitializedListeners(eventListeners),
                                                                                                       new ToMessageSubscriptionCancelledConverter(converter)),
                                                      ActivitiEventType.ENTITY_DELETED);
-    }
-
-    @Bean
-    @ConditionalOnMissingBean
-    public ProcessDefinitionVariablesDecorator processDefinitionVariablesDecorator(ProcessExtensionService processExtensionService) {
-        return new ProcessDefinitionVariablesDecorator(processExtensionService);
     }
 
 }

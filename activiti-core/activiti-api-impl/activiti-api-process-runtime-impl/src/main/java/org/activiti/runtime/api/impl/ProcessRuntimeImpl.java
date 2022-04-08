@@ -63,7 +63,6 @@ import org.activiti.engine.TaskService;
 import org.activiti.engine.repository.ProcessDefinitionQuery;
 import org.activiti.engine.runtime.ProcessInstanceBuilder;
 import org.activiti.engine.task.TaskQuery;
-import org.activiti.runtime.api.model.decorator.ProcessDefinitionDecorator;
 import org.activiti.runtime.api.model.impl.APIDeploymentConverter;
 import org.activiti.runtime.api.model.impl.APIProcessDefinitionConverter;
 import org.activiti.runtime.api.model.impl.APIProcessInstanceConverter;
@@ -100,8 +99,6 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
 
     private final SecurityManager securityManager;
 
-    private final List<ProcessDefinitionDecorator> processDefinitionDecorators;
-
     public ProcessRuntimeImpl(RepositoryService repositoryService,
                               APIProcessDefinitionConverter processDefinitionConverter,
                               RuntimeService runtimeService,
@@ -113,8 +110,7 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
                               ProcessRuntimeConfiguration configuration,
                               ApplicationEventPublisher eventPublisher,
                               ProcessVariablesPayloadValidator processVariablesValidator,
-                              SecurityManager securityManager,
-                              List<ProcessDefinitionDecorator> processDefinitionDecorators) {
+                              SecurityManager securityManager) {
         this.repositoryService = repositoryService;
         this.processDefinitionConverter = processDefinitionConverter;
         this.runtimeService = runtimeService;
@@ -127,7 +123,6 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
         this.eventPublisher = eventPublisher;
         this.processVariablesValidator = processVariablesValidator;
         this.securityManager = securityManager;
-        this.processDefinitionDecorators = processDefinitionDecorators;
     }
 
     @Override
@@ -213,26 +208,8 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
             processDefinitionQuery.processDefinitionKeys(getProcessDefinitionsPayload.getProcessDefinitionKeys());
         }
 
-        List<ProcessDefinition> processDefinitions = processDefinitionConverter.from(processDefinitionQuery.list());
-        List<ProcessDefinition> decoratedProcessDefinitions = decorate(processDefinitions, include);
-        return new PageImpl<>(decoratedProcessDefinitions,
+        return new PageImpl<>(processDefinitionConverter.from(processDefinitionQuery.list()),
                               Math.toIntExact(processDefinitionQuery.count()));
-    }
-
-    private List<ProcessDefinition> decorate(List<ProcessDefinition> processDefinitions, List<String> include) {
-        List<ProcessDefinition> decoratedProcessDefinitions = new ArrayList<>(processDefinitions);
-        for (String param : include) {
-            decoratedProcessDefinitions = decorate(decoratedProcessDefinitions, param);
-        }
-        return decoratedProcessDefinitions;
-    }
-
-    private List<ProcessDefinition> decorate(List<ProcessDefinition> processDefinitions, String includeParam) {
-        return processDefinitionDecorators.stream()
-            .filter(decorator -> decorator.applies(includeParam))
-            .findFirst()
-            .map(decorator -> processDefinitions.stream().map(decorator::decorate).collect(Collectors.toList()))
-            .orElse(processDefinitions);
     }
 
     @Override
