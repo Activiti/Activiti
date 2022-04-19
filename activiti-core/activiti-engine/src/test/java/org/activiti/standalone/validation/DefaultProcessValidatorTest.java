@@ -286,16 +286,11 @@ public class DefaultProcessValidatorTest {
         assertThat(allErrors.get(0).getProblem()).isEqualTo("activiti-di-invalid-reference");
     }
 
-  /*
-   * Test for https://jira.codehaus.org/browse/ACT-2071:
-   *
-   * If all processes in a deployment are not executable, throw an exception as this doesn't make sense to do.
-   */
   @Test
-  public void testAllNonExecutableProcesses() {
+  public void should_raiseAValidationError_when_noProcessIsExecutable() {
     BpmnModel bpmnModel = new BpmnModel();
     for (int i = 0; i < 5; i++) {
-      org.activiti.bpmn.model.Process process = TestProcessUtil.createOneTaskProcess();
+      org.activiti.bpmn.model.Process process = TestProcessUtil.createOneTaskProcess(i);
       process.setExecutable(false);
       bpmnModel.addProcess(process);
     }
@@ -304,27 +299,36 @@ public class DefaultProcessValidatorTest {
     assertThat(errors).hasSize(1);
   }
 
-  /*
-   * Test for https://jira.codehaus.org/browse/ACT-2071:
-   *
-   * If there is at least one process definition which is executable, and the deployment contains other process definitions which are not executable, then add a warning for those non executable
-   * process definitions
-   */
+    @Test
+    public void should_raiseAnError_when_twoProcessesHasSameIdInTheBPMNModel() {
+        BpmnModel bpmnModel = new BpmnModel();
+
+        org.activiti.bpmn.model.Process firstProcess = TestProcessUtil.createOneTaskProcess(1);
+        firstProcess.setExecutable(true);
+        bpmnModel.addProcess(firstProcess);
+
+        org.activiti.bpmn.model.Process secondProcess = TestProcessUtil.createOneTaskProcess(1);
+        secondProcess.setExecutable(true);
+        bpmnModel.addProcess(secondProcess);
+
+        List<ValidationError> errors = processValidator.validate(bpmnModel);
+        assertThat(errors).hasSize(1);
+  }
+
   @Test
-  public void testNonExecutableProcessDefinitionWarning() {
+  public void should_addWarningsForAllNonExecutableProcesses_WhenAtLeastOneProcessIsExecutable() {
     BpmnModel bpmnModel = new BpmnModel();
 
     // 3 non-executables
     for (int i = 0; i < 3; i++) {
-      org.activiti.bpmn.model.Process process = TestProcessUtil.createOneTaskProcess();
+      org.activiti.bpmn.model.Process process = TestProcessUtil.createOneTaskProcess(i);
       process.setExecutable(false);
       bpmnModel.addProcess(process);
     }
 
-    // 1 executables
-    org.activiti.bpmn.model.Process process = TestProcessUtil.createOneTaskProcess();
-    process.setExecutable(true);
-    bpmnModel.addProcess(process);
+    org.activiti.bpmn.model.Process executableProcess = TestProcessUtil.createOneTaskProcess(4);
+    executableProcess.setExecutable(true);
+    bpmnModel.addProcess(executableProcess);
 
     List<ValidationError> errors = processValidator.validate(bpmnModel);
     assertThat(errors).hasSize(3);

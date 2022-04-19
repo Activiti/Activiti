@@ -72,6 +72,7 @@ public interface Problems {
 
   String BPMN_MODEL_TARGET_NAMESPACE_TOO_LONG = "activiti-bpmn-model-target-namespace-too-long";
 
+  String PROCESS_DEFINITION_NAME_NOT_UNIQUE = "activiti-process-definition-name-duplicated";
   String PROCESS_DEFINITION_ID_TOO_LONG = "activiti-process-definition-id-too-long";
   String PROCESS_DEFINITION_NAME_TOO_LONG = "activiti-process-definition-name-too-long";
   String PROCESS_DEFINITION_DOCUMENTATION_TOO_LONG = "activiti-process-definition-documentation-too-long";
