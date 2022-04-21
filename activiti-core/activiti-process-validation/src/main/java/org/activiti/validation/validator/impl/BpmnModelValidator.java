@@ -37,10 +37,10 @@ public class BpmnModelValidator extends ValidatorImpl {
   @Override
   public void validate(BpmnModel bpmnModel, List<ValidationError> errors) {
 
-    List<Process> processesDuplicated = getProcessesWithSameName(bpmnModel.getProcesses());
-    if(processesDuplicated.size() > 0 ) {
-        addError(errors, Problems.PROCESS_DEFINITION_NAME_NOT_UNIQUE, processesDuplicated.get(0),
-            "The name of the process definition must be unique");
+    List<Process> processesDuplicated = getProcessesWithSameId(bpmnModel.getProcesses());
+    if(! processesDuplicated.isEmpty() ) {
+        addError(errors, Problems.PROCESS_DEFINITION_ID_NOT_UNIQUE, processesDuplicated.get(0),
+            "The id of the process definition must be unique");
     }
 
     // If all process definitions of this bpmnModel are not executable, raise an error
@@ -100,7 +100,7 @@ public class BpmnModelValidator extends ValidatorImpl {
 		return nrOfExecutableDefinitions > 0;
   }
 
-  protected List<Process> getProcessesWithSameName(final List<Process> processes) {
+  protected List<Process> getProcessesWithSameId(final List<Process> processes) {
             List<Process> filteredProcesses = processes.stream()
                 .filter(process -> process.getName() != null).collect(Collectors.toList());
           return getDuplicatesMap(filteredProcesses).values().stream()
@@ -109,8 +109,8 @@ public class BpmnModelValidator extends ValidatorImpl {
               .collect(Collectors.toList());
   }
 
-  private static Map<String, List<Process>> getDuplicatesMap(List<Process> personList) {
-        return personList.stream().collect(Collectors.groupingBy(Process::getId));
+  private static Map<String, List<Process>> getDuplicatesMap(List<Process> processes) {
+        return processes.stream().collect(Collectors.groupingBy(Process::getId));
     }
 
 }

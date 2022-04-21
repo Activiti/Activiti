@@ -24,6 +24,7 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -290,7 +291,7 @@ public class DefaultProcessValidatorTest {
   public void should_raiseAValidationError_when_noProcessIsExecutable() {
     BpmnModel bpmnModel = new BpmnModel();
     for (int i = 0; i < 5; i++) {
-      org.activiti.bpmn.model.Process process = TestProcessUtil.createOneTaskProcess(i);
+      org.activiti.bpmn.model.Process process = TestProcessUtil.createOneTaskProcessWithId(UUID.randomUUID().toString());
       process.setExecutable(false);
       bpmnModel.addProcess(process);
     }
@@ -303,16 +304,18 @@ public class DefaultProcessValidatorTest {
     public void should_raiseAnError_when_twoProcessesHasSameIdInTheBPMNModel() {
         BpmnModel bpmnModel = new BpmnModel();
 
-        org.activiti.bpmn.model.Process firstProcess = TestProcessUtil.createOneTaskProcess(1);
+        String sameIdTest = UUID.randomUUID().toString();
+        org.activiti.bpmn.model.Process firstProcess = TestProcessUtil.createOneTaskProcessWithId(sameIdTest);
         firstProcess.setExecutable(true);
         bpmnModel.addProcess(firstProcess);
 
-        org.activiti.bpmn.model.Process secondProcess = TestProcessUtil.createOneTaskProcess(1);
+        org.activiti.bpmn.model.Process secondProcess = TestProcessUtil.createOneTaskProcessWithId(sameIdTest);
         secondProcess.setExecutable(true);
         bpmnModel.addProcess(secondProcess);
 
         List<ValidationError> errors = processValidator.validate(bpmnModel);
         assertThat(errors).hasSize(1);
+        assertThat(errors.get(0).getProblem()).isEqualTo(Problems.PROCESS_DEFINITION_ID_NOT_UNIQUE);
   }
 
   @Test
@@ -321,12 +324,12 @@ public class DefaultProcessValidatorTest {
 
     // 3 non-executables
     for (int i = 0; i < 3; i++) {
-      org.activiti.bpmn.model.Process process = TestProcessUtil.createOneTaskProcess(i);
+      org.activiti.bpmn.model.Process process = TestProcessUtil.createOneTaskProcessWithId(UUID.randomUUID().toString());
       process.setExecutable(false);
       bpmnModel.addProcess(process);
     }
 
-    org.activiti.bpmn.model.Process executableProcess = TestProcessUtil.createOneTaskProcess(4);
+    org.activiti.bpmn.model.Process executableProcess = TestProcessUtil.createOneTaskProcessWithId(UUID.randomUUID().toString());
     executableProcess.setExecutable(true);
     bpmnModel.addProcess(executableProcess);
 

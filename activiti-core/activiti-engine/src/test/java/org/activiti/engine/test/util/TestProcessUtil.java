@@ -33,14 +33,20 @@ public class TestProcessUtil {
    */
   public static BpmnModel createOneTaskBpmnModel() {
     BpmnModel model = new BpmnModel();
-    model.addProcess(createOneTaskProcess(1));
+    model.addProcess(createOneTaskProcess());
     return model;
   }
 
-  public static org.activiti.bpmn.model.Process createOneTaskProcess(int index) {
+  public static org.activiti.bpmn.model.Process createOneTaskProcessWithId(String id) {
+    org.activiti.bpmn.model.Process process = createOneTaskProcess();
+    process.setId(id);
+    return process;
+  }
+
+  public static org.activiti.bpmn.model.Process createOneTaskProcess() {
     org.activiti.bpmn.model.Process process = new org.activiti.bpmn.model.Process();
 
-    process.setId("oneTaskProcess".concat("-"+index));
+    process.setId("oneTaskProcess");
     process.setName("The one task process");
 
     StartEvent startEvent = new StartEvent();
