@@ -43,6 +43,7 @@ public class TestProcessUtil {
     org.activiti.bpmn.model.Process process = new org.activiti.bpmn.model.Process();
 
     process.setId(id);
+    process.setExecutable(true);
     process.setName("The one task process");
 
     StartEvent startEvent = new StartEvent();

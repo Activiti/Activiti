@@ -291,9 +291,7 @@ public class DefaultProcessValidatorTest {
   public void should_raiseAValidationError_when_noProcessIsExecutable() {
     BpmnModel bpmnModel = new BpmnModel();
     for (int i = 0; i < 5; i++) {
-      org.activiti.bpmn.model.Process process = TestProcessUtil.createOneTaskProcess();
-      process.setExecutable(false);
-      bpmnModel.addProcess(process);
+      bpmnModel.addProcess(createNonExecutableProcess());
     }
 
     List<ValidationError> errors = processValidator.validate(bpmnModel);
@@ -305,32 +303,23 @@ public class DefaultProcessValidatorTest {
         BpmnModel bpmnModel = new BpmnModel();
 
         String sameIdTest = UUID.randomUUID().toString();
-        org.activiti.bpmn.model.Process firstProcess = TestProcessUtil.createOneTaskProcessWithId(sameIdTest);
-        firstProcess.setExecutable(true);
-        bpmnModel.addProcess(firstProcess);
-
-        org.activiti.bpmn.model.Process secondProcess = TestProcessUtil.createOneTaskProcessWithId(sameIdTest);
-        secondProcess.setExecutable(true);
-        bpmnModel.addProcess(secondProcess);
+        bpmnModel.addProcess(TestProcessUtil.createOneTaskProcessWithId(sameIdTest));
+        bpmnModel.addProcess(TestProcessUtil.createOneTaskProcessWithId(sameIdTest));
 
         List<ValidationError> errors = processValidator.validate(bpmnModel);
         assertThat(errors).hasSize(1);
         assertThat(errors.get(0).getProblem()).isEqualTo(Problems.PROCESS_DEFINITION_ID_NOT_UNIQUE);
   }
 
-  @Test
+    @Test
   public void should_addWarningsForAllNonExecutableProcesses_WhenAtLeastOneProcessIsExecutable() {
     BpmnModel bpmnModel = new BpmnModel();
 
-    // 3 non-executables
     for (int i = 0; i < 3; i++) {
-      org.activiti.bpmn.model.Process process = TestProcessUtil.createOneTaskProcess();
-      process.setExecutable(false);
-      bpmnModel.addProcess(process);
+        bpmnModel.addProcess(createNonExecutableProcess());
     }
 
     org.activiti.bpmn.model.Process executableProcess = TestProcessUtil.createOneTaskProcess();
-    executableProcess.setExecutable(true);
     bpmnModel.addProcess(executableProcess);
 
     List<ValidationError> errors = processValidator.validate(bpmnModel);
@@ -343,7 +332,13 @@ public class DefaultProcessValidatorTest {
     }
   }
 
-  private void assertCommonProblemFieldForActivity(ValidationError error) {
+    private org.activiti.bpmn.model.Process createNonExecutableProcess() {
+        org.activiti.bpmn.model.Process process = TestProcessUtil.createOneTaskProcess();
+        process.setExecutable(false);
+        return process;
+    }
+
+    private void assertCommonProblemFieldForActivity(ValidationError error) {
     assertProcessElementError(error);
 
     assertThat(error.getActivityId()).isNotNull();
