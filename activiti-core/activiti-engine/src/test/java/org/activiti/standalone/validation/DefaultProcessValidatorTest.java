@@ -291,7 +291,7 @@ public class DefaultProcessValidatorTest {
   public void should_raiseAValidationError_when_noProcessIsExecutable() {
     BpmnModel bpmnModel = new BpmnModel();
     for (int i = 0; i < 5; i++) {
-      org.activiti.bpmn.model.Process process = TestProcessUtil.createOneTaskProcessWithId(UUID.randomUUID().toString());
+      org.activiti.bpmn.model.Process process = TestProcessUtil.createOneTaskProcess();
       process.setExecutable(false);
       bpmnModel.addProcess(process);
     }
@@ -324,12 +324,12 @@ public class DefaultProcessValidatorTest {
 
     // 3 non-executables
     for (int i = 0; i < 3; i++) {
-      org.activiti.bpmn.model.Process process = TestProcessUtil.createOneTaskProcessWithId(UUID.randomUUID().toString());
+      org.activiti.bpmn.model.Process process = TestProcessUtil.createOneTaskProcess();
       process.setExecutable(false);
       bpmnModel.addProcess(process);
     }
 
-    org.activiti.bpmn.model.Process executableProcess = TestProcessUtil.createOneTaskProcessWithId(UUID.randomUUID().toString());
+    org.activiti.bpmn.model.Process executableProcess = TestProcessUtil.createOneTaskProcess();
     executableProcess.setExecutable(true);
     bpmnModel.addProcess(executableProcess);
 

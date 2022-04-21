@@ -22,6 +22,8 @@ import org.activiti.bpmn.model.SequenceFlow;
 import org.activiti.bpmn.model.StartEvent;
 import org.activiti.bpmn.model.UserTask;
 
+import java.util.UUID;
+
 /**
 
  */
@@ -38,15 +40,9 @@ public class TestProcessUtil {
   }
 
   public static org.activiti.bpmn.model.Process createOneTaskProcessWithId(String id) {
-    org.activiti.bpmn.model.Process process = createOneTaskProcess();
-    process.setId(id);
-    return process;
-  }
-
-  public static org.activiti.bpmn.model.Process createOneTaskProcess() {
     org.activiti.bpmn.model.Process process = new org.activiti.bpmn.model.Process();
 
-    process.setId("oneTaskProcess");
+    process.setId(id);
     process.setName("The one task process");
 
     StartEvent startEvent = new StartEvent();
@@ -67,7 +63,11 @@ public class TestProcessUtil {
     process.addFlowElement(new SequenceFlow("theTask", "theEnd"));
 
     return process;
-  }
+}
+
+public static org.activiti.bpmn.model.Process createOneTaskProcess() {
+    return createOneTaskProcessWithId(UUID.randomUUID().toString());
+}
 
   public static BpmnModel createTwoTasksBpmnModel() {
     BpmnModel model = new BpmnModel();
