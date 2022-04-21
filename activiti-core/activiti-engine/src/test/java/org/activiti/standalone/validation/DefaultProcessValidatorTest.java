@@ -24,6 +24,7 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -286,45 +287,40 @@ public class DefaultProcessValidatorTest {
         assertThat(allErrors.get(0).getProblem()).isEqualTo("activiti-di-invalid-reference");
     }
 
-  /*
-   * Test for https://jira.codehaus.org/browse/ACT-2071:
-   *
-   * If all processes in a deployment are not executable, throw an exception as this doesn't make sense to do.
-   */
   @Test
-  public void testAllNonExecutableProcesses() {
+  public void should_raiseAValidationError_when_noProcessIsExecutable() {
     BpmnModel bpmnModel = new BpmnModel();
     for (int i = 0; i < 5; i++) {
-      org.activiti.bpmn.model.Process process = TestProcessUtil.createOneTaskProcess();
-      process.setExecutable(false);
-      bpmnModel.addProcess(process);
+      bpmnModel.addProcess(createNonExecutableProcess());
     }
 
     List<ValidationError> errors = processValidator.validate(bpmnModel);
     assertThat(errors).hasSize(1);
   }
 
-  /*
-   * Test for https://jira.codehaus.org/browse/ACT-2071:
-   *
-   * If there is at least one process definition which is executable, and the deployment contains other process definitions which are not executable, then add a warning for those non executable
-   * process definitions
-   */
-  @Test
-  public void testNonExecutableProcessDefinitionWarning() {
+    @Test
+    public void should_raiseAnError_when_twoProcessesHasSameIdInTheBPMNModel() {
+        BpmnModel bpmnModel = new BpmnModel();
+
+        String sameIdTest = UUID.randomUUID().toString();
+        bpmnModel.addProcess(TestProcessUtil.createOneTaskProcessWithId(sameIdTest));
+        bpmnModel.addProcess(TestProcessUtil.createOneTaskProcessWithId(sameIdTest));
+
+        List<ValidationError> errors = processValidator.validate(bpmnModel);
+        assertThat(errors).hasSize(1);
+        assertThat(errors.get(0).getProblem()).isEqualTo(Problems.PROCESS_DEFINITION_ID_NOT_UNIQUE);
+  }
+
+    @Test
+  public void should_addWarningsForAllNonExecutableProcesses_WhenAtLeastOneProcessIsExecutable() {
     BpmnModel bpmnModel = new BpmnModel();
 
-    // 3 non-executables
     for (int i = 0; i < 3; i++) {
-      org.activiti.bpmn.model.Process process = TestProcessUtil.createOneTaskProcess();
-      process.setExecutable(false);
-      bpmnModel.addProcess(process);
+        bpmnModel.addProcess(createNonExecutableProcess());
     }
 
-    // 1 executables
-    org.activiti.bpmn.model.Process process = TestProcessUtil.createOneTaskProcess();
-    process.setExecutable(true);
-    bpmnModel.addProcess(process);
+    org.activiti.bpmn.model.Process executableProcess = TestProcessUtil.createOneTaskProcess();
+    bpmnModel.addProcess(executableProcess);
 
     List<ValidationError> errors = processValidator.validate(bpmnModel);
     assertThat(errors).hasSize(3);
@@ -336,7 +332,13 @@ public class DefaultProcessValidatorTest {
     }
   }
 
-  private void assertCommonProblemFieldForActivity(ValidationError error) {
+    private org.activiti.bpmn.model.Process createNonExecutableProcess() {
+        org.activiti.bpmn.model.Process process = TestProcessUtil.createOneTaskProcess();
+        process.setExecutable(false);
+        return process;
+    }
+
+    private void assertCommonProblemFieldForActivity(ValidationError error) {
     assertProcessElementError(error);
 
     assertThat(error.getActivityId()).isNotNull();
